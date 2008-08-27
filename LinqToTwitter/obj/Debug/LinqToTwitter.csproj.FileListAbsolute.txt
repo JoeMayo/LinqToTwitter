@@ -1,0 +1,10 @@
+C:\LinqProgramming\Chapter 10\LinqToTwitter\obj\Debug\ResolveAssemblyReference.cache
+C:\LinqProgramming\Chapter 10\LinqToTwitter\bin\Debug\LinqToTwitter.dll
+C:\LinqProgramming\Chapter 10\LinqToTwitter\bin\Debug\LinqToTwitter.pdb
+C:\LinqProgramming\Chapter 10\LinqToTwitter\obj\Debug\LinqToTwitter.dll
+C:\LinqProgramming\Chapter 10\LinqToTwitter\obj\Debug\LinqToTwitter.pdb
+C:\Projects\LinqToTwitter\LinqToTwitter\bin\Debug\LinqToTwitter.dll
+C:\Projects\LinqToTwitter\LinqToTwitter\bin\Debug\LinqToTwitter.pdb
+C:\Projects\LinqToTwitter\LinqToTwitter\obj\Debug\ResolveAssemblyReference.cache
+C:\Projects\LinqToTwitter\LinqToTwitter\obj\Debug\LinqToTwitter.dll
+C:\Projects\LinqToTwitter\LinqToTwitter\obj\Debug\LinqToTwitter.pdb

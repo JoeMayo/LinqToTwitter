@@ -1,0 +1,7 @@
+C:\Projects\LinqToTwitter\LinqToTwitterTest\obj\Debug\ResolveAssemblyReference.cache
+C:\Projects\LinqToTwitter\LinqToTwitterTest\bin\Debug\LinqToTwitterTest.exe
+C:\Projects\LinqToTwitter\LinqToTwitterTest\bin\Debug\LinqToTwitterTest.pdb
+C:\Projects\LinqToTwitter\LinqToTwitterTest\bin\Debug\LinqToTwitter.dll
+C:\Projects\LinqToTwitter\LinqToTwitterTest\bin\Debug\LinqToTwitter.pdb
+C:\Projects\LinqToTwitter\LinqToTwitterTest\obj\Debug\LinqToTwitterTest.exe
+C:\Projects\LinqToTwitter\LinqToTwitterTest\obj\Debug\LinqToTwitterTest.pdb
