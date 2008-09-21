@@ -18,18 +18,21 @@ namespace LinqToTwitter
     {
         public string UserName { get; set; }
         public string Password { get; set; }
+        public string BaseUrl { get; set; }
 
-        public TwitterContext()
-        {
-            UserName = string.Empty;
-            Password = string.Empty;
-        }
+        public TwitterContext() : 
+            this(string.Empty, string.Empty, string.Empty) { }
 
-        public TwitterContext(string userName, string password)
+        public TwitterContext(string userName, string password) :
+            this(userName, password, string.Empty) { }
+
+        public TwitterContext(string userName, string password, string baseUrl)
         {
             UserName = userName;
             Password = password;
+            BaseUrl = baseUrl == string.Empty ? "http://twitter.com/" : baseUrl;
         }
+
 
         public TwitterQueryable<Status> Status 
         {
@@ -85,7 +88,7 @@ namespace LinqToTwitter
             if (parameters == null ||
                 !parameters.ContainsKey("Type"))
             {
-                url = "http://twitter.com/statuses/public_timeline.xml";
+                url = BaseUrl + "statuses/public_timeline.xml";
                 return url;
             }
 
@@ -95,18 +98,18 @@ namespace LinqToTwitter
                     switch (parameters["Type"])
                     {
                         case "Public":
-                            url = "http://twitter.com/statuses/public_timeline.xml";
+                            url = BaseUrl + "statuses/public_timeline.xml";
                             break;
                         case "Friends":
-                            url = "http://twitter.com/statuses/friends_timeline.xml";
+                            url = BaseUrl + "statuses/friends_timeline.xml";
                             break;
                         default:
-                            url = "http://twitter.com/statuses/public_timeline.xml";
+                            url = BaseUrl + "statuses/public_timeline.xml";
                             break;
                     }
                     break;
                 default:
-                    url = "http://twitter.com/statuses/public_timeline.xml";
+                    url = BaseUrl + "statuses/public_timeline.xml";
                     break;
             }
 
