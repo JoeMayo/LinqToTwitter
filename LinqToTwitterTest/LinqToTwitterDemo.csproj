@@ -8,8 +8,8 @@
     <ProjectGuid>{CF26D528-E26B-40DB-A821-DEDE868D2638}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>LinqToTwitterTest</RootNamespace>
-    <AssemblyName>LinqToTwitterTest</AssemblyName>
+    <RootNamespace>LinqToTwitterDemo</RootNamespace>
+    <AssemblyName>LinqToTwitterDemo</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SccProjectName>SAK</SccProjectName>

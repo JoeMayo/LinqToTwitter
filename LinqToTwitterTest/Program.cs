@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+
 using LinqToTwitter;
 
-namespace LinqToTwitterTest
+namespace LinqToTwitterDemo
 {
     class Program
     {
@@ -16,7 +15,7 @@ namespace LinqToTwitterTest
             Console.Write("Twitter Password: ");
             string password = Console.ReadLine();
 
-            var twitterCtx = new TwitterContext(userName, password);
+            var twitterCtx = new TwitterContext(userName, password, "http://www.twitter.com/");
 
             //var type = "Public";
             var type = "Friends";

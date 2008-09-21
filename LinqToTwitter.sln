@@ -1,22 +1,36 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqToTwitterTest", "LinqToTwitterTest\LinqToTwitterTest.csproj", "{CF26D528-E26B-40DB-A821-DEDE868D2638}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqToTwitterDemo", "LinqToTwitterTest\LinqToTwitterDemo.csproj", "{CF26D528-E26B-40DB-A821-DEDE868D2638}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqToTwitter", "LinqToTwitter\LinqToTwitter.csproj", "{A214B9F0-6B8C-4E91-BE99-27F55CC860C1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqToTwitterTests", "LinqToTwitterTests\LinqToTwitterTests.csproj", "{2DC196D0-E574-4F11-A235-8987DC8FFB79}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{BC2D998B-4453-442C-B475-60F43B0D0D70}"
+	ProjectSection(SolutionItems) = preProject
+		LinqToTwitter.vsmdi = LinqToTwitter.vsmdi
+		LocalTestRun.testrunconfig = LocalTestRun.testrunconfig
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 3
+		SccNumberOfProjects = 4
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs01.codeplex.com/
 		SccLocalPath0 = .
-		SccProjectUniqueName1 = LinqToTwitterTest\\LinqToTwitterTest.csproj
-		SccProjectName1 = LinqToTwitterTest
-		SccLocalPath1 = LinqToTwitterTest
-		SccProjectUniqueName2 = LinqToTwitter\\LinqToTwitter.csproj
-		SccProjectName2 = LinqToTwitter
-		SccLocalPath2 = LinqToTwitter
+		SccProjectUniqueName1 = LinqToTwitter\\LinqToTwitter.csproj
+		SccProjectName1 = LinqToTwitter
+		SccLocalPath1 = LinqToTwitter
+		SccProjectUniqueName2 = LinqToTwitterTest\\LinqToTwitterDemo.csproj
+		SccProjectName2 = LinqToTwitterTest
+		SccLocalPath2 = LinqToTwitterTest
+		SccProjectUniqueName3 = LinqToTwitterTests\\LinqToTwitterTests.csproj
+		SccProjectName3 = LinqToTwitterTests
+		SccLocalPath3 = LinqToTwitterTests
+	EndGlobalSection
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = LinqToTwitter.vsmdi
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +45,10 @@ Global
 		{A214B9F0-6B8C-4E91-BE99-27F55CC860C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A214B9F0-6B8C-4E91-BE99-27F55CC860C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A214B9F0-6B8C-4E91-BE99-27F55CC860C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2DC196D0-E574-4F11-A235-8987DC8FFB79}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2DC196D0-E574-4F11-A235-8987DC8FFB79}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2DC196D0-E574-4F11-A235-8987DC8FFB79}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2DC196D0-E574-4F11-A235-8987DC8FFB79}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
