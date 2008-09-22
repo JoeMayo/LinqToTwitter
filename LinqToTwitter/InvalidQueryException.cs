@@ -19,15 +19,25 @@ using System.Text;
 
 namespace LinqToTwitter
 {
+    /// <summary>
+    /// custom exception for handling bad queries
+    /// </summary>
     class InvalidQueryException : System.Exception
     {
         private string message;
 
+        /// <summary>
+        /// init exception
+        /// </summary>
+        /// <param name="message">message to display</param>
         public InvalidQueryException(string message)
         {
             this.message = message + " ";
         }
 
+        /// <summary>
+        /// message to display
+        /// </summary>
         public override string Message
         {
             get
