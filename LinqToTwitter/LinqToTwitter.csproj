@@ -54,7 +54,9 @@
     <Compile Include="ExpressionTreeVisitor.cs" />
     <Compile Include="InnerMostWhereFinder.cs" />
     <Compile Include="InvalidQueryException.cs" />
+    <Compile Include="IRequestProcessor.cs" />
     <Compile Include="ParameterFinder.cs" />
+    <Compile Include="StatusRequestProcessor.cs" />
     <Compile Include="TwitterQueryable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Status.cs" />

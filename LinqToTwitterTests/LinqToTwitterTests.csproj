@@ -51,6 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StatusRequestProcessorTest.cs" />
     <Compile Include="TwitterContextTest.cs" />
   </ItemGroup>
   <ItemGroup>

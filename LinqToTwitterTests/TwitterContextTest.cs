@@ -131,95 +131,21 @@ namespace LinqToTwitterTests
         }
 
         /// <summary>
-        ///BuildUrl with null parameters
+        ///A test for CreateRequestProcessor
         ///</summary>
-        public void BuildUrlNullParamsHelper<T>()
+        public void CreateRequestProcessorTestHelper<T>()
         {
-            TwitterContext_Accessor ctx = new TwitterContext_Accessor();
-            Dictionary<string, string> parameters = null;
-            string expected = "http://twitter.com/statuses/public_timeline.xml";
-            string actual;
-            actual = ctx.BuildUrl<Status>(parameters);
-            Assert.AreEqual(expected, actual);
+            TwitterContext ctx = new TwitterContext();
+            IRequestProcessor statusProc;
+            statusProc = ctx.CreateRequestProcessor<Status>();
+            Assert.IsInstanceOfType(statusProc, typeof(StatusRequestProcessor));
         }
 
         [TestMethod()]
         [DeploymentItem("LinqToTwitter.dll")]
-        public void BuildUrlNullParams()
+        public void CreateRequestProcessorTest()
         {
-            BuildUrlNullParamsHelper<GenericParameterHelper>();
-        }
-
-        /// <summary>
-        ///BuildUrl with Public parameters
-        ///</summary>
-        public void BuildUrlPublicParamsHelper<T>()
-        {
-            TwitterContext_Accessor ctx = new TwitterContext_Accessor();
-            Dictionary<string, string> parameters =
-                new Dictionary<string, string>
-                {
-                    { "Type", "Public" }
-                };
-            string expected = "http://twitter.com/statuses/public_timeline.xml";
-            string actual;
-            actual = ctx.BuildUrl<Status>(parameters);
-            Assert.AreEqual(expected, actual);
-        }
-
-        [TestMethod()]
-        [DeploymentItem("LinqToTwitter.dll")]
-        public void BuildUrlPublicParams()
-        {
-            BuildUrlPublicParamsHelper<GenericParameterHelper>();
-        }
-
-        /// <summary>
-        ///BuildUrl with Friends parameters
-        ///</summary>
-        public void BuildUrlFriendsParamsHelper<T>()
-        {
-            TwitterContext_Accessor ctx = new TwitterContext_Accessor();
-            Dictionary<string, string> parameters =
-                new Dictionary<string, string>
-                {
-                    { "Type", "Friends" }
-                };
-            string expected = "http://twitter.com/statuses/friends_timeline.xml";
-            string actual;
-            actual = ctx.BuildUrl<Status>(parameters);
-            Assert.AreEqual(expected, actual);
-        }
-
-        [TestMethod()]
-        [DeploymentItem("LinqToTwitter.dll")]
-        public void BuildUrlFriendsParams()
-        {
-            BuildUrlFriendsParamsHelper<GenericParameterHelper>();
-        }
-
-        /// <summary>
-        ///BuildUrl with unknown type
-        ///</summary>
-        public void BuildUrlUnknownTypeParamsHelper<T>()
-        {
-            TwitterContext_Accessor ctx = new TwitterContext_Accessor();
-            Dictionary<string, string> parameters =
-                new Dictionary<string, string>
-                {
-                    { "Type", "Friends" }
-                };
-            string expected = "http://twitter.com/statuses/public_timeline.xml";
-            string actual;
-            actual = ctx.BuildUrl<T>(parameters);
-            Assert.AreEqual(expected, actual);
-        }
-
-        [TestMethod()]
-        [DeploymentItem("LinqToTwitter.dll")]
-        public void BuildUnknownTypeParams()
-        {
-            BuildUrlUnknownTypeParamsHelper<GenericParameterHelper>();
+            CreateRequestProcessorTestHelper<GenericParameterHelper>();
         }
     }
 }

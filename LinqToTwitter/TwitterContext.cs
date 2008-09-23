@@ -11,6 +11,7 @@ using System.Linq.Expressions;
 using System.Xml.Linq;
 using System.Net;
 using System.IO;
+using System.Diagnostics;
 
 namespace LinqToTwitter
 {
@@ -106,73 +107,102 @@ namespace LinqToTwitter
             // but this will eventually be refactored to support more of the Twitter API
             //
 
-            var statusList = GetStatusList(parameters);
+            //var statusList = ExecuteTwitterQuery<Status>(parameters);
 
-            var queryableStatusList = statusList.AsQueryable<Status>();
+            var req = CreateRequestProcessor<Status>();
 
-            return queryableStatusList;
+            var url = req.BuildURL(parameters);
+            var queryableList = QueryTwitter(url, req);
+            //var queryableList = res.AsQueryable<Status>();
+
+            return queryableList;
         }
 
+        ///// <summary>
+        ///// constructs the Twitter API URL and executes the query
+        ///// </summary>
+        ///// <param name="parameters">criteria for the query</param>
+        ///// <returns>List of Status objects</returns>
+        //private object ExecuteTwitterQuery<T>(Dictionary<string, string> parameters)
+        //{
+        //    var req = CreateRequestProcessor<T>();
+        //    var url = req.BuildURL(parameters);
+        //    var res = QueryTwitter<T>(url);
+
+        //    return res;
+        //}
+
         /// <summary>
-        /// constructs the Twitter API URL and executes the query
+        /// factory method for returning a request processor
         /// </summary>
-        /// <param name="parameters">criteria for the query</param>
-        /// <returns>List of Status objects</returns>
-        private List<Status> GetStatusList(Dictionary<string, string> parameters)
+        /// <typeparam name="T">type of request</typeparam>
+        /// <returns>request processor matching type parameter</returns>
+        public IRequestProcessor CreateRequestProcessor<T>()
         {
-            var url = BuildUrl<Status>(parameters);
-            var statusList = QueryTwitter(url);
-
-            return statusList;
-        }
-
-        /// <summary>
-        /// constructs an URL, based on type and parameter
-        /// </summary>
-        /// <typeparam name="T">type of query</typeparam>
-        /// <param name="parameters">parameters for building URL</param>
-        /// <returns>final URL to call Twitter API with</returns>
-        private string BuildUrl<T>(Dictionary<string, string> parameters)
-        {
-            string url = null;
-
-            if (parameters == null ||
-                !parameters.ContainsKey("Type"))
-            {
-                url = BaseUrl + "statuses/public_timeline.xml";
-                return url;
-            }
+            IRequestProcessor req;
 
             switch (typeof(T).Name)
             {
                 case "Status":
-                    switch (parameters["Type"])
-                    {
-                        case "Public":
-                            url = BaseUrl + "statuses/public_timeline.xml";
-                            break;
-                        case "Friends":
-                            url = BaseUrl + "statuses/friends_timeline.xml";
-                            break;
-                        default:
-                            url = BaseUrl + "statuses/public_timeline.xml";
-                            break;
-                    }
+                    req = new StatusRequestProcessor() { BaseUrl = BaseUrl };
                     break;
                 default:
-                    url = BaseUrl + "statuses/public_timeline.xml";
+                    req = new StatusRequestProcessor() { BaseUrl = BaseUrl };
                     break;
             }
 
-            return url;
+            Debug.Assert(req != null, "You you must assign a value to req.");
+
+            return req;
         }
+
+        ///// <summary>
+        ///// constructs an URL, based on type and parameter
+        ///// </summary>
+        ///// <typeparam name="T">type of query</typeparam>
+        ///// <param name="parameters">parameters for building URL</param>
+        ///// <returns>final URL to call Twitter API with</returns>
+        //private string BuildUrl<T>(Dictionary<string, string> parameters)
+        //{
+        //    string url = null;
+
+        //    if (parameters == null ||
+        //        !parameters.ContainsKey("Type"))
+        //    {
+        //        url = BaseUrl + "statuses/public_timeline.xml";
+        //        return url;
+        //    }
+
+        //    switch (typeof(T).Name)
+        //    {
+        //        case "Status":
+        //            switch (parameters["Type"])
+        //            {
+        //                case "Public":
+        //                    url = BaseUrl + "statuses/public_timeline.xml";
+        //                    break;
+        //                case "Friends":
+        //                    url = BaseUrl + "statuses/friends_timeline.xml";
+        //                    break;
+        //                default:
+        //                    url = BaseUrl + "statuses/public_timeline.xml";
+        //                    break;
+        //            }
+        //            break;
+        //        default:
+        //            url = BaseUrl + "statuses/public_timeline.xml";
+        //            break;
+        //    }
+
+        //    return url;
+        //}
 
         /// <summary>
         /// makes HTTP call to Twitter API
         /// </summary>
         /// <param name="url">URL with all query info</param>
         /// <returns>List of objects to return</returns>
-        private List<Status> QueryTwitter(string url)
+        private object QueryTwitter(string url, IRequestProcessor requestProcessor)
         {
             var req = HttpWebRequest.Create(url);
             req.Credentials = new NetworkCredential(UserName, Password);
@@ -182,49 +212,8 @@ namespace LinqToTwitter
             var txtRdr = new StringReader(strmRdr.ReadToEnd());
             var statusXml = XElement.Load(txtRdr);
 
-            var statusList =
-                from status in statusXml.Elements("status")
-                let dateParts = 
-                    status.Element("created_at").Value.Split(' ')
-                let createdAtDate = 
-                    DateTime.Parse(
-                        string.Format("{0} {1} {2} {3} GMT", 
-                        dateParts[1], 
-                        dateParts[2], 
-                        dateParts[5], 
-                        dateParts[3]))
-                let user = status.Element("user")
-                select
-                   new Status
-                   {
-                       CreatedAt = createdAtDate,
-                       Favorited = 
-                        bool.Parse(
-                            string.IsNullOrEmpty(status.Element("favorited").Value) ?
-                            "true" :
-                            status.Element("favorited").Value),
-                       ID = status.Element("id").Value,
-                       InReplyToStatusID = status.Element("in_reply_to_status_id").Value,
-                       InReplyToUserID = status.Element("in_reply_to_user_id").Value,
-                       Source = status.Element("source").Value,
-                       Text = status.Element("text").Value,
-                       Truncated = bool.Parse(status.Element("truncated").Value),
-                       User =
-                           new User
-                           {
-                               Description = user.Element("description").Value,
-                               FollowersCount = int.Parse(user.Element("followers_count").Value),
-                               ID = user.Element("id").Value,
-                               Location = user.Element("location").Value,
-                               Name = user.Element("name").Value,
-                               ProfileImageUrl = user.Element("profile_image_url").Value,
-                               Protected = bool.Parse(user.Element("protected").Value),
-                               ScreenName = user.Element("screen_name").Value,
-                               URL = user.Element("url").Value
-                           }
-                   };
-
-            return statusList.ToList();
+            var results = requestProcessor.ProcessResults(statusXml);
+            return results;
         }
     }
 }
