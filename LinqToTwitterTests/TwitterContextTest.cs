@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Linq;
 
 namespace LinqToTwitterTests
 {
@@ -136,8 +137,13 @@ namespace LinqToTwitterTests
         public void CreateRequestProcessorTestHelper<T>()
         {
             TwitterContext ctx = new TwitterContext();
-            IRequestProcessor statusProc;
-            statusProc = ctx.CreateRequestProcessor<Status>();
+
+            var publicQuery =
+                from tweet in ctx.Status
+                where tweet.Type == "Public"
+                select tweet;
+
+            var statusProc = ctx.CreateRequestProcessor(publicQuery.Expression);
             Assert.IsInstanceOfType(statusProc, typeof(StatusRequestProcessor));
         }
 
@@ -146,6 +152,42 @@ namespace LinqToTwitterTests
         public void CreateRequestProcessorTest()
         {
             CreateRequestProcessorTestHelper<GenericParameterHelper>();
+        }
+
+        /// <summary>
+        ///A test for Execute
+        ///</summary>
+        [TestMethod()]
+        public void ExecuteTest()
+        {
+            var ctx = new TwitterContext();
+
+            var publicQuery =
+                from tweet in ctx.Status
+                where tweet.Type == "Public"
+                select tweet;
+
+            var actual = ctx.Execute(publicQuery.Expression);
+            var tweets = (actual as IQueryable<Status>).ToList();
+            Assert.IsNotNull(tweets);
+            Assert.IsTrue(tweets.Count > 0);
+        }
+
+        /// <summary>
+        ///A test for QueryTwitter
+        ///</summary>
+        [TestMethod()]
+        [DeploymentItem("LinqToTwitter.dll")]
+        public void QueryTwitterTest()
+        {
+            TwitterContext_Accessor target = new TwitterContext_Accessor();
+            string url = "http://twitter.com/statuses/public_timeline.xml";
+            IRequestProcessor requestProcessor = new StatusRequestProcessor();
+            var twitterResponse = target.QueryTwitter(url, requestProcessor);
+
+            var tweets = (twitterResponse as IQueryable<Status>).ToList();
+            Assert.IsNotNull(tweets);
+            Assert.IsTrue(tweets.Count > 0);
         }
     }
 }

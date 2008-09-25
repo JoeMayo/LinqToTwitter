@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Xml.Linq;
 using System.Linq;
 using System.IO;
+using System.Linq.Expressions;
 
 namespace LinqToTwitterTests
 {
@@ -172,6 +173,35 @@ namespace LinqToTwitterTests
  
             Assert.IsNotNull(actualQuery);
             Assert.AreEqual(actualQuery.Count(), 2);
+        }
+
+        /// <summary>
+        ///A test for GetParameters
+        ///</summary>
+        [TestMethod()]
+        public void GetParametersTest()
+        {
+            var reqProc = new StatusRequestProcessor();
+
+            var ctx = new TwitterContext();
+
+            var publicQuery =
+                from tweet in ctx.Status
+                where tweet.Type == "Public"
+                select tweet;
+
+            var whereFinder = new InnermostWhereFinder();
+            var whereExpression = whereFinder.GetInnermostWhere(publicQuery.Expression);
+
+            var lambdaExpression = (LambdaExpression)((UnaryExpression)(whereExpression.Arguments[1])).Operand;
+
+            lambdaExpression = (LambdaExpression)Evaluator.PartialEval(lambdaExpression);
+
+            var queryParams = reqProc.GetParameters(lambdaExpression);
+
+            Assert.IsTrue(
+                queryParams.Contains(
+                    new KeyValuePair<string, string>("Type", "Public")));
         }
     }
 }

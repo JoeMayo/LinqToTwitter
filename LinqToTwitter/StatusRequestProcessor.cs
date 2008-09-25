@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
+using System.Linq.Expressions;
 
 namespace LinqToTwitter
 {
@@ -15,6 +16,23 @@ namespace LinqToTwitter
         /// base url for request
         /// </summary>
         public string BaseUrl { get; set; }
+
+        /// <summary>
+        /// extracts parameters from lambda
+        /// </summary>
+        /// <param name="lambdaExpression">lambda expression with where clause</param>
+        /// <returns>dictionary of parameter name/value pairs</returns>
+        public Dictionary<string, string> GetParameters(LambdaExpression lambdaExpression)
+        {
+            var paramFinder =
+               new ParameterFinder<Status>(
+                   lambdaExpression.Body,
+                   new List<string> { "Type" });
+
+            var parameters = paramFinder.Parameters;
+
+            return parameters;
+        }
 
         /// <summary>
         /// builds url based on input parameters
@@ -53,7 +71,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="twitterResponse">xml with Twitter response</param>
         /// <returns>IQueryable of Status</returns>
-        public object ProcessResults(XElement twitterResponse)
+        public IQueryable ProcessResults(XElement twitterResponse)
         {
             var statusList =
                 from status in twitterResponse.Elements("status")

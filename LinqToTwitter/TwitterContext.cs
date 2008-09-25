@@ -78,9 +78,11 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="expression">ExpressionTree to parse</param>
         /// <returns>list of objects with query results</returns>
-        internal object Execute(Expression expression)
+        internal IQueryable Execute(Expression expression)
         {
             Dictionary<string, string> parameters = null;
+
+            var reqProc = CreateRequestProcessor(expression);
 
             var whereFinder = new InnermostWhereFinder();
             var whereExpression = whereFinder.GetInnermostWhere(expression);
@@ -94,54 +96,27 @@ namespace LinqToTwitter
                 lambdaExpression = 
                     (LambdaExpression)Evaluator.PartialEval(lambdaExpression);
 
-                var paramFinder =
-                    new ParameterFinder<Status>(
-                        lambdaExpression.Body,
-                        new List<string> { "Type" });
-
-                parameters = paramFinder.Parameters; 
+                parameters = reqProc.GetParameters(lambdaExpression);
             }
 
-            //
-            // here, we assume the results are for Status queries, 
-            // but this will eventually be refactored to support more of the Twitter API
-            //
-
-            //var statusList = ExecuteTwitterQuery<Status>(parameters);
-
-            var req = CreateRequestProcessor<Status>();
-
-            var url = req.BuildURL(parameters);
-            var queryableList = QueryTwitter(url, req);
-            //var queryableList = res.AsQueryable<Status>();
+            var url = reqProc.BuildURL(parameters);
+            var queryableList = QueryTwitter(url, reqProc);
 
             return queryableList;
         }
-
-        ///// <summary>
-        ///// constructs the Twitter API URL and executes the query
-        ///// </summary>
-        ///// <param name="parameters">criteria for the query</param>
-        ///// <returns>List of Status objects</returns>
-        //private object ExecuteTwitterQuery<T>(Dictionary<string, string> parameters)
-        //{
-        //    var req = CreateRequestProcessor<T>();
-        //    var url = req.BuildURL(parameters);
-        //    var res = QueryTwitter<T>(url);
-
-        //    return res;
-        //}
 
         /// <summary>
         /// factory method for returning a request processor
         /// </summary>
         /// <typeparam name="T">type of request</typeparam>
         /// <returns>request processor matching type parameter</returns>
-        public IRequestProcessor CreateRequestProcessor<T>()
+        public IRequestProcessor CreateRequestProcessor(Expression expression)
         {
+            var requestType = expression.Type.GetGenericArguments()[0].Name;
+
             IRequestProcessor req;
 
-            switch (typeof(T).Name)
+            switch (requestType)
             {
                 case "Status":
                     req = new StatusRequestProcessor() { BaseUrl = BaseUrl };
@@ -156,53 +131,12 @@ namespace LinqToTwitter
             return req;
         }
 
-        ///// <summary>
-        ///// constructs an URL, based on type and parameter
-        ///// </summary>
-        ///// <typeparam name="T">type of query</typeparam>
-        ///// <param name="parameters">parameters for building URL</param>
-        ///// <returns>final URL to call Twitter API with</returns>
-        //private string BuildUrl<T>(Dictionary<string, string> parameters)
-        //{
-        //    string url = null;
-
-        //    if (parameters == null ||
-        //        !parameters.ContainsKey("Type"))
-        //    {
-        //        url = BaseUrl + "statuses/public_timeline.xml";
-        //        return url;
-        //    }
-
-        //    switch (typeof(T).Name)
-        //    {
-        //        case "Status":
-        //            switch (parameters["Type"])
-        //            {
-        //                case "Public":
-        //                    url = BaseUrl + "statuses/public_timeline.xml";
-        //                    break;
-        //                case "Friends":
-        //                    url = BaseUrl + "statuses/friends_timeline.xml";
-        //                    break;
-        //                default:
-        //                    url = BaseUrl + "statuses/public_timeline.xml";
-        //                    break;
-        //            }
-        //            break;
-        //        default:
-        //            url = BaseUrl + "statuses/public_timeline.xml";
-        //            break;
-        //    }
-
-        //    return url;
-        //}
-
         /// <summary>
         /// makes HTTP call to Twitter API
         /// </summary>
         /// <param name="url">URL with all query info</param>
         /// <returns>List of objects to return</returns>
-        private object QueryTwitter(string url, IRequestProcessor requestProcessor)
+        private IQueryable QueryTwitter(string url, IRequestProcessor requestProcessor)
         {
             var req = HttpWebRequest.Create(url);
             req.Credentials = new NetworkCredential(UserName, Password);
