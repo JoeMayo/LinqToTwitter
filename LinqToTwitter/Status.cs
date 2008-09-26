@@ -22,6 +22,26 @@ namespace LinqToTwitter
         public string Type { get; set; }
 
         /// <summary>
+        /// filter results to after this date
+        /// </summary>
+        public DateTime Since { get; set; }
+
+        /// <summary>
+        /// filter results to after this status id
+        /// </summary>
+        public int SinceID { get; set; }
+
+        /// <summary>
+        /// only return this many results
+        /// </summary>
+        public int Count { get; set; }
+
+        /// <summary>
+        /// page of results to return
+        /// </summary>
+        public int Page { get; set; }
+
+        /// <summary>
         /// when was the tweet created
         /// </summary>
         public DateTime CreatedAt { get; set; }

@@ -27,7 +27,13 @@ namespace LinqToTwitter
             var paramFinder =
                new ParameterFinder<Status>(
                    lambdaExpression.Body,
-                   new List<string> { "Type" });
+                   new List<string> { 
+                       "Type",
+                       "Since",
+                       "SinceID",
+                       "Count",
+                       "Page"
+                   });
 
             var parameters = paramFinder.Parameters;
 
@@ -61,6 +67,37 @@ namespace LinqToTwitter
                 default:
                     url = BaseUrl + "statuses/public_timeline.xml";
                     break;
+            }
+
+            var urlParams = new List<string>();
+
+            if (parameters.ContainsKey("Since"))
+            {
+                var sinceDateLocal = DateTime.Parse(parameters["Since"]);
+                var sinceDateUtc = new DateTimeOffset(sinceDateLocal, 
+                            TimeZoneInfo.Local.GetUtcOffset(sinceDateLocal));
+
+                urlParams.Add("since=" + sinceDateUtc.ToUniversalTime().ToString("r"));
+            }
+
+            if (parameters.ContainsKey("SinceID"))
+            {
+                urlParams.Add("since_id=" + parameters["SinceID"]);
+            }
+
+            if (parameters.ContainsKey("Count"))
+            {
+                urlParams.Add("count=" + parameters["Count"]);
+            }
+
+            if (parameters.ContainsKey("Page"))
+            {
+                urlParams.Add("page=" + parameters["Page"]);
+            }
+
+            if (urlParams.Count > 0)
+            {
+                url += "?" + string.Join("&", urlParams.ToArray());
             }
 
             return url;

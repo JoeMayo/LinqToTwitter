@@ -23,11 +23,19 @@ namespace LinqToTwitterDemo
             var tweets =
                 from tweet in twitterCtx.Status
                 where tweet.Type == type
+                      //&& tweet.Page == 0
+                      //&& tweet.Count == 21
+                      //&& tweet.SinceID == 934818247
+                      //&& tweet.Since == DateTime.Now.AddHours(-8)
                 select tweet;
 
             foreach (var tweet in tweets)
             {
-                Console.WriteLine(tweet.User.Name + ", " + tweet.Text);
+                Console.WriteLine(
+                    "(" + tweet.ID + ")" + 
+                    tweet.User.Name + ", " + 
+                    tweet.Text + ", " + 
+                    tweet.CreatedAt);
             }
 
             Console.ReadKey();

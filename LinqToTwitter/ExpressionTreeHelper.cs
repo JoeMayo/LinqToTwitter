@@ -76,7 +76,7 @@ namespace LinqToTwitter
         internal static string GetValueFromExpression(Expression expression)
         {
             if (expression.NodeType == ExpressionType.Constant)
-                return (string)(((ConstantExpression)expression).Value);
+                return (string)(((ConstantExpression)expression).Value.ToString());
             else
                 throw new InvalidQueryException(
                     String.Format("The expression type {0} is not supported to obtain a value.", expression.NodeType));
