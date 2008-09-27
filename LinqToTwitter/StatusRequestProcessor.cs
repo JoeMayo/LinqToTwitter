@@ -29,6 +29,7 @@ namespace LinqToTwitter
                    lambdaExpression.Body,
                    new List<string> { 
                        "Type",
+                       "ID",
                        "Since",
                        "SinceID",
                        "Count",
@@ -64,9 +65,17 @@ namespace LinqToTwitter
                 case "Friends":
                     url = BaseUrl + "statuses/friends_timeline.xml";
                     break;
+                case "User":
+                    url = BaseUrl + "statuses/user_timeline.xml";
+                    break;
                 default:
                     url = BaseUrl + "statuses/public_timeline.xml";
                     break;
+            }
+
+            if (parameters.ContainsKey("ID"))
+            {
+                url = url.Replace(".xml", "/" + parameters["ID"] + ".xml");
             }
 
             var urlParams = new List<string>();

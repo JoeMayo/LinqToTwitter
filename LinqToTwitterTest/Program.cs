@@ -18,11 +18,13 @@ namespace LinqToTwitterDemo
             var twitterCtx = new TwitterContext(userName, password, "http://www.twitter.com/");
 
             //var type = "Public";
-            var type = "Friends";
+            //var type = "Friends";
+            var type = "User";
 
             var tweets =
                 from tweet in twitterCtx.Status
                 where tweet.Type == type
+                      && tweet.ID == "15411837"
                       //&& tweet.Page == 0
                       //&& tweet.Count == 21
                       //&& tweet.SinceID == 934818247
@@ -33,6 +35,7 @@ namespace LinqToTwitterDemo
             {
                 Console.WriteLine(
                     "(" + tweet.ID + ")" + 
+                    "[" + tweet.User.ID + "]" +
                     tweet.User.Name + ", " + 
                     tweet.Text + ", " + 
                     tweet.CreatedAt);
