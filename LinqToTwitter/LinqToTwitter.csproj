@@ -52,7 +52,7 @@
     <Compile Include="Evaluator.cs" />
     <Compile Include="ExpressionTreeHelper.cs" />
     <Compile Include="ExpressionTreeVisitor.cs" />
-    <Compile Include="InnerMostWhereFinder.cs" />
+    <Compile Include="FirstWhereClauseFinder.cs" />
     <Compile Include="InvalidQueryException.cs" />
     <Compile Include="IRequestProcessor.cs" />
     <Compile Include="ParameterFinder.cs" />

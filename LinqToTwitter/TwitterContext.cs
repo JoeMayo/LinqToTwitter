@@ -84,8 +84,8 @@ namespace LinqToTwitter
 
             var reqProc = CreateRequestProcessor(expression);
 
-            var whereFinder = new InnermostWhereFinder();
-            var whereExpression = whereFinder.GetInnermostWhere(expression);
+            var whereFinder = new FirstWhereClauseFinder();
+            var whereExpression = whereFinder.GetFirstWhere(expression);
 
             if (whereExpression != null)
             {

@@ -86,7 +86,7 @@ namespace LinqToTwitter
         /// <returns>list of results from query</returns>
         public TResult Execute<TResult>(Expression expression)
         {
-            bool IsEnumerable = (typeof(TResult).Name == "IEnumerable`1");
+            bool isEnumerable = (typeof(TResult).Name == "IEnumerable`1");
 
             return (TResult)Context.Execute(expression);
         }

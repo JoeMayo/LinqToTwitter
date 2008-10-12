@@ -5,6 +5,7 @@ using System.Xml.Linq;
 using System.Linq;
 using System.IO;
 using System.Linq.Expressions;
+using System;
 
 namespace LinqToTwitterTests
 {
@@ -164,7 +165,7 @@ namespace LinqToTwitterTests
         ///A test for ProcessResults
         ///</summary>
         [TestMethod()]
-        public void ProcessResultsTest()
+        public void ProcessResultsMultipleResultsTest()
         {
             var statProc = new StatusRequestProcessor() { BaseUrl = "http://twitter.com/" };
             XElement twitterResponse = XElement.Load(new StringReader(m_testQueryResponse));
@@ -173,6 +174,21 @@ namespace LinqToTwitterTests
  
             Assert.IsNotNull(actualQuery);
             Assert.AreEqual(actualQuery.Count(), 2);
+        }
+
+        /// <summary>
+        ///A test for ProcessResults
+        ///</summary>
+        [TestMethod()]
+        public void ProcessResultsSingleResultTest()
+        {
+            var statProc = new StatusRequestProcessor() { BaseUrl = "http://twitter.com/" };
+            XElement twitterResponse = XElement.Load(new StringReader(m_testQueryResponse));
+            var actual = statProc.ProcessResults(twitterResponse.Descendants("status").First());
+            var actualQuery = actual as IQueryable<Status>;
+
+            Assert.IsNotNull(actualQuery);
+            Assert.AreEqual(actualQuery.Count(), 1);
         }
 
         /// <summary>
@@ -190,8 +206,8 @@ namespace LinqToTwitterTests
                 where tweet.Type == "Public"
                 select tweet;
 
-            var whereFinder = new InnermostWhereFinder();
-            var whereExpression = whereFinder.GetInnermostWhere(publicQuery.Expression);
+            var whereFinder = new FirstWhereClauseFinder();
+            var whereExpression = whereFinder.GetFirstWhere(publicQuery.Expression);
 
             var lambdaExpression = (LambdaExpression)((UnaryExpression)(whereExpression.Arguments[1])).Operand;
 
@@ -202,6 +218,104 @@ namespace LinqToTwitterTests
             Assert.IsTrue(
                 queryParams.Contains(
                     new KeyValuePair<string, string>("Type", "Public")));
+        }
+
+        /// <summary>
+        ///A test for BuildUserUrl
+        ///</summary>
+        [TestMethod()]
+        [DeploymentItem("LinqToTwitter.dll")]
+        public void BuildShowUrlTest()
+        {
+            var reqProc = new StatusRequestProcessor_Accessor();
+            reqProc.BaseUrl = "http://twitter.com/";
+            Dictionary<string, string> parameters =
+                new Dictionary<string, string>
+                    {
+                        { "Type", "Show" },
+                        { "ID", "945932078" }
+                    };
+            string expected = "http://twitter.com/statuses/show/945932078.xml";
+            var actual = reqProc.BuildShowUrl(parameters);
+            Assert.AreEqual(expected, actual);
+        }
+
+        /// <summary>
+        ///A test for BuildUserUrl
+        ///</summary>
+        [TestMethod()]
+        [DeploymentItem("LinqToTwitter.dll")]
+        public void BuildUserUrlTest()
+        {
+            var reqProc = new StatusRequestProcessor_Accessor();
+            reqProc.BaseUrl = "http://twitter.com/";
+            Dictionary<string, string> parameters =
+                new Dictionary<string, string>
+                    {
+                        { "Type", "User" },
+                        { "ID", "15411837" }
+                    };
+            string expected = "http://twitter.com/statuses/user_timeline/15411837.xml";
+            var actual = reqProc.BuildUserUrl(parameters);
+            Assert.AreEqual(expected, actual);
+        }
+
+        /// <summary>
+        ///A test for BuildFriendAndUrlParameters
+        ///</summary>
+        [TestMethod()]
+        [DeploymentItem("LinqToTwitter.dll")]
+        public void BuildFriendAndUrlParametersTest()
+        {
+            var reqProc = new StatusRequestProcessor_Accessor();
+            var url = "http://twitter.com/statuses/user_timeline/15411837.xml";
+            Dictionary<string, string> parameters =
+                new Dictionary<string, string>
+                    {
+                        { "Page", "0" },
+                        { "Count", "21" },
+                        { "SinceID", "934818247" },
+                        { "Since", new DateTime(2007, 10, 1).ToString() }
+                    };
+            string expected = "http://twitter.com/statuses/user_timeline/15411837.xml?since=Mon, 01 Oct 2007 06:00:00 GMT&since_id=934818247&count=21&page=0";
+            var actual = reqProc.BuildFriendAndUrlParameters(parameters, url);
+            Assert.AreEqual(expected, actual);
+        }
+
+        /// <summary>
+        ///A test for BuildFriendUrl
+        ///</summary>
+        [TestMethod()]
+        [DeploymentItem("LinqToTwitter.dll")]
+        public void BuildFriendUrlTest()
+        {
+            var reqProc = new StatusRequestProcessor_Accessor();
+            reqProc.BaseUrl = "http://twitter.com/";
+            Dictionary<string, string> parameters =
+                new Dictionary<string, string>
+                    {
+                        { "Page", "0" },
+                        { "Count", "21" },
+                        { "SinceID", "934818247" },
+                        { "Since", new DateTime(2007, 10, 1).ToString() }
+                    };
+            string expected = "http://twitter.com/statuses/friends_timeline.xml?since=Mon, 01 Oct 2007 06:00:00 GMT&since_id=934818247&count=21&page=0";
+            var actual = reqProc.BuildFriendUrl(parameters);
+            Assert.AreEqual(expected, actual);
+        }
+
+        /// <summary>
+        ///A test for BuildPublicUrl
+        ///</summary>
+        [TestMethod()]
+        [DeploymentItem("LinqToTwitter.dll")]
+        public void BuildPublicUrlTest()
+        {
+            var reqProc = new StatusRequestProcessor_Accessor();
+            reqProc.BaseUrl = "http://twitter.com/";
+            string expected = "http://twitter.com/statuses/public_timeline.xml";
+            var actual = reqProc.BuildPublicUrl();
+            Assert.AreEqual(expected, actual);
         }
     }
 }

@@ -19,27 +19,29 @@ namespace LinqToTwitterDemo
 
             //var type = "Public";
             //var type = "Friends";
-            var type = "User";
+            //var type = "User";
+            var type = "Show";
 
             var tweets =
                 from tweet in twitterCtx.Status
                 where tweet.Type == type
-                      && tweet.ID == "15411837"
+                      && tweet.ID == "945932078" // ID for Show
+                      //&& tweet.ID == "15411837"  // ID for User
                       //&& tweet.Page == 0
                       //&& tweet.Count == 21
-                      //&& tweet.SinceID == 934818247
-                      //&& tweet.Since == DateTime.Now.AddHours(-8)
+                      //&& tweet.SinceID == 931894254
+                      //&& tweet.Since == DateTime.Now.AddHours(-72)
                 select tweet;
 
             foreach (var tweet in tweets)
             {
                 Console.WriteLine(
-                    "(" + tweet.ID + ")" + 
+                    "(" + tweet.ID + ")" +
                     "[" + tweet.User.ID + "]" +
-                    tweet.User.Name + ", " + 
-                    tweet.Text + ", " + 
+                    tweet.User.Name + ", " +
+                    tweet.Text + ", " +
                     tweet.CreatedAt);
-            }
+            } 
 
             Console.ReadKey();
         }

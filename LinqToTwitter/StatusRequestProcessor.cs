@@ -50,40 +50,62 @@ namespace LinqToTwitter
         {
             string url = null;
 
-            if (parameters == null ||
-                !parameters.ContainsKey("Type"))
+            if (parameters == null || !parameters.ContainsKey("Type"))
             {
-                url = BaseUrl + "statuses/public_timeline.xml";
+                url = BuildPublicUrl();
                 return url;
             }
 
             switch (parameters["Type"])
             {
                 case "Public":
-                    url = BaseUrl + "statuses/public_timeline.xml";
+                    url = BuildPublicUrl();
                     break;
                 case "Friends":
-                    url = BaseUrl + "statuses/friends_timeline.xml";
+                    url = BuildFriendUrl(parameters);
                     break;
                 case "User":
-                    url = BaseUrl + "statuses/user_timeline.xml";
+                    url = BuildUserUrl(parameters);
+                    break;
+                case "Show":
+                    url = BuildShowUrl(parameters);
                     break;
                 default:
-                    url = BaseUrl + "statuses/public_timeline.xml";
+                    url = BuildPublicUrl();
                     break;
             }
 
-            if (parameters.ContainsKey("ID"))
-            {
-                url = url.Replace(".xml", "/" + parameters["ID"] + ".xml");
-            }
+            return url;
+        }
 
+        /// <summary>
+        /// builds an url for showing status of user
+        /// </summary>
+        /// <param name="parameters">parameter list</param>
+        /// <returns>base url + show segment</returns>
+        private string BuildShowUrl(Dictionary<string, string> parameters)
+        {
+            var url = BaseUrl + "statuses/show.xml";
+
+            url = TransformIDUrl(parameters, url);
+
+            return url;
+        }
+
+        /// <summary>
+        /// appends parameters that are common to both friend and user queries
+        /// </summary>
+        /// <param name="parameters">list of parameters from expression tree</param>
+        /// <param name="url">base url</param>
+        /// <returns>base url + parameters</returns>
+        private string BuildFriendAndUrlParameters(Dictionary<string, string> parameters, string url)
+        {
             var urlParams = new List<string>();
 
             if (parameters.ContainsKey("Since"))
             {
                 var sinceDateLocal = DateTime.Parse(parameters["Since"]);
-                var sinceDateUtc = new DateTimeOffset(sinceDateLocal, 
+                var sinceDateUtc = new DateTimeOffset(sinceDateLocal,
                             TimeZoneInfo.Local.GetUtcOffset(sinceDateLocal));
 
                 urlParams.Add("since=" + sinceDateUtc.ToUniversalTime().ToString("r"));
@@ -113,14 +135,79 @@ namespace LinqToTwitter
         }
 
         /// <summary>
+        /// makes ID parameter part of the URL
+        /// </summary>
+        /// <param name="parameters">parameter list</param>
+        /// <param name="url">original url</param>
+        /// <returns>transformed URL with ID</returns>
+        private static string TransformIDUrl(Dictionary<string, string> parameters, string url)
+        {
+            if (parameters.ContainsKey("ID"))
+            {
+                url = url.Replace(".xml", "/" + parameters["ID"] + ".xml");
+            }
+            return url;
+        }
+
+        /// <summary>
+        /// construct a base user url
+        /// </summary>
+        /// <param name="url">base status url</param>
+        /// <returns>base url + user timeline segment</returns>
+        private string BuildUserUrl(Dictionary<string, string> parameters)
+        {
+            var url = BaseUrl + "statuses/user_timeline.xml";
+
+            url = TransformIDUrl(parameters, url);
+
+            url = BuildFriendAndUrlParameters(parameters, url);
+
+            return url;
+        }
+
+        /// <summary>
+        /// construct a base friend url
+        /// </summary>
+        /// <param name="url">base status url</param>
+        /// <returns>base url + friend segment</returns>
+        private string BuildFriendUrl(Dictionary<string, string> parameters)
+        {
+            var url = BaseUrl + "statuses/friends_timeline.xml";
+            
+            url = BuildFriendAndUrlParameters(parameters, url);
+            
+            return url;
+        }
+
+        /// <summary>
+        /// return a public url
+        /// </summary>
+        /// 
+        /// <returns>base url + public segment</returns>
+        private string BuildPublicUrl()
+        {
+            var url = BaseUrl + "statuses/public_timeline.xml";
+            return url;
+        }
+
+        /// <summary>
         /// transforms XML into IQueryable of Status
         /// </summary>
         /// <param name="twitterResponse">xml with Twitter response</param>
         /// <returns>IQueryable of Status</returns>
         public IQueryable ProcessResults(XElement twitterResponse)
         {
+            var responseItems = twitterResponse.Elements("status").ToList();
+
+            // if we get only a single response back,
+            // such as a Show request, make sure we get it
+            if (twitterResponse.Name == "status")
+            {
+                responseItems.Add(twitterResponse);
+            }
+
             var statusList =
-                from status in twitterResponse.Elements("status")
+                from status in responseItems
                 let dateParts =
                     status.Element("created_at").Value.Split(' ')
                 let createdAtDate =
