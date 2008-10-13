@@ -17,20 +17,15 @@ namespace LinqToTwitterDemo
 
             var twitterCtx = new TwitterContext(userName, password, "http://www.twitter.com/");
 
-            //var type = "Public";
-            //var type = "Friends";
-            //var type = "User";
-            var type = "Show";
-
             var tweets =
                 from tweet in twitterCtx.Status
-                where tweet.Type == type
-                      && tweet.ID == "945932078" // ID for Show
+                where tweet.Type == StatusType.Friends
+                      //&& tweet.ID == "945932078" // ID for Show
                       //&& tweet.ID == "15411837"  // ID for User
-                      //&& tweet.Page == 0
-                      //&& tweet.Count == 21
-                      //&& tweet.SinceID == 931894254
-                      //&& tweet.Since == DateTime.Now.AddHours(-72)
+                      && tweet.Page == 0
+                      && tweet.Count == 21
+                      && tweet.SinceID == 931894254
+                      && tweet.Since == DateTime.Now.AddMonths(-1)
                 select tweet;
 
             foreach (var tweet in tweets)

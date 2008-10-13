@@ -56,24 +56,41 @@ namespace LinqToTwitter
                 return url;
             }
 
-            switch (parameters["Type"])
+            switch ((StatusType)Enum.ToObject(typeof(StatusType), int.Parse(parameters["Type"])))
             {
-                case "Public":
+                case StatusType.Public:
                     url = BuildPublicUrl();
                     break;
-                case "Friends":
+                case StatusType.Friends:
                     url = BuildFriendUrl(parameters);
                     break;
-                case "User":
+                case StatusType.User:
                     url = BuildUserUrl(parameters);
                     break;
-                case "Show":
+                case StatusType.Show:
                     url = BuildShowUrl(parameters);
+                    break;
+                case StatusType.Replies:
+                    url = BuildRepliesUrl(parameters);
                     break;
                 default:
                     url = BuildPublicUrl();
                     break;
             }
+
+            return url;
+        }
+
+        /// <summary>
+        /// builds an url for showing status of user
+        /// </summary>
+        /// <param name="parameters">parameter list</param>
+        /// <returns>base url + show segment</returns>
+        private string BuildRepliesUrl(Dictionary<string, string> parameters)
+        {
+            var url = BaseUrl + "statuses/replies.xml";
+
+            url = BuildFriendRepliesAndUrlParameters(parameters, url);
 
             return url;
         }
@@ -98,7 +115,7 @@ namespace LinqToTwitter
         /// <param name="parameters">list of parameters from expression tree</param>
         /// <param name="url">base url</param>
         /// <returns>base url + parameters</returns>
-        private string BuildFriendAndUrlParameters(Dictionary<string, string> parameters, string url)
+        private string BuildFriendRepliesAndUrlParameters(Dictionary<string, string> parameters, string url)
         {
             var urlParams = new List<string>();
 
@@ -160,7 +177,7 @@ namespace LinqToTwitter
 
             url = TransformIDUrl(parameters, url);
 
-            url = BuildFriendAndUrlParameters(parameters, url);
+            url = BuildFriendRepliesAndUrlParameters(parameters, url);
 
             return url;
         }
@@ -174,7 +191,7 @@ namespace LinqToTwitter
         {
             var url = BaseUrl + "statuses/friends_timeline.xml";
             
-            url = BuildFriendAndUrlParameters(parameters, url);
+            url = BuildFriendRepliesAndUrlParameters(parameters, url);
             
             return url;
         }

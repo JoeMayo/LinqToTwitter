@@ -135,7 +135,7 @@ namespace LinqToTwitterTests
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                     {
-                        { "Type", "Public" }
+                        { "Type", ((int)StatusType.Public).ToString() }
                     };
             string expected = "http://twitter.com/statuses/public_timeline.xml";
             string actual;
@@ -153,7 +153,7 @@ namespace LinqToTwitterTests
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                     {
-                        { "Type", "Friends" }
+                        { "Type", ((int)StatusType.Friends).ToString() }
                     };
             string expected = "http://twitter.com/statuses/friends_timeline.xml";
             string actual;
@@ -203,7 +203,7 @@ namespace LinqToTwitterTests
 
             var publicQuery =
                 from tweet in ctx.Status
-                where tweet.Type == "Public"
+                where tweet.Type == StatusType.Public
                 select tweet;
 
             var whereFinder = new FirstWhereClauseFinder();
@@ -217,7 +217,28 @@ namespace LinqToTwitterTests
 
             Assert.IsTrue(
                 queryParams.Contains(
-                    new KeyValuePair<string, string>("Type", "Public")));
+                    new KeyValuePair<string, string>("Type", ((int)StatusType.Public).ToString())));
+        }
+
+        /// <summary>
+        ///A test for BuildUserUrl
+        ///</summary>
+        [TestMethod()]
+        [DeploymentItem("LinqToTwitter.dll")]
+        public void BuildRepliesUrlTest()
+        {
+            var reqProc = new StatusRequestProcessor_Accessor();
+            reqProc.BaseUrl = "http://twitter.com/";
+            Dictionary<string, string> parameters =
+                new Dictionary<string, string>
+                    {
+                        { "Page", "0" },
+                        { "SinceID", "934818247" },
+                        { "Since", new DateTime(2007, 10, 1).ToString() }
+                    };
+            string expected = "http://twitter.com/statuses/replies.xml?since=Mon, 01 Oct 2007 06:00:00 GMT&since_id=934818247&page=0";
+            var actual = reqProc.BuildRepliesUrl(parameters);
+            Assert.AreEqual(expected, actual);
         }
 
         /// <summary>
@@ -232,7 +253,7 @@ namespace LinqToTwitterTests
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                     {
-                        { "Type", "Show" },
+                        { "Type", ((int)StatusType.Show).ToString() },
                         { "ID", "945932078" }
                     };
             string expected = "http://twitter.com/statuses/show/945932078.xml";
@@ -252,7 +273,7 @@ namespace LinqToTwitterTests
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                     {
-                        { "Type", "User" },
+                        { "Type", ((int)StatusType.User).ToString() },
                         { "ID", "15411837" }
                     };
             string expected = "http://twitter.com/statuses/user_timeline/15411837.xml";
@@ -278,7 +299,7 @@ namespace LinqToTwitterTests
                         { "Since", new DateTime(2007, 10, 1).ToString() }
                     };
             string expected = "http://twitter.com/statuses/user_timeline/15411837.xml?since=Mon, 01 Oct 2007 06:00:00 GMT&since_id=934818247&count=21&page=0";
-            var actual = reqProc.BuildFriendAndUrlParameters(parameters, url);
+            var actual = reqProc.BuildFriendRepliesAndUrlParameters(parameters, url);
             Assert.AreEqual(expected, actual);
         }
 

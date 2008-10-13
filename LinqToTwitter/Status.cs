@@ -19,7 +19,7 @@ namespace LinqToTwitter
         /// <summary>
         /// type of status request, i.e. Friends or Public
         /// </summary>
-        public string Type { get; set; }
+        public StatusType Type { get; set; }
 
         /// <summary>
         /// filter results to after this date

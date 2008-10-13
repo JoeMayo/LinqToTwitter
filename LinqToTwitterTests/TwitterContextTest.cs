@@ -140,7 +140,7 @@ namespace LinqToTwitterTests
 
             var publicQuery =
                 from tweet in ctx.Status
-                where tweet.Type == "Public"
+                where tweet.Type == StatusType.Public
                 select tweet;
 
             var statusProc = ctx.CreateRequestProcessor(publicQuery.Expression);
@@ -164,7 +164,7 @@ namespace LinqToTwitterTests
 
             var publicQuery =
                 from tweet in ctx.Status
-                where tweet.Type == "Public"
+                where tweet.Type == StatusType.Public
                 select tweet;
 
             var actual = ctx.Execute(publicQuery.Expression);

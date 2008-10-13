@@ -40,9 +40,15 @@ namespace LinqToTwitter
 
         internal static bool IsSpecificMemberExpression(Expression exp, Type declaringType, string memberName)
         {
-            return ((exp is MemberExpression) &&
-                (((MemberExpression)exp).Member.DeclaringType == declaringType) &&
-                (((MemberExpression)exp).Member.Name == memberName));
+            // adjust for enums
+            Expression tempExp =
+                exp.NodeType == ExpressionType.Convert ?
+                    (exp as UnaryExpression).Operand :
+                    exp;
+
+            return ((tempExp is MemberExpression) &&
+                (((MemberExpression)tempExp).Member.DeclaringType == declaringType) &&
+                (((MemberExpression)tempExp).Member.Name == memberName));
         }
 
         internal static string GetValueFromEqualsExpression(BinaryExpression be, Type memberDeclaringType, string memberName)
@@ -50,9 +56,16 @@ namespace LinqToTwitter
             if (be.NodeType != ExpressionType.Equal)
                 throw new Exception("There is a bug in this program.");
 
-            if (be.Left.NodeType == ExpressionType.MemberAccess)
+            if (be.Left.NodeType == ExpressionType.MemberAccess ||
+                be.Left.NodeType == ExpressionType.Convert)
             {
-                MemberExpression me = (MemberExpression)be.Left;
+                // adjust for enums
+                MemberExpression me =
+                    be.Left.NodeType == ExpressionType.Convert ?
+                        (be.Left as UnaryExpression).Operand as MemberExpression :
+                        be.Left as MemberExpression;
+
+                //MemberExpression me = (MemberExpression)be.Left;
 
                 if (me.Member.DeclaringType == memberDeclaringType && me.Member.Name == memberName)
                 {
