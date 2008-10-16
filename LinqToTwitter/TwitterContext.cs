@@ -6,12 +6,14 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Xml.Linq;
 using System.Net;
-using System.IO;
-using System.Diagnostics;
+using System.Text;
+using System.Xml.Linq;
+using System.Web;
 
 namespace LinqToTwitter
 {
@@ -38,7 +40,7 @@ namespace LinqToTwitter
         /// <summary>
         /// default constructor, results in no credentials and BaseUrl set to http://twitter.com/
         /// </summary>
-        public TwitterContext() : 
+        public TwitterContext() :
             this(string.Empty, string.Empty, string.Empty) { }
 
         /// <summary>
@@ -65,7 +67,7 @@ namespace LinqToTwitter
         /// <summary>
         /// enables access to Twitter Status messages, such as Friends and Public
         /// </summary>
-        public TwitterQueryable<Status> Status 
+        public TwitterQueryable<Status> Status
         {
             get
             {
@@ -89,11 +91,11 @@ namespace LinqToTwitter
 
             if (whereExpression != null)
             {
-                var lambdaExpression = 
+                var lambdaExpression =
                     (LambdaExpression)
                     ((UnaryExpression)(whereExpression.Arguments[1])).Operand;
 
-                lambdaExpression = 
+                lambdaExpression =
                     (LambdaExpression)Evaluator.PartialEval(lambdaExpression);
 
                 parameters = reqProc.GetParameters(lambdaExpression);
@@ -141,13 +143,120 @@ namespace LinqToTwitter
             var req = HttpWebRequest.Create(url);
             req.Credentials = new NetworkCredential(UserName, Password);
             var resp = req.GetResponse();
-            var strm = resp.GetResponseStream();
-            var strmRdr = new StreamReader(strm);
-            var txtRdr = new StringReader(strmRdr.ReadToEnd());
+
+            StringReader txtRdr;
+
+            using (var strm = resp.GetResponseStream())
+            {
+                var strmRdr = new StreamReader(strm);
+                txtRdr = new StringReader(strmRdr.ReadToEnd());
+            }
+
             var statusXml = XElement.Load(txtRdr);
 
             var results = requestProcessor.ProcessResults(statusXml);
             return results;
+        }
+
+        /// <summary>
+        /// performs HTTP POST for Twitter requests with side-effects
+        /// </summary>
+        /// <param name="url">URL of request</param>
+        /// <param name="parameters">parameters to post</param>
+        /// <param name="requestProcessor">IRequestProcessor to handle response</param>
+        /// <returns>response from server, handled by the requestProcessor</returns>
+        private IQueryable ExecuteTwitter(string url, Dictionary<string, string> parameters, IRequestProcessor requestProcessor)
+        {
+            var req = WebRequest.Create(url);
+            req.Credentials = new NetworkCredential(UserName, Password);
+            req.Method = "POST";
+            var paramsJoined =
+                string.Join(
+                    "&",
+                    (from param in parameters
+                     where !string.IsNullOrEmpty(param.Value)
+                     select param.Key + "=" + HttpUtility.UrlEncode(param.Value))
+                     .ToArray());
+            var bytes = Encoding.UTF8.GetBytes(paramsJoined);
+            req.ContentType = "application/x-www-form-urlencoded";
+            req.ContentLength = bytes.Length;
+
+            string responseXML;
+
+            using (var reqStream = req.GetRequestStream())
+            {
+                reqStream.Write(bytes, 0, bytes.Length);
+
+                var resp = req.GetResponse();
+
+                using (var respStream = resp.GetResponseStream())
+                using (var respRdr = new StreamReader(respStream))
+                {
+                    responseXML = respRdr.ReadToEnd();
+                }
+            }
+
+            var responseXElem = XElement.Parse(responseXML);
+            var results = requestProcessor.ProcessResults(responseXElem);
+            return results;
+        }
+
+        /// <summary>
+        /// sends a status update
+        /// </summary>
+        /// <param name="status">(optional @UserName) and (required) status text</param>
+        /// <returns>IQueryable of sent status</returns>
+        public IQueryable<Status> UpdateStatus(string status)
+        {
+            return UpdateStatus(status, null);
+        }
+
+        /// <summary>
+        /// sends a status update
+        /// </summary>
+        /// <param name="status">(optional @UserName) and (required) status text</param>
+        /// <param name="inReplyToStatusID">id of status replying to - optional - pass null if not used</param>
+        /// <returns>IQueryable of sent status</returns>
+        public IQueryable<Status> UpdateStatus(string status, string inReplyToStatusID)
+        {
+            if (string.IsNullOrEmpty(status))
+            {
+                throw new ArgumentException("status is a required parameter.");
+            }
+
+            status = status.Substring(0, Math.Min(140, status.Length));
+
+            var updateUrl = BaseUrl + "statuses/update.xml";
+
+            var results =
+                ExecuteTwitter(
+                    updateUrl,
+                    new Dictionary<string, string>
+                    {
+                        {"status", status},
+                        {"in_reply_to_status_id", inReplyToStatusID}
+                    },
+                    new StatusRequestProcessor());
+
+            return results as IQueryable<Status>;
+        }
+
+        /// <summary>
+        /// deletes a tweet
+        /// </summary>
+        /// <param name="id">id of tweet</param>
+        /// <returns>deleted tweet</returns>
+        public IQueryable<Status> Destroy(string id)
+        {
+            var destroyUrl = BaseUrl + "statuses/destroy/" + id + ".xml";
+
+            var results =
+                ExecuteTwitter(
+                    destroyUrl,
+                    new Dictionary<string, string>(),
+                    new StatusRequestProcessor());
+
+            return results as IQueryable<Status>;
         }
     }
 }
