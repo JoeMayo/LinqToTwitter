@@ -31,27 +31,28 @@ namespace LinqToTwitter
     /// <typeparam name="T">Type to operate on</typeparam>
     public class TwitterQueryable<T> : IOrderedQueryable<T>
     {
-        public TwitterQueryable()
-        {
-            Provider = new TwitterQueryProvider();
-            Expression = Expression.Constant(this);
-        }
-
         /// <summary>
         /// init with TwitterContext
         /// </summary>
         /// <param name="context"></param>
         public TwitterQueryable(TwitterContext context)
-            : this()
         {
+            Provider = new TwitterQueryProvider();
+            Expression = Expression.Constant(this);
+
             // lets provider reach back to TwitterContext, 
             // where execute implementation resides
             (Provider as TwitterQueryProvider).Context = context;
         }
 
-        // TODO: refactor - LINQ to Twitter is Unusable without TwitterContext
-        public TwitterQueryable(
-            TwitterQueryProvider provider, 
+        /// <summary>
+        /// modified as internal because LINQ to Twitter is Unusable 
+        /// without TwitterContext, but provider still needs access
+        /// </summary>
+        /// <param name="provider">IQueryProvider</param>
+        /// <param name="expression">Expression Tree</param>
+        internal TwitterQueryable(
+            TwitterQueryProvider provider,
             Expression expression)
         {
             if (provider == null)

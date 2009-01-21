@@ -17,6 +17,10 @@ namespace LinqToTwitterDemo
 
             var twitterCtx = new TwitterContext(userName, password, "http://www.twitter.com/");
 
+            //
+            // status tweets
+            //
+
             //var statusResult = twitterCtx.UpdateStatus("@TwitterUser Testing LINQ to Twitter with reply", "961760788");
             //var statusResult = twitterCtx.UpdateStatus("Testing LINQ to Twitter with only status");
             //var statusResult = twitterCtx.Destroy("961866827");
@@ -31,18 +35,18 @@ namespace LinqToTwitterDemo
             //        tweet.CreatedAt);
             //}
             Console.WriteLine();
-            var tweets =
+            var statusTweets =
                 from tweet in twitterCtx.Status
                 where tweet.Type == StatusType.User
                       //&& tweet.ID == "945932078" // ID for Show
                       && tweet.ID == "15411837"  // ID for User
-                      && tweet.Page == 4
+                      && tweet.Page == 1
                       && tweet.Count == 20
                       && tweet.SinceID == 931894254
                       && tweet.Since == DateTime.Now.AddMonths(-1)
                 select tweet;
 
-            foreach (var tweet in tweets)
+            foreach (var tweet in statusTweets)
             {
                 Console.WriteLine(
                     "(" + tweet.ID + ")" +
@@ -51,6 +55,18 @@ namespace LinqToTwitterDemo
                     tweet.Text + ", " +
                     tweet.CreatedAt);
             } 
+
+            //
+            // user tweets
+            //
+
+            var userTweets =
+                from tweet in twitterCtx.User
+                where tweet.Type == UserType.Show &&
+                      tweet.ID == "15411837"
+                select tweet;
+
+            var tweetList = userTweets.ToList();
 
             Console.ReadKey();
         }

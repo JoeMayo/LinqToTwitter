@@ -76,6 +76,17 @@ namespace LinqToTwitter
         }
 
         /// <summary>
+        /// enables access to Twitter User messages, such as Friends and Followers
+        /// </summary>
+        public TwitterQueryable<User> User
+        {
+            get
+            {
+                return new TwitterQueryable<User>(this);
+            }
+        }
+
+        /// <summary>
         /// Called by QueryProvider to execute queries
         /// </summary>
         /// <param name="expression">ExpressionTree to parse</param>
@@ -122,6 +133,9 @@ namespace LinqToTwitter
             {
                 case "Status":
                     req = new StatusRequestProcessor() { BaseUrl = BaseUrl };
+                    break;
+                case "User":
+                    req = new UserRequestProcessor() { BaseUrl = BaseUrl };
                     break;
                 default:
                     req = new StatusRequestProcessor() { BaseUrl = BaseUrl };

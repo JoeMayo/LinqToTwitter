@@ -5,6 +5,9 @@ using System.Text;
 
 namespace LinqToTwitter
 {
+    /// <summary>
+    /// type of status request
+    /// </summary>
     public enum StatusType
     {
         /// <summary>

@@ -50,6 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BuildUrlHelper.cs" />
     <Compile Include="Evaluator.cs" />
     <Compile Include="ExpressionTreeHelper.cs" />
     <Compile Include="ExpressionTreeVisitor.cs" />
@@ -66,6 +67,8 @@
     <Compile Include="TwitterQueryProvider.cs" />
     <Compile Include="TypeSystem.cs" />
     <Compile Include="User.cs" />
+    <Compile Include="UserRequestProcessor.cs" />
+    <Compile Include="UserType.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

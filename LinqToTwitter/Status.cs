@@ -62,7 +62,7 @@ namespace LinqToTwitter
         public string Source { get; set; }
 
         /// <summary>
-        /// has the tween been truncated
+        /// has the tweet been truncated
         /// </summary>
         public bool Truncated { get; set; }
 
@@ -82,7 +82,12 @@ namespace LinqToTwitter
         public bool Favorited { get; set; }
 
         /// <summary>
-        /// information about user posting tweet
+        /// screen name of user being replied to, if it is a reply
+        /// </summary>
+        public string InReplyToScreenName { get; set; }
+
+        /// <summary>
+        /// information about user posting tweet (except in user tweets)
         /// </summary>
         public User User { get; set; }
     }

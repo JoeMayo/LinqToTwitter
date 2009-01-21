@@ -8,7 +8,7 @@ using System.Linq.Expressions;
 namespace LinqToTwitter
 {
     /// <summary>
-    /// builds URL's for Twitter Status requests
+    /// processes Twitter Status requests
     /// </summary>
     public class StatusRequestProcessor : IRequestProcessor
     {
@@ -104,7 +104,7 @@ namespace LinqToTwitter
         {
             var url = BaseUrl + "statuses/show.xml";
 
-            url = TransformIDUrl(parameters, url);
+            url = BuildUrlHelper.TransformIDUrl(parameters, url);
 
             return url;
         }
@@ -152,21 +152,6 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// makes ID parameter part of the URL
-        /// </summary>
-        /// <param name="parameters">parameter list</param>
-        /// <param name="url">original url</param>
-        /// <returns>transformed URL with ID</returns>
-        private static string TransformIDUrl(Dictionary<string, string> parameters, string url)
-        {
-            if (parameters.ContainsKey("ID"))
-            {
-                url = url.Replace(".xml", "/" + parameters["ID"] + ".xml");
-            }
-            return url;
-        }
-
-        /// <summary>
         /// construct a base user url
         /// </summary>
         /// <param name="url">base status url</param>
@@ -175,7 +160,7 @@ namespace LinqToTwitter
         {
             var url = BaseUrl + "statuses/user_timeline.xml";
 
-            url = TransformIDUrl(parameters, url);
+            url = BuildUrlHelper.TransformIDUrl(parameters, url);
 
             url = BuildFriendRepliesAndUrlParameters(parameters, url);
 
@@ -206,6 +191,30 @@ namespace LinqToTwitter
             var url = BaseUrl + "statuses/public_timeline.xml";
             return url;
         }
+
+//<statuses type="array">
+//  <status>
+//    <created_at>Wed Oct 15 19:41:49 +0000 2008</created_at>
+//    <id>961102353</id>
+//    <text>My latest blog post: Where in the world is Blake Stone? http://tinyurl.com/4bd9hv</text>
+//    <source>web</source>
+//    <truncated>false</truncated>
+//    <in_reply_to_status_id></in_reply_to_status_id>
+//    <in_reply_to_user_id></in_reply_to_user_id>
+//    <favorited>false</favorited>
+//    <in_reply_to_screen_name></in_reply_to_screen_name>
+//    <user>
+//      <id>15411837</id>
+//      <name>Joe Mayo</name>
+//      <screen_name>JoeMayo</screen_name>
+//      <location>Denver, CO</location>
+//      <description>Author/entrepreneur, specializing in custom .NET software development</description>
+//      <profile_image_url>http://s3.amazonaws.com/twitter_production/profile_images/62569644/JoeTwitter_normal.jpg</profile_image_url>
+//      <url>http://www.csharp-station.com</url>
+//      <protected>false</protected>
+//      <followers_count>25</followers_count>
+//    </user>
+//  </status>        
 
         /// <summary>
         /// transforms XML into IQueryable of Status
@@ -250,6 +259,10 @@ namespace LinqToTwitter
                        Source = status.Element("source").Value,
                        Text = status.Element("text").Value,
                        Truncated = bool.Parse(status.Element("truncated").Value),
+                       InReplyToScreenName = 
+                        status.Element("in_reply_to_screen_name") == null ?
+                            string.Empty :
+                            status.Element("in_reply_to_screen_name").Value,
                        User =
                            new User
                            {
