@@ -22,6 +22,8 @@ namespace LinqToTwitter
     /// </summary>
     public class TwitterContext
     {
+        #region TwitterContext initialization
+
         /// <summary>
         /// login name of user
         /// </summary>
@@ -64,6 +66,10 @@ namespace LinqToTwitter
             BaseUrl = baseUrl == string.Empty ? "http://twitter.com/" : baseUrl;
         }
 
+        #endregion
+
+        #region TwitterQueryable objects
+
         /// <summary>
         /// enables access to Twitter Status messages, such as Friends and Public
         /// </summary>
@@ -86,6 +92,10 @@ namespace LinqToTwitter
             }
         }
 
+        #endregion
+
+        #region Twitter Query API
+
         /// <summary>
         /// Called by QueryProvider to execute queries
         /// </summary>
@@ -95,24 +105,28 @@ namespace LinqToTwitter
         {
             Dictionary<string, string> parameters = null;
 
+            // request processor is specific to request type (i.e. Status, User, etc.)
             var reqProc = CreateRequestProcessor(expression);
 
+            // we need the where expression because it contains the criteria for the request
             var whereFinder = new FirstWhereClauseFinder();
             var whereExpression = whereFinder.GetFirstWhere(expression);
 
             if (whereExpression != null)
             {
-                var lambdaExpression =
-                    (LambdaExpression)
+                var lambdaExpression = (LambdaExpression) 
                     ((UnaryExpression)(whereExpression.Arguments[1])).Operand;
 
-                lambdaExpression =
-                    (LambdaExpression)Evaluator.PartialEval(lambdaExpression);
+                // translate variable references in expression into constants
+                lambdaExpression = (LambdaExpression)Evaluator.PartialEval(lambdaExpression);
 
                 parameters = reqProc.GetParameters(lambdaExpression);
             }
 
+            // construct REST endpoint, based on input parameters
             var url = reqProc.BuildURL(parameters);
+
+            // execute the query and return results
             var queryableList = QueryTwitter(url, reqProc);
 
             return queryableList;
@@ -172,8 +186,12 @@ namespace LinqToTwitter
             return results;
         }
 
+        #endregion
+
+        #region Twitter Execution API
+
         /// <summary>
-        /// performs HTTP POST for Twitter requests with side-effects
+        /// utility method to perform HTTP POST for Twitter requests with side-effects
         /// </summary>
         /// <param name="url">URL of request</param>
         /// <param name="parameters">parameters to post</param>
@@ -216,7 +234,7 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// sends a status update
+        /// sends a status update - overload to make inReplyToStatusID optional
         /// </summary>
         /// <param name="status">(optional @UserName) and (required) status text</param>
         /// <returns>IQueryable of sent status</returns>
@@ -272,5 +290,7 @@ namespace LinqToTwitter
 
             return results as IQueryable<Status>;
         }
+
+        #endregion
     }
 }

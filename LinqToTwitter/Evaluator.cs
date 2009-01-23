@@ -20,6 +20,9 @@ using System.Linq.Expressions;
 
 namespace LinqToTwitter
 {
+    /// <summary>
+    /// translates variable references in expressions to constants
+    /// </summary>
     public static class Evaluator
     {
         /// <summary>

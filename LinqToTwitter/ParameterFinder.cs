@@ -20,17 +20,37 @@ using System.Linq.Expressions;
 
 namespace LinqToTwitter
 {
+    /// <summary>
+    /// extracts parameters from an expression
+    /// - called for extracting parameters and values on where clauses
+    /// </summary>
+    /// <typeparam name="T">type to get parameters for</typeparam>
     internal class ParameterFinder<T> : ExpressionVisitor
     {
+        /// <summary>
+        /// expression being searched
+        /// </summary>
         private Expression m_expression;
+
+        /// <summary>
+        /// parameters to search for
+        /// </summary>
         private Dictionary<string, string> m_parameters;
 
+        /// <summary>
+        /// keep track of expression and parameter list
+        /// </summary>
+        /// <param name="exp">expression to search</param>
+        /// <param name="parameters">parameters to search for</param>
         public ParameterFinder(Expression exp, List<string> parameters)
         {
             m_expression = exp;
             ParameterNames = parameters;
         }
 
+        /// <summary>
+        /// name/value pairs of parameters and their values
+        /// </summary>
         public Dictionary<string, string> Parameters
         {
             get
@@ -44,8 +64,16 @@ namespace LinqToTwitter
             }
         }
 
+        /// <summary>
+        /// names of input parameters
+        /// </summary>
         public List<string> ParameterNames { get; set; }
 
+        /// <summary>
+        /// extracts values from equality expressions that match parameter names
+        /// </summary>
+        /// <param name="be">binary expression to evaluate</param>
+        /// <returns>binary expression - supports recursive tree traversal in visitor</returns>
         protected override Expression VisitBinary(BinaryExpression be)
         {
             if (be.NodeType == ExpressionType.Equal)

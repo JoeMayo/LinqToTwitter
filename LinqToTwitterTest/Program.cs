@@ -46,6 +46,8 @@ namespace LinqToTwitterDemo
                       && tweet.Since == DateTime.Now.AddMonths(-1)
                 select tweet;
 
+            //statusTweets = statusTweets.Where(tweet => tweet.Since == DateTime.Now.AddMonths(-1)); 
+
             foreach (var tweet in statusTweets)
             {
                 Console.WriteLine(
