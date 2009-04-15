@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml.Linq;
 
 namespace LinqToTwitter
 {
@@ -16,6 +17,152 @@ namespace LinqToTwitter
     /// </summary>
     public class User
     {
+        // TODO: can refactor earlier code that creates Users - Joe
+
+        /// <summary>
+        /// creates a new user based on an XML user fragment
+        /// </summary>
+        /// <param name="user">XML user fragment</param>
+        /// <returns>new User instance</returns>
+        public User CreateUser(XElement user)
+        {
+            if (user == null)
+            {
+                return null;
+            }
+
+            var tempUserProtected = false;
+            var tempFollowersCount = 0;
+            var tempFriendsCount = 0;
+            var tempFavoritesCount = 0;
+            var tempStatusesCount = 0;
+            var tempStatusTruncated = false;
+            var tempStatusFavorited = false;
+
+            var canParseProtected = 
+                bool.TryParse(user.Element("protected").Value, out tempUserProtected);
+            var followersCount = 
+                int.TryParse(user.Element("followers_count").Value, out tempFollowersCount);
+            var friendsCount =
+                user.Element("friends_count") == null ? 
+                    false :
+                    int.TryParse(user.Element("friends_count").Value, out tempFriendsCount);
+            var userDateParts =
+                user.Element("created_at") == null ?
+                    null :
+                    user.Element("created_at").Value.Split(' ');
+            var userCreatedAtDate =
+                userDateParts == null ?
+                    DateTime.MinValue :
+                    DateTime.Parse(
+                        string.Format("{0} {1} {2} {3} GMT",
+                        userDateParts[1],
+                        userDateParts[2],
+                        userDateParts[5],
+                        userDateParts[3]));
+            var favoritesCount =
+                user.Element("favourites_count") == null ? 
+                    false :
+                    int.TryParse(user.Element("favourites_count").Value, out tempFavoritesCount);
+            var statusesCount =
+                user.Element("statuses_count") == null ?
+                    false :
+                    int.TryParse(user.Element("statuses_count").Value, out tempStatusesCount);
+            var status =
+                user.Element("status");
+            var statusDateParts =
+                status == null ?
+                    null :
+                    status.Element("created_at").Value.Split(' ');
+            var statusCreatedAtDate =
+                statusDateParts == null ?
+                    DateTime.MinValue :
+                    DateTime.Parse(
+                        string.Format("{0} {1} {2} {3} GMT",
+                        statusDateParts[1],
+                        statusDateParts[2],
+                        statusDateParts[5],
+                        statusDateParts[3]));
+            var canParseTruncated =
+                status == null ?
+                    false :
+                    bool.TryParse(status.Element("truncated").Value, out tempStatusTruncated);
+            var canParseFavorited =
+                status == null ?
+                    false :
+                    bool.TryParse(status.Element("favorited").Value, out tempStatusFavorited);
+               
+            var newUser = new User
+            {
+                ID = user.Element("id").Value,
+                Name = user.Element("name").Value,
+                ScreenName = user.Element("screen_name").Value,
+                Location = user.Element("location").Value,
+                Description = user.Element("description").Value,
+                ProfileImageUrl = user.Element("profile_image_url").Value,
+                URL = user.Element("url").Value,
+                Protected = tempUserProtected,
+                FollowersCount = tempFollowersCount,
+                ProfileBackgroundColor = 
+                    user.Element("profile_background_color") == null ?
+                        string.Empty :
+                        user.Element("profile_background_color").Value,
+                ProfileTextColor = 
+                    user.Element("profile_text_color") == null ?
+                        string.Empty :
+                        user.Element("profile_text_color").Value,
+                ProfileLinkColor = 
+                    user.Element("profile_link_color") == null ?
+                        string.Empty :
+                        user.Element("profile_link_color").Value,
+                ProfileSidebarFillColor = 
+                    user.Element("profile_sidebar_fill_color") == null ?
+                        string.Empty :
+                        user.Element("profile_sidebar_fill_color").Value,
+                ProfileSidebarBorderColor = 
+                    user.Element("profile_sidebar_border_color") == null ?
+                        string.Empty :
+                        user.Element("profile_sidebar_border_color").Value,
+                FriendsCount = tempFriendsCount,
+                CreatedAt = userCreatedAtDate,
+                FavoritesCount = tempFavoritesCount,
+                UtcOffset = 
+                    user.Element("utc_offset") == null ?
+                        string.Empty :
+                        user.Element("utc_offset").Value,
+                TimeZone = 
+                    user.Element("time_zone") == null ?
+                        string.Empty :
+                        user.Element("time_zone").Value,
+                ProfileBackgroundImageUrl = 
+                    user.Element("profile_background_image_url") == null ?
+                        string.Empty :
+                        user.Element("profile_background_image_url").Value,
+                ProfileBackgroundTile = 
+                    user.Element("profile_background_tile") == null ?
+                        string.Empty :
+                        user.Element("profile_background_tile").Value,
+                StatusesCount = tempStatusesCount,
+                Status = 
+                    status == null ?
+                        null :
+                        new Status
+                        {
+                            CreatedAt = statusCreatedAtDate,
+                            ID = status.Element("id").Value,
+                            Text = status.Element("text").Value,
+                            Source = status.Element("source").Value,
+                            Truncated = tempStatusTruncated,
+                            InReplyToStatusID = status.Element("in_reply_to_status_id").Value,
+                            InReplyToUserID = status.Element("in_reply_to_user_id").Value,
+                            Favorited = tempStatusFavorited,
+                            InReplyToScreenName = status.Element("in_reply_to_screen_name").Value
+                        }
+            };
+
+            return newUser;
+        }
+
         /// <summary>
         /// type of user request (i.e. Friends, Followers, or Show)
         /// </summary>

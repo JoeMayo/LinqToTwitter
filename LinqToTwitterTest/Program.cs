@@ -62,13 +62,24 @@ namespace LinqToTwitterDemo
             // user tweets
             //
 
-            var userTweets =
-                from tweet in twitterCtx.User
-                where tweet.Type == UserType.Show &&
-                      tweet.ID == "15411837"
+            //var userTweets =
+            //    from tweet in twitterCtx.User
+            //    where tweet.Type == UserType.Show &&
+            //          tweet.ID == "15411837"
+            //    select tweet;
+
+            //var tweetList = userTweets.ToList();
+
+            //
+            // direct messages
+            //
+
+            var directMessages =
+                from tweet in twitterCtx.DirectMessage
+                where tweet.Type == DirectMessageType.SentTo
                 select tweet;
 
-            var tweetList = userTweets.ToList();
+            var directTweets = directMessages.ToList();
 
             Console.ReadKey();
         }

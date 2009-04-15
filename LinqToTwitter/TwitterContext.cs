@@ -92,6 +92,17 @@ namespace LinqToTwitter
             }
         }
 
+        /// <summary>
+        /// enables access to Twitter User messages, such as Friends and Followers
+        /// </summary>
+        public TwitterQueryable<DirectMessage> DirectMessage
+        {
+            get
+            {
+                return new TwitterQueryable<DirectMessage>(this);
+            }
+        }
+
         #endregion
 
         #region Twitter Query API
@@ -150,6 +161,9 @@ namespace LinqToTwitter
                     break;
                 case "User":
                     req = new UserRequestProcessor() { BaseUrl = BaseUrl };
+                    break;
+                case "DirectMessage":
+                    req = new DirectRequestProcessor() { BaseUrl = BaseUrl };
                     break;
                 default:
                     req = new StatusRequestProcessor() { BaseUrl = BaseUrl };

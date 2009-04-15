@@ -51,6 +51,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BuildUrlHelper.cs" />
+    <Compile Include="DirectMessage.cs" />
+    <Compile Include="DirectMessageType.cs" />
+    <Compile Include="DirectRequestProcessor.cs" />
     <Compile Include="Evaluator.cs" />
     <Compile Include="ExpressionTreeHelper.cs" />
     <Compile Include="ExpressionTreeVisitor.cs" />
