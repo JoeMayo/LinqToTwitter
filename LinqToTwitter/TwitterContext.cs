@@ -213,7 +213,7 @@ namespace LinqToTwitter
         /// <returns>response from server, handled by the requestProcessor</returns>
         private IQueryable ExecuteTwitter(string url, Dictionary<string, string> parameters, IRequestProcessor requestProcessor)
         {
-            var req = WebRequest.Create(url);
+            var req = WebRequest.Create(url) as HttpWebRequest;
             req.Credentials = new NetworkCredential(UserName, Password);
             req.Method = "POST";
             var paramsJoined =
@@ -226,6 +226,10 @@ namespace LinqToTwitter
             var bytes = Encoding.UTF8.GetBytes(paramsJoined);
             req.ContentType = "application/x-www-form-urlencoded";
             req.ContentLength = bytes.Length;
+            
+            // due to Twitter API change, I needed to remove the Expect header. More details here by Phil Haack - Joe
+            // http://haacked.com/archive/2004/05/15/http-web-request-expect-100-continue.aspx
+            req.ServicePoint.Expect100Continue = false;
 
             string responseXML;
 
@@ -287,12 +291,33 @@ namespace LinqToTwitter
             return results as IQueryable<Status>;
         }
 
+        // TODO: Remove Destroy at v1.0 - Joe
+
         /// <summary>
         /// deletes a tweet
         /// </summary>
         /// <param name="id">id of tweet</param>
         /// <returns>deleted tweet</returns>
+        [Obsolete("Destroy is on the fast track to deprecation.  Please use DestroyStatus instead, which is more descriptive and consistent with other DestroyXxx methods. Thanks for using LINQ to Twitter - Joe :)")]
         public IQueryable<Status> Destroy(string id)
+        {
+            var destroyUrl = BaseUrl + "statuses/destroy/" + id + ".xml";
+
+            var results =
+                ExecuteTwitter(
+                    destroyUrl,
+                    new Dictionary<string, string>(),
+                    new StatusRequestProcessor());
+
+            return results as IQueryable<Status>;
+        }
+
+        /// <summary>
+        /// deletes a status tweet
+        /// </summary>
+        /// <param name="id">id of status tweet</param>
+        /// <returns>deleted status tweet</returns>
+        public IQueryable<Status> DestroyStatus(string id)
         {
             var destroyUrl = BaseUrl + "statuses/destroy/" + id + ".xml";
 
