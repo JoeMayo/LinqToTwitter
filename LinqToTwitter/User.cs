@@ -41,16 +41,20 @@ namespace LinqToTwitter
 
             var canParseProtected = 
                 bool.TryParse(user.Element("protected").Value, out tempUserProtected);
+            
             var followersCount = 
                 int.TryParse(user.Element("followers_count").Value, out tempFollowersCount);
+            
             var friendsCount =
                 user.Element("friends_count") == null ? 
                     false :
                     int.TryParse(user.Element("friends_count").Value, out tempFriendsCount);
+            
             var userDateParts =
                 user.Element("created_at") == null ?
                     null :
                     user.Element("created_at").Value.Split(' ');
+            
             var userCreatedAtDate =
                 userDateParts == null ?
                     DateTime.MinValue :
@@ -60,20 +64,25 @@ namespace LinqToTwitter
                         userDateParts[2],
                         userDateParts[5],
                         userDateParts[3]));
+            
             var favoritesCount =
                 user.Element("favourites_count") == null ? 
                     false :
                     int.TryParse(user.Element("favourites_count").Value, out tempFavoritesCount);
+            
             var statusesCount =
                 user.Element("statuses_count") == null ?
                     false :
                     int.TryParse(user.Element("statuses_count").Value, out tempStatusesCount);
+            
             var status =
                 user.Element("status");
+            
             var statusDateParts =
                 status == null ?
                     null :
                     status.Element("created_at").Value.Split(' ');
+            
             var statusCreatedAtDate =
                 statusDateParts == null ?
                     DateTime.MinValue :
@@ -83,10 +92,12 @@ namespace LinqToTwitter
                         statusDateParts[2],
                         statusDateParts[5],
                         statusDateParts[3]));
+            
             var canParseTruncated =
                 status == null ?
                     false :
                     bool.TryParse(status.Element("truncated").Value, out tempStatusTruncated);
+            
             var canParseFavorited =
                 status == null ?
                     false :

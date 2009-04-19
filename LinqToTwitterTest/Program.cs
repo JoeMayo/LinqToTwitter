@@ -28,8 +28,8 @@ namespace LinqToTwitterDemo
 
             //UpdateStatusDemo(twitterCtx);
             //DestroyStatusDemo(twitterCtx);
-
-            //StatusQueryDemo(twitterCtx);
+            //UserStatusQueryDemo(twitterCtx);
+            //PublicStatusQueryDemo();
 
             //
             // user tweets
@@ -45,16 +45,86 @@ namespace LinqToTwitterDemo
 
             //NewDirectMessageDemo(twitterCtx);
 
-            //DestroyDirectMethodDemo(twitterCtx);
+            //DestroyDirectMessageDemo(twitterCtx);
+
+            //
+            // freindship
+            //
+
+            //FriendshipExistsDemo(twitterCtx);
+
+            //CreateFriendshipFollowDemo(twitterCtx);
+            //DestroyFriendshipDemo(twitterCtx);
+            //CreateFriendshipNoDeviceUpdatesDemo(twitterCtx);
 
             Console.ReadKey();
         }
+
+        #region Friendship Demos
+
+        private static void CreateFriendshipNoDeviceUpdatesDemo(TwitterContext twitterCtx)
+        {
+            var results = twitterCtx.CreateFriendship("LinqToTweeter", false);
+
+            var user = results.First();
+
+            Console.WriteLine(
+                "User Name: {0}, Status: {1}",
+                user.Name,
+                user.Status.Text);
+        }
+
+        private static void DestroyFriendshipDemo(TwitterContext twitterCtx)
+        {
+            var results = twitterCtx.DestroyFriendship("LinqToTweeter");
+
+            var user = results.First();
+
+            Console.WriteLine(
+                "User Name: {0}, Status: {1}",
+                user.Name,
+                user.Status.Text);
+        }
+
+        private static void CreateFriendshipFollowDemo(TwitterContext twitterCtx)
+        {
+            var results = twitterCtx.CreateFriendship("LinqToTweeter", true);
+
+            var user = results.First();
+
+            Console.WriteLine(
+                "User Name: {0}, Status: {1}",
+                user.Name,
+                user.Status.Text);
+        }
+
+        /// <summary>
+        /// shows how to show that one user follows another with Friendship Exists
+        /// </summary>
+        /// <param name="twitterCtx"></param>
+        private static void FriendshipExistsDemo(TwitterContext twitterCtx)
+        {
+            var friendship =
+                from friend in twitterCtx.Friendship
+                where friend.Type == FriendshipType.Exists &&
+                      friend.SubjectUser == "LinqToTweeter" &&
+                      friend.FollowingUser == "JoeMayo"
+                select friend;
+
+            Console.WriteLine(
+                "JoeMayo follows LinqToTweeter: " + 
+                friendship.ToList().First().IsFriend);
+        }
+
+        #endregion
+
+        #region Direct Message Demos
 
         /// <summary>
         /// shows how to delete a direct message
         /// </summary>
         /// <param name="twitterCtx">TwitterContext</param>
-        private static void DestroyDirectMethodDemo(TwitterContext twitterCtx)
+        private static void DestroyDirectMessageDemo(TwitterContext twitterCtx)
         {
             var results = twitterCtx.DestroyDirectMessage("96404341");
 
@@ -106,6 +176,10 @@ namespace LinqToTwitterDemo
                     dm.Text));
         }
 
+        #endregion
+
+        #region User Demos
+
         /// <summary>
         /// shows how to query users
         /// </summary>
@@ -121,11 +195,15 @@ namespace LinqToTwitterDemo
             var tweetList = userTweets.ToList();
         }
 
+        #endregion
+
+        #region Status Demos
+
         /// <summary>
         /// shows how to query status
         /// </summary>
         /// <param name="twitterCtx">TwitterContext</param>
-        private static void StatusQueryDemo(TwitterContext twitterCtx)
+        private static void UserStatusQueryDemo(TwitterContext twitterCtx)
         {
             Console.WriteLine();
 
@@ -202,5 +280,26 @@ namespace LinqToTwitterDemo
                     tweet.CreatedAt);
             }
         }
+
+        /// <summary>
+        /// shows how to send a public status query
+        /// </summary>
+        private static void PublicStatusQueryDemo()
+        {
+            var twitterCtx = new TwitterContext();
+
+            var publicTweets =
+                from tweet in twitterCtx.Status
+                where tweet.Type == StatusType.Public
+                select tweet;
+
+            publicTweets.ToList().ForEach(
+                tweet => Console.WriteLine(
+                    "User Name: {0}, Tweet: {1}",
+                    tweet.User.Name,
+                    tweet.Text));
+        }
+
+        #endregion
     }
 }

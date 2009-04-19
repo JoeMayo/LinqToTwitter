@@ -103,6 +103,17 @@ namespace LinqToTwitter
             }
         }
 
+        /// <summary>
+        /// enables access to Twitter User messages, such as Friends and Followers
+        /// </summary>
+        public TwitterQueryable<Friendship> Friendship
+        {
+            get
+            {
+                return new TwitterQueryable<Friendship>(this);
+            }
+        }
+
         #endregion
 
         #region Twitter Query API
@@ -164,6 +175,9 @@ namespace LinqToTwitter
                     break;
                 case "DirectMessage":
                     req = new DirectMessageRequestProcessor() { BaseUrl = BaseUrl };
+                    break;
+                case "Friendship":
+                    req = new FriendshipRequestProcessor() { BaseUrl = BaseUrl };
                     break;
                 default:
                     req = new StatusRequestProcessor() { BaseUrl = BaseUrl };
@@ -369,6 +383,52 @@ namespace LinqToTwitter
                     new DirectMessageRequestProcessor());
 
             return results as IQueryable<DirectMessage>;
+        }
+
+        /// <summary>
+        /// lets logged-in user follow another user
+        /// </summary>
+        /// <param name="id">id of user to follow</param>
+        /// <returns>followed friend user info</returns>
+        public IQueryable<User> CreateFriendship(string id, bool follow)
+        {
+            var destroyUrl = BaseUrl + "friendships/create/" + id + ".xml";
+
+            Dictionary<string, string> createParams = new Dictionary<string, string>();
+            
+            // If follow exists in the parameter list, Twitter will
+            // always treat it as true, even if the value is false;
+            // Therefore, only add follow if it is true.
+            if (follow)
+            {
+                createParams.Add("follow", "true");
+            }
+
+            var results =
+                ExecuteTwitter(
+                    destroyUrl,
+                    createParams,
+                    new UserRequestProcessor());
+
+            return results as IQueryable<User>;
+        }
+
+        /// <summary>
+        /// lets logged-in user follow another user
+        /// </summary>
+        /// <param name="id">id of user to follow</param>
+        /// <returns>followed friend user info</returns>
+        public IQueryable<User> DestroyFriendship(string id)
+        {
+            var destroyUrl = BaseUrl + "friendships/destroy/" + id + ".xml";
+
+            var results =
+                ExecuteTwitter(
+                    destroyUrl,
+                    new Dictionary<string, string>(),
+                    new UserRequestProcessor());
+
+            return results as IQueryable<User>;
         }
 
         #endregion

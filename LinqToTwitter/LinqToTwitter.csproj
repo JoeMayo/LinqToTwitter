@@ -58,6 +58,9 @@
     <Compile Include="ExpressionTreeHelper.cs" />
     <Compile Include="ExpressionTreeVisitor.cs" />
     <Compile Include="FirstWhereClauseFinder.cs" />
+    <Compile Include="Friendship.cs" />
+    <Compile Include="FriendshipRequestProcessor.cs" />
+    <Compile Include="FriendshipType.cs" />
     <Compile Include="InvalidQueryException.cs" />
     <Compile Include="IRequestProcessor.cs" />
     <Compile Include="ParameterFinder.cs" />

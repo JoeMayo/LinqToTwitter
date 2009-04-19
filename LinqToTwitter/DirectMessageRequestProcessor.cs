@@ -200,10 +200,10 @@ namespace LinqToTwitter
         //</direct_message>
 
         /// <summary>
-        /// transforms XML into IQueryable of User
+        /// transforms XML into IQueryable of DirectMessage
         /// </summary>
         /// <param name="twitterResponse">xml with Twitter response</param>
-        /// <returns>IQueryable of User</returns>
+        /// <returns>IQueryable of DirectMessage</returns>
         public IQueryable ProcessResults(System.Xml.Linq.XElement twitterResponse)
         {
             var responseItems = twitterResponse.Elements("direct_message").ToList();
