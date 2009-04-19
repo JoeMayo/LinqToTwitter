@@ -27,7 +27,7 @@ namespace LinqToTwitterDemo
             //
 
             //UpdateStatusDemo(twitterCtx);
-            DestroyStatusDemo(twitterCtx);
+            //DestroyStatusDemo(twitterCtx);
 
             //StatusQueryDemo(twitterCtx);
 
@@ -43,9 +43,49 @@ namespace LinqToTwitterDemo
 
             //DirectMessageQueryDemo(twitterCtx);
 
+            //NewDirectMessageDemo(twitterCtx);
 
+            //DestroyDirectMethodDemo(twitterCtx);
 
             Console.ReadKey();
+        }
+
+        /// <summary>
+        /// shows how to delete a direct message
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void DestroyDirectMethodDemo(TwitterContext twitterCtx)
+        {
+            var results = twitterCtx.DestroyDirectMessage("96404341");
+
+            var result = results.FirstOrDefault();
+
+            if (result != null)
+            {
+                Console.WriteLine(
+                    "Recipient: {0}, Message: {1}",
+                    result.RecipientScreenName,
+                    result.Text);
+            }
+        }
+
+        /// <summary>
+        /// shows how to send a new direct message
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void NewDirectMessageDemo(TwitterContext twitterCtx)
+        {
+            var results = twitterCtx.NewDirectMessage("16761255", "Direct Message Test - 4/16/09");
+
+            var result = results.FirstOrDefault();
+
+            if (result != null)
+            {
+                Console.WriteLine(
+                    "Recipient: {0}, Message: {1}",
+                    result.RecipientScreenName,
+                    result.Text);
+            }
         }
 
         /// <summary>

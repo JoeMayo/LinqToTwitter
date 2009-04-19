@@ -163,7 +163,7 @@ namespace LinqToTwitter
                     req = new UserRequestProcessor() { BaseUrl = BaseUrl };
                     break;
                 case "DirectMessage":
-                    req = new DirectRequestProcessor() { BaseUrl = BaseUrl };
+                    req = new DirectMessageRequestProcessor() { BaseUrl = BaseUrl };
                     break;
                 default:
                     req = new StatusRequestProcessor() { BaseUrl = BaseUrl };
@@ -328,6 +328,47 @@ namespace LinqToTwitter
                     new StatusRequestProcessor());
 
             return results as IQueryable<Status>;
+        }
+
+        /// <summary>
+        /// sends a new direct message to specified userr
+        /// </summary>
+        /// <param name="userID">id of user to send to</param>
+        /// <param name="id">text to send</param>
+        /// <returns>direct message element</returns>
+        public IQueryable<DirectMessage> NewDirectMessage(string userID, string text)
+        {
+            var newUrl = BaseUrl + "direct_messages/new.xml";
+
+            var results =
+                ExecuteTwitter(
+                    newUrl,
+                    new Dictionary<string, string>
+                    {
+                        {"user", userID},
+                        {"text", text}
+                    },
+                    new DirectMessageRequestProcessor());
+
+            return results as IQueryable<DirectMessage>;
+        }
+
+        /// <summary>
+        /// deletes a direct message
+        /// </summary>
+        /// <param name="id">id of direct message</param>
+        /// <returns>direct message element</returns>
+        public IQueryable<DirectMessage> DestroyDirectMessage(string id)
+        {
+            var destroyUrl = BaseUrl + "direct_messages/destroy/" + id + ".xml";
+
+            var results =
+                ExecuteTwitter(
+                    destroyUrl,
+                    new Dictionary<string, string>(),
+                    new DirectMessageRequestProcessor());
+
+            return results as IQueryable<DirectMessage>;
         }
 
         #endregion

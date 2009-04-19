@@ -9,7 +9,7 @@ namespace LinqToTwitter
     /// <summary>
     /// processes Twitter Direct Messages
     /// </summary>
-    public class DirectRequestProcessor : IRequestProcessor
+    public class DirectMessageRequestProcessor : IRequestProcessor
     {
         #region IRequestProcessor Members
 
@@ -209,7 +209,7 @@ namespace LinqToTwitter
             var responseItems = twitterResponse.Elements("direct_message").ToList();
 
             // if we get only a single response back,
-            // such as a Show request, make sure we get it
+            // make sure we get it
             if (twitterResponse.Name == "direct_message")
             {
                 responseItems.Add(twitterResponse);
