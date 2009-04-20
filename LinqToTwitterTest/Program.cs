@@ -57,7 +57,37 @@ namespace LinqToTwitterDemo
             //DestroyFriendshipDemo(twitterCtx);
             //CreateFriendshipNoDeviceUpdatesDemo(twitterCtx);
 
+            //
+            // SocialGraph
+            //
+
+            //ShowFriendsDemo(twitterCtx);
+            ShowFollowersDemo(twitterCtx);
+
             Console.ReadKey();
+        }
+
+        private static void ShowFollowersDemo(TwitterContext twitterCtx)
+        {
+            var followers =
+                from follower in twitterCtx.SocialGraph
+                where follower.Type == SocialGraphType.Followers &&
+                      follower.ID == 15411837
+                select follower;
+
+            followers.ToList().ForEach(
+                follower => Console.WriteLine("Follower ID: " + follower.ID));
+        }
+
+        private static void ShowFriendsDemo(TwitterContext twitterCtx)
+        {
+            var friends =
+                from friend in twitterCtx.SocialGraph
+                where friend.Type == SocialGraphType.Friends
+                select friend;
+
+            friends.ToList().ForEach(
+                friend => Console.WriteLine("Friend ID: " + friend.ID));
         }
 
         #region Friendship Demos

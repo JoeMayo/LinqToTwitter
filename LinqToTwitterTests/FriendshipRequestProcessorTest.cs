@@ -90,7 +90,6 @@ namespace LinqToTwitterTests
         public void GetParametersTest()
         {
             FriendshipRequestProcessor target = new FriendshipRequestProcessor() { BaseUrl = "http://twitter.com/" };
-            Func<Friendship, bool> func = friend => friend.SubjectUser == "123" && friend.FollowingUser == "456";
             Expression<Func<Friendship, bool>> expression = 
                 friend => 
                     friend.Type == FriendshipType.Exists &&

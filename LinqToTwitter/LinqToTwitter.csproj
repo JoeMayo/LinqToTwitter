@@ -64,6 +64,9 @@
     <Compile Include="InvalidQueryException.cs" />
     <Compile Include="IRequestProcessor.cs" />
     <Compile Include="ParameterFinder.cs" />
+    <Compile Include="SocialGraph.cs" />
+    <Compile Include="SocialGraphRequestProcessor.cs" />
+    <Compile Include="SocialGraphType.cs" />
     <Compile Include="StatusRequestProcessor.cs" />
     <Compile Include="StatusType.cs" />
     <Compile Include="TwitterQueryable.cs" />

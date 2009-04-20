@@ -58,6 +58,7 @@
     <Compile Include="DirectMessageRequestProcessorTest.cs" />
     <Compile Include="FriendshipRequestProcessorTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SocialGraphRequestProcessorTest.cs" />
     <Compile Include="StatusRequestProcessorTest.cs" />
     <Compile Include="TwitterContextTest.cs" />
     <Compile Include="UserRequestProcessorTest.cs" />

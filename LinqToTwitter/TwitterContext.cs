@@ -104,13 +104,24 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// enables access to Twitter User messages, such as Friends and Followers
+        /// enables access to Twitter Friendship info
         /// </summary>
         public TwitterQueryable<Friendship> Friendship
         {
             get
             {
                 return new TwitterQueryable<Friendship>(this);
+            }
+        }
+
+        /// <summary>
+        /// enables access to Twitter SocialGraph to discover Friends and Followers
+        /// </summary>
+        public TwitterQueryable<SocialGraph> SocialGraph
+        {
+            get
+            {
+                return new TwitterQueryable<SocialGraph>(this);
             }
         }
 
@@ -178,6 +189,9 @@ namespace LinqToTwitter
                     break;
                 case "Friendship":
                     req = new FriendshipRequestProcessor() { BaseUrl = BaseUrl };
+                    break;
+                case "SocialGraph":
+                    req = new SocialGraphRequestProcessor() { BaseUrl = BaseUrl };
                     break;
                 default:
                     req = new StatusRequestProcessor() { BaseUrl = BaseUrl };
