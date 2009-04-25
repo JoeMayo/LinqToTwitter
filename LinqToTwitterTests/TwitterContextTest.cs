@@ -70,11 +70,13 @@ namespace LinqToTwitterTests
             string userName = string.Empty;
             string password = string.Empty;
             string baseUrl = "http://twitter.com/";
+            string searchUrl = "http://search.twitter.com/";
             TwitterContext ctx = new TwitterContext();
 
             Assert.AreEqual(userName, ctx.UserName);
             Assert.AreEqual(password, ctx.Password);
             Assert.AreEqual(baseUrl, ctx.BaseUrl);
+            Assert.AreEqual(searchUrl, ctx.SearchUrl);
         }
 
         /// <summary>
@@ -86,11 +88,13 @@ namespace LinqToTwitterTests
             string userName = "TestUser";
             string password = "TestPassword";
             string baseUrl = "http://twitter.com/";
+            string searchUrl = "http://search.twitter.com/";
             TwitterContext ctx = new TwitterContext(userName, password);
 
             Assert.AreEqual(userName, ctx.UserName);
             Assert.AreEqual(password, ctx.Password);
             Assert.AreEqual(baseUrl, ctx.BaseUrl);
+            Assert.AreEqual(searchUrl, ctx.SearchUrl);
         }
 
         /// <summary>
@@ -102,11 +106,13 @@ namespace LinqToTwitterTests
             string userName = "TestUser";
             string password = "TestPassword";
             string baseUrl = "http://www.twitter.com/";
-            TwitterContext ctx = new TwitterContext(userName, password, baseUrl);
+            string searchUrl = "http://search.twitter.com/";
+            TwitterContext ctx = new TwitterContext(userName, password, baseUrl, searchUrl);
 
             Assert.AreEqual(userName, ctx.UserName);
             Assert.AreEqual(password, ctx.Password);
             Assert.AreEqual(baseUrl, ctx.BaseUrl);
+            Assert.AreEqual(searchUrl, ctx.SearchUrl);
         }
 
         /// <summary>
@@ -118,6 +124,7 @@ namespace LinqToTwitterTests
             string userName = "TestUser";
             string password = "TestPassword";
             string baseUrl = "http://www.twitter.com/";
+            string searchUrl = "http://search.twitter.com/";
             TwitterContext ctx =
                 new TwitterContext
                 {
@@ -129,6 +136,7 @@ namespace LinqToTwitterTests
             Assert.AreEqual(userName, ctx.UserName);
             Assert.AreEqual(password, ctx.Password);
             Assert.AreEqual(baseUrl, ctx.BaseUrl);
+            Assert.AreEqual(searchUrl, ctx.SearchUrl);
         }
 
         /// <summary>

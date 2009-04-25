@@ -40,10 +40,15 @@ namespace LinqToTwitter
         public string BaseUrl { get; set; }
 
         /// <summary>
+        /// base URL for accessing Twitter Search API
+        /// </summary>
+        public string SearchUrl { get; set; }
+
+        /// <summary>
         /// default constructor, results in no credentials and BaseUrl set to http://twitter.com/
         /// </summary>
         public TwitterContext() :
-            this(string.Empty, string.Empty, string.Empty) { }
+            this(string.Empty, string.Empty, string.Empty, string.Empty) { }
 
         /// <summary>
         /// initializes TwitterContext with username and password - BaseUrl defaults to http://twitter.com/
@@ -51,7 +56,16 @@ namespace LinqToTwitter
         /// <param name="userName">name of user</param>
         /// <param name="password">user's password</param>
         public TwitterContext(string userName, string password) :
-            this(userName, password, string.Empty) { }
+            this(userName, password, string.Empty, string.Empty) { }
+
+        /// <summary>
+        /// initializes TwitterContext with username and password - BaseUrl defaults to http://twitter.com/
+        /// </summary>
+        /// <param name="userName">name of user</param>
+        /// <param name="password">user's password</param>
+        /// <param name="baseUrl">base url of Twitter API</param>
+        public TwitterContext(string userName, string password, string baseUrl) :
+            this(userName, password, baseUrl, string.Empty) { }
 
         /// <summary>
         /// initialize TwitterContext with credentials and custom BaseUrl
@@ -59,11 +73,13 @@ namespace LinqToTwitter
         /// <param name="userName">name of user</param>
         /// <param name="password">user's password</param>
         /// <param name="baseUrl">base url of Twitter API</param>
-        public TwitterContext(string userName, string password, string baseUrl)
+        /// <param name="searchUrl">base url of Twitter Search API</param>
+        public TwitterContext(string userName, string password, string baseUrl, string searchUrl)
         {
             UserName = userName;
             Password = password;
-            BaseUrl = baseUrl == string.Empty ? "http://twitter.com/" : baseUrl;
+            BaseUrl = string.IsNullOrEmpty(baseUrl) ? "http://twitter.com/" : baseUrl;
+            SearchUrl = string.IsNullOrEmpty(searchUrl) ? "http://search.twitter.com/" : searchUrl;
         }
 
         #endregion
@@ -122,6 +138,17 @@ namespace LinqToTwitter
             get
             {
                 return new TwitterQueryable<SocialGraph>(this);
+            }
+        }
+
+        /// <summary>
+        /// enables access to Twitter SocialGraph to discover Friends and Followers
+        /// </summary>
+        public TwitterQueryable<TwitterSearch> Search
+        {
+            get
+            {
+                return new TwitterQueryable<TwitterSearch>(this);
             }
         }
 
@@ -193,6 +220,9 @@ namespace LinqToTwitter
                 case "SocialGraph":
                     req = new SocialGraphRequestProcessor() { BaseUrl = BaseUrl };
                     break;
+                case "TwitterSearch":
+                    req = new SearchRequestProcessor() { BaseUrl = SearchUrl };
+                    break;
                 default:
                     req = new StatusRequestProcessor() { BaseUrl = BaseUrl };
                     break;
@@ -210,8 +240,10 @@ namespace LinqToTwitter
         /// <returns>List of objects to return</returns>
         private IQueryable QueryTwitter(string url, IRequestProcessor requestProcessor)
         {
-            var req = HttpWebRequest.Create(url);
+            var req = HttpWebRequest.Create(url) as HttpWebRequest;
             req.Credentials = new NetworkCredential(UserName, Password);
+            req.UserAgent = "LINQ to Twitter";
+
             var resp = req.GetResponse();
 
             StringReader txtRdr;
@@ -254,7 +286,8 @@ namespace LinqToTwitter
             var bytes = Encoding.UTF8.GetBytes(paramsJoined);
             req.ContentType = "application/x-www-form-urlencoded";
             req.ContentLength = bytes.Length;
-            
+            req.UserAgent = "LINQ to Twitter";
+
             // due to Twitter API change, I needed to remove the Expect header. More details here by Phil Haack - Joe
             // http://haacked.com/archive/2004/05/15/http-web-request-expect-100-continue.aspx
             req.ServicePoint.Expect100Continue = false;

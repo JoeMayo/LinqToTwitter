@@ -50,6 +50,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AtomAuthor.cs" />
+    <Compile Include="AtomEntry.cs" />
+    <Compile Include="AtomFeed.cs" />
     <Compile Include="BuildUrlHelper.cs" />
     <Compile Include="DirectMessage.cs" />
     <Compile Include="DirectMessageType.cs" />
@@ -64,6 +67,9 @@
     <Compile Include="InvalidQueryException.cs" />
     <Compile Include="IRequestProcessor.cs" />
     <Compile Include="ParameterFinder.cs" />
+    <Compile Include="TwitterSearch.cs" />
+    <Compile Include="SearchRequestProcessor.cs" />
+    <Compile Include="SearchType.cs" />
     <Compile Include="SocialGraph.cs" />
     <Compile Include="SocialGraphRequestProcessor.cs" />
     <Compile Include="SocialGraphType.cs" />

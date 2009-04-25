@@ -20,7 +20,7 @@ namespace LinqToTwitterDemo
             string password = Console.ReadLine();
 
             // similar to DataContext (LINQ to SQL) or ObjectContext (LINQ to Entities)
-            var twitterCtx = new TwitterContext(userName, password, "http://www.twitter.com/");
+            var twitterCtx = new TwitterContext(userName, password, "http://www.twitter.com/", "http://search.twitter.com/");
 
             //
             // status tweets
@@ -62,9 +62,46 @@ namespace LinqToTwitterDemo
             //
 
             //ShowFriendsDemo(twitterCtx);
-            ShowFollowersDemo(twitterCtx);
+            //ShowFollowersDemo(twitterCtx);
+
+            //
+            // Search
+            //
+
+            SearchTwitterDemo(twitterCtx);
 
             Console.ReadKey();
+        }
+
+        private static void SearchTwitterDemo(TwitterContext twitterCtx)
+        {
+            var queryResults =
+                from search in twitterCtx.Search
+                where search.Type == SearchType.Search &&
+                      search.Query == "LINQ to Twitter"
+                select search;
+
+            // search item holds a SearchResult
+            //var searchItem = queryResults.FirstOrDefault();
+
+            foreach (var searchItem in queryResults)
+            {
+                // the SearchResults property holds
+                // information from an atom feed
+                var searchResults = searchItem.SearchResults;
+
+                // here, you can see that properties are named
+                // from the perspective of atom feed elements
+                // i.e. the query string is called Title
+                Console.WriteLine("\nQuery:\n" + searchResults.Title);
+
+                foreach (var entry in searchResults.Entries)
+                {
+                    Console.WriteLine(
+                        "ID: {0}, Content: {1}\n",
+                        entry.ID, entry.Content);
+                } 
+            }
         }
 
         private static void ShowFollowersDemo(TwitterContext twitterCtx)
