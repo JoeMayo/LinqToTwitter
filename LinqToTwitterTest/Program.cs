@@ -92,8 +92,29 @@ namespace LinqToTwitterDemo
             //CreateBlock(twitterCtx);
             //DestroyBlock(twitterCtx);
 
+            //
+            // Help
+            //
+
+            PerformHelpTest(twitterCtx);
+
             Console.ReadKey();
         }
+
+        #region Help Demos
+
+        /// <summary>
+        /// shows how to perform a help test
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void PerformHelpTest(TwitterContext twitterCtx)
+        {
+            var helpResult = twitterCtx.HelpTest();
+
+            Console.WriteLine("Test Result: " + helpResult);
+        }
+
+        #endregion
 
         #region Block Demos
 
@@ -103,9 +124,7 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx"></param>
         private static void DestroyBlock(TwitterContext twitterCtx)
         {
-            var userList = twitterCtx.DestroyBlock("JoeMayo");
-
-            var user = userList.FirstOrDefault();
+            var user = twitterCtx.DestroyBlock("JoeMayo");
 
             if (user == null) return;
 
@@ -118,9 +137,7 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void CreateBlock(TwitterContext twitterCtx)
         {
-            var userList = twitterCtx.CreateBlock("JoeMayo");
-
-            var user = userList.FirstOrDefault();
+            var user = twitterCtx.CreateBlock("JoeMayo");
 
             if (user == null) return;
 
@@ -137,9 +154,7 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void EnableNotificationsDemo(TwitterContext twitterCtx)
         {
-            var userList = twitterCtx.EnableNotifications("15411837", null, null);
-
-            var user = userList.FirstOrDefault();
+            var user = twitterCtx.EnableNotifications("15411837", null, null);
 
             if (user == null) return;
 
@@ -152,9 +167,7 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void DisableNotificationsDemo(TwitterContext twitterCtx)
         {
-            var userList = twitterCtx.DisableNotifications("15411837", null, null);
-
-            var user = userList.FirstOrDefault();
+            var user = twitterCtx.DisableNotifications("15411837", null, null);
 
             if (user == null) return;
 
@@ -167,9 +180,7 @@ namespace LinqToTwitterDemo
 
         private static void DestroyFavoriteDemo(TwitterContext twitterCtx)
         {
-            var statusList = twitterCtx.DestroyFavorite("1552797863");
-
-            var status = statusList.First();
+            var status = twitterCtx.DestroyFavorite("1552797863");
 
             Console.WriteLine("User: {0}, Tweet: {1}", status.User.Name, status.Text);
         }
@@ -180,9 +191,7 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx"></param>
         private static void CreateFavoriteDemo(TwitterContext twitterCtx)
         {
-            var statusList = twitterCtx.CreateFavorite("1552797863");
-
-            var status = statusList.First();
+            var status = twitterCtx.CreateFavorite("1552797863");
 
             Console.WriteLine("User: {0}, Tweet: {1}", status.User.Name, status.Text);
         }
@@ -277,9 +286,7 @@ namespace LinqToTwitterDemo
 
         private static void CreateFriendshipNoDeviceUpdatesDemo(TwitterContext twitterCtx)
         {
-            var results = twitterCtx.CreateFriendship("LinqToTweeter", false);
-
-            var user = results.First();
+            var user = twitterCtx.CreateFriendship("LinqToTweeter", false);
 
             Console.WriteLine(
                 "User Name: {0}, Status: {1}",
@@ -289,9 +296,7 @@ namespace LinqToTwitterDemo
 
         private static void DestroyFriendshipDemo(TwitterContext twitterCtx)
         {
-            var results = twitterCtx.DestroyFriendship("LinqToTweeter");
-
-            var user = results.First();
+            var user = twitterCtx.DestroyFriendship("LinqToTweeter");
 
             Console.WriteLine(
                 "User Name: {0}, Status: {1}",
@@ -301,9 +306,7 @@ namespace LinqToTwitterDemo
 
         private static void CreateFriendshipFollowDemo(TwitterContext twitterCtx)
         {
-            var results = twitterCtx.CreateFriendship("LinqToTweeter", true);
-
-            var user = results.First();
+            var user = twitterCtx.CreateFriendship("LinqToTweeter", true);
 
             Console.WriteLine(
                 "User Name: {0}, Status: {1}",
@@ -339,16 +342,14 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void DestroyDirectMessageDemo(TwitterContext twitterCtx)
         {
-            var results = twitterCtx.DestroyDirectMessage("96404341");
+            var message = twitterCtx.DestroyDirectMessage("96404341");
 
-            var result = results.FirstOrDefault();
-
-            if (result != null)
+            if (message != null)
             {
                 Console.WriteLine(
                     "Recipient: {0}, Message: {1}",
-                    result.RecipientScreenName,
-                    result.Text);
+                    message.RecipientScreenName,
+                    message.Text);
             }
         }
 
@@ -358,16 +359,14 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void NewDirectMessageDemo(TwitterContext twitterCtx)
         {
-            var results = twitterCtx.NewDirectMessage("16761255", "Direct Message Test - 4/16/09");
+            var message = twitterCtx.NewDirectMessage("16761255", "Direct Message Test - 4/16/09");
 
-            var result = results.FirstOrDefault();
-
-            if (result != null)
+            if (message != null)
             {
                 Console.WriteLine(
                     "Recipient: {0}, Message: {1}",
-                    result.RecipientScreenName,
-                    result.Text);
+                    message.RecipientScreenName,
+                    message.Text);
             }
         }
 
@@ -450,17 +449,14 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void DestroyStatusDemo(TwitterContext twitterCtx)
         {
-            var statusResult = twitterCtx.DestroyStatus("1539399086");
+            var status = twitterCtx.DestroyStatus("1539399086");
 
-            foreach (var tweet in statusResult)
-            {
-                Console.WriteLine(
-                    "(" + tweet.ID + ")" +
-                    "[" + tweet.User.ID + "]" +
-                    tweet.User.Name + ", " +
-                    tweet.Text + ", " +
-                    tweet.CreatedAt);
-            }
+            Console.WriteLine(
+                "(" + status.ID + ")" +
+                "[" + status.User.ID + "]" +
+                status.User.Name + ", " +
+                status.Text + ", " +
+                status.CreatedAt);
         }
 
         /// <summary>
@@ -469,6 +465,8 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void UpdateStatusDemo(TwitterContext twitterCtx)
         {
+            // TODO: separate into multiple methods - Joe
+
             //var statusResult = twitterCtx.UpdateStatus("@TwitterUser Testing LINQ to Twitter with reply", "961760788");
 
             //foreach (var tweet in statusResult)
@@ -481,17 +479,14 @@ namespace LinqToTwitterDemo
             //        tweet.CreatedAt);
             //}
 
-            var statusResult = twitterCtx.UpdateStatus("Testing LINQ to Twitter with only status - 4/16/09");
+            var tweet = twitterCtx.UpdateStatus("Testing LINQ to Twitter with only status - 4/16/09");
 
-            foreach (var tweet in statusResult)
-            {
-                Console.WriteLine(
-                    "(" + tweet.ID + ")" +
-                    "[" + tweet.User.ID + "]" +
-                    tweet.User.Name + ", " +
-                    tweet.Text + ", " +
-                    tweet.CreatedAt);
-            }
+            Console.WriteLine(
+                "(" + tweet.ID + ")" +
+                "[" + tweet.User.ID + "]" +
+                tweet.User.Name + ", " +
+                tweet.Text + ", " +
+                tweet.CreatedAt);
         }
 
         /// <summary>

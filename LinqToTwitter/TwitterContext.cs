@@ -331,7 +331,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="status">(optional @UserName) and (required) status text</param>
         /// <returns>IQueryable of sent status</returns>
-        public IQueryable<Status> UpdateStatus(string status)
+        public Status UpdateStatus(string status)
         {
             return UpdateStatus(status, null);
         }
@@ -342,7 +342,7 @@ namespace LinqToTwitter
         /// <param name="status">(optional @UserName) and (required) status text</param>
         /// <param name="inReplyToStatusID">id of status replying to - optional - pass null if not used</param>
         /// <returns>IQueryable of sent status</returns>
-        public IQueryable<Status> UpdateStatus(string status, string inReplyToStatusID)
+        public Status UpdateStatus(string status, string inReplyToStatusID)
         {
             if (string.IsNullOrEmpty(status))
             {
@@ -363,7 +363,7 @@ namespace LinqToTwitter
                     },
                     new StatusRequestProcessor());
 
-            return results as IQueryable<Status>;
+            return (results as IQueryable<Status>).FirstOrDefault();
         }
 
         // TODO: Remove Destroy at v1.0 - Joe
@@ -373,7 +373,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="id">id of tweet</param>
         /// <returns>deleted tweet</returns>
-        [Obsolete("Destroy is on the fast track to deprecation.  Please use DestroyStatus instead, which is more descriptive and consistent with other DestroyXxx methods. Thanks for using LINQ to Twitter - Joe :)")]
+        [Obsolete("Destroy is on the fast track to deprecation.  Please use DestroyStatus instead, which is more descriptive and consistent with other DestroyXxx methods. Thanks for using LINQ to Twitter - Joe :)", true)]
         public IQueryable<Status> Destroy(string id)
         {
             if (string.IsNullOrEmpty(id))
@@ -397,7 +397,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="id">id of status tweet</param>
         /// <returns>deleted status tweet</returns>
-        public IQueryable<Status> DestroyStatus(string id)
+        public Status DestroyStatus(string id)
         {
             if (string.IsNullOrEmpty(id))
             {
@@ -412,7 +412,7 @@ namespace LinqToTwitter
                     new Dictionary<string, string>(),
                     new StatusRequestProcessor());
 
-            return results as IQueryable<Status>;
+            return (results as IQueryable<Status>).FirstOrDefault();
         }
 
         /// <summary>
@@ -421,7 +421,7 @@ namespace LinqToTwitter
         /// <param name="userID">id of user to send to</param>
         /// <param name="id">text to send</param>
         /// <returns>direct message element</returns>
-        public IQueryable<DirectMessage> NewDirectMessage(string userID, string text)
+        public DirectMessage NewDirectMessage(string userID, string text)
         {
             var newUrl = BaseUrl + "direct_messages/new.xml";
 
@@ -435,7 +435,7 @@ namespace LinqToTwitter
                     },
                     new DirectMessageRequestProcessor());
 
-            return results as IQueryable<DirectMessage>;
+            return (results as IQueryable<DirectMessage>).FirstOrDefault();
         }
 
         /// <summary>
@@ -443,7 +443,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="id">id of direct message</param>
         /// <returns>direct message element</returns>
-        public IQueryable<DirectMessage> DestroyDirectMessage(string id)
+        public DirectMessage DestroyDirectMessage(string id)
         {
             if (string.IsNullOrEmpty(id))
             {
@@ -458,7 +458,7 @@ namespace LinqToTwitter
                     new Dictionary<string, string>(),
                     new DirectMessageRequestProcessor());
 
-            return results as IQueryable<DirectMessage>;
+            return (results as IQueryable<DirectMessage>).FirstOrDefault();
         }
 
         /// <summary>
@@ -466,7 +466,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="id">id of user to follow</param>
         /// <returns>followed friend user info</returns>
-        public IQueryable<User> CreateFriendship(string id, bool follow)
+        public User CreateFriendship(string id, bool follow)
         {
             if (string.IsNullOrEmpty(id))
             {
@@ -491,7 +491,7 @@ namespace LinqToTwitter
                     createParams,
                     new UserRequestProcessor());
 
-            return results as IQueryable<User>;
+            return (results as IQueryable<User>).FirstOrDefault();
         }
 
         /// <summary>
@@ -499,7 +499,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="id">id of user to follow</param>
         /// <returns>followed friend user info</returns>
-        public IQueryable<User> DestroyFriendship(string id)
+        public User DestroyFriendship(string id)
         {
             if (string.IsNullOrEmpty(id))
             {
@@ -514,7 +514,7 @@ namespace LinqToTwitter
                     new Dictionary<string, string>(),
                     new UserRequestProcessor());
 
-            return results as IQueryable<User>;
+            return (results as IQueryable<User>).FirstOrDefault();
         }
 
         /// <summary>
@@ -522,7 +522,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="id">id of status to add to favorites</param>
         /// <returns>status of favorite</returns>
-        public IQueryable<Status> CreateFavorite(string id)
+        public Status CreateFavorite(string id)
         {
             if (string.IsNullOrEmpty(id))
             {
@@ -537,7 +537,7 @@ namespace LinqToTwitter
                     new Dictionary<string, string>(),
                     new StatusRequestProcessor());
 
-            return results as IQueryable<Status>;
+            return (results as IQueryable<Status>).FirstOrDefault();
         }
 
         /// <summary>
@@ -545,7 +545,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="id">id of status to add to favorites</param>
         /// <returns>status of favorite</returns>
-        public IQueryable<Status> DestroyFavorite(string id)
+        public Status DestroyFavorite(string id)
         {
             if (string.IsNullOrEmpty(id))
             {
@@ -560,7 +560,7 @@ namespace LinqToTwitter
                     new Dictionary<string, string>(),
                     new StatusRequestProcessor());
 
-            return results as IQueryable<Status>;
+            return (results as IQueryable<Status>).FirstOrDefault();
         }
 
         /// <summary>
@@ -573,7 +573,7 @@ namespace LinqToTwitter
         /// <param name="userID">ID of user - disambiguates when ID is screen name.</param>
         /// <param name="screenName">Screen Name of user - disambiguates when ID is screen name.</param>
         /// <returns>Specified user info</returns>
-        public IQueryable<User> DisableNotifications(string id, string userID, string screenName)
+        public User DisableNotifications(string id, string userID, string screenName)
         {
             if (string.IsNullOrEmpty(id) &&
                 string.IsNullOrEmpty(userID) &&
@@ -594,7 +594,7 @@ namespace LinqToTwitter
                     },
                     new UserRequestProcessor());
 
-            return results as IQueryable<User>;
+            return (results as IQueryable<User>).FirstOrDefault();
         }
 
         /// <summary>
@@ -607,7 +607,7 @@ namespace LinqToTwitter
         /// <param name="userID">ID of user - disambiguates when ID is screen name.</param>
         /// <param name="screenName">Screen Name of user - disambiguates when ID is screen name.</param>
         /// <returns>Specified user info</returns>
-        public IQueryable<User> EnableNotifications(string id, string userID, string screenName)
+        public User EnableNotifications(string id, string userID, string screenName)
         {
             if (string.IsNullOrEmpty(id) &&
                 string.IsNullOrEmpty(userID) &&
@@ -628,7 +628,7 @@ namespace LinqToTwitter
                     },
                     new UserRequestProcessor());
 
-            return results as IQueryable<User>;
+            return (results as IQueryable<User>).FirstOrDefault();
         }
 
         /// <summary>
@@ -636,7 +636,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="id">id of user to block</param>
         /// <returns>User that was unblocked</returns>
-        public IQueryable<User> CreateBlock(string id)
+        public User CreateBlock(string id)
         {
             if (string.IsNullOrEmpty(id))
             {
@@ -651,7 +651,7 @@ namespace LinqToTwitter
                     new Dictionary<string, string>(),
                     new UserRequestProcessor());
 
-            return results as IQueryable<User>;
+            return (results as IQueryable<User>).FirstOrDefault();
         }
 
         /// <summary>
@@ -659,7 +659,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="id">id of user to unblock</param>
         /// <returns>User that was unblocked</returns>
-        public IQueryable<User> DestroyBlock(string id)
+        public User DestroyBlock(string id)
         {
             if (string.IsNullOrEmpty(id))
             {
@@ -674,7 +674,24 @@ namespace LinqToTwitter
                     new Dictionary<string, string>(),
                     new UserRequestProcessor());
 
-            return results as IQueryable<User>;
+            return (results as IQueryable<User>).FirstOrDefault();
+        }
+
+        /// <summary>
+        /// sends a test message to twitter to check connectivity
+        /// </summary>
+        /// <returns>true</returns>
+        public bool HelpTest()
+        {
+            var helpUrl = BaseUrl + "help/test.xml";
+
+            var results =
+                ExecuteTwitter(
+                    helpUrl,
+                    new Dictionary<string, string>(),
+                    new HelpRequestProcessor());
+
+            return (results as IQueryable<bool>).FirstOrDefault();
         }
 
         #endregion

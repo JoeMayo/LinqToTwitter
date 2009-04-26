@@ -67,6 +67,7 @@
     <Compile Include="Friendship.cs" />
     <Compile Include="FriendshipRequestProcessor.cs" />
     <Compile Include="FriendshipType.cs" />
+    <Compile Include="HelpRequestProcessor.cs" />
     <Compile Include="InvalidQueryException.cs" />
     <Compile Include="IRequestProcessor.cs" />
     <Compile Include="ParameterFinder.cs" />
