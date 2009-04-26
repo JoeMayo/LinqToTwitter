@@ -68,7 +68,7 @@ namespace LinqToTwitterDemo
             // Search
             //
 
-            SearchTwitterDemo(twitterCtx);
+            //SearchTwitterDemo(twitterCtx);
 
             //
             // Favorites
@@ -78,7 +78,37 @@ namespace LinqToTwitterDemo
             //CreateFavoriteDemo(twitterCtx);
             //DestroyFavoriteDemo(twitterCtx);
 
+            //
+            // Notifications
+            //
+
+            //EnableNotificationsDemo(twitterCtx);
+            //DisableNotificationsDemo(twitterCtx);
+
             Console.ReadKey();
+        }
+
+
+        private static void EnableNotificationsDemo(TwitterContext twitterCtx)
+        {
+            var userList = twitterCtx.EnableNotifications("15411837", null, null);
+
+            var user = userList.FirstOrDefault();
+
+            if (user == null) return;
+
+            Console.WriteLine("User Name: " + user.Name);
+        }
+
+        private static void DisableNotificationsDemo(TwitterContext twitterCtx)
+        {
+            var userList = twitterCtx.DisableNotifications("15411837", null, null);
+
+            var user = userList.FirstOrDefault();
+
+            if (user == null) return;
+
+            Console.WriteLine("User Name: " + user.Name);
         }
 
         #region Favorites Demos

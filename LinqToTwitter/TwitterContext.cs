@@ -376,6 +376,11 @@ namespace LinqToTwitter
         [Obsolete("Destroy is on the fast track to deprecation.  Please use DestroyStatus instead, which is more descriptive and consistent with other DestroyXxx methods. Thanks for using LINQ to Twitter - Joe :)")]
         public IQueryable<Status> Destroy(string id)
         {
+            if (string.IsNullOrEmpty(id))
+            {
+                throw new ArgumentException("id is a required parameter.", "id");
+            }
+
             var destroyUrl = BaseUrl + "statuses/destroy/" + id + ".xml";
 
             var results =
@@ -394,6 +399,11 @@ namespace LinqToTwitter
         /// <returns>deleted status tweet</returns>
         public IQueryable<Status> DestroyStatus(string id)
         {
+            if (string.IsNullOrEmpty(id))
+            {
+                throw new ArgumentException("id is a required parameter.", "id");
+            }
+
             var destroyUrl = BaseUrl + "statuses/destroy/" + id + ".xml";
 
             var results =
@@ -435,6 +445,11 @@ namespace LinqToTwitter
         /// <returns>direct message element</returns>
         public IQueryable<DirectMessage> DestroyDirectMessage(string id)
         {
+            if (string.IsNullOrEmpty(id))
+            {
+                throw new ArgumentException("id is a required parameter.", "id");
+            }
+
             var destroyUrl = BaseUrl + "direct_messages/destroy/" + id + ".xml";
 
             var results =
@@ -453,6 +468,11 @@ namespace LinqToTwitter
         /// <returns>followed friend user info</returns>
         public IQueryable<User> CreateFriendship(string id, bool follow)
         {
+            if (string.IsNullOrEmpty(id))
+            {
+                throw new ArgumentException("id is a required parameter.", "id");
+            }
+
             var destroyUrl = BaseUrl + "friendships/create/" + id + ".xml";
 
             Dictionary<string, string> createParams = new Dictionary<string, string>();
@@ -481,6 +501,11 @@ namespace LinqToTwitter
         /// <returns>followed friend user info</returns>
         public IQueryable<User> DestroyFriendship(string id)
         {
+            if (string.IsNullOrEmpty(id))
+            {
+                throw new ArgumentException("id is a required parameter.", "id");
+            }
+
             var destroyUrl = BaseUrl + "friendships/destroy/" + id + ".xml";
 
             var results =
@@ -499,6 +524,11 @@ namespace LinqToTwitter
         /// <returns>status of favorite</returns>
         public IQueryable<Status> CreateFavorite(string id)
         {
+            if (string.IsNullOrEmpty(id))
+            {
+                throw new ArgumentException("id is a required parameter.", "id");
+            }
+
             var favoritesUrl = BaseUrl + "favorites/create/" + id + ".xml";
 
             var results =
@@ -517,6 +547,11 @@ namespace LinqToTwitter
         /// <returns>status of favorite</returns>
         public IQueryable<Status> DestroyFavorite(string id)
         {
+            if (string.IsNullOrEmpty(id))
+            {
+                throw new ArgumentException("id is a required parameter.", "id");
+            }
+
             var favoritesUrl = BaseUrl + "favorites/destroy/" + id + ".xml";
 
             var results =
@@ -526,6 +561,74 @@ namespace LinqToTwitter
                     new StatusRequestProcessor());
 
             return results as IQueryable<Status>;
+        }
+
+        /// <summary>
+        /// Disables notifications from specified user
+        /// </summary>
+        /// <remarks>
+        /// A least one parameter is required.
+        /// </remarks>
+        /// <param name="id">ID of user to disable notifications on.</param>
+        /// <param name="userID">ID of user - disambiguates when ID is screen name.</param>
+        /// <param name="screenName">Screen Name of user - disambiguates when ID is screen name.</param>
+        /// <returns>Specified user info</returns>
+        public IQueryable<User> DisableNotifications(string id, string userID, string screenName)
+        {
+            if (string.IsNullOrEmpty(id) &&
+                string.IsNullOrEmpty(userID) &&
+                string.IsNullOrEmpty(screenName))
+            {
+                throw new ArgumentException("Either id, userID, or screenName is a required parameter.");
+            }
+
+            var notificationsUrl = BaseUrl + "notifications/leave/" + id + ".xml";
+
+            var results =
+                ExecuteTwitter(
+                    notificationsUrl,
+                    new Dictionary<string, string>
+                    {
+                        {"user_id", userID},
+                        {"screen_name", screenName}
+                    },
+                    new UserRequestProcessor());
+
+            return results as IQueryable<User>;
+        }
+
+        /// <summary>
+        /// Enables notifications from specified user
+        /// </summary>
+        /// <remarks>
+        /// A least one parameter is required.
+        /// </remarks>
+        /// <param name="id">ID of user to enable notifications on.</param>
+        /// <param name="userID">ID of user - disambiguates when ID is screen name.</param>
+        /// <param name="screenName">Screen Name of user - disambiguates when ID is screen name.</param>
+        /// <returns>Specified user info</returns>
+        public IQueryable<User> EnableNotifications(string id, string userID, string screenName)
+        {
+            if (string.IsNullOrEmpty(id) &&
+                string.IsNullOrEmpty(userID) &&
+                string.IsNullOrEmpty(screenName))
+            {
+                throw new ArgumentException("Either id, userID, or screenName is a required parameter.");
+            }
+
+            var notificationsUrl = BaseUrl + "notifications/follow/" + id + ".xml";
+
+            var results =
+                ExecuteTwitter(
+                    notificationsUrl,
+                    new Dictionary<string, string>
+                    {
+                        {"user_id", userID},
+                        {"screen_name", screenName}
+                    },
+                    new UserRequestProcessor());
+
+            return results as IQueryable<User>;
         }
 
         #endregion
