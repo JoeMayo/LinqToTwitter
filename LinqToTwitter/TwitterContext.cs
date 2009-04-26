@@ -564,7 +564,7 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// Disables notifications from specified user
+        /// Disables notifications from specified user. (Notification Leave)
         /// </summary>
         /// <remarks>
         /// A least one parameter is required.
@@ -598,7 +598,7 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// Enables notifications from specified user
+        /// Enables notifications from specified user (Notification Follow)
         /// </summary>
         /// <remarks>
         /// A least one parameter is required.
@@ -626,6 +626,52 @@ namespace LinqToTwitter
                         {"user_id", userID},
                         {"screen_name", screenName}
                     },
+                    new UserRequestProcessor());
+
+            return results as IQueryable<User>;
+        }
+
+        /// <summary>
+        /// Blocks a user
+        /// </summary>
+        /// <param name="id">id of user to block</param>
+        /// <returns>User that was unblocked</returns>
+        public IQueryable<User> CreateBlock(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                throw new ArgumentException("id is a required parameter.", "id");
+            }
+
+            var blocksUrl = BaseUrl + "blocks/create/" + id + ".xml";
+
+            var results =
+                ExecuteTwitter(
+                    blocksUrl,
+                    new Dictionary<string, string>(),
+                    new UserRequestProcessor());
+
+            return results as IQueryable<User>;
+        }
+
+        /// <summary>
+        /// Unblocks a user
+        /// </summary>
+        /// <param name="id">id of user to unblock</param>
+        /// <returns>User that was unblocked</returns>
+        public IQueryable<User> DestroyBlock(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                throw new ArgumentException("id is a required parameter.", "id");
+            }
+
+            var blocksUrl = BaseUrl + "blocks/destroy/" + id + ".xml";
+
+            var results =
+                ExecuteTwitter(
+                    blocksUrl,
+                    new Dictionary<string, string>(),
                     new UserRequestProcessor());
 
             return results as IQueryable<User>;

@@ -85,10 +85,56 @@ namespace LinqToTwitterDemo
             //EnableNotificationsDemo(twitterCtx);
             //DisableNotificationsDemo(twitterCtx);
 
+            //
+            // Blocks
+            //
+
+            //CreateBlock(twitterCtx);
+            //DestroyBlock(twitterCtx);
+
             Console.ReadKey();
         }
 
+        #region Block Demos
 
+        /// <summary>
+        /// shows how to unblock a user
+        /// </summary>
+        /// <param name="twitterCtx"></param>
+        private static void DestroyBlock(TwitterContext twitterCtx)
+        {
+            var userList = twitterCtx.DestroyBlock("JoeMayo");
+
+            var user = userList.FirstOrDefault();
+
+            if (user == null) return;
+
+            Console.WriteLine("User Name: " + user.Name);
+        }
+
+        /// <summary>
+        /// Shows how to block a user
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void CreateBlock(TwitterContext twitterCtx)
+        {
+            var userList = twitterCtx.CreateBlock("JoeMayo");
+
+            var user = userList.FirstOrDefault();
+
+            if (user == null) return;
+
+            Console.WriteLine("User Name: " + user.Name);
+        }
+
+        #endregion
+
+        #region Notifications Demos
+
+        /// <summary>
+        /// Shows how to do a Notifications Follow
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
         private static void EnableNotificationsDemo(TwitterContext twitterCtx)
         {
             var userList = twitterCtx.EnableNotifications("15411837", null, null);
@@ -100,6 +146,10 @@ namespace LinqToTwitterDemo
             Console.WriteLine("User Name: " + user.Name);
         }
 
+        /// <summary>
+        /// Shows how to do a Notifications Leave
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
         private static void DisableNotificationsDemo(TwitterContext twitterCtx)
         {
             var userList = twitterCtx.DisableNotifications("15411837", null, null);
@@ -110,6 +160,8 @@ namespace LinqToTwitterDemo
 
             Console.WriteLine("User Name: " + user.Name);
         }
+
+        #endregion
 
         #region Favorites Demos
 
