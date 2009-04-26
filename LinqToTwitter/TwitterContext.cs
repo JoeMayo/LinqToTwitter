@@ -87,28 +87,6 @@ namespace LinqToTwitter
         #region TwitterQueryable objects
 
         /// <summary>
-        /// enables access to Twitter Status messages, such as Friends and Public
-        /// </summary>
-        public TwitterQueryable<Status> Status
-        {
-            get
-            {
-                return new TwitterQueryable<Status>(this);
-            }
-        }
-
-        /// <summary>
-        /// enables access to Twitter User messages, such as Friends and Followers
-        /// </summary>
-        public TwitterQueryable<User> User
-        {
-            get
-            {
-                return new TwitterQueryable<User>(this);
-            }
-        }
-
-        /// <summary>
         /// enables access to Twitter User messages, such as Friends and Followers
         /// </summary>
         public TwitterQueryable<DirectMessage> DirectMessage
@@ -116,6 +94,17 @@ namespace LinqToTwitter
             get
             {
                 return new TwitterQueryable<DirectMessage>(this);
+            }
+        }
+
+        /// <summary>
+        /// enables access to Twitter Favorites
+        /// </summary>
+        public TwitterQueryable<Favorites> Favorites
+        {
+            get
+            {
+                return new TwitterQueryable<Favorites>(this);
             }
         }
 
@@ -144,11 +133,33 @@ namespace LinqToTwitter
         /// <summary>
         /// enables access to Twitter SocialGraph to discover Friends and Followers
         /// </summary>
-        public TwitterQueryable<TwitterSearch> Search
+        public TwitterQueryable<Search> Search
         {
             get
             {
-                return new TwitterQueryable<TwitterSearch>(this);
+                return new TwitterQueryable<Search>(this);
+            }
+        }
+
+        /// <summary>
+        /// enables access to Twitter Status messages, such as Friends and Public
+        /// </summary>
+        public TwitterQueryable<Status> Status
+        {
+            get
+            {
+                return new TwitterQueryable<Status>(this);
+            }
+        }
+
+        /// <summary>
+        /// enables access to Twitter User messages, such as Friends and Followers
+        /// </summary>
+        public TwitterQueryable<User> User
+        {
+            get
+            {
+                return new TwitterQueryable<User>(this);
             }
         }
 
@@ -205,14 +216,11 @@ namespace LinqToTwitter
 
             switch (requestType)
             {
-                case "Status":
-                    req = new StatusRequestProcessor() { BaseUrl = BaseUrl };
-                    break;
-                case "User":
-                    req = new UserRequestProcessor() { BaseUrl = BaseUrl };
-                    break;
                 case "DirectMessage":
                     req = new DirectMessageRequestProcessor() { BaseUrl = BaseUrl };
+                    break;
+                case "Favorites":
+                    req = new FavoritesRequestProcessor() { BaseUrl = BaseUrl };
                     break;
                 case "Friendship":
                     req = new FriendshipRequestProcessor() { BaseUrl = BaseUrl };
@@ -220,8 +228,14 @@ namespace LinqToTwitter
                 case "SocialGraph":
                     req = new SocialGraphRequestProcessor() { BaseUrl = BaseUrl };
                     break;
-                case "TwitterSearch":
+                case "Search":
                     req = new SearchRequestProcessor() { BaseUrl = SearchUrl };
+                    break;
+                case "Status":
+                    req = new StatusRequestProcessor() { BaseUrl = BaseUrl };
+                    break;
+                case "User":
+                    req = new UserRequestProcessor() { BaseUrl = BaseUrl };
                     break;
                 default:
                     req = new StatusRequestProcessor() { BaseUrl = BaseUrl };
@@ -476,6 +490,42 @@ namespace LinqToTwitter
                     new UserRequestProcessor());
 
             return results as IQueryable<User>;
+        }
+
+        /// <summary>
+        /// Adds a favorite to the logged-in user's profile
+        /// </summary>
+        /// <param name="id">id of status to add to favorites</param>
+        /// <returns>status of favorite</returns>
+        public IQueryable<Status> CreateFavorite(string id)
+        {
+            var favoritesUrl = BaseUrl + "favorites/create/" + id + ".xml";
+
+            var results =
+                ExecuteTwitter(
+                    favoritesUrl,
+                    new Dictionary<string, string>(),
+                    new StatusRequestProcessor());
+
+            return results as IQueryable<Status>;
+        }
+
+        /// <summary>
+        /// Deletes a favorite from the logged-in user's profile
+        /// </summary>
+        /// <param name="id">id of status to add to favorites</param>
+        /// <returns>status of favorite</returns>
+        public IQueryable<Status> DestroyFavorite(string id)
+        {
+            var favoritesUrl = BaseUrl + "favorites/destroy/" + id + ".xml";
+
+            var results =
+                ExecuteTwitter(
+                    favoritesUrl,
+                    new Dictionary<string, string>(),
+                    new StatusRequestProcessor());
+
+            return results as IQueryable<Status>;
         }
 
         #endregion

@@ -129,8 +129,8 @@ The blog system I'm us.. &lt;a href=""http://tinyurl.com/cvdbvr""&gt;http://tiny
             SearchRequestProcessor target = new SearchRequestProcessor();
             XElement twitterResponse = XElement.Parse(m_testQueryResponse);
             IQueryable actual = target.ProcessResults(twitterResponse);
-            var result = actual.Cast<TwitterSearch>().First();
-            Assert.AreEqual(2, result.SearchResults.Entries.Count);
+            var result = actual.Cast<Search>().First();
+            Assert.AreEqual(2, result.Entries.Count);
         }
 
         /// <summary>
@@ -142,8 +142,8 @@ The blog system I'm us.. &lt;a href=""http://tinyurl.com/cvdbvr""&gt;http://tiny
             SearchRequestProcessor target = new SearchRequestProcessor();
             XElement twitterResponse = XElement.Parse(m_emptyResponse);
             IQueryable actual = target.ProcessResults(twitterResponse);
-            var result = actual.Cast<TwitterSearch>().First();
-            Assert.AreEqual(0, result.SearchResults.Entries.Count);
+            var result = actual.Cast<Search>().First();
+            Assert.AreEqual(0, result.Entries.Count);
         }
 
         /// <summary>
@@ -153,7 +153,7 @@ The blog system I'm us.. &lt;a href=""http://tinyurl.com/cvdbvr""&gt;http://tiny
         public void GetParametersTest()
         {
             SearchRequestProcessor target = new SearchRequestProcessor(); // TODO: Initialize to an appropriate value
-            Expression<Func<TwitterSearch, bool>> expression =
+            Expression<Func<Search, bool>> expression =
                 search =>
                     search.Type == SearchType.Search &&
                     search.GeoCode == "40.757929,-73.985506,25km" &&
@@ -211,7 +211,7 @@ The blog system I'm us.. &lt;a href=""http://tinyurl.com/cvdbvr""&gt;http://tiny
                     { "ShowUser", "true" },
                     { "SinceID", "1" }
                 };
-            string expected = "http://search.twitter.com/search.xml?geocode=40.757929%2c-73.985506%2c25km&lang=en&page=1&rpp=10&q=LINQ+to+Twitter&show_user=true&since_id=1:LINQ+to+Twitter";
+            string expected = "http://search.twitter.com/search.atom?geocode=40.757929%2c-73.985506%2c25km&lang=en&page=1&rpp=10&q=LINQ+to+Twitter&show_user=true&since_id=1";
             string actual;
             actual = target.BuildURL(parameters);
             Assert.AreEqual(expected, actual);

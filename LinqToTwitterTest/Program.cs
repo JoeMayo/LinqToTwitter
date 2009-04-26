@@ -70,9 +70,66 @@ namespace LinqToTwitterDemo
 
             SearchTwitterDemo(twitterCtx);
 
+            //
+            // Favorites
+            //
+
+            //FavoritesQueryDemo(twitterCtx);
+            //CreateFavoriteDemo(twitterCtx);
+            //DestroyFavoriteDemo(twitterCtx);
+
             Console.ReadKey();
         }
 
+        #region Favorites Demos
+
+        private static void DestroyFavoriteDemo(TwitterContext twitterCtx)
+        {
+            var statusList = twitterCtx.DestroyFavorite("1552797863");
+
+            var status = statusList.First();
+
+            Console.WriteLine("User: {0}, Tweet: {1}", status.User.Name, status.Text);
+        }
+
+        /// <summary>
+        /// Shows how to create a Favorite
+        /// </summary>
+        /// <param name="twitterCtx"></param>
+        private static void CreateFavoriteDemo(TwitterContext twitterCtx)
+        {
+            var statusList = twitterCtx.CreateFavorite("1552797863");
+
+            var status = statusList.First();
+
+            Console.WriteLine("User: {0}, Tweet: {1}", status.User.Name, status.Text);
+        }
+
+        /// <summary>
+        /// shows how to request a favorites list
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void FavoritesQueryDemo(TwitterContext twitterCtx)
+        {
+            var favorites =
+                from fav in twitterCtx.Favorites
+                where fav.Type == FavoritesType.Favorites
+                select fav;
+
+            favorites.ToList().ForEach(
+                fav => Console.WriteLine(
+                    "User Name: {0}, Tweet: {1}",
+                    fav.User.Name, fav.Text));
+        }
+
+        #endregion
+
+        #region Search Demos
+
+        /// <summary>
+        /// shows how to perform a twitter search
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
         private static void SearchTwitterDemo(TwitterContext twitterCtx)
         {
             var queryResults =
@@ -81,21 +138,14 @@ namespace LinqToTwitterDemo
                       search.Query == "LINQ to Twitter"
                 select search;
 
-            // search item holds a SearchResult
-            //var searchItem = queryResults.FirstOrDefault();
-
-            foreach (var searchItem in queryResults)
+            foreach (var search in queryResults)
             {
-                // the SearchResults property holds
-                // information from an atom feed
-                var searchResults = searchItem.SearchResults;
-
                 // here, you can see that properties are named
                 // from the perspective of atom feed elements
                 // i.e. the query string is called Title
-                Console.WriteLine("\nQuery:\n" + searchResults.Title);
+                Console.WriteLine("\nQuery:\n" + search.Title);
 
-                foreach (var entry in searchResults.Entries)
+                foreach (var entry in search.Entries)
                 {
                     Console.WriteLine(
                         "ID: {0}, Content: {1}\n",
@@ -104,6 +154,14 @@ namespace LinqToTwitterDemo
             }
         }
 
+        #endregion
+
+        #region Followers Demos
+
+        /// <summary>
+        /// Shows how to list followers
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
         private static void ShowFollowersDemo(TwitterContext twitterCtx)
         {
             var followers =
@@ -116,6 +174,10 @@ namespace LinqToTwitterDemo
                 follower => Console.WriteLine("Follower ID: " + follower.ID));
         }
 
+        /// <summary>
+        /// Shows how to list Friends
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
         private static void ShowFriendsDemo(TwitterContext twitterCtx)
         {
             var friends =
@@ -126,6 +188,8 @@ namespace LinqToTwitterDemo
             friends.ToList().ForEach(
                 friend => Console.WriteLine("Friend ID: " + friend.ID));
         }
+
+        #endregion
 
         #region Friendship Demos
 

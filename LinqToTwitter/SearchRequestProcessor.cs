@@ -26,7 +26,7 @@ namespace LinqToTwitter
         public Dictionary<string, string> GetParameters(System.Linq.Expressions.LambdaExpression lambdaExpression)
         {
             var paramFinder =
-               new ParameterFinder<TwitterSearch>(
+               new ParameterFinder<Search>(
                    lambdaExpression.Body,
                    new List<string> { 
                        "Type",
@@ -57,7 +57,7 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// appends parameters for Friendship action
+        /// appends parameters for Search request
         /// </summary>
         /// <param name="parameters">list of parameters from expression tree</param>
         /// <param name="url">base url</param>
@@ -167,7 +167,7 @@ The blog system I'm us.. &lt;a href=""http://tinyurl.com/cvdbvr""&gt;http://tiny
             XNamespace twitter = "http://api.twitter.com/";
             XNamespace openSearch = "http://a9.com/-/spec/opensearch/1.1/";
 
-            var searchResult = new AtomFeed
+            var searchResult = new Search
             {
                 ID = twitterResponse.Element(atom + "id").Value,
                 Title = twitterResponse.Element(atom + "title").Value,
@@ -246,12 +246,9 @@ The blog system I'm us.. &lt;a href=""http://tinyurl.com/cvdbvr""&gt;http://tiny
                      }).ToList()
             };
 
-            var searchList = new List<TwitterSearch>
+            var searchList = new List<Search>
             {
-                new TwitterSearch 
-                {
-                    SearchResults = searchResult
-                }
+                searchResult
             };
 
             return searchList.AsQueryable();

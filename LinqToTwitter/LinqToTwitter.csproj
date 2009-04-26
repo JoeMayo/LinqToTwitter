@@ -60,6 +60,9 @@
     <Compile Include="Evaluator.cs" />
     <Compile Include="ExpressionTreeHelper.cs" />
     <Compile Include="ExpressionTreeVisitor.cs" />
+    <Compile Include="Favorites.cs" />
+    <Compile Include="FavoritesRequestProcessor.cs" />
+    <Compile Include="FavoritesType.cs" />
     <Compile Include="FirstWhereClauseFinder.cs" />
     <Compile Include="Friendship.cs" />
     <Compile Include="FriendshipRequestProcessor.cs" />
@@ -67,7 +70,7 @@
     <Compile Include="InvalidQueryException.cs" />
     <Compile Include="IRequestProcessor.cs" />
     <Compile Include="ParameterFinder.cs" />
-    <Compile Include="TwitterSearch.cs" />
+    <Compile Include="Search.cs" />
     <Compile Include="SearchRequestProcessor.cs" />
     <Compile Include="SearchType.cs" />
     <Compile Include="SocialGraph.cs" />

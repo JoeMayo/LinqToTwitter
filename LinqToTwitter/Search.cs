@@ -8,7 +8,7 @@ namespace LinqToTwitter
     /// <summary>
     /// for performing Twitter searches
     /// </summary>
-    public class TwitterSearch
+    public class Search : AtomFeed
     {
         /// <summary>
         /// type of search, included for compatibility
@@ -50,10 +50,5 @@ namespace LinqToTwitter
         /// adds user information for each tweet if true (default = false)
         /// </summary>
         public string ShowUser { get; set; }
-
-        /// <summary>
-        /// search results
-        /// </summary>
-        public AtomFeed SearchResults { get; set; }
     }
 }
