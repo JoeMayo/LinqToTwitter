@@ -50,13 +50,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Account.cs" />
+    <Compile Include="AccountRequestProcessor.cs" />
+    <Compile Include="AccountType.cs" />
     <Compile Include="AtomAuthor.cs" />
     <Compile Include="AtomEntry.cs" />
     <Compile Include="AtomFeed.cs" />
     <Compile Include="BuildUrlHelper.cs" />
+    <Compile Include="DeviceType.cs" />
     <Compile Include="DirectMessage.cs" />
     <Compile Include="DirectMessageType.cs" />
     <Compile Include="DirectMessageRequestProcessor.cs" />
+    <Compile Include="EndSessionStatus.cs" />
     <Compile Include="Evaluator.cs" />
     <Compile Include="ExpressionTreeHelper.cs" />
     <Compile Include="ExpressionTreeVisitor.cs" />
@@ -67,6 +72,7 @@
     <Compile Include="Friendship.cs" />
     <Compile Include="FriendshipRequestProcessor.cs" />
     <Compile Include="FriendshipType.cs" />
+    <Compile Include="RateLimitStatus.cs" />
     <Compile Include="HelpRequestProcessor.cs" />
     <Compile Include="InvalidQueryException.cs" />
     <Compile Include="IRequestProcessor.cs" />

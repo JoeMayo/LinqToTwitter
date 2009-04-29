@@ -152,7 +152,7 @@ The blog system I'm us.. &lt;a href=""http://tinyurl.com/cvdbvr""&gt;http://tiny
         [TestMethod()]
         public void GetParametersTest()
         {
-            SearchRequestProcessor target = new SearchRequestProcessor(); // TODO: Initialize to an appropriate value
+            SearchRequestProcessor target = new SearchRequestProcessor();
             Expression<Func<Search, bool>> expression =
                 search =>
                     search.Type == SearchType.Search &&

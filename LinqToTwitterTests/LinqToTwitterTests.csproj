@@ -55,6 +55,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AccountRequestProcessorTest.cs" />
     <Compile Include="DirectMessageRequestProcessorTest.cs" />
     <Compile Include="FavoritesRequestProcessorTest.cs" />
     <Compile Include="FriendshipRequestProcessorTest.cs" />

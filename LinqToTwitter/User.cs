@@ -74,7 +74,14 @@ namespace LinqToTwitter
                 user.Element("statuses_count") == null ?
                     false :
                     int.TryParse(user.Element("statuses_count").Value, out tempStatusesCount);
-            
+
+            var notifications =
+                user.Element("notifications") == null ?
+                DeviceType.None :
+                    user.Element("notifications").Value == "false" ?
+                    DeviceType.None :
+                    (DeviceType)Enum.Parse(typeof(DeviceType), user.Element("notifications").Value, true);
+               
             var status =
                 user.Element("status");
             
@@ -102,7 +109,7 @@ namespace LinqToTwitter
                 status == null ?
                     false :
                     bool.TryParse(status.Element("favorited").Value, out tempStatusFavorited);
-               
+
             var newUser = new User
             {
                 ID = user.Element("id").Value,
@@ -154,6 +161,7 @@ namespace LinqToTwitter
                         string.Empty :
                         user.Element("profile_background_tile").Value,
                 StatusesCount = tempStatusesCount,
+                Notifications = notifications,
                 Status = 
                     status == null ?
                         null :
@@ -293,6 +301,11 @@ namespace LinqToTwitter
         /// number of status updates user has made
         /// </summary>
         public int StatusesCount { get; set; }
+
+        /// <summary>
+        /// type of device notifications
+        /// </summary>
+        public DeviceType Notifications { get; set; }
 
         /// <summary>
         /// current user status (valid only in user queries)

@@ -44,6 +44,26 @@ namespace LinqToTwitter
         /// </summary>
         public string SearchUrl { get; set; }
 
+        private string m_userAgent = "LINQ To Twitter v1.0";
+
+        /// <summary>
+        /// User agent for queries
+        /// </summary>
+        public string UserAgent
+        {
+            get
+            {
+                return m_userAgent;
+            }
+            set
+            {
+                m_userAgent = 
+                    string.IsNullOrEmpty(value) ? 
+                        m_userAgent : 
+                        value + ";" + m_userAgent;
+            }
+        }
+
         /// <summary>
         /// default constructor, results in no credentials and BaseUrl set to http://twitter.com/
         /// </summary>
@@ -85,6 +105,17 @@ namespace LinqToTwitter
         #endregion
 
         #region TwitterQueryable objects
+
+        /// <summary>
+        /// enables access to Twitter account information, such as Verify Credentials and Rate Limit Status
+        /// </summary>
+        public TwitterQueryable<Account> Account
+        {
+            get
+            {
+                return new TwitterQueryable<Account>(this);
+            }
+        }
 
         /// <summary>
         /// enables access to Twitter User messages, such as Friends and Followers
@@ -216,6 +247,9 @@ namespace LinqToTwitter
 
             switch (requestType)
             {
+                case "Account":
+                    req = new AccountRequestProcessor() { BaseUrl = BaseUrl };
+                    break;
                 case "DirectMessage":
                     req = new DirectMessageRequestProcessor() { BaseUrl = BaseUrl };
                     break;
@@ -256,7 +290,7 @@ namespace LinqToTwitter
         {
             var req = HttpWebRequest.Create(url) as HttpWebRequest;
             req.Credentials = new NetworkCredential(UserName, Password);
-            req.UserAgent = "LINQ to Twitter";
+            req.UserAgent = UserAgent;
 
             var resp = req.GetResponse();
 
@@ -277,6 +311,80 @@ namespace LinqToTwitter
         #endregion
 
         #region Twitter Execution API
+
+        /// <summary>
+        /// performs HTTP POST file upload to Twitter
+        /// </summary>
+        /// <param name="fileName">name of file to upload</param>
+        /// <param name="url">url to upload to</param>
+        /// <returns>IQueryable</returns>
+        private IQueryable PostTwitterFile(string filePath, string url, IRequestProcessor requestProcessor)
+        {
+            var file = Path.GetFileName(filePath);
+
+            string contentBoundaryBase = DateTime.Now.Ticks.ToString("x");// string.Format("----------{0}", DateTime.Now.Ticks.ToString("x"));
+            string beginContentBoundary = string.Format("--{0}\r\n", contentBoundaryBase);
+            var contentDisposition = string.Format("Content-Disposition:form-data); name=\"image\"); filename=\"{0}\"\r\nContent-Type: image/jpeg\r\n\r\n", file);
+            var endContentBoundary = string.Format("\r\n--{0}--\r\n", contentBoundaryBase);
+
+            byte[] fileBytes = null;
+            string fileByteString = null;
+
+            using (var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+            {
+                byte[] buffer = new byte[4096];
+                var memStr = new MemoryStream();
+                memStr.Position = 0;
+                int bytesRead = 0;
+
+                while ((bytesRead = fileStream.Read(buffer, 0, buffer.Length)) != 0)
+                {
+                    memStr.Write(buffer, 0, bytesRead);
+                }
+
+                memStr.Position = 0;
+                fileByteString = Encoding.GetEncoding("iso-8859-1").GetString(memStr.GetBuffer());
+            }
+
+            fileBytes = 
+                Encoding.GetEncoding("iso-8859-1").GetBytes(
+                    beginContentBoundary + 
+                    contentDisposition + 
+                    fileByteString + 
+                    endContentBoundary);
+
+            var req = (HttpWebRequest)WebRequest.Create(url);
+
+            // due to Twitter API change, I needed to remove the Expect header. More details here by Phil Haack - Joe
+            // http://haacked.com/archive/2004/05/15/http-web-request-expect-100-continue.aspx
+            req.ServicePoint.Expect100Continue = false;
+            req.ContentType = "multipart/form-data;boundary=" + contentBoundaryBase;
+            req.PreAuthenticate = true;
+            req.AllowWriteStreamBuffering = true;
+            req.Credentials = new NetworkCredential(UserName, Password);
+            req.Method = "POST";
+            req.UserAgent = UserAgent;
+            req.ContentLength = fileBytes.Length;
+
+            string responseXML = null;
+
+            using (var reqStream = req.GetRequestStream())
+            {
+                reqStream.Write(fileBytes, 0, fileBytes.Length);
+                reqStream.Flush();
+            }
+
+            using (var resp = req.GetResponse())
+            using (var respStream = resp.GetResponseStream())
+            using (var respRdr = new StreamReader(respStream))
+            {
+                responseXML = respRdr.ReadToEnd();
+            }
+
+            var responseXElem = XElement.Parse(responseXML);
+            var results = requestProcessor.ProcessResults(responseXElem);
+            return results;
+        }
 
         /// <summary>
         /// utility method to perform HTTP POST for Twitter requests with side-effects
@@ -300,7 +408,7 @@ namespace LinqToTwitter
             var bytes = Encoding.UTF8.GetBytes(paramsJoined);
             req.ContentType = "application/x-www-form-urlencoded";
             req.ContentLength = bytes.Length;
-            req.UserAgent = "LINQ to Twitter";
+            req.UserAgent = UserAgent;
 
             // due to Twitter API change, I needed to remove the Expect header. More details here by Phil Haack - Joe
             // http://haacked.com/archive/2004/05/15/http-web-request-expect-100-continue.aspx
@@ -692,6 +800,204 @@ namespace LinqToTwitter
                     new HelpRequestProcessor());
 
             return (results as IQueryable<bool>).FirstOrDefault();
+        }
+
+        /// <summary>
+        /// Ends the session for the currently logged in user
+        /// </summary>
+        /// <returns>true</returns>
+        public EndSessionStatus EndAccountSession()
+        {
+            var accountUrl = BaseUrl + "account/end_session.xml";
+
+            var results =
+                ExecuteTwitter(
+                    accountUrl,
+                    new Dictionary<string, string>(),
+                    new AccountRequestProcessor());
+
+            var acct = (results as IQueryable<Account>).FirstOrDefault();
+
+            if (acct != null)
+            {
+                return acct.EndSessionStatus;
+            }
+            else
+            {
+                throw new WebException("Unknown Twitter Response.");
+            }
+        }
+
+        /// <summary>
+        /// Updates notification device for account
+        /// </summary>
+        /// <param name="device">type of device to use</param>
+        /// <returns>User info</returns>
+        public User UpdateAccountDeliveryDevice(DeviceType device)
+        {
+            // TODO: Follow-up on this API; It always returns false and Twitter doesn't seem to be working the same as the API docs - Joe
+            var accountUrl = BaseUrl + "account/update_delivery_device.xml";
+
+            var results =
+                ExecuteTwitter(
+                    accountUrl,
+                    new Dictionary<string, string>
+                    {
+                        { "device", device.ToString().ToLower() }
+                    },
+                    new UserRequestProcessor());
+
+            return (results as IQueryable<User>).FirstOrDefault();
+        }
+
+        /// <summary>
+        /// Update Twitter colors
+        /// </summary>
+        /// <remarks>
+        /// The # character prefix is optional.  At least one color argument must be provided.
+        /// </remarks>
+        /// <param name="background">background color</param>
+        /// <param name="text">text color</param>
+        /// <param name="link">link color</param>
+        /// <param name="sidebarFill">sidebar color</param>
+        /// <param name="sidebarBorder">sidebar border color</param>
+        /// <returns>User info with new colors</returns>
+        public User UpdateAccountColors(string background, string text, string link, string sidebarFill, string sidebarBorder)
+        {
+            var accountUrl = BaseUrl + "account/update_profile_colors.xml";
+
+            if (string.IsNullOrEmpty(background) &&
+                string.IsNullOrEmpty(text) &&
+                string.IsNullOrEmpty(link) &&
+                string.IsNullOrEmpty(sidebarFill) &&
+                string.IsNullOrEmpty(sidebarBorder))
+            {
+                throw new ArgumentException("At least one of the colors (background, text, link, sidebarFill, or sidebarBorder) must be provided as arguments, but none are specified.");
+            }
+
+            var results =
+                ExecuteTwitter(
+                    accountUrl,
+                    new Dictionary<string, string>
+                    {
+                        { "profile_background_color", background.TrimStart('#') },
+                        { "profile_text_color", text.TrimStart('#') },
+                        { "profile_link_color", link.TrimStart('#') },
+                        { "profile_sidebar_fill_color", sidebarFill.TrimStart('#') },
+                        { "profile_sidebar_border_color", sidebarBorder.TrimStart('#') }
+                    },
+                    new UserRequestProcessor());
+
+            return (results as IQueryable<User>).FirstOrDefault();
+        }
+
+        /// <summary>
+        /// sends an image file to Twitter to replace user image
+        /// </summary>
+        /// <remarks>
+        /// You can only run this method with a period of time between executions; 
+        /// otherwise you get WebException errors from Twitter
+        /// </remarks>
+        /// <param name="imageFilePath">full path to file, including file name</param>
+        /// <returns>User with new image info</returns>
+        public User UpdateAccountImage(string imageFilePath)
+        {
+            var accountUrl = BaseUrl + "account/update_profile_image.xml";
+
+            if (string.IsNullOrEmpty(imageFilePath))
+            {
+                throw new ArgumentException("imageFilePath is required.", "imageFilePath");
+            }
+
+            var results = PostTwitterFile(imageFilePath, accountUrl, new UserRequestProcessor());
+
+            return (results as IQueryable<User>).FirstOrDefault();
+        }
+
+        /// <summary>
+        /// sends an image file to Twitter to replace background image
+        /// </summary>
+        /// <remarks>
+        /// You can only run this method with a period of time between executions; 
+        /// otherwise you get WebException errors from Twitter
+        /// </remarks>
+        /// <param name="imageFilePath">full path to file, including file name</param>
+        /// <returns>User with new image info</returns>
+        public User UpdateAccountBackgroundImage(string imageFilePath, bool tile)
+        {
+            var accountUrl = BaseUrl + "account/update_profile_background_image.xml";
+
+            if (string.IsNullOrEmpty(imageFilePath))
+            {
+                throw new ArgumentException("imageFilePath is required.", "imageFilePath");
+            }
+
+            var results = PostTwitterFile(imageFilePath, accountUrl, new UserRequestProcessor());
+
+            return (results as IQueryable<User>).FirstOrDefault();
+        }
+
+        /// <summary>
+        /// Update account profile info
+        /// </summary>
+        /// <param name="name">User Name</param>
+        /// <param name="email">Email Address</param>
+        /// <param name="url">Web Address</param>
+        /// <param name="location">Geographic Location</param>
+        /// <param name="description">Personal Description</param>
+        /// <returns>User with new info</returns>
+        public User UpdateAccountProfile(string name, string email, string url, string location, string description)
+        {
+            var accountUrl = BaseUrl + "account/update_profile.xml";
+
+            if (string.IsNullOrEmpty(name) &&
+                string.IsNullOrEmpty(email) &&
+                string.IsNullOrEmpty(url) &&
+                string.IsNullOrEmpty(location) &&
+                string.IsNullOrEmpty(description))
+            {
+                throw new ArgumentException("At least one of the colors (name, email, url, location, or description) must be provided as arguments, but none are specified.");
+            }
+
+            if (!string.IsNullOrEmpty(name) && name.Length > 20)
+            {
+                throw new ArgumentException("name must be no longer than 20 characters", "name");
+            }
+
+            if (!string.IsNullOrEmpty(email) && email.Length > 40)
+            {
+                throw new ArgumentException("email must be no longer than 40 characters", "email");
+            }
+
+            if (!string.IsNullOrEmpty(url) && url.Length > 100)
+            {
+                throw new ArgumentException("url must be no longer than 100 characters", "url");
+            }
+
+            if (!string.IsNullOrEmpty(location) && location.Length > 30)
+            {
+                throw new ArgumentException("location must be no longer than 30 characters", "location");
+            }
+
+            if (!string.IsNullOrEmpty(description) && description.Length > 160)
+            {
+                throw new ArgumentException("description must be no longer than 160 characters", "description");
+            }
+
+            var results =
+                ExecuteTwitter(
+                    accountUrl,
+                    new Dictionary<string, string>
+                    {
+                        { "name", name },
+                        { "email", email },
+                        { "url", url },
+                        { "location", location },
+                        { "description", description }
+                    },
+                    new UserRequestProcessor());
+
+            return (results as IQueryable<User>).FirstOrDefault();
         }
 
         #endregion

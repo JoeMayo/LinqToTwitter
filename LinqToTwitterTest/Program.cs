@@ -2,6 +2,7 @@
 using System.Linq;
 
 using LinqToTwitter;
+using System.Net;
 
 namespace LinqToTwitterDemo
 {
@@ -96,10 +97,154 @@ namespace LinqToTwitterDemo
             // Help
             //
 
-            PerformHelpTest(twitterCtx);
+            //PerformHelpTest(twitterCtx);
+
+            //
+            // Account
+            //
+
+            //VerifyAccountCredentials(twitterCtx);
+            //ViewRateLimitStatus(twitterCtx);
+            //EndSession(twitterCtx);
+            //UpdateDeliveryDevice(twitterCtx);
+            //UpdateAccountColors(twitterCtx);
+            //UpdateAccountImage(twitterCtx);
+            //UpdateAccountBackgroundImage(twitterCtx);
+            UpdateAccountInfoDemo(twitterCtx);
 
             Console.ReadKey();
         }
+
+        #region Account Demos
+
+        /// <summary>
+        /// Shows how to update account profile info
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void UpdateAccountInfoDemo(TwitterContext twitterCtx)
+        {
+            var user = twitterCtx.UpdateAccountProfile(
+                "LtoT Test", 
+                "WhoDoIWantToAggravateToday@World.com", 
+                "http://linqtotwitter.codeplex.com", 
+                "Anywhere In The World", 
+                "Testing the LINQ to Twitter Account Profile Update.");
+
+            Console.WriteLine(
+                "Name: {0}\nEmail: {1}\nURL: {2}\nLocation: {3}\nDescription: {4}",
+                user.Name, user.Email, user.URL, user.Location, user.Description);
+        }
+
+        /// <summary>
+        /// Shows how to update the background image in an account
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void UpdateAccountBackgroundImage(TwitterContext twitterCtx)
+        {
+            var user = twitterCtx.UpdateAccountBackgroundImage(@"C:\Users\jmayo\Pictures\41NN9GPz15L__SS500_.jpg", false);
+
+            Console.WriteLine("User Image: " + user.ProfileBackgroundImageUrl);
+        }
+
+        /// <summary>
+        /// Shows how to update the image in an account
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void UpdateAccountImage(TwitterContext twitterCtx)
+        {
+            var user = twitterCtx.UpdateAccountImage(@"C:\Users\jmayo\Pictures\JoeTwitter.jpg");
+
+            Console.WriteLine("User Image: " + user.ProfileImageUrl);
+        }
+
+        /// <summary>
+        /// Shows how to update Twitter colors
+        /// </summary>
+        /// <param name="twitterCtx"></param>
+        private static void UpdateAccountColors(TwitterContext twitterCtx)
+        {
+            var user = twitterCtx.UpdateAccountColors("9ae4e8", "#000000", "#0000ff", "#e0ff92", "#87bc44");
+
+            Console.WriteLine("\nAccount Colors:\n");
+
+            Console.WriteLine("Background:     " + user.ProfileBackgroundColor);
+            Console.WriteLine("Text:           " + user.ProfileTextColor);
+            Console.WriteLine("Link:           " + user.ProfileLinkColor);
+            Console.WriteLine("Sidebar Fill:   " + user.ProfileSidebarFillColor);
+            Console.WriteLine("Sidebar Border: " + user.ProfileSidebarBorderColor);
+        }
+
+        /// <summary>
+        /// Shows how to update a device
+        /// </summary>
+        /// <param name="twitterCtx"></param>
+        private static void UpdateDeliveryDevice(TwitterContext twitterCtx)
+        {
+            var user = twitterCtx.UpdateAccountDeliveryDevice(DeviceType.None);
+
+            Console.WriteLine("Device Type: {0}", user.Notifications.ToString());
+        }
+
+        /// <summary>
+        /// Shows how to end the session for the current account
+        /// </summary>
+        /// <param name="twitterCtx"></param>
+        private static void EndSession(TwitterContext twitterCtx)
+        {
+            var endSessionStatus = twitterCtx.EndAccountSession();
+
+            Console.WriteLine(
+                "Request: {0}, Error: {1}", 
+                endSessionStatus.Request, 
+                endSessionStatus.Error);
+        }
+
+        /// <summary>
+        /// Shows how to query an account's rate limit status info
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void ViewRateLimitStatus(TwitterContext twitterCtx)
+        {
+            var accounts =
+                from acct in twitterCtx.Account
+                where acct.Type == AccountType.RateLimitStatus
+                select acct;
+
+            foreach (var account in accounts)
+            {
+                Console.WriteLine("\nRate Limit Status: \n");
+                Console.WriteLine("Remaining Hits: {0}", account.RateLimitStatus.RemainingHits);
+                Console.WriteLine("Hourly Limit: {0}", account.RateLimitStatus.HourlyLimit);
+                Console.WriteLine("Reset Time: {0}", account.RateLimitStatus.ResetTime);
+                Console.WriteLine("Reset Time in Seconds: {0}", account.RateLimitStatus.ResetTimeInSeconds);
+            }
+        }
+
+        /// <summary>
+        /// verifies that account credentials are correct
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void VerifyAccountCredentials(TwitterContext twitterCtx)
+        {
+            var accounts =
+                from acct in twitterCtx.Account
+                where acct.Type == AccountType.VerifyCredentials
+                select acct;
+
+            try
+            {
+                foreach (var account in accounts)
+                {
+                    Console.WriteLine("Credentials for account, {0}, are okay.", account.User.Name);
+                }
+            }
+            catch (WebException wex)
+            {
+                Console.WriteLine("Twitter did not recognize the credentials. Response from Twitter: " + wex.Message);
+            }
+        }
+
+        #endregion
 
         #region Help Demos
 

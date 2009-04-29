@@ -78,7 +78,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void ProcessResultsTest()
         {
-            SocialGraphRequestProcessor target = new SocialGraphRequestProcessor(); // TODO: Initialize to an appropriate value
+            SocialGraphRequestProcessor target = new SocialGraphRequestProcessor();
             XElement twitterResponse = XElement.Parse(m_testQueryResponse);
             IQueryable actual = target.ProcessResults(twitterResponse);
             var graph = actual.Cast<SocialGraph>().ToList();
