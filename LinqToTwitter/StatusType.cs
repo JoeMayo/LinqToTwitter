@@ -60,6 +60,18 @@ namespace LinqToTwitter
         ///     - SinceID, get tweets replies since this ID
         ///     - Page, which page to return
         /// </summary>
-        Replies
+        Replies,
+
+        /// <summary>
+        /// lists the 20 most recent tweets about the logged-in user
+        /// 
+        /// Available Options:
+        /// 
+        ///     - SinceID, get tweets since this ID
+        ///     - MaxID, gets tweets less than this ID
+        ///     - Count, max number of tweets to return
+        ///     - Page, which page to return
+        /// </summary>
+        Mentions
     }
 }

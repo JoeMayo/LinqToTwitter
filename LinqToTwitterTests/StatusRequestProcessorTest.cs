@@ -162,6 +162,28 @@ namespace LinqToTwitterTests
         }
 
         /// <summary>
+        ///A test for BuildURL
+        ///</summary>
+        [TestMethod()]
+        public void BuildURLMentionsTest()
+        {
+            var statProc = new StatusRequestProcessor() { BaseUrl = "http://twitter.com/" };
+            Dictionary<string, string> parameters =
+                new Dictionary<string, string>
+                    {
+                        { "Type", ((int)StatusType.Mentions).ToString() },
+                        { "SinceID", "123" },
+                        { "MaxID", "145" },
+                        { "Count", "50" },
+                        { "Page", "1" }
+                    };
+            string expected = "http://twitter.com/statuses/mentions.xml?since_id=123&max_id=145&count=50&page=1";
+            string actual;
+            actual = statProc.BuildURL(parameters);
+            Assert.AreEqual(expected, actual);
+        }
+
+        /// <summary>
         ///A test for ProcessResults
         ///</summary>
         [TestMethod()]

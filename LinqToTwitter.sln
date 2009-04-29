@@ -1,8 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqToTwitterDemo", "LinqToTwitterTest\LinqToTwitterDemo.csproj", "{CF26D528-E26B-40DB-A821-DEDE868D2638}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqToTwitter", "LinqToTwitter\LinqToTwitter.csproj", "{A214B9F0-6B8C-4E91-BE99-27F55CC860C1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqToTwitterTests", "LinqToTwitterTests\LinqToTwitterTests.csproj", "{2DC196D0-E574-4F11-A235-8987DC8FFB79}"
@@ -15,6 +13,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Resources", "Resources", "{F7E91FC6-DC3E-47D3-AC5C-09C01C4CEF7F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqToTwitterDemo", "LinqToTwitterDemo\LinqToTwitterDemo.csproj", "{CF26D528-E26B-40DB-A821-DEDE868D2638}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
 		SccNumberOfProjects = 4
@@ -24,12 +24,12 @@ Global
 		SccProjectUniqueName1 = LinqToTwitter\\LinqToTwitter.csproj
 		SccProjectName1 = LinqToTwitter
 		SccLocalPath1 = LinqToTwitter
-		SccProjectUniqueName2 = LinqToTwitterTest\\LinqToTwitterDemo.csproj
-		SccProjectName2 = LinqToTwitterTest
-		SccLocalPath2 = LinqToTwitterTest
-		SccProjectUniqueName3 = LinqToTwitterTests\\LinqToTwitterTests.csproj
-		SccProjectName3 = LinqToTwitterTests
-		SccLocalPath3 = LinqToTwitterTests
+		SccProjectUniqueName2 = LinqToTwitterTests\\LinqToTwitterTests.csproj
+		SccProjectName2 = LinqToTwitterTests
+		SccLocalPath2 = LinqToTwitterTests
+		SccProjectUniqueName3 = LinqToTwitterDemo\\LinqToTwitterDemo.csproj
+		SccProjectName3 = LinqToTwitterDemo
+		SccLocalPath3 = LinqToTwitterDemo
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = LinqToTwitter.vsmdi
@@ -39,10 +39,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{CF26D528-E26B-40DB-A821-DEDE868D2638}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CF26D528-E26B-40DB-A821-DEDE868D2638}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CF26D528-E26B-40DB-A821-DEDE868D2638}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CF26D528-E26B-40DB-A821-DEDE868D2638}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A214B9F0-6B8C-4E91-BE99-27F55CC860C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A214B9F0-6B8C-4E91-BE99-27F55CC860C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A214B9F0-6B8C-4E91-BE99-27F55CC860C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -51,6 +47,10 @@ Global
 		{2DC196D0-E574-4F11-A235-8987DC8FFB79}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2DC196D0-E574-4F11-A235-8987DC8FFB79}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2DC196D0-E574-4F11-A235-8987DC8FFB79}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CF26D528-E26B-40DB-A821-DEDE868D2638}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF26D528-E26B-40DB-A821-DEDE868D2638}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF26D528-E26B-40DB-A821-DEDE868D2638}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF26D528-E26B-40DB-A821-DEDE868D2638}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

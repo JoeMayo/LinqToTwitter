@@ -32,6 +32,7 @@ namespace LinqToTwitter
                        "ID",
                        "Since",
                        "SinceID",
+                       "MaxID",
                        "Count",
                        "Page"
                    });
@@ -58,20 +59,23 @@ namespace LinqToTwitter
 
             switch ((StatusType)Enum.ToObject(typeof(StatusType), int.Parse(parameters["Type"])))
             {
-                case StatusType.Public:
-                    url = BuildPublicUrl();
-                    break;
                 case StatusType.Friends:
                     url = BuildFriendUrl(parameters);
                     break;
-                case StatusType.User:
-                    url = BuildUserUrl(parameters);
+                case StatusType.Mentions:
+                    url = BuildMentionsUrl(parameters);
+                    break;
+                case StatusType.Public:
+                    url = BuildPublicUrl();
+                    break;
+                case StatusType.Replies:
+                    url = BuildRepliesUrl(parameters);
                     break;
                 case StatusType.Show:
                     url = BuildShowUrl(parameters);
                     break;
-                case StatusType.Replies:
-                    url = BuildRepliesUrl(parameters);
+                case StatusType.User:
+                    url = BuildUserUrl(parameters);
                     break;
                 default:
                     url = BuildPublicUrl();
@@ -133,6 +137,11 @@ namespace LinqToTwitter
                 urlParams.Add("since_id=" + parameters["SinceID"]);
             }
 
+            if (parameters.ContainsKey("MaxID"))
+            {
+                urlParams.Add("max_id=" + parameters["MaxID"]);
+            }
+
             if (parameters.ContainsKey("Count"))
             {
                 urlParams.Add("count=" + parameters["Count"]);
@@ -178,6 +187,20 @@ namespace LinqToTwitter
             
             url = BuildFriendRepliesAndUrlParameters(parameters, url);
             
+            return url;
+        }
+
+        /// <summary>
+        /// construct a base mentions url
+        /// </summary>
+        /// <param name="url">base status url</param>
+        /// <returns>base url + friend segment</returns>
+        private string BuildMentionsUrl(Dictionary<string, string> parameters)
+        {
+            var url = BaseUrl + "statuses/mentions.xml";
+
+            url = BuildFriendRepliesAndUrlParameters(parameters, url);
+
             return url;
         }
 
