@@ -36,6 +36,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Newtonsoft.Json, Version=3.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Resources\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="NMock2, Version=2.0.0.44, Culture=neutral, PublicKeyToken=37d3be0adc87c2b7, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Resources\NMock2.dll</HintPath>
@@ -63,6 +67,7 @@
     <Compile Include="SearchRequestProcessorTest.cs" />
     <Compile Include="SocialGraphRequestProcessorTest.cs" />
     <Compile Include="StatusRequestProcessorTest.cs" />
+    <Compile Include="TrendRequestProcessorTest.cs" />
     <Compile Include="TwitterContextTest.cs" />
     <Compile Include="UserRequestProcessorTest.cs" />
   </ItemGroup>

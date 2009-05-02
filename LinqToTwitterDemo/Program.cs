@@ -31,7 +31,7 @@ namespace LinqToTwitterDemo
             //DestroyStatusDemo(twitterCtx);
             //UserStatusQueryDemo(twitterCtx);
             //PublicStatusQueryDemo();
-            MentionsStatusQueryDemo(twitterCtx);
+            //MentionsStatusQueryDemo(twitterCtx);
 
             //
             // user tweets
@@ -113,8 +113,93 @@ namespace LinqToTwitterDemo
             //UpdateAccountBackgroundImage(twitterCtx);
             //UpdateAccountInfoDemo(twitterCtx);
 
+            //
+            // Trends
+            //
+
+            //SearchTrendsDemo(twitterCtx);
+            //SearchCurrentTrendsDemo(twitterCtx);
+            //SearchDailyTrendsDemo(twitterCtx);
+            //SearchWeeklyTrendsDemo(twitterCtx);
+
             Console.ReadKey();
         }
+
+        #region Trends Demos
+
+        /// <summary>
+        /// shows how to request weekly trends
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void SearchWeeklyTrendsDemo(TwitterContext twitterCtx)
+        {
+            var trends =
+                from trend in twitterCtx.Trends
+                where trend.Type == TrendType.Weekly &&
+                      trend.ExcludeHashtags == true &&
+                      trend.Date == DateTime.Now.AddDays(-14)
+                select trend;
+
+            trends.ToList().ForEach(
+                trend => Console.WriteLine(
+                    "Name: {0}, Query: {1}, Date: {2}",
+                    trend.Name, trend.Query, trend.AsOf));
+        }
+
+        /// <summary>
+        /// shows how to request daily trends
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void SearchDailyTrendsDemo(TwitterContext twitterCtx)
+        {
+            var trends =
+                from trend in twitterCtx.Trends
+                where trend.Type == TrendType.Daily &&
+                      trend.Date == DateTime.Now.AddDays(-2)
+                select trend;
+
+            trends.ToList().ForEach(
+                trend => Console.WriteLine(
+                    "Name: {0}, Query: {1}",
+                    trend.Name, trend.Query));
+        }
+
+        /// <summary>
+        /// shows how to request current trends
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void SearchCurrentTrendsDemo(TwitterContext twitterCtx)
+        {
+            var trends =
+                from trend in twitterCtx.Trends
+                where trend.Type == TrendType.Current &&
+                      trend.ExcludeHashtags == true
+                select trend;
+
+            trends.ToList().ForEach(
+                trend => Console.WriteLine(
+                    "Name: {0}, Query: {1}",
+                    trend.Name, trend.Query));
+        }
+
+        /// <summary>
+        /// shows how to request trends
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void SearchTrendsDemo(TwitterContext twitterCtx)
+        {
+            var trends =
+                from trend in twitterCtx.Trends
+                where trend.Type == TrendType.Trend
+                select trend;
+
+            trends.ToList().ForEach(
+                trend => Console.WriteLine(
+                    "Name: {0}, Query: {1}, Date: {2}",
+                    trend.Name, trend.Query, trend.AsOf));
+        }
+
+        #endregion
 
         #region Account Demos
 

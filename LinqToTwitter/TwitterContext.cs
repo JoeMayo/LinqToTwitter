@@ -14,6 +14,8 @@ using System.Net;
 using System.Text;
 using System.Xml.Linq;
 using System.Web;
+using System.Xml;
+using System.Runtime.Serialization.Json;
 
 namespace LinqToTwitter
 {
@@ -184,6 +186,17 @@ namespace LinqToTwitter
         }
 
         /// <summary>
+        /// enables access to Twitter Trends, such as Trend, Current, Daily, and Weekly
+        /// </summary>
+        public TwitterQueryable<Trend> Trends
+        {
+            get
+            {
+                return new TwitterQueryable<Trend>(this);
+            }
+        }
+
+        /// <summary>
         /// enables access to Twitter User messages, such as Friends and Followers
         /// </summary>
         public TwitterQueryable<User> User
@@ -268,6 +281,9 @@ namespace LinqToTwitter
                 case "Status":
                     req = new StatusRequestProcessor() { BaseUrl = BaseUrl };
                     break;
+                case "Trend":
+                    req = new TrendRequestProcessor() { BaseUrl = SearchUrl };
+                    break;
                 case "User":
                     req = new UserRequestProcessor() { BaseUrl = BaseUrl };
                     break;
@@ -302,7 +318,24 @@ namespace LinqToTwitter
                 txtRdr = new StringReader(strmRdr.ReadToEnd());
             }
 
-            var statusXml = XElement.Load(txtRdr);
+            string responseStr = txtRdr.ReadToEnd();
+
+            XElement statusXml = null;
+
+            if (new Uri(url).LocalPath.EndsWith("json"))
+            {
+                var stream = new MemoryStream(ASCIIEncoding.Default.GetBytes(responseStr));
+                XmlDictionaryReader reader = JsonReaderWriterFactory.CreateJsonReader(stream, XmlDictionaryReaderQuotas.Max);
+
+                var doc = new XmlDocument();
+                doc.Load(reader);
+
+                statusXml = XElement.Parse(doc.OuterXml);
+            }
+            else
+            {
+                statusXml = XElement.Parse(responseStr);
+            }
 
             var results = requestProcessor.ProcessResults(statusXml);
             return results;

@@ -39,6 +39,12 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Runtime.Serialization">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.ServiceModel.Web">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -85,6 +91,9 @@
     <Compile Include="SocialGraphType.cs" />
     <Compile Include="StatusRequestProcessor.cs" />
     <Compile Include="StatusType.cs" />
+    <Compile Include="Trend.cs" />
+    <Compile Include="TrendRequestProcessor.cs" />
+    <Compile Include="TrendType.cs" />
     <Compile Include="TwitterQueryable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Status.cs" />
