@@ -28,6 +28,6 @@ namespace LinqToTwitter
         /// <summary>
         /// Response from request to end session
         /// </summary>
-        public EndSessionStatus EndSessionStatus { get; set; }
+        public TwitterHashResponse EndSessionStatus { get; set; }
     }
 }

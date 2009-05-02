@@ -30,8 +30,6 @@ namespace LinqToTwitter
         /// <summary>
         /// not used
         /// </summary>
-        /// <param name="lambdaExpression"></param>
-        /// <returns></returns>
         public Dictionary<string, string> GetParameters(System.Linq.Expressions.LambdaExpression lambdaExpression)
         {
             throw new NotImplementedException();
@@ -40,8 +38,6 @@ namespace LinqToTwitter
         /// <summary>
         /// not used
         /// </summary>
-        /// <param name="parameters"></param>
-        /// <returns></returns>
         public string BuildURL(Dictionary<string, string> parameters)
         {
             throw new NotImplementedException();

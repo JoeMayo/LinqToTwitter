@@ -52,17 +52,6 @@ namespace LinqToTwitter
         Show,
 
         /// <summary>
-        /// replies to your tweets
-        /// 
-        /// Available Options:
-        /// 
-        ///     - Since, get tweets replies since this date
-        ///     - SinceID, get tweets replies since this ID
-        ///     - Page, which page to return
-        /// </summary>
-        Replies,
-
-        /// <summary>
         /// lists the 20 most recent tweets about the logged-in user
         /// 
         /// Available Options:

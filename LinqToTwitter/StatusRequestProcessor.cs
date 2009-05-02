@@ -30,7 +30,8 @@ namespace LinqToTwitter
                    new List<string> { 
                        "Type",
                        "ID",
-                       "Since",
+                       "UserID",
+                       "ScreenName",
                        "SinceID",
                        "MaxID",
                        "Count",
@@ -68,9 +69,6 @@ namespace LinqToTwitter
                 case StatusType.Public:
                     url = BuildPublicUrl();
                     break;
-                case StatusType.Replies:
-                    url = BuildRepliesUrl(parameters);
-                    break;
                 case StatusType.Show:
                     url = BuildShowUrl(parameters);
                     break;
@@ -81,20 +79,6 @@ namespace LinqToTwitter
                     url = BuildPublicUrl();
                     break;
             }
-
-            return url;
-        }
-
-        /// <summary>
-        /// builds an url for showing status of user
-        /// </summary>
-        /// <param name="parameters">parameter list</param>
-        /// <returns>base url + show segment</returns>
-        private string BuildRepliesUrl(Dictionary<string, string> parameters)
-        {
-            var url = BaseUrl + "statuses/replies.xml";
-
-            url = BuildFriendRepliesAndUrlParameters(parameters, url);
 
             return url;
         }
@@ -123,13 +107,14 @@ namespace LinqToTwitter
         {
             var urlParams = new List<string>();
 
-            if (parameters.ContainsKey("Since"))
+            if (parameters.ContainsKey("UserID"))
             {
-                var sinceDateLocal = DateTime.Parse(parameters["Since"]);
-                var sinceDateUtc = new DateTimeOffset(sinceDateLocal,
-                            TimeZoneInfo.Local.GetUtcOffset(sinceDateLocal));
+                urlParams.Add("user_id=" + parameters["UserID"]);
+            }
 
-                urlParams.Add("since=" + sinceDateUtc.ToUniversalTime().ToString("r"));
+            if (parameters.ContainsKey("ScreenName"))
+            {
+                urlParams.Add("screen_name=" + parameters["ScreenName"]);
             }
 
             if (parameters.ContainsKey("SinceID"))

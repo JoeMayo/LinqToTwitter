@@ -6,9 +6,9 @@ using System.Text;
 namespace LinqToTwitter
 {
     /// <summary>
-    /// Response from end session request
+    /// Response for HTTP errors and end response
     /// </summary>
-    public class EndSessionStatus
+    public class TwitterHashResponse
     {
         /// <summary>
         /// URL action from request

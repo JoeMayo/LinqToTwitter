@@ -22,11 +22,6 @@ namespace LinqToTwitter
         public StatusType Type { get; set; }
 
         /// <summary>
-        /// filter results to after this date
-        /// </summary>
-        public DateTime Since { get; set; }
-
-        /// <summary>
         /// filter results to after this status id
         /// </summary>
         public int SinceID { get; set; }
@@ -50,6 +45,16 @@ namespace LinqToTwitter
         /// TweetID
         /// </summary>
         public string ID { get; set; }
+
+        /// <summary>
+        /// User ID to disambiguate when ID is same as screen name
+        /// </summary>
+        public string UserID { get; set; }
+
+        /// <summary>
+        /// Screen Name to disambiguate when ID is same as UserD
+        /// </summary>
+        public string ScreenName { get; set; }
 
         /// <summary>
         /// Tweet Text (140)characters

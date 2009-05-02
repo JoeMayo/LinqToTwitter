@@ -97,7 +97,8 @@ namespace LinqToTwitterTests
                 graph => 
                     graph.Type == SocialGraphType.Followers && 
                     graph.ID == 123 && 
-                    graph.ScreenName == "456";
+                    graph.ScreenName == "456" &&
+                    graph.Page == 1;
             LambdaExpression lambdaExpression = expression as LambdaExpression;
 
             var queryParams = target.GetParameters(lambdaExpression);
@@ -111,12 +112,16 @@ namespace LinqToTwitterTests
             Assert.IsTrue(
                 queryParams.Contains(
                     new KeyValuePair<string, string>("ScreenName", "456")));
+            Assert.IsTrue(
+                queryParams.Contains(
+                    new KeyValuePair<string, string>("Page", "1")));
         }
 
         /// <summary>
         ///A test for BuildURL
         ///</summary>
         [TestMethod()]
+        [ExpectedException(typeof(ArgumentException))]
         public void BuildURLTest()
         {
             SocialGraphRequestProcessor target = new SocialGraphRequestProcessor() { BaseUrl = "http://twitter.com/" };
@@ -141,9 +146,10 @@ namespace LinqToTwitterTests
                     { "Type", "0" },
                     { "ID", "JoeMayo" },
                     { "UserID", "123" },
-                    { "ScreenName", "456" }
+                    { "ScreenName", "456" },
+                    { "Page", "1" }
                 };
-            string expected = "http://twitter.com/friends/ids/JoeMayo.xml?user_id=123&screen_name=456";
+            string expected = "http://twitter.com/friends/ids/JoeMayo.xml?user_id=123&screen_name=456&page=1";
             string actual;
             actual = target.BuildURL(parameters);
             Assert.AreEqual(expected, actual);
@@ -163,9 +169,10 @@ namespace LinqToTwitterTests
                     { "Type", "1" },
                     { "ID", "JoeMayo" },
                     { "UserID", "123" },
-                    { "ScreenName", "456" }
+                    { "ScreenName", "456" },
+                    { "Page", "1" }
                 };
-            string expected = "http://twitter.com/followers/ids/JoeMayo.xml?user_id=123&screen_name=456";
+            string expected = "http://twitter.com/followers/ids/JoeMayo.xml?user_id=123&screen_name=456&page=1";
             string actual;
             actual = target.BuildURL(parameters);
             Assert.AreEqual(expected, actual);

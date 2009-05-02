@@ -93,10 +93,18 @@ namespace LinqToTwitter
             {
                 urlParams.Add("user_a=" + parameters["SubjectUser"]);
             }
+            else
+            {
+                throw new ArgumentException("SubjectUser is required.", "SubjectUser");
+            }
 
             if (parameters.ContainsKey("FollowingUser"))
             {
                 urlParams.Add("user_b=" + parameters["FollowingUser"]);
+            }
+            else
+            {
+                throw new ArgumentException("FollowingUser is required.", "FollowingUser");
             }
 
             if (urlParams.Count > 0)

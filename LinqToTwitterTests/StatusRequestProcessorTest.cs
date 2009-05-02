@@ -242,26 +242,26 @@ namespace LinqToTwitterTests
                     new KeyValuePair<string, string>("Type", ((int)StatusType.Public).ToString())));
         }
 
-        /// <summary>
-        ///A test for BuildUserUrl
-        ///</summary>
-        [TestMethod()]
-        [DeploymentItem("LinqToTwitter.dll")]
-        public void BuildRepliesUrlTest()
-        {
-            var reqProc = new StatusRequestProcessor_Accessor();
-            reqProc.BaseUrl = "http://twitter.com/";
-            Dictionary<string, string> parameters =
-                new Dictionary<string, string>
-                    {
-                        { "Page", "0" },
-                        { "SinceID", "934818247" },
-                        { "Since", new DateTime(2007, 10, 1).ToString() }
-                    };
-            string expected = "http://twitter.com/statuses/replies.xml?since=Mon, 01 Oct 2007 06:00:00 GMT&since_id=934818247&page=0";
-            var actual = reqProc.BuildRepliesUrl(parameters);
-            Assert.AreEqual(expected, actual);
-        }
+        ///// <summary>
+        /////A test for BuildUserUrl
+        /////</summary>
+        //[TestMethod()]
+        //[DeploymentItem("LinqToTwitter.dll")]
+        //public void BuildRepliesUrlTest()
+        //{
+        //    var reqProc = new StatusRequestProcessor_Accessor();
+        //    reqProc.BaseUrl = "http://twitter.com/";
+        //    Dictionary<string, string> parameters =
+        //        new Dictionary<string, string>
+        //            {
+        //                { "Page", "0" },
+        //                { "SinceID", "934818247" },
+        //                { "Since", new DateTime(2007, 10, 1).ToString() }
+        //            };
+        //    string expected = "http://twitter.com/statuses/replies.xml?since=Mon, 01 Oct 2007 06:00:00 GMT&since_id=934818247&page=0";
+        //    var actual = reqProc.BuildRepliesUrl(parameters);
+        //    Assert.AreEqual(expected, actual);
+        //}
 
         /// <summary>
         ///A test for BuildUserUrl
@@ -296,9 +296,11 @@ namespace LinqToTwitterTests
                 new Dictionary<string, string>
                     {
                         { "Type", ((int)StatusType.User).ToString() },
-                        { "ID", "15411837" }
+                        { "ID", "15411837" },
+                        { "UserID", "15411837" },
+                        { "ScreenName", "JoeMayo" },
                     };
-            string expected = "http://twitter.com/statuses/user_timeline/15411837.xml";
+            string expected = "http://twitter.com/statuses/user_timeline/15411837.xml?user_id=15411837&screen_name=JoeMayo";
             var actual = reqProc.BuildUserUrl(parameters);
             Assert.AreEqual(expected, actual);
         }
@@ -317,10 +319,9 @@ namespace LinqToTwitterTests
                     {
                         { "Page", "0" },
                         { "Count", "21" },
-                        { "SinceID", "934818247" },
-                        { "Since", new DateTime(2007, 10, 1).ToString() }
+                        { "SinceID", "934818247" }
                     };
-            string expected = "http://twitter.com/statuses/user_timeline/15411837.xml?since=Mon, 01 Oct 2007 06:00:00 GMT&since_id=934818247&count=21&page=0";
+            string expected = "http://twitter.com/statuses/user_timeline/15411837.xml?since_id=934818247&count=21&page=0";
             var actual = reqProc.BuildFriendRepliesAndUrlParameters(parameters, url);
             Assert.AreEqual(expected, actual);
         }
@@ -339,10 +340,9 @@ namespace LinqToTwitterTests
                     {
                         { "Page", "0" },
                         { "Count", "21" },
-                        { "SinceID", "934818247" },
-                        { "Since", new DateTime(2007, 10, 1).ToString() }
+                        { "SinceID", "934818247" }
                     };
-            string expected = "http://twitter.com/statuses/friends_timeline.xml?since=Mon, 01 Oct 2007 06:00:00 GMT&since_id=934818247&count=21&page=0";
+            string expected = "http://twitter.com/statuses/friends_timeline.xml?since_id=934818247&count=21&page=0";
             var actual = reqProc.BuildFriendUrl(parameters);
             Assert.AreEqual(expected, actual);
         }

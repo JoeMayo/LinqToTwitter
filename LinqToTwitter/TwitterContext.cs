@@ -209,6 +209,49 @@ namespace LinqToTwitter
 
         #endregion
 
+        #region Execution and Query Helper Methods
+
+        /// <summary>
+        /// generates a new TwitterQueryException from a WebException
+        /// </summary>
+        /// <param name="wex">Web Exception to Translate</param>
+        /// <returns>new TwitterQueryException instance</returns>
+        private TwitterQueryException CreateTwitterQueryException(WebException wex)
+        {
+            var responseStr = GetTwitterResponse(wex.Response);
+            XElement responseXml = XElement.Parse(responseStr);
+
+            return new TwitterQueryException("Error while querying Twitter.", wex)
+            {
+                HttpError = wex.Response.Headers["Status"],
+                Response = new TwitterHashResponse
+                {
+                    Request = responseXml.Element("request").Value,
+                    Error = responseXml.Element("error").Value
+                }
+            };
+        }
+
+        /// <summary>
+        /// gets WebResponse contents from Twitter
+        /// </summary>
+        /// <param name="resp">WebResponse to extract string from</param>
+        /// <returns>XML string response from Twitter</returns>
+        private string GetTwitterResponse(WebResponse resp)
+        {
+            StringReader txtRdr;
+
+            using (var strm = resp.GetResponseStream())
+            {
+                var strmRdr = new StreamReader(strm);
+                txtRdr = new StringReader(strmRdr.ReadToEnd());
+            }
+
+            return txtRdr.ReadToEnd();
+        }
+
+        #endregion
+
         #region Twitter Query API
 
         /// <summary>
@@ -308,17 +351,26 @@ namespace LinqToTwitter
             req.Credentials = new NetworkCredential(UserName, Password);
             req.UserAgent = UserAgent;
 
-            var resp = req.GetResponse();
+            WebResponse resp = null;
+            string responseStr = null;
 
-            StringReader txtRdr;
-
-            using (var strm = resp.GetResponseStream())
+            try
             {
-                var strmRdr = new StreamReader(strm);
-                txtRdr = new StringReader(strmRdr.ReadToEnd());
+                resp = req.GetResponse();
+                responseStr = GetTwitterResponse(resp);
             }
-
-            string responseStr = txtRdr.ReadToEnd();
+            catch (WebException wex)
+            {
+                var twitterQueryEx = CreateTwitterQueryException(wex);
+                throw twitterQueryEx;
+            }
+            finally
+            {
+                if (resp != null)
+                {
+                    resp.Close(); 
+                }
+            }
 
             XElement statusXml = null;
 
@@ -407,11 +459,29 @@ namespace LinqToTwitter
                 reqStream.Flush();
             }
 
-            using (var resp = req.GetResponse())
-            using (var respStream = resp.GetResponseStream())
-            using (var respRdr = new StreamReader(respStream))
+            WebResponse resp = null;
+
+            try
             {
-                responseXML = respRdr.ReadToEnd();
+                resp = req.GetResponse();
+
+                using (var respStream = resp.GetResponseStream())
+                using (var respRdr = new StreamReader(respStream))
+                {
+                    responseXML = respRdr.ReadToEnd();
+                }
+            }
+            catch (WebException wex)
+            {
+                var twitterQueryEx = CreateTwitterQueryException(wex);
+                throw twitterQueryEx;
+            }
+            finally
+            {
+                if (resp != null)
+                {
+                    resp.Close();
+                }
             }
 
             var responseXElem = XElement.Parse(responseXML);
@@ -453,12 +523,29 @@ namespace LinqToTwitter
             {
                 reqStream.Write(bytes, 0, bytes.Length);
 
-                var resp = req.GetResponse();
+                WebResponse resp = null;
 
-                using (var respStream = resp.GetResponseStream())
-                using (var respRdr = new StreamReader(respStream))
+                try
                 {
-                    responseXML = respRdr.ReadToEnd();
+                    resp = req.GetResponse();
+
+                    using (var respStream = resp.GetResponseStream())
+                    using (var respRdr = new StreamReader(respStream))
+                    {
+                        responseXML = respRdr.ReadToEnd();
+                    }
+                }
+                catch (WebException wex)
+                {
+                    var twitterQueryEx = CreateTwitterQueryException(wex);
+                    throw twitterQueryEx;
+                }
+                finally
+                {
+                    if (resp != null)
+                    {
+                        resp.Close();
+                    }
                 }
             }
 
@@ -488,6 +575,11 @@ namespace LinqToTwitter
             if (string.IsNullOrEmpty(status))
             {
                 throw new ArgumentException("status is a required parameter.");
+            }
+
+            if (status.Length > 140)
+            {
+                throw new ArgumentException("status length must be no more than 140 characters.", "status");
             }
 
             status = status.Substring(0, Math.Min(140, status.Length));
@@ -564,6 +656,21 @@ namespace LinqToTwitter
         /// <returns>direct message element</returns>
         public DirectMessage NewDirectMessage(string userID, string text)
         {
+            if (string.IsNullOrEmpty(userID))
+            {
+                throw new ArgumentException("userID is a required parameter.", "userID");
+            }
+
+            if (string.IsNullOrEmpty(text))
+            {
+                throw new ArgumentException("text is a required parameter.", "text");
+            }
+
+            if (text.Length > 140)
+            {
+                throw new ArgumentException("text must be no longer than 140 characters.", "text");
+            }
+
             var newUrl = BaseUrl + "direct_messages/new.xml";
 
             var results =
@@ -607,16 +714,22 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="id">id of user to follow</param>
         /// <returns>followed friend user info</returns>
-        public User CreateFriendship(string id, bool follow)
+        public User CreateFriendship(string id, string userID, string screenName, bool follow)
         {
-            if (string.IsNullOrEmpty(id))
+            if (string.IsNullOrEmpty(id) &&
+                string.IsNullOrEmpty(userID) &&
+                string.IsNullOrEmpty(screenName))
             {
-                throw new ArgumentException("id is a required parameter.", "id");
+                throw new ArgumentException("Either id, userID, or screenName is a required parameter.");
             }
 
             var destroyUrl = BaseUrl + "friendships/create/" + id + ".xml";
 
-            Dictionary<string, string> createParams = new Dictionary<string, string>();
+            var createParams = new Dictionary<string, string>
+                {
+                    { "user_id", userID },
+                    { "screen_name", screenName }
+                };
             
             // If follow exists in the parameter list, Twitter will
             // always treat it as true, even if the value is false;
@@ -640,11 +753,13 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="id">id of user to follow</param>
         /// <returns>followed friend user info</returns>
-        public User DestroyFriendship(string id)
+        public User DestroyFriendship(string id, string userID, string screenName)
         {
-            if (string.IsNullOrEmpty(id))
+            if (string.IsNullOrEmpty(id) &&
+                string.IsNullOrEmpty(userID) &&
+                string.IsNullOrEmpty(screenName))
             {
-                throw new ArgumentException("id is a required parameter.", "id");
+                throw new ArgumentException("Either id, userID, or screenName is a required parameter.");
             }
 
             var destroyUrl = BaseUrl + "friendships/destroy/" + id + ".xml";
@@ -652,7 +767,11 @@ namespace LinqToTwitter
             var results =
                 ExecuteTwitter(
                     destroyUrl,
-                    new Dictionary<string, string>(),
+                    new Dictionary<string, string>
+                    {
+                        { "user_id", userID },
+                        { "screen_name", screenName }
+                    },
                     new UserRequestProcessor());
 
             return (results as IQueryable<User>).FirstOrDefault();
@@ -839,7 +958,7 @@ namespace LinqToTwitter
         /// Ends the session for the currently logged in user
         /// </summary>
         /// <returns>true</returns>
-        public EndSessionStatus EndAccountSession()
+        public TwitterHashResponse EndAccountSession()
         {
             var accountUrl = BaseUrl + "account/end_session.xml";
 

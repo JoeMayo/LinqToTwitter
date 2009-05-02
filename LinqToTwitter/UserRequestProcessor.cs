@@ -31,8 +31,9 @@ namespace LinqToTwitter
                    new List<string> { 
                        "Type",
                        "ID",
-                       "Page",
-                       "Email"
+                       "UserID",
+                       "ScreenName",
+                       "Page"
                    });
 
             var parameters = paramFinder.Parameters;
@@ -83,18 +84,9 @@ namespace LinqToTwitter
         {
             var url = BaseUrl + "users/show.xml";
 
-            if (parameters.ContainsKey("Email"))
+            if (parameters != null)
             {
-                url += "?email=" + parameters["Email"];
-            }
-            else if (parameters.ContainsKey("ID"))
-            {
-                url = BuildUrlHelper.TransformIDUrl(parameters, url);
-            }
-            else
-            {
-                // Twitter requires one or the other of ID or Email
-                throw new InvalidQueryException("You must provide either a user ID or an Email for a User Show request.");
+                url = BuildFriendsAndFollowersUrlParameters(parameters, url);
             }
 
             return url;
@@ -147,14 +139,38 @@ namespace LinqToTwitter
                 return url;
             }
 
+            if (!parameters.ContainsKey("ID") && 
+                !parameters.ContainsKey("UserID") && 
+                !parameters.ContainsKey("ScreenName"))
+            {
+                throw new ArgumentException("Parameters must include at least one of ID, UserID, or ScreenName.");
+            }
+
+            var urlParams = new List<string>();
+
             if (parameters.ContainsKey("ID"))
             {
                 url = BuildUrlHelper.TransformIDUrl(parameters, url);
             }
 
+            if (parameters.ContainsKey("UserID"))
+            {
+                urlParams.Add("user_id=" + parameters["UserID"]);
+            }
+
+            if (parameters.ContainsKey("ScreenName"))
+            {
+                urlParams.Add("screen_name=" + parameters["ScreenName"]);
+            }
+
             if (parameters.ContainsKey("Page"))
             {
-                url += "?page=" + parameters["Page"];
+                urlParams.Add("page=" + parameters["Page"]);
+            }
+
+            if (urlParams.Count > 0)
+            {
+                url += "?" + string.Join("&", urlParams.ToArray());
             }
 
             return url;

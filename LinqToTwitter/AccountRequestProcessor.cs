@@ -93,7 +93,7 @@ namespace LinqToTwitter
                 }
                 else
                 {
-                    var endSession = new EndSessionStatus
+                    var endSession = new TwitterHashResponse
                     {
                         Request = twitterResponse.Element("request").Value,
                         Error = twitterResponse.Element("error").Value

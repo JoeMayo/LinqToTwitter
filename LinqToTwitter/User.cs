@@ -193,6 +193,17 @@ namespace LinqToTwitter
         public string ID { get; set; }
 
         /// <summary>
+        /// User ID for disambiguating when ID is screen name
+        /// </summary>
+        public string UserID { get; set; }
+
+        /// <summary>
+        /// user's screen name
+        /// On Input - disambiguates when ID is User ID
+        /// </summary>
+        public string ScreenName { get; set; }
+
+        /// <summary>
         /// used in search for user by email
         /// </summary>
         public string Email { get; set; }
@@ -201,11 +212,6 @@ namespace LinqToTwitter
         /// name of user
         /// </summary>
         public string Name { get; set; }
-
-        /// <summary>
-        /// user's screen name
-        /// </summary>
-        public string ScreenName { get; set; }
 
         /// <summary>
         /// location of user

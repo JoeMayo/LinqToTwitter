@@ -31,5 +31,10 @@ namespace LinqToTwitter
         /// Helpful for disambiguating when a valid screen name is also a user ID.
         /// </summary>
         public string ScreenName { get; set; }
+
+        /// <summary>
+        /// Page to return
+        /// </summary>
+        public int Page { get; set; }
     }
 }

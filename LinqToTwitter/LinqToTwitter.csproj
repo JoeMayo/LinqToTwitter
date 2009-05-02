@@ -67,7 +67,7 @@
     <Compile Include="DirectMessage.cs" />
     <Compile Include="DirectMessageType.cs" />
     <Compile Include="DirectMessageRequestProcessor.cs" />
-    <Compile Include="EndSessionStatus.cs" />
+    <Compile Include="TwitterHashResponse.cs" />
     <Compile Include="Evaluator.cs" />
     <Compile Include="ExpressionTreeHelper.cs" />
     <Compile Include="ExpressionTreeVisitor.cs" />
@@ -98,6 +98,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Status.cs" />
     <Compile Include="TwitterContext.cs" />
+    <Compile Include="TwitterQueryException.cs" />
     <Compile Include="TwitterQueryProvider.cs" />
     <Compile Include="TypeSystem.cs" />
     <Compile Include="User.cs" />

@@ -132,9 +132,11 @@ namespace LinqToTwitterTests
                 new Dictionary<string, string>
                     {
                         { "Type", ((int)UserType.Friends).ToString() },
-                        { "ID", "15411837" }
+                        { "ID", "15411837" },
+                        { "UserID", "15411837" },
+                        { "ScreenName", "JoeMayo" }
                     };
-            string expected = "http://twitter.com/users/show/15411837.xml";
+            string expected = "http://twitter.com/users/show/15411837.xml?user_id=15411837&screen_name=JoeMayo";
             var actual = reqProc.BuildShowUrl(parameters);
             Assert.AreEqual(expected, actual);
         }

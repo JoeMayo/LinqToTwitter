@@ -44,9 +44,7 @@ namespace LinqToTwitterDemo
             //
 
             //DirectMessageQueryDemo(twitterCtx);
-
             //NewDirectMessageDemo(twitterCtx);
-
             //DestroyDirectMessageDemo(twitterCtx);
 
             //
@@ -121,9 +119,101 @@ namespace LinqToTwitterDemo
             //SearchCurrentTrendsDemo(twitterCtx);
             //SearchDailyTrendsDemo(twitterCtx);
             //SearchWeeklyTrendsDemo(twitterCtx);
+            
+            //
+            // Error Handling Demos
+            //
+
+            //HandleQueryExceptionDemo(twitterCtx);
+            //HandleSideEffectExceptionDemo(twitterCtx);
+            //HandleSideEffectWithFilePostExceptionDemo(twitterCtx);
 
             Console.ReadKey();
         }
+
+        #region Error Handling Demos
+
+        /// <summary>
+        /// shows how to handle a TwitterQueryException with a side-effect causing a file post
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void HandleSideEffectWithFilePostExceptionDemo(TwitterContext twitterCtx)
+        {
+            // force the error by supplying bad credentials
+            twitterCtx.UserName = "BadUserName";
+            twitterCtx.Password = "BadPassword";
+
+            try
+            {
+                var user = twitterCtx.UpdateAccountImage(@"C:\Users\jmayo\Pictures\JoeTwitter.jpg");
+            }
+            catch (TwitterQueryException tqe)
+            {
+                // log it to the console
+                Console.WriteLine(
+                    "\nHTTP Error Code: {0}\nError: {1}\nRequest: {2}\n",
+                    tqe.HttpError,
+                    tqe.Response.Error,
+                    tqe.Response.Request);
+            }
+        }
+
+        /// <summary>
+        /// shows how to handle a TwitterQueryException with a side-effect
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void HandleSideEffectExceptionDemo(TwitterContext twitterCtx)
+        {
+            // force the error by supplying bad credentials
+            twitterCtx.UserName = "BadUserName";
+            twitterCtx.Password = "BadPassword";
+
+            try
+            {
+                var status = twitterCtx.UpdateStatus("Test from LINQ to Twitter - 5/2/09");
+            }
+            catch (TwitterQueryException tqe)
+            {
+                // log it to the console
+                Console.WriteLine(
+                    "\nHTTP Error Code: {0}\nError: {1}\nRequest: {2}\n",
+                    tqe.HttpError,
+                    tqe.Response.Error,
+                    tqe.Response.Request);
+            }
+        }
+
+        /// <summary>
+        /// shows how to handle a TwitterQueryException with a query
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void HandleQueryExceptionDemo(TwitterContext twitterCtx)
+        {
+            // force the error by supplying bad credentials
+            twitterCtx.UserName = "BadUserName";
+            twitterCtx.Password = "BadPassword";
+
+            try
+            {
+                var statuses =
+                        from status in twitterCtx.Status
+                        where status.Type == StatusType.Mentions
+                        select status;
+
+                var statusList = statuses.ToList();
+            }
+            catch (TwitterQueryException tqe)
+            {
+                // log it to the console
+                Console.WriteLine(
+                    "\nHTTP Error Code: {0}\nError: {1}\nRequest: {2}\n",
+                    tqe.HttpError,
+                    tqe.Response.Error,
+                    tqe.Response.Request);
+            }
+        }
+
+        #endregion
 
         #region Trends Demos
 
@@ -517,7 +607,7 @@ namespace LinqToTwitterDemo
 
         private static void CreateFriendshipNoDeviceUpdatesDemo(TwitterContext twitterCtx)
         {
-            var user = twitterCtx.CreateFriendship("LinqToTweeter", false);
+            var user = twitterCtx.CreateFriendship("LinqToTweeter", string.Empty, string.Empty, false);
 
             Console.WriteLine(
                 "User Name: {0}, Status: {1}",
@@ -527,7 +617,7 @@ namespace LinqToTwitterDemo
 
         private static void DestroyFriendshipDemo(TwitterContext twitterCtx)
         {
-            var user = twitterCtx.DestroyFriendship("LinqToTweeter");
+            var user = twitterCtx.DestroyFriendship("LinqToTweeter", string.Empty, string.Empty);
 
             Console.WriteLine(
                 "User Name: {0}, Status: {1}",
@@ -537,7 +627,7 @@ namespace LinqToTwitterDemo
 
         private static void CreateFriendshipFollowDemo(TwitterContext twitterCtx)
         {
-            var user = twitterCtx.CreateFriendship("LinqToTweeter", true);
+            var user = twitterCtx.CreateFriendship("LinqToTweeter", string.Empty, string.Empty, true);
 
             Console.WriteLine(
                 "User Name: {0}, Status: {1}",
@@ -670,15 +760,11 @@ namespace LinqToTwitterDemo
             var statusTweets =
                 from tweet in twitterCtx.Status
                 where tweet.Type == StatusType.User
-                    //&& tweet.ID == "945932078" // ID for Show
                       && tweet.ID == "15411837"  // ID for User
                       && tweet.Page == 1
                       && tweet.Count == 20
                       && tweet.SinceID == 931894254
-                      && tweet.Since == DateTime.Now.AddMonths(-1)
                 select tweet;
-
-            //statusTweets = statusTweets.Where(tweet => tweet.Since == DateTime.Now.AddMonths(-1)); 
 
             foreach (var tweet in statusTweets)
             {

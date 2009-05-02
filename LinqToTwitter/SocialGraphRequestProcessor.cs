@@ -27,7 +27,8 @@ namespace LinqToTwitter
                        "Type",
                        "ID",
                        "UserID",
-                       "ScreenName"
+                       "ScreenName",
+                       "Page"
                    });
 
             var parameters = paramFinder.Parameters;
@@ -102,6 +103,11 @@ namespace LinqToTwitter
         {
             var urlParams = new List<string>();
 
+            if (!parameters.ContainsKey("ID") && !parameters.ContainsKey("UserID") && !parameters.ContainsKey("ScreenName"))
+            {
+                throw new ArgumentException("You must specify either ID, UserID, or ScreenName.");
+            }
+
             if (parameters.ContainsKey("ID"))
             {
                 url = BuildUrlHelper.TransformIDUrl(parameters, url);
@@ -115,6 +121,11 @@ namespace LinqToTwitter
             if (parameters.ContainsKey("ScreenName"))
             {
                 urlParams.Add("screen_name=" + parameters["ScreenName"]);
+            }
+
+            if (parameters.ContainsKey("Page"))
+            {
+                urlParams.Add("page=" + parameters["Page"]);
             }
 
             if (urlParams.Count > 0)
