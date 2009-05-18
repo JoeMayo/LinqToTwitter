@@ -27,6 +27,11 @@ namespace LinqToTwitter
         public int SinceID { get; set; }
 
         /// <summary>
+        /// max ID to retrieve
+        /// </summary>
+        public int MaxID { get; set; }
+
+        /// <summary>
         /// only return this many results
         /// </summary>
         public int Count { get; set; }

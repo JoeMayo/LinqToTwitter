@@ -89,6 +89,8 @@ namespace LinqToTwitter
         /// <param name="authToken">The oauth_token is supplied by Twitter's authorization page following the callback.</param>
         public void AccessTokenGet(string authToken, string accessTokenUrl)
         {
+            // TODO: Add support for oauth_access_type - Joe
+
             this.OAuthToken = authToken;
 
             string response = oAuthWebRequest(HttpMethod.GET, accessTokenUrl, String.Empty);
@@ -177,11 +179,12 @@ namespace LinqToTwitter
         /// <summary>
         /// Url Encodes according to OAuth Spec
         /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
+        /// <param name="value">string to be encoded</param>
+        /// <returns>OAuth UrlEncoded string</returns>
         public string OAuthParameterUrlEncode(string value)
         {
-            // TODO:  - may be the same as AuthBase UrlEncode
+            // TODO: see if this can this be merged with AuthBase UrlEncode - Joe
+
             string RESERVED_CHARS = @"`!@#$%^&*()_-+=.~,:;'?/|\[] ";
             var result = new StringBuilder();
 

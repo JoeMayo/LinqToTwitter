@@ -147,12 +147,15 @@ namespace LinqToTwitterTests
         public void BuildUrlSentToSinceIDTest()
         {
             var dmProc = new DirectMessageRequestProcessor() { BaseUrl = "http://twitter.com/" };
-            string expected = "http://twitter.com/direct_messages.xml?since_id=1234567";
+            string expected = "http://twitter.com/direct_messages.xml?since_id=1234567&max_id=357&page=1&count=2";
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                 {
                         { "Type", ((int)DirectMessageType.SentTo).ToString() },
-                        { "SinceID", "1234567" }
+                        { "SinceID", "1234567" },
+                        { "MaxID", "357" },
+                        { "Page", "1" },
+                        { "Count", "2" }
                 };
             string actual = dmProc.BuildURL(parameters);
             Assert.AreEqual(expected, actual);

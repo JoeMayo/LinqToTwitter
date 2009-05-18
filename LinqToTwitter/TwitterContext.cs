@@ -26,6 +26,10 @@ namespace LinqToTwitter
     {
         #region TwitterContext initialization
 
+        // TODO: Add support for response headers, i.e. X-RateLimit-Reset - Joe
+ 
+        // TODO: Remove Since parameters, which have been removed from the API. - Joe
+
         /// <summary>
         /// login name of user
         /// </summary>
@@ -123,6 +127,17 @@ namespace LinqToTwitter
         }
 
         /// <summary>
+        /// enables access to Twitter blocking information, such as Exists, Blocks, and IDs
+        /// </summary>
+        public TwitterQueryable<Blocks> Blocks
+        {
+            get
+            {
+                return new TwitterQueryable<Blocks>(this);
+            }
+        }
+
+        /// <summary>
         /// enables access to Twitter User messages, such as Friends and Followers
         /// </summary>
         public TwitterQueryable<DirectMessage> DirectMessage
@@ -214,6 +229,8 @@ namespace LinqToTwitter
 
         #region OAuth Support
 
+        // TODO: check support for uploading images via https - Joe 
+
         /// <summary>
         /// OAuth Consumer key - must be set for OAuth calls.
         /// </summary>
@@ -286,6 +303,7 @@ namespace LinqToTwitter
                 throw new ArgumentException("Invalid OAuth Token.", "oAuthToken");
             }
 
+            // TODO: need to same screen_name and user_id that are returned from access token request - Joe
             OAuthTwitter.AccessTokenGet(oAuthToken, OAuthAccessTokenUrl);
         }
 
@@ -415,6 +433,9 @@ namespace LinqToTwitter
             {
                 case "Account":
                     req = new AccountRequestProcessor() { BaseUrl = BaseUrl };
+                    break;
+                case "Blocks":
+                    req = new BlocksRequestProcessor() { BaseUrl = BaseUrl };
                     break;
                 case "DirectMessage":
                     req = new DirectMessageRequestProcessor() { BaseUrl = BaseUrl };
@@ -656,7 +677,8 @@ namespace LinqToTwitter
                      select param.Key + "=" + OAuthTwitter.OAuthParameterUrlEncode(param.Value))
                      .ToArray());
 
-                url += "?" + paramsJoined;
+            url += "?" + paramsJoined;
+
             var req = WebRequest.Create(url) as HttpWebRequest;
 
             if (AuthorizedViaOAuth)
@@ -1233,6 +1255,8 @@ namespace LinqToTwitter
         /// <returns>User with new image info</returns>
         public User UpdateAccountBackgroundImage(string imageFilePath, bool tile)
         {
+            // TODO: finish tile implementation - Joe
+
             var accountUrl = BaseUrl + "account/update_profile_background_image.xml";
 
             if (string.IsNullOrEmpty(imageFilePath))

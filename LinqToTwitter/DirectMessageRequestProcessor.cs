@@ -31,7 +31,9 @@ namespace LinqToTwitter
                    new List<string> { 
                        "Type",
                        "SinceID",
-                       "Page"
+                       "MaxID",
+                       "Page",
+                       "Count"
                    });
 
             var parameters = paramFinder.Parameters;
@@ -112,6 +114,8 @@ namespace LinqToTwitter
         /// <returns>new url with parameters</returns>
         private string BuildSentUrlParameters(Dictionary<string, string> parameters, string url)
         {
+            // TODO: Refactor into separate methods as all parameters aren't applicable to all query types - Joe
+
             if (parameters == null)
             {
                 return url;
@@ -124,9 +128,19 @@ namespace LinqToTwitter
                 urlParams.Add("since_id=" + parameters["SinceID"]);
             }
 
+            if (parameters.ContainsKey("MaxID"))
+            {
+                urlParams.Add("max_id=" + parameters["MaxID"]);
+            }
+
             if (parameters.ContainsKey("Page"))
             {
                 urlParams.Add("page=" + parameters["Page"]);
+            }
+
+            if (parameters.ContainsKey("Count"))
+            {
+                urlParams.Add("count=" + parameters["Count"]);
             }
 
             if (urlParams.Count > 0)

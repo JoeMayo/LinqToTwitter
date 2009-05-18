@@ -62,6 +62,9 @@
     <Compile Include="AtomAuthor.cs" />
     <Compile Include="AtomEntry.cs" />
     <Compile Include="AtomFeed.cs" />
+    <Compile Include="BlockingType.cs" />
+    <Compile Include="Blocks.cs" />
+    <Compile Include="BlocksRequestProcessor.cs" />
     <Compile Include="BuildUrlHelper.cs" />
     <Compile Include="DeviceType.cs" />
     <Compile Include="DirectMessage.cs" />

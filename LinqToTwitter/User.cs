@@ -19,6 +19,8 @@ namespace LinqToTwitter
     {
         // TODO: can refactor earlier code that creates Users - Joe
 
+        // TODO: ensure all code extracts full User object; previous API supported multiple versions - Joe
+
         /// <summary>
         /// creates a new user based on an XML user fragment
         /// </summary>
@@ -76,7 +78,8 @@ namespace LinqToTwitter
                     int.TryParse(user.Element("statuses_count").Value, out tempStatusesCount);
 
             var notifications =
-                user.Element("notifications") == null ?
+                user.Element("notifications") == null || 
+                string.IsNullOrEmpty(user.Element("notifications").Value) ?
                 DeviceType.None :
                     user.Element("notifications").Value == "false" ?
                     DeviceType.None :

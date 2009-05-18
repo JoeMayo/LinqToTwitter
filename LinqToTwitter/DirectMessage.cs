@@ -18,6 +18,26 @@ namespace LinqToTwitter
         //  <sender_id>1234567</sender_id>
         public int SenderID { get; set; }
 
+        /// <summary>
+        /// since this message ID
+        /// </summary>
+        public int SinceID { get; set; }
+
+        /// <summary>
+        /// max ID to return
+        /// </summary>
+        public int MaxID { get; set; }
+
+        /// <summary>
+        /// page number to return
+        /// </summary>
+        public int Page { get; set; }
+
+        /// <summary>
+        /// number of items to return
+        /// </summary>
+        public int Count { get; set; }
+
         //  <text>;)</text>
         public string Text { get; set; }
 

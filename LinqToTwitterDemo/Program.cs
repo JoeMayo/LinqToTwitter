@@ -95,6 +95,9 @@ namespace LinqToTwitterDemo
 
             //CreateBlock(twitterCtx);
             //DestroyBlock(twitterCtx);
+            BlockExistsDemo(twitterCtx);
+            //BlockIDsDemo(twitterCtx);
+            //BlockBlockingDemo(twitterCtx);
 
             //
             // Help
@@ -136,12 +139,13 @@ namespace LinqToTwitterDemo
             // Oauth Demos
             //
 
-            HandleOAuthQueryDemo(twitterCtx);
+            //HandleOAuthQueryDemo(twitterCtx);
             //HandleOAuthSideEffectDemo(twitterCtx);
             //HandleOAuthFilePostDemo(twitterCtx);
 
             Console.ReadKey();
         }
+
 
         #region OAuth Demos
 
@@ -159,12 +163,13 @@ namespace LinqToTwitterDemo
             string link = twitterCtx.GetAuthorizationPageLink();
 
             Console.WriteLine("Authorization Page Link: {0}\n", link);
-            Console.WriteLine("Next, you'll need to tell Twitter to authorize access. This program has no knowledge of what your credentials are, which is the whole point of OAuth.  Once you log into Twitter and give this program permission, the come back to this console and press the enter key to complete the authorization sequence.\n\nPress Enter now to continue.");
+            Console.WriteLine("Next, you'll need to tell Twitter to authorize access. This program will not have access to your credentials, which is the benefit of OAuth.  Once you log into Twitter and give this program permission, come back to this console and press Enter to complete the authorization sequence.\n\nPress Enter now to continue.");
             Console.ReadKey();
+
             // launches browser so you can log in and give permissions
             Process.Start(link);
 
-            Console.WriteLine("Press a key again to resume after authorization.");
+            Console.WriteLine("\nYou should see your browser navigate to Twitter, saying that your application wants to access your Twitter account. Once you've authorized this program, return to this console and press any key to execute the LINQ to Twitter code.");
             Console.ReadKey();
             var uri = new Uri(link);
             NameValueCollection urlParams = HttpUtility.ParseQueryString(uri.Query);
@@ -198,12 +203,13 @@ namespace LinqToTwitterDemo
             string link = twitterCtx.GetAuthorizationPageLink();
 
             Console.WriteLine("Authorization Page Link: {0}\n", link);
-            Console.WriteLine("Next, you'll need to tell Twitter to authorize access. This program has no knowledge of what your credentials are, which is the whole point of OAuth.  Once you log into Twitter and give this program permission, the come back to this console and press the enter key to complete the authorization sequence.\n\nPress Enter now to continue.");
+            Console.WriteLine("Next, you'll need to tell Twitter to authorize access. This program will not have access to your credentials, which is the benefit of OAuth.  Once you log into Twitter and give this program permission, come back to this console and press Enter to complete the authorization sequence.\n\nPress Enter now to continue.");
             Console.ReadKey();
+
             // launches browser so you can log in and give permissions
             Process.Start(link);
 
-            Console.WriteLine("Press a key again to resume after authorization.");
+            Console.WriteLine("\nYou should see your browser navigate to Twitter, saying that your application wants to access your Twitter account. Once you've authorized this program, return to this console and press any key to execute the LINQ to Twitter code.");
             Console.ReadKey();
             var uri = new Uri(link);
             NameValueCollection urlParams = HttpUtility.ParseQueryString(uri.Query);
@@ -236,12 +242,13 @@ namespace LinqToTwitterDemo
             string link = twitterCtx.GetAuthorizationPageLink();
 
             Console.WriteLine("Authorization Page Link: {0}\n", link);
-            Console.WriteLine("Next, you'll need to tell Twitter to authorize access. This program has no knowledge of what your credentials are, which is the whole point of OAuth.  Once you log into Twitter and give this program permission, the come back to this console and press the enter key to complete the authorization sequence.\n\nPress Enter now to continue.");
+            Console.WriteLine("Next, you'll need to tell Twitter to authorize access. This program will not have access to your credentials, which is the benefit of OAuth.  Once you log into Twitter and give this program permission, come back to this console and press Enter to complete the authorization sequence.\n\nPress Enter now to continue.");
             Console.ReadKey();
+
             // launches browser so you can log in and give permissions
             Process.Start(link);
 
-            Console.WriteLine("Press a key again to resume after authorization.");
+            Console.WriteLine("\nYou should see your browser navigate to Twitter, saying that your application wants to access your Twitter account. Once you've authorized this program, return to this console and press any key to execute the LINQ to Twitter code.");
             Console.ReadKey();
             var uri = new Uri(link);
             NameValueCollection urlParams = HttpUtility.ParseQueryString(uri.Query);
@@ -608,6 +615,65 @@ namespace LinqToTwitterDemo
             if (user == null) return;
 
             Console.WriteLine("User Name: " + user.Name);
+        }
+
+        /// <summary>
+        /// shows how to get a list of users that are being blocked
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void BlockBlockingDemo(TwitterContext twitterCtx)
+        {
+            var result =
+                from blockItem in twitterCtx.Blocks
+                where blockItem.Type == BlockingType.Blocking
+                select blockItem;
+
+            result.ToList().ForEach(
+                block =>
+                    Console.WriteLine(
+                        "User, {0} is blocked.",
+                        block.User.Name));
+        }
+
+        /// <summary>
+        /// shows how to get a list of IDs of the users being blocked
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void BlockIDsDemo(TwitterContext twitterCtx)
+        {
+            var result =
+                from blockItem in twitterCtx.Blocks
+                where blockItem.Type == BlockingType.IDS
+                select blockItem;
+
+            result.ToList().ForEach(
+                block => Console.WriteLine("ID: {0}\n", block.ID));
+        }
+
+        /// <summary>
+        /// shows how to see if a specific user is being blocked
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void BlockExistsDemo(TwitterContext twitterCtx)
+        {
+            try
+            {
+                var result =
+                    from blockItem in twitterCtx.Blocks
+                    where blockItem.Type == BlockingType.Exists &&
+                          blockItem.ScreenName == "JoeMayo"
+                    select blockItem;
+
+                result.ToList().ForEach(
+                    block =>
+                        Console.WriteLine(
+                            "User, {0} is blocked.",
+                            block.User.Name));
+            }
+            catch (TwitterQueryException tqe)
+            {
+                Console.WriteLine("User not blocked. Twitter Response: " + tqe.Response.Error);
+            }
         }
 
         #endregion
