@@ -102,6 +102,9 @@ namespace LinqToTwitter
             Password = password;
             BaseUrl = string.IsNullOrEmpty(baseUrl) ? "http://twitter.com/" : baseUrl;
             SearchUrl = string.IsNullOrEmpty(searchUrl) ? "http://search.twitter.com/" : searchUrl;
+            OAuthAccessTokenUrl = "http://twitter.com/oauth/access_token";
+            OAuthAuthorizeUrl = "http://twitter.com/oauth/authorize";
+            OAuthRequestTokenUrl = "http://twitter.com/oauth/request_token";
         }
 
         #endregion
@@ -209,6 +212,96 @@ namespace LinqToTwitter
 
         #endregion
 
+        #region OAuth Support
+
+        /// <summary>
+        /// OAuth Consumer key - must be set for OAuth calls.
+        /// </summary>
+        public string ConsumerKey { get; set; }
+
+        /// <summary>
+        /// OAuth Consumer secret - must be set for OAuth calls.
+        /// </summary>
+        public string ConsumerSecret { get; set; }
+
+        /// <summary>
+        /// URL for OAuth Request Tokens
+        /// </summary>
+        public string OAuthRequestTokenUrl { get; set; }
+
+        /// <summary>
+        /// URL for OAuth authorization
+        /// </summary>
+        public string OAuthAuthorizeUrl { get; set; }
+
+        /// <summary>
+        /// URL for OAuth Access Tokens
+        /// </summary>
+        public string OAuthAccessTokenUrl { get; set; }
+
+        /// <summary>
+        /// Backing store for OAuthTwitter instance
+        /// </summary>
+        private OAuthTwitter m_oAuthTwitter = null;
+
+        /// <summary>
+        /// reference to OAuthTwitter for authentication
+        /// </summary>
+        private OAuthTwitter OAuthTwitter 
+        { 
+            get
+            {
+                if (m_oAuthTwitter == null)
+                {
+                    m_oAuthTwitter = new OAuthTwitter
+                    {
+                        OAuthUserAgent = UserAgent,
+                        OAuthConsumerKey = ConsumerKey,
+                        OAuthConsumerSecret = ConsumerSecret
+                    };
+                }
+
+                return m_oAuthTwitter;
+            }
+        }
+
+        /// <summary>
+        /// Get the link to Twitter's authorization page for this application.
+        /// </summary>
+        /// <returns>The url with a valid request token, or a null string.</returns>
+        public string GetAuthorizationPageLink()
+        {
+            return OAuthTwitter.AuthorizationLinkGet(OAuthRequestTokenUrl, OAuthAuthorizeUrl);
+        }
+
+        /// <summary>
+        /// Retrieves access token from Twitter.
+        /// Call this after calling GetAuthorizationPageLink()
+        /// </summary>
+        /// <param name="oAuthToken">Auth Token from call to GetAuthorizationPageLink</param>
+        public void RetrieveAccessToken(string oAuthToken)
+        {
+            if (string.IsNullOrEmpty(oAuthToken))
+            {
+                throw new ArgumentException("Invalid OAuth Token.", "oAuthToken");
+            }
+
+            OAuthTwitter.AccessTokenGet(oAuthToken, OAuthAccessTokenUrl);
+        }
+
+        /// <summary>
+        /// True if OAuth succeeds, otherwise false.
+        /// </summary>
+        public bool AuthorizedViaOAuth
+        {
+            get
+            {
+                return !string.IsNullOrEmpty(OAuthTwitter.OAuthTokenSecret);
+            }
+        }
+
+        #endregion
+
         #region Execution and Query Helper Methods
 
         /// <summary>
@@ -219,7 +312,24 @@ namespace LinqToTwitter
         private TwitterQueryException CreateTwitterQueryException(WebException wex)
         {
             var responseStr = GetTwitterResponse(wex.Response);
-            XElement responseXml = XElement.Parse(responseStr);
+
+            XElement responseXml;
+
+            try
+            {
+                responseXml = XElement.Parse(responseStr);
+            }
+            catch (Exception)
+            {
+                // One known reason this can happen is if you don't have an 
+                // Internet connection, meaning that the response will contain
+                // an HTML message, that can't be parsed as normal XML.
+                responseXml = XElement.Parse(
+@"<hash>
+  <request>" + wex.Response.ResponseUri + @"</request>
+  <error>See Inner Exception Details for more information.</error>
+</hash>");
+            }
 
             return new TwitterQueryException("Error while querying Twitter.", wex)
             {
@@ -347,8 +457,21 @@ namespace LinqToTwitter
         /// <returns>List of objects to return</returns>
         private IQueryable QueryTwitter(string url, IRequestProcessor requestProcessor)
         {
+            if (AuthorizedViaOAuth)
+            {
+                string outUrl;
+                string queryString;
+                OAuthTwitter.GetOAuthQueryString(HttpMethod.GET, url, out outUrl, out queryString);
+                url = outUrl + "?" + queryString;
+            }
+
             var req = HttpWebRequest.Create(url) as HttpWebRequest;
-            req.Credentials = new NetworkCredential(UserName, Password);
+
+            if (!AuthorizedViaOAuth)
+            {
+                req.Credentials = new NetworkCredential(UserName, Password);
+            }
+
             req.UserAgent = UserAgent;
 
             WebResponse resp = null;
@@ -389,8 +512,7 @@ namespace LinqToTwitter
                 statusXml = XElement.Parse(responseStr);
             }
 
-            var results = requestProcessor.ProcessResults(statusXml);
-            return results;
+            return requestProcessor.ProcessResults(statusXml);
         }
 
         #endregion
@@ -407,9 +529,28 @@ namespace LinqToTwitter
         {
             var file = Path.GetFileName(filePath);
 
-            string contentBoundaryBase = DateTime.Now.Ticks.ToString("x");// string.Format("----------{0}", DateTime.Now.Ticks.ToString("x"));
+            string imageType;
+
+            switch (Path.GetExtension(file).ToLower())
+            {
+                case ".jpg":
+                case ".jpeg":
+                    imageType = "jpg";
+                    break;
+                case ".gif":
+                    imageType = "gif";
+                    break;
+                case ".png":
+                    imageType = "png";
+                    break;
+                default:
+                    throw new ArgumentException(
+                        "Can't recognize the extension of the file you're uploading. Please choose either a *.gif, *.jpg, *.jpeg, or *.png file.", filePath);
+            }
+
+            string contentBoundaryBase = DateTime.Now.Ticks.ToString("x");
             string beginContentBoundary = string.Format("--{0}\r\n", contentBoundaryBase);
-            var contentDisposition = string.Format("Content-Disposition:form-data); name=\"image\"); filename=\"{0}\"\r\nContent-Type: image/jpeg\r\n\r\n", file);
+            var contentDisposition = string.Format("Content-Disposition:form-data); name=\"image\"); filename=\"{0}\"\r\nContent-Type: image/{1}\r\n\r\n", file, imageType);
             var endContentBoundary = string.Format("\r\n--{0}--\r\n", contentBoundaryBase);
 
             byte[] fileBytes = null;
@@ -439,17 +580,24 @@ namespace LinqToTwitter
                     endContentBoundary);
 
             var req = (HttpWebRequest)WebRequest.Create(url);
-
-            // due to Twitter API change, I needed to remove the Expect header. More details here by Phil Haack - Joe
-            // http://haacked.com/archive/2004/05/15/http-web-request-expect-100-continue.aspx
             req.ServicePoint.Expect100Continue = false;
             req.ContentType = "multipart/form-data;boundary=" + contentBoundaryBase;
             req.PreAuthenticate = true;
             req.AllowWriteStreamBuffering = true;
-            req.Credentials = new NetworkCredential(UserName, Password);
             req.Method = "POST";
             req.UserAgent = UserAgent;
             req.ContentLength = fileBytes.Length;
+
+            if (AuthorizedViaOAuth)
+            {
+                req.Headers.Add(
+                    HttpRequestHeader.Authorization,
+                    OAuthTwitter.GetOAuthAuthorizationHeader(url, null));
+            }
+            else
+            {
+                req.Credentials = new NetworkCredential(UserName, Password);
+            }
 
             string responseXML = null;
 
@@ -498,23 +646,35 @@ namespace LinqToTwitter
         /// <returns>response from server, handled by the requestProcessor</returns>
         private IQueryable ExecuteTwitter(string url, Dictionary<string, string> parameters, IRequestProcessor requestProcessor)
         {
-            var req = WebRequest.Create(url) as HttpWebRequest;
-            req.Credentials = new NetworkCredential(UserName, Password);
-            req.Method = "POST";
-            var paramsJoined =
+            string paramsJoined = string.Empty;
+
+            paramsJoined =
                 string.Join(
                     "&",
                     (from param in parameters
                      where !string.IsNullOrEmpty(param.Value)
-                     select param.Key + "=" + HttpUtility.UrlEncode(param.Value))
+                     select param.Key + "=" + OAuthTwitter.OAuthParameterUrlEncode(param.Value))
                      .ToArray());
-            var bytes = Encoding.UTF8.GetBytes(paramsJoined);
-            req.ContentType = "application/x-www-form-urlencoded";
-            req.ContentLength = bytes.Length;
-            req.UserAgent = UserAgent;
 
-            // due to Twitter API change, I needed to remove the Expect header. More details here by Phil Haack - Joe
-            // http://haacked.com/archive/2004/05/15/http-web-request-expect-100-continue.aspx
+                url += "?" + paramsJoined;
+            var req = WebRequest.Create(url) as HttpWebRequest;
+
+            if (AuthorizedViaOAuth)
+            {
+                req.Headers.Add(
+                    HttpRequestHeader.Authorization,
+                    OAuthTwitter.GetOAuthAuthorizationHeader(url, null));
+            }
+            else
+            {
+                req.Credentials = new NetworkCredential(UserName, Password);
+            }
+
+            var bytes = Encoding.UTF8.GetBytes(paramsJoined);
+            req.ContentLength = bytes.Length;
+            req.Method = "POST";
+            req.ContentType = "x-www-form-urlencoded";
+            req.UserAgent = UserAgent;
             req.ServicePoint.Expect100Continue = false;
 
             string responseXML;
@@ -1069,10 +1229,6 @@ namespace LinqToTwitter
         /// <summary>
         /// sends an image file to Twitter to replace background image
         /// </summary>
-        /// <remarks>
-        /// You can only run this method with a period of time between executions; 
-        /// otherwise you get WebException errors from Twitter
-        /// </remarks>
         /// <param name="imageFilePath">full path to file, including file name</param>
         /// <returns>User with new image info</returns>
         public User UpdateAccountBackgroundImage(string imageFilePath, bool tile)

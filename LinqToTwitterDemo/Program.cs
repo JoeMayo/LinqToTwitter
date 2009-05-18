@@ -3,6 +3,9 @@ using System.Linq;
 
 using LinqToTwitter;
 using System.Net;
+using System.Diagnostics;
+using System.Web;
+using System.Collections.Specialized;
 
 namespace LinqToTwitterDemo
 {
@@ -69,6 +72,7 @@ namespace LinqToTwitterDemo
             //
 
             //SearchTwitterDemo(twitterCtx);
+            //SearchTwitterSource(twitterCtx);
 
             //
             // Favorites
@@ -128,8 +132,149 @@ namespace LinqToTwitterDemo
             //HandleSideEffectExceptionDemo(twitterCtx);
             //HandleSideEffectWithFilePostExceptionDemo(twitterCtx);
 
+            //
+            // Oauth Demos
+            //
+
+            HandleOAuthQueryDemo(twitterCtx);
+            //HandleOAuthSideEffectDemo(twitterCtx);
+            //HandleOAuthFilePostDemo(twitterCtx);
+
             Console.ReadKey();
         }
+
+        #region OAuth Demos
+
+        /// <summary>
+        /// hows how to use OAuth to post a file to Twitter
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void HandleOAuthFilePostDemo(TwitterContext twitterCtx)
+        {
+            Console.Write("Consumer Key: ");
+            twitterCtx.ConsumerKey = Console.ReadLine();
+            Console.Write("Consumer Secret: ");
+            twitterCtx.ConsumerSecret = Console.ReadLine();
+
+            string link = twitterCtx.GetAuthorizationPageLink();
+
+            Console.WriteLine("Authorization Page Link: {0}\n", link);
+            Console.WriteLine("Next, you'll need to tell Twitter to authorize access. This program has no knowledge of what your credentials are, which is the whole point of OAuth.  Once you log into Twitter and give this program permission, the come back to this console and press the enter key to complete the authorization sequence.\n\nPress Enter now to continue.");
+            Console.ReadKey();
+            // launches browser so you can log in and give permissions
+            Process.Start(link);
+
+            Console.WriteLine("Press a key again to resume after authorization.");
+            Console.ReadKey();
+            var uri = new Uri(link);
+            NameValueCollection urlParams = HttpUtility.ParseQueryString(uri.Query);
+            string oAuthToken = urlParams["oauth_token"];
+
+            twitterCtx.RetrieveAccessToken(oAuthToken);
+
+            if (twitterCtx.AuthorizedViaOAuth)
+            {
+                var user = twitterCtx.UpdateAccountBackgroundImage(
+                    @"C:\Users\jmayo\Documents\linq2twitter\linq2twitter\200xColor_2.png", false);
+
+                Console.WriteLine(
+                    "Name: {0}\nImage: {1}\n",
+                    user.Name,
+                    user.ProfileBackgroundImageUrl);
+            }
+        }
+
+        /// <summary>
+        /// Perform an update using OAuth
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void HandleOAuthSideEffectDemo(TwitterContext twitterCtx)
+        {
+            Console.Write("Consumer Key: ");
+            twitterCtx.ConsumerKey = Console.ReadLine();
+            Console.Write("Consumer Secret: ");
+            twitterCtx.ConsumerSecret = Console.ReadLine();
+
+            string link = twitterCtx.GetAuthorizationPageLink();
+
+            Console.WriteLine("Authorization Page Link: {0}\n", link);
+            Console.WriteLine("Next, you'll need to tell Twitter to authorize access. This program has no knowledge of what your credentials are, which is the whole point of OAuth.  Once you log into Twitter and give this program permission, the come back to this console and press the enter key to complete the authorization sequence.\n\nPress Enter now to continue.");
+            Console.ReadKey();
+            // launches browser so you can log in and give permissions
+            Process.Start(link);
+
+            Console.WriteLine("Press a key again to resume after authorization.");
+            Console.ReadKey();
+            var uri = new Uri(link);
+            NameValueCollection urlParams = HttpUtility.ParseQueryString(uri.Query);
+            string oAuthToken = urlParams["oauth_token"];
+
+            twitterCtx.RetrieveAccessToken(oAuthToken);
+
+            if (twitterCtx.AuthorizedViaOAuth)
+            {
+                var status = twitterCtx.UpdateStatus("Updated Twitter via OAuth: " + DateTime.Now.ToString());
+
+                Console.WriteLine(
+                    "Friend: {0}\nTweet: {1}\n",
+                    status.User.Name,
+                    status.Text);
+            }
+        }
+
+        /// <summary>
+        /// perform a query using OAuth
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void HandleOAuthQueryDemo(TwitterContext twitterCtx)
+        {
+            Console.Write("Consumer Key: ");
+            twitterCtx.ConsumerKey = Console.ReadLine();
+            Console.Write("Consumer Secret: ");
+            twitterCtx.ConsumerSecret = Console.ReadLine();
+
+            string link = twitterCtx.GetAuthorizationPageLink();
+
+            Console.WriteLine("Authorization Page Link: {0}\n", link);
+            Console.WriteLine("Next, you'll need to tell Twitter to authorize access. This program has no knowledge of what your credentials are, which is the whole point of OAuth.  Once you log into Twitter and give this program permission, the come back to this console and press the enter key to complete the authorization sequence.\n\nPress Enter now to continue.");
+            Console.ReadKey();
+            // launches browser so you can log in and give permissions
+            Process.Start(link);
+
+            Console.WriteLine("Press a key again to resume after authorization.");
+            Console.ReadKey();
+            var uri = new Uri(link);
+            NameValueCollection urlParams = HttpUtility.ParseQueryString(uri.Query);
+            string oAuthToken = urlParams["oauth_token"];
+
+            twitterCtx.RetrieveAccessToken(oAuthToken);
+
+            if (twitterCtx.AuthorizedViaOAuth)
+            {
+                //var accounts =
+                //    from acct in twitterCtx.Account
+                //    where acct.Type == AccountType.VerifyCredentials
+                //    select acct;
+
+                //foreach (var account in accounts)
+                //{
+                //    Console.WriteLine("Credentials for account, {0}, are okay.", account.User.Name);
+                //}
+
+                var tweets =
+                    from tweet in twitterCtx.Status
+                    where tweet.Type == StatusType.Friends
+                    select tweet;
+
+                tweets.ToList().ForEach(
+                    tweet => Console.WriteLine(
+                        "Friend: {0}\nTweet: {1}\n",
+                        tweet.User.Name,
+                        tweet.Text));
+            }
+        }
+
+        #endregion
 
         #region Error Handling Demos
 
@@ -317,7 +462,7 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void UpdateAccountBackgroundImage(TwitterContext twitterCtx)
         {
-            var user = twitterCtx.UpdateAccountBackgroundImage(@"C:\Users\jmayo\Pictures\41NN9GPz15L__SS500_.jpg", false);
+            var user = twitterCtx.UpdateAccountBackgroundImage(@"C:\Users\jmayo\Pictures\TwitterBackground.jpg", false);
 
             Console.WriteLine("User Image: " + user.ProfileBackgroundImageUrl);
         }
@@ -328,7 +473,7 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void UpdateAccountImage(TwitterContext twitterCtx)
         {
-            var user = twitterCtx.UpdateAccountImage(@"C:\Users\jmayo\Pictures\JoeTwitter.jpg");
+            var user = twitterCtx.UpdateAccountImage(@"C:\Users\jmayo\Pictures\Sgt Peppers\JoeTwitterBW.jpg");
 
             Console.WriteLine("User Image: " + user.ProfileImageUrl);
         }
@@ -560,9 +705,37 @@ namespace LinqToTwitterDemo
                 foreach (var entry in search.Entries)
                 {
                     Console.WriteLine(
-                        "ID: {0}, Content: {1}\n",
-                        entry.ID, entry.Content);
+                        "ID: {0}, Source: {1}\nContent: {2}\n",
+                        entry.ID, entry.Source, entry.Content);
                 } 
+            }
+        }
+
+        /// <summary>
+        /// Shows how to specify a source of tweets to search for
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void SearchTwitterSource(TwitterContext twitterCtx)
+        {
+            var queryResults =
+                from search in twitterCtx.Search
+                where search.Type == SearchType.Search &&
+                      search.Query == "LINQ to Twitter source:web"
+                select search;
+
+            foreach (var search in queryResults)
+            {
+                // here, you can see that properties are named
+                // from the perspective of atom feed elements
+                // i.e. the query string is called Title
+                Console.WriteLine("\nQuery:\n" + search.Title);
+
+                foreach (var entry in search.Entries)
+                {
+                    Console.WriteLine(
+                        "ID: {0}, Source: {1}\nContent: {2}\n",
+                        entry.ID, entry.Source, entry.Content);
+                }
             }
         }
 
@@ -813,7 +986,7 @@ namespace LinqToTwitterDemo
             //        tweet.CreatedAt);
             //}
 
-            var tweet = twitterCtx.UpdateStatus("Testing LINQ to Twitter with only status - 4/16/09");
+            var tweet = twitterCtx.UpdateStatus("Testing LINQ to Twitter with only status on " + DateTime.Now.ToString());
 
             Console.WriteLine(
                 "(" + tweet.ID + ")" +

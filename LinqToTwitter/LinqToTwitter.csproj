@@ -67,6 +67,10 @@
     <Compile Include="DirectMessage.cs" />
     <Compile Include="DirectMessageType.cs" />
     <Compile Include="DirectMessageRequestProcessor.cs" />
+    <Compile Include="HttpMethod.cs" />
+    <Compile Include="OAuthBase.cs" />
+    <Compile Include="OAuthSignatureTypes.cs" />
+    <Compile Include="OAuthTwitter.cs" />
     <Compile Include="TwitterHashResponse.cs" />
     <Compile Include="Evaluator.cs" />
     <Compile Include="ExpressionTreeHelper.cs" />

@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Linq;
+using System;
 
 namespace LinqToTwitterTests
 {
@@ -196,6 +197,23 @@ namespace LinqToTwitterTests
             var tweets = (twitterResponse as IQueryable<Status>).ToList();
             Assert.IsNotNull(tweets);
             Assert.IsTrue(tweets.Count > 0);
+        }
+
+        /// <summary>
+        ///A test for GetAuthorizationPageLink
+        ///</summary>
+        [TestMethod()]
+        public void GetAuthorizationPageLinkTest()
+        {
+            TwitterContext target = new TwitterContext();
+            Console.Write("Consumer Key: ");
+            target.ConsumerKey = "123";
+            Console.Write("Consumer Secret: ");
+            target.ConsumerSecret = "456";
+            string expected = string.Empty; // TODO: Initialize to an appropriate value
+            string actual = string.Empty;
+            //actual = target.GetAuthorizationPageLink();
+            Assert.AreEqual(expected, actual);
         }
     }
 }
