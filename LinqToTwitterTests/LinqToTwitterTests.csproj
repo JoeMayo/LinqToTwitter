@@ -74,6 +74,7 @@
     <Compile Include="TrendRequestProcessorTest.cs" />
     <Compile Include="TwitterContextTest.cs" />
     <Compile Include="UserRequestProcessorTest.cs" />
+    <Compile Include="UserTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <Shadow Include="Test References\LinqToTwitter.accessor" />

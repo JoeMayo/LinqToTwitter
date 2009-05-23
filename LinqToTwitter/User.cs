@@ -17,10 +17,6 @@ namespace LinqToTwitter
     /// </summary>
     public class User
     {
-        // TODO: can refactor earlier code that creates Users - Joe
-
-        // TODO: ensure all code extracts full User object; previous API supported multiple versions - Joe
-
         /// <summary>
         /// creates a new user based on an XML user fragment
         /// </summary>
@@ -165,6 +161,12 @@ namespace LinqToTwitter
                         user.Element("profile_background_tile").Value,
                 StatusesCount = tempStatusesCount,
                 Notifications = notifications,
+                Following = 
+                    user.Element("following") == null ||
+                    user.Element("following").Value == "0" ||
+                    user.Element("following").Value == string.Empty ?
+                        false :
+                        bool.Parse(user.Element("following").Value),
                 Status = 
                     status == null ?
                         null :
@@ -205,11 +207,6 @@ namespace LinqToTwitter
         /// On Input - disambiguates when ID is User ID
         /// </summary>
         public string ScreenName { get; set; }
-
-        /// <summary>
-        /// used in search for user by email
-        /// </summary>
-        public string Email { get; set; }
 
         /// <summary>
         /// name of user
@@ -315,6 +312,11 @@ namespace LinqToTwitter
         /// type of device notifications
         /// </summary>
         public DeviceType Notifications { get; set; }
+
+        /// <summary>
+        /// is authenticated user following this user
+        /// </summary>
+        public bool Following { get; set; }
 
         /// <summary>
         /// current user status (valid only in user queries)

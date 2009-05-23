@@ -194,13 +194,11 @@ namespace LinqToTwitter
             }
             else if (twitterResponse.Name == "users")
             {
-                var userObj = new User();
-
                 blockList =
                     (from user in twitterResponse.Elements("user").ToList()
                      select new Blocks
                      {
-                        User = userObj.CreateUser(user)
+                         User = new User().CreateUser(user)
                      })
                      .ToList();
             }

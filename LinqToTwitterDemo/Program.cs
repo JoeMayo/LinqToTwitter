@@ -452,15 +452,15 @@ namespace LinqToTwitterDemo
         private static void UpdateAccountInfoDemo(TwitterContext twitterCtx)
         {
             var user = twitterCtx.UpdateAccountProfile(
-                "LtoT Test", 
-                "WhoDoIWantToAggravateToday@World.com", 
+                "LINQ to Tweeter Test", 
+                "Joe@LinqToTwitter.com", 
                 "http://linqtotwitter.codeplex.com", 
                 "Anywhere In The World", 
                 "Testing the LINQ to Twitter Account Profile Update.");
 
             Console.WriteLine(
-                "Name: {0}\nEmail: {1}\nURL: {2}\nLocation: {3}\nDescription: {4}",
-                user.Name, user.Email, user.URL, user.Location, user.Description);
+                "Name: {0}\nURL: {2}\nLocation: {3}\nDescription: {4}",
+                user.Name, user.URL, user.Location, user.Description);
         }
 
         /// <summary>
