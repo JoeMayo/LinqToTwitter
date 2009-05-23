@@ -30,7 +30,7 @@ namespace LinqToTwitterDemo
             // status tweets
             //
 
-            //UpdateStatusDemo(twitterCtx);
+            UpdateStatusDemo(twitterCtx);
             //DestroyStatusDemo(twitterCtx);
             //UserStatusQueryDemo(twitterCtx);
             //PublicStatusQueryDemo();
@@ -95,7 +95,7 @@ namespace LinqToTwitterDemo
 
             //CreateBlock(twitterCtx);
             //DestroyBlock(twitterCtx);
-            BlockExistsDemo(twitterCtx);
+            //BlockExistsDemo(twitterCtx);
             //BlockIDsDemo(twitterCtx);
             //BlockBlockingDemo(twitterCtx);
 
@@ -219,7 +219,7 @@ namespace LinqToTwitterDemo
 
             if (twitterCtx.AuthorizedViaOAuth)
             {
-                var status = twitterCtx.UpdateStatus("Updated Twitter via OAuth: " + DateTime.Now.ToString());
+                var status = twitterCtx.UpdateStatus("I used LINQ to Twitter with OAuth: " + DateTime.Now.ToString());
 
                 Console.WriteLine(
                     "Friend: {0}\nTweet: {1}\n",
@@ -469,7 +469,7 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void UpdateAccountBackgroundImage(TwitterContext twitterCtx)
         {
-            var user = twitterCtx.UpdateAccountBackgroundImage(@"C:\Users\jmayo\Pictures\TwitterBackground.jpg", false);
+            var user = twitterCtx.UpdateAccountBackgroundImage(@"C:\Users\jmayo\Documents\linq2twitter\linq2twitter\linq2twitter_v3_300x90.png", false);
 
             Console.WriteLine("User Image: " + user.ProfileBackgroundImageUrl);
         }

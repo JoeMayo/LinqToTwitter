@@ -31,7 +31,7 @@ namespace LinqToTwitter
     /// <summary>
     /// helps perform OAuth Authorization for LINQ to Twitter
     /// </summary>
-    public class OAuthTwitter : OAuthBase
+    public class OAuthTwitter : OAuthBase, IOAuthTwitter
     {
         /// <summary>
         /// user agent header sent to Twitter
