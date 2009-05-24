@@ -65,19 +65,27 @@ namespace LinqToTwitter
         /// <summary>
         /// Get the link to Twitter's authorization page for this application.
         /// </summary>
+        /// <param name="readOnly">true for read-only, otherwise read/Write</param>
         /// <returns>The url with a valid request token, or a null string.</returns>
-        public string AuthorizationLinkGet(string requestToken, string authorizeUrl)
+        public string AuthorizationLinkGet(string requestToken, string authorizeUrl, bool readOnly)
         {
             string ret = null;
-
             string response = oAuthWebRequest(HttpMethod.GET, requestToken, String.Empty);
             if (response.Length > 0)
             {
+                var prefixChar = "?";
+
                 //response contains token and token secret.  We only need the token.
                 NameValueCollection qs = HttpUtility.ParseQueryString(response);
                 if (qs["oauth_token"] != null)
                 {
                     ret = authorizeUrl + "?oauth_token=" + qs["oauth_token"];
+                    prefixChar = "&";
+                }
+
+                if (readOnly)
+                {
+                    ret += prefixChar + "oauth_access_type=read";
                 }
             }
             return ret;
@@ -87,11 +95,11 @@ namespace LinqToTwitter
         /// Exchange the request token for an access token.
         /// </summary>
         /// <param name="authToken">The oauth_token is supplied by Twitter's authorization page following the callback.</param>
-        public void AccessTokenGet(string authToken, string accessTokenUrl)
+        public void AccessTokenGet(string authToken, string accessTokenUrl, out string screenName, out string userID)
         {
-            // TODO: Add support for oauth_access_type - Joe
-
             this.OAuthToken = authToken;
+            screenName = string.Empty;
+            userID = string.Empty;
 
             string response = oAuthWebRequest(HttpMethod.GET, accessTokenUrl, String.Empty);
 
@@ -99,13 +107,25 @@ namespace LinqToTwitter
             {
                 //Store the Token and Token Secret
                 NameValueCollection qs = HttpUtility.ParseQueryString(response);
+
                 if (qs["oauth_token"] != null)
                 {
                     this.OAuthToken = qs["oauth_token"];
                 }
+
                 if (qs["oauth_token_secret"] != null)
                 {
                     this.OAuthTokenSecret = qs["oauth_token_secret"];
+                }
+
+                if (qs["screen_name"] != null)
+                {
+                    screenName = qs["screen_name"];
+                }
+
+                if (qs["user_id"] != null)
+                {
+                    userID = qs["user_id"];
                 }
             }
         }

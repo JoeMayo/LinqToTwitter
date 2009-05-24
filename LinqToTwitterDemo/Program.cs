@@ -142,8 +142,129 @@ namespace LinqToTwitterDemo
             //HandleOAuthQueryDemo(twitterCtx);
             //HandleOAuthSideEffectDemo(twitterCtx);
             //HandleOAuthFilePostDemo(twitterCtx);
+            //HandleOAuthReadOnlyQueryDemo(twitterCtx);
+            //HandleOAuthSideEffectReadOnlyDemo(twitterCtx);
+            //HandleOAuthRequestResponseDetailsDemo(twitterCtx);
 
             Console.ReadKey();
+        }
+
+        /// <summary>
+        /// shows how to retrieve the screen name and user ID from an OAuth request
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void HandleOAuthRequestResponseDetailsDemo(TwitterContext twitterCtx)
+        {
+            Console.Write("Consumer Key: ");
+            twitterCtx.ConsumerKey = Console.ReadLine();
+            Console.Write("Consumer Secret: ");
+            twitterCtx.ConsumerSecret = Console.ReadLine();
+
+            // TODO: setting readOnly to true doesn't seem to be working; query is pending with Twitter API list - Joe
+            string link = twitterCtx.GetAuthorizationPageLink(true);
+
+            Console.WriteLine("Authorization Page Link: {0}\n", link);
+            Console.WriteLine("Next, you'll need to tell Twitter to authorize access. This program will not have access to your credentials, which is the benefit of OAuth.  Once you log into Twitter and give this program permission, come back to this console and press Enter to complete the authorization sequence.\n\nPress Enter now to continue.");
+            Console.ReadKey();
+
+            // launches browser so you can log in and give permissions
+            Process.Start(link);
+
+            Console.WriteLine("\nYou should see your browser navigate to Twitter, saying that your application wants to access your Twitter account. Once you've authorized this program, return to this console and press any key to execute the LINQ to Twitter code.");
+            Console.ReadKey();
+            var uri = new Uri(link);
+            NameValueCollection urlParams = HttpUtility.ParseQueryString(uri.Query);
+            string oAuthToken = urlParams["oauth_token"];
+
+            twitterCtx.RetrieveAccessToken(oAuthToken);
+
+            Console.WriteLine();
+            Console.WriteLine(
+                "Screen Name: {0}, User ID: {1}", 
+                twitterCtx.OAuthRequestScreenName, 
+                twitterCtx.OAuthRequestUserID);
+        }
+
+        /// <summary>
+        /// shows what happens when performing a side-effect when ReadOnly is turned on
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void HandleOAuthSideEffectReadOnlyDemo(TwitterContext twitterCtx)
+        {
+            Console.Write("Consumer Key: ");
+            twitterCtx.ConsumerKey = Console.ReadLine();
+            Console.Write("Consumer Secret: ");
+            twitterCtx.ConsumerSecret = Console.ReadLine();
+
+            // TODO: setting readOnly to true doesn't seem to be working; query is pending with Twitter API list - Joe
+            string link = twitterCtx.GetAuthorizationPageLink(true);
+
+            Console.WriteLine("Authorization Page Link: {0}\n", link);
+            Console.WriteLine("Next, you'll need to tell Twitter to authorize access. This program will not have access to your credentials, which is the benefit of OAuth.  Once you log into Twitter and give this program permission, come back to this console and press Enter to complete the authorization sequence.\n\nPress Enter now to continue.");
+            Console.ReadKey();
+
+            // launches browser so you can log in and give permissions
+            Process.Start(link);
+
+            Console.WriteLine("\nYou should see your browser navigate to Twitter, saying that your application wants to access your Twitter account. Once you've authorized this program, return to this console and press any key to execute the LINQ to Twitter code.");
+            Console.ReadKey();
+            var uri = new Uri(link);
+            NameValueCollection urlParams = HttpUtility.ParseQueryString(uri.Query);
+            string oAuthToken = urlParams["oauth_token"];
+
+            twitterCtx.RetrieveAccessToken(oAuthToken);
+
+            if (twitterCtx.AuthorizedViaOAuth)
+            {
+                var status = twitterCtx.UpdateStatus("I used LINQ to Twitter with OAuth: " + DateTime.Now.ToString());
+
+                Console.WriteLine(
+                    "Friend: {0}\nTweet: {1}\n",
+                    status.User.Name,
+                    status.Text);
+            }
+        }
+
+        /// <summary>
+        /// shows how to restrict access to read-only while performing a query
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void HandleOAuthReadOnlyQueryDemo(TwitterContext twitterCtx)
+        {
+            Console.Write("Consumer Key: ");
+            twitterCtx.ConsumerKey = Console.ReadLine();
+            Console.Write("Consumer Secret: ");
+            twitterCtx.ConsumerSecret = Console.ReadLine();
+
+            string link = twitterCtx.GetAuthorizationPageLink(true);
+
+            Console.WriteLine("Authorization Page Link: {0}\n", link);
+            Console.WriteLine("Next, you'll need to tell Twitter to authorize access. This program will not have access to your credentials, which is the benefit of OAuth.  Once you log into Twitter and give this program permission, come back to this console and press Enter to complete the authorization sequence.\n\nPress Enter now to continue.");
+            Console.ReadKey();
+
+            // launches browser so you can log in and give permissions
+            Process.Start(link);
+
+            Console.WriteLine("\nYou should see your browser navigate to Twitter, saying that your application wants to access your Twitter account. Once you've authorized this program, return to this console and press any key to execute the LINQ to Twitter code.");
+            Console.ReadKey();
+            var uri = new Uri(link);
+            NameValueCollection urlParams = HttpUtility.ParseQueryString(uri.Query);
+            string oAuthToken = urlParams["oauth_token"];
+
+            twitterCtx.RetrieveAccessToken(oAuthToken);
+
+            if (twitterCtx.AuthorizedViaOAuth)
+            {
+                var accounts =
+                    from acct in twitterCtx.Account
+                    where acct.Type == AccountType.VerifyCredentials
+                    select acct;
+
+                foreach (var account in accounts)
+                {
+                    Console.WriteLine("Credentials for account, {0}, are okay.", account.User.Name);
+                }
+            }
         }
 
 
@@ -160,7 +281,7 @@ namespace LinqToTwitterDemo
             Console.Write("Consumer Secret: ");
             twitterCtx.ConsumerSecret = Console.ReadLine();
 
-            string link = twitterCtx.GetAuthorizationPageLink();
+            string link = twitterCtx.GetAuthorizationPageLink(false);
 
             Console.WriteLine("Authorization Page Link: {0}\n", link);
             Console.WriteLine("Next, you'll need to tell Twitter to authorize access. This program will not have access to your credentials, which is the benefit of OAuth.  Once you log into Twitter and give this program permission, come back to this console and press Enter to complete the authorization sequence.\n\nPress Enter now to continue.");
@@ -200,7 +321,7 @@ namespace LinqToTwitterDemo
             Console.Write("Consumer Secret: ");
             twitterCtx.ConsumerSecret = Console.ReadLine();
 
-            string link = twitterCtx.GetAuthorizationPageLink();
+            string link = twitterCtx.GetAuthorizationPageLink(false);
 
             Console.WriteLine("Authorization Page Link: {0}\n", link);
             Console.WriteLine("Next, you'll need to tell Twitter to authorize access. This program will not have access to your credentials, which is the benefit of OAuth.  Once you log into Twitter and give this program permission, come back to this console and press Enter to complete the authorization sequence.\n\nPress Enter now to continue.");
@@ -239,7 +360,7 @@ namespace LinqToTwitterDemo
             Console.Write("Consumer Secret: ");
             twitterCtx.ConsumerSecret = Console.ReadLine();
 
-            string link = twitterCtx.GetAuthorizationPageLink();
+            string link = twitterCtx.GetAuthorizationPageLink(false);
 
             Console.WriteLine("Authorization Page Link: {0}\n", link);
             Console.WriteLine("Next, you'll need to tell Twitter to authorize access. This program will not have access to your credentials, which is the benefit of OAuth.  Once you log into Twitter and give this program permission, come back to this console and press Enter to complete the authorization sequence.\n\nPress Enter now to continue.");
@@ -258,16 +379,6 @@ namespace LinqToTwitterDemo
 
             if (twitterCtx.AuthorizedViaOAuth)
             {
-                //var accounts =
-                //    from acct in twitterCtx.Account
-                //    where acct.Type == AccountType.VerifyCredentials
-                //    select acct;
-
-                //foreach (var account in accounts)
-                //{
-                //    Console.WriteLine("Credentials for account, {0}, are okay.", account.User.Name);
-                //}
-
                 var tweets =
                     from tweet in twitterCtx.Status
                     where tweet.Type == StatusType.Friends

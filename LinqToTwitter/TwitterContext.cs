@@ -369,6 +369,16 @@ namespace LinqToTwitter
         public string OAuthAccessTokenUrl { get; set; }
 
         /// <summary>
+        /// Screen name returned from OAuth Token Request
+        /// </summary>
+        public string OAuthRequestScreenName { get; set; }
+
+        /// <summary>
+        /// User ID returned from OAuth Token Request
+        /// </summary>
+        public string OAuthRequestUserID { get; set; }
+
+        /// <summary>
         /// Backing store for OAuthTwitter instance
         /// </summary>
         private OAuthTwitter m_oAuthTwitter = null;
@@ -406,10 +416,11 @@ namespace LinqToTwitter
         /// <summary>
         /// Get the link to Twitter's authorization page for this application.
         /// </summary>
+        /// <param name="readOnly">true for read-only, otherwise read/Write</param>
         /// <returns>The url with a valid request token, or a null string.</returns>
-        public string GetAuthorizationPageLink()
+        public string GetAuthorizationPageLink(bool readOnly)
         {
-            return OAuthTwitter.AuthorizationLinkGet(OAuthRequestTokenUrl, OAuthAuthorizeUrl);
+            return OAuthTwitter.AuthorizationLinkGet(OAuthRequestTokenUrl, OAuthAuthorizeUrl, readOnly);
         }
 
         /// <summary>
@@ -424,8 +435,13 @@ namespace LinqToTwitter
                 throw new ArgumentException("Invalid OAuth Token.", "oAuthToken");
             }
 
-            // TODO: need to same screen_name and user_id that are returned from access token request - Joe
-            OAuthTwitter.AccessTokenGet(oAuthToken, OAuthAccessTokenUrl);
+            string screenName;
+            string userID;
+
+            OAuthTwitter.AccessTokenGet(oAuthToken, OAuthAccessTokenUrl, out screenName, out userID);
+
+            OAuthRequestScreenName = screenName;
+            OAuthRequestUserID = userID;
         }
 
         #endregion

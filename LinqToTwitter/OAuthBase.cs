@@ -88,6 +88,7 @@ namespace LinqToTwitter
         //
         // List of known and used oauth parameters' names
         //        
+        protected const string OAuthAccessTypeKey = "oauth_access_type";
         protected const string OAuthConsumerKeyKey = "oauth_consumer_key";
         protected const string OAuthCallbackKey = "oauth_callback";
         protected const string OAuthVersionKey = "oauth_version";
@@ -149,7 +150,7 @@ namespace LinqToTwitter
                 string[] p = parameters.Split('&');
                 foreach (string s in p)
                 {
-                    if (!string.IsNullOrEmpty(s) && !s.StartsWith(OAuthParameterPrefix))
+                    if (!string.IsNullOrEmpty(s) && (!s.StartsWith(OAuthParameterPrefix) || s.StartsWith(OAuthAccessTypeKey)))
                     {
                         if (s.IndexOf('=') > -1)
                         {
