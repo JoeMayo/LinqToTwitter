@@ -114,8 +114,6 @@ namespace LinqToTwitter
         /// <returns>new url with parameters</returns>
         private string BuildSentUrlParameters(Dictionary<string, string> parameters, string url)
         {
-            // TODO: Refactor into separate methods as all parameters aren't applicable to all query types - Joe
-
             if (parameters == null)
             {
                 return url;

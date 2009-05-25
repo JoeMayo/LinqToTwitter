@@ -31,6 +31,7 @@ namespace LinqToTwitterDemo
             //
 
             UpdateStatusDemo(twitterCtx);
+            //UpdateStatusWithReplyDemo(twitterCtx);
             //DestroyStatusDemo(twitterCtx);
             //UserStatusQueryDemo(twitterCtx);
             //PublicStatusQueryDemo();
@@ -46,7 +47,8 @@ namespace LinqToTwitterDemo
             // direct messages
             //
 
-            //DirectMessageQueryDemo(twitterCtx);
+            //DirectMessageSentByQueryDemo(twitterCtx);
+            //DirectMessageSentToQueryDemo(twitterCtx);
             //NewDirectMessageDemo(twitterCtx);
             //DestroyDirectMessageDemo(twitterCtx);
 
@@ -55,7 +57,6 @@ namespace LinqToTwitterDemo
             //
 
             //FriendshipExistsDemo(twitterCtx);
-
             //CreateFriendshipFollowDemo(twitterCtx);
             //DestroyFriendshipDemo(twitterCtx);
             //CreateFriendshipNoDeviceUpdatesDemo(twitterCtx);
@@ -111,11 +112,13 @@ namespace LinqToTwitterDemo
 
             //VerifyAccountCredentials(twitterCtx);
             //ViewRateLimitStatus(twitterCtx);
+            //ViewRateLimitResponseHeadersDemo(twitterCtx);
             //EndSession(twitterCtx);
             //UpdateDeliveryDevice(twitterCtx);
             //UpdateAccountColors(twitterCtx);
             //UpdateAccountImage(twitterCtx);
             //UpdateAccountBackgroundImage(twitterCtx);
+            //UpdateAccountBackgroundImageAndTileDemo(twitterCtx);
             //UpdateAccountInfoDemo(twitterCtx);
 
             //
@@ -149,6 +152,41 @@ namespace LinqToTwitterDemo
             Console.ReadKey();
         }
 
+        private static void ViewRateLimitResponseHeadersDemo(TwitterContext twitterCtx)
+        {
+            var myMentions =
+                from mention in twitterCtx.Status
+                where mention.Type == StatusType.Mentions
+                select mention;
+
+            Console.WriteLine("\nAll rate limit results are either -1 or from the last query because this query hasn't executed yet. Look at results for this query *after* the query: \n");
+            
+            Console.WriteLine("Current Rate Limit: {0}", twitterCtx.RateLimitCurrent);
+            Console.WriteLine("Remaining Rate Limit: {0}", twitterCtx.RateLimitRemaining);
+            Console.WriteLine("Rate Limit Reset: {0}", twitterCtx.RateLimitReset);
+
+            myMentions.ToList().ForEach(
+                mention => Console.WriteLine(
+                    "Name: {0}, Tweet: {1}\n",
+                    mention.User.Name, mention.Text));
+
+            Console.WriteLine("\nRate Limits from Query Response: \n");
+            
+            Console.WriteLine("Current Rate Limit: {0}", twitterCtx.RateLimitCurrent);
+            Console.WriteLine("Remaining Rate Limit: {0}", twitterCtx.RateLimitRemaining);
+            Console.WriteLine("Rate Limit Reset: {0}", twitterCtx.RateLimitReset);
+
+            var resetTime =
+                new DateTime(1970, 1, 1)
+                .AddSeconds(twitterCtx.RateLimitReset)
+                .ToLocalTime();
+            
+            Console.WriteLine("Rate Limit Reset in current time: {0}", resetTime);
+       }
+
+
+        #region OAuth Demos
+
         /// <summary>
         /// shows how to retrieve the screen name and user ID from an OAuth request
         /// </summary>
@@ -160,7 +198,6 @@ namespace LinqToTwitterDemo
             Console.Write("Consumer Secret: ");
             twitterCtx.ConsumerSecret = Console.ReadLine();
 
-            // TODO: setting readOnly to true doesn't seem to be working; query is pending with Twitter API list - Joe
             string link = twitterCtx.GetAuthorizationPageLink(true);
 
             Console.WriteLine("Authorization Page Link: {0}\n", link);
@@ -196,7 +233,6 @@ namespace LinqToTwitterDemo
             Console.Write("Consumer Secret: ");
             twitterCtx.ConsumerSecret = Console.ReadLine();
 
-            // TODO: setting readOnly to true doesn't seem to be working; query is pending with Twitter API list - Joe
             string link = twitterCtx.GetAuthorizationPageLink(true);
 
             Console.WriteLine("Authorization Page Link: {0}\n", link);
@@ -266,9 +302,6 @@ namespace LinqToTwitterDemo
                 }
             }
         }
-
-
-        #region OAuth Demos
 
         /// <summary>
         /// hows how to use OAuth to post a file to Twitter
@@ -581,6 +614,17 @@ namespace LinqToTwitterDemo
         private static void UpdateAccountBackgroundImage(TwitterContext twitterCtx)
         {
             var user = twitterCtx.UpdateAccountBackgroundImage(@"C:\Users\jmayo\Documents\linq2twitter\linq2twitter\linq2twitter_v3_300x90.png", false);
+
+            Console.WriteLine("User Image: " + user.ProfileBackgroundImageUrl);
+        }
+
+        /// <summary>
+        /// Shows how to update the background image in an account and tiles the image
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void UpdateAccountBackgroundImageAndTileDemo(TwitterContext twitterCtx)
+        {
+            var user = twitterCtx.UpdateAccountBackgroundImage(@"C:\Users\jmayo\Documents\linq2twitter\linq2twitter\200xColor_2.png", true);
 
             Console.WriteLine("User Image: " + user.ProfileBackgroundImageUrl);
         }
@@ -1045,11 +1089,31 @@ namespace LinqToTwitterDemo
         /// shows how to query direct messages
         /// </summary>
         /// <param name="twitterCtx">TwitterContext</param>
-        private static void DirectMessageQueryDemo(TwitterContext twitterCtx)
+        private static void DirectMessageSentToQueryDemo(TwitterContext twitterCtx)
         {
             var directMessages =
                 from tweet in twitterCtx.DirectMessage
-                where tweet.Type == DirectMessageType.SentTo
+                where tweet.Type == DirectMessageType.SentTo &&
+                      tweet.Count == 2
+                select tweet;
+
+            directMessages.ToList().ForEach(
+                dm => Console.WriteLine(
+                    "Sender: {0}, Tweet: {1}",
+                    dm.SenderScreenName,
+                    dm.Text));
+        }
+
+        /// <summary>
+        /// shows how to query direct messages
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void DirectMessageSentByQueryDemo(TwitterContext twitterCtx)
+        {
+            var directMessages =
+                from tweet in twitterCtx.DirectMessage
+                where tweet.Type == DirectMessageType.SentBy &&
+                      tweet.Count == 2
                 select tweet;
 
             directMessages.ToList().ForEach(
@@ -1147,22 +1211,24 @@ namespace LinqToTwitterDemo
         /// shows how to update a status
         /// </summary>
         /// <param name="twitterCtx">TwitterContext</param>
+        private static void UpdateStatusWithReplyDemo(TwitterContext twitterCtx)
+        {
+            var tweet = twitterCtx.UpdateStatus("@TwitterUser Testing LINQ to Twitter with reply on " + DateTime.Now.ToString(), "961760788");
+
+            Console.WriteLine(
+                "(" + tweet.ID + ")" +
+                "[" + tweet.User.ID + "]" +
+                tweet.User.Name + ", " +
+                tweet.Text + ", " +
+                tweet.CreatedAt);
+        }
+
+        /// <summary>
+        /// shows how to update a status
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
         private static void UpdateStatusDemo(TwitterContext twitterCtx)
         {
-            // TODO: separate into multiple methods - Joe
-
-            //var statusResult = twitterCtx.UpdateStatus("@TwitterUser Testing LINQ to Twitter with reply", "961760788");
-
-            //foreach (var tweet in statusResult)
-            //{
-            //    Console.WriteLine(
-            //        "(" + tweet.ID + ")" +
-            //        "[" + tweet.User.ID + "]" +
-            //        tweet.User.Name + ", " +
-            //        tweet.Text + ", " +
-            //        tweet.CreatedAt);
-            //}
-
             var tweet = twitterCtx.UpdateStatus("Testing LINQ to Twitter with only status on " + DateTime.Now.ToString());
 
             Console.WriteLine(

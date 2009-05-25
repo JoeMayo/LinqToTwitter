@@ -34,7 +34,7 @@ namespace LinqToTwitter
         public int Page { get; set; }
 
         /// <summary>
-        /// number of items to return
+        /// number of items to return (works for SentBy and SentTo
         /// </summary>
         public int Count { get; set; }
 

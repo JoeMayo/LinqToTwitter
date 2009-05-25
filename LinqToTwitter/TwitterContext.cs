@@ -26,10 +26,6 @@ namespace LinqToTwitter
     {
         #region TwitterContext initialization
 
-        // TODO: Add support for response headers, i.e. X-RateLimit-Reset - Joe
- 
-        // TODO: Remove Since parameters, which have been removed from the API. - Joe
-
         /// <summary>
         /// base URL for accessing Twitter API
         /// </summary>
@@ -41,7 +37,8 @@ namespace LinqToTwitter
         public string SearchUrl { get; set; }
 
         /// <summary>
-        /// default constructor, results in no credentials and BaseUrl set to http://twitter.com/
+        /// default constructor, results in no credentials 
+        /// and BaseUrl set to http://twitter.com/
         /// </summary>
         public TwitterContext() :
             this(string.Empty, string.Empty, string.Empty, string.Empty) { }
@@ -301,8 +298,6 @@ namespace LinqToTwitter
 
         #region OAuth Support
 
-        // TODO: check support for uploading images via https - Joe 
-
         /// <summary>
         /// OAuth Consumer key - must be set for OAuth calls.
         /// </summary>
@@ -420,6 +415,7 @@ namespace LinqToTwitter
         /// <returns>The url with a valid request token, or a null string.</returns>
         public string GetAuthorizationPageLink(bool readOnly)
         {
+            // TODO: setting readOnly to true doesn't seem to be working; no Twitter API documentation available; check again later - Joe
             return OAuthTwitter.AuthorizationLinkGet(OAuthRequestTokenUrl, OAuthAuthorizeUrl, readOnly);
         }
 
@@ -442,6 +438,101 @@ namespace LinqToTwitter
 
             OAuthRequestScreenName = screenName;
             OAuthRequestUserID = userID;
+        }
+
+        #endregion
+
+        #region Response Headers
+
+        // rate limit constants
+        private const string XRateLimitLimit = "X-RateLimit-Limit";
+        private const string XRateLimitRemaining = "X-RateLimit-Remaining";
+        private const string XRateLimitReset = "X-RateLimit-Reset";
+
+        /// <summary>
+        /// retrieves a specified response header, converting it to an int
+        /// </summary>
+        /// <param name="responseHeader">Response header to retrieve.</param>
+        /// <returns>int value from response</returns>
+        private int GetResponseHeaderAsInt(string responseHeader)
+        {
+            var headerVal = -1;
+
+            if (ResponseHeaders != null &&
+                ResponseHeaders.ContainsKey(responseHeader))
+            {
+                var headerValAsString = ResponseHeaders[responseHeader];
+
+                int.TryParse(headerValAsString, out headerVal);
+            }
+
+            return headerVal;
+        }
+
+        /// <summary>
+        /// Response headers from Twitter Queries
+        /// </summary>
+        public Dictionary<string, string> ResponseHeaders
+        {
+            get
+            {
+                if (TwitterExecute != null)
+                {
+                    return TwitterExecute.ResponseHeaders;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+       }
+
+        /// <summary>
+        /// Max number of requests per minute
+        /// returned by the most recent query
+        /// </summary>
+        /// <remarks>
+        /// Returns -1 if information isn't available,
+        /// i.e. you haven't performed a query yet
+        /// </remarks>
+        public int RateLimitCurrent
+        {
+            get
+            {
+                return GetResponseHeaderAsInt(XRateLimitLimit);
+            }
+        }
+
+        /// <summary>
+        /// Number of requests available until reset
+        /// returned by the most recent query
+        /// </summary>
+        /// <remarks>
+        /// Returns -1 if information isn't available,
+        /// i.e. you haven't performed a query yet
+        /// </remarks>
+        public int RateLimitRemaining
+        {
+            get
+            {
+                return GetResponseHeaderAsInt(XRateLimitRemaining);
+            }
+        }
+
+        /// <summary>
+        /// UTC time in ticks until rate limit resets
+        /// returned by the most recent query
+        /// </summary>
+        /// <remarks>
+        /// Returns -1 if information isn't available,
+        /// i.e. you haven't performed a query yet
+        /// </remarks>
+        public int RateLimitReset
+        {
+            get
+            {
+                return GetResponseHeaderAsInt(XRateLimitReset);
+            }
         }
 
         #endregion
@@ -975,7 +1066,6 @@ namespace LinqToTwitter
         /// <returns>User info</returns>
         public User UpdateAccountDeliveryDevice(DeviceType device)
         {
-            // TODO: Follow-up on this API; It always returns false and Twitter doesn't seem to be working the same as the API docs - Joe
             var accountUrl = BaseUrl + "account/update_delivery_device.xml";
 
             var results =
@@ -1049,7 +1139,7 @@ namespace LinqToTwitter
                 throw new ArgumentException("imageFilePath is required.", "imageFilePath");
             }
 
-            var results = TwitterExecute.PostTwitterFile(imageFilePath, accountUrl, new UserRequestProcessor());
+            var results = TwitterExecute.PostTwitterFile(imageFilePath, null, accountUrl, new UserRequestProcessor());
 
             return (results as IQueryable<User>).FirstOrDefault();
         }
@@ -1061,8 +1151,6 @@ namespace LinqToTwitter
         /// <returns>User with new image info</returns>
         public User UpdateAccountBackgroundImage(string imageFilePath, bool tile)
         {
-            // TODO: finish tile implementation - Joe
-
             var accountUrl = BaseUrl + "account/update_profile_background_image.xml";
 
             if (string.IsNullOrEmpty(imageFilePath))
@@ -1070,7 +1158,19 @@ namespace LinqToTwitter
                 throw new ArgumentException("imageFilePath is required.", "imageFilePath");
             }
 
-            var results = TwitterExecute.PostTwitterFile(imageFilePath, accountUrl, new UserRequestProcessor());
+            Dictionary<string, string> parameters = null;
+
+            // TODO: tile implementation doesn't seem to be working; numerous problems reported in Twitter API; check again later - Joe
+            if (tile)
+            {
+                parameters =
+                        new Dictionary<string, string>
+                {
+                    { "tile", "true" }
+                };
+            }
+
+            var results = TwitterExecute.PostTwitterFile(imageFilePath, parameters, accountUrl, new UserRequestProcessor());
 
             return (results as IQueryable<User>).FirstOrDefault();
         }

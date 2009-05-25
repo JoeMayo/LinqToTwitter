@@ -28,6 +28,11 @@ namespace LinqToTwitter
         public string Password { get; set; }
 
         /// <summary>
+        /// list of response headers from query
+        /// </summary>
+        public Dictionary<string, string> ResponseHeaders { get; set; }
+
+        /// <summary>
         /// backing store for UserAgent
         /// </summary>
         private string m_userAgent = "LINQ To Twitter v1.0";
@@ -130,6 +135,21 @@ namespace LinqToTwitter
                 txtRdr = new StringReader(strmRdr.ReadToEnd());
             }
 
+            //
+            // This code assumes that the caller will find that
+            // name/value pairs are easier to work with via 
+            // LINQ to Objects over an IEnumerable collection.
+            //
+
+            var responseHeaders = new Dictionary<string, string>();
+            
+            foreach (string key in resp.Headers.Keys)
+            {
+                responseHeaders.Add(key, resp.Headers[key].ToString());
+            }
+
+            ResponseHeaders = responseHeaders;
+
             return txtRdr.ReadToEnd();
         }
 
@@ -204,7 +224,7 @@ namespace LinqToTwitter
         /// <param name="fileName">name of file to upload</param>
         /// <param name="url">url to upload to</param>
         /// <returns>IQueryable</returns>
-        public IQueryable PostTwitterFile(string filePath, string url, IRequestProcessor requestProcessor)
+        public IQueryable PostTwitterFile(string filePath, Dictionary<string, string> parameters, string url, IRequestProcessor requestProcessor)
         {
             var file = Path.GetFileName(filePath);
 
@@ -232,8 +252,19 @@ namespace LinqToTwitter
             var contentDisposition = string.Format("Content-Disposition:form-data); name=\"image\"); filename=\"{0}\"\r\nContent-Type: image/{1}\r\n\r\n", file, imageType);
             var endContentBoundary = string.Format("\r\n--{0}--\r\n", contentBoundaryBase);
 
+            var formDataSB = new StringBuilder();
+
+            if (parameters != null && parameters.Count > 0)
+            {
+                foreach (var param in parameters)
+                {
+                    formDataSB.AppendFormat("--{0}\r\nContent-Disposition: form-data; name=\"{1}\"\r\n\r\n{2}\r\n", contentBoundaryBase, param.Key, param.Value);
+                }
+            }
+
             byte[] fileBytes = null;
             string fileByteString = null;
+            Encoding encoding = Encoding.GetEncoding("iso-8859-1");
 
             using (var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
             {
@@ -248,11 +279,12 @@ namespace LinqToTwitter
                 }
 
                 memStr.Position = 0;
-                fileByteString = Encoding.GetEncoding("iso-8859-1").GetString(memStr.GetBuffer());
+                fileByteString = encoding.GetString(memStr.GetBuffer());
             }
 
             fileBytes =
-                Encoding.GetEncoding("iso-8859-1").GetBytes(
+                encoding.GetBytes(
+                    formDataSB.ToString() +
                     beginContentBoundary +
                     contentDisposition +
                     fileByteString +

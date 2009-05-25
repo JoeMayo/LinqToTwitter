@@ -19,6 +19,11 @@ namespace LinqToTwitter
         string Password { get; set; }
 
         /// <summary>
+        /// list of response headers from query
+        /// </summary>
+        Dictionary<string, string> ResponseHeaders { get; set; }
+
+        /// <summary>
         /// Gets and sets HTTP UserAgent header
         /// </summary>
         string UserAgent { get; set; }
@@ -48,7 +53,7 @@ namespace LinqToTwitter
         /// <param name="fileName">name of file to upload</param>
         /// <param name="url">url to upload to</param>
         /// <returns>IQueryable</returns>
-        IQueryable PostTwitterFile(string filePath, string url, IRequestProcessor requestProcessor);
+        IQueryable PostTwitterFile(string filePath, Dictionary<string, string> parameters, string url, IRequestProcessor requestProcessor);
 
         /// <summary>
         /// makes HTTP call to Twitter API
