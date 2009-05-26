@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Collections;
 
 namespace LinqToTwitter
 {
@@ -67,7 +68,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="twitterResponse">xml with Twitter response</param>
         /// <returns>IQueryable of User</returns>
-        public IQueryable ProcessResults(System.Xml.Linq.XElement twitterResponse)
+        public IList ProcessResults(System.Xml.Linq.XElement twitterResponse)
         {
             var acct = new Account();
 
@@ -108,8 +109,8 @@ namespace LinqToTwitter
             }
 
             var acctList = new List<Account> { acct };
-
-            return acctList.AsQueryable<Account>();
+            return acctList;
+            //return acctList.AsQueryable<Account>();
         }
     }
 }

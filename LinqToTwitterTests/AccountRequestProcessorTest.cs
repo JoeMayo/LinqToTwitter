@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Xml.Linq;
 using System.Linq;
 using System;
+using System.Collections;
 
 namespace LinqToTwitterTests
 {
@@ -125,7 +126,7 @@ namespace LinqToTwitterTests
         {
             AccountRequestProcessor target = new AccountRequestProcessor();
             XElement twitterResponse = XElement.Parse(m_testVerifyCredentialsQueryResponse);
-            IQueryable actual = target.ProcessResults(twitterResponse);
+            IList actual = target.ProcessResults(twitterResponse);
             var acct = actual.Cast<Account>().ToList().FirstOrDefault();
 
             Assert.AreEqual("Joe Mayo", acct.User.Name);
@@ -139,7 +140,7 @@ namespace LinqToTwitterTests
         {
             AccountRequestProcessor target = new AccountRequestProcessor();
             XElement twitterResponse = XElement.Parse(m_testRateLimitStatusQueryResponse);
-            IQueryable actual = target.ProcessResults(twitterResponse);
+            IList actual = target.ProcessResults(twitterResponse);
             var acct = actual.Cast<Account>().ToList().FirstOrDefault();
 
             Assert.AreEqual(100, acct.RateLimitStatus.HourlyLimit);
@@ -154,7 +155,7 @@ namespace LinqToTwitterTests
         {
             AccountRequestProcessor target = new AccountRequestProcessor();
             XElement twitterResponse = XElement.Parse(m_testInvalidValueQueryResponse);
-            IQueryable actual = target.ProcessResults(twitterResponse);
+            IList actual = target.ProcessResults(twitterResponse);
             var acct = actual.Cast<Account>().ToList().FirstOrDefault();
         }
 
@@ -166,7 +167,7 @@ namespace LinqToTwitterTests
         {
             AccountRequestProcessor target = new AccountRequestProcessor();
             XElement twitterResponse = XElement.Parse(m_testEndSessionResponse);
-            IQueryable actual = target.ProcessResults(twitterResponse);
+            IList actual = target.ProcessResults(twitterResponse);
             var acct = actual.Cast<Account>().ToList().FirstOrDefault();
 
             Assert.AreEqual("Logged out.", acct.EndSessionStatus.Error);

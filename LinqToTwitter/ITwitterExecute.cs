@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Collections;
 namespace LinqToTwitter
 {
     /// <summary>
@@ -45,7 +46,7 @@ namespace LinqToTwitter
         /// <param name="parameters">parameters to post</param>
         /// <param name="requestProcessor">IRequestProcessor to handle response</param>
         /// <returns>response from server, handled by the requestProcessor</returns>
-        IQueryable ExecuteTwitter(string url, Dictionary<string, string> parameters, IRequestProcessor requestProcessor);
+        IList ExecuteTwitter(string url, Dictionary<string, string> parameters, IRequestProcessor requestProcessor);
 
         /// <summary>
         /// performs HTTP POST file upload to Twitter
@@ -53,13 +54,13 @@ namespace LinqToTwitter
         /// <param name="fileName">name of file to upload</param>
         /// <param name="url">url to upload to</param>
         /// <returns>IQueryable</returns>
-        IQueryable PostTwitterFile(string filePath, Dictionary<string, string> parameters, string url, IRequestProcessor requestProcessor);
+        IList PostTwitterFile(string filePath, Dictionary<string, string> parameters, string url, IRequestProcessor requestProcessor);
 
         /// <summary>
         /// makes HTTP call to Twitter API
         /// </summary>
         /// <param name="url">URL with all query info</param>
         /// <returns>List of objects to return</returns>
-        IQueryable QueryTwitter(string url, IRequestProcessor requestProcessor);
+        IList QueryTwitter(string url, IRequestProcessor requestProcessor);
     }
 }

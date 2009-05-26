@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
+using System.Collections;
 
 namespace LinqToTwitter
 {
@@ -180,7 +181,7 @@ namespace LinqToTwitter
         /// <param name="parameters">list of parameters from expression tree</param>
         /// <param name="url">base url</param>
         /// <returns>base url + parameters</returns>
-        public IQueryable ProcessResults(XElement twitterResponse)
+        public IList ProcessResults(XElement twitterResponse)
         {
             var blockList = new List<Blocks>();
 
@@ -217,7 +218,8 @@ namespace LinqToTwitter
                 throw new ArgumentException("Account Results Processing expected a Twitter response for either a user or hash, but received an unknown element type instead.");
             }
 
-            return blockList.AsQueryable<Blocks>();
+            return blockList;
+            //return blockList.AsQueryable<Blocks>();
         }
     }
 }

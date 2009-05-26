@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Linq.Expressions;
+using System.Collections;
 
 namespace LinqToTwitter
 {
@@ -217,7 +218,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="twitterResponse">xml with Twitter response</param>
         /// <returns>IQueryable of User</returns>
-        public IQueryable ProcessResults(System.Xml.Linq.XElement twitterResponse)
+        public IList ProcessResults(System.Xml.Linq.XElement twitterResponse)
         {
             var responseItems = twitterResponse.Elements("user").ToList();
 
@@ -228,138 +229,142 @@ namespace LinqToTwitter
                 responseItems.Add(twitterResponse);
             }
 
-            var tempUserProtected = false;
-            var tempFollowersCount = 0;
-            var tempFriendsCount = 0;
-            var tempFavoritesCount = 0;
-            var tempStatusesCount = 0;
-            var tempStatusTruncated = false;
-            var tempStatusFavorited = false;
+            //var tempUserProtected = false;
+            //var tempFollowersCount = 0;
+            //var tempFriendsCount = 0;
+            //var tempFavoritesCount = 0;
+            //var tempStatusesCount = 0;
+            //var tempStatusTruncated = false;
+            //var tempStatusFavorited = false;
 
             var userList =
                 from user in responseItems
-                let canParseProtected = 
-                    bool.TryParse(user.Element("protected").Value, out tempUserProtected)
-                let followersCount = 
-                    int.TryParse(user.Element("followers_count").Value, out tempFollowersCount)
-                let friendsCount =
-                    user.Element("friends_count") == null ? 
-                        false :
-                        int.TryParse(user.Element("friends_count").Value, out tempFriendsCount)
-                let userDateParts =
-                    user.Element("created_at") == null ?
-                        null :
-                        user.Element("created_at").Value.Split(' ')
-                let userCreatedAtDate =
-                    userDateParts == null ?
-                        DateTime.MinValue :
-                        DateTime.Parse(
-                            string.Format("{0} {1} {2} {3} GMT",
-                            userDateParts[1],
-                            userDateParts[2],
-                            userDateParts[5],
-                            userDateParts[3]))
-                let favoritesCount =
-                    user.Element("favourites_count") == null ? 
-                        false :
-                        int.TryParse(user.Element("favourites_count").Value, out tempFavoritesCount)
-                let statusesCount =
-                    user.Element("statuses_count") == null ?
-                        false :
-                        int.TryParse(user.Element("statuses_count").Value, out tempStatusesCount)
-                let status = 
-                    user.Element("status")
-                let statusDateParts =
-                    status == null ?
-                        null :
-                        status.Element("created_at").Value.Split(' ')
-                let statusCreatedAtDate =
-                    statusDateParts == null ?
-                        DateTime.MinValue :
-                        DateTime.Parse(
-                            string.Format("{0} {1} {2} {3} GMT",
-                            statusDateParts[1],
-                            statusDateParts[2],
-                            statusDateParts[5],
-                            statusDateParts[3]))
-                let canParseTruncated =
-                    status == null ?
-                        false :
-                        bool.TryParse(status.Element("truncated").Value, out tempStatusTruncated)
-                let canParseFavorited =
-                    status == null ?
-                        false :
-                        bool.TryParse(status.Element("favorited").Value, out tempStatusFavorited)
-                select new User
-                {
-                    ID = user.Element("id").Value,
-                    Name = user.Element("name").Value,
-                    ScreenName = user.Element("screen_name").Value,
-                    Location = user.Element("location").Value,
-                    Description = user.Element("description").Value,
-                    ProfileImageUrl = user.Element("profile_image_url").Value,
-                    URL = user.Element("url").Value,
-                    Protected = tempUserProtected,
-                    FollowersCount = tempFollowersCount,
-                    ProfileBackgroundColor = 
-                        user.Element("profile_background_color") == null ?
-                            string.Empty :
-                            user.Element("profile_background_color").Value,
-                    ProfileTextColor = 
-                        user.Element("profile_text_color") == null ?
-                            string.Empty :
-                            user.Element("profile_text_color").Value,
-                    ProfileLinkColor = 
-                        user.Element("profile_link_color") == null ?
-                            string.Empty :
-                            user.Element("profile_link_color").Value,
-                    ProfileSidebarFillColor = 
-                        user.Element("profile_sidebar_fill_color") == null ?
-                            string.Empty :
-                            user.Element("profile_sidebar_fill_color").Value,
-                    ProfileSidebarBorderColor = 
-                        user.Element("profile_sidebar_border_color") == null ?
-                            string.Empty :
-                            user.Element("profile_sidebar_border_color").Value,
-                    FriendsCount = tempFriendsCount,
-                    CreatedAt = userCreatedAtDate,
-                    FavoritesCount = tempFavoritesCount,
-                    UtcOffset = 
-                        user.Element("utc_offset") == null ?
-                            string.Empty :
-                            user.Element("utc_offset").Value,
-                    TimeZone = 
-                        user.Element("time_zone") == null ?
-                            string.Empty :
-                            user.Element("time_zone").Value,
-                    ProfileBackgroundImageUrl = 
-                        user.Element("profile_background_image_url") == null ?
-                            string.Empty :
-                            user.Element("profile_background_image_url").Value,
-                    ProfileBackgroundTile = 
-                        user.Element("profile_background_tile") == null ?
-                            string.Empty :
-                            user.Element("profile_background_tile").Value,
-                    StatusesCount = tempStatusesCount,
-                    Status = 
-                        status == null ?
-                            null :
-                            new Status
-                            {
-                                CreatedAt = statusCreatedAtDate,
-                                ID = status.Element("id").Value,
-                                Text = status.Element("text").Value,
-                                Source = status.Element("source").Value,
-                                Truncated = tempStatusTruncated,
-                                InReplyToStatusID = status.Element("in_reply_to_status_id").Value,
-                                InReplyToUserID = status.Element("in_reply_to_user_id").Value,
-                                Favorited = tempStatusFavorited,
-                                InReplyToScreenName = status.Element("in_reply_to_screen_name").Value
-                            }
-                        };
+                select new User().CreateUser(user);
 
-            var queryableUser = userList.AsQueryable<User>();
-            return queryableUser;
+            return userList.ToList();
+
+            //    let canParseProtected = 
+            //        bool.TryParse(user.Element("protected").Value, out tempUserProtected)
+            //    let followersCount = 
+            //        int.TryParse(user.Element("followers_count").Value, out tempFollowersCount)
+            //    let friendsCount =
+            //        user.Element("friends_count") == null ? 
+            //            false :
+            //            int.TryParse(user.Element("friends_count").Value, out tempFriendsCount)
+            //    let userDateParts =
+            //        user.Element("created_at") == null ?
+            //            null :
+            //            user.Element("created_at").Value.Split(' ')
+            //    let userCreatedAtDate =
+            //        userDateParts == null ?
+            //            DateTime.MinValue :
+            //            DateTime.Parse(
+            //                string.Format("{0} {1} {2} {3} GMT",
+            //                userDateParts[1],
+            //                userDateParts[2],
+            //                userDateParts[5],
+            //                userDateParts[3]))
+            //    let favoritesCount =
+            //        user.Element("favourites_count") == null ? 
+            //            false :
+            //            int.TryParse(user.Element("favourites_count").Value, out tempFavoritesCount)
+            //    let statusesCount =
+            //        user.Element("statuses_count") == null ?
+            //            false :
+            //            int.TryParse(user.Element("statuses_count").Value, out tempStatusesCount)
+            //    let status = 
+            //        user.Element("status")
+            //    let statusDateParts =
+            //        status == null ?
+            //            null :
+            //            status.Element("created_at").Value.Split(' ')
+            //    let statusCreatedAtDate =
+            //        statusDateParts == null ?
+            //            DateTime.MinValue :
+            //            DateTime.Parse(
+            //                string.Format("{0} {1} {2} {3} GMT",
+            //                statusDateParts[1],
+            //                statusDateParts[2],
+            //                statusDateParts[5],
+            //                statusDateParts[3]))
+            //    let canParseTruncated =
+            //        status == null ?
+            //            false :
+            //            bool.TryParse(status.Element("truncated").Value, out tempStatusTruncated)
+            //    let canParseFavorited =
+            //        status == null ?
+            //            false :
+            //            bool.TryParse(status.Element("favorited").Value, out tempStatusFavorited)
+            //    select new User
+            //    {
+            //        ID = user.Element("id").Value,
+            //        Name = user.Element("name").Value,
+            //        ScreenName = user.Element("screen_name").Value,
+            //        Location = user.Element("location").Value,
+            //        Description = user.Element("description").Value,
+            //        ProfileImageUrl = user.Element("profile_image_url").Value,
+            //        URL = user.Element("url").Value,
+            //        Protected = tempUserProtected,
+            //        FollowersCount = tempFollowersCount,
+            //        ProfileBackgroundColor = 
+            //            user.Element("profile_background_color") == null ?
+            //                string.Empty :
+            //                user.Element("profile_background_color").Value,
+            //        ProfileTextColor = 
+            //            user.Element("profile_text_color") == null ?
+            //                string.Empty :
+            //                user.Element("profile_text_color").Value,
+            //        ProfileLinkColor = 
+            //            user.Element("profile_link_color") == null ?
+            //                string.Empty :
+            //                user.Element("profile_link_color").Value,
+            //        ProfileSidebarFillColor = 
+            //            user.Element("profile_sidebar_fill_color") == null ?
+            //                string.Empty :
+            //                user.Element("profile_sidebar_fill_color").Value,
+            //        ProfileSidebarBorderColor = 
+            //            user.Element("profile_sidebar_border_color") == null ?
+            //                string.Empty :
+            //                user.Element("profile_sidebar_border_color").Value,
+            //        FriendsCount = tempFriendsCount,
+            //        CreatedAt = userCreatedAtDate,
+            //        FavoritesCount = tempFavoritesCount,
+            //        UtcOffset = 
+            //            user.Element("utc_offset") == null ?
+            //                string.Empty :
+            //                user.Element("utc_offset").Value,
+            //        TimeZone = 
+            //            user.Element("time_zone") == null ?
+            //                string.Empty :
+            //                user.Element("time_zone").Value,
+            //        ProfileBackgroundImageUrl = 
+            //            user.Element("profile_background_image_url") == null ?
+            //                string.Empty :
+            //                user.Element("profile_background_image_url").Value,
+            //        ProfileBackgroundTile = 
+            //            user.Element("profile_background_tile") == null ?
+            //                string.Empty :
+            //                user.Element("profile_background_tile").Value,
+            //        StatusesCount = tempStatusesCount,
+            //        Status = 
+            //            status == null ?
+            //                null :
+            //                new Status
+            //                {
+            //                    CreatedAt = statusCreatedAtDate,
+            //                    ID = status.Element("id").Value,
+            //                    Text = status.Element("text").Value,
+            //                    Source = status.Element("source").Value,
+            //                    Truncated = tempStatusTruncated,
+            //                    InReplyToStatusID = status.Element("in_reply_to_status_id").Value,
+            //                    InReplyToUserID = status.Element("in_reply_to_user_id").Value,
+            //                    Favorited = tempStatusFavorited,
+            //                    InReplyToScreenName = status.Element("in_reply_to_screen_name").Value
+            //                }
+            //            };
+
+            //var queryableUser = userList.AsQueryable<User>();
+            //return queryableUser;
         }
 
         #endregion

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Collections;
 
 namespace LinqToTwitter
 {
@@ -48,13 +49,13 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="twitterResponse">response from twitter</param>
         /// <returns>true</returns>
-        public IQueryable ProcessResults(System.Xml.Linq.XElement twitterResponse)
+        public IList ProcessResults(System.Xml.Linq.XElement twitterResponse)
         {
             var response = twitterResponse.Value;
 
             var helpList = new List<bool> { bool.Parse(response) };
-
-            return helpList.AsQueryable();
+            return helpList;
+            //return helpList.AsQueryable();
         }
 
         #endregion

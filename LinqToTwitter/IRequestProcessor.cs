@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Xml.Linq;
 using System.Linq.Expressions;
+using System.Collections;
 
 namespace LinqToTwitter
 {
@@ -12,6 +13,6 @@ namespace LinqToTwitter
         string BaseUrl { get; set; }
         Dictionary<string, string> GetParameters(LambdaExpression lambdaExpression);
         string BuildURL(Dictionary<string, string> parameters);
-        IQueryable ProcessResults(XElement twitterResponse);
+        IList ProcessResults(XElement twitterResponse);
     }
 }

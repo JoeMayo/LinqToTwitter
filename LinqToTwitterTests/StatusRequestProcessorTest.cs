@@ -192,7 +192,7 @@ namespace LinqToTwitterTests
             var statProc = new StatusRequestProcessor() { BaseUrl = "http://twitter.com/" };
             XElement twitterResponse = XElement.Load(new StringReader(m_testQueryResponse));
             var actual = statProc.ProcessResults(twitterResponse);
-            var actualQuery = actual as IQueryable<Status>;
+            var actualQuery = actual as IList<Status>;
  
             Assert.IsNotNull(actualQuery);
             Assert.AreEqual(actualQuery.Count(), 2);
@@ -207,7 +207,7 @@ namespace LinqToTwitterTests
             var statProc = new StatusRequestProcessor() { BaseUrl = "http://twitter.com/" };
             XElement twitterResponse = XElement.Load(new StringReader(m_testQueryResponse));
             var actual = statProc.ProcessResults(twitterResponse.Descendants("status").First());
-            var actualQuery = actual as IQueryable<Status>;
+            var actualQuery = actual as IList<Status>;
 
             Assert.IsNotNull(actualQuery);
             Assert.AreEqual(actualQuery.Count(), 1);

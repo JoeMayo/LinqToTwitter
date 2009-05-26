@@ -5,6 +5,7 @@ using System.Text;
 using System.Linq.Expressions;
 using System.Xml.Linq;
 using System.Web;
+using System.Collections;
 
 namespace LinqToTwitter
 {
@@ -157,7 +158,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="twitterResponse">xml with Twitter response</param>
         /// <returns>IQueryable of User</returns>
-        public IQueryable ProcessResults(XElement twitterResponse)
+        public IList ProcessResults(XElement twitterResponse)
         {
             var responseItems = twitterResponse.Elements("status").ToList();
 
@@ -198,7 +199,8 @@ namespace LinqToTwitter
                        User = new User().CreateUser(user)
                    };
 
-           return statusList.AsQueryable<Favorites>();
+            return statusList.ToList();
+           //return statusList.AsQueryable<Favorites>();
         }
     }
 }

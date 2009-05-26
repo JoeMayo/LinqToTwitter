@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Linq.Expressions;
+using System.Collections;
 
 namespace LinqToTwitter
 {
@@ -141,7 +142,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="twitterResponse">xml with Twitter response</param>
         /// <returns>IQueryable of User</returns>
-        public IQueryable ProcessResults(System.Xml.Linq.XElement twitterResponse)
+        public IList ProcessResults(System.Xml.Linq.XElement twitterResponse)
         {
             var idList =
                 from id in twitterResponse.Elements("id").ToList()
@@ -150,7 +151,8 @@ namespace LinqToTwitter
                     ID = int.Parse(id.Value)
                 };
 
-            return idList.AsQueryable<SocialGraph>();
+            return idList.ToList();
+            //return idList.AsQueryable<SocialGraph>();
         }
     }
 }

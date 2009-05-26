@@ -5,6 +5,7 @@ using System.Text;
 using System.Web;
 using System.Xml.Linq;
 using System.Xml;
+using System.Collections;
 
 namespace LinqToTwitter
 {
@@ -161,7 +162,7 @@ The blog system I'm us.. &lt;a href=""http://tinyurl.com/cvdbvr""&gt;http://tiny
         /// </summary>
         /// <param name="twitterResponse">xml with Twitter response</param>
         /// <returns>IQueryable of User</returns>
-        public IQueryable ProcessResults(System.Xml.Linq.XElement twitterResponse)
+        public IList ProcessResults(System.Xml.Linq.XElement twitterResponse)
         {
             XNamespace atom = "http://www.w3.org/2005/Atom";
             XNamespace twitter = "http://api.twitter.com/";
@@ -251,7 +252,8 @@ The blog system I'm us.. &lt;a href=""http://tinyurl.com/cvdbvr""&gt;http://tiny
                 searchResult
             };
 
-            return searchList.AsQueryable();
+            return searchList;
+            //return searchList.AsQueryable();
         }
     }
 }

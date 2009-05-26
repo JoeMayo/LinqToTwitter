@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Linq.Expressions;
+using System.Collections;
 
 namespace LinqToTwitter
 {
@@ -216,7 +217,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="twitterResponse">xml with Twitter response</param>
         /// <returns>IQueryable of DirectMessage</returns>
-        public IQueryable ProcessResults(System.Xml.Linq.XElement twitterResponse)
+        public IList ProcessResults(System.Xml.Linq.XElement twitterResponse)
         {
             var responseItems = twitterResponse.Elements("direct_message").ToList();
 
@@ -229,7 +230,7 @@ namespace LinqToTwitter
 
             var user = new User();
 
-            var userList =
+            var dmList =
                 from dm in responseItems
                 let sender =
                     dm.Element("sender")
@@ -253,8 +254,9 @@ namespace LinqToTwitter
                     Recipient = user.CreateUser(recipient)
                 };
 
-            var queryableUser = userList.AsQueryable<DirectMessage>();
-            return queryableUser;
+            return dmList.ToList();
+            //var queryableUser = userList.AsQueryable<DirectMessage>();
+            //return queryableUser;
         }
 
         #endregion

@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Xml.Linq;
 using System.Linq;
 using System;
+using System.Collections;
 
 namespace LinqToTwitterTests
 {
@@ -77,8 +78,7 @@ namespace LinqToTwitterTests
             FriendshipRequestProcessor target = new FriendshipRequestProcessor();
             XElement twitterResponse = XElement.Parse(m_testQueryResponse);
             bool expected = true;
-            IQueryable actual;
-            actual = target.ProcessResults(twitterResponse);
+            IList actual = target.ProcessResults(twitterResponse);
             var isFriend = actual.Cast<Friendship>().First().IsFriend;
             Assert.AreEqual(expected, actual.Cast<Friendship>().First().IsFriend);
         }

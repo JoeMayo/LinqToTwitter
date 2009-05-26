@@ -67,7 +67,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="readOnly">true for read-only, otherwise read/Write</param>
         /// <returns>The url with a valid request token, or a null string.</returns>
-        public string AuthorizationLinkGet(string requestToken, string authorizeUrl, bool readOnly)
+        public string AuthorizationLinkGet(string requestToken, string authorizeUrl, bool readOnly, bool forceLogin)
         {
             string ret = null;
             string response = oAuthWebRequest(HttpMethod.GET, requestToken, String.Empty);
@@ -86,6 +86,12 @@ namespace LinqToTwitter
                 if (readOnly)
                 {
                     ret += prefixChar + "oauth_access_type=read";
+                    prefixChar = "&";
+                }
+
+                if (readOnly)
+                {
+                    ret += prefixChar + "force_login=true";
                 }
             }
             return ret;

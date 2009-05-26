@@ -7,6 +7,7 @@ using System.Net;
 using System.IO;
 using System.Xml;
 using System.Runtime.Serialization.Json;
+using System.Collections;
 
 namespace LinqToTwitter
 {
@@ -158,7 +159,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="url">URL with all query info</param>
         /// <returns>List of objects to return</returns>
-        public IQueryable QueryTwitter(string url, IRequestProcessor requestProcessor)
+        public IList QueryTwitter(string url, IRequestProcessor requestProcessor)
         {
             if (AuthorizedViaOAuth)
             {
@@ -224,7 +225,7 @@ namespace LinqToTwitter
         /// <param name="fileName">name of file to upload</param>
         /// <param name="url">url to upload to</param>
         /// <returns>IQueryable</returns>
-        public IQueryable PostTwitterFile(string filePath, Dictionary<string, string> parameters, string url, IRequestProcessor requestProcessor)
+        public IList PostTwitterFile(string filePath, Dictionary<string, string> parameters, string url, IRequestProcessor requestProcessor)
         {
             var file = Path.GetFileName(filePath);
 
@@ -355,7 +356,7 @@ namespace LinqToTwitter
         /// <param name="parameters">parameters to post</param>
         /// <param name="requestProcessor">IRequestProcessor to handle response</param>
         /// <returns>response from server, handled by the requestProcessor</returns>
-        public IQueryable ExecuteTwitter(string url, Dictionary<string, string> parameters, IRequestProcessor requestProcessor)
+        public IList ExecuteTwitter(string url, Dictionary<string, string> parameters, IRequestProcessor requestProcessor)
         {
             string paramsJoined = string.Empty;
 

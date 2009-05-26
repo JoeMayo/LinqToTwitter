@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
+using System.Collections;
 
 namespace LinqToTwitter
 {
@@ -251,7 +252,7 @@ namespace LinqToTwitter
         /// <param name="parameters">list of parameters from expression tree</param>
         /// <param name="url">base url</param>
         /// <returns>base url + parameters</returns>
-        public IQueryable ProcessResults(System.Xml.Linq.XElement twitterResponse)
+        public IList ProcessResults(System.Xml.Linq.XElement twitterResponse)
         {
             XNamespace itemNS = "item";
 
@@ -287,11 +288,12 @@ namespace LinqToTwitter
                         trend.Element("url").Value
                  select new Trend
                  {
-                    Name = trend.Element("name").Value,
-                    Query = query,
-                    AsOf = asOf
+                     Name = trend.Element("name").Value,
+                     Query = query,
+                     AsOf = asOf
                  })
-                 .AsQueryable<Trend>();
+                 .ToList();
+                 //.AsQueryable<Trend>();
         }
     }
 }

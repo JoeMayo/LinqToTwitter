@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Xml.Linq;
 using System.Linq;
 using System;
+using System.Collections;
 
 namespace LinqToTwitterTests
 {
@@ -128,7 +129,7 @@ The blog system I'm us.. &lt;a href=""http://tinyurl.com/cvdbvr""&gt;http://tiny
         {
             SearchRequestProcessor target = new SearchRequestProcessor();
             XElement twitterResponse = XElement.Parse(m_testQueryResponse);
-            IQueryable actual = target.ProcessResults(twitterResponse);
+            IList actual = target.ProcessResults(twitterResponse);
             var result = actual.Cast<Search>().First();
             Assert.AreEqual(2, result.Entries.Count);
         }
@@ -141,7 +142,7 @@ The blog system I'm us.. &lt;a href=""http://tinyurl.com/cvdbvr""&gt;http://tiny
         {
             SearchRequestProcessor target = new SearchRequestProcessor();
             XElement twitterResponse = XElement.Parse(m_emptyResponse);
-            IQueryable actual = target.ProcessResults(twitterResponse);
+            IList actual = target.ProcessResults(twitterResponse);
             var result = actual.Cast<Search>().First();
             Assert.AreEqual(0, result.Entries.Count);
         }

@@ -4,7 +4,7 @@ namespace LinqToTwitter
     public interface IOAuthTwitter
     {
         void AccessTokenGet(string authToken, string accessTokenUrl, out string screenName, out string userID);
-        string AuthorizationLinkGet(string requestToken, string authorizeUrl, bool readOnly);
+        string AuthorizationLinkGet(string requestToken, string authorizeUrl, bool readOnly, bool forceLogin);
         string GetOAuthAuthorizationHeader(string url, System.Collections.Generic.Dictionary<string, string> parameters);
         void GetOAuthQueryString(HttpMethod method, string url, out string outUrl, out string queryString);
         void GetOAuthQueryStringForPost(string url, System.Collections.Generic.Dictionary<string, string> parameters, out string outUrl, out string postData);

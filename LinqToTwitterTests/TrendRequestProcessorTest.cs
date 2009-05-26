@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Xml.Linq;
 using System.Linq;
 using System;
+using System.Collections;
 
 namespace LinqToTwitterTests
 {
@@ -165,7 +166,7 @@ namespace LinqToTwitterTests
         {
             TrendRequestProcessor target = new TrendRequestProcessor();
             XElement twitterResponse = XElement.Parse(m_testTrendQueryResponse);
-            IQueryable actual = target.ProcessResults(twitterResponse);
+            IList actual = target.ProcessResults(twitterResponse);
             var trends = actual.Cast<Trend>().ToList();
             Assert.AreEqual(10, trends.Count);
             Assert.AreNotEqual(DateTime.MinValue.Date, trends[0].AsOf.Date);
@@ -179,7 +180,7 @@ namespace LinqToTwitterTests
         {
             TrendRequestProcessor target = new TrendRequestProcessor();
             XElement twitterResponse = XElement.Parse(m_testCurrentTrendQueryResponse);
-            IQueryable actual = target.ProcessResults(twitterResponse);
+            IList actual = target.ProcessResults(twitterResponse);
             var trends = actual.Cast<Trend>().ToList();
             Assert.AreEqual(10, trends.Count);
             Assert.AreNotEqual(DateTime.MinValue.Date, trends[0].AsOf.Date);

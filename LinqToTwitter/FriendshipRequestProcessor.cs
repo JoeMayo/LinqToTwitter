@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Linq.Expressions;
+using System.Collections;
 
 namespace LinqToTwitter
 {
@@ -120,15 +121,16 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="twitterResponse">xml with Twitter response</param>
         /// <returns>IQueryable of User</returns>
-        public IQueryable ProcessResults(System.Xml.Linq.XElement twitterResponse)
+        public IList ProcessResults(System.Xml.Linq.XElement twitterResponse)
         {
             var friendList = new List<Friendship>()
             {
                 new Friendship { IsFriend = bool.Parse(twitterResponse.Value) }
             };
 
-            var queryableStatus = friendList.AsQueryable<Friendship>();
-            return queryableStatus;
+            return friendList;
+            //var queryableStatus = friendList.AsQueryable<Friendship>();
+            //return queryableStatus;
         }
     }
 }

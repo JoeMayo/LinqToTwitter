@@ -187,7 +187,7 @@ namespace LinqToTwitterTests
             var dmProc = new DirectMessageRequestProcessor() { BaseUrl = "http://twitter.com/" };
             XElement twitterResponse = XElement.Load(new StringReader(m_testQueryResponse));
             var actual = dmProc.ProcessResults(twitterResponse);
-            var actualQuery = actual as IQueryable<DirectMessage>;
+            var actualQuery = actual as IList<DirectMessage>;
 
             Assert.IsNotNull(actualQuery);
             Assert.AreEqual(1 ,actualQuery.Count());

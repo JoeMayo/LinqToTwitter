@@ -413,10 +413,11 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="readOnly">true for read-only, otherwise read/Write</param>
         /// <returns>The url with a valid request token, or a null string.</returns>
-        public string GetAuthorizationPageLink(bool readOnly)
+        public string GetAuthorizationPageLink(bool readOnly, bool forceLogin)
         {
             // TODO: setting readOnly to true doesn't seem to be working; no Twitter API documentation available; check again later - Joe
-            return OAuthTwitter.AuthorizationLinkGet(OAuthRequestTokenUrl, OAuthAuthorizeUrl, readOnly);
+            // TODO: setting forceLogin to true doesn't seem to be working; no Twitter API documentation available; fix for bug in Twitter API pending; check again later - Joe
+            return OAuthTwitter.AuthorizationLinkGet(OAuthRequestTokenUrl, OAuthAuthorizeUrl, readOnly, forceLogin);
         }
 
         /// <summary>
@@ -444,10 +445,14 @@ namespace LinqToTwitter
 
         #region Response Headers
 
-        // rate limit constants
-        private const string XRateLimitLimit = "X-RateLimit-Limit";
-        private const string XRateLimitRemaining = "X-RateLimit-Remaining";
-        private const string XRateLimitReset = "X-RateLimit-Reset";
+        //
+        // response header constants
+        //
+
+        public const string XRateLimitLimitKey = "X-RateLimit-Limit";
+        public const string XRateLimitRemainingKey = "X-RateLimit-Remaining";
+        public const string XRateLimitResetKey = "X-RateLimit-Reset";
+        public const string RetryAfterKey = "Retry-After";
 
         /// <summary>
         /// retrieves a specified response header, converting it to an int
@@ -499,7 +504,7 @@ namespace LinqToTwitter
         {
             get
             {
-                return GetResponseHeaderAsInt(XRateLimitLimit);
+                return GetResponseHeaderAsInt(XRateLimitLimitKey);
             }
         }
 
@@ -515,7 +520,7 @@ namespace LinqToTwitter
         {
             get
             {
-                return GetResponseHeaderAsInt(XRateLimitRemaining);
+                return GetResponseHeaderAsInt(XRateLimitRemainingKey);
             }
         }
 
@@ -531,7 +536,24 @@ namespace LinqToTwitter
         {
             get
             {
-                return GetResponseHeaderAsInt(XRateLimitReset);
+                return GetResponseHeaderAsInt(XRateLimitResetKey);
+            }
+        }
+
+        /// <summary>
+        /// UTC time in ticks until rate limit resets
+        /// returned by the most recent search query 
+        /// that fails with an HTTP 503
+        /// </summary>
+        /// <remarks>
+        /// Returns -1 if information isn't available,
+        /// i.e. you haven't exceeded search rate yet
+        /// </remarks>
+        public int RetryAfter
+        {
+            get
+            {
+                return GetResponseHeaderAsInt(RetryAfterKey);
             }
         }
 
@@ -544,12 +566,12 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="expression">ExpressionTree to parse</param>
         /// <returns>list of objects with query results</returns>
-        internal IQueryable Execute(Expression expression)
+        internal object Execute(Expression expression, bool isEnumerable)
         {
             Dictionary<string, string> parameters = null;
 
             // request processor is specific to request type (i.e. Status, User, etc.)
-            var reqProc = CreateRequestProcessor(expression);
+            var reqProc = CreateRequestProcessor(expression, isEnumerable);
 
             // we need the where expression because it contains the criteria for the request
             var whereFinder = new FirstWhereClauseFinder();
@@ -572,7 +594,14 @@ namespace LinqToTwitter
             // execute the query and return results
             var queryableList = TwitterExecute.QueryTwitter(url, reqProc);
 
-            return queryableList;
+            if (isEnumerable)
+            {
+                return queryableList;
+            }
+            else
+            {
+                return queryableList[0];
+            }
         }
 
         /// <summary>
@@ -580,9 +609,21 @@ namespace LinqToTwitter
         /// </summary>
         /// <typeparam name="T">type of request</typeparam>
         /// <returns>request processor matching type parameter</returns>
-        private IRequestProcessor CreateRequestProcessor(Expression expression)
+        private IRequestProcessor CreateRequestProcessor(Expression expression, bool isEnumerable)
         {
-            var requestType = expression.Type.GetGenericArguments()[0].Name;
+            string requestType = string.Empty;
+
+            if (expression != null)
+            {
+                if (isEnumerable)
+                {
+                    requestType = expression.Type.GetGenericArguments()[0].Name; 
+                }
+                else
+                {
+                    requestType = expression.Type.Name;
+                } 
+            }
 
             IRequestProcessor req;
 
@@ -632,7 +673,6 @@ namespace LinqToTwitter
 
         #region Twitter Execution API
 
-
         /// <summary>
         /// sends a status update - overload to make inReplyToStatusID optional
         /// </summary>
@@ -675,33 +715,7 @@ namespace LinqToTwitter
                     },
                     new StatusRequestProcessor());
 
-            return (results as IQueryable<Status>).FirstOrDefault();
-        }
-
-        // TODO: Remove Destroy at v1.0 - Joe
-
-        /// <summary>
-        /// deletes a tweet
-        /// </summary>
-        /// <param name="id">id of tweet</param>
-        /// <returns>deleted tweet</returns>
-        [Obsolete("Destroy is on the fast track to deprecation.  Please use DestroyStatus instead, which is more descriptive and consistent with other DestroyXxx methods. Thanks for using LINQ to Twitter - Joe :)", true)]
-        public IQueryable<Status> Destroy(string id)
-        {
-            if (string.IsNullOrEmpty(id))
-            {
-                throw new ArgumentException("id is a required parameter.", "id");
-            }
-
-            var destroyUrl = BaseUrl + "statuses/destroy/" + id + ".xml";
-
-            var results =
-                TwitterExecute.ExecuteTwitter(
-                    destroyUrl,
-                    new Dictionary<string, string>(),
-                    new StatusRequestProcessor());
-
-            return results as IQueryable<Status>;
+            return (results as IList<Status>).FirstOrDefault();
         }
 
         /// <summary>
@@ -724,7 +738,7 @@ namespace LinqToTwitter
                     new Dictionary<string, string>(),
                     new StatusRequestProcessor());
 
-            return (results as IQueryable<Status>).FirstOrDefault();
+            return (results as IList<Status>).FirstOrDefault();
         }
 
         /// <summary>
@@ -762,7 +776,7 @@ namespace LinqToTwitter
                     },
                     new DirectMessageRequestProcessor());
 
-            return (results as IQueryable<DirectMessage>).FirstOrDefault();
+            return (results as IList<DirectMessage>).FirstOrDefault();
         }
 
         /// <summary>
@@ -785,7 +799,7 @@ namespace LinqToTwitter
                     new Dictionary<string, string>(),
                     new DirectMessageRequestProcessor());
 
-            return (results as IQueryable<DirectMessage>).FirstOrDefault();
+            return (results as IList<DirectMessage>).FirstOrDefault();
         }
 
         /// <summary>
@@ -824,7 +838,7 @@ namespace LinqToTwitter
                     createParams,
                     new UserRequestProcessor());
 
-            return (results as IQueryable<User>).FirstOrDefault();
+            return (results as IList<User>).FirstOrDefault();
         }
 
         /// <summary>
@@ -853,7 +867,7 @@ namespace LinqToTwitter
                     },
                     new UserRequestProcessor());
 
-            return (results as IQueryable<User>).FirstOrDefault();
+            return (results as IList<User>).FirstOrDefault();
         }
 
         /// <summary>
@@ -876,7 +890,7 @@ namespace LinqToTwitter
                     new Dictionary<string, string>(),
                     new StatusRequestProcessor());
 
-            return (results as IQueryable<Status>).FirstOrDefault();
+            return (results as IList<Status>).FirstOrDefault();
         }
 
         /// <summary>
@@ -899,7 +913,7 @@ namespace LinqToTwitter
                     new Dictionary<string, string>(),
                     new StatusRequestProcessor());
 
-            return (results as IQueryable<Status>).FirstOrDefault();
+            return (results as IList<Status>).FirstOrDefault();
         }
 
         /// <summary>
@@ -933,7 +947,7 @@ namespace LinqToTwitter
                     },
                     new UserRequestProcessor());
 
-            return (results as IQueryable<User>).FirstOrDefault();
+            return (results as IList<User>).FirstOrDefault();
         }
 
         /// <summary>
@@ -967,7 +981,7 @@ namespace LinqToTwitter
                     },
                     new UserRequestProcessor());
 
-            return (results as IQueryable<User>).FirstOrDefault();
+            return (results as IList<User>).FirstOrDefault();
         }
 
         /// <summary>
@@ -990,7 +1004,7 @@ namespace LinqToTwitter
                     new Dictionary<string, string>(),
                     new UserRequestProcessor());
 
-            return (results as IQueryable<User>).FirstOrDefault();
+            return (results as IList<User>).FirstOrDefault();
         }
 
         /// <summary>
@@ -1013,7 +1027,7 @@ namespace LinqToTwitter
                     new Dictionary<string, string>(),
                     new UserRequestProcessor());
 
-            return (results as IQueryable<User>).FirstOrDefault();
+            return (results as IList<User>).FirstOrDefault();
         }
 
         /// <summary>
@@ -1030,7 +1044,7 @@ namespace LinqToTwitter
                     new Dictionary<string, string>(),
                     new HelpRequestProcessor());
 
-            return (results as IQueryable<bool>).FirstOrDefault();
+            return (results as IList<bool>).FirstOrDefault();
         }
 
         /// <summary>
@@ -1047,7 +1061,7 @@ namespace LinqToTwitter
                     new Dictionary<string, string>(),
                     new AccountRequestProcessor());
 
-            var acct = (results as IQueryable<Account>).FirstOrDefault();
+            var acct = (results as IList<Account>).FirstOrDefault();
 
             if (acct != null)
             {
@@ -1077,7 +1091,7 @@ namespace LinqToTwitter
                     },
                     new UserRequestProcessor());
 
-            return (results as IQueryable<User>).FirstOrDefault();
+            return (results as IList<User>).FirstOrDefault();
         }
 
         /// <summary>
@@ -1118,7 +1132,7 @@ namespace LinqToTwitter
                     },
                     new UserRequestProcessor());
 
-            return (results as IQueryable<User>).FirstOrDefault();
+            return (results as IList<User>).FirstOrDefault();
         }
 
         /// <summary>
@@ -1141,7 +1155,7 @@ namespace LinqToTwitter
 
             var results = TwitterExecute.PostTwitterFile(imageFilePath, null, accountUrl, new UserRequestProcessor());
 
-            return (results as IQueryable<User>).FirstOrDefault();
+            return (results as IList<User>).FirstOrDefault();
         }
 
         /// <summary>
@@ -1160,7 +1174,7 @@ namespace LinqToTwitter
 
             Dictionary<string, string> parameters = null;
 
-            // TODO: tile implementation doesn't seem to be working; numerous problems reported in Twitter API; check again later - Joe
+            // TODO: tile implementation doesn't seem to be working; numerous update background image problems reported in Twitter API; check again later - Joe
             if (tile)
             {
                 parameters =
@@ -1172,7 +1186,7 @@ namespace LinqToTwitter
 
             var results = TwitterExecute.PostTwitterFile(imageFilePath, parameters, accountUrl, new UserRequestProcessor());
 
-            return (results as IQueryable<User>).FirstOrDefault();
+            return (results as IList<User>).FirstOrDefault();
         }
 
         /// <summary>
@@ -1235,7 +1249,7 @@ namespace LinqToTwitter
                     },
                     new UserRequestProcessor());
 
-            return (results as IQueryable<User>).FirstOrDefault();
+            return (results as IList<User>).FirstOrDefault();
         }
 
         #endregion

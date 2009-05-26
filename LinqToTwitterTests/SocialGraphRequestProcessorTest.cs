@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Xml.Linq;
 using System.Linq;
 using System;
+using System.Collections;
 
 namespace LinqToTwitterTests
 {
@@ -80,7 +81,7 @@ namespace LinqToTwitterTests
         {
             SocialGraphRequestProcessor target = new SocialGraphRequestProcessor();
             XElement twitterResponse = XElement.Parse(m_testQueryResponse);
-            IQueryable actual = target.ProcessResults(twitterResponse);
+            IList actual = target.ProcessResults(twitterResponse);
             var graph = actual.Cast<SocialGraph>().ToList();
             Assert.AreEqual(graph[0].ID, 123456);
             Assert.AreEqual(graph[1].ID, 987654);

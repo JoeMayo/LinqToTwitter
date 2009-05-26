@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Xml.Linq;
 using System.Linq;
 using System;
+using System.Collections;
 
 namespace LinqToTwitterTests
 {
@@ -151,7 +152,7 @@ namespace LinqToTwitterTests
         {
             FavoritesRequestProcessor target = new FavoritesRequestProcessor();
             XElement twitterResponse = XElement.Parse(m_twitterResponse);
-            IQueryable actual = target.ProcessResults(twitterResponse);
+            IList actual = target.ProcessResults(twitterResponse);
             var results = actual.Cast<Favorites>();
             Assert.AreEqual(2, results.Count());
         }

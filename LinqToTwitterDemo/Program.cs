@@ -34,6 +34,7 @@ namespace LinqToTwitterDemo
             //UpdateStatusWithReplyDemo(twitterCtx);
             //DestroyStatusDemo(twitterCtx);
             //UserStatusQueryDemo(twitterCtx);
+            //FirstStatusQueryDemo(twitterCtx);
             //PublicStatusQueryDemo();
             //MentionsStatusQueryDemo(twitterCtx);
 
@@ -74,6 +75,7 @@ namespace LinqToTwitterDemo
 
             //SearchTwitterDemo(twitterCtx);
             //SearchTwitterSource(twitterCtx);
+            //ExceedSearchRateLimitDemo(twitterCtx);
 
             //
             // Favorites
@@ -148,44 +150,55 @@ namespace LinqToTwitterDemo
             //HandleOAuthReadOnlyQueryDemo(twitterCtx);
             //HandleOAuthSideEffectReadOnlyDemo(twitterCtx);
             //HandleOAuthRequestResponseDetailsDemo(twitterCtx);
+            //OAuthForceLoginDemo(twitterCtx);
 
             Console.ReadKey();
         }
 
-        private static void ViewRateLimitResponseHeadersDemo(TwitterContext twitterCtx)
-        {
-            var myMentions =
-                from mention in twitterCtx.Status
-                where mention.Type == StatusType.Mentions
-                select mention;
-
-            Console.WriteLine("\nAll rate limit results are either -1 or from the last query because this query hasn't executed yet. Look at results for this query *after* the query: \n");
-            
-            Console.WriteLine("Current Rate Limit: {0}", twitterCtx.RateLimitCurrent);
-            Console.WriteLine("Remaining Rate Limit: {0}", twitterCtx.RateLimitRemaining);
-            Console.WriteLine("Rate Limit Reset: {0}", twitterCtx.RateLimitReset);
-
-            myMentions.ToList().ForEach(
-                mention => Console.WriteLine(
-                    "Name: {0}, Tweet: {1}\n",
-                    mention.User.Name, mention.Text));
-
-            Console.WriteLine("\nRate Limits from Query Response: \n");
-            
-            Console.WriteLine("Current Rate Limit: {0}", twitterCtx.RateLimitCurrent);
-            Console.WriteLine("Remaining Rate Limit: {0}", twitterCtx.RateLimitRemaining);
-            Console.WriteLine("Rate Limit Reset: {0}", twitterCtx.RateLimitReset);
-
-            var resetTime =
-                new DateTime(1970, 1, 1)
-                .AddSeconds(twitterCtx.RateLimitReset)
-                .ToLocalTime();
-            
-            Console.WriteLine("Rate Limit Reset in current time: {0}", resetTime);
-       }
-
-
         #region OAuth Demos
+
+        /// <summary>
+        /// Shows how to force user to log in
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void OAuthForceLoginDemo(TwitterContext twitterCtx)
+        {
+            Console.Write("Consumer Key: ");
+            twitterCtx.ConsumerKey = Console.ReadLine();
+            Console.Write("Consumer Secret: ");
+            twitterCtx.ConsumerSecret = Console.ReadLine();
+
+            string link = twitterCtx.GetAuthorizationPageLink(false, true);
+
+            Console.WriteLine("Authorization Page Link: {0}\n", link);
+            Console.WriteLine("Next, you'll need to tell Twitter to authorize access. This program will not have access to your credentials, which is the benefit of OAuth.  Once you log into Twitter and give this program permission, come back to this console and press Enter to complete the authorization sequence.\n\nPress Enter now to continue.");
+            Console.ReadKey();
+
+            // launches browser so you can log in and give permissions
+            Process.Start(link);
+
+            Console.WriteLine("\nYou should see your browser navigate to Twitter, saying that your application wants to access your Twitter account. Once you've authorized this program, return to this console and press any key to execute the LINQ to Twitter code.");
+            Console.ReadKey();
+            var uri = new Uri(link);
+            NameValueCollection urlParams = HttpUtility.ParseQueryString(uri.Query);
+            string oAuthToken = urlParams["oauth_token"];
+
+            twitterCtx.RetrieveAccessToken(oAuthToken);
+
+            if (twitterCtx.AuthorizedViaOAuth)
+            {
+                var tweets =
+                    from tweet in twitterCtx.Status
+                    where tweet.Type == StatusType.Friends
+                    select tweet;
+
+                tweets.ToList().ForEach(
+                    tweet => Console.WriteLine(
+                        "Friend: {0}\nTweet: {1}\n",
+                        tweet.User.Name,
+                        tweet.Text));
+            }
+        }
 
         /// <summary>
         /// shows how to retrieve the screen name and user ID from an OAuth request
@@ -198,7 +211,7 @@ namespace LinqToTwitterDemo
             Console.Write("Consumer Secret: ");
             twitterCtx.ConsumerSecret = Console.ReadLine();
 
-            string link = twitterCtx.GetAuthorizationPageLink(true);
+            string link = twitterCtx.GetAuthorizationPageLink(true, false);
 
             Console.WriteLine("Authorization Page Link: {0}\n", link);
             Console.WriteLine("Next, you'll need to tell Twitter to authorize access. This program will not have access to your credentials, which is the benefit of OAuth.  Once you log into Twitter and give this program permission, come back to this console and press Enter to complete the authorization sequence.\n\nPress Enter now to continue.");
@@ -233,7 +246,7 @@ namespace LinqToTwitterDemo
             Console.Write("Consumer Secret: ");
             twitterCtx.ConsumerSecret = Console.ReadLine();
 
-            string link = twitterCtx.GetAuthorizationPageLink(true);
+            string link = twitterCtx.GetAuthorizationPageLink(true, false);
 
             Console.WriteLine("Authorization Page Link: {0}\n", link);
             Console.WriteLine("Next, you'll need to tell Twitter to authorize access. This program will not have access to your credentials, which is the benefit of OAuth.  Once you log into Twitter and give this program permission, come back to this console and press Enter to complete the authorization sequence.\n\nPress Enter now to continue.");
@@ -272,7 +285,7 @@ namespace LinqToTwitterDemo
             Console.Write("Consumer Secret: ");
             twitterCtx.ConsumerSecret = Console.ReadLine();
 
-            string link = twitterCtx.GetAuthorizationPageLink(true);
+            string link = twitterCtx.GetAuthorizationPageLink(true, false);
 
             Console.WriteLine("Authorization Page Link: {0}\n", link);
             Console.WriteLine("Next, you'll need to tell Twitter to authorize access. This program will not have access to your credentials, which is the benefit of OAuth.  Once you log into Twitter and give this program permission, come back to this console and press Enter to complete the authorization sequence.\n\nPress Enter now to continue.");
@@ -314,7 +327,7 @@ namespace LinqToTwitterDemo
             Console.Write("Consumer Secret: ");
             twitterCtx.ConsumerSecret = Console.ReadLine();
 
-            string link = twitterCtx.GetAuthorizationPageLink(false);
+            string link = twitterCtx.GetAuthorizationPageLink(false, false);
 
             Console.WriteLine("Authorization Page Link: {0}\n", link);
             Console.WriteLine("Next, you'll need to tell Twitter to authorize access. This program will not have access to your credentials, which is the benefit of OAuth.  Once you log into Twitter and give this program permission, come back to this console and press Enter to complete the authorization sequence.\n\nPress Enter now to continue.");
@@ -354,7 +367,7 @@ namespace LinqToTwitterDemo
             Console.Write("Consumer Secret: ");
             twitterCtx.ConsumerSecret = Console.ReadLine();
 
-            string link = twitterCtx.GetAuthorizationPageLink(false);
+            string link = twitterCtx.GetAuthorizationPageLink(false, false);
 
             Console.WriteLine("Authorization Page Link: {0}\n", link);
             Console.WriteLine("Next, you'll need to tell Twitter to authorize access. This program will not have access to your credentials, which is the benefit of OAuth.  Once you log into Twitter and give this program permission, come back to this console and press Enter to complete the authorization sequence.\n\nPress Enter now to continue.");
@@ -393,7 +406,7 @@ namespace LinqToTwitterDemo
             Console.Write("Consumer Secret: ");
             twitterCtx.ConsumerSecret = Console.ReadLine();
 
-            string link = twitterCtx.GetAuthorizationPageLink(false);
+            string link = twitterCtx.GetAuthorizationPageLink(false, false);
 
             Console.WriteLine("Authorization Page Link: {0}\n", link);
             Console.WriteLine("Next, you'll need to tell Twitter to authorize access. This program will not have access to your credentials, which is the benefit of OAuth.  Once you log into Twitter and give this program permission, come back to this console and press Enter to complete the authorization sequence.\n\nPress Enter now to continue.");
@@ -624,7 +637,7 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void UpdateAccountBackgroundImageAndTileDemo(TwitterContext twitterCtx)
         {
-            var user = twitterCtx.UpdateAccountBackgroundImage(@"C:\Users\jmayo\Documents\linq2twitter\linq2twitter\200xColor_2.png", true);
+            var user = twitterCtx.UpdateAccountBackgroundImage(@"C:\Users\jmayo\Documents\linq2twitter\linq2twitter\linq2twitter_v3_300x90.png", true);
 
             Console.WriteLine("User Image: " + user.ProfileBackgroundImageUrl);
         }
@@ -680,6 +693,42 @@ namespace LinqToTwitterDemo
                 "Request: {0}, Error: {1}", 
                 endSessionStatus.Request, 
                 endSessionStatus.Error);
+        }
+
+        /// <summary>
+        /// Shows how to extract rate limit info from response headers
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void ViewRateLimitResponseHeadersDemo(TwitterContext twitterCtx)
+        {
+            var myMentions =
+                from mention in twitterCtx.Status
+                where mention.Type == StatusType.Mentions
+                select mention;
+
+            Console.WriteLine("\nAll rate limit results are either -1 or from the last query because this query hasn't executed yet. Look at results for this query *after* the query: \n");
+
+            Console.WriteLine("Current Rate Limit: {0}", twitterCtx.RateLimitCurrent);
+            Console.WriteLine("Remaining Rate Limit: {0}", twitterCtx.RateLimitRemaining);
+            Console.WriteLine("Rate Limit Reset: {0}", twitterCtx.RateLimitReset);
+
+            myMentions.ToList().ForEach(
+                mention => Console.WriteLine(
+                    "Name: {0}, Tweet: {1}\n",
+                    mention.User.Name, mention.Text));
+
+            Console.WriteLine("\nRate Limits from Query Response: \n");
+
+            Console.WriteLine("Current Rate Limit: {0}", twitterCtx.RateLimitCurrent);
+            Console.WriteLine("Remaining Rate Limit: {0}", twitterCtx.RateLimitRemaining);
+            Console.WriteLine("Rate Limit Reset: {0}", twitterCtx.RateLimitReset);
+
+            var resetTime =
+                new DateTime(1970, 1, 1)
+                .AddSeconds(twitterCtx.RateLimitReset)
+                .ToLocalTime();
+
+            Console.WriteLine("Rate Limit Reset in current time: {0}", resetTime);
         }
 
         /// <summary>
@@ -960,6 +1009,67 @@ namespace LinqToTwitterDemo
             }
         }
 
+        ///// <summary>
+        ///// shows how to handle response when you exceed Search query rate limits
+        ///// </summary>
+        ///// <param name="twitterCtx"></param>
+        //private static void ExceedSearchRateLimitDemo(TwitterContext twitterCtx)
+        //{
+        //    //
+        //    // WARNING: This is for Test/Demo purposes only; 
+        //    //          it makes many queries to Twitter in
+        //    //          a very short amount of time, which
+        //    //          has a negative impact on the service.
+        //    //
+        //    //          The only reason it is here is to test
+        //    //          that LINQ to Twitter responds appropriately
+        //    //          to Search rate limits.
+        //    //
+
+        //    var queryResults =
+        //        from search in twitterCtx.Search
+        //        where search.Type == SearchType.Search &&
+        //              search.Query == "Testing Search Rate Limit Results"
+        //        select search;
+
+        //    try
+        //    {
+        //        // set to a sufficiently high number to force the HTTP 503 response
+        //        // -- assumes you have the bandwidth to exceed
+        //        //    limit, which you might not have
+        //        var searchesToPerform = 5;
+
+        //        for (int i = 0; i < searchesToPerform; i++)
+        //        {
+        //            foreach (var search in queryResults)
+        //            {
+        //                // here, you can see that properties are named
+        //                // from the perspective of atom feed elements
+        //                // i.e. the query string is called Title
+        //                Console.WriteLine("\n#{0}. Query:{1}\n", i+1, search.Title);
+
+        //                foreach (var entry in search.Entries)
+        //                {
+        //                    Console.WriteLine(
+        //                        "ID: {0}, Source: {1}\nContent: {2}\n",
+        //                        entry.ID, entry.Source, entry.Content);
+        //                }
+        //            } 
+        //        }
+        //    }
+        //    catch (TwitterQueryException tqe)
+        //    {
+        //        if (tqe.HttpError == "503")
+        //        {
+        //            Console.WriteLine("HTTP Error: {0}", tqe.HttpError);
+        //            Console.WriteLine("You've exceeded rate limits for search.");
+        //            Console.WriteLine("Please retry in {0} seconds.", twitterCtx.RetryAfter);
+        //        }
+        //    }
+
+        //    Console.WriteLine("\nComplete.");
+        //}
+
         #endregion
 
         #region Followers Demos
@@ -1133,13 +1243,17 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void UserQueryDemo(TwitterContext twitterCtx)
         {
-            var userTweets =
+            var users =
                 from tweet in twitterCtx.User
                 where tweet.Type == UserType.Show &&
                       tweet.ID == "15411837"
                 select tweet;
 
-            var tweetList = userTweets.ToList();
+            var user = users.SingleOrDefault();
+            
+            Console.WriteLine(
+                "Name: {0}, Last Tweet: {1}\n",
+                user.Name, user.Status.Text);
         }
 
         #endregion
@@ -1189,6 +1303,33 @@ namespace LinqToTwitterDemo
                     tweet.Text + ", " +
                     tweet.CreatedAt);
             }
+        }
+
+        /// <summary>
+        /// shows how to query status
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void FirstStatusQueryDemo(TwitterContext twitterCtx)
+        {
+            Console.WriteLine();
+
+            var statusTweets =
+                from tweet in twitterCtx.Status
+                where tweet.Type == StatusType.User
+                      && tweet.ID == "15411837"  // ID for User
+                      && tweet.Page == 1
+                      && tweet.Count == 20
+                      && tweet.SinceID == 931894254
+                select tweet;
+
+            var status = statusTweets.FirstOrDefault();
+
+            Console.WriteLine(
+                "(" + status.ID + ")" +
+                "[" + status.User.ID + "]" +
+                status.User.Name + ", " +
+                status.Text + ", " +
+                status.CreatedAt);
         }
 
         /// <summary>

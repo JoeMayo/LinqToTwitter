@@ -75,7 +75,7 @@ namespace LinqToTwitter
         /// <returns>list of results from query</returns>
         public object Execute(Expression expression)
         {
-            return Context.Execute(expression);
+            return Context.Execute(expression, false);
         }
 
         /// <summary>
@@ -88,7 +88,7 @@ namespace LinqToTwitter
         {
             bool isEnumerable = (typeof(TResult).Name == "IEnumerable`1");
 
-            return (TResult)Context.Execute(expression);
+            return (TResult)Context.Execute(expression, isEnumerable);
         }
     }
 }

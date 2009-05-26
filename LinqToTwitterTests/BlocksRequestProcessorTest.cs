@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Xml.Linq;
 using System.Linq;
 using System;
+using System.Collections;
 
 namespace LinqToTwitterTests
 {
@@ -187,8 +188,8 @@ namespace LinqToTwitterTests
         {
             BlocksRequestProcessor target = new BlocksRequestProcessor();
             XElement twitterResponse = XElement.Parse(m_blockExistsXml);
-            IQueryable actual = target.ProcessResults(twitterResponse);
-            var actualQuery = actual as IQueryable<Blocks>;
+            IList actual = target.ProcessResults(twitterResponse);
+            var actualQuery = actual as IList<Blocks>;
 
             Assert.IsNotNull(actualQuery);
             Assert.AreEqual(actualQuery.Count(), 1);
@@ -202,8 +203,8 @@ namespace LinqToTwitterTests
         {
             BlocksRequestProcessor target = new BlocksRequestProcessor();
             XElement twitterResponse = XElement.Parse(m_blockedIDsXml);
-            IQueryable actual = target.ProcessResults(twitterResponse);
-            var actualQuery = actual as IQueryable<Blocks>;
+            IList actual = target.ProcessResults(twitterResponse);
+            var actualQuery = actual as IList<Blocks>;
 
             Assert.IsNotNull(actualQuery);
             Assert.AreEqual(actualQuery.Count(), 7);
@@ -217,8 +218,8 @@ namespace LinqToTwitterTests
         {
             BlocksRequestProcessor target = new BlocksRequestProcessor();
             XElement twitterResponse = XElement.Parse(m_blockedUsersXml);
-            IQueryable actual = target.ProcessResults(twitterResponse);
-            var actualQuery = actual as IQueryable<Blocks>;
+            IList actual = target.ProcessResults(twitterResponse);
+            var actualQuery = actual as IList<Blocks>;
 
             Assert.IsNotNull(actualQuery);
             Assert.AreEqual(actualQuery.Count(), 2);
@@ -232,8 +233,8 @@ namespace LinqToTwitterTests
         {
             BlocksRequestProcessor target = new BlocksRequestProcessor();
             XElement twitterResponse = XElement.Parse(m_blockedUsersXml);
-            IQueryable actual = target.ProcessResults(twitterResponse);
-            var actualQuery = actual as IQueryable<Blocks>;
+            IList actual = target.ProcessResults(twitterResponse);
+            var actualQuery = actual as IList<Blocks>;
 
             Assert.IsNotNull(actualQuery);
             Assert.AreEqual(actualQuery.Count(), 2);

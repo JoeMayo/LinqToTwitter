@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Xml.Linq;
 using System.Linq.Expressions;
+using System.Collections;
 
 namespace LinqToTwitter
 {
@@ -229,7 +230,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="twitterResponse">xml with Twitter response</param>
         /// <returns>IQueryable of Status</returns>
-        public IQueryable ProcessResults(XElement twitterResponse)
+        public IList ProcessResults(XElement twitterResponse)
         {
             var responseItems = twitterResponse.Elements("status").ToList();
 
@@ -286,8 +287,9 @@ namespace LinqToTwitter
                            //}
                    };
 
-            var queryableStatus = statusList.AsQueryable<Status>();
-            return queryableStatus;
+            return statusList.ToList();
+            //var queryableStatus = statusList.AsQueryable<Status>();
+            //return queryableStatus;
         }
     }
 }
