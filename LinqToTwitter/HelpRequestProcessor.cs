@@ -55,7 +55,6 @@ namespace LinqToTwitter
 
             var helpList = new List<bool> { bool.Parse(response) };
             return helpList;
-            //return helpList.AsQueryable();
         }
 
         #endregion

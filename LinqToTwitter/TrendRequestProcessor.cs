@@ -50,7 +50,9 @@ namespace LinqToTwitter
                 return url;
             }
 
-            switch ((TrendType)Enum.ToObject(typeof(TrendType), int.Parse(parameters["Type"])))
+            TrendType trendType = RequestProcessorHelper.ParseQueryEnumType<TrendType>(parameters["Type"]);
+
+            switch (trendType)
             {
                 case TrendType.Current:
                     url = BuildCurrentTrendsUrl(parameters);
@@ -246,6 +248,7 @@ namespace LinqToTwitter
 //  </trends>
 //  <as_of type="number">1241233670</as_of>
 //</root>
+        
         /// <summary>
         /// appends parameters for Search request
         /// </summary>
@@ -293,7 +296,6 @@ namespace LinqToTwitter
                      AsOf = asOf
                  })
                  .ToList();
-                 //.AsQueryable<Trend>();
         }
     }
 }

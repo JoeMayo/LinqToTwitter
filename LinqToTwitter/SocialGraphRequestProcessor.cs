@@ -52,7 +52,9 @@ namespace LinqToTwitter
                 return url;
             }
 
-            switch ((SocialGraphType)Enum.ToObject(typeof(SocialGraphType), int.Parse(parameters["Type"])))
+            SocialGraphType socGraphType = RequestProcessorHelper.ParseQueryEnumType<SocialGraphType>(parameters["Type"]);
+
+            switch (socGraphType)
             {
                 case SocialGraphType.Followers:
                     url = BuildSocialGraphFollowersUrl(parameters);
@@ -152,7 +154,6 @@ namespace LinqToTwitter
                 };
 
             return idList.ToList();
-            //return idList.AsQueryable<SocialGraph>();
         }
     }
 }

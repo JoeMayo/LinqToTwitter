@@ -57,7 +57,9 @@ namespace LinqToTwitter
                 return url;
             }
 
-            switch ((DirectMessageType)Enum.ToObject(typeof(DirectMessageType), int.Parse(parameters["Type"])))
+            DirectMessageType dirMsgType = RequestProcessorHelper.ParseQueryEnumType<DirectMessageType>(parameters["Type"]);
+
+            switch (dirMsgType)
             {
                 case DirectMessageType.SentBy:
                     url = BuildSentByUrl(parameters);
@@ -255,8 +257,6 @@ namespace LinqToTwitter
                 };
 
             return dmList.ToList();
-            //var queryableUser = userList.AsQueryable<DirectMessage>();
-            //return queryableUser;
         }
 
         #endregion

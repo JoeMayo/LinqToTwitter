@@ -76,6 +76,7 @@
     <Compile Include="OAuthBase.cs" />
     <Compile Include="OAuthSignatureTypes.cs" />
     <Compile Include="OAuthTwitter.cs" />
+    <Compile Include="RequestProcessorHelper.cs" />
     <Compile Include="TwitterExecute.cs" />
     <Compile Include="TwitterHashResponse.cs" />
     <Compile Include="Evaluator.cs" />

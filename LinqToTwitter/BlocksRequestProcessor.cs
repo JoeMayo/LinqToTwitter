@@ -55,7 +55,9 @@ namespace LinqToTwitter
                 return url;
             }
 
-            switch ((BlockingType)Enum.ToObject(typeof(BlockingType), int.Parse(parameters["Type"])))
+            BlockingType blockType = RequestProcessorHelper.ParseQueryEnumType<BlockingType>(parameters["Type"]);
+
+            switch (blockType)
             {
                 case BlockingType.Blocking:
                     url = BuildBlockingUrl(parameters);
@@ -219,7 +221,6 @@ namespace LinqToTwitter
             }
 
             return blockList;
-            //return blockList.AsQueryable<Blocks>();
         }
     }
 }

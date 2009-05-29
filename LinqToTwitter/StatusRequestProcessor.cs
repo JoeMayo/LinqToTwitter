@@ -59,7 +59,9 @@ namespace LinqToTwitter
                 return url;
             }
 
-            switch ((StatusType)Enum.ToObject(typeof(StatusType), int.Parse(parameters["Type"])))
+            StatusType statusType = RequestProcessorHelper.ParseQueryEnumType<StatusType>(parameters["Type"]);
+
+            switch (statusType)
             {
                 case StatusType.Friends:
                     url = BuildFriendUrl(parameters);
@@ -273,23 +275,9 @@ namespace LinqToTwitter
                             string.Empty :
                             status.Element("in_reply_to_screen_name").Value,
                        User = new User().CreateUser(user)
-                           //new User
-                           //{
-                           //    Description = user.Element("description").Value,
-                           //    FollowersCount = int.Parse(user.Element("followers_count").Value),
-                           //    ID = user.Element("id").Value,
-                           //    Location = user.Element("location").Value,
-                           //    Name = user.Element("name").Value,
-                           //    ProfileImageUrl = user.Element("profile_image_url").Value,
-                           //    Protected = bool.Parse(user.Element("protected").Value),
-                           //    ScreenName = user.Element("screen_name").Value,
-                           //    URL = user.Element("url").Value
-                           //}
                    };
 
             return statusList.ToList();
-            //var queryableStatus = statusList.AsQueryable<Status>();
-            //return queryableStatus;
         }
     }
 }

@@ -47,7 +47,9 @@ namespace LinqToTwitter
                 return url;
             }
 
-            switch ((AccountType)Enum.ToObject(typeof(AccountType), int.Parse(parameters["Type"])))
+            AccountType acctType = RequestProcessorHelper.ParseQueryEnumType<AccountType>(parameters["Type"]);
+
+            switch (acctType)
             {
                 case AccountType.VerifyCredentials:
                     url = BaseUrl + "account/verify_credentials.xml";
@@ -108,9 +110,7 @@ namespace LinqToTwitter
                 throw new ArgumentException("Account Results Processing expected a Twitter response for either a user or hash, but received an unknown element type instead.");
             }
 
-            var acctList = new List<Account> { acct };
-            return acctList;
-            //return acctList.AsQueryable<Account>();
+            return new List<Account> { acct };
         }
     }
 }

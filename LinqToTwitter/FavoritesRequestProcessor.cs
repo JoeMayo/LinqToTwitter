@@ -200,7 +200,6 @@ namespace LinqToTwitter
                    };
 
             return statusList.ToList();
-           //return statusList.AsQueryable<Favorites>();
         }
     }
 }

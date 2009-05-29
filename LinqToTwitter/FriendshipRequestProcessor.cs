@@ -53,7 +53,9 @@ namespace LinqToTwitter
                 return url;
             }
 
-            switch ((FriendshipType)Enum.ToObject(typeof(FriendshipType), int.Parse(parameters["Type"])))
+            FriendshipType friendType = RequestProcessorHelper.ParseQueryEnumType<FriendshipType>(parameters["Type"]);
+
+            switch (friendType)
             {
                 case FriendshipType.Exists:
                     url = BuildFriendshipExistsUrl(parameters);
@@ -129,8 +131,6 @@ namespace LinqToTwitter
             };
 
             return friendList;
-            //var queryableStatus = friendList.AsQueryable<Friendship>();
-            //return queryableStatus;
         }
     }
 }

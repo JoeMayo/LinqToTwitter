@@ -253,7 +253,6 @@ The blog system I'm us.. &lt;a href=""http://tinyurl.com/cvdbvr""&gt;http://tiny
             };
 
             return searchList;
-            //return searchList.AsQueryable();
         }
     }
 }

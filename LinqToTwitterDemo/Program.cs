@@ -54,7 +54,7 @@ namespace LinqToTwitterDemo
             //DestroyDirectMessageDemo(twitterCtx);
 
             //
-            // freindship
+            // friendship
             //
 
             //FriendshipExistsDemo(twitterCtx);
