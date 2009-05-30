@@ -23,19 +23,27 @@ namespace LinqToTwitterDemo
             Console.Write("Twitter Password: ");
             string password = Console.ReadLine();
 
-            // similar to DataContext (LINQ to SQL) or ObjectContext (LINQ to Entities)
+            // TwitterContext is similar to DataContext (LINQ to SQL) or ObjectContext (LINQ to Entities)
+            
+            // For Twitter
             var twitterCtx = new TwitterContext(userName, password, "http://www.twitter.com/", "http://search.twitter.com/");
-
+            
+            // For JTweeter (Laconica)
+            //var twitterCtx = new TwitterContext(userName, password, "http://jtweeter.com/api/", "http://search.twitter.com/");
+            
+            // For Identi.ca (Laconica)
+            //var twitterCtx = new TwitterContext(userName, password, "http://identi.ca/api/", "http://search.twitter.com/");
+            
             //
             // status tweets
             //
 
-            UpdateStatusDemo(twitterCtx);
+            //UpdateStatusDemo(twitterCtx);
             //UpdateStatusWithReplyDemo(twitterCtx);
             //DestroyStatusDemo(twitterCtx);
             //UserStatusQueryDemo(twitterCtx);
             //FirstStatusQueryDemo(twitterCtx);
-            //PublicStatusQueryDemo();
+            PublicStatusQueryDemo(twitterCtx);
             //MentionsStatusQueryDemo(twitterCtx);
 
             //
@@ -1383,10 +1391,9 @@ namespace LinqToTwitterDemo
         /// <summary>
         /// shows how to send a public status query
         /// </summary>
-        private static void PublicStatusQueryDemo()
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void PublicStatusQueryDemo(TwitterContext twitterCtx)
         {
-            var twitterCtx = new TwitterContext();
-
             var publicTweets =
                 from tweet in twitterCtx.Status
                 where tweet.Type == StatusType.Public
