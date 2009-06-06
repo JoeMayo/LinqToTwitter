@@ -214,6 +214,22 @@ namespace LinqToTwitterTests
         }
 
         /// <summary>
+        ///A test for ProcessResults
+        ///</summary>
+        [TestMethod()]
+        public void TwypocalypseProcessResultsSingleResultTest()
+        {
+            var statProc = new StatusRequestProcessor() { BaseUrl = "http://twitter.com/" };
+            XElement twitterResponse = XElement.Load(new StringReader(m_testQueryResponse));
+            twitterResponse.Element("status").Element("id").Value = uint.MaxValue.ToString();
+            var actual = statProc.ProcessResults(twitterResponse.Descendants("status").First());
+            var actualQuery = actual as IList<Status>;
+
+            Assert.IsNotNull(actualQuery);
+            Assert.AreEqual(actualQuery.Count(), 1);
+        }
+
+        /// <summary>
         ///A test for GetParameters
         ///</summary>
         [TestMethod()]
@@ -242,29 +258,73 @@ namespace LinqToTwitterTests
                     new KeyValuePair<string, string>("Type", ((int)StatusType.Public).ToString())));
         }
 
-        ///// <summary>
-        /////A test for BuildUserUrl
-        /////</summary>
-        //[TestMethod()]
-        //[DeploymentItem("LinqToTwitter.dll")]
-        //public void BuildRepliesUrlTest()
-        //{
-        //    var reqProc = new StatusRequestProcessor_Accessor();
-        //    reqProc.BaseUrl = "http://twitter.com/";
-        //    Dictionary<string, string> parameters =
-        //        new Dictionary<string, string>
-        //            {
-        //                { "Page", "0" },
-        //                { "SinceID", "934818247" },
-        //                { "Since", new DateTime(2007, 10, 1).ToString() }
-        //            };
-        //    string expected = "http://twitter.com/statuses/replies.xml?since=Mon, 01 Oct 2007 06:00:00 GMT&since_id=934818247&page=0";
-        //    var actual = reqProc.BuildRepliesUrl(parameters);
-        //    Assert.AreEqual(expected, actual);
-        //}
 
         /// <summary>
-        ///A test for BuildUserUrl
+        ///A test for BuildMentionsUrl
+        ///</summary>
+        [TestMethod()]
+        [DeploymentItem("LinqToTwitter.dll")]
+        public void TwypocalypseStatusIDUrlTest()
+        {
+            var reqProc = new StatusRequestProcessor_Accessor();
+            reqProc.BaseUrl = "http://twitter.com/";
+            var twypocalypseID = uint.MaxValue.ToString();
+            Dictionary<string, string> parameters =
+                new Dictionary<string, string>
+                    {
+                        { "ID", twypocalypseID }
+                    };
+            string expected = "http://twitter.com/statuses/show/4294967295.xml";
+            var actual = reqProc.BuildShowUrl(parameters);
+            Assert.AreEqual(expected, actual);
+        }
+
+        /// <summary>
+        ///A test for BuildMentionsUrl
+        ///</summary>
+        [TestMethod()]
+        [DeploymentItem("LinqToTwitter.dll")]
+        public void TwypocalypseSinceIDUrlTest()
+        {
+            var reqProc = new StatusRequestProcessor_Accessor();
+            reqProc.BaseUrl = "http://twitter.com/";
+            var twypocalypseID = uint.MaxValue.ToString();
+            Dictionary<string, string> parameters =
+                new Dictionary<string, string>
+                    {
+                        { "Type", ((int)StatusType.User).ToString() },
+                        { "ID", "15411837" },
+                        { "UserID", "15411837" },
+                        { "SinceID", twypocalypseID },
+                        { "ScreenName", "JoeMayo" },
+                    };
+            string expected = "http://twitter.com/statuses/user_timeline/15411837.xml?user_id=15411837&screen_name=JoeMayo&since_id=4294967295";
+            var actual = reqProc.BuildUserUrl(parameters);
+            Assert.AreEqual(expected, actual);
+        }
+
+        /// <summary>
+        ///A test for BuildMentionsUrl
+        ///</summary>
+        [TestMethod()]
+        [DeploymentItem("LinqToTwitter.dll")]
+        public void BuildMentionsUrlTest()
+        {
+            var reqProc = new StatusRequestProcessor_Accessor();
+            reqProc.BaseUrl = "http://twitter.com/";
+            Dictionary<string, string> parameters =
+                new Dictionary<string, string>
+                    {
+                        { "Page", "0" },
+                        { "SinceID", "934818247" }
+                    };
+            string expected = "http://twitter.com/statuses/mentions.xml?since_id=934818247&page=0";
+            var actual = reqProc.BuildMentionsUrl(parameters);
+            Assert.AreEqual(expected, actual);
+        }
+
+        /// <summary>
+        ///A test for BuildShowUrl
         ///</summary>
         [TestMethod()]
         [DeploymentItem("LinqToTwitter.dll")]

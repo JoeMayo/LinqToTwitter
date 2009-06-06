@@ -150,7 +150,7 @@ namespace LinqToTwitter
                 from id in twitterResponse.Elements("id").ToList()
                 select new SocialGraph
                 {
-                    ID = int.Parse(id.Value)
+                    ID = uint.Parse(id.Value)
                 };
 
             return idList.ToList();

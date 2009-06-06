@@ -85,7 +85,7 @@ namespace LinqToTwitter
         /// <returns>new url for request</returns>
         private string BuildShowUrl(Dictionary<string, string> parameters)
         {
-            var url = BaseUrl + "users/show.xml";
+            var url = BaseUrl + "users/show.json";
 
             if (parameters != null)
             {
@@ -215,6 +215,12 @@ namespace LinqToTwitter
         //  </status>
         //</user>
 
+        // TODO: received when twitter was down - write a test
+        //<hash>
+        //  <request></request>
+        //  <error>Twitter is down for maintenance. It will return in about an hour.</error>
+        //</hash>
+
         /// <summary>
         /// transforms XML into IQueryable of User
         /// </summary>
@@ -222,11 +228,20 @@ namespace LinqToTwitter
         /// <returns>IQueryable of User</returns>
         public IList ProcessResults(System.Xml.Linq.XElement twitterResponse)
         {
-            var responseItems = twitterResponse.Elements("user").ToList();
+            var isRoot = twitterResponse.Name == "root";
+            var responseItems = twitterResponse.Elements("root").ToList();
+
+            string rootElement =
+                isRoot || responseItems.Count > 0 ? "root" : "user";
+
+            if (responseItems.Count == 0)
+            {
+                responseItems = twitterResponse.Elements(rootElement).ToList();
+            }
 
             // if we get only a single response back,
             // such as a Show request, make sure we get it
-            if (twitterResponse.Name == "user")
+            if (twitterResponse.Name == rootElement)
             {
                 responseItems.Add(twitterResponse);
             }

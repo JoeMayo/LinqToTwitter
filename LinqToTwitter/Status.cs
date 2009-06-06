@@ -24,12 +24,12 @@ namespace LinqToTwitter
         /// <summary>
         /// filter results to after this status id
         /// </summary>
-        public int SinceID { get; set; }
+        public uint SinceID { get; set; }
 
         /// <summary>
         /// max ID to retrieve
         /// </summary>
-        public int MaxID { get; set; }
+        public uint MaxID { get; set; }
 
         /// <summary>
         /// only return this many results

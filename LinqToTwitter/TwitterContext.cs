@@ -240,6 +240,17 @@ namespace LinqToTwitter
         }
 
         /// <summary>
+        /// enables access to Twitter Saved Searches
+        /// </summary>
+        public TwitterQueryable<SavedSearch> SavedSearch
+        {
+            get
+            {
+                return new TwitterQueryable<SavedSearch>(this);
+            }
+        }
+
+        /// <summary>
         /// enables access to Twitter SocialGraph to discover Friends and Followers
         /// </summary>
         public TwitterQueryable<SocialGraph> SocialGraph
@@ -643,6 +654,9 @@ namespace LinqToTwitter
                     break;
                 case "Friendship":
                     req = new FriendshipRequestProcessor() { BaseUrl = BaseUrl };
+                    break;
+                case "SavedSearch":
+                    req = new SavedSearchRequestProcessor() { BaseUrl = BaseUrl };
                     break;
                 case "SocialGraph":
                     req = new SocialGraphRequestProcessor() { BaseUrl = BaseUrl };
@@ -1250,6 +1264,55 @@ namespace LinqToTwitter
                     new UserRequestProcessor());
 
             return (results as IList<User>).FirstOrDefault();
+        }
+
+        /// <summary>
+        /// Adds a saved search to your twitter account
+        /// </summary>
+        /// <param name="query">Search query to add</param>
+        /// <returns>SavedSearch object</returns>
+        public SavedSearch CreateSavedSearch(string query)
+        {
+            if (string.IsNullOrEmpty(query))
+            {
+                throw new ArgumentException("query is required.", "query");
+            }
+
+            var savedSearchUrl = BaseUrl + "saved_searches/create.xml";
+
+            var results =
+                TwitterExecute.ExecuteTwitter(
+                    savedSearchUrl,
+                    new Dictionary<string, string>
+                    {
+                        { "query", query }
+                    },
+                    new SavedSearchRequestProcessor());
+
+            return (results as IList<SavedSearch>).FirstOrDefault();
+        }
+
+        /// <summary>
+        /// Adds a saved search to your twitter account
+        /// </summary>
+        /// <param name="query">Search query to add</param>
+        /// <returns>SavedSearch object</returns>
+        public SavedSearch DestroySavedSearch(int id)
+        {
+            if (id < 1)
+            {
+                throw new ArgumentException("Invalid Saved Search ID: " + id, "id");
+            }
+
+            var savedSearchUrl = BaseUrl + "saved_searches/destroy/" + id + ".xml";
+
+            var results =
+                TwitterExecute.ExecuteTwitter(
+                    savedSearchUrl,
+                    new Dictionary<string, string>(),
+                    new SavedSearchRequestProcessor());
+
+            return (results as IList<SavedSearch>).FirstOrDefault();
         }
 
         #endregion

@@ -136,7 +136,7 @@ namespace LinqToTwitterTests
                         { "UserID", "15411837" },
                         { "ScreenName", "JoeMayo" }
                     };
-            string expected = "http://twitter.com/users/show/15411837.xml?user_id=15411837&screen_name=JoeMayo";
+            string expected = "http://twitter.com/users/show/15411837.json?user_id=15411837&screen_name=JoeMayo";
             var actual = reqProc.BuildShowUrl(parameters);
             Assert.AreEqual(expected, actual);
         }
@@ -156,7 +156,7 @@ namespace LinqToTwitterTests
                         { "Type", ((int)UserType.Show).ToString() },
                         { "ID", "15411837" }
                     };
-            string expected = "http://twitter.com/users/show/15411837.xml";
+            string expected = "http://twitter.com/users/show/15411837.json";
             var actual = reqProc.BuildShowUrl(parameters);
             Assert.AreEqual(expected, actual);
         }

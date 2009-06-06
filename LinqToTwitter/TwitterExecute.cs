@@ -90,29 +90,39 @@ namespace LinqToTwitter
         /// <returns>new TwitterQueryException instance</returns>
         private TwitterQueryException CreateTwitterQueryException(WebException wex)
         {
-            var responseStr = GetTwitterResponse(wex.Response);
 
             XElement responseXml;
 
             try
             {
+                var responseStr = GetTwitterResponse(wex.Response);
                 responseXml = XElement.Parse(responseStr);
             }
             catch (Exception)
             {
+                string responseUri = string.Empty;
+
+                if (wex.Response != null)
+                {
+                    responseUri = wex.Response.ResponseUri.ToString();
+                }
+
                 // One known reason this can happen is if you don't have an 
                 // Internet connection, meaning that the response will contain
                 // an HTML message, that can't be parsed as normal XML.
                 responseXml = XElement.Parse(
 @"<hash>
-  <request>" + wex.Response.ResponseUri + @"</request>
+  <request>" + responseUri + @"</request>
   <error>See Inner Exception Details for more information.</error>
 </hash>");
             }
 
             return new TwitterQueryException("Error while querying Twitter.", wex)
             {
-                HttpError = wex.Response.Headers["Status"],
+                HttpError = 
+                    wex != null && wex.Response != null ? 
+                        wex.Response.Headers["Status"] : 
+                        string.Empty,
                 Response = new TwitterHashResponse
                 {
                     Request = responseXml.Element("request").Value,
@@ -155,6 +165,33 @@ namespace LinqToTwitter
         }
 
         /// <summary>
+        /// either calls the appropriate strategy method for processing results
+        /// or intercepts an error and throws an exception
+        /// </summary>
+        /// <param name="requestProcessor">strategy class for processing XML response</param>
+        /// <param name="responseStr">XML string response from Twitter</param>
+        /// <returns></returns>
+        private static IList ProcessResults(IRequestProcessor requestProcessor, string responseStr, string status)
+        {
+            var responseXml = XElement.Parse(responseStr);
+
+            if (responseXml.Name == "hash")
+            {
+                throw new TwitterQueryException("Error while querying Twitter.")
+                {
+                    HttpError = status,
+                    Response = new TwitterHashResponse
+                    {
+                        Request = responseXml.Element("request").Value,
+                        Error = responseXml.Element("error").Value
+                    }
+                };
+            }
+
+            return requestProcessor.ProcessResults(responseXml);
+        }
+
+        /// <summary>
         /// makes HTTP call to Twitter API
         /// </summary>
         /// <param name="url">URL with all query info</param>
@@ -178,13 +215,15 @@ namespace LinqToTwitter
 
             req.UserAgent = UserAgent;
 
+            string responseXml = string.Empty;
+            string httpStatus = string.Empty;
             WebResponse resp = null;
-            string responseStr = null;
 
             try
             {
                 resp = req.GetResponse();
-                responseStr = GetTwitterResponse(resp);
+                responseXml = GetTwitterResponse(resp);
+                httpStatus = resp.Headers["Status"];
             }
             catch (WebException wex)
             {
@@ -199,24 +238,17 @@ namespace LinqToTwitter
                 }
             }
 
-            XElement statusXml = null;
-
             if (new Uri(url).LocalPath.EndsWith("json"))
             {
-                var stream = new MemoryStream(ASCIIEncoding.Default.GetBytes(responseStr));
+                var stream = new MemoryStream(ASCIIEncoding.Default.GetBytes(responseXml));
                 XmlDictionaryReader reader = JsonReaderWriterFactory.CreateJsonReader(stream, XmlDictionaryReaderQuotas.Max);
 
                 var doc = new XmlDocument();
                 doc.Load(reader);
-
-                statusXml = XElement.Parse(doc.OuterXml);
-            }
-            else
-            {
-                statusXml = XElement.Parse(responseStr);
+                responseXml = doc.OuterXml;
             }
 
-            return requestProcessor.ProcessResults(statusXml);
+            return ProcessResults(requestProcessor, responseXml, httpStatus);
         }
 
         /// <summary>
@@ -311,7 +343,7 @@ namespace LinqToTwitter
                 req.Credentials = new NetworkCredential(UserName, Password);
             }
 
-            string responseXML = null;
+            string responseXml = null;
 
             using (var reqStream = req.GetRequestStream())
             {
@@ -319,16 +351,19 @@ namespace LinqToTwitter
                 reqStream.Flush();
             }
 
+            string httpStatus = string.Empty;
             WebResponse resp = null;
 
             try
             {
                 resp = req.GetResponse();
 
+                httpStatus = resp.Headers["Status"];
+
                 using (var respStream = resp.GetResponseStream())
                 using (var respRdr = new StreamReader(respStream))
                 {
-                    responseXML = respRdr.ReadToEnd();
+                    responseXml = respRdr.ReadToEnd();
                 }
             }
             catch (WebException wex)
@@ -344,9 +379,7 @@ namespace LinqToTwitter
                 }
             }
 
-            var responseXElem = XElement.Parse(responseXML);
-            var results = requestProcessor.ProcessResults(responseXElem);
-            return results;
+            return ProcessResults(requestProcessor, responseXml, httpStatus);
         }
 
         /// <summary>
@@ -390,7 +423,8 @@ namespace LinqToTwitter
             req.UserAgent = UserAgent;
             req.ServicePoint.Expect100Continue = false;
 
-            string responseXML;
+            string httpStatus = string.Empty;
+            string responseXml = string.Empty;
 
             using (var reqStream = req.GetRequestStream())
             {
@@ -402,10 +436,12 @@ namespace LinqToTwitter
                 {
                     resp = req.GetResponse();
 
+                    httpStatus = resp.Headers["Status"];
+
                     using (var respStream = resp.GetResponseStream())
                     using (var respRdr = new StreamReader(respStream))
                     {
-                        responseXML = respRdr.ReadToEnd();
+                        responseXml = respRdr.ReadToEnd();
                     }
                 }
                 catch (WebException wex)
@@ -422,9 +458,7 @@ namespace LinqToTwitter
                 }
             }
 
-            var responseXElem = XElement.Parse(responseXML);
-            var results = requestProcessor.ProcessResults(responseXElem);
-            return results;
+            return ProcessResults(requestProcessor, responseXml, httpStatus);
         }
     }
 }

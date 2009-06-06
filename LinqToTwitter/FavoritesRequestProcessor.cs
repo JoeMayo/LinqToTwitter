@@ -186,7 +186,7 @@ namespace LinqToTwitter
                             string.IsNullOrEmpty(status.Element("favorited").Value) ?
                             "true" :
                             status.Element("favorited").Value),
-                       ID = int.Parse(status.Element("id").Value),
+                       ID = uint.Parse(status.Element("id").Value),
                        InReplyToStatusID = status.Element("in_reply_to_status_id").Value,
                        InReplyToUserID = status.Element("in_reply_to_user_id").Value,
                        Source = status.Element("source").Value,

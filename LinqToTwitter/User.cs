@@ -30,23 +30,24 @@ namespace LinqToTwitter
             }
 
             var tempUserProtected = false;
-            var tempFollowersCount = 0;
-            var tempFriendsCount = 0;
-            var tempFavoritesCount = 0;
-            var tempStatusesCount = 0;
+            var tempFollowersCount = 0u;
+            var tempFriendsCount = 0u;
+            var tempFavoritesCount = 0u;
+            var tempStatusesCount = 0u;
             var tempStatusTruncated = false;
             var tempStatusFavorited = false;
+            var tempFollowingUsers = false;
 
             var canParseProtected = 
                 bool.TryParse(user.Element("protected").Value, out tempUserProtected);
             
             var followersCount = 
-                int.TryParse(user.Element("followers_count").Value, out tempFollowersCount);
+                uint.TryParse(user.Element("followers_count").Value, out tempFollowersCount);
             
             var friendsCount =
                 user.Element("friends_count") == null ? 
                     false :
-                    int.TryParse(user.Element("friends_count").Value, out tempFriendsCount);
+                    uint.TryParse(user.Element("friends_count").Value, out tempFriendsCount);
             
             var userDateParts =
                 user.Element("created_at") == null ?
@@ -66,12 +67,12 @@ namespace LinqToTwitter
             var favoritesCount =
                 user.Element("favourites_count") == null ? 
                     false :
-                    int.TryParse(user.Element("favourites_count").Value, out tempFavoritesCount);
+                    uint.TryParse(user.Element("favourites_count").Value, out tempFavoritesCount);
             
             var statusesCount =
                 user.Element("statuses_count") == null ?
                     false :
-                    int.TryParse(user.Element("statuses_count").Value, out tempStatusesCount);
+                    uint.TryParse(user.Element("statuses_count").Value, out tempStatusesCount);
 
             var notifications =
                 user.Element("notifications") == null || 
@@ -80,7 +81,13 @@ namespace LinqToTwitter
                     user.Element("notifications").Value == "false" ?
                     DeviceType.None :
                     (DeviceType)Enum.Parse(typeof(DeviceType), user.Element("notifications").Value, true);
-               
+
+            var isFollowing =
+                user.Element("following") == null ||
+                string.IsNullOrEmpty(user.Element("following").Value) ?
+                    false :
+                    bool.TryParse(user.Element("following").Value, out tempFollowingUsers);
+
             var status =
                 user.Element("status");
             
@@ -161,12 +168,7 @@ namespace LinqToTwitter
                         user.Element("profile_background_tile").Value,
                 StatusesCount = tempStatusesCount,
                 Notifications = notifications,
-                Following = 
-                    user.Element("following") == null ||
-                    user.Element("following").Value == "0" ||
-                    user.Element("following").Value == string.Empty ?
-                        false :
-                        bool.Parse(user.Element("following").Value),
+                Following = tempFollowingUsers,
                 Status = 
                     status == null ?
                         null :
@@ -241,7 +243,7 @@ namespace LinqToTwitter
         /// <summary>
         /// number of people following user
         /// </summary>
-        public int FollowersCount { get; set; }
+        public uint FollowersCount { get; set; }
 
         /// <summary>
         /// color of profile background
@@ -271,7 +273,7 @@ namespace LinqToTwitter
         /// <summary>
         /// number of friends
         /// </summary>
-        public int FriendsCount { get; set; }
+        public uint FriendsCount { get; set; }
 
         /// <summary>
         /// date and time when profile was created
@@ -281,7 +283,7 @@ namespace LinqToTwitter
         /// <summary>
         /// number of favorites
         /// </summary>
-        public int FavoritesCount { get; set; }
+        public uint FavoritesCount { get; set; }
 
         /// <summary>
         /// UTC Offset
@@ -306,7 +308,7 @@ namespace LinqToTwitter
         /// <summary>
         /// number of status updates user has made
         /// </summary>
-        public int StatusesCount { get; set; }
+        public uint StatusesCount { get; set; }
 
         /// <summary>
         /// type of device notifications

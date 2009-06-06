@@ -1,9 +1,9 @@
 ﻿using LinqToTwitter;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Xml.Linq;
-using System.Linq;
 using System;
 using System.Collections;
 
@@ -12,19 +12,37 @@ namespace LinqToTwitterTests
     
     
     /// <summary>
-    ///This is a test class for SocialGraphRequestProcessorTest and is intended
-    ///to contain all SocialGraphRequestProcessorTest Unit Tests
+    ///This is a test class for SavedSearchRequestProcessorTest and is intended
+    ///to contain all SavedSearchRequestProcessorTest Unit Tests
     ///</summary>
     [TestClass()]
-    public class SocialGraphRequestProcessorTest
+    public class SavedSearchRequestProcessorTest
     {
-        private string m_testQueryResponse = @"<?xml version=""1.0"" encoding=""UTF-8""?>
-<ids>
-<id>123456</id>
-<id>987654</id>
-</ids>";
-
         private TestContext testContextInstance;
+
+        private string m_testQueryResponse = @"<saved_searches type=""array"">
+  <saved_search>
+    <id>176136</id>
+    <name>#csharp</name>
+    <query>#csharp</query>
+    <position></position>
+    <created_at>Mon May 18 20:27:59 +0000 2009</created_at>
+  </saved_search>
+  <saved_search>
+    <id>210448</id>
+    <name>#twitterapi</name>
+    <query>#twitterapi</query>
+    <position></position>
+    <created_at>Sat May 23 01:53:52 +0000 2009</created_at>
+  </saved_search>
+  <saved_search>
+    <id>314612</id>
+    <name>dotnet</name>
+    <query>dotnet</query>
+    <position></position>
+    <created_at>Fri Jun 05 01:03:52 +0000 2009</created_at>
+  </saved_search>
+</saved_searches>";
 
         /// <summary>
         ///Gets or sets the test context which provides
@@ -79,12 +97,10 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void ProcessResultsTest()
         {
-            SocialGraphRequestProcessor target = new SocialGraphRequestProcessor();
+            SavedSearchRequestProcessor target = new SavedSearchRequestProcessor();
             XElement twitterResponse = XElement.Parse(m_testQueryResponse);
             IList actual = target.ProcessResults(twitterResponse);
-            var graph = actual.Cast<SocialGraph>().ToList();
-            Assert.AreEqual(graph[0].ID, 123456u);
-            Assert.AreEqual(graph[1].ID, 987654u);
+            Assert.AreEqual(actual.Count, 3);
         }
 
         /// <summary>
@@ -93,89 +109,76 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void GetParametersTest()
         {
-            SocialGraphRequestProcessor target = new SocialGraphRequestProcessor();
-            Expression<Func<SocialGraph, bool>> expression =
-                graph => 
-                    graph.Type == SocialGraphType.Followers && 
-                    graph.ID == 123 && 
-                    graph.ScreenName == "456" &&
-                    graph.Page == 1;
+            SavedSearchRequestProcessor target = new SavedSearchRequestProcessor() { BaseUrl = "http://twitter.com/" };
+            Expression<Func<SavedSearch, bool>> expression =
+                search =>
+                    search.Type == SavedSearchType.Show &&
+                    search.ID == "123";
             LambdaExpression lambdaExpression = expression as LambdaExpression;
 
             var queryParams = target.GetParameters(lambdaExpression);
 
             Assert.IsTrue(
                 queryParams.Contains(
-                    new KeyValuePair<string, string>("Type", ((int)SocialGraphType.Followers).ToString())));
+                    new KeyValuePair<string, string>("Type", ((int)SavedSearchType.Show).ToString())));
             Assert.IsTrue(
                 queryParams.Contains(
                     new KeyValuePair<string, string>("ID", "123")));
-            Assert.IsTrue(
-                queryParams.Contains(
-                    new KeyValuePair<string, string>("ScreenName", "456")));
-            Assert.IsTrue(
-                queryParams.Contains(
-                    new KeyValuePair<string, string>("Page", "1")));
         }
 
         /// <summary>
-        ///A test for BuildURL
+        ///A test for BuildShowUrl
         ///</summary>
         [TestMethod()]
+        [DeploymentItem("LinqToTwitter.dll")]
         [ExpectedException(typeof(ArgumentException))]
-        public void BuildURLTest()
+        public void BuildShowNoIDUrlTest()
         {
-            SocialGraphRequestProcessor target = new SocialGraphRequestProcessor() { BaseUrl = "http://twitter.com/" };
-            Dictionary<string, string> parameters = new Dictionary<string, string>();
-            string expected = "http://twitter.com/friends/ids.xml";
-            string actual;
-            actual = target.BuildURL(parameters);
+            SavedSearchRequestProcessor target = new SavedSearchRequestProcessor() { BaseUrl = "http://twitter.com/" };
+            Dictionary<string, string> parameters =
+                new Dictionary<string, string>
+                {
+                    { "Type", SavedSearchType.Show.ToString() }
+                };
+            string expected = "http://twitter.com/saved_searches/show/123.xml";
+            string actual = target.BuildURL(parameters);
             Assert.AreEqual(expected, actual);
         }
 
         /// <summary>
-        ///A test for BuildSocialGraphFriendsUrl
+        ///A test for BuildShowUrl
         ///</summary>
         [TestMethod()]
         [DeploymentItem("LinqToTwitter.dll")]
-        public void BuildSocialGraphFriendsUrlTest()
+        public void BuildShowUrlTest()
         {
-            SocialGraphRequestProcessor target = new SocialGraphRequestProcessor() { BaseUrl = "http://twitter.com/" };
+            SavedSearchRequestProcessor target = new SavedSearchRequestProcessor() { BaseUrl = "http://twitter.com/" };
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                 {
-                    { "Type", "0" },
-                    { "ID", "JoeMayo" },
-                    { "UserID", "123" },
-                    { "ScreenName", "456" },
-                    { "Page", "1" }
+                    { "Type", SavedSearchType.Show.ToString() },
+                    { "ID", "123" }
                 };
-            string expected = "http://twitter.com/friends/ids/JoeMayo.xml?user_id=123&screen_name=456&page=1";
-            string actual;
-            actual = target.BuildURL(parameters);
+            string expected = "http://twitter.com/saved_searches/show/123.xml";
+            string actual = target.BuildURL(parameters);
             Assert.AreEqual(expected, actual);
         }
 
         /// <summary>
-        ///A test for BuildSocialGraphFollowersUrl
+        ///A test for BuildSearchesUrl
         ///</summary>
         [TestMethod()]
         [DeploymentItem("LinqToTwitter.dll")]
-        public void BuildSocialGraphFollowersUrlTest()
+        public void BuildSearchesUrlTest()
         {
-            SocialGraphRequestProcessor target = new SocialGraphRequestProcessor() { BaseUrl = "http://twitter.com/" };
+            SavedSearchRequestProcessor target = new SavedSearchRequestProcessor() { BaseUrl = "http://twitter.com/" };
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                 {
-                    { "Type", "1" },
-                    { "ID", "JoeMayo" },
-                    { "UserID", "123" },
-                    { "ScreenName", "456" },
-                    { "Page", "1" }
+                    { "Type", SavedSearchType.Searches.ToString() }
                 };
-            string expected = "http://twitter.com/followers/ids/JoeMayo.xml?user_id=123&screen_name=456&page=1";
-            string actual;
-            actual = target.BuildURL(parameters);
+            string expected = "http://twitter.com/saved_searches.xml";
+            string actual = target.BuildURL(parameters);
             Assert.AreEqual(expected, actual);
         }
     }

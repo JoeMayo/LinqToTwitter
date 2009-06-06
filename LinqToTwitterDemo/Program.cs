@@ -38,19 +38,21 @@ namespace LinqToTwitterDemo
             // status tweets
             //
 
-            //UpdateStatusDemo(twitterCtx);
+            UpdateStatusDemo(twitterCtx);
             //UpdateStatusWithReplyDemo(twitterCtx);
             //DestroyStatusDemo(twitterCtx);
             //UserStatusQueryDemo(twitterCtx);
             //FirstStatusQueryDemo(twitterCtx);
-            PublicStatusQueryDemo(twitterCtx);
+            //PublicStatusQueryDemo(twitterCtx);
             //MentionsStatusQueryDemo(twitterCtx);
 
             //
             // user tweets
             //
 
-            //UserQueryDemo(twitterCtx);
+            //UserShowQueryDemo(twitterCtx);
+            //UserFriendsQueryDemo(twitterCtx);
+            //UserFollowersQueryDemo(twitterCtx);
 
             //
             // direct messages
@@ -160,7 +162,80 @@ namespace LinqToTwitterDemo
             //HandleOAuthRequestResponseDetailsDemo(twitterCtx);
             //OAuthForceLoginDemo(twitterCtx);
 
+            //
+            // Saved Search Demos
+            //
+
+            //QuerySavedSearchesDemo(twitterCtx);
+            //QuerySavedSearchesShowDemo(twitterCtx);
+            //CreateSavedSearchDemo(twitterCtx);
+            //DestroySavedSearchDemo(twitterCtx);
+
             Console.ReadKey();
+        }
+
+        /// <summary>
+        /// Shows how to delete a saved search
+        /// </summary>
+        /// <remarks>
+        /// Trying to delete a saved search that doesn't exist results
+        /// in a TwitterQueryException with HTTP Status 404 (Not Found)
+        /// </remarks>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void DestroySavedSearchDemo(TwitterContext twitterCtx)
+        {
+            var savedSearch = twitterCtx.DestroySavedSearch(329820);
+
+            Console.WriteLine("ID: {0}, Search: {1}", savedSearch.ID, savedSearch.Name);
+        }
+
+        /// <summary>
+        /// shows how to create a Saved Search
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void CreateSavedSearchDemo(TwitterContext twitterCtx)
+        {
+            var savedSearch = twitterCtx.CreateSavedSearch("#csharp");
+
+            Console.WriteLine("ID: {0}, Search: {1}", savedSearch.ID, savedSearch.Name);
+        }
+        
+        /// <summary>
+        /// shows how to retrieve a single search
+        /// </summary>
+        /// <remarks>
+        /// Trying to delete a saved search that doesn't exist results
+        /// in a TwitterQueryException with HTTP Status 404 (Not Found)
+        /// </remarks>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void QuerySavedSearchesShowDemo(TwitterContext twitterCtx)
+        {
+            var savedSearches =
+                from search in twitterCtx.SavedSearch
+                where search.Type == SavedSearchType.Show &&
+                      search.ID == "176136"
+                select search;
+
+            var savedSearch = savedSearches.FirstOrDefault();
+
+            Console.WriteLine("ID: {0}, Search: {1}", savedSearch.ID, savedSearch.Name);
+        }
+
+        /// <summary>
+        /// shows how to retrieve all searches
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void QuerySavedSearchesDemo(TwitterContext twitterCtx)
+        {
+            var savedSearches =
+                from search in twitterCtx.SavedSearch
+                where search.Type == SavedSearchType.Searches
+                select search;
+
+            foreach (var search in savedSearches)
+            {
+                Console.WriteLine("ID: {0}, Search: {1}", search.ID, search.Name);
+            }
         }
 
         #region OAuth Demos
@@ -1249,7 +1324,7 @@ namespace LinqToTwitterDemo
         /// shows how to query users
         /// </summary>
         /// <param name="twitterCtx">TwitterContext</param>
-        private static void UserQueryDemo(TwitterContext twitterCtx)
+        private static void UserShowQueryDemo(TwitterContext twitterCtx)
         {
             var users =
                 from tweet in twitterCtx.User
@@ -1262,6 +1337,53 @@ namespace LinqToTwitterDemo
             Console.WriteLine(
                 "Name: {0}, Last Tweet: {1}\n",
                 user.Name, user.Status.Text);
+        }
+
+        /// <summary>
+        /// shows how to query users
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void UserFriendsQueryDemo(TwitterContext twitterCtx)
+        {
+            var users =
+                from tweet in twitterCtx.User
+                where tweet.Type == UserType.Friends &&
+                      tweet.ID == "15411837"
+                select tweet;
+
+            foreach (var user in users)
+            {
+                var status = user.Protected ? "Status Unavailable" : user.Status.Text;
+
+                Console.WriteLine(
+                        "Name: {0}, Last Tweet: {1}\n",
+                        user.Name, status); 
+            }
+        }
+
+        /// <summary>
+        /// shows how to query users
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void UserFollowersQueryDemo(TwitterContext twitterCtx)
+        {
+            var users =
+                from tweet in twitterCtx.User
+                where tweet.Type == UserType.Followers &&
+                      tweet.ID == "15411837"
+                select tweet;
+
+            foreach (var user in users)
+            {
+                var status = 
+                    user.Protected || user.Status == null ? 
+                        "Status Unavailable" : 
+                        user.Status.Text;
+
+                Console.WriteLine(
+                        "Name: {0}, Last Tweet: {1}\n",
+                        user.Name, status);
+            }
         }
 
         #endregion
@@ -1362,7 +1484,7 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void UpdateStatusWithReplyDemo(TwitterContext twitterCtx)
         {
-            var tweet = twitterCtx.UpdateStatus("@TwitterUser Testing LINQ to Twitter with reply on " + DateTime.Now.ToString(), "961760788");
+            var tweet = twitterCtx.UpdateStatus("@LinqToTweeter Testing LINQ to Twitter with reply on " + DateTime.Now.ToString() + " #linqtotwitter", "961760788");
 
             Console.WriteLine(
                 "(" + tweet.ID + ")" +
@@ -1378,7 +1500,7 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void UpdateStatusDemo(TwitterContext twitterCtx)
         {
-            var tweet = twitterCtx.UpdateStatus("Testing LINQ to Twitter with only status on " + DateTime.Now.ToString());
+            var tweet = twitterCtx.UpdateStatus("Testing LINQ to Twitter with only status on " + DateTime.Now.ToString() + " #linqtotwitter");
 
             Console.WriteLine(
                 "(" + tweet.ID + ")" +

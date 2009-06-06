@@ -245,10 +245,10 @@ namespace LinqToTwitter
                         null)
                 select new DirectMessage
                 {
-                    ID = int.Parse(dm.Element("id").Value),
-                    SenderID = int.Parse(dm.Element("sender_id").Value),
+                    ID = uint.Parse(dm.Element("id").Value),
+                    SenderID = uint.Parse(dm.Element("sender_id").Value),
                     Text = dm.Element("text").Value,
-                    RecipientID = int.Parse(dm.Element("recipient_id").Value),
+                    RecipientID = uint.Parse(dm.Element("recipient_id").Value),
                     CreatedAt = createdAtDate,
                     SenderScreenName = dm.Element("sender_screen_name").Value,
                     RecipientScreenName = dm.Element("recipient_screen_name").Value,

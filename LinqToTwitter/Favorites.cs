@@ -18,7 +18,7 @@ namespace LinqToTwitter
         /// <summary>
         /// User identity to search (optional)
         /// </summary>
-        public new int ID { get; set; }
+        public new uint ID { get; set; }
 
         /// <summary>
         /// Page to retrieve (optional)

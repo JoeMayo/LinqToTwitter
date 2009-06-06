@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
 
 namespace LinqToTwitter
 {
@@ -17,7 +18,9 @@ namespace LinqToTwitter
         {
             if (parameters.ContainsKey("ID"))
             {
-                url = url.Replace(".xml", "/" + parameters["ID"] + ".xml");
+                var fileExtension = Path.GetExtension(url);
+                url = url.Replace(fileExtension, "/" + parameters["ID"] + fileExtension);
+                //url = url.Replace(".xml", "/" + parameters["ID"] + ".xml");
             }
             return url;
         }
