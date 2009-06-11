@@ -221,7 +221,7 @@ namespace LinqToTwitterTests
         {
             var statProc = new StatusRequestProcessor() { BaseUrl = "http://twitter.com/" };
             XElement twitterResponse = XElement.Load(new StringReader(m_testQueryResponse));
-            twitterResponse.Element("status").Element("id").Value = uint.MaxValue.ToString();
+            twitterResponse.Element("status").Element("id").Value = ulong.MaxValue.ToString();
             var actual = statProc.ProcessResults(twitterResponse.Descendants("status").First());
             var actualQuery = actual as IList<Status>;
 
@@ -268,13 +268,13 @@ namespace LinqToTwitterTests
         {
             var reqProc = new StatusRequestProcessor_Accessor();
             reqProc.BaseUrl = "http://twitter.com/";
-            var twypocalypseID = uint.MaxValue.ToString();
+            var twypocalypseID = ulong.MaxValue.ToString();
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                     {
                         { "ID", twypocalypseID }
                     };
-            string expected = "http://twitter.com/statuses/show/4294967295.xml";
+            string expected = "http://twitter.com/statuses/show/18446744073709551615.xml";
             var actual = reqProc.BuildShowUrl(parameters);
             Assert.AreEqual(expected, actual);
         }
@@ -288,7 +288,7 @@ namespace LinqToTwitterTests
         {
             var reqProc = new StatusRequestProcessor_Accessor();
             reqProc.BaseUrl = "http://twitter.com/";
-            var twypocalypseID = uint.MaxValue.ToString();
+            var twypocalypseID = ulong.MaxValue.ToString();
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                     {
@@ -298,7 +298,7 @@ namespace LinqToTwitterTests
                         { "SinceID", twypocalypseID },
                         { "ScreenName", "JoeMayo" },
                     };
-            string expected = "http://twitter.com/statuses/user_timeline/15411837.xml?user_id=15411837&screen_name=JoeMayo&since_id=4294967295";
+            string expected = "http://twitter.com/statuses/user_timeline/15411837.xml?user_id=15411837&screen_name=JoeMayo&since_id=18446744073709551615";
             var actual = reqProc.BuildUserUrl(parameters);
             Assert.AreEqual(expected, actual);
         }

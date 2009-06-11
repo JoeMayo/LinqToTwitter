@@ -6,6 +6,8 @@ using System.Net;
 using System.Diagnostics;
 using System.Web;
 using System.Collections.Specialized;
+using System.Threading;
+using System.Globalization;
 
 namespace LinqToTwitterDemo
 {
@@ -13,6 +15,10 @@ namespace LinqToTwitterDemo
     {
         static void Main(string[] args)
         {
+            // For testing globalization, uncomment and change 
+            // locale to a locale that is not yours
+            //Thread.CurrentThread.CurrentCulture = new CultureInfo("pt-PT");
+
             //
             // get user credentials and instantiate TwitterContext
             //
@@ -67,8 +73,8 @@ namespace LinqToTwitterDemo
             // friendship
             //
 
-            //FriendshipExistsDemo(twitterCtx);
             //CreateFriendshipFollowDemo(twitterCtx);
+            //FriendshipExistsDemo(twitterCtx);
             //DestroyFriendshipDemo(twitterCtx);
             //CreateFriendshipNoDeviceUpdatesDemo(twitterCtx);
 
@@ -1267,14 +1273,15 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void NewDirectMessageDemo(TwitterContext twitterCtx)
         {
-            var message = twitterCtx.NewDirectMessage("16761255", "Direct Message Test - 4/16/09");
+            var message = twitterCtx.NewDirectMessage("16761255", "Direct Message Test - " + DateTime.Now);
 
             if (message != null)
             {
                 Console.WriteLine(
-                    "Recipient: {0}, Message: {1}",
+                    "Recipient: {0}, Message: {1}, Date: {2}",
                     message.RecipientScreenName,
-                    message.Text);
+                    message.Text,
+                    message.CreatedAt);
             }
         }
 

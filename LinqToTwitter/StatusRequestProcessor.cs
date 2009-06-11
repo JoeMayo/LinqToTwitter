@@ -5,6 +5,7 @@ using System.Text;
 using System.Xml.Linq;
 using System.Linq.Expressions;
 using System.Collections;
+using System.Globalization;
 
 namespace LinqToTwitter
 {
@@ -253,7 +254,8 @@ namespace LinqToTwitter
                         dateParts[1],
                         dateParts[2],
                         dateParts[5],
-                        dateParts[3]))
+                        dateParts[3]), 
+                        CultureInfo.InvariantCulture)
                 let user = status.Element("user")
                 select
                    new Status

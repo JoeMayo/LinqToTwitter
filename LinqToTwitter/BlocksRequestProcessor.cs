@@ -211,7 +211,7 @@ namespace LinqToTwitter
                     (from id in twitterResponse.Elements("id").ToList()
                      select new Blocks
                      {
-                        ID = uint.Parse(id.Value)
+                        ID = ulong.Parse(id.Value)
                      })
                      .ToList();
             }

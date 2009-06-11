@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
+using System.Globalization;
 
 namespace LinqToTwitter
 {
@@ -30,10 +31,10 @@ namespace LinqToTwitter
             }
 
             var tempUserProtected = false;
-            var tempFollowersCount = 0u;
-            var tempFriendsCount = 0u;
-            var tempFavoritesCount = 0u;
-            var tempStatusesCount = 0u;
+            var tempFollowersCount = 0ul;
+            var tempFriendsCount = 0ul;
+            var tempFavoritesCount = 0ul;
+            var tempStatusesCount = 0ul;
             var tempStatusTruncated = false;
             var tempStatusFavorited = false;
             var tempFollowingUsers = false;
@@ -41,13 +42,13 @@ namespace LinqToTwitter
             var canParseProtected = 
                 bool.TryParse(user.Element("protected").Value, out tempUserProtected);
             
-            var followersCount = 
-                uint.TryParse(user.Element("followers_count").Value, out tempFollowersCount);
+            var followersCount =
+                ulong.TryParse(user.Element("followers_count").Value, out tempFollowersCount);
             
             var friendsCount =
                 user.Element("friends_count") == null ? 
                     false :
-                    uint.TryParse(user.Element("friends_count").Value, out tempFriendsCount);
+                    ulong.TryParse(user.Element("friends_count").Value, out tempFriendsCount);
             
             var userDateParts =
                 user.Element("created_at") == null ?
@@ -62,17 +63,18 @@ namespace LinqToTwitter
                         userDateParts[1],
                         userDateParts[2],
                         userDateParts[5],
-                        userDateParts[3]));
+                        userDateParts[3]),
+                        CultureInfo.InvariantCulture);
             
             var favoritesCount =
                 user.Element("favourites_count") == null ? 
                     false :
-                    uint.TryParse(user.Element("favourites_count").Value, out tempFavoritesCount);
+                    ulong.TryParse(user.Element("favourites_count").Value, out tempFavoritesCount);
             
             var statusesCount =
                 user.Element("statuses_count") == null ?
                     false :
-                    uint.TryParse(user.Element("statuses_count").Value, out tempStatusesCount);
+                    ulong.TryParse(user.Element("statuses_count").Value, out tempStatusesCount);
 
             var notifications =
                 user.Element("notifications") == null || 
@@ -104,7 +106,8 @@ namespace LinqToTwitter
                         statusDateParts[1],
                         statusDateParts[2],
                         statusDateParts[5],
-                        statusDateParts[3]));
+                        statusDateParts[3]),
+                        CultureInfo.InvariantCulture);
             
             var canParseTruncated =
                 status == null ?
@@ -243,7 +246,7 @@ namespace LinqToTwitter
         /// <summary>
         /// number of people following user
         /// </summary>
-        public uint FollowersCount { get; set; }
+        public ulong FollowersCount { get; set; }
 
         /// <summary>
         /// color of profile background
@@ -273,7 +276,7 @@ namespace LinqToTwitter
         /// <summary>
         /// number of friends
         /// </summary>
-        public uint FriendsCount { get; set; }
+        public ulong FriendsCount { get; set; }
 
         /// <summary>
         /// date and time when profile was created
@@ -283,7 +286,7 @@ namespace LinqToTwitter
         /// <summary>
         /// number of favorites
         /// </summary>
-        public uint FavoritesCount { get; set; }
+        public ulong FavoritesCount { get; set; }
 
         /// <summary>
         /// UTC Offset
@@ -308,7 +311,7 @@ namespace LinqToTwitter
         /// <summary>
         /// number of status updates user has made
         /// </summary>
-        public uint StatusesCount { get; set; }
+        public ulong StatusesCount { get; set; }
 
         /// <summary>
         /// type of device notifications

@@ -6,6 +6,7 @@ using System.Linq.Expressions;
 using System.Xml.Linq;
 using System.Web;
 using System.Collections;
+using System.Globalization;
 
 namespace LinqToTwitter
 {
@@ -175,7 +176,7 @@ namespace LinqToTwitter
                     DateTime.ParseExact(
                         status.Element("created_at").Value,
                         "ddd MMM dd HH:mm:ss %zzzz yyyy",
-                        null)
+                        CultureInfo.InvariantCulture)
                 let user = status.Element("user")
                 select
                    new Favorites
@@ -186,7 +187,7 @@ namespace LinqToTwitter
                             string.IsNullOrEmpty(status.Element("favorited").Value) ?
                             "true" :
                             status.Element("favorited").Value),
-                       ID = uint.Parse(status.Element("id").Value),
+                       ID = ulong.Parse(status.Element("id").Value),
                        InReplyToStatusID = status.Element("in_reply_to_status_id").Value,
                        InReplyToUserID = status.Element("in_reply_to_user_id").Value,
                        Source = status.Element("source").Value,

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Collections;
+using System.Globalization;
 
 namespace LinqToTwitter
 {
@@ -88,7 +89,7 @@ namespace LinqToTwitter
                     {
                         HourlyLimit = int.Parse(twitterResponse.Element("hourly-limit").Value),
                         RemainingHits = int.Parse(twitterResponse.Element("remaining-hits").Value),
-                        ResetTime = DateTime.Parse(twitterResponse.Element("reset-time").Value),
+                        ResetTime = DateTime.Parse(twitterResponse.Element("reset-time").Value, CultureInfo.InvariantCulture),
                         ResetTimeInSeconds = int.Parse(twitterResponse.Element("reset-time-in-seconds").Value)
                     };
 

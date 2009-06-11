@@ -6,6 +6,7 @@ using System.Web;
 using System.Xml.Linq;
 using System.Xml;
 using System.Collections;
+using System.Globalization;
 
 namespace LinqToTwitter
 {
@@ -176,7 +177,7 @@ The blog system I'm us.. &lt;a href=""http://tinyurl.com/cvdbvr""&gt;http://tiny
                     twitterResponse.Element(twitter + "warning") == null ?
                     string.Empty :
                     twitterResponse.Element(twitter + "warning").Value,
-                Updated = DateTime.Parse(twitterResponse.Element(atom + "updated").Value),
+                Updated = DateTime.Parse(twitterResponse.Element(atom + "updated").Value, CultureInfo.InvariantCulture),
                 ItemsPerPage = 
                     twitterResponse.Element(openSearch + "itemsPerPage") == null ?
                     -1 :
@@ -225,10 +226,10 @@ The blog system I'm us.. &lt;a href=""http://tinyurl.com/cvdbvr""&gt;http://tiny
                      select new AtomEntry
                      {
                          ID = atomEntry.Element(atom + "id").Value,
-                         Published = DateTime.Parse(atomEntry.Element(atom + "published").Value),
+                         Published = DateTime.Parse(atomEntry.Element(atom + "published").Value, CultureInfo.InvariantCulture),
                          Title = atomEntry.Element(atom + "title").Value,
                          Content = atomEntry.Element(atom + "content").Value,
-                         Updated = DateTime.Parse(atomEntry.Element(atom + "updated").Value),
+                         Updated = DateTime.Parse(atomEntry.Element(atom + "updated").Value, CultureInfo.InvariantCulture),
                          Source = atomEntry.Element(twitter + "source").Value,
                          Language = atomEntry.Element(twitter + "lang").Value,
                          Alternate = atomEntry.Elements(atom + "link")

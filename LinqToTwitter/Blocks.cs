@@ -18,12 +18,12 @@ namespace LinqToTwitter
         /// <summary>
         /// id of user
         /// </summary>
-        public uint ID { get; set; }
+        public ulong ID { get; set; }
 
         /// <summary>
         /// disambiguates when user id is screen name
         /// </summary>
-        public uint UserID { get; set; }
+        public ulong UserID { get; set; }
 
         /// <summary>
         /// disambiguates when screen name is user id

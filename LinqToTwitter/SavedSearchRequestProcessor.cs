@@ -5,6 +5,7 @@ using System.Text;
 using System.Collections;
 using System.Linq.Expressions;
 using System.Xml.Linq;
+using System.Globalization;
 
 namespace LinqToTwitter
 {
@@ -123,7 +124,7 @@ namespace LinqToTwitter
                     DateTime.ParseExact(
                         search.Element("created_at").Value,
                         "ddd MMM dd HH:mm:ss %zzzz yyyy",
-                        null)
+                        CultureInfo.InvariantCulture)
                 let position =
                     int.TryParse(search.Element("position").Value, out tempPosition)
                 select

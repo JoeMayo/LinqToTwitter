@@ -13,20 +13,20 @@ namespace LinqToTwitter
         public DirectMessageType Type { get; set; }
 
         //  <id>87864628</id>
-        public uint ID { get; set; }
+        public ulong ID { get; set; }
 
         //  <sender_id>1234567</sender_id>
-        public uint SenderID { get; set; }
+        public ulong SenderID { get; set; }
 
         /// <summary>
         /// since this message ID
         /// </summary>
-        public uint SinceID { get; set; }
+        public ulong SinceID { get; set; }
 
         /// <summary>
         /// max ID to return
         /// </summary>
-        public uint MaxID { get; set; }
+        public ulong MaxID { get; set; }
 
         /// <summary>
         /// page number to return
@@ -42,7 +42,7 @@ namespace LinqToTwitter
         public string Text { get; set; }
 
         //  <recipient_id>15411837</recipient_id>
-        public uint RecipientID { get; set; }
+        public ulong RecipientID { get; set; }
 
         //  <created_at>Tue Apr 07 16:47:25 +0000 2009</created_at>
         public DateTime CreatedAt { get; set; }

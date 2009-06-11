@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Linq.Expressions;
 using System.Collections;
+using System.Globalization;
 
 namespace LinqToTwitter
 {
@@ -242,13 +243,13 @@ namespace LinqToTwitter
                     DateTime.ParseExact(
                         dm.Element("created_at").Value, 
                         "ddd MMM dd HH:mm:ss %zzzz yyyy", 
-                        null)
+                        CultureInfo.InvariantCulture)
                 select new DirectMessage
                 {
-                    ID = uint.Parse(dm.Element("id").Value),
-                    SenderID = uint.Parse(dm.Element("sender_id").Value),
+                    ID = ulong.Parse(dm.Element("id").Value),
+                    SenderID = ulong.Parse(dm.Element("sender_id").Value),
                     Text = dm.Element("text").Value,
-                    RecipientID = uint.Parse(dm.Element("recipient_id").Value),
+                    RecipientID = ulong.Parse(dm.Element("recipient_id").Value),
                     CreatedAt = createdAtDate,
                     SenderScreenName = dm.Element("sender_screen_name").Value,
                     RecipientScreenName = dm.Element("recipient_screen_name").Value,

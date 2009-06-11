@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Xml.Linq;
 using System.Collections;
+using System.Globalization;
 
 namespace LinqToTwitter
 {
@@ -138,7 +139,7 @@ namespace LinqToTwitter
 
             if (parameters.ContainsKey("Date"))
             {
-                urlParams.Add("date=" + DateTime.Parse(parameters["Date"]).ToString("yyyy-MM-dd"));
+                urlParams.Add("date=" + DateTime.Parse(parameters["Date"], CultureInfo.InvariantCulture).ToString("yyyy-MM-dd"));
             }
 
             if (parameters.ContainsKey("ExcludeHashtags") &&
@@ -266,7 +267,7 @@ namespace LinqToTwitter
             if (twitterResponse.Element("trends").Element(itemNS + "item") == null)
             {
                 items = twitterResponse.Element("trends").Elements("item").ToList();
-                asOf = DateTime.Parse(twitterResponse.Element("as_of").Value);
+                asOf = DateTime.Parse(twitterResponse.Element("as_of").Value, CultureInfo.InvariantCulture);
             }
             else
             {
@@ -280,7 +281,8 @@ namespace LinqToTwitter
                 asOf = DateTime.Parse(
                     twitterResponse
                         .Element("trends")
-                            .Element(itemNS + "item").Attribute("item").Value);
+                            .Element(itemNS + "item").Attribute("item").Value,
+                    CultureInfo.InvariantCulture);
             }
 
             return

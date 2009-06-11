@@ -39,7 +39,7 @@ namespace LinqToTwitter
         /// <summary>
         /// last status ID
         /// </summary>
-        public uint SinceID { get; set; }
+        public ulong SinceID { get; set; }
 
         /// <summary>
         /// location, specified as "latitude,longitude,radius"
