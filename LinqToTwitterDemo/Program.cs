@@ -1507,9 +1507,15 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void UpdateStatusDemo(TwitterContext twitterCtx)
         {
-            var tweet = twitterCtx.UpdateStatus("Testing LINQ to Twitter with only status on " + DateTime.Now.ToString() + " #linqtotwitter");
+            // the \u00C7 is C Cedilla, which I've included to ensure that non-ascii characters appear properly
+            var status = "\u00C7 Testing LINQ to Twitter with only status on " + DateTime.Now.ToString() + " #linqtotwitter";
+
+            Console.WriteLine("Status being sent: " + status);
+
+            var tweet = twitterCtx.UpdateStatus(status);
 
             Console.WriteLine(
+                "Status returned: " +
                 "(" + tweet.ID + ")" +
                 "[" + tweet.User.ID + "]" +
                 tweet.User.Name + ", " +
