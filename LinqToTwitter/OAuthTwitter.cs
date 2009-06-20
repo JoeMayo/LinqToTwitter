@@ -203,45 +203,6 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// Url Encodes according to OAuth Spec
-        /// </summary>
-        /// <param name="value">string to be encoded</param>
-        /// <returns>OAuth UrlEncoded string</returns>
-        public string OAuthParameterUrlEncode(string value)
-        {
-            // TODO: see if this can this be merged with AuthBase UrlEncode - Joe
-
-            string RESERVED_CHARS = @"`!@#$%^&*()_-+=.~,:;'?/|\[] ";
-            var result = new StringBuilder();
-
-            if (string.IsNullOrEmpty(value))
-                return string.Empty;
-
-            foreach (var symbol in value)
-            {
-                if (unreservedChars.IndexOf(symbol) != -1)
-                {
-                    result.Append(symbol);
-                }
-                else if (RESERVED_CHARS.IndexOf(symbol) != -1)
-                {
-                    result.Append('%' + String.Format("{0:X2}", (int)symbol));
-                }
-                else
-                {
-                    var encoded = HttpUtility.UrlEncode(symbol.ToString());
-
-                    if (!string.IsNullOrEmpty(encoded))
-                    {
-                        result.Append(encoded);
-                    }
-                }
-            }
-
-            return result.ToString();
-        }
-
-        /// <summary>
         /// processes POST request parameters
         /// </summary>
         /// <param name="parameters">parameters to process</param>

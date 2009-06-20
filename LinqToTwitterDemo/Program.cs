@@ -47,9 +47,11 @@ namespace LinqToTwitterDemo
             UpdateStatusDemo(twitterCtx);
             //UpdateStatusWithReplyDemo(twitterCtx);
             //DestroyStatusDemo(twitterCtx);
+            //UserStatusByNameQueryDemo(twitterCtx);
             //UserStatusQueryDemo(twitterCtx);
             //FirstStatusQueryDemo(twitterCtx);
             //PublicStatusQueryDemo(twitterCtx);
+            //PublicStatusFilteredQueryDemo(twitterCtx);
             //MentionsStatusQueryDemo(twitterCtx);
 
             //
@@ -155,6 +157,7 @@ namespace LinqToTwitterDemo
             //HandleQueryExceptionDemo(twitterCtx);
             //HandleSideEffectExceptionDemo(twitterCtx);
             //HandleSideEffectWithFilePostExceptionDemo(twitterCtx);
+            //HandleTimeoutErrors(twitterCtx);
 
             //
             // Oauth Demos
@@ -179,6 +182,8 @@ namespace LinqToTwitterDemo
 
             Console.ReadKey();
         }
+
+        #region Saved Search Demos
 
         /// <summary>
         /// Shows how to delete a saved search
@@ -243,6 +248,8 @@ namespace LinqToTwitterDemo
                 Console.WriteLine("ID: {0}, Search: {1}", search.ID, search.Name);
             }
         }
+
+        #endregion
 
         #region OAuth Demos
 
@@ -530,6 +537,38 @@ namespace LinqToTwitterDemo
         #endregion
 
         #region Error Handling Demos
+
+        /// <summary>
+        /// shows how to handle a timeout error
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void HandleTimeoutErrors(TwitterContext twitterCtx)
+        {
+            // force an unreasonable timeout (1 millisecond)
+            twitterCtx.Timeout = 1;
+
+            var publicTweets =
+                from tweet in twitterCtx.Status
+                where tweet.Type == StatusType.Public
+                select tweet;
+
+            try
+            {
+                publicTweets.ToList().ForEach(
+                        tweet => Console.WriteLine(
+                            "User Name: {0}, Tweet: {1}",
+                            tweet.User.Name,
+                            tweet.Text));
+            }
+            catch (TwitterQueryException tqEx)
+            {
+                // use your logging and handling logic here
+
+                // notice how the WebException is wrapped as the
+                // inner exception of the TwitterQueryException
+                Console.WriteLine(tqEx.InnerException.Message);
+            }
+        }
 
         /// <summary>
         /// shows how to handle a TwitterQueryException with a side-effect causing a file post
@@ -1415,6 +1454,35 @@ namespace LinqToTwitterDemo
         }
 
         /// <summary>
+        /// shows how to query status with a screen name for specified number of tweets
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void UserStatusByNameQueryDemo(TwitterContext twitterCtx)
+        {
+            Console.WriteLine();
+
+            var lastN = 20;
+            var screenName = "JoeMayo";
+
+            var statusTweets =
+                from tweet in twitterCtx.Status
+                where tweet.Type == StatusType.User
+                      && tweet.ScreenName == screenName
+                      && tweet.Count == lastN
+                select tweet;
+
+            foreach (var tweet in statusTweets)
+            {
+                Console.WriteLine(
+                    "(" + tweet.ID + ")" +
+                    "[" + tweet.User.ID + "]" +
+                    tweet.User.Name + ", " +
+                    tweet.Text + ", " +
+                    tweet.CreatedAt);
+            }
+        }
+
+        /// <summary>
         /// shows how to query status
         /// </summary>
         /// <param name="twitterCtx">TwitterContext</param>
@@ -1521,6 +1589,33 @@ namespace LinqToTwitterDemo
                 tweet.User.Name + ", " +
                 tweet.Text + ", " +
                 tweet.CreatedAt);
+        }
+
+        /// <summary>
+        /// shows how to send a public status query and then filter
+        /// </summary>
+        /// <remarks>
+        /// since Twitter API doesn't filter public status,
+        /// you can grab the results and then filter with
+        /// LINQ to Objects.
+        /// </remarks>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void PublicStatusFilteredQueryDemo(TwitterContext twitterCtx)
+        {
+            var publicTweets =
+                (from tweet in twitterCtx.Status
+                 where tweet.Type == StatusType.Public
+                 select tweet)
+                 .ToList();
+
+            var filteredTweets =
+                publicTweets.Where(tweet => tweet.User.Name.StartsWith("J"));
+
+            filteredTweets.ToList().ForEach(
+                tweet => Console.WriteLine(
+                    "User Name: {0}, Tweet: {1}",
+                    tweet.User.Name,
+                    tweet.Text));
         }
 
         /// <summary>

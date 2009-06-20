@@ -8,6 +8,7 @@ using System.IO;
 using System.Xml;
 using System.Runtime.Serialization.Json;
 using System.Collections;
+using System.Web;
 
 namespace LinqToTwitter
 {
@@ -27,6 +28,27 @@ namespace LinqToTwitter
         /// user's password
         /// </summary>
         public string Password { get; set; }
+
+        /// <summary>
+        /// Default for ReadWriteTimeout
+        /// </summary>
+        public const int DefaultReadWriteTimeout = 300000;
+
+        /// <summary>
+        /// Timeout (milliseconds) for writing to request 
+        /// stream or reading from response stream
+        /// </summary>
+        public int ReadWriteTimeout { get; set; }
+
+        /// <summary>
+        /// Default for Timeout
+        /// </summary>
+        public const int DefaultTimeout = 100000;
+
+        /// <summary>
+        /// Timeout (milliseconds) to wait for a server response
+        /// </summary>
+        public int Timeout { get; set; }
 
         /// <summary>
         /// list of response headers from query
@@ -215,6 +237,16 @@ namespace LinqToTwitter
 
             req.UserAgent = UserAgent;
 
+            if (ReadWriteTimeout > 0)
+            {
+                req.ReadWriteTimeout = ReadWriteTimeout;
+            }
+
+            if (Timeout > 0)
+            {
+                req.Timeout = Timeout;
+            }
+
             string responseXml = string.Empty;
             string httpStatus = string.Empty;
             WebResponse resp = null;
@@ -332,6 +364,16 @@ namespace LinqToTwitter
             req.UserAgent = UserAgent;
             req.ContentLength = fileBytes.Length;
 
+            if (ReadWriteTimeout > 0)
+            {
+                req.ReadWriteTimeout = ReadWriteTimeout;
+            }
+
+            if (Timeout > 0)
+            {
+                req.Timeout = Timeout;
+            }
+
             if (AuthorizedViaOAuth)
             {
                 req.Headers.Add(
@@ -383,6 +425,45 @@ namespace LinqToTwitter
         }
 
         /// <summary>
+        /// Url Encodes for both OAuth and Basic Authentication
+        /// </summary>
+        /// <param name="value">string to be encoded</param>
+        /// <returns>UrlEncoded string</returns>
+        public string TwitterParameterUrlEncode(string value)
+        {
+            string ReservedChars = @"`!@#$%^&*()_-+=.~,:;'?/|\[] ";
+            string UnReservedChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_.~";
+            
+            var result = new StringBuilder();
+
+            if (string.IsNullOrEmpty(value))
+                return string.Empty;
+
+            foreach (var symbol in value)
+            {
+                if (UnReservedChars.IndexOf(symbol) != -1)
+                {
+                    result.Append(symbol);
+                }
+                else if (ReservedChars.IndexOf(symbol) != -1)
+                {
+                    result.Append('%' + String.Format("{0:X2}", (int)symbol));
+                }
+                else
+                {
+                    var encoded = HttpUtility.UrlEncode(symbol.ToString());
+
+                    if (!string.IsNullOrEmpty(encoded))
+                    {
+                        result.Append(encoded);
+                    }
+                }
+            }
+
+            return result.ToString();
+        }
+
+        /// <summary>
         /// utility method to perform HTTP POST for Twitter requests with side-effects
         /// </summary>
         /// <param name="url">URL of request</param>
@@ -398,7 +479,7 @@ namespace LinqToTwitter
                     "&",
                     (from param in parameters
                      where !string.IsNullOrEmpty(param.Value)
-                     select param.Key + "=" + OAuthTwitter.OAuthParameterUrlEncode(param.Value))
+                     select param.Key + "=" + TwitterParameterUrlEncode(param.Value))
                      .ToArray());
 
             url += "?" + paramsJoined;
@@ -422,6 +503,16 @@ namespace LinqToTwitter
             req.ContentType = "x-www-form-urlencoded";
             req.UserAgent = UserAgent;
             req.ServicePoint.Expect100Continue = false;
+
+            if (ReadWriteTimeout > 0)
+            {
+                req.ReadWriteTimeout = ReadWriteTimeout;
+            }
+
+            if (Timeout > 0)
+            {
+                req.Timeout = Timeout;
+            }
 
             string httpStatus = string.Empty;
             string responseXml = string.Empty;

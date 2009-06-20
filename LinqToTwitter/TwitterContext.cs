@@ -49,7 +49,7 @@ namespace LinqToTwitter
         public TwitterContext(ITwitterExecute twitterExecute) :
             this(string.Empty, string.Empty, string.Empty, string.Empty) 
         {
-            TwitterExecute = twitterExecute;
+            TwitterExecutor = twitterExecute;
         }
 
         /// <summary>
@@ -78,8 +78,8 @@ namespace LinqToTwitter
         /// <param name="searchUrl">base url of Twitter Search API</param>
         public TwitterContext(string userName, string password, string baseUrl, string searchUrl)
         {
-            TwitterExecute = new TwitterExecute();
-            TwitterExecute.OAuthTwitter = OAuthTwitter;
+            TwitterExecutor = new TwitterExecute();
+            TwitterExecutor.OAuthTwitter = OAuthTwitter;
             UserName = userName;
             Password = password;
             BaseUrl = string.IsNullOrEmpty(baseUrl) ? "http://twitter.com/" : baseUrl;
@@ -107,9 +107,9 @@ namespace LinqToTwitter
         {
             get
             {
-                if (TwitterExecute != null)
+                if (TwitterExecutor != null)
                 {
-                    return TwitterExecute.UserName;
+                    return TwitterExecutor.UserName;
                 }
                 else
                 {
@@ -118,9 +118,9 @@ namespace LinqToTwitter
             }
             set
             {
-                if (TwitterExecute != null)
+                if (TwitterExecutor != null)
                 {
-                    TwitterExecute.UserName = value;
+                    TwitterExecutor.UserName = value;
                 }
             }
         }
@@ -132,9 +132,9 @@ namespace LinqToTwitter
         {
             get
             {
-                if (TwitterExecute != null)
+                if (TwitterExecutor != null)
                 {
-                    return TwitterExecute.Password;
+                    return TwitterExecutor.Password;
                 }
                 else
                 {
@@ -143,9 +143,9 @@ namespace LinqToTwitter
             }
             set
             {
-                if (TwitterExecute != null)
+                if (TwitterExecutor != null)
                 {
-                    TwitterExecute.Password = value;
+                    TwitterExecutor.Password = value;
                 }
             }
         }
@@ -157,9 +157,9 @@ namespace LinqToTwitter
         {
             get
             {
-                if (TwitterExecute != null)
+                if (TwitterExecutor != null)
                 {
-                    return TwitterExecute.UserAgent;
+                    return TwitterExecutor.UserAgent;
                 }
                 else
                 {
@@ -168,9 +168,60 @@ namespace LinqToTwitter
             }
             set
             {
-                if (TwitterExecute != null)
+                if (TwitterExecutor != null)
                 {
-                    TwitterExecute.UserAgent = value;
+                    TwitterExecutor.UserAgent = value;
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// Gets and sets HTTP UserAgent header
+        /// </summary>
+        public int ReadWriteTimeout
+        {
+            get
+            {
+                if (TwitterExecutor != null)
+                {
+                    return TwitterExecutor.ReadWriteTimeout;
+                }
+                else
+                {
+                    return TwitterExecute.DefaultReadWriteTimeout;
+                }
+            }
+            set
+            {
+                if (TwitterExecutor != null)
+                {
+                    TwitterExecutor.ReadWriteTimeout = value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets and sets HTTP UserAgent header
+        /// </summary>
+        public int Timeout
+        {
+            get
+            {
+                if (TwitterExecutor != null)
+                {
+                    return TwitterExecutor.Timeout;
+                }
+                else
+                {
+                    return TwitterExecute.DefaultTimeout;
+                }
+            }
+            set
+            {
+                if (TwitterExecutor != null)
+                {
+                    TwitterExecutor.Timeout = value;
                 }
             }
         }
@@ -178,7 +229,7 @@ namespace LinqToTwitter
         /// <summary>
         /// Methods for communicating with Twitter
         /// </summary>
-        private ITwitterExecute TwitterExecute { get; set; }
+        private ITwitterExecute TwitterExecutor { get; set; }
 
         #endregion
 
@@ -492,9 +543,9 @@ namespace LinqToTwitter
         {
             get
             {
-                if (TwitterExecute != null)
+                if (TwitterExecutor != null)
                 {
-                    return TwitterExecute.ResponseHeaders;
+                    return TwitterExecutor.ResponseHeaders;
                 }
                 else
                 {
@@ -603,7 +654,7 @@ namespace LinqToTwitter
             var url = reqProc.BuildURL(parameters);
 
             // execute the query and return results
-            var queryableList = TwitterExecute.QueryTwitter(url, reqProc);
+            var queryableList = TwitterExecutor.QueryTwitter(url, reqProc);
 
             if (isEnumerable)
             {
@@ -720,7 +771,7 @@ namespace LinqToTwitter
             var updateUrl = BaseUrl + "statuses/update.xml";
 
             var results =
-                TwitterExecute.ExecuteTwitter(
+                TwitterExecutor.ExecuteTwitter(
                     updateUrl,
                     new Dictionary<string, string>
                     {
@@ -747,7 +798,7 @@ namespace LinqToTwitter
             var destroyUrl = BaseUrl + "statuses/destroy/" + id + ".xml";
 
             var results =
-                TwitterExecute.ExecuteTwitter(
+                TwitterExecutor.ExecuteTwitter(
                     destroyUrl,
                     new Dictionary<string, string>(),
                     new StatusRequestProcessor());
@@ -781,7 +832,7 @@ namespace LinqToTwitter
             var newUrl = BaseUrl + "direct_messages/new.xml";
 
             var results =
-                TwitterExecute.ExecuteTwitter(
+                TwitterExecutor.ExecuteTwitter(
                     newUrl,
                     new Dictionary<string, string>
                     {
@@ -808,7 +859,7 @@ namespace LinqToTwitter
             var destroyUrl = BaseUrl + "direct_messages/destroy/" + id + ".xml";
 
             var results =
-                TwitterExecute.ExecuteTwitter(
+                TwitterExecutor.ExecuteTwitter(
                     destroyUrl,
                     new Dictionary<string, string>(),
                     new DirectMessageRequestProcessor());
@@ -847,7 +898,7 @@ namespace LinqToTwitter
             }
 
             var results =
-                TwitterExecute.ExecuteTwitter(
+                TwitterExecutor.ExecuteTwitter(
                     destroyUrl,
                     createParams,
                     new UserRequestProcessor());
@@ -872,7 +923,7 @@ namespace LinqToTwitter
             var destroyUrl = BaseUrl + "friendships/destroy/" + id + ".xml";
 
             var results =
-                TwitterExecute.ExecuteTwitter(
+                TwitterExecutor.ExecuteTwitter(
                     destroyUrl,
                     new Dictionary<string, string>
                     {
@@ -899,7 +950,7 @@ namespace LinqToTwitter
             var favoritesUrl = BaseUrl + "favorites/create/" + id + ".xml";
 
             var results =
-                TwitterExecute.ExecuteTwitter(
+                TwitterExecutor.ExecuteTwitter(
                     favoritesUrl,
                     new Dictionary<string, string>(),
                     new StatusRequestProcessor());
@@ -922,7 +973,7 @@ namespace LinqToTwitter
             var favoritesUrl = BaseUrl + "favorites/destroy/" + id + ".xml";
 
             var results =
-                TwitterExecute.ExecuteTwitter(
+                TwitterExecutor.ExecuteTwitter(
                     favoritesUrl,
                     new Dictionary<string, string>(),
                     new StatusRequestProcessor());
@@ -952,7 +1003,7 @@ namespace LinqToTwitter
             var notificationsUrl = BaseUrl + "notifications/leave/" + id + ".xml";
 
             var results =
-                TwitterExecute.ExecuteTwitter(
+                TwitterExecutor.ExecuteTwitter(
                     notificationsUrl,
                     new Dictionary<string, string>
                     {
@@ -986,7 +1037,7 @@ namespace LinqToTwitter
             var notificationsUrl = BaseUrl + "notifications/follow/" + id + ".xml";
 
             var results =
-                TwitterExecute.ExecuteTwitter(
+                TwitterExecutor.ExecuteTwitter(
                     notificationsUrl,
                     new Dictionary<string, string>
                     {
@@ -1013,7 +1064,7 @@ namespace LinqToTwitter
             var blocksUrl = BaseUrl + "blocks/create/" + id + ".xml";
 
             var results =
-                TwitterExecute.ExecuteTwitter(
+                TwitterExecutor.ExecuteTwitter(
                     blocksUrl,
                     new Dictionary<string, string>(),
                     new UserRequestProcessor());
@@ -1036,7 +1087,7 @@ namespace LinqToTwitter
             var blocksUrl = BaseUrl + "blocks/destroy/" + id + ".xml";
 
             var results =
-                TwitterExecute.ExecuteTwitter(
+                TwitterExecutor.ExecuteTwitter(
                     blocksUrl,
                     new Dictionary<string, string>(),
                     new UserRequestProcessor());
@@ -1053,7 +1104,7 @@ namespace LinqToTwitter
             var helpUrl = BaseUrl + "help/test.xml";
 
             var results =
-                TwitterExecute.ExecuteTwitter(
+                TwitterExecutor.ExecuteTwitter(
                     helpUrl,
                     new Dictionary<string, string>(),
                     new HelpRequestProcessor());
@@ -1070,7 +1121,7 @@ namespace LinqToTwitter
             var accountUrl = BaseUrl + "account/end_session.xml";
 
             var results =
-                TwitterExecute.ExecuteTwitter(
+                TwitterExecutor.ExecuteTwitter(
                     accountUrl,
                     new Dictionary<string, string>(),
                     new AccountRequestProcessor());
@@ -1097,7 +1148,7 @@ namespace LinqToTwitter
             var accountUrl = BaseUrl + "account/update_delivery_device.xml";
 
             var results =
-                TwitterExecute.ExecuteTwitter(
+                TwitterExecutor.ExecuteTwitter(
                     accountUrl,
                     new Dictionary<string, string>
                     {
@@ -1134,7 +1185,7 @@ namespace LinqToTwitter
             }
 
             var results =
-                TwitterExecute.ExecuteTwitter(
+                TwitterExecutor.ExecuteTwitter(
                     accountUrl,
                     new Dictionary<string, string>
                     {
@@ -1167,7 +1218,7 @@ namespace LinqToTwitter
                 throw new ArgumentException("imageFilePath is required.", "imageFilePath");
             }
 
-            var results = TwitterExecute.PostTwitterFile(imageFilePath, null, accountUrl, new UserRequestProcessor());
+            var results = TwitterExecutor.PostTwitterFile(imageFilePath, null, accountUrl, new UserRequestProcessor());
 
             return (results as IList<User>).FirstOrDefault();
         }
@@ -1198,7 +1249,7 @@ namespace LinqToTwitter
                 };
             }
 
-            var results = TwitterExecute.PostTwitterFile(imageFilePath, parameters, accountUrl, new UserRequestProcessor());
+            var results = TwitterExecutor.PostTwitterFile(imageFilePath, parameters, accountUrl, new UserRequestProcessor());
 
             return (results as IList<User>).FirstOrDefault();
         }
@@ -1251,7 +1302,7 @@ namespace LinqToTwitter
             }
 
             var results =
-                TwitterExecute.ExecuteTwitter(
+                TwitterExecutor.ExecuteTwitter(
                     accountUrl,
                     new Dictionary<string, string>
                     {
@@ -1281,7 +1332,7 @@ namespace LinqToTwitter
             var savedSearchUrl = BaseUrl + "saved_searches/create.xml";
 
             var results =
-                TwitterExecute.ExecuteTwitter(
+                TwitterExecutor.ExecuteTwitter(
                     savedSearchUrl,
                     new Dictionary<string, string>
                     {
@@ -1307,7 +1358,7 @@ namespace LinqToTwitter
             var savedSearchUrl = BaseUrl + "saved_searches/destroy/" + id + ".xml";
 
             var results =
-                TwitterExecute.ExecuteTwitter(
+                TwitterExecutor.ExecuteTwitter(
                     savedSearchUrl,
                     new Dictionary<string, string>(),
                     new SavedSearchRequestProcessor());

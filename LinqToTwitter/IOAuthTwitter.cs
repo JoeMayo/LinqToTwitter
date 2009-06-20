@@ -10,7 +10,6 @@ namespace LinqToTwitter
         void GetOAuthQueryStringForPost(string url, System.Collections.Generic.Dictionary<string, string> parameters, out string outUrl, out string postData);
         string OAuthConsumerKey { get; set; }
         string OAuthConsumerSecret { get; set; }
-        string OAuthParameterUrlEncode(string value);
         string OAuthToken { get; set; }
         string OAuthTokenSecret { get; set; }
         string OAuthUserAgent { get; set; }

@@ -30,6 +30,17 @@ namespace LinqToTwitter
         string UserAgent { get; set; }
 
         /// <summary>
+        /// Timeout (milliseconds) for writing to request 
+        /// stream or reading from response stream
+        /// </summary>
+        int ReadWriteTimeout { get; set; }
+
+        /// <summary>
+        /// Timeout (milliseconds) to wait for a server response
+        /// </summary>
+        int Timeout { get; set; }
+
+        /// <summary>
         /// True if OAuth succeeds, otherwise false.
         /// </summary>
         bool AuthorizedViaOAuth { get; }
