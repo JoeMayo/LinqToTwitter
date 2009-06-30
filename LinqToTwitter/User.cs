@@ -79,10 +79,8 @@ namespace LinqToTwitter
             var notifications =
                 user.Element("notifications") == null || 
                 string.IsNullOrEmpty(user.Element("notifications").Value) ?
-                DeviceType.None :
-                    user.Element("notifications").Value == "false" ?
-                    DeviceType.None :
-                    (DeviceType)Enum.Parse(typeof(DeviceType), user.Element("notifications").Value, true);
+                    false : 
+                    bool.Parse(user.Element("notifications").Value);
 
             var isFollowing =
                 user.Element("following") == null ||
@@ -316,7 +314,7 @@ namespace LinqToTwitter
         /// <summary>
         /// type of device notifications
         /// </summary>
-        public DeviceType Notifications { get; set; }
+        public bool Notifications { get; set; }
 
         /// <summary>
         /// is authenticated user following this user

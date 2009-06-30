@@ -158,7 +158,7 @@ The blog system I'm us.. &lt;a href=""http://tinyurl.com/cvdbvr""&gt;http://tiny
                 search =>
                     search.Type == SearchType.Search &&
                     search.GeoCode == "40.757929,-73.985506,25km" &&
-                    search.Language == "en" &&
+                    search.SearchLanguage == "en" &&
                     search.Page == 1 &&
                     search.PageSize == 10 &&
                     search.Query == "LINQ to Twitter" &&
@@ -176,7 +176,7 @@ The blog system I'm us.. &lt;a href=""http://tinyurl.com/cvdbvr""&gt;http://tiny
                     new KeyValuePair<string, string>("GeoCode", "40.757929,-73.985506,25km")));
             Assert.IsTrue(
                 queryParams.Contains(
-                    new KeyValuePair<string, string>("Language", "en")));
+                    new KeyValuePair<string, string>("SearchLanguage", "en")));
             Assert.IsTrue(
                 queryParams.Contains(
                     new KeyValuePair<string, string>("Page", "1")));
@@ -205,7 +205,7 @@ The blog system I'm us.. &lt;a href=""http://tinyurl.com/cvdbvr""&gt;http://tiny
                 new Dictionary<string, string>
                 {
                     { "GeoCode", "40.757929,-73.985506,25km" },
-                    { "Language", "en" },
+                    { "SearchLanguage", "en" },
                     { "Page", "1" },
                     { "PageSize", "10" },
                     { "Query", "LINQ to Twitter" },

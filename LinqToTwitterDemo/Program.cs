@@ -8,6 +8,7 @@ using System.Web;
 using System.Collections.Specialized;
 using System.Threading;
 using System.Globalization;
+using System.Collections.Generic;
 
 namespace LinqToTwitterDemo
 {
@@ -53,6 +54,7 @@ namespace LinqToTwitterDemo
             //PublicStatusQueryDemo(twitterCtx);
             //PublicStatusFilteredQueryDemo(twitterCtx);
             //MentionsStatusQueryDemo(twitterCtx);
+            //FriendStatusQueryDemo(twitterCtx);
 
             //
             // user tweets
@@ -1435,6 +1437,26 @@ namespace LinqToTwitterDemo
         #endregion
 
         #region Status Demos
+
+        /// <summary>
+        /// Shows how to get statuses for logged-in user's friends - just like main Twitter page
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void FriendStatusQueryDemo(TwitterContext twitterCtx)
+        {
+            var friendTweets =
+                from tweet in twitterCtx.Status
+                where tweet.Type == StatusType.Friends
+                select tweet;
+
+            Console.WriteLine("\nTweets for " + twitterCtx.UserName + "\n");
+            foreach (var tweet in friendTweets)
+            {
+                Console.WriteLine(
+                    "Friend: " + tweet.User.Name +
+                    "\nTweet: " + tweet.Text + "\n");
+            }
+        }
 
         /// <summary>
         /// Shows how to query tweets menioning logged-in user

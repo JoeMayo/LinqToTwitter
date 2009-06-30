@@ -24,7 +24,7 @@ namespace LinqToTwitter
         /// <summary>
         /// language to search in (ISO 639-1)
         /// </summary>
-        public string Language { get; set; }
+        public string SearchLanguage { get; set; }
 
         /// <summary>
         /// number of results for each page

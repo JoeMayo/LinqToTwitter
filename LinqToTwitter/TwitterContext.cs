@@ -16,6 +16,7 @@ using System.Xml.Linq;
 using System.Web;
 using System.Xml;
 using System.Runtime.Serialization.Json;
+using System.Diagnostics.Contracts;
 
 namespace LinqToTwitter
 {
@@ -756,6 +757,8 @@ namespace LinqToTwitter
         /// <returns>IQueryable of sent status</returns>
         public Status UpdateStatus(string status, string inReplyToStatusID)
         {
+            //Contract.Requires(!string.IsNullOrEmpty(status));
+
             if (string.IsNullOrEmpty(status))
             {
                 throw new ArgumentException("status is a required parameter.");

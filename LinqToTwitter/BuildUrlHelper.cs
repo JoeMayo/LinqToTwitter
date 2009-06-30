@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using System.Diagnostics.Contracts;
 
 namespace LinqToTwitter
 {
@@ -20,7 +21,6 @@ namespace LinqToTwitter
             {
                 var fileExtension = Path.GetExtension(url);
                 url = url.Replace(fileExtension, "/" + parameters["ID"] + fileExtension);
-                //url = url.Replace(".xml", "/" + parameters["ID"] + ".xml");
             }
             return url;
         }
