@@ -410,6 +410,57 @@ namespace LinqToTwitter
             }
         }
 
+
+        /// <summary>
+        /// OAuth Token.
+        /// </summary>
+        public string OauthToken
+        {
+            get
+            {
+                if (OAuthTwitter != null)
+                {
+                    return OAuthTwitter.OAuthToken;
+                }
+                else
+                {
+                    return string.Empty;
+                }
+            }
+            set
+            {
+                if (OAuthTwitter != null)
+                {
+                    OAuthTwitter.OAuthToken = value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// OAuth Token secret.
+        /// </summary>
+        public string OauthTokenSecret
+        {
+            get
+            {
+                if (OAuthTwitter != null)
+                {
+                    return OAuthTwitter.OAuthTokenSecret;
+                }
+                else
+                {
+                    return string.Empty;
+                }
+            }
+            set
+            {
+                if (OAuthTwitter != null)
+                {
+                    OAuthTwitter.OAuthTokenSecret = value;
+                }
+            }
+        }
+
         /// <summary>
         /// URL for OAuth Request Tokens
         /// </summary>

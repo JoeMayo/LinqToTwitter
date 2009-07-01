@@ -521,6 +521,9 @@ namespace LinqToTwitterDemo
 
             twitterCtx.RetrieveAccessToken(oAuthToken);
 
+            var oauthToken = twitterCtx.OauthToken;
+            var oauthTokenSecret = twitterCtx.OauthTokenSecret;
+
             if (twitterCtx.AuthorizedViaOAuth)
             {
                 var tweets =
@@ -1388,7 +1391,7 @@ namespace LinqToTwitterDemo
         }
 
         /// <summary>
-        /// shows how to query users
+        /// shows how to query friends of a specified user
         /// </summary>
         /// <param name="twitterCtx">TwitterContext</param>
         private static void UserFriendsQueryDemo(TwitterContext twitterCtx)
@@ -1396,7 +1399,8 @@ namespace LinqToTwitterDemo
             var users =
                 from tweet in twitterCtx.User
                 where tweet.Type == UserType.Friends &&
-                      tweet.ID == "15411837"
+                      tweet.ID == twitterCtx.UserName
+ //                     tweet.ID == "15411837" // <-- user to get friends for
                 select tweet;
 
             foreach (var user in users)
@@ -1404,8 +1408,8 @@ namespace LinqToTwitterDemo
                 var status = user.Protected ? "Status Unavailable" : user.Status.Text;
 
                 Console.WriteLine(
-                        "Name: {0}, Last Tweet: {1}\n",
-                        user.Name, status); 
+                        "ID: {0}, Name: {1}\nLast Tweet: {2}\n",
+                        user.ID, user.Name, status); 
             }
         }
 
