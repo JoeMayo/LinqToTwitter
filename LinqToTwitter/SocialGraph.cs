@@ -18,7 +18,7 @@ namespace LinqToTwitter
         /// <summary>
         /// The ID or screen_name of the user to retrieve the friends ID list for
         /// </summary>
-        public ulong ID { get; set; }
+        public string ID { get; set; }
 
         /// <summary>
         /// Specfies the ID of the user for whom to return the friends list. 

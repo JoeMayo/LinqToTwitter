@@ -168,7 +168,7 @@ namespace LinqToTwitterTests
                 fav =>
                     fav.Type == FavoritesType.Favorites &&
                     fav.Page == 1 &&
-                    fav.ID == 123;
+                    fav.ID == "123";
             LambdaExpression lambdaExpression = expression as LambdaExpression;
 
             var queryParams = target.GetParameters(lambdaExpression);

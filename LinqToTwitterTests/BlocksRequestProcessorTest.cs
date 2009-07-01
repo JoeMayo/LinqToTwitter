@@ -251,7 +251,7 @@ namespace LinqToTwitterTests
             Expression<Func<Blocks, bool>> expression =
                 graph =>
                     graph.Type == BlockingType.Blocking &&
-                    graph.ID == 123 &&
+                    graph.ID == "123" &&
                     graph.ScreenName == "456" &&
                     graph.Page == 1;
             LambdaExpression lambdaExpression = expression as LambdaExpression;

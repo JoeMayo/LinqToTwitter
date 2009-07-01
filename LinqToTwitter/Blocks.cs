@@ -16,9 +16,9 @@ namespace LinqToTwitter
         public BlockingType Type { get; set; }
 
         /// <summary>
-        /// id of user
+        /// id or screen name of user
         /// </summary>
-        public ulong ID { get; set; }
+        public string ID { get; set; }
 
         /// <summary>
         /// disambiguates when user id is screen name

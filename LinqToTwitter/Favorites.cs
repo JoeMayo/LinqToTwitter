@@ -18,7 +18,7 @@ namespace LinqToTwitter
         /// <summary>
         /// User identity to search (optional)
         /// </summary>
-        public new ulong ID { get; set; }
+        public new string ID { get; set; }
 
         /// <summary>
         /// Page to retrieve (optional)

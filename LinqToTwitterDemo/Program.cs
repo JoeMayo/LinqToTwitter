@@ -1216,7 +1216,7 @@ namespace LinqToTwitterDemo
             var followers =
                 from follower in twitterCtx.SocialGraph
                 where follower.Type == SocialGraphType.Followers &&
-                      follower.ID == 15411837
+                      follower.ID == "15411837"
                 select follower;
 
             followers.ToList().ForEach(
