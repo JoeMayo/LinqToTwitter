@@ -10,14 +10,9 @@ namespace LinqToTwitter
     public interface ITwitterExecute
     {
         /// <summary>
-        /// login name of user
+        /// Gets or sets the object that can send authorized requests to Twitter.
         /// </summary>
-        string UserName { get; set; }
-
-        /// <summary>
-        /// user's password
-        /// </summary>
-        string Password { get; set; }
+        ITwitterAuthorization AuthorizedClient { get; set; }
 
         /// <summary>
         /// list of response headers from query
@@ -39,16 +34,6 @@ namespace LinqToTwitter
         /// Timeout (milliseconds) to wait for a server response
         /// </summary>
         int Timeout { get; set; }
-
-        /// <summary>
-        /// True if OAuth succeeds, otherwise false.
-        /// </summary>
-        bool AuthorizedViaOAuth { get; }
-
-        /// <summary>
-        /// Twitter OAuth Implementation
-        /// </summary>
-        IOAuthTwitter OAuthTwitter { get; set; }
 
         /// <summary>
         /// utility method to perform HTTP POST for Twitter requests with side-effects

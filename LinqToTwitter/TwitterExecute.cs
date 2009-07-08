@@ -20,25 +20,24 @@ namespace LinqToTwitter
     internal class TwitterExecute : ITwitterExecute
     {
         /// <summary>
-        /// login name of user
-        /// </summary>
-        public string UserName { get; set; }
-
-        /// <summary>
-        /// user's password
-        /// </summary>
-        public string Password { get; set; }
-
-        /// <summary>
         /// Default for ReadWriteTimeout
         /// </summary>
         public const int DefaultReadWriteTimeout = 300000;
 
         /// <summary>
+        /// Gets or sets the object that can send authorized requests to Twitter.
+        /// </summary>
+        public ITwitterAuthorization AuthorizedClient { get; set; }
+
+        /// <summary>
         /// Timeout (milliseconds) for writing to request 
         /// stream or reading from response stream
         /// </summary>
-        public int ReadWriteTimeout { get; set; }
+        public int ReadWriteTimeout
+        {
+            get { return (int)this.AuthorizedClient.ReadWriteTimeout.TotalMilliseconds; }
+            set { this.AuthorizedClient.ReadWriteTimeout = TimeSpan.FromMilliseconds(value); }
+        }
 
         /// <summary>
         /// Default for Timeout
@@ -48,17 +47,16 @@ namespace LinqToTwitter
         /// <summary>
         /// Timeout (milliseconds) to wait for a server response
         /// </summary>
-        public int Timeout { get; set; }
+        public int Timeout
+        {
+            get { return (int)this.AuthorizedClient.Timeout.TotalMilliseconds; }
+            set { this.AuthorizedClient.Timeout = TimeSpan.FromMilliseconds(value); }
+        }
 
         /// <summary>
         /// list of response headers from query
         /// </summary>
         public Dictionary<string, string> ResponseHeaders { get; set; }
-
-        /// <summary>
-        /// backing store for UserAgent
-        /// </summary>
-        private string m_userAgent = "LINQ To Twitter v1.0";
 
         /// <summary>
         /// Gets and sets HTTP UserAgent header
@@ -67,42 +65,34 @@ namespace LinqToTwitter
         {
             get
             {
-                return m_userAgent;
+                return this.AuthorizedClient.UserAgent;
             }
             set
             {
-                m_userAgent =
+                this.AuthorizedClient.UserAgent =
                     string.IsNullOrEmpty(value) ?
-                        m_userAgent :
-                        value + ";" + m_userAgent;
+                        this.AuthorizedClient.UserAgent :
+                        value + ";" + this.AuthorizedClient.UserAgent;
             }
         }
 
         /// <summary>
-        /// True if OAuth succeeds, otherwise false.
+        /// Initializes a new instance of the <see cref="TwitterExecute"/> class.
         /// </summary>
-        public bool AuthorizedViaOAuth
+        public TwitterExecute()
         {
-            get
-            {
-                return !string.IsNullOrEmpty(OAuthTwitter.OAuthTokenSecret);
-            }
+            this.AuthorizedClient = new UsernamePasswordAuthorization();
+            this.AuthorizedClient.UserAgent = "LINQ To Twitter v1.0";
         }
-
-        /// <summary>
-        /// Twitter OAuth Implementation
-        /// </summary>
-        public IOAuthTwitter OAuthTwitter { get; set; }
-
-        public TwitterExecute() { }
 
         /// <summary>
         /// supports testing
         /// </summary>
         /// <param name="oAuthTwitter">IOAuthTwitter Mock</param>
-        public TwitterExecute(IOAuthTwitter oAuthTwitter)
+        public TwitterExecute(ITwitterAuthorization authorizedClient)
         {
-            OAuthTwitter = oAuthTwitter;
+            this.AuthorizedClient = authorizedClient;
+            this.AuthorizedClient.UserAgent = "LINQ To Twitter v1.0";
         }
 
         /// <summary>
@@ -141,9 +131,9 @@ namespace LinqToTwitter
 
             return new TwitterQueryException("Error while querying Twitter.", wex)
             {
-                HttpError = 
-                    wex != null && wex.Response != null ? 
-                        wex.Response.Headers["Status"] : 
+                HttpError =
+                    wex != null && wex.Response != null ?
+                        wex.Response.Headers["Status"] :
                         string.Empty,
                 Response = new TwitterHashResponse
                 {
@@ -175,7 +165,7 @@ namespace LinqToTwitter
             //
 
             var responseHeaders = new Dictionary<string, string>();
-            
+
             foreach (string key in resp.Headers.Keys)
             {
                 responseHeaders.Add(key, resp.Headers[key].ToString());
@@ -220,32 +210,7 @@ namespace LinqToTwitter
         /// <returns>List of objects to return</returns>
         public IList QueryTwitter(string url, IRequestProcessor requestProcessor)
         {
-            if (AuthorizedViaOAuth)
-            {
-                string outUrl;
-                string queryString;
-                OAuthTwitter.GetOAuthQueryString(HttpMethod.GET, url, out outUrl, out queryString);
-                url = outUrl + "?" + queryString;
-            }
-
-            var req = HttpWebRequest.Create(url) as HttpWebRequest;
-
-            if (!AuthorizedViaOAuth)
-            {
-                req.Credentials = new NetworkCredential(UserName, Password);
-            }
-
-            req.UserAgent = UserAgent;
-
-            if (ReadWriteTimeout > 0)
-            {
-                req.ReadWriteTimeout = ReadWriteTimeout;
-            }
-
-            if (Timeout > 0)
-            {
-                req.Timeout = Timeout;
-            }
+            var req = this.AuthorizedClient.Get(new Uri(url), null);
 
             string responseXml = string.Empty;
             string httpStatus = string.Empty;
@@ -355,35 +320,12 @@ namespace LinqToTwitter
                     fileByteString +
                     endContentBoundary);
 
-            var req = (HttpWebRequest)WebRequest.Create(url);
+            var req = this.AuthorizedClient.Post(new Uri(url));
             req.ServicePoint.Expect100Continue = false;
             req.ContentType = "multipart/form-data;boundary=" + contentBoundaryBase;
             req.PreAuthenticate = true;
             req.AllowWriteStreamBuffering = true;
-            req.Method = "POST";
-            req.UserAgent = UserAgent;
             req.ContentLength = fileBytes.Length;
-
-            if (ReadWriteTimeout > 0)
-            {
-                req.ReadWriteTimeout = ReadWriteTimeout;
-            }
-
-            if (Timeout > 0)
-            {
-                req.Timeout = Timeout;
-            }
-
-            if (AuthorizedViaOAuth)
-            {
-                req.Headers.Add(
-                    HttpRequestHeader.Authorization,
-                    OAuthTwitter.GetOAuthAuthorizationHeader(url, null));
-            }
-            else
-            {
-                req.Credentials = new NetworkCredential(UserName, Password);
-            }
 
             string responseXml = null;
 
@@ -425,45 +367,6 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// Url Encodes for both OAuth and Basic Authentication
-        /// </summary>
-        /// <param name="value">string to be encoded</param>
-        /// <returns>UrlEncoded string</returns>
-        public string TwitterParameterUrlEncode(string value)
-        {
-            string ReservedChars = @"`!@#$%^&*()_-+=.~,:;'?/|\[] ";
-            string UnReservedChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_.~";
-            
-            var result = new StringBuilder();
-
-            if (string.IsNullOrEmpty(value))
-                return string.Empty;
-
-            foreach (var symbol in value)
-            {
-                if (UnReservedChars.IndexOf(symbol) != -1)
-                {
-                    result.Append(symbol);
-                }
-                else if (ReservedChars.IndexOf(symbol) != -1)
-                {
-                    result.Append('%' + String.Format("{0:X2}", (int)symbol));
-                }
-                else
-                {
-                    var encoded = HttpUtility.UrlEncode(symbol.ToString());
-
-                    if (!string.IsNullOrEmpty(encoded))
-                    {
-                        result.Append(encoded);
-                    }
-                }
-            }
-
-            return result.ToString();
-        }
-
-        /// <summary>
         /// utility method to perform HTTP POST for Twitter requests with side-effects
         /// </summary>
         /// <param name="url">URL of request</param>
@@ -472,61 +375,15 @@ namespace LinqToTwitter
         /// <returns>response from server, handled by the requestProcessor</returns>
         public IList ExecuteTwitter(string url, Dictionary<string, string> parameters, IRequestProcessor requestProcessor)
         {
-            string paramsJoined = string.Empty;
-
-            paramsJoined =
-                string.Join(
-                    "&",
-                    (from param in parameters
-                     where !string.IsNullOrEmpty(param.Value)
-                     select param.Key + "=" + TwitterParameterUrlEncode(param.Value))
-                     .ToArray());
-
-            url += "?" + paramsJoined;
-
-            var req = WebRequest.Create(url) as HttpWebRequest;
-
-            if (AuthorizedViaOAuth)
-            {
-                req.Headers.Add(
-                    HttpRequestHeader.Authorization,
-                    OAuthTwitter.GetOAuthAuthorizationHeader(url, null));
-            }
-            else
-            {
-                req.Credentials = new NetworkCredential(UserName, Password);
-            }
-
-            var bytes = Encoding.UTF8.GetBytes(paramsJoined);
-            req.ContentLength = bytes.Length;
-            req.Method = "POST";
-            req.ContentType = "x-www-form-urlencoded";
-            req.UserAgent = UserAgent;
-            req.ServicePoint.Expect100Continue = false;
-
-            if (ReadWriteTimeout > 0)
-            {
-                req.ReadWriteTimeout = ReadWriteTimeout;
-            }
-
-            if (Timeout > 0)
-            {
-                req.Timeout = Timeout;
-            }
-
             string httpStatus = string.Empty;
             string responseXml = string.Empty;
 
-            using (var reqStream = req.GetRequestStream())
+            // Oddly, we add the parameters both to the URI's query string and the POST entity
+            Uri requestUri = Utilities.AppendQueryString(new Uri(url), parameters);
+            using (var resp = this.AuthorizedClient.Post(requestUri, parameters))
             {
-                reqStream.Write(bytes, 0, bytes.Length);
-
-                WebResponse resp = null;
-
                 try
                 {
-                    resp = req.GetResponse();
-
                     httpStatus = resp.Headers["Status"];
 
                     using (var respStream = resp.GetResponseStream())
@@ -539,13 +396,6 @@ namespace LinqToTwitter
                 {
                     var twitterQueryEx = CreateTwitterQueryException(wex);
                     throw twitterQueryEx;
-                }
-                finally
-                {
-                    if (resp != null)
-                    {
-                        resp.Close();
-                    }
                 }
             }
 

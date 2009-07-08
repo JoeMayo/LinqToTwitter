@@ -18,7 +18,6 @@ namespace LinqToTwitterTests
         private Mockery m_mocks;
         private TwitterContext m_ctx;
         private ITwitterExecute m_twitterExecute;
-        private IOAuthTwitter m_oAuthTwitter;
         private TestContext m_testContextInstance;
 
         /// <summary>
@@ -59,7 +58,9 @@ namespace LinqToTwitterTests
         {
             m_mocks = new Mockery();
             m_twitterExecute = m_mocks.NewMock<ITwitterExecute>();
-            m_oAuthTwitter = m_mocks.NewMock<IOAuthTwitter>();
+            var authorizedClient = m_mocks.NewMock<ITwitterAuthorization>();
+            Expect.Once.On(m_twitterExecute).GetProperty("AuthorizedClient").Will(Return.Value(authorizedClient));
+            Expect.Once.On(authorizedClient).SetProperty("AuthenticationTarget");
             m_ctx = new TwitterContext(m_twitterExecute);
         }
         
@@ -77,32 +78,12 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void OneParamCtorDefaults()
         {
-            string userName = string.Empty;
-            string password = string.Empty;
             string baseUrl = "http://twitter.com/";
             string searchUrl = "http://search.twitter.com/";
-            TwitterContext ctx = new TwitterContext();
+            ITwitterAuthorization authorizedClient = new UsernamePasswordAuthorization();
+            TwitterContext ctx = new TwitterContext(authorizedClient);
 
-            Assert.AreEqual(userName, ctx.UserName);
-            Assert.AreEqual(password, ctx.Password);
-            Assert.AreEqual(baseUrl, ctx.BaseUrl);
-            Assert.AreEqual(searchUrl, ctx.SearchUrl);
-        }
-
-        /// <summary>
-        ///2 param constructor defaults
-        ///</summary>
-        [TestMethod()]
-        public void TwoParamCtorDefaults()
-        {
-            string userName = "TestUser";
-            string password = "TestPassword";
-            string baseUrl = "http://twitter.com/";
-            string searchUrl = "http://search.twitter.com/";
-            TwitterContext ctx = new TwitterContext(userName, password);
-
-            Assert.AreEqual(userName, ctx.UserName);
-            Assert.AreEqual(password, ctx.Password);
+            Assert.AreSame(authorizedClient, ctx.AuthorizedClient);
             Assert.AreEqual(baseUrl, ctx.BaseUrl);
             Assert.AreEqual(searchUrl, ctx.SearchUrl);
         }
@@ -113,14 +94,11 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void ThreeParamCtorDefaults()
         {
-            string userName = "TestUser";
-            string password = "TestPassword";
+            ITwitterExecute execute = new TwitterExecute();
             string baseUrl = "http://www.twitter.com/";
             string searchUrl = "http://search.twitter.com/";
-            TwitterContext ctx = new TwitterContext(userName, password, baseUrl, searchUrl);
+            TwitterContext ctx = new TwitterContext(execute, baseUrl, searchUrl);
 
-            Assert.AreEqual(userName, ctx.UserName);
-            Assert.AreEqual(password, ctx.Password);
             Assert.AreEqual(baseUrl, ctx.BaseUrl);
             Assert.AreEqual(searchUrl, ctx.SearchUrl);
         }
@@ -131,20 +109,15 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void ObjectInitializerTest()
         {
-            string userName = "TestUser";
-            string password = "TestPassword";
             string baseUrl = "http://www.twitter.com/";
             string searchUrl = "http://search.twitter.com/";
             TwitterContext ctx =
                 new TwitterContext
                 {
-                    UserName = userName,
-                    Password = password,
-                    BaseUrl = baseUrl
+                    BaseUrl = baseUrl,
+                    SearchUrl = searchUrl,
                 };
 
-            Assert.AreEqual(userName, ctx.UserName);
-            Assert.AreEqual(password, ctx.Password);
             Assert.AreEqual(baseUrl, ctx.BaseUrl);
             Assert.AreEqual(searchUrl, ctx.SearchUrl);
         }

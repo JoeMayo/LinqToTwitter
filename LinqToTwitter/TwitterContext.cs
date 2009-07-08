@@ -27,67 +27,95 @@ namespace LinqToTwitter
         #region TwitterContext initialization
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="TwitterContext"/> class.
+        /// </summary>
+        public TwitterContext()
+            : this((ITwitterExecute)null, null, null)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TwitterContext"/> class.
+        /// </summary>
+        /// <param name="authorization">The authorization.</param>
+        public TwitterContext(ITwitterAuthorization authorization)
+            : this(new TwitterExecute(authorization), null, null)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TwitterContext"/> class.
+        /// </summary>
+        /// <param name="authorization">The authorization.</param>
+        public TwitterContext(ITwitterAuthorization authorization, string baseUrl, string searchUrl)
+            : this(new TwitterExecute(authorization), baseUrl, searchUrl)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TwitterContext"/> class.
+        /// </summary>
+        /// <param name="authorization">The authorization.</param>
+        public TwitterContext(ITwitterExecute executor)
+            : this(executor, null, null)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TwitterContext"/> class.
+        /// </summary>
+        /// <param name="execute">The <see cref="ITwitterExecute"/> object to use.  May be null.</param>
+        /// <param name="baseUrl">Base url of Twitter API.  May be null to use the default "http://twitter.com/" value.</param>
+        /// <param name="searchUrl">Base url of Twitter Search API.  May be null to use the default "http://search.twitter.com/" value.</param>
+        public TwitterContext(ITwitterExecute execute, string baseUrl, string searchUrl)
+        {
+            TwitterExecutor = execute ?? new TwitterExecute();
+            BaseUrl = string.IsNullOrEmpty(baseUrl) ? "http://twitter.com/" : baseUrl;
+            SearchUrl = string.IsNullOrEmpty(searchUrl) ? "http://search.twitter.com/" : searchUrl;
+        }
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// Gets the screen name of the user.
+        /// </summary>
+        public string UserName
+        {
+            get { return this.AuthorizedClient.ScreenName; }
+        }
+
+        private string baseUrl;
+
+        /// <summary>
         /// base URL for accessing Twitter API
         /// </summary>
-        public string BaseUrl { get; set; }
+        public string BaseUrl
+        {
+            get
+            {
+                return this.baseUrl;
+            }
+
+            set
+            {
+                this.baseUrl = value;
+                try
+                {
+                    this.AuthorizedClient.AuthenticationTarget = value;
+                }
+                catch (NotSupportedException)
+                {
+                    // Some, like OAuth, don't use or support setting this property.  That's ok.
+                }
+            }
+        }
 
         /// <summary>
         /// base URL for accessing Twitter Search API
         /// </summary>
         public string SearchUrl { get; set; }
-
-        /// <summary>
-        /// default constructor, results in no credentials 
-        /// and BaseUrl set to http://twitter.com/
-        /// </summary>
-        public TwitterContext() :
-            this(string.Empty, string.Empty, string.Empty, string.Empty) { }
-
-        /// <summary>
-        /// Call this constructor for IoC testing
-        /// </summary>
-        public TwitterContext(ITwitterExecute twitterExecute) :
-            this(string.Empty, string.Empty, string.Empty, string.Empty) 
-        {
-            TwitterExecutor = twitterExecute;
-        }
-
-        /// <summary>
-        /// initializes TwitterContext with username and password - BaseUrl defaults to http://twitter.com/
-        /// </summary>
-        /// <param name="userName">name of user</param>
-        /// <param name="password">user's password</param>
-        public TwitterContext(string userName, string password) :
-            this(userName, password, string.Empty, string.Empty) { }
-
-        /// <summary>
-        /// initializes TwitterContext with username and password - BaseUrl defaults to http://twitter.com/
-        /// </summary>
-        /// <param name="userName">name of user</param>
-        /// <param name="password">user's password</param>
-        /// <param name="baseUrl">base url of Twitter API</param>
-        public TwitterContext(string userName, string password, string baseUrl) :
-            this(userName, password, baseUrl, string.Empty) { }
-
-        /// <summary>
-        /// initialize TwitterContext with credentials and custom BaseUrl
-        /// </summary>
-        /// <param name="userName">name of user</param>
-        /// <param name="password">user's password</param>
-        /// <param name="baseUrl">base url of Twitter API</param>
-        /// <param name="searchUrl">base url of Twitter Search API</param>
-        public TwitterContext(string userName, string password, string baseUrl, string searchUrl)
-        {
-            TwitterExecutor = new TwitterExecute();
-            TwitterExecutor.OAuthTwitter = OAuthTwitter;
-            UserName = userName;
-            Password = password;
-            BaseUrl = string.IsNullOrEmpty(baseUrl) ? "http://twitter.com/" : baseUrl;
-            SearchUrl = string.IsNullOrEmpty(searchUrl) ? "http://search.twitter.com/" : searchUrl;
-            OAuthAccessTokenUrl = "http://twitter.com/oauth/access_token";
-            OAuthAuthorizeUrl = "http://twitter.com/oauth/authorize";
-            OAuthRequestTokenUrl = "http://twitter.com/oauth/request_token";
-        }
 
         #endregion
 
@@ -99,56 +127,6 @@ namespace LinqToTwitter
         // This is necessary so we can make the side-effect methods
         // more testable, using IoC.
         //
-
-        /// <summary>
-        /// login name of user
-        /// </summary>
-        public string UserName
-        {
-            get
-            {
-                if (TwitterExecutor != null)
-                {
-                    return TwitterExecutor.UserName;
-                }
-                else
-                {
-                    return string.Empty;
-                }
-            }
-            set
-            {
-                if (TwitterExecutor != null)
-                {
-                    TwitterExecutor.UserName = value;
-                }
-            }
-        }
-
-        /// <summary>
-        /// user's password
-        /// </summary>
-        public string Password
-        {
-            get
-            {
-                if (TwitterExecutor != null)
-                {
-                    return TwitterExecutor.Password;
-                }
-                else
-                {
-                    return string.Empty;
-                }
-            }
-            set
-            {
-                if (TwitterExecutor != null)
-                {
-                    TwitterExecutor.Password = value;
-                }
-            }
-        }
 
         /// <summary>
         /// Gets and sets HTTP UserAgent header
@@ -175,10 +153,10 @@ namespace LinqToTwitter
             }
         }
 
-
         /// <summary>
-        /// Gets and sets HTTP UserAgent header
+        /// Gets or sets the read write timeout.
         /// </summary>
+        /// <value>The read write timeout.</value>
         public int ReadWriteTimeout
         {
             get
@@ -224,6 +202,14 @@ namespace LinqToTwitter
                     TwitterExecutor.Timeout = value;
                 }
             }
+        }
+
+        /// <summary>
+        /// Gets or sets the authorized client on the <see cref="ITwitterExecute"/> object.
+        /// </summary>
+        public ITwitterAuthorization AuthorizedClient {
+            get { return this.TwitterExecutor.AuthorizedClient; }
+            set { this.TwitterExecutor.AuthorizedClient = value; }
         }
 
         /// <summary>
@@ -354,204 +340,6 @@ namespace LinqToTwitter
             {
                 return new TwitterQueryable<User>(this);
             }
-        }
-
-        #endregion
-
-        #region OAuth Support
-
-        /// <summary>
-        /// OAuth Consumer key - must be set for OAuth calls.
-        /// </summary>
-        public string ConsumerKey
-        {
-            get
-            {
-                if (OAuthTwitter != null)
-                {
-                    return OAuthTwitter.OAuthConsumerKey;
-                }
-                else
-                {
-                    return string.Empty;
-                }
-            }
-            set
-            {
-                if (OAuthTwitter != null)
-                {
-                    OAuthTwitter.OAuthConsumerKey = value;
-                }
-            }
-        }
-
-        /// <summary>
-        /// OAuth Consumer secret - must be set for OAuth calls.
-        /// </summary>
-        public string ConsumerSecret
-        {
-            get
-            {
-                if (OAuthTwitter != null)
-                {
-                    return OAuthTwitter.OAuthConsumerSecret;
-                }
-                else
-                {
-                    return string.Empty;
-                }
-            }
-            set
-            {
-                if (OAuthTwitter != null)
-                {
-                    OAuthTwitter.OAuthConsumerSecret = value;
-                }
-            }
-        }
-
-
-        /// <summary>
-        /// OAuth Token.
-        /// </summary>
-        public string OauthToken
-        {
-            get
-            {
-                if (OAuthTwitter != null)
-                {
-                    return OAuthTwitter.OAuthToken;
-                }
-                else
-                {
-                    return string.Empty;
-                }
-            }
-            set
-            {
-                if (OAuthTwitter != null)
-                {
-                    OAuthTwitter.OAuthToken = value;
-                }
-            }
-        }
-
-        /// <summary>
-        /// OAuth Token secret.
-        /// </summary>
-        public string OauthTokenSecret
-        {
-            get
-            {
-                if (OAuthTwitter != null)
-                {
-                    return OAuthTwitter.OAuthTokenSecret;
-                }
-                else
-                {
-                    return string.Empty;
-                }
-            }
-            set
-            {
-                if (OAuthTwitter != null)
-                {
-                    OAuthTwitter.OAuthTokenSecret = value;
-                }
-            }
-        }
-
-        /// <summary>
-        /// URL for OAuth Request Tokens
-        /// </summary>
-        public string OAuthRequestTokenUrl { get; set; }
-
-        /// <summary>
-        /// URL for OAuth authorization
-        /// </summary>
-        public string OAuthAuthorizeUrl { get; set; }
-
-        /// <summary>
-        /// URL for OAuth Access Tokens
-        /// </summary>
-        public string OAuthAccessTokenUrl { get; set; }
-
-        /// <summary>
-        /// Screen name returned from OAuth Token Request
-        /// </summary>
-        public string OAuthRequestScreenName { get; set; }
-
-        /// <summary>
-        /// User ID returned from OAuth Token Request
-        /// </summary>
-        public string OAuthRequestUserID { get; set; }
-
-        /// <summary>
-        /// Backing store for OAuthTwitter instance
-        /// </summary>
-        private OAuthTwitter m_oAuthTwitter = null;
-
-        /// <summary>
-        /// reference to OAuthTwitter for authentication
-        /// </summary>
-        private OAuthTwitter OAuthTwitter 
-        { 
-            get
-            {
-                if (m_oAuthTwitter == null)
-                {
-                    m_oAuthTwitter = new OAuthTwitter
-                    {
-                        OAuthUserAgent = UserAgent
-                    };
-                }
-
-                return m_oAuthTwitter;
-            }
-        }
-
-        /// <summary>
-        /// True if OAuth succeeds, otherwise false.
-        /// </summary>
-        public bool AuthorizedViaOAuth
-        {
-            get
-            {
-                return !string.IsNullOrEmpty(OAuthTwitter.OAuthTokenSecret);
-            }
-        }
-
-        /// <summary>
-        /// Get the link to Twitter's authorization page for this application.
-        /// </summary>
-        /// <param name="readOnly">true for read-only, otherwise read/Write</param>
-        /// <returns>The url with a valid request token, or a null string.</returns>
-        public string GetAuthorizationPageLink(bool readOnly, bool forceLogin)
-        {
-            // TODO: setting readOnly to true doesn't seem to be working; no Twitter API documentation available; check again later - Joe
-            // TODO: setting forceLogin to true doesn't seem to be working; no Twitter API documentation available; fix for bug in Twitter API pending; check again later - Joe
-            return OAuthTwitter.AuthorizationLinkGet(OAuthRequestTokenUrl, OAuthAuthorizeUrl, readOnly, forceLogin);
-        }
-
-        /// <summary>
-        /// Retrieves access token from Twitter.
-        /// Call this after calling GetAuthorizationPageLink()
-        /// </summary>
-        /// <param name="oAuthToken">Auth Token from call to GetAuthorizationPageLink</param>
-        public void RetrieveAccessToken(string oAuthToken)
-        {
-            if (string.IsNullOrEmpty(oAuthToken))
-            {
-                throw new ArgumentException("Invalid OAuth Token.", "oAuthToken");
-            }
-
-            string screenName;
-            string userID;
-
-            OAuthTwitter.AccessTokenGet(oAuthToken, OAuthAccessTokenUrl, out screenName, out userID);
-
-            OAuthRequestScreenName = screenName;
-            OAuthRequestUserID = userID;
         }
 
         #endregion

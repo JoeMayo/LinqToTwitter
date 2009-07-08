@@ -59,7 +59,41 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>CONTRACTS_FULL;DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DotNetOpenAuth, Version=3.2.0.9177, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Resources\DotNetOpenAuth.dll</HintPath>
+    </Reference>
+    <Reference Include="Kerr.Credentials, Version=1.0.0.1, Culture=neutral, PublicKeyToken=ce7a2d015f9fdd1b, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Resources\Kerr.Credentials.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="PresentationFramework">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -71,6 +105,7 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Web" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -79,6 +114,9 @@
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Account.cs" />
@@ -91,16 +129,17 @@
     <Compile Include="Blocks.cs" />
     <Compile Include="BlocksRequestProcessor.cs" />
     <Compile Include="BuildUrlHelper.cs" />
+    <Compile Include="DesktopOAuthAuthorization.cs" />
     <Compile Include="DeviceType.cs" />
     <Compile Include="DirectMessage.cs" />
     <Compile Include="DirectMessageType.cs" />
     <Compile Include="DirectMessageRequestProcessor.cs" />
     <Compile Include="HttpMethod.cs" />
-    <Compile Include="IOAuthTwitter.cs" />
+    <Compile Include="InMemoryTokenManager.cs" />
+    <Compile Include="ITwitterAuthorization.cs" />
     <Compile Include="ITwitterExecute.cs" />
-    <Compile Include="OAuthBase.cs" />
-    <Compile Include="OAuthSignatureTypes.cs" />
-    <Compile Include="OAuthTwitter.cs" />
+    <Compile Include="OAuthAuthorization.cs" />
+    <Compile Include="NativeMethods.cs" />
     <Compile Include="RequestProcessorHelper.cs" />
     <Compile Include="SavedSearch.cs" />
     <Compile Include="SavedSearchRequestProcessor.cs" />
@@ -141,8 +180,11 @@
     <Compile Include="TwitterQueryProvider.cs" />
     <Compile Include="TypeSystem.cs" />
     <Compile Include="User.cs" />
+    <Compile Include="UsernamePasswordAuthorization.cs" />
     <Compile Include="UserRequestProcessor.cs" />
     <Compile Include="UserType.cs" />
+    <Compile Include="Utilities.cs" />
+    <Compile Include="WebOAuthAuthorization.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
