@@ -9,11 +9,12 @@
 //-----------------------------------------------------------------------
 
 using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Diagnostics;
 using System.Globalization;
 using DotNetOpenAuth.OAuth;
-using System.Diagnostics;
-using System.Collections.Generic;
+using Kerr;
 
 namespace LinqToTwitter
 {
@@ -40,8 +41,14 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="serviceDescription">The service description.</param>
         public DesktopOAuthAuthorization(ServiceProviderDescription serviceProviderDescription)
-            : base(new DesktopConsumer(serviceProviderDescription, new InMemoryTokenManager()))
+            : base(new DesktopConsumer(serviceProviderDescription, new WindowsCredentialStoreTokenManager()))
         {
+
+            var inMemoryTokenManager = this.Consumer.TokenManager as WindowsCredentialStoreTokenManager;
+            if (inMemoryTokenManager != null)
+            {
+                inMemoryTokenManager.SetAuthenticationTarget(this.AuthenticationTarget);
+            }
         }
 
         /// <summary>
@@ -54,9 +61,47 @@ namespace LinqToTwitter
         }
 
         /// <summary>
+        /// Gets a value indicating whether this authorization mechanism can immediately
+        /// provide the user with access to his account without prompting (again)
+        /// for his credentials.
+        /// </summary>
+        /// <value>
+        /// 	<c>true</c> if cached credentials are available; otherwise, <c>false</c>.
+        /// </value>
+        public override bool CachedCredentialsAvailable
+        {
+            get { return Kerr.Credential.Exists(this.AuthenticationTarget, Kerr.CredentialType.Generic); }
+        }
+
+        /// <summary>
         /// Gets or sets the function that will ask the user for the verifier code (PIN).
         /// </summary>
         public Func<string> GetVerifier { get; set; }
+
+        /// <summary>
+        /// Gets the access token.
+        /// </summary>
+        /// <value>The access token.</value>
+        protected override string AccessToken
+        {
+            get { return this.TokenManager.AccessToken; }
+        }
+
+        /// <summary>
+        /// Gets the token manager.
+        /// </summary>
+        private WindowsCredentialStoreTokenManager TokenManager
+        {
+            get { return (WindowsCredentialStoreTokenManager)base.Consumer.TokenManager; }
+        }
+
+        /// <summary>
+        /// Clears the cached credentials, if any.
+        /// </summary>
+        public void ClearCachedCredentials()
+        {
+            Kerr.Credential.Delete(this.AuthenticationTarget, Kerr.CredentialType.Generic);
+        }
 
         /// <summary>
         /// Generates the URI to direct the user to in order to complete authorization.
@@ -79,7 +124,6 @@ namespace LinqToTwitter
             }
 
             var response = this.Consumer.ProcessUserAuthorization(this.requestToken, this.GetVerifier());
-            SaveCredentials();
 
             return response.ExtraData;
         }

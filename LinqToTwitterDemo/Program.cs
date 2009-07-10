@@ -9,6 +9,7 @@ using System.Collections.Specialized;
 using System.Threading;
 using System.Globalization;
 using System.Collections.Generic;
+using System.Configuration;
 
 namespace LinqToTwitterDemo
 {
@@ -23,14 +24,23 @@ namespace LinqToTwitterDemo
             //
             // get user credentials and instantiate TwitterContext
             //
-            var passwordAuth = new UsernamePasswordAuthorization(Utilities.GetConsoleHWnd());
-            var oauthAuth = new DesktopOAuthAuthorization();
+            ITwitterAuthorization auth;
 
-            // For username/password authorization demo...
-            ITwitterAuthorization auth = passwordAuth;
+            if (string.IsNullOrEmpty(ConfigurationManager.AppSettings["twitterConsumerKey"]) || string.IsNullOrEmpty(ConfigurationManager.AppSettings["twitterConsumerSecret"]))
+            {
+                Console.WriteLine("Skipping OAuth authorization demo because twitterConsumerKey and/or twitterConsumerSecret are not set in your .config file.");
+                Console.WriteLine("Using username/password authorization instead.");
 
-            // Or for OAuth authorization demo...
-            //ITwitterAuthorization auth = oauthAuth;
+                // For username/password authorization demo...
+                auth = new UsernamePasswordAuthorization(Utilities.GetConsoleHWnd());
+            }
+            else
+            {
+                Console.WriteLine("Discovered Twitter OAuth consumer key in .config file.  Using OAuth authorization.");
+
+                // For OAuth authorization demo...
+                auth = new DesktopOAuthAuthorization();
+            }
 
             // TwitterContext is similar to DataContext (LINQ to SQL) or ObjectContext (LINQ to Entities)
 
@@ -57,7 +67,7 @@ namespace LinqToTwitterDemo
             // status tweets
             //
 
-            //UpdateStatusDemo(twitterCtx);
+            UpdateStatusDemo(twitterCtx);
             //UpdateStatusWithReplyDemo(twitterCtx);
             //DestroyStatusDemo(twitterCtx);
             //UserStatusByNameQueryDemo(twitterCtx);
@@ -285,10 +295,7 @@ namespace LinqToTwitterDemo
                 return Console.ReadLine();
             };
 
-            Console.Write("Consumer Key: ");
-            oauth.ConsumerKey = Console.ReadLine();
-            Console.Write("Consumer Secret: ");
-            oauth.ConsumerSecret = Console.ReadLine();
+
 
             if (oauth.CachedCredentialsAvailable)
             {

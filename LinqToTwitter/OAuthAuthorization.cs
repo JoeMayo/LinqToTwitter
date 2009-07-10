@@ -10,16 +10,15 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Net;
-using DotNetOpenAuth.OAuth;
-using DotNetOpenAuth.Messaging;
-using DotNetOpenAuth.OAuth.ChannelElements;
 using System.Collections.Specialized;
-using Kerr;
-using System.Xml.Linq;
+using System.Linq;
+using System.Net;
+using System.Text;
 using System.Xml;
+using System.Xml.Linq;
+using DotNetOpenAuth.Messaging;
+using DotNetOpenAuth.OAuth;
+using DotNetOpenAuth.OAuth.ChannelElements;
 
 namespace LinqToTwitter
 {
@@ -52,32 +51,6 @@ namespace LinqToTwitter
             }
 
             this.Consumer = consumer;
-
-            var inMemoryTokenManager = consumer.TokenManager as InMemoryTokenManager;
-            if (inMemoryTokenManager != null)
-            {
-                inMemoryTokenManager.SetAuthenticationTarget(this.AuthenticationTarget);
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the consumer key.
-        /// </summary>
-        /// <value>The consumer key.</value>
-        public string ConsumerKey
-        {
-            get { return this.TokenManager.ConsumerKey; }
-            set { this.TokenManager.ConsumerKey = value; }
-        }
-
-        /// <summary>
-        /// Gets or sets the consumer secret.
-        /// </summary>
-        /// <value>The consumer secret.</value>
-        public string ConsumerSecret
-        {
-            get { return this.TokenManager.ConsumerSecret; }
-            set { this.TokenManager.ConsumerSecret = value; }
         }
 
         /// <summary>
@@ -94,15 +67,6 @@ namespace LinqToTwitter
         /// </summary>
         /// <value>The consumer.</value>
         protected ConsumerBase Consumer { get; private set; }
-
-        /// <summary>
-        /// Gets the token manager.
-        /// </summary>
-        /// <value>The token manager.</value>
-        private InMemoryTokenManager TokenManager
-        {
-            get { return (InMemoryTokenManager)this.Consumer.TokenManager; }
-        }
 
         #region ITwitterAuthorization Members
 
@@ -168,10 +132,9 @@ namespace LinqToTwitter
         /// <value>
         /// 	<c>true</c> if cached credentials are available; otherwise, <c>false</c>.
         /// </value>
-        public bool CachedCredentialsAvailable
-        {
-            get { return Kerr.Credential.Exists(this.AuthenticationTarget, Kerr.CredentialType.Generic); }
-        }
+        public abstract bool CachedCredentialsAvailable { get; }
+
+        protected abstract string AccessToken { get; }
 
         /// <summary>
         /// Logs the user into the web site, prompting for credentials if necessary.
@@ -224,14 +187,6 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// Clears the cached credentials, if any.
-        /// </summary>
-        public void ClearCachedCredentials()
-        {
-            Kerr.Credential.Delete(this.AuthenticationTarget, Kerr.CredentialType.Generic);
-        }
-
-        /// <summary>
         /// Prepares an authorized HTTP GET request.
         /// </summary>
         /// <param name="requestUrl">The request URL.</param>
@@ -241,7 +196,7 @@ namespace LinqToTwitter
         /// </returns>
         public HttpWebRequest Get(Uri requestUrl, IDictionary<string, string> args)
         {
-            return this.Consumer.PrepareAuthorizedRequest(new MessageReceivingEndpoint(requestUrl, HttpDeliveryMethods.GetRequest | HttpDeliveryMethods.AuthorizationHeaderRequest), this.TokenManager.AccessToken);
+            return this.Consumer.PrepareAuthorizedRequest(new MessageReceivingEndpoint(requestUrl, HttpDeliveryMethods.GetRequest | HttpDeliveryMethods.AuthorizationHeaderRequest), this.AccessToken);
         }
 
         /// <summary>
@@ -253,7 +208,7 @@ namespace LinqToTwitter
         /// </returns>
         public HttpWebRequest Post(Uri requestUrl)
         {
-            return this.Consumer.PrepareAuthorizedRequest(new MessageReceivingEndpoint(requestUrl, HttpDeliveryMethods.PostRequest | HttpDeliveryMethods.AuthorizationHeaderRequest), this.TokenManager.AccessToken);
+            return this.Consumer.PrepareAuthorizedRequest(new MessageReceivingEndpoint(requestUrl, HttpDeliveryMethods.PostRequest | HttpDeliveryMethods.AuthorizationHeaderRequest), this.AccessToken);
         }
 
         /// <summary>
@@ -266,7 +221,7 @@ namespace LinqToTwitter
         public HttpWebResponse Post(Uri requestUrl, IDictionary<string, string> args)
         {
             ((HttpWebRequest)WebRequest.Create(requestUrl)).ServicePoint.Expect100Continue = false;
-            return (HttpWebResponse)this.Consumer.PrepareAuthorizedRequest(new MessageReceivingEndpoint(requestUrl, HttpDeliveryMethods.PostRequest), this.TokenManager.AccessToken).GetResponse();
+            return (HttpWebResponse)this.Consumer.PrepareAuthorizedRequest(new MessageReceivingEndpoint(requestUrl, HttpDeliveryMethods.PostRequest), this.AccessToken).GetResponse();
         }
 
         #endregion
@@ -276,22 +231,6 @@ namespace LinqToTwitter
         /// </summary>
         /// <returns>The extra data included in the last OAuth leg from Twitter that contains the user id and screen name.</returns>
         public abstract IDictionary<string, string> Authorize();
-
-        /// <summary>
-        /// Saves the access token.
-        /// </summary>
-        [Obsolete("InMemoryTokenManager should do this implicitly.")]
-        protected void SaveCredentials()
-        {
-            var cred = new Credential(
-                AuthenticationTarget,
-                CredentialType.Generic,
-                this.TokenManager.AccessToken,
-                this.TokenManager.GetTokenSecret(this.TokenManager.AccessToken).ToSecureString(),
-                CredentialPersistence.LocalComputer,
-                "OAuth access token and secret");
-            cred.Save();
-        }
 
         /// <summary>
         /// Verifies that a cached access token is still valid.

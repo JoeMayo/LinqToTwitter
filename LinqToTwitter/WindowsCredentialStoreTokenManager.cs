@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using DotNetOpenAuth.OAuth.ChannelElements;
 using DotNetOpenAuth.OAuth.Messages;
 using Kerr;
@@ -17,14 +18,37 @@ using Kerr;
 namespace LinqToTwitter
 {
     /// <summary>
-    /// A consumer token manager designed to serve just one client account (access token).
+    /// A consumer token manager that stores a single access token in the Windows credential store.
     /// </summary>
-    internal class InMemoryTokenManager : ITokenManager, IConsumerTokenManager
+    /// <remarks>
+    /// The consumer key and secret must be kept in the the application .config file in appSettings
+    /// under twitterConsumerKey and twitterConsumerSecret.
+    /// </remarks>
+    internal class WindowsCredentialStoreTokenManager : IConsumerTokenManager
     {
         /// <summary>
-        /// The memory store of tokens and their secrets.
+        /// The request token, which may be unauthorized or authorized depending on the state in the OAuth flow.
         /// </summary>
-        private Dictionary<string, string> tokensAndSecrets = new Dictionary<string, string>();
+        /// <value>
+        /// <c>A token assigned by the Service Provider; 
+        /// or <c>null</c> if the flow hasn't started or an access token has already been obtained.</c>
+        /// </value>
+        private string requestToken;
+
+        /// <summary>
+        /// The request token secret, or <c>null</c> if <see cref="requestToken"/> is null.
+        /// </summary>
+        private string requestTokenSecret;
+
+        /// <summary>
+        /// The access token.
+        /// </summary>
+        private string accessToken;
+
+        /// <summary>
+        /// The access token secret.
+        /// </summary>
+        private string accessTokenSecret;
 
         /// <summary>
         /// The credential store for the access token and secret.
@@ -32,29 +56,36 @@ namespace LinqToTwitter
         private Credential credential;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="InMemoryTokenManager"/> class.
+        /// Initializes a new instance of the <see cref="WindowsCredentialStoreTokenManager"/> class.
         /// </summary>
-        internal InMemoryTokenManager()
+        internal WindowsCredentialStoreTokenManager()
         {
         }
 
         /// <summary>
         /// Gets the consumer key.
         /// </summary>
-        /// <value>The consumer key.</value>
-        public string ConsumerKey { get; internal set; }
+        public string ConsumerKey
+        {
+            get { return ConfigurationManager.AppSettings["twitterConsumerKey"]; }
+        }
 
         /// <summary>
         /// Gets the consumer secret.
         /// </summary>
-        /// <value>The consumer secret.</value>
-        public string ConsumerSecret { get; internal set; }
+        public string ConsumerSecret
+        {
+            get { return ConfigurationManager.AppSettings["twitterConsumerSecret"]; }
+        }
 
         /// <summary>
-        /// Gets or sets the access token.
+        /// Gets the access token.
         /// </summary>
         /// <value>The access token.</value>
-        public string AccessToken { get; private set; }
+        public string AccessToken
+        {
+            get { return this.accessToken; }
+        }
 
         /// <summary>
         /// Sets the authentication target.
@@ -66,8 +97,8 @@ namespace LinqToTwitter
             if (Credential.Exists(target, CredentialType.Generic))
             {
                 this.credential.Load();
-                this.AccessToken = credential.UserName;
-                this.tokensAndSecrets[this.AccessToken] = credential.Password.ToUnsecureString();
+                this.accessToken = credential.UserName;
+                this.accessTokenSecret = credential.Password.ToUnsecureString();
             }
         }
 
@@ -83,7 +114,18 @@ namespace LinqToTwitter
         /// <exception cref="T:System.ArgumentException">Thrown if the secret cannot be found for the given token.</exception>
         public string GetTokenSecret(string token)
         {
-            return this.tokensAndSecrets[token];
+            if (token == this.requestToken)
+            {
+                return this.requestTokenSecret;
+            }
+            else if (token == this.accessToken)
+            {
+                return this.accessTokenSecret;
+            }
+            else
+            {
+                throw new ArgumentOutOfRangeException("token");
+            }
         }
 
         /// <summary>
@@ -95,7 +137,8 @@ namespace LinqToTwitter
         /// <exception cref="T:System.ArgumentException">Thrown if the consumer key is not registered, or a required parameter was not found in the parameters collection.</exception>
         public void StoreNewRequestToken(UnauthorizedTokenRequest request, ITokenSecretContainingMessage response)
         {
-            this.tokensAndSecrets[response.Token] = response.TokenSecret;
+            this.requestToken = response.Token;
+            this.requestTokenSecret = response.TokenSecret;
         }
 
         /// <summary>
@@ -110,6 +153,7 @@ namespace LinqToTwitter
         /// </returns>
         public bool IsRequestTokenAuthorized(string requestToken)
         {
+            // Only needed by Service Providers.
             throw new NotImplementedException();
         }
 
@@ -127,13 +171,14 @@ namespace LinqToTwitter
         /// </remarks>
         public void ExpireRequestTokenAndStoreNewAccessToken(string consumerKey, string requestToken, string accessToken, string accessTokenSecret)
         {
-            this.tokensAndSecrets.Remove(requestToken);
-            this.tokensAndSecrets[accessToken] = accessTokenSecret;
+            this.requestToken = null;
+            this.requestTokenSecret = null;
+            this.accessToken = accessToken;
+            this.accessTokenSecret = accessTokenSecret;
 
-            this.AccessToken = accessToken;
             if (credential != null)
             {
-                credential.UserName = this.AccessToken;
+                credential.UserName = this.accessToken;
                 credential.Password = accessTokenSecret.ToSecureString();
                 credential.Save();
             }
@@ -146,6 +191,7 @@ namespace LinqToTwitter
         /// <returns>Request or Access token, or invalid if the token is not recognized.</returns>
         public TokenType GetTokenType(string token)
         {
+            // Only needed by Service Providers
             throw new NotImplementedException();
         }
 

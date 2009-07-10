@@ -1,14 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Xml.Linq;
-using System.Net;
-using System.IO;
-using System.Xml;
-using System.Runtime.Serialization.Json;
 using System.Collections;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Runtime.Serialization.Json;
+using System.Text;
 using System.Web;
+using System.Xml;
+using System.Xml.Linq;
 
 namespace LinqToTwitter
 {
@@ -91,6 +91,11 @@ namespace LinqToTwitter
         /// <param name="oAuthTwitter">IOAuthTwitter Mock</param>
         public TwitterExecute(ITwitterAuthorization authorizedClient)
         {
+            if (authorizedClient == null)
+            {
+                throw new ArgumentNullException("authorizedClient");
+            }
+
             this.AuthorizedClient = authorizedClient;
             this.AuthorizedClient.UserAgent = "LINQ To Twitter v1.0";
         }

@@ -10,11 +10,11 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Net;
 using System.Collections.Specialized;
 using System.IO;
+using System.Linq;
+using System.Net;
+using System.Text;
 
 namespace LinqToTwitter {
     /// <summary>
@@ -88,11 +88,6 @@ namespace LinqToTwitter {
         /// Where applicable, cancels session tokens (like an HTTP cookie), effectively logging the user off.
         /// </summary>
         void SignOff();
-
-        /// <summary>
-        /// Clears the cached credentials, if any.
-        /// </summary>
-        void ClearCachedCredentials();
 
         /// <summary>
         /// Prepares an authorized HTTP GET request.

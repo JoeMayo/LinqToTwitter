@@ -95,6 +95,7 @@
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -135,7 +136,7 @@
     <Compile Include="DirectMessageType.cs" />
     <Compile Include="DirectMessageRequestProcessor.cs" />
     <Compile Include="HttpMethod.cs" />
-    <Compile Include="InMemoryTokenManager.cs" />
+    <Compile Include="WindowsCredentialStoreTokenManager.cs" />
     <Compile Include="ITwitterAuthorization.cs" />
     <Compile Include="ITwitterExecute.cs" />
     <Compile Include="OAuthAuthorization.cs" />
