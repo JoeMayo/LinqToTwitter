@@ -74,7 +74,7 @@ namespace LinqToTwitter
         /// Gets or sets the consumer.
         /// </summary>
         /// <value>The consumer.</value>
-        private new WebConsumer Consumer
+        protected new WebConsumer Consumer
         {
             get { return (WebConsumer)base.Consumer; }
         }

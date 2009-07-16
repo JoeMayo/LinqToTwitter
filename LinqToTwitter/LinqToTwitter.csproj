@@ -106,6 +106,7 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.Mvc, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -136,6 +137,7 @@
     <Compile Include="DirectMessageType.cs" />
     <Compile Include="DirectMessageRequestProcessor.cs" />
     <Compile Include="HttpMethod.cs" />
+    <Compile Include="MvcOAuthAuthorization.cs" />
     <Compile Include="WindowsCredentialStoreTokenManager.cs" />
     <Compile Include="ITwitterAuthorization.cs" />
     <Compile Include="ITwitterExecute.cs" />
