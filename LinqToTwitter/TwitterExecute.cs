@@ -192,7 +192,8 @@ namespace LinqToTwitter
         {
             var responseXml = XElement.Parse(responseStr);
 
-            if (responseXml.Name == "hash")
+            if (responseXml.Name == "hash" &&
+                responseXml.Element("error") != null)
             {
                 throw new TwitterQueryException("Error while querying Twitter.")
                 {

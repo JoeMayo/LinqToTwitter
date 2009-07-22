@@ -68,6 +68,7 @@ namespace LinqToTwitterDemo
             //
 
             UpdateStatusDemo(twitterCtx);
+            //SingleStatusQueryDemo(twitterCtx);
             //UpdateStatusWithReplyDemo(twitterCtx);
             //DestroyStatusDemo(twitterCtx);
             //UserStatusByNameQueryDemo(twitterCtx);
@@ -82,7 +83,8 @@ namespace LinqToTwitterDemo
             // user tweets
             //
 
-            //UserShowQueryDemo(twitterCtx);
+            //UserShowWithIDQueryDemo(twitterCtx);
+            //UserShowWithScreenNameQueryDemo(twitterCtx);
             //UserFriendsQueryDemo(twitterCtx);
             //UserFollowersQueryDemo(twitterCtx);
 
@@ -424,8 +426,9 @@ namespace LinqToTwitterDemo
 
                 tweets.ToList().ForEach(
                     tweet => Console.WriteLine(
-                        "Friend: {0}\nTweet: {1}\n",
+                        "Friend: {0}, Created: {1}\nTweet: {2}\n",
                         tweet.User.Name,
+                        tweet.CreatedAt,
                         tweet.Text));
             }
         }
@@ -992,10 +995,13 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void SearchTwitterDemo(TwitterContext twitterCtx)
         {
+            
             var queryResults =
                 from search in twitterCtx.Search
                 where search.Type == SearchType.Search &&
-                      search.Query == "LINQ to Twitter"
+                      search.Query == "LINQ to Twitter" &&
+                      search.Page == 2 &&
+                      search.PageSize == 5
                 select search;
 
             foreach (var search in queryResults)
@@ -1131,7 +1137,8 @@ namespace LinqToTwitterDemo
         {
             var friends =
                 from friend in twitterCtx.SocialGraph
-                where friend.Type == SocialGraphType.Friends
+                where friend.Type == SocialGraphType.Friends &&
+                      friend.ScreenName == "JoeMayo"
                 select friend;
 
             friends.ToList().ForEach(
@@ -1275,7 +1282,28 @@ namespace LinqToTwitterDemo
         /// shows how to query users
         /// </summary>
         /// <param name="twitterCtx">TwitterContext</param>
-        private static void UserShowQueryDemo(TwitterContext twitterCtx)
+        private static void UserShowWithScreenNameQueryDemo(TwitterContext twitterCtx)
+        {
+            var users =
+                from tweet in twitterCtx.User
+                where tweet.Type == UserType.Show &&
+                      tweet.ScreenName == "JoeMayo"
+                select tweet;
+
+            var user = users.SingleOrDefault();
+
+            var name = user.Name;
+            var lastStatus = user.Status == null ? "No Status" : user.Status.Text;
+
+            Console.WriteLine();
+            Console.WriteLine("Name: {0}, Last Tweet: {1}\n", name, lastStatus);
+        }
+        
+        /// <summary>
+        /// shows how to query users
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void UserShowWithIDQueryDemo(TwitterContext twitterCtx)
         {
             var users =
                 from tweet in twitterCtx.User
@@ -1341,6 +1369,28 @@ namespace LinqToTwitterDemo
         #endregion
 
         #region Status Demos
+
+        /// <summary>
+        /// Shows how to get statuses for logged-in user's friends - just like main Twitter page
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void SingleStatusQueryDemo(TwitterContext twitterCtx)
+        {
+            var friendTweets =
+                from tweet in twitterCtx.Status
+                where tweet.Type == StatusType.Show &&
+                      tweet.ID == "2534357295"
+                select tweet;
+
+            Console.WriteLine("\nRequested Tweet: \n");
+            foreach (var tweet in friendTweets)
+            {
+                Console.WriteLine(
+                    "User: " + tweet.User.Name +
+                    "\nTweet: " + tweet.Text + 
+                    "\nTweet ID: " + tweet.ID + "\n");
+            }
+        }
 
         /// <summary>
         /// Shows how to get statuses for logged-in user's friends - just like main Twitter page
@@ -1502,7 +1552,7 @@ namespace LinqToTwitterDemo
         private static void UpdateStatusDemo(TwitterContext twitterCtx)
         {
             // the \u00C7 is C Cedilla, which I've included to ensure that non-ascii characters appear properly
-            var status = "\u00C7 Testing LINQ to Twitter with only status on " + DateTime.Now.ToString() + " #linqtotwitter";
+            var status = "\u00C7 Testing LINQ to Twitter update status on " + DateTime.Now.ToString() + " #linqtotwitter";
 
             Console.WriteLine("Status being sent: " + status);
 
