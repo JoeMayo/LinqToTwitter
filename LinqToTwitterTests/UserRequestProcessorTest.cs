@@ -215,9 +215,12 @@ namespace LinqToTwitterTests
                 new Dictionary<string, string>
                     {
                         { "Type", ((int)UserType.Followers).ToString() },
-                        { "ID", "15411837" }
+                        { "ID", "15411837" },
+                        { "UserID", "123" },
+                        { "ScreenName", "JoeMayo" },
+                        { "Page", "2" }
                     };
-            string expected = "http://twitter.com/statuses/followers/15411837.xml";
+            string expected = "http://twitter.com/statuses/followers/15411837.xml?user_id=123&screen_name=JoeMayo&page=2";
             var actual = reqProc.BuildFollowersUrl(parameters);
             Assert.AreEqual(expected, actual);
         }

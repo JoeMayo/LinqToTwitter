@@ -212,6 +212,11 @@ namespace LinqToTwitter
         public string ScreenName { get; set; }
 
         /// <summary>
+        /// page number of results to retrieve
+        /// </summary>
+        public int Page { get; set; }
+
+        /// <summary>
         /// name of user
         /// </summary>
         public string Name { get; set; }

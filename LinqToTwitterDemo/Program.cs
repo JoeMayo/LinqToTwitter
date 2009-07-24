@@ -87,6 +87,7 @@ namespace LinqToTwitterDemo
             //UserShowWithScreenNameQueryDemo(twitterCtx);
             //UserFriendsQueryDemo(twitterCtx);
             //UserFollowersQueryDemo(twitterCtx);
+            //GetAllFollowersQueryDemo(twitterCtx);
 
             //
             // direct messages
@@ -1364,6 +1365,56 @@ namespace LinqToTwitterDemo
                         "Name: {0}, Last Tweet: {1}\n",
                         user.Name, status);
             }
+        }
+
+        /// <summary>
+        /// shows how to query all followers
+        /// </summary>
+        /// <remarks>
+        /// uses the Page property because Twitter doesn't
+        /// return all followers in a single call; you
+        /// must page through results until you get all
+        /// </remarks>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void GetAllFollowersQueryDemo(TwitterContext twitterCtx)
+        {
+            var followerList = new List<User>();
+
+            List<User> followers = new List<User>();
+            int pageNumber = 1;
+
+            do
+            {
+                followers.Clear();
+
+                followers =
+                    (from follower in twitterCtx.User
+                     where follower.Type == UserType.Followers &&
+                           follower.ScreenName == "JoeMayo" &&
+                           follower.Page == pageNumber
+                     select follower)
+                     .ToList();
+
+                pageNumber++;
+                followerList.AddRange(followers);
+            }
+            while (followers.Count > 0);
+
+            Console.WriteLine("\nFollowers: \n");
+
+            foreach (var user in followerList)
+            {
+                var status =
+                    user.Protected || user.Status == null ?
+                        "Status Unavailable" :
+                        user.Status.Text;
+
+                Console.WriteLine(
+                        "Name: {0}, Last Tweet: {1}\n",
+                        user.Name, status);
+            }
+
+            Console.WriteLine("\nFollower Count: {0}\n", followerList.Count);
         }
 
         #endregion
