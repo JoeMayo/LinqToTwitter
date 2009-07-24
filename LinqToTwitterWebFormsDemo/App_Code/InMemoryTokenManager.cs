@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using DotNetOpenAuth.OAuth.ChannelElements;
 using DotNetOpenAuth.OAuth.Messages;
+using System.Web;
 
 /// <summary>
 /// Stores request and access tokens in memory and an instance of this class should
@@ -28,6 +29,33 @@ public class InMemoryTokenManager : IConsumerTokenManager
     /// </summary>
     public InMemoryTokenManager()
     {
+    }
+
+    /// <summary>
+    /// Gets or sets the access token for the currently logged in user.
+    /// </summary>
+    /// <value>The access token.</value>
+    public static string AccessToken
+    {
+        get { return (string)HttpContext.Current.Session["AccessToken"]; }
+        set { HttpContext.Current.Session["AccessToken"] = value; }
+    }
+
+    /// <summary>
+    /// Gets an instance of the token manager.
+    /// </summary>
+    public static InMemoryTokenManager Instance
+    {
+        get
+        {
+            InMemoryTokenManager tokenManager = (InMemoryTokenManager)HttpContext.Current.Application["TokenManager"];
+            if (tokenManager == null)
+            {
+                HttpContext.Current.Application["TokenManager"] = tokenManager = new InMemoryTokenManager();
+            }
+
+            return tokenManager;
+        }
     }
 
     /// <summary>

@@ -24,14 +24,21 @@
 			<p>Now that you have this sample configured with a Twitter consumer key and secret,
 				you can authorize this web application to download your private Twitter messages.
 			</p>
-			<asp:Button runat="server" Text="Cool!  Authorize now." 
-				ID="authorizeTwitterButton" onclick="authorizeTwitterButton_Click" />
+			<asp:Button runat="server" Text="Cool!  Authorize now." ID="authorizeTwitterButton"
+				OnClick="authorizeTwitterButton_Click" />
 			<p>Until you authorize this web app, we can only show you the <b>public</b> feed.</p>
 		</asp:View>
 		<asp:View ID="ViewPrivateUpdates" runat="server">
 			<p>Twitter has authorized us to download your feeds and now we're displaying your
 				<b>personal</b> feed. Notice, <asp:Label runat="server" ID="screenNameLabel" Font-Bold="true" />,
 				how we never asked you for your Twitter username or password. </p>
+			<asp:Panel DefaultButton="postUpdateButton" runat="server">
+				Post an update: <asp:TextBox ID="updateBox" runat="server" Columns="60" Text="Trying out LinqToTwitter's web update post sample." />
+				<asp:Button ID="postUpdateButton" runat="server" Text="Post update" OnClick="postUpdateButton_Click" />
+				&nbsp;<asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ControlToValidate="updateBox"
+					ErrorMessage="type in some message first" />
+			</asp:Panel>
+			</div>
 		</asp:View>
 	</asp:MultiView>
 	<asp:ListView ID="TwitterListView" runat="server">
