@@ -24,6 +24,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Resources", "Resources", "{
 		Resources\NMock2.dll = Resources\NMock2.dll
 		Resources\NMock2.pdb = Resources\NMock2.pdb
 		Resources\NMock2.XML = Resources\NMock2.XML
+		Resources\System.Web.Mvc.dll = Resources\System.Web.Mvc.dll
+		Resources\System.Web.Mvc.xml = Resources\System.Web.Mvc.xml
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqToTwitterDemo", "LinqToTwitterDemo\LinqToTwitterDemo.csproj", "{CF26D528-E26B-40DB-A821-DEDE868D2638}"
