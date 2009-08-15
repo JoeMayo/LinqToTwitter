@@ -34,9 +34,9 @@ namespace LinqToTwitter
         /// </summary>
         protected static readonly ServiceProviderDescription TwitterServiceDescription = new ServiceProviderDescription
         {
-            RequestTokenEndpoint = new MessageReceivingEndpoint("http://twitter.com/oauth/request_token", HttpDeliveryMethods.GetRequest | HttpDeliveryMethods.AuthorizationHeaderRequest),
-            UserAuthorizationEndpoint = new MessageReceivingEndpoint("http://twitter.com/oauth/authorize", HttpDeliveryMethods.GetRequest | HttpDeliveryMethods.AuthorizationHeaderRequest),
-            AccessTokenEndpoint = new MessageReceivingEndpoint("http://twitter.com/oauth/access_token", HttpDeliveryMethods.GetRequest | HttpDeliveryMethods.AuthorizationHeaderRequest),
+            RequestTokenEndpoint = new MessageReceivingEndpoint("https://twitter.com/oauth/request_token", HttpDeliveryMethods.GetRequest | HttpDeliveryMethods.AuthorizationHeaderRequest),
+            UserAuthorizationEndpoint = new MessageReceivingEndpoint("https://twitter.com/oauth/authorize", HttpDeliveryMethods.GetRequest | HttpDeliveryMethods.AuthorizationHeaderRequest),
+            AccessTokenEndpoint = new MessageReceivingEndpoint("https://twitter.com/oauth/access_token", HttpDeliveryMethods.GetRequest | HttpDeliveryMethods.AuthorizationHeaderRequest),
             TamperProtectionElements = new ITamperProtectionChannelBindingElement[] { new HmacSha1SigningBindingElement() },
         };
 
@@ -239,7 +239,7 @@ namespace LinqToTwitter
         private IDictionary<string, string> ValidateLogin()
         {
             var result = new Dictionary<string, string>();
-            var request = Get(new Uri("http://twitter.com/account/verify_credentials.xml"), null);
+            var request = Get(new Uri("https://twitter.com/account/verify_credentials.xml"), null);
             using (var response = request.GetResponse())
             {
                 using (var responseStream = response.GetResponseStream())

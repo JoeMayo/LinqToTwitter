@@ -200,7 +200,7 @@ namespace LinqToTwitter
                 this.Password = password;
                 this.IsAuthorized = true;
 
-                var request = Get(new Uri("http://twitter.com/account/verify_credentials.xml"), null);
+                var request = Get(new Uri("https://twitter.com/account/verify_credentials.xml"), null);
 
                 using (var response = request.GetResponse())
                 {

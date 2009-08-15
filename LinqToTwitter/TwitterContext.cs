@@ -70,7 +70,7 @@ namespace LinqToTwitter
         public TwitterContext(ITwitterExecute execute, string baseUrl, string searchUrl)
         {
             TwitterExecutor = execute ?? new TwitterExecute();
-            BaseUrl = string.IsNullOrEmpty(baseUrl) ? "http://twitter.com/" : baseUrl;
+            BaseUrl = string.IsNullOrEmpty(baseUrl) ? "https://twitter.com/" : baseUrl;
             SearchUrl = string.IsNullOrEmpty(searchUrl) ? "http://search.twitter.com/" : searchUrl;
         }
 

@@ -45,7 +45,7 @@ namespace LinqToTwitterDemo
             // TwitterContext is similar to DataContext (LINQ to SQL) or ObjectContext (LINQ to Entities)
 
             // For Twitter
-            var twitterCtx = new TwitterContext(auth, "http://www.twitter.com/", "http://search.twitter.com/");
+            var twitterCtx = new TwitterContext(auth, "https://twitter.com/", "http://search.twitter.com/");
 
             // For JTweeter (Laconica)
             //var twitterCtx = new TwitterContext(passwordAuth, "http://jtweeter.com/api/", "http://search.twitter.com/");
