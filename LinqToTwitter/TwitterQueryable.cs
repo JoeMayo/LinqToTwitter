@@ -29,6 +29,7 @@ namespace LinqToTwitter
     /// IQueryable of T part of LINQ to Twitter
     /// </summary>
     /// <typeparam name="T">Type to operate on</typeparam>
+    [Serializable]
     public class TwitterQueryable<T> : IOrderedQueryable<T>
     {
         /// <summary>

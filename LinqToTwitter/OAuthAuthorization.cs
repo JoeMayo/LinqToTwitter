@@ -27,6 +27,7 @@ namespace LinqToTwitter
     /// Instantiate one of the <see cref="DesktopOAuthAuthorization"/> or <see cref="WebOAuthAuthorization"/>
     /// subclasses.
     /// </summary>
+    [Serializable]
     public abstract class OAuthAuthorization : ITwitterAuthorization
     {
         /// <summary>

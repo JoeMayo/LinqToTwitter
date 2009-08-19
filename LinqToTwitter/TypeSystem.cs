@@ -19,6 +19,7 @@ using System.Text;
 
 namespace LinqToTwitter
 {
+    [Serializable]
     internal static class TypeSystem
     {
         internal static Type GetElementType(Type seqType)

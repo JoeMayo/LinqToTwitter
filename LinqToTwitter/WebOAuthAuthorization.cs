@@ -21,6 +21,7 @@ namespace LinqToTwitter
     /// <summary>
     /// Provides OAuth authorization to Twitter client web applications.
     /// </summary>
+    [Serializable]
     public class WebOAuthAuthorization : OAuthAuthorization
     {
         /// <summary>

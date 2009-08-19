@@ -8,6 +8,7 @@ namespace LinqToTwitter
     /// <summary>
     /// Use for errors returned from HTTP GET and POST to Twitter
     /// </summary>
+    [Serializable]
     public class TwitterQueryException : InvalidQueryException
     {
         /// <summary>

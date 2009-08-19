@@ -8,6 +8,7 @@ namespace LinqToTwitter
     /// <summary>
     /// Response for HTTP errors and end response
     /// </summary>
+    [Serializable]
     public class TwitterHashResponse
     {
         /// <summary>

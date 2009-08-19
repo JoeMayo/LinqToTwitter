@@ -16,6 +16,7 @@ namespace LinqToTwitter
     /// <summary>
     /// information for a twitter user
     /// </summary>
+    [Serializable]
     public class User
     {
         /// <summary>

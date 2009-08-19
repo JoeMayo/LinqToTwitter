@@ -8,6 +8,7 @@ namespace LinqToTwitter
     /// <summary>
     /// for performing Twitter searches
     /// </summary>
+    [Serializable]
     public class Search : AtomFeed
     {
         /// <summary>

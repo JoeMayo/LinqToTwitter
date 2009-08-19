@@ -17,6 +17,7 @@ namespace LinqToTwitter
     /// execution routines that communicate with Twitter 
     /// from the rest of the logic.
     /// </summary>
+    [Serializable]
     internal class TwitterExecute : ITwitterExecute
     {
         /// <summary>

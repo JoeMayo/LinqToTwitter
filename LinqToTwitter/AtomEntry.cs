@@ -8,6 +8,7 @@ namespace LinqToTwitter
     /// <summary>
     /// Holds an atom (RFC 4287) entry in object form, member of AtomFeed
     /// </summary>
+    [Serializable]
     public class AtomEntry
     {
         public string ID { get; set; }

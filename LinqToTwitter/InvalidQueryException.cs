@@ -30,6 +30,7 @@ namespace LinqToTwitter
     /// <summary>
     /// custom exception for handling bad queries
     /// </summary>
+    [Serializable]
     public class InvalidQueryException : ApplicationException
     {
         /// <summary>

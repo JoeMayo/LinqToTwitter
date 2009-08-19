@@ -27,6 +27,7 @@ namespace LinqToTwitter
     /// <summary>
     /// implementation of IQueryProvider, part of the LINQ Provider API
     /// </summary>
+    [Serializable]
     public class TwitterQueryProvider : IQueryProvider
     {
         /// <summary>

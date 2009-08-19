@@ -13,6 +13,7 @@ namespace LinqToTwitter
     /// bits from Twitter. If you need this object to hold 
     /// more information, let me know - Joe
     /// </remarks>
+    [Serializable]
     public class AtomFeed
     {
         public string ID { get; set; }

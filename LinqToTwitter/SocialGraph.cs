@@ -8,6 +8,7 @@ namespace LinqToTwitter
     /// <summary>
     /// social graph information
     /// </summary>
+    [Serializable]
     public class SocialGraph
     {
         /// <summary>

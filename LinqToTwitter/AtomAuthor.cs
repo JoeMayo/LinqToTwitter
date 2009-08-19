@@ -8,6 +8,7 @@ namespace LinqToTwitter
     /// <summary>
     /// Holds an atom (RFC 4287) author in object form
     /// </summary>
+    [Serializable]
     public class AtomAuthor
     {
         public string Name { get; set; }

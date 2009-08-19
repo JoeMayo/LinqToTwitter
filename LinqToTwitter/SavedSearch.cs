@@ -8,6 +8,7 @@ namespace LinqToTwitter
     /// <summary>
     /// info for query and retrieval of saved searches
     /// </summary>
+    [Serializable]
     public class SavedSearch
     {
         /// <summary>

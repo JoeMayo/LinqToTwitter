@@ -22,6 +22,7 @@ namespace LinqToTwitter
     /// <summary>
     /// manages access to Twitter API
     /// </summary>
+    [Serializable]
     public class TwitterContext
     {
         #region TwitterContext initialization

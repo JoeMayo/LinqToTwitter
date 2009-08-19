@@ -8,6 +8,7 @@ namespace LinqToTwitter
     /// <summary>
     /// DIrect message elements contain a set of values that describe a message, as well as nested <sender> and <recipient> nodes.
     /// </summary>
+    [Serializable]
     public class DirectMessage
     {
         public DirectMessageType Type { get; set; }

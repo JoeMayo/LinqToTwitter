@@ -8,6 +8,7 @@ namespace LinqToTwitter
     /// <summary>
     /// information for account queries
     /// </summary>
+    [Serializable]
     public class Account
     {
         /// <summary>

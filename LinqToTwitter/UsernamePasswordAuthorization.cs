@@ -24,6 +24,7 @@ namespace LinqToTwitter
     /// Standard HTTP Basic authentication that takes a Twitter username and password
     /// for authenticating Twitter client applications to access private user data.
     /// </summary>
+    [Serializable]
     public class UsernamePasswordAuthorization : ITwitterAuthorization
     {
         /// <summary>

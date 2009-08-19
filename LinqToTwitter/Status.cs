@@ -14,6 +14,7 @@ namespace LinqToTwitter
     /// <summary>
     /// returned information from Twitter Status queries
     /// </summary>
+    [Serializable]
     public class Status
     {
         /// <summary>

@@ -8,6 +8,7 @@ namespace LinqToTwitter
     /// <summary>
     /// Twitter favorites info
     /// </summary>
+    [Serializable]
     public class Favorites : Status
     {
         /// <summary>

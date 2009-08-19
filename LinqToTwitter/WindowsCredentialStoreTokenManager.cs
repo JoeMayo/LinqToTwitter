@@ -24,6 +24,7 @@ namespace LinqToTwitter
     /// The consumer key and secret must be kept in the the application .config file in appSettings
     /// under twitterConsumerKey and twitterConsumerSecret.
     /// </remarks>
+    [Serializable]
     internal class WindowsCredentialStoreTokenManager : IConsumerTokenManager
     {
         /// <summary>

@@ -78,7 +78,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void OneParamCtorDefaults()
         {
-            string baseUrl = "http://twitter.com/";
+            string baseUrl = "https://twitter.com/";
             string searchUrl = "http://search.twitter.com/";
             ITwitterAuthorization authorizedClient = new UsernamePasswordAuthorization();
             TwitterContext ctx = new TwitterContext(authorizedClient);

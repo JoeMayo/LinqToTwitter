@@ -8,6 +8,7 @@ namespace LinqToTwitter
     /// <summary>
     /// helps to work with trends
     /// </summary>
+    [Serializable]
     public class Trend
     {
         /// <summary>

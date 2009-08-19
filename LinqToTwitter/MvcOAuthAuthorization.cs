@@ -12,9 +12,11 @@ using System.Web.Mvc;
 using DotNetOpenAuth.Messaging;
 using DotNetOpenAuth.OAuth;
 using DotNetOpenAuth.OAuth.ChannelElements;
+using System;
 
 namespace LinqToTwitter
 {
+    [Serializable]
     public class MvcOAuthAuthorization : WebOAuthAuthorization
     {
         /// <summary>

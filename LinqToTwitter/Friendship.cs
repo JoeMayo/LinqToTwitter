@@ -8,6 +8,7 @@ namespace LinqToTwitter
     /// <summary>
     /// parameters for freindship actions
     /// </summary>
+    [Serializable]
     public class Friendship
     {
         /// <summary>
