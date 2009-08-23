@@ -56,9 +56,11 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "LinqToTwitterWebFormsDemo",
 		DefaultWebSiteLanguage = "Visual C#"
 	EndProjectSection
 EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "LinqToTwitterDemoVB", "LinqToTwitterDemoVB\LinqToTwitterDemoVB.vbproj", "{C5526BE1-A83C-4E9B-B1EA-43DBBB74C403}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 5
+		SccNumberOfProjects = 6
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs01.codeplex.com/
 		SccLocalPath0 = .
@@ -76,31 +78,58 @@ Global
 		SccLocalPath4 = .
 		SccProjectFilePathRelativizedFromConnection4 = LinqToTwitterWebFormsDemo\\
 		SccProjectEnlistmentChoice4 = 2
+		SccProjectUniqueName5 = LinqToTwitterDemoVB\\LinqToTwitterDemoVB.vbproj
+		SccProjectName5 = LinqToTwitterDemoVB
+		SccLocalPath5 = LinqToTwitterDemoVB
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = LinqToTwitter.vsmdi
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
 		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A214B9F0-6B8C-4E91-BE99-27F55CC860C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A214B9F0-6B8C-4E91-BE99-27F55CC860C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A214B9F0-6B8C-4E91-BE99-27F55CC860C1}.Debug|x86.ActiveCfg = Debug|x86
 		{A214B9F0-6B8C-4E91-BE99-27F55CC860C1}.Debug|x86.Build.0 = Debug|x86
+		{A214B9F0-6B8C-4E91-BE99-27F55CC860C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A214B9F0-6B8C-4E91-BE99-27F55CC860C1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A214B9F0-6B8C-4E91-BE99-27F55CC860C1}.Release|x86.ActiveCfg = Release|Any CPU
 		{A214B9F0-6B8C-4E91-BE99-27F55CC860C1}.Release|x86.Build.0 = Release|Any CPU
+		{2DC196D0-E574-4F11-A235-8987DC8FFB79}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2DC196D0-E574-4F11-A235-8987DC8FFB79}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2DC196D0-E574-4F11-A235-8987DC8FFB79}.Debug|x86.ActiveCfg = Debug|x86
 		{2DC196D0-E574-4F11-A235-8987DC8FFB79}.Debug|x86.Build.0 = Debug|x86
+		{2DC196D0-E574-4F11-A235-8987DC8FFB79}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2DC196D0-E574-4F11-A235-8987DC8FFB79}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2DC196D0-E574-4F11-A235-8987DC8FFB79}.Release|x86.ActiveCfg = Release|Any CPU
 		{2DC196D0-E574-4F11-A235-8987DC8FFB79}.Release|x86.Build.0 = Release|Any CPU
+		{CF26D528-E26B-40DB-A821-DEDE868D2638}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF26D528-E26B-40DB-A821-DEDE868D2638}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CF26D528-E26B-40DB-A821-DEDE868D2638}.Debug|x86.ActiveCfg = Debug|x86
 		{CF26D528-E26B-40DB-A821-DEDE868D2638}.Debug|x86.Build.0 = Debug|x86
+		{CF26D528-E26B-40DB-A821-DEDE868D2638}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF26D528-E26B-40DB-A821-DEDE868D2638}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CF26D528-E26B-40DB-A821-DEDE868D2638}.Release|x86.ActiveCfg = Release|Any CPU
 		{CF26D528-E26B-40DB-A821-DEDE868D2638}.Release|x86.Build.0 = Release|Any CPU
+		{D22341E7-1F64-44A9-9A60-29FCCDBA5D5C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D22341E7-1F64-44A9-9A60-29FCCDBA5D5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D22341E7-1F64-44A9-9A60-29FCCDBA5D5C}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{D22341E7-1F64-44A9-9A60-29FCCDBA5D5C}.Debug|x86.Build.0 = Debug|Any CPU
+		{D22341E7-1F64-44A9-9A60-29FCCDBA5D5C}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{D22341E7-1F64-44A9-9A60-29FCCDBA5D5C}.Release|Any CPU.Build.0 = Debug|Any CPU
 		{D22341E7-1F64-44A9-9A60-29FCCDBA5D5C}.Release|x86.ActiveCfg = Debug|Any CPU
 		{D22341E7-1F64-44A9-9A60-29FCCDBA5D5C}.Release|x86.Build.0 = Debug|Any CPU
+		{C5526BE1-A83C-4E9B-B1EA-43DBBB74C403}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C5526BE1-A83C-4E9B-B1EA-43DBBB74C403}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C5526BE1-A83C-4E9B-B1EA-43DBBB74C403}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C5526BE1-A83C-4E9B-B1EA-43DBBB74C403}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C5526BE1-A83C-4E9B-B1EA-43DBBB74C403}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C5526BE1-A83C-4E9B-B1EA-43DBBB74C403}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

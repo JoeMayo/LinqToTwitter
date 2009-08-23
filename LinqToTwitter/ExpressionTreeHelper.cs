@@ -58,9 +58,11 @@ namespace LinqToTwitter
         /// <returns>true if type and name in expression match expected type and name</returns>
         internal static bool IsSpecificMemberExpression(Expression exp, Type declaringType, string memberName)
         {
-            // adjust for enums
+            // adjust for enums or VB ConvertChecked
+            // VB wraps Type in a ConvertChecked that we must extract
             Expression tempExp =
-                exp.NodeType == ExpressionType.Convert ?
+                exp.NodeType == ExpressionType.Convert ||
+                exp.NodeType == ExpressionType.ConvertChecked ?
                     (exp as UnaryExpression).Operand :
                     exp;
 
@@ -83,11 +85,13 @@ namespace LinqToTwitter
                 throw new Exception("There is a bug in this program.");
 
             if (be.Left.NodeType == ExpressionType.MemberAccess ||
-                be.Left.NodeType == ExpressionType.Convert)
+                be.Left.NodeType == ExpressionType.Convert ||
+                be.Left.NodeType == ExpressionType.ConvertChecked)
             {
-                // adjust for enums
+                // adjust for enums & VB ConvertChecked
                 MemberExpression me =
-                    be.Left.NodeType == ExpressionType.Convert ?
+                    be.Left.NodeType == ExpressionType.Convert ||
+                    be.Left.NodeType == ExpressionType.ConvertChecked ?
                         (be.Left as UnaryExpression).Operand as MemberExpression :
                         be.Left as MemberExpression;
 
