@@ -70,10 +70,6 @@ public partial class _Default : System.Web.UI.Page
         // if you have ASP.NET state server turned on
         // this will still work because User is serializable
         Session["SerializableUser"] = serializableUser;
-
-        // can even add a TwitterContext, which is serializable
-        // to session, if it makes sense for your requirements
-        Session["TwitterContext"] = twitterCtx;
     }
 
     protected void authorizeTwitterButton_Click(object sender, EventArgs e)
