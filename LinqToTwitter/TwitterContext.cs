@@ -23,7 +23,7 @@ namespace LinqToTwitter
     /// manages access to Twitter API
     /// </summary>
     [Serializable]
-    public class TwitterContext
+    public class TwitterContext : IDisposable
     {
         #region TwitterContext initialization
 
@@ -1204,6 +1204,35 @@ namespace LinqToTwitter
                     new SavedSearchRequestProcessor());
 
             return (results as IList<SavedSearch>).FirstOrDefault();
+        }
+
+        #endregion
+
+        #region IDisposable Members
+
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
+        public void Dispose()
+        {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Releases unmanaged and - optionally - managed resources
+        /// </summary>
+        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                var disposableExecutor = this.TwitterExecutor as IDisposable;
+                if (disposableExecutor != null)
+                {
+                    disposableExecutor.Dispose();
+                }
+            }
         }
 
         #endregion

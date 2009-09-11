@@ -45,174 +45,176 @@ namespace LinqToTwitterDemo
             // TwitterContext is similar to DataContext (LINQ to SQL) or ObjectContext (LINQ to Entities)
 
             // For Twitter
-            var twitterCtx = new TwitterContext(auth, "https://twitter.com/", "http://search.twitter.com/");
-
-            // For JTweeter (Laconica)
-            //var twitterCtx = new TwitterContext(passwordAuth, "http://jtweeter.com/api/", "http://search.twitter.com/");
-
-            // For Identi.ca (Laconica)
-            //var twitterCtx = new TwitterContext(passwordAuth, "http://identi.ca/api/", "http://search.twitter.com/");
-
-            // If we're using OAuth, we need to configure it with the ConsumerKey etc. from the user.
-            if (twitterCtx.AuthorizedClient is OAuthAuthorization)
+            using (var twitterCtx = new TwitterContext(auth, "https://twitter.com/", "http://search.twitter.com/"))
             {
-                InitializeOAuthConsumerStrings(twitterCtx);
+
+                // For JTweeter (Laconica)
+                //var twitterCtx = new TwitterContext(passwordAuth, "http://jtweeter.com/api/", "http://search.twitter.com/");
+
+                // For Identi.ca (Laconica)
+                //var twitterCtx = new TwitterContext(passwordAuth, "http://identi.ca/api/", "http://search.twitter.com/");
+
+                // If we're using OAuth, we need to configure it with the ConsumerKey etc. from the user.
+                if (twitterCtx.AuthorizedClient is OAuthAuthorization)
+                {
+                    InitializeOAuthConsumerStrings(twitterCtx);
+                }
+
+                // Whatever authorization module we selected... sign on now.  
+                // See the bottom of the method for sign-off procedures.
+                auth.SignOn();
+
+                //
+                // status tweets
+                //
+
+                UpdateStatusDemo(twitterCtx);
+                //SingleStatusQueryDemo(twitterCtx);
+                //UpdateStatusWithReplyDemo(twitterCtx);
+                //DestroyStatusDemo(twitterCtx);
+                //UserStatusByNameQueryDemo(twitterCtx);
+                //UserStatusQueryDemo(twitterCtx);
+                //FirstStatusQueryDemo(twitterCtx);
+                //PublicStatusQueryDemo(twitterCtx);
+                //PublicStatusFilteredQueryDemo(twitterCtx);
+                //MentionsStatusQueryDemo(twitterCtx);
+                //FriendStatusQueryDemo(twitterCtx);
+
+                //
+                // user tweets
+                //
+
+                //UserShowWithIDQueryDemo(twitterCtx);
+                //UserShowWithScreenNameQueryDemo(twitterCtx);
+                //UserFriendsQueryDemo(twitterCtx);
+                //UserFollowersQueryDemo(twitterCtx);
+                //GetAllFollowersQueryDemo(twitterCtx);
+
+                //
+                // direct messages
+                //
+
+                //DirectMessageSentByQueryDemo(twitterCtx);
+                //DirectMessageSentToQueryDemo(twitterCtx);
+                //NewDirectMessageDemo(twitterCtx);
+                //DestroyDirectMessageDemo(twitterCtx);
+
+                //
+                // friendship
+                //
+
+                //CreateFriendshipFollowDemo(twitterCtx);
+                //FriendshipExistsDemo(twitterCtx);
+                //DestroyFriendshipDemo(twitterCtx);
+                //CreateFriendshipNoDeviceUpdatesDemo(twitterCtx);
+
+                //
+                // SocialGraph
+                //
+
+                //ShowFriendsDemo(twitterCtx);
+                //ShowFollowersDemo(twitterCtx);
+
+                //
+                // Search
+                //
+
+                //SearchTwitterDemo(twitterCtx);
+                //SearchTwitterSource(twitterCtx);
+                //ExceedSearchRateLimitDemo(twitterCtx);
+
+                //
+                // Favorites
+                //
+
+                //FavoritesQueryDemo(twitterCtx);
+                //CreateFavoriteDemo(twitterCtx);
+                //DestroyFavoriteDemo(twitterCtx);
+
+                //
+                // Notifications
+                //
+
+                //EnableNotificationsDemo(twitterCtx);
+                //DisableNotificationsDemo(twitterCtx);
+
+                //
+                // Blocks
+                //
+
+                //CreateBlock(twitterCtx);
+                //DestroyBlock(twitterCtx);
+                //BlockExistsDemo(twitterCtx);
+                //BlockIDsDemo(twitterCtx);
+                //BlockBlockingDemo(twitterCtx);
+
+                //
+                // Help
+                //
+
+                //PerformHelpTest(twitterCtx);
+
+                //
+                // Account
+                //
+
+                //VerifyAccountCredentials(twitterCtx);
+                //ViewRateLimitStatus(twitterCtx);
+                //ViewRateLimitResponseHeadersDemo(twitterCtx);
+                //EndSession(twitterCtx);
+                //UpdateDeliveryDevice(twitterCtx);
+                //UpdateAccountColors(twitterCtx);
+                //UpdateAccountImage(twitterCtx);
+                //UpdateAccountBackgroundImage(twitterCtx);
+                //UpdateAccountBackgroundImageAndTileDemo(twitterCtx);
+                //UpdateAccountInfoDemo(twitterCtx);
+
+                //
+                // Trends
+                //
+
+                //SearchTrendsDemo(twitterCtx);
+                //SearchCurrentTrendsDemo(twitterCtx);
+                //SearchDailyTrendsDemo(twitterCtx);
+                //SearchWeeklyTrendsDemo(twitterCtx);
+
+                //
+                // Error Handling Demos
+                //
+
+                //HandleQueryExceptionDemo(twitterCtx);
+                //HandleSideEffectExceptionDemo(twitterCtx);
+                //HandleSideEffectWithFilePostExceptionDemo(twitterCtx);
+                //HandleTimeoutErrors(twitterCtx);
+
+                //
+                // Oauth Demos
+                //
+
+                //HandleOAuthQueryDemo(twitterCtx);
+                //HandleOAuthSideEffectDemo(twitterCtx);
+                //HandleOAuthFilePostDemo(twitterCtx);
+                //HandleOAuthReadOnlyQueryDemo(twitterCtx);
+                //HandleOAuthSideEffectReadOnlyDemo(twitterCtx);
+                //HandleOAuthRequestResponseDetailsDemo(twitterCtx);
+                //OAuthForceLoginDemo(twitterCtx);
+
+                //
+                // Saved Search Demos
+                //
+
+                //QuerySavedSearchesDemo(twitterCtx);
+                //QuerySavedSearchesShowDemo(twitterCtx);
+                //CreateSavedSearchDemo(twitterCtx);
+                //DestroySavedSearchDemo(twitterCtx);
+
+                //
+                // Sign-off, including optional clearing of cached credentials.
+                //
+
+                //auth.SignOff();
+                //auth.ClearCachedCredentials();
             }
-
-            // Whatever authorization module we selected... sign on now.  
-            // See the bottom of the method for sign-off procedures.
-            auth.SignOn();
-
-            //
-            // status tweets
-            //
-
-            UpdateStatusDemo(twitterCtx);
-            //SingleStatusQueryDemo(twitterCtx);
-            //UpdateStatusWithReplyDemo(twitterCtx);
-            //DestroyStatusDemo(twitterCtx);
-            //UserStatusByNameQueryDemo(twitterCtx);
-            //UserStatusQueryDemo(twitterCtx);
-            //FirstStatusQueryDemo(twitterCtx);
-            //PublicStatusQueryDemo(twitterCtx);
-            //PublicStatusFilteredQueryDemo(twitterCtx);
-            //MentionsStatusQueryDemo(twitterCtx);
-            //FriendStatusQueryDemo(twitterCtx);
-
-            //
-            // user tweets
-            //
-
-            //UserShowWithIDQueryDemo(twitterCtx);
-            //UserShowWithScreenNameQueryDemo(twitterCtx);
-            //UserFriendsQueryDemo(twitterCtx);
-            //UserFollowersQueryDemo(twitterCtx);
-            //GetAllFollowersQueryDemo(twitterCtx);
-
-            //
-            // direct messages
-            //
-
-            //DirectMessageSentByQueryDemo(twitterCtx);
-            //DirectMessageSentToQueryDemo(twitterCtx);
-            //NewDirectMessageDemo(twitterCtx);
-            //DestroyDirectMessageDemo(twitterCtx);
-
-            //
-            // friendship
-            //
-
-            //CreateFriendshipFollowDemo(twitterCtx);
-            //FriendshipExistsDemo(twitterCtx);
-            //DestroyFriendshipDemo(twitterCtx);
-            //CreateFriendshipNoDeviceUpdatesDemo(twitterCtx);
-
-            //
-            // SocialGraph
-            //
-
-            //ShowFriendsDemo(twitterCtx);
-            //ShowFollowersDemo(twitterCtx);
-
-            //
-            // Search
-            //
-
-            //SearchTwitterDemo(twitterCtx);
-            //SearchTwitterSource(twitterCtx);
-            //ExceedSearchRateLimitDemo(twitterCtx);
-
-            //
-            // Favorites
-            //
-
-            //FavoritesQueryDemo(twitterCtx);
-            //CreateFavoriteDemo(twitterCtx);
-            //DestroyFavoriteDemo(twitterCtx);
-
-            //
-            // Notifications
-            //
-
-            //EnableNotificationsDemo(twitterCtx);
-            //DisableNotificationsDemo(twitterCtx);
-
-            //
-            // Blocks
-            //
-
-            //CreateBlock(twitterCtx);
-            //DestroyBlock(twitterCtx);
-            //BlockExistsDemo(twitterCtx);
-            //BlockIDsDemo(twitterCtx);
-            //BlockBlockingDemo(twitterCtx);
-
-            //
-            // Help
-            //
-
-            //PerformHelpTest(twitterCtx);
-
-            //
-            // Account
-            //
-
-            //VerifyAccountCredentials(twitterCtx);
-            //ViewRateLimitStatus(twitterCtx);
-            //ViewRateLimitResponseHeadersDemo(twitterCtx);
-            //EndSession(twitterCtx);
-            //UpdateDeliveryDevice(twitterCtx);
-            //UpdateAccountColors(twitterCtx);
-            //UpdateAccountImage(twitterCtx);
-            //UpdateAccountBackgroundImage(twitterCtx);
-            //UpdateAccountBackgroundImageAndTileDemo(twitterCtx);
-            //UpdateAccountInfoDemo(twitterCtx);
-
-            //
-            // Trends
-            //
-
-            //SearchTrendsDemo(twitterCtx);
-            //SearchCurrentTrendsDemo(twitterCtx);
-            //SearchDailyTrendsDemo(twitterCtx);
-            //SearchWeeklyTrendsDemo(twitterCtx);
-
-            //
-            // Error Handling Demos
-            //
-
-            //HandleQueryExceptionDemo(twitterCtx);
-            //HandleSideEffectExceptionDemo(twitterCtx);
-            //HandleSideEffectWithFilePostExceptionDemo(twitterCtx);
-            //HandleTimeoutErrors(twitterCtx);
-
-            //
-            // Oauth Demos
-            //
-
-            //HandleOAuthQueryDemo(twitterCtx);
-            //HandleOAuthSideEffectDemo(twitterCtx);
-            //HandleOAuthFilePostDemo(twitterCtx);
-            //HandleOAuthReadOnlyQueryDemo(twitterCtx);
-            //HandleOAuthSideEffectReadOnlyDemo(twitterCtx);
-            //HandleOAuthRequestResponseDetailsDemo(twitterCtx);
-            //OAuthForceLoginDemo(twitterCtx);
-
-            //
-            // Saved Search Demos
-            //
-
-            //QuerySavedSearchesDemo(twitterCtx);
-            //QuerySavedSearchesShowDemo(twitterCtx);
-            //CreateSavedSearchDemo(twitterCtx);
-            //DestroySavedSearchDemo(twitterCtx);
-
-            //
-            // Sign-off, including optional clearing of cached credentials.
-            //
-
-            //auth.SignOff();
-            //auth.ClearCachedCredentials();
 
             Console.WriteLine("Press any key to end this demo.");
             Console.ReadKey();

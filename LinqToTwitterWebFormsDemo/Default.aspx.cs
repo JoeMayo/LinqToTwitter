@@ -72,6 +72,17 @@ public partial class _Default : System.Web.UI.Page
         Session["SerializableUser"] = serializableUser;
     }
 
+    protected override void OnPreRender(EventArgs e)
+    {
+        base.OnPreRender(e);
+
+        if (twitterCtx != null)
+        {
+            twitterCtx.Dispose();
+            twitterCtx = null;
+        }
+    }
+
     protected void authorizeTwitterButton_Click(object sender, EventArgs e)
     {
         auth.BeginAuthorize();
