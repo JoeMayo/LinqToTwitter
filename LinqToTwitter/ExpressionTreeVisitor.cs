@@ -131,8 +131,47 @@ namespace LinqToTwitter
             return u;
         }
 
+        /// <summary>
+        /// VB compiler generates CompareString() for comparisons and
+        /// this routine extracts the comparison into an expression
+        /// </summary>
+        /// <param name="exp">Expression to evaluate</param>
+        /// <returns>Expression with CompareString factored out</returns>
+        protected BinaryExpression ConvertVBStringCompare(BinaryExpression exp)
+        {
+            if (exp.Left.NodeType != ExpressionType.Call)
+            {
+                return exp;
+            }
+
+            var compareStringCall = exp.Left as MethodCallExpression;
+            if (compareStringCall.Method.DeclaringType.FullName == "Microsoft.VisualBasic.CompilerServices.Operators" &&
+                compareStringCall.Method.Name == "CompareString")
+            {
+                var left = compareStringCall.Arguments[0];
+                var right = compareStringCall.Arguments[1];
+
+                switch (exp.NodeType)
+                {
+                    case ExpressionType.GreaterThan:
+                        return Expression.GreaterThan(left, right);
+                    case ExpressionType.GreaterThanOrEqual:
+                        return Expression.GreaterThanOrEqual(left, right);
+                    case ExpressionType.LessThan:
+                        return Expression.LessThan(left, right);
+                    case ExpressionType.LessThanOrEqual:
+                        return Expression.LessThanOrEqual(left, right);
+                    default:
+                        return Expression.Equal(left, right);
+                }
+            }
+            return exp;
+        }
+
         protected virtual Expression VisitBinary(BinaryExpression b)
         {
+            b = ConvertVBStringCompare(b);
+
             Expression left = this.Visit(b.Left);
             Expression right = this.Visit(b.Right);
             Expression conversion = this.Visit(b.Conversion);
