@@ -68,7 +68,7 @@ namespace LinqToTwitterDemo
                 // status tweets
                 //
 
-                UpdateStatusDemo(twitterCtx);
+                //UpdateStatusDemo(twitterCtx);
                 //SingleStatusQueryDemo(twitterCtx);
                 //UpdateStatusWithReplyDemo(twitterCtx);
                 //DestroyStatusDemo(twitterCtx);
@@ -127,7 +127,7 @@ namespace LinqToTwitterDemo
                 // Favorites
                 //
 
-                //FavoritesQueryDemo(twitterCtx);
+                FavoritesQueryDemo(twitterCtx);
                 //CreateFavoriteDemo(twitterCtx);
                 //DestroyFavoriteDemo(twitterCtx);
 
@@ -1114,7 +1114,7 @@ namespace LinqToTwitterDemo
 
         #endregion
 
-        #region Followers Demos
+        #region Social Graph Demos
 
         /// <summary>
         /// Shows how to list followers

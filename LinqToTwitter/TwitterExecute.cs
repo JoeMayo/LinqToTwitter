@@ -143,8 +143,8 @@ namespace LinqToTwitter
                         string.Empty,
                 Response = new TwitterHashResponse
                 {
-                    Request = responseXml.Element("request").Value,
-                    Error = responseXml.Element("error").Value
+                    Request = responseXml.Element("request") == null ? "request URI not received from Twitter" : responseXml.Element("request").Value,
+                    Error = responseXml.Element("error") == null ? "error message not received from Twitter" : responseXml.Element("error").Value
                 }
             };
         }
