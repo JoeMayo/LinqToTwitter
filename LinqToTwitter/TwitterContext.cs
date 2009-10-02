@@ -721,7 +721,20 @@ namespace LinqToTwitter
                 throw new ArgumentException("Either id, userID, or screenName is a required parameter.");
             }
 
-            var destroyUrl = BaseUrl + "friendships/create/" + id + ".xml";
+            string destroyUrl = null;
+
+            if (!string.IsNullOrEmpty(id))
+            {
+                destroyUrl = BaseUrl + "friendships/create/" + id + ".xml";
+            }
+            else if (!string.IsNullOrEmpty(userID))
+            {
+                destroyUrl = BaseUrl + "friendships/create/" + userID + ".xml";
+            }
+            else
+            {
+                destroyUrl = BaseUrl + "friendships/create/" + screenName + ".xml";
+            }
 
             var createParams = new Dictionary<string, string>
                 {
@@ -760,7 +773,20 @@ namespace LinqToTwitter
                 throw new ArgumentException("Either id, userID, or screenName is a required parameter.");
             }
 
-            var destroyUrl = BaseUrl + "friendships/destroy/" + id + ".xml";
+            string destroyUrl = null;
+
+            if (!string.IsNullOrEmpty(id))
+            {
+                destroyUrl = BaseUrl + "friendships/destroy/" + id + ".xml";
+            }
+            else if (!string.IsNullOrEmpty(userID))
+            {
+                destroyUrl = BaseUrl + "friendships/destroy/" + id + ".xml";
+            }
+            else
+            {
+                destroyUrl = BaseUrl + "friendships/destroy/" + id + ".xml";
+            }
 
             var results =
                 TwitterExecutor.ExecuteTwitter(
@@ -840,7 +866,20 @@ namespace LinqToTwitter
                 throw new ArgumentException("Either id, userID, or screenName is a required parameter.");
             }
 
-            var notificationsUrl = BaseUrl + "notifications/leave/" + id + ".xml";
+            string notificationsUrl = null;
+
+            if (!string.IsNullOrEmpty(id))
+            {
+                notificationsUrl = BaseUrl + "notifications/leave/" + id + ".xml";
+            }
+            else if (!string.IsNullOrEmpty(userID))
+            {
+                notificationsUrl = BaseUrl + "notifications/leave/" + userID + ".xml";
+            }
+            else
+            {
+                notificationsUrl = BaseUrl + "notifications/leave/" + screenName + ".xml";
+            }
 
             var results =
                 TwitterExecutor.ExecuteTwitter(
@@ -874,7 +913,20 @@ namespace LinqToTwitter
                 throw new ArgumentException("Either id, userID, or screenName is a required parameter.");
             }
 
-            var notificationsUrl = BaseUrl + "notifications/follow/" + id + ".xml";
+            string notificationsUrl = null;
+
+            if (!string.IsNullOrEmpty(id))
+            {
+                notificationsUrl = BaseUrl + "notifications/follow/" + id + ".xml";
+            }
+            else if (!string.IsNullOrEmpty(userID))
+            {
+                notificationsUrl = BaseUrl + "notifications/follow/" + userID + ".xml";
+            }
+            else
+            {
+                notificationsUrl = BaseUrl + "notifications/follow/" + screenName + ".xml";
+            }
 
             var results =
                 TwitterExecutor.ExecuteTwitter(

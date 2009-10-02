@@ -68,7 +68,7 @@ namespace LinqToTwitterDemo
                 // status tweets
                 //
 
-                //UpdateStatusDemo(twitterCtx);
+                UpdateStatusDemo(twitterCtx);
                 //SingleStatusQueryDemo(twitterCtx);
                 //UpdateStatusWithReplyDemo(twitterCtx);
                 //DestroyStatusDemo(twitterCtx);
@@ -127,7 +127,7 @@ namespace LinqToTwitterDemo
                 // Favorites
                 //
 
-                FavoritesQueryDemo(twitterCtx);
+                //FavoritesQueryDemo(twitterCtx);
                 //CreateFavoriteDemo(twitterCtx);
                 //DestroyFavoriteDemo(twitterCtx);
 
@@ -136,6 +136,8 @@ namespace LinqToTwitterDemo
                 //
 
                 //EnableNotificationsDemo(twitterCtx);
+                //EnableNotificationsWithScreenNameDemo(twitterCtx);
+                //EnableNotificationsWithUserIDDemo(twitterCtx);
                 //DisableNotificationsDemo(twitterCtx);
 
                 //
@@ -930,6 +932,32 @@ namespace LinqToTwitterDemo
         private static void EnableNotificationsDemo(TwitterContext twitterCtx)
         {
             var user = twitterCtx.EnableNotifications("15411837", null, null);
+
+            if (user == null) return;
+
+            Console.WriteLine("User Name: " + user.Name);
+        }
+
+        /// <summary>
+        /// Shows how to do a Notifications Follow
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void EnableNotificationsWithScreenNameDemo(TwitterContext twitterCtx)
+        {
+            var user = twitterCtx.EnableNotifications(null, null, "JoeMayo");
+
+            if (user == null) return;
+
+            Console.WriteLine("User Name: " + user.Name);
+        }
+
+        /// <summary>
+        /// Shows how to do a Notifications Follow
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void EnableNotificationsWithUserIDDemo(TwitterContext twitterCtx)
+        {
+            var user = twitterCtx.EnableNotifications(null, "15411837", null);
 
             if (user == null) return;
 

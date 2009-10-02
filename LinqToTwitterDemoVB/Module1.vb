@@ -22,70 +22,230 @@ Module Module1
             auth = New DesktopOAuthAuthorization()
         End If
 
-        Dim twitterCtx As TwitterContext
-        twitterCtx = New TwitterContext(auth, "https://twitter.com/", "http://search.twitter.com/")
+        Dim twitterCtx As TwitterContext = New TwitterContext(auth, "https://twitter.com/", "http://search.twitter.com/")
 
-        If twitterCtx.AuthorizedClient.GetType() Is GetType(OAuthAuthorization) Then
+        If TypeOf twitterCtx.AuthorizedClient Is OAuthAuthorization Then
             InitializeOAuthConsumerStrings(twitterCtx)
         End If
         auth.SignOn()
 
-        Dim twitterContext = New TwitterContext(auth)
+        'Dim twitterContext = New TwitterContext(auth)
 
         '
         ' Status Demos
         '
 
-        'UpdateStatusDemo(twitterContext)
-        'UpdateStatusWithReplyDemo(twitterContext)
-        'DestroyStatusDemo(twitterContext)
-        'MentionsDemo(twitterContext)
-        'SingleStatusQueryDemo(twitterContext)
-        'FriendsStatusQueryDemo(twitterContext)
-        'UserStatusByNameDemo(twitterContext)
-        'UserStatusByQueryDemo(twitterContext)
-        'FirstStatusByQueryDemo(twitterContext)
-        'PublicStatusQueryDemo(twitterContext)
-        'PublicStatusFilteredQueryDemo(twitterContext)
+        UpdateStatusDemo(twitterCtx)
+        'UpdateStatusWithReplyDemo(twitterCtx)
+        'DestroyStatusDemo(twitterCtx)
+        'MentionsDemo(twitterCtx)
+        'SingleStatusQueryDemo(twitterCtx)
+        'FriendsStatusQueryDemo(twitterCtx)
+        'UserStatusByNameDemo(twitterCtx)
+        'UserStatusByQueryDemo(twitterCtx)
+        'FirstStatusByQueryDemo(twitterCtx)
+        'PublicStatusQueryDemo(twitterCtx)
+        'PublicStatusFilteredQueryDemo(twitterCtx)
 
         '
         ' User Demos
         '
-        'UserShowWithIDQueryDemo(twitterContext)
-        'UserShowWithScreenNameQueryDemo(twitterContext)
+        'UserShowWithIDQueryDemo(twitterCtx)
+        'UserShowWithScreenNameQueryDemo(twitterCtx)
 
         '
         ' Direct Message Demos
         '
 
-        'DirectMessageSentByQueryDemo(twitterContext)
+        'DirectMessageSentByQueryDemo(twitterCtx)
 
         '
         ' Friendship Demos
         '
 
-        'FriendshipExistsDemo(twitterContext)
+        'FriendshipExistsDemo(twitterCtx)
 
         '
         ' Social Graph Demos
         '
 
-        'ShowFriendsDemo(twitterContext)
+        'ShowFriendsDemo(twitterCtx)
 
         '
         ' Search Demos
         '
 
-        'SearchTwitterDemo(twitterContext)
+        'SearchTwitterDemo(twitterCtx)
 
         '
         ' Favorites Demos
         '
 
-        'FavoritesQueryDemo(twitterContext)
+        'FavoritesQueryDemo(twitterCtx)
+
+        '
+        ' Notifications Demos
+        '
+
+        'EnableNotificationsDemo(twitterCtx)
+        'DisableNotificationsDemo(twitterCtx)
+
+        '
+        ' Block Demos
+        '
+
+        'BlockIDsDemo(twitterCtx)
+
+        '
+        ' Help Demos
+        '
+
+        'PerformHelpTest(twitterCtx)
+
+        '
+        ' Account Demos
+        '
+
+        'VerifyAccountCredentialsDemo(twitterCtx)
+
+        '
+        ' Trends Demos
+        '
+
+        'SearchCurrentTrendsDemo(twitterCtx)
+
+        '
+        ' OAuth Demos
+        '
+
+        'HandleOAuthQueryDemo(twitterCtx)
+
+        '
+        ' Saved Searches Demos
+        '
+
+        'QuerySavedSearchesDemo(twitterCtx)
 
         Console.ReadKey()
     End Sub
+
+#Region "Saved Search Demos"
+
+    Private Sub QuerySavedSearchesDemo(ByVal twitterCtx As TwitterContext)
+        Dim savedSearches = _
+            From search In twitterCtx.SavedSearch _
+            Where search.Type = SavedSearchType.Searches
+
+        For Each Search In savedSearches
+            Console.WriteLine("ID: {0}, Search: {1}", Search.ID, Search.Name)
+        Next
+    End Sub
+
+#End Region
+
+#Region "OAuth Demos"
+
+    Private Sub HandleOAuthQueryDemo(ByVal twitterCtx As TwitterContext)
+
+        If twitterCtx.AuthorizedClient.IsAuthorized Then
+            Dim tweets = _
+                From tweet In twitterCtx.Status _
+                Where tweet.Type = StatusType.Friends
+
+            For Each tweet In tweets
+                Console.WriteLine( _
+                    "Friend: {0}, Created: {1}\r\nTweet: {2}", _
+                    tweet.User.Name, _
+                    tweet.CreatedAt, _
+                    tweet.Text)
+            Next
+        End If
+
+    End Sub
+
+#End Region
+
+#Region "Trends Demos"
+
+    Private Sub SearchCurrentTrendsDemo(ByVal twitterCtx As TwitterContext)
+        Dim trends = _
+            From trnd In twitterCtx.Trends _
+            Where trnd.Type = TrendType.Current _
+            And trnd.ExcludeHashtags = True
+
+        For Each trnd In trends
+            Console.WriteLine("Name: {0}, Query: {1}", _
+                              trnd.Name, trnd.Query)
+        Next
+    End Sub
+#End Region
+
+#Region "Account Demos"
+    Private Sub VerifyAccountCredentialsDemo(ByVal twitterCtx As TwitterContext)
+        Dim accounts = _
+            From acct In twitterCtx.Account _
+            Where acct.Type = AccountType.VerifyCredentials
+
+        Try
+            For Each Account In accounts
+                Console.WriteLine("Credentials for account, {0}, are okay.", Account.User.Name)
+            Next
+        Catch ex As Exception
+            Console.WriteLine("Twitter did not recognize the credentials. Response from Twitter: " & ex.Message)
+        End Try
+    End Sub
+#End Region
+
+#Region "Help Demos"
+
+    Private Sub PerformHelpTest(ByVal twitterCtx As TwitterContext)
+        Dim helpResult = twitterCtx.HelpTest()
+        Console.WriteLine("Test Result: " & helpResult)
+    End Sub
+
+#End Region
+
+#Region "Block Demos"
+
+    Private Sub BlockIDsDemo(ByVal twitterCtx As TwitterContext)
+        Dim result = _
+            From blockItem In twitterCtx.Blocks _
+            Where blockItem.Type = BlockingType.IDS
+
+
+        If result.ToList().Count = 0 Then
+            Console.WriteLine("No Blocks")
+        End If
+
+        For Each block In result
+            Console.WriteLine("ID: {0}", block.ID)
+        Next
+    End Sub
+#End Region
+
+#Region "Notifications Demos"
+
+    Private Sub EnableNotificationsDemo(ByVal twitterCtx As TwitterContext)
+        Dim usr As User = twitterCtx.EnableNotifications(Nothing, Nothing, "JoeMayo")
+
+        If usr Is Nothing Then
+            Return
+        End If
+
+        Console.WriteLine("Enabled Notifications for User Name: " & usr.Name)
+    End Sub
+
+    Private Sub DisableNotificationsDemo(ByVal twitterCtx As TwitterContext)
+        Dim usr As User = twitterCtx.DisableNotifications(Nothing, Nothing, "JoeMayo")
+
+        If usr Is Nothing Then
+            Return
+        End If
+
+        Console.WriteLine("Disabled Notifications for User Name: " & usr.Name)
+    End Sub
+
+#End Region
 
 #Region "Favorites Demos"
 
