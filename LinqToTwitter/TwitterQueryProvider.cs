@@ -76,7 +76,11 @@ namespace LinqToTwitter
         /// <returns>list of results from query</returns>
         public object Execute(Expression expression)
         {
-            return Context.Execute(expression, false);
+            Type elementType = TypeSystem.GetElementType(expression.Type);
+
+            return GetType()
+                .GetMethod("Execute", new Type[] { elementType })
+                .Invoke(this, new object[] { expression });
         }
 
         /// <summary>
@@ -91,7 +95,7 @@ namespace LinqToTwitter
                 typeof(TResult).Name == "IEnumerable`1" ||
                 typeof(TResult).Name == "IEnumerable";
 
-            return (TResult)Context.Execute(expression, isEnumerable);
+            return (TResult)Context.Execute<TResult>(expression, isEnumerable);
         }
     }
 }

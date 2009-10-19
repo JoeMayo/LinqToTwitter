@@ -1648,6 +1648,12 @@ namespace LinqToTwitterDemo
                 tweet.CreatedAt);
         }
 
+        public class MyTweetClass
+        {
+            public string UserName { get; set; }
+            public string Text { get; set; }
+        }
+
         /// <summary>
         /// shows how to send a public status query and then filter
         /// </summary>
@@ -1661,18 +1667,37 @@ namespace LinqToTwitterDemo
         {
             var publicTweets =
                 (from tweet in twitterCtx.Status
-                 where tweet.Type == StatusType.Public
-                 select tweet)
-                 .ToList();
+                 where tweet.Type == StatusType.Public &&
+                       tweet.User.Name.StartsWith("S")
+                 orderby tweet.Source
+                 select new MyTweetClass
+                 {
+                     UserName = tweet.User.Name,
+                     Text = tweet.Text
+                 })
+                 .ToArray();
 
-            var filteredTweets =
-                publicTweets.Where(tweet => tweet.User.Name.StartsWith("J"));
-
-            filteredTweets.ToList().ForEach(
+            publicTweets.ToList().ForEach(
                 tweet => Console.WriteLine(
                     "User Name: {0}, Tweet: {1}",
-                    tweet.User.Name,
+                    tweet.UserName,
                     tweet.Text));
+
+            //publicTweets.ToList().ForEach(
+            //    tweet => Console.WriteLine(
+            //        "User Name: {0}, Tweet: {1}",
+            //        tweet.User.Name,
+            //        tweet.Text));
+
+            //var publicTweets = twitterCtx.Status
+            //    .Where(x => x.Type == StatusType.Public)
+            //    .Select(x => x.Text.Replace('\n', ' '))
+            //    .ToArray();
+
+            //publicTweets.ToList().ForEach(
+            //    tweet => Console.WriteLine(
+            //        "Tweet: {0}",
+            //        tweet));
         }
 
         /// <summary>

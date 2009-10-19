@@ -16,6 +16,8 @@ using System.Xml.Linq;
 using System.Web;
 using System.Xml;
 using System.Runtime.Serialization.Json;
+using System.Collections;
+using System.Reflection;
 
 namespace LinqToTwitter
 {
@@ -468,20 +470,47 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="expression">ExpressionTree to parse</param>
         /// <returns>list of objects with query results</returns>
-        internal object Execute(Expression expression, bool isEnumerable)
+        internal object Execute<T>(Expression expression, bool isEnumerable)
+        {
+            // request processor is specific to request type (i.e. Status, User, etc.)
+            var reqProc = CreateRequestProcessor(expression);
+
+            // get input parameters that go on the REST query URL
+            var parameters = GetRequestParameters(expression, reqProc);
+
+            // construct REST endpoint, based on input parameters
+            var url = reqProc.BuildURL(parameters);
+
+            // process request through Twitter
+            var queryableList = TwitterExecutor.QueryTwitter(url, reqProc);
+
+            // post-process results to perform non-twitter
+            // specific processing using LINQ to Objects
+            var finalResult = 
+                ExecuteEnumerable<Status>(
+                    queryableList as List<Status>, 
+                    expression as MethodCallExpression,
+                    isEnumerable);
+
+            return finalResult;
+        }
+
+        /// <summary>
+        /// Search the where clause for query parameters
+        /// </summary>
+        /// <param name="expression">Input query expression tree</param>
+        /// <param name="reqProc">Processor specific to this request type</param>
+        /// <returns>Name/value pairs of query parameters</returns>
+        private static Dictionary<string, string> GetRequestParameters(Expression expression, IRequestProcessor reqProc)
         {
             Dictionary<string, string> parameters = null;
 
-            // request processor is specific to request type (i.e. Status, User, etc.)
-            var reqProc = CreateRequestProcessor(expression, isEnumerable);
-
-            // we need the where expression because it contains the criteria for the request
-            var whereFinder = new FirstWhereClauseFinder();
-            var whereExpression = whereFinder.GetFirstWhere(expression);
+            // the where clause holds query arguments
+            var whereExpression = new FirstWhereClauseFinder().GetFirstWhere(expression);
 
             if (whereExpression != null)
             {
-                var lambdaExpression = (LambdaExpression) 
+                var lambdaExpression = (LambdaExpression)
                     ((UnaryExpression)(whereExpression.Arguments[1])).Operand;
 
                 // translate variable references in expression into constants
@@ -490,20 +519,153 @@ namespace LinqToTwitter
                 parameters = reqProc.GetParameters(lambdaExpression);
             }
 
-            // construct REST endpoint, based on input parameters
-            var url = reqProc.BuildURL(parameters);
+            return parameters;
+        }
 
-            // execute the query and return results
-            var queryableList = TwitterExecutor.QueryTwitter(url, reqProc);
+        /// <summary>
+        /// Main entry point for post-processing queries as LINQ to Objects
+        /// </summary>
+        /// <typeparam name="T">Type of object being processed</typeparam>
+        /// <param name="list">List of objects to process</param>
+        /// <param name="expr">Expression Tree with Lambda to process</param>
+        /// <returns>List of processed items</returns>
+        private object ExecuteEnumerable<T>(IEnumerable<T> list, MethodCallExpression expr, bool isEnumerable)
+        {
+            IEnumerable<T> nextResult = null;
 
-            if (isEnumerable)
+            if (expr.Arguments[0].NodeType == ExpressionType.Call)
             {
-                return queryableList;
+                nextResult = (IEnumerable<T>)ExecuteEnumerable<T>(list, expr.Arguments[0] as MethodCallExpression, isEnumerable);
             }
             else
             {
-                return queryableList[0];
+                nextResult = list;
             }
+
+            object operatorResult = null;
+
+            var methodName = expr.Method.Name;
+            var lambdaExpr = ((expr as MethodCallExpression).Arguments[1] as UnaryExpression).Operand as LambdaExpression;
+            
+            switch (methodName)
+            {
+                case "OrderBy":
+                    operatorResult = ProcessOrderBy<T>(nextResult, lambdaExpr);
+                    break;
+                case "Select":
+                    operatorResult = ProcessSelect<T>(nextResult, lambdaExpr);
+                    break;
+                case "Where":
+                    operatorResult = list.Where((Func<T, bool>)lambdaExpr.Compile());
+                    break;
+                default:
+                    break;
+            }
+
+            IList finalResult = null;
+
+            if (operatorResult == null)
+            {
+                finalResult =
+                    (IList)Activator.CreateInstance(
+                        typeof(List<>)
+                        .MakeGenericType(TypeSystem.GetElementType(list.GetType())));
+                
+                foreach (var item in (list as IEnumerable))
+                {
+                    finalResult.Add(item);
+                }
+            }
+            else
+            {
+                finalResult =
+                    (IList)Activator.CreateInstance(
+                        typeof(List<>)
+                        .MakeGenericType(TypeSystem.GetElementType(operatorResult.GetType())));
+                
+                foreach (var item in (operatorResult as IEnumerable))
+                {
+                    finalResult.Add(item);
+                }
+            }
+
+            if (isEnumerable)
+            {
+                return finalResult;
+            }
+            else
+            {
+                return finalResult[0];
+            }
+        }
+
+        /// <summary>
+        /// Execute a projection on the list
+        /// </summary>
+        /// <typeparam name="T">Type being processed</typeparam>
+        /// <param name="list">List to process</param>
+        /// <param name="lambdaExpr">Lambda with projection</param>
+        /// <returns>List of projected types</returns>
+        private static object ProcessSelect<T>(IEnumerable<T> list, LambdaExpression lambdaExpr)
+        {
+            Type resultType = TypeSystem.GetElementType(lambdaExpr.Body.Type);
+
+            var methodInfo =
+                typeof(Enumerable)
+                    .GetMethods()
+                    .Where(
+                        meth => meth.Name == "Select" &&
+                        meth.GetGenericArguments().Count() == 2)
+                    .FirstOrDefault();
+
+            Type[] genericArguments = new Type[] { typeof(T), resultType };
+            MethodInfo genericMethodInfo = methodInfo.MakeGenericMethod(genericArguments);
+
+            return genericMethodInfo.Invoke(null, new object[] { list, lambdaExpr.Compile() });
+        }
+
+        /// <summary>
+        /// Execute an OrderBy operation on the list
+        /// </summary>
+        /// <typeparam name="T">Type of elements in list</typeparam>
+        /// <param name="list">List of elements</param>
+        /// <param name="lambdaExpr">Selector Lambda</param>
+        /// <returns>List of ordered items</returns>
+        private static IEnumerable<T> ProcessOrderBy<T>(IEnumerable<T> list, LambdaExpression lambdaExpr)
+        {
+            IEnumerable<T> operatorResult = null;
+
+            switch (lambdaExpr.Body.Type.Name)
+            {
+                case "Boolean":
+                    operatorResult = list.OrderBy((Func<T, bool>)lambdaExpr.Compile());
+                    break;
+                case "DateTime":
+                    operatorResult = list.OrderBy((Func<T, DateTime>)lambdaExpr.Compile());
+                    break;
+                case "Decimal":
+                    operatorResult = list.OrderBy((Func<T, decimal>)lambdaExpr.Compile());
+                    break;
+                case "Double":
+                    operatorResult = list.OrderBy((Func<T, double>)lambdaExpr.Compile());
+                    break;
+                case "Int32":
+                    operatorResult = list.OrderBy((Func<T, int>)lambdaExpr.Compile());
+                    break;
+                case "Single":
+                    operatorResult = list.OrderBy((Func<T, float>)lambdaExpr.Compile());
+                    break;
+                case "String":
+                    operatorResult = list.OrderBy((Func<T, string>)lambdaExpr.Compile());
+                    break;
+                case "UInt64":
+                    operatorResult = list.OrderBy((Func<T, ulong>)lambdaExpr.Compile());
+                    break;
+                default:
+                    break;
+            }
+
+            return operatorResult == null ? list : operatorResult.ToList();
         }
 
         /// <summary>
@@ -511,21 +673,19 @@ namespace LinqToTwitter
         /// </summary>
         /// <typeparam name="T">type of request</typeparam>
         /// <returns>request processor matching type parameter</returns>
-        private IRequestProcessor CreateRequestProcessor(Expression expression, bool isEnumerable)
+        private IRequestProcessor CreateRequestProcessor(Expression expression)
         {
-            string requestType = string.Empty;
-
-            if (expression != null)
+            if (expression == null)
             {
-                if (isEnumerable)
-                {
-                    requestType = expression.Type.GetGenericArguments()[0].Name; 
-                }
-                else
-                {
-                    requestType = expression.Type.Name;
-                } 
+                throw new ArgumentNullException("Expression passed to CreateRequestProcessor must not be null.");
             }
+
+            string requestType = 
+                TypeSystem
+                    .GetElementType(
+                        (expression as MethodCallExpression)
+                        .Arguments[0].Type)
+                        .Name;
 
             IRequestProcessor req;
 

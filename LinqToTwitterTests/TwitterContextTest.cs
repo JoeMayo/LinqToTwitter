@@ -134,7 +134,7 @@ namespace LinqToTwitterTests
                 where tweet.Type == StatusType.Public
                 select tweet;
 
-            var statusProc = ctx.CreateRequestProcessor(publicQuery.Expression, false);
+            var statusProc = ctx.CreateRequestProcessor(publicQuery.Expression);
             Assert.IsInstanceOfType(statusProc, typeof(StatusRequestProcessor));
         }
 
@@ -158,7 +158,7 @@ namespace LinqToTwitterTests
                 where tweet.Type == StatusType.Public
                 select tweet;
 
-            var actual = ctx.Execute(publicQuery.Expression, true);
+            var actual = ctx.Execute<Status>(publicQuery.Expression, true);
             var tweets = actual as IList<Status>;
             Assert.IsNotNull(tweets);
             Assert.IsTrue(tweets.Count > 0);
@@ -1119,7 +1119,7 @@ namespace LinqToTwitterTests
 
             var queryResult = from tweet in ctx.Status select tweet;
 
-            IRequestProcessor actual = ctx.CreateRequestProcessor(queryResult.Expression, false);
+            IRequestProcessor actual = ctx.CreateRequestProcessor(queryResult.Expression);
             Assert.IsInstanceOfType(actual, typeof(StatusRequestProcessor));
         }
 
@@ -1133,7 +1133,7 @@ namespace LinqToTwitterTests
 
             var queryResult = from tweet in ctx.Account select tweet;
 
-            IRequestProcessor actual = ctx.CreateRequestProcessor(queryResult.Expression, true);
+            IRequestProcessor actual = ctx.CreateRequestProcessor(queryResult.Expression);
             Assert.IsInstanceOfType(actual, typeof(AccountRequestProcessor));
         }
 
@@ -1147,7 +1147,7 @@ namespace LinqToTwitterTests
 
             var queryResult = from tweet in ctx.Blocks select tweet;
 
-            IRequestProcessor actual = ctx.CreateRequestProcessor(queryResult.Expression, true);
+            IRequestProcessor actual = ctx.CreateRequestProcessor(queryResult.Expression);
             Assert.IsInstanceOfType(actual, typeof(BlocksRequestProcessor));
         }
 
@@ -1161,7 +1161,7 @@ namespace LinqToTwitterTests
 
             var queryResult = from tweet in ctx.DirectMessage select tweet;
 
-            IRequestProcessor actual = ctx.CreateRequestProcessor(queryResult.Expression, true);
+            IRequestProcessor actual = ctx.CreateRequestProcessor(queryResult.Expression);
             Assert.IsInstanceOfType(actual, typeof(DirectMessageRequestProcessor));
         }
 
@@ -1175,7 +1175,7 @@ namespace LinqToTwitterTests
 
             var queryResult = from tweet in ctx.Favorites select tweet;
 
-            IRequestProcessor actual = ctx.CreateRequestProcessor(queryResult.Expression, true);
+            IRequestProcessor actual = ctx.CreateRequestProcessor(queryResult.Expression);
             Assert.IsInstanceOfType(actual, typeof(FavoritesRequestProcessor));
         }
 
@@ -1189,7 +1189,7 @@ namespace LinqToTwitterTests
 
             var queryResult = from tweet in ctx.Friendship select tweet;
 
-            IRequestProcessor actual = ctx.CreateRequestProcessor(queryResult.Expression, true);
+            IRequestProcessor actual = ctx.CreateRequestProcessor(queryResult.Expression);
             Assert.IsInstanceOfType(actual, typeof(FriendshipRequestProcessor));
         }
 
@@ -1203,7 +1203,7 @@ namespace LinqToTwitterTests
 
             var queryResult = from tweet in ctx.Search select tweet;
 
-            IRequestProcessor actual = ctx.CreateRequestProcessor(queryResult.Expression, true);
+            IRequestProcessor actual = ctx.CreateRequestProcessor(queryResult.Expression);
             Assert.IsInstanceOfType(actual, typeof(SearchRequestProcessor));
         }
 
@@ -1217,7 +1217,7 @@ namespace LinqToTwitterTests
 
             var queryResult = from tweet in ctx.SocialGraph select tweet;
 
-            IRequestProcessor actual = ctx.CreateRequestProcessor(queryResult.Expression, true);
+            IRequestProcessor actual = ctx.CreateRequestProcessor(queryResult.Expression);
             Assert.IsInstanceOfType(actual, typeof(SocialGraphRequestProcessor));
         }
 
@@ -1231,7 +1231,7 @@ namespace LinqToTwitterTests
 
             var queryResult = from tweet in ctx.Trends select tweet;
 
-            IRequestProcessor actual = ctx.CreateRequestProcessor(queryResult.Expression, true);
+            IRequestProcessor actual = ctx.CreateRequestProcessor(queryResult.Expression);
             Assert.IsInstanceOfType(actual, typeof(TrendRequestProcessor));
         }
 
@@ -1245,7 +1245,7 @@ namespace LinqToTwitterTests
 
             var queryResult = from tweet in ctx.User select tweet;
 
-            IRequestProcessor actual = ctx.CreateRequestProcessor(queryResult.Expression, true);
+            IRequestProcessor actual = ctx.CreateRequestProcessor(queryResult.Expression);
             Assert.IsInstanceOfType(actual, typeof(UserRequestProcessor));
         }
 
@@ -1253,12 +1253,12 @@ namespace LinqToTwitterTests
         ///A test for CreateRequestProcessor
         ///</summary>
         [TestMethod()]
+        [ExpectedException(typeof(ArgumentNullException))]
         public void CreateRequestProcessorNullExpressionTest1()
         {
             TwitterContext_Accessor ctx = new TwitterContext_Accessor();
 
-            IRequestProcessor actual = ctx.CreateRequestProcessor(null, true);
-            Assert.IsInstanceOfType(actual, typeof(StatusRequestProcessor));
+            IRequestProcessor actual = ctx.CreateRequestProcessor(null);
         }
 
         /// <summary>
