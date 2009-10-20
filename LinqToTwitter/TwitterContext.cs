@@ -486,13 +486,22 @@ namespace LinqToTwitter
 
             // post-process results to perform non-twitter
             // specific processing using LINQ to Objects
-            var finalResult = 
+            var postProcessingResult = 
                 ExecuteEnumerable<Status>(
                     queryableList as List<Status>, 
                     expression as MethodCallExpression,
                     isEnumerable);
 
-            return finalResult;
+            if (isEnumerable)
+            {
+                return postProcessingResult;
+            }
+            else
+            {
+                IEnumerator enumerator = postProcessingResult.GetEnumerator();
+                enumerator.MoveNext();
+                return enumerator.Current;
+            }
         }
 
         /// <summary>
@@ -529,7 +538,7 @@ namespace LinqToTwitter
         /// <param name="list">List of objects to process</param>
         /// <param name="expr">Expression Tree with Lambda to process</param>
         /// <returns>List of processed items</returns>
-        private object ExecuteEnumerable<T>(IEnumerable<T> list, MethodCallExpression expr, bool isEnumerable)
+        private IEnumerable ExecuteEnumerable<T>(IEnumerable<T> list, MethodCallExpression expr, bool isEnumerable)
         {
             IEnumerable<T> nextResult = null;
 
@@ -542,7 +551,7 @@ namespace LinqToTwitter
                 nextResult = list;
             }
 
-            object operatorResult = null;
+            IEnumerable operatorResult = null;
 
             var methodName = expr.Method.Name;
             var lambdaExpr = ((expr as MethodCallExpression).Arguments[1] as UnaryExpression).Operand as LambdaExpression;
@@ -551,6 +560,15 @@ namespace LinqToTwitter
             {
                 case "OrderBy":
                     operatorResult = ProcessOrderBy<T>(nextResult, lambdaExpr);
+                    break;
+                case "OrderByDescending":
+                    operatorResult = ProcessOrderByDescending<T>(nextResult, lambdaExpr);
+                    break;
+                case "ThenBy":
+                    operatorResult = ProcessThenBy<T>((IOrderedEnumerable<T>)nextResult, lambdaExpr);
+                    break;
+                case "ThenByDescending":
+                    operatorResult = ProcessThenByDescending<T>((IOrderedEnumerable<T>)nextResult, lambdaExpr);
                     break;
                 case "Select":
                     operatorResult = ProcessSelect<T>(nextResult, lambdaExpr);
@@ -562,41 +580,51 @@ namespace LinqToTwitter
                     break;
             }
 
-            IList finalResult = null;
+            return operatorResult;
+            //IList finalResult = null;
 
-            if (operatorResult == null)
-            {
-                finalResult =
-                    (IList)Activator.CreateInstance(
-                        typeof(List<>)
-                        .MakeGenericType(TypeSystem.GetElementType(list.GetType())));
+            //if (operatorResult == null)
+            //{
+            //    finalResult =
+            //        (IList)Activator.CreateInstance(
+            //            typeof(List<>)
+            //            .MakeGenericType(TypeSystem.GetElementType(list.GetType())));
                 
-                foreach (var item in (list as IEnumerable))
-                {
-                    finalResult.Add(item);
-                }
-            }
-            else
-            {
-                finalResult =
-                    (IList)Activator.CreateInstance(
-                        typeof(List<>)
-                        .MakeGenericType(TypeSystem.GetElementType(operatorResult.GetType())));
-                
-                foreach (var item in (operatorResult as IEnumerable))
-                {
-                    finalResult.Add(item);
-                }
-            }
+            //    foreach (var item in (list as IEnumerable))
+            //    {
+            //        finalResult.Add(item);
+            //    }
+            //}
+            //else if (operatorResult.GetType().Name == "IOrderedEnumerable'")
+            //{
+            //    //finalResult = operatorResult as IOrderedEnumerable<T>;
 
-            if (isEnumerable)
-            {
-                return finalResult;
-            }
-            else
-            {
-                return finalResult[0];
-            }
+            //    //foreach (var item in (operatorResult as IEnumerable))
+            //    //{
+            //    //    finalResult.Add(item);
+            //    //}
+            //}
+            //else
+            //{
+            //    finalResult =
+            //        (IList)Activator.CreateInstance(
+            //            typeof(List<>)
+            //            .MakeGenericType(TypeSystem.GetElementType(operatorResult.GetType())));
+                
+            //    foreach (var item in (operatorResult as IEnumerable))
+            //    {
+            //        finalResult.Add(item);
+            //    }
+            //}
+
+            //if (isEnumerable)
+            //{
+            //    return finalResult;
+            //}
+            //else
+            //{
+            //    return finalResult[0];
+            //}
         }
 
         /// <summary>
@@ -606,7 +634,7 @@ namespace LinqToTwitter
         /// <param name="list">List to process</param>
         /// <param name="lambdaExpr">Lambda with projection</param>
         /// <returns>List of projected types</returns>
-        private static object ProcessSelect<T>(IEnumerable<T> list, LambdaExpression lambdaExpr)
+        private static IEnumerable ProcessSelect<T>(IEnumerable<T> list, LambdaExpression lambdaExpr)
         {
             Type resultType = TypeSystem.GetElementType(lambdaExpr.Body.Type);
 
@@ -621,7 +649,7 @@ namespace LinqToTwitter
             Type[] genericArguments = new Type[] { typeof(T), resultType };
             MethodInfo genericMethodInfo = methodInfo.MakeGenericMethod(genericArguments);
 
-            return genericMethodInfo.Invoke(null, new object[] { list, lambdaExpr.Compile() });
+            return (IEnumerable)genericMethodInfo.Invoke(null, new object[] { list, lambdaExpr.Compile() });
         }
 
         /// <summary>
@@ -631,9 +659,9 @@ namespace LinqToTwitter
         /// <param name="list">List of elements</param>
         /// <param name="lambdaExpr">Selector Lambda</param>
         /// <returns>List of ordered items</returns>
-        private static IEnumerable<T> ProcessOrderBy<T>(IEnumerable<T> list, LambdaExpression lambdaExpr)
+        private static IOrderedEnumerable<T> ProcessOrderBy<T>(IEnumerable<T> list, LambdaExpression lambdaExpr)
         {
-            IEnumerable<T> operatorResult = null;
+            IOrderedEnumerable<T> operatorResult = null;
 
             switch (lambdaExpr.Body.Type.Name)
             {
@@ -662,10 +690,146 @@ namespace LinqToTwitter
                     operatorResult = list.OrderBy((Func<T, ulong>)lambdaExpr.Compile());
                     break;
                 default:
-                    break;
+                    throw new ArgumentException(
+                        "Type " + lambdaExpr.Body.Type.Name + " is not yet supported. Please discuss or submit an issue at http://linqtotwitter.codeplex.com/");
             }
 
-            return operatorResult == null ? list : operatorResult.ToList();
+            return operatorResult;
+        }
+
+        /// <summary>
+        /// Execute an OrderByDecending operation on the list
+        /// </summary>
+        /// <typeparam name="T">Type of elements in list</typeparam>
+        /// <param name="list">List of elements</param>
+        /// <param name="lambdaExpr">Selector Lambda</param>
+        /// <returns>List of ordered items</returns>
+        private static IEnumerable<T> ProcessOrderByDescending<T>(IEnumerable<T> list, LambdaExpression lambdaExpr)
+        {
+            IEnumerable<T> operatorResult = null;
+
+            switch (lambdaExpr.Body.Type.Name)
+            {
+                case "Boolean":
+                    operatorResult = list.OrderByDescending((Func<T, bool>)lambdaExpr.Compile());
+                    break;
+                case "DateTime":
+                    operatorResult = list.OrderByDescending((Func<T, DateTime>)lambdaExpr.Compile());
+                    break;
+                case "Decimal":
+                    operatorResult = list.OrderByDescending((Func<T, decimal>)lambdaExpr.Compile());
+                    break;
+                case "Double":
+                    operatorResult = list.OrderByDescending((Func<T, double>)lambdaExpr.Compile());
+                    break;
+                case "Int32":
+                    operatorResult = list.OrderByDescending((Func<T, int>)lambdaExpr.Compile());
+                    break;
+                case "Single":
+                    operatorResult = list.OrderByDescending((Func<T, float>)lambdaExpr.Compile());
+                    break;
+                case "String":
+                    operatorResult = list.OrderByDescending((Func<T, string>)lambdaExpr.Compile());
+                    break;
+                case "UInt64":
+                    operatorResult = list.OrderByDescending((Func<T, ulong>)lambdaExpr.Compile());
+                    break;
+                default:
+                    throw new ArgumentException(
+                        "Type " + lambdaExpr.Body.Type.Name + " is not yet supported. Please discuss or submit an issue at http://linqtotwitter.codeplex.com/");
+            }
+
+            return operatorResult;
+        }
+
+        /// <summary>
+        /// Execute an ThenBy operation on the list
+        /// </summary>
+        /// <typeparam name="T">Type of elements in list</typeparam>
+        /// <param name="list">List of elements</param>
+        /// <param name="lambdaExpr">Selector Lambda</param>
+        /// <returns>List of ordered items</returns>
+        private static IEnumerable<T> ProcessThenBy<T>(IOrderedEnumerable<T> list, LambdaExpression lambdaExpr)
+        {
+            IOrderedEnumerable<T> operatorResult = null;
+
+            switch (lambdaExpr.Body.Type.Name)
+            {
+                case "Boolean":
+                    operatorResult = list.ThenBy((Func<T, bool>)lambdaExpr.Compile());
+                    break;
+                case "DateTime":
+                    operatorResult = list.ThenBy((Func<T, DateTime>)lambdaExpr.Compile());
+                    break;
+                case "Decimal":
+                    operatorResult = list.ThenBy((Func<T, decimal>)lambdaExpr.Compile());
+                    break;
+                case "Double":
+                    operatorResult = list.ThenBy((Func<T, double>)lambdaExpr.Compile());
+                    break;
+                case "Int32":
+                    operatorResult = list.ThenBy((Func<T, int>)lambdaExpr.Compile());
+                    break;
+                case "Single":
+                    operatorResult = list.ThenBy((Func<T, float>)lambdaExpr.Compile());
+                    break;
+                case "String":
+                    operatorResult = list.ThenBy((Func<T, string>)lambdaExpr.Compile());
+                    break;
+                case "UInt64":
+                    operatorResult = list.ThenBy((Func<T, ulong>)lambdaExpr.Compile());
+                    break;
+                default:
+                    throw new ArgumentException(
+                        "Type " + lambdaExpr.Body.Type.Name + " is not yet supported. Please discuss or submit an issue at http://linqtotwitter.codeplex.com/");
+            }
+
+            return operatorResult;
+        }
+
+        /// <summary>
+        /// Execute an ThenByDecending operation on the list
+        /// </summary>
+        /// <typeparam name="T">Type of elements in list</typeparam>
+        /// <param name="list">List of elements</param>
+        /// <param name="lambdaExpr">Selector Lambda</param>
+        /// <returns>List of ordered items</returns>
+        private static IEnumerable<T> ProcessThenByDescending<T>(IOrderedEnumerable<T> list, LambdaExpression lambdaExpr)
+        {
+            IOrderedEnumerable<T> operatorResult = null;
+
+            switch (lambdaExpr.Body.Type.Name)
+            {
+                case "Boolean":
+                    operatorResult = list.ThenByDescending((Func<T, bool>)lambdaExpr.Compile());
+                    break;
+                case "DateTime":
+                    operatorResult = list.ThenByDescending((Func<T, DateTime>)lambdaExpr.Compile());
+                    break;
+                case "Decimal":
+                    operatorResult = list.ThenByDescending((Func<T, decimal>)lambdaExpr.Compile());
+                    break;
+                case "Double":
+                    operatorResult = list.ThenByDescending((Func<T, double>)lambdaExpr.Compile());
+                    break;
+                case "Int32":
+                    operatorResult = list.ThenByDescending((Func<T, int>)lambdaExpr.Compile());
+                    break;
+                case "Single":
+                    operatorResult = list.ThenByDescending((Func<T, float>)lambdaExpr.Compile());
+                    break;
+                case "String":
+                    operatorResult = list.ThenByDescending((Func<T, string>)lambdaExpr.Compile());
+                    break;
+                case "UInt64":
+                    operatorResult = list.ThenByDescending((Func<T, ulong>)lambdaExpr.Compile());
+                    break;
+                default:
+                    throw new ArgumentException(
+                        "Type " + lambdaExpr.Body.Type.Name + " is not yet supported. Please discuss or submit an issue at http://linqtotwitter.codeplex.com/");
+            }
+
+            return operatorResult;
         }
 
         /// <summary>

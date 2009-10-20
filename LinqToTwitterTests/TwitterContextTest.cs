@@ -159,9 +159,9 @@ namespace LinqToTwitterTests
                 select tweet;
 
             var actual = ctx.Execute<Status>(publicQuery.Expression, true);
-            var tweets = actual as IList<Status>;
+            var tweets = actual as IEnumerable<Status>;
             Assert.IsNotNull(tweets);
-            Assert.IsTrue(tweets.Count > 0);
+            Assert.IsTrue(tweets.ToList().Count > 0);
         }
 
         /// <summary>

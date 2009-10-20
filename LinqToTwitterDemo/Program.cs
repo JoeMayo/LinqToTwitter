@@ -1665,23 +1665,30 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void PublicStatusFilteredQueryDemo(TwitterContext twitterCtx)
         {
+            //var publicTweets =
+            //    (from tweet in twitterCtx.Status
+            //     where tweet.Type == StatusType.Public &&
+            //           tweet.User.Name.StartsWith("S")
+            //     orderby tweet.Source descending
+            //     select new MyTweetClass
+            //     {
+            //         UserName = tweet.User.Name,
+            //         Text = tweet.Text
+            //     })
+            //     .ToArray();
+
             var publicTweets =
                 (from tweet in twitterCtx.Status
-                 where tweet.Type == StatusType.Public &&
-                       tweet.User.Name.StartsWith("S")
-                 orderby tweet.Source
-                 select new MyTweetClass
-                 {
-                     UserName = tweet.User.Name,
-                     Text = tweet.Text
-                 })
+                 where tweet.Type == StatusType.Public
+                 orderby tweet.Source descending, tweet.User.Name
+                 select tweet)
                  .ToArray();
 
             publicTweets.ToList().ForEach(
                 tweet => Console.WriteLine(
-                    "User Name: {0}, Tweet: {1}",
-                    tweet.UserName,
-                    tweet.Text));
+                    "Source: {0}, Name: {1}",
+                    tweet.Source,
+                    tweet.User.Name));
 
             //publicTweets.ToList().ForEach(
             //    tweet => Console.WriteLine(
