@@ -78,7 +78,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void OneParamCtorDefaults()
         {
-            string baseUrl = "https://twitter.com/";
+            string baseUrl = "https://api.twitter.com/1/";
             string searchUrl = "http://search.twitter.com/";
             ITwitterAuthorization authorizedClient = new UsernamePasswordAuthorization();
             TwitterContext ctx = new TwitterContext(authorizedClient);
@@ -95,7 +95,7 @@ namespace LinqToTwitterTests
         public void ThreeParamCtorDefaults()
         {
             ITwitterExecute execute = new TwitterExecute();
-            string baseUrl = "http://www.twitter.com/";
+            string baseUrl = "http://api.twitter.com/1/";
             string searchUrl = "http://search.twitter.com/";
             TwitterContext ctx = new TwitterContext(execute, baseUrl, searchUrl);
 
@@ -109,7 +109,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void ObjectInitializerTest()
         {
-            string baseUrl = "http://www.twitter.com/";
+            string baseUrl = "http://api.twitter.com/1/";
             string searchUrl = "http://search.twitter.com/";
             TwitterContext ctx =
                 new TwitterContext

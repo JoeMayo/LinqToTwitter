@@ -141,6 +141,10 @@
     <Compile Include="DirectMessageRequestProcessor.cs" />
     <Compile Include="HttpMethod.cs" />
     <Compile Include="MvcOAuthAuthorization.cs" />
+    <Compile Include="PostProcessing\Filter.cs" />
+    <Compile Include="PostProcessing\PostProcessor.cs" />
+    <Compile Include="PostProcessing\Projection.cs" />
+    <Compile Include="PostProcessing\Sort.cs" />
     <Compile Include="WindowsCredentialStoreTokenManager.cs" />
     <Compile Include="ITwitterAuthorization.cs" />
     <Compile Include="ITwitterExecute.cs" />
