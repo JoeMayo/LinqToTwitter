@@ -29,10 +29,15 @@ namespace LinqToTwitter.PostProcessing
                 nextResult = list;
             }
 
-            IEnumerable operatorResult = null;
+            IEnumerable operatorResult = list;
 
             var methodName = expr.Method.Name;
-            var lambdaExpr = ((expr as MethodCallExpression).Arguments[1] as UnaryExpression).Operand as LambdaExpression;
+
+            LambdaExpression lambdaExpr = null;
+            if (expr.Arguments.Count > 1)
+            {
+                lambdaExpr = (expr.Arguments[1] as UnaryExpression).Operand as LambdaExpression; 
+            }
 
             switch (methodName)
             {

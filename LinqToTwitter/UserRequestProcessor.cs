@@ -20,6 +20,43 @@ namespace LinqToTwitter
         public string BaseUrl { get; set; }
 
         /// <summary>
+        /// type of user request (i.e. Friends, Followers, or Show)
+        /// </summary>
+        private UserType Type { get; set; }
+
+        /// <summary>
+        /// user's Twitter ID
+        /// </summary>
+        private string ID { get; set; }
+
+        /// <summary>
+        /// User ID for disambiguating when ID is screen name
+        /// </summary>
+        private string UserID { get; set; }
+
+        /// <summary>
+        /// user's screen name
+        /// On Input - disambiguates when ID is User ID
+        /// </summary>
+        private string ScreenName { get; set; }
+
+        /// <summary>
+        /// page number of results to retrieve
+        /// </summary>
+        private int Page { get; set; }
+
+        /// <summary>
+        /// Indicator for which page to get next
+        /// </summary>
+        /// <remarks>
+        /// This is not a page number, but is an indicator to
+        /// Twitter on which page you need back. Your choices
+        /// are Previous and Next, which you can find in the
+        /// CursorResponse property when your response comes back.
+        /// </remarks>
+        private string Cursor { get; set; }
+        
+        /// <summary>
         /// extracts parameters from lambda
         /// </summary>
         /// <param name="lambdaExpression">lambda expression with where clause</param>
@@ -34,7 +71,8 @@ namespace LinqToTwitter
                        "ID",
                        "UserID",
                        "ScreenName",
-                       "Page"
+                       "Page",
+                       "Cursor"
                    });
 
             var parameters = paramFinder.Parameters;
@@ -58,6 +96,8 @@ namespace LinqToTwitter
             }
 
             UserType userType = RequestProcessorHelper.ParseQueryEnumType<UserType>(parameters["Type"]);
+
+            Type = userType;
 
             switch (userType)
             {
@@ -153,22 +193,32 @@ namespace LinqToTwitter
 
             if (parameters.ContainsKey("ID"))
             {
+                ID = parameters["ID"];
                 url = BuildUrlHelper.TransformIDUrl(parameters, url);
             }
 
             if (parameters.ContainsKey("UserID"))
             {
+                UserID = parameters["UserID"];
                 urlParams.Add("user_id=" + parameters["UserID"]);
             }
 
             if (parameters.ContainsKey("ScreenName"))
             {
+                ScreenName = parameters["ScreenName"];
                 urlParams.Add("screen_name=" + parameters["ScreenName"]);
             }
 
             if (parameters.ContainsKey("Page"))
             {
+                Page = int.Parse(parameters["Page"]);
                 urlParams.Add("page=" + parameters["Page"]);
+            }
+
+            if (parameters.ContainsKey("Cursor"))
+            {
+                Cursor = parameters["Cursor"];
+                urlParams.Add("cursor=" + parameters["Cursor"]);
             }
 
             if (urlParams.Count > 0)
@@ -239,6 +289,14 @@ namespace LinqToTwitter
                 responseItems = twitterResponse.Elements(rootElement).ToList();
             }
 
+            if (twitterResponse.Element("users") != null)
+            {
+                responseItems =
+                    (from user in twitterResponse.Element("users").Elements("user").ToList()
+                     select user)
+                     .ToList();
+            }
+
             // if we get only a single response back,
             // such as a Show request, make sure we get it
             if (twitterResponse.Name == rootElement)
@@ -246,9 +304,22 @@ namespace LinqToTwitter
                 responseItems.Add(twitterResponse);
             }
 
-            var userList =
+            var users =
                 from user in responseItems
                 select new User().CreateUser(user);
+
+            var userList = users.ToList();
+
+            userList.ForEach(
+                user =>
+                {
+                    user.Type = Type;
+                    user.ID = ID;
+                    user.UserID = UserID;
+                    user.ScreenName = ScreenName;
+                    user.Page = Page;
+                    user.Cursor = Cursor;
+                });
 
             return userList.ToList();
         }

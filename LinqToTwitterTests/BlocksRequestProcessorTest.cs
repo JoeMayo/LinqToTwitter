@@ -207,7 +207,7 @@ namespace LinqToTwitterTests
             var actualQuery = actual as IList<Blocks>;
 
             Assert.IsNotNull(actualQuery);
-            Assert.AreEqual(actualQuery.Count(), 7);
+            Assert.AreEqual(actualQuery[0].IDs.Count, 7);
         }
 
         /// <summary>
@@ -222,7 +222,7 @@ namespace LinqToTwitterTests
             var actualQuery = actual as IList<Blocks>;
 
             Assert.IsNotNull(actualQuery);
-            Assert.AreEqual(actualQuery.Count(), 2);
+            Assert.AreEqual(actualQuery[0].Users.Count, 2);
         }
 
         /// <summary>
@@ -237,7 +237,7 @@ namespace LinqToTwitterTests
             var actualQuery = actual as IList<Blocks>;
 
             Assert.IsNotNull(actualQuery);
-            Assert.AreEqual(actualQuery.Count(), 2);
+            Assert.AreEqual(actualQuery[0].Users.Count, 2);
         }
 
 

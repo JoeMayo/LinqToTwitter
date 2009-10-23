@@ -19,6 +19,22 @@ namespace LinqToTwitter
         public string BaseUrl { get; set; }
 
         /// <summary>
+        /// type of trend to query (Trend (all), Current, Daily, or Weekly)
+        /// </summary>
+        private TrendType Type { get; set; }
+
+        /// <summary>
+        /// exclude all trends with hastags if set to true 
+        /// (i.e. include "Wolverine" but not "#Wolverine")
+        /// </summary>
+        private bool ExcludeHashtags { get; set; }
+
+        /// <summary>
+        /// date to start
+        /// </summary>
+        private DateTime Date { get; set; }
+
+        /// <summary>
         /// extracts parameters from lambda
         /// </summary>
         /// <param name="lambdaExpression">lambda expression with where clause</param>
@@ -52,6 +68,8 @@ namespace LinqToTwitter
             }
 
             TrendType trendType = RequestProcessorHelper.ParseQueryEnumType<TrendType>(parameters["Type"]);
+
+            Type = trendType;
 
             switch (trendType)
             {
@@ -139,12 +157,14 @@ namespace LinqToTwitter
 
             if (parameters.ContainsKey("Date"))
             {
+                Date = DateTime.Parse(parameters["Date"]);
                 urlParams.Add("date=" + DateTime.Parse(parameters["Date"], CultureInfo.InvariantCulture).ToString("yyyy-MM-dd"));
             }
 
             if (parameters.ContainsKey("ExcludeHashtags") &&
                 bool.Parse(parameters["ExcludeHashtags"]) == true)
             {
+                ExcludeHashtags = bool.Parse(parameters["ExcludeHashtags"]);
                 urlParams.Add("exclude=hashtags");
             }
 
@@ -285,7 +305,7 @@ namespace LinqToTwitter
                     CultureInfo.InvariantCulture);
             }
 
-            return
+            var trends =
                 (from trend in items
                  let query =
                     trend.Element("url") == null ?
@@ -293,11 +313,16 @@ namespace LinqToTwitter
                         trend.Element("url").Value
                  select new Trend
                  {
+                     Type = Type,
+                     ExcludeHashtags = ExcludeHashtags,
+                     Date = Date,
                      Name = trend.Element("name").Value,
                      Query = query,
                      AsOf = asOf
                  })
                  .ToList();
+
+            return trends;
         }
     }
 }

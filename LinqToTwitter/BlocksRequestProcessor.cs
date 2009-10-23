@@ -18,6 +18,31 @@ namespace LinqToTwitter
         public string BaseUrl { get; set; }
 
         /// <summary>
+        /// type of blocks request to perform
+        /// </summary>
+        private BlockingType Type { get; set; }
+
+        /// <summary>
+        /// id or screen name of user
+        /// </summary>
+        private string ID { get; set; }
+
+        /// <summary>
+        /// disambiguates when user id is screen name
+        /// </summary>
+        private ulong UserID { get; set; }
+
+        /// <summary>
+        /// disambiguates when screen name is user id
+        /// </summary>
+        private string ScreenName { get; set; }
+
+        /// <summary>
+        /// page to retrieve
+        /// </summary>
+        public int Page { get; set; }
+        
+        /// <summary>
         /// extracts parameters from lambda
         /// </summary>
         /// <param name="lambdaExpression">lambda expression with where clause</param>
@@ -56,6 +81,8 @@ namespace LinqToTwitter
             }
 
             BlockingType blockType = RequestProcessorHelper.ParseQueryEnumType<BlockingType>(parameters["Type"]);
+
+            Type = blockType;
 
             switch (blockType)
             {
@@ -128,6 +155,7 @@ namespace LinqToTwitter
 
             if (parameters.ContainsKey("Page"))
             {
+                Page = int.Parse(parameters["Page"]);
                 urlParams.Add("page=" + parameters["Page"]);
             }
 
@@ -156,16 +184,19 @@ namespace LinqToTwitter
 
             if (parameters.ContainsKey("ID"))
             {
+                ID = parameters["ID"];
                 url = BuildUrlHelper.TransformIDUrl(parameters, url);
             }
 
             if (parameters.ContainsKey("UserID"))
             {
+                UserID = ulong.Parse(parameters["UserID"]);
                 urlParams.Add("user_id=" + parameters["UserID"]);
             }
 
             if (parameters.ContainsKey("ScreenName"))
             {
+                ScreenName = parameters["ScreenName"];
                 urlParams.Add("screen_name=" + parameters["ScreenName"]);
             }
 
@@ -185,34 +216,32 @@ namespace LinqToTwitter
         /// <returns>base url + parameters</returns>
         public IList ProcessResults(XElement twitterResponse)
         {
-            var blockList = new List<Blocks>();
+            var blocks = new Blocks
+            {
+                Type = Type,
+                ID = ID,
+                UserID = UserID,
+                ScreenName = ScreenName,
+                Page = Page
+            };
 
             if (twitterResponse.Name == "user")
             {
-                var user = new User().CreateUser(twitterResponse);
-                
-                var block = new Blocks();
-                block.User = user;
-                blockList.Add(block);
+                blocks.User = new User().CreateUser(twitterResponse);
             }
             else if (twitterResponse.Name == "users")
             {
-                blockList =
+                var usr = new User();
+                blocks.Users =
                     (from user in twitterResponse.Elements("user").ToList()
-                     select new Blocks
-                     {
-                         User = new User().CreateUser(user)
-                     })
+                     select usr.CreateUser(user))
                      .ToList();
             }
             else if (twitterResponse.Name == "ids")
             {
-                blockList =
+                blocks.IDs =
                     (from id in twitterResponse.Elements("id").ToList()
-                     select new Blocks
-                     {
-                        ID = id.Value
-                     })
+                     select id.Value)
                      .ToList();
             }
             else
@@ -220,7 +249,7 @@ namespace LinqToTwitter
                 throw new ArgumentException("Account Results Processing expected a Twitter response for either a user or hash, but received an unknown element type instead.");
             }
 
-            return blockList;
+            return new List<Blocks> { blocks };
         }
     }
 }

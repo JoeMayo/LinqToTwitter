@@ -134,6 +134,7 @@
     <Compile Include="Blocks.cs" />
     <Compile Include="BlocksRequestProcessor.cs" />
     <Compile Include="BuildUrlHelper.cs" />
+    <Compile Include="Cursors.cs" />
     <Compile Include="DesktopOAuthAuthorization.cs" />
     <Compile Include="DeviceType.cs" />
     <Compile Include="DirectMessage.cs" />
@@ -145,6 +146,7 @@
     <Compile Include="PostProcessing\PostProcessor.cs" />
     <Compile Include="PostProcessing\Projection.cs" />
     <Compile Include="PostProcessing\Sort.cs" />
+    <Compile Include="UserIdentifier.cs" />
     <Compile Include="WindowsCredentialStoreTokenManager.cs" />
     <Compile Include="ITwitterAuthorization.cs" />
     <Compile Include="ITwitterExecute.cs" />

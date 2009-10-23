@@ -21,6 +21,11 @@ namespace LinqToTwitter
     internal class TwitterExecute : ITwitterExecute, IDisposable
     {
         /// <summary>
+        /// Version used in UserAgent
+        /// </summary>
+        private const string m_linqToTwitterVersion = "LINQ to Twitter v2.0";
+
+        /// <summary>
         /// Default for ReadWriteTimeout
         /// </summary>
         public const int DefaultReadWriteTimeout = 300000;
@@ -83,7 +88,7 @@ namespace LinqToTwitter
         public TwitterExecute()
         {
             this.AuthorizedClient = new UsernamePasswordAuthorization();
-            this.AuthorizedClient.UserAgent = "LINQ To Twitter v1.0";
+            this.AuthorizedClient.UserAgent = m_linqToTwitterVersion;
         }
 
         /// <summary>
@@ -98,7 +103,7 @@ namespace LinqToTwitter
             }
 
             this.AuthorizedClient = authorizedClient;
-            this.AuthorizedClient.UserAgent = "LINQ To Twitter v1.0";
+            this.AuthorizedClient.UserAgent = m_linqToTwitterVersion;
         }
 
         /// <summary>

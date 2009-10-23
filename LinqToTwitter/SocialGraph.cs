@@ -36,6 +36,34 @@ namespace LinqToTwitter
         /// <summary>
         /// Page to return
         /// </summary>
+        [Obsolete("This property has been deprecated and will be ignored by Twitter. Please use Cursor/CursorMovement properties instead.")]
         public int Page { get; set; }
+
+        /// <summary>
+        /// Indicator for which page to get next
+        /// </summary>
+        /// <remarks>
+        /// This is not a page number, but is an indicator to
+        /// Twitter on which page you need back. Your choices
+        /// are Previous and Next, which you can find in the
+        /// CursorResponse property when your response comes back.
+        /// </remarks>
+        public string Cursor { get; set; }
+
+        /// <summary>
+        /// Contains Next and Previous cursors
+        /// </summary>
+        /// <remarks>
+        /// This is read-only and returned with the response
+        /// from Twitter. You use it by setting Cursor on the
+        /// next request to indicate that you want to move to
+        /// either the next or previous page.
+        /// </remarks>
+        public Cursors CursorMovement { get; internal set; }
+
+        /// <summary>
+        /// List of IDs returned from query
+        /// </summary>
+        public List<string> IDs { get; set; }
     }
 }

@@ -120,9 +120,13 @@ namespace LinqToTwitter
 
             var newUser = new User
             {
-                ID = user.Element("id").Value,
+                Identifier = new UserIdentifier
+                {
+                    ID = user.Element("id").Value,
+                    UserID = user.Element("id").Value,
+                    ScreenName = user.Element("screen_name").Value
+                },
                 Name = user.Element("name").Value,
-                ScreenName = user.Element("screen_name").Value,
                 Location = user.Element("location").Value,
                 Description = user.Element("description").Value,
                 ProfileImageUrl = user.Element("profile_image_url").Value,
@@ -185,7 +189,18 @@ namespace LinqToTwitter
                             InReplyToUserID = status.Element("in_reply_to_user_id").Value,
                             Favorited = tempStatusFavorited,
                             InReplyToScreenName = status.Element("in_reply_to_screen_name").Value
-                        }
+                        },
+                CursorMovement = new Cursors
+                {
+                    Next =
+                        user.Element("next_cursor") == null ?
+                            string.Empty :
+                            user.Element("next_cursor").Value,
+                    Previous =
+                        user.Element("previous_cursor") == null ?
+                            string.Empty :
+                            user.Element("previous_cursor").Value
+                }
             };
 
             return newUser;
@@ -197,25 +212,54 @@ namespace LinqToTwitter
         public UserType Type { get; set; }
 
         /// <summary>
-        /// user's Twitter ID
+        /// Query user's Twitter ID
         /// </summary>
         public string ID { get; set; }
 
         /// <summary>
-        /// User ID for disambiguating when ID is screen name
+        /// Query User ID for disambiguating when ID is screen name
         /// </summary>
         public string UserID { get; set; }
 
         /// <summary>
-        /// user's screen name
+        /// Query screen name
         /// On Input - disambiguates when ID is User ID
         /// </summary>
         public string ScreenName { get; set; }
 
         /// <summary>
-        /// page number of results to retrieve
+        /// Identity properties of this specific user
         /// </summary>
+        public UserIdentifier Identifier { get; set; }
+
+
+        /// <summary>
+        /// Page to return
+        /// </summary>
+        [Obsolete("This property has been deprecated and will be ignored by Twitter. Please use Cursor/CursorMovement properties instead.")]
         public int Page { get; set; }
+
+        /// <summary>
+        /// Indicator for which page to get next
+        /// </summary>
+        /// <remarks>
+        /// This is not a page number, but is an indicator to
+        /// Twitter on which page you need back. Your choices
+        /// are Previous and Next, which you can find in the
+        /// CursorResponse property when your response comes back.
+        /// </remarks>
+        public string Cursor { get; set; }
+
+        /// <summary>
+        /// Contains Next and Previous cursors
+        /// </summary>
+        /// <remarks>
+        /// This is read-only and returned with the response
+        /// from Twitter. You use it by setting Cursor on the
+        /// next request to indicate that you want to move to
+        /// either the next or previous page.
+        /// </remarks>
+        public Cursors CursorMovement { get; internal set; }
 
         /// <summary>
         /// name of user

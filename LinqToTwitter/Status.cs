@@ -23,6 +23,21 @@ namespace LinqToTwitter
         public StatusType Type { get; set; }
 
         /// <summary>
+        /// TweetID
+        /// </summary>
+        public string ID { get; set; }
+
+        /// <summary>
+        /// User ID to disambiguate when ID is same as screen name
+        /// </summary>
+        public string UserID { get; set; }
+
+        /// <summary>
+        /// Screen Name to disambiguate when ID is same as UserD
+        /// </summary>
+        public string ScreenName { get; set; }
+
+        /// <summary>
         /// filter results to after this status id
         /// </summary>
         public ulong SinceID { get; set; }
@@ -48,19 +63,9 @@ namespace LinqToTwitter
         public DateTime CreatedAt { get; set; }
 
         /// <summary>
-        /// TweetID
+        /// ID of this status
         /// </summary>
-        public string ID { get; set; }
-
-        /// <summary>
-        /// User ID to disambiguate when ID is same as screen name
-        /// </summary>
-        public string UserID { get; set; }
-
-        /// <summary>
-        /// Screen Name to disambiguate when ID is same as UserD
-        /// </summary>
-        public string ScreenName { get; set; }
+        public string StatusID { get; set; }
 
         /// <summary>
         /// Tweet Text (140)characters

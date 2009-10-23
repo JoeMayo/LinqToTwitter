@@ -18,6 +18,21 @@ namespace LinqToTwitter
         public string BaseUrl { get; set; }
 
         /// <summary>
+        /// type of favorites to query
+        /// </summary>
+        private new FavoritesType Type { get; set; }
+
+        /// <summary>
+        /// User identity to search (optional)
+        /// </summary>
+        private new string ID { get; set; }
+
+        /// <summary>
+        /// Page to retrieve (optional)
+        /// </summary>
+        private new int Page { get; set; }
+
+        /// <summary>
         /// extracts parameters from lambda
         /// </summary>
         /// <param name="lambdaExpression">lambda expression with where clause</param>
@@ -42,6 +57,8 @@ namespace LinqToTwitter
         /// <returns>URL conforming to Twitter API</returns>
         public string BuildURL(Dictionary<string, string> parameters)
         {
+            Type = FavoritesType.Favorites;
+
             var url = BaseUrl + "favorites.xml";
 
             url = BuildFavoritesUrlParameters(parameters, url);
@@ -61,11 +78,13 @@ namespace LinqToTwitter
 
             if (parameters.ContainsKey("Page"))
             {
+                Page = int.Parse(parameters["Page"]);
                 urlParams.Add("page=" + parameters["Page"]);
             }
 
             if (parameters.ContainsKey("ID"))
             {
+                ID = parameters["ID"];
                 urlParams.Add("id=" + parameters["ID"]);
             }
 
@@ -181,6 +200,8 @@ namespace LinqToTwitter
                 select
                    new Favorites
                    {
+                       Type = Type,
+                       Page = Page,
                        CreatedAt = createdAtDate,
                        Favorited =
                         bool.Parse(

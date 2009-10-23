@@ -21,6 +21,47 @@ namespace LinqToTwitter
         public string BaseUrl { get; set; }
 
         /// <summary>
+        /// type of search, included for compatibility
+        /// with other APIs
+        /// </summary>
+        private SearchType Type { get; set; }
+
+        /// <summary>
+        /// search query
+        /// </summary>
+        private string Query { get; set; }
+
+        /// <summary>
+        /// language to search in (ISO 639-1)
+        /// </summary>
+        private string SearchLanguage { get; set; }
+
+        /// <summary>
+        /// number of results for each page
+        /// </summary>
+        private int PageSize { get; set; }
+
+        /// <summary>
+        /// page number
+        /// </summary>
+        private int Page { get; set; }
+
+        /// <summary>
+        /// last status ID
+        /// </summary>
+        private ulong SinceID { get; set; }
+
+        /// <summary>
+        /// location, specified as "latitude,longitude,radius"
+        /// </summary>
+        private string GeoCode { get; set; }
+
+        /// <summary>
+        /// adds user information for each tweet if true (default = false)
+        /// </summary>
+        private string ShowUser { get; set; }
+
+        /// <summary>
         /// extracts parameters from lambda
         /// </summary>
         /// <param name="lambdaExpression">lambda expression with where clause</param>
@@ -51,6 +92,8 @@ namespace LinqToTwitter
         /// <returns>URL conforming to Twitter API</returns>
         public string BuildURL(Dictionary<string, string> parameters)
         {
+            Type = SearchType.Search;
+
             var url = BaseUrl + "search.atom";
 
             url = BuildSearchUrlParameters(parameters, url);
@@ -70,36 +113,43 @@ namespace LinqToTwitter
 
             if (parameters.ContainsKey("GeoCode"))
             {
+                GeoCode = parameters["GeoCode"];
                 urlParams.Add("geocode=" + HttpUtility.UrlEncode(parameters["GeoCode"]));
             }
 
             if (parameters.ContainsKey("SearchLanguage"))
             {
+                SearchLanguage = parameters["SearchLanguage"];
                 urlParams.Add("lang=" + parameters["SearchLanguage"]);
             }
 
             if (parameters.ContainsKey("Page"))
             {
+                Page = int.Parse(parameters["Page"]);
                 urlParams.Add("page=" + parameters["Page"]);
             }
 
             if (parameters.ContainsKey("PageSize"))
             {
+                PageSize = int.Parse(parameters["PageSize"]);
                 urlParams.Add("rpp=" + parameters["PageSize"]);
             }
 
             if (parameters.ContainsKey("Query"))
             {
+                Query = parameters["Query"];
                 urlParams.Add("q=" + HttpUtility.UrlEncode(parameters["Query"]));
             }
 
             if (parameters.ContainsKey("ShowUser"))
             {
+                ShowUser = parameters["ShowUser"];
                 urlParams.Add("show_user=" + parameters["ShowUser"]);
             }
 
             if (parameters.ContainsKey("SinceID"))
             {
+                SinceID = ulong.Parse(parameters["SinceID"]);
                 urlParams.Add("since_id=" + parameters["SinceID"]);
             }
 
@@ -171,6 +221,13 @@ namespace LinqToTwitter
 
             var searchResult = new Search
             {
+                Type = Type,
+                GeoCode = GeoCode,
+                Page = Page,
+                PageSize = PageSize,
+                Query = Query,
+                ShowUser = ShowUser,
+                SinceID = SinceID,
                 ID = twitterResponse.Element(atom + "id").Value,
                 Title = twitterResponse.Element(atom + "title").Value,
                 TwitterWarning = 

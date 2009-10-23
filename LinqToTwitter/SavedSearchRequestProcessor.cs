@@ -20,6 +20,16 @@ namespace LinqToTwitter
         public string BaseUrl { get; set; }
 
         /// <summary>
+        /// type of search to perform (Searches or Show)
+        /// </summary>
+        private SavedSearchType Type { get; set; }
+
+        /// <summary>
+        /// search item ID
+        /// </summary>
+        private string ID { get; set; }
+
+        /// <summary>
         /// extracts parameters from lambda
         /// </summary>
         /// <param name="lambdaExpression">lambda expression with where clause</param>
@@ -56,6 +66,8 @@ namespace LinqToTwitter
 
             SavedSearchType savedSearchType = RequestProcessorHelper.ParseQueryEnumType<SavedSearchType>(parameters["Type"]);
 
+            Type = savedSearchType;
+
             switch (savedSearchType)
             {
                 case SavedSearchType.Searches:
@@ -83,6 +95,8 @@ namespace LinqToTwitter
             {
                 throw new ArgumentException("ID is required for a Saved Search Show query.", "ID");
             }
+
+            ID = parameters["ID"];
 
             var url = BaseUrl + "saved_searches/show.xml";
 
@@ -130,6 +144,7 @@ namespace LinqToTwitter
                 select
                    new SavedSearch
                    {
+                       Type = Type,
                        ID = search.Element("id").Value,
                        Name = search.Element("name").Value,
                        Query = search.Element("query").Value,

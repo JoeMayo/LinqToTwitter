@@ -21,6 +21,31 @@ namespace LinqToTwitter
         public string BaseUrl { get; set; }
 
         /// <summary>
+        /// Type of Direct Message
+        /// </summary>
+        private DirectMessageType Type { get; set; }
+
+        /// <summary>
+        /// since this message ID
+        /// </summary>
+        private ulong SinceID { get; set; }
+
+        /// <summary>
+        /// max ID to return
+        /// </summary>
+        private ulong MaxID { get; set; }
+
+        /// <summary>
+        /// page number to return
+        /// </summary>
+        private int Page { get; set; }
+
+        /// <summary>
+        /// number of items to return (works for SentBy and SentTo
+        /// </summary>
+        private int Count { get; set; }
+        
+        /// <summary>
         /// extracts parameters from lambda
         /// </summary>
         /// <param name="lambdaExpression">lambda expression with where clause</param>
@@ -59,6 +84,8 @@ namespace LinqToTwitter
             }
 
             DirectMessageType dirMsgType = RequestProcessorHelper.ParseQueryEnumType<DirectMessageType>(parameters["Type"]);
+
+            Type = dirMsgType;
 
             switch (dirMsgType)
             {
@@ -127,21 +154,25 @@ namespace LinqToTwitter
 
             if (parameters.ContainsKey("SinceID"))
             {
+                SinceID = ulong.Parse(parameters["SinceID"]);
                 urlParams.Add("since_id=" + parameters["SinceID"]);
             }
 
             if (parameters.ContainsKey("MaxID"))
             {
+                MaxID = ulong.Parse(parameters["MaxID"]);
                 urlParams.Add("max_id=" + parameters["MaxID"]);
             }
 
             if (parameters.ContainsKey("Page"))
             {
+                Page = int.Parse(parameters["Page"]);
                 urlParams.Add("page=" + parameters["Page"]);
             }
 
             if (parameters.ContainsKey("Count"))
             {
+                Count = int.Parse(parameters["Count"]);
                 urlParams.Add("count=" + parameters["Count"]);
             }
 
@@ -246,6 +277,11 @@ namespace LinqToTwitter
                         CultureInfo.InvariantCulture)
                 select new DirectMessage
                 {
+                    Type = Type,
+                    SinceID = SinceID,
+                    MaxID = MaxID,
+                    Page = Page,
+                    Count = Count,
                     ID = ulong.Parse(dm.Element("id").Value),
                     SenderID = ulong.Parse(dm.Element("sender_id").Value),
                     Text = dm.Element("text").Value,

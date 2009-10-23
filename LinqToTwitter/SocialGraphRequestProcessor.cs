@@ -15,6 +15,45 @@ namespace LinqToTwitter
         public string BaseUrl { get; set; }
 
         /// <summary>
+        /// type of request
+        /// </summary>
+        private SocialGraphType Type { get; set; }
+
+        /// <summary>
+        /// The ID or screen_name of the user to retrieve the friends ID list for
+        /// </summary>
+        private string ID { get; set; }
+
+        /// <summary>
+        /// Specfies the ID of the user for whom to return the friends list. 
+        /// Helpful for disambiguating when a valid user ID is also a valid screen name. 
+        /// </summary>
+        private ulong UserID { get; set; }
+
+        /// <summary>
+        /// Specfies the screen name of the user for whom to return the friends list. 
+        /// Helpful for disambiguating when a valid screen name is also a user ID.
+        /// </summary>
+        private string ScreenName { get; set; }
+
+        /// <summary>
+        /// Page to return
+        /// </summary>
+        [Obsolete("This property has been deprecated and will be ignored by Twitter. Please use Cursor/CursorResponse instead.")]
+        private int Page { get; set; }
+
+        /// <summary>
+        /// Indicator for which page to get next
+        /// </summary>
+        /// <remarks>
+        /// This is not a page number, but is an indicator to
+        /// Twitter on which page you need back. Your choices
+        /// are Previous and Next, which you can find in the
+        /// CursorResponse property when your response comes back.
+        /// </remarks>
+        private string Cursor { get; set; }
+
+        /// <summary>
         /// extracts parameters from lambda
         /// </summary>
         /// <param name="lambdaExpression">lambda expression with where clause</param>
@@ -29,7 +68,8 @@ namespace LinqToTwitter
                        "ID",
                        "UserID",
                        "ScreenName",
-                       "Page"
+                       "Page",
+                       "Cursor"
                    });
 
             var parameters = paramFinder.Parameters;
@@ -75,6 +115,8 @@ namespace LinqToTwitter
         /// <returns>base url + show segment</returns>
         private string BuildSocialGraphFriendsUrl(Dictionary<string, string> parameters)
         {
+            Type = SocialGraphType.Friends;
+
             var url = BaseUrl + "friends/ids.xml";
 
             url = BuildSocialGraphUrlParameters(parameters, url);
@@ -89,6 +131,8 @@ namespace LinqToTwitter
         /// <returns>base url + show segment</returns>
         private string BuildSocialGraphFollowersUrl(Dictionary<string, string> parameters)
         {
+            Type = SocialGraphType.Followers;
+
             var url = BaseUrl + "followers/ids.xml";
 
             url = BuildSocialGraphUrlParameters(parameters, url);
@@ -113,22 +157,32 @@ namespace LinqToTwitter
 
             if (parameters.ContainsKey("ID"))
             {
+                ID = parameters["ID"];
                 url = BuildUrlHelper.TransformIDUrl(parameters, url);
             }
 
             if (parameters.ContainsKey("UserID"))
             {
+                UserID = ulong.Parse(parameters["UserID"]);
                 urlParams.Add("user_id=" + parameters["UserID"]);
             }
 
             if (parameters.ContainsKey("ScreenName"))
             {
+                ScreenName = parameters["ScreenName"];
                 urlParams.Add("screen_name=" + parameters["ScreenName"]);
             }
 
             if (parameters.ContainsKey("Page"))
             {
+                Page = int.Parse(parameters["Page"]);
                 urlParams.Add("page=" + parameters["Page"]);
+            }
+
+            if (parameters.ContainsKey("Cursor"))
+            {
+                Cursor = parameters["Cursor"];
+                urlParams.Add("cursor=" + parameters["Cursor"]);
             }
 
             if (urlParams.Count > 0)
@@ -146,14 +200,45 @@ namespace LinqToTwitter
         /// <returns>IQueryable of User</returns>
         public IList ProcessResults(System.Xml.Linq.XElement twitterResponse)
         {
-            var idList =
-                from id in twitterResponse.Elements("id").ToList()
-                select new SocialGraph
+            var graph = new SocialGraph
+            {
+                ID = ID,
+                UserID = UserID,
+                ScreenName = ScreenName,
+                Page = Page,
+                Cursor = Cursor,
+                CursorMovement = new Cursors
                 {
-                    ID = id.Value
-                };
+                    Next =
+                        twitterResponse.Element("next_cursor") == null ?
+                            string.Empty :
+                            twitterResponse.Element("next_cursor").Value,
+                    Previous =
+                        twitterResponse.Element("previous_cursor") == null ?
+                            string.Empty :
+                            twitterResponse.Element("previous_cursor").Value
+                }
+            };
 
-            return idList.ToList();
+            IEnumerable<string> idList = null;
+
+            // we get back ids if using cursors but id if not using cursors
+            if (twitterResponse.Element("ids") == null)
+            {
+                idList =
+                    from id in twitterResponse.Elements("id").ToList()
+                    select id.Value;
+            }
+            else
+            {
+                idList =
+                    from id in twitterResponse.Element("ids").Elements("id").ToList()
+                    select id.Value;
+            }
+
+            graph.IDs = idList.ToList();
+
+            return new List<SocialGraph> { graph };
         }
     }
 }

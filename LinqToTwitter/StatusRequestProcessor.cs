@@ -20,6 +20,46 @@ namespace LinqToTwitter
         public string BaseUrl { get; set; }
 
         /// <summary>
+        /// type of status request, i.e. Friends or Public
+        /// </summary>
+        public StatusType Type { get; set; }
+
+        /// <summary>
+        /// TweetID
+        /// </summary>
+        public string ID { get; set; }
+
+        /// <summary>
+        /// User ID to disambiguate when ID is same as screen name
+        /// </summary>
+        public string UserID { get; set; }
+
+        /// <summary>
+        /// Screen Name to disambiguate when ID is same as UserD
+        /// </summary>
+        public string ScreenName { get; set; }
+
+        /// <summary>
+        /// filter results to after this status id
+        /// </summary>
+        public ulong SinceID { get; set; }
+
+        /// <summary>
+        /// max ID to retrieve
+        /// </summary>
+        public ulong MaxID { get; set; }
+
+        /// <summary>
+        /// only return this many results
+        /// </summary>
+        public int Count { get; set; }
+
+        /// <summary>
+        /// page of results to return
+        /// </summary>
+        public int Page { get; set; }
+
+        /// <summary>
         /// extracts parameters from lambda
         /// </summary>
         /// <param name="lambdaExpression">lambda expression with where clause</param>
@@ -62,6 +102,8 @@ namespace LinqToTwitter
 
             StatusType statusType = RequestProcessorHelper.ParseQueryEnumType<StatusType>(parameters["Type"]);
 
+            Type = statusType;
+
             switch (statusType)
             {
                 case StatusType.Friends:
@@ -94,6 +136,11 @@ namespace LinqToTwitter
         /// <returns>base url + show segment</returns>
         private string BuildShowUrl(Dictionary<string, string> parameters)
         {
+            if (parameters.ContainsKey("ID"))
+            {
+                ID = parameters["ID"];
+            }
+
             var url = BaseUrl + "statuses/show.xml";
 
             url = BuildUrlHelper.TransformIDUrl(parameters, url);
@@ -111,33 +158,44 @@ namespace LinqToTwitter
         {
             var urlParams = new List<string>();
 
+            if (parameters.ContainsKey("ID"))
+            {
+                ID = parameters["ID"];
+            }
+
             if (parameters.ContainsKey("UserID"))
             {
+                UserID = parameters["UserID"];
                 urlParams.Add("user_id=" + parameters["UserID"]);
             }
 
             if (parameters.ContainsKey("ScreenName"))
             {
+                ScreenName = parameters["ScreenName"];
                 urlParams.Add("screen_name=" + parameters["ScreenName"]);
             }
 
             if (parameters.ContainsKey("SinceID"))
             {
+                SinceID = ulong.Parse(parameters["SinceID"]);
                 urlParams.Add("since_id=" + parameters["SinceID"]);
             }
 
             if (parameters.ContainsKey("MaxID"))
             {
+                MaxID = ulong.Parse(parameters["MaxID"]);
                 urlParams.Add("max_id=" + parameters["MaxID"]);
             }
 
             if (parameters.ContainsKey("Count"))
             {
+                Count = int.Parse(parameters["Count"]);
                 urlParams.Add("count=" + parameters["Count"]);
             }
 
             if (parameters.ContainsKey("Page"))
             {
+                Page = int.Parse(parameters["Page"]);
                 urlParams.Add("page=" + parameters["Page"]);
             }
 
@@ -260,13 +318,21 @@ namespace LinqToTwitter
                 select
                    new Status
                    {
+                       Type = Type,
+                       ID = ID,
+                       UserID = UserID,
+                       ScreenName = ScreenName,
+                       Page = Page,
+                       Count = Count,
+                       MaxID = MaxID,
+                       SinceID = SinceID,
                        CreatedAt = createdAtDate,
                        Favorited =
                         bool.Parse(
                             string.IsNullOrEmpty(status.Element("favorited").Value) ?
                             "true" :
                             status.Element("favorited").Value),
-                       ID = status.Element("id").Value,
+                       StatusID = status.Element("id").Value,
                        InReplyToStatusID = status.Element("in_reply_to_status_id").Value,
                        InReplyToUserID = status.Element("in_reply_to_user_id").Value,
                        Source = status.Element("source").Value,

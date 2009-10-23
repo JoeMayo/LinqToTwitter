@@ -18,6 +18,21 @@ namespace LinqToTwitter
         public string BaseUrl { get; set; }
 
         /// <summary>
+        /// type of friendship (defaults to Exists)
+        /// </summary>
+        private FriendshipType Type { get; set; }
+
+        /// <summary>
+        /// The ID or screen_name of the subject user
+        /// </summary>
+        private string SubjectUser { get; set; }
+
+        /// <summary>
+        /// The ID or screen_name of the user to test for following
+        /// </summary>
+        private string FollowingUser { get; set; }
+
+        /// <summary>
         /// extracts parameters from lambda
         /// </summary>
         /// <param name="lambdaExpression">lambda expression with where clause</param>
@@ -54,6 +69,8 @@ namespace LinqToTwitter
             }
 
             FriendshipType friendType = RequestProcessorHelper.ParseQueryEnumType<FriendshipType>(parameters["Type"]);
+
+            Type = friendType;
 
             switch (friendType)
             {
@@ -94,6 +111,7 @@ namespace LinqToTwitter
 
             if (parameters.ContainsKey("SubjectUser"))
             {
+                SubjectUser = parameters["SubjectUser"];
                 urlParams.Add("user_a=" + parameters["SubjectUser"]);
             }
             else
@@ -103,6 +121,7 @@ namespace LinqToTwitter
 
             if (parameters.ContainsKey("FollowingUser"))
             {
+                FollowingUser = parameters["FollowingUser"];
                 urlParams.Add("user_b=" + parameters["FollowingUser"]);
             }
             else
@@ -127,7 +146,13 @@ namespace LinqToTwitter
         {
             var friendList = new List<Friendship>()
             {
-                new Friendship { IsFriend = bool.Parse(twitterResponse.Value) }
+                new Friendship 
+                { 
+                    Type = Type,
+                    SubjectUser = SubjectUser,
+                    FollowingUser = FollowingUser,
+                    IsFriend = bool.Parse(twitterResponse.Value) 
+                }
             };
 
             return friendList;

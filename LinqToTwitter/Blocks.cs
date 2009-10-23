@@ -37,9 +37,19 @@ namespace LinqToTwitter
         public int Page { get; set; }
 
         /// <summary>
+        /// List of blocked IDs
+        /// </summary>
+        public List<string> IDs { get; internal set; }
+
+        /// <summary>
         /// user being blocked
         /// </summary>
         public User User { get; set; }
+
+        /// <summary>
+        /// Populated for blocking queries, showing all blocked users
+        /// </summary>
+        public List<User> Users { get; set; }
 
         /// <summary>
         /// Twitter response for no block on specified user

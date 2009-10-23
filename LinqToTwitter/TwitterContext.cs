@@ -485,12 +485,10 @@ namespace LinqToTwitter
             // process request through Twitter
             var queryableList = TwitterExecutor.QueryTwitter(url, reqProc);
 
-            // post-process results to perform non-twitter
-            // specific processing using LINQ to Objects
             var postProcessingResult = 
-                new PostProcessor().ExecuteEnumerable<Status>(
-                    queryableList as List<Status>, 
-                    expression as MethodCallExpression,
+                ExecuteEnumerable(
+                    queryableList,
+                    expression as MethodCallExpression, 
                     isEnumerable);
 
             if (isEnumerable)
@@ -503,6 +501,24 @@ namespace LinqToTwitter
                 enumerator.MoveNext();
                 return enumerator.Current;
             }
+        }
+
+        private IEnumerable ExecuteEnumerable(IList queryableList, MethodCallExpression expression, bool isEnumerable)
+        {
+            var evalExpression = (MethodCallExpression)Evaluator.PartialEval(expression);
+            Type resultType = TypeSystem.GetElementType(expression.Arguments[0].Type);
+            var methodInfo = typeof(PostProcessor).GetMethod("ExecuteEnumerable", BindingFlags.NonPublic | BindingFlags.Instance);
+            Type[] genericArguments = new Type[] { resultType };
+            MethodInfo genericMethodInfo = methodInfo.MakeGenericMethod(genericArguments);
+
+            var list = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(resultType));
+
+            foreach (var item in queryableList)
+            {
+                list.Add(item);
+            }
+
+            return (IEnumerable)genericMethodInfo.Invoke(new PostProcessor(), new object[] { list, evalExpression, isEnumerable });
         }
 
         /// <summary>

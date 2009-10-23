@@ -18,6 +18,11 @@ namespace LinqToTwitter
         public string BaseUrl { get; set; }
 
         /// <summary>
+        /// Type of account query (VerifyCredentials or RateLimitStatus)
+        /// </summary>
+        private AccountType Type { get; set; }
+
+        /// <summary>
         /// extracts parameters from lambda
         /// </summary>
         /// <param name="lambdaExpression">lambda expression with where clause</param>
@@ -50,6 +55,8 @@ namespace LinqToTwitter
 
             AccountType acctType = RequestProcessorHelper.ParseQueryEnumType<AccountType>(parameters["Type"]);
 
+            Type = acctType;
+
             switch (acctType)
             {
                 case AccountType.VerifyCredentials:
@@ -73,7 +80,7 @@ namespace LinqToTwitter
         /// <returns>IQueryable of User</returns>
         public IList ProcessResults(System.Xml.Linq.XElement twitterResponse)
         {
-            var acct = new Account();
+            var acct = new Account { Type = Type };
 
             if (twitterResponse.Name == "user")
             {
