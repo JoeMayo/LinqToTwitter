@@ -68,7 +68,7 @@ namespace LinqToTwitterDemo
                 // status tweets
                 //
 
-                UpdateStatusDemo(twitterCtx);
+                //UpdateStatusDemo(twitterCtx);
                 //SingleStatusQueryDemo(twitterCtx);
                 //UpdateStatusWithReplyDemo(twitterCtx);
                 //DestroyStatusDemo(twitterCtx);
@@ -215,6 +215,12 @@ namespace LinqToTwitterDemo
                 //DestroySavedSearchDemo(twitterCtx);
 
                 //
+                // Report Spam Demos
+                //
+
+                ReportSpamDemo(twitterCtx);
+
+                //
                 // Sign-off, including optional clearing of cached credentials.
                 //
 
@@ -225,6 +231,26 @@ namespace LinqToTwitterDemo
             Console.WriteLine("Press any key to end this demo.");
             Console.ReadKey();
         }
+
+        #region Report Spam Demos
+
+        /// <summary>
+        /// Shows multiple ways to report spammers
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void ReportSpamDemo(TwitterContext twitterCtx)
+        {
+            var spammer = twitterCtx.ReportSpam(null, null, "Greer_105");
+            Console.WriteLine("Spammer \"{0}\" Zapped! He he :)", spammer.Name);
+
+            spammer = twitterCtx.ReportSpam("84705854", null, null);
+            Console.WriteLine("Spammer \"{0}\" Zapped again! Ha Ha :)", spammer.Name);
+
+            spammer = twitterCtx.ReportSpam(null, "84705854", null);
+            Console.WriteLine("Spammer \"{0}\" is so gone! ... and don't come back! :)", spammer.Name);
+        }
+
+        #endregion
 
         #region Saved Search Demos
 

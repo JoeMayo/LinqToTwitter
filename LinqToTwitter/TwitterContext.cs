@@ -1298,6 +1298,41 @@ namespace LinqToTwitter
             return (results as IList<SavedSearch>).FirstOrDefault();
         }
 
+        /// <summary>
+        /// lets logged-in user report spam
+        /// </summary>
+        /// <param name="id">id of alleged spammer</param>
+        /// <param name="userID">user id of alleged spammer</param>
+        /// <param name="screenName">screen name of alleged spammer</param>
+        /// <returns>Alleged spammer user info</returns>
+        public User ReportSpam(string id, string userID, string screenName)
+        {
+            if (string.IsNullOrEmpty(id) &&
+                string.IsNullOrEmpty(userID) &&
+                string.IsNullOrEmpty(screenName))
+            {
+                throw new ArgumentException("Either id, userID, or screenName is a required parameter.");
+            }
+
+            string reportSpamUrl = BaseUrl + "report_spam.xml";
+
+            var createParams = new Dictionary<string, string>
+                {
+                    { "id", id },
+                    { "user_id", userID },
+                    { "screen_name", screenName }
+                };
+
+            var results =
+                TwitterExecutor.ExecuteTwitter(
+                    reportSpamUrl,
+                    createParams,
+                    new UserRequestProcessor());
+
+            return (results as IList<User>).FirstOrDefault();
+        }
+
+
         #endregion
 
         #region IDisposable Members
