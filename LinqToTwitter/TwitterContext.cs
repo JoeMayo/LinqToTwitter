@@ -1332,6 +1332,28 @@ namespace LinqToTwitter
             return (results as IList<User>).FirstOrDefault();
         }
 
+        /// <summary>
+        /// retweets a tweet
+        /// </summary>
+        /// <param name="id">id of status tweet</param>
+        /// <returns>deleted status tweet</returns>
+        public Status Retweet(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                throw new ArgumentException("id is a required parameter.", "id");
+            }
+
+            var retweetUrl = BaseUrl + "statuses/retweet/" + id + ".xml";
+
+            var results =
+                TwitterExecutor.ExecuteTwitter(
+                    retweetUrl,
+                    new Dictionary<string, string>(),
+                    new StatusRequestProcessor());
+
+            return (results as IList<Status>).FirstOrDefault();
+        }
 
         #endregion
 

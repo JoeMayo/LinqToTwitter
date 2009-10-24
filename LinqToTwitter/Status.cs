@@ -106,5 +106,10 @@ namespace LinqToTwitter
         /// information about user posting tweet (except in user tweets)
         /// </summary>
         public User User { get; set; }
+
+        /// <summary>
+        /// Retweet details
+        /// </summary>
+        public Retweet Retweet { get; set; }
     }
 }

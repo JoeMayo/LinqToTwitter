@@ -79,6 +79,12 @@ namespace LinqToTwitterDemo
                 //PublicStatusFilteredQueryDemo(twitterCtx);
                 //MentionsStatusQueryDemo(twitterCtx);
                 //FriendStatusQueryDemo(twitterCtx);
+                //HomeStatusQueryDemo(twitterCtx);
+                RetweetDemo(twitterCtx);
+                //RetweetsQueryDemo(twitterCtx);
+                //RetweetedByMeStatusQueryDemo(twitterCtx);
+                //RetweetedToMeStatusQueryDemo(twitterCtx);
+                //RetweetsOfMeStatusQueryDemo(twitterCtx);
 
                 //
                 // user tweets
@@ -218,7 +224,7 @@ namespace LinqToTwitterDemo
                 // Report Spam Demos
                 //
 
-                ReportSpamDemo(twitterCtx);
+                //ReportSpamDemo(twitterCtx);
 
                 //
                 // Sign-off, including optional clearing of cached credentials.
@@ -242,6 +248,10 @@ namespace LinqToTwitterDemo
         {
             var spammer = twitterCtx.ReportSpam(null, null, "Greer_105");
             Console.WriteLine("Spammer \"{0}\" Zapped! He he :)", spammer.Name);
+
+            // after the first one, subsequent calls won't report spam to Twitter
+            // but hopefully you can see my enthusiasm for this API;
+            // besides, a couple extra examples might be helpful - Joe
 
             spammer = twitterCtx.ReportSpam("84705854", null, null);
             Console.WriteLine("Spammer \"{0}\" Zapped again! Ha Ha :)", spammer.Name);
@@ -1656,6 +1666,31 @@ namespace LinqToTwitterDemo
         }
 
         /// <summary>
+        /// Shows how to get statuses for logged-in user's friends, including retweets
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void HomeStatusQueryDemo(TwitterContext twitterCtx)
+        {
+            var friendTweets =
+                from tweet in twitterCtx.Status
+                where tweet.Type == StatusType.Home &&
+                      tweet.Page == 2
+                select tweet;
+
+            Console.WriteLine("\nTweets for " + twitterCtx.UserName + "\n");
+            foreach (var tweet in friendTweets)
+            {
+                Console.WriteLine(
+                    "Friend: " + tweet.User.Name +
+                    "\nRetweeted by: " + 
+                        (tweet.Retweet == null ? 
+                            "Original Tweet" :
+                            tweet.Retweet.RetweetingUser.Name) +
+                    "\nTweet: " + tweet.Text + "\n");
+            }
+        }
+
+        /// <summary>
         /// Shows how to query tweets menioning logged-in user
         /// </summary>
         /// <param name="twitterCtx">TwitterContext</param>
@@ -1668,8 +1703,92 @@ namespace LinqToTwitterDemo
 
             myMentions.ToList().ForEach(
                 mention => Console.WriteLine(
+                    "Name: {0}, Tweet[{1}]: {2}\n",
+                    mention.User.Name, mention.StatusID, mention.Text));
+        }
+
+        private static void RetweetDemo(TwitterContext twitterCtx)
+        {
+            var retweet = twitterCtx.Retweet("5069721745");
+
+            Console.WriteLine("Retweeted Tweet: ");
+            Console.WriteLine(
+                "\nUser: " + retweet.User.Name +
+                "\nTweet: " + retweet.Text +
+                "\nTweet ID: " + retweet.StatusID + "\n");
+        }
+
+        /// <summary>
+        /// Shows how to get retweets of a specified tweet
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void RetweetsQueryDemo(TwitterContext twitterCtx)
+        {
+            var friendTweets =
+                from tweet in twitterCtx.Status
+                where tweet.Type == StatusType.Retweets &&
+                      tweet.ID == "5069721745"
+                select tweet;
+
+            Console.WriteLine("\nRequested Tweets: \n");
+            foreach (var tweet in friendTweets)
+            {
+                Console.WriteLine(
+                    "User: " + tweet.User.Name +
+                    "\nTweet: " + tweet.Text +
+                    "\nTweet ID: " + tweet.StatusID + "\n");
+            }
+        }
+
+        /// <summary>
+        /// Shows how to query retweets by the logged-in user
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void RetweetedByMeStatusQueryDemo(TwitterContext twitterCtx)
+        {
+            var myRetweets =
+                from retweet in twitterCtx.Status
+                where retweet.Type == StatusType.RetweetedByMe
+                select retweet;
+
+            myRetweets.ToList().ForEach(
+                retweet => Console.WriteLine(
                     "Name: {0}, Tweet: {1}\n",
-                    mention.User.Name, mention.Text));
+                    retweet.User.Name, retweet.Text));
+        }
+
+        /// <summary>
+        /// Shows how to query retweets to the logged-in user
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void RetweetedToMeStatusQueryDemo(TwitterContext twitterCtx)
+        {
+            var myRetweets =
+                from retweet in twitterCtx.Status
+                where retweet.Type == StatusType.RetweetedToMe
+                select retweet;
+
+            myRetweets.ToList().ForEach(
+                retweet => Console.WriteLine(
+                    "Name: {0}, Tweet: {1}\n",
+                    retweet.User.Name, retweet.Text));
+        }
+
+        /// <summary>
+        /// Shows how to query retweets about the logged-in user
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void RetweetsOfMeStatusQueryDemo(TwitterContext twitterCtx)
+        {
+            var myRetweets =
+                from retweet in twitterCtx.Status
+                where retweet.Type == StatusType.RetweetsOfMe
+                select retweet;
+
+            myRetweets.ToList().ForEach(
+                retweet => Console.WriteLine(
+                    "Name: {0}, Tweet: {1}\n",
+                    retweet.User.Name, retweet.Text));
         }
 
         /// <summary>
@@ -1693,7 +1812,7 @@ namespace LinqToTwitterDemo
             foreach (var tweet in statusTweets)
             {
                 Console.WriteLine(
-                    "(" + tweet.ID + ")" +
+                    "(" + tweet.StatusID + ")" +
                     "[" + tweet.User.ID + "]" +
                     tweet.User.Name + ", " +
                     tweet.Text + ", " +
@@ -1718,7 +1837,7 @@ namespace LinqToTwitterDemo
             foreach (var tweet in statusTweets)
             {
                 Console.WriteLine(
-                    "(" + tweet.ID + ")" +
+                    "(" + tweet.StatusID + ")" +
                     "[" + tweet.User.ID + "]" +
                     tweet.User.Name + ", " +
                     tweet.Text + ", " +
@@ -1746,7 +1865,7 @@ namespace LinqToTwitterDemo
             var status = statusTweets.FirstOrDefault();
 
             Console.WriteLine(
-                "(" + status.ID + ")" +
+                "(" + status.StatusID + ")" +
                 "[" + status.User.ID + "]" +
                 status.User.Name + ", " +
                 status.Text + ", " +
@@ -1762,7 +1881,7 @@ namespace LinqToTwitterDemo
             var status = twitterCtx.DestroyStatus("1539399086");
 
             Console.WriteLine(
-                "(" + status.ID + ")" +
+                "(" + status.StatusID + ")" +
                 "[" + status.User.ID + "]" +
                 status.User.Name + ", " +
                 status.Text + ", " +
@@ -1778,7 +1897,7 @@ namespace LinqToTwitterDemo
             var tweet = twitterCtx.UpdateStatus("@LinqToTweeter Testing LINQ to Twitter with reply on " + DateTime.Now.ToString() + " #linqtotwitter", "961760788");
 
             Console.WriteLine(
-                "(" + tweet.ID + ")" +
+                "(" + tweet.StatusID + ")" +
                 "[" + tweet.User.ID + "]" +
                 tweet.User.Name + ", " +
                 tweet.Text + ", " +
@@ -1800,7 +1919,7 @@ namespace LinqToTwitterDemo
 
             Console.WriteLine(
                 "Status returned: " +
-                "(" + tweet.ID + ")" +
+                "(" + tweet.StatusID + ")" +
                 "[" + tweet.User.ID + "]" +
                 tweet.User.Name + ", " +
                 tweet.Text + ", " +

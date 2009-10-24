@@ -109,11 +109,23 @@ namespace LinqToTwitter
                 case StatusType.Friends:
                     url = BuildFriendUrl(parameters);
                     break;
+                case StatusType.Home:
+                    url = BuildHomeUrl(parameters);
+                    break;
                 case StatusType.Mentions:
                     url = BuildMentionsUrl(parameters);
                     break;
                 case StatusType.Public:
                     url = BuildPublicUrl();
+                    break;
+                case StatusType.RetweetedByMe:
+                    url = BuildRetweetedByMeUrl(parameters);
+                    break;
+                case StatusType.RetweetedToMe:
+                    url = BuildRetweetedToMeUrl(parameters);
+                    break;
+                case StatusType.RetweetsOfMe:
+                    url = BuildRetweetsOfMeUrl(parameters);
                     break;
                 case StatusType.Show:
                     url = BuildShowUrl(parameters);
@@ -144,6 +156,31 @@ namespace LinqToTwitter
             var url = BaseUrl + "statuses/show.xml";
 
             url = BuildUrlHelper.TransformIDUrl(parameters, url);
+
+            return url;
+        }
+
+        /// <summary>
+        /// builds an url for showing status of user
+        /// </summary>
+        /// <param name="parameters">parameter list</param>
+        /// <returns>base url + show segment</returns>
+        private string BuildRetweetsUrl(Dictionary<string, string> parameters)
+        {
+            if (parameters.ContainsKey("ID"))
+            {
+                ID = parameters["ID"];
+            }
+
+            var url = BaseUrl + "statuses/show.xml";
+
+            url = BuildUrlHelper.TransformIDUrl(parameters, url);
+
+            if (parameters.ContainsKey("Count"))
+            {
+                Count = int.Parse(parameters["Count"]);
+                url += "?count=" + Count;
+            }
 
             return url;
         }
@@ -238,6 +275,20 @@ namespace LinqToTwitter
         }
 
         /// <summary>
+        /// construct a base home url
+        /// </summary>
+        /// <param name="url">base status url</param>
+        /// <returns>base url + home segment</returns>
+        private string BuildHomeUrl(Dictionary<string, string> parameters)
+        {
+            var url = BaseUrl + "statuses/home_timeline.xml";
+
+            url = BuildFriendRepliesAndUrlParameters(parameters, url);
+
+            return url;
+        }
+
+        /// <summary>
         /// construct a base mentions url
         /// </summary>
         /// <param name="url">base status url</param>
@@ -259,6 +310,48 @@ namespace LinqToTwitter
         private string BuildPublicUrl()
         {
             var url = BaseUrl + "statuses/public_timeline.xml";
+            return url;
+        }
+
+        /// <summary>
+        /// construct a base mentions url
+        /// </summary>
+        /// <param name="url">base status url</param>
+        /// <returns>base url + friend segment</returns>
+        private string BuildRetweetedByMeUrl(Dictionary<string, string> parameters)
+        {
+            var url = BaseUrl + "statuses/retweeted_by_me.xml";
+
+            url = BuildFriendRepliesAndUrlParameters(parameters, url);
+
+            return url;
+        }
+
+        /// <summary>
+        /// construct a base mentions url
+        /// </summary>
+        /// <param name="url">base status url</param>
+        /// <returns>base url + friend segment</returns>
+        private string BuildRetweetedToMeUrl(Dictionary<string, string> parameters)
+        {
+            var url = BaseUrl + "statuses/retweeted_to_me.xml";
+
+            url = BuildFriendRepliesAndUrlParameters(parameters, url);
+
+            return url;
+        }
+
+        /// <summary>
+        /// construct a base mentions url
+        /// </summary>
+        /// <param name="url">base status url</param>
+        /// <returns>base url + friend segment</returns>
+        private string BuildRetweetsOfMeUrl(Dictionary<string, string> parameters)
+        {
+            var url = BaseUrl + "statuses/retweets_of_me.xml";
+
+            url = BuildFriendRepliesAndUrlParameters(parameters, url);
+
             return url;
         }
 
@@ -302,6 +395,8 @@ namespace LinqToTwitter
                 responseItems.Add(twitterResponse);
             }
 
+            var usr = new User();
+
             var statusList =
                 from status in responseItems
                 let dateParts =
@@ -312,9 +407,24 @@ namespace LinqToTwitter
                         dateParts[1],
                         dateParts[2],
                         dateParts[5],
-                        dateParts[3]), 
+                        dateParts[3]),
                         CultureInfo.InvariantCulture)
                 let user = status.Element("user")
+                let retweet = status.Element("retweet_details")
+                let rtDateParts =
+                    retweet == null ? 
+                        null :
+                        retweet.Element("retweeted_at").Value.Split(' ')
+                let retweetedAtDate =
+                    retweet == null ?
+                        DateTime.MinValue :
+                        DateTime.Parse(
+                            string.Format("{0} {1} {2} {3} GMT",
+                            rtDateParts[1],
+                            rtDateParts[2],
+                            rtDateParts[5],
+                            rtDateParts[3]),
+                            CultureInfo.InvariantCulture)
                 select
                    new Status
                    {
@@ -338,11 +448,20 @@ namespace LinqToTwitter
                        Source = status.Element("source").Value,
                        Text = status.Element("text").Value,
                        Truncated = bool.Parse(status.Element("truncated").Value),
-                       InReplyToScreenName = 
-                        status.Element("in_reply_to_screen_name") == null ?
-                            string.Empty :
-                            status.Element("in_reply_to_screen_name").Value,
-                       User = new User().CreateUser(user)
+                       InReplyToScreenName =
+                            status.Element("in_reply_to_screen_name") == null ?
+                                string.Empty :
+                                status.Element("in_reply_to_screen_name").Value,
+                       User = usr.CreateUser(user),
+                       Retweet = 
+                           retweet == null ? 
+                               null :
+                               new Retweet
+                               {
+                                   ID = retweet.Element("retweet_id").Value,
+                                   RetweetedAt = retweetedAtDate,
+                                   RetweetingUser = usr.CreateUser(retweet.Element("Retweeting_user"))
+                               }
                    };
 
             return statusList.ToList();

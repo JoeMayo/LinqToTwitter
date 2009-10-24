@@ -61,6 +61,65 @@ namespace LinqToTwitter
         ///     - Count, max number of tweets to return
         ///     - Page, which page to return
         /// </summary>
-        Mentions
+        Mentions,
+
+        /// <summary>
+        /// Same as Friend, but includes retweets too
+        /// 
+        /// Available Options:
+        /// 
+        ///     - Since, get tweets since this date
+        ///     - SinceID, get tweets since this ID
+        ///     - Count, number of tweets to retrieve
+        ///     - Page, which page to return
+        /// </summary>
+        Home,
+
+        /// <summary>
+        /// gets retweets of specified tweet
+        /// 
+        /// Available Options:
+        /// 
+        ///     - ID, tweet to get retweets for
+        ///     - Count, number of tweets to retrieve
+        /// </summary>
+        Retweets,
+
+        /// <summary>
+        /// lists the 20 most recent re-tweets by the logged-in user
+        /// 
+        /// Available Options:
+        /// 
+        ///     - SinceID, get tweets since this ID
+        ///     - MaxID, gets tweets less than this ID
+        ///     - Count, max number of tweets to return
+        ///     - Page, which page to return
+        /// </summary>
+        RetweetedByMe,
+
+        /// <summary>
+        /// lists the 20 most recent re-tweets to the logged-in user
+        /// 
+        /// Available Options:
+        /// 
+        ///     - SinceID, get tweets since this ID
+        ///     - MaxID, gets tweets less than this ID
+        ///     - Count, max number of tweets to return
+        ///     - Page, which page to return
+        /// </summary>
+        RetweetedToMe,
+
+        /// <summary>
+        /// lists the 20 most recent re-tweets about the logged-in user
+        /// 
+        /// Available Options:
+        /// 
+        ///     - SinceID, get tweets since this ID
+        ///     - MaxID, gets tweets less than this ID
+        ///     - Count, max number of tweets to return
+        ///     - Page, which page to return
+        /// </summary>
+        RetweetsOfMe,
+
     }
 }
