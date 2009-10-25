@@ -8,6 +8,7 @@ namespace LinqToTwitter
     /// <summary>
     /// Retweet Information
     /// </summary>
+    [Serializable]
     public class Retweet
     {
         /// <summary>

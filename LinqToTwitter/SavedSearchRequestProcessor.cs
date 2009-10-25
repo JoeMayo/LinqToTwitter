@@ -64,11 +64,9 @@ namespace LinqToTwitter
                 return url;
             }
 
-            SavedSearchType savedSearchType = RequestProcessorHelper.ParseQueryEnumType<SavedSearchType>(parameters["Type"]);
+            Type = RequestProcessorHelper.ParseQueryEnumType<SavedSearchType>(parameters["Type"]);
 
-            Type = savedSearchType;
-
-            switch (savedSearchType)
+            switch (Type)
             {
                 case SavedSearchType.Searches:
                     url = BuildSearchesUrl();

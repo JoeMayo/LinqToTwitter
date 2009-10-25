@@ -13,6 +13,7 @@ namespace LinqToTwitter
     /// and then use one of these response cursors to move
     /// backwards or forwards in paged results.
     /// </remarks>
+    [Serializable]
     public class Cursors
     {
         /// <summary>

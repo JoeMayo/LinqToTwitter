@@ -95,11 +95,9 @@ namespace LinqToTwitter
                 return url;
             }
 
-            UserType userType = RequestProcessorHelper.ParseQueryEnumType<UserType>(parameters["Type"]);
+            Type = RequestProcessorHelper.ParseQueryEnumType<UserType>(parameters["Type"]);
 
-            Type = userType;
-
-            switch (userType)
+            switch (Type)
             {
                 case UserType.Followers:
                     url = BuildFollowersUrl(parameters);

@@ -83,11 +83,9 @@ namespace LinqToTwitter
                 return url;
             }
 
-            DirectMessageType dirMsgType = RequestProcessorHelper.ParseQueryEnumType<DirectMessageType>(parameters["Type"]);
+            Type = RequestProcessorHelper.ParseQueryEnumType<DirectMessageType>(parameters["Type"]);
 
-            Type = dirMsgType;
-
-            switch (dirMsgType)
+            switch (Type)
             {
                 case DirectMessageType.SentBy:
                     url = BuildSentByUrl(parameters);

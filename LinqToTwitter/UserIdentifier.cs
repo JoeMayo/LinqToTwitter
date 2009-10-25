@@ -5,6 +5,7 @@ using System.Text;
 
 namespace LinqToTwitter
 {
+    [Serializable]
     public class UserIdentifier
     {
         /// <summary>

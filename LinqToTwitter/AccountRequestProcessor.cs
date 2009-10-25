@@ -53,11 +53,9 @@ namespace LinqToTwitter
                 return url;
             }
 
-            AccountType acctType = RequestProcessorHelper.ParseQueryEnumType<AccountType>(parameters["Type"]);
+            Type = RequestProcessorHelper.ParseQueryEnumType<AccountType>(parameters["Type"]);
 
-            Type = acctType;
-
-            switch (acctType)
+            switch (Type)
             {
                 case AccountType.VerifyCredentials:
                     url = BaseUrl + "account/verify_credentials.xml";

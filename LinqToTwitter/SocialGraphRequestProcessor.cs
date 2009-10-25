@@ -92,9 +92,9 @@ namespace LinqToTwitter
                 return url;
             }
 
-            SocialGraphType socGraphType = RequestProcessorHelper.ParseQueryEnumType<SocialGraphType>(parameters["Type"]);
+            Type = RequestProcessorHelper.ParseQueryEnumType<SocialGraphType>(parameters["Type"]);
 
-            switch (socGraphType)
+            switch (Type)
             {
                 case SocialGraphType.Followers:
                     url = BuildSocialGraphFollowersUrl(parameters);
@@ -115,8 +115,6 @@ namespace LinqToTwitter
         /// <returns>base url + show segment</returns>
         private string BuildSocialGraphFriendsUrl(Dictionary<string, string> parameters)
         {
-            Type = SocialGraphType.Friends;
-
             var url = BaseUrl + "friends/ids.xml";
 
             url = BuildSocialGraphUrlParameters(parameters, url);
@@ -131,8 +129,6 @@ namespace LinqToTwitter
         /// <returns>base url + show segment</returns>
         private string BuildSocialGraphFollowersUrl(Dictionary<string, string> parameters)
         {
-            Type = SocialGraphType.Followers;
-
             var url = BaseUrl + "followers/ids.xml";
 
             url = BuildSocialGraphUrlParameters(parameters, url);

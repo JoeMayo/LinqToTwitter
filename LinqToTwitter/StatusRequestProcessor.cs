@@ -100,11 +100,9 @@ namespace LinqToTwitter
                 return url;
             }
 
-            StatusType statusType = RequestProcessorHelper.ParseQueryEnumType<StatusType>(parameters["Type"]);
+            Type = RequestProcessorHelper.ParseQueryEnumType<StatusType>(parameters["Type"]);
 
-            Type = statusType;
-
-            switch (statusType)
+            switch (Type)
             {
                 case StatusType.Friends:
                     url = BuildFriendUrl(parameters);

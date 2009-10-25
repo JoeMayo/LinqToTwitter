@@ -68,11 +68,9 @@ namespace LinqToTwitter
                 return url;
             }
 
-            FriendshipType friendType = RequestProcessorHelper.ParseQueryEnumType<FriendshipType>(parameters["Type"]);
+            Type = RequestProcessorHelper.ParseQueryEnumType<FriendshipType>(parameters["Type"]);
 
-            Type = friendType;
-
-            switch (friendType)
+            switch (Type)
             {
                 case FriendshipType.Exists:
                     url = BuildFriendshipExistsUrl(parameters);

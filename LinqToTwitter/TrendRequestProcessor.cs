@@ -67,11 +67,9 @@ namespace LinqToTwitter
                 return url;
             }
 
-            TrendType trendType = RequestProcessorHelper.ParseQueryEnumType<TrendType>(parameters["Type"]);
+            Type = RequestProcessorHelper.ParseQueryEnumType<TrendType>(parameters["Type"]);
 
-            Type = trendType;
-
-            switch (trendType)
+            switch (Type)
             {
                 case TrendType.Current:
                     url = BuildCurrentTrendsUrl(parameters);

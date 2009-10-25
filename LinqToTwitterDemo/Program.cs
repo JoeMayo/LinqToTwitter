@@ -68,7 +68,7 @@ namespace LinqToTwitterDemo
                 // status tweets
                 //
 
-                //UpdateStatusDemo(twitterCtx);
+                UpdateStatusDemo(twitterCtx);
                 //SingleStatusQueryDemo(twitterCtx);
                 //UpdateStatusWithReplyDemo(twitterCtx);
                 //DestroyStatusDemo(twitterCtx);
@@ -80,7 +80,7 @@ namespace LinqToTwitterDemo
                 //MentionsStatusQueryDemo(twitterCtx);
                 //FriendStatusQueryDemo(twitterCtx);
                 //HomeStatusQueryDemo(twitterCtx);
-                RetweetDemo(twitterCtx);
+                //RetweetDemo(twitterCtx);
                 //RetweetsQueryDemo(twitterCtx);
                 //RetweetedByMeStatusQueryDemo(twitterCtx);
                 //RetweetedToMeStatusQueryDemo(twitterCtx);
