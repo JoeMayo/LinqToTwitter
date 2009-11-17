@@ -116,6 +116,9 @@ namespace LinqToTwitter
                 case StatusType.Public:
                     url = BuildPublicUrl();
                     break;
+                case StatusType.Retweets:
+                    url = BuildRetweetsUrl(parameters);
+                    break;
                 case StatusType.RetweetedByMe:
                     url = BuildRetweetedByMeUrl(parameters);
                     break;
@@ -154,31 +157,6 @@ namespace LinqToTwitter
             var url = BaseUrl + "statuses/show.xml";
 
             url = BuildUrlHelper.TransformIDUrl(parameters, url);
-
-            return url;
-        }
-
-        /// <summary>
-        /// builds an url for showing status of user
-        /// </summary>
-        /// <param name="parameters">parameter list</param>
-        /// <returns>base url + show segment</returns>
-        private string BuildRetweetsUrl(Dictionary<string, string> parameters)
-        {
-            if (parameters.ContainsKey("ID"))
-            {
-                ID = parameters["ID"];
-            }
-
-            var url = BaseUrl + "statuses/show.xml";
-
-            url = BuildUrlHelper.TransformIDUrl(parameters, url);
-
-            if (parameters.ContainsKey("Count"))
-            {
-                Count = int.Parse(parameters["Count"]);
-                url += "?count=" + Count;
-            }
 
             return url;
         }
@@ -312,10 +290,35 @@ namespace LinqToTwitter
         }
 
         /// <summary>
+        /// construct a url that will request all the retweets of a given tweet
+        /// </summary>
+        /// <param name="parameters">input parameters</param>
+        /// <returns>base url + retweet segment</returns>
+        private string BuildRetweetsUrl(Dictionary<string, string> parameters)
+        {
+            var url = BaseUrl + "statuses/retweets.xml";
+
+            if (parameters.ContainsKey("ID"))
+            {
+                ID = parameters["ID"];
+            }
+
+            url = BuildUrlHelper.TransformIDUrl(parameters, url);
+
+            if (parameters.ContainsKey("Count"))
+            {
+                Count = int.Parse(parameters["Count"]);
+                url += "?count=" + Count;
+            }
+
+            return url;
+        }
+
+        /// <summary>
         /// construct a base mentions url
         /// </summary>
-        /// <param name="url">base status url</param>
-        /// <returns>base url + friend segment</returns>
+        /// <param name="parameters">input parameters</param>
+        /// <returns>base url + retweeted by me segment</returns>
         private string BuildRetweetedByMeUrl(Dictionary<string, string> parameters)
         {
             var url = BaseUrl + "statuses/retweeted_by_me.xml";
@@ -328,8 +331,8 @@ namespace LinqToTwitter
         /// <summary>
         /// construct a base mentions url
         /// </summary>
-        /// <param name="url">base status url</param>
-        /// <returns>base url + friend segment</returns>
+        /// <param name="parameters">input parameters</param>
+        /// <returns>base url + retweeted to me segment</returns>
         private string BuildRetweetedToMeUrl(Dictionary<string, string> parameters)
         {
             var url = BaseUrl + "statuses/retweeted_to_me.xml";
@@ -342,8 +345,8 @@ namespace LinqToTwitter
         /// <summary>
         /// construct a base mentions url
         /// </summary>
-        /// <param name="url">base status url</param>
-        /// <returns>base url + friend segment</returns>
+        /// <param name="parameters">input parameters</param>
+        /// <returns>base url + retweets of me segment</returns>
         private string BuildRetweetsOfMeUrl(Dictionary<string, string> parameters)
         {
             var url = BaseUrl + "statuses/retweets_of_me.xml";

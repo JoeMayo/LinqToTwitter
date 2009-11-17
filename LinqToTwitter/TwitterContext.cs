@@ -485,8 +485,11 @@ namespace LinqToTwitter
             // process request through Twitter
             var queryableList = TwitterExecutor.QueryTwitter(url, reqProc);
 
-            var postProcessingResult = 
-                ExecuteEnumerable(
+            // perform post-processing on results:
+            //  any processing that isn't handled by Twitter
+            //  is handled here via a LINQ to Objects query
+            var postProcessingResult =
+                PostProcessTwitterResults(
                     queryableList,
                     expression as MethodCallExpression, 
                     isEnumerable);
@@ -503,21 +506,39 @@ namespace LinqToTwitter
             }
         }
 
-        private IEnumerable ExecuteEnumerable(IList queryableList, MethodCallExpression expression, bool isEnumerable)
+        /// <summary>
+        /// Converts weak typed collection to strong typed for post-processing
+        /// </summary>
+        /// <param name="queryableList">Weak typed collection</param>
+        /// <param name="expression">Query expression tree</param>
+        /// <param name="isEnumerable">Is single value or IEnumerable</param>
+        /// <returns>Results from Twitter, further processed via LINQ to Objects on operators that don't convert to Twitter</returns>
+        private IEnumerable PostProcessTwitterResults(IList queryableList, MethodCallExpression expression, bool isEnumerable)
         {
+            // convert captured variables to values
             var evalExpression = (MethodCallExpression)Evaluator.PartialEval(expression);
+
+            // generic parameter type for method call
             Type resultType = TypeSystem.GetElementType(expression.Arguments[0].Type);
-            var methodInfo = typeof(PostProcessor).GetMethod("ExecuteEnumerable", BindingFlags.NonPublic | BindingFlags.Instance);
             Type[] genericArguments = new Type[] { resultType };
+
+            // generic method instance via reflection
+            var methodInfo = typeof(PostProcessor).GetMethod("ProcessResults", BindingFlags.NonPublic | BindingFlags.Instance);
             MethodInfo genericMethodInfo = methodInfo.MakeGenericMethod(genericArguments);
 
+            // need a generic list of the type from the expression tree
             var list = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(resultType));
 
+            // grab the values returned from the call
+            // to Twitter in a form required of the 
+            // PostProcessor.ProcessResults method
             foreach (var item in queryableList)
             {
                 list.Add(item);
             }
 
+            // use reflection to execute the generic method with the proper arguments
+            //  Note: look at ProcessResults method in PostProcessor and you'll see what is being executed
             return (IEnumerable)genericMethodInfo.Invoke(new PostProcessor(), new object[] { list, evalExpression, isEnumerable });
         }
 

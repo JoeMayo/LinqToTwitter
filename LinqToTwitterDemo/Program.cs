@@ -68,7 +68,7 @@ namespace LinqToTwitterDemo
                 // status tweets
                 //
 
-                UpdateStatusDemo(twitterCtx);
+                //UpdateStatusDemo(twitterCtx);
                 //SingleStatusQueryDemo(twitterCtx);
                 //UpdateStatusWithReplyDemo(twitterCtx);
                 //DestroyStatusDemo(twitterCtx);
@@ -1580,43 +1580,43 @@ namespace LinqToTwitterDemo
             // Please use cursors instead
             //
 
-            //var followerList = new List<User>();
+            var followerList = new List<User>();
 
-            //List<User> followers = new List<User>();
-            //int pageNumber = 1;
+            List<User> followers = new List<User>();
+            int pageNumber = 1;
 
-            //do
-            //{
-            //    followers.Clear();
+            do
+            {
+                followers.Clear();
 
-            //    followers =
-            //        (from follower in twitterCtx.User
-            //         where follower.Type == UserType.Followers &&
-            //               follower.ScreenName == "JoeMayo" &&
-            //               follower.Page == pageNumber
-            //         select follower)
-            //         .ToList();
+                followers =
+                    (from follower in twitterCtx.User
+                     where follower.Type == UserType.Followers &&
+                           follower.ScreenName == "JoeMayo" &&
+                           follower.Page == pageNumber
+                     select follower)
+                     .ToList();
 
-            //    pageNumber++;
-            //    followerList.AddRange(followers);
-            //}
-            //while (followers.Count > 0);
+                pageNumber++;
+                followerList.AddRange(followers);
+            }
+            while (followers.Count > 0);
 
-            //Console.WriteLine("\nFollowers: \n");
+            Console.WriteLine("\nFollowers: \n");
 
-            //foreach (var user in followerList)
-            //{
-            //    var status =
-            //        user.Protected || user.Status == null ?
-            //            "Status Unavailable" :
-            //            user.Status.Text;
+            foreach (var user in followerList)
+            {
+                var status =
+                    user.Protected || user.Status == null ?
+                        "Status Unavailable" :
+                        user.Status.Text;
 
-            //    Console.WriteLine(
-            //            "Name: {0}, Last Tweet: {1}\n",
-            //            user.Name, status);
-            //}
+                Console.WriteLine(
+                        "Name: {0}, Last Tweet: {1}\n",
+                        user.Name, status);
+            }
 
-            //Console.WriteLine("\nFollower Count: {0}\n", followerList.Count);
+            Console.WriteLine("\nFollower Count: {0}\n", followerList.Count);
         }
 
         #endregion
@@ -1709,7 +1709,7 @@ namespace LinqToTwitterDemo
 
         private static void RetweetDemo(TwitterContext twitterCtx)
         {
-            var retweet = twitterCtx.Retweet("5069721745");
+            var retweet = twitterCtx.Retweet("5769361742");
 
             Console.WriteLine("Retweeted Tweet: ");
             Console.WriteLine(
@@ -1727,10 +1727,10 @@ namespace LinqToTwitterDemo
             var friendTweets =
                 from tweet in twitterCtx.Status
                 where tweet.Type == StatusType.Retweets &&
-                      tweet.ID == "5069721745"
+                      tweet.ID == "5769361742"
                 select tweet;
 
-            Console.WriteLine("\nRequested Tweets: \n");
+            Console.WriteLine("\nReTweets: \n");
             foreach (var tweet in friendTweets)
             {
                 Console.WriteLine(

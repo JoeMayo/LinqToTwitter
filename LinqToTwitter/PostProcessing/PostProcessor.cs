@@ -16,13 +16,13 @@ namespace LinqToTwitter.PostProcessing
         /// <param name="list">List of objects to process</param>
         /// <param name="expr">Expression Tree with Lambda to process</param>
         /// <returns>List of processed items</returns>
-        internal IEnumerable ExecuteEnumerable<T>(IEnumerable<T> list, MethodCallExpression expr, bool isEnumerable)
+        internal IEnumerable ProcessResults<T>(IEnumerable<T> list, MethodCallExpression expr, bool isEnumerable)
         {
             IEnumerable<T> nextResult = null;
 
             if (expr.Arguments[0].NodeType == ExpressionType.Call)
             {
-                nextResult = (IEnumerable<T>)ExecuteEnumerable<T>(list, expr.Arguments[0] as MethodCallExpression, isEnumerable);
+                nextResult = (IEnumerable<T>)ProcessResults<T>(list, expr.Arguments[0] as MethodCallExpression, isEnumerable);
             }
             else
             {
