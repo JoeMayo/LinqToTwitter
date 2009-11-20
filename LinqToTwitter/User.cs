@@ -190,16 +190,16 @@ namespace LinqToTwitter
                             Favorited = tempStatusFavorited,
                             InReplyToScreenName = status.Element("in_reply_to_screen_name").Value
                         },
-                CursorMovement = new Cursors
+                CursorMovement = new Cursors()
                 {
                     Next =
-                        user.Element("next_cursor") == null ?
-                            string.Empty :
-                            user.Element("next_cursor").Value,
+                            (user.Parent == null || user.Parent.Parent == null || user.Parent.Parent.Element("next_cursor") == null) ?
+                                string.Empty :
+                                user.Parent.Parent.Element("next_cursor").Value,
                     Previous =
-                        user.Element("previous_cursor") == null ?
-                            string.Empty :
-                            user.Element("previous_cursor").Value
+                            (user.Parent == null || user.Parent.Parent == null || user.Parent.Parent.Element("previous_cursor") == null) ?
+                                string.Empty :
+                                user.Parent.Parent.Element("previous_cursor").Value
                 }
             };
 
