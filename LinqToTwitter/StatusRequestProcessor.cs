@@ -356,30 +356,6 @@ namespace LinqToTwitter
             return url;
         }
 
-//<statuses type="array">
-//  <status>
-//    <created_at>Wed Oct 15 19:41:49 +0000 2008</created_at>
-//    <id>961102353</id>
-//    <text>My latest blog post: Where in the world is Blake Stone? http://tinyurl.com/4bd9hv</text>
-//    <source>web</source>
-//    <truncated>false</truncated>
-//    <in_reply_to_status_id></in_reply_to_status_id>
-//    <in_reply_to_user_id></in_reply_to_user_id>
-//    <favorited>false</favorited>
-//    <in_reply_to_screen_name></in_reply_to_screen_name>
-//    <user>
-//      <id>15411837</id>
-//      <name>Joe Mayo</name>
-//      <screen_name>JoeMayo</screen_name>
-//      <location>Denver, CO</location>
-//      <description>Author/entrepreneur, specializing in custom .NET software development</description>
-//      <profile_image_url>http://s3.amazonaws.com/twitter_production/profile_images/62569644/JoeTwitter_normal.jpg</profile_image_url>
-//      <url>http://www.csharp-station.com</url>
-//      <protected>false</protected>
-//      <followers_count>25</followers_count>
-//    </user>
-//  </status>        
-
         /// <summary>
         /// transforms XML into IQueryable of Status
         /// </summary>
@@ -403,19 +379,21 @@ namespace LinqToTwitter
                 let dateParts =
                     status.Element("created_at").Value.Split(' ')
                 let createdAtDate =
+                    dateParts.Count() > 1 ?
                     DateTime.Parse(
                         string.Format("{0} {1} {2} {3} GMT",
                         dateParts[1],
                         dateParts[2],
                         dateParts[5],
                         dateParts[3]),
-                        CultureInfo.InvariantCulture)
+                        CultureInfo.InvariantCulture) :
+                    DateTime.MinValue
                 let user = status.Element("user")
-                let retweet = status.Element("retweet_details")
+                let retweet = status.Element("retweeted_status")
                 let rtDateParts =
                     retweet == null ? 
                         null :
-                        retweet.Element("retweeted_at").Value.Split(' ')
+                        retweet.Element("created_at").Value.Split(' ')
                 let retweetedAtDate =
                     retweet == null ?
                         DateTime.MinValue :
@@ -459,9 +437,24 @@ namespace LinqToTwitter
                                null :
                                new Retweet
                                {
-                                   ID = retweet.Element("retweet_id").Value,
-                                   RetweetedAt = retweetedAtDate,
-                                   RetweetingUser = usr.CreateUser(retweet.Element("Retweeting_user"))
+                                    ID = retweet.Element("id").Value,
+                                    CreatedAt = retweetedAtDate,
+                                    Favorited =
+                                        bool.Parse(
+                                            string.IsNullOrEmpty(retweet.Element("favorited").Value) ?
+                                            "true" :
+                                            retweet.Element("favorited").Value),
+                                    InReplyToScreenName = retweet.Element("in_reply_to_screen_name").Value,
+                                    InReplyToStatusID = retweet.Element("in_reply_to_status_id").Value,
+                                    InReplyToUserID = retweet.Element("in_reply_to_user_id").Value,
+                                    Source = retweet.Element("source").Value,
+                                    Text = retweet.Element("text").Value,
+                                    Truncated =
+                                        bool.Parse(
+                                            string.IsNullOrEmpty(retweet.Element("truncated").Value) ?
+                                            "true" :
+                                            retweet.Element("truncated").Value),
+                                    RetweetingUser = usr.CreateUser(retweet.Element("user"))
                                }
                    };
 

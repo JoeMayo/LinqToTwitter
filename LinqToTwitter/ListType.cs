@@ -8,24 +8,29 @@ namespace LinqToTwitter
     public enum ListType
     {
         /// <summary>
-        /// Lists your lists
+        /// Lists for specified user
         /// </summary>
-        Yours,
+        Lists,
 
         /// <summary>
-        /// List the lists the specified user has been added to
+        /// Show specified list
         /// </summary>
-        UserAdded,
+        List,
 
         /// <summary>
         /// Show tweet timeline for members of the specified list
         /// </summary>
-        Tweets,
+        Statuses,
 
         /// <summary>
-        /// Show a specific list you can use the new resource
+        /// Show lists that specified user is a member of
         /// </summary>
-        Specific,
+        Memberships,
+
+        /// <summary>
+        /// Shows the lists a user is subscribed to
+        /// </summary>
+        Subscriptions,
 
         /// <summary>
         /// Members of the specified list
@@ -36,11 +41,6 @@ namespace LinqToTwitter
         /// Check if a user is a member of the specified list
         /// </summary>
         IsMember,
-
-        /// <summary>
-        /// Subscribe the authenticated user to the specified list
-        /// </summary>
-        Subscribe,
 
         /// <summary>
         /// List the users subscribed to the specified list

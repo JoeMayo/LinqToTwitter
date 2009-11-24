@@ -68,7 +68,7 @@ namespace LinqToTwitterDemo
                 // status tweets
                 //
 
-                //UpdateStatusDemo(twitterCtx);
+                UpdateStatusDemo(twitterCtx);
                 //SingleStatusQueryDemo(twitterCtx);
                 //UpdateStatusWithReplyDemo(twitterCtx);
                 //DestroyStatusDemo(twitterCtx);
@@ -1713,9 +1713,9 @@ namespace LinqToTwitterDemo
 
             Console.WriteLine("Retweeted Tweet: ");
             Console.WriteLine(
-                "\nUser: " + retweet.User.Name +
-                "\nTweet: " + retweet.Text +
-                "\nTweet ID: " + retweet.StatusID + "\n");
+                "\nUser: " + retweet.Retweet.RetweetingUser.Name +
+                "\nTweet: " + retweet.Retweet.Text +
+                "\nTweet ID: " + retweet.Retweet.ID + "\n");
         }
 
         /// <summary>
@@ -1734,9 +1734,9 @@ namespace LinqToTwitterDemo
             foreach (var tweet in friendTweets)
             {
                 Console.WriteLine(
-                    "User: " + tweet.User.Name +
-                    "\nTweet: " + tweet.Text +
-                    "\nTweet ID: " + tweet.StatusID + "\n");
+                    "\nUser: " + tweet.Retweet.RetweetingUser.Name +
+                    "\nTweet: " + tweet.Retweet.Text +
+                    "\nTweet ID: " + tweet.Retweet.ID + "\n");
             }
         }
 
@@ -1754,7 +1754,7 @@ namespace LinqToTwitterDemo
             myRetweets.ToList().ForEach(
                 retweet => Console.WriteLine(
                     "Name: {0}, Tweet: {1}\n",
-                    retweet.User.Name, retweet.Text));
+                    retweet.Retweet.RetweetingUser.Name, retweet.Retweet.Text));
         }
 
         /// <summary>
@@ -1771,7 +1771,7 @@ namespace LinqToTwitterDemo
             myRetweets.ToList().ForEach(
                 retweet => Console.WriteLine(
                     "Name: {0}, Tweet: {1}\n",
-                    retweet.User.Name, retweet.Text));
+                    retweet.Retweet.RetweetingUser.Name, retweet.Retweet.Text));
         }
 
         /// <summary>
