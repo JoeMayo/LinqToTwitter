@@ -68,7 +68,7 @@ namespace LinqToTwitterDemo
                 // status tweets
                 //
 
-                UpdateStatusDemo(twitterCtx);
+                //UpdateStatusDemo(twitterCtx);
                 //SingleStatusQueryDemo(twitterCtx);
                 //UpdateStatusWithReplyDemo(twitterCtx);
                 //DestroyStatusDemo(twitterCtx);
@@ -178,7 +178,9 @@ namespace LinqToTwitterDemo
                 //UpdateAccountColors(twitterCtx);
                 //UpdateAccountImage(twitterCtx);
                 //UpdateAccountBackgroundImage(twitterCtx);
+                //UpdateAccountBackgroundImageBytes(twitterCtx);
                 //UpdateAccountBackgroundImageAndTileDemo(twitterCtx);
+                //UpdateAccountBackgroundImageWithProgressUpdates(twitterCtx);
                 //UpdateAccountInfoDemo(twitterCtx);
 
                 //
@@ -208,6 +210,7 @@ namespace LinqToTwitterDemo
                 //HandleOAuthFilePostDemo(twitterCtx);
                 //HandleOAuthReadOnlyQueryDemo(twitterCtx);
                 //HandleOAuthSideEffectReadOnlyDemo(twitterCtx);
+                HandleOAuthUpdateAccountBackgroundImageWithProgressUpdatesDemo(twitterCtx);
                 //HandleOAuthRequestResponseDetailsDemo(twitterCtx);
                 //OAuthForceLoginDemo(twitterCtx);
 
@@ -453,6 +456,26 @@ namespace LinqToTwitterDemo
                     "Friend: {0}\nTweet: {1}\n",
                     status.User.Name,
                     status.Text);
+            }
+        }
+
+        /// <summary>
+        /// Shows how to update the background image with OAuth
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void HandleOAuthUpdateAccountBackgroundImageWithProgressUpdatesDemo(TwitterContext twitterCtx)
+        {
+            if (twitterCtx.AuthorizedClient.IsAuthorized)
+            {
+                twitterCtx.UploadProgressChanged +=
+                        (sender, e) =>
+                        {
+                            Console.WriteLine("Progress: {0}%", e.PercentComplete);
+                        };
+                byte[] fileBytes = Utilities.GetFileBytes(@"C:\Users\jmayo\Documents\linq2twitter\linq2twitter\200xColor_2.png");
+                var user = twitterCtx.UpdateAccountBackgroundImage(fileBytes, "200xColor_2.png", "png", false);
+
+                Console.WriteLine("User Image: " + user.ProfileBackgroundImageUrl); 
             }
         }
 
@@ -718,12 +741,42 @@ namespace LinqToTwitterDemo
         }
 
         /// <summary>
+        /// Shows how to update the background image in an account
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void UpdateAccountBackgroundImageBytes(TwitterContext twitterCtx)
+        {
+            byte[] fileBytes = Utilities.GetFileBytes(@"C:\Users\jmayo\Documents\linq2twitter\linq2twitter\200xColor_2.png");
+            var user = twitterCtx.UpdateAccountBackgroundImage(fileBytes, "200xColor_2.png", "png", false);
+
+            Console.WriteLine("User Image: " + user.ProfileBackgroundImageUrl);
+        }
+
+        /// <summary>
         /// Shows how to update the background image in an account and tiles the image
         /// </summary>
         /// <param name="twitterCtx">TwitterContext</param>
         private static void UpdateAccountBackgroundImageAndTileDemo(TwitterContext twitterCtx)
         {
-            var user = twitterCtx.UpdateAccountBackgroundImage(@"C:\Users\jmayo\Documents\linq2twitter\linq2twitter\linq2twitter_v3_300x90.png", true);
+            byte[] fileBytes = Utilities.GetFileBytes(@"C:\Users\jmayo\Documents\linq2twitter\linq2twitter\linq2twitter_v3_300x90.png");
+            var user = twitterCtx.UpdateAccountBackgroundImage(fileBytes, "linq2twitter_v3_300x90.png", "png", true);
+
+            Console.WriteLine("User Image: " + user.ProfileBackgroundImageUrl);
+        }
+
+        /// <summary>
+        /// Shows how to update the background image in an account
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void UpdateAccountBackgroundImageWithProgressUpdates(TwitterContext twitterCtx)
+        {
+            twitterCtx.UploadProgressChanged +=
+                (sender, e) =>
+                {
+                    Console.WriteLine("Progress: {0}%", e.PercentComplete);
+                };
+            byte[] fileBytes = Utilities.GetFileBytes(@"C:\Users\jmayo\Documents\linq2twitter\linq2twitter\200xColor_2.png");
+            var user = twitterCtx.UpdateAccountBackgroundImage(fileBytes, "200xColor_2.png", "png", false);
 
             Console.WriteLine("User Image: " + user.ProfileBackgroundImageUrl);
         }

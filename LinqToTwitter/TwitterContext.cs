@@ -123,6 +123,25 @@ namespace LinqToTwitter
 
         #endregion
 
+        #region Events
+
+        /// <summary>
+        /// Used to notify callers of changes in image upload progress
+        /// </summary>
+        public event EventHandler<TwitterProgressEventArgs> UploadProgressChanged
+        {
+            add
+            {
+                TwitterExecutor.UploadProgressChanged += value;
+            }
+            remove
+            {
+                TwitterExecutor.UploadProgressChanged -= value;
+            }
+        }
+
+        #endregion
+
         #region TwitterExecute Delegation
 
         //
@@ -1177,6 +1196,41 @@ namespace LinqToTwitter
         }
 
         /// <summary>
+        /// sends an image file to Twitter to replace user image
+        /// </summary>
+        /// <remarks>
+        /// You can only run this method with a period of time between executions; 
+        /// otherwise you get WebException errors from Twitter
+        /// </remarks>
+        /// <param name="image">byte array of image to upload</param>
+        /// <param name="fileName">name to pass to Twitter for the file</param>
+        /// <param name="imageType">type of image: must be one of jpg, gif, or png</param>
+        /// <returns>User with new image info</returns>
+        public User UpdateAccountImage(byte[] image, string fileName, string imageType)
+        {
+            var accountUrl = BaseUrl + "account/update_profile_image.xml";
+
+            if (image == null || image.Length == 0)
+            {
+                throw new ArgumentException("image is required.", "image");
+            }
+
+            if (string.IsNullOrEmpty(fileName))
+            {
+                throw new ArgumentException("fileName is required.", "fileName");
+            }
+
+            if (string.IsNullOrEmpty(imageType))
+            {
+                throw new ArgumentException("imageType is required.", "imageType");
+            }
+
+            var results = TwitterExecutor.PostTwitterImage(image, null, accountUrl, new UserRequestProcessor(), fileName, imageType);
+
+            return (results as IList<User>).FirstOrDefault();
+        }
+
+        /// <summary>
         /// sends an image file to Twitter to replace background image
         /// </summary>
         /// <param name="imageFilePath">full path to file, including file name</param>
@@ -1192,7 +1246,6 @@ namespace LinqToTwitter
 
             Dictionary<string, string> parameters = null;
 
-            // TODO: tile implementation doesn't seem to be working; numerous update background image problems reported in Twitter API; check again later - Joe
             if (tile)
             {
                 parameters =
@@ -1203,6 +1256,49 @@ namespace LinqToTwitter
             }
 
             var results = TwitterExecutor.PostTwitterFile(imageFilePath, parameters, accountUrl, new UserRequestProcessor());
+
+            return (results as IList<User>).FirstOrDefault();
+        }
+
+        /// <summary>
+        /// sends an image file to Twitter to replace background image
+        /// </summary>
+        /// <param name="image">full path to file, including file name</param>
+        /// <param name="fileName">name to pass to Twitter for the file</param>
+        /// <param name="imageType">type of image: must be one of jpg, gif, or png</param>
+        /// <param name="tile">Tile image across background.</param>
+        /// <returns>User with new image info</returns>
+        public User UpdateAccountBackgroundImage(byte[] image, string fileName, string imageType, bool tile)
+        {
+            var accountUrl = BaseUrl + "account/update_profile_background_image.xml";
+
+            if (image == null || image.Length == 0)
+            {
+                throw new ArgumentException("image is required.", "image");
+            }
+
+            if (string.IsNullOrEmpty(fileName))
+            {
+                throw new ArgumentException("fileName is required.", "fileName");
+            }
+
+            if (string.IsNullOrEmpty(imageType))
+            {
+                throw new ArgumentException("imageType is required.", "imageType");
+            }
+
+            Dictionary<string, string> parameters = null;
+
+            if (tile)
+            {
+                parameters =
+                        new Dictionary<string, string>
+                {
+                    { "tile", "true" }
+                };
+            }
+
+            var results = TwitterExecutor.PostTwitterImage(image, parameters, accountUrl, new UserRequestProcessor(), fileName, imageType);
 
             return (results as IList<User>).FirstOrDefault();
         }

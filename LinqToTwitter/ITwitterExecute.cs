@@ -47,10 +47,22 @@ namespace LinqToTwitter
         /// <summary>
         /// performs HTTP POST file upload to Twitter
         /// </summary>
-        /// <param name="fileName">name of file to upload</param>
+        /// <param name="filePath">full path of file to upload</param>
+        /// <param name="parameters">query string parameters</param>
         /// <param name="url">url to upload to</param>
+        /// <param name="requestProcessor">IRequestProcessor to handle results</param>
         /// <returns>IQueryable</returns>
         IList PostTwitterFile(string filePath, Dictionary<string, string> parameters, string url, IRequestProcessor requestProcessor);
+
+        /// <summary>
+        /// performs HTTP POST image byte array upload to Twitter
+        /// </summary>
+        /// <param name="image">byte array containing image to upload</param>
+        /// <param name="url">url to upload to</param>
+        /// <param name="fileName">name to pass to Twitter for the file</param>
+        /// <param name="imageType">type of image: must be one of jpg, gif, or png</param>
+        /// <returns>IQueryable</returns>
+        IList PostTwitterImage(byte[] image, Dictionary<string, string> parameters, string url, IRequestProcessor requestProcessor, string fileName, string imageType);
 
         /// <summary>
         /// makes HTTP call to Twitter API
@@ -58,5 +70,10 @@ namespace LinqToTwitter
         /// <param name="url">URL with all query info</param>
         /// <returns>List of objects to return</returns>
         IList QueryTwitter(string url, IRequestProcessor requestProcessor);
+
+        /// <summary>
+        /// Used to notify callers of changes in image upload progress
+        /// </summary>
+        event EventHandler<TwitterProgressEventArgs> UploadProgressChanged;
     }
 }

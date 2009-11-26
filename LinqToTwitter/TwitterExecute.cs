@@ -36,6 +36,11 @@ namespace LinqToTwitter
         public ITwitterAuthorization AuthorizedClient { get; set; }
 
         /// <summary>
+        /// Used to notify callers of changes in image upload progress
+        /// </summary>
+        public event EventHandler<TwitterProgressEventArgs> UploadProgressChanged;
+
+        /// <summary>
         /// Timeout (milliseconds) for writing to request 
         /// stream or reading from response stream
         /// </summary>
@@ -104,6 +109,22 @@ namespace LinqToTwitter
 
             this.AuthorizedClient = authorizedClient;
             this.AuthorizedClient.UserAgent = m_linqToTwitterVersion;
+        }
+
+        /// <summary>
+        /// Call this to notify users of percentage of completion of operation.
+        /// </summary>
+        /// <param name="percent">Percent complete.</param>
+        private void OnUploadProgressChanged(int percent)
+        {
+            if (UploadProgressChanged != null)
+            {
+                var progressEventArgs = new TwitterProgressEventArgs 
+                { 
+                    PercentComplete = percent 
+                };
+                UploadProgressChanged(this, progressEventArgs);
+            }
         }
 
         /// <summary>
@@ -263,16 +284,18 @@ namespace LinqToTwitter
         /// <summary>
         /// performs HTTP POST file upload to Twitter
         /// </summary>
-        /// <param name="fileName">name of file to upload</param>
+        /// <param name="filePath">full path of file to upload</param>
+        /// <param name="parameters">query string parameters</param>
         /// <param name="url">url to upload to</param>
+        /// <param name="requestProcessor">IRequestProcessor to handle results</param>
         /// <returns>IQueryable</returns>
         public IList PostTwitterFile(string filePath, Dictionary<string, string> parameters, string url, IRequestProcessor requestProcessor)
         {
-            var file = Path.GetFileName(filePath);
+            var fileName = Path.GetFileName(filePath);
 
             string imageType;
 
-            switch (Path.GetExtension(file).ToLower())
+            switch (Path.GetExtension(fileName).ToLower())
             {
                 case ".jpg":
                 case ".jpeg":
@@ -289,9 +312,24 @@ namespace LinqToTwitter
                         "Can't recognize the extension of the file you're uploading. Please choose either a *.gif, *.jpg, *.jpeg, or *.png file.", filePath);
             }
 
+            byte[] fileBytes = Utilities.GetFileBytes(filePath);
+
+            return PostTwitterImage(fileBytes, parameters, url, requestProcessor, fileName, imageType);
+        }
+
+        /// <summary>
+        /// performs HTTP POST image byte array upload to Twitter
+        /// </summary>
+        /// <param name="image">byte array containing image to upload</param>
+        /// <param name="url">url to upload to</param>
+        /// <param name="fileName">name to pass to Twitter for the file</param>
+        /// <param name="imageType">type of image: must be one of jpg, gif, or png</param>
+        /// <returns>IQueryable</returns>
+        public IList PostTwitterImage(byte[] image, Dictionary<string, string> parameters, string url, IRequestProcessor requestProcessor, string fileName, string imageType)
+        {
             string contentBoundaryBase = DateTime.Now.Ticks.ToString("x");
             string beginContentBoundary = string.Format("--{0}\r\n", contentBoundaryBase);
-            var contentDisposition = string.Format("Content-Disposition:form-data); name=\"image\"); filename=\"{0}\"\r\nContent-Type: image/{1}\r\n\r\n", file, imageType);
+            var contentDisposition = string.Format("Content-Disposition:form-data); name=\"image\"); filename=\"{0}\"\r\nContent-Type: image/{1}\r\n\r\n", fileName, imageType);
             var endContentBoundary = string.Format("\r\n--{0}--\r\n", contentBoundaryBase);
 
             var formDataSB = new StringBuilder();
@@ -304,32 +342,15 @@ namespace LinqToTwitter
                 }
             }
 
-            byte[] fileBytes = null;
-            string fileByteString = null;
             Encoding encoding = Encoding.GetEncoding("iso-8859-1");
+            string imageByteString = encoding.GetString(image);
 
-            using (var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
-            {
-                byte[] buffer = new byte[4096];
-                var memStr = new MemoryStream();
-                memStr.Position = 0;
-                int bytesRead = 0;
-
-                while ((bytesRead = fileStream.Read(buffer, 0, buffer.Length)) != 0)
-                {
-                    memStr.Write(buffer, 0, bytesRead);
-                }
-
-                memStr.Position = 0;
-                fileByteString = encoding.GetString(memStr.GetBuffer());
-            }
-
-            fileBytes =
+            byte[] imageBytes =
                 encoding.GetBytes(
                     formDataSB.ToString() +
                     beginContentBoundary +
                     contentDisposition +
-                    fileByteString +
+                    imageByteString +
                     endContentBoundary);
 
             var req = this.AuthorizedClient.Post(new Uri(url));
@@ -337,13 +358,47 @@ namespace LinqToTwitter
             req.ContentType = "multipart/form-data;boundary=" + contentBoundaryBase;
             req.PreAuthenticate = true;
             req.AllowWriteStreamBuffering = true;
-            req.ContentLength = fileBytes.Length;
+            req.ContentLength = imageBytes.Length;
 
             string responseXml = null;
 
             using (var reqStream = req.GetRequestStream())
             {
-                reqStream.Write(fileBytes, 0, fileBytes.Length);
+                //reqStream.Write(imageBytes, 0, imageBytes.Length);
+
+                int offset = 0;
+                int bufferSize = 4096;
+                int lastPercentage = 0;
+                while (offset < imageBytes.Length)
+                {
+                    int bytesLeft = imageBytes.Length - offset;
+
+                    if (bytesLeft < bufferSize)
+                    {
+                        reqStream.Write(imageBytes, offset, bytesLeft);
+                    }
+                    else
+                    {
+                        reqStream.Write(imageBytes, offset, bufferSize);
+                    }
+
+                    offset += bufferSize;
+
+                    int percentComplete = 
+                        (int)((double)offset / (double)imageBytes.Length * 100);
+                    
+                    // since we still need to get the response later
+                    // in the algorithm, interpolate the results to
+                    // give user a more accurate picture of completion.
+                    // i.e. we don't want to shoot up to 100% here when
+                    // we know there is more processing to do.
+                    lastPercentage = percentComplete >= 98 ? 
+                        100 - ((98 - lastPercentage)/2) : 
+                        percentComplete;
+
+                    OnUploadProgressChanged(lastPercentage);
+                }
+
                 reqStream.Flush();
             }
 
@@ -361,6 +416,8 @@ namespace LinqToTwitter
                 {
                     responseXml = respRdr.ReadToEnd();
                 }
+
+                OnUploadProgressChanged(99);
             }
             catch (WebException wex)
             {
@@ -375,7 +432,9 @@ namespace LinqToTwitter
                 }
             }
 
-            return ProcessResults(requestProcessor, responseXml, httpStatus);
+            IList results = ProcessResults(requestProcessor, responseXml, httpStatus);
+            OnUploadProgressChanged(100);
+            return results;
         }
 
         /// <summary>

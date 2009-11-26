@@ -148,6 +148,7 @@
     <Compile Include="PostProcessing\Projection.cs" />
     <Compile Include="PostProcessing\Sort.cs" />
     <Compile Include="Retweet.cs" />
+    <Compile Include="TwitterProgressEventArgs.cs" />
     <Compile Include="UserIdentifier.cs" />
     <Compile Include="WindowsCredentialStoreTokenManager.cs" />
     <Compile Include="ITwitterAuthorization.cs" />
