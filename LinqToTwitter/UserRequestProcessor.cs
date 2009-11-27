@@ -270,10 +270,10 @@ namespace LinqToTwitter
         //</hash>
 
         /// <summary>
-        /// transforms XML into IQueryable of User
+        /// transforms XML into IList of User
         /// </summary>
         /// <param name="twitterResponse">xml with Twitter response</param>
-        /// <returns>IQueryable of User</returns>
+        /// <returns>IList of User</returns>
         public IList ProcessResults(System.Xml.Linq.XElement twitterResponse)
         {
             var isRoot = twitterResponse.Name == "root";

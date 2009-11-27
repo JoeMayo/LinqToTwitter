@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Xml.Linq;
 using System.Collections;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Xml.Linq;
 
 namespace LinqToTwitter
 {
@@ -39,7 +39,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="lambdaExpression">lambda expression with where clause</param>
         /// <returns>dictionary of parameter name/value pairs</returns>
-        public Dictionary<string, string> GetParameters(System.Linq.Expressions.LambdaExpression lambdaExpression)
+        public Dictionary<string, string> GetParameters(LambdaExpression lambdaExpression)
         {
             return
                new ParameterFinder<Trend>(
@@ -174,100 +174,6 @@ namespace LinqToTwitter
             return url;
         }
 
-//<root type=""object"">
-//  <trends type=""array"">
-//    <item type=""object"">
-//      <name type=""string"">Wolverine</name>
-//      <url type=""string"">http://search.twitter.com/search?q=Wolverine+OR+%23Wolverine</url>
-//    </item>
-//    <item type=""object"">
-//      <name type=""string"">Swine Flu</name>
-//      <url type=""string"">http://search.twitter.com/search?q=%22Swine+Flu%22</url>
-//    </item>
-//    <item type=""object"">
-//      <name type=""string"">#swineflu</name>
-//      <url type=""string"">http://search.twitter.com/search?q=%23swineflu</url>
-//    </item>
-//    <item type=""object"">
-//      <name type=""string"">Dollhouse</name>
-//      <url type=""string"">http://search.twitter.com/search?q=Dollhouse+OR+%23dollhouse</url>
-//    </item>
-//    <item type=""object"">
-//      <name type=""string"">Hamthrax</name>
-//      <url type=""string"">http://search.twitter.com/search?q=Hamthrax+OR+%23hamthrax</url>
-//    </item>
-//    <item type=""object"">
-//      <name type=""string"">H1N1</name>
-//      <url type=""string"">http://search.twitter.com/search?q=H1N1</url>
-//    </item>
-//    <item type=""object"">
-//      <name type=""string"">X-Men Origins</name>
-//      <url type=""string"">http://search.twitter.com/search?q=%22X-Men+Origins%22</url>
-//    </item>
-//    <item type=""object"">
-//      <name type=""string"">#outdoorplay</name>
-//      <url type=""string"">http://search.twitter.com/search?q=%23outdoorplay</url>
-//    </item>
-//    <item type=""object"">
-//      <name type=""string"">Earthquake</name>
-//      <url type=""string"">http://search.twitter.com/search?q=Earthquake+OR+%23earthquake</url>
-//    </item>
-//    <item type=""object"">
-//      <name type=""string"">#jonaslive</name>
-//      <url type=""string"">http://search.twitter.com/search?q=%23jonaslive</url>
-//    </item>
-//  </trends>
-//  <as_of type=""string"">Sat, 02 May 2009 02:38:00 +0000</as_of>
-//</root>
-
-//<root type="object">
-//  <trends type="object">
-//    <a:item xmlns:a="item" item="2009-05-02 03:07:50" type="array">
-//      <item type="object">
-//        <query type="string">Wolverine OR #wolverine</query>
-//        <name type="string">Wolverine</name>
-//      </item>
-//      <item type="object">
-//        <query type="string">"Swine Flu"</query>
-//        <name type="string">Swine Flu</name>
-//      </item>
-//      <item type="object">
-//        <query type="string">#SwineFlu</query>
-//        <name type="string">#SwineFlu</name>
-//      </item>
-//      <item type="object">
-//        <query type="string">H1N1</query>
-//        <name type="string">H1N1</name>
-//      </item>
-//      <item type="object">
-//        <query type="string">Dollhouse OR #dollhouse</query>
-//        <name type="string">Dollhouse</name>
-//      </item>
-//      <item type="object">
-//        <query type="string">Hamthrax</query>
-//        <name type="string">Hamthrax</name>
-//      </item>
-//      <item type="object">
-//        <query type="string">"X-Men Origins"</query>
-//        <name type="string">X-Men Origins</name>
-//      </item>
-//      <item type="object">
-//        <query type="string">Hawks</query>
-//        <name type="string">Hawks</name>
-//      </item>
-//      <item type="object">
-//        <query type="string">#jonaslive</query>
-//        <name type="string">#jonaslive</name>
-//      </item>
-//      <item type="object">
-//        <query type="string">#fitfam</query>
-//        <name type="string">#fitfam</name>
-//      </item>
-//    </a:item>
-//  </trends>
-//  <as_of type="number">1241233670</as_of>
-//</root>
-        
         /// <summary>
         /// appends parameters for Search request
         /// </summary>

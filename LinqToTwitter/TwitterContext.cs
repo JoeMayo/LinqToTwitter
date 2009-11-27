@@ -300,6 +300,17 @@ namespace LinqToTwitter
         }
 
         /// <summary>
+        /// enables access to Twitter Friendship info
+        /// </summary>
+        public TwitterQueryable<List> List
+        {
+            get
+            {
+                return new TwitterQueryable<List>(this);
+            }
+        }
+
+        /// <summary>
         /// enables access to Twitter Saved Searches
         /// </summary>
         public TwitterQueryable<SavedSearch> SavedSearch
@@ -626,6 +637,9 @@ namespace LinqToTwitter
                 case "Friendship":
                     req = new FriendshipRequestProcessor() { BaseUrl = BaseUrl };
                     break;
+                case "List":
+                    req = new ListRequestProcessor() { BaseUrl = baseUrl };
+                    break;
                 case "SavedSearch":
                     req = new SavedSearchRequestProcessor() { BaseUrl = BaseUrl };
                     break;
@@ -657,6 +671,8 @@ namespace LinqToTwitter
         #endregion
 
         #region Twitter Execution API
+
+        #region Status Methods
 
         /// <summary>
         /// sends a status update - overload to make inReplyToStatusID optional
@@ -726,6 +742,10 @@ namespace LinqToTwitter
             return (results as IList<Status>).FirstOrDefault();
         }
 
+        #endregion
+
+        #region Direct Message Methods
+
         /// <summary>
         /// sends a new direct message to specified userr
         /// </summary>
@@ -786,6 +806,10 @@ namespace LinqToTwitter
 
             return (results as IList<DirectMessage>).FirstOrDefault();
         }
+
+        #endregion
+
+        #region Friendship Methods
 
         /// <summary>
         /// lets logged-in user follow another user
@@ -881,6 +905,10 @@ namespace LinqToTwitter
             return (results as IList<User>).FirstOrDefault();
         }
 
+        #endregion
+
+        #region Favorites Methods
+
         /// <summary>
         /// Adds a favorite to the logged-in user's profile
         /// </summary>
@@ -926,6 +954,10 @@ namespace LinqToTwitter
 
             return (results as IList<Status>).FirstOrDefault();
         }
+
+        #endregion
+
+        #region Notifications Methods
 
         /// <summary>
         /// Disables notifications from specified user. (Notification Leave)
@@ -1021,6 +1053,10 @@ namespace LinqToTwitter
             return (results as IList<User>).FirstOrDefault();
         }
 
+        #endregion
+
+        #region Block Methods
+
         /// <summary>
         /// Blocks a user
         /// </summary>
@@ -1067,6 +1103,10 @@ namespace LinqToTwitter
             return (results as IList<User>).FirstOrDefault();
         }
 
+        #endregion
+
+        #region Help Methods
+
         /// <summary>
         /// sends a test message to twitter to check connectivity
         /// </summary>
@@ -1083,6 +1123,10 @@ namespace LinqToTwitter
 
             return (results as IList<bool>).FirstOrDefault();
         }
+
+        #endregion
+
+        #region Account Methods
 
         /// <summary>
         /// Ends the session for the currently logged in user
@@ -1366,6 +1410,10 @@ namespace LinqToTwitter
             return (results as IList<User>).FirstOrDefault();
         }
 
+        #endregion
+
+        #region Saved Search Methods
+
         /// <summary>
         /// Adds a saved search to your twitter account
         /// </summary>
@@ -1415,6 +1463,10 @@ namespace LinqToTwitter
             return (results as IList<SavedSearch>).FirstOrDefault();
         }
 
+        #endregion
+
+        #region Spam Methods
+
         /// <summary>
         /// lets logged-in user report spam
         /// </summary>
@@ -1449,6 +1501,10 @@ namespace LinqToTwitter
             return (results as IList<User>).FirstOrDefault();
         }
 
+        #endregion
+
+        #region Retweet Methods
+
         /// <summary>
         /// retweets a tweet
         /// </summary>
@@ -1471,6 +1527,245 @@ namespace LinqToTwitter
 
             return (results as IList<Status>).FirstOrDefault();
         }
+
+        #endregion
+
+        #region List Methods
+
+        /// <summary>
+        /// Creates a new list
+        /// </summary>
+        /// <param name="screenName">name of user to create list for</param>
+        /// <param name="listName">name of list</param>
+        /// <param name="mode">public or private</param>
+        /// <param name="description">list description</param>
+        /// <returns>List info for new list</returns>
+        public List CreateList(string screenName, string listName, string mode, string description)
+        {
+            if (string.IsNullOrEmpty(screenName))
+            {
+                throw new ArgumentException("screenName is required.", "screenName");
+            }
+
+            if (string.IsNullOrEmpty(listName))
+            {
+                throw new ArgumentException("listName is required.", "listName");
+            }
+
+            var savedSearchUrl = BaseUrl + screenName + "/lists.xml";
+
+            var results =
+                TwitterExecutor.ExecuteTwitter(
+                    savedSearchUrl,
+                    new Dictionary<string, string>
+                    {
+                        { "name", listName },
+                        { "mode", mode },
+                        { "description", description }
+                    },
+                    new ListRequestProcessor());
+
+            return (results as IList<List>).FirstOrDefault();
+        }
+
+        /// <summary>
+        /// Modifies an existing list
+        /// </summary>
+        /// <param name="screenName">name of user to modify list for</param>
+        /// <param name="listID">ID or slug of list</param>
+        /// <param name="listName">name of list</param>
+        /// <param name="mode">public or private</param>
+        /// <param name="description">list description</param>
+        /// <returns>List info for modified list</returns>
+        public List UpdateList(string screenName, string listID, string listName, string mode, string description)
+        {
+            if (string.IsNullOrEmpty(screenName))
+            {
+                throw new ArgumentException("screenName is required.", "screenName");
+            }
+
+            if (string.IsNullOrEmpty(listID))
+            {
+                throw new ArgumentException("listID is required.", "listID");
+            }
+
+            var savedSearchUrl = BaseUrl + screenName + "/lists/" + listID + ".xml";
+
+            var results =
+                TwitterExecutor.ExecuteTwitter(
+                    savedSearchUrl,
+                    new Dictionary<string, string>
+                    {
+                        { "name", listName },
+                        { "mode", mode },
+                        { "description", description }
+                    },
+                    new ListRequestProcessor());
+
+            return (results as IList<List>).FirstOrDefault();
+        }
+
+        /// <summary>
+        /// Deletes an existing list
+        /// </summary>
+        /// <param name="screenName">name of user to delete list for</param>
+        /// <param name="listID">ID or slug of list</param>
+        /// <returns>List info for deleted list</returns>
+        public List DeleteList(string screenName, string listID)
+        {
+            if (string.IsNullOrEmpty(screenName))
+            {
+                throw new ArgumentException("screenName is required.", "screenName");
+            }
+
+            if (string.IsNullOrEmpty(listID))
+            {
+                throw new ArgumentException("listID is required.", "listID");
+            }
+
+            var savedSearchUrl = BaseUrl + screenName + "/lists/" + listID + ".xml";
+
+            var results =
+                TwitterExecutor.ExecuteTwitter(
+                    savedSearchUrl,
+                    new Dictionary<string, string>
+                    {
+                        { "_method", "DELETE" }
+                    },
+                    new ListRequestProcessor());
+
+            return (results as IList<List>).FirstOrDefault();
+        }
+
+        /// <summary>
+        /// Adds a user as a list member
+        /// </summary>
+        /// <param name="screenName">name of user to add member to list for</param>
+        /// <param name="listID">ID or slug of list</param>
+        /// <param name="memberID">ID of member to add</param>
+        /// <returns>List info for list member added to</returns>
+        public List AddMemberToList(string screenName, string listID, string memberID)
+        {
+            if (string.IsNullOrEmpty(screenName))
+            {
+                throw new ArgumentException("screenName is required.", "screenName");
+            }
+
+            if (string.IsNullOrEmpty(listID))
+            {
+                throw new ArgumentException("listID is required.", "listID");
+            }
+
+            var savedSearchUrl = BaseUrl + screenName + "/" + listID + @"/members.xml";
+
+            var results =
+                TwitterExecutor.ExecuteTwitter(
+                    savedSearchUrl,
+                    new Dictionary<string, string>
+                    {
+                        { "id", memberID }
+                    },
+                    new ListRequestProcessor());
+
+            return (results as IList<List>).FirstOrDefault();
+        }
+
+        /// <summary>
+        /// Removes a user as a list member
+        /// </summary>
+        /// <param name="screenName">name of user to remove member from list for</param>
+        /// <param name="listID">ID or slug of list</param>
+        /// <param name="memberID">ID of member to remove</param>
+        /// <returns>List info for list member removed from</returns>
+        public List DeleteMemberFromList(string screenName, string listID, string memberID)
+        {
+            if (string.IsNullOrEmpty(screenName))
+            {
+                throw new ArgumentException("screenName is required.", "screenName");
+            }
+
+            if (string.IsNullOrEmpty(listID))
+            {
+                throw new ArgumentException("listID is required.", "listID");
+            }
+
+            var savedSearchUrl = BaseUrl + screenName + "/" + listID + @"/members.xml";
+
+            var results =
+                TwitterExecutor.ExecuteTwitter(
+                    savedSearchUrl,
+                    new Dictionary<string, string>
+                    {
+                        { "id", memberID },
+                        { "_method", "DELETE" }
+                    },
+                    new ListRequestProcessor());
+
+            return (results as IList<List>).FirstOrDefault();
+        }
+
+        /// <summary>
+        /// Adds a user as a list subscriber
+        /// </summary>
+        /// <param name="screenName">name of user to add subscription to list for</param>
+        /// <param name="listID">ID or slug of list</param>
+        /// <returns>List info for list subscribed to</returns>
+        public List SubscribeToList(string screenName, string listID)
+        {
+            if (string.IsNullOrEmpty(screenName))
+            {
+                throw new ArgumentException("screenName is required.", "screenName");
+            }
+
+            if (string.IsNullOrEmpty(listID))
+            {
+                throw new ArgumentException("listID is required.", "listID");
+            }
+
+            var savedSearchUrl = BaseUrl + screenName + "/" + listID + @"/subscribers.xml";
+
+            var results =
+                TwitterExecutor.ExecuteTwitter(
+                    savedSearchUrl,
+                    new Dictionary<string, string>(),
+                    new ListRequestProcessor());
+
+            return (results as IList<List>).FirstOrDefault();
+        }
+
+        /// <summary>
+        /// Removes a user as a list subscriber
+        /// </summary>
+        /// <param name="screenName">name of user to remove subscription from list for</param>
+        /// <param name="listID">ID or slug of list</param>
+        /// <returns>List info for list subscription removed from</returns>
+        public List UnsubscribeFromList(string screenName, string listID)
+        {
+            if (string.IsNullOrEmpty(screenName))
+            {
+                throw new ArgumentException("screenName is required.", "screenName");
+            }
+
+            if (string.IsNullOrEmpty(listID))
+            {
+                throw new ArgumentException("listID is required.", "listID");
+            }
+
+            var savedSearchUrl = BaseUrl + screenName + "/" + listID + @"/subscribers.xml";
+
+            var results =
+                TwitterExecutor.ExecuteTwitter(
+                    savedSearchUrl,
+                    new Dictionary<string, string>
+                    {
+                        { "_method", "DELETE" }
+                    },
+                    new ListRequestProcessor());
+
+            return (results as IList<List>).FirstOrDefault();
+        }
+
+        #endregion
 
         #endregion
 

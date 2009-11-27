@@ -141,6 +141,8 @@
     <Compile Include="DirectMessageType.cs" />
     <Compile Include="DirectMessageRequestProcessor.cs" />
     <Compile Include="HttpMethod.cs" />
+    <Compile Include="List.cs" />
+    <Compile Include="ListRequestProcessor.cs" />
     <Compile Include="ListType.cs" />
     <Compile Include="MvcOAuthAuthorization.cs" />
     <Compile Include="PostProcessing\Filter.cs" />

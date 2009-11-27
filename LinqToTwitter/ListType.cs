@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace LinqToTwitter
+﻿namespace LinqToTwitter
 {
+    /// <summary>
+    /// Available types of queries for the Twitter Lists API
+    /// </summary>
     public enum ListType
     {
         /// <summary>

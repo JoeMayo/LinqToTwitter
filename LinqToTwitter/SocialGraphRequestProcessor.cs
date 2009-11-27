@@ -7,6 +7,9 @@ using System.Collections;
 
 namespace LinqToTwitter
 {
+    /// <summary>
+    /// Processes Social Graph Requests and responses
+    /// </summary>
     class SocialGraphRequestProcessor : IRequestProcessor
     {
         /// <summary>

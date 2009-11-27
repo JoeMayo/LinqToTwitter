@@ -20,6 +20,8 @@ namespace LinqToTwitter
     [Serializable]
     internal class TwitterExecute : ITwitterExecute, IDisposable
     {
+        #region Properties
+
         /// <summary>
         /// Version used in UserAgent
         /// </summary>
@@ -34,11 +36,6 @@ namespace LinqToTwitter
         /// Gets or sets the object that can send authorized requests to Twitter.
         /// </summary>
         public ITwitterAuthorization AuthorizedClient { get; set; }
-
-        /// <summary>
-        /// Used to notify callers of changes in image upload progress
-        /// </summary>
-        public event EventHandler<TwitterProgressEventArgs> UploadProgressChanged;
 
         /// <summary>
         /// Timeout (milliseconds) for writing to request 
@@ -87,6 +84,35 @@ namespace LinqToTwitter
             }
         }
 
+        #endregion
+
+        #region Events
+
+        /// <summary>
+        /// Used to notify callers of changes in image upload progress
+        /// </summary>
+        public event EventHandler<TwitterProgressEventArgs> UploadProgressChanged;
+
+        /// <summary>
+        /// Call this to notify users of percentage of completion of operation.
+        /// </summary>
+        /// <param name="percent">Percent complete.</param>
+        private void OnUploadProgressChanged(int percent)
+        {
+            if (UploadProgressChanged != null)
+            {
+                var progressEventArgs = new TwitterProgressEventArgs
+                {
+                    PercentComplete = percent
+                };
+                UploadProgressChanged(this, progressEventArgs);
+            }
+        }
+
+        #endregion
+
+        #region Initialization
+
         /// <summary>
         /// Initializes a new instance of the <see cref="TwitterExecute"/> class.
         /// </summary>
@@ -111,21 +137,9 @@ namespace LinqToTwitter
             this.AuthorizedClient.UserAgent = m_linqToTwitterVersion;
         }
 
-        /// <summary>
-        /// Call this to notify users of percentage of completion of operation.
-        /// </summary>
-        /// <param name="percent">Percent complete.</param>
-        private void OnUploadProgressChanged(int percent)
-        {
-            if (UploadProgressChanged != null)
-            {
-                var progressEventArgs = new TwitterProgressEventArgs 
-                { 
-                    PercentComplete = percent 
-                };
-                UploadProgressChanged(this, progressEventArgs);
-            }
-        }
+        #endregion
+
+        #region Exception and Response Handling
 
         /// <summary>
         /// generates a new TwitterQueryException from a WebException
@@ -235,6 +249,10 @@ namespace LinqToTwitter
 
             return requestProcessor.ProcessResults(responseXml);
         }
+
+        #endregion
+
+        #region Execution
 
         /// <summary>
         /// makes HTTP call to Twitter API
@@ -472,6 +490,8 @@ namespace LinqToTwitter
 
             return ProcessResults(requestProcessor, responseXml, httpStatus);
         }
+
+        #endregion
 
         #region IDisposable Members
 
