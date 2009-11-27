@@ -97,6 +97,7 @@ namespace LinqToTwitterDemo
                 //UserFollowersQueryDemo(twitterCtx);
                 //UserFollowersWithCursorsQueryDemo(twitterCtx);
                 //GetAllFollowersQueryDemo(twitterCtx);
+                //VerifiedAndGeoEnabledDemo(twitterCtx);
 
                 //
                 // direct messages
@@ -1875,6 +1876,31 @@ namespace LinqToTwitterDemo
                 Console.WriteLine(
                         "ID: {0}, Name: {1}\nLast Tweet: {2}\n",
                         user.ID, user.Name, status);
+            }
+        }
+
+        /// <summary>
+        /// shows how to check the verified and geoenabled tags for users
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void VerifiedAndGeoEnabledDemo(TwitterContext twitterCtx)
+        {
+            var users =
+                from tweet in twitterCtx.User
+                where tweet.Type == UserType.Friends &&
+                      tweet.ID == "15411837" // <-- user to get friends for
+                select tweet;
+
+            foreach (var user in users)
+            {
+                var status =
+                    user.Protected || user.Status == null ?
+                        "Status Unavailable" :
+                        user.Status.Text;
+
+                Console.WriteLine(
+                        "ID: {0}, Verified: {1}, GeoEnabled: {2}, Name: {3}\nLast Tweet: {4}\n",
+                        user.ID, user.Verified, user.GeoEnabled, user.Name, status);
             }
         }
 

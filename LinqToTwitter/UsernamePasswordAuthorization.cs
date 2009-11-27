@@ -70,6 +70,21 @@ namespace LinqToTwitter
         public string UserAgent { get; set; }
 
         /// <summary>
+        /// Indicates if you want to use the proxy
+        /// </summary>
+        public bool UseProxy { get; set; }
+
+        /// <summary>
+        /// Gets or sets the proxy address
+        /// </summary>
+        public string ProxyAddress { get; set; }
+
+        /// <summary>
+        /// Gets or sets the proxy port
+        /// </summary>
+        public int ProxyPort { get; set; }
+
+        /// <summary>
         /// Gets or sets the timeout.
         /// </summary>
         /// <value>The timeout.</value>
@@ -307,9 +322,24 @@ namespace LinqToTwitter
             if (this.IsAuthorized)
             {
                 request.Credentials = new NetworkCredential(this.UserName, this.Password);
+
+                // From issue #25135 (icyflash on codeplex.com):
+                // When using a twitter api proxy (such as http://code.google.com/p/birdnest/), you will receive an HTTP Basic Authentication response 401.
+                // Fix: 
+                //add HTTP Basic Authentication to http request header
+                string authInfo = Convert.ToBase64String(Encoding.Default.GetBytes(this.UserName + ":" + this.Password));
+                request.Headers["Authorization"] = "Basic " + authInfo;
             }
 
             request.UserAgent = this.UserAgent;
+
+            // From issue #24811 (MarkStruik on codeplex.com):
+            //      If you are behind a proxy server you cant use the application. 
+            // Fix includes UseProxy, ProxyAddress, and ProxyPort properties
+            if (UseProxy)
+            {
+                request.Proxy = new WebProxy(ProxyAddress, ProxyPort);
+            }
 
             if (this.ReadWriteTimeout > TimeSpan.Zero)
             {

@@ -83,6 +83,18 @@ namespace LinqToTwitter
                     false : 
                     bool.Parse(user.Element("notifications").Value);
 
+            var geoEnabled =
+                user.Element("geo_enabled") == null ||
+                string.IsNullOrEmpty(user.Element("geo_enabled").Value) ?
+                    false :
+                    bool.Parse(user.Element("geo_enabled").Value);
+
+            var verified =
+                user.Element("verified") == null ||
+                string.IsNullOrEmpty(user.Element("verified").Value) ?
+                    false :
+                    bool.Parse(user.Element("verified").Value);
+
             var isFollowing =
                 user.Element("following") == null ||
                 string.IsNullOrEmpty(user.Element("following").Value) ?
@@ -108,16 +120,6 @@ namespace LinqToTwitter
                         statusDateParts[3]),
                         CultureInfo.InvariantCulture);
             
-            var canParseTruncated =
-                status == null ?
-                    false :
-                    bool.TryParse(status.Element("truncated").Value, out tempStatusTruncated);
-            
-            var canParseFavorited =
-                status == null ?
-                    false :
-                    bool.TryParse(status.Element("favorited").Value, out tempStatusFavorited);
-
             var newUser = new User
             {
                 Identifier = new UserIdentifier
@@ -174,6 +176,8 @@ namespace LinqToTwitter
                         user.Element("profile_background_tile").Value,
                 StatusesCount = tempStatusesCount,
                 Notifications = notifications,
+                GeoEnabled = geoEnabled,
+                Verified = verified,
                 Following = tempFollowingUsers,
                 Status = 
                     status == null ?
@@ -365,6 +369,16 @@ namespace LinqToTwitter
         /// type of device notifications
         /// </summary>
         public bool Notifications { get; set; }
+
+        /// <summary>
+        /// Supports Geo Tracking
+        /// </summary>
+        public bool GeoEnabled { get; set; }
+
+        /// <summary>
+        /// Is a verified account
+        /// </summary>
+        public bool Verified { get; set; }
 
         /// <summary>
         /// is authenticated user following this user
