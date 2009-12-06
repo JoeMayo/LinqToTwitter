@@ -61,23 +61,21 @@ namespace LinqToTwitter
         /// </summary>
         internal WindowsCredentialStoreTokenManager()
         {
+            this.ConsumerKey = ConfigurationManager.AppSettings["twitterConsumerKey"];
+            this.ConsumerSecret = ConfigurationManager.AppSettings["twitterConsumerSecret"];
         }
 
         /// <summary>
         /// Gets the consumer key.
         /// </summary>
-        public string ConsumerKey
-        {
-            get { return ConfigurationManager.AppSettings["twitterConsumerKey"]; }
-        }
+        /// <value>Default value is the AppSetting stored as twitterConsumerKey.</value>
+        public string ConsumerKey { get; internal set; }
 
         /// <summary>
         /// Gets the consumer secret.
         /// </summary>
-        public string ConsumerSecret
-        {
-            get { return ConfigurationManager.AppSettings["twitterConsumerSecret"]; }
-        }
+        /// <value>Default value is the AppSetting stored as twitterConsumerSecret.</value>
+        public string ConsumerSecret { get; internal set; }
 
         /// <summary>
         /// Gets the access token.

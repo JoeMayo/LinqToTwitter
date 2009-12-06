@@ -40,6 +40,12 @@ namespace LinqToTwitterDemo
 
                 // For OAuth authorization demo...
                 auth = new DesktopOAuthAuthorization();
+
+                // If you wanted to pass the consumer key and secret in programmatically, you could do so as shown here.
+                // Otherwise this information is pulled out of your .config file.
+                ////var desktopAuth = (DesktopOAuthAuthorization)auth;
+                ////desktopAuth.ConsumerKey = "some key";
+                ////desktopAuth.ConsumerSecret = "some secret";
             }
 
             // TwitterContext is similar to DataContext (LINQ to SQL) or ObjectContext (LINQ to Entities)

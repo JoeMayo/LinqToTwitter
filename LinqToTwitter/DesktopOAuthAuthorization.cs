@@ -67,7 +67,7 @@ namespace LinqToTwitter
         /// for his credentials.
         /// </summary>
         /// <value>
-        /// 	<c>true</c> if cached credentials are available; otherwise, <c>false</c>.
+        ///     <c>true</c> if cached credentials are available; otherwise, <c>false</c>.
         /// </value>
         public override bool CachedCredentialsAvailable
         {
@@ -78,6 +78,26 @@ namespace LinqToTwitter
         /// Gets or sets the function that will ask the user for the verifier code (PIN).
         /// </summary>
         public Func<string> GetVerifier { get; set; }
+
+        /// <summary>
+        /// Gets or sets the consumer key.
+        /// </summary>
+        /// <value>Default value is the AppSetting stored as twitterConsumerKey.</value>
+        public string ConsumerKey
+        {
+            get { return ((WindowsCredentialStoreTokenManager)this.Consumer.TokenManager).ConsumerKey; }
+            set { ((WindowsCredentialStoreTokenManager)this.Consumer.TokenManager).ConsumerKey = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the consumer secret.
+        /// </summary>
+        /// <value>Default value is the AppSetting stored as twitterConsumerSecret.</value>
+        public string ConsumerSecret
+        {
+            get { return ((WindowsCredentialStoreTokenManager)this.Consumer.TokenManager).ConsumerSecret; }
+            set { ((WindowsCredentialStoreTokenManager)this.Consumer.TokenManager).ConsumerSecret = value; }
+        }
 
         /// <summary>
         /// Gets the access token.
