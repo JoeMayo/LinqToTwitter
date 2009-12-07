@@ -47,6 +47,7 @@ namespace LinqToTwitter
         /// <param name="ownerWindow">The parent window of any UI that may be presented to the user as part of authentication.</param>
         public UsernamePasswordAuthorization(IWin32Window ownerWindow)
         {
+            this.AllowUIPrompt = true;
             this.ownerWindow = ownerWindow;
         }
 
@@ -132,6 +133,12 @@ namespace LinqToTwitter
         }
 
         /// <summary>
+        /// Gets or sets a value indicating whether a dialog can appear to prompt the user for credentials.
+        /// </summary>
+        /// <value><c>true</c> for most desktop apps; for web apps or custom desktop apps, use <c>false</c>.</value>
+        public bool AllowUIPrompt { get; set; }
+
+        /// <summary>
         /// Gets or sets the base Service URI of the Twitter service to authenticate to.
         /// </summary>
         public string AuthenticationTarget { get; set; }
@@ -145,9 +152,11 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// Logs the user into the web site, prompting for credentials if necessary.
+        /// Logs the user into the web site, prompting for credentials if necessary if <see cref="AllowUIPrompt"/>
+        /// is set to <c>true</c>.
         /// </summary>
         /// <exception cref="OperationCanceledException">Thrown if the user cancels the authentication/authorization.</exception>
+        /// <exception cref="InvalidOperationException">Thrown if the credentials are missing or invalid.</exception>
         public void SignOn()
         {
             if (!string.IsNullOrEmpty(this.UserName) && !string.IsNullOrEmpty(this.Password))
@@ -164,7 +173,7 @@ namespace LinqToTwitter
                 }
             }
 
-            if (string.IsNullOrEmpty(this.UserName) || string.IsNullOrEmpty(this.Password))
+            if (this.AllowUIPrompt)
             {
                 using (Kerr.PromptForCredential prompt = new Kerr.PromptForCredential())
                 {
@@ -200,6 +209,11 @@ namespace LinqToTwitter
                         throw new OperationCanceledException();
                     }
                 }
+            }
+            else
+            {
+                // TODO: what's a more appropriate exception type here?
+                throw new InvalidOperationException("Invalid or missing Twitter credentials.");
             }
         }
 

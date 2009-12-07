@@ -68,7 +68,15 @@ namespace LinqToTwitterDemo
 
                 // Whatever authorization module we selected... sign on now.  
                 // See the bottom of the method for sign-off procedures.
-                auth.SignOn();
+                try
+                {
+                    auth.SignOn();
+                }
+                catch (OperationCanceledException)
+                {
+                    Console.WriteLine("Login canceled. Demo exiting.");
+                    return;
+                }
 
                 //
                 // status tweets
