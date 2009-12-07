@@ -14,6 +14,7 @@ using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Globalization;
 using DotNetOpenAuth.OAuth;
+using DotNetOpenAuth.OAuth.ChannelElements;
 using Kerr;
 
 namespace LinqToTwitter
@@ -30,11 +31,39 @@ namespace LinqToTwitter
         private string requestToken;
 
         /// <summary>
+        /// The access token to use when we're using a custom token manager.
+        /// </summary>
+        private string accessToken;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="DesktopOAuthAuthorization"/> class.
         /// </summary>
         public DesktopOAuthAuthorization()
             : this(TwitterServiceDescription)
         {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DesktopOAuthAuthorization"/> class
+        /// that uses a custom token manager.
+        /// </summary>
+        /// <param name="tokenManager">The token manager.</param>
+        /// <param name="accessToken">The access token.</param>
+        public DesktopOAuthAuthorization(IConsumerTokenManager tokenManager, string accessToken)
+            : this(tokenManager, accessToken, TwitterServiceDescription)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DesktopOAuthAuthorization"/> class
+        /// that uses a custom token manager.
+        /// </summary>
+        /// <param name="tokenManager">The token manager.</param>
+        /// <param name="accessToken">The access token.</param>
+        public DesktopOAuthAuthorization(IConsumerTokenManager tokenManager, string accessToken, ServiceProviderDescription serviceProviderDescription)
+            : base(new DesktopConsumer(serviceProviderDescription, tokenManager))
+        {
+            this.accessToken = accessToken;
         }
 
         /// <summary>
@@ -44,7 +73,6 @@ namespace LinqToTwitter
         public DesktopOAuthAuthorization(ServiceProviderDescription serviceProviderDescription)
             : base(new DesktopConsumer(serviceProviderDescription, new WindowsCredentialStoreTokenManager()))
         {
-
             var inMemoryTokenManager = this.Consumer.TokenManager as WindowsCredentialStoreTokenManager;
             if (inMemoryTokenManager != null)
             {
@@ -85,8 +113,23 @@ namespace LinqToTwitter
         /// <value>Default value is the AppSetting stored as twitterConsumerKey.</value>
         public string ConsumerKey
         {
-            get { return ((WindowsCredentialStoreTokenManager)this.Consumer.TokenManager).ConsumerKey; }
-            set { ((WindowsCredentialStoreTokenManager)this.Consumer.TokenManager).ConsumerKey = value; }
+            get
+            {
+                return this.Consumer.TokenManager.ConsumerKey;
+            }
+
+            set
+            {
+                var credTokenManager = this.Consumer.TokenManager as WindowsCredentialStoreTokenManager;
+                if (credTokenManager != null)
+                {
+                    credTokenManager.ConsumerKey = value;
+                }
+                else
+                {
+                    throw new InvalidOperationException("The ConsumerKey can only be set in this way when using the standard " + typeof(WindowsCredentialStoreTokenManager).Name + ".  For a custom class, set the ConsumerKey on that directly.");
+                }
+            }
         }
 
         /// <summary>
@@ -95,8 +138,23 @@ namespace LinqToTwitter
         /// <value>Default value is the AppSetting stored as twitterConsumerSecret.</value>
         public string ConsumerSecret
         {
-            get { return ((WindowsCredentialStoreTokenManager)this.Consumer.TokenManager).ConsumerSecret; }
-            set { ((WindowsCredentialStoreTokenManager)this.Consumer.TokenManager).ConsumerSecret = value; }
+            get
+            {
+                return this.Consumer.TokenManager.ConsumerSecret;
+            }
+
+            set
+            {
+                var credTokenManager = this.Consumer.TokenManager as WindowsCredentialStoreTokenManager;
+                if (credTokenManager != null)
+                {
+                    credTokenManager.ConsumerSecret = value;
+                }
+                else
+                {
+                    throw new InvalidOperationException("The ConsumerSecret can only be set in this way when using the standard " + typeof(WindowsCredentialStoreTokenManager).Name + ".  For a custom class, set the ConsumerSecret on that directly.");
+                }
+            }
         }
 
         /// <summary>
@@ -105,15 +163,26 @@ namespace LinqToTwitter
         /// <value>The access token.</value>
         protected override string AccessToken
         {
-            get { return this.TokenManager.AccessToken; }
+            get
+            {
+                var credTokenManager = this.TokenManager as WindowsCredentialStoreTokenManager;
+                if (credTokenManager != null)
+                {
+                    return credTokenManager.AccessToken;
+                }
+                else
+                {
+                    return this.accessToken;
+                }
+            }
         }
 
         /// <summary>
         /// Gets the token manager.
         /// </summary>
-        private WindowsCredentialStoreTokenManager TokenManager
+        private IConsumerTokenManager TokenManager
         {
-            get { return (WindowsCredentialStoreTokenManager)base.Consumer.TokenManager; }
+            get { return base.Consumer.TokenManager; }
         }
 
         /// <summary>
