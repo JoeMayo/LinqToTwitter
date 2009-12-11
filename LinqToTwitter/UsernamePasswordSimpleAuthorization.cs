@@ -33,12 +33,18 @@ namespace LinqToTwitter
         /// </summary>
         public UsernamePasswordSimpleAuthorization()
         {
+            BaseUrl = "https://api.twitter.com/1/";
         }
 
         /// <summary>
         /// Gets or sets the username.
         /// </summary>
         public string UserName { get; set; }
+
+        /// <summary>
+        /// Base URL for accessing Twitter API
+        /// </summary>
+        public string BaseUrl { get; set; }
 
         /// <summary>
         /// Gets or sets the password.
@@ -163,7 +169,8 @@ namespace LinqToTwitter
                 this.Password = password;
                 this.IsAuthorized = true;
 
-                var request = Get(new Uri("https://twitter.com/account/verify_credentials.xml"), null);
+                // From Patch 4614 (icyflash on codeplex.com)
+                var request = Get(new Uri(BaseUrl + "account/verify_credentials.xml"), null);
 
                 using (var response = request.GetResponse())
                 {
