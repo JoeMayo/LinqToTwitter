@@ -265,12 +265,35 @@ namespace LinqToTwitterTests
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                 {
-                    { "Type", "0" },
+                    { "Type", ((int)ListType.Lists).ToString() },
                     { "ScreenName", "JoeMayo" }
                 };
             string expected = "https://api.twitter.com/1/JoeMayo/lists.xml";
             string actual = target.BuildURL(parameters);
             Assert.AreEqual(expected, actual);
+        }
+
+        ///<summary>
+        /// A test for buildUrl using parameters
+        /// </summary>
+        [TestMethod()]
+        public void BuildStatusUrlTestWithParameters()
+        {
+            ListRequestProcessor target = new ListRequestProcessor() { BaseUrl = "https://api.twitter.com/1/" };
+            var parameters = new Dictionary<string, string>
+                                 {
+                                     {"Type", ((int) ListType.Statuses).ToString()},
+                                     {"ScreenName", "JoeMayo"},
+                                     {"ListID", "1234567"},
+                                     {"MaxID", "9876543"},
+                                     {"SinceID", "2345678"},
+                                     {"PerPage", "100"},
+                                     {"Page", "2"}
+                                 };
+            string expected =
+                "https://api.twitter.com/1/JoeMayo/lists/1234567/statuses.xml?max_id=9876543&since_id=2345678&per_page=100&page=2";
+            string actual = target.BuildURL(parameters);
+            Assert.AreEqual(expected, actual);                       
         }
 
         /// <summary>

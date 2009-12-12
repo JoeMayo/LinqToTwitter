@@ -231,6 +231,11 @@ namespace LinqToTwitter
         /// <returns>URL for statuses query</returns>
         private string BuildStatusesUrl(Dictionary<string, string> parameters)
         {
+            // From patch #4628 (MikeLang on codeplex.com):
+            //  The previous implementation wasn't putting the '?' separator 
+            //  between the query string and the rest of the url.
+            var urlParams = new List<string>();
+
             string url = BaseUrl + @"lists/";
 
             if (parameters.ContainsKey("ListID"))
@@ -246,25 +251,30 @@ namespace LinqToTwitter
             if (parameters.ContainsKey("MaxID"))
             {
                 MaxID = ulong.Parse(parameters["MaxID"]);
-                url += "&max_id=" + parameters["MaxID"];
+                urlParams.Add("max_id=" + parameters["MaxID"]);
             }
 
             if (parameters.ContainsKey("SinceID"))
             {
                 SinceID = ulong.Parse(parameters["SinceID"]);
-                url += "&since_id=" + parameters["SinceID"];
+                urlParams.Add("since_id=" + parameters["SinceID"]);
             }
 
             if (parameters.ContainsKey("PerPage"))
             {
                 PerPage = int.Parse(parameters["PerPage"]);
-                url += "&per_page=" + parameters["PerPage"];
+                urlParams.Add("per_page=" + parameters["PerPage"]);
             }
 
             if (parameters.ContainsKey("Page"))
             {
                 Page = int.Parse(parameters["Page"]);
-                url += "&page=" + parameters["Page"];
+                urlParams.Add("page=" + parameters["Page"]);
+            }
+
+            if (urlParams.Count > 0)
+            {
+                url += "?" + string.Join("&", urlParams.ToArray());
             }
 
             return url;

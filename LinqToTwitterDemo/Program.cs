@@ -405,14 +405,14 @@ namespace LinqToTwitterDemo
         /// <summary>
         /// Gets a list of statuses for specified list
         /// </summary>
-        /// <param name="twitterCtx"></param>
+        /// <param name="twitterCtx">TwitterContext</param>
         private static void GetListStatusesDemo(TwitterContext twitterCtx)
         {
             var statusList =
                 (from list in twitterCtx.List
                  where list.Type == ListType.Statuses &&
                        list.ScreenName == "LinqToTweeter" &&
-                       list.ListID == 3897006 // ID of list to get statuses for
+                       list.ListID == 3897016 // ID of list to get statuses for
                  select list)
                  .First();
 
