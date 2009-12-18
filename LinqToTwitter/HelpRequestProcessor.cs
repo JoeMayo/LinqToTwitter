@@ -16,7 +16,7 @@ namespace LinqToTwitter
         /// <summary>
         /// not used
         /// </summary>
-        public string BaseUrl
+        public virtual string BaseUrl
         {
             get
             {
@@ -31,7 +31,7 @@ namespace LinqToTwitter
         /// <summary>
         /// not used
         /// </summary>
-        public Dictionary<string, string> GetParameters(System.Linq.Expressions.LambdaExpression lambdaExpression)
+        public virtual Dictionary<string, string> GetParameters(System.Linq.Expressions.LambdaExpression lambdaExpression)
         {
             throw new NotImplementedException();
         }
@@ -39,7 +39,7 @@ namespace LinqToTwitter
         /// <summary>
         /// not used
         /// </summary>
-        public string BuildURL(Dictionary<string, string> parameters)
+        public virtual string BuildURL(Dictionary<string, string> parameters)
         {
             throw new NotImplementedException();
         }
@@ -49,7 +49,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="twitterResponse">response from twitter</param>
         /// <returns>true</returns>
-        public IList ProcessResults(System.Xml.Linq.XElement twitterResponse)
+        public virtual IList ProcessResults(System.Xml.Linq.XElement twitterResponse)
         {
             var response = twitterResponse.Value;
 

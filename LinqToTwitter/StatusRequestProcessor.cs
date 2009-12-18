@@ -17,7 +17,7 @@ namespace LinqToTwitter
         /// <summary>
         /// base url for request
         /// </summary>
-        public string BaseUrl { get; set; }
+        public virtual string BaseUrl { get; set; }
 
         /// <summary>
         /// type of status request, i.e. Friends or Public
@@ -64,7 +64,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="lambdaExpression">lambda expression with where clause</param>
         /// <returns>dictionary of parameter name/value pairs</returns>
-        public Dictionary<string, string> GetParameters(LambdaExpression lambdaExpression)
+        public virtual Dictionary<string, string> GetParameters(LambdaExpression lambdaExpression)
         {
             var paramFinder =
                new ParameterFinder<Status>(
@@ -90,7 +90,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">criteria for url segments and parameters</param>
         /// <returns>URL conforming to Twitter API</returns>
-        public string BuildURL(Dictionary<string, string> parameters)
+        public virtual string BuildURL(Dictionary<string, string> parameters)
         {
             string url = null;
 
@@ -361,7 +361,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="twitterResponse">xml with Twitter response</param>
         /// <returns>IQueryable of Status</returns>
-        public IList ProcessResults(XElement twitterResponse)
+        public virtual IList ProcessResults(XElement twitterResponse)
         {
             var responseItems = twitterResponse.Elements("status").ToList();
 
@@ -374,11 +374,26 @@ namespace LinqToTwitter
 
             var usr = new User();
 
-            var statusList =
+            var statuses =
                 from statusXmlElement in responseItems
                 select new Status().CreateStatus(statusXmlElement);
 
-            return statusList.ToList();
+            var statusList = statuses.ToList();
+
+            statusList.ForEach(
+                status =>
+                {
+                    status.Type = Type;
+                    status.ID = ID;
+                    status.UserID = UserID;
+                    status.ScreenName = ScreenName;
+                    status.SinceID = SinceID;
+                    status.MaxID = MaxID;
+                    status.Count = Count;
+                    status.Page = Page;
+                });
+
+            return statusList;
         }
     }
 }

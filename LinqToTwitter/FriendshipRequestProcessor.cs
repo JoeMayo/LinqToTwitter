@@ -15,7 +15,7 @@ namespace LinqToTwitter
         /// <summary>
         /// base url for request
         /// </summary>
-        public string BaseUrl { get; set; }
+        public virtual string BaseUrl { get; set; }
 
         /// <summary>
         /// type of friendship (defaults to Exists)
@@ -37,7 +37,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="lambdaExpression">lambda expression with where clause</param>
         /// <returns>dictionary of parameter name/value pairs</returns>
-        public Dictionary<string, string> GetParameters(LambdaExpression lambdaExpression)
+        public virtual Dictionary<string, string> GetParameters(LambdaExpression lambdaExpression)
         {
             var paramFinder =
                new ParameterFinder<Friendship>(
@@ -58,7 +58,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">criteria for url segments and parameters</param>
         /// <returns>URL conforming to Twitter API</returns>
-        public string BuildURL(Dictionary<string, string> parameters)
+        public virtual string BuildURL(Dictionary<string, string> parameters)
         {
             string url = null;
 
@@ -140,7 +140,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="twitterResponse">xml with Twitter response</param>
         /// <returns>IQueryable of User</returns>
-        public IList ProcessResults(System.Xml.Linq.XElement twitterResponse)
+        public virtual IList ProcessResults(System.Xml.Linq.XElement twitterResponse)
         {
             var friendList = new List<Friendship>()
             {

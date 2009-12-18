@@ -16,7 +16,7 @@ namespace LinqToTwitter
         /// <summary>
         /// base url for request
         /// </summary>
-        public string BaseUrl { get; set; }
+        public virtual string BaseUrl { get; set; }
 
         /// <summary>
         /// type of trend to query (Trend (all), Current, Daily, or Weekly)
@@ -39,7 +39,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="lambdaExpression">lambda expression with where clause</param>
         /// <returns>dictionary of parameter name/value pairs</returns>
-        public Dictionary<string, string> GetParameters(LambdaExpression lambdaExpression)
+        public virtual Dictionary<string, string> GetParameters(LambdaExpression lambdaExpression)
         {
             return
                new ParameterFinder<Trend>(
@@ -57,7 +57,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">criteria for url segments and parameters</param>
         /// <returns>URL conforming to Twitter API</returns>
-        public string BuildURL(Dictionary<string, string> parameters)
+        public virtual string BuildURL(Dictionary<string, string> parameters)
         {
             string url = null;
 
@@ -180,7 +180,7 @@ namespace LinqToTwitter
         /// <param name="parameters">list of parameters from expression tree</param>
         /// <param name="url">base url</param>
         /// <returns>base url + parameters</returns>
-        public IList ProcessResults(System.Xml.Linq.XElement twitterResponse)
+        public virtual IList ProcessResults(System.Xml.Linq.XElement twitterResponse)
         {
             XNamespace itemNS = "item";
 

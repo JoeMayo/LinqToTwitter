@@ -2158,7 +2158,7 @@ namespace LinqToTwitterDemo
             var friendTweets =
                 from tweet in twitterCtx.Status
                 where tweet.Type == StatusType.Retweets &&
-                      tweet.ID == "5769361742"
+                      tweet.ID == "6773457956"
                 select tweet;
 
             Console.WriteLine("\nReTweets: \n");
@@ -2230,7 +2230,7 @@ namespace LinqToTwitterDemo
         {
             Console.WriteLine();
 
-            var lastN = 20;
+            var lastN = 11;
             var screenName = "JoeMayo";
 
             var statusTweets =

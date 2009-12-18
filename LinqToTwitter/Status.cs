@@ -64,14 +64,6 @@ namespace LinqToTwitter
 
             var newStatus = new Status
             {
-                Type = Type,
-                ID = ID,
-                UserID = UserID,
-                ScreenName = ScreenName,
-                Page = Page,
-                Count = Count,
-                MaxID = MaxID,
-                SinceID = SinceID,
                 CreatedAt = createdAtDate,
                 Favorited =
                  bool.Parse(
