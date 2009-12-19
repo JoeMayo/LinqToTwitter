@@ -91,8 +91,7 @@ namespace LinqToTwitter
 
             if (parameters == null || !parameters.ContainsKey("Type"))
             {
-                url = BuildSocialGraphFriendsUrl(parameters);
-                return url;
+                throw new ArgumentException("You must set Type.", "Type");
             }
 
             Type = RequestProcessorHelper.ParseQueryEnumType<SocialGraphType>(parameters["Type"]);
@@ -102,10 +101,11 @@ namespace LinqToTwitter
                 case SocialGraphType.Followers:
                     url = BuildSocialGraphFollowersUrl(parameters);
                     break;
-
-                default:
+                case SocialGraphType.Friends:
                     url = BuildSocialGraphFriendsUrl(parameters);
                     break;
+                default:
+                    throw new InvalidOperationException("The default case of BuildUrl should never execute because a Type must be specified.");
             }
 
             return url;

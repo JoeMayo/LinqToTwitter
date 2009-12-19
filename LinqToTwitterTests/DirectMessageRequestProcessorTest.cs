@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Xml.Linq;
 using System.Linq;
 using System.IO;
+using System;
 
 namespace LinqToTwitterTests
 {
@@ -131,19 +132,6 @@ namespace LinqToTwitterTests
         ///A test for BuildUrl
         ///</summary>
         [TestMethod()]
-        public void BuildUrlTest()
-        {
-            var dmProc = new DirectMessageRequestProcessor() { BaseUrl = "http://twitter.com/" };
-            string expected = "http://twitter.com/direct_messages.xml";
-            Dictionary<string, string> parameters = null;
-            string actual = dmProc.BuildURL(parameters);
-            Assert.AreEqual(expected, actual);
-        }
-
-        /// <summary>
-        ///A test for BuildUrl
-        ///</summary>
-        [TestMethod()]
         public void BuildUrlSentToSinceIDTest()
         {
             var dmProc = new DirectMessageRequestProcessor() { BaseUrl = "http://twitter.com/" };
@@ -221,6 +209,46 @@ namespace LinqToTwitterTests
             Assert.IsTrue(
                 queryParams.Contains(
                     new KeyValuePair<string, string>("Type", ((int)DirectMessageType.SentTo).ToString())));
+        }
+
+        /// <summary>
+        ///A test for missing type
+        ///</summary>
+        [TestMethod()]
+        public void MissingTypeTest()
+        {
+            DirectMessageRequestProcessor target = new DirectMessageRequestProcessor() { BaseUrl = "http://twitter.com/" };
+            Dictionary<string, string> parameters = new Dictionary<string, string> { };
+            string actual;
+            try
+            {
+                actual = target.BuildURL(parameters);
+                Assert.Fail("Expected ArgumentException.");
+            }
+            catch (ArgumentException ae)
+            {
+                Assert.AreEqual<string>("Type", ae.ParamName);
+            }
+        }
+
+        /// <summary>
+        ///A test for null parameters
+        ///</summary>
+        [TestMethod()]
+        public void NullParametersTest()
+        {
+            DirectMessageRequestProcessor target = new DirectMessageRequestProcessor() { BaseUrl = "http://twitter.com/" };
+            Dictionary<string, string> parameters = null;
+            string actual;
+            try
+            {
+                actual = target.BuildURL(parameters);
+                Assert.Fail("Expected ArgumentException.");
+            }
+            catch (ArgumentException ae)
+            {
+                Assert.AreEqual<string>("Type", ae.ParamName);
+            }
         }
     }
 }

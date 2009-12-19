@@ -132,12 +132,12 @@ namespace LinqToTwitter
 
             if (parameters == null || !parameters.ContainsKey("Type"))
             {
-                throw new ArgumentException("You must specify the ListType for your query.");
+                throw new ArgumentException("You must set Type.", "Type");
             }
 
             if (!parameters.ContainsKey("ScreenName"))
             {
-                throw new ArgumentException("You must specify the user's ScreenName for your query.");
+                throw new ArgumentException("You must specify the user's ScreenName for your query.", "ScreenName");
             }
 
             ScreenName = parameters["ScreenName"];

@@ -76,8 +76,7 @@ namespace LinqToTwitter
 
             if (parameters == null || !parameters.ContainsKey("Type"))
             {
-                url = BuildBlockingIDsUrl(parameters);
-                return url;
+                throw new ArgumentException("You must set Type.", "Type");
             }
 
             Type = RequestProcessorHelper.ParseQueryEnumType<BlockingType>(parameters["Type"]);
@@ -94,8 +93,7 @@ namespace LinqToTwitter
                     url = BuildBlockingIDsUrl(parameters);
                     break;
                 default:
-                    url = BuildBlockingIDsUrl(parameters);
-                    break;
+                    throw new InvalidOperationException("The default case of BuildUrl should never execute because a Type must be specified.");
             }
 
             return url;

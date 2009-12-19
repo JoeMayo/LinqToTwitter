@@ -63,8 +63,7 @@ namespace LinqToTwitter
 
             if (parameters == null || !parameters.ContainsKey("Type"))
             {
-                url = BuildTrendsUrl(parameters);
-                return url;
+                throw new ArgumentException("You must set Type.", "Type");
             }
 
             Type = RequestProcessorHelper.ParseQueryEnumType<TrendType>(parameters["Type"]);
@@ -84,8 +83,7 @@ namespace LinqToTwitter
                     url = BuildWeeklyTrendsUrl(parameters);
                     break;
                 default:
-                    url = BuildTrendsUrl(parameters);
-                    break;
+                    throw new InvalidOperationException("The default case of BuildUrl should never execute because a Type must be specified.");
             }
 
             return url;

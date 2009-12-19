@@ -204,6 +204,7 @@ The blog system I'm us.. &lt;a href=""http://tinyurl.com/cvdbvr""&gt;http://tiny
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                 {
+                    { "Type", SearchType.Search.ToString() },
                     { "GeoCode", "40.757929,-73.985506,25km" },
                     { "SearchLanguage", "en" },
                     { "Page", "1" },
@@ -216,6 +217,46 @@ The blog system I'm us.. &lt;a href=""http://tinyurl.com/cvdbvr""&gt;http://tiny
             string actual;
             actual = target.BuildURL(parameters);
             Assert.AreEqual(expected, actual);
+        }
+
+        /// <summary>
+        ///A test for missing type
+        ///</summary>
+        [TestMethod()]
+        public void MissingTypeTest()
+        {
+            SearchRequestProcessor target = new SearchRequestProcessor() { BaseUrl = "http://search.twitter.com/" };
+            Dictionary<string, string> parameters = new Dictionary<string, string> { };
+            string actual;
+            try
+            {
+                actual = target.BuildURL(parameters);
+                Assert.Fail("Expected ArgumentException.");
+            }
+            catch (ArgumentException ae)
+            {
+                Assert.AreEqual<string>("Type", ae.ParamName);
+            }
+        }
+
+        /// <summary>
+        ///A test for null parameters
+        ///</summary>
+        [TestMethod()]
+        public void NullParametersTest()
+        {
+            SearchRequestProcessor target = new SearchRequestProcessor() { BaseUrl = "http://search.twitter.com/" };
+            Dictionary<string, string> parameters = null;
+            string actual;
+            try
+            {
+                actual = target.BuildURL(parameters);
+                Assert.Fail("Expected ArgumentException.");
+            }
+            catch (ArgumentException ae)
+            {
+                Assert.AreEqual<string>("Type", ae.ParamName);
+            }
         }
     }
 }

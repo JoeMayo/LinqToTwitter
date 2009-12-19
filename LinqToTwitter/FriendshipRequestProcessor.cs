@@ -64,8 +64,7 @@ namespace LinqToTwitter
 
             if (parameters == null || !parameters.ContainsKey("Type"))
             {
-                url = BuildFriendshipExistsUrl(parameters);
-                return url;
+                throw new ArgumentException("You must set Type.", "Type");
             }
 
             Type = RequestProcessorHelper.ParseQueryEnumType<FriendshipType>(parameters["Type"]);
@@ -76,8 +75,7 @@ namespace LinqToTwitter
                     url = BuildFriendshipExistsUrl(parameters);
                     break;
                 default:
-                    url = BuildFriendshipExistsUrl(parameters);
-                    break;
+                    throw new InvalidOperationException("The default case of BuildUrl should never execute because a Type must be specified.");
             }
 
             return url;

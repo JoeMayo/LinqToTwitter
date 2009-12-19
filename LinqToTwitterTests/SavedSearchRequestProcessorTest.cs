@@ -181,5 +181,45 @@ namespace LinqToTwitterTests
             string actual = target.BuildURL(parameters);
             Assert.AreEqual(expected, actual);
         }
+
+        /// <summary>
+        ///A test for missing type
+        ///</summary>
+        [TestMethod()]
+        public void MissingTypeTest()
+        {
+            SavedSearchRequestProcessor target = new SavedSearchRequestProcessor() { BaseUrl = "http://twitter.com/" };
+            Dictionary<string, string> parameters = new Dictionary<string, string> { };
+            string actual;
+            try
+            {
+                actual = target.BuildURL(parameters);
+                Assert.Fail("Expected ArgumentException.");
+            }
+            catch (ArgumentException ae)
+            {
+                Assert.AreEqual<string>("Type", ae.ParamName);
+            }
+        }
+
+        /// <summary>
+        ///A test for null parameters
+        ///</summary>
+        [TestMethod()]
+        public void NullParametersTest()
+        {
+            SavedSearchRequestProcessor target = new SavedSearchRequestProcessor() { BaseUrl = "http://twitter.com/" };
+            Dictionary<string, string> parameters = null;
+            string actual;
+            try
+            {
+                actual = target.BuildURL(parameters);
+                Assert.Fail("Expected ArgumentException.");
+            }
+            catch (ArgumentException ae)
+            {
+                Assert.AreEqual<string>("Type", ae.ParamName);
+            }
+        }
     }
 }

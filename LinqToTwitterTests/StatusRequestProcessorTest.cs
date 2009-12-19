@@ -919,7 +919,11 @@ namespace LinqToTwitterTests
         public void BuildURLPublicTest()
         {
             var statProc = new StatusRequestProcessor() { BaseUrl = "http://twitter.com/" };
-            Dictionary<string, string> parameters = null;
+            Dictionary<string, string> parameters =
+                new Dictionary<string, string>
+                    {
+                        { "Type", ((int)StatusType.Public).ToString() }
+                    };
             string expected = "http://twitter.com/statuses/public_timeline.xml";
             string actual;
             actual = statProc.BuildURL(parameters);
@@ -1220,6 +1224,46 @@ namespace LinqToTwitterTests
             string expected = "http://twitter.com/statuses/public_timeline.xml";
             var actual = reqProc.BuildPublicUrl();
             Assert.AreEqual(expected, actual);
+        }
+
+        /// <summary>
+        ///A test for missing type
+        ///</summary>
+        [TestMethod()]
+        public void MissingTypeTest()
+        {
+            StatusRequestProcessor target = new StatusRequestProcessor() { BaseUrl = "http://twitter.com/" };
+            Dictionary<string, string> parameters = new Dictionary<string, string> { };
+            string actual;
+            try
+            {
+                actual = target.BuildURL(parameters);
+                Assert.Fail("Expected ArgumentException.");
+            }
+            catch (ArgumentException ae)
+            {
+                Assert.AreEqual<string>("Type", ae.ParamName);
+            }
+        }
+
+        /// <summary>
+        ///A test for null parameters
+        ///</summary>
+        [TestMethod()]
+        public void NullParametersTest()
+        {
+            StatusRequestProcessor target = new StatusRequestProcessor() { BaseUrl = "http://twitter.com/" };
+            Dictionary<string, string> parameters = null;
+            string actual;
+            try
+            {
+                actual = target.BuildURL(parameters);
+                Assert.Fail("Expected ArgumentException.");
+            }
+            catch (ArgumentException ae)
+            {
+                Assert.AreEqual<string>("Type", ae.ParamName);
+            }
         }
     }
 }

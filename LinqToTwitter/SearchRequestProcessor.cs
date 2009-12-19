@@ -92,7 +92,12 @@ namespace LinqToTwitter
         /// <returns>URL conforming to Twitter API</returns>
         public string BuildURL(Dictionary<string, string> parameters)
         {
-            Type = SearchType.Search;
+            if (parameters == null || !parameters.ContainsKey("Type"))
+            {
+                throw new ArgumentException("You must set Type.", "Type");
+            }
+
+            Type = RequestProcessorHelper.ParseQueryEnumType<SearchType>(parameters["Type"]);
 
             var url = BaseUrl + "search.atom";
 

@@ -120,6 +120,7 @@ namespace LinqToTwitterTests
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                 {
+                    { "Type", FriendshipType.Exists.ToString() },
                     { "SubjectUser", "123" },
                     { "FollowingUser", "456" }
                 };
@@ -127,6 +128,46 @@ namespace LinqToTwitterTests
             string actual;
             actual = target.BuildURL(parameters);
             Assert.AreEqual(expected, actual);
+        }
+
+        /// <summary>
+        ///A test for missing type
+        ///</summary>
+        [TestMethod()]
+        public void MissingTypeTest()
+        {
+            FriendshipRequestProcessor target = new FriendshipRequestProcessor() { BaseUrl = "http://twitter.com/" };
+            Dictionary<string, string> parameters = new Dictionary<string, string> { };
+            string actual;
+            try
+            {
+                actual = target.BuildURL(parameters);
+                Assert.Fail("Expected ArgumentException.");
+            }
+            catch (ArgumentException ae)
+            {
+                Assert.AreEqual<string>("Type", ae.ParamName);
+            }
+        }
+
+        /// <summary>
+        ///A test for null parameters
+        ///</summary>
+        [TestMethod()]
+        public void NullParametersTest()
+        {
+            FriendshipRequestProcessor target = new FriendshipRequestProcessor() { BaseUrl = "http://twitter.com/" };
+            Dictionary<string, string> parameters = null;
+            string actual;
+            try
+            {
+                actual = target.BuildURL(parameters);
+                Assert.Fail("Expected ArgumentException.");
+            }
+            catch (ArgumentException ae)
+            {
+                Assert.AreEqual<string>("Type", ae.ParamName);
+            }
         }
     }
 }

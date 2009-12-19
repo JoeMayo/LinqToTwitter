@@ -49,8 +49,7 @@ namespace LinqToTwitter
 
             if (parameters == null || !parameters.ContainsKey("Type"))
             {
-                url = BaseUrl + "account/verify_credentials.xml";
-                return url;
+                throw new ArgumentException("You must set Type.", "Type");
             }
 
             Type = RequestProcessorHelper.ParseQueryEnumType<AccountType>(parameters["Type"]);
@@ -64,8 +63,7 @@ namespace LinqToTwitter
                     url = BaseUrl + "account/rate_limit_status.xml";
                     break;
                 default:
-                    url = BaseUrl + "account/verify_credentials.xml";
-                    break;
+                    throw new InvalidOperationException("The default case of BuildUrl should never execute because a Type must be specified.");
             }
 
             return url;

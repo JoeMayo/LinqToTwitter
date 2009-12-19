@@ -99,6 +99,7 @@ namespace LinqToTwitterDemo
                 //RetweetedByMeStatusQueryDemo(twitterCtx);
                 //RetweetedToMeStatusQueryDemo(twitterCtx);
                 //RetweetsOfMeStatusQueryDemo(twitterCtx);
+                //GetAllTweetsAndRetweetsDemo(twitterCtx);
 
                 //
                 // user tweets
@@ -2220,6 +2221,45 @@ namespace LinqToTwitterDemo
                 retweet => Console.WriteLine(
                     "Name: {0}, Tweet: {1}\n",
                     retweet.User.Name, retweet.Text));
+        }
+
+        /// <summary>
+        /// Shows how to get tweets and retweets by the logged-in user through a union
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void GetAllTweetsAndRetweetsDemo(TwitterContext twitterCtx)
+        {
+            var myTweets =
+                (from tweet in twitterCtx.Status
+                 where tweet.Type == StatusType.User
+                      && tweet.ScreenName == "JoeMayo"
+                 select tweet)
+                 .ToList();
+
+            var myRetweets =
+                (from retweet in twitterCtx.Status
+                 where retweet.Type == StatusType.RetweetedByMe
+                 select retweet)
+                 .ToList();
+
+            var allTweets = myTweets.Union(myRetweets);
+
+            allTweets.ToList().ForEach(
+                tweet => 
+                {
+                    if (tweet.Retweet == null)
+                    {
+                        Console.WriteLine(
+                            "Name: {0}, Tweet: {1}\n",
+                            tweet.User.Name, tweet.Text);
+                    }
+                    else
+	                {
+                        Console.WriteLine(
+                            "Name: {0}, ReTweet: {1}\n",
+                            tweet.Retweet.RetweetingUser.Name, tweet.Retweet.Text);
+	                }
+                });
         }
 
         /// <summary>

@@ -57,7 +57,12 @@ namespace LinqToTwitter
         /// <returns>URL conforming to Twitter API</returns>
         public virtual string BuildURL(Dictionary<string, string> parameters)
         {
-            Type = FavoritesType.Favorites;
+            if (parameters == null || !parameters.ContainsKey("Type"))
+            {
+                throw new ArgumentException("You must set Type.", "Type");
+            }
+
+            Type = RequestProcessorHelper.ParseQueryEnumType<FavoritesType>(parameters["Type"]);
 
             var url = BaseUrl + "favorites.xml";
 
