@@ -92,11 +92,14 @@ namespace LinqToTwitterDemo
                 //PublicStatusQueryDemo(twitterCtx);
                 //PublicStatusFilteredQueryDemo(twitterCtx);
                 //MentionsStatusQueryDemo(twitterCtx);
+                //MentionsWithSinceIDStatusQueryDemo(twitterCtx);
+                //MentionsWithPagingQueryDemo(twitterCtx);
                 //FriendStatusQueryDemo(twitterCtx);
                 //HomeStatusQueryDemo(twitterCtx);
                 //RetweetDemo(twitterCtx);
                 //RetweetsQueryDemo(twitterCtx);
                 //RetweetedByMeStatusQueryDemo(twitterCtx);
+                //RetweetedByMeWithCountStatusQueryDemo(twitterCtx);
                 //RetweetedToMeStatusQueryDemo(twitterCtx);
                 //RetweetsOfMeStatusQueryDemo(twitterCtx);
                 //GetAllTweetsAndRetweetsDemo(twitterCtx);
@@ -107,6 +110,7 @@ namespace LinqToTwitterDemo
 
                 //UserShowWithIDQueryDemo(twitterCtx);
                 //UserShowWithScreenNameQueryDemo(twitterCtx);
+                //UserShowLoggedInUserQueryDemo(twitterCtx);
                 //UserFriendsQueryDemo(twitterCtx);
                 //UserFriendsWithCursorQueryDemo(twitterCtx);
                 //UserFollowersQueryDemo(twitterCtx);
@@ -146,6 +150,8 @@ namespace LinqToTwitterDemo
                 //
 
                 //SearchTwitterDemo(twitterCtx);
+                //SearchAndUseStatusTwitterDemo(twitterCtx);
+                //SearchByLanguageTwitterDemo(twitterCtx);
                 //SearchTwitterSource(twitterCtx);
                 //ExceedSearchRateLimitDemo(twitterCtx);
 
@@ -1505,6 +1511,60 @@ namespace LinqToTwitterDemo
         }
 
         /// <summary>
+        /// shows how to perform a twitter search, extract status, and search the status
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void SearchAndUseStatusTwitterDemo(TwitterContext twitterCtx)
+        {
+            var queryResult =
+                (from search in twitterCtx.Search
+                 where search.Type == SearchType.Search &&
+                       search.Query == "LINQ to Twitter"
+                 select search)
+                 .SingleOrDefault();
+
+            foreach (var entry in queryResult.Entries)
+            {
+                var statusID = entry.ID.Substring(entry.ID.LastIndexOf(":") + 1);
+
+                var status =
+                    (from tweet in twitterCtx.Status
+                     where tweet.Type == StatusType.Show &&
+                           tweet.ID == statusID
+                     select tweet)
+                     .SingleOrDefault();
+
+                Console.WriteLine(
+                    "ID: {0}, User: {1}\nTweet: {2}\n",
+                    status.ID, status.User.Name, status.Text);
+            }
+        }
+
+        /// <summary>
+        /// shows how to perform a twitter search, extract status, and search the status
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void SearchByLanguageTwitterDemo(TwitterContext twitterCtx)
+        {
+            var filter = "Dallas";
+
+            var queryResult =
+                (from search in twitterCtx.Search
+                 where search.Type == SearchType.Search &&
+                    search.Query == filter && 
+                    search.SearchLanguage == "en"
+                  select search)
+                 .SingleOrDefault();
+
+            foreach (var entry in queryResult.Entries)
+            {
+                Console.WriteLine(
+                    "ID: {0}, Source: {1}, Language: {2}\nContent: {3}\n",
+                    entry.ID, entry.Source, entry.Language, entry.Content);
+            }
+        }
+
+        /// <summary>
         /// Shows how to specify a source of tweets to search for
         /// </summary>
         /// <param name="twitterCtx">TwitterContext</param>
@@ -1849,24 +1909,44 @@ namespace LinqToTwitterDemo
             Console.WriteLine();
             Console.WriteLine("Name: {0}, Last Tweet: {1}\n", name, lastStatus);
         }
-        
+
         /// <summary>
         /// shows how to query users
         /// </summary>
         /// <param name="twitterCtx">TwitterContext</param>
-        private static void UserShowWithIDQueryDemo(TwitterContext twitterCtx)
+        private static void UserShowLoggedInUserQueryDemo(TwitterContext twitterCtx)
         {
             var users =
-                from tweet in twitterCtx.User
-                where tweet.Type == UserType.Show &&
-                      tweet.ID == "15411837"
-                select tweet;
+                from usr in twitterCtx.User
+                where usr.Type == UserType.Show &&
+                      usr.ScreenName == twitterCtx.UserName
+                select usr;
 
             var user = users.SingleOrDefault();
 
+            var name = user.Name;
+            var lastStatus = user.Status == null ? "No Status" : user.Status.Text;
+
+            Console.WriteLine();
+            Console.WriteLine("Name: {0}, Last Tweet: {1}\n", name, lastStatus);
+        }
+
+        /// <summary>
+        /// Uses LINQ to Twitter to discover password to 1st Chirp conference
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void UserShowWithIDQueryDemo(TwitterContext twitterCtx)
+        {
+            var user =
+                (from tweet in twitterCtx.User
+                 where tweet.Type == UserType.Show &&
+                      tweet.ID == "6253282"
+                 select tweet)
+                 .SingleOrDefault();
+
             Console.WriteLine(
-                "Name: {0}, Last Tweet: {1}\n",
-                user.Name, user.Status.Text);
+                "The password to Chirp is: {0}", 
+                user.Identifier.ScreenName);
         }
 
         /// <summary>
@@ -2139,6 +2219,58 @@ namespace LinqToTwitterDemo
                     mention.User.Name, mention.StatusID, mention.Text));
         }
 
+        /// <summary>
+        /// Shows how to query tweets menioning logged-in user
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void MentionsWithSinceIDStatusQueryDemo(TwitterContext twitterCtx)
+        {
+            var myMentions =
+                from mention in twitterCtx.Status
+                where mention.Type == StatusType.Mentions
+                    && mention.SinceID == 7841796067
+                select mention;
+
+            myMentions.ToList().ForEach(
+                mention => Console.WriteLine(
+                    "Name: {0}, Tweet[{1}]: {2}\n",
+                    mention.User.Name, mention.StatusID, mention.Text));
+        }
+
+        /// <summary>
+        /// Shows how to query tweets menioning logged-in user
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void MentionsWithPagingQueryDemo(TwitterContext twitterCtx)
+        {
+            bool hasMoreTweets;
+            int page = 1;
+
+            do
+            {
+                var myMentions =
+                    (from mention in twitterCtx.Status
+                     where mention.Type == StatusType.Mentions
+                        && mention.Page == page
+                     select mention)
+                     .ToList();
+
+                hasMoreTweets = myMentions.Count > 0;
+                if (hasMoreTweets)
+                {
+                    Console.WriteLine("\n*** Page {0} ***\n", page); 
+
+                    myMentions.ForEach(
+                        mention => Console.WriteLine(
+                            "Name: {0}, Tweet[{1}]: {2}\n",
+                            mention.User.Name, mention.StatusID, mention.Text));
+                }
+
+                page++;
+
+            } while (hasMoreTweets);
+        }
+
         private static void RetweetDemo(TwitterContext twitterCtx)
         {
             var retweet = twitterCtx.Retweet("5769361742");
@@ -2181,6 +2313,24 @@ namespace LinqToTwitterDemo
             var myRetweets =
                 from retweet in twitterCtx.Status
                 where retweet.Type == StatusType.RetweetedByMe
+                select retweet;
+
+            myRetweets.ToList().ForEach(
+                retweet => Console.WriteLine(
+                    "Name: {0}, Tweet: {1}\n",
+                    retweet.Retweet.RetweetingUser.Name, retweet.Retweet.Text));
+        }
+
+        /// <summary>
+        /// Shows how to query retweets by the logged-in user, specifying the number of tweets
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void RetweetedByMeWithCountStatusQueryDemo(TwitterContext twitterCtx)
+        {
+            var myRetweets =
+                from retweet in twitterCtx.Status
+                where retweet.Type == StatusType.RetweetedByMe
+                   && retweet.Count == 5
                 select retweet;
 
             myRetweets.ToList().ForEach(

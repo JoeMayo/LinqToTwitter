@@ -52,6 +52,7 @@ Module Module1
         '
         'UserShowWithIDQueryDemo(twitterCtx)
         'UserShowWithScreenNameQueryDemo(twitterCtx)
+        'UserShowLoggedInUserQueryDemo(twitterCtx)
 
         '
         ' Direct Message Demos
@@ -350,6 +351,19 @@ Module Module1
             From user In twitterCtx.User _
             Where user.Type = UserType.Show _
             And user.ScreenName = "JoeMayo"
+        Dim singleUser As User = users.SingleOrDefault()
+
+        Console.WriteLine( _
+            "Name: {0}, Last Tweet: {1}" & Environment.NewLine, _
+            singleUser.Name, singleUser.Status.Text)
+    End Sub
+
+    Private Sub UserShowLoggedInUserQueryDemo(ByVal twitterCtx As TwitterContext)
+        Dim users = _
+            From usr In twitterCtx.User _
+            Where usr.Type = UserType.Show _
+                AndAlso usr.ScreenName = twitterCtx.UserName _
+            Select usr
         Dim singleUser As User = users.SingleOrDefault()
 
         Console.WriteLine( _
