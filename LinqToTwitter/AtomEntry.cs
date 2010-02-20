@@ -30,5 +30,10 @@ namespace LinqToTwitter
         public string Language { get; set; }
 
         public AtomAuthor Author { get; set; }
+
+        /// <summary>
+        /// Geo location of tweet
+        /// </summary>
+        public string Location { get; set; } 
     }
 }

@@ -306,7 +306,8 @@ namespace LinqToTwitter
                          {
                              Name = author.Element(atom + "name").Value,
                              URI = author.Element(atom + "uri").Value
-                         }
+                         },
+                         Location = atomEntry.Element(twitter + "geo").Value
                      }).ToList()
             };
 

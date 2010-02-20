@@ -82,7 +82,7 @@ namespace LinqToTwitterDemo
                 // status tweets
                 //
 
-                UpdateStatusDemo(twitterCtx);
+                //UpdateStatusDemo(twitterCtx);
                 //SingleStatusQueryDemo(twitterCtx);
                 //UpdateStatusWithReplyDemo(twitterCtx);
                 //DestroyStatusDemo(twitterCtx);
@@ -150,6 +150,8 @@ namespace LinqToTwitterDemo
                 //
 
                 //SearchTwitterDemo(twitterCtx);
+                //SearchTwitterSinceIDDemo(twitterCtx);
+                SearchTwitterLocationDemo(twitterCtx);
                 //SearchAndUseStatusTwitterDemo(twitterCtx);
                 //SearchByLanguageTwitterDemo(twitterCtx);
                 //SearchTwitterSource(twitterCtx);
@@ -1506,6 +1508,68 @@ namespace LinqToTwitterDemo
                     Console.WriteLine(
                         "ID: {0}, Source: {1}\nContent: {2}\n",
                         entry.ID, entry.Source, entry.Content);
+                }
+            }
+        }
+
+        /// <summary>
+        /// shows how to perform a twitter search using SinceID
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void SearchTwitterSinceIDDemo(TwitterContext twitterCtx)
+        {
+            string searchTerm = "Linq to Twitter";
+            ulong lastId = 9172099221;
+            int pageSize = 10;
+
+            var queryResults = from search in twitterCtx.Search
+                               where search.Type == SearchType.Search &&
+                                     search.Query == searchTerm.Trim() &&
+                                     search.PageSize == pageSize &&
+                                     search.SinceID == lastId
+                               select search;
+
+            foreach (var search in queryResults)
+            {
+                // here, you can see that properties are named
+                // from the perspective of atom feed elements
+                // i.e. the query string is called Title
+                Console.WriteLine("\nQuery:\n" + search.Title);
+
+                foreach (var entry in search.Entries)
+                {
+                    Console.WriteLine(
+                        "ID: {0}, Source: {1}\nContent: {2}\n",
+                        entry.ID, entry.Source, entry.Content);
+                }
+            }
+        }
+
+        /// <summary>
+        /// shows how to perform a twitter search using SinceID
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void SearchTwitterLocationDemo(TwitterContext twitterCtx)
+        {
+            string searchTerm = "JoeMayo";
+
+            var queryResults = from search in twitterCtx.Search
+                               where search.Type == SearchType.Search &&
+                                     search.Query == searchTerm
+                               select search;
+
+            foreach (var search in queryResults)
+            {
+                // here, you can see that properties are named
+                // from the perspective of atom feed elements
+                // i.e. the query string is called Title
+                Console.WriteLine("\nQuery:\n" + search.Title);
+
+                foreach (var entry in search.Entries)
+                {
+                    Console.WriteLine(
+                        "ID: {0}\nLocation: {1}\nSource: {2}\nContent: {3}\n",
+                        entry.ID, entry.Location, entry.Source, entry.Content);
                 }
             }
         }
