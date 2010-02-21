@@ -23,9 +23,14 @@ namespace LinqToTwitter
         public string Query { get; set; }
 
         /// <summary>
-        /// language to search in (ISO 639-1)
+        /// filters query to tweets in specified language (ISO 639-1)
         /// </summary>
         public string SearchLanguage { get; set; }
+
+        /// <summary>
+        /// language of the search query (currently only supports ja)
+        /// </summary>
+        public string Locale { get; set; }
 
         /// <summary>
         /// number of results for each page

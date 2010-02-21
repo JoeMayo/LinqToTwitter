@@ -95,11 +95,10 @@ namespace LinqToTwitterTests
         {
             SocialGraphRequestProcessor target = new SocialGraphRequestProcessor();
             Expression<Func<SocialGraph, bool>> expression =
-                graph => 
-                    graph.Type == SocialGraphType.Followers && 
-                    graph.ID == "123" && 
-                    graph.ScreenName == "456" &&
-                    graph.Page == 1;
+                graph =>
+                    graph.Type == SocialGraphType.Followers &&
+                    graph.ID == "123" &&
+                    graph.ScreenName == "456";
             LambdaExpression lambdaExpression = expression as LambdaExpression;
 
             var queryParams = target.GetParameters(lambdaExpression);
@@ -113,9 +112,6 @@ namespace LinqToTwitterTests
             Assert.IsTrue(
                 queryParams.Contains(
                     new KeyValuePair<string, string>("ScreenName", "456")));
-            Assert.IsTrue(
-                queryParams.Contains(
-                    new KeyValuePair<string, string>("Page", "1")));
         }
 
         /// <summary>

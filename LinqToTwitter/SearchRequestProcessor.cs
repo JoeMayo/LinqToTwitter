@@ -32,9 +32,14 @@ namespace LinqToTwitter
         private string Query { get; set; }
 
         /// <summary>
-        /// language to search in (ISO 639-1)
+        /// filters query to tweets in specified language (ISO 639-1)
         /// </summary>
         private string SearchLanguage { get; set; }
+
+        /// <summary>
+        /// language of the search query (currently only supports ja)
+        /// </summary>
+        private string Locale { get; set; }
 
         /// <summary>
         /// number of results for each page
@@ -75,6 +80,7 @@ namespace LinqToTwitter
                        "Type",
                        "Query",
                        "SearchLanguage",
+                       "Locale",
                        "PageSize",
                        "Page",
                        "SinceID",
@@ -128,6 +134,12 @@ namespace LinqToTwitter
                 urlParams.Add("lang=" + parameters["SearchLanguage"]);
             }
 
+            if (parameters.ContainsKey("Locale"))
+            {
+                Locale = parameters["Locale"];
+                urlParams.Add("locale=" + parameters["Locale"]);
+            }
+
             if (parameters.ContainsKey("Page"))
             {
                 Page = int.Parse(parameters["Page"]);
@@ -143,6 +155,12 @@ namespace LinqToTwitter
             if (parameters.ContainsKey("Query"))
             {
                 Query = parameters["Query"];
+
+                if (Query.Length > 140)
+                {
+                    throw new ArgumentException("Query length must be 140 characters or less.", "Query");
+                }
+
                 urlParams.Add("q=" + HttpUtility.UrlEncode(parameters["Query"]));
             }
 
@@ -218,7 +236,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="twitterResponse">xml with Twitter response</param>
         /// <returns>IQueryable of User</returns>
-        public IList ProcessResults(System.Xml.Linq.XElement twitterResponse)
+        public IList ProcessResults(XElement twitterResponse)
         {
             XNamespace atom = "http://www.w3.org/2005/Atom";
             XNamespace twitter = "http://api.twitter.com/";
@@ -233,6 +251,8 @@ namespace LinqToTwitter
                 Query = Query,
                 ShowUser = ShowUser,
                 SinceID = SinceID,
+                SearchLanguage = SearchLanguage,
+                Locale = Locale,
                 ID = twitterResponse.Element(atom + "id").Value,
                 Title = twitterResponse.Element(atom + "title").Value,
                 TwitterWarning = 
@@ -244,7 +264,7 @@ namespace LinqToTwitter
                     twitterResponse.Element(openSearch + "itemsPerPage") == null ?
                     -1 :
                     int.Parse(twitterResponse.Element(openSearch + "itemsPerPage").Value),
-                SearchLanguage = 
+                Language = 
                     twitterResponse.Element(openSearch + "language") == null ?
                     string.Empty :
                     twitterResponse.Element(openSearch + "language").Value,
@@ -307,7 +327,10 @@ namespace LinqToTwitter
                              Name = author.Element(atom + "name").Value,
                              URI = author.Element(atom + "uri").Value
                          },
-                         Location = atomEntry.Element(twitter + "geo").Value
+                         Location = 
+                            atomEntry.Element(twitter + "geo") == null ?
+                            string.Empty :
+                            atomEntry.Element(twitter + "geo").Value
                      }).ToList()
             };
 

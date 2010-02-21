@@ -258,5 +258,42 @@ The blog system I'm us.. &lt;a href=""http://tinyurl.com/cvdbvr""&gt;http://tiny
                 Assert.AreEqual<string>("Type", ae.ParamName);
             }
         }
+
+        /// <summary>
+        /// ensure query is URL encoded
+        /// </summary>
+        [TestMethod()]
+        public void UrlEncodedQueryTest()
+        {
+            SearchRequestProcessor target = new SearchRequestProcessor() { BaseUrl = "http://search.twitter.com/" };
+            string expected = target.BaseUrl + "search.atom?q=Contains+Space";
+            Dictionary<string, string> parameters =
+                new Dictionary<string, string>
+                {
+                    { "Type", SearchType.Search.ToString() },
+                    { "Query", "Contains Space" }
+                };
+            string actual = target.BuildURL(parameters);
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        /// <summary>
+        /// ensure query doesn't exceed 140 characters
+        /// </summary>
+        [TestMethod()]
+        [ExpectedException(typeof(ArgumentException))]
+        public void QueryTooLongTest()
+        {
+            SearchRequestProcessor target = new SearchRequestProcessor() { BaseUrl = "http://search.twitter.com/" };
+            string expected = target.BaseUrl + "search.atom?q=Contains+Space";
+            Dictionary<string, string> parameters =
+                new Dictionary<string, string>
+                {
+                    { "Type", SearchType.Search.ToString() },
+                    { "Query", "x01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789" }
+                };
+            string actual = target.BuildURL(parameters);
+        }
     }
 }
