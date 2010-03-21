@@ -300,6 +300,17 @@ namespace LinqToTwitter
         }
 
         /// <summary>
+        /// enables access to Twitter Geo info
+        /// </summary>
+        public TwitterQueryable<Geo> Geo
+        {
+            get
+            {
+                return new TwitterQueryable<Geo>(this);
+            }
+        }
+
+        /// <summary>
         /// enables access to Twitter Friendship info
         /// </summary>
         public TwitterQueryable<List> List
@@ -637,6 +648,9 @@ namespace LinqToTwitter
                 case "Friendship":
                     req = new FriendshipRequestProcessor() { BaseUrl = BaseUrl };
                     break;
+                case "Geo":
+                    req = new GeoRequestProcessor() { BaseUrl = baseUrl };
+                    break;
                 case "List":
                     req = new ListRequestProcessor() { BaseUrl = BaseUrl };
                     break;
@@ -670,13 +684,6 @@ namespace LinqToTwitter
                         trendTypeStr = parameters["Type"];
                     }
 
-                    //string trendTypeStr =
-                    //    ((((((expression as MethodCallExpression)
-                    //        .Arguments[0] as MethodCallExpression)
-                    //        .Arguments[1] as UnaryExpression)
-                    //        .Operand as LambdaExpression)
-                    //        .Body as BinaryExpression)
-                    //        .Right as ConstantExpression).Value.ToString();
                     TrendType trendType = (TrendType)Enum.Parse(typeof(TrendType), trendTypeStr);
 
                     string trendUrl = SearchUrl;

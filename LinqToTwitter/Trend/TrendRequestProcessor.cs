@@ -37,17 +37,17 @@ namespace LinqToTwitter
         /// <summary>
         /// Latitude
         /// </summary>
-        public string Latitude { get; set; }
+        private string Latitude { get; set; }
 
         /// <summary>
         /// Longitude
         /// </summary>
-        public string Longitude { get; set; }
+        private string Longitude { get; set; }
 
         /// <summary>
         /// Yahoo Where On Earth ID
         /// </summary>
-        public int WeoID { get; set; }
+        private int WeoID { get; set; }
         
         /// <summary>
         /// extracts parameters from lambda
