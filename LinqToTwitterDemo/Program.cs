@@ -82,7 +82,7 @@ namespace LinqToTwitterDemo
                 // status tweets
                 //
 
-                //UpdateStatusDemo(twitterCtx);
+                UpdateStatusDemo(twitterCtx);
                 //SingleStatusQueryDemo(twitterCtx);
                 //UpdateStatusWithReplyDemo(twitterCtx);
                 //DestroyStatusDemo(twitterCtx);
@@ -150,7 +150,7 @@ namespace LinqToTwitterDemo
                 //
 
                 //SearchTwitterDemo(twitterCtx);
-                SearchOperatorDemo(twitterCtx);
+                //SearchOperatorDemo(twitterCtx);
                 //SearchTwitterSinceIDDemo(twitterCtx);
                 //SearchTwitterLocationDemo(twitterCtx);
                 //SearchTwitterLocaleDemo(twitterCtx);
@@ -217,6 +217,8 @@ namespace LinqToTwitterDemo
                 //SearchCurrentTrendsDemo(twitterCtx);
                 //SearchDailyTrendsDemo(twitterCtx);
                 //SearchWeeklyTrendsDemo(twitterCtx);
+                //SearchAvailableTrendsDemo(twitterCtx);
+                //SearchLocationTrendsDemo(twitterCtx);
 
                 //
                 // Error Handling Demos
@@ -995,6 +997,51 @@ namespace LinqToTwitterDemo
         #region Trends Demos
 
         /// <summary>
+        /// Find locations where trending topics are occurring
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void SearchLocationTrendsDemo(TwitterContext twitterCtx)
+        {
+            // remember to truncate seconds (maybe even minutes) because they
+            // will never compare evenly, causing your list to be empty
+            var trends =
+                (from trnd in twitterCtx.Trends
+                 where trnd.Type == TrendType.Location &&
+                       trnd.WeoID == 1
+                 select trnd)
+                 .ToList();
+
+            // Location is the same for each trending item, so just read the first
+            Console.WriteLine("Location: {0}\n", trends[0].Location.Name);
+
+            trends.ForEach(
+                trnd => Console.WriteLine(
+                    "Name: {0}, Query: {1}\nSearchUrl: {2}\n",
+                    trnd.Name, trnd.Query, trnd.SearchUrl));
+        }
+
+        /// <summary>
+        /// Find locations where trending topics are occurring
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void SearchAvailableTrendsDemo(TwitterContext twitterCtx)
+        {
+            // remember to truncate seconds (maybe even minutes) because they
+            // will never compare evenly, causing your list to be empty
+            var trends =
+                from trnd in twitterCtx.Trends
+                where trnd.Type == TrendType.Available
+                select trnd;
+
+            var trend = trends.FirstOrDefault();
+
+            trend.Locations.ToList().ForEach(
+                loc => Console.WriteLine(
+                    "Name: {0}, Country: {1}, WoeID: {2}",
+                    loc.Name, loc.Country, loc.WoeID));
+        }
+
+        /// <summary>
         /// shows how to request weekly trends
         /// </summary>
         /// <param name="twitterCtx">TwitterContext</param>
@@ -1067,8 +1114,8 @@ namespace LinqToTwitterDemo
 
             trends.ToList().ForEach(
                 trend => Console.WriteLine(
-                    "Name: {0}, Query: {1}, Date: {2}",
-                    trend.Name, trend.Query, trend.AsOf));
+                    "Name: {0}, Date: {2}\nSearch URL: {1}",
+                    trend.Name, trend.AsOf, trend.SearchUrl));
         }
 
         #endregion

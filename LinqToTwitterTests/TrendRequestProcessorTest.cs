@@ -112,6 +112,79 @@ namespace LinqToTwitterTests
   <as_of type=""number"">1241233670</as_of>
 </root>";
 
+        string m_testAvailableQueryResponse = @"<locations type=""array"">
+  <location>
+    <woeid>23424900</woeid>
+    <name>Mexico</name>
+    <placeTypeName code=""12"">Country</placeTypeName>
+    <country type=""Country"" code=""MX"">Mexico</country>
+    <url>http://where.yahooapis.com/v1/place/23424900</url>
+  </location>
+  <location>
+    <woeid>23424975</woeid>
+    <name>United Kingdom</name>
+    <placeTypeName code=""12"">Country</placeTypeName>
+    <country type=""Country"" code=""GB"">United Kingdom</country>
+    <url>http://where.yahooapis.com/v1/place/23424975</url>
+  </location>
+  <location>
+    <woeid>23424803</woeid>
+    <name>Ireland</name>
+    <placeTypeName code=""12"">Country</placeTypeName>
+    <country type=""Country"" code=""IE"">Ireland</country>
+    <url>http://where.yahooapis.com/v1/place/23424803</url>
+  </location>
+  <location>
+    <woeid>2367105</woeid>
+    <name>Boston</name>
+    <placeTypeName code=""7"">Town</placeTypeName>
+    <country type=""Country"" code=""US"">United States</country>
+    <url>http://where.yahooapis.com/v1/place/2367105</url>
+  </location>
+  <location>
+    <woeid>2514815</woeid>
+    <name>Washington</name>
+    <placeTypeName code=""7"">Town</placeTypeName>
+    <country type=""Country"" code=""US"">United States</country>
+    <url>http://where.yahooapis.com/v1/place/2514815</url>
+  </location>
+  <location>
+    <woeid>2358820</woeid>
+    <name>Baltimore</name>
+    <placeTypeName code=""7"">Town</placeTypeName>
+    <country type=""Country"" code=""US"">United States</country>
+    <url>http://where.yahooapis.com/v1/place/2358820</url>
+  </location>
+  <location>
+    <woeid>455827</woeid>
+    <name>Sao Paulo</name>
+    <placeTypeName code=""7"">Town</placeTypeName>
+    <country type=""Country"" code=""BR"">Brazil</country>
+    <url>http://where.yahooapis.com/v1/place/455827</url>
+  </location>
+  <location>
+    <woeid>2459115</woeid>
+    <name>New York</name>
+    <placeTypeName code=""7"">Town</placeTypeName>
+    <country type=""Country"" code=""US"">United States</country>
+    <url>http://where.yahooapis.com/v1/place/2459115</url>
+  </location>
+  <location>
+    <woeid>2487796</woeid>
+    <name>San Antonio</name>
+    <placeTypeName code=""7"">Town</placeTypeName>
+    <country type=""Country"" code=""US"">United States</country>
+    <url>http://where.yahooapis.com/v1/place/2487796</url>
+  </location>
+  <location>
+    <woeid>23424977</woeid>
+    <name>United States</name>
+    <placeTypeName code=""12"">Country</placeTypeName>
+    <country type=""Country"" code=""US"">United States</country>
+    <url>http://where.yahooapis.com/v1/place/23424977</url>
+  </location>
+</locations>";
+
         /// <summary>
         ///Gets or sets the test context which provides
         ///information about and functionality for the current test run.
@@ -186,7 +259,20 @@ namespace LinqToTwitterTests
             Assert.AreNotEqual(DateTime.MinValue.Date, trends[0].AsOf.Date);
         }
 
-        /// <summary>
+         /// <summary>
+        ///A test for ProcessResults
+        ///</summary>
+        [TestMethod()]
+        public void ProcessAvailableTrendResultsTest()
+        {
+            TrendRequestProcessor target = new TrendRequestProcessor();
+            XElement twitterResponse = XElement.Parse(m_testAvailableQueryResponse);
+            IList actual = target.ProcessResults(twitterResponse);
+            var trends = actual.Cast<Trend>().ToList();
+            Assert.AreEqual(10, trends[0].Locations.Count);
+        }
+
+       /// <summary>
         ///A test for GetParameters
         ///</summary>
         [TestMethod()]
@@ -287,6 +373,78 @@ namespace LinqToTwitterTests
             string actual;
             actual = target.BuildURL(parameters);
             Assert.AreEqual(expected, actual);
+        }
+
+        /// <summary>
+        ///A test for BuildURL
+        ///</summary>
+        [TestMethod()]
+        public void BuildAvailableTrendsURLTest()
+        {
+            TrendRequestProcessor target = new TrendRequestProcessor() { BaseUrl = "http://api.twitter.com/1/" };
+            Dictionary<string, string> parameters =
+                new Dictionary<string, string>
+                {
+                    { "Type", ((int)TrendType.Available).ToString() },
+                    { "Latitude", "37.78215" },
+                    { "Longitude", "-122.40060" }
+                };
+            string expected = "http://api.twitter.com/1/trends/available.xml?lat=37.78215&long=-122.40060";
+            string actual;
+            actual = target.BuildURL(parameters);
+            Assert.AreEqual(expected, actual);
+        }
+
+        /// <summary>
+        ///A test for BuildURL
+        ///</summary>
+        [TestMethod()]
+        [ExpectedException(typeof(ArgumentException))]
+        public void BuildAvailableTrendsWithoutLatitudeURLTest()
+        {
+            TrendRequestProcessor target = new TrendRequestProcessor() { BaseUrl = "http://api.twitter.com/1/" };
+            Dictionary<string, string> parameters =
+                new Dictionary<string, string>
+                {
+                    { "Type", ((int)TrendType.Available).ToString() },
+                    { "Longitude", "-122.40060" }
+                };
+            target.BuildURL(parameters);
+        }
+
+        /// <summary>
+        ///A test for BuildURL
+        ///</summary>
+        [TestMethod()]
+        public void BuildLocationTrendsURLTest()
+        {
+            TrendRequestProcessor target = new TrendRequestProcessor() { BaseUrl = "http://api.twitter.com/1/" };
+            Dictionary<string, string> parameters =
+                new Dictionary<string, string>
+                {
+                    { "Type", ((int)TrendType.Location).ToString() },
+                    { "WeoID", "1" }
+                };
+            string expected = "http://api.twitter.com/1/trends/1.xml";
+            string actual;
+            actual = target.BuildURL(parameters);
+            Assert.AreEqual(expected, actual);
+        }
+
+        /// <summary>
+        ///A test for BuildURL
+        ///</summary>
+        [TestMethod()]
+        [ExpectedException(typeof(ArgumentException))]
+        public void BuildLocationTrendsWithoutWeoIDURLTest()
+        {
+            TrendRequestProcessor target = new TrendRequestProcessor() { BaseUrl = "http://api.twitter.com/1/" };
+            Dictionary<string, string> parameters =
+                new Dictionary<string, string>
+                {
+                    { "Type", ((int)TrendType.Location).ToString() },
+                };
+            string actual = target.BuildURL(parameters);
         }
 
         /// <summary>

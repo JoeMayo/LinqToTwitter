@@ -38,8 +38,38 @@ namespace LinqToTwitter
         public string Query { get; set; }
 
         /// <summary>
+        /// Search URL returned from Local Trends
+        /// </summary>
+        public string SearchUrl { get; set; }
+
+        /// <summary>
         /// name of trend topic
         /// </summary>
         public string Name { get; set; }
+
+        /// <summary>
+        /// Latitude
+        /// </summary>
+        public string Latitude { get; set; }
+
+        /// <summary>
+        /// Longitude
+        /// </summary>
+        public string Longitude { get; set; }
+
+        /// <summary>
+        /// Yahoo Where On Earth ID
+        /// </summary>
+        public int WeoID { get; set; }
+
+        /// <summary>
+        /// Location where trend is occurring
+        /// </summary>
+        public Location Location { get; set; }
+
+        /// <summary>
+        /// Return value for Avalable query listing locations of trending topics
+        /// </summary>
+        public List<Location> Locations { get; set; }
     }
 }

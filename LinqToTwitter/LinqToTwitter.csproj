@@ -134,6 +134,7 @@
     <Compile Include="Blocks.cs" />
     <Compile Include="BlocksRequestProcessor.cs" />
     <Compile Include="BuildUrlHelper.cs" />
+    <Compile Include="Location.cs" />
     <Compile Include="UsernamePasswordSimpleAuthorization.cs" />
     <Compile Include="Cursors.cs" />
     <Compile Include="DesktopOAuthAuthorization.cs" />

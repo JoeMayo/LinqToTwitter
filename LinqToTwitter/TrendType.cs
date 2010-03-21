@@ -28,6 +28,16 @@ namespace LinqToTwitter
         /// <summary>
         /// top 30 trending topics for every day of specified week
         /// </summary>
-        Weekly
+        Weekly,
+
+        /// <summary>
+        /// Locations of where trends are occurring
+        /// </summary>
+        Available,
+
+        /// <summary>
+        /// Top 10 topics for a location
+        /// </summary>
+        Location
     }
 }

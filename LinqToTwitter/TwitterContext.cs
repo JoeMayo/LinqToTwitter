@@ -638,7 +638,7 @@ namespace LinqToTwitter
                     req = new FriendshipRequestProcessor() { BaseUrl = BaseUrl };
                     break;
                 case "List":
-                    req = new ListRequestProcessor() { BaseUrl = baseUrl };
+                    req = new ListRequestProcessor() { BaseUrl = BaseUrl };
                     break;
                 case "SavedSearch":
                     req = new SavedSearchRequestProcessor() { BaseUrl = BaseUrl };
@@ -653,7 +653,41 @@ namespace LinqToTwitter
                     req = new StatusRequestProcessor() { BaseUrl = BaseUrl };
                     break;
                 case "Trend":
-                    req = new TrendRequestProcessor() { BaseUrl = SearchUrl };
+                    string trendTypeStr = "Trend";
+
+                    var whereExpression = new FirstWhereClauseFinder().GetFirstWhere(expression);
+
+                    if (whereExpression != null)
+                    {
+                        var lambdaExpression = (LambdaExpression)
+                            ((UnaryExpression)(whereExpression.Arguments[1])).Operand;
+
+                        var parameters = new ParameterFinder<Trend>(
+                            lambdaExpression.Body,
+                            new List<string> { "Type" })
+                            .Parameters;
+
+                        trendTypeStr = parameters["Type"];
+                    }
+
+                    //string trendTypeStr =
+                    //    ((((((expression as MethodCallExpression)
+                    //        .Arguments[0] as MethodCallExpression)
+                    //        .Arguments[1] as UnaryExpression)
+                    //        .Operand as LambdaExpression)
+                    //        .Body as BinaryExpression)
+                    //        .Right as ConstantExpression).Value.ToString();
+                    TrendType trendType = (TrendType)Enum.Parse(typeof(TrendType), trendTypeStr);
+
+                    string trendUrl = SearchUrl;
+
+                    // the base urls for Available and Location don't use the Search URL
+                    if (trendType == TrendType.Available || trendType == TrendType.Location)
+                    {
+                        trendUrl = BaseUrl;
+                    }
+
+                    req = new TrendRequestProcessor() { BaseUrl = trendUrl };
                     break;
                 case "User":
                     req = new UserRequestProcessor() { BaseUrl = BaseUrl };
