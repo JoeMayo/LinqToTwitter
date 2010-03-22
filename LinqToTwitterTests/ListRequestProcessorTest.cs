@@ -216,7 +216,7 @@ namespace LinqToTwitterTests
                     list.Type == ListType.Members &&
                     list.ScreenName == "JoeMayo" &&
                     list.Cursor == "123" &&
-                    list.ListID == 456 &&
+                    list.ListID == "456" &&
                     list.MaxID == 789 &&
                     list.Page == 1 &&
                     list.PerPage == 10 &&

@@ -82,7 +82,7 @@ namespace LinqToTwitterDemo
                 // status tweets
                 //
 
-                UpdateStatusDemo(twitterCtx);
+                //UpdateStatusDemo(twitterCtx);
                 //SingleStatusQueryDemo(twitterCtx);
                 //UpdateStatusWithReplyDemo(twitterCtx);
                 //DestroyStatusDemo(twitterCtx);
@@ -117,6 +117,8 @@ namespace LinqToTwitterDemo
                 //UserFollowersWithCursorsQueryDemo(twitterCtx);
                 //GetAllFollowersQueryDemo(twitterCtx);
                 //VerifiedAndGeoEnabledDemo(twitterCtx);
+                //UserSuggestedCategoriesListQueryDemo(twitterCtx);
+                UsersInSuggestedCategoryQueryDemo(twitterCtx);
 
                 //
                 // direct messages
@@ -285,6 +287,7 @@ namespace LinqToTwitterDemo
 
                 //LookupReverseGeocodeDemo(twitterCtx);
                 //LookupGeoIDDemo(twitterCtx);
+                //LookupGeoNearbyPlacesDemo(twitterCtx);
 
                 //
                 // Sign-off, including optional clearing of cached credentials.
@@ -299,6 +302,27 @@ namespace LinqToTwitterDemo
         }
 
         #region Geo Demos
+
+        /// <summary>
+        /// Shows how to perform a reverse geocode lookup
+        /// to find a place, based on latitude and longitude
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void LookupGeoNearbyPlacesDemo(TwitterContext twitterCtx)
+        {
+            var geo =
+                (from g in twitterCtx.Geo
+                 where g.Type == GeoType.Nearby &&
+                       g.IP == "168.143.171.180"
+                 select g)
+                 .SingleOrDefault();
+
+            Place place = geo.Places[0];
+
+            Console.WriteLine(
+                "Name: {0}, Country: {1}, Type: {2}",
+                place.Name, place.Country, place.PlaceType);
+        } 
 
         /// <summary>
         /// Shows how to perform a reverse geocode lookup
@@ -479,7 +503,7 @@ namespace LinqToTwitterDemo
                 (from list in twitterCtx.List
                  where list.Type == ListType.Statuses &&
                        list.ScreenName == "LinqToTweeter" &&
-                       list.ListID == 3897016 // ID of list to get statuses for
+                       list.ListID == "3897016" // ID of list to get statuses for
                  select list)
                  .First();
 
@@ -538,7 +562,7 @@ namespace LinqToTwitterDemo
                 (from list in twitterCtx.List
                  where list.Type == ListType.Members &&
                        list.ScreenName == "LinqToTweeter" &&
-                       list.ListID == 3897006 // ID of list
+                       list.ListID == "3897006" // ID of list
                  select list)
                  .First();
 
@@ -561,7 +585,7 @@ namespace LinqToTwitterDemo
                     where list.Type == ListType.IsMember &&
                          list.ScreenName == "LinqToTweeter" &&
                          list.ID == "15411837" && // ID of user
-                         list.ListID == 3897006 // ID of list
+                         list.ListID == "3897006" // ID of list
                     select list)
                     .FirstOrDefault();
 
@@ -594,7 +618,7 @@ namespace LinqToTwitterDemo
                 (from list in twitterCtx.List
                  where list.Type == ListType.Subscribers &&
                        list.ScreenName == "LinqToTweeter" &&
-                       list.ListID == 3897016 // ID of list
+                       list.ListID == "3897016" // ID of list
                  select list)
                  .First();
 
@@ -636,7 +660,7 @@ namespace LinqToTwitterDemo
                     where list.Type == ListType.IsSubscribed &&
                          list.ScreenName == "LinqToTweeter" &&
                          list.ID == "15411837" && // ID of user
-                         list.ListID == 3897016 // ID of list
+                         list.ListID == "3897016" // ID of list
                     select list)
                     .FirstOrDefault();
 
@@ -1056,8 +1080,6 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void SearchLocationTrendsDemo(TwitterContext twitterCtx)
         {
-            // remember to truncate seconds (maybe even minutes) because they
-            // will never compare evenly, causing your list to be empty
             var trends =
                 (from trnd in twitterCtx.Trends
                  where trnd.Type == TrendType.Location &&
@@ -1080,8 +1102,6 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void SearchAvailableTrendsDemo(TwitterContext twitterCtx)
         {
-            // remember to truncate seconds (maybe even minutes) because they
-            // will never compare evenly, causing your list to be empty
             var trends =
                 from trnd in twitterCtx.Trends
                 where trnd.Type == TrendType.Available
@@ -2115,6 +2135,40 @@ namespace LinqToTwitterDemo
         #endregion
 
         #region User Demos
+
+        /// <summary>
+        /// shows how to query for users in a suggested category
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void UsersInSuggestedCategoryQueryDemo(TwitterContext twitterCtx)
+        {
+            var users =
+                (from tweet in twitterCtx.User
+                 where tweet.Type == UserType.Category &&
+                       tweet.Slug == "funny"
+                 select tweet)
+                 .ToList();
+
+            users.ForEach(
+                user => Console.WriteLine("User: " + user.Name));
+        }
+
+        /// <summary>
+        /// shows how to query suggested categories
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void UserSuggestedCategoriesListQueryDemo(TwitterContext twitterCtx)
+        {
+            var users =
+                from tweet in twitterCtx.User
+                where tweet.Type == UserType.Categories
+                select tweet;
+
+            var user = users.SingleOrDefault();
+
+            user.Categories.ForEach(
+                cat => Console.WriteLine("Category: " + cat.Name));
+        }
 
         /// <summary>
         /// shows how to query users

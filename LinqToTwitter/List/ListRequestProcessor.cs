@@ -33,7 +33,7 @@ namespace LinqToTwitter
         /// <summary>
         /// List ID or Slug
         /// </summary>
-        public ulong ListID { get; set; }
+        public string ListID { get; set; }
 
         /// <summary>
         /// Max ID to retrieve for statuses
@@ -95,7 +95,7 @@ namespace LinqToTwitter
 
             if (parameters.ContainsKey("ListID"))
             {
-                ListID = ulong.Parse(parameters["ListID"]);
+                ListID = parameters["ListID"];
             }
 
             if (parameters.ContainsKey("MaxID"))
@@ -240,7 +240,7 @@ namespace LinqToTwitter
 
             if (parameters.ContainsKey("ListID"))
             {
-                ListID = ulong.Parse(parameters["ListID"]);
+                ListID = parameters["ListID"];
                 url += parameters["ListID"] + "/statuses.xml";
             }
             else
@@ -311,7 +311,7 @@ namespace LinqToTwitter
 
             if (parameters.ContainsKey("ListID"))
             {
-                ListID = ulong.Parse(parameters["ListID"]);
+                ListID = parameters["ListID"];
                 url += parameters["ListID"] + "/members.xml";
             }
             else
@@ -339,7 +339,7 @@ namespace LinqToTwitter
 
             if (parameters.ContainsKey("ListID"))
             {
-                ListID = ulong.Parse(parameters["ListID"]);
+                ListID = parameters["ListID"];
                 url += parameters["ListID"] + "/members.xml";
             }
             else
@@ -371,7 +371,7 @@ namespace LinqToTwitter
 
             if (parameters.ContainsKey("ListID"))
             {
-                ListID = ulong.Parse(parameters["ListID"]);
+                ListID = parameters["ListID"];
                 url += parameters["ListID"] + "/subscribers.xml";
             }
             else
@@ -399,7 +399,7 @@ namespace LinqToTwitter
 
             if (parameters.ContainsKey("ListID"))
             {
-                ListID = ulong.Parse(parameters["ListID"]);
+                ListID = parameters["ListID"];
                 url += parameters["ListID"] + "/subscribers.xml";
             }
             else
@@ -438,7 +438,7 @@ namespace LinqToTwitter
                          Type = Type,
                          Cursor = Cursor,
                          ID = ID,
-                         ListID = ulong.Parse(list.Element("id").Value),
+                         ListID = list.Element("id").Value,
                          PerPage = PerPage,
                          Page = Page,
                          ScreenName = ScreenName,
@@ -477,7 +477,7 @@ namespace LinqToTwitter
                         Type = Type,
                         Cursor = Cursor,
                         ID = ID,
-                        ListID = ulong.Parse(twitterResponse.Element("id").Value),
+                        ListID = twitterResponse.Element("id").Value,
                         PerPage = PerPage,
                         Page = Page,
                         ScreenName = ScreenName,

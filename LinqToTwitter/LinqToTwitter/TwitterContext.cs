@@ -542,8 +542,14 @@ namespace LinqToTwitter
             else
             {
                 IEnumerator enumerator = postProcessingResult.GetEnumerator();
-                enumerator.MoveNext();
-                return enumerator.Current;
+                if (enumerator.MoveNext())
+                {
+                    return enumerator.Current; 
+                }
+                else
+                {
+                    return null;
+                }
             }
         }
 

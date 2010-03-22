@@ -13,6 +13,11 @@
         /// <summary>
         /// Get more details on a place (found via GeoType.Reverse)
         /// </summary>
-        ID
+        ID,
+
+        /// <summary>
+        /// Get a list of nearby places
+        /// </summary>
+        Nearby
     }
 }

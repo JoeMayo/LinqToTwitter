@@ -179,7 +179,7 @@ namespace LinqToTwitter
                 GeoEnabled = geoEnabled,
                 Verified = verified,
                 Following = tempFollowingUsers,
-                Status = 
+                Status = // TODO: refactor to CreateStatus
                     status == null ?
                         null :
                         new Status
@@ -236,7 +236,7 @@ namespace LinqToTwitter
         /// </summary>
         public UserIdentifier Identifier { get; set; }
 
-
+        // TODO: follow-up with Twitter API to see how long until this is definitely not supported. Then flag as error. - Joe 3/21/2010
         /// <summary>
         /// Page to return
         /// </summary>
@@ -253,6 +253,11 @@ namespace LinqToTwitter
         /// CursorResponse property when your response comes back.
         /// </remarks>
         public string Cursor { get; set; }
+
+        /// <summary>
+        /// Used to identify suggested users category
+        /// </summary>
+        public string Slug { get; set; }
 
         /// <summary>
         /// Contains Next and Previous cursors
@@ -389,5 +394,10 @@ namespace LinqToTwitter
         /// current user status (valid only in user queries)
         /// </summary>
         public Status Status { get; set; }
+
+        /// <summary>
+        /// User categories for Twitter Suggested Users
+        /// </summary>
+        public List<Category> Categories { get; set; }
     }
 }

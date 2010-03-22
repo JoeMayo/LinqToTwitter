@@ -159,6 +159,7 @@
     <Compile Include="PostProcessing\Sort.cs" />
     <Compile Include="Status\Retweet.cs" />
     <Compile Include="Common\TwitterProgressEventArgs.cs" />
+    <Compile Include="User\Category.cs" />
     <Compile Include="User\UserIdentifier.cs" />
     <Compile Include="OAuth\WindowsCredentialStoreTokenManager.cs" />
     <Compile Include="OAuth\ITwitterAuthorization.cs" />

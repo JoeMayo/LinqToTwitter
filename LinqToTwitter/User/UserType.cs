@@ -23,6 +23,16 @@ namespace LinqToTwitter
         /// <summary>
         /// extended information on a user
         /// </summary>
-        Show
+        Show,
+
+        /// <summary>
+        /// Available Twitter suggestion categories
+        /// </summary>
+        Categories,
+
+        /// <summary>
+        /// Users under a specified category
+        /// </summary>
+        Category,
     }
 }

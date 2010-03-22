@@ -29,7 +29,7 @@ namespace LinqToTwitter
         /// <summary>
         /// List ID or Slug
         /// </summary>
-        public ulong ListID { get; set; }
+        public string ListID { get; set; }
 
         /// <summary>
         /// Max ID to retrieve for statuses

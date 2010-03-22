@@ -593,7 +593,8 @@ namespace LinqToTwitterTests
                     geo.Latitude == 37.78215m &&
                     geo.Longitude == -122.40060m &&
                     geo.MaxResults == 10 &&
-                    geo.ID == "456";
+                    geo.ID == "456" &&
+                    geo.IP == "168.143.171.180";
             LambdaExpression lambdaExpression = expression as LambdaExpression;
 
             var queryParams = geoReqProc.GetParameters(lambdaExpression);
@@ -619,6 +620,9 @@ namespace LinqToTwitterTests
             Assert.IsTrue(
                 queryParams.Contains(
                     new KeyValuePair<string, string>("ID", "456")));
+            Assert.IsTrue(
+                queryParams.Contains(
+                    new KeyValuePair<string, string>("IP", "168.143.171.180")));
         }
 
         /// <summary>
@@ -689,6 +693,38 @@ namespace LinqToTwitterTests
             var parameters = new Dictionary<string, string>
              {
                  {"Type", ((int) GeoType.ID).ToString()},
+             };
+            string actual = target.BuildURL(parameters);
+        }
+
+        /// <summary>
+        ///A test for BuildURL
+        ///</summary>
+        [TestMethod()]
+        public void BuildNearbyURLTest()
+        {
+            GeoRequestProcessor target = new GeoRequestProcessor() { BaseUrl = "https://api.twitter.com/1/" };
+            var parameters = new Dictionary<string, string>
+             {
+                 {"Type", ((int) GeoType.Nearby).ToString()},
+                 {"IP", "168.143.171.180"},
+             };
+            string expected = "https://api.twitter.com/1/geo/nearby_places.json?ip=168.143.171.180";
+            string actual = target.BuildURL(parameters);
+            Assert.AreEqual(expected, actual);
+        }
+
+        /// <summary>
+        ///A test for BuildURL
+        ///</summary>
+        [TestMethod()]
+        [ExpectedException(typeof(ArgumentException))]
+        public void BuildNearbyURLWithoutArgsTest()
+        {
+            GeoRequestProcessor target = new GeoRequestProcessor() { BaseUrl = "https://api.twitter.com/1/" };
+            var parameters = new Dictionary<string, string>
+             {
+                 {"Type", ((int) GeoType.Nearby).ToString()},
              };
             string actual = target.BuildURL(parameters);
         }

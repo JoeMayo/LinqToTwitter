@@ -55,6 +55,11 @@ namespace LinqToTwitter
         /// CursorResponse property when your response comes back.
         /// </remarks>
         private string Cursor { get; set; }
+
+        /// <summary>
+        /// Used to identify suggested users category
+        /// </summary>
+        private string Slug { get; set; }
         
         /// <summary>
         /// extracts parameters from lambda
@@ -72,7 +77,8 @@ namespace LinqToTwitter
                        "UserID",
                        "ScreenName",
                        "Page",
-                       "Cursor"
+                       "Cursor",
+                       "Slug"
                    });
 
             var parameters = paramFinder.Parameters;
@@ -107,11 +113,44 @@ namespace LinqToTwitter
                 case UserType.Show:
                     url = BuildShowUrl(parameters);
                     break;
+                case UserType.Categories:
+                    url = BuildCategoriesUrl(parameters);
+                    break;
+                case UserType.Category:
+                    url = BuildUsersInCategoryUrl(parameters);
+                    break;
                 default:
                     throw new InvalidOperationException("The default case of BuildUrl should never execute because a Type must be specified.");
             }
 
             return url;
+        }
+
+        /// <summary>
+        /// Builds url for getting users that belong to a suggestion category
+        /// </summary>
+        /// <param name="parameters">Contains Slug. Required.</param>
+        /// <returns>Url for query + slug</returns>
+        private string BuildUsersInCategoryUrl(Dictionary<string, string> parameters)
+        {
+            if (!parameters.ContainsKey("Slug"))
+            {
+                throw new ArgumentException("Slug parameter is required.", "Slug");
+            }
+
+            Slug = parameters["Slug"];
+
+            return BaseUrl + "users/suggestions/" + parameters["Slug"] + ".xml"; ;
+        }
+
+        /// <summary>
+        /// Builds a url to get suggested user categories
+        /// </summary>
+        /// <param name="parameters">Not used</param>
+        /// <returns>Url for suggested user categories</returns>
+        private string BuildCategoriesUrl(Dictionary<string, string> parameters)
+        {
+            return BaseUrl + "users/suggestions.xml";
         }
 
         /// <summary>
@@ -274,6 +313,9 @@ namespace LinqToTwitter
         /// <returns>IList of User</returns>
         public virtual IList ProcessResults(System.Xml.Linq.XElement twitterResponse)
         {
+            var userList = new List<User>();
+            var categories = new List<Category>();
+
             var isRoot = twitterResponse.Name == "root";
             var responseItems = twitterResponse.Elements("root").ToList();
 
@@ -293,6 +335,18 @@ namespace LinqToTwitter
                      .ToList();
             }
 
+            if (twitterResponse.Name == "suggestions")
+            {
+                userList.Add(new User());
+
+                var category = new Category();
+
+                categories =
+                    (from cat in twitterResponse.Elements("category")
+                     select category.CreateCategory(cat))
+                     .ToList();
+            }
+
             // if we get only a single response back,
             // such as a Show request, make sure we get it
             if (twitterResponse.Name == rootElement)
@@ -301,10 +355,11 @@ namespace LinqToTwitter
             }
 
             var users =
-                from user in responseItems
-                select new User().CreateUser(user);
+                (from user in responseItems
+                 select new User().CreateUser(user))
+                .ToList();
 
-            var userList = users.ToList();
+            userList.AddRange(users);
 
             userList.ForEach(
                 user =>
@@ -315,6 +370,8 @@ namespace LinqToTwitter
                     user.ScreenName = ScreenName;
                     user.Page = Page;
                     user.Cursor = Cursor;
+                    user.Slug = Slug;
+                    user.Categories = categories;
                 });
 
             return userList.ToList();

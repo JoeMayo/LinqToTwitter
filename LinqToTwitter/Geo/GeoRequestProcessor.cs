@@ -35,6 +35,11 @@ namespace LinqToTwitter
         private decimal Longitude { get; set; }
 
         /// <summary>
+        /// IP address to find nearby places
+        /// </summary>
+        private string IP { get; set; }
+
+        /// <summary>
         /// How accurate the results should be.
         ///     - A number defaults to meters
         ///     - Default is 0m
@@ -70,6 +75,7 @@ namespace LinqToTwitter
                    "Type",
                    "Latitude",
                    "Longitude",
+                   "IP",
                    "Accuracy",
                    "Granularity",
                    "MaxResults",
@@ -102,9 +108,33 @@ namespace LinqToTwitter
                 case GeoType.Reverse:
                     url = BuildReverseUrl(parameters);
                     break;
+                case GeoType.Nearby:
+                    url = BuildNearbyPlacesUrl(parameters);
+                    break;
                 default:
                     throw new InvalidOperationException("The default case of BuildUrl should never execute because a Type must be specified.");
             }
+
+            return url;
+        }
+
+        /// <summary>
+        /// Builds an url for nearby places query
+        /// </summary>
+        /// <param name="parameters">URL parameters</param>
+        /// <returns>URL for nearby places + parameters</returns>
+        private string BuildNearbyPlacesUrl(Dictionary<string, string> parameters)
+        {
+            if (!parameters.ContainsKey("IP") &&
+                !(parameters.ContainsKey("Latitude") &&
+                 parameters.ContainsKey("Longitude")))
+            {
+                throw new ArgumentException("Either Latitude and Longitude or IP address is required.");
+            }
+
+            IP = parameters["IP"];
+
+            var url = BaseUrl +"geo/nearby_places.json?ip=" + parameters["IP"];
 
             return url;
         }

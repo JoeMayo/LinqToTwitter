@@ -25,6 +25,12 @@ namespace LinqToTwitter
         /// </summary>
         public decimal Longitude { get; set; }
 
+
+        /// <summary>
+        /// IP address to find nearby places
+        /// </summary>
+        public string IP { get; set; }
+
         /// <summary>
         /// How accurate the results should be.
         ///     - A number defaults to meters
