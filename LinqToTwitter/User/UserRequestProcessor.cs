@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Linq.Expressions;
 using System.Collections;
+using System.Web;
 
 namespace LinqToTwitter
 {
@@ -46,6 +47,11 @@ namespace LinqToTwitter
         private int Page { get; set; }
 
         /// <summary>
+        /// Number of users to return for each page
+        /// </summary>
+        private int PerPage { get; set; }
+
+        /// <summary>
         /// Indicator for which page to get next
         /// </summary>
         /// <remarks>
@@ -60,7 +66,12 @@ namespace LinqToTwitter
         /// Used to identify suggested users category
         /// </summary>
         private string Slug { get; set; }
-        
+
+        /// <summary>
+        /// Query for User Search
+        /// </summary>
+        private string Query { get; set; }
+      
         /// <summary>
         /// extracts parameters from lambda
         /// </summary>
@@ -77,8 +88,10 @@ namespace LinqToTwitter
                        "UserID",
                        "ScreenName",
                        "Page",
+                       "PerPage",
                        "Cursor",
-                       "Slug"
+                       "Slug",
+                       "Query"
                    });
 
             var parameters = paramFinder.Parameters;
@@ -119,8 +132,85 @@ namespace LinqToTwitter
                 case UserType.Category:
                     url = BuildUsersInCategoryUrl(parameters);
                     break;
+                case UserType.Lookup:
+                    url = BuildLookupUrl(parameters);
+                    break;
+                case UserType.Search:
+                    url = BuildSearchUrl(parameters);
+                    break;
                 default:
                     throw new InvalidOperationException("The default case of BuildUrl should never execute because a Type must be specified.");
+            }
+
+            return url;
+        }
+
+        /// <summary>
+        /// Builds a URL to perform a user search
+        /// </summary>
+        /// <param name="parameters">Query, Page, and PerPage</param>
+        /// <returns>URL for performing user search</returns>
+        private string BuildSearchUrl(Dictionary<string, string> parameters)
+        {
+            if (!parameters.ContainsKey("Query"))
+            {
+                throw new ArgumentException("Query parameter is required.");
+            }
+
+            string url = BaseUrl + "users/search.xml";
+            var urlParams = new List<string>();
+
+            if (parameters.ContainsKey("Query"))
+            {
+                Query = parameters["Query"];
+                urlParams.Add("q=" + HttpUtility.UrlEncode(parameters["Query"]));
+            }
+
+            if (parameters.ContainsKey("Page"))
+            {
+                Page = int.Parse(parameters["Page"]);
+                urlParams.Add("page=" + parameters["Page"]);
+            }
+
+            if (parameters.ContainsKey("PerPage"))
+            {
+                PerPage = int.Parse(parameters["PerPage"]);
+                urlParams.Add("per_page=" + parameters["PerPage"]);
+            }
+
+            if (urlParams.Count > 0)
+            {
+                url += "?" + string.Join("&", urlParams.ToArray());
+            }
+
+            return url;
+        }
+
+        /// <summary>
+        /// Builds a url for performing lookups
+        /// </summary>
+        /// <param name="parameters">Either UserID or ScreenName</param>
+        /// <returns>URL for performing lookups</returns>
+        private string BuildLookupUrl(Dictionary<string, string> parameters)
+        {
+            if (!(parameters.ContainsKey("ScreenName") || parameters.ContainsKey("UserID")) ||
+                (parameters.ContainsKey("ScreenName") && parameters.ContainsKey("UserID")))
+            {
+                throw new ArgumentException("Query must contain one of either ScreenName or UserID parameters, but not both.");
+            }
+
+            string url = BaseUrl + "users/lookup.xml?";
+
+            if (parameters.ContainsKey("ScreenName"))
+            {
+                ScreenName = parameters["ScreenName"];
+                url += "screen_name=" + parameters["ScreenName"];
+            }
+
+            if (parameters.ContainsKey("UserID"))
+            {
+                UserID = parameters["UserID"];
+                url += "user_id=" + parameters["UserID"];
             }
 
             return url;

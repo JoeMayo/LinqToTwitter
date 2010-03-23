@@ -82,7 +82,7 @@ namespace LinqToTwitterDemo
                 // status tweets
                 //
 
-                //UpdateStatusDemo(twitterCtx);
+                UpdateStatusDemo(twitterCtx);
                 //SingleStatusQueryDemo(twitterCtx);
                 //UpdateStatusWithReplyDemo(twitterCtx);
                 //DestroyStatusDemo(twitterCtx);
@@ -118,7 +118,9 @@ namespace LinqToTwitterDemo
                 //GetAllFollowersQueryDemo(twitterCtx);
                 //VerifiedAndGeoEnabledDemo(twitterCtx);
                 //UserSuggestedCategoriesListQueryDemo(twitterCtx);
-                UsersInSuggestedCategoryQueryDemo(twitterCtx);
+                //UsersInSuggestedCategoryQueryDemo(twitterCtx);
+                //UsersLookupDemo(twitterCtx);
+                //UserSearchDemo(twitterCtx);
 
                 //
                 // direct messages
@@ -2136,6 +2138,38 @@ namespace LinqToTwitterDemo
 
         #region User Demos
 
+        /// <summary>
+        /// Shows how to search for a user
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void UserSearchDemo(TwitterContext twitterCtx)
+        {
+            var user =
+                (from usr in twitterCtx.User
+                 where usr.Type == UserType.Search &&
+                       usr.Query == "Joe Mayo"
+                 select usr)
+                 .FirstOrDefault();
+
+            Console.WriteLine("User Name: " + user.Name);
+        }
+
+        /// <summary>
+        /// Shows how to perform a lookup of specified user details
+        /// </summary>
+        /// <param name="twitterCtx"></param>
+        private static void UsersLookupDemo(TwitterContext twitterCtx)
+        {
+            var users =
+                (from user in twitterCtx.User
+                 where user.Type == UserType.Lookup &&
+                       user.ScreenName == "JoeMayo,LinqToTweeter"
+                 select user)
+                 .ToList();
+
+            users.ForEach(user => Console.WriteLine("Name: " + user.Name));
+        }
+        
         /// <summary>
         /// shows how to query for users in a suggested category
         /// </summary>

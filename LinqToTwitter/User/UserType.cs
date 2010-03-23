@@ -34,5 +34,15 @@ namespace LinqToTwitter
         /// Users under a specified category
         /// </summary>
         Category,
+
+        /// <summary>
+        /// Get user details for a set of users
+        /// </summary>
+        Lookup,
+
+        /// <summary>
+        /// Perform a user search
+        /// </summary>
+        Search
     }
 }

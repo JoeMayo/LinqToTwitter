@@ -337,7 +337,7 @@ namespace LinqToTwitterTests
         }
 
         /// <summary>
-        ///A test for BuildFollowersUrl
+        ///A test for BuildCategoriesUrl
         ///</summary>
         [TestMethod()]
         [DeploymentItem("LinqToTwitter.dll")]
@@ -357,7 +357,7 @@ namespace LinqToTwitterTests
         }
 
         /// <summary>
-        ///A test for BuildFollowersUrl
+        ///A test for BuildUsersInCategoryUrl
         ///</summary>
         [TestMethod()]
         [DeploymentItem("LinqToTwitter.dll")]
@@ -370,6 +370,124 @@ namespace LinqToTwitterTests
                 new Dictionary<string, string>
                     {
                         { "Type", ((int)UserType.Category).ToString() },
+                    };
+            var actual = reqProc.BuildURL(parameters);
+        }
+
+        /// <summary>
+        ///A test for BuildLookupsUrl
+        ///</summary>
+        [TestMethod()]
+        [DeploymentItem("LinqToTwitter.dll")]
+        public void BuildLookupScreenNameUrlTest()
+        {
+            UserRequestProcessor_Accessor reqProc = new UserRequestProcessor_Accessor();
+            reqProc.BaseUrl = "https://api.twitter.com/1/";
+            Dictionary<string, string> parameters =
+                new Dictionary<string, string>
+                    {
+                        { "Type", ((int)UserType.Lookup).ToString() },
+                        { "ScreenName", "JoeMayo,LinqToTweeter" }
+                    };
+            string expected = "https://api.twitter.com/1/users/lookup.xml?screen_name=JoeMayo,LinqToTweeter";
+            var actual = reqProc.BuildURL(parameters);
+            Assert.AreEqual(expected, actual);
+        }
+
+        /// <summary>
+        ///A test for BuildLookupsUrl
+        ///</summary>
+        [TestMethod()]
+        [DeploymentItem("LinqToTwitter.dll")]
+        public void BuildLookupUserIDUrlTest()
+        {
+            UserRequestProcessor_Accessor reqProc = new UserRequestProcessor_Accessor();
+            reqProc.BaseUrl = "https://api.twitter.com/1/";
+            Dictionary<string, string> parameters =
+                new Dictionary<string, string>
+                    {
+                        { "Type", ((int)UserType.Lookup).ToString() },
+                        { "UserID", "1,2" }
+                    };
+            string expected = "https://api.twitter.com/1/users/lookup.xml?user_id=1,2";
+            var actual = reqProc.BuildURL(parameters);
+            Assert.AreEqual(expected, actual);
+        }
+
+        /// <summary>
+        ///A test for BuildLookupsUrl
+        ///</summary>
+        [TestMethod()]
+        [DeploymentItem("LinqToTwitter.dll")]
+        [ExpectedException(typeof(ArgumentException))]
+        public void BuildLookupScreenNameUrlWithoutParamsTest()
+        {
+            UserRequestProcessor_Accessor reqProc = new UserRequestProcessor_Accessor();
+            reqProc.BaseUrl = "https://api.twitter.com/1/";
+            Dictionary<string, string> parameters =
+                new Dictionary<string, string>
+                    {
+                        { "Type", ((int)UserType.Lookup).ToString() },
+                    };
+            var actual = reqProc.BuildURL(parameters);
+        }
+
+        /// <summary>
+        ///A test for BuildLookupsUrl
+        ///</summary>
+        [TestMethod()]
+        [DeploymentItem("LinqToTwitter.dll")]
+        [ExpectedException(typeof(ArgumentException))]
+        public void BuildLookupScreenNameUrlWithUserIDAndScreenNameTest()
+        {
+            UserRequestProcessor_Accessor reqProc = new UserRequestProcessor_Accessor();
+            reqProc.BaseUrl = "https://api.twitter.com/1/";
+            Dictionary<string, string> parameters =
+                new Dictionary<string, string>
+                    {
+                        { "Type", ((int)UserType.Lookup).ToString() },
+                        { "ScreenName", "JoeMayo,LinqToTweeter" },
+                        { "UserID", "1,2" }
+                   };
+            var actual = reqProc.BuildURL(parameters);
+        }
+
+        /// <summary>
+        ///A test for BuildSearchUrl
+        ///</summary>
+        [TestMethod()]
+        [DeploymentItem("LinqToTwitter.dll")]
+        public void BuildSearchUrlTest()
+        {
+            UserRequestProcessor_Accessor reqProc = new UserRequestProcessor_Accessor();
+            reqProc.BaseUrl = "https://api.twitter.com/1/";
+            Dictionary<string, string> parameters =
+                new Dictionary<string, string>
+                    {
+                        { "Type", ((int)UserType.Search).ToString() },
+                        { "Query", "Joe Mayo" },
+                        { "Page", "2" },
+                        { "PerPage", "10" }
+                    };
+            string expected = "https://api.twitter.com/1/users/search.xml?q=Joe+Mayo&page=2&per_page=10";
+            var actual = reqProc.BuildURL(parameters);
+            Assert.AreEqual(expected, actual);
+        }
+
+        /// <summary>
+        ///A test for BuildSearchUrl
+        ///</summary>
+        [TestMethod()]
+        [DeploymentItem("LinqToTwitter.dll")]
+        [ExpectedException(typeof(ArgumentException))]
+        public void BuildSearchUrlWithoutQueryTest()
+        {
+            UserRequestProcessor_Accessor reqProc = new UserRequestProcessor_Accessor();
+            reqProc.BaseUrl = "https://api.twitter.com/1/";
+            Dictionary<string, string> parameters =
+                new Dictionary<string, string>
+                    {
+                        { "Type", ((int)UserType.Search).ToString() },
                     };
             var actual = reqProc.BuildURL(parameters);
         }
@@ -389,7 +507,10 @@ namespace LinqToTwitterTests
                 user.UserID == "10" &&
                 user.ScreenName == "JoeMayo" &&
                 user.Cursor == "10819235" &&
-                user.Slug == "twitter";
+                user.Slug == "twitter" &&
+                user.Query == "Joe Mayo" &&
+                user.Page == 2 &&
+                user.PerPage == 10;
 
             LambdaExpression lambdaExpression = expression as LambdaExpression;
 
@@ -416,6 +537,15 @@ namespace LinqToTwitterTests
             Assert.IsTrue(
                queryParams.Contains(
                    new KeyValuePair<string, string>("Slug", "twitter")));
+            Assert.IsTrue(
+              queryParams.Contains(
+                  new KeyValuePair<string, string>("Query", "Joe Mayo")));
+            Assert.IsTrue(
+              queryParams.Contains(
+                  new KeyValuePair<string, string>("Page", "2")));
+            Assert.IsTrue(
+              queryParams.Contains(
+                  new KeyValuePair<string, string>("PerPage", "10")));
         }
 
         /// <summary>

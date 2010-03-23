@@ -236,12 +236,19 @@ namespace LinqToTwitter
         /// </summary>
         public UserIdentifier Identifier { get; set; }
 
-        // TODO: follow-up with Twitter API to see how long until this is definitely not supported. Then flag as error. - Joe 3/21/2010
         /// <summary>
         /// Page to return
         /// </summary>
-        [Obsolete("This property has been deprecated and will be ignored by Twitter. Please use Cursor/CursorMovement properties instead.")]
+        /// <remarks>
+        /// This was made obsolete for one API, but not Search. Therefore, we can't mark it as obsolete yet.
+        /// </remarks>
+        //[Obsolete("This property has been deprecated and will be ignored by Twitter. Please use Cursor/CursorMovement properties instead.")]
         public int Page { get; set; }
+
+        /// <summary>
+        /// Number of users to return for each page
+        /// </summary>
+        public int PerPage { get; set; }
 
         /// <summary>
         /// Indicator for which page to get next
@@ -258,6 +265,11 @@ namespace LinqToTwitter
         /// Used to identify suggested users category
         /// </summary>
         public string Slug { get; set; }
+
+        /// <summary>
+        /// Query for User Search
+        /// </summary>
+        public string Query { get; set; }
 
         /// <summary>
         /// Contains Next and Previous cursors
