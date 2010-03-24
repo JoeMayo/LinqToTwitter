@@ -191,14 +191,15 @@ namespace LinqToTwitter
         /// <returns>Base URL + lists request</returns>
         private string BuildListsUrl(Dictionary<string, string> parameters)
         {
-            string url = BaseUrl + "lists.xml";
+            string url = BaseUrl + "lists.xml?";
 
             if (parameters.ContainsKey("Cursor"))
             {
                 Cursor = parameters["Cursor"];
-                url += "&cursor=" + parameters["Cursor"];
+                url += "cursor=" + parameters["Cursor"] + "&";
             }
 
+            url = url.Substring(0, url.Length - 1);
             return url;
         }
 
@@ -287,7 +288,16 @@ namespace LinqToTwitter
         /// <returns>URL for memberships query</returns>
         private string BuildMembershipsUrl(Dictionary<string, string> parameters)
         {
-            return BaseUrl + @"lists/memberships.xml";
+            string url = BaseUrl + @"lists/memberships.xml?";
+
+            if (parameters.ContainsKey("Cursor") && !string.IsNullOrEmpty(parameters["Cursor"]))
+            {
+                Cursor = parameters["Cursor"];
+                url += "cursor=" + parameters["Cursor"] + "&";
+            }
+
+            url = url.Substring(0, url.Length - 1);
+            return url;
         }
 
         /// <summary>
@@ -297,7 +307,16 @@ namespace LinqToTwitter
         /// <returns>URL for subscriptions query</returns>
         private string BuildSubscriptionsUrl(Dictionary<string, string> parameters)
         {
-            return BaseUrl + @"lists/subscriptions.xml";
+            string url = BaseUrl + @"lists/subscriptions.xml?";
+
+            if (parameters.ContainsKey("Cursor") && !string.IsNullOrEmpty(parameters["Cursor"]))
+            {
+                Cursor = parameters["Cursor"];
+                url += "cursor=" + parameters["Cursor"] + "&";
+            }
+
+            url = url.Substring(0, url.Length - 1);
+            return url;
         }
 
         /// <summary>
@@ -312,19 +331,20 @@ namespace LinqToTwitter
             if (parameters.ContainsKey("ListID"))
             {
                 ListID = parameters["ListID"];
-                url += parameters["ListID"] + "/members.xml";
+                url += parameters["ListID"] + "/members.xml?";
             }
             else
             {
                 throw new ArgumentException("ListID is required for Members query.");
             }
 
-            if (parameters.ContainsKey("Cursor"))
+            if (parameters.ContainsKey("Cursor") && !string.IsNullOrEmpty(parameters["Cursor"]))
             {
                 Cursor = parameters["Cursor"];
-                url += "&cursor=" + parameters["Cursor"];
+                url += "cursor=" + parameters["Cursor"] + "&";
             }
 
+            url = url.Substring(0, url.Length - 1);
             return url;
         }
 
@@ -372,19 +392,20 @@ namespace LinqToTwitter
             if (parameters.ContainsKey("ListID"))
             {
                 ListID = parameters["ListID"];
-                url += parameters["ListID"] + "/subscribers.xml";
+                url += parameters["ListID"] + "/subscribers.xml?";
             }
             else
             {
                 throw new ArgumentException("ListID is required for Subscribers query.");
             }
 
-            if (parameters.ContainsKey("Cursor"))
+            if (parameters.ContainsKey("Cursor") && !string.IsNullOrEmpty(parameters["Cursor"]))
             {
                 Cursor = parameters["Cursor"];
-                url += "&cursor=" + parameters["Cursor"];
+                url += "cursor=" + parameters["Cursor"] + "&";
             }
 
+            url = url.Substring(0, url.Length - 1);
             return url;
         }
 
@@ -523,7 +544,16 @@ namespace LinqToTwitter
                         Users = 
                             (from user in twitterResponse.Element("users").Elements("user")
                              select new User().CreateUser(user))
-                             .ToList()
+                             .ToList(),
+                        CursorMovement = new Cursors
+                            {
+                                Next = (twitterResponse.Element("next_cursor") == null)
+                                        ? string.Empty
+                                        : twitterResponse.Element("next_cursor").Value,
+                                Previous = (twitterResponse.Element("previous_cursor") == null)
+                                        ? string.Empty
+                                        : twitterResponse.Element("previous_cursor").Value
+                            }
                     });
             }
             else if (twitterResponse.Name == "user")
@@ -561,7 +591,16 @@ namespace LinqToTwitter
                         Statuses = 
                             (from status in twitterResponse.Elements("status")
                              select new Status().CreateStatus(status))
-                             .ToList()
+                             .ToList(),
+                        CursorMovement = new Cursors
+                            {
+                                Next = (twitterResponse.Element("next_cursor") == null)
+                                        ? string.Empty
+                                        : twitterResponse.Element("next_cursor").Value,
+                                Previous = (twitterResponse.Element("previous_cursor") == null)
+                                        ? string.Empty
+                                        : twitterResponse.Element("previous_cursor").Value
+                            }
                     });
             }
 

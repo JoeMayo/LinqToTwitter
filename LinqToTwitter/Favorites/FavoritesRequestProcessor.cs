@@ -20,17 +20,17 @@ namespace LinqToTwitter
         /// <summary>
         /// type of favorites to query
         /// </summary>
-        private new FavoritesType Type { get; set; }
+        private FavoritesType Type { get; set; }
 
         /// <summary>
         /// User identity to search (optional)
         /// </summary>
-        private new string ID { get; set; }
+        private string ID { get; set; }
 
         /// <summary>
         /// Page to retrieve (optional)
         /// </summary>
-        private new int Page { get; set; }
+        private int Page { get; set; }
 
         /// <summary>
         /// extracts parameters from lambda

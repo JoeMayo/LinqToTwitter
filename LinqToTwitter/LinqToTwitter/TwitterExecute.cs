@@ -261,7 +261,8 @@ namespace LinqToTwitter
         /// <returns>List of objects to return</returns>
         public IList QueryTwitter(string url, IRequestProcessor requestProcessor)
         {
-            var req = this.AuthorizedClient.Get(new Uri(url), null);
+            var uri = new Uri(url);
+            var req = this.AuthorizedClient.Get(uri, null);
 
             string responseXml = string.Empty;
             string httpStatus = string.Empty;
@@ -286,7 +287,7 @@ namespace LinqToTwitter
                 }
             }
 
-            if (new Uri(url).LocalPath.EndsWith("json"))
+            if (uri.LocalPath.EndsWith("json"))
             {
                 var stream = new MemoryStream(ASCIIEncoding.Default.GetBytes(responseXml));
                 XmlDictionaryReader reader = JsonReaderWriterFactory.CreateJsonReader(stream, XmlDictionaryReaderQuotas.Max);
