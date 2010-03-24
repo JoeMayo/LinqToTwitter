@@ -135,7 +135,7 @@ namespace LinqToTwitter
         /// </value>
         public abstract bool CachedCredentialsAvailable { get; }
 
-        protected abstract string AccessToken { get; }
+        public abstract string AccessToken { get; }
 
         /// <summary>
         /// Logs the user into the web site, prompting for credentials if necessary.

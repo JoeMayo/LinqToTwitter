@@ -161,7 +161,7 @@ namespace LinqToTwitter
         /// Gets the access token.
         /// </summary>
         /// <value>The access token.</value>
-        protected override string AccessToken
+        public override string AccessToken
         {
             get
             {
