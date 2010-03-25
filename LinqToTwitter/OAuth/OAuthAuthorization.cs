@@ -78,6 +78,11 @@ namespace LinqToTwitter
         public string UserAgent { get; set; }
 
         /// <summary>
+        /// Indicates if you want to use enable compressed responses (GZip/deflate)
+        /// </summary>
+        public bool UseCompression { get; set; }
+
+        /// <summary>
         /// Gets or sets the timeout.
         /// </summary>
         /// <value>The timeout.</value>
@@ -197,7 +202,9 @@ namespace LinqToTwitter
         /// </returns>
         public HttpWebRequest Get(Uri requestUrl, IDictionary<string, string> args)
         {
-            return this.Consumer.PrepareAuthorizedRequest(new MessageReceivingEndpoint(requestUrl, HttpDeliveryMethods.GetRequest | HttpDeliveryMethods.AuthorizationHeaderRequest), this.AccessToken);
+            var req = this.Consumer.PrepareAuthorizedRequest(new MessageReceivingEndpoint(requestUrl, HttpDeliveryMethods.GetRequest | HttpDeliveryMethods.AuthorizationHeaderRequest), this.AccessToken);
+            this.InitializeRequest(req);
+            return req;
         }
 
         /// <summary>
@@ -209,7 +216,9 @@ namespace LinqToTwitter
         /// </returns>
         public HttpWebRequest Post(Uri requestUrl)
         {
-            return this.Consumer.PrepareAuthorizedRequest(new MessageReceivingEndpoint(requestUrl, HttpDeliveryMethods.PostRequest | HttpDeliveryMethods.AuthorizationHeaderRequest), this.AccessToken);
+            var req = this.Consumer.PrepareAuthorizedRequest(new MessageReceivingEndpoint(requestUrl, HttpDeliveryMethods.PostRequest | HttpDeliveryMethods.AuthorizationHeaderRequest), this.AccessToken);
+            this.InitializeRequest(req);
+            return req;
         }
 
         /// <summary>
@@ -221,10 +230,11 @@ namespace LinqToTwitter
         /// <exception cref="WebException">Thrown if the server returns an error.</exception>
         public HttpWebResponse Post(Uri requestUrl, IDictionary<string, string> args)
         {
-            ((HttpWebRequest)WebRequest.Create(requestUrl)).ServicePoint.Expect100Continue = false;
-            return (HttpWebResponse)this.Consumer.PrepareAuthorizedRequest(new MessageReceivingEndpoint(requestUrl, HttpDeliveryMethods.PostRequest), this.AccessToken).GetResponse();
+            var req = this.Consumer.PrepareAuthorizedRequest(new MessageReceivingEndpoint(requestUrl, HttpDeliveryMethods.PostRequest), this.AccessToken);
+            this.InitializeRequest(req);
+            req.ServicePoint.Expect100Continue = false;
+            return (HttpWebResponse)req.GetResponse();
         }
-
         #endregion
 
         /// <summary>
@@ -253,6 +263,31 @@ namespace LinqToTwitter
 
             this.IsAuthorized = true;
             return result;
+        }
+
+        /// <summary>
+        /// Initializes the request in ways common to GET and POST requests.
+        /// </summary>
+        /// <param name="request">The request to initialize.</param>
+        private void InitializeRequest(HttpWebRequest request)
+        {
+            request.UserAgent = this.UserAgent;
+
+            if (this.ReadWriteTimeout > TimeSpan.Zero)
+            {
+                request.ReadWriteTimeout = (int)this.ReadWriteTimeout.TotalMilliseconds;
+            }
+
+            if (this.Timeout > TimeSpan.Zero)
+            {
+                request.Timeout = (int)this.Timeout.TotalMilliseconds;
+            }
+
+            if (this.UseCompression)
+            {
+                request.Headers.Add("Accept-Encoding:gzip, deflate");
+                request.AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip;
+            }
         }
 
         #region IDisposable Members

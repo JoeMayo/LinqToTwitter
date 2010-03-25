@@ -61,6 +61,11 @@ namespace LinqToTwitter
         public string UserAgent { get; set; }
 
         /// <summary>
+        /// Indicates if you want to use enable compressed responses (GZip/deflate)
+        /// </summary>
+        public bool UseCompression { get; set; }
+
+        /// <summary>
         /// Indicates if you want to use the proxy
         /// </summary>
         public bool UseProxy { get; set; }
@@ -303,6 +308,12 @@ namespace LinqToTwitter
             if (this.Timeout > TimeSpan.Zero)
             {
                 request.Timeout = (int)this.Timeout.TotalMilliseconds;
+            }
+
+            if (this.UseCompression)
+            {
+                request.Headers.Add("Accept-Encoding:gzip, deflate");
+                request.AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip;
             }
         }
     }

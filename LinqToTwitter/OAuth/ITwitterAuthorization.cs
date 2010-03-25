@@ -23,7 +23,6 @@ namespace LinqToTwitter {
     public interface ITwitterAuthorization
     {
         #region Non-authorization HTTP-specific details
-
         /// <summary>
         /// Gets or sets the read write timeout.
         /// </summary>
@@ -42,6 +41,10 @@ namespace LinqToTwitter {
         /// <value>The user agent.</value>
         string UserAgent { get; set; }
 
+        /// <summary>
+        /// Indicates if you want to use enable compressed responses (GZip/deflate)
+        /// </summary>
+        bool UseCompression { get; set; }
         #endregion
 
         /// <summary>
