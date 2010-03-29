@@ -72,8 +72,26 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AccountDemos.cs" />
+    <Compile Include="BlocksDemos.cs" />
+    <Compile Include="DirectMessageDemos.cs" />
+    <Compile Include="ErrorHandlingDemos.cs" />
+    <Compile Include="FavoritesDemos.cs" />
+    <Compile Include="FriendshipDemos.cs" />
+    <Compile Include="GeoDemos.cs" />
+    <Compile Include="HelpDemos.cs" />
+    <Compile Include="ListDemos.cs" />
+    <Compile Include="NotificationsDemos.cs" />
+    <Compile Include="OAuthDemos.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReportSpamDemos.cs" />
+    <Compile Include="SavedSearchDemos.cs" />
+    <Compile Include="SearchDemos.cs" />
+    <Compile Include="SocialGraphDemos.cs" />
+    <Compile Include="StatusDemos.cs" />
+    <Compile Include="TrendsDemos.cs" />
+    <Compile Include="UserDemos.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LinqToTwitter\LinqToTwitter.csproj">

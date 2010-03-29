@@ -322,7 +322,6 @@ namespace LinqToTwitterTests
         public void UpdateAccountProfileTest()
         {
             string name = "Joe";
-            string email = "Joe@LinqToTwitter.com";
             string url = "http://www.csharp-station.com";
             string location = "Denver, CO";
             string description = "Open source developer for LINQ to Twitter";
@@ -337,7 +336,7 @@ namespace LinqToTwitterTests
                 .Method("ExecuteTwitter")
                 .Will(Return.Value(expectedList));
 
-            User actual = m_ctx.UpdateAccountProfile(name, email, url, location, description);
+            User actual = m_ctx.UpdateAccountProfile(name, url, location, description);
             Assert.AreEqual(expected, actual);
         }
 
@@ -349,7 +348,6 @@ namespace LinqToTwitterTests
         public void UpdateAccountProfileNullInputTest()
         {
             string name = string.Empty;
-            string email = string.Empty;
             string url = string.Empty;
             string location = string.Empty;
             string description = string.Empty;
@@ -364,7 +362,7 @@ namespace LinqToTwitterTests
                 .Method("ExecuteTwitter")
                 .Will(Return.Value(expectedList));
 
-            User actual = m_ctx.UpdateAccountProfile(name, email, url, location, description);
+            User actual = m_ctx.UpdateAccountProfile(name, url, location, description);
             Assert.AreEqual(expected, actual);
         }
 
@@ -376,7 +374,6 @@ namespace LinqToTwitterTests
         public void UpdateAccountProfileNameOver20Test()
         {
             string name = new string(Enumerable.Repeat<char>('x', 21).ToArray());
-            string email = "Joe@LinqToTwitter.com";
             string url = "http://www.csharp-station.com";
             string location = "Denver, CO";
             string description = "Open source developer for LINQ to Twitter";
@@ -391,34 +388,7 @@ namespace LinqToTwitterTests
                 .Method("ExecuteTwitter")
                 .Will(Return.Value(expectedList));
 
-            User actual = m_ctx.UpdateAccountProfile(name, email, url, location, description);
-            Assert.AreEqual(expected, actual);
-        }
-
-        /// <summary>
-        ///A test for UpdateAccountProfile
-        ///</summary>
-        [TestMethod()]
-        [ExpectedException(typeof(ArgumentException))]
-        public void UpdateAccountProfileEmailOver40Test()
-        {
-            string name = "Joe";
-            string email = new string(Enumerable.Repeat<char>('x', 41).ToArray());
-            string url = "http://www.csharp-station.com";
-            string location = "Denver, CO";
-            string description = "Open source developer for LINQ to Twitter";
-            User expected = new User();
-            var expectedList =
-                new List<User>
-                {
-                    expected
-                };
-
-            Expect.Once.On(m_twitterExecute)
-                .Method("ExecuteTwitter")
-                .Will(Return.Value(expectedList));
-
-            User actual = m_ctx.UpdateAccountProfile(name, email, url, location, description);
+            User actual = m_ctx.UpdateAccountProfile(name, url, location, description);
             Assert.AreEqual(expected, actual);
         }
 
@@ -430,7 +400,6 @@ namespace LinqToTwitterTests
         public void UpdateAccountProfileUrlOver100Test()
         {
             string name = "Joe";
-            string email = "Joe@LinqToTwitter.com";
             string url = new string(Enumerable.Repeat<char>('x', 101).ToArray()); ;
             string location = "Denver, CO";
             string description = "Open source developer for LINQ to Twitter";
@@ -445,7 +414,7 @@ namespace LinqToTwitterTests
                 .Method("ExecuteTwitter")
                 .Will(Return.Value(expectedList));
 
-            User actual = m_ctx.UpdateAccountProfile(name, email, url, location, description);
+            User actual = m_ctx.UpdateAccountProfile(name, url, location, description);
             Assert.AreEqual(expected, actual);
         }
 
@@ -457,7 +426,6 @@ namespace LinqToTwitterTests
         public void UpdateAccountProfileLocationOver30Test()
         {
             string name = "Joe";
-            string email = "Joe@LinqToTwitter.com";
             string url = "http://www.csharp-station.com";
             string location = new string(Enumerable.Repeat<char>('x', 31).ToArray()); ;
             string description = "Open source developer for LINQ to Twitter";
@@ -472,7 +440,7 @@ namespace LinqToTwitterTests
                 .Method("ExecuteTwitter")
                 .Will(Return.Value(expectedList));
 
-            User actual = m_ctx.UpdateAccountProfile(name, email, url, location, description);
+            User actual = m_ctx.UpdateAccountProfile(name, url, location, description);
             Assert.AreEqual(expected, actual);
         }
 
@@ -484,7 +452,6 @@ namespace LinqToTwitterTests
         public void UpdateAccountProfileDescriptionOver160Test()
         {
             string name = "Joe";
-            string email = "Joe@LinqToTwitter.com";
             string url = "http://www.csharp-station.com";
             string location = "Denver, CO";
             string description = new string(Enumerable.Repeat<char>('x', 161).ToArray());
@@ -499,7 +466,7 @@ namespace LinqToTwitterTests
                 .Method("ExecuteTwitter")
                 .Will(Return.Value(expectedList));
 
-            User actual = m_ctx.UpdateAccountProfile(name, email, url, location, description);
+            User actual = m_ctx.UpdateAccountProfile(name, url, location, description);
             Assert.AreEqual(expected, actual);
         }
 

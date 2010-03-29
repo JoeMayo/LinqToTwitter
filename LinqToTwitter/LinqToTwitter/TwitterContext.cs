@@ -796,14 +796,14 @@ namespace LinqToTwitter
         /// <summary>
         /// sends a new direct message to specified userr
         /// </summary>
-        /// <param name="userID">id of user to send to</param>
-        /// <param name="id">text to send</param>
-        /// <returns>direct message element</returns>
-        public DirectMessage NewDirectMessage(string userID, string text)
+        /// <param name="user">UserID or ScreenName of user to send to</param>
+        /// <param name="id">Text to send</param>
+        /// <returns>Direct message element</returns>
+        public DirectMessage NewDirectMessage(string user, string text)
         {
-            if (string.IsNullOrEmpty(userID))
+            if (string.IsNullOrEmpty(user))
             {
-                throw new ArgumentException("userID is a required parameter.", "userID");
+                throw new ArgumentException("user is a required parameter.", "user");
             }
 
             if (string.IsNullOrEmpty(text))
@@ -823,7 +823,7 @@ namespace LinqToTwitter
                     newUrl,
                     new Dictionary<string, string>
                     {
-                        {"user", userID},
+                        {"user", user},
                         {"text", text}
                     },
                     new DirectMessageRequestProcessor());
@@ -1398,17 +1398,15 @@ namespace LinqToTwitter
         /// Update account profile info
         /// </summary>
         /// <param name="name">User Name</param>
-        /// <param name="email">Email Address</param>
         /// <param name="url">Web Address</param>
         /// <param name="location">Geographic Location</param>
         /// <param name="description">Personal Description</param>
         /// <returns>User with new info</returns>
-        public User UpdateAccountProfile(string name, string email, string url, string location, string description)
+        public User UpdateAccountProfile(string name, string url, string location, string description)
         {
             var accountUrl = BaseUrl + "account/update_profile.xml";
 
             if (string.IsNullOrEmpty(name) &&
-                string.IsNullOrEmpty(email) &&
                 string.IsNullOrEmpty(url) &&
                 string.IsNullOrEmpty(location) &&
                 string.IsNullOrEmpty(description))
@@ -1419,11 +1417,6 @@ namespace LinqToTwitter
             if (!string.IsNullOrEmpty(name) && name.Length > 20)
             {
                 throw new ArgumentException("name must be no longer than 20 characters", "name");
-            }
-
-            if (!string.IsNullOrEmpty(email) && email.Length > 40)
-            {
-                throw new ArgumentException("email must be no longer than 40 characters", "email");
             }
 
             if (!string.IsNullOrEmpty(url) && url.Length > 100)
@@ -1447,7 +1440,6 @@ namespace LinqToTwitter
                     new Dictionary<string, string>
                     {
                         { "name", name },
-                        { "email", email },
                         { "url", url },
                         { "location", location },
                         { "description", description }
