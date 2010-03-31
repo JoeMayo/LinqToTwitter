@@ -230,9 +230,10 @@ namespace LinqToTwitter
         /// <exception cref="WebException">Thrown if the server returns an error.</exception>
         public HttpWebResponse Post(Uri requestUrl, IDictionary<string, string> args)
         {
+            var servicePoint = ServicePointManager.FindServicePoint(requestUrl);
+            servicePoint.Expect100Continue = false;
             var req = this.Consumer.PrepareAuthorizedRequest(new MessageReceivingEndpoint(requestUrl, HttpDeliveryMethods.PostRequest), this.AccessToken);
             this.InitializeRequest(req);
-            req.ServicePoint.Expect100Continue = false;
             return (HttpWebResponse)req.GetResponse();
         }
         #endregion
