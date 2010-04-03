@@ -34,6 +34,11 @@ namespace LinqToTwitter
         /// <summary>
         /// Geo location of tweet
         /// </summary>
-        public string Location { get; set; } 
+        public string Location { get; set; }
+
+        /// <summary>
+        /// Result type returned from twitter for this entry
+        /// </summary>
+        public string ResultType { get; set; }
     }
 }

@@ -26,6 +26,11 @@ namespace LinqToTwitterDemo
             //SearchByLanguageTwitterDemo(twitterCtx);
             //SearchTwitterSource(twitterCtx);
             //ExceedSearchRateLimitDemo(twitterCtx);
+            //SearchWithResultType(twitterCtx);
+            //SearchWithWordQuery(twitterCtx);
+            //SearchWithPersonQuery(twitterCtx);
+            //SearchWithAttitudeQuery(twitterCtx);
+            SearchWithLinksQuery(twitterCtx);
         }
 
         #region Search Demos
@@ -36,7 +41,6 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void SearchTwitterDemo(TwitterContext twitterCtx)
         {
-
             var queryResults =
                 from search in twitterCtx.Search
                 where search.Type == SearchType.Search &&
@@ -261,6 +265,134 @@ namespace LinqToTwitterDemo
                     Console.WriteLine(
                         "ID: {0}, Source: {1}\nContent: {2}\n",
                         entry.ID, entry.Source, entry.Content);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Demonstrates how to use the ResultType parameter
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void SearchWithResultType(TwitterContext twitterCtx)
+        {
+            var queryResults =
+                from search in twitterCtx.Search
+                where search.Type == SearchType.Search &&
+                      search.ResultType == ResultType.Mixed &&
+                      search.Query == "Didi Benami"
+                select search;
+
+            foreach (var search in queryResults)
+            {
+                Console.WriteLine("\nQuery:\n" + search.Title);
+
+                foreach (var entry in search.Entries)
+                {
+                    Console.WriteLine(
+                        "ID: {0}, Result Type: {1}\nContent: {2}\n",
+                        entry.ID, entry.ResultType, entry.Content);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Demonstrates how to use words parameters
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void SearchWithWordQuery(TwitterContext twitterCtx)
+        {
+            var queryResults =
+                from search in twitterCtx.Search
+                where search.Type == SearchType.Search &&
+                      search.WordAnd == "LINQ Twitter"
+                select search;
+
+            foreach (var search in queryResults)
+            {
+                Console.WriteLine("\nQuery:\n" + search.Title);
+
+                foreach (var entry in search.Entries)
+                {
+                    Console.WriteLine(
+                        "ID: {0}, As of: {1}\nContent: {2}\n",
+                        entry.ID, entry.Updated, entry.Content);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Demonstrates how to use person parameters
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void SearchWithPersonQuery(TwitterContext twitterCtx)
+        {
+            var queryResults =
+                from search in twitterCtx.Search
+                where search.Type == SearchType.Search &&
+                      search.PersonReference == "JoeMayo"
+                select search;
+
+            foreach (var search in queryResults)
+            {
+                Console.WriteLine("\nQuery:\n" + search.Title);
+
+                foreach (var entry in search.Entries)
+                {
+                    Console.WriteLine(
+                        "ID: {0}, As of: {1}\nContent: {2}\n",
+                        entry.ID, entry.Updated, entry.Content);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Demonstrates how to use the Attitude parameter
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void SearchWithAttitudeQuery(TwitterContext twitterCtx)
+        {
+            var queryResults =
+                from search in twitterCtx.Search
+                where search.Type == SearchType.Search &&
+                      search.Query == "Twitter" &&
+                      search.Attitude == (Attitude.Negative | Attitude.Question)
+                select search;
+
+            foreach (var search in queryResults)
+            {
+                Console.WriteLine("\nQuery:\n" + search.Title);
+
+                foreach (var entry in search.Entries)
+                {
+                    Console.WriteLine(
+                        "ID: {0}, As of: {1}\nContent: {2}\n",
+                        entry.ID, entry.Updated, entry.Content);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Demonstrates how to use the WithLinks parameter
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void SearchWithLinksQuery(TwitterContext twitterCtx)
+        {
+            var queryResults =
+                from search in twitterCtx.Search
+                where search.Type == SearchType.Search &&
+                      search.Query == "Linq to Twitter" &&
+                      search.WithLinks == true
+                select search;
+
+            foreach (var search in queryResults)
+            {
+                Console.WriteLine("\nQuery:\n" + search.Title);
+
+                foreach (var entry in search.Entries)
+                {
+                    Console.WriteLine(
+                        "ID: {0}, As of: {1}\nContent: {2}\n",
+                        entry.ID, entry.Updated, entry.Content);
                 }
             }
         }

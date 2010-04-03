@@ -52,9 +52,24 @@ namespace LinqToTwitter
         private int Page { get; set; }
 
         /// <summary>
+        /// Return tweets since this date
+        /// </summary>
+        private DateTime Since { get; set; }
+
+        /// <summary>
+        /// Return tweets before this date
+        /// </summary>
+        private DateTime Until { get; set; }
+
+        /// <summary>
         /// last status ID
         /// </summary>
         private ulong SinceID { get; set; }
+
+        /// <summary>
+        /// for getting tweets with ID that is less than or equal to this value
+        /// </summary>
+        private ulong MaxID { get; set; }
 
         /// <summary>
         /// location, specified as "latitude,longitude,radius"
@@ -64,7 +79,67 @@ namespace LinqToTwitter
         /// <summary>
         /// adds user information for each tweet if true (default = false)
         /// </summary>
-        private string ShowUser { get; set; }
+        private bool ShowUser { get; set; }
+
+        /// <summary>
+        /// Metadata for type of result (mixed, recent, or popular)
+        /// </summary>
+        private ResultType ResultType { get; set; }
+
+        /// <summary>
+        /// With exact phrase
+        /// </summary>
+        private string WordPhrase { get; set; }
+
+        /// <summary>
+        /// With all words
+        /// </summary>
+        private string WordAnd { get; set; }
+
+        /// <summary>
+        /// With any of the words
+        /// </summary>
+        private string WordOr { get; set; }
+
+        /// <summary>
+        /// Without the words
+        /// </summary>
+        private string WordNot { get; set; }
+
+        /// <summary>
+        /// With hashtag (add a single hashtag without the #)
+        /// </summary>
+        private string Hashtag { get; set; }
+
+        /// <summary>
+        /// From this person
+        /// </summary>
+        private string PersonFrom { get; set; }
+
+        /// <summary>
+        /// To this person
+        /// </summary>
+        private string PersonTo { get; set; }
+
+        /// <summary>
+        /// Person mentioned in tweet
+        /// </summary>
+        private string PersonReference { get; set; }
+
+        /// <summary>
+        /// Tweets with an attitude (Positive, Negative, or Question)
+        /// </summary>
+        private Attitude Attitude { get; set; }
+
+        /// <summary>
+        /// Tweets that contain links
+        /// </summary>
+        private bool WithLinks { get; set; }
+
+        /// <summary>
+        /// Tweets that have been retweeted
+        /// </summary>
+        private bool WithRetweets { get; set; }
 
         /// <summary>
         /// extracts parameters from lambda
@@ -83,9 +158,24 @@ namespace LinqToTwitter
                        "Locale",
                        "PageSize",
                        "Page",
+                       "Since",
+                       "Until",
                        "SinceID",
+                       "MaxID",
                        "GeoCode",
-                       "ShowUser"
+                       "ShowUser",
+                       "ResultType",
+                       "WordPhrase",
+                       "WordAnd",
+                       "WordOr",
+                       "WordNot",
+                       "Hashtag",
+                       "PersonFrom",
+                       "PersonTo",
+                       "PersonReference",
+                       "Attitude",
+                       "WithLinks",
+                       "WithRetweets"
                    });
 
             return paramFinder.Parameters;
@@ -166,14 +256,130 @@ namespace LinqToTwitter
 
             if (parameters.ContainsKey("ShowUser"))
             {
-                ShowUser = parameters["ShowUser"];
-                urlParams.Add("show_user=" + parameters["ShowUser"]);
+                ShowUser = bool.Parse(parameters["ShowUser"]);
+
+                if (ShowUser)
+                {
+                    urlParams.Add("show_user=" + parameters["ShowUser"]); 
+                }
+            }
+
+            if (parameters.ContainsKey("Since"))
+            {
+                Since = DateTime.Parse(parameters["Since"]);
+                urlParams.Add("since=" + Since.ToString("yyyy-MM-dd"));
+            }
+
+            if (parameters.ContainsKey("Until"))
+            {
+                Until = DateTime.Parse(parameters["Until"]);
+                urlParams.Add("until=" + Until.ToString("yyyy-MM-dd"));
             }
 
             if (parameters.ContainsKey("SinceID"))
             {
                 SinceID = ulong.Parse(parameters["SinceID"]);
                 urlParams.Add("since_id=" + parameters["SinceID"]);
+            }
+
+            if (parameters.ContainsKey("MaxID"))
+            {
+                MaxID = ulong.Parse(parameters["MaxID"]);
+                urlParams.Add("max_id=" + parameters["MaxID"]);
+            }
+
+            if (parameters.ContainsKey("ResultType"))
+            {
+                ResultType = RequestProcessorHelper.ParseQueryEnumType<ResultType>(parameters["ResultType"]);
+                urlParams.Add("result_type=" + ResultType.ToString());
+            }
+
+            if (parameters.ContainsKey("WordPhrase"))
+            {
+                WordPhrase = parameters["WordPhrase"];
+                urlParams.Add("exact=" + HttpUtility.UrlEncode(parameters["WordPhrase"]));
+            }
+
+            if (parameters.ContainsKey("WordAnd"))
+            {
+                WordAnd = parameters["WordAnd"];
+                urlParams.Add("ands=" + HttpUtility.UrlEncode(parameters["WordAnd"]));
+            }
+
+            if (parameters.ContainsKey("WordOr"))
+            {
+                WordOr = parameters["WordOr"];
+                urlParams.Add("ors=" + HttpUtility.UrlEncode(parameters["WordOr"]));
+            }
+
+            if (parameters.ContainsKey("WordNot"))
+            {
+                WordNot = parameters["WordNot"];
+                urlParams.Add("nots=" + HttpUtility.UrlEncode(parameters["WordNot"]));
+            }
+
+            if (parameters.ContainsKey("Hashtag"))
+            {
+                Hashtag = parameters["Hashtag"];
+                urlParams.Add("tag=" + HttpUtility.UrlEncode(parameters["Hashtag"]));
+            }
+
+            if (parameters.ContainsKey("PersonFrom"))
+            {
+                PersonFrom = parameters["PersonFrom"];
+                urlParams.Add("from=" + HttpUtility.UrlEncode(parameters["PersonFrom"]));
+            }
+
+            if (parameters.ContainsKey("PersonTo"))
+            {
+                PersonTo = parameters["PersonTo"];
+                urlParams.Add("to=" + HttpUtility.UrlEncode(parameters["PersonTo"]));
+            }
+
+            if (parameters.ContainsKey("PersonReference"))
+            {
+                PersonReference = parameters["PersonReference"];
+                urlParams.Add("ref=" + HttpUtility.UrlEncode(parameters["PersonReference"]));
+            }
+
+            if (parameters.ContainsKey("Attitude"))
+            {
+                Attitude = RequestProcessorHelper.ParseQueryEnumType<Attitude>(parameters["Attitude"]);
+
+                if ((Attitude & Attitude.Positive) == Attitude.Positive)
+                {
+                    urlParams.Add("tude%5B%5D=%3A%29"); 
+                }
+
+                if ((Attitude & Attitude.Negative) == Attitude.Negative)
+                {
+                    urlParams.Add("tude%5B%5D=%3A%28");
+                }
+
+                if ((Attitude & Attitude.Question) == Attitude.Question)
+                {
+                    urlParams.Add("tude%5B%5D=%3F");
+                }
+            }
+
+            if (parameters.ContainsKey("WithLinks"))
+            {
+                WithLinks = bool.Parse(parameters["WithLinks"]);
+
+                if (WithLinks)
+                {
+                    urlParams.Add("filter%5B%5D=links");
+                }
+            }
+
+            if (parameters.ContainsKey("WithRetweets"))
+            {
+                WithRetweets = bool.Parse(parameters["WithRetweets"]);
+
+                if (WithRetweets)
+                {
+                    urlParams.Add("include%5B%5D=retweets");
+                }
             }
 
             if (urlParams.Count > 0)
@@ -183,53 +389,6 @@ namespace LinqToTwitter
 
             return url;
         }
-
-//        private string m_testQueryResponse = @"<?xml version=""1.0"" encoding=""UTF-8""?>
-//<feed xmlns:google=""http://base.google.com/ns/1.0"" xml:lang=""en-US"" xmlns:openSearch=""http://a9.com/-/spec/opensearch/1.1/"" xmlns=""http://www.w3.org/2005/Atom"" xmlns:twitter=""http://api.twitter.com/"">
-//  <id>tag:search.twitter.com,2005:search/LINQ to Twitter</id>
-//  <link type=""text/html"" rel=""alternate"" href=""http://search.twitter.com/search?q=LINQ+to+Twitter""/>
-//  <link type=""application/atom+xml"" rel=""self"" href=""http://search.twitter.com/search.atom?lang=en&amp;q=LINQ%20to%20Twitter&amp;rpp=2&amp;show_user=true""/>
-//  <title>LINQ to Twitter - Twitter Search</title>
-//  <link type=""application/opensearchdescription+xml"" rel=""search"" href=""http://search.twitter.com/opensearch.xml""/>
-//  <link type=""application/atom+xml"" rel=""refresh"" href=""http://search.twitter.com/search.atom?lang=en&amp;q=LINQ+to+Twitter&amp;rpp=2&amp;show_user=true&amp;since_id=1600414821""/>
-//  <twitter:warning>adjusted since_id, it was older than allowed</twitter:warning>
-//  <updated>2009-04-23T08:33:40Z</updated>
-//  <openSearch:itemsPerPage>2</openSearch:itemsPerPage>
-//  <openSearch:language>en</openSearch:language>
-//  <link type=""application/atom+xml"" rel=""next"" href=""http://search.twitter.com/search.atom?lang=en&amp;max_id=1600414821&amp;page=2&amp;q=LINQ+to+Twitter&amp;rpp=2""/>
-//  <entry>
-//    <id>tag:search.twitter.com,2005:1592662820</id>
-//    <published>2009-04-23T08:33:40Z</published>
-//    <link type=""text/html"" rel=""alternate"" href=""http://twitter.com/slecluyse/statuses/1592662820""/>
-//    <title>slecluyse: LINQ to Twitter http://bit.ly/11vAp</title>
-//    <content type=""html"">slecluyse: &lt;b&gt;LINQ&lt;/b&gt; &lt;b&gt;to&lt;/b&gt; &lt;b&gt;Twitter&lt;/b&gt; &lt;a href=""http://bit.ly/11vAp""&gt;http://bit.ly/11vAp&lt;/a&gt;</content>
-//    <updated>2009-04-23T08:33:40Z</updated>
-//    <link type=""image/png"" rel=""image"" href=""http://s3.amazonaws.com/twitter_production/profile_images/178528955/linkedin_normal.jpg""/>
-//    <twitter:source>&lt;a href=""http://www.tweetdeck.com/""&gt;TweetDeck&lt;/a&gt;</twitter:source>
-//    <twitter:lang>en</twitter:lang>
-//    <author>
-//      <name>slecluyse (Steven Lecluyse)</name>
-//      <uri>http://twitter.com/slecluyse</uri>
-//    </author>
-//  </entry>
-//  <entry>
-//    <id>tag:search.twitter.com,2005:1575147318</id>
-//    <published>2009-04-21T14:12:41Z</published>
-//    <link type=""text/html"" rel=""alternate"" href=""http://twitter.com/JackStow/statuses/1575147318""/>
-//    <title>JackStow: Blog post: A Simple Twitter Status ASP.NET User Control With LINQ To XML: 
-//The blog system I'm us.. http://tinyurl.com/cvdbvr</title>
-//    <content type=""html"">JackStow: Blog post: A Simple &lt;b&gt;Twitter&lt;/b&gt; Status ASP.NET User Control With &lt;b&gt;LINQ&lt;/b&gt; &lt;b&gt;To&lt;/b&gt; XML: 
-//The blog system I'm us.. &lt;a href=""http://tinyurl.com/cvdbvr""&gt;http://tinyurl.com/cvdbvr&lt;/a&gt;</content>
-//    <updated>2009-04-21T14:12:41Z</updated>
-//    <link type=""image/png"" rel=""image"" href=""http://s3.amazonaws.com/twitter_production/profile_images/63057949/Twitter-Jack-Small_normal.jpg""/>
-//    <twitter:source>&lt;a href=""http://twitterfeed.com""&gt;twitterfeed&lt;/a&gt;</twitter:source>
-//    <twitter:lang>en</twitter:lang>
-//    <author>
-//      <name>JackStow (Jack Stow)</name>
-//      <uri>http://twitter.com/JackStow</uri>
-//    </author>
-//  </entry>
-//</feed>";
 
         /// <summary>
         /// transforms XML into IQueryable of User
@@ -253,6 +412,21 @@ namespace LinqToTwitter
                 SinceID = SinceID,
                 SearchLanguage = SearchLanguage,
                 Locale = Locale,
+                MaxID = MaxID,
+                Since = Since,
+                Until = Until,
+                ResultType = ResultType,
+                WordPhrase = WordPhrase,
+                WordAnd = WordAnd,
+                WordOr = WordOr,
+                WordNot = WordNot,
+                Hashtag = Hashtag,
+                PersonFrom = PersonFrom,
+                PersonTo = PersonTo,
+                PersonReference = PersonReference,
+                Attitude = Attitude,
+                WithLinks = WithLinks,
+                WithRetweets = WithRetweets,
                 ID = twitterResponse.Element(atom + "id").Value,
                 Title = twitterResponse.Element(atom + "title").Value,
                 TwitterWarning = 
@@ -330,7 +504,15 @@ namespace LinqToTwitter
                          Location = 
                             atomEntry.Element(twitter + "geo") == null ?
                             string.Empty :
-                            atomEntry.Element(twitter + "geo").Value
+                            atomEntry.Element(twitter + "geo").Value,
+                         ResultType =
+                            atomEntry.Element(twitter + "metadata") == null ||
+                            atomEntry.Element(twitter + "metadata")
+                                .Element(twitter + "result_type") == null ?
+                            string.Empty :
+                            atomEntry
+                                .Element(twitter + "metadata")
+                                    .Element(twitter + "result_type").Value
                      }).ToList()
             };
 

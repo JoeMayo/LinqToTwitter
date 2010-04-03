@@ -1,0 +1,28 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace LinqToTwitter
+{
+    /// <summary>
+    /// Type of results to return in a search
+    /// </summary>
+    public enum ResultType
+    {
+        /// <summary>
+        /// Combination of popular and recent
+        /// </summary>
+        Mixed,
+
+        /// <summary>
+        /// Real-time results
+        /// </summary>
+        Recent,
+
+        /// <summary>
+        /// Most popular tweets
+        /// </summary>
+        Popular
+    }
+}

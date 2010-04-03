@@ -80,23 +80,23 @@ namespace LinqToTwitterDemo
                 }
 
                 StatusDemos.Run(twitterCtx);
-                UserDemos.Run(twitterCtx);
-                DirectMessageDemos.Run(twitterCtx);
-                FriendshipDemos.Run(twitterCtx);
-                SocialGraphDemos.Run(twitterCtx);
-                AccountDemos.Run(twitterCtx);
-                SearchDemos.Run(twitterCtx);
-                FavoritesDemos.Run(twitterCtx);
-                NotificationsDemos.Run(twitterCtx);
-                BlocksDemos.Run(twitterCtx);
-                HelpDemos.Run(twitterCtx);
-                TrendsDemos.Run(twitterCtx);
-                SavedSearchDemos.Run(twitterCtx);
-                ReportSpamDemos.Run(twitterCtx);
-                ListDemos.Run(twitterCtx);
-                GeoDemos.Run(twitterCtx);
-                ErrorHandlingDemos.Run(twitterCtx);
-                OAuthDemos.Run(twitterCtx);
+                //UserDemos.Run(twitterCtx);
+                //DirectMessageDemos.Run(twitterCtx);
+                //FriendshipDemos.Run(twitterCtx);
+                //SocialGraphDemos.Run(twitterCtx);
+                //AccountDemos.Run(twitterCtx);
+                //FavoritesDemos.Run(twitterCtx);
+                //SearchDemos.Run(twitterCtx);
+                //NotificationsDemos.Run(twitterCtx);
+                //BlocksDemos.Run(twitterCtx);
+                //HelpDemos.Run(twitterCtx);
+                //TrendsDemos.Run(twitterCtx);
+                //SavedSearchDemos.Run(twitterCtx);
+                //ReportSpamDemos.Run(twitterCtx);
+                //ListDemos.Run(twitterCtx);
+                //GeoDemos.Run(twitterCtx);
+                //ErrorHandlingDemos.Run(twitterCtx);
+                //OAuthDemos.Run(twitterCtx);
 
                 //
                 // Sign-off, including optional clearing of cached credentials.

@@ -162,8 +162,21 @@ The blog system I'm us.. &lt;a href=""http://tinyurl.com/cvdbvr""&gt;http://tiny
                     search.Page == 1 &&
                     search.PageSize == 10 &&
                     search.Query == "LINQ to Twitter" &&
-                    search.ShowUser == "true" &&
-                    search.SinceID == 123;
+                    search.ShowUser == true &&
+                    search.SinceID == 123 &&
+                    search.MaxID == 200 &&
+                    search.ResultType == ResultType.Popular &&
+                    search.WordPhrase == "LINQ to Twitter" &&
+                    search.WordAnd == "LINQ Twitter" &&
+                    search.WordOr == "LINQ Twitter" &&
+                    search.WordNot == "LINQ Twitter" &&
+                    search.Hashtag == "linqtotwitter" &&
+                    search.PersonFrom == "JoeMayo" &&
+                    search.PersonTo == "JoeMayo" &&
+                    search.PersonReference == "JoeMayo" &&
+                    search.Attitude == Attitude.Positive &&
+                    search.WithLinks == true &&
+                    search.WithRetweets == true;
             LambdaExpression lambdaExpression = expression as LambdaExpression;
             
             var queryParams = target.GetParameters(lambdaExpression);
@@ -188,10 +201,49 @@ The blog system I'm us.. &lt;a href=""http://tinyurl.com/cvdbvr""&gt;http://tiny
                     new KeyValuePair<string, string>("Query", "LINQ to Twitter")));
             Assert.IsTrue(
                 queryParams.Contains(
-                    new KeyValuePair<string, string>("ShowUser", "true")));
+                    new KeyValuePair<string, string>("ShowUser", "True")));
             Assert.IsTrue(
                 queryParams.Contains(
                     new KeyValuePair<string, string>("SinceID", "123")));
+            Assert.IsTrue(
+               queryParams.Contains(
+                   new KeyValuePair<string, string>("MaxID", "200")));
+            Assert.IsTrue(
+               queryParams.Contains(
+                   new KeyValuePair<string, string>("ResultType", ((int)ResultType.Popular).ToString())));
+            Assert.IsTrue(
+              queryParams.Contains(
+                  new KeyValuePair<string, string>("WordPhrase", "LINQ to Twitter")));
+             Assert.IsTrue(
+              queryParams.Contains(
+                  new KeyValuePair<string, string>("WordAnd", "LINQ Twitter")));
+            Assert.IsTrue(
+              queryParams.Contains(
+                  new KeyValuePair<string, string>("WordOr", "LINQ Twitter")));
+            Assert.IsTrue(
+              queryParams.Contains(
+                  new KeyValuePair<string, string>("WordNot", "LINQ Twitter")));
+            Assert.IsTrue(
+              queryParams.Contains(
+                  new KeyValuePair<string, string>("Hashtag", "linqtotwitter")));
+            Assert.IsTrue(
+              queryParams.Contains(
+                  new KeyValuePair<string, string>("PersonFrom", "JoeMayo")));
+            Assert.IsTrue(
+              queryParams.Contains(
+                  new KeyValuePair<string, string>("PersonTo", "JoeMayo")));
+            Assert.IsTrue(
+              queryParams.Contains(
+                  new KeyValuePair<string, string>("PersonReference", "JoeMayo")));
+            Assert.IsTrue(
+              queryParams.Contains(
+                  new KeyValuePair<string, string>("Attitude", ((int)Attitude.Positive).ToString())));
+            Assert.IsTrue(
+              queryParams.Contains(
+                  new KeyValuePair<string, string>("WithLinks", "True")));
+            Assert.IsTrue(
+              queryParams.Contains(
+                  new KeyValuePair<string, string>("WithRetweets", "True")));
         }
 
         /// <summary>
@@ -211,9 +263,153 @@ The blog system I'm us.. &lt;a href=""http://tinyurl.com/cvdbvr""&gt;http://tiny
                     { "PageSize", "10" },
                     { "Query", "LINQ to Twitter" },
                     { "ShowUser", "true" },
-                    { "SinceID", "1" }
+                    { "SinceID", "1" },
+                    { "Since", "7/4/2010" },
+                    { "Until", "7/4/2011" },
+                    { "ResultType", ResultType.Popular.ToString()},
+               };
+            string expected = "http://search.twitter.com/search.atom?geocode=40.757929%2c-73.985506%2c25km&lang=en&page=1&rpp=10&q=LINQ+to+Twitter&show_user=true&since=2010-07-04&until=2011-07-04&since_id=1&result_type=Popular";
+            string actual;
+            actual = target.BuildURL(parameters);
+            Assert.AreEqual(expected, actual);
+        }
+
+        /// <summary>
+        ///A test for BuildURL with ShowUser set to false
+        ///</summary>
+        [TestMethod()]
+        public void BuildShowUserSetToFalseURLTest()
+        {
+            SearchRequestProcessor target = new SearchRequestProcessor() { BaseUrl = "http://search.twitter.com/" };
+            Dictionary<string, string> parameters =
+                new Dictionary<string, string>
+                {
+                    { "Type", SearchType.Search.ToString() },
+                    { "ShowUser", false.ToString() },
                 };
-            string expected = "http://search.twitter.com/search.atom?geocode=40.757929%2c-73.985506%2c25km&lang=en&page=1&rpp=10&q=LINQ+to+Twitter&show_user=true&since_id=1";
+            string expected = "http://search.twitter.com/search.atom";
+            string actual;
+            actual = target.BuildURL(parameters);
+            Assert.AreEqual(expected, actual);
+        }
+
+        /// <summary>
+        ///A test for BuildURL with words query parameters
+        ///</summary>
+        [TestMethod()]
+        public void BuildWordsURLTest()
+        {
+            SearchRequestProcessor target = new SearchRequestProcessor() { BaseUrl = "http://search.twitter.com/" };
+            Dictionary<string, string> parameters =
+                new Dictionary<string, string>
+                {
+                    { "Type", SearchType.Search.ToString() },
+                    { "WordPhrase", "LINQ to Twitter" },
+                    { "WordAnd", "LINQ Twitter" },
+                    { "WordOr", "LINQ Twitter" },
+                    { "WordNot", "LINQ Twitter" },
+                    { "Hashtag", "linqtotwitter" },
+               };
+            string expected = "http://search.twitter.com/search.atom?exact=LINQ+to+Twitter&ands=LINQ+Twitter&ors=LINQ+Twitter&nots=LINQ+Twitter&tag=linqtotwitter";
+            string actual;
+            actual = target.BuildURL(parameters);
+            Assert.AreEqual(expected, actual);
+        }
+
+        /// <summary>
+        ///A test for BuildURL with person query parameters
+        ///</summary>
+        [TestMethod()]
+        public void BuildPersonURLTest()
+        {
+            SearchRequestProcessor target = new SearchRequestProcessor() { BaseUrl = "http://search.twitter.com/" };
+            Dictionary<string, string> parameters =
+                new Dictionary<string, string>
+                {
+                    { "Type", SearchType.Search.ToString() },
+                    { "PersonFrom", "JoeMayo" },
+                    { "PersonTo", "JoeMayo" },
+                    { "PersonReference", "JoeMayo" },
+              };
+            string expected = "http://search.twitter.com/search.atom?from=JoeMayo&to=JoeMayo&ref=JoeMayo";
+            string actual;
+            actual = target.BuildURL(parameters);
+            Assert.AreEqual(expected, actual);
+        }
+
+        /// <summary>
+        ///A test for BuildURL with all attitude query parameters
+        ///</summary>
+        [TestMethod()]
+        public void BuildAttitudeURLTest()
+        {
+            SearchRequestProcessor target = new SearchRequestProcessor() { BaseUrl = "http://search.twitter.com/" };
+            Dictionary<string, string> parameters =
+                new Dictionary<string, string>
+                {
+                    { "Type", SearchType.Search.ToString() },
+                    { "Attitude", (Attitude.Positive | Attitude.Negative | Attitude.Question).ToString() },
+                };
+            string expected = "http://search.twitter.com/search.atom?tude%5B%5D=%3A%29&tude%5B%5D=%3A%28&tude%5B%5D=%3F";
+            string actual;
+            actual = target.BuildURL(parameters);
+            Assert.AreEqual(expected, actual);
+        }
+
+        /// <summary>
+        ///A test for BuildURL without positive query parameters
+        ///</summary>
+        [TestMethod()]
+        public void BuildAttitudeWithoutPositiveURLTest()
+        {
+            SearchRequestProcessor target = new SearchRequestProcessor() { BaseUrl = "http://search.twitter.com/" };
+            Dictionary<string, string> parameters =
+                new Dictionary<string, string>
+                {
+                    { "Type", SearchType.Search.ToString() },
+                    { "Attitude", (Attitude.Negative | Attitude.Question).ToString() },
+                };
+            string expected = "http://search.twitter.com/search.atom?tude%5B%5D=%3A%28&tude%5B%5D=%3F";
+            string actual;
+            actual = target.BuildURL(parameters);
+            Assert.AreEqual(expected, actual);
+        }
+
+        /// <summary>
+        ///A test for BuildURL with other parameters
+        ///</summary>
+        [TestMethod()]
+        public void BuildOtherURLTest()
+        {
+            SearchRequestProcessor target = new SearchRequestProcessor() { BaseUrl = "http://search.twitter.com/" };
+            Dictionary<string, string> parameters =
+                new Dictionary<string, string>
+                {
+                    { "Type", SearchType.Search.ToString() },
+                    { "WithLinks", true.ToString() },
+                    { "WithRetweets", true.ToString() }
+                };
+            string expected = "http://search.twitter.com/search.atom?filter%5B%5D=links&include%5B%5D=retweets";
+            string actual;
+            actual = target.BuildURL(parameters);
+            Assert.AreEqual(expected, actual);
+        }
+
+        /// <summary>
+        ///A test for BuildURL with other parameters set to false
+        ///</summary>
+        [TestMethod()]
+        public void BuildOtherSetToFalseURLTest()
+        {
+            SearchRequestProcessor target = new SearchRequestProcessor() { BaseUrl = "http://search.twitter.com/" };
+            Dictionary<string, string> parameters =
+                new Dictionary<string, string>
+                {
+                    { "Type", SearchType.Search.ToString() },
+                    { "WithLinks", false.ToString() },
+                    { "WithRetweets", false.ToString() }
+                };
+            string expected = "http://search.twitter.com/search.atom";
             string actual;
             actual = target.BuildURL(parameters);
             Assert.AreEqual(expected, actual);
