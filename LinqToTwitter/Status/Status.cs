@@ -19,6 +19,11 @@ namespace LinqToTwitter
     [Serializable]
     public class Status
     {
+        /// <summary>
+        /// Shreds an XML element into a Status object
+        /// </summary>
+        /// <param name="status">XML element with info</param>
+        /// <returns>Newly populated status object</returns>
         public Status CreateStatus(XElement status)
         {
             if (status == null)
@@ -60,6 +65,72 @@ namespace LinqToTwitter
                         rtDateParts[3]),
                         CultureInfo.InvariantCulture);
 
+            List<string> contributorIDs = null;
+
+            if (status.Element("contributors") != null)
+            {
+                contributorIDs =
+                    (from id in status.Element("contributors").Elements("user_id")
+                     select id.Value)
+                     .ToList(); 
+            }
+
+            XNamespace geoRss = "http://www.georss.org/georss";
+
+            var geoStr =
+               status.Element("geo") != null &&
+               status.Element("geo").Element(geoRss + "point") != null ?
+                   status.Element("geo").Element(geoRss + "point").Value :
+                   string.Empty;
+
+            Geo geo = new Geo();
+            if (!string.IsNullOrEmpty(geoStr))
+            {
+                var coordArr = geoStr.Split(' ');
+
+                decimal tempLatitude = 0;
+                decimal tempLongitide = 0;
+
+                if (decimal.TryParse(coordArr[Coordinate.LatitudePos], out tempLatitude) &&
+                    decimal.TryParse(coordArr[Coordinate.LongitudePos], out tempLongitide))
+                {
+                    geo =
+                        new Geo
+                        {
+                            Latitude = tempLatitude,
+                            Longitude = tempLongitide
+                        };
+                }
+            }
+            
+            var coordStr =
+                status.Element("coordinates") != null &&
+                status.Element("coordinates").Element(geoRss + "point") != null ?
+                    status.Element("coordinates").Element(geoRss + "point").Value :
+                    string.Empty;
+
+            Coordinate coord = new Coordinate();
+            if (!string.IsNullOrEmpty(coordStr))
+            {
+                var coordArr = coordStr.Split(' ');
+
+                decimal tempLatitude = 0;
+                decimal tempLongitide = 0;
+
+                if (decimal.TryParse(coordArr[Coordinate.LatitudePos], out tempLatitude) && 
+                    decimal.TryParse(coordArr[Coordinate.LongitudePos], out tempLongitide))
+                {
+                    coord = 
+                        new Coordinate
+                        {
+                            Latitude = tempLatitude,
+                            Longitude = tempLongitide
+                        }; 
+                }
+            }
+
+            var place = new Place().CreatePlace(status.Element("place"));
+
             var usr = new User();
 
             var newStatus = new Status
@@ -80,6 +151,10 @@ namespace LinqToTwitter
                      status.Element("in_reply_to_screen_name") == null ?
                          string.Empty :
                          status.Element("in_reply_to_screen_name").Value,
+                ContributorIDs = contributorIDs,
+                Geo = geo,
+                Coordinates = coord,
+                Place = place,
                 User = usr.CreateUser(user),
                 Retweet =
                     retweet == null ?
@@ -204,5 +279,26 @@ namespace LinqToTwitter
         /// Retweet details
         /// </summary>
         public Retweet Retweet { get; set; }
+
+        /// <summary>
+        /// Contains ID of users who have contributed
+        /// </summary>
+        public List<string> ContributorIDs { get; set; }
+
+        /// <summary>
+        /// Geographic information on tweet location
+        /// </summary>
+        [Obsolete("Soon to be deprecated. Use Coordinates instead.")]
+        public Geo Geo { get; set; }
+
+        /// <summary>
+        /// Coordinates of where tweet occurred
+        /// </summary>
+        public Coordinate Coordinates { get; set; }
+
+        /// <summary>
+        /// Place where status was created
+        /// </summary>
+        public Place Place { get; set; }
     }
 }

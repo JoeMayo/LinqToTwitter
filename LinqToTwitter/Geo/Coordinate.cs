@@ -11,6 +11,9 @@ namespace LinqToTwitter
     /// </summary>
     public class Coordinate
     {
+        public const int LatitudePos = 0;
+        public const int LongitudePos = 1;
+
         /// <summary>
         /// Converts XML to a Coordinate
         /// </summary>
@@ -18,15 +21,12 @@ namespace LinqToTwitter
         /// <returns>Coordinate holding info from XML</returns>
         public Coordinate CreateCoordinate(XElement coordinate)
         {
-            const int Latitude = 1;
-            const int Longitude = 0;
-
             List<XElement> coords = coordinate.Elements("item").ToList();
 
             return new Coordinate
             {
-                Latitude = decimal.Parse(coords[Latitude].Value),
-                Longitude = decimal.Parse(coords[Longitude].Value)
+                Latitude = decimal.Parse(coords[LatitudePos].Value),
+                Longitude = decimal.Parse(coords[LongitudePos].Value)
             };
         }
 

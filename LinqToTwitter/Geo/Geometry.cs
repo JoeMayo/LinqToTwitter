@@ -23,15 +23,44 @@ namespace LinqToTwitter
                 return null;
             }
 
-            var coordinate = new Coordinate();
+            List<Coordinate> coords = new List<Coordinate>();
+
+            if (geometry.Element("coordinates") == null)
+            {
+                XNamespace geoRss = "http://www.georss.org/georss";
+
+                if (geometry.Element(geoRss + "polygon") != null)
+                {
+                    var coordArr = geometry.Element(geoRss + "polygon").Value.Split(' ');
+
+                    for (int lat = Coordinate.LatitudePos, lon = Coordinate.LongitudePos; lon < coordArr.Length; lat+=2, lon += 2)
+                    {
+                        coords.Add(
+                            new Coordinate 
+                            { 
+                                Latitude = decimal.Parse(coordArr[lat]), 
+                                Longitude = decimal.Parse(coordArr[lon]) 
+                            });
+                    }
+                }
+            }
+            else
+            {
+                var coordinate = new Coordinate();
+
+                coords =
+                    (from coord in geometry.Element("coordinates").Element("item").Elements("item")
+                     select coordinate.CreateCoordinate(coord))
+                     .ToList();
+            }
 
             return new Geometry
             {
-                Type = geometry.Element("type").Value,
-                Coordinates =
-                    (from coord in geometry.Element("coordinates").Element("item").Elements("item")
-                     select coordinate.CreateCoordinate(coord))
-                     .ToList()
+                Type = 
+                    geometry.Element("type") == null ?
+                        string.Empty :
+                        geometry.Element("type").Value,
+                Coordinates = coords
             };
         }
 

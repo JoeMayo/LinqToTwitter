@@ -18,7 +18,7 @@ namespace LinqToTwitter
         /// <returns>Place populated from XML</returns>
         public Place CreatePlace(XElement place)
         {
-            if (place == null)
+            if (place == null || place.Descendants().Count() == 0)
             {
                 return null;
             }
@@ -33,7 +33,13 @@ namespace LinqToTwitter
                     place.Element("country") == null ?
                         string.Empty :
                         place.Element("country").Value,
-                CountryCode = place.Element("country_code").Value,
+                CountryCode = 
+                    place.Element("country_code") == null ?
+                        place.Element("country") != null &&
+                        place.Element("country").Attribute("code") != null ?
+                            place.Element("country").Attribute("code").Value :
+                            string.Empty :
+                        place.Element("country_code").Value,
                 FullName = place.Element("full_name").Value,
                 PlaceType = place.Element("place_type").Value,
                 Url = place.Element("url").Value,

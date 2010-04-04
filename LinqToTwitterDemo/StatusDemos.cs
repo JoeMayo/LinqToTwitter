@@ -31,8 +31,10 @@ namespace LinqToTwitterDemo
             //MentionsWithSinceIDStatusQueryDemo(twitterCtx);
             //MentionsWithPagingQueryDemo(twitterCtx);
             //SingleStatusQueryDemo(twitterCtx);
-            UpdateStatusDemo(twitterCtx);
+            //UpdateStatusDemo(twitterCtx);
             //UpdateStatusWithReplyDemo(twitterCtx);
+            //UpdateStatusWithLocationDemo(twitterCtx);
+            UpdateStatusWithPlaceDemo(twitterCtx);
             //DestroyStatusDemo(twitterCtx);
             //RetweetedByMeStatusQueryDemo(twitterCtx);
             //RetweetedByMeWithCountStatusQueryDemo(twitterCtx);
@@ -42,6 +44,8 @@ namespace LinqToTwitterDemo
             //RetweetsQueryDemo(twitterCtx);
             //FirstStatusQueryDemo(twitterCtx);
             //GetAllTweetsAndRetweetsDemo(twitterCtx);
+            //ContributorIDsDemo(twitterCtx);
+
         }
 
         #region Status Demos
@@ -184,7 +188,7 @@ namespace LinqToTwitterDemo
 
         private static void RetweetDemo(TwitterContext twitterCtx)
         {
-            var retweet = twitterCtx.Retweet("5769361742");
+            var retweet = twitterCtx.Retweet("11515561768");
 
             Console.WriteLine("Retweeted Tweet: ");
             Console.WriteLine(
@@ -458,10 +462,47 @@ namespace LinqToTwitterDemo
                 tweet.CreatedAt);
         }
 
-        public class MyTweetClass
+        /// <summary>
+        /// shows how to update a status
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void UpdateStatusWithPlaceDemo(TwitterContext twitterCtx)
         {
-            public string UserName { get; set; }
-            public string Text { get; set; }
+            // the \u00C7 is C Cedilla, which I've included to ensure that non-ascii characters appear properly
+            var status = "\u00C7 Testing LINQ to Twitter update status on " + DateTime.Now.ToString() + " #linqtotwitter";
+
+            Console.WriteLine("Status being sent: " + status);
+
+            var tweet = twitterCtx.UpdateStatus(status, 37.78215m, -122.40060m, "fbd6d2f5a4e4a15e");
+
+            Console.WriteLine(
+                "User: {0}, Tweet: {1}\nLatitude: {2}, Longitude: {3}, Place: {4}",
+                tweet.User.Identifier.ScreenName,
+                tweet.Text,
+                tweet.Coordinates.Latitude,
+                tweet.Coordinates.Longitude,
+                tweet.Place.Name);
+        }
+
+        /// <summary>
+        /// shows how to update a status
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void UpdateStatusWithLocationDemo(TwitterContext twitterCtx)
+        {
+            // the \u00C7 is C Cedilla, which I've included to ensure that non-ascii characters appear properly
+            var status = "\u00C7 Testing LINQ to Twitter update status on " + DateTime.Now.ToString() + " #linqtotwitter";
+
+            Console.WriteLine("Status being sent: " + status);
+
+            var tweet = twitterCtx.UpdateStatus(status, 37.78215m, -122.40060m, true);
+
+            Console.WriteLine(
+                "User: {0}, Tweet: {1}\nLatitude: {2}, Longitude: {3}",
+                tweet.User.Identifier.ScreenName,
+                tweet.Text,
+                tweet.Coordinates.Latitude,
+                tweet.Coordinates.Longitude);
         }
 
         /// <summary>
@@ -533,6 +574,25 @@ namespace LinqToTwitterDemo
                     "User Name: {0}, Tweet: {1}",
                     tweet.User.Name,
                     tweet.Text));
+        }
+
+        /// <summary>
+        /// Shows how to read contributor IDs
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void ContributorIDsDemo(TwitterContext twitterCtx)
+        {
+            var contributedStatus =
+                (from tweet in twitterCtx.Status
+                 where tweet.Type == StatusType.Show &&
+                       tweet.ID == "7680619122"
+                 select tweet)
+                 .SingleOrDefault();
+
+            Console.WriteLine("Contributors Enabled: {0}\n", contributedStatus.User.ContributorsEnabled);
+
+            contributedStatus.ContributorIDs.ForEach(
+                id => Console.WriteLine("ContributorID: " + id));
         }
 
         #endregion

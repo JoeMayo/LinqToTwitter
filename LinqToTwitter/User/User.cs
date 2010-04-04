@@ -95,6 +95,12 @@ namespace LinqToTwitter
                     false :
                     bool.Parse(user.Element("verified").Value);
 
+            var contributorsEnabled =
+                user.Element("contributors_enabled") == null ||
+                string.IsNullOrEmpty(user.Element("contributors_enabled").Value) ?
+                    false :
+                    bool.Parse(user.Element("contributors_enabled").Value);
+
             var isFollowing =
                 user.Element("following") == null ||
                 string.IsNullOrEmpty(user.Element("following").Value) ?
@@ -178,6 +184,7 @@ namespace LinqToTwitter
                 Notifications = notifications,
                 GeoEnabled = geoEnabled,
                 Verified = verified,
+                ContributorsEnabled = contributorsEnabled,
                 Following = tempFollowingUsers,
                 Status = // TODO: refactor to CreateStatus
                     status == null ?
@@ -396,6 +403,11 @@ namespace LinqToTwitter
         /// Is a verified account
         /// </summary>
         public bool Verified { get; set; }
+
+        /// <summary>
+        /// Is contributors enabled on account?
+        /// </summary>
+        public bool ContributorsEnabled { get; set; }
 
         /// <summary>
         /// is authenticated user following this user

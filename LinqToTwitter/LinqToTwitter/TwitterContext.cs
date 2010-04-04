@@ -728,7 +728,7 @@ namespace LinqToTwitter
         /// <returns>IQueryable of sent status</returns>
         public Status UpdateStatus(string status)
         {
-            return UpdateStatus(status, null);
+            return UpdateStatus(status, -1, -1, null, false, null);
         }
 
         /// <summary>
@@ -738,6 +738,126 @@ namespace LinqToTwitter
         /// <param name="inReplyToStatusID">id of status replying to - optional - pass null if not used</param>
         /// <returns>IQueryable of sent status</returns>
         public Status UpdateStatus(string status, string inReplyToStatusID)
+        {
+            return UpdateStatus(status, -1, -1, null, false, inReplyToStatusID);
+        }
+
+        /// <summary>
+        /// sends a status update
+        /// </summary>
+        /// <param name="status">(optional @UserName) and (required) status text</param>
+        /// <param name="latitude">Latitude coordinate of where tweet occurred</param>
+        /// <param name="longitude">Longitude coordinate of where tweet occurred</param>
+        /// <returns>IQueryable of sent status</returns>
+        public Status UpdateStatus(string status, decimal latitude, decimal longitude)
+        {
+            return UpdateStatus(status, latitude, longitude, null, false, null);
+        }
+
+        /// <summary>
+        /// sends a status update
+        /// </summary>
+        /// <param name="status">(optional @UserName) and (required) status text</param>
+        /// <param name="latitude">Latitude coordinate of where tweet occurred</param>
+        /// <param name="longitude">Longitude coordinate of where tweet occurred</param>
+        /// <param name="displayCoordinates">Allow or prevent display of coordinates for this tweet</param>
+        /// <returns>IQueryable of sent status</returns>
+        public Status UpdateStatus(string status, decimal latitude, decimal longitude, bool displayCoordinates)
+        {
+            return UpdateStatus(status, latitude, longitude, null, displayCoordinates);
+        }
+
+        /// <summary>
+        /// sends a status update
+        /// </summary>
+        /// <param name="status">(optional @UserName) and (required) status text</param>
+        /// <param name="latitude">Latitude coordinate of where tweet occurred</param>
+        /// <param name="longitude">Longitude coordinate of where tweet occurred</param>
+        /// <param name="displayCoordinates">Allow or prevent display of coordinates for this tweet</param>
+        /// <param name="inReplyToStatusID">id of status replying to - optional - pass null if not used</param>
+        /// <returns>IQueryable of sent status</returns>
+        public Status UpdateStatus(string status, decimal latitude, decimal longitude, bool displayCoordinates, string inReplyToStatusID)
+        {
+            return UpdateStatus(status, latitude, longitude, null, displayCoordinates, inReplyToStatusID);
+        }
+
+        /// <summary>
+        /// sends a status update
+        /// </summary>
+        /// <param name="status">(optional @UserName) and (required) status text</param>
+        /// <param name="latitude">Latitude coordinate of where tweet occurred</param>
+        /// <param name="longitude">Longitude coordinate of where tweet occurred</param>
+        /// <param name="placeID">ID of place (found via Geo Reverse lookup query)</param>
+        /// <returns>IQueryable of sent status</returns>
+        public Status UpdateStatus(string status, decimal latitude, decimal longitude, string placeID)
+        {
+            return UpdateStatus(status, latitude, longitude, placeID, false, null);
+        }
+
+        /// <summary>
+        /// sends a status update
+        /// </summary>
+        /// <param name="status">(optional @UserName) and (required) status text</param>
+        /// <param name="latitude">Latitude coordinate of where tweet occurred</param>
+        /// <param name="longitude">Longitude coordinate of where tweet occurred</param>
+        /// <param name="placeID">ID of place (found via Geo Reverse lookup query)</param>
+        /// <param name="inReplyToStatusID">id of status replying to - optional - pass null if not used</param>
+        /// <returns>IQueryable of sent status</returns>
+        public Status UpdateStatus(string status, decimal latitude, decimal longitude, string placeID, string inReplyToStatusID)
+        {
+            return UpdateStatus(status, latitude, longitude, placeID, false, inReplyToStatusID);
+        }
+
+        /// <summary>
+        /// sends a status update
+        /// </summary>
+        /// <param name="status">(optional @UserName) and (required) status text</param>
+        /// <param name="latitude">Latitude coordinate of where tweet occurred</param>
+        /// <param name="longitude">Longitude coordinate of where tweet occurred</param>
+        /// <param name="placeID">ID of place (found via Geo Reverse lookup query)</param>
+        /// <param name="displayCoordinates">Allow or prevent display of coordinates for this tweet</param>
+        /// <returns>IQueryable of sent status</returns>
+        public Status UpdateStatus(string status, decimal latitude, decimal longitude, string placeID, bool displayCoordinates)
+        {
+            return UpdateStatus(status, latitude, longitude, placeID, displayCoordinates, null);
+        }
+
+        /// <summary>
+        /// sends a status update
+        /// </summary>
+        /// <param name="status">(optional @UserName) and (required) status text</param>
+        /// <param name="placeID">ID of place (found via Geo Reverse lookup query)</param>
+        /// <param name="displayCoordinates">Allow or prevent display of coordinates for this tweet</param>
+        /// <returns>IQueryable of sent status</returns>
+        public Status UpdateStatus(string status, string placeID, bool displayCoordinates)
+        {
+            return UpdateStatus(status, -1, -1, placeID, displayCoordinates, null);
+        }
+
+        /// <summary>
+        /// sends a status update
+        /// </summary>
+        /// <param name="status">(optional @UserName) and (required) status text</param>
+        /// <param name="placeID">ID of place (found via Geo Reverse lookup query)</param>
+        /// <param name="displayCoordinates">Allow or prevent display of coordinates for this tweet</param>
+        /// <param name="inReplyToStatusID">id of status replying to - optional - pass null if not used</param>
+        /// <returns>IQueryable of sent status</returns>
+        public Status UpdateStatus(string status, string placeID, bool displayCoordinates, string inReplyToStatusID)
+        {
+            return UpdateStatus(status, -1, -1, placeID, displayCoordinates, inReplyToStatusID);
+        }
+
+        /// <summary>
+        /// sends a status update
+        /// </summary>
+        /// <param name="status">(optional @UserName) and (required) status text</param>
+        /// <param name="latitude">Latitude coordinate of where tweet occurred</param>
+        /// <param name="longitude">Longitude coordinate of where tweet occurred</param>
+        /// <param name="placeID">ID of place (found via Geo Reverse lookup query)</param>
+        /// <param name="displayCoordinates">Allow or prevent display of coordinates for this tweet</param>
+        /// <param name="inReplyToStatusID">id of status replying to - optional - pass null if not used</param>
+        /// <returns>IQueryable of sent status</returns>
+        public Status UpdateStatus(string status, decimal latitude, decimal longitude, string placeID, bool displayCoordinates, string inReplyToStatusID)
         {
             if (string.IsNullOrEmpty(status))
             {
@@ -759,7 +879,11 @@ namespace LinqToTwitter
                     new Dictionary<string, string>
                     {
                         {"status", status},
-                        {"in_reply_to_status_id", inReplyToStatusID}
+                        {"in_reply_to_status_id", inReplyToStatusID},
+                        {"lat", latitude == -1 ? null : latitude.ToString()},
+                        {"long", longitude == -1 ? null : longitude.ToString()},
+                        {"place_id", placeID},
+                        {"display_coordinates", displayCoordinates.ToString()},
                     },
                     new StatusRequestProcessor());
 
