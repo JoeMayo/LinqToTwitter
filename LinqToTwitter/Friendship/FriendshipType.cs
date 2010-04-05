@@ -13,6 +13,11 @@ namespace LinqToTwitter
         /// <summary>
         /// does freindship exist between two users
         /// </summary>
-        Exists
+        Exists,
+
+        /// <summary>
+        /// Detailed information on the relationship between two people
+        /// </summary>
+        Show
     }
 }

@@ -127,6 +127,7 @@
     <Compile Include="Account\Account.cs" />
     <Compile Include="Account\AccountRequestProcessor.cs" />
     <Compile Include="Account\AccountType.cs" />
+    <Compile Include="Friendship\Relationship.cs" />
     <Compile Include="Geo\Geometry.cs" />
     <Compile Include="Geo\Coordinate.cs" />
     <Compile Include="Geo\Geo.cs" />

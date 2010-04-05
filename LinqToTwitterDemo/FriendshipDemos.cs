@@ -18,9 +18,10 @@ namespace LinqToTwitterDemo
         public static void Run(TwitterContext twitterCtx)
         {
             //CreateFriendshipFollowDemo(twitterCtx);
-            //FriendshipExistsDemo(twitterCtx);
             //DestroyFriendshipDemo(twitterCtx);
             //CreateFriendshipNoDeviceUpdatesDemo(twitterCtx);
+            //FriendshipExistsDemo(twitterCtx);
+            //FriendshipShowDemo(twitterCtx);
         }
 
         #region Friendship Demos
@@ -72,6 +73,27 @@ namespace LinqToTwitterDemo
             Console.WriteLine(
                 "LinqToTweeter follows JoeMayo: " +
                 friendship.First().IsFriend);
+        }
+
+        /// <summary>
+        /// shows how to show that one user follows another with Friendship Exists
+        /// </summary>
+        /// <param name="twitterCtx"></param>
+        private static void FriendshipShowDemo(TwitterContext twitterCtx)
+        {
+            var friendship =
+                (from friend in twitterCtx.Friendship
+                 where friend.Type == FriendshipType.Show &&
+                       friend.SourceScreenName == "JoeMayo" &&
+                       friend.TargetScreenName == "LinqToTweeter"
+                 select friend)
+                 .First();
+
+            Console.WriteLine(
+                "\nJoeMayo follows LinqToTweeter: " + 
+                friendship.SourceRelationship.FollowedBy + 
+                "\nLinqToTweeter follows JoeMayo: " +
+                friendship.TargetRelationship.FollowedBy);
         }
 
         #endregion

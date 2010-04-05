@@ -94,7 +94,11 @@ namespace LinqToTwitterTests
                 friend => 
                     friend.Type == FriendshipType.Exists &&
                     friend.SubjectUser == "123" && 
-                    friend.FollowingUser == "456";
+                    friend.FollowingUser == "456" &&
+                    friend.SourceUserID == "1" &&
+                    friend.SourceScreenName == "Name" &&
+                    friend.TargetUserID == "2" &&
+                    friend.TargetScreenName == "Name";
             LambdaExpression lambdaExpression = expression as LambdaExpression;
 
             var queryParams = target.GetParameters(lambdaExpression);
@@ -108,13 +112,25 @@ namespace LinqToTwitterTests
             Assert.IsTrue(
                 queryParams.Contains(
                     new KeyValuePair<string, string>("FollowingUser", "456")));
+            Assert.IsTrue(
+                queryParams.Contains(
+                    new KeyValuePair<string, string>("SourceUserID", "1")));
+            Assert.IsTrue(
+                queryParams.Contains(
+                    new KeyValuePair<string, string>("SourceScreenName", "Name")));
+            Assert.IsTrue(
+                queryParams.Contains(
+                    new KeyValuePair<string, string>("TargetUserID", "2")));
+            Assert.IsTrue(
+                queryParams.Contains(
+                    new KeyValuePair<string, string>("TargetScreenName", "Name")));
         }
 
         /// <summary>
-        ///A test for BuildURL
+        ///A test for BuildURL for the exists API
         ///</summary>
         [TestMethod()]
-        public void BuildURLTest()
+        public void BuildExistsURLTest()
         {
             FriendshipRequestProcessor target = new FriendshipRequestProcessor() { BaseUrl = "http://twitter.com/" };
             Dictionary<string, string> parameters =
@@ -128,6 +144,65 @@ namespace LinqToTwitterTests
             string actual;
             actual = target.BuildURL(parameters);
             Assert.AreEqual(expected, actual);
+        }
+
+        /// <summary>
+        ///A test for BuildURL for the show function
+        ///</summary>
+        [TestMethod()]
+        public void BuildShowURLTest()
+        {
+            FriendshipRequestProcessor target = new FriendshipRequestProcessor() { BaseUrl = "http://twitter.com/" };
+            Dictionary<string, string> parameters =
+                new Dictionary<string, string>
+                {
+                    { "Type", FriendshipType.Show.ToString() },
+                    { "SourceUserID", "123" },
+                    { "SourceScreenName", "JoeMayo" },
+                    { "TargetUserID", "456" },
+                    { "TargetScreenName", "LinqToTweeter" }
+                };
+            string expected = "http://twitter.com/friendships/show.xml?source_id=123&source_screen_name=JoeMayo&target_id=456&target_screen_name=LinqToTweeter";
+            string actual;
+            actual = target.BuildURL(parameters);
+            Assert.AreEqual(expected, actual);
+        }
+
+
+        /// <summary>
+        ///A test for BuildURL for the show function
+        ///</summary>
+        [TestMethod()]
+        [ExpectedException(typeof(ArgumentException))]
+        public void BuildShowWithoutSourceURLTest()
+        {
+            FriendshipRequestProcessor target = new FriendshipRequestProcessor() { BaseUrl = "http://twitter.com/" };
+            Dictionary<string, string> parameters =
+                new Dictionary<string, string>
+                {
+                    { "Type", FriendshipType.Show.ToString() },
+                    { "TargetUserID", "456" },
+                    { "TargetScreenName", "LinqToTweeter" }
+                };
+            string actual = target.BuildURL(parameters);
+        }
+
+        /// <summary>
+        ///A test for BuildURL for the show function
+        ///</summary>
+        [TestMethod()]
+        [ExpectedException(typeof(ArgumentException))]
+        public void BuildShowWithoutTargetURLTest()
+        {
+            FriendshipRequestProcessor target = new FriendshipRequestProcessor() { BaseUrl = "http://twitter.com/" };
+            Dictionary<string, string> parameters =
+                new Dictionary<string, string>
+                {
+                    { "Type", FriendshipType.Show.ToString() },
+                    { "SourceUserID", "123" },
+                    { "SourceScreenName", "JoeMayo" },
+                };
+            string actual = target.BuildURL(parameters);
         }
 
         /// <summary>

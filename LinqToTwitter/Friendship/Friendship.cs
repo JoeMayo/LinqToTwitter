@@ -27,7 +27,7 @@ namespace LinqToTwitter
         public string FollowingUser { get; set; }
 
         /// <summary>
-        /// FollowingUser is following SubjectUser
+        /// FollowingUser is following SubjectUser returned from Twitter (Exists query)
         /// </summary>
         public bool IsFriend { get; set; }
 
@@ -35,5 +35,35 @@ namespace LinqToTwitter
         /// info on friend
         /// </summary>
         public User Friend { get; set; }
+
+        /// <summary>
+        /// ID of source user (Show query)
+        /// </summary>
+        public string SourceUserID { get; set; }
+
+        /// <summary>
+        /// Screen name of source user (Show query)
+        /// </summary>
+        public string SourceScreenName { get; set; }
+
+        /// <summary>
+        /// ID of target user (Show query)
+        /// </summary>
+        public string TargetUserID { get; set; }
+
+        /// <summary>
+        /// Screen name of target user (Show query)
+        /// </summary>
+        public string TargetScreenName { get; set; }
+
+        /// <summary>
+        /// Relationship details returned from Twitter for the source (Show query)
+        /// </summary>
+        public Relationship SourceRelationship { get; set; }
+
+        /// <summary>
+        /// Relationship details returned from Twitter for the target (Show query)
+        /// </summary>
+        public Relationship TargetRelationship { get; set; }
     }
 }
