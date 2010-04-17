@@ -97,6 +97,7 @@ namespace LinqToTwitterDemo
                 //GeoDemos.Run(twitterCtx);
                 //ErrorHandlingDemos.Run(twitterCtx);
                 //OAuthDemos.Run(twitterCtx);
+                //TwitterContextDemos.Run(twitterCtx);
 
                 //
                 // Sign-off, including optional clearing of cached credentials.

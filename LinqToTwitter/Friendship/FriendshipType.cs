@@ -18,6 +18,16 @@ namespace LinqToTwitter
         /// <summary>
         /// Detailed information on the relationship between two people
         /// </summary>
-        Show
+        Show,
+
+        /// <summary>
+        /// Show IDs of all users requesting friendship with logged in user
+        /// </summary>
+        Incoming,
+
+        /// <summary>
+        /// Show IDs of all users logged in user is requesting friendship with
+        /// </summary>
+        Outgoing
     }
 }

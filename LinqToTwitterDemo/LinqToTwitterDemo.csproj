@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{CF26D528-E26B-40DB-A821-DEDE868D2638}</ProjectGuid>
     <OutputType>Exe</OutputType>
@@ -91,6 +91,7 @@
     <Compile Include="SocialGraphDemos.cs" />
     <Compile Include="StatusDemos.cs" />
     <Compile Include="TrendsDemos.cs" />
+    <Compile Include="TwitterContextDemos.cs" />
     <Compile Include="UserDemos.cs" />
   </ItemGroup>
   <ItemGroup>

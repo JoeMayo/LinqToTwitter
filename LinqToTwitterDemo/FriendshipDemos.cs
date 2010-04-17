@@ -22,6 +22,8 @@ namespace LinqToTwitterDemo
             //CreateFriendshipNoDeviceUpdatesDemo(twitterCtx);
             //FriendshipExistsDemo(twitterCtx);
             //FriendshipShowDemo(twitterCtx);
+            //FriendshipIncomingDemo(twitterCtx);
+            FriendshipOutgoingDemo(twitterCtx);
         }
 
         #region Friendship Demos
@@ -94,6 +96,36 @@ namespace LinqToTwitterDemo
                 friendship.SourceRelationship.FollowedBy + 
                 "\nLinqToTweeter follows JoeMayo: " +
                 friendship.TargetRelationship.FollowedBy);
+        }
+
+        /// <summary>
+        /// Shows how to check who has an incoming request to logged in user's locked account
+        /// </summary>
+        /// <param name="twitterCtx">twitterCtx</param>
+        private static void FriendshipIncomingDemo(TwitterContext twitterCtx)
+        {
+            var request =
+                (from req in twitterCtx.Friendship
+                 where req.Type == FriendshipType.Incoming
+                 select req)
+                 .FirstOrDefault();
+
+            request.IDInfo.IDs.ForEach(req => Console.WriteLine(req));
+        }
+
+        /// <summary>
+        /// Shows all outgoing requests from the logged in user to locked accounts
+        /// </summary>
+        /// <param name="twitterCtx">twitterCtx</param>
+        private static void FriendshipOutgoingDemo(TwitterContext twitterCtx)
+        {
+            var request =
+                (from req in twitterCtx.Friendship
+                 where req.Type == FriendshipType.Outgoing
+                 select req)
+                 .FirstOrDefault();
+
+            request.IDInfo.IDs.ForEach(req => Console.WriteLine(req));
         }
 
         #endregion

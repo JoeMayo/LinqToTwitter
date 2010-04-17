@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Xml.Linq;
 
 namespace LinqToTwitter
 {
@@ -16,6 +14,27 @@ namespace LinqToTwitter
     [Serializable]
     public class Cursors
     {
+        /// <summary>
+        /// Transforms XML document into a Cursors
+        /// </summary>
+        /// <param name="cursors">XElement with info</param>
+        /// <returns>New Cursors instance</returns>
+        public Cursors CreateCursors(XElement cursors)
+        {
+            return
+                new Cursors
+                {
+                    Next =
+                        cursors.Element("next_cursor") == null ?
+                            string.Empty :
+                            cursors.Element("next_cursor").Value,
+                    Previous =
+                        cursors.Element("previous_cursor") == null ?
+                            string.Empty :
+                            cursors.Element("previous_cursor").Value
+                };
+        }
+
         /// <summary>
         /// Use this value to retrieve the next page
         /// </summary>

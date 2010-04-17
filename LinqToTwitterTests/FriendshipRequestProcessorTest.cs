@@ -98,7 +98,8 @@ namespace LinqToTwitterTests
                     friend.SourceUserID == "1" &&
                     friend.SourceScreenName == "Name" &&
                     friend.TargetUserID == "2" &&
-                    friend.TargetScreenName == "Name";
+                    friend.TargetScreenName == "Name" &&
+                    friend.Cursor == "-1";
             LambdaExpression lambdaExpression = expression as LambdaExpression;
 
             var queryParams = target.GetParameters(lambdaExpression);
@@ -124,6 +125,9 @@ namespace LinqToTwitterTests
             Assert.IsTrue(
                 queryParams.Contains(
                     new KeyValuePair<string, string>("TargetScreenName", "Name")));
+            Assert.IsTrue(
+                queryParams.Contains(
+                    new KeyValuePair<string, string>("Cursor", "-1")));
         }
 
         /// <summary>
@@ -167,7 +171,6 @@ namespace LinqToTwitterTests
             actual = target.BuildURL(parameters);
             Assert.AreEqual(expected, actual);
         }
-
 
         /// <summary>
         ///A test for BuildURL for the show function
@@ -243,6 +246,80 @@ namespace LinqToTwitterTests
             {
                 Assert.AreEqual<string>("Type", ae.ParamName);
             }
+        }
+
+        /// <summary>
+        ///A test for BuildURL for the incoming function
+        ///</summary>
+        [TestMethod()]
+        public void BuildIncomingURLTest()
+        {
+            FriendshipRequestProcessor target = new FriendshipRequestProcessor() { BaseUrl = "https://api.twitter.com/1/" };
+            Dictionary<string, string> parameters =
+                new Dictionary<string, string>
+                {
+                    { "Type", FriendshipType.Incoming.ToString() }
+                };
+            string expected = "https://api.twitter.com/1/friendships/incoming.xml";
+            string actual;
+            actual = target.BuildURL(parameters);
+            Assert.AreEqual(expected, actual);
+        }
+
+        /// <summary>
+        ///A test for BuildURL for the incoming with cursor parameter function
+        ///</summary>
+        [TestMethod()]
+        public void BuildIncomingWithCursorURLTest()
+        {
+            FriendshipRequestProcessor target = new FriendshipRequestProcessor() { BaseUrl = "https://api.twitter.com/1/" };
+            Dictionary<string, string> parameters =
+                new Dictionary<string, string>
+                {
+                    { "Type", FriendshipType.Incoming.ToString() },
+                    { "Cursor", "-1" }
+                };
+            string expected = "https://api.twitter.com/1/friendships/incoming.xml?cursor=-1";
+            string actual;
+            actual = target.BuildURL(parameters);
+            Assert.AreEqual(expected, actual);
+        }
+
+        /// <summary>
+        ///A test for BuildURL for the outgoing function
+        ///</summary>
+        [TestMethod()]
+        public void BuildOutgoingURLTest()
+        {
+            FriendshipRequestProcessor target = new FriendshipRequestProcessor() { BaseUrl = "https://api.twitter.com/1/" };
+            Dictionary<string, string> parameters =
+                new Dictionary<string, string>
+                {
+                    { "Type", FriendshipType.Outgoing.ToString() }
+                };
+            string expected = "https://api.twitter.com/1/friendships/outgoing.xml";
+            string actual;
+            actual = target.BuildURL(parameters);
+            Assert.AreEqual(expected, actual);
+        }
+
+        /// <summary>
+        ///A test for BuildURL for the outgoing with cursor parameter function
+        ///</summary>
+        [TestMethod()]
+        public void BuildOutgoingWithCursorURLTest()
+        {
+            FriendshipRequestProcessor target = new FriendshipRequestProcessor() { BaseUrl = "https://api.twitter.com/1/" };
+            Dictionary<string, string> parameters =
+                new Dictionary<string, string>
+                {
+                    { "Type", FriendshipType.Outgoing.ToString() },
+                    { "Cursor", "-1" }
+                };
+            string expected = "https://api.twitter.com/1/friendships/outgoing.xml?cursor=-1";
+            string actual;
+            actual = target.BuildURL(parameters);
+            Assert.AreEqual(expected, actual);
         }
     }
 }

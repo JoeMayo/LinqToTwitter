@@ -221,6 +221,10 @@ namespace LinqToTwitter
 
             IEnumerable<string> idList = null;
 
+            // TODO: analyze to determine if this (CursorMovement and IDs) can be refactored to use IDList list as done in friendship/incoming and friendship/outgoing. 
+            //  Would be a breaking change, but yet pull API into consistent usage in this area. 
+            //  Because of the if statement this might not be straight forward, but then again, if statement might be OBE since initial API creation and all that is needed is to parse IDs rather than a single ID. - Joe 4/16/2010
+
             // we get back ids if using cursors but id if not using cursors
             if (twitterResponse.Element("ids") == null)
             {

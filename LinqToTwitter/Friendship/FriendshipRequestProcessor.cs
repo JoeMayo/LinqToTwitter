@@ -52,6 +52,12 @@ namespace LinqToTwitter
         /// </summary>
         private string TargetScreenName { get; set; }
 
+
+        /// <summary>
+        /// Helps in paging results for queries such as incoming and outgoing
+        /// </summary>
+        public string Cursor { get; set; }
+
         /// <summary>
         /// extracts parameters from lambda
         /// </summary>
@@ -69,7 +75,8 @@ namespace LinqToTwitter
                        "SourceUserID",
                        "SourceScreenName",
                        "TargetUserID",
-                       "TargetScreenName"
+                       "TargetScreenName",
+                       "Cursor"
                    });
 
             var parameters = paramFinder.Parameters;
@@ -100,6 +107,12 @@ namespace LinqToTwitter
                     break;
                 case FriendshipType.Show:
                     url = BuildFriendshipShowUrl(parameters);
+                    break;
+                case FriendshipType.Incoming:
+                    url = BuildFriendshipIncomingUrl(parameters);
+                    break;
+                case FriendshipType.Outgoing:
+                    url = BuildFriendshipOutgoingUrl(parameters);
                     break;
                 default:
                     throw new InvalidOperationException("The default case of BuildUrl should never execute because a Type must be specified.");
@@ -201,6 +214,56 @@ namespace LinqToTwitter
         }
 
         /// <summary>
+        /// Build url for determining incoming friend requests
+        /// </summary>
+        /// <param name="parameters">Can optionally contain Cursor</param>
+        /// <returns>Url for incoming</returns>
+        private string BuildFriendshipIncomingUrl(Dictionary<string, string> parameters)
+        {
+            var url = BaseUrl + "friendships/incoming.xml";
+
+            var urlParams = new List<string>();
+
+            if (parameters.ContainsKey("Cursor"))
+            {
+                Cursor = parameters["Cursor"];
+                urlParams.Add("cursor=" + parameters["Cursor"]);
+            }
+
+            if (urlParams.Count > 0)
+            {
+                url += "?" + string.Join("&", urlParams.ToArray());
+            }
+
+            return url;
+        }
+
+        /// <summary>
+        /// Build url for determining outgoing friend requests
+        /// </summary>
+        /// <param name="parameters">Can optionally contain Cursor</param>
+        /// <returns>Url for outgoing</returns>
+        private string BuildFriendshipOutgoingUrl(Dictionary<string, string> parameters)
+        {
+            var url = BaseUrl + "friendships/outgoing.xml";
+
+            var urlParams = new List<string>();
+
+            if (parameters.ContainsKey("Cursor"))
+            {
+                Cursor = parameters["Cursor"];
+                urlParams.Add("cursor=" + parameters["Cursor"]);
+            }
+
+            if (urlParams.Count > 0)
+            {
+                url += "?" + string.Join("&", urlParams.ToArray());
+            }
+
+            return url;
+        }
+
+        /// <summary>
         /// transforms XML into IQueryable of User
         /// </summary>
         /// <param name="twitterResponse">xml with Twitter response</param>
@@ -216,7 +279,8 @@ namespace LinqToTwitter
                     SourceUserID = SourceUserID,
                     SourceScreenName = SourceScreenName,
                     TargetUserID = TargetUserID,
-                    TargetScreenName = TargetScreenName
+                    TargetScreenName = TargetScreenName,
+                    Cursor = Cursor
                 };
 
             if (twitterResponse.Name == "relationship") // Show
@@ -227,6 +291,10 @@ namespace LinqToTwitter
                     relationship.CreateRelationship(twitterResponse.Element("source"));
                 friendship.TargetRelationship =
                     relationship.CreateRelationship(twitterResponse.Element("target"));
+            }
+            else if (twitterResponse.Name == "id_list") // incoming/outgoing
+            {
+                friendship.IDInfo = new IDList().CreateIDList(twitterResponse);
             }
             else // Exists
             {

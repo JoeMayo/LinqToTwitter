@@ -27,16 +27,6 @@ namespace LinqToTwitter
         public string FollowingUser { get; set; }
 
         /// <summary>
-        /// FollowingUser is following SubjectUser returned from Twitter (Exists query)
-        /// </summary>
-        public bool IsFriend { get; set; }
-
-        /// <summary>
-        /// info on friend
-        /// </summary>
-        public User Friend { get; set; }
-
-        /// <summary>
         /// ID of source user (Show query)
         /// </summary>
         public string SourceUserID { get; set; }
@@ -57,6 +47,21 @@ namespace LinqToTwitter
         public string TargetScreenName { get; set; }
 
         /// <summary>
+        /// Helps in paging results for queries such as incoming and outgoing
+        /// </summary>
+        public string Cursor { get; set; }
+
+        /// <summary>
+        /// FollowingUser is following SubjectUser returned from Twitter (Exists query)
+        /// </summary>
+        public bool IsFriend { get; set; }
+
+        /// <summary>
+        /// info on friend
+        /// </summary>
+        public User Friend { get; set; }
+
+        /// <summary>
         /// Relationship details returned from Twitter for the source (Show query)
         /// </summary>
         public Relationship SourceRelationship { get; set; }
@@ -65,5 +70,7 @@ namespace LinqToTwitter
         /// Relationship details returned from Twitter for the target (Show query)
         /// </summary>
         public Relationship TargetRelationship { get; set; }
+
+        public IDList IDInfo { get; set; }
     }
 }
