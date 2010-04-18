@@ -9,6 +9,7 @@ namespace LinqToTwitter
     /// <summary>
     /// Geographical coordinates
     /// </summary>
+    [Serializable]
     public class Coordinate
     {
         public const int LatitudePos = 0;

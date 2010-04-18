@@ -9,6 +9,7 @@ namespace LinqToTwitter
     /// <summary>
     /// A general description of a geographical location in Twitter
     /// </summary>
+    [Serializable]
     public class Place
     {
         /// <summary>

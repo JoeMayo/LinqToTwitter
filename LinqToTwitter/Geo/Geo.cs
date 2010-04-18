@@ -8,6 +8,7 @@ namespace LinqToTwitter
     /// <summary>
     /// Geo info for querying and reading results
     /// </summary>
+    [Serializable]
     public class Geo
     {
         /// <summary>

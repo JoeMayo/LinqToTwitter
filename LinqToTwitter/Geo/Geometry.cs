@@ -9,6 +9,7 @@ namespace LinqToTwitter
     /// <summary>
     /// Geographical area
     /// </summary>
+    [Serializable]
     public class Geometry
     {
         /// <summary>

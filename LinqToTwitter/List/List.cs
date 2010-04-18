@@ -8,6 +8,7 @@ namespace LinqToTwitter
     /// <summary>
     /// Information for a single Twitter List
     /// </summary>
+    [Serializable]
     public class List
     {
         /// <summary>

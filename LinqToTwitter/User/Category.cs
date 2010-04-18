@@ -9,6 +9,7 @@ namespace LinqToTwitter
     /// <summary>
     /// A single category for Twitter suggested categories
     /// </summary>
+    [Serializable]
     public class Category
     {
         /// <summary>

@@ -9,6 +9,7 @@ namespace LinqToTwitter
     /// <summary>
     /// Location Info
     /// </summary>
+    [Serializable]
     public class Location
     {
         /// <summary>

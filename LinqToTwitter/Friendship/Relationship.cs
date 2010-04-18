@@ -9,6 +9,7 @@ namespace LinqToTwitter
     /// <summary>
     /// Friendship details for either a Source or Target
     /// </summary>
+    [Serializable]
     public class Relationship
     {
         /// <summary>
