@@ -88,11 +88,11 @@ namespace LinqToTwitter
             {
                 var coordArr = geoStr.Split(' ');
 
-                decimal tempLatitude = 0;
-                decimal tempLongitide = 0;
+                double tempLatitude = 0;
+                double tempLongitide = 0;
 
-                if (decimal.TryParse(coordArr[Coordinate.LatitudePos], out tempLatitude) &&
-                    decimal.TryParse(coordArr[Coordinate.LongitudePos], out tempLongitide))
+                if (double.TryParse(coordArr[Coordinate.LatitudePos], out tempLatitude) &&
+                    double.TryParse(coordArr[Coordinate.LongitudePos], out tempLongitide))
                 {
                     geo =
                         new Geo
@@ -114,11 +114,11 @@ namespace LinqToTwitter
             {
                 var coordArr = coordStr.Split(' ');
 
-                decimal tempLatitude = 0;
-                decimal tempLongitide = 0;
+                double tempLatitude = 0;
+                double tempLongitide = 0;
 
-                if (decimal.TryParse(coordArr[Coordinate.LatitudePos], out tempLatitude) && 
-                    decimal.TryParse(coordArr[Coordinate.LongitudePos], out tempLongitide))
+                if (double.TryParse(coordArr[Coordinate.LatitudePos], out tempLatitude) &&
+                    double.TryParse(coordArr[Coordinate.LongitudePos], out tempLongitide))
                 {
                     coord = 
                         new Coordinate

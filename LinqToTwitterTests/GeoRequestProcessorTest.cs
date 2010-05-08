@@ -6,6 +6,8 @@ using System.Xml.Linq;
 using System.Collections;
 using System;
 using System.Linq;
+using System.Threading;
+using System.Globalization;
 
 namespace LinqToTwitterTests
 {
@@ -570,6 +572,18 @@ namespace LinqToTwitterTests
         ///A test for ProcessResults
         ///</summary>
         [TestMethod()]
+        public void ProcessReverseResultsCultureInsensitiveTest()
+        {
+            GeoRequestProcessor target = new GeoRequestProcessor();
+            XElement twitterResponse = XElement.Parse(m_reverseResponse);
+            List<Geo> actual = (List<Geo>)target.ProcessResults(twitterResponse);
+            Assert.AreEqual(5, actual[0].Places.Count);
+        }
+
+        /// <summary>
+        ///A test for ProcessResults
+        ///</summary>
+        [TestMethod()]
         public void ProcessIDResultsTest()
         {
             GeoRequestProcessor target = new GeoRequestProcessor();
@@ -590,8 +604,8 @@ namespace LinqToTwitterTests
                     geo.Type == GeoType.Reverse &&
                     geo.Accuracy == "10" &&
                     geo.Granularity == "city" &&
-                    geo.Latitude == 37.78215m &&
-                    geo.Longitude == -122.40060m &&
+                    geo.Latitude == 37.78215 &&
+                    geo.Longitude == -122.40060 &&
                     geo.MaxResults == 10 &&
                     geo.ID == "456" &&
                     geo.IP == "168.143.171.180";
@@ -613,7 +627,7 @@ namespace LinqToTwitterTests
                     new KeyValuePair<string, string>("Latitude", "37.78215")));
             Assert.IsTrue(
                 queryParams.Contains(
-                    new KeyValuePair<string, string>("Longitude", "-122.40060")));
+                    new KeyValuePair<string, string>("Longitude", "-122.4006")));
             Assert.IsTrue(
                 queryParams.Contains(
                     new KeyValuePair<string, string>("MaxResults", "10")));

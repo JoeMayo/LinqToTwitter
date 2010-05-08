@@ -26,19 +26,19 @@ namespace LinqToTwitter
 
             return new Coordinate
             {
-                Latitude = decimal.Parse(coords[LatitudePos].Value),
-                Longitude = decimal.Parse(coords[LongitudePos].Value)
+                Latitude = double.Parse(coords[LatitudePos].Value),
+                Longitude = double.Parse(coords[LongitudePos].Value)
             };
         }
 
         /// <summary>
         /// Latitude
         /// </summary>
-        public decimal Latitude { get; set; }
+        public double Latitude { get; set; }
 
         /// <summary>
         /// Longitude
         /// </summary>
-        public decimal Longitude { get; set; }
+        public double Longitude { get; set; }
     }
 }

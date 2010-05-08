@@ -19,12 +19,12 @@ namespace LinqToTwitter
         /// <summary>
         /// Latitude
         /// </summary>
-        public decimal Latitude { get; set; }
+        public double Latitude { get; set; }
 
         /// <summary>
         /// Longitude
         /// </summary>
-        public decimal Longitude { get; set; }
+        public double Longitude { get; set; }
 
 
         /// <summary>

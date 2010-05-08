@@ -76,8 +76,8 @@ namespace LinqToTwitterDemo
             var geo =
                 (from g in twitterCtx.Geo
                  where g.Type == GeoType.Reverse &&
-                       g.Latitude == 37.78215m &&
-                       g.Longitude == -122.40060m
+                       g.Latitude == 37.78215 &&
+                       g.Longitude == -122.40060
                  select g)
                  .SingleOrDefault();
 

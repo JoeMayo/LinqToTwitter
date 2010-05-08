@@ -19,7 +19,7 @@ namespace LinqToTwitterDemo
         {
             //SearchTrendsDemo(twitterCtx);
             //SearchCurrentTrendsDemo(twitterCtx);
-            //SearchDailyTrendsDemo(twitterCtx);
+            SearchDailyTrendsDemo(twitterCtx);
             //SearchWeeklyTrendsDemo(twitterCtx);
             //SearchAvailableTrendsDemo(twitterCtx);
             //SearchLocationTrendsDemo(twitterCtx);
@@ -33,6 +33,7 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void SearchLocationTrendsDemo(TwitterContext twitterCtx)
         {
+            twitterCtx.SearchUrl = "http://api.twitter.com/1/";
             var trends =
                 (from trnd in twitterCtx.Trends
                  where trnd.Type == TrendType.Location &&
@@ -95,6 +96,8 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void SearchDailyTrendsDemo(TwitterContext twitterCtx)
         {
+            twitterCtx.SearchUrl = "https://api.twitter.com/1/";
+
             // remember to truncate seconds (maybe even minutes) because they
             // will never compare evenly, causing your list to be empty
             var trends =

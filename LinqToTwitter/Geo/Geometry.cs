@@ -38,9 +38,9 @@ namespace LinqToTwitter
                     {
                         coords.Add(
                             new Coordinate 
-                            { 
-                                Latitude = decimal.Parse(coordArr[lat]), 
-                                Longitude = decimal.Parse(coordArr[lon]) 
+                            {
+                                Latitude = double.Parse(coordArr[lat]),
+                                Longitude = double.Parse(coordArr[lon]) 
                             });
                     }
                 }

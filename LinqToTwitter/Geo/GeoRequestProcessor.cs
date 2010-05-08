@@ -27,12 +27,12 @@ namespace LinqToTwitter
         /// <summary>
         /// Latitude
         /// </summary>
-        private decimal Latitude { get; set; }
+        private double Latitude { get; set; }
 
         /// <summary>
         /// Longitude
         /// </summary>
-        private decimal Longitude { get; set; }
+        private double Longitude { get; set; }
 
         /// <summary>
         /// IP address to find nearby places
@@ -175,13 +175,13 @@ namespace LinqToTwitter
 
             if (parameters.ContainsKey("Latitude"))
             {
-                Latitude = decimal.Parse(parameters["Latitude"]);
+                Latitude = double.Parse(parameters["Latitude"]);
                 urlParams.Add("lat=" + parameters["Latitude"]);
             }
 
             if (parameters.ContainsKey("Longitude"))
             {
-                Longitude = decimal.Parse(parameters["Longitude"]);
+                Longitude = double.Parse(parameters["Longitude"]);
                 urlParams.Add("long=" + parameters["Longitude"]);
             }
 

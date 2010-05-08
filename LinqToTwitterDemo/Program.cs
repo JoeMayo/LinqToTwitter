@@ -52,7 +52,8 @@ namespace LinqToTwitterDemo
             // TwitterContext is similar to DataContext (LINQ to SQL) or ObjectContext (LINQ to Entities)
 
             // For Twitter
-            using (var twitterCtx = new TwitterContext(auth, "https://api.twitter.com/1/", "http://search.twitter.com/"))
+            using (var twitterCtx = new TwitterContext(auth, "https://api.twitter.com/1/", "https://search.twitter.com/"))
+            //using (var twitterCtx = new TwitterContext(auth, "https://api.twitter.com/1/", "https://api.twitter.com/1/"))
             {
 
                 // For JTweeter (Laconica)
@@ -79,7 +80,7 @@ namespace LinqToTwitterDemo
                     return;
                 }
 
-                StatusDemos.Run(twitterCtx);
+                //StatusDemos.Run(twitterCtx);
                 //UserDemos.Run(twitterCtx);
                 //DirectMessageDemos.Run(twitterCtx);
                 //FriendshipDemos.Run(twitterCtx);
@@ -90,7 +91,7 @@ namespace LinqToTwitterDemo
                 //NotificationsDemos.Run(twitterCtx);
                 //BlocksDemos.Run(twitterCtx);
                 //HelpDemos.Run(twitterCtx);
-                //TrendsDemos.Run(twitterCtx);
+                TrendsDemos.Run(twitterCtx);
                 //SavedSearchDemos.Run(twitterCtx);
                 //ReportSpamDemos.Run(twitterCtx);
                 //ListDemos.Run(twitterCtx);
