@@ -17,7 +17,7 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         public static void Run(TwitterContext twitterCtx)
         {
-            //QuerySavedSearchesDemo(twitterCtx);
+            QuerySavedSearchesDemo(twitterCtx);
             //QuerySavedSearchesShowDemo(twitterCtx);
             //CreateSavedSearchDemo(twitterCtx);
             //DestroySavedSearchDemo(twitterCtx);

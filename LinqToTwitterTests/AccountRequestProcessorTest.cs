@@ -124,7 +124,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void ProcessResultsForVerifyCredentialsTest()
         {
-            AccountRequestProcessor target = new AccountRequestProcessor();
+            AccountRequestProcessor<Account> target = new AccountRequestProcessor<Account>();
             XElement twitterResponse = XElement.Parse(m_testVerifyCredentialsQueryResponse);
             IList actual = target.ProcessResults(twitterResponse);
             var acct = actual.Cast<Account>().ToList().FirstOrDefault();
@@ -138,7 +138,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void ProcessResultsForRateLimitStatusTest()
         {
-            AccountRequestProcessor target = new AccountRequestProcessor();
+            AccountRequestProcessor<Account> target = new AccountRequestProcessor<Account>();
             XElement twitterResponse = XElement.Parse(m_testRateLimitStatusQueryResponse);
             IList actual = target.ProcessResults(twitterResponse);
             var acct = actual.Cast<Account>().ToList().FirstOrDefault();
@@ -153,7 +153,7 @@ namespace LinqToTwitterTests
         [ExpectedException(typeof(ArgumentException))]
         public void ProcessResultsForInvalidValueTest()
         {
-            AccountRequestProcessor target = new AccountRequestProcessor();
+            AccountRequestProcessor<Account> target = new AccountRequestProcessor<Account>();
             XElement twitterResponse = XElement.Parse(m_testInvalidValueQueryResponse);
             IList actual = target.ProcessResults(twitterResponse);
             var acct = actual.Cast<Account>().ToList().FirstOrDefault();
@@ -165,7 +165,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void ProcessResultsForEndSessionTest()
         {
-            AccountRequestProcessor target = new AccountRequestProcessor();
+            AccountRequestProcessor<Account> target = new AccountRequestProcessor<Account>();
             XElement twitterResponse = XElement.Parse(m_testEndSessionResponse);
             IList actual = target.ProcessResults(twitterResponse);
             var acct = actual.Cast<Account>().ToList().FirstOrDefault();
@@ -179,7 +179,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void GetParametersTest()
         {
-            AccountRequestProcessor target = new AccountRequestProcessor();
+            AccountRequestProcessor<Account> target = new AccountRequestProcessor<Account>();
             Expression<Func<Account, bool>> expression = acct => acct.Type == AccountType.RateLimitStatus;
             LambdaExpression lambdaExpression = expression as LambdaExpression;
 
@@ -196,7 +196,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void BuildVerifyCredentialsStatusURLTest()
         {
-            AccountRequestProcessor target = new AccountRequestProcessor() { BaseUrl = "http://twitter.com/" };
+            AccountRequestProcessor<Account> target = new AccountRequestProcessor<Account>() { BaseUrl = "http://twitter.com/" };
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                 {
@@ -214,7 +214,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void BuildRateLimitStatusURLTest()
         {
-            AccountRequestProcessor target = new AccountRequestProcessor() { BaseUrl = "http://twitter.com/" };
+            AccountRequestProcessor<Account> target = new AccountRequestProcessor<Account>() { BaseUrl = "http://twitter.com/" };
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                 {
@@ -232,7 +232,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void MissingTypeTest()
         {
-            AccountRequestProcessor target = new AccountRequestProcessor() { BaseUrl = "http://twitter.com/" };
+            AccountRequestProcessor<Account> target = new AccountRequestProcessor<Account>() { BaseUrl = "http://twitter.com/" };
             Dictionary<string, string> parameters = new Dictionary<string, string> { };
             string actual;
             try
@@ -252,7 +252,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void NullParametersTest()
         {
-            AccountRequestProcessor target = new AccountRequestProcessor() { BaseUrl = "http://twitter.com/" };
+            AccountRequestProcessor<Account> target = new AccountRequestProcessor<Account>() { BaseUrl = "http://twitter.com/" };
             Dictionary<string, string> parameters = null;
             string actual;
             try

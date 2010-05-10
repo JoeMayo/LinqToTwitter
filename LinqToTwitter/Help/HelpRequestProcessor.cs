@@ -9,7 +9,7 @@ namespace LinqToTwitter
     /// <summary>
     /// used for processing help messages - we only use the request processing part
     /// </summary>
-    public class HelpRequestProcessor : IRequestProcessor
+    public class HelpRequestProcessor<T> : IRequestProcessor<T>
     {
         #region IRequestProcessor Members
 
@@ -49,12 +49,11 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="twitterResponse">response from twitter</param>
         /// <returns>true</returns>
-        public virtual IList ProcessResults(System.Xml.Linq.XElement twitterResponse)
+        public virtual List<T> ProcessResults(System.Xml.Linq.XElement twitterResponse)
         {
             var response = twitterResponse.Value;
 
-            var helpList = new List<bool> { bool.Parse(response) };
-            return helpList;
+            return new List<bool>{ bool.Parse(response) }.OfType<T>().ToList();
         }
 
         #endregion

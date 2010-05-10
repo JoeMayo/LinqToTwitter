@@ -127,7 +127,7 @@ The blog system I'm us.. &lt;a href=""http://tinyurl.com/cvdbvr""&gt;http://tiny
         [TestMethod()]
         public void ProcessResultsTest()
         {
-            SearchRequestProcessor target = new SearchRequestProcessor();
+            SearchRequestProcessor<Search> target = new SearchRequestProcessor<Search>();
             XElement twitterResponse = XElement.Parse(m_testQueryResponse);
             IList actual = target.ProcessResults(twitterResponse);
             var result = actual.Cast<Search>().First();
@@ -140,7 +140,7 @@ The blog system I'm us.. &lt;a href=""http://tinyurl.com/cvdbvr""&gt;http://tiny
         [TestMethod()]
         public void ProcessEmptyResultsTest()
         {
-            SearchRequestProcessor target = new SearchRequestProcessor();
+            SearchRequestProcessor<Search> target = new SearchRequestProcessor<Search>();
             XElement twitterResponse = XElement.Parse(m_emptyResponse);
             IList actual = target.ProcessResults(twitterResponse);
             var result = actual.Cast<Search>().First();
@@ -148,12 +148,26 @@ The blog system I'm us.. &lt;a href=""http://tinyurl.com/cvdbvr""&gt;http://tiny
         }
 
         /// <summary>
+        ///A test for ProcessResults
+        ///</summary>
+        [TestMethod()]
+        public void ProcessResultsNextTest()
+        {
+            SearchRequestProcessor<Search> target = new SearchRequestProcessor<Search>();
+            XElement twitterResponse = XElement.Parse(m_testQueryResponse);
+            IList actual = target.ProcessResults(twitterResponse);
+            var result = actual.Cast<Search>().First();
+            Assert.AreEqual("http://search.twitter.com/search.atom?lang=en&max_id=1600414821&page=2&q=LINQ+to+Twitter&rpp=2", result.Next);
+        }
+
+
+        /// <summary>
         ///A test for GetParameters
         ///</summary>
         [TestMethod()]
         public void GetParametersTest()
         {
-            SearchRequestProcessor target = new SearchRequestProcessor();
+            SearchRequestProcessor<Search> target = new SearchRequestProcessor<Search>();
             Expression<Func<Search, bool>> expression =
                 search =>
                     search.Type == SearchType.Search &&
@@ -178,7 +192,7 @@ The blog system I'm us.. &lt;a href=""http://tinyurl.com/cvdbvr""&gt;http://tiny
                     search.WithLinks == true &&
                     search.WithRetweets == true;
             LambdaExpression lambdaExpression = expression as LambdaExpression;
-            
+
             var queryParams = target.GetParameters(lambdaExpression);
 
             Assert.IsTrue(
@@ -214,9 +228,9 @@ The blog system I'm us.. &lt;a href=""http://tinyurl.com/cvdbvr""&gt;http://tiny
             Assert.IsTrue(
               queryParams.Contains(
                   new KeyValuePair<string, string>("WordPhrase", "LINQ to Twitter")));
-             Assert.IsTrue(
-              queryParams.Contains(
-                  new KeyValuePair<string, string>("WordAnd", "LINQ Twitter")));
+            Assert.IsTrue(
+             queryParams.Contains(
+                 new KeyValuePair<string, string>("WordAnd", "LINQ Twitter")));
             Assert.IsTrue(
               queryParams.Contains(
                   new KeyValuePair<string, string>("WordOr", "LINQ Twitter")));
@@ -252,7 +266,7 @@ The blog system I'm us.. &lt;a href=""http://tinyurl.com/cvdbvr""&gt;http://tiny
         [TestMethod()]
         public void BuildURLTest()
         {
-            SearchRequestProcessor target = new SearchRequestProcessor() { BaseUrl = "http://search.twitter.com/" };
+            SearchRequestProcessor<Search> target = new SearchRequestProcessor<Search>() { BaseUrl = "http://search.twitter.com/" };
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                 {
@@ -280,7 +294,7 @@ The blog system I'm us.. &lt;a href=""http://tinyurl.com/cvdbvr""&gt;http://tiny
         [TestMethod()]
         public void BuildShowUserSetToFalseURLTest()
         {
-            SearchRequestProcessor target = new SearchRequestProcessor() { BaseUrl = "http://search.twitter.com/" };
+            SearchRequestProcessor<Search> target = new SearchRequestProcessor<Search>() { BaseUrl = "http://search.twitter.com/" };
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                 {
@@ -299,7 +313,7 @@ The blog system I'm us.. &lt;a href=""http://tinyurl.com/cvdbvr""&gt;http://tiny
         [TestMethod()]
         public void BuildWordsURLTest()
         {
-            SearchRequestProcessor target = new SearchRequestProcessor() { BaseUrl = "http://search.twitter.com/" };
+            SearchRequestProcessor<Search> target = new SearchRequestProcessor<Search>() { BaseUrl = "http://search.twitter.com/" };
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                 {
@@ -322,7 +336,7 @@ The blog system I'm us.. &lt;a href=""http://tinyurl.com/cvdbvr""&gt;http://tiny
         [TestMethod()]
         public void BuildPersonURLTest()
         {
-            SearchRequestProcessor target = new SearchRequestProcessor() { BaseUrl = "http://search.twitter.com/" };
+            SearchRequestProcessor<Search> target = new SearchRequestProcessor<Search>() { BaseUrl = "http://search.twitter.com/" };
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                 {
@@ -343,7 +357,7 @@ The blog system I'm us.. &lt;a href=""http://tinyurl.com/cvdbvr""&gt;http://tiny
         [TestMethod()]
         public void BuildAttitudeURLTest()
         {
-            SearchRequestProcessor target = new SearchRequestProcessor() { BaseUrl = "http://search.twitter.com/" };
+            SearchRequestProcessor<Search> target = new SearchRequestProcessor<Search>() { BaseUrl = "http://search.twitter.com/" };
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                 {
@@ -362,7 +376,7 @@ The blog system I'm us.. &lt;a href=""http://tinyurl.com/cvdbvr""&gt;http://tiny
         [TestMethod()]
         public void BuildAttitudeWithoutPositiveURLTest()
         {
-            SearchRequestProcessor target = new SearchRequestProcessor() { BaseUrl = "http://search.twitter.com/" };
+            SearchRequestProcessor<Search> target = new SearchRequestProcessor<Search>() { BaseUrl = "http://search.twitter.com/" };
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                 {
@@ -381,7 +395,7 @@ The blog system I'm us.. &lt;a href=""http://tinyurl.com/cvdbvr""&gt;http://tiny
         [TestMethod()]
         public void BuildOtherURLTest()
         {
-            SearchRequestProcessor target = new SearchRequestProcessor() { BaseUrl = "http://search.twitter.com/" };
+            SearchRequestProcessor<Search> target = new SearchRequestProcessor<Search>() { BaseUrl = "http://search.twitter.com/" };
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                 {
@@ -401,7 +415,7 @@ The blog system I'm us.. &lt;a href=""http://tinyurl.com/cvdbvr""&gt;http://tiny
         [TestMethod()]
         public void BuildOtherSetToFalseURLTest()
         {
-            SearchRequestProcessor target = new SearchRequestProcessor() { BaseUrl = "http://search.twitter.com/" };
+            SearchRequestProcessor<Search> target = new SearchRequestProcessor<Search>() { BaseUrl = "http://search.twitter.com/" };
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                 {
@@ -421,7 +435,7 @@ The blog system I'm us.. &lt;a href=""http://tinyurl.com/cvdbvr""&gt;http://tiny
         [TestMethod()]
         public void MissingTypeTest()
         {
-            SearchRequestProcessor target = new SearchRequestProcessor() { BaseUrl = "http://search.twitter.com/" };
+            SearchRequestProcessor<Search> target = new SearchRequestProcessor<Search>() { BaseUrl = "http://search.twitter.com/" };
             Dictionary<string, string> parameters = new Dictionary<string, string> { };
             string actual;
             try
@@ -441,7 +455,7 @@ The blog system I'm us.. &lt;a href=""http://tinyurl.com/cvdbvr""&gt;http://tiny
         [TestMethod()]
         public void NullParametersTest()
         {
-            SearchRequestProcessor target = new SearchRequestProcessor() { BaseUrl = "http://search.twitter.com/" };
+            SearchRequestProcessor<Search> target = new SearchRequestProcessor<Search>() { BaseUrl = "http://search.twitter.com/" };
             Dictionary<string, string> parameters = null;
             string actual;
             try
@@ -461,7 +475,7 @@ The blog system I'm us.. &lt;a href=""http://tinyurl.com/cvdbvr""&gt;http://tiny
         [TestMethod()]
         public void UrlEncodedQueryTest()
         {
-            SearchRequestProcessor target = new SearchRequestProcessor() { BaseUrl = "http://search.twitter.com/" };
+            SearchRequestProcessor<Search> target = new SearchRequestProcessor<Search>() { BaseUrl = "http://search.twitter.com/" };
             string expected = target.BaseUrl + "search.atom?q=Contains+Space";
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
@@ -481,7 +495,7 @@ The blog system I'm us.. &lt;a href=""http://tinyurl.com/cvdbvr""&gt;http://tiny
         [ExpectedException(typeof(ArgumentException))]
         public void QueryTooLongTest()
         {
-            SearchRequestProcessor target = new SearchRequestProcessor() { BaseUrl = "http://search.twitter.com/" };
+            SearchRequestProcessor<Search> target = new SearchRequestProcessor<Search>() { BaseUrl = "http://search.twitter.com/" };
             string expected = target.BaseUrl + "search.atom?q=Contains+Space";
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>

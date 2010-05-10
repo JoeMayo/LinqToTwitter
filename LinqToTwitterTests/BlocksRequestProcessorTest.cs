@@ -186,7 +186,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void ProcessExistsResultsTest()
         {
-            BlocksRequestProcessor target = new BlocksRequestProcessor();
+            BlocksRequestProcessor<Blocks> target = new BlocksRequestProcessor<Blocks>();
             XElement twitterResponse = XElement.Parse(m_blockExistsXml);
             IList actual = target.ProcessResults(twitterResponse);
             var actualQuery = actual as IList<Blocks>;
@@ -201,7 +201,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void ProcessIDsResultsTest()
         {
-            BlocksRequestProcessor target = new BlocksRequestProcessor();
+            BlocksRequestProcessor<Blocks> target = new BlocksRequestProcessor<Blocks>();
             XElement twitterResponse = XElement.Parse(m_blockedIDsXml);
             IList actual = target.ProcessResults(twitterResponse);
             var actualQuery = actual as IList<Blocks>;
@@ -216,7 +216,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void ProcessBlockingResultsTest()
         {
-            BlocksRequestProcessor target = new BlocksRequestProcessor();
+            BlocksRequestProcessor<Blocks> target = new BlocksRequestProcessor<Blocks>();
             XElement twitterResponse = XElement.Parse(m_blockedUsersXml);
             IList actual = target.ProcessResults(twitterResponse);
             var actualQuery = actual as IList<Blocks>;
@@ -231,7 +231,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void ProcessIdsResultsTest()
         {
-            BlocksRequestProcessor target = new BlocksRequestProcessor();
+            BlocksRequestProcessor<Blocks> target = new BlocksRequestProcessor<Blocks>();
             XElement twitterResponse = XElement.Parse(m_blockedUsersXml);
             IList actual = target.ProcessResults(twitterResponse);
             var actualQuery = actual as IList<Blocks>;
@@ -247,7 +247,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void GetParametersTest()
         {
-            BlocksRequestProcessor target = new BlocksRequestProcessor();
+            BlocksRequestProcessor<Blocks> target = new BlocksRequestProcessor<Blocks>();
             Expression<Func<Blocks, bool>> expression =
                 graph =>
                     graph.Type == BlockingType.Blocking &&
@@ -278,7 +278,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void BuildExistsURLTest()
         {
-            BlocksRequestProcessor target = new BlocksRequestProcessor() { BaseUrl = "http://twitter.com/" };
+            BlocksRequestProcessor<Blocks> target = new BlocksRequestProcessor<Blocks>() { BaseUrl = "http://twitter.com/" };
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                 {
@@ -298,7 +298,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void BuildBlockingURLTest()
         {
-            BlocksRequestProcessor target = new BlocksRequestProcessor() { BaseUrl = "http://twitter.com/" };
+            BlocksRequestProcessor<Blocks> target = new BlocksRequestProcessor<Blocks>() { BaseUrl = "http://twitter.com/" };
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                 {
@@ -316,7 +316,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void BuildIDsURLTest()
         {
-            BlocksRequestProcessor target = new BlocksRequestProcessor() { BaseUrl = "http://twitter.com/" };
+            BlocksRequestProcessor<Blocks> target = new BlocksRequestProcessor<Blocks>() { BaseUrl = "http://twitter.com/" };
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                 {
@@ -333,7 +333,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void MissingTypeTest()
         {
-            BlocksRequestProcessor target = new BlocksRequestProcessor() { BaseUrl = "http://twitter.com/" };
+            BlocksRequestProcessor<Blocks> target = new BlocksRequestProcessor<Blocks>() { BaseUrl = "http://twitter.com/" };
             Dictionary<string, string> parameters = new Dictionary<string, string> { };
             string actual;
             try
@@ -353,7 +353,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void NullParametersTest()
         {
-            BlocksRequestProcessor target = new BlocksRequestProcessor() { BaseUrl = "http://twitter.com/" };
+            BlocksRequestProcessor<Blocks> target = new BlocksRequestProcessor<Blocks>() { BaseUrl = "http://twitter.com/" };
             Dictionary<string, string> parameters = null;
             string actual;
             try

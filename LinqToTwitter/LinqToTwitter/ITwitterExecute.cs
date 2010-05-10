@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Collections.Generic;
 using System.Collections;
+using System.Xml.Linq;
 namespace LinqToTwitter
 {
     /// <summary>
@@ -36,13 +37,12 @@ namespace LinqToTwitter
         int Timeout { get; set; }
 
         /// <summary>
-        /// utility method to perform HTTP POST for Twitter requests with side-effects
+        /// utility method to perform HTTP POST for Twitter change requests
         /// </summary>
         /// <param name="url">URL of request</param>
         /// <param name="parameters">parameters to post</param>
-        /// <param name="requestProcessor">IRequestProcessor to handle response</param>
-        /// <returns>response from server, handled by the requestProcessor</returns>
-        IList ExecuteTwitter(string url, Dictionary<string, string> parameters, IRequestProcessor requestProcessor);
+        /// <returns>XML Response from Twitter</returns>
+        XElement ExecuteTwitter(string url, Dictionary<string, string> parameters);
 
         /// <summary>
         /// performs HTTP POST file upload to Twitter
@@ -50,9 +50,8 @@ namespace LinqToTwitter
         /// <param name="filePath">full path of file to upload</param>
         /// <param name="parameters">query string parameters</param>
         /// <param name="url">url to upload to</param>
-        /// <param name="requestProcessor">IRequestProcessor to handle results</param>
-        /// <returns>IQueryable</returns>
-        IList PostTwitterFile(string filePath, Dictionary<string, string> parameters, string url, IRequestProcessor requestProcessor);
+        /// <returns>XML Results from Twitter</returns>
+        XElement PostTwitterFile(string filePath, Dictionary<string, string> parameters, string url);
 
         /// <summary>
         /// performs HTTP POST image byte array upload to Twitter
@@ -61,15 +60,15 @@ namespace LinqToTwitter
         /// <param name="url">url to upload to</param>
         /// <param name="fileName">name to pass to Twitter for the file</param>
         /// <param name="imageType">type of image: must be one of jpg, gif, or png</param>
-        /// <returns>IQueryable</returns>
-        IList PostTwitterImage(byte[] image, Dictionary<string, string> parameters, string url, IRequestProcessor requestProcessor, string fileName, string imageType);
+        /// <returns>XML results From Twitter</returns>
+        XElement PostTwitterImage(byte[] image, Dictionary<string, string> parameters, string url, string fileName, string imageType);
 
         /// <summary>
         /// makes HTTP call to Twitter API
         /// </summary>
         /// <param name="url">URL with all query info</param>
-        /// <returns>List of objects to return</returns>
-        IList QueryTwitter(string url, IRequestProcessor requestProcessor);
+        /// <returns>XML Results from Twitter</returns>
+        XElement QueryTwitter(string url);
 
         /// <summary>
         /// Used to notify callers of changes in image upload progress

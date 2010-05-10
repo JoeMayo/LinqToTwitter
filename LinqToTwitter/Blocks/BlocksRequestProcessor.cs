@@ -10,7 +10,7 @@ namespace LinqToTwitter
     /// <summary>
     /// processes block queries
     /// </summary>
-    public class BlocksRequestProcessor : IRequestProcessor
+    public class BlocksRequestProcessor<T> : IRequestProcessor<T>
     {
         /// <summary>
         /// base url for request
@@ -210,7 +210,7 @@ namespace LinqToTwitter
         /// <param name="parameters">list of parameters from expression tree</param>
         /// <param name="url">base url</param>
         /// <returns>base url + parameters</returns>
-        public virtual IList ProcessResults(XElement twitterResponse)
+        public virtual List<T> ProcessResults(XElement twitterResponse)
         {
             var blocks = new Blocks
             {
@@ -245,7 +245,7 @@ namespace LinqToTwitter
                 throw new ArgumentException("Account Results Processing expected a Twitter response for either a user or hash, but received an unknown element type instead.");
             }
 
-            return new List<Blocks> { blocks };
+            return new List<Blocks>{ blocks }.OfType<T>().ToList();
         }
     }
 }

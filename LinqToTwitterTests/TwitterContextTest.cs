@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Linq;
 using System;
 using NMock2;
+using System.Xml.Linq;
 
 namespace LinqToTwitterTests
 {
@@ -19,6 +20,154 @@ namespace LinqToTwitterTests
         private TwitterContext m_ctx;
         private ITwitterExecute m_twitterExecute;
         private TestContext m_testContextInstance;
+
+        private string m_testUserQueryResponse =
+        @"<user>
+          <id>15411837</id>
+          <name>Joe Mayo</name>
+          <screen_name>JoeMayo</screen_name>
+          <location>Denver, CO</location>
+          <description>Author/entrepreneur, specializing in custom .NET software development</description>
+          <profile_image_url>http://s3.amazonaws.com/twitter_production/profile_images/62569644/JoeTwitter_normal.jpg</profile_image_url>
+          <url>http://www.csharp-station.com</url>
+          <protected>false</protected>
+          <followers_count>25</followers_count>
+          <profile_background_color>C6E2EE</profile_background_color>
+          <profile_text_color>663B12</profile_text_color>
+          <profile_link_color>1F98C7</profile_link_color>
+          <profile_sidebar_fill_color>DAECF4</profile_sidebar_fill_color>
+          <profile_sidebar_border_color>C6E2EE</profile_sidebar_border_color>
+          <friends_count>1</friends_count>
+          <created_at>Sun Jul 13 04:35:50 +0000 2008</created_at>
+          <favourites_count>0</favourites_count>
+          <utc_offset>-25200</utc_offset>
+          <time_zone>Mountain Time (US &amp; Canada)</time_zone>
+          <profile_background_image_url>http://static.twitter.com/images/themes/theme2/bg.gif</profile_background_image_url>
+          <profile_background_tile>false</profile_background_tile>
+          <statuses_count>81</statuses_count>
+          <status>
+            <created_at>Sun Jan 18 21:58:24 +0000 2009</created_at>
+            <id>1128977017</id>
+            <text>New schedule for #SoCalCodeCamp by @DanielEgan - http://tinyurl.com/9gv5zp</text>
+            <source>web</source>
+            <truncated>false</truncated>
+            <in_reply_to_status_id></in_reply_to_status_id>
+            <in_reply_to_user_id></in_reply_to_user_id>
+            <favorited>false</favorited>
+            <in_reply_to_screen_name></in_reply_to_screen_name>
+          </status>
+        </user>";
+
+        private string m_testStatusQueryResponse = @"<statuses type=""array"">
+  <status>
+    <created_at>Fri Nov 27 18:28:57 +0000 2009</created_at>
+    <id>6118906745</id>
+    <text>ah,vou lá comer</text>
+    <source>web</source>
+    <truncated>false</truncated>
+    <in_reply_to_status_id></in_reply_to_status_id>
+    <in_reply_to_user_id></in_reply_to_user_id>
+    <favorited>false</favorited>
+    <in_reply_to_screen_name></in_reply_to_screen_name>
+    <user>
+      <id>77880019</id>
+      <name>caah </name>
+      <screen_name>caahbuss</screen_name>
+      <location></location>
+      <description></description>
+      <profile_image_url>http://a1.twimg.com/profile_images/440024240/d_normal.JPG</profile_image_url>
+      <url></url>
+      <protected>false</protected>
+      <followers_count>48</followers_count>
+      <profile_background_color>131516</profile_background_color>
+      <profile_text_color>333333</profile_text_color>
+      <profile_link_color>009999</profile_link_color>
+      <profile_sidebar_fill_color>efefef</profile_sidebar_fill_color>
+      <profile_sidebar_border_color>eeeeee</profile_sidebar_border_color>
+      <friends_count>47</friends_count>
+      <created_at>Mon Sep 28 00:47:48 +0000 2009</created_at>
+      <favourites_count>0</favourites_count>
+      <utc_offset></utc_offset>
+      <time_zone></time_zone>
+      <profile_background_image_url>http://s.twimg.com/a/1259091217/images/themes/theme14/bg.gif</profile_background_image_url>
+      <profile_background_tile>true</profile_background_tile>
+      <statuses_count>211</statuses_count>
+      <notifications>false</notifications>
+      <geo_enabled>false</geo_enabled>
+      <verified>false</verified>
+      <following>false</following>
+    </user>
+    <geo />
+  </status>
+</statuses>";
+
+        private string m_testDirectMessageQueryResponse = @"
+        <direct_message>
+          <id>87864628</id>
+          <sender_id>1234567</sender_id>
+          <text>;)</text>
+          <recipient_id>15411837</recipient_id>
+          <created_at>Tue Apr 07 16:47:25 +0000 2009</created_at>
+          <sender_screen_name>senderscreenname</sender_screen_name>
+          <recipient_screen_name>JoeMayo</recipient_screen_name>
+          <sender>
+            <id>1234567</id>
+            <name>Sender Name</name>
+            <screen_name>senderscreenname</screen_name>
+            <location>SenderLocation</location>
+            <description>Sender Description</description>
+            <profile_image_url>http://s3.amazonaws.com/twitter_production/profile_images/12345678/name_of_image.jpg</profile_image_url>
+            <url>http://sendersite.com</url>
+            <protected>false</protected>
+            <followers_count>10406</followers_count>
+            <profile_background_color>9ae4e8</profile_background_color>
+            <profile_text_color>696969</profile_text_color>
+            <profile_link_color>72412c</profile_link_color>
+            <profile_sidebar_fill_color>b8aa9c</profile_sidebar_fill_color>
+            <profile_sidebar_border_color>b8aa9c</profile_sidebar_border_color>
+            <friends_count>705</friends_count>
+            <created_at>Tue May 01 05:55:26 +0000 2007</created_at>
+            <favourites_count>56</favourites_count>
+            <utc_offset>-28800</utc_offset>
+            <time_zone>Pacific Time (US &amp; Canada)</time_zone>
+            <profile_background_image_url>http://s3.amazonaws.com/twitter_production/profile_background_images/2036752/background.gif</profile_background_image_url>
+            <profile_background_tile>true</profile_background_tile>
+            <statuses_count>7607</statuses_count>
+            <notifications>false</notifications>
+            <following>true</following>
+          </sender>
+          <recipient>
+            <id>15411837</id>
+            <name>Joe Mayo</name>
+            <screen_name>JoeMayo</screen_name>
+            <location>Denver, CO</location>
+            <description>Author/entrepreneur, specializing in custom .NET software development</description>
+            <profile_image_url>http://s3.amazonaws.com/twitter_production/profile_images/62569644/JoeTwitter_normal.jpg</profile_image_url>
+            <url>http://www.csharp-station.com</url>
+            <protected>false</protected>
+            <followers_count>47</followers_count>
+            <profile_background_color>0099B9</profile_background_color>
+            <profile_text_color>3C3940</profile_text_color>
+            <profile_link_color>0099B9</profile_link_color>
+            <profile_sidebar_fill_color>95E8EC</profile_sidebar_fill_color>
+            <profile_sidebar_border_color>5ED4DC</profile_sidebar_border_color>
+            <friends_count>22</friends_count>
+            <created_at>Sun Jul 13 04:35:50 +0000 2008</created_at>
+            <favourites_count>0</favourites_count>
+            <utc_offset>-25200</utc_offset>
+            <time_zone>Mountain Time (US &amp; Canada)</time_zone>
+            <profile_background_image_url>http://static.twitter.com/images/themes/theme4/bg.gif</profile_background_image_url>
+            <profile_background_tile>false</profile_background_tile>
+            <statuses_count>137</statuses_count>
+            <notifications>false</notifications>
+            <following>false</following>
+          </recipient>
+        </direct_message>";
+
+        private string m_testEndSessionResponse = @"<hash>
+  <request>/account/end_session.xml</request>
+  <error>Logged out.</error>
+</hash>";
 
         /// <summary>
         ///Gets or sets the test context which provides
@@ -63,7 +212,7 @@ namespace LinqToTwitterTests
             Expect.Once.On(authorizedClient).SetProperty("AuthenticationTarget");
             m_ctx = new TwitterContext(m_twitterExecute);
         }
-        
+
         //Use TestCleanup to run code after each test has run
         //[TestCleanup()]
         //public void MyTestCleanup()
@@ -134,8 +283,8 @@ namespace LinqToTwitterTests
                 where tweet.Type == StatusType.Public
                 select tweet;
 
-            var statusProc = ctx.CreateRequestProcessor(publicQuery.Expression);
-            Assert.IsInstanceOfType(statusProc, typeof(StatusRequestProcessor));
+            var statusProc = ctx.CreateRequestProcessor<Status>(publicQuery.Expression);
+            Assert.IsInstanceOfType(statusProc, typeof(StatusRequestProcessor<Status>));
         }
 
         [TestMethod()]
@@ -172,21 +321,16 @@ namespace LinqToTwitterTests
         {
             string status = "Hello";
             string inReplyToStatusID = "1";
-            Status expected = new Status();
-            var statusQueryable =
-                new List<Status>()
-                {
-                    expected
-                };
+            var expected = XElement.Parse(m_testStatusQueryResponse);
 
             Expect.Once.On(m_twitterExecute)
                 .Method("ExecuteTwitter")
-                .Will(Return.Value(statusQueryable));
+                .Will(Return.Value(expected));
 
             Status actual = m_ctx.UpdateStatus(status, inReplyToStatusID);
 
             m_mocks.VerifyAllExpectationsHaveBeenMet();
-            Assert.AreEqual(expected, actual);
+            Assert.AreEqual(expected.Element("status").Element("id").Value, actual.StatusID);
         }
 
         /// <summary>
@@ -248,21 +392,16 @@ namespace LinqToTwitterTests
         public void UpdateStatusTest()
         {
             string status = "Hello";
-            Status expected = new Status();
-            var statusQueryable =
-                new List<Status>()
-                {
-                    expected
-                };
+            XElement expected = XElement.Parse(m_testStatusQueryResponse);
 
             Expect.Once.On(m_twitterExecute)
                 .Method("ExecuteTwitter")
-                .Will(Return.Value(statusQueryable));
+                .Will(Return.Value(expected));
 
             Status actual = m_ctx.UpdateStatus(status);
 
             m_mocks.VerifyAllExpectationsHaveBeenMet();
-            Assert.AreEqual(expected, actual);
+            Assert.AreEqual(expected.Element("status").Element("id").Value, actual.StatusID);
         }
 
         /// <summary>
@@ -273,21 +412,16 @@ namespace LinqToTwitterTests
         public void UpdateStatusNullStatusTest()
         {
             string status = null;
-            Status expected = new Status();
-            var statusQueryable =
-                new List<Status>()
-                {
-                    expected
-                };
+            XElement expected = XElement.Parse(m_testStatusQueryResponse);
 
             Expect.Once.On(m_twitterExecute)
                 .Method("ExecuteTwitter")
-                .Will(Return.Value(statusQueryable));
+                .Will(Return.Value(expected));
 
             Status actual = m_ctx.UpdateStatus(status);
 
             m_mocks.VerifyAllExpectationsHaveBeenMet();
-            Assert.AreEqual(expected, actual);
+            Assert.AreEqual(expected.Element("status").Element("id").Value, actual.StatusID);
         }
 
         /// <summary>
@@ -298,21 +432,16 @@ namespace LinqToTwitterTests
         public void UpdateStatusOver140Test()
         {
             string status = new string(Enumerable.Repeat<char>('x', 141).ToArray());
-            Status expected = new Status();
-            var statusQueryable =
-                new List<Status>()
-                {
-                    expected
-                };
+            XElement expected = XElement.Parse(m_testStatusQueryResponse);
 
             Expect.Once.On(m_twitterExecute)
                 .Method("ExecuteTwitter")
-                .Will(Return.Value(statusQueryable));
+                .Will(Return.Value(expected));
 
             Status actual = m_ctx.UpdateStatus(status);
 
             m_mocks.VerifyAllExpectationsHaveBeenMet();
-            Assert.AreEqual(expected, actual);
+            Assert.AreEqual(expected.Element("status").Element("id").Value, actual.StatusID);
         }
 
         /// <summary>
@@ -325,19 +454,14 @@ namespace LinqToTwitterTests
             string url = "http://www.csharp-station.com";
             string location = "Denver, CO";
             string description = "Open source developer for LINQ to Twitter";
-            User expected = new User();
-            var expectedList =
-                new List<User>
-                {
-                    expected
-                };
+            XElement expected = XElement.Parse(m_testUserQueryResponse);
 
             Expect.Once.On(m_twitterExecute)
                 .Method("ExecuteTwitter")
-                .Will(Return.Value(expectedList));
+                .Will(Return.Value(expected));
 
             User actual = m_ctx.UpdateAccountProfile(name, url, location, description);
-            Assert.AreEqual(expected, actual);
+            Assert.AreEqual(actual.Name, expected.Element("name").Value);
         }
 
         /// <summary>
@@ -477,19 +601,15 @@ namespace LinqToTwitterTests
         public void UpdateAccountImageTest()
         {
             string imageFilePath = "c:\\image.jpg";
-            User expected = new User();
-            var expectedList =
-                new List<User>
-                {
-                    expected
-                };
+
+            XElement expected = XElement.Parse(m_testUserQueryResponse);
 
             Expect.Once.On(m_twitterExecute)
                 .Method("PostTwitterFile")
-                .Will(Return.Value(expectedList));
+                .Will(Return.Value(expected));
 
             User actual = m_ctx.UpdateAccountImage(imageFilePath);
-            Assert.AreEqual(expected, actual);
+            Assert.AreEqual(expected.Element("name").Value, actual.Name);
         }
 
         /// <summary>
@@ -522,19 +642,15 @@ namespace LinqToTwitterTests
         public void UpdateAccountDeliveryDeviceTest()
         {
             DeviceType device = new DeviceType();
-            User expected = new User();
-            var expectedList =
-                new List<User>
-                {
-                    expected
-                };
+
+            XElement expected = XElement.Parse(m_testUserQueryResponse);
 
             Expect.Once.On(m_twitterExecute)
                 .Method("ExecuteTwitter")
-                .Will(Return.Value(expectedList));
+                .Will(Return.Value(expected));
 
             User actual = m_ctx.UpdateAccountDeliveryDevice(device);
-            Assert.AreEqual(expected, actual);
+            Assert.AreEqual(expected.Element("name").Value, actual.Name);
         }
 
         /// <summary>
@@ -548,19 +664,15 @@ namespace LinqToTwitterTests
             string link = "#0000ff";
             string sidebarFill = "#e0ff92";
             string sidebarBorder = "#87bc44";
-            User expected = new User();
-            var expectedList =
-                new List<User>
-                {
-                    expected
-                };
+
+            XElement expected = XElement.Parse(m_testUserQueryResponse);
 
             Expect.Once.On(m_twitterExecute)
                 .Method("ExecuteTwitter")
-                .Will(Return.Value(expectedList));
+                .Will(Return.Value(expected));
 
             User actual = m_ctx.UpdateAccountColors(background, text, link, sidebarFill, sidebarBorder);
-            Assert.AreEqual(expected, actual);
+            Assert.AreEqual(expected.Element("name").Value, actual.Name);
         }
 
         /// <summary>
@@ -598,20 +710,14 @@ namespace LinqToTwitterTests
         {
             string imageFilePath = "C:\\image.png";
             bool tile = false;
-            User expected = new User();
-            var expectedList =
-                new List<User>
-                {
-                    expected
-                };
+            XElement expected = XElement.Parse(m_testUserQueryResponse);
 
             Expect.Once.On(m_twitterExecute)
                 .Method("PostTwitterFile")
-                .Will(Return.Value(expectedList));
+                .Will(Return.Value(expected));
 
-            User actual;
-            actual = m_ctx.UpdateAccountBackgroundImage(imageFilePath, tile);
-            Assert.AreEqual(expected, actual);
+            User actual = m_ctx.UpdateAccountBackgroundImage(imageFilePath, tile);
+            Assert.AreEqual(expected.Element("name").Value, actual.Name);
         }
 
         /// <summary>
@@ -647,19 +753,15 @@ namespace LinqToTwitterTests
         {
             string userID = "1";
             string text = "Hi";
-            DirectMessage expected = new DirectMessage();
-            var expectedList =
-                new List<DirectMessage>
-                {
-                    expected
-                };
+
+            XElement expected = XElement.Parse(m_testDirectMessageQueryResponse);
 
             Expect.Once.On(m_twitterExecute)
                 .Method("ExecuteTwitter")
-                .Will(Return.Value(expectedList));
+                .Will(Return.Value(expected));
 
             DirectMessage actual = m_ctx.NewDirectMessage(userID, text);
-            Assert.AreEqual(expected, actual);
+            Assert.AreEqual(expected.Element("id").Value, actual.ID.ToString());
         }
 
         /// <summary>
@@ -716,19 +818,14 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void HelpTestTest()
         {
-            bool expected = false;
-            var expectedList =
-                new List<bool>
-                {
-                    expected
-                };
+            XElement expected = XElement.Parse("<ok>False</ok>");
 
             Expect.Once.On(m_twitterExecute)
                 .Method("ExecuteTwitter")
-                .Will(Return.Value(expectedList));
+                .Will(Return.Value(expected));
 
             bool actual = m_ctx.HelpTest();
-            Assert.AreEqual(expected, actual);
+            Assert.AreEqual(bool.Parse(expected.Value), actual);
         }
 
         /// <summary>
@@ -737,24 +834,14 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void EndAccountSessionTest()
         {
-            TwitterHashResponse expected = new TwitterHashResponse
-            {
-                Error = "Session Ended",
-                Request = "http://twitter.com"
-            };
-            Account acct = new Account { EndSessionStatus = expected };
-            var expectedList =
-                new List<Account>
-                {
-                    acct
-                };
+            XElement expected = XElement.Parse(m_testEndSessionResponse);
 
             Expect.Once.On(m_twitterExecute)
                 .Method("ExecuteTwitter")
-                .Will(Return.Value(expectedList));
+                .Will(Return.Value(expected));
 
             TwitterHashResponse actual = m_ctx.EndAccountSession();
-            Assert.AreEqual(expected, actual);
+            Assert.AreEqual(expected.Element("error").Value, actual.Error);
         }
 
         /// <summary>
@@ -766,19 +853,14 @@ namespace LinqToTwitterTests
             string id = "1";
             string userID = "2";
             string screenName = "JoeMayo";
-            User expected = new User();
-            var expectedList =
-                new List<User>
-                {
-                    expected
-                };
+            XElement expected = XElement.Parse(m_testUserQueryResponse);
 
             Expect.Once.On(m_twitterExecute)
                 .Method("ExecuteTwitter")
-                .Will(Return.Value(expectedList));
+                .Will(Return.Value(expected));
 
             User actual = m_ctx.EnableNotifications(id, userID, screenName);
-            Assert.AreEqual(expected, actual);
+            Assert.AreEqual(expected.Element("name").Value, actual.Name);
         }
 
         /// <summary>
@@ -815,19 +897,14 @@ namespace LinqToTwitterTests
             string id = "1";
             string userID = "2";
             string screenName = "JoeMayo";
-            User expected = new User();
-            var expectedList =
-                new List<User>
-                {
-                    expected
-                };
+            XElement expected = XElement.Parse(m_testUserQueryResponse);
 
             Expect.Once.On(m_twitterExecute)
                 .Method("ExecuteTwitter")
-                .Will(Return.Value(expectedList));
+                .Will(Return.Value(expected));
 
             User actual = m_ctx.DisableNotifications(id, userID, screenName);
-            Assert.AreEqual(expected, actual);
+            Assert.AreEqual(expected.Element("name").Value, actual.Name);
         }
 
         /// <summary>
@@ -862,18 +939,14 @@ namespace LinqToTwitterTests
         public void DestroyStatusTest()
         {
             string id = "1";
-            Status expected = new Status();
-            var expectedList =
-                new List<Status>
-                {
-                    expected
-                };
+            XElement expected = XElement.Parse(m_testStatusQueryResponse);
 
             Expect.Once.On(m_twitterExecute)
                 .Method("ExecuteTwitter")
-                .Will(Return.Value(expectedList));
+                .Will(Return.Value(expected));
+
             Status actual = m_ctx.DestroyStatus(id);
-            Assert.AreEqual(expected, actual);
+            Assert.AreEqual(expected.Element("status").Element("id").Value, actual.StatusID);
         }
 
         /// <summary>
@@ -907,19 +980,14 @@ namespace LinqToTwitterTests
             string id = "1";
             string userID = "2";
             string screenName = "JoeMayo";
-            User expected = new User();
-            var expectedList =
-                new List<User>
-                {
-                    expected
-                };
+            XElement expected = XElement.Parse(m_testUserQueryResponse);
 
             Expect.Once.On(m_twitterExecute)
                 .Method("ExecuteTwitter")
-                .Will(Return.Value(expectedList));
+                .Will(Return.Value(expected));
 
             User actual = m_ctx.DestroyFriendship(id, userID, screenName);
-            Assert.AreEqual(expected, actual);
+            Assert.AreEqual(expected.Element("name").Value, actual.Name);
         }
 
         /// <summary>
@@ -954,18 +1022,14 @@ namespace LinqToTwitterTests
         public void DestroyFavoriteTest()
         {
             string id = "1";
-            Status expected = new Status();
-            var expectedList =
-                new List<Status>
-                {
-                    expected
-                };
+            XElement expected = XElement.Parse(m_testStatusQueryResponse);
 
             Expect.Once.On(m_twitterExecute)
                 .Method("ExecuteTwitter")
-                .Will(Return.Value(expectedList));
+                .Will(Return.Value(expected));
+
             Status actual = m_ctx.DestroyFavorite(id);
-            Assert.AreEqual(expected, actual);
+            Assert.AreEqual(expected.Element("status").Element("id").Value, actual.StatusID);
         }
 
         /// <summary>
@@ -997,18 +1061,14 @@ namespace LinqToTwitterTests
         public void DestroyDirectMessageTest()
         {
             string id = "1";
-            DirectMessage expected = new DirectMessage();
-            var expectedList =
-                new List<DirectMessage>
-                {
-                    expected
-                };
+            XElement expected = XElement.Parse(m_testDirectMessageQueryResponse);
 
             Expect.Once.On(m_twitterExecute)
                 .Method("ExecuteTwitter")
-                .Will(Return.Value(expectedList));
+                .Will(Return.Value(expected));
+
             DirectMessage actual = m_ctx.DestroyDirectMessage(id);
-            Assert.AreEqual(expected, actual);
+            Assert.AreEqual(expected.Element("id").Value, actual.ID.ToString());
         }
 
         /// <summary>
@@ -1029,6 +1089,7 @@ namespace LinqToTwitterTests
             Expect.Once.On(m_twitterExecute)
                 .Method("ExecuteTwitter")
                 .Will(Return.Value(expectedList));
+
             DirectMessage actual = m_ctx.DestroyDirectMessage(id);
             Assert.AreEqual(expected, actual);
         }
@@ -1040,18 +1101,14 @@ namespace LinqToTwitterTests
         public void DestroyBlockTest()
         {
             string id = "1";
-            User expected = new User();
-            var expectedList =
-                new List<User>
-                {
-                    expected
-                };
+            XElement expected = XElement.Parse(m_testUserQueryResponse);
 
             Expect.Once.On(m_twitterExecute)
                 .Method("ExecuteTwitter")
-                .Will(Return.Value(expectedList));
+                .Will(Return.Value(expected));
+
             User actual = m_ctx.DestroyBlock(id);
-            Assert.AreEqual(expected, actual);
+            Assert.AreEqual(expected.Element("name").Value, actual.Name);
         }
 
         /// <summary>
@@ -1086,8 +1143,8 @@ namespace LinqToTwitterTests
 
             var queryResult = from tweet in ctx.Status select tweet;
 
-            IRequestProcessor actual = ctx.CreateRequestProcessor(queryResult.Expression);
-            Assert.IsInstanceOfType(actual, typeof(StatusRequestProcessor));
+            IRequestProcessor<Status> actual = ctx.CreateRequestProcessor<Status>(queryResult.Expression);
+            Assert.IsInstanceOfType(actual, typeof(StatusRequestProcessor<Status>));
         }
 
         /// <summary>
@@ -1100,8 +1157,8 @@ namespace LinqToTwitterTests
 
             var queryResult = from tweet in ctx.Account select tweet;
 
-            IRequestProcessor actual = ctx.CreateRequestProcessor(queryResult.Expression);
-            Assert.IsInstanceOfType(actual, typeof(AccountRequestProcessor));
+            IRequestProcessor<Account> actual = ctx.CreateRequestProcessor<Account>(queryResult.Expression);
+            Assert.IsInstanceOfType(actual, typeof(AccountRequestProcessor<Account>));
         }
 
         /// <summary>
@@ -1114,8 +1171,8 @@ namespace LinqToTwitterTests
 
             var queryResult = from tweet in ctx.Blocks select tweet;
 
-            IRequestProcessor actual = ctx.CreateRequestProcessor(queryResult.Expression);
-            Assert.IsInstanceOfType(actual, typeof(BlocksRequestProcessor));
+            IRequestProcessor<Blocks> actual = ctx.CreateRequestProcessor<Blocks>(queryResult.Expression);
+            Assert.IsInstanceOfType(actual, typeof(BlocksRequestProcessor<Blocks>));
         }
 
         /// <summary>
@@ -1128,8 +1185,8 @@ namespace LinqToTwitterTests
 
             var queryResult = from tweet in ctx.DirectMessage select tweet;
 
-            IRequestProcessor actual = ctx.CreateRequestProcessor(queryResult.Expression);
-            Assert.IsInstanceOfType(actual, typeof(DirectMessageRequestProcessor));
+            IRequestProcessor<DirectMessage> actual = ctx.CreateRequestProcessor<DirectMessage>(queryResult.Expression);
+            Assert.IsInstanceOfType(actual, typeof(DirectMessageRequestProcessor<DirectMessage>));
         }
 
         /// <summary>
@@ -1142,8 +1199,8 @@ namespace LinqToTwitterTests
 
             var queryResult = from tweet in ctx.Favorites select tweet;
 
-            IRequestProcessor actual = ctx.CreateRequestProcessor(queryResult.Expression);
-            Assert.IsInstanceOfType(actual, typeof(FavoritesRequestProcessor));
+            IRequestProcessor<Favorites> actual = ctx.CreateRequestProcessor<Favorites>(queryResult.Expression);
+            Assert.IsInstanceOfType(actual, typeof(FavoritesRequestProcessor<Favorites>));
         }
 
         /// <summary>
@@ -1156,8 +1213,8 @@ namespace LinqToTwitterTests
 
             var queryResult = from tweet in ctx.Friendship select tweet;
 
-            IRequestProcessor actual = ctx.CreateRequestProcessor(queryResult.Expression);
-            Assert.IsInstanceOfType(actual, typeof(FriendshipRequestProcessor));
+            IRequestProcessor<Friendship> actual = ctx.CreateRequestProcessor<Friendship>(queryResult.Expression);
+            Assert.IsInstanceOfType(actual, typeof(FriendshipRequestProcessor<Friendship>));
         }
 
         /// <summary>
@@ -1170,8 +1227,8 @@ namespace LinqToTwitterTests
 
             var queryResult = from tweet in ctx.Search select tweet;
 
-            IRequestProcessor actual = ctx.CreateRequestProcessor(queryResult.Expression);
-            Assert.IsInstanceOfType(actual, typeof(SearchRequestProcessor));
+            IRequestProcessor<Search> actual = ctx.CreateRequestProcessor<Search>(queryResult.Expression);
+            Assert.IsInstanceOfType(actual, typeof(SearchRequestProcessor<Search>));
         }
 
         /// <summary>
@@ -1184,8 +1241,8 @@ namespace LinqToTwitterTests
 
             var queryResult = from tweet in ctx.SocialGraph select tweet;
 
-            IRequestProcessor actual = ctx.CreateRequestProcessor(queryResult.Expression);
-            Assert.IsInstanceOfType(actual, typeof(SocialGraphRequestProcessor));
+            IRequestProcessor<SocialGraph> actual = ctx.CreateRequestProcessor<SocialGraph>(queryResult.Expression);
+            Assert.IsInstanceOfType(actual, typeof(SocialGraphRequestProcessor<SocialGraph>));
         }
 
         /// <summary>
@@ -1198,8 +1255,8 @@ namespace LinqToTwitterTests
 
             var queryResult = from tweet in ctx.Trends select tweet;
 
-            IRequestProcessor actual = ctx.CreateRequestProcessor(queryResult.Expression);
-            Assert.IsInstanceOfType(actual, typeof(TrendRequestProcessor));
+            IRequestProcessor<Trend> actual = ctx.CreateRequestProcessor<Trend>(queryResult.Expression);
+            Assert.IsInstanceOfType(actual, typeof(TrendRequestProcessor<Trend>));
         }
 
         /// <summary>
@@ -1212,8 +1269,8 @@ namespace LinqToTwitterTests
 
             var queryResult = from tweet in ctx.User select tweet;
 
-            IRequestProcessor actual = ctx.CreateRequestProcessor(queryResult.Expression);
-            Assert.IsInstanceOfType(actual, typeof(UserRequestProcessor));
+            IRequestProcessor<User> actual = ctx.CreateRequestProcessor<User>(queryResult.Expression);
+            Assert.IsInstanceOfType(actual, typeof(UserRequestProcessor<User>));
         }
 
         /// <summary>
@@ -1225,7 +1282,7 @@ namespace LinqToTwitterTests
         {
             TwitterContext_Accessor ctx = new TwitterContext_Accessor();
 
-            IRequestProcessor actual = ctx.CreateRequestProcessor(null);
+            IRequestProcessor<Status> actual = ctx.CreateRequestProcessor<Status>(null);
         }
 
         /// <summary>
@@ -1238,19 +1295,14 @@ namespace LinqToTwitterTests
             string userID = "2";
             string screenName = "JoeMayo";
             bool follow = false;
-            User expected = new User();
-            var expectedList =
-                new List<User>
-                {
-                    expected
-                };
+            XElement expected = XElement.Parse(m_testUserQueryResponse);
 
             Expect.Once.On(m_twitterExecute)
                 .Method("ExecuteTwitter")
-                .Will(Return.Value(expectedList));
+                .Will(Return.Value(expected));
 
             User actual = m_ctx.CreateFriendship(id, userID, screenName, follow);
-            Assert.AreEqual(expected, actual);
+            Assert.AreEqual(expected.Element("name").Value, actual.Name);
         }
 
         /// <summary>
@@ -1286,18 +1338,14 @@ namespace LinqToTwitterTests
         public void CreateFavoriteTest()
         {
             string id = "1";
-            Status expected = new Status();
-            var expectedList =
-                new List<Status>
-                {
-                    expected
-                };
+            XElement expected = XElement.Parse(m_testStatusQueryResponse);
 
             Expect.Once.On(m_twitterExecute)
                 .Method("ExecuteTwitter")
-                .Will(Return.Value(expectedList));
+                .Will(Return.Value(expected));
+
             Status actual = m_ctx.CreateFavorite(id);
-            Assert.AreEqual(expected, actual);
+            Assert.AreEqual(expected.Element("status").Element("id").Value, actual.StatusID);
         }
 
         /// <summary>
@@ -1329,19 +1377,14 @@ namespace LinqToTwitterTests
         public void CreateBlockTest()
         {
             string id = "1";
-            User expected = new User();
-            var expectedList =
-                new List<User>
-                {
-                    expected
-                };
+            XElement expected = XElement.Parse(m_testUserQueryResponse);
 
             Expect.Once.On(m_twitterExecute)
                 .Method("ExecuteTwitter")
-                .Will(Return.Value(expectedList));
+                .Will(Return.Value(expected));
 
             User actual = m_ctx.CreateBlock(id);
-            Assert.AreEqual(expected, actual);
+            Assert.AreEqual(expected.Element("name").Value, actual.Name);
         }
 
         /// <summary>

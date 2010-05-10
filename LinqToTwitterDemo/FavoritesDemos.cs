@@ -17,7 +17,7 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         public static void Run(TwitterContext twitterCtx)
         {
-            //FavoritesQueryDemo(twitterCtx);
+            FavoritesQueryDemo(twitterCtx);
             //CreateFavoriteDemo(twitterCtx);
             //DestroyFavoriteDemo(twitterCtx);
         }
@@ -53,10 +53,12 @@ namespace LinqToTwitterDemo
                 where fav.Type == FavoritesType.Favorites
                 select fav;
 
-            favorites.ToList().ForEach(
-                fav => Console.WriteLine(
+            foreach (var fav in favorites)
+            {
+                Console.WriteLine(
                     "User Name: {0}, Tweet: {1}",
-                    fav.User.Name, fav.Text));
+                    fav.User.Name, fav.Text);
+            }
         }
 
         #endregion

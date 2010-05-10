@@ -97,7 +97,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void ProcessResultsTest()
         {
-            SavedSearchRequestProcessor target = new SavedSearchRequestProcessor();
+            SavedSearchRequestProcessor<SavedSearch> target = new SavedSearchRequestProcessor<SavedSearch>();
             XElement twitterResponse = XElement.Parse(m_testQueryResponse);
             IList actual = target.ProcessResults(twitterResponse);
             Assert.AreEqual(actual.Count, 3);
@@ -109,7 +109,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void GetParametersTest()
         {
-            SavedSearchRequestProcessor target = new SavedSearchRequestProcessor() { BaseUrl = "http://twitter.com/" };
+            SavedSearchRequestProcessor<SavedSearch> target = new SavedSearchRequestProcessor<SavedSearch>() { BaseUrl = "http://twitter.com/" };
             Expression<Func<SavedSearch, bool>> expression =
                 search =>
                     search.Type == SavedSearchType.Show &&
@@ -134,7 +134,7 @@ namespace LinqToTwitterTests
         [ExpectedException(typeof(ArgumentException))]
         public void BuildShowNoIDUrlTest()
         {
-            SavedSearchRequestProcessor target = new SavedSearchRequestProcessor() { BaseUrl = "http://twitter.com/" };
+            SavedSearchRequestProcessor<SavedSearch> target = new SavedSearchRequestProcessor<SavedSearch>() { BaseUrl = "http://twitter.com/" };
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                 {
@@ -152,7 +152,7 @@ namespace LinqToTwitterTests
         [DeploymentItem("LinqToTwitter.dll")]
         public void BuildShowUrlTest()
         {
-            SavedSearchRequestProcessor target = new SavedSearchRequestProcessor() { BaseUrl = "http://twitter.com/" };
+            SavedSearchRequestProcessor<SavedSearch> target = new SavedSearchRequestProcessor<SavedSearch>() { BaseUrl = "http://twitter.com/" };
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                 {
@@ -171,7 +171,7 @@ namespace LinqToTwitterTests
         [DeploymentItem("LinqToTwitter.dll")]
         public void BuildSearchesUrlTest()
         {
-            SavedSearchRequestProcessor target = new SavedSearchRequestProcessor() { BaseUrl = "http://twitter.com/" };
+            SavedSearchRequestProcessor<SavedSearch> target = new SavedSearchRequestProcessor<SavedSearch>() { BaseUrl = "http://twitter.com/" };
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                 {
@@ -188,7 +188,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void MissingTypeTest()
         {
-            SavedSearchRequestProcessor target = new SavedSearchRequestProcessor() { BaseUrl = "http://twitter.com/" };
+            SavedSearchRequestProcessor<SavedSearch> target = new SavedSearchRequestProcessor<SavedSearch>() { BaseUrl = "http://twitter.com/" };
             Dictionary<string, string> parameters = new Dictionary<string, string> { };
             string actual;
             try
@@ -208,7 +208,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void NullParametersTest()
         {
-            SavedSearchRequestProcessor target = new SavedSearchRequestProcessor() { BaseUrl = "http://twitter.com/" };
+            SavedSearchRequestProcessor<SavedSearch> target = new SavedSearchRequestProcessor<SavedSearch>() { BaseUrl = "http://twitter.com/" };
             Dictionary<string, string> parameters = null;
             string actual;
             try

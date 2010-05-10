@@ -33,8 +33,8 @@ namespace LinqToTwitterDemo
             //SingleStatusQueryDemo(twitterCtx);
             //UpdateStatusDemo(twitterCtx);
             //UpdateStatusWithReplyDemo(twitterCtx);
-            //UpdateStatusWithLocationDemo(twitterCtx);
-            UpdateStatusWithPlaceDemo(twitterCtx);
+            UpdateStatusWithLocationDemo(twitterCtx);
+            //UpdateStatusWithPlaceDemo(twitterCtx);
             //DestroyStatusDemo(twitterCtx);
             //RetweetedByMeStatusQueryDemo(twitterCtx);
             //RetweetedByMeWithCountStatusQueryDemo(twitterCtx);
@@ -45,6 +45,7 @@ namespace LinqToTwitterDemo
             //FirstStatusQueryDemo(twitterCtx);
             //GetAllTweetsAndRetweetsDemo(twitterCtx);
             //ContributorIDsDemo(twitterCtx);
+            //StatusCountDemo(twitterCtx);
 
         }
 
@@ -414,14 +415,14 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void DestroyStatusDemo(TwitterContext twitterCtx)
         {
-            var status = twitterCtx.DestroyStatus("1539399086");
+            //var status = twitterCtx.DestroyStatus("1539399086");
 
-            Console.WriteLine(
-                "(" + status.StatusID + ")" +
-                "[" + status.User.ID + "]" +
-                status.User.Name + ", " +
-                status.Text + ", " +
-                status.CreatedAt);
+            //Console.WriteLine(
+            //    "(" + status.StatusID + ")" +
+            //    "[" + status.User.ID + "]" +
+            //    status.User.Name + ", " +
+            //    status.Text + ", " +
+            //    status.CreatedAt);
         }
 
         /// <summary>
@@ -593,6 +594,21 @@ namespace LinqToTwitterDemo
 
             contributedStatus.ContributorIDs.ForEach(
                 id => Console.WriteLine("ContributorID: " + id));
+        }
+
+        private static void StatusCountDemo(TwitterContext twitterCtx)
+        {
+            var tweets =
+                from tweet in twitterCtx.Status
+                where tweet.Type == StatusType.Friends
+                select tweet;
+
+            var tweetCount = tweets.Count();
+
+            foreach (var l in tweets)
+            {
+                Console.WriteLine(l.Text);
+            }
         }
 
         #endregion

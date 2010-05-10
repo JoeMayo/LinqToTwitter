@@ -17,7 +17,7 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         public static void Run(TwitterContext twitterCtx)
         {
-            //GetListsDemo(twitterCtx);
+            GetListsDemo(twitterCtx);
             //IsListSubscribedDemo(twitterCtx);
             //GetListSubscribersDemo(twitterCtx);
             //IsListMemberDemo(twitterCtx);

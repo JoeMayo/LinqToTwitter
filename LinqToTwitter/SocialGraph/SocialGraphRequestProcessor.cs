@@ -10,7 +10,7 @@ namespace LinqToTwitter
     /// <summary>
     /// Processes Social Graph Requests and responses
     /// </summary>
-    class SocialGraphRequestProcessor : IRequestProcessor
+    class SocialGraphRequestProcessor<T> : IRequestProcessor<T>
     {
         /// <summary>
         /// base url for request
@@ -197,7 +197,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="twitterResponse">xml with Twitter response</param>
         /// <returns>IQueryable of User</returns>
-        public IList ProcessResults(System.Xml.Linq.XElement twitterResponse)
+        public List<T> ProcessResults(System.Xml.Linq.XElement twitterResponse)
         {
             var graph = new SocialGraph
             {
@@ -241,7 +241,7 @@ namespace LinqToTwitter
 
             graph.IDs = idList.ToList();
 
-            return new List<SocialGraph> { graph };
+            return new List<SocialGraph> { graph }.OfType<T>().ToList();
         }
     }
 }

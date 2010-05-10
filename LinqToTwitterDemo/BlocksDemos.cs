@@ -19,7 +19,7 @@ namespace LinqToTwitterDemo
         {
             //CreateBlock(twitterCtx);
             //DestroyBlock(twitterCtx);
-            //BlockExistsDemo(twitterCtx);
+            BlockExistsDemo(twitterCtx);
             //BlockIDsDemo(twitterCtx);
             //BlockBlockingDemo(twitterCtx);
         }
@@ -91,17 +91,14 @@ namespace LinqToTwitterDemo
         {
             try
             {
-                var result =
-                    from blockItem in twitterCtx.Blocks
-                    where blockItem.Type == BlockingType.Exists &&
-                          blockItem.ScreenName == "JoeMayo"
-                    select blockItem;
+                var block =
+                    (from blockItem in twitterCtx.Blocks
+                     where blockItem.Type == BlockingType.Exists &&
+                           blockItem.ScreenName == "JoeMayo"
+                     select blockItem)
+                     .FirstOrDefault();
 
-                result.ToList().ForEach(
-                    block =>
-                        Console.WriteLine(
-                            "User, {0} is blocked.",
-                            block.User.Name));
+                Console.WriteLine("User, {0} is blocked.", block.User.Name);
             }
             catch (TwitterQueryException tqe)
             {

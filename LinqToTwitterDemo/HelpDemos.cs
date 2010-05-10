@@ -17,7 +17,7 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         public static void Run(TwitterContext twitterCtx)
         {
-            //PerformHelpTest(twitterCtx);
+            PerformHelpTest(twitterCtx);
         }
 
         #region Help Demos

@@ -12,7 +12,7 @@ namespace LinqToTwitter
     /// <summary>
     /// processes Twitter Status requests
     /// </summary>
-    public class StatusRequestProcessor : IRequestProcessor
+    public class StatusRequestProcessor<T> : IRequestProcessor<T>
     {
         /// <summary>
         /// base url for request
@@ -359,7 +359,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="twitterResponse">xml with Twitter response</param>
         /// <returns>IQueryable of Status</returns>
-        public virtual IList ProcessResults(XElement twitterResponse)
+        public virtual List<T> ProcessResults(XElement twitterResponse)
         {
             var responseItems = twitterResponse.Elements("status").ToList();
 
@@ -391,7 +391,7 @@ namespace LinqToTwitter
                     status.Page = Page;
                 });
 
-            return statusList;
+            return statusList.OfType<T>().ToList();
         }
     }
 }

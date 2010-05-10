@@ -20,10 +20,10 @@ namespace LinqToTwitterDemo
             //CreateFriendshipFollowDemo(twitterCtx);
             //DestroyFriendshipDemo(twitterCtx);
             //CreateFriendshipNoDeviceUpdatesDemo(twitterCtx);
-            //FriendshipExistsDemo(twitterCtx);
+            FriendshipExistsDemo(twitterCtx);
             //FriendshipShowDemo(twitterCtx);
             //FriendshipIncomingDemo(twitterCtx);
-            FriendshipOutgoingDemo(twitterCtx);
+            //FriendshipOutgoingDemo(twitterCtx);
         }
 
         #region Friendship Demos
@@ -70,11 +70,11 @@ namespace LinqToTwitterDemo
                        friend.SubjectUser == "JoeMayo" &&
                        friend.FollowingUser == "LinqToTweeter"
                  select friend)
-                 .ToList();
+                 .FirstOrDefault();
 
             Console.WriteLine(
                 "LinqToTweeter follows JoeMayo: " +
-                friendship.First().IsFriend);
+                friendship.IsFriend);
         }
 
         /// <summary>

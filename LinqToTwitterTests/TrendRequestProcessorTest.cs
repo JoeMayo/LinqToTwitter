@@ -237,7 +237,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void ProcessTrendResultsTest()
         {
-            TrendRequestProcessor target = new TrendRequestProcessor();
+            TrendRequestProcessor<Trend> target = new TrendRequestProcessor<Trend>();
             XElement twitterResponse = XElement.Parse(m_testTrendQueryResponse);
             IList actual = target.ProcessResults(twitterResponse);
             var trends = actual.Cast<Trend>().ToList();
@@ -251,7 +251,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void ProcessCurrentTrendResultsTest()
         {
-            TrendRequestProcessor target = new TrendRequestProcessor();
+            TrendRequestProcessor<Trend> target = new TrendRequestProcessor<Trend>();
             XElement twitterResponse = XElement.Parse(m_testCurrentTrendQueryResponse);
             IList actual = target.ProcessResults(twitterResponse);
             var trends = actual.Cast<Trend>().ToList();
@@ -265,7 +265,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void ProcessAvailableTrendResultsTest()
         {
-            TrendRequestProcessor target = new TrendRequestProcessor();
+            TrendRequestProcessor<Trend> target = new TrendRequestProcessor<Trend>();
             XElement twitterResponse = XElement.Parse(m_testAvailableQueryResponse);
             IList actual = target.ProcessResults(twitterResponse);
             var trends = actual.Cast<Trend>().ToList();
@@ -280,7 +280,7 @@ namespace LinqToTwitterTests
         {
             var currDT = DateTime.Now;
 
-            TrendRequestProcessor target = new TrendRequestProcessor();
+            TrendRequestProcessor<Trend> target = new TrendRequestProcessor<Trend>();
             Expression<Func<Trend, bool>> expression =
                 trend =>
                     trend.Type == TrendType.Current &&
@@ -303,7 +303,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void BuildTrendsURLTest()
         {
-            TrendRequestProcessor target = new TrendRequestProcessor() { BaseUrl = "http://search.twitter.com/" };
+            TrendRequestProcessor<Trend> target = new TrendRequestProcessor<Trend>() { BaseUrl = "http://search.twitter.com/" };
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                 {
@@ -321,7 +321,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void BuildWeeklyTrendsURLTest()
         {
-            TrendRequestProcessor target = new TrendRequestProcessor() { BaseUrl = "http://search.twitter.com/" };
+            TrendRequestProcessor<Trend> target = new TrendRequestProcessor<Trend>() { BaseUrl = "http://search.twitter.com/" };
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                 {
@@ -341,7 +341,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void BuildCurrentTrendsURLTest()
         {
-            TrendRequestProcessor target = new TrendRequestProcessor() { BaseUrl = "http://search.twitter.com/" };
+            TrendRequestProcessor<Trend> target = new TrendRequestProcessor<Trend>() { BaseUrl = "http://search.twitter.com/" };
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                 {
@@ -361,7 +361,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void BuildDailyTrendsURLTest()
         {
-            TrendRequestProcessor target = new TrendRequestProcessor() { BaseUrl = "http://search.twitter.com/" };
+            TrendRequestProcessor<Trend> target = new TrendRequestProcessor<Trend>() { BaseUrl = "http://search.twitter.com/" };
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                 {
@@ -381,7 +381,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void BuildAvailableTrendsURLTest()
         {
-            TrendRequestProcessor target = new TrendRequestProcessor() { BaseUrl = "http://api.twitter.com/1/" };
+            TrendRequestProcessor<Trend> target = new TrendRequestProcessor<Trend>() { BaseUrl = "http://api.twitter.com/1/" };
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                 {
@@ -402,7 +402,7 @@ namespace LinqToTwitterTests
         [ExpectedException(typeof(ArgumentException))]
         public void BuildAvailableTrendsWithoutLatitudeURLTest()
         {
-            TrendRequestProcessor target = new TrendRequestProcessor() { BaseUrl = "http://api.twitter.com/1/" };
+            TrendRequestProcessor<Trend> target = new TrendRequestProcessor<Trend>() { BaseUrl = "http://api.twitter.com/1/" };
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                 {
@@ -418,7 +418,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void BuildLocationTrendsURLTest()
         {
-            TrendRequestProcessor target = new TrendRequestProcessor() { BaseUrl = "http://api.twitter.com/1/" };
+            TrendRequestProcessor<Trend> target = new TrendRequestProcessor<Trend>() { BaseUrl = "http://api.twitter.com/1/" };
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                 {
@@ -438,7 +438,7 @@ namespace LinqToTwitterTests
         [ExpectedException(typeof(ArgumentException))]
         public void BuildLocationTrendsWithoutWeoIDURLTest()
         {
-            TrendRequestProcessor target = new TrendRequestProcessor() { BaseUrl = "http://api.twitter.com/1/" };
+            TrendRequestProcessor<Trend> target = new TrendRequestProcessor<Trend>() { BaseUrl = "http://api.twitter.com/1/" };
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                 {
@@ -453,7 +453,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void MissingTypeTest()
         {
-            TrendRequestProcessor target = new TrendRequestProcessor() { BaseUrl = "http://search.twitter.com/" };
+            TrendRequestProcessor<Trend> target = new TrendRequestProcessor<Trend>() { BaseUrl = "http://search.twitter.com/" };
             Dictionary<string, string> parameters = new Dictionary<string, string> { };
             string actual;
             try
@@ -473,7 +473,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void NullParametersTest()
         {
-            TrendRequestProcessor target = new TrendRequestProcessor() { BaseUrl = "http://search.twitter.com/" };
+            TrendRequestProcessor<Trend> target = new TrendRequestProcessor<Trend>() { BaseUrl = "http://search.twitter.com/" };
             Dictionary<string, string> parameters = null;
             string actual;
             try

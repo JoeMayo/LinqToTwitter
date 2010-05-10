@@ -30,7 +30,9 @@ namespace LinqToTwitterDemo
             //SearchWithWordQuery(twitterCtx);
             //SearchWithPersonQuery(twitterCtx);
             //SearchWithAttitudeQuery(twitterCtx);
-            SearchWithLinksQuery(twitterCtx);
+            //SearchWithLinksQuery(twitterCtx);
+            //SearchCountDemo(twitterCtx);
+            SearchEntriesQueryDemo(twitterCtx);
         }
 
         #region Search Demos
@@ -395,6 +397,76 @@ namespace LinqToTwitterDemo
                         entry.ID, entry.Updated, entry.Content);
                 }
             }
+        }
+
+        private static void SearchCountDemo(TwitterContext twitterCtx)
+        {
+            var queryResults =
+                from search in twitterCtx.Search
+                where search.Type == SearchType.Search &&
+                      search.Query == "Linq to Twitter"
+                select search;
+
+            var srch = queryResults.SingleOrDefault();
+
+            Console.WriteLine("Number of references to LINQ to Twitter: " + srch.Entries.Count);
+        }
+
+        private static void SearchEntriesQueryDemo(TwitterContext twitterCtx)
+        {
+            var queryResults =
+                from tweet in twitterCtx.Search
+                where tweet.Type == SearchType.Search &&
+                tweet.Query == "Linq to Twitter"
+                select tweet;
+
+
+            var entries =
+                (from result in queryResults
+                from atomEntry in result.Entries
+                select new SearchItem
+                {
+                    Title = atomEntry.Title,
+                    Abstract = atomEntry.Content,
+                    Date = atomEntry.Published,
+                    Extract = string.Empty,
+                    Locations = new List<LocatedItem>(),
+                    Source = atomEntry.Source,
+                    Url = atomEntry.Alternate,
+                    Author = new AuthorInfo
+                    {
+                        AuthorImage = atomEntry.Image,
+                        Url = atomEntry.Author.URI,
+                        Name = atomEntry.Author.Name
+                    }
+                }).ToList();
+
+            foreach (var entry in entries)
+            {
+                Console.WriteLine("Title: " + entry.Title);
+            }
+
+        }
+
+        public class SearchItem
+        {
+            public string Title { get; set; }
+            public string Abstract { get; set; }
+            public DateTime Date { get; set; }
+            public string Extract { get; set; }
+            public List<LocatedItem> Locations { get; set; }
+            public string Source { get; set; }
+            public string Url { get; set; }
+            public AuthorInfo Author { get; set; }
+        };
+
+        public class LocatedItem { }
+
+        public class AuthorInfo
+        {
+            public string AuthorImage { get; set; }
+            public string Url { get; set; }
+            public string Name { get; set; }
         }
 
         ///// <summary>

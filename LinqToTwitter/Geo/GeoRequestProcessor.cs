@@ -12,7 +12,7 @@ namespace LinqToTwitter
     /// <summary>
     /// processes Twitter Saved Search requests
     /// </summary>
-    public class GeoRequestProcessor : IRequestProcessor
+    public class GeoRequestProcessor<T> : IRequestProcessor<T>
     {
         /// <summary>
         /// base url for request
@@ -216,7 +216,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="twitterResponse">xml with Twitter response</param>
         /// <returns>IList of SavedSearch</returns>
-        public IList ProcessResults(XElement twitterResponse)
+        public List<T> ProcessResults(XElement twitterResponse)
         {
             List<XElement> responseItems = new List<XElement>();
 
@@ -247,6 +247,7 @@ namespace LinqToTwitter
                    ID = ID,
                    Latitude = Latitude,
                    Longitude = Longitude,
+                   IP = IP,
                    MaxResults = MaxResults,
                    Places =
                        (from pl in responseItems
@@ -254,7 +255,7 @@ namespace LinqToTwitter
                         .ToList()
                };
 
-            return new List<Geo> { geo };
+            return new List<Geo> { geo }.OfType<T>().ToList();
         }
     }
 }

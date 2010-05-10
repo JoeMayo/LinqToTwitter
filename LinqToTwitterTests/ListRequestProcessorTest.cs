@@ -195,7 +195,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void ProcessResultsTest()
         {
-            ListRequestProcessor listProc = new ListRequestProcessor();
+            ListRequestProcessor<List> listProc = new ListRequestProcessor<List>();
             XElement twitterResponse = XElement.Load(new StringReader(m_testQueryResponse));
             var actual = listProc.ProcessResults(twitterResponse.Descendants("list").First());
             var actualQuery = actual as IList<List>;
@@ -210,7 +210,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void GetParametersTest()
         {
-            ListRequestProcessor target = new ListRequestProcessor();
+            ListRequestProcessor<List> target = new ListRequestProcessor<List>();
             Expression<Func<List, bool>> expression =
                 list =>
                     list.Type == ListType.Members &&
@@ -261,7 +261,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void BuildURLTest()
         {
-            ListRequestProcessor target = new ListRequestProcessor { BaseUrl = "https://api.twitter.com/1/" };
+            ListRequestProcessor<List> target = new ListRequestProcessor<List> { BaseUrl = "https://api.twitter.com/1/" };
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                 {
@@ -279,7 +279,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void BuildStatusUrlTestWithParameters()
         {
-            ListRequestProcessor target = new ListRequestProcessor() { BaseUrl = "https://api.twitter.com/1/" };
+            ListRequestProcessor<List> target = new ListRequestProcessor<List>() { BaseUrl = "https://api.twitter.com/1/" };
             var parameters = new Dictionary<string, string>
                                  {
                                      {"Type", ((int) ListType.Statuses).ToString()},
@@ -303,7 +303,7 @@ namespace LinqToTwitterTests
         [ExpectedException(typeof(ArgumentException))]
         public void BuildURLTestMissingType()
         {
-            ListRequestProcessor target = new ListRequestProcessor { BaseUrl = "https://api.twitter.com/1/" };
+            ListRequestProcessor<List> target = new ListRequestProcessor<List> { BaseUrl = "https://api.twitter.com/1/" };
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                 {
@@ -321,7 +321,7 @@ namespace LinqToTwitterTests
         [ExpectedException(typeof(ArgumentException))]
         public void BuildURLTestMissingScreenName()
         {
-            ListRequestProcessor target = new ListRequestProcessor { BaseUrl = "https://api.twitter.com/1/" };
+            ListRequestProcessor<List> target = new ListRequestProcessor<List> { BaseUrl = "https://api.twitter.com/1/" };
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                 {
@@ -338,7 +338,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void MissingTypeTest()
         {
-            ListRequestProcessor target = new ListRequestProcessor { BaseUrl = "https://api.twitter.com/1/" };
+            ListRequestProcessor<List> target = new ListRequestProcessor<List> { BaseUrl = "https://api.twitter.com/1/" };
             Dictionary<string, string> parameters = new Dictionary<string, string> { };
             string actual;
             try
@@ -358,7 +358,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void NullParametersTest()
         {
-            ListRequestProcessor target = new ListRequestProcessor { BaseUrl = "https://api.twitter.com/1/" };
+            ListRequestProcessor<List> target = new ListRequestProcessor<List> { BaseUrl = "https://api.twitter.com/1/" };
             Dictionary<string, string> parameters = null;
             string actual;
             try

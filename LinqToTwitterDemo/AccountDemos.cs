@@ -19,7 +19,7 @@ namespace LinqToTwitterDemo
         public static void Run(TwitterContext twitterCtx)
         {
             //VerifyAccountCredentials(twitterCtx);
-            //ViewRateLimitStatus(twitterCtx);
+            ViewRateLimitStatus(twitterCtx);
             //ViewRateLimitResponseHeadersDemo(twitterCtx);
             //EndSession(twitterCtx);
             //UpdateDeliveryDevice(twitterCtx);
@@ -226,10 +226,8 @@ namespace LinqToTwitterDemo
 
             try
             {
-                foreach (var account in accounts)
-                {
-                    Console.WriteLine("Credentials for account, {0}, are okay.", account.User.Name);
-                }
+                Account account = accounts.SingleOrDefault();
+                Console.WriteLine("Account credentials are verified.");
             }
             catch (WebException wex)
             {

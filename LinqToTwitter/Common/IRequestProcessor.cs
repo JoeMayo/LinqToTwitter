@@ -8,11 +8,11 @@ using System.Collections;
 
 namespace LinqToTwitter
 {
-    public interface IRequestProcessor
+    public interface IRequestProcessor<T>
     {
         string BaseUrl { get; set; }
         Dictionary<string, string> GetParameters(LambdaExpression lambdaExpression);
         string BuildURL(Dictionary<string, string> parameters);
-        IList ProcessResults(XElement twitterResponse);
+        List<T> ProcessResults(XElement twitterResponse);
     }
 }

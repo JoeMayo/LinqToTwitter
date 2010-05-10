@@ -229,7 +229,7 @@ namespace LinqToTwitter
         /// <param name="requestProcessor">strategy class for processing XML response</param>
         /// <param name="responseStr">XML string response from Twitter</param>
         /// <returns></returns>
-        private static IList ProcessResults(IRequestProcessor requestProcessor, string responseStr, string status)
+        private static XElement ProcessResults(string responseStr, string status)
         {
             var responseXml = XElement.Parse(responseStr);
 
@@ -247,7 +247,7 @@ namespace LinqToTwitter
                 };
             }
 
-            return requestProcessor.ProcessResults(responseXml);
+            return responseXml;
         }
 
         #endregion
@@ -258,8 +258,8 @@ namespace LinqToTwitter
         /// makes HTTP call to Twitter API
         /// </summary>
         /// <param name="url">URL with all query info</param>
-        /// <returns>List of objects to return</returns>
-        public IList QueryTwitter(string url, IRequestProcessor requestProcessor)
+        /// <returns>XML Respose from Twitter</returns>
+        public XElement QueryTwitter(string url)
         {
             var uri = new Uri(url);
             var req = this.AuthorizedClient.Get(uri, null);
@@ -297,7 +297,7 @@ namespace LinqToTwitter
                 responseXml = doc.OuterXml;
             }
 
-            return ProcessResults(requestProcessor, responseXml, httpStatus);
+            return ProcessResults(responseXml, httpStatus);
         }
 
         /// <summary>
@@ -306,9 +306,8 @@ namespace LinqToTwitter
         /// <param name="filePath">full path of file to upload</param>
         /// <param name="parameters">query string parameters</param>
         /// <param name="url">url to upload to</param>
-        /// <param name="requestProcessor">IRequestProcessor to handle results</param>
-        /// <returns>IQueryable</returns>
-        public IList PostTwitterFile(string filePath, Dictionary<string, string> parameters, string url, IRequestProcessor requestProcessor)
+        /// <returns>XML Respose from Twitter</returns>
+        public XElement PostTwitterFile(string filePath, Dictionary<string, string> parameters, string url)
         {
             var fileName = Path.GetFileName(filePath);
 
@@ -333,7 +332,7 @@ namespace LinqToTwitter
 
             byte[] fileBytes = Utilities.GetFileBytes(filePath);
 
-            return PostTwitterImage(fileBytes, parameters, url, requestProcessor, fileName, imageType);
+            return PostTwitterImage(fileBytes, parameters, url, fileName, imageType);
         }
 
         /// <summary>
@@ -343,8 +342,8 @@ namespace LinqToTwitter
         /// <param name="url">url to upload to</param>
         /// <param name="fileName">name to pass to Twitter for the file</param>
         /// <param name="imageType">type of image: must be one of jpg, gif, or png</param>
-        /// <returns>IQueryable</returns>
-        public IList PostTwitterImage(byte[] image, Dictionary<string, string> parameters, string url, IRequestProcessor requestProcessor, string fileName, string imageType)
+        /// <returns>XML Response from Twitter</returns>
+        public XElement PostTwitterImage(byte[] image, Dictionary<string, string> parameters, string url, string fileName, string imageType)
         {
             string contentBoundaryBase = DateTime.Now.Ticks.ToString("x");
             string beginContentBoundary = string.Format("--{0}\r\n", contentBoundaryBase);
@@ -451,9 +450,8 @@ namespace LinqToTwitter
                 }
             }
 
-            IList results = ProcessResults(requestProcessor, responseXml, httpStatus);
             OnUploadProgressChanged(100);
-            return results;
+            return ProcessResults(responseXml, httpStatus);
         }
 
         /// <summary>
@@ -461,9 +459,8 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="url">URL of request</param>
         /// <param name="parameters">parameters to post</param>
-        /// <param name="requestProcessor">IRequestProcessor to handle response</param>
-        /// <returns>response from server, handled by the requestProcessor</returns>
-        public IList ExecuteTwitter(string url, Dictionary<string, string> parameters, IRequestProcessor requestProcessor)
+        /// <returns>XML response from Twitter</returns>
+        public XElement ExecuteTwitter(string url, Dictionary<string, string> parameters)
         {
             string httpStatus = string.Empty;
             string responseXml = string.Empty;
@@ -489,7 +486,7 @@ namespace LinqToTwitter
                 }
             }
 
-            return ProcessResults(requestProcessor, responseXml, httpStatus);
+            return ProcessResults(responseXml, httpStatus);
         }
 
         #endregion

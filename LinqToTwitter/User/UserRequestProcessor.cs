@@ -11,7 +11,7 @@ namespace LinqToTwitter
     /// <summary>
     /// processes Twitter User requests
     /// </summary>
-    public class UserRequestProcessor : IRequestProcessor
+    public class UserRequestProcessor<T> : IRequestProcessor<T>
     {
         #region IRequestProcessor Members
 
@@ -401,7 +401,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="twitterResponse">xml with Twitter response</param>
         /// <returns>IList of User</returns>
-        public virtual IList ProcessResults(System.Xml.Linq.XElement twitterResponse)
+        public virtual List<T> ProcessResults(System.Xml.Linq.XElement twitterResponse)
         {
             var userList = new List<User>();
             var categories = new List<Category>();
@@ -464,7 +464,7 @@ namespace LinqToTwitter
                     user.Categories = categories;
                 });
 
-            return userList.ToList();
+            return userList.OfType<T>().ToList();
         }
 
         #endregion

@@ -13,7 +13,7 @@ namespace LinqToTwitter
     /// <summary>
     /// Manages request processing for favorites
     /// </summary>
-    public class FavoritesRequestProcessor : IRequestProcessor
+    public class FavoritesRequestProcessor<T> : IRequestProcessor<T>
     {
         public virtual string BaseUrl { get; set; }
 
@@ -183,7 +183,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="twitterResponse">xml with Twitter response</param>
         /// <returns>IQueryable of User</returns>
-        public virtual IList ProcessResults(XElement twitterResponse)
+        public virtual List<T> ProcessResults(XElement twitterResponse)
         {
             var responseItems = twitterResponse.Elements("status").ToList();
 
@@ -226,7 +226,7 @@ namespace LinqToTwitter
                        User = new User().CreateUser(user)
                    };
 
-            return statusList.ToList();
+            return statusList.OfType<T>().ToList();
         }
     }
 }

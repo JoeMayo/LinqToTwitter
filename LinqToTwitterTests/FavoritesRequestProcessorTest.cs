@@ -150,7 +150,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void ProcessResultsTest()
         {
-            FavoritesRequestProcessor target = new FavoritesRequestProcessor();
+            FavoritesRequestProcessor<Favorites> target = new FavoritesRequestProcessor<Favorites>();
             XElement twitterResponse = XElement.Parse(m_twitterResponse);
             IList actual = target.ProcessResults(twitterResponse);
             var results = actual.Cast<Favorites>();
@@ -163,7 +163,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void GetParametersTest()
         {
-            FavoritesRequestProcessor target = new FavoritesRequestProcessor() { BaseUrl = "http://twitter.com/" };
+            FavoritesRequestProcessor<Favorites> target = new FavoritesRequestProcessor<Favorites>() { BaseUrl = "http://twitter.com/" };
             Expression<Func<Favorites, bool>> expression =
                 fav =>
                     fav.Type == FavoritesType.Favorites &&
@@ -190,7 +190,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void BuildURLTest()
         {
-            FavoritesRequestProcessor target = new FavoritesRequestProcessor() { BaseUrl = "http://twitter.com/" };
+            FavoritesRequestProcessor<Favorites> target = new FavoritesRequestProcessor<Favorites>() { BaseUrl = "http://twitter.com/" };
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                 {
@@ -210,7 +210,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void MissingTypeTest()
         {
-            FavoritesRequestProcessor target = new FavoritesRequestProcessor() { BaseUrl = "http://twitter.com/" };
+            FavoritesRequestProcessor<Favorites> target = new FavoritesRequestProcessor<Favorites>() { BaseUrl = "http://twitter.com/" };
             Dictionary<string, string> parameters = new Dictionary<string, string> { };
             string actual;
             try
@@ -230,7 +230,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void NullParametersTest()
         {
-            FavoritesRequestProcessor target = new FavoritesRequestProcessor() { BaseUrl = "http://twitter.com/" };
+            FavoritesRequestProcessor<Favorites> target = new FavoritesRequestProcessor<Favorites>() { BaseUrl = "http://twitter.com/" };
             Dictionary<string, string> parameters = null;
             string actual;
             try

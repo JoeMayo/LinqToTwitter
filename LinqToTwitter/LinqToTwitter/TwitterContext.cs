@@ -7,18 +7,10 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Net;
-using System.Text;
 using System.Xml.Linq;
-using System.Web;
-using System.Xml;
-using System.Runtime.Serialization.Json;
-using System.Collections;
-using System.Reflection;
-using LinqToTwitter.PostProcessing;
 
 namespace LinqToTwitter
 {
@@ -242,7 +234,7 @@ namespace LinqToTwitter
 
         #endregion
 
-        #region TwitterQueryable objects
+        #region TwitterQueryable Entities
 
         /// <summary>
         /// enables access to Twitter account information, such as Verify Credentials and Rate Limit Status
@@ -515,7 +507,7 @@ namespace LinqToTwitter
         internal object Execute<T>(Expression expression, bool isEnumerable)
         {
             // request processor is specific to request type (i.e. Status, User, etc.)
-            var reqProc = CreateRequestProcessor(expression);
+            var reqProc = CreateRequestProcessor<T>(expression);
 
             // get input parameters that go on the REST query URL
             var parameters = GetRequestParameters(expression, reqProc);
@@ -524,69 +516,23 @@ namespace LinqToTwitter
             var url = reqProc.BuildURL(parameters);
 
             // process request through Twitter
-            var queryableList = TwitterExecutor.QueryTwitter(url, reqProc);
+            XElement resultsXml = TwitterExecutor.QueryTwitter(url);
 
-            // perform post-processing on results:
-            //  any processing that isn't handled by Twitter
-            //  is handled here via a LINQ to Objects query
-            var postProcessingResult =
-                PostProcessTwitterResults(
-                    queryableList,
-                    expression as MethodCallExpression, 
-                    isEnumerable);
+            var queryableList = reqProc.ProcessResults(resultsXml);
 
+            // Copy the IEnumerable places to an IQueryable.
+            var queryableItems = queryableList.AsQueryable<T>();
+
+            // Copy the expression tree that was passed in, changing only the first
+            // argument of the innermost MethodCallExpression.
+            ExpressionTreeModifier<T> treeCopier = new ExpressionTreeModifier<T>(queryableItems);
+            Expression newExpressionTree = treeCopier.CopyAndModify(expression);
+
+            // This step creates an IQueryable that executes by replacing Queryable methods with Enumerable methods.
             if (isEnumerable)
-            {
-                return postProcessingResult;
-            }
+                return queryableItems.Provider.CreateQuery(newExpressionTree);
             else
-            {
-                IEnumerator enumerator = postProcessingResult.GetEnumerator();
-                if (enumerator.MoveNext())
-                {
-                    return enumerator.Current; 
-                }
-                else
-                {
-                    return null;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Converts weak typed collection to strong typed for post-processing
-        /// </summary>
-        /// <param name="queryableList">Weak typed collection</param>
-        /// <param name="expression">Query expression tree</param>
-        /// <param name="isEnumerable">Is single value or IEnumerable</param>
-        /// <returns>Results from Twitter, further processed via LINQ to Objects on operators that don't convert to Twitter</returns>
-        private IEnumerable PostProcessTwitterResults(IList queryableList, MethodCallExpression expression, bool isEnumerable)
-        {
-            // convert captured variables to values
-            var evalExpression = (MethodCallExpression)Evaluator.PartialEval(expression);
-
-            // generic parameter type for method call
-            Type resultType = TypeSystem.GetElementType(expression.Arguments[0].Type);
-            Type[] genericArguments = new Type[] { resultType };
-
-            // generic method instance via reflection
-            var methodInfo = typeof(PostProcessor).GetMethod("ProcessResults", BindingFlags.NonPublic | BindingFlags.Instance);
-            MethodInfo genericMethodInfo = methodInfo.MakeGenericMethod(genericArguments);
-
-            // need a generic list of the type from the expression tree
-            var list = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(resultType));
-
-            // grab the values returned from the call
-            // to Twitter in a form required of the 
-            // PostProcessor.ProcessResults method
-            foreach (var item in queryableList)
-            {
-                list.Add(item);
-            }
-
-            // use reflection to execute the generic method with the proper arguments
-            //  Note: look at ProcessResults method in PostProcessor and you'll see what is being executed
-            return (IEnumerable)genericMethodInfo.Invoke(new PostProcessor(), new object[] { list, evalExpression, isEnumerable });
+                return queryableItems.Provider.Execute(newExpressionTree);
         }
 
         /// <summary>
@@ -595,7 +541,7 @@ namespace LinqToTwitter
         /// <param name="expression">Input query expression tree</param>
         /// <param name="reqProc">Processor specific to this request type</param>
         /// <returns>Name/value pairs of query parameters</returns>
-        private static Dictionary<string, string> GetRequestParameters(Expression expression, IRequestProcessor reqProc)
+        private static Dictionary<string, string> GetRequestParameters<T>(Expression expression, IRequestProcessor<T> reqProc)
         {
             Dictionary<string, string> parameters = null;
 
@@ -621,56 +567,56 @@ namespace LinqToTwitter
         /// </summary>
         /// <typeparam name="T">type of request</typeparam>
         /// <returns>request processor matching type parameter</returns>
-        private IRequestProcessor CreateRequestProcessor(Expression expression)
+        private IRequestProcessor<T> CreateRequestProcessor<T>(Expression expression)
         {
             if (expression == null)
             {
                 throw new ArgumentNullException("Expression passed to CreateRequestProcessor must not be null.");
             }
 
-            string requestType = 
+            string requestType =
                 TypeSystem
                     .GetElementType(
                         (expression as MethodCallExpression)
                         .Arguments[0].Type)
                         .Name;
 
-            IRequestProcessor req;
+            IRequestProcessor<T> req = null;
 
             switch (requestType)
             {
                 case "Account":
-                    req = new AccountRequestProcessor() { BaseUrl = BaseUrl };
+                    req = new AccountRequestProcessor<T>() { BaseUrl = BaseUrl };
                     break;
                 case "Blocks":
-                    req = new BlocksRequestProcessor() { BaseUrl = BaseUrl };
+                    req = new BlocksRequestProcessor<T>() { BaseUrl = BaseUrl };
                     break;
                 case "DirectMessage":
-                    req = new DirectMessageRequestProcessor() { BaseUrl = BaseUrl };
+                    req = new DirectMessageRequestProcessor<T>() { BaseUrl = BaseUrl };
                     break;
                 case "Favorites":
-                    req = new FavoritesRequestProcessor() { BaseUrl = BaseUrl };
+                    req = new FavoritesRequestProcessor<T>() { BaseUrl = BaseUrl };
                     break;
                 case "Friendship":
-                    req = new FriendshipRequestProcessor() { BaseUrl = BaseUrl };
+                    req = new FriendshipRequestProcessor<T>() { BaseUrl = BaseUrl };
                     break;
                 case "Geo":
-                    req = new GeoRequestProcessor() { BaseUrl = baseUrl };
+                    req = new GeoRequestProcessor<T>() { BaseUrl = baseUrl };
                     break;
                 case "List":
-                    req = new ListRequestProcessor() { BaseUrl = BaseUrl };
+                    req = new ListRequestProcessor<T>() { BaseUrl = BaseUrl };
                     break;
                 case "SavedSearch":
-                    req = new SavedSearchRequestProcessor() { BaseUrl = BaseUrl };
+                    req = new SavedSearchRequestProcessor<T>() { BaseUrl = BaseUrl };
                     break;
                 case "SocialGraph":
-                    req = new SocialGraphRequestProcessor() { BaseUrl = BaseUrl };
+                    req = new SocialGraphRequestProcessor<T>() { BaseUrl = BaseUrl };
                     break;
                 case "Search":
-                    req = new SearchRequestProcessor() { BaseUrl = SearchUrl };
+                    req = new SearchRequestProcessor<T>() { BaseUrl = SearchUrl };
                     break;
                 case "Status":
-                    req = new StatusRequestProcessor() { BaseUrl = BaseUrl };
+                    req = new StatusRequestProcessor<T>() { BaseUrl = BaseUrl };
                     break;
                 case "Trend":
                     string trendTypeStr = "Trend";
@@ -700,13 +646,13 @@ namespace LinqToTwitter
                         trendUrl = BaseUrl;
                     }
 
-                    req = new TrendRequestProcessor() { BaseUrl = trendUrl };
+                    req = new TrendRequestProcessor<T>() { BaseUrl = trendUrl };
                     break;
                 case "User":
-                    req = new UserRequestProcessor() { BaseUrl = BaseUrl };
+                    req = new UserRequestProcessor<T>() { BaseUrl = BaseUrl };
                     break;
                 default:
-                    req = new StatusRequestProcessor() { BaseUrl = BaseUrl };
+                    req = new StatusRequestProcessor<T>() { BaseUrl = BaseUrl };
                     break;
             }
 
@@ -871,9 +817,9 @@ namespace LinqToTwitter
 
             status = status.Substring(0, Math.Min(140, status.Length));
 
-            var updateUrl = BaseUrl + "statuses/update.xml";
+            string updateUrl = BaseUrl + "statuses/update.xml";
 
-            var results =
+            XElement resultsXml =
                 TwitterExecutor.ExecuteTwitter(
                     updateUrl,
                     new Dictionary<string, string>
@@ -884,10 +830,10 @@ namespace LinqToTwitter
                         {"long", longitude == -1 ? null : longitude.ToString()},
                         {"place_id", placeID},
                         {"display_coordinates", displayCoordinates.ToString()},
-                    },
-                    new StatusRequestProcessor());
+                    });
 
-            return (results as IList<Status>).FirstOrDefault();
+            List<Status> results = new StatusRequestProcessor<Status>().ProcessResults(resultsXml);
+            return results.FirstOrDefault();
         }
 
         /// <summary>
@@ -902,15 +848,15 @@ namespace LinqToTwitter
                 throw new ArgumentException("id is a required parameter.", "id");
             }
 
-            var destroyUrl = BaseUrl + "statuses/destroy/" + id + ".xml";
+            string destroyUrl = BaseUrl + "statuses/destroy/" + id + ".xml";
 
-            var results =
+            XElement resultsXml =
                 TwitterExecutor.ExecuteTwitter(
                     destroyUrl,
-                    new Dictionary<string, string>(),
-                    new StatusRequestProcessor());
+                    new Dictionary<string, string>());
 
-            return (results as IList<Status>).FirstOrDefault();
+            List<Status> results = new StatusRequestProcessor<Status>().ProcessResults(resultsXml);
+            return results.FirstOrDefault();
         }
 
         #endregion
@@ -940,19 +886,19 @@ namespace LinqToTwitter
                 throw new ArgumentException("text must be no longer than 140 characters.", "text");
             }
 
-            var newUrl = BaseUrl + "direct_messages/new.xml";
+            string newUrl = BaseUrl + "direct_messages/new.xml";
 
-            var results =
+            XElement resultsXml =
                 TwitterExecutor.ExecuteTwitter(
                     newUrl,
                     new Dictionary<string, string>
                     {
                         {"user", user},
                         {"text", text}
-                    },
-                    new DirectMessageRequestProcessor());
+                    });
 
-            return (results as IList<DirectMessage>).FirstOrDefault();
+            List<DirectMessage> results = new DirectMessageRequestProcessor<DirectMessage>().ProcessResults(resultsXml);
+            return results.FirstOrDefault();
         }
 
         /// <summary>
@@ -967,15 +913,15 @@ namespace LinqToTwitter
                 throw new ArgumentException("id is a required parameter.", "id");
             }
 
-            var destroyUrl = BaseUrl + "direct_messages/destroy/" + id + ".xml";
+            string destroyUrl = BaseUrl + "direct_messages/destroy/" + id + ".xml";
 
-            var results =
+            XElement resultsXml =
                 TwitterExecutor.ExecuteTwitter(
                     destroyUrl,
-                    new Dictionary<string, string>(),
-                    new DirectMessageRequestProcessor());
+                    new Dictionary<string, string>());
 
-            return (results as IList<DirectMessage>).FirstOrDefault();
+            List<DirectMessage> results = new DirectMessageRequestProcessor<DirectMessage>().ProcessResults(resultsXml);
+            return results.FirstOrDefault();
         }
 
         #endregion
@@ -1016,7 +962,7 @@ namespace LinqToTwitter
                     { "user_id", userID },
                     { "screen_name", screenName }
                 };
-            
+
             // If follow exists in the parameter list, Twitter will
             // always treat it as true, even if the value is false;
             // Therefore, only add follow if it is true.
@@ -1025,13 +971,13 @@ namespace LinqToTwitter
                 createParams.Add("follow", "true");
             }
 
-            var results =
+            XElement resultsXml =
                 TwitterExecutor.ExecuteTwitter(
                     destroyUrl,
-                    createParams,
-                    new UserRequestProcessor());
+                    createParams);
 
-            return (results as IList<User>).FirstOrDefault();
+            List<User> results = new UserRequestProcessor<User>().ProcessResults(resultsXml);
+            return results.FirstOrDefault();
         }
 
         /// <summary>
@@ -1063,17 +1009,17 @@ namespace LinqToTwitter
                 destroyUrl = BaseUrl + "friendships/destroy/" + id + ".xml";
             }
 
-            var results =
+            XElement resultsXml =
                 TwitterExecutor.ExecuteTwitter(
                     destroyUrl,
                     new Dictionary<string, string>
                     {
                         { "user_id", userID },
                         { "screen_name", screenName }
-                    },
-                    new UserRequestProcessor());
+                    });
 
-            return (results as IList<User>).FirstOrDefault();
+            List<User> results = new UserRequestProcessor<User>().ProcessResults(resultsXml);
+            return results.FirstOrDefault();
         }
 
         #endregion
@@ -1092,15 +1038,15 @@ namespace LinqToTwitter
                 throw new ArgumentException("id is a required parameter.", "id");
             }
 
-            var favoritesUrl = BaseUrl + "favorites/create/" + id + ".xml";
+            string favoritesUrl = BaseUrl + "favorites/create/" + id + ".xml";
 
-            var results =
+            XElement resultsXml =
                 TwitterExecutor.ExecuteTwitter(
                     favoritesUrl,
-                    new Dictionary<string, string>(),
-                    new StatusRequestProcessor());
+                    new Dictionary<string, string>());
 
-            return (results as IList<Status>).FirstOrDefault();
+            List<Status> results = new StatusRequestProcessor<Status>().ProcessResults(resultsXml);
+            return results.FirstOrDefault();
         }
 
         /// <summary>
@@ -1115,15 +1061,15 @@ namespace LinqToTwitter
                 throw new ArgumentException("id is a required parameter.", "id");
             }
 
-            var favoritesUrl = BaseUrl + "favorites/destroy/" + id + ".xml";
+            string favoritesUrl = BaseUrl + "favorites/destroy/" + id + ".xml";
 
-            var results =
+            XElement resultsXml =
                 TwitterExecutor.ExecuteTwitter(
                     favoritesUrl,
-                    new Dictionary<string, string>(),
-                    new StatusRequestProcessor());
+                    new Dictionary<string, string>());
 
-            return (results as IList<Status>).FirstOrDefault();
+            List<Status> results = new StatusRequestProcessor<Status>().ProcessResults(resultsXml);
+            return results.FirstOrDefault();
         }
 
         #endregion
@@ -1164,17 +1110,17 @@ namespace LinqToTwitter
                 notificationsUrl = BaseUrl + "notifications/leave/" + screenName + ".xml";
             }
 
-            var results =
+            XElement resultsXml =
                 TwitterExecutor.ExecuteTwitter(
                     notificationsUrl,
                     new Dictionary<string, string>
                     {
                         {"user_id", userID},
                         {"screen_name", screenName}
-                    },
-                    new UserRequestProcessor());
+                    });
 
-            return (results as IList<User>).FirstOrDefault();
+            List<User> results = new UserRequestProcessor<User>().ProcessResults(resultsXml);
+            return results.FirstOrDefault();
         }
 
         /// <summary>
@@ -1211,17 +1157,17 @@ namespace LinqToTwitter
                 notificationsUrl = BaseUrl + "notifications/follow/" + screenName + ".xml";
             }
 
-            var results =
+            XElement resultsXml =
                 TwitterExecutor.ExecuteTwitter(
                     notificationsUrl,
                     new Dictionary<string, string>
                     {
                         {"user_id", userID},
                         {"screen_name", screenName}
-                    },
-                    new UserRequestProcessor());
+                    });
 
-            return (results as IList<User>).FirstOrDefault();
+            List<User> results = new UserRequestProcessor<User>().ProcessResults(resultsXml);
+            return results.FirstOrDefault();
         }
 
         #endregion
@@ -1240,15 +1186,15 @@ namespace LinqToTwitter
                 throw new ArgumentException("id is a required parameter.", "id");
             }
 
-            var blocksUrl = BaseUrl + "blocks/create/" + id + ".xml";
+            string blocksUrl = BaseUrl + "blocks/create/" + id + ".xml";
 
-            var results =
+            XElement resultsXml =
                 TwitterExecutor.ExecuteTwitter(
                     blocksUrl,
-                    new Dictionary<string, string>(),
-                    new UserRequestProcessor());
+                    new Dictionary<string, string>());
 
-            return (results as IList<User>).FirstOrDefault();
+            List<User> results = new UserRequestProcessor<User>().ProcessResults(resultsXml);
+            return results.FirstOrDefault();
         }
 
         /// <summary>
@@ -1263,15 +1209,15 @@ namespace LinqToTwitter
                 throw new ArgumentException("id is a required parameter.", "id");
             }
 
-            var blocksUrl = BaseUrl + "blocks/destroy/" + id + ".xml";
+            string blocksUrl = BaseUrl + "blocks/destroy/" + id + ".xml";
 
-            var results =
+            XElement resultsXml =
                 TwitterExecutor.ExecuteTwitter(
                     blocksUrl,
-                    new Dictionary<string, string>(),
-                    new UserRequestProcessor());
+                    new Dictionary<string, string>());
 
-            return (results as IList<User>).FirstOrDefault();
+            List<User> results = new UserRequestProcessor<User>().ProcessResults(resultsXml);
+            return results.FirstOrDefault();
         }
 
         #endregion
@@ -1284,15 +1230,15 @@ namespace LinqToTwitter
         /// <returns>true</returns>
         public bool HelpTest()
         {
-            var helpUrl = BaseUrl + "help/test.xml";
+            string helpUrl = BaseUrl + "help/test.xml";
 
-            var results =
+            XElement resultXml =
                 TwitterExecutor.ExecuteTwitter(
                     helpUrl,
-                    new Dictionary<string, string>(),
-                    new HelpRequestProcessor());
+                    new Dictionary<string, string>());
 
-            return (results as IList<bool>).FirstOrDefault();
+            List<bool> results = new HelpRequestProcessor<bool>().ProcessResults(resultXml);
+            return results.FirstOrDefault();
         }
 
         #endregion
@@ -1305,15 +1251,15 @@ namespace LinqToTwitter
         /// <returns>true</returns>
         public TwitterHashResponse EndAccountSession()
         {
-            var accountUrl = BaseUrl + "account/end_session.xml";
+            string accountUrl = BaseUrl + "account/end_session.xml";
 
-            var results =
+            XElement resultsXml =
                 TwitterExecutor.ExecuteTwitter(
                     accountUrl,
-                    new Dictionary<string, string>(),
-                    new AccountRequestProcessor());
+                    new Dictionary<string, string>());
 
-            var acct = (results as IList<Account>).FirstOrDefault();
+            List<Account> results = new AccountRequestProcessor<Account>().ProcessResults(resultsXml);
+            Account acct = results.FirstOrDefault();
 
             if (acct != null)
             {
@@ -1332,18 +1278,18 @@ namespace LinqToTwitter
         /// <returns>User info</returns>
         public User UpdateAccountDeliveryDevice(DeviceType device)
         {
-            var accountUrl = BaseUrl + "account/update_delivery_device.xml";
+            string accountUrl = BaseUrl + "account/update_delivery_device.xml";
 
-            var results =
+            XElement resultsXml =
                 TwitterExecutor.ExecuteTwitter(
                     accountUrl,
                     new Dictionary<string, string>
                     {
                         { "device", device.ToString().ToLower() }
-                    },
-                    new UserRequestProcessor());
+                    });
 
-            return (results as IList<User>).FirstOrDefault();
+            List<User> results = new UserRequestProcessor<User>().ProcessResults(resultsXml);
+            return results.FirstOrDefault();
         }
 
         /// <summary>
@@ -1360,7 +1306,7 @@ namespace LinqToTwitter
         /// <returns>User info with new colors</returns>
         public User UpdateAccountColors(string background, string text, string link, string sidebarFill, string sidebarBorder)
         {
-            var accountUrl = BaseUrl + "account/update_profile_colors.xml";
+            string accountUrl = BaseUrl + "account/update_profile_colors.xml";
 
             if (string.IsNullOrEmpty(background) &&
                 string.IsNullOrEmpty(text) &&
@@ -1371,7 +1317,7 @@ namespace LinqToTwitter
                 throw new ArgumentException("At least one of the colors (background, text, link, sidebarFill, or sidebarBorder) must be provided as arguments, but none are specified.");
             }
 
-            var results =
+            XElement resultsXml =
                 TwitterExecutor.ExecuteTwitter(
                     accountUrl,
                     new Dictionary<string, string>
@@ -1381,10 +1327,10 @@ namespace LinqToTwitter
                         { "profile_link_color", link.TrimStart('#') },
                         { "profile_sidebar_fill_color", sidebarFill.TrimStart('#') },
                         { "profile_sidebar_border_color", sidebarBorder.TrimStart('#') }
-                    },
-                    new UserRequestProcessor());
+                    });
 
-            return (results as IList<User>).FirstOrDefault();
+            List<User> results = new UserRequestProcessor<User>().ProcessResults(resultsXml);
+            return results.FirstOrDefault();
         }
 
         /// <summary>
@@ -1398,16 +1344,17 @@ namespace LinqToTwitter
         /// <returns>User with new image info</returns>
         public User UpdateAccountImage(string imageFilePath)
         {
-            var accountUrl = BaseUrl + "account/update_profile_image.xml";
+            string accountUrl = BaseUrl + "account/update_profile_image.xml";
 
             if (string.IsNullOrEmpty(imageFilePath))
             {
                 throw new ArgumentException("imageFilePath is required.", "imageFilePath");
             }
 
-            var results = TwitterExecutor.PostTwitterFile(imageFilePath, null, accountUrl, new UserRequestProcessor());
+            XElement resultsXml = TwitterExecutor.PostTwitterFile(imageFilePath, null, accountUrl);
 
-            return (results as IList<User>).FirstOrDefault();
+            List<User> results = new UserRequestProcessor<User>().ProcessResults(resultsXml);
+            return results.FirstOrDefault();
         }
 
         /// <summary>
@@ -1423,7 +1370,7 @@ namespace LinqToTwitter
         /// <returns>User with new image info</returns>
         public User UpdateAccountImage(byte[] image, string fileName, string imageType)
         {
-            var accountUrl = BaseUrl + "account/update_profile_image.xml";
+            string accountUrl = BaseUrl + "account/update_profile_image.xml";
 
             if (image == null || image.Length == 0)
             {
@@ -1440,9 +1387,10 @@ namespace LinqToTwitter
                 throw new ArgumentException("imageType is required.", "imageType");
             }
 
-            var results = TwitterExecutor.PostTwitterImage(image, null, accountUrl, new UserRequestProcessor(), fileName, imageType);
+            XElement resultsXml = TwitterExecutor.PostTwitterImage(image, null, accountUrl, fileName, imageType);
 
-            return (results as IList<User>).FirstOrDefault();
+            List<User> results = new UserRequestProcessor<User>().ProcessResults(resultsXml);
+            return results.FirstOrDefault();
         }
 
         /// <summary>
@@ -1452,7 +1400,7 @@ namespace LinqToTwitter
         /// <returns>User with new image info</returns>
         public User UpdateAccountBackgroundImage(string imageFilePath, bool tile)
         {
-            var accountUrl = BaseUrl + "account/update_profile_background_image.xml";
+            string accountUrl = BaseUrl + "account/update_profile_background_image.xml";
 
             if (string.IsNullOrEmpty(imageFilePath))
             {
@@ -1470,9 +1418,10 @@ namespace LinqToTwitter
                 };
             }
 
-            var results = TwitterExecutor.PostTwitterFile(imageFilePath, parameters, accountUrl, new UserRequestProcessor());
+            XElement resultsXml = TwitterExecutor.PostTwitterFile(imageFilePath, parameters, accountUrl);
 
-            return (results as IList<User>).FirstOrDefault();
+            List<User> results = new UserRequestProcessor<User>().ProcessResults(resultsXml);
+            return results.FirstOrDefault();
         }
 
         /// <summary>
@@ -1485,7 +1434,7 @@ namespace LinqToTwitter
         /// <returns>User with new image info</returns>
         public User UpdateAccountBackgroundImage(byte[] image, string fileName, string imageType, bool tile)
         {
-            var accountUrl = BaseUrl + "account/update_profile_background_image.xml";
+            string accountUrl = BaseUrl + "account/update_profile_background_image.xml";
 
             if (image == null || image.Length == 0)
             {
@@ -1513,9 +1462,10 @@ namespace LinqToTwitter
                 };
             }
 
-            var results = TwitterExecutor.PostTwitterImage(image, parameters, accountUrl, new UserRequestProcessor(), fileName, imageType);
+            XElement resultsXml = TwitterExecutor.PostTwitterImage(image, parameters, accountUrl, fileName, imageType);
 
-            return (results as IList<User>).FirstOrDefault();
+            List<User> results = new UserRequestProcessor<User>().ProcessResults(resultsXml);
+            return results.FirstOrDefault();
         }
 
         /// <summary>
@@ -1528,7 +1478,7 @@ namespace LinqToTwitter
         /// <returns>User with new info</returns>
         public User UpdateAccountProfile(string name, string url, string location, string description)
         {
-            var accountUrl = BaseUrl + "account/update_profile.xml";
+            string accountUrl = BaseUrl + "account/update_profile.xml";
 
             if (string.IsNullOrEmpty(name) &&
                 string.IsNullOrEmpty(url) &&
@@ -1558,7 +1508,7 @@ namespace LinqToTwitter
                 throw new ArgumentException("description must be no longer than 160 characters", "description");
             }
 
-            var results =
+            XElement resultsXml =
                 TwitterExecutor.ExecuteTwitter(
                     accountUrl,
                     new Dictionary<string, string>
@@ -1567,10 +1517,10 @@ namespace LinqToTwitter
                         { "url", url },
                         { "location", location },
                         { "description", description }
-                    },
-                    new UserRequestProcessor());
+                    });
 
-            return (results as IList<User>).FirstOrDefault();
+            List<User> results = new UserRequestProcessor<User>().ProcessResults(resultsXml);
+            return results.FirstOrDefault();
         }
 
         #endregion
@@ -1589,18 +1539,18 @@ namespace LinqToTwitter
                 throw new ArgumentException("query is required.", "query");
             }
 
-            var savedSearchUrl = BaseUrl + "saved_searches/create.xml";
+            string savedSearchUrl = BaseUrl + "saved_searches/create.xml";
 
-            var results =
+            XElement resultsXml =
                 TwitterExecutor.ExecuteTwitter(
                     savedSearchUrl,
                     new Dictionary<string, string>
                     {
                         { "query", query }
-                    },
-                    new SavedSearchRequestProcessor());
+                    });
 
-            return (results as IList<SavedSearch>).FirstOrDefault();
+            List<SavedSearch> results = new SavedSearchRequestProcessor<SavedSearch>().ProcessResults(resultsXml);
+            return results.FirstOrDefault();
         }
 
         /// <summary>
@@ -1615,15 +1565,15 @@ namespace LinqToTwitter
                 throw new ArgumentException("Invalid Saved Search ID: " + id, "id");
             }
 
-            var savedSearchUrl = BaseUrl + "saved_searches/destroy/" + id + ".xml";
+            string savedSearchUrl = BaseUrl + "saved_searches/destroy/" + id + ".xml";
 
-            var results =
+            XElement resultsXml =
                 TwitterExecutor.ExecuteTwitter(
                     savedSearchUrl,
-                    new Dictionary<string, string>(),
-                    new SavedSearchRequestProcessor());
+                    new Dictionary<string, string>());
 
-            return (results as IList<SavedSearch>).FirstOrDefault();
+            List<SavedSearch> results = new SavedSearchRequestProcessor<SavedSearch>().ProcessResults(resultsXml);
+            return results.FirstOrDefault();
         }
 
         #endregion
@@ -1655,13 +1605,13 @@ namespace LinqToTwitter
                     { "screen_name", screenName }
                 };
 
-            var results =
+            XElement resultsXml =
                 TwitterExecutor.ExecuteTwitter(
                     reportSpamUrl,
-                    createParams,
-                    new UserRequestProcessor());
+                    createParams);
 
-            return (results as IList<User>).FirstOrDefault();
+            List<User> results = new UserRequestProcessor<User>().ProcessResults(resultsXml);
+            return results.FirstOrDefault();
         }
 
         #endregion
@@ -1680,15 +1630,15 @@ namespace LinqToTwitter
                 throw new ArgumentException("id is a required parameter.", "id");
             }
 
-            var retweetUrl = BaseUrl + "statuses/retweet/" + id + ".xml";
+            string retweetUrl = BaseUrl + "statuses/retweet/" + id + ".xml";
 
-            var results =
+            XElement resultsXml =
                 TwitterExecutor.ExecuteTwitter(
                     retweetUrl,
-                    new Dictionary<string, string>(),
-                    new StatusRequestProcessor());
+                    new Dictionary<string, string>());
 
-            return (results as IList<Status>).FirstOrDefault();
+            List<Status> results = new StatusRequestProcessor<Status>().ProcessResults(resultsXml);
+            return results.FirstOrDefault();
         }
 
         #endregion
@@ -1715,9 +1665,9 @@ namespace LinqToTwitter
                 throw new ArgumentException("listName is required.", "listName");
             }
 
-            var savedSearchUrl = BaseUrl + screenName + "/lists.xml";
+            string savedSearchUrl = BaseUrl + screenName + "/lists.xml";
 
-            var results =
+            XElement resultsXml =
                 TwitterExecutor.ExecuteTwitter(
                     savedSearchUrl,
                     new Dictionary<string, string>
@@ -1725,10 +1675,10 @@ namespace LinqToTwitter
                         { "name", listName },
                         { "mode", mode },
                         { "description", description }
-                    },
-                    new ListRequestProcessor());
+                    });
 
-            return (results as IList<List>).FirstOrDefault();
+            List<List> results = new ListRequestProcessor<List>().ProcessResults(resultsXml);
+            return results.FirstOrDefault();
         }
 
         /// <summary>
@@ -1752,9 +1702,9 @@ namespace LinqToTwitter
                 throw new ArgumentException("listID is required.", "listID");
             }
 
-            var savedSearchUrl = BaseUrl + screenName + "/lists/" + listID + ".xml";
+            string savedSearchUrl = BaseUrl + screenName + "/lists/" + listID + ".xml";
 
-            var results =
+            XElement resultsXml =
                 TwitterExecutor.ExecuteTwitter(
                     savedSearchUrl,
                     new Dictionary<string, string>
@@ -1762,10 +1712,10 @@ namespace LinqToTwitter
                         { "name", listName },
                         { "mode", mode },
                         { "description", description }
-                    },
-                    new ListRequestProcessor());
+                    });
 
-            return (results as IList<List>).FirstOrDefault();
+            List<List> results = new ListRequestProcessor<List>().ProcessResults(resultsXml);
+            return results.FirstOrDefault();
         }
 
         /// <summary>
@@ -1786,18 +1736,18 @@ namespace LinqToTwitter
                 throw new ArgumentException("listID is required.", "listID");
             }
 
-            var savedSearchUrl = BaseUrl + screenName + "/lists/" + listID + ".xml";
+            string savedSearchUrl = BaseUrl + screenName + "/lists/" + listID + ".xml";
 
-            var results =
+            XElement resultsXml =
                 TwitterExecutor.ExecuteTwitter(
                     savedSearchUrl,
                     new Dictionary<string, string>
                     {
                         { "_method", "DELETE" }
-                    },
-                    new ListRequestProcessor());
+                    });
 
-            return (results as IList<List>).FirstOrDefault();
+            List<List> results = new ListRequestProcessor<List>().ProcessResults(resultsXml);
+            return results.FirstOrDefault();
         }
 
         /// <summary>
@@ -1819,18 +1769,18 @@ namespace LinqToTwitter
                 throw new ArgumentException("listID is required.", "listID");
             }
 
-            var savedSearchUrl = BaseUrl + screenName + "/" + listID + @"/members.xml";
+            string savedSearchUrl = BaseUrl + screenName + "/" + listID + @"/members.xml";
 
-            var results =
+            XElement resultsXml =
                 TwitterExecutor.ExecuteTwitter(
                     savedSearchUrl,
                     new Dictionary<string, string>
                     {
                         { "id", memberID }
-                    },
-                    new ListRequestProcessor());
+                    });
 
-            return (results as IList<List>).FirstOrDefault();
+            List<List> results = new ListRequestProcessor<List>().ProcessResults(resultsXml);
+            return results.FirstOrDefault();
         }
 
         /// <summary>
@@ -1852,19 +1802,19 @@ namespace LinqToTwitter
                 throw new ArgumentException("listID is required.", "listID");
             }
 
-            var savedSearchUrl = BaseUrl + screenName + "/" + listID + @"/members.xml";
+            string savedSearchUrl = BaseUrl + screenName + "/" + listID + @"/members.xml";
 
-            var results =
+            XElement resultsXml =
                 TwitterExecutor.ExecuteTwitter(
                     savedSearchUrl,
                     new Dictionary<string, string>
                     {
                         { "id", memberID },
                         { "_method", "DELETE" }
-                    },
-                    new ListRequestProcessor());
+                    });
 
-            return (results as IList<List>).FirstOrDefault();
+            List<List> results = new ListRequestProcessor<List>().ProcessResults(resultsXml);
+            return results.FirstOrDefault();
         }
 
         /// <summary>
@@ -1885,15 +1835,15 @@ namespace LinqToTwitter
                 throw new ArgumentException("listID is required.", "listID");
             }
 
-            var savedSearchUrl = BaseUrl + screenName + "/" + listID + @"/subscribers.xml";
+            string savedSearchUrl = BaseUrl + screenName + "/" + listID + @"/subscribers.xml";
 
-            var results =
+            XElement resultsXml =
                 TwitterExecutor.ExecuteTwitter(
                     savedSearchUrl,
-                    new Dictionary<string, string>(),
-                    new ListRequestProcessor());
+                    new Dictionary<string, string>());
 
-            return (results as IList<List>).FirstOrDefault();
+            List<List> results = new ListRequestProcessor<List>().ProcessResults(resultsXml);
+            return results.FirstOrDefault();
         }
 
         /// <summary>
@@ -1914,18 +1864,18 @@ namespace LinqToTwitter
                 throw new ArgumentException("listID is required.", "listID");
             }
 
-            var savedSearchUrl = BaseUrl + screenName + "/" + listID + @"/subscribers.xml";
+            string savedSearchUrl = BaseUrl + screenName + "/" + listID + @"/subscribers.xml";
 
-            var results =
+            XElement resultsXml =
                 TwitterExecutor.ExecuteTwitter(
                     savedSearchUrl,
                     new Dictionary<string, string>
                     {
                         { "_method", "DELETE" }
-                    },
-                    new ListRequestProcessor());
+                    });
 
-            return (results as IList<List>).FirstOrDefault();
+            List<List> results = new ListRequestProcessor<List>().ProcessResults(resultsXml);
+            return results.FirstOrDefault();
         }
 
         #endregion

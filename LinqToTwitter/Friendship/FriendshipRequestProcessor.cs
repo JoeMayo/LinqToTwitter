@@ -4,13 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Linq.Expressions;
 using System.Collections;
+using System.Xml.Linq;
 
 namespace LinqToTwitter
 {
     /// <summary>
     /// processes Twitter Friendship queries
     /// </summary>
-    class FriendshipRequestProcessor : IRequestProcessor
+    class FriendshipRequestProcessor<T> : IRequestProcessor<T>
     {
         /// <summary>
         /// base url for request
@@ -268,7 +269,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="twitterResponse">xml with Twitter response</param>
         /// <returns>IQueryable of User</returns>
-        public virtual IList ProcessResults(System.Xml.Linq.XElement twitterResponse)
+        public virtual List<T> ProcessResults(XElement twitterResponse)
         {
             var friendship =
                 new Friendship
@@ -306,7 +307,7 @@ namespace LinqToTwitter
                 friendship
             };
 
-            return friendList;
+            return friendList.OfType<T>().ToList();
         }
     }
 }

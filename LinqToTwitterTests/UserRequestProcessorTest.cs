@@ -198,7 +198,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void BuildURLTest()
         {
-            UserRequestProcessor reqProc = new UserRequestProcessor();
+            UserRequestProcessor<User> reqProc = new UserRequestProcessor<User>();
             reqProc.BaseUrl = "http://twitter.com/";
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
@@ -218,7 +218,7 @@ namespace LinqToTwitterTests
         [DeploymentItem("LinqToTwitter.dll")]
         public void BuildShowUrlTest()
         {
-            UserRequestProcessor_Accessor reqProc = new UserRequestProcessor_Accessor();
+            UserRequestProcessor_Accessor<User> reqProc = new UserRequestProcessor_Accessor<User>();
             reqProc.BaseUrl = "http://twitter.com/";
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
@@ -240,7 +240,7 @@ namespace LinqToTwitterTests
         [DeploymentItem("LinqToTwitter.dll")]
         public void BuildShowUrlWithNoParametersTest()
         {
-            UserRequestProcessor_Accessor reqProc = new UserRequestProcessor_Accessor();
+            UserRequestProcessor_Accessor<User> reqProc = new UserRequestProcessor_Accessor<User>();
             reqProc.BaseUrl = "http://twitter.com/";
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
@@ -260,7 +260,7 @@ namespace LinqToTwitterTests
         [DeploymentItem("LinqToTwitter.dll")]
         public void BuildFriendsUrlTest()
         {
-            UserRequestProcessor_Accessor reqProc = new UserRequestProcessor_Accessor();
+            UserRequestProcessor_Accessor<User> reqProc = new UserRequestProcessor_Accessor<User>();
             reqProc.BaseUrl = "http://twitter.com/";
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
@@ -280,7 +280,7 @@ namespace LinqToTwitterTests
         [DeploymentItem("LinqToTwitter.dll")]
         public void BuildFriendsAndFollowersUrlParametersTest()
         {
-            UserRequestProcessor_Accessor reqProc = new UserRequestProcessor_Accessor();
+            UserRequestProcessor_Accessor<User> reqProc = new UserRequestProcessor_Accessor<User>();
             reqProc.BaseUrl = "http://twitter.com/";
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
@@ -301,7 +301,7 @@ namespace LinqToTwitterTests
         [DeploymentItem("LinqToTwitter.dll")]
         public void BuildFollowersUrlTest()
         {
-            UserRequestProcessor_Accessor reqProc = new UserRequestProcessor_Accessor();
+            UserRequestProcessor_Accessor<User> reqProc = new UserRequestProcessor_Accessor<User>();
             reqProc.BaseUrl = "http://twitter.com/";
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
@@ -324,7 +324,7 @@ namespace LinqToTwitterTests
         [DeploymentItem("LinqToTwitter.dll")]
         public void BuildSuggestionCategoriesUrlTest()
         {
-            UserRequestProcessor_Accessor reqProc = new UserRequestProcessor_Accessor();
+            UserRequestProcessor_Accessor<User> reqProc = new UserRequestProcessor_Accessor<User>();
             reqProc.BaseUrl = "https://api.twitter.com/1/";
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
@@ -343,7 +343,7 @@ namespace LinqToTwitterTests
         [DeploymentItem("LinqToTwitter.dll")]
         public void BuildSuggestionCategoryUsersUrlTest()
         {
-            UserRequestProcessor_Accessor reqProc = new UserRequestProcessor_Accessor();
+            UserRequestProcessor_Accessor<User> reqProc = new UserRequestProcessor_Accessor<User>();
             reqProc.BaseUrl = "https://api.twitter.com/1/";
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
@@ -364,7 +364,7 @@ namespace LinqToTwitterTests
         [ExpectedException(typeof(ArgumentException))]
         public void BuildSuggestionCategoryUsersUrlWithoutSlugTest()
         {
-            UserRequestProcessor_Accessor reqProc = new UserRequestProcessor_Accessor();
+            UserRequestProcessor_Accessor<User> reqProc = new UserRequestProcessor_Accessor<User>();
             reqProc.BaseUrl = "https://api.twitter.com/1/";
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
@@ -381,7 +381,7 @@ namespace LinqToTwitterTests
         [DeploymentItem("LinqToTwitter.dll")]
         public void BuildLookupScreenNameUrlTest()
         {
-            UserRequestProcessor_Accessor reqProc = new UserRequestProcessor_Accessor();
+            UserRequestProcessor_Accessor<User> reqProc = new UserRequestProcessor_Accessor<User>();
             reqProc.BaseUrl = "https://api.twitter.com/1/";
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
@@ -401,7 +401,7 @@ namespace LinqToTwitterTests
         [DeploymentItem("LinqToTwitter.dll")]
         public void BuildLookupUserIDUrlTest()
         {
-            UserRequestProcessor_Accessor reqProc = new UserRequestProcessor_Accessor();
+            UserRequestProcessor_Accessor<User> reqProc = new UserRequestProcessor_Accessor<User>();
             reqProc.BaseUrl = "https://api.twitter.com/1/";
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
@@ -422,7 +422,7 @@ namespace LinqToTwitterTests
         [ExpectedException(typeof(ArgumentException))]
         public void BuildLookupScreenNameUrlWithoutParamsTest()
         {
-            UserRequestProcessor_Accessor reqProc = new UserRequestProcessor_Accessor();
+            UserRequestProcessor_Accessor<User> reqProc = new UserRequestProcessor_Accessor<User>();
             reqProc.BaseUrl = "https://api.twitter.com/1/";
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
@@ -440,7 +440,7 @@ namespace LinqToTwitterTests
         [ExpectedException(typeof(ArgumentException))]
         public void BuildLookupScreenNameUrlWithUserIDAndScreenNameTest()
         {
-            UserRequestProcessor_Accessor reqProc = new UserRequestProcessor_Accessor();
+            UserRequestProcessor_Accessor<User> reqProc = new UserRequestProcessor_Accessor<User>();
             reqProc.BaseUrl = "https://api.twitter.com/1/";
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
@@ -459,7 +459,7 @@ namespace LinqToTwitterTests
         [DeploymentItem("LinqToTwitter.dll")]
         public void BuildSearchUrlTest()
         {
-            UserRequestProcessor_Accessor reqProc = new UserRequestProcessor_Accessor();
+            UserRequestProcessor_Accessor<User> reqProc = new UserRequestProcessor_Accessor<User>();
             reqProc.BaseUrl = "https://api.twitter.com/1/";
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
@@ -482,7 +482,7 @@ namespace LinqToTwitterTests
         [ExpectedException(typeof(ArgumentException))]
         public void BuildSearchUrlWithoutQueryTest()
         {
-            UserRequestProcessor_Accessor reqProc = new UserRequestProcessor_Accessor();
+            UserRequestProcessor_Accessor<User> reqProc = new UserRequestProcessor_Accessor<User>();
             reqProc.BaseUrl = "https://api.twitter.com/1/";
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
@@ -498,7 +498,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void GetParametersTest()
         {
-            var reqProc = new UserRequestProcessor();
+            var reqProc = new UserRequestProcessor<User>();
 
             Expression<Func<User, bool>> expression =
             user =>
@@ -554,7 +554,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void ProcessResultsSingleResultTest()
         {
-            var statProc = new UserRequestProcessor() { BaseUrl = "http://twitter.com/" };
+            var statProc = new UserRequestProcessor<User>() { BaseUrl = "http://twitter.com/" };
             XElement twitterResponse = XElement.Load(new StringReader(m_testQueryResponse));
             var actual = statProc.ProcessResults(twitterResponse);
             var actualQuery = actual as IList<User>;
@@ -569,7 +569,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void ProcessResultsMultipleResultsTest()
         {
-            var statProc = new UserRequestProcessor() { BaseUrl = "http://twitter.com/" };
+            var statProc = new UserRequestProcessor<User>() { BaseUrl = "http://twitter.com/" };
             XElement twitterResponse = XElement.Load(new StringReader(m_testQueryResponse));
             var actual = statProc.ProcessResults(twitterResponse);
             var actualQuery = actual as IList<User>;
@@ -584,7 +584,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void ProcessCategoresResultsTest()
         {
-            var statProc = new UserRequestProcessor() { BaseUrl = "http://api.twitter.com/1/" };
+            var statProc = new UserRequestProcessor<User>() { BaseUrl = "http://api.twitter.com/1/" };
             XElement twitterResponse = XElement.Load(new StringReader(m_testCategoriesResponse));
             var actual = (List<User>)statProc.ProcessResults(twitterResponse);
             Assert.AreEqual(5, actual[0].Categories.Count);
@@ -596,7 +596,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void ProcessUsersInCategoryResultsTest()
         {
-            var statProc = new UserRequestProcessor() { BaseUrl = "http://api.twitter.com/1/" };
+            var statProc = new UserRequestProcessor<User>() { BaseUrl = "http://api.twitter.com/1/" };
             XElement twitterResponse = XElement.Load(new StringReader(m_usersInCategoryResponse));
             var actual = (List<User>)statProc.ProcessResults(twitterResponse);
             Assert.AreEqual(2, actual.Count);
@@ -608,7 +608,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void MissingTypeTest()
         {
-            UserRequestProcessor target = new UserRequestProcessor() { BaseUrl = "http://twitter.com/" };
+            UserRequestProcessor<User> target = new UserRequestProcessor<User>() { BaseUrl = "http://twitter.com/" };
             Dictionary<string, string> parameters = new Dictionary<string, string> { };
             string actual;
             try
@@ -628,7 +628,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void NullParametersTest()
         {
-            UserRequestProcessor target = new UserRequestProcessor() { BaseUrl = "http://twitter.com/" };
+            UserRequestProcessor<User> target = new UserRequestProcessor<User>() { BaseUrl = "http://twitter.com/" };
             Dictionary<string, string> parameters = null;
             string actual;
             try

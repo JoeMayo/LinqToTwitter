@@ -562,7 +562,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void ProcessReverseResultsTest()
         {
-            GeoRequestProcessor target = new GeoRequestProcessor();
+            GeoRequestProcessor<Geo> target = new GeoRequestProcessor<Geo>();
             XElement twitterResponse = XElement.Parse(m_reverseResponse);
             List<Geo> actual = (List<Geo>)target.ProcessResults(twitterResponse);
             Assert.AreEqual(5, actual[0].Places.Count);
@@ -574,7 +574,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void ProcessReverseResultsCultureInsensitiveTest()
         {
-            GeoRequestProcessor target = new GeoRequestProcessor();
+            GeoRequestProcessor<Geo> target = new GeoRequestProcessor<Geo>();
             XElement twitterResponse = XElement.Parse(m_reverseResponse);
             List<Geo> actual = (List<Geo>)target.ProcessResults(twitterResponse);
             Assert.AreEqual(5, actual[0].Places.Count);
@@ -586,7 +586,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void ProcessIDResultsTest()
         {
-            GeoRequestProcessor target = new GeoRequestProcessor();
+            GeoRequestProcessor<Geo> target = new GeoRequestProcessor<Geo>();
             XElement twitterResponse = XElement.Parse(m_idResponse);
             List<Geo> actual = (List<Geo>)target.ProcessResults(twitterResponse);
             Assert.AreEqual("San Francisco", actual[0].Places[0].Name);
@@ -598,7 +598,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void GetParametersTest()
         {
-            var geoReqProc = new GeoRequestProcessor();
+            var geoReqProc = new GeoRequestProcessor<Geo>();
             Expression<Func<Geo, bool>> expression =
                 geo =>
                     geo.Type == GeoType.Reverse &&
@@ -645,7 +645,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void BuildReverseURLTest()
         {
-            GeoRequestProcessor target = new GeoRequestProcessor() { BaseUrl = "https://api.twitter.com/1/" };
+            GeoRequestProcessor<Geo> target = new GeoRequestProcessor<Geo>() { BaseUrl = "https://api.twitter.com/1/" };
             var parameters = new Dictionary<string, string>
              {
                  {"Type", ((int) GeoType.Reverse).ToString()},
@@ -668,7 +668,7 @@ namespace LinqToTwitterTests
         [ExpectedException(typeof(ArgumentException))]
         public void BuildReverseURLWithoutLatLongTest()
         {
-            GeoRequestProcessor target = new GeoRequestProcessor() { BaseUrl = "https://api.twitter.com/1/" };
+            GeoRequestProcessor<Geo> target = new GeoRequestProcessor<Geo>() { BaseUrl = "https://api.twitter.com/1/" };
             var parameters = new Dictionary<string, string>
              {
                  {"Type", ((int) GeoType.Reverse).ToString()},
@@ -685,7 +685,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void BuildIDURLTest()
         {
-            GeoRequestProcessor target = new GeoRequestProcessor() { BaseUrl = "https://api.twitter.com/1/" };
+            GeoRequestProcessor<Geo> target = new GeoRequestProcessor<Geo>() { BaseUrl = "https://api.twitter.com/1/" };
             var parameters = new Dictionary<string, string>
              {
                  {"Type", ((int) GeoType.ID).ToString()},
@@ -703,7 +703,7 @@ namespace LinqToTwitterTests
         [ExpectedException(typeof(ArgumentException))]
         public void BuildIDURLWithoutIDTest()
         {
-            GeoRequestProcessor target = new GeoRequestProcessor() { BaseUrl = "https://api.twitter.com/1/" };
+            GeoRequestProcessor<Geo> target = new GeoRequestProcessor<Geo>() { BaseUrl = "https://api.twitter.com/1/" };
             var parameters = new Dictionary<string, string>
              {
                  {"Type", ((int) GeoType.ID).ToString()},
@@ -717,7 +717,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void BuildNearbyURLTest()
         {
-            GeoRequestProcessor target = new GeoRequestProcessor() { BaseUrl = "https://api.twitter.com/1/" };
+            GeoRequestProcessor<Geo> target = new GeoRequestProcessor<Geo>() { BaseUrl = "https://api.twitter.com/1/" };
             var parameters = new Dictionary<string, string>
              {
                  {"Type", ((int) GeoType.Nearby).ToString()},
@@ -735,7 +735,7 @@ namespace LinqToTwitterTests
         [ExpectedException(typeof(ArgumentException))]
         public void BuildNearbyURLWithoutArgsTest()
         {
-            GeoRequestProcessor target = new GeoRequestProcessor() { BaseUrl = "https://api.twitter.com/1/" };
+            GeoRequestProcessor<Geo> target = new GeoRequestProcessor<Geo>() { BaseUrl = "https://api.twitter.com/1/" };
             var parameters = new Dictionary<string, string>
              {
                  {"Type", ((int) GeoType.Nearby).ToString()},

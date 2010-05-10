@@ -80,22 +80,22 @@ namespace LinqToTwitterDemo
                     return;
                 }
 
-                //StatusDemos.Run(twitterCtx);
-                //UserDemos.Run(twitterCtx);
-                //DirectMessageDemos.Run(twitterCtx);
-                //FriendshipDemos.Run(twitterCtx);
-                //SocialGraphDemos.Run(twitterCtx);
                 //AccountDemos.Run(twitterCtx);
-                //FavoritesDemos.Run(twitterCtx);
-                //SearchDemos.Run(twitterCtx);
-                //NotificationsDemos.Run(twitterCtx);
                 //BlocksDemos.Run(twitterCtx);
-                //HelpDemos.Run(twitterCtx);
-                TrendsDemos.Run(twitterCtx);
-                //SavedSearchDemos.Run(twitterCtx);
-                //ReportSpamDemos.Run(twitterCtx);
-                //ListDemos.Run(twitterCtx);
+                //DirectMessageDemos.Run(twitterCtx);
+                //FavoritesDemos.Run(twitterCtx);
+                //FriendshipDemos.Run(twitterCtx);
                 //GeoDemos.Run(twitterCtx);
+                //ListDemos.Run(twitterCtx);
+                //SavedSearchDemos.Run(twitterCtx);
+                SearchDemos.Run(twitterCtx);
+                //SocialGraphDemos.Run(twitterCtx);
+                //StatusDemos.Run(twitterCtx);
+                //TrendsDemos.Run(twitterCtx);
+                //UserDemos.Run(twitterCtx);
+                //NotificationsDemos.Run(twitterCtx);
+                //HelpDemos.Run(twitterCtx);
+                //ReportSpamDemos.Run(twitterCtx);
                 //ErrorHandlingDemos.Run(twitterCtx);
                 //OAuthDemos.Run(twitterCtx);
                 //TwitterContextDemos.Run(twitterCtx);

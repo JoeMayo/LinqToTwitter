@@ -134,7 +134,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void BuildUrlSentToSinceIDTest()
         {
-            var dmProc = new DirectMessageRequestProcessor() { BaseUrl = "http://twitter.com/" };
+            var dmProc = new DirectMessageRequestProcessor<DirectMessage>() { BaseUrl = "http://twitter.com/" };
             string expected = "http://twitter.com/direct_messages.xml?since_id=1234567&max_id=357&page=1&count=2";
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
@@ -155,7 +155,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void BuildUrlSentByTest()
         {
-            var dmProc = new DirectMessageRequestProcessor() { BaseUrl = "http://twitter.com/" };
+            var dmProc = new DirectMessageRequestProcessor<DirectMessage>() { BaseUrl = "http://twitter.com/" };
             string expected = "http://twitter.com/direct_messages/sent.xml?since_id=1234567&max_id=357&page=1&count=2";
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
@@ -176,7 +176,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void ProcessResultsTest()
         {
-            var dmProc = new DirectMessageRequestProcessor() { BaseUrl = "http://twitter.com/" };
+            var dmProc = new DirectMessageRequestProcessor<DirectMessage>() { BaseUrl = "http://twitter.com/" };
             XElement twitterResponse = XElement.Load(new StringReader(m_testQueryResponse));
             var actual = dmProc.ProcessResults(twitterResponse);
             var actualQuery = actual as IList<DirectMessage>;
@@ -191,7 +191,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void GetParametersTest()
         {
-            var dmProc = new DirectMessageRequestProcessor(); 
+            var dmProc = new DirectMessageRequestProcessor<DirectMessage>(); 
             var ctx = new TwitterContext();
 
             var directMessages =
@@ -217,7 +217,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void MissingTypeTest()
         {
-            DirectMessageRequestProcessor target = new DirectMessageRequestProcessor() { BaseUrl = "http://twitter.com/" };
+            DirectMessageRequestProcessor<DirectMessage> target = new DirectMessageRequestProcessor<DirectMessage>() { BaseUrl = "http://twitter.com/" };
             Dictionary<string, string> parameters = new Dictionary<string, string> { };
             string actual;
             try
@@ -237,7 +237,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void NullParametersTest()
         {
-            DirectMessageRequestProcessor target = new DirectMessageRequestProcessor() { BaseUrl = "http://twitter.com/" };
+            DirectMessageRequestProcessor<DirectMessage> target = new DirectMessageRequestProcessor<DirectMessage>() { BaseUrl = "http://twitter.com/" };
             Dictionary<string, string> parameters = null;
             string actual;
             try

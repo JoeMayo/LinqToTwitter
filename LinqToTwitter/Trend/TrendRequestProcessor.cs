@@ -11,7 +11,7 @@ namespace LinqToTwitter
     /// <summary>
     /// helps process trend requests
     /// </summary>
-    public class TrendRequestProcessor : IRequestProcessor
+    public class TrendRequestProcessor<T> : IRequestProcessor<T>
     {
         /// <summary>
         /// base url for request
@@ -261,7 +261,7 @@ namespace LinqToTwitter
         /// <param name="parameters">list of parameters from expression tree</param>
         /// <param name="url">base url</param>
         /// <returns>base url + parameters</returns>
-        public virtual IList ProcessResults(System.Xml.Linq.XElement twitterResponse)
+        public virtual List<T> ProcessResults(System.Xml.Linq.XElement twitterResponse)
         {
             XNamespace itemNS = "item";
 
@@ -349,7 +349,7 @@ namespace LinqToTwitter
                  })
                  .ToList();
 
-            return trends;
+            return trends.OfType<T>().ToList();
         }
     }
 }

@@ -11,7 +11,7 @@ namespace LinqToTwitter
     /// <summary>
     /// processes Twitter Direct Messages
     /// </summary>
-    public class DirectMessageRequestProcessor : IRequestProcessor
+    public class DirectMessageRequestProcessor<T> : IRequestProcessor<T>
     {
         #region IRequestProcessor Members
 
@@ -247,7 +247,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="twitterResponse">xml with Twitter response</param>
         /// <returns>IQueryable of DirectMessage</returns>
-        public virtual IList ProcessResults(System.Xml.Linq.XElement twitterResponse)
+        public virtual List<T> ProcessResults(System.Xml.Linq.XElement twitterResponse)
         {
             var responseItems = twitterResponse.Elements("direct_message").ToList();
 
@@ -289,7 +289,7 @@ namespace LinqToTwitter
                     Recipient = user.CreateUser(recipient)
                 };
 
-            return dmList.ToList();
+            return dmList.OfType<T>().ToList();
         }
 
         #endregion

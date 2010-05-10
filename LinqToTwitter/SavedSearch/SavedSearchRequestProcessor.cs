@@ -12,7 +12,7 @@ namespace LinqToTwitter
     /// <summary>
     /// processes Twitter Saved Search requests
     /// </summary>
-    public class SavedSearchRequestProcessor : IRequestProcessor
+    public class SavedSearchRequestProcessor<T> : IRequestProcessor<T>
     {
         /// <summary>
         /// base url for request
@@ -115,7 +115,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="twitterResponse">xml with Twitter response</param>
         /// <returns>IList of SavedSearch</returns>
-        public IList ProcessResults(XElement twitterResponse)
+        public List<T> ProcessResults(XElement twitterResponse)
         {
             var responseItems = twitterResponse.Elements("saved_search").ToList();
 
@@ -148,7 +148,7 @@ namespace LinqToTwitter
                        CreatedAt = createdAtDate
                    };
 
-            return savedSearchList.ToList();
+            return savedSearchList.OfType<T>().ToList();
         }
     }
 }

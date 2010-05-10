@@ -8,7 +8,7 @@ using System.Collections;
 
 namespace LinqToTwitter
 {
-    public class ListRequestProcessor : IRequestProcessor
+    public class ListRequestProcessor<T> : IRequestProcessor<T>
     {
         /// <summary>
         /// base url for request
@@ -446,7 +446,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="twitterResponse">xml with Twitter response</param>
         /// <returns>IList of List</returns>
-        public virtual IList ProcessResults(XElement twitterResponse)
+        public virtual List<T> ProcessResults(XElement twitterResponse)
         {
             List<List> lists = new List<List>();
 
@@ -604,7 +604,7 @@ namespace LinqToTwitter
                     });
             }
 
-            return lists;
+            return lists.AsEnumerable().OfType<T>().ToList();
         }
     }
 }

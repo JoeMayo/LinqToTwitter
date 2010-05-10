@@ -127,6 +127,7 @@
     <Compile Include="Account\Account.cs" />
     <Compile Include="Account\AccountRequestProcessor.cs" />
     <Compile Include="Account\AccountType.cs" />
+    <Compile Include="Common\ExpressionTreeModifier.cs" />
     <Compile Include="Common\IDList.cs" />
     <Compile Include="Friendship\Relationship.cs" />
     <Compile Include="Geo\Geometry.cs" />
@@ -157,10 +158,6 @@
     <Compile Include="List\ListRequestProcessor.cs" />
     <Compile Include="List\ListType.cs" />
     <Compile Include="OAuth\MvcOAuthAuthorization.cs" />
-    <Compile Include="PostProcessing\Filter.cs" />
-    <Compile Include="PostProcessing\PostProcessor.cs" />
-    <Compile Include="PostProcessing\Projection.cs" />
-    <Compile Include="PostProcessing\Sort.cs" />
     <Compile Include="Status\Retweet.cs" />
     <Compile Include="Common\TwitterProgressEventArgs.cs" />
     <Compile Include="User\Category.cs" />

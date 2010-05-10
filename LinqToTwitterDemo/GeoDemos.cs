@@ -19,7 +19,7 @@ namespace LinqToTwitterDemo
         {
             //LookupReverseGeocodeDemo(twitterCtx);
             //LookupGeoIDDemo(twitterCtx);
-            //LookupGeoNearbyPlacesDemo(twitterCtx);
+            LookupGeoNearbyPlacesDemo(twitterCtx);
         }
 
         #region Geo Demos
@@ -36,7 +36,7 @@ namespace LinqToTwitterDemo
                  where g.Type == GeoType.Nearby &&
                        g.IP == "168.143.171.180"
                  select g)
-                 .SingleOrDefault();
+                 .FirstOrDefault();
 
             Place place = geo.Places[0];
 

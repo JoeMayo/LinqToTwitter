@@ -918,7 +918,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void BuildURLPublicTest()
         {
-            var statProc = new StatusRequestProcessor() { BaseUrl = "http://twitter.com/" };
+            var statProc = new StatusRequestProcessor<Status>() { BaseUrl = "http://twitter.com/" };
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                     {
@@ -936,7 +936,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void BuildURLPublicNullTest()
         {
-            var statProc = new StatusRequestProcessor() { BaseUrl = "http://twitter.com/" };
+            var statProc = new StatusRequestProcessor<Status>() { BaseUrl = "http://twitter.com/" };
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                     {
@@ -954,7 +954,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void BuildURLFriendTest()
         {
-            var statProc = new StatusRequestProcessor() { BaseUrl = "http://twitter.com/" };
+            var statProc = new StatusRequestProcessor<Status>() { BaseUrl = "http://twitter.com/" };
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                     {
@@ -972,7 +972,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void BuildURLMentionsTest()
         {
-            var statProc = new StatusRequestProcessor() { BaseUrl = "http://twitter.com/" };
+            var statProc = new StatusRequestProcessor<Status>() { BaseUrl = "http://twitter.com/" };
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                     {
@@ -994,7 +994,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void ProcessResultsMultipleResultsTest()
         {
-            var statProc = new StatusRequestProcessor() { BaseUrl = "http://twitter.com/" };
+            var statProc = new StatusRequestProcessor<Status>() { BaseUrl = "http://twitter.com/" };
             XElement twitterResponse = XElement.Load(new StringReader(m_testQueryResponse));
             var actual = statProc.ProcessResults(twitterResponse);
             var actualQuery = actual as IList<Status>;
@@ -1009,7 +1009,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void ProcessResultsSingleResultTest()
         {
-            var statProc = new StatusRequestProcessor() { BaseUrl = "http://twitter.com/" };
+            var statProc = new StatusRequestProcessor<Status>() { BaseUrl = "http://twitter.com/" };
             XElement twitterResponse = XElement.Load(new StringReader(m_testQueryResponse));
             var actual = statProc.ProcessResults(twitterResponse.Descendants("status").First());
             var actualQuery = actual as IList<Status>;
@@ -1024,7 +1024,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void TwypocalypseProcessResultsSingleResultTest()
         {
-            var statProc = new StatusRequestProcessor() { BaseUrl = "http://twitter.com/" };
+            var statProc = new StatusRequestProcessor<Status>() { BaseUrl = "http://twitter.com/" };
             XElement twitterResponse = XElement.Load(new StringReader(m_testQueryResponse));
             twitterResponse.Element("status").Element("id").Value = ulong.MaxValue.ToString();
             var actual = statProc.ProcessResults(twitterResponse.Descendants("status").First());
@@ -1040,7 +1040,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void GetParametersTest()
         {
-            var reqProc = new StatusRequestProcessor();
+            var reqProc = new StatusRequestProcessor<Status>();
 
             var ctx = new TwitterContext();
 
@@ -1071,7 +1071,7 @@ namespace LinqToTwitterTests
         [DeploymentItem("LinqToTwitter.dll")]
         public void TwypocalypseStatusIDUrlTest()
         {
-            var reqProc = new StatusRequestProcessor_Accessor();
+            var reqProc = new StatusRequestProcessor_Accessor<Status>();
             reqProc.BaseUrl = "http://twitter.com/";
             var twypocalypseID = ulong.MaxValue.ToString();
             Dictionary<string, string> parameters =
@@ -1091,7 +1091,7 @@ namespace LinqToTwitterTests
         [DeploymentItem("LinqToTwitter.dll")]
         public void TwypocalypseSinceIDUrlTest()
         {
-            var reqProc = new StatusRequestProcessor_Accessor();
+            var reqProc = new StatusRequestProcessor_Accessor<Status>();
             reqProc.BaseUrl = "http://twitter.com/";
             var twypocalypseID = ulong.MaxValue.ToString();
             Dictionary<string, string> parameters =
@@ -1115,7 +1115,7 @@ namespace LinqToTwitterTests
         [DeploymentItem("LinqToTwitter.dll")]
         public void BuildMentionsUrlTest()
         {
-            var reqProc = new StatusRequestProcessor_Accessor();
+            var reqProc = new StatusRequestProcessor_Accessor<Status>();
             reqProc.BaseUrl = "http://twitter.com/";
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
@@ -1135,7 +1135,7 @@ namespace LinqToTwitterTests
         [DeploymentItem("LinqToTwitter.dll")]
         public void BuildShowUrlTest()
         {
-            var reqProc = new StatusRequestProcessor_Accessor();
+            var reqProc = new StatusRequestProcessor_Accessor<Status>();
             reqProc.BaseUrl = "http://twitter.com/";
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
@@ -1155,7 +1155,7 @@ namespace LinqToTwitterTests
         [DeploymentItem("LinqToTwitter.dll")]
         public void BuildUserUrlTest()
         {
-            var reqProc = new StatusRequestProcessor_Accessor();
+            var reqProc = new StatusRequestProcessor_Accessor<Status>();
             reqProc.BaseUrl = "http://twitter.com/";
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
@@ -1177,7 +1177,7 @@ namespace LinqToTwitterTests
         [DeploymentItem("LinqToTwitter.dll")]
         public void BuildFriendAndUrlParametersTest()
         {
-            var reqProc = new StatusRequestProcessor_Accessor();
+            var reqProc = new StatusRequestProcessor_Accessor<Status>();
             var url = "http://twitter.com/statuses/user_timeline/15411837.xml";
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
@@ -1198,7 +1198,7 @@ namespace LinqToTwitterTests
         [DeploymentItem("LinqToTwitter.dll")]
         public void BuildFriendUrlTest()
         {
-            var reqProc = new StatusRequestProcessor_Accessor();
+            var reqProc = new StatusRequestProcessor_Accessor<Status>();
             reqProc.BaseUrl = "http://twitter.com/";
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
@@ -1219,7 +1219,7 @@ namespace LinqToTwitterTests
         [DeploymentItem("LinqToTwitter.dll")]
         public void BuildPublicUrlTest()
         {
-            var reqProc = new StatusRequestProcessor_Accessor();
+            var reqProc = new StatusRequestProcessor_Accessor<Status>();
             reqProc.BaseUrl = "http://twitter.com/";
             string expected = "http://twitter.com/statuses/public_timeline.xml";
             var actual = reqProc.BuildPublicUrl();
@@ -1232,7 +1232,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void MissingTypeTest()
         {
-            StatusRequestProcessor target = new StatusRequestProcessor() { BaseUrl = "http://twitter.com/" };
+            StatusRequestProcessor<Status> target = new StatusRequestProcessor<Status>() { BaseUrl = "http://twitter.com/" };
             Dictionary<string, string> parameters = new Dictionary<string, string> { };
             string actual;
             try
@@ -1252,7 +1252,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void NullParametersTest()
         {
-            StatusRequestProcessor target = new StatusRequestProcessor() { BaseUrl = "http://twitter.com/" };
+            StatusRequestProcessor<Status> target = new StatusRequestProcessor<Status>() { BaseUrl = "http://twitter.com/" };
             Dictionary<string, string> parameters = null;
             string actual;
             try

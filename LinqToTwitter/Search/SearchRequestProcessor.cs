@@ -13,7 +13,7 @@ namespace LinqToTwitter
     /// <summary>
     /// processes search queries
     /// </summary>
-    class SearchRequestProcessor : IRequestProcessor
+    class SearchRequestProcessor<T> : IRequestProcessor<T>
     {
         /// <summary>
         /// base url for request
@@ -395,7 +395,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="twitterResponse">xml with Twitter response</param>
         /// <returns>IQueryable of User</returns>
-        public IList ProcessResults(XElement twitterResponse)
+        public List<T> ProcessResults(XElement twitterResponse)
         {
             XNamespace atom = "http://www.w3.org/2005/Atom";
             XNamespace twitter = "http://api.twitter.com/";
@@ -474,6 +474,14 @@ namespace LinqToTwitter
                         .Where(elem => elem.Attribute("rel").Value == "refresh")
                         .First()
                         .Attribute("href").Value,
+                Next =
+                    twitterResponse.Elements(atom + "link")
+                        .Where(elem => elem.Attribute("rel").Value == "next").Count() == 0 ?
+                    string.Empty :
+                    twitterResponse.Elements(atom + "link")
+                        .Where(elem => elem.Attribute("rel").Value == "next")
+                        .First()
+                        .Attribute("href").Value,
                 Entries =
                     (from node in twitterResponse.Nodes()
                      let atomEntry = node as XElement
@@ -521,7 +529,7 @@ namespace LinqToTwitter
                 searchResult
             };
 
-            return searchList;
+            return searchList.OfType<T>().ToList();
         }
     }
 }

@@ -4,13 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Collections;
 using System.Globalization;
+using System.Xml.Linq;
 
 namespace LinqToTwitter
 {
     /// <summary>
     /// handles query processing for accounts
     /// </summary>
-    public class AccountRequestProcessor : IRequestProcessor
+    public class AccountRequestProcessor<T> : IRequestProcessor<T>
     {
         /// <summary>
         /// base url for request
@@ -74,7 +75,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="twitterResponse">xml with Twitter response</param>
         /// <returns>IQueryable of User</returns>
-        public virtual IList ProcessResults(System.Xml.Linq.XElement twitterResponse)
+        public virtual List<T> ProcessResults(XElement twitterResponse)
         {
             var acct = new Account { Type = Type };
 
@@ -114,7 +115,11 @@ namespace LinqToTwitter
                 throw new ArgumentException("Account Results Processing expected a Twitter response for either a user or hash, but received an unknown element type instead.");
             }
 
-            return new List<Account> { acct };
+            return new List<Account> { acct }.OfType<T>().ToList();
         }
+
+        #region IRequestProcessor Members
+
+        #endregion
     }
 }
