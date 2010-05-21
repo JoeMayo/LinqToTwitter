@@ -201,6 +201,7 @@ namespace LinqToTwitter
         {
             var graph = new SocialGraph
             {
+                Type = Type,
                 ID = ID,
                 UserID = UserID,
                 ScreenName = ScreenName,
