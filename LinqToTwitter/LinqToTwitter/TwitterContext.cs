@@ -619,28 +619,7 @@ namespace LinqToTwitter
                     req = new StatusRequestProcessor<T>() { BaseUrl = BaseUrl };
                     break;
                 case "Trend":
-                    string trendTypeStr = "Trend";
-
-                    var whereExpression = new FirstWhereClauseFinder().GetFirstWhere(expression);
-
-                    if (whereExpression != null)
-                    {
-                        var lambdaExpression = (LambdaExpression)
-                            ((UnaryExpression)(whereExpression.Arguments[1])).Operand;
-
-                        var parameters = new ParameterFinder<Trend>(
-                            lambdaExpression.Body,
-                            new List<string> { "Type" })
-                            .Parameters;
-
-                        trendTypeStr = parameters["Type"];
-                    }
-
-                    TrendType trendType = (TrendType)Enum.Parse(typeof(TrendType), trendTypeStr);
-
-                    string trendUrl = baseUrl;
-
-                    req = new TrendRequestProcessor<T>() { BaseUrl = trendUrl };
+                    req = new TrendRequestProcessor<T>() { BaseUrl = BaseUrl };
                     break;
                 case "User":
                     req = new UserRequestProcessor<T>() { BaseUrl = BaseUrl };
