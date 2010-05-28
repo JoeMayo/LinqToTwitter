@@ -638,13 +638,7 @@ namespace LinqToTwitter
 
                     TrendType trendType = (TrendType)Enum.Parse(typeof(TrendType), trendTypeStr);
 
-                    string trendUrl = SearchUrl;
-
-                    // the base urls for Available and Location don't use the Search URL
-                    if (trendType == TrendType.Available || trendType == TrendType.Location)
-                    {
-                        trendUrl = BaseUrl;
-                    }
+                    string trendUrl = baseUrl;
 
                     req = new TrendRequestProcessor<T>() { BaseUrl = trendUrl };
                     break;
