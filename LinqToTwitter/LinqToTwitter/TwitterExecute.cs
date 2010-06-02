@@ -196,12 +196,12 @@ namespace LinqToTwitter
         /// <returns>XML string response from Twitter</returns>
         private string GetTwitterResponse(WebResponse resp)
         {
-            StringReader txtRdr;
+            string responseBody;
 
-            using (var strm = resp.GetResponseStream())
+            using (var respStream = resp.GetResponseStream())
+            using (var respReader = new StreamReader(respStream))
             {
-                var strmRdr = new StreamReader(strm);
-                txtRdr = new StringReader(strmRdr.ReadToEnd());
+                responseBody = respReader.ReadToEnd();
             }
 
             //
@@ -209,7 +209,6 @@ namespace LinqToTwitter
             // name/value pairs are easier to work with via 
             // LINQ to Objects over an IEnumerable collection.
             //
-
             var responseHeaders = new Dictionary<string, string>();
 
             foreach (string key in resp.Headers.Keys)
@@ -219,7 +218,7 @@ namespace LinqToTwitter
 
             ResponseHeaders = responseHeaders;
 
-            return txtRdr.ReadToEnd();
+            return responseBody;
         }
 
         /// <summary>
@@ -262,29 +261,23 @@ namespace LinqToTwitter
         public XElement QueryTwitter(string url)
         {
             var uri = new Uri(url);
-            var req = this.AuthorizedClient.Get(uri, null);
-
             string responseXml = string.Empty;
             string httpStatus = string.Empty;
-            WebResponse resp = null;
 
             try
             {
-                resp = req.GetResponse();
-                responseXml = GetTwitterResponse(resp);
-                httpStatus = resp.Headers["Status"];
+                var req = this.AuthorizedClient.Get(uri, null);
+
+                using (WebResponse resp = req.GetResponse())
+                {
+                    httpStatus = resp.Headers["Status"];
+                    responseXml = GetTwitterResponse(resp);
+                }
             }
             catch (WebException wex)
             {
                 var twitterQueryEx = CreateTwitterQueryException(wex);
                 throw twitterQueryEx;
-            }
-            finally
-            {
-                if (resp != null)
-                {
-                    resp.Close();
-                }
             }
 
             if (uri.LocalPath.EndsWith("json"))
@@ -371,83 +364,69 @@ namespace LinqToTwitter
                     imageByteString +
                     endContentBoundary);
 
-            var req = this.AuthorizedClient.Post(new Uri(url));
-            req.ServicePoint.Expect100Continue = false;
-            req.ContentType = "multipart/form-data;boundary=" + contentBoundaryBase;
-            req.PreAuthenticate = true;
-            req.AllowWriteStreamBuffering = true;
-            req.ContentLength = imageBytes.Length;
-
-            string responseXml = null;
-
-            using (var reqStream = req.GetRequestStream())
-            {
-                //reqStream.Write(imageBytes, 0, imageBytes.Length);
-
-                int offset = 0;
-                int bufferSize = 4096;
-                int lastPercentage = 0;
-                while (offset < imageBytes.Length)
-                {
-                    int bytesLeft = imageBytes.Length - offset;
-
-                    if (bytesLeft < bufferSize)
-                    {
-                        reqStream.Write(imageBytes, offset, bytesLeft);
-                    }
-                    else
-                    {
-                        reqStream.Write(imageBytes, offset, bufferSize);
-                    }
-
-                    offset += bufferSize;
-
-                    int percentComplete = 
-                        (int)((double)offset / (double)imageBytes.Length * 100);
-                    
-                    // since we still need to get the response later
-                    // in the algorithm, interpolate the results to
-                    // give user a more accurate picture of completion.
-                    // i.e. we don't want to shoot up to 100% here when
-                    // we know there is more processing to do.
-                    lastPercentage = percentComplete >= 98 ? 
-                        100 - ((98 - lastPercentage)/2) : 
-                        percentComplete;
-
-                    OnUploadProgressChanged(lastPercentage);
-                }
-
-                reqStream.Flush();
-            }
-
+            string responseXml = string.Empty;
             string httpStatus = string.Empty;
-            WebResponse resp = null;
 
             try
             {
-                resp = req.GetResponse();
+                var req = this.AuthorizedClient.Post(new Uri(url));
+                req.ServicePoint.Expect100Continue = false;
+                req.ContentType = "multipart/form-data;boundary=" + contentBoundaryBase;
+                req.PreAuthenticate = true;
+                req.AllowWriteStreamBuffering = true;
+                req.ContentLength = imageBytes.Length;
 
-                httpStatus = resp.Headers["Status"];
-
-                using (var respStream = resp.GetResponseStream())
-                using (var respRdr = new StreamReader(respStream))
+                using (var reqStream = req.GetRequestStream())
                 {
-                    responseXml = respRdr.ReadToEnd();
+                    //reqStream.Write(imageBytes, 0, imageBytes.Length);
+
+                    int offset = 0;
+                    int bufferSize = 4096;
+                    int lastPercentage = 0;
+                    while (offset < imageBytes.Length)
+                    {
+                        int bytesLeft = imageBytes.Length - offset;
+
+                        if (bytesLeft < bufferSize)
+                        {
+                            reqStream.Write(imageBytes, offset, bytesLeft);
+                        }
+                        else
+                        {
+                            reqStream.Write(imageBytes, offset, bufferSize);
+                        }
+
+                        offset += bufferSize;
+
+                        int percentComplete =
+                            (int)((double)offset / (double)imageBytes.Length * 100);
+
+                        // since we still need to get the response later
+                        // in the algorithm, interpolate the results to
+                        // give user a more accurate picture of completion.
+                        // i.e. we don't want to shoot up to 100% here when
+                        // we know there is more processing to do.
+                        lastPercentage = percentComplete >= 98 ?
+                            100 - ((98 - lastPercentage) / 2) :
+                            percentComplete;
+
+                        OnUploadProgressChanged(lastPercentage);
+                    }
+
+                    reqStream.Flush();
                 }
 
-                OnUploadProgressChanged(99);
+                using (WebResponse resp = req.GetResponse())
+                {
+                    httpStatus = resp.Headers["Status"];
+                    responseXml = GetTwitterResponse(resp);
+                    OnUploadProgressChanged(99);
+                }
             }
             catch (WebException wex)
             {
                 var twitterQueryEx = CreateTwitterQueryException(wex);
                 throw twitterQueryEx;
-            }
-            finally
-            {
-                if (resp != null)
-                {
-                    resp.Close();
-                }
             }
 
             OnUploadProgressChanged(100);
@@ -467,23 +446,18 @@ namespace LinqToTwitter
 
             // Oddly, we add the parameters both to the URI's query string and the POST entity
             Uri requestUri = Utilities.AppendQueryString(new Uri(url), parameters);
-            using (var resp = this.AuthorizedClient.Post(requestUri, parameters))
+            try
             {
-                try
+                using (var resp = this.AuthorizedClient.Post(requestUri, parameters))
                 {
                     httpStatus = resp.Headers["Status"];
-
-                    using (var respStream = resp.GetResponseStream())
-                    using (var respRdr = new StreamReader(respStream))
-                    {
-                        responseXml = respRdr.ReadToEnd();
-                    }
+                    responseXml = GetTwitterResponse(resp);
                 }
-                catch (WebException wex)
-                {
-                    var twitterQueryEx = CreateTwitterQueryException(wex);
-                    throw twitterQueryEx;
-                }
+            }
+            catch (WebException wex)
+            {
+                var twitterQueryEx = CreateTwitterQueryException(wex);
+                throw twitterQueryEx;
             }
 
             return ProcessResults(responseXml, httpStatus);
