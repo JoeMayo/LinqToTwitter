@@ -226,6 +226,12 @@ namespace LinqToTwitter
         public int Page { get; set; }
 
         /// <summary>
+        /// By default, user timeline doesn't include retweets,
+        /// but you can set this to true to includes retweets
+        /// </summary>
+        public bool IncludeRetweets { get; set; }
+
+        /// <summary>
         /// when was the tweet created
         /// </summary>
         public DateTime CreatedAt { get; set; }

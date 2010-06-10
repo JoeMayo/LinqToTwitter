@@ -27,13 +27,14 @@ namespace LinqToTwitterDemo
             //FriendStatusQueryDemo(twitterCtx);
             //UserStatusQueryDemo(twitterCtx);
             //UserStatusByNameQueryDemo(twitterCtx);
+            UserStatusWithRetweetsQueryDemo(twitterCtx);
             //MentionsStatusQueryDemo(twitterCtx);
             //MentionsWithSinceIDStatusQueryDemo(twitterCtx);
             //MentionsWithPagingQueryDemo(twitterCtx);
             //SingleStatusQueryDemo(twitterCtx);
             //UpdateStatusDemo(twitterCtx);
             //UpdateStatusWithReplyDemo(twitterCtx);
-            UpdateStatusWithLocationDemo(twitterCtx);
+            //UpdateStatusWithLocationDemo(twitterCtx);
             //UpdateStatusWithPlaceDemo(twitterCtx);
             //DestroyStatusDemo(twitterCtx);
             //RetweetedByMeStatusQueryDemo(twitterCtx);
@@ -352,6 +353,35 @@ namespace LinqToTwitterDemo
                     "(" + tweet.StatusID + ")" +
                     "[" + tweet.User.ID + "]" +
                     tweet.User.Name + ", " +
+                    tweet.Text + ", " +
+                    tweet.CreatedAt);
+            }
+        }
+
+        /// <summary>
+        /// shows how to include retweets with user statuses
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void UserStatusWithRetweetsQueryDemo(TwitterContext twitterCtx)
+        {
+            Console.WriteLine();
+
+            var screenName = "JoeMayo";
+
+            var statusTweets =
+                from tweet in twitterCtx.Status
+                where tweet.Type == StatusType.User
+                      && tweet.ScreenName == screenName
+                      && tweet.IncludeRetweets == true
+                select tweet;
+
+            foreach (var tweet in statusTweets)
+            {
+                Console.WriteLine(
+                    "(" + tweet.StatusID + ")" +
+                    "[" + tweet.User.ID + "]" + 
+                    ", Is Retweet: " + (tweet.Retweet != null).ToString() + "\n" +
+                    tweet.User.Name + ", " + "\n" +
                     tweet.Text + ", " +
                     tweet.CreatedAt);
             }

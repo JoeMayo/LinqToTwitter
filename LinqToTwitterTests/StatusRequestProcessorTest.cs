@@ -1170,6 +1170,46 @@ namespace LinqToTwitterTests
             Assert.AreEqual(expected, actual);
         }
 
+        [TestMethod()]
+        [DeploymentItem("LinqToTwitter.dll")]
+        public void BuildUserUrl_Returns_URL_For_Retweets()
+        {
+            var reqProc = new StatusRequestProcessor_Accessor<Status>();
+            reqProc.BaseUrl = "http://api.twitter.com/1/";
+            Dictionary<string, string> parameters =
+                new Dictionary<string, string>
+                    {
+                        { "Type", ((int)StatusType.User).ToString() },
+                        { "ID", "15411837" },
+                        { "IncludeRetweets", "True" }
+                    };
+            string expected = "http://api.twitter.com/1/statuses/user_timeline/15411837.xml?include_rts=true";
+
+            var actual = reqProc.BuildUserUrl(parameters);
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod()]
+        [DeploymentItem("LinqToTwitter.dll")]
+        public void BuildUserUrl_Returns_URL_Without_include_rts_Param_For_False_Retweets()
+        {
+            var reqProc = new StatusRequestProcessor_Accessor<Status>();
+            reqProc.BaseUrl = "http://api.twitter.com/1/";
+            Dictionary<string, string> parameters =
+                new Dictionary<string, string>
+                    {
+                        { "Type", ((int)StatusType.User).ToString() },
+                        { "ID", "15411837" },
+                        { "IncludeRetweets", "False" }
+                    };
+            string expected = "http://api.twitter.com/1/statuses/user_timeline/15411837.xml";
+
+            var actual = reqProc.BuildUserUrl(parameters);
+
+            Assert.AreEqual(expected, actual);
+        }
+
         /// <summary>
         ///A test for BuildFriendAndUrlParameters
         ///</summary>

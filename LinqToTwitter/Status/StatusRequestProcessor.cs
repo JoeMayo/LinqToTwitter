@@ -60,6 +60,12 @@ namespace LinqToTwitter
         public int Page { get; set; }
 
         /// <summary>
+        /// Retweets are optional and you must set this to true
+        /// before they will be included in the user timeline
+        /// </summary>
+        public bool IncludeRetweets { get; set; }
+
+        /// <summary>
         /// extracts parameters from lambda
         /// </summary>
         /// <param name="lambdaExpression">lambda expression with where clause</param>
@@ -77,7 +83,8 @@ namespace LinqToTwitter
                        "SinceID",
                        "MaxID",
                        "Count",
-                       "Page"
+                       "Page",
+                       "IncludeRetweets"
                    });
 
             var parameters = paramFinder.Parameters;
@@ -210,6 +217,16 @@ namespace LinqToTwitter
                 urlParams.Add("page=" + parameters["Page"]);
             }
 
+            if (parameters.ContainsKey("IncludeRetweets"))
+            {
+                IncludeRetweets = bool.Parse(parameters["IncludeRetweets"]);
+
+                if (IncludeRetweets)
+                {
+                    urlParams.Add("include_rts=" + parameters["IncludeRetweets"].ToLower()); 
+                }
+            }
+
             if (urlParams.Count > 0)
             {
                 url += "?" + string.Join("&", urlParams.ToArray());
@@ -219,7 +236,7 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// construct a base user url
+        /// construct an url for the user timeline
         /// </summary>
         /// <param name="url">base status url</param>
         /// <returns>base url + user timeline segment</returns>
@@ -389,6 +406,7 @@ namespace LinqToTwitter
                     status.MaxID = MaxID;
                     status.Count = Count;
                     status.Page = Page;
+                    status.IncludeRetweets = IncludeRetweets;
                 });
 
             return statusList.OfType<T>().ToList();

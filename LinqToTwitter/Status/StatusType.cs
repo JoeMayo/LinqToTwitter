@@ -39,6 +39,7 @@ namespace LinqToTwitter
         ///     - SinceID, get tweets since this ID
         ///     - Count, number of tweets to retrieve
         ///     - Page, which page to return
+        ///     - IncludeRetweets, return retweets too
         /// </summary>
         User,
 
