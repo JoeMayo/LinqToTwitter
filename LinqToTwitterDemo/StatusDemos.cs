@@ -27,14 +27,14 @@ namespace LinqToTwitterDemo
             //FriendStatusQueryDemo(twitterCtx);
             //UserStatusQueryDemo(twitterCtx);
             //UserStatusByNameQueryDemo(twitterCtx);
-            UserStatusWithRetweetsQueryDemo(twitterCtx);
+            //UserStatusWithRetweetsQueryDemo(twitterCtx);
             //MentionsStatusQueryDemo(twitterCtx);
             //MentionsWithSinceIDStatusQueryDemo(twitterCtx);
             //MentionsWithPagingQueryDemo(twitterCtx);
             //SingleStatusQueryDemo(twitterCtx);
             //UpdateStatusDemo(twitterCtx);
             //UpdateStatusWithReplyDemo(twitterCtx);
-            //UpdateStatusWithLocationDemo(twitterCtx);
+            UpdateStatusWithLocationDemo(twitterCtx);
             //UpdateStatusWithPlaceDemo(twitterCtx);
             //DestroyStatusDemo(twitterCtx);
             //RetweetedByMeStatusQueryDemo(twitterCtx);
@@ -43,11 +43,11 @@ namespace LinqToTwitterDemo
             //RetweetsOfMeStatusQueryDemo(twitterCtx);
             //RetweetDemo(twitterCtx);
             //RetweetsQueryDemo(twitterCtx);
+            //RetweetsCount(twitterCtx);
             //FirstStatusQueryDemo(twitterCtx);
             //GetAllTweetsAndRetweetsDemo(twitterCtx);
             //ContributorIDsDemo(twitterCtx);
             //StatusCountDemo(twitterCtx);
-
         }
 
         #region Status Demos
@@ -197,6 +197,19 @@ namespace LinqToTwitterDemo
                 "\nUser: " + retweet.Retweet.RetweetingUser.Name +
                 "\nTweet: " + retweet.Retweet.Text +
                 "\nTweet ID: " + retweet.Retweet.ID + "\n");
+        }
+
+        private static void RetweetsCount(TwitterContext twitterCtx)
+        {
+            long idTweet = 16151285130;
+
+            var result = 
+                from tweet in twitterCtx.Status
+                where tweet.ID == idTweet.ToString() &&
+                      tweet.Type == StatusType.Retweets
+                select tweet;
+
+            Console.WriteLine("Retweet Count: " + result.Count<LinqToTwitter.Status>()); 
         }
 
         /// <summary>
