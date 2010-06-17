@@ -76,7 +76,12 @@ namespace LinqToTwitter
         /// <returns>binary expression - supports recursive tree traversal in visitor</returns>
         protected override Expression VisitBinary(BinaryExpression be)
         {
-            if (be.NodeType == ExpressionType.Equal)
+            if (be.NodeType == ExpressionType.Equal || 
+                be.NodeType == ExpressionType.GreaterThan ||
+                be.NodeType == ExpressionType.GreaterThanOrEqual ||
+                be.NodeType == ExpressionType.LessThan ||
+                be.NodeType == ExpressionType.LessThanOrEqual ||
+                be.NodeType == ExpressionType.NotEqual)
             {
                 foreach (var param in ParameterNames)
                 {

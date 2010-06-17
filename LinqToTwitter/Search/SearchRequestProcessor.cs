@@ -266,13 +266,13 @@ namespace LinqToTwitter
 
             if (parameters.ContainsKey("Since"))
             {
-                Since = DateTime.Parse(parameters["Since"]);
+                Since = DateTime.Parse(parameters["Since"]).Date;
                 urlParams.Add("since=" + Since.ToString("yyyy-MM-dd"));
             }
 
             if (parameters.ContainsKey("Until"))
             {
-                Until = DateTime.Parse(parameters["Until"]);
+                Until = DateTime.Parse(parameters["Until"]).Date;
                 urlParams.Add("until=" + Until.ToString("yyyy-MM-dd"));
             }
 

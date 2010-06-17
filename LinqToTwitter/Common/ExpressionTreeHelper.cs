@@ -35,7 +35,12 @@ namespace LinqToTwitter
         /// <returns>true if member is being checked for equality with value</returns>
         internal static bool IsMemberEqualsValueExpression(Expression exp, Type declaringType, string memberName)
         {
-            if (exp.NodeType != ExpressionType.Equal)
+            if (exp.NodeType != ExpressionType.Equal &&
+                exp.NodeType != ExpressionType.NotEqual &&
+                exp.NodeType != ExpressionType.GreaterThan &&
+                exp.NodeType != ExpressionType.GreaterThanOrEqual &&
+                exp.NodeType != ExpressionType.LessThan &&
+                exp.NodeType != ExpressionType.LessThanOrEqual)
                 return false;
 
             BinaryExpression be = (BinaryExpression)exp;
@@ -81,7 +86,12 @@ namespace LinqToTwitter
         /// <returns>string representation of value</returns>
         internal static string GetValueFromEqualsExpression(BinaryExpression be, Type memberDeclaringType, string memberName)
         {
-            if (be.NodeType != ExpressionType.Equal)
+            if (be.NodeType != ExpressionType.Equal &&
+                be.NodeType != ExpressionType.NotEqual &&
+                be.NodeType != ExpressionType.GreaterThan &&
+                be.NodeType != ExpressionType.GreaterThanOrEqual &&
+                be.NodeType != ExpressionType.LessThan &&
+                be.NodeType != ExpressionType.LessThanOrEqual)
                 throw new Exception("There is a bug in this program.");
 
             if (be.Left.NodeType == ExpressionType.MemberAccess ||

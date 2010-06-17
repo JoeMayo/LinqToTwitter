@@ -24,6 +24,7 @@ namespace LinqToTwitterDemo
             //SearchTwitterLocaleDemo(twitterCtx);
             //SearchAndUseStatusTwitterDemo(twitterCtx);
             //SearchByLanguageTwitterDemo(twitterCtx);
+            SearchSinceDateTwitterDemo(twitterCtx);
             //SearchTwitterSource(twitterCtx);
             //ExceedSearchRateLimitDemo(twitterCtx);
             //SearchWithResultType(twitterCtx);
@@ -32,7 +33,7 @@ namespace LinqToTwitterDemo
             //SearchWithAttitudeQuery(twitterCtx);
             //SearchWithLinksQuery(twitterCtx);
             //SearchCountDemo(twitterCtx);
-            SearchEntriesQueryDemo(twitterCtx);
+            //SearchEntriesQueryDemo(twitterCtx);
         }
 
         #region Search Demos
@@ -236,6 +237,31 @@ namespace LinqToTwitterDemo
                  .SingleOrDefault();
 
             foreach (var entry in queryResult.Entries)
+            {
+                Console.WriteLine(
+                    "ID: {0}, Source: {1}, Language: {2}\nContent: {3}\n",
+                    entry.ID, entry.Source, entry.Language, entry.Content);
+            }
+        }
+
+        /// <summary>
+        /// shows how to perform a twitter search, extract status, and search the status
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void SearchSinceDateTwitterDemo(TwitterContext twitterCtx)
+        {
+            var queryResults = 
+                from search in twitterCtx.Search 
+                where search.Type == SearchType.Search && 
+                      search.Query == "Leite Moca" && 
+                      search.SearchLanguage == "pt" && 
+                      search.PageSize == 50 && 
+                      search.Since >= DateTime.Now.Date
+                select search;
+
+            var searchResult = queryResults.FirstOrDefault();
+
+            foreach (var entry in searchResult.Entries)
             {
                 Console.WriteLine(
                     "ID: {0}, Source: {1}, Language: {2}\nContent: {3}\n",
