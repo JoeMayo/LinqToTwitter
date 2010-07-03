@@ -84,6 +84,13 @@ namespace LinqToTwitter
             }
         }
 
+        private static TextWriter log;
+        public static TextWriter Log
+        {
+            get { return log; }
+            set { log = value; }
+        }
+
         #endregion
 
         #region Events
@@ -268,6 +275,9 @@ namespace LinqToTwitter
             {
                 var req = this.AuthorizedClient.Get(uri, null);
 
+                //Log
+                WriteLog(url, "QueryTwitter");
+
                 using (WebResponse resp = req.GetResponse())
                 {
                     httpStatus = resp.Headers["Status"];
@@ -292,6 +302,7 @@ namespace LinqToTwitter
 
             return ProcessResults(responseXml, httpStatus);
         }
+
 
         /// <summary>
         /// performs HTTP POST file upload to Twitter
@@ -369,6 +380,9 @@ namespace LinqToTwitter
 
             try
             {
+                //Log
+                WriteLog(url, "PostTwitterImage");
+
                 var req = this.AuthorizedClient.Post(new Uri(url));
                 req.ServicePoint.Expect100Continue = false;
                 req.ContentType = "multipart/form-data;boundary=" + contentBoundaryBase;
@@ -448,6 +462,9 @@ namespace LinqToTwitter
             Uri requestUri = Utilities.AppendQueryString(new Uri(url), parameters);
             try
             {
+                //Log
+                WriteLog(url, "ExecuteTwitter");
+
                 using (var resp = this.AuthorizedClient.Post(requestUri, parameters))
                 {
                     httpStatus = resp.Headers["Status"];
@@ -461,6 +478,19 @@ namespace LinqToTwitter
             }
 
             return ProcessResults(responseXml, httpStatus);
+        }
+
+        private void WriteLog(string content, string currentMethod)
+        {
+            if (log != null)
+            {
+                log.Flush();
+                log.WriteLine("--Log Starts Here--");
+                log.WriteLine("Query:" + content);
+                log.WriteLine("Method:" + currentMethod);
+                log.WriteLine("--Log Ends Here--");
+                log.Close();
+            }
         }
 
         #endregion

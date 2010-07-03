@@ -130,6 +130,7 @@
   <ItemGroup>
     <Compile Include="AccountRequestProcessorTest.cs" />
     <Compile Include="BlocksRequestProcessorTest.cs" />
+    <Compile Include="Common\DebuggerWriter.cs" />
     <Compile Include="DirectMessageRequestProcessorTest.cs" />
     <Compile Include="ExpressionTreeHelpersTest.cs" />
     <Compile Include="FavoritesRequestProcessorTest.cs" />

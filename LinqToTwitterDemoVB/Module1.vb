@@ -24,6 +24,8 @@ Module Module1
 
         Dim twitterCtx As TwitterContext = New TwitterContext(auth, "https://twitter.com/", "http://search.twitter.com/")
 
+        twitterCtx.Log = Console.Out
+
         If TypeOf twitterCtx.AuthorizedClient Is OAuthAuthorization Then
             InitializeOAuthConsumerStrings(twitterCtx)
         End If

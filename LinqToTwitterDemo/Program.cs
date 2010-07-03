@@ -55,6 +55,8 @@ namespace LinqToTwitterDemo
             using (var twitterCtx = new TwitterContext(auth, "https://api.twitter.com/1/", "https://search.twitter.com/"))
             //using (var twitterCtx = new TwitterContext(auth, "https://api.twitter.com/1/", "https://api.twitter.com/1/"))
             {
+                //Log
+                twitterCtx.Log = Console.Out;
 
                 // For JTweeter (Laconica)
                 //var twitterCtx = new TwitterContext(passwordAuth, "http://jtweeter.com/api/", "http://search.twitter.com/");

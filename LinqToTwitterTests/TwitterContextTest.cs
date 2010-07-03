@@ -302,6 +302,9 @@ namespace LinqToTwitterTests
         {
             var ctx = new TwitterContext();
 
+            //Log
+            ctx.Log = new LinqToTwitterTests.Common.DebuggerWriter();
+
             var publicQuery =
                 from tweet in ctx.Status
                 where tweet.Type == StatusType.Public

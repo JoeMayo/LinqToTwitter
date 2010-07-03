@@ -11,6 +11,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Net;
 using System.Xml.Linq;
+using System.IO;
 
 namespace LinqToTwitter
 {
@@ -112,6 +113,16 @@ namespace LinqToTwitter
         /// base URL for accessing Twitter Search API
         /// </summary>
         public string SearchUrl { get; set; }
+
+        /// <summary>
+        /// Assign the Log to the context
+        /// </summary>
+        public TextWriter Log
+        {
+            get { return TwitterExecute.Log; }
+            set { TwitterExecute.Log = value; }
+        }
+
 
         #endregion
 

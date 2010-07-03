@@ -34,7 +34,7 @@ namespace LinqToTwitterDemo
             //SingleStatusQueryDemo(twitterCtx);
             //UpdateStatusDemo(twitterCtx);
             //UpdateStatusWithReplyDemo(twitterCtx);
-            UpdateStatusWithLocationDemo(twitterCtx);
+            //UpdateStatusWithLocationDemo(twitterCtx);
             //UpdateStatusWithPlaceDemo(twitterCtx);
             //DestroyStatusDemo(twitterCtx);
             //RetweetedByMeStatusQueryDemo(twitterCtx);
@@ -45,7 +45,7 @@ namespace LinqToTwitterDemo
             //RetweetsQueryDemo(twitterCtx);
             //RetweetsCount(twitterCtx);
             //FirstStatusQueryDemo(twitterCtx);
-            //GetAllTweetsAndRetweetsDemo(twitterCtx);
+            GetAllTweetsAndRetweetsDemo(twitterCtx);
             //ContributorIDsDemo(twitterCtx);
             //StatusCountDemo(twitterCtx);
         }
