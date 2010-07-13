@@ -16,6 +16,14 @@ namespace LinqToTwitter
         ITwitterAuthorization AuthorizedClient { get; set; }
 
         /// <summary>
+        /// Gets the most recent URL executed
+        /// </summary>
+        /// <remarks>
+        /// This is very useful for debugging
+        /// </remarks>
+        string LastUrl { get; }
+
+        /// <summary>
         /// list of response headers from query
         /// </summary>
         Dictionary<string, string> ResponseHeaders { get; set; }

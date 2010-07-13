@@ -62,6 +62,14 @@ namespace LinqToTwitter
         }
 
         /// <summary>
+        /// Gets the most recent URL executed
+        /// </summary>
+        /// <remarks>
+        /// This is very useful for debugging
+        /// </remarks>
+        public string LastUrl { get; private set; }
+
+        /// <summary>
         /// list of response headers from query
         /// </summary>
         public Dictionary<string, string> ResponseHeaders { get; set; }
@@ -155,7 +163,6 @@ namespace LinqToTwitter
         /// <returns>new TwitterQueryException instance</returns>
         private TwitterQueryException CreateTwitterQueryException(WebException wex)
         {
-
             XElement responseXml;
 
             try
@@ -273,6 +280,7 @@ namespace LinqToTwitter
 
             try
             {
+                this.LastUrl = uri.AbsoluteUri;
                 var req = this.AuthorizedClient.Get(uri, null);
 
                 //Log
@@ -302,7 +310,6 @@ namespace LinqToTwitter
 
             return ProcessResults(responseXml, httpStatus);
         }
-
 
         /// <summary>
         /// performs HTTP POST file upload to Twitter
@@ -380,6 +387,7 @@ namespace LinqToTwitter
 
             try
             {
+                this.LastUrl = url;
                 //Log
                 WriteLog(url, "PostTwitterImage");
 
@@ -462,6 +470,7 @@ namespace LinqToTwitter
             Uri requestUri = Utilities.AppendQueryString(new Uri(url), parameters);
             try
             {
+                this.LastUrl = requestUri.AbsoluteUri;
                 //Log
                 WriteLog(url, "ExecuteTwitter");
 

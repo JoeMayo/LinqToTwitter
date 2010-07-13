@@ -149,16 +149,7 @@ namespace LinqToTwitter
                 throw new InvalidOperationException("Missing credentials.");
             }
 
-            try
-            {
-                ValidateCredentials(this.UserName, this.Password);
-                return;
-            }
-            catch (WebException)
-            {
-                // TODO: what's a more appropriate exception type here?
-                throw new InvalidOperationException("Invalid or missing Twitter credentials.");
-            }
+            ValidateCredentials(this.UserName, this.Password);
         }
 
         /// <summary>
