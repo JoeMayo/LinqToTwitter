@@ -102,7 +102,7 @@ namespace LinqToTwitter
             Type[] genericArguments = new Type[] { resultType };
 
             // generic method instance via reflection
-            var methodInfo = Context.GetType().GetMethod("Execute", BindingFlags.NonPublic | BindingFlags.Instance);
+            var methodInfo = Context.GetType().GetMethod("Execute", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
             MethodInfo genericMethodInfo = methodInfo.MakeGenericMethod(genericArguments);
 
             // use reflection to execute the generic method with the proper arguments
