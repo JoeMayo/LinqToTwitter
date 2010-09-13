@@ -129,15 +129,6 @@ namespace LinqToTwitter
         #region Initialization
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TwitterExecute"/> class.
-        /// </summary>
-        public TwitterExecute()
-        {
-            this.AuthorizedClient = new UsernamePasswordAuthorization();
-            this.AuthorizedClient.UserAgent = m_linqToTwitterVersion;
-        }
-
-        /// <summary>
         /// supports testing
         /// </summary>
         /// <param name="oAuthTwitter">IOAuthTwitter Mock</param>

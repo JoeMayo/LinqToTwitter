@@ -10,126 +10,120 @@ Module Module1
         Dim auth As ITwitterAuthorization
 
         If String.IsNullOrEmpty(ConfigurationManager.AppSettings("twitterConsumerKey")) Or String.IsNullOrEmpty(ConfigurationManager.AppSettings("twitterConsumerSecret")) Then
-            Console.WriteLine("Skipping OAuth authorization demo because twitterConsumerKey and/or twitterConsumerSecret are not set in your .config file.")
-            Console.WriteLine("Using username/password authorization instead.")
+			Console.WriteLine("Please set the Twitter consumer key and secret values in the app.config file and run again.")
+			Exit Sub
+		End If
 
-            ' For username/password authorization demo...
-            auth = New UsernamePasswordAuthorization(Utilities.GetConsoleHWnd())
-        Else
-            Console.WriteLine("Discovered Twitter OAuth consumer key in .config file.  Using OAuth authorization.")
+		auth = New DesktopOAuthAuthorization()
 
-            ' For OAuth authorization demo...
-            auth = New DesktopOAuthAuthorization()
-        End If
+		Dim twitterCtx As TwitterContext = New TwitterContext(auth, "https://twitter.com/", "http://search.twitter.com/")
 
-        Dim twitterCtx As TwitterContext = New TwitterContext(auth, "https://twitter.com/", "http://search.twitter.com/")
+		twitterCtx.Log = Console.Out
 
-        twitterCtx.Log = Console.Out
+		If TypeOf twitterCtx.AuthorizedClient Is OAuthAuthorization Then
+			InitializeOAuthConsumerStrings(twitterCtx)
+		End If
+		auth.SignOn()
 
-        If TypeOf twitterCtx.AuthorizedClient Is OAuthAuthorization Then
-            InitializeOAuthConsumerStrings(twitterCtx)
-        End If
-        auth.SignOn()
+		'Dim twitterContext = New TwitterContext(auth)
 
-        'Dim twitterContext = New TwitterContext(auth)
+		'
+		' Status Demos
+		'
 
-        '
-        ' Status Demos
-        '
+		UpdateStatusDemo(twitterCtx)
+		'UpdateStatusWithReplyDemo(twitterCtx)
+		'DestroyStatusDemo(twitterCtx)
+		'MentionsDemo(twitterCtx)
+		'SingleStatusQueryDemo(twitterCtx)
+		'FriendsStatusQueryDemo(twitterCtx)
+		'UserStatusByNameDemo(twitterCtx)
+		'UserStatusByQueryDemo(twitterCtx)
+		'FirstStatusByQueryDemo(twitterCtx)
+		'PublicStatusQueryDemo(twitterCtx)
+		'PublicStatusFilteredQueryDemo(twitterCtx)
 
-        UpdateStatusDemo(twitterCtx)
-        'UpdateStatusWithReplyDemo(twitterCtx)
-        'DestroyStatusDemo(twitterCtx)
-        'MentionsDemo(twitterCtx)
-        'SingleStatusQueryDemo(twitterCtx)
-        'FriendsStatusQueryDemo(twitterCtx)
-        'UserStatusByNameDemo(twitterCtx)
-        'UserStatusByQueryDemo(twitterCtx)
-        'FirstStatusByQueryDemo(twitterCtx)
-        'PublicStatusQueryDemo(twitterCtx)
-        'PublicStatusFilteredQueryDemo(twitterCtx)
+		'
+		' User Demos
+		'
+		'UserShowWithIDQueryDemo(twitterCtx)
+		'UserShowWithScreenNameQueryDemo(twitterCtx)
+		'UserShowLoggedInUserQueryDemo(twitterCtx)
 
-        '
-        ' User Demos
-        '
-        'UserShowWithIDQueryDemo(twitterCtx)
-        'UserShowWithScreenNameQueryDemo(twitterCtx)
-        'UserShowLoggedInUserQueryDemo(twitterCtx)
+		'
+		' Direct Message Demos
+		'
 
-        '
-        ' Direct Message Demos
-        '
+		'DirectMessageSentByQueryDemo(twitterCtx)
 
-        'DirectMessageSentByQueryDemo(twitterCtx)
+		'
+		' Friendship Demos
+		'
 
-        '
-        ' Friendship Demos
-        '
+		'FriendshipExistsDemo(twitterCtx)
 
-        'FriendshipExistsDemo(twitterCtx)
+		'
+		' Social Graph Demos
+		'
 
-        '
-        ' Social Graph Demos
-        '
+		'ShowFriendsDemo(twitterCtx)
 
-        'ShowFriendsDemo(twitterCtx)
+		'
+		' Search Demos
+		'
 
-        '
-        ' Search Demos
-        '
+		'SearchTwitterDemo(twitterCtx)
 
-        'SearchTwitterDemo(twitterCtx)
+		'
+		' Favorites Demos
+		'
 
-        '
-        ' Favorites Demos
-        '
+		'FavoritesQueryDemo(twitterCtx)
 
-        'FavoritesQueryDemo(twitterCtx)
+		'
+		' Notifications Demos
+		'
 
-        '
-        ' Notifications Demos
-        '
+		'EnableNotificationsDemo(twitterCtx)
+		'DisableNotificationsDemo(twitterCtx)
 
-        'EnableNotificationsDemo(twitterCtx)
-        'DisableNotificationsDemo(twitterCtx)
+		'
+		' Block Demos
+		'
 
-        '
-        ' Block Demos
-        '
+		'BlockIDsDemo(twitterCtx)
 
-        'BlockIDsDemo(twitterCtx)
+		'
+		' Help Demos
+		'
 
-        '
-        ' Help Demos
-        '
+		'PerformHelpTest(twitterCtx)
 
-        'PerformHelpTest(twitterCtx)
+		'
+		' Account Demos
+		'
 
-        '
-        ' Account Demos
-        '
+		'VerifyAccountCredentialsDemo(twitterCtx)
 
-        'VerifyAccountCredentialsDemo(twitterCtx)
+		'
+		' Trends Demos
+		'
 
-        '
-        ' Trends Demos
-        '
+		'SearchCurrentTrendsDemo(twitterCtx)
 
-        'SearchCurrentTrendsDemo(twitterCtx)
+		'
+		' OAuth Demos
+		'
 
-        '
-        ' OAuth Demos
-        '
+		'HandleOAuthQueryDemo(twitterCtx)
 
-        'HandleOAuthQueryDemo(twitterCtx)
+		'
+		' Saved Searches Demos
+		'
 
-        '
-        ' Saved Searches Demos
-        '
+		'QuerySavedSearchesDemo(twitterCtx)
 
-        'QuerySavedSearchesDemo(twitterCtx)
-
-        Console.ReadKey()
+		Console.ReadKey()
     End Sub
 
 #Region "Saved Search Demos"

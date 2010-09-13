@@ -28,24 +28,19 @@ namespace LinqToTwitterDemo
 
             if (string.IsNullOrEmpty(ConfigurationManager.AppSettings["twitterConsumerKey"]) || string.IsNullOrEmpty(ConfigurationManager.AppSettings["twitterConsumerSecret"]))
             {
-                Console.WriteLine("Skipping OAuth authorization demo because twitterConsumerKey and/or twitterConsumerSecret are not set in your .config file.");
-                Console.WriteLine("Using username/password authorization instead.");
-
-                // For username/password authorization demo...
-                auth = new UsernamePasswordAuthorization(Utilities.GetConsoleHWnd());
+                Console.WriteLine("Please set the Twitter consumer key and secret values in the app.config file and run again.");
+                return;
             }
-            else
-            {
-                Console.WriteLine("Discovered Twitter OAuth consumer key in .config file.  Using OAuth authorization.");
 
-                // For OAuth authorization demo...
-                auth = new DesktopOAuthAuthorization();
-                // If you wanted to pass the consumer key and secret in programmatically, you could do so as shown here.
-                // Otherwise this information is pulled out of your .config file.
-                ////var desktopAuth = (DesktopOAuthAuthorization)auth;
-                ////desktopAuth.ConsumerKey = "some key";
-                ////desktopAuth.ConsumerSecret = "some secret";
-            }
+            Console.WriteLine("Discovered Twitter OAuth consumer key in .config file.  Using OAuth authorization.");
+
+            // For OAuth authorization demo...
+            auth = new DesktopOAuthAuthorization();
+            // If you wanted to pass the consumer key and secret in programmatically, you could do so as shown here.
+            // Otherwise this information is pulled out of your .config file.
+            ////var desktopAuth = (DesktopOAuthAuthorization)auth;
+            ////desktopAuth.ConsumerKey = "some key";
+            ////desktopAuth.ConsumerSecret = "some secret";
 
             auth.UseCompression = true;
 

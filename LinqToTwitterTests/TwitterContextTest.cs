@@ -229,7 +229,7 @@ namespace LinqToTwitterTests
         {
             string baseUrl = "https://api.twitter.com/1/";
             string searchUrl = "http://search.twitter.com/";
-            ITwitterAuthorization authorizedClient = new UsernamePasswordAuthorization();
+            ITwitterAuthorization authorizedClient = new DesktopOAuthAuthorization();
             TwitterContext ctx = new TwitterContext(authorizedClient);
 
             Assert.AreSame(authorizedClient, ctx.AuthorizedClient);
@@ -243,7 +243,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void ThreeParamCtorDefaults()
         {
-            ITwitterExecute execute = new TwitterExecute();
+            ITwitterExecute execute = new TwitterExecute(new DesktopOAuthAuthorization());
             string baseUrl = "http://api.twitter.com/1/";
             string searchUrl = "http://search.twitter.com/";
             TwitterContext ctx = new TwitterContext(execute, baseUrl, searchUrl);

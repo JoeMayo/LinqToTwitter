@@ -27,9 +27,10 @@ namespace LinqToTwitter
         /// Initializes a new instance of the <see cref="TwitterContext"/> class.
         /// </summary>
         public TwitterContext()
-            : this((ITwitterExecute)null, null, null)
+            : this(new AnonymousAuthorization())
         {
         }
+
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TwitterContext"/> class.
@@ -61,12 +62,17 @@ namespace LinqToTwitter
         /// <summary>
         /// Initializes a new instance of the <see cref="TwitterContext"/> class.
         /// </summary>
-        /// <param name="execute">The <see cref="ITwitterExecute"/> object to use.  May be null.</param>
+        /// <param name="execute">The <see cref="ITwitterExecute"/> object to use.</param>
         /// <param name="baseUrl">Base url of Twitter API.  May be null to use the default "http://twitter.com/" value.</param>
         /// <param name="searchUrl">Base url of Twitter Search API.  May be null to use the default "http://search.twitter.com/" value.</param>
         public TwitterContext(ITwitterExecute execute, string baseUrl, string searchUrl)
         {
-            TwitterExecutor = execute ?? new TwitterExecute();
+            if (execute == null)
+            {
+                throw new ArgumentNullException("execute");
+            }
+
+            TwitterExecutor = execute;
             BaseUrl = string.IsNullOrEmpty(baseUrl) ? "https://api.twitter.com/1/" : baseUrl;
             SearchUrl = string.IsNullOrEmpty(searchUrl) ? "http://search.twitter.com/" : searchUrl;
         }

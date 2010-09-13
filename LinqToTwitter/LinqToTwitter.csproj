@@ -104,8 +104,7 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DotNetOpenAuth, Version=3.2.0.9177, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="DotNetOpenAuth">
       <HintPath>..\Resources\DotNetOpenAuth.dll</HintPath>
     </Reference>
     <Reference Include="Kerr.Credentials, Version=1.0.0.1, Culture=neutral, PublicKeyToken=ce7a2d015f9fdd1b, processorArchitecture=x86">
@@ -161,6 +160,8 @@
     <Compile Include="Geo\GeoRequestProcessor.cs" />
     <Compile Include="Geo\GeoType.cs" />
     <Compile Include="Geo\Place.cs" />
+    <Compile Include="OAuth\AnonymousAuthorization.cs" />
+    <Compile Include="OAuth\AuthorizationBase.cs" />
     <Compile Include="Search\AtomAuthor.cs" />
     <Compile Include="Search\AtomEntry.cs" />
     <Compile Include="Search\AtomFeed.cs" />
@@ -171,7 +172,6 @@
     <Compile Include="Search\Attitude.cs" />
     <Compile Include="Search\ResultType.cs" />
     <Compile Include="Trend\Location.cs" />
-    <Compile Include="OAuth\UsernamePasswordSimpleAuthorization.cs" />
     <Compile Include="Common\Cursors.cs" />
     <Compile Include="OAuth\DesktopOAuthAuthorization.cs" />
     <Compile Include="Account\DeviceType.cs" />
@@ -232,7 +232,6 @@
     <Compile Include="LinqToTwitter\TwitterQueryProvider.cs" />
     <Compile Include="Common\TypeSystem.cs" />
     <Compile Include="User\User.cs" />
-    <Compile Include="OAuth\UsernamePasswordAuthorization.cs" />
     <Compile Include="User\UserRequestProcessor.cs" />
     <Compile Include="User\UserType.cs" />
     <Compile Include="OAuth\Utilities.cs" />

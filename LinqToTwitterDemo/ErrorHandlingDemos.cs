@@ -64,11 +64,7 @@ namespace LinqToTwitterDemo
         private static void HandleSideEffectWithFilePostExceptionDemo(TwitterContext twitterCtx)
         {
             // force the error by supplying bad credentials
-            twitterCtx.AuthorizedClient = new UsernamePasswordAuthorization
-            {
-                UserName = "BadUserName",
-                Password = "BadPassword",
-            };
+            twitterCtx.AuthorizedClient = new DesktopOAuthAuthorization();
 
             try
             {
@@ -92,11 +88,7 @@ namespace LinqToTwitterDemo
         private static void HandleSideEffectExceptionDemo(TwitterContext twitterCtx)
         {
             // force the error by supplying bad credentials
-            twitterCtx.AuthorizedClient = new UsernamePasswordAuthorization
-            {
-                UserName = "BadUserName",
-                Password = "BadPassword",
-            };
+            twitterCtx.AuthorizedClient = new DesktopOAuthAuthorization();
 
             try
             {
@@ -120,11 +112,7 @@ namespace LinqToTwitterDemo
         private static void HandleQueryExceptionDemo(TwitterContext twitterCtx)
         {
             // force the error by supplying bad credentials
-            twitterCtx.AuthorizedClient = new UsernamePasswordAuthorization
-            {
-                UserName = "BadUserName",
-                Password = "BadPassword",
-            };
+            twitterCtx.AuthorizedClient = new DesktopOAuthAuthorization();
 
             try
             {
