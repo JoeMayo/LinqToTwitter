@@ -42,7 +42,7 @@ namespace LinqToTwitterDemo
             ////desktopAuth.ConsumerKey = "some key";
             ////desktopAuth.ConsumerSecret = "some secret";
 
-            auth.UseCompression = true;
+            //auth.UseCompression = true;
 
             // TwitterContext is similar to DataContext (LINQ to SQL) or ObjectContext (LINQ to Entities)
 

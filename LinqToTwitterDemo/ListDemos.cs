@@ -17,7 +17,7 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         public static void Run(TwitterContext twitterCtx)
         {
-            GetListsDemo(twitterCtx);
+            //GetListsDemo(twitterCtx);
             //IsListSubscribedDemo(twitterCtx);
             //GetListSubscribersDemo(twitterCtx);
             //IsListMemberDemo(twitterCtx);
@@ -30,10 +30,59 @@ namespace LinqToTwitterDemo
             //UpdateListDemo(twitterCtx);
             //DeleteListDemo(twitterCtx);
             //AddMemberToListDemo(twitterCtx);
+            //AddMemberRangeToListWithScreenNamesDemo(twitterCtx);
+            //AddMemberRangeToListWithUserIDsDemo(twitterCtx);
+            AddMemberRangeToListWithTooManyIDsDemo(twitterCtx);
             //DeleteMemberFromListDemo(twitterCtx);
             //SubscribeToListDemo(twitterCtx);
             //UnsubscribeFromListDemo(twitterCtx);
             //ListSortDemo(twitterCtx);
+        }
+
+        private static void AddMemberRangeToListWithScreenNamesDemo(TwitterContext twitterCtx)
+        {
+            var members = new List<string>
+            {
+                "JoeMayo",
+                "Mayoster"
+            };
+
+            List list = twitterCtx.AddMemberRangeToList("LinqToTweeter", "linq", members);
+
+            foreach (var user in list.Users)
+            {
+                Console.WriteLine(user.Name);
+            }
+        }
+
+        private static void AddMemberRangeToListWithUserIDsDemo(TwitterContext twitterCtx)
+        {
+            var members = new List<ulong>
+            {
+                15411837,
+                45714308
+            };
+
+            List list = twitterCtx.AddMemberRangeToList("LinqToTweeter", "linq", members);
+
+            foreach (var user in list.Users)
+            {
+                Console.WriteLine(user.Name);
+            }
+        }
+
+        private static void AddMemberRangeToListWithTooManyIDsDemo(TwitterContext twitterCtx)
+        {
+            var members = new List<ulong>(Enumerable.Range(1, 101).Select(id => (ulong)id));
+
+            try
+            {
+                List list = twitterCtx.AddMemberRangeToList("LinqToTweeter", "linq", members);
+            }
+            catch (ArgumentException ae)
+            {
+                Console.WriteLine("This is what we expect: \n" + ae.ToString());
+            }
         }
 
         #region List Demos

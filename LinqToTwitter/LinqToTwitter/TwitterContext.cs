@@ -1847,6 +1847,93 @@ namespace LinqToTwitter
         }
 
         /// <summary>
+        /// Adds a list of users to a list
+        /// </summary>
+        /// <remarks>
+        /// Original code contributed by zorgster/CodePlex.com
+        /// </remarks>
+        /// <param name="screenName">name of user to add member to list for</param>
+        /// <param name="listID">ID or slug of list</param>
+        /// <param name="members">List of IDs of members to add</param>
+        /// <returns>List info for list member added to - up to 100 Members at a time can be added</returns>
+        public virtual List AddMemberRangeToList(string screenName, string listID, List<string> members)
+        {
+            if (string.IsNullOrEmpty(screenName))
+            {
+                throw new ArgumentException("screenName is required.", "screenName");
+            }
+
+            if (string.IsNullOrEmpty(listID))
+            {
+                throw new ArgumentException("listID is required.", "listID");
+            }
+
+            if (members.Count > 100)
+            {
+                throw new ArgumentException("Max users is 100 at a time.", "members");
+            }
+
+            var savedSearchUrl = BaseUrl + screenName + "/" + listID + @"/members/create_all.xml";
+
+            var resultsXml =
+                TwitterExecutor.ExecuteTwitter(
+                    savedSearchUrl,
+                    new Dictionary<string, string>
+                    {
+                        { "screen_name", string.Join(",", members.ToArray()) }
+                    });
+
+            List<List> results = new ListRequestProcessor<List>().ProcessResults(resultsXml);
+            return results.FirstOrDefault();
+        }
+
+        /// <summary>
+        /// Adds a list of users to a list
+        /// </summary>
+        /// <remarks>
+        /// Original code contributed by zorgster/CodePlex.com
+        /// </remarks>
+        /// <param name="screenName">name of user to add member to list for</param>
+        /// <param name="listID">ID or slug of list</param>
+        /// <param name="memberIDs">List of IDs of members to add</param>
+        /// <returns>List info for list member added to - up to 100 Members at a time can be added</returns>
+        public virtual List AddMemberRangeToList(string screenName, string listID, List<ulong> memberIDs)
+        {
+            if (string.IsNullOrEmpty(screenName))
+            {
+                throw new ArgumentException("screenName is required.", "screenName");
+            }
+
+            if (string.IsNullOrEmpty(listID))
+            {
+                throw new ArgumentException("listID is required.", "listID");
+            }
+
+            if (memberIDs.Count > 100)
+            {
+                throw new ArgumentException("Max users is 100 at a time.", "members");
+            }
+
+            var savedSearchUrl = BaseUrl + screenName + "/" + listID + @"/members/create_all.xml";
+
+            string[] idStrings =
+                (from id in memberIDs
+                 select id.ToString())
+                .ToArray();
+
+            var resultsXml =
+                TwitterExecutor.ExecuteTwitter(
+                    savedSearchUrl,
+                    new Dictionary<string, string>
+                    {
+                        { "user_id", string.Join(",", idStrings) }
+                    });
+
+            List<List> results = new ListRequestProcessor<List>().ProcessResults(resultsXml);
+            return results.FirstOrDefault();
+        }
+
+        /// <summary>
         /// Removes a user as a list member
         /// </summary>
         /// <param name="screenName">name of user to remove member from list for</param>
