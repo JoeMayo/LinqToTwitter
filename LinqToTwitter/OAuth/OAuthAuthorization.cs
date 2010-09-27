@@ -209,7 +209,7 @@ namespace LinqToTwitter
         {
             var servicePoint = ServicePointManager.FindServicePoint(requestUrl);
             servicePoint.Expect100Continue = false;
-            var req = this.Consumer.PrepareAuthorizedRequest(new MessageReceivingEndpoint(requestUrl, HttpDeliveryMethods.PostRequest), this.AccessToken);
+            var req = this.Consumer.PrepareAuthorizedRequest(new MessageReceivingEndpoint(requestUrl, HttpDeliveryMethods.PostRequest | HttpDeliveryMethods.AuthorizationHeaderRequest), this.AccessToken);
             this.InitializeRequest(req);
             return (HttpWebResponse)req.GetResponse();
         }
