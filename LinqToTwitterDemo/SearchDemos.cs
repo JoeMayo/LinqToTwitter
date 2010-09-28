@@ -24,10 +24,10 @@ namespace LinqToTwitterDemo
             //SearchTwitterLocaleDemo(twitterCtx);
             //SearchAndUseStatusTwitterDemo(twitterCtx);
             //SearchByLanguageTwitterDemo(twitterCtx);
-            SearchSinceDateTwitterDemo(twitterCtx);
+            //SearchSinceDateTwitterDemo(twitterCtx);
             //SearchTwitterSource(twitterCtx);
             //ExceedSearchRateLimitDemo(twitterCtx);
-            //SearchWithResultType(twitterCtx);
+            SearchWithResultType(twitterCtx);
             //SearchWithWordQuery(twitterCtx);
             //SearchWithPersonQuery(twitterCtx);
             //SearchWithAttitudeQuery(twitterCtx);
@@ -303,23 +303,21 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void SearchWithResultType(TwitterContext twitterCtx)
         {
-            var queryResults =
-                from search in twitterCtx.Search
-                where search.Type == SearchType.Search &&
-                      search.ResultType == ResultType.Mixed &&
-                      search.Query == "Didi Benami"
-                select search;
+            var searchResults =
+                (from search in twitterCtx.Search
+                 where search.Type == SearchType.Search &&
+                       search.ResultType == ResultType.Popular &&
+                       search.Query == "Katy Perry"
+                 select search)
+                .FirstOrDefault();
 
-            foreach (var search in queryResults)
+            Console.WriteLine("\nQuery:\n" + searchResults.Title);
+
+            foreach (var entry in searchResults.Entries)
             {
-                Console.WriteLine("\nQuery:\n" + search.Title);
-
-                foreach (var entry in search.Entries)
-                {
-                    Console.WriteLine(
-                        "ID: {0}, Result Type: {1}\nContent: {2}\n",
-                        entry.ID, entry.ResultType, entry.Content);
-                }
+                Console.WriteLine(
+                    "ID: {0}, Result Type: {1}\nContent: {2}\n",
+                    entry.ID, entry.ResultType, entry.Content);
             }
         }
 

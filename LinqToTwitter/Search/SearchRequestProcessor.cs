@@ -291,7 +291,7 @@ namespace LinqToTwitter
             if (parameters.ContainsKey("ResultType"))
             {
                 ResultType = RequestProcessorHelper.ParseQueryEnumType<ResultType>(parameters["ResultType"]);
-                urlParams.Add("result_type=" + ResultType.ToString());
+                urlParams.Add("result_type=" + ResultType.ToString().ToLower());
             }
 
             if (parameters.ContainsKey("WordPhrase"))
