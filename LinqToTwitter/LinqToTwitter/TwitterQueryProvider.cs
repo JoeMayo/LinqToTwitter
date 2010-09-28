@@ -21,6 +21,7 @@ using System;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using LinqToTwitter.Common;
 
 namespace LinqToTwitter
 {
@@ -96,9 +97,7 @@ namespace LinqToTwitter
                 typeof(TResult).Name == "IEnumerable";
 
             // generic parameter type for method call
-            Type resultType = 
-                TypeSystem.GetElementType(
-                    (expression as MethodCallExpression).Arguments[0].Type);
+            Type resultType = new MethodCallExpressionTypeFinder().GetGenericType(expression);
             Type[] genericArguments = new Type[] { resultType };
 
             // generic method instance via reflection
@@ -108,8 +107,6 @@ namespace LinqToTwitter
             // use reflection to execute the generic method with the proper arguments
             //  Note: look at ProcessResults method in PostProcessor and you'll see what is being executed
             return (TResult)genericMethodInfo.Invoke(Context, new object[] { expression, isEnumerable });
-
-            //return (TResult)Context.Execute<TResult>(expression, isEnumerable);
         }
     }
 }

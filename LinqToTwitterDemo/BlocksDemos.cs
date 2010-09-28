@@ -19,9 +19,10 @@ namespace LinqToTwitterDemo
         {
             //CreateBlock(twitterCtx);
             //DestroyBlock(twitterCtx);
-            BlockExistsDemo(twitterCtx);
+            //BlockExistsDemo(twitterCtx);
             //BlockIDsDemo(twitterCtx);
             //BlockBlockingDemo(twitterCtx);
+            BlockBlockingProjectionDemo(twitterCtx);
         }
 
         #region Block Demos
@@ -65,6 +66,23 @@ namespace LinqToTwitterDemo
                  .FirstOrDefault();
 
             block.Users.ForEach(
+                user => Console.WriteLine("User, {0} is blocked.", user.Name));
+        }
+
+
+        /// <summary>
+        /// shows how to get a list of users that are being blocked via custom projection
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void BlockBlockingProjectionDemo(TwitterContext twitterCtx)
+        {
+            var blockedUsers =
+                (from blockItem in twitterCtx.Blocks
+                 where blockItem.Type == BlockingType.Blocking
+                 select blockItem.Users)
+                .FirstOrDefault();
+
+            blockedUsers.ForEach(
                 user => Console.WriteLine("User, {0} is blocked.", user.Name));
         }
 

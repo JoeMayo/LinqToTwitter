@@ -90,8 +90,12 @@ namespace LinqToTwitterDemo
                 (from tweet in twitterCtx.DirectMessage
                  where tweet.Type == DirectMessageType.SentBy &&
                        tweet.Count == 2
-                 select tweet)
-                 .ToList();
+                 select new
+                 {
+                     tweet.SenderScreenName,
+                     tweet.Text
+                 })
+                .ToList();
 
             directMessages.ForEach(
                 dm => Console.WriteLine(

@@ -17,7 +17,7 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         public static void Run(TwitterContext twitterCtx)
         {
-            //GetListsDemo(twitterCtx);
+            GetListsDemo(twitterCtx);
             //IsListSubscribedDemo(twitterCtx);
             //GetListSubscribersDemo(twitterCtx);
             //IsListMemberDemo(twitterCtx);
@@ -32,7 +32,7 @@ namespace LinqToTwitterDemo
             //AddMemberToListDemo(twitterCtx);
             //AddMemberRangeToListWithScreenNamesDemo(twitterCtx);
             //AddMemberRangeToListWithUserIDsDemo(twitterCtx);
-            AddMemberRangeToListWithTooManyIDsDemo(twitterCtx);
+            //AddMemberRangeToListWithTooManyIDsDemo(twitterCtx);
             //DeleteMemberFromListDemo(twitterCtx);
             //SubscribeToListDemo(twitterCtx);
             //UnsubscribeFromListDemo(twitterCtx);
@@ -344,6 +344,13 @@ namespace LinqToTwitterDemo
             }
         }
 
+        private class ListDetails
+        {
+            public string Name { get; set; }
+
+            public string Description { get; set; }
+        }
+
         /// <summary>
         /// Gets lists that user created
         /// </summary>
@@ -354,7 +361,11 @@ namespace LinqToTwitterDemo
                 from list in twitterCtx.List
                 where list.Type == ListType.Lists &&
                       list.ScreenName == "LinqToTweeter"
-                select list;
+                select new ListDetails
+                {
+                    Name = list.Name,
+                    Description = list.Description
+                };
 
             foreach (var list in lists)
             {

@@ -51,13 +51,17 @@ namespace LinqToTwitterDemo
             var favorites =
                 from fav in twitterCtx.Favorites
                 where fav.Type == FavoritesType.Favorites
-                select fav;
+                select new
+                {
+                    UserName = fav.User.Name,
+                    Tweet = fav.Text
+                };
 
             foreach (var fav in favorites)
             {
                 Console.WriteLine(
                     "User Name: {0}, Tweet: {1}",
-                    fav.User.Name, fav.Text);
+                    fav.UserName, fav.Tweet);
             }
         }
 

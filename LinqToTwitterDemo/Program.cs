@@ -42,19 +42,15 @@ namespace LinqToTwitterDemo
             ////desktopAuth.ConsumerKey = "some key";
             ////desktopAuth.ConsumerSecret = "some secret";
 
-            //auth.UseCompression = true;
+            auth.UseCompression = true;
 
             // TwitterContext is similar to DataContext (LINQ to SQL) or ObjectContext (LINQ to Entities)
 
             // For Twitter
             using (var twitterCtx = new TwitterContext(auth, "https://api.twitter.com/1/", "https://search.twitter.com/"))
-            //using (var twitterCtx = new TwitterContext(auth, "https://api.twitter.com/1/", "https://api.twitter.com/1/"))
             {
                 //Log
                 twitterCtx.Log = Console.Out;
-
-                // For JTweeter (Laconica)
-                //var twitterCtx = new TwitterContext(passwordAuth, "http://jtweeter.com/api/", "http://search.twitter.com/");
 
                 // For Identi.ca (Laconica)
                 //var twitterCtx = new TwitterContext(passwordAuth, "http://identi.ca/api/", "http://search.twitter.com/");

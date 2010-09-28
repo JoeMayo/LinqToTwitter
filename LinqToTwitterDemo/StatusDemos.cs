@@ -32,9 +32,9 @@ namespace LinqToTwitterDemo
             //MentionsWithSinceIDStatusQueryDemo(twitterCtx);
             //MentionsWithPagingQueryDemo(twitterCtx);
             //SingleStatusQueryDemo(twitterCtx);
-            //UpdateStatusDemo(twitterCtx);
+            UpdateStatusDemo(twitterCtx);
             //UpdateStatusWithReplyDemo(twitterCtx);
-            UpdateStatusWithLocationDemo(twitterCtx);
+            //UpdateStatusWithLocationDemo(twitterCtx);
             //UpdateStatusWithPlaceDemo(twitterCtx);
             //DestroyStatusDemo(twitterCtx);
             //RetweetedByMeStatusQueryDemo(twitterCtx);
@@ -104,13 +104,18 @@ namespace LinqToTwitterDemo
                 from tweet in twitterCtx.Status
                 where tweet.Type == StatusType.Home &&
                       tweet.Page == 2
-                select tweet;
+                select new
+                {
+                    tweet.User.Name,
+                    tweet.Retweet,
+                    tweet.Text
+                };
 
             Console.WriteLine("\nTweets for " + twitterCtx.UserName + "\n");
             foreach (var tweet in friendTweets)
             {
                 Console.WriteLine(
-                    "Friend: " + tweet.User.Name +
+                    "Friend: " + tweet.Name +
                     "\nRetweeted by: " +
                         (tweet.Retweet == null ?
                             "Original Tweet" :

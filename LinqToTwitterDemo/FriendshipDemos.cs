@@ -17,10 +17,11 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         public static void Run(TwitterContext twitterCtx)
         {
-            //CreateFriendshipFollowDemo(twitterCtx);
+            CreateFriendshipFollowDemo(twitterCtx);
             //DestroyFriendshipDemo(twitterCtx);
             //CreateFriendshipNoDeviceUpdatesDemo(twitterCtx);
-            FriendshipExistsDemo(twitterCtx);
+            //FriendshipExistsDemo(twitterCtx);
+            //FriendshipExistsProjectionDemo(twitterCtx);
             //FriendshipShowDemo(twitterCtx);
             //FriendshipIncomingDemo(twitterCtx);
             //FriendshipOutgoingDemo(twitterCtx);
@@ -30,7 +31,7 @@ namespace LinqToTwitterDemo
 
         private static void CreateFriendshipNoDeviceUpdatesDemo(TwitterContext twitterCtx)
         {
-            var user = twitterCtx.CreateFriendship("LinqToTweeter", string.Empty, string.Empty, false);
+            var user = twitterCtx.CreateFriendship("JoeMayo", string.Empty, string.Empty, false);
 
             Console.WriteLine(
                 "User Name: {0}, Status: {1}",
@@ -50,7 +51,7 @@ namespace LinqToTwitterDemo
 
         private static void CreateFriendshipFollowDemo(TwitterContext twitterCtx)
         {
-            var user = twitterCtx.CreateFriendship("LinqToTweeter", string.Empty, string.Empty, true);
+            var user = twitterCtx.CreateFriendship("JoeMayo", string.Empty, string.Empty, true);
 
             Console.WriteLine(
                 "User Name: {0}, Status: {1}",
@@ -75,6 +76,23 @@ namespace LinqToTwitterDemo
             Console.WriteLine(
                 "LinqToTweeter follows JoeMayo: " +
                 friendship.IsFriend);
+        }
+
+        /// <summary>
+        /// Show how to perform a custom projection
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void FriendshipExistsProjectionDemo(TwitterContext twitterCtx)
+        {
+            var isFriend =
+                (from friend in twitterCtx.Friendship
+                 where friend.Type == FriendshipType.Exists &&
+                       friend.SubjectUser == "JoeMayo" &&
+                       friend.FollowingUser == "LinqToTweeter"
+                 select friend.IsFriend)
+                .FirstOrDefault();
+
+            Console.WriteLine("LinqToTweeter follows JoeMayo: " + isFriend);
         }
 
         /// <summary>

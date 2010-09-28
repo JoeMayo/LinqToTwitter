@@ -12,6 +12,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Net;
 using System.Xml.Linq;
+using LinqToTwitter.Common;
 
 namespace LinqToTwitter
 {
@@ -660,12 +661,7 @@ namespace LinqToTwitter
                 throw new ArgumentNullException("Expression passed to CreateRequestProcessor must not be null.");
             }
 
-            string requestType =
-                TypeSystem
-                    .GetElementType(
-                        (expression as MethodCallExpression)
-                        .Arguments[0].Type)
-                        .Name;
+            string requestType = new MethodCallExpressionTypeFinder().GetGenericType(expression).Name;
 
             IRequestProcessor<T> req = null;
 

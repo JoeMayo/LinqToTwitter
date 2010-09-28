@@ -19,7 +19,8 @@ namespace LinqToTwitterDemo
         public static void Run(TwitterContext twitterCtx)
         {
             //VerifyAccountCredentials(twitterCtx);
-            ViewRateLimitStatus(twitterCtx);
+            //ViewRateLimitStatus(twitterCtx);
+            ViewRateLimitStatusProjection(twitterCtx);
             //ViewRateLimitResponseHeadersDemo(twitterCtx);
             //EndSession(twitterCtx);
             //UpdateDeliveryDevice(twitterCtx);
@@ -211,6 +212,25 @@ namespace LinqToTwitterDemo
                 Console.WriteLine("Reset Time: {0}", account.RateLimitStatus.ResetTime);
                 Console.WriteLine("Reset Time in Seconds: {0}", account.RateLimitStatus.ResetTimeInSeconds);
             }
+        }
+
+        /// <summary>
+        /// Shows how to query an account's rate limit status info with a custom projection
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void ViewRateLimitStatusProjection(TwitterContext twitterCtx)
+        {
+            var rateLimitStatus =
+                (from acct in twitterCtx.Account
+                 where acct.Type == AccountType.RateLimitStatus
+                 select acct.RateLimitStatus)
+                .SingleOrDefault();
+
+            Console.WriteLine("\nRate Limit Status: \n");
+            Console.WriteLine("Remaining Hits: {0}", rateLimitStatus.RemainingHits);
+            Console.WriteLine("Hourly Limit: {0}", rateLimitStatus.HourlyLimit);
+            Console.WriteLine("Reset Time: {0}", rateLimitStatus.ResetTime);
+            Console.WriteLine("Reset Time in Seconds: {0}", rateLimitStatus.ResetTimeInSeconds);
         }
 
         /// <summary>

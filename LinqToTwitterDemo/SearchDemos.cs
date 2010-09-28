@@ -250,18 +250,18 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void SearchSinceDateTwitterDemo(TwitterContext twitterCtx)
         {
-            var queryResults = 
-                from search in twitterCtx.Search 
-                where search.Type == SearchType.Search && 
-                      search.Query == "Leite Moca" && 
-                      search.SearchLanguage == "pt" && 
-                      search.PageSize == 50 && 
+            var queryResults =
+                from search in twitterCtx.Search
+                where search.Type == SearchType.Search &&
+                      search.Query == "Leite Moca" &&
+                      search.SearchLanguage == "pt" &&
+                      search.PageSize == 50 &&
                       search.Since >= DateTime.Now.Date
-                select search;
+                select search.Entries;
 
             var searchResult = queryResults.FirstOrDefault();
 
-            foreach (var entry in searchResult.Entries)
+            foreach (var entry in searchResult)
             {
                 Console.WriteLine(
                     "ID: {0}, Source: {1}, Language: {2}\nContent: {3}\n",

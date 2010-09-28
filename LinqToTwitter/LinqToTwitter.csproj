@@ -152,6 +152,7 @@
     <Compile Include="Account\AccountType.cs" />
     <Compile Include="Common\ExpressionTreeModifier.cs" />
     <Compile Include="Common\IDList.cs" />
+    <Compile Include="Common\MethodCallExpressionTypeFinder.cs" />
     <Compile Include="Friendship\Relationship.cs" />
     <Compile Include="Geo\Geometry.cs" />
     <Compile Include="Geo\Coordinate.cs" />
