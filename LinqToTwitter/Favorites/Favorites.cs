@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml.Serialization;
 
 namespace LinqToTwitter
 {
@@ -14,6 +15,7 @@ namespace LinqToTwitter
         /// <summary>
         /// type of favorites to query
         /// </summary>
+        [XmlElement(ElementName="FavoritesType")]
         public new FavoritesType Type { get; set; }
 
         /// <summary>

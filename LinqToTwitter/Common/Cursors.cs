@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Xml.Linq;
+using System.Xml.Serialization;
 
 namespace LinqToTwitter
 {
@@ -38,11 +39,13 @@ namespace LinqToTwitter
         /// <summary>
         /// Use this value to retrieve the next page
         /// </summary>
+        [XmlIgnore]
         public string Next { get; internal set; }
 
         /// <summary>
         /// Use this value to go back to the previous page
         /// </summary>
+        [XmlIgnore]
         public string Previous { get; internal set; }
     }
 }

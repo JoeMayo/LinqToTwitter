@@ -282,7 +282,7 @@ The blog system I'm us.. &lt;a href=""http://tinyurl.com/cvdbvr""&gt;http://tiny
                     { "Until", "7/4/2011" },
                     { "ResultType", ResultType.Popular.ToString()},
                };
-            string expected = "http://search.twitter.com/search.atom?geocode=40.757929%2c-73.985506%2c25km&lang=en&page=1&rpp=10&q=LINQ+to+Twitter&show_user=true&since=2010-07-04&until=2011-07-04&since_id=1&result_type=Popular";
+            string expected = "http://search.twitter.com/search.atom?geocode=40.757929%2c-73.985506%2c25km&lang=en&page=1&rpp=10&q=LINQ+to+Twitter&show_user=true&since=2010-07-04&until=2011-07-04&since_id=1&result_type=popular";
             string actual;
             actual = target.BuildURL(parameters);
             Assert.AreEqual(expected, actual);

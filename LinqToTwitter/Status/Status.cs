@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Xml.Linq;
 using System.Globalization;
+using System.Xml.Serialization;
 
 namespace LinqToTwitter
 {
@@ -188,6 +189,7 @@ namespace LinqToTwitter
         /// <summary>
         /// type of status request, i.e. Friends or Public
         /// </summary>
+        [XmlElement(ElementName="StatusType")]
         public StatusType Type { get; set; }
 
         /// <summary>

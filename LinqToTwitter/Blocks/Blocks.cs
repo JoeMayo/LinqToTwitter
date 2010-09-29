@@ -39,7 +39,7 @@ namespace LinqToTwitter
         /// <summary>
         /// List of blocked IDs
         /// </summary>
-        public List<string> IDs { get; internal set; }
+        public List<string> IDs { get; set; }
 
         /// <summary>
         /// user being blocked

@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Xml.Linq;
 using System.Globalization;
+using System.Xml.Serialization;
 
 namespace LinqToTwitter
 {
@@ -287,6 +288,7 @@ namespace LinqToTwitter
         /// next request to indicate that you want to move to
         /// either the next or previous page.
         /// </remarks>
+        [XmlIgnore]
         public Cursors CursorMovement { get; internal set; }
 
         /// <summary>
