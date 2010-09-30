@@ -707,8 +707,7 @@ namespace LinqToTwitter
                     req = new UserRequestProcessor<T>() { BaseUrl = BaseUrl };
                     break;
                 default:
-                    req = new StatusRequestProcessor<T>() { BaseUrl = BaseUrl };
-                    break;
+                    throw new ArgumentException("Type, " + requestType + " isn't as supported LINQ to Twitter entity.", "requestType");
             }
 
             Debug.Assert(req != null, "You you must assign a value to req.");

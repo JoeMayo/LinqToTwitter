@@ -48,6 +48,37 @@ namespace LinqToTwitterDemo
             //GetAllTweetsAndRetweetsDemo(twitterCtx);
             //ContributorIDsDemo(twitterCtx);
             //StatusCountDemo(twitterCtx);
+            //StatusJoinDemo(twitterCtx);
+        }
+        
+        private static void StatusJoinDemo(TwitterContext twitterCtx)
+        {
+            // Working on Issue #28845
+            //var tweets = 
+            //    from tweet in twitterCtx.Status 
+            //    join tweet2 in twitterCtx.Status 
+            //        on tweet.ScreenName equals tweet2.ScreenName 
+            //    where tweet.Type == StatusType.Friends &&
+            //          tweet.ScreenName == "JoeMayo"
+            //    select new 
+            //    { 
+            //        tweet, 
+            //        tweet2 
+            //    }; 
+
+            //var tweets =
+            //    from tweet in twitterCtx.Status
+            //    join user in twitterCtx.User
+            //        on tweet.ScreenName equals user.ScreenName
+            //    where tweet.Type == StatusType.Friends &&
+            //          tweet.ScreenName == "JoeMayo"
+            //    select new
+            //    {
+            //        tweet,
+            //        user.Status
+            //    }; 
+
+            //Console.WriteLine(tweets.Count());
         }
 
         #region Status Demos
@@ -499,6 +530,8 @@ namespace LinqToTwitterDemo
             var status = "\u00C7 Testing LINQ to Twitter update status on " + DateTime.Now.ToString() + " #linqtotwitter";
 
             Console.WriteLine("Status being sent: " + status);
+            Console.WriteLine("Press any key to post tweet...");
+            Console.ReadKey();
 
             var tweet = twitterCtx.UpdateStatus(status);
 
