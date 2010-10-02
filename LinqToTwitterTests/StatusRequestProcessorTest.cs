@@ -1,4 +1,5 @@
 ﻿using LinqToTwitter;
+using LinqToTwitterTests.Resources;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System.Xml.Linq;
@@ -1338,6 +1339,31 @@ namespace LinqToTwitterTests
             Annotation ann = new Annotation().CreateAnnotation(annXml);
 
             Assert.AreEqual(null, ann);
+        }
+
+        /// <summary>
+        /// Tries to deserialise XML into the object
+        /// </summary>
+        [TestMethod]
+        public void ProcessStatusXml()
+        {
+            var processor = new StatusRequestProcessor<Status>();
+            var element = XElement.Load(new StringReader(XmlContent.Status));
+            var result = processor.ProcessResults(element);
+
+            Assert.IsNotNull(result, "The result is null");
+            Assert.AreEqual(1, result.Count, "Incorrect number of statuses");
+
+            var status = result.FirstOrDefault();
+            Assert.IsNotNull(status, "No status update");
+            Assert.AreEqual("RT @mashable @LinkedIn Beefs Up Its Twitter Integration [PICS] http://bit.ly/bkB7cA #linkedin #tweets #twitter", status.Text);
+
+            //check links
+            Assert.AreEqual("http://bit.ly/bkB7cA", status.Entities.UrlMentions[0].Url);
+
+            //check user mentions
+            Assert.AreEqual(2, status.Entities.UserMentions.Count, "Invalid number of metnions");
+
         }
     }
 }

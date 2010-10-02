@@ -136,6 +136,8 @@ namespace LinqToTwitter
 
             var usr = new User();
 
+            var entities = new Entities().CreateEntities(status.Element("entities"));
+
             var newStatus = new Status
             {
                 CreatedAt = createdAtDate,
@@ -160,6 +162,7 @@ namespace LinqToTwitter
                 Place = place,
                 Annotation = annotation,
                 User = usr.CreateUser(user),
+                Entities = entities,
                 Retweet =
                     retweet == null ?
                         null :
@@ -316,5 +319,10 @@ namespace LinqToTwitter
         /// Meta-data applied to tweet
         /// </summary>
         public Annotation Annotation { get; set; }
+
+        /// <summary>
+        /// Entities connected to the status
+        /// </summary>
+        public Entities Entities { get; set; }
     }
 }

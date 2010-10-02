@@ -1,4 +1,5 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="Default.aspx.cs" Inherits="_Default" %>
+<%@ Import Namespace="LinqToTwitter" %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -48,6 +49,7 @@
 					<th>Picture </th>
 					<th>Name </th>
 					<th>Last Tweet </th>
+                    <th>Mentions </th>
 				</tr>
 				<tr id="itemPlaceholder">
 				</tr>
@@ -60,6 +62,18 @@
 				</td>
 				<td><asp:Label ID="NameLabel" runat="server" Text='<%#Eval("User.Name") %>' /> </td>
 				<td><asp:Label ID="TweetLabel" runat="server" Text='<%#Eval("Text") %>' /> </td>
+                <td>
+                    <asp:Repeater runat="server" DataSource='<%#Eval("Entities.UserMentions") %>'>
+                        <ItemTemplate><%# Eval("ScreenName")%>,</ItemTemplate>
+                    </asp:Repeater>
+                    <asp:Repeater ID="Repeater1" runat="server" DataSource='<%#Eval("Entities.UrlMentions") %>'>
+                        <ItemTemplate><%# Eval("Url")%>,</ItemTemplate>
+                    </asp:Repeater>
+
+                    <asp:Repeater ID="Repeater2" runat="server" DataSource='<%#Eval("Entities.HashTagMentions") %>'>
+                        <ItemTemplate><%# Eval("Tag")%>,</ItemTemplate>
+                    </asp:Repeater>
+                </td>
 			</tr>
 		</ItemTemplate>
 	</asp:ListView>

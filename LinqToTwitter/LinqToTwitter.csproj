@@ -171,7 +171,12 @@
     <Compile Include="Common\BuildUrlHelper.cs" />
     <Compile Include="Search\Attitude.cs" />
     <Compile Include="Search\ResultType.cs" />
+    <Compile Include="Status\Entities\HashTagMention.cs" />
     <Compile Include="Status\Annotation.cs" />
+    <Compile Include="Status\Entities\Entities.cs" />
+    <Compile Include="Status\Entities\MentionBase.cs" />
+    <Compile Include="Status\Entities\UrlMention.cs" />
+    <Compile Include="Status\Entities\UserMention.cs" />
     <Compile Include="Trend\Location.cs" />
     <Compile Include="Common\Cursors.cs" />
     <Compile Include="OAuth\DesktopOAuthAuthorization.cs" />
