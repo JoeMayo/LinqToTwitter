@@ -612,6 +612,7 @@ namespace LinqToTwitter
 
             // Copy the expression tree that was passed in, changing only the first
             // argument of the innermost MethodCallExpression.
+            // -- Transforms IQueryable<T> into List<T>, which is (IEnumerable<T>)
             ExpressionTreeModifier<T> treeCopier = new ExpressionTreeModifier<T>(queryableItems);
             Expression newExpressionTree = treeCopier.CopyAndModify(expression);
 

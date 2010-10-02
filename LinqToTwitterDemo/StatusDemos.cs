@@ -51,35 +51,40 @@ namespace LinqToTwitterDemo
             //StatusJoinDemo(twitterCtx);
         }
         
-        private static void StatusJoinDemo(TwitterContext twitterCtx)
-        {
-            // Working on Issue #28845
-            //var tweets = 
-            //    from tweet in twitterCtx.Status 
-            //    join tweet2 in twitterCtx.Status 
-            //        on tweet.ScreenName equals tweet2.ScreenName 
-            //    where tweet.Type == StatusType.Friends &&
-            //          tweet.ScreenName == "JoeMayo"
-            //    select new 
-            //    { 
-            //        tweet, 
-            //        tweet2 
-            //    }; 
+        //private static void StatusJoinDemo(TwitterContext twitterCtx)
+        //{
+        //    // Working on Issue #28845
+        //    var tweets =
+        //        from tweet in twitterCtx.Status
+        //        join tweet2 in twitterCtx.Status
+        //            on tweet.ScreenName equals tweet2.ScreenName
+        //        where tweet.Type == StatusType.Friends &&
+        //              tweet.ScreenName == "JoeMayo"
+        //        select new
+        //        {
+        //            tweet,
+        //            tweet2
+        //        };
+        //    //var tweets =
+        //    //    from tweet in twitterCtx.Status
+        //    //    where tweet.Type == StatusType.Friends &&
+        //    //          tweet.ScreenName == "JoeMayo"
+        //    //    select tweet; 
 
-            //var tweets =
-            //    from tweet in twitterCtx.Status
-            //    join user in twitterCtx.User
-            //        on tweet.ScreenName equals user.ScreenName
-            //    where tweet.Type == StatusType.Friends &&
-            //          tweet.ScreenName == "JoeMayo"
-            //    select new
-            //    {
-            //        tweet,
-            //        user.Status
-            //    }; 
+        //    //var tweets =
+        //    //    from tweet in twitterCtx.Status
+        //    //    join user in twitterCtx.User
+        //    //        on tweet.ScreenName equals user.ScreenName
+        //    //    where tweet.Type == StatusType.Friends &&
+        //    //          tweet.ScreenName == "JoeMayo"
+        //    //    select new
+        //    //    {
+        //    //        tweet,
+        //    //        user.Status
+        //    //    }; 
 
-            //Console.WriteLine(tweets.Count());
-        }
+        //    Console.WriteLine(tweets.Count());
+        //}
 
         #region Status Demos
 

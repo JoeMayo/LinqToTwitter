@@ -132,6 +132,8 @@ namespace LinqToTwitter
 
             var place = new Place().CreatePlace(status.Element("place"));
 
+            var annotation = new Annotation().CreateAnnotation(status.Element("annotation"));
+
             var usr = new User();
 
             var newStatus = new Status
@@ -156,6 +158,7 @@ namespace LinqToTwitter
                 Geo = geo,
                 Coordinates = coord,
                 Place = place,
+                Annotation = annotation,
                 User = usr.CreateUser(user),
                 Retweet =
                     retweet == null ?
@@ -308,5 +311,10 @@ namespace LinqToTwitter
         /// Place where status was created
         /// </summary>
         public Place Place { get; set; }
+
+        /// <summary>
+        /// Meta-data applied to tweet
+        /// </summary>
+        public Annotation Annotation { get; set; }
     }
 }

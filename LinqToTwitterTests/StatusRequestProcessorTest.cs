@@ -20,6 +20,18 @@ namespace LinqToTwitterTests
 
         #region Test Data
 
+        private string m_annotation = @"<annotations type=""array"">
+  <annotation>
+    <type>foo</type>
+    <attributes>
+      <attribute>
+        <name>bar</name>
+        <value>baz</value>
+      </attribute>
+    </attributes>
+  </annotation>
+</annotations>";
+
         private string m_testQueryResponse = @"<statuses type=""array"">
   <status>
     <created_at>Fri Nov 27 18:28:57 +0000 2009</created_at>
@@ -1304,6 +1316,28 @@ namespace LinqToTwitterTests
             {
                 Assert.AreEqual<string>("Type", ae.ParamName);
             }
+        }
+
+        [TestMethod]
+        public void CreateAnnotation_Transform_XML_Into_Annotation()
+        {
+            var annXml = XElement.Parse(m_annotation);
+
+            Annotation ann = new Annotation().CreateAnnotation(annXml.Element("annotation"));
+
+            Assert.AreEqual("foo", ann.Type);
+            Assert.IsTrue(ann.Attributes.ContainsKey("bar"));
+            Assert.AreEqual("baz", ann.Attributes["bar"]);
+        }
+
+        [TestMethod]
+        public void CreateAnnotation_Returns_Null_On_Missing_Annotation()
+        {
+            XElement annXml = null;
+
+            Annotation ann = new Annotation().CreateAnnotation(annXml);
+
+            Assert.AreEqual(null, ann);
         }
     }
 }
