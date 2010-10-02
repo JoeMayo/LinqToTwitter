@@ -7,6 +7,7 @@ using System.Xml.Serialization;
 
 namespace LinqToTwitter
 {
+    [Serializable]
     public class Annotation
     {
         public string Type { get; set; }
