@@ -393,10 +393,11 @@ namespace LinqToTwitter
         /// <summary>
         /// transforms XML into IQueryable of User
         /// </summary>
-        /// <param name="twitterResponse">xml with Twitter response</param>
-        /// <returns>IQueryable of User</returns>
-        public List<T> ProcessResults(XElement twitterResponse)
+        /// <param name="responseXml">xml with Twitter response</param>
+        /// <returns>List of User</returns>
+        public List<T> ProcessResults(string responseXml)
         {
+            XElement twitterResponse = XElement.Parse(responseXml);
             XNamespace atom = "http://www.w3.org/2005/Atom";
             XNamespace twitter = "http://api.twitter.com/";
             XNamespace openSearch = "http://a9.com/-/spec/opensearch/1.1/";

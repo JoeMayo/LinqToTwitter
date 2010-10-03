@@ -50,7 +50,7 @@ namespace LinqToTwitter
         /// <param name="url">URL of request</param>
         /// <param name="parameters">parameters to post</param>
         /// <returns>XML Response from Twitter</returns>
-        XElement ExecuteTwitter(string url, Dictionary<string, string> parameters);
+        string ExecuteTwitter(string url, Dictionary<string, string> parameters);
 
         /// <summary>
         /// performs HTTP POST file upload to Twitter
@@ -59,7 +59,7 @@ namespace LinqToTwitter
         /// <param name="parameters">query string parameters</param>
         /// <param name="url">url to upload to</param>
         /// <returns>XML Results from Twitter</returns>
-        XElement PostTwitterFile(string filePath, Dictionary<string, string> parameters, string url);
+        string PostTwitterFile(string filePath, Dictionary<string, string> parameters, string url);
 
         /// <summary>
         /// performs HTTP POST image byte array upload to Twitter
@@ -69,14 +69,14 @@ namespace LinqToTwitter
         /// <param name="fileName">name to pass to Twitter for the file</param>
         /// <param name="imageType">type of image: must be one of jpg, gif, or png</param>
         /// <returns>XML results From Twitter</returns>
-        XElement PostTwitterImage(byte[] image, Dictionary<string, string> parameters, string url, string fileName, string imageType);
+        string PostTwitterImage(byte[] image, Dictionary<string, string> parameters, string url, string fileName, string imageType);
 
         /// <summary>
         /// makes HTTP call to Twitter API
         /// </summary>
         /// <param name="url">URL with all query info</param>
         /// <returns>XML Results from Twitter</returns>
-        XElement QueryTwitter(string url);
+        string QueryTwitter(string url);
 
         /// <summary>
         /// Used to notify callers of changes in image upload progress

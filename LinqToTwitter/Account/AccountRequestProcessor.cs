@@ -73,10 +73,11 @@ namespace LinqToTwitter
         /// <summary>
         /// transforms XML into IQueryable of User
         /// </summary>
-        /// <param name="twitterResponse">xml with Twitter response</param>
-        /// <returns>IQueryable of User</returns>
-        public virtual List<T> ProcessResults(XElement twitterResponse)
+        /// <param name="responseXml">xml with Twitter response</param>
+        /// <returns>List of User</returns>
+        public virtual List<T> ProcessResults(string responseXml)
         {
+            XElement twitterResponse = XElement.Parse(responseXml);
             var acct = new Account { Type = Type };
 
             if (twitterResponse.Name == "user")

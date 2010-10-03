@@ -256,13 +256,13 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// appends parameters for Search request
+        /// Transforms response from Twitter into List of Trend
         /// </summary>
-        /// <param name="parameters">list of parameters from expression tree</param>
-        /// <param name="url">base url</param>
-        /// <returns>base url + parameters</returns>
-        public virtual List<T> ProcessResults(System.Xml.Linq.XElement twitterResponse)
+        /// <param name="responseXml">XML response from Twitter</param>
+        /// <returns>List of Trend</returns>
+        public virtual List<T> ProcessResults(string responseXml)
         {
+            XElement twitterResponse = XElement.Parse(responseXml);
             XNamespace itemNS = "item";
 
             List<XElement> locations = new List<XElement>();

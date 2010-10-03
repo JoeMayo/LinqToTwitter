@@ -151,8 +151,9 @@ namespace LinqToTwitterTests
         public void ProcessResultsTest()
         {
             FavoritesRequestProcessor<Favorites> target = new FavoritesRequestProcessor<Favorites>();
-            XElement twitterResponse = XElement.Parse(m_twitterResponse);
-            IList actual = target.ProcessResults(twitterResponse);
+
+            IList actual = target.ProcessResults(m_twitterResponse);
+
             var results = actual.Cast<Favorites>();
             Assert.AreEqual(2, results.Count());
         }

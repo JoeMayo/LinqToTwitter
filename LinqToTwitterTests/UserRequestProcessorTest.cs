@@ -555,10 +555,10 @@ namespace LinqToTwitterTests
         public void ProcessResultsSingleResultTest()
         {
             var statProc = new UserRequestProcessor<User>() { BaseUrl = "http://twitter.com/" };
-            XElement twitterResponse = XElement.Load(new StringReader(m_testQueryResponse));
-            var actual = statProc.ProcessResults(twitterResponse);
-            var actualQuery = actual as IList<User>;
 
+            var actual = statProc.ProcessResults(m_testQueryResponse);
+
+            var actualQuery = actual as IList<User>;
             Assert.IsNotNull(actualQuery);
             Assert.AreEqual(actualQuery.Count(), 1);
         }
@@ -570,10 +570,10 @@ namespace LinqToTwitterTests
         public void ProcessResultsMultipleResultsTest()
         {
             var statProc = new UserRequestProcessor<User>() { BaseUrl = "http://twitter.com/" };
-            XElement twitterResponse = XElement.Load(new StringReader(m_testQueryResponse));
-            var actual = statProc.ProcessResults(twitterResponse);
-            var actualQuery = actual as IList<User>;
 
+            var actual = statProc.ProcessResults(m_testQueryResponse);
+
+            var actualQuery = actual as IList<User>;
             Assert.IsNotNull(actualQuery);
             Assert.AreEqual(actualQuery.Count(), 1);
         }
@@ -585,8 +585,9 @@ namespace LinqToTwitterTests
         public void ProcessCategoresResultsTest()
         {
             var statProc = new UserRequestProcessor<User>() { BaseUrl = "http://api.twitter.com/1/" };
-            XElement twitterResponse = XElement.Load(new StringReader(m_testCategoriesResponse));
-            var actual = (List<User>)statProc.ProcessResults(twitterResponse);
+
+            var actual = (List<User>)statProc.ProcessResults(m_testCategoriesResponse);
+
             Assert.AreEqual(5, actual[0].Categories.Count);
         }
 
@@ -597,8 +598,9 @@ namespace LinqToTwitterTests
         public void ProcessUsersInCategoryResultsTest()
         {
             var statProc = new UserRequestProcessor<User>() { BaseUrl = "http://api.twitter.com/1/" };
-            XElement twitterResponse = XElement.Load(new StringReader(m_usersInCategoryResponse));
-            var actual = (List<User>)statProc.ProcessResults(twitterResponse);
+
+            var actual = (List<User>)statProc.ProcessResults(m_usersInCategoryResponse);
+
             Assert.AreEqual(2, actual.Count);
         }
 

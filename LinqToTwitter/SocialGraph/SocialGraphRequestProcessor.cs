@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Linq.Expressions;
 using System.Collections;
+using System.Xml.Linq;
 
 namespace LinqToTwitter
 {
@@ -195,10 +196,11 @@ namespace LinqToTwitter
         /// <summary>
         /// transforms XML into IQueryable of User
         /// </summary>
-        /// <param name="twitterResponse">xml with Twitter response</param>
+        /// <param name="responseXml">xml with Twitter response</param>
         /// <returns>IQueryable of User</returns>
-        public List<T> ProcessResults(System.Xml.Linq.XElement twitterResponse)
+        public List<T> ProcessResults(string responseXml)
         {
+            XElement twitterResponse = XElement.Parse(responseXml);
             var graph = new SocialGraph
             {
                 Type = Type,

@@ -205,13 +205,13 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// appends parameters for Search request
+        /// Transforms twitter response into List of Blocks objects
         /// </summary>
-        /// <param name="parameters">list of parameters from expression tree</param>
-        /// <param name="url">base url</param>
-        /// <returns>base url + parameters</returns>
-        public virtual List<T> ProcessResults(XElement twitterResponse)
+        /// <param name="responseXML">XML response from Twitter</param>
+        /// <returns>List of Blocks</returns>
+        public virtual List<T> ProcessResults(string responseXml)
         {
+            XElement twitterResponse = XElement.Parse(responseXml);
             var blocks = new Blocks
             {
                 Type = Type,

@@ -5,6 +5,7 @@ using System.Text;
 using System.Linq.Expressions;
 using System.Collections;
 using System.Web;
+using System.Xml.Linq;
 
 namespace LinqToTwitter
 {
@@ -399,10 +400,11 @@ namespace LinqToTwitter
         /// <summary>
         /// transforms XML into IList of User
         /// </summary>
-        /// <param name="twitterResponse">xml with Twitter response</param>
-        /// <returns>IList of User</returns>
-        public virtual List<T> ProcessResults(System.Xml.Linq.XElement twitterResponse)
+        /// <param name="responseXml">xml with Twitter response</param>
+        /// <returns>List of User</returns>
+        public virtual List<T> ProcessResults(string responseXml)
         {
+            XElement twitterResponse = XElement.Parse(responseXml);
             var userList = new List<User>();
             var categories = new List<Category>();
 

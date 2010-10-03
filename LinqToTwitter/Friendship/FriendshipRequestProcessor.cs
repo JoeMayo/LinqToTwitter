@@ -267,10 +267,11 @@ namespace LinqToTwitter
         /// <summary>
         /// transforms XML into IQueryable of User
         /// </summary>
-        /// <param name="twitterResponse">xml with Twitter response</param>
+        /// <param name="responseXml">xml with Twitter response</param>
         /// <returns>IQueryable of User</returns>
-        public virtual List<T> ProcessResults(XElement twitterResponse)
+        public virtual List<T> ProcessResults(string responseXml)
         {
+            XElement twitterResponse = XElement.Parse(responseXml);
             var friendship =
                 new Friendship
                 {

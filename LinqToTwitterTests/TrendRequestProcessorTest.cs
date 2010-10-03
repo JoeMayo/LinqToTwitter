@@ -238,8 +238,9 @@ namespace LinqToTwitterTests
         public void ProcessTrendResultsTest()
         {
             TrendRequestProcessor<Trend> target = new TrendRequestProcessor<Trend>();
-            XElement twitterResponse = XElement.Parse(m_testTrendQueryResponse);
-            IList actual = target.ProcessResults(twitterResponse);
+
+            IList actual = target.ProcessResults(m_testTrendQueryResponse);
+
             var trends = actual.Cast<Trend>().ToList();
             Assert.AreEqual(10, trends.Count);
             Assert.AreNotEqual(DateTime.MinValue.Date, trends[0].AsOf.Date);
@@ -252,8 +253,9 @@ namespace LinqToTwitterTests
         public void ProcessCurrentTrendResultsTest()
         {
             TrendRequestProcessor<Trend> target = new TrendRequestProcessor<Trend>();
-            XElement twitterResponse = XElement.Parse(m_testCurrentTrendQueryResponse);
-            IList actual = target.ProcessResults(twitterResponse);
+
+            IList actual = target.ProcessResults(m_testCurrentTrendQueryResponse);
+
             var trends = actual.Cast<Trend>().ToList();
             Assert.AreEqual(10, trends.Count);
             Assert.AreNotEqual(DateTime.MinValue.Date, trends[0].AsOf.Date);
@@ -266,8 +268,9 @@ namespace LinqToTwitterTests
         public void ProcessAvailableTrendResultsTest()
         {
             TrendRequestProcessor<Trend> target = new TrendRequestProcessor<Trend>();
-            XElement twitterResponse = XElement.Parse(m_testAvailableQueryResponse);
-            IList actual = target.ProcessResults(twitterResponse);
+
+            IList actual = target.ProcessResults(m_testAvailableQueryResponse);
+
             var trends = actual.Cast<Trend>().ToList();
             Assert.AreEqual(10, trends[0].Locations.Count);
         }

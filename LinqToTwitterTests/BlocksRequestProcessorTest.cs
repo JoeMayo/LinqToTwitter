@@ -187,10 +187,10 @@ namespace LinqToTwitterTests
         public void ProcessExistsResultsTest()
         {
             BlocksRequestProcessor<Blocks> target = new BlocksRequestProcessor<Blocks>();
-            XElement twitterResponse = XElement.Parse(m_blockExistsXml);
-            IList actual = target.ProcessResults(twitterResponse);
-            var actualQuery = actual as IList<Blocks>;
 
+            IList actual = target.ProcessResults(m_blockExistsXml);
+
+            var actualQuery = actual as IList<Blocks>;
             Assert.IsNotNull(actualQuery);
             Assert.AreEqual(actualQuery.Count(), 1);
         }
@@ -202,8 +202,8 @@ namespace LinqToTwitterTests
         public void ProcessIDsResultsTest()
         {
             BlocksRequestProcessor<Blocks> target = new BlocksRequestProcessor<Blocks>();
-            XElement twitterResponse = XElement.Parse(m_blockedIDsXml);
-            IList actual = target.ProcessResults(twitterResponse);
+
+            IList actual = target.ProcessResults(m_blockedIDsXml);
             var actualQuery = actual as IList<Blocks>;
 
             Assert.IsNotNull(actualQuery);
@@ -217,10 +217,10 @@ namespace LinqToTwitterTests
         public void ProcessBlockingResultsTest()
         {
             BlocksRequestProcessor<Blocks> target = new BlocksRequestProcessor<Blocks>();
-            XElement twitterResponse = XElement.Parse(m_blockedUsersXml);
-            IList actual = target.ProcessResults(twitterResponse);
-            var actualQuery = actual as IList<Blocks>;
 
+            IList actual = target.ProcessResults(m_blockedUsersXml);
+
+            var actualQuery = actual as IList<Blocks>;
             Assert.IsNotNull(actualQuery);
             Assert.AreEqual(actualQuery[0].Users.Count, 2);
         }
@@ -232,10 +232,10 @@ namespace LinqToTwitterTests
         public void ProcessIdsResultsTest()
         {
             BlocksRequestProcessor<Blocks> target = new BlocksRequestProcessor<Blocks>();
-            XElement twitterResponse = XElement.Parse(m_blockedUsersXml);
-            IList actual = target.ProcessResults(twitterResponse);
-            var actualQuery = actual as IList<Blocks>;
 
+            IList actual = target.ProcessResults(m_blockedUsersXml);
+
+            var actualQuery = actual as IList<Blocks>;
             Assert.IsNotNull(actualQuery);
             Assert.AreEqual(actualQuery[0].Users.Count, 2);
         }

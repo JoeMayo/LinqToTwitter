@@ -78,6 +78,31 @@ namespace LinqToTwitter
             SearchUrl = string.IsNullOrEmpty(searchUrl) ? "http://search.twitter.com/" : searchUrl;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TwitterContext"/> class.
+        /// </summary>
+        /// <param name="authorization">OAuth provider</param>
+        /// <param name="execute">The <see cref="ITwitterExecute"/> object to use.</param>
+        /// <param name="baseUrl">Base url of Twitter API.  May be null to use the default "http://twitter.com/" value.</param>
+        /// <param name="searchUrl">Base url of Twitter Search API.  May be null to use the default "http://search.twitter.com/" value.</param>
+        public TwitterContext(ITwitterAuthorization authorization, ITwitterExecute execute, string baseUrl, string searchUrl)
+        {
+            if (authorization == null)
+            {
+                throw new ArgumentNullException("authorization");
+            }
+
+            if (execute == null)
+            {
+                throw new ArgumentNullException("execute");
+            }
+
+            TwitterExecutor = execute;
+            TwitterExecutor.AuthorizedClient = authorization;
+            BaseUrl = string.IsNullOrEmpty(baseUrl) ? "https://api.twitter.com/1/" : baseUrl;
+            SearchUrl = string.IsNullOrEmpty(searchUrl) ? "http://search.twitter.com/" : searchUrl;
+        }
+
         #endregion
 
         #region Properties
@@ -331,13 +356,24 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// enables access to Twitter Friendship info
+        /// enables access to Twitter List info
         /// </summary>
         public TwitterQueryable<List> List
         {
             get
             {
                 return new TwitterQueryable<List>(this);
+            }
+        }
+
+        /// <summary>
+        /// enables access to Raw Query Extensibility
+        /// </summary>
+        public TwitterQueryable<Raw> RawQuery
+        {
+            get
+            {
+                return new TwitterQueryable<Raw>(this);
             }
         }
 
@@ -603,7 +639,7 @@ namespace LinqToTwitter
             var url = reqProc.BuildURL(parameters);
 
             // process request through Twitter
-            XElement resultsXml = TwitterExecutor.QueryTwitter(url);
+            string resultsXml = TwitterExecutor.QueryTwitter(url);
 
             var queryableList = reqProc.ProcessResults(resultsXml);
 
@@ -689,6 +725,9 @@ namespace LinqToTwitter
                 case "List":
                     req = new ListRequestProcessor<T>() { BaseUrl = BaseUrl };
                     break;
+                case "Raw":
+                    req = new RawRequestProcessor<T>() { BaseUrl = baseUrl };
+                    break;
                 case "SavedSearch":
                     req = new SavedSearchRequestProcessor<T>() { BaseUrl = BaseUrl };
                     break;
@@ -708,7 +747,7 @@ namespace LinqToTwitter
                     req = new UserRequestProcessor<T>() { BaseUrl = BaseUrl };
                     break;
                 default:
-                    throw new ArgumentException("Type, " + requestType + " isn't as supported LINQ to Twitter entity.", "requestType");
+                    throw new ArgumentException("Type, " + requestType + " isn't a supported LINQ to Twitter entity.", "requestType");
             }
 
             Debug.Assert(req != null, "You you must assign a value to req.");
@@ -2022,6 +2061,34 @@ namespace LinqToTwitter
 
             List<List> results = new ListRequestProcessor<List>().ProcessResults(resultsXml);
             return results.FirstOrDefault();
+        }
+
+        #endregion
+
+        #region Raw Requests
+
+        public string ExecuteRaw(string queryString, Dictionary<string, string> parameters)
+        {
+            //if (string.IsNullOrEmpty(screenName))
+            //{
+            //    throw new ArgumentException("screenName is required.", "screenName");
+            //}
+
+            //if (string.IsNullOrEmpty(listID))
+            //{
+            //    throw new ArgumentException("listID is required.", "listID");
+            //}
+
+            //var savedSearchUrl = BaseUrl + screenName + "/lists/" + listID + ".xml";
+
+            string rawUrl = BaseUrl.TrimEnd('/') + "/" + queryString.TrimStart('/');
+
+            var resultsXml =
+                TwitterExecutor.ExecuteTwitter(
+                    rawUrl,
+                    parameters);
+
+            return resultsXml;
         }
 
         #endregion

@@ -197,9 +197,10 @@ namespace LinqToTwitterTests
         {
             ListRequestProcessor<List> listProc = new ListRequestProcessor<List>();
             XElement twitterResponse = XElement.Load(new StringReader(m_testQueryResponse));
-            var actual = listProc.ProcessResults(twitterResponse.Descendants("list").First());
-            var actualQuery = actual as IList<List>;
 
+            var actual = listProc.ProcessResults(twitterResponse.Descendants("list").First().ToString());
+
+            var actualQuery = actual as IList<List>;
             Assert.IsNotNull(actualQuery);
             Assert.AreEqual(actualQuery.Count(), 1);
         }

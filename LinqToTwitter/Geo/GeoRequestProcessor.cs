@@ -214,10 +214,11 @@ namespace LinqToTwitter
         /// <summary>
         /// transforms XML into IList of SavedSearch
         /// </summary>
-        /// <param name="twitterResponse">xml with Twitter response</param>
-        /// <returns>IList of SavedSearch</returns>
-        public List<T> ProcessResults(XElement twitterResponse)
+        /// <param name="responseXml">xml with Twitter response</param>
+        /// <returns>List of SavedSearch</returns>
+        public List<T> ProcessResults(string responseXml)
         {
+            XElement twitterResponse = XElement.Parse(responseXml);
             List<XElement> responseItems = new List<XElement>();
 
             // place_type under root means that it's an ID query

@@ -444,10 +444,11 @@ namespace LinqToTwitter
         /// <summary>
         /// transforms XML into IList of List
         /// </summary>
-        /// <param name="twitterResponse">xml with Twitter response</param>
+        /// <param name="responseXml">xml with Twitter response</param>
         /// <returns>IList of List</returns>
-        public virtual List<T> ProcessResults(XElement twitterResponse)
+        public virtual List<T> ProcessResults(string responseXml)
         {
+            XElement twitterResponse = XElement.Parse(responseXml);
             List<List> lists = new List<List>();
 
             if (twitterResponse.Name == "lists_list")

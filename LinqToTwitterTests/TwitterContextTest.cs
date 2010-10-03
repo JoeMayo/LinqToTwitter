@@ -6,6 +6,7 @@ using System.Linq;
 using System;
 using NMock2;
 using System.Xml.Linq;
+using Moq;
 
 namespace LinqToTwitterTests
 {
@@ -20,6 +21,8 @@ namespace LinqToTwitterTests
         private TwitterContext m_ctx;
         private ITwitterExecute m_twitterExecute;
         private TestContext m_testContextInstance;
+
+        #region Test Data
 
         private string m_testUserQueryResponse =
         @"<user>
@@ -169,6 +172,8 @@ namespace LinqToTwitterTests
   <error>Logged out.</error>
 </hash>";
 
+        #endregion
+
         /// <summary>
         ///Gets or sets the test context which provides
         ///information about and functionality for the current test run.
@@ -271,6 +276,38 @@ namespace LinqToTwitterTests
             Assert.AreEqual(searchUrl, ctx.SearchUrl);
         }
 
+        [TestMethod]
+        public void TwitterContext_Requres_NonNull_Authorization()
+        {
+            try
+            {
+                var execMock = new Mock<ITwitterExecute>();
+                var ctx = new TwitterContext(null, execMock.Object, "", "");
+
+                Assert.Fail("Expected ArgumentNullException.");
+            }
+            catch (ArgumentNullException ane)
+            {
+                Assert.AreEqual("authorization", ane.ParamName);
+            }
+        }
+
+        [TestMethod]
+        public void TwitterContext_Requres_NonNull_Executor()
+        {
+            try
+            {
+                var authMock = new Mock<ITwitterAuthorization>();
+                var ctx = new TwitterContext(authMock.Object, null, "", "");
+
+                Assert.Fail("Expected ArgumentNullException.");
+            }
+            catch (ArgumentNullException ane)
+            {
+                Assert.AreEqual("execute", ane.ParamName);
+            }
+        }
+
         /// <summary>
         ///A test for CreateRequestProcessor
         ///</summary>
@@ -328,7 +365,7 @@ namespace LinqToTwitterTests
 
             Expect.Once.On(m_twitterExecute)
                 .Method("ExecuteTwitter")
-                .Will(Return.Value(expected));
+                .Will(Return.Value(m_testStatusQueryResponse));
 
             Status actual = m_ctx.UpdateStatus(status, inReplyToStatusID);
 
@@ -399,7 +436,7 @@ namespace LinqToTwitterTests
 
             Expect.Once.On(m_twitterExecute)
                 .Method("ExecuteTwitter")
-                .Will(Return.Value(expected));
+                .Will(Return.Value(m_testStatusQueryResponse));
 
             Status actual = m_ctx.UpdateStatus(status);
 
@@ -461,7 +498,7 @@ namespace LinqToTwitterTests
 
             Expect.Once.On(m_twitterExecute)
                 .Method("ExecuteTwitter")
-                .Will(Return.Value(expected));
+                .Will(Return.Value(m_testUserQueryResponse));
 
             User actual = m_ctx.UpdateAccountProfile(name, url, location, description);
             Assert.AreEqual(actual.Name, expected.Element("name").Value);
@@ -609,7 +646,7 @@ namespace LinqToTwitterTests
 
             Expect.Once.On(m_twitterExecute)
                 .Method("PostTwitterFile")
-                .Will(Return.Value(expected));
+                .Will(Return.Value(m_testUserQueryResponse));
 
             User actual = m_ctx.UpdateAccountImage(imageFilePath);
             Assert.AreEqual(expected.Element("name").Value, actual.Name);
@@ -650,7 +687,7 @@ namespace LinqToTwitterTests
 
             Expect.Once.On(m_twitterExecute)
                 .Method("ExecuteTwitter")
-                .Will(Return.Value(expected));
+                .Will(Return.Value(m_testUserQueryResponse));
 
             User actual = m_ctx.UpdateAccountDeliveryDevice(device);
             Assert.AreEqual(expected.Element("name").Value, actual.Name);
@@ -672,7 +709,7 @@ namespace LinqToTwitterTests
 
             Expect.Once.On(m_twitterExecute)
                 .Method("ExecuteTwitter")
-                .Will(Return.Value(expected));
+                .Will(Return.Value(m_testUserQueryResponse));
 
             User actual = m_ctx.UpdateAccountColors(background, text, link, sidebarFill, sidebarBorder);
             Assert.AreEqual(expected.Element("name").Value, actual.Name);
@@ -717,7 +754,7 @@ namespace LinqToTwitterTests
 
             Expect.Once.On(m_twitterExecute)
                 .Method("PostTwitterFile")
-                .Will(Return.Value(expected));
+                .Will(Return.Value(m_testUserQueryResponse));
 
             User actual = m_ctx.UpdateAccountBackgroundImage(imageFilePath, tile);
             Assert.AreEqual(expected.Element("name").Value, actual.Name);
@@ -761,7 +798,7 @@ namespace LinqToTwitterTests
 
             Expect.Once.On(m_twitterExecute)
                 .Method("ExecuteTwitter")
-                .Will(Return.Value(expected));
+                .Will(Return.Value(m_testDirectMessageQueryResponse));
 
             DirectMessage actual = m_ctx.NewDirectMessage(userID, text);
             Assert.AreEqual(expected.Element("id").Value, actual.ID.ToString());
@@ -821,14 +858,14 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void HelpTestTest()
         {
-            XElement expected = XElement.Parse("<ok>False</ok>");
+            string input = "<ok>False</ok>";
 
             Expect.Once.On(m_twitterExecute)
                 .Method("ExecuteTwitter")
-                .Will(Return.Value(expected));
+                .Will(Return.Value(input));
 
             bool actual = m_ctx.HelpTest();
-            Assert.AreEqual(bool.Parse(expected.Value), actual);
+            Assert.AreEqual(false, actual);
         }
 
         /// <summary>
@@ -841,7 +878,7 @@ namespace LinqToTwitterTests
 
             Expect.Once.On(m_twitterExecute)
                 .Method("ExecuteTwitter")
-                .Will(Return.Value(expected));
+                .Will(Return.Value(m_testEndSessionResponse));
 
             TwitterHashResponse actual = m_ctx.EndAccountSession();
             Assert.AreEqual(expected.Element("error").Value, actual.Error);
@@ -860,7 +897,7 @@ namespace LinqToTwitterTests
 
             Expect.Once.On(m_twitterExecute)
                 .Method("ExecuteTwitter")
-                .Will(Return.Value(expected));
+                .Will(Return.Value(m_testUserQueryResponse));
 
             User actual = m_ctx.EnableNotifications(id, userID, screenName);
             Assert.AreEqual(expected.Element("name").Value, actual.Name);
@@ -904,7 +941,7 @@ namespace LinqToTwitterTests
 
             Expect.Once.On(m_twitterExecute)
                 .Method("ExecuteTwitter")
-                .Will(Return.Value(expected));
+                .Will(Return.Value(m_testUserQueryResponse));
 
             User actual = m_ctx.DisableNotifications(id, userID, screenName);
             Assert.AreEqual(expected.Element("name").Value, actual.Name);
@@ -946,7 +983,7 @@ namespace LinqToTwitterTests
 
             Expect.Once.On(m_twitterExecute)
                 .Method("ExecuteTwitter")
-                .Will(Return.Value(expected));
+                .Will(Return.Value(m_testStatusQueryResponse));
 
             Status actual = m_ctx.DestroyStatus(id);
             Assert.AreEqual(expected.Element("status").Element("id").Value, actual.StatusID);
@@ -987,7 +1024,7 @@ namespace LinqToTwitterTests
 
             Expect.Once.On(m_twitterExecute)
                 .Method("ExecuteTwitter")
-                .Will(Return.Value(expected));
+                .Will(Return.Value(m_testUserQueryResponse));
 
             User actual = m_ctx.DestroyFriendship(id, userID, screenName);
             Assert.AreEqual(expected.Element("name").Value, actual.Name);
@@ -1029,7 +1066,7 @@ namespace LinqToTwitterTests
 
             Expect.Once.On(m_twitterExecute)
                 .Method("ExecuteTwitter")
-                .Will(Return.Value(expected));
+                .Will(Return.Value(m_testStatusQueryResponse));
 
             Status actual = m_ctx.DestroyFavorite(id);
             Assert.AreEqual(expected.Element("status").Element("id").Value, actual.StatusID);
@@ -1068,7 +1105,7 @@ namespace LinqToTwitterTests
 
             Expect.Once.On(m_twitterExecute)
                 .Method("ExecuteTwitter")
-                .Will(Return.Value(expected));
+                .Will(Return.Value(m_testDirectMessageQueryResponse));
 
             DirectMessage actual = m_ctx.DestroyDirectMessage(id);
             Assert.AreEqual(expected.Element("id").Value, actual.ID.ToString());
@@ -1108,7 +1145,7 @@ namespace LinqToTwitterTests
 
             Expect.Once.On(m_twitterExecute)
                 .Method("ExecuteTwitter")
-                .Will(Return.Value(expected));
+                .Will(Return.Value(m_testUserQueryResponse));
 
             User actual = m_ctx.DestroyBlock(id);
             Assert.AreEqual(expected.Element("name").Value, actual.Name);
@@ -1224,6 +1261,20 @@ namespace LinqToTwitterTests
         ///A test for CreateRequestProcessor
         ///</summary>
         [TestMethod()]
+        public void CreateSearchRequestProcessor_Returns_RawRequestProcessor()
+        {
+            var ctx = new TwitterContext_Accessor();
+
+            var queryResult = from raw in ctx.RawQuery select raw;
+
+            IRequestProcessor<Raw> actual = ctx.CreateRequestProcessor<Raw>(queryResult.Expression);
+            Assert.IsInstanceOfType(actual, typeof(RawRequestProcessor<Raw>));
+        }
+
+        /// <summary>
+        ///A test for CreateRequestProcessor
+        ///</summary>
+        [TestMethod()]
         public void CreateSearchRequestProcessorTest()
         {
             TwitterContext_Accessor ctx = new TwitterContext_Accessor();
@@ -1302,7 +1353,7 @@ namespace LinqToTwitterTests
 
             Expect.Once.On(m_twitterExecute)
                 .Method("ExecuteTwitter")
-                .Will(Return.Value(expected));
+                .Will(Return.Value(m_testUserQueryResponse));
 
             User actual = m_ctx.CreateFriendship(id, userID, screenName, follow);
             Assert.AreEqual(expected.Element("name").Value, actual.Name);
@@ -1345,7 +1396,7 @@ namespace LinqToTwitterTests
 
             Expect.Once.On(m_twitterExecute)
                 .Method("ExecuteTwitter")
-                .Will(Return.Value(expected));
+                .Will(Return.Value(m_testStatusQueryResponse));
 
             Status actual = m_ctx.CreateFavorite(id);
             Assert.AreEqual(expected.Element("status").Element("id").Value, actual.StatusID);
@@ -1384,7 +1435,7 @@ namespace LinqToTwitterTests
 
             Expect.Once.On(m_twitterExecute)
                 .Method("ExecuteTwitter")
-                .Will(Return.Value(expected));
+                .Will(Return.Value(m_testUserQueryResponse));
 
             User actual = m_ctx.CreateBlock(id);
             Assert.AreEqual(expected.Element("name").Value, actual.Name);
@@ -1411,6 +1462,94 @@ namespace LinqToTwitterTests
 
             User actual = m_ctx.CreateBlock(id);
             Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void ExecuteRawRequest_Invokes_Executor_Execute()
+        {
+            var authMock = new Mock<ITwitterAuthorization>();
+            var execMock = new Mock<ITwitterExecute>();
+            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
+            string queryString = "statuses/update.xml";
+            var parameters = new Dictionary<string, string>
+            {
+                { "status", "Testing" }
+            };
+
+            string actualResult = ctx.ExecuteRaw(queryString, parameters);
+
+            execMock.Verify(exec => 
+                exec.ExecuteTwitter(
+                    "https://api.twitter.com/1/statuses/update.xml", 
+                    parameters), Times.Once());
+        }
+
+        [TestMethod]
+        public void ExecuteRawRequest_Returns_Raw_Result()
+        {
+            var authMock = new Mock<ITwitterAuthorization>();
+            var execMock = new Mock<ITwitterExecute>();
+            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
+            string queryString = "statuses/update.xml";
+            var parameters = new Dictionary<string, string>
+            {
+                { "status", "Testing" }
+            };
+            var expectedResult = "<status>xxx</status>";
+            var fullUrl = "https://api.twitter.com/1/statuses/update.xml";
+            execMock.Setup(exec => exec.ExecuteTwitter(fullUrl, parameters)).Returns(expectedResult);
+
+            string actualResult = ctx.ExecuteRaw(queryString, parameters);
+
+            Assert.AreEqual(expectedResult, actualResult);
+        }
+
+        [TestMethod]
+        public void ExecuteRawRequest_Resolves_Too_Many_Url_Slashes()
+        {
+            string baseUrlWithTrailingSlash = "https://api.twitter.com/1/";
+            string queryStringWithBeginningSlash = "/statuses/update.xml";
+            var fullUrl = "https://api.twitter.com/1/statuses/update.xml";
+            var authMock = new Mock<ITwitterAuthorization>();
+            var execMock = new Mock<ITwitterExecute>();
+            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, baseUrlWithTrailingSlash, "");
+            var parameters = new Dictionary<string, string>
+            {
+                { "status", "Testing" }
+            };
+
+            string actualResult = ctx.ExecuteRaw(queryStringWithBeginningSlash, parameters);
+
+            execMock.Verify(exec =>
+                exec.ExecuteTwitter(
+                    fullUrl,
+                    parameters), Times.Once());
+        }
+
+        [TestMethod]
+        public void ExecuteRawRequest_Resolves_Too_Few_Url_Slashes()
+        {
+            string baseUrlWithoutTrailingSlash = "https://api.twitter.com/1";
+            string queryStringWithoutBeginningSlash = "statuses/update.xml";
+            var fullUrl = "https://api.twitter.com/1/statuses/update.xml";
+            var authMock = new Mock<ITwitterAuthorization>();
+            var execMock = new Mock<ITwitterExecute>();
+            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, baseUrlWithoutTrailingSlash, "");
+            var parameters = new Dictionary<string, string>
+            {
+                { "status", "Testing" }
+            };
+
+            string actualResult = ctx.ExecuteRaw(queryStringWithoutBeginningSlash, parameters);
+
+            execMock.Verify(exec =>
+                exec.ExecuteTwitter(
+                    fullUrl,
+                    parameters), Times.Once());
         }
     }
 }

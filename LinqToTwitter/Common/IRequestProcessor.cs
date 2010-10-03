@@ -13,6 +13,6 @@ namespace LinqToTwitter
         string BaseUrl { get; set; }
         Dictionary<string, string> GetParameters(LambdaExpression lambdaExpression);
         string BuildURL(Dictionary<string, string> parameters);
-        List<T> ProcessResults(XElement twitterResponse);
+        List<T> ProcessResults(string twitterResponse);
     }
 }

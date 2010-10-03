@@ -128,8 +128,9 @@ The blog system I'm us.. &lt;a href=""http://tinyurl.com/cvdbvr""&gt;http://tiny
         public void ProcessResultsTest()
         {
             SearchRequestProcessor<Search> target = new SearchRequestProcessor<Search>();
-            XElement twitterResponse = XElement.Parse(m_testQueryResponse);
-            IList actual = target.ProcessResults(twitterResponse);
+
+            IList actual = target.ProcessResults(m_testQueryResponse);
+
             var result = actual.Cast<Search>().First();
             Assert.AreEqual(2, result.Entries.Count);
         }
@@ -141,8 +142,9 @@ The blog system I'm us.. &lt;a href=""http://tinyurl.com/cvdbvr""&gt;http://tiny
         public void ProcessEmptyResultsTest()
         {
             SearchRequestProcessor<Search> target = new SearchRequestProcessor<Search>();
-            XElement twitterResponse = XElement.Parse(m_emptyResponse);
-            IList actual = target.ProcessResults(twitterResponse);
+
+            IList actual = target.ProcessResults(m_emptyResponse);
+
             var result = actual.Cast<Search>().First();
             Assert.AreEqual(0, result.Entries.Count);
         }
@@ -154,8 +156,9 @@ The blog system I'm us.. &lt;a href=""http://tinyurl.com/cvdbvr""&gt;http://tiny
         public void ProcessResultsNextTest()
         {
             SearchRequestProcessor<Search> target = new SearchRequestProcessor<Search>();
-            XElement twitterResponse = XElement.Parse(m_testQueryResponse);
-            IList actual = target.ProcessResults(twitterResponse);
+
+            IList actual = target.ProcessResults(m_testQueryResponse);
+
             var result = actual.Cast<Search>().First();
             Assert.AreEqual("http://search.twitter.com/search.atom?lang=en&max_id=1600414821&page=2&q=LINQ+to+Twitter&rpp=2", result.Next);
         }

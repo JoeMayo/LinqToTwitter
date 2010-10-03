@@ -18,6 +18,8 @@ namespace LinqToTwitterTests
     [TestClass()]
     public class GeoRequestProcessorTest
     {
+        #region Test Data
+
         string m_reverseResponse = @"<root type=""object"">
   <result type=""object"">
     <places type=""array"">
@@ -507,6 +509,8 @@ namespace LinqToTwitterTests
   <country_code type=""string"">US</country_code>
 </root>";
 
+        #endregion
+
         private TestContext testContextInstance;
 
         /// <summary>
@@ -563,8 +567,9 @@ namespace LinqToTwitterTests
         public void ProcessReverseResultsTest()
         {
             GeoRequestProcessor<Geo> target = new GeoRequestProcessor<Geo>();
-            XElement twitterResponse = XElement.Parse(m_reverseResponse);
-            List<Geo> actual = (List<Geo>)target.ProcessResults(twitterResponse);
+
+            List<Geo> actual = (List<Geo>)target.ProcessResults(m_reverseResponse);
+
             Assert.AreEqual(5, actual[0].Places.Count);
         }
 
@@ -575,8 +580,9 @@ namespace LinqToTwitterTests
         public void ProcessReverseResultsCultureInsensitiveTest()
         {
             GeoRequestProcessor<Geo> target = new GeoRequestProcessor<Geo>();
-            XElement twitterResponse = XElement.Parse(m_reverseResponse);
-            List<Geo> actual = (List<Geo>)target.ProcessResults(twitterResponse);
+
+            List<Geo> actual = (List<Geo>)target.ProcessResults(m_reverseResponse);
+
             Assert.AreEqual(5, actual[0].Places.Count);
         }
 
@@ -587,8 +593,9 @@ namespace LinqToTwitterTests
         public void ProcessIDResultsTest()
         {
             GeoRequestProcessor<Geo> target = new GeoRequestProcessor<Geo>();
-            XElement twitterResponse = XElement.Parse(m_idResponse);
-            List<Geo> actual = (List<Geo>)target.ProcessResults(twitterResponse);
+
+            List<Geo> actual = (List<Geo>)target.ProcessResults(m_idResponse);
+
             Assert.AreEqual("San Francisco", actual[0].Places[0].Name);
         }
 

@@ -227,13 +227,11 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// either calls the appropriate strategy method for processing results
-        /// or intercepts an error and throws an exception
+        /// Throws exception if error returned from Twitter
         /// </summary>
-        /// <param name="requestProcessor">strategy class for processing XML response</param>
         /// <param name="responseStr">XML string response from Twitter</param>
-        /// <returns></returns>
-        private static XElement ProcessResults(string responseStr, string status)
+        /// <param name="status">HTTP Error number</param>
+        private void CheckResultsForTwitterError(string responseStr, string status)
         {
             var responseXml = XElement.Parse(responseStr);
 
@@ -250,8 +248,6 @@ namespace LinqToTwitter
                     }
                 };
             }
-
-            return responseXml;
         }
 
         #endregion
@@ -263,7 +259,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="url">URL with all query info</param>
         /// <returns>XML Respose from Twitter</returns>
-        public XElement QueryTwitter(string url)
+        public string QueryTwitter(string url)
         {
             var uri = new Uri(url);
             string responseXml = string.Empty;
@@ -299,7 +295,9 @@ namespace LinqToTwitter
                 responseXml = doc.OuterXml;
             }
 
-            return ProcessResults(responseXml, httpStatus);
+            CheckResultsForTwitterError(responseXml, httpStatus);
+
+            return responseXml;
         }
 
         /// <summary>
@@ -309,7 +307,7 @@ namespace LinqToTwitter
         /// <param name="parameters">query string parameters</param>
         /// <param name="url">url to upload to</param>
         /// <returns>XML Respose from Twitter</returns>
-        public XElement PostTwitterFile(string filePath, Dictionary<string, string> parameters, string url)
+        public string PostTwitterFile(string filePath, Dictionary<string, string> parameters, string url)
         {
             var fileName = Path.GetFileName(filePath);
 
@@ -345,7 +343,7 @@ namespace LinqToTwitter
         /// <param name="fileName">name to pass to Twitter for the file</param>
         /// <param name="imageType">type of image: must be one of jpg, gif, or png</param>
         /// <returns>XML Response from Twitter</returns>
-        public XElement PostTwitterImage(byte[] image, Dictionary<string, string> parameters, string url, string fileName, string imageType)
+        public string PostTwitterImage(byte[] image, Dictionary<string, string> parameters, string url, string fileName, string imageType)
         {
             string contentBoundaryBase = DateTime.Now.Ticks.ToString("x");
             string beginContentBoundary = string.Format("--{0}\r\n", contentBoundaryBase);
@@ -443,7 +441,8 @@ namespace LinqToTwitter
             }
 
             OnUploadProgressChanged(100);
-            return ProcessResults(responseXml, httpStatus);
+            CheckResultsForTwitterError(responseXml, httpStatus);
+            return responseXml;
         }
 
         /// <summary>
@@ -452,7 +451,7 @@ namespace LinqToTwitter
         /// <param name="url">URL of request</param>
         /// <param name="parameters">parameters to post</param>
         /// <returns>XML response from Twitter</returns>
-        public XElement ExecuteTwitter(string url, Dictionary<string, string> parameters)
+        public string ExecuteTwitter(string url, Dictionary<string, string> parameters)
         {
             string httpStatus = string.Empty;
             string responseXml = string.Empty;
@@ -477,7 +476,8 @@ namespace LinqToTwitter
                 throw twitterQueryEx;
             }
 
-            return ProcessResults(responseXml, httpStatus);
+            CheckResultsForTwitterError(responseXml, httpStatus);
+            return responseXml;
         }
 
         private void WriteLog(string content, string currentMethod)

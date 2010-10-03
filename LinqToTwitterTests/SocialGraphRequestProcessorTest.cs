@@ -80,8 +80,9 @@ namespace LinqToTwitterTests
         public void ProcessResultsTest()
         {
             SocialGraphRequestProcessor<SocialGraph> target = new SocialGraphRequestProcessor<SocialGraph>();
-            XElement twitterResponse = XElement.Parse(m_testQueryResponse);
-            IList actual = target.ProcessResults(twitterResponse);
+
+            IList actual = target.ProcessResults(m_testQueryResponse);
+            
             var graph = actual.Cast<SocialGraph>().ToList();
             Assert.AreEqual(graph[0].IDs[0], "123456");
             Assert.AreEqual(graph[0].IDs[1], "987654");

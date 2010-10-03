@@ -113,10 +113,11 @@ namespace LinqToTwitter
         /// <summary>
         /// transforms XML into IList of SavedSearch
         /// </summary>
-        /// <param name="twitterResponse">xml with Twitter response</param>
-        /// <returns>IList of SavedSearch</returns>
-        public List<T> ProcessResults(XElement twitterResponse)
+        /// <param name="responseXml">xml with Twitter response</param>
+        /// <returns>List of SavedSearch</returns>
+        public List<T> ProcessResults(string responseXml)
         {
+            XElement twitterResponse = XElement.Parse(responseXml);
             var responseItems = twitterResponse.Elements("saved_search").ToList();
 
             // if we get only a single response back,

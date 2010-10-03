@@ -162,6 +162,8 @@
     <Compile Include="Geo\Place.cs" />
     <Compile Include="OAuth\AnonymousAuthorization.cs" />
     <Compile Include="OAuth\AuthorizationBase.cs" />
+    <Compile Include="Raw\Raw.cs" />
+    <Compile Include="Raw\RawRequestProcessor.cs" />
     <Compile Include="Search\AtomAuthor.cs" />
     <Compile Include="Search\AtomEntry.cs" />
     <Compile Include="Search\AtomFeed.cs" />

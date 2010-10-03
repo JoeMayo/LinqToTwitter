@@ -125,10 +125,10 @@ namespace LinqToTwitterTests
         public void ProcessResultsForVerifyCredentialsTest()
         {
             AccountRequestProcessor<Account> target = new AccountRequestProcessor<Account>();
-            XElement twitterResponse = XElement.Parse(m_testVerifyCredentialsQueryResponse);
-            IList actual = target.ProcessResults(twitterResponse);
-            var acct = actual.Cast<Account>().ToList().FirstOrDefault();
 
+            IList actual = target.ProcessResults(m_testVerifyCredentialsQueryResponse);
+
+            var acct = actual.Cast<Account>().ToList().FirstOrDefault();
             Assert.AreEqual("Joe Mayo", acct.User.Name);
         }
 
@@ -139,10 +139,10 @@ namespace LinqToTwitterTests
         public void ProcessResultsForRateLimitStatusTest()
         {
             AccountRequestProcessor<Account> target = new AccountRequestProcessor<Account>();
-            XElement twitterResponse = XElement.Parse(m_testRateLimitStatusQueryResponse);
-            IList actual = target.ProcessResults(twitterResponse);
-            var acct = actual.Cast<Account>().ToList().FirstOrDefault();
 
+            IList actual = target.ProcessResults(m_testRateLimitStatusQueryResponse);
+
+            var acct = actual.Cast<Account>().ToList().FirstOrDefault();
             Assert.AreEqual(100, acct.RateLimitStatus.HourlyLimit);
         }
 
@@ -154,8 +154,9 @@ namespace LinqToTwitterTests
         public void ProcessResultsForInvalidValueTest()
         {
             AccountRequestProcessor<Account> target = new AccountRequestProcessor<Account>();
-            XElement twitterResponse = XElement.Parse(m_testInvalidValueQueryResponse);
-            IList actual = target.ProcessResults(twitterResponse);
+
+            IList actual = target.ProcessResults(m_testInvalidValueQueryResponse);
+
             var acct = actual.Cast<Account>().ToList().FirstOrDefault();
         }
 
@@ -166,10 +167,10 @@ namespace LinqToTwitterTests
         public void ProcessResultsForEndSessionTest()
         {
             AccountRequestProcessor<Account> target = new AccountRequestProcessor<Account>();
-            XElement twitterResponse = XElement.Parse(m_testEndSessionResponse);
-            IList actual = target.ProcessResults(twitterResponse);
-            var acct = actual.Cast<Account>().ToList().FirstOrDefault();
 
+            IList actual = target.ProcessResults(m_testEndSessionResponse);
+
+            var acct = actual.Cast<Account>().ToList().FirstOrDefault();
             Assert.AreEqual("Logged out.", acct.EndSessionStatus.Error);
         }
 

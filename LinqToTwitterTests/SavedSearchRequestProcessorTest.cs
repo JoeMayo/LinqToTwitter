@@ -98,8 +98,9 @@ namespace LinqToTwitterTests
         public void ProcessResultsTest()
         {
             SavedSearchRequestProcessor<SavedSearch> target = new SavedSearchRequestProcessor<SavedSearch>();
-            XElement twitterResponse = XElement.Parse(m_testQueryResponse);
-            IList actual = target.ProcessResults(twitterResponse);
+
+            IList actual = target.ProcessResults(m_testQueryResponse);
+
             Assert.AreEqual(actual.Count, 3);
         }
 

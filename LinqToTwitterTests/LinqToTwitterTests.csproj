@@ -88,6 +88,9 @@
       <HintPath>..\Resources\Kerr.Credentials.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Moq">
+      <HintPath>..\Resources\Moq.dll</HintPath>
+    </Reference>
     <Reference Include="NMock2, Version=2.0.0.44, Culture=neutral, PublicKeyToken=37d3be0adc87c2b7, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Resources\NMock2.dll</HintPath>
@@ -131,6 +134,7 @@
     <Compile Include="AccountRequestProcessorTest.cs" />
     <Compile Include="BlocksRequestProcessorTest.cs" />
     <Compile Include="Common\DebuggerWriter.cs" />
+    <Compile Include="RawRequestProcessorTest.cs" />
     <Compile Include="XmlSerializerTests.cs" />
     <Compile Include="DirectMessageRequestProcessorTest.cs" />
     <Compile Include="ExpressionTreeHelpersTest.cs" />

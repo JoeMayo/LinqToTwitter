@@ -374,10 +374,11 @@ namespace LinqToTwitter
         /// <summary>
         /// transforms XML into IQueryable of Status
         /// </summary>
-        /// <param name="twitterResponse">xml with Twitter response</param>
-        /// <returns>IQueryable of Status</returns>
-        public virtual List<T> ProcessResults(XElement twitterResponse)
+        /// <param name="responseXml">xml with Twitter response</param>
+        /// <returns>List of Status</returns>
+        public virtual List<T> ProcessResults(string responseXml)
         {
+            XElement twitterResponse = XElement.Parse(responseXml);
             var responseItems = twitterResponse.Elements("status").ToList();
 
             // if we get only a single response back,

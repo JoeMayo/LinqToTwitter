@@ -80,10 +80,11 @@ namespace LinqToTwitterDemo
                 //FriendshipDemos.Run(twitterCtx);
                 //GeoDemos.Run(twitterCtx);
                 //ListDemos.Run(twitterCtx);
+                RawDemos.Run(twitterCtx);
                 //SavedSearchDemos.Run(twitterCtx);
                 //SearchDemos.Run(twitterCtx);
                 //SocialGraphDemos.Run(twitterCtx);
-                StatusDemos.Run(twitterCtx);
+                //StatusDemos.Run(twitterCtx);
                 //TrendsDemos.Run(twitterCtx);
                 //UserDemos.Run(twitterCtx);
                 //NotificationsDemos.Run(twitterCtx);

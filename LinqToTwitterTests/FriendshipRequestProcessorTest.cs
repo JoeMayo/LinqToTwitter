@@ -76,9 +76,10 @@ namespace LinqToTwitterTests
         public void ProcessResultsTest()
         {
             FriendshipRequestProcessor<Friendship> target = new FriendshipRequestProcessor<Friendship>();
-            XElement twitterResponse = XElement.Parse(m_testQueryResponse);
             bool expected = true;
-            IList actual = target.ProcessResults(twitterResponse);
+
+            IList actual = target.ProcessResults(m_testQueryResponse);
+
             var isFriend = actual.Cast<Friendship>().First().IsFriend;
             Assert.AreEqual(expected, actual.Cast<Friendship>().First().IsFriend);
         }

@@ -5,6 +5,7 @@ using System.Text;
 using System.Linq.Expressions;
 using System.Collections;
 using System.Globalization;
+using System.Xml.Linq;
 
 namespace LinqToTwitter
 {
@@ -245,10 +246,11 @@ namespace LinqToTwitter
         /// <summary>
         /// transforms XML into IQueryable of DirectMessage
         /// </summary>
-        /// <param name="twitterResponse">xml with Twitter response</param>
-        /// <returns>IQueryable of DirectMessage</returns>
-        public virtual List<T> ProcessResults(System.Xml.Linq.XElement twitterResponse)
+        /// <param name="responseXml">xml with Twitter response</param>
+        /// <returns>List of DirectMessage</returns>
+        public virtual List<T> ProcessResults(string responseXml)
         {
+            XElement twitterResponse = XElement.Parse(responseXml);
             var responseItems = twitterResponse.Elements("direct_message").ToList();
 
             // if we get only a single response back,

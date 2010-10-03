@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Collections;
+using System.Xml.Linq;
 
 namespace LinqToTwitter
 {
@@ -47,10 +48,12 @@ namespace LinqToTwitter
         /// <summary>
         /// return response from help request
         /// </summary>
-        /// <param name="twitterResponse">response from twitter</param>
+        /// <param name="responseXml">response from twitter</param>
         /// <returns>true</returns>
-        public virtual List<T> ProcessResults(System.Xml.Linq.XElement twitterResponse)
+        public virtual List<T> ProcessResults(string responseXml)
         {
+            XElement twitterResponse = XElement.Parse(responseXml);
+
             var response = twitterResponse.Value;
 
             return new List<bool>{ bool.Parse(response) }.OfType<T>().ToList();
