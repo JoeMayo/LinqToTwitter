@@ -20,6 +20,8 @@ namespace LinqToTwitterTests
     {
         private TestContext testContextInstance;
 
+        #region Test Data
+
         private string m_testVerifyCredentialsQueryResponse = @"<user>
   <id>15411837</id>
   <name>Joe Mayo</name>
@@ -71,6 +73,50 @@ namespace LinqToTwitterTests
   <request>/account/end_session.xml</request>
   <error>Logged out.</error>
 </hash>";
+
+        private string m_testTotalsResponse = @"<?xml version=""1.0"" encoding=""UTF-8""?>
+<hash>
+  <updates type=""integer"">78</updates>
+  <friends type=""integer"">1</friends>
+  <favorites type=""integer"">2</favorites>
+  <followers type=""integer"">26</followers>
+</hash>";
+
+        private string m_testSettingsResponse = @"<?xml version=""1.0"" encoding=""UTF-8""?>
+<settings>
+  <trend_location>
+    <woeid>23424977</woeid>
+    <name>United States</name>
+    <placeTypeName code=""12"">Country</placeTypeName>
+    <country type=""Country"" code=""US"">United States</country>
+    <url>http://where.yahooapis.com/v1/place/23424977</url>
+  </trend_location>
+  <geo_enabled>true</geo_enabled>
+  <sleep_time>
+    <start_time></start_time>
+    <enabled>false</enabled>
+    <end_time></end_time>
+  </sleep_time>
+</settings>";
+
+                private string m_testSettingsResponseTimesEnabled = @"<?xml version=""1.0"" encoding=""UTF-8""?>
+<settings>
+  <trend_location>
+    <woeid>23424977</woeid>
+    <name>United States</name>
+    <placeTypeName code=""12"">Country</placeTypeName>
+    <country type=""Country"" code=""US"">United States</country>
+    <url>http://where.yahooapis.com/v1/place/23424977</url>
+  </trend_location>
+  <geo_enabled>true</geo_enabled>
+  <sleep_time>
+    <start_time>21</start_time>
+    <enabled>true</enabled>
+    <end_time>8</end_time>
+  </sleep_time>
+</settings>";
+
+        #endregion
 
         /// <summary>
         ///Gets or sets the test context which provides
@@ -146,6 +192,57 @@ namespace LinqToTwitterTests
             Assert.AreEqual(100, acct.RateLimitStatus.HourlyLimit);
         }
 
+        [TestMethod()]
+        public void ProcessResults_Converts_Totals_To_Account()
+        {
+            var acctReqProc = new AccountRequestProcessor<Account>();
+
+            List<Account> actual = acctReqProc.ProcessResults(m_testTotalsResponse);
+
+            var acct = actual.FirstOrDefault();
+            Assert.AreEqual(78, acct.Totals.Updates);
+            Assert.AreEqual(1, acct.Totals.Friends);
+            Assert.AreEqual(2, acct.Totals.Favorites);
+            Assert.AreEqual(26, acct.Totals.Followers);
+        }
+
+        [TestMethod()]
+        public void ProcessResults_Converts_Settings_To_Account()
+        {
+            var acctReqProc = new AccountRequestProcessor<Account>();
+
+            List<Account> actual = acctReqProc.ProcessResults(m_testSettingsResponse);
+
+            var acct = actual.FirstOrDefault();
+
+            Assert.AreEqual("23424977", acct.Settings.TrendLocation.WoeID);
+            Assert.AreEqual("United States", acct.Settings.TrendLocation.Name);
+            Assert.AreEqual(12, acct.Settings.TrendLocation.PlaceTypeNameCode);
+            Assert.AreEqual("Country", acct.Settings.TrendLocation.PlaceTypeName);
+            Assert.AreEqual("Country", acct.Settings.TrendLocation.CountryType);
+            Assert.AreEqual("US", acct.Settings.TrendLocation.CountryCode);
+            Assert.AreEqual("United States", acct.Settings.TrendLocation.Country);
+            Assert.AreEqual("http://where.yahooapis.com/v1/place/23424977", acct.Settings.TrendLocation.Url);
+            Assert.AreEqual(true, acct.Settings.GeoEnabled);
+            Assert.AreEqual(false, acct.Settings.SleepTime.Enabled);
+            Assert.AreEqual(null, acct.Settings.SleepTime.StartHour);
+            Assert.AreEqual(null, acct.Settings.SleepTime.EndHour);
+        }
+
+        [TestMethod()]
+        public void ProcessResults_Converts_Settings_When_Times_Are_Enabled()
+        {
+            var acctReqProc = new AccountRequestProcessor<Account>();
+
+            List<Account> actual = acctReqProc.ProcessResults(m_testSettingsResponseTimesEnabled);
+
+            var acct = actual.FirstOrDefault();
+
+            Assert.AreEqual(true, acct.Settings.SleepTime.Enabled);
+            Assert.AreEqual(21, acct.Settings.SleepTime.StartHour);
+            Assert.AreEqual(8, acct.Settings.SleepTime.EndHour);
+        }
+
         /// <summary>
         ///A test for ProcessResults
         ///</summary>
@@ -197,13 +294,13 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void BuildVerifyCredentialsStatusURLTest()
         {
-            AccountRequestProcessor<Account> target = new AccountRequestProcessor<Account>() { BaseUrl = "http://twitter.com/" };
+            AccountRequestProcessor<Account> target = new AccountRequestProcessor<Account>() { BaseUrl = "https://api.twitter.com/1/" };
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                 {
                         { "Type", ((int)AccountType.VerifyCredentials).ToString() }
                 };
-            string expected = "http://twitter.com/account/verify_credentials.xml";
+            string expected = "https://api.twitter.com/1/account/verify_credentials.xml";
             string actual;
             actual = target.BuildURL(parameters);
             Assert.AreEqual(expected, actual);
@@ -215,15 +312,45 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void BuildRateLimitStatusURLTest()
         {
-            AccountRequestProcessor<Account> target = new AccountRequestProcessor<Account>() { BaseUrl = "http://twitter.com/" };
+            AccountRequestProcessor<Account> target = new AccountRequestProcessor<Account>() { BaseUrl = "https://api.twitter.com/1/" };
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                 {
                         { "Type", ((int)AccountType.RateLimitStatus).ToString() }
                 };
-            string expected = "http://twitter.com/account/rate_limit_status.xml";
+            string expected = "https://api.twitter.com/1/account/rate_limit_status.xml";
             string actual;
             actual = target.BuildURL(parameters);
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod()]
+        public void BuildUrl_Returns_Totals_Url()
+        {
+            var acctReqProc = new AccountRequestProcessor<Account>() { BaseUrl = "https://api.twitter.com/1/" };
+            var parameters = new Dictionary<string, string>
+                {
+                        { "Type", ((int)AccountType.Totals).ToString() }
+                };
+            string expected = "https://api.twitter.com/1/account/totals.xml";
+
+            string actual = acctReqProc.BuildURL(parameters);
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod()]
+        public void BuildUrl_Returns_Settings_Url()
+        {
+            var acctReqProc = new AccountRequestProcessor<Account>() { BaseUrl = "https://api.twitter.com/1/" };
+            var parameters = new Dictionary<string, string>
+                {
+                        { "Type", ((int)AccountType.Settings).ToString() }
+                };
+            string expected = "https://api.twitter.com/1/account/settings.xml";
+
+            string actual = acctReqProc.BuildURL(parameters);
+
             Assert.AreEqual(expected, actual);
         }
 

@@ -6,28 +6,28 @@ using System.Text;
 namespace LinqToTwitter
 {
     /// <summary>
-    /// actions for querying accounts
+    /// Current totals
     /// </summary>
-    public enum AccountType
+    public class Totals
     {
         /// <summary>
-        /// Allows you to check user credentails
+        /// Total Updates
         /// </summary>
-        VerifyCredentials,
+        public int Updates { get; set; }
 
         /// <summary>
-        /// Gets current rate limits
+        /// Total Friends
         /// </summary>
-        RateLimitStatus,
+        public int Friends { get; set; }
 
         /// <summary>
-        /// Gets friend, follower, update, and favorites totals
+        /// Total Favorites
         /// </summary>
-        Totals,
+        public int Favorites { get; set; }
 
         /// <summary>
-        /// Gets trend, geo, and sleep settings
+        /// Total Followers
         /// </summary>
-        Settings
+        public int Followers { get; set; }
     }
 }

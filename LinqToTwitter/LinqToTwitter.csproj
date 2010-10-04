@@ -150,6 +150,9 @@
     <Compile Include="Account\Account.cs" />
     <Compile Include="Account\AccountRequestProcessor.cs" />
     <Compile Include="Account\AccountType.cs" />
+    <Compile Include="Account\Settings.cs" />
+    <Compile Include="Account\SleepTime.cs" />
+    <Compile Include="Account\Totals.cs" />
     <Compile Include="Common\ExpressionTreeModifier.cs" />
     <Compile Include="Common\IDList.cs" />
     <Compile Include="Common\MethodCallExpressionTypeFinder.cs" />

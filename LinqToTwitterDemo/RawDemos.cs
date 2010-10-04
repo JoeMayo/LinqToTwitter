@@ -15,8 +15,8 @@ namespace LinqToTwitterDemo
         public static void Run(TwitterContext twitterCtx)
         {
             //PublicTimelineDemo(twitterCtx);
-            AccountTotalsDemo(twitterCtx);
-            //AccountSettingsDemo(twitterCtx);
+            //AccountTotalsDemo(twitterCtx);
+            AccountSettingsDemo(twitterCtx);
             //RetweetedToUserDemo(twitterCtx);
             //SearchDemo(twitterCtx);
             //UpdateStatusDemo(twitterCtx);
@@ -64,10 +64,10 @@ namespace LinqToTwitterDemo
             var rawResult =
                 (from raw in twitterCtx.RawQuery
                  where raw.QueryString == "account/settings.xml"
-                 select raw)
+                 select raw.Result)
                 .FirstOrDefault();
 
-            Console.WriteLine("Response from Twitter: \n\n" + rawResult.Result);
+            Console.WriteLine("Response from Twitter: \n\n" + rawResult);
         }
 
         /// <summary>

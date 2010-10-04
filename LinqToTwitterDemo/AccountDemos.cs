@@ -20,8 +20,10 @@ namespace LinqToTwitterDemo
         {
             //VerifyAccountCredentials(twitterCtx);
             //ViewRateLimitStatus(twitterCtx);
-            ViewRateLimitStatusProjection(twitterCtx);
+            //ViewRateLimitStatusProjection(twitterCtx);
             //ViewRateLimitResponseHeadersDemo(twitterCtx);
+            //ViewAccountTotalsDemo(twitterCtx);
+            ViewAccountSettingsDemo(twitterCtx);
             //EndSession(twitterCtx);
             //UpdateDeliveryDevice(twitterCtx);
             //UpdateAccountColors(twitterCtx);
@@ -155,6 +157,37 @@ namespace LinqToTwitterDemo
                 "Request: {0}, Error: {1}",
                 endSessionStatus.Request,
                 endSessionStatus.Error);
+        }
+
+        private static void ViewAccountSettingsDemo(TwitterContext twitterCtx)
+        {
+            var accountSettings =
+                (from acct in twitterCtx.Account
+                 where acct.Type == AccountType.Settings
+                 select acct.Settings)
+                .SingleOrDefault();
+
+            Console.WriteLine(
+                "Trend Location: {0}\nGeo Enabled: {1}\nSleep Enabled: {2}",
+                accountSettings.TrendLocation.Name,
+                accountSettings.GeoEnabled,
+                accountSettings.SleepTime.Enabled);
+        }
+
+        private static void ViewAccountTotalsDemo(TwitterContext twitterCtx)
+        {
+            var accountTotals =
+                (from acct in twitterCtx.Account
+                 where acct.Type == AccountType.Totals
+                 select acct.Totals)
+                .SingleOrDefault();
+
+            Console.WriteLine(
+                "Updates: {0}\nFriends: {1}\nFollowers: {2}\nFavorites: {3}",
+                accountTotals.Updates,
+                accountTotals.Friends,
+                accountTotals.Followers,
+                accountTotals.Favorites);
         }
 
         /// <summary>

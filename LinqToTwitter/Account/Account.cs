@@ -30,5 +30,15 @@ namespace LinqToTwitter
         /// Response from request to end session
         /// </summary>
         public TwitterHashResponse EndSessionStatus { get; set; }
+
+        /// <summary>
+        /// Current Totals
+        /// </summary>
+        public Totals Totals { get; set; }
+
+        /// <summary>
+        /// Account settings, such as trend location, geo enabled, and sleep time
+        /// </summary>
+        public Settings Settings { get; set; }
     }
 }

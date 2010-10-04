@@ -63,6 +63,12 @@ namespace LinqToTwitter
                 case AccountType.RateLimitStatus:
                     url = BaseUrl + "account/rate_limit_status.xml";
                     break;
+                case AccountType.Totals:
+                    url = BaseUrl + "account/totals.xml";
+                    break;
+                case AccountType.Settings:
+                    url = BaseUrl + "account/settings.xml";
+                    break;
                 default:
                     throw new InvalidOperationException("The default case of BuildUrl should never execute because a Type must be specified.");
             }
@@ -100,7 +106,7 @@ namespace LinqToTwitter
 
                     acct.RateLimitStatus = rateLimits; 
                 }
-                else
+                else if (twitterResponse.Element("request") != null)
                 {
                     var endSession = new TwitterHashResponse
                     {
@@ -110,6 +116,32 @@ namespace LinqToTwitter
 
                     acct.EndSessionStatus = endSession;
                 }
+                else
+                {
+                    acct.Totals = new Totals
+                    {
+                        Updates = int.Parse(twitterResponse.Element("updates").Value),
+                        Friends = int.Parse(twitterResponse.Element("friends").Value),
+                        Favorites = int.Parse(twitterResponse.Element("favorites").Value),
+                        Followers = int.Parse(twitterResponse.Element("followers").Value)
+                    };
+                }
+            }
+            else if (twitterResponse.Name == "settings")
+            {
+                acct.Settings = new Settings
+                {
+                    TrendLocation = new Location().CreateLocation(twitterResponse.Element("trend_location")),
+                    GeoEnabled = bool.Parse(twitterResponse.Element("geo_enabled").Value),
+                    SleepTime = new SleepTime
+                    {
+                        StartHour = twitterResponse.Element("sleep_time").Element("start_time").Value == string.Empty ? null :
+                                    (int?)int.Parse(twitterResponse.Element("sleep_time").Element("start_time").Value),
+                        EndHour = twitterResponse.Element("sleep_time").Element("end_time").Value == string.Empty ? null :
+                                    (int?)int.Parse(twitterResponse.Element("sleep_time").Element("end_time").Value),
+                        Enabled = bool.Parse(twitterResponse.Element("sleep_time").Element("enabled").Value)
+                    }
+                };
             }
             else
             {
