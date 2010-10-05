@@ -36,6 +36,11 @@ namespace LinqToTwitter
         Category,
 
         /// <summary>
+        /// Get most recent tweet of each user in category
+        /// </summary>
+        CategoryStatus,
+
+        /// <summary>
         /// Get user details for a set of users
         /// </summary>
         Lookup,

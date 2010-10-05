@@ -16,6 +16,8 @@ namespace LinqToTwitterTests
     [TestClass()]
     public class UserRequestProcessorTest
     {
+        #region Test Data
+
         private TestContext testContextInstance;
 
         private string m_testQueryResponse =
@@ -145,6 +147,63 @@ namespace LinqToTwitterTests
     </user>
   </users>
 </category>";
+
+        private string m_userInCategoryStatusResponse = @"<?xml version=""1.0"" encoding=""UTF-8""?>
+<suggestions type=""array"">
+<user>
+  <id>93957809</id>
+  <name>Eric Schmidt</name>
+  <screen_name>ericschmidt</screen_name>
+  <location>Mountain View, CA</location>
+  <description>CEO Google</description>
+  <profile_image_url>http://a1.twimg.com/profile_images/565244113/edited_twit_normal.jpg</profile_image_url>
+  <url>http://www.google.com</url>
+  <protected>false</protected>
+  <followers_count>159473</followers_count>
+  <profile_background_color>C0DEED</profile_background_color>
+  <profile_text_color>333333</profile_text_color>
+  <profile_link_color>0084B4</profile_link_color>
+  <profile_sidebar_fill_color>DDEEF6</profile_sidebar_fill_color>
+  <profile_sidebar_border_color>C0DEED</profile_sidebar_border_color>
+  <friends_count>81</friends_count>
+  <created_at>Tue Dec 01 22:23:22 +0000 2009</created_at>
+  <favourites_count>0</favourites_count>
+  <utc_offset>-28800</utc_offset>
+  <time_zone>Pacific Time (US &amp; Canada)</time_zone>
+  <profile_background_image_url>http://s.twimg.com/a/1285805719/images/themes/theme1/bg.png</profile_background_image_url>
+  <profile_background_tile>false</profile_background_tile>
+  <profile_use_background_image>true</profile_use_background_image>
+  <notifications>false</notifications>
+  <geo_enabled>false</geo_enabled>
+  <verified>true</verified>
+  <following>false</following>
+  <statuses_count>32</statuses_count>
+  <lang>en</lang>
+  <contributors_enabled>false</contributors_enabled>
+  <follow_request_sent>false</follow_request_sent>
+  <listed_count>8274</listed_count>
+  <show_all_inline_media>false</show_all_inline_media>
+  <status>
+    <created_at>Wed Sep 08 14:52:22 +0000 2010</created_at>
+    <id>23920548950</id>
+    <text>I predict big things happening today at Google.  We're already fast.. fast is about to get faster.</text>
+    <source>web</source>
+    <truncated>false</truncated>
+    <in_reply_to_status_id></in_reply_to_status_id>
+    <in_reply_to_user_id></in_reply_to_user_id>
+    <favorited>false</favorited>
+    <in_reply_to_screen_name></in_reply_to_screen_name>
+    <retweet_count></retweet_count>
+    <retweeted>false</retweeted>
+    <geo/>
+    <coordinates/>
+    <place/>
+    <contributors/>
+  </status>
+</user>
+</suggestions>";
+
+        #endregion
 
         /// <summary>
         ///Gets or sets the test context which provides
@@ -315,6 +374,47 @@ namespace LinqToTwitterTests
             string expected = "http://twitter.com/statuses/followers/15411837.xml?user_id=123&screen_name=JoeMayo&page=2";
             var actual = reqProc.BuildFollowersUrl(parameters);
             Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod()]
+        public void BuildCategoriesUrl_Returns_Url()
+        {
+            var reqProc = new UserRequestProcessor_Accessor<User>();
+            reqProc.BaseUrl = "https://api.twitter.com/1/";
+            Dictionary<string, string> parameters =
+                new Dictionary<string, string>
+                    {
+                        { "Type", ((int)UserType.CategoryStatus).ToString() },
+                        { "Slug", "Technology" }
+                    };
+            string expected = "https://api.twitter.com/1/users/suggestions/technology/members.xml";
+
+            var actual = reqProc.BuildCategoryStatusUrl(parameters);
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod()]
+        public void BuildCategoriesUrl_Requires_Slug()
+        {
+            var reqProc = new UserRequestProcessor_Accessor<User>();
+            Dictionary<string, string> parameters =
+                new Dictionary<string, string>
+                    {
+                        { "Type", ((int)UserType.CategoryStatus).ToString() },
+                        //{ "Slug", "Technology" }
+                    };
+
+            try
+            {
+                reqProc.BuildCategoryStatusUrl(parameters);
+
+                Assert.Fail("Expected ArgumentNullException.");
+            }
+            catch (ArgumentNullException ane)
+            {
+                Assert.AreEqual("Slug", ane.ParamName);
+            }
         }
 
         /// <summary>
@@ -589,6 +689,19 @@ namespace LinqToTwitterTests
             var actual = (List<User>)statProc.ProcessResults(m_testCategoriesResponse);
 
             Assert.AreEqual(5, actual[0].Categories.Count);
+        }
+
+        [TestMethod()]
+        public void ProcessResults_Converts_Suggestions_Into_User()
+        {
+            var statProc = new UserRequestProcessor<User>() { BaseUrl = "http://api.twitter.com/1/" };
+
+            var actual = statProc.ProcessResults(m_userInCategoryStatusResponse) as List<User>;
+
+            var user = actual.First();
+            Assert.AreEqual(1, actual.Count);
+            Assert.AreEqual("Eric Schmidt", user.Name);
+            Assert.AreEqual("I predict big things happening today at Google.  We're already fast.. fast is about to get faster.", user.Status.Text);
         }
 
         /// <summary>

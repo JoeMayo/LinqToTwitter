@@ -30,6 +30,24 @@ namespace LinqToTwitterDemo
             //UsersInSuggestedCategoryQueryDemo(twitterCtx);
             //UserShowLoggedInUserQueryDemo(twitterCtx);
             //VerifiedAndGeoEnabledDemo(twitterCtx);
+            CategoryStatusDemo(twitterCtx);
+        }
+
+        private static void CategoryStatusDemo(TwitterContext twitterCtx)
+        {
+            var catTweets =
+                (from user in twitterCtx.User
+                 where user.Type == UserType.CategoryStatus &&
+                       user.Slug == "Technology"
+                 select user)
+                .ToList();
+
+            Console.WriteLine("Tweets from Suggested Users in Technology Category: \n");
+
+            catTweets.ForEach(tweet => 
+                Console.WriteLine(
+                    "User: {0}\nTweet: {1}\n", 
+                    tweet.Name, tweet.Status.Text));
         }
 
         #region User Demos

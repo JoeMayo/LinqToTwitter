@@ -29,6 +29,9 @@ namespace LinqToTwitterDemo
             if (string.IsNullOrEmpty(ConfigurationManager.AppSettings["twitterConsumerKey"]) || string.IsNullOrEmpty(ConfigurationManager.AppSettings["twitterConsumerSecret"]))
             {
                 Console.WriteLine("Please set the Twitter consumer key and secret values in the app.config file and run again.");
+                Console.WriteLine("If you don't have keys yet, you can visit http://dev.twitter.com/apps and register a  new app.");
+                Console.WriteLine("Press any key to exit...");
+                Console.ReadKey();
                 return;
             }
 

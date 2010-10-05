@@ -12,6 +12,8 @@ namespace LinqToTwitterTests
     [TestClass()]
     public class UserTest
     {
+        #region Test Data
+
         //
         // User Response Example as of 5/23/09
         //
@@ -53,7 +55,9 @@ namespace LinqToTwitterTests
             <in_reply_to_screen_name></in_reply_to_screen_name>
           </status>
         </user>";
-        
+
+        #endregion
+
         private TestContext testContextInstance;
 
         /// <summary>

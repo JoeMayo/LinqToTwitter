@@ -16,7 +16,8 @@ namespace LinqToTwitterDemo
         {
             //PublicTimelineDemo(twitterCtx);
             //AccountTotalsDemo(twitterCtx);
-            AccountSettingsDemo(twitterCtx);
+            //AccountSettingsDemo(twitterCtx);
+            CategoryStatusDemo(twitterCtx);
             //RetweetedToUserDemo(twitterCtx);
             //SearchDemo(twitterCtx);
             //UpdateStatusDemo(twitterCtx);
@@ -64,6 +65,21 @@ namespace LinqToTwitterDemo
             var rawResult =
                 (from raw in twitterCtx.RawQuery
                  where raw.QueryString == "account/settings.xml"
+                 select raw.Result)
+                .FirstOrDefault();
+
+            Console.WriteLine("Response from Twitter: \n\n" + rawResult);
+        }
+
+        /// <summary>
+        /// Gets tweets of users in a suggested category
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void CategoryStatusDemo(TwitterContext twitterCtx)
+        {
+            var rawResult =
+                (from raw in twitterCtx.RawQuery
+                 where raw.QueryString == "users/suggestions/technology/members.xml"
                  select raw.Result)
                 .FirstOrDefault();
 

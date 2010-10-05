@@ -133,6 +133,9 @@ namespace LinqToTwitter
                 case UserType.Category:
                     url = BuildUsersInCategoryUrl(parameters);
                     break;
+                case UserType.CategoryStatus:
+                    url = BuildCategoryStatusUrl(parameters);
+                    break;
                 case UserType.Lookup:
                     url = BuildLookupUrl(parameters);
                     break;
@@ -242,6 +245,25 @@ namespace LinqToTwitter
         private string BuildCategoriesUrl(Dictionary<string, string> parameters)
         {
             return BaseUrl + "users/suggestions.xml";
+        }
+
+        /// <summary>
+        /// Builds a url to get tweets of users in a suggested category
+        /// </summary>
+        /// <param name="parameters">Reads Slug param</param>
+        /// <returns>Url for category statuses</returns>
+        private string BuildCategoryStatusUrl(Dictionary<string, string> parameters)
+        {
+            if (parameters.ContainsKey("Slug"))
+            {
+                Slug = parameters["Slug"]; 
+            }
+            else
+            {
+                throw new ArgumentNullException("Slug", "You must set the Slug property, which is the suggested category.");
+            }
+
+            return BaseUrl + "users/suggestions/" + Slug.ToLower() + "/members.xml";
         }
 
         /// <summary>
@@ -355,48 +377,6 @@ namespace LinqToTwitter
             return url;
         }
 
-        //<user>
-        //  <id>15411837</id>
-        //  <name>Joe Mayo</name>
-        //  <screen_name>JoeMayo</screen_name>
-        //  <location>Denver, CO</location>
-        //  <description>Author/entrepreneur, specializing in custom .NET software development</description>
-        //  <profile_image_url>http://s3.amazonaws.com/twitter_production/profile_images/62569644/JoeTwitter_normal.jpg</profile_image_url>
-        //  <url>http://www.csharp-station.com</url>
-        //  <protected>false</protected>
-        //  <followers_count>25</followers_count>
-        //  <profile_background_color>C6E2EE</profile_background_color>
-        //  <profile_text_color>663B12</profile_text_color>
-        //  <profile_link_color>1F98C7</profile_link_color>
-        //  <profile_sidebar_fill_color>DAECF4</profile_sidebar_fill_color>
-        //  <profile_sidebar_border_color>C6E2EE</profile_sidebar_border_color>
-        //  <friends_count>1</friends_count>
-        //  <created_at>Sun Jul 13 04:35:50 +0000 2008</created_at>
-        //  <favourites_count>0</favourites_count>
-        //  <utc_offset>-25200</utc_offset>
-        //  <time_zone>Mountain Time (US &amp; Canada)</time_zone>
-        //  <profile_background_image_url>http://static.twitter.com/images/themes/theme2/bg.gif</profile_background_image_url>
-        //  <profile_background_tile>false</profile_background_tile>
-        //  <statuses_count>81</statuses_count>
-        //  <status>
-        //    <created_at>Sun Jan 18 21:58:24 +0000 2009</created_at>
-        //    <id>1128977017</id>
-        //    <text>New schedule for #SoCalCodeCamp by @DanielEgan - http://tinyurl.com/9gv5zp</text>
-        //    <source>web</source>
-        //    <truncated>false</truncated>
-        //    <in_reply_to_status_id></in_reply_to_status_id>
-        //    <in_reply_to_user_id></in_reply_to_user_id>
-        //    <favorited>false</favorited>
-        //    <in_reply_to_screen_name></in_reply_to_screen_name>
-        //  </status>
-        //</user>
-
-        // TODO: received when twitter was down - write a test
-        //<hash>
-        //  <request></request>
-        //  <error>Twitter is down for maintenance. It will return in about an hour.</error>
-        //</hash>
-
         /// <summary>
         /// transforms XML into IList of User
         /// </summary>
@@ -427,7 +407,7 @@ namespace LinqToTwitter
                      .ToList();
             }
 
-            if (twitterResponse.Name == "suggestions")
+            if (twitterResponse.Name == "suggestions" && twitterResponse.Elements("user").Count() == 0)
             {
                 userList.Add(new User());
 
