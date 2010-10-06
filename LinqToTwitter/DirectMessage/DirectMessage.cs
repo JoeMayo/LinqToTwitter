@@ -13,10 +13,14 @@ namespace LinqToTwitter
     {
         public DirectMessageType Type { get; set; }
 
-        //  <id>87864628</id>
+        /// <summary>
+        /// Direct Message ID
+        /// </summary>
         public ulong ID { get; set; }
 
-        //  <sender_id>1234567</sender_id>
+        /// <summary>
+        /// User ID of sender
+        /// </summary>
         public ulong SenderID { get; set; }
 
         /// <summary>
@@ -39,23 +43,39 @@ namespace LinqToTwitter
         /// </summary>
         public int Count { get; set; }
 
-        //  <text>;)</text>
+        /// <summary>
+        /// DM Text
+        /// </summary>
         public string Text { get; set; }
 
-        //  <recipient_id>15411837</recipient_id>
+        /// <summary>
+        /// User ID of Recipient
+        /// </summary>
         public ulong RecipientID { get; set; }
 
-        //  <created_at>Tue Apr 07 16:47:25 +0000 2009</created_at>
+        /// <summary>
+        /// When DM was created
+        /// </summary>
         public DateTime CreatedAt { get; set; }
 
-        //  <sender_screen_name>senderscreenname</sender_screen_name>
+        /// <summary>
+        /// ScreenName of Sender
+        /// </summary>
         public string SenderScreenName { get; set; }
 
-        //  <recipient_screen_name>JoeMayo</recipient_screen_name>
+        /// <summary>
+        /// ScreenName of Recipient
+        /// </summary>
         public string RecipientScreenName { get; set; }
 
+        /// <summary>
+        /// User object for sender
+        /// </summary>
         public User Sender { get; set; }
 
+        /// <summary>
+        /// User object for recipient
+        /// </summary>
         public User Recipient { get; set; }
     }
 }

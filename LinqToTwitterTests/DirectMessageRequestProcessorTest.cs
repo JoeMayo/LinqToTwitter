@@ -170,6 +170,46 @@ namespace LinqToTwitterTests
             Assert.AreEqual(expected, actual);
         }
 
+        [TestMethod()]
+        public void BuildUrlShow_Returns_Url()
+        {
+            var dmProc = new DirectMessageRequestProcessor<DirectMessage>() { BaseUrl = "https://api.twitter.com/1/" };
+            string expected = "https://api.twitter.com/1/direct_messages/show/478805447.xml";
+            Dictionary<string, string> parameters =
+                new Dictionary<string, string>
+                {
+                        { "Type", ((int)DirectMessageType.Show).ToString() },
+                        { "ID", "478805447" },
+                };
+
+            string actual = dmProc.BuildURL(parameters);
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod()]
+        public void BuildUrlShow_Requires_ID()
+        {
+            var dmProc = new DirectMessageRequestProcessor<DirectMessage>() { BaseUrl = "https://api.twitter.com/1/" };
+            Dictionary<string, string> parameters =
+                new Dictionary<string, string>
+                {
+                        { "Type", ((int)DirectMessageType.Show).ToString() },
+                        //{ "ID", "478805447" },
+                };
+
+            try
+            {
+                string actual = dmProc.BuildURL(parameters);
+
+                Assert.Fail("Expected ArgumentNullException.");
+            }
+            catch (ArgumentNullException ane)
+            {
+                Assert.AreEqual("ID", ane.ParamName);
+            }
+        }
+
         /// <summary>
         ///A test for ProcessResults
         ///</summary>
@@ -185,30 +225,40 @@ namespace LinqToTwitterTests
             Assert.AreEqual(1 ,actualQuery.Count());
         }
 
-        /// <summary>
-        ///A test for GetParameters
-        ///</summary>
         [TestMethod()]
-        public void GetParametersTest()
+        public void GetParameters_Returns_Parameters()
         {
-            var dmProc = new DirectMessageRequestProcessor<DirectMessage>(); 
-            var ctx = new TwitterContext();
+            var dmProc = new DirectMessageRequestProcessor<DirectMessage>();
+            Expression<Func<DirectMessage, bool>> expression =
+                dm =>
+                    dm.Type == DirectMessageType.Show &&
+                    dm.Count == 1 &&
+                    dm.MaxID == 789 &&
+                    dm.Page == 1 &&
+                    dm.SinceID == 123 &&
+                    dm.ID == 456;
+            LambdaExpression lambdaExpression = expression as LambdaExpression;
 
-            var directMessages =
-                from tweet in ctx.DirectMessage
-                where tweet.Type == DirectMessageType.SentTo
-                select tweet;
-
-            var whereFinder = new FirstWhereClauseFinder();
-            var whereExpression = whereFinder.GetFirstWhere(directMessages.Expression);
-            var lambdaExpression = (LambdaExpression)((UnaryExpression)(whereExpression.Arguments[1])).Operand;
-            lambdaExpression = (LambdaExpression)Evaluator.PartialEval(lambdaExpression);
-            
             var queryParams = dmProc.GetParameters(lambdaExpression);
-            
+
             Assert.IsTrue(
                 queryParams.Contains(
-                    new KeyValuePair<string, string>("Type", ((int)DirectMessageType.SentTo).ToString())));
+                    new KeyValuePair<string, string>("Type", ((int)DirectMessageType.Show).ToString())));
+            Assert.IsTrue(
+                queryParams.Contains(
+                    new KeyValuePair<string, string>("Count", "1")));
+            Assert.IsTrue(
+                queryParams.Contains(
+                    new KeyValuePair<string, string>("MaxID", "789")));
+            Assert.IsTrue(
+                queryParams.Contains(
+                    new KeyValuePair<string, string>("Page", "1")));
+            Assert.IsTrue(
+                queryParams.Contains(
+                    new KeyValuePair<string, string>("SinceID", "123")));
+            Assert.IsTrue(
+                queryParams.Contains(
+                    new KeyValuePair<string, string>("ID", "456")));
         }
 
         /// <summary>

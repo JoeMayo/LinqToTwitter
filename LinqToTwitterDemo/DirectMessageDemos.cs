@@ -17,8 +17,9 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         public static void Run(TwitterContext twitterCtx)
         {
-            DirectMessageSentByQueryDemo(twitterCtx);
+            //DirectMessageSentByQueryDemo(twitterCtx);
             //DirectMessageSentToQueryDemo(twitterCtx);
+            DirectMessageShowDemo(twitterCtx);
             //NewDirectMessageDemo(twitterCtx);
             //DestroyDirectMessageDemo(twitterCtx);
         }
@@ -58,6 +59,22 @@ namespace LinqToTwitterDemo
                     message.Text,
                     message.CreatedAt);
             }
+        }
+
+        private static void DirectMessageShowDemo(TwitterContext twitterCtx)
+        {
+            var directMsg =
+                (from dm in twitterCtx.DirectMessage
+                 where dm.Type == DirectMessageType.Show &&
+                       dm.ID == 478805447
+                 select dm)
+                .SingleOrDefault();
+
+            Console.WriteLine(
+                "From: {0}\nTo:  {1}\nMessage: {2}",
+                directMsg.Sender.Name,
+                directMsg.Recipient.Name,
+                directMsg.Text);
         }
 
         /// <summary>

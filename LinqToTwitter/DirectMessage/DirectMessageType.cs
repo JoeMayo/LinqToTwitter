@@ -13,6 +13,11 @@
         /// <summary>
         /// direct messages sent to a user
         /// </summary>
-        SentTo
+        SentTo,
+
+        /// <summary>
+        /// get a single direct message
+        /// </summary>
+        Show
     }
 }

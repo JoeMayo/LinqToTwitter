@@ -45,6 +45,11 @@ namespace LinqToTwitter
         /// number of items to return (works for SentBy and SentTo
         /// </summary>
         private int Count { get; set; }
+
+        /// <summary>
+        /// ID of DM
+        /// </summary>
+        private ulong ID { get; set; }
         
         /// <summary>
         /// extracts parameters from lambda
@@ -61,7 +66,8 @@ namespace LinqToTwitter
                        "SinceID",
                        "MaxID",
                        "Page",
-                       "Count"
+                       "Count",
+                       "ID"
                    });
 
             var parameters = paramFinder.Parameters;
@@ -93,9 +99,27 @@ namespace LinqToTwitter
                 case DirectMessageType.SentTo:
                     url = BuildSentToUrl(parameters);
                     break;
+                case DirectMessageType.Show:
+                    url = BuildShowUrl(parameters);
+                    break;
                 default:
                     throw new InvalidOperationException("The default case of BuildUrl should never execute because a Type must be specified.");
             }
+
+            return url;
+        }
+
+        private string BuildShowUrl(Dictionary<string, string> parameters)
+        {
+            if (!parameters.ContainsKey("ID"))
+            {
+                throw new ArgumentNullException("ID", "ID is required.");
+            }
+
+            var url = BaseUrl + "direct_messages/show.xml";
+
+            url = BuildUrlHelper.TransformIDUrl(parameters, url);
+            ID = ulong.Parse(parameters["ID"]);
 
             return url;
         }
@@ -180,68 +204,6 @@ namespace LinqToTwitter
 
             return url;
         }
-
-        //<direct_message>
-        //  <id>87864628</id>
-        //  <sender_id>1234567</sender_id>
-        //  <text>;)</text>
-        //  <recipient_id>15411837</recipient_id>
-        //  <created_at>Tue Apr 07 16:47:25 +0000 2009</created_at>
-        //  <sender_screen_name>senderscreenname</sender_screen_name>
-        //  <recipient_screen_name>JoeMayo</recipient_screen_name>
-        //  <sender>
-        //    <id>1234567</id>
-        //    <name>Sender Name</name>
-        //    <screen_name>senderscreenname</screen_name>
-        //    <location>SenderLocation</location>
-        //    <description>Sender Description</description>
-        //    <profile_image_url>http://s3.amazonaws.com/twitter_production/profile_images/12345678/name_of_image.jpg</profile_image_url>
-        //    <url>http://sendersite.com</url>
-        //    <protected>false</protected>
-        //    <followers_count>10406</followers_count>
-        //    <profile_background_color>9ae4e8</profile_background_color>
-        //    <profile_text_color>696969</profile_text_color>
-        //    <profile_link_color>72412c</profile_link_color>
-        //    <profile_sidebar_fill_color>b8aa9c</profile_sidebar_fill_color>
-        //    <profile_sidebar_border_color>b8aa9c</profile_sidebar_border_color>
-        //    <friends_count>705</friends_count>
-        //    <created_at>Tue May 01 05:55:26 +0000 2007</created_at>
-        //    <favourites_count>56</favourites_count>
-        //    <utc_offset>-28800</utc_offset>
-        //    <time_zone>Pacific Time (US &amp; Canada)</time_zone>
-        //    <profile_background_image_url>http://s3.amazonaws.com/twitter_production/profile_background_images/2036752/background.gif</profile_background_image_url>
-        //    <profile_background_tile>true</profile_background_tile>
-        //    <statuses_count>7607</statuses_count>
-        //    <notifications>false</notifications>
-        //    <following>true</following>
-        //  </sender>
-        //  <recipient>
-        //    <id>15411837</id>
-        //    <name>Joe Mayo</name>
-        //    <screen_name>JoeMayo</screen_name>
-        //    <location>Denver, CO</location>
-        //    <description>Author/entrepreneur, specializing in custom .NET software development</description>
-        //    <profile_image_url>http://s3.amazonaws.com/twitter_production/profile_images/62569644/JoeTwitter_normal.jpg</profile_image_url>
-        //    <url>http://www.csharp-station.com</url>
-        //    <protected>false</protected>
-        //    <followers_count>47</followers_count>
-        //    <profile_background_color>0099B9</profile_background_color>
-        //    <profile_text_color>3C3940</profile_text_color>
-        //    <profile_link_color>0099B9</profile_link_color>
-        //    <profile_sidebar_fill_color>95E8EC</profile_sidebar_fill_color>
-        //    <profile_sidebar_border_color>5ED4DC</profile_sidebar_border_color>
-        //    <friends_count>22</friends_count>
-        //    <created_at>Sun Jul 13 04:35:50 +0000 2008</created_at>
-        //    <favourites_count>0</favourites_count>
-        //    <utc_offset>-25200</utc_offset>
-        //    <time_zone>Mountain Time (US &amp; Canada)</time_zone>
-        //    <profile_background_image_url>http://static.twitter.com/images/themes/theme4/bg.gif</profile_background_image_url>
-        //    <profile_background_tile>false</profile_background_tile>
-        //    <statuses_count>137</statuses_count>
-        //    <notifications>false</notifications>
-        //    <following>false</following>
-        //  </recipient>
-        //</direct_message>
 
         /// <summary>
         /// transforms XML into IQueryable of DirectMessage
