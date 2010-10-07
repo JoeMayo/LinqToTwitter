@@ -6,6 +6,7 @@ using System.Xml.Linq;
 using System.Linq;
 using System.IO;
 using System;
+using LinqToTwitterTests.Common;
 
 namespace LinqToTwitterTests
 {
@@ -16,6 +17,8 @@ namespace LinqToTwitterTests
     [TestClass()]
     public class DirectMessageRequestProcessorTest
     {
+        #region Test Data
+
         private string m_testQueryResponse = @"
         <direct_message>
           <id>87864628</id>
@@ -79,6 +82,8 @@ namespace LinqToTwitterTests
           </recipient>
         </direct_message>";
 
+        #endregion
+
         private TestContext testContextInstance;
 
         /// <summary>
@@ -102,11 +107,12 @@ namespace LinqToTwitterTests
         //You can use the following additional attributes as you write your tests:
         //
         //Use ClassInitialize to run code before running the first test in the class
-        //[ClassInitialize()]
-        //public static void MyClassInitialize(TestContext testContext)
-        //{
-        //}
-        //
+        [ClassInitialize()]
+        public static void MyClassInitialize(TestContext testContext)
+        {
+            TestCulture.SetCulture();
+        }
+
         //Use ClassCleanup to run code after all tests in a class have run
         //[ClassCleanup()]
         //public static void MyClassCleanup()
@@ -126,7 +132,6 @@ namespace LinqToTwitterTests
         //}
         //
         #endregion
-
 
         /// <summary>
         ///A test for BuildUrl

@@ -134,6 +134,7 @@
     <Compile Include="AccountRequestProcessorTest.cs" />
     <Compile Include="BlocksRequestProcessorTest.cs" />
     <Compile Include="Common\DebuggerWriter.cs" />
+    <Compile Include="Common\TestCulture.cs" />
     <Compile Include="RawRequestProcessorTest.cs" />
     <Compile Include="XmlSerializerTests.cs" />
     <Compile Include="DirectMessageRequestProcessorTest.cs" />
@@ -196,6 +197,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>XmlContent.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

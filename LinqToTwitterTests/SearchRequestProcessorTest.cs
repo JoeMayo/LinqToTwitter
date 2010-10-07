@@ -6,6 +6,9 @@ using System.Xml.Linq;
 using System.Linq;
 using System;
 using System.Collections;
+using LinqToTwitterTests.Common;
+using System.Globalization;
+using System.Threading;
 
 namespace LinqToTwitterTests
 {
@@ -17,6 +20,8 @@ namespace LinqToTwitterTests
     public class SearchRequestProcessorTest
     {
         private TestContext testContextInstance;
+
+        #region Test Data
 
         private string m_testQueryResponse = @"<?xml version=""1.0"" encoding=""UTF-8""?>
 <feed xmlns:google=""http://base.google.com/ns/1.0"" xml:lang=""en-US"" xmlns:openSearch=""http://a9.com/-/spec/opensearch/1.1/"" xmlns=""http://www.w3.org/2005/Atom"" xmlns:twitter=""http://api.twitter.com/"">
@@ -74,6 +79,8 @@ The blog system I'm us.. &lt;a href=""http://tinyurl.com/cvdbvr""&gt;http://tiny
   <updated>2009-04-25T23:03:55+00:00</updated>
 </feed>";
 
+        #endregion
+
         /// <summary>
         ///Gets or sets the test context which provides
         ///information about and functionality for the current test run.
@@ -95,11 +102,12 @@ The blog system I'm us.. &lt;a href=""http://tinyurl.com/cvdbvr""&gt;http://tiny
         //You can use the following additional attributes as you write your tests:
         //
         //Use ClassInitialize to run code before running the first test in the class
-        //[ClassInitialize()]
-        //public static void MyClassInitialize(TestContext testContext)
-        //{
-        //}
-        //
+        [ClassInitialize()]
+        public static void MyClassInitialize(TestContext testContext)
+        {
+            TestCulture.SetCulture();
+        }
+
         //Use ClassCleanup to run code after all tests in a class have run
         //[ClassCleanup()]
         //public static void MyClassCleanup()
@@ -119,7 +127,6 @@ The blog system I'm us.. &lt;a href=""http://tinyurl.com/cvdbvr""&gt;http://tiny
         //}
         //
         #endregion
-
 
         /// <summary>
         ///A test for ProcessResults
@@ -269,8 +276,8 @@ The blog system I'm us.. &lt;a href=""http://tinyurl.com/cvdbvr""&gt;http://tiny
         [TestMethod()]
         public void BuildURLTest()
         {
-            SearchRequestProcessor<Search> target = new SearchRequestProcessor<Search>() { BaseUrl = "http://search.twitter.com/" };
-            Dictionary<string, string> parameters =
+            var searchReqProc = new SearchRequestProcessor<Search>() { BaseUrl = "http://search.twitter.com/" };
+            var parameters =
                 new Dictionary<string, string>
                 {
                     { "Type", SearchType.Search.ToString() },
@@ -281,13 +288,14 @@ The blog system I'm us.. &lt;a href=""http://tinyurl.com/cvdbvr""&gt;http://tiny
                     { "Query", "LINQ to Twitter" },
                     { "ShowUser", "true" },
                     { "SinceID", "1" },
-                    { "Since", "7/4/2010" },
-                    { "Until", "7/4/2011" },
-                    { "ResultType", ResultType.Popular.ToString()},
+                    { "Since", new DateTime(2010, 7, 4).ToString() },
+                    { "Until", new DateTime(2011, 7, 4).ToString() },
+                    { "ResultType", ResultType.Popular.ToString() },
                };
             string expected = "http://search.twitter.com/search.atom?geocode=40.757929%2c-73.985506%2c25km&lang=en&page=1&rpp=10&q=LINQ+to+Twitter&show_user=true&since=2010-07-04&until=2011-07-04&since_id=1&result_type=popular";
-            string actual;
-            actual = target.BuildURL(parameters);
+            
+            string actual = searchReqProc.BuildURL(parameters);
+
             Assert.AreEqual(expected, actual);
         }
 

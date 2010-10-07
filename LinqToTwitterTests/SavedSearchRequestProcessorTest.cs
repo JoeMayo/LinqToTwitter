@@ -6,6 +6,7 @@ using System.Linq.Expressions;
 using System.Xml.Linq;
 using System;
 using System.Collections;
+using LinqToTwitterTests.Common;
 
 namespace LinqToTwitterTests
 {
@@ -19,6 +20,8 @@ namespace LinqToTwitterTests
     public class SavedSearchRequestProcessorTest
     {
         private TestContext testContextInstance;
+
+        #region Test Data
 
         private string m_testQueryResponse = @"<saved_searches type=""array"">
   <saved_search>
@@ -44,6 +47,8 @@ namespace LinqToTwitterTests
   </saved_search>
 </saved_searches>";
 
+        #endregion
+
         /// <summary>
         ///Gets or sets the test context which provides
         ///information about and functionality for the current test run.
@@ -65,11 +70,12 @@ namespace LinqToTwitterTests
         //You can use the following additional attributes as you write your tests:
         //
         //Use ClassInitialize to run code before running the first test in the class
-        //[ClassInitialize()]
-        //public static void MyClassInitialize(TestContext testContext)
-        //{
-        //}
-        //
+        [ClassInitialize()]
+        public static void MyClassInitialize(TestContext testContext)
+        {
+            TestCulture.SetCulture();
+        }
+
         //Use ClassCleanup to run code after all tests in a class have run
         //[ClassCleanup()]
         //public static void MyClassCleanup()
@@ -89,7 +95,6 @@ namespace LinqToTwitterTests
         //}
         //
         #endregion
-
 
         /// <summary>
         ///A test for ProcessResults

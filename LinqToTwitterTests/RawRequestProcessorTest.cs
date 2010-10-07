@@ -6,6 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using LinqToTwitter;
 using System.Linq.Expressions;
 using System.Xml.Linq;
+using LinqToTwitterTests.Common;
 
 namespace LinqToTwitterTests
 {
@@ -858,6 +859,12 @@ namespace LinqToTwitterTests
 </statuses>";
 
         #endregion
+
+        [ClassInitialize()]
+        public static void MyClassInitialize(TestContext testContext)
+        {
+            TestCulture.SetCulture();
+        }
 
         [TestMethod()]
         public void GetParameters_Returns_Parameters()

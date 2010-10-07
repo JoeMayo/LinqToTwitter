@@ -6,6 +6,7 @@ using System.Xml.Linq;
 using System.Linq;
 using System;
 using System.Collections;
+using LinqToTwitterTests.Common;
 
 namespace LinqToTwitterTests
 {
@@ -19,6 +20,8 @@ namespace LinqToTwitterTests
     public class BlocksRequestProcessorTest
     {
         private TestContext testContextInstance;
+
+        #region Test Data
 
         private string m_blockedUsersXml = @"<users type=""array"">
   <user>
@@ -134,6 +137,8 @@ namespace LinqToTwitterTests
     </status>
   </user>";
 
+        #endregion
+
         /// <summary>
         ///Gets or sets the test context which provides
         ///information about and functionality for the current test run.
@@ -155,11 +160,12 @@ namespace LinqToTwitterTests
         //You can use the following additional attributes as you write your tests:
         //
         //Use ClassInitialize to run code before running the first test in the class
-        //[ClassInitialize()]
-        //public static void MyClassInitialize(TestContext testContext)
-        //{
-        //}
-        //
+        [ClassInitialize()]
+        public static void MyClassInitialize(TestContext testContext)
+        {
+            TestCulture.SetCulture();
+        }
+
         //Use ClassCleanup to run code after all tests in a class have run
         //[ClassCleanup()]
         //public static void MyClassCleanup()

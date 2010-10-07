@@ -27,12 +27,13 @@ namespace LinqToTwitterDemo
             //SearchSinceDateTwitterDemo(twitterCtx);
             //SearchTwitterSource(twitterCtx);
             //ExceedSearchRateLimitDemo(twitterCtx);
-            SearchWithResultType(twitterCtx);
+            //SearchWithResultType(twitterCtx);
             //SearchWithWordQuery(twitterCtx);
             //SearchWithPersonQuery(twitterCtx);
             //SearchWithAttitudeQuery(twitterCtx);
             //SearchWithLinksQuery(twitterCtx);
             //SearchCountDemo(twitterCtx);
+            SearchDatesDemo(twitterCtx);
             //SearchEntriesQueryDemo(twitterCtx);
         }
 
@@ -434,6 +435,20 @@ namespace LinqToTwitterDemo
             var srch = queryResults.SingleOrDefault();
 
             Console.WriteLine("Number of references to LINQ to Twitter: " + srch.Entries.Count);
+        }
+
+        private static void SearchDatesDemo(TwitterContext twitterCtx)
+        {
+            var result =
+                (from search in twitterCtx.Search
+                 where search.Type == SearchType.Search &&
+                       search.Query == "LINQ to Twitter" &&
+                       search.Since == DateTime.Now.AddDays(-15).Date && // remember to use Date property
+                       search.Until == DateTime.Now.Date // remember to use Date property
+                 select search)
+                .SingleOrDefault();
+
+            result.Entries.ForEach(entry => Console.WriteLine("Result: {0}\n", entry.Content));
         }
 
         private static void SearchEntriesQueryDemo(TwitterContext twitterCtx)

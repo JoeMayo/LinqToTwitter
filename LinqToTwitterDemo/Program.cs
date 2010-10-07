@@ -19,7 +19,7 @@ namespace LinqToTwitterDemo
         {
             // For testing globalization, uncomment and change 
             // locale to a locale that is not yours
-            //Thread.CurrentThread.CurrentCulture = new CultureInfo("pt-PT");
+            //Thread.CurrentThread.CurrentCulture = new CultureInfo("nn-NO");
 
             //
             // get user credentials and instantiate TwitterContext

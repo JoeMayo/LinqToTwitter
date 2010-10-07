@@ -6,12 +6,19 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Xml;
 using System.Xml.Serialization;
 using LinqToTwitter;
+using LinqToTwitterTests.Common;
 
 namespace LinqToTwitterTests
 {
     [TestClass]
     public class XmlSerializerTests
     {
+        [ClassInitialize()]
+        public static void MyClassInitialize(TestContext testContext)
+        {
+            TestCulture.SetCulture();
+        }
+
         [TestMethod]
         public void Account_Can_Serialize()
         {
@@ -99,6 +106,17 @@ namespace LinqToTwitterTests
             XmlWriter writer = XmlWriter.Create(stringBuilder);
             XmlSerializer xmlSerializer = new XmlSerializer(typeof(List));
             xmlSerializer.Serialize(writer, list);
+        }
+
+        [TestMethod]
+        public void Raw_Can_Serialize()
+        {
+            var raw = new Raw();
+            var stringBuilder = new StringBuilder();
+
+            XmlWriter writer = XmlWriter.Create(stringBuilder);
+            XmlSerializer xmlSerializer = new XmlSerializer(typeof(Raw));
+            xmlSerializer.Serialize(writer, raw);
         }
 
         [TestMethod]

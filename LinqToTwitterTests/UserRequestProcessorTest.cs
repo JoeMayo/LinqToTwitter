@@ -6,6 +6,7 @@ using System.Linq;
 using System.Xml.Linq;
 using System.IO;
 using System;
+using LinqToTwitterTests.Common;
 
 namespace LinqToTwitterTests
 {
@@ -226,11 +227,12 @@ namespace LinqToTwitterTests
         //You can use the following additional attributes as you write your tests:
         //
         //Use ClassInitialize to run code before running the first test in the class
-        //[ClassInitialize()]
-        //public static void MyClassInitialize(TestContext testContext)
-        //{
-        //}
-        //
+        [ClassInitialize()]
+        public static void MyClassInitialize(TestContext testContext)
+        {
+            TestCulture.SetCulture();
+        }
+
         //Use ClassCleanup to run code after all tests in a class have run
         //[ClassCleanup()]
         //public static void MyClassCleanup()
