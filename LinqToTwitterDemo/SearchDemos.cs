@@ -29,11 +29,12 @@ namespace LinqToTwitterDemo
             //ExceedSearchRateLimitDemo(twitterCtx);
             //SearchWithResultType(twitterCtx);
             //SearchWithWordQuery(twitterCtx);
-            //SearchWithPersonQuery(twitterCtx);
+            //SearchWithPersonReferenceQuery(twitterCtx);
+            SearchWithPersonFromQuery(twitterCtx);
             //SearchWithAttitudeQuery(twitterCtx);
             //SearchWithLinksQuery(twitterCtx);
             //SearchCountDemo(twitterCtx);
-            SearchDatesDemo(twitterCtx);
+            //SearchDatesDemo(twitterCtx);
             //SearchEntriesQueryDemo(twitterCtx);
         }
 
@@ -351,7 +352,7 @@ namespace LinqToTwitterDemo
         /// Demonstrates how to use person parameters
         /// </summary>
         /// <param name="twitterCtx">TwitterContext</param>
-        private static void SearchWithPersonQuery(TwitterContext twitterCtx)
+        private static void SearchWithPersonReferenceQuery(TwitterContext twitterCtx)
         {
             var queryResults =
                 from search in twitterCtx.Search
@@ -369,6 +370,29 @@ namespace LinqToTwitterDemo
                         "ID: {0}, As of: {1}\nContent: {2}\n",
                         entry.ID, entry.Updated, entry.Content);
                 }
+            }
+        }
+
+        /// <summary>
+        /// Demonstrates how to use person parameters
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void SearchWithPersonFromQuery(TwitterContext twitterCtx)
+        {
+            var queryResults =
+                (from search in twitterCtx.Search
+                 where search.Type == SearchType.Search &&
+                       search.PersonFrom == "JoeMayo"
+                 select search)
+                .SingleOrDefault();
+
+            Console.WriteLine("\nQuery:\n" + queryResults.Title);
+
+            foreach (var entry in queryResults.Entries)
+            {
+                Console.WriteLine(
+                    "ID: {0}, As of: {1}\nContent: {2}\n",
+                    entry.ID, entry.Updated, entry.Content);
             }
         }
 

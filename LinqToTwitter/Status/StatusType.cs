@@ -110,6 +110,37 @@ namespace LinqToTwitter
         /// </summary>
         RetweetedToMe,
 
+
+        /// <summary>
+        /// lists the 20 most recent re-tweets by the specified user
+        /// 
+        /// Available Options:
+        /// 
+        ///     - ID, ID or ScreenName of User to get Retweets for
+        ///     - UserID, ID of User to get Retweets for
+        ///     - ScreenName, Name of user to get Retweets for
+        ///     - SinceID, get tweets since this ID
+        ///     - MaxID, gets tweets less than this ID
+        ///     - Count, max number of tweets to return
+        ///     - Page, which page to return
+        /// </summary>
+        RetweetedToUser,
+
+        /// <summary>
+        /// lists the 20 most recent re-tweets to the specified user
+        /// 
+        /// Available Options:
+        /// 
+        ///     - ID, ID or ScreenName of User to get Retweets for
+        ///     - UserID, ID of User to get Retweets for
+        ///     - ScreenName, Name of user to get Retweets for
+        ///     - SinceID, get tweets since this ID
+        ///     - MaxID, gets tweets less than this ID
+        ///     - Count, max number of tweets to return
+        ///     - Page, which page to return
+        /// </summary>
+        RetweetedByUser,
+
         /// <summary>
         /// lists the 20 most recent re-tweets about the logged-in user
         /// 

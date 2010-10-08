@@ -134,6 +134,12 @@ namespace LinqToTwitter
                 case StatusType.RetweetsOfMe:
                     url = BuildRetweetsOfMeUrl(parameters);
                     break;
+                case StatusType.RetweetedByUser:
+                    url = BuildRetweetedByUserUrl(parameters);
+                    break;
+                case StatusType.RetweetedToUser:
+                    url = BuildRetweetedToUserUrl(parameters);
+                    break;
                 case StatusType.Show:
                     url = BuildShowUrl(parameters);
                     break;
@@ -330,7 +336,7 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// construct a base mentions url
+        /// construct a base retweeted by me url
         /// </summary>
         /// <param name="parameters">input parameters</param>
         /// <returns>base url + retweeted by me segment</returns>
@@ -351,6 +357,34 @@ namespace LinqToTwitter
         private string BuildRetweetedToMeUrl(Dictionary<string, string> parameters)
         {
             var url = BaseUrl + "statuses/retweeted_to_me.xml";
+
+            url = BuildFriendRepliesAndUrlParameters(parameters, url);
+
+            return url;
+        }
+
+        /// <summary>
+        /// construct a base retweeted by user url
+        /// </summary>
+        /// <param name="parameters">input parameters</param>
+        /// <returns>base url + retweeted by user segment</returns>
+        private string BuildRetweetedByUserUrl(Dictionary<string, string> parameters)
+        {
+            var url = BaseUrl + "statuses/retweeted_by_user.xml";
+
+            url = BuildFriendRepliesAndUrlParameters(parameters, url);
+
+            return url;
+        }
+
+        /// <summary>
+        /// construct a base retweeted to user url
+        /// </summary>
+        /// <param name="parameters">input parameters</param>
+        /// <returns>base url + retweeted to user segment</returns>
+        private string BuildRetweetedToUserUrl(Dictionary<string, string> parameters)
+        {
+            var url = BaseUrl + "statuses/retweeted_to_user.xml";
 
             url = BuildFriendRepliesAndUrlParameters(parameters, url);
 

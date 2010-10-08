@@ -1226,6 +1226,44 @@ namespace LinqToTwitterTests
             Assert.AreEqual(expected, actual);
         }
 
+        [TestMethod()]
+        public void BuildRetweetedByUserUrl_Returns_URL_For_RetweetedByUser()
+        {
+            var reqProc = new StatusRequestProcessor_Accessor<Status>();
+            reqProc.BaseUrl = "http://api.twitter.com/1/";
+            Dictionary<string, string> parameters =
+                new Dictionary<string, string>
+                    {
+                        { "Type", ((int)StatusType.RetweetedByUser).ToString() },
+                        { "ID", "15411837" },
+                        { "ScreenName", "JoeMayo" }
+                    };
+            string expected = "http://api.twitter.com/1/statuses/retweeted_by_user.xml?screen_name=JoeMayo";
+
+            string actual = reqProc.BuildRetweetedByUserUrl(parameters);
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod()]
+        public void BuildRetweetedToUserUrl_Returns_URL_For_RetweetedToUser()
+        {
+            var reqProc = new StatusRequestProcessor_Accessor<Status>();
+            reqProc.BaseUrl = "http://api.twitter.com/1/";
+            Dictionary<string, string> parameters =
+                new Dictionary<string, string>
+                    {
+                        { "Type", ((int)StatusType.RetweetedToUser).ToString() },
+                        { "ID", "15411837" },
+                        { "ScreenName", "JoeMayo" }
+                    };
+            string expected = "http://api.twitter.com/1/statuses/retweeted_to_user.xml?screen_name=JoeMayo";
+
+            string actual = reqProc.BuildRetweetedToUserUrl(parameters);
+
+            Assert.AreEqual(expected, actual);
+        }
+
         /// <summary>
         ///A test for BuildFriendAndUrlParameters
         ///</summary>

@@ -33,6 +33,8 @@ namespace LinqToTwitterDemo
             CategoryStatusDemo(twitterCtx);
         }
 
+        #region User Demos
+
         private static void CategoryStatusDemo(TwitterContext twitterCtx)
         {
             var catTweets =
@@ -47,10 +49,11 @@ namespace LinqToTwitterDemo
             catTweets.ForEach(tweet => 
                 Console.WriteLine(
                     "User: {0}\nTweet: {1}\n", 
-                    tweet.Name, tweet.Status.Text));
+                    tweet.Name, 
+                    tweet.Status == null ?
+                        "<Tweet not available.>" : 
+                        tweet.Status.Text));
         }
-
-        #region User Demos
 
         /// <summary>
         /// Shows how to search for a user
