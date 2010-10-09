@@ -28,6 +28,12 @@ namespace LinqToTwitter
         /// <summary>
         /// Show IDs of all users logged in user is requesting friendship with
         /// </summary>
-        Outgoing
+        Outgoing,
+
+        /// <summary>
+        /// Allows you to examine the relationship of a list of users, ScreenName,
+        /// to the logged in user
+        /// </summary>
+        Lookup
     }
 }

@@ -27,9 +27,20 @@ namespace LinqToTwitter
             return new Relationship
             {
                 ID = relationship.Element("id").Value,
-                ScreenName = relationship.Element("screen_name").Value,
-                Following = bool.Parse(relationship.Element("following").Value),
-                FollowedBy = bool.Parse(relationship.Element("followed_by").Value),
+                ScreenName = 
+                    relationship.Element("screen_name") == null ?
+                        string.Empty :
+                        relationship.Element("screen_name").Value,
+                Following =
+                    relationship.Element("following") == null ||
+                    relationship.Element("following").Value == string.Empty ?
+                        false :
+                        bool.Parse(relationship.Element("following").Value),
+                FollowedBy =
+                    relationship.Element("followed_by") == null ||
+                    relationship.Element("followed_by").Value == string.Empty ?
+                        false :
+                        bool.Parse(relationship.Element("followed_by").Value),
                 Blocking =
                     relationship.Element("blocking") == null ||
                     relationship.Element("blocking").Value == string.Empty ?
@@ -39,7 +50,18 @@ namespace LinqToTwitter
                     relationship.Element("notifications_enabled") == null ||
                     relationship.Element("notifications_enabled").Value == string.Empty ?
                         (bool?)null :
-                        bool.Parse(relationship.Element("notifications_enabled").Value)
+                        bool.Parse(relationship.Element("notifications_enabled").Value),
+                RetweetsWanted =
+                    relationship.Element("want_retweets") == null ||
+                    relationship.Element("want_retweets").Value == string.Empty ?
+                        false :
+                        bool.Parse(relationship.Element("want_retweets").Value),
+                Connection = // TODO: after adding this, does FollowedBy and Following properties still make sense? Joe
+                    relationship.Element("connections") == null ? 
+                        null :
+                        relationship.Element("connections").Element("connection") == null ?
+                            null :
+                            relationship.Element("connections").Element("connection").Value
             };
         }
 
@@ -74,5 +96,16 @@ namespace LinqToTwitter
         /// (null means that Twitter doesn't provide the value for privacy reasons)
         /// </summary>
         public bool? NotificationsEnabled { get; set; }
+
+        /// <summary>
+        /// Does the user want to receive retweets from person they follow
+        /// </summary>
+        public bool RetweetsWanted { get; set; }
+
+        /// <summary>
+        /// Shows relationship between the logged in user and 
+        /// the person identified by this relationship
+        /// </summary>
+        public string Connection { get; set; }
     }
 }

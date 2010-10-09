@@ -53,6 +53,10 @@ namespace LinqToTwitter
         /// </summary>
         private string TargetScreenName { get; set; }
 
+        /// <summary>
+        /// List of names for lookup
+        /// </summary>
+        private string ScreenName { get; set; }
 
         /// <summary>
         /// Helps in paging results for queries such as incoming and outgoing
@@ -77,7 +81,8 @@ namespace LinqToTwitter
                        "SourceScreenName",
                        "TargetUserID",
                        "TargetScreenName",
-                       "Cursor"
+                       "Cursor",
+                       "ScreenName"
                    });
 
             var parameters = paramFinder.Parameters;
@@ -106,14 +111,17 @@ namespace LinqToTwitter
                 case FriendshipType.Exists:
                     url = BuildFriendshipExistsUrl(parameters);
                     break;
-                case FriendshipType.Show:
-                    url = BuildFriendshipShowUrl(parameters);
-                    break;
                 case FriendshipType.Incoming:
                     url = BuildFriendshipIncomingUrl(parameters);
                     break;
+                case FriendshipType.Lookup:
+                    url = BuildLookupUrl(parameters);
+                    break;
                 case FriendshipType.Outgoing:
                     url = BuildFriendshipOutgoingUrl(parameters);
+                    break;
+                case FriendshipType.Show:
+                    url = BuildFriendshipShowUrl(parameters);
                     break;
                 default:
                     throw new InvalidOperationException("The default case of BuildUrl should never execute because a Type must be specified.");
@@ -240,6 +248,39 @@ namespace LinqToTwitter
         }
 
         /// <summary>
+        /// Build url for determining relationship between logged in user and list of other users
+        /// </summary>
+        /// <param name="parameters">Should contain ScreenName</param>
+        /// <returns>Url for lookup</returns>
+        private string BuildLookupUrl(Dictionary<string, string> parameters)
+        {
+            var url = BaseUrl + "friendships/lookup.xml";
+
+            var urlParams = new List<string>();
+
+            if (!parameters.ContainsKey("ScreenName"))
+            {
+                throw new ArgumentNullException("ScreenName", "Requires ScreenName with a comma-separated list of twitter screen names");
+            }
+
+            ScreenName = parameters["ScreenName"];
+
+            if (ScreenName.Contains(' '))
+            {
+                throw new ArgumentException("Spaces aren't allowed in ScreenName.", "ScreenName");
+            }
+
+            urlParams.Add("screen_name=" + parameters["ScreenName"]);
+
+            if (urlParams.Count > 0)
+            {
+                url += "?" + string.Join("&", urlParams.ToArray());
+            }
+
+            return url;
+        }
+
+        /// <summary>
         /// Build url for determining outgoing friend requests
         /// </summary>
         /// <param name="parameters">Can optionally contain Cursor</param>
@@ -282,7 +323,8 @@ namespace LinqToTwitter
                     SourceScreenName = SourceScreenName,
                     TargetUserID = TargetUserID,
                     TargetScreenName = TargetScreenName,
-                    Cursor = Cursor
+                    Cursor = Cursor,
+                    ScreenName = ScreenName
                 };
 
             if (twitterResponse.Name == "relationship") // Show
@@ -293,6 +335,14 @@ namespace LinqToTwitter
                     relationship.CreateRelationship(twitterResponse.Element("source"));
                 friendship.TargetRelationship =
                     relationship.CreateRelationship(twitterResponse.Element("target"));
+            }
+            else if (twitterResponse.Name == "relationships")
+            {
+                var relationship = new Relationship();
+                friendship.Relationships =
+                    (from relElem in twitterResponse.Elements("relationship")
+                     select relationship.CreateRelationship(relElem))
+                    .ToList();
             }
             else if (twitterResponse.Name == "id_list") // incoming/outgoing
             {

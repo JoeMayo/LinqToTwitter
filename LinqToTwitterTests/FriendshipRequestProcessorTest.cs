@@ -7,6 +7,7 @@ using System.Linq;
 using System;
 using System.Collections;
 using LinqToTwitterTests.Common;
+using Moq;
 
 namespace LinqToTwitterTests
 {
@@ -17,7 +18,52 @@ namespace LinqToTwitterTests
     [TestClass()]
     public class FriendshipRequestProcessorTest
     {
+        #region Test Data
+
         private string m_testQueryResponse = "<friends>true</friends>";
+
+        private string m_testLookupResponse = @"<?xml version=""1.0"" encoding=""UTF-8""?>
+<relationships>
+    <relationship id=""783214"">
+        <id>783214</id>
+        <name>Twitter</name>
+        <screen_name>twitter</screen_name>
+        <connections>
+            <connection>none</connection>
+        </connections>
+    </relationship>
+        <relationship id=""15411837"">
+        <id>15411837</id>
+        <name>Joe Mayo</name>
+        <screen_name>JoeMayo</screen_name>
+        <connections>
+            <connection>following</connection>
+        </connections>
+    </relationship>
+</relationships>";
+
+        private string m_testUpdateResponse = @"<?xml version=""1.0"" encoding=""UTF-8""?>
+<relationship>
+  <target>
+    <followed_by type=""boolean"">true</followed_by>
+    <screen_name>JoeMayo</screen_name>
+    <following type=""boolean"">false</following>
+    <id type=""integer"">15411837</id>
+  </target>
+  <source>
+    <marked_spam type=""boolean"">false</marked_spam>
+    <followed_by type=""boolean"">false</followed_by>
+    <notifications_enabled type=""boolean"">true</notifications_enabled>
+    <screen_name>LinqToTweeter</screen_name>
+    <following type=""boolean"">true</following>
+    <all_replies type=""boolean"">false</all_replies>
+    <want_retweets type=""boolean"">true</want_retweets>
+    <blocking type=""boolean"">false</blocking>
+    <id type=""integer"">16761255</id>
+  </source>
+</relationship>";
+
+        #endregion
 
         private TestContext testContextInstance;
 
@@ -83,11 +129,36 @@ namespace LinqToTwitterTests
             Assert.AreEqual(expected, actual.Cast<Friendship>().First().IsFriend);
         }
 
+        [TestMethod()]
+        public void ProcessResults_Translates_Relationships_From_LookupQuery()
+        {
+            var friendReqProc = new FriendshipRequestProcessor<Friendship>();
+
+            List<Friendship> friends = friendReqProc.ProcessResults(m_testLookupResponse);
+
+            var relations = friends.First().Relationships;
+            Assert.AreEqual(2, relations.Count);
+            Assert.AreEqual("none", relations[0].Connection);
+            Assert.AreEqual("following", relations[1].Connection);
+        }
+
+        [TestMethod()]
+        public void ProcessResults_Translates_Relationships_From_UpdateSettings()
+        {
+            var friendReqProc = new FriendshipRequestProcessor<Friendship>();
+
+            List<Friendship> friends = friendReqProc.ProcessResults(m_testUpdateResponse);
+
+            var srcRel = friends.First().SourceRelationship;
+            Assert.AreEqual(true, srcRel.RetweetsWanted);
+            Assert.AreEqual(true, srcRel.NotificationsEnabled);
+        }
+
         /// <summary>
         ///A test for GetParameters
         ///</summary>
         [TestMethod()]
-        public void GetParametersTest()
+        public void GetParameters_Returns_Parameters()
         {
             FriendshipRequestProcessor<Friendship> target = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "http://twitter.com/" };
             Expression<Func<Friendship, bool>> expression = 
@@ -99,7 +170,8 @@ namespace LinqToTwitterTests
                     friend.SourceScreenName == "Name" &&
                     friend.TargetUserID == "2" &&
                     friend.TargetScreenName == "Name" &&
-                    friend.Cursor == "-1";
+                    friend.Cursor == "-1" &&
+                    friend.ScreenName == "twitter,joemayo" ;
             LambdaExpression lambdaExpression = expression as LambdaExpression;
 
             var queryParams = target.GetParameters(lambdaExpression);
@@ -128,6 +200,9 @@ namespace LinqToTwitterTests
             Assert.IsTrue(
                 queryParams.Contains(
                     new KeyValuePair<string, string>("Cursor", "-1")));
+            Assert.IsTrue(
+                queryParams.Contains(
+                    new KeyValuePair<string, string>("ScreenName", "twitter,joemayo")));
         }
 
         /// <summary>
@@ -320,6 +395,116 @@ namespace LinqToTwitterTests
             string actual;
             actual = target.BuildURL(parameters);
             Assert.AreEqual(expected, actual);
+        }
+
+        /// <summary>
+        ///A test for BuildURL for the Lookup function
+        ///</summary>
+        [TestMethod()]
+        public void BuildLookupUrl_Returns_Url()
+        {
+            var friendReqProc = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "https://api.twitter.com/1/" };
+            Dictionary<string, string> parameters =
+                new Dictionary<string, string>
+                {
+                    { "Type", FriendshipType.Lookup.ToString() },
+                    { "ScreenName", "twitter,joemayo" }
+                };
+            string expected = "https://api.twitter.com/1/friendships/lookup.xml?screen_name=twitter,joemayo";
+            string actual;
+            actual = friendReqProc.BuildURL(parameters);
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void BuildLookupUrl_Requires_ScreenName()
+        {
+            var friendReqProc = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "https://api.twitter.com/1/" };
+            Dictionary<string, string> parameters =
+                new Dictionary<string, string>
+                {
+                    { "Type", FriendshipType.Lookup.ToString() },
+                    //{ "ScreenName", "twitter,joemayo" }
+                };
+
+            try
+            {
+                friendReqProc.BuildURL(parameters);
+
+                Assert.Fail("Expected ArgumentNullException.");
+            }
+            catch (ArgumentNullException ane)
+            {
+                Assert.AreEqual("ScreenName", ane.ParamName);
+            }
+        }
+
+        [TestMethod]
+        public void BuildLookupUrl_Requires_ScreenName_With_No_Spaces()
+        {
+            var friendReqProc = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "https://api.twitter.com/1/" };
+            Dictionary<string, string> parameters =
+                new Dictionary<string, string>
+                {
+                    { "Type", FriendshipType.Lookup.ToString() },
+                    { "ScreenName", "twitter, joemayo" }
+                };
+
+            try
+            {
+                friendReqProc.BuildURL(parameters);
+
+                Assert.Fail("Expected ArgumentException.");
+            }
+            catch (ArgumentNullException)
+            {
+                Assert.Fail("Expected ArgumentException, not ArgumentNullException.");
+            }
+            catch (ArgumentException ae)
+            {
+                Assert.AreEqual("ScreenName", ae.ParamName);
+            }
+        }
+
+        [TestMethod]
+        public void UpdateFriendshipSettings_Calls_Execute()
+        {
+            var authMock = new Mock<ITwitterAuthorization>();
+            var execMock = new Mock<ITwitterExecute>();
+            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
+            execMock.Setup(exec => exec.ExecuteTwitter(It.IsAny<string>(), It.IsAny<Dictionary<string, string>>())).Returns("<friends>true</friends>");
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "https://api.twitter.com/1/", "");
+            var reqProc = new Mock<IRequestProcessor<User>>();
+
+            ctx.UpdateFriendshipSettings("joemayo", true, true);
+
+            execMock.Verify(exec => 
+                exec.ExecuteTwitter(
+                    "https://api.twitter.com/1/friendships/update.xml",
+                    It.IsAny<Dictionary<string, string>>()),
+                Times.Once());
+        }
+
+        [TestMethod]
+        public void UpdateFriendshipSettings_Requires_ScreenName()
+        {
+            var authMock = new Mock<ITwitterAuthorization>();
+            var execMock = new Mock<ITwitterExecute>();
+            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
+            execMock.Setup(exec => exec.ExecuteTwitter(It.IsAny<string>(), It.IsAny<Dictionary<string, string>>())).Returns("<friends>true</friends>");
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "https://api.twitter.com/1/", "");
+            var reqProc = new Mock<IRequestProcessor<User>>();
+
+            try
+            {
+                ctx.UpdateFriendshipSettings(/*"joemayo"*/ null, true, true);
+
+                Assert.Fail("Expected ArgumentNullException.");
+            }
+            catch (ArgumentNullException ane)
+            {
+                Assert.AreEqual("screenName", ane.ParamName);
+            }
         }
     }
 }

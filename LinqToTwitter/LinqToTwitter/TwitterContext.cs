@@ -1116,6 +1116,34 @@ namespace LinqToTwitter
             return results.FirstOrDefault();
         }
 
+        /// <summary>
+        /// lets logged-in user set retweets and/or device notifications for a follower
+        /// </summary>
+        /// <param name="screenName">screen name of user to update</param>
+        /// <returns>updated friend user info</returns>
+        public virtual Friendship UpdateFriendshipSettings(string screenName, bool retweets, bool device)
+        {
+            if (string.IsNullOrEmpty(screenName))
+            {
+                throw new ArgumentNullException("screenName", "screenName is a required parameter.");
+            }
+
+            string updateUrl = baseUrl + "friendships/update.xml";
+
+            var resultsXml =
+                TwitterExecutor.ExecuteTwitter(
+                    updateUrl,
+                    new Dictionary<string, string>
+                    {
+                        { "screen_name", screenName },
+                        { "retweets", retweets.ToString().ToLower() },
+                        { "device", device.ToString().ToLower() }
+                    });
+
+            var results = new FriendshipRequestProcessor<Friendship>().ProcessResults(resultsXml);
+            return results.FirstOrDefault();
+        }
+
         #endregion
 
         #region Favorites Methods

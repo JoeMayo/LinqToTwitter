@@ -71,6 +71,19 @@ namespace LinqToTwitter
         /// </summary>
         public Relationship TargetRelationship { get; set; }
 
+        /// <summary>
+        /// List of ids returned by Incoming and Outgoing queries
+        /// </summary>
         public IDList IDInfo { get; set; }
+
+        /// <summary>
+        /// Comma-separated list of screen names for Lookup query
+        /// </summary>
+        public string ScreenName { get; set; }
+
+        /// <summary>
+        /// List of relationships from Lookup query
+        /// </summary>
+        public List<Relationship> Relationships { get; set; }
     }
 }

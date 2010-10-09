@@ -17,7 +17,7 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         public static void Run(TwitterContext twitterCtx)
         {
-            CreateFriendshipFollowDemo(twitterCtx);
+            //CreateFriendshipFollowDemo(twitterCtx);
             //DestroyFriendshipDemo(twitterCtx);
             //CreateFriendshipNoDeviceUpdatesDemo(twitterCtx);
             //FriendshipExistsDemo(twitterCtx);
@@ -25,6 +25,8 @@ namespace LinqToTwitterDemo
             //FriendshipShowDemo(twitterCtx);
             //FriendshipIncomingDemo(twitterCtx);
             //FriendshipOutgoingDemo(twitterCtx);
+            //FriendshipLookupDemo(twitterCtx);
+            UpdateSettingsDemo(twitterCtx);
         }
 
         #region Friendship Demos
@@ -146,7 +148,28 @@ namespace LinqToTwitterDemo
             request.IDInfo.IDs.ForEach(req => Console.WriteLine(req));
         }
 
-        #endregion
+        private static void FriendshipLookupDemo(TwitterContext twitterCtx)
+        {
+            var relationships =
+                (from look in twitterCtx.Friendship
+                 where look.Type == FriendshipType.Lookup &&
+                       look.ScreenName == "twitter,joemayo"
+                 select look.Relationships)
+                .SingleOrDefault();
 
+            relationships.ForEach(rel => Console.WriteLine("Relationship to " + rel.ScreenName + " is " + rel.Connection));
+        }
+
+        private static void UpdateSettingsDemo(TwitterContext twitterCtx)
+        {
+            Friendship friend = twitterCtx.UpdateFriendshipSettings("JoeMayo", retweets: true, device: true);
+
+            Console.WriteLine("Settings for {0} are: Can Retweet is {1} and Can Send Device Notifications is {2}",
+                friend.SourceRelationship.ScreenName, 
+                friend.SourceRelationship.RetweetsWanted, 
+                friend.SourceRelationship.NotificationsEnabled);
+        }
+
+        #endregion
     }
 }
