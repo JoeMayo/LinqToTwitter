@@ -48,6 +48,11 @@
         /// <summary>
         /// Check if a user subscribes to the specified list
         /// </summary>
-        IsSubscribed
+        IsSubscribed,
+
+        /// <summary>
+        /// Get all lists subscribed to
+        /// </summary>
+        All
     }
 }

@@ -146,6 +146,194 @@ namespace LinqToTwitterTests
   <previous_cursor>0</previous_cursor>
 </lists_list>";
 
+        private string m_listAllResponse = @"<?xml version=""1.0"" encoding=""UTF-8""?>
+<lists type=""array"">
+<list>
+  <id>4557337</id>
+  <name>DotNetTwittterDevs</name>
+  <full_name>@JoeMayo/dotnettwittterdevs</full_name>
+  <slug>dotnettwittterdevs</slug>
+  <description>.NET Developers who use the Twitter API</description>
+  <subscriber_count>14</subscriber_count>
+  <member_count>182</member_count>
+  <uri>/JoeMayo/dotnettwittterdevs</uri>
+  <following>true</following>
+  <mode>public</mode>
+  <user>
+    <id>15411837</id>
+    <name>Joe Mayo</name>
+    <screen_name>JoeMayo</screen_name>
+    <location>Denver, CO</location>
+    <description>Created LINQ to Twitter, author of 6 .NET books, .NET Consultant, and C# MVP</description>
+    <profile_image_url>http://a3.twimg.com/profile_images/520626655/JoeTwitterBW_-_150_x_150_normal.jpg</profile_image_url>
+    <url>http://linqtotwitter.codeplex.com/</url>
+    <protected>false</protected>
+    <followers_count>569</followers_count>
+    <profile_background_color>0099B9</profile_background_color>
+    <profile_text_color>3C3940</profile_text_color>
+    <profile_link_color>0099B9</profile_link_color>
+    <profile_sidebar_fill_color>95E8EC</profile_sidebar_fill_color>
+    <profile_sidebar_border_color>5ED4DC</profile_sidebar_border_color>
+    <friends_count>44</friends_count>
+    <created_at>Sun Jul 13 04:35:50 +0000 2008</created_at>
+    <favourites_count>92</favourites_count>
+    <utc_offset>-25200</utc_offset>
+    <time_zone>Mountain Time (US &amp; Canada)</time_zone>
+    <profile_background_image_url>http://a3.twimg.com/profile_background_images/13330711/200xColor_2.png</profile_background_image_url>
+    <profile_background_tile>false</profile_background_tile>
+    <profile_use_background_image>true</profile_use_background_image>
+    <notifications>true</notifications>
+    <geo_enabled>true</geo_enabled>
+    <verified>false</verified>
+    <following>true</following>
+    <statuses_count>1202</statuses_count>
+    <lang>en</lang>
+    <contributors_enabled>false</contributors_enabled>
+    <follow_request_sent>false</follow_request_sent>
+    <listed_count>81</listed_count>
+    <show_all_inline_media>false</show_all_inline_media>
+  </user>
+</list>
+<list>
+  <id>3897042</id>
+  <name>Privatelist</name>
+  <full_name>@LinqToTweeter/privatelist</full_name>
+  <slug>privatelist</slug>
+  <description>This is a private list for testing</description>
+  <subscriber_count>0</subscriber_count>
+  <member_count>1</member_count>
+  <uri>/LinqToTweeter/privatelist</uri>
+  <following>false</following>
+  <mode>private</mode>
+  <user>
+    <id>16761255</id>
+    <name>LINQ to Tweeter Test</name>
+    <screen_name>LinqToTweeter</screen_name>
+    <location>Anywhere In The World</location>
+    <description>Testing the LINQ to Twitter Account Profile Update.</description>
+    <profile_image_url>http://a3.twimg.com/profile_images/197870807/JoeTwitterBW_normal.jpg</profile_image_url>
+    <url>http://linqtotwitter.codeplex.com</url>
+    <protected>false</protected>
+    <followers_count>26</followers_count>
+    <profile_background_color>0099B9</profile_background_color>
+    <profile_text_color>3C3940</profile_text_color>
+    <profile_link_color>0099B9</profile_link_color>
+    <profile_sidebar_fill_color>95E8EC</profile_sidebar_fill_color>
+    <profile_sidebar_border_color>5ED4DC</profile_sidebar_border_color>
+    <friends_count>1</friends_count>
+    <created_at>Wed Oct 15 05:15:40 +0000 2008</created_at>
+    <favourites_count>2</favourites_count>
+    <utc_offset>-25200</utc_offset>
+    <time_zone>Mountain Time (US &amp; Canada)</time_zone>
+    <profile_background_image_url>http://a3.twimg.com/profile_background_images/100000765/linq2twitter_v3_300x90.png</profile_background_image_url>
+    <profile_background_tile>true</profile_background_tile>
+    <profile_use_background_image>true</profile_use_background_image>
+    <notifications>false</notifications>
+    <geo_enabled>true</geo_enabled>
+    <verified>false</verified>
+    <following>false</following>
+    <statuses_count>77</statuses_count>
+    <lang>en</lang>
+    <contributors_enabled>false</contributors_enabled>
+    <follow_request_sent>false</follow_request_sent>
+    <listed_count>0</listed_count>
+    <show_all_inline_media>false</show_all_inline_media>
+  </user>
+</list>
+<list>
+  <id>3897016</id>
+  <name>MVC</name>
+  <full_name>@LinqToTweeter/mvc</full_name>
+  <slug>mvc</slug>
+  <description>Developers Interested in MVC</description>
+  <subscriber_count>0</subscriber_count>
+  <member_count>1</member_count>
+  <uri>/LinqToTweeter/mvc</uri>
+  <following>false</following>
+  <mode>public</mode>
+  <user>
+    <id>16761255</id>
+    <name>LINQ to Tweeter Test</name>
+    <screen_name>LinqToTweeter</screen_name>
+    <location>Anywhere In The World</location>
+    <description>Testing the LINQ to Twitter Account Profile Update.</description>
+    <profile_image_url>http://a3.twimg.com/profile_images/197870807/JoeTwitterBW_normal.jpg</profile_image_url>
+    <url>http://linqtotwitter.codeplex.com</url>
+    <protected>false</protected>
+    <followers_count>26</followers_count>
+    <profile_background_color>0099B9</profile_background_color>
+    <profile_text_color>3C3940</profile_text_color>
+    <profile_link_color>0099B9</profile_link_color>
+    <profile_sidebar_fill_color>95E8EC</profile_sidebar_fill_color>
+    <profile_sidebar_border_color>5ED4DC</profile_sidebar_border_color>
+    <friends_count>1</friends_count>
+    <created_at>Wed Oct 15 05:15:40 +0000 2008</created_at>
+    <favourites_count>2</favourites_count>
+    <utc_offset>-25200</utc_offset>
+    <time_zone>Mountain Time (US &amp; Canada)</time_zone>
+    <profile_background_image_url>http://a3.twimg.com/profile_background_images/100000765/linq2twitter_v3_300x90.png</profile_background_image_url>
+    <profile_background_tile>true</profile_background_tile>
+    <profile_use_background_image>true</profile_use_background_image>
+    <notifications>false</notifications>
+    <geo_enabled>true</geo_enabled>
+    <verified>false</verified>
+    <following>false</following>
+    <statuses_count>77</statuses_count>
+    <lang>en</lang>
+    <contributors_enabled>false</contributors_enabled>
+    <follow_request_sent>false</follow_request_sent>
+    <listed_count>0</listed_count>
+    <show_all_inline_media>false</show_all_inline_media>
+  </user>
+</list>
+<list>
+  <id>3897006</id>
+  <name>LINQ</name>
+  <full_name>@LinqToTweeter/linq</full_name>
+  <slug>linq</slug>
+  <description>People who specialize in LINQ</description>
+  <subscriber_count>0</subscriber_count>
+  <member_count>2</member_count>
+  <uri>/LinqToTweeter/linq</uri>
+  <following>false</following>
+  <mode>public</mode>
+  <user>
+    <id>16761255</id>
+    <name>LINQ to Tweeter Test</name>
+    <screen_name>LinqToTweeter</screen_name>
+    <location>Anywhere In The World</location>
+    <description>Testing the LINQ to Twitter Account Profile Update.</description>
+    <profile_image_url>http://a3.twimg.com/profile_images/197870807/JoeTwitterBW_normal.jpg</profile_image_url>
+    <url>http://linqtotwitter.codeplex.com</url>
+    <protected>false</protected>
+    <followers_count>26</followers_count>
+    <profile_background_color>0099B9</profile_background_color>
+    <profile_text_color>3C3940</profile_text_color>
+    <profile_link_color>0099B9</profile_link_color>
+    <profile_sidebar_fill_color>95E8EC</profile_sidebar_fill_color>
+    <profile_sidebar_border_color>5ED4DC</profile_sidebar_border_color>
+    <friends_count>1</friends_count>
+    <created_at>Wed Oct 15 05:15:40 +0000 2008</created_at>
+    <favourites_count>2</favourites_count>
+    <utc_offset>-25200</utc_offset>
+    <time_zone>Mountain Time (US &amp; Canada)</time_zone>
+    <profile_background_image_url>http://a3.twimg.com/profile_background_images/100000765/linq2twitter_v3_300x90.png</profile_background_image_url>
+    <profile_background_tile>true</profile_background_tile>
+    <profile_use_background_image>true</profile_use_background_image>
+    <notifications>false</notifications>
+    <geo_enabled>true</geo_enabled>
+    <verified>false</verified>
+    <following>false</following>
+    <statuses_count>77</statuses_count>
+    <lang>en</lang>
+    <contributors_enabled>false</contributors_enabled>
+    <follow_request_sent>false</follow_request_sent>
+    <listed_count>0</listed_count>
+    <show_all_inline_media>false</show_all_inline_media>
+  </user>
+</list>
+</lists>";
+
         #endregion
 
         /// <summary>
@@ -209,6 +397,18 @@ namespace LinqToTwitterTests
             var actualQuery = actual as IList<List>;
             Assert.IsNotNull(actualQuery);
             Assert.AreEqual(actualQuery.Count(), 1);
+        }
+
+        [TestMethod]
+        public void ProcessResults_Transforms_All_Query_Results()
+        {
+            var listProc = new ListRequestProcessor<List>();
+            XElement twitterResponse = XElement.Load(new StringReader(m_listAllResponse));
+
+            var actual = listProc.ProcessResults(twitterResponse.ToString());
+
+            Assert.IsNotNull(actual);
+            Assert.AreEqual(4, actual.Count);
         }
 
         /// <summary>
@@ -283,23 +483,25 @@ namespace LinqToTwitterTests
         ///<summary>
         /// A test for buildUrl using parameters
         /// </summary>
-        [TestMethod()]
+        [TestMethod]
         public void BuildStatusUrlTestWithParameters()
         {
             ListRequestProcessor<List> target = new ListRequestProcessor<List>() { BaseUrl = "https://api.twitter.com/1/" };
             var parameters = new Dictionary<string, string>
-                                 {
-                                     {"Type", ((int) ListType.Statuses).ToString()},
-                                     {"ScreenName", "JoeMayo"},
-                                     {"ListID", "1234567"},
-                                     {"MaxID", "9876543"},
-                                     {"SinceID", "2345678"},
-                                     {"PerPage", "100"},
-                                     {"Page", "2"}
-                                 };
+            {
+                {"Type", ((int) ListType.Statuses).ToString()},
+                {"ScreenName", "JoeMayo"},
+                {"ListID", "1234567"},
+                {"MaxID", "9876543"},
+                {"SinceID", "2345678"},
+                {"PerPage", "100"},
+                {"Page", "2"}
+            };
             string expected =
                 "https://api.twitter.com/1/JoeMayo/lists/1234567/statuses.xml?max_id=9876543&since_id=2345678&per_page=100&page=2";
+            
             string actual = target.BuildURL(parameters);
+            
             Assert.AreEqual(expected, actual);                       
         }
 
@@ -321,9 +523,6 @@ namespace LinqToTwitterTests
             Assert.AreEqual(expected, actual);
         }
 
-        /// <summary>
-        ///A test for BuildURL
-        ///</summary>
         [TestMethod()]
         [ExpectedException(typeof(ArgumentException))]
         public void BuildURLTestMissingScreenName()
@@ -377,6 +576,42 @@ namespace LinqToTwitterTests
             {
                 Assert.AreEqual<string>("Type", ae.ParamName);
             }
+        }
+
+        [TestMethod]
+        public void BuildAllListsUrl_Returns_Url_With_ScreenName()
+        {
+            var listReqProc = new ListRequestProcessor<List>() { BaseUrl = "https://api.twitter.com/1/" };
+            var parameters = new Dictionary<string, string>
+            {
+                {"Type", ((int) ListType.All).ToString()},
+                {"ScreenName", "JoeMayo"},
+            };
+            string expected =
+                "https://api.twitter.com/1/lists/all.xml?screen_name=JoeMayo";
+
+            string actual = listReqProc.BuildURL(parameters);
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [Ignore]
+        [TestMethod]
+        public void BuildAllListsUrl_Returns_Url_With_UserID()
+        {
+            // TODO: ScreenName check in BuilUrl breaks this test. All other list APIs requires ScreenName, except for this one
+            var listReqProc = new ListRequestProcessor<List>() { BaseUrl = "https://api.twitter.com/1/" };
+            var parameters = new Dictionary<string, string>
+            {
+                {"Type", ((int) ListType.All).ToString()},
+                {"ID", "123"},
+            };
+            string expected =
+                "https://api.twitter.com/1/JoeMayo/lists/all.xml?user_id=123";
+
+            string actual = listReqProc.BuildURL(parameters);
+
+            Assert.AreEqual(expected, actual);
         }
     }
 }

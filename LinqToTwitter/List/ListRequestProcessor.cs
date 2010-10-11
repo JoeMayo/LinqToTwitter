@@ -149,6 +149,9 @@ namespace LinqToTwitter
 
             switch (Type)
             {
+                case ListType.All:
+                    url = BuildAllUrl(parameters);
+                    break;
                 case ListType.Lists:
                     url = BuildListsUrl(parameters);
                     break;
@@ -178,6 +181,37 @@ namespace LinqToTwitter
                     break;
                 default:
                     break;
+            }
+
+            return url;
+        }
+
+        /// <summary>
+        /// Builds URL to retrieve all lists a user is subscribed to
+        /// </summary>
+        /// <param name="parameters">ScreenName or UserID</param>
+        /// <returns>Url of requesting user's subscribed lists</returns>
+        private string BuildAllUrl(Dictionary<string, string> parameters)
+        {
+            var urlParams = new List<string>();
+
+            string url = BaseUrl.Replace(ScreenName + "/", "") + @"lists/all.xml";
+
+            if (parameters.ContainsKey("UserID"))
+            {
+                ID = parameters["UserID"];
+                urlParams.Add("user_id=" + parameters["UserID"]);
+            }
+
+            if (parameters.ContainsKey("ScreenName"))
+            {
+                ScreenName = parameters["ScreenName"];
+                urlParams.Add("screen_name=" + parameters["ScreenName"]);
+            }
+
+            if (urlParams.Count > 0)
+            {
+                url += "?" + string.Join("&", urlParams.ToArray());
             }
 
             return url;
@@ -451,10 +485,15 @@ namespace LinqToTwitter
             XElement twitterResponse = XElement.Parse(responseXml);
             List<List> lists = new List<List>();
 
-            if (twitterResponse.Name == "lists_list")
+            if (twitterResponse.Name == "lists_list" || twitterResponse.Name == "lists")
             {
+                IEnumerable<XElement> listElements =
+                    twitterResponse.Name == "lists_list" ?
+                        twitterResponse.Element("lists").Elements("list") :
+                        twitterResponse.Elements("list");
+
                 lists =
-                    (from list in twitterResponse.Element("lists").Elements("list")
+                    (from list in listElements
                      select new List
                      {
                          Type = Type,

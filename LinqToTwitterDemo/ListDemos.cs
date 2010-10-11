@@ -17,7 +17,7 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         public static void Run(TwitterContext twitterCtx)
         {
-            GetListsDemo(twitterCtx);
+            //GetListsDemo(twitterCtx);
             //IsListSubscribedDemo(twitterCtx);
             //GetListSubscribersDemo(twitterCtx);
             //IsListMemberDemo(twitterCtx);
@@ -37,6 +37,19 @@ namespace LinqToTwitterDemo
             //SubscribeToListDemo(twitterCtx);
             //UnsubscribeFromListDemo(twitterCtx);
             //ListSortDemo(twitterCtx);
+            GetAllSubscribedListsDemo(twitterCtx);
+        }
+
+        private static void GetAllSubscribedListsDemo(TwitterContext twitterCtx)
+        {
+            var lists =
+                (from list in twitterCtx.List
+                 where list.Type == ListType.All &&
+                       list.ScreenName == "JoeMayo"
+                 select list)
+                .ToList();
+
+            lists.ForEach(list => Console.WriteLine("Slug: " + list.Slug));
         }
 
         private static void AddMemberRangeToListWithScreenNamesDemo(TwitterContext twitterCtx)

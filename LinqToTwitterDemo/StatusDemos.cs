@@ -21,7 +21,7 @@ namespace LinqToTwitterDemo
             // status tweets
             //
 
-            //PublicStatusQueryDemo(twitterCtx);
+            PublicStatusQueryDemo(twitterCtx);
             //PublicStatusFilteredQueryDemo(twitterCtx);
             //HomeStatusQueryDemo(twitterCtx);
             //HomeSinceStatusQueryDemo(twitterCtx);
@@ -42,7 +42,7 @@ namespace LinqToTwitterDemo
             //RetweetedByMeWithCountStatusQueryDemo(twitterCtx);
             //RetweetedToMeStatusQueryDemo(twitterCtx);
             //RetweetsOfMeStatusQueryDemo(twitterCtx);
-            RetweetedByUserStatusQueryDemo(twitterCtx);
+            //RetweetedByUserStatusQueryDemo(twitterCtx);
             //RetweetDemo(twitterCtx);
             //RetweetsQueryDemo(twitterCtx);
             //RetweetsCount(twitterCtx);
