@@ -240,6 +240,16 @@ namespace LinqToTwitter
         public bool IncludeRetweets { get; set; }
 
         /// <summary>
+        /// Don't include replies in results
+        /// </summary>
+        public bool ExcludeReplies { get; set; }
+
+        /// <summary>
+        /// Add entities to tweets
+        /// </summary>
+        public bool IncludeEntities { get; set; }
+
+        /// <summary>
         /// when was the tweet created
         /// </summary>
         public DateTime CreatedAt { get; set; }
@@ -324,5 +334,7 @@ namespace LinqToTwitter
         /// Entities connected to the status
         /// </summary>
         public Entities Entities { get; set; }
+
+        public bool TrimUser { get; set; }
     }
 }

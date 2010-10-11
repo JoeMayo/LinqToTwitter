@@ -42,10 +42,14 @@ namespace LinqToTwitter
             var tempFollowingUsers = false;
 
             var canParseProtected = 
-                bool.TryParse(user.Element("protected").Value, out tempUserProtected);
+                user.Element("protected") == null ?
+                    false :
+                    bool.TryParse(user.Element("protected").Value, out tempUserProtected);
             
             var followersCount =
-                ulong.TryParse(user.Element("followers_count").Value, out tempFollowersCount);
+                user.Element("followers_count") == null ?
+                    false :
+                    ulong.TryParse(user.Element("followers_count").Value, out tempFollowersCount);
             
             var friendsCount =
                 user.Element("friends_count") == null ? 
@@ -131,15 +135,15 @@ namespace LinqToTwitter
             {
                 Identifier = new UserIdentifier
                 {
-                    ID = user.Element("id").Value,
-                    UserID = user.Element("id").Value,
-                    ScreenName = user.Element("screen_name").Value
+                    ID = user.Element("id") == null ? "0" : user.Element("id").Value,
+                    UserID = user.Element("id") == null ? "0" : user.Element("id").Value,
+                    ScreenName = user.Element("screen_name") == null ? "" : user.Element("screen_name").Value
                 },
-                Name = user.Element("name").Value,
-                Location = user.Element("location").Value,
-                Description = user.Element("description").Value,
-                ProfileImageUrl = user.Element("profile_image_url").Value,
-                URL = user.Element("url").Value,
+                Name = user.Element("name") == null ? "" : user.Element("name").Value,
+                Location = user.Element("location") == null ? "" : user.Element("location").Value,
+                Description = user.Element("description") == null ? "" : user.Element("description").Value,
+                ProfileImageUrl = user.Element("profile_image_url") == null ? "" : user.Element("profile_image_url").Value,
+                URL = user.Element("url") == null ? "" : user.Element("url").Value,
                 Protected = tempUserProtected,
                 FollowersCount = tempFollowersCount,
                 ProfileBackgroundColor = 

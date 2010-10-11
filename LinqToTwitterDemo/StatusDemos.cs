@@ -21,7 +21,7 @@ namespace LinqToTwitterDemo
             // status tweets
             //
 
-            PublicStatusQueryDemo(twitterCtx);
+            //PublicStatusQueryDemo(twitterCtx);
             //PublicStatusFilteredQueryDemo(twitterCtx);
             //HomeStatusQueryDemo(twitterCtx);
             //HomeSinceStatusQueryDemo(twitterCtx);
@@ -51,8 +51,9 @@ namespace LinqToTwitterDemo
             //ContributorIDsDemo(twitterCtx);
             //StatusCountDemo(twitterCtx);
             //StatusJoinDemo(twitterCtx);
+            TrimUserDemo(twitterCtx);
         }
-        
+
         //private static void StatusJoinDemo(TwitterContext twitterCtx)
         //{
         //    // Working on Issue #28845
@@ -778,6 +779,18 @@ namespace LinqToTwitterDemo
             {
                 Console.WriteLine(l.Text);
             }
+        }
+
+        private static void TrimUserDemo(TwitterContext twitterCtx)
+        {
+            var tweets =
+                (from tweet in twitterCtx.Status
+                 where tweet.Type == StatusType.Home &&
+                       tweet.TrimUser == true
+                 select tweet)
+                .ToList();
+
+            tweets.ForEach(tweet => Console.WriteLine("User ID: {0}\nTweet: {1}\n", tweet.User.Identifier.ID, tweet.Text));
         }
 
         #endregion

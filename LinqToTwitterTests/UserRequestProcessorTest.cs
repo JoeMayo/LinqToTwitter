@@ -631,9 +631,6 @@ namespace LinqToTwitterTests
                queryParams.Contains(
                    new KeyValuePair<string, string>("ScreenName", "JoeMayo")));
             Assert.IsTrue(
-               queryParams.Contains(
-                   new KeyValuePair<string, string>("ID", "10")));
-            Assert.IsTrue(
               queryParams.Contains(
                   new KeyValuePair<string, string>("Cursor", "10819235")));
             Assert.IsTrue(

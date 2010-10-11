@@ -66,6 +66,21 @@ namespace LinqToTwitter
         public bool IncludeRetweets { get; set; }
 
         /// <summary>
+        /// Don't include replies in responses
+        /// </summary>
+        public bool ExcludeReplies { get; set; }
+
+        /// <summary>
+        /// Include entities in tweets
+        /// </summary>
+        public bool IncludeEntities { get; set; }
+
+        /// <summary>
+        /// Remove all user info, except for User ID
+        /// </summary>
+        public bool TrimUser { get; set; }
+
+        /// <summary>
         /// extracts parameters from lambda
         /// </summary>
         /// <param name="lambdaExpression">lambda expression with where clause</param>
@@ -84,7 +99,10 @@ namespace LinqToTwitter
                        "MaxID",
                        "Count",
                        "Page",
-                       "IncludeRetweets"
+                       "IncludeRetweets",
+                       "ExcludeReplies",
+                       "IncludeEntities",
+                       "TrimUser"
                    });
 
             var parameters = paramFinder.Parameters;
@@ -230,6 +248,36 @@ namespace LinqToTwitter
                 if (IncludeRetweets)
                 {
                     urlParams.Add("include_rts=" + parameters["IncludeRetweets"].ToLower()); 
+                }
+            }
+
+            if (parameters.ContainsKey("ExcludeReplies"))
+            {
+                ExcludeReplies = bool.Parse(parameters["ExcludeReplies"]);
+
+                if (ExcludeReplies)
+                {
+                    urlParams.Add("exclude_replies=" + parameters["ExcludeReplies"].ToLower());
+                }
+            }
+
+            if (parameters.ContainsKey("IncludeEntities"))
+            {
+                IncludeEntities = bool.Parse(parameters["IncludeEntities"]);
+
+                if (IncludeEntities)
+                {
+                    urlParams.Add("include_entities=" + parameters["IncludeEntities"].ToLower());
+                }
+            }
+
+            if (parameters.ContainsKey("TrimUser"))
+            {
+                TrimUser = bool.Parse(parameters["TrimUser"]);
+
+                if (TrimUser)
+                {
+                    urlParams.Add("trim_user=" + parameters["TrimUser"].ToLower());
                 }
             }
 
@@ -442,6 +490,9 @@ namespace LinqToTwitter
                     status.Count = Count;
                     status.Page = Page;
                     status.IncludeRetweets = IncludeRetweets;
+                    status.ExcludeReplies = ExcludeReplies;
+                    status.IncludeEntities = IncludeEntities;
+                    status.TrimUser = TrimUser;
                 });
 
             return statusList.OfType<T>().ToList();

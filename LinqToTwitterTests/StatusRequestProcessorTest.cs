@@ -1050,35 +1050,70 @@ namespace LinqToTwitterTests
             Assert.AreEqual(actualQuery.Count(), 1);
         }
 
-        /// <summary>
-        ///A test for GetParameters
-        ///</summary>
         [TestMethod()]
         public void GetParametersTest()
         {
             var reqProc = new StatusRequestProcessor<Status>();
 
-            var ctx = new TwitterContext();
+            Expression<Func<Status, bool>> expression =
+            status =>
+                status.Type == StatusType.Home &&
+                status.ID == "10" &&
+                status.UserID == "10" &&
+                status.ScreenName == "JoeMayo" &&
+                status.SinceID == 123 &&
+                status.MaxID == 456 &&
+                status.Count == 50 &&
+                status.Page == 2 &&
+                status.IncludeRetweets == true &&
+                status.ExcludeReplies == true &&
+                status.IncludeEntities == true &&
+                status.TrimUser == true;
 
-            var publicQuery =
-                from tweet in ctx.Status
-                where tweet.Type == StatusType.Public
-                select tweet;
-
-            var whereFinder = new FirstWhereClauseFinder();
-            var whereExpression = whereFinder.GetFirstWhere(publicQuery.Expression);
-
-            var lambdaExpression = (LambdaExpression)((UnaryExpression)(whereExpression.Arguments[1])).Operand;
-
-            lambdaExpression = (LambdaExpression)Evaluator.PartialEval(lambdaExpression);
+            LambdaExpression lambdaExpression = expression as LambdaExpression;
 
             var queryParams = reqProc.GetParameters(lambdaExpression);
 
             Assert.IsTrue(
                 queryParams.Contains(
-                    new KeyValuePair<string, string>("Type", ((int)StatusType.Public).ToString())));
+                    new KeyValuePair<string, string>("Type", ((int)StatusType.Home).ToString())));
+            Assert.IsTrue(
+               queryParams.Contains(
+                   new KeyValuePair<string, string>("ID", "10")));
+            Assert.IsTrue(
+              queryParams.Contains(
+                  new KeyValuePair<string, string>("UserID", "10")));
+            Assert.IsTrue(
+               queryParams.Contains(
+                   new KeyValuePair<string, string>("ScreenName", "JoeMayo")));
+            Assert.IsTrue(
+               queryParams.Contains(
+                   new KeyValuePair<string, string>("SinceID", "123")));
+            Assert.IsTrue(
+              queryParams.Contains(
+                  new KeyValuePair<string, string>("MaxID", "456")));
+            Assert.IsTrue(
+               queryParams.Contains(
+                   new KeyValuePair<string, string>("Count", "50")));
+            Assert.IsTrue(
+              queryParams.Contains(
+                  new KeyValuePair<string, string>("Page", "2")));
+            Assert.IsTrue(
+              queryParams.Contains(
+                  new KeyValuePair<string, string>("Page", "2")));
+            Assert.IsTrue(
+              queryParams.Contains(
+                  new KeyValuePair<string, string>("IncludeRetweets", "True")));
+            Assert.IsTrue(
+              queryParams.Contains(
+                  new KeyValuePair<string, string>("ExcludeReplies", "True")));
+            Assert.IsTrue(
+              queryParams.Contains(
+                  new KeyValuePair<string, string>("IncludeEntities", "True")));
+            Assert.IsTrue(
+              queryParams.Contains(
+                  new KeyValuePair<string, string>("TrimUser", "True")));
         }
-
 
         /// <summary>
         ///A test for BuildMentionsUrl
@@ -1278,9 +1313,12 @@ namespace LinqToTwitterTests
                     {
                         { "Page", "0" },
                         { "Count", "21" },
-                        { "SinceID", "934818247" }
+                        { "SinceID", "934818247" },
+                        { "ExcludeReplies", "True" },
+                        { "IncludeEntities", "True" },
+                        { "TrimUser", "True" }
                     };
-            string expected = "http://twitter.com/statuses/user_timeline/15411837.xml?since_id=934818247&count=21&page=0";
+            string expected = "http://twitter.com/statuses/user_timeline/15411837.xml?since_id=934818247&count=21&page=0&exclude_replies=true&include_entities=true&trim_user=true";
             var actual = reqProc.BuildFriendRepliesAndUrlParameters(parameters, url);
             Assert.AreEqual(expected, actual);
         }
@@ -1299,9 +1337,10 @@ namespace LinqToTwitterTests
                     {
                         { "Page", "0" },
                         { "Count", "21" },
-                        { "SinceID", "934818247" }
+                        { "SinceID", "934818247" },
+                        { "ExcludeReplies", "true" }
                     };
-            string expected = "http://twitter.com/statuses/friends_timeline.xml?since_id=934818247&count=21&page=0";
+            string expected = "http://twitter.com/statuses/friends_timeline.xml?since_id=934818247&count=21&page=0&exclude_replies=true";
             var actual = reqProc.BuildFriendUrl(parameters);
             Assert.AreEqual(expected, actual);
         }
