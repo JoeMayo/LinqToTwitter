@@ -18,12 +18,12 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         public static void Run(TwitterContext twitterCtx)
         {
-            //VerifyAccountCredentials(twitterCtx);
+            VerifyAccountCredentials(twitterCtx);
             //ViewRateLimitStatus(twitterCtx);
             //ViewRateLimitStatusProjection(twitterCtx);
             //ViewRateLimitResponseHeadersDemo(twitterCtx);
             //ViewAccountTotalsDemo(twitterCtx);
-            ViewAccountSettingsDemo(twitterCtx);
+            //ViewAccountSettingsDemo(twitterCtx);
             //EndSession(twitterCtx);
             //UpdateDeliveryDevice(twitterCtx);
             //UpdateAccountColors(twitterCtx);
@@ -31,6 +31,7 @@ namespace LinqToTwitterDemo
             //UpdateAccountBackgroundImage(twitterCtx);
             //UpdateAccountBackgroundImageBytes(twitterCtx);
             //UpdateAccountBackgroundImageAndTileDemo(twitterCtx);
+            //UpdateAccountBackgroundImageAndTileButDontUseDemo(twitterCtx);
             //UpdateAccountBackgroundImageWithProgressUpdates(twitterCtx);
             //UpdateAccountInfoDemo(twitterCtx);
         }
@@ -60,7 +61,7 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void UpdateAccountBackgroundImage(TwitterContext twitterCtx)
         {
-            var user = twitterCtx.UpdateAccountBackgroundImage(@"C:\Users\jmayo\Documents\linq2twitter\linq2twitter\linq2twitter_v3_300x90.png", false);
+            var user = twitterCtx.UpdateAccountBackgroundImage(@"C:\Users\jmayo\Documents\linq2twitter\linq2twitter\linq2twitter_v3_300x90.png", tile: false, use: true);
 
             Console.WriteLine("User Image: " + user.ProfileBackgroundImageUrl);
         }
@@ -72,7 +73,7 @@ namespace LinqToTwitterDemo
         private static void UpdateAccountBackgroundImageBytes(TwitterContext twitterCtx)
         {
             byte[] fileBytes = Utilities.GetFileBytes(@"C:\Users\jmayo\Documents\linq2twitter\linq2twitter\200xColor_2.png");
-            var user = twitterCtx.UpdateAccountBackgroundImage(fileBytes, "200xColor_2.png", "png", false);
+            var user = twitterCtx.UpdateAccountBackgroundImage(fileBytes, "200xColor_2.png", "png", tile: false, use: true);
 
             Console.WriteLine("User Image: " + user.ProfileBackgroundImageUrl);
         }
@@ -84,7 +85,19 @@ namespace LinqToTwitterDemo
         private static void UpdateAccountBackgroundImageAndTileDemo(TwitterContext twitterCtx)
         {
             byte[] fileBytes = Utilities.GetFileBytes(@"C:\Users\jmayo\Documents\linq2twitter\linq2twitter\linq2twitter_v3_300x90.png");
-            var user = twitterCtx.UpdateAccountBackgroundImage(fileBytes, "linq2twitter_v3_300x90.png", "png", true);
+            var user = twitterCtx.UpdateAccountBackgroundImage(fileBytes, "linq2twitter_v3_300x90.png", "png", tile: true, use: true);
+
+            Console.WriteLine("User Image: " + user.ProfileBackgroundImageUrl);
+        }
+
+        /// <summary>
+        /// Shows how to update the background image in an account and tiles the image, but doesn't use the uploaded background
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void UpdateAccountBackgroundImageAndTileButDontUseDemo(TwitterContext twitterCtx)
+        {
+            byte[] fileBytes = Utilities.GetFileBytes(@"C:\Users\jmayo\Documents\linq2twitter\linq2twitter\linq2twitter_v3_300x90.png");
+            var user = twitterCtx.UpdateAccountBackgroundImage(fileBytes, "linq2twitter_v3_300x90.png", "png", tile: true, use: false);
 
             Console.WriteLine("User Image: " + user.ProfileBackgroundImageUrl);
         }
@@ -101,7 +114,7 @@ namespace LinqToTwitterDemo
                     Console.WriteLine("Progress: {0}%", e.PercentComplete);
                 };
             byte[] fileBytes = Utilities.GetFileBytes(@"C:\Users\jmayo\Documents\linq2twitter\linq2twitter\200xColor_2.png");
-            var user = twitterCtx.UpdateAccountBackgroundImage(fileBytes, "200xColor_2.png", "png", false);
+            var user = twitterCtx.UpdateAccountBackgroundImage(fileBytes, "200xColor_2.png", "png", tile: false, use: true);
 
             Console.WriteLine("User Image: " + user.ProfileBackgroundImageUrl);
         }

@@ -60,5 +60,15 @@ namespace LinqToTwitter
         /// Screen name of retweeted user
         /// </summary>
         public string InReplyToScreenName { get; set; }
+
+        /// <summary>
+        /// Number of retweets
+        /// </summary>
+        public int RetweetCount { get; set; }
+
+        /// <summary>
+        /// Has retweet been retweeted
+        /// </summary>
+        public object Retweeted { get; set; }
     }
 }

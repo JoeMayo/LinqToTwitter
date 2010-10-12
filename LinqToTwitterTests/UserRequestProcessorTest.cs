@@ -181,9 +181,9 @@ namespace LinqToTwitterTests
   <statuses_count>32</statuses_count>
   <lang>en</lang>
   <contributors_enabled>false</contributors_enabled>
-  <follow_request_sent>false</follow_request_sent>
+  <follow_request_sent>true</follow_request_sent>
   <listed_count>8274</listed_count>
-  <show_all_inline_media>false</show_all_inline_media>
+  <show_all_inline_media>true</show_all_inline_media>
   <status>
     <created_at>Wed Sep 08 14:52:22 +0000 2010</created_at>
     <id>23920548950</id>
@@ -431,9 +431,10 @@ namespace LinqToTwitterTests
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                     {
-                        { "Type", ((int)UserType.Categories).ToString() }
+                        { "Type", ((int)UserType.Categories).ToString() },
+                        { "Lang", "it" }
                     };
-            string expected = "https://api.twitter.com/1/users/suggestions.xml";
+            string expected = "https://api.twitter.com/1/users/suggestions.xml?lang=it";
             var actual = reqProc.BuildURL(parameters);
             Assert.AreEqual(expected, actual);
         }
@@ -451,9 +452,10 @@ namespace LinqToTwitterTests
                 new Dictionary<string, string>
                     {
                         { "Type", ((int)UserType.Category).ToString() },
-                        { "Slug", "twitter" }
+                        { "Slug", "twitter" },
+                        { "Lang", "it" }
                     };
-            string expected = "https://api.twitter.com/1/users/suggestions/twitter.xml";
+            string expected = "https://api.twitter.com/1/users/suggestions/twitter.xml?lang=it";
             var actual = reqProc.BuildURL(parameters);
             Assert.AreEqual(expected, actual);
         }
@@ -612,7 +614,8 @@ namespace LinqToTwitterTests
                 user.Slug == "twitter" &&
                 user.Query == "Joe Mayo" &&
                 user.Page == 2 &&
-                user.PerPage == 10;
+                user.PerPage == 10 &&
+                user.Lang == "it";
 
             LambdaExpression lambdaExpression = expression as LambdaExpression;
 
@@ -645,6 +648,9 @@ namespace LinqToTwitterTests
             Assert.IsTrue(
               queryParams.Contains(
                   new KeyValuePair<string, string>("PerPage", "10")));
+            Assert.IsTrue(
+              queryParams.Contains(
+                  new KeyValuePair<string, string>("Lang", "it")));
         }
 
         /// <summary>
@@ -701,6 +707,39 @@ namespace LinqToTwitterTests
             Assert.AreEqual(1, actual.Count);
             Assert.AreEqual("Eric Schmidt", user.Name);
             Assert.AreEqual("I predict big things happening today at Google.  We're already fast.. fast is about to get faster.", user.Status.Text);
+        }
+
+        [TestMethod()]
+        public void ProcessResults_Reads_ShowAllInlineMedia()
+        {
+            var statProc = new UserRequestProcessor<User>() { BaseUrl = "http://api.twitter.com/1/" };
+
+            var actual = statProc.ProcessResults(m_userInCategoryStatusResponse) as List<User>;
+
+            var user = actual.First();
+            Assert.AreEqual(true, user.ShowAllInlineMedia);
+        }
+
+        [TestMethod()]
+        public void ProcessResults_Reads_ListedCount()
+        {
+            var statProc = new UserRequestProcessor<User>() { BaseUrl = "http://api.twitter.com/1/" };
+
+            var actual = statProc.ProcessResults(m_userInCategoryStatusResponse) as List<User>;
+
+            var user = actual.First();
+            Assert.AreEqual(8274, user.ListedCount);
+        }
+
+        [TestMethod()]
+        public void ProcessResults_Reads_FollowRequestSent()
+        {
+            var statProc = new UserRequestProcessor<User>() { BaseUrl = "http://api.twitter.com/1/" };
+
+            var actual = statProc.ProcessResults(m_userInCategoryStatusResponse) as List<User>;
+
+            var user = actual.First();
+            Assert.AreEqual(true, user.FollowRequestSent);
         }
 
         /// <summary>

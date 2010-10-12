@@ -27,10 +27,11 @@ namespace LinqToTwitterDemo
             //UserFollowersWithCursorsQueryDemo(twitterCtx);
             //GetAllFollowersQueryDemo(twitterCtx);
             //UserSuggestedCategoriesListQueryDemo(twitterCtx);
+            UserSuggestedCategoriesListWithLangQueryDemo(twitterCtx);
             //UsersInSuggestedCategoryQueryDemo(twitterCtx);
             //UserShowLoggedInUserQueryDemo(twitterCtx);
             //VerifiedAndGeoEnabledDemo(twitterCtx);
-            CategoryStatusDemo(twitterCtx);
+            //CategoryStatusDemo(twitterCtx);
         }
 
         #region User Demos
@@ -113,6 +114,24 @@ namespace LinqToTwitterDemo
             var users =
                 from tweet in twitterCtx.User
                 where tweet.Type == UserType.Categories
+                select tweet;
+
+            var user = users.SingleOrDefault();
+
+            user.Categories.ForEach(
+                cat => Console.WriteLine("Category: " + cat.Name));
+        }
+
+        /// <summary>
+        /// shows how to query suggested categories
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void UserSuggestedCategoriesListWithLangQueryDemo(TwitterContext twitterCtx)
+        {
+            var users =
+                from tweet in twitterCtx.User
+                where tweet.Type == UserType.Categories &&
+                      tweet.Lang == "it"
                 select tweet;
 
             var user = users.SingleOrDefault();

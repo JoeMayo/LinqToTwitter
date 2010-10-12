@@ -33,7 +33,7 @@ namespace LinqToTwitterDemo
             //MentionsWithSinceIDStatusQueryDemo(twitterCtx);
             //MentionsWithPagingQueryDemo(twitterCtx);
             //SingleStatusQueryDemo(twitterCtx);
-            //UpdateStatusDemo(twitterCtx);
+            UpdateStatusDemo(twitterCtx);
             //UpdateStatusWithReplyDemo(twitterCtx);
             //UpdateStatusWithLocationDemo(twitterCtx);
             //UpdateStatusWithPlaceDemo(twitterCtx);
@@ -49,9 +49,10 @@ namespace LinqToTwitterDemo
             //FirstStatusQueryDemo(twitterCtx);
             //GetAllTweetsAndRetweetsDemo(twitterCtx);
             //ContributorIDsDemo(twitterCtx);
+            //ContributorDetailsDemo(twitterCtx);
             //StatusCountDemo(twitterCtx);
             //StatusJoinDemo(twitterCtx);
-            TrimUserDemo(twitterCtx);
+            //TrimUserDemo(twitterCtx);
         }
 
         //private static void StatusJoinDemo(TwitterContext twitterCtx)
@@ -276,15 +277,21 @@ namespace LinqToTwitterDemo
 
         private static void RetweetsCount(TwitterContext twitterCtx)
         {
-            long idTweet = 16151285130;
+            var tweets =
+                (from tweet in twitterCtx.Status
+                 where tweet.Type == StatusType.Home &&
+                       tweet.IncludeRetweets == true
+                 select tweet)
+                .ToList();
 
-            var result = 
-                from tweet in twitterCtx.Status
-                where tweet.ID == idTweet.ToString() &&
-                      tweet.Type == StatusType.Retweets
-                select tweet;
-
-            Console.WriteLine("Retweet Count: " + result.Count<LinqToTwitter.Status>()); 
+            tweets.ForEach(tweet =>
+                Console.WriteLine(
+                    "* Tweet: {0}\nRetweeted: {1}, Retweet Count: {2}\n" +
+                    "Retweet: {3}\nRetweeted: {4}, Retweet Count: {5}\n",
+                    tweet.Text, tweet.Retweeted, tweet.RetweetCount,
+                    tweet.Retweet == null ? "<none>" : tweet.Retweet.Text, 
+                    tweet.Retweet == null ? false : tweet.Retweet.Retweeted, 
+                    tweet.Retweet == null ? 0 : tweet.Retweet.RetweetCount));
         }
 
         /// <summary>
@@ -618,8 +625,8 @@ namespace LinqToTwitterDemo
             // the \u00C7 is C Cedilla, which I've included to ensure that non-ascii characters appear properly
             var status = "\u00C7 Testing LINQ to Twitter update status on " + DateTime.Now.ToString() + " #linqtotwitter";
 
-            Console.WriteLine("Status being sent: " + status);
-            Console.WriteLine("Press any key to post tweet...");
+            Console.WriteLine("\nStatus being sent: \n\n\"{0}\"", status);
+            Console.WriteLine("\nPress any key to post tweet...\n");
             Console.ReadKey();
 
             var tweet = twitterCtx.UpdateStatus(status);
@@ -630,7 +637,7 @@ namespace LinqToTwitterDemo
                 "[" + tweet.User.ID + "]" +
                 tweet.User.Name + ", " +
                 tweet.Text + ", " +
-                tweet.CreatedAt);
+                tweet.CreatedAt + "\n");
         }
 
         /// <summary>
@@ -762,8 +769,28 @@ namespace LinqToTwitterDemo
 
             Console.WriteLine("Contributors Enabled: {0}\n", contributedStatus.User.ContributorsEnabled);
 
-            contributedStatus.ContributorIDs.ForEach(
-                id => Console.WriteLine("ContributorID: " + id));
+            contributedStatus.Contributors.ForEach(
+                contr => Console.WriteLine("Contributor ID: " + contr.ID));
+        }
+
+        /// <summary>
+        /// Shows how to specify additional contributor info
+        /// </summary>
+        /// <param name="twitterCtx"></param>
+        private static void ContributorDetailsDemo(TwitterContext twitterCtx)
+        {
+            var contributedStatus =
+                (from tweet in twitterCtx.Status
+                 where tweet.Type == StatusType.Show &&
+                       tweet.ID == "7680619122" &&
+                       tweet.IncludeContributorDetails == true
+                 select tweet)
+                .SingleOrDefault();
+
+            Console.WriteLine("Contributors Enabled: {0}\n", contributedStatus.User.ContributorsEnabled);
+
+            contributedStatus.Contributors.ForEach(
+                contr => Console.WriteLine("ID: {0}, Screen Name: {1}", contr.ID, contr.ScreenName));
         }
 
         private static void StatusCountDemo(TwitterContext twitterCtx)

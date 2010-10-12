@@ -81,6 +81,11 @@ namespace LinqToTwitter
         public bool TrimUser { get; set; }
 
         /// <summary>
+        /// Enhances contributor info, beyond the default ID
+        /// </summary>
+        public bool IncludeContributorDetails { get; set; }
+
+        /// <summary>
         /// extracts parameters from lambda
         /// </summary>
         /// <param name="lambdaExpression">lambda expression with where clause</param>
@@ -102,7 +107,8 @@ namespace LinqToTwitter
                        "IncludeRetweets",
                        "ExcludeReplies",
                        "IncludeEntities",
-                       "TrimUser"
+                       "TrimUser",
+                       "IncludeContributorDetails"
                    });
 
             var parameters = paramFinder.Parameters;
@@ -186,6 +192,8 @@ namespace LinqToTwitter
             var url = BaseUrl + "statuses/show.xml";
 
             url = BuildUrlHelper.TransformIDUrl(parameters, url);
+
+            url = BuildFriendRepliesAndUrlParameters(parameters, url);
 
             return url;
         }
@@ -278,6 +286,16 @@ namespace LinqToTwitter
                 if (TrimUser)
                 {
                     urlParams.Add("trim_user=" + parameters["TrimUser"].ToLower());
+                }
+            }
+
+            if (parameters.ContainsKey("IncludeContributorDetails"))
+            {
+                IncludeContributorDetails = bool.Parse(parameters["IncludeContributorDetails"]);
+
+                if (IncludeContributorDetails)
+                {
+                    urlParams.Add("contributor_details=" + parameters["IncludeContributorDetails"].ToLower());
                 }
             }
 
@@ -493,6 +511,7 @@ namespace LinqToTwitter
                     status.ExcludeReplies = ExcludeReplies;
                     status.IncludeEntities = IncludeEntities;
                     status.TrimUser = TrimUser;
+                    status.IncludeContributorDetails = IncludeContributorDetails;
                 });
 
             return statusList.OfType<T>().ToList();

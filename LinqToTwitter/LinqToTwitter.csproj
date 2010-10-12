@@ -176,6 +176,7 @@
     <Compile Include="Common\BuildUrlHelper.cs" />
     <Compile Include="Search\Attitude.cs" />
     <Compile Include="Search\ResultType.cs" />
+    <Compile Include="Status\Contributor.cs" />
     <Compile Include="Status\Entities\HashTagMention.cs" />
     <Compile Include="Status\Annotation.cs" />
     <Compile Include="Status\Entities\Entities.cs" />

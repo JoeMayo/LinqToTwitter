@@ -752,13 +752,14 @@ namespace LinqToTwitterTests
         {
             string imageFilePath = "C:\\image.png";
             bool tile = false;
+            bool use = false;
             XElement expected = XElement.Parse(m_testUserQueryResponse);
 
             Expect.Once.On(m_twitterExecute)
                 .Method("PostTwitterFile")
                 .Will(Return.Value(m_testUserQueryResponse));
 
-            User actual = m_ctx.UpdateAccountBackgroundImage(imageFilePath, tile);
+            User actual = m_ctx.UpdateAccountBackgroundImage(imageFilePath, tile, use);
             Assert.AreEqual(expected.Element("name").Value, actual.Name);
         }
 
@@ -771,6 +772,7 @@ namespace LinqToTwitterTests
         {
             string imageFilePath = string.Empty;
             bool tile = false;
+            bool use = false;
             User expected = new User();
             var expectedList =
                 new List<User>
@@ -783,7 +785,7 @@ namespace LinqToTwitterTests
                 .Will(Return.Value(expectedList));
 
             User actual;
-            actual = m_ctx.UpdateAccountBackgroundImage(imageFilePath, tile);
+            actual = m_ctx.UpdateAccountBackgroundImage(imageFilePath, tile, use);
             Assert.AreEqual(expected, actual);
         }
 

@@ -40,6 +40,9 @@ namespace LinqToTwitter
             var tempStatusTruncated = false;
             var tempStatusFavorited = false;
             var tempFollowingUsers = false;
+            var tempShowInlineMedia = false;
+            var tempListedCount = 0;
+            var tempFollowRequestSent = false;
 
             var canParseProtected = 
                 user.Element("protected") == null ?
@@ -111,6 +114,21 @@ namespace LinqToTwitter
                 string.IsNullOrEmpty(user.Element("following").Value) ?
                     false :
                     bool.TryParse(user.Element("following").Value, out tempFollowingUsers);
+
+            var showInlineMedia =
+                user.Element("show_all_inline_media") == null ? 
+                    false : 
+                    bool.TryParse(user.Element("show_all_inline_media").Value, out tempShowInlineMedia);
+
+            var listedCount =
+                user.Element("listed_count") == null ?
+                    false :
+                    int.TryParse(user.Element("listed_count").Value, out tempListedCount);
+
+            var followRequestSent =
+                user.Element("follow_request_sent") == null ?
+                    false :
+                    bool.TryParse(user.Element("follow_request_sent").Value, out tempFollowRequestSent);
 
             var status =
                 user.Element("status");
@@ -191,6 +209,9 @@ namespace LinqToTwitter
                 Verified = verified,
                 ContributorsEnabled = contributorsEnabled,
                 Following = tempFollowingUsers,
+                ShowAllInlineMedia = tempShowInlineMedia,
+                ListedCount = tempListedCount,
+                FollowRequestSent = tempFollowRequestSent,
                 Status = // TODO: refactor to CreateStatus
                     status == null ?
                         null :
@@ -429,5 +450,27 @@ namespace LinqToTwitter
         /// User categories for Twitter Suggested Users
         /// </summary>
         public List<Category> Categories { get; set; }
+
+        /// <summary>
+        /// Return results for specified language
+        ///  Note: Twitter only supports a limited number of languages,
+        ///  which include en, fr, de, es, it when this feature was added.
+        /// </summary>
+        public string Lang { get; set; }
+
+        /// <summary>
+        /// Indicates if user has inline media enabled
+        /// </summary>
+        public bool ShowAllInlineMedia { get; set; }
+
+        /// <summary>
+        /// Number of lists user is a member of
+        /// </summary>
+        public int ListedCount { get; set; }
+
+        /// <summary>
+        /// If authenticated user has requested to follow this use
+        /// </summary>
+        public bool FollowRequestSent { get; set; }
     }
 }

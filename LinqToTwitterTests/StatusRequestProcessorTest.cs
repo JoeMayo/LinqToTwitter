@@ -34,6 +34,112 @@ namespace LinqToTwitterTests
   </annotation>
 </annotations>";
 
+        private string m_testRetweetResponse = @"<?xml version=""1.0"" encoding=""UTF-8""?>
+<statuses type=""array"">
+<status>
+  <created_at>Sat Oct 02 02:12:34 +0000 2010</created_at>
+  <id>26136741809</id>
+  <text>RT @peterbromberg: At the end of the day, Microsoft .Net has been very good to me for the last 10 years. Three cheers, Microsoft! Got th ...</text>
+  <source>web</source>
+  <truncated>true</truncated>
+  <in_reply_to_status_id></in_reply_to_status_id>
+  <in_reply_to_user_id></in_reply_to_user_id>
+  <favorited>false</favorited>
+  <in_reply_to_screen_name></in_reply_to_screen_name>
+  <retweet_count>0</retweet_count>
+  <retweeted>false</retweeted>
+  <retweeted_status>
+    <created_at>Sat Oct 02 01:42:05 +0000 2010</created_at>
+    <id>26134450146</id>
+    <text>At the end of the day, Microsoft .Net has been very good to me for the last 10 years. Three cheers, Microsoft! Got that one right.</text>
+    <source>&lt;a href=&quot;http://www.sobees.com&quot; rel=&quot;nofollow&quot;&gt;sobees&lt;/a&gt;</source>
+    <truncated>false</truncated>
+    <in_reply_to_status_id></in_reply_to_status_id>
+    <in_reply_to_user_id></in_reply_to_user_id>
+    <favorited>false</favorited>
+    <in_reply_to_screen_name></in_reply_to_screen_name>
+    <retweet_count>2</retweet_count>
+    <retweeted>false</retweeted>
+    <user>
+      <id>10290862</id>
+      <name>Peter Bromberg</name>
+      <screen_name>peterbromberg</screen_name>
+      <location>29.05213,-81.289265</location>
+      <description>.NET C# MVP, eggheadcafe.com co-founder, philanthropist, UnEducator, Badass .NET programmer.</description>
+      <profile_image_url>http://a2.twimg.com/profile_images/1127116786/warholpetesm4_normal.jpg</profile_image_url>
+      <url>http://www.eggheadcafe.com</url>
+      <protected>false</protected>
+      <followers_count>755</followers_count>
+      <profile_background_color>9ae4e8</profile_background_color>
+      <profile_text_color>000000</profile_text_color>
+      <profile_link_color>0000ff</profile_link_color>
+      <profile_sidebar_fill_color>e0ff92</profile_sidebar_fill_color>
+      <profile_sidebar_border_color>87bc44</profile_sidebar_border_color>
+      <friends_count>592</friends_count>
+      <created_at>Fri Nov 16 01:55:29 +0000 2007</created_at>
+      <favourites_count>9</favourites_count>
+      <utc_offset>-18000</utc_offset>
+      <time_zone>Eastern Time (US &amp; Canada)</time_zone>
+      <profile_background_image_url>http://a3.twimg.com/profile_background_images/159697515/twilk_background3.jpg</profile_background_image_url>
+      <profile_background_tile>true</profile_background_tile>
+      <profile_use_background_image>true</profile_use_background_image>
+      <notifications>false</notifications>
+      <geo_enabled>true</geo_enabled>
+      <verified>false</verified>
+      <following>false</following>
+      <statuses_count>9342</statuses_count>
+      <lang>en</lang>
+      <contributors_enabled>false</contributors_enabled>
+      <follow_request_sent>false</follow_request_sent>
+      <listed_count>76</listed_count>
+      <show_all_inline_media>true</show_all_inline_media>
+    </user>
+    <geo/>
+    <coordinates/>
+    <place/>
+    <contributors/>
+  </retweeted_status>
+  <user>
+    <id>15411837</id>
+    <name>Joe Mayo</name>
+    <screen_name>JoeMayo</screen_name>
+    <location>Denver, CO</location>
+    <description>Created LINQ to Twitter, author of 6 .NET books, .NET Consultant, and C# MVP</description>
+    <profile_image_url>http://a3.twimg.com/profile_images/520626655/JoeTwitterBW_-_150_x_150_normal.jpg</profile_image_url>
+    <url>http://linqtotwitter.codeplex.com/</url>
+    <protected>false</protected>
+    <followers_count>570</followers_count>
+    <profile_background_color>0099B9</profile_background_color>
+    <profile_text_color>3C3940</profile_text_color>
+    <profile_link_color>0099B9</profile_link_color>
+    <profile_sidebar_fill_color>95E8EC</profile_sidebar_fill_color>
+    <profile_sidebar_border_color>5ED4DC</profile_sidebar_border_color>
+    <friends_count>44</friends_count>
+    <created_at>Sun Jul 13 04:35:50 +0000 2008</created_at>
+    <favourites_count>92</favourites_count>
+    <utc_offset>-25200</utc_offset>
+    <time_zone>Mountain Time (US &amp; Canada)</time_zone>
+    <profile_background_image_url>http://a3.twimg.com/profile_background_images/13330711/200xColor_2.png</profile_background_image_url>
+    <profile_background_tile>false</profile_background_tile>
+    <profile_use_background_image>true</profile_use_background_image>
+    <notifications>true</notifications>
+    <geo_enabled>true</geo_enabled>
+    <verified>false</verified>
+    <following>true</following>
+    <statuses_count>1202</statuses_count>
+    <lang>en</lang>
+    <contributors_enabled>false</contributors_enabled>
+    <follow_request_sent>false</follow_request_sent>
+    <listed_count>81</listed_count>
+    <show_all_inline_media>false</show_all_inline_media>
+  </user>
+  <geo/>
+  <coordinates/>
+  <place/>
+  <contributors/>
+</status>
+</statuses>";
+
         private string m_testQueryResponse = @"<statuses type=""array"">
   <status>
     <created_at>Fri Nov 27 18:28:57 +0000 2009</created_at>
@@ -1033,6 +1139,20 @@ namespace LinqToTwitterTests
             Assert.AreEqual(actualQuery.Count(), 1);
         }
 
+        [TestMethod()]
+        public void ProcessResults_Reads_Retweet_Info()
+        {
+            var statProc = new StatusRequestProcessor<Status>() { BaseUrl = "http://api.twitter.com/1/" };
+
+            var tweets = statProc.ProcessResults(m_testRetweetResponse);
+
+            var tweet = tweets.First();
+            Assert.AreEqual(0, tweet.RetweetCount);
+            Assert.AreEqual(false, tweet.Retweeted);
+            Assert.AreEqual(2, tweet.Retweet.RetweetCount);
+            Assert.AreEqual(false, tweet.Retweet.Retweeted);
+        }
+
         /// <summary>
         ///A test for ProcessResults
         ///</summary>
@@ -1068,7 +1188,8 @@ namespace LinqToTwitterTests
                 status.IncludeRetweets == true &&
                 status.ExcludeReplies == true &&
                 status.IncludeEntities == true &&
-                status.TrimUser == true;
+                status.TrimUser == true &&
+                status.IncludeContributorDetails == true;
 
             LambdaExpression lambdaExpression = expression as LambdaExpression;
 
@@ -1113,6 +1234,9 @@ namespace LinqToTwitterTests
             Assert.IsTrue(
               queryParams.Contains(
                   new KeyValuePair<string, string>("TrimUser", "True")));
+            Assert.IsTrue(
+              queryParams.Contains(
+                  new KeyValuePair<string, string>("IncludeContributorDetails", "True")));
         }
 
         /// <summary>
@@ -1316,9 +1440,10 @@ namespace LinqToTwitterTests
                         { "SinceID", "934818247" },
                         { "ExcludeReplies", "True" },
                         { "IncludeEntities", "True" },
-                        { "TrimUser", "True" }
+                        { "TrimUser", "True" },
+                        { "IncludeContributorDetails", "True" }
                     };
-            string expected = "http://twitter.com/statuses/user_timeline/15411837.xml?since_id=934818247&count=21&page=0&exclude_replies=true&include_entities=true&trim_user=true";
+            string expected = "http://twitter.com/statuses/user_timeline/15411837.xml?since_id=934818247&count=21&page=0&exclude_replies=true&include_entities=true&trim_user=true&contributor_details=true";
             var actual = reqProc.BuildFriendRepliesAndUrlParameters(parameters, url);
             Assert.AreEqual(expected, actual);
         }

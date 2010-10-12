@@ -108,7 +108,7 @@ namespace LinqToTwitterDemo
             if (twitterCtx.AuthorizedClient.IsAuthorized)
             {
                 var user = twitterCtx.UpdateAccountBackgroundImage(
-                    @"C:\Users\jmayo\Documents\linq2twitter\linq2twitter\200xColor_2.png", false);
+                    @"C:\Users\jmayo\Documents\linq2twitter\linq2twitter\200xColor_2.png", tile: false, use: true);
 
                 Console.WriteLine(
                     "Name: {0}\nImage: {1}\n",
@@ -148,7 +148,7 @@ namespace LinqToTwitterDemo
                             Console.WriteLine("Progress: {0}%", e.PercentComplete);
                         };
                 byte[] fileBytes = Utilities.GetFileBytes(@"C:\Users\jmayo\Documents\linq2twitter\linq2twitter\200xColor_2.png");
-                var user = twitterCtx.UpdateAccountBackgroundImage(fileBytes, "200xColor_2.png", "png", false);
+                var user = twitterCtx.UpdateAccountBackgroundImage(fileBytes, "200xColor_2.png", "png", tile: false, use: true);
 
                 Console.WriteLine("User Image: " + user.ProfileBackgroundImageUrl);
             }

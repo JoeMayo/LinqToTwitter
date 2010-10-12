@@ -50,6 +50,17 @@ namespace LinqToTwitter
 
             var retweet = status.Element("retweeted_status");
 
+            var retweetCount =
+                status.Element("retweet_count") == null || 
+                status.Element("retweet_count").Value == string.Empty ?
+                    0 :
+                    int.Parse(status.Element("retweet_count").Value);
+
+            var retweeted =
+                status.Element("retweeted") == null || status.Element("retweeted").Value == string.Empty ?
+                    false :
+                    bool.Parse(status.Element("retweeted").Value);
+
             var rtDateParts =
                 retweet == null ?
                     null :
@@ -66,14 +77,34 @@ namespace LinqToTwitter
                         rtDateParts[3]),
                         CultureInfo.InvariantCulture);
 
-            List<string> contributorIDs = null;
+            List<Contributor> contributors = null;
 
-            if (status.Element("contributors") != null)
+            XElement contributorElement = status.Element("contributors");
+
+            if (contributorElement != null)
             {
-                contributorIDs =
-                    (from id in status.Element("contributors").Elements("user_id")
-                     select id.Value)
-                     .ToList(); 
+                if (contributorElement.Elements("user").Count() > 0)
+                {
+                    contributors =
+                        (from contr in contributorElement.Elements("user")
+                         select new Contributor
+                         {
+                             ID = contr.Element("id").Value,
+                             ScreenName = contr.Element("screen_name").Value
+                         })
+                        .ToList();
+                }
+                else
+                {
+                    contributors =
+                            (from id in contributorElement.Elements("user_id")
+                             select new Contributor
+                             {
+                                 ID = id.Value,
+                                 ScreenName = string.Empty
+                             })
+                            .ToList();  
+                }
             }
 
             XNamespace geoRss = "http://www.georss.org/georss";
@@ -156,13 +187,15 @@ namespace LinqToTwitter
                      status.Element("in_reply_to_screen_name") == null ?
                          string.Empty :
                          status.Element("in_reply_to_screen_name").Value,
-                ContributorIDs = contributorIDs,
+                Contributors = contributors,
                 Geo = geo,
                 Coordinates = coord,
                 Place = place,
                 Annotation = annotation,
                 User = usr.CreateUser(user),
                 Entities = entities,
+                Retweeted = retweeted,
+                RetweetCount = retweetCount,
                 Retweet =
                     retweet == null ?
                         null :
@@ -180,6 +213,16 @@ namespace LinqToTwitter
                             InReplyToUserID = retweet.Element("in_reply_to_user_id").Value,
                             Source = retweet.Element("source").Value,
                             Text = retweet.Element("text").Value,
+                            Retweeted =
+                                retweet.Element("retweeted") == null || 
+                                retweet.Element("retweeted").Value == string.Empty ?
+                                    false :
+                                    bool.Parse(retweet.Element("retweeted").Value),
+                            RetweetCount =
+                                retweet.Element("retweet_count") == null || 
+                                retweet.Element("retweet_count").Value == string.Empty ?
+                                    0 :
+                                    int.Parse(retweet.Element("retweet_count").Value),
                             Truncated =
                                 bool.Parse(
                                     string.IsNullOrEmpty(retweet.Element("truncated").Value) ?
@@ -305,9 +348,9 @@ namespace LinqToTwitter
         public Retweet Retweet { get; set; }
 
         /// <summary>
-        /// Contains ID of users who have contributed
+        /// Contains info on users who have contributed
         /// </summary>
-        public List<string> ContributorIDs { get; set; }
+        public List<Contributor> Contributors { get; set; }
 
         /// <summary>
         /// Geographic information on tweet location
@@ -335,6 +378,24 @@ namespace LinqToTwitter
         /// </summary>
         public Entities Entities { get; set; }
 
+        /// <summary>
+        /// Removes all user info, except for ID
+        /// </summary>
         public bool TrimUser { get; set; }
+
+        /// <summary>
+        /// Include more contributor info, beyond ID
+        /// </summary>
+        public bool IncludeContributorDetails { get; set; }
+
+        /// <summary>
+        /// Number of times retweeted
+        /// </summary>
+        public object RetweetCount { get; set; }
+
+        /// <summary>
+        /// Has tweet been retweeted
+        /// </summary>
+        public object Retweeted { get; set; }
     }
 }

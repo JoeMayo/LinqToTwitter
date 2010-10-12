@@ -72,6 +72,11 @@ namespace LinqToTwitter
         /// Query for User Search
         /// </summary>
         private string Query { get; set; }
+
+        /// <summary>
+        /// Supports various languages
+        /// </summary>
+        private string Lang { get; set; }
       
         /// <summary>
         /// extracts parameters from lambda
@@ -92,7 +97,8 @@ namespace LinqToTwitter
                        "PerPage",
                        "Cursor",
                        "Slug",
-                       "Query"
+                       "Query",
+                       "Lang"
                    });
 
             var parameters = paramFinder.Parameters;
@@ -234,7 +240,15 @@ namespace LinqToTwitter
 
             Slug = parameters["Slug"];
 
-            return BaseUrl + "users/suggestions/" + parameters["Slug"] + ".xml"; ;
+            string url = BaseUrl + "users/suggestions/" + parameters["Slug"] + ".xml";
+
+            if (parameters.ContainsKey("Lang"))
+            {
+                url += "?lang=" + parameters["Lang"];
+                Lang = parameters["Lang"];
+            }
+
+            return url;
         }
 
         /// <summary>
@@ -244,7 +258,15 @@ namespace LinqToTwitter
         /// <returns>Url for suggested user categories</returns>
         private string BuildCategoriesUrl(Dictionary<string, string> parameters)
         {
-            return BaseUrl + "users/suggestions.xml";
+            string url = BaseUrl + "users/suggestions.xml";
+
+            if (parameters.ContainsKey("Lang"))
+            {
+                url += "?lang=" + parameters["Lang"];
+                Lang = parameters["Lang"];
+            }
+
+            return url;
         }
 
         /// <summary>
@@ -444,6 +466,7 @@ namespace LinqToTwitter
                     user.Cursor = Cursor;
                     user.Slug = Slug;
                     user.Categories = categories;
+                    user.Lang = Lang;
                 });
 
             return userList.OfType<T>().ToList();

@@ -1521,8 +1521,9 @@ namespace LinqToTwitter
         /// sends an image file to Twitter to replace background image
         /// </summary>
         /// <param name="imageFilePath">full path to file, including file name</param>
+        /// <param name="use">Whether to use uploaded background image or not</param>
         /// <returns>User with new image info</returns>
-        public virtual User UpdateAccountBackgroundImage(string imageFilePath, bool tile)
+        public virtual User UpdateAccountBackgroundImage(string imageFilePath, bool tile, bool use)
         {
             var accountUrl = BaseUrl + "account/update_profile_background_image.xml";
 
@@ -1535,10 +1536,10 @@ namespace LinqToTwitter
 
             if (tile)
             {
-                parameters =
-                        new Dictionary<string, string>
+                parameters = new Dictionary<string, string>
                 {
-                    { "tile", "true" }
+                    { "tile", tile.ToString().ToLower() },
+                    { "use", use.ToString().ToLower() }
                 };
             }
 
@@ -1556,8 +1557,9 @@ namespace LinqToTwitter
         /// <param name="fileName">name to pass to Twitter for the file</param>
         /// <param name="imageType">type of image: must be one of jpg, gif, or png</param>
         /// <param name="tile">Tile image across background.</param>
+        /// <param name="use">Whether to use uploaded background image or not</param>
         /// <returns>User with new image info</returns>
-        public virtual User UpdateAccountBackgroundImage(byte[] image, string fileName, string imageType, bool tile)
+        public virtual User UpdateAccountBackgroundImage(byte[] image, string fileName, string imageType, bool tile, bool use)
         {
             var accountUrl = BaseUrl + "account/update_profile_background_image.xml";
 
@@ -1580,10 +1582,10 @@ namespace LinqToTwitter
 
             if (tile)
             {
-                parameters =
-                        new Dictionary<string, string>
+                parameters = new Dictionary<string, string>
                 {
-                    { "tile", "true" }
+                    { "tile", tile.ToString().ToLower() },
+                    { "use", use.ToString().ToLower() }
                 };
             }
 
