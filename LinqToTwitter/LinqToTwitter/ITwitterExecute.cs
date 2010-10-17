@@ -80,6 +80,13 @@ namespace LinqToTwitter
         string QueryTwitter(string url);
 
         /// <summary>
+        /// Query for Twitter Streaming APIs
+        /// </summary>
+        /// <param name="url">URL with all query info</param>
+        /// <returns>Raw results from Twitter</returns>
+        string QueryTwitterStream(string url);
+
+        /// <summary>
         /// Used to notify callers of changes in image upload progress
         /// </summary>
         event EventHandler<TwitterProgressEventArgs> UploadProgressChanged;

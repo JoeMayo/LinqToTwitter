@@ -98,6 +98,7 @@ namespace LinqToTwitter
             switch (Type)
             {
                 case StreamingType.Filter:
+                    url = BuildFilterUrl(parameters);
                     break;
                 case StreamingType.Firehose:
                     break;
@@ -110,6 +111,52 @@ namespace LinqToTwitter
                     break;
                 default:
                     break;
+            }
+
+            return url;
+        }
+
+        private string BuildFilterUrl(Dictionary<string, string> parameters)
+        {
+            if (!parameters.ContainsKey("Follow") &&
+                !parameters.ContainsKey("Locations") &&
+                !parameters.ContainsKey("Track"))
+            {
+                throw new ArgumentException("You must specify at least one of the parameters Follow, Locations, or Track.", "FollowOrLocationsOrTrack");
+            }
+
+            string url = BaseUrl + "statuses/filter.json";
+
+            var urlParams = new List<string>();
+
+            if (parameters.ContainsKey("Count"))
+            {
+                urlParams.Add("count=" + parameters["Count"]);
+            }
+
+            if (parameters.ContainsKey("Delimited"))
+            {
+                urlParams.Add("delimited=" + parameters["Delimited"]);
+            }
+
+            if (parameters.ContainsKey("Follow"))
+            {
+                urlParams.Add("follow=" + parameters["Follow"]);
+            }
+
+            if (parameters.ContainsKey("Locations"))
+            {
+                urlParams.Add("locations=" + parameters["Locations"]);
+            }
+
+            if (parameters.ContainsKey("Track"))
+            {
+                urlParams.Add("track=" + Uri.EscapeUriString(parameters["Track"]));
+            }
+
+            if (urlParams.Count > 0)
+            {
+                url += "?" + string.Join("&", urlParams.ToArray());
             }
 
             return url;

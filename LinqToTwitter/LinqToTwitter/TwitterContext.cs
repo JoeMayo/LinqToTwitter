@@ -674,10 +674,20 @@ namespace LinqToTwitter
             // construct REST endpoint, based on input parameters
             var url = reqProc.BuildURL(parameters);
 
-            // process request through Twitter
-            string resultsXml = TwitterExecutor.QueryTwitter(url);
+            string results = string.Empty;
 
-            var queryableList = reqProc.ProcessResults(resultsXml);
+            // process request through Twitter
+            if (typeof(T) == typeof(Streaming))
+            {
+                results = TwitterExecutor.QueryTwitterStream(url);
+            }
+            else
+            {
+                results = TwitterExecutor.QueryTwitter(url);
+            }
+
+            // Transform results into objects
+            var queryableList = reqProc.ProcessResults(results);
 
             // Copy the IEnumerable places to an IQueryable.
             var queryableItems = queryableList.AsQueryable<T>();

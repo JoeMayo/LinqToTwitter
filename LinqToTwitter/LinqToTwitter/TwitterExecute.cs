@@ -117,16 +117,16 @@ namespace LinqToTwitter
             get
             {
                 lock (m_closeStreamLock)
-	            {
+                {
                     return m_closeStream;
-	            }
+                }
             }
             set
             {
                 lock (m_closeStreamLock)
-	            {
+                {
                     m_closeStream = value;
-	            }
+                }
             }
         }
 
@@ -305,11 +305,11 @@ namespace LinqToTwitter
             //Log
             WriteLog(url, "QueryTwitter");
 
-            if (url.Contains("stream."))
-            {
-                new Thread(ManageTwitterStream).Start(url);
-                return "<streaming></streaming>";
-            }
+            //if (url.Contains("stream."))
+            //{
+            //    new Thread(ManageTwitterStream).Start(url);
+            //    return "<streaming></streaming>";
+            //}
 
             var uri = new Uri(url);
             string responseXml = string.Empty;
@@ -324,7 +324,7 @@ namespace LinqToTwitter
                 {
                     httpStatus = resp.Headers["Status"];
                     responseXml = GetTwitterResponse(resp);
-                } 
+                }
             }
             catch (WebException wex)
             {
@@ -347,6 +347,12 @@ namespace LinqToTwitter
             return responseXml;
         }
 
+        public string QueryTwitterStream(string url)
+        {
+            new Thread(ManageTwitterStream).Start(url);
+            return "<streaming></streaming>";
+        }
+
         /// <summary>
         /// This code will execute on a thread, processing content from the Twitter stream
         /// </summary>
@@ -361,9 +367,29 @@ namespace LinqToTwitter
         /// <param name="req">Web request, which has already been authenticated</param>
         private void ManageTwitterStream(object url)
         {
-            var req = HttpWebRequest.Create(url as string);
+            string streamUrl = url as string;
+
+            var req = HttpWebRequest.Create(streamUrl) as HttpWebRequest;
             req.Credentials = new NetworkCredential(StreamingUserName, StreamingPassword);
+            req.UserAgent = UserAgent;
             req.Timeout = -1;
+
+            byte[] bytes = new byte[0];
+
+            bool shouldPostQuery = streamUrl.Contains("filter.json");
+
+            if (shouldPostQuery)
+            {
+                int qIndex = streamUrl.IndexOf('?');
+                string urlParams = streamUrl.Substring(qIndex);
+                streamUrl = streamUrl.Substring(qIndex - 1);
+
+                bytes = Encoding.UTF8.GetBytes(urlParams);
+                req.ContentLength = bytes.Length;
+                req.Method = "POST";
+                req.ContentType = "x-www-form-urlencoded";
+                req.ServicePoint.Expect100Continue = false;
+            }
 
             int errorWait = 250;
 
@@ -371,6 +397,14 @@ namespace LinqToTwitter
             {
                 while (!CloseStream)
                 {
+                    if (shouldPostQuery)
+                    {
+                        using (var reqStream = req.GetRequestStream())
+                        {
+                            reqStream.Write(bytes, 0, bytes.Length);
+                        }
+                    }
+
                     using (var resp = req.GetResponse())
                     using (var stream = resp.GetResponseStream())
                     using (var respRdr = new StreamReader(stream, Encoding.UTF8))
@@ -382,7 +416,11 @@ namespace LinqToTwitter
                             do
                             {
                                 content = respRdr.ReadLine();
-                                StreamingCallback(new StreamContent(this, content));
+                                //StreamingCallback(new StreamContent(this, content));
+                                
+                                // launch on a separate thread to keep user's 
+                                // callback code from blocking the stream.
+                                new Thread(InvokeCallback).Start(content);
 
                                 errorWait = 250;
                             }
@@ -434,6 +472,29 @@ namespace LinqToTwitter
             {
                 WriteLog(ex.ToString(), "ManageTwitterStream");
                 Thread.Sleep(errorWait);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Executes callback handler
+        /// </summary>
+        /// <remarks>
+        /// If the user's callback code fails to handle an exception
+        /// this code will log and re-throw.  The user should consider
+        /// ensuring the code they write doesn't do anything
+        /// that will get them rate-limited or black-listed on Twitter.
+        /// </remarks>
+        /// <param name="content">Content from Twitter</param>
+        private void InvokeCallback(object content)
+        {
+            try
+            {
+                StreamingCallback(new StreamContent(this, content as string));
+            }
+            catch (Exception ex)
+            {
+                WriteLog("Unhandled exception in your StreamingCallback code.  " + ex.ToString(), "InvokeCallback");
                 throw;
             }
         }

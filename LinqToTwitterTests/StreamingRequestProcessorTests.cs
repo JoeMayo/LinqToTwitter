@@ -97,6 +97,43 @@ namespace LinqToTwitterTests
         }
 
         [TestMethod]
+        public void BuildFilterUrl_Returns_Url()
+        {
+            var reqProc = new StreamingRequestProcessor<Streaming>() { BaseUrl = "https://stream.twitter.com/1/" };
+            var parms = new Dictionary<string, string>
+            {
+                { "Type", StreamingType.Filter.ToString() },
+                { "Track", "LINQ to Twitter" }
+            };
+
+            string url = reqProc.BuildURL(parms);
+
+            Assert.AreEqual("https://stream.twitter.com/1/statuses/filter.json?track=LINQ%20to%20Twitter", url);
+        }
+
+        [TestMethod]
+        public void BuildFilterUrl_Requires_FollowOrLocationsOrTrack()
+        {
+            var reqProc = new StreamingRequestProcessor<Streaming>() { BaseUrl = "https://stream.twitter.com/1/" };
+            var parms = new Dictionary<string, string>
+            {
+                { "Type", StreamingType.Filter.ToString() },
+                { "Count", "10" }
+            };
+
+            try
+            {
+                string url = reqProc.BuildURL(parms);
+
+                Assert.Fail("Expected ArgumentException.");
+            }
+            catch (ArgumentException aex)
+            {
+                Assert.AreEqual("FollowOrLocationsOrTrack", aex.ParamName);
+            }
+        }
+
+        [TestMethod]
         public void BuildSampleUrl_Returns_Url()
         {
             var reqProc = new StreamingRequestProcessor<Streaming>() { BaseUrl = "https://stream.twitter.com/1/" };
