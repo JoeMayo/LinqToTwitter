@@ -156,6 +156,7 @@
     <Compile Include="Common\ExpressionTreeModifier.cs" />
     <Compile Include="Common\IDList.cs" />
     <Compile Include="Common\MethodCallExpressionTypeFinder.cs" />
+    <Compile Include="LinqToTwitter\TwitterExtensions.cs" />
     <Compile Include="Friendship\Relationship.cs" />
     <Compile Include="Geo\Geometry.cs" />
     <Compile Include="Geo\Coordinate.cs" />
@@ -183,6 +184,10 @@
     <Compile Include="Status\Entities\MentionBase.cs" />
     <Compile Include="Status\Entities\UrlMention.cs" />
     <Compile Include="Status\Entities\UserMention.cs" />
+    <Compile Include="Streaming\StreamContent.cs" />
+    <Compile Include="Streaming\Streaming.cs" />
+    <Compile Include="Streaming\StreamingRequestProcessor.cs" />
+    <Compile Include="Streaming\StreamingType.cs" />
     <Compile Include="Trend\Location.cs" />
     <Compile Include="Common\Cursors.cs" />
     <Compile Include="OAuth\DesktopOAuthAuthorization.cs" />

@@ -9,6 +9,8 @@ using System.Text;
 using System.Web;
 using System.Xml;
 using System.Xml.Linq;
+using System.Reflection;
+using System.Threading;
 
 namespace LinqToTwitter
 {
@@ -98,6 +100,45 @@ namespace LinqToTwitter
             get { return log; }
             set { log = value; }
         }
+
+        /// <summary>
+        /// Allows users to process content returned from stream
+        /// </summary>
+        public Action<StreamContent> StreamingCallback { get; set; }
+
+        private static object m_closeStreamLock = new object();
+        private bool m_closeStream;
+
+        /// <summary>
+        /// Set to true to close stream, false means stream is still open
+        /// </summary>
+        public bool CloseStream
+        {
+            get
+            {
+                lock (m_closeStreamLock)
+	            {
+                    return m_closeStream;
+	            }
+            }
+            set
+            {
+                lock (m_closeStreamLock)
+	            {
+                    m_closeStream = value;
+	            }
+            }
+        }
+
+        /// <summary>
+        /// Only for streaming credentials, use OAuth for non-streaming APIs
+        /// </summary>
+        public string StreamingUserName { get; set; }
+
+        /// <summary>
+        /// Only for streaming credentials, use OAuth for non-streaming APIs
+        /// </summary>
+        public string StreamingPassword { get; set; }
 
         #endregion
 
@@ -261,6 +302,15 @@ namespace LinqToTwitter
         /// <returns>XML Respose from Twitter</returns>
         public string QueryTwitter(string url)
         {
+            //Log
+            WriteLog(url, "QueryTwitter");
+
+            if (url.Contains("stream."))
+            {
+                new Thread(ManageTwitterStream).Start(url);
+                return "<streaming></streaming>";
+            }
+
             var uri = new Uri(url);
             string responseXml = string.Empty;
             string httpStatus = string.Empty;
@@ -270,14 +320,11 @@ namespace LinqToTwitter
                 this.LastUrl = uri.AbsoluteUri;
                 var req = this.AuthorizedClient.Get(uri, null);
 
-                //Log
-                WriteLog(url, "QueryTwitter");
-
                 using (WebResponse resp = req.GetResponse())
                 {
                     httpStatus = resp.Headers["Status"];
                     responseXml = GetTwitterResponse(resp);
-                }
+                } 
             }
             catch (WebException wex)
             {
@@ -298,6 +345,97 @@ namespace LinqToTwitter
             CheckResultsForTwitterError(responseXml, httpStatus);
 
             return responseXml;
+        }
+
+        /// <summary>
+        /// This code will execute on a thread, processing content from the Twitter stream
+        /// </summary>
+        /// <remarks>
+        /// Values are returned to invocations of StreamingCallback. Remember that these callbacks
+        /// are running on a separate thread and it is the caller's responsibility to marshal back
+        /// onto UI thread, if applicable.
+        /// 
+        /// Thanks to Shannon Whitley for a good example of how to do this in C#:
+        /// http://www.voiceoftech.com/swhitley/?p=898
+        /// </remarks>
+        /// <param name="req">Web request, which has already been authenticated</param>
+        private void ManageTwitterStream(object url)
+        {
+            var req = HttpWebRequest.Create(url as string);
+            req.Credentials = new NetworkCredential(StreamingUserName, StreamingPassword);
+            req.Timeout = -1;
+
+            int errorWait = 250;
+
+            try
+            {
+                while (!CloseStream)
+                {
+                    using (var resp = req.GetResponse())
+                    using (var stream = resp.GetResponseStream())
+                    using (var respRdr = new StreamReader(stream, Encoding.UTF8))
+                    {
+                        string content = null;
+
+                        try
+                        {
+                            do
+                            {
+                                content = respRdr.ReadLine();
+                                StreamingCallback(new StreamContent(this, content));
+
+                                errorWait = 250;
+                            }
+                            while (!CloseStream);
+                        }
+                        catch (WebException wex)
+                        {
+                            if (wex.Status == WebExceptionStatus.ProtocolError)
+                            {
+                                if (errorWait < 10000)
+                                {
+                                    errorWait = 10000;
+                                }
+                                else
+                                {
+                                    if (errorWait < 240000)
+                                    {
+                                        errorWait *= 2;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                if (errorWait < 16000)
+                                {
+                                    errorWait += 250;
+                                }
+                            }
+
+                            WriteLog(wex.ToString() + ", Waiting " + errorWait + " seconds.  ", "ManageTwitterStream");
+                        }
+                        catch (Exception ex)
+                        {
+                            WriteLog(ex.ToString(), "ManageTwitterStream");
+                        }
+                        finally
+                        {
+                            if (req != null)
+                            {
+                                req.Abort();
+                            }
+
+                            Thread.Sleep(errorWait);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                WriteLog(ex.ToString(), "ManageTwitterStream");
+                Thread.Sleep(errorWait);
+                throw;
+            }
         }
 
         /// <summary>

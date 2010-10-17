@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Collections;
 using System.Xml.Linq;
+using System.IO;
 namespace LinqToTwitter
 {
     /// <summary>
@@ -82,5 +83,25 @@ namespace LinqToTwitter
         /// Used to notify callers of changes in image upload progress
         /// </summary>
         event EventHandler<TwitterProgressEventArgs> UploadProgressChanged;
+
+        /// <summary>
+        /// Allows users to process content returned from stream
+        /// </summary>
+        Action<StreamContent> StreamingCallback { get; set; }
+
+        /// <summary>
+        /// Set to true to close stream, false means stream is still open
+        /// </summary>
+        bool CloseStream { get; set; }
+
+        /// <summary>
+        /// Only for streaming credentials, use OAuth for non-streaming APIs
+        /// </summary>
+        string StreamingUserName { get; set; }
+
+        /// <summary>
+        /// Only for streaming credentials, use OAuth for non-streaming APIs
+        /// </summary>
+        string StreamingPassword { get; set; }
     }
 }

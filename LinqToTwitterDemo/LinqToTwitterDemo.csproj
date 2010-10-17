@@ -115,6 +115,7 @@
     <Compile Include="SearchDemos.cs" />
     <Compile Include="SocialGraphDemos.cs" />
     <Compile Include="StatusDemos.cs" />
+    <Compile Include="StreamingDemo.cs" />
     <Compile Include="TrendsDemos.cs" />
     <Compile Include="TwitterContextDemos.cs" />
     <Compile Include="UserDemos.cs" />

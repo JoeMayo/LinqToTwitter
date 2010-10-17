@@ -76,6 +76,7 @@ namespace LinqToTwitter
             TwitterExecutor = execute;
             BaseUrl = string.IsNullOrEmpty(baseUrl) ? "https://api.twitter.com/1/" : baseUrl;
             SearchUrl = string.IsNullOrEmpty(searchUrl) ? "http://search.twitter.com/" : searchUrl;
+            StreamingUrl = "http://stream.twitter.com/1/";
         }
 
         /// <summary>
@@ -145,6 +146,30 @@ namespace LinqToTwitter
         /// base URL for accessing Twitter Search API
         /// </summary>
         public string SearchUrl { get; set; }
+
+        /// <summary>
+        /// base URL for accessing streaming APIs
+        /// </summary>
+        private string StreamingUrl { get; set; }
+
+
+        /// <summary>
+        /// Only for streaming credentials, use OAuth for non-streaming APIs
+        /// </summary>
+        public string StreamingUserName 
+        {
+            get { return TwitterExecutor.StreamingUserName; }
+            set { TwitterExecutor.StreamingUserName = value; }
+        }
+
+        /// <summary>
+        /// Only for streaming credentials, use OAuth for non-streaming APIs
+        /// </summary>
+        public string StreamingPassword
+        {
+            get { return TwitterExecutor.StreamingPassword; }
+            set { TwitterExecutor.StreamingPassword = value; }
+        }
 
         /// <summary>
         /// Assign the Log to the context
@@ -283,7 +308,7 @@ namespace LinqToTwitter
         /// <summary>
         /// Methods for communicating with Twitter
         /// </summary>
-        private ITwitterExecute TwitterExecutor { get; set; }
+        internal ITwitterExecute TwitterExecutor { get; set; }
 
         #endregion
 
@@ -418,6 +443,17 @@ namespace LinqToTwitter
             get
             {
                 return new TwitterQueryable<Status>(this);
+            }
+        }
+
+        /// <summary>
+        /// enables access to Twitter Status messages, such as Friends and Public
+        /// </summary>
+        public TwitterQueryable<Streaming> Streaming
+        {
+            get
+            {
+                return new TwitterQueryable<Streaming>(this);
             }
         }
 
@@ -739,6 +775,13 @@ namespace LinqToTwitter
                     break;
                 case "Status":
                     req = new StatusRequestProcessor<T>() { BaseUrl = BaseUrl };
+                    break;
+                case "Streaming":
+                    req = new StreamingRequestProcessor<T> 
+                    { 
+                        BaseUrl = StreamingUrl,
+                        TwitterExecutor = TwitterExecutor
+                    };
                     break;
                 case "Trend":
                     req = new TrendRequestProcessor<T>() { BaseUrl = BaseUrl };
@@ -2099,18 +2142,6 @@ namespace LinqToTwitter
 
         public string ExecuteRaw(string queryString, Dictionary<string, string> parameters)
         {
-            //if (string.IsNullOrEmpty(screenName))
-            //{
-            //    throw new ArgumentException("screenName is required.", "screenName");
-            //}
-
-            //if (string.IsNullOrEmpty(listID))
-            //{
-            //    throw new ArgumentException("listID is required.", "listID");
-            //}
-
-            //var savedSearchUrl = BaseUrl + screenName + "/lists/" + listID + ".xml";
-
             string rawUrl = BaseUrl.TrimEnd('/') + "/" + queryString.TrimStart('/');
 
             var resultsXml =
