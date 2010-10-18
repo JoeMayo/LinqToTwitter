@@ -10,11 +10,12 @@ namespace LinqToTwitterDemo
     {
         public static void Run(LinqToTwitter.TwitterContext twitterCtx)
         {
-            FilterDemo(twitterCtx);
+            //FilterDemo(twitterCtx);
             //SamplesDemo(twitterCtx);
+            UserStreamDemo(twitterCtx);
         }
 
-        private static void FilterDemo(LinqToTwitter.TwitterContext twitterCtx)
+        private static void FilterDemo(TwitterContext twitterCtx)
         {
             twitterCtx.StreamingUserName = "";
             twitterCtx.StreamingPassword = "";
@@ -64,6 +65,27 @@ namespace LinqToTwitterDemo
             var streaming =
                 (from strm in twitterCtx.Streaming
                  where strm.Type == StreamingType.Sample
+                 select strm)
+                .StreamingCallback(strm =>
+                {
+                    Console.WriteLine(strm.Content + "\n");
+
+                    if (count++ >= 10)
+                    {
+                        strm.CloseStream();
+                    }
+                })
+                .SingleOrDefault();
+        }
+
+        private static void UserStreamDemo(TwitterContext twitterCtx)
+        {
+            Console.WriteLine("\nStreamed Content: \n");
+            int count = 0;
+
+            var streaming =
+                (from strm in twitterCtx.UserStream
+                 where strm.Type == UserStreamType.User
                  select strm)
                 .StreamingCallback(strm =>
                 {

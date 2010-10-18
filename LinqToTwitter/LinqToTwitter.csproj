@@ -188,6 +188,9 @@
     <Compile Include="Streaming\Streaming.cs" />
     <Compile Include="Streaming\StreamingRequestProcessor.cs" />
     <Compile Include="Streaming\StreamingType.cs" />
+    <Compile Include="Streaming\UserStream.cs" />
+    <Compile Include="Streaming\UserStreamRequestProcessor.cs" />
+    <Compile Include="Streaming\UserStreamType.cs" />
     <Compile Include="Trend\Location.cs" />
     <Compile Include="Common\Cursors.cs" />
     <Compile Include="OAuth\DesktopOAuthAuthorization.cs" />

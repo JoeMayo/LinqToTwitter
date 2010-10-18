@@ -42,6 +42,11 @@ namespace LinqToTwitter
         /// </summary>
         public string Locations { get; set; }
 
+        /// <summary>
+        /// extracts parameters from lambda
+        /// </summary>
+        /// <param name="lambdaExpression">lambda expression with where clause</param>
+        /// <returns>dictionary of parameter name/value pairs</returns>
         public Dictionary<string, string> GetParameters(LambdaExpression lambdaExpression)
         {
             var parameters =
@@ -84,6 +89,11 @@ namespace LinqToTwitter
             return parameters;
         }
 
+        /// <summary>
+        /// builds url based on input parameters
+        /// </summary>
+        /// <param name="parameters">criteria for url segments and parameters</param>
+        /// <returns>URL conforming to Twitter API</returns>
         public string BuildURL(Dictionary<string, string> parameters)
         {
             string url = null;
@@ -116,6 +126,11 @@ namespace LinqToTwitter
             return url;
         }
 
+        /// <summary>
+        /// builds an url for filtering stream
+        /// </summary>
+        /// <param name="parameters">parameter list</param>
+        /// <returns>base url + show segment</returns>
         private string BuildFilterUrl(Dictionary<string, string> parameters)
         {
             if (!parameters.ContainsKey("Follow") &&
@@ -162,6 +177,11 @@ namespace LinqToTwitter
             return url;
         }
 
+        /// <summary>
+        /// builds an url for getting a sample from the stream
+        /// </summary>
+        /// <param name="parameters">parameter list</param>
+        /// <returns>base url + show segment</returns>
         private string BuildSampleUrl(Dictionary<string, string> parameters)
         {
             if (parameters.ContainsKey("Count"))
@@ -179,6 +199,11 @@ namespace LinqToTwitter
             return url;
         }
 
+        /// <summary>
+        /// Returns an object for interacting with stream
+        /// </summary>
+        /// <param name="notUsed">Not used</param>
+        /// <returns>List with a single Streaming</returns>
         public List<T> ProcessResults(string notUsed)
         {
             var streamingList = new List<Streaming>

@@ -1613,6 +1613,42 @@ namespace LinqToTwitterTests
             execMock.Verify(exec => exec.QueryTwitter(It.IsAny<string>()), Times.Once());
         }
 
+        [TestMethod]
+        public void CreateRequestProcessor_Returns_UserStreamRequestProcessor()
+        {
+            TwitterContext_Accessor ctx = new TwitterContext_Accessor();
+            ctx.StreamingUrl = "https://userstream.twitter.com/2/";
+            var execMock = new Mock<ITwitterExecute>();
+            ctx.TwitterExecutor = execMock.Object;
+            var streamingQuery =
+                from tweet in ctx.UserStream
+                where tweet.Type == UserStreamType.User
+                select tweet;
+
+            var reqProc = ctx.CreateRequestProcessor<UserStream>(streamingQuery.Expression);
+
+            Assert.IsInstanceOfType(reqProc, typeof(UserStreamRequestProcessor<UserStream>));
+            Assert.AreEqual("https://userstream.twitter.com/2/", reqProc.BaseUrl);
+            Assert.AreEqual(execMock.Object, (reqProc as UserStreamRequestProcessor<UserStream>).TwitterExecutor);
+        }
+
+        [TestMethod]
+        public void Execute_Calls_QueryTwitterStream_For_UserStream_Queries()
+        {
+            var authMock = new Mock<ITwitterAuthorization>();
+            var execMock = new Mock<ITwitterExecute>();
+            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
+            var streamingQuery =
+                from tweet in ctx.UserStream
+                where tweet.Type == UserStreamType.User
+                select tweet;
+
+            var reqProc = ctx.Execute<UserStream>(streamingQuery.Expression, isEnumerable: true);
+
+            execMock.Verify(exec => exec.QueryTwitterStream(It.IsAny<string>()), Times.Once());
+        }
+
         #endregion
     }
 }

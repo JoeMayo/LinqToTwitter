@@ -305,12 +305,6 @@ namespace LinqToTwitter
             //Log
             WriteLog(url, "QueryTwitter");
 
-            //if (url.Contains("stream."))
-            //{
-            //    new Thread(ManageTwitterStream).Start(url);
-            //    return "<streaming></streaming>";
-            //}
-
             var uri = new Uri(url);
             string responseXml = string.Empty;
             string httpStatus = string.Empty;
@@ -349,7 +343,14 @@ namespace LinqToTwitter
 
         public string QueryTwitterStream(string url)
         {
-            new Thread(ManageTwitterStream).Start(url);
+            if (url.Contains("user.json"))
+            {
+                new Thread(ManageTwitterUserStream).Start(url);
+            }
+            else
+            {
+                new Thread(ManageTwitterStreaming).Start(url); 
+            }
             return "<streaming></streaming>";
         }
 
@@ -365,7 +366,7 @@ namespace LinqToTwitter
         /// http://www.voiceoftech.com/swhitley/?p=898
         /// </remarks>
         /// <param name="req">Web request, which has already been authenticated</param>
-        private void ManageTwitterStream(object url)
+        private void ManageTwitterStreaming(object url)
         {
             string streamUrl = url as string;
 
@@ -418,6 +419,108 @@ namespace LinqToTwitter
                                 content = respRdr.ReadLine();
                                 //StreamingCallback(new StreamContent(this, content));
                                 
+                                // launch on a separate thread to keep user's 
+                                // callback code from blocking the stream.
+                                new Thread(InvokeCallback).Start(content);
+
+                                errorWait = 250;
+                            }
+                            while (!CloseStream);
+                        }
+                        catch (WebException wex)
+                        {
+                            if (wex.Status == WebExceptionStatus.ProtocolError)
+                            {
+                                if (errorWait < 10000)
+                                {
+                                    errorWait = 10000;
+                                }
+                                else
+                                {
+                                    if (errorWait < 240000)
+                                    {
+                                        errorWait *= 2;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                if (errorWait < 16000)
+                                {
+                                    errorWait += 250;
+                                }
+                            }
+
+                            WriteLog(wex.ToString() + ", Waiting " + errorWait + " seconds.  ", "ManageTwitterStream");
+                        }
+                        catch (Exception ex)
+                        {
+                            WriteLog(ex.ToString(), "ManageTwitterStream");
+                        }
+                        finally
+                        {
+                            if (req != null)
+                            {
+                                req.Abort();
+                            }
+
+                            Thread.Sleep(errorWait);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                WriteLog(ex.ToString(), "ManageTwitterStream");
+                Thread.Sleep(errorWait);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// This code will execute on a thread, processing content from the Twitter user stream
+        /// </summary>
+        /// <remarks>
+        /// Values are returned to invocations of StreamingCallback. Remember that these callbacks
+        /// are running on a separate thread and it is the caller's responsibility to marshal back
+        /// onto UI thread, if applicable.
+        /// 
+        /// Thanks to Shannon Whitley for a good example of how to do this in C#:
+        /// http://www.voiceoftech.com/swhitley/?p=898
+        /// </remarks>
+        /// <param name="req">Web request, which has already been authenticated</param>
+        private void ManageTwitterUserStream(object url)
+        {
+            string streamUrl = url as string;
+
+            var uri = new Uri(streamUrl);
+            string responseXml = string.Empty;
+            string httpStatus = string.Empty;
+
+            this.LastUrl = uri.AbsoluteUri;
+            var req = this.AuthorizedClient.Get(uri, null);
+            req.UserAgent = UserAgent;
+            req.Timeout = -1;
+
+            int errorWait = 250;
+
+            try
+            {
+                while (!CloseStream)
+                {
+                    using (var resp = req.GetResponse())
+                    using (var stream = resp.GetResponseStream())
+                    using (var respRdr = new StreamReader(stream, Encoding.UTF8))
+                    {
+                        string content = null;
+
+                        try
+                        {
+                            do
+                            {
+                                content = respRdr.ReadLine();
+                                //StreamingCallback(new StreamContent(this, content));
+
                                 // launch on a separate thread to keep user's 
                                 // callback code from blocking the stream.
                                 new Thread(InvokeCallback).Start(content);

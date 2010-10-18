@@ -77,6 +77,7 @@ namespace LinqToTwitter
             BaseUrl = string.IsNullOrEmpty(baseUrl) ? "https://api.twitter.com/1/" : baseUrl;
             SearchUrl = string.IsNullOrEmpty(searchUrl) ? "http://search.twitter.com/" : searchUrl;
             StreamingUrl = "http://stream.twitter.com/1/";
+            UserStreamUrl = "https://userstream.twitter.com/2/";
         }
 
         /// <summary>
@@ -152,6 +153,10 @@ namespace LinqToTwitter
         /// </summary>
         private string StreamingUrl { get; set; }
 
+        /// <summary>
+        /// base URL for accessing user stream APIs
+        /// </summary>
+        private string UserStreamUrl { get; set; }
 
         /// <summary>
         /// Only for streaming credentials, use OAuth for non-streaming APIs
@@ -479,6 +484,17 @@ namespace LinqToTwitter
             }
         }
 
+        /// <summary>
+        /// enables access to Twitter UserStream for streaming access to user info
+        /// </summary>
+        public TwitterQueryable<UserStream> UserStream
+        {
+            get
+            {
+                return new TwitterQueryable<UserStream>(this);
+            }
+        }
+
         #endregion
 
         #region Response Headers
@@ -677,7 +693,8 @@ namespace LinqToTwitter
             string results = string.Empty;
 
             // process request through Twitter
-            if (typeof(T) == typeof(Streaming))
+            if (typeof(T) == typeof(Streaming) ||
+                typeof(T) == typeof(UserStream))
             {
                 results = TwitterExecutor.QueryTwitterStream(url);
             }
@@ -798,6 +815,13 @@ namespace LinqToTwitter
                     break;
                 case "User":
                     req = new UserRequestProcessor<T>() { BaseUrl = BaseUrl };
+                    break;
+                case "UserStream":
+                    req = new UserStreamRequestProcessor<T>
+                    {
+                        BaseUrl = UserStreamUrl,
+                        TwitterExecutor = TwitterExecutor
+                    };
                     break;
                 default:
                     throw new ArgumentException("Type, " + requestType + " isn't a supported LINQ to Twitter entity.", "requestType");
