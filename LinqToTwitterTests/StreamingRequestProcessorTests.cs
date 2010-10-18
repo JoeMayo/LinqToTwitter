@@ -99,7 +99,7 @@ namespace LinqToTwitterTests
         [TestMethod]
         public void BuildFilterUrl_Returns_Url()
         {
-            var reqProc = new StreamingRequestProcessor<Streaming>() { BaseUrl = "https://stream.twitter.com/1/" };
+            var reqProc = new StreamingRequestProcessor<Streaming>() { BaseUrl = "http://stream.twitter.com/1/" };
             var parms = new Dictionary<string, string>
             {
                 { "Type", StreamingType.Filter.ToString() },
@@ -108,13 +108,13 @@ namespace LinqToTwitterTests
 
             string url = reqProc.BuildURL(parms);
 
-            Assert.AreEqual("https://stream.twitter.com/1/statuses/filter.json?track=LINQ%20to%20Twitter", url);
+            Assert.AreEqual("http://stream.twitter.com/1/statuses/filter.json?track=LINQ%20to%20Twitter", url);
         }
 
         [TestMethod]
         public void BuildFilterUrl_Requires_FollowOrLocationsOrTrack()
         {
-            var reqProc = new StreamingRequestProcessor<Streaming>() { BaseUrl = "https://stream.twitter.com/1/" };
+            var reqProc = new StreamingRequestProcessor<Streaming>() { BaseUrl = "http://stream.twitter.com/1/" };
             var parms = new Dictionary<string, string>
             {
                 { "Type", StreamingType.Filter.ToString() },
@@ -134,9 +134,56 @@ namespace LinqToTwitterTests
         }
 
         [TestMethod]
+        public void BuildFirehoseUrl_Returns_Url()
+        {
+            var reqProc = new StreamingRequestProcessor<Streaming>() { BaseUrl = "http://stream.twitter.com/1/" };
+            var parms = new Dictionary<string, string>
+            {
+                { "Type", StreamingType.Firehose.ToString() },
+                { "Count", "25" },
+                { "Delimited", "length" }
+            };
+
+            string url = reqProc.BuildURL(parms);
+
+            Assert.AreEqual("http://stream.twitter.com/1/statuses/firehose.json?count=25&delimited=length", url);
+        }
+
+        [TestMethod]
+        public void BuildLinksUrl_Returns_Url()
+        {
+            var reqProc = new StreamingRequestProcessor<Streaming>() { BaseUrl = "http://stream.twitter.com/1/" };
+            var parms = new Dictionary<string, string>
+            {
+                { "Type", StreamingType.Links.ToString() },
+                { "Count", "25" },
+                { "Delimited", "length" }
+            };
+
+            string url = reqProc.BuildURL(parms);
+
+            Assert.AreEqual("http://stream.twitter.com/1/statuses/links.json?count=25&delimited=length", url);
+        }
+
+        [TestMethod]
+        public void BuildRetweetUrl_Returns_Url()
+        {
+            var reqProc = new StreamingRequestProcessor<Streaming>() { BaseUrl = "http://stream.twitter.com/1/" };
+            var parms = new Dictionary<string, string>
+            {
+                { "Type", StreamingType.Retweet.ToString() },
+                { "Delimited", "length" }
+            };
+
+            string url = reqProc.BuildURL(parms);
+
+            Assert.AreEqual("http://stream.twitter.com/1/statuses/retweet.json?delimited=length", url);
+        }
+
+        [TestMethod]
         public void BuildSampleUrl_Returns_Url()
         {
-            var reqProc = new StreamingRequestProcessor<Streaming>() { BaseUrl = "https://stream.twitter.com/1/" };
+            var reqProc = new StreamingRequestProcessor<Streaming>() { BaseUrl = "http://stream.twitter.com/1/" };
             var parms = new Dictionary<string, string>
             {
                 { "Type", StreamingType.Sample.ToString() }
@@ -144,13 +191,13 @@ namespace LinqToTwitterTests
 
             string url = reqProc.BuildURL(parms);
 
-            Assert.AreEqual("https://stream.twitter.com/1/statuses/sample.json", url);
+            Assert.AreEqual("http://stream.twitter.com/1/statuses/sample.json", url);
         }
 
         [TestMethod]
         public void BuildUrl_Requires_Type()
         {
-            var reqProc = new StreamingRequestProcessor<Streaming>() { BaseUrl = "https://stream.twitter.com/1/" };
+            var reqProc = new StreamingRequestProcessor<Streaming>() { BaseUrl = "http://stream.twitter.com/1/" };
             var parms = new Dictionary<string, string>
             {
                 //{ "Type", StreamingType.Sample.ToString() },
@@ -171,7 +218,7 @@ namespace LinqToTwitterTests
         [TestMethod]
         public void BuildSampleUrl_Forbids_Count()
         {
-            var reqProc = new StreamingRequestProcessor<Streaming>() { BaseUrl = "https://stream.twitter.com/1/" };
+            var reqProc = new StreamingRequestProcessor<Streaming>() { BaseUrl = "http://stream.twitter.com/1/" };
             var parms = new Dictionary<string, string>
             {
                 { "Type", StreamingType.Sample.ToString() },
@@ -193,7 +240,7 @@ namespace LinqToTwitterTests
         [TestMethod]
         public void BuildSampleUrl_Only_Adds_Delimited_To_Url()
         {
-            var reqProc = new StreamingRequestProcessor<Streaming>() { BaseUrl = "https://stream.twitter.com/1/" };
+            var reqProc = new StreamingRequestProcessor<Streaming>() { BaseUrl = "http://stream.twitter.com/1/" };
             var parms = new Dictionary<string, string>
             {
                 { "Type", StreamingType.Sample.ToString() },
@@ -205,7 +252,7 @@ namespace LinqToTwitterTests
 
             string url = reqProc.BuildURL(parms);
 
-            Assert.AreEqual("https://stream.twitter.com/1/statuses/sample.json?delimited=length", url);
+            Assert.AreEqual("http://stream.twitter.com/1/statuses/sample.json?delimited=length", url);
         }
 
         [TestMethod]
@@ -214,7 +261,7 @@ namespace LinqToTwitterTests
             var execMock = new Mock<ITwitterExecute>();
             var reqProc = new StreamingRequestProcessor<Streaming>() 
             { 
-                BaseUrl = "https://stream.twitter.com/1/",
+                BaseUrl = "http://stream.twitter.com/1/",
                 TwitterExecutor = execMock.Object
             };
 

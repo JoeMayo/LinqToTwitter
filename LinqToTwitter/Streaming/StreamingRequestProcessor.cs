@@ -111,10 +111,13 @@ namespace LinqToTwitter
                     url = BuildFilterUrl(parameters);
                     break;
                 case StreamingType.Firehose:
+                    url = BuildFirehoseUrl(parameters);
                     break;
                 case StreamingType.Links:
+                    url = BuildLinksUrl(parameters);
                     break;
                 case StreamingType.Retweet:
+                    url = BuildRetweetUrl(parameters);
                     break;
                 case StreamingType.Sample:
                     url = BuildSampleUrl(parameters);
@@ -167,6 +170,88 @@ namespace LinqToTwitter
             if (parameters.ContainsKey("Track"))
             {
                 urlParams.Add("track=" + Uri.EscapeUriString(parameters["Track"]));
+            }
+
+            if (urlParams.Count > 0)
+            {
+                url += "?" + string.Join("&", urlParams.ToArray());
+            }
+
+            return url;
+        }
+
+        /// <summary>
+        /// builds an url for getting all results from the Twitter stream
+        /// </summary>
+        /// <param name="parameters">parameter list</param>
+        /// <returns>base url + show segment</returns>
+        private string BuildFirehoseUrl(Dictionary<string, string> parameters)
+        {
+            string url = BaseUrl + "statuses/firehose.json";
+
+            var urlParams = new List<string>();
+
+            if (parameters.ContainsKey("Count"))
+            {
+                urlParams.Add("count=" + parameters["Count"]);
+            }
+
+            if (parameters.ContainsKey("Delimited"))
+            {
+                urlParams.Add("delimited=" + parameters["Delimited"]);
+            }
+
+            if (urlParams.Count > 0)
+            {
+                url += "?" + string.Join("&", urlParams.ToArray());
+            }
+
+            return url;
+        }
+
+        /// <summary>
+        /// builds an url for getting all results from the Twitter stream
+        /// </summary>
+        /// <param name="parameters">parameter list</param>
+        /// <returns>base url + show segment</returns>
+        private string BuildLinksUrl(Dictionary<string, string> parameters)
+        {
+            string url = BaseUrl + "statuses/links.json";
+
+            var urlParams = new List<string>();
+
+            if (parameters.ContainsKey("Count"))
+            {
+                urlParams.Add("count=" + parameters["Count"]);
+            }
+
+            if (parameters.ContainsKey("Delimited"))
+            {
+                urlParams.Add("delimited=" + parameters["Delimited"]);
+            }
+
+            if (urlParams.Count > 0)
+            {
+                url += "?" + string.Join("&", urlParams.ToArray());
+            }
+
+            return url;
+        }
+
+        /// <summary>
+        /// builds an url for getting all results from the Twitter stream
+        /// </summary>
+        /// <param name="parameters">parameter list</param>
+        /// <returns>base url + show segment</returns>
+        private string BuildRetweetUrl(Dictionary<string, string> parameters)
+        {
+            string url = BaseUrl + "statuses/retweet.json";
+
+            var urlParams = new List<string>();
+
+            if (parameters.ContainsKey("Delimited"))
+            {
+                urlParams.Add("delimited=" + parameters["Delimited"]);
             }
 
             if (urlParams.Count > 0)
