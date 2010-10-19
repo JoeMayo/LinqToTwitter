@@ -392,6 +392,17 @@ namespace LinqToTwitter
         }
 
         /// <summary>
+        /// enables access to Twitter Legal info
+        /// </summary>
+        public TwitterQueryable<Legal> Legal
+        {
+            get
+            {
+                return new TwitterQueryable<Legal>(this);
+            }
+        }
+
+        /// <summary>
         /// enables access to Twitter List info
         /// </summary>
         public TwitterQueryable<List> List
@@ -789,7 +800,10 @@ namespace LinqToTwitter
                     req = new FriendshipRequestProcessor<T>() { BaseUrl = BaseUrl };
                     break;
                 case "Geo":
-                    req = new GeoRequestProcessor<T>() { BaseUrl = baseUrl };
+                    req = new GeoRequestProcessor<T>() { BaseUrl = BaseUrl };
+                    break;
+                case "Legal":
+                    req = new LegalRequestProcessor<T>() { BaseUrl = BaseUrl };
                     break;
                 case "List":
                     req = new ListRequestProcessor<T>() { BaseUrl = BaseUrl };

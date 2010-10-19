@@ -1556,6 +1556,24 @@ namespace LinqToTwitterTests
                     parameters), Times.Once());
         }
 
+        [TestMethod]
+        public void CreateRequestProcessor_Returns_LegalRequestProcessor()
+        {
+            TwitterContext_Accessor ctx = new TwitterContext_Accessor();
+            ctx.BaseUrl = "http://stream.twitter.com/1/";
+            var execMock = new Mock<ITwitterExecute>();
+            ctx.TwitterExecutor = execMock.Object;
+            var legalQuery =
+                from tweet in ctx.Legal
+                where tweet.Type == LegalType.Privacy
+                select tweet;
+
+            var reqProc = ctx.CreateRequestProcessor<Legal>(legalQuery.Expression);
+
+            Assert.IsInstanceOfType(reqProc, typeof(LegalRequestProcessor<Legal>));
+            Assert.AreEqual("http://stream.twitter.com/1/", reqProc.BaseUrl);
+        }
+
         #region Streaming Tests
 
         [TestMethod]

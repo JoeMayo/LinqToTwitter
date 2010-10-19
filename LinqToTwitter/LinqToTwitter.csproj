@@ -156,6 +156,9 @@
     <Compile Include="Common\ExpressionTreeModifier.cs" />
     <Compile Include="Common\IDList.cs" />
     <Compile Include="Common\MethodCallExpressionTypeFinder.cs" />
+    <Compile Include="Legal\Legal.cs" />
+    <Compile Include="Legal\LegalRequestProcessor.cs" />
+    <Compile Include="Legal\LegalType.cs" />
     <Compile Include="LinqToTwitter\TwitterExtensions.cs" />
     <Compile Include="Friendship\Relationship.cs" />
     <Compile Include="Geo\Geometry.cs" />
@@ -164,8 +167,8 @@
     <Compile Include="Geo\GeoRequestProcessor.cs" />
     <Compile Include="Geo\GeoType.cs" />
     <Compile Include="Geo\Place.cs" />
-    <Compile Include="OAuth\AnonymousAuthorization.cs" />
-    <Compile Include="OAuth\AuthorizationBase.cs" />
+    <Compile Include="OAuth\DotNetOpenAuth\AnonymousAuthorization.cs" />
+    <Compile Include="OAuth\DotNetOpenAuth\AuthorizationBase.cs" />
     <Compile Include="Raw\Raw.cs" />
     <Compile Include="Raw\RawRequestProcessor.cs" />
     <Compile Include="Search\AtomAuthor.cs" />
@@ -193,7 +196,7 @@
     <Compile Include="Streaming\UserStreamType.cs" />
     <Compile Include="Trend\Location.cs" />
     <Compile Include="Common\Cursors.cs" />
-    <Compile Include="OAuth\DesktopOAuthAuthorization.cs" />
+    <Compile Include="OAuth\DotNetOpenAuth\DesktopOAuthAuthorization.cs" />
     <Compile Include="Account\DeviceType.cs" />
     <Compile Include="DirectMessage\DirectMessage.cs" />
     <Compile Include="DirectMessage\DirectMessageType.cs" />
@@ -202,16 +205,16 @@
     <Compile Include="List\List.cs" />
     <Compile Include="List\ListRequestProcessor.cs" />
     <Compile Include="List\ListType.cs" />
-    <Compile Include="OAuth\MvcOAuthAuthorization.cs" />
+    <Compile Include="OAuth\DotNetOpenAuth\MvcOAuthAuthorization.cs" />
     <Compile Include="Status\Retweet.cs" />
     <Compile Include="Common\TwitterProgressEventArgs.cs" />
     <Compile Include="User\Category.cs" />
     <Compile Include="User\UserIdentifier.cs" />
-    <Compile Include="OAuth\WindowsCredentialStoreTokenManager.cs" />
-    <Compile Include="OAuth\ITwitterAuthorization.cs" />
+    <Compile Include="OAuth\DotNetOpenAuth\WindowsCredentialStoreTokenManager.cs" />
+    <Compile Include="OAuth\DotNetOpenAuth\ITwitterAuthorization.cs" />
     <Compile Include="LinqToTwitter\ITwitterExecute.cs" />
-    <Compile Include="OAuth\OAuthAuthorization.cs" />
-    <Compile Include="OAuth\NativeMethods.cs" />
+    <Compile Include="OAuth\DotNetOpenAuth\OAuthAuthorization.cs" />
+    <Compile Include="OAuth\DotNetOpenAuth\NativeMethods.cs" />
     <Compile Include="Common\RequestProcessorHelper.cs" />
     <Compile Include="SavedSearch\SavedSearch.cs" />
     <Compile Include="SavedSearch\SavedSearchRequestProcessor.cs" />
@@ -254,8 +257,8 @@
     <Compile Include="User\User.cs" />
     <Compile Include="User\UserRequestProcessor.cs" />
     <Compile Include="User\UserType.cs" />
-    <Compile Include="OAuth\Utilities.cs" />
-    <Compile Include="OAuth\WebOAuthAuthorization.cs" />
+    <Compile Include="OAuth\DotNetOpenAuth\Utilities.cs" />
+    <Compile Include="OAuth\DotNetOpenAuth\WebOAuthAuthorization.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
@@ -273,6 +276,9 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="OAuth\LinqToTwitterOAuth\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

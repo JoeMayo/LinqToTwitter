@@ -135,6 +135,7 @@
     <Compile Include="BlocksRequestProcessorTest.cs" />
     <Compile Include="Common\DebuggerWriter.cs" />
     <Compile Include="Common\TestCulture.cs" />
+    <Compile Include="LegalRequestProcessorTests.cs" />
     <Compile Include="RawRequestProcessorTest.cs" />
     <Compile Include="StreamingRequestProcessorTests.cs" />
     <Compile Include="TwitterExtensionsTest.cs" />
