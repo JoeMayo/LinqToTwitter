@@ -8,7 +8,21 @@ namespace LinqToTwitter
 {
     public class UserStreamRequestProcessor<T> : IRequestProcessor<T>
     {
-        public string BaseUrl { get; set; }
+        public string BaseUrl 
+        {
+            get
+            {
+                throw new NotImplementedException("You should use UserStreamUrl or SiteStreamUrl instead.");
+            }
+            set
+            {
+                throw new NotImplementedException("You should use UserStreamUrl or SiteStreamUrl instead.");
+            }
+        }
+
+        public string UserStreamUrl { get; set; }
+
+        public string SiteStreamUrl { get; set; }
 
         public ITwitterExecute TwitterExecutor { get; set; }
 
@@ -21,6 +35,11 @@ namespace LinqToTwitter
         /// Stream delimiter
         /// </summary>
         public string Delimited { get; set; }
+
+        /// <summary>
+        /// Comma-separated list (no spaces) of users to add to Site Stream
+        /// </summary>
+        public string Follow { get; set; }
 
         /// <summary>
         /// Search terms
@@ -51,6 +70,7 @@ namespace LinqToTwitter
                    new List<string> { 
                        "Type",
                        "Delimited",
+                       "Follow",
                        "Track",
                        "With",
                        "AllReplies"
@@ -59,6 +79,11 @@ namespace LinqToTwitter
             if (parameters.ContainsKey("Delimited"))
             {
                 Delimited = parameters["Delimited"];
+            }
+
+            if (parameters.ContainsKey("Follow"))
+            {
+                Follow = parameters["Follow"];
             }
 
             if (parameters.ContainsKey("Track"))
@@ -101,6 +126,7 @@ namespace LinqToTwitter
                     url = BuildUserUrl(parameters);
                     break;
                 case UserStreamType.Site:
+                    url = BuildSiteUrl(parameters);
                     break;
                 default:
                     throw new ArgumentException("Invalid UserStreamType", "UserStreamType");
@@ -116,7 +142,7 @@ namespace LinqToTwitter
         /// <returns>base url + show segment</returns>
         private string BuildUserUrl(Dictionary<string, string> parameters)
         {
-            string url = BaseUrl + "user.json";
+            string url = UserStreamUrl + "user.json";
 
             var urlParams = new List<string>();
 
@@ -152,6 +178,58 @@ namespace LinqToTwitter
         }
 
         /// <summary>
+        /// builds an url for getting user info from stream
+        /// </summary>
+        /// <param name="parameters">parameter list</param>
+        /// <returns>base url + show segment</returns>
+        private string BuildSiteUrl(Dictionary<string, string> parameters)
+        {
+            if (!parameters.ContainsKey("Follow"))
+            {
+                throw new ArgumentNullException("Follow", "Follow is required.");
+            }
+
+            string url = SiteStreamUrl + "site.json";
+
+            var urlParams = new List<string>();
+
+            if (parameters.ContainsKey("Delimited"))
+            {
+                urlParams.Add("delimited=" + parameters["Delimited"].ToLower());
+            }
+
+            if (parameters.ContainsKey("Follow"))
+            {
+                urlParams.Add("follow=" + parameters["Follow"].ToLower());
+            }
+
+            if (parameters.ContainsKey("Track"))
+            {
+                urlParams.Add("track=" + Uri.EscapeUriString(parameters["Track"]));
+            }
+
+            if (parameters.ContainsKey("With"))
+            {
+                urlParams.Add("with=" + parameters["With"].ToLower());
+            }
+
+            if (parameters.ContainsKey("AllReplies"))
+            {
+                if (bool.Parse(parameters["AllReplies"]))
+                {
+                    urlParams.Add("replies=all");
+                }
+            }
+
+            if (urlParams.Count > 0)
+            {
+                url += "?" + string.Join("&", urlParams.ToArray());
+            }
+
+            return url;
+        }
+
+        /// <summary>
         /// Returns an object for interacting with stream
         /// </summary>
         /// <param name="notUsed">Not used</param>
@@ -164,6 +242,7 @@ namespace LinqToTwitter
                 {
                     Type = Type,
                     Delimited = Delimited,
+                    Follow = Follow,
                     Track = Track,
                     With = With,
                     AllReplies = AllReplies,

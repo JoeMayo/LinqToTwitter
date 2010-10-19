@@ -78,6 +78,7 @@ namespace LinqToTwitter
             SearchUrl = string.IsNullOrEmpty(searchUrl) ? "http://search.twitter.com/" : searchUrl;
             StreamingUrl = "http://stream.twitter.com/1/";
             UserStreamUrl = "https://userstream.twitter.com/2/";
+            SiteStreamUrl = "http://betastream.twitter.com/2b/";
         }
 
         /// <summary>
@@ -157,6 +158,11 @@ namespace LinqToTwitter
         /// base URL for accessing user stream APIs
         /// </summary>
         private string UserStreamUrl { get; set; }
+
+        /// <summary>
+        /// base URL for accessing site stream APIs
+        /// </summary>
+        private string SiteStreamUrl { get; set; }
 
         /// <summary>
         /// Only for streaming credentials, use OAuth for non-streaming APIs
@@ -761,9 +767,9 @@ namespace LinqToTwitter
                 throw new ArgumentNullException("Expression passed to CreateRequestProcessor must not be null.");
             }
 
-            string requestType = new MethodCallExpressionTypeFinder().GetGenericType(expression).Name;
-
             IRequestProcessor<T> req = null;
+
+            string requestType = new MethodCallExpressionTypeFinder().GetGenericType(expression).Name;
 
             switch (requestType)
             {
@@ -819,7 +825,8 @@ namespace LinqToTwitter
                 case "UserStream":
                     req = new UserStreamRequestProcessor<T>
                     {
-                        BaseUrl = UserStreamUrl,
+                        UserStreamUrl = UserStreamUrl,
+                        SiteStreamUrl = SiteStreamUrl,
                         TwitterExecutor = TwitterExecutor
                     };
                     break;

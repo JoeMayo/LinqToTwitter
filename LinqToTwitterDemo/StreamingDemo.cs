@@ -12,7 +12,8 @@ namespace LinqToTwitterDemo
         {
             //FilterDemo(twitterCtx);
             //SamplesDemo(twitterCtx);
-            UserStreamDemo(twitterCtx);
+            //UserStreamDemo(twitterCtx);
+            SiteStreamDemo(twitterCtx);
         }
 
         private static void FilterDemo(TwitterContext twitterCtx)
@@ -86,6 +87,30 @@ namespace LinqToTwitterDemo
             var streaming =
                 (from strm in twitterCtx.UserStream
                  where strm.Type == UserStreamType.User
+                 select strm)
+                .StreamingCallback(strm =>
+                {
+                    Console.WriteLine(strm.Content + "\n");
+
+                    if (count++ >= 10)
+                    {
+                        strm.CloseStream();
+                    }
+                })
+                .SingleOrDefault();
+        }
+
+        private static void SiteStreamDemo(TwitterContext twitterCtx)
+        {
+            Console.WriteLine("\nStreamed Content: \n");
+            int count = 0;
+
+            var streaming =
+                (from strm in twitterCtx.UserStream
+                 where strm.Type == UserStreamType.Site &&
+                       strm.Follow == "15411837,16761255" // these are relatively low-volume accounts, 
+                                                          // so you may want to add more to see results.
+                                                          // i.e. add your account ID and tweet to see results.
                  select strm)
                 .StreamingCallback(strm =>
                 {

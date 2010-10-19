@@ -21,6 +21,11 @@ namespace LinqToTwitter
         public string Delimited { get; set; }
 
         /// <summary>
+        /// Comma-separated list (no spaces) of users to add to Site Stream
+        /// </summary>
+        public string Follow { get; set; }
+
+        /// <summary>
         /// Search terms
         /// </summary>
         public string Track { get; set; }

@@ -1628,7 +1628,7 @@ namespace LinqToTwitterTests
             var reqProc = ctx.CreateRequestProcessor<UserStream>(streamingQuery.Expression);
 
             Assert.IsInstanceOfType(reqProc, typeof(UserStreamRequestProcessor<UserStream>));
-            Assert.AreEqual("https://userstream.twitter.com/2/", reqProc.BaseUrl);
+            Assert.AreEqual("https://userstream.twitter.com/2/", (reqProc as UserStreamRequestProcessor<UserStream>).UserStreamUrl);
             Assert.AreEqual(execMock.Object, (reqProc as UserStreamRequestProcessor<UserStream>).TwitterExecutor);
         }
 
