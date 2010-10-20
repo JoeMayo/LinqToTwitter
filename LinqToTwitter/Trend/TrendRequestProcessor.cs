@@ -236,8 +236,8 @@ namespace LinqToTwitter
 
             if (parameters.ContainsKey("Date"))
             {
-                Date = DateTime.Parse(parameters["Date"]);
-                urlParams.Add("date=" + DateTime.Parse(parameters["Date"], CultureInfo.InvariantCulture).ToString("yyyy-MM-dd"));
+                Date = DateTime.Parse(parameters["Date"], CultureInfo.InvariantCulture);
+                urlParams.Add("date=" + Date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
             }
 
             if (parameters.ContainsKey("ExcludeHashtags") &&
@@ -267,7 +267,7 @@ namespace LinqToTwitter
 
             List<XElement> locations = new List<XElement>();
             List<XElement> items = null;
-            DateTime asOf = DateTime.Now;
+            DateTime asOf = DateTime.UtcNow;
             XElement locationElement = null;
 
             if (twitterResponse.Name.LocalName == "locations")
@@ -282,12 +282,16 @@ namespace LinqToTwitter
             {
                 locationElement = twitterResponse.Element("trends").Element("locations").Element("location");
                 items = twitterResponse.Element("trends").Elements("trend").ToList();
-                asOf = DateTime.Parse(twitterResponse.Element("trends").Attribute("as_of").Value, CultureInfo.InvariantCulture);
+                asOf = DateTime.Parse(twitterResponse.Element("trends").Attribute("as_of").Value,
+                                      CultureInfo.InvariantCulture,
+                                      DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal);
             }
             else if (twitterResponse.Element("trends").Element(itemNS + "item") == null)
             {
                 items = twitterResponse.Element("trends").Elements("item").ToList();
-                asOf = DateTime.Parse(twitterResponse.Element("as_of").Value, CultureInfo.InvariantCulture);
+                asOf = DateTime.Parse(twitterResponse.Element("as_of").Value,
+                                      CultureInfo.InvariantCulture,
+                                      DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal);
             }
             else
             {
@@ -302,10 +306,9 @@ namespace LinqToTwitter
                     twitterResponse
                         .Element("trends")
                             .Element(itemNS + "item").Attribute("item").Value,
-                    CultureInfo.InvariantCulture);
+                    CultureInfo.InvariantCulture,
+                    DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal);
             }
-
-            var location = new Location();
 
             var trends =
                 (from trend in items
@@ -326,11 +329,11 @@ namespace LinqToTwitter
                         trend.Value :
                         trend.Element("name").Value
                  let trendLoc = 
-                    location.CreateLocation(
+                    Location.CreateLocation(
                         locationElement ?? trend.Element("location"))
                  let locs =
                     (from loc in locations
-                     select location.CreateLocation(loc))
+                     select Location.CreateLocation(loc))
                      .ToList()
                  select new Trend
                  {

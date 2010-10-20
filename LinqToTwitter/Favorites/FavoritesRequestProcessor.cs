@@ -124,7 +124,8 @@ namespace LinqToTwitter
                     DateTime.ParseExact(
                         status.Element("created_at").Value,
                         "ddd MMM dd HH:mm:ss %zzzz yyyy",
-                        CultureInfo.InvariantCulture)
+                        CultureInfo.InvariantCulture,
+                        DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal)
                 let user = status.Element("user")
                 select
                    new Favorites
@@ -147,7 +148,7 @@ namespace LinqToTwitter
                         status.Element("in_reply_to_screen_name") == null ?
                             string.Empty :
                             status.Element("in_reply_to_screen_name").Value,
-                       User = new User().CreateUser(user)
+                       User = User.CreateUser(user)
                    };
 
             return statusList.OfType<T>().ToList();

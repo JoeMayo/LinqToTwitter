@@ -17,7 +17,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="category">XML with category info</param>
         /// <returns>Category with info from XML</returns>
-        public Category CreateCategory(XElement category)
+        public static Category CreateCategory(XElement category)
         {
             if (category == null)
             {
@@ -42,7 +42,7 @@ namespace LinqToTwitter
                     category.Element("users") == null ?
                     null :
                     (from user in category.Element("users").Elements("user")
-                     select new User().CreateUser(user))
+                     select User.CreateUser(user))
                      .ToList()
             };
         }

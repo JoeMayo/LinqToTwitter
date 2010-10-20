@@ -21,7 +21,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="coordinate">XML to convert</param>
         /// <returns>Coordinate holding info from XML</returns>
-        public Coordinate CreateCoordinate(XElement coordinate)
+        public static Coordinate CreateCoordinate(XElement coordinate)
         {
             List<XElement> coords = coordinate.Elements("item").ToList();
 

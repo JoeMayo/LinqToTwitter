@@ -492,7 +492,7 @@ namespace LinqToTwitter
 
             var statuses =
                 from statusXmlElement in responseItems
-                select new Status().CreateStatus(statusXmlElement);
+                select Status.CreateStatus(statusXmlElement);
 
             var statusList = statuses.ToList();
 

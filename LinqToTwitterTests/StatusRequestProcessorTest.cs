@@ -1529,7 +1529,7 @@ namespace LinqToTwitterTests
         {
             var annXml = XElement.Parse(m_annotation);
 
-            Annotation ann = new Annotation().CreateAnnotation(annXml.Element("annotation"));
+            Annotation ann = Annotation.CreateAnnotation(annXml.Element("annotation"));
 
             Assert.AreEqual("foo", ann.Type);
             Assert.IsTrue(ann.Attributes.ContainsKey("bar"));
@@ -1541,7 +1541,7 @@ namespace LinqToTwitterTests
         {
             XElement annXml = null;
 
-            Annotation ann = new Annotation().CreateAnnotation(annXml);
+            Annotation ann = Annotation.CreateAnnotation(annXml);
 
             Assert.AreEqual(null, ann);
         }

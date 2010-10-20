@@ -17,7 +17,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="relationship">XML with info</param>
         /// <returns>Relationship instance</returns>
-        public Relationship CreateRelationship(XElement relationship)
+        public static Relationship CreateRelationship(XElement relationship)
         {
             if (relationship == null || relationship.Value == null)
             {

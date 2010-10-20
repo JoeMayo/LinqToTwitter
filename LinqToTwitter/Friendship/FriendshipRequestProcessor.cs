@@ -329,24 +329,21 @@ namespace LinqToTwitter
 
             if (twitterResponse.Name == "relationship") // Show
             {
-                var relationship = new Relationship();
-
                 friendship.SourceRelationship =
-                    relationship.CreateRelationship(twitterResponse.Element("source"));
+                    Relationship.CreateRelationship(twitterResponse.Element("source"));
                 friendship.TargetRelationship =
-                    relationship.CreateRelationship(twitterResponse.Element("target"));
+                    Relationship.CreateRelationship(twitterResponse.Element("target"));
             }
             else if (twitterResponse.Name == "relationships")
             {
-                var relationship = new Relationship();
                 friendship.Relationships =
                     (from relElem in twitterResponse.Elements("relationship")
-                     select relationship.CreateRelationship(relElem))
+                     select Relationship.CreateRelationship(relElem))
                     .ToList();
             }
             else if (twitterResponse.Name == "id_list") // incoming/outgoing
             {
-                friendship.IDInfo = new IDList().CreateIDList(twitterResponse);
+                friendship.IDInfo = IDList.CreateIDList(twitterResponse);
             }
             else // Exists
             {

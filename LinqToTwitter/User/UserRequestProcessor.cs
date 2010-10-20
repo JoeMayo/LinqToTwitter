@@ -433,11 +433,9 @@ namespace LinqToTwitter
             {
                 userList.Add(new User());
 
-                var category = new Category();
-
                 categories =
                     (from cat in twitterResponse.Elements("category")
-                     select category.CreateCategory(cat))
+                     select Category.CreateCategory(cat))
                      .ToList();
             }
 
@@ -450,7 +448,7 @@ namespace LinqToTwitter
 
             var users =
                 (from user in responseItems
-                 select new User().CreateUser(user))
+                 select User.CreateUser(user))
                 .ToList();
 
             userList.AddRange(users);

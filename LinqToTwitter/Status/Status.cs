@@ -25,29 +25,23 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="status">XML element with info</param>
         /// <returns>Newly populated status object</returns>
-        public Status CreateStatus(XElement status)
+        public static Status CreateStatus(XElement status)
         {
             if (status == null)
             {
                 return null;
             }
 
-            var dateParts =
-                status.Element("created_at").Value.Split(' ');
-
-            var createdAtDate =
-                dateParts.Count() > 1 ?
-                DateTime.Parse(
-                    string.Format("{0} {1} {2} {3} GMT",
-                    dateParts[1],
-                    dateParts[2],
-                    dateParts[5],
-                    dateParts[3]),
-                    CultureInfo.InvariantCulture) :
-                DateTime.MinValue;
+            var date = status.Element("created_at").Value;
+            var createdAtDate = String.IsNullOrEmpty(date) 
+                                ? DateTime.MinValue
+                                : DateTime.ParseExact(
+                                        date,
+                                        "ddd MMM dd HH:mm:ss %zzzz yyyy",
+                                        CultureInfo.InvariantCulture,
+                                        DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal);
 
             var user = status.Element("user");
-
             var retweet = status.Element("retweeted_status");
 
             var retweetCount =
@@ -61,21 +55,18 @@ namespace LinqToTwitter
                     false :
                     bool.Parse(status.Element("retweeted").Value);
 
-            var rtDateParts =
-                retweet == null ?
-                    null :
-                    retweet.Element("created_at").Value.Split(' ');
+            var retweetDate = retweet == null
+                              ? null
+                              : retweet.Element("created_at").Value;
 
-            var retweetedAtDate =
-                retweet == null ?
-                    DateTime.MinValue :
-                    DateTime.Parse(
-                        string.Format("{0} {1} {2} {3} GMT",
-                        rtDateParts[1],
-                        rtDateParts[2],
-                        rtDateParts[5],
-                        rtDateParts[3]),
-                        CultureInfo.InvariantCulture);
+            var retweetedAtDate = String.IsNullOrEmpty(retweetDate)
+                                ? DateTime.MinValue
+                                : DateTime.ParseExact(
+                                        retweetDate,
+                                        "ddd MMM dd HH:mm:ss %zzzz yyyy",
+                                        CultureInfo.InvariantCulture,
+                                        DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal);
+
 
             List<Contributor> contributors = null;
 
@@ -161,13 +152,9 @@ namespace LinqToTwitter
                 }
             }
 
-            var place = new Place().CreatePlace(status.Element("place"));
-
-            var annotation = new Annotation().CreateAnnotation(status.Element("annotation"));
-
-            var usr = new User();
-
-            var entities = new Entities().CreateEntities(status.Element("entities"));
+            var place = Place.CreatePlace(status.Element("place"));
+            var annotation = Annotation.CreateAnnotation(status.Element("annotation"));
+            var entities = Entities.CreateEntities(status.Element("entities"));
 
             var newStatus = new Status
             {
@@ -192,7 +179,7 @@ namespace LinqToTwitter
                 Coordinates = coord,
                 Place = place,
                 Annotation = annotation,
-                User = usr.CreateUser(user),
+                User = User.CreateUser(user),
                 Entities = entities,
                 Retweeted = retweeted,
                 RetweetCount = retweetCount,
@@ -228,7 +215,7 @@ namespace LinqToTwitter
                                     string.IsNullOrEmpty(retweet.Element("truncated").Value) ?
                                     "true" :
                                     retweet.Element("truncated").Value),
-                            RetweetingUser = usr.CreateUser(retweet.Element("user"))
+                            RetweetingUser = User.CreateUser(retweet.Element("user"))
                         }
             };
 

@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Xml.Linq;
 
 namespace LinqToTwitter
@@ -17,7 +14,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="loc">XML</param>
         /// <returns>Location</returns>
-        public Location CreateLocation(XElement loc)
+        public static Location CreateLocation(XElement loc)
         {
             if (loc != null)
             {

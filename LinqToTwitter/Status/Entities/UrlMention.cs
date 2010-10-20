@@ -1,4 +1,5 @@
 using System;
+using System.Xml.Linq;
 
 namespace LinqToTwitter
 {
@@ -9,6 +10,19 @@ namespace LinqToTwitter
     [Serializable]
     public class UrlMention : MentionBase
     {
+        /// <summary>
+        /// Create UrlMention out of the XElement
+        /// </summary>
+        /// <param name="element">the entry node</param>
+        /// <returns>UrlMention</returns>
+        public static UrlMention FromXElement(XElement element)
+        {
+            var mention = new UrlMention { Url = element.Element("url").Value };
+
+            mention.SetStartEndValues(element);
+            return mention;
+        }
+
         /// <summary>
         /// Absolute Url in the tweet
         /// </summary>

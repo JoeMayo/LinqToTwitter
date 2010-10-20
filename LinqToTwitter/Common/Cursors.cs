@@ -20,17 +20,17 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="cursors">XElement with info</param>
         /// <returns>New Cursors instance</returns>
-        public Cursors CreateCursors(XElement cursors)
+        public static Cursors CreateCursors(XElement cursors)
         {
             return
                 new Cursors
                 {
                     Next =
-                        cursors.Element("next_cursor") == null ?
+                        cursors == null || cursors.Element("next_cursor") == null ?
                             string.Empty :
                             cursors.Element("next_cursor").Value,
                     Previous =
-                        cursors.Element("previous_cursor") == null ?
+                        cursors == null || cursors.Element("previous_cursor") == null ?
                             string.Empty :
                             cursors.Element("previous_cursor").Value
                 };

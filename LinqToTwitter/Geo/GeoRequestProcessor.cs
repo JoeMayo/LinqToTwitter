@@ -238,7 +238,6 @@ namespace LinqToTwitter
                                 .Elements("item").ToList();
             }
 
-            var place = new Place();
             var geo =
                new Geo
                {
@@ -252,7 +251,7 @@ namespace LinqToTwitter
                    MaxResults = MaxResults,
                    Places =
                        (from pl in responseItems
-                        select place.CreatePlace(pl.Element("contained_within").Element("item")))
+                        select Place.CreatePlace(pl.Element("contained_within").Element("item")))
                         .ToList()
                };
 

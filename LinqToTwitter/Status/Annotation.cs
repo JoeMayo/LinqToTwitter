@@ -15,7 +15,7 @@ namespace LinqToTwitter
         [XmlIgnore]
         public Dictionary<string, string> Attributes { get; set; }
 
-        public virtual Annotation CreateAnnotation(XElement annotation)
+        public static Annotation CreateAnnotation(XElement annotation)
         {
             if (annotation == null)
             {

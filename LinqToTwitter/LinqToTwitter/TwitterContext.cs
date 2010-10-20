@@ -32,7 +32,6 @@ namespace LinqToTwitter
         {
         }
 
-
         /// <summary>
         /// Initializes a new instance of the <see cref="TwitterContext"/> class.
         /// </summary>
@@ -707,7 +706,7 @@ namespace LinqToTwitter
             // construct REST endpoint, based on input parameters
             var url = reqProc.BuildURL(parameters);
 
-            string results = string.Empty;
+            string results;
 
             // process request through Twitter
             if (typeof(T) == typeof(Streaming) ||
@@ -1711,7 +1710,7 @@ namespace LinqToTwitter
                 string.IsNullOrEmpty(location) &&
                 string.IsNullOrEmpty(description))
             {
-                throw new ArgumentException("At least one of the colors (name, email, url, location, or description) must be provided as arguments, but none are specified.");
+                throw new ArgumentException("At least one of the text fields (name, email, url, location, or description) must be provided as arguments, but none are specified.");
             }
 
             if (!string.IsNullOrEmpty(name) && name.Length > 20)

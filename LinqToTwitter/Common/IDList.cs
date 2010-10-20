@@ -16,13 +16,11 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="idList">XML with IDs and cursor info</param>
         /// <returns>New IDList instance</returns>
-        public IDList CreateIDList(XElement idList)
+        public static IDList CreateIDList(XElement idList)
         {
             return new IDList
             {
-                CursorMovement = 
-                    new Cursors()
-                        .CreateCursors(idList),
+                CursorMovement = Cursors.CreateCursors(idList),
                 IDs =
                     (from id in idList.Element("ids").Elements("id")
                      select id.Value)

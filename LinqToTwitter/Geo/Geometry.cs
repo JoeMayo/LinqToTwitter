@@ -47,11 +47,9 @@ namespace LinqToTwitter
             }
             else
             {
-                var coordinate = new Coordinate();
-
                 coords =
                     (from coord in geometry.Element("coordinates").Element("item").Elements("item")
-                     select coordinate.CreateCoordinate(coord))
+                     select Coordinate.CreateCoordinate(coord))
                      .ToList();
             }
 

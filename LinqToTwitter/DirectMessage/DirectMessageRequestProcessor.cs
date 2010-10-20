@@ -222,18 +222,16 @@ namespace LinqToTwitter
                 responseItems.Add(twitterResponse);
             }
 
-            var user = new User();
-
             var dmList =
                 from dm in responseItems
                 let sender =
                     dm.Element("sender")
                 let recipient =
                     dm.Element("recipient")
-                let createdAtDate = 
+                let createdAtDate =
                     DateTime.ParseExact(
-                        dm.Element("created_at").Value, 
-                        "ddd MMM dd HH:mm:ss %zzzz yyyy", 
+                        dm.Element("created_at").Value,
+                        "ddd MMM dd HH:mm:ss %zzzz yyyy",
                         CultureInfo.InvariantCulture)
                 select new DirectMessage
                 {
@@ -249,8 +247,8 @@ namespace LinqToTwitter
                     CreatedAt = createdAtDate,
                     SenderScreenName = dm.Element("sender_screen_name").Value,
                     RecipientScreenName = dm.Element("recipient_screen_name").Value,
-                    Sender = user.CreateUser(sender),
-                    Recipient = user.CreateUser(recipient)
+                    Sender = User.CreateUser(sender),
+                    Recipient = User.CreateUser(recipient)
                 };
 
             return dmList.OfType<T>().ToList();

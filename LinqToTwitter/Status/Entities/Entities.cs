@@ -11,7 +11,7 @@ namespace LinqToTwitter
     [Serializable]
     public class Entities
     {
-        public Entities CreateEntities(XElement element)
+        public static Entities CreateEntities(XElement element)
         {
             if (element == null || element.Descendants().Count() == 0)
             {
@@ -19,25 +19,13 @@ namespace LinqToTwitter
             }
 
             //process user mentions
-            var userMentions = new List<UserMention>();
-            if(element.Element("user_mentions") != null && element.Element("user_mentions").HasElements)
-            {
-                userMentions.AddRange(element.Element("user_mentions").Descendants("user_mention").Select(GetUserMention));
-            }
+            var userMentions = new List<UserMention>(MentionBase.ProcessMentions<UserMention>(element, "user_mentions", "user_mention", false, UserMention.FromXElement));
 
             //process urls mentions
-            var urlMentions = new List<UrlMention>();
-            if (element.Element("urls") != null && element.Element("urls").HasElements)
-            {
-                urlMentions.AddRange(element.Element("urls").Descendants("url").Where(x => x.Attribute("start")!=null).Select(GetUrlMention));
-            }
+            var urlMentions = new List<UrlMention>(MentionBase.ProcessMentions<UrlMention>(element, "urls", "url", true, UrlMention.FromXElement));
 
             //process hashtags mentions
-            var hashTagMentions = new List<HashTagMention>();
-            if (element.Element("hashtags") != null && element.Element("hashtags").HasElements)
-            {
-                hashTagMentions.AddRange(element.Element("hashtags").Descendants("hashtag").Select(GetHashTagMention));
-            }
+            var hashTagMentions = new List<HashTagMention>(MentionBase.ProcessMentions<HashTagMention>(element, "hashtags", "hashtag", false, HashTagMention.FromXElement));
 
             return new Entities
                                {
@@ -61,49 +49,5 @@ namespace LinqToTwitter
         /// Hash tags mentions in the tweet
         /// </summary>
         public List<HashTagMention> HashTagMentions { get; set; }
-
-        #region Helpers
-
-        /// <summary>
-        /// Create object out of the XElement
-        /// </summary>
-        /// <param name="element"></param>
-        /// <returns></returns>
-        private UserMention GetUserMention(XElement element)
-        {
-            var mention = new UserMention
-                              {
-                                  Id = Int64.Parse(element.Element("id").Value),
-                                  Name = element.Element("name").Value,
-                                  ScreenName = element.Element("screen_name").Value
-                              };
-
-            SetValues(mention, element);
-            return mention;
-        }
-
-        private HashTagMention GetHashTagMention(XElement element)
-        {
-            var mention = new HashTagMention {Tag = element.Value};
-
-            SetValues(mention, element);
-            return mention;
-        }
-
-        private UrlMention GetUrlMention(XElement element)
-        {
-            var mention = new UrlMention { Url = element.Element("url").Value };
-
-            SetValues(mention, element);
-            return mention;
-        }
-
-        private void SetValues(MentionBase mention, XElement element)
-        {
-            mention.Start = Int32.Parse(element.Attribute("start").Value);
-            mention.End = Int32.Parse(element.Attribute("end").Value);
-        }
-
-        #endregion
     }
 }

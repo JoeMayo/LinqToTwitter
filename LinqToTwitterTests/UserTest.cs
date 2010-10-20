@@ -114,7 +114,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void CreateNullUserTest()
         {
-            User actual = new User().CreateUser(null);
+            User actual = User.CreateUser(null);
             Assert.IsNull(actual);
         }
 
@@ -134,7 +134,7 @@ namespace LinqToTwitterTests
                  Following = false
             };
 
-            User actual = target.CreateUser(user);
+            User actual = User.CreateUser(user);
             Assert.AreEqual(expected.Description, actual.Description);
             Assert.AreEqual(expected.Name, actual.Name);
             Assert.AreEqual(expected.Following, actual.Following);

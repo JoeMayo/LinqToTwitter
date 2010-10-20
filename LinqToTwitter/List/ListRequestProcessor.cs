@@ -56,6 +56,11 @@ namespace LinqToTwitter
         public string ScreenName { get; set; }
 
         /// <summary>
+        /// Add entities to tweets
+        /// </summary>
+        public bool IncludeEntities { get; set; }
+
+        /// <summary>
         /// Statuses since status ID
         /// </summary>
         public ulong SinceID { get; set; }
@@ -79,7 +84,8 @@ namespace LinqToTwitter
                        "MaxID",
                        "PerPage",
                        "Page",
-                       "SinceID"
+                       "SinceID",
+                       "IncludeEntities"
                    })
                    .Parameters;
 
@@ -116,6 +122,11 @@ namespace LinqToTwitter
             if (parameters.ContainsKey("SinceID"))
             {
                 SinceID = ulong.Parse(parameters["SinceID"]);
+            }
+
+            if (parameters.ContainsKey("IncludeEntities"))
+            {
+                IncludeEntities = bool.Parse(parameters["IncludeEntities"]);
             }
 
             return parameters;
@@ -307,6 +318,12 @@ namespace LinqToTwitter
                 urlParams.Add("page=" + parameters["Page"]);
             }
 
+            if (parameters.ContainsKey("IncludeEntities"))
+            {
+                IncludeEntities = bool.Parse(parameters["IncludeEntities"]);
+                urlParams.Add("include_entities=" + (IncludeEntities ? "true" : "false"));
+            }
+
             if (urlParams.Count > 0)
             {
                 url += "?" + string.Join("&", urlParams.ToArray());
@@ -494,106 +511,25 @@ namespace LinqToTwitter
 
                 lists =
                     (from list in listElements
-                     select new List
-                     {
-                         Type = Type,
-                         Cursor = Cursor,
-                         ID = ID,
-                         ListID = list.Element("id").Value,
-                         PerPage = PerPage,
-                         Page = Page,
-                         ScreenName = ScreenName,
-                         SinceID = SinceID,
-                         Name = list.Element("name").Value,
-                         FullName = list.Element("full_name").Value,
-                         Slug = list.Element("slug").Value,
-                         Description = list.Element("description").Value,
-                         SubscriberCount = int.Parse(list.Element("subscriber_count").Value),
-                         MemberCount = int.Parse(list.Element("member_count").Value),
-                         Uri = list.Element("uri").Value,
-                         Mode = list.Element("mode").Value,
-                         Users = new List<User>
-                         {
-                             new User().CreateUser(list.Element("user"))
-                         },
-                         CursorMovement = new Cursors
-                         {
-                             Next =
-                                 twitterResponse.Element("next_cursor") == null ?
-                                     string.Empty :
-                                     twitterResponse.Element("next_cursor").Value,
-                             Previous =
-                                 twitterResponse.Element("previous_cursor") == null ?
-                                     string.Empty :
-                                     twitterResponse.Element("previous_cursor").Value
-                         }
-                     })
+                     select List.CreateList(list, twitterResponse))
                      .ToList();
             }
             else if (twitterResponse.Name == "list")
             {
                 lists.Add(
-                    new List
-                    {
-                        Type = Type,
-                        Cursor = Cursor,
-                        ID = ID,
-                        ListID = twitterResponse.Element("id").Value,
-                        PerPage = PerPage,
-                        Page = Page,
-                        ScreenName = ScreenName,
-                        SinceID = SinceID,
-                        Name = twitterResponse.Element("name").Value,
-                        FullName = twitterResponse.Element("full_name").Value,
-                        Slug = twitterResponse.Element("slug").Value,
-                        Description = twitterResponse.Element("description").Value,
-                        SubscriberCount = int.Parse(twitterResponse.Element("subscriber_count").Value),
-                        MemberCount = int.Parse(twitterResponse.Element("member_count").Value),
-                        Uri = twitterResponse.Element("uri").Value,
-                        Mode = twitterResponse.Element("mode").Value,
-                        Users = new List<User>
-                         {
-                             new User().CreateUser(twitterResponse.Element("user"))
-                         },
-                        CursorMovement = new Cursors
-                        {
-                            Next =
-                                twitterResponse.Element("next_cursor") == null ?
-                                    string.Empty :
-                                    twitterResponse.Element("next_cursor").Value,
-                            Previous =
-                                twitterResponse.Element("previous_cursor") == null ?
-                                    string.Empty :
-                                    twitterResponse.Element("previous_cursor").Value
-                        }
-                    });
+                    List.CreateList(twitterResponse, twitterResponse)
+                    );
             }
             else if (twitterResponse.Name == "users_list")
             {
                 lists.Add(
                     new List
                     {
-                        Type = Type,
-                        Cursor = Cursor,
-                        ID = ID,
-                        ListID = ListID,
-                        PerPage = PerPage,
-                        Page = Page,
-                        ScreenName = ScreenName,
-                        SinceID = SinceID,
                         Users = 
                             (from user in twitterResponse.Element("users").Elements("user")
-                             select new User().CreateUser(user))
+                             select User.CreateUser(user))
                              .ToList(),
-                        CursorMovement = new Cursors
-                            {
-                                Next = (twitterResponse.Element("next_cursor") == null)
-                                        ? string.Empty
-                                        : twitterResponse.Element("next_cursor").Value,
-                                Previous = (twitterResponse.Element("previous_cursor") == null)
-                                        ? string.Empty
-                                        : twitterResponse.Element("previous_cursor").Value
-                            }
+                        CursorMovement = Cursors.CreateCursors(twitterResponse)
                     });
             }
             else if (twitterResponse.Name == "user")
@@ -601,17 +537,9 @@ namespace LinqToTwitter
                 lists.Add(
                     new List 
                     {
-                        Type = Type,
-                        Cursor = Cursor,
-                        ID = ID,
-                        ListID = ListID,
-                        PerPage = PerPage,
-                        Page = Page,
-                        ScreenName = ScreenName,
-                        SinceID = SinceID,
                         Users = new List<User>
                         {
-                            new User().CreateUser(twitterResponse)
+                            User.CreateUser(twitterResponse)
                         }
                     });
             }
@@ -620,29 +548,28 @@ namespace LinqToTwitter
                 lists.Add(
                     new List
                     {
-                        Type = Type,
-                        Cursor = Cursor,
-                        ID = ID,
-                        ListID = ListID,
-                        PerPage = PerPage,
-                        Page = Page,
-                        ScreenName = ScreenName,
-                        SinceID = SinceID,
                         Statuses = 
                             (from status in twitterResponse.Elements("status")
-                             select new Status().CreateStatus(status))
+                             select Status.CreateStatus(status))
                              .ToList(),
-                        CursorMovement = new Cursors
-                            {
-                                Next = (twitterResponse.Element("next_cursor") == null)
-                                        ? string.Empty
-                                        : twitterResponse.Element("next_cursor").Value,
-                                Previous = (twitterResponse.Element("previous_cursor") == null)
-                                        ? string.Empty
-                                        : twitterResponse.Element("previous_cursor").Value
-                            }
+                        CursorMovement = Cursors.CreateCursors(twitterResponse)
                     });
             }
+
+            lists.ForEach(list =>
+                            {
+                                list.Type = Type;
+                                list.Cursor = Cursor;
+                                list.ID = ID;
+
+                                if (String.IsNullOrEmpty(list.ListID) && !String.IsNullOrEmpty(ListID))
+                                    list.ListID = ListID;
+
+                                list.PerPage = PerPage;
+                                list.Page = Page;
+                                list.ScreenName = ScreenName;
+                                list.SinceID = SinceID;
+                            });
 
             return lists.AsEnumerable().OfType<T>().ToList();
         }

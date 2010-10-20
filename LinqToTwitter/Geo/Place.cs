@@ -17,7 +17,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="place">XML containing place info</param>
         /// <returns>Place populated from XML</returns>
-        public Place CreatePlace(XElement place)
+        public static Place CreatePlace(XElement place)
         {
             if (place == null || place.Descendants().Count() == 0)
             {

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml.Linq;
 
 namespace LinqToTwitter
 {
@@ -11,11 +12,31 @@ namespace LinqToTwitter
     [Serializable]
     public class List
     {
+        public static List CreateList(XElement list, XElement cursorNode)
+        {
+            return new List
+            {
+                ListID = list.Element("id").Value,
+                Name = list.Element("name").Value,
+                FullName = list.Element("full_name").Value,
+                Slug = list.Element("slug").Value,
+                Description = list.Element("description").Value,
+                SubscriberCount = int.Parse(list.Element("subscriber_count").Value),
+                MemberCount = int.Parse(list.Element("member_count").Value),
+                Uri = list.Element("uri").Value,
+                Mode = list.Element("mode").Value,
+                Users = new List<User>
+                         {
+                             User.CreateUser(list.Element("user"))
+                         },
+                CursorMovement = Cursors.CreateCursors(cursorNode)
+            };
+        }
+
         /// <summary>
         /// Type of List query to perform
         /// </summary>
         public ListType Type { get; set; }
-
 
         /// <summary>
         /// Helps page results
@@ -51,6 +72,11 @@ namespace LinqToTwitter
         /// ScreenName of user for query
         /// </summary>
         public string ScreenName { get; set; }
+
+        /// <summary>
+        /// Add entities to tweets
+        /// </summary>
+        public bool IncludeEntities { get; set; }
 
         /// <summary>
         /// Statuses since status ID

@@ -266,14 +266,14 @@ namespace LinqToTwitter
 
             if (parameters.ContainsKey("Since"))
             {
-                Since = DateTime.Parse(parameters["Since"]);
-                urlParams.Add("since=" + Since.ToString("yyyy-MM-dd"));
+                Since = DateTime.Parse(parameters["Since"]).Date;
+                urlParams.Add("since=" + Since.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
             }
 
             if (parameters.ContainsKey("Until"))
             {
-                Until = DateTime.Parse(parameters["Until"]);
-                urlParams.Add("until=" + Until.ToString("yyyy-MM-dd"));
+                Until = DateTime.Parse(parameters["Until"]).Date;
+                urlParams.Add("until=" + Until.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
             }
 
             if (parameters.ContainsKey("SinceID"))
@@ -434,7 +434,9 @@ namespace LinqToTwitter
                     twitterResponse.Element(twitter + "warning") == null ?
                     string.Empty :
                     twitterResponse.Element(twitter + "warning").Value,
-                Updated = DateTime.Parse(twitterResponse.Element(atom + "updated").Value, CultureInfo.InvariantCulture),
+                Updated = DateTime.Parse(twitterResponse.Element(atom + "updated").Value,
+                                         CultureInfo.InvariantCulture,
+                                         DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal),
                 ItemsPerPage = 
                     twitterResponse.Element(openSearch + "itemsPerPage") == null ?
                     -1 :
@@ -491,10 +493,14 @@ namespace LinqToTwitter
                      select new AtomEntry
                      {
                          ID = atomEntry.Element(atom + "id").Value,
-                         Published = DateTime.Parse(atomEntry.Element(atom + "published").Value, CultureInfo.InvariantCulture),
+                         Published = DateTime.Parse(atomEntry.Element(atom + "published").Value,
+                                                    CultureInfo.InvariantCulture,
+                                                    DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal),
                          Title = atomEntry.Element(atom + "title").Value,
                          Content = atomEntry.Element(atom + "content").Value,
-                         Updated = DateTime.Parse(atomEntry.Element(atom + "updated").Value, CultureInfo.InvariantCulture),
+                         Updated = DateTime.Parse(atomEntry.Element(atom + "updated").Value,
+                                                  CultureInfo.InvariantCulture,
+                                                  DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal),
                          Source = atomEntry.Element(twitter + "source").Value,
                          Language = atomEntry.Element(twitter + "lang").Value,
                          Alternate = atomEntry.Elements(atom + "link")

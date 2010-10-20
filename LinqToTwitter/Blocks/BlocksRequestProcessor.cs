@@ -223,14 +223,13 @@ namespace LinqToTwitter
 
             if (twitterResponse.Name == "user")
             {
-                blocks.User = new User().CreateUser(twitterResponse);
+                blocks.User = User.CreateUser(twitterResponse);
             }
             else if (twitterResponse.Name == "users")
             {
-                var usr = new User();
                 blocks.Users =
                     (from user in twitterResponse.Elements("user").ToList()
-                     select usr.CreateUser(user))
+                     select User.CreateUser(user))
                      .ToList();
             }
             else if (twitterResponse.Name == "ids")

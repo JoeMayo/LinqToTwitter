@@ -88,7 +88,7 @@ namespace LinqToTwitter
 
             if (twitterResponse.Name == "user")
             {
-                var user = new User().CreateUser(twitterResponse);
+                var user = User.CreateUser(twitterResponse);
 
                 acct.User = user;
             }
@@ -100,7 +100,9 @@ namespace LinqToTwitter
                     {
                         HourlyLimit = int.Parse(twitterResponse.Element("hourly-limit").Value),
                         RemainingHits = int.Parse(twitterResponse.Element("remaining-hits").Value),
-                        ResetTime = DateTime.Parse(twitterResponse.Element("reset-time").Value, CultureInfo.InvariantCulture),
+                        ResetTime = DateTime.Parse(twitterResponse.Element("reset-time").Value,
+                                                    CultureInfo.InvariantCulture,
+                                                    DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal),
                         ResetTimeInSeconds = int.Parse(twitterResponse.Element("reset-time-in-seconds").Value)
                     };
 
@@ -131,16 +133,9 @@ namespace LinqToTwitter
             {
                 acct.Settings = new Settings
                 {
-                    TrendLocation = new Location().CreateLocation(twitterResponse.Element("trend_location")),
+                    TrendLocation = Location.CreateLocation(twitterResponse.Element("trend_location")),
                     GeoEnabled = bool.Parse(twitterResponse.Element("geo_enabled").Value),
-                    SleepTime = new SleepTime
-                    {
-                        StartHour = twitterResponse.Element("sleep_time").Element("start_time").Value == string.Empty ? null :
-                                    (int?)int.Parse(twitterResponse.Element("sleep_time").Element("start_time").Value),
-                        EndHour = twitterResponse.Element("sleep_time").Element("end_time").Value == string.Empty ? null :
-                                    (int?)int.Parse(twitterResponse.Element("sleep_time").Element("end_time").Value),
-                        Enabled = bool.Parse(twitterResponse.Element("sleep_time").Element("enabled").Value)
-                    }
+                    SleepTime = SleepTime.CreateSleepTime(twitterResponse.Element("sleep_time"))
                 };
             }
             else
@@ -150,9 +145,5 @@ namespace LinqToTwitter
 
             return new List<Account> { acct }.OfType<T>().ToList();
         }
-
-        #region IRequestProcessor Members
-
-        #endregion
     }
 }

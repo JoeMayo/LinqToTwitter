@@ -1,4 +1,5 @@
 using System;
+using System.Xml.Linq;
 
 namespace LinqToTwitter
 {
@@ -9,6 +10,24 @@ namespace LinqToTwitter
     [Serializable]
     public class UserMention : MentionBase
     {
+        /// <summary>
+        /// Create UserMention out of the XElement
+        /// </summary>
+        /// <param name="element">the entry node</param>
+        /// <returns>UserMention</returns>
+        public static UserMention FromXElement(XElement element)
+        {
+            var mention = new UserMention
+            {
+                Id = Int64.Parse(element.Element("id").Value),
+                Name = element.Element("name").Value,
+                ScreenName = element.Element("screen_name").Value
+            };
+
+            mention.SetStartEndValues(element);
+            return mention;
+        }
+
         /// <summary>
         /// Tweitter user Id
         /// </summary>

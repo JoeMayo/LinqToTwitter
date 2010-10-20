@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Xml.Linq;
 
 namespace LinqToTwitter
 {
@@ -11,6 +8,29 @@ namespace LinqToTwitter
     /// </summary>
     public class SleepTime
     {
+        /// <summary>
+        /// Converts XML into a new sleep-time object
+        /// </summary>
+        /// <param name="sleep_time">XML</param>
+        /// <returns>SleepTime</returns>
+        public static SleepTime CreateSleepTime(XElement sleep_time)
+        {
+            if (sleep_time != null)
+            {
+                return new SleepTime
+                {
+
+                    StartHour = sleep_time.Element("start_time").Value == string.Empty ? null :
+                        (int?)int.Parse(sleep_time.Element("start_time").Value),
+                    EndHour = sleep_time.Element("end_time").Value == string.Empty ? null :
+                        (int?)int.Parse(sleep_time.Element("end_time").Value),
+                    Enabled = bool.Parse(sleep_time.Element("enabled").Value)
+                };
+            }
+
+            return null;
+        }
+
         /// <summary>
         /// Stop sending notifications at this time
         /// </summary>

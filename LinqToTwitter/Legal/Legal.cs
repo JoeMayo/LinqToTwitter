@@ -8,6 +8,7 @@ namespace LinqToTwitter
     /// <summary>
     /// Twitter's legal information
     /// </summary>
+    [Serializable]
     public class Legal
     {
         /// <summary>
