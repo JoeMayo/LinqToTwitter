@@ -169,6 +169,19 @@
     <Compile Include="Geo\Place.cs" />
     <Compile Include="OAuth\DotNetOpenAuth\AnonymousAuthorization.cs" />
     <Compile Include="OAuth\DotNetOpenAuth\AuthorizationBase.cs" />
+    <Compile Include="OAuth\LinqToTwitterOAuth\AnonymousAuthorizer.cs" />
+    <Compile Include="OAuth\LinqToTwitterOAuth\IOAuthHelper.cs" />
+    <Compile Include="OAuth\LinqToTwitterOAuth\IOAuthTwitter.cs" />
+    <Compile Include="OAuth\LinqToTwitterOAuth\ITwitterAuthorizer.cs" />
+    <Compile Include="OAuth\LinqToTwitterOAuth\MvcAuthorizer.cs" />
+    <Compile Include="OAuth\LinqToTwitterOAuth\MvcOAuthActionResult.cs" />
+    <Compile Include="OAuth\LinqToTwitterOAuth\OAuthAuthorizer.cs" />
+    <Compile Include="OAuth\LinqToTwitterOAuth\OAuthBase.cs" />
+    <Compile Include="OAuth\LinqToTwitterOAuth\OAuthHelper.cs" />
+    <Compile Include="OAuth\LinqToTwitterOAuth\OAuthSignatureTypes.cs" />
+    <Compile Include="OAuth\LinqToTwitterOAuth\OAuthTwitter.cs" />
+    <Compile Include="OAuth\LinqToTwitterOAuth\PinAuthorizer.cs" />
+    <Compile Include="OAuth\LinqToTwitterOAuth\WebAuthorizer.cs" />
     <Compile Include="Raw\Raw.cs" />
     <Compile Include="Raw\RawRequestProcessor.cs" />
     <Compile Include="Search\AtomAuthor.cs" />
@@ -277,9 +290,7 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="OAuth\LinqToTwitterOAuth\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

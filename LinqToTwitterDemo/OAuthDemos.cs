@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using LinqToTwitter;
+using System.Collections.Specialized;
+using System.Web;
+using System.Diagnostics;
 
 namespace LinqToTwitterDemo
 {
@@ -18,7 +21,7 @@ namespace LinqToTwitterDemo
         {
             //HandleOAuthQueryDemo(twitterCtx);
             //HandleOAuthSideEffectDemo(twitterCtx);
-            //HandleOAuthFilePostDemo(twitterCtx);
+            HandleOAuthFilePostDemo(twitterCtx);
             //HandleOAuthReadOnlyQueryDemo(twitterCtx);
             //HandleOAuthSideEffectReadOnlyDemo(twitterCtx);
             //HandleOAuthUpdateAccountBackgroundImageWithProgressUpdatesDemo(twitterCtx);
@@ -148,7 +151,7 @@ namespace LinqToTwitterDemo
                             Console.WriteLine("Progress: {0}%", e.PercentComplete);
                         };
                 byte[] fileBytes = Utilities.GetFileBytes(@"C:\Users\jmayo\Documents\linq2twitter\linq2twitter\200xColor_2.png");
-                var user = twitterCtx.UpdateAccountBackgroundImage(fileBytes, "200xColor_2.png", "png", tile: false, use: true);
+                var user = twitterCtx.UpdateAccountBackgroundImage(fileBytes, "200xColor_2.png", "png", tile: true, use: true);
 
                 Console.WriteLine("User Image: " + user.ProfileBackgroundImageUrl);
             }
@@ -163,16 +166,16 @@ namespace LinqToTwitterDemo
             if (twitterCtx.AuthorizedClient.IsAuthorized)
             {
                 var tweets =
-                    from tweet in twitterCtx.Status
-                    where tweet.Type == StatusType.Friends
-                    select tweet;
+                        from tweet in twitterCtx.Status
+                        where tweet.Type == StatusType.Friends
+                        select tweet;
 
                 tweets.ToList().ForEach(
                     tweet => Console.WriteLine(
                         "Friend: {0}, Created: {1}\nTweet: {2}\n",
                         tweet.User.Name,
                         tweet.CreatedAt,
-                        tweet.Text));
+                        tweet.Text)); 
             }
         }
 

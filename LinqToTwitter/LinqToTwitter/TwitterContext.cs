@@ -24,19 +24,45 @@ namespace LinqToTwitter
     {
         #region TwitterContext initialization
 
+        ///// <summary>
+        ///// Initializes a new instance of the <see cref="TwitterContext"/> class.
+        ///// </summary>
+        //public TwitterContext()
+        //    : this(new AnonymousAuthorization())
+        //{
+        //}
+
         /// <summary>
         /// Initializes a new instance of the <see cref="TwitterContext"/> class.
         /// </summary>
         public TwitterContext()
-            : this(new AnonymousAuthorization())
+            : this(new AnonymousAuthorizer())
         {
         }
+
+        ///// <summary>
+        ///// Initializes a new instance of the <see cref="TwitterContext"/> class.
+        ///// </summary>
+        ///// <param name="authorization">The authorization.</param>
+        //public TwitterContext(ITwitterAuthorization authorization)
+        //    : this(new TwitterExecute(authorization), null, null)
+        //{
+        //}
+
+        ///// <summary>
+        ///// Initializes a new instance of the <see cref="TwitterContext"/> class.
+        ///// </summary>
+        ///// <param name="authorization">The authorization.</param>
+        //public TwitterContext(ITwitterAuthorization authorization, string baseUrl, string searchUrl)
+        //    : this(new TwitterExecute(authorization), baseUrl, searchUrl)
+        //{
+        //}
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TwitterContext"/> class.
         /// </summary>
         /// <param name="authorization">The authorization.</param>
-        public TwitterContext(ITwitterAuthorization authorization)
+        public TwitterContext(ITwitterAuthorizer authorization)
             : this(new TwitterExecute(authorization), null, null)
         {
         }
@@ -45,7 +71,7 @@ namespace LinqToTwitter
         /// Initializes a new instance of the <see cref="TwitterContext"/> class.
         /// </summary>
         /// <param name="authorization">The authorization.</param>
-        public TwitterContext(ITwitterAuthorization authorization, string baseUrl, string searchUrl)
+        public TwitterContext(ITwitterAuthorizer authorization, string baseUrl, string searchUrl)
             : this(new TwitterExecute(authorization), baseUrl, searchUrl)
         {
         }
@@ -80,6 +106,31 @@ namespace LinqToTwitter
             SiteStreamUrl = "http://betastream.twitter.com/2b/";
         }
 
+        ///// <summary>
+        ///// Initializes a new instance of the <see cref="TwitterContext"/> class.
+        ///// </summary>
+        ///// <param name="authorization">OAuth provider</param>
+        ///// <param name="execute">The <see cref="ITwitterExecute"/> object to use.</param>
+        ///// <param name="baseUrl">Base url of Twitter API.  May be null to use the default "http://twitter.com/" value.</param>
+        ///// <param name="searchUrl">Base url of Twitter Search API.  May be null to use the default "http://search.twitter.com/" value.</param>
+        //public TwitterContext(ITwitterAuthorization authorization, ITwitterExecute execute, string baseUrl, string searchUrl)
+        //{
+        //    if (authorization == null)
+        //    {
+        //        throw new ArgumentNullException("authorization");
+        //    }
+
+        //    if (execute == null)
+        //    {
+        //        throw new ArgumentNullException("execute");
+        //    }
+
+        //    TwitterExecutor = execute;
+        //    TwitterExecutor.AuthorizedClient = authorization;
+        //    BaseUrl = string.IsNullOrEmpty(baseUrl) ? "https://api.twitter.com/1/" : baseUrl;
+        //    SearchUrl = string.IsNullOrEmpty(searchUrl) ? "http://search.twitter.com/" : searchUrl;
+        //}
+
         /// <summary>
         /// Initializes a new instance of the <see cref="TwitterContext"/> class.
         /// </summary>
@@ -87,7 +138,7 @@ namespace LinqToTwitter
         /// <param name="execute">The <see cref="ITwitterExecute"/> object to use.</param>
         /// <param name="baseUrl">Base url of Twitter API.  May be null to use the default "http://twitter.com/" value.</param>
         /// <param name="searchUrl">Base url of Twitter Search API.  May be null to use the default "http://search.twitter.com/" value.</param>
-        public TwitterContext(ITwitterAuthorization authorization, ITwitterExecute execute, string baseUrl, string searchUrl)
+        public TwitterContext(ITwitterAuthorizer authorization, ITwitterExecute execute, string baseUrl, string searchUrl)
         {
             if (authorization == null)
             {
@@ -132,14 +183,14 @@ namespace LinqToTwitter
             set
             {
                 this.baseUrl = value;
-                try
-                {
-                    this.AuthorizedClient.AuthenticationTarget = value;
-                }
-                catch (NotSupportedException)
-                {
-                    // Some, like OAuth, don't use or support setting this property.  That's ok.
-                }
+                //try
+                //{
+                //    this.AuthorizedClient.AuthenticationTarget = value;
+                //}
+                //catch (NotSupportedException)
+                //{
+                //    // Some, like OAuth, don't use or support setting this property.  That's ok.
+                //}
             }
         }
 
@@ -296,10 +347,19 @@ namespace LinqToTwitter
             }
         }
 
+        ///// <summary>
+        ///// Gets or sets the authorized client on the <see cref="ITwitterExecute"/> object.
+        ///// </summary>
+        //public ITwitterAuthorization AuthorizedClient {
+        //    get { return this.TwitterExecutor.AuthorizedClient; }
+        //    set { this.TwitterExecutor.AuthorizedClient = value; }
+        //}
+
         /// <summary>
         /// Gets or sets the authorized client on the <see cref="ITwitterExecute"/> object.
         /// </summary>
-        public ITwitterAuthorization AuthorizedClient {
+        public ITwitterAuthorizer AuthorizedClient
+        {
             get { return this.TwitterExecutor.AuthorizedClient; }
             set { this.TwitterExecutor.AuthorizedClient = value; }
         }

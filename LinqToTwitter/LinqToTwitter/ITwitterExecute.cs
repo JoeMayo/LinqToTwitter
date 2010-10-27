@@ -11,10 +11,15 @@ namespace LinqToTwitter
     /// </summary>
     public interface ITwitterExecute
     {
+        ///// <summary>
+        ///// Gets or sets the object that can send authorized requests to Twitter.
+        ///// </summary>
+        //ITwitterAuthorization AuthorizedClient { get; set; }
+
         /// <summary>
         /// Gets or sets the object that can send authorized requests to Twitter.
         /// </summary>
-        ITwitterAuthorization AuthorizedClient { get; set; }
+        ITwitterAuthorizer AuthorizedClient { get; set; }
 
         /// <summary>
         /// Gets the most recent URL executed

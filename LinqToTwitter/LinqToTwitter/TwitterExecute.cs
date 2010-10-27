@@ -34,10 +34,15 @@ namespace LinqToTwitter
         /// </summary>
         public const int DefaultReadWriteTimeout = 300000;
 
+        ///// <summary>
+        ///// Gets or sets the object that can send authorized requests to Twitter.
+        ///// </summary>
+        //public ITwitterAuthorization AuthorizedClient { get; set; }
+
         /// <summary>
         /// Gets or sets the object that can send authorized requests to Twitter.
         /// </summary>
-        public ITwitterAuthorization AuthorizedClient { get; set; }
+        public ITwitterAuthorizer AuthorizedClient { get; set; }
 
         /// <summary>
         /// Timeout (milliseconds) for writing to request 
@@ -169,11 +174,26 @@ namespace LinqToTwitter
 
         #region Initialization
 
+        ///// <summary>
+        ///// supports testing
+        ///// </summary>
+        ///// <param name="oAuthTwitter">IOAuthTwitter Mock</param>
+        //public TwitterExecute(ITwitterAuthorization authorizedClient)
+        //{
+        //    if (authorizedClient == null)
+        //    {
+        //        throw new ArgumentNullException("authorizedClient");
+        //    }
+
+        //    this.AuthorizedClient = authorizedClient;
+        //    this.AuthorizedClient.UserAgent = m_linqToTwitterVersion;
+        //}
+
         /// <summary>
         /// supports testing
         /// </summary>
         /// <param name="oAuthTwitter">IOAuthTwitter Mock</param>
-        public TwitterExecute(ITwitterAuthorization authorizedClient)
+        public TwitterExecute(ITwitterAuthorizer authorizedClient)
         {
             if (authorizedClient == null)
             {
@@ -312,7 +332,7 @@ namespace LinqToTwitter
             try
             {
                 this.LastUrl = uri.AbsoluteUri;
-                var req = this.AuthorizedClient.Get(uri, null);
+                var req = this.AuthorizedClient.Get(url);
 
                 using (WebResponse resp = req.GetResponse())
                 {
@@ -498,7 +518,7 @@ namespace LinqToTwitter
             string httpStatus = string.Empty;
 
             this.LastUrl = uri.AbsoluteUri;
-            var req = this.AuthorizedClient.Get(uri, null);
+            var req = this.AuthorizedClient.Get(streamUrl);
             req.UserAgent = UserAgent;
             req.Timeout = -1;
 
@@ -682,7 +702,7 @@ namespace LinqToTwitter
                 //Log
                 WriteLog(url, "PostTwitterImage");
 
-                var req = this.AuthorizedClient.Post(new Uri(url));
+                var req = this.AuthorizedClient.Post(url);
                 req.ServicePoint.Expect100Continue = false;
                 req.ContentType = "multipart/form-data;boundary=" + contentBoundaryBase;
                 req.PreAuthenticate = true;
@@ -766,7 +786,7 @@ namespace LinqToTwitter
                 //Log
                 WriteLog(url, "ExecuteTwitter");
 
-                using (var resp = this.AuthorizedClient.Post(requestUri, parameters))
+                using (var resp = this.AuthorizedClient.Post(url, parameters))
                 {
                     httpStatus = resp.Headers["Status"];
                     responseXml = GetTwitterResponse(resp);

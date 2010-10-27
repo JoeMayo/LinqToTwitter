@@ -57,9 +57,11 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "LinqToTwitterWebFormsDemo",
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "LinqToTwitterDemoVB", "LinqToTwitterDemoVB\LinqToTwitterDemoVB.vbproj", "{C5526BE1-A83C-4E9B-B1EA-43DBBB74C403}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqToTwitterMvcDemo", "LinqToTwitterMvcDemo\LinqToTwitterMvcDemo.csproj", "{54A55783-61E7-43CC-8148-265D84E26248}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 6
+		SccNumberOfProjects = 7
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs01
 		SccLocalPath0 = .
@@ -80,6 +82,9 @@ Global
 		SccLocalPath5 = .
 		SccProjectFilePathRelativizedFromConnection5 = LinqToTwitterWebFormsDemo\\
 		SccProjectEnlistmentChoice5 = 2
+		SccProjectUniqueName6 = LinqToTwitterMvcDemo\\LinqToTwitterMvcDemo.csproj
+		SccProjectName6 = LinqToTwitterMvcDemo
+		SccLocalPath6 = LinqToTwitterMvcDemo
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = LinqToTwitter.vsmdi
@@ -129,6 +134,12 @@ Global
 		{C5526BE1-A83C-4E9B-B1EA-43DBBB74C403}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C5526BE1-A83C-4E9B-B1EA-43DBBB74C403}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C5526BE1-A83C-4E9B-B1EA-43DBBB74C403}.Release|x86.ActiveCfg = Release|Any CPU
+		{54A55783-61E7-43CC-8148-265D84E26248}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{54A55783-61E7-43CC-8148-265D84E26248}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{54A55783-61E7-43CC-8148-265D84E26248}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{54A55783-61E7-43CC-8148-265D84E26248}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{54A55783-61E7-43CC-8148-265D84E26248}.Release|Any CPU.Build.0 = Release|Any CPU
+		{54A55783-61E7-43CC-8148-265D84E26248}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

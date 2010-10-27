@@ -11,8 +11,8 @@ namespace LinqToTwitterDemo
         public static void Run(LinqToTwitter.TwitterContext twitterCtx)
         {
             //FilterDemo(twitterCtx);
-            SamplesDemo(twitterCtx);
-            //UserStreamDemo(twitterCtx);
+            //SamplesDemo(twitterCtx);
+            UserStreamDemo(twitterCtx);
             //SiteStreamDemo(twitterCtx);
         }
 

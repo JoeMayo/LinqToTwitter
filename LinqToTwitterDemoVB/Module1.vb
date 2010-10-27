@@ -7,23 +7,24 @@ Module Module1
         '
         ' get user credentials and instantiate TwitterContext
         '
-        Dim auth As ITwitterAuthorization
 
         If String.IsNullOrEmpty(ConfigurationManager.AppSettings("twitterConsumerKey")) Or String.IsNullOrEmpty(ConfigurationManager.AppSettings("twitterConsumerSecret")) Then
 			Console.WriteLine("Please set the Twitter consumer key and secret values in the app.config file and run again.")
 			Exit Sub
 		End If
 
-		auth = New DesktopOAuthAuthorization()
+        Dim auth As PinAuthorizer = New PinAuthorizer()
 
-		Dim twitterCtx As TwitterContext = New TwitterContext(auth, "https://twitter.com/", "http://search.twitter.com/")
+        auth.ConsumerKey = ConfigurationManager.AppSettings("twitterConsumerKey")
+        auth.ConsumerSecret = ConfigurationManager.AppSettings("twitterConsumerSecret")
+        auth.GetPin = AddressOf VerifierCallback
+        auth.Authorize()
+
+        Dim twitterCtx As TwitterContext = New TwitterContext(auth, "https://twitter.com/", "http://search.twitter.com/")
 
 		twitterCtx.Log = Console.Out
 
-		If TypeOf twitterCtx.AuthorizedClient Is OAuthAuthorization Then
-			InitializeOAuthConsumerStrings(twitterCtx)
-		End If
-		auth.SignOn()
+        'auth.SignOn()
 
 		'Dim twitterContext = New TwitterContext(auth)
 
@@ -31,16 +32,16 @@ Module Module1
 		' Status Demos
 		'
 
-		UpdateStatusDemo(twitterCtx)
+        UpdateStatusDemo(twitterCtx)
 		'UpdateStatusWithReplyDemo(twitterCtx)
 		'DestroyStatusDemo(twitterCtx)
 		'MentionsDemo(twitterCtx)
 		'SingleStatusQueryDemo(twitterCtx)
-		'FriendsStatusQueryDemo(twitterCtx)
+        'FriendsStatusQueryDemo(twitterCtx)
 		'UserStatusByNameDemo(twitterCtx)
 		'UserStatusByQueryDemo(twitterCtx)
 		'FirstStatusByQueryDemo(twitterCtx)
-		'PublicStatusQueryDemo(twitterCtx)
+        'PublicStatusQueryDemo(twitterCtx)
 		'PublicStatusFilteredQueryDemo(twitterCtx)
 
 		'
@@ -125,6 +126,13 @@ Module Module1
 
 		Console.ReadKey()
     End Sub
+
+    Private Function VerifierCallback() As String
+        Console.WriteLine("Next, you'll need to tell Twitter to authorize access.\nThis program will not have access to your credentials, which is the benefit of OAuth.\nOnce you log into Twitter and give this program permission,\n come back to this console.")
+        Console.Write("Please enter the PIN that Twitter gives you after authorizing this client: ")
+        Return Console.ReadLine()
+    End Function
+
 
 #Region "Saved Search Demos"
 
@@ -370,18 +378,6 @@ Module Module1
 #End Region
 
 #Region "Status Tweet Demos"
-
-    Private Sub InitializeOAuthConsumerStrings(ByVal twitterCtx As TwitterContext)
-        Dim oauth As DesktopOAuthAuthorization
-        oauth = CType(twitterCtx.AuthorizedClient, DesktopOAuthAuthorization)
-        oauth.GetVerifier = AddressOf VerifierCallback
-    End Sub
-
-    Private Function VerifierCallback() As String
-        Console.WriteLine("Next, you'll need to tell Twitter to authorize access.\nThis program will not have access to your credentials, which is the benefit of OAuth.\nOnce you log into Twitter and give this program permission,\n come back to this console.")
-        Console.Write("Please enter the PIN that Twitter gives you after authorizing this client: ")
-        Return Console.ReadLine()
-    End Function
 
     Private Sub FriendsStatusQueryDemo(ByVal twitterCtx As TwitterContext)
         Dim ts = From t In twitterCtx.Status _

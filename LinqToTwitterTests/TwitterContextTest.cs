@@ -236,7 +236,7 @@ namespace LinqToTwitterTests
         {
             string baseUrl = "https://api.twitter.com/1/";
             string searchUrl = "http://search.twitter.com/";
-            ITwitterAuthorization authorizedClient = new DesktopOAuthAuthorization();
+            ITwitterAuthorizer authorizedClient = new PinAuthorizer();
             TwitterContext ctx = new TwitterContext(authorizedClient);
 
             Assert.AreSame(authorizedClient, ctx.AuthorizedClient);
@@ -250,7 +250,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void ThreeParamCtorDefaults()
         {
-            ITwitterExecute execute = new TwitterExecute(new DesktopOAuthAuthorization());
+            ITwitterExecute execute = new TwitterExecute(new PinAuthorizer());
             string baseUrl = "http://api.twitter.com/1/";
             string searchUrl = "http://search.twitter.com/";
             TwitterContext ctx = new TwitterContext(execute, baseUrl, searchUrl);
@@ -299,7 +299,7 @@ namespace LinqToTwitterTests
         {
             try
             {
-                var authMock = new Mock<ITwitterAuthorization>();
+                var authMock = new Mock<ITwitterAuthorizer>();
                 var ctx = new TwitterContext(authMock.Object, null, "", "");
 
                 Assert.Fail("Expected ArgumentNullException.");
@@ -355,23 +355,21 @@ namespace LinqToTwitterTests
             Assert.IsTrue(tweets.ToList().Count > 0);
         }
 
-        /// <summary>
-        ///A test for UpdateStatus
-        ///</summary>
-        [TestMethod()]
-        public void UpdateStatusTest1()
+        [TestMethod]
+        public void UpdateStatus_With_Reply_Sets_StatusID()
         {
             string status = "Hello";
             string inReplyToStatusID = "1";
             var expected = XElement.Parse(m_testStatusQueryResponse);
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
+            execMock.Setup(exec => exec.ExecuteTwitter(It.IsAny<string>(), It.IsAny<Dictionary<string, string>>()))
+                    .Returns(m_testStatusQueryResponse);
 
-            Expect.Once.On(m_twitterExecute)
-                .Method("ExecuteTwitter")
-                .Will(Return.Value(m_testStatusQueryResponse));
+            Status actual = ctx.UpdateStatus(status, inReplyToStatusID);
 
-            Status actual = m_ctx.UpdateStatus(status, inReplyToStatusID);
-
-            m_mocks.VerifyAllExpectationsHaveBeenMet();
             Assert.AreEqual(expected.Element("status").Element("id").Value, actual.StatusID);
         }
 
@@ -427,22 +425,20 @@ namespace LinqToTwitterTests
             Assert.AreEqual(expected, actual);
         }
 
-        /// <summary>
-        ///A test for UpdateStatus
-        ///</summary>
-        [TestMethod()]
-        public void UpdateStatusTest()
+        [TestMethod]
+        public void UpdateStatus_Sets_StatusID()
         {
             string status = "Hello";
             XElement expected = XElement.Parse(m_testStatusQueryResponse);
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
+            execMock.Setup(exec => exec.ExecuteTwitter(It.IsAny<string>(), It.IsAny<Dictionary<string, string>>()))
+                    .Returns(m_testStatusQueryResponse);
 
-            Expect.Once.On(m_twitterExecute)
-                .Method("ExecuteTwitter")
-                .Will(Return.Value(m_testStatusQueryResponse));
+            Status actual = ctx.UpdateStatus(status);
 
-            Status actual = m_ctx.UpdateStatus(status);
-
-            m_mocks.VerifyAllExpectationsHaveBeenMet();
             Assert.AreEqual(expected.Element("status").Element("id").Value, actual.StatusID);
         }
 
@@ -1471,7 +1467,7 @@ namespace LinqToTwitterTests
         [TestMethod]
         public void ExecuteRawRequest_Invokes_Executor_Execute()
         {
-            var authMock = new Mock<ITwitterAuthorization>();
+            var authMock = new Mock<ITwitterAuthorizer>();
             var execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
             var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
@@ -1492,7 +1488,7 @@ namespace LinqToTwitterTests
         [TestMethod]
         public void ExecuteRawRequest_Returns_Raw_Result()
         {
-            var authMock = new Mock<ITwitterAuthorization>();
+            var authMock = new Mock<ITwitterAuthorizer>();
             var execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
             var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
@@ -1516,7 +1512,7 @@ namespace LinqToTwitterTests
             string baseUrlWithTrailingSlash = "https://api.twitter.com/1/";
             string queryStringWithBeginningSlash = "/statuses/update.xml";
             var fullUrl = "https://api.twitter.com/1/statuses/update.xml";
-            var authMock = new Mock<ITwitterAuthorization>();
+            var authMock = new Mock<ITwitterAuthorizer>();
             var execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
             var ctx = new TwitterContext(authMock.Object, execMock.Object, baseUrlWithTrailingSlash, "");
@@ -1539,7 +1535,7 @@ namespace LinqToTwitterTests
             string baseUrlWithoutTrailingSlash = "https://api.twitter.com/1";
             string queryStringWithoutBeginningSlash = "statuses/update.xml";
             var fullUrl = "https://api.twitter.com/1/statuses/update.xml";
-            var authMock = new Mock<ITwitterAuthorization>();
+            var authMock = new Mock<ITwitterAuthorizer>();
             var execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
             var ctx = new TwitterContext(authMock.Object, execMock.Object, baseUrlWithoutTrailingSlash, "");
@@ -1598,7 +1594,7 @@ namespace LinqToTwitterTests
         [TestMethod]
         public void Execute_Calls_QueryTwitterStream_For_Streaming_Queries()
         {
-            var authMock = new Mock<ITwitterAuthorization>();
+            var authMock = new Mock<ITwitterAuthorizer>();
             var execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
             var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
@@ -1615,7 +1611,7 @@ namespace LinqToTwitterTests
         [TestMethod]
         public void Execute_Calls_QueryTwitter_InsteadOf_QueryTwitterStream_For_NonStreaming_Queries()
         {
-            var authMock = new Mock<ITwitterAuthorization>();
+            var authMock = new Mock<ITwitterAuthorizer>();
             var execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
             execMock.Setup(exec => exec.QueryTwitter(It.IsAny<string>())).Returns(m_testStatusQueryResponse);
@@ -1653,7 +1649,7 @@ namespace LinqToTwitterTests
         [TestMethod]
         public void Execute_Calls_QueryTwitterStream_For_UserStream_Queries()
         {
-            var authMock = new Mock<ITwitterAuthorization>();
+            var authMock = new Mock<ITwitterAuthorizer>();
             var execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
             var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");

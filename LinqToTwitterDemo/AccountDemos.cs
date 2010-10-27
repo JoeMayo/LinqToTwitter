@@ -18,7 +18,7 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         public static void Run(TwitterContext twitterCtx)
         {
-            VerifyAccountCredentials(twitterCtx);
+            //VerifyAccountCredentials(twitterCtx);
             //ViewRateLimitStatus(twitterCtx);
             //ViewRateLimitStatusProjection(twitterCtx);
             //ViewRateLimitResponseHeadersDemo(twitterCtx);
@@ -30,7 +30,7 @@ namespace LinqToTwitterDemo
             //UpdateAccountImage(twitterCtx);
             //UpdateAccountBackgroundImage(twitterCtx);
             //UpdateAccountBackgroundImageBytes(twitterCtx);
-            //UpdateAccountBackgroundImageAndTileDemo(twitterCtx);
+            UpdateAccountBackgroundImageAndTileDemo(twitterCtx);
             //UpdateAccountBackgroundImageAndTileButDontUseDemo(twitterCtx);
             //UpdateAccountBackgroundImageWithProgressUpdates(twitterCtx);
             //UpdateAccountInfoDemo(twitterCtx);

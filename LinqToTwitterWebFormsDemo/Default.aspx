@@ -39,7 +39,6 @@
 				&nbsp;<asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ControlToValidate="updateBox"
 					ErrorMessage="type in some message first" />
 			</asp:Panel>
-			</div>
 		</asp:View>
 	</asp:MultiView>
 	<asp:ListView ID="TwitterListView" runat="server">

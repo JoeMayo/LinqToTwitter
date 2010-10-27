@@ -8,16 +8,18 @@ using LinqToTwitter;
 
 public partial class PostOnly : System.Web.UI.Page
 {
-    private WebOAuthAuthorization auth;
+    //private WebOAuthAuthorization auth;
+    private WebAuthorizer auth;
     private TwitterContext twitterCtx;
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        auth = new WebOAuthAuthorization(InMemoryTokenManager.Instance, InMemoryTokenManager.AccessToken);
+        //auth = new WebOAuthAuthorization(InMemoryTokenManager.Instance, InMemoryTokenManager.AccessToken);
+        auth = new WebAuthorizer();
 
-        if (string.IsNullOrEmpty(InMemoryTokenManager.Instance.ConsumerKey) ||
-            string.IsNullOrEmpty(InMemoryTokenManager.Instance.ConsumerSecret) ||
-            !auth.CachedCredentialsAvailable)
+        if (string.IsNullOrEmpty(auth.ConsumerKey) ||
+            string.IsNullOrEmpty(auth.ConsumerSecret) ||
+            !auth.IsAuthorized)
         {
             // Authorization occurs only on the home page.
             Response.Redirect("~/");

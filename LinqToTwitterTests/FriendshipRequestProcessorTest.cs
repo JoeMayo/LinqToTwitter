@@ -469,7 +469,7 @@ namespace LinqToTwitterTests
         [TestMethod]
         public void UpdateFriendshipSettings_Calls_Execute()
         {
-            var authMock = new Mock<ITwitterAuthorization>();
+            var authMock = new Mock<ITwitterAuthorizer>();
             var execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
             execMock.Setup(exec => exec.ExecuteTwitter(It.IsAny<string>(), It.IsAny<Dictionary<string, string>>())).Returns("<friends>true</friends>");
@@ -488,7 +488,7 @@ namespace LinqToTwitterTests
         [TestMethod]
         public void UpdateFriendshipSettings_Requires_ScreenName()
         {
-            var authMock = new Mock<ITwitterAuthorization>();
+            var authMock = new Mock<ITwitterAuthorizer>();
             var execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
             execMock.Setup(exec => exec.ExecuteTwitter(It.IsAny<string>(), It.IsAny<Dictionary<string, string>>())).Returns("<friends>true</friends>");

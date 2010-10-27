@@ -136,10 +136,13 @@
     <Compile Include="Common\DebuggerWriter.cs" />
     <Compile Include="Common\TestCulture.cs" />
     <Compile Include="LegalRequestProcessorTests.cs" />
+    <Compile Include="OAuthAuthorizerTest.cs" />
+    <Compile Include="PinAuthorizerTest.cs" />
     <Compile Include="RawRequestProcessorTest.cs" />
     <Compile Include="StreamingRequestProcessorTests.cs" />
     <Compile Include="TwitterExtensionsTest.cs" />
     <Compile Include="UserStreamRequestProcessorTest.cs" />
+    <Compile Include="WebAuthorizerTest.cs" />
     <Compile Include="XmlSerializerTests.cs" />
     <Compile Include="DirectMessageRequestProcessorTest.cs" />
     <Compile Include="ExpressionTreeHelpersTest.cs" />

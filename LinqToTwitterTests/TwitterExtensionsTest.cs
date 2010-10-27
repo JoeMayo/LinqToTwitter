@@ -14,7 +14,7 @@ namespace LinqToTwitterTests
         [TestMethod]
         public void StreamingCallback_Sets_TwitterExecutor_StreamCallback()
         {
-            var authMock = new Mock<ITwitterAuthorization>();
+            var authMock = new Mock<ITwitterAuthorizer>();
             var execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
             var ctxMock = new Mock<TwitterContext>(authMock.Object, execMock.Object, string.Empty, string.Empty);
