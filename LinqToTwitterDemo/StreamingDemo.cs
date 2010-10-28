@@ -10,9 +10,9 @@ namespace LinqToTwitterDemo
     {
         public static void Run(LinqToTwitter.TwitterContext twitterCtx)
         {
+            SamplesDemo(twitterCtx);
             //FilterDemo(twitterCtx);
-            //SamplesDemo(twitterCtx);
-            UserStreamDemo(twitterCtx);
+            //UserStreamDemo(twitterCtx);
             //SiteStreamDemo(twitterCtx);
         }
 

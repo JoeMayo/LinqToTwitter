@@ -8,7 +8,6 @@ namespace LinqToTwitter
     /// <summary>
     /// holds rate limit info
     /// </summary>
-    [Serializable]
     public class RateLimitStatus
     {
         public int RemainingHits { get; set; }

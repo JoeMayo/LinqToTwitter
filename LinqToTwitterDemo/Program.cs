@@ -1,6 +1,6 @@
 ﻿using System;
-using LinqToTwitter;
 using System.Configuration;
+using LinqToTwitter;
 
 namespace LinqToTwitterDemo
 {
@@ -8,79 +8,56 @@ namespace LinqToTwitterDemo
     {
         static void Main()
         {
-            // For testing globalization, uncomment and change 
-            // locale to a locale that is not yours
-            //Thread.CurrentThread.CurrentCulture = new CultureInfo("nn-NO");
+            #region Set up OAuth
+            
+            // validate that credentials are present
+            if (string.IsNullOrWhiteSpace(ConfigurationManager.AppSettings["twitterConsumerKey"]) ||
+                string.IsNullOrWhiteSpace(ConfigurationManager.AppSettings["twitterConsumerSecret"]))
+            {
+                Console.WriteLine("You need to set twitterConsumerKey and twitterConsumerSecret in App.config/appSettings. Visit http://dev.twitter.com/apps for more info.\n");
+                Console.Write("Press any key to exit...");
+                Console.ReadKey();
+                return;
+            }
 
-            //
-            // get user credentials and instantiate TwitterContext
-            //
-            //ITwitterAuthorization auth;
-
-            //if (string.IsNullOrEmpty(ConfigurationManager.AppSettings["twitterConsumerKey"]) || string.IsNullOrEmpty(ConfigurationManager.AppSettings["twitterConsumerSecret"]))
-            //{
-            //    Console.WriteLine("Please set the Twitter consumer key and secret values in the app.config file and run again.");
-            //    Console.WriteLine("If you don't have keys yet, you can visit http://dev.twitter.com/apps and register a  new app.");
-            //    Console.WriteLine("Press any key to exit...");
-            //    Console.ReadKey();
-            //    return;
-            //}
-
-            Console.WriteLine("Discovered Twitter OAuth consumer key in .config file.  Using OAuth authorization.");
-
-            // For OAuth authorization demo...
-            //auth = new DesktopOAuthAuthorization();
-            // If you wanted to pass the consumer key and secret in programmatically, you could do so as shown here.
-            // Otherwise this information is pulled out of your .config file.
-            ////var desktopAuth = (DesktopOAuthAuthorization)auth;
-            ////desktopAuth.ConsumerKey = "some key";
-            ////desktopAuth.ConsumerSecret = "some secret";
-
-            //auth.UseCompression = true;
-
-            // TwitterContext is similar to DataContext (LINQ to SQL) or ObjectContext (LINQ to Entities)
-
+            // configure the OAuth object
             var auth = new PinAuthorizer
             {
                 ConsumerKey = ConfigurationManager.AppSettings["twitterConsumerKey"],
                 ConsumerSecret = ConfigurationManager.AppSettings["twitterConsumerSecret"],
+                UseCompression = true,
                 GetPin = () =>
                 {
-                    Console.WriteLine("Next, you'll need to tell Twitter to authorize access.\nThis program will not have access to your credentials, which is the benefit of OAuth.\nOnce you log into Twitter and give this program permission,\n come back to this console.");
-                    Console.Write("Please enter the PIN that Twitter gives you after authorizing this client: ");
+                    // this executes after user authorizes, which begins with the call to auth.Authorize() below.
+                    Console.WriteLine("\nAfter you authorize this application, Twitter will give you a 7-digit PIN Number.\n");
+                    Console.Write("Enter the PIN number here: ");
                     return Console.ReadLine();
                 }
             };
 
+            // start the authorization process (launches Twitter authorization page).
             auth.Authorize();
 
-            // For Twitter
-            //using (var twitterCtx = new TwitterContext())
+            #endregion
+
             using (var twitterCtx = new TwitterContext(auth, "https://api.twitter.com/1/", "https://search.twitter.com/"))
             {
                 //Log
                 twitterCtx.Log = Console.Out;
 
-                // For Identi.ca (Laconica)
-                //var twitterCtx = new TwitterContext(passwordAuth, "http://identi.ca/api/", "http://search.twitter.com/");
+                #region Demos
 
-                // If we're using OAuth, we need to configure it with the ConsumerKey etc. from the user.
-                //if (twitterCtx.AuthorizedClient is OAuthAuthorization)
-                //{
-                //    InitializeOAuthConsumerStrings(twitterCtx);
-                //}
-
-                // Whatever authorization module we selected... sign on now.  
-                // See the bottom of the method for sign-off procedures.
-                //try
-                //{
-                //    auth.SignOn();
-                //}
-                //catch (OperationCanceledException)
-                //{
-                //    Console.WriteLine("Login canceled. Demo exiting.");
-                //    return;
-                //}
+                //
+                // Each Run section below will execute at least one demo
+                // from the specified area of the Twitter API.
+                // Uncomment and navigate to code to see the example.
+                //
+                // Each section supports the Twitter API, as documented here:
+                //  http://dev.twitter.com/doc
+                //
+                // LINQ to Twitter documentation "Making API Calls" is here:
+                //  http://linqtotwitter.codeplex.com/wikipage?title=Making%20API%20Calls&referringTitle=Documentation
+                //
 
                 //AccountDemos.Run(twitterCtx);
                 //BlocksDemos.Run(twitterCtx);
@@ -105,34 +82,11 @@ namespace LinqToTwitterDemo
                 //OAuthDemos.Run(twitterCtx);
                 //TwitterContextDemos.Run(twitterCtx);
 
-                //
-                // Sign-off, including optional clearing of cached credentials.
-                //
-
-                //auth.SignOff();
-                //auth.ClearCachedCredentials();
+                #endregion
             }
 
             Console.WriteLine("Press any key to end this demo.");
             Console.ReadKey();
         }
-
-        //private static void InitializeOAuthConsumerStrings(TwitterContext twitterCtx)
-        //{
-        //    var oauth = (DesktopOAuthAuthorization)twitterCtx.AuthorizedClient;
-        //    oauth.GetVerifier = () =>
-        //    {
-        //        Console.WriteLine("Next, you'll need to tell Twitter to authorize access.\nThis program will not have access to your credentials, which is the benefit of OAuth.\nOnce you log into Twitter and give this program permission,\n come back to this console.");
-        //        Console.Write("Please enter the PIN that Twitter gives you after authorizing this client: ");
-        //        return Console.ReadLine();
-        //    };
-
-
-
-        //    if (oauth.CachedCredentialsAvailable)
-        //    {
-        //        Console.WriteLine("Skipping OAuth authorization step because that has already been done.");
-        //    }
-        //}
     }
 }

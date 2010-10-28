@@ -1,20 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.UI;
-using System.Web.UI.WebControls;
 using LinqToTwitter;
 
 public partial class PostOnly : System.Web.UI.Page
 {
-    //private WebOAuthAuthorization auth;
     private WebAuthorizer auth;
     private TwitterContext twitterCtx;
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        //auth = new WebOAuthAuthorization(InMemoryTokenManager.Instance, InMemoryTokenManager.AccessToken);
         auth = new WebAuthorizer();
 
         if (string.IsNullOrEmpty(auth.ConsumerKey) ||

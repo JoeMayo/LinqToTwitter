@@ -8,7 +8,6 @@ namespace LinqToTwitter
     /// <summary>
     /// helps retrieve information about blocks
     /// </summary>
-    [Serializable]
     public class Blocks
     {
         /// <summary>

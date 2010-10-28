@@ -12,15 +12,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Resources", "Resources", "{
 		Resources\BuildDelphiPrismDemo.bat = Resources\BuildDelphiPrismDemo.bat
 		Resources\DelphiPrismDemo.pas = Resources\DelphiPrismDemo.pas
 		Resources\DelphiPrismReadMe.txt = Resources\DelphiPrismReadMe.txt
-		Resources\DotNetOpenAuth.xsd = Resources\DotNetOpenAuth.xsd
-		Resources\Kerr.Credentials.dll = Resources\Kerr.Credentials.dll
 		Resources\Moq.dll = Resources\Moq.dll
 		Resources\Moq.pdb = Resources\Moq.pdb
 		Resources\Moq.xml = Resources\Moq.xml
 		Resources\NMock2.dll = Resources\NMock2.dll
 		Resources\NMock2.pdb = Resources\NMock2.pdb
-		Resources\System.Web.Mvc.dll = Resources\System.Web.Mvc.dll
-		Resources\System.Web.Mvc.xml = Resources\System.Web.Mvc.xml
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqToTwitter", "LinqToTwitter\LinqToTwitter.csproj", "{A214B9F0-6B8C-4E91-BE99-27F55CC860C1}"

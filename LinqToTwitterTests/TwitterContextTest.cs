@@ -214,9 +214,8 @@ namespace LinqToTwitterTests
         {
             m_mocks = new Mockery();
             m_twitterExecute = m_mocks.NewMock<ITwitterExecute>();
-            var authorizedClient = m_mocks.NewMock<ITwitterAuthorization>();
+            var authorizedClient = m_mocks.NewMock<ITwitterAuthorizer>();
             Expect.Once.On(m_twitterExecute).GetProperty("AuthorizedClient").Will(Return.Value(authorizedClient));
-            Expect.Once.On(authorizedClient).SetProperty("AuthenticationTarget");
             m_ctx = new TwitterContext(m_twitterExecute);
         }
 
