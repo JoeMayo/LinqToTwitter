@@ -39,9 +39,9 @@ namespace LinqToTwitter
         /// <summary>
         /// Perform authorization
         /// </summary>
-        public void CompleteAuthorization()
+        public bool CompleteAuthorization()
         {
-            if (IsAuthorized) return;
+            if (IsAuthorized) return true;
 
             string verifier = OAuthHelper.GetRequestParam("oauth_verifier");
 
@@ -58,6 +58,8 @@ namespace LinqToTwitter
 
                 IsAuthorized = true;
             }
+
+            return IsAuthorized;
         }
     }
 }

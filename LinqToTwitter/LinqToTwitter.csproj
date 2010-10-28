@@ -156,6 +156,7 @@
     <Compile Include="OAuth\LinqToTwitterOAuth\OAuthSignatureTypes.cs" />
     <Compile Include="OAuth\LinqToTwitterOAuth\OAuthTwitter.cs" />
     <Compile Include="OAuth\LinqToTwitterOAuth\PinAuthorizer.cs" />
+    <Compile Include="OAuth\LinqToTwitterOAuth\SignInAuthorizer.cs" />
     <Compile Include="OAuth\LinqToTwitterOAuth\WebAuthorizer.cs" />
     <Compile Include="OAuth\Utilities.cs" />
     <Compile Include="Raw\Raw.cs" />
