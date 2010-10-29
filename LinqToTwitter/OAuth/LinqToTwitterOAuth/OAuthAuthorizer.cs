@@ -122,7 +122,7 @@ namespace LinqToTwitter
                 }
                 else
                 {
-                    var encoded = HttpUtility.UrlEncode(symbol.ToString());
+                    var encoded = HttpUtility.UrlEncode(symbol.ToString().ToUpper());
 
                     if (!string.IsNullOrEmpty(encoded))
                     {

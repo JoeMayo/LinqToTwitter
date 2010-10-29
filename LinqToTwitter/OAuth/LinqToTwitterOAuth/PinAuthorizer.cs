@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Specialized;
+using System.Linq;
 using System.Web;
 
 namespace LinqToTwitter
@@ -23,9 +24,12 @@ namespace LinqToTwitter
 
             string verifier = GetPin();
 
-            var uri = new Uri(link);
-            NameValueCollection urlParams = HttpUtility.ParseQueryString(uri.Query);
-            string oAuthToken = urlParams["oauth_token"];
+            string oAuthToken =
+                (from nameValPair in new Uri(link).Query.TrimStart('?').Split('&')
+                 let pair = nameValPair.Split('=')
+                 where pair[0] == "oauth_token"
+                 select pair[1])
+                .SingleOrDefault();
 
             string screenName;
             string userID;

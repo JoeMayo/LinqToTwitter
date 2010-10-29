@@ -623,7 +623,8 @@ namespace LinqToTwitterDemo
         private static void UpdateStatusDemo(TwitterContext twitterCtx)
         {
             // the \u00C7 is C Cedilla, which I've included to ensure that non-ascii characters appear properly
-            var status = "\u00C7 Testing LINQ to Twitter update status on " + DateTime.Now.ToString() + " #linqtotwitter";
+            //var status = "\u00C7 Testing LINQ to Twitter update status on " + DateTime.Now.ToString() + " #linqtotwitter";
+            var status = "Testing LINQ to Twitter update status on " + DateTime.Now.ToString() + " #linqtotwitter";
 
             Console.WriteLine("\nStatus being sent: \n\n\"{0}\"", status);
             Console.WriteLine("\nPress any key to post tweet...\n");
