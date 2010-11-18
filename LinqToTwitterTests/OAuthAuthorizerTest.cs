@@ -109,7 +109,7 @@ namespace LinqToTwitterTests
         }
 
         [TestMethod]
-        public void Post_With_Params_Calls_GetOAuthAuthorizationHeader()
+        public void Post_With_Params_Calls_GetOAuthQueryStringForPost()
         {
             string url = "https://api.twitter.com/statuses/public.xml";
             var pinAuth = new PinAuthorizer();
@@ -124,7 +124,7 @@ namespace LinqToTwitterTests
                     {"param1", "val1" }
                 });
 
-            oAuthMock.Verify(oAuth => oAuth.GetOAuthAuthorizationHeader(It.IsAny<string>(), It.IsAny<Dictionary<string, string>>(), string.Empty), Times.Once());
+            oAuthMock.Verify(oAuth => oAuth.GetOAuthQueryStringForPost(It.IsAny<string>()), Times.Once());
         }
 
         [TestMethod]
@@ -147,7 +147,7 @@ namespace LinqToTwitterTests
         }
 
         [TestMethod]
-        public void Post_Without_Params_Calls_GetOAuthAuthorizationHeader()
+        public void Post_Without_Params_Calls_GetOAuthQueryStringForPost()
         {
             string url = "https://api.twitter.com/statuses/public.xml";
             var pinAuth = new PinAuthorizer();
@@ -158,7 +158,7 @@ namespace LinqToTwitterTests
 
             pinAuth.Post(url);
 
-            oAuthMock.Verify(oAuth => oAuth.GetOAuthAuthorizationHeader(It.IsAny<string>(), It.IsAny<Dictionary<string, string>>(), string.Empty), Times.Once());
+            oAuthMock.Verify(oAuth => oAuth.GetOAuthQueryStringForPost(It.IsAny<string>()), Times.Once());
         }
 
         [TestMethod]

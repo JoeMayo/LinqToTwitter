@@ -52,11 +52,11 @@ namespace LinqToTwitterDemo
                 // from the specified area of the Twitter API.
                 // Uncomment and navigate to code to see the example.
                 //
-                // Each section supports the Twitter API, as documented here:
-                //  http://dev.twitter.com/doc
-                //
                 // LINQ to Twitter documentation "Making API Calls" is here:
                 //  http://linqtotwitter.codeplex.com/wikipage?title=Making%20API%20Calls&referringTitle=Documentation
+                //
+                // Each section supports the Twitter API, as documented here:
+                //  http://dev.twitter.com/doc
                 //
 
                 //AccountDemos.Run(twitterCtx);

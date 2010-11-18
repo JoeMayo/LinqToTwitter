@@ -175,58 +175,21 @@ namespace LinqToTwitter
         /// <summary>
         /// processes POST request parameters
         /// </summary>
-        /// <param name="parameters">parameters to process</param>
-        public void GetOAuthQueryStringForPost(string url, Dictionary<string, string> parameters, string callback, out string outUrl, out string postData)
+        /// <param name="url">url of request, without query string</param>
+        /// 
+        public string GetOAuthQueryStringForPost(string url)
         {
-            var paramString = string.Empty;
+            OAuthVerifier = null;
 
-            if (parameters != null)
-            {
-                foreach (string key in parameters.Keys)
-                {
-                    if (string.IsNullOrEmpty(parameters[key]))
-                    {
-                        continue;
-                    }
-                    if (paramString.Length > 0)
-                    {
-                        paramString += "&";
-                    }
-                    var param = string.Empty;
-                    param = HttpUtility.UrlDecode(parameters[key]);
-                    param = this.UrlEncode(param);
-                    paramString += key + "=" + param;
-                }
-            }
+            string outUrl;
+            string queryString;
+            GetOAuthQueryString(HttpMethod.POST, url, string.Empty, out outUrl, out queryString);
 
-            if (url.IndexOf("?") > 0)
-            {
-                url += "&";
-            }
-            else
-            {
-                url += "?";
-            }
-
-            GetOAuthQueryString(HttpMethod.POST, url + paramString, callback, out outUrl, out postData);
-        }
-
-        /// <summary>
-        /// processes POST request parameters
-        /// </summary>
-        /// <param name="parameters">parameters to process</param>
-        public string GetOAuthAuthorizationHeader(string url, Dictionary<string, string> parameters, string callback)
-        {
             const int Key = 0;
             const int Value = 1;
 
-            string outUrl;
-            string postData;
-
-            GetOAuthQueryStringForPost(url, parameters, callback, out outUrl, out postData);
-
             var headerItems =
-                from param in postData.Split('&')
+                from param in queryString.Split('&')
                 let keyValPair = param.Split('=')
                 select
                     keyValPair[Key] +
@@ -234,7 +197,7 @@ namespace LinqToTwitter
                     keyValPair[Value] +
                     "\"";
 
-            return "OAuth realm=\"" + outUrl + "\"," + string.Join(",", headerItems.ToArray());
+            return "OAuth " + string.Join(",", headerItems.ToArray());
         }
 
         /// <summary>
@@ -260,11 +223,11 @@ namespace LinqToTwitter
                 }
                 else if (ReservedChars.IndexOf(symbol) != -1)
                 {
-                    result.Append('%' + String.Format("{0:X2}", (int)symbol));
+                    result.Append('%' + String.Format("{0:X2}", (int)symbol).ToUpper());
                 }
                 else
                 {
-                    var encoded = HttpUtility.UrlEncode(symbol.ToString());
+                    var encoded = HttpUtility.UrlEncode(symbol.ToString()).ToUpper();
 
                     if (!string.IsNullOrEmpty(encoded))
                     {
@@ -275,7 +238,6 @@ namespace LinqToTwitter
 
             return result.ToString();
         }
-
 
         private string PrepareAuthHeader(string authHeader)
         {
@@ -363,11 +325,6 @@ namespace LinqToTwitter
                 postData = querystring;
                 querystring = "";
             }
-
-            //if (querystring.Length > 0)
-            //{
-            //    outUrl += "?";
-            //}
 
             ret = WebRequest(method, outUrl, querystring, postData);
 

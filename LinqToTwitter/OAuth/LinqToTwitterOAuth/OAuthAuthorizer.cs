@@ -95,45 +95,6 @@ namespace LinqToTwitter
 
         public bool UseCompression { get; set; }
 
-        /// <summary>
-        /// Url Encodes for OAuth Authentication
-        /// </summary>
-        /// <param name="value">string to be encoded</param>
-        /// <returns>UrlEncoded string</returns>
-        public string TwitterParameterUrlEncode(string value)
-        {
-            string ReservedChars = @"`!@#$%^&*()_-+=.~,:;'?/|\[] ";
-            string UnReservedChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_.~";
-
-            var result = new StringBuilder();
-
-            if (string.IsNullOrEmpty(value))
-                return string.Empty;
-
-            foreach (var symbol in value)
-            {
-                if (UnReservedChars.IndexOf(symbol) != -1)
-                {
-                    result.Append(symbol);
-                }
-                else if (ReservedChars.IndexOf(symbol) != -1)
-                {
-                    result.Append('%' + String.Format("{0:X2}", (int)symbol));
-                }
-                else
-                {
-                    var encoded = HttpUtility.UrlEncode(symbol.ToString().ToUpper());
-
-                    if (!string.IsNullOrEmpty(encoded))
-                    {
-                        result.Append(encoded);
-                    }
-                }
-            }
-
-            return result.ToString();
-        }
-
         private string PrepareAuthHeader(string authHeader)
         {
             var encodedParams =
@@ -183,7 +144,7 @@ namespace LinqToTwitter
             string outUrl;
             string queryString;
             OAuthTwitter.GetOAuthQueryString(HttpMethod.GET, url, string.Empty, out outUrl, out queryString);
-            //url = outUrl + "?" + queryString;
+
             var req = HttpWebRequest.Create(url) as HttpWebRequest;
 
             req.Headers.Add(
@@ -202,7 +163,7 @@ namespace LinqToTwitter
 
             req.Headers.Add(
                 HttpRequestHeader.Authorization,
-                OAuthTwitter.GetOAuthAuthorizationHeader(url, null, string.Empty));
+                OAuthTwitter.GetOAuthQueryStringForPost(url));
 
             InitializeRequest(req);
 
@@ -217,14 +178,12 @@ namespace LinqToTwitter
         /// <returns>Response from Twitter</returns>
         public HttpWebResponse Post(string url, Dictionary<string, string> args)
         {
-            string paramsJoined = string.Empty;
-
-            paramsJoined =
+            string paramsJoined =
                 string.Join(
                     "&",
                     (from param in args
                      where !string.IsNullOrEmpty(param.Value)
-                     select param.Key + "=" + TwitterParameterUrlEncode(param.Value))
+                     select param.Key + "=" + OAuthTwitter.TwitterParameterUrlEncode(param.Value))
                     .ToArray());
 
             url += "?" + paramsJoined;
@@ -233,9 +192,10 @@ namespace LinqToTwitter
             req.ServicePoint.Expect100Continue = false;
             req.Method = HttpMethod.POST.ToString();
 
-            req.Headers.Add(
-                HttpRequestHeader.Authorization,
-                OAuthTwitter.GetOAuthAuthorizationHeader(url, null, string.Empty));
+            req.Headers.Add
+                (HttpRequestHeader.Authorization,
+                OAuthTwitter.GetOAuthQueryStringForPost(url));
+            req.ContentLength = 0;
 
             InitializeRequest(req);
 

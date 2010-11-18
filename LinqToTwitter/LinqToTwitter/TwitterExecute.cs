@@ -1,16 +1,12 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Runtime.Serialization.Json;
 using System.Text;
-using System.Web;
+using System.Threading;
 using System.Xml;
 using System.Xml.Linq;
-using System.Reflection;
-using System.Threading;
 
 namespace LinqToTwitter
 {
@@ -361,9 +357,17 @@ namespace LinqToTwitter
             return responseXml;
         }
 
+        /// <summary>
+        /// Selects appropriate streaming method
+        /// </summary>
+        /// <param name="url">Stream url</param>
+        /// <returns>
+        /// Caller expects an XML formatted string response, but
+        /// real response(s) with streams is fed to the callback
+        /// </returns>
         public string QueryTwitterStream(string url)
         {
-            if (url.Contains("user.json"))
+            if (url.Contains("user.json") || url.Contains("site.json"))
             {
                 new Thread(ManageTwitterUserStream).Start(url);
             }
@@ -437,11 +441,10 @@ namespace LinqToTwitter
                             do
                             {
                                 content = respRdr.ReadLine();
-                                //StreamingCallback(new StreamContent(this, content));
                                 
                                 // launch on a separate thread to keep user's 
                                 // callback code from blocking the stream.
-                                new Thread(InvokeCallback).Start(content);
+                                new Thread(InvokeStreamCallback).Start(content);
 
                                 errorWait = 250;
                             }
@@ -471,11 +474,11 @@ namespace LinqToTwitter
                                 }
                             }
 
-                            WriteLog(wex.ToString() + ", Waiting " + errorWait + " seconds.  ", "ManageTwitterStream");
+                            WriteLog(wex.ToString() + ", Waiting " + errorWait + " seconds.  ", "ManageTwitterStreaming");
                         }
                         catch (Exception ex)
                         {
-                            WriteLog(ex.ToString(), "ManageTwitterStream");
+                            WriteLog(ex.ToString(), "ManageTwitterStreaming");
                         }
                         finally
                         {
@@ -539,11 +542,10 @@ namespace LinqToTwitter
                             do
                             {
                                 content = respRdr.ReadLine();
-                                //StreamingCallback(new StreamContent(this, content));
 
                                 // launch on a separate thread to keep user's 
                                 // callback code from blocking the stream.
-                                new Thread(InvokeCallback).Start(content);
+                                new Thread(InvokeStreamCallback).Start(content);
 
                                 errorWait = 250;
                             }
@@ -573,11 +575,11 @@ namespace LinqToTwitter
                                 }
                             }
 
-                            WriteLog(wex.ToString() + ", Waiting " + errorWait + " seconds.  ", "ManageTwitterStream");
+                            WriteLog(wex.ToString() + ", Waiting " + errorWait + " seconds.  ", "ManageTwitterUserStream");
                         }
                         catch (Exception ex)
                         {
-                            WriteLog(ex.ToString(), "ManageTwitterStream");
+                            WriteLog(ex.ToString(), "ManageTwitterUserStream");
                         }
                         finally
                         {
@@ -593,7 +595,7 @@ namespace LinqToTwitter
             }
             catch (Exception ex)
             {
-                WriteLog(ex.ToString(), "ManageTwitterStream");
+                WriteLog(ex.ToString(), "ManageTwitterUserStream");
                 Thread.Sleep(errorWait);
                 throw;
             }
@@ -609,7 +611,7 @@ namespace LinqToTwitter
         /// that will get them rate-limited or black-listed on Twitter.
         /// </remarks>
         /// <param name="content">Content from Twitter</param>
-        private void InvokeCallback(object content)
+        private void InvokeStreamCallback(object content)
         {
             try
             {
@@ -711,8 +713,6 @@ namespace LinqToTwitter
 
                 using (var reqStream = req.GetRequestStream())
                 {
-                    //reqStream.Write(imageBytes, 0, imageBytes.Length);
-
                     int offset = 0;
                     int bufferSize = 4096;
                     int lastPercentage = 0;
