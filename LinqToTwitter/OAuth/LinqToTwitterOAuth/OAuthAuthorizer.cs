@@ -147,9 +147,11 @@ namespace LinqToTwitter
 
             var req = HttpWebRequest.Create(url) as HttpWebRequest;
 
-            req.Headers.Add(
-                HttpRequestHeader.Authorization,
-                PrepareAuthHeader(queryString));
+            req.Headers[HttpRequestHeader.Authorization] = PrepareAuthHeader(queryString);
+
+            //req.Headers.Add(
+            //    HttpRequestHeader.Authorization,
+            //    PrepareAuthHeader(queryString));
 
             InitializeRequest(req);
 
@@ -161,9 +163,7 @@ namespace LinqToTwitter
             var req = WebRequest.Create(url) as HttpWebRequest;
             req.Method = HttpMethod.POST.ToString();
 
-            req.Headers.Add(
-                HttpRequestHeader.Authorization,
-                OAuthTwitter.GetOAuthQueryStringForPost(url));
+            req.Headers[HttpRequestHeader.Authorization] = OAuthTwitter.GetOAuthQueryStringForPost(url);
 
             InitializeRequest(req);
 
@@ -192,9 +192,7 @@ namespace LinqToTwitter
             req.ServicePoint.Expect100Continue = false;
             req.Method = HttpMethod.POST.ToString();
 
-            req.Headers.Add
-                (HttpRequestHeader.Authorization,
-                OAuthTwitter.GetOAuthQueryStringForPost(url));
+            req.Headers[HttpRequestHeader.Authorization] = OAuthTwitter.GetOAuthQueryStringForPost(url);
             req.ContentLength = 0;
 
             InitializeRequest(req);

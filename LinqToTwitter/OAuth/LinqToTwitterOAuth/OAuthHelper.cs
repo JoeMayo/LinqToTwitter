@@ -5,6 +5,7 @@ using System.Text;
 using System.Diagnostics;
 using System.Net;
 using System.Web;
+using System.Threading;
 
 namespace LinqToTwitter
 {
@@ -30,7 +31,20 @@ namespace LinqToTwitter
         /// <returns>Response to Twitter</returns>
         public HttpWebResponse GetResponse(HttpWebRequest req)
         {
-            return req.GetResponse() as HttpWebResponse;
+            var resetEvent = new ManualResetEvent(initialState: false);
+            HttpWebResponse res = null;
+
+            req.BeginGetResponse(
+                new AsyncCallback(
+                    ar =>
+                    {
+                        res = req.EndGetResponse(ar) as HttpWebResponse;
+                        resetEvent.Set();
+                    }), null);
+
+            resetEvent.WaitOne();
+
+            return res;
         }
 
         /// <summary>

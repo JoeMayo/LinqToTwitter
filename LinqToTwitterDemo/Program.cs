@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Configuration;
+using System.Linq;
 using LinqToTwitter;
 
 namespace LinqToTwitterDemo
@@ -8,6 +9,22 @@ namespace LinqToTwitterDemo
     {
         static void Main()
         {
+            // This first part is for API's that don't require authentication
+            var ctx = new TwitterContext();
+
+            var tweets =
+                (from tweet in ctx.Status
+                 where tweet.Type == StatusType.Public
+                 select tweet)
+                .ToList();
+
+            tweets.ForEach(tweet => 
+                Console.WriteLine(
+                    "User: {0}\nTweet: {1}\n", 
+                    tweet.User.Identifier.ScreenName, 
+                    tweet.Text));
+
+            // The rest of the example demonstrates how to authenticate with OAuth
             #region Set up OAuth
             
             // validate that credentials are present

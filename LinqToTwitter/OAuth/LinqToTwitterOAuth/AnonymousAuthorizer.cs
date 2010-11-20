@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Net;
 using System.IO;
+using System.Threading;
 
 namespace LinqToTwitter
 {
@@ -74,12 +75,35 @@ namespace LinqToTwitter
             req.ContentType = "x-www-form-urlencoded";
             req.ContentLength = queryStringBytes.Length;
 
-            using (Stream requestStream = req.GetRequestStream())
-            {
-                requestStream.Write(queryStringBytes, 0, queryStringBytes.Length);
-            }
+            var resetEvent = new ManualResetEvent(initialState: false);
 
-            return req.GetResponse() as HttpWebResponse;
+            req.BeginGetRequestStream(
+                new AsyncCallback(
+                    ar =>
+                    {
+                        using (var requestStream = req.EndGetRequestStream(ar))
+                        {
+                            requestStream.Write(queryStringBytes, 0, queryStringBytes.Length);
+                        }
+                        resetEvent.Set();
+                    }), null);
+
+            resetEvent.WaitOne();
+            resetEvent.Reset();
+
+            HttpWebResponse res = null;
+
+            req.BeginGetResponse(
+                new AsyncCallback(
+                    ar =>
+                    {
+                        res = req.EndGetResponse(ar) as HttpWebResponse;
+                        resetEvent.Set();
+                    }), null);
+
+            resetEvent.WaitOne();
+
+            return res;
         }
     }
 }

@@ -25,6 +25,7 @@ using System.Collections.Specialized;
 using System.Web;
 using System.Net;
 using System.IO;
+using System.Threading;
 
 namespace LinqToTwitter
 {
@@ -341,34 +342,34 @@ namespace LinqToTwitter
         public string WebRequest(HttpMethod method, string url, string authHeader, string postData)
         {
             HttpWebRequest webRequest = null;
-            StreamWriter requestWriter = null;
             string responseData = "";
 
             webRequest = System.Net.WebRequest.Create(url) as HttpWebRequest;
             webRequest.Method = method.ToString();
             webRequest.ServicePoint.Expect100Continue = false;
             webRequest.UserAgent = OAuthUserAgent;
-            webRequest.Headers.Add(HttpRequestHeader.Authorization, PrepareAuthHeader(authHeader));
+            webRequest.Headers[HttpRequestHeader.Authorization] = PrepareAuthHeader(authHeader);
 
             if (method == HttpMethod.POST)
             {
                 webRequest.ContentType = "application/x-www-form-urlencoded";
 
-                //POST the data.
-                requestWriter = new StreamWriter(webRequest.GetRequestStream());
-                try
-                {
-                    requestWriter.Write(postData);
-                }
-                catch
-                {
-                    throw;
-                }
-                finally
-                {
-                    requestWriter.Close();
-                    requestWriter = null;
-                }
+                byte[] postDataBytes = Encoding.UTF8.GetBytes(postData);
+
+                var resetEvent = new ManualResetEvent(initialState: false);
+
+                webRequest.BeginGetRequestStream(
+                    new AsyncCallback(
+                        ar =>
+                        {
+                            using (var requestStream = webRequest.EndGetRequestStream(ar))
+                            {
+                                requestStream.Write(postDataBytes, 0, postDataBytes.Length);
+                            }
+                            resetEvent.Set();
+                        }), null);
+
+                resetEvent.WaitOne();
             }
 
             responseData = WebResponseGet(webRequest);
@@ -385,20 +386,25 @@ namespace LinqToTwitter
         /// <returns>The response data.</returns>
         public string WebResponseGet(HttpWebRequest webRequest)
         {
-            StreamReader responseReader = null;
             string responseData = "";
 
-            try
-            {
-                responseReader = new StreamReader(webRequest.GetResponse().GetResponseStream());
-                responseData = responseReader.ReadToEnd();
-            }
-            finally
-            {
-                webRequest.GetResponse().GetResponseStream().Close();
-                responseReader.Close();
-                responseReader = null;
-            }
+            var resetEvent = new ManualResetEvent(initialState: false);
+            HttpWebResponse res = null;
+
+            webRequest.BeginGetResponse(
+                new AsyncCallback(
+                    ar =>
+                    {
+                        res = webRequest.EndGetResponse(ar) as HttpWebResponse;
+                        using (var respStream = res.GetResponseStream())
+                        using (var respReader = new StreamReader(respStream))
+                        {
+                            responseData = respReader.ReadToEnd();
+                        }
+                        resetEvent.Set();
+                    }), null);
+
+            resetEvent.WaitOne();
 
             return responseData;
         }

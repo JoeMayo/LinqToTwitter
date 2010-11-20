@@ -590,14 +590,14 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void DestroyStatusDemo(TwitterContext twitterCtx)
         {
-            //var status = twitterCtx.DestroyStatus("1539399086");
+            var status = twitterCtx.DestroyStatus("5476861752647680");
 
-            //Console.WriteLine(
-            //    "(" + status.StatusID + ")" +
-            //    "[" + status.User.ID + "]" +
-            //    status.User.Name + ", " +
-            //    status.Text + ", " +
-            //    status.CreatedAt);
+            Console.WriteLine(
+                "(" + status.StatusID + ")" +
+                "[" + status.User.ID + "]" +
+                status.User.Name + ", " +
+                status.Text + ", " +
+                status.CreatedAt);
         }
 
         /// <summary>

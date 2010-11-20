@@ -24,7 +24,7 @@ namespace LinqToTwitterDemo
             //GetListMembersDemo(twitterCtx);
             //GetListSubscriptionsDemo(twitterCtx);
             //GetListMembershipsDemo(twitterCtx);
-            //GetListStatusesDemo(twitterCtx);
+            GetListStatusesDemo(twitterCtx);
             //GetListDemo(twitterCtx);
             //CreateListDemo(twitterCtx);
             //UpdateListDemo(twitterCtx);
@@ -37,7 +37,7 @@ namespace LinqToTwitterDemo
             //SubscribeToListDemo(twitterCtx);
             //UnsubscribeFromListDemo(twitterCtx);
             //ListSortDemo(twitterCtx);
-            GetAllSubscribedListsDemo(twitterCtx);
+            //GetAllSubscribedListsDemo(twitterCtx);
         }
 
         private static void GetAllSubscribedListsDemo(TwitterContext twitterCtx)

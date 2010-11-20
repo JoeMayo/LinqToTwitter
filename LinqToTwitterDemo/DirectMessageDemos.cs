@@ -18,9 +18,9 @@ namespace LinqToTwitterDemo
         public static void Run(TwitterContext twitterCtx)
         {
             //DirectMessageSentByQueryDemo(twitterCtx);
-            DirectMessageSentToQueryDemo(twitterCtx);
+            //DirectMessageSentToQueryDemo(twitterCtx);
             //DirectMessageShowDemo(twitterCtx);
-            //NewDirectMessageDemo(twitterCtx);
+            NewDirectMessageDemo(twitterCtx);
             //DestroyDirectMessageDemo(twitterCtx);
         }
 

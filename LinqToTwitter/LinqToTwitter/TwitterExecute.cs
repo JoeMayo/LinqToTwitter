@@ -330,11 +330,20 @@ namespace LinqToTwitter
                 this.LastUrl = uri.AbsoluteUri;
                 var req = this.AuthorizedClient.Get(url);
 
-                using (WebResponse resp = req.GetResponse())
-                {
-                    httpStatus = resp.Headers["Status"];
-                    responseXml = GetTwitterResponse(resp);
-                }
+                var resetEvent = new ManualResetEvent(initialState: false);
+                HttpWebResponse res = null;
+
+                req.BeginGetResponse(
+                    new AsyncCallback(
+                        ar =>
+                        {
+                            res = req.EndGetResponse(ar) as HttpWebResponse;
+                            httpStatus = res.Headers["Status"];
+                            responseXml = GetTwitterResponse(res);
+                            resetEvent.Set();
+                        }), null);
+
+                resetEvent.WaitOne();
             }
             catch (WebException wex)
             {
@@ -344,12 +353,11 @@ namespace LinqToTwitter
 
             if (uri.LocalPath.EndsWith("json"))
             {
-                var stream = new MemoryStream(ASCIIEncoding.Default.GetBytes(responseXml));
+                var stream = new MemoryStream(Encoding.UTF8.GetBytes(responseXml));
                 XmlDictionaryReader reader = JsonReaderWriterFactory.CreateJsonReader(stream, XmlDictionaryReaderQuotas.Max);
 
-                var doc = new XmlDocument();
-                doc.Load(reader);
-                responseXml = doc.OuterXml;
+                var doc = XDocument.Load(reader);
+                responseXml = doc.ToString();
             }
 
             CheckResultsForTwitterError(responseXml, httpStatus);
@@ -416,88 +424,7 @@ namespace LinqToTwitter
                 req.ServicePoint.Expect100Continue = false;
             }
 
-            int errorWait = 250;
-
-            try
-            {
-                while (!CloseStream)
-                {
-                    if (shouldPostQuery)
-                    {
-                        using (var reqStream = req.GetRequestStream())
-                        {
-                            reqStream.Write(bytes, 0, bytes.Length);
-                        }
-                    }
-
-                    using (var resp = req.GetResponse())
-                    using (var stream = resp.GetResponseStream())
-                    using (var respRdr = new StreamReader(stream, Encoding.UTF8))
-                    {
-                        string content = null;
-
-                        try
-                        {
-                            do
-                            {
-                                content = respRdr.ReadLine();
-                                
-                                // launch on a separate thread to keep user's 
-                                // callback code from blocking the stream.
-                                new Thread(InvokeStreamCallback).Start(content);
-
-                                errorWait = 250;
-                            }
-                            while (!CloseStream);
-                        }
-                        catch (WebException wex)
-                        {
-                            if (wex.Status == WebExceptionStatus.ProtocolError)
-                            {
-                                if (errorWait < 10000)
-                                {
-                                    errorWait = 10000;
-                                }
-                                else
-                                {
-                                    if (errorWait < 240000)
-                                    {
-                                        errorWait *= 2;
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                if (errorWait < 16000)
-                                {
-                                    errorWait += 250;
-                                }
-                            }
-
-                            WriteLog(wex.ToString() + ", Waiting " + errorWait + " seconds.  ", "ManageTwitterStreaming");
-                        }
-                        catch (Exception ex)
-                        {
-                            WriteLog(ex.ToString(), "ManageTwitterStreaming");
-                        }
-                        finally
-                        {
-                            if (req != null)
-                            {
-                                req.Abort();
-                            }
-
-                            Thread.Sleep(errorWait);
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                WriteLog(ex.ToString(), "ManageTwitterStream");
-                Thread.Sleep(errorWait);
-                throw;
-            }
+            ExecuteTwitterStream(req, bytes, shouldPostQuery);
         }
 
         /// <summary>
@@ -525,77 +452,119 @@ namespace LinqToTwitter
             req.UserAgent = UserAgent;
             req.Timeout = -1;
 
+            ExecuteTwitterStream(req, null, shouldPostQuery: false);
+        }
+
+        /// <summary>
+        /// Processes stream results and performs error handling
+        /// </summary>
+        /// <param name="req">HTTP Request</param>
+        /// <param name="postBytes">Contains post data if shouldPostQuery is true</param>
+        /// <param name="shouldPostQuery">If true, send postBytes as post</param>
+        private void ExecuteTwitterStream(HttpWebRequest req, byte[] postBytes, bool shouldPostQuery)
+        {
+            var resetEvent = new ManualResetEvent(initialState: false);
             int errorWait = 250;
 
             try
             {
                 while (!CloseStream)
                 {
-                    using (var resp = req.GetResponse())
-                    using (var stream = resp.GetResponseStream())
-                    using (var respRdr = new StreamReader(stream, Encoding.UTF8))
+                    if (shouldPostQuery)
                     {
-                        string content = null;
-
-                        try
-                        {
-                            do
-                            {
-                                content = respRdr.ReadLine();
-
-                                // launch on a separate thread to keep user's 
-                                // callback code from blocking the stream.
-                                new Thread(InvokeStreamCallback).Start(content);
-
-                                errorWait = 250;
-                            }
-                            while (!CloseStream);
-                        }
-                        catch (WebException wex)
-                        {
-                            if (wex.Status == WebExceptionStatus.ProtocolError)
-                            {
-                                if (errorWait < 10000)
+                        req.BeginGetRequestStream(
+                            new AsyncCallback(
+                                ar =>
                                 {
-                                    errorWait = 10000;
-                                }
-                                else
-                                {
-                                    if (errorWait < 240000)
+                                    using (var requestStream = req.EndGetRequestStream(ar))
                                     {
-                                        errorWait *= 2;
+                                        requestStream.Write(postBytes, 0, postBytes.Length);
                                     }
-                                }
-                            }
-                            else
-                            {
-                                if (errorWait < 16000)
-                                {
-                                    errorWait += 250;
-                                }
-                            }
 
-                            WriteLog(wex.ToString() + ", Waiting " + errorWait + " seconds.  ", "ManageTwitterUserStream");
-                        }
-                        catch (Exception ex)
-                        {
-                            WriteLog(ex.ToString(), "ManageTwitterUserStream");
-                        }
-                        finally
-                        {
-                            if (req != null)
-                            {
-                                req.Abort();
-                            }
+                                    resetEvent.Set();
 
-                            Thread.Sleep(errorWait);
-                        }
+                                }), null);
+
+                        resetEvent.WaitOne();
+                        resetEvent.Reset();
                     }
+
+                    req.BeginGetResponse(
+                        new AsyncCallback(ar =>
+                        {
+                            HttpWebResponse resp = req.EndGetResponse(ar) as HttpWebResponse;
+                            using (var stream = resp.GetResponseStream())
+                            using (var respRdr = new StreamReader(stream, Encoding.UTF8))
+                            {
+                                string content = null;
+
+                                try
+                                {
+                                    do
+                                    {
+                                        content = respRdr.ReadLine();
+
+                                        // launch on a separate thread to keep user's 
+                                        // callback code from blocking the stream.
+                                        new Thread(InvokeStreamCallback).Start(content);
+
+                                        errorWait = 250;
+                                    }
+                                    while (!CloseStream);
+                                }
+                                catch (WebException wex)
+                                {
+                                    if (wex.Status == WebExceptionStatus.ProtocolError)
+                                    {
+                                        if (errorWait < 10000)
+                                        {
+                                            errorWait = 10000;
+                                        }
+                                        else
+                                        {
+                                            if (errorWait < 240000)
+                                            {
+                                                errorWait *= 2;
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (errorWait < 16000)
+                                        {
+                                            errorWait += 250;
+                                        }
+                                    }
+
+                                    WriteLog(wex.ToString() + ", Waiting " + errorWait + " seconds.  ", "ExecuteStream");
+                                }
+                                catch (Exception ex)
+                                {
+                                    WriteLog(ex.ToString(), "ExecuteStream");
+                                }
+                                finally
+                                {
+                                    if (req != null)
+                                    {
+                                        req.Abort();
+                                    }
+
+                                    Thread.Sleep(errorWait);
+                                }
+                            }
+
+                            resetEvent.Set();
+
+                        }), null);
+
+
+                    resetEvent.WaitOne();
+                    resetEvent.Reset();
                 }
             }
             catch (Exception ex)
             {
-                WriteLog(ex.ToString(), "ManageTwitterUserStream");
+                WriteLog(ex.ToString(), "ManageTwitterStream");
                 Thread.Sleep(errorWait);
                 throw;
             }
@@ -685,7 +654,7 @@ namespace LinqToTwitter
             }
 
             Encoding encoding = Encoding.GetEncoding("iso-8859-1");
-            string imageByteString = encoding.GetString(image);
+            string imageByteString = encoding.GetString(image, 0, image.Length);
 
             byte[] imageBytes =
                 encoding.GetBytes(
@@ -711,50 +680,113 @@ namespace LinqToTwitter
                 req.AllowWriteStreamBuffering = true;
                 req.ContentLength = imageBytes.Length;
 
-                using (var reqStream = req.GetRequestStream())
-                {
-                    int offset = 0;
-                    int bufferSize = 4096;
-                    int lastPercentage = 0;
-                    while (offset < imageBytes.Length)
-                    {
-                        int bytesLeft = imageBytes.Length - offset;
+                var resetEvent = new ManualResetEvent(initialState: false);
 
-                        if (bytesLeft < bufferSize)
+                req.BeginGetRequestStream(
+                    new AsyncCallback(
+                        ar =>
                         {
-                            reqStream.Write(imageBytes, offset, bytesLeft);
-                        }
-                        else
+                            using (var reqStream = req.EndGetRequestStream(ar))
+                            {
+                                int offset = 0;
+                                int bufferSize = 4096;
+                                int lastPercentage = 0;
+                                while (offset < imageBytes.Length)
+                                {
+                                    int bytesLeft = imageBytes.Length - offset;
+
+                                    if (bytesLeft < bufferSize)
+                                    {
+                                        reqStream.Write(imageBytes, offset, bytesLeft);
+                                    }
+                                    else
+                                    {
+                                        reqStream.Write(imageBytes, offset, bufferSize);
+                                    }
+
+                                    offset += bufferSize;
+
+                                    int percentComplete =
+                                        (int)((double)offset / (double)imageBytes.Length * 100);
+
+                                    // since we still need to get the response later
+                                    // in the algorithm, interpolate the results to
+                                    // give user a more accurate picture of completion.
+                                    // i.e. we don't want to shoot up to 100% here when
+                                    // we know there is more processing to do.
+                                    lastPercentage = percentComplete >= 98 ?
+                                        100 - ((98 - lastPercentage) / 2) :
+                                        percentComplete;
+
+                                    OnUploadProgressChanged(lastPercentage);
+                                }
+
+                                reqStream.Flush();
+                            }
+                            resetEvent.Set();
+                        }), null);
+
+                resetEvent.WaitOne();
+                resetEvent.Reset();
+
+                req.BeginGetResponse(
+                    new AsyncCallback(
+                        ar =>
                         {
-                            reqStream.Write(imageBytes, offset, bufferSize);
-                        }
+                            using (var res = req.EndGetResponse(ar) as HttpWebResponse)
+                            {
+                                httpStatus = res.Headers["Status"];
+                                responseXml = GetTwitterResponse(res);
+                                OnUploadProgressChanged(99);
+                            }
+                            resetEvent.Set();
+                        }), null);
 
-                        offset += bufferSize;
+                resetEvent.WaitOne();
+                //using (var reqStream = req.GetRequestStream())
+                //{
+                //    int offset = 0;
+                //    int bufferSize = 4096;
+                //    int lastPercentage = 0;
+                //    while (offset < imageBytes.Length)
+                //    {
+                //        int bytesLeft = imageBytes.Length - offset;
 
-                        int percentComplete =
-                            (int)((double)offset / (double)imageBytes.Length * 100);
+                //        if (bytesLeft < bufferSize)
+                //        {
+                //            reqStream.Write(imageBytes, offset, bytesLeft);
+                //        }
+                //        else
+                //        {
+                //            reqStream.Write(imageBytes, offset, bufferSize);
+                //        }
 
-                        // since we still need to get the response later
-                        // in the algorithm, interpolate the results to
-                        // give user a more accurate picture of completion.
-                        // i.e. we don't want to shoot up to 100% here when
-                        // we know there is more processing to do.
-                        lastPercentage = percentComplete >= 98 ?
-                            100 - ((98 - lastPercentage) / 2) :
-                            percentComplete;
+                //        offset += bufferSize;
 
-                        OnUploadProgressChanged(lastPercentage);
-                    }
+                //        int percentComplete =
+                //            (int)((double)offset / (double)imageBytes.Length * 100);
 
-                    reqStream.Flush();
-                }
+                //        // since we still need to get the response later
+                //        // in the algorithm, interpolate the results to
+                //        // give user a more accurate picture of completion.
+                //        // i.e. we don't want to shoot up to 100% here when
+                //        // we know there is more processing to do.
+                //        lastPercentage = percentComplete >= 98 ?
+                //            100 - ((98 - lastPercentage) / 2) :
+                //            percentComplete;
 
-                using (WebResponse resp = req.GetResponse())
-                {
-                    httpStatus = resp.Headers["Status"];
-                    responseXml = GetTwitterResponse(resp);
-                    OnUploadProgressChanged(99);
-                }
+                //        OnUploadProgressChanged(lastPercentage);
+                //    }
+
+                //    reqStream.Flush();
+                //}
+
+                //using (WebResponse resp = req.GetResponse())
+                //{
+                //    httpStatus = resp.Headers["Status"];
+                //    responseXml = GetTwitterResponse(resp);
+                //    OnUploadProgressChanged(99);
+                //}
             }
             catch (WebException wex)
             {
