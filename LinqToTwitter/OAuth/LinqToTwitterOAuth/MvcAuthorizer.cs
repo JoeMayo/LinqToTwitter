@@ -8,7 +8,7 @@ namespace LinqToTwitter
 {
     public class MvcAuthorizer : WebAuthorizer
     {
-        public new ActionResult BeginAuthorization()
+        public ActionResult BeginAuthorization()
         {
             return new MvcOAuthActionResult(this);
         }

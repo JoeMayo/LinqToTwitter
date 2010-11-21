@@ -6,38 +6,48 @@ using LinqToTwitter;
 
 public partial class _Default : System.Web.UI.Page
 {
+    private const string OAuthCredentialsKey = "OAuthCredentialsKey";
     private WebAuthorizer auth;
     private TwitterContext twitterCtx;
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        auth = Session["WebAuthorizer"] as WebAuthorizer;
+        IOAuthCredentials credentials = new InMemoryCredentials();
+        string authString = Session[OAuthCredentialsKey] as string;
 
-        if (auth == null)
+        if (authString == null)
         {
-            string consumerKey = ConfigurationManager.AppSettings["twitterConsumerKey"];
-            string consumerSecret = ConfigurationManager.AppSettings["twitterConsumerSecret"];
+            credentials.ConsumerKey = ConfigurationManager.AppSettings["twitterConsumerKey"];
+            credentials.ConsumerSecret = ConfigurationManager.AppSettings["twitterConsumerSecret"];
 
-            auth = new WebAuthorizer
-            {
-                ConsumerKey = consumerKey,
-                ConsumerSecret = consumerSecret,
-            };
-
-            Session["WebAuthorizer"] = auth; 
+            Session[OAuthCredentialsKey] = credentials.ToString();
         }
+        else
+        {
+            credentials.Load(authString);
+        }
+
+        auth = new WebAuthorizer
+        {
+            Credentials = new InMemoryCredentials
+            {
+                ConsumerKey = ConfigurationManager.AppSettings["twitterConsumerKey"],
+                ConsumerSecret = ConfigurationManager.AppSettings["twitterConsumerSecret"]
+            },
+            PerformRedirect = authUrl => Response.Redirect(authUrl)
+        };
 
         if (!Page.IsPostBack)
         {
-            if (!string.IsNullOrWhiteSpace(auth.ConsumerKey) && 
-                !string.IsNullOrWhiteSpace(auth.ConsumerSecret))
+            if (!string.IsNullOrWhiteSpace(credentials.ConsumerKey) &&
+                !string.IsNullOrWhiteSpace(credentials.ConsumerSecret))
             {
-                auth.CompleteAuthorization();
+                auth.CompleteAuthorization(Request.Url);
             }
         }
 
-        if (string.IsNullOrWhiteSpace(auth.ConsumerKey) || 
-            string.IsNullOrWhiteSpace(auth.ConsumerSecret))
+        if (string.IsNullOrWhiteSpace(credentials.ConsumerKey) ||
+            string.IsNullOrWhiteSpace(credentials.ConsumerSecret))
         {
             // The user needs to set up the web.config file to include Twitter consumer key and secret.
             PrivateDataMultiView.SetActiveView(SetupTwitterConsumer);
@@ -77,7 +87,7 @@ public partial class _Default : System.Web.UI.Page
 
     protected void authorizeTwitterButton_Click(object sender, EventArgs e)
     {
-        auth.BeginAuthorization();
+        auth.BeginAuthorization(Request.Url);
     }
 
     protected void postUpdateButton_Click(object sender, EventArgs e)

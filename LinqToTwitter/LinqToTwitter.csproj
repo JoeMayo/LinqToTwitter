@@ -145,6 +145,8 @@
     <Compile Include="Geo\GeoType.cs" />
     <Compile Include="Geo\Place.cs" />
     <Compile Include="OAuth\LinqToTwitterOAuth\AnonymousAuthorizer.cs" />
+    <Compile Include="OAuth\LinqToTwitterOAuth\InMemoryCredentials.cs" />
+    <Compile Include="OAuth\LinqToTwitterOAuth\IOAuthCredentials.cs" />
     <Compile Include="OAuth\LinqToTwitterOAuth\IOAuthHelper.cs" />
     <Compile Include="OAuth\LinqToTwitterOAuth\IOAuthTwitter.cs" />
     <Compile Include="OAuth\LinqToTwitterOAuth\ITwitterAuthorizer.cs" />

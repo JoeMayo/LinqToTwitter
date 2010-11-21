@@ -73,12 +73,32 @@ namespace LinqToTwitterTests
             var oAuthMock = new Mock<IOAuthTwitter>();
             webAuth.OAuthTwitter = oAuthMock.Object;
             var helperMock = new Mock<IOAuthHelper>();
-            helperMock.Setup(helper => helper.GetRequestUrl()).Returns(requestUrl);
+            //helperMock.Setup(helper => helper.GetRequestUrl()).Returns(requestUrl);
             webAuth.OAuthHelper = helperMock.Object;
+            string authUrl = string.Empty;
+            webAuth.PerformRedirect = url => authUrl = url;
 
-            webAuth.BeginAuthorization();
+            webAuth.BeginAuthorization(new Uri(requestUrl));
 
             oAuthMock.Verify(oAuth => oAuth.AuthorizationLinkGet(It.IsAny<string>(), It.IsAny<string>(), requestUrl, false, false), Times.Once());
+        }
+
+        [TestMethod]
+        public void BeginAuthorization_Calls_PerformRedirect()
+        {
+            string requestUrl = "https://api.twitter.com/";
+            var webAuth = new WebAuthorizer();
+            var oAuthMock = new Mock<IOAuthTwitter>();
+            webAuth.OAuthTwitter = oAuthMock.Object;
+            var helperMock = new Mock<IOAuthHelper>();
+            //helperMock.Setup(helper => helper.GetRequestUrl()).Returns(requestUrl);
+            webAuth.OAuthHelper = helperMock.Object;
+            string authUrl = string.Empty;
+            webAuth.PerformRedirect = url => authUrl = url;
+
+            webAuth.BeginAuthorization(new Uri(requestUrl));
+
+            Assert.IsNull(authUrl);
         }
 
         [TestMethod]
@@ -88,7 +108,7 @@ namespace LinqToTwitterTests
             string userID = "123";
             string verifier = "1234567";
             string authToken = "token";
-            string authLink = "https://authorizationlink?oauth_token=" + authToken;
+            string authLink = "https://authorizationlink?oauth_token=" + authToken + "&oauth_verifier=" + verifier;
             var webAuth = new WebAuthorizer();
             var oAuthMock = new Mock<IOAuthTwitter>();
             oAuthMock.Setup(oAuth => oAuth.AuthorizationLinkGet(It.IsAny<string>(), It.IsAny<string>(), "https://authorizationlink", false, false))
@@ -96,11 +116,9 @@ namespace LinqToTwitterTests
             oAuthMock.Setup(oAuth => oAuth.AccessTokenGet(authToken, verifier, It.IsAny<string>(), string.Empty, out screenName, out userID));
             webAuth.OAuthTwitter = oAuthMock.Object;
             var helperMock = new Mock<IOAuthHelper>();
-            helperMock.Setup(helper => helper.GetRequestParam("oauth_token")).Returns(authToken);
-            helperMock.Setup(helper => helper.GetRequestParam("oauth_verifier")).Returns(verifier);
             webAuth.OAuthHelper = helperMock.Object;
 
-            webAuth.Authorize();
+            webAuth.CompleteAuthorization(new Uri(authLink));
 
             oAuthMock.Verify(oauth => oauth.AccessTokenGet(authToken, verifier, It.IsAny<string>(), string.Empty, out screenName, out userID), Times.Once());
             Assert.AreEqual(screenName, webAuth.ScreenName);

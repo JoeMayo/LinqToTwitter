@@ -1,18 +1,43 @@
 ﻿using System;
 using System.Web.UI;
 using LinqToTwitter;
+using System.Configuration;
 
 public partial class PostOnly : System.Web.UI.Page
 {
+    private const string OAuthCredentialsKey = "OAuthCredentialsKey";
     private WebAuthorizer auth;
     private TwitterContext twitterCtx;
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        auth = new WebAuthorizer();
+        IOAuthCredentials credentials = new InMemoryCredentials();
+        string authString = Session[OAuthCredentialsKey] as string;
 
-        if (string.IsNullOrEmpty(auth.ConsumerKey) ||
-            string.IsNullOrEmpty(auth.ConsumerSecret) ||
+        if (authString == null)
+        {
+            credentials.ConsumerKey = ConfigurationManager.AppSettings["twitterConsumerKey"];
+            credentials.ConsumerSecret = ConfigurationManager.AppSettings["twitterConsumerSecret"];
+
+            Session[OAuthCredentialsKey] = credentials.ToString();
+        }
+        else
+        {
+            credentials.Load(authString);
+        }
+
+        auth = new WebAuthorizer
+        {
+            Credentials = new InMemoryCredentials
+            {
+                ConsumerKey = ConfigurationManager.AppSettings["twitterConsumerKey"],
+                ConsumerSecret = ConfigurationManager.AppSettings["twitterConsumerSecret"]
+            },
+            PerformRedirect = authUrl => Response.Redirect(authUrl)
+        };
+
+        if (string.IsNullOrEmpty(credentials.ConsumerKey) ||
+            string.IsNullOrEmpty(credentials.ConsumerSecret) ||
             !auth.IsAuthorized)
         {
             // Authorization occurs only on the home page.

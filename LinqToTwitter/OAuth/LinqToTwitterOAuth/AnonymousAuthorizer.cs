@@ -72,6 +72,7 @@ namespace LinqToTwitter
 
             req.Method = HttpMethod.POST.ToString();
             req.ServicePoint.Expect100Continue = false;
+            //req.Headers.Remove(HttpRequestHeader.Expect);
             req.ContentType = "x-www-form-urlencoded";
             req.ContentLength = queryStringBytes.Length;
 

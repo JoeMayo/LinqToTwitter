@@ -346,7 +346,7 @@ namespace LinqToTwitter
 
             webRequest = System.Net.WebRequest.Create(url) as HttpWebRequest;
             webRequest.Method = method.ToString();
-            webRequest.ServicePoint.Expect100Continue = false;
+            //webRequest.ServicePoint.Expect100Continue = false;
             webRequest.UserAgent = OAuthUserAgent;
             webRequest.Headers[HttpRequestHeader.Authorization] = PrepareAuthHeader(authHeader);
 

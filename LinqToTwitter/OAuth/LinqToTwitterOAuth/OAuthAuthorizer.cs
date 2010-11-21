@@ -45,39 +45,61 @@ namespace LinqToTwitter
         /// </summary>
         public IOAuthHelper OAuthHelper { get; set; }
 
-        public string ConsumerKey 
-        {
-            get
-            {
-                return OAuthTwitter.OAuthConsumerKey;
-            }
-            set
-            {
-                OAuthTwitter.OAuthConsumerKey = value;
-            }
-        }
+        //public string ConsumerKey 
+        //{
+        //    get
+        //    {
+        //        return OAuthTwitter.OAuthConsumerKey;
+        //    }
+        //    set
+        //    {
+        //        OAuthTwitter.OAuthConsumerKey = value;
+        //    }
+        //}
 
-        public string ConsumerSecret
-        {
-            get
-            {
-                return OAuthTwitter.OAuthConsumerSecret;
-            }
-            set
-            {
-                OAuthTwitter.OAuthConsumerSecret = value;
-            }
-        }
+        //public string ConsumerSecret
+        //{
+        //    get
+        //    {
+        //        return OAuthTwitter.OAuthConsumerSecret;
+        //    }
+        //    set
+        //    {
+        //        OAuthTwitter.OAuthConsumerSecret = value;
+        //    }
+        //}
 
-        public string AccessToken
+        //public string AccessToken
+        //{
+        //    get
+        //    {
+        //        return OAuthTwitter.OAuthTokenSecret;
+        //    }
+        //    set
+        //    {
+        //        OAuthTwitter.OAuthTokenSecret = value;
+        //    }
+        //}
+
+        private IOAuthCredentials m_credentials;
+
+        /// <summary>
+        /// Holds ConsumerKey, ConsumerSecret, and AccessToken
+        /// 
+        /// Note: Populate Credentials before setting this property
+        /// </summary>
+        public IOAuthCredentials Credentials
         {
             get
             {
-                return OAuthTwitter.OAuthTokenSecret;
+                return m_credentials;
             }
             set
             {
-                OAuthTwitter.OAuthTokenSecret = value;
+                m_credentials = value;
+                OAuthTwitter.OAuthConsumerKey = value.ConsumerKey;
+                OAuthTwitter.OAuthConsumerSecret = value.ConsumerSecret;
+                OAuthTwitter.OAuthTokenSecret = value.AccessToken;
             }
         }
 
@@ -149,10 +171,6 @@ namespace LinqToTwitter
 
             req.Headers[HttpRequestHeader.Authorization] = PrepareAuthHeader(queryString);
 
-            //req.Headers.Add(
-            //    HttpRequestHeader.Authorization,
-            //    PrepareAuthHeader(queryString));
-
             InitializeRequest(req);
 
             return req;
@@ -189,7 +207,7 @@ namespace LinqToTwitter
             url += "?" + paramsJoined;
 
             var req = WebRequest.Create(url) as HttpWebRequest;
-            req.ServicePoint.Expect100Continue = false;
+            //req.ServicePoint.Expect100Continue = false;
             req.Method = HttpMethod.POST.ToString();
 
             req.Headers[HttpRequestHeader.Authorization] = OAuthTwitter.GetOAuthQueryStringForPost(url);

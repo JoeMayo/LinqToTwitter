@@ -29,8 +29,8 @@ namespace LinqToTwitterDemo
             //UpdateAccountColors(twitterCtx);
             //UpdateAccountImage(twitterCtx);
             //UpdateAccountBackgroundImage(twitterCtx);
-            UpdateAccountBackgroundImageBytes(twitterCtx);
-            //UpdateAccountBackgroundImageAndTileDemo(twitterCtx);
+            //UpdateAccountBackgroundImageBytes(twitterCtx);
+            UpdateAccountBackgroundImageAndTileDemo(twitterCtx);
             //UpdateAccountBackgroundImageAndTileButDontUseDemo(twitterCtx);
             //UpdateAccountBackgroundImageWithProgressUpdates(twitterCtx);
             //UpdateAccountInfoDemo(twitterCtx);

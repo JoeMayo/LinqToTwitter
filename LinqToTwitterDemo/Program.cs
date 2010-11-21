@@ -2,6 +2,7 @@
 using System.Configuration;
 using System.Linq;
 using LinqToTwitter;
+using System.Diagnostics;
 
 namespace LinqToTwitterDemo
 {
@@ -9,7 +10,13 @@ namespace LinqToTwitterDemo
     {
         static void Main()
         {
+            //
             // This first part is for API's that don't require authentication
+            //
+
+            Console.WriteLine("Getting Public Statuses without authentication. Press any key to continue...\n");
+            Console.ReadKey();
+
             var ctx = new TwitterContext();
 
             var tweets =
@@ -24,7 +31,13 @@ namespace LinqToTwitterDemo
                     tweet.User.Identifier.ScreenName, 
                     tweet.Text));
 
+            Console.WriteLine("... that was public statuses with no authentication. Now, you'll see a demo of how to authenticate with OAuth. Press any key to continue...\n");
+            Console.ReadKey();
+            
+            //
             // The rest of the example demonstrates how to authenticate with OAuth
+            //
+
             #region Set up OAuth
             
             // validate that credentials are present
@@ -40,9 +53,13 @@ namespace LinqToTwitterDemo
             // configure the OAuth object
             var auth = new PinAuthorizer
             {
-                ConsumerKey = ConfigurationManager.AppSettings["twitterConsumerKey"],
-                ConsumerSecret = ConfigurationManager.AppSettings["twitterConsumerSecret"],
+                Credentials = new InMemoryCredentials
+                {
+                    ConsumerKey = ConfigurationManager.AppSettings["twitterConsumerKey"],
+                    ConsumerSecret = ConfigurationManager.AppSettings["twitterConsumerSecret"]
+                },
                 UseCompression = true,
+                GoToTwitterAuthorization = pageLink => Process.Start(pageLink),
                 GetPin = () =>
                 {
                     // this executes after user authorizes, which begins with the call to auth.Authorize() below.
@@ -88,8 +105,8 @@ namespace LinqToTwitterDemo
                 //SavedSearchDemos.Run(twitterCtx);
                 //SearchDemos.Run(twitterCtx);
                 //SocialGraphDemos.Run(twitterCtx);
-                StatusDemos.Run(twitterCtx);
-                //StreamingDemo.Run(twitterCtx);
+                //StatusDemos.Run(twitterCtx);
+                StreamingDemo.Run(twitterCtx);
                 //TrendsDemos.Run(twitterCtx);
                 //UserDemos.Run(twitterCtx);
                 //NotificationsDemos.Run(twitterCtx);

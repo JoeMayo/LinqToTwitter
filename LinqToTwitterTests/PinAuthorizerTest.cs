@@ -74,7 +74,9 @@ namespace LinqToTwitterTests
             pinAuth.GetPin = () => { return "1234567"; };
             var helperMock = new Mock<IOAuthHelper>();
             pinAuth.OAuthHelper = helperMock.Object;
-        
+            string destinationUrl = string.Empty;
+            pinAuth.GoToTwitterAuthorization = link => destinationUrl = link;
+
             pinAuth.Authorize();
 
             oAuthMock.Verify(oAuth => oAuth.AuthorizationLinkGet(It.IsAny<string>(), It.IsAny<string>(), "oob", false, false), Times.Once());
@@ -92,10 +94,12 @@ namespace LinqToTwitterTests
             var helperMock = new Mock<IOAuthHelper>();
             pinAuth.OAuthHelper = helperMock.Object;
             pinAuth.GetPin = () => { return "1234567"; };
+            string destinationUrl = string.Empty;
+            pinAuth.GoToTwitterAuthorization = link => destinationUrl = link;
 
             pinAuth.Authorize();
 
-            helperMock.Verify(helper => helper.LaunchBrowser(authLink), Times.Once());
+            Assert.AreEqual(authLink, destinationUrl);
         }
 
         [TestMethod]
@@ -111,6 +115,8 @@ namespace LinqToTwitterTests
             pinAuth.OAuthHelper = helperMock.Object;
             bool pinSet = false;
             pinAuth.GetPin = () => { pinSet = true; return "1234567"; };
+            string destinationUrl = string.Empty;
+            pinAuth.GoToTwitterAuthorization = link => destinationUrl = link;
 
             pinAuth.Authorize();
 
@@ -130,6 +136,8 @@ namespace LinqToTwitterTests
             pinAuth.OAuthHelper = helperMock.Object;
             //bool pinSet = false;
             //pinAuth.GetPin = () => { pinSet = true; return "1234567"; };
+            string destinationUrl = string.Empty;
+            pinAuth.GoToTwitterAuthorization = link => destinationUrl = link;
 
             try
             {
@@ -140,6 +148,34 @@ namespace LinqToTwitterTests
             catch (InvalidOperationException ioe)
             {
                 Assert.IsTrue(ioe.Message.Contains("GetPin"));
+            }
+        }
+
+        [TestMethod]
+        public void Authorize_Requires_GoToTwitterAuthorization_Handler()
+        {
+            string authLink = "https://authorizationlink";
+            var pinAuth = new PinAuthorizer();
+            var oAuthMock = new Mock<IOAuthTwitter>();
+            oAuthMock.Setup(oAuth => oAuth.AuthorizationLinkGet(It.IsAny<string>(), It.IsAny<string>(), "oob", false, false))
+                     .Returns(authLink);
+            pinAuth.OAuthTwitter = oAuthMock.Object;
+            var helperMock = new Mock<IOAuthHelper>();
+            pinAuth.OAuthHelper = helperMock.Object;
+            bool pinSet = false;
+            pinAuth.GetPin = () => { pinSet = true; return "1234567"; };
+            //string destinationUrl = string.Empty;
+            //pinAuth.GoToTwitterAuthorization = link => destinationUrl = link;
+
+            try
+            {
+                pinAuth.Authorize();
+
+                Assert.Fail("Expected InvalidOperationException.");
+            }
+            catch (InvalidOperationException ioe)
+            {
+                Assert.IsTrue(ioe.Message.Contains("GoToTwitterAuthorization"));
             }
         }
 
@@ -160,6 +196,8 @@ namespace LinqToTwitterTests
             var helperMock = new Mock<IOAuthHelper>();
             pinAuth.OAuthHelper = helperMock.Object;
             pinAuth.GetPin = () => { return pinCode; };
+            string destinationUrl = string.Empty;
+            pinAuth.GoToTwitterAuthorization = link => destinationUrl = link;
 
             pinAuth.Authorize();
 

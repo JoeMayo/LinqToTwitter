@@ -405,7 +405,7 @@ namespace LinqToTwitter
             var req = HttpWebRequest.Create(streamUrl) as HttpWebRequest;
             req.Credentials = new NetworkCredential(StreamingUserName, StreamingPassword);
             req.UserAgent = UserAgent;
-            req.Timeout = -1;
+            //req.Timeout = -1;
 
             byte[] bytes = new byte[0];
 
@@ -421,7 +421,7 @@ namespace LinqToTwitter
                 req.ContentLength = bytes.Length;
                 req.Method = "POST";
                 req.ContentType = "x-www-form-urlencoded";
-                req.ServicePoint.Expect100Continue = false;
+                //req.ServicePoint.Expect100Continue = false;
             }
 
             ExecuteTwitterStream(req, bytes, shouldPostQuery);
@@ -450,7 +450,7 @@ namespace LinqToTwitter
             this.LastUrl = uri.AbsoluteUri;
             var req = this.AuthorizedClient.Get(streamUrl);
             req.UserAgent = UserAgent;
-            req.Timeout = -1;
+            //req.Timeout = -1;
 
             ExecuteTwitterStream(req, null, shouldPostQuery: false);
         }
@@ -465,6 +465,7 @@ namespace LinqToTwitter
         {
             var resetEvent = new ManualResetEvent(initialState: false);
             int errorWait = 250;
+            bool firstConnection = true;
 
             try
             {
@@ -492,65 +493,95 @@ namespace LinqToTwitter
                     req.BeginGetResponse(
                         new AsyncCallback(ar =>
                         {
-                            HttpWebResponse resp = req.EndGetResponse(ar) as HttpWebResponse;
-                            using (var stream = resp.GetResponseStream())
-                            using (var respRdr = new StreamReader(stream, Encoding.UTF8))
+                            HttpWebResponse resp = null;
+
+                            try
                             {
-                                string content = null;
+                                resp = req.EndGetResponse(ar) as HttpWebResponse;
 
-                                try
+                                using (var stream = resp.GetResponseStream())
+                                using (var respRdr = new StreamReader(stream, Encoding.UTF8))
                                 {
-                                    do
-                                    {
-                                        content = respRdr.ReadLine();
+                                    string content = null;
 
-                                        // launch on a separate thread to keep user's 
-                                        // callback code from blocking the stream.
-                                        new Thread(InvokeStreamCallback).Start(content);
-
-                                        errorWait = 250;
-                                    }
-                                    while (!CloseStream);
-                                }
-                                catch (WebException wex)
-                                {
-                                    if (wex.Status == WebExceptionStatus.ProtocolError)
+                                    try
                                     {
-                                        if (errorWait < 10000)
+                                        do
                                         {
-                                            errorWait = 10000;
+                                            content = respRdr.ReadLine();
+
+                                            // launch on a separate thread to keep user's 
+                                            // callback code from blocking the stream.
+                                            new Thread(InvokeStreamCallback).Start(content);
+
+                                            errorWait = 250;
+                                        }
+                                        while (!CloseStream);
+                                    }
+                                    catch (WebException wex)
+                                    {
+                                        // TODO: refactor errorWait caculation into separate method and verify with http://dev.twitter.com/pages/user_streams_suggestions#Startup
+                                        if (wex.Status == WebExceptionStatus.ProtocolError)
+                                        {
+                                            if (errorWait < 10000)
+                                            {
+                                                errorWait = 10000;
+                                            }
+                                            else
+                                            {
+                                                if (errorWait < 240000)
+                                                {
+                                                    errorWait *= 2;
+                                                }
+                                            }
                                         }
                                         else
                                         {
-                                            if (errorWait < 240000)
+                                            if (errorWait < 16000)
                                             {
-                                                errorWait *= 2;
+                                                errorWait += 250;
                                             }
                                         }
+
+                                        WriteLog(wex.ToString() + ", Waiting " + errorWait + " seconds.  ", "ExecuteStream");
                                     }
-                                    else
+                                    catch (Exception ex)
                                     {
-                                        if (errorWait < 16000)
+                                        WriteLog(ex.ToString(), "ExecuteStream");
+                                    }
+                                    finally
+                                    {
+                                        if (req != null)
                                         {
-                                            errorWait += 250;
+                                            req.Abort();
                                         }
-                                    }
 
-                                    WriteLog(wex.ToString() + ", Waiting " + errorWait + " seconds.  ", "ExecuteStream");
-                                }
-                                catch (Exception ex)
-                                {
-                                    WriteLog(ex.ToString(), "ExecuteStream");
-                                }
-                                finally
-                                {
-                                    if (req != null)
-                                    {
-                                        req.Abort();
+                                        Thread.Sleep(errorWait);
                                     }
-
-                                    Thread.Sleep(errorWait);
                                 }
+                            }
+                            catch (Exception ex)
+                            {
+                                // TODO: Needs more work: http://dev.twitter.com/pages/user_streams_suggestions#StreamingConnectionFailure
+                                if (firstConnection)
+                                {
+                                    firstConnection = false;
+                                    errorWait = 0;
+                                }
+                                else
+                                {
+                                    errorWait += 250;
+                                }
+                                WriteLog(ex.ToString(), "ExecuteStream");
+                            }
+                            finally
+                            {
+                                if (req != null)
+                                {
+                                    req.Abort();
+                                }
+
+                                Thread.Sleep(errorWait);
                             }
 
                             resetEvent.Set();
@@ -674,9 +705,9 @@ namespace LinqToTwitter
                 WriteLog(url, "PostTwitterImage");
 
                 var req = this.AuthorizedClient.Post(url);
-                req.ServicePoint.Expect100Continue = false;
+                //req.ServicePoint.Expect100Continue = false;
                 req.ContentType = "multipart/form-data;boundary=" + contentBoundaryBase;
-                req.PreAuthenticate = true;
+                //req.PreAuthenticate = true;
                 req.AllowWriteStreamBuffering = true;
                 req.ContentLength = imageBytes.Length;
 
@@ -743,50 +774,6 @@ namespace LinqToTwitter
                         }), null);
 
                 resetEvent.WaitOne();
-                //using (var reqStream = req.GetRequestStream())
-                //{
-                //    int offset = 0;
-                //    int bufferSize = 4096;
-                //    int lastPercentage = 0;
-                //    while (offset < imageBytes.Length)
-                //    {
-                //        int bytesLeft = imageBytes.Length - offset;
-
-                //        if (bytesLeft < bufferSize)
-                //        {
-                //            reqStream.Write(imageBytes, offset, bytesLeft);
-                //        }
-                //        else
-                //        {
-                //            reqStream.Write(imageBytes, offset, bufferSize);
-                //        }
-
-                //        offset += bufferSize;
-
-                //        int percentComplete =
-                //            (int)((double)offset / (double)imageBytes.Length * 100);
-
-                //        // since we still need to get the response later
-                //        // in the algorithm, interpolate the results to
-                //        // give user a more accurate picture of completion.
-                //        // i.e. we don't want to shoot up to 100% here when
-                //        // we know there is more processing to do.
-                //        lastPercentage = percentComplete >= 98 ?
-                //            100 - ((98 - lastPercentage) / 2) :
-                //            percentComplete;
-
-                //        OnUploadProgressChanged(lastPercentage);
-                //    }
-
-                //    reqStream.Flush();
-                //}
-
-                //using (WebResponse resp = req.GetResponse())
-                //{
-                //    httpStatus = resp.Headers["Status"];
-                //    responseXml = GetTwitterResponse(resp);
-                //    OnUploadProgressChanged(99);
-                //}
             }
             catch (WebException wex)
             {

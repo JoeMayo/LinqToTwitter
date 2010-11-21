@@ -11,28 +11,39 @@ namespace LinqToTwitterMvcDemo.Controllers
 {
     public class HomeController : Controller
     {
+        private const string OAuthCredentialsKey = "OAuthCredentialsKey";
+
         private MvcAuthorizer auth;
         private TwitterContext twitterCtx;
 
         public ActionResult Index()
         {
-            auth = Session["MvcAuthorizer"] as MvcAuthorizer;
+            string authString = Session[OAuthCredentialsKey] as string;
 
-            if (auth == null)
+            if (authString == null)
             {
                 string consumerKey = ConfigurationManager.AppSettings["twitterConsumerKey"];
                 string consumerSecret = ConfigurationManager.AppSettings["twitterConsumerSecret"];
 
                 auth = new MvcAuthorizer
                 {
-                    ConsumerKey = consumerKey,
-                    ConsumerSecret = consumerSecret,
+                    Credentials = new InMemoryCredentials
+                    {
+                        ConsumerKey = consumerKey,
+                        ConsumerSecret = consumerSecret
+                    }
                 };
 
-                Session["MvcAuthorizer"] = auth;
+                Session[OAuthCredentialsKey] = auth.ToString();
+            }
+            else
+            {
+                var credentials = new InMemoryCredentials();
+                credentials.Load(authString);
+                auth.Credentials = credentials;
             }
 
-            auth.CompleteAuthorization();
+            auth.CompleteAuthorization(Request.Url);
 
             if (!auth.IsAuthorized)
             {

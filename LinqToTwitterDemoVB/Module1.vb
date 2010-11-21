@@ -13,10 +13,13 @@ Module Module1
 			Exit Sub
 		End If
 
-        Dim auth As PinAuthorizer = New PinAuthorizer()
+        Dim credentials As IOAuthCredentials = New InMemoryCredentials
 
-        auth.ConsumerKey = ConfigurationManager.AppSettings("twitterConsumerKey")
-        auth.ConsumerSecret = ConfigurationManager.AppSettings("twitterConsumerSecret")
+        credentials.ConsumerKey = ConfigurationManager.AppSettings("twitterConsumerKey")
+        credentials.ConsumerSecret = ConfigurationManager.AppSettings("twitterConsumerSecret")
+
+        Dim auth As PinAuthorizer = New PinAuthorizer()
+        auth.Credentials = credentials
         auth.GetPin = AddressOf VerifierCallback
         auth.Authorize()
 
