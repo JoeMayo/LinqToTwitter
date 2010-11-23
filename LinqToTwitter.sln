@@ -55,32 +55,37 @@ Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "LinqToTwitterDemoVB", "Linq
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqToTwitterMvcDemo", "LinqToTwitterMvcDemo\LinqToTwitterMvcDemo.csproj", "{54A55783-61E7-43CC-8148-265D84E26248}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqToTwitterAg", "LinqToTwitterAg\LinqToTwitterAg.csproj", "{D6F5E8C4-5A90-4606-B9EF-9478DDA7BF9C}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 7
+		SccNumberOfProjects = 8
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs01
 		SccLocalPath0 = .
-		SccProjectUniqueName1 = LinqToTwitter\\LinqToTwitter.csproj
-		SccProjectName1 = LinqToTwitter
-		SccLocalPath1 = LinqToTwitter
-		SccProjectUniqueName2 = LinqToTwitterTests\\LinqToTwitterTests.csproj
-		SccProjectName2 = LinqToTwitterTests
-		SccLocalPath2 = LinqToTwitterTests
-		SccProjectUniqueName3 = LinqToTwitterDemo\\LinqToTwitterDemo.csproj
-		SccProjectName3 = LinqToTwitterDemo
-		SccLocalPath3 = LinqToTwitterDemo
-		SccProjectUniqueName4 = LinqToTwitterDemoVB\\LinqToTwitterDemoVB.vbproj
-		SccProjectName4 = LinqToTwitterDemoVB
-		SccLocalPath4 = LinqToTwitterDemoVB
-		SccWebProject5 = true
-		SccProjectUniqueName5 = LinqToTwitterWebFormsDemo
-		SccLocalPath5 = .
-		SccProjectFilePathRelativizedFromConnection5 = LinqToTwitterWebFormsDemo\\
-		SccProjectEnlistmentChoice5 = 2
-		SccProjectUniqueName6 = LinqToTwitterMvcDemo\\LinqToTwitterMvcDemo.csproj
-		SccProjectName6 = LinqToTwitterMvcDemo
-		SccLocalPath6 = LinqToTwitterMvcDemo
+		SccProjectUniqueName1 = LinqToTwitterTests\\LinqToTwitterTests.csproj
+		SccProjectName1 = LinqToTwitterTests
+		SccLocalPath1 = LinqToTwitterTests
+		SccProjectUniqueName2 = LinqToTwitterDemo\\LinqToTwitterDemo.csproj
+		SccProjectName2 = LinqToTwitterDemo
+		SccLocalPath2 = LinqToTwitterDemo
+		SccProjectUniqueName3 = LinqToTwitterDemoVB\\LinqToTwitterDemoVB.vbproj
+		SccProjectName3 = LinqToTwitterDemoVB
+		SccLocalPath3 = LinqToTwitterDemoVB
+		SccWebProject4 = true
+		SccProjectUniqueName4 = LinqToTwitterWebFormsDemo
+		SccLocalPath4 = .
+		SccProjectFilePathRelativizedFromConnection4 = LinqToTwitterWebFormsDemo\\
+		SccProjectEnlistmentChoice4 = 2
+		SccProjectUniqueName5 = LinqToTwitterMvcDemo\\LinqToTwitterMvcDemo.csproj
+		SccProjectName5 = LinqToTwitterMvcDemo
+		SccLocalPath5 = LinqToTwitterMvcDemo
+		SccProjectUniqueName6 = LinqToTwitter\\LinqToTwitter.csproj
+		SccProjectName6 = LinqToTwitter
+		SccLocalPath6 = LinqToTwitter
+		SccProjectUniqueName7 = LinqToTwitterAg\\LinqToTwitterAg.csproj
+		SccProjectName7 = LinqToTwitterAg
+		SccLocalPath7 = LinqToTwitterAg
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = LinqToTwitter.vsmdi
@@ -136,6 +141,12 @@ Global
 		{54A55783-61E7-43CC-8148-265D84E26248}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{54A55783-61E7-43CC-8148-265D84E26248}.Release|Any CPU.Build.0 = Release|Any CPU
 		{54A55783-61E7-43CC-8148-265D84E26248}.Release|x86.ActiveCfg = Release|Any CPU
+		{D6F5E8C4-5A90-4606-B9EF-9478DDA7BF9C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6F5E8C4-5A90-4606-B9EF-9478DDA7BF9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6F5E8C4-5A90-4606-B9EF-9478DDA7BF9C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D6F5E8C4-5A90-4606-B9EF-9478DDA7BF9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6F5E8C4-5A90-4606-B9EF-9478DDA7BF9C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6F5E8C4-5A90-4606-B9EF-9478DDA7BF9C}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
