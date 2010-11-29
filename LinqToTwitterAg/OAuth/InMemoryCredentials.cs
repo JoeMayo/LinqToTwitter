@@ -5,26 +5,43 @@ using System.Text;
 
 namespace LinqToTwitter
 {
+    /// <summary>
+    /// Holds credentials in memory. You must persist values 
+    /// to save or work in stateless apps (such as Web apps).
+    /// </summary>
     public class InMemoryCredentials : IOAuthCredentials
     {
-        public string ConsumerKey { get; set; }
+        public virtual string ConsumerKey { get; set; }
 
-        public string ConsumerSecret { get; set; }
+        public virtual string ConsumerSecret { get; set; }
 
-        public string AccessToken { get; set; }
+        public virtual string OAuthToken { get; set; }
 
-        public void Load(string credentialString)
+        public virtual string AccessToken { get; set; }
+
+        /// <summary>
+        /// Sets ConsumerKey, ConsumerSecret, and AccessToken with a comma-separated 
+        /// list. You must reassign credentials to Authorizer after changing them.
+        /// </summary>
+        /// <param name="credentialString"></param>
+        public virtual void Load(string credentialString)
         {
             string[] credentials = credentialString.Split(',');
 
             ConsumerKey = credentials[0];
             ConsumerSecret = credentials[1];
-            AccessToken = credentials[2];
+            OAuthToken = credentials[2];
+            AccessToken = credentials[3];
         }
 
+        /// <summary>
+        /// Gets a comma-separated list of ConsumerKey, ConsumerSecret, 
+        /// and AccessToken that can be saved or serialized.
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
-            return ConsumerKey + "," + ConsumerSecret + "," + AccessToken;
+            return ConsumerKey + "," + ConsumerSecret + "," + OAuthToken + "," + AccessToken;
         }
     }
 }

@@ -4,6 +4,8 @@ using System;
 using LinqToTwitterTests.Common;
 using LinqToTwitter;
 using Moq;
+using System.Web.SessionState;
+using System.Web;
 
 namespace LinqToTwitterTests
 {
@@ -70,6 +72,7 @@ namespace LinqToTwitterTests
         {
             string requestUrl = "https://api.twitter.com/";
             var webAuth = new WebAuthorizer();
+            webAuth.Credentials = new InMemoryCredentials();
             var oAuthMock = new Mock<IOAuthTwitter>();
             webAuth.OAuthTwitter = oAuthMock.Object;
             var helperMock = new Mock<IOAuthHelper>();
@@ -88,6 +91,7 @@ namespace LinqToTwitterTests
         {
             string requestUrl = "https://api.twitter.com/";
             var webAuth = new WebAuthorizer();
+            webAuth.Credentials = new InMemoryCredentials();
             var oAuthMock = new Mock<IOAuthTwitter>();
             webAuth.OAuthTwitter = oAuthMock.Object;
             var helperMock = new Mock<IOAuthHelper>();
@@ -110,6 +114,7 @@ namespace LinqToTwitterTests
             string authToken = "token";
             string authLink = "https://authorizationlink?oauth_token=" + authToken + "&oauth_verifier=" + verifier;
             var webAuth = new WebAuthorizer();
+            webAuth.Credentials = new InMemoryCredentials();
             var oAuthMock = new Mock<IOAuthTwitter>();
             oAuthMock.Setup(oAuth => oAuth.AuthorizationLinkGet(It.IsAny<string>(), It.IsAny<string>(), "https://authorizationlink", false, false))
                      .Returns(authLink);

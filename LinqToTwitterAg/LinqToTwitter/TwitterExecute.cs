@@ -141,6 +141,11 @@ namespace LinqToTwitter
         /// </summary>
         public string StreamingPassword { get; set; }
 
+        /// <summary>
+        /// Allows users to process content returned from stream
+        /// </summary>
+        public Delegate AsyncCallback { get; set; }
+
         #endregion
 
         #region Events
@@ -169,21 +174,6 @@ namespace LinqToTwitter
         #endregion
 
         #region Initialization
-
-        ///// <summary>
-        ///// supports testing
-        ///// </summary>
-        ///// <param name="oAuthTwitter">IOAuthTwitter Mock</param>
-        //public TwitterExecute(ITwitterAuthorization authorizedClient)
-        //{
-        //    if (authorizedClient == null)
-        //    {
-        //        throw new ArgumentNullException("authorizedClient");
-        //    }
-
-        //    this.AuthorizedClient = authorizedClient;
-        //    this.AuthorizedClient.UserAgent = m_linqToTwitterVersion;
-        //}
 
         /// <summary>
         /// supports testing
@@ -266,17 +256,14 @@ namespace LinqToTwitter
                 responseBody = respReader.ReadToEnd();
             }
 
-            //
-            // This code assumes that the caller will find that
-            // name/value pairs are easier to work with via 
-            // LINQ to Objects over an IEnumerable collection.
-            //
             var responseHeaders = new Dictionary<string, string>();
 
+#if !SILVERLIGHT
             foreach (string key in resp.Headers.AllKeys)
             {
                 responseHeaders.Add(key, resp.Headers[key].ToString());
-            }
+            } 
+#endif
 
             ResponseHeaders = responseHeaders;
 
@@ -315,8 +302,9 @@ namespace LinqToTwitter
         /// makes HTTP call to Twitter API
         /// </summary>
         /// <param name="url">URL with all query info</param>
+        /// <param name="reqProc">Request Processor for Async Results</param>
         /// <returns>XML Respose from Twitter</returns>
-        public string QueryTwitter(string url)
+        public string QueryTwitter<T>(string url, IRequestProcessor<T> reqProc)
         {
             //Log
             WriteLog(url, "QueryTwitter");
@@ -330,20 +318,32 @@ namespace LinqToTwitter
                 this.LastUrl = uri.AbsoluteUri;
                 var req = this.AuthorizedClient.Get(url);
 
+#if SILVERLIGHT
+                req.BeginGetResponse(
+                    new AsyncCallback(
+                        ar =>
+                        {
+                            var res = req.EndGetResponse(ar) as HttpWebResponse;
+                            //httpStatus = res.Headers["Status"];
+                            responseXml = GetTwitterResponse(res);
+                            List<T> responseObj = reqProc.ProcessResults(responseXml);
+                            (AsyncCallback as Action<IEnumerable<T>>)(responseObj);
+                        }), null);
+#else
                 var resetEvent = new ManualResetEvent(initialState: false);
-                HttpWebResponse res = null;
 
                 req.BeginGetResponse(
                     new AsyncCallback(
                         ar =>
                         {
-                            res = req.EndGetResponse(ar) as HttpWebResponse;
+                            var res = req.EndGetResponse(ar) as HttpWebResponse;
                             httpStatus = res.Headers["Status"];
                             responseXml = GetTwitterResponse(res);
                             resetEvent.Set();
                         }), null);
 
                 resetEvent.WaitOne();
+#endif
             }
             catch (WebException wex)
             {
@@ -360,7 +360,9 @@ namespace LinqToTwitter
                 responseXml = doc.ToString();
             }
 
+#if !SILVERLIGHT
             CheckResultsForTwitterError(responseXml, httpStatus);
+#endif
 
             return responseXml;
         }

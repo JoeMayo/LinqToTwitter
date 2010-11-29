@@ -478,6 +478,11 @@ namespace LinqToTwitter
         /// <returns>List of Status</returns>
         public virtual List<T> ProcessResults(string responseXml)
         {
+            if (string.IsNullOrEmpty(responseXml))
+            {
+                responseXml = "<status></status>";
+            }
+
             XElement twitterResponse = XElement.Parse(responseXml);
             var responseItems = twitterResponse.Elements("status").ToList();
 

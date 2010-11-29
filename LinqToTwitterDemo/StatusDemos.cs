@@ -25,7 +25,7 @@ namespace LinqToTwitterDemo
             //PublicStatusFilteredQueryDemo(twitterCtx);
             //HomeStatusQueryDemo(twitterCtx);
             //HomeSinceStatusQueryDemo(twitterCtx);
-            //FriendStatusQueryDemo(twitterCtx);
+            FriendStatusQueryDemo(twitterCtx);
             //UserStatusQueryDemo(twitterCtx);
             //UserStatusByNameQueryDemo(twitterCtx);
             //UserStatusWithRetweetsQueryDemo(twitterCtx);

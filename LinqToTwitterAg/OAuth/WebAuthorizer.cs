@@ -112,7 +112,8 @@ namespace LinqToTwitter
                 ScreenName = screenName;
                 UserId = userID;
 
-                IsAuthorized = true;
+                Credentials.OAuthToken = OAuthTwitter.OAuthToken;
+                Credentials.AccessToken = OAuthTwitter.OAuthTokenSecret;
             }
 
             return IsAuthorized;

@@ -4,6 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Net;
 
+#if SILVERLIGHT
+using System.Net.Browser;
+#endif
+
 namespace LinqToTwitter
 {
     public abstract class OAuthAuthorizer
@@ -61,11 +65,22 @@ namespace LinqToTwitter
                 m_credentials = value;
                 OAuthTwitter.OAuthConsumerKey = value.ConsumerKey;
                 OAuthTwitter.OAuthConsumerSecret = value.ConsumerSecret;
+                OAuthTwitter.OAuthToken = value.OAuthToken;
                 OAuthTwitter.OAuthTokenSecret = value.AccessToken;
             }
         }
 
-        public bool IsAuthorized { get; protected set; }
+        public bool IsAuthorized 
+        {
+            get
+            {
+                return
+                    !string.IsNullOrEmpty(Credentials.ConsumerKey) &&
+                    !string.IsNullOrEmpty(Credentials.ConsumerSecret) &&
+                    !string.IsNullOrEmpty(Credentials.OAuthToken) &&
+                    !string.IsNullOrEmpty(Credentials.AccessToken);
+            }
+        }
 
         public string UserId { get; protected set; }
 
@@ -99,9 +114,9 @@ namespace LinqToTwitter
         /// <param name="request">The request to initialize.</param>
         protected void InitializeRequest(HttpWebRequest request)
         {
+#if !SILVERLIGHT
             request.UserAgent = UserAgent;
 
-#if !SILVERLIGHT
             if (this.ReadWriteTimeout > TimeSpan.Zero)
             {
                 request.ReadWriteTimeout = (int)ReadWriteTimeout.TotalMilliseconds;
@@ -131,8 +146,11 @@ namespace LinqToTwitter
             string queryString;
             OAuthTwitter.GetOAuthQueryString(HttpMethod.GET, url, string.Empty, out outUrl, out queryString);
 
+#if SILVERLIGHT
+            var req = WebRequestCreator.ClientHttp.Create(new Uri(url)) as HttpWebRequest;
+#else
             var req = HttpWebRequest.Create(url) as HttpWebRequest;
-
+#endif
             req.Headers[HttpRequestHeader.Authorization] = PrepareAuthHeader(queryString);
 
             InitializeRequest(req);

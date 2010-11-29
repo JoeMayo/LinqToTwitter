@@ -111,32 +111,6 @@ namespace LinqToTwitter
                 }
             }
             return ret;
-            //string ret = null;
-            //string response = oAuthWebRequest(HttpMethod.GET, requestToken, String.Empty, callback);
-            //if (response.Length > 0)
-            //{
-            //    var prefixChar = "?";
-
-            //    //response contains token and token secret.  We only need the token.
-            //    NameValueCollection qs = HttpUtility.ParseQueryString(response);
-            //    if (qs["oauth_token"] != null)
-            //    {
-            //        ret = authorizeUrl + "?oauth_token=" + qs["oauth_token"];
-            //        prefixChar = "&";
-            //    }
-
-            //    if (readOnly)
-            //    {
-            //        ret += prefixChar + "oauth_access_type=read";
-            //        prefixChar = "&";
-            //    }
-
-            //    if (forceLogin)
-            //    {
-            //        ret += prefixChar + "force_login=true";
-            //    }
-            //}
-            //return ret;
         }
 
         /// <summary>
@@ -186,38 +160,6 @@ namespace LinqToTwitter
                     userID = qs["user_id"];
                 }
             }
-            //this.OAuthToken = authToken;
-            //this.OAuthVerifier = verifier;
-            //screenName = string.Empty;
-            //userID = string.Empty;
-
-            //string response = oAuthWebRequest(HttpMethod.GET, accessTokenUrl, String.Empty, callback);
-
-            //if (response.Length > 0)
-            //{
-            //    //Store the Token and Token Secret
-            //    NameValueCollection qs = HttpUtility.ParseQueryString(response);
-
-            //    if (qs["oauth_token"] != null)
-            //    {
-            //        this.OAuthToken = qs["oauth_token"];
-            //    }
-
-            //    if (qs["oauth_token_secret"] != null)
-            //    {
-            //        this.OAuthTokenSecret = qs["oauth_token_secret"];
-            //    }
-
-            //    if (qs["screen_name"] != null)
-            //    {
-            //        screenName = qs["screen_name"];
-            //    }
-
-            //    if (qs["user_id"] != null)
-            //    {
-            //        userID = qs["user_id"];
-            //    }
-            //}
         }
 
         /// <summary>
@@ -416,73 +358,6 @@ namespace LinqToTwitter
             ret = WebRequest(method, outUrl, querystring, postData);
 
             return ret;
-            //string outUrl = "";
-            //string querystring = "";
-            //string ret = "";
-
-            ////Setup postData for signing.
-            ////Add the postData to the querystring.
-            //if (method == HttpMethod.POST)
-            //{
-            //    if (postData.Length > 0)
-            //    {
-            //        //Decode the parameters and re-encode using the oAuth UrlEncode method.
-            //        NameValueCollection qs = HttpUtility.ParseQueryString(postData);
-            //        postData = "";
-            //        foreach (string key in qs.AllKeys)
-            //        {
-            //            if (postData.Length > 0)
-            //            {
-            //                postData += "&";
-            //            }
-            //            qs[key] = HttpUtility.UrlDecode(qs[key]);
-            //            qs[key] = this.UrlEncode(qs[key]);
-            //            postData += key + "=" + qs[key];
-
-            //        }
-            //        if (url.IndexOf("?") > 0)
-            //        {
-            //            url += "&";
-            //        }
-            //        else
-            //        {
-            //            url += "?";
-            //        }
-            //        url += postData;
-            //    }
-            //}
-
-            //Uri uri = new Uri(url);
-
-            //string nonce = this.GenerateNonce();
-            //string timeStamp = this.GenerateTimeStamp();
-
-            ////Generate Signature
-            //string sig = this.GenerateSignature(uri,
-            //    this.OAuthConsumerKey,
-            //    this.OAuthConsumerSecret,
-            //    this.OAuthToken,
-            //    this.OAuthTokenSecret,
-            //    this.OAuthVerifier,
-            //    TwitterParameterUrlEncode(callback),
-            //    method.ToString(),
-            //    timeStamp,
-            //    nonce,
-            //    out outUrl,
-            //    out querystring);
-
-            //querystring += "&oauth_signature=" + HttpUtility.UrlEncode(sig);
-
-            ////Convert the querystring to postData
-            //if (method == HttpMethod.POST)
-            //{
-            //    postData = querystring;
-            //    querystring = "";
-            //}
-
-            //ret = WebRequest(method, outUrl, querystring, postData);
-
-            //return ret;
         }
 
         /// <summary>
@@ -499,8 +374,10 @@ namespace LinqToTwitter
 
             webRequest = System.Net.WebRequest.Create(url) as HttpWebRequest;
             webRequest.Method = method.ToString();
-            //webRequest.ServicePoint.Expect100Continue = false;
-            webRequest.UserAgent = OAuthUserAgent;
+#if !SILVERLIGHT
+            webRequest.ServicePoint.Expect100Continue = false;
+            webRequest.UserAgent = OAuthUserAgent; 
+#endif
             webRequest.Headers[HttpRequestHeader.Authorization] = PrepareAuthHeader(authHeader);
 
             if (method == HttpMethod.POST)
@@ -509,6 +386,18 @@ namespace LinqToTwitter
 
                 byte[] postDataBytes = Encoding.UTF8.GetBytes(postData);
 
+#if SILVERLIGHT
+                // TODO: work in progress
+                webRequest.BeginGetRequestStream(
+                    new AsyncCallback(
+                        ar =>
+                        {
+                            using (var requestStream = webRequest.EndGetRequestStream(ar))
+                            {
+                                requestStream.Write(postDataBytes, 0, postDataBytes.Length);
+                            }
+                        }), null);
+#else
                 var resetEvent = new ManualResetEvent(initialState: false);
 
                 webRequest.BeginGetRequestStream(
@@ -523,9 +412,12 @@ namespace LinqToTwitter
                         }), null);
 
                 resetEvent.WaitOne();
+#endif
             }
 
-            responseData = WebResponseGet(webRequest);
+#if !SILVERLIGHT
+            responseData = WebResponseGet(webRequest); 
+#endif
 
             webRequest = null;
 

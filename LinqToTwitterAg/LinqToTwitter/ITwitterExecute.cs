@@ -81,8 +81,9 @@ namespace LinqToTwitter
         /// makes HTTP call to Twitter API
         /// </summary>
         /// <param name="url">URL with all query info</param>
+        /// <param name="reqProc">Request Processor for Async Results</param>
         /// <returns>XML Results from Twitter</returns>
-        string QueryTwitter(string url);
+        string QueryTwitter<T>(string url, IRequestProcessor<T> reqProc);
 
         /// <summary>
         /// Query for Twitter Streaming APIs
@@ -115,5 +116,10 @@ namespace LinqToTwitter
         /// Only for streaming credentials, use OAuth for non-streaming APIs
         /// </summary>
         string StreamingPassword { get; set; }
+
+        /// <summary>
+        /// Executed for async calls
+        /// </summary>
+        Delegate AsyncCallback { get; set; }
     }
 }

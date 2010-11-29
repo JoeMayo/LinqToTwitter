@@ -37,6 +37,8 @@ namespace LinqToTwitter
         public TwitterContext()
             : this(new AnonymousAuthorizer())
         {
+            BaseUrl = "http://api.twitter.com/1/";
+            SearchUrl = "http://search.twitter.com/";
         }
 
         ///// <summary>
@@ -775,7 +777,7 @@ namespace LinqToTwitter
             }
             else
             {
-                results = TwitterExecutor.QueryTwitter(url);
+                results = TwitterExecutor.QueryTwitter(url, reqProc);
             }
 
             // Transform results into objects

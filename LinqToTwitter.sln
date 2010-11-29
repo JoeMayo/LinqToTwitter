@@ -57,9 +57,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqToTwitterMvcDemo", "Lin
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqToTwitterAg", "LinqToTwitterAg\LinqToTwitterAg.csproj", "{D6F5E8C4-5A90-4606-B9EF-9478DDA7BF9C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqToTwitterSilverlightDemo", "LinqToTwitterSilverlightDemo\LinqToTwitterSilverlightDemo.csproj", "{F1F4D80B-4772-4D9A-97F9-F11D57F4E519}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqToTwitterSilverlightDemo.Web", "LinqToTwitterSilverlightDemo.Web\LinqToTwitterSilverlightDemo.Web.csproj", "{509AAAE9-A9DD-4CD1-9807-B315506BC6CE}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 8
+		SccNumberOfProjects = 10
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs01
 		SccLocalPath0 = .
@@ -86,6 +90,12 @@ Global
 		SccProjectUniqueName7 = LinqToTwitterAg\\LinqToTwitterAg.csproj
 		SccProjectName7 = LinqToTwitterAg
 		SccLocalPath7 = LinqToTwitterAg
+		SccProjectUniqueName8 = LinqToTwitterSilverlightDemo\\LinqToTwitterSilverlightDemo.csproj
+		SccProjectName8 = LinqToTwitterSilverlightDemo
+		SccLocalPath8 = LinqToTwitterSilverlightDemo
+		SccProjectUniqueName9 = LinqToTwitterSilverlightDemo.Web\\LinqToTwitterSilverlightDemo.Web.csproj
+		SccProjectName9 = LinqToTwitterSilverlightDemo.Web
+		SccLocalPath9 = LinqToTwitterSilverlightDemo.Web
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = LinqToTwitter.vsmdi
@@ -147,6 +157,18 @@ Global
 		{D6F5E8C4-5A90-4606-B9EF-9478DDA7BF9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D6F5E8C4-5A90-4606-B9EF-9478DDA7BF9C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D6F5E8C4-5A90-4606-B9EF-9478DDA7BF9C}.Release|x86.ActiveCfg = Release|Any CPU
+		{F1F4D80B-4772-4D9A-97F9-F11D57F4E519}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F1F4D80B-4772-4D9A-97F9-F11D57F4E519}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F1F4D80B-4772-4D9A-97F9-F11D57F4E519}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F1F4D80B-4772-4D9A-97F9-F11D57F4E519}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F1F4D80B-4772-4D9A-97F9-F11D57F4E519}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F1F4D80B-4772-4D9A-97F9-F11D57F4E519}.Release|x86.ActiveCfg = Release|Any CPU
+		{509AAAE9-A9DD-4CD1-9807-B315506BC6CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{509AAAE9-A9DD-4CD1-9807-B315506BC6CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{509AAAE9-A9DD-4CD1-9807-B315506BC6CE}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{509AAAE9-A9DD-4CD1-9807-B315506BC6CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{509AAAE9-A9DD-4CD1-9807-B315506BC6CE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{509AAAE9-A9DD-4CD1-9807-B315506BC6CE}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

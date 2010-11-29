@@ -31,14 +31,21 @@ namespace LinqToTwitter
                 return null;
             }
 
-            var date = status.Element("created_at").Value;
-            var createdAtDate = String.IsNullOrEmpty(date) 
-                                ? DateTime.MinValue
-                                : DateTime.ParseExact(
-                                        date,
-                                        "ddd MMM dd HH:mm:ss %zzzz yyyy",
-                                        CultureInfo.InvariantCulture,
-                                        DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal);
+            var createdAtDate =
+                status.Element("created_at") == null ||
+                status.Element("created_at").Value == string.Empty
+                    ? DateTime.MinValue
+                    : DateTime.ParseExact(
+                        status.Element("created_at").Value,
+                        "ddd MMM dd HH:mm:ss %zzzz yyyy",
+                        CultureInfo.InvariantCulture,
+                        DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal);
+
+            var favorite =
+                    status.Element("favorited") == null ||
+                    status.Element("favorited").Value == string.Empty ?
+                         "false" :
+                         status.Element("favorited").Value;
 
             var user = status.Element("user");
             var retweet = status.Element("retweeted_status");
@@ -158,21 +165,14 @@ namespace LinqToTwitter
             var newStatus = new Status
             {
                 CreatedAt = createdAtDate,
-                Favorited =
-                 bool.Parse(
-                     string.IsNullOrEmpty(status.Element("favorited").Value) ?
-                     "true" :
-                     status.Element("favorited").Value),
-                StatusID = status.Element("id").Value,
-                InReplyToStatusID = status.Element("in_reply_to_status_id").Value,
-                InReplyToUserID = status.Element("in_reply_to_user_id").Value,
-                Source = status.Element("source").Value,
-                Text = status.Element("text").Value,
-                Truncated = bool.Parse(status.Element("truncated").Value),
-                InReplyToScreenName =
-                     status.Element("in_reply_to_screen_name") == null ?
-                         string.Empty :
-                         status.Element("in_reply_to_screen_name").Value,
+                Favorited = bool.Parse(favorite),
+                StatusID = status.GetString("id"),
+                InReplyToStatusID = status.GetString("in_reply_to_status_id"),
+                InReplyToUserID = status.GetString("in_reply_to_user_id"),
+                Source = status.GetString("source"),
+                Text = status.GetString("text"),
+                Truncated = status.GetBool("truncated"),
+                InReplyToScreenName = status.GetString("in_reply_to_screen_name"),
                 Contributors = contributors,
                 Geo = geo,
                 Coordinates = coord,
@@ -187,33 +187,17 @@ namespace LinqToTwitter
                         null :
                         new Retweet
                         {
-                            ID = retweet.Element("id").Value,
+                            ID = retweet.GetString("id"),
                             CreatedAt = retweetedAtDate,
-                            Favorited =
-                                bool.Parse(
-                                    string.IsNullOrEmpty(retweet.Element("favorited").Value) ?
-                                    "true" :
-                                    retweet.Element("favorited").Value),
-                            InReplyToScreenName = retweet.Element("in_reply_to_screen_name").Value,
-                            InReplyToStatusID = retweet.Element("in_reply_to_status_id").Value,
-                            InReplyToUserID = retweet.Element("in_reply_to_user_id").Value,
-                            Source = retweet.Element("source").Value,
-                            Text = retweet.Element("text").Value,
-                            Retweeted =
-                                retweet.Element("retweeted") == null || 
-                                retweet.Element("retweeted").Value == string.Empty ?
-                                    false :
-                                    bool.Parse(retweet.Element("retweeted").Value),
-                            RetweetCount =
-                                retweet.Element("retweet_count") == null || 
-                                retweet.Element("retweet_count").Value == string.Empty ?
-                                    0 :
-                                    int.Parse(retweet.Element("retweet_count").Value),
-                            Truncated =
-                                bool.Parse(
-                                    string.IsNullOrEmpty(retweet.Element("truncated").Value) ?
-                                    "true" :
-                                    retweet.Element("truncated").Value),
+                            Favorited = retweet.GetBool("favorited"),
+                            InReplyToScreenName = retweet.GetString("in_reply_to_screen_name"),
+                            InReplyToStatusID = retweet.GetString("in_reply_to_status_id"),
+                            InReplyToUserID = retweet.GetString("in_reply_to_user_id"),
+                            Source = retweet.GetString("source"),
+                            Text = retweet.GetString("text"),
+                            Retweeted = retweet.GetBool("retweeted"),
+                            RetweetCount = retweet.GetInt("retweet_count"),
+                            Truncated = retweet.GetBool("truncated", true),
                             RetweetingUser = User.CreateUser(retweet.Element("user"))
                         }
             };

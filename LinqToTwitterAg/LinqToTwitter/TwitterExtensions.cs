@@ -11,7 +11,7 @@ namespace LinqToTwitter
         /// Callback is invoked by LINQ to Twitter streaming support,
         /// allowing you to process each individual response from Twitter.
         /// 
-        /// If your callback code fails to handle an exception
+        /// If your callback code fails to handle an exception,
         /// LINQ to Twitter will log and re-throw. Remember to ensure
         /// your code conforms with Twitter stream usage guidelines.
         /// LINQ to Twitter has a conformant backoff/retry strategy, but
@@ -61,6 +61,16 @@ namespace LinqToTwitter
                 .StreamingCallback = callback;
 
             return streaming;
+        }
+
+        public static IQueryable<T> AsyncCallback<T>(this IQueryable<T> queryType, Action<IEnumerable<T>> callback)
+        {
+            (queryType.Provider as TwitterQueryProvider)
+                .Context
+                .TwitterExecutor
+                .AsyncCallback = callback;
+
+            return queryType;
         }
     }
 }

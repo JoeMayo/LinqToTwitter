@@ -1,0 +1,22 @@
+﻿<navigation:Page x:Class="LinqToTwitterSilverlightDemo.Views.StatusUpdate" 
+           xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+           xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+           xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+           mc:Ignorable="d"
+           xmlns:navigation="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Navigation"
+           d:DesignWidth="640" d:DesignHeight="480"
+           Title="StatusUpdate Page" xmlns:sdk="http://schemas.microsoft.com/winfx/2006/xaml/presentation/sdk">
+    <Grid x:Name="LayoutRoot">
+        <TextBlock Height="23" HorizontalAlignment="Left" Margin="222,359,0,0" Name="textBlock1" Text="" VerticalAlignment="Top" Width="194" />
+        <WebBrowser Height="306" HorizontalAlignment="Left" Margin="12,12,0,0" Name="webBrowser1" VerticalAlignment="Top" Width="616" />
+        <TextBox Height="23" HorizontalAlignment="Right" Margin="0,324,287,0" Name="PinTextBox" VerticalAlignment="Top" Width="120" />
+        <sdk:Label Height="28" HorizontalAlignment="Left" Margin="201,324,0,0" Name="label2" VerticalAlignment="Top" Width="37" Content="Pin:" />
+        <StackPanel Height="81" HorizontalAlignment="Left" Margin="99,399,0,0" Name="stackPanel1" VerticalAlignment="Top" Width="487" Orientation="Horizontal" Visibility="Collapsed">
+            <sdk:Label Height="28" Name="label1" Width="44" Content="Tweet:" />
+            <TextBox Height="52" Name="TweetTextBox" Width="349" />
+            <Button Content="Send" Height="23" Name="button1" Width="75" Margin="5" />
+        </StackPanel>
+        <Button Content="Submit" Height="23" HorizontalAlignment="Left" Margin="367,324,0,0" Name="button2" VerticalAlignment="Top" Width="75" Click="button2_Click" />
+    </Grid>
+</navigation:Page>

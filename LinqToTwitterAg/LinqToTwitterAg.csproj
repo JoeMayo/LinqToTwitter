@@ -90,6 +90,7 @@
     <Compile Include="Common\TwitterHashResponse.cs" />
     <Compile Include="Common\TwitterProgressEventArgs.cs" />
     <Compile Include="Common\TwitterQueryException.cs" />
+    <Compile Include="Common\XTwitterElement.cs" />
     <Compile Include="Common\TypeSystem.cs" />
     <Compile Include="DirectMessage\DirectMessage.cs" />
     <Compile Include="DirectMessage\DirectMessageRequestProcessor.cs" />
@@ -185,12 +186,8 @@
     <Compile Include="User\UserType.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="obj\Debug\DesignTimeResolveAssemblyReferencesInput.cache" />
-  </ItemGroup>
-  <ItemGroup>
     <Folder Include="Bin\Debug\" />
     <Folder Include="Bin\Release\" />
-    <Folder Include="obj\Debug\TempPE\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Silverlight\$(SilverlightVersion)\Microsoft.Silverlight.CSharp.targets" />
   <ProjectExtensions>

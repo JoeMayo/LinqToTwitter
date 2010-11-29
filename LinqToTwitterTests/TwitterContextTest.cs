@@ -1613,7 +1613,7 @@ namespace LinqToTwitterTests
             var authMock = new Mock<ITwitterAuthorizer>();
             var execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
-            execMock.Setup(exec => exec.QueryTwitter(It.IsAny<string>())).Returns(m_testStatusQueryResponse);
+            execMock.Setup(exec => exec.QueryTwitter(It.IsAny<string>(), It.IsAny<StatusRequestProcessor<Status>>())).Returns(m_testStatusQueryResponse);
             var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
             var statusQuery =
                 from tweet in ctx.Status
@@ -1623,7 +1623,7 @@ namespace LinqToTwitterTests
             var reqProc = ctx.Execute<Status>(statusQuery.Expression, isEnumerable: true);
 
             execMock.Verify(exec => exec.QueryTwitterStream(It.IsAny<string>()), Times.Never());
-            execMock.Verify(exec => exec.QueryTwitter(It.IsAny<string>()), Times.Once());
+            execMock.Verify(exec => exec.QueryTwitter(It.IsAny<string>(), It.IsAny<StatusRequestProcessor<Status>>()), Times.Once());
         }
 
         [TestMethod]

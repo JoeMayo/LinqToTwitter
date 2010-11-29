@@ -32,6 +32,11 @@ namespace LinqToTwitter
         string ConsumerSecret { get; set; }
 
         /// <summary>
+        /// Token provided by Twitter for making request
+        /// </summary>
+        string OAuthToken { get; set; }
+
+        /// <summary>
         /// Unique access token for a user
         /// </summary>
         string AccessToken { get; set; }

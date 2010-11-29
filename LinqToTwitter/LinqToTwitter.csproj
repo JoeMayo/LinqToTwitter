@@ -211,6 +211,9 @@
     <Compile Include="..\LinqToTwitterAg\Common\TypeSystem.cs">
       <Link>Common\TypeSystem.cs</Link>
     </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\XTwitterElement.cs">
+      <Link>Common\XTwitterElement.cs</Link>
+    </Compile>
     <Compile Include="..\LinqToTwitterAg\DirectMessage\DirectMessage.cs">
       <Link>DirectMessage\DirectMessage.cs</Link>
     </Compile>
@@ -474,6 +477,7 @@
     </Compile>
     <Compile Include="OAuth\MvcAuthorizer.cs" />
     <Compile Include="OAuth\MvcOAuthActionResult.cs" />
+    <Compile Include="OAuth\SessionStateCredentials.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

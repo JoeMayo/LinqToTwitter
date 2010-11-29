@@ -12,38 +12,28 @@ public partial class _Default : System.Web.UI.Page
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        IOAuthCredentials credentials = new InMemoryCredentials();
-        string authString = Session[OAuthCredentialsKey] as string;
+        IOAuthCredentials credentials = new SessionStateCredentials();
 
-        if (authString == null)
+        if (credentials.ConsumerKey == null || credentials.ConsumerSecret == null)
         {
             credentials.ConsumerKey = ConfigurationManager.AppSettings["twitterConsumerKey"];
             credentials.ConsumerSecret = ConfigurationManager.AppSettings["twitterConsumerSecret"];
+        }
 
-            Session[OAuthCredentialsKey] = credentials.ToString();
-        }
-        else
+        auth = new MvcAuthorizer
         {
-            credentials.Load(authString);
-        }
+            Credentials = credentials
+        };
 
         auth = new WebAuthorizer
         {
-            Credentials = new InMemoryCredentials
-            {
-                ConsumerKey = ConfigurationManager.AppSettings["twitterConsumerKey"],
-                ConsumerSecret = ConfigurationManager.AppSettings["twitterConsumerSecret"]
-            },
+            Credentials = credentials,
             PerformRedirect = authUrl => Response.Redirect(authUrl)
         };
 
         if (!Page.IsPostBack)
         {
-            if (!string.IsNullOrWhiteSpace(credentials.ConsumerKey) &&
-                !string.IsNullOrWhiteSpace(credentials.ConsumerSecret))
-            {
-                auth.CompleteAuthorization(Request.Url);
-            }
+            auth.CompleteAuthorization(Request.Url);
         }
 
         if (string.IsNullOrWhiteSpace(credentials.ConsumerKey) ||
