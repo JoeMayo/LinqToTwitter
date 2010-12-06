@@ -37,6 +37,14 @@ namespace LinqToTwitter
         HttpWebResponse Post(string url, Dictionary<string, string> args);
 
         /// <summary>
+        /// Async OAuth Post
+        /// </summary>
+        /// <param name="url">Twitter Command</param>
+        /// <param name="args">Command Arguments</param>
+        /// <returns>HttpWebRequest for post</returns>
+        HttpWebRequest PostAsync(string url, Dictionary<string, string> args);
+
+        /// <summary>
         /// Gets a value indicating whether this instance is ready to send authorized GET and POST requests.
         /// </summary>
         /// <value>

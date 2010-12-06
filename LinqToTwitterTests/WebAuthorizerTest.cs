@@ -2,7 +2,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using LinqToTwitterTests.Common;
-using LinqToTwitter;
 using Moq;
 using System.Web.SessionState;
 using System.Web;

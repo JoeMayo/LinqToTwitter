@@ -39,12 +39,12 @@ namespace LinqToTwitter
     /// </summary>
     public class OAuthTwitter : OAuthBase, IOAuthTwitter
     {
+        #region Properties
+
         /// <summary>
         /// user agent header sent to Twitter
         /// </summary>
         public string OAuthUserAgent { get; set; }
-
-        #region Properties
 
         /// <summary>
         /// Consumer Key
@@ -80,8 +80,14 @@ namespace LinqToTwitter
         /// <returns>The url with a valid request token, or a null string.</returns>
         public string AuthorizationLinkGet(string requestToken, string authorizeUrl, string callback, bool readOnly, bool forceLogin)
         {
-            string ret = null;
             string response = oAuthWebRequest(HttpMethod.GET, requestToken, String.Empty, callback);
+            return PrepareAuthorizeUrl(authorizeUrl, readOnly, forceLogin, response);
+        }
+
+        private string PrepareAuthorizeUrl(string authorizeUrl, bool readOnly, bool forceLogin, string response)
+        {
+            string authUrl = string.Empty;
+
             if (response.Length > 0)
             {
                 var prefixChar = "?";
@@ -95,22 +101,23 @@ namespace LinqToTwitter
 
                 if (oAuthToken != null)
                 {
-                    ret = authorizeUrl + "?oauth_token=" + oAuthToken;
+                    OAuthToken = oAuthToken;
+                    authUrl = authorizeUrl + "?oauth_token=" + oAuthToken;
                     prefixChar = "&";
                 }
 
                 if (readOnly)
                 {
-                    ret += prefixChar + "oauth_access_type=read";
+                    authUrl += prefixChar + "oauth_access_type=read";
                     prefixChar = "&";
                 }
 
                 if (forceLogin)
                 {
-                    ret += prefixChar + "force_login=true";
+                    authUrl += prefixChar + "force_login=true";
                 }
             }
-            return ret;
+            return authUrl;
         }
 
         /// <summary>
@@ -126,6 +133,17 @@ namespace LinqToTwitter
 
             string response = oAuthWebRequest(HttpMethod.GET, accessTokenUrl, String.Empty, callback);
 
+            ProcessAccessTokenResponse(ref screenName, ref userID, response);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="screenName"></param>
+        /// <param name="userID"></param>
+        /// <param name="response"></param>
+        private void ProcessAccessTokenResponse(ref string screenName, ref string userID, string response)
+        {
             if (response.Length > 0)
             {
                 var qs =
@@ -453,5 +471,193 @@ namespace LinqToTwitter
 
             return responseData;
         }
+
+        #region - Async -
+
+        public HttpWebRequest GetHttpRequest(Uri oauthUrl, Uri callbackUrl)
+        {
+            string signedUrl = null;
+            string queryString = null;
+            string callback = callbackUrl == null ? "oob" : callbackUrl.ToString();
+            GetOAuthQueryString(HttpMethod.GET, oauthUrl.ToString(), callback, out signedUrl, out queryString);
+            var req = System.Net.WebRequest.Create(signedUrl + "?" + queryString) as HttpWebRequest;
+            req.Method = HttpMethod.GET.ToString();
+            //req.Headers[HttpRequestHeader.Authorization] =
+            //    GetOAuthHeader(oauthUrl, callbackUrl);
+#if !SILVERLIGHT
+            req.ServicePoint.Expect100Continue = false;
+            req.UserAgent = OAuthUserAgent;
+#endif
+            return req;
+        }
+
+        /// <summary>
+        /// Gets a signed OAuth Header
+        /// </summary>
+        /// <param name="url">Request Url</param>
+        /// <param name="callbackUrl">Callback Url</param>
+        /// <returns></returns>
+        public string GetOAuthHeader(Uri url, Uri callbackUrl)
+        {
+            string outUrl = string.Empty;
+            string queryString = string.Empty;
+            string nonce = this.GenerateNonce();
+            string timeStamp = this.GenerateTimeStamp();
+            string callback = callbackUrl == null ? "oob" : callbackUrl.ToString();
+
+            //Generate Signature
+            string sig = this.GenerateSignature(url,
+                this.OAuthConsumerKey,
+                this.OAuthConsumerSecret,
+                this.OAuthToken,
+                this.OAuthTokenSecret,
+                this.OAuthVerifier,
+                TwitterParameterUrlEncode(callback),
+                HttpMethod.GET.ToString(),
+                timeStamp,
+                nonce,
+                out outUrl,
+                out queryString);
+
+            queryString += "&oauth_signature=" + HttpUtility.UrlEncode(sig);
+
+            return PrepareAuthHeader(queryString);
+        }
+
+        /// <summary>
+        /// Asynchronous request for OAuth request token
+        /// </summary>
+        /// <param name="oauthRequestTokenUrl">Url to make initial request on</param>
+        /// <param name="oauthAuthorizeUrl">Url to send user to for authorization</param>
+        /// <param name="twitterCallbackUrl">Url for Twitter to redirect to after authorization (null for Pin authorization)</param>
+        /// <param name="readOnly">Should access be read-only</param>
+        /// <param name="forceLogin">Should user be forced to log in to authorize this app</param>
+        /// <param name="authorizationCallback">Lambda to let program perform redirect to authorization page</param>
+        /// <param name="authenticationCompleteCallback">Lambda to invoke to let user know when authorization completes</param>
+        public void GetRequestTokenAsync(
+            Uri oauthRequestTokenUrl, 
+            Uri oauthAuthorizeUrl, 
+            Uri twitterCallbackUrl, 
+            bool readOnly, bool forceLogin, 
+            Action<string> authorizationCallback, 
+            Action<TwitterAsyncResponse<object>> authenticationCompleteCallback)
+        {
+            HttpWebRequest req = GetHttpRequest(oauthRequestTokenUrl, twitterCallbackUrl);
+
+            req.BeginGetResponse(
+                new AsyncCallback(
+                    ar =>
+                    {
+                        var twitterResponse = new TwitterAsyncResponse<object>();
+
+                        try
+                        {
+                            string requestTokenResponse = string.Empty;
+
+                            var res = req.EndGetResponse(ar) as HttpWebResponse;
+
+                            using (var respStream = res.GetResponseStream())
+                            using (var respReader = new StreamReader(respStream))
+                            {
+                                requestTokenResponse = respReader.ReadToEnd();
+                            }
+
+                            string authorizationUrl = PrepareAuthorizeUrl(oauthAuthorizeUrl.ToString(), readOnly, forceLogin, requestTokenResponse);
+
+                            authorizationCallback(authorizationUrl);
+                        }
+                        catch (TwitterQueryException tqe)
+                        {
+                            twitterResponse.Status = TwitterErrorStatus.TwitterApiError;
+                            twitterResponse.Message = "Error while communicating with Twitter. Please see Error property for details.";
+                            twitterResponse.Error = tqe;
+                        }
+                        catch (Exception ex)
+                        {
+                            twitterResponse.Status = TwitterErrorStatus.TwitterApiError;
+                            twitterResponse.Message = "Error during LINQ to Twitter processing. Please see Error property for details.";
+                            twitterResponse.Error = ex;
+                        }
+                        finally
+                        {
+                            if (authenticationCompleteCallback != null)
+                            {
+                                authenticationCompleteCallback(twitterResponse); 
+                            }
+                        }
+                    }), null);
+        }
+
+        /// <summary>
+        /// Asynchronous request for OAuth access token
+        /// </summary>
+        /// <param name="verifier">Verification token provided by Twitter after user authorizes (7-digit number for Pin authorization too)</param>
+        /// <param name="oauthAccessTokenUrl">Access token URL</param>
+        /// <param name="twitterCallbackUrl">URL for your app that Twitter redirects to after authorization (null for Pin authorization)</param>
+        /// <param name="authenticationCompleteCallback">Callback to application after response completes (contains UserID and ScreenName)</param>
+        public void GetAccessTokenAsync(
+            string verifier,
+            Uri oauthAccessTokenUrl,
+            Uri twitterCallbackUrl,
+            Action<TwitterAsyncResponse<UserIdentifier>> authenticationCompleteCallback)
+        {
+            this.OAuthVerifier = verifier;
+
+            HttpWebRequest req = GetHttpRequest(oauthAccessTokenUrl, twitterCallbackUrl);
+
+            req.BeginGetResponse(
+                new AsyncCallback(
+                    ar =>
+                    {
+                        string screenName = string.Empty;
+                        string userID = string.Empty;
+
+                        var twitterResponse = new TwitterAsyncResponse<UserIdentifier>();
+
+                        try
+                        {
+                            string accessTokenResponse = string.Empty;
+
+                            var res = req.EndGetResponse(ar) as HttpWebResponse;
+
+                            using (var respStream = res.GetResponseStream())
+                            using (var respReader = new StreamReader(respStream))
+                            {
+                                accessTokenResponse = respReader.ReadToEnd();
+                            }
+
+                            ProcessAccessTokenResponse(ref screenName, ref userID, accessTokenResponse);
+                        }
+                        catch (TwitterQueryException tqe)
+                        {
+                            twitterResponse.Status = TwitterErrorStatus.TwitterApiError;
+                            twitterResponse.Message = "Error while communicating with Twitter. Please see Error property for details.";
+                            twitterResponse.Error = tqe;
+                        }
+                        catch (Exception ex)
+                        {
+                            twitterResponse.Status = TwitterErrorStatus.TwitterApiError;
+                            twitterResponse.Message = "Error during LINQ to Twitter processing. Please see Error property for details.";
+                            twitterResponse.Error = ex;
+                        }
+                        finally
+                        {
+                            if (authenticationCompleteCallback != null)
+                            {
+                                twitterResponse.State =
+                                    new UserIdentifier
+                                    {
+                                        ID = userID,
+                                        UserID = userID,
+                                        ScreenName = screenName
+                                    };
+                                authenticationCompleteCallback(twitterResponse); 
+                            }
+                        }
+                    }), null);
+
+        }
+
+        #endregion
     }
 }

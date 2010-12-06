@@ -87,6 +87,8 @@
     <Compile Include="Common\MethodCallExpressionTypeFinder.cs" />
     <Compile Include="Common\ParameterFinder.cs" />
     <Compile Include="Common\RequestProcessorHelper.cs" />
+    <Compile Include="Common\TwitterAsyncResponse.cs" />
+    <Compile Include="Common\TwitterErrorStatus.cs" />
     <Compile Include="Common\TwitterHashResponse.cs" />
     <Compile Include="Common\TwitterProgressEventArgs.cs" />
     <Compile Include="Common\TwitterQueryException.cs" />

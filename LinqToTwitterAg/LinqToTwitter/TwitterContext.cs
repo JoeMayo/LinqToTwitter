@@ -14,6 +14,10 @@ using System.Net;
 using System.Xml.Linq;
 using LinqToTwitter.Common;
 
+#if SILVERLIGHT
+using System.Net.Browser;
+#endif
+
 namespace LinqToTwitter
 {
     /// <summary>
@@ -22,14 +26,6 @@ namespace LinqToTwitter
     public class TwitterContext : IDisposable
     {
         #region TwitterContext initialization
-
-        ///// <summary>
-        ///// Initializes a new instance of the <see cref="TwitterContext"/> class.
-        ///// </summary>
-        //public TwitterContext()
-        //    : this(new AnonymousAuthorization())
-        //{
-        //}
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TwitterContext"/> class.
@@ -40,24 +36,6 @@ namespace LinqToTwitter
             BaseUrl = "http://api.twitter.com/1/";
             SearchUrl = "http://search.twitter.com/";
         }
-
-        ///// <summary>
-        ///// Initializes a new instance of the <see cref="TwitterContext"/> class.
-        ///// </summary>
-        ///// <param name="authorization">The authorization.</param>
-        //public TwitterContext(ITwitterAuthorization authorization)
-        //    : this(new TwitterExecute(authorization), null, null)
-        //{
-        //}
-
-        ///// <summary>
-        ///// Initializes a new instance of the <see cref="TwitterContext"/> class.
-        ///// </summary>
-        ///// <param name="authorization">The authorization.</param>
-        //public TwitterContext(ITwitterAuthorization authorization, string baseUrl, string searchUrl)
-        //    : this(new TwitterExecute(authorization), baseUrl, searchUrl)
-        //{
-        //}
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TwitterContext"/> class.
@@ -105,32 +83,12 @@ namespace LinqToTwitter
             StreamingUrl = "http://stream.twitter.com/1/";
             UserStreamUrl = "https://userstream.twitter.com/2/";
             SiteStreamUrl = "http://betastream.twitter.com/2b/";
+
+#if SILVERLIGHT
+            WebRequest.RegisterPrefix("http://", WebRequestCreator.BrowserHttp);
+            WebRequest.RegisterPrefix("https://", WebRequestCreator.BrowserHttp);
+#endif
         }
-
-        ///// <summary>
-        ///// Initializes a new instance of the <see cref="TwitterContext"/> class.
-        ///// </summary>
-        ///// <param name="authorization">OAuth provider</param>
-        ///// <param name="execute">The <see cref="ITwitterExecute"/> object to use.</param>
-        ///// <param name="baseUrl">Base url of Twitter API.  May be null to use the default "http://twitter.com/" value.</param>
-        ///// <param name="searchUrl">Base url of Twitter Search API.  May be null to use the default "http://search.twitter.com/" value.</param>
-        //public TwitterContext(ITwitterAuthorization authorization, ITwitterExecute execute, string baseUrl, string searchUrl)
-        //{
-        //    if (authorization == null)
-        //    {
-        //        throw new ArgumentNullException("authorization");
-        //    }
-
-        //    if (execute == null)
-        //    {
-        //        throw new ArgumentNullException("execute");
-        //    }
-
-        //    TwitterExecutor = execute;
-        //    TwitterExecutor.AuthorizedClient = authorization;
-        //    BaseUrl = string.IsNullOrEmpty(baseUrl) ? "https://api.twitter.com/1/" : baseUrl;
-        //    SearchUrl = string.IsNullOrEmpty(searchUrl) ? "http://search.twitter.com/" : searchUrl;
-        //}
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TwitterContext"/> class.
@@ -155,6 +113,11 @@ namespace LinqToTwitter
             TwitterExecutor.AuthorizedClient = authorization;
             BaseUrl = string.IsNullOrEmpty(baseUrl) ? "https://api.twitter.com/1/" : baseUrl;
             SearchUrl = string.IsNullOrEmpty(searchUrl) ? "http://search.twitter.com/" : searchUrl;
+
+#if SILVERLIGHT
+            WebRequest.RegisterPrefix("http://", WebRequestCreator.ClientHttp);
+            WebRequest.RegisterPrefix("https://", WebRequestCreator.ClientHttp);
+#endif
         }
 
         #endregion
@@ -926,7 +889,18 @@ namespace LinqToTwitter
         /// <returns>IQueryable of sent status</returns>
         public virtual Status UpdateStatus(string status)
         {
-            return UpdateStatus(status, -1, -1, null, false, null);
+            return UpdateStatus(status, -1, -1, null, false, null, null);
+        }
+
+        /// <summary>
+        /// sends a status update - overload to make inReplyToStatusID optional
+        /// </summary>
+        /// <param name="status">(optional @UserName) and (required) status text</param>
+        /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <returns>IQueryable of sent status</returns>
+        public virtual Status UpdateStatus(string status, Action<TwitterAsyncResponse<Status>> callback)
+        {
+            return UpdateStatus(status, -1, -1, null, false, null, callback);
         }
 
         /// <summary>
@@ -937,7 +911,19 @@ namespace LinqToTwitter
         /// <returns>IQueryable of sent status</returns>
         public virtual Status UpdateStatus(string status, string inReplyToStatusID)
         {
-            return UpdateStatus(status, -1, -1, null, false, inReplyToStatusID);
+            return UpdateStatus(status, -1, -1, null, false, inReplyToStatusID, null);
+        }
+
+        /// <summary>
+        /// sends a status update
+        /// </summary>
+        /// <param name="status">(optional @UserName) and (required) status text</param>
+        /// <param name="inReplyToStatusID">id of status replying to - optional - pass null if not used</param>
+        /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <returns>IQueryable of sent status</returns>
+        public virtual Status UpdateStatus(string status, string inReplyToStatusID, Action<TwitterAsyncResponse<Status>> callback)
+        {
+            return UpdateStatus(status, -1, -1, null, false, inReplyToStatusID, callback);
         }
 
         /// <summary>
@@ -949,7 +935,20 @@ namespace LinqToTwitter
         /// <returns>IQueryable of sent status</returns>
         public virtual Status UpdateStatus(string status, decimal latitude, decimal longitude)
         {
-            return UpdateStatus(status, latitude, longitude, null, false, null);
+            return UpdateStatus(status, latitude, longitude, null, false, null, null);
+        }
+
+        /// <summary>
+        /// sends a status update
+        /// </summary>
+        /// <param name="status">(optional @UserName) and (required) status text</param>
+        /// <param name="latitude">Latitude coordinate of where tweet occurred</param>
+        /// <param name="longitude">Longitude coordinate of where tweet occurred</param>
+        /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <returns>IQueryable of sent status</returns>
+        public virtual Status UpdateStatus(string status, decimal latitude, decimal longitude, Action<TwitterAsyncResponse<Status>> callback)
+        {
+            return UpdateStatus(status, latitude, longitude, null, false, null, callback);
         }
 
         /// <summary>
@@ -962,7 +961,21 @@ namespace LinqToTwitter
         /// <returns>IQueryable of sent status</returns>
         public virtual Status UpdateStatus(string status, decimal latitude, decimal longitude, bool displayCoordinates)
         {
-            return UpdateStatus(status, latitude, longitude, null, displayCoordinates);
+            return UpdateStatus(status, latitude, longitude, null, displayCoordinates, null, null);
+        }
+
+        /// <summary>
+        /// sends a status update
+        /// </summary>
+        /// <param name="status">(optional @UserName) and (required) status text</param>
+        /// <param name="latitude">Latitude coordinate of where tweet occurred</param>
+        /// <param name="longitude">Longitude coordinate of where tweet occurred</param>
+        /// <param name="displayCoordinates">Allow or prevent display of coordinates for this tweet</param>
+        /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <returns>IQueryable of sent status</returns>
+        public virtual Status UpdateStatus(string status, decimal latitude, decimal longitude, bool displayCoordinates, Action<TwitterAsyncResponse<Status>> callback)
+        {
+            return UpdateStatus(status, latitude, longitude, null, displayCoordinates, callback);
         }
 
         /// <summary>
@@ -976,7 +989,22 @@ namespace LinqToTwitter
         /// <returns>IQueryable of sent status</returns>
         public virtual Status UpdateStatus(string status, decimal latitude, decimal longitude, bool displayCoordinates, string inReplyToStatusID)
         {
-            return UpdateStatus(status, latitude, longitude, null, displayCoordinates, inReplyToStatusID);
+            return UpdateStatus(status, latitude, longitude, null, displayCoordinates, inReplyToStatusID, null);
+        }
+
+        /// <summary>
+        /// sends a status update
+        /// </summary>
+        /// <param name="status">(optional @UserName) and (required) status text</param>
+        /// <param name="latitude">Latitude coordinate of where tweet occurred</param>
+        /// <param name="longitude">Longitude coordinate of where tweet occurred</param>
+        /// <param name="displayCoordinates">Allow or prevent display of coordinates for this tweet</param>
+        /// <param name="inReplyToStatusID">id of status replying to - optional - pass null if not used</param>
+        /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <returns>IQueryable of sent status</returns>
+        public virtual Status UpdateStatus(string status, decimal latitude, decimal longitude, bool displayCoordinates, string inReplyToStatusID, Action<TwitterAsyncResponse<Status>> callback)
+        {
+            return UpdateStatus(status, latitude, longitude, null, displayCoordinates, inReplyToStatusID, callback);
         }
 
         /// <summary>
@@ -989,7 +1017,21 @@ namespace LinqToTwitter
         /// <returns>IQueryable of sent status</returns>
         public virtual Status UpdateStatus(string status, decimal latitude, decimal longitude, string placeID)
         {
-            return UpdateStatus(status, latitude, longitude, placeID, false, null);
+            return UpdateStatus(status, latitude, longitude, placeID, false, null, null);
+        }
+
+        /// <summary>
+        /// sends a status update
+        /// </summary>
+        /// <param name="status">(optional @UserName) and (required) status text</param>
+        /// <param name="latitude">Latitude coordinate of where tweet occurred</param>
+        /// <param name="longitude">Longitude coordinate of where tweet occurred</param>
+        /// <param name="placeID">ID of place (found via Geo Reverse lookup query)</param>
+        /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <returns>IQueryable of sent status</returns>
+        public virtual Status UpdateStatus(string status, decimal latitude, decimal longitude, string placeID, Action<TwitterAsyncResponse<Status>> callback)
+        {
+            return UpdateStatus(status, latitude, longitude, placeID, false, null, callback);
         }
 
         /// <summary>
@@ -1003,7 +1045,22 @@ namespace LinqToTwitter
         /// <returns>IQueryable of sent status</returns>
         public virtual Status UpdateStatus(string status, decimal latitude, decimal longitude, string placeID, string inReplyToStatusID)
         {
-            return UpdateStatus(status, latitude, longitude, placeID, false, inReplyToStatusID);
+            return UpdateStatus(status, latitude, longitude, placeID, false, inReplyToStatusID, null);
+        }
+
+        /// <summary>
+        /// sends a status update
+        /// </summary>
+        /// <param name="status">(optional @UserName) and (required) status text</param>
+        /// <param name="latitude">Latitude coordinate of where tweet occurred</param>
+        /// <param name="longitude">Longitude coordinate of where tweet occurred</param>
+        /// <param name="placeID">ID of place (found via Geo Reverse lookup query)</param>
+        /// <param name="inReplyToStatusID">id of status replying to - optional - pass null if not used</param>
+        /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <returns>IQueryable of sent status</returns>
+        public virtual Status UpdateStatus(string status, decimal latitude, decimal longitude, string placeID, string inReplyToStatusID, Action<TwitterAsyncResponse<Status>> callback)
+        {
+            return UpdateStatus(status, latitude, longitude, placeID, false, inReplyToStatusID, callback);
         }
 
         /// <summary>
@@ -1017,7 +1074,22 @@ namespace LinqToTwitter
         /// <returns>IQueryable of sent status</returns>
         public virtual Status UpdateStatus(string status, decimal latitude, decimal longitude, string placeID, bool displayCoordinates)
         {
-            return UpdateStatus(status, latitude, longitude, placeID, displayCoordinates, null);
+            return UpdateStatus(status, latitude, longitude, placeID, displayCoordinates, null, null);
+        }
+
+        /// <summary>
+        /// sends a status update
+        /// </summary>
+        /// <param name="status">(optional @UserName) and (required) status text</param>
+        /// <param name="latitude">Latitude coordinate of where tweet occurred</param>
+        /// <param name="longitude">Longitude coordinate of where tweet occurred</param>
+        /// <param name="placeID">ID of place (found via Geo Reverse lookup query)</param>
+        /// <param name="displayCoordinates">Allow or prevent display of coordinates for this tweet</param>
+        /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <returns>IQueryable of sent status</returns>
+        public virtual Status UpdateStatus(string status, decimal latitude, decimal longitude, string placeID, bool displayCoordinates, Action<TwitterAsyncResponse<Status>> callback)
+        {
+            return UpdateStatus(status, latitude, longitude, placeID, displayCoordinates, null, callback);
         }
 
         /// <summary>
@@ -1029,7 +1101,20 @@ namespace LinqToTwitter
         /// <returns>IQueryable of sent status</returns>
         public virtual Status UpdateStatus(string status, string placeID, bool displayCoordinates)
         {
-            return UpdateStatus(status, -1, -1, placeID, displayCoordinates, null);
+            return UpdateStatus(status, -1, -1, placeID, displayCoordinates, null, null);
+        }
+
+        /// <summary>
+        /// sends a status update
+        /// </summary>
+        /// <param name="status">(optional @UserName) and (required) status text</param>
+        /// <param name="placeID">ID of place (found via Geo Reverse lookup query)</param>
+        /// <param name="displayCoordinates">Allow or prevent display of coordinates for this tweet</param>
+        /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <returns>IQueryable of sent status</returns>
+        public virtual Status UpdateStatus(string status, string placeID, bool displayCoordinates, Action<TwitterAsyncResponse<Status>> callback)
+        {
+            return UpdateStatus(status, -1, -1, placeID, displayCoordinates, null, callback);
         }
 
         /// <summary>
@@ -1042,7 +1127,21 @@ namespace LinqToTwitter
         /// <returns>IQueryable of sent status</returns>
         public virtual Status UpdateStatus(string status, string placeID, bool displayCoordinates, string inReplyToStatusID)
         {
-            return UpdateStatus(status, -1, -1, placeID, displayCoordinates, inReplyToStatusID);
+            return UpdateStatus(status, -1, -1, placeID, displayCoordinates, inReplyToStatusID, null);
+        }
+
+        /// <summary>
+        /// sends a status update
+        /// </summary>
+        /// <param name="status">(optional @UserName) and (required) status text</param>
+        /// <param name="placeID">ID of place (found via Geo Reverse lookup query)</param>
+        /// <param name="displayCoordinates">Allow or prevent display of coordinates for this tweet</param>
+        /// <param name="inReplyToStatusID">id of status replying to - optional - pass null if not used</param>
+        /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <returns>IQueryable of sent status</returns>
+        public virtual Status UpdateStatus(string status, string placeID, bool displayCoordinates, string inReplyToStatusID, Action<TwitterAsyncResponse<Status>> callback)
+        {
+            return UpdateStatus(status, -1, -1, placeID, displayCoordinates, inReplyToStatusID, callback);
         }
 
         /// <summary>
@@ -1056,6 +1155,22 @@ namespace LinqToTwitter
         /// <param name="inReplyToStatusID">id of status replying to - optional - pass null if not used</param>
         /// <returns>IQueryable of sent status</returns>
         public virtual Status UpdateStatus(string status, decimal latitude, decimal longitude, string placeID, bool displayCoordinates, string inReplyToStatusID)
+        {
+            return UpdateStatus(status, latitude, longitude, placeID, displayCoordinates, inReplyToStatusID, null);
+        }
+
+        /// <summary>
+        /// sends a status update
+        /// </summary>
+        /// <param name="status">(optional @UserName) and (required) status text</param>
+        /// <param name="latitude">Latitude coordinate of where tweet occurred</param>
+        /// <param name="longitude">Longitude coordinate of where tweet occurred</param>
+        /// <param name="placeID">ID of place (found via Geo Reverse lookup query)</param>
+        /// <param name="displayCoordinates">Allow or prevent display of coordinates for this tweet</param>
+        /// <param name="inReplyToStatusID">id of status replying to - optional - pass null if not used</param>
+        /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <returns>IQueryable of sent status</returns>
+        public virtual Status UpdateStatus(string status, decimal latitude, decimal longitude, string placeID, bool displayCoordinates, string inReplyToStatusID, Action<TwitterAsyncResponse<Status>> callback)
         {
             if (string.IsNullOrEmpty(status))
             {
@@ -1071,6 +1186,9 @@ namespace LinqToTwitter
 
             var updateUrl = BaseUrl + "statuses/update.xml";
 
+            var reqProc = new StatusRequestProcessor<Status>();
+
+            TwitterExecutor.AsyncCallback = callback;
             var resultsXml =
                 TwitterExecutor.ExecuteTwitter(
                     updateUrl,
@@ -1082,18 +1200,30 @@ namespace LinqToTwitter
                         {"long", longitude == -1 ? null : longitude.ToString()},
                         {"place_id", placeID},
                         {"display_coordinates", displayCoordinates.ToString()},
-                    });
+                    },
+                    reqProc);
 
-            List<Status> results = new StatusRequestProcessor<Status>().ProcessResults(resultsXml);
+            List<Status> results = reqProc.ProcessResults(resultsXml);
             return results.FirstOrDefault();
         }
-
+        
         /// <summary>
         /// deletes a status tweet
         /// </summary>
         /// <param name="id">id of status tweet</param>
         /// <returns>deleted status tweet</returns>
         public virtual Status DestroyStatus(string id)
+        {
+            return DestroyStatus(id, null);
+        }
+
+        /// <summary>
+        /// deletes a status tweet
+        /// </summary>
+        /// <param name="id">id of status tweet</param>
+        /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <returns>deleted status tweet</returns>
+        public virtual Status DestroyStatus(string id, Action<TwitterAsyncResponse<Status>> callback)
         {
             if (string.IsNullOrEmpty(id))
             {
@@ -1102,12 +1232,16 @@ namespace LinqToTwitter
 
             var destroyUrl = BaseUrl + "statuses/destroy/" + id + ".xml";
 
+            var reqProc = new StatusRequestProcessor<Status>();
+
+            TwitterExecutor.AsyncCallback = callback;
             var resultsXml =
                 TwitterExecutor.ExecuteTwitter(
                     destroyUrl,
-                    new Dictionary<string, string>());
+                    new Dictionary<string, string>(),
+                    reqProc);
 
-            List<Status> results = new StatusRequestProcessor<Status>().ProcessResults(resultsXml);
+            List<Status> results = reqProc.ProcessResults(resultsXml);
             return results.FirstOrDefault();
         }
 
@@ -1122,6 +1256,18 @@ namespace LinqToTwitter
         /// <param name="id">Text to send</param>
         /// <returns>Direct message element</returns>
         public virtual DirectMessage NewDirectMessage(string user, string text)
+        {
+            return NewDirectMessage(user, text, null);
+        }
+
+        /// <summary>
+        /// sends a new direct message to specified userr
+        /// </summary>
+        /// <param name="user">UserID or ScreenName of user to send to</param>
+        /// <param name="id">Text to send</param>
+        /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <returns>Direct message element</returns>
+        public virtual DirectMessage NewDirectMessage(string user, string text, Action<TwitterAsyncResponse<DirectMessage>> callback)
         {
             if (string.IsNullOrEmpty(user))
             {
@@ -1140,6 +1286,9 @@ namespace LinqToTwitter
 
             var newUrl = BaseUrl + "direct_messages/new.xml";
 
+            var reqProc = new DirectMessageRequestProcessor<DirectMessage>();
+
+            TwitterExecutor.AsyncCallback = callback;
             var resultsXml =
                 TwitterExecutor.ExecuteTwitter(
                     newUrl,
@@ -1147,9 +1296,10 @@ namespace LinqToTwitter
                     {
                         {"user", user},
                         {"text", text}
-                    });
+                    },
+                    reqProc);
 
-            List<DirectMessage> results = new DirectMessageRequestProcessor<DirectMessage>().ProcessResults(resultsXml);
+            List<DirectMessage> results = reqProc.ProcessResults(resultsXml);
             return results.FirstOrDefault();
         }
 
@@ -1160,6 +1310,17 @@ namespace LinqToTwitter
         /// <returns>direct message element</returns>
         public virtual DirectMessage DestroyDirectMessage(string id)
         {
+            return DestroyDirectMessage(id, null);
+        }
+
+        /// <summary>
+        /// deletes a direct message
+        /// </summary>
+        /// <param name="id">id of direct message</param>
+        /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <returns>direct message element</returns>
+        public virtual DirectMessage DestroyDirectMessage(string id, Action<TwitterAsyncResponse<DirectMessage>> callback)
+        {
             if (string.IsNullOrEmpty(id))
             {
                 throw new ArgumentException("id is a required parameter.", "id");
@@ -1167,12 +1328,16 @@ namespace LinqToTwitter
 
             var destroyUrl = BaseUrl + "direct_messages/destroy/" + id + ".xml";
 
+            var reqProc = new DirectMessageRequestProcessor<DirectMessage>();
+
+            TwitterExecutor.AsyncCallback = callback;
             var resultsXml =
                 TwitterExecutor.ExecuteTwitter(
                     destroyUrl,
-                    new Dictionary<string, string>());
+                    new Dictionary<string, string>(),
+                    reqProc);
 
-            List<DirectMessage> results = new DirectMessageRequestProcessor<DirectMessage>().ProcessResults(resultsXml);
+            List<DirectMessage> results = reqProc.ProcessResults(resultsXml);
             return results.FirstOrDefault();
         }
 
@@ -1186,6 +1351,17 @@ namespace LinqToTwitter
         /// <param name="id">id of user to follow</param>
         /// <returns>followed friend user info</returns>
         public virtual User CreateFriendship(string id, string userID, string screenName, bool follow)
+        {
+            return CreateFriendship(id, userID, screenName, follow, null);
+        }
+
+        /// <summary>
+        /// lets logged-in user follow another user
+        /// </summary>
+        /// <param name="id">id of user to follow</param>
+        /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <returns>followed friend user info</returns>
+        public virtual User CreateFriendship(string id, string userID, string screenName, bool follow, Action<TwitterAsyncResponse<User>> callback)
         {
             if (string.IsNullOrEmpty(id) &&
                 string.IsNullOrEmpty(userID) &&
@@ -1223,21 +1399,36 @@ namespace LinqToTwitter
                 createParams.Add("follow", "true");
             }
 
+            var reqProc = new UserRequestProcessor<User>();
+
+            TwitterExecutor.AsyncCallback = callback;
             var resultsXml =
                 TwitterExecutor.ExecuteTwitter(
                     destroyUrl,
-                    createParams);
+                    createParams,
+                    reqProc);
 
-            List<User> results = new UserRequestProcessor<User>().ProcessResults(resultsXml);
+            List<User> results = reqProc.ProcessResults(resultsXml);
             return results.FirstOrDefault();
         }
-
+        
         /// <summary>
         /// lets logged-in user follow another user
         /// </summary>
         /// <param name="id">id of user to follow</param>
         /// <returns>followed friend user info</returns>
         public virtual User DestroyFriendship(string id, string userID, string screenName)
+        {
+            return DestroyFriendship(id, userID, screenName, null);
+        }
+
+        /// <summary>
+        /// lets logged-in user follow another user
+        /// </summary>
+        /// <param name="id">id of user to follow</param>
+        /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <returns>followed friend user info</returns>
+        public virtual User DestroyFriendship(string id, string userID, string screenName, Action<TwitterAsyncResponse<User>> callback)
         {
             if (string.IsNullOrEmpty(id) &&
                 string.IsNullOrEmpty(userID) &&
@@ -1261,6 +1452,9 @@ namespace LinqToTwitter
                 destroyUrl = BaseUrl + "friendships/destroy/" + id + ".xml";
             }
 
+            var reqProc = new UserRequestProcessor<User>();
+
+            TwitterExecutor.AsyncCallback = callback;
             var resultsXml =
                 TwitterExecutor.ExecuteTwitter(
                     destroyUrl,
@@ -1268,18 +1462,30 @@ namespace LinqToTwitter
                     {
                         { "user_id", userID },
                         { "screen_name", screenName }
-                    });
+                    },
+                    reqProc);
 
-            List<User> results = new UserRequestProcessor<User>().ProcessResults(resultsXml);
+            List<User> results = reqProc.ProcessResults(resultsXml);
             return results.FirstOrDefault();
         }
-
+        
         /// <summary>
         /// lets logged-in user set retweets and/or device notifications for a follower
         /// </summary>
         /// <param name="screenName">screen name of user to update</param>
         /// <returns>updated friend user info</returns>
         public virtual Friendship UpdateFriendshipSettings(string screenName, bool retweets, bool device)
+        {
+            return UpdateFriendshipSettings(screenName, retweets, device, null);
+        }
+
+        /// <summary>
+        /// lets logged-in user set retweets and/or device notifications for a follower
+        /// </summary>
+        /// <param name="screenName">screen name of user to update</param>
+        /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <returns>updated friend user info</returns>
+        public virtual Friendship UpdateFriendshipSettings(string screenName, bool retweets, bool device, Action<TwitterAsyncResponse<Friendship>> callback)
         {
             if (string.IsNullOrEmpty(screenName))
             {
@@ -1288,6 +1494,9 @@ namespace LinqToTwitter
 
             string updateUrl = baseUrl + "friendships/update.xml";
 
+            var reqProc = new FriendshipRequestProcessor<Friendship>();
+
+            TwitterExecutor.AsyncCallback = callback;
             var resultsXml =
                 TwitterExecutor.ExecuteTwitter(
                     updateUrl,
@@ -1296,22 +1505,34 @@ namespace LinqToTwitter
                         { "screen_name", screenName },
                         { "retweets", retweets.ToString().ToLower() },
                         { "device", device.ToString().ToLower() }
-                    });
+                    },
+                    reqProc);
 
-            var results = new FriendshipRequestProcessor<Friendship>().ProcessResults(resultsXml);
+            var results = reqProc.ProcessResults(resultsXml);
             return results.FirstOrDefault();
         }
 
         #endregion
 
         #region Favorites Methods
-
+        
         /// <summary>
         /// Adds a favorite to the logged-in user's profile
         /// </summary>
         /// <param name="id">id of status to add to favorites</param>
         /// <returns>status of favorite</returns>
         public virtual Status CreateFavorite(string id)
+        {
+            return CreateFavorite(id, null);
+        }
+
+        /// <summary>
+        /// Adds a favorite to the logged-in user's profile
+        /// </summary>
+        /// <param name="id">id of status to add to favorites</param>
+        /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <returns>status of favorite</returns>
+        public virtual Status CreateFavorite(string id, Action<TwitterAsyncResponse<Status>> callback)
         {
             if (string.IsNullOrEmpty(id))
             {
@@ -1320,21 +1541,36 @@ namespace LinqToTwitter
 
             var favoritesUrl = BaseUrl + "favorites/create/" + id + ".xml";
 
+            var reqProc = new StatusRequestProcessor<Status>();
+
+            TwitterExecutor.AsyncCallback = callback;
             var resultsXml =
                 TwitterExecutor.ExecuteTwitter(
                     favoritesUrl,
-                    new Dictionary<string, string>());
+                    new Dictionary<string, string>(),
+                    reqProc);
 
-            List<Status> results = new StatusRequestProcessor<Status>().ProcessResults(resultsXml);
+            List<Status> results = reqProc.ProcessResults(resultsXml);
             return results.FirstOrDefault();
         }
-
+        
         /// <summary>
         /// Deletes a favorite from the logged-in user's profile
         /// </summary>
         /// <param name="id">id of status to add to favorites</param>
         /// <returns>status of favorite</returns>
         public virtual Status DestroyFavorite(string id)
+        {
+            return DestroyFavorite(id, null);
+        }
+
+        /// <summary>
+        /// Deletes a favorite from the logged-in user's profile
+        /// </summary>
+        /// <param name="id">id of status to add to favorites</param>
+        /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <returns>status of favorite</returns>
+        public virtual Status DestroyFavorite(string id, Action<TwitterAsyncResponse<Status>> callback)
         {
             if (string.IsNullOrEmpty(id))
             {
@@ -1343,12 +1579,16 @@ namespace LinqToTwitter
 
             var favoritesUrl = BaseUrl + "favorites/destroy/" + id + ".xml";
 
+            var reqProc = new StatusRequestProcessor<Status>();
+
+            TwitterExecutor.AsyncCallback = callback;
             var resultsXml =
                 TwitterExecutor.ExecuteTwitter(
                     favoritesUrl,
-                    new Dictionary<string, string>());
+                    new Dictionary<string, string>(),
+                    reqProc);
 
-            List<Status> results = new StatusRequestProcessor<Status>().ProcessResults(resultsXml);
+            List<Status> results = reqProc.ProcessResults(resultsXml);
             return results.FirstOrDefault();
         }
 
@@ -1367,6 +1607,22 @@ namespace LinqToTwitter
         /// <param name="screenName">Screen Name of user - disambiguates when ID is screen name.</param>
         /// <returns>Specified user info</returns>
         public virtual User DisableNotifications(string id, string userID, string screenName)
+        {
+            return DisableNotifications(id, userID, screenName, null);
+        }
+
+        /// <summary>
+        /// Disables notifications from specified user. (Notification Leave)
+        /// </summary>
+        /// <remarks>
+        /// A least one parameter is required.
+        /// </remarks>
+        /// <param name="id">ID of user to disable notifications on.</param>
+        /// <param name="userID">ID of user - disambiguates when ID is screen name.</param>
+        /// <param name="screenName">Screen Name of user - disambiguates when ID is screen name.</param>
+        /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <returns>Specified user info</returns>
+        public virtual User DisableNotifications(string id, string userID, string screenName, Action<TwitterAsyncResponse<User>> callback)
         {
             if (string.IsNullOrEmpty(id) &&
                 string.IsNullOrEmpty(userID) &&
@@ -1390,6 +1646,9 @@ namespace LinqToTwitter
                 notificationsUrl = BaseUrl + "notifications/leave/" + screenName + ".xml";
             }
 
+            var reqProc = new UserRequestProcessor<User>();
+
+            TwitterExecutor.AsyncCallback = callback;
             var resultsXml =
                 TwitterExecutor.ExecuteTwitter(
                     notificationsUrl,
@@ -1397,9 +1656,10 @@ namespace LinqToTwitter
                     {
                         {"user_id", userID},
                         {"screen_name", screenName}
-                    });
+                    },
+                    reqProc);
 
-            List<User> results = new UserRequestProcessor<User>().ProcessResults(resultsXml);
+            List<User> results = reqProc.ProcessResults(resultsXml);
             return results.FirstOrDefault();
         }
 
@@ -1414,6 +1674,22 @@ namespace LinqToTwitter
         /// <param name="screenName">Screen Name of user - disambiguates when ID is screen name.</param>
         /// <returns>Specified user info</returns>
         public virtual User EnableNotifications(string id, string userID, string screenName)
+        {
+            return EnableNotifications(id, userID, screenName, null);
+        }
+
+        /// <summary>
+        /// Enables notifications from specified user (Notification Follow)
+        /// </summary>
+        /// <remarks>
+        /// A least one parameter is required.
+        /// </remarks>
+        /// <param name="id">ID of user to enable notifications on.</param>
+        /// <param name="userID">ID of user - disambiguates when ID is screen name.</param>
+        /// <param name="screenName">Screen Name of user - disambiguates when ID is screen name.</param>
+        /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <returns>Specified user info</returns>
+        public virtual User EnableNotifications(string id, string userID, string screenName, Action<TwitterAsyncResponse<User>> callback)
         {
             if (string.IsNullOrEmpty(id) &&
                 string.IsNullOrEmpty(userID) &&
@@ -1437,6 +1713,9 @@ namespace LinqToTwitter
                 notificationsUrl = BaseUrl + "notifications/follow/" + screenName + ".xml";
             }
 
+            var reqProc = new UserRequestProcessor<User>();
+
+            TwitterExecutor.AsyncCallback = callback;
             var resultsXml =
                 TwitterExecutor.ExecuteTwitter(
                     notificationsUrl,
@@ -1444,22 +1723,34 @@ namespace LinqToTwitter
                     {
                         {"user_id", userID},
                         {"screen_name", screenName}
-                    });
+                    },
+                    reqProc);
 
-            List<User> results = new UserRequestProcessor<User>().ProcessResults(resultsXml);
+            List<User> results = reqProc.ProcessResults(resultsXml);
             return results.FirstOrDefault();
         }
 
         #endregion
 
         #region Block Methods
-
+        
         /// <summary>
         /// Blocks a user
         /// </summary>
         /// <param name="id">id of user to block</param>
         /// <returns>User that was unblocked</returns>
         public virtual User CreateBlock(string id)
+        {
+            return CreateBlock(id, null);
+        }
+
+        /// <summary>
+        /// Blocks a user
+        /// </summary>
+        /// <param name="id">id of user to block</param>
+        /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <returns>User that was unblocked</returns>
+        public virtual User CreateBlock(string id, Action<TwitterAsyncResponse<User>> callback)
         {
             if (string.IsNullOrEmpty(id))
             {
@@ -1468,21 +1759,36 @@ namespace LinqToTwitter
 
             var blocksUrl = BaseUrl + "blocks/create/" + id + ".xml";
 
+            var reqProc = new UserRequestProcessor<User>();
+
+            TwitterExecutor.AsyncCallback = callback;
             var resultsXml =
                 TwitterExecutor.ExecuteTwitter(
                     blocksUrl,
-                    new Dictionary<string, string>());
+                    new Dictionary<string, string>(),
+                    reqProc);
 
-            List<User> results = new UserRequestProcessor<User>().ProcessResults(resultsXml);
+            List<User> results = reqProc.ProcessResults(resultsXml);
             return results.FirstOrDefault();
         }
-
+        
         /// <summary>
         /// Unblocks a user
         /// </summary>
         /// <param name="id">id of user to unblock</param>
         /// <returns>User that was unblocked</returns>
         public virtual User DestroyBlock(string id)
+        {
+            return DestroyBlock(id, null);
+        }
+
+        /// <summary>
+        /// Unblocks a user
+        /// </summary>
+        /// <param name="id">id of user to unblock</param>
+        /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <returns>User that was unblocked</returns>
+        public virtual User DestroyBlock(string id, Action<TwitterAsyncResponse<User>> callback)
         {
             if (string.IsNullOrEmpty(id))
             {
@@ -1491,54 +1797,86 @@ namespace LinqToTwitter
 
             var blocksUrl = BaseUrl + "blocks/destroy/" + id + ".xml";
 
+            var reqProc = new UserRequestProcessor<User>();
+
+            TwitterExecutor.AsyncCallback = callback;
             var resultsXml =
                 TwitterExecutor.ExecuteTwitter(
                     blocksUrl,
-                    new Dictionary<string, string>());
+                    new Dictionary<string, string>(),
+                    reqProc);
 
-            List<User> results = new UserRequestProcessor<User>().ProcessResults(resultsXml);
+            List<User> results = reqProc.ProcessResults(resultsXml);
             return results.FirstOrDefault();
         }
 
         #endregion
 
         #region Help Methods
-
+        
         /// <summary>
         /// sends a test message to twitter to check connectivity
         /// </summary>
         /// <returns>true</returns>
         public virtual bool HelpTest()
         {
+            return HelpTest(null);
+        }
+
+        /// <summary>
+        /// sends a test message to twitter to check connectivity
+        /// </summary>
+        /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <returns>true</returns>
+        public virtual bool HelpTest(Action<TwitterAsyncResponse<bool>> callback)
+        {
             var helpUrl = BaseUrl + "help/test.xml";
 
+            var reqProc = new HelpRequestProcessor<bool>();
+
+            TwitterExecutor.AsyncCallback = callback;
             var resultsXml =
                 TwitterExecutor.ExecuteTwitter(
                     helpUrl,
-                    new Dictionary<string, string>());
+                    new Dictionary<string, string>(),
+                    reqProc);
 
-            List<bool> results = new HelpRequestProcessor<bool>().ProcessResults(resultsXml);
+            List<bool> results = reqProc.ProcessResults(resultsXml);
             return results.FirstOrDefault();
         }
 
         #endregion
 
         #region Account Methods
-
+        
         /// <summary>
         /// Ends the session for the currently logged in user
         /// </summary>
         /// <returns>true</returns>
         public virtual TwitterHashResponse EndAccountSession()
         {
+            return EndAccountSession(null);
+        }
+
+        /// <summary>
+        /// Ends the session for the currently logged in user
+        /// </summary>
+        /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <returns>true</returns>
+        public virtual TwitterHashResponse EndAccountSession(Action<TwitterAsyncResponse<Account>> callback)
+        {
             var accountUrl = BaseUrl + "account/end_session.xml";
 
+            var reqProc = new AccountRequestProcessor<Account>();
+
+            TwitterExecutor.AsyncCallback = callback;
             var resultsXml =
                 TwitterExecutor.ExecuteTwitter(
                     accountUrl,
-                    new Dictionary<string, string>());
+                    new Dictionary<string, string>(),
+                    reqProc);
 
-            List<Account> results = new AccountRequestProcessor<Account>().ProcessResults(resultsXml);
+            List<Account> results = reqProc.ProcessResults(resultsXml);
             Account acct = results.FirstOrDefault();
 
             if (acct != null)
@@ -1550,7 +1888,7 @@ namespace LinqToTwitter
                 throw new WebException("Unknown Twitter Response.");
             }
         }
-
+        
         /// <summary>
         /// Updates notification device for account
         /// </summary>
@@ -1558,20 +1896,35 @@ namespace LinqToTwitter
         /// <returns>User info</returns>
         public virtual User UpdateAccountDeliveryDevice(DeviceType device)
         {
+            return UpdateAccountDeliveryDevice(device, null);
+        }
+
+        /// <summary>
+        /// Updates notification device for account
+        /// </summary>
+        /// <param name="device">type of device to use</param>
+        /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <returns>User info</returns>
+        public virtual User UpdateAccountDeliveryDevice(DeviceType device, Action<TwitterAsyncResponse<User>> callback)
+        {
             var accountUrl = BaseUrl + "account/update_delivery_device.xml";
 
+            var reqProc = new UserRequestProcessor<User>();
+
+            TwitterExecutor.AsyncCallback = callback;
             var resultsXml =
                 TwitterExecutor.ExecuteTwitter(
                     accountUrl,
                     new Dictionary<string, string>
                     {
                         { "device", device.ToString().ToLower() }
-                    });
+                    },
+                    reqProc);
 
-            List<User> results = new UserRequestProcessor<User>().ProcessResults(resultsXml);
+            List<User> results = reqProc.ProcessResults(resultsXml);
             return results.FirstOrDefault();
         }
-
+        
         /// <summary>
         /// Update Twitter colors
         /// </summary>
@@ -1586,6 +1939,24 @@ namespace LinqToTwitter
         /// <returns>User info with new colors</returns>
         public virtual User UpdateAccountColors(string background, string text, string link, string sidebarFill, string sidebarBorder)
         {
+            return UpdateAccountColors(background, text, link, sidebarFill, sidebarBorder, null);
+        }
+
+        /// <summary>
+        /// Update Twitter colors
+        /// </summary>
+        /// <remarks>
+        /// The # character prefix is optional.  At least one color argument must be provided.
+        /// </remarks>
+        /// <param name="background">background color</param>
+        /// <param name="text">text color</param>
+        /// <param name="link">link color</param>
+        /// <param name="sidebarFill">sidebar color</param>
+        /// <param name="sidebarBorder">sidebar border color</param>
+        /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <returns>User info with new colors</returns>
+        public virtual User UpdateAccountColors(string background, string text, string link, string sidebarFill, string sidebarBorder, Action<TwitterAsyncResponse<User>> callback)
+        {
             var accountUrl = BaseUrl + "account/update_profile_colors.xml";
 
             if (string.IsNullOrEmpty(background) &&
@@ -1597,6 +1968,9 @@ namespace LinqToTwitter
                 throw new ArgumentException("At least one of the colors (background, text, link, sidebarFill, or sidebarBorder) must be provided as arguments, but none are specified.");
             }
 
+            var reqProc = new UserRequestProcessor<User>();
+
+            TwitterExecutor.AsyncCallback = callback;
             var resultsXml =
                 TwitterExecutor.ExecuteTwitter(
                     accountUrl,
@@ -1607,9 +1981,10 @@ namespace LinqToTwitter
                         { "profile_link_color", link.TrimStart('#') },
                         { "profile_sidebar_fill_color", sidebarFill.TrimStart('#') },
                         { "profile_sidebar_border_color", sidebarBorder.TrimStart('#') }
-                    });
+                    },
+                    reqProc);
 
-            List<User> results = new UserRequestProcessor<User>().ProcessResults(resultsXml);
+            List<User> results = reqProc.ProcessResults(resultsXml);
             return results.FirstOrDefault();
         }
 
@@ -1624,6 +1999,21 @@ namespace LinqToTwitter
         /// <returns>User with new image info</returns>
         public virtual User UpdateAccountImage(string imageFilePath)
         {
+            return UpdateAccountImage(imageFilePath, null);
+        }
+
+        /// <summary>
+        /// sends an image file to Twitter to replace user image
+        /// </summary>
+        /// <remarks>
+        /// You can only run this method with a period of time between executions; 
+        /// otherwise you get WebException errors from Twitter
+        /// </remarks>
+        /// <param name="imageFilePath">full path to file, including file name</param>
+        /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <returns>User with new image info</returns>
+        public virtual User UpdateAccountImage(string imageFilePath, Action<TwitterAsyncResponse<User>> callback)
+        {
             var accountUrl = BaseUrl + "account/update_profile_image.xml";
 
             if (string.IsNullOrEmpty(imageFilePath))
@@ -1631,10 +2021,13 @@ namespace LinqToTwitter
                 throw new ArgumentException("imageFilePath is required.", "imageFilePath");
             }
 
-            var resultsXml =
-                TwitterExecutor.PostTwitterFile(imageFilePath, null, accountUrl);
+            var reqProc = new UserRequestProcessor<User>();
 
-            List<User> results = new UserRequestProcessor<User>().ProcessResults(resultsXml);
+            TwitterExecutor.AsyncCallback = callback;
+            var resultsXml =
+                TwitterExecutor.PostTwitterFile(imageFilePath, null, accountUrl, reqProc);
+
+            List<User> results = reqProc.ProcessResults(resultsXml);
             return results.FirstOrDefault();
         }
 
@@ -1651,6 +2044,23 @@ namespace LinqToTwitter
         /// <returns>User with new image info</returns>
         public virtual User UpdateAccountImage(byte[] image, string fileName, string imageType)
         {
+            return UpdateAccountImage(image, fileName, imageType, null);
+        }
+
+        /// <summary>
+        /// sends an image file to Twitter to replace user image
+        /// </summary>
+        /// <remarks>
+        /// You can only run this method with a period of time between executions; 
+        /// otherwise you get WebException errors from Twitter
+        /// </remarks>
+        /// <param name="image">byte array of image to upload</param>
+        /// <param name="fileName">name to pass to Twitter for the file</param>
+        /// <param name="imageType">type of image: must be one of jpg, gif, or png</param>
+        /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <returns>User with new image info</returns>
+        public virtual User UpdateAccountImage(byte[] image, string fileName, string imageType, Action<TwitterAsyncResponse<User>> callback)
+        {
             var accountUrl = BaseUrl + "account/update_profile_image.xml";
 
             if (image == null || image.Length == 0)
@@ -1668,13 +2078,16 @@ namespace LinqToTwitter
                 throw new ArgumentException("imageType is required.", "imageType");
             }
 
-            var resultsXml =
-                TwitterExecutor.PostTwitterImage(image, null, accountUrl, fileName, imageType);
+            var reqProc = new UserRequestProcessor<User>();
 
-            List<User> results = new UserRequestProcessor<User>().ProcessResults(resultsXml);
+            TwitterExecutor.AsyncCallback = callback;
+            var resultsXml =
+                TwitterExecutor.PostTwitterImage(image, null, accountUrl, fileName, imageType, reqProc);
+
+            List<User> results = reqProc.ProcessResults(resultsXml);
             return results.FirstOrDefault();
         }
-
+        
         /// <summary>
         /// sends an image file to Twitter to replace background image
         /// </summary>
@@ -1682,6 +2095,18 @@ namespace LinqToTwitter
         /// <param name="use">Whether to use uploaded background image or not</param>
         /// <returns>User with new image info</returns>
         public virtual User UpdateAccountBackgroundImage(string imageFilePath, bool tile, bool use)
+        {
+            return UpdateAccountBackgroundImage(imageFilePath, tile, use, null);
+        }
+
+        /// <summary>
+        /// sends an image file to Twitter to replace background image
+        /// </summary>
+        /// <param name="imageFilePath">full path to file, including file name</param>
+        /// <param name="use">Whether to use uploaded background image or not</param>
+        /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <returns>User with new image info</returns>
+        public virtual User UpdateAccountBackgroundImage(string imageFilePath, bool tile, bool use, Action<TwitterAsyncResponse<User>> callback)
         {
             var accountUrl = BaseUrl + "account/update_profile_background_image.xml";
 
@@ -1701,13 +2126,16 @@ namespace LinqToTwitter
                 };
             }
 
-            var resultsXml =
-                TwitterExecutor.PostTwitterFile(imageFilePath, parameters, accountUrl);
+            var reqProc = new UserRequestProcessor<User>();
 
-            List<User> results = new UserRequestProcessor<User>().ProcessResults(resultsXml);
+            TwitterExecutor.AsyncCallback = callback;
+            var resultsXml =
+                TwitterExecutor.PostTwitterFile(imageFilePath, parameters, accountUrl, reqProc);
+
+            List<User> results = reqProc.ProcessResults(resultsXml);
             return results.FirstOrDefault();
         }
-
+        
         /// <summary>
         /// sends an image file to Twitter to replace background image
         /// </summary>
@@ -1718,6 +2146,21 @@ namespace LinqToTwitter
         /// <param name="use">Whether to use uploaded background image or not</param>
         /// <returns>User with new image info</returns>
         public virtual User UpdateAccountBackgroundImage(byte[] image, string fileName, string imageType, bool tile, bool use)
+        {
+            return UpdateAccountBackgroundImage(image, fileName, imageType, tile, use, null);
+        }
+
+        /// <summary>
+        /// sends an image file to Twitter to replace background image
+        /// </summary>
+        /// <param name="image">full path to file, including file name</param>
+        /// <param name="fileName">name to pass to Twitter for the file</param>
+        /// <param name="imageType">type of image: must be one of jpg, gif, or png</param>
+        /// <param name="tile">Tile image across background.</param>
+        /// <param name="use">Whether to use uploaded background image or not</param>
+        /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <returns>User with new image info</returns>
+        public virtual User UpdateAccountBackgroundImage(byte[] image, string fileName, string imageType, bool tile, bool use, Action<TwitterAsyncResponse<User>> callback)
         {
             var accountUrl = BaseUrl + "account/update_profile_background_image.xml";
 
@@ -1747,13 +2190,16 @@ namespace LinqToTwitter
                 };
             }
 
-            var resultsXml =
-                TwitterExecutor.PostTwitterImage(image, parameters, accountUrl, fileName, imageType);
+            var reqProc = new UserRequestProcessor<User>();
 
-            List<User> results = new UserRequestProcessor<User>().ProcessResults(resultsXml);
+            TwitterExecutor.AsyncCallback = callback;
+            var resultsXml =
+                TwitterExecutor.PostTwitterImage(image, parameters, accountUrl, fileName, imageType, reqProc);
+
+            List<User> results = reqProc.ProcessResults(resultsXml);
             return results.FirstOrDefault();
         }
-
+        
         /// <summary>
         /// Update account profile info
         /// </summary>
@@ -1763,6 +2209,20 @@ namespace LinqToTwitter
         /// <param name="description">Personal Description</param>
         /// <returns>User with new info</returns>
         public virtual User UpdateAccountProfile(string name, string url, string location, string description)
+        {
+            return UpdateAccountProfile(name, url, location, description, null);
+        }
+
+        /// <summary>
+        /// Update account profile info
+        /// </summary>
+        /// <param name="name">User Name</param>
+        /// <param name="url">Web Address</param>
+        /// <param name="location">Geographic Location</param>
+        /// <param name="description">Personal Description</param>
+        /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <returns>User with new info</returns>
+        public virtual User UpdateAccountProfile(string name, string url, string location, string description, Action<TwitterAsyncResponse<User>> callback)
         {
             var accountUrl = BaseUrl + "account/update_profile.xml";
 
@@ -1794,6 +2254,9 @@ namespace LinqToTwitter
                 throw new ArgumentException("description must be no longer than 160 characters", "description");
             }
 
+            var reqProc = new UserRequestProcessor<User>();
+
+            TwitterExecutor.AsyncCallback = callback;
             var resultsXml =
                 TwitterExecutor.ExecuteTwitter(
                     accountUrl,
@@ -1803,22 +2266,34 @@ namespace LinqToTwitter
                         { "url", url },
                         { "location", location },
                         { "description", description }
-                    });
+                    },
+                    reqProc);
 
-            List<User> results = new UserRequestProcessor<User>().ProcessResults(resultsXml);
+            List<User> results = reqProc.ProcessResults(resultsXml);
             return results.FirstOrDefault();
         }
 
         #endregion
 
         #region Saved Search Methods
-
+        
         /// <summary>
         /// Adds a saved search to your twitter account
         /// </summary>
         /// <param name="query">Search query to add</param>
         /// <returns>SavedSearch object</returns>
         public virtual SavedSearch CreateSavedSearch(string query)
+        {
+            return CreateSavedSearch(query, null);
+        }
+
+        /// <summary>
+        /// Adds a saved search to your twitter account
+        /// </summary>
+        /// <param name="query">Search query to add</param>
+        /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <returns>SavedSearch object</returns>
+        public virtual SavedSearch CreateSavedSearch(string query, Action<TwitterAsyncResponse<SavedSearch>> callback)
         {
             if (string.IsNullOrEmpty(query))
             {
@@ -1827,24 +2302,39 @@ namespace LinqToTwitter
 
             var savedSearchUrl = BaseUrl + "saved_searches/create.xml";
 
+            var reqProc = new SavedSearchRequestProcessor<SavedSearch>();
+
+            TwitterExecutor.AsyncCallback = callback;
             var resultsXml =
                 TwitterExecutor.ExecuteTwitter(
                     savedSearchUrl,
                     new Dictionary<string, string>
                     {
                         { "query", query }
-                    });
+                    },
+                    reqProc);
 
-            List<SavedSearch> results = new SavedSearchRequestProcessor<SavedSearch>().ProcessResults(resultsXml);
+            List<SavedSearch> results = reqProc.ProcessResults(resultsXml);
             return results.FirstOrDefault();
         }
-
+        
         /// <summary>
         /// Adds a saved search to your twitter account
         /// </summary>
         /// <param name="query">Search query to add</param>
         /// <returns>SavedSearch object</returns>
         public virtual SavedSearch DestroySavedSearch(int id)
+        {
+            return DestroySavedSearch(id, null);
+        }
+
+        /// <summary>
+        /// Adds a saved search to your twitter account
+        /// </summary>
+        /// <param name="query">Search query to add</param>
+        /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <returns>SavedSearch object</returns>
+        public virtual SavedSearch DestroySavedSearch(int id, Action<TwitterAsyncResponse<SavedSearch>> callback)
         {
             if (id < 1)
             {
@@ -1853,19 +2343,23 @@ namespace LinqToTwitter
 
             var savedSearchUrl = BaseUrl + "saved_searches/destroy/" + id + ".xml";
 
+            var reqProc = new SavedSearchRequestProcessor<SavedSearch>();
+
+            TwitterExecutor.AsyncCallback = callback;
             var resultsXml =
                 TwitterExecutor.ExecuteTwitter(
                     savedSearchUrl,
-                    new Dictionary<string, string>());
+                    new Dictionary<string, string>(),
+                    reqProc);
 
-            List<SavedSearch> results = new SavedSearchRequestProcessor<SavedSearch>().ProcessResults(resultsXml);
+            List<SavedSearch> results = reqProc.ProcessResults(resultsXml);
             return results.FirstOrDefault();
         }
 
         #endregion
 
         #region Spam Methods
-
+        
         /// <summary>
         /// lets logged-in user report spam
         /// </summary>
@@ -1874,6 +2368,19 @@ namespace LinqToTwitter
         /// <param name="screenName">screen name of alleged spammer</param>
         /// <returns>Alleged spammer user info</returns>
         public virtual User ReportSpam(string id, string userID, string screenName)
+        {
+            return ReportSpam(id, userID, screenName, null);
+        }
+
+        /// <summary>
+        /// lets logged-in user report spam
+        /// </summary>
+        /// <param name="id">id of alleged spammer</param>
+        /// <param name="userID">user id of alleged spammer</param>
+        /// <param name="screenName">screen name of alleged spammer</param>
+        /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <returns>Alleged spammer user info</returns>
+        public virtual User ReportSpam(string id, string userID, string screenName, Action<TwitterAsyncResponse<User>> callback)
         {
             if (string.IsNullOrEmpty(id) &&
                 string.IsNullOrEmpty(userID) &&
@@ -1891,25 +2398,40 @@ namespace LinqToTwitter
                     { "screen_name", screenName }
                 };
 
+            var reqProc = new UserRequestProcessor<User>();
+
+            TwitterExecutor.AsyncCallback = callback;
             var resultsXml =
                 TwitterExecutor.ExecuteTwitter(
                     reportSpamUrl,
-                    createParams);
+                    createParams,
+                    reqProc);
 
-            List<User> results = new UserRequestProcessor<User>().ProcessResults(resultsXml);
+            List<User> results = reqProc.ProcessResults(resultsXml);
             return results.FirstOrDefault();
         }
 
         #endregion
 
         #region Retweet Methods
-
+        
         /// <summary>
         /// retweets a tweet
         /// </summary>
         /// <param name="id">id of status tweet</param>
         /// <returns>deleted status tweet</returns>
         public virtual Status Retweet(string id)
+        {
+            return Retweet(id, null);
+        }
+
+        /// <summary>
+        /// retweets a tweet
+        /// </summary>
+        /// <param name="id">id of status tweet</param>
+        /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <returns>deleted status tweet</returns>
+        public virtual Status Retweet(string id, Action<TwitterAsyncResponse<Status>> callback)
         {
             if (string.IsNullOrEmpty(id))
             {
@@ -1918,19 +2440,23 @@ namespace LinqToTwitter
 
             var retweetUrl = BaseUrl + "statuses/retweet/" + id + ".xml";
 
+            var reqProc = new StatusRequestProcessor<Status>();
+
+            TwitterExecutor.AsyncCallback = callback;
             var resultsXml =
                 TwitterExecutor.ExecuteTwitter(
                     retweetUrl,
-                    new Dictionary<string, string>());
+                    new Dictionary<string, string>(),
+                    reqProc);
 
-            List<Status> results = new StatusRequestProcessor<Status>().ProcessResults(resultsXml);
+            List<Status> results = reqProc.ProcessResults(resultsXml);
             return results.FirstOrDefault();
         }
 
         #endregion
 
         #region List Methods
-
+        
         /// <summary>
         /// Creates a new list
         /// </summary>
@@ -1940,6 +2466,20 @@ namespace LinqToTwitter
         /// <param name="description">list description</param>
         /// <returns>List info for new list</returns>
         public virtual List CreateList(string screenName, string listName, string mode, string description)
+        {
+            return CreateList(screenName, listName, mode, description, null);
+        }
+
+        /// <summary>
+        /// Creates a new list
+        /// </summary>
+        /// <param name="screenName">name of user to create list for</param>
+        /// <param name="listName">name of list</param>
+        /// <param name="mode">public or private</param>
+        /// <param name="description">list description</param>
+        /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <returns>List info for new list</returns>
+        public virtual List CreateList(string screenName, string listName, string mode, string description, Action<TwitterAsyncResponse<List>> callback)
         {
             if (string.IsNullOrEmpty(screenName))
             {
@@ -1953,6 +2493,9 @@ namespace LinqToTwitter
 
             var savedSearchUrl = BaseUrl + screenName + "/lists.xml";
 
+            var reqProc = new ListRequestProcessor<List>();
+
+            TwitterExecutor.AsyncCallback = callback;
             var resultsXml =
                 TwitterExecutor.ExecuteTwitter(
                     savedSearchUrl,
@@ -1961,12 +2504,13 @@ namespace LinqToTwitter
                         { "name", listName },
                         { "mode", mode },
                         { "description", description }
-                    });
+                    },
+                    reqProc);
 
-            List<List> results = new ListRequestProcessor<List>().ProcessResults(resultsXml);
+            List<List> results = reqProc.ProcessResults(resultsXml);
             return results.FirstOrDefault();
         }
-
+        
         /// <summary>
         /// Modifies an existing list
         /// </summary>
@@ -1978,39 +2522,20 @@ namespace LinqToTwitter
         /// <returns>List info for modified list</returns>
         public virtual List UpdateList(string screenName, string listID, string listName, string mode, string description)
         {
-            if (string.IsNullOrEmpty(screenName))
-            {
-                throw new ArgumentException("screenName is required.", "screenName");
-            }
-
-            if (string.IsNullOrEmpty(listID))
-            {
-                throw new ArgumentException("listID is required.", "listID");
-            }
-
-            var savedSearchUrl = BaseUrl + screenName + "/lists/" + listID + ".xml";
-
-            var resultsXml =
-                TwitterExecutor.ExecuteTwitter(
-                    savedSearchUrl,
-                    new Dictionary<string, string>
-                    {
-                        { "name", listName },
-                        { "mode", mode },
-                        { "description", description }
-                    });
-
-            List<List> results = new ListRequestProcessor<List>().ProcessResults(resultsXml);
-            return results.FirstOrDefault();
+            return UpdateList(screenName, listID, listName, mode, description, null);
         }
 
         /// <summary>
-        /// Deletes an existing list
+        /// Modifies an existing list
         /// </summary>
-        /// <param name="screenName">name of user to delete list for</param>
+        /// <param name="screenName">name of user to modify list for</param>
         /// <param name="listID">ID or slug of list</param>
-        /// <returns>List info for deleted list</returns>
-        public virtual List DeleteList(string screenName, string listID)
+        /// <param name="listName">name of list</param>
+        /// <param name="mode">public or private</param>
+        /// <param name="description">list description</param>
+        /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <returns>List info for modified list</returns>
+        public virtual List UpdateList(string screenName, string listID, string listName, string mode, string description, Action<TwitterAsyncResponse<List>> callback)
         {
             if (string.IsNullOrEmpty(screenName))
             {
@@ -2024,18 +2549,72 @@ namespace LinqToTwitter
 
             var savedSearchUrl = BaseUrl + screenName + "/lists/" + listID + ".xml";
 
+            var reqProc = new ListRequestProcessor<List>();
+
+            TwitterExecutor.AsyncCallback = callback;
+            var resultsXml =
+                TwitterExecutor.ExecuteTwitter(
+                    savedSearchUrl,
+                    new Dictionary<string, string>
+                    {
+                        { "name", listName },
+                        { "mode", mode },
+                        { "description", description }
+                    },
+                    reqProc);
+
+            List<List> results = reqProc.ProcessResults(resultsXml);
+            return results.FirstOrDefault();
+        }
+        
+        /// <summary>
+        /// Deletes an existing list
+        /// </summary>
+        /// <param name="screenName">name of user to delete list for</param>
+        /// <param name="listID">ID or slug of list</param>
+        /// <returns>List info for deleted list</returns>
+        public virtual List DeleteList(string screenName, string listID)
+        {
+            return DeleteList(screenName, listID, null);
+        }
+
+        /// <summary>
+        /// Deletes an existing list
+        /// </summary>
+        /// <param name="screenName">name of user to delete list for</param>
+        /// <param name="listID">ID or slug of list</param>
+        /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <returns>List info for deleted list</returns>
+        public virtual List DeleteList(string screenName, string listID, Action<TwitterAsyncResponse<List>> callback)
+        {
+            if (string.IsNullOrEmpty(screenName))
+            {
+                throw new ArgumentException("screenName is required.", "screenName");
+            }
+
+            if (string.IsNullOrEmpty(listID))
+            {
+                throw new ArgumentException("listID is required.", "listID");
+            }
+
+            var savedSearchUrl = BaseUrl + screenName + "/lists/" + listID + ".xml";
+
+            var reqProc = new ListRequestProcessor<List>();
+
+            TwitterExecutor.AsyncCallback = callback;
             var resultsXml =
                 TwitterExecutor.ExecuteTwitter(
                     savedSearchUrl,
                     new Dictionary<string, string>
                     {
                         { "_method", "DELETE" }
-                    });
+                    },
+                    reqProc);
 
-            List<List> results = new ListRequestProcessor<List>().ProcessResults(resultsXml);
+            List<List> results = reqProc.ProcessResults(resultsXml);
             return results.FirstOrDefault();
         }
-
+        
         /// <summary>
         /// Adds a user as a list member
         /// </summary>
@@ -2044,6 +2623,19 @@ namespace LinqToTwitter
         /// <param name="memberID">ID of member to add</param>
         /// <returns>List info for list member added to</returns>
         public virtual List AddMemberToList(string screenName, string listID, string memberID)
+        {
+            return AddMemberToList(screenName, listID, memberID, null);
+        }
+
+        /// <summary>
+        /// Adds a user as a list member
+        /// </summary>
+        /// <param name="screenName">name of user to add member to list for</param>
+        /// <param name="listID">ID or slug of list</param>
+        /// <param name="memberID">ID of member to add</param>
+        /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <returns>List info for list member added to</returns>
+        public virtual List AddMemberToList(string screenName, string listID, string memberID, Action<TwitterAsyncResponse<List>> callback)
         {
             if (string.IsNullOrEmpty(screenName))
             {
@@ -2057,18 +2649,22 @@ namespace LinqToTwitter
 
             var savedSearchUrl = BaseUrl + screenName + "/" + listID + @"/members.xml";
 
+            var reqProc = new ListRequestProcessor<List>();
+
+            TwitterExecutor.AsyncCallback = callback;
             var resultsXml =
                 TwitterExecutor.ExecuteTwitter(
                     savedSearchUrl,
                     new Dictionary<string, string>
                     {
                         { "id", memberID }
-                    });
+                    },
+                    reqProc);
 
-            List<List> results = new ListRequestProcessor<List>().ProcessResults(resultsXml);
+            List<List> results = reqProc.ProcessResults(resultsXml);
             return results.FirstOrDefault();
         }
-
+        
         /// <summary>
         /// Adds a list of users to a list
         /// </summary>
@@ -2080,6 +2676,22 @@ namespace LinqToTwitter
         /// <param name="members">List of IDs of members to add</param>
         /// <returns>List info for list member added to - up to 100 Members at a time can be added</returns>
         public virtual List AddMemberRangeToList(string screenName, string listID, List<string> members)
+        {
+            return AddMemberRangeToList(screenName, listID, members, null);
+        }
+
+        /// <summary>
+        /// Adds a list of users to a list
+        /// </summary>
+        /// <remarks>
+        /// Original code contributed by zorgster/CodePlex.com
+        /// </remarks>
+        /// <param name="screenName">name of user to add member to list for</param>
+        /// <param name="listID">ID or slug of list</param>
+        /// <param name="members">List of IDs of members to add</param>
+        /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <returns>List info for list member added to - up to 100 Members at a time can be added</returns>
+        public virtual List AddMemberRangeToList(string screenName, string listID, List<string> members, Action<TwitterAsyncResponse<List>> callback)
         {
             if (string.IsNullOrEmpty(screenName))
             {
@@ -2098,18 +2710,22 @@ namespace LinqToTwitter
 
             var savedSearchUrl = BaseUrl + screenName + "/" + listID + @"/members/create_all.xml";
 
+            var reqProc = new ListRequestProcessor<List>();
+
+            TwitterExecutor.AsyncCallback = callback;
             var resultsXml =
                 TwitterExecutor.ExecuteTwitter(
                     savedSearchUrl,
                     new Dictionary<string, string>
                     {
                         { "screen_name", string.Join(",", members.ToArray()) }
-                    });
+                    },
+                    reqProc);
 
-            List<List> results = new ListRequestProcessor<List>().ProcessResults(resultsXml);
+            List<List> results = reqProc.ProcessResults(resultsXml);
             return results.FirstOrDefault();
         }
-
+        
         /// <summary>
         /// Adds a list of users to a list
         /// </summary>
@@ -2121,6 +2737,22 @@ namespace LinqToTwitter
         /// <param name="memberIDs">List of IDs of members to add</param>
         /// <returns>List info for list member added to - up to 100 Members at a time can be added</returns>
         public virtual List AddMemberRangeToList(string screenName, string listID, List<ulong> memberIDs)
+        {
+            return AddMemberRangeToList(screenName, listID, memberIDs, null);
+        }
+
+        /// <summary>
+        /// Adds a list of users to a list
+        /// </summary>
+        /// <remarks>
+        /// Original code contributed by zorgster/CodePlex.com
+        /// </remarks>
+        /// <param name="screenName">name of user to add member to list for</param>
+        /// <param name="listID">ID or slug of list</param>
+        /// <param name="memberIDs">List of IDs of members to add</param>
+        /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <returns>List info for list member added to - up to 100 Members at a time can be added</returns>
+        public virtual List AddMemberRangeToList(string screenName, string listID, List<ulong> memberIDs, Action<TwitterAsyncResponse<List>> callback)
         {
             if (string.IsNullOrEmpty(screenName))
             {
@@ -2144,18 +2776,22 @@ namespace LinqToTwitter
                  select id.ToString())
                 .ToArray();
 
+            var reqProc = new ListRequestProcessor<List>();
+
+            TwitterExecutor.AsyncCallback = callback;
             var resultsXml =
                 TwitterExecutor.ExecuteTwitter(
                     savedSearchUrl,
                     new Dictionary<string, string>
                     {
                         { "user_id", string.Join(",", idStrings) }
-                    });
+                    },
+                    reqProc);
 
-            List<List> results = new ListRequestProcessor<List>().ProcessResults(resultsXml);
+            List<List> results = reqProc.ProcessResults(resultsXml);
             return results.FirstOrDefault();
         }
-
+        
         /// <summary>
         /// Removes a user as a list member
         /// </summary>
@@ -2164,6 +2800,19 @@ namespace LinqToTwitter
         /// <param name="memberID">ID of member to remove</param>
         /// <returns>List info for list member removed from</returns>
         public virtual List DeleteMemberFromList(string screenName, string listID, string memberID)
+        {
+            return DeleteMemberFromList(screenName, listID, memberID, null);
+        }
+
+        /// <summary>
+        /// Removes a user as a list member
+        /// </summary>
+        /// <param name="screenName">name of user to remove member from list for</param>
+        /// <param name="listID">ID or slug of list</param>
+        /// <param name="memberID">ID of member to remove</param>
+        /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <returns>List info for list member removed from</returns>
+        public virtual List DeleteMemberFromList(string screenName, string listID, string memberID, Action<TwitterAsyncResponse<List>> callback)
         {
             if (string.IsNullOrEmpty(screenName))
             {
@@ -2177,6 +2826,9 @@ namespace LinqToTwitter
 
             var savedSearchUrl = BaseUrl + screenName + "/" + listID + @"/members.xml";
 
+            var reqProc = new ListRequestProcessor<List>();
+
+            TwitterExecutor.AsyncCallback = callback;
             var resultsXml =
                 TwitterExecutor.ExecuteTwitter(
                     savedSearchUrl,
@@ -2184,12 +2836,13 @@ namespace LinqToTwitter
                     {
                         { "id", memberID },
                         { "_method", "DELETE" }
-                    });
+                    },
+                    reqProc);
 
-            List<List> results = new ListRequestProcessor<List>().ProcessResults(resultsXml);
+            List<List> results = reqProc.ProcessResults(resultsXml);
             return results.FirstOrDefault();
         }
-
+        
         /// <summary>
         /// Adds a user as a list subscriber
         /// </summary>
@@ -2197,6 +2850,18 @@ namespace LinqToTwitter
         /// <param name="listID">ID or slug of list</param>
         /// <returns>List info for list subscribed to</returns>
         public virtual List SubscribeToList(string screenName, string listID)
+        {
+            return SubscribeToList(screenName, listID, null);
+        }
+
+        /// <summary>
+        /// Adds a user as a list subscriber
+        /// </summary>
+        /// <param name="screenName">name of user to add subscription to list for</param>
+        /// <param name="listID">ID or slug of list</param>
+        /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <returns>List info for list subscribed to</returns>
+        public virtual List SubscribeToList(string screenName, string listID, Action<TwitterAsyncResponse<List>> callback)
         {
             if (string.IsNullOrEmpty(screenName))
             {
@@ -2210,12 +2875,16 @@ namespace LinqToTwitter
 
             var savedSearchUrl = BaseUrl + screenName + "/" + listID + @"/subscribers.xml";
 
+            var reqProc = new ListRequestProcessor<List>();
+
+            TwitterExecutor.AsyncCallback = callback;
             var resultsXml =
                 TwitterExecutor.ExecuteTwitter(
                     savedSearchUrl,
-                    new Dictionary<string, string>());
+                    new Dictionary<string, string>(),
+                    reqProc);
 
-            List<List> results = new ListRequestProcessor<List>().ProcessResults(resultsXml);
+            List<List> results = reqProc.ProcessResults(resultsXml);
             return results.FirstOrDefault();
         }
 
@@ -2227,6 +2896,18 @@ namespace LinqToTwitter
         /// <returns>List info for list subscription removed from</returns>
         public virtual List UnsubscribeFromList(string screenName, string listID)
         {
+            return UnsubscribeFromList(screenName, listID, null);
+        }
+
+        /// <summary>
+        /// Removes a user as a list subscriber
+        /// </summary>
+        /// <param name="screenName">name of user to remove subscription from list for</param>
+        /// <param name="listID">ID or slug of list</param>
+        /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <returns>List info for list subscription removed from</returns>
+        public virtual List UnsubscribeFromList(string screenName, string listID, Action<TwitterAsyncResponse<List>> callback)
+        {
             if (string.IsNullOrEmpty(screenName))
             {
                 throw new ArgumentException("screenName is required.", "screenName");
@@ -2239,15 +2920,19 @@ namespace LinqToTwitter
 
             var savedSearchUrl = BaseUrl + screenName + "/" + listID + @"/subscribers.xml";
 
+            var reqProc = new ListRequestProcessor<List>();
+
+            TwitterExecutor.AsyncCallback = callback;
             var resultsXml =
                 TwitterExecutor.ExecuteTwitter(
                     savedSearchUrl,
                     new Dictionary<string, string>
                     {
                         { "_method", "DELETE" }
-                    });
+                    },
+                    reqProc);
 
-            List<List> results = new ListRequestProcessor<List>().ProcessResults(resultsXml);
+            List<List> results = reqProc.ProcessResults(resultsXml);
             return results.FirstOrDefault();
         }
 
@@ -2255,14 +2940,38 @@ namespace LinqToTwitter
 
         #region Raw Requests
 
+        /// <summary>
+        /// Lets you perform a query by specifying the raw URL and parameters yourself.
+        /// Useful for when Twitter changes or adds new features before they are added to LINQ to Twitter.
+        /// </summary>
+        /// <param name="queryString">The segments that follow the base URL. i.e. "statuses/public_timeline.xml" for a public status query</param>
+        /// <param name="parameters">Querystring parameters that will be appended to the URL</param>
+        /// <returns></returns>
         public string ExecuteRaw(string queryString, Dictionary<string, string> parameters)
+        {
+            return ExecuteRaw(queryString, parameters, null);
+        }
+
+        /// <summary>
+        /// Lets you perform a query by specifying the raw URL and parameters yourself.
+        /// Useful for when Twitter changes or adds new features before they are added to LINQ to Twitter.
+        /// </summary>
+        /// <param name="queryString">The segments that follow the base URL. i.e. "statuses/public_timeline.xml" for a public status query</param>
+        /// <param name="parameters">Querystring parameters that will be appended to the URL</param>
+        /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <returns></returns>
+        public string ExecuteRaw(string queryString, Dictionary<string, string> parameters, Action<TwitterAsyncResponse<string>> callback)
         {
             string rawUrl = BaseUrl.TrimEnd('/') + "/" + queryString.TrimStart('/');
 
+            var reqProc = new RawRequestProcessor<Raw>();
+
+            TwitterExecutor.AsyncCallback = callback;
             var resultsXml =
                 TwitterExecutor.ExecuteTwitter(
                     rawUrl,
-                    parameters);
+                    parameters,
+                    reqProc);
 
             return resultsXml;
         }

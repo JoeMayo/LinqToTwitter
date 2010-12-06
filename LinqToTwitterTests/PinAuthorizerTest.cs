@@ -211,5 +211,211 @@ namespace LinqToTwitterTests
             Assert.AreEqual(screenName, pinAuth.ScreenName);
             Assert.AreEqual(userID, pinAuth.UserId);
         }
+
+        [TestMethod]
+        public void Authorize_Returns_If_Already_Authorized()
+        {
+            var oAuthMock = new Mock<IOAuthTwitter>();
+            var pinAuth = new PinAuthorizer
+            {
+                Credentials = new InMemoryCredentials
+                {
+                    ConsumerKey = "consumerkey",
+                    ConsumerSecret = "consumersecret",
+                    OAuthToken = "oauthtoken",
+                    AccessToken = "accesstoken"
+                },
+                OAuthTwitter = oAuthMock.Object,
+                OAuthHelper = new Mock<IOAuthHelper>().Object,
+                GetPin = () => { return "1234567"; },
+                GoToTwitterAuthorization = link => { }
+            };
+
+            pinAuth.Authorize();
+
+            oAuthMock.Verify(oauth =>
+                oauth.AuthorizationLinkGet(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), false, false),
+                Times.Never());
+        }
+
+        [TestMethod]
+        public void BeginAuthorize_Gets_Request_Token()
+        {
+            var oauthRequestTokenUrl = new Uri("https://api.twitter.com/oauth/request_token");
+            var oauthAuthorizeUrl = new Uri("https://api.twitter.com/oauth/authorize");
+            var oAuthMock = new Mock<IOAuthTwitter>();
+            var pinAuth = new PinAuthorizer
+            {
+                Credentials = new InMemoryCredentials(),
+                OAuthTwitter = oAuthMock.Object,
+                OAuthHelper = new Mock<IOAuthHelper>().Object,
+                GetPin = () => { return "1234567"; },
+                GoToTwitterAuthorization = link => { }
+            };
+
+            pinAuth.BeginAuthorize(resp => { });
+
+            oAuthMock.Verify(oAuth =>
+                oAuth.GetRequestTokenAsync(oauthRequestTokenUrl, oauthAuthorizeUrl, null, false, false, It.IsAny<Action<string>>(), It.IsAny<Action<TwitterAsyncResponse<object>>>()),
+                Times.Once());
+        }
+
+        [TestMethod]
+        public void BeginAuthorize_Requires_GoToTwitterAuthorization_Handler()
+        {
+            var pinAuth = new PinAuthorizer
+            {
+                Credentials = new InMemoryCredentials(),
+                OAuthTwitter = new OAuthTwitterMock(),
+                OAuthHelper = new Mock<IOAuthHelper>().Object,
+                GetPin = () => { return "1234567"; },
+                //GoToTwitterAuthorization = link => { }
+            };
+
+            try
+            {
+                pinAuth.BeginAuthorize(resp => { });
+
+                Assert.Fail("Expected InvalidOperationException.");
+            }
+            catch (InvalidOperationException ioe)
+            {
+                Assert.IsTrue(ioe.Message.Contains("GoToTwitterAuthorization"));
+            }
+        }
+
+        [TestMethod]
+        public void BeginAuthorize_Returns_If_Already_Authorized()
+        {
+            var oAuthMock = new Mock<IOAuthTwitter>();
+            TwitterAsyncResponse<object> twitterResp = null;
+            var pinAuth = new PinAuthorizer
+            {
+                Credentials = new InMemoryCredentials
+                {
+                    ConsumerKey = "consumerkey",
+                    ConsumerSecret = "consumersecret",
+                    OAuthToken = "oauthtoken",
+                    AccessToken = "accesstoken"
+                },
+                OAuthTwitter = oAuthMock.Object,
+                OAuthHelper = new Mock<IOAuthHelper>().Object,
+                GetPin = () => { return "1234567"; },
+                GoToTwitterAuthorization = link => { }
+            };
+
+            pinAuth.BeginAuthorize(resp => twitterResp = resp);
+
+            oAuthMock.Verify(oauth =>
+                oauth.GetRequestTokenAsync(It.IsAny<Uri>(), It.IsAny<Uri>(), null, false, false, It.IsAny<Action<string>>(), It.IsAny<Action<TwitterAsyncResponse<object>>>()), 
+                Times.Never());
+        }
+
+        [TestMethod]
+        public void BeginAuthorize_Invokes_authorizationCompleteCallback()
+        {
+            var pinAuth = new PinAuthorizer
+            {
+                Credentials = new InMemoryCredentials(),
+                OAuthTwitter = new OAuthTwitterMock(),
+                OAuthHelper = new Mock<IOAuthHelper>().Object,
+                GetPin = () => { return "1234567"; },
+                GoToTwitterAuthorization = link => { }
+            };
+            TwitterAsyncResponse<object> twitterResp = null;
+            pinAuth.BeginAuthorize(resp => twitterResp = resp);
+
+            Assert.IsNotNull(twitterResp);
+        }
+
+        [TestMethod]
+        public void CompleteAuthorize_Gets_Access_Token()
+        {
+            string pin = "1234567";
+            Action<TwitterAsyncResponse<UserIdentifier>> callback = resp => { };
+            var oauthAccessTokenUrl = new Uri("https://api.twitter.com/oauth/access_token");
+            var oAuthMock = new Mock<IOAuthTwitter>();
+            var pinAuth = new PinAuthorizer
+            {
+                Credentials = new InMemoryCredentials(),
+                OAuthTwitter = oAuthMock.Object,
+                OAuthHelper = new Mock<IOAuthHelper>().Object,
+                GoToTwitterAuthorization = link => { }
+            };
+
+            pinAuth.CompleteAuthorize(pin, callback);
+
+            oAuthMock.Verify(oAuth =>
+                oAuth.GetAccessTokenAsync(pin, oauthAccessTokenUrl, null, callback),
+                Times.Once());
+        }
+
+        [TestMethod]
+        public void CompleteAuthorize_Invokes_authorizationCompleteCallback()
+        {
+            var pinAuth = new PinAuthorizer
+            {
+                Credentials = new InMemoryCredentials(),
+                OAuthTwitter = new OAuthTwitterMock(),
+                OAuthHelper = new Mock<IOAuthHelper>().Object,
+                GoToTwitterAuthorization = link => { }
+            };
+            TwitterAsyncResponse<UserIdentifier> twitterResp = null;
+
+            pinAuth.CompleteAuthorize("1234567", resp => twitterResp = resp);
+
+            Assert.IsNotNull(twitterResp);
+        }
+
+        [TestMethod]
+        public void CompleteAuthorize_Requires_Pin()
+        {
+            var pinAuth = new PinAuthorizer
+            {
+                Credentials = new InMemoryCredentials(),
+                OAuthTwitter = new OAuthTwitterMock(),
+                OAuthHelper = new Mock<IOAuthHelper>().Object,
+                GoToTwitterAuthorization = link => { }
+            };
+
+            try
+            {
+                pinAuth.CompleteAuthorize(null, resp => { });
+
+                Assert.Fail("Expected Exception.");
+            }
+            catch (ArgumentNullException ex)
+            {
+                Assert.AreEqual("pin", ex.ParamName);
+            }
+        }
+
+        [TestMethod]
+        public void CompleteAuthorize_Returns_If_Already_Authorized()
+        {
+            string pin = "1234567";
+            Action<TwitterAsyncResponse<UserIdentifier>> callback = resp => { };
+            var oauthAccessTokenUrl = new Uri("https://api.twitter.com/oauth/access_token");
+            var oAuthMock = new Mock<IOAuthTwitter>();
+            var pinAuth = new PinAuthorizer
+            {
+                Credentials = new InMemoryCredentials
+                {
+                    ConsumerKey = "consumerkey",
+                    ConsumerSecret = "consumersecret",
+                    OAuthToken = "oauthtoken",
+                    AccessToken = "accesstoken"
+                },
+                OAuthTwitter = oAuthMock.Object,
+                OAuthHelper = new Mock<IOAuthHelper>().Object,
+                GoToTwitterAuthorization = link => { }
+            };
+
+            pinAuth.CompleteAuthorize(pin, callback);
+
+            oAuthMock.Verify(oAuth =>
+                oAuth.GetAccessTokenAsync(pin, oauthAccessTokenUrl, null, callback),
+                Times.Never());
+        }
     }
 }

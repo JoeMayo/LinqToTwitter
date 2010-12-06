@@ -42,12 +42,17 @@
 									 
                     <Rectangle x:Name="Divider1" Style="{StaticResource DividerStyle}"/>
 					
-                    <HyperlinkButton x:Name="Link2" Style="{StaticResource LinkStyle}" 
+                    <HyperlinkButton x:Name="PublicLink" Style="{StaticResource LinkStyle}" 
                                      NavigateUri="/PublicStatusQuery" TargetName="ContentFrame" Content="Public Status"/>
 
                     <Rectangle x:Name="Divider2" Style="{StaticResource DividerStyle}"/>
 
-                    <HyperlinkButton x:Name="Link3" Style="{StaticResource LinkStyle}" 
+                    <HyperlinkButton x:Name="FriendsLink" Style="{StaticResource LinkStyle}" 
+                                     NavigateUri="/FriendsStatusQuery" TargetName="ContentFrame" Content="Friends Status"/>
+
+                    <Rectangle x:Name="Divider3" Style="{StaticResource DividerStyle}"/>
+
+                    <HyperlinkButton x:Name="UpdateLink" Style="{StaticResource LinkStyle}" 
                                      NavigateUri="/StatusUpdate" TargetName="ContentFrame" Content="Status Update"/>
 
                 </StackPanel>

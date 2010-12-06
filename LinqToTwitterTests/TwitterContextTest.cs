@@ -4,23 +4,15 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Linq;
 using System;
-using NMock2;
 using System.Xml.Linq;
 using Moq;
 using LinqToTwitterTests.Common;
 
 namespace LinqToTwitterTests
 {
-    /// <summary>
-    ///This is a test class for TwitterContextTest and is intended
-    ///to contain all TwitterContextTest Unit Tests
-    ///</summary>
-    [TestClass()]
+    [TestClass]
     public class TwitterContextTest
     {
-        private Mockery m_mocks;
-        private TwitterContext m_ctx;
-        private ITwitterExecute m_twitterExecute;
         private TestContext m_testContextInstance;
 
         #region Test Data
@@ -212,11 +204,6 @@ namespace LinqToTwitterTests
         [TestInitialize()]
         public void MyTestInitialize()
         {
-            m_mocks = new Mockery();
-            m_twitterExecute = m_mocks.NewMock<ITwitterExecute>();
-            var authorizedClient = m_mocks.NewMock<ITwitterAuthorizer>();
-            Expect.Once.On(m_twitterExecute).GetProperty("AuthorizedClient").Will(Return.Value(authorizedClient));
-            m_ctx = new TwitterContext(m_twitterExecute);
         }
 
         //Use TestCleanup to run code after each test has run
@@ -364,7 +351,7 @@ namespace LinqToTwitterTests
             var execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
             var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
-            execMock.Setup(exec => exec.ExecuteTwitter(It.IsAny<string>(), It.IsAny<Dictionary<string, string>>()))
+            execMock.Setup(exec => exec.ExecuteTwitter(It.IsAny<string>(), It.IsAny<Dictionary<string, string>>(), It.IsAny<IRequestProcessor<Status>>()))
                     .Returns(m_testStatusQueryResponse);
 
             Status actual = ctx.UpdateStatus(status, inReplyToStatusID);
@@ -372,10 +359,7 @@ namespace LinqToTwitterTests
             Assert.AreEqual(expected.Element("status").Element("id").Value, actual.StatusID);
         }
 
-        /// <summary>
-        ///A test for UpdateStatus
-        ///</summary>
-        [TestMethod()]
+        [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void UpdateStatusNullStatusTest1()
         {
@@ -387,21 +371,23 @@ namespace LinqToTwitterTests
                 {
                     expected
                 };
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
+            execMock.Setup(exec =>
+                exec.ExecuteTwitter<Status>(
+                    It.IsAny<string>(),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<IRequestProcessor<Status>>()))
+                .Returns(m_testStatusQueryResponse);
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
 
-            Expect.Once.On(m_twitterExecute)
-                .Method("ExecuteTwitter")
-                .Will(Return.Value(statusQueryable));
+            Status actual = ctx.UpdateStatus(status, inReplyToStatusID);
 
-            Status actual = m_ctx.UpdateStatus(status, inReplyToStatusID);
-
-            m_mocks.VerifyAllExpectationsHaveBeenMet();
             Assert.AreEqual(expected, actual);
         }
 
-        /// <summary>
-        ///A test for UpdateStatus
-        ///</summary>
-        [TestMethod()]
+        [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void UpdateStatusOver140Test1()
         {
@@ -413,14 +399,19 @@ namespace LinqToTwitterTests
                 {
                     expected
                 };
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
+            execMock.Setup(exec =>
+                exec.ExecuteTwitter<Status>(
+                    It.IsAny<string>(),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<IRequestProcessor<Status>>()))
+                .Returns(m_testStatusQueryResponse);
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
 
-            Expect.Once.On(m_twitterExecute)
-                .Method("ExecuteTwitter")
-                .Will(Return.Value(statusQueryable));
+            Status actual = ctx.UpdateStatus(status, inReplyToStatusID);
 
-            Status actual = m_ctx.UpdateStatus(status, inReplyToStatusID);
-
-            m_mocks.VerifyAllExpectationsHaveBeenMet();
             Assert.AreEqual(expected, actual);
         }
 
@@ -433,7 +424,7 @@ namespace LinqToTwitterTests
             var execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
             var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
-            execMock.Setup(exec => exec.ExecuteTwitter(It.IsAny<string>(), It.IsAny<Dictionary<string, string>>()))
+            execMock.Setup(exec => exec.ExecuteTwitter(It.IsAny<string>(), It.IsAny<Dictionary<string, string>>(), It.IsAny<IRequestProcessor<Status>>()))
                     .Returns(m_testStatusQueryResponse);
 
             Status actual = ctx.UpdateStatus(status);
@@ -441,50 +432,51 @@ namespace LinqToTwitterTests
             Assert.AreEqual(expected.Element("status").Element("id").Value, actual.StatusID);
         }
 
-        /// <summary>
-        ///A test for UpdateStatus
-        ///</summary>
-        [TestMethod()]
+        [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void UpdateStatusNullStatusTest()
         {
             string status = null;
             XElement expected = XElement.Parse(m_testStatusQueryResponse);
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
+            execMock.Setup(exec =>
+                exec.ExecuteTwitter<Status>(
+                    It.IsAny<string>(),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<IRequestProcessor<Status>>()))
+                .Returns(m_testStatusQueryResponse);
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
 
-            Expect.Once.On(m_twitterExecute)
-                .Method("ExecuteTwitter")
-                .Will(Return.Value(expected));
+            Status actual = ctx.UpdateStatus(status);
 
-            Status actual = m_ctx.UpdateStatus(status);
-
-            m_mocks.VerifyAllExpectationsHaveBeenMet();
             Assert.AreEqual(expected.Element("status").Element("id").Value, actual.StatusID);
         }
 
-        /// <summary>
-        ///A test for UpdateStatus
-        ///</summary>
-        [TestMethod()]
+        [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void UpdateStatusOver140Test()
         {
             string status = new string(Enumerable.Repeat<char>('x', 141).ToArray());
             XElement expected = XElement.Parse(m_testStatusQueryResponse);
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
+            execMock.Setup(exec =>
+                exec.ExecuteTwitter<Status>(
+                    It.IsAny<string>(),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<IRequestProcessor<Status>>()))
+                .Returns(m_testStatusQueryResponse);
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
 
-            Expect.Once.On(m_twitterExecute)
-                .Method("ExecuteTwitter")
-                .Will(Return.Value(expected));
+            Status actual = ctx.UpdateStatus(status);
 
-            Status actual = m_ctx.UpdateStatus(status);
-
-            m_mocks.VerifyAllExpectationsHaveBeenMet();
             Assert.AreEqual(expected.Element("status").Element("id").Value, actual.StatusID);
         }
 
-        /// <summary>
-        ///A test for UpdateAccountProfile
-        ///</summary>
-        [TestMethod()]
+        [TestMethod]
         public void UpdateAccountProfileTest()
         {
             string name = "Joe";
@@ -492,19 +484,23 @@ namespace LinqToTwitterTests
             string location = "Denver, CO";
             string description = "Open source developer for LINQ to Twitter";
             XElement expected = XElement.Parse(m_testUserQueryResponse);
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
+            execMock.Setup(exec =>
+                exec.ExecuteTwitter<User>(
+                    It.IsAny<string>(),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<IRequestProcessor<User>>()))
+                .Returns(m_testUserQueryResponse);
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
 
-            Expect.Once.On(m_twitterExecute)
-                .Method("ExecuteTwitter")
-                .Will(Return.Value(m_testUserQueryResponse));
+            User actual = ctx.UpdateAccountProfile(name, url, location, description);
 
-            User actual = m_ctx.UpdateAccountProfile(name, url, location, description);
             Assert.AreEqual(actual.Name, expected.Element("name").Value);
         }
 
-        /// <summary>
-        ///A test for UpdateAccountProfile
-        ///</summary>
-        [TestMethod()]
+        [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void UpdateAccountProfileNullInputTest()
         {
@@ -518,19 +514,23 @@ namespace LinqToTwitterTests
                 {
                     expected
                 };
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
+            execMock.Setup(exec =>
+                exec.ExecuteTwitter<User>(
+                    It.IsAny<string>(),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<IRequestProcessor<User>>()))
+                .Returns(m_testUserQueryResponse);
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
 
-            Expect.Once.On(m_twitterExecute)
-                .Method("ExecuteTwitter")
-                .Will(Return.Value(expectedList));
+            User actual = ctx.UpdateAccountProfile(name, url, location, description);
 
-            User actual = m_ctx.UpdateAccountProfile(name, url, location, description);
             Assert.AreEqual(expected, actual);
         }
 
-        /// <summary>
-        ///A test for UpdateAccountProfile
-        ///</summary>
-        [TestMethod()]
+        [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void UpdateAccountProfileNameOver20Test()
         {
@@ -544,19 +544,23 @@ namespace LinqToTwitterTests
                 {
                     expected
                 };
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
+            execMock.Setup(exec =>
+                exec.ExecuteTwitter<User>(
+                    It.IsAny<string>(),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<IRequestProcessor<User>>()))
+                .Returns(m_testUserQueryResponse);
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
 
-            Expect.Once.On(m_twitterExecute)
-                .Method("ExecuteTwitter")
-                .Will(Return.Value(expectedList));
+            User actual = ctx.UpdateAccountProfile(name, url, location, description);
 
-            User actual = m_ctx.UpdateAccountProfile(name, url, location, description);
             Assert.AreEqual(expected, actual);
         }
 
-        /// <summary>
-        ///A test for UpdateAccountProfile
-        ///</summary>
-        [TestMethod()]
+        [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void UpdateAccountProfileUrlOver100Test()
         {
@@ -570,19 +574,23 @@ namespace LinqToTwitterTests
                 {
                     expected
                 };
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
+            execMock.Setup(exec =>
+                exec.ExecuteTwitter<User>(
+                    It.IsAny<string>(),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<IRequestProcessor<User>>()))
+                .Returns(m_testUserQueryResponse);
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
 
-            Expect.Once.On(m_twitterExecute)
-                .Method("ExecuteTwitter")
-                .Will(Return.Value(expectedList));
+            User actual = ctx.UpdateAccountProfile(name, url, location, description);
 
-            User actual = m_ctx.UpdateAccountProfile(name, url, location, description);
             Assert.AreEqual(expected, actual);
         }
 
-        /// <summary>
-        ///A test for UpdateAccountProfile
-        ///</summary>
-        [TestMethod()]
+        [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void UpdateAccountProfileLocationOver30Test()
         {
@@ -596,19 +604,23 @@ namespace LinqToTwitterTests
                 {
                     expected
                 };
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
+            execMock.Setup(exec =>
+                exec.ExecuteTwitter<User>(
+                    It.IsAny<string>(),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<IRequestProcessor<User>>()))
+                .Returns(m_testUserQueryResponse);
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
 
-            Expect.Once.On(m_twitterExecute)
-                .Method("ExecuteTwitter")
-                .Will(Return.Value(expectedList));
+            User actual = ctx.UpdateAccountProfile(name, url, location, description);
 
-            User actual = m_ctx.UpdateAccountProfile(name, url, location, description);
             Assert.AreEqual(expected, actual);
         }
 
-        /// <summary>
-        ///A test for UpdateAccountProfile
-        ///</summary>
-        [TestMethod()]
+        [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void UpdateAccountProfileDescriptionOver160Test()
         {
@@ -622,37 +634,45 @@ namespace LinqToTwitterTests
                 {
                     expected
                 };
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
+            execMock.Setup(exec =>
+                exec.ExecuteTwitter<User>(
+                    It.IsAny<string>(),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<IRequestProcessor<User>>()))
+                .Returns(m_testUserQueryResponse);
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
 
-            Expect.Once.On(m_twitterExecute)
-                .Method("ExecuteTwitter")
-                .Will(Return.Value(expectedList));
+            User actual = ctx.UpdateAccountProfile(name, url, location, description);
 
-            User actual = m_ctx.UpdateAccountProfile(name, url, location, description);
             Assert.AreEqual(expected, actual);
         }
 
-        /// <summary>
-        ///A test for UpdateAccountImage
-        ///</summary>
-        [TestMethod()]
+        [TestMethod]
         public void UpdateAccountImageTest()
         {
             string imageFilePath = "c:\\image.jpg";
-
             XElement expected = XElement.Parse(m_testUserQueryResponse);
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
+            execMock.Setup(exec =>
+                exec.PostTwitterFile<User>(
+                    It.IsAny<string>(),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<string>(),
+                    It.IsAny<IRequestProcessor<User>>()))
+                .Returns(m_testUserQueryResponse);
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
 
-            Expect.Once.On(m_twitterExecute)
-                .Method("PostTwitterFile")
-                .Will(Return.Value(m_testUserQueryResponse));
+            User actual = ctx.UpdateAccountImage(imageFilePath);
 
-            User actual = m_ctx.UpdateAccountImage(imageFilePath);
             Assert.AreEqual(expected.Element("name").Value, actual.Name);
         }
 
-        /// <summary>
-        ///A test for UpdateAccountImage
-        ///</summary>
-        [TestMethod()]
+        [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void UpdateAccountImageNullPathTest()
         {
@@ -663,37 +683,44 @@ namespace LinqToTwitterTests
                 {
                     expected
                 };
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
+            execMock.Setup(exec =>
+                exec.ExecuteTwitter<User>(
+                    It.IsAny<string>(),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<IRequestProcessor<User>>()))
+                .Returns(m_testUserQueryResponse);
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
 
-            Expect.Once.On(m_twitterExecute)
-                .Method("PostTwitterFile")
-                .Will(Return.Value(expectedList));
+            User actual = ctx.UpdateAccountImage(imageFilePath);
 
-            User actual = m_ctx.UpdateAccountImage(imageFilePath);
             Assert.AreEqual(expected, actual);
         }
 
-        /// <summary>
-        ///A test for UpdateAccountDeliveryDevice
-        ///</summary>
-        [TestMethod()]
+        [TestMethod]
         public void UpdateAccountDeliveryDeviceTest()
         {
             DeviceType device = new DeviceType();
-
             XElement expected = XElement.Parse(m_testUserQueryResponse);
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
+            execMock.Setup(exec =>
+                exec.ExecuteTwitter<User>(
+                    It.IsAny<string>(),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<IRequestProcessor<User>>()))
+                .Returns(m_testUserQueryResponse);
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
 
-            Expect.Once.On(m_twitterExecute)
-                .Method("ExecuteTwitter")
-                .Will(Return.Value(m_testUserQueryResponse));
+            User actual = ctx.UpdateAccountDeliveryDevice(device);
 
-            User actual = m_ctx.UpdateAccountDeliveryDevice(device);
             Assert.AreEqual(expected.Element("name").Value, actual.Name);
         }
 
-        /// <summary>
-        ///A test for UpdateAccountColors
-        ///</summary>
-        [TestMethod()]
+        [TestMethod]
         public void UpdateAccountColorsTest()
         {
             string background = "9ae4e8";
@@ -701,21 +728,24 @@ namespace LinqToTwitterTests
             string link = "#0000ff";
             string sidebarFill = "#e0ff92";
             string sidebarBorder = "#87bc44";
-
             XElement expected = XElement.Parse(m_testUserQueryResponse);
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
+            execMock.Setup(exec =>
+                exec.ExecuteTwitter<User>(
+                    It.IsAny<string>(),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<IRequestProcessor<User>>()))
+                .Returns(m_testUserQueryResponse);
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
 
-            Expect.Once.On(m_twitterExecute)
-                .Method("ExecuteTwitter")
-                .Will(Return.Value(m_testUserQueryResponse));
+            User actual = ctx.UpdateAccountColors(background, text, link, sidebarFill, sidebarBorder);
 
-            User actual = m_ctx.UpdateAccountColors(background, text, link, sidebarFill, sidebarBorder);
             Assert.AreEqual(expected.Element("name").Value, actual.Name);
         }
 
-        /// <summary>
-        ///A test for UpdateAccountColors
-        ///</summary>
-        [TestMethod()]
+        [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void UpdateAccountColorsNoInputTest()
         {
@@ -730,38 +760,47 @@ namespace LinqToTwitterTests
                 {
                     expected
                 };
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
+            execMock.Setup(exec =>
+                exec.ExecuteTwitter<User>(
+                    It.IsAny<string>(),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<IRequestProcessor<User>>()))
+                .Returns(m_testUserQueryResponse);
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
 
-            Expect.Once.On(m_twitterExecute)
-                .Method("ExecuteTwitter")
-                .Will(Return.Value(expectedList));
+            User actual = ctx.UpdateAccountColors(background, text, link, sidebarFill, sidebarBorder);
 
-            User actual = m_ctx.UpdateAccountColors(background, text, link, sidebarFill, sidebarBorder);
             Assert.AreEqual(expected, actual);
         }
 
-        /// <summary>
-        ///A test for UpdateAccountBackgroundImage
-        ///</summary>
-        [TestMethod()]
+        [TestMethod]
         public void UpdateAccountBackgroundImageTest()
         {
             string imageFilePath = "C:\\image.png";
             bool tile = false;
             bool use = false;
             XElement expected = XElement.Parse(m_testUserQueryResponse);
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
+            execMock.Setup(exec =>
+                exec.PostTwitterFile<User>(
+                    It.IsAny<string>(),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<string>(),
+                    It.IsAny<IRequestProcessor<User>>()))
+                .Returns(m_testUserQueryResponse);
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
 
-            Expect.Once.On(m_twitterExecute)
-                .Method("PostTwitterFile")
-                .Will(Return.Value(m_testUserQueryResponse));
+            User actual = ctx.UpdateAccountBackgroundImage(imageFilePath, tile, use);
 
-            User actual = m_ctx.UpdateAccountBackgroundImage(imageFilePath, tile, use);
             Assert.AreEqual(expected.Element("name").Value, actual.Name);
         }
 
-        /// <summary>
-        ///A test for UpdateAccountBackgroundImage
-        ///</summary>
-        [TestMethod()]
+        [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void UpdateAccountBackgroundImageNullPathTest()
         {
@@ -774,39 +813,48 @@ namespace LinqToTwitterTests
                 {
                     expected
                 };
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
+            execMock.Setup(exec =>
+                exec.PostTwitterImage<User>(
+                    It.IsAny<byte[]>(),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<IRequestProcessor<User>>()))
+                .Returns(m_testUserQueryResponse);
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
 
-            Expect.Once.On(m_twitterExecute)
-                .Method("PostTwitterFile")
-                .Will(Return.Value(expectedList));
+            User actual = ctx.UpdateAccountBackgroundImage(imageFilePath, tile, use);
 
-            User actual;
-            actual = m_ctx.UpdateAccountBackgroundImage(imageFilePath, tile, use);
             Assert.AreEqual(expected, actual);
         }
 
-        /// <summary>
-        ///A test for NewDirectMessage
-        ///</summary>
-        [TestMethod()]
+        [TestMethod]
         public void NewDirectMessageTest()
         {
             string userID = "1";
             string text = "Hi";
-
             XElement expected = XElement.Parse(m_testDirectMessageQueryResponse);
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
+            execMock.Setup(exec =>
+                exec.ExecuteTwitter<DirectMessage>(
+                    It.IsAny<string>(),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<IRequestProcessor<DirectMessage>>()))
+                .Returns(m_testDirectMessageQueryResponse);
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
 
-            Expect.Once.On(m_twitterExecute)
-                .Method("ExecuteTwitter")
-                .Will(Return.Value(m_testDirectMessageQueryResponse));
+            DirectMessage actual = ctx.NewDirectMessage(userID, text);
 
-            DirectMessage actual = m_ctx.NewDirectMessage(userID, text);
             Assert.AreEqual(expected.Element("id").Value, actual.ID.ToString());
         }
 
-        /// <summary>
-        ///A test for NewDirectMessage
-        ///</summary>
-        [TestMethod()]
+        [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void NewDirectMessageNullMessageTest()
         {
@@ -818,19 +866,23 @@ namespace LinqToTwitterTests
                 {
                     expected
                 };
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
+            execMock.Setup(exec =>
+                exec.ExecuteTwitter<DirectMessage>(
+                    It.IsAny<string>(),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<IRequestProcessor<DirectMessage>>()))
+                .Returns(m_testDirectMessageQueryResponse);
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
 
-            Expect.Once.On(m_twitterExecute)
-                .Method("ExecuteTwitter")
-                .Will(Return.Value(expectedList));
+            DirectMessage actual = ctx.NewDirectMessage(userID, text);
 
-            DirectMessage actual = m_ctx.NewDirectMessage(userID, text);
             Assert.AreEqual(expected, actual);
         }
 
-        /// <summary>
-        ///A test for NewDirectMessage
-        ///</summary>
-        [TestMethod()]
+        [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void NewDirectMessageNullUserIDTest()
         {
@@ -842,70 +894,85 @@ namespace LinqToTwitterTests
                 {
                     expected
                 };
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
+            execMock.Setup(exec =>
+                exec.ExecuteTwitter<DirectMessage>(
+                    It.IsAny<string>(),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<IRequestProcessor<DirectMessage>>()))
+                .Returns(m_testDirectMessageQueryResponse);
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
 
-            Expect.Once.On(m_twitterExecute)
-                .Method("ExecuteTwitter")
-                .Will(Return.Value(expectedList));
+            DirectMessage actual = ctx.NewDirectMessage(userID, text);
 
-            DirectMessage actual = m_ctx.NewDirectMessage(userID, text);
             Assert.AreEqual(expected, actual);
         }
 
-        /// <summary>
-        ///A test for HelpTest
-        ///</summary>
-        [TestMethod()]
+        [TestMethod]
         public void HelpTestTest()
         {
             string input = "<ok>False</ok>";
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
+            execMock.Setup(exec =>
+                exec.ExecuteTwitter<bool>(
+                    It.IsAny<string>(),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<IRequestProcessor<bool>>()))
+                .Returns(input);
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
 
-            Expect.Once.On(m_twitterExecute)
-                .Method("ExecuteTwitter")
-                .Will(Return.Value(input));
-
-            bool actual = m_ctx.HelpTest();
+            bool actual = ctx.HelpTest();
             Assert.AreEqual(false, actual);
         }
 
-        /// <summary>
-        ///A test for EndAccountSession
-        ///</summary>
-        [TestMethod()]
+        [TestMethod]
         public void EndAccountSessionTest()
         {
             XElement expected = XElement.Parse(m_testEndSessionResponse);
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
+            execMock.Setup(exec =>
+                exec.ExecuteTwitter<Account>(
+                    It.IsAny<string>(),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<IRequestProcessor<Account>>()))
+                .Returns(m_testEndSessionResponse);
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
 
-            Expect.Once.On(m_twitterExecute)
-                .Method("ExecuteTwitter")
-                .Will(Return.Value(m_testEndSessionResponse));
+            TwitterHashResponse actual = ctx.EndAccountSession();
 
-            TwitterHashResponse actual = m_ctx.EndAccountSession();
             Assert.AreEqual(expected.Element("error").Value, actual.Error);
         }
 
-        /// <summary>
-        ///A test for EnableNotifications
-        ///</summary>
-        [TestMethod()]
+        [TestMethod]
         public void EnableNotificationsTest()
         {
             string id = "1";
             string userID = "2";
             string screenName = "JoeMayo";
             XElement expected = XElement.Parse(m_testUserQueryResponse);
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
+            execMock.Setup(exec =>
+                exec.ExecuteTwitter<User>(
+                    It.IsAny<string>(),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<IRequestProcessor<User>>()))
+                .Returns(m_testUserQueryResponse);
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
 
-            Expect.Once.On(m_twitterExecute)
-                .Method("ExecuteTwitter")
-                .Will(Return.Value(m_testUserQueryResponse));
+            User actual = ctx.EnableNotifications(id, userID, screenName);
 
-            User actual = m_ctx.EnableNotifications(id, userID, screenName);
             Assert.AreEqual(expected.Element("name").Value, actual.Name);
         }
 
-        /// <summary>
-        ///A test for EnableNotifications
-        ///</summary>
-        [TestMethod()]
+        [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void EnableNotificationsNoInputTest()
         {
@@ -918,38 +985,46 @@ namespace LinqToTwitterTests
                 {
                     expected
                 };
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
+            execMock.Setup(exec =>
+                exec.ExecuteTwitter<User>(
+                    It.IsAny<string>(),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<IRequestProcessor<User>>()))
+                .Returns(m_testUserQueryResponse);
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
 
-            Expect.Once.On(m_twitterExecute)
-                .Method("ExecuteTwitter")
-                .Will(Return.Value(expectedList));
+            User actual = ctx.EnableNotifications(id, userID, screenName);
 
-            User actual = m_ctx.EnableNotifications(id, userID, screenName);
             Assert.AreEqual(expected, actual);
         }
 
-        /// <summary>
-        ///A test for DisableNotifications
-        ///</summary>
-        [TestMethod()]
+        [TestMethod]
         public void DisableNotificationsTest()
         {
             string id = "1";
             string userID = "2";
             string screenName = "JoeMayo";
             XElement expected = XElement.Parse(m_testUserQueryResponse);
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
+            execMock.Setup(exec =>
+                exec.ExecuteTwitter<User>(
+                    It.IsAny<string>(),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<IRequestProcessor<User>>()))
+                .Returns(m_testUserQueryResponse);
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
 
-            Expect.Once.On(m_twitterExecute)
-                .Method("ExecuteTwitter")
-                .Will(Return.Value(m_testUserQueryResponse));
+            User actual = ctx.DisableNotifications(id, userID, screenName);
 
-            User actual = m_ctx.DisableNotifications(id, userID, screenName);
             Assert.AreEqual(expected.Element("name").Value, actual.Name);
         }
 
-        /// <summary>
-        ///A test for DisableNotifications
-        ///</summary>
-        [TestMethod()]
+        [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void DisableNotificationsNoInputTest()
         {
@@ -962,36 +1037,44 @@ namespace LinqToTwitterTests
                 {
                     expected
                 };
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
+            execMock.Setup(exec =>
+                exec.ExecuteTwitter<User>(
+                    It.IsAny<string>(),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<IRequestProcessor<User>>()))
+                .Returns(m_testUserQueryResponse);
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
 
-            Expect.Once.On(m_twitterExecute)
-                .Method("ExecuteTwitter")
-                .Will(Return.Value(expectedList));
+            User actual = ctx.DisableNotifications(id, userID, screenName);
 
-            User actual = m_ctx.DisableNotifications(id, userID, screenName);
             Assert.AreEqual(expected, actual);
         }
 
-        /// <summary>
-        ///A test for DestroyStatus
-        ///</summary>
-        [TestMethod()]
+        [TestMethod]
         public void DestroyStatusTest()
         {
             string id = "1";
             XElement expected = XElement.Parse(m_testStatusQueryResponse);
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
+            execMock.Setup(exec =>
+                exec.ExecuteTwitter<Status>(
+                    It.IsAny<string>(),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<IRequestProcessor<Status>>()))
+                .Returns(m_testStatusQueryResponse);
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
 
-            Expect.Once.On(m_twitterExecute)
-                .Method("ExecuteTwitter")
-                .Will(Return.Value(m_testStatusQueryResponse));
+            Status actual = ctx.DestroyStatus(id);
 
-            Status actual = m_ctx.DestroyStatus(id);
             Assert.AreEqual(expected.Element("status").Element("id").Value, actual.StatusID);
         }
 
-        /// <summary>
-        ///A test for DestroyStatus
-        ///</summary>
-        [TestMethod()]
+        [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void DestroyStatusNullStatusTest()
         {
@@ -1002,37 +1085,46 @@ namespace LinqToTwitterTests
                 {
                     expected
                 };
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
+            execMock.Setup(exec =>
+                exec.ExecuteTwitter<Status>(
+                    It.IsAny<string>(),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<IRequestProcessor<Status>>()))
+                .Returns(m_testStatusQueryResponse);
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
 
-            Expect.Once.On(m_twitterExecute)
-                .Method("ExecuteTwitter")
-                .Will(Return.Value(expectedList));
-            Status actual = m_ctx.DestroyStatus(id);
+            Status actual = ctx.DestroyStatus(id);
+
             Assert.AreEqual(expected, actual);
         }
 
-        /// <summary>
-        ///A test for DestroyFriendship
-        ///</summary>
-        [TestMethod()]
+        [TestMethod]
         public void DestroyFriendshipTest()
         {
             string id = "1";
             string userID = "2";
             string screenName = "JoeMayo";
             XElement expected = XElement.Parse(m_testUserQueryResponse);
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
+            execMock.Setup(exec =>
+                exec.ExecuteTwitter<User>(
+                    It.IsAny<string>(),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<IRequestProcessor<User>>()))
+                .Returns(m_testUserQueryResponse);
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
 
-            Expect.Once.On(m_twitterExecute)
-                .Method("ExecuteTwitter")
-                .Will(Return.Value(m_testUserQueryResponse));
+            User actual = ctx.DestroyFriendship(id, userID, screenName);
 
-            User actual = m_ctx.DestroyFriendship(id, userID, screenName);
             Assert.AreEqual(expected.Element("name").Value, actual.Name);
         }
 
-        /// <summary>
-        ///A test for DestroyFriendship
-        ///</summary>
-        [TestMethod()]
+        [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void DestroyFriendshipNoInputTest()
         {
@@ -1045,36 +1137,44 @@ namespace LinqToTwitterTests
                 {
                     expected
                 };
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
+            execMock.Setup(exec =>
+                exec.ExecuteTwitter<User>(
+                    It.IsAny<string>(),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<IRequestProcessor<User>>()))
+                .Returns(m_testUserQueryResponse);
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
 
-            Expect.Once.On(m_twitterExecute)
-                .Method("ExecuteTwitter")
-                .Will(Return.Value(expectedList));
+            User actual = ctx.DestroyFriendship(id, userID, screenName);
 
-            User actual = m_ctx.DestroyFriendship(id, userID, screenName);
             Assert.AreEqual(expected, actual);
         }
 
-        /// <summary>
-        ///A test for DestroyFavorite
-        ///</summary>
-        [TestMethod()]
+        [TestMethod]
         public void DestroyFavoriteTest()
         {
             string id = "1";
             XElement expected = XElement.Parse(m_testStatusQueryResponse);
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
+            execMock.Setup(exec =>
+                exec.ExecuteTwitter<Status>(
+                    It.IsAny<string>(),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<IRequestProcessor<Status>>()))
+                .Returns(m_testStatusQueryResponse);
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
 
-            Expect.Once.On(m_twitterExecute)
-                .Method("ExecuteTwitter")
-                .Will(Return.Value(m_testStatusQueryResponse));
+            Status actual = ctx.DestroyFavorite(id);
 
-            Status actual = m_ctx.DestroyFavorite(id);
             Assert.AreEqual(expected.Element("status").Element("id").Value, actual.StatusID);
         }
 
-        /// <summary>
-        ///A test for DestroyFavorite
-        ///</summary>
-        [TestMethod()]
+        [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void DestroyFavoriteNullIDTest()
         {
@@ -1085,35 +1185,44 @@ namespace LinqToTwitterTests
                 {
                     expected
                 };
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
+            execMock.Setup(exec =>
+                exec.ExecuteTwitter<Status>(
+                    It.IsAny<string>(),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<IRequestProcessor<Status>>()))
+                .Returns(m_testStatusQueryResponse);
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
 
-            Expect.Once.On(m_twitterExecute)
-                .Method("ExecuteTwitter")
-                .Will(Return.Value(expectedList));
-            Status actual = m_ctx.DestroyFavorite(id);
+            Status actual = ctx.DestroyFavorite(id);
+
             Assert.AreEqual(expected, actual);
         }
 
-        /// <summary>
-        ///A test for DestroyDirectMessage
-        ///</summary>
-        [TestMethod()]
+        [TestMethod]
         public void DestroyDirectMessageTest()
         {
             string id = "1";
             XElement expected = XElement.Parse(m_testDirectMessageQueryResponse);
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
+            execMock.Setup(exec =>
+                exec.ExecuteTwitter<DirectMessage>(
+                    It.IsAny<string>(),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<IRequestProcessor<DirectMessage>>()))
+                .Returns(m_testDirectMessageQueryResponse);
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
 
-            Expect.Once.On(m_twitterExecute)
-                .Method("ExecuteTwitter")
-                .Will(Return.Value(m_testDirectMessageQueryResponse));
+            DirectMessage actual = ctx.DestroyDirectMessage(id);
 
-            DirectMessage actual = m_ctx.DestroyDirectMessage(id);
             Assert.AreEqual(expected.Element("id").Value, actual.ID.ToString());
         }
 
-        /// <summary>
-        ///A test for DestroyDirectMessage
-        ///</summary>
-        [TestMethod()]
+        [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void DestroyDirectMessageNullIDTest()
         {
@@ -1124,36 +1233,44 @@ namespace LinqToTwitterTests
                 {
                     expected
                 };
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
+            execMock.Setup(exec =>
+                exec.ExecuteTwitter<DirectMessage>(
+                    It.IsAny<string>(),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<IRequestProcessor<DirectMessage>>()))
+                .Returns(m_testDirectMessageQueryResponse);
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
 
-            Expect.Once.On(m_twitterExecute)
-                .Method("ExecuteTwitter")
-                .Will(Return.Value(expectedList));
+            DirectMessage actual = ctx.DestroyDirectMessage(id);
 
-            DirectMessage actual = m_ctx.DestroyDirectMessage(id);
             Assert.AreEqual(expected, actual);
         }
 
-        /// <summary>
-        ///A test for DestroyBlock
-        ///</summary>
-        [TestMethod()]
+        [TestMethod]
         public void DestroyBlockTest()
         {
             string id = "1";
             XElement expected = XElement.Parse(m_testUserQueryResponse);
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
+            execMock.Setup(exec =>
+                exec.ExecuteTwitter<User>(
+                    It.IsAny<string>(),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<IRequestProcessor<User>>()))
+                .Returns(m_testUserQueryResponse);
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
 
-            Expect.Once.On(m_twitterExecute)
-                .Method("ExecuteTwitter")
-                .Will(Return.Value(m_testUserQueryResponse));
+            User actual = ctx.DestroyBlock(id);
 
-            User actual = m_ctx.DestroyBlock(id);
             Assert.AreEqual(expected.Element("name").Value, actual.Name);
         }
 
-        /// <summary>
-        ///A test for DestroyBlock
-        ///</summary>
-        [TestMethod()]
+        [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void DestroyBlockNullIDTest()
         {
@@ -1164,18 +1281,23 @@ namespace LinqToTwitterTests
                 {
                     expected
                 };
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
+            execMock.Setup(exec =>
+                exec.ExecuteTwitter<User>(
+                    It.IsAny<string>(),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<IRequestProcessor<User>>()))
+                .Returns(m_testUserQueryResponse);
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
 
-            Expect.Once.On(m_twitterExecute)
-                .Method("ExecuteTwitter")
-                .Will(Return.Value(expectedList));
-            User actual = m_ctx.DestroyBlock(id);
+            User actual = ctx.DestroyBlock(id);
+
             Assert.AreEqual(expected, actual);
         }
 
-        /// <summary>
-        ///A test for CreateRequestProcessor
-        ///</summary>
-        [TestMethod()]
+        [TestMethod]
         public void CreateStatusRequestProcessorTest()
         {
             TwitterContext_Accessor ctx = new TwitterContext_Accessor();
@@ -1186,10 +1308,7 @@ namespace LinqToTwitterTests
             Assert.IsInstanceOfType(actual, typeof(StatusRequestProcessor<Status>));
         }
 
-        /// <summary>
-        ///A test for CreateRequestProcessor
-        ///</summary>
-        [TestMethod()]
+        [TestMethod]
         public void CreateAccountRequestProcessorTest()
         {
             TwitterContext_Accessor ctx = new TwitterContext_Accessor();
@@ -1200,10 +1319,7 @@ namespace LinqToTwitterTests
             Assert.IsInstanceOfType(actual, typeof(AccountRequestProcessor<Account>));
         }
 
-        /// <summary>
-        ///A test for CreateRequestProcessor
-        ///</summary>
-        [TestMethod()]
+        [TestMethod]
         public void CreateBlocksRequestProcessorTest()
         {
             TwitterContext_Accessor ctx = new TwitterContext_Accessor();
@@ -1214,10 +1330,7 @@ namespace LinqToTwitterTests
             Assert.IsInstanceOfType(actual, typeof(BlocksRequestProcessor<Blocks>));
         }
 
-        /// <summary>
-        ///A test for CreateRequestProcessor
-        ///</summary>
-        [TestMethod()]
+        [TestMethod]
         public void CreateDirectMessageRequestProcessorTest()
         {
             TwitterContext_Accessor ctx = new TwitterContext_Accessor();
@@ -1228,10 +1341,7 @@ namespace LinqToTwitterTests
             Assert.IsInstanceOfType(actual, typeof(DirectMessageRequestProcessor<DirectMessage>));
         }
 
-        /// <summary>
-        ///A test for CreateRequestProcessor
-        ///</summary>
-        [TestMethod()]
+        [TestMethod]
         public void CreateFavoritesRequestProcessorTest()
         {
             TwitterContext_Accessor ctx = new TwitterContext_Accessor();
@@ -1242,10 +1352,7 @@ namespace LinqToTwitterTests
             Assert.IsInstanceOfType(actual, typeof(FavoritesRequestProcessor<Favorites>));
         }
 
-        /// <summary>
-        ///A test for CreateRequestProcessor
-        ///</summary>
-        [TestMethod()]
+        [TestMethod]
         public void CreateFriendshipRequestProcessorTest()
         {
             TwitterContext_Accessor ctx = new TwitterContext_Accessor();
@@ -1256,10 +1363,7 @@ namespace LinqToTwitterTests
             Assert.IsInstanceOfType(actual, typeof(FriendshipRequestProcessor<Friendship>));
         }
 
-        /// <summary>
-        ///A test for CreateRequestProcessor
-        ///</summary>
-        [TestMethod()]
+        [TestMethod]
         public void CreateSearchRequestProcessor_Returns_RawRequestProcessor()
         {
             var ctx = new TwitterContext_Accessor();
@@ -1270,10 +1374,7 @@ namespace LinqToTwitterTests
             Assert.IsInstanceOfType(actual, typeof(RawRequestProcessor<Raw>));
         }
 
-        /// <summary>
-        ///A test for CreateRequestProcessor
-        ///</summary>
-        [TestMethod()]
+        [TestMethod]
         public void CreateSearchRequestProcessorTest()
         {
             TwitterContext_Accessor ctx = new TwitterContext_Accessor();
@@ -1284,10 +1385,7 @@ namespace LinqToTwitterTests
             Assert.IsInstanceOfType(actual, typeof(SearchRequestProcessor<Search>));
         }
 
-        /// <summary>
-        ///A test for CreateRequestProcessor
-        ///</summary>
-        [TestMethod()]
+        [TestMethod]
         public void CreateSocialGraphRequestProcessorTest()
         {
             TwitterContext_Accessor ctx = new TwitterContext_Accessor();
@@ -1298,10 +1396,7 @@ namespace LinqToTwitterTests
             Assert.IsInstanceOfType(actual, typeof(SocialGraphRequestProcessor<SocialGraph>));
         }
 
-        /// <summary>
-        ///A test for CreateRequestProcessor
-        ///</summary>
-        [TestMethod()]
+        [TestMethod]
         public void CreateTrendRequestProcessorTest()
         {
             TwitterContext_Accessor ctx = new TwitterContext_Accessor();
@@ -1312,10 +1407,7 @@ namespace LinqToTwitterTests
             Assert.IsInstanceOfType(actual, typeof(TrendRequestProcessor<Trend>));
         }
 
-        /// <summary>
-        ///A test for CreateRequestProcessor
-        ///</summary>
-        [TestMethod()]
+        [TestMethod]
         public void CreateUserRequestProcessorTest()
         {
             TwitterContext_Accessor ctx = new TwitterContext_Accessor();
@@ -1326,10 +1418,7 @@ namespace LinqToTwitterTests
             Assert.IsInstanceOfType(actual, typeof(UserRequestProcessor<User>));
         }
 
-        /// <summary>
-        ///A test for CreateRequestProcessor
-        ///</summary>
-        [TestMethod()]
+        [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void CreateRequestProcessorNullExpressionTest1()
         {
@@ -1338,10 +1427,7 @@ namespace LinqToTwitterTests
             IRequestProcessor<Status> actual = ctx.CreateRequestProcessor<Status>(null);
         }
 
-        /// <summary>
-        ///A test for CreateFriendship
-        ///</summary>
-        [TestMethod()]
+        [TestMethod]
         public void CreateFriendshipTest()
         {
             string id = "1";
@@ -1349,19 +1435,23 @@ namespace LinqToTwitterTests
             string screenName = "JoeMayo";
             bool follow = false;
             XElement expected = XElement.Parse(m_testUserQueryResponse);
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
+            execMock.Setup(exec =>
+                exec.ExecuteTwitter<User>(
+                    It.IsAny<string>(),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<IRequestProcessor<User>>()))
+                .Returns(m_testUserQueryResponse);
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
 
-            Expect.Once.On(m_twitterExecute)
-                .Method("ExecuteTwitter")
-                .Will(Return.Value(m_testUserQueryResponse));
+            User actual = ctx.CreateFriendship(id, userID, screenName, follow);
 
-            User actual = m_ctx.CreateFriendship(id, userID, screenName, follow);
             Assert.AreEqual(expected.Element("name").Value, actual.Name);
         }
 
-        /// <summary>
-        ///A test for CreateFriendship
-        ///</summary>
-        [TestMethod()]
+        [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void CreateFriendshipNoInputTest()
         {
@@ -1375,36 +1465,43 @@ namespace LinqToTwitterTests
                 {
                     expected
                 };
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
+            execMock.Setup(exec =>
+                exec.ExecuteTwitter<User>(
+                    It.IsAny<string>(),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<IRequestProcessor<User>>()))
+                .Returns(m_testUserQueryResponse);
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
 
-            Expect.Once.On(m_twitterExecute)
-                .Method("ExecuteTwitter")
-                .Will(Return.Value(expectedList));
-
-            User actual = m_ctx.CreateFriendship(id, userID, screenName, follow);
+            User actual = ctx.CreateFriendship(id, userID, screenName, follow);
             Assert.AreEqual(expected, actual);
         }
 
-        /// <summary>
-        ///A test for CreateFavorite
-        ///</summary>
-        [TestMethod()]
+        [TestMethod]
         public void CreateFavoriteTest()
         {
             string id = "1";
             XElement expected = XElement.Parse(m_testStatusQueryResponse);
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
+            execMock.Setup(exec =>
+                exec.ExecuteTwitter<Status>(
+                    It.IsAny<string>(),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<IRequestProcessor<Status>>()))
+                .Returns(m_testStatusQueryResponse);
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
 
-            Expect.Once.On(m_twitterExecute)
-                .Method("ExecuteTwitter")
-                .Will(Return.Value(m_testStatusQueryResponse));
+            Status actual = ctx.CreateFavorite(id);
 
-            Status actual = m_ctx.CreateFavorite(id);
             Assert.AreEqual(expected.Element("status").Element("id").Value, actual.StatusID);
         }
 
-        /// <summary>
-        ///A test for CreateFavorite
-        ///</summary>
-        [TestMethod()]
+        [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void CreateFavoriteNoIDTest()
         {
@@ -1415,35 +1512,44 @@ namespace LinqToTwitterTests
                 {
                     expected
                 };
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
+            execMock.Setup(exec =>
+                exec.ExecuteTwitter<Status>(
+                    It.IsAny<string>(),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<IRequestProcessor<Status>>()))
+                .Returns(m_testStatusQueryResponse);
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
 
-            Expect.Once.On(m_twitterExecute)
-                .Method("ExecuteTwitter")
-                .Will(Return.Value(expectedList));
-            Status actual = m_ctx.CreateFavorite(id);
+            Status actual = ctx.CreateFavorite(id);
+
             Assert.AreEqual(expected, actual);
         }
 
-        /// <summary>
-        ///A test for CreateBlock
-        ///</summary>
-        [TestMethod()]
+        [TestMethod]
         public void CreateBlockTest()
         {
             string id = "1";
             XElement expected = XElement.Parse(m_testUserQueryResponse);
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
+            execMock.Setup(exec => 
+                exec.ExecuteTwitter<User>(
+                    It.IsAny<string>(),
+                    It.IsAny <Dictionary<string, string>>(),
+                    It.IsAny<IRequestProcessor<User>>()))
+                .Returns(m_testUserQueryResponse);
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
 
-            Expect.Once.On(m_twitterExecute)
-                .Method("ExecuteTwitter")
-                .Will(Return.Value(m_testUserQueryResponse));
+            User actual = ctx.CreateBlock(id);
 
-            User actual = m_ctx.CreateBlock(id);
             Assert.AreEqual(expected.Element("name").Value, actual.Name);
         }
 
-        /// <summary>
-        ///A test for CreateBlock
-        ///</summary>
-        [TestMethod()]
+        [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void CreateBlockNoIDTest()
         {
@@ -1454,12 +1560,19 @@ namespace LinqToTwitterTests
                 {
                     expected
                 };
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
+            execMock.Setup(exec =>
+                exec.ExecuteTwitter<User>(
+                    It.IsAny<string>(),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<IRequestProcessor<User>>()))
+                .Returns(m_testUserQueryResponse);
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
 
-            Expect.Once.On(m_twitterExecute)
-                .Method("ExecuteTwitter")
-                .Will(Return.Value(expectedList));
+            User actual = ctx.CreateBlock(id);
 
-            User actual = m_ctx.CreateBlock(id);
             Assert.AreEqual(expected, actual);
         }
 
@@ -1480,8 +1593,10 @@ namespace LinqToTwitterTests
 
             execMock.Verify(exec => 
                 exec.ExecuteTwitter(
-                    "https://api.twitter.com/1/statuses/update.xml", 
-                    parameters), Times.Once());
+                    "https://api.twitter.com/1/statuses/update.xml",
+                    parameters, 
+                    It.IsAny<IRequestProcessor<Raw>>()), 
+                Times.Once());
         }
 
         [TestMethod]
@@ -1498,7 +1613,7 @@ namespace LinqToTwitterTests
             };
             var expectedResult = "<status>xxx</status>";
             var fullUrl = "https://api.twitter.com/1/statuses/update.xml";
-            execMock.Setup(exec => exec.ExecuteTwitter(fullUrl, parameters)).Returns(expectedResult);
+            execMock.Setup(exec => exec.ExecuteTwitter(fullUrl, parameters, It.IsAny<IRequestProcessor<Raw>>())).Returns(expectedResult);
 
             string actualResult = ctx.ExecuteRaw(queryString, parameters);
 
@@ -1525,7 +1640,8 @@ namespace LinqToTwitterTests
             execMock.Verify(exec =>
                 exec.ExecuteTwitter(
                     fullUrl,
-                    parameters), Times.Once());
+                    parameters, 
+                    It.IsAny<IRequestProcessor<Raw>>()), Times.Once());
         }
 
         [TestMethod]
@@ -1548,7 +1664,7 @@ namespace LinqToTwitterTests
             execMock.Verify(exec =>
                 exec.ExecuteTwitter(
                     fullUrl,
-                    parameters), Times.Once());
+                    parameters, It.IsAny<IRequestProcessor<Raw>>()), Times.Once());
         }
 
         [TestMethod]

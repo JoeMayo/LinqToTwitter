@@ -56,7 +56,7 @@ namespace LinqToTwitter
         /// <param name="url">URL of request</param>
         /// <param name="parameters">parameters to post</param>
         /// <returns>XML Response from Twitter</returns>
-        string ExecuteTwitter(string url, Dictionary<string, string> parameters);
+        string ExecuteTwitter<T>(string url, Dictionary<string, string> parameters, IRequestProcessor<T> reqProc);
 
         /// <summary>
         /// performs HTTP POST file upload to Twitter
@@ -65,7 +65,7 @@ namespace LinqToTwitter
         /// <param name="parameters">query string parameters</param>
         /// <param name="url">url to upload to</param>
         /// <returns>XML Results from Twitter</returns>
-        string PostTwitterFile(string filePath, Dictionary<string, string> parameters, string url);
+        string PostTwitterFile<T>(string filePath, Dictionary<string, string> parameters, string url, IRequestProcessor<T> reqProc);
 
         /// <summary>
         /// performs HTTP POST image byte array upload to Twitter
@@ -75,7 +75,7 @@ namespace LinqToTwitter
         /// <param name="fileName">name to pass to Twitter for the file</param>
         /// <param name="imageType">type of image: must be one of jpg, gif, or png</param>
         /// <returns>XML results From Twitter</returns>
-        string PostTwitterImage(byte[] image, Dictionary<string, string> parameters, string url, string fileName, string imageType);
+        string PostTwitterImage<T>(byte[] image, Dictionary<string, string> parameters, string url, string fileName, string imageType, IRequestProcessor<T> reqProc);
 
         /// <summary>
         /// makes HTTP call to Twitter API

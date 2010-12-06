@@ -11,16 +11,15 @@ using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using System.Windows.Navigation;
 using LinqToTwitter;
-using System.Threading;
 
 namespace LinqToTwitterSilverlightDemo.Views
 {
-    public partial class StatusUpdate : Page
+    public partial class FriendsStatusQuery : Page
     {
         private TwitterContext m_twitterCtx = null;
         private PinAuthorizer m_pinAuth = null;
 
-        public StatusUpdate()
+        public FriendsStatusQuery()
         {
             InitializeComponent();
         }
@@ -36,11 +35,11 @@ namespace LinqToTwitterSilverlightDemo.Views
                     ConsumerSecret = ""
                 },
                 UseCompression = true,
-                GoToTwitterAuthorization = pageLink => 
+                GoToTwitterAuthorization = pageLink =>
                     Dispatcher.BeginInvoke(() => WebBrowser.Navigate(new Uri(pageLink)))
             };
 
-            m_pinAuth.BeginAuthorize(resp => 
+            m_pinAuth.BeginAuthorize(resp =>
                 Dispatcher.BeginInvoke(() =>
                 {
                     switch (resp.Status)
@@ -71,8 +70,7 @@ namespace LinqToTwitterSilverlightDemo.Views
                     switch (completeResp.Status)
                     {
                         case TwitterErrorStatus.Success:
-                            UpdatePanel.Visibility = Visibility.Visible;
-                            TweetTextBox.Text = "Silverlight OOB Test, " + DateTime.Now.ToString() + " #linqtotwitter";
+                            FriendsPanel.Visibility = Visibility.Visible;
                             break;
                         case TwitterErrorStatus.TwitterApiError:
                         case TwitterErrorStatus.RequestProcessingException:
@@ -85,32 +83,28 @@ namespace LinqToTwitterSilverlightDemo.Views
                 }));
         }
 
-        private void SendButton_Click(object sender, RoutedEventArgs e)
+        private void FriendsButton_Click(object sender, RoutedEventArgs e)
         {
-            m_twitterCtx.UpdateStatus(TweetTextBox.Text,
-                updateResp => Dispatcher.BeginInvoke(() =>
-                {
-                    switch (updateResp.Status)
+            var result =
+                (from tweet in m_twitterCtx.Status
+                 where tweet.Type == StatusType.Friends
+                 select tweet)
+                .AsyncCallback(tweets =>
+                    Dispatcher.BeginInvoke(() =>
                     {
-                        case TwitterErrorStatus.Success:
-                            Status tweet = updateResp.State;
-                            User user = tweet.User;
-                            UserIdentifier id = user.Identifier;
-                            MessageBox.Show(
-                                "User: " + id.ScreenName +
-                                ", Posted Status: " + tweet.Text,
-                                "Update Successfully Posted.",
-                                MessageBoxButton.OK);
-                            break;
-                        case TwitterErrorStatus.TwitterApiError:
-                        case TwitterErrorStatus.RequestProcessingException:
-                            MessageBox.Show(
-                                updateResp.Error.ToString(),
-                                updateResp.Message,
-                                MessageBoxButton.OK);
-                            break;
-                    }
-                }));
+                        var projectedTweets =
+                           (from tweet in tweets
+                            select new MyTweet
+                            {
+                                ScreenName = tweet.User.Identifier.ScreenName,
+                                Tweet = tweet.Text
+                            })
+                           .ToList();
+
+                        FriendsDataGrid.ItemsSource = projectedTweets;
+                    }))
+                .SingleOrDefault();
         }
+
     }
 }

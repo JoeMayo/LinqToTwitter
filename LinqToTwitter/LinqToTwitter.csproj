@@ -196,6 +196,12 @@
     <Compile Include="..\LinqToTwitterAg\Common\RequestProcessorHelper.cs">
       <Link>Common\RequestProcessorHelper.cs</Link>
     </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\TwitterAsyncResponse.cs">
+      <Link>Common\TwitterAsyncResponse.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\TwitterErrorStatus.cs">
+      <Link>Common\TwitterErrorStatus.cs</Link>
+    </Compile>
     <Compile Include="..\LinqToTwitterAg\Common\TwitterHashResponse.cs">
       <Link>Common\TwitterHashResponse.cs</Link>
     </Compile>

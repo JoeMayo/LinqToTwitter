@@ -109,6 +109,7 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.Mvc, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq">
@@ -122,6 +123,7 @@
     <Compile Include="AccountRequestProcessorTest.cs" />
     <Compile Include="BlocksRequestProcessorTest.cs" />
     <Compile Include="Common\DebuggerWriter.cs" />
+    <Compile Include="Common\OAuthTwitterMock.cs" />
     <Compile Include="Common\TestCulture.cs" />
     <Compile Include="LegalRequestProcessorTests.cs" />
     <Compile Include="OAuthAuthorizerTest.cs" />

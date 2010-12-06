@@ -146,12 +146,9 @@ namespace LinqToTwitter
             string queryString;
             OAuthTwitter.GetOAuthQueryString(HttpMethod.GET, url, string.Empty, out outUrl, out queryString);
 
-#if SILVERLIGHT
-            var req = WebRequestCreator.ClientHttp.Create(new Uri(url)) as HttpWebRequest;
-#else
-            var req = HttpWebRequest.Create(url) as HttpWebRequest;
-#endif
-            req.Headers[HttpRequestHeader.Authorization] = PrepareAuthHeader(queryString);
+            var req = HttpWebRequest.Create(outUrl + "?" + queryString) as HttpWebRequest;
+
+            //req.Headers[HttpRequestHeader.Authorization] = PrepareAuthHeader(queryString);
 
             InitializeRequest(req);
 
@@ -198,6 +195,36 @@ namespace LinqToTwitter
             InitializeRequest(req);
 
             return OAuthHelper.GetResponse(req);
+        }
+
+        /// <summary>
+        /// Async OAuth Post
+        /// </summary>
+        /// <param name="url">Twitter Command</param>
+        /// <param name="args">Command Arguments</param>
+        /// <returns>HttpWebRequest for post</returns>
+        public HttpWebRequest PostAsync(string url, Dictionary<string, string> args)
+        {
+            string paramsJoined =
+                string.Join(
+                    "&",
+                    (from param in args
+                     where !string.IsNullOrEmpty(param.Value)
+                     select param.Key + "=" + OAuthTwitter.TwitterParameterUrlEncode(param.Value))
+                    .ToArray());
+
+            url += "?" + paramsJoined;
+
+            var req = WebRequest.Create(url) as HttpWebRequest;
+            //req.ServicePoint.Expect100Continue = false;
+            req.Method = HttpMethod.POST.ToString();
+
+            req.Headers[HttpRequestHeader.Authorization] = OAuthTwitter.GetOAuthQueryStringForPost(url);
+            req.ContentLength = 0;
+
+            InitializeRequest(req);
+
+            return req;
         }
     }
 }
