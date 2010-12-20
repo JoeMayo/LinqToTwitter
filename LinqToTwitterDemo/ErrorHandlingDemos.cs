@@ -17,7 +17,7 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         public static void Run(TwitterContext twitterCtx)
         {
-            //HandleQueryExceptionDemo(twitterCtx);
+            HandleQueryExceptionDemo(twitterCtx);
             //HandleSideEffectExceptionDemo(twitterCtx);
             //HandleSideEffectWithFilePostExceptionDemo(twitterCtx);
             //HandleTimeoutErrors(twitterCtx);

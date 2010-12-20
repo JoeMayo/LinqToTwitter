@@ -332,19 +332,36 @@ namespace LinqToTwitter
                             (AsyncCallback as Action<IEnumerable<T>>)(responseObj);
                         }), null);
 #else
+                Exception asyncException = null;
+                
                 var resetEvent = new ManualResetEvent(initialState: false);
 
                 req.BeginGetResponse(
                     new AsyncCallback(
                         ar =>
                         {
-                            var res = req.EndGetResponse(ar) as HttpWebResponse;
-                            httpStatus = res.Headers["Status"];
-                            responseXml = GetTwitterResponse(res);
-                            resetEvent.Set();
+                            try
+                            {
+                                var res = req.EndGetResponse(ar) as HttpWebResponse;
+                                httpStatus = res.Headers["Status"];
+                                responseXml = GetTwitterResponse(res);
+                            }
+                            catch (Exception ex)
+                            {
+                                asyncException = ex;
+                            }
+                            finally
+                            {
+                                resetEvent.Set();
+                            }
                         }), null);
 
                 resetEvent.WaitOne();
+
+                if (asyncException != null)
+                {
+                    throw asyncException;
+                }
 #endif
             }
             catch (WebException wex)
@@ -481,9 +498,17 @@ namespace LinqToTwitter
                             new AsyncCallback(
                                 ar =>
                                 {
-                                    using (var requestStream = req.EndGetRequestStream(ar))
+                                    try
                                     {
-                                        requestStream.Write(postBytes, 0, postBytes.Length);
+                                        using (var requestStream = req.EndGetRequestStream(ar))
+                                        {
+                                            requestStream.Write(postBytes, 0, postBytes.Length);
+                                        }
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        WriteLog(ex.ToString(), "ExecuteTwitterStream");
+                                        throw;
                                     }
 
                                     resetEvent.Set();
@@ -551,7 +576,7 @@ namespace LinqToTwitter
                                     }
                                     catch (Exception ex)
                                     {
-                                        WriteLog(ex.ToString(), "ExecuteStream");
+                                        WriteLog(ex.ToString(), "ExecuteTwitterStream");
                                     }
                                     finally
                                     {
@@ -576,7 +601,7 @@ namespace LinqToTwitter
                                 {
                                     errorWait += 250;
                                 }
-                                WriteLog(ex.ToString(), "ExecuteStream");
+                                WriteLog(ex.ToString(), "ExecuteTwitterStream");
                             }
                             finally
                             {
@@ -599,7 +624,7 @@ namespace LinqToTwitter
             }
             catch (Exception ex)
             {
-                WriteLog(ex.ToString(), "ManageTwitterStream");
+                WriteLog(ex.ToString(), "ExecuteTwitterStream");
                 Thread.Sleep(errorWait);
                 throw;
             }
@@ -717,69 +742,101 @@ namespace LinqToTwitter
                 req.AllowWriteStreamBuffering = true;
                 req.ContentLength = imageBytes.Length;
 
+                Exception asyncException = null;
                 var resetEvent = new ManualResetEvent(initialState: false);
 
                 req.BeginGetRequestStream(
                     new AsyncCallback(
                         ar =>
                         {
-                            using (var reqStream = req.EndGetRequestStream(ar))
+                            try
                             {
-                                int offset = 0;
-                                int bufferSize = 4096;
-                                int lastPercentage = 0;
-                                while (offset < imageBytes.Length)
+                                using (var reqStream = req.EndGetRequestStream(ar))
                                 {
-                                    int bytesLeft = imageBytes.Length - offset;
-
-                                    if (bytesLeft < bufferSize)
+                                    int offset = 0;
+                                    int bufferSize = 4096;
+                                    int lastPercentage = 0;
+                                    while (offset < imageBytes.Length)
                                     {
-                                        reqStream.Write(imageBytes, offset, bytesLeft);
+                                        int bytesLeft = imageBytes.Length - offset;
+
+                                        if (bytesLeft < bufferSize)
+                                        {
+                                            reqStream.Write(imageBytes, offset, bytesLeft);
+                                        }
+                                        else
+                                        {
+                                            reqStream.Write(imageBytes, offset, bufferSize);
+                                        }
+
+                                        offset += bufferSize;
+
+                                        int percentComplete =
+                                            (int)((double)offset / (double)imageBytes.Length * 100);
+
+                                        // since we still need to get the response later
+                                        // in the algorithm, interpolate the results to
+                                        // give user a more accurate picture of completion.
+                                        // i.e. we don't want to shoot up to 100% here when
+                                        // we know there is more processing to do.
+                                        lastPercentage = percentComplete >= 98 ?
+                                            100 - ((98 - lastPercentage) / 2) :
+                                            percentComplete;
+
+                                        OnUploadProgressChanged(lastPercentage);
                                     }
-                                    else
-                                    {
-                                        reqStream.Write(imageBytes, offset, bufferSize);
-                                    }
 
-                                    offset += bufferSize;
-
-                                    int percentComplete =
-                                        (int)((double)offset / (double)imageBytes.Length * 100);
-
-                                    // since we still need to get the response later
-                                    // in the algorithm, interpolate the results to
-                                    // give user a more accurate picture of completion.
-                                    // i.e. we don't want to shoot up to 100% here when
-                                    // we know there is more processing to do.
-                                    lastPercentage = percentComplete >= 98 ?
-                                        100 - ((98 - lastPercentage) / 2) :
-                                        percentComplete;
-
-                                    OnUploadProgressChanged(lastPercentage);
+                                    reqStream.Flush();
                                 }
-
-                                reqStream.Flush();
                             }
-                            resetEvent.Set();
+                            catch (Exception ex)
+                            {
+                                asyncException = ex;
+                            }
+                            finally
+                            {
+                                resetEvent.Set();
+                            }
                         }), null);
 
                 resetEvent.WaitOne();
+
+                if (asyncException != null)
+                {
+                    throw asyncException;
+                }
+
                 resetEvent.Reset();
 
                 req.BeginGetResponse(
                     new AsyncCallback(
                         ar =>
                         {
-                            using (var res = req.EndGetResponse(ar) as HttpWebResponse)
+                            try
                             {
-                                httpStatus = res.Headers["Status"];
-                                responseXml = GetTwitterResponse(res);
-                                OnUploadProgressChanged(99);
+                                using (var res = req.EndGetResponse(ar) as HttpWebResponse)
+                                {
+                                    httpStatus = res.Headers["Status"];
+                                    responseXml = GetTwitterResponse(res);
+                                    OnUploadProgressChanged(99);
+                                }
                             }
-                            resetEvent.Set();
+                            catch (Exception ex)
+                            {
+                                asyncException = ex;
+                            }
+                            finally
+                            {
+                                resetEvent.Set();
+                            }
                         }), null);
 
                 resetEvent.WaitOne();
+
+                if (asyncException != null)
+                {
+                    throw asyncException;
+                }
             }
             catch (WebException wex)
             {
