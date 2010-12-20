@@ -319,11 +319,13 @@ namespace LinqToTwitter
                 var req = this.AuthorizedClient.Get(url);
 
 #if SILVERLIGHT
-                req.BeginGetResponse(
+                var reqEx = req as HttpWebRequest;
+
+                reqEx.BeginGetResponse(
                     new AsyncCallback(
                         ar =>
                         {
-                            var res = req.EndGetResponse(ar) as HttpWebResponse;
+                            var res = reqEx.EndGetResponse(ar) as HttpWebResponse;
                             //httpStatus = res.Headers["Status"];
                             responseXml = GetTwitterResponse(res);
                             List<T> responseObj = reqProc.ProcessResults(responseXml);
@@ -450,7 +452,7 @@ namespace LinqToTwitter
             string httpStatus = string.Empty;
 
             this.LastUrl = uri.AbsoluteUri;
-            var req = this.AuthorizedClient.Get(streamUrl);
+            var req = this.AuthorizedClient.Get(streamUrl) as HttpWebRequest;
             req.UserAgent = UserAgent;
             //req.Timeout = -1;
 

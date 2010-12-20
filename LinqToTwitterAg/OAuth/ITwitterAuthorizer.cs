@@ -16,7 +16,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="url">The request URL.</param>
         /// <returns>The <see cref="HttpWebRequest"/> object that may be further customized.</returns>
-        HttpWebRequest Get(string url);
+        WebRequest Get(string url);
 
         /// <summary>
         /// Prepares an authorized HTTP POST request without sending a POST entity stream.

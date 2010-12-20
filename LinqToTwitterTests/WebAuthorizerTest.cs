@@ -74,8 +74,8 @@ namespace LinqToTwitterTests
             webAuth.Credentials = new InMemoryCredentials();
             var oAuthMock = new Mock<IOAuthTwitter>();
             webAuth.OAuthTwitter = oAuthMock.Object;
+            oAuthMock.Setup(oauth => oauth.FilterRequestParameters(It.IsAny<Uri>())).Returns(requestUrl);
             var helperMock = new Mock<IOAuthHelper>();
-            //helperMock.Setup(helper => helper.GetRequestUrl()).Returns(requestUrl);
             webAuth.OAuthHelper = helperMock.Object;
             string authUrl = string.Empty;
             webAuth.PerformRedirect = url => authUrl = url;
@@ -92,9 +92,9 @@ namespace LinqToTwitterTests
             var webAuth = new WebAuthorizer();
             webAuth.Credentials = new InMemoryCredentials();
             var oAuthMock = new Mock<IOAuthTwitter>();
+            oAuthMock.Setup(oauth => oauth.FilterRequestParameters(It.IsAny<Uri>())).Returns(requestUrl);
             webAuth.OAuthTwitter = oAuthMock.Object;
             var helperMock = new Mock<IOAuthHelper>();
-            //helperMock.Setup(helper => helper.GetRequestUrl()).Returns(requestUrl);
             webAuth.OAuthHelper = helperMock.Object;
             string authUrl = string.Empty;
             webAuth.PerformRedirect = url => authUrl = url;
@@ -115,6 +115,8 @@ namespace LinqToTwitterTests
             var webAuth = new WebAuthorizer();
             webAuth.Credentials = new InMemoryCredentials();
             var oAuthMock = new Mock<IOAuthTwitter>();
+            oAuthMock.Setup(oauth => oauth.GetUrlParamValue(It.IsAny<string>(), "oauth_verifier")).Returns(verifier);
+            oAuthMock.Setup(oauth => oauth.GetUrlParamValue(It.IsAny<string>(), "oauth_token")).Returns(authToken);
             oAuthMock.Setup(oAuth => oAuth.AuthorizationLinkGet(It.IsAny<string>(), It.IsAny<string>(), "https://authorizationlink", false, false))
                      .Returns(authLink);
             oAuthMock.Setup(oAuth => oAuth.AccessTokenGet(authToken, verifier, It.IsAny<string>(), string.Empty, out screenName, out userID));

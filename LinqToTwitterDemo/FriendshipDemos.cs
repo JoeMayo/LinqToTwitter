@@ -22,11 +22,11 @@ namespace LinqToTwitterDemo
             //CreateFriendshipNoDeviceUpdatesDemo(twitterCtx);
             //FriendshipExistsDemo(twitterCtx);
             //FriendshipExistsProjectionDemo(twitterCtx);
-            //FriendshipShowDemo(twitterCtx);
+            FriendshipShowDemo(twitterCtx);
             //FriendshipIncomingDemo(twitterCtx);
             //FriendshipOutgoingDemo(twitterCtx);
             //FriendshipLookupDemo(twitterCtx);
-            UpdateSettingsDemo(twitterCtx);
+            //UpdateSettingsDemo(twitterCtx);
         }
 
         #region Friendship Demos

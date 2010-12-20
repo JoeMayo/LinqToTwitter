@@ -24,35 +24,27 @@ namespace LinqToTwitterSilverlightDemo.Views
         // Executes when the user navigates to this page.
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            if (Application.Current.IsRunningOutOfBrowser &&
-                Application.Current.HasElevatedPermissions)
-            {
-                var twitterCtx = new TwitterContext();
+            var twitterCtx = new TwitterContext();
 
-                var result =
-                    (from tweet in twitterCtx.Status
-                     where tweet.Type == StatusType.Public
-                     select tweet)
-                    .AsyncCallback(tweets =>
-                        Dispatcher.BeginInvoke(() =>
-                        {
-                            var projectedTweets =
-                               (from tweet in tweets
-                                select new MyTweet
-                                {
-                                    ScreenName = tweet.User.Identifier.ScreenName,
-                                    Tweet = tweet.Text
-                                })
-                               .ToList();
+            var result =
+                (from tweet in twitterCtx.Status
+                    where tweet.Type == StatusType.Public
+                    select tweet)
+                .AsyncCallback(tweets =>
+                    Dispatcher.BeginInvoke(() =>
+                    {
+                        var projectedTweets =
+                            (from tweet in tweets
+                            select new MyTweet
+                            {
+                                ScreenName = tweet.User.Identifier.ScreenName,
+                                Tweet = tweet.Text
+                            })
+                            .ToList();
 
-                            dataGrid1.ItemsSource = projectedTweets;
-                        }))
-                    .SingleOrDefault();
-            }
-            else
-            {
-                MessageBox.Show("Your app must be running out-of-browser and have elevated permissions.");
-            }
+                        dataGrid1.ItemsSource = projectedTweets;
+                    }))
+                .SingleOrDefault();
         }
 
     }

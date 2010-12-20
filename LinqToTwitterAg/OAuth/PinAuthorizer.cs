@@ -73,7 +73,7 @@ namespace LinqToTwitter
                 throw new InvalidOperationException("GoToTwitterAuthorization must have a handler before calling BeginAuthorize.");
             }
 
-            OAuthTwitter.GetRequestTokenAsync(new Uri(OAuthRequestTokenUrl), new Uri(OAuthAuthorizeUrl), null, false, false, GoToTwitterAuthorization, authorizationCompleteCallback);
+            OAuthTwitter.GetRequestTokenAsync(new Uri(OAuthRequestTokenUrl), new Uri(OAuthAuthorizeUrl), "oob", false, false, GoToTwitterAuthorization, authorizationCompleteCallback);
         }
 
         /// <summary>
@@ -90,7 +90,7 @@ namespace LinqToTwitter
                 throw new ArgumentNullException("pin", "pin is required");
             }
 
-            OAuthTwitter.GetAccessTokenAsync(pin, new Uri(OAuthAccessTokenUrl), null, authorizationCompleteCallback);
+            OAuthTwitter.GetAccessTokenAsync(pin, new Uri(OAuthAccessTokenUrl), "oob", authorizationCompleteCallback);
         }
     }
 }

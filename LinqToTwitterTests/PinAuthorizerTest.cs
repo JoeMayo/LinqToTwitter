@@ -256,7 +256,7 @@ namespace LinqToTwitterTests
             pinAuth.BeginAuthorize(resp => { });
 
             oAuthMock.Verify(oAuth =>
-                oAuth.GetRequestTokenAsync(oauthRequestTokenUrl, oauthAuthorizeUrl, null, false, false, It.IsAny<Action<string>>(), It.IsAny<Action<TwitterAsyncResponse<object>>>()),
+                oAuth.GetRequestTokenAsync(oauthRequestTokenUrl, oauthAuthorizeUrl, "oob", false, false, It.IsAny<Action<string>>(), It.IsAny<Action<TwitterAsyncResponse<object>>>()),
                 Times.Once());
         }
 
@@ -307,7 +307,7 @@ namespace LinqToTwitterTests
             pinAuth.BeginAuthorize(resp => twitterResp = resp);
 
             oAuthMock.Verify(oauth =>
-                oauth.GetRequestTokenAsync(It.IsAny<Uri>(), It.IsAny<Uri>(), null, false, false, It.IsAny<Action<string>>(), It.IsAny<Action<TwitterAsyncResponse<object>>>()), 
+                oauth.GetRequestTokenAsync(It.IsAny<Uri>(), It.IsAny<Uri>(), "oob", false, false, It.IsAny<Action<string>>(), It.IsAny<Action<TwitterAsyncResponse<object>>>()), 
                 Times.Never());
         }
 
@@ -346,7 +346,7 @@ namespace LinqToTwitterTests
             pinAuth.CompleteAuthorize(pin, callback);
 
             oAuthMock.Verify(oAuth =>
-                oAuth.GetAccessTokenAsync(pin, oauthAccessTokenUrl, null, callback),
+                oAuth.GetAccessTokenAsync(pin, oauthAccessTokenUrl, "oob", callback),
                 Times.Once());
         }
 
@@ -414,7 +414,7 @@ namespace LinqToTwitterTests
             pinAuth.CompleteAuthorize(pin, callback);
 
             oAuthMock.Verify(oAuth =>
-                oAuth.GetAccessTokenAsync(pin, oauthAccessTokenUrl, null, callback),
+                oAuth.GetAccessTokenAsync(pin, oauthAccessTokenUrl, "oob", callback),
                 Times.Never());
         }
     }

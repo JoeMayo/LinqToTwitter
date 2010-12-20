@@ -11,6 +11,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using System.Windows.Navigation;
 using LinqToTwitter;
+using System.Windows.Browser;
 
 namespace LinqToTwitterSilverlightDemo.Views
 {
@@ -26,6 +27,78 @@ namespace LinqToTwitterSilverlightDemo.Views
 
         // Executes when the user navigates to this page.
         protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            if (Application.Current.IsRunningOutOfBrowser &&
+                Application.Current.HasElevatedPermissions)
+            {
+                DoPinAuth(); 
+            }
+            else
+            {
+                DoWebAuth();
+            }
+        }
+
+        private void DoWebAuth()
+        {
+            WebBrowser.Visibility = Visibility.Collapsed;
+            PinPanel.Visibility = Visibility.Collapsed;
+
+            var auth = new SilverlightAuthorizer
+            {
+                Credentials = new InMemoryCredentials
+                {
+                    ConsumerKey = "",
+                    ConsumerSecret = ""
+                },
+                PerformRedirect = authUrl => 
+                    Dispatcher.BeginInvoke(() => HtmlPage.Window.Navigate(new Uri(authUrl)))
+            };
+
+            Uri url = HtmlPage.Document.DocumentUri;
+
+            auth.CompleteAuthorize(url, resp =>
+                Dispatcher.BeginInvoke(() =>
+                {
+                    switch (resp.Status)
+                    {
+                        case TwitterErrorStatus.Success:
+                            FriendsPanel.Visibility = Visibility.Visible;
+                            break;
+                        case TwitterErrorStatus.TwitterApiError:
+                        case TwitterErrorStatus.RequestProcessingException:
+                            MessageBox.Show(
+                                resp.Error.ToString(),
+                                resp.Message,
+                                MessageBoxButton.OK);
+                            break;
+                    }
+                }));
+
+            if (!auth.IsAuthorized && !auth.IsAuthorizing)
+            {
+                auth.BeginAuthorize(url, resp =>
+                    Dispatcher.BeginInvoke(() =>
+                    {
+                        switch (resp.Status)
+                        {
+                            case TwitterErrorStatus.Success:
+                                break;
+                            case TwitterErrorStatus.TwitterApiError:
+                            case TwitterErrorStatus.RequestProcessingException:
+                                MessageBox.Show(
+                                    resp.Error.ToString(),
+                                    resp.Message,
+                                    MessageBoxButton.OK);
+                                break;
+                        }
+                    }));
+            }
+
+            m_twitterCtx = new TwitterContext(auth);
+        }
+
+        private void DoPinAuth()
         {
             m_pinAuth = new PinAuthorizer
             {

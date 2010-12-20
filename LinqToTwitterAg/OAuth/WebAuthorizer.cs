@@ -18,9 +18,8 @@ namespace LinqToTwitter
         public Uri Callback { get; set; }
 
         /// <summary>
-        /// Redirection logic differs between Silverlight
-        /// and ASP.NET, so this is a hook where you can
-        /// attach a lambda to perform the technology
+        /// This is a hook where you can assign
+        /// a lambda to perform the technology
         /// specific redirection action.
         /// 
         /// The string passed as the lambda paramter
@@ -50,38 +49,10 @@ namespace LinqToTwitter
         {
             if (IsAuthorized) return;
 
-            string callbackStr = FilterRequestParameters(callback);
+            string callbackStr = OAuthTwitter.FilterRequestParameters(callback);
             string link = OAuthTwitter.AuthorizationLinkGet(OAuthRequestTokenUrl, OAuthAuthorizeUrl, callbackStr, readOnly: false, forceLogin: false);
 
             PerformRedirect(link);
-        }
-
-
-        /// <summary>
-        /// Removes OAuth parameters from URL
-        /// </summary>
-        /// <param name="fullUrl">Raw url with OAuth parameters</param>
-        /// <returns>Filtered url without OAuth parameters</returns>
-        private static string FilterRequestParameters(Uri fullUrl)
-        {
-            string filteredParams = string.Empty;
-
-            string url = fullUrl.ToString().Split('?')[0];
-            string urlParams = fullUrl.Query;
-
-            if (!string.IsNullOrEmpty(urlParams))
-            {
-                filteredParams =
-                    string.Join(
-                        "&",
-                        (from param in urlParams.Split('&')
-                         let args = param.Split('=')
-                         where !args[0].StartsWith("oauth_")
-                         select param)
-                        .ToArray());
-            }
-
-            return url + (filteredParams == string.Empty ? string.Empty : "?" + filteredParams);
         }
 
         /// <summary>
@@ -99,11 +70,11 @@ namespace LinqToTwitter
         {
             if (IsAuthorized) return true;
 
-            string verifier = GetUrlParamValue(callback.Query, "oauth_verifier");
+            string verifier = OAuthTwitter.GetUrlParamValue(callback.Query, "oauth_verifier");
 
             if (verifier != null)
             {
-                string oAuthToken = GetUrlParamValue(callback.Query, "oauth_token");
+                string oAuthToken = OAuthTwitter.GetUrlParamValue(callback.Query, "oauth_token");
 
                 string screenName;
                 string userID;
@@ -117,33 +88,6 @@ namespace LinqToTwitter
             }
 
             return IsAuthorized;
-        }
-
-        /// <summary>
-        /// Extracts a value from a query string matching a key
-        /// </summary>
-        /// <param name="queryString">query string</param>
-        /// <param name="paramKey">key to match val</param>
-        /// <returns>value matching key</returns>
-        public string GetUrlParamValue(string queryString, string paramKey)
-        {
-            if (string.IsNullOrEmpty(queryString))
-            {
-                return null;
-            }
-
-            string[] keyValPairs = queryString.TrimStart('?').Split('&');
- 
-            var paramVal =
-                (from keyValPair in keyValPairs
-                 let pair = keyValPair.Split('=')
-                 let key = pair[0]
-                 let val = pair[1]
-                 where key == paramKey
-                 select val)
-                .SingleOrDefault();
-
-            return paramVal;
         }
     }
 }

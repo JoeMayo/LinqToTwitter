@@ -148,5 +148,42 @@ namespace LinqToTwitterTests.Common
         }
 
         #endregion
+
+        #region IOAuthTwitter Members
+
+
+        public string ProxyUrl
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public void GetRequestTokenAsync(Uri oauthRequestTokenUrl, Uri oauthAuthorizeUrl, string twitterCallbackUrl, bool readOnly, bool forceLogin, Action<string> authorizationCallback, Action<TwitterAsyncResponse<object>> authenticationCompleteCallback)
+        {
+            authenticationCompleteCallback(new TwitterAsyncResponse<object>());
+        }
+
+        public void GetAccessTokenAsync(string verifier, Uri oauthAccessTokenUrl, string twitterCallbackUrl, Action<TwitterAsyncResponse<UserIdentifier>> authenticationCompleteCallback)
+        {
+            authenticationCompleteCallback(new TwitterAsyncResponse<UserIdentifier>());
+        }
+
+        public string FilterRequestParameters(Uri fullUrl)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string GetUrlParamValue(string queryString, string paramKey)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
     }
 }

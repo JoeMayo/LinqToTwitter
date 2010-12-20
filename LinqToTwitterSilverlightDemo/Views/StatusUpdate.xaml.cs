@@ -12,6 +12,7 @@ using System.Windows.Shapes;
 using System.Windows.Navigation;
 using LinqToTwitter;
 using System.Threading;
+using System.Windows.Browser;
 
 namespace LinqToTwitterSilverlightDemo.Views
 {
@@ -28,6 +29,19 @@ namespace LinqToTwitterSilverlightDemo.Views
         // Executes when the user navigates to this page.
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
+            if (Application.Current.IsRunningOutOfBrowser &&
+                Application.Current.HasElevatedPermissions)
+            {
+                DoPinAuth();
+            }
+            else
+            {
+                DoWebAuth();
+            }
+        }
+
+        private void DoPinAuth()
+        {
             m_pinAuth = new PinAuthorizer
             {
                 Credentials = new InMemoryCredentials
@@ -36,11 +50,11 @@ namespace LinqToTwitterSilverlightDemo.Views
                     ConsumerSecret = ""
                 },
                 UseCompression = true,
-                GoToTwitterAuthorization = pageLink => 
+                GoToTwitterAuthorization = pageLink =>
                     Dispatcher.BeginInvoke(() => WebBrowser.Navigate(new Uri(pageLink)))
             };
 
-            m_pinAuth.BeginAuthorize(resp => 
+            m_pinAuth.BeginAuthorize(resp =>
                 Dispatcher.BeginInvoke(() =>
                 {
                     switch (resp.Status)
@@ -58,6 +72,66 @@ namespace LinqToTwitterSilverlightDemo.Views
                 }));
 
             m_twitterCtx = new TwitterContext(m_pinAuth, "https://api.twitter.com/1/", "https://search.twitter.com/");
+        }
+
+        private void DoWebAuth()
+        {
+            WebBrowser.Visibility = Visibility.Collapsed;
+            PinPanel.Visibility = Visibility.Collapsed;
+
+            var auth = new SilverlightAuthorizer
+            {
+                Credentials = new InMemoryCredentials
+                {
+                    ConsumerKey = "",
+                    ConsumerSecret = ""
+                },
+                PerformRedirect = authUrl =>
+                    Dispatcher.BeginInvoke(() => HtmlPage.Window.Navigate(new Uri(authUrl)))
+            };
+
+            Uri url = HtmlPage.Document.DocumentUri;
+
+            auth.CompleteAuthorize(url, resp =>
+                Dispatcher.BeginInvoke(() =>
+                {
+                    switch (resp.Status)
+                    {
+                        case TwitterErrorStatus.Success:
+                            UpdatePanel.Visibility = Visibility.Visible;
+                            TweetTextBox.Text = "Silverlight Web Test, " + DateTime.Now.ToString() + " #linqtotwitter";
+                            break;
+                        case TwitterErrorStatus.TwitterApiError:
+                        case TwitterErrorStatus.RequestProcessingException:
+                            MessageBox.Show(
+                                resp.Error.ToString(),
+                                resp.Message,
+                                MessageBoxButton.OK);
+                            break;
+                    }
+                }));
+
+            if (!auth.IsAuthorized && !auth.IsAuthorizing)
+            {
+                auth.BeginAuthorize(url, resp =>
+                    Dispatcher.BeginInvoke(() =>
+                    {
+                        switch (resp.Status)
+                        {
+                            case TwitterErrorStatus.Success:
+                                break;
+                            case TwitterErrorStatus.TwitterApiError:
+                            case TwitterErrorStatus.RequestProcessingException:
+                                MessageBox.Show(
+                                    resp.Error.ToString(),
+                                    resp.Message,
+                                    MessageBoxButton.OK);
+                                break;
+                        }
+                    }));
+            }
+
+            m_twitterCtx = new TwitterContext(auth);
         }
 
         private void PinButton_Click(object sender, RoutedEventArgs e)

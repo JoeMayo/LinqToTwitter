@@ -22,7 +22,7 @@ namespace LinqToTwitterDemo
             //SearchTwitterSinceIDDemo(twitterCtx);
             //SearchTwitterLocationDemo(twitterCtx);
             //SearchTwitterLocaleDemo(twitterCtx);
-            //SearchAndUseStatusTwitterDemo(twitterCtx);
+            SearchAndUseStatusTwitterDemo(twitterCtx);
             //SearchByLanguageTwitterDemo(twitterCtx);
             //SearchSinceDateTwitterDemo(twitterCtx);
             //SearchTwitterSource(twitterCtx);
@@ -30,7 +30,7 @@ namespace LinqToTwitterDemo
             //SearchWithResultType(twitterCtx);
             //SearchWithWordQuery(twitterCtx);
             //SearchWithPersonReferenceQuery(twitterCtx);
-            SearchWithPersonFromQuery(twitterCtx);
+            //SearchWithPersonFromQuery(twitterCtx);
             //SearchWithAttitudeQuery(twitterCtx);
             //SearchWithLinksQuery(twitterCtx);
             //SearchCountDemo(twitterCtx);

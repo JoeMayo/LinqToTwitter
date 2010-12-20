@@ -99,7 +99,7 @@ namespace LinqToTwitterTests
             pinAuth.Timeout = new TimeSpan(0, 0, 2);
             pinAuth.UseCompression = true;
 
-            HttpWebRequest req = pinAuth.Get(url);
+            HttpWebRequest req = pinAuth.Get(url) as HttpWebRequest;
 
             Assert.AreEqual(userAgent, req.UserAgent);
             Assert.AreEqual(1000, req.ReadWriteTimeout);

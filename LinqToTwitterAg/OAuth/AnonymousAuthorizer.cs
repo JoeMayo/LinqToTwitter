@@ -5,6 +5,9 @@ using System.Text;
 using System.Net;
 using System.IO;
 using System.Threading;
+#if SILVERLIGHT
+using System.Windows;
+#endif
 
 namespace LinqToTwitter
 {
@@ -21,10 +24,16 @@ namespace LinqToTwitter
         /// <param name="requestUri">The request URI.</param>
         /// <param name="args">The args.</param>
         /// <returns></returns>
-        public new HttpWebRequest Get(string url)
+        public new WebRequest Get(string url)
         {
+#if SILVERLIGHT
+            url = ProxyUrl + url;
+#endif
+
             Uri requestUri = new Uri(url);
-            var req = WebRequest.Create(requestUri) as HttpWebRequest;
+            
+            var req = WebRequest.Create(requestUri);
+
             this.InitializeRequest(req);
             return req;
         }
@@ -36,6 +45,10 @@ namespace LinqToTwitter
         /// <returns></returns>
         public new HttpWebRequest Post(string url)
         {
+#if SILVERLIGHT
+            url = ProxyUrl + url;
+#endif
+
             Uri requestUri = new Uri(url);
             var req = WebRequest.Create(requestUri) as HttpWebRequest;
             this.InitializeRequest(req);
@@ -51,6 +64,10 @@ namespace LinqToTwitter
         /// <returns></returns>
         public new HttpWebResponse Post(string url, Dictionary<string, string> args)
         {
+#if SILVERLIGHT
+            url = ProxyUrl + url;
+#endif
+
             if (string.IsNullOrEmpty(url))
             {
                 throw new ArgumentNullException("url");

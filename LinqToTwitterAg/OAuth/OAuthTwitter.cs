@@ -71,6 +71,11 @@ namespace LinqToTwitter
         /// </summary>
         public string OAuthTokenSecret { get; set; }
 
+        /// <summary>
+        /// URL for Silverlight Proxy
+        /// </summary>
+        public string ProxyUrl { get; set; }
+
         #endregion
 
         /// <summary>
@@ -199,7 +204,7 @@ namespace LinqToTwitter
                 this.OAuthToken,
                 this.OAuthTokenSecret,
                 this.OAuthVerifier,
-                callback,
+                TwitterParameterUrlEncode(callback),
                 method.ToString(),
                 timeStamp,
                 nonce,
@@ -390,7 +395,7 @@ namespace LinqToTwitter
             HttpWebRequest webRequest = null;
             string responseData = "";
 
-            webRequest = System.Net.WebRequest.Create(url) as HttpWebRequest;
+            webRequest = System.Net.WebRequest.Create(ProxyUrl + url) as HttpWebRequest;
             webRequest.Method = method.ToString();
 #if !SILVERLIGHT
             webRequest.ServicePoint.Expect100Continue = false;
@@ -472,18 +477,79 @@ namespace LinqToTwitter
             return responseData;
         }
 
+        /// <summary>
+        /// Extracts a value from a query string matching a key
+        /// </summary>
+        /// <param name="queryString">query string</param>
+        /// <param name="paramKey">key to match val</param>
+        /// <returns>value matching key</returns>
+        public string GetUrlParamValue(string queryString, string paramKey)
+        {
+            if (string.IsNullOrEmpty(queryString))
+            {
+                return null;
+            }
+
+            string[] keyValPairs = queryString.TrimStart('?').Split('&');
+
+            var paramVal =
+                (from keyValPair in keyValPairs
+                 let pair = keyValPair.Split('=')
+                 let key = pair[0]
+                 let val = pair[1]
+                 where key == paramKey
+                 select val)
+                .SingleOrDefault();
+
+            return paramVal;
+        }
+
+        /// <summary>
+        /// Removes OAuth parameters from URL
+        /// </summary>
+        /// <param name="fullUrl">Raw url with OAuth parameters</param>
+        /// <returns>Filtered url without OAuth parameters</returns>
+        public string FilterRequestParameters(Uri fullUrl)
+        {
+            string filteredParams = string.Empty;
+
+            string url = fullUrl.ToString().Split('?')[0];
+            string urlParams = fullUrl.Query;
+
+            if (!string.IsNullOrEmpty(urlParams))
+            {
+                filteredParams =
+                    string.Join(
+                        "&",
+                        (from param in urlParams.Split('&')
+                         let args = param.Split('=')
+                         where !args[0].StartsWith("oauth_")
+                         select param)
+                        .ToArray());
+            }
+
+            return url + (filteredParams == string.Empty ? string.Empty : "?" + filteredParams);
+        }
+
         #region - Async -
 
-        public HttpWebRequest GetHttpRequest(Uri oauthUrl, Uri callbackUrl)
+        public HttpWebRequest GetHttpRequest(Uri oauthUrl, string callbackUrl)
         {
             string signedUrl = null;
             string queryString = null;
-            string callback = callbackUrl == null ? "oob" : callbackUrl.ToString();
+            string callback = callbackUrl == null ? string.Empty : callbackUrl;
+            
             GetOAuthQueryString(HttpMethod.GET, oauthUrl.ToString(), callback, out signedUrl, out queryString);
-            var req = System.Net.WebRequest.Create(signedUrl + "?" + queryString) as HttpWebRequest;
+            
+            var finalUrl =
+                ProxyUrl +
+                signedUrl +
+                (string.IsNullOrEmpty(ProxyUrl) ? "?" : "&") +
+                queryString;
+
+            var req = System.Net.WebRequest.Create(finalUrl) as HttpWebRequest;
             req.Method = HttpMethod.GET.ToString();
-            //req.Headers[HttpRequestHeader.Authorization] =
-            //    GetOAuthHeader(oauthUrl, callbackUrl);
+
 #if !SILVERLIGHT
             req.ServicePoint.Expect100Continue = false;
             req.UserAgent = OAuthUserAgent;
@@ -503,7 +569,7 @@ namespace LinqToTwitter
             string queryString = string.Empty;
             string nonce = this.GenerateNonce();
             string timeStamp = this.GenerateTimeStamp();
-            string callback = callbackUrl == null ? "oob" : callbackUrl.ToString();
+            string callback = callbackUrl == null ? string.Empty : callbackUrl.ToString();
 
             //Generate Signature
             string sig = this.GenerateSignature(url,
@@ -537,7 +603,7 @@ namespace LinqToTwitter
         public void GetRequestTokenAsync(
             Uri oauthRequestTokenUrl, 
             Uri oauthAuthorizeUrl, 
-            Uri twitterCallbackUrl, 
+            string twitterCallbackUrl, 
             bool readOnly, bool forceLogin, 
             Action<string> authorizationCallback, 
             Action<TwitterAsyncResponse<object>> authenticationCompleteCallback)
@@ -598,10 +664,10 @@ namespace LinqToTwitter
         public void GetAccessTokenAsync(
             string verifier,
             Uri oauthAccessTokenUrl,
-            Uri twitterCallbackUrl,
+            string twitterCallbackUrl,
             Action<TwitterAsyncResponse<UserIdentifier>> authenticationCompleteCallback)
         {
-            this.OAuthVerifier = verifier;
+            OAuthVerifier = verifier;
 
             HttpWebRequest req = GetHttpRequest(oauthAccessTokenUrl, twitterCallbackUrl);
 

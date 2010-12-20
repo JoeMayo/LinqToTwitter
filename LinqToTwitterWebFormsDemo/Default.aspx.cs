@@ -20,11 +20,6 @@ public partial class _Default : System.Web.UI.Page
             credentials.ConsumerSecret = ConfigurationManager.AppSettings["twitterConsumerSecret"];
         }
 
-        auth = new MvcAuthorizer
-        {
-            Credentials = credentials
-        };
-
         auth = new WebAuthorizer
         {
             Credentials = credentials,
