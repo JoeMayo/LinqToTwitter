@@ -34,6 +34,15 @@ namespace LinqToTwitterDemo
             Console.WriteLine("... that was public statuses with no authentication. Now, you'll see a demo of how to authenticate with OAuth. Press any key to continue...\n");
             Console.ReadKey();
             
+            // Uncomment the code below if you need to use XAuth. Generally, XAuth isn't available unless you specifically
+            // justify using it with Twitter: http://dev.twitter.com/pages/xauth. You should use OAuth instead.  However,
+            // LINQ to Twitter supports XAuth if you're one of the rare cases that Twitter gives permission to.
+
+            //DoXAuthDemo();
+
+            //Console.ReadKey();
+            //return;
+
             //
             // The rest of the example demonstrates how to authenticate with OAuth
             //
@@ -105,8 +114,8 @@ namespace LinqToTwitterDemo
                 //SavedSearchDemos.Run(twitterCtx);
                 //SearchDemos.Run(twitterCtx);
                 //SocialGraphDemos.Run(twitterCtx);
-                //StatusDemos.Run(twitterCtx);
-                StreamingDemo.Run(twitterCtx);
+                StatusDemos.Run(twitterCtx);
+                //StreamingDemo.Run(twitterCtx);
                 //TrendsDemos.Run(twitterCtx);
                 //UserDemos.Run(twitterCtx);
                 //NotificationsDemos.Run(twitterCtx);
@@ -121,6 +130,59 @@ namespace LinqToTwitterDemo
 
             Console.WriteLine("Press any key to end this demo.");
             Console.ReadKey();
+        }
+
+        private static void DoXAuthDemo()
+        {
+            // validate that credentials are present
+            if (string.IsNullOrWhiteSpace(ConfigurationManager.AppSettings["twitterConsumerKey"]) ||
+                string.IsNullOrWhiteSpace(ConfigurationManager.AppSettings["twitterConsumerSecret"]))
+            {
+                Console.WriteLine("You need to set twitterConsumerKey and twitterConsumerSecret in App.config/appSettings. Visit http://dev.twitter.com/apps for more info.\n");
+                Console.Write("Press any key to exit...");
+                Console.ReadKey();
+                return;
+            }
+
+            // configure the OAuth object
+            var auth = new XAuthAuthorizer
+            {
+                Credentials = new XAuthCredentials
+                {
+                    ConsumerKey = ConfigurationManager.AppSettings["twitterConsumerKey"],
+                    ConsumerSecret = ConfigurationManager.AppSettings["twitterConsumerSecret"],
+                    UserName = "YourUserName",
+                    Password = "YourPassword"
+                }
+            };
+
+            // authorize with Twitter
+            auth.Authorize();
+
+            using (var twitterCtx = new TwitterContext(auth, "https://api.twitter.com/1/", "https://search.twitter.com/"))
+            {
+                //Log
+                twitterCtx.Log = Console.Out;
+
+                var users =
+                    (from tweet in twitterCtx.User
+                     where tweet.Type == UserType.Friends &&
+                           tweet.ScreenName == "JoeMayo"
+                     select tweet)
+                    .ToList();
+
+                users.ForEach(user =>
+                {
+                    var status =
+                        user.Protected || user.Status == null ?
+                            "Status Unavailable" :
+                            user.Status.Text;
+
+                    Console.WriteLine(
+                        "ID: {0}, Name: {1}\nLast Tweet: {2}\n",
+                        user.Identifier.UserID, user.Identifier.ScreenName, status);
+                });
+            }
         }
     }
 }

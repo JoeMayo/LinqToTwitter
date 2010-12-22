@@ -185,5 +185,30 @@ namespace LinqToTwitterTests.Common
         }
 
         #endregion
+
+        #region IOAuthTwitter Members
+
+
+        public void PostAccessToken(string accessTokenUrl, string postData, out string screenName, out string userID)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string OAuthWebRequest(HttpMethod method, string url, string postData, string callback)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IOAuthTwitter Members
+
+
+        public void PostAccessTokenAsync(Uri uri, string postData, Action<TwitterAsyncResponse<UserIdentifier>> authorizationCompleteCallback)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
     }
 }

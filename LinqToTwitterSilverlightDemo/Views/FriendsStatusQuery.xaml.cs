@@ -28,6 +28,13 @@ namespace LinqToTwitterSilverlightDemo.Views
         // Executes when the user navigates to this page.
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
+            // Uncomment the code below if you need to use XAuth. Generally, XAuth isn't available unless you specifically
+            // justify using it with Twitter: http://dev.twitter.com/pages/xauth. You should use OAuth instead.  However,
+            // LINQ to Twitter supports XAuth if you're one of the rare cases that Twitter gives permission to.
+
+            //DoXAuth();
+            //return;
+
             if (Application.Current.IsRunningOutOfBrowser &&
                 Application.Current.HasElevatedPermissions)
             {
@@ -179,5 +186,41 @@ namespace LinqToTwitterSilverlightDemo.Views
                 .SingleOrDefault();
         }
 
+        private void DoXAuth()
+        {
+            WebBrowser.Visibility = Visibility.Collapsed;
+            PinPanel.Visibility = Visibility.Collapsed;
+
+            var auth = new XAuthAuthorizer
+            {
+                Credentials = new XAuthCredentials
+                {
+                    ConsumerKey = "",
+                    ConsumerSecret = "",
+                    UserName = "",
+                    Password = ""
+                }
+            };
+
+            auth.BeginAuthorize(resp =>
+                Dispatcher.BeginInvoke(() =>
+                {
+                    switch (resp.Status)
+                    {
+                        case TwitterErrorStatus.Success:
+                            FriendsPanel.Visibility = Visibility.Visible;
+                            break;
+                        case TwitterErrorStatus.TwitterApiError:
+                        case TwitterErrorStatus.RequestProcessingException:
+                            MessageBox.Show(
+                                resp.Error.ToString(),
+                                resp.Message,
+                                MessageBoxButton.OK);
+                            break;
+                    }
+                }));
+
+            m_twitterCtx = new TwitterContext(auth);
+        }
     }
 }

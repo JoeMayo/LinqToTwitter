@@ -6,6 +6,16 @@ namespace LinqToTwitter
     public interface IOAuthTwitter
     {
         void AccessTokenGet(string authToken, string verifier, string accessTokenUrl, string callback, out string screenName, out string userID);
+
+        /// <summary>
+        /// Requests an access token from Twitter
+        /// </summary>
+        /// <param name="accessTokenUrl">Base url for request</param>
+        /// <param name="postData">POST body params</param>
+        /// <param name="screenName">Returns user's Twitter screen name</param>
+        /// <param name="userID">Returns user's Twitter ID</param>
+        void PostAccessToken(string accessTokenUrl, string postData, out string screenName, out string userID);
+
         string AuthorizationLinkGet(string requestToken, string authorizeUrl, string callback, bool readOnly, bool forceLogin);
         string TwitterParameterUrlEncode(string value);       
         void GetOAuthQueryString(HttpMethod method, string url, string callback, out string outUrl, out string queryString);
@@ -22,7 +32,7 @@ namespace LinqToTwitter
         /// </summary>
         string ProxyUrl { get; set; }
 
-        string oAuthWebRequest(HttpMethod method, string url, string postData, string callback);
+        string OAuthWebRequest(HttpMethod method, string url, string postData, string callback);
         string WebRequest(HttpMethod method, string url, string authHeader, string postData);
         string WebResponseGet(System.Net.HttpWebRequest webRequest);
 
@@ -57,5 +67,7 @@ namespace LinqToTwitter
         /// <param name="paramKey">key to match val</param>
         /// <returns>value matching key</returns>
         string GetUrlParamValue(string queryString, string paramKey);
+
+        void PostAccessTokenAsync(Uri uri, string postData, Action<TwitterAsyncResponse<UserIdentifier>> authorizationCompleteCallback);
     }
 }

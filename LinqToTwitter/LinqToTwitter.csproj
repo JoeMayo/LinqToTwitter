@@ -349,6 +349,12 @@
     <Compile Include="..\LinqToTwitterAg\OAuth\WebAuthorizer.cs">
       <Link>OAuth\WebAuthorizer.cs</Link>
     </Compile>
+    <Compile Include="..\LinqToTwitterAg\OAuth\XAuthAuthorizer.cs">
+      <Link>OAuth\XAuthAuthorizer.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\OAuth\XAuthCredentials.cs">
+      <Link>OAuth\XAuthCredentials.cs</Link>
+    </Compile>
     <Compile Include="..\LinqToTwitterAg\Raw\Raw.cs">
       <Link>Raw\Raw.cs</Link>
     </Compile>

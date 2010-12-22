@@ -12,6 +12,7 @@ using System.Net;
 using System.Text;
 using System.Web;
 using System.Web.SessionState;
+using System.IO;
 
 namespace LinqToTwitterSilverlightDemo.Web
 {
@@ -39,14 +40,33 @@ namespace LinqToTwitterSilverlightDemo.Web
 
             if (context.Request.HttpMethod == "POST")
             {
-                var wc = new WebClient();
-                wc = SetCookies(wc, context.Request);
-                wc = SetHeaders(wc, context.Request.Headers);
-                NameValueCollection nameValueCollection = context.Request.Form;
-                byte[] responseArray = wc.UploadValues(url, "POST", nameValueCollection);
-                string returnString = Encoding.UTF8.GetString(responseArray);
-                context.Response.Write(returnString);
-                wc.Dispose();
+                var req = WebRequest.Create(url) as HttpWebRequest;
+                req.Method = "POST";
+                req = SetCookies(req, context.Request);
+                req = SetHeaders(req, context.Request.Headers);
+                string postData =
+                    string.Join(
+                        "&",
+                        (from string key in context.Request.Form
+                         select key + "=" + context.Request.Form[key])
+                        .ToArray());
+
+                byte[] postDataBytes = Encoding.UTF8.GetBytes(postData);
+                using (var reqStream = req.GetRequestStream())
+                {
+                    reqStream.Write(postDataBytes, 0, postDataBytes.Length);
+                    reqStream.Flush();
+                }
+
+                using (WebResponse resp = req.GetResponse())
+                {
+                    using (var respStream = resp.GetResponseStream())
+                    using (var respReader = new StreamReader(respStream))
+                    {
+                        string respString = respReader.ReadToEnd();
+                        context.Response.Write(respString);
+                    }
+                }
             }
         }
 
@@ -101,36 +121,64 @@ namespace LinqToTwitterSilverlightDemo.Web
         }
 
         /// <summary>
+        /// Transfer any cookies from original Silverlight request to real outbound request
+        /// </summary>
+        /// <param name="wc">HttpRequest with Headers property</param>
+        /// <param name="origReq">Request containing original cookies</param>
+        /// <returns>HttpRequest with updated cookies</returns>
+        private HttpWebRequest SetCookies(HttpWebRequest proxyReq, HttpRequest origReq)
+        {
+            HttpCookieCollection coll = origReq.Cookies;
+            foreach (string cookieName in coll.Keys)
+            {
+                proxyReq.Headers.Add("Cookie", cookieName + "=" + coll[cookieName].Value);
+            }
+            return proxyReq;
+        }
+
+        /// <summary>
         /// Transfer Headers for Twitter query
         /// </summary>
-        /// <param name="wc">WebClient with Headers property</param>
-        /// <param name="headers">Headers, from original request, to transfer</param>
+        /// <param name="proxyReq">WebClient with Headers property</param>
+        /// <param name="origReq">Headers, from original request, to transfer</param>
         /// <returns>WebClient with updated headers</returns>
-        private WebClient SetHeaders(WebClient wc, NameValueCollection headers)
+        private HttpWebRequest SetHeaders(HttpWebRequest proxyReq, NameValueCollection origReq)
         {
             var headersToNotSet = new List<string> 
             { 
+                "Accept",
+                "Accept-Encoding",
                 "Authorization", 
                 "Connection", 
                 "Content-Length", 
+                "Content-Type",
                 "Host", 
+                "Referer",
+                "User-Agent"
             };
             string hdrvalue = "";
 
-            foreach (string headerName in headers.Keys)
+            foreach (string headerName in origReq.Keys)
             {
-                hdrvalue = headers[headerName];
+                hdrvalue = origReq[headerName];
 
                 if (!headersToNotSet.Contains(headerName))
-                    wc.Headers.Add(headerName, hdrvalue);
+                    proxyReq.Headers.Add(headerName, hdrvalue);
             }
 
-            if (headers["Authorization"] != null)
+            if (origReq["Authorization"] != null)
             {
-                wc.Headers.Add(HttpRequestHeader.Authorization, headers["Authorization"]); 
+                proxyReq.Headers["Authorization"] = origReq["Authorization"]; 
             }
 
-            return wc;
+            proxyReq.ServicePoint.Expect100Continue = false;
+
+            if (origReq["User-Agent"] != null)
+            {
+                proxyReq.UserAgent = origReq["User-Agent"];
+            }
+
+            return proxyReq;
         }
 
         /// <summary>

@@ -139,6 +139,8 @@
     <Compile Include="OAuth\SilverlightAuthorizer.cs" />
     <Compile Include="OAuth\WebAuthorizer.cs" />
     <Compile Include="OAuth\Utilities.cs" />
+    <Compile Include="OAuth\XAuthAuthorizer.cs" />
+    <Compile Include="OAuth\XAuthCredentials.cs" />
     <Compile Include="PostProcessing\Filter.cs" />
     <Compile Include="PostProcessing\PostProcessor.cs" />
     <Compile Include="PostProcessing\Projection.cs" />

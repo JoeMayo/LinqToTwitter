@@ -209,7 +209,7 @@ namespace LinqToTwitterDemo
             var users =
                 from tweet in twitterCtx.User
                 where tweet.Type == UserType.Friends &&
-                      tweet.ID == "15411837" // <-- user to get friends for
+                      tweet.ID == "JoeMayo" // <-- user to get friends for
                 select tweet;
 
             foreach (var user in users)
@@ -220,8 +220,8 @@ namespace LinqToTwitterDemo
                         user.Status.Text;
 
                 Console.WriteLine(
-                        "ID: {0}, Name: {1}\nLast Tweet: {2}\n",
-                        user.ID, user.Name, status);
+                    "ID: {0}, Name: {1}\nLast Tweet: {2}\n",
+                    user.Identifier.ID, user.Identifier.ScreenName, status);
             }
         }
 

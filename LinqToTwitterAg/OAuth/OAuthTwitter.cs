@@ -85,7 +85,7 @@ namespace LinqToTwitter
         /// <returns>The url with a valid request token, or a null string.</returns>
         public string AuthorizationLinkGet(string requestToken, string authorizeUrl, string callback, bool readOnly, bool forceLogin)
         {
-            string response = oAuthWebRequest(HttpMethod.GET, requestToken, String.Empty, callback);
+            string response = OAuthWebRequest(HttpMethod.GET, requestToken, String.Empty, callback);
             return PrepareAuthorizeUrl(authorizeUrl, readOnly, forceLogin, response);
         }
 
@@ -126,6 +126,23 @@ namespace LinqToTwitter
         }
 
         /// <summary>
+        /// Requests an access token from Twitter
+        /// </summary>
+        /// <param name="accessTokenUrl">Base url for request</param>
+        /// <param name="postData">POST body params</param>
+        /// <param name="screenName">Returns user's Twitter screen name</param>
+        /// <param name="userID">Returns user's Twitter ID</param>
+        public void PostAccessToken(string accessTokenUrl, string postData, out string screenName, out string userID)
+        {
+            screenName = string.Empty;
+            userID = string.Empty;
+
+            string response = OAuthWebRequest(HttpMethod.POST, accessTokenUrl, postData, string.Empty);
+
+            ProcessAccessTokenResponse(ref screenName, ref userID, response);
+        }
+
+        /// <summary>
         /// Exchange the request token for an access token.
         /// </summary>
         /// <param name="authToken">The oauth_token is supplied by Twitter's authorization page following the callback.</param>
@@ -136,7 +153,7 @@ namespace LinqToTwitter
             screenName = string.Empty;
             userID = string.Empty;
 
-            string response = oAuthWebRequest(HttpMethod.GET, accessTokenUrl, String.Empty, callback);
+            string response = OAuthWebRequest(HttpMethod.GET, accessTokenUrl, String.Empty, callback);
 
             ProcessAccessTokenResponse(ref screenName, ref userID, response);
         }
@@ -302,7 +319,7 @@ namespace LinqToTwitter
         /// <param name="url">The full url, including the querystring.</param>
         /// <param name="postData">Data to post (querystring format)</param>
         /// <returns>The web server response.</returns>
-        public string oAuthWebRequest(HttpMethod method, string url, string postData, string callback)
+        public string OAuthWebRequest(HttpMethod method, string url, string postData, string callback)
         {
             string outUrl = "";
             string querystring = "";
@@ -326,18 +343,19 @@ namespace LinqToTwitter
                             pair => pair.Key,
                             pair => pair.Value);
 
-                    postData = "";
+                    string queryParams = string.Empty;
+
                     foreach (string key in qs.Keys)
                     {
-                        if (postData.Length > 0)
+                        if (queryParams.Length > 0)
                         {
-                            postData += "&";
+                            queryParams += "&";
                         }
-                        qs[key] = HttpUtility.UrlDecode(qs[key]);
-                        qs[key] = this.UrlEncode(qs[key]);
-                        postData += key + "=" + qs[key];
-
+                        var val = HttpUtility.UrlDecode(qs[key]);
+                        val = this.UrlEncode(val);
+                        queryParams += key + "=" + val;
                     }
+
                     if (url.IndexOf("?") > 0)
                     {
                         url += "&";
@@ -346,7 +364,7 @@ namespace LinqToTwitter
                     {
                         url += "?";
                     }
-                    url += postData;
+                    url += queryParams;
                 }
             }
 
@@ -371,12 +389,12 @@ namespace LinqToTwitter
 
             querystring += "&oauth_signature=" + HttpUtility.UrlEncode(sig);
 
-            //Convert the querystring to postData
-            if (method == HttpMethod.POST)
-            {
-                postData = querystring;
-                querystring = "";
-            }
+            ////Convert the querystring to postData
+            //if (method == HttpMethod.POST)
+            //{
+            //    postData = querystring;
+            //    querystring = null;
+            //}
 
             ret = WebRequest(method, outUrl, querystring, postData);
 
@@ -421,20 +439,37 @@ namespace LinqToTwitter
                             }
                         }), null);
 #else
+                Exception asyncException = null;
+
                 var resetEvent = new ManualResetEvent(initialState: false);
 
                 webRequest.BeginGetRequestStream(
                     new AsyncCallback(
                         ar =>
                         {
-                            using (var requestStream = webRequest.EndGetRequestStream(ar))
+                            try 
+	                        {	        
+		                        using (var requestStream = webRequest.EndGetRequestStream(ar))
+                                {
+                                    requestStream.Write(postDataBytes, 0, postDataBytes.Length);
+                                }
+	                        }
+	                        catch (Exception ex)
+	                        {
+                                asyncException = ex;
+	                        }
+                            finally
                             {
-                                requestStream.Write(postDataBytes, 0, postDataBytes.Length);
+                                resetEvent.Set();
                             }
-                            resetEvent.Set();
                         }), null);
 
                 resetEvent.WaitOne();
+
+                if (asyncException != null)
+	            {
+                    throw asyncException;
+	            }
 #endif
             }
 
@@ -456,6 +491,8 @@ namespace LinqToTwitter
         {
             string responseData = "";
 
+            Exception asyncException = null;
+
             var resetEvent = new ManualResetEvent(initialState: false);
             HttpWebResponse res = null;
 
@@ -463,16 +500,31 @@ namespace LinqToTwitter
                 new AsyncCallback(
                     ar =>
                     {
-                        res = webRequest.EndGetResponse(ar) as HttpWebResponse;
-                        using (var respStream = res.GetResponseStream())
-                        using (var respReader = new StreamReader(respStream))
+                        try
                         {
-                            responseData = respReader.ReadToEnd();
+                            res = webRequest.EndGetResponse(ar) as HttpWebResponse;
+                            using (var respStream = res.GetResponseStream())
+                            using (var respReader = new StreamReader(respStream))
+                            {
+                                responseData = respReader.ReadToEnd();
+                            }
                         }
-                        resetEvent.Set();
+                        catch (Exception ex)
+                        {
+                            asyncException = ex;
+                        }
+                        finally
+                        {
+                            resetEvent.Set(); 
+                        }
                     }), null);
 
             resetEvent.WaitOne();
+
+            if (asyncException != null)
+            {
+                throw asyncException;
+            }
 
             return responseData;
         }
@@ -533,7 +585,7 @@ namespace LinqToTwitter
 
         #region - Async -
 
-        public HttpWebRequest GetHttpRequest(Uri oauthUrl, string callbackUrl)
+        public HttpWebRequest GetHttpGetRequest(Uri oauthUrl, string callbackUrl)
         {
             string signedUrl = null;
             string queryString = null;
@@ -549,6 +601,30 @@ namespace LinqToTwitter
 
             var req = System.Net.WebRequest.Create(finalUrl) as HttpWebRequest;
             req.Method = HttpMethod.GET.ToString();
+
+#if !SILVERLIGHT
+            req.ServicePoint.Expect100Continue = false;
+            req.UserAgent = OAuthUserAgent;
+#endif
+            return req;
+        }
+
+        public HttpWebRequest GetHttpPostRequest(Uri oauthUrl)
+        {
+            string url = oauthUrl.ToString();
+
+            string oauthSig = GetOAuthQueryStringForPost(url);
+
+            string baseUrl = url.Split('?')[0];
+
+            var finalUrl = ProxyUrl + baseUrl;
+                //url +
+                //(string.IsNullOrEmpty(ProxyUrl) ? "?" : "&") +
+                //queryString;
+
+            var req = System.Net.WebRequest.Create(finalUrl) as HttpWebRequest;
+            req.Headers[HttpRequestHeader.Authorization] = oauthSig;
+            req.Method = HttpMethod.POST.ToString();
 
 #if !SILVERLIGHT
             req.ServicePoint.Expect100Continue = false;
@@ -608,7 +684,7 @@ namespace LinqToTwitter
             Action<string> authorizationCallback, 
             Action<TwitterAsyncResponse<object>> authenticationCompleteCallback)
         {
-            HttpWebRequest req = GetHttpRequest(oauthRequestTokenUrl, twitterCallbackUrl);
+            HttpWebRequest req = GetHttpGetRequest(oauthRequestTokenUrl, twitterCallbackUrl);
 
             req.BeginGetResponse(
                 new AsyncCallback(
@@ -669,7 +745,7 @@ namespace LinqToTwitter
         {
             OAuthVerifier = verifier;
 
-            HttpWebRequest req = GetHttpRequest(oauthAccessTokenUrl, twitterCallbackUrl);
+            HttpWebRequest req = GetHttpGetRequest(oauthAccessTokenUrl, twitterCallbackUrl);
 
             req.BeginGetResponse(
                 new AsyncCallback(
@@ -722,6 +798,168 @@ namespace LinqToTwitter
                         }
                     }), null);
 
+        }
+
+        /// <summary>
+        /// Posts asynchronously to Twitter for access token
+        /// </summary>
+        /// <param name="accessTokenUrl">Access token URL</param>
+        /// <param name="postData">Post info</param>
+        /// <param name="authorizationCompleteCallback">Invoked when request finishes</param>
+        public void PostAccessTokenAsync(Uri accessTokenUrl, string postData, Action<TwitterAsyncResponse<UserIdentifier>> authenticationCompleteCallback)
+        {
+            HttpWebRequest req = GetHttpPostRequest(accessTokenUrl);
+
+            req.ContentType = "application/x-www-form-urlencoded";
+
+            byte[] postDataBytes = Encoding.UTF8.GetBytes(postData);
+
+#if SILVERLIGHT
+                // TODO: work in progress
+                req.BeginGetRequestStream(
+                    new AsyncCallback(
+                        reqAr =>
+                        {
+                            using (var requestStream = req.EndGetRequestStream(reqAr))
+                            {
+                                requestStream.Write(postDataBytes, 0, postDataBytes.Length);
+                            }
+
+                            req.BeginGetResponse(
+                                new AsyncCallback(
+                                    resAr =>
+                                    {
+                                        string screenName = string.Empty;
+                                        string userID = string.Empty;
+
+                                        var twitterResponse = new TwitterAsyncResponse<UserIdentifier>();
+
+                                        try
+                                        {
+                                            string accessTokenResponse = string.Empty;
+
+                                            var res = req.EndGetResponse(resAr) as HttpWebResponse;
+
+                                            using (var respStream = res.GetResponseStream())
+                                            using (var respReader = new StreamReader(respStream))
+                                            {
+                                                accessTokenResponse = respReader.ReadToEnd();
+                                            }
+
+                                            ProcessAccessTokenResponse(ref screenName, ref userID, accessTokenResponse);
+                                        }
+                                        catch (TwitterQueryException tqe)
+                                        {
+                                            twitterResponse.Status = TwitterErrorStatus.TwitterApiError;
+                                            twitterResponse.Message = "Error while communicating with Twitter. Please see Error property for details.";
+                                            twitterResponse.Error = tqe;
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            twitterResponse.Status = TwitterErrorStatus.TwitterApiError;
+                                            twitterResponse.Message = "Error during LINQ to Twitter processing. Please see Error property for details.";
+                                            twitterResponse.Error = ex;
+                                        }
+                                        finally
+                                        {
+                                            if (authenticationCompleteCallback != null)
+                                            {
+                                                twitterResponse.State =
+                                                    new UserIdentifier
+                                                    {
+                                                        ID = userID,
+                                                        UserID = userID,
+                                                        ScreenName = screenName
+                                                    };
+                                                authenticationCompleteCallback(twitterResponse);
+                                            }
+                                        }
+                                    }), null);
+                        }), null);
+#else
+            Exception asyncException = null;
+
+            var resetEvent = new ManualResetEvent(initialState: false);
+
+            req.BeginGetRequestStream(
+                new AsyncCallback(
+                    ar =>
+                    {
+                        try
+                        {
+                            using (var requestStream = req.EndGetRequestStream(ar))
+                            {
+                                requestStream.Write(postDataBytes, 0, postDataBytes.Length);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            asyncException = ex;
+                        }
+                        finally
+                        {
+                            resetEvent.Set();
+                        }
+                    }), null);
+
+            resetEvent.WaitOne();
+
+            if (asyncException != null)
+            {
+                throw asyncException;
+            }
+
+            req.BeginGetResponse(
+                new AsyncCallback(
+                    ar =>
+                    {
+                        string screenName = string.Empty;
+                        string userID = string.Empty;
+
+                        var twitterResponse = new TwitterAsyncResponse<UserIdentifier>();
+
+                        try
+                        {
+                            string accessTokenResponse = string.Empty;
+
+                            var res = req.EndGetResponse(ar) as HttpWebResponse;
+
+                            using (var respStream = res.GetResponseStream())
+                            using (var respReader = new StreamReader(respStream))
+                            {
+                                accessTokenResponse = respReader.ReadToEnd();
+                            }
+
+                            ProcessAccessTokenResponse(ref screenName, ref userID, accessTokenResponse);
+                        }
+                        catch (TwitterQueryException tqe)
+                        {
+                            twitterResponse.Status = TwitterErrorStatus.TwitterApiError;
+                            twitterResponse.Message = "Error while communicating with Twitter. Please see Error property for details.";
+                            twitterResponse.Error = tqe;
+                        }
+                        catch (Exception ex)
+                        {
+                            twitterResponse.Status = TwitterErrorStatus.TwitterApiError;
+                            twitterResponse.Message = "Error during LINQ to Twitter processing. Please see Error property for details.";
+                            twitterResponse.Error = ex;
+                        }
+                        finally
+                        {
+                            if (authenticationCompleteCallback != null)
+                            {
+                                twitterResponse.State =
+                                    new UserIdentifier
+                                    {
+                                        ID = userID,
+                                        UserID = userID,
+                                        ScreenName = screenName
+                                    };
+                                authenticationCompleteCallback(twitterResponse);
+                            }
+                        }
+                    }), null);
+#endif
         }
 
         #endregion
