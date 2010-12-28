@@ -10,9 +10,9 @@ namespace LinqToTwitterDemo
     {
         public static void Run(LinqToTwitter.TwitterContext twitterCtx)
         {
-            SamplesDemo(twitterCtx);
+            //SamplesDemo(twitterCtx);
             //FilterDemo(twitterCtx);
-            //UserStreamDemo(twitterCtx);
+            UserStreamDemo(twitterCtx);
             //SiteStreamDemo(twitterCtx);
         }
 
@@ -92,7 +92,7 @@ namespace LinqToTwitterDemo
                 {
                     Console.WriteLine(strm.Content + "\n");
 
-                    if (count++ >= 10)
+                    if (count++ >= 1000)
                     {
                         strm.CloseStream();
                     }

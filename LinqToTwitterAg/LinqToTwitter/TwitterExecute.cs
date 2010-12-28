@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Xml;
 using System.Xml.Linq;
+using System.Diagnostics;
 
 namespace LinqToTwitter
 {
@@ -387,7 +388,7 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// Selects appropriate streaming method
+        /// Performs a query on the Twitter Stream
         /// </summary>
         /// <param name="url">Stream url</param>
         /// <returns>
@@ -396,16 +397,260 @@ namespace LinqToTwitter
         /// </returns>
         public string QueryTwitterStream(string url)
         {
-            if (url.Contains("user.json") || url.Contains("site.json"))
-            {
-                new Thread(ManageTwitterUserStream).Start(url);
-            }
-            else
-            {
-                new Thread(ManageTwitterStreaming).Start(url); 
-            }
+            new Thread(ExecuteTwitterStream).Start(url);
+
             return "<streaming></streaming>";
         }
+
+        /// <summary>
+        /// Processes stream results and performs error handling
+        /// </summary>
+        /// <param name="url">Stream URL</param>
+        private void ExecuteTwitterStream(object url)
+        {
+            var resetEvent = new ManualResetEvent(initialState: false);
+            int errorWait = 250;
+            bool firstConnection = true;
+
+            HttpWebRequest req = null;
+            string streamUrl = url as string;
+            Debug.Assert(url != null, "url type must be string");
+
+            try
+            {
+                while (!CloseStream)
+                {
+                    if (streamUrl.Contains("user.json") || streamUrl.Contains("site.json"))
+                    {
+                        req = GetUserStreamRequest(streamUrl);
+                    }
+                    else
+                    {
+                        req = GetBasicStreamRequest(streamUrl);
+                    }
+
+                    req.BeginGetResponse(
+                        new AsyncCallback(ar =>
+                        {
+                            HttpWebResponse resp = null;
+
+                            try
+                            {
+                                resp = req.EndGetResponse(ar) as HttpWebResponse;
+
+                                using (var stream = resp.GetResponseStream())
+                                using (var respRdr = new StreamReader(stream, Encoding.UTF8))
+                                {
+                                    firstConnection = true;
+                                    string content = null;
+
+                                    try
+                                    {
+                                        do
+                                        {
+                                            content = respRdr.ReadLine();
+
+                                            // launch on a separate thread to keep user's 
+                                            // callback code from blocking the stream.
+                                            new Thread(InvokeStreamCallback).Start(content);
+
+                                            errorWait = 250;
+                                        }
+                                        while (!CloseStream);
+                                    }
+                                    catch (WebException wex)
+                                    {
+                                        if (wex.Status == WebExceptionStatus.ConnectFailure)
+                                        {
+                                            if (errorWait < 10000)
+                                            {
+                                                errorWait = 10000;
+                                            }
+                                            else
+                                            {
+                                                if (errorWait < 240000)
+                                                {
+                                                    errorWait *= 2;
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (errorWait < 16000)
+                                            {
+                                                errorWait += 250;
+                                            }
+                                        }
+
+                                        WriteLog(wex.ToString() + ", Waiting " + errorWait/1000 + " seconds.  ", "ExecuteStream");
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        WriteLog(ex.ToString(), "ExecuteTwitterStream");
+                                    }
+                                    finally
+                                    {
+                                        if (req != null)
+                                        {
+                                            req.Abort();
+                                        }
+
+                                        Thread.Sleep(errorWait);
+                                    }
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                if (firstConnection)
+                                {
+                                    firstConnection = false;
+                                    errorWait = new Random().Next(20000, 40000);
+                                }
+                                else
+                                {
+                                    if (errorWait < 300000)
+                                    {
+                                        errorWait *= 2;
+                                    }
+                                }
+                                WriteLog(ex.ToString() + ", Waiting " + errorWait/1000 + " seconds.  ", "ExecuteStream");
+                            }
+                            finally
+                            {
+                                if (req != null)
+                                {
+                                    req.Abort();
+                                }
+
+                                Thread.Sleep(errorWait);
+                            }
+
+                            resetEvent.Set();
+
+                        }), null);
+
+                    resetEvent.WaitOne();
+                    resetEvent.Reset();
+                }
+            }
+            catch (Exception ex)
+            {
+                WriteLog(ex.ToString(), "ExecuteTwitterStream");
+                Thread.Sleep(errorWait);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Handles request initialization for sample, filter, and other basic streams
+        /// </summary>
+        /// <param name="url">Stream url</param>
+        /// <returns>Initialized Request</returns>
+        private HttpWebRequest GetBasicStreamRequest(string streamUrl)
+        {
+            var req = HttpWebRequest.Create(streamUrl) as HttpWebRequest;
+            req.Credentials = new NetworkCredential(StreamingUserName, StreamingPassword);
+            req.UserAgent = UserAgent;
+            
+            byte[] bytes = new byte[0];
+
+            bool shouldPostQuery = streamUrl.Contains("filter.json");
+
+            if (shouldPostQuery)
+            {
+                int qIndex = streamUrl.IndexOf('?');
+                string urlParams = streamUrl.Substring(qIndex);
+                streamUrl = streamUrl.Substring(qIndex - 1);
+
+                bytes = Encoding.UTF8.GetBytes(urlParams);
+                req.ContentLength = bytes.Length;
+                req.Method = "POST";
+                req.ContentType = "x-www-form-urlencoded";
+
+#if !SILVERLIGHT
+                req.Timeout = Timeout;
+                req.ReadWriteTimeout = ReadWriteTimeout;
+#endif
+
+                var resetEvent = new ManualResetEvent(initialState: false);
+                Exception asyncException = null;
+
+                req.BeginGetRequestStream(
+                    new AsyncCallback(
+                        ar =>
+                        {
+                            try
+                            {
+                                using (var requestStream = req.EndGetRequestStream(ar))
+                                {
+                                    requestStream.Write(bytes, 0, bytes.Length);
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                asyncException = ex;
+                                WriteLog(ex.ToString(), "GetBasicStreamRequest");
+                                throw;
+                            }
+
+                            resetEvent.Set();
+
+                        }), null);
+
+                resetEvent.WaitOne();
+
+                if (asyncException != null)
+                {
+                    throw asyncException;
+                }
+            }
+
+            return req;
+        }
+
+        /// <summary>
+        /// Handles request initialization for user and site streams
+        /// </summary>
+        /// <param name="url">Stream url</param>
+        /// <returns>Initialized Request</returns>
+        private HttpWebRequest GetUserStreamRequest(string streamUrl)
+        {
+            var uri = new Uri(streamUrl);
+            string responseXml = string.Empty;
+            string httpStatus = string.Empty;
+
+            this.LastUrl = uri.AbsoluteUri;
+            var req = this.AuthorizedClient.Get(streamUrl) as HttpWebRequest;
+            req.UserAgent = UserAgent;
+
+#if !SILVERLIGHT
+            req.Timeout = Timeout;
+            req.ReadWriteTimeout = ReadWriteTimeout;
+#endif
+
+            return req;
+        }
+
+        ///// <summary>
+        ///// Selects appropriate streaming method
+        ///// </summary>
+        ///// <param name="url">Stream url</param>
+        ///// <returns>
+        ///// Caller expects an XML formatted string response, but
+        ///// real response(s) with streams is fed to the callback
+        ///// </returns>
+        //public string QueryTwitterStream(string url)
+        //{
+        //    if (url.Contains("user.json") || url.Contains("site.json"))
+        //    {
+        //        new Thread(ManageTwitterUserStream).Start(url);
+        //    }
+        //    else
+        //    {
+        //        new Thread(ManageTwitterStreaming).Start(url);
+        //    }
+        //    return "<streaming></streaming>";
+        //}
 
         /// <summary>
         /// This code will execute on a thread, processing content from the Twitter stream

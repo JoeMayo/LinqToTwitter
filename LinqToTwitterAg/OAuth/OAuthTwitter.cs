@@ -30,6 +30,8 @@ using System.Threading;
     using System.Windows.Browser;
 #else
     using System.Web;
+using System.Security.Cryptography.X509Certificates;
+using System.Net.Security;
 #endif
 
 namespace LinqToTwitter
