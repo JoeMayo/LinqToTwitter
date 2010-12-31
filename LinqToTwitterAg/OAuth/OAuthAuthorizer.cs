@@ -27,6 +27,8 @@ namespace LinqToTwitter
                 Application.Current.Host.Source.Scheme + "://" +
                 Application.Current.Host.Source.Host + ":" +
                 Application.Current.Host.Source.Port + "/LinqToTwitterProxy.ashx?url=";
+#else
+            ProxyUrl = string.Empty;
 #endif
         }
 

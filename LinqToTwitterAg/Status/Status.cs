@@ -54,7 +54,7 @@ namespace LinqToTwitter
                 status.Element("retweet_count") == null || 
                 status.Element("retweet_count").Value == string.Empty ?
                     0 :
-                    int.Parse(status.Element("retweet_count").Value);
+                    int.Parse(status.Element("retweet_count").Value.TrimEnd('+'));
 
             var retweeted =
                 status.Element("retweeted") == null || status.Element("retweeted").Value == string.Empty ?
