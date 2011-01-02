@@ -164,7 +164,7 @@ namespace LinqToTwitterTests
     <in_reply_to_user_id></in_reply_to_user_id>
     <favorited>false</favorited>
     <in_reply_to_screen_name></in_reply_to_screen_name>
-    <retweet_count>2</retweet_count>
+    <retweet_count>100+</retweet_count>
     <retweeted>false</retweeted>
     <user>
       <id>10290862</id>
@@ -1268,6 +1268,7 @@ namespace LinqToTwitterTests
 
             var tweet = tweets.First();
             Assert.AreEqual(100, tweet.RetweetCount);
+            Assert.AreEqual(100, tweet.Retweet.RetweetCount);
         }
 
         /// <summary>
