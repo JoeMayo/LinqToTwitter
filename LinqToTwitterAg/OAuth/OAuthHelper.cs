@@ -20,6 +20,8 @@ namespace LinqToTwitter
         /// <returns>Response to Twitter</returns>
         public HttpWebResponse GetResponse(HttpWebRequest req)
         {
+            Exception asyncException = null;
+
             var resetEvent = new ManualResetEvent(initialState: false);
             HttpWebResponse res = null;
 
@@ -27,11 +29,26 @@ namespace LinqToTwitter
                 new AsyncCallback(
                     ar =>
                     {
-                        res = req.EndGetResponse(ar) as HttpWebResponse;
-                        resetEvent.Set();
+                        try
+                        {
+                            res = req.EndGetResponse(ar) as HttpWebResponse;
+                        }
+                        catch (Exception ex)
+                        {
+                            asyncException = ex;
+                        }
+                        finally
+                        {
+                            resetEvent.Set();
+                        }
                     }), null);
 
             resetEvent.WaitOne();
+
+            if (asyncException != null)
+            {
+                throw asyncException;
+            }
 
             return res;
         }

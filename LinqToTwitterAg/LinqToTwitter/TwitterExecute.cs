@@ -10,6 +10,12 @@ using System.Xml;
 using System.Xml.Linq;
 using System.Diagnostics;
 
+#if SILVERLIGHT
+    using System.Windows.Browser;
+#else
+    using System.Web;
+#endif
+
 namespace LinqToTwitter
 {
     /// <summary>
@@ -223,7 +229,7 @@ namespace LinqToTwitter
                 // an HTML message, that can't be parsed as normal XML.
                 responseXml = XElement.Parse(
 @"<hash>
-  <request>" + responseUri + @"</request>
+  <request>" + HttpUtility.UrlEncode(responseUri) + @"</request>
   <error>See Inner Exception Details for more information.</error>
 </hash>");
             }
