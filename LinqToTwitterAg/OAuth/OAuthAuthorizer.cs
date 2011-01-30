@@ -107,9 +107,9 @@ namespace LinqToTwitter
             }
         }
 
-        public string UserId { get; protected set; }
+        public string UserId { get; set; }
 
-        public string ScreenName { get; protected set; }
+        public string ScreenName { get; set; }
 
         public TimeSpan ReadWriteTimeout { get; set; }
 
