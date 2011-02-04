@@ -175,5 +175,193 @@ namespace LinqToTwitterTests
 
             Assert.AreEqual("POST", req.Method);
         }
+
+        [TestMethod]
+        public void IsAuthorized_Throws_ArgumentNullException_For_Null_Credentials()
+        {
+            var pinAuth = new PinAuthorizer();
+
+            try
+            {
+                bool isAuth = pinAuth.IsAuthorized;
+
+                Assert.Fail("Expected ArgumentNullException.");
+            }
+            catch (ArgumentNullException ane)
+            {
+                Assert.AreEqual("Credentials", ane.ParamName);
+            }
+        }
+
+        [TestMethod]
+        public void IsAuthorized_Returns_True_When_Credentials_Are_Present()
+        {
+            var pinAuth = new PinAuthorizer
+            {
+                Credentials = new InMemoryCredentials
+                {
+                    AccessToken = "A",
+                    ConsumerKey = "C",
+                    ConsumerSecret = "S",
+                    OAuthToken = "O"
+                }
+            };
+
+            bool isAuth = pinAuth.IsAuthorized;
+
+            Assert.IsTrue(isAuth);
+        }
+
+        [TestMethod]
+        public void IsAuthorized_Returns_False_When_4_Credentials_Are_Empty()
+        {
+            var pinAuth = new PinAuthorizer
+            {
+                Credentials = new InMemoryCredentials
+                {
+                    AccessToken = "",
+                    ConsumerKey = "",
+                    ConsumerSecret = "",
+                    OAuthToken = ""
+                }
+            };
+
+            bool isAuth = pinAuth.IsAuthorized;
+
+            Assert.IsFalse(isAuth);
+        }
+
+        [TestMethod]
+        public void IsAuthorized_Returns_False_When_3_Credentials_Are_Empty()
+        {
+            var pinAuth = new PinAuthorizer
+            {
+                Credentials = new InMemoryCredentials
+                {
+                    AccessToken = "A",
+                    ConsumerKey = "",
+                    ConsumerSecret = "",
+                    OAuthToken = ""
+                }
+            };
+
+            bool isAuth = pinAuth.IsAuthorized;
+
+            Assert.IsFalse(isAuth);
+        }
+
+        [TestMethod]
+        public void IsAuthorized_Returns_False_When_2_Credentials_Are_Empty()
+        {
+            var pinAuth = new PinAuthorizer
+            {
+                Credentials = new InMemoryCredentials
+                {
+                    AccessToken = "A",
+                    ConsumerKey = "C",
+                    ConsumerSecret = "",
+                    OAuthToken = ""
+                }
+            };
+
+            bool isAuth = pinAuth.IsAuthorized;
+
+            Assert.IsFalse(isAuth);
+        }
+
+        [TestMethod]
+        public void IsAuthorized_Returns_False_When_1_Credential_Is_Empty()
+        {
+            var pinAuth = new PinAuthorizer
+            {
+                Credentials = new InMemoryCredentials
+                {
+                    AccessToken = "A",
+                    ConsumerKey = "C",
+                    ConsumerSecret = "S",
+                    OAuthToken = ""
+                }
+            };
+
+            bool isAuth = pinAuth.IsAuthorized;
+
+            Assert.IsFalse(isAuth);
+        }
+
+        [TestMethod]
+        public void IsAuthorized_Returns_False_When_4_Credentials_Are_Null()
+        {
+            var pinAuth = new PinAuthorizer
+            {
+                Credentials = new InMemoryCredentials
+                {
+                    AccessToken = null,
+                    ConsumerKey = null,
+                    ConsumerSecret = null,
+                    OAuthToken = null
+                }
+            };
+
+            bool isAuth = pinAuth.IsAuthorized;
+
+            Assert.IsFalse(isAuth);
+        }
+
+        [TestMethod]
+        public void IsAuthorized_Returns_False_When_3_Credentials_Are_Null()
+        {
+            var pinAuth = new PinAuthorizer
+            {
+                Credentials = new InMemoryCredentials
+                {
+                    AccessToken = "A",
+                    ConsumerKey = null,
+                    ConsumerSecret = null,
+                    OAuthToken = null
+                }
+            };
+
+            bool isAuth = pinAuth.IsAuthorized;
+
+            Assert.IsFalse(isAuth);
+        }
+
+        [TestMethod]
+        public void IsAuthorized_Returns_False_When_2_Credentials_Are_Null()
+        {
+            var pinAuth = new PinAuthorizer
+            {
+                Credentials = new InMemoryCredentials
+                {
+                    AccessToken = "A",
+                    ConsumerKey = "C",
+                    ConsumerSecret = null,
+                    OAuthToken = null
+                }
+            };
+
+            bool isAuth = pinAuth.IsAuthorized;
+
+            Assert.IsFalse(isAuth);
+        }
+
+        [TestMethod]
+        public void IsAuthorized_Returns_False_When_1_Credential_Is_Null()
+        {
+            var pinAuth = new PinAuthorizer
+            {
+                Credentials = new InMemoryCredentials
+                {
+                    AccessToken = "A",
+                    ConsumerKey = "C",
+                    ConsumerSecret = "S",
+                    OAuthToken = null
+                }
+            };
+
+            bool isAuth = pinAuth.IsAuthorized;
+
+            Assert.IsFalse(isAuth);
+        }
     }
 }

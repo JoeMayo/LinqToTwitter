@@ -573,10 +573,10 @@ namespace LinqToTwitter
                 req.Method = "POST";
                 req.ContentType = "x-www-form-urlencoded";
 
-#if !SILVERLIGHT
-                req.Timeout = Timeout;
-                req.ReadWriteTimeout = ReadWriteTimeout;
-#endif
+//#if !SILVERLIGHT
+//                req.Timeout = Timeout;
+//                req.ReadWriteTimeout = ReadWriteTimeout;
+//#endif
 
                 var resetEvent = new ManualResetEvent(initialState: false);
                 Exception asyncException = null;
@@ -629,10 +629,10 @@ namespace LinqToTwitter
             var req = this.AuthorizedClient.Get(streamUrl) as HttpWebRequest;
             req.UserAgent = UserAgent;
 
-#if !SILVERLIGHT
-            req.Timeout = Timeout;
-            req.ReadWriteTimeout = ReadWriteTimeout;
-#endif
+//#if !SILVERLIGHT
+//            req.Timeout = Timeout;
+//            req.ReadWriteTimeout = ReadWriteTimeout;
+//#endif
 
             return req;
         }

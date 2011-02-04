@@ -185,6 +185,23 @@ namespace LinqToTwitterTests
         }
 
         [TestMethod]
+        public void Authorize_Requires_Credentials()
+        {
+            var pinAuth = new PinAuthorizer();
+
+            try
+            {
+                pinAuth.Authorize();
+
+                Assert.Fail("Expected ArgumentNullException.");
+            }
+            catch (ArgumentNullException ane)
+            {
+                Assert.AreEqual("Credentials", ane.ParamName);
+            }
+        }
+
+        [TestMethod]
         public void Authorize_Gets_Access_Token()
         {
             string screenName = "JoeMayo";

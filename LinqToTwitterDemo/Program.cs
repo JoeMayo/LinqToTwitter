@@ -67,7 +67,7 @@ namespace LinqToTwitterDemo
                     ConsumerKey = ConfigurationManager.AppSettings["twitterConsumerKey"],
                     ConsumerSecret = ConfigurationManager.AppSettings["twitterConsumerSecret"]
                 },
-                //UseCompression = true,
+                UseCompression = true,
                 GoToTwitterAuthorization = pageLink => Process.Start(pageLink),
                 GetPin = () =>
                 {

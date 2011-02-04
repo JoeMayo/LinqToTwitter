@@ -99,6 +99,11 @@ namespace LinqToTwitter
         {
             get
             {
+                if (Credentials == null)
+                {
+                    throw new ArgumentNullException("Credentials", "You must set the Credentials property.");
+                }
+
                 return
                     !string.IsNullOrEmpty(Credentials.ConsumerKey) &&
                     !string.IsNullOrEmpty(Credentials.ConsumerSecret) &&

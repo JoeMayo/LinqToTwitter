@@ -68,6 +68,11 @@ namespace LinqToTwitter
         /// <returns>True if successful</returns>
         public bool CompleteAuthorization(Uri callback)
         {
+            if (callback == null)
+            {
+                throw new ArgumentNullException("callback", "You must pass in the callback that Twitter returned after authentication.");
+            }
+
             if (IsAuthorized) return true;
 
             string verifier = OAuthTwitter.GetUrlParamValue(callback.Query, "oauth_verifier");

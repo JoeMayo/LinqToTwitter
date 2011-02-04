@@ -86,6 +86,39 @@ namespace LinqToTwitterTests
         }
 
         [TestMethod]
+        public void BeginAuthorize_Requires_Credentials()
+        {
+            string requestUrl = "https://api.twitter.com/";
+            var webAuth = new WebAuthorizer();
+
+            try
+            {
+                webAuth.BeginAuthorization(new Uri(requestUrl));
+
+                Assert.Fail("Expected ArgumentNullException.");
+            }
+            catch (ArgumentNullException ane)
+            {
+                Assert.AreEqual("Credentials", ane.ParamName);
+            }
+        }
+
+        [TestMethod]
+        public void BeginAuthorize_Does_Not_Require_A_Uri()
+        {
+            var webAuth = new WebAuthorizer();
+            webAuth.Credentials = new InMemoryCredentials();
+            var oAuthMock = new Mock<IOAuthTwitter>();
+            webAuth.OAuthTwitter = oAuthMock.Object;
+            var helperMock = new Mock<IOAuthHelper>();
+            webAuth.OAuthHelper = helperMock.Object;
+            string authUrl = string.Empty;
+            webAuth.PerformRedirect = url => authUrl = url;
+
+            webAuth.BeginAuthorization(null);
+        }
+
+        [TestMethod]
         public void BeginAuthorization_Calls_PerformRedirect()
         {
             string requestUrl = "https://api.twitter.com/";
@@ -129,6 +162,46 @@ namespace LinqToTwitterTests
             oAuthMock.Verify(oauth => oauth.AccessTokenGet(authToken, verifier, It.IsAny<string>(), string.Empty, out screenName, out userID), Times.Once());
             Assert.AreEqual(screenName, webAuth.ScreenName);
             Assert.AreEqual(userID, webAuth.UserId);
+        }
+
+        [TestMethod]
+        public void CompleteAuthorization_Requires_A_Uri()
+        {
+            var webAuth = new WebAuthorizer();
+            webAuth.Credentials = new InMemoryCredentials();
+            var oAuthMock = new Mock<IOAuthTwitter>();
+            webAuth.OAuthTwitter = oAuthMock.Object;
+            var helperMock = new Mock<IOAuthHelper>();
+            webAuth.OAuthHelper = helperMock.Object;
+
+            try
+            {
+                webAuth.CompleteAuthorization(null);
+
+                Assert.Fail("Expected ArgumentNullException.");
+            }
+            catch (ArgumentNullException ane)
+            {
+                Assert.AreEqual("callback", ane.ParamName);
+            }
+        }
+
+        [TestMethod]
+        public void CompleteAuthorization_Requires_Credentials()
+        {
+            string authLink = "https://authorizationlink";
+            var webAuth = new WebAuthorizer();
+
+            try
+            {
+                webAuth.CompleteAuthorization(new Uri(authLink));
+
+                Assert.Fail("Expected ArgumentNullException.");
+            }
+            catch (ArgumentNullException ane)
+            {
+                Assert.AreEqual("Credentials", ane.ParamName);
+            }
         }
     }
 }

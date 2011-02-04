@@ -565,6 +565,11 @@ namespace LinqToTwitter
         /// <returns>Filtered url without OAuth parameters</returns>
         public string FilterRequestParameters(Uri fullUrl)
         {
+            if (fullUrl == null)
+            {
+                return string.Empty;
+            }
+
             string filteredParams = string.Empty;
 
             string url = fullUrl.ToString().Split('?')[0];

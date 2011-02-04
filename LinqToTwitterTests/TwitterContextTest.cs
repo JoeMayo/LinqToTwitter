@@ -265,7 +265,24 @@ namespace LinqToTwitterTests
         }
 
         [TestMethod]
-        public void TwitterContext_Requres_NonNull_Authorization()
+        public void TwitterContext_1_Param_Requres_NonNull_Authorization()
+        {
+            try
+            {
+                PinAuthorizer auth = null;
+
+                var ctx = new TwitterContext(auth);
+
+                Assert.Fail("Expected ArgumentNullException.");
+            }
+            catch (ArgumentNullException ane)
+            {
+                Assert.AreEqual("authorizedClient", ane.ParamName);
+            }
+        }
+
+        [TestMethod]
+        public void TwitterContext_4_Params_Requres_NonNull_Authorization()
         {
             try
             {
