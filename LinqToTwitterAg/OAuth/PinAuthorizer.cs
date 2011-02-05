@@ -36,7 +36,7 @@ namespace LinqToTwitter
                 throw new InvalidOperationException("GoToTwitterAuthorization must have a handler before calling Authorize.");
             }
 
-            string link = OAuthTwitter.AuthorizationLinkGet(OAuthRequestTokenUrl, OAuthAuthorizeUrl, "oob", false, false);
+            string link = OAuthTwitter.AuthorizationLinkGet(OAuthRequestTokenUrl, OAuthAuthorizeUrl, "oob", false);
             GoToTwitterAuthorization(link);
 
             string verifier = GetPin();
@@ -73,7 +73,7 @@ namespace LinqToTwitter
                 throw new InvalidOperationException("GoToTwitterAuthorization must have a handler before calling BeginAuthorize.");
             }
 
-            OAuthTwitter.GetRequestTokenAsync(new Uri(OAuthRequestTokenUrl), new Uri(OAuthAuthorizeUrl), "oob", false, false, GoToTwitterAuthorization, authorizationCompleteCallback);
+            OAuthTwitter.GetRequestTokenAsync(new Uri(OAuthRequestTokenUrl), new Uri(OAuthAuthorizeUrl), "oob", false, GoToTwitterAuthorization, authorizationCompleteCallback);
         }
 
         /// <summary>

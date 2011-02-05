@@ -16,7 +16,7 @@ namespace LinqToTwitter
         /// <param name="userID">Returns user's Twitter ID</param>
         void PostAccessToken(string accessTokenUrl, string postData, out string screenName, out string userID);
 
-        string AuthorizationLinkGet(string requestToken, string authorizeUrl, string callback, bool readOnly, bool forceLogin);
+        string AuthorizationLinkGet(string requestToken, string authorizeUrl, string callback, bool forceLogin);
         string TwitterParameterUrlEncode(string value);       
         void GetOAuthQueryString(HttpMethod method, string url, string callback, out string outUrl, out string queryString);
         string GetOAuthQueryStringForPost(string url);
@@ -40,7 +40,6 @@ namespace LinqToTwitter
             Uri oauthRequestTokenUrl, 
             Uri oauthAuthorizeUrl, 
             string twitterCallbackUrl, 
-            bool readOnly, 
             bool forceLogin, 
             Action<string> authorizationCallback, 
             Action<TwitterAsyncResponse<object>> authenticationCompleteCallback);

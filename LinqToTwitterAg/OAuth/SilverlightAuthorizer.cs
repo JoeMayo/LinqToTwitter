@@ -49,7 +49,7 @@ namespace LinqToTwitter
                 throw new InvalidOperationException("GoToTwitterAuthorization must have a handler before calling BeginAuthorize.");
             }
 
-            OAuthTwitter.GetRequestTokenAsync(new Uri(OAuthRequestTokenUrl), new Uri(OAuthAuthorizeUrl), callback.ToString(), false, false, PerformRedirect, authorizationCompleteCallback);
+            OAuthTwitter.GetRequestTokenAsync(new Uri(OAuthRequestTokenUrl), new Uri(OAuthAuthorizeUrl), callback.ToString(), false, PerformRedirect, authorizationCompleteCallback);
         }
 
         public bool IsAuthorizing 

@@ -8,19 +8,17 @@ namespace LinqToTwitterTests.Common
 {
     class OAuthTwitterMock : IOAuthTwitter
     {
-        public void GetRequestTokenAsync(Uri oauthRequestTokenUrl, Uri oauthAuthorizeUrl, Uri twitterCallbackUrl, bool readOnly, bool forceLogin, Action<string> authorizationCallback, Action<TwitterAsyncResponse<object>> authenticationCompleteCallback)
+        public void GetRequestTokenAsync(Uri oauthRequestTokenUrl, Uri oauthAuthorizeUrl, string twitterCallbackUrl, bool forceLogin, Action<string> authorizationCallback, Action<TwitterAsyncResponse<object>> authenticationCompleteCallback)
         {
             authenticationCompleteCallback(new TwitterAsyncResponse<object>());
         }
-
-        #region IOAuthTwitter Members
 
         public void AccessTokenGet(string authToken, string verifier, string accessTokenUrl, string callback, out string screenName, out string userID)
         {
             throw new NotImplementedException();
         }
 
-        public string AuthorizationLinkGet(string requestToken, string authorizeUrl, string callback, bool readOnly, bool forceLogin)
+        public string AuthorizationLinkGet(string requestToken, string authorizeUrl, string callback, bool forceLogin)
         {
             throw new NotImplementedException();
         }
@@ -127,30 +125,15 @@ namespace LinqToTwitterTests.Common
             throw new NotImplementedException();
         }
 
-        #endregion
-
-        #region IOAuthTwitter Members
-
-
         public string GetOAuthHeader(Uri requestUrl, Uri callbackUrl)
         {
             throw new NotImplementedException();
         }
 
-        #endregion
-
-        #region IOAuthTwitter Members
-
-
         public void GetAccessTokenAsync(string verifier, Uri oauthAccessTokenUrl, Uri twitterCallbackUrl, Action<TwitterAsyncResponse<UserIdentifier>> authenticationCompleteCallback)
         {
             authenticationCompleteCallback(new TwitterAsyncResponse<UserIdentifier>());
         }
-
-        #endregion
-
-        #region IOAuthTwitter Members
-
 
         public string ProxyUrl
         {
@@ -162,11 +145,6 @@ namespace LinqToTwitterTests.Common
             {
                 throw new NotImplementedException();
             }
-        }
-
-        public void GetRequestTokenAsync(Uri oauthRequestTokenUrl, Uri oauthAuthorizeUrl, string twitterCallbackUrl, bool readOnly, bool forceLogin, Action<string> authorizationCallback, Action<TwitterAsyncResponse<object>> authenticationCompleteCallback)
-        {
-            authenticationCompleteCallback(new TwitterAsyncResponse<object>());
         }
 
         public void GetAccessTokenAsync(string verifier, Uri oauthAccessTokenUrl, string twitterCallbackUrl, Action<TwitterAsyncResponse<UserIdentifier>> authenticationCompleteCallback)
@@ -184,11 +162,6 @@ namespace LinqToTwitterTests.Common
             throw new NotImplementedException();
         }
 
-        #endregion
-
-        #region IOAuthTwitter Members
-
-
         public void PostAccessToken(string accessTokenUrl, string postData, out string screenName, out string userID)
         {
             throw new NotImplementedException();
@@ -199,16 +172,9 @@ namespace LinqToTwitterTests.Common
             throw new NotImplementedException();
         }
 
-        #endregion
-
-        #region IOAuthTwitter Members
-
-
         public void PostAccessTokenAsync(Uri uri, string postData, Action<TwitterAsyncResponse<UserIdentifier>> authorizationCompleteCallback)
         {
             throw new NotImplementedException();
         }
-
-        #endregion
     }
 }

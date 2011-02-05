@@ -82,7 +82,7 @@ namespace LinqToTwitterTests
 
             webAuth.BeginAuthorization(new Uri(requestUrl));
 
-            oAuthMock.Verify(oAuth => oAuth.AuthorizationLinkGet(It.IsAny<string>(), It.IsAny<string>(), requestUrl, false, false), Times.Once());
+            oAuthMock.Verify(oAuth => oAuth.AuthorizationLinkGet(It.IsAny<string>(), It.IsAny<string>(), requestUrl, false), Times.Once());
         }
 
         [TestMethod]
@@ -150,7 +150,7 @@ namespace LinqToTwitterTests
             var oAuthMock = new Mock<IOAuthTwitter>();
             oAuthMock.Setup(oauth => oauth.GetUrlParamValue(It.IsAny<string>(), "oauth_verifier")).Returns(verifier);
             oAuthMock.Setup(oauth => oauth.GetUrlParamValue(It.IsAny<string>(), "oauth_token")).Returns(authToken);
-            oAuthMock.Setup(oAuth => oAuth.AuthorizationLinkGet(It.IsAny<string>(), It.IsAny<string>(), "https://authorizationlink", false, false))
+            oAuthMock.Setup(oAuth => oAuth.AuthorizationLinkGet(It.IsAny<string>(), It.IsAny<string>(), "https://authorizationlink", false))
                      .Returns(authLink);
             oAuthMock.Setup(oAuth => oAuth.AccessTokenGet(authToken, verifier, It.IsAny<string>(), string.Empty, out screenName, out userID));
             webAuth.OAuthTwitter = oAuthMock.Object;

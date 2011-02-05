@@ -85,13 +85,13 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="readOnly">true for read-only, otherwise read/Write</param>
         /// <returns>The url with a valid request token, or a null string.</returns>
-        public string AuthorizationLinkGet(string requestToken, string authorizeUrl, string callback, bool readOnly, bool forceLogin)
+        public string AuthorizationLinkGet(string requestToken, string authorizeUrl, string callback, bool forceLogin)
         {
             string response = OAuthWebRequest(HttpMethod.GET, requestToken, String.Empty, callback);
-            return PrepareAuthorizeUrl(authorizeUrl, readOnly, forceLogin, response);
+            return PrepareAuthorizeUrl(authorizeUrl, forceLogin, response);
         }
 
-        private string PrepareAuthorizeUrl(string authorizeUrl, bool readOnly, bool forceLogin, string response)
+        private string PrepareAuthorizeUrl(string authorizeUrl, bool forceLogin, string response)
         {
             string authUrl = string.Empty;
 
@@ -110,12 +110,6 @@ namespace LinqToTwitter
                 {
                     OAuthToken = oAuthToken;
                     authUrl = authorizeUrl + "?oauth_token=" + oAuthToken;
-                    prefixChar = "&";
-                }
-
-                if (readOnly)
-                {
-                    authUrl += prefixChar + "oauth_access_type=read";
                     prefixChar = "&";
                 }
 
@@ -391,14 +385,7 @@ namespace LinqToTwitter
 
             querystring += "&oauth_signature=" + HttpUtility.UrlEncode(sig);
 
-            ////Convert the querystring to postData
-            //if (method == HttpMethod.POST)
-            //{
-            //    postData = querystring;
-            //    querystring = null;
-            //}
-
-            ret = WebRequest(method, outUrl, querystring, postData);
+            ret = WebRequest(method, url, querystring, postData);
 
             return ret;
         }
@@ -679,7 +666,6 @@ namespace LinqToTwitter
         /// <param name="oauthRequestTokenUrl">Url to make initial request on</param>
         /// <param name="oauthAuthorizeUrl">Url to send user to for authorization</param>
         /// <param name="twitterCallbackUrl">Url for Twitter to redirect to after authorization (null for Pin authorization)</param>
-        /// <param name="readOnly">Should access be read-only</param>
         /// <param name="forceLogin">Should user be forced to log in to authorize this app</param>
         /// <param name="authorizationCallback">Lambda to let program perform redirect to authorization page</param>
         /// <param name="authenticationCompleteCallback">Lambda to invoke to let user know when authorization completes</param>
@@ -687,7 +673,7 @@ namespace LinqToTwitter
             Uri oauthRequestTokenUrl, 
             Uri oauthAuthorizeUrl, 
             string twitterCallbackUrl, 
-            bool readOnly, bool forceLogin, 
+            bool forceLogin, 
             Action<string> authorizationCallback, 
             Action<TwitterAsyncResponse<object>> authenticationCompleteCallback)
         {
@@ -711,7 +697,7 @@ namespace LinqToTwitter
                                 requestTokenResponse = respReader.ReadToEnd();
                             }
 
-                            string authorizationUrl = PrepareAuthorizeUrl(oauthAuthorizeUrl.ToString(), readOnly, forceLogin, requestTokenResponse);
+                            string authorizationUrl = PrepareAuthorizeUrl(oauthAuthorizeUrl.ToString(), forceLogin, requestTokenResponse);
 
                             authorizationCallback(authorizationUrl);
                         }

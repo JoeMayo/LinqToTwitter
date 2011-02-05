@@ -57,6 +57,6 @@ public partial class SignIn : System.Web.UI.Page
 
     protected void signInButton_Click(object sender, ImageClickEventArgs e)
     {
-        auth.BeginAuthorization(Request.Url);
+        auth.BeginAuthorization(Request.Url, forceLogin: true);
     }
 }

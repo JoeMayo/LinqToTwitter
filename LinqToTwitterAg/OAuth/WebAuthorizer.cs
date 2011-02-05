@@ -47,10 +47,22 @@ namespace LinqToTwitter
         /// <param name="callback">This is where you want Twitter to redirect to after authorization</param>
         public void BeginAuthorization(Uri callback)
         {
+            BeginAuthorization(callback, forceLogin: false);
+        }
+
+        /// <summary>
+        /// First part of the authorization sequence that:
+        /// 1. Obtains a request token and then
+        /// 2. Redirects to the Twitter authorization page
+        /// </summary>
+        /// <param name="forceLogin">Forces user to login for Sign-In with Twitter scenarios</param>
+        /// <param name="callback">This is where you want Twitter to redirect to after authorization</param>
+        protected void BeginAuthorization(Uri callback, bool forceLogin)
+        {
             if (IsAuthorized) return;
 
             string callbackStr = OAuthTwitter.FilterRequestParameters(callback);
-            string link = OAuthTwitter.AuthorizationLinkGet(OAuthRequestTokenUrl, OAuthAuthorizeUrl, callbackStr, readOnly: false, forceLogin: false);
+            string link = OAuthTwitter.AuthorizationLinkGet(OAuthRequestTokenUrl, OAuthAuthorizeUrl, callbackStr, forceLogin);
 
             PerformRedirect(link);
         }
