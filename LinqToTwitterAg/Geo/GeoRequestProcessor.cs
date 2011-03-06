@@ -63,6 +63,21 @@ namespace LinqToTwitter
         private string ID { get; set; }
 
         /// <summary>
+        /// Any text you want to add to help find a place
+        /// </summary>
+        private string Query { get; set; }
+
+        /// <summary>
+        /// Place ID to restrict search to
+        /// </summary>
+        private string ContainedWithin { get; set; }
+
+        /// <summary>
+        /// Name/value pair separated by "=" (i.e. "street_address=123 4th Street")
+        /// </summary>
+        private string Attribute { get; set; }
+
+        /// <summary>
         /// extracts parameters from lambda
         /// </summary>
         /// <param name="lambdaExpression">lambda expression with where clause</param>
@@ -79,7 +94,10 @@ namespace LinqToTwitter
                    "Accuracy",
                    "Granularity",
                    "MaxResults",
-                   "ID"
+                   "ID",
+                   "Query",
+                   "ContainedWithin",
+                   "Attribute"
                })
                .Parameters;
         }
@@ -108,8 +126,8 @@ namespace LinqToTwitter
                 case GeoType.Reverse:
                     url = BuildReverseUrl(parameters);
                     break;
-                case GeoType.Nearby:
-                    url = BuildNearbyPlacesUrl(parameters);
+                case GeoType.Search:
+                    url = BuildSearchUrl(parameters);
                     break;
                 default:
                     throw new InvalidOperationException("The default case of BuildUrl should never execute because a Type must be specified.");
@@ -119,11 +137,11 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// Builds an url for nearby places query
+        /// Builds an url for search query
         /// </summary>
         /// <param name="parameters">URL parameters</param>
         /// <returns>URL for nearby places + parameters</returns>
-        private string BuildNearbyPlacesUrl(Dictionary<string, string> parameters)
+        private string BuildSearchUrl(Dictionary<string, string> parameters)
         {
             if (!parameters.ContainsKey("IP") &&
                 !(parameters.ContainsKey("Latitude") &&
@@ -134,7 +152,76 @@ namespace LinqToTwitter
 
             IP = parameters["IP"];
 
-            var url = BaseUrl +"geo/nearby_places.json?ip=" + parameters["IP"];
+            var url = BaseUrl +"geo/search.json";
+
+            var urlParams = new List<string>();
+
+            if (parameters.ContainsKey("Latitude"))
+            {
+                Latitude = double.Parse(parameters["Latitude"]);
+                urlParams.Add("lat=" + parameters["Latitude"]);
+            }
+
+            if (parameters.ContainsKey("Longitude"))
+            {
+                Longitude = double.Parse(parameters["Longitude"]);
+                urlParams.Add("long=" + parameters["Longitude"]);
+            }
+
+            if (parameters.ContainsKey("Query"))
+            {
+                Query = parameters["Query"];
+                urlParams.Add("query=" + Uri.EscapeUriString(parameters["Query"]));
+            }
+            
+            if (parameters.ContainsKey("IP"))
+            {
+                IP = parameters["IP"];
+                urlParams.Add("ip=" + parameters["IP"]);
+            }
+
+            if (parameters.ContainsKey("Accuracy"))
+            {
+                Accuracy = parameters["Accuracy"];
+                urlParams.Add("accuracy=" + parameters["Accuracy"]);
+            }
+
+            if (parameters.ContainsKey("Granularity"))
+            {
+                Granularity = parameters["Granularity"];
+                urlParams.Add("granularity=" + parameters["Granularity"]);
+            }
+
+            if (parameters.ContainsKey("MaxResults"))
+            {
+                MaxResults = int.Parse(parameters["MaxResults"]);
+                urlParams.Add("max_results=" + parameters["MaxResults"]);
+            }
+
+            if (parameters.ContainsKey("ContainedWithin"))
+            {
+                ContainedWithin = parameters["ContainedWithin"];
+                urlParams.Add("contained_within=" + parameters["ContainedWithin"]);
+            }
+
+            if (parameters.ContainsKey("Attribute"))
+            {
+                Attribute = parameters["Attribute"];
+
+                if (Attribute.IndexOf('=') < 0)
+                {
+                    throw new ArgumentException(
+                        "Attribute must be a name/value pair (i.e. street_address=123); actual value: " + Attribute,
+                        "Attribute");
+                }
+
+                urlParams.Add("attribute:" + Uri.EscapeUriString(parameters["Attribute"]));
+            }
+
+            if (urlParams.Count > 0)
+            {
+                url += "?" + string.Join("&", urlParams.ToArray());
+            }
 
             return url;
         }
@@ -249,6 +336,9 @@ namespace LinqToTwitter
                    Longitude = Longitude,
                    IP = IP,
                    MaxResults = MaxResults,
+                   Query = Query,
+                   ContainedWithin = ContainedWithin,
+                   Attribute = Attribute,
                    Places =
                        (from pl in responseItems
                         select Place.CreatePlace(pl.Element("contained_within").Element("item")))

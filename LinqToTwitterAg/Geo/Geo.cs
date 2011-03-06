@@ -50,6 +50,21 @@ namespace LinqToTwitter
         public int MaxResults { get; set; }
 
         /// <summary>
+        /// Any text you want to add to help find a place
+        /// </summary>
+        public string Query { get; set; }
+
+        /// <summary>
+        /// Place ID to restrict search to
+        /// </summary>
+        public string ContainedWithin { get; set; }
+
+        /// <summary>
+        /// Name/value pair separated by "=" (i.e. "street_address=123 4th Street")
+        /// </summary>
+        public string Attribute { get; set; }
+
+        /// <summary>
         /// Results showing places matching query
         /// </summary>
         public List<Place> Places { get; set; }

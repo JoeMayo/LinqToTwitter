@@ -562,7 +562,6 @@ namespace LinqToTwitterTests
         //
         #endregion
 
-
         /// <summary>
         ///A test for ProcessResults
         ///</summary>
@@ -618,7 +617,11 @@ namespace LinqToTwitterTests
                     geo.Longitude == -122.40060 &&
                     geo.MaxResults == 10 &&
                     geo.ID == "456" &&
-                    geo.IP == "168.143.171.180";
+                    geo.IP == "168.143.171.180" &&
+                    geo.Query == "place" &&
+                    geo.ContainedWithin == "abc" &&
+                    geo.Attribute == "street_address=123";
+
             LambdaExpression lambdaExpression = expression as LambdaExpression;
 
             var queryParams = geoReqProc.GetParameters(lambdaExpression);
@@ -647,6 +650,15 @@ namespace LinqToTwitterTests
             Assert.IsTrue(
                 queryParams.Contains(
                     new KeyValuePair<string, string>("IP", "168.143.171.180")));
+            Assert.IsTrue(
+                queryParams.Contains(
+                    new KeyValuePair<string, string>("Query", "place")));
+            Assert.IsTrue(
+                queryParams.Contains(
+                    new KeyValuePair<string, string>("ContainedWithin", "abc")));
+            Assert.IsTrue(
+                queryParams.Contains(
+                    new KeyValuePair<string, string>("Attribute", "street_address=123")));
         }
 
         /// <summary>
@@ -721,36 +733,78 @@ namespace LinqToTwitterTests
             string actual = target.BuildURL(parameters);
         }
 
-        /// <summary>
-        ///A test for BuildURL
-        ///</summary>
+        //[TestMethod()]
+        //public void BuildNearbyURLTest()
+        //{
+        //    GeoRequestProcessor<Geo> target = new GeoRequestProcessor<Geo>() { BaseUrl = "https://api.twitter.com/1/" };
+        //    var parameters = new Dictionary<string, string>
+        //     {
+        //         {"Type", ((int) GeoType.Nearby).ToString()},
+        //         {"IP", "168.143.171.180"},
+        //     };
+        //    string expected = "https://api.twitter.com/1/geo/nearby_places.json?ip=168.143.171.180";
+        //    string actual = target.BuildURL(parameters);
+        //    Assert.AreEqual(expected, actual);
+        //}
+
+        //[TestMethod()]
+        //[ExpectedException(typeof(ArgumentException))]
+        //public void BuildNearbyURLWithoutArgsTest()
+        //{
+        //    GeoRequestProcessor<Geo> target = new GeoRequestProcessor<Geo>() { BaseUrl = "https://api.twitter.com/1/" };
+        //    var parameters = new Dictionary<string, string>
+        //     {
+        //         {"Type", ((int) GeoType.Nearby).ToString()},
+        //     };
+        //    string actual = target.BuildURL(parameters);
+        //}
+
         [TestMethod()]
-        public void BuildNearbyURLTest()
+        public void BuildUrl_Generates_Search_Url()
         {
             GeoRequestProcessor<Geo> target = new GeoRequestProcessor<Geo>() { BaseUrl = "https://api.twitter.com/1/" };
             var parameters = new Dictionary<string, string>
              {
-                 {"Type", ((int) GeoType.Nearby).ToString()},
+                 {"Type", ((int) GeoType.Search).ToString()},
+                 {"Latitude", "37.78215"},
+                 {"Longitude", "-122.40060"},
+                 {"Query", "Twitter HQ" },
                  {"IP", "168.143.171.180"},
+                 {"Accuracy", "city" },
+                 {"Granularity", "10" },
+                 {"MaxResults", "10" },
+                 {"ContainedWithin", "123" },
+                 {"Attribute", "street_address=123" }
              };
-            string expected = "https://api.twitter.com/1/geo/nearby_places.json?ip=168.143.171.180";
+            string expected = "https://api.twitter.com/1/geo/search.json?lat=37.78215&long=-122.40060&query=Twitter%20HQ&ip=168.143.171.180&accuracy=city&granularity=10&max_results=10&contained_within=123&attribute:street_address=123";
+            
             string actual = target.BuildURL(parameters);
+            
             Assert.AreEqual(expected, actual);
         }
 
-        /// <summary>
-        ///A test for BuildURL
-        ///</summary>
         [TestMethod()]
-        [ExpectedException(typeof(ArgumentException))]
-        public void BuildNearbyURLWithoutArgsTest()
+        public void BuildUrl_Search_Throws_On_Attribute_Missing_Equals()
         {
             GeoRequestProcessor<Geo> target = new GeoRequestProcessor<Geo>() { BaseUrl = "https://api.twitter.com/1/" };
             var parameters = new Dictionary<string, string>
              {
-                 {"Type", ((int) GeoType.Nearby).ToString()},
+                 {"Type", ((int) GeoType.Search).ToString()},
+                 {"IP", "168.143.171.180"},
+                 {"Attribute", "street_address" }
              };
-            string actual = target.BuildURL(parameters);
+
+            try
+            {
+                string actual = target.BuildURL(parameters);
+
+                Assert.Fail("Expected ArgumentException.");
+            }
+            catch (ArgumentException ae)
+            {
+                Assert.AreEqual("Attribute", ae.ParamName);
+            }
         }
+
     }
 }

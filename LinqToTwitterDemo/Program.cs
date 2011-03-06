@@ -107,14 +107,14 @@ namespace LinqToTwitterDemo
                 //DirectMessageDemos.Run(twitterCtx);
                 //FavoritesDemos.Run(twitterCtx);
                 //FriendshipDemos.Run(twitterCtx);
-                //GeoDemos.Run(twitterCtx);
+                GeoDemos.Run(twitterCtx);
                 //LegalDemos.Run(twitterCtx);
                 //ListDemos.Run(twitterCtx);
                 //RawDemos.Run(twitterCtx);
                 //SavedSearchDemos.Run(twitterCtx);
                 //SearchDemos.Run(twitterCtx);
                 //SocialGraphDemos.Run(twitterCtx);
-                StatusDemos.Run(twitterCtx);
+                //StatusDemos.Run(twitterCtx);
                 //StreamingDemo.Run(twitterCtx);
                 //TrendsDemos.Run(twitterCtx);
                 //UserDemos.Run(twitterCtx);

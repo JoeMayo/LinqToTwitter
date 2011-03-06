@@ -8,7 +8,7 @@ namespace LinqToTwitterDemo
 {
     public class StreamingDemo
     {
-        public static void Run(LinqToTwitter.TwitterContext twitterCtx)
+        public static void Run(TwitterContext twitterCtx)
         {
             //SamplesDemo(twitterCtx);
             //FilterDemo(twitterCtx);
@@ -48,7 +48,7 @@ namespace LinqToTwitterDemo
                 .SingleOrDefault();
         }
 
-        private static void SamplesDemo(LinqToTwitter.TwitterContext twitterCtx)
+        private static void SamplesDemo(TwitterContext twitterCtx)
         {
             twitterCtx.StreamingUserName = "";
             twitterCtx.StreamingPassword = "";
@@ -84,6 +84,8 @@ namespace LinqToTwitterDemo
             Console.WriteLine("\nStreamed Content: \n");
             int count = 0;
 
+            // the user stream is for whoever is authenticated
+            // via the Authenticator passed to TwitterContext
             var streaming =
                 (from strm in twitterCtx.UserStream
                  where strm.Type == UserStreamType.User
