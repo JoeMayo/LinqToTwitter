@@ -27,10 +27,11 @@ namespace LinqToTwitterDemo
             //EndSession(twitterCtx);
             //UpdateDeliveryDevice(twitterCtx);
             //UpdateAccountColors(twitterCtx);
-            //UpdateAccountImage(twitterCtx);
+            UpdateAccountImage(twitterCtx);
+            //UpdateAccountImageCallback(twitterCtx);
             //UpdateAccountBackgroundImage(twitterCtx);
             //UpdateAccountBackgroundImageBytes(twitterCtx);
-            UpdateAccountBackgroundImageAndTileDemo(twitterCtx);
+            //UpdateAccountBackgroundImageAndTileDemo(twitterCtx);
             //UpdateAccountBackgroundImageAndTileButDontUseDemo(twitterCtx);
             //UpdateAccountBackgroundImageWithProgressUpdates(twitterCtx);
             //UpdateAccountInfoDemo(twitterCtx);
@@ -128,6 +129,20 @@ namespace LinqToTwitterDemo
             var user = twitterCtx.UpdateAccountImage(@"C:\Users\jmayo\Pictures\Sgt Peppers\JoeTwitterBW.jpg");
 
             Console.WriteLine("User Image: " + user.ProfileImageUrl);
+        }
+
+        /// <summary>
+        /// Shows how to asynchronously update the image in an account
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void UpdateAccountImageCallback(TwitterContext twitterCtx)
+        {
+            var user = twitterCtx.UpdateAccountImage(
+                @"C:\Users\jmayo\Pictures\Sgt Peppers\JoeTwitterBW.jpg",
+                response =>
+                {
+                    Console.WriteLine("User Image: " + response.Status.ToString());
+                });
         }
 
         /// <summary>

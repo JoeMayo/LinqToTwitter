@@ -34,6 +34,7 @@ namespace LinqToTwitterDemo
             //MentionsWithPagingQueryDemo(twitterCtx);
             //SingleStatusQueryDemo(twitterCtx);
             //UpdateStatusDemo(twitterCtx);
+            //UpdateStatusWithCallbackDemo(twitterCtx);
             //UpdateStatusWithReplyDemo(twitterCtx);
             UpdateStatusWithLocationDemo(twitterCtx);
             //UpdateStatusWithPlaceDemo(twitterCtx);
@@ -641,6 +642,34 @@ namespace LinqToTwitterDemo
                 tweet.CreatedAt + "\n");
         }
 
+        /// <summary>
+        /// shows how to asynchronously update a status
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void UpdateStatusWithCallbackDemo(TwitterContext twitterCtx)
+        {
+            // the \u00C7 is C Cedilla, which I've included to ensure that non-ascii characters appear properly
+            var status = "\u00C7 Testing LINQ to Twitter update status on " + DateTime.Now.ToString() + " #linqtotwitter";
+            //var status = "Testing LINQ to Twitter update status on " + DateTime.Now.ToString() + " #linqtotwitter";
+
+            Console.WriteLine("\nStatus being sent: \n\n\"{0}\"", status);
+            Console.WriteLine("\nPress any key to post tweet...\n");
+            Console.ReadKey();
+
+            twitterCtx.UpdateStatus(status,
+                response =>
+                {
+                    Status tweet = response.State;
+
+                    Console.WriteLine(
+                        "Status returned: " +
+                        "(" + tweet.StatusID + ")" +
+                        "[" + tweet.User.ID + "]" +
+                        tweet.User.Name + ", " +
+                        tweet.Text + ", " +
+                        tweet.CreatedAt + "\n");
+                });
+        }
         /// <summary>
         /// shows how to update a status
         /// </summary>

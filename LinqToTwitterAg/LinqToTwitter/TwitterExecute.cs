@@ -1069,6 +1069,16 @@ namespace LinqToTwitter
                                 {
                                     httpStatus = res.Headers["Status"];
                                     responseXml = GetTwitterResponse(res);
+
+                                    if (AsyncCallback != null)
+                                    {
+                                        List<T> responseObj = reqProc.ProcessResults(responseXml);
+                                        var asyncResp = new TwitterAsyncResponse<T>();
+                                        asyncResp.State = responseObj.FirstOrDefault();
+                                        (AsyncCallback as Action<TwitterAsyncResponse<T>>)(asyncResp);
+                                    }
+
+                                    // almost done
                                     OnUploadProgressChanged(99);
                                 }
                             }
@@ -1095,8 +1105,11 @@ namespace LinqToTwitter
                 throw twitterQueryEx;
             }
 
+            // make sure the caller knows it's done
             OnUploadProgressChanged(100);
+
             CheckResultsForTwitterError(responseXml, httpStatus);
+
             return responseXml;
         }
 
@@ -1129,6 +1142,8 @@ namespace LinqToTwitter
                         {
                             var resp = req.EndGetResponse(ar) as HttpWebResponse;
                             responseXml = GetTwitterResponse(resp);
+                            CheckResultsForTwitterError(responseXml, httpStatus);
+
                             if (AsyncCallback != null)
                             {
                                 List<T> responseObj = reqProc.ProcessResults(responseXml);
@@ -1138,10 +1153,32 @@ namespace LinqToTwitter
                             }
                         }), null);
 #else
-                using (var resp = this.AuthorizedClient.Post(url, parameters))
+                if (AsyncCallback != null)
                 {
-                    httpStatus = resp.Headers["Status"];
-                    responseXml = GetTwitterResponse(resp);
+                    HttpWebRequest req = AuthorizedClient.PostAsync(url, parameters);
+
+                    req.BeginGetResponse(
+                        new AsyncCallback(
+                            ar =>
+                            {
+                                var resp = req.EndGetResponse(ar) as HttpWebResponse;
+                                responseXml = GetTwitterResponse(resp);
+                                CheckResultsForTwitterError(responseXml, httpStatus);
+
+                                List<T> responseObj = reqProc.ProcessResults(responseXml);
+                                var asyncResp = new TwitterAsyncResponse<T>();
+                                asyncResp.State = responseObj.FirstOrDefault();
+                                (AsyncCallback as Action<TwitterAsyncResponse<T>>)(asyncResp);
+                            }), 
+                            null);
+                }
+                else
+                {
+                    using (var resp = this.AuthorizedClient.Post(url, parameters))
+                    {
+                        httpStatus = resp.Headers["Status"];
+                        responseXml = GetTwitterResponse(resp);
+                    }
                 }
 #endif
             }
@@ -1151,9 +1188,6 @@ namespace LinqToTwitter
                 throw twitterQueryEx;
             }
 
-#if !SILVERLIGHT
-            CheckResultsForTwitterError(responseXml, httpStatus);
-#endif
             return responseXml;
         }
 

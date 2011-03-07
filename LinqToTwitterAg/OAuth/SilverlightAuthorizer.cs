@@ -78,7 +78,13 @@ namespace LinqToTwitter
                 Credentials.OAuthToken = oauthToken;
                 OAuthTwitter.OAuthToken = oauthToken;
 
-                string verifier = OAuthTwitter.GetUrlParamValue(callbackParts[QueryPart], "oauth_verifier");
+                // we have to split on # because Twitter appends #PageName at the end of the url, 
+                // which identifies the Silverlight page to navigate to, but is not part of the verifier
+                string verifier = 
+                    OAuthTwitter
+                        .GetUrlParamValue(callbackParts[QueryPart], "oauth_verifier")
+                        .Split('#')[0];
+
                 if (verifier != null)
                 {
                     OAuthTwitter.GetAccessTokenAsync(verifier, new Uri(OAuthAccessTokenUrl), null, authorizationCompleteCallback);
