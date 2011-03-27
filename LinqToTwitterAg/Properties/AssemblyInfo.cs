@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("LinqToTwitterAg")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Linq To Twitter for Silverlight")]
+[assembly: AssemblyDescription("Open Source LINQ Provider for the Twitter Micro-Blogging Service (Silverlight)")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("LinqToTwitterAg")]
+[assembly: AssemblyCompany("Joe Mayo")]
+[assembly: AssemblyProduct("LINQ to Twitter for Silverlight")]
 [assembly: AssemblyCopyright("Copyright ©  2010")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -31,5 +31,5 @@ using System.Runtime.InteropServices;
 //
 // You can specify all the values or you can default the Revision and Build Numbers 
 // by using the '*' as shown below:
-[assembly: AssemblyVersion("2.0.20.0")]
-[assembly: AssemblyFileVersion("2.0.20.0")]
+[assembly: AssemblyVersion("2.0.21")]
+[assembly: AssemblyFileVersion("2.0.21")]

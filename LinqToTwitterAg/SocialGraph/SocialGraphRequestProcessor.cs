@@ -41,9 +41,11 @@ namespace LinqToTwitter
         private string ScreenName { get; set; }
 
         /// <summary>
-        /// Page to return
+        /// Page to return (obsolete, use Cursor instead)
         /// </summary>
-        [Obsolete("This property has been deprecated and will be ignored by Twitter. Please use Cursor/CursorResponse instead.")]
+        [Obsolete(
+            "This property has been deprecated and will be ignored by Twitter. Please use Cursor/CursorResponse instead.",
+            error: true)]
         private int Page { get; set; }
 
         /// <summary>
@@ -173,16 +175,15 @@ namespace LinqToTwitter
                 urlParams.Add("screen_name=" + parameters["ScreenName"]);
             }
 
-            if (parameters.ContainsKey("Page"))
-            {
-                Page = int.Parse(parameters["Page"]);
-                urlParams.Add("page=" + parameters["Page"]);
-            }
-
             if (parameters.ContainsKey("Cursor"))
             {
                 Cursor = parameters["Cursor"];
                 urlParams.Add("cursor=" + parameters["Cursor"]);
+            }
+            else
+            {
+                Cursor = "-1";
+                urlParams.Add("cursor=-1");
             }
 
             if (urlParams.Count > 0)
@@ -207,7 +208,6 @@ namespace LinqToTwitter
                 ID = ID,
                 UserID = UserID,
                 ScreenName = ScreenName,
-                Page = Page,
                 Cursor = Cursor,
                 CursorMovement = new Cursors
                 {

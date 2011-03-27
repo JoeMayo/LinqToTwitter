@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using LinqToTwitter;
+using System;
 using System.Linq;
-using System.Text;
-using LinqToTwitter;
 
 namespace LinqToTwitterDemo
 {

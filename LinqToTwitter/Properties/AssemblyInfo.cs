@@ -9,11 +9,11 @@ using System.Security;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("LinqToTwitter")]
-[assembly: AssemblyDescription("Open Source LINQ Provider for the Twitter Micro-Blogging Service")]
+[assembly: AssemblyDescription("Open Source LINQ Provider for the Twitter Micro-Blogging Service (Desktop and Web)")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Joe Mayo")]
-[assembly: AssemblyProduct("LinqToTwitter")]
-[assembly: AssemblyCopyright("Copyright ©  2008, 2009, 2010")]
+[assembly: AssemblyProduct("Linq To Twitter")]
+[assembly: AssemblyCopyright("Copyright ©  2008, 2009, 2010, 2011")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -35,8 +35,8 @@ using System.Security;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("2.0.20.0")]
-[assembly: AssemblyFileVersion("2.0.20.0")]
+[assembly: AssemblyVersion("2.0.21.0")]
+[assembly: AssemblyFileVersion("2.0.21.0")]
 
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("LinqToTwitterTests")]
 [assembly: InternalsVisibleTo("LinqToTwitter.Tests")]

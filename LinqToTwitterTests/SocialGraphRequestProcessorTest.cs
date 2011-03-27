@@ -1,17 +1,14 @@
 ﻿using LinqToTwitter;
+using LinqToTwitterTests.Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Collections.Generic;
-using System.Linq.Expressions;
-using System.Xml.Linq;
-using System.Linq;
 using System;
 using System.Collections;
-using LinqToTwitterTests.Common;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
 
 namespace LinqToTwitterTests
 {
-    
-    
     /// <summary>
     ///This is a test class for SocialGraphRequestProcessorTest and is intended
     ///to contain all SocialGraphRequestProcessorTest Unit Tests
@@ -19,11 +16,24 @@ namespace LinqToTwitterTests
     [TestClass()]
     public class SocialGraphRequestProcessorTest
     {
+        #region Test Data
+
         private string m_testQueryResponse = @"<?xml version=""1.0"" encoding=""UTF-8""?>
 <ids>
 <id>123456</id>
 <id>987654</id>
 </ids>";
+
+        private string m_testQueryResponseWithIDList = @"<?xml version=""1.0"" encoding=""UTF-8""?>
+<id_list>
+<ids>
+<id>271935353</id>
+<id>39340123</id>
+</ids>
+<next_cursor>0</next_cursor><previous_cursor>0</previous_cursor>
+</id_list>";
+
+        #endregion
 
         private TestContext testContextInstance;
 
@@ -74,11 +84,8 @@ namespace LinqToTwitterTests
         //
         #endregion
 
-        /// <summary>
-        ///A test for ProcessResults
-        ///</summary>
-        [TestMethod()]
-        public void ProcessResultsTest()
+        [TestMethod]
+        public void ProcessResults_Gets_Results_With_Only_IDs()
         {
             SocialGraphRequestProcessor<SocialGraph> target = new SocialGraphRequestProcessor<SocialGraph>();
 
@@ -87,6 +94,18 @@ namespace LinqToTwitterTests
             var graph = actual.Cast<SocialGraph>().ToList();
             Assert.AreEqual(graph[0].IDs[0], "123456");
             Assert.AreEqual(graph[0].IDs[1], "987654");
+        }
+
+        [TestMethod]
+        public void ProcessResults_Gets_Results_With_IDList()
+        {
+            var socialGraph = new SocialGraphRequestProcessor<SocialGraph>();
+
+            IList actual = socialGraph.ProcessResults(m_testQueryResponseWithIDList);
+
+            var graph = actual.Cast<SocialGraph>().ToList();
+            Assert.AreEqual(graph[0].IDs[0], "271935353");
+            Assert.AreEqual(graph[0].IDs[1], "39340123");
         }
 
         /// <summary>
@@ -100,7 +119,8 @@ namespace LinqToTwitterTests
                 graph =>
                     graph.Type == SocialGraphType.Followers &&
                     graph.ID == "123" &&
-                    graph.ScreenName == "456";
+                    graph.ScreenName == "456" &&
+                    graph.Cursor == "-1";
             LambdaExpression lambdaExpression = expression as LambdaExpression;
 
             var queryParams = target.GetParameters(lambdaExpression);
@@ -114,6 +134,9 @@ namespace LinqToTwitterTests
             Assert.IsTrue(
                 queryParams.Contains(
                     new KeyValuePair<string, string>("ScreenName", "456")));
+            Assert.IsTrue(
+                queryParams.Contains(
+                    new KeyValuePair<string, string>("Cursor", "-1")));
         }
 
         /// <summary>
@@ -134,8 +157,7 @@ namespace LinqToTwitterTests
         /// <summary>
         ///A test for BuildSocialGraphFriendsUrl
         ///</summary>
-        [TestMethod()]
-        [DeploymentItem("LinqToTwitter.dll")]
+        [TestMethod]
         public void BuildSocialGraphFriendsUrlTest()
         {
             SocialGraphRequestProcessor<SocialGraph> target = new SocialGraphRequestProcessor<SocialGraph>() { BaseUrl = "http://twitter.com/" };
@@ -146,11 +168,28 @@ namespace LinqToTwitterTests
                     { "ID", "JoeMayo" },
                     { "UserID", "123" },
                     { "ScreenName", "456" },
-                    { "Page", "1" }
+                    { "Cursor", "1" }
                 };
-            string expected = "http://twitter.com/friends/ids/JoeMayo.xml?user_id=123&screen_name=456&page=1";
+            string expected = "http://twitter.com/friends/ids/JoeMayo.xml?user_id=123&screen_name=456&cursor=1";
             string actual;
             actual = target.BuildURL(parameters);
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void BuildUrl_Defaults_Cursor_When_Not_Specified()
+        {
+            var socialGraph = new SocialGraphRequestProcessor<SocialGraph>() { BaseUrl = "http://twitter.com/" };
+            Dictionary<string, string> parameters =
+                new Dictionary<string, string>
+                {
+                    { "Type", SocialGraphType.Friends.ToString() },
+                    { "ID", "JoeMayo" },
+                };
+            string expected = "http://twitter.com/friends/ids/JoeMayo.xml?cursor=-1";
+            
+            string actual = socialGraph.BuildURL(parameters);
+            
             Assert.AreEqual(expected, actual);
         }
 
@@ -169,9 +208,9 @@ namespace LinqToTwitterTests
                     { "ID", "JoeMayo" },
                     { "UserID", "123" },
                     { "ScreenName", "456" },
-                    { "Page", "1" }
+                    { "Cursor", "1" }
                 };
-            string expected = "http://twitter.com/followers/ids/JoeMayo.xml?user_id=123&screen_name=456&page=1";
+            string expected = "http://twitter.com/followers/ids/JoeMayo.xml?user_id=123&screen_name=456&cursor=1";
             string actual;
             actual = target.BuildURL(parameters);
             Assert.AreEqual(expected, actual);

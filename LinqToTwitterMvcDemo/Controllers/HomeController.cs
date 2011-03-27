@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using LinqToTwitter;
+﻿using LinqToTwitter;
 using LinqToTwitterMvcDemo.Models;
 using System.Configuration;
+using System.Linq;
+using System.Web.Mvc;
 
 namespace LinqToTwitterMvcDemo.Controllers
 {
