@@ -1,13 +1,12 @@
 ﻿using LinqToTwitter;
+using LinqToTwitterTests.Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Collections.Generic;
-using System.Linq.Expressions;
-using System.Xml.Linq;
-using System.Linq;
+using Moq;
 using System;
 using System.Collections;
-using LinqToTwitterTests.Common;
-using Moq;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
 
 namespace LinqToTwitterTests
 {
@@ -62,6 +61,12 @@ namespace LinqToTwitterTests
     <id type=""integer"">16761255</id>
   </source>
 </relationship>";
+
+        private string m_testNoRetweetIDsResponse = @"<?xml version=""1.0"" encoding=""UTF-8""?>
+<ids>
+<id>15411837</id>
+<id>241594327</id>
+</ids>";
 
         #endregion
 
@@ -152,6 +157,17 @@ namespace LinqToTwitterTests
             var srcRel = friends.First().SourceRelationship;
             Assert.AreEqual(true, srcRel.RetweetsWanted);
             Assert.AreEqual(true, srcRel.NotificationsEnabled);
+        }
+
+        [TestMethod()]
+        public void ProcessResults_Translates_IDs_From_Response()
+        {
+            var friendReqProc = new FriendshipRequestProcessor<Friendship>();
+
+            List<Friendship> friends = friendReqProc.ProcessResults(m_testNoRetweetIDsResponse);
+
+            var ids = friends.First().IDInfo.IDs;
+            Assert.AreEqual(2, ids.Count);
         }
 
         /// <summary>
@@ -281,6 +297,25 @@ namespace LinqToTwitterTests
                     { "SourceScreenName", "JoeMayo" },
                 };
             string actual = target.BuildURL(parameters);
+        }
+
+        /// <summary>
+        ///A test for BuildURL for the show function
+        ///</summary>
+        [TestMethod()]
+        public void BuildUrl_Creates_No_Retweet_Url()
+        {
+            var target = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "http://api.twitter.com/" };
+            Dictionary<string, string> parameters =
+                new Dictionary<string, string>
+                {
+                    { "Type", FriendshipType.NoRetweetIDs.ToString() }
+                };
+            string expected = "http://api.twitter.com/friendships/no_retweet_ids.xml";
+            
+            string actual = target.BuildURL(parameters);
+
+            Assert.AreEqual(expected, actual);
         }
 
         /// <summary>

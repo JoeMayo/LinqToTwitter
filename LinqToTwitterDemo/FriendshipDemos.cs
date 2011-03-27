@@ -22,7 +22,8 @@ namespace LinqToTwitterDemo
             //CreateFriendshipNoDeviceUpdatesDemo(twitterCtx);
             //FriendshipExistsDemo(twitterCtx);
             //FriendshipExistsProjectionDemo(twitterCtx);
-            FriendshipShowDemo(twitterCtx);
+            //FriendshipShowDemo(twitterCtx);
+            FriendshipNoRetweetIDsDemo(twitterCtx);
             //FriendshipIncomingDemo(twitterCtx);
             //FriendshipOutgoingDemo(twitterCtx);
             //FriendshipLookupDemo(twitterCtx);
@@ -116,6 +117,21 @@ namespace LinqToTwitterDemo
                 friendship.SourceRelationship.FollowedBy + 
                 "\nLinqToTweeter follows JoeMayo: " +
                 friendship.TargetRelationship.FollowedBy);
+        }
+
+        /// <summary>
+        /// shows how to get ids of user that the logged in user doesn't want retweets for
+        /// </summary>
+        /// <param name="twitterCtx"></param>
+        private static void FriendshipNoRetweetIDsDemo(TwitterContext twitterCtx)
+        {
+            var friendship =
+                (from friend in twitterCtx.Friendship
+                 where friend.Type == FriendshipType.NoRetweetIDs
+                 select friend)
+                .First();
+
+            Console.WriteLine("\nIDs: " + string.Join(",", friendship.IDInfo.IDs.ToArray()));
         }
 
         /// <summary>

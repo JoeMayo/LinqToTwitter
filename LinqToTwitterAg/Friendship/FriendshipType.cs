@@ -34,6 +34,11 @@ namespace LinqToTwitter
         /// Allows you to examine the relationship of a list of users, ScreenName,
         /// to the logged in user
         /// </summary>
-        Lookup
+        Lookup,
+
+        /// <summary>
+        /// List of user IDs logged in user doesn't want to receive retweets for
+        /// </summary>
+        NoRetweetIDs,
     }
 }

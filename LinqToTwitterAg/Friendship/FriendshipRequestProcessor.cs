@@ -123,11 +123,23 @@ namespace LinqToTwitter
                 case FriendshipType.Show:
                     url = BuildFriendshipShowUrl(parameters);
                     break;
+                case FriendshipType.NoRetweetIDs:
+                    url = BuildFriendshipNoRetweetIDsUrl();
+                    break;
                 default:
                     throw new InvalidOperationException("The default case of BuildUrl should never execute because a Type must be specified.");
             }
 
             return url;
+        }
+
+        /// <summary>
+        /// Builds an url that retrieves ids of people who the logged in user doesn't want retweets for
+        /// </summary>
+        /// <returns>no_retweet_id URL</returns>
+        private string BuildFriendshipNoRetweetIDsUrl()
+        {
+            return BaseUrl + "friendships/no_retweet_ids.xml";
         }
 
         /// <summary>
@@ -344,6 +356,10 @@ namespace LinqToTwitter
             else if (twitterResponse.Name == "id_list") // incoming/outgoing
             {
                 friendship.IDInfo = IDList.CreateIDList(twitterResponse);
+            }
+            else if (twitterResponse.Name == "ids")
+            {
+                friendship.IDInfo = IDList.CreateIDs(twitterResponse);
             }
             else // Exists
             {

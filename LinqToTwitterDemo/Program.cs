@@ -74,7 +74,12 @@ namespace LinqToTwitterDemo
                     // this executes after user authorizes, which begins with the call to auth.Authorize() below.
                     Console.WriteLine("\nAfter you authorize this application, Twitter will give you a 7-digit PIN Number.\n");
                     Console.Write("Enter the PIN number here: ");
-                    return Console.ReadLine();
+                    //return Console.ReadLine();
+
+                    // TODO: uncomment code above and delete the code below once Twitter fixes the bug.
+                    string pin = Console.ReadLine();
+                    Console.WriteLine("Waiting 15 seconds to work around Twitter bug, that still exists on 3/27/11...");
+                    return pin;
                 }
             };
 

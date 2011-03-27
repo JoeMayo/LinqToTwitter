@@ -27,6 +27,19 @@ namespace LinqToTwitter
             };
         }
 
+
+        public static IDList CreateIDs(XElement idList)
+        {
+            return new IDList
+            {
+                CursorMovement = Cursors.CreateCursors(idList),
+                IDs =
+                    (from id in idList.Elements("id")
+                     select id.Value)
+                     .ToList()
+            };
+        }
+
         /// <summary>
         /// Holds prev/next cursors
         /// </summary>
