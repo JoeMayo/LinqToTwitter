@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Specialized;
 using System.Linq;
 using System.Threading;
 
@@ -49,10 +48,6 @@ namespace LinqToTwitter
                  where pair[0] == "oauth_token"
                  select pair[1])
                 .SingleOrDefault();
-
-            // TODO: this is a temporary kludge to work around a Twitter bug.
-            // Remove it after Twitter fixes the problem, which persists as of 3/27/11.
-            Thread.Sleep(15000);
 
             string screenName;
             string userID;

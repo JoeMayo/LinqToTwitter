@@ -18,10 +18,8 @@
  ***********************************************************/
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Collections.Specialized;
 using System.Net;
 using System.IO;
 using System.Threading;
@@ -552,6 +550,9 @@ namespace LinqToTwitter
         /// <returns>Filtered url without OAuth parameters</returns>
         public string FilterRequestParameters(Uri fullUrl)
         {
+            const int Domain = 0;
+            const int Params = 1;
+
             if (fullUrl == null)
             {
                 return string.Empty;
@@ -559,22 +560,21 @@ namespace LinqToTwitter
 
             string filteredParams = string.Empty;
 
-            string url = fullUrl.ToString().Split('?')[0];
-            string urlParams = fullUrl.Query;
+            string[] urlParts = fullUrl.ToString().Split('?');
 
-            if (!string.IsNullOrEmpty(urlParams))
+            if (urlParts.Length == 2 && !string.IsNullOrEmpty(urlParts[Params]))
             {
                 filteredParams =
                     string.Join(
                         "&",
-                        (from param in urlParams.Split('&')
+                        (from param in urlParts[Params].Split('&')
                          let args = param.Split('=')
                          where !args[0].StartsWith("oauth_")
                          select param)
                         .ToArray());
             }
 
-            return url + (filteredParams == string.Empty ? string.Empty : "?" + filteredParams);
+            return urlParts[Domain] + (filteredParams == string.Empty ? string.Empty : "?" + filteredParams);
         }
 
         #region - Async -
