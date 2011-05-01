@@ -115,78 +115,34 @@ namespace LinqToTwitterTests
   <as_of type=""number"">1241233670</as_of>
 </root>";
 
-        string m_testAvailableQueryResponse = @"<locations type=""array"">
-  <location>
-    <woeid>23424900</woeid>
-    <name>Mexico</name>
-    <placeTypeName code=""12"">Country</placeTypeName>
-    <country type=""Country"" code=""MX"">Mexico</country>
-    <url>http://where.yahooapis.com/v1/place/23424900</url>
-  </location>
-  <location>
-    <woeid>23424975</woeid>
-    <name>United Kingdom</name>
-    <placeTypeName code=""12"">Country</placeTypeName>
-    <country type=""Country"" code=""GB"">United Kingdom</country>
-    <url>http://where.yahooapis.com/v1/place/23424975</url>
-  </location>
-  <location>
-    <woeid>23424803</woeid>
-    <name>Ireland</name>
-    <placeTypeName code=""12"">Country</placeTypeName>
-    <country type=""Country"" code=""IE"">Ireland</country>
-    <url>http://where.yahooapis.com/v1/place/23424803</url>
-  </location>
-  <location>
-    <woeid>2367105</woeid>
-    <name>Boston</name>
-    <placeTypeName code=""7"">Town</placeTypeName>
-    <country type=""Country"" code=""US"">United States</country>
-    <url>http://where.yahooapis.com/v1/place/2367105</url>
-  </location>
-  <location>
-    <woeid>2514815</woeid>
-    <name>Washington</name>
-    <placeTypeName code=""7"">Town</placeTypeName>
-    <country type=""Country"" code=""US"">United States</country>
-    <url>http://where.yahooapis.com/v1/place/2514815</url>
-  </location>
-  <location>
-    <woeid>2358820</woeid>
-    <name>Baltimore</name>
-    <placeTypeName code=""7"">Town</placeTypeName>
-    <country type=""Country"" code=""US"">United States</country>
-    <url>http://where.yahooapis.com/v1/place/2358820</url>
-  </location>
-  <location>
-    <woeid>455827</woeid>
-    <name>Sao Paulo</name>
-    <placeTypeName code=""7"">Town</placeTypeName>
-    <country type=""Country"" code=""BR"">Brazil</country>
-    <url>http://where.yahooapis.com/v1/place/455827</url>
-  </location>
-  <location>
-    <woeid>2459115</woeid>
-    <name>New York</name>
-    <placeTypeName code=""7"">Town</placeTypeName>
-    <country type=""Country"" code=""US"">United States</country>
-    <url>http://where.yahooapis.com/v1/place/2459115</url>
-  </location>
-  <location>
-    <woeid>2487796</woeid>
-    <name>San Antonio</name>
-    <placeTypeName code=""7"">Town</placeTypeName>
-    <country type=""Country"" code=""US"">United States</country>
-    <url>http://where.yahooapis.com/v1/place/2487796</url>
-  </location>
-  <location>
-    <woeid>23424977</woeid>
-    <name>United States</name>
-    <placeTypeName code=""12"">Country</placeTypeName>
-    <country type=""Country"" code=""US"">United States</country>
-    <url>http://where.yahooapis.com/v1/place/23424977</url>
-  </location>
-</locations>";
+        string m_testAvailableQueryResponse = @"<?xml version=""1.0"" encoding=""UTF-8""?>
+<locations type=""array"">
+<location>
+  <woeid>23424969</woeid>
+  <name>Turkey</name>
+  <placeTypeName code=""12"">Country</placeTypeName>
+  <country type=""Country"" code=""TR"">Turkey</country>
+  <url>http://where.yahooapis.com/v1/place/23424969</url>
+  <parentid>1</parentid>
+</location>
+<location>
+  <woeid>2364559</woeid>
+  <name>Birmingham</name>
+  <placeTypeName code=""7"">Town</placeTypeName>
+  <country type=""Country"" code=""US"">United States</country>
+  <url>http://where.yahooapis.com/v1/place/2364559</url>
+  <parentid>23424977</parentid>
+</location>
+<location>
+  <woeid>395269</woeid>
+  <name>Caracas</name>
+  <placeTypeName code=""7"">Town</placeTypeName>
+  <country type=""Country"" code=""VE"">Venezuela</country>
+  <url>http://where.yahooapis.com/v1/place/395269</url>
+  <parentid>23424982</parentid>
+</location>
+</locations>
+";
 
         #endregion
 
@@ -278,10 +234,31 @@ namespace LinqToTwitterTests
             IList actual = target.ProcessResults(m_testAvailableQueryResponse);
 
             var trends = actual.Cast<Trend>().ToList();
-            Assert.AreEqual(10, trends[0].Locations.Count);
+            Assert.AreEqual(3, trends[0].Locations.Count);
         }
 
-       /// <summary>
+        [TestMethod]
+        public void ProcessResults_Parses_Location()
+        {
+            var trendProc = new TrendRequestProcessor<Trend>();
+
+            List<Trend> trends = trendProc.ProcessResults(m_testAvailableQueryResponse);
+
+            Assert.AreEqual(3, trends[0].Locations.Count);
+
+            Location loc = trends[0].Locations.First();
+            Assert.AreEqual("Turkey", loc.Country);
+            Assert.AreEqual("TR", loc.CountryCode);
+            Assert.AreEqual("Country", loc.CountryType);
+            Assert.AreEqual("Turkey", loc.Name);
+            Assert.AreEqual("Country", loc.PlaceTypeName);
+            Assert.AreEqual(12, loc.PlaceTypeNameCode);
+            Assert.AreEqual("http://where.yahooapis.com/v1/place/23424969", loc.Url);
+            Assert.AreEqual("23424969", loc.WoeID);
+            Assert.AreEqual("1", loc.ParentID);
+        }
+
+        /// <summary>
         ///A test for GetParameters
         ///</summary>
         [TestMethod()]

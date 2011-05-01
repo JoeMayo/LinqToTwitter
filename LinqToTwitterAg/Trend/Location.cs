@@ -38,28 +38,17 @@ namespace LinqToTwitter
                             country.Attribute("type") == null ?
                                 string.Empty :
                                 country.Attribute("type").Value,
-                    Name = 
-                        loc.Element("name") == null ?
-                            string.Empty :
-                            loc.Element("name").Value,
-                    PlaceTypeName =
-                        placeType == null ?
-                            string.Empty :
-                            placeType.Value,
+                    Name = loc.GetString("name"),
+                    PlaceTypeName = loc.GetString("placeTypeName"),
                     PlaceTypeNameCode = int.Parse(
                         placeType == null ?
                             "0" :
                             placeType.Attribute("code") == null ?
                                 "0" :
                                 placeType.Attribute("code").Value),
-                    Url = 
-                        loc.Element("url") == null ?
-                            string.Empty :
-                            loc.Element("url").Value,
-                    WoeID = 
-                        loc.Element("woeid") == null ?
-                            string.Empty :
-                            loc.Element("woeid").Value
+                    Url = loc.GetString("url"),
+                    WoeID =  loc.GetString("woeid"),
+                    ParentID = loc.GetString("parentid")
                 };
             }
 
@@ -105,5 +94,11 @@ namespace LinqToTwitter
         /// Yahoo Location URL
         /// </summary>
         public string Url { get; set; }
+
+        /// <summary>
+        /// Parent location relative to current location.
+        /// Set to null if current location is World.
+        /// </summary>
+        public string ParentID { get; set; }
     }
 }
