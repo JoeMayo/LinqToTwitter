@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
+using System.Globalization;
 
 namespace LinqToTwitter
 {
@@ -38,8 +39,8 @@ namespace LinqToTwitter
                         coords.Add(
                             new Coordinate 
                             {
-                                Latitude = double.Parse(coordArr[lat]),
-                                Longitude = double.Parse(coordArr[lon]) 
+                                Latitude = double.Parse(coordArr[lat], CultureInfo.InvariantCulture),
+                                Longitude = double.Parse(coordArr[lon], CultureInfo.InvariantCulture) 
                             });
                     }
                 }
