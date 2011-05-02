@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Linq.Expressions;
-using System.Collections;
+using System.Linq;
 using System.Xml.Linq;
 
 #if SILVERLIGHT
@@ -350,7 +348,7 @@ namespace LinqToTwitter
         /// <param name="parameters">parameters to add</param>
         /// <param name="url">url to start with</param>
         /// <returns>new url with parameters</returns>
-        private string BuildFriendsAndFollowersUrlParameters(Dictionary<string, string> parameters, string url)
+        internal string BuildFriendsAndFollowersUrlParameters(Dictionary<string, string> parameters, string url)
         {
             if (parameters == null)
             {
@@ -362,6 +360,21 @@ namespace LinqToTwitter
                 !parameters.ContainsKey("ScreenName"))
             {
                 throw new ArgumentException("Parameters must include at least one of ID, UserID, or ScreenName.");
+            }
+
+            if (parameters.ContainsKey("UserID") && string.IsNullOrEmpty(parameters["UserID"]))
+            {
+                throw new ArgumentNullException("UserID", "If specified, UserID can't be null or an empty string.");
+            }
+
+            if (parameters.ContainsKey("ScreenName") && string.IsNullOrEmpty(parameters["ScreenName"]))
+            {
+                throw new ArgumentNullException("ScreenName", "If specified, ScreenName can't be null or an empty string.");
+            }
+
+            if (parameters.ContainsKey("ID") && string.IsNullOrEmpty(parameters["ID"]))
+            {
+                throw new ArgumentNullException("ID", "If specified, ID can't be null or an empty string.");
             }
 
             var urlParams = new List<string>();

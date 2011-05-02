@@ -18,8 +18,8 @@ namespace LinqToTwitterDemo
         public static void Run(TwitterContext twitterCtx)
         {
             //UserShowWithIDQueryDemo(twitterCtx);
-            //UserShowWithScreenNameQueryDemo(twitterCtx);
-            UserFriendsQueryDemo(twitterCtx);
+            UserShowWithScreenNameQueryDemo(twitterCtx);
+            //UserFriendsQueryDemo(twitterCtx);
             //UserFriendsWithCursorQueryDemo(twitterCtx);
             //UsersLookupDemo(twitterCtx);
             //UserSearchDemo(twitterCtx);        

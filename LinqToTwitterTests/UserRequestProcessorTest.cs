@@ -355,6 +355,75 @@ namespace LinqToTwitterTests
             Assert.AreEqual(expected, actual);
         }
 
+        [TestMethod]
+        public void BuildFriendsAndFollowersUrlParameters_Throws_On_Null_UserID()
+        {
+            var reqProc = new UserRequestProcessor_Accessor<User> { BaseUrl = "https://api.twitter.com/" };
+            Dictionary<string, string> parameters =
+                new Dictionary<string, string>
+                    {
+                        { "Type", ((int)UserType.Show).ToString() },
+                        { "UserID", null }
+                    };
+
+            try
+            {
+                reqProc.BuildFriendsAndFollowersUrlParameters(parameters, string.Empty);
+
+                Assert.Fail("Expected ArgumentNullException.");
+            }
+            catch (ArgumentNullException ane)
+            {
+                Assert.AreEqual("UserID", ane.ParamName);
+            }
+        }
+
+        [TestMethod]
+        public void BuildFriendsAndFollowersUrlParameters_Throws_On_Null_ScreenName()
+        {
+            var reqProc = new UserRequestProcessor_Accessor<User> { BaseUrl = "https://api.twitter.com/" };
+            Dictionary<string, string> parameters =
+                new Dictionary<string, string>
+                    {
+                        { "Type", ((int)UserType.Show).ToString() },
+                        { "ScreenName", null }
+                    };
+
+            try
+            {
+                reqProc.BuildFriendsAndFollowersUrlParameters(parameters, string.Empty);
+
+                Assert.Fail("Expected ArgumentNullException.");
+            }
+            catch (ArgumentNullException ane)
+            {
+                Assert.AreEqual("ScreenName", ane.ParamName);
+            }
+        }
+
+        [TestMethod]
+        public void BuildFriendsAndFollowersUrlParameters_Throws_On_Null_ID()
+        {
+            var reqProc = new UserRequestProcessor_Accessor<User> { BaseUrl = "https://api.twitter.com/" };
+            Dictionary<string, string> parameters =
+                new Dictionary<string, string>
+                    {
+                        { "Type", ((int)UserType.Show).ToString() },
+                        { "ID", null }
+                    };
+
+            try
+            {
+                reqProc.BuildFriendsAndFollowersUrlParameters(parameters, string.Empty);
+
+                Assert.Fail("Expected ArgumentNullException.");
+            }
+            catch (ArgumentNullException ane)
+            {
+                Assert.AreEqual("ID", ane.ParamName);
+            }
+        }
+
         /// <summary>
         ///A test for BuildFollowersUrl
         ///</summary>
