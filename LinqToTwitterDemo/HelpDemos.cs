@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using LinqToTwitter;
+﻿using LinqToTwitter;
+using System;
 
 namespace LinqToTwitterDemo
 {
     /// <summary>
-    /// Shows status demos
+    /// Shows help demos
     /// </summary>
     public class HelpDemos
     {

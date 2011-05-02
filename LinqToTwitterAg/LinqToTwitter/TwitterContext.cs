@@ -448,6 +448,17 @@ namespace LinqToTwitter
         }
 
         /// <summary>
+        /// enables access to Related Results Query Extensibility
+        /// </summary>
+        public TwitterQueryable<RelatedResults> RelatedResults
+        {
+            get
+            {
+                return new TwitterQueryable<RelatedResults>(this);
+            }
+        }
+
+        /// <summary>
         /// enables access to Twitter Saved Searches
         /// </summary>
         public TwitterQueryable<SavedSearch> SavedSearch
@@ -833,6 +844,9 @@ namespace LinqToTwitter
                     break;
                 case "Raw":
                     req = new RawRequestProcessor<T>() { BaseUrl = baseUrl };
+                    break;
+                case "RelatedResults":
+                    req = new RelatedResultsRequestProcessor<T> { BaseUrl = baseUrl };
                     break;
                 case "SavedSearch":
                     req = new SavedSearchRequestProcessor<T>() { BaseUrl = BaseUrl };

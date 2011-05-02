@@ -22,6 +22,8 @@ namespace LinqToTwitter
         /// <returns>Coordinate holding info from XML</returns>
         public static Coordinate CreateCoordinate(XElement coordinate)
         {
+            if (coordinate == null || string.IsNullOrEmpty(coordinate.Value)) return null;
+
             List<XElement> coords = coordinate.Elements("item").ToList();
 
             return new Coordinate

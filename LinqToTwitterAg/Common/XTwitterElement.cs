@@ -24,6 +24,24 @@ namespace LinqToTwitter
                     : int.Parse(elem.Element(tagName).Value);
         }
 
+        public static ulong GetULong(this XElement elem, string tagName, ulong defaultValue = 0)
+        {
+            return
+                elem.Element(tagName) == null ||
+                elem.Element(tagName).Value == string.Empty
+                    ? defaultValue
+                    : ulong.Parse(elem.Element(tagName).Value);
+        }
+
+        public static double GetDouble(this XElement elem, string tagName, double defaultValue = 0)
+        {
+            return
+                elem.Element(tagName) == null ||
+                elem.Element(tagName).Value == string.Empty
+                    ? defaultValue
+                    : double.Parse(elem.Element(tagName).Value, CultureInfo.InvariantCulture);
+        }
+
         public static string GetString(this XElement elem, string tagName, string defaultValue = "")
         {
             return

@@ -98,6 +98,7 @@
   <ItemGroup>
     <Compile Include="AccountDemos.cs" />
     <Compile Include="BlocksDemos.cs" />
+    <Compile Include="RelatedResultsDemos.cs" />
     <Compile Include="DirectMessageDemos.cs" />
     <Compile Include="ErrorHandlingDemos.cs" />
     <Compile Include="FavoritesDemos.cs" />

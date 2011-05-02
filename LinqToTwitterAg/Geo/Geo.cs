@@ -10,6 +10,7 @@ namespace LinqToTwitter
     /// </summary>
     public class Geo
     {
+        // TODO: add Created method and replace manual Geo parsing elsewhere
         /// <summary>
         /// Type of Geo query (Reverse or ID)
         /// </summary>
