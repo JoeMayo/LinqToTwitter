@@ -349,6 +349,9 @@
     <Compile Include="..\LinqToTwitterAg\OAuth\SignInAuthorizer.cs">
       <Link>OAuth\SignInAuthorizer.cs</Link>
     </Compile>
+    <Compile Include="..\LinqToTwitterAg\OAuth\SingleUserAuthorizer.cs">
+      <Link>OAuth\SingleUserAuthorizer.cs</Link>
+    </Compile>
     <Compile Include="..\LinqToTwitterAg\OAuth\Utilities.cs">
       <Link>OAuth\Utilities.cs</Link>
     </Compile>

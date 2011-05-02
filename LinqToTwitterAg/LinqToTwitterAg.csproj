@@ -147,6 +147,7 @@
     <Compile Include="OAuth\PinAuthorizer.cs" />
     <Compile Include="OAuth\SignInAuthorizer.cs" />
     <Compile Include="OAuth\SilverlightAuthorizer.cs" />
+    <Compile Include="OAuth\SingleUserAuthorizer.cs" />
     <Compile Include="OAuth\WebAuthorizer.cs" />
     <Compile Include="OAuth\Utilities.cs" />
     <Compile Include="OAuth\XAuthAuthorizer.cs" />
