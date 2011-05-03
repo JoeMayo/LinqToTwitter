@@ -21,10 +21,10 @@ namespace LinqToTwitterDemo
             //IsListSubscribedDemo(twitterCtx);
             //GetListSubscribersDemo(twitterCtx);
             //IsListMemberDemo(twitterCtx);
-            //GetListMembersDemo(twitterCtx);
+            GetListMembersDemo(twitterCtx);
             //GetListSubscriptionsDemo(twitterCtx);
             //GetListMembershipsDemo(twitterCtx);
-            GetListStatusesDemo(twitterCtx);
+            //GetListStatusesDemo(twitterCtx);
             //GetListDemo(twitterCtx);
             //CreateListDemo(twitterCtx);
             //UpdateListDemo(twitterCtx);
@@ -60,7 +60,7 @@ namespace LinqToTwitterDemo
                 "Mayoster"
             };
 
-            List list = twitterCtx.AddMemberRangeToList("LinqToTweeter", "linq", members);
+            List list = twitterCtx.AddMemberRangeToList("Linq2Tweeter", "linq", members);
 
             foreach (var user in list.Users)
             {
@@ -76,7 +76,7 @@ namespace LinqToTwitterDemo
                 45714308
             };
 
-            List list = twitterCtx.AddMemberRangeToList("LinqToTweeter", "linq", members);
+            List list = twitterCtx.AddMemberRangeToList("Linq2Tweeter", "linq", members);
 
             foreach (var user in list.Users)
             {
@@ -90,7 +90,7 @@ namespace LinqToTwitterDemo
 
             try
             {
-                List list = twitterCtx.AddMemberRangeToList("LinqToTweeter", "linq", members);
+                List list = twitterCtx.AddMemberRangeToList("Linq2Tweeter", "linq", members);
             }
             catch (ArgumentException ae)
             {
@@ -109,7 +109,7 @@ namespace LinqToTwitterDemo
             var lists =
                 from list in twitterCtx.List
                 where list.Type == ListType.Lists &&
-                      list.ScreenName == "LinqToTweeter"
+                      list.ScreenName == "Linq2Tweeter"
                 orderby list.Name
                 select list;
 
@@ -126,7 +126,7 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void UnsubscribeFromListDemo(TwitterContext twitterCtx)
         {
-            List list = twitterCtx.UnsubscribeFromList("LinqToTweeter", "linq");
+            List list = twitterCtx.UnsubscribeFromList("Linq2Tweeter", "linq");
 
             Console.WriteLine("List Name: {0}, Description: {1}",
                 list.Name, list.Description);
@@ -138,7 +138,7 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void SubscribeToListDemo(TwitterContext twitterCtx)
         {
-            List list = twitterCtx.SubscribeToList("LinqToTweeter", "linq");
+            List list = twitterCtx.SubscribeToList("Linq2Tweeter", "linq");
 
             Console.WriteLine("List Name: {0}, Description: {1}",
                 list.Name, list.Description);
@@ -150,7 +150,7 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void DeleteMemberFromListDemo(TwitterContext twitterCtx)
         {
-            List list = twitterCtx.DeleteMemberFromList("LinqToTweeter", "linq", "15411837");
+            List list = twitterCtx.DeleteMemberFromList("Linq2Tweeter", "linq", "15411837");
 
             Console.WriteLine("List Name: {0}, Description: {1}",
                 list.Name, list.Description);
@@ -162,7 +162,7 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void AddMemberToListDemo(TwitterContext twitterCtx)
         {
-            List list = twitterCtx.AddMemberToList("LinqToTweeter", "linq", "15411837");
+            List list = twitterCtx.AddMemberToList("Linq2Tweeter", "linq", "15411837");
 
             Console.WriteLine("List Name: {0}, Description: {1}",
                 list.Name, list.Description);
@@ -174,7 +174,7 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void DeleteListDemo(TwitterContext twitterCtx)
         {
-            List list = twitterCtx.DeleteList("LinqToTweeter", "test2");
+            List list = twitterCtx.DeleteList("44351713");
 
             Console.WriteLine("List Name: {0}, Description: {1}",
                 list.Name, list.Description);
@@ -186,7 +186,7 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void UpdateListDemo(TwitterContext twitterCtx)
         {
-            List list = twitterCtx.UpdateList("LinqToTweeter", "test", "test2", "public", "This is a test2");
+            List list = twitterCtx.UpdateList("Linq2Tweeter", "44351713", "test2", "public", "This is a test2");
 
             Console.WriteLine("List Name: {0}, Description: {1}",
                 list.Name, list.Description);
@@ -198,7 +198,7 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void CreateListDemo(TwitterContext twitterCtx)
         {
-            List list = twitterCtx.CreateList("LinqToTweeter", "test", "public", "This is a test");
+            List list = twitterCtx.CreateList("test", "public", "This is a test");
 
             Console.WriteLine("List Name: {0}, Description: {1}",
                 list.Name, list.Description);
@@ -213,7 +213,7 @@ namespace LinqToTwitterDemo
             var requestedList =
                 (from list in twitterCtx.List
                  where list.Type == ListType.List &&
-                       list.ScreenName == "LinqToTweeter" && // user to get memberships for
+                       list.ScreenName == "Linq2Tweeter" && // user to get memberships for
                        list.ID == "mvc" // ID of list
                  select list)
                  .FirstOrDefault();
@@ -231,7 +231,7 @@ namespace LinqToTwitterDemo
             var statusList =
                 (from list in twitterCtx.List
                  where list.Type == ListType.Statuses &&
-                       list.ScreenName == "LinqToTweeter" &&
+                       list.ScreenName == "Linq2Tweeter" &&
                        list.ListID == "3897016" // ID of list to get statuses for
                  select list)
                  .First();
@@ -271,7 +271,7 @@ namespace LinqToTwitterDemo
             var lists =
                 from list in twitterCtx.List
                 where list.Type == ListType.Subscriptions &&
-                      list.ScreenName == "JoeMayo" // user to get subscriptions for
+                      list.ScreenName == "Linq2Tweeter" // user to get subscriptions for
                 select list;
 
             foreach (var list in lists)
@@ -290,7 +290,7 @@ namespace LinqToTwitterDemo
             var lists =
                 (from list in twitterCtx.List
                  where list.Type == ListType.Members &&
-                       list.ScreenName == "LinqToTweeter" &&
+                       list.ScreenName == "Linq2Tweeter" &&
                        list.ListID == "3897006" // ID of list
                  select list)
                  .First();
@@ -312,7 +312,7 @@ namespace LinqToTwitterDemo
                 var subscribedList =
                    (from list in twitterCtx.List
                     where list.Type == ListType.IsMember &&
-                         list.ScreenName == "LinqToTweeter" &&
+                         list.ScreenName == "Linq2Tweeter" &&
                          list.ID == "15411837" && // ID of user
                          list.ListID == "3897006" // ID of list
                     select list)
@@ -346,7 +346,7 @@ namespace LinqToTwitterDemo
             var lists =
                 (from list in twitterCtx.List
                  where list.Type == ListType.Subscribers &&
-                       list.ScreenName == "LinqToTweeter" &&
+                       list.ScreenName == "Linq2Tweeter" &&
                        list.ListID == "3897016" // ID of list
                  select list)
                  .First();
@@ -371,14 +371,11 @@ namespace LinqToTwitterDemo
         private static void GetListsDemo(TwitterContext twitterCtx)
         {
             var lists =
-                from list in twitterCtx.List
-                where list.Type == ListType.Lists &&
-                      list.ScreenName == "LinqToTweeter"
-                select new ListDetails
-                {
-                    Name = list.Name,
-                    Description = list.Description
-                };
+                (from list in twitterCtx.List
+                 where list.Type == ListType.Lists &&
+                       list.ScreenName == "Linq2Tweeter"
+                 select list)
+                .ToList();
 
             foreach (var list in lists)
             {
@@ -398,7 +395,7 @@ namespace LinqToTwitterDemo
                 var subscribedList =
                    (from list in twitterCtx.List
                     where list.Type == ListType.IsSubscribed &&
-                         list.ScreenName == "LinqToTweeter" &&
+                         list.ScreenName == "Linq2Tweeter" &&
                          list.ID == "15411837" && // ID of user
                          list.ListID == "3897016" // ID of list
                     select list)

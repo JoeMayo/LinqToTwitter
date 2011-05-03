@@ -2474,45 +2474,38 @@ namespace LinqToTwitter
         /// <summary>
         /// Creates a new list
         /// </summary>
-        /// <param name="screenName">name of user to create list for</param>
         /// <param name="listName">name of list</param>
         /// <param name="mode">public or private</param>
         /// <param name="description">list description</param>
         /// <returns>List info for new list</returns>
-        public virtual List CreateList(string screenName, string listName, string mode, string description)
+        public virtual List CreateList(string listName, string mode, string description)
         {
-            return CreateList(screenName, listName, mode, description, null);
+            return CreateList(listName, mode, description, null);
         }
 
         /// <summary>
         /// Creates a new list
         /// </summary>
-        /// <param name="screenName">name of user to create list for</param>
         /// <param name="listName">name of list</param>
         /// <param name="mode">public or private</param>
         /// <param name="description">list description</param>
         /// <param name="callback">Async Callback used in Silverlight queries</param>
         /// <returns>List info for new list</returns>
-        public virtual List CreateList(string screenName, string listName, string mode, string description, Action<TwitterAsyncResponse<List>> callback)
+        public virtual List CreateList(string listName, string mode, string description, Action<TwitterAsyncResponse<List>> callback)
         {
-            if (string.IsNullOrEmpty(screenName))
-            {
-                throw new ArgumentException("screenName is required.", "screenName");
-            }
-
             if (string.IsNullOrEmpty(listName))
             {
                 throw new ArgumentException("listName is required.", "listName");
             }
 
-            var savedSearchUrl = BaseUrl + screenName + "/lists.xml";
+            var createUrl = BaseUrl + "lists/create.xml";
 
             var reqProc = new ListRequestProcessor<List>();
 
             TwitterExecutor.AsyncCallback = callback;
             var resultsXml =
                 TwitterExecutor.ExecuteTwitter(
-                    savedSearchUrl,
+                    createUrl,
                     new Dictionary<string, string>
                     {
                         { "name", listName },
@@ -2528,7 +2521,6 @@ namespace LinqToTwitter
         /// <summary>
         /// Modifies an existing list
         /// </summary>
-        /// <param name="screenName">name of user to modify list for</param>
         /// <param name="listID">ID or slug of list</param>
         /// <param name="listName">name of list</param>
         /// <param name="mode">public or private</param>
@@ -2542,8 +2534,7 @@ namespace LinqToTwitter
         /// <summary>
         /// Modifies an existing list
         /// </summary>
-        /// <param name="screenName">name of user to modify list for</param>
-        /// <param name="listID">ID or slug of list</param>
+        /// <param name="listID">ID of list</param>
         /// <param name="listName">name of list</param>
         /// <param name="mode">public or private</param>
         /// <param name="description">list description</param>
@@ -2551,17 +2542,12 @@ namespace LinqToTwitter
         /// <returns>List info for modified list</returns>
         public virtual List UpdateList(string screenName, string listID, string listName, string mode, string description, Action<TwitterAsyncResponse<List>> callback)
         {
-            if (string.IsNullOrEmpty(screenName))
-            {
-                throw new ArgumentException("screenName is required.", "screenName");
-            }
-
             if (string.IsNullOrEmpty(listID))
             {
                 throw new ArgumentException("listID is required.", "listID");
             }
 
-            var savedSearchUrl = BaseUrl + screenName + "/lists/" + listID + ".xml";
+            var savedSearchUrl = BaseUrl + "lists/update.xml";
 
             var reqProc = new ListRequestProcessor<List>();
 
@@ -2571,6 +2557,8 @@ namespace LinqToTwitter
                     savedSearchUrl,
                     new Dictionary<string, string>
                     {
+                        { "screen_name", screenName },
+                        { "list_id", listID },
                         { "name", listName },
                         { "mode", mode },
                         { "description", description }
@@ -2584,44 +2572,37 @@ namespace LinqToTwitter
         /// <summary>
         /// Deletes an existing list
         /// </summary>
-        /// <param name="screenName">name of user to delete list for</param>
         /// <param name="listID">ID or slug of list</param>
         /// <returns>List info for deleted list</returns>
-        public virtual List DeleteList(string screenName, string listID)
+        public virtual List DeleteList(string listID)
         {
-            return DeleteList(screenName, listID, null);
+            return DeleteList(listID, null);
         }
 
         /// <summary>
         /// Deletes an existing list
         /// </summary>
-        /// <param name="screenName">name of user to delete list for</param>
         /// <param name="listID">ID or slug of list</param>
         /// <param name="callback">Async Callback used in Silverlight queries</param>
         /// <returns>List info for deleted list</returns>
-        public virtual List DeleteList(string screenName, string listID, Action<TwitterAsyncResponse<List>> callback)
+        public virtual List DeleteList(string listID, Action<TwitterAsyncResponse<List>> callback)
         {
-            if (string.IsNullOrEmpty(screenName))
-            {
-                throw new ArgumentException("screenName is required.", "screenName");
-            }
-
             if (string.IsNullOrEmpty(listID))
             {
                 throw new ArgumentException("listID is required.", "listID");
             }
 
-            var savedSearchUrl = BaseUrl + screenName + "/lists/" + listID + ".xml";
+            var deleteUrl = BaseUrl + "lists/destroy.xml";
 
             var reqProc = new ListRequestProcessor<List>();
 
             TwitterExecutor.AsyncCallback = callback;
             var resultsXml =
                 TwitterExecutor.ExecuteTwitter(
-                    savedSearchUrl,
+                    deleteUrl,
                     new Dictionary<string, string>
                     {
-                        { "_method", "DELETE" }
+                        { "list_id", listID }
                     },
                     reqProc);
 
@@ -2661,14 +2642,14 @@ namespace LinqToTwitter
                 throw new ArgumentException("listID is required.", "listID");
             }
 
-            var savedSearchUrl = BaseUrl + screenName + "/" + listID + @"/members.xml";
+            var addMemberUrl = BaseUrl + screenName + "/" + listID + @"/members.xml";
 
             var reqProc = new ListRequestProcessor<List>();
 
             TwitterExecutor.AsyncCallback = callback;
             var resultsXml =
                 TwitterExecutor.ExecuteTwitter(
-                    savedSearchUrl,
+                    addMemberUrl,
                     new Dictionary<string, string>
                     {
                         { "id", memberID }

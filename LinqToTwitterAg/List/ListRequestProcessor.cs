@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Linq.Expressions;
 using System.Xml.Linq;
-using System.Collections;
 
 namespace LinqToTwitter
 {
@@ -154,7 +152,7 @@ namespace LinqToTwitter
             ScreenName = parameters["ScreenName"];
 
             // all List api requests are based on a user's screen name
-            BaseUrl += ScreenName + @"/";
+            //BaseUrl += ScreenName + @"/";
 
             Type = RequestProcessorHelper.ParseQueryEnumType<ListType>(parameters["Type"]);
 
@@ -236,6 +234,11 @@ namespace LinqToTwitter
         /// <returns>Base URL + lists request</returns>
         private string BuildListsUrl(Dictionary<string, string> parameters)
         {
+            ScreenName = parameters["ScreenName"];
+
+            // all List api requests are based on a user's screen name
+            BaseUrl += ScreenName + @"/";
+
             string url = BaseUrl + "lists.xml?";
 
             if (parameters.ContainsKey("Cursor"))
@@ -255,6 +258,11 @@ namespace LinqToTwitter
         /// <returns>URL for List query</returns>
         private string BuildListUrl(Dictionary<string, string> parameters)
         {
+            ScreenName = parameters["ScreenName"];
+
+            // all List api requests are based on a user's screen name
+            BaseUrl += ScreenName + @"/";
+
             string url = BaseUrl + @"lists.xml";
 
             if (parameters.ContainsKey("ID"))
@@ -282,16 +290,16 @@ namespace LinqToTwitter
             //  between the query string and the rest of the url.
             var urlParams = new List<string>();
 
-            string url = BaseUrl + @"lists/";
+            string url = BaseUrl + @"lists/statuses.xml";
 
             if (parameters.ContainsKey("ListID"))
             {
                 ListID = parameters["ListID"];
-                url += parameters["ListID"] + "/statuses.xml";
+                urlParams.Add("list_id=" + parameters["ListID"]);
             }
             else
             {
-                throw new ArgumentException("ListID is required for Members query.");
+                throw new ArgumentException("ListID is required for Status query.");
             }
 
             if (parameters.ContainsKey("MaxID"))
@@ -339,6 +347,11 @@ namespace LinqToTwitter
         /// <returns>URL for memberships query</returns>
         private string BuildMembershipsUrl(Dictionary<string, string> parameters)
         {
+            ScreenName = parameters["ScreenName"];
+
+            // all List api requests are based on a user's screen name
+            BaseUrl += ScreenName + @"/";
+
             string url = BaseUrl + @"lists/memberships.xml?";
 
             if (parameters.ContainsKey("Cursor") && !string.IsNullOrEmpty(parameters["Cursor"]))
@@ -358,6 +371,11 @@ namespace LinqToTwitter
         /// <returns>URL for subscriptions query</returns>
         private string BuildSubscriptionsUrl(Dictionary<string, string> parameters)
         {
+            ScreenName = parameters["ScreenName"];
+
+            // all List api requests are based on a user's screen name
+            BaseUrl += ScreenName + @"/";
+
             string url = BaseUrl + @"lists/subscriptions.xml?";
 
             if (parameters.ContainsKey("Cursor") && !string.IsNullOrEmpty(parameters["Cursor"]))
@@ -377,6 +395,11 @@ namespace LinqToTwitter
         /// <returns>URL for members query</returns>
         private string BuildMembersUrl(Dictionary<string, string> parameters)
         {
+            ScreenName = parameters["ScreenName"];
+
+            // all List api requests are based on a user's screen name
+            BaseUrl += ScreenName + @"/";
+
             string url = BaseUrl;
 
             if (parameters.ContainsKey("ListID"))
@@ -406,6 +429,11 @@ namespace LinqToTwitter
         /// <returns>URL for list members query</returns>
         private string BuildIsMemberUrl(Dictionary<string, string> parameters)
         {
+            ScreenName = parameters["ScreenName"];
+
+            // all List api requests are based on a user's screen name
+            BaseUrl += ScreenName + @"/";
+
             string url = BaseUrl;
 
             if (parameters.ContainsKey("ListID"))
@@ -438,6 +466,11 @@ namespace LinqToTwitter
         /// <returns>URL for list subscribers query</returns>
         private string BuildSubscribersUrl(Dictionary<string, string> parameters)
         {
+            ScreenName = parameters["ScreenName"];
+
+            // all List api requests are based on a user's screen name
+            BaseUrl += ScreenName + @"/";
+
             string url = BaseUrl;
 
             if (parameters.ContainsKey("ListID"))
@@ -467,6 +500,11 @@ namespace LinqToTwitter
         /// <returns>URL for IsSubscribed query</returns>
         private string BuildIsSubcribedUrl(Dictionary<string, string> parameters)
         {
+            ScreenName = parameters["ScreenName"];
+
+            // all List api requests are based on a user's screen name
+            BaseUrl += ScreenName + @"/";
+
             string url = BaseUrl;
 
             if (parameters.ContainsKey("ListID"))
