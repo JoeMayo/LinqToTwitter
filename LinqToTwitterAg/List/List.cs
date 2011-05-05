@@ -48,9 +48,14 @@ namespace LinqToTwitter
         public string ID { get; set; }
 
         /// <summary>
-        /// List ID or Slug
+        /// List ID
         /// </summary>
         public string ListID { get; set; }
+
+        /// <summary>
+        /// Catchword for list
+        /// </summary>
+        public string Slug { get; set; }
 
         /// <summary>
         /// Max ID to retrieve for statuses
@@ -60,7 +65,7 @@ namespace LinqToTwitter
         /// <summary>
         /// Number of statuses per page
         /// </summary>
-        public int PerPage { get; set; }
+        public int Count { get; set; }
 
         /// <summary>
         /// Page number for statuses
@@ -73,9 +78,19 @@ namespace LinqToTwitter
         public string ScreenName { get; set; }
 
         /// <summary>
+        /// Truncate all user info, except for ID
+        /// </summary>
+        public bool TrimUser { get; set; }
+
+        /// <summary>
         /// Add entities to tweets
         /// </summary>
         public bool IncludeEntities { get; set; }
+
+        /// <summary>
+        /// Add retweets, in addition to normal tweets
+        /// </summary>
+        public bool IncludeRetweets { get; set; }
 
         /// <summary>
         /// Statuses since status ID
@@ -91,11 +106,6 @@ namespace LinqToTwitter
         /// Fully qualified name of list
         /// </summary>
         public string FullName { get; set; }
-
-        /// <summary>
-        /// Catchword for list
-        /// </summary>
-        public string Slug { get; set; }
 
         /// <summary>
         /// Description of List's purpose
@@ -136,5 +146,11 @@ namespace LinqToTwitter
         /// Cursors for current request
         /// </summary>
         public Cursors CursorMovement { get; set; }
+
+        /// <summary>
+        /// Only returns lists that belong to authenticated 
+        /// user or user identified by ID or ScreenName
+        /// </summary>
+        public bool FilterToOwnedLists { get; set; }
     }
 }

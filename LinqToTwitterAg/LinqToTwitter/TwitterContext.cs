@@ -3,7 +3,7 @@
  * 
  * Created By: Joe Mayo, 8/26/08
  ***********************************************************/
-
+using LinqToTwitter.Common;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -11,8 +11,6 @@ using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Net;
-using System.Xml.Linq;
-using LinqToTwitter.Common;
 
 #if SILVERLIGHT
 using System.Net.Browser;
@@ -2632,6 +2630,7 @@ namespace LinqToTwitter
         /// <returns>List info for list member added to</returns>
         public virtual List AddMemberToList(string screenName, string listID, string memberID, Action<TwitterAsyncResponse<List>> callback)
         {
+            // TODO: Twitter isn't using the new URL format for this API yet, check back later
             if (string.IsNullOrEmpty(screenName))
             {
                 throw new ArgumentException("screenName is required.", "screenName");
@@ -2688,6 +2687,7 @@ namespace LinqToTwitter
         /// <returns>List info for list member added to - up to 100 Members at a time can be added</returns>
         public virtual List AddMemberRangeToList(string screenName, string listID, List<string> members, Action<TwitterAsyncResponse<List>> callback)
         {
+            // TODO: Wait until all new URLs are implented before doing this one
             if (string.IsNullOrEmpty(screenName))
             {
                 throw new ArgumentException("screenName is required.", "screenName");
@@ -2809,6 +2809,7 @@ namespace LinqToTwitter
         /// <returns>List info for list member removed from</returns>
         public virtual List DeleteMemberFromList(string screenName, string listID, string memberID, Action<TwitterAsyncResponse<List>> callback)
         {
+            // TODO: wait until Twitter implements new URL scheme
             if (string.IsNullOrEmpty(screenName))
             {
                 throw new ArgumentException("screenName is required.", "screenName");
@@ -2858,6 +2859,7 @@ namespace LinqToTwitter
         /// <returns>List info for list subscribed to</returns>
         public virtual List SubscribeToList(string screenName, string listID, Action<TwitterAsyncResponse<List>> callback)
         {
+            // TODO: wait for Twitter to implement new url
             if (string.IsNullOrEmpty(screenName))
             {
                 throw new ArgumentException("screenName is required.", "screenName");
@@ -2903,6 +2905,7 @@ namespace LinqToTwitter
         /// <returns>List info for list subscription removed from</returns>
         public virtual List UnsubscribeFromList(string screenName, string listID, Action<TwitterAsyncResponse<List>> callback)
         {
+            // TODO: wait for Twitter to implement new URL format
             if (string.IsNullOrEmpty(screenName))
             {
                 throw new ArgumentException("screenName is required.", "screenName");

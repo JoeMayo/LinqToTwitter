@@ -1,4 +1,5 @@
-﻿namespace LinqToTwitter
+﻿using System;
+namespace LinqToTwitter
 {
     /// <summary>
     /// Available types of queries for the Twitter Lists API
@@ -13,6 +14,8 @@
         /// <summary>
         /// Show specified list
         /// </summary>
+        Show,
+        [Obsolete("This enum value is obsolete and will become an error in a later release. Please use Show instead.")]
         List,
 
         /// <summary>

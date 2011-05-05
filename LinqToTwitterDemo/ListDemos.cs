@@ -21,10 +21,10 @@ namespace LinqToTwitterDemo
             //IsListSubscribedDemo(twitterCtx);
             //GetListSubscribersDemo(twitterCtx);
             //IsListMemberDemo(twitterCtx);
-            GetListMembersDemo(twitterCtx);
+            //GetListMembersDemo(twitterCtx);
             //GetListSubscriptionsDemo(twitterCtx);
             //GetListMembershipsDemo(twitterCtx);
-            //GetListStatusesDemo(twitterCtx);
+            GetListStatusesDemo(twitterCtx);
             //GetListDemo(twitterCtx);
             //CreateListDemo(twitterCtx);
             //UpdateListDemo(twitterCtx);
@@ -212,14 +212,14 @@ namespace LinqToTwitterDemo
         {
             var requestedList =
                 (from list in twitterCtx.List
-                 where list.Type == ListType.List &&
-                       list.ScreenName == "Linq2Tweeter" && // user to get memberships for
-                       list.ID == "mvc" // ID of list
+                 where list.Type == ListType.Show &&
+                       list.ScreenName == "JoeMayo" && // user to get memberships for
+                       list.Slug == "dotnettwittterdevs" // ID of list
                  select list)
-                 .FirstOrDefault();
+                .FirstOrDefault();
 
-            Console.WriteLine("List Name: {0}, Description: {1}",
-                requestedList.Name, requestedList.Description);
+            Console.WriteLine("List Name: {0}, Description: {1}, # Users: {2}",
+                requestedList.Name, requestedList.Description, requestedList.Users.Count());
         }
 
         /// <summary>
@@ -231,8 +231,8 @@ namespace LinqToTwitterDemo
             var statusList =
                 (from list in twitterCtx.List
                  where list.Type == ListType.Statuses &&
-                       list.ScreenName == "Linq2Tweeter" &&
-                       list.ListID == "3897016" // ID of list to get statuses for
+                       list.ScreenName == "JoeMayo" &&
+                       list.Slug == "dotnettwittterdevs" // ID of list to get statuses for
                  select list)
                  .First();
 

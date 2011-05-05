@@ -410,11 +410,8 @@ namespace LinqToTwitterTests
             Assert.AreEqual(4, actual.Count);
         }
 
-        /// <summary>
-        ///A test for GetParameters
-        ///</summary>
-        [TestMethod()]
-        public void GetParametersTest()
+        [TestMethod]
+        public void GetParameters_Parses_All_Available_Parameters()
         {
             ListRequestProcessor<List> target = new ListRequestProcessor<List>();
             Expression<Func<List, bool>> expression =
@@ -423,11 +420,16 @@ namespace LinqToTwitterTests
                     list.ScreenName == "JoeMayo" &&
                     list.Cursor == "123" &&
                     list.ListID == "456" &&
+                    list.Slug == "test" &&
                     list.MaxID == 789 &&
                     list.Page == 1 &&
-                    list.PerPage == 10 &&
+                    list.Count == 10 &&
                     list.SinceID == 123 &&
-                    list.ID == "456";
+                    list.ID == "456" &&
+                    list.FilterToOwnedLists == true &&
+                    list.TrimUser == true &&
+                    list.IncludeEntities == true &&
+                    list.IncludeRetweets == true;
             LambdaExpression lambdaExpression = expression as LambdaExpression;
 
             var queryParams = target.GetParameters(lambdaExpression);
@@ -446,19 +448,34 @@ namespace LinqToTwitterTests
                     new KeyValuePair<string, string>("ListID", "456")));
             Assert.IsTrue(
                 queryParams.Contains(
+                    new KeyValuePair<string, string>("Slug", "test")));
+            Assert.IsTrue(
+                queryParams.Contains(
                     new KeyValuePair<string, string>("MaxID", "789")));
             Assert.IsTrue(
                 queryParams.Contains(
                     new KeyValuePair<string, string>("Page", "1")));
             Assert.IsTrue(
                 queryParams.Contains(
-                    new KeyValuePair<string, string>("PerPage", "10")));
+                    new KeyValuePair<string, string>("Count", "10")));
             Assert.IsTrue(
                 queryParams.Contains(
                     new KeyValuePair<string, string>("SinceID", "123")));
             Assert.IsTrue(
                 queryParams.Contains(
                     new KeyValuePair<string, string>("ID", "456")));
+            Assert.IsTrue(
+                queryParams.Contains(
+                    new KeyValuePair<string, string>("FilterToOwnedLists", "True")));
+            Assert.IsTrue(
+                queryParams.Contains(
+                    new KeyValuePair<string, string>("TrimUser", "True")));
+            Assert.IsTrue(
+                queryParams.Contains(
+                    new KeyValuePair<string, string>("IncludeEntities", "True")));
+            Assert.IsTrue(
+                queryParams.Contains(
+                    new KeyValuePair<string, string>("IncludeRetweets", "True")));
         }
 
         /// <summary>
@@ -474,34 +491,9 @@ namespace LinqToTwitterTests
                     { "Type", ((int)ListType.Lists).ToString() },
                     { "ScreenName", "JoeMayo" }
                 };
-            string expected = "https://api.twitter.com/1/JoeMayo/lists.xml";
+            string expected = "https://api.twitter.com/1/lists.xml?screen_name=JoeMayo";
             string actual = target.BuildURL(parameters);
             Assert.AreEqual(expected, actual);
-        }
-
-        ///<summary>
-        /// A test for buildUrl using parameters
-        /// </summary>
-        [TestMethod]
-        public void BuildStatusUrlTestWithParameters()
-        {
-            ListRequestProcessor<List> target = new ListRequestProcessor<List>() { BaseUrl = "https://api.twitter.com/1/" };
-            var parameters = new Dictionary<string, string>
-            {
-                {"Type", ((int) ListType.Statuses).ToString()},
-                {"ScreenName", "JoeMayo"},
-                {"ListID", "1234567"},
-                {"MaxID", "9876543"},
-                {"SinceID", "2345678"},
-                {"PerPage", "100"},
-                {"Page", "2"}
-            };
-            string expected =
-                "https://api.twitter.com/1/JoeMayo/lists/1234567/statuses.xml?max_id=9876543&since_id=2345678&per_page=100&page=2";
-            
-            string actual = target.BuildURL(parameters);
-            
-            Assert.AreEqual(expected, actual);                       
         }
 
         /// <summary>
@@ -545,10 +537,11 @@ namespace LinqToTwitterTests
         {
             ListRequestProcessor<List> target = new ListRequestProcessor<List> { BaseUrl = "https://api.twitter.com/1/" };
             Dictionary<string, string> parameters = new Dictionary<string, string> { };
-            string actual;
+
             try
             {
-                actual = target.BuildURL(parameters);
+                target.BuildURL(parameters);
+
                 Assert.Fail("Expected ArgumentException.");
             }
             catch (ArgumentException ae)
@@ -565,10 +558,11 @@ namespace LinqToTwitterTests
         {
             ListRequestProcessor<List> target = new ListRequestProcessor<List> { BaseUrl = "https://api.twitter.com/1/" };
             Dictionary<string, string> parameters = null;
-            string actual;
+
             try
             {
-                actual = target.BuildURL(parameters);
+                target.BuildURL(parameters);
+
                 Assert.Fail("Expected ArgumentException.");
             }
             catch (ArgumentException ae)
@@ -612,5 +606,223 @@ namespace LinqToTwitterTests
 
             Assert.AreEqual(expected, actual);
         }
+
+        [TestMethod]
+        public void BuildListUrl_Requires_ID_Or_ScreenName()
+        {
+            var reqProc = new ListRequestProcessor<List> { BaseUrl = "https://api.twitter.com/1/" };
+            var parameters = new Dictionary<string, string>
+            {
+                {"Type", ((int) ListType.Lists).ToString()},
+                //{"ID", "123"},
+            };
+
+            try
+            {
+                reqProc.BuildURL(parameters);
+
+                Assert.Fail("Expected ArgumentException.");
+            }
+            catch (ArgumentException ae)
+            {
+                Assert.AreEqual("IdOrScreenName", ae.ParamName);
+            }
+        }
+
+        [TestMethod]
+        public void BuildListsUrl_Returns_Url()
+        {
+            var listReqProc = new ListRequestProcessor<List>() { BaseUrl = "https://api.twitter.com/1/" };
+            var parameters = new Dictionary<string, string>
+            {
+                { "Type", ((int) ListType.Lists).ToString() },
+                { "ID", "123" },
+                { "ScreenName", "JoeMayo" },
+                { "Cursor", "456" }
+            };
+            string expected = "https://api.twitter.com/1/lists.xml?user_id=123&screen_name=JoeMayo&cursor=456";
+
+            string actual = listReqProc.BuildURL(parameters);
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void BuildMembershipsUrl_Requires_ID_Or_ScreenName()
+        {
+            var reqProc = new ListRequestProcessor<List> { BaseUrl = "https://api.twitter.com/1/" };
+            var parameters = new Dictionary<string, string>
+            {
+                {"Type", ((int) ListType.Memberships).ToString()},
+                //{"ID", "123"},
+            };
+
+            try
+            {
+                reqProc.BuildURL(parameters);
+
+                Assert.Fail("Expected ArgumentException.");
+            }
+            catch (ArgumentException ae)
+            {
+                Assert.AreEqual("IdOrScreenName", ae.ParamName);
+            }
+        }
+
+        [TestMethod]
+        public void BuildMembershipsUrl_Returns_Url()
+        {
+            var listReqProc = new ListRequestProcessor<List>() { BaseUrl = "https://api.twitter.com/1/" };
+            var parameters = new Dictionary<string, string>
+            {
+                { "Type", ((int) ListType.Memberships).ToString() },
+                { "ID", "123" },
+                { "ScreenName", "JoeMayo" },
+                { "Cursor", "456" },
+                { "FilterToOwnedLists", "true" }
+            };
+            string expected = "https://api.twitter.com/1/lists/memberships.xml?user_id=123&screen_name=JoeMayo&cursor=456&filter_to_owned_lists=true";
+
+            string actual = listReqProc.BuildURL(parameters);
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void BuildMembershipsUrl_Does_Not_Add_False_Filter_To_Url()
+        {
+            var listReqProc = new ListRequestProcessor<List>() { BaseUrl = "https://api.twitter.com/1/" };
+            var parameters = new Dictionary<string, string>
+            {
+                { "Type", ((int) ListType.Memberships).ToString() },
+                { "ID", "123" },
+                { "ScreenName", "JoeMayo" },
+                { "Cursor", "456" },
+                { "FilterToOwnedLists", "false" }
+            };
+            string expected = "https://api.twitter.com/1/lists/memberships.xml?user_id=123&screen_name=JoeMayo&cursor=456";
+
+            string actual = listReqProc.BuildURL(parameters);
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void BuildShowUrl_Requires_ID_Or_ScreenName_If_Slug_Used()
+        {
+            var reqProc = new ListRequestProcessor<List> { BaseUrl = "https://api.twitter.com/1/" };
+            var parameters = new Dictionary<string, string>
+            {
+                { "Type", ((int) ListType.Show).ToString()},
+                { "Slug", "test" }
+                //{"ID", "123"},
+            };
+
+            try
+            {
+                reqProc.BuildURL(parameters);
+
+                Assert.Fail("Expected ArgumentException.");
+            }
+            catch (ArgumentException ae)
+            {
+                Assert.AreEqual("IdOrScreenName", ae.ParamName);
+            }
+        }
+
+        [TestMethod]
+        public void BuildShowUrl_Returns_Url()
+        {
+            var listReqProc = new ListRequestProcessor<List>() { BaseUrl = "https://api.twitter.com/1/" };
+            var parameters = new Dictionary<string, string>
+            {
+                { "Type", ((int) ListType.Show).ToString() },
+                { "ID", "123" },
+                { "ScreenName", "JoeMayo" },
+                { "Slug", "test" },
+                { "ListID", "456" }
+            };
+            string expected = "https://api.twitter.com/1/lists/show.xml?slug=test&owner_id=123&owner_screen_name=JoeMayo&list_id=456";
+
+            string actual = listReqProc.BuildURL(parameters);
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void BuildStatusesUrl_Requires_ID_Or_ScreenName_If_Slug_Used()
+        {
+            var reqProc = new ListRequestProcessor<List> { BaseUrl = "https://api.twitter.com/1/" };
+            var parameters = new Dictionary<string, string>
+            {
+                { "Type", ((int) ListType.Statuses).ToString()},
+                { "Slug", "test" }
+                //{"ID", "123"},
+            };
+
+            try
+            {
+                reqProc.BuildURL(parameters);
+
+                Assert.Fail("Expected ArgumentException.");
+            }
+            catch (ArgumentException ae)
+            {
+                Assert.AreEqual("IdOrScreenName", ae.ParamName);
+            }
+        }
+
+        [TestMethod]
+        public void BuildStatusesUrl_Returns_Url()
+        {
+            var listReqProc = new ListRequestProcessor<List>() { BaseUrl = "https://api.twitter.com/1/" };
+            var parameters = new Dictionary<string, string>
+            {
+                { "Type", ((int) ListType.Statuses).ToString() },
+                { "ID", "123" },
+                { "ScreenName", "JoeMayo" },
+                { "Slug", "test" },
+                { "ListID", "456" },
+                { "SinceID", "789" },
+                { "MaxID", "234" },
+                { "Count", "25" },
+                { "Page", "3" },
+                { "TrimUser", "true" },
+                { "IncludeEntities", "true" },
+                { "IncludeRetweets", "true" },
+            };
+            string expected = "https://api.twitter.com/1/lists/statuses.xml?owner_id=123&owner_screen_name=JoeMayo&slug=test&list_id=456&since_id=789&max_id=234&count=25&page=3&trim_user=true&include_entities=true&include_rts=true";
+
+            string actual = listReqProc.BuildURL(parameters);
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void BuildStatusesUrl_Does_Not_Include_False_Parameters()
+        {
+            var listReqProc = new ListRequestProcessor<List>() { BaseUrl = "https://api.twitter.com/1/" };
+            var parameters = new Dictionary<string, string>
+            {
+                { "Type", ((int) ListType.Statuses).ToString() },
+                { "ID", "123" },
+                { "ScreenName", "JoeMayo" },
+                { "Slug", "test" },
+                { "ListID", "456" },
+                { "SinceID", "789" },
+                { "MaxID", "234" },
+                { "Count", "25" },
+                { "Page", "3" },
+                { "TrimUser", "false" },
+                { "IncludeEntities", "false" },
+                { "IncludeRetweets", "false" },
+            };
+            string expected = "https://api.twitter.com/1/lists/statuses.xml?owner_id=123&owner_screen_name=JoeMayo&slug=test&list_id=456&since_id=789&max_id=234&count=25&page=3";
+
+            string actual = listReqProc.BuildURL(parameters);
+
+            Assert.AreEqual(expected, actual);
+        }
+
     }
 }
