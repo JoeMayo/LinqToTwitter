@@ -2520,44 +2520,54 @@ namespace LinqToTwitter
         /// Modifies an existing list
         /// </summary>
         /// <param name="listID">ID or slug of list</param>
-        /// <param name="listName">name of list</param>
+        /// <param name="slug">name of list</param>
+        /// <param name="ownerID">ID of user who owns the list.</param>
+        /// <param name="ownerScreenName">Screen name of user who owns the list.</param>
         /// <param name="mode">public or private</param>
         /// <param name="description">list description</param>
         /// <returns>List info for modified list</returns>
-        public virtual List UpdateList(string screenName, string listID, string listName, string mode, string description)
+        public virtual List UpdateList(string listID, string slug, string ownerID, string ownerScreenName, string mode, string description)
         {
-            return UpdateList(screenName, listID, listName, mode, description, null);
+            return UpdateList(listID, slug, ownerID, ownerScreenName, mode, description, null);
         }
 
         /// <summary>
         /// Modifies an existing list
         /// </summary>
         /// <param name="listID">ID of list</param>
-        /// <param name="listName">name of list</param>
+        /// <param name="slug">name of list</param>
+        /// <param name="ownerID">ID of user who owns the list.</param>
+        /// <param name="ownerScreenName">Screen name of user who owns the list.</param>
         /// <param name="mode">public or private</param>
         /// <param name="description">list description</param>
         /// <param name="callback">Async Callback used in Silverlight queries</param>
         /// <returns>List info for modified list</returns>
-        public virtual List UpdateList(string screenName, string listID, string listName, string mode, string description, Action<TwitterAsyncResponse<List>> callback)
+        public virtual List UpdateList(string listID, string slug, string ownerID, string ownerScreenName, string mode, string description, Action<TwitterAsyncResponse<List>> callback)
         {
-            if (string.IsNullOrEmpty(listID))
+            if (string.IsNullOrEmpty(listID) && string.IsNullOrEmpty(slug))
             {
-                throw new ArgumentException("listID is required.", "listID");
+                throw new ArgumentException("Either listID or slug is required.", "ListIdOrSlug");
             }
 
-            var savedSearchUrl = BaseUrl + "lists/update.xml";
+            if (!string.IsNullOrEmpty(slug) && string.IsNullOrEmpty(ownerID) && string.IsNullOrEmpty(ownerScreenName))
+            {
+                throw new ArgumentException("If you specify a Slug, you must also specify either OwnerID or OwnerScreenName.", "OwnerIdOrOwnerScreenName");
+            }
+
+            var updateListUrl = BaseUrl + "lists/update.xml";
 
             var reqProc = new ListRequestProcessor<List>();
 
             TwitterExecutor.AsyncCallback = callback;
             var resultsXml =
                 TwitterExecutor.ExecuteTwitter(
-                    savedSearchUrl,
+                    updateListUrl,
                     new Dictionary<string, string>
                     {
-                        { "screen_name", screenName },
                         { "list_id", listID },
-                        { "name", listName },
+                        { "slug", slug },
+                        { "owner_id", ownerID },
+                        { "owner_screen_name", ownerScreenName },
                         { "mode", mode },
                         { "description", description }
                     },
@@ -2571,23 +2581,34 @@ namespace LinqToTwitter
         /// Deletes an existing list
         /// </summary>
         /// <param name="listID">ID or slug of list</param>
+        /// <param name="slug">name of list</param>
+        /// <param name="ownerID">ID of user who owns the list.</param>
+        /// <param name="ownerScreenName">Screen name of user who owns the list.</param>
         /// <returns>List info for deleted list</returns>
-        public virtual List DeleteList(string listID)
+        public virtual List DeleteList(string listID, string slug, string ownerID, string ownerScreenName)
         {
-            return DeleteList(listID, null);
+            return DeleteList(listID, slug, ownerID, ownerScreenName, null);
         }
 
         /// <summary>
         /// Deletes an existing list
         /// </summary>
         /// <param name="listID">ID or slug of list</param>
+        /// <param name="slug">name of list</param>
+        /// <param name="ownerID">ID of user who owns the list.</param>
+        /// <param name="ownerScreenName">Screen name of user who owns the list.</param>
         /// <param name="callback">Async Callback used in Silverlight queries</param>
         /// <returns>List info for deleted list</returns>
-        public virtual List DeleteList(string listID, Action<TwitterAsyncResponse<List>> callback)
+        public virtual List DeleteList(string listID, string slug, string ownerID, string ownerScreenName, Action<TwitterAsyncResponse<List>> callback)
         {
-            if (string.IsNullOrEmpty(listID))
+            if (string.IsNullOrEmpty(listID) && string.IsNullOrEmpty(slug))
             {
-                throw new ArgumentException("listID is required.", "listID");
+                throw new ArgumentException("listID is required.", "listIdOrSlug");
+            }
+
+            if (!string.IsNullOrEmpty(slug) && string.IsNullOrEmpty(ownerID) && string.IsNullOrEmpty(ownerScreenName))
+            {
+                throw new ArgumentException("If you specify a Slug, you must also specify either OwnerID or OwnerScreenName.", "OwnerIdOrOwnerScreenName");
             }
 
             var deleteUrl = BaseUrl + "lists/destroy.xml";
@@ -2600,48 +2621,61 @@ namespace LinqToTwitter
                     deleteUrl,
                     new Dictionary<string, string>
                     {
-                        { "list_id", listID }
+                        { "list_id", listID },
+                        { "slug", slug },
+                        { "owner_id", ownerID },
+                        { "owner_screen_name", ownerScreenName }
                     },
                     reqProc);
 
             List<List> results = reqProc.ProcessResults(resultsXml);
             return results.FirstOrDefault();
         }
-        
+
         /// <summary>
-        /// Adds a user as a list member
+        /// Adds a user as a list member.
         /// </summary>
-        /// <param name="screenName">name of user to add member to list for</param>
-        /// <param name="listID">ID or slug of list</param>
-        /// <param name="memberID">ID of member to add</param>
-        /// <returns>List info for list member added to</returns>
-        public virtual List AddMemberToList(string screenName, string listID, string memberID)
+        /// <param name="userID">ID of user to add to list.</param>
+        /// <param name="screenName">ScreenName of user to add to list.</param>
+        /// <param name="listID">ID of list.</param>
+        /// <param name="slug">Name of list to add to.</param>
+        /// <param name="ownerID">ID of user who owns the list.</param>
+        /// <param name="ownerScreenName">Screen name of user who owns the list.</param>
+        /// <returns>List info for list member added to.</returns>
+        public virtual List AddMemberToList(string userID, string screenName, string listID, string slug, string ownerID, string ownerScreenName)
         {
-            return AddMemberToList(screenName, listID, memberID, null);
+            return AddMemberToList(userID, screenName, listID, slug, ownerID, ownerScreenName, null);
         }
 
         /// <summary>
         /// Adds a user as a list member
         /// </summary>
-        /// <param name="screenName">name of user to add member to list for</param>
-        /// <param name="listID">ID or slug of list</param>
-        /// <param name="memberID">ID of member to add</param>
+        /// <param name="userID">ID of user to add to list.</param>
+        /// <param name="screenName">ScreenName of user to add to list.</param>
+        /// <param name="listID">ID of list.</param>
+        /// <param name="slug">Name of list to add to.</param>
+        /// <param name="ownerID">ID of user who owns the list.</param>
+        /// <param name="ownerScreenName">Screen name of user who owns the list.</param>
         /// <param name="callback">Async Callback used in Silverlight queries</param>
         /// <returns>List info for list member added to</returns>
-        public virtual List AddMemberToList(string screenName, string listID, string memberID, Action<TwitterAsyncResponse<List>> callback)
+        public virtual List AddMemberToList(string userID, string screenName, string listID, string slug, string ownerID, string ownerScreenName, Action<TwitterAsyncResponse<List>> callback)
         {
-            // TODO: Twitter isn't using the new URL format for this API yet, check back later
-            if (string.IsNullOrEmpty(screenName))
+            if (string.IsNullOrEmpty(userID) && string.IsNullOrEmpty(screenName))
             {
-                throw new ArgumentException("screenName is required.", "screenName");
+                throw new ArgumentException("Either userID or screenName is required.", "UserIdOrScreenName");
             }
 
-            if (string.IsNullOrEmpty(listID))
+            if (string.IsNullOrEmpty(listID) && string.IsNullOrEmpty(slug))
             {
-                throw new ArgumentException("listID is required.", "listID");
+                throw new ArgumentException("Either listID or slug is required.", "ListIdOrSlug");
             }
 
-            var addMemberUrl = BaseUrl + screenName + "/" + listID + @"/members.xml";
+            if (!string.IsNullOrEmpty(slug) && string.IsNullOrEmpty(ownerID) && string.IsNullOrEmpty(ownerScreenName))
+            {
+                throw new ArgumentException("If using slug, you must also provide either ownerID or ownerScreenName.", "OwnerIdOrOwnerScreenName");
+            }
+
+            var addMemberUrl = BaseUrl + "lists/members/create.xml";
 
             var reqProc = new ListRequestProcessor<List>();
 
@@ -2651,7 +2685,12 @@ namespace LinqToTwitter
                     addMemberUrl,
                     new Dictionary<string, string>
                     {
-                        { "id", memberID }
+                        { "user_id", userID },
+                        { "screen_name", screenName },
+                        { "list_id", listID },
+                        { "slug", slug },
+                        { "owner_id", ownerID },
+                        { "owner_screen_name", ownerScreenName },
                     },
                     reqProc);
 
@@ -2660,126 +2699,123 @@ namespace LinqToTwitter
         }
         
         /// <summary>
-        /// Adds a list of users to a list
+        /// Adds a list of users to a list.
         /// </summary>
-        /// <remarks>
-        /// Original code contributed by zorgster/CodePlex.com
-        /// </remarks>
-        /// <param name="screenName">name of user to add member to list for</param>
-        /// <param name="listID">ID or slug of list</param>
-        /// <param name="members">List of IDs of members to add</param>
-        /// <returns>List info for list member added to - up to 100 Members at a time can be added</returns>
-        public virtual List AddMemberRangeToList(string screenName, string listID, List<string> members)
+        /// <param name="listID">ID of List.</param>
+        /// <param name="slug">List name.</param>
+        /// <param name="ownerID">ID of user who owns the list.</param>
+        /// <param name="ownerScreenName">Screen name of user who owns the list.</param>
+        /// <param name="screenNames">List of user screen names to be list members.</param>
+        /// <returns>List info for list members added to.</returns>
+        public virtual List AddMemberRangeToList(string listID, string slug, string ownerID, string ownerScreenName, List<string> screenNames)
         {
-            return AddMemberRangeToList(screenName, listID, members, null);
+            return AddMemberRangeToList(listID, slug, ownerID, ownerScreenName, screenNames, null);
         }
 
         /// <summary>
-        /// Adds a list of users to a list
+        /// Adds a list of users to a list.
         /// </summary>
-        /// <remarks>
-        /// Original code contributed by zorgster/CodePlex.com
-        /// </remarks>
-        /// <param name="screenName">name of user to add member to list for</param>
-        /// <param name="listID">ID or slug of list</param>
-        /// <param name="members">List of IDs of members to add</param>
+        /// <param name="listID">ID of List.</param>
+        /// <param name="slug">List name.</param>
+        /// <param name="ownerID">ID of user who owns the list.</param>
+        /// <param name="ownerScreenName">Screen name of user who owns the list.</param>
+        /// <param name="screenNames">List of user screen names to be list members. (max 100)</param>
         /// <param name="callback">Async Callback used in Silverlight queries</param>
-        /// <returns>List info for list member added to - up to 100 Members at a time can be added</returns>
-        public virtual List AddMemberRangeToList(string screenName, string listID, List<string> members, Action<TwitterAsyncResponse<List>> callback)
+        /// <returns>List info for list members added to.</returns>
+        public virtual List AddMemberRangeToList(string listID, string slug, string ownerID, string ownerScreenName, List<string> screenNames, Action<TwitterAsyncResponse<List>> callback)
         {
-            // TODO: Wait until all new URLs are implented before doing this one
-            if (string.IsNullOrEmpty(screenName))
+            if (screenNames == null || screenNames.Count == 0)
             {
-                throw new ArgumentException("screenName is required.", "screenName");
+                throw new ArgumentException("screenNames is required. Check to see if the argument is null or the List<string> is empty.", "screenNames");
             }
 
-            if (string.IsNullOrEmpty(listID))
+            if (screenNames != null && screenNames.Count > 100)
             {
-                throw new ArgumentException("listID is required.", "listID");
+                throw new ArgumentException("Max screenNames is 100 at a time.", "screenNames");
             }
 
-            if (members.Count > 100)
-            {
-                throw new ArgumentException("Max users is 100 at a time.", "members");
-            }
-
-            var savedSearchUrl = BaseUrl + screenName + "/" + listID + @"/members/create_all.xml";
-
-            var reqProc = new ListRequestProcessor<List>();
-
-            TwitterExecutor.AsyncCallback = callback;
-            var resultsXml =
-                TwitterExecutor.ExecuteTwitter(
-                    savedSearchUrl,
-                    new Dictionary<string, string>
-                    {
-                        { "screen_name", string.Join(",", members.ToArray()) }
-                    },
-                    reqProc);
-
-            List<List> results = reqProc.ProcessResults(resultsXml);
-            return results.FirstOrDefault();
+            return AddMemberRangeToList(listID, slug, ownerID, ownerScreenName, null, screenNames, callback);
         }
         
         /// <summary>
-        /// Adds a list of users to a list
+        /// Adds a list of users to a list.
         /// </summary>
-        /// <remarks>
-        /// Original code contributed by zorgster/CodePlex.com
-        /// </remarks>
-        /// <param name="screenName">name of user to add member to list for</param>
-        /// <param name="listID">ID or slug of list</param>
-        /// <param name="memberIDs">List of IDs of members to add</param>
-        /// <returns>List info for list member added to - up to 100 Members at a time can be added</returns>
-        public virtual List AddMemberRangeToList(string screenName, string listID, List<ulong> memberIDs)
+        /// <param name="listID">ID of List.</param>
+        /// <param name="slug">List name.</param>
+        /// <param name="ownerID">ID of user who owns the list.</param>
+        /// <param name="ownerScreenName">Screen name of user who owns the list.</param>
+        /// <param name="userIDs">List of user IDs to be list members. (max 100)</param>
+        /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <returns>List info for list members added to.</returns>
+        public virtual List AddMemberRangeToList(string listID, string slug, string ownerID, string ownerScreenName, List<ulong> userIDs)
         {
-            return AddMemberRangeToList(screenName, listID, memberIDs, null);
+            return AddMemberRangeToList(listID, slug, ownerID, ownerScreenName, userIDs, null);
         }
 
         /// <summary>
-        /// Adds a list of users to a list
+        /// Adds a list of users to a list.
         /// </summary>
-        /// <remarks>
-        /// Original code contributed by zorgster/CodePlex.com
-        /// </remarks>
-        /// <param name="screenName">name of user to add member to list for</param>
-        /// <param name="listID">ID or slug of list</param>
-        /// <param name="memberIDs">List of IDs of members to add</param>
+        /// <param name="listID">ID of List.</param>
+        /// <param name="slug">List name.</param>
+        /// <param name="ownerID">ID of user who owns the list.</param>
+        /// <param name="ownerScreenName">Screen name of user who owns the list.</param>
+        /// <param name="userIDs">List of user IDs to be list members. (max 100)</param>
         /// <param name="callback">Async Callback used in Silverlight queries</param>
-        /// <returns>List info for list member added to - up to 100 Members at a time can be added</returns>
-        public virtual List AddMemberRangeToList(string screenName, string listID, List<ulong> memberIDs, Action<TwitterAsyncResponse<List>> callback)
+        /// <returns>List info for list members added to.</returns>
+        public virtual List AddMemberRangeToList(string listID, string slug, string ownerID, string ownerScreenName, List<ulong> userIDs, Action<TwitterAsyncResponse<List>> callback)
         {
-            if (string.IsNullOrEmpty(screenName))
+            if (userIDs == null || userIDs.Count == 0)
             {
-                throw new ArgumentException("screenName is required.", "screenName");
+                throw new ArgumentException("userIDs is required. Check to see if the argument is null or the List<ulong> is empty.", "userIDs");
             }
 
-            if (string.IsNullOrEmpty(listID))
+            if (userIDs != null && userIDs.Count > 100)
             {
-                throw new ArgumentException("listID is required.", "listID");
+                throw new ArgumentException("Max user IDs is 100 at a time.", "userIDs");
             }
 
-            if (memberIDs.Count > 100)
+            return AddMemberRangeToList(listID, slug, ownerID, ownerScreenName, userIDs, null, callback);
+        }
+
+        /// <summary>
+        /// Adds a list of users to a list.
+        /// </summary>
+        /// <param name="listID">ID of List.</param>
+        /// <param name="slug">List name.</param>
+        /// <param name="ownerID">ID of user who owns the list.</param>
+        /// <param name="ownerScreenName">Screen name of user who owns the list.</param>
+        /// <param name="userIDs">List of user IDs to be list members. (max 100)</param>
+        /// <param name="screenNames">List of user screen names to be list members. (max 100)</param>
+        /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <returns>List info for list members added to.</returns>
+        private List AddMemberRangeToList(string listID, string slug, string ownerID, string ownerScreenName, List<ulong> userIDs, List<string> screenNames, Action<TwitterAsyncResponse<List>> callback)
+        {
+            if (string.IsNullOrEmpty(listID) && string.IsNullOrEmpty(slug))
             {
-                throw new ArgumentException("Max users is 100 at a time.", "members");
+                throw new ArgumentException("Either listID or slug is required.", "ListIdOrSlug");
             }
 
-            var savedSearchUrl = BaseUrl + screenName + "/" + listID + @"/members/create_all.xml";
-
-            string[] idStrings =
-                (from id in memberIDs
-                 select id.ToString())
-                .ToArray();
+            if (!string.IsNullOrEmpty(slug) && string.IsNullOrEmpty(ownerID) && string.IsNullOrEmpty(ownerScreenName))
+            {
+                throw new ArgumentException("If using slug, you must also provide either ownerID or ownerScreenName.", "OwnerIdOrOwnerScreenName");
+            }
+            
+            var addMemberRangeUrl = BaseUrl + "lists/members/create_all.xml";
 
             var reqProc = new ListRequestProcessor<List>();
 
             TwitterExecutor.AsyncCallback = callback;
             var resultsXml =
                 TwitterExecutor.ExecuteTwitter(
-                    savedSearchUrl,
+                    addMemberRangeUrl,
                     new Dictionary<string, string>
                     {
-                        { "user_id", string.Join(",", idStrings) }
+                        { "list_id", listID },
+                        { "slug", slug },
+                        { "owner_id", ownerID },
+                        { "owner_screen_name", ownerScreenName },
+                        { "user_id", userIDs == null ? null : string.Join(",", userIDs.Select(id => id.ToString()).ToArray()) },                        
+                        { "screen_name", screenNames == null ? null : string.Join(",", screenNames.ToArray()) }
                     },
                     reqProc);
 
@@ -2790,48 +2826,61 @@ namespace LinqToTwitter
         /// <summary>
         /// Removes a user as a list member
         /// </summary>
-        /// <param name="screenName">name of user to remove member from list for</param>
-        /// <param name="listID">ID or slug of list</param>
-        /// <param name="memberID">ID of member to remove</param>
+        /// <param name="userID">ID of user to add to list.</param>
+        /// <param name="screenName">ScreenName of user to add to list.</param>
+        /// <param name="listID">ID of list.</param>
+        /// <param name="slug">Name of list to remove from.</param>
+        /// <param name="ownerID">ID of user who owns the list.</param>
+        /// <param name="ownerScreenName">Screen name of user who owns the list.</param>
         /// <returns>List info for list member removed from</returns>
-        public virtual List DeleteMemberFromList(string screenName, string listID, string memberID)
+        public virtual List DeleteMemberFromList(string userID, string screenName, string listID, string slug, string ownerID, string ownerScreenName)
         {
-            return DeleteMemberFromList(screenName, listID, memberID, null);
+            return DeleteMemberFromList(userID, screenName, listID, slug, ownerID, ownerScreenName, null);
         }
 
         /// <summary>
         /// Removes a user as a list member
         /// </summary>
-        /// <param name="screenName">name of user to remove member from list for</param>
-        /// <param name="listID">ID or slug of list</param>
-        /// <param name="memberID">ID of member to remove</param>
-        /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <param name="userID">ID of user to add to list.</param>
+        /// <param name="screenName">ScreenName of user to add to list.</param>
+        /// <param name="listID">ID of list.</param>
+        /// <param name="slug">Name of list to remove from.</param>
+        /// <param name="ownerID">ID of user who owns the list.</param>
+        /// <param name="ownerScreenName">Screen name of user who owns the list.</param>
         /// <returns>List info for list member removed from</returns>
-        public virtual List DeleteMemberFromList(string screenName, string listID, string memberID, Action<TwitterAsyncResponse<List>> callback)
+        public virtual List DeleteMemberFromList(string userID, string screenName, string listID, string slug, string ownerID, string ownerScreenName, Action<TwitterAsyncResponse<List>> callback)
         {
-            // TODO: wait until Twitter implements new URL scheme
-            if (string.IsNullOrEmpty(screenName))
+            if (string.IsNullOrEmpty(userID) && string.IsNullOrEmpty(screenName))
             {
-                throw new ArgumentException("screenName is required.", "screenName");
+                throw new ArgumentException("Either userID or screenName is required.", "UserIdOrScreenName");
             }
 
-            if (string.IsNullOrEmpty(listID))
+            if (string.IsNullOrEmpty(listID) && string.IsNullOrEmpty(slug))
             {
-                throw new ArgumentException("listID is required.", "listID");
+                throw new ArgumentException("Either listID or slug is required.", "ListIdOrSlug");
             }
 
-            var savedSearchUrl = BaseUrl + screenName + "/" + listID + @"/members.xml";
+            if (!string.IsNullOrEmpty(slug) && string.IsNullOrEmpty(ownerID) && string.IsNullOrEmpty(ownerScreenName))
+            {
+                throw new ArgumentException("If using slug, you must also provide either ownerID or ownerScreenName.", "OwnerIdOrOwnerScreenName");
+            }
+
+            var deleteUrl = BaseUrl + "lists/members/destroy.xml";
 
             var reqProc = new ListRequestProcessor<List>();
 
             TwitterExecutor.AsyncCallback = callback;
             var resultsXml =
                 TwitterExecutor.ExecuteTwitter(
-                    savedSearchUrl,
+                    deleteUrl,
                     new Dictionary<string, string>
                     {
-                        { "id", memberID },
-                        { "_method", "DELETE" }
+                        { "user_id", userID },
+                        { "screen_name", screenName },
+                        { "list_id", listID },
+                        { "slug", slug },
+                        { "owner_id", ownerID },
+                        { "owner_screen_name", ownerScreenName },
                     },
                     reqProc);
 
@@ -2842,43 +2891,52 @@ namespace LinqToTwitter
         /// <summary>
         /// Adds a user as a list subscriber
         /// </summary>
-        /// <param name="screenName">name of user to add subscription to list for</param>
-        /// <param name="listID">ID or slug of list</param>
+        /// <param name="listID">ID of list.</param>
+        /// <param name="slug">Name of list to add to.</param>
+        /// <param name="ownerID">ID of user who owns the list.</param>
+        /// <param name="ownerScreenName">Screen name of user who owns the list.</param>
         /// <returns>List info for list subscribed to</returns>
-        public virtual List SubscribeToList(string screenName, string listID)
+        public virtual List SubscribeToList(string listID, string slug, string ownerID, string ownerScreenName)
         {
-            return SubscribeToList(screenName, listID, null);
+            return SubscribeToList(listID, slug, ownerID, ownerScreenName, null);
         }
 
         /// <summary>
         /// Adds a user as a list subscriber
         /// </summary>
-        /// <param name="screenName">name of user to add subscription to list for</param>
-        /// <param name="listID">ID or slug of list</param>
+        /// <param name="listID">ID of list.</param>
+        /// <param name="slug">Name of list to add to.</param>
+        /// <param name="ownerID">ID of user who owns the list.</param>
+        /// <param name="ownerScreenName">Screen name of user who owns the list.</param>
         /// <param name="callback">Async Callback used in Silverlight queries</param>
         /// <returns>List info for list subscribed to</returns>
-        public virtual List SubscribeToList(string screenName, string listID, Action<TwitterAsyncResponse<List>> callback)
+        public virtual List SubscribeToList(string listID, string slug, string ownerID, string ownerScreenName, Action<TwitterAsyncResponse<List>> callback)
         {
-            // TODO: wait for Twitter to implement new url
-            if (string.IsNullOrEmpty(screenName))
+            if (string.IsNullOrEmpty(listID) && string.IsNullOrEmpty(slug))
             {
-                throw new ArgumentException("screenName is required.", "screenName");
+                throw new ArgumentException("Either listID or slug is required.", "ListIdOrSlug");
             }
 
-            if (string.IsNullOrEmpty(listID))
+            if (!string.IsNullOrEmpty(slug) && string.IsNullOrEmpty(ownerID) && string.IsNullOrEmpty(ownerScreenName))
             {
-                throw new ArgumentException("listID is required.", "listID");
+                throw new ArgumentException("If using slug, you must also provide either ownerID or ownerScreenName.", "OwnerIdOrOwnerScreenName");
             }
 
-            var savedSearchUrl = BaseUrl + screenName + "/" + listID + @"/subscribers.xml";
+            var subscribeUrl = BaseUrl + "lists/subscribers/create.xml";
 
             var reqProc = new ListRequestProcessor<List>();
 
             TwitterExecutor.AsyncCallback = callback;
             var resultsXml =
                 TwitterExecutor.ExecuteTwitter(
-                    savedSearchUrl,
-                    new Dictionary<string, string>(),
+                    subscribeUrl,
+                    new Dictionary<string, string>
+                    {
+                        { "list_id", listID },
+                        { "slug", slug },
+                        { "owner_id", ownerID },
+                        { "owner_screen_name", ownerScreenName },
+                    },
                     reqProc);
 
             List<List> results = reqProc.ProcessResults(resultsXml);
@@ -2888,45 +2946,51 @@ namespace LinqToTwitter
         /// <summary>
         /// Removes a user as a list subscriber
         /// </summary>
-        /// <param name="screenName">name of user to remove subscription from list for</param>
-        /// <param name="listID">ID or slug of list</param>
+        /// <param name="listID">ID of list.</param>
+        /// <param name="slug">Name of list to remove from.</param>
+        /// <param name="ownerID">ID of user who owns the list.</param>
+        /// <param name="ownerScreenName">Screen name of user who owns the list.</param>
         /// <returns>List info for list subscription removed from</returns>
-        public virtual List UnsubscribeFromList(string screenName, string listID)
+        public virtual List UnsubscribeFromList(string listID, string slug, string ownerID, string ownerScreenName)
         {
-            return UnsubscribeFromList(screenName, listID, null);
+            return UnsubscribeFromList(listID, slug, ownerID, ownerScreenName, null);
         }
 
         /// <summary>
         /// Removes a user as a list subscriber
         /// </summary>
-        /// <param name="screenName">name of user to remove subscription from list for</param>
-        /// <param name="listID">ID or slug of list</param>
+        /// <param name="listID">ID of list.</param>
+        /// <param name="slug">Name of list to remove from.</param>
+        /// <param name="ownerID">ID of user who owns the list.</param>
+        /// <param name="ownerScreenName">Screen name of user who owns the list.</param>
         /// <param name="callback">Async Callback used in Silverlight queries</param>
         /// <returns>List info for list subscription removed from</returns>
-        public virtual List UnsubscribeFromList(string screenName, string listID, Action<TwitterAsyncResponse<List>> callback)
+        public virtual List UnsubscribeFromList(string listID, string slug, string ownerID, string ownerScreenName, Action<TwitterAsyncResponse<List>> callback)
         {
-            // TODO: wait for Twitter to implement new URL format
-            if (string.IsNullOrEmpty(screenName))
+            if (string.IsNullOrEmpty(listID) && string.IsNullOrEmpty(slug))
             {
-                throw new ArgumentException("screenName is required.", "screenName");
+                throw new ArgumentException("Either listID or slug is required.", "ListIdOrSlug");
             }
 
-            if (string.IsNullOrEmpty(listID))
+            if (!string.IsNullOrEmpty(slug) && string.IsNullOrEmpty(ownerID) && string.IsNullOrEmpty(ownerScreenName))
             {
-                throw new ArgumentException("listID is required.", "listID");
+                throw new ArgumentException("If using slug, you must also provide either ownerID or ownerScreenName.", "OwnerIdOrOwnerScreenName");
             }
 
-            var savedSearchUrl = BaseUrl + screenName + "/" + listID + @"/subscribers.xml";
+            var unsubscribeUrl = BaseUrl + "lists/subscribers/destroy.xml";
 
             var reqProc = new ListRequestProcessor<List>();
 
             TwitterExecutor.AsyncCallback = callback;
             var resultsXml =
                 TwitterExecutor.ExecuteTwitter(
-                    savedSearchUrl,
+                    unsubscribeUrl,
                     new Dictionary<string, string>
                     {
-                        { "_method", "DELETE" }
+                        { "list_id", listID },
+                        { "slug", slug },
+                        { "owner_id", ownerID },
+                        { "owner_screen_name", ownerScreenName },
                     },
                     reqProc);
 

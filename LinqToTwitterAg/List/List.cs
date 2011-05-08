@@ -43,9 +43,14 @@ namespace LinqToTwitter
         public string Cursor { get; set; }
 
         /// <summary>
-        /// User ID (also used as ListID or Slug in List query)
+        /// User ID
         /// </summary>
-        public string ID { get; set; }
+        public string UserID { get; set; }
+
+        /// <summary>
+        /// ScreenName of user for query
+        /// </summary>
+        public string ScreenName { get; set; }
 
         /// <summary>
         /// List ID
@@ -56,6 +61,16 @@ namespace LinqToTwitter
         /// Catchword for list
         /// </summary>
         public string Slug { get; set; }
+
+        /// <summary>
+        /// ID of List Owner
+        /// </summary>
+        public string OwnerID { get; set; }
+
+        /// <summary>
+        /// ScreenName of List Owner
+        /// </summary>
+        public string OwnerScreenName { get; set; }
 
         /// <summary>
         /// Max ID to retrieve for statuses
@@ -71,11 +86,6 @@ namespace LinqToTwitter
         /// Page number for statuses
         /// </summary>
         public int Page { get; set; }
-
-        /// <summary>
-        /// ScreenName of user for query
-        /// </summary>
-        public string ScreenName { get; set; }
 
         /// <summary>
         /// Truncate all user info, except for ID

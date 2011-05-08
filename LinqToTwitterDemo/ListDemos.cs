@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using LinqToTwitter;
+using System.Reflection;
+using System.Net;
 
 namespace LinqToTwitterDemo
 {
@@ -17,22 +18,21 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         public static void Run(TwitterContext twitterCtx)
         {
-            //GetListsDemo(twitterCtx);
+            GetListsDemo(twitterCtx);
             //IsListSubscribedDemo(twitterCtx);
             //GetListSubscribersDemo(twitterCtx);
             //IsListMemberDemo(twitterCtx);
             //GetListMembersDemo(twitterCtx);
             //GetListSubscriptionsDemo(twitterCtx);
             //GetListMembershipsDemo(twitterCtx);
-            GetListStatusesDemo(twitterCtx);
-            //GetListDemo(twitterCtx);
+            //GetListStatusesDemo(twitterCtx);
+            //ShowListDemo(twitterCtx);
             //CreateListDemo(twitterCtx);
             //UpdateListDemo(twitterCtx);
             //DeleteListDemo(twitterCtx);
             //AddMemberToListDemo(twitterCtx);
             //AddMemberRangeToListWithScreenNamesDemo(twitterCtx);
             //AddMemberRangeToListWithUserIDsDemo(twitterCtx);
-            //AddMemberRangeToListWithTooManyIDsDemo(twitterCtx);
             //DeleteMemberFromListDemo(twitterCtx);
             //SubscribeToListDemo(twitterCtx);
             //UnsubscribeFromListDemo(twitterCtx);
@@ -54,13 +54,13 @@ namespace LinqToTwitterDemo
 
         private static void AddMemberRangeToListWithScreenNamesDemo(TwitterContext twitterCtx)
         {
-            var members = new List<string>
+            var screenNames = new List<string>
             {
                 "JoeMayo",
-                "Mayoster"
+                "Linq2Tweeter"
             };
 
-            List list = twitterCtx.AddMemberRangeToList("Linq2Tweeter", "linq", members);
+            List list = twitterCtx.AddMemberRangeToList(null, "linq", null, "Linq2Tweeter", screenNames);
 
             foreach (var user in list.Users)
             {
@@ -70,31 +70,17 @@ namespace LinqToTwitterDemo
 
         private static void AddMemberRangeToListWithUserIDsDemo(TwitterContext twitterCtx)
         {
-            var members = new List<ulong>
+            var userIds = new List<ulong>
             {
                 15411837,
-                45714308
+                16761255
             };
 
-            List list = twitterCtx.AddMemberRangeToList("Linq2Tweeter", "linq", members);
+            List list = twitterCtx.AddMemberRangeToList(null, "test", null, "Linq2Tweeter", userIds);
 
             foreach (var user in list.Users)
             {
                 Console.WriteLine(user.Name);
-            }
-        }
-
-        private static void AddMemberRangeToListWithTooManyIDsDemo(TwitterContext twitterCtx)
-        {
-            var members = new List<ulong>(Enumerable.Range(1, 101).Select(id => (ulong)id));
-
-            try
-            {
-                List list = twitterCtx.AddMemberRangeToList("Linq2Tweeter", "linq", members);
-            }
-            catch (ArgumentException ae)
-            {
-                Console.WriteLine("This is what we expect: \n" + ae.ToString());
             }
         }
 
@@ -126,7 +112,7 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void UnsubscribeFromListDemo(TwitterContext twitterCtx)
         {
-            List list = twitterCtx.UnsubscribeFromList("Linq2Tweeter", "linq");
+            List list = twitterCtx.UnsubscribeFromList(null, "twitterhq", null, "JoeMayo");
 
             Console.WriteLine("List Name: {0}, Description: {1}",
                 list.Name, list.Description);
@@ -138,7 +124,7 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void SubscribeToListDemo(TwitterContext twitterCtx)
         {
-            List list = twitterCtx.SubscribeToList("Linq2Tweeter", "linq");
+            List list = twitterCtx.SubscribeToList(null, "dotnettwittterdevs", null,  "JoeMayo");
 
             Console.WriteLine("List Name: {0}, Description: {1}",
                 list.Name, list.Description);
@@ -150,7 +136,7 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void DeleteMemberFromListDemo(TwitterContext twitterCtx)
         {
-            List list = twitterCtx.DeleteMemberFromList("Linq2Tweeter", "linq", "15411837");
+            List list = twitterCtx.DeleteMemberFromList(null, "Linq2Tweeter", null, "test", null, "Linq2Tweeter");
 
             Console.WriteLine("List Name: {0}, Description: {1}",
                 list.Name, list.Description);
@@ -162,7 +148,7 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void AddMemberToListDemo(TwitterContext twitterCtx)
         {
-            List list = twitterCtx.AddMemberToList("Linq2Tweeter", "linq", "15411837");
+            List list = twitterCtx.AddMemberToList(null, "Linq2Tweeter",  null, "test", null, "Linq2Tweeter");
 
             Console.WriteLine("List Name: {0}, Description: {1}",
                 list.Name, list.Description);
@@ -174,7 +160,7 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void DeleteListDemo(TwitterContext twitterCtx)
         {
-            List list = twitterCtx.DeleteList("44351713");
+            List list = twitterCtx.DeleteList(null, "test-5", null, "Linq2Tweeter");
 
             Console.WriteLine("List Name: {0}, Description: {1}",
                 list.Name, list.Description);
@@ -186,7 +172,7 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void UpdateListDemo(TwitterContext twitterCtx)
         {
-            List list = twitterCtx.UpdateList("Linq2Tweeter", "44351713", "test2", "public", "This is a test2");
+            List list = twitterCtx.UpdateList(null, "test", null, "Linq2Tweeter", "public", "This is a test2");
 
             Console.WriteLine("List Name: {0}, Description: {1}",
                 list.Name, list.Description);
@@ -208,13 +194,13 @@ namespace LinqToTwitterDemo
         /// Shows how to get information for a specific list
         /// </summary>
         /// <param name="twitterCtx">TwitterContext</param>
-        private static void GetListDemo(TwitterContext twitterCtx)
+        private static void ShowListDemo(TwitterContext twitterCtx)
         {
             var requestedList =
                 (from list in twitterCtx.List
                  where list.Type == ListType.Show &&
-                       list.ScreenName == "JoeMayo" && // user to get memberships for
-                       list.Slug == "dotnettwittterdevs" // ID of list
+                       list.OwnerScreenName == "JoeMayo" && // user who owns list
+                       list.Slug == "dotnettwittterdevs" // list name
                  select list)
                 .FirstOrDefault();
 
@@ -231,8 +217,8 @@ namespace LinqToTwitterDemo
             var statusList =
                 (from list in twitterCtx.List
                  where list.Type == ListType.Statuses &&
-                       list.ScreenName == "JoeMayo" &&
-                       list.Slug == "dotnettwittterdevs" // ID of list to get statuses for
+                       list.OwnerScreenName == "JoeMayo" &&
+                       list.Slug == "dotnettwittterdevs" // name of list to get statuses for
                  select list)
                  .First();
 
@@ -290,8 +276,8 @@ namespace LinqToTwitterDemo
             var lists =
                 (from list in twitterCtx.List
                  where list.Type == ListType.Members &&
-                       list.ScreenName == "Linq2Tweeter" &&
-                       list.ListID == "3897006" // ID of list
+                       list.ScreenName == "JoeMayo" &&
+                       list.Slug == "dotnettwittterdevs"
                  select list)
                  .First();
 
@@ -312,9 +298,9 @@ namespace LinqToTwitterDemo
                 var subscribedList =
                    (from list in twitterCtx.List
                     where list.Type == ListType.IsMember &&
-                         list.ScreenName == "Linq2Tweeter" &&
-                         list.ID == "15411837" && // ID of user
-                         list.ListID == "3897006" // ID of list
+                         list.ScreenName == "MichaelJordan" &&
+                         list.OwnerScreenName == "Linq2Tweeter" &&
+                         list.Slug == "linq"
                     select list)
                     .FirstOrDefault();
 
@@ -325,15 +311,36 @@ namespace LinqToTwitterDemo
                     user.Name, subscribedList.ListID);
             }
             // whenever user is not subscribed to the specified list, Twitter
-            // returns an HTTP 404, Not Found, response, which results in a
+            // returns an HTTP 404 Not Found, response, which results in a
             // .NET exception.  LINQ to Twitter intercepts the HTTP exception
             // and wraps it in a TwitterQueryResponse where you can read the
             // error message from Twitter via the Response property, shown below.
-            catch (TwitterQueryException tqe)
+            catch (TargetInvocationException ex)
             {
-                Console.WriteLine(
-                    "User is not a member of List. Response from Twitter: " +
-                    tqe.Response.Error);
+                // because of reflection, the original error gets wrapped inside a TargetInvocationException
+                var twitterQryEx = ex.InnerException as TwitterQueryException;
+                if (twitterQryEx == null) throw;
+
+                // TwitterQueryException will always reference the original WebException, so the check is redundant but doesn't hurt
+                var webEx = twitterQryEx.InnerException as WebException;
+                if (webEx == null) throw twitterQryEx;
+
+                // The response holds data from Twitter
+                var webResponse = webEx.Response as HttpWebResponse;
+                if (webResponse == null) throw twitterQryEx;
+
+
+                if (webResponse.StatusCode == HttpStatusCode.NotFound)
+                {
+                    Console.WriteLine(
+                        "HTTP Status Code: {0}. Response from Twitter: {1}",
+                        webEx.Response.Headers["Status"],
+                        twitterQryEx.Response.Error); 
+                }
+                else
+                {
+                    throw twitterQryEx;
+                }
             }
         }
 
@@ -346,8 +353,8 @@ namespace LinqToTwitterDemo
             var lists =
                 (from list in twitterCtx.List
                  where list.Type == ListType.Subscribers &&
-                       list.ScreenName == "Linq2Tweeter" &&
-                       list.ListID == "3897016" // ID of list
+                       list.Slug == "dotnettwittterdevs" &&
+                       list.OwnerScreenName == "JoeMayo"
                  select list)
                  .First();
 
@@ -355,13 +362,6 @@ namespace LinqToTwitterDemo
             {
                 Console.WriteLine("Subscriber: " + user.Name);
             }
-        }
-
-        private class ListDetails
-        {
-            public string Name { get; set; }
-
-            public string Description { get; set; }
         }
 
         /// <summary>
@@ -379,8 +379,8 @@ namespace LinqToTwitterDemo
 
             foreach (var list in lists)
             {
-                Console.WriteLine("List Name: {0}, Description: {1}",
-                    list.Name, list.Description);
+                Console.WriteLine("ID: {0}  Name: {1} Description: {2}",
+                    list.ListID, list.Name, list.Description);
             }
         }
 
@@ -395,9 +395,9 @@ namespace LinqToTwitterDemo
                 var subscribedList =
                    (from list in twitterCtx.List
                     where list.Type == ListType.IsSubscribed &&
-                         list.ScreenName == "Linq2Tweeter" &&
-                         list.ID == "15411837" && // ID of user
-                         list.ListID == "3897016" // ID of list
+                          list.ScreenName == "Linq2Tweeter" &&
+                          list.Slug == "dotnettwittterdevs" &&
+                          list.OwnerScreenName == "JoeMayo"
                     select list)
                     .FirstOrDefault();
 
@@ -412,11 +412,32 @@ namespace LinqToTwitterDemo
             // .NET exception.  LINQ to Twitter intercepts the HTTP exception
             // and wraps it in a TwitterQueryResponse where you can read the
             // error message from Twitter via the Response property, shown below.
-            catch (TwitterQueryException tqe)
+            catch (TargetInvocationException ex)
             {
-                Console.WriteLine(
-                    "User is not subscribed to List. Response from Twitter: " +
-                    tqe.Response.Error);
+                // because of reflection, the original error gets wrapped inside a TargetInvocationException
+                var twitterQryEx = ex.InnerException as TwitterQueryException;
+                if (twitterQryEx == null) throw;
+
+                // TwitterQueryException will always reference the original WebException, so the check is redundant but doesn't hurt
+                var webEx = twitterQryEx.InnerException as WebException;
+                if (webEx == null) throw twitterQryEx;
+
+                // The response holds data from Twitter
+                var webResponse = webEx.Response as HttpWebResponse;
+                if (webResponse == null) throw twitterQryEx;
+
+
+                if (webResponse.StatusCode == HttpStatusCode.NotFound)
+                {
+                    Console.WriteLine(
+                        "HTTP Status Code: {0}. Response from Twitter: {1}",
+                        webEx.Response.Headers["Status"],
+                        twitterQryEx.Response.Error);
+                }
+                else
+                {
+                    throw twitterQryEx;
+                }
             }
         }
 

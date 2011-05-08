@@ -272,7 +272,7 @@ namespace LinqToTwitterTests
             {
                 PinAuthorizer auth = null;
 
-                var ctx = new TwitterContext(auth);
+                new TwitterContext(auth);
 
                 Assert.Fail("Expected ArgumentNullException.");
             }
@@ -288,7 +288,7 @@ namespace LinqToTwitterTests
             try
             {
                 var execMock = new Mock<ITwitterExecute>();
-                var ctx = new TwitterContext(null, execMock.Object, "", "");
+                new TwitterContext(null, execMock.Object, "", "");
 
                 Assert.Fail("Expected ArgumentNullException.");
             }
@@ -304,7 +304,7 @@ namespace LinqToTwitterTests
             try
             {
                 var authMock = new Mock<ITwitterAuthorizer>();
-                var ctx = new TwitterContext(authMock.Object, null, "", "");
+                new TwitterContext(authMock.Object, null, "", "");
 
                 Assert.Fail("Expected ArgumentNullException.");
             }
@@ -468,7 +468,7 @@ namespace LinqToTwitterTests
         {
             TwitterContext_Accessor ctx = new TwitterContext_Accessor();
 
-            IRequestProcessor<Status> actual = ctx.CreateRequestProcessor<Status>(null);
+            ctx.CreateRequestProcessor<Status>(null);
         }
 
         [TestMethod]
@@ -564,11 +564,6 @@ namespace LinqToTwitterTests
             string status = null;
             string inReplyToStatusID = "1";
             Status expected = new Status();
-            var statusQueryable =
-                new List<Status>()
-                {
-                    expected
-                };
             var authMock = new Mock<ITwitterAuthorizer>();
             var execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
@@ -592,11 +587,6 @@ namespace LinqToTwitterTests
             string status = new string(Enumerable.Repeat<char>('x', 141).ToArray());
             string inReplyToStatusID = "1";
             Status expected = new Status();
-            var statusQueryable =
-                new List<Status>()
-                {
-                    expected
-                };
             var authMock = new Mock<ITwitterAuthorizer>();
             var execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
@@ -701,11 +691,6 @@ namespace LinqToTwitterTests
         {
             string id = string.Empty;
             Status expected = new Status();
-            var expectedList =
-                new List<Status>
-                {
-                    expected
-                };
             var authMock = new Mock<ITwitterAuthorizer>();
             var execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
@@ -759,11 +744,6 @@ namespace LinqToTwitterTests
             string location = string.Empty;
             string description = string.Empty;
             User expected = new User();
-            var expectedList =
-                new List<User>
-                {
-                    expected
-                };
             var authMock = new Mock<ITwitterAuthorizer>();
             var execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
@@ -789,11 +769,6 @@ namespace LinqToTwitterTests
             string location = "Denver, CO";
             string description = "Open source developer for LINQ to Twitter";
             User expected = new User();
-            var expectedList =
-                new List<User>
-                {
-                    expected
-                };
             var authMock = new Mock<ITwitterAuthorizer>();
             var execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
@@ -815,15 +790,10 @@ namespace LinqToTwitterTests
         public void UpdateAccountProfileUrlOver100Test()
         {
             string name = "Joe";
-            string url = new string(Enumerable.Repeat<char>('x', 101).ToArray()); ;
+            string url = new string(Enumerable.Repeat<char>('x', 101).ToArray());
             string location = "Denver, CO";
             string description = "Open source developer for LINQ to Twitter";
             User expected = new User();
-            var expectedList =
-                new List<User>
-                {
-                    expected
-                };
             var authMock = new Mock<ITwitterAuthorizer>();
             var execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
@@ -846,14 +816,9 @@ namespace LinqToTwitterTests
         {
             string name = "Joe";
             string url = "http://www.csharp-station.com";
-            string location = new string(Enumerable.Repeat<char>('x', 31).ToArray()); ;
+            string location = new string(Enumerable.Repeat<char>('x', 31).ToArray());
             string description = "Open source developer for LINQ to Twitter";
             User expected = new User();
-            var expectedList =
-                new List<User>
-                {
-                    expected
-                };
             var authMock = new Mock<ITwitterAuthorizer>();
             var execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
@@ -879,11 +844,6 @@ namespace LinqToTwitterTests
             string location = "Denver, CO";
             string description = new string(Enumerable.Repeat<char>('x', 161).ToArray());
             User expected = new User();
-            var expectedList =
-                new List<User>
-                {
-                    expected
-                };
             var authMock = new Mock<ITwitterAuthorizer>();
             var execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
@@ -928,11 +888,6 @@ namespace LinqToTwitterTests
         {
             string imageFilePath = null;
             User expected = new User();
-            var expectedList =
-                new List<User>
-                {
-                    expected
-                };
             var authMock = new Mock<ITwitterAuthorizer>();
             var execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
@@ -1005,11 +960,6 @@ namespace LinqToTwitterTests
             string sidebarFill = null;
             string sidebarBorder = null;
             User expected = new User();
-            var expectedList =
-                new List<User>
-                {
-                    expected
-                };
             var authMock = new Mock<ITwitterAuthorizer>();
             var execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
@@ -1058,11 +1008,6 @@ namespace LinqToTwitterTests
             bool tile = false;
             bool use = false;
             User expected = new User();
-            var expectedList =
-                new List<User>
-                {
-                    expected
-                };
             var authMock = new Mock<ITwitterAuthorizer>();
             var execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
@@ -1133,11 +1078,6 @@ namespace LinqToTwitterTests
             string userID = null;
             string screenName = string.Empty;
             User expected = new User();
-            var expectedList =
-                new List<User>
-                {
-                    expected
-                };
             var authMock = new Mock<ITwitterAuthorizer>();
             var execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
@@ -1185,11 +1125,6 @@ namespace LinqToTwitterTests
             string userID = null;
             string screenName = string.Empty;
             User expected = new User();
-            var expectedList =
-                new List<User>
-                {
-                    expected
-                };
             var authMock = new Mock<ITwitterAuthorizer>();
             var execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
@@ -1239,11 +1174,6 @@ namespace LinqToTwitterTests
             string userID = "1";
             string text = null;
             DirectMessage expected = new DirectMessage();
-            var expectedList =
-                new List<DirectMessage>
-                {
-                    expected
-                };
             var authMock = new Mock<ITwitterAuthorizer>();
             var execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
@@ -1267,11 +1197,6 @@ namespace LinqToTwitterTests
             string userID = string.Empty;
             string text = "Test Text";
             DirectMessage expected = new DirectMessage();
-            var expectedList =
-                new List<DirectMessage>
-                {
-                    expected
-                };
             var authMock = new Mock<ITwitterAuthorizer>();
             var execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
@@ -1315,11 +1240,6 @@ namespace LinqToTwitterTests
         {
             string id = null;
             DirectMessage expected = new DirectMessage();
-            var expectedList =
-                new List<DirectMessage>
-                {
-                    expected
-                };
             var authMock = new Mock<ITwitterAuthorizer>();
             var execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
@@ -1396,11 +1316,6 @@ namespace LinqToTwitterTests
             string screenName = null;
             bool follow = false;
             User expected = new User();
-            var expectedList =
-                new List<User>
-                {
-                    expected
-                };
             var authMock = new Mock<ITwitterAuthorizer>();
             var execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
@@ -1447,11 +1362,6 @@ namespace LinqToTwitterTests
             string userID = string.Empty;
             string screenName = null;
             User expected = new User();
-            var expectedList =
-                new List<User>
-                {
-                    expected
-                };
             var authMock = new Mock<ITwitterAuthorizer>();
             var execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
@@ -1499,11 +1409,6 @@ namespace LinqToTwitterTests
         {
             string id = null;
             Status expected = new Status();
-            var expectedList =
-                new List<Status>
-                {
-                    expected
-                };
             var authMock = new Mock<ITwitterAuthorizer>();
             var execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
@@ -1547,11 +1452,6 @@ namespace LinqToTwitterTests
         {
             string id = string.Empty;
             Status expected = new Status();
-            var expectedList =
-                new List<Status>
-                {
-                    expected
-                };
             var authMock = new Mock<ITwitterAuthorizer>();
             var execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
@@ -1599,11 +1499,6 @@ namespace LinqToTwitterTests
         {
             string id = string.Empty;
             User expected = new User();
-            var expectedList =
-                new List<User>
-                {
-                    expected
-                };
             var authMock = new Mock<ITwitterAuthorizer>();
             var execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
@@ -1647,11 +1542,6 @@ namespace LinqToTwitterTests
         {
             string id = string.Empty;
             User expected = new User();
-            var expectedList =
-                new List<User>
-                {
-                    expected
-                };
             var authMock = new Mock<ITwitterAuthorizer>();
             var execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
@@ -1685,7 +1575,7 @@ namespace LinqToTwitterTests
                 { "status", "Testing" }
             };
 
-            string actualResult = ctx.ExecuteRaw(queryString, parameters);
+            ctx.ExecuteRaw(queryString, parameters);
 
             execMock.Verify(exec => 
                 exec.ExecuteTwitter(
@@ -1731,7 +1621,7 @@ namespace LinqToTwitterTests
                 { "status", "Testing" }
             };
 
-            string actualResult = ctx.ExecuteRaw(queryStringWithBeginningSlash, parameters);
+            ctx.ExecuteRaw(queryStringWithBeginningSlash, parameters);
 
             execMock.Verify(exec =>
                 exec.ExecuteTwitter(
@@ -1755,7 +1645,7 @@ namespace LinqToTwitterTests
                 { "status", "Testing" }
             };
 
-            string actualResult = ctx.ExecuteRaw(queryStringWithoutBeginningSlash, parameters);
+            ctx.ExecuteRaw(queryStringWithoutBeginningSlash, parameters);
 
             execMock.Verify(exec =>
                 exec.ExecuteTwitter(
@@ -1798,7 +1688,7 @@ namespace LinqToTwitterTests
                 where tweet.Type == StreamingType.Sample
                 select tweet;
 
-            var reqProc = ctx.Execute<Streaming>(streamingQuery.Expression, isEnumerable: true);
+            ctx.Execute<Streaming>(streamingQuery.Expression, isEnumerable: true);
 
             execMock.Verify(exec => exec.QueryTwitterStream(It.IsAny<string>()), Times.Once());
         }
@@ -1816,7 +1706,7 @@ namespace LinqToTwitterTests
                 where tweet.Type == StatusType.Public
                 select tweet;
 
-            var reqProc = ctx.Execute<Status>(statusQuery.Expression, isEnumerable: true);
+            ctx.Execute<Status>(statusQuery.Expression, isEnumerable: true);
 
             execMock.Verify(exec => exec.QueryTwitterStream(It.IsAny<string>()), Times.Never());
             execMock.Verify(exec => exec.QueryTwitter(It.IsAny<string>(), It.IsAny<StatusRequestProcessor<Status>>()), Times.Once());
@@ -1853,7 +1743,7 @@ namespace LinqToTwitterTests
                 where tweet.Type == UserStreamType.User
                 select tweet;
 
-            var reqProc = ctx.Execute<UserStream>(streamingQuery.Expression, isEnumerable: true);
+            ctx.Execute<UserStream>(streamingQuery.Expression, isEnumerable: true);
 
             execMock.Verify(exec => exec.QueryTwitterStream(It.IsAny<string>()), Times.Once());
         }
@@ -1912,7 +1802,7 @@ namespace LinqToTwitterTests
         }
 
         [TestMethod]
-        public void UpdateList_Requires_ListID()
+        public void UpdateList_Requires_ListID_Or_Slug()
         {
             var authMock = new Mock<ITwitterAuthorizer>();
             var execMock = new Mock<ITwitterExecute>();
@@ -1920,13 +1810,32 @@ namespace LinqToTwitterTests
 
             try
             {
-                ctx.UpdateList(null, null, null, null, null);
+                ctx.UpdateList(null, null, null, null, null, null);
 
                 Assert.Fail("Expected ArgumentException.");
             }
             catch (ArgumentException ae)
             {
-                Assert.AreEqual("listID", ae.ParamName);
+                Assert.AreEqual("ListIdOrSlug", ae.ParamName);
+            }
+        }
+
+        [TestMethod]
+        public void UpdateList_Requires_OwnerID_Or_OwnerScreenName_If_Slug_Used()
+        {
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
+
+            try
+            {
+                ctx.UpdateList("123", "test", null, null, null, null);
+
+                Assert.Fail("Expected ArgumentException.");
+            }
+            catch (ArgumentException ae)
+            {
+                Assert.AreEqual("OwnerIdOrOwnerScreenName", ae.ParamName);
             }
         }
 
@@ -1945,14 +1854,15 @@ namespace LinqToTwitterTests
             var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
             var parameters = new Dictionary<string, string>
             {
-                { "screen_name", "JoeMayo" },
                 { "list_id", "123" },
-                { "name", "test" },
+                { "slug", "test" },
+                { "owner_id", "456" },
+                { "owner_screen_name", "JoeMayo" },
                 { "mode", "public" },
                 { "description", "desc" }
             };
 
-            ctx.UpdateList("JoeMayo", "123", "test", "public", "desc");
+            ctx.UpdateList("123", "test", "456", "JoeMayo", "public", "desc");
 
             execMock.Verify(exec =>
                 exec.ExecuteTwitter(
@@ -1963,7 +1873,7 @@ namespace LinqToTwitterTests
         }
 
         [TestMethod]
-        public void DeleteList_Requires_ListID()
+        public void DeleteList_Requires_ListID_Or_Slug()
         {
             var authMock = new Mock<ITwitterAuthorizer>();
             var execMock = new Mock<ITwitterExecute>();
@@ -1971,14 +1881,67 @@ namespace LinqToTwitterTests
 
             try
             {
-                ctx.DeleteList(null);
+                ctx.DeleteList(null, null, null, null);
 
                 Assert.Fail("Expected ArgumentException.");
             }
             catch (ArgumentException ae)
             {
-                Assert.AreEqual("listID", ae.ParamName);
+                Assert.AreEqual("listIdOrSlug", ae.ParamName);
             }
+        }
+
+        [TestMethod]
+        public void DeleteList_Requires_OwnerID_Or_OwnerScreenName_If_Slug_Used()
+        {
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
+
+            try
+            {
+                ctx.DeleteList("123", "test", null, null);
+
+                Assert.Fail("Expected ArgumentException.");
+            }
+            catch (ArgumentException ae)
+            {
+                Assert.AreEqual("OwnerIdOrOwnerScreenName", ae.ParamName);
+            }
+        }
+
+        [TestMethod]
+        public void DeleteList_Works_With_Slug_And_OwnerID()
+        {
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
+            execMock.Setup(exec =>
+                exec.ExecuteTwitter<List>(
+                    It.IsAny<string>(),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<IRequestProcessor<List>>()))
+                .Returns(m_testStatusQueryResponse);
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
+
+            ctx.DeleteList(null, "test", "456", null);
+        }
+
+        [TestMethod]
+        public void DeleteList_Works_With_ListID_Only()
+        {
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
+            execMock.Setup(exec =>
+                exec.ExecuteTwitter<List>(
+                    It.IsAny<string>(),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<IRequestProcessor<List>>()))
+                .Returns(m_testStatusQueryResponse);
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
+
+            ctx.DeleteList("123", null, null, null);
         }
 
         [TestMethod]
@@ -1996,14 +1959,557 @@ namespace LinqToTwitterTests
             var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
             var parameters = new Dictionary<string, string>
             {
-                { "list_id", "123" }
+                { "list_id", "123" },
+                { "slug", "test" },
+                { "owner_id", "456" },
+                { "owner_screen_name", "JoeMayo" }
             };
 
-            ctx.DeleteList("123");
+            ctx.DeleteList("123", "test", "456", "JoeMayo");
 
             execMock.Verify(exec =>
                 exec.ExecuteTwitter(
                     "https://api.twitter.com/1/lists/destroy.xml",
+                    parameters,
+                    It.IsAny<IRequestProcessor<List>>()),
+                Times.Once());
+        }
+
+        [TestMethod]
+        public void AddMemberToList_Requires_UserID_Or_ScreenName()
+        {
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
+
+            try
+            {
+                ctx.AddMemberToList(null, null, null, null, null, null);
+
+                Assert.Fail("Expected ArgumentException.");
+            }
+            catch (ArgumentException ae)
+            {
+                Assert.AreEqual("UserIdOrScreenName", ae.ParamName);
+            }
+        }
+
+        [TestMethod]
+        public void AddMemberToList_Requires_ListID_Or_Slug()
+        {
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
+
+            try
+            {
+                ctx.AddMemberToList(null, "JoeMayo", null, null, null, null);
+
+                Assert.Fail("Expected ArgumentException.");
+            }
+            catch (ArgumentException ae)
+            {
+                Assert.AreEqual("ListIdOrSlug", ae.ParamName);
+            }
+        }
+
+        [TestMethod]
+        public void AddMemberToList_Requires_OwnerID_Or_OwnerScreenName_If_Slug_Used()
+        {
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
+
+            try
+            {
+                ctx.AddMemberToList(null, "JoeMayo", null, "linq", null, null);
+
+                Assert.Fail("Expected ArgumentException.");
+            }
+            catch (ArgumentException ae)
+            {
+                Assert.AreEqual("OwnerIdOrOwnerScreenName", ae.ParamName);
+            }
+        }
+
+        [TestMethod]
+        public void AddMemberToList_Invokes_Executor_Execute()
+        {
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
+            execMock.Setup(exec =>
+                exec.ExecuteTwitter<List>(
+                    It.IsAny<string>(),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<IRequestProcessor<List>>()))
+                .Returns(m_testStatusQueryResponse);
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
+            var parameters = new Dictionary<string, string>
+            {
+                { "user_id", "789" },
+                { "screen_name", "JoeMayo" },
+                { "list_id", "123" },
+                { "slug", "test" },
+                { "owner_id", "456" },
+                { "owner_screen_name", "JoeMayo" }
+            };
+
+            ctx.AddMemberToList("789", "JoeMayo", "123", "test", "456", "JoeMayo");
+
+            execMock.Verify(exec =>
+                exec.ExecuteTwitter(
+                    "https://api.twitter.com/1/lists/members/create.xml",
+                    parameters,
+                    It.IsAny<IRequestProcessor<List>>()),
+                Times.Once());
+        }
+
+        [TestMethod]
+        public void AddMemberRangeToList_For_ScreenNames_Requires_ListID_Or_Slug()
+        {
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
+
+            try
+            {
+                ctx.AddMemberRangeToList(null, null, null, null, new List<string> { "SomeName" });
+
+                Assert.Fail("Expected ArgumentException.");
+            }
+            catch (ArgumentException ae)
+            {
+                Assert.AreEqual("ListIdOrSlug", ae.ParamName);
+            }
+        }
+
+        [TestMethod]
+        public void AddMemberRangeToList_For_ScreenNames_Requires_OwnerID_Or_OwnerScreenName_If_Slug_Used()
+        {
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
+
+            try
+            {
+                ctx.AddMemberRangeToList(null, "test", null, null, new List<string> { "SomeOne" });
+
+                Assert.Fail("Expected ArgumentException.");
+            }
+            catch (ArgumentException ae)
+            {
+                Assert.AreEqual("OwnerIdOrOwnerScreenName", ae.ParamName);
+            }
+        }
+
+        [TestMethod]
+        public void AddMemberRangeToList_For_ScreenNames_Requires_ScreenNames()
+        {
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
+
+            try
+            {
+                ctx.AddMemberRangeToList(null, "test", "123", null, (List<string>)null);
+
+                Assert.Fail("Expected ArgumentException.");
+            }
+            catch (ArgumentException ae)
+            {
+                Assert.AreEqual("screenNames", ae.ParamName);
+            }
+        }
+
+        [TestMethod]
+        public void AddMemberRangeToList_For_ScreenNames_Requires_ScreenNames_With_Values()
+        {
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
+
+            try
+            {
+                ctx.AddMemberRangeToList(null, "test", "123", null, new List<string>());
+
+                Assert.Fail("Expected ArgumentException.");
+            }
+            catch (ArgumentException ae)
+            {
+                Assert.AreEqual("screenNames", ae.ParamName);
+            }
+        }
+
+        [TestMethod]
+        public void AddMemberRangeToList_For_ScreenNames_Requires_ScreenNames_Count_LessThanOrEqualTo_100()
+        {
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
+            var screenNames = Enumerable.Range(1, 101).Select(item => item.ToString()).ToList();
+
+            try
+            {
+                ctx.AddMemberRangeToList(null, "test", "123", null, screenNames);
+
+                Assert.Fail("Expected ArgumentException.");
+            }
+            catch (ArgumentException ae)
+            {
+                Assert.AreEqual("screenNames", ae.ParamName);
+            }
+        }
+
+        [TestMethod]
+        public void AddMemberRangeToList_For_ScreenNames_Invokes_Executor_Execute()
+        {
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
+            execMock.Setup(exec =>
+                exec.ExecuteTwitter<List>(
+                    It.IsAny<string>(),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<IRequestProcessor<List>>()))
+                .Returns(m_testStatusQueryResponse);
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
+            var parameters = new Dictionary<string, string>
+            {
+                { "list_id", "123" },
+                { "slug", "test" },
+                { "owner_id", "456" },
+                { "owner_screen_name", "JoeMayo" },
+                { "user_id", null },
+                { "screen_name", "JoeMayo,Linq2Tweeter,SomeOneElse" },
+            };
+            var screenNames = new List<string> { "JoeMayo", "Linq2Tweeter", "SomeOneElse" };
+
+            ctx.AddMemberRangeToList("123", "test", "456", "JoeMayo", screenNames);
+
+            execMock.Verify(exec =>
+                exec.ExecuteTwitter(
+                    "https://api.twitter.com/1/lists/members/create_all.xml",
+                    parameters,
+                    It.IsAny<IRequestProcessor<List>>()),
+                Times.Once());
+        }
+
+        [TestMethod]
+        public void AddMemberRangeToList_For_UserIDs_Requires_UserIDs()
+        {
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
+
+            try
+            {
+                ctx.AddMemberRangeToList(null, "test", "123", null, (List<ulong>)null);
+
+                Assert.Fail("Expected ArgumentException.");
+            }
+            catch (ArgumentException ae)
+            {
+                Assert.AreEqual("userIDs", ae.ParamName);
+            }
+        }
+
+        [TestMethod]
+        public void AddMemberRangeToList_For_UserIDs_Requires_UserIDs_With_Values()
+        {
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
+
+            try
+            {
+                ctx.AddMemberRangeToList(null, "test", "123", null, new List<ulong>());
+
+                Assert.Fail("Expected ArgumentException.");
+            }
+            catch (ArgumentException ae)
+            {
+                Assert.AreEqual("userIDs", ae.ParamName);
+            }
+        }
+
+        [TestMethod]
+        public void AddMemberRangeToList_For_UserIDs_Requires_UserIDs_Count_LessThanOrEqualTo_100()
+        {
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
+            var userIDs = Enumerable.Range(1, 101).Select(item => (ulong)item).ToList();
+
+            try
+            {
+                ctx.AddMemberRangeToList(null, "test", "123", null, userIDs);
+
+                Assert.Fail("Expected ArgumentException.");
+            }
+            catch (ArgumentException ae)
+            {
+                Assert.AreEqual("userIDs", ae.ParamName);
+            }
+        }
+
+        [TestMethod]
+        public void AddMemberRangeToList_For_UserIDs_Invokes_Executor_Execute()
+        {
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
+            execMock.Setup(exec =>
+                exec.ExecuteTwitter<List>(
+                    It.IsAny<string>(),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<IRequestProcessor<List>>()))
+                .Returns(m_testStatusQueryResponse);
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
+            var parameters = new Dictionary<string, string>
+            {
+                { "list_id", "123" },
+                { "slug", "test" },
+                { "owner_id", "456" },
+                { "owner_screen_name", "JoeMayo" },
+                { "user_id", "123,234,345" },
+                { "screen_name", null },
+            };
+            var userIDs = new List<ulong> { 123ul, 234ul, 345ul };
+
+            ctx.AddMemberRangeToList("123", "test", "456", "JoeMayo", userIDs);
+
+            execMock.Verify(exec =>
+                exec.ExecuteTwitter(
+                    "https://api.twitter.com/1/lists/members/create_all.xml",
+                    parameters,
+                    It.IsAny<IRequestProcessor<List>>()),
+                Times.Once());
+        }
+
+        [TestMethod]
+        public void DeleteMemberFromList_Requires_UserID_Or_ScreenName()
+        {
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
+
+            try
+            {
+                ctx.DeleteMemberFromList(null, null, null, null, null, null);
+
+                Assert.Fail("Expected ArgumentException.");
+            }
+            catch (ArgumentException ae)
+            {
+                Assert.AreEqual("UserIdOrScreenName", ae.ParamName);
+            }
+        }
+
+        [TestMethod]
+        public void DeleteMemberFromList_Requires_ListID_Or_Slug()
+        {
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
+
+            try
+            {
+                ctx.DeleteMemberFromList(null, "JoeMayo", null, null, null, null);
+
+                Assert.Fail("Expected ArgumentException.");
+            }
+            catch (ArgumentException ae)
+            {
+                Assert.AreEqual("ListIdOrSlug", ae.ParamName);
+            }
+        }
+
+        [TestMethod]
+        public void DeleteMemberFromList_Requires_OwnerID_Or_OwnerScreenName_If_Slug_Used()
+        {
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
+
+            try
+            {
+                ctx.DeleteMemberFromList(null, "JoeMayo", null, "linq", null, null);
+
+                Assert.Fail("Expected ArgumentException.");
+            }
+            catch (ArgumentException ae)
+            {
+                Assert.AreEqual("OwnerIdOrOwnerScreenName", ae.ParamName);
+            }
+        }
+
+        [TestMethod]
+        public void DeleteMemberFromList_Invokes_Executor_Execute()
+        {
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
+            execMock.Setup(exec =>
+                exec.ExecuteTwitter<List>(
+                    It.IsAny<string>(),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<IRequestProcessor<List>>()))
+                .Returns(m_testStatusQueryResponse);
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
+            var parameters = new Dictionary<string, string>
+            {
+                { "user_id", "789" },
+                { "screen_name", "JoeMayo" },
+                { "list_id", "123" },
+                { "slug", "test" },
+                { "owner_id", "456" },
+                { "owner_screen_name", "JoeMayo" }
+            };
+
+            ctx.DeleteMemberFromList("789", "JoeMayo", "123", "test", "456", "JoeMayo");
+
+            execMock.Verify(exec =>
+                exec.ExecuteTwitter(
+                    "https://api.twitter.com/1/lists/members/destroy.xml",
+                    parameters,
+                    It.IsAny<IRequestProcessor<List>>()),
+                Times.Once());
+        }
+
+        [TestMethod]
+        public void SubscribeToList_Requires_ListID_Or_Slug()
+        {
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
+
+            try
+            {
+                ctx.SubscribeToList(null, null, null, null);
+
+                Assert.Fail("Expected ArgumentException.");
+            }
+            catch (ArgumentException ae)
+            {
+                Assert.AreEqual("ListIdOrSlug", ae.ParamName);
+            }
+        }
+
+        [TestMethod]
+        public void SubscribeToList_Requires_OwnerID_Or_OwnerScreenName_If_Slug_Used()
+        {
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
+
+            try
+            {
+                ctx.SubscribeToList(null, "linq", null, null);
+
+                Assert.Fail("Expected ArgumentException.");
+            }
+            catch (ArgumentException ae)
+            {
+                Assert.AreEqual("OwnerIdOrOwnerScreenName", ae.ParamName);
+            }
+        }
+
+        [TestMethod]
+        public void SubscribeToList_Invokes_Executor_Execute()
+        {
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
+            execMock.Setup(exec =>
+                exec.ExecuteTwitter<List>(
+                    It.IsAny<string>(),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<IRequestProcessor<List>>()))
+                .Returns(m_testStatusQueryResponse);
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
+            var parameters = new Dictionary<string, string>
+            {
+                { "list_id", "123" },
+                { "slug", "test" },
+                { "owner_id", "456" },
+                { "owner_screen_name", "JoeMayo" }
+            };
+
+            ctx.SubscribeToList("123", "test", "456", "JoeMayo");
+
+            execMock.Verify(exec =>
+                exec.ExecuteTwitter(
+                    "https://api.twitter.com/1/lists/subscribers/create.xml",
+                    parameters,
+                    It.IsAny<IRequestProcessor<List>>()),
+                Times.Once());
+        }
+
+        [TestMethod]
+        public void UnsubscribeFromList_Requires_ListID_Or_Slug()
+        {
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
+
+            try
+            {
+                ctx.UnsubscribeFromList(null, null, null, null);
+
+                Assert.Fail("Expected ArgumentException.");
+            }
+            catch (ArgumentException ae)
+            {
+                Assert.AreEqual("ListIdOrSlug", ae.ParamName);
+            }
+        }
+
+        [TestMethod]
+        public void UnsubscribeFromList_Requires_OwnerID_Or_OwnerScreenName_If_Slug_Used()
+        {
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
+
+            try
+            {
+                ctx.UnsubscribeFromList(null, "linq", null, null);
+
+                Assert.Fail("Expected ArgumentException.");
+            }
+            catch (ArgumentException ae)
+            {
+                Assert.AreEqual("OwnerIdOrOwnerScreenName", ae.ParamName);
+            }
+        }
+
+        [TestMethod]
+        public void UnsubscribeFromList_Invokes_Executor_Execute()
+        {
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
+            execMock.Setup(exec =>
+                exec.ExecuteTwitter<List>(
+                    It.IsAny<string>(),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<IRequestProcessor<List>>()))
+                .Returns(m_testStatusQueryResponse);
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
+            var parameters = new Dictionary<string, string>
+            {
+                { "list_id", "123" },
+                { "slug", "test" },
+                { "owner_id", "456" },
+                { "owner_screen_name", "JoeMayo" }
+            };
+
+            ctx.UnsubscribeFromList("123", "test", "456", "JoeMayo");
+
+            execMock.Verify(exec =>
+                exec.ExecuteTwitter(
+                    "https://api.twitter.com/1/lists/subscribers/destroy.xml",
                     parameters,
                     It.IsAny<IRequestProcessor<List>>()),
                 Times.Once());
