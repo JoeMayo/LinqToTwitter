@@ -105,7 +105,18 @@ namespace LinqToTwitter
 
             // use reflection to execute the generic method with the proper arguments
             //  Note: look at ProcessResults method in PostProcessor and you'll see what is being executed
-            return (TResult)genericMethodInfo.Invoke(Context, new object[] { expression, isEnumerable });
+            try
+            {
+                return (TResult)genericMethodInfo.Invoke(Context, new object[] { expression, isEnumerable });
+            }
+            catch (TargetInvocationException tex)
+            {
+                // gotta unwrap the Invoke exception, as the the inner exception is the interesting bit...
+                if (tex.InnerException != null)
+                    throw tex.InnerException;
+                else
+                    throw;
+            }
         }
     }
 }
