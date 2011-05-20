@@ -31,21 +31,14 @@ namespace LinqToTwitter
                 return null;
             }
 
-            var createdAtDate =
-                status.Element("created_at") == null ||
-                status.Element("created_at").Value == string.Empty
-                    ? DateTime.MinValue
-                    : DateTime.ParseExact(
-                        status.Element("created_at").Value,
-                        "ddd MMM dd HH:mm:ss %zzzz yyyy",
-                        CultureInfo.InvariantCulture,
-                        DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal);
-
-            var favorite =
-                    status.Element("favorited") == null ||
-                    status.Element("favorited").Value == string.Empty ?
-                         "false" :
-                         status.Element("favorited").Value;
+            var date = status.Element("created_at").Value;
+            var createdAtDate = String.IsNullOrEmpty(date) 
+                                ? DateTime.MinValue
+                                : DateTime.ParseExact(
+                                        date,
+                                        "ddd MMM dd HH:mm:ss %zzzz yyyy",
+                                        CultureInfo.InvariantCulture,
+                                        DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal);
 
             var user = status.Element("user");
             var retweet = status.Element("retweeted_status");
@@ -165,7 +158,7 @@ namespace LinqToTwitter
             var newStatus = new Status
             {
                 CreatedAt = createdAtDate,
-                Favorited = bool.Parse(favorite),
+                Favorited = status.GetBool("favorited", false),
                 StatusID = status.GetString("id"),
                 InReplyToStatusID = status.GetString("in_reply_to_status_id"),
                 InReplyToUserID = status.GetString("in_reply_to_user_id"),
