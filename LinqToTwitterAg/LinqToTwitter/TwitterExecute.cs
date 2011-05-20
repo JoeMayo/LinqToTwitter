@@ -1178,6 +1178,7 @@ namespace LinqToTwitter
                     {
                         httpStatus = resp.Headers["Status"];
                         responseXml = GetTwitterResponse(resp);
+                        CheckResultsForTwitterError(responseXml, httpStatus);
                     }
                 }
 #endif
