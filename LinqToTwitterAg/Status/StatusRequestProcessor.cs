@@ -493,8 +493,6 @@ namespace LinqToTwitter
                 responseItems.Add(twitterResponse);
             }
 
-            var usr = new User();
-
             var statuses =
                 from statusXmlElement in responseItems
                 select Status.CreateStatus(statusXmlElement);
