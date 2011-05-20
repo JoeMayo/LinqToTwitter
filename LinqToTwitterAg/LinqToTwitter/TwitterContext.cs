@@ -7,6 +7,7 @@ using LinqToTwitter.Common;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
@@ -559,6 +560,7 @@ namespace LinqToTwitter
         public const string XFeatureRateLimitLimitKey = "X-FeatureRateLimit-Limit";
         public const string XFeatureRateLimitRemainingKey = "X-FeatureRateLimit-Remaining";
         public const string XFeatureRateLimitResetKey = "X-FeatureRateLimit-Reset";
+        public const string DateKey = "Date";
 
         /// <summary>
         /// retrieves a specified response header, converting it to an int
@@ -568,11 +570,12 @@ namespace LinqToTwitter
         private int GetResponseHeaderAsInt(string responseHeader)
         {
             var headerVal = -1;
+            var headers = ResponseHeaders;
 
-            if (ResponseHeaders != null &&
-                ResponseHeaders.ContainsKey(responseHeader))
+            if (headers != null &&
+                headers.ContainsKey(responseHeader))
             {
-                var headerValAsString = ResponseHeaders[responseHeader];
+                var headerValAsString = headers[responseHeader];
 
                 int.TryParse(headerValAsString, out headerVal);
             }
@@ -580,6 +583,33 @@ namespace LinqToTwitter
             return headerVal;
         }
 
+        /// <summary>
+        /// retrieves a specified response header, converting it to a DateTime
+        /// </summary>
+        /// <param name="responseHeader">Response header to retrieve.</param>
+        /// <returns>DateTime value from response</returns>
+        /// <remarks>Expects a string like: Sat, 26 Feb 2011 01:12:08 GMT</remarks>
+        private DateTime? GetResponseHeaderAsDateTime(string responseHeader)
+        {
+            DateTime? headerVal = null;
+            var headers = ResponseHeaders;
+
+            if (headers != null &&
+                headers.ContainsKey(responseHeader))
+            {
+                var headerValAsString = headers[responseHeader];
+                DateTime value;
+
+                if (DateTime.TryParse(headerValAsString,
+                                        CultureInfo.InvariantCulture,
+                                        DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal,
+                                        out value))
+                    headerVal = value;
+            }
+
+            return headerVal;
+        }
+        
         /// <summary>
         /// Response headers from Twitter Queries
         /// </summary>
@@ -717,6 +747,21 @@ namespace LinqToTwitter
             get
             {
                 return GetResponseHeaderAsInt(XFeatureRateLimitResetKey);
+            }
+        }
+
+        /// <summary>
+        /// Gets the response header Date and converts to a nullable-DateTime
+        /// </summary>
+        /// <remarks>
+        /// Returns null if the headers don't contain a valid Date value
+        /// i.e. you haven't performed a query yet or not convertable
+        /// </remarks>
+        public DateTime? TwitterDate
+        {
+            get
+            {
+                return GetResponseHeaderAsDateTime(DateKey);
             }
         }
         #endregion
