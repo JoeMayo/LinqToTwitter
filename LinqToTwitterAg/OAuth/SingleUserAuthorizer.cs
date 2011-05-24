@@ -9,7 +9,8 @@ namespace LinqToTwitter
         /// </summary>
         public void Authorize()
         {
-            throw new InvalidOperationException("SingleUserAuthorizer only needs credentials; don't call Authorize - just pass instance to TwitterContext");
+            if (!IsAuthorized)
+                throw new InvalidOperationException("SingleUserAuthorizer needs preset credentials; don't call Authorize unless you've completly set the Credentials");
         }
     }
 }
