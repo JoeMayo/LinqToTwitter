@@ -29,161 +29,46 @@ namespace LinqToTwitter
                 return null;
             }
 
-            var tempUserProtected = false;
-            var tempFollowersCount = 0ul;
-            var tempFriendsCount = 0ul;
-            var tempFavoritesCount = 0ul;
-            var tempStatusesCount = 0ul;
-            var tempFollowingUsers = false;
-            var tempShowInlineMedia = false;
-            var tempListedCount = 0;
-            var tempFollowRequestSent = false;
-
-            var canParseProtected =
-                user.Element("protected") == null ?
-                    false :
-                    bool.TryParse(user.Element("protected").Value, out tempUserProtected);
-
-            var followersCount =
-                user.Element("followers_count") == null ?
-                    false :
-                    ulong.TryParse(user.Element("followers_count").Value, out tempFollowersCount);
-
-            var friendsCount =
-                user.Element("friends_count") == null ?
-                    false :
-                    ulong.TryParse(user.Element("friends_count").Value, out tempFriendsCount);
-
-            var userDate = user.Element("created_at").Value;
-            var userCreatedAtDate = String.IsNullOrEmpty(userDate) ?
-                    DateTime.MinValue :
-                    DateTime.ParseExact(
-                        userDate,
-                        "ddd MMM dd HH:mm:ss %zzzz yyyy",
-                        CultureInfo.InvariantCulture,
-                        DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal);
-
-            var favoritesCount =
-                user.Element("favourites_count") == null ?
-                    false :
-                    ulong.TryParse(user.Element("favourites_count").Value, out tempFavoritesCount);
-
-            var statusesCount =
-                user.Element("statuses_count") == null ?
-                    false :
-                    ulong.TryParse(user.Element("statuses_count").Value, out tempStatusesCount);
-
-            var notifications =
-                user.Element("notifications") == null ||
-                string.IsNullOrEmpty(user.Element("notifications").Value) ?
-                    false :
-                    bool.Parse(user.Element("notifications").Value);
-
-            var geoEnabled =
-                user.Element("geo_enabled") == null ||
-                string.IsNullOrEmpty(user.Element("geo_enabled").Value) ?
-                    false :
-                    bool.Parse(user.Element("geo_enabled").Value);
-
-            var verified =
-                user.Element("verified") == null ||
-                string.IsNullOrEmpty(user.Element("verified").Value) ?
-                    false :
-                    bool.Parse(user.Element("verified").Value);
-
-            var contributorsEnabled =
-                user.Element("contributors_enabled") == null ||
-                string.IsNullOrEmpty(user.Element("contributors_enabled").Value) ?
-                    false :
-                    bool.Parse(user.Element("contributors_enabled").Value);
-
-            var isFollowing =
-                user.Element("following") == null ||
-                string.IsNullOrEmpty(user.Element("following").Value) ?
-                    false :
-                    bool.TryParse(user.Element("following").Value, out tempFollowingUsers);
-
-            var showInlineMedia =
-                user.Element("show_all_inline_media") == null ?
-                    false :
-                    bool.TryParse(user.Element("show_all_inline_media").Value, out tempShowInlineMedia);
-
-            var listedCount =
-                user.Element("listed_count") == null ?
-                    false :
-                    int.TryParse(user.Element("listed_count").Value, out tempListedCount);
-
-            var followRequestSent =
-                user.Element("follow_request_sent") == null ?
-                    false :
-                    bool.TryParse(user.Element("follow_request_sent").Value, out tempFollowRequestSent);
-
-            var status =
-                user.Element("status");
+            var status = user.Element("status");
+            var userID = user.GetString("id", "0");
 
             var newUser = new User
             {
                 Identifier = new UserIdentifier
                 {
-                    ID = user.Element("id") == null ? "0" : user.Element("id").Value,
-                    UserID = user.Element("id") == null ? "0" : user.Element("id").Value,
-                    ScreenName = user.Element("screen_name") == null ? "" : user.Element("screen_name").Value
+                    ID = userID,
+                    UserID = userID,
+                    ScreenName = user.GetString("screen_name")
                 },
-                Name = user.Element("name") == null ? "" : user.Element("name").Value,
-                Location = user.Element("location") == null ? "" : user.Element("location").Value,
-                Description = user.Element("description") == null ? "" : user.Element("description").Value,
-                ProfileImageUrl = user.Element("profile_image_url") == null ? "" : user.Element("profile_image_url").Value,
-                URL = user.Element("url") == null ? "" : user.Element("url").Value,
-                Protected = tempUserProtected,
-                FollowersCount = tempFollowersCount,
-                ProfileBackgroundColor =
-                    user.Element("profile_background_color") == null ?
-                        string.Empty :
-                        user.Element("profile_background_color").Value,
-                ProfileTextColor =
-                    user.Element("profile_text_color") == null ?
-                        string.Empty :
-                        user.Element("profile_text_color").Value,
-                ProfileLinkColor =
-                    user.Element("profile_link_color") == null ?
-                        string.Empty :
-                        user.Element("profile_link_color").Value,
-                ProfileSidebarFillColor =
-                    user.Element("profile_sidebar_fill_color") == null ?
-                        string.Empty :
-                        user.Element("profile_sidebar_fill_color").Value,
-                ProfileSidebarBorderColor =
-                    user.Element("profile_sidebar_border_color") == null ?
-                        string.Empty :
-                        user.Element("profile_sidebar_border_color").Value,
-                FriendsCount = tempFriendsCount,
-                CreatedAt = userCreatedAtDate,
-                FavoritesCount = tempFavoritesCount,
-                UtcOffset =
-                    user.Element("utc_offset") == null ?
-                        string.Empty :
-                        user.Element("utc_offset").Value,
-                TimeZone =
-                    user.Element("time_zone") == null ?
-                        string.Empty :
-                        user.Element("time_zone").Value,
-                ProfileBackgroundImageUrl =
-                    user.Element("profile_background_image_url") == null ?
-                        string.Empty :
-                        user.Element("profile_background_image_url").Value,
-                ProfileBackgroundTile =
-                    user.Element("profile_background_tile") == null ?
-                        string.Empty :
-                        user.Element("profile_background_tile").Value,
-                StatusesCount = tempStatusesCount,
-                Notifications = notifications,
-                GeoEnabled = geoEnabled,
-                Verified = verified,
-                ContributorsEnabled = contributorsEnabled,
-                Following = tempFollowingUsers,
-                ShowAllInlineMedia = tempShowInlineMedia,
-                ListedCount = tempListedCount,
-                FollowRequestSent = tempFollowRequestSent,
+                Name = user.GetString("name"),
+                Location = user.GetString("location"),
+                Description = user.GetString("description"),
+                ProfileImageUrl = user.GetString("profile_image_url"),
+                URL = user.GetString("url"),
+                Protected = user.GetBool("protected"),
+                FollowersCount = user.GetULong("followers_count"),
+                ProfileBackgroundColor = user.GetString("profile_background_color"),
+                ProfileTextColor = user.GetString("profile_text_color"),
+                ProfileLinkColor = user.GetString("profile_link_color"),
+                ProfileSidebarFillColor = user.GetString("profile_sidebar_fill_color"),
+                ProfileSidebarBorderColor = user.GetString("profile_sidebar_border_color"),
+                FriendsCount = user.GetULong("friends_count"),
+                CreatedAt = user.GetDate("created_at", DateTime.MinValue),
+                FavoritesCount = user.GetULong("favourites_count"),
+                UtcOffset = user.GetString("utc_offset"),
+                TimeZone = user.GetString("time_zone"),
+                ProfileBackgroundImageUrl = user.GetString("profile_background_image_url"),
+                ProfileBackgroundImageUrlHttps = user.GetString("profile_background_image_url_https"),
+                ProfileBackgroundTile = user.GetString("profile_background_tile"),
+                StatusesCount = user.GetULong("statuses_count"),
+                Notifications = user.GetBool("notifications"),
+                GeoEnabled = user.GetBool("geo_enabled"),
+                Verified = user.GetBool("verified"),
+                ContributorsEnabled = user.GetBool("contributors_enabled"),
+                Following = user.GetBool("following"),
+                ShowAllInlineMedia = user.GetBool("show_all_inline_media"),
+                ListedCount = user.GetInt("listed_count"),
+                FollowRequestSent = user.GetBool("follow_request_sent"),
                 Status = Status.CreateStatus(status),
                 CursorMovement = Cursors.CreateCursors(GrandParentOrNull(user))
             };
@@ -293,6 +178,12 @@ namespace LinqToTwitter
         public string ProfileImageUrl { get; set; }
 
         /// <summary>
+        /// user's image for use on HTTPS secured pages
+        /// </summary>
+        public string ProfileImageUrlHttps { get; set; }
+
+        /// 
+        /// <summary>
         /// user's URL
         /// </summary>
         public string URL { get; set; }
@@ -361,6 +252,11 @@ namespace LinqToTwitter
         /// URL of profile background image
         /// </summary>
         public string ProfileBackgroundImageUrl { get; set; }
+
+        /// <summary>
+        /// URL of profile background image for use on HTTPS secured pages
+        /// </summary>
+        public string ProfileBackgroundImageUrlHttps { get; set; }
 
         /// <summary>
         /// Title of profile background
