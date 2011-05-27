@@ -62,6 +62,7 @@ namespace LinqToTwitter
             public string Value
             {
                 get { return value; }
+                internal set { this.value = value; }
             }
         }
 
@@ -71,10 +72,9 @@ namespace LinqToTwitter
         protected class QueryParameterComparer : IComparer<QueryParameter>
         {
             #region IComparer<QueryParameter> Members
-
             public int Compare(QueryParameter x, QueryParameter y)
             {
-                if (x.Name == y.Name)
+                if (x.Name.Equals(y.Name))
                 {
                     return string.Compare(x.Value, y.Value);
                 }
@@ -83,7 +83,6 @@ namespace LinqToTwitter
                     return string.Compare(x.Name, y.Name);
                 }
             }
-
             #endregion
         }
 
@@ -111,7 +110,7 @@ namespace LinqToTwitter
 
         protected Random random = new Random();
 
-        protected string unreservedChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_.~";
+        protected static readonly string unreservedChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_.~";
 
         /// <summary>
         /// Helper function to compute a hash value
@@ -156,7 +155,7 @@ namespace LinqToTwitter
                 string[] p = parameters.Split('&');
                 foreach (string s in p)
                 {
-                    if (!string.IsNullOrEmpty(s) && (!s.StartsWith(OAuthParameterPrefix) || s.StartsWith(OAuthAccessTypeKey)))
+                    if (!string.IsNullOrEmpty(s) && (!s.StartsWith(OAuthParameterPrefix, StringComparison.Ordinal) || s.StartsWith(OAuthAccessTypeKey, StringComparison.Ordinal)))
                     {
                         if (s.IndexOf('=') > -1)
                         {
@@ -287,6 +286,11 @@ namespace LinqToTwitter
                 parameters.Add(new QueryParameter(OAuthVerifierKey, verifier));
             }
 
+            // need to UrlEncode (per section 5.1) all the parameter values now, before sorting
+            // see: http://hueniverse.com/2008/10/beginners-guide-to-oauth-part-iv-signing-requests/
+            foreach (var parm in parameters)
+                parm.Value = UrlEncode(parm.Value);
+
             parameters.Sort(new QueryParameterComparer());
 
             string normalizedRequestParameters = NormalizeRequestParameters(parameters);
@@ -349,6 +353,7 @@ namespace LinqToTwitter
             parameters.Add(new QueryParameter(OAuthTimestampKey, timeStamp));
             parameters.Add(new QueryParameter(OAuthSignatureMethodKey, signatureType));
             parameters.Add(new QueryParameter(OAuthConsumerKeyKey, consumerKey));
+
             if (!string.IsNullOrEmpty(callback))
             {
                 parameters.Add(new QueryParameter(OAuthCallbackKey, callback)); 
@@ -363,6 +368,11 @@ namespace LinqToTwitter
             {
                 parameters.Add(new QueryParameter(OAuthVerifierKey, verifier));
             }
+
+            // need to UrlEncode (per section 5.1) all the parameter values now, before sorting
+            // see: http://hueniverse.com/2008/10/beginners-guide-to-oauth-part-iv-signing-requests/
+            foreach (var parm in parameters)
+                parm.Value = UrlEncode(parm.Value);
 
             parameters.Sort(new QueryParameterComparer());
 
