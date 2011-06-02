@@ -469,6 +469,9 @@ namespace LinqToTwitter
             {
                 Count = int.Parse(parameters["Count"]);
                 urlParams.Add("count=" + parameters["Count"]);
+                // twitter seems to be ignoring the documented "count=", but does honor "per_page="
+                // for now, send BOTH
+                urlParams.Add("per_page=" + parameters["Count"]);
             }
 
             if (parameters.ContainsKey("Page"))
@@ -660,7 +663,6 @@ namespace LinqToTwitter
                 urlParams.Add("cursor=" + parameters["Cursor"]);
             }
 
-
             if (parameters.ContainsKey("IncludeEntities"))
             {
                 if (bool.Parse(parameters["IncludeEntities"]))
@@ -812,7 +814,6 @@ namespace LinqToTwitter
                 Cursor = parameters["Cursor"];
                 urlParams.Add("cursor=" + parameters["Cursor"]);
             }
-
 
             if (parameters.ContainsKey("IncludeEntities"))
             {
