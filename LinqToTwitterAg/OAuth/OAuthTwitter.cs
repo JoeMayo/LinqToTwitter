@@ -215,7 +215,7 @@ namespace LinqToTwitter
                 this.OAuthToken,
                 this.OAuthTokenSecret,
                 this.OAuthVerifier,
-                TwitterParameterUrlEncode(callback),
+                callback,
                 method.ToString(),
                 timeStamp,
                 nonce,
@@ -374,7 +374,7 @@ namespace LinqToTwitter
                 this.OAuthToken,
                 this.OAuthTokenSecret,
                 this.OAuthVerifier,
-                TwitterParameterUrlEncode(callback),
+                callback,
                 method.ToString(),
                 timeStamp,
                 nonce,
@@ -648,7 +648,7 @@ namespace LinqToTwitter
                 this.OAuthToken,
                 this.OAuthTokenSecret,
                 this.OAuthVerifier,
-                TwitterParameterUrlEncode(callback),
+                callback,
                 HttpMethod.GET.ToString(),
                 timeStamp,
                 nonce,
@@ -872,7 +872,7 @@ namespace LinqToTwitter
 #else
             Exception asyncException = null;
 
-            var resetEvent = new ManualResetEvent(initialState: false);
+            var resetEvent = new ManualResetEvent(/*initialState:*/ false);
 
             req.BeginGetRequestStream(
                 new AsyncCallback(
