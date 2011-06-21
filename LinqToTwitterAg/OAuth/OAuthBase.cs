@@ -30,7 +30,7 @@ using System.Globalization;
 #if SILVERLIGHT
     using System.Windows.Browser;
 #else
-    using System.Web;
+using System.Web;
 #endif
 
 namespace LinqToTwitter
@@ -40,52 +40,6 @@ namespace LinqToTwitter
     /// </summary>
     public class OAuthBase
     {
-        /// <summary>
-        /// Provides an internal structure to sort the query parameter
-        /// </summary>
-        protected class QueryParameter
-        {
-            private string name = null;
-            private string value = null;
-
-            public QueryParameter(string name, string value)
-            {
-                this.name = name;
-                this.value = value;
-            }
-
-            public string Name
-            {
-                get { return name; }
-            }
-
-            public string Value
-            {
-                get { return value; }
-                internal set { this.value = value; }
-            }
-        }
-
-        /// <summary>
-        /// Comparer class used to perform the sorting of the query parameters
-        /// </summary>
-        protected class QueryParameterComparer : IComparer<QueryParameter>
-        {
-            #region IComparer<QueryParameter> Members
-            public int Compare(QueryParameter x, QueryParameter y)
-            {
-                if (x.Name.Equals(y.Name))
-                {
-                    return string.Compare(x.Value, y.Value);
-                }
-                else
-                {
-                    return string.Compare(x.Name, y.Name);
-                }
-            }
-            #endregion
-        }
-
         protected const string OAuthVersion = "1.0";
         protected const string OAuthParameterPrefix = "oauth_";
 
@@ -111,6 +65,7 @@ namespace LinqToTwitter
         protected Random random = new Random();
 
         protected static readonly string unreservedChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_.~";
+        protected static readonly string ReservedChars = @"`!@#$%^&*()_-+=.~,:;'?/|\[] ";
 
         /// <summary>
         /// Helper function to compute a hash value
@@ -141,32 +96,20 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">The query string part of the Url</param>
         /// <returns>A list of QueryParameter each containing the parameter name and value</returns>
-        private List<QueryParameter> GetQueryParameters(string parameters)
+        private List<QueryParameter> CloneQueryParameters(IEnumerable<QueryParameter> parameters)
         {
-            if (parameters.StartsWith("?", StringComparison.OrdinalIgnoreCase))
-            {
-                parameters = parameters.Remove(0, 1);
-            }
+            var result = new List<QueryParameter>();
 
-            List<QueryParameter> result = new List<QueryParameter>();
-
-            if (!string.IsNullOrEmpty(parameters))
+            foreach (var pair in parameters)
             {
-                string[] p = parameters.Split('&');
-                foreach (string s in p)
+                string name = pair.Name;
+                string value = pair.Value;
+
+                if (!string.IsNullOrEmpty(name)
+                    && (!name.StartsWith(OAuthParameterPrefix, StringComparison.Ordinal)
+                        || name.StartsWith(OAuthAccessTypeKey, StringComparison.Ordinal)))
                 {
-                    if (!string.IsNullOrEmpty(s) && (!s.StartsWith(OAuthParameterPrefix, StringComparison.Ordinal) || s.StartsWith(OAuthAccessTypeKey, StringComparison.Ordinal)))
-                    {
-                        if (s.IndexOf('=') > -1)
-                        {
-                            string[] temp = s.Split('=');
-                            result.Add(new QueryParameter(temp[0], temp[1]));
-                        }
-                        else
-                        {
-                            result.Add(new QueryParameter(s, string.Empty));
-                        }
-                    }
+                    result.Add(new QueryParameter(name, value ?? String.Empty));
                 }
             }
 
@@ -174,8 +117,9 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// This is a different Url Encode implementation since the default .NET one outputs the percent encoding in lower case.
-        /// While this is not a problem with the percent encoding spec, it is used in upper case throughout OAuth
+        /// This is a different Url Encode implementation since the default .NET one outputs
+        /// the percent encoding in lower case. While this is not a problem with the percent 
+        /// encoding spec, it is used in upper case throughout OAuth
         /// </summary>
         /// <param name="value">The value to Url encode</param>
         /// <returns>Returns a Url encoded string</returns>
@@ -191,9 +135,13 @@ namespace LinqToTwitter
                     {
                         result.Append(symbol);
                     }
+                    else if (ReservedChars.IndexOf(symbol) != -1)
+                    {
+                        result.Append('%' + String.Format("{0:X2}", (int)symbol).ToUpper());
+                    }
                     else
                     {
-                        result.Append('%' + String.Format(CultureInfo.InvariantCulture, "{0:X2}", (int)symbol));
+                        result.Append(HttpUtility.UrlEncode(symbol.ToString()).ToUpper());
                     }
                 }
             }
@@ -209,101 +157,18 @@ namespace LinqToTwitter
         protected string NormalizeRequestParameters(IList<QueryParameter> parameters)
         {
             StringBuilder sb = new StringBuilder();
-            QueryParameter p = null;
+
             for (int i = 0; i < parameters.Count; i++)
             {
-                p = parameters[i];
+                QueryParameter p = parameters[i];
                 sb.AppendFormat(CultureInfo.InvariantCulture, "{0}={1}", p.Name, p.Value);
-
-                if (i < parameters.Count - 1)
-                {
-                    sb.Append("&");
-                }
+                sb.Append("&");
             }
+
+            if (sb.Length > 1)
+                sb.Length--;
 
             return sb.ToString();
-        }
-
-        /// <summary>         
-        /// Generate the signature base that is used to produce the signature         
-        /// </summary>         
-        /// <param name="url">The full url that needs to be signed including its non OAuth url parameters</param>         
-        /// <param name="consumerKey">The consumer key</param>                 
-        /// <param name="token">The token, if available. If not available pass null or an empty string</param>         
-        /// <param name="tokenSecret">The token secret, if available. If not available pass null or an empty string</param>         
-        /// <param name="httpMethod">The http method used. Must be a valid HTTP method verb (POST,GET,PUT, etc)</param>         
-        /// <param name="signatureType">The signature type. To use the default values use <see cref="SignatureType">OAuthBase.SignatureTypes</see>.</param>         
-        /// <param name="nonce">Nonce</param>         
-        /// <param name="timestamp">Time Stamp</param>         
-        /// <returns>The signature base</returns>         
-        public string GenerateSignatureBase(Uri url, string consumerKey, string token, string tokenSecret, string verifier, string callback, string httpMethod, string timestamp, string nonce, string signatureType)
-        {
-            if (token == null)
-            {
-                token = string.Empty;
-            }
-
-            if (tokenSecret == null)
-            {
-                tokenSecret = string.Empty;
-            }
-
-            if (string.IsNullOrEmpty(consumerKey))
-            {
-                throw new ArgumentNullException("consumerKey");
-            }
-
-            if (string.IsNullOrEmpty(httpMethod))
-            {
-                throw new ArgumentNullException("httpMethod");
-            }
-
-            if (string.IsNullOrEmpty(signatureType))
-            {
-                throw new ArgumentNullException("signatureType");
-            }
-
-            List<QueryParameter> parameters = GetQueryParameters(url.Query);
-
-            parameters.Add(new QueryParameter(OAuthVersionKey, OAuthVersion));
-            parameters.Add(new QueryParameter(OAuthNonceKey, nonce));
-            parameters.Add(new QueryParameter(OAuthTimestampKey, timestamp));
-            parameters.Add(new QueryParameter(OAuthSignatureMethodKey, signatureType));
-            parameters.Add(new QueryParameter(OAuthConsumerKeyKey, consumerKey));
-
-            if (!string.IsNullOrEmpty(callback))
-            {
-                parameters.Add(new QueryParameter(OAuthCallbackKey, callback));
-            }
-
-            if (!string.IsNullOrEmpty(token))
-            {
-                parameters.Add(new QueryParameter(OAuthTokenKey, token));
-            }
-
-            if (!string.IsNullOrEmpty(verifier))
-            {
-                parameters.Add(new QueryParameter(OAuthVerifierKey, verifier));
-            }
-
-            // need to UrlEncode (per section 5.1) all the parameter values now, before sorting
-            // see: http://hueniverse.com/2008/10/beginners-guide-to-oauth-part-iv-signing-requests/
-            foreach (var parm in parameters)
-                parm.Value = UrlEncode(parm.Value);
-
-            parameters.Sort(new QueryParameterComparer());
-
-            string normalizedRequestParameters = NormalizeRequestParameters(parameters);
-
-            StringBuilder signatureBase = new StringBuilder();
-
-            signatureBase.AppendFormat(CultureInfo.InvariantCulture, "{0}&", httpMethod.ToUpper(CultureInfo.InvariantCulture));
-            signatureBase.AppendFormat(CultureInfo.InvariantCulture, "{0}&", UrlEncode(string.Format(CultureInfo.InvariantCulture, "{0}://{1}{2}", url.Scheme, url.Host, url.AbsolutePath)));
-            signatureBase.AppendFormat(CultureInfo.InvariantCulture, "{0}", UrlEncode(normalizedRequestParameters));
-
-            System.Diagnostics.Debug.WriteLine(signatureBase);
-
-            return signatureBase.ToString();
         }
 
         /// <summary>
@@ -316,7 +181,7 @@ namespace LinqToTwitter
         /// <param name="httpMethod">The http method used. Must be a valid HTTP method verb (POST,GET,PUT, etc)</param>
         /// <param name="signatureType">The signature type. To use the default values use <see cref="OAuthBase.SignatureTypes">OAuthBase.SignatureTypes</see>.</param>
         /// <returns>The signature base</returns>
-        public string GenerateSignatureBase(Uri url, string consumerKey, string token, string tokenSecret, string verifier, string callback, string httpMethod, string timeStamp, string nonce, string signatureType, out string normalizedUrl, out string normalizedRequestParameters)
+        public string GenerateSignatureBase(Request request, string consumerKey, string token, string tokenSecret, string verifier, string callback, string httpMethod, string timeStamp, string nonce, string signatureType, out string normalizedUrl, out string normalizedRequestParameters)
         {
             if (token == null)
             {
@@ -343,11 +208,7 @@ namespace LinqToTwitter
                 throw new ArgumentNullException("You must provide a signatureType.", "signatureType");
             }
 
-            normalizedUrl = null;
-            normalizedRequestParameters = null;
-
-            List<QueryParameter> parameters = GetQueryParameters(url.Query);
-
+            var parameters = CloneQueryParameters(request.RequestParameters);
             parameters.Add(new QueryParameter(OAuthVersionKey, OAuthVersion));
             parameters.Add(new QueryParameter(OAuthNonceKey, nonce));
             parameters.Add(new QueryParameter(OAuthTimestampKey, timeStamp));
@@ -356,7 +217,7 @@ namespace LinqToTwitter
 
             if (!string.IsNullOrEmpty(callback))
             {
-                parameters.Add(new QueryParameter(OAuthCallbackKey, callback)); 
+                parameters.Add(new QueryParameter(OAuthCallbackKey, callback));
             }
 
             if (!string.IsNullOrEmpty(token))
@@ -374,98 +235,31 @@ namespace LinqToTwitter
             foreach (var parm in parameters)
                 parm.Value = UrlEncode(parm.Value);
 
-            parameters.Sort(new QueryParameterComparer());
+            parameters.Sort(QueryParameter.DefaultComparer);
 
-            normalizedUrl = string.Format("{0}://{1}", url.Scheme, url.Host);
+            Uri url = new Uri(request.Endpoint);
+            normalizedUrl = url.Scheme + "://";
+#if !SILVERLIGHT
+            normalizedUrl += url.Authority;
+#else
+            normalizedUrl += url.Host;
 
-            if (!((url.Scheme == "http" && url.Port == 80) || (url.Scheme == "https" && url.Port == 443)))
+            if (!((url.Scheme == "http" && url.Port == 80)
+                  || (url.Scheme == "https" && url.Port == 443)))
             {
                 normalizedUrl += ":" + url.Port;
             }
-
+#endif
             normalizedUrl += url.AbsolutePath;
             normalizedRequestParameters = NormalizeRequestParameters(parameters);
 
             StringBuilder signatureBase = new StringBuilder();
 
             signatureBase.AppendFormat(CultureInfo.InvariantCulture, "{0}&", httpMethod.ToUpper(CultureInfo.InvariantCulture));
-            signatureBase.AppendFormat(CultureInfo.InvariantCulture, "{0}&", UrlEncode(string.Format(CultureInfo.InvariantCulture, "{0}://{1}{2}", url.Scheme, url.Host, url.AbsolutePath)));
+            signatureBase.AppendFormat(CultureInfo.InvariantCulture, "{0}&", UrlEncode(normalizedUrl));
             signatureBase.AppendFormat(CultureInfo.InvariantCulture, "{0}", UrlEncode(normalizedRequestParameters));
 
             return signatureBase.ToString();
-        }
-
-        /// <summary>
-        /// Generate the signature value based on the given signature base and hash algorithm
-        /// </summary>
-        /// <param name="signatureBase">The signature based as produced by the GenerateSignatureBase method or by any other means</param>
-        /// <param name="hash">The hash algorithm used to perform the hashing. If the hashing algorithm requires initialization or a key it should be set prior to calling this method</param>
-        /// <returns>A base64 string of the hash value</returns>
-        public string GenerateSignatureUsingHash(string signatureBase, HashAlgorithm hash)
-        {
-            return ComputeHash(hash, signatureBase);
-        }
-
-        /// <summary>         
-        /// Generates a signature using the HMAC-SHA1 algorithm         
-        /// </summary>                   
-        /// <param name="url">The full url that needs to be signed including its non OAuth url parameters</param>         
-        /// <param name="consumerKey">The consumer key</param>         
-        /// <param name="consumerSecret">The consumer seceret</param>         
-        /// <param name="token">The token, if available. If not available pass null or an empty string</param>         
-        /// <param name="tokenSecret">The token secret, if available. If not available pass null or an empty string</param>         
-        /// <param name="httpMethod">The http method used. Must be a valid HTTP method verb (POST,GET,PUT, etc)</param>         
-        /// <param name="nonce">Nonce</param>         /// <param name="timestamp">Time Stamp</param>         
-        /// <returns>A base64 string of the hash value</returns>         
-        public string GenerateSignature(Uri url, string consumerKey, string consumerSecret, string token, string tokenSecret, string verifier, string callback, string httpMethod, string timestamp, string nonce)
-        {
-            return GenerateSignature(url, consumerKey, consumerSecret, token, tokenSecret, verifier, callback, httpMethod, timestamp, nonce, OAuthSignatureTypes.HMACSHA1);
-        }
-
-        /// <summary>         
-        /// Generates a signature using the specified signatureType          
-        /// </summary>                   
-        /// <param name="url">The full url that needs to be signed including its non OAuth url parameters</param>         
-        /// <param name="consumerKey">The consumer key</param>         
-        /// <param name="consumerSecret">The consumer seceret</param>         
-        /// <param name="token">The token, if available. If not available pass null or an empty string</param>         
-        /// <param name="tokenSecret">The token secret, if available. If not available pass null or an empty string</param>         
-        /// <param name="httpMethod">The http method used. Must be a valid HTTP method verb (POST,GET,PUT, etc)</param>         
-        /// <param name="signatureType">The type of signature to use</param>         
-        /// <param name="nonce">Nonce</param>         
-        /// <param name="timestamp">UNIX time stamp</param>         
-        /// <returns>A base64 string of the hash value</returns>         
-        public string GenerateSignature(Uri url, string consumerKey, string consumerSecret, string token, string tokenSecret, string verifier, string callback, string httpMethod, string timestamp, string nonce, OAuthSignatureTypes signatureType)
-        {
-            switch (signatureType)
-            {
-                case OAuthSignatureTypes.PLAINTEXT:
-                    return HttpUtility.UrlEncode(string.Format(CultureInfo.InvariantCulture, "{0}&{1}", consumerSecret, tokenSecret));
-                case OAuthSignatureTypes.HMACSHA1:
-                    string signatureBase = GenerateSignatureBase(url, consumerKey, token, tokenSecret, verifier, callback, httpMethod, timestamp, nonce, HMACSHA1SignatureType);
-                    HMACSHA1 hmacsha1 = new HMACSHA1();
-                    hmacsha1.Key = Encoding.UTF8.GetBytes(string.Format(CultureInfo.InvariantCulture, "{0}&{1}", UrlEncode(consumerSecret), UrlEncode(tokenSecret)));
-                    return GenerateSignatureUsingHash(signatureBase, hmacsha1);
-                case OAuthSignatureTypes.RSASHA1:
-                    throw new NotImplementedException();
-                default:
-                    throw new ArgumentException("Unknown signature type", "signatureType");
-            }
-        }
-
-        /// <summary>
-        /// Generates a signature using the HMAC-SHA1 algorithm
-        /// </summary>		
-        /// <param name="url">The full url that needs to be signed including its non OAuth url parameters</param>
-        /// <param name="consumerKey">The consumer key</param>
-        /// <param name="consumerSecret">The consumer seceret</param>
-        /// <param name="token">The token, if available. If not available pass null or an empty string</param>
-        /// <param name="tokenSecret">The token secret, if available. If not available pass null or an empty string</param>
-        /// <param name="httpMethod">The http method used. Must be a valid HTTP method verb (POST,GET,PUT, etc)</param>
-        /// <returns>A base64 string of the hash value</returns>
-        public string GenerateSignature(Uri url, string consumerKey, string consumerSecret, string token, string tokenSecret, string verifier, string callback, string httpMethod, string timeStamp, string nonce, out string normalizedUrl, out string normalizedRequestParameters)
-        {
-            return GenerateSignature(url, consumerKey, consumerSecret, token, tokenSecret, verifier, callback, httpMethod, timeStamp, nonce, OAuthSignatureTypes.HMACSHA1, out normalizedUrl, out normalizedRequestParameters);
         }
 
         /// <summary>
@@ -479,7 +273,7 @@ namespace LinqToTwitter
         /// <param name="httpMethod">The http method used. Must be a valid HTTP method verb (POST,GET,PUT, etc)</param>
         /// <param name="signatureType">The type of signature to use</param>
         /// <returns>A base64 string of the hash value</returns>
-        public string GenerateSignature(Uri url, string consumerKey, string consumerSecret, string token, string tokenSecret, string verifier, string callback, string httpMethod, string timeStamp, string nonce, OAuthSignatureTypes signatureType, out string normalizedUrl, out string normalizedRequestParameters)
+        public string GenerateSignature(Request request, string consumerKey, string consumerSecret, string token, string tokenSecret, string verifier, string callback, string httpMethod, string timeStamp, string nonce, OAuthSignatureTypes signatureType, out string normalizedUrl, out string normalizedRequestParameters)
         {
             normalizedUrl = null;
             normalizedRequestParameters = null;
@@ -489,10 +283,10 @@ namespace LinqToTwitter
                 case OAuthSignatureTypes.PLAINTEXT:
                     return HttpUtility.UrlEncode(string.Format(CultureInfo.InvariantCulture, "{0}&{1}", consumerSecret, tokenSecret));
                 case OAuthSignatureTypes.HMACSHA1:
-                    string signatureBase = GenerateSignatureBase(url, consumerKey, token, tokenSecret, verifier, callback, httpMethod, timeStamp, nonce, HMACSHA1SignatureType, out normalizedUrl, out normalizedRequestParameters);
+                    string signatureBase = GenerateSignatureBase(request, consumerKey, token, tokenSecret, verifier, callback, httpMethod, timeStamp, nonce, HMACSHA1SignatureType, out normalizedUrl, out normalizedRequestParameters);
                     HMACSHA1 hmacsha1 = new HMACSHA1();
                     hmacsha1.Key = Encoding.UTF8.GetBytes(string.Format(CultureInfo.InvariantCulture, "{0}&{1}", UrlEncode(consumerSecret), UrlEncode(tokenSecret)));
-                    return GenerateSignatureUsingHash(signatureBase, hmacsha1);
+                    return ComputeHash(hmacsha1, signatureBase);
                 case OAuthSignatureTypes.RSASHA1:
                     throw new NotImplementedException();
                 default:

@@ -151,6 +151,9 @@
     <Compile Include="..\LinqToTwitterAg\Account\Totals.cs">
       <Link>Account\Totals.cs</Link>
     </Compile>
+    <Compile Include="..\LinqToTwitterAg\Account\TZInfo.cs">
+      <Link>Account\TZInfo.cs</Link>
+    </Compile>
     <Compile Include="..\LinqToTwitterAg\Blocks\BlockingType.cs">
       <Link>Blocks\BlockingType.cs</Link>
     </Compile>
@@ -198,6 +201,9 @@
     </Compile>
     <Compile Include="..\LinqToTwitterAg\Common\ParameterFinder.cs">
       <Link>Common\ParameterFinder.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\QueryParameter.cs">
+      <Link>Common\QueryParameter.cs</Link>
     </Compile>
     <Compile Include="..\LinqToTwitterAg\Common\RequestProcessorHelper.cs">
       <Link>Common\RequestProcessorHelper.cs</Link>
@@ -319,9 +325,6 @@
     <Compile Include="..\LinqToTwitterAg\OAuth\IOAuthCredentials.cs">
       <Link>OAuth\IOAuthCredentials.cs</Link>
     </Compile>
-    <Compile Include="..\LinqToTwitterAg\OAuth\IOAuthHelper.cs">
-      <Link>OAuth\IOAuthHelper.cs</Link>
-    </Compile>
     <Compile Include="..\LinqToTwitterAg\OAuth\IOAuthTwitter.cs">
       <Link>OAuth\IOAuthTwitter.cs</Link>
     </Compile>
@@ -333,9 +336,6 @@
     </Compile>
     <Compile Include="..\LinqToTwitterAg\OAuth\OAuthBase.cs">
       <Link>OAuth\OAuthBase.cs</Link>
-    </Compile>
-    <Compile Include="..\LinqToTwitterAg\OAuth\OAuthHelper.cs">
-      <Link>OAuth\OAuthHelper.cs</Link>
     </Compile>
     <Compile Include="..\LinqToTwitterAg\OAuth\OAuthSignatureTypes.cs">
       <Link>OAuth\OAuthSignatureTypes.cs</Link>

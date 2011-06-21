@@ -207,65 +207,41 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">criteria for url segments and parameters</param>
         /// <returns>URL conforming to Twitter API</returns>
-        public virtual string BuildURL(Dictionary<string, string> parameters)
+        public virtual Request BuildURL(Dictionary<string, string> parameters)
         {
-            string url = null;
-
             if (parameters == null || !parameters.ContainsKey("Type"))
             {
                 throw new ArgumentException("You must set Type.", "Type");
             }
-
-            //if (!parameters.ContainsKey("ScreenName"))
-            //{
-            //    throw new ArgumentException("You must specify the user's ScreenName for your query.", "ScreenName");
-            //}
-
-            //ScreenName = parameters["ScreenName"];
-
-            // all List api requests are based on a user's screen name
-            //BaseUrl += ScreenName + @"/";
 
             Type = RequestProcessorHelper.ParseQueryEnumType<ListType>(parameters["Type"]);
 
             switch (Type)
             {
                 case ListType.All:
-                    url = BuildAllUrl(parameters);
-                    break;
+                    return BuildAllUrl(parameters);
                 case ListType.Lists:
-                    url = BuildListsUrl(parameters);
-                    break;
+                    return BuildListsUrl(parameters);
                 case ListType.List: // TODO: Mark List enum as error soon, it's currently only a warning
                 case ListType.Show:
-                    url = BuildShowUrl(parameters);
-                    break;
+                    return BuildShowUrl(parameters);
                 case ListType.Statuses:
-                    url = BuildStatusesUrl(parameters);
-                    break;
+                    return BuildStatusesUrl(parameters);
                 case ListType.Memberships:
-                    url = BuildMembershipsUrl(parameters);
-                    break;
+                    return BuildMembershipsUrl(parameters);
                 case ListType.Subscriptions:
-                    url = BuildSubscriptionsUrl(parameters);
-                    break;
+                    return BuildSubscriptionsUrl(parameters);
                 case ListType.Members:
-                    url = BuildMembersUrl(parameters);
-                    break;
+                    return BuildMembersUrl(parameters);
                 case ListType.IsMember:
-                    url = BuildIsMemberUrl(parameters);
-                    break;
+                    return BuildIsMemberUrl(parameters);
                 case ListType.Subscribers:
-                    url = BuildSubscribersUrl(parameters);
-                    break;
+                    return BuildSubscribersUrl(parameters);
                 case ListType.IsSubscribed:
-                    url = BuildIsSubcribedUrl(parameters);
-                    break;
+                    return BuildIsSubcribedUrl(parameters);
                 default:
-                    break;
+                    throw new ArgumentException("Invalid ListType", "Type");
             }
-
-            return url;
         }
 
         /// <summary>
@@ -273,45 +249,32 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">ScreenName or UserID</param>
         /// <returns>Url of requesting user's subscribed lists</returns>
-        private string BuildAllUrl(Dictionary<string, string> parameters)
+        private Request BuildAllUrl(Dictionary<string, string> parameters)
         {
-            // TODO: wait for Twitter to implement new URL format
-            ScreenName = parameters["ScreenName"];
-
-            // all List api requests are based on a user's screen name
-            BaseUrl += ScreenName + @"/";
-
-            var urlParams = new List<string>();
-
-            string url = BaseUrl.Replace(ScreenName + "/", "") + @"lists/all.xml";
+            var req = new Request(BaseUrl + "lists/all.xml");
+            var urlParams = req.RequestParameters;
 
             if (parameters.ContainsKey("UserID"))
             {
                 UserID = parameters["UserID"];
-                urlParams.Add("user_id=" + parameters["UserID"]);
+                urlParams.Add(new QueryParameter("user_id", parameters["UserID"]));
             }
 
             if (parameters.ContainsKey("ScreenName"))
             {
                 ScreenName = parameters["ScreenName"];
-                urlParams.Add("screen_name=" + parameters["ScreenName"]);
+                urlParams.Add(new QueryParameter("screen_name", parameters["ScreenName"]));
             }
 
-            if (urlParams.Count > 0)
-            {
-                url += "?" + string.Join("&", urlParams.ToArray());
-            }
-
-            return url;
+            return req;
         }
-
 
         /// <summary>
         /// Builds URL to retrieve all of a user's lists
         /// </summary>
         /// <param name="parameters">Parameter List</param>
         /// <returns>Base URL + lists request</returns>
-        private string BuildListsUrl(Dictionary<string, string> parameters)
+        private Request BuildListsUrl(Dictionary<string, string> parameters)
         {
             if (!(parameters.ContainsKey("UserID") && !string.IsNullOrEmpty(parameters["UserID"])) &&
                 !(parameters.ContainsKey("ScreenName") && !string.IsNullOrEmpty(parameters["ScreenName"])))
@@ -319,34 +282,28 @@ namespace LinqToTwitter
                 throw new ArgumentException("Either UserID or ScreenName are required.", "UserIdOrScreenName");
             }
 
-            string url = BaseUrl + "lists.xml";
-
-            var urlParams = new List<string>();
+            var req = new Request(BaseUrl + "lists.xml");
+            var urlParams = req.RequestParameters;
 
             if (parameters.ContainsKey("UserID"))
             {
                 UserID = parameters["UserID"];
-                urlParams.Add("user_id=" + parameters["UserID"]);
+                urlParams.Add(new QueryParameter("user_id", parameters["UserID"]));
             }
 
             if (parameters.ContainsKey("ScreenName"))
             {
                 ScreenName = parameters["ScreenName"];
-                urlParams.Add("screen_name=" + parameters["ScreenName"]);
+                urlParams.Add(new QueryParameter("screen_name", parameters["ScreenName"]));
             }
 
             if (parameters.ContainsKey("Cursor"))
             {
                 Cursor = parameters["Cursor"];
-                urlParams.Add("cursor=" + parameters["Cursor"]);
+                urlParams.Add(new QueryParameter("cursor", parameters["Cursor"]));
             }
 
-            if (urlParams.Count > 0)
-            {
-                url += "?" + string.Join("&", urlParams.ToArray());
-            }
-
-            return url;
+            return req;
         }
 
         /// <summary>
@@ -354,7 +311,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">Contains ID for List</param>
         /// <returns>URL for List query</returns>
-        private string BuildShowUrl(Dictionary<string, string> parameters)
+        private Request BuildShowUrl(Dictionary<string, string> parameters)
         {
             if ((!parameters.ContainsKey("ListID") || string.IsNullOrEmpty(parameters["ListID"])) &&
                 (!parameters.ContainsKey("Slug") || string.IsNullOrEmpty(parameters["Slug"])))
@@ -369,40 +326,34 @@ namespace LinqToTwitter
                 throw new ArgumentException("If you specify a Slug, you must also specify either OwnerID or OwnerScreenName.", "OwnerIdOrOwnerScreenName");
             }
 
-            string url = BaseUrl + @"lists/show.xml";
-
-            var urlParams = new List<string>();
+            var req = new Request(BaseUrl + @"lists/show.xml");
+            var urlParams = req.RequestParameters;
 
             if (parameters.ContainsKey("Slug"))
             {
                 Slug = parameters["Slug"];
-                urlParams.Add("slug=" + parameters["Slug"]);
+                urlParams.Add(new QueryParameter("slug", parameters["Slug"]));
             }
 
             if (parameters.ContainsKey("OwnerID"))
             {
                 OwnerID = parameters["OwnerID"];
-                urlParams.Add("owner_id=" + parameters["OwnerID"]);
+                urlParams.Add(new QueryParameter("owner_id", parameters["OwnerID"]));
             }
 
             if (parameters.ContainsKey("OwnerScreenName"))
             {
                 OwnerScreenName = parameters["OwnerScreenName"];
-                urlParams.Add("owner_screen_name=" + parameters["OwnerScreenName"]);
+                urlParams.Add(new QueryParameter("owner_screen_name", parameters["OwnerScreenName"]));
             }
 
             if (parameters.ContainsKey("ListID"))
             {
                 ListID = parameters["ListID"];
-                urlParams.Add("list_id=" + parameters["ListID"]);
+                urlParams.Add(new QueryParameter("list_id", parameters["ListID"]));
             }
 
-            if (urlParams.Count > 0)
-            {
-                url += "?" + string.Join("&", urlParams.ToArray());
-            }
-
-            return url;
+            return req;
         }
 
         /// <summary>
@@ -410,7 +361,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">Contains ListID and optionally MaxID, SinceID, Count, and Page</param>
         /// <returns>URL for statuses query</returns>
-        private string BuildStatusesUrl(Dictionary<string, string> parameters)
+        private Request BuildStatusesUrl(Dictionary<string, string> parameters)
         {
             if ((!parameters.ContainsKey("ListID") || string.IsNullOrEmpty(parameters["ListID"])) &&
                 (!parameters.ContainsKey("Slug") || string.IsNullOrEmpty(parameters["Slug"])))
@@ -425,99 +376,97 @@ namespace LinqToTwitter
                 throw new ArgumentException("If you specify a Slug, you must also specify either OwnerID or OwnerScreenName.", "OwnerIdOrOwnerScreenName");
             }
 
-            string url = BaseUrl + @"lists/statuses.xml";
-
-            var urlParams = new List<string>();
+            var req = new Request(BaseUrl + "lists/statuses.xml");
+            var urlParams = req.RequestParameters;
 
             if (parameters.ContainsKey("OwnerID"))
             {
                 OwnerID = parameters["OwnerID"];
-                urlParams.Add("owner_id=" + parameters["OwnerID"]);
+                urlParams.Add(new QueryParameter("owner_id", parameters["OwnerID"]));
             }
 
             if (parameters.ContainsKey("OwnerScreenName"))
             {
                 OwnerScreenName = parameters["OwnerScreenName"];
-                urlParams.Add("owner_screen_name=" + parameters["OwnerScreenName"]);
+                urlParams.Add(new QueryParameter("owner_screen_name", parameters["OwnerScreenName"]));
             }
 
             if (parameters.ContainsKey("Slug"))
             {
                 Slug = parameters["Slug"];
-                urlParams.Add("slug=" + parameters["Slug"]);
+                urlParams.Add(new QueryParameter("slug", parameters["Slug"]));
             }
 
             if (parameters.ContainsKey("ListID"))
             {
                 ListID = parameters["ListID"];
-                urlParams.Add("list_id=" + parameters["ListID"]);
+                urlParams.Add(new QueryParameter("list_id", parameters["ListID"]));
             }
 
             if (parameters.ContainsKey("SinceID"))
             {
                 SinceID = ulong.Parse(parameters["SinceID"]);
-                urlParams.Add("since_id=" + parameters["SinceID"]);
+                urlParams.Add(new QueryParameter("since_id", parameters["SinceID"]));
             }
 
             if (parameters.ContainsKey("MaxID"))
             {
                 MaxID = ulong.Parse(parameters["MaxID"]);
-                urlParams.Add("max_id=" + parameters["MaxID"]);
+                urlParams.Add(new QueryParameter("max_id", parameters["MaxID"]));
             }
 
             if (parameters.ContainsKey("Count"))
             {
                 Count = int.Parse(parameters["Count"]);
-                urlParams.Add("count=" + parameters["Count"]);
+                urlParams.Add(new QueryParameter("count", parameters["Count"]));
                 // twitter seems to be ignoring the documented "count=", but does honor "per_page="
                 // for now, send BOTH
-                urlParams.Add("per_page=" + parameters["Count"]);
+                urlParams.Add(new QueryParameter("per_page", parameters["Count"]));
             }
 
             if (parameters.ContainsKey("Page"))
             {
                 Page = int.Parse(parameters["Page"]);
-                urlParams.Add("page=" + parameters["Page"]);
+                urlParams.Add(new QueryParameter("page", parameters["Page"]));
             }
 
             if (parameters.ContainsKey("TrimUser"))
             {
-                if (bool.Parse(parameters["TrimUser"]))
+                if (FlagTrue(parameters, "TrimUser"))
                 {
-                    urlParams.Add("trim_user=true");
+                    TrimUser = true;
+                    urlParams.Add(new QueryParameter("trim_user", "true"));
                 }
             }
 
             if (parameters.ContainsKey("IncludeEntities"))
             {
-                if (bool.Parse(parameters["IncludeEntities"]))
+                if (FlagTrue(parameters, "IncludeEntities"))
                 {
-                    urlParams.Add("include_entities=true");
+                    IncludeEntities = true;
+                    urlParams.Add(new QueryParameter("include_entities", "true"));
                 }
             }
 
             if (parameters.ContainsKey("IncludeRetweets"))
             {
-                if (bool.Parse(parameters["IncludeRetweets"]))
+                if (FlagTrue(parameters, "IncludeRetweets"))
                 {
-                    urlParams.Add("include_rts=true"); 
+                    IncludeRetweets = true;
+                    urlParams.Add(new QueryParameter("include_rts", "true"));
                 }
             }
 
-            if (urlParams.Count > 0)
-            {
-                url += "?" + string.Join("&", urlParams.ToArray());
-            }
-
-            return url;
+            return req;
         }
+
 
         /// <summary>
         /// Build url for getting list memberships
         /// </summary>
         /// <param name="parameters">None required</param>
         /// <returns>URL for memberships query</returns>
-        private string BuildMembershipsUrl(Dictionary<string, string> parameters)
+        private Request BuildMembershipsUrl(Dictionary<string, string> parameters)
         {
             if (!(parameters.ContainsKey("UserID") && !string.IsNullOrEmpty(parameters["UserID"])) &&
                 !(parameters.ContainsKey("ScreenName") && !string.IsNullOrEmpty(parameters["ScreenName"])))
@@ -525,45 +474,37 @@ namespace LinqToTwitter
                 throw new ArgumentException("Either UserID or ScreenName are required.", "UserIdOrScreenName");
             }
 
-            string url = BaseUrl + @"lists/memberships.xml";
-
-            var urlParams = new List<string>();
+            var req = new Request(BaseUrl + "lists/memberships.xml");
+            var urlParams = req.RequestParameters;
 
             if (parameters.ContainsKey("UserID"))
             {
                 UserID = parameters["UserID"];
-                urlParams.Add("user_id=" + parameters["UserID"]);
+                urlParams.Add(new QueryParameter("user_id", parameters["UserID"]));
             }
 
             if (parameters.ContainsKey("ScreenName"))
             {
                 ScreenName = parameters["ScreenName"];
-                urlParams.Add("screen_name=" + parameters["ScreenName"]);
+                urlParams.Add(new QueryParameter("screen_name", parameters["ScreenName"]));
             }
 
             if (parameters.ContainsKey("Cursor"))
             {
                 Cursor = parameters["Cursor"];
-                urlParams.Add("cursor=" + parameters["Cursor"]);
+                urlParams.Add(new QueryParameter("cursor", parameters["Cursor"]));
             }
 
             if (parameters.ContainsKey("FilterToOwnedLists"))
             {
-                bool filter;
-
-                if (bool.TryParse(parameters["FilterToOwnedLists"], out filter) && filter == true)
+                if (FlagTrue(parameters, "FilterToOwnedLists"))
                 {
-                    FilterToOwnedLists = filter;
-                    urlParams.Add("filter_to_owned_lists=" + parameters["FilterToOwnedLists"]);
+                    FilterToOwnedLists = true;
+                    urlParams.Add(new QueryParameter("filter_to_owned_lists", "true"));
                 }
             }
 
-            if (urlParams.Count > 0)
-            {
-                url += "?" + string.Join("&", urlParams.ToArray());
-            }
-
-            return url;
+            return req;
         }
 
         /// <summary>
@@ -571,7 +512,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">None required</param>
         /// <returns>URL for subscriptions query</returns>
-        private string BuildSubscriptionsUrl(Dictionary<string, string> parameters)
+        private Request BuildSubscriptionsUrl(Dictionary<string, string> parameters)
         {
             if (!(parameters.ContainsKey("UserID") && !string.IsNullOrEmpty(parameters["UserID"])) &&
                 !(parameters.ContainsKey("ScreenName") && !string.IsNullOrEmpty(parameters["ScreenName"])))
@@ -579,34 +520,28 @@ namespace LinqToTwitter
                 throw new ArgumentException("Either UserID or ScreenName are required.", "UserIdOrScreenName");
             }
 
-            string url = BaseUrl + @"lists/subscriptions.xml";
-
-            var urlParams = new List<string>();
+            var req = new Request(BaseUrl + "lists/subscriptions.xml");
+            var urlParams = req.RequestParameters;
 
             if (parameters.ContainsKey("UserID"))
             {
                 UserID = parameters["UserID"];
-                urlParams.Add("user_id=" + parameters["UserID"]);
+                urlParams.Add(new QueryParameter("user_id", parameters["UserID"]));
             }
 
             if (parameters.ContainsKey("ScreenName"))
             {
                 ScreenName = parameters["ScreenName"];
-                urlParams.Add("screen_name=" + parameters["ScreenName"]);
+                urlParams.Add(new QueryParameter("screen_name", parameters["ScreenName"]));
             }
 
             if (parameters.ContainsKey("Cursor"))
             {
                 Cursor = parameters["Cursor"];
-                urlParams.Add("cursor=" + parameters["Cursor"]);
+                urlParams.Add(new QueryParameter("cursor", parameters["Cursor"]));
             }
 
-            if (urlParams.Count > 0)
-            {
-                url += "?" + string.Join("&", urlParams.ToArray());
-            }
-
-            return url;
+            return req;
         }
 
         /// <summary>
@@ -614,7 +549,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">Contains ListID and optionally Cursor</param>
         /// <returns>URL for members query</returns>
-        private string BuildMembersUrl(Dictionary<string, string> parameters)
+        private Request BuildMembersUrl(Dictionary<string, string> parameters)
         {
             if ((!parameters.ContainsKey("ListID") || string.IsNullOrEmpty(parameters["ListID"])) &&
                (!parameters.ContainsKey("Slug") || string.IsNullOrEmpty(parameters["Slug"])))
@@ -629,54 +564,49 @@ namespace LinqToTwitter
                 throw new ArgumentException("If you specify a Slug, you must also specify either OwnerID or OwnerScreenName.", "OwnerIdOrOwnerScreenName");
             }
 
-            string url = BaseUrl + @"lists/members.xml";
-
-            var urlParams = new List<string>();
+            var req = new Request(BaseUrl + "lists/members.xml");
+            var urlParams = req.RequestParameters;
 
             if (parameters.ContainsKey("OwnerID"))
             {
                 OwnerID = parameters["OwnerID"];
-                urlParams.Add("owner_id=" + parameters["OwnerID"]);
+                urlParams.Add(new QueryParameter("owner_id", parameters["OwnerID"]));
             }
 
             if (parameters.ContainsKey("OwnerScreenName"))
             {
                 OwnerScreenName = parameters["OwnerScreenName"];
-                urlParams.Add("owner_screen_name=" + parameters["OwnerScreenName"]);
+                urlParams.Add(new QueryParameter("owner_screen_name", parameters["OwnerScreenName"]));
             }
 
             if (parameters.ContainsKey("Slug"))
             {
                 Slug = parameters["Slug"];
-                urlParams.Add("slug=" + parameters["Slug"]);
+                urlParams.Add(new QueryParameter("slug", parameters["Slug"]));
             }
 
             if (parameters.ContainsKey("ListID"))
             {
                 ListID = parameters["ListID"];
-                urlParams.Add("list_id=" + parameters["ListID"]);
+                urlParams.Add(new QueryParameter("list_id", parameters["ListID"]));
             }
 
             if (parameters.ContainsKey("Cursor"))
             {
                 Cursor = parameters["Cursor"];
-                urlParams.Add("cursor=" + parameters["Cursor"]);
+                urlParams.Add(new QueryParameter("cursor", parameters["Cursor"]));
             }
 
             if (parameters.ContainsKey("IncludeEntities"))
             {
-                if (bool.Parse(parameters["IncludeEntities"]))
+                if (FlagTrue(parameters, "IncludeEntities"))
                 {
-                    urlParams.Add("include_entities=true");
+                    IncludeEntities = true;
+                    urlParams.Add(new QueryParameter("include_entities", "true"));
                 }
             }
 
-            if (urlParams.Count > 0)
-            {
-                url += "?" + string.Join("&", urlParams.ToArray());
-            }
-
-            return url;
+            return req;
         }
 
         /// <summary>
@@ -684,7 +614,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">Contains ID and ListID</param>
         /// <returns>URL for list members query</returns>
-        private string BuildIsMemberUrl(Dictionary<string, string> parameters)
+        private Request BuildIsMemberUrl(Dictionary<string, string> parameters)
         {
             if ((!parameters.ContainsKey("UserID") || string.IsNullOrEmpty(parameters["UserID"])) &&
                (!parameters.ContainsKey("ScreenName") || string.IsNullOrEmpty(parameters["ScreenName"])))
@@ -705,60 +635,55 @@ namespace LinqToTwitter
                 throw new ArgumentException("If you specify a Slug, you must also specify either OwnerID or OwnerScreenName.", "OwnerIdOrOwnerScreenName");
             }
 
-            string url = BaseUrl + @"lists/members/show.xml";
-
-            var urlParams = new List<string>();
+            var req = new Request(BaseUrl + "lists/members/show.xml");
+            var urlParams = req.RequestParameters;
 
             if (parameters.ContainsKey("UserID"))
             {
                 UserID = parameters["UserID"];
-                urlParams.Add("user_id=" + parameters["UserID"]);
+                urlParams.Add(new QueryParameter("user_id", parameters["UserID"]));
             }
 
             if (parameters.ContainsKey("ScreenName"))
             {
                 ScreenName = parameters["ScreenName"];
-                urlParams.Add("screen_name=" + parameters["ScreenName"]);
+                urlParams.Add(new QueryParameter("screen_name", parameters["ScreenName"]));
             }
 
             if (parameters.ContainsKey("Slug"))
             {
                 Slug = parameters["Slug"];
-                urlParams.Add("slug=" + parameters["Slug"]);
+                urlParams.Add(new QueryParameter("slug", parameters["Slug"]));
             }
 
             if (parameters.ContainsKey("OwnerID"))
             {
                 OwnerID = parameters["OwnerID"];
-                urlParams.Add("owner_id=" + parameters["OwnerID"]);
+                urlParams.Add(new QueryParameter("owner_id", parameters["OwnerID"]));
             }
 
             if (parameters.ContainsKey("OwnerScreenName"))
             {
                 OwnerScreenName = parameters["OwnerScreenName"];
-                urlParams.Add("owner_screen_name=" + parameters["OwnerScreenName"]);
+                urlParams.Add(new QueryParameter("owner_screen_name", parameters["OwnerScreenName"]));
             }
 
             if (parameters.ContainsKey("ListID"))
             {
                 ListID = parameters["ListID"];
-                urlParams.Add("list_id=" + parameters["ListID"]);
+                urlParams.Add(new QueryParameter("list_id", parameters["ListID"]));
             }
 
             if (parameters.ContainsKey("IncludeEntities"))
             {
-                if (bool.Parse(parameters["IncludeEntities"]))
+                if (FlagTrue(parameters, "IncludeEntities"))
                 {
-                    urlParams.Add("include_entities=true");
+                    IncludeEntities = true;
+                    urlParams.Add(new QueryParameter("include_entities", "true"));
                 }
             }
 
-            if (urlParams.Count > 0)
-            {
-                url += "?" + string.Join("&", urlParams.ToArray());
-            }
-
-            return url;
+            return req;
         }
 
         /// <summary>
@@ -766,7 +691,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters"></param>
         /// <returns>URL for list subscribers query</returns>
-        private string BuildSubscribersUrl(Dictionary<string, string> parameters)
+        private Request BuildSubscribersUrl(Dictionary<string, string> parameters)
         {
             if ((!parameters.ContainsKey("ListID") || string.IsNullOrEmpty(parameters["ListID"])) &&
                (!parameters.ContainsKey("Slug") || string.IsNullOrEmpty(parameters["Slug"])))
@@ -781,54 +706,49 @@ namespace LinqToTwitter
                 throw new ArgumentException("If you specify a Slug, you must also specify either OwnerID or OwnerScreenName.", "OwnerIdOrOwnerScreenName");
             }
 
-            string url = BaseUrl + @"lists/subscribers.xml";
-
-            var urlParams = new List<string>();
+            var req = new Request(BaseUrl + "lists/subscribers.xml");
+            var urlParams = req.RequestParameters;
 
             if (parameters.ContainsKey("OwnerID"))
             {
                 OwnerID = parameters["OwnerID"];
-                urlParams.Add("owner_id=" + parameters["OwnerID"]);
+                urlParams.Add(new QueryParameter("owner_id", parameters["OwnerID"]));
             }
 
             if (parameters.ContainsKey("OwnerScreenName"))
             {
                 OwnerScreenName = parameters["OwnerScreenName"];
-                urlParams.Add("owner_screen_name=" + parameters["OwnerScreenName"]);
+                urlParams.Add(new QueryParameter("owner_screen_name", parameters["OwnerScreenName"]));
             }
 
             if (parameters.ContainsKey("Slug"))
             {
                 Slug = parameters["Slug"];
-                urlParams.Add("slug=" + parameters["Slug"]);
+                urlParams.Add(new QueryParameter("slug", parameters["Slug"]));
             }
 
             if (parameters.ContainsKey("ListID"))
             {
                 ListID = parameters["ListID"];
-                urlParams.Add("list_id=" + parameters["ListID"]);
+                urlParams.Add(new QueryParameter("list_id", parameters["ListID"]));
             }
 
             if (parameters.ContainsKey("Cursor"))
             {
                 Cursor = parameters["Cursor"];
-                urlParams.Add("cursor=" + parameters["Cursor"]);
+                urlParams.Add(new QueryParameter("cursor", parameters["Cursor"]));
             }
 
             if (parameters.ContainsKey("IncludeEntities"))
             {
-                if (bool.Parse(parameters["IncludeEntities"]))
+                if (FlagTrue(parameters, "IncludeEntities"))
                 {
-                    urlParams.Add("include_entities=true");
+                    IncludeEntities = true;
+                    urlParams.Add(new QueryParameter("include_entities", "true"));
                 }
             }
 
-            if (urlParams.Count > 0)
-            {
-                url += "?" + string.Join("&", urlParams.ToArray());
-            }
-
-            return url;
+            return req;
         }
 
         /// <summary>
@@ -836,7 +756,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">Should contain ID and ListID</param>
         /// <returns>URL for IsSubscribed query</returns>
-        private string BuildIsSubcribedUrl(Dictionary<string, string> parameters)
+        private Request BuildIsSubcribedUrl(Dictionary<string, string> parameters)
         {
             if ((!parameters.ContainsKey("UserID") || string.IsNullOrEmpty(parameters["UserID"])) &&
                (!parameters.ContainsKey("ScreenName") || string.IsNullOrEmpty(parameters["ScreenName"])))
@@ -857,60 +777,55 @@ namespace LinqToTwitter
                 throw new ArgumentException("If you specify a Slug, you must also specify either OwnerID or OwnerScreenName.", "OwnerIdOrOwnerScreenName");
             }
 
-            string url = BaseUrl + @"lists/subscribers/show.xml";
-
-            var urlParams = new List<string>();
+            var req = new Request(BaseUrl + "lists/subscribers/show.xml");
+            var urlParams = req.RequestParameters;
 
             if (parameters.ContainsKey("UserID"))
             {
                 UserID = parameters["UserID"];
-                urlParams.Add("user_id=" + parameters["UserID"]);
+                urlParams.Add(new QueryParameter("user_id", parameters["UserID"]));
             }
 
             if (parameters.ContainsKey("ScreenName"))
             {
                 ScreenName = parameters["ScreenName"];
-                urlParams.Add("screen_name=" + parameters["ScreenName"]);
+                urlParams.Add(new QueryParameter("screen_name", parameters["ScreenName"]));
             }
 
             if (parameters.ContainsKey("Slug"))
             {
                 Slug = parameters["Slug"];
-                urlParams.Add("slug=" + parameters["Slug"]);
+                urlParams.Add(new QueryParameter("slug", parameters["Slug"]));
             }
 
             if (parameters.ContainsKey("OwnerID"))
             {
                 OwnerID = parameters["OwnerID"];
-                urlParams.Add("owner_id=" + parameters["OwnerID"]);
+                urlParams.Add(new QueryParameter("owner_id", parameters["OwnerID"]));
             }
 
             if (parameters.ContainsKey("OwnerScreenName"))
             {
                 OwnerScreenName = parameters["OwnerScreenName"];
-                urlParams.Add("owner_screen_name=" + parameters["OwnerScreenName"]);
+                urlParams.Add(new QueryParameter("owner_screen_name", parameters["OwnerScreenName"]));
             }
 
             if (parameters.ContainsKey("ListID"))
             {
                 ListID = parameters["ListID"];
-                urlParams.Add("list_id=" + parameters["ListID"]);
+                urlParams.Add(new QueryParameter("list_id", parameters["ListID"]));
             }
 
             if (parameters.ContainsKey("IncludeEntities"))
             {
-                if (bool.Parse(parameters["IncludeEntities"]))
+                if (FlagTrue(parameters, "IncludeEntities"))
                 {
-                    urlParams.Add("include_entities=true");
+                    IncludeEntities = true;
+                    urlParams.Add(new QueryParameter("include_entities", "true"));
                 }
             }
 
-            if (urlParams.Count > 0)
-            {
-                url += "?" + string.Join("&", urlParams.ToArray());
-            }
-
-            return url;
+            return req;
         }
 
         /// <summary>
@@ -946,7 +861,7 @@ namespace LinqToTwitter
                 lists.Add(
                     new List
                     {
-                        Users = 
+                        Users =
                             (from user in twitterResponse.Element("users").Elements("user")
                              select User.CreateUser(user))
                              .ToList(),
@@ -956,7 +871,7 @@ namespace LinqToTwitter
             else if (twitterResponse.Name == "user")
             {
                 lists.Add(
-                    new List 
+                    new List
                     {
                         Users = new List<User>
                         {
@@ -969,7 +884,7 @@ namespace LinqToTwitter
                 lists.Add(
                     new List
                     {
-                        Statuses = 
+                        Statuses =
                             (from status in twitterResponse.Elements("status")
                              select Status.CreateStatus(status))
                              .ToList(),
@@ -1001,6 +916,18 @@ namespace LinqToTwitter
             });
 
             return lists.AsEnumerable().OfType<T>().ToList();
+        }
+
+        private static bool FlagTrue(IDictionary<string, string> parameters, string key)
+        {
+            bool flag;
+
+            if (!bool.TryParse(parameters[key], out flag))
+            {
+                flag = false;
+            }
+
+            return flag;
         }
     }
 }

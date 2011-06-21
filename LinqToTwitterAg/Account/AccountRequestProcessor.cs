@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Collections;
 using System.Globalization;
+using System.Linq;
 using System.Xml.Linq;
 
 namespace LinqToTwitter
@@ -44,7 +42,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">criteria for url segments and parameters</param>
         /// <returns>URL conforming to Twitter API</returns>
-        public virtual string BuildURL(Dictionary<string, string> parameters)
+        public virtual Request BuildURL(Dictionary<string, string> parameters)
         {
             string url = null;
 
@@ -73,7 +71,7 @@ namespace LinqToTwitter
                     throw new InvalidOperationException("The default case of BuildUrl should never execute because a Type must be specified.");
             }
 
-            return url;
+            return new Request(url);
         }
 
         /// <summary>
@@ -135,8 +133,12 @@ namespace LinqToTwitter
                 {
                     TrendLocation = Location.CreateLocation(twitterResponse.Element("trend_location")),
                     GeoEnabled = bool.Parse(twitterResponse.Element("geo_enabled").Value),
-                    SleepTime = SleepTime.CreateSleepTime(twitterResponse.Element("sleep_time"))
-                };
+                    SleepTime = SleepTime.CreateSleepTime(twitterResponse.Element("sleep_time")),
+                    Language = twitterResponse.Element("language").Value,
+                    AlwaysUseHttps = bool.Parse(twitterResponse.Element("always_use_https").Value),
+                    DiscoverableByEmail = bool.Parse(twitterResponse.Element("discoverable_by_email").Value),
+                    TimeZone = TZInfo.CreateTZInfo(twitterResponse.Element("time_zone"))
+                 };
             }
             else
             {

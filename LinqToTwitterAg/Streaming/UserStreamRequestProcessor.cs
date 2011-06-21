@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Linq.Expressions;
 
 namespace LinqToTwitter
 {
     public class UserStreamRequestProcessor<T> : IRequestProcessor<T>
     {
-        public string BaseUrl 
+        public string BaseUrl
         {
             get
             {
@@ -34,6 +33,7 @@ namespace LinqToTwitter
         /// <summary>
         /// Stream delimiter
         /// </summary>
+        /// <remarks>Should always be "length" </remarks>
         public string Delimited { get; set; }
 
         /// <summary>
@@ -109,30 +109,22 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">criteria for url segments and parameters</param>
         /// <returns>URL conforming to Twitter API</returns>
-        public string BuildURL(Dictionary<string, string> parameters)
+        public Request BuildURL(Dictionary<string, string> parameters)
         {
-            string url = null;
-
             if (parameters == null || !parameters.ContainsKey("Type"))
-            {
                 throw new ArgumentException("You must set Type.", "Type");
-            }
 
             Type = RequestProcessorHelper.ParseQueryEnumType<UserStreamType>(parameters["Type"]);
 
             switch (Type)
             {
                 case UserStreamType.User:
-                    url = BuildUserUrl(parameters);
-                    break;
+                    return BuildUserUrl(parameters);
                 case UserStreamType.Site:
-                    url = BuildSiteUrl(parameters);
-                    break;
+                    return BuildSiteUrl(parameters);
                 default:
                     throw new ArgumentException("Invalid UserStreamType", "UserStreamType");
             }
-
-            return url;
         }
 
         /// <summary>
@@ -140,41 +132,40 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">parameter list</param>
         /// <returns>base url + show segment</returns>
-        private string BuildUserUrl(Dictionary<string, string> parameters)
+        private Request BuildUserUrl(Dictionary<string, string> parameters)
         {
-            string url = UserStreamUrl + "user.json";
-
-            var urlParams = new List<string>();
+            var req = new Request(UserStreamUrl + "user.json");
+            var urlParams = req.RequestParameters;
 
             if (parameters.ContainsKey("Delimited"))
             {
-                urlParams.Add("delimited=" + parameters["Delimited"].ToLower());
+                Delimited = parameters["Delimited"];
+                urlParams.Add(new QueryParameter("delimited", Delimited.ToLower()));
             }
 
             if (parameters.ContainsKey("Track"))
             {
-                urlParams.Add("track=" + Uri.EscapeUriString(parameters["Track"]));
+                Track = parameters["Track"];
+                urlParams.Add(new QueryParameter("track", Track));
             }
 
             if (parameters.ContainsKey("With"))
             {
-                urlParams.Add("with=" + parameters["With"].ToLower());
+                With = parameters["With"];
+                urlParams.Add(new QueryParameter("with", With.ToLower()));
             }
 
             if (parameters.ContainsKey("AllReplies"))
             {
-                if (bool.Parse(parameters["AllReplies"]))
+                AllReplies = bool.Parse(parameters["AllReplies"]);
+
+                if (AllReplies)
                 {
-                    urlParams.Add("replies=all"); 
+                    urlParams.Add(new QueryParameter("replies", "all"));
                 }
             }
 
-            if (urlParams.Count > 0)
-            {
-                url += "?" + string.Join("&", urlParams.ToArray());
-            }
-
-            return url;
+            return req;
         }
 
         /// <summary>
@@ -182,51 +173,51 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">parameter list</param>
         /// <returns>base url + show segment</returns>
-        private string BuildSiteUrl(Dictionary<string, string> parameters)
+        private Request BuildSiteUrl(Dictionary<string, string> parameters)
         {
             if (!parameters.ContainsKey("Follow"))
             {
                 throw new ArgumentNullException("Follow", "Follow is required.");
             }
 
-            string url = SiteStreamUrl + "site.json";
-
-            var urlParams = new List<string>();
+            var req = new Request(SiteStreamUrl + "site.json");
+            var urlParams = req.RequestParameters;
 
             if (parameters.ContainsKey("Delimited"))
             {
-                urlParams.Add("delimited=" + parameters["Delimited"].ToLower());
+                Delimited = parameters["Delimited"];
+                urlParams.Add(new QueryParameter("delimited", Delimited.ToLower()));
             }
 
             if (parameters.ContainsKey("Follow"))
             {
-                urlParams.Add("follow=" + parameters["Follow"].ToLower());
+                Follow = parameters["Follow"];
+                urlParams.Add(new QueryParameter("follow", Follow.ToLower()));
             }
 
             if (parameters.ContainsKey("Track"))
             {
-                urlParams.Add("track=" + Uri.EscapeUriString(parameters["Track"]));
+                Track = parameters["Track"];
+                urlParams.Add(new QueryParameter("track", Track));
             }
 
             if (parameters.ContainsKey("With"))
             {
-                urlParams.Add("with=" + parameters["With"].ToLower());
+                With = parameters["With"];
+                urlParams.Add(new QueryParameter("with", With.ToLower()));
             }
 
             if (parameters.ContainsKey("AllReplies"))
             {
-                if (bool.Parse(parameters["AllReplies"]))
+                AllReplies = bool.Parse(parameters["AllReplies"]);
+
+                if (AllReplies)
                 {
-                    urlParams.Add("replies=all");
+                    urlParams.Add(new QueryParameter("replies", "all"));
                 }
             }
 
-            if (urlParams.Count > 0)
-            {
-                url += "?" + string.Join("&", urlParams.ToArray());
-            }
-
-            return url;
+            return req;
         }
 
         /// <summary>

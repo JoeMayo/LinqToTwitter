@@ -16,33 +16,37 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="url">The request URL.</param>
         /// <returns>The <see cref="HttpWebRequest"/> object that may be further customized.</returns>
-        WebRequest Get(string url);
+        WebRequest Get(Request request);
 
         /// <summary>
-        /// Prepares an authorized HTTP POST request without sending a POST entity stream.
+        /// Prepares an authorized HTTP POST request.
         /// </summary>
-        /// <param name="url">The request URL.</param>
-        /// <returns>The <see cref="HttpWebRequest"/> object that may be further customized.</returns>
-        HttpWebRequest Post(string url);
+        /// <param name="request">The request with the endpoint URL and the parameters to 
+        /// include in the POST entity.  Must not be null.</param>
+        /// <returns>
+        /// The HTTP request.
+        /// </returns>
+        HttpWebRequest PostRequest(Request request, IDictionary<string, string> postData);
 
+        // Was HttpWebResponse for calls with args
         /// <summary>
         /// Prepares and sends an authorized HTTP POST request.
         /// </summary>
-        /// <param name="url">The request URL.</param>
-        /// <param name="args">The parameters to include in the POST entity.  Must not be null.</param>
+        /// <param name="request">The request with the endpoint URL and the parameters to 
+        /// include in the POST entity.  Must not be null.</param>
         /// <returns>
-        /// The HTTP response.
+        /// The HTTP reponce.
         /// </returns>
         /// <exception cref="WebException">Thrown if the server returns an error.</exception>
-        HttpWebResponse Post(string url, Dictionary<string, string> args);
+        HttpWebResponse Post(Request request, IDictionary<string, string> postData);
 
         /// <summary>
         /// Async OAuth Post
         /// </summary>
-        /// <param name="url">Twitter Command</param>
-        /// <param name="args">Command Arguments</param>
+        /// <param name="request">The request with the endpoint URL and the parameters to 
+        /// include in the POST entity.  Must not be null.</param>
         /// <returns>HttpWebRequest for post</returns>
-        HttpWebRequest PostAsync(string url, Dictionary<string, string> args);
+        HttpWebRequest PostAsync(Request request, IDictionary<string, string> postData);
 
         /// <summary>
         /// Gets a value indicating whether this instance is ready to send authorized GET and POST requests.

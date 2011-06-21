@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Linq.Expressions;
-using System.Collections;
 using System.Globalization;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Xml.Linq;
 
 namespace LinqToTwitter
@@ -50,7 +48,7 @@ namespace LinqToTwitter
         /// ID of DM
         /// </summary>
         private ulong ID { get; set; }
-        
+
         /// <summary>
         /// extracts parameters from lambda
         /// </summary>
@@ -80,48 +78,35 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">criteria for url segments and parameters</param>
         /// <returns>URL conforming to Twitter API</returns>
-        public virtual string BuildURL(Dictionary<string, string> parameters)
+        public virtual Request BuildURL(Dictionary<string, string> parameters)
         {
-            string url = null;
-
             if (parameters == null || !parameters.ContainsKey("Type"))
-            {
                 throw new ArgumentException("You must set Type.", "Type");
-            }
 
             Type = RequestProcessorHelper.ParseQueryEnumType<DirectMessageType>(parameters["Type"]);
 
             switch (Type)
             {
                 case DirectMessageType.SentBy:
-                    url = BuildSentByUrl(parameters);
-                    break;
+                    return BuildSentByUrl(parameters);
                 case DirectMessageType.SentTo:
-                    url = BuildSentToUrl(parameters);
-                    break;
+                    return BuildSentToUrl(parameters);
                 case DirectMessageType.Show:
-                    url = BuildShowUrl(parameters);
-                    break;
+                    return BuildShowUrl(parameters);
                 default:
                     throw new InvalidOperationException("The default case of BuildUrl should never execute because a Type must be specified.");
             }
-
-            return url;
         }
 
-        private string BuildShowUrl(Dictionary<string, string> parameters)
+        private Request BuildShowUrl(Dictionary<string, string> parameters)
         {
-            if (!parameters.ContainsKey("ID"))
-            {
+            if (parameters == null || !parameters.ContainsKey("ID"))
                 throw new ArgumentNullException("ID", "ID is required.");
-            }
 
-            var url = BaseUrl + "direct_messages/show.xml";
-
-            url = BuildUrlHelper.TransformIDUrl(parameters, url);
             ID = ulong.Parse(parameters["ID"]);
 
-            return url;
+            var url = BuildUrlHelper.TransformIDUrl(parameters, "direct_messages/show.xml");
+            return new Request(BaseUrl + url);
         }
 
         /// <summary>
@@ -129,16 +114,9 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">parameters to add</param>
         /// <returns>new url with parameters</returns>
-        private string BuildSentToUrl(Dictionary<string, string> parameters)
+        private Request BuildSentToUrl(Dictionary<string, string> parameters)
         {
-            var url = BaseUrl + "direct_messages.xml";
-
-            if (parameters != null)
-            {
-                url = BuildSentUrlParameters(parameters, url);
-            }
-
-            return url;
+            return BuildSentUrlParameters(parameters, "direct_messages.xml");
         }
 
         /// <summary>
@@ -146,16 +124,9 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">parameters to add</param>
         /// <returns>new url with parameters</returns>
-        private string BuildSentByUrl(Dictionary<string, string> parameters)
+        private Request BuildSentByUrl(Dictionary<string, string> parameters)
         {
-            var url = BaseUrl + "direct_messages/sent.xml";
-
-            if (parameters != null)
-            {
-                url = BuildSentUrlParameters(parameters, url);
-            }
-
-            return url;
+            return BuildSentUrlParameters(parameters, "direct_messages/sent.xml");
         }
 
         /// <summary>
@@ -164,45 +135,39 @@ namespace LinqToTwitter
         /// <param name="parameters">parameters to add</param>
         /// <param name="url">url to start with</param>
         /// <returns>new url with parameters</returns>
-        private string BuildSentUrlParameters(Dictionary<string, string> parameters, string url)
+        private Request BuildSentUrlParameters(Dictionary<string, string> parameters, string url)
         {
-            if (parameters == null)
-            {
-                return url;
-            }
+            var req = new Request(BaseUrl + url);
+            var urlParams = req.RequestParameters;
 
-            var urlParams = new List<string>();
+            if (parameters == null)
+                return req;
 
             if (parameters.ContainsKey("SinceID"))
             {
                 SinceID = ulong.Parse(parameters["SinceID"]);
-                urlParams.Add("since_id=" + parameters["SinceID"]);
+                urlParams.Add(new QueryParameter("since_id", SinceID.ToString(CultureInfo.InvariantCulture)));
             }
 
             if (parameters.ContainsKey("MaxID"))
             {
                 MaxID = ulong.Parse(parameters["MaxID"]);
-                urlParams.Add("max_id=" + parameters["MaxID"]);
+                urlParams.Add(new QueryParameter("max_id", MaxID.ToString(CultureInfo.InvariantCulture)));
             }
 
             if (parameters.ContainsKey("Page"))
             {
                 Page = int.Parse(parameters["Page"]);
-                urlParams.Add("page=" + parameters["Page"]);
+                urlParams.Add(new QueryParameter("page", Page.ToString(CultureInfo.InvariantCulture)));
             }
 
             if (parameters.ContainsKey("Count"))
             {
                 Count = int.Parse(parameters["Count"]);
-                urlParams.Add("count=" + parameters["Count"]);
+                urlParams.Add(new QueryParameter("count", Count.ToString(CultureInfo.InvariantCulture)));
             }
 
-            if (urlParams.Count > 0)
-            {
-                url += "?" + string.Join("&", urlParams.ToArray());
-            }
-
-            return url;
+            return req;
         }
 
         /// <summary>

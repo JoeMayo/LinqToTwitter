@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
-using System.Text;
 using System.Linq.Expressions;
 using System.Xml.Linq;
-using System.Collections;
-using System.Globalization;
 
 namespace LinqToTwitter
 {
@@ -54,20 +52,14 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">criteria for url segments and parameters</param>
         /// <returns>URL conforming to Twitter API</returns>
-        public virtual string BuildURL(Dictionary<string, string> parameters)
+        public virtual Request BuildURL(Dictionary<string, string> parameters)
         {
             if (parameters == null || !parameters.ContainsKey("Type"))
-            {
                 throw new ArgumentException("You must set Type.", "Type");
-            }
 
             Type = RequestProcessorHelper.ParseQueryEnumType<FavoritesType>(parameters["Type"]);
 
-            var url = BaseUrl + "favorites.xml";
-
-            url = BuildFavoritesUrlParameters(parameters, url);
-
-            return url;
+            return BuildFavoritesUrlParameters(parameters);
         }
 
         /// <summary>
@@ -76,28 +68,24 @@ namespace LinqToTwitter
         /// <param name="parameters">list of parameters from expression tree</param>
         /// <param name="url">base url</param>
         /// <returns>base url + parameters</returns>
-        private string BuildFavoritesUrlParameters(Dictionary<string, string> parameters, string url)
+        private Request BuildFavoritesUrlParameters(Dictionary<string, string> parameters)
         {
-            var urlParams = new List<string>();
+            var req = new Request(BaseUrl + "favorites.xml");
+            var urlParams = req.RequestParameters;
 
             if (parameters.ContainsKey("Page"))
             {
                 Page = int.Parse(parameters["Page"]);
-                urlParams.Add("page=" + parameters["Page"]);
+                urlParams.Add(new QueryParameter("page", parameters["Page"]));
             }
 
             if (parameters.ContainsKey("ID"))
             {
                 ID = parameters["ID"];
-                urlParams.Add("id=" + parameters["ID"]);
+                urlParams.Add(new QueryParameter("id", parameters["ID"]));
             }
 
-            if (urlParams.Count > 0)
-            {
-                url += "?" + string.Join("&", urlParams.ToArray());
-            }
-
-            return url;
+            return req;
         }
 
         /// <summary>

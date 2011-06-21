@@ -7,6 +7,13 @@ using System.Linq.Expressions;
 using System.Collections;
 using System.Globalization;
 
+#if SILVERLIGHT
+using System.Net.Browser;
+using System.Windows;
+#else
+using System.Web;
+#endif
+
 namespace LinqToTwitter
 {
     /// <summary>
@@ -18,7 +25,7 @@ namespace LinqToTwitter
         /// base url for request
         /// </summary>
         public virtual string BaseUrl { get; set; }
-        
+
         /// <summary>
         /// Actual query string sent to twitter
         /// </summary>
@@ -49,25 +56,26 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">criteria for url segments and parameters</param>
         /// <returns>URL conforming to Twitter API</returns>
-        public virtual string BuildURL(Dictionary<string, string> parameters)
+        public virtual Request BuildURL(Dictionary<string, string> parameters)
         {
-            if (parameters.ContainsKey("QueryString"))
-            {
-                QueryString = parameters["QueryString"].Trim();
-            }
-            else
-            {
+            if (!parameters.ContainsKey("QueryString"))
                 throw new ArgumentNullException("QueryString", "QueryString parameter is required.");
-            }
+
+            QueryString = parameters["QueryString"].Trim();
 
             if (QueryString == string.Empty)
-            {
                 throw new ArgumentException("Blank QueryString isn't valid.", "QueryString");
-            }
 
             string url = BaseUrl.TrimEnd('/') + "/" + QueryString.TrimStart('/');
+            var parts = url.Split('?');
+            var req = new Request(BaseUrl + parts[0]);
+            var urlParams = req.RequestParameters;
 
-            return url;
+            var qsparms = HttpUtility.ParseQueryString(url);  // probably will return an empty collection
+            foreach (KeyValuePair<string, string> parm in qsparms)
+                urlParams.Add(new QueryParameter(parm.Key, parm.Value)); // may need to unescape
+
+            return req;
         }
 
         /// <summary>

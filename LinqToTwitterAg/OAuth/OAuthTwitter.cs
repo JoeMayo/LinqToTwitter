@@ -18,6 +18,7 @@
  ***********************************************************/
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Net;
@@ -27,9 +28,9 @@ using System.Threading;
 #if SILVERLIGHT
     using System.Windows.Browser;
 #else
+    using System.Net.Security;
+    using System.Security.Cryptography.X509Certificates;
     using System.Web;
-using System.Security.Cryptography.X509Certificates;
-using System.Net.Security;
 #endif
 
 namespace LinqToTwitter
@@ -85,7 +86,8 @@ namespace LinqToTwitter
         /// <returns>The url with a valid request token, or a null string.</returns>
         public string AuthorizationLinkGet(string requestToken, string authorizeUrl, string callback, bool forceLogin)
         {
-            string response = OAuthWebRequest(HttpMethod.GET, requestToken, String.Empty, callback);
+            var request = new Request(requestToken);
+            var response = OAuthWebRequest(HttpMethod.GET, request, null, callback);
             return PrepareAuthorizeUrl(authorizeUrl, forceLogin, response);
         }
 
@@ -126,12 +128,11 @@ namespace LinqToTwitter
         /// <param name="postData">POST body params</param>
         /// <param name="screenName">Returns user's Twitter screen name</param>
         /// <param name="userID">Returns user's Twitter ID</param>
-        public void PostAccessToken(string accessTokenUrl, string postData, out string screenName, out string userID)
+        public void PostAccessToken(Request request, IDictionary<string, string> postData, out string screenName, out string userID)
         {
             screenName = string.Empty;
             userID = string.Empty;
-
-            string response = OAuthWebRequest(HttpMethod.POST, accessTokenUrl, postData, string.Empty);
+            var response = OAuthWebRequest(HttpMethod.POST, request, postData, string.Empty);
 
             ProcessAccessTokenResponse(ref screenName, ref userID, response);
         }
@@ -142,12 +143,13 @@ namespace LinqToTwitter
         /// <param name="authToken">The oauth_token is supplied by Twitter's authorization page following the callback.</param>
         public void AccessTokenGet(string authToken, string verifier, string accessTokenUrl, string callback, out string screenName, out string userID)
         {
-            this.OAuthToken = authToken;
-            this.OAuthVerifier = verifier;
             screenName = string.Empty;
             userID = string.Empty;
 
-            string response = OAuthWebRequest(HttpMethod.GET, accessTokenUrl, String.Empty, callback);
+            this.OAuthToken = authToken;
+            this.OAuthVerifier = verifier;
+            var request = new Request(accessTokenUrl);
+            var response = OAuthWebRequest(HttpMethod.GET, request, null, callback);
 
             ProcessAccessTokenResponse(ref screenName, ref userID, response);
         }
@@ -201,15 +203,13 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="url">Twitter query</param>
         /// <returns>Query string with OAuth parameters</returns>
-        public void GetOAuthQueryString(HttpMethod method, string url, string callback, out string outUrl, out string queryString)
+        public void GetOAuthQueryString(HttpMethod method, Request request, string callback, out string outUrl, out string queryString)
         {
-            Uri uri = new Uri(url);
-
             string nonce = this.GenerateNonce();
             string timeStamp = this.GenerateTimeStamp();
 
             //Generate Signature
-            string sig = this.GenerateSignature(uri,
+            string sig = this.GenerateSignature(request,
                 this.OAuthConsumerKey,
                 this.OAuthConsumerSecret,
                 this.OAuthToken,
@@ -219,6 +219,7 @@ namespace LinqToTwitter
                 method.ToString(),
                 timeStamp,
                 nonce,
+                OAuthSignatureTypes.HMACSHA1,
                 out outUrl,
                 out queryString);
 
@@ -228,15 +229,24 @@ namespace LinqToTwitter
         /// <summary>
         /// processes POST request parameters
         /// </summary>
-        /// <param name="url">url of request, without query string</param>
-        /// 
-        public string GetOAuthQueryStringForPost(string url)
+        /// <param name="reqest">request having endpoint without query string and any query parameters</param>
+        /// <param name="args">extra query-string parameters</param>
+        public string GetOAuthQueryStringForPost(Request request, IDictionary<string, string> postData)
         {
+            if (postData != null)
+            {
+                foreach (var postEntry in postData)
+                {
+                    if (!String.IsNullOrEmpty(postEntry.Key) && !String.IsNullOrEmpty(postEntry.Value))
+                        request.RequestParameters.Add(new QueryParameter(postEntry.Key, postEntry.Value));
+                }
+            }
+
             OAuthVerifier = null;
 
             string outUrl;
             string queryString;
-            GetOAuthQueryString(HttpMethod.POST, url, string.Empty, out outUrl, out queryString);
+            GetOAuthQueryString(HttpMethod.POST, request, string.Empty, out outUrl, out queryString);
 
             const int Key = 0;
             const int Value = 1;
@@ -306,6 +316,27 @@ namespace LinqToTwitter
             return "OAuth " + encodedParams;
         }
 
+        private string GatherPostData(IDictionary<string, string> postData)
+        {
+            var queryParams = new StringBuilder();
+
+            if (postData != null && postData.Count > 0)
+            {
+                foreach (var entry in postData)
+                {
+                    queryParams
+                        .Append(entry.Key)
+                        .Append('=')
+                        .Append(this.UrlEncode(entry.Value))
+                        .Append('&');
+                }
+
+                queryParams.Length--;   // discard trailing &
+            }
+
+            return queryParams.ToString();
+        }
+
         /// <summary>
         /// Submit a web request using oAuth.
         /// </summary>
@@ -313,62 +344,29 @@ namespace LinqToTwitter
         /// <param name="url">The full url, including the querystring.</param>
         /// <param name="postData">Data to post (querystring format)</param>
         /// <returns>The web server response.</returns>
-        public string OAuthWebRequest(HttpMethod method, string url, string postData, string callback)
+        public string OAuthWebRequest(HttpMethod method, Request request, IDictionary<string, string> postData, string callback)
         {
-            string outUrl = "";
-            string querystring = "";
-            string ret = "";
-
             //Setup postData for signing.
             //Add the postData to the querystring.
+            var url = request.FullUrl;
+
             if (method == HttpMethod.POST)
             {
-                if (postData.Length > 0)
+                if (postData != null && postData.Count > 0)
                 {
-                    var qs =
-                        (from nameValPair in postData.Split('&')
-                         let pair = nameValPair.Split('=')
-                         select new
-                         {
-                             Key = pair[0],
-                             Value = pair[1]
-                         })
-                        .ToDictionary(
-                            pair => pair.Key,
-                            pair => pair.Value);
-
-                    string queryParams = string.Empty;
-
-                    foreach (string key in qs.Keys)
-                    {
-                        if (queryParams.Length > 0)
-                        {
-                            queryParams += "&";
-                        }
-                        var val = HttpUtility.UrlDecode(qs[key]);
-                        val = this.UrlEncode(val);
-                        queryParams += key + "=" + val;
-                    }
-
-                    if (url.IndexOf("?") > 0)
-                    {
-                        url += "&";
-                    }
-                    else
-                    {
-                        url += "?";
-                    }
-                    url += queryParams;
+                    foreach (var postEntry in postData)
+                        if (!String.IsNullOrEmpty(postEntry.Value))
+                            request.RequestParameters.Add(new QueryParameter(postEntry.Key, postEntry.Value));
                 }
             }
 
-            Uri uri = new Uri(url);
-
             string nonce = this.GenerateNonce();
             string timeStamp = this.GenerateTimeStamp();
+            string outUrl;
+            string querystring;
 
             //Generate Signature
-            string sig = this.GenerateSignature(uri,
+            string sig = this.GenerateSignature(request,
                 this.OAuthConsumerKey,
                 this.OAuthConsumerSecret,
                 this.OAuthToken,
@@ -378,13 +376,13 @@ namespace LinqToTwitter
                 method.ToString(),
                 timeStamp,
                 nonce,
+                OAuthSignatureTypes.HMACSHA1,
                 out outUrl,
                 out querystring);
 
-            querystring += "&oauth_signature=" + HttpUtility.UrlEncode(sig);
+            querystring += "&oauth_signature=" + this.UrlEncode(sig);
 
-            ret = WebRequest(method, url, querystring, postData);
-
+            var ret = WebRequest(method, url, querystring, postData);
             return ret;
         }
 
@@ -395,12 +393,11 @@ namespace LinqToTwitter
         /// <param name="url">Full url to the web resource</param>
         /// <param name="postData">Data to post in querystring format</param>
         /// <returns>The web server response.</returns>
-        public string WebRequest(HttpMethod method, string url, string authHeader, string postData)
+        public string WebRequest(HttpMethod method, string url, string authHeader, IDictionary<string, string> postData)
         {
-            HttpWebRequest webRequest = null;
             string responseData = "";
 
-            webRequest = System.Net.WebRequest.Create(ProxyUrl + url) as HttpWebRequest;
+            HttpWebRequest webRequest = System.Net.WebRequest.Create(ProxyUrl + url) as HttpWebRequest;
             webRequest.Method = method.ToString();
 #if !SILVERLIGHT
             webRequest.ServicePoint.Expect100Continue = false;
@@ -411,8 +408,8 @@ namespace LinqToTwitter
             if (method == HttpMethod.POST)
             {
                 webRequest.ContentType = "application/x-www-form-urlencoded";
-
-                byte[] postDataBytes = Encoding.UTF8.GetBytes(postData);
+                var postBody = GatherPostData(postData);
+                byte[] postDataBytes = Encoding.UTF8.GetBytes(postBody);
 
 #if SILVERLIGHT
                 // TODO: work in progress
@@ -428,7 +425,7 @@ namespace LinqToTwitter
 #else
                 Exception asyncException = null;
 
-                var resetEvent = new ManualResetEvent(initialState: false);
+                var resetEvent = new ManualResetEvent(/*initialState:*/ false);
 
                 webRequest.BeginGetRequestStream(
                     new AsyncCallback(
@@ -480,7 +477,7 @@ namespace LinqToTwitter
 
             Exception asyncException = null;
 
-            var resetEvent = new ManualResetEvent(initialState: false);
+            var resetEvent = new ManualResetEvent(/*initialState:*/ false);
             HttpWebResponse res = null;
 
             webRequest.BeginGetResponse(
@@ -584,8 +581,8 @@ namespace LinqToTwitter
             string signedUrl = null;
             string queryString = null;
             string callback = callbackUrl == null ? string.Empty : callbackUrl;
-            
-            GetOAuthQueryString(HttpMethod.GET, oauthUrl.ToString(), callback, out signedUrl, out queryString);
+            var request = new Request(oauthUrl.ToString());
+            GetOAuthQueryString(HttpMethod.GET, request, callback, out signedUrl, out queryString);
             
             var finalUrl =
                 ProxyUrl +
@@ -606,9 +603,8 @@ namespace LinqToTwitter
         public HttpWebRequest GetHttpPostRequest(Uri oauthUrl)
         {
             string url = oauthUrl.ToString();
-
-            string oauthSig = GetOAuthQueryStringForPost(url);
-
+            var request = new Request(url);
+            string oauthSig = GetOAuthQueryStringForPost(request, null);
             string baseUrl = url.Split('?')[0];
 
             var finalUrl = ProxyUrl + baseUrl;
@@ -627,13 +623,14 @@ namespace LinqToTwitter
             return req;
         }
 
+#if OLDSCHOOL
         /// <summary>
         /// Gets a signed OAuth Header
         /// </summary>
         /// <param name="url">Request Url</param>
         /// <param name="callbackUrl">Callback Url</param>
         /// <returns></returns>
-        public string GetOAuthHeader(Uri url, Uri callbackUrl)
+        public string GetOAuthHeader(Request request, Uri callbackUrl)
         {
             string outUrl = string.Empty;
             string queryString = string.Empty;
@@ -642,7 +639,7 @@ namespace LinqToTwitter
             string callback = callbackUrl == null ? string.Empty : callbackUrl.ToString();
 
             //Generate Signature
-            string sig = this.GenerateSignature(url,
+            string sig = this.GenerateSignature(request,
                 this.OAuthConsumerKey,
                 this.OAuthConsumerSecret,
                 this.OAuthToken,
@@ -652,6 +649,7 @@ namespace LinqToTwitter
                 HttpMethod.GET.ToString(),
                 timeStamp,
                 nonce,
+                OAuthSignatureTypes.HMACSHA1,
                 out outUrl,
                 out queryString);
 
@@ -659,6 +657,7 @@ namespace LinqToTwitter
 
             return PrepareAuthHeader(queryString);
         }
+#endif
 
         /// <summary>
         /// Asynchronous request for OAuth request token
@@ -799,13 +798,15 @@ namespace LinqToTwitter
         /// <param name="accessTokenUrl">Access token URL</param>
         /// <param name="postData">Post info</param>
         /// <param name="authorizationCompleteCallback">Invoked when request finishes</param>
-        public void PostAccessTokenAsync(Uri accessTokenUrl, string postData, Action<TwitterAsyncResponse<UserIdentifier>> authenticationCompleteCallback)
+        public void PostAccessTokenAsync(Request request, IDictionary<string, string> postData, Action<TwitterAsyncResponse<UserIdentifier>> authenticationCompleteCallback)
         {
+            Uri accessTokenUrl = new Uri(request.FullUrl);
             HttpWebRequest req = GetHttpPostRequest(accessTokenUrl);
 
             req.ContentType = "application/x-www-form-urlencoded";
 
-            byte[] postDataBytes = Encoding.UTF8.GetBytes(postData);
+            var postBody = GatherPostData(postData);
+            byte[] postDataBytes = Encoding.UTF8.GetBytes(postBody);
 
 #if SILVERLIGHT
                 // TODO: work in progress

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Linq.Expressions;
 using System.Xml.Linq;
 
@@ -38,10 +37,8 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">criteria for url segments and parameters</param>
         /// <returns>URL conforming to Twitter API</returns>
-        public string BuildURL(Dictionary<string, string> parameters)
+        public Request BuildURL(Dictionary<string, string> parameters)
         {
-            string url = null;
-
             if (parameters == null || !parameters.ContainsKey("Type"))
             {
                 throw new ArgumentException("You must set Type.", "Type");
@@ -52,16 +49,14 @@ namespace LinqToTwitter
             switch (Type)
             {
                 case LegalType.Privacy:
-                    url = BuildPrivacyUrl(parameters);
-                    break;
+                    return BuildPrivacyUrl(parameters);
                 case LegalType.TOS:
-                    url = BuildTosUrl(parameters);
-                    break;
+                    return BuildTosUrl(parameters);
                 default:
                     break;
             }
 
-            return url;
+            return null;
         }
 
         /// <summary>
@@ -69,9 +64,10 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">parameter list</param>
         /// <returns>base url + show segment</returns>
-        private string BuildPrivacyUrl(Dictionary<string, string> parameters)
+        private Request BuildPrivacyUrl(Dictionary<string, string> parameters)
         {
-            return BaseUrl + "privacy.xml";
+            var req = new Request(BaseUrl + "privacy.xml");
+            return req;
         }
 
         /// <summary>
@@ -79,10 +75,12 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">parameter list</param>
         /// <returns>base url + show segment</returns>
-        private string BuildTosUrl(Dictionary<string, string> parameters)
+        private Request BuildTosUrl(Dictionary<string, string> parameters)
         {
-            return BaseUrl + "tos.xml";
+            var req = new Request(BaseUrl + "tos.xml");
+            return req;
         }
+
         /// <summary>
         /// Returns an object for interacting with stream
         /// </summary>

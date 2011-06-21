@@ -5,6 +5,7 @@ using System.Text;
 using System.Net;
 using System.IO;
 using System.Threading;
+using System.Web;
 #if SILVERLIGHT
 using System.Windows;
 #endif
@@ -24,17 +25,22 @@ namespace LinqToTwitter
         /// <param name="requestUri">The request URI.</param>
         /// <param name="args">The args.</param>
         /// <returns></returns>
-        public new WebRequest Get(string url)
+        public new WebRequest Get(Request request)
         {
+            var url = request.Endpoint;
+            var queryString = request.QueryString;
+
 #if SILVERLIGHT
-            url = ProxyUrl + url;
+            var requestUri = new Uri(
+                ProxyUrl + url + 
+                (string.IsNullOrEmpty(ProxyUrl) ? "?" : "&") +
+                queryString);
+#else
+            var requestUri = new Uri(url + "?" + queryString);
 #endif
-
-            Uri requestUri = new Uri(url);
-            
             var req = WebRequest.Create(requestUri);
-
             this.InitializeRequest(req);
+
             return req;
         }
 
@@ -43,13 +49,17 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="requestUri">The request URI.</param>
         /// <returns></returns>
-        public new HttpWebRequest Post(string url)
+        public override HttpWebRequest PostRequest(Request request, IDictionary<string, string> postData)
         {
+            if (request == null)
+                throw new ArgumentNullException("request");
+
+            var url = request.Endpoint;
+
 #if SILVERLIGHT
             url = ProxyUrl + url;
 #endif
-
-            Uri requestUri = new Uri(url);
+            var requestUri = new Uri(url);
             var req = WebRequest.Create(requestUri) as HttpWebRequest;
             this.InitializeRequest(req);
             req.Method = HttpMethod.POST.ToString();
@@ -62,26 +72,18 @@ namespace LinqToTwitter
         /// <param name="requestUri">The request URI.</param>
         /// <param name="args">The args.</param>
         /// <returns></returns>
-        public new HttpWebResponse Post(string url, Dictionary<string, string> args)
+        public override HttpWebResponse Post(Request request, IDictionary<string, string> postData)
         {
+            if (request == null)
+                throw new ArgumentNullException("request");
+
+            var url = request.Endpoint;
+
 #if SILVERLIGHT
-            url = ProxyUrl + url;
+             url = ProxyUrl + url;
 #endif
-
-            if (string.IsNullOrEmpty(url))
-            {
-                throw new ArgumentNullException("url");
-            }
-
-            if (args == null)
-            {
-                throw new ArgumentNullException("args");
-            }
-
-            Uri requestUri = new Uri(url);
-
-            string queryString = Utilities.BuildQueryString(args);
-            byte[] queryStringBytes = Encoding.UTF8.GetBytes(queryString);
+            var requestUri = new Uri(url);
+            byte[] queryStringBytes = Encoding.UTF8.GetBytes(request.QueryString);
 
             var req = WebRequest.Create(requestUri) as HttpWebRequest;
 
@@ -93,7 +95,7 @@ namespace LinqToTwitter
             req.ContentType = "x-www-form-urlencoded";
             req.ContentLength = queryStringBytes.Length;
 
-            var resetEvent = new ManualResetEvent(initialState: false);
+            var resetEvent = new ManualResetEvent(/*initialState:*/ false);
 
             req.BeginGetRequestStream(
                 new AsyncCallback(

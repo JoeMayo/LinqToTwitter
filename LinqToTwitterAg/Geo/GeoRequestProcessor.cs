@@ -107,33 +107,24 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">criteria for url segments and parameters</param>
         /// <returns>URL conforming to Twitter API</returns>
-        public string BuildURL(Dictionary<string, string> parameters)
+        public Request BuildURL(Dictionary<string, string> parameters)
         {
-            string url = null;
-
             if (parameters == null || !parameters.ContainsKey("Type"))
-            {
                 throw new ArgumentException("You must set Type.", "Type");
-            }
 
             Type = RequestProcessorHelper.ParseQueryEnumType<GeoType>(parameters["Type"]);
 
             switch (Type)
             {
                 case GeoType.ID:
-                    url = BuildIDUrl(parameters);
-                    break;
+                    return BuildIDUrl(parameters);
                 case GeoType.Reverse:
-                    url = BuildReverseUrl(parameters);
-                    break;
+                    return BuildReverseUrl(parameters);
                 case GeoType.Search:
-                    url = BuildSearchUrl(parameters);
-                    break;
+                    return BuildSearchUrl(parameters);
                 default:
                     throw new InvalidOperationException("The default case of BuildUrl should never execute because a Type must be specified.");
             }
-
-            return url;
         }
 
         /// <summary>
@@ -141,89 +132,83 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">URL parameters</param>
         /// <returns>URL for nearby places + parameters</returns>
-        private string BuildSearchUrl(Dictionary<string, string> parameters)
+        private Request BuildSearchUrl(Dictionary<string, string> parameters)
         {
             if (!parameters.ContainsKey("IP") &&
                 !(parameters.ContainsKey("Latitude") &&
-                 parameters.ContainsKey("Longitude")))
+                  parameters.ContainsKey("Longitude")))
             {
                 throw new ArgumentException("Either Latitude and Longitude or IP address is required.");
             }
 
-            IP = parameters["IP"];
-
-            var url = BaseUrl +"geo/search.json";
-
-            var urlParams = new List<string>();
+            var req = new Request(BaseUrl + "geo/search.json");
+            var urlParams = req.RequestParameters;
 
             if (parameters.ContainsKey("Latitude"))
             {
                 Latitude = double.Parse(parameters["Latitude"]);
-                urlParams.Add("lat=" + parameters["Latitude"]);
+                urlParams.Add(new QueryParameter("lat", Latitude.ToString(CultureInfo.InvariantCulture)));
             }
 
             if (parameters.ContainsKey("Longitude"))
             {
                 Longitude = double.Parse(parameters["Longitude"]);
-                urlParams.Add("long=" + parameters["Longitude"]);
+                urlParams.Add(new QueryParameter("long", Longitude.ToString(CultureInfo.InvariantCulture)));
             }
 
             if (parameters.ContainsKey("Query"))
             {
                 Query = parameters["Query"];
-                urlParams.Add("query=" + Uri.EscapeUriString(parameters["Query"]));
+                urlParams.Add(new QueryParameter("query", Query));
             }
             
             if (parameters.ContainsKey("IP"))
             {
                 IP = parameters["IP"];
-                urlParams.Add("ip=" + parameters["IP"]);
+                urlParams.Add(new QueryParameter("ip", IP));
             }
 
             if (parameters.ContainsKey("Accuracy"))
             {
                 Accuracy = parameters["Accuracy"];
-                urlParams.Add("accuracy=" + parameters["Accuracy"]);
+                urlParams.Add(new QueryParameter("accuracy", Accuracy));
             }
 
             if (parameters.ContainsKey("Granularity"))
             {
                 Granularity = parameters["Granularity"];
-                urlParams.Add("granularity=" + parameters["Granularity"]);
+                urlParams.Add(new QueryParameter("granularity", Granularity));
             }
 
             if (parameters.ContainsKey("MaxResults"))
             {
                 MaxResults = int.Parse(parameters["MaxResults"]);
-                urlParams.Add("max_results=" + parameters["MaxResults"]);
+                urlParams.Add(new QueryParameter("max_results", MaxResults.ToString(CultureInfo.InvariantCulture)));
             }
 
             if (parameters.ContainsKey("ContainedWithin"))
             {
                 ContainedWithin = parameters["ContainedWithin"];
-                urlParams.Add("contained_within=" + parameters["ContainedWithin"]);
+                urlParams.Add(new QueryParameter("contained_within", ContainedWithin));
             }
 
             if (parameters.ContainsKey("Attribute"))
             {
-                Attribute = parameters["Attribute"];
+                // TODO should really be able to search for more than one Attribute
+                Attribute = parameters["Attribute"] ?? String.Empty;
+                var parts = Attribute.Split('=');
 
-                if (Attribute.IndexOf('=') < 0)
+                if (parts.Length < 2)
                 {
                     throw new ArgumentException(
                         "Attribute must be a name/value pair (i.e. street_address=123); actual value: " + Attribute,
                         "Attribute");
                 }
 
-                urlParams.Add("attribute:" + Uri.EscapeUriString(parameters["Attribute"]));
+                urlParams.Add(new QueryParameter("attribute:" + parts[0], parts[1]));
             }
 
-            if (urlParams.Count > 0)
-            {
-                url += "?" + string.Join("&", urlParams.ToArray());
-            }
-
-            return url;
+            return req;
         }
 
         /// <summary>
@@ -231,71 +216,62 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="url">base show url</param>
         /// <returns>base url + show segment</returns>
-        private string BuildIDUrl(Dictionary<string, string> parameters)
+        private Request BuildIDUrl(Dictionary<string, string> parameters)
         {
             if (!parameters.ContainsKey("ID"))
-            {
                 throw new ArgumentException("ID is required for a Geo ID query.", "ID");
-            }
 
             ID = parameters["ID"];
 
-            var url = BaseUrl +"geo/id/" + ID + ".json";
-
-            return url;
+            var url = "geo/id/" + ID + ".json";
+            return new Request(BaseUrl + url);
         }
 
         /// <summary>
         /// return a saved searches url
         /// </summary>
         /// <returns>saved search url</returns>
-        private string BuildReverseUrl(Dictionary<string, string> parameters)
+        private Request BuildReverseUrl(Dictionary<string, string> parameters)
         {
             if (!parameters.ContainsKey("Latitude") || !parameters.ContainsKey("Longitude"))
             {
                 throw new ArgumentException("Latitude and Longitude parameters are required.");
             }
 
-            var url = BaseUrl + "geo/reverse_geocode.json";
-
-            var urlParams = new List<string>();
+            var req = new Request(BaseUrl + "geo/reverse_geocode.json");
+            var urlParams = req.RequestParameters;
 
             if (parameters.ContainsKey("Latitude"))
             {
                 Latitude = double.Parse(parameters["Latitude"]);
-                urlParams.Add("lat=" + parameters["Latitude"]);
+                urlParams.Add(new QueryParameter("lat", Latitude.ToString(CultureInfo.InvariantCulture)));
             }
 
             if (parameters.ContainsKey("Longitude"))
             {
                 Longitude = double.Parse(parameters["Longitude"]);
-                urlParams.Add("long=" + parameters["Longitude"]);
+                urlParams.Add(new QueryParameter("long", Longitude.ToString(CultureInfo.InvariantCulture)));
             }
 
             if (parameters.ContainsKey("Accuracy"))
             {
                 Accuracy = parameters["Accuracy"];
-                urlParams.Add("accuracy=" + parameters["Accuracy"]);
+                urlParams.Add(new QueryParameter("accuracy", Accuracy));
             }
 
             if (parameters.ContainsKey("Granularity"))
             {
                 Granularity = parameters["Granularity"];
-                urlParams.Add("granularity=" + parameters["Granularity"]);
+                urlParams.Add(new QueryParameter("granularity", Granularity));
             }
 
             if (parameters.ContainsKey("MaxResults"))
             {
                 MaxResults = int.Parse(parameters["MaxResults"]);
-                urlParams.Add("max_results=" + parameters["MaxResults"]);
+                urlParams.Add(new QueryParameter("max_results", MaxResults.ToString(CultureInfo.InvariantCulture)));
             }
 
-            if (urlParams.Count > 0)
-            {
-                url += "?" + string.Join("&", urlParams.ToArray());
-            }
-
-            return url;
+            return req;
         }
 
         /// <summary>

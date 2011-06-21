@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -75,42 +74,30 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">criteria for url segments and parameters</param>
         /// <returns>URL conforming to Twitter API</returns>
-        public virtual string BuildURL(Dictionary<string, string> parameters)
+        public virtual Request BuildURL(Dictionary<string, string> parameters)
         {
-            string url = null;
-
             if (parameters == null || !parameters.ContainsKey("Type"))
-            {
                 throw new ArgumentException("You must set Type.", "Type");
-            }
 
             Type = RequestProcessorHelper.ParseQueryEnumType<TrendType>(parameters["Type"]);
 
             switch (Type)
             {
                 case TrendType.Current:
-                    url = BuildCurrentTrendsUrl(parameters);
-                    break;
+                    return BuildCurrentTrendsUrl(parameters);
                 case TrendType.Daily:
-                    url = BuildDailyTrendsUrl(parameters);
-                    break;
+                    return BuildDailyTrendsUrl(parameters);
                 case TrendType.Trend:
-                    url = BuildTrendsUrl(parameters);
-                    break;
+                    return BuildTrendsUrl(parameters);
                 case TrendType.Weekly:
-                    url = BuildWeeklyTrendsUrl(parameters);
-                    break;
+                    return BuildWeeklyTrendsUrl(parameters);
                 case TrendType.Available:
-                    url = BuildAvailableTrendsUrl(parameters);
-                    break;
+                    return BuildAvailableTrendsUrl(parameters);
                 case TrendType.Location:
-                    url = BuildLocationTrendsUrl(parameters);
-                    break;
+                    return BuildLocationTrendsUrl(parameters);
                 default:
                     throw new InvalidOperationException("The default case of BuildUrl should never execute because a Type must be specified.");
             }
-
-            return url;
         }
 
         /// <summary>
@@ -118,21 +105,15 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">parameters should contain WeoID</param>
         /// <returns>base url + location segment</returns>
-        private string BuildLocationTrendsUrl(Dictionary<string, string> parameters)
+        private Request BuildLocationTrendsUrl(Dictionary<string, string> parameters)
         {
-            string url = BaseUrl;
-
-            if (parameters.ContainsKey("WeoID"))
-            {
-                WeoID = int.Parse(parameters["WeoID"]);
-                url += "trends/" + parameters["WeoID"] + ".xml";
-            }
-            else
-            {
+            if (!parameters.ContainsKey("WeoID"))
                 throw new ArgumentException("WeoID is a required parameter.", "WeoID");
-            }
 
-            return url;
+            WeoID = int.Parse(parameters["WeoID"]);
+            var url = "trends/" + parameters["WeoID"] + ".xml";
+
+            return new Request(BaseUrl + url);
         }
 
         /// <summary>
@@ -140,36 +121,28 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">parameters can include Latitude and Longitude (must have either both parameter or neither)</param>
         /// <returns>base url + Available segment</returns>
-        private string BuildAvailableTrendsUrl(Dictionary<string, string> parameters)
+        private Request BuildAvailableTrendsUrl(Dictionary<string, string> parameters)
         {
             if ((parameters.ContainsKey("Latitude") && !parameters.ContainsKey("Longitude")) ||
                 (!parameters.ContainsKey("Latitude") && parameters.ContainsKey("Longitude")))
-            {
                 throw new ArgumentException("If you pass either Latitude or Longitude then you must pass both. Otherwise, don't pass either.");
-            }
 
-            var url = BaseUrl + "trends/available.xml";
-
-            var urlParams = new List<string>();
+            var req = new Request(BaseUrl + "trends/available.xml");
+            var urlParams = req.RequestParameters;
 
             if (parameters.ContainsKey("Latitude"))
             {
                 Latitude = parameters["Latitude"];
-                urlParams.Add("lat=" + parameters["Latitude"]);
+                urlParams.Add(new QueryParameter("lat", parameters["Latitude"]));
             }
 
             if (parameters.ContainsKey("Longitude"))
             {
                 Longitude = parameters["Longitude"];
-                urlParams.Add("long=" + parameters["Longitude"]);
+                urlParams.Add(new QueryParameter("long", parameters["Longitude"]));
             }
 
-            if (urlParams.Count > 0)
-            {
-                url += "?" + string.Join("&", urlParams.ToArray());
-            }
-
-            return url;
+            return req;
         }
 
         /// <summary>
@@ -177,13 +150,9 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">parameter list</param>
         /// <returns>base url + show segment</returns>
-        private string BuildDailyTrendsUrl(Dictionary<string, string> parameters)
+        private Request BuildDailyTrendsUrl(Dictionary<string, string> parameters)
         {
-            var url = BaseUrl + "trends/daily.json";
-
-            url = BuildTrendsUrlParameters(parameters, url);
-
-            return url;
+            return BuildTrendsUrlParameters(parameters, "trends/daily.json");
         }
 
         /// <summary>
@@ -191,13 +160,9 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">parameter list</param>
         /// <returns>base url + show segment</returns>
-        private string BuildCurrentTrendsUrl(Dictionary<string, string> parameters)
+        private Request BuildCurrentTrendsUrl(Dictionary<string, string> parameters)
         {
-            var url = BaseUrl + "trends/current.json";
-
-            url = BuildTrendsUrlParameters(parameters, url);
-
-            return url;
+            return BuildTrendsUrlParameters(parameters, "trends/current.json");
         }
 
         /// <summary>
@@ -205,13 +170,9 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">parameter list</param>
         /// <returns>base url + show segment</returns>
-        private string BuildWeeklyTrendsUrl(Dictionary<string, string> parameters)
+        private Request BuildWeeklyTrendsUrl(Dictionary<string, string> parameters)
         {
-            var url = BaseUrl + "trends/weekly.json";
-
-            url = BuildTrendsUrlParameters(parameters, url);
-
-            return url;
+            return BuildTrendsUrlParameters(parameters, "trends/weekly.json");
         }
 
         /// <summary>
@@ -219,9 +180,9 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">parameter list</param>
         /// <returns>base url + show segment</returns>
-        private string BuildTrendsUrl(Dictionary<string, string> parameters)
+        private Request BuildTrendsUrl(Dictionary<string, string> parameters)
         {
-            return BaseUrl + "trends.json";
+            return new Request(BaseUrl + "trends.json");
         }
 
         /// <summary>
@@ -230,29 +191,25 @@ namespace LinqToTwitter
         /// <param name="parameters">list of parameters from expression tree</param>
         /// <param name="url">base url</param>
         /// <returns>base url + parameters</returns>
-        private string BuildTrendsUrlParameters(Dictionary<string, string> parameters, string url)
+        private Request BuildTrendsUrlParameters(Dictionary<string, string> parameters, string url)
         {
-            var urlParams = new List<string>();
+            var req = new Request(BaseUrl + url);
+            var urlParams = req.RequestParameters;
 
             if (parameters.ContainsKey("Date"))
             {
                 Date = DateTime.Parse(parameters["Date"], CultureInfo.InvariantCulture);
-                urlParams.Add("date=" + Date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
+                urlParams.Add(new QueryParameter("date", Date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)));
             }
 
             if (parameters.ContainsKey("ExcludeHashtags") &&
                 bool.Parse(parameters["ExcludeHashtags"]) == true)
             {
-                ExcludeHashtags = bool.Parse(parameters["ExcludeHashtags"]);
-                urlParams.Add("exclude=hashtags");
+                ExcludeHashtags = true;
+                urlParams.Add(new QueryParameter("exclude", "hashtags"));
             }
 
-            if (urlParams.Count > 0)
-            {
-                url += "?" + string.Join("&", urlParams.ToArray());
-            }
-
-            return url;
+            return req;
         }
 
         /// <summary>

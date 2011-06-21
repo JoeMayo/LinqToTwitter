@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq.Expressions;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Xml.Linq;
 
 #if SILVERLIGHT
     using System.Windows.Browser;
-#else
-    using System.Web;
 #endif
 
 namespace LinqToTwitter
@@ -80,7 +78,7 @@ namespace LinqToTwitter
         /// Supports various languages
         /// </summary>
         private string Lang { get; set; }
-      
+
         /// <summary>
         /// extracts parameters from lambda
         /// </summary>
@@ -114,10 +112,8 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">criteria for url segments and parameters</param>
         /// <returns>URL conforming to Twitter API</returns>
-        public virtual string BuildURL(Dictionary<string, string> parameters)
+        public virtual Request BuildURL(Dictionary<string, string> parameters)
         {
-            string url = null;
-
             if (parameters == null || !parameters.ContainsKey("Type"))
             {
                 throw new ArgumentException("You must set Type.", "Type");
@@ -128,34 +124,24 @@ namespace LinqToTwitter
             switch (Type)
             {
                 case UserType.Followers:
-                    url = BuildFollowersUrl(parameters);
-                    break;
+                    return BuildFollowersUrl(parameters);
                 case UserType.Friends:
-                    url = BuildFriendsUrl(parameters);
-                    break;
+                    return BuildFriendsUrl(parameters);
                 case UserType.Show:
-                    url = BuildShowUrl(parameters);
-                    break;
+                    return BuildShowUrl(parameters);
                 case UserType.Categories:
-                    url = BuildCategoriesUrl(parameters);
-                    break;
+                    return BuildCategoriesUrl(parameters);
                 case UserType.Category:
-                    url = BuildUsersInCategoryUrl(parameters);
-                    break;
+                    return BuildUsersInCategoryUrl(parameters);
                 case UserType.CategoryStatus:
-                    url = BuildCategoryStatusUrl(parameters);
-                    break;
+                    return BuildCategoryStatusUrl(parameters);
                 case UserType.Lookup:
-                    url = BuildLookupUrl(parameters);
-                    break;
+                    return BuildLookupUrl(parameters);
                 case UserType.Search:
-                    url = BuildSearchUrl(parameters);
-                    break;
+                    return BuildSearchUrl(parameters);
                 default:
                     throw new InvalidOperationException("The default case of BuildUrl should never execute because a Type must be specified.");
             }
-
-            return url;
         }
 
         /// <summary>
@@ -163,40 +149,33 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">Query, Page, and PerPage</param>
         /// <returns>URL for performing user search</returns>
-        private string BuildSearchUrl(Dictionary<string, string> parameters)
+        private Request BuildSearchUrl(Dictionary<string, string> parameters)
         {
             if (!parameters.ContainsKey("Query"))
-            {
                 throw new ArgumentException("Query parameter is required.");
-            }
 
-            string url = BaseUrl + "users/search.xml";
-            var urlParams = new List<string>();
+            var req = new Request(BaseUrl + "users/search.xml");
+            var urlParams = req.RequestParameters;
 
             if (parameters.ContainsKey("Query"))
             {
                 Query = parameters["Query"];
-                urlParams.Add("q=" + HttpUtility.UrlEncode(parameters["Query"]));
+                urlParams.Add(new QueryParameter("q", parameters["Query"]));
             }
 
             if (parameters.ContainsKey("Page"))
             {
                 Page = int.Parse(parameters["Page"]);
-                urlParams.Add("page=" + parameters["Page"]);
+                urlParams.Add(new QueryParameter("page", parameters["Page"]));
             }
 
             if (parameters.ContainsKey("PerPage"))
             {
                 PerPage = int.Parse(parameters["PerPage"]);
-                urlParams.Add("per_page=" + parameters["PerPage"]);
+                urlParams.Add(new QueryParameter("per_page", parameters["PerPage"]));
             }
 
-            if (urlParams.Count > 0)
-            {
-                url += "?" + string.Join("&", urlParams.ToArray());
-            }
-
-            return url;
+            return req;
         }
 
         /// <summary>
@@ -204,29 +183,28 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">Either UserID or ScreenName</param>
         /// <returns>URL for performing lookups</returns>
-        private string BuildLookupUrl(Dictionary<string, string> parameters)
+        private Request BuildLookupUrl(Dictionary<string, string> parameters)
         {
             if (!(parameters.ContainsKey("ScreenName") || parameters.ContainsKey("UserID")) ||
                 (parameters.ContainsKey("ScreenName") && parameters.ContainsKey("UserID")))
-            {
                 throw new ArgumentException("Query must contain one of either ScreenName or UserID parameters, but not both.");
-            }
 
-            string url = BaseUrl + "users/lookup.xml?";
+            var req = new Request(BaseUrl + "users/lookup.xml");
+            var urlParams = req.RequestParameters;
 
             if (parameters.ContainsKey("ScreenName"))
             {
                 ScreenName = parameters["ScreenName"];
-                url += "screen_name=" + parameters["ScreenName"];
+                urlParams.Add(new QueryParameter("screen_name", parameters["ScreenName"]));
             }
 
             if (parameters.ContainsKey("UserID"))
             {
                 UserID = parameters["UserID"];
-                url += "user_id=" + parameters["UserID"];
+                urlParams.Add(new QueryParameter("user_id", parameters["UserID"]));
             }
 
-            return url;
+            return req;
         }
 
         /// <summary>
@@ -234,24 +212,23 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">Contains Slug. Required.</param>
         /// <returns>Url for query + slug</returns>
-        private string BuildUsersInCategoryUrl(Dictionary<string, string> parameters)
+        private Request BuildUsersInCategoryUrl(Dictionary<string, string> parameters)
         {
             if (!parameters.ContainsKey("Slug"))
-            {
                 throw new ArgumentException("Slug parameter is required.", "Slug");
-            }
 
             Slug = parameters["Slug"];
 
-            string url = BaseUrl + "users/suggestions/" + parameters["Slug"] + ".xml";
+            var req = new Request(BaseUrl + "users/suggestions/" + Slug + ".xml");
+            var urlParams = req.RequestParameters;
 
             if (parameters.ContainsKey("Lang"))
             {
-                url += "?lang=" + parameters["Lang"];
                 Lang = parameters["Lang"];
+                urlParams.Add(new QueryParameter("lang", parameters["Lang"]));
             }
 
-            return url;
+            return req;
         }
 
         /// <summary>
@@ -259,17 +236,18 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">Not used</param>
         /// <returns>Url for suggested user categories</returns>
-        private string BuildCategoriesUrl(Dictionary<string, string> parameters)
+        private Request BuildCategoriesUrl(Dictionary<string, string> parameters)
         {
-            string url = BaseUrl + "users/suggestions.xml";
+            var req = new Request(BaseUrl + "users/suggestions.xml");
+            var urlParams = req.RequestParameters;
 
             if (parameters.ContainsKey("Lang"))
             {
-                url += "?lang=" + parameters["Lang"];
                 Lang = parameters["Lang"];
+                urlParams.Add(new QueryParameter("lang", parameters["Lang"]));
             }
 
-            return url;
+            return req;
         }
 
         /// <summary>
@@ -277,18 +255,15 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">Reads Slug param</param>
         /// <returns>Url for category statuses</returns>
-        private string BuildCategoryStatusUrl(Dictionary<string, string> parameters)
+        private Request BuildCategoryStatusUrl(Dictionary<string, string> parameters)
         {
             if (parameters.ContainsKey("Slug"))
-            {
-                Slug = parameters["Slug"]; 
-            }
-            else
-            {
                 throw new ArgumentNullException("Slug", "You must set the Slug property, which is the suggested category.");
-            }
 
-            return BaseUrl + "users/suggestions/" + Slug.ToLower() + "/members.xml";
+            Slug = parameters["Slug"];
+            var req = new Request(BaseUrl + "users/suggestions/" + Slug.ToLower() + "/members.xml");
+
+            return req;
         }
 
         /// <summary>
@@ -296,16 +271,9 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">url parameters</param>
         /// <returns>new url for request</returns>
-        private string BuildShowUrl(Dictionary<string, string> parameters)
+        private Request BuildShowUrl(Dictionary<string, string> parameters)
         {
-            var url = BaseUrl + "users/show.json";
-
-            if (parameters != null)
-            {
-                url = BuildFriendsAndFollowersUrlParameters(parameters, url);
-            }
-
-            return url;
+            return BuildFriendsAndFollowersUrlParameters(parameters, "users/show.xml");
         }
 
         /// <summary>
@@ -313,16 +281,9 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">parameters to add</param>
         /// <returns>new url with parameters</returns>
-        private string BuildFriendsUrl(Dictionary<string, string> parameters)
+        private Request BuildFriendsUrl(Dictionary<string, string> parameters)
         {
-            var url = BaseUrl + "statuses/friends.xml";
-
-            if (parameters != null)
-            {
-                url = BuildFriendsAndFollowersUrlParameters(parameters, url); 
-            }
-
-            return url;
+            return BuildFriendsAndFollowersUrlParameters(parameters, "statuses/friends.xml");
         }
 
         /// <summary>
@@ -330,16 +291,9 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">parameters to add</param>
         /// <returns>new url with parameters</returns>
-        private string BuildFollowersUrl(Dictionary<string, string> parameters)
+        private Request BuildFollowersUrl(Dictionary<string, string> parameters)
         {
-            var url = BaseUrl + "statuses/followers.xml";
-
-            if (parameters != null)
-            {
-                url = BuildFriendsAndFollowersUrlParameters(parameters, url); 
-            }
-
-            return url;
+            return BuildFriendsAndFollowersUrlParameters(parameters, "statuses/followers.xml");
         }
 
         /// <summary>
@@ -348,15 +302,15 @@ namespace LinqToTwitter
         /// <param name="parameters">parameters to add</param>
         /// <param name="url">url to start with</param>
         /// <returns>new url with parameters</returns>
-        internal string BuildFriendsAndFollowersUrlParameters(Dictionary<string, string> parameters, string url)
+        internal Request BuildFriendsAndFollowersUrlParameters(Dictionary<string, string> parameters, string url)
         {
             if (parameters == null)
             {
-                return url;
+                return new Request(BaseUrl + url);
             }
 
-            if (!parameters.ContainsKey("ID") && 
-                !parameters.ContainsKey("UserID") && 
+            if (!parameters.ContainsKey("ID") &&
+                !parameters.ContainsKey("UserID") &&
                 !parameters.ContainsKey("ScreenName"))
             {
                 throw new ArgumentException("Parameters must include at least one of ID, UserID, or ScreenName.");
@@ -377,44 +331,40 @@ namespace LinqToTwitter
                 throw new ArgumentNullException("ID", "If specified, ID can't be null or an empty string.");
             }
 
-            var urlParams = new List<string>();
-
             if (parameters.ContainsKey("ID"))
             {
                 ID = parameters["ID"];
                 url = BuildUrlHelper.TransformIDUrl(parameters, url);
             }
 
+            var req = new Request(BaseUrl + url);
+            var urlParams = req.RequestParameters;
+
             if (parameters.ContainsKey("UserID"))
             {
                 UserID = parameters["UserID"];
-                urlParams.Add("user_id=" + parameters["UserID"]);
+                urlParams.Add(new QueryParameter("user_id", parameters["UserID"]));
             }
 
             if (parameters.ContainsKey("ScreenName"))
             {
                 ScreenName = parameters["ScreenName"];
-                urlParams.Add("screen_name=" + parameters["ScreenName"]);
+                urlParams.Add(new QueryParameter("screen_name", parameters["ScreenName"]));
             }
 
             if (parameters.ContainsKey("Page"))
             {
                 Page = int.Parse(parameters["Page"]);
-                urlParams.Add("page=" + parameters["Page"]);
+                urlParams.Add(new QueryParameter("page", parameters["Page"]));
             }
 
             if (parameters.ContainsKey("Cursor"))
             {
                 Cursor = parameters["Cursor"];
-                urlParams.Add("cursor=" + parameters["Cursor"]);
+                urlParams.Add(new QueryParameter("cursor", parameters["Cursor"]));
             }
 
-            if (urlParams.Count > 0)
-            {
-                url += "?" + string.Join("&", urlParams.ToArray());
-            }
-
-            return url;
+            return req;
         }
 
         /// <summary>

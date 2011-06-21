@@ -41,8 +41,8 @@ public partial class SignIn : System.Web.UI.Page
 
         if (!Page.IsPostBack)
         {
-            if (!string.IsNullOrWhiteSpace(credentials.ConsumerKey) &&
-                !string.IsNullOrWhiteSpace(credentials.ConsumerSecret))
+            if (!credentials.ConsumerKey.IsNullOrWhiteSpace() &&
+                !credentials.ConsumerSecret.IsNullOrWhiteSpace())
             {
                 AuthMultiView.ActiveViewIndex = 1;
 
@@ -57,6 +57,6 @@ public partial class SignIn : System.Web.UI.Page
 
     protected void signInButton_Click(object sender, ImageClickEventArgs e)
     {
-        auth.BeginAuthorization(Request.Url, forceLogin: true);
+        auth.BeginAuthorization(Request.Url, /*forceLogin:*/ true);
     }
 }

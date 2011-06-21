@@ -782,7 +782,7 @@ namespace LinqToTwitter
             var parameters = GetRequestParameters(expression, reqProc);
 
             // construct REST endpoint, based on input parameters
-            var url = reqProc.BuildURL(parameters);
+            var request = reqProc.BuildURL(parameters);
 
             string results;
 
@@ -790,11 +790,11 @@ namespace LinqToTwitter
             if (typeof(T) == typeof(Streaming) ||
                 typeof(T) == typeof(UserStream))
             {
-                results = TwitterExecutor.QueryTwitterStream(url);
+                results = TwitterExecutor.QueryTwitterStream(request);
             }
             else
             {
-                results = TwitterExecutor.QueryTwitter(url, reqProc);
+                results = TwitterExecutor.QueryTwitter(request, reqProc);
             }
 
             // Transform results into objects
@@ -2139,7 +2139,7 @@ namespace LinqToTwitter
 
             TwitterExecutor.AsyncCallback = callback;
             var resultsXml =
-                TwitterExecutor.PostTwitterImage(image, null, accountUrl, fileName, imageType, reqProc);
+                TwitterExecutor.PostTwitterImage(accountUrl, null, image, fileName, imageType, reqProc);
 
             List<User> results = reqProc.ProcessResults(resultsXml);
             return results.FirstOrDefault();
@@ -2251,7 +2251,7 @@ namespace LinqToTwitter
 
             TwitterExecutor.AsyncCallback = callback;
             var resultsXml =
-                TwitterExecutor.PostTwitterImage(image, parameters, accountUrl, fileName, imageType, reqProc);
+                TwitterExecutor.PostTwitterImage(accountUrl, parameters, image, fileName, imageType, reqProc);
 
             List<User> results = reqProc.ProcessResults(resultsXml);
             return results.FirstOrDefault();

@@ -47,7 +47,7 @@ namespace LinqToTwitter
         /// <param name="callback">This is where you want Twitter to redirect to after authorization</param>
         public void BeginAuthorization(Uri callback)
         {
-            BeginAuthorization(callback, forceLogin: false);
+            BeginAuthorization(callback, /*forceLogin:*/ false);
         }
 
         /// <summary>

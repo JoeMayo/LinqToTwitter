@@ -1,16 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Xml.Linq;
-using System.Xml;
-using System.Collections;
 using System.Globalization;
+using System.Linq;
+using System.Xml.Linq;
 
 #if SILVERLIGHT
     using System.Windows.Browser;
-#else
-    using System.Web;
 #endif
 
 namespace LinqToTwitter
@@ -191,20 +186,17 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">criteria for url segments and parameters</param>
         /// <returns>URL conforming to Twitter API</returns>
-        public string BuildURL(Dictionary<string, string> parameters)
+        public Request BuildURL(Dictionary<string, string> parameters)
         {
             if (parameters == null || !parameters.ContainsKey("Type"))
             {
                 throw new ArgumentException("You must set Type.", "Type");
             }
 
+            ///TODO Joe: Why force a Type when there is only one Type?
             Type = RequestProcessorHelper.ParseQueryEnumType<SearchType>(parameters["Type"]);
 
-            var url = BaseUrl + "search.atom";
-
-            url = BuildSearchUrlParameters(parameters, url);
-
-            return url;
+            return BuildSearchUrlParameters(parameters, "search.atom");
         }
 
         /// <summary>
@@ -213,38 +205,39 @@ namespace LinqToTwitter
         /// <param name="parameters">list of parameters from expression tree</param>
         /// <param name="url">base url</param>
         /// <returns>base url + parameters</returns>
-        private string BuildSearchUrlParameters(Dictionary<string, string> parameters, string url)
+        private Request BuildSearchUrlParameters(Dictionary<string, string> parameters, string url)
         {
-            var urlParams = new List<string>();
+            var req = new Request(BaseUrl + url);
+            var urlParams = req.RequestParameters;
 
             if (parameters.ContainsKey("GeoCode"))
             {
                 GeoCode = parameters["GeoCode"];
-                urlParams.Add("geocode=" + HttpUtility.UrlEncode(parameters["GeoCode"]));
+                urlParams.Add(new QueryParameter("geocode" , GeoCode));
             }
 
             if (parameters.ContainsKey("SearchLanguage"))
             {
                 SearchLanguage = parameters["SearchLanguage"];
-                urlParams.Add("lang=" + parameters["SearchLanguage"]);
+                urlParams.Add(new QueryParameter("lang", SearchLanguage));
             }
 
             if (parameters.ContainsKey("Locale"))
             {
                 Locale = parameters["Locale"];
-                urlParams.Add("locale=" + parameters["Locale"]);
+                urlParams.Add(new QueryParameter("locale", Locale));
             }
 
             if (parameters.ContainsKey("Page"))
             {
                 Page = int.Parse(parameters["Page"]);
-                urlParams.Add("page=" + parameters["Page"]);
+                urlParams.Add(new QueryParameter("page", Page.ToString(CultureInfo.InvariantCulture)));
             }
 
             if (parameters.ContainsKey("PageSize"))
             {
                 PageSize = int.Parse(parameters["PageSize"]);
-                urlParams.Add("rpp=" + parameters["PageSize"]);
+                urlParams.Add(new QueryParameter("rpp", PageSize.ToString(CultureInfo.InvariantCulture)));
             }
 
             if (parameters.ContainsKey("Query"))
@@ -256,7 +249,7 @@ namespace LinqToTwitter
                     throw new ArgumentException("Query length must be 140 characters or less.", "Query");
                 }
 
-                urlParams.Add("q=" + HttpUtility.UrlEncode(parameters["Query"]));
+                urlParams.Add(new QueryParameter("q", Query));
             }
 
             if (parameters.ContainsKey("ShowUser"))
@@ -265,86 +258,86 @@ namespace LinqToTwitter
 
                 if (ShowUser)
                 {
-                    urlParams.Add("show_user=" + parameters["ShowUser"]); 
+                    urlParams.Add(new QueryParameter("show_user", "true")); 
                 }
             }
 
             if (parameters.ContainsKey("Since"))
             {
                 Since = DateTime.Parse(parameters["Since"]).Date;
-                urlParams.Add("since=" + Since.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
+                urlParams.Add(new QueryParameter("since", Since.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)));
             }
 
             if (parameters.ContainsKey("Until"))
             {
                 Until = DateTime.Parse(parameters["Until"]).Date;
-                urlParams.Add("until=" + Until.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
+                urlParams.Add(new QueryParameter("until",  Until.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)));
             }
 
             if (parameters.ContainsKey("SinceID"))
             {
                 SinceID = ulong.Parse(parameters["SinceID"]);
-                urlParams.Add("since_id=" + parameters["SinceID"]);
+                urlParams.Add(new QueryParameter("since_id", SinceID.ToString(CultureInfo.InvariantCulture)));
             }
 
             if (parameters.ContainsKey("MaxID"))
             {
                 MaxID = ulong.Parse(parameters["MaxID"]);
-                urlParams.Add("max_id=" + parameters["MaxID"]);
+                urlParams.Add(new QueryParameter("max_id", MaxID.ToString(CultureInfo.InvariantCulture)));
             }
 
             if (parameters.ContainsKey("ResultType"))
             {
                 ResultType = RequestProcessorHelper.ParseQueryEnumType<ResultType>(parameters["ResultType"]);
-                urlParams.Add("result_type=" + ResultType.ToString().ToLower());
+                urlParams.Add(new QueryParameter("result_type" , ResultType.ToString().ToLower()));
             }
 
             if (parameters.ContainsKey("WordPhrase"))
             {
                 WordPhrase = parameters["WordPhrase"];
-                urlParams.Add("exact=" + HttpUtility.UrlEncode(parameters["WordPhrase"]));
+                urlParams.Add(new QueryParameter("exact" , WordPhrase));
             }
 
             if (parameters.ContainsKey("WordAnd"))
             {
                 WordAnd = parameters["WordAnd"];
-                urlParams.Add("ands=" + HttpUtility.UrlEncode(parameters["WordAnd"]));
+                urlParams.Add(new QueryParameter("ands" , WordAnd));
             }
 
             if (parameters.ContainsKey("WordOr"))
             {
                 WordOr = parameters["WordOr"];
-                urlParams.Add("ors=" + HttpUtility.UrlEncode(parameters["WordOr"]));
+                urlParams.Add(new QueryParameter("ors" , WordOr));
             }
 
             if (parameters.ContainsKey("WordNot"))
             {
                 WordNot = parameters["WordNot"];
-                urlParams.Add("nots=" + HttpUtility.UrlEncode(parameters["WordNot"]));
+                urlParams.Add(new QueryParameter("nots" , WordNot));
             }
 
             if (parameters.ContainsKey("Hashtag"))
             {
                 Hashtag = parameters["Hashtag"];
-                urlParams.Add("tag=" + HttpUtility.UrlEncode(parameters["Hashtag"]));
+                urlParams.Add(new QueryParameter("tag" ,Hashtag));
             }
 
             if (parameters.ContainsKey("PersonFrom"))
             {
                 PersonFrom = parameters["PersonFrom"];
-                urlParams.Add("from=" + HttpUtility.UrlEncode(parameters["PersonFrom"]));
+                urlParams.Add(new QueryParameter("from", PersonFrom));
             }
 
             if (parameters.ContainsKey("PersonTo"))
             {
                 PersonTo = parameters["PersonTo"];
-                urlParams.Add("to=" + HttpUtility.UrlEncode(parameters["PersonTo"]));
+                urlParams.Add(new QueryParameter("to" ,PersonTo));
             }
 
             if (parameters.ContainsKey("PersonReference"))
             {
                 PersonReference = parameters["PersonReference"];
-                urlParams.Add("ref=" + HttpUtility.UrlEncode(parameters["PersonReference"]));
+                urlParams.Add(new QueryParameter("ref" ,PersonReference));
             }
 
             if (parameters.ContainsKey("Attitude"))
@@ -353,17 +346,17 @@ namespace LinqToTwitter
 
                 if ((Attitude & Attitude.Positive) == Attitude.Positive)
                 {
-                    urlParams.Add("tude%5B%5D=%3A%29"); 
+                    urlParams.Add(new QueryParameter("tude[]", ":)")); 
                 }
 
                 if ((Attitude & Attitude.Negative) == Attitude.Negative)
                 {
-                    urlParams.Add("tude%5B%5D=%3A%28");
+                    urlParams.Add(new QueryParameter("tude[]", ":("));
                 }
 
                 if ((Attitude & Attitude.Question) == Attitude.Question)
                 {
-                    urlParams.Add("tude%5B%5D=%3F");
+                    urlParams.Add(new QueryParameter("tude[]", "?"));
                 }
             }
 
@@ -373,7 +366,7 @@ namespace LinqToTwitter
 
                 if (WithLinks)
                 {
-                    urlParams.Add("filter%5B%5D=links");
+                    urlParams.Add(new QueryParameter("filter[]", "links"));
                 }
             }
 
@@ -383,16 +376,11 @@ namespace LinqToTwitter
 
                 if (WithRetweets)
                 {
-                    urlParams.Add("include%5B%5D=retweets");
+                    urlParams.Add(new QueryParameter("include[]", "retweets"));
                 }
             }
 
-            if (urlParams.Count > 0)
-            {
-                url += "?" + string.Join("&", urlParams.ToArray());
-            }
-
-            return url;
+            return req;
         }
 
         /// <summary>

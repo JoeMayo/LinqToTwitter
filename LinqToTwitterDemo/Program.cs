@@ -68,8 +68,8 @@ namespace LinqToTwitterDemo
             //
 
             // validate that credentials are present
-            if (string.IsNullOrWhiteSpace(ConfigurationManager.AppSettings["twitterConsumerKey"]) ||
-                string.IsNullOrWhiteSpace(ConfigurationManager.AppSettings["twitterConsumerSecret"]))
+            if (ConfigurationManager.AppSettings["twitterConsumerKey"].IsNullOrWhiteSpace() ||
+                ConfigurationManager.AppSettings["twitterConsumerSecret"].IsNullOrWhiteSpace())
             {
                 Console.WriteLine("You need to set twitterConsumerKey and twitterConsumerSecret in App.config/appSettings. Visit http://dev.twitter.com/apps for more info.\n");
                 Console.Write("Press any key to exit...");
@@ -154,10 +154,10 @@ namespace LinqToTwitterDemo
         private static void DoSingleUserDemo()
         {
             // validate that credentials are present
-            if (string.IsNullOrWhiteSpace(ConfigurationManager.AppSettings["twitterConsumerKey"]) ||
-                string.IsNullOrWhiteSpace(ConfigurationManager.AppSettings["twitterConsumerSecret"]) ||
-                string.IsNullOrWhiteSpace(ConfigurationManager.AppSettings["twitterOAuthToken"]) ||
-                string.IsNullOrWhiteSpace(ConfigurationManager.AppSettings["twitterAccessToken"]))
+            if (ConfigurationManager.AppSettings["twitterConsumerKey"].IsNullOrWhiteSpace() ||
+                ConfigurationManager.AppSettings["twitterConsumerSecret"].IsNullOrWhiteSpace() ||
+                ConfigurationManager.AppSettings["twitterOAuthToken"].IsNullOrWhiteSpace() ||
+                ConfigurationManager.AppSettings["twitterAccessToken"].IsNullOrWhiteSpace())
             {
                 Console.WriteLine("You need to set credentials in App.config/appSettings. Visit http://dev.twitter.com/apps for more info.\n");
                 Console.Write("Press any key to exit...");
@@ -209,8 +209,8 @@ namespace LinqToTwitterDemo
         private static void DoXAuthDemo()
         {
             // validate that credentials are present
-            if (string.IsNullOrWhiteSpace(ConfigurationManager.AppSettings["twitterConsumerKey"]) ||
-                string.IsNullOrWhiteSpace(ConfigurationManager.AppSettings["twitterConsumerSecret"]))
+            if (ConfigurationManager.AppSettings["twitterConsumerKey"].IsNullOrWhiteSpace() ||
+                ConfigurationManager.AppSettings["twitterConsumerSecret"].IsNullOrWhiteSpace())
             {
                 Console.WriteLine("You need to set twitterConsumerKey and twitterConsumerSecret in App.config/appSettings. Visit http://dev.twitter.com/apps for more info.\n");
                 Console.Write("Press any key to exit...");

@@ -25,7 +25,7 @@ namespace LinqToTwitter
         /// Tweet ID to get results for
         /// </summary>
         private ulong StatusID { get; set; }
-        
+
         /// <summary>
         /// extracts parameters from lambda
         /// </summary>
@@ -48,27 +48,20 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">criteria for url segments and parameters</param>
         /// <returns>URL conforming to Twitter API</returns>
-        public virtual string BuildURL(Dictionary<string, string> parameters)
+        public virtual Request BuildURL(Dictionary<string, string> parameters)
         {
-            string url = null;
-
             if (parameters == null || !parameters.ContainsKey("Type"))
-            {
                 throw new ArgumentException("You must set Type.", "Type");
-            }
 
             Type = RequestProcessorHelper.ParseQueryEnumType<RelatedResultsType>(parameters["Type"]);
 
             switch (Type)
             {
                 case RelatedResultsType.Show:
-                    url = BuildShowUrl(parameters);
-                    break;
+                    return BuildShowUrl(parameters);
                 default:
                     throw new InvalidOperationException("The default case of BuildUrl should never execute because a Type must be specified.");
             }
-
-            return url;
         }
 
         /// <summary>
@@ -76,21 +69,16 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">Parameters contain StatusID.</param>
         /// <returns>Url for performing related results show query.</returns>
-        private string BuildShowUrl(Dictionary<string, string> parameters)
+        private Request BuildShowUrl(Dictionary<string, string> parameters)
         {
-            string url = BaseUrl;
-
-            if (parameters.ContainsKey("StatusID"))
-            {
-                StatusID = ulong.Parse(parameters["StatusID"]);
-                url += "related_results/show/" + parameters["StatusID"] + ".json";
-            }
-            else
-            {
+            if (parameters == null || !parameters.ContainsKey("StatusID"))
                 throw new ArgumentException("StatusID is a required parameter.", "StatusWeoID");
-            }
 
-            return url;
+            StatusID = ulong.Parse(parameters["StatusID"]);
+            var url = BuildUrlHelper.TransformParameterUrl(parameters, "StatusID", "related_results/show.json");
+                        
+            var req = new Request(BaseUrl + url);
+            return req;
         }
 
         /// <summary>
@@ -107,7 +95,7 @@ namespace LinqToTwitter
                  select RelatedResults.CreateRelatedResults(result))
                 .ToList();
 
-            results.ForEach(result => 
+            results.ForEach(result =>
                 {
                     result.StatusID = StatusID;
                     result.Type = Type;

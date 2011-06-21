@@ -308,22 +308,24 @@ namespace LinqToTwitter
         /// <summary>
         /// makes HTTP call to Twitter API
         /// </summary>
-        /// <param name="url">URL with all query info</param>
+        /// <param name="request">Request with url endpoint and all query parameters</param>
         /// <param name="reqProc">Request Processor for Async Results</param>
         /// <returns>XML Respose from Twitter</returns>
-        public string QueryTwitter<T>(string url, IRequestProcessor<T> reqProc)
+        public string QueryTwitter<T>(Request request, IRequestProcessor<T> reqProc)
         {
             //Log
-            WriteLog(url, "QueryTwitter");
+            var url = request.Endpoint;
+            var parameters = request.RequestParameters;
+            this.LastUrl = request.FullUrl;
+            WriteLog(this.LastUrl, "QueryTwitter");
 
-            var uri = new Uri(url);
+            var uri = new Uri(this.LastUrl);
             string responseXml = string.Empty;
             string httpStatus = string.Empty;
 
             try
             {
-                this.LastUrl = uri.AbsoluteUri;
-                var req = this.AuthorizedClient.Get(url);
+                var req = this.AuthorizedClient.Get(request);
 
 #if SILVERLIGHT
                 var reqEx = req as HttpWebRequest;
@@ -341,7 +343,7 @@ namespace LinqToTwitter
 #else
                 Exception asyncException = null;
                 
-                var resetEvent = new ManualResetEvent(initialState: false);
+                var resetEvent = new ManualResetEvent(/*initialState:*/ false);
 
                 req.BeginGetResponse(
                     new AsyncCallback(
@@ -396,43 +398,46 @@ namespace LinqToTwitter
         /// <summary>
         /// Performs a query on the Twitter Stream
         /// </summary>
-        /// <param name="url">Stream url</param>
+        /// <param name="request">Request with url endpoint and all query parameters</param>
         /// <returns>
         /// Caller expects an XML formatted string response, but
         /// real response(s) with streams is fed to the callback
         /// </returns>
-        public string QueryTwitterStream(string url)
+        public string QueryTwitterStream(Request request)
         {
-            new Thread(ExecuteTwitterStream).Start(url);
-
+            new Thread(ExecuteTwitterStream).Start(request);
             return "<streaming></streaming>";
         }
 
         /// <summary>
         /// Processes stream results and performs error handling
         /// </summary>
-        /// <param name="url">Stream URL</param>
-        private void ExecuteTwitterStream(object url)
+        /// <param name="state">The request</param>
+        private void ExecuteTwitterStream(object state)
         {
-            var resetEvent = new ManualResetEvent(initialState: false);
+            var request = state as Request;
+            Debug.Assert(request != null, "state must be a Request object");
+
+            var streamUrl = request.Endpoint;
+            var parameters = request.RequestParameters; 
+
+            var resetEvent = new ManualResetEvent(/*initialState:*/ false);
             int errorWait = 250;
             bool firstConnection = true;
 
-            HttpWebRequest req = null;
-            string streamUrl = url as string;
-            Debug.Assert(url != null, "url type must be string");
-
             try
             {
+                HttpWebRequest req = null;
+
                 while (!CloseStream)
                 {
                     if (streamUrl.Contains("user.json") || streamUrl.Contains("site.json"))
                     {
-                        req = GetUserStreamRequest(streamUrl);
+                        req = GetUserStreamRequest(request);
                     }
                     else
                     {
-                        req = GetBasicStreamRequest(streamUrl);
+                        req = GetBasicStreamRequest(request);
                     }
 
                     req.BeginGetResponse(
@@ -550,10 +555,12 @@ namespace LinqToTwitter
         /// <summary>
         /// Handles request initialization for sample, filter, and other basic streams
         /// </summary>
-        /// <param name="url">Stream url</param>
+        /// <param name="request">Stream endpoint and parameters</param>
         /// <returns>Initialized Request</returns>
-        private HttpWebRequest GetBasicStreamRequest(string streamUrl)
+        private HttpWebRequest GetBasicStreamRequest(Request request)
         {
+            var streamUrl = request.FullUrl;
+            this.LastUrl = streamUrl;
             var req = HttpWebRequest.Create(streamUrl) as HttpWebRequest;
             req.Credentials = new NetworkCredential(StreamingUserName, StreamingPassword);
             req.UserAgent = UserAgent;
@@ -578,7 +585,7 @@ namespace LinqToTwitter
 //                req.ReadWriteTimeout = ReadWriteTimeout;
 //#endif
 
-                var resetEvent = new ManualResetEvent(initialState: false);
+                var resetEvent = new ManualResetEvent(/*initialState:*/ false);
                 Exception asyncException = null;
 
                 req.BeginGetRequestStream(
@@ -617,16 +624,15 @@ namespace LinqToTwitter
         /// <summary>
         /// Handles request initialization for user and site streams
         /// </summary>
-        /// <param name="url">Stream url</param>
+        /// <param name="request">Stream endpoint and parameters</param>
         /// <returns>Initialized Request</returns>
-        private HttpWebRequest GetUserStreamRequest(string streamUrl)
+        private HttpWebRequest GetUserStreamRequest(Request request)
         {
-            var uri = new Uri(streamUrl);
             string responseXml = string.Empty;
             string httpStatus = string.Empty;
 
-            this.LastUrl = uri.AbsoluteUri;
-            var req = this.AuthorizedClient.Get(streamUrl) as HttpWebRequest;
+            this.LastUrl = request.FullUrl;
+            var req = this.AuthorizedClient.Get(request) as HttpWebRequest;
             req.UserAgent = UserAgent;
 
 //#if !SILVERLIGHT
@@ -637,26 +643,6 @@ namespace LinqToTwitter
             return req;
         }
 
-        ///// <summary>
-        ///// Selects appropriate streaming method
-        ///// </summary>
-        ///// <param name="url">Stream url</param>
-        ///// <returns>
-        ///// Caller expects an XML formatted string response, but
-        ///// real response(s) with streams is fed to the callback
-        ///// </returns>
-        //public string QueryTwitterStream(string url)
-        //{
-        //    if (url.Contains("user.json") || url.Contains("site.json"))
-        //    {
-        //        new Thread(ManageTwitterUserStream).Start(url);
-        //    }
-        //    else
-        //    {
-        //        new Thread(ManageTwitterStreaming).Start(url);
-        //    }
-        //    return "<streaming></streaming>";
-        //}
 
         /// <summary>
         /// This code will execute on a thread, processing content from the Twitter stream
@@ -669,10 +655,11 @@ namespace LinqToTwitter
         /// Thanks to Shannon Whitley for a good example of how to do this in C#:
         /// http://www.voiceoftech.com/swhitley/?p=898
         /// </remarks>
-        /// <param name="req">Web request, which has already been authenticated</param>
-        private void ManageTwitterStreaming(object url)
+        /// <param name="state">Web request, which has already been authenticated</param>
+        private void ManageTwitterStreaming(object state)
         {
-            string streamUrl = url as string;
+            var request = state as Request;
+            string streamUrl = request.FullUrl;
 
             var req = HttpWebRequest.Create(streamUrl) as HttpWebRequest;
             req.Credentials = new NetworkCredential(StreamingUserName, StreamingPassword);
@@ -710,21 +697,20 @@ namespace LinqToTwitter
         /// Thanks to Shannon Whitley for a good example of how to do this in C#:
         /// http://www.voiceoftech.com/swhitley/?p=898
         /// </remarks>
-        /// <param name="req">Web request, which has already been authenticated</param>
-        private void ManageTwitterUserStream(object url)
+        /// <param name="state">Web request, which has already been authenticated</param>
+        private void ManageTwitterUserStream(object state)
         {
-            string streamUrl = url as string;
+            var request = state as Request;
 
-            var uri = new Uri(streamUrl);
             string responseXml = string.Empty;
             string httpStatus = string.Empty;
 
-            this.LastUrl = uri.AbsoluteUri;
-            var req = this.AuthorizedClient.Get(streamUrl) as HttpWebRequest;
+            this.LastUrl = request.FullUrl;
+            var req = this.AuthorizedClient.Get(request) as HttpWebRequest;
             req.UserAgent = UserAgent;
             //req.Timeout = -1;
 
-            ExecuteTwitterStream(req, null, shouldPostQuery: false);
+            ExecuteTwitterStream(req, null, /*shouldPostQuery:*/ false);
         }
 
         /// <summary>
@@ -735,7 +721,7 @@ namespace LinqToTwitter
         /// <param name="shouldPostQuery">If true, send postBytes as post</param>
         private void ExecuteTwitterStream(HttpWebRequest req, byte[] postBytes, bool shouldPostQuery)
         {
-            var resetEvent = new ManualResetEvent(initialState: false);
+            var resetEvent = new ManualResetEvent(/*initialState:*/ false);
             int errorWait = 250;
             bool firstConnection = true;
 
@@ -912,7 +898,7 @@ namespace LinqToTwitter
         /// <param name="url">url to upload to</param>
         /// <param name="reqProc">Processes results of async requests</param>
         /// <returns>XML Respose from Twitter</returns>
-        public string PostTwitterFile<T>(string filePath, Dictionary<string, string> parameters, string url, IRequestProcessor<T> reqProc)
+        public string PostTwitterFile<T>(string url, IDictionary<string, string> postData, string filePath, IRequestProcessor<T> reqProc)
         {
             var fileName = Path.GetFileName(filePath);
 
@@ -937,7 +923,7 @@ namespace LinqToTwitter
 
             byte[] fileBytes = Utilities.GetFileBytes(filePath);
 
-            return PostTwitterImage(fileBytes, parameters, url, fileName, imageType, reqProc);
+            return PostTwitterImage(url, postData, fileBytes, fileName, imageType, reqProc);
         }
 
         /// <summary>
@@ -949,7 +935,7 @@ namespace LinqToTwitter
         /// <param name="imageType">type of image: must be one of jpg, gif, or png</param>
         /// <param name="reqProc">Processes results of async requests</param>
         /// <returns>XML Response from Twitter</returns>
-        public string PostTwitterImage<T>(byte[] image, Dictionary<string, string> parameters, string url, string fileName, string imageType, IRequestProcessor<T> reqProc)
+        public string PostTwitterImage<T>(string url, IDictionary<string, string> postData, byte[] image, string fileName, string imageType, IRequestProcessor<T> reqProc)
         {
             string contentBoundaryBase = DateTime.Now.Ticks.ToString("x");
             string beginContentBoundary = string.Format("--{0}\r\n", contentBoundaryBase);
@@ -958,9 +944,9 @@ namespace LinqToTwitter
 
             var formDataSB = new StringBuilder();
 
-            if (parameters != null && parameters.Count > 0)
+            if (postData != null && postData.Count > 0)
             {
-                foreach (var param in parameters)
+                foreach (var param in postData)
                 {
                     formDataSB.AppendFormat("--{0}\r\nContent-Disposition: form-data; name=\"{1}\"\r\n\r\n{2}\r\n", contentBoundaryBase, param.Key, param.Value);
                 }
@@ -984,9 +970,9 @@ namespace LinqToTwitter
             {
                 this.LastUrl = url;
                 //Log
-                WriteLog(url, "PostTwitterImage");
+                WriteLog(this.LastUrl, "PostTwitterImage");
 
-                var req = this.AuthorizedClient.Post(url);
+                var req = this.AuthorizedClient.PostRequest(new Request(url), postData);
                 //req.ServicePoint.Expect100Continue = false;
                 req.ContentType = "multipart/form-data;boundary=" + contentBoundaryBase;
                 //req.PreAuthenticate = true;
@@ -994,7 +980,7 @@ namespace LinqToTwitter
                 req.ContentLength = imageBytes.Length;
 
                 Exception asyncException = null;
-                var resetEvent = new ManualResetEvent(initialState: false);
+                var resetEvent = new ManualResetEvent(/*initialState:*/ false);
 
                 req.BeginGetRequestStream(
                     new AsyncCallback(
@@ -1009,18 +995,9 @@ namespace LinqToTwitter
                                     int lastPercentage = 0;
                                     while (offset < imageBytes.Length)
                                     {
-                                        int bytesLeft = imageBytes.Length - offset;
-
-                                        if (bytesLeft < bufferSize)
-                                        {
-                                            reqStream.Write(imageBytes, offset, bytesLeft);
-                                        }
-                                        else
-                                        {
-                                            reqStream.Write(imageBytes, offset, bufferSize);
-                                        }
-
-                                        offset += bufferSize;
+                                        int bytesToWrite = Math.Min(bufferSize, imageBytes.Length - offset);
+                                        reqStream.Write(imageBytes, offset, bytesToWrite);
+                                        offset += bytesToWrite;
 
                                         int percentComplete =
                                             (int)((double)offset / (double)imageBytes.Length * 100);
@@ -1120,18 +1097,18 @@ namespace LinqToTwitter
         /// <param name="parameters">parameters to post</param>
         /// <param name="reqProc">Processes results of async requests</param>
         /// <returns>XML response from Twitter</returns>
-        public string ExecuteTwitter<T>(string url, Dictionary<string, string> parameters, IRequestProcessor<T> reqProc)
+        public string ExecuteTwitter<T>(string url, IDictionary<string, string> postData, IRequestProcessor<T> reqProc)
         {
             string httpStatus = string.Empty;
             string responseXml = string.Empty;
 
-            // Oddly, we add the parameters both to the URI's query string and the POST entity
-            Uri requestUri = Utilities.AppendQueryString(new Uri(url), parameters);
             try
             {
-                this.LastUrl = requestUri.AbsoluteUri;
+                // for debugging purposes only, so don't worry about ? vs. &???
+                this.LastUrl = url;
                 //Log
-                WriteLog(url, "ExecuteTwitter");
+                WriteLog(this.LastUrl, "ExecuteTwitter");
+                var request = new Request(url);
 
 #if SILVERLIGHT
                 HttpWebRequest req = AuthorizedClient.PostAsync(url, parameters);
@@ -1155,7 +1132,7 @@ namespace LinqToTwitter
 #else
                 if (AsyncCallback != null)
                 {
-                    HttpWebRequest req = AuthorizedClient.PostAsync(url, parameters);
+                    HttpWebRequest req = AuthorizedClient.PostAsync(request, postData);
 
                     req.BeginGetResponse(
                         new AsyncCallback(
@@ -1174,7 +1151,8 @@ namespace LinqToTwitter
                 }
                 else
                 {
-                    using (var resp = this.AuthorizedClient.Post(url, parameters))
+                    var req = this.AuthorizedClient.PostRequest(request, postData);
+                    using (var resp = Utilities.AsyncGetResponse(req))
                     {
                         httpStatus = resp.Headers["Status"];
                         responseXml = GetTwitterResponse(resp);

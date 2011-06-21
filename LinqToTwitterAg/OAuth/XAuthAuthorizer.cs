@@ -1,5 +1,6 @@
-﻿
-using System;
+﻿using System;
+using System.Collections.Generic;
+
 namespace LinqToTwitter
 {
     public class XAuthAuthorizer : OAuthAuthorizer, ITwitterAuthorizer
@@ -9,18 +10,20 @@ namespace LinqToTwitter
         /// </summary>
         public void Authorize()
         {
-            if (IsAuthorized) return;
+            if (IsAuthorized)
+                return;
+
+            var request = new Request(OAuthAccessTokenUrl);
 
             var xauthCredentials = Credentials as XAuthCredentials;
-
-            string postData =
-                "x_auth_username=" + xauthCredentials.UserName + "&" +
-                "x_auth_password=" + xauthCredentials.Password + "&" +
-                "x_auth_mode=client_auth";
+            var postData = new Dictionary<string, string>();
+            postData.Add("x_auth_username", xauthCredentials.UserName);
+            postData.Add("x_auth_password", xauthCredentials.Password);
+            postData.Add("x_auth_mode", "client_auth");
 
             string screenName;
             string userID;
-            OAuthTwitter.PostAccessToken(OAuthAccessTokenUrl, postData, out screenName, out userID);
+            OAuthTwitter.PostAccessToken(request, postData, out screenName, out userID);
 
             ScreenName = screenName;
             UserId = userID;
@@ -35,18 +38,18 @@ namespace LinqToTwitter
         /// <param name="authorizationCompleteCallback">Action you provide for when authorization completes.</param>
         public void BeginAuthorize(Action<TwitterAsyncResponse<UserIdentifier>> authorizationCompleteCallback)
         {
-            if (IsAuthorized) return;
+            if (IsAuthorized)
+                return;
+
+            var request = new Request(OAuthAccessTokenUrl);
 
             var xauthCredentials = Credentials as XAuthCredentials;
+            var postData = new Dictionary<string, string>();
+            postData.Add("x_auth_username", xauthCredentials.UserName);
+            postData.Add("x_auth_password", xauthCredentials.Password);
+            postData.Add("x_auth_mode", "client_auth");
 
-            string postData =
-                "x_auth_username=" + xauthCredentials.UserName + "&" +
-                "x_auth_password=" + xauthCredentials.Password + "&" +
-                "x_auth_mode=client_auth";
-
-            string url = OAuthAccessTokenUrl + "?" + postData;
-
-            OAuthTwitter.PostAccessTokenAsync(new Uri(url), postData, authorizationCompleteCallback);
+            OAuthTwitter.PostAccessTokenAsync(request, postData, authorizationCompleteCallback);
         }
     }
 }

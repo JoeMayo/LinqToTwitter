@@ -20,7 +20,6 @@ namespace LinqToTwitter
             OAuthAccessTokenUrl = "https://api.twitter.com/oauth/access_token";
 
             OAuthTwitter = new OAuthTwitter();
-            OAuthHelper = new OAuthHelper();
 
 #if SILVERLIGHT
             if (!Application.Current.IsRunningOutOfBrowser)
@@ -53,7 +52,7 @@ namespace LinqToTwitter
         /// <summary>
         /// URL for Silverlight proxy
         /// </summary>
-        public string ProxyUrl 
+        public string ProxyUrl
         {
             get
             {
@@ -69,11 +68,6 @@ namespace LinqToTwitter
         /// Contains general OAuth functionality
         /// </summary>
         public IOAuthTwitter OAuthTwitter { get; set; }
-
-        /// <summary>
-        /// Facilitates testing without calling Process.Start
-        /// </summary>
-        public IOAuthHelper OAuthHelper { get; set; }
 
         private IOAuthCredentials m_credentials;
 
@@ -98,7 +92,7 @@ namespace LinqToTwitter
             }
         }
 
-        public bool IsAuthorized 
+        public bool IsAuthorized
         {
             get
             {
@@ -127,20 +121,6 @@ namespace LinqToTwitter
 
         public bool UseCompression { get; set; }
 
-        private string PrepareAuthHeader(string authHeader)
-        {
-            var encodedParams =
-                string.Join(
-                    ",",
-                    (from param in authHeader.Split('&')
-                     let args = param.Split('=')
-                     where !args[0].Contains("realm")
-                     select args[0] + "=\"" + args[1] + "\"")
-                    .ToArray());
-
-            return "OAuth " + encodedParams;
-        }
-
         /// <summary>
         /// Initializes the request in ways common to GET and POST requests.
         /// </summary>
@@ -166,7 +146,7 @@ namespace LinqToTwitter
             {
                 request.Headers.Add(HttpRequestHeader.AcceptEncoding, "gzip, deflate");
                 request.AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip;
-            } 
+            }
 #endif
         }
 
@@ -175,15 +155,15 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="url">Twitter Query</param>
         /// <returns>Request to be sent to Twitter</returns>
-        public WebRequest Get(string url)
+        public WebRequest Get(Request request)
         {
             string outUrl;
             string queryString;
-            OAuthTwitter.GetOAuthQueryString(HttpMethod.GET, url, string.Empty, out outUrl, out queryString);
+            OAuthTwitter.GetOAuthQueryString(HttpMethod.GET, request, string.Empty, out outUrl, out queryString);
 
 #if SILVERLIGHT
             var req = HttpWebRequest.Create(
-                ProxyUrl + url + 
+                ProxyUrl + outUrl + 
                 (string.IsNullOrEmpty(ProxyUrl) ? "?" : "&") +
                 queryString);
 #else
@@ -196,75 +176,63 @@ namespace LinqToTwitter
             return req;
         }
 
-        public HttpWebRequest Post(string url)
+        /// <summary>
+        /// OAuth Post
+        /// </summary>
+        /// <param name="request">The request with the endpoint URL and the parameters to 
+        /// include in the POST entity.  Must not be null.</param>
+        /// <returns>request to send</returns>
+        public virtual HttpWebRequest PostRequest(Request request, IDictionary<string, string> postData)
         {
-            var req = WebRequest.Create(ProxyUrl + url) as HttpWebRequest;
-            req.Method = HttpMethod.POST.ToString();
+            var auth = OAuthTwitter.GetOAuthQueryStringForPost(request, postData);
 
-            req.Headers[HttpRequestHeader.Authorization] = OAuthTwitter.GetOAuthQueryStringForPost(url);
+#if SILVERLIGHT
+            var req = HttpWebRequest.Create(
+                ProxyUrl + request.Endpoint + 
+                (string.IsNullOrEmpty(ProxyUrl) ? "?" : "&") +
+                request.QueryString) as HttpWebRequest;;
+#else
+            var req = HttpWebRequest.Create(request.FullUrl) as HttpWebRequest;
+#endif
+            //req.ServicePoint.Expect100Continue = false;
+            req.Method = HttpMethod.POST.ToString();
+            req.Headers[HttpRequestHeader.Authorization] = auth;
+            req.ContentLength = 0;
 
             InitializeRequest(req);
 
             return req;
         }
-
         /// <summary>
         /// OAuth Post
         /// </summary>
-        /// <param name="url">Twitter Command</param>
-        /// <param name="args">Command Arguments</param>
-        /// <returns>Response from Twitter</returns>
-        public HttpWebResponse Post(string url, Dictionary<string, string> args)
+        /// <param name="request">The request with the endpoint URL and the parameters to 
+        /// include in the POST entity.  Must not be null.</param>
+        /// <returns>request to send</returns>
+        public virtual HttpWebResponse Post(Request request, IDictionary<string, string> postData)
         {
-            string paramsJoined =
-                string.Join(
-                    "&",
-                    (from param in args
-                     where !string.IsNullOrEmpty(param.Value)
-                     select param.Key + "=" + OAuthTwitter.TwitterParameterUrlEncode(param.Value))
-                    .ToArray());
-
-            url += "?" + paramsJoined;
-
-            var req = WebRequest.Create(ProxyUrl + url) as HttpWebRequest;
-            //req.ServicePoint.Expect100Continue = false;
-            req.Method = HttpMethod.POST.ToString();
-
-            req.Headers[HttpRequestHeader.Authorization] = OAuthTwitter.GetOAuthQueryStringForPost(url);
-            req.ContentLength = 0;
-
-            InitializeRequest(req);
-
-            return OAuthHelper.GetResponse(req);
+            var req = PostRequest(request, postData);
+            return Utilities.AsyncGetResponse(req);
         }
 
         /// <summary>
         /// Async OAuth Post
         /// </summary>
-        /// <param name="url">Twitter Command</param>
-        /// <param name="args">Command Arguments</param>
+        /// <param name="request">The request with the endpoint URL and the parameters to 
+        /// include in the POST entity.  Must not be null.</param>
         /// <returns>HttpWebRequest for post</returns>
-        public HttpWebRequest PostAsync(string url, Dictionary<string, string> args)
+        public virtual HttpWebRequest PostAsync(Request request, IDictionary<string, string> postData)
         {
-            string paramsJoined =
-                string.Join(
-                    "&",
-                    (from param in args
-                     where !string.IsNullOrEmpty(param.Value)
-                     select param.Key + "=" + OAuthTwitter.TwitterParameterUrlEncode(param.Value))
-                    .ToArray());
-
-            //url += "?" + paramsJoined;
+            var auth = OAuthTwitter.GetOAuthQueryStringForPost(request, postData);
 
             var req = WebRequest.Create(
-                    ProxyUrl + url +
+                    ProxyUrl + request.Endpoint +
                     (string.IsNullOrEmpty(ProxyUrl) ? "?" : "&") +
-                    paramsJoined) 
+                    request.QueryString)
                 as HttpWebRequest;
             //req.ServicePoint.Expect100Continue = false;
             req.Method = HttpMethod.POST.ToString();
-
-            req.Headers[HttpRequestHeader.Authorization] = OAuthTwitter.GetOAuthQueryStringForPost(url + "?" + paramsJoined);
+            req.Headers[HttpRequestHeader.Authorization] = auth;
             req.ContentLength = 0;
 
             InitializeRequest(req);

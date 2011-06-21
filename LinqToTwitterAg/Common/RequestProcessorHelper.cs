@@ -32,7 +32,7 @@ namespace LinqToTwitter
 
             if (queryType.GetType() == typeof(string))
             {
-                statusType = (T)Enum.Parse(typeof(T), queryType, ignoreCase: true);
+                statusType = (T)Enum.Parse(typeof(T), queryType, /*ignoreCase:*/ true);
             }
             else
             {

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Linq.Expressions;
 
 namespace LinqToTwitter
@@ -94,39 +93,32 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">criteria for url segments and parameters</param>
         /// <returns>URL conforming to Twitter API</returns>
-        public string BuildURL(Dictionary<string, string> parameters)
+        public Request BuildURL(Dictionary<string, string> parameters)
         {
-            string url = null;
-
             if (parameters == null || !parameters.ContainsKey("Type"))
             {
                 throw new ArgumentException("You must set Type.", "Type");
             }
-
+ 
             Type = RequestProcessorHelper.ParseQueryEnumType<StreamingType>(parameters["Type"]);
 
             switch (Type)
             {
                 case StreamingType.Filter:
-                    url = BuildFilterUrl(parameters);
-                    break;
+                    return BuildFilterUrl(parameters);
                 case StreamingType.Firehose:
-                    url = BuildFirehoseUrl(parameters);
-                    break;
+                    return BuildFirehoseUrl(parameters);
                 case StreamingType.Links:
-                    url = BuildLinksUrl(parameters);
-                    break;
+                    return BuildLinksUrl(parameters);
                 case StreamingType.Retweet:
-                    url = BuildRetweetUrl(parameters);
-                    break;
+                    return BuildRetweetUrl(parameters);
                 case StreamingType.Sample:
-                    url = BuildSampleUrl(parameters);
-                    break;
+                    return BuildSampleUrl(parameters);
                 default:
                     break;
             }
 
-            return url;
+            return null;
         }
 
         /// <summary>
@@ -134,7 +126,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">parameter list</param>
         /// <returns>base url + show segment</returns>
-        private string BuildFilterUrl(Dictionary<string, string> parameters)
+        private Request BuildFilterUrl(Dictionary<string, string> parameters)
         {
             if (!parameters.ContainsKey("Follow") &&
                 !parameters.ContainsKey("Locations") &&
@@ -143,41 +135,35 @@ namespace LinqToTwitter
                 throw new ArgumentException("You must specify at least one of the parameters Follow, Locations, or Track.", "FollowOrLocationsOrTrack");
             }
 
-            string url = BaseUrl + "statuses/filter.json";
-
-            var urlParams = new List<string>();
+            var req = new Request(BaseUrl + "statuses/filter.json");
+            var urlParams = req.RequestParameters;
 
             if (parameters.ContainsKey("Count"))
             {
-                urlParams.Add("count=" + parameters["Count"]);
+                urlParams.Add(new QueryParameter("count", parameters["Count"]));
             }
 
             if (parameters.ContainsKey("Delimited"))
             {
-                urlParams.Add("delimited=" + parameters["Delimited"]);
+                urlParams.Add(new QueryParameter("delimited", parameters["Delimited"]));
             }
 
             if (parameters.ContainsKey("Follow"))
             {
-                urlParams.Add("follow=" + parameters["Follow"]);
+                urlParams.Add(new QueryParameter("follow", parameters["Follow"]));
             }
 
             if (parameters.ContainsKey("Locations"))
             {
-                urlParams.Add("locations=" + parameters["Locations"]);
+                urlParams.Add(new QueryParameter("locations", parameters["Locations"]));
             }
 
             if (parameters.ContainsKey("Track"))
             {
-                urlParams.Add("track=" + Uri.EscapeUriString(parameters["Track"]));
+                urlParams.Add(new QueryParameter("track", parameters["Track"]));
             }
 
-            if (urlParams.Count > 0)
-            {
-                url += "?" + string.Join("&", urlParams.ToArray());
-            }
-
-            return url;
+            return req;
         }
 
         /// <summary>
@@ -185,28 +171,22 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">parameter list</param>
         /// <returns>base url + show segment</returns>
-        private string BuildFirehoseUrl(Dictionary<string, string> parameters)
+        private Request BuildFirehoseUrl(Dictionary<string, string> parameters)
         {
-            string url = BaseUrl + "statuses/firehose.json";
-
-            var urlParams = new List<string>();
+            var req = new Request(BaseUrl + "statuses/firehose.json");
+            var urlParams = req.RequestParameters;
 
             if (parameters.ContainsKey("Count"))
             {
-                urlParams.Add("count=" + parameters["Count"]);
+                urlParams.Add(new QueryParameter("count", parameters["Count"]));
             }
 
             if (parameters.ContainsKey("Delimited"))
             {
-                urlParams.Add("delimited=" + parameters["Delimited"]);
+                urlParams.Add(new QueryParameter("delimited", parameters["Delimited"]));
             }
 
-            if (urlParams.Count > 0)
-            {
-                url += "?" + string.Join("&", urlParams.ToArray());
-            }
-
-            return url;
+            return req;
         }
 
         /// <summary>
@@ -214,28 +194,22 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">parameter list</param>
         /// <returns>base url + show segment</returns>
-        private string BuildLinksUrl(Dictionary<string, string> parameters)
+        private Request BuildLinksUrl(Dictionary<string, string> parameters)
         {
-            string url = BaseUrl + "statuses/links.json";
-
-            var urlParams = new List<string>();
-
+            var req = new Request(BaseUrl + "statuses/links.json");
+            var urlParams = req.RequestParameters;
+      
             if (parameters.ContainsKey("Count"))
             {
-                urlParams.Add("count=" + parameters["Count"]);
+                urlParams.Add(new QueryParameter("count", parameters["Count"]));
             }
 
             if (parameters.ContainsKey("Delimited"))
             {
-                urlParams.Add("delimited=" + parameters["Delimited"]);
+                urlParams.Add(new QueryParameter("delimited", parameters["Delimited"]));
             }
 
-            if (urlParams.Count > 0)
-            {
-                url += "?" + string.Join("&", urlParams.ToArray());
-            }
-
-            return url;
+            return req;
         }
 
         /// <summary>
@@ -243,23 +217,17 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">parameter list</param>
         /// <returns>base url + show segment</returns>
-        private string BuildRetweetUrl(Dictionary<string, string> parameters)
+        private Request BuildRetweetUrl(Dictionary<string, string> parameters)
         {
-            string url = BaseUrl + "statuses/retweet.json";
-
-            var urlParams = new List<string>();
+            var req = new Request(BaseUrl + "statuses/retweet.json");
+            var urlParams = req.RequestParameters;
 
             if (parameters.ContainsKey("Delimited"))
             {
-                urlParams.Add("delimited=" + parameters["Delimited"]);
+                urlParams.Add(new QueryParameter("delimited", parameters["Delimited"]));
             }
 
-            if (urlParams.Count > 0)
-            {
-                url += "?" + string.Join("&", urlParams.ToArray());
-            }
-
-            return url;
+            return req;
         }
 
         /// <summary>
@@ -267,21 +235,20 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">parameter list</param>
         /// <returns>base url + show segment</returns>
-        private string BuildSampleUrl(Dictionary<string, string> parameters)
+        private Request BuildSampleUrl(Dictionary<string, string> parameters)
         {
             if (parameters.ContainsKey("Count"))
-            {
                 throw new ArgumentException("Count is forbidden in Sample streams.", "Count");
-            }
 
-            string url = BaseUrl + "statuses/sample.json";
+            var req = new Request(BaseUrl + "statuses/sample.json");
+            var urlParams = req.RequestParameters;
 
             if (parameters.ContainsKey("Delimited"))
             {
-                url += "?delimited=" + parameters["Delimited"];
+                urlParams.Add(new QueryParameter("delimited", parameters["Delimited"]));
             }
 
-            return url;
+            return req;
         }
 
         /// <summary>

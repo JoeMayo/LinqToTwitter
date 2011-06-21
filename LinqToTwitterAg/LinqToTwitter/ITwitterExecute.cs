@@ -11,11 +11,6 @@ namespace LinqToTwitter
     /// </summary>
     public interface ITwitterExecute
     {
-        ///// <summary>
-        ///// Gets or sets the object that can send authorized requests to Twitter.
-        ///// </summary>
-        //ITwitterAuthorization AuthorizedClient { get; set; }
-
         /// <summary>
         /// Gets or sets the object that can send authorized requests to Twitter.
         /// </summary>
@@ -56,7 +51,7 @@ namespace LinqToTwitter
         /// <param name="url">URL of request</param>
         /// <param name="parameters">parameters to post</param>
         /// <returns>XML Response from Twitter</returns>
-        string ExecuteTwitter<T>(string url, Dictionary<string, string> parameters, IRequestProcessor<T> reqProc);
+        string ExecuteTwitter<T>(string url, IDictionary<string, string> postData, IRequestProcessor<T> reqProc);
 
         /// <summary>
         /// performs HTTP POST file upload to Twitter
@@ -65,7 +60,7 @@ namespace LinqToTwitter
         /// <param name="parameters">query string parameters</param>
         /// <param name="url">url to upload to</param>
         /// <returns>XML Results from Twitter</returns>
-        string PostTwitterFile<T>(string filePath, Dictionary<string, string> parameters, string url, IRequestProcessor<T> reqProc);
+        string PostTwitterFile<T>(string url, IDictionary<string, string> postData, string filePath, IRequestProcessor<T> reqProc);
 
         /// <summary>
         /// performs HTTP POST image byte array upload to Twitter
@@ -75,7 +70,7 @@ namespace LinqToTwitter
         /// <param name="fileName">name to pass to Twitter for the file</param>
         /// <param name="imageType">type of image: must be one of jpg, gif, or png</param>
         /// <returns>XML results From Twitter</returns>
-        string PostTwitterImage<T>(byte[] image, Dictionary<string, string> parameters, string url, string fileName, string imageType, IRequestProcessor<T> reqProc);
+        string PostTwitterImage<T>(string url, IDictionary<string, string> postData, byte[] image, string fileName, string imageType, IRequestProcessor<T> reqProc);
 
         /// <summary>
         /// makes HTTP call to Twitter API
@@ -83,14 +78,14 @@ namespace LinqToTwitter
         /// <param name="url">URL with all query info</param>
         /// <param name="reqProc">Request Processor for Async Results</param>
         /// <returns>XML Results from Twitter</returns>
-        string QueryTwitter<T>(string url, IRequestProcessor<T> reqProc);
+        string QueryTwitter<T>(Request req, IRequestProcessor<T> reqProc);
 
         /// <summary>
         /// Query for Twitter Streaming APIs
         /// </summary>
         /// <param name="url">URL with all query info</param>
         /// <returns>Raw results from Twitter</returns>
-        string QueryTwitterStream(string url);
+        string QueryTwitterStream(Request req);
 
         /// <summary>
         /// Used to notify callers of changes in image upload progress

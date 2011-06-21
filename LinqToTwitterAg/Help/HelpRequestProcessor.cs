@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Collections;
 using System.Xml.Linq;
 
 namespace LinqToTwitter
@@ -40,7 +38,7 @@ namespace LinqToTwitter
         /// <summary>
         /// not used
         /// </summary>
-        public virtual string BuildURL(Dictionary<string, string> parameters)
+        public virtual Request BuildURL(Dictionary<string, string> parameters)
         {
             throw new NotImplementedException();
         }

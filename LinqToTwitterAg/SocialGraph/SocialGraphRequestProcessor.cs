@@ -1,9 +1,8 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Linq.Expressions;
-using System.Collections;
 using System.Xml.Linq;
 
 namespace LinqToTwitter
@@ -45,7 +44,7 @@ namespace LinqToTwitter
         /// </summary>
         [Obsolete(
             "This property has been deprecated and will be ignored by Twitter. Please use Cursor/CursorResponse instead.",
-            error: true)]
+            /*error:*/ true)]
         private int Page { get; set; }
 
         /// <summary>
@@ -88,30 +87,22 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">criteria for url segments and parameters</param>
         /// <returns>URL conforming to Twitter API</returns>
-        public string BuildURL(Dictionary<string, string> parameters)
+        public Request BuildURL(Dictionary<string, string> parameters)
         {
-            string url = null;
-
             if (parameters == null || !parameters.ContainsKey("Type"))
-            {
                 throw new ArgumentException("You must set Type.", "Type");
-            }
 
             Type = RequestProcessorHelper.ParseQueryEnumType<SocialGraphType>(parameters["Type"]);
 
             switch (Type)
             {
                 case SocialGraphType.Followers:
-                    url = BuildSocialGraphFollowersUrl(parameters);
-                    break;
+                    return BuildSocialGraphFollowersUrl(parameters);
                 case SocialGraphType.Friends:
-                    url = BuildSocialGraphFriendsUrl(parameters);
-                    break;
+                    return BuildSocialGraphFriendsUrl(parameters);
                 default:
                     throw new InvalidOperationException("The default case of BuildUrl should never execute because a Type must be specified.");
             }
-
-            return url;
         }
 
         /// <summary>
@@ -119,13 +110,11 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">parameter list</param>
         /// <returns>base url + show segment</returns>
-        private string BuildSocialGraphFriendsUrl(Dictionary<string, string> parameters)
+        private Request BuildSocialGraphFriendsUrl(Dictionary<string, string> parameters)
         {
             var url = BaseUrl + "friends/ids.xml";
 
-            url = BuildSocialGraphUrlParameters(parameters, url);
-
-            return url;
+            return BuildSocialGraphUrlParameters(parameters, url);
         }
 
         /// <summary>
@@ -133,13 +122,11 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">parameter list</param>
         /// <returns>base url + show segment</returns>
-        private string BuildSocialGraphFollowersUrl(Dictionary<string, string> parameters)
+        private Request BuildSocialGraphFollowersUrl(Dictionary<string, string> parameters)
         {
             var url = BaseUrl + "followers/ids.xml";
 
-            url = BuildSocialGraphUrlParameters(parameters, url);
-
-            return url;
+            return BuildSocialGraphUrlParameters(parameters, url);
         }
 
         /// <summary>
@@ -148,14 +135,10 @@ namespace LinqToTwitter
         /// <param name="parameters">list of parameters from expression tree</param>
         /// <param name="url">base url</param>
         /// <returns>base url + parameters</returns>
-        private string BuildSocialGraphUrlParameters(Dictionary<string, string> parameters, string url)
+        private Request BuildSocialGraphUrlParameters(Dictionary<string, string> parameters, string url)
         {
-            var urlParams = new List<string>();
-
             if (!parameters.ContainsKey("ID") && !parameters.ContainsKey("UserID") && !parameters.ContainsKey("ScreenName"))
-            {
                 throw new ArgumentException("You must specify either ID, UserID, or ScreenName.");
-            }
 
             if (parameters.ContainsKey("ID"))
             {
@@ -163,35 +146,33 @@ namespace LinqToTwitter
                 url = BuildUrlHelper.TransformIDUrl(parameters, url);
             }
 
+            var req = new Request(BaseUrl + url);
+            var urlParams = req.RequestParameters;
+
             if (parameters.ContainsKey("UserID"))
             {
                 UserID = ulong.Parse(parameters["UserID"]);
-                urlParams.Add("user_id=" + parameters["UserID"]);
+                urlParams.Add(new QueryParameter("user_id", parameters["UserID"]));
             }
 
             if (parameters.ContainsKey("ScreenName"))
             {
                 ScreenName = parameters["ScreenName"];
-                urlParams.Add("screen_name=" + parameters["ScreenName"]);
+                urlParams.Add(new QueryParameter("screen_name", parameters["ScreenName"]));
             }
 
             if (parameters.ContainsKey("Cursor"))
             {
                 Cursor = parameters["Cursor"];
-                urlParams.Add("cursor=" + parameters["Cursor"]);
+                urlParams.Add(new QueryParameter("cursor", parameters["Cursor"]));
             }
             else
             {
                 Cursor = "-1";
-                urlParams.Add("cursor=-1");
+                urlParams.Add(new QueryParameter("cursor", Cursor));
             }
 
-            if (urlParams.Count > 0)
-            {
-                url += "?" + string.Join("&", urlParams.ToArray());
-            }
-
-            return url;
+            return req;
         }
 
         /// <summary>

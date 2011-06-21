@@ -12,43 +12,70 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Security;
+using System.Net;
 using System.Text;
+using System.Threading;
 
 namespace LinqToTwitter
 {
     public static class Utilities
     {
         /// <summary>
-        /// Creates a new Uri based on a given Uri, with an appended query string containing all the given parameters.
+        /// Encapsulates GetResponse so tests don't invoke the request
         /// </summary>
-        /// <param name="requestUri">The request URI.</param>
-        /// <param name="parameters">The parameters.</param>
-        /// <returns>A new Uri instance.</returns>
-        internal static Uri AppendQueryString(Uri requestUri, IEnumerable<KeyValuePair<string, string>> parameters)
+        /// <param name="req">Request to Twitter</param>
+        /// <returns>Response to Twitter</returns>
+        public static HttpWebResponse AsyncGetResponse(HttpWebRequest req)
         {
-            if (requestUri == null)
+            Exception asyncException = null;
+
+            var resetEvent = new ManualResetEvent(/*initialState:*/ false);
+            HttpWebResponse res = null;
+
+            req.BeginGetResponse(
+                new AsyncCallback(
+                    ar =>
+                    {
+                        try
+                        {
+                            res = req.EndGetResponse(ar) as HttpWebResponse;
+                        }
+                        catch (Exception ex)
+                        {
+                            asyncException = ex;
+                        }
+                        finally
+                        {
+                            resetEvent.Set();
+                        }
+                    }), null);
+
+            resetEvent.WaitOne();
+
+            if (asyncException != null)
             {
-                throw new ArgumentNullException("requestUri");
+                throw asyncException;
             }
 
-            if (parameters == null)
-            {
-                return requestUri;
-            }
+            return res;
+        }
 
-            UriBuilder builder = new UriBuilder(requestUri);
-            if (!string.IsNullOrEmpty(builder.Query))
-            {
-                builder.Query += "&" + BuildQueryString(parameters);
-            }
-            else
-            {
-                builder.Query = BuildQueryString(parameters);
-            }
+        /// <summary>
+        /// Reads the web response stream into a string.
+        /// </summary>
+        /// <param name="resp">The response to read</param>
+        /// <returns>a string containing the entire web response body</returns>
+        public static string ReadReponse(this WebResponse resp)
+        {
+            if (resp == null)
+                return null;
 
-            return builder.Uri;
+            using (var respStream = resp.GetResponseStream())
+            using (var respReader = new StreamReader(respStream))
+            {
+                var responseBody = respReader.ReadToEnd();
+                return responseBody;
+            }
         }
 
         /// <summary>
@@ -56,25 +83,22 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">The parameters to include.</param>
         /// <returns>A query-string-like value such as a=b&c=d.  Does not include a leading question mark (?).</returns>
-        internal static string BuildQueryString(IEnumerable<KeyValuePair<string, string>> parameters)
+        public static string BuildQueryString(IEnumerable<QueryParameter> parameters)
         {
             if (parameters == null)
-            {
                 throw new ArgumentNullException("parameters");
-            }
 
             StringBuilder builder = new StringBuilder();
             foreach (var pair in parameters.Where(p => !string.IsNullOrEmpty(p.Value)))
             {
-                if (builder.Length > 0)
-                {
-                    builder.Append("&");
-                }
-
-                builder.Append(Uri.EscapeDataString(pair.Key));
-                builder.Append("=");
+                builder.Append(Uri.EscapeDataString(pair.Name));
+                builder.Append('=');
                 builder.Append(Uri.EscapeDataString(pair.Value));
+                builder.Append('&');
             }
+
+            if (builder.Length > 1)
+                builder.Length--;   // truncate trailing &
 
             return builder.ToString();
         }

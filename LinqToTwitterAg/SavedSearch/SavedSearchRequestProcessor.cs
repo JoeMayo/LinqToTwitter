@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Collections;
 using System.Linq.Expressions;
 using System.Xml.Linq;
-using System.Globalization;
 
 namespace LinqToTwitter
 {
@@ -54,30 +52,22 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">criteria for url segments and parameters</param>
         /// <returns>URL conforming to Twitter API</returns>
-        public string BuildURL(Dictionary<string, string> parameters)
+        public Request BuildURL(Dictionary<string, string> parameters)
         {
-            string url = null;
-
             if (parameters == null || !parameters.ContainsKey("Type"))
-            {
                 throw new ArgumentException("You must set Type.", "Type");
-            }
 
             Type = RequestProcessorHelper.ParseQueryEnumType<SavedSearchType>(parameters["Type"]);
 
             switch (Type)
             {
                 case SavedSearchType.Searches:
-                    url = BuildSearchesUrl();
-                    break;
+                    return BuildSearchesUrl();
                 case SavedSearchType.Show:
-                    url = BuildShowUrl(parameters);
-                    break;
+                    return BuildShowUrl(parameters);
                 default:
                     throw new InvalidOperationException("The default case of BuildUrl should never execute because a Type must be specified.");
             }
-
-            return url;
         }
 
         /// <summary>
@@ -85,29 +75,24 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="url">base show url</param>
         /// <returns>base url + show segment</returns>
-        private string BuildShowUrl(Dictionary<string, string> parameters)
+        private Request BuildShowUrl(Dictionary<string, string> parameters)
         {
             if (!parameters.ContainsKey("ID"))
-            {
                 throw new ArgumentException("ID is required for a Saved Search Show query.", "ID");
-            }
 
             ID = parameters["ID"];
 
-            var url = BaseUrl + "saved_searches/show.xml";
-
-            url = BuildUrlHelper.TransformIDUrl(parameters, url);
-
-            return url;
+            var url = BuildUrlHelper.TransformIDUrl(parameters, "saved_searches/show.xml");
+            return new Request(BaseUrl + url);
         }
 
         /// <summary>
         /// return a saved searches url
         /// </summary>
         /// <returns>saved search url</returns>
-        private string BuildSearchesUrl()
+        private Request BuildSearchesUrl()
         {
-            return BaseUrl + "saved_searches.xml";
+            return new Request(BaseUrl + "saved_searches.xml");
         }
 
         /// <summary>

@@ -70,33 +70,24 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">criteria for url segments and parameters</param>
         /// <returns>URL conforming to Twitter API</returns>
-        public virtual string BuildURL(Dictionary<string, string> parameters)
+        public virtual Request BuildURL(Dictionary<string, string> parameters)
         {
-            string url = null;
-
             if (parameters == null || !parameters.ContainsKey("Type"))
-            {
                 throw new ArgumentException("You must set Type.", "Type");
-            }
 
             Type = RequestProcessorHelper.ParseQueryEnumType<BlockingType>(parameters["Type"]);
 
             switch (Type)
             {
                 case BlockingType.Blocking:
-                    url = BuildBlockingUrl(parameters);
-                    break;
+                    return BuildBlockingUrl(parameters);
                 case BlockingType.Exists:
-                    url = BuildBlockingExistsUrl(parameters);
-                    break;
+                    return BuildBlockingExistsUrl(parameters);
                 case BlockingType.IDS:
-                    url = BuildBlockingIDsUrl(parameters);
-                    break;
+                    return BuildBlockingIDsUrl(parameters);
                 default:
                     throw new InvalidOperationException("The default case of BuildUrl should never execute because a Type must be specified.");
             }
-
-            return url;
         }
 
         /// <summary>
@@ -104,11 +95,9 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">parameter list</param>
         /// <returns>base url + show segment</returns>
-        private string BuildBlockingIDsUrl(Dictionary<string, string> parameters)
+        private Request BuildBlockingIDsUrl(Dictionary<string, string> parameters)
         {
-            var url = BaseUrl + "blocks/blocking/ids.xml";
-
-            return url;
+           return new Request(BaseUrl + "blocks/blocking/ids.xml");
         }
 
         /// <summary>
@@ -116,13 +105,10 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">parameter list</param>
         /// <returns>base url + show segment</returns>
-        private string BuildBlockingExistsUrl(Dictionary<string, string> parameters)
+        private Request BuildBlockingExistsUrl(Dictionary<string, string> parameters)
         {
-            var url = BaseUrl + "blocks/exists.xml";
+            return BuildBlockingExistsUrlParameters(parameters, "blocks/exists.xml");
 
-            url = BuildBlockingExistsUrlParameters(parameters, url);
-
-            return url;
         }
 
         /// <summary>
@@ -130,13 +116,9 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">parameter list</param>
         /// <returns>base url + show segment</returns>
-        private string BuildBlockingUrl(Dictionary<string, string> parameters)
+        private Request BuildBlockingUrl(Dictionary<string, string> parameters)
         {
-            var url = BaseUrl + "blocks/blocking.xml";
-
-            url = BuildBlockingUrlParameters(parameters, url);
-
-            return url;
+            return BuildBlockingUrlParameters(parameters, "blocks/blocking.xml");
         }
 
         /// <summary>
@@ -145,22 +127,18 @@ namespace LinqToTwitter
         /// <param name="parameters">list of parameters from expression tree</param>
         /// <param name="url">base url</param>
         /// <returns>base url + parameters</returns>
-        private string BuildBlockingUrlParameters(Dictionary<string, string> parameters, string url)
+        private Request BuildBlockingUrlParameters(Dictionary<string, string> parameters, string url)
         {
-            var urlParams = new List<string>();
+            var req = new Request(BaseUrl + url);
+            var urlParams = req.RequestParameters;
 
             if (parameters.ContainsKey("Page"))
             {
                 Page = int.Parse(parameters["Page"]);
-                urlParams.Add("page=" + parameters["Page"]);
+                urlParams.Add(new QueryParameter("page", parameters["Page"]));
             }
 
-            if (urlParams.Count > 0)
-            {
-                url += "?" + string.Join("&", urlParams.ToArray());
-            }
-
-            return url;
+            return req;
         }
 
         /// <summary>
@@ -169,14 +147,10 @@ namespace LinqToTwitter
         /// <param name="parameters">list of parameters from expression tree</param>
         /// <param name="url">base url</param>
         /// <returns>base url + parameters</returns>
-        private string BuildBlockingExistsUrlParameters(Dictionary<string, string> parameters, string url)
+        private Request BuildBlockingExistsUrlParameters(Dictionary<string, string> parameters, string url)
         {
-            var urlParams = new List<string>();
-
             if (!parameters.ContainsKey("ID") && !parameters.ContainsKey("UserID") && !parameters.ContainsKey("ScreenName"))
-            {
                 throw new ArgumentException("You must specify either ID, UserID, or ScreenName.");
-            }
 
             if (parameters.ContainsKey("ID"))
             {
@@ -184,24 +158,22 @@ namespace LinqToTwitter
                 url = BuildUrlHelper.TransformIDUrl(parameters, url);
             }
 
+            var req = new Request(BaseUrl + url);
+            var urlParams = req.RequestParameters;
+
             if (parameters.ContainsKey("UserID"))
             {
                 UserID = ulong.Parse(parameters["UserID"]);
-                urlParams.Add("user_id=" + parameters["UserID"]);
+                urlParams.Add(new QueryParameter("user_id", parameters["UserID"]));
             }
 
             if (parameters.ContainsKey("ScreenName"))
             {
                 ScreenName = parameters["ScreenName"];
-                urlParams.Add("screen_name=" + parameters["ScreenName"]);
+                urlParams.Add(new QueryParameter("screen_name", parameters["ScreenName"]));
             }
 
-            if (urlParams.Count > 0)
-            {
-                url += "?" + string.Join("&", urlParams.ToArray());
-            }
-
-            return url;
+            return req;
         }
 
         /// <summary>
