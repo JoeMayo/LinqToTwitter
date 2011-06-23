@@ -80,6 +80,7 @@
     <Compile Include="Account\Settings.cs" />
     <Compile Include="Account\SleepTime.cs" />
     <Compile Include="Account\Totals.cs" />
+    <Compile Include="Account\TZInfo.cs" />
     <Compile Include="Blocks\BlockingType.cs" />
     <Compile Include="Blocks\Blocks.cs" />
     <Compile Include="Blocks\BlocksRequestProcessor.cs" />
@@ -96,6 +97,7 @@
     <Compile Include="Common\IRequestProcessor.cs" />
     <Compile Include="Common\MethodCallExpressionTypeFinder.cs" />
     <Compile Include="Common\ParameterFinder.cs" />
+    <Compile Include="Common\QueryParameter.cs" />
     <Compile Include="Common\RequestProcessorHelper.cs" />
     <Compile Include="Common\TwitterAsyncResponse.cs" />
     <Compile Include="Common\TwitterErrorStatus.cs" />
@@ -141,7 +143,6 @@
     <Compile Include="OAuth\ITwitterAuthorizer.cs" />
     <Compile Include="OAuth\OAuthAuthorizer.cs" />
     <Compile Include="OAuth\OAuthBase.cs" />
-    <Compile Include="OAuth\OAuthHelper.cs" />
     <Compile Include="OAuth\OAuthSignatureTypes.cs" />
     <Compile Include="OAuth\OAuthTwitter.cs" />
     <Compile Include="OAuth\PinAuthorizer.cs" />

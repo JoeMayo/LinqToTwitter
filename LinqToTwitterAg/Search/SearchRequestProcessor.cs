@@ -193,7 +193,11 @@ namespace LinqToTwitter
                 throw new ArgumentException("You must set Type.", "Type");
             }
 
-            ///TODO Joe: Why force a Type when there is only one Type?
+            // TODO Joe: Why force a Type when there is only one Type?
+            //
+            // Answer: This is a LINQ to Twitter idiom and is necessary for extensibility.  
+            // If we add another member to the enum in the future and this wasn't here, 
+            // then adding this later would break a lot of code - Joe
             Type = RequestProcessorHelper.ParseQueryEnumType<SearchType>(parameters["Type"]);
 
             return BuildSearchUrlParameters(parameters, "search.atom");

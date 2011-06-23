@@ -257,7 +257,7 @@ namespace LinqToTwitter
         /// <returns>Url for category statuses</returns>
         private Request BuildCategoryStatusUrl(Dictionary<string, string> parameters)
         {
-            if (parameters.ContainsKey("Slug"))
+            if (!parameters.ContainsKey("Slug"))
                 throw new ArgumentNullException("Slug", "You must set the Slug property, which is the suggested category.");
 
             Slug = parameters["Slug"];
@@ -273,6 +273,8 @@ namespace LinqToTwitter
         /// <returns>new url for request</returns>
         private Request BuildShowUrl(Dictionary<string, string> parameters)
         {
+            // TODO: The format of this used to be show.json and now Twitter offers an xml option
+            // check to see if there's dead code in ProcessRequest based on the old json to xml translation - Joe
             return BuildFriendsAndFollowersUrlParameters(parameters, "users/show.xml");
         }
 

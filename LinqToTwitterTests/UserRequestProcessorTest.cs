@@ -268,8 +268,10 @@ namespace LinqToTwitterTests
                         { "ID", "15411837" }
                     };
             string expected = "http://twitter.com/statuses/friends/15411837.xml";
-            var actual = reqProc.BuildURL(parameters);
-            Assert.AreEqual(expected, actual);
+
+            Request req = reqProc.BuildURL(parameters);
+
+            Assert.AreEqual(expected, req.FullUrl);
         }
 
         /// <summary>
@@ -289,9 +291,11 @@ namespace LinqToTwitterTests
                         { "UserID", "15411837" },
                         { "ScreenName", "JoeMayo" }
                     };
-            string expected = "http://twitter.com/users/show/15411837.json?user_id=15411837&screen_name=JoeMayo";
-            var actual = reqProc.BuildShowUrl(parameters);
-            Assert.AreEqual(expected, actual);
+            string expected = "http://twitter.com/users/show/15411837.xml?user_id=15411837&screen_name=JoeMayo";
+
+            Request req = reqProc.BuildShowUrl(parameters);
+
+            Assert.AreEqual(expected, req.FullUrl);
         }
 
         /// <summary>
@@ -309,9 +313,11 @@ namespace LinqToTwitterTests
                         { "Type", ((int)UserType.Show).ToString() },
                         { "ID", "15411837" }
                     };
-            string expected = "http://twitter.com/users/show/15411837.json";
-            var actual = reqProc.BuildShowUrl(parameters);
-            Assert.AreEqual(expected, actual);
+            string expected = "http://twitter.com/users/show/15411837.xml";
+
+            Request req = reqProc.BuildShowUrl(parameters);
+
+            Assert.AreEqual(expected, req.FullUrl);
         }
 
         /// <summary>
@@ -330,14 +336,16 @@ namespace LinqToTwitterTests
                         { "ID", "15411837" }
                     };
             string expected = "http://twitter.com/statuses/friends/15411837.xml";
-            var actual = reqProc.BuildFriendsUrl(parameters);
-            Assert.AreEqual(expected, actual);
+
+            Request req = reqProc.BuildFriendsUrl(parameters);
+
+            Assert.AreEqual(expected, req.FullUrl);
         }
 
         /// <summary>
         ///A test for BuildFriendsAndFollowersUrlParameters
         ///</summary>
-        [TestMethod()]
+        [TestMethod]
         [DeploymentItem("LinqToTwitter.dll")]
         public void BuildFriendsAndFollowersUrlParametersTest()
         {
@@ -349,10 +357,12 @@ namespace LinqToTwitterTests
                         { "Type", ((int)UserType.Friends).ToString() },
                         { "ID", "15411837" }
                     };
-            var url = "http://twitter.com/statuses/friends.xml";
+            var url = "statuses/friends.xml";
             string expected = "http://twitter.com/statuses/friends/15411837.xml";
-            var actual = reqProc.BuildFriendsAndFollowersUrlParameters(parameters, url);
-            Assert.AreEqual(expected, actual);
+
+            Request req = reqProc.BuildFriendsAndFollowersUrlParameters(parameters, url);
+
+            Assert.AreEqual(expected, req.FullUrl);
         }
 
         [TestMethod]
@@ -443,8 +453,10 @@ namespace LinqToTwitterTests
                         { "Page", "2" }
                     };
             string expected = "http://twitter.com/statuses/followers/15411837.xml?user_id=123&screen_name=JoeMayo&page=2";
-            var actual = reqProc.BuildFollowersUrl(parameters);
-            Assert.AreEqual(expected, actual);
+
+            Request req = reqProc.BuildFollowersUrl(parameters);
+
+            Assert.AreEqual(expected, req.FullUrl);
         }
 
         [TestMethod()]
@@ -460,12 +472,12 @@ namespace LinqToTwitterTests
                     };
             string expected = "https://api.twitter.com/1/users/suggestions/technology/members.xml";
 
-            var actual = reqProc.BuildCategoryStatusUrl(parameters);
+            Request req = reqProc.BuildCategoryStatusUrl(parameters);
 
-            Assert.AreEqual(expected, actual);
+            Assert.AreEqual(expected, req.FullUrl);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void BuildCategoriesUrl_Requires_Slug()
         {
             var reqProc = new UserRequestProcessor_Accessor<User>();
@@ -504,8 +516,10 @@ namespace LinqToTwitterTests
                         { "Lang", "it" }
                     };
             string expected = "https://api.twitter.com/1/users/suggestions.xml?lang=it";
-            var actual = reqProc.BuildURL(parameters);
-            Assert.AreEqual(expected, actual);
+
+            Request req = reqProc.BuildURL(parameters);
+
+            Assert.AreEqual(expected, req.FullUrl);
         }
 
         /// <summary>
@@ -525,8 +539,10 @@ namespace LinqToTwitterTests
                         { "Lang", "it" }
                     };
             string expected = "https://api.twitter.com/1/users/suggestions/twitter.xml?lang=it";
-            var actual = reqProc.BuildURL(parameters);
-            Assert.AreEqual(expected, actual);
+
+            Request req = reqProc.BuildURL(parameters);
+
+            Assert.AreEqual(expected, req.FullUrl);
         }
 
         /// <summary>
@@ -544,7 +560,8 @@ namespace LinqToTwitterTests
                     {
                         { "Type", ((int)UserType.Category).ToString() },
                     };
-            var actual = reqProc.BuildURL(parameters);
+            
+            reqProc.BuildURL(parameters);
         }
 
         /// <summary>
@@ -562,9 +579,11 @@ namespace LinqToTwitterTests
                         { "Type", ((int)UserType.Lookup).ToString() },
                         { "ScreenName", "JoeMayo,LinqToTweeter" }
                     };
-            string expected = "https://api.twitter.com/1/users/lookup.xml?screen_name=JoeMayo,LinqToTweeter";
-            var actual = reqProc.BuildURL(parameters);
-            Assert.AreEqual(expected, actual);
+            string expected = "https://api.twitter.com/1/users/lookup.xml?screen_name=JoeMayo%2CLinqToTweeter";
+
+            Request req = reqProc.BuildURL(parameters);
+
+            Assert.AreEqual(expected, req.FullUrl);
         }
 
         /// <summary>
@@ -582,9 +601,11 @@ namespace LinqToTwitterTests
                         { "Type", ((int)UserType.Lookup).ToString() },
                         { "UserID", "1,2" }
                     };
-            string expected = "https://api.twitter.com/1/users/lookup.xml?user_id=1,2";
-            var actual = reqProc.BuildURL(parameters);
-            Assert.AreEqual(expected, actual);
+            string expected = "https://api.twitter.com/1/users/lookup.xml?user_id=1%2C2";
+
+            Request req = reqProc.BuildURL(parameters);
+
+            Assert.AreEqual(expected, req.FullUrl);
         }
 
         /// <summary>
@@ -602,7 +623,8 @@ namespace LinqToTwitterTests
                     {
                         { "Type", ((int)UserType.Lookup).ToString() },
                     };
-            var actual = reqProc.BuildURL(parameters);
+            
+            reqProc.BuildURL(parameters);
         }
 
         /// <summary>
@@ -622,7 +644,8 @@ namespace LinqToTwitterTests
                         { "ScreenName", "JoeMayo,LinqToTweeter" },
                         { "UserID", "1,2" }
                    };
-            var actual = reqProc.BuildURL(parameters);
+            
+            reqProc.BuildURL(parameters);
         }
 
         /// <summary>
@@ -642,9 +665,11 @@ namespace LinqToTwitterTests
                         { "Page", "2" },
                         { "PerPage", "10" }
                     };
-            string expected = "https://api.twitter.com/1/users/search.xml?q=Joe+Mayo&page=2&per_page=10";
-            var actual = reqProc.BuildURL(parameters);
-            Assert.AreEqual(expected, actual);
+            string expected = "https://api.twitter.com/1/users/search.xml?q=Joe%20Mayo&page=2&per_page=10";
+
+            Request req = reqProc.BuildURL(parameters);
+
+            Assert.AreEqual(expected, req.FullUrl);
         }
 
         /// <summary>
@@ -662,7 +687,8 @@ namespace LinqToTwitterTests
                     {
                         { "Type", ((int)UserType.Search).ToString() },
                     };
-            var actual = reqProc.BuildURL(parameters);
+            
+            reqProc.BuildURL(parameters);
         }
 
         /// <summary>
@@ -760,7 +786,7 @@ namespace LinqToTwitterTests
         {
             var statProc = new UserRequestProcessor<User>() { BaseUrl = "http://api.twitter.com/1/" };
 
-            var actual = (List<User>)statProc.ProcessResults(m_testCategoriesResponse);
+            var actual = statProc.ProcessResults(m_testCategoriesResponse);
 
             Assert.AreEqual(5, actual[0].Categories.Count);
         }
@@ -770,7 +796,7 @@ namespace LinqToTwitterTests
         {
             var statProc = new UserRequestProcessor<User>() { BaseUrl = "http://api.twitter.com/1/" };
 
-            var actual = statProc.ProcessResults(m_userInCategoryStatusResponse) as List<User>;
+            var actual = statProc.ProcessResults(m_userInCategoryStatusResponse);
 
             var user = actual.First();
             Assert.AreEqual(1, actual.Count);
@@ -783,7 +809,7 @@ namespace LinqToTwitterTests
         {
             var statProc = new UserRequestProcessor<User>() { BaseUrl = "http://api.twitter.com/1/" };
 
-            var actual = statProc.ProcessResults(m_userInCategoryStatusResponse) as List<User>;
+            var actual = statProc.ProcessResults(m_userInCategoryStatusResponse);
 
             var user = actual.First();
             Assert.AreEqual(true, user.ShowAllInlineMedia);
@@ -794,7 +820,7 @@ namespace LinqToTwitterTests
         {
             var statProc = new UserRequestProcessor<User>() { BaseUrl = "http://api.twitter.com/1/" };
 
-            var actual = statProc.ProcessResults(m_userInCategoryStatusResponse) as List<User>;
+            var actual = statProc.ProcessResults(m_userInCategoryStatusResponse);
 
             var user = actual.First();
             Assert.AreEqual(8274, user.ListedCount);
@@ -805,7 +831,7 @@ namespace LinqToTwitterTests
         {
             var statProc = new UserRequestProcessor<User>() { BaseUrl = "http://api.twitter.com/1/" };
 
-            var actual = statProc.ProcessResults(m_userInCategoryStatusResponse) as List<User>;
+            var actual = statProc.ProcessResults(m_userInCategoryStatusResponse);
 
             var user = actual.First();
             Assert.AreEqual(true, user.FollowRequestSent);
@@ -819,7 +845,7 @@ namespace LinqToTwitterTests
         {
             var statProc = new UserRequestProcessor<User>() { BaseUrl = "http://api.twitter.com/1/" };
 
-            var actual = (List<User>)statProc.ProcessResults(m_usersInCategoryResponse);
+            var actual = statProc.ProcessResults(m_usersInCategoryResponse);
 
             Assert.AreEqual(2, actual.Count);
         }
@@ -832,10 +858,11 @@ namespace LinqToTwitterTests
         {
             UserRequestProcessor<User> target = new UserRequestProcessor<User>() { BaseUrl = "http://twitter.com/" };
             Dictionary<string, string> parameters = new Dictionary<string, string> { };
-            string actual;
+
             try
             {
-                actual = target.BuildURL(parameters);
+                target.BuildURL(parameters);
+
                 Assert.Fail("Expected ArgumentException.");
             }
             catch (ArgumentException ae)
@@ -852,10 +879,11 @@ namespace LinqToTwitterTests
         {
             UserRequestProcessor<User> target = new UserRequestProcessor<User>() { BaseUrl = "http://twitter.com/" };
             Dictionary<string, string> parameters = null;
-            string actual;
+
             try
             {
-                actual = target.BuildURL(parameters);
+                target.BuildURL(parameters);
+
                 Assert.Fail("Expected ArgumentException.");
             }
             catch (ArgumentException ae)

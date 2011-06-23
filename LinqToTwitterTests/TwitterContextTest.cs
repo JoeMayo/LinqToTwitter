@@ -1013,9 +1013,9 @@ namespace LinqToTwitterTests
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
             execMock.Setup(exec =>
                 exec.PostTwitterImage<User>(
-                    It.IsAny<byte[]>(),
-                    It.IsAny<Dictionary<string, string>>(),
                     It.IsAny<string>(),
+                    It.IsAny<IDictionary<string, string>>(),
+                    It.IsAny<byte[]>(),
                     It.IsAny<string>(),
                     It.IsAny<string>(),
                     It.IsAny<IRequestProcessor<User>>()))
@@ -1690,7 +1690,7 @@ namespace LinqToTwitterTests
 
             ctx.Execute<Streaming>(streamingQuery.Expression, isEnumerable: true);
 
-            execMock.Verify(exec => exec.QueryTwitterStream(It.IsAny<string>()), Times.Once());
+            execMock.Verify(exec => exec.QueryTwitterStream(It.IsAny<Request>()), Times.Once());
         }
 
         [TestMethod]
@@ -1699,7 +1699,7 @@ namespace LinqToTwitterTests
             var authMock = new Mock<ITwitterAuthorizer>();
             var execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
-            execMock.Setup(exec => exec.QueryTwitter(It.IsAny<string>(), It.IsAny<StatusRequestProcessor<Status>>())).Returns(m_testStatusQueryResponse);
+            execMock.Setup(exec => exec.QueryTwitter(It.IsAny<Request>(), It.IsAny<StatusRequestProcessor<Status>>())).Returns(m_testStatusQueryResponse);
             var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
             var statusQuery =
                 from tweet in ctx.Status
@@ -1708,8 +1708,8 @@ namespace LinqToTwitterTests
 
             ctx.Execute<Status>(statusQuery.Expression, isEnumerable: true);
 
-            execMock.Verify(exec => exec.QueryTwitterStream(It.IsAny<string>()), Times.Never());
-            execMock.Verify(exec => exec.QueryTwitter(It.IsAny<string>(), It.IsAny<StatusRequestProcessor<Status>>()), Times.Once());
+            execMock.Verify(exec => exec.QueryTwitterStream(It.IsAny<Request>()), Times.Never());
+            execMock.Verify(exec => exec.QueryTwitter(It.IsAny<Request>(), It.IsAny<StatusRequestProcessor<Status>>()), Times.Once());
         }
 
         [TestMethod]
@@ -1745,7 +1745,7 @@ namespace LinqToTwitterTests
 
             ctx.Execute<UserStream>(streamingQuery.Expression, isEnumerable: true);
 
-            execMock.Verify(exec => exec.QueryTwitterStream(It.IsAny<string>()), Times.Once());
+            execMock.Verify(exec => exec.QueryTwitterStream(It.IsAny<Request>()), Times.Once());
         }
 
         #endregion

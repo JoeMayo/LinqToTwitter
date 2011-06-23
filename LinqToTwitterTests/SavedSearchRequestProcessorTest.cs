@@ -147,8 +147,8 @@ namespace LinqToTwitterTests
                     { "Type", SavedSearchType.Show.ToString() }
                 };
             string expected = "http://twitter.com/saved_searches/show/123.xml";
-            string actual = target.BuildURL(parameters);
-            Assert.AreEqual(expected, actual);
+            Request req = target.BuildURL(parameters);
+            Assert.AreEqual(expected, req.FullUrl);
         }
 
         /// <summary>
@@ -166,8 +166,8 @@ namespace LinqToTwitterTests
                     { "ID", "123" }
                 };
             string expected = "http://twitter.com/saved_searches/show/123.xml";
-            string actual = target.BuildURL(parameters);
-            Assert.AreEqual(expected, actual);
+            Request req = target.BuildURL(parameters);
+            Assert.AreEqual(expected, req.FullUrl);
         }
 
         /// <summary>
@@ -184,8 +184,8 @@ namespace LinqToTwitterTests
                     { "Type", SavedSearchType.Searches.ToString() }
                 };
             string expected = "http://twitter.com/saved_searches.xml";
-            string actual = target.BuildURL(parameters);
-            Assert.AreEqual(expected, actual);
+            Request req = target.BuildURL(parameters);
+            Assert.AreEqual(expected, req.FullUrl);
         }
 
         /// <summary>
@@ -196,10 +196,11 @@ namespace LinqToTwitterTests
         {
             SavedSearchRequestProcessor<SavedSearch> target = new SavedSearchRequestProcessor<SavedSearch>() { BaseUrl = "http://twitter.com/" };
             Dictionary<string, string> parameters = new Dictionary<string, string> { };
-            string actual;
+
             try
             {
-                actual = target.BuildURL(parameters);
+                target.BuildURL(parameters);
+
                 Assert.Fail("Expected ArgumentException.");
             }
             catch (ArgumentException ae)
@@ -216,10 +217,11 @@ namespace LinqToTwitterTests
         {
             SavedSearchRequestProcessor<SavedSearch> target = new SavedSearchRequestProcessor<SavedSearch>() { BaseUrl = "http://twitter.com/" };
             Dictionary<string, string> parameters = null;
-            string actual;
+
             try
             {
-                actual = target.BuildURL(parameters);
+                target.BuildURL(parameters);
+
                 Assert.Fail("Expected ArgumentException.");
             }
             catch (ArgumentException ae)

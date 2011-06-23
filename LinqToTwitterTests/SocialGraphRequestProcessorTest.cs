@@ -149,9 +149,10 @@ namespace LinqToTwitterTests
             SocialGraphRequestProcessor<SocialGraph> target = new SocialGraphRequestProcessor<SocialGraph>() { BaseUrl = "http://twitter.com/" };
             Dictionary<string, string> parameters = new Dictionary<string, string>();
             string expected = "http://twitter.com/friends/ids.xml";
-            string actual;
-            actual = target.BuildURL(parameters);
-            Assert.AreEqual(expected, actual);
+
+            Request req = target.BuildURL(parameters);
+
+            Assert.AreEqual(expected, req.FullUrl);
         }
 
         /// <summary>
@@ -171,9 +172,10 @@ namespace LinqToTwitterTests
                     { "Cursor", "1" }
                 };
             string expected = "http://twitter.com/friends/ids/JoeMayo.xml?user_id=123&screen_name=456&cursor=1";
-            string actual;
-            actual = target.BuildURL(parameters);
-            Assert.AreEqual(expected, actual);
+
+            Request req = target.BuildURL(parameters);
+
+            Assert.AreEqual(expected, req.FullUrl);
         }
 
         [TestMethod]
@@ -187,33 +189,30 @@ namespace LinqToTwitterTests
                     { "ID", "JoeMayo" },
                 };
             string expected = "http://twitter.com/friends/ids/JoeMayo.xml?cursor=-1";
+
+            Request req = socialGraph.BuildURL(parameters);
             
-            string actual = socialGraph.BuildURL(parameters);
-            
-            Assert.AreEqual(expected, actual);
+            Assert.AreEqual(expected, req.FullUrl);
         }
 
-        /// <summary>
-        ///A test for BuildSocialGraphFollowersUrl
-        ///</summary>
-        [TestMethod()]
-        [DeploymentItem("LinqToTwitter.dll")]
-        public void BuildSocialGraphFollowersUrlTest()
+        [TestMethod]
+        public void BuildURL_Creates_URL_For_Followers()
         {
-            SocialGraphRequestProcessor<SocialGraph> target = new SocialGraphRequestProcessor<SocialGraph>() { BaseUrl = "http://twitter.com/" };
+            var reqProc = new SocialGraphRequestProcessor<SocialGraph>() { BaseUrl = "http://twitter.com/" };
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                 {
-                    { "Type", "1" },
+                    { "Type", ((int)SocialGraphType.Followers).ToString() },
                     { "ID", "JoeMayo" },
                     { "UserID", "123" },
                     { "ScreenName", "456" },
                     { "Cursor", "1" }
                 };
             string expected = "http://twitter.com/followers/ids/JoeMayo.xml?user_id=123&screen_name=456&cursor=1";
-            string actual;
-            actual = target.BuildURL(parameters);
-            Assert.AreEqual(expected, actual);
+
+            Request req = reqProc.BuildURL(parameters);
+
+            Assert.AreEqual(expected, req.FullUrl);
         }
 
         /// <summary>
@@ -224,10 +223,11 @@ namespace LinqToTwitterTests
         {
             SocialGraphRequestProcessor<SocialGraph> target = new SocialGraphRequestProcessor<SocialGraph>() { BaseUrl = "http://twitter.com/" };
             Dictionary<string, string> parameters = new Dictionary<string, string> { };
-            string actual;
+
             try
             {
-                actual = target.BuildURL(parameters);
+                target.BuildURL(parameters);
+
                 Assert.Fail("Expected ArgumentException.");
             }
             catch (ArgumentException ae)
@@ -244,10 +244,11 @@ namespace LinqToTwitterTests
         {
             SocialGraphRequestProcessor<SocialGraph> target = new SocialGraphRequestProcessor<SocialGraph>() { BaseUrl = "http://twitter.com/" };
             Dictionary<string, string> parameters = null;
-            string actual;
+
             try
             {
-                actual = target.BuildURL(parameters);
+                target.BuildURL(parameters);
+
                 Assert.Fail("Expected ArgumentException.");
             }
             catch (ArgumentException ae)

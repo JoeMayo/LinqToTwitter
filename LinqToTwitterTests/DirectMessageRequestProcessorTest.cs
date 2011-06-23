@@ -150,8 +150,10 @@ namespace LinqToTwitterTests
                         { "Page", "1" },
                         { "Count", "2" }
                 };
-            string actual = dmProc.BuildURL(parameters);
-            Assert.AreEqual(expected, actual);
+
+            Request req = dmProc.BuildURL(parameters);
+
+            Assert.AreEqual(expected, req.FullUrl);
         }
 
         /// <summary>
@@ -171,8 +173,10 @@ namespace LinqToTwitterTests
                         { "Page", "1" },
                         { "Count", "2" }
                 };
-            string actual = dmProc.BuildURL(parameters);
-            Assert.AreEqual(expected, actual);
+
+            Request req = dmProc.BuildURL(parameters);
+
+            Assert.AreEqual(expected, req.FullUrl);
         }
 
         [TestMethod()]
@@ -187,9 +191,9 @@ namespace LinqToTwitterTests
                         { "ID", "478805447" },
                 };
 
-            string actual = dmProc.BuildURL(parameters);
+            Request req = dmProc.BuildURL(parameters);
 
-            Assert.AreEqual(expected, actual);
+            Assert.AreEqual(expected, req.FullUrl);
         }
 
         [TestMethod()]
@@ -205,7 +209,7 @@ namespace LinqToTwitterTests
 
             try
             {
-                string actual = dmProc.BuildURL(parameters);
+                dmProc.BuildURL(parameters);
 
                 Assert.Fail("Expected ArgumentNullException.");
             }
@@ -274,10 +278,11 @@ namespace LinqToTwitterTests
         {
             DirectMessageRequestProcessor<DirectMessage> target = new DirectMessageRequestProcessor<DirectMessage>() { BaseUrl = "http://twitter.com/" };
             Dictionary<string, string> parameters = new Dictionary<string, string> { };
-            string actual;
+
             try
             {
-                actual = target.BuildURL(parameters);
+                target.BuildURL(parameters);
+
                 Assert.Fail("Expected ArgumentException.");
             }
             catch (ArgumentException ae)
@@ -294,10 +299,11 @@ namespace LinqToTwitterTests
         {
             DirectMessageRequestProcessor<DirectMessage> target = new DirectMessageRequestProcessor<DirectMessage>() { BaseUrl = "http://twitter.com/" };
             Dictionary<string, string> parameters = null;
-            string actual;
+
             try
             {
-                actual = target.BuildURL(parameters);
+                target.BuildURL(parameters);
+
                 Assert.Fail("Expected ArgumentException.");
             }
             catch (ArgumentException ae)

@@ -55,9 +55,9 @@ namespace LinqToTwitterTests
                 { "AllReplies", "True" }
             };
 
-            string url = reqProc.BuildURL(parms);
+            Request req = reqProc.BuildURL(parms);
 
-            Assert.AreEqual("https://userstream.twitter.com/2/user.json?delimited=length&track=LINQ%20to%20Twitter&with=follow&replies=all", url);
+            Assert.AreEqual("https://userstream.twitter.com/2/user.json?delimited=length&track=LINQ%20to%20Twitter&with=follow&replies=all", req.FullUrl);
         }
 
         [TestMethod]
@@ -74,9 +74,9 @@ namespace LinqToTwitterTests
                 { "AllReplies", "True" }
             };
 
-            string url = reqProc.BuildURL(parms);
+            Request req = reqProc.BuildURL(parms);
 
-            Assert.AreEqual("http://betastream.twitter.com/2b/site.json?delimited=length&follow=1,2,3&track=LINQ%20to%20Twitter&with=follow&replies=all", url);
+            Assert.AreEqual("http://betastream.twitter.com/2b/site.json?delimited=length&follow=1%2C2%2C3&track=LINQ%20to%20Twitter&with=follow&replies=all", req.FullUrl);
         }
 
         [TestMethod]
@@ -91,7 +91,7 @@ namespace LinqToTwitterTests
 
             try
             {
-                string url = reqProc.BuildURL(parms);
+                reqProc.BuildURL(parms);
 
                 Assert.Fail("Expected ArgumentNullException.");
             }

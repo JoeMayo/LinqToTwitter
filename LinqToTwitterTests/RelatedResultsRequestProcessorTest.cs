@@ -378,9 +378,9 @@ namespace LinqToTwitterTests
                 };
             string expectedUrl = "https://api.twitter.com/1/related_results/show/123.json";
 
-            string actualUrl = relResultsProc.BuildURL(parameters);
+            Request req = relResultsProc.BuildURL(parameters);
 
-            Assert.AreEqual(expectedUrl, actualUrl);
+            Assert.AreEqual(expectedUrl, req.FullUrl);
         }
 
         [TestMethod]

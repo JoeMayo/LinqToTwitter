@@ -677,10 +677,11 @@ namespace LinqToTwitterTests
                  {"Granularity", "10" },
                  {"MaxResults", "10" }
              };
-            string expected = "https://api.twitter.com/1/geo/reverse_geocode.json?lat=37.78215&long=-122.40060&accuracy=city&granularity=10&max_results=10";
-            string actual;
-            actual = target.BuildURL(parameters);
-            Assert.AreEqual(expected, actual);
+            string expected = "https://api.twitter.com/1/geo/reverse_geocode.json?lat=37.78215&long=-122.4006&accuracy=city&granularity=10&max_results=10";
+
+            Request req = target.BuildURL(parameters);
+
+            Assert.AreEqual(expected, req.FullUrl);
         }
 
         /// <summary>
@@ -698,7 +699,8 @@ namespace LinqToTwitterTests
                  {"Granularity", "10" },
                  {"MaxResults", "10" }
              };
-            string actual = target.BuildURL(parameters);
+
+            target.BuildURL(parameters);
         }
 
         /// <summary>
@@ -714,8 +716,10 @@ namespace LinqToTwitterTests
                  {"ID", "7695dd2ec2f86f2b"},
              };
             string expected = "https://api.twitter.com/1/geo/id/7695dd2ec2f86f2b.json";
-            string actual = target.BuildURL(parameters);
-            Assert.AreEqual(expected, actual);
+
+            Request req = target.BuildURL(parameters);
+
+            Assert.AreEqual(expected, req.FullUrl);
         }
 
         /// <summary>
@@ -730,7 +734,8 @@ namespace LinqToTwitterTests
              {
                  {"Type", ((int) GeoType.ID).ToString()},
              };
-            string actual = target.BuildURL(parameters);
+            
+            target.BuildURL(parameters);
         }
 
         //[TestMethod()]
@@ -776,11 +781,11 @@ namespace LinqToTwitterTests
                  {"ContainedWithin", "123" },
                  {"Attribute", "street_address=123" }
              };
-            string expected = "https://api.twitter.com/1/geo/search.json?lat=37.78215&long=-122.40060&query=Twitter%20HQ&ip=168.143.171.180&accuracy=city&granularity=10&max_results=10&contained_within=123&attribute:street_address=123";
+            string expected = "https://api.twitter.com/1/geo/search.json?lat=37.78215&long=-122.4006&query=Twitter%20HQ&ip=168.143.171.180&accuracy=city&granularity=10&max_results=10&contained_within=123&attribute%3Astreet_address=123";
+
+            Request req = target.BuildURL(parameters);
             
-            string actual = target.BuildURL(parameters);
-            
-            Assert.AreEqual(expected, actual);
+            Assert.AreEqual(expected, req.FullUrl);
         }
 
         [TestMethod()]
@@ -796,7 +801,7 @@ namespace LinqToTwitterTests
 
             try
             {
-                string actual = target.BuildURL(parameters);
+                target.BuildURL(parameters);
 
                 Assert.Fail("Expected ArgumentException.");
             }

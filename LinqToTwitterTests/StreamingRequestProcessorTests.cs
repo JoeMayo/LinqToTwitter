@@ -106,9 +106,9 @@ namespace LinqToTwitterTests
                 { "Track", "LINQ to Twitter" }
             };
 
-            string url = reqProc.BuildURL(parms);
+            Request req = reqProc.BuildURL(parms);
 
-            Assert.AreEqual("http://stream.twitter.com/1/statuses/filter.json?track=LINQ%20to%20Twitter", url);
+            Assert.AreEqual("http://stream.twitter.com/1/statuses/filter.json?track=LINQ%20to%20Twitter", req.FullUrl);
         }
 
         [TestMethod]
@@ -123,7 +123,7 @@ namespace LinqToTwitterTests
 
             try
             {
-                string url = reqProc.BuildURL(parms);
+                reqProc.BuildURL(parms);
 
                 Assert.Fail("Expected ArgumentException.");
             }
@@ -144,9 +144,9 @@ namespace LinqToTwitterTests
                 { "Delimited", "length" }
             };
 
-            string url = reqProc.BuildURL(parms);
+            Request req = reqProc.BuildURL(parms);
 
-            Assert.AreEqual("http://stream.twitter.com/1/statuses/firehose.json?count=25&delimited=length", url);
+            Assert.AreEqual("http://stream.twitter.com/1/statuses/firehose.json?count=25&delimited=length", req.FullUrl);
         }
 
         [TestMethod]
@@ -160,9 +160,9 @@ namespace LinqToTwitterTests
                 { "Delimited", "length" }
             };
 
-            string url = reqProc.BuildURL(parms);
+            Request req = reqProc.BuildURL(parms);
 
-            Assert.AreEqual("http://stream.twitter.com/1/statuses/links.json?count=25&delimited=length", url);
+            Assert.AreEqual("http://stream.twitter.com/1/statuses/links.json?count=25&delimited=length", req.FullUrl);
         }
 
         [TestMethod]
@@ -175,9 +175,9 @@ namespace LinqToTwitterTests
                 { "Delimited", "length" }
             };
 
-            string url = reqProc.BuildURL(parms);
+            Request req = reqProc.BuildURL(parms);
 
-            Assert.AreEqual("http://stream.twitter.com/1/statuses/retweet.json?delimited=length", url);
+            Assert.AreEqual("http://stream.twitter.com/1/statuses/retweet.json?delimited=length", req.FullUrl);
         }
 
         [TestMethod]
@@ -189,9 +189,9 @@ namespace LinqToTwitterTests
                 { "Type", StreamingType.Sample.ToString() }
             };
 
-            string url = reqProc.BuildURL(parms);
+            Request req = reqProc.BuildURL(parms);
 
-            Assert.AreEqual("http://stream.twitter.com/1/statuses/sample.json", url);
+            Assert.AreEqual("http://stream.twitter.com/1/statuses/sample.json", req.FullUrl);
         }
 
         [TestMethod]
@@ -205,7 +205,7 @@ namespace LinqToTwitterTests
 
             try
             {
-                string url = reqProc.BuildURL(parms);
+                reqProc.BuildURL(parms);
 
                 Assert.Fail("Expected ArgumentException.");
             }
@@ -227,7 +227,7 @@ namespace LinqToTwitterTests
 
             try
             {
-                string url = reqProc.BuildURL(parms);
+                reqProc.BuildURL(parms);
 
                 Assert.Fail("Expected ArgumentException.");
             }
@@ -250,9 +250,9 @@ namespace LinqToTwitterTests
                 { "Locations", "123,456,789,012" }
             };
 
-            string url = reqProc.BuildURL(parms);
+            Request req = reqProc.BuildURL(parms);
 
-            Assert.AreEqual("http://stream.twitter.com/1/statuses/sample.json?delimited=length", url);
+            Assert.AreEqual("http://stream.twitter.com/1/statuses/sample.json?delimited=length", req.FullUrl);
         }
 
         [TestMethod]

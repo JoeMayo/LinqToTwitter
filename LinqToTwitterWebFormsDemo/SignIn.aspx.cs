@@ -41,8 +41,8 @@ public partial class SignIn : System.Web.UI.Page
 
         if (!Page.IsPostBack)
         {
-            if (!credentials.ConsumerKey.IsNullOrWhiteSpace() &&
-                !credentials.ConsumerSecret.IsNullOrWhiteSpace())
+            if (!string.IsNullOrWhiteSpace(credentials.ConsumerKey) &&
+                !string.IsNullOrWhiteSpace(credentials.ConsumerSecret))
             {
                 AuthMultiView.ActiveViewIndex = 1;
 

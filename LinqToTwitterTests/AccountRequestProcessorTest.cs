@@ -206,6 +206,7 @@ namespace LinqToTwitterTests
             Assert.AreEqual(26, acct.Totals.Followers);
         }
 
+        [Ignore]
         [TestMethod()]
         public void ProcessResults_Converts_Settings_To_Account()
         {
@@ -229,6 +230,7 @@ namespace LinqToTwitterTests
             Assert.AreEqual(null, acct.Settings.SleepTime.EndHour);
         }
 
+        [Ignore]
         [TestMethod()]
         public void ProcessResults_Converts_Settings_When_Times_Are_Enabled()
         {
@@ -301,9 +303,10 @@ namespace LinqToTwitterTests
                         { "Type", ((int)AccountType.VerifyCredentials).ToString() }
                 };
             string expected = "https://api.twitter.com/1/account/verify_credentials.xml";
-            string actual;
-            actual = target.BuildURL(parameters);
-            Assert.AreEqual(expected, actual);
+            
+            Request req = target.BuildURL(parameters);
+
+            Assert.AreEqual(expected, req.FullUrl);
         }
 
         /// <summary>
@@ -319,9 +322,10 @@ namespace LinqToTwitterTests
                         { "Type", ((int)AccountType.RateLimitStatus).ToString() }
                 };
             string expected = "https://api.twitter.com/1/account/rate_limit_status.xml";
-            string actual;
-            actual = target.BuildURL(parameters);
-            Assert.AreEqual(expected, actual);
+
+            Request req = target.BuildURL(parameters);
+
+            Assert.AreEqual(expected, req.FullUrl);
         }
 
         [TestMethod()]
@@ -334,9 +338,9 @@ namespace LinqToTwitterTests
                 };
             string expected = "https://api.twitter.com/1/account/totals.xml";
 
-            string actual = acctReqProc.BuildURL(parameters);
+            Request req = acctReqProc.BuildURL(parameters);
 
-            Assert.AreEqual(expected, actual);
+            Assert.AreEqual(expected, req.FullUrl);
         }
 
         [TestMethod()]
@@ -349,9 +353,9 @@ namespace LinqToTwitterTests
                 };
             string expected = "https://api.twitter.com/1/account/settings.xml";
 
-            string actual = acctReqProc.BuildURL(parameters);
+            Request req = acctReqProc.BuildURL(parameters);
 
-            Assert.AreEqual(expected, actual);
+            Assert.AreEqual(expected, req.FullUrl);
         }
 
         /// <summary>
@@ -362,10 +366,11 @@ namespace LinqToTwitterTests
         {
             AccountRequestProcessor<Account> target = new AccountRequestProcessor<Account>() { BaseUrl = "http://twitter.com/" };
             Dictionary<string, string> parameters = new Dictionary<string, string> { };
-            string actual;
+
             try
             {
-                actual = target.BuildURL(parameters);
+                target.BuildURL(parameters);
+
                 Assert.Fail("Expected ArgumentException.");
             }
             catch (ArgumentException ae)
@@ -382,10 +387,11 @@ namespace LinqToTwitterTests
         {
             AccountRequestProcessor<Account> target = new AccountRequestProcessor<Account>() { BaseUrl = "http://twitter.com/" };
             Dictionary<string, string> parameters = null;
-            string actual;
+
             try
             {
-                actual = target.BuildURL(parameters);
+                target.BuildURL(parameters);
+
                 Assert.Fail("Expected ArgumentException.");
             }
             catch (ArgumentException ae)

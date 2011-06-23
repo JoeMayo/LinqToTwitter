@@ -75,8 +75,6 @@ namespace LinqToTwitterTests
             var oAuthMock = new Mock<IOAuthTwitter>();
             signInAuth.OAuthTwitter = oAuthMock.Object;
             oAuthMock.Setup(oauth => oauth.FilterRequestParameters(It.IsAny<Uri>())).Returns(requestUrl);
-            var helperMock = new Mock<IOAuthHelper>();
-            signInAuth.OAuthHelper = helperMock.Object;
             string authUrl = string.Empty;
             signInAuth.PerformRedirect = url => authUrl = url;
 

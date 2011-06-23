@@ -294,8 +294,10 @@ namespace LinqToTwitterTests
                     { "ScreenName", "789" }
                 };
             string expected = "http://twitter.com/blocks/exists/123.xml?user_id=456&screen_name=789";
-            string actual = target.BuildURL(parameters);
-            Assert.AreEqual(expected, actual);
+
+            Request req = target.BuildURL(parameters);
+
+            Assert.AreEqual(expected, req.FullUrl);
         }
 
         /// <summary>
@@ -312,8 +314,10 @@ namespace LinqToTwitterTests
                     { "Page", "2" }
                 };
             string expected = "http://twitter.com/blocks/blocking.xml?page=2";
-            string actual = target.BuildURL(parameters);
-            Assert.AreEqual(expected, actual);
+
+            Request req = target.BuildURL(parameters);
+
+            Assert.AreEqual(expected, req.FullUrl);
         }
 
         /// <summary>
@@ -329,8 +333,10 @@ namespace LinqToTwitterTests
                     { "Type", ((int)BlockingType.IDS).ToString() }
                 };
             string expected = "http://twitter.com/blocks/blocking/ids.xml";
-            string actual = target.BuildURL(parameters);
-            Assert.AreEqual(expected, actual);
+
+            Request req = target.BuildURL(parameters);
+
+            Assert.AreEqual(expected, req.FullUrl);
         }
 
         /// <summary>
@@ -341,10 +347,11 @@ namespace LinqToTwitterTests
         {
             BlocksRequestProcessor<Blocks> target = new BlocksRequestProcessor<Blocks>() { BaseUrl = "http://twitter.com/" };
             Dictionary<string, string> parameters = new Dictionary<string, string> { };
-            string actual;
+
             try
             {
-                actual = target.BuildURL(parameters);
+                target.BuildURL(parameters);
+
                 Assert.Fail("Expected ArgumentException.");
             }
             catch (ArgumentException ae)
@@ -361,10 +368,11 @@ namespace LinqToTwitterTests
         {
             BlocksRequestProcessor<Blocks> target = new BlocksRequestProcessor<Blocks>() { BaseUrl = "http://twitter.com/" };
             Dictionary<string, string> parameters = null;
-            string actual;
+
             try
             {
-                actual = target.BuildURL(parameters);
+                target.BuildURL(parameters);
+
                 Assert.Fail("Expected ArgumentException.");
             }
             catch (ArgumentException ae)

@@ -205,9 +205,10 @@ namespace LinqToTwitterTests
                     { "Page", "1" },
                 };
             string expected = "http://twitter.com/favorites.xml?page=1&id=123";
-            string actual;
-            actual = target.BuildURL(parameters);
-            Assert.AreEqual(expected, actual);
+
+            Request req = target.BuildURL(parameters);
+
+            Assert.AreEqual(expected, req.FullUrl);
         }
 
         /// <summary>
@@ -218,10 +219,11 @@ namespace LinqToTwitterTests
         {
             FavoritesRequestProcessor<Favorites> target = new FavoritesRequestProcessor<Favorites>() { BaseUrl = "http://twitter.com/" };
             Dictionary<string, string> parameters = new Dictionary<string, string> { };
-            string actual;
+
             try
             {
-                actual = target.BuildURL(parameters);
+                target.BuildURL(parameters);
+
                 Assert.Fail("Expected ArgumentException.");
             }
             catch (ArgumentException ae)
@@ -238,10 +240,11 @@ namespace LinqToTwitterTests
         {
             FavoritesRequestProcessor<Favorites> target = new FavoritesRequestProcessor<Favorites>() { BaseUrl = "http://twitter.com/" };
             Dictionary<string, string> parameters = null;
-            string actual;
+
             try
             {
-                actual = target.BuildURL(parameters);
+                target.BuildURL(parameters);
+
                 Assert.Fail("Expected ArgumentException.");
             }
             catch (ArgumentException ae)

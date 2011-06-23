@@ -296,9 +296,10 @@ namespace LinqToTwitterTests
                     { "Type", ((int)TrendType.Trend).ToString() }
                 };
             string expected = "https://api.twitter.com/1/trends.json";
-            string actual;
-            actual = target.BuildURL(parameters);
-            Assert.AreEqual(expected, actual);
+
+            Request req = target.BuildURL(parameters);
+
+            Assert.AreEqual(expected, req.FullUrl);
         }
 
         /// <summary>
@@ -316,9 +317,10 @@ namespace LinqToTwitterTests
                     { "ExcludeHashtags", "true" }
                 };
             string expected = "https://api.twitter.com/1/trends/weekly.json?date=2009-01-01&exclude=hashtags";
-            string actual;
-            actual = target.BuildURL(parameters);
-            Assert.AreEqual(expected, actual);
+
+            Request req = target.BuildURL(parameters);
+
+            Assert.AreEqual(expected, req.FullUrl);
         }
 
         /// <summary>
@@ -336,9 +338,10 @@ namespace LinqToTwitterTests
                     { "ExcludeHashtags", "true" }
                 };
             string expected = "https://api.twitter.com/1/trends/current.json?date=2009-01-01&exclude=hashtags";
-            string actual;
-            actual = target.BuildURL(parameters);
-            Assert.AreEqual(expected, actual);
+
+            Request req = target.BuildURL(parameters);
+
+            Assert.AreEqual(expected, req.FullUrl);
         }
 
         /// <summary>
@@ -356,9 +359,10 @@ namespace LinqToTwitterTests
                     { "ExcludeHashtags", "true" }
                 };
             string expected = "https://api.twitter.com/1/trends/daily.json?date=2009-01-01&exclude=hashtags";
-            string actual;
-            actual = target.BuildURL(parameters);
-            Assert.AreEqual(expected, actual);
+
+            Request req = target.BuildURL(parameters);
+
+            Assert.AreEqual(expected, req.FullUrl);
         }
 
         /// <summary>
@@ -376,9 +380,10 @@ namespace LinqToTwitterTests
                     { "Longitude", "-122.40060" }
                 };
             string expected = "http://api.twitter.com/1/trends/available.xml?lat=37.78215&long=-122.40060";
-            string actual;
-            actual = target.BuildURL(parameters);
-            Assert.AreEqual(expected, actual);
+
+            Request req = target.BuildURL(parameters);
+
+            Assert.AreEqual(expected, req.FullUrl);
         }
 
         /// <summary>
@@ -395,6 +400,7 @@ namespace LinqToTwitterTests
                     { "Type", ((int)TrendType.Available).ToString() },
                     { "Longitude", "-122.40060" }
                 };
+
             target.BuildURL(parameters);
         }
 
@@ -412,9 +418,10 @@ namespace LinqToTwitterTests
                     { "WeoID", "1" }
                 };
             string expected = "http://api.twitter.com/1/trends/1.xml";
-            string actual;
-            actual = target.BuildURL(parameters);
-            Assert.AreEqual(expected, actual);
+
+            Request req = target.BuildURL(parameters);
+
+            Assert.AreEqual(expected, req.FullUrl);
         }
 
         /// <summary>
@@ -430,7 +437,8 @@ namespace LinqToTwitterTests
                 {
                     { "Type", ((int)TrendType.Location).ToString() },
                 };
-            string actual = target.BuildURL(parameters);
+
+            target.BuildURL(parameters);
         }
 
         /// <summary>
@@ -441,10 +449,11 @@ namespace LinqToTwitterTests
         {
             TrendRequestProcessor<Trend> target = new TrendRequestProcessor<Trend>() { BaseUrl = "https://api.twitter.com/1/" };
             Dictionary<string, string> parameters = new Dictionary<string, string> { };
-            string actual;
+
             try
             {
-                actual = target.BuildURL(parameters);
+                target.BuildURL(parameters);
+
                 Assert.Fail("Expected ArgumentException.");
             }
             catch (ArgumentException ae)
@@ -456,15 +465,16 @@ namespace LinqToTwitterTests
         /// <summary>
         ///A test for null parameters
         ///</summary>
-        [TestMethod()]
+        [TestMethod]
         public void NullParametersTest()
         {
             TrendRequestProcessor<Trend> target = new TrendRequestProcessor<Trend>() { BaseUrl = "https://api.twitter.com/1/" };
             Dictionary<string, string> parameters = null;
-            string actual;
+
             try
             {
-                actual = target.BuildURL(parameters);
+                target.BuildURL(parameters);
+
                 Assert.Fail("Expected ArgumentException.");
             }
             catch (ArgumentException ae)

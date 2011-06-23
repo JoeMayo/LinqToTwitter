@@ -292,11 +292,11 @@ The blog system I'm us.. &lt;a href=""http://tinyurl.com/cvdbvr""&gt;http://tiny
                     { "Until", new DateTime(2011, 7, 4).ToString() },
                     { "ResultType", ResultType.Popular.ToString() },
                };
-            string expected = "http://search.twitter.com/search.atom?geocode=40.757929%2c-73.985506%2c25km&lang=en&page=1&rpp=10&q=LINQ+to+Twitter&show_user=true&since=2010-07-04&until=2011-07-04&since_id=1&result_type=popular";
-            
-            string actual = searchReqProc.BuildURL(parameters);
+            string expected = "http://search.twitter.com/search.atom?geocode=40.757929%2C-73.985506%2C25km&lang=en&page=1&rpp=10&q=LINQ%20to%20Twitter&show_user=true&since=2010-07-04&until=2011-07-04&since_id=1&result_type=popular";
 
-            Assert.AreEqual(expected, actual);
+            Request req = searchReqProc.BuildURL(parameters);
+
+            Assert.AreEqual(expected, req.FullUrl);
         }
 
         /// <summary>
@@ -313,9 +313,10 @@ The blog system I'm us.. &lt;a href=""http://tinyurl.com/cvdbvr""&gt;http://tiny
                     { "ShowUser", false.ToString() },
                 };
             string expected = "http://search.twitter.com/search.atom";
-            string actual;
-            actual = target.BuildURL(parameters);
-            Assert.AreEqual(expected, actual);
+
+            Request req = target.BuildURL(parameters);
+
+            Assert.AreEqual(expected, req.FullUrl);
         }
 
         /// <summary>
@@ -335,10 +336,11 @@ The blog system I'm us.. &lt;a href=""http://tinyurl.com/cvdbvr""&gt;http://tiny
                     { "WordNot", "LINQ Twitter" },
                     { "Hashtag", "linqtotwitter" },
                };
-            string expected = "http://search.twitter.com/search.atom?exact=LINQ+to+Twitter&ands=LINQ+Twitter&ors=LINQ+Twitter&nots=LINQ+Twitter&tag=linqtotwitter";
-            string actual;
-            actual = target.BuildURL(parameters);
-            Assert.AreEqual(expected, actual);
+            string expected = "http://search.twitter.com/search.atom?exact=LINQ%20to%20Twitter&ands=LINQ%20Twitter&ors=LINQ%20Twitter&nots=LINQ%20Twitter&tag=linqtotwitter";
+
+            Request req = target.BuildURL(parameters);
+
+            Assert.AreEqual(expected, req.FullUrl);
         }
 
         /// <summary>
@@ -357,9 +359,10 @@ The blog system I'm us.. &lt;a href=""http://tinyurl.com/cvdbvr""&gt;http://tiny
                     { "PersonReference", "JoeMayo" },
               };
             string expected = "http://search.twitter.com/search.atom?from=JoeMayo&to=JoeMayo&ref=JoeMayo";
-            string actual;
-            actual = target.BuildURL(parameters);
-            Assert.AreEqual(expected, actual);
+
+            Request req = target.BuildURL(parameters);
+
+            Assert.AreEqual(expected, req.FullUrl);
         }
 
         /// <summary>
@@ -375,10 +378,11 @@ The blog system I'm us.. &lt;a href=""http://tinyurl.com/cvdbvr""&gt;http://tiny
                     { "Type", SearchType.Search.ToString() },
                     { "Attitude", (Attitude.Positive | Attitude.Negative | Attitude.Question).ToString() },
                 };
-            string expected = "http://search.twitter.com/search.atom?tude%5B%5D=%3A%29&tude%5B%5D=%3A%28&tude%5B%5D=%3F";
-            string actual;
-            actual = target.BuildURL(parameters);
-            Assert.AreEqual(expected, actual);
+            string expected = "http://search.twitter.com/search.atom?tude%5B%5D=%3A)&tude%5B%5D=%3A(&tude%5B%5D=%3F";
+
+            Request req = target.BuildURL(parameters);
+
+            Assert.AreEqual(expected, req.FullUrl);
         }
 
         /// <summary>
@@ -394,10 +398,11 @@ The blog system I'm us.. &lt;a href=""http://tinyurl.com/cvdbvr""&gt;http://tiny
                     { "Type", SearchType.Search.ToString() },
                     { "Attitude", (Attitude.Negative | Attitude.Question).ToString() },
                 };
-            string expected = "http://search.twitter.com/search.atom?tude%5B%5D=%3A%28&tude%5B%5D=%3F";
-            string actual;
-            actual = target.BuildURL(parameters);
-            Assert.AreEqual(expected, actual);
+            string expected = "http://search.twitter.com/search.atom?tude%5B%5D=%3A(&tude%5B%5D=%3F";
+
+            Request req = target.BuildURL(parameters);
+
+            Assert.AreEqual(expected, req.FullUrl);
         }
 
         /// <summary>
@@ -415,9 +420,10 @@ The blog system I'm us.. &lt;a href=""http://tinyurl.com/cvdbvr""&gt;http://tiny
                     { "WithRetweets", true.ToString() }
                 };
             string expected = "http://search.twitter.com/search.atom?filter%5B%5D=links&include%5B%5D=retweets";
-            string actual;
-            actual = target.BuildURL(parameters);
-            Assert.AreEqual(expected, actual);
+
+            Request req = target.BuildURL(parameters);
+
+            Assert.AreEqual(expected, req.FullUrl);
         }
 
         /// <summary>
@@ -435,9 +441,10 @@ The blog system I'm us.. &lt;a href=""http://tinyurl.com/cvdbvr""&gt;http://tiny
                     { "WithRetweets", false.ToString() }
                 };
             string expected = "http://search.twitter.com/search.atom";
-            string actual;
-            actual = target.BuildURL(parameters);
-            Assert.AreEqual(expected, actual);
+
+            Request req = target.BuildURL(parameters);
+
+            Assert.AreEqual(expected, req.FullUrl);
         }
 
         /// <summary>
@@ -448,10 +455,11 @@ The blog system I'm us.. &lt;a href=""http://tinyurl.com/cvdbvr""&gt;http://tiny
         {
             SearchRequestProcessor<Search> target = new SearchRequestProcessor<Search>() { BaseUrl = "http://search.twitter.com/" };
             Dictionary<string, string> parameters = new Dictionary<string, string> { };
-            string actual;
+
             try
             {
-                actual = target.BuildURL(parameters);
+                target.BuildURL(parameters);
+
                 Assert.Fail("Expected ArgumentException.");
             }
             catch (ArgumentException ae)
@@ -468,10 +476,11 @@ The blog system I'm us.. &lt;a href=""http://tinyurl.com/cvdbvr""&gt;http://tiny
         {
             SearchRequestProcessor<Search> target = new SearchRequestProcessor<Search>() { BaseUrl = "http://search.twitter.com/" };
             Dictionary<string, string> parameters = null;
-            string actual;
+
             try
             {
-                actual = target.BuildURL(parameters);
+                target.BuildURL(parameters);
+
                 Assert.Fail("Expected ArgumentException.");
             }
             catch (ArgumentException ae)
@@ -487,16 +496,17 @@ The blog system I'm us.. &lt;a href=""http://tinyurl.com/cvdbvr""&gt;http://tiny
         public void UrlEncodedQueryTest()
         {
             SearchRequestProcessor<Search> target = new SearchRequestProcessor<Search>() { BaseUrl = "http://search.twitter.com/" };
-            string expected = target.BaseUrl + "search.atom?q=Contains+Space";
+            string expected = target.BaseUrl + "search.atom?q=Contains%20Space";
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                 {
                     { "Type", SearchType.Search.ToString() },
                     { "Query", "Contains Space" }
                 };
-            string actual = target.BuildURL(parameters);
 
-            Assert.AreEqual(expected, actual);
+            Request req = target.BuildURL(parameters);
+
+            Assert.AreEqual(expected, req.FullUrl);
         }
 
         /// <summary>
@@ -507,14 +517,15 @@ The blog system I'm us.. &lt;a href=""http://tinyurl.com/cvdbvr""&gt;http://tiny
         public void QueryTooLongTest()
         {
             SearchRequestProcessor<Search> target = new SearchRequestProcessor<Search>() { BaseUrl = "http://search.twitter.com/" };
-            string expected = target.BaseUrl + "search.atom?q=Contains+Space";
+            string expected = target.BaseUrl + "search.atom?q=Contains%20Space";
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                 {
                     { "Type", SearchType.Search.ToString() },
                     { "Query", "x01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789" }
                 };
-            string actual = target.BuildURL(parameters);
+            
+            target.BuildURL(parameters);
         }
     }
 }

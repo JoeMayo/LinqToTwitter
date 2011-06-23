@@ -1111,7 +1111,7 @@ namespace LinqToTwitter
                 var request = new Request(url);
 
 #if SILVERLIGHT
-                HttpWebRequest req = AuthorizedClient.PostAsync(url, parameters);
+                HttpWebRequest req = AuthorizedClient.PostAsync(request, postData);
 
                 req.BeginGetResponse(
                     new AsyncCallback(

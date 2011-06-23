@@ -5,9 +5,10 @@ using System.Text;
 using System.Net;
 using System.IO;
 using System.Threading;
-using System.Web;
 #if SILVERLIGHT
 using System.Windows;
+#else
+using System.Web;
 #endif
 
 namespace LinqToTwitter

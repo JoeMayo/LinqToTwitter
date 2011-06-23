@@ -8,6 +8,7 @@ using System.Collections;
 using System.Globalization;
 
 #if SILVERLIGHT
+using System.Windows.Browser;
 using System.Net.Browser;
 using System.Windows;
 #else
@@ -68,12 +69,27 @@ namespace LinqToTwitter
 
             string url = BaseUrl.TrimEnd('/') + "/" + QueryString.TrimStart('/');
             var parts = url.Split('?');
-            var req = new Request(BaseUrl + parts[0]);
+            var req = new Request(parts[0]);
             var urlParams = req.RequestParameters;
 
-            var qsparms = HttpUtility.ParseQueryString(url);  // probably will return an empty collection
-            foreach (KeyValuePair<string, string> parm in qsparms)
-                urlParams.Add(new QueryParameter(parm.Key, parm.Value)); // may need to unescape
+            if (parts.Length == 2)
+            {
+                var qsParms =
+                    (from pair in parts[1].Split('&')
+                     let keyVal = pair.Split('=')
+                     select new
+                     {
+                         Key = keyVal[0],
+                         Val = keyVal[1]
+                     })
+                    .ToDictionary(
+                        key => key.Key,
+                        val => val.Val);
+
+                //var qsparms = HttpUtility.ParseQueryString(url);  // probably will return an empty collection
+                foreach (KeyValuePair<string, string> parm in qsParms)
+                    urlParams.Add(new QueryParameter(parm.Key, parm.Value)); // may need to unescape
+            }
 
             return req;
         }

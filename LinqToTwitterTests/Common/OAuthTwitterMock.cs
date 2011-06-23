@@ -28,12 +28,12 @@ namespace LinqToTwitterTests.Common
             throw new NotImplementedException();
         }
 
-        public void GetOAuthQueryString(HttpMethod method, string url, string callback, out string outUrl, out string queryString)
+        public void GetOAuthQueryString(HttpMethod method, Request url, string callback, out string outUrl, out string queryString)
         {
             throw new NotImplementedException();
         }
 
-        public string GetOAuthQueryStringForPost(string url)
+        public string GetOAuthQueryStringForPost(Request url, IDictionary<string, string> postData)
         {
             throw new NotImplementedException();
         }
@@ -115,7 +115,7 @@ namespace LinqToTwitterTests.Common
             throw new NotImplementedException();
         }
 
-        public string WebRequest(HttpMethod method, string url, string authHeader, string postData)
+        public string WebRequest(HttpMethod method, string url, string authHeader, IDictionary<string, string> postData)
         {
             throw new NotImplementedException();
         }
@@ -162,17 +162,17 @@ namespace LinqToTwitterTests.Common
             throw new NotImplementedException();
         }
 
-        public void PostAccessToken(string accessTokenUrl, string postData, out string screenName, out string userID)
+        public void PostAccessToken(Request accessTokenUrl, IDictionary<string, string> postData, out string screenName, out string userID)
         {
             throw new NotImplementedException();
         }
 
-        public string OAuthWebRequest(HttpMethod method, string url, string postData, string callback)
+        public string OAuthWebRequest(HttpMethod method, Request url, IDictionary<string, string> postData, string callback)
         {
             throw new NotImplementedException();
         }
 
-        public void PostAccessTokenAsync(Uri uri, string postData, Action<TwitterAsyncResponse<UserIdentifier>> authorizationCompleteCallback)
+        public void PostAccessTokenAsync(Request uri, IDictionary<string, string> postData, Action<TwitterAsyncResponse<UserIdentifier>> authorizationCompleteCallback)
         {
             throw new NotImplementedException();
         }

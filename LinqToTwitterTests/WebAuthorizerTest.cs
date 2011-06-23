@@ -75,8 +75,6 @@ namespace LinqToTwitterTests
             var oAuthMock = new Mock<IOAuthTwitter>();
             webAuth.OAuthTwitter = oAuthMock.Object;
             oAuthMock.Setup(oauth => oauth.FilterRequestParameters(It.IsAny<Uri>())).Returns(requestUrl);
-            var helperMock = new Mock<IOAuthHelper>();
-            webAuth.OAuthHelper = helperMock.Object;
             string authUrl = string.Empty;
             webAuth.PerformRedirect = url => authUrl = url;
 
@@ -110,8 +108,6 @@ namespace LinqToTwitterTests
             webAuth.Credentials = new InMemoryCredentials();
             var oAuthMock = new Mock<IOAuthTwitter>();
             webAuth.OAuthTwitter = oAuthMock.Object;
-            var helperMock = new Mock<IOAuthHelper>();
-            webAuth.OAuthHelper = helperMock.Object;
             string authUrl = string.Empty;
             webAuth.PerformRedirect = url => authUrl = url;
 
@@ -127,8 +123,6 @@ namespace LinqToTwitterTests
             var oAuthMock = new Mock<IOAuthTwitter>();
             oAuthMock.Setup(oauth => oauth.FilterRequestParameters(It.IsAny<Uri>())).Returns(requestUrl);
             webAuth.OAuthTwitter = oAuthMock.Object;
-            var helperMock = new Mock<IOAuthHelper>();
-            webAuth.OAuthHelper = helperMock.Object;
             string authUrl = string.Empty;
             webAuth.PerformRedirect = url => authUrl = url;
 
@@ -154,8 +148,6 @@ namespace LinqToTwitterTests
                      .Returns(authLink);
             oAuthMock.Setup(oAuth => oAuth.AccessTokenGet(authToken, verifier, It.IsAny<string>(), string.Empty, out screenName, out userID));
             webAuth.OAuthTwitter = oAuthMock.Object;
-            var helperMock = new Mock<IOAuthHelper>();
-            webAuth.OAuthHelper = helperMock.Object;
 
             webAuth.CompleteAuthorization(new Uri(authLink));
 
@@ -171,8 +163,6 @@ namespace LinqToTwitterTests
             webAuth.Credentials = new InMemoryCredentials();
             var oAuthMock = new Mock<IOAuthTwitter>();
             webAuth.OAuthTwitter = oAuthMock.Object;
-            var helperMock = new Mock<IOAuthHelper>();
-            webAuth.OAuthHelper = helperMock.Object;
 
             try
             {

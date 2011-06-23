@@ -31,8 +31,8 @@ public partial class _Default : System.Web.UI.Page
             auth.CompleteAuthorization(Request.Url);
         }
 
-        if (credentials.ConsumerKey.IsNullOrWhiteSpace() ||
-            credentials.ConsumerSecret.IsNullOrWhiteSpace())
+        if (string.IsNullOrWhiteSpace(credentials.ConsumerKey) ||
+            string.IsNullOrWhiteSpace(credentials.ConsumerSecret))
         {
             // The user needs to set up the web.config file to include Twitter consumer key and secret.
             PrivateDataMultiView.SetActiveView(SetupTwitterConsumer);

@@ -112,7 +112,7 @@ namespace LinqToTwitter
         /// <returns>base url + show segment</returns>
         private Request BuildSocialGraphFriendsUrl(Dictionary<string, string> parameters)
         {
-            var url = BaseUrl + "friends/ids.xml";
+            var url = "friends/ids.xml";
 
             return BuildSocialGraphUrlParameters(parameters, url);
         }
@@ -124,7 +124,7 @@ namespace LinqToTwitter
         /// <returns>base url + show segment</returns>
         private Request BuildSocialGraphFollowersUrl(Dictionary<string, string> parameters)
         {
-            var url = BaseUrl + "followers/ids.xml";
+            var url = "followers/ids.xml";
 
             return BuildSocialGraphUrlParameters(parameters, url);
         }

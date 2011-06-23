@@ -73,8 +73,6 @@ namespace LinqToTwitterTests
                      .Returns(authLink);
             pinAuth.OAuthTwitter = oAuthMock.Object;
             pinAuth.GetPin = () => { return "1234567"; };
-            var helperMock = new Mock<IOAuthHelper>();
-            pinAuth.OAuthHelper = helperMock.Object;
             string destinationUrl = string.Empty;
             pinAuth.GoToTwitterAuthorization = link => destinationUrl = link;
 
@@ -93,8 +91,6 @@ namespace LinqToTwitterTests
             oAuthMock.Setup(oAuth => oAuth.AuthorizationLinkGet(It.IsAny<string>(), It.IsAny<string>(), "oob", false))
                      .Returns(authLink);
             pinAuth.OAuthTwitter = oAuthMock.Object;
-            var helperMock = new Mock<IOAuthHelper>();
-            pinAuth.OAuthHelper = helperMock.Object;
             pinAuth.GetPin = () => { return "1234567"; };
             string destinationUrl = string.Empty;
             pinAuth.GoToTwitterAuthorization = link => destinationUrl = link;
@@ -114,8 +110,6 @@ namespace LinqToTwitterTests
             oAuthMock.Setup(oAuth => oAuth.AuthorizationLinkGet(It.IsAny<string>(), It.IsAny<string>(), "oob", false))
                      .Returns(authLink);
             pinAuth.OAuthTwitter = oAuthMock.Object;
-            var helperMock = new Mock<IOAuthHelper>();
-            pinAuth.OAuthHelper = helperMock.Object;
             bool pinSet = false;
             pinAuth.GetPin = () => { pinSet = true; return "1234567"; };
             string destinationUrl = string.Empty;
@@ -136,8 +130,6 @@ namespace LinqToTwitterTests
             oAuthMock.Setup(oAuth => oAuth.AuthorizationLinkGet(It.IsAny<string>(), It.IsAny<string>(), "oob", false))
                      .Returns(authLink);
             pinAuth.OAuthTwitter = oAuthMock.Object;
-            var helperMock = new Mock<IOAuthHelper>();
-            pinAuth.OAuthHelper = helperMock.Object;
             //bool pinSet = false;
             //pinAuth.GetPin = () => { pinSet = true; return "1234567"; };
             string destinationUrl = string.Empty;
@@ -165,8 +157,6 @@ namespace LinqToTwitterTests
             oAuthMock.Setup(oAuth => oAuth.AuthorizationLinkGet(It.IsAny<string>(), It.IsAny<string>(), "oob", false))
                      .Returns(authLink);
             pinAuth.OAuthTwitter = oAuthMock.Object;
-            var helperMock = new Mock<IOAuthHelper>();
-            pinAuth.OAuthHelper = helperMock.Object;
             bool pinSet = false;
             pinAuth.GetPin = () => { pinSet = true; return "1234567"; };
             //string destinationUrl = string.Empty;
@@ -216,8 +206,6 @@ namespace LinqToTwitterTests
                      .Returns(authLink);
             oAuthMock.Setup(oAuth => oAuth.AccessTokenGet(authToken, pinCode, It.IsAny<string>(), string.Empty, out screenName, out userID));
             pinAuth.OAuthTwitter = oAuthMock.Object;
-            var helperMock = new Mock<IOAuthHelper>();
-            pinAuth.OAuthHelper = helperMock.Object;
             pinAuth.GetPin = () => { return pinCode; };
             string destinationUrl = string.Empty;
             pinAuth.GoToTwitterAuthorization = link => destinationUrl = link;
@@ -243,7 +231,6 @@ namespace LinqToTwitterTests
                     AccessToken = "accesstoken"
                 },
                 OAuthTwitter = oAuthMock.Object,
-                OAuthHelper = new Mock<IOAuthHelper>().Object,
                 GetPin = () => { return "1234567"; },
                 GoToTwitterAuthorization = link => { }
             };
@@ -265,7 +252,6 @@ namespace LinqToTwitterTests
             {
                 Credentials = new InMemoryCredentials(),
                 OAuthTwitter = oAuthMock.Object,
-                OAuthHelper = new Mock<IOAuthHelper>().Object,
                 GetPin = () => { return "1234567"; },
                 GoToTwitterAuthorization = link => { }
             };
@@ -284,7 +270,6 @@ namespace LinqToTwitterTests
             {
                 Credentials = new InMemoryCredentials(),
                 OAuthTwitter = new OAuthTwitterMock(),
-                OAuthHelper = new Mock<IOAuthHelper>().Object,
                 GetPin = () => { return "1234567"; },
                 //GoToTwitterAuthorization = link => { }
             };
@@ -316,7 +301,6 @@ namespace LinqToTwitterTests
                     AccessToken = "accesstoken"
                 },
                 OAuthTwitter = oAuthMock.Object,
-                OAuthHelper = new Mock<IOAuthHelper>().Object,
                 GetPin = () => { return "1234567"; },
                 GoToTwitterAuthorization = link => { }
             };
@@ -335,7 +319,6 @@ namespace LinqToTwitterTests
             {
                 Credentials = new InMemoryCredentials(),
                 OAuthTwitter = new OAuthTwitterMock(),
-                OAuthHelper = new Mock<IOAuthHelper>().Object,
                 GetPin = () => { return "1234567"; },
                 GoToTwitterAuthorization = link => { }
             };
@@ -356,7 +339,6 @@ namespace LinqToTwitterTests
             {
                 Credentials = new InMemoryCredentials(),
                 OAuthTwitter = oAuthMock.Object,
-                OAuthHelper = new Mock<IOAuthHelper>().Object,
                 GoToTwitterAuthorization = link => { }
             };
 
@@ -374,7 +356,6 @@ namespace LinqToTwitterTests
             {
                 Credentials = new InMemoryCredentials(),
                 OAuthTwitter = new OAuthTwitterMock(),
-                OAuthHelper = new Mock<IOAuthHelper>().Object,
                 GoToTwitterAuthorization = link => { }
             };
             TwitterAsyncResponse<UserIdentifier> twitterResp = null;
@@ -391,7 +372,6 @@ namespace LinqToTwitterTests
             {
                 Credentials = new InMemoryCredentials(),
                 OAuthTwitter = new OAuthTwitterMock(),
-                OAuthHelper = new Mock<IOAuthHelper>().Object,
                 GoToTwitterAuthorization = link => { }
             };
 
@@ -424,7 +404,6 @@ namespace LinqToTwitterTests
                     AccessToken = "accesstoken"
                 },
                 OAuthTwitter = oAuthMock.Object,
-                OAuthHelper = new Mock<IOAuthHelper>().Object,
                 GoToTwitterAuthorization = link => { }
             };
 

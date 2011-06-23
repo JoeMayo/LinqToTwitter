@@ -27,6 +27,7 @@ namespace LinqToTwitterDemo
             //HomeSinceStatusQueryDemo(twitterCtx);
             //FriendStatusQueryDemo(twitterCtx);
             //UserStatusQueryDemo(twitterCtx);
+            //UserStatusSinceIDQueryDemo(twitterCtx);
             //UserStatusByNameQueryDemo(twitterCtx);
             //UserStatusWithRetweetsQueryDemo(twitterCtx);
             //MentionsStatusQueryDemo(twitterCtx);
@@ -545,6 +546,33 @@ namespace LinqToTwitterDemo
                 from tweet in twitterCtx.Status
                 where tweet.Type == StatusType.User
                       && tweet.ID == "15411837"  // ID for User
+                select tweet;
+
+            foreach (var tweet in statusTweets)
+            {
+                Console.WriteLine(
+                    "(" + tweet.StatusID + ")" +
+                    "[" + tweet.User.ID + "]" +
+                    tweet.User.Name + ", " +
+                    tweet.Text + ", " +
+                    tweet.CreatedAt);
+            }
+        }
+
+        /// <summary>
+        /// shows how to query status
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void UserStatusSinceIDQueryDemo(TwitterContext twitterCtx)
+        {
+            Console.WriteLine();
+
+            var statusTweets =
+                from tweet in twitterCtx.Status
+                where tweet.Type == StatusType.User &&
+                      tweet.ScreenName == "JoeMayo" &&
+                      tweet.SinceID == 79608230359212032 &&
+                      tweet.IncludeRetweets == true
                 select tweet;
 
             foreach (var tweet in statusTweets)
