@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using LinqToTwitter;
 
 namespace LinqToTwitterDemo
@@ -10,16 +8,16 @@ namespace LinqToTwitterDemo
     {
         public static void Run(TwitterContext twitterCtx)
         {
-            //SamplesDemo(twitterCtx);
+            SamplesDemo(twitterCtx);
             //FilterDemo(twitterCtx);
-            UserStreamDemo(twitterCtx);
+            //UserStreamDemo(twitterCtx);
             //SiteStreamDemo(twitterCtx);
         }
 
         private static void FilterDemo(TwitterContext twitterCtx)
         {
-            twitterCtx.StreamingUserName = "";
-            twitterCtx.StreamingPassword = "";
+            twitterCtx.StreamingUserName = "Linq2Tweeter";
+            twitterCtx.StreamingPassword = "jamtwi0";
 
             if (twitterCtx.StreamingUserName == string.Empty ||
                 twitterCtx.StreamingPassword == string.Empty)
@@ -50,8 +48,8 @@ namespace LinqToTwitterDemo
 
         private static void SamplesDemo(TwitterContext twitterCtx)
         {
-            twitterCtx.StreamingUserName = "";
-            twitterCtx.StreamingPassword = "";
+            twitterCtx.StreamingUserName = "Linq2Tweeter";
+            twitterCtx.StreamingPassword = "jamtwi0";
 
             if (twitterCtx.StreamingUserName == string.Empty ||
                 twitterCtx.StreamingPassword == string.Empty)

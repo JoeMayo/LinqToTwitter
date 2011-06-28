@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using LinqToTwitter;
 
 namespace LinqToTwitterDemo
@@ -687,15 +688,22 @@ namespace LinqToTwitterDemo
             twitterCtx.UpdateStatus(status,
                 response =>
                 {
-                    Status tweet = response.State;
+                    if (response.Status == TwitterErrorStatus.Success)
+                    {
+                        Status tweet = response.State;
 
-                    Console.WriteLine(
-                        "Status returned: " +
-                        "(" + tweet.StatusID + ")" +
-                        "[" + tweet.User.ID + "]" +
-                        tweet.User.Name + ", " +
-                        tweet.Text + ", " +
-                        tweet.CreatedAt + "\n");
+                        Console.WriteLine(
+                            "Status returned: " +
+                            "(" + tweet.StatusID + ")" +
+                            "[" + tweet.User.ID + "]" +
+                            tweet.User.Name + ", " +
+                            tweet.Text + ", " +
+                            tweet.CreatedAt + "\n");
+                    }
+                    else
+                    {
+                        Console.WriteLine(response.Error.ToString());
+                    }
                 });
         }
         /// <summary>
@@ -728,6 +736,10 @@ namespace LinqToTwitterDemo
         {
             // the \u00C7 is C Cedilla, which I've included to ensure that non-ascii characters appear properly
             var status = "\u00C7 Testing LINQ to Twitter update status on " + DateTime.Now.ToString() + " #linqtotwitter";
+            //string japaneseCultureString = "ja-JP";
+            //Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo(japaneseCultureString);
+            //Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo(japaneseCultureString);
+            //var status = "あいうえお";
 
             Console.WriteLine("Status being sent: " + status);
 

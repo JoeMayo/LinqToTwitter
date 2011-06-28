@@ -22,7 +22,7 @@ namespace LinqToTwitterDemo
             //SearchTwitterSinceIDDemo(twitterCtx);
             //SearchTwitterLocationDemo(twitterCtx);
             //SearchTwitterLocaleDemo(twitterCtx);
-            SearchAndUseStatusTwitterDemo(twitterCtx);
+            //SearchAndUseStatusTwitterDemo(twitterCtx);
             //SearchByLanguageTwitterDemo(twitterCtx);
             //SearchSinceDateTwitterDemo(twitterCtx);
             //SearchTwitterSource(twitterCtx);
@@ -36,6 +36,7 @@ namespace LinqToTwitterDemo
             //SearchCountDemo(twitterCtx);
             //SearchDatesDemo(twitterCtx);
             //SearchEntriesQueryDemo(twitterCtx);
+            SearchGeoCodeDemo(twitterCtx);
         }
 
         #region Search Demos
@@ -509,6 +510,20 @@ namespace LinqToTwitterDemo
                 Console.WriteLine("Title: " + entry.Title);
             }
 
+        }
+
+        private static void SearchGeoCodeDemo(TwitterContext twitterCtx)
+        {
+            string geocode = "39.5485127,-104.9230675,500km"; //lat,lng,radius
+
+            var result =
+                (from search in twitterCtx.Search
+                 where search.Type == SearchType.Search &&
+                       search.GeoCode == geocode
+                 select search)
+                .SingleOrDefault();
+
+            result.Entries.ForEach(entry => Console.WriteLine("Result: {0}\n", entry.Content));
         }
 
         public class SearchItem

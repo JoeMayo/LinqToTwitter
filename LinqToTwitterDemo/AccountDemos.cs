@@ -18,7 +18,7 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         public static void Run(TwitterContext twitterCtx)
         {
-            //VerifyAccountCredentials(twitterCtx);
+            VerifyAccountCredentials(twitterCtx);
             //ViewRateLimitStatus(twitterCtx);
             //ViewRateLimitStatusProjection(twitterCtx);
             //ViewRateLimitResponseHeadersDemo(twitterCtx);
@@ -27,7 +27,7 @@ namespace LinqToTwitterDemo
             //EndSession(twitterCtx);
             //UpdateDeliveryDevice(twitterCtx);
             //UpdateAccountColors(twitterCtx);
-            UpdateAccountImage(twitterCtx);
+            //UpdateAccountImage(twitterCtx);
             //UpdateAccountImageCallback(twitterCtx);
             //UpdateAccountBackgroundImage(twitterCtx);
             //UpdateAccountBackgroundImageBytes(twitterCtx);
@@ -62,7 +62,7 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void UpdateAccountBackgroundImage(TwitterContext twitterCtx)
         {
-            var user = twitterCtx.UpdateAccountBackgroundImage(@"C:\Users\jmayo\Documents\linq2twitter\linq2twitter\linq2twitter_v3_300x90.png", /*tile:*/ false, /*use:*/ true);
+            var user = twitterCtx.UpdateAccountBackgroundImage(@"..\..\images\200xColor_2.png", /*tile:*/ false, /*use:*/ true);
 
             Console.WriteLine("User Image: " + user.ProfileBackgroundImageUrl);
         }
@@ -73,7 +73,7 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void UpdateAccountBackgroundImageBytes(TwitterContext twitterCtx)
         {
-            byte[] fileBytes = Utilities.GetFileBytes(@"C:\Users\jmayo\Documents\linq2twitter\linq2twitter\200xColor_2.png");
+            byte[] fileBytes = Utilities.GetFileBytes(@"..\..\images\200xColor_2.png");
             var user = twitterCtx.UpdateAccountBackgroundImage(fileBytes, "200xColor_2.png", "png", /*tile:*/ false, /*use:*/ true);
 
             Console.WriteLine("User Image: " + user.ProfileBackgroundImageUrl);
@@ -85,8 +85,8 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void UpdateAccountBackgroundImageAndTileDemo(TwitterContext twitterCtx)
         {
-            byte[] fileBytes = Utilities.GetFileBytes(@"C:\Users\jmayo\Documents\linq2twitter\linq2twitter\linq2twitter_v3_300x90.png");
-            var user = twitterCtx.UpdateAccountBackgroundImage(fileBytes, "linq2twitter_v3_300x90.png", "png", /*tile:*/ true, /*use:*/ true);
+            byte[] fileBytes = Utilities.GetFileBytes(@"..\..\images\200xColor_2.png");
+            var user = twitterCtx.UpdateAccountBackgroundImage(fileBytes, "200xColor_2.png", "png", /*tile:*/ true, /*use:*/ true);
 
             Console.WriteLine("User Image: " + user.ProfileBackgroundImageUrl);
         }
@@ -97,8 +97,9 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void UpdateAccountBackgroundImageAndTileButDontUseDemo(TwitterContext twitterCtx)
         {
-            byte[] fileBytes = Utilities.GetFileBytes(@"C:\Users\jmayo\Documents\linq2twitter\linq2twitter\linq2twitter_v3_300x90.png");
-            var user = twitterCtx.UpdateAccountBackgroundImage(fileBytes, "linq2twitter_v3_300x90.png", "png", /*tile:*/ true, /*use:*/ false);
+            // TODO: Twitter doesn't let us upload and mark as not used
+            byte[] fileBytes = Utilities.GetFileBytes(@"..\..\images\200xColor_2.png");
+            var user = twitterCtx.UpdateAccountBackgroundImage(fileBytes, "200xColor_2.png", "png", /*tile:*/ true, /*use:*/ false);
 
             Console.WriteLine("User Image: " + user.ProfileBackgroundImageUrl);
         }
@@ -114,7 +115,7 @@ namespace LinqToTwitterDemo
                 {
                     Console.WriteLine("Progress: {0}%", e.PercentComplete);
                 };
-            byte[] fileBytes = Utilities.GetFileBytes(@"C:\Users\jmayo\Documents\linq2twitter\linq2twitter\200xColor_2.png");
+            byte[] fileBytes = Utilities.GetFileBytes(@"..\..\images\200xColor_2.png");
             var user = twitterCtx.UpdateAccountBackgroundImage(fileBytes, "200xColor_2.png", "png", /*tile:*/ false, /*use:*/ true);
 
             Console.WriteLine("User Image: " + user.ProfileBackgroundImageUrl);
@@ -126,7 +127,7 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void UpdateAccountImage(TwitterContext twitterCtx)
         {
-            var user = twitterCtx.UpdateAccountImage(@"C:\Users\jmayo\Pictures\Sgt Peppers\JoeTwitterBW.jpg");
+            var user = twitterCtx.UpdateAccountImage(@"..\..\images\200xColor_2.png");
 
             Console.WriteLine("User Image: " + user.ProfileImageUrl);
         }
@@ -138,7 +139,7 @@ namespace LinqToTwitterDemo
         private static void UpdateAccountImageCallback(TwitterContext twitterCtx)
         {
             var user = twitterCtx.UpdateAccountImage(
-                @"C:\Users\jmayo\Pictures\Sgt Peppers\JoeTwitterBW.jpg",
+                @"..\..\images\200xColor_2.png",
                 response =>
                 {
                     Console.WriteLine("User Image: " + response.Status.ToString());
@@ -168,6 +169,7 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx"></param>
         private static void UpdateDeliveryDevice(TwitterContext twitterCtx)
         {
+            // TODO: Receiving 410 Gone - Research if replaced
             var user = twitterCtx.UpdateAccountDeliveryDevice(DeviceType.None);
 
             Console.WriteLine("Device Type: {0}", user.Notifications.ToString());

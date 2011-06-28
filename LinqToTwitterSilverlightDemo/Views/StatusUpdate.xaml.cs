@@ -1,18 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
 using System.Windows;
+using System.Windows.Browser;
 using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
 using System.Windows.Navigation;
 using LinqToTwitter;
-using System.Threading;
-using System.Windows.Browser;
 
 namespace LinqToTwitterSilverlightDemo.Views
 {
@@ -136,8 +127,6 @@ namespace LinqToTwitterSilverlightDemo.Views
 
         private void PinButton_Click(object sender, RoutedEventArgs e)
         {
-            string pin = PinTextBox.Text;
-
             m_pinAuth.CompleteAuthorize(
                 PinTextBox.Text,
                 completeResp => Dispatcher.BeginInvoke(() =>

@@ -3,7 +3,6 @@
  * 
  * Created By: Joe Mayo, 8/26/08
  ***********************************************************/
-using LinqToTwitter.Common;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -12,7 +11,7 @@ using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Net;
-
+using LinqToTwitter.Common;
 #if SILVERLIGHT
 using System.Net.Browser;
 #endif
@@ -84,8 +83,18 @@ namespace LinqToTwitter
             SiteStreamUrl = "http://betastream.twitter.com/2b/";
 
 #if SILVERLIGHT
-            WebRequest.RegisterPrefix("http://", WebRequestCreator.BrowserHttp);
-            WebRequest.RegisterPrefix("https://", WebRequestCreator.BrowserHttp);
+
+            if (System.Windows.Application.Current.IsRunningOutOfBrowser)
+            {
+                WebRequest.RegisterPrefix("http://", WebRequestCreator.ClientHttp);
+                WebRequest.RegisterPrefix("https://", WebRequestCreator.ClientHttp);
+            }
+            else
+            {
+                WebRequest.RegisterPrefix("http://", WebRequestCreator.BrowserHttp);
+                WebRequest.RegisterPrefix("https://", WebRequestCreator.BrowserHttp);
+            }
+
 #endif
         }
 
@@ -2082,7 +2091,7 @@ namespace LinqToTwitter
 
             TwitterExecutor.AsyncCallback = callback;
             var resultsXml =
-                TwitterExecutor.PostTwitterFile(imageFilePath, null, accountUrl, reqProc);
+                TwitterExecutor.PostTwitterFile(accountUrl, null, imageFilePath, reqProc);
 
             List<User> results = reqProc.ProcessResults(resultsXml);
             return results.FirstOrDefault();
@@ -2187,7 +2196,7 @@ namespace LinqToTwitter
 
             TwitterExecutor.AsyncCallback = callback;
             var resultsXml =
-                TwitterExecutor.PostTwitterFile(imageFilePath, parameters, accountUrl, reqProc);
+                TwitterExecutor.PostTwitterFile(accountUrl, parameters, imageFilePath, reqProc);
 
             List<User> results = reqProc.ProcessResults(resultsXml);
             return results.FirstOrDefault();

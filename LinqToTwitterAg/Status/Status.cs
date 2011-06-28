@@ -3,13 +3,11 @@
  * 
  * Written by: Joe Mayo, 8/26/08
  * *********************************************************/
-
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Xml.Linq;
 using System.Globalization;
+using System.Linq;
+using System.Xml.Linq;
 using System.Xml.Serialization;
 
 namespace LinqToTwitter
@@ -31,7 +29,7 @@ namespace LinqToTwitter
                 return null;
             }
 
-            var date = status.Element("created_at").Value;
+            var date = status.Element("created_at") == null ? null : status.Element("created_at").Value;
             var createdAtDate = String.IsNullOrEmpty(date) 
                                 ? DateTime.MinValue
                                 : DateTime.ParseExact(

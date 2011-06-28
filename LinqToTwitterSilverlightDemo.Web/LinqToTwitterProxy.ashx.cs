@@ -1,18 +1,10 @@
-﻿/***********************************************************
- * Credits:
- * 
- * Based On: Peter Bromberg's Silverlight Multipurpose WebRequest Proxy:
- *     http://eggheadcafe.com/tutorials/aspnet/45d1dc2b-7db7-4bbc-b612-003fe889ed4a/silverlight-multipurpose.aspx
- *     
- ***********************************************************/
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
 using System.Web;
-using System.Web.SessionState;
-using System.IO;
 
 namespace LinqToTwitterSilverlightDemo.Web
 {
@@ -31,11 +23,19 @@ namespace LinqToTwitterSilverlightDemo.Web
 
             if (context.Request.HttpMethod == "GET")
             {
-                var client = new WebClient();
-                client = SetCookies(client, context.Request);
-                string s = client.DownloadString(url);
-                context.Response.Write(s);
-                client.Dispose();
+                var req = WebRequest.Create(url) as HttpWebRequest;
+                req = SetCookies(req, context.Request);
+                req = SetHeaders(req, context.Request.Headers);
+
+                using (WebResponse resp = req.GetResponse())
+                {
+                    using (var respStream = resp.GetResponseStream())
+                    using (var respReader = new StreamReader(respStream))
+                    {
+                        string respString = respReader.ReadToEnd();
+                        context.Response.Write(respString);
+                    }
+                }
             }
 
             if (context.Request.HttpMethod == "POST")
@@ -85,39 +85,23 @@ namespace LinqToTwitterSilverlightDemo.Web
                  select new
                  {
                      Key = key,
-                     Val = context.Request.QueryString[key]
+                     Val = val
                  })
                 .ToDictionary(pair => pair.Key, pair => pair.Val);
 
             string queryString = string.Join("&",
                 (from key in queryDict.Keys
                  where key != "url"
-                 select key + "=" + HttpUtility.UrlEncode(queryDict[key]))
+                 select key + "=" + queryDict[key]) //HttpUtility.UrlEncode(queryDict[key]))
                 .ToArray());
 
-            string url = queryDict["url"];
+            string url = HttpUtility.UrlDecode(queryDict["url"]);
             if (queryString.Length > 0)
             {
                 url += "?" + queryString;
             }
 
             return url;
-        }
-
-        /// <summary>
-        /// Transfer any cookies from original Silverlight request to real outbound request
-        /// </summary>
-        /// <param name="wc">WebClient with Headers property</param>
-        /// <param name="request">Request containing original cookies</param>
-        /// <returns>WebClient with updated cookies</returns>
-        private WebClient SetCookies(WebClient wc, HttpRequest request)
-        {
-            HttpCookieCollection coll = request.Cookies;
-            foreach (string cookieName in coll.Keys)
-            {
-                wc.Headers.Add("Cookie", cookieName + "=" + coll[cookieName].Value);
-            }
-            return wc;
         }
 
         /// <summary>
@@ -173,10 +157,7 @@ namespace LinqToTwitterSilverlightDemo.Web
 
             proxyReq.ServicePoint.Expect100Continue = false;
 
-            if (origReq["User-Agent"] != null)
-            {
-                proxyReq.UserAgent = origReq["User-Agent"];
-            }
+            proxyReq.UserAgent = "LINQ to Twitter v2.0";
 
             return proxyReq;
         }

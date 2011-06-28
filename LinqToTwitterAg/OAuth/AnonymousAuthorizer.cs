@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Net;
-using System.IO;
+using System.Text;
 using System.Threading;
 #if SILVERLIGHT
 using System.Windows;
 #else
-using System.Web;
 #endif
 
 namespace LinqToTwitter
@@ -32,10 +29,13 @@ namespace LinqToTwitter
             var queryString = request.QueryString;
 
 #if SILVERLIGHT
-            var requestUri = new Uri(
-                ProxyUrl + url + 
-                (string.IsNullOrEmpty(ProxyUrl) ? "?" : "&") +
-                queryString);
+            var fullUrl = 
+                (ProxyUrl + url + 
+                 (string.IsNullOrEmpty(ProxyUrl) ? "?" : "&") +
+                 queryString)
+                .Trim('?', '&');
+
+            var requestUri = new Uri(fullUrl);
 #else
             var requestUri = new Uri(url + "?" + queryString);
 #endif

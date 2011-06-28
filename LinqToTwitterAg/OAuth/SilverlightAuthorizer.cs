@@ -1,13 +1,4 @@
 ﻿using System;
-using System.Net;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Ink;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
 
 namespace LinqToTwitter
 {
@@ -77,6 +68,8 @@ namespace LinqToTwitter
                 string oauthToken = OAuthTwitter.GetUrlParamValue(callbackParts[QueryPart], "oauth_token");
                 Credentials.OAuthToken = oauthToken;
                 OAuthTwitter.OAuthToken = oauthToken;
+
+                // TODO: Page navigation (i.e. Twitter # handling) is a little quirky, this needs more analysis - Joe
 
                 // we have to split on # because Twitter appends #PageName at the end of the url, 
                 // which identifies the Silverlight page to navigate to, but is not part of the verifier

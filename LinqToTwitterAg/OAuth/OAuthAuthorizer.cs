@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Net;
 
 #if SILVERLIGHT
-using System.Net.Browser;
 using System.Windows;
 #endif
 
@@ -162,10 +159,10 @@ namespace LinqToTwitter
             OAuthTwitter.GetOAuthQueryString(HttpMethod.GET, request, string.Empty, out outUrl, out queryString);
 
 #if SILVERLIGHT
-            var req = HttpWebRequest.Create(
-                ProxyUrl + outUrl + 
-                (string.IsNullOrEmpty(ProxyUrl) ? "?" : "&") +
-                queryString);
+            var fullUrl = ProxyUrl + request.FullUrl;
+
+            var req = HttpWebRequest.Create(fullUrl);
+            req.Headers[HttpRequestHeader.Authorization] = new OAuthTwitter().PrepareAuthHeader(queryString);
 #else
             var req = HttpWebRequest.Create(outUrl + "?" + queryString) as HttpWebRequest;
             //req.Headers[HttpRequestHeader.Authorization] = PrepareAuthHeader(queryString);
@@ -190,11 +187,10 @@ namespace LinqToTwitter
             var req = HttpWebRequest.Create(
                 ProxyUrl + request.Endpoint + 
                 (string.IsNullOrEmpty(ProxyUrl) ? "?" : "&") +
-                request.QueryString) as HttpWebRequest;;
+                request.QueryString) as HttpWebRequest;
 #else
             var req = HttpWebRequest.Create(request.FullUrl) as HttpWebRequest;
 #endif
-            //req.ServicePoint.Expect100Continue = false;
             req.Method = HttpMethod.POST.ToString();
             req.Headers[HttpRequestHeader.Authorization] = auth;
             req.ContentLength = 0;
@@ -230,7 +226,6 @@ namespace LinqToTwitter
                     (string.IsNullOrEmpty(ProxyUrl) ? "?" : "&") +
                     request.QueryString)
                 as HttpWebRequest;
-            //req.ServicePoint.Expect100Continue = false;
             req.Method = HttpMethod.POST.ToString();
             req.Headers[HttpRequestHeader.Authorization] = auth;
             req.ContentLength = 0;

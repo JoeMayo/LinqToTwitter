@@ -302,7 +302,7 @@ namespace LinqToTwitter
             return result.ToString();
         }
 
-        private string PrepareAuthHeader(string authHeader)
+        internal string PrepareAuthHeader(string authHeader)
         {
             var encodedParams =
                 string.Join(
@@ -584,13 +584,10 @@ namespace LinqToTwitter
             var request = new Request(oauthUrl.ToString());
             GetOAuthQueryString(HttpMethod.GET, request, callback, out signedUrl, out queryString);
             
-            var finalUrl =
-                ProxyUrl +
-                signedUrl +
-                (string.IsNullOrEmpty(ProxyUrl) ? "?" : "&") +
-                queryString;
+            var finalUrl = ProxyUrl + request.FullUrl;
 
             var req = System.Net.WebRequest.Create(finalUrl) as HttpWebRequest;
+            req.Headers[HttpRequestHeader.Authorization] = PrepareAuthHeader(queryString);
             req.Method = HttpMethod.GET.ToString();
 
 #if !SILVERLIGHT
@@ -608,9 +605,6 @@ namespace LinqToTwitter
             string baseUrl = url.Split('?')[0];
 
             var finalUrl = ProxyUrl + baseUrl;
-                //url +
-                //(string.IsNullOrEmpty(ProxyUrl) ? "?" : "&") +
-                //queryString;
 
             var req = System.Net.WebRequest.Create(finalUrl) as HttpWebRequest;
             req.Headers[HttpRequestHeader.Authorization] = oauthSig;
