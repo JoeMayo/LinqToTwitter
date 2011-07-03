@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
-using LinqToTwitter;
 using System.Configuration;
+using System.Web.UI;
+using LinqToTwitter;
 
 public partial class SignIn : System.Web.UI.Page
 {

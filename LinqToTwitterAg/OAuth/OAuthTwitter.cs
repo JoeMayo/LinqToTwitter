@@ -28,9 +28,7 @@ using System.Threading;
 #if SILVERLIGHT
     using System.Windows.Browser;
 #else
-    using System.Net.Security;
-    using System.Security.Cryptography.X509Certificates;
-    using System.Web;
+using System.Web;
 #endif
 
 namespace LinqToTwitter

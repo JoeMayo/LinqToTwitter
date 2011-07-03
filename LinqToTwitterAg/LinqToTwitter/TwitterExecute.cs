@@ -1213,12 +1213,11 @@ namespace LinqToTwitter
         {
             if (log != null)
             {
-                log.Flush();
                 log.WriteLine("--Log Starts Here--");
                 log.WriteLine("Query:" + content);
                 log.WriteLine("Method:" + currentMethod);
                 log.WriteLine("--Log Ends Here--");
-                log.Close();
+                log.Flush();
             }
         }
 
@@ -1247,6 +1246,11 @@ namespace LinqToTwitter
                 if (disposableClient != null)
                 {
                     disposableClient.Dispose();
+                }
+
+                if (log != null)
+                {
+                    log.Close(); 
                 }
             }
         }

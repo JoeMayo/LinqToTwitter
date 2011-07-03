@@ -90,16 +90,27 @@ namespace LinqToTwitter
         {
             XElement twitterResponse = XElement.Parse(responseXml);
 
-            var results =
-                (from result in twitterResponse.Element("item").Element("results").Elements("item")
-                 select RelatedResults.CreateRelatedResults(result))
-                .ToList();
+            List<RelatedResults> results = null;
 
-            results.ForEach(result =>
-                {
-                    result.StatusID = StatusID;
-                    result.Type = Type;
-                });
+            if (twitterResponse.Element("item") != null &&
+                twitterResponse.Element("item").Element("results") != null &&
+                twitterResponse.Element("item").Element("results").Elements("item") != null)
+            {
+                results =
+                        (from result in twitterResponse.Element("item").Element("results").Elements("item")
+                         select RelatedResults.CreateRelatedResults(result))
+                        .ToList();
+
+                results.ForEach(result =>
+                    {
+                        result.StatusID = StatusID;
+                        result.Type = Type;
+                    }); 
+            }
+            else
+            {
+                results = new List<RelatedResults>();
+            }
 
             return results.OfType<T>().ToList();
         }

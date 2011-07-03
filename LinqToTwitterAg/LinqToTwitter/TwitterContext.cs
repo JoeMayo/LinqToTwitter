@@ -80,7 +80,8 @@ namespace LinqToTwitter
             SearchUrl = string.IsNullOrEmpty(searchUrl) ? "http://search.twitter.com/" : searchUrl;
             StreamingUrl = "http://stream.twitter.com/1/";
             UserStreamUrl = "https://userstream.twitter.com/2/";
-            SiteStreamUrl = "http://betastream.twitter.com/2b/";
+            SiteStreamUrl = "http://sitestream.twitter.com/2b/";
+            //SiteStreamUrl = "http://betastream.twitter.com/2b/";
 
 #if SILVERLIGHT
 
@@ -1509,13 +1510,9 @@ namespace LinqToTwitter
             {
                 destroyUrl = BaseUrl + "friendships/destroy/" + id + ".xml";
             }
-            else if (!string.IsNullOrEmpty(userID))
-            {
-                destroyUrl = BaseUrl + "friendships/destroy/" + id + ".xml";
-            }
             else
             {
-                destroyUrl = BaseUrl + "friendships/destroy/" + id + ".xml";
+                destroyUrl = BaseUrl + "friendships/destroy.xml";
             }
 
             var reqProc = new UserRequestProcessor<User>();

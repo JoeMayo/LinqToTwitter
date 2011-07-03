@@ -49,9 +49,9 @@ namespace LinqToTwitter
             switch (Type)
             {
                 case LegalType.Privacy:
-                    return BuildPrivacyUrl(parameters);
+                    return BuildPrivacyUrl();
                 case LegalType.TOS:
-                    return BuildTosUrl(parameters);
+                    return BuildTosUrl();
                 default:
                     break;
             }
@@ -64,7 +64,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">parameter list</param>
         /// <returns>base url + show segment</returns>
-        private Request BuildPrivacyUrl(Dictionary<string, string> parameters)
+        private Request BuildPrivacyUrl()
         {
             var req = new Request(BaseUrl + "privacy.xml");
             return req;
@@ -75,7 +75,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">parameter list</param>
         /// <returns>base url + show segment</returns>
-        private Request BuildTosUrl(Dictionary<string, string> parameters)
+        private Request BuildTosUrl()
         {
             var req = new Request(BaseUrl + "tos.xml");
             return req;

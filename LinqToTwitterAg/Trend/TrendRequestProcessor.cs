@@ -88,7 +88,7 @@ namespace LinqToTwitter
                 case TrendType.Daily:
                     return BuildDailyTrendsUrl(parameters);
                 case TrendType.Trend:
-                    return BuildTrendsUrl(parameters);
+                    return BuildTrendsUrl();
                 case TrendType.Weekly:
                     return BuildWeeklyTrendsUrl(parameters);
                 case TrendType.Available:
@@ -180,7 +180,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">parameter list</param>
         /// <returns>base url + show segment</returns>
-        private Request BuildTrendsUrl(Dictionary<string, string> parameters)
+        private Request BuildTrendsUrl()
         {
             return new Request(BaseUrl + "trends.json");
         }

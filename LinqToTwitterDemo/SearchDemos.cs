@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using LinqToTwitter;
 
 namespace LinqToTwitterDemo
@@ -28,7 +27,7 @@ namespace LinqToTwitterDemo
             //SearchTwitterSource(twitterCtx);
             //ExceedSearchRateLimitDemo(twitterCtx);
             //SearchWithResultType(twitterCtx);
-            //SearchWithWordQuery(twitterCtx);
+            SearchWithWordQuery(twitterCtx);
             //SearchWithPersonReferenceQuery(twitterCtx);
             //SearchWithPersonFromQuery(twitterCtx);
             //SearchWithAttitudeQuery(twitterCtx);
@@ -36,7 +35,8 @@ namespace LinqToTwitterDemo
             //SearchCountDemo(twitterCtx);
             //SearchDatesDemo(twitterCtx);
             //SearchEntriesQueryDemo(twitterCtx);
-            SearchGeoCodeDemo(twitterCtx);
+            //SearchGeoCodeDemo(twitterCtx);
+            //SearchGeoCodeAndShowUserDemo(twitterCtx);
         }
 
         #region Search Demos
@@ -526,12 +526,49 @@ namespace LinqToTwitterDemo
             result.Entries.ForEach(entry => Console.WriteLine("Result: {0}\n", entry.Content));
         }
 
+        private static void SearchGeoCodeAndShowUserDemo(TwitterContext twitterCtx)
+        {
+            var queryResults = (from search in twitterCtx.Search
+                                where search.Type == SearchType.Search &&
+                                search.GeoCode == "13.0883,80.2833,30km" &&
+                                search.ShowUser == true &&
+                                search.PageSize == 50
+                                orderby search.Updated descending
+                                select search).ToList();
+
+            var entries =
+                (from result in queryResults
+                 from atomEntry in result.Entries
+                 select new SearchItem
+                 {
+                     TweetID = atomEntry.ID,
+                     Title = atomEntry.Title,
+                     Abstract = atomEntry.Content,
+                     Date = atomEntry.Published,
+                     Extract = string.Empty,
+                     TweetLocation = atomEntry.Location,
+                     Locations = new List<LocatedItem>(),
+                     Source = atomEntry.Source,
+                     Url = atomEntry.Alternate,
+                     Author = new AuthorInfo
+                     {
+                         AuthorImage = atomEntry.Image,
+                         Url = atomEntry.Author.URI,
+                         Name = atomEntry.Author.Name
+                     }
+                 }).ToList();
+
+            entries.ForEach(entry => Console.WriteLine("Result: {0}\n", entry.Title));
+        }
+
         public class SearchItem
         {
+            public string TweetID { get; set; }
             public string Title { get; set; }
             public string Abstract { get; set; }
             public DateTime Date { get; set; }
             public string Extract { get; set; }
+            public string TweetLocation { get; set; }
             public List<LocatedItem> Locations { get; set; }
             public string Source { get; set; }
             public string Url { get; set; }

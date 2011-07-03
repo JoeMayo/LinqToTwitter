@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Text;
-using System.Collections.Generic;
-using System.Linq;
+using LinqToTwitter;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using LinqToTwitter;
 
 namespace LinqToTwitterTests
 {

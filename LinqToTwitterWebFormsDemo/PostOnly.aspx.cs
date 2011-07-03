@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Web.UI;
-using LinqToTwitter;
 using System.Configuration;
+using LinqToTwitter;
 
 public partial class PostOnly : System.Web.UI.Page
 {

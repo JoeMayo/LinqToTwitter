@@ -172,8 +172,8 @@
     <Compile Include="..\LinqToTwitterAg\Common\Evaluator.cs">
       <Link>Common\Evaluator.cs</Link>
     </Compile>
-    <Compile Include="..\LinqToTwitterAg\Common\ExpressionTreeHelper.cs">
-      <Link>Common\ExpressionTreeHelper.cs</Link>
+    <Compile Include="..\LinqToTwitterAg\Common\ExpressionTreeHelpers.cs">
+      <Link>Common\ExpressionTreeHelpers.cs</Link>
     </Compile>
     <Compile Include="..\LinqToTwitterAg\Common\ExpressionTreeModifier.cs">
       <Link>Common\ExpressionTreeModifier.cs</Link>
@@ -204,6 +204,9 @@
     </Compile>
     <Compile Include="..\LinqToTwitterAg\Common\QueryParameter.cs">
       <Link>Common\QueryParameter.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\Request.cs">
+      <Link>Common\Request.cs</Link>
     </Compile>
     <Compile Include="..\LinqToTwitterAg\Common\RequestProcessorHelper.cs">
       <Link>Common\RequestProcessorHelper.cs</Link>

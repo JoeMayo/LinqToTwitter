@@ -15,13 +15,11 @@
  * 
  * Added constructor to pass TwitterContext to Provider
  * *********************************************************/
-
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Linq.Expressions;
-using System.Collections;
 
 namespace LinqToTwitter
 {

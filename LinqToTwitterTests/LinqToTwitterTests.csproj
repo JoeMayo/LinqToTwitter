@@ -165,6 +165,7 @@
     <Compile Include="TwitterContextTest.cs" />
     <Compile Include="UserRequestProcessorTest.cs" />
     <Compile Include="UserTest.cs" />
+    <Compile Include="XTwitterElementTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <Shadow Include="Test References\LinqToTwitter.accessor" />

@@ -19,11 +19,7 @@
  *      - has standard exception constructors
  *      - beyond the type name, it looks nothing like the original
  *****************************************************************/
-
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace LinqToTwitter
 {

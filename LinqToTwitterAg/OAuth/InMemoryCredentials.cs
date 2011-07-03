@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace LinqToTwitter
+﻿namespace LinqToTwitter
 {
     /// <summary>
     /// Holds credentials in memory. You must persist values 

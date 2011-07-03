@@ -399,6 +399,7 @@ namespace LinqToTwitter
             XNamespace twitter = "http://api.twitter.com/";
             XNamespace openSearch = "http://a9.com/-/spec/opensearch/1.1/";
 
+            // TODO: Refactor to use XTwitterElement extensions and move to Search - Joe
             var searchResult = new Search
             {
                 Type = Type,
@@ -425,8 +426,8 @@ namespace LinqToTwitter
                 Attitude = Attitude,
                 WithLinks = WithLinks,
                 WithRetweets = WithRetweets,
-                ID = twitterResponse.Element(atom + "id").Value,
-                Title = twitterResponse.Element(atom + "title").Value,
+                ID = twitterResponse.GetString(atom + "id"),
+                Title = twitterResponse.GetString(atom + "title"),
                 TwitterWarning = 
                     twitterResponse.Element(twitter + "warning") == null ?
                     string.Empty :
@@ -444,39 +445,39 @@ namespace LinqToTwitter
                     twitterResponse.Element(openSearch + "language").Value,
                 Alternate = 
                     twitterResponse.Elements(atom + "link")
-                        .Where(elem => elem.Attribute("rel").Value == "alternate").Count() == 0 ?
+                        .Where(elem => elem.Attribute("rel") != null && elem.Attribute("rel").Value == "alternate").Count() == 0 ?
                     string.Empty :
                     twitterResponse.Elements(atom + "link")
-                        .Where(elem => elem.Attribute("rel").Value == "alternate")
+                        .Where(elem => elem.Attribute("rel") != null && elem.Attribute("rel").Value == "alternate")
                         .First()
                         .Attribute("href").Value,
                 Self = 
                     twitterResponse.Elements(atom + "link")
-                        .Where(elem => elem.Attribute("rel").Value == "self").Count() == 0 ?
+                        .Where(elem => elem.Attribute("rel") != null && elem.Attribute("rel").Value == "self").Count() == 0 ?
                     string.Empty :
                     twitterResponse.Elements(atom + "link")
-                        .Where(elem => elem.Attribute("rel").Value == "self")
+                        .Where(elem => elem.Attribute("rel") != null && elem.Attribute("rel").Value == "self")
                         .First()
                         .Attribute("href").Value,
                 Search = 
                     twitterResponse.Elements(atom + "link")
-                        .Where(elem => elem.Attribute("rel").Value == "search").Count() == 0 ?
+                        .Where(elem => elem.Attribute("rel") != null && elem.Attribute("rel").Value == "search").Count() == 0 ?
                     string.Empty :
                     twitterResponse.Elements(atom + "link")
-                        .Where(elem => elem.Attribute("rel").Value == "search")
+                        .Where(elem => elem.Attribute("rel") != null && elem.Attribute("rel").Value == "search")
                         .First()
                         .Attribute("href").Value,
                 Refresh = 
                     twitterResponse.Elements(atom + "link")
-                        .Where(elem => elem.Attribute("rel").Value == "refresh").Count() == 0 ?
+                        .Where(elem => elem.Attribute("rel") != null && elem.Attribute("rel").Value == "refresh").Count() == 0 ?
                     string.Empty :
                     twitterResponse.Elements(atom + "link")
-                        .Where(elem => elem.Attribute("rel").Value == "refresh")
+                        .Where(elem => elem.Attribute("rel") != null && elem.Attribute("rel").Value == "refresh")
                         .First()
                         .Attribute("href").Value,
                 Next =
                     twitterResponse.Elements(atom + "link")
-                        .Where(elem => elem.Attribute("rel").Value == "next").Count() == 0 ?
+                        .Where(elem => elem.Attribute("rel") != null && elem.Attribute("rel").Value == "next").Count() == 0 ?
                     string.Empty :
                     twitterResponse.Elements(atom + "link")
                         .Where(elem => elem.Attribute("rel").Value == "next")
@@ -489,29 +490,32 @@ namespace LinqToTwitter
                      let author = atomEntry.Element(atom + "author")
                      select new AtomEntry
                      {
-                         ID = atomEntry.Element(atom + "id").Value,
-                         Published = DateTime.Parse(atomEntry.Element(atom + "published").Value,
-                                                    CultureInfo.InvariantCulture,
-                                                    DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal),
-                         Title = atomEntry.Element(atom + "title").Value,
-                         Content = atomEntry.Element(atom + "content").Value,
+                         ID = atomEntry.GetString(atom + "id"),
+                         Published = 
+                            atomEntry.Element(atom + "published") == null ?
+                                DateTime.MinValue :
+                                DateTime.Parse(atomEntry.Element(atom + "published").Value,
+                                    CultureInfo.InvariantCulture,
+                                    DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal),
+                         Title = atomEntry.GetString(atom + "title"),
+                         Content = atomEntry.GetString(atom + "content"),
                          Updated = DateTime.Parse(atomEntry.Element(atom + "updated").Value,
                                                   CultureInfo.InvariantCulture,
                                                   DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal),
-                         Source = atomEntry.Element(twitter + "source").Value,
-                         Language = atomEntry.Element(twitter + "lang").Value,
+                         Source = atomEntry.GetString(twitter + "source"),
+                         Language = atomEntry.GetString(twitter + "lang"),
                          Alternate = atomEntry.Elements(atom + "link")
-                                     .Where(elem => elem.Attribute("rel").Value == "alternate")
+                                     .Where(elem => elem.Attribute("rel") != null && elem.Attribute("rel").Value == "alternate")
                                      .First()
                                      .Attribute("href").Value,
                          Image = atomEntry.Elements(atom + "link")
-                                     .Where(elem => elem.Attribute("rel").Value == "image")
+                                     .Where(elem => elem.Attribute("rel") != null && elem.Attribute("rel").Value == "image")
                                      .First()
                                      .Attribute("href").Value,
                          Author = new AtomAuthor
                          {
-                             Name = author.Element(atom + "name").Value,
-                             URI = author.Element(atom + "uri").Value
+                             Name = author == null ? string.Empty : author.GetString(atom + "name"),
+                             URI = author == null ? string.Empty : author.GetString(atom + "uri")
                          },
                          Location = 
                             atomEntry.Element(twitter + "geo") == null ?

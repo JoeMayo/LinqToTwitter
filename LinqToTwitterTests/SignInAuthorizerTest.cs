@@ -1,10 +1,8 @@
-﻿using LinqToTwitter;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
+﻿using System;
+using LinqToTwitter;
 using LinqToTwitterTests.Common;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System.Web.SessionState;
-using System.Web;
 
 namespace LinqToTwitterTests
 {

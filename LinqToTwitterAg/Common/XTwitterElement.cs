@@ -6,40 +6,40 @@ namespace LinqToTwitter
 {
     public static class XTwitterElement
     {
-        private static string TagValue(this XElement elem, string tagName)
+        private static string TagValue(this XElement elem, XName name)
         {
             if (elem == null)
                 return null;
 
-            var val = elem.Element(tagName);
+            var val = elem.Element(name);
             return val == null ? null : val.Value;
         }
 
-        public static bool GetBool(this XElement elem, string tagName)
+        public static bool GetBool(this XElement elem, XName name)
         {
-            return elem.GetBool(tagName, default(bool));
+            return elem.GetBool(name, default(bool));
         }
 
-        public static bool GetBool(this XElement elem, string tagName, bool defaultValue /* = false*/)
+        public static bool GetBool(this XElement elem, XName name, bool defaultValue /* = false*/)
         {
             bool result;
-            var val = elem.TagValue(tagName);
+            var val = elem.TagValue(name);
 
-            return String.IsNullOrEmpty(val) ||
+            return string.IsNullOrEmpty(val) ||
                 !bool.TryParse(val, out result)
                     ? defaultValue
-                    : bool.Parse(elem.Element(tagName).Value);
+                    : bool.Parse(elem.Element(name).Value);
         }
 
-        public static int GetInt(this XElement elem, string tagName)
+        public static int GetInt(this XElement elem, XName name)
         {
-            return elem.GetInt(tagName, default(int));
+            return elem.GetInt(name, default(int));
         }
 
-        public static int GetInt(this XElement elem, string tagName, int defaultValue /*= 0*/)
+        public static int GetInt(this XElement elem, XName name, int defaultValue /*= 0*/)
         {
             int result;
-            var val = elem.TagValue(tagName);
+            var val = elem.TagValue(name);
 
             return String.IsNullOrEmpty(val) ||
                 !int.TryParse(val, out result)
@@ -47,15 +47,15 @@ namespace LinqToTwitter
                     : result;
         }
 
-        public static ulong GetULong(this XElement elem, string tagName)
+        public static ulong GetULong(this XElement elem, XName name)
         {
-            return elem.GetULong(tagName, default(ulong));
+            return elem.GetULong(name, default(ulong));
         }
 
-        public static ulong GetULong(this XElement elem, string tagName, ulong defaultValue /* = 0*/)
+        public static ulong GetULong(this XElement elem, XName name, ulong defaultValue /* = 0*/)
         {
             ulong result;
-            var val = elem.TagValue(tagName);
+            var val = elem.TagValue(name);
 
             return val == string.Empty ||
                 !ulong.TryParse(val, out result)
@@ -63,15 +63,15 @@ namespace LinqToTwitter
                     : result;
         }
 
-        public static double GetDouble(this XElement elem, string tagName)
+        public static double GetDouble(this XElement elem, XName name)
         {
-            return elem.GetDouble(tagName, default(double));
+            return elem.GetDouble(name, default(double));
         }
 
-        public static double GetDouble(this XElement elem, string tagName, double defaultValue /* = 0*/)
+        public static double GetDouble(this XElement elem, XName name, double defaultValue /* = 0*/)
         {
             double result;
-            var val = elem.TagValue(tagName);
+            var val = elem.TagValue(name);
 
             return String.IsNullOrEmpty(val) ||
                 !double.TryParse(val, out result)
@@ -79,29 +79,29 @@ namespace LinqToTwitter
                     : result;
         }
 
-        public static string GetString(this XElement elem, string tagName)
+        public static string GetString(this XElement elem, XName tagName)
         {
             return elem.GetString(tagName, String.Empty);
         }
 
-        public static string GetString(this XElement elem, string tagName, string defaultValue /* = ""*/)
+        public static string GetString(this XElement elem, XName tagName, string defaultValue /* = ""*/)
         {
             var val = elem.TagValue(tagName);
 
-            return val == null
+            return string.IsNullOrEmpty(val)
                     ? defaultValue
                     : val;
         }
 
-        public static DateTime GetDate(this XElement elem, string tagName)
+        public static DateTime GetDate(this XElement elem, XName name)
         {
-            return elem.GetDate(tagName, DateTime.MinValue);
+            return elem.GetDate(name, DateTime.MinValue);
         }
 
-        public static DateTime GetDate(this XElement elem, string tagName, DateTime defaultValue)
+        public static DateTime GetDate(this XElement elem, XName name, DateTime defaultValue)
         {
             DateTime result;
-            var val = elem.TagValue(tagName);
+            var val = elem.TagValue(name);
 
             return String.IsNullOrEmpty(val) ||
                 !DateTime.TryParseExact(val,

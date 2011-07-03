@@ -1,12 +1,11 @@
-﻿using LinqToTwitter;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Xml.Linq;
-using System;
-using System.Collections;
+using LinqToTwitter;
 using LinqToTwitterTests.Common;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace LinqToTwitterTests
 {

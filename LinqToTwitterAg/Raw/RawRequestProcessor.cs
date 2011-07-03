@@ -1,18 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Xml.Linq;
 using System.Linq.Expressions;
-using System.Collections;
-using System.Globalization;
-
 #if SILVERLIGHT
-using System.Windows.Browser;
-using System.Net.Browser;
-using System.Windows;
 #else
-using System.Web;
 #endif
 
 namespace LinqToTwitter

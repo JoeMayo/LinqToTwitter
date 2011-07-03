@@ -1,14 +1,11 @@
-﻿using LinqToTwitter;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Collections.Generic;
-using System.Linq.Expressions;
-using System.Xml.Linq;
-using System.Linq;
-using System;
+﻿using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using LinqToTwitter;
 using LinqToTwitterTests.Common;
-using System.Globalization;
-using System.Threading;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace LinqToTwitterTests
 {
@@ -24,6 +21,41 @@ namespace LinqToTwitterTests
         #region Test Data
 
         private string m_testQueryResponse = @"<?xml version=""1.0"" encoding=""UTF-8""?>
+<feed xmlns:google=""http://base.google.com/ns/1.0"" xml:lang=""en-US"" xmlns:openSearch=""http://a9.com/-/spec/opensearch/1.1/"" xmlns=""http://www.w3.org/2005/Atom"" xmlns:twitter=""http://api.twitter.com/"">
+  <id>tag:search.twitter.com,2005:search/</id>
+  <link type=""text/html"" href=""https://search.twitter.com/search?q="" rel=""alternate""/>
+  <link type=""application/atom+xml"" href=""https://search.twitter.com/search.atom?geocode=39.5485127%2C-104.9230675%2C500km&amp;oauth_consumer_key=7fNSFc8WaIjqghRM5fkzw&amp;oauth_nonce=614273&amp;oauth_signature_method=HMAC-SHA1&amp;oauth_timestamp=1309632860&amp;oauth_token=15411837-wzrBGuT7n2fjDW8aed4qfokPL0y7b4r5cjE0yX7Oo&amp;oauth_verifier=7605900&amp;oauth_version=1.0&amp;oauth_signature=7NFFpuO8bexRC%2bwwlV7abmLOICo%3d"" rel=""self""/>
+  <title> - Twitter Search</title>
+  <link type=""application/opensearchdescription+xml"" href=""http://search.twitter.com/opensearch.xml"" rel=""search""/>
+  <link type=""application/atom+xml"" href=""https://search.twitter.com/search.atom?geocode=39.5485127%2C-104.9230675%2C500km&amp;oauth_consumer_key=7fNSFc8WaIjqghRM5fkzw&amp;oauth_nonce=614273&amp;oauth_signature=7NFFpuO8bexRC%2BwwlV7abmLOICo%3D&amp;oauth_signature_method=HMAC-SHA1&amp;oauth_timestamp=1309632860&amp;oauth_token=15411837-wzrBGuT7n2fjDW8aed4qfokPL0y7b4r5cjE0yX7Oo&amp;oauth_verifier=7605900&amp;oauth_version=1.0&amp;since_id=87232168752988160"" rel=""refresh""/>
+  <twitter:warning>adjusted since_id to 84682264511922176 (), requested since_id was older than allowedsince_id removed for pagination.</twitter:warning>
+  <updated>2011-07-02T18:52:24Z</updated>
+  <openSearch:itemsPerPage>15</openSearch:itemsPerPage>
+  <link type=""application/atom+xml"" href=""https://search.twitter.com/search.atom?geocode=39.5485127%2C-104.9230675%2C500.0km&amp;max_id=87232168752988160&amp;page=2&amp;q="" rel=""next""/>
+  <entry>
+    <id>tag:search.twitter.com,2005:87232168752988160</id>
+    <published>2011-07-02T18:52:24Z</published>
+    <link type=""text/html"" href=""http://twitter.com/amberrmcfly/statuses/87232168752988160"" rel=""alternate""/>
+    <title>@SarahNeateX thankyou :) i was gonna do that but i decided to try it just in case :L x</title>
+    <content type=""html"">&lt;a href=&quot;http://twitter.com/SarahNeateX&quot;&gt;@SarahNeateX&lt;/a&gt; thankyou :) i was gonna do that but i decided to try it just in case :L x</content>
+    <updated>2011-07-02T18:52:24Z</updated>
+    <link type=""image/png"" href=""http://a3.twimg.com/profile_images/1396078312/cam_062_normal.jpg"" rel=""image""/>
+    <google:location>Devizes</google:location>
+    <twitter:geo>
+    </twitter:geo>
+    <twitter:metadata>
+      <twitter:result_type>recent</twitter:result_type>
+    </twitter:metadata>
+    <twitter:source>&lt;a href=&quot;http://twitter.com/&quot;&gt;web&lt;/a&gt;</twitter:source>
+    <twitter:lang>en</twitter:lang>
+    <author>
+      <name>amberrmcfly (Amber Elliott)</name>
+      <uri>http://twitter.com/amberrmcfly</uri>
+    </author>
+  </entry>
+</feed>";
+
+        private string m_testQueryResponse2 = @"<?xml version=""1.0"" encoding=""UTF-8""?>
 <feed xmlns:google=""http://base.google.com/ns/1.0"" xml:lang=""en-US"" xmlns:openSearch=""http://a9.com/-/spec/opensearch/1.1/"" xmlns=""http://www.w3.org/2005/Atom"" xmlns:twitter=""http://api.twitter.com/"">
   <id>tag:search.twitter.com,2005:search/LINQ to Twitter</id>
   <link type=""text/html"" rel=""alternate"" href=""http://search.twitter.com/search?q=LINQ+to+Twitter""/>
@@ -139,7 +171,7 @@ The blog system I'm us.. &lt;a href=""http://tinyurl.com/cvdbvr""&gt;http://tiny
             IList actual = target.ProcessResults(m_testQueryResponse);
 
             var result = actual.Cast<Search>().First();
-            Assert.AreEqual(2, result.Entries.Count);
+            Assert.AreEqual(1, result.Entries.Count);
         }
 
         /// <summary>
@@ -156,20 +188,41 @@ The blog system I'm us.. &lt;a href=""http://tinyurl.com/cvdbvr""&gt;http://tiny
             Assert.AreEqual(0, result.Entries.Count);
         }
 
-        /// <summary>
-        ///A test for ProcessResults
-        ///</summary>
-        [TestMethod()]
-        public void ProcessResultsNextTest()
+        [TestMethod]
+        public void ProcessResults_Returns_Values()
         {
             SearchRequestProcessor<Search> target = new SearchRequestProcessor<Search>();
 
             IList actual = target.ProcessResults(m_testQueryResponse);
 
             var result = actual.Cast<Search>().First();
-            Assert.AreEqual("http://search.twitter.com/search.atom?lang=en&max_id=1600414821&page=2&q=LINQ+to+Twitter&rpp=2", result.Next);
+            Assert.AreEqual("tag:search.twitter.com,2005:search/", result.ID);
+            Assert.AreEqual(" - Twitter Search", result.Title);
+            Assert.AreEqual(string.Empty, result.Language);
+            Assert.AreEqual("https://search.twitter.com/search.atom?geocode=39.5485127%2C-104.9230675%2C500.0km&max_id=87232168752988160&page=2&q=", result.Next);
+            Assert.AreEqual("https://search.twitter.com/search.atom?geocode=39.5485127%2C-104.9230675%2C500km&oauth_consumer_key=7fNSFc8WaIjqghRM5fkzw&oauth_nonce=614273&oauth_signature=7NFFpuO8bexRC%2BwwlV7abmLOICo%3D&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1309632860&oauth_token=15411837-wzrBGuT7n2fjDW8aed4qfokPL0y7b4r5cjE0yX7Oo&oauth_verifier=7605900&oauth_version=1.0&since_id=87232168752988160", result.Refresh);
+            Assert.AreEqual("http://search.twitter.com/opensearch.xml", result.Search);
+            Assert.AreEqual("https://search.twitter.com/search.atom?geocode=39.5485127%2C-104.9230675%2C500km&oauth_consumer_key=7fNSFc8WaIjqghRM5fkzw&oauth_nonce=614273&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1309632860&oauth_token=15411837-wzrBGuT7n2fjDW8aed4qfokPL0y7b4r5cjE0yX7Oo&oauth_verifier=7605900&oauth_version=1.0&oauth_signature=7NFFpuO8bexRC%2bwwlV7abmLOICo%3d", result.Self);
         }
 
+        [TestMethod]
+        public void ProcessResults_Returns_EntryValues()
+        {
+            SearchRequestProcessor<Search> target = new SearchRequestProcessor<Search>();
+
+            IList actual = target.ProcessResults(m_testQueryResponse);
+
+            var result = actual.Cast<Search>().First().Entries.First();
+            Assert.AreEqual("tag:search.twitter.com,2005:87232168752988160", result.ID);
+            Assert.AreEqual("@SarahNeateX thankyou :) i was gonna do that but i decided to try it just in case :L x", result.Title);
+            Assert.AreEqual(@"<a href=""http://twitter.com/SarahNeateX"">@SarahNeateX</a> thankyou :) i was gonna do that but i decided to try it just in case :L x", result.Content);
+            Assert.AreEqual(@"<a href=""http://twitter.com/"">web</a>", result.Source);
+            Assert.AreEqual("http://twitter.com/amberrmcfly/statuses/87232168752988160", result.Alternate);
+            Assert.AreEqual("http://a3.twimg.com/profile_images/1396078312/cam_062_normal.jpg", result.Image);
+            Assert.AreEqual("amberrmcfly (Amber Elliott)", result.Author.Name);
+            Assert.AreEqual("http://twitter.com/amberrmcfly", result.Author.URI);
+            Assert.AreEqual(new DateTime(2011, 7, 2, 18, 52, 24, DateTimeKind.Utc), result.Published);
+        }
 
         /// <summary>
         ///A test for GetParameters

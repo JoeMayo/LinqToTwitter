@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Configuration;
 using System.Linq;
-using System.Web.UI;
 using LinqToTwitter;
 
 public partial class _Default : System.Web.UI.Page

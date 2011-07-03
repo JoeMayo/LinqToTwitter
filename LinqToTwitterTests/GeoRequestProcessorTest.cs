@@ -1,15 +1,10 @@
-﻿using LinqToTwitter;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq.Expressions;
-using System.Xml.Linq;
-using System.Collections;
-using System;
 using System.Linq;
-using System.Threading;
-using System.Globalization;
-using System.Configuration;
+using System.Linq.Expressions;
+using LinqToTwitter;
 using LinqToTwitterTests.Common;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace LinqToTwitterTests
 {
@@ -570,7 +565,7 @@ namespace LinqToTwitterTests
         {
             GeoRequestProcessor<Geo> target = new GeoRequestProcessor<Geo>();
 
-            List<Geo> actual = (List<Geo>)target.ProcessResults(m_reverseResponse);
+            List<Geo> actual = target.ProcessResults(m_reverseResponse);
 
             Assert.AreEqual(5, actual[0].Places.Count);
         }
@@ -583,7 +578,7 @@ namespace LinqToTwitterTests
         {
             GeoRequestProcessor<Geo> target = new GeoRequestProcessor<Geo>();
 
-            List<Geo> actual = (List<Geo>)target.ProcessResults(m_reverseResponse);
+            List<Geo> actual = target.ProcessResults(m_reverseResponse);
 
             Assert.AreEqual(5, actual[0].Places.Count);
         }
@@ -596,7 +591,7 @@ namespace LinqToTwitterTests
         {
             GeoRequestProcessor<Geo> target = new GeoRequestProcessor<Geo>();
 
-            List<Geo> actual = (List<Geo>)target.ProcessResults(m_idResponse);
+            List<Geo> actual = target.ProcessResults(m_idResponse);
 
             Assert.AreEqual("San Francisco", actual[0].Places[0].Name);
         }

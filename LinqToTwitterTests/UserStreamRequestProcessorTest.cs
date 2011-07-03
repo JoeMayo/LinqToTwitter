@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Text;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using LinqToTwitter;
 using System.Linq.Expressions;
+using LinqToTwitter;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
 namespace LinqToTwitterTests

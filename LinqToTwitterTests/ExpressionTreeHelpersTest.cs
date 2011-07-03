@@ -1,8 +1,5 @@
-﻿using LinqToTwitter;
+﻿using LinqToTwitterTests.Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Linq.Expressions;
-using System;
-using LinqToTwitterTests.Common;
 
 namespace LinqToTwitterTests
 {
