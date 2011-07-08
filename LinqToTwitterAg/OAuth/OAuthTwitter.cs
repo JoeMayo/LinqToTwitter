@@ -212,7 +212,7 @@ namespace LinqToTwitter
                 this.OAuthConsumerSecret,
                 this.OAuthToken,
                 this.OAuthTokenSecret,
-                this.OAuthVerifier,
+                null, //this.OAuthVerifier,
                 callback,
                 method.ToString(),
                 timeStamp,
@@ -308,6 +308,22 @@ namespace LinqToTwitter
                     (from param in authHeader.Split('&')
                      let args = param.Split('=')
                      where !args[0].Contains("realm")
+                     select args[0] + "=\"" + args[1] + "\"")
+                    .ToArray());
+
+            return "OAuth " + encodedParams;
+        }
+
+        internal string PrepareAuthHeader(string authHeader, Request request)
+        {
+            var reqParams = request.RequestParameters.Select(rp => rp.Name);
+            var encodedParams =
+                string.Join(
+                    ",",
+                    (from param in authHeader.Split('&')
+                     let args = param.Split('=')
+                     where !args[0].Contains("realm") &&
+                           !reqParams.Contains(args[0])
                      select args[0] + "=\"" + args[1] + "\"")
                     .ToArray());
 

@@ -164,8 +164,9 @@ namespace LinqToTwitter
             var req = HttpWebRequest.Create(fullUrl);
             req.Headers[HttpRequestHeader.Authorization] = new OAuthTwitter().PrepareAuthHeader(queryString);
 #else
+            //var req = HttpWebRequest.Create(outUrl + (queryString == null ? string.Empty : "?" + queryString)) as HttpWebRequest;
             var req = HttpWebRequest.Create(request.FullUrl) as HttpWebRequest;
-            req.Headers[HttpRequestHeader.Authorization] = new OAuthTwitter().PrepareAuthHeader(queryString);
+            req.Headers[HttpRequestHeader.Authorization] = new OAuthTwitter().PrepareAuthHeader(queryString, request);
 
             InitializeRequest(req);
 #endif

@@ -80,8 +80,8 @@ namespace LinqToTwitter
             SearchUrl = string.IsNullOrEmpty(searchUrl) ? "http://search.twitter.com/" : searchUrl;
             StreamingUrl = "http://stream.twitter.com/1/";
             UserStreamUrl = "https://userstream.twitter.com/2/";
-            SiteStreamUrl = "http://sitestream.twitter.com/2b/";
-            //SiteStreamUrl = "http://betastream.twitter.com/2b/";
+            //SiteStreamUrl = "http://sitestream.twitter.com/2b/";
+            SiteStreamUrl = "http://betastream.twitter.com/2b/";
 
 #if SILVERLIGHT
 
