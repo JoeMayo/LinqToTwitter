@@ -68,14 +68,39 @@ namespace LinqToTwitterTests
                 { "Type", UserStreamType.Site.ToString() },
                 { "Delimited", "length" },
                 { "Follow", "1,2,3" },
-                { "Track", "LINQ to Twitter" },
                 { "With", "Follow" },
                 { "AllReplies", "True" }
             };
 
             Request req = reqProc.BuildURL(parms);
 
-            Assert.AreEqual("http://betastream.twitter.com/2b/site.json?delimited=length&follow=1%2C2%2C3&track=LINQ%20to%20Twitter&with=follow&replies=all", req.FullUrl);
+            Assert.AreEqual("http://betastream.twitter.com/2b/site.json?delimited=length&follow=1%2C2%2C3&with=follow", req.FullUrl);
+        }
+
+        [TestMethod]
+        public void BuildSiteUrl_Throws_On_Track()
+        {
+            var reqProc = new UserStreamRequestProcessor<UserStream>() { SiteStreamUrl = "http://betastream.twitter.com/2b/" };
+            var parms = new Dictionary<string, string>
+            {
+                { "Type", UserStreamType.Site.ToString() },
+                { "Delimited", "length" },
+                { "Follow", "1,2,3" },
+                { "Track", "LINQ to Twitter" },
+                { "With", "Follow" },
+                { "AllReplies", "True" }
+            };
+
+            try
+            {
+                reqProc.BuildURL(parms);
+
+                Assert.Fail("ArgumentException Expected.");
+            }
+            catch (ArgumentException ae)
+            {
+                Assert.AreEqual("Track", ae.ParamName);
+            }
         }
 
         [TestMethod]
@@ -98,6 +123,21 @@ namespace LinqToTwitterTests
             {
                 Assert.AreEqual("Follow", ane.ParamName);
             }
+        }
+
+        [TestMethod]
+        public void BuildSiteUrl_Removes_Spaces_From_Follow()
+        {
+            var reqProc = new UserStreamRequestProcessor<UserStream>() { SiteStreamUrl = "http://betastream.twitter.com/2b/" };
+            var parms = new Dictionary<string, string>
+            {
+                { "Type", UserStreamType.Site.ToString() },
+                { "Follow", "1, 2, 3" },
+            };
+
+            Request req = reqProc.BuildURL(parms);
+
+            Assert.AreEqual("http://betastream.twitter.com/2b/site.json?follow=1%2C2%2C3", req.FullUrl);
         }
 
         [TestMethod]

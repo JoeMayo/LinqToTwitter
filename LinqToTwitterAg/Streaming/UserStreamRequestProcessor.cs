@@ -47,7 +47,7 @@ namespace LinqToTwitter
         public string Track { get; set; }
 
         /// <summary>
-        /// Type of entities to return, i.e. Follow, User, etc.
+        /// Type of entities to return, i.e. "followings" or "user".
         /// </summary>
         public string With { get; set; }
 
@@ -191,14 +191,13 @@ namespace LinqToTwitter
 
             if (parameters.ContainsKey("Follow"))
             {
-                Follow = parameters["Follow"];
+                Follow = parameters["Follow"].Replace(" ", "");
                 urlParams.Add(new QueryParameter("follow", Follow.ToLower()));
             }
 
             if (parameters.ContainsKey("Track"))
             {
-                Track = parameters["Track"];
-                urlParams.Add(new QueryParameter("track", Track));
+                throw new ArgumentException("Track is not supported for Site Streams.", "Track");
             }
 
             if (parameters.ContainsKey("With"))
@@ -207,15 +206,15 @@ namespace LinqToTwitter
                 urlParams.Add(new QueryParameter("with", With.ToLower()));
             }
 
-            if (parameters.ContainsKey("AllReplies"))
-            {
-                AllReplies = bool.Parse(parameters["AllReplies"]);
+            //if (parameters.ContainsKey("AllReplies"))
+            //{
+            //    AllReplies = bool.Parse(parameters["AllReplies"]);
 
-                if (AllReplies)
-                {
-                    urlParams.Add(new QueryParameter("replies", "all"));
-                }
-            }
+            //    if (AllReplies)
+            //    {
+            //        urlParams.Add(new QueryParameter("replies", "all"));
+            //    }
+            //}
 
             return req;
         }

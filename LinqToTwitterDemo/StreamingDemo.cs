@@ -105,10 +105,8 @@ namespace LinqToTwitterDemo
             (from strm in twitterCtx.UserStream
              where strm.Type == UserStreamType.Site &&
                    strm.With == "followings" && 
-                   strm.Follow == "15411837,16761255"  // these are relatively low-volume accounts, 
-                                                        // so you may want to add more to see results.
-                                                        // i.e. add your account ID and tweet to see results.
-                select strm)
+                   strm.Follow == "15411837,16761255"
+             select strm)
             .StreamingCallback(strm =>
             {
                 Console.WriteLine(strm.Content + "\n");
