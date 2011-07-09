@@ -202,6 +202,67 @@ namespace LinqToTwitterTests
 </user>
 </suggestions>";
 
+        private string m_testSearchResponse = @"<?xml version=""1.0"" encoding=""UTF-8""?>
+<users type=""array"">
+<user>
+  <id>15411837</id>
+  <name>Joe Mayo</name>
+  <screen_name>JoeMayo</screen_name>
+  <location>Denver, CO</location>
+  <description>Like to code C#, LINQ &amp; .NET + something humorous goes here; just use your imagination</description>
+  <profile_image_url>http://a2.twimg.com/profile_images/520626655/JoeTwitterBW_-_150_x_150_normal.jpg</profile_image_url>
+  <profile_image_url_https>https://si0.twimg.com/profile_images/520626655/JoeTwitterBW_-_150_x_150_normal.jpg</profile_image_url_https>
+  <url>http://linqtotwitter.codeplex.com/</url>
+  <protected>false</protected>
+  <followers_count>785</followers_count>
+  <profile_background_color>0099B9</profile_background_color>
+  <profile_text_color>3C3940</profile_text_color>
+  <profile_link_color>0099B9</profile_link_color>
+  <profile_sidebar_fill_color>95E8EC</profile_sidebar_fill_color>
+  <profile_sidebar_border_color>5ED4DC</profile_sidebar_border_color>
+  <friends_count>142</friends_count>
+  <created_at>Sun Jul 13 04:35:50 +0000 2008</created_at>
+  <favourites_count>55</favourites_count>
+  <utc_offset>-25200</utc_offset>
+  <time_zone>Mountain Time (US &amp; Canada)</time_zone>
+  <profile_background_image_url>http://a1.twimg.com/profile_background_images/13330711/200xColor_2.png</profile_background_image_url>
+  <profile_background_image_url_https>https://si0.twimg.com/profile_background_images/13330711/200xColor_2.png</profile_background_image_url_https>
+  <profile_background_tile>false</profile_background_tile>
+  <profile_use_background_image>true</profile_use_background_image>
+  <notifications>false</notifications>
+  <geo_enabled>true</geo_enabled>
+  <verified>false</verified>
+  <following>false</following>
+  <statuses_count>1623</statuses_count>
+  <lang>en</lang>
+  <contributors_enabled>false</contributors_enabled>
+  <follow_request_sent>false</follow_request_sent>
+  <listed_count>95</listed_count>
+  <show_all_inline_media>false</show_all_inline_media>
+  <default_profile>false</default_profile>
+  <default_profile_image>false</default_profile_image>
+  <is_translator>false</is_translator>
+  <status>
+    <created_at>Sat Jul 09 19:06:14 +0000 2011</created_at>
+    <id>89772364979638272</id>
+    <text>@mbhahn Silver lining is that feedback from yourself and others helps shape evolving (slowly/gradually &amp;lt;grin /&amp;gt;) documentation</text>
+    <source>web</source>
+    <truncated>false</truncated>
+    <favorited>false</favorited>
+    <in_reply_to_status_id>89753535335497728</in_reply_to_status_id>
+    <in_reply_to_user_id>16322094</in_reply_to_user_id>
+    <in_reply_to_screen_name>mbhahn</in_reply_to_screen_name>
+    <retweet_count>0</retweet_count>
+    <retweeted>false</retweeted>
+    <geo/>
+    <coordinates/>
+    <place/>
+    <contributors/>
+    <annotations/>
+  </status>
+</user>
+</users>";
+
         #endregion
 
         /// <summary>
@@ -833,6 +894,17 @@ namespace LinqToTwitterTests
 
             var user = actual.First();
             Assert.AreEqual(true, user.FollowRequestSent);
+        }
+
+        [TestMethod]
+        public void ProcessResults_Reads_SearchResponse()
+        {
+            var statProc = new UserRequestProcessor<User>() { BaseUrl = "http://api.twitter.com/1/" };
+
+            var actual = statProc.ProcessResults(m_testSearchResponse);
+
+            var user = actual.First();
+            Assert.IsNotNull(user);
         }
 
         /// <summary>

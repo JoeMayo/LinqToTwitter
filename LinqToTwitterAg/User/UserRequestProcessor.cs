@@ -435,6 +435,7 @@ namespace LinqToTwitter
                     user.Slug = Slug;
                     user.Categories = categories;
                     user.Lang = Lang;
+                    user.Query = Query;
                 });
 
             return userList.OfType<T>().ToList();
