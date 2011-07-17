@@ -65,7 +65,7 @@ namespace LinqToTwitterTests
         {
             var reqProc = new LegalRequestProcessor<Legal>()
             {
-                BaseUrl = "http://stream.twitter.com/1/"
+                BaseUrl = "http://api.twitter.com/1/"
             };
 
             var legalList = reqProc.ProcessResults(
@@ -73,6 +73,19 @@ namespace LinqToTwitterTests
 
             Assert.AreEqual(1, legalList.Count);
             Assert.AreEqual("Twitter Privacy Policy", legalList.First().Text);
+        }
+
+        [TestMethod]
+        public void ProcessResults_Returns_Empty_Collection_When_Empty_Results()
+        {
+            var reqProc = new LegalRequestProcessor<Legal>()
+            {
+                BaseUrl = "http://api.twitter.com/1/"
+            };
+
+            var legal = reqProc.ProcessResults(string.Empty);
+
+            Assert.AreEqual(1, legal.Count);
         }
     }
 }

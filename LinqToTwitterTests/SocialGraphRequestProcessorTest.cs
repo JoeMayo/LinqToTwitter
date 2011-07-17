@@ -108,6 +108,16 @@ namespace LinqToTwitterTests
             Assert.AreEqual(graph[0].IDs[1], "39340123");
         }
 
+        [TestMethod]
+        public void ProcessResults_Returns_Empty_Collection_When_Empty_Results()
+        {
+            var socialGraph = new SocialGraphRequestProcessor<SocialGraph>();
+
+            var graph = socialGraph.ProcessResults(string.Empty);
+
+            Assert.AreEqual(1, graph.Count);
+        }
+
         /// <summary>
         ///A test for GetParameters
         ///</summary>

@@ -604,11 +604,7 @@ namespace LinqToTwitterTests
             Assert.AreEqual(expected, req.FullUrl);
         }
 
-        /// <summary>
-        ///A test for BuildUsersInCategoryUrl
-        ///</summary>
-        [TestMethod()]
-        [DeploymentItem("LinqToTwitter.dll")]
+        [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void BuildSuggestionCategoryUsersUrlWithoutSlugTest()
         {
@@ -623,14 +619,11 @@ namespace LinqToTwitterTests
             reqProc.BuildURL(parameters);
         }
 
-        /// <summary>
-        ///A test for BuildLookupsUrl
-        ///</summary>
-        [TestMethod()]
+        [TestMethod]
         [DeploymentItem("LinqToTwitter.dll")]
         public void BuildLookupScreenNameUrlTest()
         {
-            UserRequestProcessor_Accessor<User> reqProc = new UserRequestProcessor_Accessor<User>();
+            var reqProc = new UserRequestProcessor_Accessor<User>();
             reqProc.BaseUrl = "https://api.twitter.com/1/";
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
@@ -905,6 +898,16 @@ namespace LinqToTwitterTests
 
             var user = actual.First();
             Assert.IsNotNull(user);
+        }
+
+        [TestMethod]
+        public void ProcessResults_Returns_Empty_Collection_When_Empty_Results()
+        {
+            var userProc = new UserRequestProcessor<User>() { BaseUrl = "http://api.twitter.com/1/" };
+
+            var users = userProc.ProcessResults(string.Empty);
+
+            Assert.AreEqual(0, users.Count);
         }
 
         /// <summary>

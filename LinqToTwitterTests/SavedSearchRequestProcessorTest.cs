@@ -105,7 +105,17 @@ namespace LinqToTwitterTests
 
             IList actual = target.ProcessResults(m_testQueryResponse);
 
-            Assert.AreEqual(actual.Count, 3);
+            Assert.AreEqual(3, actual.Count);
+        }
+
+        [TestMethod]
+        public void ProcessResults_Returns_Empty_Collection_When_Empty_Results()
+        {
+            var reqProc = new SavedSearchRequestProcessor<SavedSearch>();
+
+            var searches = reqProc.ProcessResults(string.Empty);
+
+            Assert.AreEqual(0, searches.Count);
         }
 
         /// <summary>

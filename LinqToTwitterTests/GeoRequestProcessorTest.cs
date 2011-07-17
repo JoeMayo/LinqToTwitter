@@ -557,15 +557,12 @@ namespace LinqToTwitterTests
         //
         #endregion
 
-        /// <summary>
-        ///A test for ProcessResults
-        ///</summary>
-        [TestMethod()]
+        [TestMethod]
         public void ProcessReverseResultsTest()
         {
-            GeoRequestProcessor<Geo> target = new GeoRequestProcessor<Geo>();
+            var reqProc = new GeoRequestProcessor<Geo>();
 
-            List<Geo> actual = target.ProcessResults(m_reverseResponse);
+            List<Geo> actual = reqProc.ProcessResults(m_reverseResponse);
 
             Assert.AreEqual(5, actual[0].Places.Count);
         }
@@ -594,6 +591,16 @@ namespace LinqToTwitterTests
             List<Geo> actual = target.ProcessResults(m_idResponse);
 
             Assert.AreEqual("San Francisco", actual[0].Places[0].Name);
+        }
+
+        [TestMethod]
+        public void ProcessResults_Returns_Empty_Collection_When_Empty_Results()
+        {
+            var reqProc = new GeoRequestProcessor<Geo>() { BaseUrl = "http://api.twitter.com/1/" };
+
+            var geo = reqProc.ProcessResults(string.Empty);
+
+            Assert.AreEqual(1, geo.Count);
         }
 
         /// <summary>

@@ -17,7 +17,7 @@ namespace LinqToTwitterDemo
         public static void Run(TwitterContext twitterCtx)
         {
             //UserShowWithIDQueryDemo(twitterCtx);
-            UserShowWithScreenNameQueryDemo(twitterCtx);
+            //UserShowWithScreenNameQueryDemo(twitterCtx);
             //UserFriendsQueryDemo(twitterCtx);
             //UserFriendsWithCursorQueryDemo(twitterCtx);
             //UsersLookupDemo(twitterCtx);
@@ -26,7 +26,7 @@ namespace LinqToTwitterDemo
             //UserFollowersWithCursorsQueryDemo(twitterCtx);
             //GetAllFollowersQueryDemo(twitterCtx);
             //UserSuggestedCategoriesListQueryDemo(twitterCtx);
-            //UserSuggestedCategoriesListWithLangQueryDemo(twitterCtx);
+            UserSuggestedCategoriesListWithLangQueryDemo(twitterCtx);
             //UsersInSuggestedCategoryQueryDemo(twitterCtx);
             //UserShowLoggedInUserQueryDemo(twitterCtx);
             //VerifiedAndGeoEnabledDemo(twitterCtx);

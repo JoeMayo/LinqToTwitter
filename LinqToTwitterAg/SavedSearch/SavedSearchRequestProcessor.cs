@@ -102,14 +102,28 @@ namespace LinqToTwitter
         /// <returns>List of SavedSearch</returns>
         public List<T> ProcessResults(string responseXml)
         {
+            if (string.IsNullOrEmpty(responseXml))
+            {
+                responseXml = "<saved_searches></saved_searches>";
+            }
+
             XElement twitterResponse = XElement.Parse(responseXml);
-            var responseItems = twitterResponse.Elements("saved_search").ToList();
+
+            List<XElement> responseItems = null;
 
             // if we get only a single response back,
             // such as a Show request, make sure we get it
             if (twitterResponse.Name == "saved_search")
             {
                 responseItems.Add(twitterResponse);
+            } 
+            else if (twitterResponse.Elements("saved_search") == null)
+            {
+                responseItems = new List<XElement>();
+            }
+            else
+            {
+                responseItems = twitterResponse.Elements("saved_search").ToList();
             }
 
             var tempPosition = 0;

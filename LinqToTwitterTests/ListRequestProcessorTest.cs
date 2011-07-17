@@ -411,6 +411,16 @@ namespace LinqToTwitterTests
         }
 
         [TestMethod]
+        public void ProcessResults_Returns_Empty_Collection_When_Empty_Results()
+        {
+            var reqProc = new ListRequestProcessor<List>();
+
+            var results = reqProc.ProcessResults(string.Empty);
+
+            Assert.AreEqual(0, results.Count);
+        }
+
+        [TestMethod]
         public void GetParameters_Parses_All_Available_Parameters()
         {
             ListRequestProcessor<List> target = new ListRequestProcessor<List>();

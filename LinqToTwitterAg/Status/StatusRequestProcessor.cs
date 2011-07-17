@@ -407,7 +407,7 @@ namespace LinqToTwitter
         {
             if (string.IsNullOrEmpty(responseXml))
             {
-                responseXml = "<status></status>";
+                responseXml = "<statuses></statuses>";
             }
 
             XElement twitterResponse = XElement.Parse(responseXml);

@@ -232,6 +232,16 @@ namespace LinqToTwitterTests
             Assert.AreEqual(1 ,actualQuery.Count());
         }
 
+        [TestMethod]
+        public void ProcessResults_Returns_Empty_Collection_When_Empty_Results()
+        {
+            var dmProc = new DirectMessageRequestProcessor<DirectMessage>() { BaseUrl = "http://twitter.com/" };
+
+            var dms = dmProc.ProcessResults(string.Empty);
+
+            Assert.AreEqual(0, dms.Count);
+        }
+
         [TestMethod()]
         public void GetParameters_Returns_Parameters()
         {

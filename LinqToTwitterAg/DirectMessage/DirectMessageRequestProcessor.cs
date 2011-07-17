@@ -177,6 +177,11 @@ namespace LinqToTwitter
         /// <returns>List of DirectMessage</returns>
         public virtual List<T> ProcessResults(string responseXml)
         {
+            if (string.IsNullOrEmpty(responseXml))
+            {
+                responseXml = "<direct_messages></direct_messages>";
+            }
+
             XElement twitterResponse = XElement.Parse(responseXml);
             var responseItems = twitterResponse.Elements("direct_message").ToList();
 

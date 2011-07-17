@@ -27,13 +27,13 @@ namespace LinqToTwitterDemo
             //SearchTwitterSource(twitterCtx);
             //ExceedSearchRateLimitDemo(twitterCtx);
             //SearchWithResultType(twitterCtx);
-            SearchWithWordQuery(twitterCtx);
+            //SearchWithWordQuery(twitterCtx);
             //SearchWithPersonReferenceQuery(twitterCtx);
             //SearchWithPersonFromQuery(twitterCtx);
             //SearchWithAttitudeQuery(twitterCtx);
             //SearchWithLinksQuery(twitterCtx);
             //SearchCountDemo(twitterCtx);
-            //SearchDatesDemo(twitterCtx);
+            SearchDatesDemo(twitterCtx);
             //SearchEntriesQueryDemo(twitterCtx);
             //SearchGeoCodeDemo(twitterCtx);
             //SearchGeoCodeAndShowUserDemo(twitterCtx);
@@ -473,7 +473,10 @@ namespace LinqToTwitterDemo
                  select search)
                 .SingleOrDefault();
 
-            result.Entries.ForEach(entry => Console.WriteLine("Result: {0}\n", entry.Content));
+            if (result != null && result.Entries != null)
+            {
+                result.Entries.ForEach(entry => Console.WriteLine("Result: {0}\n", entry.Content)); 
+            }
         }
 
         private static void SearchEntriesQueryDemo(TwitterContext twitterCtx)

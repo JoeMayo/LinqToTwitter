@@ -18,10 +18,11 @@ namespace LinqToTwitterDemo
             //CreateFriendshipFollowDemo(twitterCtx);
             //DestroyFriendshipDemo(twitterCtx);
             //CreateFriendshipNoDeviceUpdatesDemo(twitterCtx);
+            CreateFriendshipAsyncDemo(twitterCtx);
             //FriendshipExistsDemo(twitterCtx);
             //FriendshipExistsProjectionDemo(twitterCtx);
             //FriendshipShowDemo(twitterCtx);
-            FriendshipNoRetweetIDsDemo(twitterCtx);
+            //FriendshipNoRetweetIDsDemo(twitterCtx);
             //FriendshipIncomingDemo(twitterCtx);
             //FriendshipOutgoingDemo(twitterCtx);
             //FriendshipLookupDemo(twitterCtx);
@@ -29,16 +30,6 @@ namespace LinqToTwitterDemo
         }
 
         #region Friendship Demos
-
-        private static void CreateFriendshipNoDeviceUpdatesDemo(TwitterContext twitterCtx)
-        {
-            var user = twitterCtx.CreateFriendship("JoeMayo", string.Empty, string.Empty, false);
-
-            Console.WriteLine(
-                "User Name: {0}, Status: {1}",
-                user.Name,
-                user.Status.Text);
-        }
 
         private static void DestroyFriendshipDemo(TwitterContext twitterCtx)
         {
@@ -58,6 +49,30 @@ namespace LinqToTwitterDemo
                 "User Name: {0}, Status: {1}",
                 user.Name,
                 user.Status.Text);
+        }
+
+        private static void CreateFriendshipNoDeviceUpdatesDemo(TwitterContext twitterCtx)
+        {
+            var user = twitterCtx.CreateFriendship("JoeMayo", string.Empty, string.Empty, false);
+
+            Console.WriteLine(
+                "User Name: {0}, Status: {1}",
+                user.Name,
+                user.Status.Text);
+        }
+
+        private static void CreateFriendshipAsyncDemo(TwitterContext twitterCtx)
+        {
+            var user = twitterCtx.CreateFriendship("JoeMayo", string.Empty, string.Empty, false,
+                response =>
+                {
+                    User usr = response.State;
+
+                    Console.WriteLine(
+                        "User Name: {0}, Status: {1}",
+                        usr.Name,
+                        usr.Status.Text);
+                });
         }
 
         /// <summary>

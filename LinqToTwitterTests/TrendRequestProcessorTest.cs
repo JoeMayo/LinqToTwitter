@@ -257,6 +257,16 @@ namespace LinqToTwitterTests
             Assert.AreEqual("1", loc.ParentID);
         }
 
+        [TestMethod]
+        public void ProcessResults_Returns_Empty_Collection_When_Empty_Results()
+        {
+            var trendProc = new TrendRequestProcessor<Trend>();
+
+            var trends = trendProc.ProcessResults(string.Empty);
+
+            Assert.AreEqual(0, trends.Count);
+        }
+
         /// <summary>
         ///A test for GetParameters
         ///</summary>

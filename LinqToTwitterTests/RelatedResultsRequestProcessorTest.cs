@@ -412,5 +412,15 @@ namespace LinqToTwitterTests
             Assert.AreEqual(RelatedResultsType.Show, result.Type);
             Assert.AreEqual(123ul, result.StatusID);
         }
+
+        [TestMethod]
+        public void ProcessResults_Returns_Empty_Collection_When_Empty_Results()
+        {
+            var reqProc = new RelatedResultsRequestProcessor<RelatedResults> { BaseUrl = "https://api.twitter.com/1/" };
+
+            var results = reqProc.ProcessResults(string.Empty);
+
+            Assert.AreEqual(0, results.Count);
+        }
     }
 }

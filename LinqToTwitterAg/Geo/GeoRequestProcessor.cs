@@ -279,6 +279,11 @@ namespace LinqToTwitter
         /// <returns>List of SavedSearch</returns>
         public List<T> ProcessResults(string responseXml)
         {
+            if (string.IsNullOrEmpty(responseXml))
+            {
+                responseXml = "<result></result>";
+            }
+
             XElement twitterResponse = XElement.Parse(responseXml);
             List<XElement> responseItems = new List<XElement>();
 
@@ -292,11 +297,12 @@ namespace LinqToTwitter
             }
             else // reverse geocode query
             {
-                responseItems =
-                    twitterResponse
-                        .Element("result")
-                            .Element("places")
-                                .Elements("item").ToList();
+                if (twitterResponse.Elements("result").Count() > 0)
+                    responseItems =
+                        twitterResponse
+                            .Element("result")
+                                .Element("places")
+                                    .Elements("item").ToList();
             }
 
             var geo =

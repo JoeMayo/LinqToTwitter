@@ -274,6 +274,11 @@ namespace LinqToTwitter
         /// <returns>IQueryable of User</returns>
         public virtual List<T> ProcessResults(string responseXml)
         {
+            if (string.IsNullOrEmpty(responseXml))
+            {
+                responseXml = "<friendship></friendship>";
+            }
+
             XElement twitterResponse = XElement.Parse(responseXml);
             var friendship =
                 new Friendship
@@ -289,7 +294,11 @@ namespace LinqToTwitter
                     ScreenName = ScreenName
                 };
 
-            if (twitterResponse.Name == "relationship") // Show
+            if (twitterResponse.Name == "friendship")
+            {
+                friendship = new Friendship();
+            }
+            else if (twitterResponse.Name == "relationship") // Show
             {
                 friendship.SourceRelationship =
                     Relationship.CreateRelationship(twitterResponse.Element("source"));

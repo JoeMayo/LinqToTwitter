@@ -245,6 +245,15 @@ namespace LinqToTwitterTests
             Assert.AreEqual(actualQuery[0].Users.Count, 2);
         }
 
+        [TestMethod]
+        public void ProcessResults_Returns_Empty_Collection_When_Empty_Results()
+        {
+            var reqProc = new BlocksRequestProcessor<Blocks>() { BaseUrl = "http://api.twitter.com/1/" };
+
+            var blocks = reqProc.ProcessResults(string.Empty);
+
+            Assert.AreEqual(1, blocks.Count);
+        }
 
         /// <summary>
         ///A test for GetParameters

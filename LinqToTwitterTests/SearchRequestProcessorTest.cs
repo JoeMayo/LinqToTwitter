@@ -206,6 +206,16 @@ The blog system I'm us.. &lt;a href=""http://tinyurl.com/cvdbvr""&gt;http://tiny
         }
 
         [TestMethod]
+        public void ProcessResults_Returns_Empty_Collection_When_Empty_Results()
+        {
+            var searchProc = new SearchRequestProcessor<Search>();
+
+            var searchResults = searchProc.ProcessResults(string.Empty);
+
+            Assert.AreEqual(0, searchResults.Count);
+        }
+
+        [TestMethod]
         public void ProcessResults_Returns_EntryValues()
         {
             SearchRequestProcessor<Search> target = new SearchRequestProcessor<Search>();
@@ -323,10 +333,7 @@ The blog system I'm us.. &lt;a href=""http://tinyurl.com/cvdbvr""&gt;http://tiny
                   new KeyValuePair<string, string>("WithRetweets", "True")));
         }
 
-        /// <summary>
-        ///A test for BuildURL
-        ///</summary>
-        [TestMethod()]
+        [TestMethod]
         public void BuildURLTest()
         {
             var searchReqProc = new SearchRequestProcessor<Search>() { BaseUrl = "http://search.twitter.com/" };
@@ -346,6 +353,23 @@ The blog system I'm us.. &lt;a href=""http://tinyurl.com/cvdbvr""&gt;http://tiny
                     { "ResultType", ResultType.Popular.ToString() },
                };
             string expected = "http://search.twitter.com/search.atom?geocode=40.757929%2C-73.985506%2C25km&lang=en&page=1&rpp=10&q=LINQ%20to%20Twitter&show_user=true&since=2010-07-04&until=2011-07-04&since_id=1&result_type=popular";
+
+            Request req = searchReqProc.BuildURL(parameters);
+
+            Assert.AreEqual(expected, req.FullUrl);
+        }
+
+        [TestMethod]
+        public void BuildURL_Uses_Only_Date_Part_Of_Since()
+        {
+            var searchReqProc = new SearchRequestProcessor<Search>() { BaseUrl = "http://search.twitter.com/" };
+            var parameters =
+                new Dictionary<string, string>
+                {
+                    { "Type", SearchType.Search.ToString() },
+                    { "Since", new DateTime(2010, 7, 4, 7, 30, 10).ToString() },
+               };
+            string expected = "http://search.twitter.com/search.atom?since=2010-07-04";
 
             Request req = searchReqProc.BuildURL(parameters);
 

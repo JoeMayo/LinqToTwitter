@@ -162,6 +162,16 @@ namespace LinqToTwitterTests
             Assert.AreEqual(2, results.Count());
         }
 
+        [TestMethod]
+        public void ProcessResults_Returns_Empty_Collection_When_Empty_Results()
+        {
+            var reqProc = new FavoritesRequestProcessor<Favorites>() { BaseUrl = "http://api.twitter.com/1/" };
+
+            var favorites = reqProc.ProcessResults(string.Empty);
+
+            Assert.AreEqual(0, favorites.Count);
+        }
+
         /// <summary>
         ///A test for GetParameters
         ///</summary>

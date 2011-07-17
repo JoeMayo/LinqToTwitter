@@ -104,7 +104,7 @@ namespace LinqToTwitterDemo
 
             (from strm in twitterCtx.UserStream
              where strm.Type == UserStreamType.Site &&
-                   strm.With == "followings" && 
+                   strm.With == "followings" &&
                    strm.Follow == "15411837,16761255"
              select strm)
             .StreamingCallback(strm =>

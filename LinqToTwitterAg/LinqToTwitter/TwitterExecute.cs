@@ -974,7 +974,7 @@ namespace LinqToTwitter
                 WriteLog(this.LastUrl, "PostTwitterImage");
 
                 var req = this.AuthorizedClient.PostRequest(new Request(url), postData);
-                //req.ServicePoint.Expect100Continue = false;
+                //req.Headers[HttpRequestHeader.Expect] = null;
                 req.ContentType = "multipart/form-data;boundary=" + contentBoundaryBase;
                 //req.PreAuthenticate = true;
                 req.AllowWriteStreamBuffering = true;

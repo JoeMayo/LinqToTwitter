@@ -170,6 +170,16 @@ namespace LinqToTwitterTests
             Assert.AreEqual(2, ids.Count);
         }
 
+        [TestMethod]
+        public void ProcessResults_Returns_Empty_Collection_When_Empty_Results()
+        {
+            var reqProc = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "http://api.twitter.com/1/" };
+
+            var friendships = reqProc.ProcessResults(string.Empty);
+
+            Assert.AreEqual(1, friendships.Count);
+        }
+
         /// <summary>
         ///A test for GetParameters
         ///</summary>

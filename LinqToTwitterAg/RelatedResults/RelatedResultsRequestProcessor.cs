@@ -88,6 +88,11 @@ namespace LinqToTwitter
         /// <returns>List of Trend</returns>
         public virtual List<T> ProcessResults(string responseXml)
         {
+            if (string.IsNullOrEmpty(responseXml))
+            {
+                responseXml = "<statuses></statuses>";
+            }
+
             XElement twitterResponse = XElement.Parse(responseXml);
 
             List<RelatedResults> results = null;

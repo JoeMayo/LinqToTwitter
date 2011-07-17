@@ -219,6 +219,11 @@ namespace LinqToTwitter
         /// <returns>List of Trend</returns>
         public virtual List<T> ProcessResults(string responseXml)
         {
+            if (string.IsNullOrEmpty(responseXml))
+            {
+                responseXml = "<trends></trends>";
+            }
+
             XElement twitterResponse = XElement.Parse(responseXml);
             XNamespace itemNS = "item";
 
@@ -226,6 +231,7 @@ namespace LinqToTwitter
             List<XElement> items = null;
             DateTime asOf = DateTime.UtcNow;
             XElement locationElement = null;
+            List<Trend> trends;
 
             if (twitterResponse.Name.LocalName == "locations")
             {
@@ -242,6 +248,10 @@ namespace LinqToTwitter
                 asOf = DateTime.Parse(twitterResponse.Element("trends").Attribute("as_of").Value,
                                       CultureInfo.InvariantCulture,
                                       DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal);
+            }
+            else if (twitterResponse.Element("trends") == null)
+            {
+                items = new List<XElement>();
             }
             else if (twitterResponse.Element("trends").Element(itemNS + "item") == null)
             {
@@ -267,7 +277,7 @@ namespace LinqToTwitter
                     DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal);
             }
 
-            var trends =
+            trends =
                 (from trend in items
                  let query =
                     trend.Element("query") == null ?

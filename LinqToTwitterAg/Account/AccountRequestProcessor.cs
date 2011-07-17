@@ -81,6 +81,11 @@ namespace LinqToTwitter
         /// <returns>List of User</returns>
         public virtual List<T> ProcessResults(string responseXml)
         {
+            if (string.IsNullOrEmpty(responseXml))
+            {
+                responseXml = "<account></account>";
+            }
+
             XElement twitterResponse = XElement.Parse(responseXml);
             var acct = new Account { Type = Type };
 
@@ -139,10 +144,6 @@ namespace LinqToTwitter
                     DiscoverableByEmail = bool.Parse(twitterResponse.Element("discoverable_by_email").Value),
                     TimeZone = TZInfo.CreateTZInfo(twitterResponse.Element("time_zone"))
                  };
-            }
-            else
-            {
-                throw new ArgumentException("Account Results Processing expected a Twitter response for either a user or hash, but received an unknown element type instead.");
             }
 
             return new List<Account> { acct }.OfType<T>().ToList();

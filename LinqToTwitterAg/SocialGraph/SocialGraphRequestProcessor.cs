@@ -181,6 +181,11 @@ namespace LinqToTwitter
         /// <returns>IQueryable of User</returns>
         public List<T> ProcessResults(string responseXml)
         {
+            if (string.IsNullOrEmpty(responseXml))
+            {
+                responseXml = "<ids></ids>";
+            }
+
             XElement twitterResponse = XElement.Parse(responseXml);
             var graph = new SocialGraph
             {

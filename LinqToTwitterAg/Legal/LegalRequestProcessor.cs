@@ -88,6 +88,11 @@ namespace LinqToTwitter
         /// <returns>List with a single Legal</returns>
         public List<T> ProcessResults(string responseXml)
         {
+            if (string.IsNullOrEmpty(responseXml))
+            {
+                responseXml = "<legal></legal>";
+            }
+
             var legalList = new List<Legal>
             {
                 new Legal

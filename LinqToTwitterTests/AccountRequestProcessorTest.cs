@@ -66,8 +66,6 @@ namespace LinqToTwitterTests
   <reset-time-in-seconds type=""integer"">1240779470</reset-time-in-seconds>
 </hash>";
 
-        private string m_testInvalidValueQueryResponse = @"<invalidValue></invalidValue>";
-
         private string m_testEndSessionResponse = @"<hash>
   <request>/account/end_session.xml</request>
   <error>Logged out.</error>
@@ -248,20 +246,6 @@ namespace LinqToTwitterTests
         ///A test for ProcessResults
         ///</summary>
         [TestMethod()]
-        [ExpectedException(typeof(ArgumentException))]
-        public void ProcessResultsForInvalidValueTest()
-        {
-            AccountRequestProcessor<Account> target = new AccountRequestProcessor<Account>();
-
-            IList actual = target.ProcessResults(m_testInvalidValueQueryResponse);
-
-            var acct = actual.Cast<Account>().ToList().FirstOrDefault();
-        }
-
-        /// <summary>
-        ///A test for ProcessResults
-        ///</summary>
-        [TestMethod()]
         public void ProcessResultsForEndSessionTest()
         {
             AccountRequestProcessor<Account> target = new AccountRequestProcessor<Account>();
@@ -270,6 +254,16 @@ namespace LinqToTwitterTests
 
             var acct = actual.Cast<Account>().ToList().FirstOrDefault();
             Assert.AreEqual("Logged out.", acct.EndSessionStatus.Error);
+        }
+
+        [TestMethod]
+        public void ProcessResults_Returns_Empty_Collection_When_Empty_Results()
+        {
+            var reqProc = new AccountRequestProcessor<Account>() { BaseUrl = "http://api.twitter.com/1/" };
+
+            var accts = reqProc.ProcessResults(string.Empty);
+
+            Assert.AreEqual(1, accts.Count);
         }
 
         /// <summary>

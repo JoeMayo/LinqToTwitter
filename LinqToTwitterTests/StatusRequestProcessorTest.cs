@@ -1275,6 +1275,16 @@ namespace LinqToTwitterTests
             Assert.AreEqual(100, tweet.Retweet.RetweetCount);
         }
 
+        [TestMethod]
+        public void ProcessResults_Returns_Empty_Collection_When_Empty_Results()
+        {
+            var statProc = new StatusRequestProcessor<Status>() { BaseUrl = "http://api.twitter.com/1/" };
+
+            var stats = statProc.ProcessResults(string.Empty);
+
+            Assert.AreEqual(0, stats.Count);
+        }
+
         /// <summary>
         ///A test for ProcessResults
         ///</summary>

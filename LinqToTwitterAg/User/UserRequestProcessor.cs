@@ -376,6 +376,11 @@ namespace LinqToTwitter
         /// <returns>List of User</returns>
         public virtual List<T> ProcessResults(string responseXml)
         {
+            if (string.IsNullOrEmpty(responseXml))
+            {
+                responseXml = "<users></users>";
+            }
+
             XElement twitterResponse = XElement.Parse(responseXml);
             var userList = new List<User>();
             var categories = new List<Category>();

@@ -181,6 +181,11 @@ namespace LinqToTwitter
         /// <returns>List of Blocks</returns>
         public virtual List<T> ProcessResults(string responseXml)
         {
+            if (string.IsNullOrEmpty(responseXml))
+            {
+                responseXml = "<blocks></blocks>";
+            }
+
             XElement twitterResponse = XElement.Parse(responseXml);
             var blocks = new Blocks
             {
@@ -208,10 +213,6 @@ namespace LinqToTwitter
                     (from id in twitterResponse.Elements("id").ToList()
                      select id.Value)
                      .ToList();
-            }
-            else
-            {
-                throw new ArgumentException("Account Results Processing expected a Twitter response for either a user or hash, but received an unknown element type instead.");
             }
 
             return new List<Blocks>{ blocks }.OfType<T>().ToList();

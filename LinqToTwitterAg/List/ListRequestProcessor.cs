@@ -835,6 +835,11 @@ namespace LinqToTwitter
         /// <returns>IList of List</returns>
         public virtual List<T> ProcessResults(string responseXml)
         {
+            if (string.IsNullOrEmpty(responseXml))
+            {
+                responseXml = "<lists></lists>";
+            }
+
             XElement twitterResponse = XElement.Parse(responseXml);
             List<List> lists = new List<List>();
 
