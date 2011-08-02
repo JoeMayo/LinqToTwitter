@@ -18,9 +18,9 @@ namespace LinqToTwitter
         public DateTime CreatedAt { get; set; }
 
         /// <summary>
-        /// User who retweeted
+        /// User of Original Tweet
         /// </summary>
-        public User RetweetingUser { get; set; }
+        public User RetweetedUser { get; set; }
 
         /// <summary>
         /// Retweet Text

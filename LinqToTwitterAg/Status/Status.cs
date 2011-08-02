@@ -194,7 +194,7 @@ namespace LinqToTwitter
                                     0 :
                                     int.Parse(retweet.Element("retweet_count").Value.TrimEnd('+')),
                             Truncated = retweet.GetBool("truncated", true),
-                            RetweetingUser = User.CreateUser(retweet.Element("user"))
+                            RetweetedUser = User.CreateUser(retweet.Element("user"))
                         }
             };
 

@@ -60,6 +60,12 @@ namespace LinqToTwitterSilverlightDemo.Views
             auth.CompleteAuthorize(url, resp =>
                 Dispatcher.BeginInvoke(() =>
                 {
+                    // you can save these in the db and add logic
+                    // to look for credentials from db before
+                    // doing Oauth dance.
+                    var oauthToken = auth.Credentials.OAuthToken;
+                    var accessToken = auth.Credentials.AccessToken;
+
                     switch (resp.Status)
                     {
                         case TwitterErrorStatus.Success:

@@ -426,7 +426,6 @@ namespace LinqToTwitter
                 byte[] postDataBytes = Encoding.UTF8.GetBytes(postBody);
 
 #if SILVERLIGHT
-                // TODO: work in progress
                 webRequest.BeginGetRequestStream(
                     new AsyncCallback(
                         ar =>
@@ -817,7 +816,6 @@ namespace LinqToTwitter
             byte[] postDataBytes = Encoding.UTF8.GetBytes(postBody);
 
 #if SILVERLIGHT
-                // TODO: work in progress
                 req.BeginGetRequestStream(
                     new AsyncCallback(
                         reqAr =>

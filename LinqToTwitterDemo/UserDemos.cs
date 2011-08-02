@@ -18,7 +18,7 @@ namespace LinqToTwitterDemo
         {
             //UserShowWithIDQueryDemo(twitterCtx);
             //UserShowWithScreenNameQueryDemo(twitterCtx);
-            //UserFriendsQueryDemo(twitterCtx);
+            UserFriendsQueryDemo(twitterCtx);
             //UserFriendsWithCursorQueryDemo(twitterCtx);
             //UsersLookupDemo(twitterCtx);
             //UserSearchDemo(twitterCtx);        
@@ -26,7 +26,7 @@ namespace LinqToTwitterDemo
             //UserFollowersWithCursorsQueryDemo(twitterCtx);
             //GetAllFollowersQueryDemo(twitterCtx);
             //UserSuggestedCategoriesListQueryDemo(twitterCtx);
-            UserSuggestedCategoriesListWithLangQueryDemo(twitterCtx);
+            //UserSuggestedCategoriesListWithLangQueryDemo(twitterCtx);
             //UsersInSuggestedCategoryQueryDemo(twitterCtx);
             //UserShowLoggedInUserQueryDemo(twitterCtx);
             //VerifiedAndGeoEnabledDemo(twitterCtx);

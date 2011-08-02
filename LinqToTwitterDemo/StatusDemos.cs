@@ -303,14 +303,14 @@ namespace LinqToTwitterDemo
             var friendTweets =
                 from tweet in twitterCtx.Status
                 where tweet.Type == StatusType.Retweets &&
-                      tweet.ID == "10875450034"
+                      tweet.ID == "93684902972760066"
                 select tweet;
 
             Console.WriteLine("\nReTweets: \n");
             foreach (var tweet in friendTweets)
             {
                 Console.WriteLine(
-                    "\nUser: " + tweet.Retweet.RetweetingUser.Name +
+                    "\nUser: " + tweet.User.Identifier.ScreenName +
                     "\nTweet: " + tweet.Retweet.Text +
                     "\nTweet ID: " + tweet.Retweet.ID + "\n");
             }

@@ -193,7 +193,7 @@ namespace LinqToTwitter
                 throw new ArgumentException("You must set Type.", "Type");
             }
 
-            // TODO Joe: Why force a Type when there is only one Type?
+            // Joe: Why force a Type when there is only one Type?
             //
             // Answer: This is a LINQ to Twitter idiom and is necessary for extensibility.  
             // If we add another member to the enum in the future and this wasn't here, 

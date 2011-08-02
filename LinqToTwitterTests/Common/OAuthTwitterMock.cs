@@ -64,7 +64,7 @@ namespace LinqToTwitterTests.Common
         {
             get
             {
-                throw new NotImplementedException();
+                return "123";
             }
             set
             {
@@ -76,7 +76,7 @@ namespace LinqToTwitterTests.Common
         {
             get
             {
-                throw new NotImplementedException();
+                return "123";
             }
             set
             {
