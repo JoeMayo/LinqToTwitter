@@ -1,4 +1,5 @@
-﻿using System.Web.Mvc;
+﻿using System;
+using System.Web.Mvc;
 
 namespace LinqToTwitter
 {
@@ -6,6 +7,12 @@ namespace LinqToTwitter
     {
         public ActionResult BeginAuthorization()
         {
+            return new MvcOAuthActionResult(this);
+        }
+
+        public ActionResult BeginAuthorization(Uri callback)
+        {
+            this.Callback = callback;
             return new MvcOAuthActionResult(this);
         }
     }

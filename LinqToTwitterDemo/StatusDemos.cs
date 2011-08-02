@@ -159,7 +159,7 @@ namespace LinqToTwitterDemo
                     "\nRetweeted by: " +
                         (tweet.Retweet == null ?
                             "Original Tweet" :
-                            tweet.Retweet.RetweetingUser.Name) +
+                            tweet.Retweet.RetweetedUser.Name) +
                     "\nTweet: " + tweet.Text + "\n");
             }
         }
@@ -190,7 +190,7 @@ namespace LinqToTwitterDemo
                     "\nRetweeted by: " +
                         (tweet.Retweet == null ?
                             "Original Tweet" :
-                            tweet.Retweet.RetweetingUser.Name) +
+                            tweet.Retweet.RetweetedUser.Name) +
                     "\nTweet: " + tweet.Text + "\n");
             }
         }
@@ -270,7 +270,7 @@ namespace LinqToTwitterDemo
 
             Console.WriteLine("Retweeted Tweet: ");
             Console.WriteLine(
-                "\nUser: " + retweet.Retweet.RetweetingUser.Name +
+                "\nUser: " + retweet.Retweet.RetweetedUser.Name +
                 "\nTweet: " + retweet.Retweet.Text +
                 "\nTweet ID: " + retweet.Retweet.ID + "\n");
         }
@@ -330,7 +330,7 @@ namespace LinqToTwitterDemo
             myRetweets.ToList().ForEach(
                 retweet => Console.WriteLine(
                     "Name: {0}, Tweet: {1}\n",
-                    retweet.Retweet.RetweetingUser.Name, retweet.Retweet.Text));
+                    retweet.Retweet.RetweetedUser.Name, retweet.Retweet.Text));
         }
 
         /// <summary>
@@ -348,7 +348,7 @@ namespace LinqToTwitterDemo
             myRetweets.ToList().ForEach(
                 retweet => Console.WriteLine(
                     "Name: {0}, Tweet: {1}\n",
-                    retweet.Retweet.RetweetingUser.Name, retweet.Retweet.Text));
+                    retweet.Retweet.RetweetedUser.Name, retweet.Retweet.Text));
         }
 
         /// <summary>
@@ -365,7 +365,7 @@ namespace LinqToTwitterDemo
             myRetweets.ToList().ForEach(
                 retweet => Console.WriteLine(
                     "Name: {0}, Tweet: {1}\n",
-                    retweet.Retweet.RetweetingUser.Name, retweet.Retweet.Text));
+                    retweet.Retweet.RetweetedUser.Name, retweet.Retweet.Text));
         }
 
         /// <summary>
@@ -405,7 +405,7 @@ namespace LinqToTwitterDemo
                     {
                         Console.WriteLine(
                             "Name: {0}, Tweet: {1}\n",
-                            retweet.RetweetingUser.Name, retweet.Text); 
+                            retweet.RetweetedUser.Name, retweet.Text); 
                     }
                 });
         }
@@ -430,7 +430,7 @@ namespace LinqToTwitterDemo
                     {
                         Console.WriteLine(
                             "Name: {0}, Tweet: {1}\n",
-                            retweet.RetweetingUser.Name, retweet.Text);
+                            retweet.RetweetedUser.Name, retweet.Text);
                     }
                 });
         }
@@ -469,7 +469,7 @@ namespace LinqToTwitterDemo
                     {
                         Console.WriteLine(
                             "Name: {0}, ReTweet: {1}\n",
-                            tweet.Retweet.RetweetingUser.Name, tweet.Retweet.Text);
+                            tweet.Retweet.RetweetedUser.Name, tweet.Retweet.Text);
                     }
                 });
         }

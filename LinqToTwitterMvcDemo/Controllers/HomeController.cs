@@ -1,4 +1,5 @@
-﻿using LinqToTwitter;
+﻿using System;
+using LinqToTwitter;
 using LinqToTwitterMvcDemo.Models;
 using System.Configuration;
 using System.Linq;
@@ -30,7 +31,8 @@ namespace LinqToTwitterMvcDemo.Controllers
 
             if (!auth.IsAuthorized)
             {
-                return auth.BeginAuthorization();
+                Uri specialUri = new Uri(Request.Url.ToString() + "?redirectUrl=somewhereelse");
+                return auth.BeginAuthorization(specialUri);
             }
 
             twitterCtx = new TwitterContext(auth);

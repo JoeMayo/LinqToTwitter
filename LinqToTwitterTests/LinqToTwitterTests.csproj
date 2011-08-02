@@ -132,6 +132,7 @@
     <Compile Include="Common\OAuthTwitterMock.cs" />
     <Compile Include="Common\TestCulture.cs" />
     <Compile Include="GeometryTests.cs" />
+    <Compile Include="MvcAuthorizerTest.cs" />
     <Compile Include="OAuthTwitterTest.cs" />
     <Compile Include="RelatedResultsRequestProcessorTest.cs" />
     <Compile Include="RelatedResultsTest.cs" />
