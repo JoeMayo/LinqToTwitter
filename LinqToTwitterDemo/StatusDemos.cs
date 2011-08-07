@@ -33,9 +33,10 @@ namespace LinqToTwitterDemo
             //MentionsWithPagingQueryDemo(twitterCtx);
             //SingleStatusQueryDemo(twitterCtx);
             //UpdateStatusDemo(twitterCtx);
+            UpdateStatusWrapLinksDemo(twitterCtx);
             //UpdateStatusWithCallbackDemo(twitterCtx);
             //UpdateStatusWithReplyDemo(twitterCtx);
-            UpdateStatusWithLocationDemo(twitterCtx);
+            //UpdateStatusWithLocationDemo(twitterCtx);
             //UpdateStatusWithPlaceDemo(twitterCtx);
             //DestroyStatusDemo(twitterCtx);
             //RetweetedByMeStatusQueryDemo(twitterCtx);
@@ -664,6 +665,28 @@ namespace LinqToTwitterDemo
                 "(" + tweet.StatusID + ")" +
                 "[" + tweet.User.ID + "]" +
                 tweet.User.Name + ", " +
+                tweet.Text + ", " +
+                tweet.CreatedAt + "\n");
+        }
+
+        /// <summary>
+        /// shows how to update a status and wrap links
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void UpdateStatusWrapLinksDemo(TwitterContext twitterCtx)
+        {
+            var status = 
+                "Test for LINQ to Twitter update status on " + DateTime.Now.ToString() + 
+                " http://linqtotwitter.codeplex.com" + " #linq2twitter";
+
+            bool wrapLinks = true;
+
+            var tweet = twitterCtx.UpdateStatus(status, wrapLinks);
+
+            Console.WriteLine(
+                "Status returned: " +
+                "(" + tweet.StatusID + ")" +
+                "[" + tweet.User.Identifier.ScreenName + "]" +
                 tweet.Text + ", " +
                 tweet.CreatedAt + "\n");
         }

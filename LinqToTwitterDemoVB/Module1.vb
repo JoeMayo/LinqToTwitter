@@ -204,15 +204,6 @@ Module Module1
     End Sub
 #End Region
 
-#Region "Help Demos"
-
-    Private Sub PerformHelpTest(ByVal twitterCtx As TwitterContext)
-        Dim helpResult = twitterCtx.HelpTest()
-        Console.WriteLine("Test Result: " & helpResult)
-    End Sub
-
-#End Region
-
 #Region "Block Demos"
 
     Private Sub BlockIDsDemo(ByVal twitterCtx As TwitterContext)

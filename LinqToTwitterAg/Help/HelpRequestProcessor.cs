@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Xml.Linq;
 
 namespace LinqToTwitter
@@ -13,34 +14,43 @@ namespace LinqToTwitter
         #region IRequestProcessor Members
 
         /// <summary>
-        /// not used
+        /// base url for request
         /// </summary>
-        public virtual string BaseUrl
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public string BaseUrl { get; set; }
 
         /// <summary>
-        /// not used
+        /// Type of Help request (Test, Configuration, or Languages)
         /// </summary>
-        public virtual Dictionary<string, string> GetParameters(System.Linq.Expressions.LambdaExpression lambdaExpression)
+        public HelpType Type { get; set; }
+
+        public virtual Dictionary<string, string> GetParameters(LambdaExpression lambdaExpression)
         {
-            throw new NotImplementedException();
+            return new ParameterFinder<Help>(
+               lambdaExpression.Body,
+               new List<string> { 
+                   "Type"
+               })
+               .Parameters;
         }
 
-        /// <summary>
-        /// not used
-        /// </summary>
-        public virtual Request BuildURL(Dictionary<string, string> parameters)
+        public Request BuildURL(Dictionary<string, string> parameters)
         {
-            throw new NotImplementedException();
+            if (parameters == null || !parameters.ContainsKey("Type"))
+                throw new ArgumentException("You must set Type.", "Type");
+
+            Type = RequestProcessorHelper.ParseQueryEnumType<HelpType>(parameters["Type"]);
+
+            switch (Type)
+            {
+                case HelpType.Test:
+                    return new Request(BaseUrl + "help/test.xml");
+                case HelpType.Configuration:
+                    return new Request(BaseUrl + "help/configuration.xml");
+                case HelpType.Languages:
+                    return new Request(BaseUrl + "help/languages.xml");
+                default:
+                    throw new InvalidOperationException("The default case of BuildUrl should never execute because a Type must be specified.");
+            }
         }
 
         /// <summary>
@@ -52,9 +62,14 @@ namespace LinqToTwitter
         {
             XElement twitterResponse = XElement.Parse(responseXml);
 
-            var response = twitterResponse.Value;
+            List<Help> helpList = new List<Help>
+            {
+                Help.Create(twitterResponse)
+            };
 
-            return new List<bool>{ bool.Parse(response) }.OfType<T>().ToList();
+            helpList.First().Type = this.Type;
+
+            return helpList.OfType<T>().ToList();
         }
 
         #endregion

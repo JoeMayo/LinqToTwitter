@@ -124,6 +124,7 @@ namespace LinqToTwitterDemo
                 //FavoritesDemos.Run(twitterCtx);
                 //FriendshipDemos.Run(twitterCtx);
                 //GeoDemos.Run(twitterCtx);
+                //HelpDemos.Run(twitterCtx);
                 //LegalDemos.Run(twitterCtx);
                 //ListDemos.Run(twitterCtx);
                 //RawDemos.Run(twitterCtx);
@@ -136,7 +137,6 @@ namespace LinqToTwitterDemo
                 //TrendsDemos.Run(twitterCtx);
                 //UserDemos.Run(twitterCtx);
                 //NotificationsDemos.Run(twitterCtx);
-                //HelpDemos.Run(twitterCtx);
                 //ReportSpamDemos.Run(twitterCtx);
                 //ErrorHandlingDemos.Run(twitterCtx);
                 //OAuthDemos.Run(twitterCtx);

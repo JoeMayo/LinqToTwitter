@@ -707,6 +707,58 @@ namespace LinqToTwitterTests
             Assert.AreEqual(expected, actual);
         }
 
+        [TestMethod]
+        public void UpdateStatus_Sets_WrapLinks()
+        {
+            bool wrapLinks = true;
+            string status = "Test";
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
+            bool wrapLinksPassedToExecute = false;
+            execMock.Setup(exec =>
+                exec.ExecuteTwitter<Status>(
+                    It.IsAny<string>(),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<IRequestProcessor<Status>>()))
+                .Callback<string, IDictionary<string, string>, IRequestProcessor<Status>>(
+                    (url, postData, reqProc) =>
+                        wrapLinksPassedToExecute = postData.ContainsKey("wrap_links") ?
+                            bool.Parse(postData["wrap_links"]) :
+                            false)
+                .Returns(m_testStatusQueryResponse);
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
+
+            ctx.UpdateStatus(status, wrapLinks);
+
+            Assert.IsTrue(wrapLinksPassedToExecute);
+        }
+
+        [TestMethod]
+        public void UpdateStatus_Sets_WrapLinks_To_Null_When_False()
+        {
+            bool wrapLinks = false;
+            string status = "Test";
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
+            bool wrapLinksIsSetToNull = false;
+            execMock.Setup(exec =>
+                exec.ExecuteTwitter<Status>(
+                    It.IsAny<string>(),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<IRequestProcessor<Status>>()))
+                .Callback<string, IDictionary<string, string>, IRequestProcessor<Status>>(
+                    (url, postData, reqProc) =>
+                        wrapLinksIsSetToNull = postData["wrap_links"] == null)
+                .Returns(m_testStatusQueryResponse);
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
+
+            ctx.UpdateStatus(status, wrapLinks);
+
+            Assert.IsTrue(wrapLinksIsSetToNull);
+        }
+
         #endregion
 
         #region Account Tests
@@ -1213,6 +1265,61 @@ namespace LinqToTwitterTests
             Assert.AreEqual(expected, actual);
         }
 
+
+        [TestMethod]
+        public void NewDirectMessage_Sets_WrapLinks()
+        {
+            bool wrapLinks = true;
+            string userID = "1";
+            string text = "Hi";
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
+            bool wrapLinksPassedToExecute = false;
+            execMock.Setup(exec =>
+                exec.ExecuteTwitter<DirectMessage>(
+                    It.IsAny<string>(),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<IRequestProcessor<DirectMessage>>()))
+                .Callback<string, IDictionary<string, string>, IRequestProcessor<DirectMessage>>(
+                    (url, postData, reqProc) =>
+                        wrapLinksPassedToExecute = postData.ContainsKey("wrap_links") ?
+                            bool.Parse(postData["wrap_links"]) :
+                            false)
+                .Returns(m_testStatusQueryResponse);
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
+
+            ctx.NewDirectMessage(userID, text, wrapLinks);
+
+            Assert.IsTrue(wrapLinksPassedToExecute);
+        }
+
+        [TestMethod]
+        public void NewDirectMessage_Sets_WrapLinks_To_Null_When_False()
+        {
+            bool wrapLinks = false;
+            string userID = "1";
+            string text = "Hi";
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
+            bool wrapLinksIsSetToNull = false;
+            execMock.Setup(exec =>
+                exec.ExecuteTwitter<DirectMessage>(
+                    It.IsAny<string>(),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<IRequestProcessor<DirectMessage>>()))
+                .Callback<string, IDictionary<string, string>, IRequestProcessor<DirectMessage>>(
+                    (url, postData, reqProc) =>
+                        wrapLinksIsSetToNull = postData["wrap_links"] == null)
+                .Returns(m_testStatusQueryResponse);
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
+
+            ctx.NewDirectMessage(userID, text, wrapLinks);
+
+            Assert.IsTrue(wrapLinksIsSetToNull);
+        }
+
         [TestMethod]
         public void DestroyDirectMessageTest()
         {
@@ -1254,29 +1361,6 @@ namespace LinqToTwitterTests
             DirectMessage actual = ctx.DestroyDirectMessage(id);
 
             Assert.AreEqual(expected, actual);
-        }
-
-        #endregion
-
-        #region Help Tests
-
-        [TestMethod]
-        public void HelpTestTest()
-        {
-            string input = "<ok>False</ok>";
-            var authMock = new Mock<ITwitterAuthorizer>();
-            var execMock = new Mock<ITwitterExecute>();
-            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
-            execMock.Setup(exec =>
-                exec.ExecuteTwitter<bool>(
-                    It.IsAny<string>(),
-                    It.IsAny<Dictionary<string, string>>(),
-                    It.IsAny<IRequestProcessor<bool>>()))
-                .Returns(input);
-            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
-
-            bool actual = ctx.HelpTest();
-            Assert.AreEqual(false, actual);
         }
 
         #endregion

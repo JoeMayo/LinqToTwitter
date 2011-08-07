@@ -280,8 +280,23 @@
     <Compile Include="..\LinqToTwitterAg\Geo\Place.cs">
       <Link>Geo\Place.cs</Link>
     </Compile>
+    <Compile Include="..\LinqToTwitterAg\Help\Configuration.cs">
+      <Link>Help\Configuration.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Help\Help.cs">
+      <Link>Help\Help.cs</Link>
+    </Compile>
     <Compile Include="..\LinqToTwitterAg\Help\HelpRequestProcessor.cs">
       <Link>Help\HelpRequestProcessor.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Help\HelpType.cs">
+      <Link>Help\HelpType.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Help\Language.cs">
+      <Link>Help\Language.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Help\PhotoSize.cs">
+      <Link>Help\PhotoSize.cs</Link>
     </Compile>
     <Compile Include="..\LinqToTwitterAg\Legal\Legal.cs">
       <Link>Legal\Legal.cs</Link>

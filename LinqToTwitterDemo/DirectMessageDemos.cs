@@ -18,7 +18,8 @@ namespace LinqToTwitterDemo
             //DirectMessageSentByQueryDemo(twitterCtx);
             //DirectMessageSentToQueryDemo(twitterCtx);
             //DirectMessageShowDemo(twitterCtx);
-            NewDirectMessageDemo(twitterCtx);
+            //NewDirectMessageDemo(twitterCtx);
+            NewDirectMessageWrapLinksDemo(twitterCtx);
             //DestroyDirectMessageDemo(twitterCtx);
         }
 
@@ -48,6 +49,30 @@ namespace LinqToTwitterDemo
         private static void NewDirectMessageDemo(TwitterContext twitterCtx)
         {
             var message = twitterCtx.NewDirectMessage("16761255", "Direct Message Test - " + DateTime.Now);
+
+            if (message != null)
+            {
+                Console.WriteLine(
+                    "Recipient: {0}, Message: {1}, Date: {2}",
+                    message.RecipientScreenName,
+                    message.Text,
+                    message.CreatedAt);
+            }
+        }
+
+        /// <summary>
+        /// shows how to send a new direct message and wrap links
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void NewDirectMessageWrapLinksDemo(TwitterContext twitterCtx)
+        {
+            bool wrapLinks = true;
+
+            var message = 
+                twitterCtx.NewDirectMessage(
+                    "16761255", 
+                    "Direct Message Test - " + DateTime.Now + " http://linqtotwitter.codeplex.com",
+                    wrapLinks);
 
             if (message != null)
             {
