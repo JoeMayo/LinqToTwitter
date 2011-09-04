@@ -114,7 +114,7 @@ namespace LinqToTwitter
         /// </summary>
         public Action<StreamContent> StreamingCallback { get; set; }
 
-        private static object m_closeStreamLock = new object();
+        private static readonly object m_closeStreamLock = new object();
         private bool m_closeStream;
 
         /// <summary>
@@ -455,45 +455,71 @@ namespace LinqToTwitter
                                     firstConnection = true;
                                     string content = null;
 
+                                    // will cause WebException with Status set to "Timeout"
+                                    // - keeps stream from blocking in
+                                    //   case user wants to cancel.
+                                    respRdr.BaseStream.ReadTimeout = ReadWriteTimeout;
+
                                     try
                                     {
                                         do
                                         {
-                                            content = respRdr.ReadLine();
+#if !SILVERLIGHT
+                                            try
+                                            {
+#endif
+                                                content = respRdr.ReadLine();
 
-                                            // launch on a separate thread to keep user's 
-                                            // callback code from blocking the stream.
-                                            new Thread(InvokeStreamCallback).Start(content);
+                                                // launch on a separate thread to keep user's 
+                                                // callback code from blocking the stream.
+                                                new Thread(InvokeStreamCallback).Start(content);
 
-                                            errorWait = 250;
+                                                errorWait = 250;
+#if !SILVERLIGHT
+                                            }
+                                            catch (WebException wex)
+                                            {
+                                                // Timeouts are expected, as set by ReadWriteTimeout
+                                                // on respRdr.BaseStream.ReadTimeout
+                                                if (wex.Status != WebExceptionStatus.Timeout) throw;
+                                            }
+#endif
                                         }
                                         while (!CloseStream);
                                     }
                                     catch (WebException wex)
                                     {
-                                        if (wex.Status == WebExceptionStatus.ConnectFailure)
+                                        switch (wex.Status)
                                         {
-                                            if (errorWait < 10000)
-                                            {
-                                                errorWait = 10000;
-                                            }
-                                            else
-                                            {
-                                                if (errorWait < 240000)
+                                            case WebExceptionStatus.Success:
+                                                break;
+                                            case WebExceptionStatus.ConnectFailure:
+                                            case WebExceptionStatus.MessageLengthLimitExceeded:
+                                            case WebExceptionStatus.Pending:
+                                            case WebExceptionStatus.RequestCanceled:
+                                            case WebExceptionStatus.SendFailure:
+                                            case WebExceptionStatus.UnknownError:
+                                                if (errorWait < 10000)
                                                 {
-                                                    errorWait *= 2;
+                                                    errorWait = 10000;
                                                 }
-                                            }
-                                        }
-                                        else
-                                        {
-                                            if (errorWait < 16000)
-                                            {
-                                                errorWait += 250;
-                                            }
-                                        }
+                                                else
+                                                {
+                                                    if (errorWait < 240000)
+                                                    {
+                                                        errorWait *= 2;
+                                                    }
+                                                }
 
-                                        WriteLog(wex.ToString() + ", Waiting " + errorWait/1000 + " seconds.  ", "ExecuteStream");
+                                                WriteLog(wex.ToString() + ", Waiting " + errorWait/1000 + " seconds.  ", "ExecuteStream");
+                                                break;
+                                            default:
+                                                if (errorWait < 16000)
+                                                {
+                                                    errorWait += 250;
+                                                }
+                                                break;
+                                        }
                                     }
                                     catch (Exception ex)
                                     {

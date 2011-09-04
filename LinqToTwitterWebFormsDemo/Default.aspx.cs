@@ -5,7 +5,6 @@ using LinqToTwitter;
 
 public partial class _Default : System.Web.UI.Page
 {
-    private const string OAuthCredentialsKey = "OAuthCredentialsKey";
     private WebAuthorizer auth;
     private TwitterContext twitterCtx;
 

@@ -6,7 +6,7 @@ namespace LinqToTwitter
 {
     public class MvcOAuthActionResult : ActionResult
     {
-        private WebAuthorizer m_webAuth;
+        private readonly WebAuthorizer m_webAuth;
 
         public MvcOAuthActionResult(WebAuthorizer webAuth)
         {

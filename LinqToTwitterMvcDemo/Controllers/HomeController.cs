@@ -9,7 +9,7 @@ namespace LinqToTwitterMvcDemo.Controllers
 {
     public class HomeController : Controller
     {
-        IOAuthCredentials credentials = new SessionStateCredentials();
+        private IOAuthCredentials credentials = new SessionStateCredentials();
 
         private MvcAuthorizer auth;
         private TwitterContext twitterCtx;
@@ -31,7 +31,7 @@ namespace LinqToTwitterMvcDemo.Controllers
 
             if (!auth.IsAuthorized)
             {
-                Uri specialUri = new Uri(Request.Url.ToString() + "?redirectUrl=somewhereelse");
+                Uri specialUri = new Uri(Request.Url.ToString());
                 return auth.BeginAuthorization(specialUri);
             }
 

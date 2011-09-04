@@ -100,6 +100,7 @@
     <Compile Include="Common\QueryParameter.cs" />
     <Compile Include="Common\Request.cs" />
     <Compile Include="Common\RequestProcessorHelper.cs" />
+    <Compile Include="Common\State.cs" />
     <Compile Include="Common\TwitterAsyncResponse.cs" />
     <Compile Include="Common\TwitterErrorStatus.cs" />
     <Compile Include="Common\TwitterHashResponse.cs" />
@@ -146,6 +147,7 @@
     <Compile Include="OAuth\IOAuthCredentials.cs" />
     <Compile Include="OAuth\IOAuthHelper.cs" />
     <Compile Include="OAuth\IOAuthTwitter.cs" />
+    <Compile Include="OAuth\IsolatedStorageCredentials.cs" />
     <Compile Include="OAuth\ITwitterAuthorizer.cs" />
     <Compile Include="OAuth\OAuthAuthorizer.cs" />
     <Compile Include="OAuth\OAuthBase.cs" />
