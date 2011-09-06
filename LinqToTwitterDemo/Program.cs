@@ -132,8 +132,8 @@ namespace LinqToTwitterDemo
                 //SavedSearchDemos.Run(twitterCtx);
                 //SearchDemos.Run(twitterCtx);
                 //SocialGraphDemos.Run(twitterCtx);
-                //StatusDemos.Run(twitterCtx);
-                StreamingDemo.Run(twitterCtx);
+                StatusDemos.Run(twitterCtx);
+                //StreamingDemo.Run(twitterCtx);
                 //TrendsDemos.Run(twitterCtx);
                 //UserDemos.Run(twitterCtx);
                 //NotificationsDemos.Run(twitterCtx);

@@ -405,7 +405,7 @@ namespace LinqToTwitter
         /// </returns>
         public string QueryTwitterStream(Request request)
         {
-            new Thread(ExecuteTwitterStream).Start(request);
+            ThreadPool.QueueUserWorkItem(ExecuteTwitterStream, request);
             return "<streaming></streaming>";
         }
 
@@ -419,7 +419,6 @@ namespace LinqToTwitter
             Debug.Assert(request != null, "state must be a Request object");
 
             var streamUrl = request.Endpoint;
-            var parameters = request.RequestParameters; 
 
             var resetEvent = new ManualResetEvent(/*initialState:*/ false);
             int errorWait = 250;
@@ -654,90 +653,82 @@ namespace LinqToTwitter
         /// <returns>Initialized Request</returns>
         private HttpWebRequest GetUserStreamRequest(Request request)
         {
-            string responseXml = string.Empty;
-            string httpStatus = string.Empty;
-
             this.LastUrl = request.FullUrl;
             var req = this.AuthorizedClient.Get(request) as HttpWebRequest;
             req.UserAgent = UserAgent;
-
-//#if !SILVERLIGHT
-//            req.Timeout = Timeout;
-//            req.ReadWriteTimeout = ReadWriteTimeout;
-//#endif
 
             return req;
         }
 
 
-        /// <summary>
-        /// This code will execute on a thread, processing content from the Twitter stream
-        /// </summary>
-        /// <remarks>
-        /// Values are returned to invocations of StreamingCallback. Remember that these callbacks
-        /// are running on a separate thread and it is the caller's responsibility to marshal back
-        /// onto UI thread, if applicable.
-        /// 
-        /// Thanks to Shannon Whitley for a good example of how to do this in C#:
-        /// http://www.voiceoftech.com/swhitley/?p=898
-        /// </remarks>
-        /// <param name="state">Web request, which has already been authenticated</param>
-        private void ManageTwitterStreaming(object state)
-        {
-            var request = state as Request;
-            string streamUrl = request.FullUrl;
+        ///// <summary>
+        ///// This code will execute on a thread, processing content from the Twitter stream
+        ///// </summary>
+        ///// <remarks>
+        ///// Values are returned to invocations of StreamingCallback. Remember that these callbacks
+        ///// are running on a separate thread and it is the caller's responsibility to marshal back
+        ///// onto UI thread, if applicable.
+        ///// 
+        ///// Thanks to Shannon Whitley for a good example of how to do this in C#:
+        ///// http://www.voiceoftech.com/swhitley/?p=898
+        ///// </remarks>
+        ///// <param name="state">Web request, which has already been authenticated</param>
+        //private void ManageTwitterStreaming(object state)
+        //{
+        //    var request = state as Request;
+        //    string streamUrl = request.FullUrl;
 
-            var req = HttpWebRequest.Create(streamUrl) as HttpWebRequest;
-            req.Credentials = new NetworkCredential(StreamingUserName, StreamingPassword);
-            req.UserAgent = UserAgent;
-            //req.Timeout = -1;
+        //    var req = HttpWebRequest.Create(streamUrl) as HttpWebRequest;
+        //    req.Credentials = new NetworkCredential(StreamingUserName, StreamingPassword);
+        //    req.UserAgent = UserAgent;
+        //    //req.Timeout = -1;
 
-            byte[] bytes = new byte[0];
+        //    byte[] bytes = new byte[0];
 
-            bool shouldPostQuery = streamUrl.Contains("filter.json");
+        //    bool shouldPostQuery = streamUrl.Contains("filter.json");
 
-            if (shouldPostQuery)
-            {
-                int qIndex = streamUrl.IndexOf('?');
-                string urlParams = streamUrl.Substring(qIndex);
-                streamUrl = streamUrl.Substring(qIndex - 1);
+        //    if (shouldPostQuery)
+        //    {
+        //        int qIndex = streamUrl.IndexOf('?');
+        //        string urlParams = streamUrl.Substring(qIndex);
+        //        streamUrl = streamUrl.Substring(qIndex - 1);
 
-                bytes = Encoding.UTF8.GetBytes(urlParams);
-                req.ContentLength = bytes.Length;
-                req.Method = "POST";
-                req.ContentType = "x-www-form-urlencoded";
-                //req.ServicePoint.Expect100Continue = false;
-            }
+        //        bytes = Encoding.UTF8.GetBytes(urlParams);
+        //        req.ContentLength = bytes.Length;
+        //        req.Method = "POST";
+        //        req.ContentType = "x-www-form-urlencoded";
+        //        //req.ServicePoint.Expect100Continue = false;
+        //    }
 
-            ExecuteTwitterStream(req, bytes, shouldPostQuery);
-        }
+        //    ExecuteTwitterStream(req, bytes, shouldPostQuery);
+        //}
 
-        /// <summary>
-        /// This code will execute on a thread, processing content from the Twitter user stream
-        /// </summary>
-        /// <remarks>
-        /// Values are returned to invocations of StreamingCallback. Remember that these callbacks
-        /// are running on a separate thread and it is the caller's responsibility to marshal back
-        /// onto UI thread, if applicable.
-        /// 
-        /// Thanks to Shannon Whitley for a good example of how to do this in C#:
-        /// http://www.voiceoftech.com/swhitley/?p=898
-        /// </remarks>
-        /// <param name="state">Web request, which has already been authenticated</param>
-        private void ManageTwitterUserStream(object state)
-        {
-            var request = state as Request;
+        ///// <summary>
+        ///// This code will execute on a thread, processing content from the Twitter user stream
+        ///// </summary>
+        ///// <remarks>
+        ///// Values are returned to invocations of StreamingCallback. Remember that these callbacks
+        ///// are running on a separate thread and it is the caller's responsibility to marshal back
+        ///// onto UI thread, if applicable.
+        ///// 
+        ///// Thanks to Shannon Whitley for a good example of how to do this in C#:
+        ///// http://www.voiceoftech.com/swhitley/?p=898
+        ///// </remarks>
+        ///// <param name="state">Web request, which has already been authenticated</param>
+        //private void ManageTwitterUserStream(object state)
+        //{
+        //    var request = state as Request;
 
-            string responseXml = string.Empty;
-            string httpStatus = string.Empty;
+        //    string responseXml = string.Empty;
+        //    string httpStatus = string.Empty;
 
-            this.LastUrl = request.FullUrl;
-            var req = this.AuthorizedClient.Get(request) as HttpWebRequest;
-            req.UserAgent = UserAgent;
-            //req.Timeout = -1;
+        //    this.LastUrl = request.FullUrl;
+        //    var req = this.AuthorizedClient.Get(request) as HttpWebRequest;
+        //    req.UserAgent = UserAgent;
+        //    //req.Timeout = -1;
 
-            ExecuteTwitterStream(req, null, /*shouldPostQuery:*/ false);
-        }
+        //    ExecuteTwitterStream(req, null, /*shouldPostQuery:*/ false);
+        //}
 
         /// <summary>
         /// Processes stream results and performs error handling
@@ -804,7 +795,7 @@ namespace LinqToTwitter
 
                                             // launch on a separate thread to keep user's 
                                             // callback code from blocking the stream.
-                                            new Thread(InvokeStreamCallback).Start(content);
+                                            ThreadPool.QueueUserWorkItem(InvokeStreamCallback, content);
 
                                             errorWait = 250;
                                         }
