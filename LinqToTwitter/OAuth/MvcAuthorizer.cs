@@ -10,7 +10,7 @@ namespace LinqToTwitter
             return new MvcOAuthActionResult(this);
         }
 
-        public ActionResult BeginAuthorization(Uri callback)
+        public new ActionResult BeginAuthorization(Uri callback)
         {
             this.Callback = callback;
             return new MvcOAuthActionResult(this);
