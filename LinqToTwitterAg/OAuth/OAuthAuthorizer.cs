@@ -77,7 +77,7 @@ namespace LinqToTwitter
         {
             get
             {
-                if (m_credentials != null && m_credentials.AccessToken == null)
+                if (m_credentials != null && m_credentials.OAuthToken == null)
                 {
                     m_credentials.OAuthToken = OAuthTwitter.OAuthToken;
                 }
