@@ -458,7 +458,7 @@ namespace LinqToTwitter
                                     // will cause WebException with Status set to "Timeout"
                                     // - keeps stream from blocking in
                                     //   case user wants to cancel.
-                                    respRdr.BaseStream.ReadTimeout = ReadWriteTimeout;
+                                    respRdr.BaseStream.ReadTimeout = ReadWriteTimeout == 0 ? 300000 : ReadWriteTimeout;
 
                                     try
                                     {
