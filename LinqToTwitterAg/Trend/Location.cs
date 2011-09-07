@@ -21,10 +21,7 @@ namespace LinqToTwitter
 
                 return new Location
                 {
-                    Country = 
-                        country == null ?
-                            string.Empty :
-                            country.Value,
+                    Country = country.GetString(null, string.Empty),
                     CountryCode =
                         country == null ?
                             string.Empty :
@@ -38,7 +35,7 @@ namespace LinqToTwitter
                                 string.Empty :
                                 country.Attribute("type").Value,
                     Name = loc.GetString("name"),
-                    PlaceTypeName = loc.GetString("placeTypeName"),
+                    PlaceTypeName = placeType.GetString(null, string.Empty),
                     PlaceTypeNameCode = int.Parse(
                         placeType == null ?
                             "0" :

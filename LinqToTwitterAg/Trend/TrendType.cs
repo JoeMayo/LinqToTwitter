@@ -6,14 +6,9 @@
     public enum TrendType
     {
         /// <summary>
-        /// top ten topics that are currently trending 
+        /// top ten topics that are currently trending world-wide (same as Location with a WoeId of 1)
         /// </summary>
         Trend,
-
-        /// <summary>
-        /// current top 10 trending topics 
-        /// </summary>
-        Current,
 
         /// <summary>
         /// top 20 trending topics for every hour of specified day

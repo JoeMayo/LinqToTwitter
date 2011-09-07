@@ -15,12 +15,11 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         public static void Run(TwitterContext twitterCtx)
         {
-            //SearchTrendsDemo(twitterCtx);
-            //SearchCurrentTrendsDemo(twitterCtx);
+            SearchAvailableTrendsDemo(twitterCtx);
+            SearchLocationTrendsDemo(twitterCtx);
+            SearchTrendsDemo(twitterCtx);
             SearchDailyTrendsDemo(twitterCtx);
-            //SearchWeeklyTrendsDemo(twitterCtx);
-            //SearchAvailableTrendsDemo(twitterCtx);
-            //SearchLocationTrendsDemo(twitterCtx);
+            SearchWeeklyTrendsDemo(twitterCtx);
         }
 
         #region Trends Demos
@@ -31,7 +30,6 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void SearchLocationTrendsDemo(TwitterContext twitterCtx)
         {
-            twitterCtx.SearchUrl = "http://api.twitter.com/1/";
             var trends =
                 (from trnd in twitterCtx.Trends
                  where trnd.Type == TrendType.Location &&
@@ -42,10 +40,7 @@ namespace LinqToTwitterDemo
             // Location is the same for each trending item, so just read the first
             Console.WriteLine("Location: {0}\n", trends[0].Location.Name);
 
-            trends.ForEach(
-                trnd => Console.WriteLine(
-                    "Name: {0}, Query: {1}\nSearchUrl: {2}\n",
-                    trnd.Name, trnd.Query, trnd.SearchUrl));
+            trends.ForEach(trnd => EmitTrend(trnd));
         }
 
         /// <summary>
@@ -82,10 +77,7 @@ namespace LinqToTwitterDemo
                       trend.Date == DateTime.Now.AddDays(-14).Date // <-- no time part
                 select trend;
 
-            trends.ToList().ForEach(
-                trend => Console.WriteLine(
-                    "Name: {0}, Query: {1}, Date: {2}",
-                    trend.Name, trend.Query, trend.AsOf));
+            trends.ToList().ForEach(trnd => EmitTrend(trnd));
         }
 
         /// <summary>
@@ -94,9 +86,7 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void SearchDailyTrendsDemo(TwitterContext twitterCtx)
         {
-            twitterCtx.SearchUrl = "https://api.twitter.com/1/";
-
-            // remember to truncate seconds (maybe even minutes) because they
+            // remember to truncate time because they
             // will never compare evenly, causing your list to be empty
             var trends =
                 (from trend in twitterCtx.Trends
@@ -105,32 +95,11 @@ namespace LinqToTwitterDemo
                  select trend)
                  .ToList();
 
-            trends.ForEach(
-                trend => Console.WriteLine(
-                    "Name: {0}, Query: {1}",
-                    trend.Name, trend.Query));
+            trends.ForEach(trnd => EmitTrend(trnd));
         }
 
         /// <summary>
-        /// shows how to request current trends
-        /// </summary>
-        /// <param name="twitterCtx">TwitterContext</param>
-        private static void SearchCurrentTrendsDemo(TwitterContext twitterCtx)
-        {
-            var trends =
-                from trend in twitterCtx.Trends
-                where trend.Type == TrendType.Current &&
-                      trend.ExcludeHashtags == true
-                select trend;
-
-            trends.ToList().ForEach(
-                trend => Console.WriteLine(
-                    "Name: {0}, Query: {1}",
-                    trend.Name, trend.Query));
-        }
-
-        /// <summary>
-        /// shows how to request trends
+        /// shows how to request trends (world-wide)
         /// </summary>
         /// <param name="twitterCtx">TwitterContext</param>
         private static void SearchTrendsDemo(TwitterContext twitterCtx)
@@ -140,12 +109,15 @@ namespace LinqToTwitterDemo
                 where trend.Type == TrendType.Trend
                 select trend;
 
-            trends.ToList().ForEach(
-                trend => Console.WriteLine(
-                    "Name: {0}, Date: {2}\nSearch URL: {1}",
-                    trend.Name, trend.AsOf, trend.SearchUrl));
+            trends.ToList().ForEach(trnd => EmitTrend(trnd));
         }
 
+        private static void EmitTrend(Trend trnd)
+        {
+            Console.WriteLine(
+                    "Name: {0}, Date: {1}, Query: {2}\nSearchUrl: {3}",
+                    trnd.Name, trnd.AsOf, trnd.Query, trnd.SearchUrl);
+        }
         #endregion
     }
 }

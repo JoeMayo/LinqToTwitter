@@ -11,7 +11,7 @@ namespace LinqToTwitter
             if (elem == null)
                 return null;
 
-            var val = elem.Element(name);
+            var val = name == null ? elem : elem.Element(name);
             return val == null ? null : val.Value;
         }
 

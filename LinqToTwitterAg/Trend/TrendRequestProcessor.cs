@@ -47,7 +47,7 @@ namespace LinqToTwitter
         /// Yahoo Where On Earth ID
         /// </summary>
         private int WeoID { get; set; }
-        
+
         /// <summary>
         /// extracts parameters from lambda
         /// </summary>
@@ -69,6 +69,15 @@ namespace LinqToTwitter
                    .Parameters;
         }
 
+        static TrendRequestProcessor()
+        {
+            var worldOnly = s_WorldWoeId = new Dictionary<string, string>();
+            worldOnly.Add("WeoID", "1");
+            s_WorldWoeId = worldOnly;
+        }
+
+        private static readonly Dictionary<string, string> s_WorldWoeId;
+
         /// <summary>
         /// builds url based on input parameters
         /// </summary>
@@ -83,12 +92,10 @@ namespace LinqToTwitter
 
             switch (Type)
             {
-                case TrendType.Current:
-                    return BuildCurrentTrendsUrl(parameters);
+                case TrendType.Trend:
+                    return BuildLocationTrendsUrl(s_WorldWoeId);
                 case TrendType.Daily:
                     return BuildDailyTrendsUrl(parameters);
-                case TrendType.Trend:
-                    return BuildTrendsUrl();
                 case TrendType.Weekly:
                     return BuildWeeklyTrendsUrl(parameters);
                 case TrendType.Available:
@@ -156,16 +163,6 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// builds an url for showing current trends
-        /// </summary>
-        /// <param name="parameters">parameter list</param>
-        /// <returns>base url + show segment</returns>
-        private Request BuildCurrentTrendsUrl(Dictionary<string, string> parameters)
-        {
-            return BuildTrendsUrlParameters(parameters, "trends/current.json");
-        }
-
-        /// <summary>
         /// builds an url for showing weekly trends
         /// </summary>
         /// <param name="parameters">parameter list</param>
@@ -173,16 +170,6 @@ namespace LinqToTwitter
         private Request BuildWeeklyTrendsUrl(Dictionary<string, string> parameters)
         {
             return BuildTrendsUrlParameters(parameters, "trends/weekly.json");
-        }
-
-        /// <summary>
-        /// builds an url for showing trends
-        /// </summary>
-        /// <param name="parameters">parameter list</param>
-        /// <returns>base url + show segment</returns>
-        private Request BuildTrendsUrl()
-        {
-            return new Request(BaseUrl + "trends.json");
         }
 
         /// <summary>
@@ -243,9 +230,10 @@ namespace LinqToTwitter
             }
             else if (twitterResponse.Name.LocalName == "matching_trends")
             {
-                locationElement = twitterResponse.Element("trends").Element("locations").Element("location");
-                items = twitterResponse.Element("trends").Elements("trend").ToList();
-                asOf = DateTime.Parse(twitterResponse.Element("trends").Attribute("as_of").Value,
+                var trendsElement = twitterResponse.Element("trends");
+                locationElement = trendsElement.Element("locations").Element("location");
+                items = trendsElement.Elements("trend").ToList();
+                asOf = DateTime.Parse(trendsElement.Attribute("as_of").Value,
                                       CultureInfo.InvariantCulture,
                                       DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal);
             }
@@ -284,18 +272,18 @@ namespace LinqToTwitter
                         trend.Attribute("query") == null ?
                             string.Empty :
                             trend.Attribute("query").Value :
-                        trend.Element("query").Value 
+                        trend.Element("query").Value
                  let searchUrl =
                     trend.Element("url") == null ?
                         trend.Attribute("url") == null ?
                             string.Empty :
-                            trend.Attribute("url").Value:
+                            trend.Attribute("url").Value :
                         trend.Element("url").Value
                  let name =
                     trend.Element("name") == null ?
                         trend.Value :
                         trend.Element("name").Value
-                 let trendLoc = 
+                 let trendLoc =
                     Location.CreateLocation(
                         locationElement ?? trend.Element("location"))
                  let locs =
