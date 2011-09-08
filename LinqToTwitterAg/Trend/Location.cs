@@ -28,12 +28,6 @@ namespace LinqToTwitter
                             country.Attribute("code") == null ?
                                 string.Empty :
                                 country.Attribute("code").Value,
-                    CountryType =
-                        country == null ?
-                            string.Empty :    
-                            country.Attribute("type") == null ?
-                                string.Empty :
-                                country.Attribute("type").Value,
                     Name = loc.GetString("name"),
                     PlaceTypeName = placeType.GetString(null, string.Empty),
                     PlaceTypeNameCode = int.Parse(
@@ -75,11 +69,6 @@ namespace LinqToTwitter
         /// Country of Location
         /// </summary>
         public string Country { get; set; }
-
-        /// <summary>
-        /// Country type
-        /// </summary>
-        public string CountryType { get; set; }
 
         /// <summary>
         /// Country Code

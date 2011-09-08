@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Globalization;
+using System.IO;
+using System.Runtime.Serialization.Json;
+using System.Text;
 using System.Xml.Linq;
 
 namespace LinqToTwitter
@@ -100,16 +103,45 @@ namespace LinqToTwitter
 
         public static DateTime GetDate(this XElement elem, XName name, DateTime defaultValue)
         {
-            DateTime result;
             var val = elem.TagValue(name);
 
-            return String.IsNullOrEmpty(val) ||
-                !DateTime.TryParseExact(val,
+            return val.GetDate(defaultValue);
+        }
+
+        public static DateTime GetDate(this string date, DateTime defaultValue)
+        {
+            DateTime result;
+
+            return String.IsNullOrEmpty(date) ||
+                !DateTime.TryParseExact(date,
                          "ddd MMM dd HH:mm:ss %zzzz yyyy",
                         CultureInfo.InvariantCulture,
                         DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal, out result)
                     ? defaultValue
                     : result;
+        }
+
+        // should get moved to a different helper in Common somewhere...
+        public static T[] DeserializeArray<T>(this string json)
+        {
+            using (MemoryStream ms = new MemoryStream(Encoding.UTF8.GetBytes(json)))
+            {
+                DataContractJsonSerializer serialiser = new DataContractJsonSerializer(typeof(T[]));
+                var obj = (T[])serialiser.ReadObject(ms);
+                ms.Close();
+                return obj;
+            }
+        }
+
+        public static T Deserialize<T>(this string json)
+        {
+            using (MemoryStream ms = new MemoryStream(Encoding.UTF8.GetBytes(json)))
+            {
+                DataContractJsonSerializer serialiser = new DataContractJsonSerializer(typeof(T));
+                var obj = (T)serialiser.ReadObject(ms);
+                ms.Close();
+                return obj;
+            }
         }
     }
 }

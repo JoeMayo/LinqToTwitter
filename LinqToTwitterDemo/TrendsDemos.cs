@@ -33,7 +33,7 @@ namespace LinqToTwitterDemo
             var trends =
                 (from trnd in twitterCtx.Trends
                  where trnd.Type == TrendType.Location &&
-                       trnd.WeoID == 1
+                       trnd.WeoID == 2486982 // something other than 1
                  select trnd)
                  .ToList();
 

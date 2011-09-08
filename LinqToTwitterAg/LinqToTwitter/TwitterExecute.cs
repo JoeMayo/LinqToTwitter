@@ -13,7 +13,7 @@ using System.Diagnostics;
 #if SILVERLIGHT
     using System.Windows.Browser;
 #else
-    using System.Web;
+using System.Web;
 #endif
 
 namespace LinqToTwitter
@@ -208,29 +208,32 @@ namespace LinqToTwitter
         /// <returns>new TwitterQueryException instance</returns>
         private TwitterQueryException CreateTwitterQueryException(WebException wex)
         {
+            string responseStr = "[NO RESPONSE]";
             XElement responseXml;
 
             try
             {
-                var responseStr = GetTwitterResponse(wex.Response);
+                responseStr = GetTwitterResponse(wex.Response);
                 responseXml = XElement.Parse(responseStr);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 string responseUri = string.Empty;
 
-                if (wex.Response != null)
-                {
+                if (wex != null && wex.Response != null)
                     responseUri = wex.Response.ResponseUri.ToString();
-                }
+
+                var errorText = (wex ?? ex).ToString()
+                                + Environment.NewLine
+                                + responseStr;
 
                 // One known reason this can happen is if you don't have an 
                 // Internet connection, meaning that the response will contain
                 // an HTML message, that can't be parsed as normal XML.
                 responseXml = XElement.Parse(
 @"<hash>
-  <request>" + HttpUtility.UrlEncode(responseUri) + @"</request>
-  <error>See Inner Exception Details for more information.</error>
+  <request>" + HttpUtility.HtmlEncode(responseUri) + @"</request>
+  <error>" + HttpUtility.HtmlEncode(errorText) + @"</error>
 </hash>");
             }
 
@@ -269,7 +272,7 @@ namespace LinqToTwitter
             foreach (string key in resp.Headers.AllKeys)
             {
                 responseHeaders.Add(key, resp.Headers[key].ToString());
-            } 
+            }
 #endif
 
             ResponseHeaders = responseHeaders;
@@ -320,7 +323,7 @@ namespace LinqToTwitter
             WriteLog(this.LastUrl, "QueryTwitter");
 
             var uri = new Uri(this.LastUrl);
-            string responseXml = string.Empty;
+            string response = string.Empty;
             string httpStatus = string.Empty;
 
             try
@@ -342,7 +345,7 @@ namespace LinqToTwitter
                         }), null);
 #else
                 Exception asyncException = null;
-                
+
                 var resetEvent = new ManualResetEvent(/*initialState:*/ false);
 
                 req.BeginGetResponse(
@@ -353,7 +356,7 @@ namespace LinqToTwitter
                             {
                                 var res = req.EndGetResponse(ar) as HttpWebResponse;
                                 httpStatus = res.Headers["Status"];
-                                responseXml = GetTwitterResponse(res);
+                                response = GetTwitterResponse(res);
                             }
                             catch (Exception ex)
                             {
@@ -379,20 +382,29 @@ namespace LinqToTwitter
                 throw twitterQueryEx;
             }
 
-            if (uri.LocalPath.EndsWith("json"))
+            var wantsJson = reqProc as IRequestProcessorWantsJson;
+
+            if (wantsJson == null && uri.LocalPath.EndsWith("json"))
             {
-                var stream = new MemoryStream(Encoding.UTF8.GetBytes(responseXml));
+                // we've got a .json endpoint that needs morphing to
+                // Xmlish stuff...
+                var stream = new MemoryStream(Encoding.UTF8.GetBytes(response));
                 XmlDictionaryReader reader = JsonReaderWriterFactory.CreateJsonReader(stream, XmlDictionaryReaderQuotas.Max);
 
                 var doc = XDocument.Load(reader);
-                responseXml = doc.ToString();
+                response = doc.ToString();
             }
 
 #if !SILVERLIGHT
-            CheckResultsForTwitterError(responseXml, httpStatus);
+            // if we're expecting XML back, or we got something that wasn't json
+            if (wantsJson == null
+                || (response.Length > 1
+                    && response[0] != '['
+                    && response[0] != '{'))
+                CheckResultsForTwitterError(response, httpStatus);
 #endif
 
-            return responseXml;
+            return response;
         }
 
         /// <summary>
@@ -480,7 +492,8 @@ namespace LinqToTwitter
                                             {
                                                 // Timeouts are expected, as set by ReadWriteTimeout
                                                 // on respRdr.BaseStream.ReadTimeout
-                                                if (wex.Status != WebExceptionStatus.Timeout) throw;
+                                                if (wex.Status != WebExceptionStatus.Timeout)
+                                                    throw;
                                             }
 #endif
                                         }
@@ -510,7 +523,7 @@ namespace LinqToTwitter
                                                     }
                                                 }
 
-                                                WriteLog(wex.ToString() + ", Waiting " + errorWait/1000 + " seconds.  ", "ExecuteStream");
+                                                WriteLog(wex.ToString() + ", Waiting " + errorWait / 1000 + " seconds.  ", "ExecuteStream");
                                                 break;
                                             default:
                                                 if (errorWait < 16000)
@@ -549,7 +562,7 @@ namespace LinqToTwitter
                                         errorWait *= 2;
                                     }
                                 }
-                                WriteLog(ex.ToString() + ", Waiting " + errorWait/1000 + " seconds.  ", "ExecuteStream");
+                                WriteLog(ex.ToString() + ", Waiting " + errorWait / 1000 + " seconds.  ", "ExecuteStream");
                             }
                             finally
                             {
@@ -589,7 +602,7 @@ namespace LinqToTwitter
             var req = HttpWebRequest.Create(streamUrl) as HttpWebRequest;
             req.Credentials = new NetworkCredential(StreamingUserName, StreamingPassword);
             req.UserAgent = UserAgent;
-            
+
             byte[] bytes = new byte[0];
 
             bool shouldPostQuery = streamUrl.Contains("filter.json");
@@ -605,10 +618,10 @@ namespace LinqToTwitter
                 req.Method = "POST";
                 req.ContentType = "x-www-form-urlencoded";
 
-//#if !SILVERLIGHT
-//                req.Timeout = Timeout;
-//                req.ReadWriteTimeout = ReadWriteTimeout;
-//#endif
+                //#if !SILVERLIGHT
+                //                req.Timeout = Timeout;
+                //                req.ReadWriteTimeout = ReadWriteTimeout;
+                //#endif
 
                 var resetEvent = new ManualResetEvent(/*initialState:*/ false);
                 Exception asyncException = null;
@@ -1183,7 +1196,7 @@ namespace LinqToTwitter
                                 var asyncResp = new TwitterAsyncResponse<T>();
                                 asyncResp.State = responseObj.FirstOrDefault();
                                 (AsyncCallback as Action<TwitterAsyncResponse<T>>)(asyncResp);
-                            }), 
+                            }),
                             null);
 
                     ThreadPool.RegisterWaitForSingleObject(arResp.AsyncWaitHandle,
@@ -1267,7 +1280,7 @@ namespace LinqToTwitter
 
                 if (log != null)
                 {
-                    log.Close(); 
+                    log.Close();
                 }
             }
         }

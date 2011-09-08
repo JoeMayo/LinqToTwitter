@@ -3,14 +3,16 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Xml.Linq;
+using System.Runtime.Serialization;
 
 namespace LinqToTwitter
 {
     /// <summary>
     /// helps process trend requests
     /// </summary>
-    public class TrendRequestProcessor<T> : IRequestProcessor<T>
+    public class TrendRequestProcessor<T>
+        : IRequestProcessor<T>
+        , IRequestProcessorWantsJson
     {
         /// <summary>
         /// base url for request
@@ -118,7 +120,7 @@ namespace LinqToTwitter
                 throw new ArgumentException("WeoID is a required parameter.", "WeoID");
 
             WeoID = int.Parse(parameters["WeoID"]);
-            var url = "trends/" + parameters["WeoID"] + ".xml";
+            var url = "trends/" + parameters["WeoID"] + ".json";
 
             return new Request(BaseUrl + url);
         }
@@ -134,7 +136,7 @@ namespace LinqToTwitter
                 (!parameters.ContainsKey("Latitude") && parameters.ContainsKey("Longitude")))
                 throw new ArgumentException("If you pass either Latitude or Longitude then you must pass both. Otherwise, don't pass either.");
 
-            var req = new Request(BaseUrl + "trends/available.xml");
+            var req = new Request(BaseUrl + "trends/available.json");
             var urlParams = req.RequestParameters;
 
             if (parameters.ContainsKey("Latitude"))
@@ -204,110 +206,223 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="responseXml">XML response from Twitter</param>
         /// <returns>List of Trend</returns>
-        public virtual List<T> ProcessResults(string responseXml)
+        public virtual List<T> ProcessResults(string responseJson)
         {
-            if (string.IsNullOrEmpty(responseXml))
+            IEnumerable<Trend> trends = Enumerable.Empty<Trend>();
+
+            if (!string.IsNullOrEmpty(responseJson))
             {
-                responseXml = "<trends></trends>";
-            }
-
-            XElement twitterResponse = XElement.Parse(responseXml);
-            XNamespace itemNS = "item";
-
-            List<XElement> locations = new List<XElement>();
-            List<XElement> items = null;
-            DateTime asOf = DateTime.UtcNow;
-            XElement locationElement = null;
-            List<Trend> trends;
-
-            if (twitterResponse.Name.LocalName == "locations")
-            {
-                locations = twitterResponse.Elements("location").ToList();
-                items = new List<XElement>
+                switch (Type)
                 {
-                    new XElement("item")
-                };
-            }
-            else if (twitterResponse.Name.LocalName == "matching_trends")
-            {
-                var trendsElement = twitterResponse.Element("trends");
-                locationElement = trendsElement.Element("locations").Element("location");
-                items = trendsElement.Elements("trend").ToList();
-                asOf = DateTime.Parse(trendsElement.Attribute("as_of").Value,
-                                      CultureInfo.InvariantCulture,
-                                      DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal);
-            }
-            else if (twitterResponse.Element("trends") == null)
-            {
-                items = new List<XElement>();
-            }
-            else if (twitterResponse.Element("trends").Element(itemNS + "item") == null)
-            {
-                items = twitterResponse.Element("trends").Elements("item").ToList();
-                asOf = DateTime.Parse(twitterResponse.Element("as_of").Value,
-                                      CultureInfo.InvariantCulture,
-                                      DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal);
-            }
-            else
-            {
-                items = new List<XElement>();
+                    case TrendType.Available:
+                        trends = HandleAvailableResponse(responseJson);
+                        break;
 
-                twitterResponse
-                    .Element("trends")
-                        .Element(itemNS + "item")
-                            .Nodes().ToList().ForEach(node => items.Add(node as XElement));
+                    case TrendType.Daily:
+                    case TrendType.Weekly:
+                        trends = HandleDailyWeeklyResponse(responseJson);
+                        break;
 
-                asOf = DateTime.Parse(
-                    twitterResponse
-                        .Element("trends")
-                            .Element(itemNS + "item").Attribute("item").Value,
-                    CultureInfo.InvariantCulture,
-                    DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal);
+                    case TrendType.Location:
+                    case TrendType.Trend:
+                        trends = HandleLocationResponse(responseJson);
+                        break;
+
+                    default:
+                        throw new InvalidOperationException("The default case of ProcessResults should never execute because a Type must be specified.");
+                }
             }
-
-            trends =
-                (from trend in items
-                 let query =
-                    trend.Element("query") == null ?
-                        trend.Attribute("query") == null ?
-                            string.Empty :
-                            trend.Attribute("query").Value :
-                        trend.Element("query").Value
-                 let searchUrl =
-                    trend.Element("url") == null ?
-                        trend.Attribute("url") == null ?
-                            string.Empty :
-                            trend.Attribute("url").Value :
-                        trend.Element("url").Value
-                 let name =
-                    trend.Element("name") == null ?
-                        trend.Value :
-                        trend.Element("name").Value
-                 let trendLoc =
-                    Location.CreateLocation(
-                        locationElement ?? trend.Element("location"))
-                 let locs =
-                    (from loc in locations
-                     select Location.CreateLocation(loc))
-                     .ToList()
-                 select new Trend
-                 {
-                     Type = Type,
-                     ExcludeHashtags = ExcludeHashtags,
-                     Date = Date,
-                     Name = name,
-                     Query = query,
-                     SearchUrl = searchUrl,
-                     AsOf = asOf,
-                     Latitude = Latitude,
-                     Longitude = Longitude,
-                     WeoID = WeoID,
-                     Location = trendLoc,
-                     Locations = locs
-                 })
-                 .ToList();
 
             return trends.OfType<T>().ToList();
+        }
+
+        private static readonly DateTime s_EpochBase = new DateTime(1970, 1, 1, 0, 0, 0, 0);
+
+        private IEnumerable<Trend> HandleDailyWeeklyResponse(string responseJson)
+        {
+#if TwitterWasSane
+            var now = DateTime.UtcNow;
+            var emptyLocations = new List<Location>();
+            var period = responseJson.Deserialize<JsonDailyWeeklyTrends>();
+            var asOf = s_EpochBase + TimeSpan.FromSeconds(period.as_of);
+            var flat = from slot in period.slots
+                       let hour = slot.hour_slot.GetDate(Date)
+                       let trends = (from trend in slot.trends
+                                     select new Trend
+                                     {
+                                         Type = Type,
+                                         ExcludeHashtags = ExcludeHashtags,
+                                         Date = Date,
+                                         Name = trend.name,
+                                         Query = trend.query,
+                                         SearchUrl = trend.url,
+                                         AsOf = asOf,
+                                         Latitude = Latitude,
+                                         Longitude = Longitude,
+                                         WeoID = WeoID,
+                                         Location = null,
+                                         Locations = emptyLocations
+                                     })
+                       select trends;
+
+            return flat.SelectMany(trend => trend);
+#endif
+            return Enumerable.Empty<Trend>();
+        }
+
+        private IEnumerable<Trend> HandleLocationResponse(string responseJson)
+        {
+            var now = DateTime.UtcNow;
+            var responses = responseJson.DeserializeArray<JsonTrends>();
+            var flat = from response in responses
+                      let asOf = response.as_of.GetDate(now)
+                      let locations = (from place in response.locations
+                                       select place.ToLocation()).ToList()
+                      let trends = (from trend in response.trends
+                                    select new Trend
+                                    {
+                                        Type = Type,
+                                        ExcludeHashtags = ExcludeHashtags,
+                                        Date = Date,
+                                        Name = trend.name,
+                                        Query = trend.query,
+                                        SearchUrl = trend.url,
+                                        AsOf = asOf,
+                                        Latitude = Latitude,
+                                        Longitude = Longitude,
+                                        WeoID = WeoID,
+                                        Location = locations.FirstOrDefault(),
+                                        Locations = locations
+                                    })
+                      select trends;
+
+            return flat.SelectMany(trend => trend);
+        }
+
+        private IEnumerable<Trend> HandleAvailableResponse(string responseJson)
+        {
+            var asOf = DateTime.UtcNow;
+            var places = responseJson.DeserializeArray<JsonPlace>();
+            var locations = new List<Location>();
+            foreach (var place in places)
+            {
+                var location = place.ToLocation();
+                locations.Add(location);
+            }
+
+            // we fake a single Trend to hang the locations off of...
+            yield return new Trend
+            {
+                Type = Type,
+                ExcludeHashtags = ExcludeHashtags,
+                Date = Date,
+                Name = string.Empty,
+                Query = string.Empty,
+                SearchUrl = string.Empty,
+                AsOf = asOf,
+                Latitude = Latitude,
+                Longitude = Longitude,
+                WeoID = WeoID,
+                Location = locations.FirstOrDefault(),
+                Locations = locations
+            };
+        }
+    }
+
+#if TwitterWasSane
+    // this is what the returned json SHOULD look like, but doesn't
+    [DataContract]
+    public class JsonSlottedTrend
+    {
+        [DataMember]
+        public string hour_slot { get; set; }
+
+        [DataMember]
+        public JsonTrend[] trends { get; set; }
+    }
+
+    [DataContract]
+    public class JsonDailyWeeklyTrends
+    {
+        [DataMember]
+        public JsonSlottedTrend[] slots { get; set; }
+
+        [DataMember]
+        public int as_of { get; set; } // epoch seconds
+    }
+#endif
+
+    [DataContract]
+    public class JsonTrends
+    {
+        [DataMember]
+        public JsonTrend[] trends { get; set; }
+        [DataMember]
+        public string created_at { get; set; }
+        [DataMember]
+        public string as_of { get; set; }
+        [DataMember]
+        public JsonPlace[] locations { get; set; }
+    }
+
+    [DataContract]
+    public class JsonTrend
+    {
+        [DataMember]
+        public string query { get; set; }
+        [DataMember]
+        public string name { get; set; }
+        [DataMember]
+        public string url { get; set; }
+#if UNSUPPORTEDBYLinqToTwitter // so don't bother parsing these...
+        [DataMember]
+        public JsonEvent[] events { get; set; }
+        [DataMember]
+        public bool promoted_content { get; set; } // not sure
+#endif
+    }
+
+    [DataContract]
+    public class JsonPlaceType
+    {
+        [DataMember]
+        public string name { get; set; }
+        [DataMember]
+        public string code { get; set; }
+    }
+
+    [DataContract]
+    public class JsonPlace
+    {
+        [DataMember]
+        public string name { get; set; }
+        [DataMember]
+        public string url { get; set; }
+        [DataMember]
+        public ulong woeid { get; set; }
+        [DataMember]
+        public ulong parentid { get; set; }
+        [DataMember]
+        public JsonPlaceType placeType { get; set; }
+        [DataMember]
+        public string country { get; set; }
+        [DataMember]
+        public string countryCode { get; set; }
+
+        internal Location ToLocation()
+        {
+            var pt = this.placeType ?? new JsonPlaceType { code = "0", name = string.Empty };
+            return new Location
+            {
+                Country = this.country ?? string.Empty,
+                CountryCode = this.countryCode ?? string.Empty,
+                Name = this.name ?? string.Empty,
+                ParentID = this.parentid.ToString(CultureInfo.InvariantCulture),
+                PlaceTypeName = pt.name,
+                PlaceTypeNameCode = int.Parse(pt.code),
+                Url = this.url ?? string.Empty,
+                WoeID = this.woeid.ToString(CultureInfo.InvariantCulture)
+            };
         }
     }
 }
