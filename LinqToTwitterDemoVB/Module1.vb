@@ -178,7 +178,7 @@ Module Module1
     Private Sub SearchCurrentTrendsDemo(ByVal twitterCtx As TwitterContext)
         Dim trends = _
             From trnd In twitterCtx.Trends _
-            Where trnd.Type = TrendType.Current _
+            Where trnd.Type = TrendType.Trend _
             And trnd.ExcludeHashtags = True
 
         For Each trnd In trends
