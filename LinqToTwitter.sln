@@ -32,7 +32,7 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "LinqToTwitterWebFormsDemo",
 		SccLocalPath = "SAK"
 		SccProvider = "SAK"
 		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
-		ProjectReferences = "{A214B9F0-6B8C-4E91-BE99-27F55CC860C1}|LinqToTwitter.dll;"
+		ProjectReferences = "{A214B9F0-6B8C-4E91-BE99-27F55CC860C1}|LinqToTwitter.dll;{3E973695-16FF-441B-9797-0986BD7F74C1}|LinqToTwitterJson.dll;"
 		Debug.AspNetCompiler.VirtualPath = "/LinqToTwitterWebFormsDemo"
 		Debug.AspNetCompiler.PhysicalPath = "LinqToTwitterWebFormsDemo\"
 		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\LinqToTwitterWebFormsDemo\"
@@ -60,6 +60,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqToTwitterSilverlightDemo", "LinqToTwitterSilverlightDemo\LinqToTwitterSilverlightDemo.csproj", "{F1F4D80B-4772-4D9A-97F9-F11D57F4E519}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqToTwitterSilverlightDemo.Web", "LinqToTwitterSilverlightDemo.Web\LinqToTwitterSilverlightDemo.Web.csproj", "{509AAAE9-A9DD-4CD1-9807-B315506BC6CE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqToTwitterJson", "LinqToTwitterJson\LinqToTwitterJson.csproj", "{3E973695-16FF-441B-9797-0986BD7F74C1}"
 EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
@@ -141,7 +143,7 @@ Global
 		{D22341E7-1F64-44A9-9A60-29FCCDBA5D5C}.Release|x86.Build.0 = Debug|Any CPU
 		{C5526BE1-A83C-4E9B-B1EA-43DBBB74C403}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C5526BE1-A83C-4E9B-B1EA-43DBBB74C403}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C5526BE1-A83C-4E9B-B1EA-43DBBB74C403}.Debug|x86.ActiveCfg = Debug|x86
+		{C5526BE1-A83C-4E9B-B1EA-43DBBB74C403}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{C5526BE1-A83C-4E9B-B1EA-43DBBB74C403}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C5526BE1-A83C-4E9B-B1EA-43DBBB74C403}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C5526BE1-A83C-4E9B-B1EA-43DBBB74C403}.Release|x86.ActiveCfg = Release|Any CPU
@@ -169,6 +171,12 @@ Global
 		{509AAAE9-A9DD-4CD1-9807-B315506BC6CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{509AAAE9-A9DD-4CD1-9807-B315506BC6CE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{509AAAE9-A9DD-4CD1-9807-B315506BC6CE}.Release|x86.ActiveCfg = Release|Any CPU
+		{3E973695-16FF-441B-9797-0986BD7F74C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E973695-16FF-441B-9797-0986BD7F74C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E973695-16FF-441B-9797-0986BD7F74C1}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{3E973695-16FF-441B-9797-0986BD7F74C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E973695-16FF-441B-9797-0986BD7F74C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3E973695-16FF-441B-9797-0986BD7F74C1}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

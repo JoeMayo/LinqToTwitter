@@ -547,6 +547,12 @@
       <Link>LinqToTwitter.snk</Link>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\LinqToTwitterJson\LinqToTwitterJson.csproj">
+      <Project>{3E973695-16FF-441B-9797-0986BD7F74C1}</Project>
+      <Name>LinqToTwitterJson</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

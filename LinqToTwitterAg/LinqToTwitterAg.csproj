@@ -220,6 +220,12 @@
   <ItemGroup>
     <None Include="LinqToTwitter.snk" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\LinqToTwitterJson\LinqToTwitterJson.csproj">
+      <Project>{3E973695-16FF-441B-9797-0986BD7F74C1}</Project>
+      <Name>LinqToTwitterJson</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Silverlight\$(SilverlightVersion)\Microsoft.Silverlight.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
