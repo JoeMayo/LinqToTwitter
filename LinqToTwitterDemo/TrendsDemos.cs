@@ -116,7 +116,7 @@ namespace LinqToTwitterDemo
         {
             Console.WriteLine(
                     "Name: {0}, Date: {1}, Query: {2}\nSearchUrl: {3}",
-                    trnd.Name, trnd.AsOf, trnd.Query, trnd.SearchUrl);
+                    trnd.Name, trnd.TrendDate, trnd.Query, trnd.SearchUrl);
         }
         #endregion
     }

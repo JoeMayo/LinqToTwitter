@@ -30,6 +30,11 @@ namespace LinqToTwitter
         public DateTime AsOf { get; set; }
 
         /// <summary>
+        /// date/hour of trend
+        /// </summary>
+        public DateTime TrendDate { get; set; }
+        
+        /// <summary>
         /// twitter search query on topic
         /// </summary>
         public string Query { get; set; }
@@ -58,6 +63,16 @@ namespace LinqToTwitter
         /// Yahoo Where On Earth ID
         /// </summary>
         public int WeoID { get; set; }
+
+        /// <summary>
+        /// No idea, perhaps the event associated with a trend
+        /// </summary>
+        public string Events { get; set; }
+
+        /// <summary>
+        /// Flag indicating this is a promoted trend (as opposed to organic)
+        /// </summary>
+        public string PromotedContent { get; set; }
 
         /// <summary>
         /// Location where trend is occurring
