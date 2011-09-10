@@ -1,0 +1,44 @@
+﻿using System.Collections.Generic;
+using System.Runtime.Serialization;
+using System.Web.Script.Serialization;
+
+namespace LinqToTwitter.Json
+{
+    [DataContract]
+    public class Place
+    {
+        [DataMember]
+        public string name { get; set; }
+        [DataMember]
+        public string url { get; set; }
+        [DataMember]
+        public ulong woeid { get; set; }
+        [DataMember]
+        public ulong parentid { get; set; }
+        [DataMember]
+        public PlaceType placeType { get; set; }
+        [DataMember]
+        public string country { get; set; }
+        [DataMember]
+        public string countryCode { get; set; }
+
+        public static Place Deserialize(IDictionary<string, object> dictionary, JavaScriptSerializer serializer)
+        {
+            var placeName = dictionary["name"] as string; // required!
+            var pts = dictionary.GetValue<object>("placeType");
+            var pt = serializer.ConvertToType<PlaceType>(pts);
+            var woeId = dictionary.GetValue<int>("woeid");
+            var parentId = dictionary.GetValue<int>("parentid");
+            return new Place
+            {
+                name = placeName,
+                url = dictionary.GetValue<string>("url"),
+                woeid = (ulong)woeId,
+                parentid = (ulong)parentId,
+                placeType = pt,
+                country = dictionary.GetValue<string>("country"),
+                countryCode = dictionary.GetValue<string>("countryCode")
+            };
+        }
+    }
+}
