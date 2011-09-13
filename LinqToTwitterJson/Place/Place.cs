@@ -25,16 +25,14 @@ namespace LinqToTwitter.Json
         public static Place Deserialize(IDictionary<string, object> dictionary, JavaScriptSerializer serializer)
         {
             var placeName = dictionary["name"] as string; // required!
-            var pts = dictionary.GetValue<object>("placeType");
-            var pt = serializer.ConvertToType<PlaceType>(pts);
-            var woeId = dictionary.GetValue<int>("woeid");
-            var parentId = dictionary.GetValue<int>("parentid");
+            var pt = dictionary.GetNested<PlaceType>("placeType", serializer);
+
             return new Place
             {
                 name = placeName,
                 url = dictionary.GetValue<string>("url"),
-                woeid = (ulong)woeId,
-                parentid = (ulong)parentId,
+                woeid = (ulong)dictionary.GetValue<int>("woeid"),
+                parentid = (ulong)dictionary.GetValue<int>("parentid"),
                 placeType = pt,
                 country = dictionary.GetValue<string>("country"),
                 countryCode = dictionary.GetValue<string>("countryCode")

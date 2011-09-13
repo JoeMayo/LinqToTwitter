@@ -1,11 +1,9 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Runtime.Serialization;
-using System.Web.Script.Serialization;
-using System.Collections;
 
 namespace LinqToTwitter
 {
@@ -278,7 +276,7 @@ namespace LinqToTwitter
             var flat = from response in responses
                        let asOf = response.as_of.GetDate(now)
                        let locations = (from place in response.locations
-                                        select ToLocation(place)).ToList()
+                                        select place.ToLocation()).ToList()
                        let trends = (from trend in response.trends
                                      select new Trend
                                      {
@@ -310,7 +308,7 @@ namespace LinqToTwitter
             var locations = new List<Location>();
             foreach (var place in places)
             {
-                var location = ToLocation(place);
+                var location = place.ToLocation();
                 locations.Add(location);
             }
 
@@ -332,22 +330,6 @@ namespace LinqToTwitter
                 WeoID = this.WeoID,
                 Location = locations.FirstOrDefault(),
                 Locations = locations
-            };
-        }
-
-        internal Location ToLocation(Json.Place place)
-        {
-            var pt = place.placeType ?? new Json.PlaceType { code = 0, name = string.Empty };
-            return new Location
-            {
-                Country = place.country ?? string.Empty,
-                CountryCode = place.countryCode ?? string.Empty,
-                Name = place.name ?? string.Empty,
-                ParentID = place.parentid.ToString(CultureInfo.InvariantCulture),
-                PlaceTypeName = pt.name,
-                PlaceTypeNameCode = pt.code,
-                Url = place.url ?? string.Empty,
-                WoeID = place.woeid.ToString(CultureInfo.InvariantCulture)
             };
         }
     }

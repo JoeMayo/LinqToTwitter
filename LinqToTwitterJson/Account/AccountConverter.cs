@@ -4,11 +4,11 @@ using System.Web.Script.Serialization;
 
 namespace LinqToTwitter.Json
 {
-    public class TrendConverter : JavaScriptConverter
+    public class AccountConverter : JavaScriptConverter
     {
         public static JavaScriptSerializer GetSerializer()
         {
-            var converter = new Json.TrendConverter();
+            var converter = new Json.AccountConverter();
             var jss = new JavaScriptSerializer();
             jss.RegisterConverters(new JavaScriptConverter[] { converter });
             return jss;
@@ -26,10 +26,13 @@ namespace LinqToTwitter.Json
             {
                 return new List<Type> 
                 {
-                    typeof(Json.DailyWeeklyTrends), 
-                    typeof(Json.Trends),
-                    typeof(Json.SlottedTrend),
-                    typeof(Json.Trend),
+                    typeof(Json.Settings), 
+                    typeof(Json.SleepTime),
+                    typeof(Json.TimeZone),
+                    typeof(Json.RateLimitStatus),
+                    typeof(Json.User),
+                    typeof(Json.Status),
+                    typeof(Json.Totals),
                     typeof(Json.Place),
                     typeof(Json.PlaceType)
                 };
@@ -41,21 +44,33 @@ namespace LinqToTwitter.Json
             if (dictionary == null)
                 throw new ArgumentNullException("dictionary");
 
-            if (type == typeof(Json.DailyWeeklyTrends))
+            if (type == typeof(Json.Settings))
             {
-                return Json.DailyWeeklyTrends.Deserialize(dictionary, serializer);
+                return Json.Settings.Deserialize(dictionary, serializer);
             }
-            else if (type == typeof(Json.SlottedTrend))
+            else if (type == typeof(Json.SleepTime))
             {
-                return Json.SlottedTrend.Deserialize(dictionary, serializer);
+                return Json.SleepTime.Deserialize(dictionary, serializer);
             }
-            else if (type == typeof(Json.Trends))
+            else if (type == typeof(Json.TimeZone))
             {
-                return Json.Trends.Deserialize(dictionary, serializer);
+                return Json.TimeZone.Deserialize(dictionary, serializer);
             }
-            else if (type == typeof(Json.Trend))
+            else if (type == typeof(Json.RateLimitStatus))
             {
-                return Json.Trend.Deserialize(dictionary, serializer);
+                return Json.RateLimitStatus.Deserialize(dictionary, serializer);
+            }
+            else if (type == typeof(Json.User))
+            {
+                return Json.User.Deserialize(dictionary, serializer);
+            }
+            else if (type == typeof(Json.Status))
+            {
+                return Json.Status.Deserialize(dictionary, serializer);
+            }
+            else if (type == typeof(Json.Totals))
+            {
+                return Json.Totals.Deserialize(dictionary, serializer);
             }
             else if (type == typeof(Json.Place))
             {

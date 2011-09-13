@@ -95,6 +95,7 @@
     <Compile Include="Common\IDList.cs" />
     <Compile Include="Common\InvalidQueryException.cs" />
     <Compile Include="Common\IRequestProcessor.cs" />
+    <Compile Include="Common\JsonConversions.cs" />
     <Compile Include="Common\MethodCallExpressionTypeFinder.cs" />
     <Compile Include="Common\ParameterFinder.cs" />
     <Compile Include="Common\QueryParameter.cs" />

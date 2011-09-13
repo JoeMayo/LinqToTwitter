@@ -20,18 +20,13 @@ namespace LinqToTwitter.Json
 
         public static Trends Deserialize(IDictionary<string, object> dictionary, JavaScriptSerializer serializer)
         {
-            var jsonTrends = dictionary["trends"] as ArrayList;    // required!
-            var createdAt = dictionary.GetValue<string>("created_at");
-            var asOf = dictionary.GetValue<string>("as_of");
-            var locations = dictionary.GetValue<ArrayList>("locations");
-            var locs = (from object location in locations
-                        select serializer.ConvertToType<Place>(location));
-            var trds = (from object trend in jsonTrends
-                        select serializer.ConvertToType<Trend>(trend));
+            var trds = dictionary.GetNestedEnumeration<Trend>("trends", serializer);
+            var locs = dictionary.GetNestedEnumeration<Place>("locations", serializer);
+            
             return new Trends
             {
-                as_of = asOf,
-                created_at = createdAt,
+                as_of = dictionary.GetValue<string>("as_of"),
+                created_at = dictionary.GetValue<string>("created_at"),
                 locations = locs.ToArray(),
                 trends = trds.ToArray()
             };

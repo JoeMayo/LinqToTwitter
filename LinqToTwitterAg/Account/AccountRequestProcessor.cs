@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Xml.Linq;
 
 namespace LinqToTwitter
 {
     /// <summary>
     /// handles query processing for accounts
     /// </summary>
-    public class AccountRequestProcessor<T> : IRequestProcessor<T>
+    public class AccountRequestProcessor<T>
+        : IRequestProcessor<T>
+        , IRequestProcessorWantsJson
     {
         /// <summary>
         /// base url for request
@@ -56,16 +56,16 @@ namespace LinqToTwitter
             switch (Type)
             {
                 case AccountType.VerifyCredentials:
-                    url = BaseUrl + "account/verify_credentials.xml";
+                    url = BaseUrl + "account/verify_credentials.json";
                     break;
                 case AccountType.RateLimitStatus:
-                    url = BaseUrl + "account/rate_limit_status.xml";
+                    url = BaseUrl + "account/rate_limit_status.json";
                     break;
                 case AccountType.Totals:
-                    url = BaseUrl + "account/totals.xml";
+                    url = BaseUrl + "account/totals.json";
                     break;
                 case AccountType.Settings:
-                    url = BaseUrl + "account/settings.xml";
+                    url = BaseUrl + "account/settings.json";
                     break;
                 default:
                     throw new InvalidOperationException("The default case of BuildUrl should never execute because a Type must be specified.");
@@ -79,22 +79,116 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="responseXml">xml with Twitter response</param>
         /// <returns>List of User</returns>
-        public virtual List<T> ProcessResults(string responseXml)
+        public virtual List<T> ProcessResults(string responseJson)
         {
-            if (string.IsNullOrEmpty(responseXml))
+            Account acct = null;
+
+            if (!string.IsNullOrEmpty(responseJson))
             {
-                responseXml = "<account></account>";
+                switch (Type)
+                {
+                    case AccountType.Settings:
+                        acct = HandleSettingsResponse(responseJson);
+                        break;
+
+                    case AccountType.VerifyCredentials:
+                        acct = HandleVerifyCredentialsResponse(responseJson);
+                        break;
+
+                    case AccountType.RateLimitStatus:
+                        acct = HandleRateLimitResponse(responseJson);
+                        break;
+
+                    case AccountType.Totals:
+                        acct = HandleTotalsResponse(responseJson);
+                        break;
+
+                    default:
+                        throw new InvalidOperationException("The default case of ProcessResults should never execute because a Type must be specified.");
+                }
             }
 
-            XElement twitterResponse = XElement.Parse(responseXml);
-            var acct = new Account { Type = Type };
+            return new List<Account> { acct }.OfType<T>().ToList();
+        }
 
-            if (twitterResponse.Name == "user")
+        private Account HandleSettingsResponse(string responseJson)
+        {
+            var serializer = Json.AccountConverter.GetSerializer();
+            var settings = serializer.Deserialize<Json.Settings>(responseJson);
+
+            var acct = new Account
             {
-                var user = User.CreateUser(twitterResponse);
+                Type = Type,
+                Settings = new Settings
+                {
+                    TrendLocation = settings.trend_location.ToLocation(),
+                    GeoEnabled = settings.geo_enabled,
+                    SleepTime = settings.sleep_time.ToSleepTime(),
+                    Language = settings.language,
+                    AlwaysUseHttps = settings.always_use_https,
+                    DiscoverableByEmail = settings.discoverable_by_email,
+                    TimeZone = settings.time_zone.ToTZInfo()
+                }
+            };
 
-                acct.User = user;
-            }
+            return acct;
+        }
+
+        private Account HandleRateLimitResponse(string responseJson)
+        {
+            var serializer = Json.AccountConverter.GetSerializer();
+            var status = serializer.Deserialize<Json.RateLimitStatus>(responseJson);
+
+            var acct = new Account
+            {
+                Type = Type,
+                RateLimitStatus = new RateLimitStatus
+                {
+                    HourlyLimit = status.hourly_limit,
+                    RemainingHits = status.remaining_hits,
+                    ResetTime = status.reset_time,
+                    ResetTimeInSeconds = status.reset_time_in_seconds
+                }
+            };
+
+            return acct;
+        }
+
+        private Account HandleVerifyCredentialsResponse(string responseJson)
+        {
+            var serializer = Json.AccountConverter.GetSerializer();
+            var user = serializer.Deserialize<Json.User>(responseJson);
+
+            var acct = new Account
+            {
+                Type = Type,
+                User = user.ToUser()
+            };
+
+            return acct;
+        }
+
+        private Account HandleTotalsResponse(string responseJson)
+        {
+            var serializer = Json.AccountConverter.GetSerializer();
+            var totals = serializer.Deserialize<Json.Totals>(responseJson);
+
+            var acct = new Account
+            {
+                Type = Type,
+                Totals = new Totals
+                {
+                    Favorites = totals.favorites,
+                    Followers = totals.followers,
+                    Friends = totals.friends,
+                    Updates = totals.updates
+                }
+            };
+
+            return acct;
+        }
+#if THESEDONTSEEMTOBEINJSON
+
             else if (twitterResponse.Name == "hash")
             {
                 if (twitterResponse.Element("hourly-limit") != null)
@@ -109,7 +203,7 @@ namespace LinqToTwitter
                         ResetTimeInSeconds = int.Parse(twitterResponse.Element("reset-time-in-seconds").Value)
                     };
 
-                    acct.RateLimitStatus = rateLimits; 
+                    acct.RateLimitStatus = rateLimits;
                 }
                 else if (twitterResponse.Element("request") != null)
                 {
@@ -121,32 +215,7 @@ namespace LinqToTwitter
 
                     acct.EndSessionStatus = endSession;
                 }
-                else
-                {
-                    acct.Totals = new Totals
-                    {
-                        Updates = int.Parse(twitterResponse.Element("updates").Value),
-                        Friends = int.Parse(twitterResponse.Element("friends").Value),
-                        Favorites = int.Parse(twitterResponse.Element("favorites").Value),
-                        Followers = int.Parse(twitterResponse.Element("followers").Value)
-                    };
-                }
             }
-            else if (twitterResponse.Name == "settings")
-            {
-                acct.Settings = new Settings
-                {
-                    TrendLocation = Location.CreateLocation(twitterResponse.Element("trend_location")),
-                    GeoEnabled = bool.Parse(twitterResponse.Element("geo_enabled").Value),
-                    SleepTime = SleepTime.CreateSleepTime(twitterResponse.Element("sleep_time")),
-                    Language = twitterResponse.Element("language").Value,
-                    AlwaysUseHttps = bool.Parse(twitterResponse.Element("always_use_https").Value),
-                    DiscoverableByEmail = bool.Parse(twitterResponse.Element("discoverable_by_email").Value),
-                    TimeZone = TZInfo.CreateTZInfo(twitterResponse.Element("time_zone"))
-                 };
-            }
-
-            return new List<Account> { acct }.OfType<T>().ToList();
-        }
+#endif
     }
 }

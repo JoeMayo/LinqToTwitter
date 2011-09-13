@@ -16,16 +16,16 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         public static void Run(TwitterContext twitterCtx)
         {
-            //VerifyAccountCredentials(twitterCtx);
-            //ViewRateLimitStatus(twitterCtx);
-            //ViewRateLimitStatusProjection(twitterCtx);
-            //ViewRateLimitResponseHeadersDemo(twitterCtx);
-            //ViewAccountTotalsDemo(twitterCtx);
-            //ViewAccountSettingsDemo(twitterCtx);
+            VerifyAccountCredentials(twitterCtx);
+            ViewRateLimitStatus(twitterCtx);
+            ViewRateLimitStatusProjection(twitterCtx);
+            ViewRateLimitResponseHeadersDemo(twitterCtx);
+            ViewAccountTotalsDemo(twitterCtx);
+            ViewAccountSettingsDemo(twitterCtx);
             //EndSession(twitterCtx);
             //UpdateDeliveryDevice(twitterCtx);
             //UpdateAccountColors(twitterCtx);
-            UpdateAccountImage(twitterCtx);
+            //UpdateAccountImage(twitterCtx);
             //UpdateAccountImageCallback(twitterCtx);
             //UpdateAccountBackgroundImage(twitterCtx);
             //UpdateAccountBackgroundImageBytes(twitterCtx);
@@ -308,6 +308,13 @@ namespace LinqToTwitterDemo
             try
             {
                 Account account = accounts.SingleOrDefault();
+                User user = account.User;
+                Status tweet = user.Status ?? new Status();
+                Console.WriteLine("User (#" + user.Identifier.ID
+                                    + "): " + user.Identifier.ScreenName
+                                    + "\nTweet: " + tweet.Text
+                                    + "\nTweet ID: " + tweet.StatusID + "\n");
+
                 Console.WriteLine("Account credentials are verified.");
             }
             catch (WebException wex)

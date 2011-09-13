@@ -22,7 +22,7 @@ namespace LinqToTwitter.Json
         {
             return new Trend
             {
-                name = dictionary["name"] as string, // required!
+                name = dictionary.GetValue<string>("name"),
                 query = dictionary.GetValue<string>("query"),
                 url = dictionary.GetValue<string>("url"),
                 events = dictionary.GetValue<string>("events"),

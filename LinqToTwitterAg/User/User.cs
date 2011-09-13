@@ -45,21 +45,21 @@ namespace LinqToTwitter
                 ProfileImageUrl = user.GetString("profile_image_url"),
                 URL = user.GetString("url"),
                 Protected = user.GetBool("protected"),
-                FollowersCount = user.GetULong("followers_count"),
+                FollowersCount = user.GetInt("followers_count"),
                 ProfileBackgroundColor = user.GetString("profile_background_color"),
                 ProfileTextColor = user.GetString("profile_text_color"),
                 ProfileLinkColor = user.GetString("profile_link_color"),
                 ProfileSidebarFillColor = user.GetString("profile_sidebar_fill_color"),
                 ProfileSidebarBorderColor = user.GetString("profile_sidebar_border_color"),
-                FriendsCount = user.GetULong("friends_count"),
+                FriendsCount = user.GetInt("friends_count"),
                 CreatedAt = user.GetDate("created_at", DateTime.MinValue),
-                FavoritesCount = user.GetULong("favourites_count"),
+                FavoritesCount = user.GetInt("favourites_count"),
                 UtcOffset = user.GetString("utc_offset"),
                 TimeZone = user.GetString("time_zone"),
                 ProfileBackgroundImageUrl = user.GetString("profile_background_image_url"),
                 ProfileBackgroundImageUrlHttps = user.GetString("profile_background_image_url_https"),
                 ProfileBackgroundTile = user.GetString("profile_background_tile"),
-                StatusesCount = user.GetULong("statuses_count"),
+                StatusesCount = user.GetInt("statuses_count"),
                 Notifications = user.GetBool("notifications"),
                 GeoEnabled = user.GetBool("geo_enabled"),
                 Verified = user.GetBool("verified"),
@@ -181,11 +181,20 @@ namespace LinqToTwitter
         /// </summary>
         public string ProfileImageUrlHttps { get; set; }
 
-        /// 
+        /// <summary>
+        /// user's image is a defaulted placeholder
+        /// </summary>
+        public bool DefaultProfileImage{ get; set; }
+
         /// <summary>
         /// user's URL
         /// </summary>
         public string URL { get; set; }
+
+        /// <summary>
+        /// user's profile has not been configured (is just defaults)
+        /// </summary>
+        public bool DefaultProfile { get; set; }
 
         /// <summary>
         /// is user protected
@@ -195,7 +204,7 @@ namespace LinqToTwitter
         /// <summary>
         /// number of people following user
         /// </summary>
-        public ulong FollowersCount { get; set; }
+        public int FollowersCount { get; set; }
 
         /// <summary>
         /// color of profile background
@@ -225,7 +234,7 @@ namespace LinqToTwitter
         /// <summary>
         /// number of friends
         /// </summary>
-        public ulong FriendsCount { get; set; }
+        public int FriendsCount { get; set; }
 
         /// <summary>
         /// date and time when profile was created
@@ -235,7 +244,7 @@ namespace LinqToTwitter
         /// <summary>
         /// number of favorites
         /// </summary>
-        public ulong FavoritesCount { get; set; }
+        public int FavoritesCount { get; set; }
 
         /// <summary>
         /// UTC Offset
@@ -263,9 +272,14 @@ namespace LinqToTwitter
         public string ProfileBackgroundTile { get; set; }
 
         /// <summary>
+        /// Should we use the profile background image?
+        /// </summary>
+        public bool ProfileUseBackgroundImage { get; set; }
+
+        /// <summary>
         /// number of status updates user has made
         /// </summary>
-        public ulong StatusesCount { get; set; }
+        public int StatusesCount { get; set; }
 
         /// <summary>
         /// type of device notifications
@@ -286,6 +300,11 @@ namespace LinqToTwitter
         /// Is contributors enabled on account?
         /// </summary>
         public bool ContributorsEnabled { get; set; }
+
+        /// <summary>
+        /// Is this a translator?
+        /// </summary>
+        public bool IsTranslator { get; set; }
 
         /// <summary>
         /// is authenticated user following this user

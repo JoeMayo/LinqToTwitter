@@ -96,7 +96,9 @@ namespace LinqToTwitterDemo
                     //  http://dev.twitter.com/doc
                     //
 
-                    //AccountDemos.Run(twitterCtx);
+                    if (DoThis("demo account"))
+                        AccountDemos.Run(twitterCtx);
+
                     //BlocksDemos.Run(twitterCtx);
                     //DirectMessageDemos.Run(twitterCtx);
                     //FavoritesDemos.Run(twitterCtx);
@@ -112,7 +114,10 @@ namespace LinqToTwitterDemo
                     //SocialGraphDemos.Run(twitterCtx);
                     //StatusDemos.Run(twitterCtx);
                     //StreamingDemo.Run(twitterCtx);
-                    TrendsDemos.Run(twitterCtx);
+
+                    if (DoThis("demo trend"))
+                        TrendsDemos.Run(twitterCtx);
+
                     //UserDemos.Run(twitterCtx);
                     //NotificationsDemos.Run(twitterCtx);
                     //ReportSpamDemos.Run(twitterCtx);
