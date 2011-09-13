@@ -110,6 +110,7 @@
     <AssemblyOriginatorKeyFile>..\LinqToTwitterAg\LinqToTwitter.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="LinqToTwitterJson, Version=2.0.22.0, Culture=neutral, PublicKeyToken=957107be965c25d9, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
