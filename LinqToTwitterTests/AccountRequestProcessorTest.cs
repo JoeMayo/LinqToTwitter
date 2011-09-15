@@ -217,7 +217,6 @@ namespace LinqToTwitterTests
             Assert.AreEqual("United States", acct.Settings.TrendLocation.Name);
             Assert.AreEqual(12, acct.Settings.TrendLocation.PlaceTypeNameCode);
             Assert.AreEqual("Country", acct.Settings.TrendLocation.PlaceTypeName);
-            Assert.AreEqual("Country", acct.Settings.TrendLocation.CountryType);
             Assert.AreEqual("US", acct.Settings.TrendLocation.CountryCode);
             Assert.AreEqual("United States", acct.Settings.TrendLocation.Country);
             Assert.AreEqual("http://where.yahooapis.com/v1/place/23424977", acct.Settings.TrendLocation.Url);

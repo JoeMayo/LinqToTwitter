@@ -339,8 +339,8 @@ namespace LinqToTwitter
                         {
                             var res = reqEx.EndGetResponse(ar) as HttpWebResponse;
                             //httpStatus = res.Headers["Status"];
-                            responseXml = GetTwitterResponse(res);
-                            List<T> responseObj = reqProc.ProcessResults(responseXml);
+                            response = GetTwitterResponse(res);
+                            List<T> responseObj = reqProc.ProcessResults(response);
                             (AsyncCallback as Action<IEnumerable<T>>)(responseObj);
                         }), null);
 #else

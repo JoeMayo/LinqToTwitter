@@ -248,7 +248,6 @@ namespace LinqToTwitterTests
             Location loc = trends[0].Locations.First();
             Assert.AreEqual("Turkey", loc.Country);
             Assert.AreEqual("TR", loc.CountryCode);
-            Assert.AreEqual("Country", loc.CountryType);
             Assert.AreEqual("Turkey", loc.Name);
             Assert.AreEqual("Country", loc.PlaceTypeName);
             Assert.AreEqual(12, loc.PlaceTypeNameCode);
@@ -278,7 +277,7 @@ namespace LinqToTwitterTests
             TrendRequestProcessor<Trend> target = new TrendRequestProcessor<Trend>();
             Expression<Func<Trend, bool>> expression =
                 trend =>
-                    trend.Type == TrendType.Current &&
+                    trend.Type == TrendType.Available &&
                     trend.ExcludeHashtags == true;
             LambdaExpression lambdaExpression = expression as LambdaExpression;
 
@@ -286,7 +285,7 @@ namespace LinqToTwitterTests
 
             Assert.IsTrue(
                 queryParams.Contains(
-                    new KeyValuePair<string, string>("Type", ((int)TrendType.Current).ToString())));
+                    new KeyValuePair<string, string>("Type", ((int)TrendType.Available).ToString())));
             Assert.IsTrue(
                 queryParams.Contains(
                     new KeyValuePair<string, string>("ExcludeHashtags", "True")));
@@ -342,7 +341,7 @@ namespace LinqToTwitterTests
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                 {
-                    { "Type", ((int)TrendType.Current).ToString() },
+                    { "Type", ((int)TrendType.Available).ToString() },
                     { "Date", "2009-01-01" },
                     { "ExcludeHashtags", "true" }
                 };
