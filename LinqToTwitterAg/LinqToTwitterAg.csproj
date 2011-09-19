@@ -183,6 +183,25 @@
     <Compile Include="Search\Search.cs" />
     <Compile Include="Search\SearchRequestProcessor.cs" />
     <Compile Include="Search\SearchType.cs" />
+    <Compile Include="Serialization\Account\AccountConverter.cs" />
+    <Compile Include="Serialization\Account\RateLimitStatus.cs" />
+    <Compile Include="Serialization\Account\Settings.cs" />
+    <Compile Include="Serialization\Account\SleepTime.cs" />
+    <Compile Include="Serialization\Account\TimeZone.cs" />
+    <Compile Include="Serialization\Account\Totals.cs" />
+    <Compile Include="Serialization\Extensions\DictionaryExtensions.cs" />
+    <Compile Include="Serialization\Extensions\StringExtensions.cs" />
+    <Compile Include="Serialization\JavaScriptConverter.cs" />
+    <Compile Include="Serialization\JavaScriptSerializer.cs" />
+    <Compile Include="Serialization\Place\Place.cs" />
+    <Compile Include="Serialization\Place\PlaceType.cs" />
+    <Compile Include="Serialization\Status\Status.cs" />
+    <Compile Include="Serialization\Trend\DailyWeeklyTrends.cs" />
+    <Compile Include="Serialization\Trend\SlottedTrend.cs" />
+    <Compile Include="Serialization\Trend\Trend.cs" />
+    <Compile Include="Serialization\Trend\TrendConverter.cs" />
+    <Compile Include="Serialization\Trend\Trends.cs" />
+    <Compile Include="Serialization\User\User.cs" />
     <Compile Include="SocialGraph\SocialGraph.cs" />
     <Compile Include="SocialGraph\SocialGraphRequestProcessor.cs" />
     <Compile Include="SocialGraph\SocialGraphType.cs" />
@@ -220,12 +239,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="LinqToTwitter.snk" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\LinqToTwitterJson\LinqToTwitterJson.csproj">
-      <Project>{3E973695-16FF-441B-9797-0986BD7F74C1}</Project>
-      <Name>LinqToTwitterJson</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Silverlight\$(SilverlightVersion)\Microsoft.Silverlight.CSharp.targets" />
   <ProjectExtensions>

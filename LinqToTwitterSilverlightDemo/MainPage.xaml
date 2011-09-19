@@ -55,6 +55,11 @@
                     <HyperlinkButton x:Name="UpdateLink" Style="{StaticResource LinkStyle}" 
                                      NavigateUri="/StatusUpdate" TargetName="ContentFrame" Content="Status Update"/>
 
+                    <Rectangle x:Name="Divider4" Style="{StaticResource DividerStyle}"/>
+
+                    <HyperlinkButton x:Name="TrendsLink" Style="{StaticResource LinkStyle}" 
+                                     NavigateUri="/Trends" TargetName="ContentFrame" Content="Trends"/>
+
                 </StackPanel>
             </Border>
 
