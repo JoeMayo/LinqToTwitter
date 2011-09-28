@@ -61,8 +61,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqToTwitterSilverlightDem
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqToTwitterSilverlightDemo.Web", "LinqToTwitterSilverlightDemo.Web\LinqToTwitterSilverlightDemo.Web.csproj", "{509AAAE9-A9DD-4CD1-9807-B315506BC6CE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqToTwitterJson", "LinqToTwitterJson\LinqToTwitterJson.csproj", "{3E973695-16FF-441B-9797-0986BD7F74C1}"
-EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
 		SccNumberOfProjects = 10
@@ -171,12 +169,6 @@ Global
 		{509AAAE9-A9DD-4CD1-9807-B315506BC6CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{509AAAE9-A9DD-4CD1-9807-B315506BC6CE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{509AAAE9-A9DD-4CD1-9807-B315506BC6CE}.Release|x86.ActiveCfg = Release|Any CPU
-		{3E973695-16FF-441B-9797-0986BD7F74C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3E973695-16FF-441B-9797-0986BD7F74C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3E973695-16FF-441B-9797-0986BD7F74C1}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{3E973695-16FF-441B-9797-0986BD7F74C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3E973695-16FF-441B-9797-0986BD7F74C1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3E973695-16FF-441B-9797-0986BD7F74C1}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

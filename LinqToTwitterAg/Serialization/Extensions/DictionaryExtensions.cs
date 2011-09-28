@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 #if !SILVERLIGHT
@@ -46,7 +47,11 @@ namespace LinqToTwitter.Json
         public static IEnumerable<T> GetNestedEnumeration<T>(this IDictionary<string, object> dictionary, string key, JavaScriptSerializer serializer)
             where T : class
         {
+#if SILVERLIGHT
             var array = dictionary.GetValue<List<object>>(key, null);
+#else
+            var array = dictionary.GetValue<ArrayList>(key, null);
+#endif
 
             if (array != null)
             {

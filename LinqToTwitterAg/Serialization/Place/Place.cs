@@ -1,5 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
+#if !SILVERLIGHT
+using System.Web.Script.Serialization;
+#endif
 
 namespace LinqToTwitter.Json
 {
