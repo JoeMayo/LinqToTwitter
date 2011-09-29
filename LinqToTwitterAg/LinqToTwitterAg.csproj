@@ -158,6 +158,7 @@
     <Compile Include="OAuth\SignInAuthorizer.cs" />
     <Compile Include="OAuth\SilverlightAuthorizer.cs" />
     <Compile Include="OAuth\SingleUserAuthorizer.cs" />
+    <Compile Include="OAuth\SingleUserInMemoryCredentials.cs" />
     <Compile Include="OAuth\WebAuthorizer.cs" />
     <Compile Include="OAuth\Utilities.cs" />
     <Compile Include="OAuth\XAuthAuthorizer.cs" />
@@ -248,11 +249,4 @@
       </FlavorProperties>
     </VisualStudio>
   </ProjectExtensions>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

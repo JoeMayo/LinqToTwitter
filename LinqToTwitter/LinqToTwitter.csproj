@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{A214B9F0-6B8C-4E91-BE99-27F55CC860C1}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -532,6 +532,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\LinqToTwitterAg\OAuth\SingleUserInMemoryCredentials.cs">
+      <Link>OAuth\SingleUserInMemoryCredentials.cs</Link>
+    </Compile>
     <Compile Include="..\LinqToTwitterAg\Serialization\Account\AccountConverter.cs">
       <Link>Serialization\Account\AccountConverter.cs</Link>
     </Compile>
@@ -564,10 +567,10 @@
     </Compile>
     <Compile Include="..\LinqToTwitterAg\Serialization\Status\Status.cs">
       <Link>Serialization\Status\Status.cs</Link>
-    </Compile>           
+    </Compile>
     <Compile Include="..\LinqToTwitterAg\Serialization\Trend\DailyWeeklyTrends.cs">
       <Link>Serialization\Trend\DailyWeeklyTrends.cs</Link>
-    </Compile>   
+    </Compile>
     <Compile Include="..\LinqToTwitterAg\Serialization\Trend\SlottedTrend.cs">
       <Link>Serialization\Trend\SlottedTrend.cs</Link>
     </Compile>

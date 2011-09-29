@@ -248,6 +248,10 @@ namespace LinqToTwitter
             {
                 Query = parameters["Query"];
 
+                //TODO: is this related to maximum tweet length (in which case
+                // this is STILL wrong, given we could be ORing clauses together
+                // on the other hand, if this is some limitation of the search
+                // endpoint then it's valid and should stay...
                 if (Query.Length > 140)
                 {
                     throw new ArgumentException("Query length must be 140 characters or less.", "Query");

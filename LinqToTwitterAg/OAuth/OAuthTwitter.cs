@@ -411,7 +411,7 @@ namespace LinqToTwitter
         {
             string responseData = "";
 
-            HttpWebRequest webRequest = System.Net.WebRequest.Create(ProxyUrl + url) as HttpWebRequest;
+            var webRequest = System.Net.WebRequest.Create(ProxyUrl + url) as HttpWebRequest;
             webRequest.Method = method.ToString();
 #if !SILVERLIGHT
             webRequest.ServicePoint.Expect100Continue = false;
@@ -438,30 +438,31 @@ namespace LinqToTwitter
 #else
                 Exception asyncException = null;
 
-                var resetEvent = new ManualResetEvent(/*initialState:*/ false);
-
-                webRequest.BeginGetRequestStream(
-                    new AsyncCallback(
-                        ar =>
-                        {
-                            try 
-	                        {	        
-		                        using (var requestStream = webRequest.EndGetRequestStream(ar))
-                                {
-                                    requestStream.Write(postDataBytes, 0, postDataBytes.Length);
-                                }
-	                        }
-	                        catch (Exception ex)
-	                        {
-                                asyncException = ex;
-	                        }
-                            finally
+                using (var resetEvent = new ManualResetEvent(/*initialState:*/ false))
+                {
+                    webRequest.BeginGetRequestStream(
+                        new AsyncCallback(
+                            ar =>
                             {
-                                resetEvent.Set();
-                            }
-                        }), null);
+                                try
+                                {
+                                    using (var requestStream = webRequest.EndGetRequestStream(ar))
+                                    {
+                                        requestStream.Write(postDataBytes, 0, postDataBytes.Length);
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    asyncException = ex;
+                                }
+                                finally
+                                {
+                                    resetEvent.Set();
+                                }
+                            }), null);
 
-                resetEvent.WaitOne();
+                    resetEvent.WaitOne();
+                }
 
                 if (asyncException != null)
 	            {
@@ -490,33 +491,35 @@ namespace LinqToTwitter
 
             Exception asyncException = null;
 
-            var resetEvent = new ManualResetEvent(/*initialState:*/ false);
-            HttpWebResponse res = null;
+            using (var resetEvent = new ManualResetEvent(/*initialState:*/ false))
+            {
+                HttpWebResponse res = null;
 
-            webRequest.BeginGetResponse(
-                new AsyncCallback(
-                    ar =>
-                    {
-                        try
+                webRequest.BeginGetResponse(
+                    new AsyncCallback(
+                        ar =>
                         {
-                            res = webRequest.EndGetResponse(ar) as HttpWebResponse;
-                            using (var respStream = res.GetResponseStream())
-                            using (var respReader = new StreamReader(respStream))
+                            try
                             {
-                                responseData = respReader.ReadToEnd();
+                                res = webRequest.EndGetResponse(ar) as HttpWebResponse;
+                                using (var respStream = res.GetResponseStream())
+                                using (var respReader = new StreamReader(respStream))
+                                {
+                                    responseData = respReader.ReadToEnd();
+                                }
                             }
-                        }
-                        catch (Exception ex)
-                        {
-                            asyncException = ex;
-                        }
-                        finally
-                        {
-                            resetEvent.Set(); 
-                        }
-                    }), null);
+                            catch (Exception ex)
+                            {
+                                asyncException = ex;
+                            }
+                            finally
+                            {
+                                resetEvent.Set();
+                            }
+                        }), null);
 
-            resetEvent.WaitOne();
+                resetEvent.WaitOne();
+            }
 
             if (asyncException != null)
             {
@@ -593,7 +596,7 @@ namespace LinqToTwitter
         {
             string signedUrl = null;
             string queryString = null;
-            string callback = callbackUrl == null ? string.Empty : callbackUrl;
+            string callback = callbackUrl ?? string.Empty;
             var request = new Request(oauthUrl.ToString());
             GetOAuthQueryString(HttpMethod.GET, request, callback, out signedUrl, out queryString);
             
@@ -683,7 +686,7 @@ namespace LinqToTwitter
             Action<string> authorizationCallback, 
             Action<TwitterAsyncResponse<object>> authenticationCompleteCallback)
         {
-            HttpWebRequest req = GetHttpGetRequest(oauthRequestTokenUrl, twitterCallbackUrl);
+            var req = GetHttpGetRequest(oauthRequestTokenUrl, twitterCallbackUrl);
 
             req.BeginGetResponse(
                 new AsyncCallback(
@@ -744,7 +747,7 @@ namespace LinqToTwitter
         {
             OAuthVerifier = verifier;
 
-            HttpWebRequest req = GetHttpGetRequest(oauthAccessTokenUrl, twitterCallbackUrl);
+            var req = GetHttpGetRequest(oauthAccessTokenUrl, twitterCallbackUrl);
 
             req.BeginGetResponse(
                 new AsyncCallback(
@@ -807,8 +810,8 @@ namespace LinqToTwitter
         /// <param name="authorizationCompleteCallback">Invoked when request finishes</param>
         public void PostAccessTokenAsync(Request request, IDictionary<string, string> postData, Action<TwitterAsyncResponse<UserIdentifier>> authenticationCompleteCallback)
         {
-            Uri accessTokenUrl = new Uri(request.FullUrl);
-            HttpWebRequest req = GetHttpPostRequest(accessTokenUrl);
+            var accessTokenUrl = new Uri(request.FullUrl);
+            var req = GetHttpPostRequest(accessTokenUrl);
 
             req.ContentType = "application/x-www-form-urlencoded";
 
@@ -879,30 +882,31 @@ namespace LinqToTwitter
 #else
             Exception asyncException = null;
 
-            var resetEvent = new ManualResetEvent(/*initialState:*/ false);
-
-            req.BeginGetRequestStream(
-                new AsyncCallback(
-                    ar =>
-                    {
-                        try
+            using (var resetEvent = new ManualResetEvent(/*initialState:*/ false))
+            {
+                req.BeginGetRequestStream(
+                    new AsyncCallback(
+                        ar =>
                         {
-                            using (var requestStream = req.EndGetRequestStream(ar))
+                            try
                             {
-                                requestStream.Write(postDataBytes, 0, postDataBytes.Length);
+                                using (var requestStream = req.EndGetRequestStream(ar))
+                                {
+                                    requestStream.Write(postDataBytes, 0, postDataBytes.Length);
+                                }
                             }
-                        }
-                        catch (Exception ex)
-                        {
-                            asyncException = ex;
-                        }
-                        finally
-                        {
-                            resetEvent.Set();
-                        }
-                    }), null);
+                            catch (Exception ex)
+                            {
+                                asyncException = ex;
+                            }
+                            finally
+                            {
+                                resetEvent.Set();
+                            }
+                        }), null);
 
-            resetEvent.WaitOne();
+                resetEvent.WaitOne();
+            }
 
             if (asyncException != null)
             {
