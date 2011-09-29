@@ -1557,13 +1557,6 @@ namespace LinqToTwitter
                 throw new ArgumentException("status is a required parameter.");
             }
 
-            if (status.Length > 140)
-            {
-                throw new ArgumentException("status length must be no more than 140 characters.", "status");
-            }
-
-            status = status.Substring(0, Math.Min(140, status.Length));
-
             var updateUrl = BaseUrl + "statuses/update.xml";
 
             var reqProc = new StatusRequestProcessor<Status>();
@@ -1671,11 +1664,6 @@ namespace LinqToTwitter
             if (string.IsNullOrEmpty(text))
             {
                 throw new ArgumentException("text is a required parameter.", "text");
-            }
-
-            if (text.Length > 140)
-            {
-                throw new ArgumentException("text must be no longer than 140 characters.", "text");
             }
 
             var newUrl = BaseUrl + "direct_messages/new.xml";
