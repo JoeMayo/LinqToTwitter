@@ -795,6 +795,7 @@ namespace LinqToTwitter
         /// <param name="expression">ExpressionTree to parse</param>
         /// <returns>list of objects with query results</returns>
         public virtual object Execute<T>(Expression expression, bool isEnumerable)
+            where T: class
         {
             // request processor is specific to request type (i.e. Status, User, etc.)
             var reqProc = CreateRequestProcessor<T>(expression);
@@ -870,6 +871,7 @@ namespace LinqToTwitter
         /// <typeparam name="T">type of request</typeparam>
         /// <returns>request processor matching type parameter</returns>
         private IRequestProcessor<T> CreateRequestProcessor<T>(Expression expression)
+            where T: class
         {
             if (expression == null)
             {
@@ -878,69 +880,72 @@ namespace LinqToTwitter
 
             IRequestProcessor<T> req = null;
 
+            var baseUrl = this.BaseUrl;
             string requestType = new MethodCallExpressionTypeFinder().GetGenericType(expression).Name;
 
             switch (requestType)
             {
                 case "Account":
-                    req = new AccountRequestProcessor<T>() { BaseUrl = BaseUrl };
+                    req = new AccountRequestProcessor<T>();
                     break;
                 case "Blocks":
-                    req = new BlocksRequestProcessor<T>() { BaseUrl = BaseUrl };
+                    req = new BlocksRequestProcessor<T>();
                     break;
                 case "DirectMessage":
-                    req = new DirectMessageRequestProcessor<T>() { BaseUrl = BaseUrl };
+                    req = new DirectMessageRequestProcessor<T>();
                     break;
                 case "Favorites":
-                    req = new FavoritesRequestProcessor<T>() { BaseUrl = BaseUrl };
+                    req = new FavoritesRequestProcessor<T>();
                     break;
                 case "Friendship":
-                    req = new FriendshipRequestProcessor<T>() { BaseUrl = BaseUrl };
+                    req = new FriendshipRequestProcessor<T>();
                     break;
                 case "Geo":
-                    req = new GeoRequestProcessor<T>() { BaseUrl = BaseUrl };
+                    req = new GeoRequestProcessor<T>();
                     break;
                 case "Help":
-                    req = new HelpRequestProcessor<T>() { BaseUrl = BaseUrl };
+                    req = new HelpRequestProcessor<T>();
                     break;
                 case "Legal":
-                    req = new LegalRequestProcessor<T>() { BaseUrl = BaseUrl };
+                    req = new LegalRequestProcessor<T>();
                     break;
                 case "List":
-                    req = new ListRequestProcessor<T>() { BaseUrl = BaseUrl };
+                    req = new ListRequestProcessor<T>();
                     break;
                 case "Raw":
-                    req = new RawRequestProcessor<T>() { BaseUrl = baseUrl };
+                    req = new RawRequestProcessor<T>();
                     break;
                 case "RelatedResults":
-                    req = new RelatedResultsRequestProcessor<T> { BaseUrl = baseUrl };
+                    req = new RelatedResultsRequestProcessor<T>();
                     break;
                 case "SavedSearch":
-                    req = new SavedSearchRequestProcessor<T>() { BaseUrl = BaseUrl };
+                    req = new SavedSearchRequestProcessor<T>();
                     break;
                 case "SocialGraph":
-                    req = new SocialGraphRequestProcessor<T>() { BaseUrl = BaseUrl };
+                    req = new SocialGraphRequestProcessor<T>();
                     break;
                 case "Search":
-                    req = new SearchRequestProcessor<T>() { BaseUrl = SearchUrl };
+                    baseUrl = SearchUrl;
+                    req = new SearchRequestProcessor<T>();
                     break;
                 case "Status":
-                    req = new StatusRequestProcessor<T>() { BaseUrl = BaseUrl };
+                    req = new StatusRequestProcessor<T>();
                     break;
                 case "Streaming":
-                    req = new StreamingRequestProcessor<T> 
+                    baseUrl = StreamingUrl;
+                    req = new StreamingRequestProcessor<T>
                     { 
-                        BaseUrl = StreamingUrl,
                         TwitterExecutor = TwitterExecutor
                     };
                     break;
                 case "Trend":
-                    req = new TrendRequestProcessor<T>() { BaseUrl = BaseUrl };
+                    req = new TrendRequestProcessor<T>();
                     break;
                 case "User":
-                    req = new UserRequestProcessor<T>() { BaseUrl = BaseUrl };
+                    req = new UserRequestProcessor<T>();
                     break;
                 case "UserStream":
+                    baseUrl = null; // don't set that..
                     req = new UserStreamRequestProcessor<T>
                     {
                         UserStreamUrl = UserStreamUrl,
@@ -952,7 +957,8 @@ namespace LinqToTwitter
                     throw new ArgumentException("Type, " + requestType + " isn't a supported LINQ to Twitter entity.", "requestType");
             }
 
-            Debug.Assert(req != null, "You you must assign a value to req.");
+            if (baseUrl != null)
+                req.BaseUrl = baseUrl;
 
             return req;
         }
@@ -1871,7 +1877,7 @@ namespace LinqToTwitter
                 throw new ArgumentNullException("screenName", "screenName is a required parameter.");
             }
 
-            string updateUrl = baseUrl + "friendships/update.xml";
+            string updateUrl = BaseUrl + "friendships/update.xml";
 
             var reqProc = new FriendshipRequestProcessor<Friendship>();
 
@@ -2248,19 +2254,18 @@ namespace LinqToTwitter
         /// <returns>true</returns>
         public virtual TwitterHashResponse EndAccountSession(Action<TwitterAsyncResponse<Account>> callback)
         {
-            var accountUrl = BaseUrl + "account/end_session.xml";
+            var accountUrl = BaseUrl + "account/end_session.json";
 
             var reqProc = new AccountRequestProcessor<Account>();
 
             TwitterExecutor.AsyncCallback = callback;
-            var resultsXml =
+            var results =
                 TwitterExecutor.ExecuteTwitter(
                     accountUrl,
                     new Dictionary<string, string>(),
                     reqProc);
 
-            List<Account> results = reqProc.ProcessResults(resultsXml);
-            Account acct = results.FirstOrDefault();
+            var acct = reqProc.ProcessActionResult(results, AccountAction.EndSession);
 
             if (acct != null)
             {

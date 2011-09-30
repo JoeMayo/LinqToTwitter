@@ -12,7 +12,7 @@ namespace LinqToTwitter
     /// </summary>
     public class TrendRequestProcessor<T>
         : IRequestProcessor<T>
-        , IRequestProcessorWantsJson
+        , IRequestProcessorWithAction<T>
     {
         /// <summary>
         /// base url for request
@@ -234,6 +234,31 @@ namespace LinqToTwitter
             }
 
             return trends.OfType<T>().ToList();
+        }
+
+        /// <summary>
+        /// transforms json into an action response
+        /// </summary>
+        /// <param name="responseXml">json with Twitter response</param>
+        /// <returns>Action response</returns>
+        public virtual T ProcessActionResult(string responseJson, Enum theAction)
+        {
+            Trend trend = null;
+
+            if (!string.IsNullOrEmpty(responseJson))
+            {
+                //switch ((TrendAction)theAction)
+                //{
+                    //case AccountAction.EndSession:
+                    //    acct = HandleEndSessionResponse(responseJson);
+                    //    break;
+
+                    //default:
+                        throw new InvalidOperationException("The default case of ProcessActionResult should never execute because a Type must be specified.");
+                //}
+            }
+
+            return trend.ToEnumerable().OfType<T>().FirstOrDefault();
         }
 
         private IEnumerable<Trend> HandleDailyWeeklyResponse(string responseJson)

@@ -22,7 +22,7 @@ namespace LinqToTwitterDemo
             ViewRateLimitResponseHeadersDemo(twitterCtx);
             ViewAccountTotalsDemo(twitterCtx);
             ViewAccountSettingsDemo(twitterCtx);
-            //EndSession(twitterCtx);
+            //EndSession(twitterCtx); // really shouldn't do this at all!
             //UpdateDeliveryDevice(twitterCtx);
             //UpdateAccountColors(twitterCtx);
             //UpdateAccountImage(twitterCtx);

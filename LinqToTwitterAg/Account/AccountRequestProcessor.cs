@@ -9,7 +9,8 @@ namespace LinqToTwitter
     /// </summary>
     public class AccountRequestProcessor<T>
         : IRequestProcessor<T>
-        , IRequestProcessorWantsJson
+        , IRequestProcessorWithAction<T>
+        where T : class
     {
         /// <summary>
         /// base url for request
@@ -75,10 +76,10 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// transforms XML into IQueryable of User
+        /// transforms json into IQueryable of Account
         /// </summary>
-        /// <param name="responseXml">xml with Twitter response</param>
-        /// <returns>List of User</returns>
+        /// <param name="responseXml">json with Twitter response</param>
+        /// <returns>List of Account</returns>
         public virtual List<T> ProcessResults(string responseJson)
         {
             Account acct = null;
@@ -109,6 +110,31 @@ namespace LinqToTwitter
             }
 
             return new List<Account> { acct }.OfType<T>().ToList();
+        }
+
+        /// <summary>
+        /// transforms json into an action response
+        /// </summary>
+        /// <param name="responseXml">json with Twitter response</param>
+        /// <returns>Action response</returns>
+        public virtual T ProcessActionResult(string responseJson, Enum theAction)
+        {
+            Account acct = null;
+
+            if (!string.IsNullOrEmpty(responseJson))
+            {
+                switch ((AccountAction)theAction)
+                {
+                    case AccountAction.EndSession:
+                        acct = HandleEndSessionResponse(responseJson);
+                        break;
+
+                    default:
+                        throw new InvalidOperationException("The default case of ProcessActionResult should never execute because a Type must be specified.");
+                }
+            }
+
+            return acct.ItemCast(default(T));
         }
 
         private Account HandleSettingsResponse(string responseJson)
@@ -182,6 +208,23 @@ namespace LinqToTwitter
                     Followers = totals.followers,
                     Friends = totals.friends,
                     Updates = totals.updates
+                }
+            };
+
+            return acct;
+        }
+
+        private Account HandleEndSessionResponse(string responseJson)
+        {
+            var serializer = Json.AccountConverter.GetSerializer();
+            var endSession = serializer.Deserialize<Json.EndSession>(responseJson);
+
+            var acct = new Account
+            {
+                EndSessionStatus = new TwitterHashResponse
+                {
+                    Request = endSession.request,
+                    Error = endSession.error
                 }
             };
 

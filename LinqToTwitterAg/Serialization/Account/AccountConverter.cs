@@ -36,7 +36,8 @@ namespace LinqToTwitter.Json
                     typeof(Json.Status),
                     typeof(Json.Totals),
                     typeof(Json.Place),
-                    typeof(Json.PlaceType)
+                    typeof(Json.PlaceType),
+                    typeof(Json.EndSession)
                 };
             }
         }
@@ -81,6 +82,10 @@ namespace LinqToTwitter.Json
             else if (type == typeof(Json.PlaceType))
             {
                 return Json.PlaceType.Deserialize(dictionary, serializer);
+            }
+            else if (type == typeof(Json.EndSession))
+            {
+                return Json.EndSession.Deserialize(dictionary, serializer);
             }
             else
             {

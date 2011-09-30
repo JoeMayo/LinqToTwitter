@@ -48,8 +48,12 @@ namespace LinqToTwitterDemo
                 // justify using it with Twitter: http://dev.twitter.com/pages/xauth. You should use OAuth instead.  However,
                 // LINQ to Twitter supports XAuth if you're one of the rare cases that Twitter gives permission to.
                 auth = DoXAuth();
-                DumpJoeFriends(auth);
-                Console.ReadKey();
+                if (DoThis("dump Joe's friends"))
+                {
+                    DumpJoeFriends(auth);
+                    Console.WriteLine("Press any key to continue");
+                    Console.ReadKey();
+                }
             }
             #endregion
 
@@ -58,8 +62,12 @@ namespace LinqToTwitterDemo
             {
                 // perform single user authorization. Visit Twitter at http://dev.twitter.com/pages/oauth_single_token for more info.
                 auth = DoSingleUserAuth();
-                DumpJoeFriends(auth);
-                Console.ReadKey();
+                if (DoThis("dump Joe's friends"))
+                {
+                    DumpJoeFriends(auth);
+                    Console.WriteLine("Press any key to continue");
+                    Console.ReadKey();
+                }
             }
             #endregion
 
@@ -67,8 +75,12 @@ namespace LinqToTwitterDemo
             if (DoThis("use OAuth via Pin"))
             {
                 auth = DoPinOAuth();
-                DumpJoeFriends(auth);
-                Console.ReadKey();
+                if (DoThis("dump Joe's friends"))
+                {
+                    DumpJoeFriends(auth);
+                    Console.WriteLine("Press any key to continue");
+                    Console.ReadKey();
+                }
             }
             #endregion
 
@@ -132,6 +144,9 @@ namespace LinqToTwitterDemo
             }
             #endregion
 
+            if (DoThis("end session"))
+                EndSession(auth);
+
             Console.WriteLine("Press any key to end this demo.");
             Console.ReadKey();
         }
@@ -143,6 +158,21 @@ namespace LinqToTwitterDemo
             var doIt = choice.KeyChar != 'n' && choice.KeyChar != 'N';
             Console.WriteLine(doIt ? "es" : "o");
             return doIt;
+        }
+
+        private static void EndSession(ITwitterAuthorizer auth)
+        {
+            using (var twitterCtx = new TwitterContext(auth, "https://api.twitter.com/1/", "https://search.twitter.com/"))
+            {
+                //Log
+                twitterCtx.Log = Console.Out;
+
+                var status = twitterCtx.EndAccountSession();
+
+                Console.WriteLine("Request: {0}, Error: {1}"
+                    , status.Request
+                    , status.Error);
+            }
         }
 
         private static void DumpJoeFriends(ITwitterAuthorizer auth)

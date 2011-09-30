@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{CF26D528-E26B-40DB-A821-DEDE868D2638}</ProjectGuid>
     <OutputType>Exe</OutputType>
@@ -85,6 +85,9 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -124,12 +127,6 @@
     <Compile Include="UserDemos.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\LinqToTwitter\LinqToTwitter.csproj">
-      <Project>{A214B9F0-6B8C-4E91-BE99-27F55CC860C1}</Project>
-      <Name>LinqToTwitter</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
@@ -151,6 +148,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="images\200xColor_2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\LinqToTwitter\LinqToTwitter.csproj">
+      <Project>{A214B9F0-6B8C-4E91-BE99-27F55CC860C1}</Project>
+      <Name>LinqToTwitter</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

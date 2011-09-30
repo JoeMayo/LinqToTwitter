@@ -21,44 +21,6 @@ namespace LinqToTwitterTests
 
         #region Test Data
 
-//        private string m_testVerifyCredentialsQueryResponse = @"<user>
-//  <id>15411837</id>
-//  <name>Joe Mayo</name>
-//  <screen_name>JoeMayo</screen_name>
-//  <location>Denver, CO</location>
-//  <description>Created LINQ to Twitter, author of LINQ Programming/McGraw-Hill, .NET Consulting, and Microsoft MVP</description>
-//  <profile_image_url>http://s3.amazonaws.com/twitter_production/profile_images/62569644/JoeTwitter_normal.jpg</profile_image_url>
-//  <url>http://linqtotwitter.codeplex.com/</url>
-//  <protected>false</protected>
-//  <followers_count>61</followers_count>
-//  <profile_background_color>0099B9</profile_background_color>
-//  <profile_text_color>3C3940</profile_text_color>
-//  <profile_link_color>0099B9</profile_link_color>
-//  <profile_sidebar_fill_color>95E8EC</profile_sidebar_fill_color>
-//  <profile_sidebar_border_color>5ED4DC</profile_sidebar_border_color>
-//  <friends_count>25</friends_count>
-//  <created_at>Sun Jul 13 04:35:50 +0000 2008</created_at>
-//  <favourites_count>2</favourites_count>
-//  <utc_offset>-25200</utc_offset>
-//  <time_zone>Mountain Time (US &amp; Canada)</time_zone>
-//  <profile_background_image_url>http://static.twitter.com/images/themes/theme4/bg.gif</profile_background_image_url>
-//  <profile_background_tile>false</profile_background_tile>
-//  <statuses_count>155</statuses_count>
-//  <notifications>false</notifications>
-//  <following>false</following>
-//  <status>
-//    <created_at>Sun Apr 26 16:06:04 +0000 2009</created_at>
-//    <id>1621219524</id>
-//    <text>Flutter might overtake twitter: http://safeurl.to/8U1W; video at bottom of article.</text>
-//    <source>web</source>
-//    <truncated>false</truncated>
-//    <in_reply_to_status_id></in_reply_to_status_id>
-//    <in_reply_to_user_id></in_reply_to_user_id>
-//    <favorited>false</favorited>
-//    <in_reply_to_screen_name></in_reply_to_screen_name>
-//  </status>
-//</user>";
-
         private string m_testVerifyCredentialsQueryResponse = @"{
    ""statuses_count"":1624,
    ""favourites_count"":65,
@@ -121,13 +83,6 @@ namespace LinqToTwitterTests
    ""profile_image_url_https"":""https:\/\/si0.twimg.com\/profile_images\/520626655\/JoeTwitterBW_-_150_x_150_normal.jpg""
 }";
 
-//        private string m_testRateLimitStatusQueryResponse = @"<hash>
-//  <remaining-hits type=""integer"">99</remaining-hits>
-//  <hourly-limit type=""integer"">100</hourly-limit>
-//  <reset-time type=""datetime"">2009-04-26T20:57:50+00:00</reset-time>
-//  <reset-time-in-seconds type=""integer"">1240779470</reset-time-in-seconds>
-//</hash>";
-
         private string m_testRateLimitStatusQueryResponse = @"{
    ""remaining_hits"":343,
    ""hourly_limit"":350,
@@ -135,20 +90,10 @@ namespace LinqToTwitterTests
    ""reset_time"":""Mon Sep 19 02:06:36 +0000 2011""
 }";
 
-        private string m_testEndSessionResponse = @"<hash>
-  <request>/account/end_session.xml</request>
-  <error>Logged out.</error>
-</hash>";
-
-        //private string m_testEndSessionResponse = @"";
-
-//        private string m_testTotalsResponse = @"<?xml version=""1.0"" encoding=""UTF-8""?>
-//<hash>
-//  <updates type=""integer"">78</updates>
-//  <friends type=""integer"">1</friends>
-//  <favorites type=""integer"">2</favorites>
-//  <followers type=""integer"">26</followers>
-//</hash>";
+        private string m_testEndSessionResponse = @"{
+  ""request"": ""/1/account/end_session.json"",
+  ""error"": ""Logged out.""
+}";
 
         private string m_testTotalsResponse = @"{
    ""followers"":875,

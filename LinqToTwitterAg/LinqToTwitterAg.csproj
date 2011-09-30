@@ -96,6 +96,7 @@
     <Compile Include="Common\InvalidQueryException.cs" />
     <Compile Include="Common\IRequestProcessor.cs" />
     <Compile Include="Common\JsonConversions.cs" />
+    <Compile Include="Common\LinqExtensions.cs" />
     <Compile Include="Common\MethodCallExpressionTypeFinder.cs" />
     <Compile Include="Common\ParameterFinder.cs" />
     <Compile Include="Common\QueryParameter.cs" />
@@ -185,6 +186,7 @@
     <Compile Include="Search\SearchRequestProcessor.cs" />
     <Compile Include="Search\SearchType.cs" />
     <Compile Include="Serialization\Account\AccountConverter.cs" />
+    <Compile Include="Serialization\Account\EndSession.cs" />
     <Compile Include="Serialization\Account\RateLimitStatus.cs" />
     <Compile Include="Serialization\Account\Settings.cs" />
     <Compile Include="Serialization\Account\SleepTime.cs" />

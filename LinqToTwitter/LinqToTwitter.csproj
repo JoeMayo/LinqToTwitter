@@ -532,11 +532,17 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\LinqToTwitterAg\Common\LinqExtensions.cs">
+      <Link>Common\LinqExtensions.cs</Link>
+    </Compile>
     <Compile Include="..\LinqToTwitterAg\OAuth\SingleUserInMemoryCredentials.cs">
       <Link>OAuth\SingleUserInMemoryCredentials.cs</Link>
     </Compile>
     <Compile Include="..\LinqToTwitterAg\Serialization\Account\AccountConverter.cs">
       <Link>Serialization\Account\AccountConverter.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Serialization\Account\EndSession.cs">
+      <Link>Serialization\Account\EndSession.cs</Link>
     </Compile>
     <Compile Include="..\LinqToTwitterAg\Serialization\Account\RateLimitStatus.cs">
       <Link>Serialization\Account\RateLimitStatus.cs</Link>
