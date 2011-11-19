@@ -1575,8 +1575,8 @@ namespace LinqToTwitter
                     {
                         {"status", status},
                         {"in_reply_to_status_id", inReplyToStatusID},
-                        {"lat", latitude == -1 ? null : latitude.ToString()},
-                        {"long", longitude == -1 ? null : longitude.ToString()},
+                        {"lat", latitude == -1 ? null : latitude.ToString(CultureInfo.InvariantCulture)},
+                        {"long", longitude == -1 ? null : longitude.ToString(CultureInfo.InvariantCulture)},
                         {"place_id", placeID},
                         {"display_coordinates", displayCoordinates.ToString()},
                         {"wrap_links", wrapLinks ? wrapLinks.ToString() : null }

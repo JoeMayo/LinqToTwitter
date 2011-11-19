@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Globalization;
 using System.Linq;
+using System.Threading;
 using LinqToTwitter;
 
 namespace LinqToTwitterDemo
@@ -33,10 +35,10 @@ namespace LinqToTwitterDemo
             //MentionsWithPagingQueryDemo(twitterCtx);
             //SingleStatusQueryDemo(twitterCtx);
             //UpdateStatusDemo(twitterCtx);
-            UpdateStatusWrapLinksDemo(twitterCtx);
+            //UpdateStatusWrapLinksDemo(twitterCtx);
             //UpdateStatusWithCallbackDemo(twitterCtx);
             //UpdateStatusWithReplyDemo(twitterCtx);
-            //UpdateStatusWithLocationDemo(twitterCtx);
+            UpdateStatusWithLocationDemo(twitterCtx);
             //UpdateStatusWithPlaceDemo(twitterCtx);
             //DestroyStatusDemo(twitterCtx);
             //RetweetedByMeStatusQueryDemo(twitterCtx);
@@ -755,15 +757,20 @@ namespace LinqToTwitterDemo
         private static void UpdateStatusWithLocationDemo(TwitterContext twitterCtx)
         {
             // the \u00C7 is C Cedilla, which I've included to ensure that non-ascii characters appear properly
-            var status = "\u00C7 Testing LINQ to Twitter update status on " + DateTime.Now.ToString() + " #linqtotwitter";
-            //string japaneseCultureString = "ja-JP";
-            //Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo(japaneseCultureString);
-            //Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo(japaneseCultureString);
-            //var status = "あいうえお";
+            //var status = "\u00C7 Testing LINQ to Twitter update status on " + DateTime.Now.ToString() + " #linqtotwitter";
+            string japaneseCultureString = "ja-JP";
+            Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo(japaneseCultureString);
+            Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo(japaneseCultureString);
+            var status = "あいうえお" + DateTime.Now.ToString();
+            decimal latitude = Decimal.Parse("37.78215", CultureInfo.CurrentUICulture);
+            decimal longitude = Decimal.Parse("-122.40060", CultureInfo.CurrentUICulture);
+
+            //decimal latitude = 37.78215m;
+            //decimal longitude = -122.40060m;
 
             Console.WriteLine("Status being sent: " + status);
 
-            var tweet = twitterCtx.UpdateStatus(status, 37.78215m, -122.40060m, true);
+            var tweet = twitterCtx.UpdateStatus(status, latitude, longitude, true);
 
             Console.WriteLine(
                 "User: {0}, Tweet: {1}\nLatitude: {2}, Longitude: {3}",
