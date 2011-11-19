@@ -159,10 +159,10 @@ namespace LinqToTwitterTests
           </recipient>
         </direct_message>";
 
-        private string m_testEndSessionResponse = @"<hash>
-  <request>/account/end_session.xml</request>
-  <error>Logged out.</error>
-</hash>";
+        private string m_testEndSessionResponse = @"{
+  ""request"": ""/1/account/end_session.json"",
+  ""error"": ""Logged out.""
+}";
 
         #endregion
 
@@ -581,29 +581,6 @@ namespace LinqToTwitterTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
-        public void UpdateStatusOver140Test1()
-        {
-            string status = new string(Enumerable.Repeat<char>('x', 141).ToArray());
-            string inReplyToStatusID = "1";
-            Status expected = new Status();
-            var authMock = new Mock<ITwitterAuthorizer>();
-            var execMock = new Mock<ITwitterExecute>();
-            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
-            execMock.Setup(exec =>
-                exec.ExecuteTwitter<Status>(
-                    It.IsAny<string>(),
-                    It.IsAny<Dictionary<string, string>>(),
-                    It.IsAny<IRequestProcessor<Status>>()))
-                .Returns(m_testStatusQueryResponse);
-            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
-
-            Status actual = ctx.UpdateStatus(status, inReplyToStatusID);
-
-            Assert.AreEqual(expected, actual);
-        }
-
-        [TestMethod]
         public void UpdateStatus_Sets_StatusID()
         {
             string status = "Hello";
@@ -625,28 +602,6 @@ namespace LinqToTwitterTests
         public void UpdateStatusNullStatusTest()
         {
             string status = null;
-            XElement expected = XElement.Parse(m_testStatusQueryResponse);
-            var authMock = new Mock<ITwitterAuthorizer>();
-            var execMock = new Mock<ITwitterExecute>();
-            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
-            execMock.Setup(exec =>
-                exec.ExecuteTwitter<Status>(
-                    It.IsAny<string>(),
-                    It.IsAny<Dictionary<string, string>>(),
-                    It.IsAny<IRequestProcessor<Status>>()))
-                .Returns(m_testStatusQueryResponse);
-            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
-
-            Status actual = ctx.UpdateStatus(status);
-
-            Assert.AreEqual(expected.Element("status").Element("id").Value, actual.StatusID);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
-        public void UpdateStatusOver140Test()
-        {
-            string status = new string(Enumerable.Repeat<char>('x', 141).ToArray());
             XElement expected = XElement.Parse(m_testStatusQueryResponse);
             var authMock = new Mock<ITwitterAuthorizer>();
             var execMock = new Mock<ITwitterExecute>();
@@ -1082,7 +1037,7 @@ namespace LinqToTwitterTests
         [TestMethod]
         public void EndAccountSessionTest()
         {
-            XElement expected = XElement.Parse(m_testEndSessionResponse);
+            string expectedErrorResponse = "Logged out.";
             var authMock = new Mock<ITwitterAuthorizer>();
             var execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
@@ -1096,7 +1051,7 @@ namespace LinqToTwitterTests
 
             TwitterHashResponse actual = ctx.EndAccountSession();
 
-            Assert.AreEqual(expected.Element("error").Value, actual.Error);
+            Assert.AreEqual(expectedErrorResponse, actual.Error);
         }
 
         [TestMethod]

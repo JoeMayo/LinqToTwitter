@@ -266,13 +266,12 @@ namespace LinqToTwitterTests
         }
 
         [TestMethod]
-        public void ProcessResults_Handles_EndSession()
+        public void ProcessActionResult_Handles_EndSession()
         {
             var acctReqProc = new AccountRequestProcessor<Account>();
             
-            IList actual = acctReqProc.ProcessResults(m_testEndSessionResponse);
+            var acct = acctReqProc.ProcessActionResult(m_testEndSessionResponse, AccountAction.EndSession);
 
-            var acct = actual.Cast<Account>().ToList().FirstOrDefault();
             Assert.AreEqual("Logged out.", acct.EndSessionStatus.Error);
         }
 

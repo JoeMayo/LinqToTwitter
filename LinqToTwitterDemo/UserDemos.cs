@@ -18,7 +18,8 @@ namespace LinqToTwitterDemo
         {
             //UserShowWithIDQueryDemo(twitterCtx);
             //UserShowWithScreenNameQueryDemo(twitterCtx);
-            UserFriendsQueryDemo(twitterCtx);
+            UserShowForAuthenticatedUser(twitterCtx);
+            //UserFriendsQueryDemo(twitterCtx);
             //UserFriendsWithCursorQueryDemo(twitterCtx);
             //UsersLookupDemo(twitterCtx);
             //UserSearchDemo(twitterCtx);        
@@ -137,6 +138,27 @@ namespace LinqToTwitterDemo
 
             user.Categories.ForEach(
                 cat => Console.WriteLine("Category: " + cat.Name));
+        }
+
+        /// <summary>
+        /// shows how to query authenticated user
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void UserShowForAuthenticatedUser(TwitterContext twitterCtx)
+        {
+            string screenName = twitterCtx.AuthorizedClient.ScreenName;
+
+            var user =
+                (from usr in twitterCtx.User
+                 where usr.Type == UserType.Show &&
+                       usr.ScreenName == screenName
+                 select usr)
+                .SingleOrDefault();
+
+            var name = user.Name;
+            var lastStatus = user.Status == null ? "No Status" : user.Status.Text;
+
+            Console.WriteLine("\nName: {0}, Last Tweet: {1}\n", name, lastStatus);
         }
 
         /// <summary>

@@ -822,7 +822,7 @@ namespace LinqToTwitter
             // Transform results into objects
             var queryableList = reqProc.ProcessResults(results);
 
-            // Copy the IEnumerable places to an IQueryable.
+            // Copy the IEnumerable entities to an IQueryable.
             var queryableItems = queryableList.AsQueryable<T>();
 
             // Copy the expression tree that was passed in, changing only the first

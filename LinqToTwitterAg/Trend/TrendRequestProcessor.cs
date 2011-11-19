@@ -204,7 +204,7 @@ namespace LinqToTwitter
         /// <summary>
         /// Transforms response from Twitter into List of Trend
         /// </summary>
-        /// <param name="responseXml">XML response from Twitter</param>
+        /// <param name="responseJson">Json response from Twitter</param>
         /// <returns>List of Trend</returns>
         public virtual List<T> ProcessResults(string responseJson)
         {
