@@ -18,11 +18,11 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         public static void Run(TwitterContext twitterCtx)
         {
-            GetListsDemo(twitterCtx);
+            //GetListsDemo(twitterCtx);
             //IsListSubscribedDemo(twitterCtx);
             //GetListSubscribersDemo(twitterCtx);
             //IsListMemberDemo(twitterCtx);
-            //GetListMembersDemo(twitterCtx);
+            GetListMembersDemo(twitterCtx);
             //GetListSubscriptionsDemo(twitterCtx);
             //GetListMembershipsDemo(twitterCtx);
             //GetListStatusesDemo(twitterCtx);
@@ -276,7 +276,7 @@ namespace LinqToTwitterDemo
             var lists =
                 (from list in twitterCtx.List
                  where list.Type == ListType.Members &&
-                       list.ScreenName == "JoeMayo" &&
+                       list.OwnerScreenName == "JoeMayo" &&
                        list.Slug == "dotnettwittterdevs"
                  select list)
                  .First();

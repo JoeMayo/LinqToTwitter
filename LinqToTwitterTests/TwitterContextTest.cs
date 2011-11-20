@@ -1,4 +1,5 @@
-﻿using LinqToTwitter;
+﻿using System.Linq.Expressions;
+using LinqToTwitter;
 using LinqToTwitterTests.Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -12,8 +13,6 @@ namespace LinqToTwitterTests
     [TestClass]
     public class TwitterContextTest
     {
-        private TestContext m_testContextInstance;
-
         #region Test Data
 
         private string m_testUserQueryResponse =
@@ -165,22 +164,6 @@ namespace LinqToTwitterTests
 }";
 
         #endregion
-
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
-        public TestContext TestContext
-        {
-            get
-            {
-                return m_testContextInstance;
-            }
-            set
-            {
-                m_testContextInstance = value;
-            }
-        }
 
         #region Additional test attributes
         // 
@@ -511,26 +494,61 @@ namespace LinqToTwitterTests
 
         #region Execute Tests
 
-        /// <summary>
-        ///A test for Execute
-        ///</summary>
-        [TestMethod()]
-        public void ExecuteTest()
+        private void InitializeTwitterContextForExecuteTest(out TwitterContext ctx, out Expression expression)
         {
-            var ctx = new TwitterContext();
+            var exec = new Mock<ITwitterExecute>();
+            exec.Setup(exc => exc.QueryTwitter(It.IsAny<Request>(), It.IsAny<IRequestProcessor<Status>>()))
+                .Returns(m_testStatusQueryResponse);
 
-            //Log
-            ctx.Log = new LinqToTwitterTests.Common.DebuggerWriter();
-
-            var publicQuery =
+            ctx = new TwitterContext(exec.Object);
+            var publicQuery = 
                 from tweet in ctx.Status
                 where tweet.Type == StatusType.Public
                 select tweet;
 
-            var actual = ctx.Execute<Status>(publicQuery.Expression, true);
+            expression = publicQuery.Expression;
+        }
+
+        [TestMethod]
+        public void Execute_Returns_List_Of_Status()
+        {
+            TwitterContext ctx;
+            Expression expression;
+            InitializeTwitterContextForExecuteTest(out ctx, out expression);
+            //Log
+            ctx.Log = new LinqToTwitterTests.Common.DebuggerWriter();
+
+            var actual = ctx.Execute<Status>(expression, true);
+
             var tweets = actual as IEnumerable<Status>;
             Assert.IsNotNull(tweets);
             Assert.IsTrue(tweets.ToList().Count > 0);
+        }
+
+        [TestMethod]
+        public void Execute_Logs_Results()
+        {
+            TwitterContext ctx;
+            Expression expression;
+            InitializeTwitterContextForExecuteTest(out ctx, out expression);
+
+            var actual = ctx.Execute<Status>(expression, true);
+
+            var tweets = actual as IEnumerable<Status>;
+            Assert.IsNotNull(tweets);
+            Assert.IsTrue(tweets.ToList().Count > 0);
+        }
+  
+        [TestMethod]
+        public void Execute_Sets_RawResults_Property()
+        {
+            TwitterContext ctx;
+            Expression expression;
+            InitializeTwitterContextForExecuteTest(out ctx, out expression);
+
+            ctx.Execute<Status>(expression, true);
+
+            Assert.AreEqual(m_testStatusQueryResponse, ctx.RawResult);
         }
 
         #endregion

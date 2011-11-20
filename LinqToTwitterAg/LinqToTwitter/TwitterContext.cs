@@ -155,14 +155,6 @@ namespace LinqToTwitter
             set
             {
                 this.baseUrl = value;
-                //try
-                //{
-                //    this.AuthorizedClient.AuthenticationTarget = value;
-                //}
-                //catch (NotSupportedException)
-                //{
-                //    // Some, like OAuth, don't use or support setting this property.  That's ok.
-                //}
             }
         }
 
@@ -212,6 +204,8 @@ namespace LinqToTwitter
             get { return TwitterExecute.Log; }
             set { TwitterExecute.Log = value; }
         }
+
+        public string RawResult { get; set; }
 
         #endregion
 
@@ -817,6 +811,8 @@ namespace LinqToTwitter
             {
                 results = TwitterExecutor.QueryTwitter(request, reqProc);
             }
+
+            RawResult = results;
 
             // Transform results into objects
             var queryableList = reqProc.ProcessResults(results);

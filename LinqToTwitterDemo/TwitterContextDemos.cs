@@ -12,14 +12,15 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         public static void Run(TwitterContext twitterCtx)
         {
-            ShowFeatureRateLimitHeadersViaResponseHeaders(twitterCtx);
+            //ShowFeatureRateLimitHeadersViaResponseHeaders(twitterCtx);
+            ShowRawResults(twitterCtx);
         }
 
         /// <summary>
         /// Performs a search query and displays the X-Feature... headers from the response
         /// </summary>
         /// <param name="twitterCtx">TwitterContext</param>
-        private static void ShowFeatureRateLimitHeadersViaResponseHeaders(TwitterContext twitterCtx)
+        static void ShowFeatureRateLimitHeadersViaResponseHeaders(TwitterContext twitterCtx)
         {
             var user =
                 (from usr in twitterCtx.User
@@ -37,6 +38,17 @@ namespace LinqToTwitterDemo
                 twitterCtx.ResponseHeaders["X-FeatureRateLimit-Remaining"],
                 twitterCtx.ResponseHeaders["X-FeatureRateLimit-Reset"],
                 twitterCtx.ResponseHeaders["X-FeatureRateLimit-Class"]);
+        }
+
+        static void ShowRawResults(TwitterContext twitterCtx)
+        {
+            var publicTweets =
+                (from tweet in twitterCtx.Status
+                 where tweet.Type == StatusType.Public
+                 select tweet)
+                .ToList();
+
+            Console.WriteLine("\nRaw Results: \n\n{0}", twitterCtx.RawResult);
         }
     }
 }
