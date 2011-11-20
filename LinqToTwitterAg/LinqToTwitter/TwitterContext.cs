@@ -81,7 +81,6 @@ namespace LinqToTwitter
             StreamingUrl = "http://stream.twitter.com/1/";
             UserStreamUrl = "https://userstream.twitter.com/2/";
             SiteStreamUrl = "https://sitestream.twitter.com/2b/";
-            //SiteStreamUrl = "https://betastream.twitter.com/2b/";
 
 #if SILVERLIGHT
 
