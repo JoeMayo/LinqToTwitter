@@ -92,13 +92,17 @@ namespace LinqToTwitterSilverlightDemo.Web
             string queryString = string.Join("&",
                 (from key in queryDict.Keys
                  where key != "url"
-                 select key + "=" + queryDict[key]) //HttpUtility.UrlEncode(queryDict[key]))
+                 select key + "=" + queryDict[key])
                 .ToArray());
 
             string url = HttpUtility.UrlDecode(queryDict["url"]);
+
             if (queryString.Length > 0)
             {
-                url += "?" + queryString;
+                if (url.Contains('?'))
+                    url += "&" + queryString;
+                else
+                    url += "?" + queryString;
             }
 
             return url;
