@@ -59,9 +59,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqToTwitterSilverlightDem
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqToTwitterSilverlightDemo.Web", "LinqToTwitterSilverlightDemo.Web\LinqToTwitterSilverlightDemo.Web.csproj", "{509AAAE9-A9DD-4CD1-9807-B315506BC6CE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqToTwitterXUnitTests", "LinqToTwitterXUnitTests\LinqToTwitterXUnitTests.csproj", "{6487F451-98B1-4911-B910-6D4AF27D7442}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 10
+		SccNumberOfProjects = 11
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs01
 		SccLocalPath0 = .
@@ -94,6 +96,9 @@ Global
 		SccProjectUniqueName9 = LinqToTwitterSilverlightDemo.Web\\LinqToTwitterSilverlightDemo.Web.csproj
 		SccProjectName9 = LinqToTwitterSilverlightDemo.Web
 		SccLocalPath9 = LinqToTwitterSilverlightDemo.Web
+		SccProjectUniqueName10 = LinqToTwitterXUnitTests\\LinqToTwitterXUnitTests.csproj
+		SccProjectName10 = LinqToTwitterXUnitTests
+		SccLocalPath10 = LinqToTwitterXUnitTests
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = LinqToTwitter.vsmdi
@@ -167,6 +172,12 @@ Global
 		{509AAAE9-A9DD-4CD1-9807-B315506BC6CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{509AAAE9-A9DD-4CD1-9807-B315506BC6CE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{509AAAE9-A9DD-4CD1-9807-B315506BC6CE}.Release|x86.ActiveCfg = Release|Any CPU
+		{6487F451-98B1-4911-B910-6D4AF27D7442}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6487F451-98B1-4911-B910-6D4AF27D7442}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6487F451-98B1-4911-B910-6D4AF27D7442}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6487F451-98B1-4911-B910-6D4AF27D7442}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6487F451-98B1-4911-B910-6D4AF27D7442}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6487F451-98B1-4911-B910-6D4AF27D7442}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

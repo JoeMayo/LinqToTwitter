@@ -200,6 +200,12 @@
     <Compile Include="..\LinqToTwitterAg\Common\JsonConversions.cs">
       <Link>Common\JsonConversions.cs</Link>
     </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\Media.cs">
+      <Link>Common\Media.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\MediaType.cs">
+      <Link>Common\MediaType.cs</Link>
+    </Compile>
     <Compile Include="..\LinqToTwitterAg\Common\MethodCallExpressionTypeFinder.cs">
       <Link>Common\MethodCallExpressionTypeFinder.cs</Link>
     </Compile>
@@ -469,6 +475,9 @@
     </Compile>
     <Compile Include="..\LinqToTwitterAg\Status\Status.cs">
       <Link>Status\Status.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Status\StatusExtensions.cs">
+      <Link>Status\StatusExtensions.cs</Link>
     </Compile>
     <Compile Include="..\LinqToTwitterAg\Status\StatusRequestProcessor.cs">
       <Link>Status\StatusRequestProcessor.cs</Link>

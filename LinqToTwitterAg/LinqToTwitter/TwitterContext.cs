@@ -11,10 +11,18 @@ using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Net;
+using System.Runtime.CompilerServices;
 using LinqToTwitter.Common;
 #if SILVERLIGHT
 using System.Net.Browser;
 #endif
+
+[assembly:InternalsVisibleTo("LinqToTwitterXUnitTests, PublicKey=" +
+"002400000480000094000000060200000024000052534131000400000100010079457c3d341758" +
+"22b3b56803d473d9491f0d2e000550adfd7064db02fd65b91e2a5018c32cc754b1cea1f1219ad2" +
+"e76dda7b2a5dc7e3748159852251b72331f40e51934cb153108c3f39dd3b053f321fc12cf4d10f" +
+"8f7b45aa9f96c81c63047ea53c9c5c4b5c2d251fdce0821b37d24bf51a2fa6d543668af24c1dc5" +
+"69081096")]
 
 namespace LinqToTwitter
 {
@@ -81,6 +89,7 @@ namespace LinqToTwitter
             StreamingUrl = "http://stream.twitter.com/1/";
             UserStreamUrl = "https://userstream.twitter.com/2/";
             SiteStreamUrl = "https://sitestream.twitter.com/2b/";
+            UploadUrl = "https://upload.twitter.com/1/";
 
 #if SILVERLIGHT
 
@@ -166,17 +175,22 @@ namespace LinqToTwitter
         /// <summary>
         /// base URL for accessing streaming APIs
         /// </summary>
-        private string StreamingUrl { get; set; }
+        public string StreamingUrl { get; set; }
 
         /// <summary>
         /// base URL for accessing user stream APIs
         /// </summary>
-        private string UserStreamUrl { get; set; }
+        public string UserStreamUrl { get; set; }
 
         /// <summary>
         /// base URL for accessing site stream APIs
         /// </summary>
-        private string SiteStreamUrl { get; set; }
+        public string SiteStreamUrl { get; set; }
+
+        /// <summary>
+        /// twitter endpoint for update with media requests
+        /// </summary>
+        public string UploadUrl { get; set; }
 
         /// <summary>
         /// Only for streaming credentials, use OAuth for non-streaming APIs
@@ -860,12 +874,22 @@ namespace LinqToTwitter
             return parameters;
         }
 
+        protected internal virtual IRequestProcessor<T> CreateRequestProcessor<T>()
+            where T : class
+        {
+            string requestType = typeof(T).Name;
+
+            IRequestProcessor<T> req = CreateRequestProcessor<T>(requestType);
+
+            return req;
+        }
+
         /// <summary>
         /// factory method for returning a request processor
         /// </summary>
         /// <typeparam name="T">type of request</typeparam>
         /// <returns>request processor matching type parameter</returns>
-        private IRequestProcessor<T> CreateRequestProcessor<T>(Expression expression)
+        IRequestProcessor<T> CreateRequestProcessor<T>(Expression expression)
             where T: class
         {
             if (expression == null)
@@ -873,10 +897,17 @@ namespace LinqToTwitter
                 throw new ArgumentNullException("Expression passed to CreateRequestProcessor must not be null.");
             }
 
-            IRequestProcessor<T> req = null;
-
-            var baseUrl = this.BaseUrl;
             string requestType = new MethodCallExpressionTypeFinder().GetGenericType(expression).Name;
+
+            IRequestProcessor<T> req = CreateRequestProcessor<T>(requestType);
+            return req;
+        }
+
+        protected internal IRequestProcessor<T> CreateRequestProcessor<T>(string requestType)
+            where T : class
+        {
+            var baseUrl = this.BaseUrl;
+            IRequestProcessor<T> req = null;
 
             switch (requestType)
             {
@@ -929,7 +960,7 @@ namespace LinqToTwitter
                 case "Streaming":
                     baseUrl = StreamingUrl;
                     req = new StreamingRequestProcessor<T>
-                    { 
+                    {
                         TwitterExecutor = TwitterExecutor
                     };
                     break;

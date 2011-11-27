@@ -920,6 +920,179 @@ namespace LinqToTwitter
             return response;
         }
 
+
+        /// <summary>
+        /// performs HTTP POST media byte array upload to Twitter
+        /// </summary>
+        /// <param name="url">url to upload to</param>
+        /// <param name="postData">request parameters</param>
+        /// <param name="mediaItems">list of Media each media item to upload</param>
+        /// <param name="reqProc">request processor for handling results</param>
+        /// <returns>XML results From Twitter</returns>
+        public string PostMedia<T>(string url, IDictionary<string, string> postData, List<Media> mediaItems, IRequestProcessor<T> reqProc)
+        {
+            string contentBoundaryBase = DateTime.Now.Ticks.ToString("x");
+            string beginContentBoundary = string.Format("--{0}\r\n", contentBoundaryBase);
+            var endContentBoundary = string.Format("\r\n--{0}--\r\n", contentBoundaryBase);
+
+            var formDataSB = new StringBuilder();
+
+            if (postData != null && postData.Count > 0)
+            {
+                foreach (var param in postData)
+                {
+                    if (param.Value != null)
+                    {
+                        formDataSB.AppendFormat("--{0}\r\nContent-Disposition: form-data; name=\"{1}\"\r\n\r\n{2}\r\n", contentBoundaryBase, param.Key, param.Value);
+                    }
+                }
+            }
+
+            var encoding = Encoding.GetEncoding("iso-8859-1");
+
+            mediaItems.ForEach(
+                media =>
+                {
+                    formDataSB.Append(beginContentBoundary);
+                    formDataSB.Append(
+                        string.Format(
+                            "Content-Disposition: form-data; name=\"media[]\"; " +
+                            "filename=\"{0}\"\r\nContent-Type: image/{1}\r\n\r\n", 
+                            media.FileName, media.ContentType));
+                    formDataSB.Append(encoding.GetString(media.Data, 0, media.Data.Length));
+                });
+
+            formDataSB.Append(endContentBoundary);
+
+            byte[] imageBytes = encoding.GetBytes(formDataSB.ToString());
+
+            string response = string.Empty;
+            string httpStatus = string.Empty;
+
+            try
+            {
+                this.LastUrl = url;
+
+                //Log
+                WriteLog(this.LastUrl, "PostMedia");
+
+                var dontIncludePostParametersInOAuthSignature = new Dictionary<string, string>();
+                var req = this.AuthorizedClient.PostRequest(new Request(url), dontIncludePostParametersInOAuthSignature);
+                req.ContentType = "multipart/form-data;boundary=" + contentBoundaryBase;
+                req.AllowWriteStreamBuffering = true;
+                req.ContentLength = imageBytes.Length;
+
+                Exception asyncException = null;
+                using (var resetEvent = new ManualResetEvent(/*initialState:*/ false))
+                {
+                    req.BeginGetRequestStream(
+                        new AsyncCallback(
+                            ar =>
+                            {
+                                try
+                                {
+                                    using (var reqStream = req.EndGetRequestStream(ar))
+                                    {
+                                        int offset = 0;
+                                        int bufferSize = 4096;
+                                        int lastPercentage = 0;
+                                        while (offset < imageBytes.Length)
+                                        {
+                                            int bytesToWrite = Math.Min(bufferSize, imageBytes.Length - offset);
+                                            reqStream.Write(imageBytes, offset, bytesToWrite);
+                                            offset += bytesToWrite;
+
+                                            int percentComplete =
+                                                (int)((double)offset / (double)imageBytes.Length * 100);
+
+                                            // since we still need to get the response later
+                                            // in the algorithm, interpolate the results to
+                                            // give user a more accurate picture of completion.
+                                            // i.e. we don't want to shoot up to 100% here when
+                                            // we know there is more processing to do.
+                                            lastPercentage = percentComplete >= 98 ?
+                                                100 - ((98 - lastPercentage) / 2) :
+                                                percentComplete;
+
+                                            OnUploadProgressChanged(lastPercentage);
+                                        }
+
+                                        reqStream.Flush();
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    asyncException = ex;
+                                }
+                                finally
+                                {
+                                    resetEvent.Set();
+                                }
+                            }), null);
+
+                    resetEvent.WaitOne();
+
+                    if (asyncException != null)
+                        throw asyncException;
+
+                    resetEvent.Reset();
+
+                    req.BeginGetResponse(
+                        new AsyncCallback(
+                            ar =>
+                            {
+                                try
+                                {
+                                    lock (this.asyncCallbackLock)
+                                    {
+                                        using (var res = req.EndGetResponse(ar) as HttpWebResponse)
+                                        {
+                                            httpStatus = res.Headers["Status"];
+                                            response = GetTwitterResponse(res);
+
+                                            if (AsyncCallback != null)
+                                            {
+                                                List<T> responseObj = reqProc.ProcessResults(response);
+                                                var asyncResp = new TwitterAsyncResponse<T>();
+                                                asyncResp.State = responseObj.FirstOrDefault();
+                                                (AsyncCallback as Action<TwitterAsyncResponse<T>>)(asyncResp);
+                                            }
+
+                                            // almost done
+                                            OnUploadProgressChanged(99);
+                                        }
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    asyncException = ex;
+                                }
+                                finally
+                                {
+                                    resetEvent.Set();
+                                }
+                            }), null);
+
+                    resetEvent.WaitOne();
+
+                    if (asyncException != null)
+                        throw asyncException;
+                }
+            }
+            catch (WebException wex)
+            {
+                var twitterQueryEx = CreateTwitterQueryException(wex);
+                throw twitterQueryEx;
+            }
+
+            // make sure the caller knows it's done
+            OnUploadProgressChanged(100);
+
+            CheckResultsForTwitterError(response, httpStatus);
+
+            return response;
+        }
+
         /// <summary>
         /// utility method to perform HTTP POST for Twitter requests with side-effects
         /// </summary>

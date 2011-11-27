@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
@@ -20,7 +21,6 @@ namespace LinqToTwitterDemo
             //
             // status tweets
             //
-
             //PublicStatusQueryDemo(twitterCtx);
             //PublicStatusFilteredQueryDemo(twitterCtx);
             //HomeStatusQueryDemo(twitterCtx);
@@ -38,7 +38,7 @@ namespace LinqToTwitterDemo
             //UpdateStatusWrapLinksDemo(twitterCtx);
             //UpdateStatusWithCallbackDemo(twitterCtx);
             //UpdateStatusWithReplyDemo(twitterCtx);
-            UpdateStatusWithLocationDemo(twitterCtx);
+            //UpdateStatusWithLocationDemo(twitterCtx);
             //UpdateStatusWithPlaceDemo(twitterCtx);
             //DestroyStatusDemo(twitterCtx);
             //RetweetedByMeStatusQueryDemo(twitterCtx);
@@ -56,42 +56,8 @@ namespace LinqToTwitterDemo
             //StatusCountDemo(twitterCtx);
             //StatusJoinDemo(twitterCtx);
             //TrimUserDemo(twitterCtx);
+            TweetWithMediaDemo(twitterCtx);
         }
-
-        //private static void StatusJoinDemo(TwitterContext twitterCtx)
-        //{
-        //    // Working on Issue #28845
-        //    var tweets =
-        //        from tweet in twitterCtx.Status
-        //        join tweet2 in twitterCtx.Status
-        //            on tweet.ScreenName equals tweet2.ScreenName
-        //        where tweet.Type == StatusType.Friends &&
-        //              tweet.ScreenName == "JoeMayo"
-        //        select new
-        //        {
-        //            tweet,
-        //            tweet2
-        //        };
-        //    //var tweets =
-        //    //    from tweet in twitterCtx.Status
-        //    //    where tweet.Type == StatusType.Friends &&
-        //    //          tweet.ScreenName == "JoeMayo"
-        //    //    select tweet; 
-
-        //    //var tweets =
-        //    //    from tweet in twitterCtx.Status
-        //    //    join user in twitterCtx.User
-        //    //        on tweet.ScreenName equals user.ScreenName
-        //    //    where tweet.Type == StatusType.Friends &&
-        //    //          tweet.ScreenName == "JoeMayo"
-        //    //    select new
-        //    //    {
-        //    //        tweet,
-        //    //        user.Status
-        //    //    }; 
-
-        //    Console.WriteLine(tweets.Count());
-        //}
 
         #region Status Demos
 
@@ -915,6 +881,35 @@ namespace LinqToTwitterDemo
                 .ToList();
 
             tweets.ForEach(tweet => Console.WriteLine("User ID: {0}\nTweet: {1}\n", tweet.User.Identifier.ID, tweet.Text));
+        }
+
+        static void TweetWithMediaDemo(TwitterContext twitterCtx)
+        {
+            string status = "Test";//ing TweetWithMedia #Linq2Twitter " + DateTime.Now.ToString();
+            bool possiblySensitive = false;
+            decimal latitude = StatusExtensions.NoCoordinate;//37.78215m;
+            decimal longitude = StatusExtensions.NoCoordinate; // -122.40060m;
+            string placeID = null;
+            bool displayCoordinates = false;
+
+            string replaceThisWithYourImageLocation = @"..\..\images\200xColor_2.png";
+
+            var mediaItems =
+                new List<Media>
+                {
+                    new Media
+                    {
+                        Data = Utilities.GetFileBytes(replaceThisWithYourImageLocation),
+                        FileName = "200xColor_2.png",
+                        ContentType = MediaContentType.PNG
+                    }
+                };
+
+            Status tweet = twitterCtx.TweetWithMedia(
+                status, possiblySensitive, latitude, longitude, 
+                placeID, displayCoordinates, mediaItems, null);
+
+            Console.WriteLine("Media item sent - Tweet Text: " + tweet.Text);
         }
 
         #endregion

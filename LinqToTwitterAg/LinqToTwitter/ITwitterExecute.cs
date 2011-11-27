@@ -70,6 +70,16 @@ namespace LinqToTwitter
         string PostTwitterImage<T>(string url, IDictionary<string, string> postData, byte[] image, string fileName, string imageType, IRequestProcessor<T> reqProc);
 
         /// <summary>
+        /// performs HTTP POST media byte array upload to Twitter
+        /// </summary>
+        /// <param name="url">url to upload to</param>
+        /// <param name="postData">request parameters</param>
+        /// <param name="mediaItems">list of Media each media item to upload</param>
+        /// <param name="reqProc">request processor for handling results</param>
+        /// <returns>XML results From Twitter</returns>
+        string PostMedia<T>(string url, IDictionary<string, string> postData, List<Media> mediaItems, IRequestProcessor<T> reqProc);
+
+        /// <summary>
         /// makes HTTP call to Twitter API
         /// </summary>
         /// <param name="url">URL with all query info</param>

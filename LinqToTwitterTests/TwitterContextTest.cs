@@ -450,8 +450,9 @@ namespace LinqToTwitterTests
         public void CreateRequestProcessorNullExpressionTest1()
         {
             TwitterContext_Accessor ctx = new TwitterContext_Accessor();
+            Expression exp = null;
 
-            ctx.CreateRequestProcessor<Status>(null);
+            ctx.CreateRequestProcessor<Status>(exp);
         }
 
         [TestMethod]

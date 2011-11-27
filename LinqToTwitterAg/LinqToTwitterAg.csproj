@@ -97,6 +97,8 @@
     <Compile Include="Common\IRequestProcessor.cs" />
     <Compile Include="Common\JsonConversions.cs" />
     <Compile Include="Common\LinqExtensions.cs" />
+    <Compile Include="Common\Media.cs" />
+    <Compile Include="Common\MediaType.cs" />
     <Compile Include="Common\MethodCallExpressionTypeFinder.cs" />
     <Compile Include="Common\ParameterFinder.cs" />
     <Compile Include="Common\QueryParameter.cs" />
@@ -217,6 +219,7 @@
     <Compile Include="Status\Entities\UserMention.cs" />
     <Compile Include="Status\Retweet.cs" />
     <Compile Include="Status\Status.cs" />
+    <Compile Include="Status\StatusExtensions.cs" />
     <Compile Include="Status\StatusRequestProcessor.cs" />
     <Compile Include="Status\StatusType.cs" />
     <Compile Include="Streaming\StreamContent.cs" />
