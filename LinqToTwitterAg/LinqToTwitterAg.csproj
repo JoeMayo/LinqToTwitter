@@ -166,10 +166,6 @@
     <Compile Include="OAuth\Utilities.cs" />
     <Compile Include="OAuth\XAuthAuthorizer.cs" />
     <Compile Include="OAuth\XAuthCredentials.cs" />
-    <Compile Include="PostProcessing\Filter.cs" />
-    <Compile Include="PostProcessing\PostProcessor.cs" />
-    <Compile Include="PostProcessing\Projection.cs" />
-    <Compile Include="PostProcessing\Sort.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Raw\Raw.cs" />
     <Compile Include="Raw\RawRequestProcessor.cs" />
@@ -198,6 +194,15 @@
     <Compile Include="Serialization\Extensions\StringExtensions.cs" />
     <Compile Include="Serialization\JavaScriptConverter.cs" />
     <Compile Include="Serialization\JavaScriptSerializer.cs" />
+    <Compile Include="Serialization\LitJson\IJsonWrapper.cs" />
+    <Compile Include="Serialization\LitJson\IOrderedDictionary.cs" />
+    <Compile Include="Serialization\LitJson\JsonData.cs" />
+    <Compile Include="Serialization\LitJson\JsonException.cs" />
+    <Compile Include="Serialization\LitJson\JsonMapper.cs" />
+    <Compile Include="Serialization\LitJson\JsonReader.cs" />
+    <Compile Include="Serialization\LitJson\JsonWriter.cs" />
+    <Compile Include="Serialization\LitJson\Lexer.cs" />
+    <Compile Include="Serialization\LitJson\ParserToken.cs" />
     <Compile Include="Serialization\Place\Place.cs" />
     <Compile Include="Serialization\Place\PlaceType.cs" />
     <Compile Include="Serialization\Status\Status.cs" />
@@ -245,6 +250,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="LinqToTwitter.snk" />
+    <None Include="Serialization\LitJson\AUTHORS" />
+    <None Include="Serialization\LitJson\COPYING" />
+    <None Include="Serialization\LitJson\HACKING" />
+    <None Include="Serialization\LitJson\README" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Silverlight\$(SilverlightVersion)\Microsoft.Silverlight.CSharp.targets" />
   <ProjectExtensions>

@@ -18,7 +18,7 @@ namespace LinqToTwitter
 
             OAuthTwitter = new OAuthTwitter();
 
-#if SILVERLIGHT
+#if SILVERLIGHT && !WINDOWS_PHONE
             if (!Application.Current.IsRunningOutOfBrowser)
             {
                 ProxyUrl =
@@ -204,7 +204,9 @@ namespace LinqToTwitter
 #endif
             req.Method = HttpMethod.POST.ToString();
             req.Headers[HttpRequestHeader.Authorization] = auth;
-            req.ContentLength = 0;
+#if !WINDOWS_PHONE
+            req.ContentLength = 0; 
+#endif
 
             InitializeRequest(req);
 
@@ -239,7 +241,9 @@ namespace LinqToTwitter
                 as HttpWebRequest;
             req.Method = HttpMethod.POST.ToString();
             req.Headers[HttpRequestHeader.Authorization] = auth;
-            req.ContentLength = 0;
+#if !WINDOWS_PHONE
+            req.ContentLength = 0; 
+#endif
 
             InitializeRequest(req);
 

@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
 using System.Linq;
-using System.Runtime.Serialization.Json;
-using System.Text;
-using System.Xml;
-using System.Xml.Linq;
+using System.Linq;
+using LitJson;
 
 namespace LinqToTwitter.Json
 {
@@ -54,19 +50,15 @@ namespace LinqToTwitter.Json
                     "You must assign a converter for type " + deserializedType.ToString() + ".");
             }
 
-            XDocument xDoc = null;
-            using (var ms = new MemoryStream(Encoding.UTF8.GetBytes(input)))
-            {
-                XmlDictionaryReader reader = JsonReaderWriterFactory.CreateJsonReader(ms, XmlDictionaryReaderQuotas.Max);
-                xDoc = XDocument.Load(reader);
-            }
+            var reader = new JsonReader(input);
+            JsonData data = JsonMapper.ToObject(reader);
 
             if (isArray)
             {
                 var instances =
-                    (from elem in xDoc.Root.Elements()
-                     let dict = BuildDictionaryFromXml(elem)
-                     select converter.Deserialize(dict, deserializedType, this))
+                (from JsonData json in data
+                 let dict = BuildDictionaryFromJson(null, json)
+                 select converter.Deserialize(dict, deserializedType, this))
                     .ToArray();
 
                 var returnArray = Array.CreateInstance(deserializedType, instances.Length);
@@ -80,14 +72,14 @@ namespace LinqToTwitter.Json
             }
             else
             {
-                IDictionary<string, object> dict = BuildDictionaryFromXml(xDoc.Root);
+                IDictionary<string, object> dict = BuildDictionaryFromJson(null, data);
 
                 object instance = converter.Deserialize(dict, deserializedType, this);
 
-                return (T)instance; 
+                return (T)instance;
             }
         }
-  
+ 
         private JavaScriptConverter GetConverter(Type deserializedType)
         {
             var converter =
@@ -99,66 +91,55 @@ namespace LinqToTwitter.Json
             return converter;
         }
 
-        const string ArrayType = "array";
-
-        private IDictionary<string, object> BuildDictionaryFromXml(XElement xElem)
+        private IDictionary<string, object> BuildDictionaryFromJson(string inKey, JsonData data)
         {
-            if (!xElem.HasElements)
+            if (data == null || !(data.IsArray || data.IsObject))
             {
                 return null;
             }
-            else if (xElem.Attribute("type") != null && xElem.Attribute("type").Value == ArrayType)
+            else if (data.IsArray)
             {
-                List<object> value = BuildList(xElem);
-                var item = xElem.Attribute("item");
+                List<object> value = BuildList(data);
 
-                string key = item == null ? xElem.Name.ToString() : item.Value;
-
-                return new Dictionary<string, object> { { key, value } };
+                return new Dictionary<string, object> { { inKey, value } };
             }
             else
             {
                 return
-                    (from elem in xElem.Elements()
+                    (from string key in (data as IOrderedDictionary).Keys
                      select new
                      {
-                         Dictionary = BuildDictionaryFromXml(elem),
-                         Element = elem,
-                         Type = elem.Attribute("type")
+                         Key = key,
+                     Dictionary = BuildDictionaryFromJson(key, data[key]),
+                     Element = data[key] ?? string.Empty
                      })
                     .ToDictionary(
                         key =>
                         {
-                            if (key.Type != null && key.Type.Value == ArrayType)
-                            {
-                                return key.Element.Attribute("item").Value;
-                            }
-                            else
-                            {
-                                return key.Element.Name.ToString();
-                            }
+                            return key.Key;
                         },
                         val =>
                         {
-                            if (val.Type != null && val.Type.Value == ArrayType)
+                            if (val.Element.IsArray)
                             {
-                                string item = val.Element.Attribute("item").Value;
-                                return val.Dictionary[item];
+                                return val.Dictionary[val.Key];
                             }
                             else
                             {
-                                return val.Dictionary == null ? ParseValue(val.Element.Value) : val.Dictionary as object;
+                                return val.Dictionary == null ? 
+                                    ParseValue(val.Element.ToString()) : 
+                                    val.Dictionary as object;
                             }
                         });
             }
         }
 
-        private List<object> BuildList(XElement xElem)
+        private List<object> BuildList(JsonData data)
         {
             var elements =
-                (from elem in xElem.Elements()
-                 select BuildDictionaryFromXml(elem) as object)
-                .ToList();
+            (from string key in (data as IOrderedDictionary).Keys
+             select BuildDictionaryFromJson(key, data[key]) as object)
+            .ToList();
 
             return elements;
         }

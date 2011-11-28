@@ -4,7 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Xml.Linq;
 
-#if SILVERLIGHT
+#if SILVERLIGHT && !WINDOWS_PHONE
     using System.Windows.Browser;
 #endif
 

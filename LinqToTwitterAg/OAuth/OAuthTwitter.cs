@@ -25,10 +25,10 @@ using System.Net;
 using System.IO;
 using System.Threading;
 
-#if SILVERLIGHT
+#if SILVERLIGHT && !WINDOWS_PHONE
     using System.Windows.Browser;
-#else
-using System.Web;
+#elif !SILVERLIGHT && !WINDOWS_PHONE
+    using System.Web;
 #endif
 
 namespace LinqToTwitter

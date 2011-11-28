@@ -230,6 +230,40 @@ namespace LinqToTwitterTests
    }
 ]";
 
+        string testDailyQueryResponse = @"{
+           ""trends"":{
+              ""2011-09-05 11:00"":[
+                 {
+                    ""name"":""#Youshouldbeashamedif"",
+                    ""query"":""#Youshouldbeashamedif"",
+                    ""events"":null,
+                    ""promoted_content"":null
+                 },
+                 {
+                    ""name"":""#iReallyHateWhen"",
+                    ""query"":""#iReallyHateWhen"",
+                    ""events"":null,
+                    ""promoted_content"":null
+                 }
+              ],
+              ""2011-09-05 10:00"":[
+                 {
+                    ""name"":""#iReallyHateWhen"",
+                    ""query"":""#iReallyHateWhen"",
+                    ""events"":null,
+                    ""promoted_content"":null
+                 },
+                 {
+                    ""name"":""#Youshouldbeashamedif"",
+                    ""query"":""#Youshouldbeashamedif"",
+                    ""events"":null,
+                    ""promoted_content"":null
+                 }
+              ]
+           },
+           ""as_of"":1315440609
+         }";
+
         #endregion
 
         /// <summary>
@@ -300,6 +334,16 @@ namespace LinqToTwitterTests
 
             var trends = actual.Cast<Trend>().ToList();
             Assert.AreEqual(2, trends[0].Locations.Count);
+        }
+
+        [TestMethod]
+        public void ProcessResults_Handles_Daily()
+        {
+            var trendReqProc = new TrendRequestProcessor_Accessor<Trend> { Type = TrendType.Daily };
+
+            IList actual = trendReqProc.ProcessResults(this.testDailyQueryResponse);
+
+            Assert.AreEqual(4, actual.Count);
         }
 
         [TestMethod]

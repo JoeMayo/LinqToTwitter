@@ -91,7 +91,7 @@ namespace LinqToTwitter
             SiteStreamUrl = "https://sitestream.twitter.com/2b/";
             UploadUrl = "https://upload.twitter.com/1/";
 
-#if SILVERLIGHT
+#if SILVERLIGHT && !WINDOWS_PHONE
 
             if (System.Windows.Application.Current.IsRunningOutOfBrowser)
             {

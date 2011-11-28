@@ -1,0 +1,599 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>10.0.20506</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{C6E6BF25-5DED-4349-A5EC-E61DCC598F10}</ProjectGuid>
+    <ProjectTypeGuids>{C089C8C0-30E0-4E22-80C0-CE093F111A43};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>LinqToTwitter</RootNamespace>
+    <AssemblyName>LinqToTwitterWP</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <SilverlightVersion>$(TargetFrameworkVersion)</SilverlightVersion>
+    <TargetFrameworkProfile>WindowsPhone71</TargetFrameworkProfile>
+    <TargetFrameworkIdentifier>Silverlight</TargetFrameworkIdentifier>
+    <SilverlightApplication>false</SilverlightApplication>
+    <ValidateXaml>true</ValidateXaml>
+    <ThrowErrorsInValidation>true</ThrowErrorsInValidation>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>Bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;TRACE;SILVERLIGHT;WINDOWS_PHONE</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>Bin\Release</OutputPath>
+    <DefineConstants>TRACE;SILVERLIGHT;WINDOWS_PHONE</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Servicemodel.Web" />
+    <Reference Include="System.Windows" />
+    <Reference Include="system" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Net" />
+    <Reference Include="mscorlib.extensions" />
+    <Reference Include="System.Xml.Linq" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\LinqToTwitterAg\Account\Account.cs">
+      <Link>Account\Account.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Account\AccountRequestProcessor.cs">
+      <Link>Account\AccountRequestProcessor.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Account\AccountType.cs">
+      <Link>Account\AccountType.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Account\DeviceType.cs">
+      <Link>Account\DeviceType.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Account\RateLimitStatus.cs">
+      <Link>Account\RateLimitStatus.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Account\Settings.cs">
+      <Link>Account\Settings.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Account\SleepTime.cs">
+      <Link>Account\SleepTime.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Account\Totals.cs">
+      <Link>Account\Totals.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Account\TZInfo.cs">
+      <Link>Account\TZInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Blocks\BlockingType.cs">
+      <Link>Blocks\BlockingType.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Blocks\Blocks.cs">
+      <Link>Blocks\Blocks.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Blocks\BlocksRequestProcessor.cs">
+      <Link>Blocks\BlocksRequestProcessor.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\BuildUrlHelper.cs">
+      <Link>Common\BuildUrlHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\Cursors.cs">
+      <Link>Common\Cursors.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\Evaluator.cs">
+      <Link>Common\Evaluator.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\ExpressionTreeHelpers.cs">
+      <Link>Common\ExpressionTreeHelpers.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\ExpressionTreeModifier.cs">
+      <Link>Common\ExpressionTreeModifier.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\ExpressionTreeVisitor.cs">
+      <Link>Common\ExpressionTreeVisitor.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\FirstWhereClauseFinder.cs">
+      <Link>Common\FirstWhereClauseFinder.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\HttpMethod.cs">
+      <Link>Common\HttpMethod.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\IDList.cs">
+      <Link>Common\IDList.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\InvalidQueryException.cs">
+      <Link>Common\InvalidQueryException.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\IRequestProcessor.cs">
+      <Link>Common\IRequestProcessor.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\JsonConversions.cs">
+      <Link>Common\JsonConversions.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\LinqExtensions.cs">
+      <Link>Common\LinqExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\Media.cs">
+      <Link>Common\Media.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\MediaType.cs">
+      <Link>Common\MediaType.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\MethodCallExpressionTypeFinder.cs">
+      <Link>Common\MethodCallExpressionTypeFinder.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\ParameterFinder.cs">
+      <Link>Common\ParameterFinder.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\QueryParameter.cs">
+      <Link>Common\QueryParameter.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\Request.cs">
+      <Link>Common\Request.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\RequestProcessorHelper.cs">
+      <Link>Common\RequestProcessorHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\State.cs">
+      <Link>Common\State.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\TwitterAsyncResponse.cs">
+      <Link>Common\TwitterAsyncResponse.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\TwitterErrorStatus.cs">
+      <Link>Common\TwitterErrorStatus.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\TwitterHashResponse.cs">
+      <Link>Common\TwitterHashResponse.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\TwitterProgressEventArgs.cs">
+      <Link>Common\TwitterProgressEventArgs.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\TwitterQueryException.cs">
+      <Link>Common\TwitterQueryException.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\TypeSystem.cs">
+      <Link>Common\TypeSystem.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\XTwitterElement.cs">
+      <Link>Common\XTwitterElement.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\DirectMessage\DirectMessage.cs">
+      <Link>DirectMessage\DirectMessage.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\DirectMessage\DirectMessageRequestProcessor.cs">
+      <Link>DirectMessage\DirectMessageRequestProcessor.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\DirectMessage\DirectMessageType.cs">
+      <Link>DirectMessage\DirectMessageType.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Favorites\Favorites.cs">
+      <Link>Favorites\Favorites.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Favorites\FavoritesRequestProcessor.cs">
+      <Link>Favorites\FavoritesRequestProcessor.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Favorites\FavoritesType.cs">
+      <Link>Favorites\FavoritesType.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Friendship\Friendship.cs">
+      <Link>Friendship\Friendship.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Friendship\FriendshipRequestProcessor.cs">
+      <Link>Friendship\FriendshipRequestProcessor.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Friendship\FriendshipType.cs">
+      <Link>Friendship\FriendshipType.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Friendship\Relationship.cs">
+      <Link>Friendship\Relationship.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Geo\Coordinate.cs">
+      <Link>Geo\Coordinate.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Geo\Geo.cs">
+      <Link>Geo\Geo.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Geo\Geometry.cs">
+      <Link>Geo\Geometry.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Geo\GeoRequestProcessor.cs">
+      <Link>Geo\GeoRequestProcessor.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Geo\GeoType.cs">
+      <Link>Geo\GeoType.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Geo\Place.cs">
+      <Link>Geo\Place.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Help\Configuration.cs">
+      <Link>Help\Configuration.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Help\Help.cs">
+      <Link>Help\Help.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Help\HelpRequestProcessor.cs">
+      <Link>Help\HelpRequestProcessor.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Help\HelpType.cs">
+      <Link>Help\HelpType.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Help\Language.cs">
+      <Link>Help\Language.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Help\PhotoSize.cs">
+      <Link>Help\PhotoSize.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Legal\Legal.cs">
+      <Link>Legal\Legal.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Legal\LegalRequestProcessor.cs">
+      <Link>Legal\LegalRequestProcessor.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Legal\LegalType.cs">
+      <Link>Legal\LegalType.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\LinqToTwitter\ITwitterExecute.cs">
+      <Link>LinqToTwitter\ITwitterExecute.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\LinqToTwitter\TwitterContext.cs">
+      <Link>LinqToTwitter\TwitterContext.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\LinqToTwitter\TwitterExecute.cs">
+      <Link>LinqToTwitter\TwitterExecute.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\LinqToTwitter\TwitterExtensions.cs">
+      <Link>LinqToTwitter\TwitterExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\LinqToTwitter\TwitterQueryable.cs">
+      <Link>LinqToTwitter\TwitterQueryable.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\LinqToTwitter\TwitterQueryProvider.cs">
+      <Link>LinqToTwitter\TwitterQueryProvider.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\List\List.cs">
+      <Link>List\List.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\List\ListRequestProcessor.cs">
+      <Link>List\ListRequestProcessor.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\List\ListType.cs">
+      <Link>List\ListType.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\OAuth\AnonymousAuthorizer.cs">
+      <Link>OAuth\AnonymousAuthorizer.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\OAuth\InMemoryCredentials.cs">
+      <Link>OAuth\InMemoryCredentials.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\OAuth\IOAuthCredentials.cs">
+      <Link>OAuth\IOAuthCredentials.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\OAuth\IOAuthHelper.cs">
+      <Link>OAuth\IOAuthHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\OAuth\IOAuthTwitter.cs">
+      <Link>OAuth\IOAuthTwitter.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\OAuth\IsolatedStorageCredentials.cs">
+      <Link>OAuth\IsolatedStorageCredentials.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\OAuth\ITwitterAuthorizer.cs">
+      <Link>OAuth\ITwitterAuthorizer.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\OAuth\OAuthAuthorizer.cs">
+      <Link>OAuth\OAuthAuthorizer.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\OAuth\OAuthBase.cs">
+      <Link>OAuth\OAuthBase.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\OAuth\OAuthSignatureTypes.cs">
+      <Link>OAuth\OAuthSignatureTypes.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\OAuth\OAuthTwitter.cs">
+      <Link>OAuth\OAuthTwitter.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\OAuth\PinAuthorizer.cs">
+      <Link>OAuth\PinAuthorizer.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\OAuth\SignInAuthorizer.cs">
+      <Link>OAuth\SignInAuthorizer.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\OAuth\SilverlightAuthorizer.cs">
+      <Link>OAuth\SilverlightAuthorizer.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\OAuth\SingleUserAuthorizer.cs">
+      <Link>OAuth\SingleUserAuthorizer.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\OAuth\SingleUserInMemoryCredentials.cs">
+      <Link>OAuth\SingleUserInMemoryCredentials.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\OAuth\Utilities.cs">
+      <Link>OAuth\Utilities.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\OAuth\WebAuthorizer.cs">
+      <Link>OAuth\WebAuthorizer.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\OAuth\XAuthAuthorizer.cs">
+      <Link>OAuth\XAuthAuthorizer.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\OAuth\XAuthCredentials.cs">
+      <Link>OAuth\XAuthCredentials.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Raw\Raw.cs">
+      <Link>Raw\Raw.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Raw\RawRequestProcessor.cs">
+      <Link>Raw\RawRequestProcessor.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\RelatedResults\RelatedResults.cs">
+      <Link>RelatedResults\RelatedResults.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\RelatedResults\RelatedResultsRequestProcessor.cs">
+      <Link>RelatedResults\RelatedResultsRequestProcessor.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\RelatedResults\RelatedResultsType.cs">
+      <Link>RelatedResults\RelatedResultsType.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\SavedSearch\SavedSearch.cs">
+      <Link>SavedSearch\SavedSearch.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\SavedSearch\SavedSearchRequestProcessor.cs">
+      <Link>SavedSearch\SavedSearchRequestProcessor.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\SavedSearch\SavedSearchType.cs">
+      <Link>SavedSearch\SavedSearchType.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Search\AtomAuthor.cs">
+      <Link>Search\AtomAuthor.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Search\AtomEntry.cs">
+      <Link>Search\AtomEntry.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Search\AtomFeed.cs">
+      <Link>Search\AtomFeed.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Search\Attitude.cs">
+      <Link>Search\Attitude.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Search\ResultType.cs">
+      <Link>Search\ResultType.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Search\Search.cs">
+      <Link>Search\Search.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Search\SearchRequestProcessor.cs">
+      <Link>Search\SearchRequestProcessor.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Search\SearchType.cs">
+      <Link>Search\SearchType.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Serialization\Account\AccountConverter.cs">
+      <Link>Serialization\Account\AccountConverter.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Serialization\Account\EndSession.cs">
+      <Link>Serialization\Account\EndSession.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Serialization\Account\RateLimitStatus.cs">
+      <Link>Serialization\Account\RateLimitStatus.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Serialization\Account\Settings.cs">
+      <Link>Serialization\Account\Settings.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Serialization\Account\SleepTime.cs">
+      <Link>Serialization\Account\SleepTime.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Serialization\Account\TimeZone.cs">
+      <Link>Serialization\Account\TimeZone.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Serialization\Account\Totals.cs">
+      <Link>Serialization\Account\Totals.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Serialization\Extensions\DictionaryExtensions.cs">
+      <Link>Serialization\Extensions\DictionaryExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Serialization\Extensions\StringExtensions.cs">
+      <Link>Serialization\Extensions\StringExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Serialization\JavaScriptConverter.cs">
+      <Link>Serialization\JavaScriptConverter.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Serialization\JavaScriptSerializer.cs">
+      <Link>Serialization\JavaScriptSerializer.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Serialization\LitJson\IJsonWrapper.cs">
+      <Link>Serialization\LitJson\IJsonWrapper.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Serialization\LitJson\IOrderedDictionary.cs">
+      <Link>Serialization\LitJson\IOrderedDictionary.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Serialization\LitJson\JsonData.cs">
+      <Link>Serialization\LitJson\JsonData.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Serialization\LitJson\JsonException.cs">
+      <Link>Serialization\LitJson\JsonException.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Serialization\LitJson\JsonMapper.cs">
+      <Link>Serialization\LitJson\JsonMapper.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Serialization\LitJson\JsonReader.cs">
+      <Link>Serialization\LitJson\JsonReader.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Serialization\LitJson\JsonWriter.cs">
+      <Link>Serialization\LitJson\JsonWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Serialization\LitJson\Lexer.cs">
+      <Link>Serialization\LitJson\Lexer.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Serialization\LitJson\ParserToken.cs">
+      <Link>Serialization\LitJson\ParserToken.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Serialization\Place\Place.cs">
+      <Link>Serialization\Place\Place.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Serialization\Place\PlaceType.cs">
+      <Link>Serialization\Place\PlaceType.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Serialization\Status\Status.cs">
+      <Link>Serialization\Status\Status.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Serialization\Trend\DailyWeeklyTrends.cs">
+      <Link>Serialization\Trend\DailyWeeklyTrends.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Serialization\Trend\SlottedTrend.cs">
+      <Link>Serialization\Trend\SlottedTrend.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Serialization\Trend\Trend.cs">
+      <Link>Serialization\Trend\Trend.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Serialization\Trend\TrendConverter.cs">
+      <Link>Serialization\Trend\TrendConverter.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Serialization\Trend\Trends.cs">
+      <Link>Serialization\Trend\Trends.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Serialization\User\User.cs">
+      <Link>Serialization\User\User.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\SocialGraph\SocialGraph.cs">
+      <Link>SocialGraph\SocialGraph.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\SocialGraph\SocialGraphRequestProcessor.cs">
+      <Link>SocialGraph\SocialGraphRequestProcessor.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\SocialGraph\SocialGraphType.cs">
+      <Link>SocialGraph\SocialGraphType.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Status\Annotation.cs">
+      <Link>Status\Annotation.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Status\Contributor.cs">
+      <Link>Status\Contributor.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Status\Entities\Entities.cs">
+      <Link>Status\Entities\Entities.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Status\Entities\HashTagMention.cs">
+      <Link>Status\Entities\HashTagMention.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Status\Entities\MentionBase.cs">
+      <Link>Status\Entities\MentionBase.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Status\Entities\UrlMention.cs">
+      <Link>Status\Entities\UrlMention.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Status\Entities\UserMention.cs">
+      <Link>Status\Entities\UserMention.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Status\Retweet.cs">
+      <Link>Status\Retweet.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Status\Status.cs">
+      <Link>Status\Status.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Status\StatusExtensions.cs">
+      <Link>Status\StatusExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Status\StatusRequestProcessor.cs">
+      <Link>Status\StatusRequestProcessor.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Status\StatusType.cs">
+      <Link>Status\StatusType.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Streaming\StreamContent.cs">
+      <Link>Streaming\StreamContent.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Streaming\Streaming.cs">
+      <Link>Streaming\Streaming.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Streaming\StreamingRequestProcessor.cs">
+      <Link>Streaming\StreamingRequestProcessor.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Streaming\StreamingType.cs">
+      <Link>Streaming\StreamingType.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Streaming\UserStream.cs">
+      <Link>Streaming\UserStream.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Streaming\UserStreamRequestProcessor.cs">
+      <Link>Streaming\UserStreamRequestProcessor.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Streaming\UserStreamType.cs">
+      <Link>Streaming\UserStreamType.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Trend\Location.cs">
+      <Link>Trend\Location.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Trend\Trend.cs">
+      <Link>Trend\Trend.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Trend\TrendRequestProcessor.cs">
+      <Link>Trend\TrendRequestProcessor.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Trend\TrendType.cs">
+      <Link>Trend\TrendType.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\User\Category.cs">
+      <Link>User\Category.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\User\User.cs">
+      <Link>User\User.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\User\UserIdentifier.cs">
+      <Link>User\UserIdentifier.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\User\UserRequestProcessor.cs">
+      <Link>User\UserRequestProcessor.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\User\UserType.cs">
+      <Link>User\UserType.cs</Link>
+    </Compile>
+    <Compile Include="Common\HashSet.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\LinqToTwitterAg\LinqToTwitter.snk">
+      <Link>LinqToTwitter.snk</Link>
+    </None>
+    <None Include="..\LinqToTwitterAg\Serialization\LitJson\AUTHORS">
+      <Link>Serialization\LitJson\AUTHORS</Link>
+    </None>
+    <None Include="..\LinqToTwitterAg\Serialization\LitJson\COPYING">
+      <Link>Serialization\LitJson\COPYING</Link>
+    </None>
+    <None Include="..\LinqToTwitterAg\Serialization\LitJson\HACKING">
+      <Link>Serialization\LitJson\HACKING</Link>
+    </None>
+    <None Include="..\LinqToTwitterAg\Serialization\LitJson\README">
+      <Link>Serialization\LitJson\README</Link>
+    </None>
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.$(TargetFrameworkProfile).Overrides.targets" />
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.CSharp.targets" />
+  <ProjectExtensions />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -10,10 +10,10 @@ using System.Xml;
 using System.Xml.Linq;
 using System.Diagnostics;
 
-#if SILVERLIGHT
+#if SILVERLIGHT && !WINDOWS_PHONE
     using System.Windows.Browser;
-#else
-using System.Web;
+#elif !SILVERLIGHT && !WINDOWS_PHONE
+    using System.Web;
 #endif
 
 namespace LinqToTwitter
@@ -403,6 +403,7 @@ namespace LinqToTwitter
                 throw twitterQueryEx;
             }
 
+#if !WINDOWS_PHONE
             var wantsJson = reqProc as IRequestProcessorWantsJson;
 
             if (wantsJson == null && uri.LocalPath.EndsWith("json"))
@@ -416,7 +417,7 @@ namespace LinqToTwitter
                     response = doc.ToString();
                 }
             }
-
+#endif
 #if !SILVERLIGHT
             CheckResultsForTwitterError(response, httpStatus);
 #endif
@@ -636,10 +637,11 @@ namespace LinqToTwitter
                 streamUrl = streamUrl.Substring(qIndex - 1);
 
                 bytes = Encoding.UTF8.GetBytes(urlParams);
-                req.ContentLength = bytes.Length;
                 req.Method = "POST";
                 req.ContentType = "x-www-form-urlencoded";
-
+#if !WINDOWS_PHONE
+                req.ContentLength = bytes.Length;
+#endif
                 //#if !SILVERLIGHT
                 //                req.Timeout = Timeout;
                 //                req.ReadWriteTimeout = ReadWriteTimeout;
@@ -805,8 +807,10 @@ namespace LinqToTwitter
                 //req.Headers[HttpRequestHeader.Expect] = null;
                 req.ContentType = "multipart/form-data;boundary=" + contentBoundaryBase;
                 //req.PreAuthenticate = true;
+#if !WINDOWS_PHONE
                 req.AllowWriteStreamBuffering = true;
-                req.ContentLength = imageBytes.Length;
+                req.ContentLength = imageBytes.Length; 
+#endif
 
                 Exception asyncException = null;
                 using (var resetEvent = new ManualResetEvent(/*initialState:*/ false))
@@ -979,8 +983,10 @@ namespace LinqToTwitter
                 var dontIncludePostParametersInOAuthSignature = new Dictionary<string, string>();
                 var req = this.AuthorizedClient.PostRequest(new Request(url), dontIncludePostParametersInOAuthSignature);
                 req.ContentType = "multipart/form-data;boundary=" + contentBoundaryBase;
+#if !WINDOWS_PHONE
                 req.AllowWriteStreamBuffering = true;
-                req.ContentLength = imageBytes.Length;
+                req.ContentLength = imageBytes.Length; 
+#endif
 
                 Exception asyncException = null;
                 using (var resetEvent = new ManualResetEvent(/*initialState:*/ false))

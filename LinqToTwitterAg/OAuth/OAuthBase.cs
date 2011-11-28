@@ -23,14 +23,15 @@
 
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 using System.Globalization;
 
-#if SILVERLIGHT
+#if SILVERLIGHT && !WINDOWS_PHONE
     using System.Windows.Browser;
-#else
-using System.Web;
+#elif !SILVERLIGHT && !WINDOWS_PHONE
+    using System.Web;
 #endif
 
 namespace LinqToTwitter
