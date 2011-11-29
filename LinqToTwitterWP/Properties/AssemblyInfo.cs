@@ -6,11 +6,11 @@ using System.Resources;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("LinqToTwitterWP")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("LINQ to Twitter for Windows Phone")]
+[assembly: AssemblyDescription("Open Source LINQ Provider for the Twitter Micro-Blogging Service (Windows Phone)")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("LinqToTwitterWP")]
+[assembly: AssemblyCompany("Joe Mayo")]
+[assembly: AssemblyProduct("LINQ to Twitter for Windows Phone")]
 [assembly: AssemblyCopyright("Copyright ©  2011")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -32,6 +32,6 @@ using System.Resources;
 //
 // You can specify all the values or you can default the Revision and Build Numbers 
 // by using the '*' as shown below:
-[assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyVersion("2.0.22")]
+[assembly: AssemblyFileVersion("2.0.22")]
 [assembly: NeutralResourcesLanguageAttribute("en-US")]
