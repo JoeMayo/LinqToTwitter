@@ -219,6 +219,7 @@
     <Compile Include="Status\Contributor.cs" />
     <Compile Include="Status\Entities\Entities.cs" />
     <Compile Include="Status\Entities\HashTagMention.cs" />
+    <Compile Include="Status\Entities\MediaMention.cs" />
     <Compile Include="Status\Entities\MentionBase.cs" />
     <Compile Include="Status\Entities\UrlMention.cs" />
     <Compile Include="Status\Entities\UserMention.cs" />

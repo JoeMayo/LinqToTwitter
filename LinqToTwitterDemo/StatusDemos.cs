@@ -57,9 +57,8 @@ namespace LinqToTwitterDemo
             //StatusJoinDemo(twitterCtx);
             //TrimUserDemo(twitterCtx);
             //TweetWithMediaDemo(twitterCtx);
+            //TweetEntityDemo(twitterCtx);
         }
-
-        #region Status Demos
 
         /// <summary>
         /// Shows how to get statuses for logged-in user's friends - just like main Twitter page
@@ -912,7 +911,26 @@ namespace LinqToTwitterDemo
             Console.WriteLine("Media item sent - Tweet Text: " + tweet.Text);
         }
 
-        #endregion
+        static void TweetEntityDemo(TwitterContext twitterCtx)
+        {
+            var tweets =
+                (from tweet in twitterCtx.Status
+                 where tweet.Type == StatusType.Home &&
+                       tweet.IncludeEntities == true &&
+                       tweet.Count == 100
+                 select tweet)
+                .ToList();
 
+            tweets.ForEach(tweet =>
+            {
+                Console.WriteLine("Tweet: " + tweet.Text);
+                Console.WriteLine(
+                    "Entities: \n\tHashes: {0}\n\tMedia: {1}\n\tUrl: {2}\n\tUser: {3}\n",
+                    tweet.Entities.HashTagMentions.Count,
+                    tweet.Entities.MediaMentions.Count,
+                    tweet.Entities.UrlMentions.Count,
+                    tweet.Entities.UserMentions.Count);
+            });
+        }
     }
 }

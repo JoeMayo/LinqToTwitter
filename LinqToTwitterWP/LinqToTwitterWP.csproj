@@ -494,6 +494,9 @@
     <Compile Include="..\LinqToTwitterAg\Status\Entities\HashTagMention.cs">
       <Link>Status\Entities\HashTagMention.cs</Link>
     </Compile>
+    <Compile Include="..\LinqToTwitterAg\Status\Entities\MediaMention.cs">
+      <Link>Status\Entities\MediaMention.cs</Link>
+    </Compile>
     <Compile Include="..\LinqToTwitterAg\Status\Entities\MentionBase.cs">
       <Link>Status\Entities\MentionBase.cs</Link>
     </Compile>

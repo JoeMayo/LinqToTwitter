@@ -25,12 +25,16 @@ namespace LinqToTwitter
             //process hashtags mentions
             var hashTagMentions = new List<HashTagMention>(MentionBase.ProcessMentions<HashTagMention>(element, "hashtags", "hashtag", false, HashTagMention.FromXElement));
 
+            //process media mentions
+            var mediaMentions = new List<MediaMention>(MentionBase.ProcessMentions<MediaMention>(element, "media", "creative", false, MediaMention.FromXElement));
+
             return new Entities
-                               {
-                                   UserMentions = userMentions,
-                                   HashTagMentions = hashTagMentions,
-                                   UrlMentions = urlMentions
-                               };
+            {
+                UserMentions = userMentions,
+                HashTagMentions = hashTagMentions,
+                UrlMentions = urlMentions,
+                MediaMentions = mediaMentions
+            };
         }
 
         /// <summary>
@@ -47,5 +51,10 @@ namespace LinqToTwitter
         /// Hash tags mentions in the tweet
         /// </summary>
         public List<HashTagMention> HashTagMentions { get; set; }
+
+        /// <summary>
+        /// Media mentions in the tweet
+        /// </summary>
+        public List<MediaMention> MediaMentions { get; set; }
     }
 }
