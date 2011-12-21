@@ -18,14 +18,14 @@ namespace LinqToTwitterDemo
             //CreateFriendshipFollowDemo(twitterCtx);
             //DestroyFriendshipDemo(twitterCtx);
             //CreateFriendshipNoDeviceUpdatesDemo(twitterCtx);
-            CreateFriendshipAsyncDemo(twitterCtx);
+            //CreateFriendshipAsyncDemo(twitterCtx);
             //FriendshipExistsDemo(twitterCtx);
             //FriendshipExistsProjectionDemo(twitterCtx);
             //FriendshipShowDemo(twitterCtx);
             //FriendshipNoRetweetIDsDemo(twitterCtx);
             //FriendshipIncomingDemo(twitterCtx);
             //FriendshipOutgoingDemo(twitterCtx);
-            //FriendshipLookupDemo(twitterCtx);
+            FriendshipLookupDemo(twitterCtx);
             //UpdateSettingsDemo(twitterCtx);
         }
 
@@ -63,7 +63,7 @@ namespace LinqToTwitterDemo
 
         private static void CreateFriendshipAsyncDemo(TwitterContext twitterCtx)
         {
-            var user = twitterCtx.CreateFriendship("JoeMayo", string.Empty, string.Empty, false,
+            twitterCtx.CreateFriendship("JoeMayo", string.Empty, string.Empty, false,
                 response =>
                 {
                     User usr = response.State;

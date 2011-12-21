@@ -39,8 +39,8 @@ namespace LinqToTwitter
         public TwitterContext()
             : this(new AnonymousAuthorizer())
         {
-            BaseUrl = "http://api.twitter.com/1/";
-            SearchUrl = "http://search.twitter.com/";
+            BaseUrl = "https://api.twitter.com/1/";
+            SearchUrl = "https://search.twitter.com/";
         }
 
         /// <summary>
@@ -74,8 +74,8 @@ namespace LinqToTwitter
         /// Initializes a new instance of the <see cref="TwitterContext"/> class.
         /// </summary>
         /// <param name="execute">The <see cref="ITwitterExecute"/> object to use.</param>
-        /// <param name="baseUrl">Base url of Twitter API.  May be null to use the default "http://twitter.com/" value.</param>
-        /// <param name="searchUrl">Base url of Twitter Search API.  May be null to use the default "http://search.twitter.com/" value.</param>
+        /// <param name="baseUrl">Base url of Twitter API.  May be null to use the default "https://api.twitter.com/1/" value.</param>
+        /// <param name="searchUrl">Base url of Twitter Search API.  May be null to use the default "https://search.twitter.com/" value.</param>
         public TwitterContext(ITwitterExecute execute, string baseUrl, string searchUrl)
         {
             if (execute == null)
@@ -85,8 +85,8 @@ namespace LinqToTwitter
 
             TwitterExecutor = execute;
             BaseUrl = string.IsNullOrEmpty(baseUrl) ? "https://api.twitter.com/1/" : baseUrl;
-            SearchUrl = string.IsNullOrEmpty(searchUrl) ? "http://search.twitter.com/" : searchUrl;
-            StreamingUrl = "http://stream.twitter.com/1/";
+            SearchUrl = string.IsNullOrEmpty(searchUrl) ? "https://search.twitter.com/" : searchUrl;
+            StreamingUrl = "https://stream.twitter.com/1/";
             UserStreamUrl = "https://userstream.twitter.com/2/";
             SiteStreamUrl = "https://sitestream.twitter.com/2b/";
             UploadUrl = "https://upload.twitter.com/1/";
@@ -112,8 +112,8 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="authorization">OAuth provider</param>
         /// <param name="execute">The <see cref="ITwitterExecute"/> object to use.</param>
-        /// <param name="baseUrl">Base url of Twitter API.  May be null to use the default "http://twitter.com/" value.</param>
-        /// <param name="searchUrl">Base url of Twitter Search API.  May be null to use the default "http://search.twitter.com/" value.</param>
+        /// <param name="baseUrl">Base url of Twitter API.  May be null to use the default "https://api.twitter.com/1/" value.</param>
+        /// <param name="searchUrl">Base url of Twitter Search API.  May be null to use the default "https://search.twitter.com/" value.</param>
         public TwitterContext(ITwitterAuthorizer authorization, ITwitterExecute execute, string baseUrl, string searchUrl)
         {
             if (authorization == null)
@@ -129,7 +129,7 @@ namespace LinqToTwitter
             TwitterExecutor = execute;
             TwitterExecutor.AuthorizedClient = authorization;
             BaseUrl = string.IsNullOrEmpty(baseUrl) ? "https://api.twitter.com/1/" : baseUrl;
-            SearchUrl = string.IsNullOrEmpty(searchUrl) ? "http://search.twitter.com/" : searchUrl;
+            SearchUrl = string.IsNullOrEmpty(searchUrl) ? "https://search.twitter.com/" : searchUrl;
 
 #if SILVERLIGHT
             WebRequest.RegisterPrefix("http://", WebRequestCreator.ClientHttp);

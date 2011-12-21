@@ -20,7 +20,7 @@ namespace LinqToTwitterXUnitTests.LinqToTwitterTests
         [Fact]
         public void StreamingUrl_Returns_Default()
         {
-            const string defaultStreamingUrl = "http://stream.twitter.com/1/";
+            const string defaultStreamingUrl = "https://stream.twitter.com/1/";
 
             string streamingUrl = new TwitterContext().StreamingUrl;
 
