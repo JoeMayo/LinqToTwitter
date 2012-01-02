@@ -134,7 +134,7 @@ namespace LinqToTwitterTests
             Assert.AreEqual(expected, actual.Cast<Friendship>().First().IsFriend);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void ProcessResults_Translates_Relationships_From_LookupQuery()
         {
             var friendReqProc = new FriendshipRequestProcessor<Friendship>();
@@ -143,8 +143,8 @@ namespace LinqToTwitterTests
 
             var relations = friends.First().Relationships;
             Assert.AreEqual(2, relations.Count);
-            Assert.AreEqual("none", relations[0].Connection);
-            Assert.AreEqual("following", relations[1].Connection);
+            Assert.AreEqual("none", relations[0].Connections[0]);
+            Assert.AreEqual("following", relations[1].Connections[0]);
         }
 
         [TestMethod()]

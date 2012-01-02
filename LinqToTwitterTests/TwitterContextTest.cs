@@ -205,7 +205,7 @@ namespace LinqToTwitterTests
         public void OneParamCtorDefaults()
         {
             string baseUrl = "https://api.twitter.com/1/";
-            string searchUrl = "http://search.twitter.com/";
+            string searchUrl = "https://search.twitter.com/";
             ITwitterAuthorizer authorizedClient = new PinAuthorizer();
             TwitterContext ctx = new TwitterContext(authorizedClient);
 

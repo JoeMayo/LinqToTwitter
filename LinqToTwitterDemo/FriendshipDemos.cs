@@ -182,11 +182,12 @@ namespace LinqToTwitterDemo
             var relationships =
                 (from look in twitterCtx.Friendship
                  where look.Type == FriendshipType.Lookup &&
-                       look.ScreenName == "twitter,joemayo"
+                       look.ScreenName == "linq2tweeter,joemayo"
                  select look.Relationships)
                 .SingleOrDefault();
 
-            relationships.ForEach(rel => Console.WriteLine("Relationship to " + rel.ScreenName + " is " + rel.Connection));
+            relationships.ForEach(rel => Console.WriteLine(
+                "Relationship to " + rel.ScreenName + " is Following: " + rel.Following + " Followed By: " + rel.FollowedBy));
         }
 
         private static void UpdateSettingsDemo(TwitterContext twitterCtx)
