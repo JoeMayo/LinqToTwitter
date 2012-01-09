@@ -1,12 +1,18 @@
 ﻿using System;
 using System.Linq;
 using LinqToTwitter;
+using LinqToTwitterTests.Common;
 using Xunit;
 
 namespace LinqToTwitterXUnitTests.LinqToTwitterTests
 {
     public class TwitterContextUrlTests
     {
+        public TwitterContextUrlTests()
+        {
+            TestCulture.SetCulture();
+        }
+
         [Fact]
         public void UploadUrl_Returns_Default()
         {

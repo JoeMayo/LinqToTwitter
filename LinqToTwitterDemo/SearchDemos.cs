@@ -25,7 +25,6 @@ namespace LinqToTwitterDemo
             //SearchByLanguageTwitterDemo(twitterCtx);
             //SearchSinceDateTwitterDemo(twitterCtx);
             //SearchTwitterSource(twitterCtx);
-            //ExceedSearchRateLimitDemo(twitterCtx);
             //SearchWithResultType(twitterCtx);
             //SearchWithWordQuery(twitterCtx);
             //SearchWithPersonReferenceQuery(twitterCtx);
@@ -33,13 +32,12 @@ namespace LinqToTwitterDemo
             //SearchWithAttitudeQuery(twitterCtx);
             //SearchWithLinksQuery(twitterCtx);
             //SearchCountDemo(twitterCtx);
-            SearchDatesDemo(twitterCtx);
+            //SearchDatesDemo(twitterCtx);
             //SearchEntriesQueryDemo(twitterCtx);
             //SearchGeoCodeDemo(twitterCtx);
             //SearchGeoCodeAndShowUserDemo(twitterCtx);
+            SearchIncludingEntities(twitterCtx);
         }
-
-        #region Search Demos
 
         /// <summary>
         /// shows how to perform a twitter search
@@ -57,16 +55,13 @@ namespace LinqToTwitterDemo
 
             foreach (var search in queryResults)
             {
-                // here, you can see that properties are named
-                // from the perspective of atom feed elements
-                // i.e. the query string is called Title
-                Console.WriteLine("\nQuery:\n" + search.Title);
+                Console.WriteLine("\nQuery:\n" + search.QueryResult);
 
-                foreach (var entry in search.Entries)
+                foreach (var entry in search.Results)
                 {
                     Console.WriteLine(
                         "ID: {0}, Source: {1}\nContent: {2}\n",
-                        entry.ID, entry.Source, entry.Content);
+                        entry.ID, entry.Source, entry.Text);
                 }
             }
         }
@@ -86,16 +81,13 @@ namespace LinqToTwitterDemo
 
             foreach (var search in queryResults)
             {
-                // here, you can see that properties are named
-                // from the perspective of atom feed elements
-                // i.e. the query string is called Title
-                Console.WriteLine("\nQuery:\n" + search.Title);
+                Console.WriteLine("\nQuery:\n" + search.QueryResult);
 
-                foreach (var entry in search.Entries)
+                foreach (var entry in search.Results)
                 {
                     Console.WriteLine(
                         "ID: {0}, Source: {1}\nContent: {2}\n",
-                        entry.ID, entry.Source, entry.Content);
+                        entry.ID, entry.Source, entry.Text);
                 }
             }
         }
@@ -119,16 +111,13 @@ namespace LinqToTwitterDemo
 
             foreach (var search in queryResults)
             {
-                // here, you can see that properties are named
-                // from the perspective of atom feed elements
-                // i.e. the query string is called Title
-                Console.WriteLine("\nQuery:\n" + search.Title);
+                Console.WriteLine("\nQuery:\n" + search.QueryResult);
 
-                foreach (var entry in search.Entries)
+                foreach (var entry in search.Results)
                 {
                     Console.WriteLine(
                         "ID: {0}, Source: {1}\nContent: {2}\n",
-                        entry.ID, entry.Source, entry.Content);
+                        entry.ID, entry.Source, entry.Text);
                 }
             }
         }
@@ -148,16 +137,13 @@ namespace LinqToTwitterDemo
 
             foreach (var search in queryResults)
             {
-                // here, you can see that properties are named
-                // from the perspective of atom feed elements
-                // i.e. the query string is called Title
-                Console.WriteLine("\nQuery:\n" + search.Title);
+                Console.WriteLine("\nQuery:\n" + search.QueryResult);
 
-                foreach (var entry in search.Entries)
+                foreach (var entry in search.Results)
                 {
                     Console.WriteLine(
                         "ID: {0}\nLocation: {1}\nSource: {2}\nContent: {3}\n",
-                        entry.ID, entry.Location, entry.Source, entry.Content);
+                        entry.ID, entry.Geo, entry.Source, entry.Text);
                 }
             }
         }
@@ -179,16 +165,13 @@ namespace LinqToTwitterDemo
 
             foreach (var search in queryResults)
             {
-                // here, you can see that properties are named
-                // from the perspective of atom feed elements
-                // i.e. the query string is called Title
-                Console.WriteLine("\nQuery:\n" + search.Title);
+                Console.WriteLine("\nQuery:\n" + search.QueryResult);
 
-                foreach (var entry in search.Entries)
+                foreach (var entry in search.Results)
                 {
                     Console.WriteLine(
-                        "ID: {0}\nLanguage: {1}\nSource: {2}\nContent: {3}\n",
-                        entry.ID, entry.Language, entry.Source, entry.Content);
+                        "ID: {0}\nSource: {1}\nContent: {2}\n",
+                        entry.ID, entry.Source, entry.Text);
                 }
             }
         }
@@ -206,9 +189,9 @@ namespace LinqToTwitterDemo
                  select search)
                  .SingleOrDefault();
 
-            foreach (var entry in queryResult.Entries)
+            foreach (var entry in queryResult.Results)
             {
-                var statusID = entry.ID.Substring(entry.ID.LastIndexOf(":") + 1);
+                string statusID = entry.ID.ToString();
 
                 var status =
                     (from tweet in twitterCtx.Status
@@ -239,11 +222,11 @@ namespace LinqToTwitterDemo
                  select search)
                  .SingleOrDefault();
 
-            foreach (var entry in queryResult.Entries)
+            foreach (var entry in queryResult.Results)
             {
                 Console.WriteLine(
-                    "ID: {0}, Source: {1}, Language: {2}\nContent: {3}\n",
-                    entry.ID, entry.Source, entry.Language, entry.Content);
+                    "ID: {0}, Source: {1}\nContent: {2}\n",
+                    entry.ID, entry.Source, entry.Text);
             }
         }
 
@@ -260,15 +243,15 @@ namespace LinqToTwitterDemo
                       search.SearchLanguage == "pt" &&
                       search.PageSize == 50 &&
                       search.Since >= DateTime.Now.Date
-                select search.Entries;
+                select search.Results;
 
             var searchResult = queryResults.FirstOrDefault();
 
             foreach (var entry in searchResult)
             {
                 Console.WriteLine(
-                    "ID: {0}, Source: {1}, Language: {2}\nContent: {3}\n",
-                    entry.ID, entry.Source, entry.Language, entry.Content);
+                    "ID: {0}, Source: {1}\nContent: {2}\n",
+                    entry.ID, entry.Source, entry.Text);
             }
         }
 
@@ -286,16 +269,13 @@ namespace LinqToTwitterDemo
 
             foreach (var search in queryResults)
             {
-                // here, you can see that properties are named
-                // from the perspective of atom feed elements
-                // i.e. the query string is called Title
-                Console.WriteLine("\nQuery:\n" + search.Title);
+                Console.WriteLine("\nQuery:\n" + search.QueryResult);
 
-                foreach (var entry in search.Entries)
+                foreach (var entry in search.Results)
                 {
                     Console.WriteLine(
                         "ID: {0}, Source: {1}\nContent: {2}\n",
-                        entry.ID, entry.Source, entry.Content);
+                        entry.ID, entry.Source, entry.Text);
                 }
             }
         }
@@ -314,13 +294,13 @@ namespace LinqToTwitterDemo
                  select search)
                 .FirstOrDefault();
 
-            Console.WriteLine("\nQuery:\n" + searchResults.Title);
+            Console.WriteLine("\nQuery:\n" + searchResults.QueryResult);
 
-            foreach (var entry in searchResults.Entries)
+            foreach (var entry in searchResults.Results)
             {
                 Console.WriteLine(
                     "ID: {0}, Result Type: {1}\nContent: {2}\n",
-                    entry.ID, entry.ResultType, entry.Content);
+                    entry.ID, entry.MetaData.ResultType, entry.Text);
             }
         }
 
@@ -338,13 +318,13 @@ namespace LinqToTwitterDemo
 
             foreach (var search in queryResults)
             {
-                Console.WriteLine("\nQuery:\n" + search.Title);
+                Console.WriteLine("\nQuery:\n" + search.QueryResult);
 
-                foreach (var entry in search.Entries)
+                foreach (var entry in search.Results)
                 {
                     Console.WriteLine(
                         "ID: {0}, As of: {1}\nContent: {2}\n",
-                        entry.ID, entry.Updated, entry.Content);
+                        entry.ID, entry.CreatedAt, entry.Text);
                 }
             }
         }
@@ -363,13 +343,13 @@ namespace LinqToTwitterDemo
 
             foreach (var search in queryResults)
             {
-                Console.WriteLine("\nQuery:\n" + search.Title);
+                Console.WriteLine("\nQuery:\n" + search.QueryResult);
 
-                foreach (var entry in search.Entries)
+                foreach (var entry in search.Results)
                 {
                     Console.WriteLine(
                         "ID: {0}, As of: {1}\nContent: {2}\n",
-                        entry.ID, entry.Updated, entry.Content);
+                        entry.ID, entry.CreatedAt, entry.Text);
                 }
             }
         }
@@ -387,13 +367,13 @@ namespace LinqToTwitterDemo
                  select search)
                 .SingleOrDefault();
 
-            Console.WriteLine("\nQuery:\n" + queryResults.Title);
+            Console.WriteLine("\nQuery:\n" + queryResults.QueryResult);
 
-            foreach (var entry in queryResults.Entries)
+            foreach (var entry in queryResults.Results)
             {
                 Console.WriteLine(
                     "ID: {0}, As of: {1}\nContent: {2}\n",
-                    entry.ID, entry.Updated, entry.Content);
+                    entry.ID, entry.CreatedAt, entry.Text);
             }
         }
 
@@ -412,13 +392,13 @@ namespace LinqToTwitterDemo
 
             foreach (var search in queryResults)
             {
-                Console.WriteLine("\nQuery:\n" + search.Title);
+                Console.WriteLine("\nQuery:\n" + search.QueryResult);
 
-                foreach (var entry in search.Entries)
+                foreach (var entry in search.Results)
                 {
                     Console.WriteLine(
                         "ID: {0}, As of: {1}\nContent: {2}\n",
-                        entry.ID, entry.Updated, entry.Content);
+                        entry.ID, entry.CreatedAt, entry.Text);
                 }
             }
         }
@@ -438,13 +418,13 @@ namespace LinqToTwitterDemo
 
             foreach (var search in queryResults)
             {
-                Console.WriteLine("\nQuery:\n" + search.Title);
+                Console.WriteLine("\nQuery:\n" + search.QueryResult);
 
-                foreach (var entry in search.Entries)
+                foreach (var entry in search.Results)
                 {
                     Console.WriteLine(
                         "ID: {0}, As of: {1}\nContent: {2}\n",
-                        entry.ID, entry.Updated, entry.Content);
+                        entry.ID, entry.CreatedAt, entry.Text);
                 }
             }
         }
@@ -459,7 +439,7 @@ namespace LinqToTwitterDemo
 
             var srch = queryResults.SingleOrDefault();
 
-            Console.WriteLine("Number of references to LINQ to Twitter: " + srch.Entries.Count);
+            Console.WriteLine("Number of references to LINQ to Twitter: " + srch.Results.Count);
         }
 
         private static void SearchDatesDemo(TwitterContext twitterCtx)
@@ -473,9 +453,9 @@ namespace LinqToTwitterDemo
                  select search)
                 .SingleOrDefault();
 
-            if (result != null && result.Entries != null)
+            if (result != null && result.Results != null)
             {
-                result.Entries.ForEach(entry => Console.WriteLine("Result: {0}\n", entry.Content)); 
+                result.Results.ForEach(entry => Console.WriteLine("Result: {0}\n", entry.Text)); 
             }
         }
 
@@ -490,27 +470,17 @@ namespace LinqToTwitterDemo
 
             var entries =
                 (from result in queryResults
-                from atomEntry in result.Entries
+                from entry in result.Results
                 select new SearchItem
                 {
-                    Title = atomEntry.Title,
-                    Abstract = atomEntry.Content,
-                    Date = atomEntry.Published,
-                    Extract = string.Empty,
-                    Locations = new List<LocatedItem>(),
-                    Source = atomEntry.Source,
-                    Url = atomEntry.Alternate,
-                    Author = new AuthorInfo
-                    {
-                        AuthorImage = atomEntry.Image,
-                        Url = atomEntry.Author.URI,
-                        Name = atomEntry.Author.Name
-                    }
+                    Tweet = entry.Text,
+                    Date = entry.CreatedAt.Date,
+                    Source = entry.Source,
                 }).ToList();
 
             foreach (var entry in entries)
             {
-                Console.WriteLine("Title: " + entry.Title);
+                Console.WriteLine("Tweet: " + entry.Tweet);
             }
 
         }
@@ -526,7 +496,7 @@ namespace LinqToTwitterDemo
                  select search)
                 .SingleOrDefault();
 
-            result.Entries.ForEach(entry => Console.WriteLine("Result: {0}\n", entry.Content));
+            result.Results.ForEach(entry => Console.WriteLine("Result: {0}\n", entry.Text));
         }
 
         private static void SearchGeoCodeAndShowUserDemo(TwitterContext twitterCtx)
@@ -536,46 +506,26 @@ namespace LinqToTwitterDemo
                                 search.GeoCode == "13.0883,80.2833,30km" &&
                                 search.ShowUser == true &&
                                 search.PageSize == 50
-                                orderby search.Updated descending
                                 select search).ToList();
 
             var entries =
                 (from result in queryResults
-                 from atomEntry in result.Entries
+                 from entry in result.Results
                  select new SearchItem
                  {
-                     TweetID = atomEntry.ID,
-                     Title = atomEntry.Title,
-                     Abstract = atomEntry.Content,
-                     Date = atomEntry.Published,
-                     Extract = string.Empty,
-                     TweetLocation = atomEntry.Location,
-                     Locations = new List<LocatedItem>(),
-                     Source = atomEntry.Source,
-                     Url = atomEntry.Alternate,
-                     Author = new AuthorInfo
-                     {
-                         AuthorImage = atomEntry.Image,
-                         Url = atomEntry.Author.URI,
-                         Name = atomEntry.Author.Name
-                     }
+                     Tweet = entry.Text,
+                     Date = entry.CreatedAt.Date,
+                     Source = entry.Source
                  }).ToList();
 
-            entries.ForEach(entry => Console.WriteLine("Result: {0}\n", entry.Title));
+            entries.ForEach(entry => Console.WriteLine("Result: {0}\n", entry.Tweet));
         }
 
         public class SearchItem
         {
-            public string TweetID { get; set; }
-            public string Title { get; set; }
-            public string Abstract { get; set; }
+            public string Tweet { get; set; }
             public DateTime Date { get; set; }
-            public string Extract { get; set; }
-            public string TweetLocation { get; set; }
-            public List<LocatedItem> Locations { get; set; }
             public string Source { get; set; }
-            public string Url { get; set; }
-            public AuthorInfo Author { get; set; }
         };
 
         public class LocatedItem { }
@@ -587,67 +537,27 @@ namespace LinqToTwitterDemo
             public string Name { get; set; }
         }
 
-        ///// <summary>
-        ///// shows how to handle response when you exceed Search query rate limits
-        ///// </summary>
-        ///// <param name="twitterCtx"></param>
-        //private static void ExceedSearchRateLimitDemo(TwitterContext twitterCtx)
-        //{
-        //    //
-        //    // WARNING: This is for Test/Demo purposes only; 
-        //    //          it makes many queries to Twitter in
-        //    //          a very short amount of time, which
-        //    //          has a negative impact on the service.
-        //    //
-        //    //          The only reason it is here is to test
-        //    //          that LINQ to Twitter responds appropriately
-        //    //          to Search rate limits.
-        //    //
+        public static void SearchIncludingEntities(TwitterContext twitterCtx)
+        {
+            var searchResults =
+                (from search in twitterCtx.Search
+                 where search.Type == SearchType.Search &&
+                       search.Query == "@rschu" &&
+                       search.IncludeEntities == true &&
+                       search.PageSize == 100
+                 select search)
+                .SingleOrDefault();
 
-        //    var queryResults =
-        //        from search in twitterCtx.Search
-        //        where search.Type == SearchType.Search &&
-        //              search.Query == "Testing Search Rate Limit Results"
-        //        select search;
-
-        //    try
-        //    {
-        //        // set to a sufficiently high number to force the HTTP 503 response
-        //        // -- assumes you have the bandwidth to exceed
-        //        //    limit, which you might not have
-        //        var searchesToPerform = 5;
-
-        //        for (int i = 0; i < searchesToPerform; i++)
-        //        {
-        //            foreach (var search in queryResults)
-        //            {
-        //                // here, you can see that properties are named
-        //                // from the perspective of atom feed elements
-        //                // i.e. the query string is called Title
-        //                Console.WriteLine("\n#{0}. Query:{1}\n", i+1, search.Title);
-
-        //                foreach (var entry in search.Entries)
-        //                {
-        //                    Console.WriteLine(
-        //                        "ID: {0}, Source: {1}\nContent: {2}\n",
-        //                        entry.ID, entry.Source, entry.Content);
-        //                }
-        //            } 
-        //        }
-        //    }
-        //    catch (TwitterQueryException tqe)
-        //    {
-        //        if (tqe.HttpError == "503")
-        //        {
-        //            Console.WriteLine("HTTP Error: {0}", tqe.HttpError);
-        //            Console.WriteLine("You've exceeded rate limits for search.");
-        //            Console.WriteLine("Please retry in {0} seconds.", twitterCtx.RetryAfter);
-        //        }
-        //    }
-
-        //    Console.WriteLine("\nComplete.");
-        //}
-
-        #endregion
+            searchResults.Results.ForEach(entry =>
+                {
+                    Entities entities = entry.Entities;
+                    Console.WriteLine(
+                        "-- Entities --\n" +
+                        "User: " + entities.UserMentions.Count + "\n" +
+                        "Urls: " + entities.UrlMentions.Count + "\n" +
+                        "Hash: " + entities.HashTagMentions.Count + "\n" +
+                        "Media: " + entities.MediaMentions.Count + "\n");
+                });
+        }
     }
 }

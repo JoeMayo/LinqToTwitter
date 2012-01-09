@@ -16,8 +16,7 @@ namespace LinqToTwitter
         {
             var mention = new MediaMention 
             {
-                ID = element.GetULong("id"),
-                IDStr = element.GetString("id_str"),
+                ID = element.GetULong("id_str"),
                 MediaUrl = element.GetString("media_url"),
                 MediaUrlHttps = element.GetString("media_url_https"),
                 Url = element.GetString("url"),
@@ -45,11 +44,6 @@ namespace LinqToTwitter
         /// ID of the media
         /// </summary>
         public ulong ID { get; set; }
-
-        /// <summary>
-        /// String representation of media ID
-        /// </summary>
-        public string IDStr { get; set; }
 
         /// <summary>
         /// URL where media is located

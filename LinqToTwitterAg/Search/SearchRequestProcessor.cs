@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Xml.Linq;
 
 #if SILVERLIGHT && !WINDOWS_PHONE
     using System.Windows.Browser;
@@ -13,7 +12,7 @@ namespace LinqToTwitter
     /// <summary>
     /// processes search queries
     /// </summary>
-    class SearchRequestProcessor<T> : IRequestProcessor<T>
+    class SearchRequestProcessor<T> : IRequestProcessor<T>, IRequestProcessorWantsJson
     {
         /// <summary>
         /// base url for request
@@ -32,6 +31,11 @@ namespace LinqToTwitter
         private string Query { get; set; }
 
         /// <summary>
+        /// location, specified as "latitude,longitude,radius"
+        /// </summary>
+        private string GeoCode { get; set; }
+
+        /// <summary>
         /// filters query to tweets in specified language (ISO 639-1)
         /// </summary>
         private string SearchLanguage { get; set; }
@@ -42,19 +46,24 @@ namespace LinqToTwitter
         private string Locale { get; set; }
 
         /// <summary>
-        /// number of results for each page
-        /// </summary>
-        private int PageSize { get; set; }
-
-        /// <summary>
         /// page number
         /// </summary>
         private int Page { get; set; }
 
         /// <summary>
-        /// Return tweets since this date
+        /// Metadata for type of result (mixed, recent, or popular)
         /// </summary>
-        private DateTime Since { get; set; }
+        private ResultType ResultType { get; set; }
+
+        /// <summary>
+        /// number of results for each page
+        /// </summary>
+        private int PageSize { get; set; }
+
+        /// <summary>
+        /// adds user information for each tweet if true (default = false)
+        /// </summary>
+        private bool ShowUser { get; set; }
 
         /// <summary>
         /// Return tweets before this date
@@ -67,24 +76,19 @@ namespace LinqToTwitter
         private ulong SinceID { get; set; }
 
         /// <summary>
+        /// Include entities in results
+        /// </summary>
+        public bool IncludeEntities { get; set; }
+
+        /// <summary>
+        /// Return tweets since this date
+        /// </summary>
+        private DateTime Since { get; set; }
+
+        /// <summary>
         /// for getting tweets with ID that is less than or equal to this value
         /// </summary>
         private ulong MaxID { get; set; }
-
-        /// <summary>
-        /// location, specified as "latitude,longitude,radius"
-        /// </summary>
-        private string GeoCode { get; set; }
-
-        /// <summary>
-        /// adds user information for each tweet if true (default = false)
-        /// </summary>
-        private bool ShowUser { get; set; }
-
-        /// <summary>
-        /// Metadata for type of result (mixed, recent, or popular)
-        /// </summary>
-        private ResultType ResultType { get; set; }
 
         /// <summary>
         /// With exact phrase
@@ -131,6 +135,7 @@ namespace LinqToTwitter
         /// </summary>
         private Attitude Attitude { get; set; }
 
+        // TODO: can't find WithLinks or WithRetweets in docs - research to find out if they should be here
         /// <summary>
         /// Tweets that contain links
         /// </summary>
@@ -175,7 +180,8 @@ namespace LinqToTwitter
                        "PersonReference",
                        "Attitude",
                        "WithLinks",
-                       "WithRetweets"
+                       "WithRetweets",
+                       "IncludeEntities"
                    });
 
             return paramFinder.Parameters;
@@ -200,7 +206,7 @@ namespace LinqToTwitter
             // then adding this later would break a lot of code - Joe
             Type = RequestProcessorHelper.ParseQueryEnumType<SearchType>(parameters["Type"]);
 
-            return BuildSearchUrlParameters(parameters, "search.atom");
+            return BuildSearchUrlParameters(parameters, "search.json");
         }
 
         /// <summary>
@@ -247,15 +253,6 @@ namespace LinqToTwitter
             if (parameters.ContainsKey("Query"))
             {
                 Query = parameters["Query"];
-
-                //TODO: is this related to maximum tweet length (in which case
-                // this is STILL wrong, given we could be ORing clauses together
-                // on the other hand, if this is some limitation of the search
-                // endpoint then it's valid and should stay...
-                if (Query.Length > 140)
-                {
-                    throw new ArgumentException("Query length must be 140 characters or less.", "Query");
-                }
 
                 urlParams.Add(new QueryParameter("q", Query));
             }
@@ -388,30 +385,32 @@ namespace LinqToTwitter
                 }
             }
 
+            if (parameters.ContainsKey("IncludeEntities"))
+            {
+                IncludeEntities = bool.Parse(parameters["IncludeEntities"]);
+
+                if (IncludeEntities)
+                {
+                    urlParams.Add(new QueryParameter("include_entities", "true"));
+                }
+            }
+
             return req;
         }
 
         /// <summary>
-        /// transforms XML into IQueryable of User
+        /// Transforms response from Twitter into List of Search
         /// </summary>
-        /// <param name="responseXml">xml with Twitter response</param>
-        /// <returns>List of User</returns>
-        public List<T> ProcessResults(string responseXml)
+        /// <param name="responseJson">Json response from Twitter</param>
+        /// <returns>List of Search</returns>
+        public virtual List<T> ProcessResults(string responseJson)
         {
-            List<Search> searchList = null;
+            IEnumerable<Search> search = Enumerable.Empty<Search>();
+            var serializer = Json.SearchConverter.GetSerializer();
+            var parsedResponse = serializer.Deserialize<Json.Search>(responseJson);
 
-            if (string.IsNullOrEmpty(responseXml))
+            if (!string.IsNullOrEmpty(responseJson))
             {
-                searchList = new List<Search>();
-            }
-            else
-            {
-                XElement twitterResponse = XElement.Parse(responseXml);
-                XNamespace atom = "http://www.w3.org/2005/Atom";
-                XNamespace twitter = "http://api.twitter.com/";
-                XNamespace openSearch = "http://a9.com/-/spec/opensearch/1.1/";
-
-                // TODO: Refactor to use XTwitterElement extensions and move to Search - Joe
                 var searchResult = new Search
                 {
                     Type = Type,
@@ -423,7 +422,6 @@ namespace LinqToTwitter
                     SinceID = SinceID,
                     SearchLanguage = SearchLanguage,
                     Locale = Locale,
-                    MaxID = MaxID,
                     Since = Since.Date,
                     Until = Until.Date,
                     ResultType = ResultType,
@@ -438,119 +436,126 @@ namespace LinqToTwitter
                     Attitude = Attitude,
                     WithLinks = WithLinks,
                     WithRetweets = WithRetweets,
-                    ID = twitterResponse.GetString(atom + "id"),
-                    Title = twitterResponse.GetString(atom + "title"),
-                    TwitterWarning =
-                        twitterResponse.Element(twitter + "warning") == null ?
-                        string.Empty :
-                        twitterResponse.Element(twitter + "warning").Value,
-                    Updated = DateTime.Parse(twitterResponse.Element(atom + "updated").Value,
-                                             CultureInfo.InvariantCulture,
-                                             DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal),
-                    ItemsPerPage =
-                        twitterResponse.Element(openSearch + "itemsPerPage") == null ?
-                        -1 :
-                        int.Parse(twitterResponse.Element(openSearch + "itemsPerPage").Value),
-                    Language =
-                        twitterResponse.Element(openSearch + "language") == null ?
-                        string.Empty :
-                        twitterResponse.Element(openSearch + "language").Value,
-                    Alternate =
-                        twitterResponse.Elements(atom + "link")
-                            .Where(elem => elem.Attribute("rel") != null && elem.Attribute("rel").Value == "alternate").Count() == 0 ?
-                        string.Empty :
-                        twitterResponse.Elements(atom + "link")
-                            .Where(elem => elem.Attribute("rel") != null && elem.Attribute("rel").Value == "alternate")
-                            .First()
-                            .Attribute("href").Value,
-                    Self =
-                        twitterResponse.Elements(atom + "link")
-                            .Where(elem => elem.Attribute("rel") != null && elem.Attribute("rel").Value == "self").Count() == 0 ?
-                        string.Empty :
-                        twitterResponse.Elements(atom + "link")
-                            .Where(elem => elem.Attribute("rel") != null && elem.Attribute("rel").Value == "self")
-                            .First()
-                            .Attribute("href").Value,
-                    Search =
-                        twitterResponse.Elements(atom + "link")
-                            .Where(elem => elem.Attribute("rel") != null && elem.Attribute("rel").Value == "search").Count() == 0 ?
-                        string.Empty :
-                        twitterResponse.Elements(atom + "link")
-                            .Where(elem => elem.Attribute("rel") != null && elem.Attribute("rel").Value == "search")
-                            .First()
-                            .Attribute("href").Value,
-                    Refresh =
-                        twitterResponse.Elements(atom + "link")
-                            .Where(elem => elem.Attribute("rel") != null && elem.Attribute("rel").Value == "refresh").Count() == 0 ?
-                        string.Empty :
-                        twitterResponse.Elements(atom + "link")
-                            .Where(elem => elem.Attribute("rel") != null && elem.Attribute("rel").Value == "refresh")
-                            .First()
-                            .Attribute("href").Value,
-                    Next =
-                        twitterResponse.Elements(atom + "link")
-                            .Where(elem => elem.Attribute("rel") != null && elem.Attribute("rel").Value == "next").Count() == 0 ?
-                        string.Empty :
-                        twitterResponse.Elements(atom + "link")
-                            .Where(elem => elem.Attribute("rel").Value == "next")
-                            .First()
-                            .Attribute("href").Value,
-                    Entries =
-                        (from node in twitterResponse.Nodes()
-                         let atomEntry = node as XElement
-                         where atomEntry != null && atomEntry.Name == atom + "entry"
-                         let author = atomEntry.Element(atom + "author")
-                         select new AtomEntry
+                    IncludeEntities = IncludeEntities,
+                    CompletedIn = parsedResponse.completed_in,
+                    MaxID = parsedResponse.max_id,
+                    NextPage = parsedResponse.next_page,
+                    PageResult = parsedResponse.page,
+                    QueryResult = parsedResponse.query,
+                    ResultsPerPageResult = parsedResponse.results_per_page,
+                    SinceIDResult = parsedResponse.since_id,
+                    RefreshUrl = parsedResponse.refresh_url,
+                    Results =
+                        (from result in parsedResponse.results
+                         select new SearchEntry
                          {
-                             ID = atomEntry.GetString(atom + "id"),
-                             Published =
-                                atomEntry.Element(atom + "published") == null ?
-                                    DateTime.MinValue :
-                                    DateTime.Parse(atomEntry.Element(atom + "published").Value,
-                                        CultureInfo.InvariantCulture,
-                                        DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal),
-                             Title = atomEntry.GetString(atom + "title"),
-                             Content = atomEntry.GetString(atom + "content"),
-                             Updated = DateTime.Parse(atomEntry.Element(atom + "updated").Value,
-                                                      CultureInfo.InvariantCulture,
-                                                      DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal),
-                             Source = atomEntry.GetString(twitter + "source"),
-                             Language = atomEntry.GetString(twitter + "lang"),
-                             Alternate = atomEntry.Elements(atom + "link")
-                                         .Where(elem => elem.Attribute("rel") != null && elem.Attribute("rel").Value == "alternate")
-                                         .First()
-                                         .Attribute("href").Value,
-                             Image = atomEntry.Elements(atom + "link")
-                                         .Where(elem => elem.Attribute("rel") != null && elem.Attribute("rel").Value == "image")
-                                         .First()
-                                         .Attribute("href").Value,
-                             Author = new AtomAuthor
+                             CreatedAt = DateTimeOffset.Parse(result.created_at),
+                             Entities = new Entities
                              {
-                                 Name = author == null ? string.Empty : author.GetString(atom + "name"),
-                                 URI = author == null ? string.Empty : author.GetString(atom + "uri")
+                                 HashTagMentions =
+                                    result.entities == null || result.entities.hashes == null ?
+                                        new List<HashTagMention>() :
+                                        (from hash in result.entities.hashes
+                                         select new HashTagMention
+                                         {
+                                             Tag = hash.text,
+                                             Start = hash.start,
+                                             End = hash.stop
+                                         })
+                                        .ToList(),
+                                 MediaMentions =
+                                    result.entities == null || result.entities.media == null ?
+                                        new List<MediaMention>() :
+                                        (from media in result.entities.media
+                                         select new MediaMention
+                                         {
+                                             DisplayUrl = media.display_url,
+                                             ExpandedUrl = media.expanded_url,
+                                             ID = media.id,
+                                             MediaUrl = media.media_url,
+                                             MediaUrlHttps = media.media_url_https,
+                                             Sizes =
+                                                (from size in media.sizes
+                                                 select new PhotoSize
+                                                 {
+                                                     Type = size.type,
+                                                     Width = size.w,
+                                                     Height = size.h,
+                                                     Resize = size.resize
+                                                 })
+                                                .ToList(),
+                                             Type = media.type,
+                                             Url = media.url,
+                                             Start = media.start,
+                                             End = media.stop
+                                         })
+                                        .ToList(),
+                                 UrlMentions =
+                                    result.entities == null || result.entities.urls == null ?
+                                        new List<UrlMention>() :
+                                        (from url in result.entities.urls
+                                         select new UrlMention
+                                         {
+                                             Url = url.url,
+                                             DisplayUrl = url.display_url,
+                                             ExpandedUrl = url.expanded_url,
+                                             Start = url.start,
+                                             End = url.stop
+                                         })
+                                        .ToList(),
+                                 UserMentions =
+                                    result.entities == null || result.entities.users == null ?
+                                        new List<UserMention>() :
+                                        (from user in result.entities.users
+                                         select new UserMention
+                                         {
+                                             ScreenName = user.screen_name,
+                                             Name = user.name,
+                                             Id = user.id,
+                                             Start = user.start,
+                                             End = user.stop
+                                         })
+                                        .ToList()
                              },
-                             Location =
-                                atomEntry.Element(twitter + "geo") == null ?
-                                string.Empty :
-                                atomEntry.Element(twitter + "geo").Value,
-                             ResultType =
-                                atomEntry.Element(twitter + "metadata") == null ||
-                                atomEntry.Element(twitter + "metadata")
-                                    .Element(twitter + "result_type") == null ?
-                                string.Empty :
-                                atomEntry
-                                    .Element(twitter + "metadata")
-                                        .Element(twitter + "result_type").Value
+                             FromUser = result.from_user,
+                             FromUserID = result.from_user_id,
+                             FromUserName = result.from_user_name,
+                             Geo =
+                                result.geo == null ?
+                                    new Geometry { Coordinates = new List<Coordinate>() } :
+                                    new Geometry
+                                    {
+                                        Type = result.geo.type,
+                                        Coordinates = new List<Coordinate>
+                                        {
+                                            new Coordinate
+                                            {
+                                                Latitude = result.geo.latitude,
+                                                Longitude = result.geo.longitude
+                                            }
+                                        }
+                                    },
+                             ID = result.id,
+                             IsoLanguageCode = result.iso_language_code,
+                             MetaData = new SearchMetaData
+                             {
+                                 RecentRetweets = result.metadata.recent_retweets,
+                                 ResultType = (ResultType)Enum.Parse(typeof(ResultType), result.metadata.result_type, true)
+                             },
+                             ProfileImageUrl = result.profile_image_url,
+                             ProfileImageUrlHttps = result.profile_image_url_https,
+                             Source = result.source,
+                             Text = result.text,
+                             ToUser = result.to_user,
+                             ToUserID = result.to_user_id,
+                             ToUserName = result.to_user_name
                          }).ToList()
                 };
 
-                searchList = new List<Search>
-                {
-                    searchResult
-                };
+                search = new List<Search> { searchResult };
             }
 
-            return searchList.OfType<T>().ToList();
+            return search.OfType<T>().ToList();
         }
     }
 }

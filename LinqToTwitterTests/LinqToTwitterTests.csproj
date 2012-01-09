@@ -158,7 +158,6 @@
       <DependentUpon>XmlContent.resx</DependentUpon>
     </Compile>
     <Compile Include="SavedSearchRequestProcessorTest.cs" />
-    <Compile Include="SearchRequestProcessorTest.cs" />
     <Compile Include="SocialGraphRequestProcessorTest.cs" />
     <Compile Include="StatusRequestProcessorTest.cs" />
     <Compile Include="TrendRequestProcessorTest.cs" />

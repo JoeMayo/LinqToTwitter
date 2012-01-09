@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using LinqToTwitterTests.Common;
 using Xunit;
 using LinqToTwitter;
 using System.Xml.Linq;
@@ -8,6 +9,11 @@ namespace LinqToTwitterXUnitTests.FriendshipTests
 {
     class RelationshipTests
     {
+        public RelationshipTests()
+        {
+            TestCulture.SetCulture();
+        }
+
         [Fact]
         public void Create_Does_Not_Populate_Following_And_FollowedBy_With_Connection_None()
         {

@@ -170,6 +170,24 @@
     <Compile Include="..\LinqToTwitterAg\Common\Cursors.cs">
       <Link>Common\Cursors.cs</Link>
     </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\Entities\Entities.cs">
+      <Link>Common\Entities\Entities.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\Entities\HashTagMention.cs">
+      <Link>Common\Entities\HashTagMention.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\Entities\MediaMention.cs">
+      <Link>Common\Entities\MediaMention.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\Entities\MentionBase.cs">
+      <Link>Common\Entities\MentionBase.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\Entities\UrlMention.cs">
+      <Link>Common\Entities\UrlMention.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\Entities\UserMention.cs">
+      <Link>Common\Entities\UserMention.cs</Link>
+    </Compile>
     <Compile Include="..\LinqToTwitterAg\Common\Evaluator.cs">
       <Link>Common\Evaluator.cs</Link>
     </Compile>
@@ -434,11 +452,53 @@
     <Compile Include="..\LinqToTwitterAg\Search\Search.cs">
       <Link>Search\Search.cs</Link>
     </Compile>
+    <Compile Include="..\LinqToTwitterAg\Search\SearchEntry.cs">
+      <Link>Search\SearchEntry.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Search\SearchMetaData.cs">
+      <Link>Search\SearchMetaData.cs</Link>
+    </Compile>
     <Compile Include="..\LinqToTwitterAg\Search\SearchRequestProcessor.cs">
       <Link>Search\SearchRequestProcessor.cs</Link>
     </Compile>
     <Compile Include="..\LinqToTwitterAg\Search\SearchType.cs">
       <Link>Search\SearchType.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Serialization\Entities\Entities.cs">
+      <Link>Serialization\Entities\Entities.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Serialization\Entities\EntityBase.cs">
+      <Link>Serialization\Entities\EntityBase.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Serialization\Entities\HashtagEntity.cs">
+      <Link>Serialization\Entities\HashtagEntity.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Serialization\Entities\ImageSize.cs">
+      <Link>Serialization\Entities\ImageSize.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Serialization\Entities\MediaEntity.cs">
+      <Link>Serialization\Entities\MediaEntity.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Serialization\Entities\UrlEntity.cs">
+      <Link>Serialization\Entities\UrlEntity.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Serialization\Entities\UserEntity.cs">
+      <Link>Serialization\Entities\UserEntity.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Serialization\Geo\Geometry.cs">
+      <Link>Serialization\Geo\Geometry.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Serialization\Search\Search.cs">
+      <Link>Serialization\Search\Search.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Serialization\Search\SearchConverter.cs">
+      <Link>Serialization\Search\SearchConverter.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Serialization\Search\SearchMetaData.cs">
+      <Link>Serialization\Search\SearchMetaData.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Serialization\Search\SearchResult.cs">
+      <Link>Serialization\Search\SearchResult.cs</Link>
     </Compile>
     <Compile Include="..\LinqToTwitterAg\SocialGraph\SocialGraph.cs">
       <Link>SocialGraph\SocialGraph.cs</Link>
@@ -454,24 +514,6 @@
     </Compile>
     <Compile Include="..\LinqToTwitterAg\Status\Contributor.cs">
       <Link>Status\Contributor.cs</Link>
-    </Compile>
-    <Compile Include="..\LinqToTwitterAg\Status\Entities\Entities.cs">
-      <Link>Status\Entities\Entities.cs</Link>
-    </Compile>
-    <Compile Include="..\LinqToTwitterAg\Status\Entities\HashTagMention.cs">
-      <Link>Status\Entities\HashTagMention.cs</Link>
-    </Compile>
-    <Compile Include="..\LinqToTwitterAg\Status\Entities\MediaMention.cs">
-      <Link>Status\Entities\MediaMention.cs</Link>
-    </Compile>
-    <Compile Include="..\LinqToTwitterAg\Status\Entities\MentionBase.cs">
-      <Link>Status\Entities\MentionBase.cs</Link>
-    </Compile>
-    <Compile Include="..\LinqToTwitterAg\Status\Entities\UrlMention.cs">
-      <Link>Status\Entities\UrlMention.cs</Link>
-    </Compile>
-    <Compile Include="..\LinqToTwitterAg\Status\Entities\UserMention.cs">
-      <Link>Status\Entities\UserMention.cs</Link>
     </Compile>
     <Compile Include="..\LinqToTwitterAg\Status\Retweet.cs">
       <Link>Status\Retweet.cs</Link>
@@ -627,5 +669,6 @@
       <Link>LinqToTwitter.snk</Link>
     </None>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

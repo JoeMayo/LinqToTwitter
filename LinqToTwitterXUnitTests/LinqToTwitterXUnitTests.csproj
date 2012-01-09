@@ -45,6 +45,7 @@
       <HintPath>..\packages\Moq.4.0.10827\lib\NET40\Moq.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -56,9 +57,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\TestCulture.cs" />
     <Compile Include="FriendshipTests\RelationshipTests.cs" />
     <Compile Include="LinqToTwitterTests\TwitterContextCreateRequestProcessorTests.cs" />
     <Compile Include="ListTests\ListTests.cs" />
+    <Compile Include="SearchTests\SearchRequestProcessorTests.cs" />
     <Compile Include="StatusTests\StatusExtensionsTweetWithMediaNoLocationTests.cs" />
     <Compile Include="StatusTests\StatusExtensionsTweetWithMediaAndLocationTests.cs" />
     <Compile Include="StatusTests\StatusExtensionsReplyWithMediaNoLocationTests.cs" />
@@ -76,6 +79,7 @@
     <None Include="..\LinqToTwitterAg\LinqToTwitter.snk">
       <Link>LinqToTwitter.snk</Link>
     </None>
+    <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

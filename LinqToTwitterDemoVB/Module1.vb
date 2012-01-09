@@ -272,10 +272,10 @@ Module Module1
         Console.WriteLine("Query: " & Environment.NewLine)
 
         For Each searchResult In queryResults
-            For Each entry In searchResult.Entries
+            For Each entry In searchResult.Results
                 Console.WriteLine( _
                     "ID: {0}, Source: {1} - Content: {2}" & Environment.NewLine, _
-                    entry.ID, entry.Source, entry.Content)
+                    entry.ID, entry.Source, entry.Text)
             Next
         Next
     End Sub

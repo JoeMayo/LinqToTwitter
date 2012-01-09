@@ -1,12 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace LinqToTwitter
 {
     /// <summary>
     /// for performing Twitter searches
     /// </summary>
-    public class Search : AtomFeed//, ITwitterEntity
+    public class Search
     {
+        //
+        // Input parameters
+        //
+
         /// <summary>
         /// type of search, included for compatibility
         /// with other APIs
@@ -54,17 +59,12 @@ namespace LinqToTwitter
         public ulong SinceID { get; set; }
 
         /// <summary>
-        /// for getting tweets with ID that is less than or equal to this value
-        /// </summary>
-        public ulong MaxID { get; set; }
-
-        /// <summary>
         /// location, specified as "latitude,longitude,radius"
         /// </summary>
         public string GeoCode { get; set; }
 
         /// <summary>
-        /// adds user information for each tweet if true (default = false)
+        /// Prepends ":" to text of each tweet if true (default = false)
         /// </summary>
         public bool ShowUser { get; set; }
 
@@ -128,138 +128,58 @@ namespace LinqToTwitter
         /// </summary>
         public bool WithRetweets { get; set; }
 
-        #region ITwitterEntity Members
+        /// <summary>
+        /// Include entities in results
+        /// </summary>
+        public bool IncludeEntities { get; set; }
 
-        //public T Create<T>(XElement twitterResponse)
-        //{
-        //    XNamespace atom = "http://www.w3.org/2005/Atom";
-        //    XNamespace twitter = "http://api.twitter.com/";
-        //    XNamespace openSearch = "http://a9.com/-/spec/opensearch/1.1/";
+        //
+        // Output results
+        //
 
-        //    return new Search
-        //    {
-        //        Type = Type,
-        //        GeoCode = GeoCode,
-        //        Page = Page,
-        //        PageSize = PageSize,
-        //        Query = Query,
-        //        ShowUser = ShowUser,
-        //        SinceID = SinceID,
-        //        SearchLanguage = SearchLanguage,
-        //        Locale = Locale,
-        //        MaxID = MaxID,
-        //        Since = Since,
-        //        Until = Until,
-        //        ResultType = ResultType,
-        //        WordPhrase = WordPhrase,
-        //        WordAnd = WordAnd,
-        //        WordOr = WordOr,
-        //        WordNot = WordNot,
-        //        Hashtag = Hashtag,
-        //        PersonFrom = PersonFrom,
-        //        PersonTo = PersonTo,
-        //        PersonReference = PersonReference,
-        //        Attitude = Attitude,
-        //        WithLinks = WithLinks,
-        //        WithRetweets = WithRetweets,
-        //        ID = twitterResponse.Element(atom + "id").Value,
-        //        Title = twitterResponse.Element(atom + "title").Value,
-        //        TwitterWarning =
-        //            twitterResponse.Element(twitter + "warning") == null ?
-        //            string.Empty :
-        //            twitterResponse.Element(twitter + "warning").Value,
-        //        Updated = DateTime.Parse(twitterResponse.Element(atom + "updated").Value, CultureInfo.InvariantCulture),
-        //        ItemsPerPage =
-        //            twitterResponse.Element(openSearch + "itemsPerPage") == null ?
-        //            -1 :
-        //            int.Parse(twitterResponse.Element(openSearch + "itemsPerPage").Value),
-        //        Language =
-        //            twitterResponse.Element(openSearch + "language") == null ?
-        //            string.Empty :
-        //            twitterResponse.Element(openSearch + "language").Value,
-        //        Alternate =
-        //            twitterResponse.Elements(atom + "link")
-        //                .Where(elem => elem.Attribute("rel").Value == "alternate").Count() == 0 ?
-        //            string.Empty :
-        //            twitterResponse.Elements(atom + "link")
-        //                .Where(elem => elem.Attribute("rel").Value == "alternate")
-        //                .First()
-        //                .Attribute("href").Value,
-        //        Self =
-        //            twitterResponse.Elements(atom + "link")
-        //                .Where(elem => elem.Attribute("rel").Value == "self").Count() == 0 ?
-        //            string.Empty :
-        //            twitterResponse.Elements(atom + "link")
-        //                .Where(elem => elem.Attribute("rel").Value == "self")
-        //                .First()
-        //                .Attribute("href").Value,
-        //        Search =
-        //            twitterResponse.Elements(atom + "link")
-        //                .Where(elem => elem.Attribute("rel").Value == "search").Count() == 0 ?
-        //            string.Empty :
-        //            twitterResponse.Elements(atom + "link")
-        //                .Where(elem => elem.Attribute("rel").Value == "search")
-        //                .First()
-        //                .Attribute("href").Value,
-        //        Refresh =
-        //            twitterResponse.Elements(atom + "link")
-        //                .Where(elem => elem.Attribute("rel").Value == "refresh").Count() == 0 ?
-        //            string.Empty :
-        //            twitterResponse.Elements(atom + "link")
-        //                .Where(elem => elem.Attribute("rel").Value == "refresh")
-        //                .First()
-        //                .Attribute("href").Value,
-        //        Next =
-        //            twitterResponse.Elements(atom + "link")
-        //                .Where(elem => elem.Attribute("rel").Value == "next").Count() == 0 ?
-        //            string.Empty :
-        //            twitterResponse.Elements(atom + "link")
-        //                .Where(elem => elem.Attribute("rel").Value == "next")
-        //                .First()
-        //                .Attribute("href").Value,
-        //        Entries =
-        //            (from node in twitterResponse.Nodes()
-        //             let atomEntry = node as XElement
-        //             where atomEntry != null && atomEntry.Name == atom + "entry"
-        //             let author = atomEntry.Element(atom + "author")
-        //             select new AtomEntry
-        //             {
-        //                 ID = atomEntry.Element(atom + "id").Value,
-        //                 Published = DateTime.Parse(atomEntry.Element(atom + "published").Value, CultureInfo.InvariantCulture),
-        //                 Title = atomEntry.Element(atom + "title").Value,
-        //                 Content = atomEntry.Element(atom + "content").Value,
-        //                 Updated = DateTime.Parse(atomEntry.Element(atom + "updated").Value, CultureInfo.InvariantCulture),
-        //                 Source = atomEntry.Element(twitter + "source").Value,
-        //                 Language = atomEntry.Element(twitter + "lang").Value,
-        //                 Alternate = atomEntry.Elements(atom + "link")
-        //                             .Where(elem => elem.Attribute("rel").Value == "alternate")
-        //                             .First()
-        //                             .Attribute("href").Value,
-        //                 Image = atomEntry.Elements(atom + "link")
-        //                             .Where(elem => elem.Attribute("rel").Value == "image")
-        //                             .First()
-        //                             .Attribute("href").Value,
-        //                 Author = new AtomAuthor
-        //                 {
-        //                     Name = author.Element(atom + "name").Value,
-        //                     URI = author.Element(atom + "uri").Value
-        //                 },
-        //                 Location =
-        //                    atomEntry.Element(twitter + "geo") == null ?
-        //                    string.Empty :
-        //                    atomEntry.Element(twitter + "geo").Value,
-        //                 ResultType =
-        //                    atomEntry.Element(twitter + "metadata") == null ||
-        //                    atomEntry.Element(twitter + "metadata")
-        //                        .Element(twitter + "result_type") == null ?
-        //                    string.Empty :
-        //                    atomEntry
-        //                        .Element(twitter + "metadata")
-        //                            .Element(twitter + "result_type").Value
-        //             }).ToList()
-        //    };
-        //}
+        /// <summary>
+        /// Tweet data returned from the search
+        /// </summary>
+        public List<SearchEntry> Results { get; set; }
 
-        #endregion
+        /// <summary>
+        /// Max ID returned in search
+        /// </summary>
+        public ulong MaxID { get; set; }
+
+        /// <summary>
+        /// Processing time for search
+        /// </summary>
+        public decimal CompletedIn { get; set; }
+
+        /// <summary>
+        /// Query string for the next page
+        /// </summary>
+        public string NextPage { get; set; }
+
+        /// <summary>
+        /// Page number returned from Twitter
+        /// </summary>
+        public int PageResult { get; set; }
+
+        /// <summary>
+        /// Your query, echo'd back by Twitter
+        /// </summary>
+        public string QueryResult { get; set; }
+
+        /// <summary>
+        /// Results per page returned from Twitter
+        /// </summary>
+        public int ResultsPerPageResult { get; set; }
+
+        /// <summary>
+        /// SinceID returned from Twitter
+        /// </summary>
+        public ulong SinceIDResult { get; set; }
+
+        /// <summary>
+        /// Query string to refresh this search
+        /// </summary>
+        public string RefreshUrl { get; set; }
     }
 }
