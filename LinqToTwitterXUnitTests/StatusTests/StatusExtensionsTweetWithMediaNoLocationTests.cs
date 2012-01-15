@@ -347,5 +347,16 @@ namespace LinqToTwitterXUnitTests.StatusTests
 
             Assert.Equal("Test", tweet.Text);
         }
+
+        [Fact]
+        public void TweetWithMedia_Accepts_Internationalized_Characters()
+        {
+            string statusMsg = "My new car £10,555. http://test.com #CodePlex #testing";
+
+            Status tweet = StatusExtensions.TweetWithMedia(
+                this.twitterCtx.Object, statusMsg, this.possiblySensitive, this.mediaItems);
+
+            Assert.Equal("Test", tweet.Text);
+        }
     }
 }

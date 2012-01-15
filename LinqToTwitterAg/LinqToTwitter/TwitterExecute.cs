@@ -947,7 +947,7 @@ namespace LinqToTwitter
                 {
                     if (param.Value != null)
                     {
-                        formDataSB.AppendFormat("--{0}\r\nContent-Disposition: form-data; name=\"{1}\"\r\n\r\n{2}\r\n", contentBoundaryBase, param.Key, param.Value);
+                        formDataSB.AppendFormat("--{0}\r\nContent-Disposition: form-data; name=\"{1}\"\r\n\r\n{2}\r\n", contentBoundaryBase, param.Key, HttpUtility.HtmlEncode(param.Value));
                     }
                 }
             }

@@ -722,11 +722,11 @@ namespace LinqToTwitterDemo
         private static void UpdateStatusWithLocationDemo(TwitterContext twitterCtx)
         {
             // the \u00C7 is C Cedilla, which I've included to ensure that non-ascii characters appear properly
-            //var status = "\u00C7 Testing LINQ to Twitter update status on " + DateTime.Now.ToString() + " #linqtotwitter";
+            var status = "\u00C7 Testing LINQ to Twitter update status on " + DateTime.Now.ToString() + " £ #linqtotwitter";
+            //var status = "あいうえお" + DateTime.Now.ToString();
             string japaneseCultureString = "ja-JP";
             Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo(japaneseCultureString);
             Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo(japaneseCultureString);
-            var status = "あいうえお" + DateTime.Now.ToString();
             decimal latitude = Decimal.Parse("37.78215", CultureInfo.CurrentUICulture);
             decimal longitude = Decimal.Parse("-122.40060", CultureInfo.CurrentUICulture);
 
@@ -884,7 +884,7 @@ namespace LinqToTwitterDemo
 
         static void TweetWithMediaDemo(TwitterContext twitterCtx)
         {
-            string status = "Test";//ing TweetWithMedia #Linq2Twitter " + DateTime.Now.ToString();
+            string status = "Testing TweetWithMedia #Linq2Twitter £ " + DateTime.Now.ToString();
             bool possiblySensitive = false;
             decimal latitude = StatusExtensions.NoCoordinate;//37.78215m;
             decimal longitude = StatusExtensions.NoCoordinate; // -122.40060m;
