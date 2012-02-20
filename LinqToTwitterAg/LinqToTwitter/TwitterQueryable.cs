@@ -40,7 +40,7 @@ namespace LinqToTwitter
 
             // lets provider reach back to TwitterContext, 
             // where execute implementation resides
-            (Provider as TwitterQueryProvider).Context = context;
+            ((TwitterQueryProvider) Provider).Context = context;
         }
 
         /// <summary>
@@ -96,7 +96,8 @@ namespace LinqToTwitter
         /// <returns>query results</returns>
         public IEnumerator<T> GetEnumerator()
         {
-            return (Provider.Execute<IEnumerable<T>>(Expression)).GetEnumerator();
+            var enumerator = (Provider.Execute<IEnumerable<T>>(Expression)).GetEnumerator();
+            return enumerator;
         }
 
         /// <summary>

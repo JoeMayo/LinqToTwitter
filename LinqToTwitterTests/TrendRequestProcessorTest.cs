@@ -14,8 +14,6 @@ namespace LinqToTwitterTests
     {
         private TestContext testContextInstance;
 
-        #region Test Data
-
 //        private string m_testTrendQueryResponse = @"<root type=""object"">
 //  <trends type=""array"">
 //    <item type=""object"">
@@ -264,8 +262,6 @@ namespace LinqToTwitterTests
            ""as_of"":1315440609
          }";
 
-        #endregion
-
         /// <summary>
         ///Gets or sets the test context which provides
         ///information about and functionality for the current test run.
@@ -282,7 +278,6 @@ namespace LinqToTwitterTests
             }
         }
 
-        #region Additional test attributes
         // 
         //You can use the following additional attributes as you write your tests:
         //
@@ -311,7 +306,6 @@ namespace LinqToTwitterTests
         //{
         //}
         //
-        #endregion
 
         [TestMethod]
         public void ProcessResults_Handles_Trends()

@@ -22,8 +22,6 @@ namespace LinqToTwitterDemo
             SearchWeeklyTrendsDemo(twitterCtx);
         }
 
-        #region Trends Demos
-
         /// <summary>
         /// Find locations where trending topics are occurring
         /// </summary>
@@ -118,6 +116,5 @@ namespace LinqToTwitterDemo
                     "Name: {0}, Date: {1}, Query: {2}\nSearchUrl: {3}",
                     trnd.Name, trnd.TrendDate, trnd.Query, trnd.SearchUrl);
         }
-        #endregion
     }
 }

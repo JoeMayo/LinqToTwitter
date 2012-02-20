@@ -34,8 +34,6 @@ namespace LinqToTwitterDemo
             //CategoryStatusDemo(twitterCtx);
         }
 
-        #region User Demos
-
         private static void CategoryStatusDemo(TwitterContext twitterCtx)
         {
             var catTweets =
@@ -402,7 +400,5 @@ namespace LinqToTwitterDemo
 
             Console.WriteLine("\nFollower Count: {0}\n", followerList.Count);
         }
-
-        #endregion
     }
 }

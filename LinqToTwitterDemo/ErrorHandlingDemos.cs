@@ -21,8 +21,6 @@ namespace LinqToTwitterDemo
             //HandleTimeoutErrors(twitterCtx);
         }
 
-        #region Error Handling Demos
-
         /// <summary>
         /// shows how to handle a timeout error
         /// </summary>
@@ -131,7 +129,5 @@ namespace LinqToTwitterDemo
                     tqe.Response.Request);
             }
         }
-
-        #endregion
     }
 }

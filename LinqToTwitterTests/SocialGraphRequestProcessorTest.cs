@@ -16,8 +16,6 @@ namespace LinqToTwitterTests
     [TestClass()]
     public class SocialGraphRequestProcessorTest
     {
-        #region Test Data
-
         private string m_testQueryResponse = @"<?xml version=""1.0"" encoding=""UTF-8""?>
 <ids>
 <id>123456</id>
@@ -32,8 +30,6 @@ namespace LinqToTwitterTests
 </ids>
 <next_cursor>0</next_cursor><previous_cursor>0</previous_cursor>
 </id_list>";
-
-        #endregion
 
         private TestContext testContextInstance;
 
@@ -53,7 +49,6 @@ namespace LinqToTwitterTests
             }
         }
 
-        #region Additional test attributes
         // 
         //You can use the following additional attributes as you write your tests:
         //
@@ -82,7 +77,6 @@ namespace LinqToTwitterTests
         //{
         //}
         //
-        #endregion
 
         [TestMethod]
         public void ProcessResults_Gets_Results_With_Only_IDs()

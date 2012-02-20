@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using LinqToTwitter;
@@ -14,14 +15,10 @@ namespace LinqToTwitterTests
     ///This is a test class for AccountRequestProcessorTest and is intended
     ///to contain all AccountRequestProcessorTest Unit Tests
     ///</summary>
-    [TestClass()]
+    [TestClass]
     public class AccountRequestProcessorTest
     {
-        private TestContext testContextInstance;
-
-        #region Test Data
-
-        private string m_testVerifyCredentialsQueryResponse = @"{
+        const string TestVerifyCredentialsQueryResponse = @"{
    ""statuses_count"":1624,
    ""favourites_count"":65,
    ""protected"":false,
@@ -83,144 +80,93 @@ namespace LinqToTwitterTests
    ""profile_image_url_https"":""https:\/\/si0.twimg.com\/profile_images\/520626655\/JoeTwitterBW_-_150_x_150_normal.jpg""
 }";
 
-        private string m_testRateLimitStatusQueryResponse = @"{
+        const string TestRateLimitStatusQueryResponse = @"{
    ""remaining_hits"":343,
    ""hourly_limit"":350,
    ""reset_time_in_seconds"":1316397996,
    ""reset_time"":""Mon Sep 19 02:06:36 +0000 2011""
 }";
 
-        private string m_testEndSessionResponse = @"{
+        const string TestEndSessionResponse = @"{
   ""request"": ""/1/account/end_session.json"",
   ""error"": ""Logged out.""
 }";
 
-        private string m_testTotalsResponse = @"{
+        const string TestTotalsResponse = @"{
    ""followers"":875,
    ""favorites"":65,
    ""friends"":161,
    ""updates"":1624
 }";
 
-        private string m_testSettingsResponse = @"<?xml version=""1.0"" encoding=""UTF-8""?>
-<settings>
-  <trend_location>
-    <woeid>23424977</woeid>
-    <name>United States</name>
-    <placeTypeName code=""12"">Country</placeTypeName>
-    <country type=""Country"" code=""US"">United States</country>
-    <url>http://where.yahooapis.com/v1/place/23424977</url>
-  </trend_location>
-  <geo_enabled>true</geo_enabled>
-  <sleep_time>
-    <start_time></start_time>
-    <enabled>false</enabled>
-    <end_time></end_time>
-  </sleep_time>
-</settings>";
+        const string TestSettingsResponse = @"{
+   ""protected"":false,
+   ""trend_location"":[
+      {
+         ""name"":""United States"",
+         ""countryCode"":""US"",
+         ""placeType"":{
+            ""name"":""Country"",
+            ""code"":12
+         },
+         ""parentid"":1,
+         ""country"":""United States"",
+         ""url"":""http:\/\/where.yahooapis.com\/v1\/place\/23424977"",
+         ""woeid"":23424977
+      }
+   ],
+   ""language"":""en"",
+   ""sleep_time"":{
+      ""start_time"":null,
+      ""end_time"":null,
+      ""enabled"":false
+   },
+   ""show_all_inline_media"":false,
+   ""discoverable_by_email"":true,
+   ""time_zone"":{
+      ""tzinfo_name"":""America\/Denver"",
+      ""name"":""Mountain Time (US & Canada)"",
+      ""utc_offset"":-25200
+   },
+   ""geo_enabled"":true,
+   ""screen_name"":""JoeMayo"",
+   ""always_use_https"":true
+}";
 
-                private string m_testSettingsResponseTimesEnabled = @"<?xml version=""1.0"" encoding=""UTF-8""?>
-<settings>
-  <trend_location>
-    <woeid>23424977</woeid>
-    <name>United States</name>
-    <placeTypeName code=""12"">Country</placeTypeName>
-    <country type=""Country"" code=""US"">United States</country>
-    <url>http://where.yahooapis.com/v1/place/23424977</url>
-  </trend_location>
-  <geo_enabled>true</geo_enabled>
-  <sleep_time>
-    <start_time>21</start_time>
-    <enabled>true</enabled>
-    <end_time>8</end_time>
-  </sleep_time>
-</settings>";
-
-        #endregion
-
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
-        public TestContext TestContext
+        [TestMethod]
+        public void ProcessResults_Handles_VerifyCredentials()
         {
-            get
-            {
-                return testContextInstance;
-            }
-            set
-            {
-                testContextInstance = value;
-            }
-        }
+            var target = new AccountRequestProcessor<Account>();
 
-        #region Additional test attributes
-        // 
-        //You can use the following additional attributes as you write your tests:
-        //
-        //Use ClassInitialize to run code before running the first test in the class
-        //[ClassInitialize()]
-        //public static void MyClassInitialize(TestContext testContext)
-        //{
-        //}
-        //
-        //Use ClassCleanup to run code after all tests in a class have run
-        //[ClassCleanup()]
-        //public static void MyClassCleanup()
-        //{
-        //}
-        //
-        //Use TestInitialize to run code before running each test
-        //[TestInitialize()]
-        //public void MyTestInitialize()
-        //{
-        //}
-        //
-        //Use TestCleanup to run code after each test has run
-        //[TestCleanup()]
-        //public void MyTestCleanup()
-        //{
-        //}
-        //
-        #endregion
-
-        /// <summary>
-        ///A test for ProcessResults
-        ///</summary>
-        [TestMethod()]
-        public void ProcessResultsForVerifyCredentialsTest()
-        {
-            AccountRequestProcessor<Account> target = new AccountRequestProcessor<Account>();
-
-            IList actual = target.ProcessResults(m_testVerifyCredentialsQueryResponse);
+            IList actual = target.ProcessResults(TestVerifyCredentialsQueryResponse);
 
             var acct = actual.Cast<Account>().ToList().FirstOrDefault();
+            Assert.IsNotNull(acct);
             Assert.AreEqual("Joe Mayo", acct.User.Name);
         }
 
-        /// <summary>
-        ///A test for ProcessResults
-        ///</summary>
-        [TestMethod()]
-        public void ProcessResultsForRateLimitStatusTest()
+        [TestMethod]
+        public void ProcessResults_Handles_RateLimitStatus()
         {
-            var acctReqProc = new AccountRequestProcessor_Accessor<Account> { Type = AccountType.RateLimitStatus };
+            var acctReqProc = new AccountRequestProcessor<Account> { Type = AccountType.RateLimitStatus };
 
-            IList actual = acctReqProc.ProcessResults(m_testRateLimitStatusQueryResponse);
+            IList actual = acctReqProc.ProcessResults(TestRateLimitStatusQueryResponse);
 
             var acct = actual.Cast<Account>().ToList().FirstOrDefault();
+            Assert.IsNotNull(acct);
             Assert.AreEqual(350, acct.RateLimitStatus.HourlyLimit);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void ProcessResults_Converts_Totals_To_Account()
         {
-            var acctReqProc = new AccountRequestProcessor_Accessor<Account> { Type = AccountType.Totals };
+            var acctReqProc = new AccountRequestProcessor<Account> { Type = AccountType.Totals };
             
-            List<Account> actual = acctReqProc.ProcessResults(m_testTotalsResponse);
+            List<Account> actual = acctReqProc.ProcessResults(TestTotalsResponse);
 
             var acct = actual.FirstOrDefault();
 
+            Assert.IsNotNull(acct);
             Assert.AreEqual(1624, acct.Totals.Updates);
             Assert.AreEqual(161, acct.Totals.Friends);
             Assert.AreEqual(65, acct.Totals.Favorites);
@@ -228,15 +174,16 @@ namespace LinqToTwitterTests
         }
 
         [Ignore]
-        [TestMethod()]
+        [TestMethod]
         public void ProcessResults_Converts_Settings_To_Account()
         {
             var acctReqProc = new AccountRequestProcessor<Account>();
 
-            List<Account> actual = acctReqProc.ProcessResults(m_testSettingsResponse);
+            List<Account> actual = acctReqProc.ProcessResults(TestSettingsResponse);
 
             var acct = actual.FirstOrDefault();
 
+            Assert.IsNotNull(acct);
             Assert.AreEqual("23424977", acct.Settings.TrendLocation.WoeID);
             Assert.AreEqual("United States", acct.Settings.TrendLocation.Name);
             Assert.AreEqual(12, acct.Settings.TrendLocation.PlaceTypeNameCode);
@@ -250,27 +197,12 @@ namespace LinqToTwitterTests
             Assert.AreEqual(null, acct.Settings.SleepTime.EndHour);
         }
 
-        [Ignore]
-        [TestMethod()]
-        public void ProcessResults_Converts_Settings_When_Times_Are_Enabled()
-        {
-            var acctReqProc = new AccountRequestProcessor<Account>();
-
-            List<Account> actual = acctReqProc.ProcessResults(m_testSettingsResponseTimesEnabled);
-
-            var acct = actual.FirstOrDefault();
-
-            Assert.AreEqual(true, acct.Settings.SleepTime.Enabled);
-            Assert.AreEqual(21, acct.Settings.SleepTime.StartHour);
-            Assert.AreEqual(8, acct.Settings.SleepTime.EndHour);
-        }
-
         [TestMethod]
         public void ProcessActionResult_Handles_EndSession()
         {
             var acctReqProc = new AccountRequestProcessor<Account>();
             
-            var acct = acctReqProc.ProcessActionResult(m_testEndSessionResponse, AccountAction.EndSession);
+            var acct = acctReqProc.ProcessActionResult(TestEndSessionResponse, AccountAction.EndSession);
 
             Assert.AreEqual("Logged out.", acct.EndSessionStatus.Error);
         }
@@ -285,21 +217,18 @@ namespace LinqToTwitterTests
             Assert.AreEqual(0, accts.Count);
         }
 
-        /// <summary>
-        ///A test for GetParameters
-        ///</summary>
-        [TestMethod()]
+        [TestMethod]
         public void GetParametersTest()
         {
-            AccountRequestProcessor<Account> target = new AccountRequestProcessor<Account>();
+            var target = new AccountRequestProcessor<Account>();
             Expression<Func<Account, bool>> expression = acct => acct.Type == AccountType.RateLimitStatus;
-            LambdaExpression lambdaExpression = expression as LambdaExpression;
+            var lambdaExpression = expression as LambdaExpression;
 
             var queryParams = target.GetParameters(lambdaExpression);
 
             Assert.IsTrue(
                 queryParams.Contains(
-                    new KeyValuePair<string, string>("Type", ((int)AccountType.RateLimitStatus).ToString())));
+                    new KeyValuePair<string, string>("Type", ((int)AccountType.RateLimitStatus).ToString(CultureInfo.InvariantCulture))));
         }
 
         /// <summary>
@@ -308,8 +237,8 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void BuildVerifyCredentialsStatusURLTest()
         {
-            AccountRequestProcessor<Account> target = new AccountRequestProcessor<Account>() { BaseUrl = "https://api.twitter.com/1/" };
-            Dictionary<string, string> parameters =
+            var target = new AccountRequestProcessor<Account>() { BaseUrl = "https://api.twitter.com/1/" };
+            var parameters =
                 new Dictionary<string, string>
                 {
                         { "Type", ((int)AccountType.VerifyCredentials).ToString() }

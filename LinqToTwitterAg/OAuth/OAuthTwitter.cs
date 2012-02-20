@@ -38,8 +38,6 @@ namespace LinqToTwitter
     /// </summary>
     public class OAuthTwitter : OAuthBase, IOAuthTwitter
     {
-        #region Properties
-
         /// <summary>
         /// user agent header sent to Twitter
         /// </summary>
@@ -74,8 +72,6 @@ namespace LinqToTwitter
         /// URL for Silverlight Proxy
         /// </summary>
         public string ProxyUrl { get; set; }
-
-        #endregion
 
         /// <summary>
         /// Get the link to Twitter's authorization page for this application.
@@ -590,8 +586,6 @@ namespace LinqToTwitter
             return urlParts[Domain] + (filteredParams == string.Empty ? string.Empty : "?" + filteredParams);
         }
 
-        #region - Async -
-
         public HttpWebRequest GetHttpGetRequest(Uri oauthUrl, string callbackUrl)
         {
             string signedUrl = null;
@@ -965,7 +959,5 @@ namespace LinqToTwitter
                     }), null);
 #endif
         }
-
-        #endregion
     }
 }

@@ -21,8 +21,6 @@ namespace LinqToTwitterDemo
             SearchDemo(twitterCtx);
         }
 
-        #region Geo Demos
-
         /// <summary>
         /// Shows how to perform a search query to 
         /// find a place, based on IP address
@@ -107,7 +105,5 @@ namespace LinqToTwitterDemo
                         "Name: {0}, Country: {1}, Type: {2}",
                         place.Name, place.Country, place.PlaceType));
         }
-
-        #endregion
     }
 }

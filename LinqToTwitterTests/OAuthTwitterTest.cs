@@ -29,7 +29,6 @@ namespace LinqToTwitterTests
             }
         }
 
-        #region Additional test attributes
         // 
         //You can use the following additional attributes as you write your tests:
         //
@@ -57,7 +56,6 @@ namespace LinqToTwitterTests
         //{
         //}
         //
-        #endregion
 
         [TestMethod()]
         public void FilterRequestParameters_Splits_Url_Properly()

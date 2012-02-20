@@ -24,8 +24,6 @@ namespace LinqToTwitterDemo
             //OAuthForceLoginDemo(twitterCtx);
         }
 
-        #region OAuth Demos
-
         /// <summary>
         /// Shows how to force user to log in
         /// </summary>
@@ -173,7 +171,5 @@ namespace LinqToTwitterDemo
                         tweet.Text)); 
             }
         }
-
-        #endregion
     }
 }

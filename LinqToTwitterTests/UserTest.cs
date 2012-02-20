@@ -13,8 +13,6 @@ namespace LinqToTwitterTests
     [TestClass()]
     public class UserTest
     {
-        #region Test Data
-
         //
         // User Response Example as of 5/23/09
         //
@@ -57,8 +55,6 @@ namespace LinqToTwitterTests
           </status>
         </user>";
 
-        #endregion
-
         private TestContext testContextInstance;
 
         /// <summary>
@@ -77,7 +73,6 @@ namespace LinqToTwitterTests
             }
         }
 
-        #region Additional test attributes
         // 
         //You can use the following additional attributes as you write your tests:
         //
@@ -106,7 +101,6 @@ namespace LinqToTwitterTests
         //{
         //}
         //
-        #endregion
 
         /// <summary>
         ///A test for CreateUser

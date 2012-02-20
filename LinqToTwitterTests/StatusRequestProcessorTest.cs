@@ -20,8 +20,6 @@ namespace LinqToTwitterTests
     {
         private TestContext testContextInstance;
 
-        #region Test Data
-
         private string m_annotation = @"<annotations type=""array"">
   <annotation>
     <type>foo</type>
@@ -1089,8 +1087,6 @@ namespace LinqToTwitterTests
   </status>
 </statuses>";
 
-        #endregion
-
         /// <summary>
         ///Gets or sets the test context which provides
         ///information about and functionality for the current test run.
@@ -1107,7 +1103,6 @@ namespace LinqToTwitterTests
             }
         }
 
-        #region Additional test attributes
         // 
         //You can use the following additional attributes as you write your tests:
         //
@@ -1136,7 +1131,6 @@ namespace LinqToTwitterTests
         //{
         //}
         //
-        #endregion
 
         /// <summary>
         ///A test for BuildURL

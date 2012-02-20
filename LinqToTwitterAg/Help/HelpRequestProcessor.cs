@@ -11,8 +11,6 @@ namespace LinqToTwitter
     /// </summary>
     public class HelpRequestProcessor<T> : IRequestProcessor<T>
     {
-        #region IRequestProcessor Members
-
         /// <summary>
         /// base url for request
         /// </summary>
@@ -35,8 +33,9 @@ namespace LinqToTwitter
 
         public Request BuildURL(Dictionary<string, string> parameters)
         {
+            const string typeParam = "Type";
             if (parameters == null || !parameters.ContainsKey("Type"))
-                throw new ArgumentException("You must set Type.", "Type");
+                throw new ArgumentException("You must set Type.", typeParam);
 
             Type = RequestProcessorHelper.ParseQueryEnumType<HelpType>(parameters["Type"]);
 
@@ -62,16 +61,14 @@ namespace LinqToTwitter
         {
             XElement twitterResponse = XElement.Parse(responseXml);
 
-            List<Help> helpList = new List<Help>
+            var helpList = new List<Help>
             {
                 Help.Create(twitterResponse)
             };
 
-            helpList.First().Type = this.Type;
+            helpList.First().Type = Type;
 
             return helpList.OfType<T>().ToList();
         }
-
-        #endregion
     }
 }

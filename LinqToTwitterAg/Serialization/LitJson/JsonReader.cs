@@ -1,4 +1,3 @@
-#region Header
 /**
  * JsonReader.cs
  *   Stream-like access to JSON text.
@@ -6,7 +5,6 @@
  * The authors disclaim copyright to this source code. For more details, see
  * the COPYING file included with this distribution.
  **/
-#endregion
 
 
 using System;
@@ -41,7 +39,6 @@ namespace LitJson
 
     public class JsonReader
     {
-        #region Fields
         private static IDictionary<int, IDictionary<int, int[]>> parse_table;
 
         private Stack<int>    automaton_stack;
@@ -57,10 +54,7 @@ namespace LitJson
         private bool          reader_is_owned;
         private object        token_value;
         private JsonToken     token;
-        #endregion
 
-
-        #region Public Properties
         public bool AllowComments {
             get { return lexer.AllowComments; }
             set { lexer.AllowComments = value; }
@@ -86,10 +80,7 @@ namespace LitJson
         public object Value {
             get { return token_value; }
         }
-        #endregion
 
-
-        #region Constructors
         static JsonReader ()
         {
             PopulateParseTable ();
@@ -126,10 +117,7 @@ namespace LitJson
             this.reader = reader;
             reader_is_owned = owned;
         }
-        #endregion
 
-
-        #region Static Methods
         private static void PopulateParseTable ()
         {
             parse_table = new Dictionary<int, IDictionary<int, int[]>> ();
@@ -246,10 +234,7 @@ namespace LitJson
         {
             parse_table.Add ((int) rule, new Dictionary<int, int[]> ());
         }
-        #endregion
 
-
-        #region Private Methods
         private void ProcessNumber (string number)
         {
             if (number.IndexOf ('.') != -1 ||
@@ -362,7 +347,6 @@ namespace LitJson
 
             return true;
         }
-        #endregion
 
 
         public void Close ()

@@ -33,7 +33,6 @@ namespace LinqToTwitterTests
             }
         }
 
-        #region Additional test attributes
         // 
         //You can use the following additional attributes as you write your tests:
         //
@@ -62,7 +61,6 @@ namespace LinqToTwitterTests
         //{
         //}
         //
-        #endregion
 
         [TestMethod]
         public void BeginAuthorization_Sets_ForceLogin()

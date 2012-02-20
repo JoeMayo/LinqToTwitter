@@ -84,8 +84,6 @@ namespace LinqToTwitterDemo
             }
         }
 
-        #region List Demos
-
         /// <summary>
         /// Shows how to get a list and sort it
         /// </summary>
@@ -440,7 +438,5 @@ namespace LinqToTwitterDemo
                 }
             }
         }
-
-        #endregion
     }
 }

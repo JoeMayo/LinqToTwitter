@@ -35,6 +35,7 @@ namespace LinqToTwitter
         /// <param name="placeID">ID of place (found via Geo Reverse lookup query)</param>
         /// <param name="displayCoordinates">Allow or prevent display of coordinates for this tweet</param>
         /// <param name="mediaItems">List of Media to send</param>
+        /// <param name="callback">Async callback handler</param>
         /// <returns>Status containing new tweet</returns>
         public static Status TweetWithMedia(this TwitterContext twitterCtx, string status, bool possiblySensitive, decimal latitude, decimal longitude, string placeID, bool displayCoordinates, List<Media> mediaItems, Action<TwitterAsyncResponse<Status>> callback)
         {
@@ -69,6 +70,7 @@ namespace LinqToTwitter
         /// <param name="placeID">ID of place (found via Geo Reverse lookup query)</param>
         /// <param name="displayCoordinates">Allow or prevent display of coordinates for this tweet</param>
         /// <param name="mediaItems">List of Media to send</param>
+        /// <param name="callback">Async callback handler</param>
         /// <returns>Status containing new reply</returns>
         public static Status ReplyWithMedia(this TwitterContext twitterCtx, ulong inReplyToStatusID, string status, bool possiblySensitive, decimal latitude, decimal longitude, string placeID, bool displayCoordinates, List<Media> mediaItems, Action<TwitterAsyncResponse<Status>> callback)
         {
@@ -81,7 +83,8 @@ namespace LinqToTwitter
             {
                 throw new ArgumentNullException("mediaItems", "You must pass at least one Media in mediaItems.");
             }
-            else if (mediaItems.Count == 0)
+
+            if (mediaItems.Count == 0)
             {
                 throw new ArgumentException("You must pass at least one Media in mediaItems.", "mediaItems");
             }
@@ -98,12 +101,12 @@ namespace LinqToTwitter
                     new Dictionary<string, string>
                     {
                         {"status", status},
-                        {"possibly_sensitive", possiblySensitive ? possiblySensitive.ToString() : null },
+                        {"possibly_sensitive", possiblySensitive ? true.ToString(CultureInfo.InvariantCulture) : null },
                         {"lat", latitude == NoCoordinate ? null : latitude.ToString(CultureInfo.InvariantCulture) },
                         {"long", longitude == NoCoordinate ? null : longitude.ToString(CultureInfo.InvariantCulture) },
                         {"place_id", string.IsNullOrEmpty(placeID) ? null : placeID },
-                        {"display_coordinates", displayCoordinates ? displayCoordinates.ToString() : null },
-                        {"in_reply_to_status_id", inReplyToStatusID == NoReply ? null : inReplyToStatusID.ToString()}
+                        {"display_coordinates", displayCoordinates ? true.ToString(CultureInfo.InvariantCulture) : null },
+                        {"in_reply_to_status_id", inReplyToStatusID == NoReply ? null : inReplyToStatusID.ToString(CultureInfo.InvariantCulture)}
                     },
                     mediaItems,
                     reqProc);

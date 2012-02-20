@@ -35,8 +35,6 @@ namespace LinqToTwitterDemo
             //UpdateAccountInfoDemo(twitterCtx);
         }
 
-        #region Account Demos
-
         /// <summary>
         /// Shows how to update account profile info
         /// </summary>
@@ -322,7 +320,5 @@ namespace LinqToTwitterDemo
                 Console.WriteLine("Twitter did not recognize the credentials. Response from Twitter: " + wex.Message);
             }
         }
-
-        #endregion
     }
 }

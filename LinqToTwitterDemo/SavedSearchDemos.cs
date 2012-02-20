@@ -21,8 +21,6 @@ namespace LinqToTwitterDemo
             //DestroySavedSearchDemo(twitterCtx);
         }
 
-        #region Saved Search Demos
-
         /// <summary>
         /// Shows how to delete a saved search
         /// </summary>
@@ -86,7 +84,5 @@ namespace LinqToTwitterDemo
                 Console.WriteLine("ID: {0}, Search: {1}", search.ID, search.Name);
             }
         }
-
-        #endregion
     }
 }

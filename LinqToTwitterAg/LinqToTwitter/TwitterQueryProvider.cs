@@ -79,7 +79,7 @@ namespace LinqToTwitter
             Type elementType = TypeSystem.GetElementType(expression.Type);
 
             return GetType()
-                .GetMethod("Execute", new Type[] { elementType })
+                .GetMethod("Execute", new[] { elementType })
                 .Invoke(this, new object[] { expression });
         }
 
@@ -97,7 +97,7 @@ namespace LinqToTwitter
 
             // generic parameter type for method call
             Type resultType = new MethodCallExpressionTypeFinder().GetGenericType(expression);
-            Type[] genericArguments = new Type[] { resultType };
+            var genericArguments = new[] { resultType };
 
             // generic method instance via reflection
             var methodInfo = Context.GetType().GetMethod("Execute", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
@@ -107,15 +107,15 @@ namespace LinqToTwitter
             //  Note: look at ProcessResults method in PostProcessor and you'll see what is being executed
             try
             {
-                return (TResult)genericMethodInfo.Invoke(Context, new object[] { expression, isEnumerable });
+                var result = (TResult)genericMethodInfo.Invoke(Context, new object[] { expression, isEnumerable });
+                return result;
             }
             catch (TargetInvocationException tex)
             {
                 // gotta unwrap the Invoke exception, as the the inner exception is the interesting bit...
                 if (tex.InnerException != null)
                     throw tex.InnerException;
-                else
-                    throw;
+                throw;
             }
         }
     }

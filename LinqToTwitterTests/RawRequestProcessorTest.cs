@@ -11,8 +11,6 @@ namespace LinqToTwitterTests
     [TestClass]
     public class RawRequestProcessorTest
     {
-        #region Test Data
-
         private string m_testQueryResponse = @"<statuses type=""array"">
   <status>
     <created_at>Fri Nov 27 18:28:57 +0000 2009</created_at>
@@ -855,8 +853,6 @@ namespace LinqToTwitterTests
     <geo />
   </status>
 </statuses>";
-
-        #endregion
 
         [ClassInitialize()]
         public static void MyClassInitialize(TestContext testContext)

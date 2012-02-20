@@ -14,7 +14,6 @@ namespace LinqToTwitter
         /// <summary>
         /// Prepares an authorized HTTP GET request.
         /// </summary>
-        /// <param name="url">The request URL.</param>
         /// <returns>The <see cref="HttpWebRequest"/> object that may be further customized.</returns>
         WebRequest Get(Request request);
 
@@ -23,6 +22,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="request">The request with the endpoint URL and the parameters to 
         /// include in the POST entity.  Must not be null.</param>
+        /// <param name="postData">Parameters to be posted</param>
         /// <returns>
         /// The HTTP request.
         /// </returns>
@@ -34,6 +34,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="request">The request with the endpoint URL and the parameters to 
         /// include in the POST entity.  Must not be null.</param>
+        /// <param name="postData">Parameters to be posted</param>
         /// <returns>
         /// The HTTP reponce.
         /// </returns>
@@ -45,6 +46,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="request">The request with the endpoint URL and the parameters to 
         /// include in the POST entity.  Must not be null.</param>
+        /// <param name="postData">Parameters to be posted</param>
         /// <returns>HttpWebRequest for post</returns>
         HttpWebRequest PostAsync(Request request, IDictionary<string, string> postData);
 
@@ -66,8 +68,6 @@ namespace LinqToTwitter
         /// Gets the screenname of the user logged into Twitter.
         /// </summary>
         string ScreenName { get; }
-
-        #region Non-authorization HTTP-specific details
 
         /// <summary>
         /// Gets or sets the read write timeout.
@@ -91,7 +91,5 @@ namespace LinqToTwitter
         /// Indicates if you want to use enable compressed responses (GZip/deflate)
         /// </summary>
         bool UseCompression { get; set; }
-
-        #endregion
     }
 }

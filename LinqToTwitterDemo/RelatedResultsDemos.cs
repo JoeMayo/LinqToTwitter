@@ -18,8 +18,6 @@ namespace LinqToTwitterDemo
             ShowRelatedResultsDemo(twitterCtx);
         }
 
-        #region Related Results Demos
-
         /// <summary>
         /// shows how to get related results of a tweet
         /// </summary>
@@ -36,7 +34,5 @@ namespace LinqToTwitterDemo
             results.ForEach(result => 
                 Console.WriteLine("Name: {0}\nTweet: {1}\n", result.User.Identifier.ScreenName, result.Text));
         }
-
-        #endregion
     }
 }

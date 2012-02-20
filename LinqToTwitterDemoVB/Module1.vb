@@ -136,9 +136,6 @@ Module Module1
         Return Console.ReadLine()
     End Function
 
-
-#Region "Saved Search Demos"
-
     Private Sub QuerySavedSearchesDemo(ByVal twitterCtx As TwitterContext)
         Dim savedSearches = _
             From search In twitterCtx.SavedSearch _
@@ -148,10 +145,6 @@ Module Module1
             Console.WriteLine("ID: {0}, Search: {1}", Search.ID, Search.Name)
         Next
     End Sub
-
-#End Region
-
-#Region "OAuth Demos"
 
     Private Sub HandleOAuthQueryDemo(ByVal twitterCtx As TwitterContext)
 
@@ -171,10 +164,6 @@ Module Module1
 
     End Sub
 
-#End Region
-
-#Region "Trends Demos"
-
     Private Sub SearchCurrentTrendsDemo(ByVal twitterCtx As TwitterContext)
         Dim trends = _
             From trnd In twitterCtx.Trends _
@@ -186,9 +175,7 @@ Module Module1
                               trnd.Name, trnd.Query)
         Next
     End Sub
-#End Region
 
-#Region "Account Demos"
     Private Sub VerifyAccountCredentialsDemo(ByVal twitterCtx As TwitterContext)
         Dim accounts = _
             From acct In twitterCtx.Account _
@@ -202,9 +189,6 @@ Module Module1
             Console.WriteLine("Twitter did not recognize the credentials. Response from Twitter: " & ex.Message)
         End Try
     End Sub
-#End Region
-
-#Region "Block Demos"
 
     Private Sub BlockIDsDemo(ByVal twitterCtx As TwitterContext)
         Dim result = _
@@ -220,9 +204,6 @@ Module Module1
             Console.WriteLine("ID: {0}", block.ID)
         Next
     End Sub
-#End Region
-
-#Region "Notifications Demos"
 
     Private Sub EnableNotificationsDemo(ByVal twitterCtx As TwitterContext)
         Dim usr As User = twitterCtx.EnableNotifications(Nothing, Nothing, "JoeMayo")
@@ -244,10 +225,6 @@ Module Module1
         Console.WriteLine("Disabled Notifications for User Name: " & usr.Name)
     End Sub
 
-#End Region
-
-#Region "Favorites Demos"
-
     Private Sub FavoritesQueryDemo(ByVal twitterCtx As TwitterContext)
         Dim favorites = _
             From fav In twitterCtx.Favorites _
@@ -259,9 +236,6 @@ Module Module1
                 fav.User.Name, fav.Text)
         Next
     End Sub
-#End Region
-
-#Region "Search Demos"
 
     Private Sub SearchTwitterDemo(ByVal twitterCtx As TwitterContext)
         Dim queryResults = _
@@ -279,9 +253,6 @@ Module Module1
             Next
         Next
     End Sub
-#End Region
-
-#Region "Social Graph Demos"
 
     Private Sub ShowFriendsDemo(ByVal twitterCtx As TwitterContext)
         Dim friends = _
@@ -293,10 +264,6 @@ Module Module1
             Console.WriteLine("Friend ID: " & frnd.ID)
         Next
     End Sub
-
-#End Region
-
-#Region "Freindship Demos"
 
     Private Sub FriendshipExistsDemo(ByVal twitterCtx As TwitterContext)
         Dim friendships = _
@@ -310,9 +277,6 @@ Module Module1
 
         Console.WriteLine("JoeMayo follows LinqToTweeter: " & isFriend)
     End Sub
-#End Region
-
-#Region "Direct Message Demos"
 
     Private Sub DirectMessageSentByQueryDemo(ByVal twitterContext As TwitterContext)
         Dim directMessages = _
@@ -327,9 +291,6 @@ Module Module1
                 dm.Text)
         Next
     End Sub
-#End Region
-
-#Region "User Demos"
 
     Private Sub UserShowWithIDQueryDemo(ByVal twitterCtx As TwitterContext)
         Dim users = _
@@ -368,10 +329,6 @@ Module Module1
             "Name: {0}, Last Tweet: {1}" & Environment.NewLine, _
             singleUser.Name, singleUser.Status.Text)
     End Sub
-
-#End Region
-
-#Region "Status Tweet Demos"
 
     Private Sub FriendsStatusQueryDemo(ByVal twitterCtx As TwitterContext)
         Dim ts = From t In twitterCtx.Status _
@@ -533,7 +490,5 @@ Module Module1
             tweet.Text & ", " & _
             tweet.CreatedAt)
     End Sub
-
-#End Region
 
 End Module

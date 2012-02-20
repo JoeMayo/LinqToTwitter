@@ -23,8 +23,6 @@ namespace LinqToTwitterDemo
             //DestroyDirectMessageDemo(twitterCtx);
         }
 
-        #region Direct Message Demos
-
         /// <summary>
         /// shows how to delete a direct message
         /// </summary>
@@ -143,7 +141,5 @@ namespace LinqToTwitterDemo
                     dm.SenderScreenName,
                     dm.Text));
         }
-
-        #endregion
     }
 }

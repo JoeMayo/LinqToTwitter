@@ -154,7 +154,6 @@ namespace LinqToTwitterTests
 </statuses>";
 
 
-        #region Additional test attributes
         // 
         //You can use the following additional attributes as you write your tests:
         //
@@ -182,7 +181,6 @@ namespace LinqToTwitterTests
         //{
         //}
         //
-        #endregion
 
 
         [TestMethod]

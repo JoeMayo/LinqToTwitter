@@ -95,8 +95,6 @@ namespace WindowsPhoneDemo
             }
         }
 
-        #region Phone application initialization
-
         // Avoid double-initialization
         private bool phoneApplicationInitialized = false;
 
@@ -128,7 +126,5 @@ namespace WindowsPhoneDemo
             // Remove this handler since it is no longer needed
             RootFrame.Navigated -= CompleteInitializePhoneApplication;
         }
-
-        #endregion
     }
 }

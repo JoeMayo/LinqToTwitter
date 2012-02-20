@@ -15,8 +15,6 @@ namespace LinqToTwitterTests
     [TestClass()]
     public class DirectMessageRequestProcessorTest
     {
-        #region Test Data
-
         private string m_testQueryResponse = @"
         <direct_message>
           <id>87864628</id>
@@ -80,8 +78,6 @@ namespace LinqToTwitterTests
           </recipient>
         </direct_message>";
 
-        #endregion
-
         private TestContext testContextInstance;
 
         /// <summary>
@@ -100,7 +96,6 @@ namespace LinqToTwitterTests
             }
         }
 
-        #region Additional test attributes
         // 
         //You can use the following additional attributes as you write your tests:
         //
@@ -129,7 +124,6 @@ namespace LinqToTwitterTests
         //{
         //}
         //
-        #endregion
 
         /// <summary>
         ///A test for BuildUrl

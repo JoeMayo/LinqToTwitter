@@ -14,8 +14,6 @@ namespace LinqToTwitterTests
     [TestClass()]
     public class HelpTest
     {
-        #region Test Data
-
         private string helpConfigurationXml = @"<?xml version=""1.0"" encoding=""UTF-8""?>
 <configuration>
   <short_url_length>19</short_url_length>
@@ -195,8 +193,6 @@ namespace LinqToTwitterTests
   </language>
 </languages>";
 
-        #endregion
-
         private TestContext testContextInstance;
 
         /// <summary>
@@ -215,7 +211,6 @@ namespace LinqToTwitterTests
             }
         }
 
-        #region Additional test attributes
         // 
         //You can use the following additional attributes as you write your tests:
         //
@@ -243,7 +238,6 @@ namespace LinqToTwitterTests
         //{
         //}
         //
-        #endregion
 
         [TestMethod]
         public void Create_Populates_Test_Results()

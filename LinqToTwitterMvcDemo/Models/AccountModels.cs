@@ -6,8 +6,6 @@ using System.Web.Security;
 
 namespace LinqToTwitterMvcDemo.Models
 {
-
-    #region Models
     [PropertiesMustMatch("NewPassword", "ConfirmPassword", ErrorMessage = "The new password and confirmation password do not match.")]
     public class ChangePasswordModel
     {
@@ -66,9 +64,7 @@ namespace LinqToTwitterMvcDemo.Models
         [DisplayName("Confirm password")]
         public string ConfirmPassword { get; set; }
     }
-    #endregion
 
-    #region Services
     // The FormsAuthentication type is sealed and contains static members, so it is difficult to
     // unit test code that calls its members. The interface and helper class below demonstrate
     // how to create an abstract wrapper around such a type in order to make the AccountController
@@ -168,9 +164,7 @@ namespace LinqToTwitterMvcDemo.Models
             FormsAuthentication.SignOut();
         }
     }
-    #endregion
 
-    #region Validation
     public static class AccountValidation
     {
         public static string ErrorCodeToString(MembershipCreateStatus createStatus)
@@ -274,6 +268,4 @@ namespace LinqToTwitterMvcDemo.Models
             return (valueAsString != null && valueAsString.Length >= _minCharacters);
         }
     }
-    #endregion
-
 }

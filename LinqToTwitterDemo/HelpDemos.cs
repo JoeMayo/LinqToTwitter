@@ -20,8 +20,6 @@ namespace LinqToTwitterDemo
             //GetHelpLanguages(twitterCtx);
         }
 
-        #region Help Demos
-
         /// <summary>
         /// shows how to perform a help test
         /// </summary>
@@ -88,7 +86,5 @@ namespace LinqToTwitterDemo
                 Console.WriteLine("{0}({1}): {2}", lang.Name, lang.Code, lang.Status);
             }
         }
-
-        #endregion
     }
 }

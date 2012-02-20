@@ -29,8 +29,6 @@ namespace LinqToTwitterDemo
             //UpdateSettingsDemo(twitterCtx);
         }
 
-        #region Friendship Demos
-
         private static void DestroyFriendshipDemo(TwitterContext twitterCtx)
         {
             var user = twitterCtx.DestroyFriendship("LinqToTweeter", string.Empty, string.Empty);
@@ -199,7 +197,5 @@ namespace LinqToTwitterDemo
                 friend.SourceRelationship.RetweetsWanted, 
                 friend.SourceRelationship.NotificationsEnabled);
         }
-
-        #endregion
     }
 }

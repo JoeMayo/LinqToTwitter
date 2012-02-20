@@ -25,10 +25,10 @@ namespace LinqToTwitter.Json
         {
             object value;
 
-            if (dictionary.TryGetValue(key, out value))
+            if (dictionary.TryGetValue(key, out value) && value != null)
                 return (T)value;
-            else
-                return defaultValue;
+
+            return defaultValue;
         }
 
         public static T GetNested<T>(this IDictionary<string, object> dictionary, string key, JavaScriptSerializer serializer)

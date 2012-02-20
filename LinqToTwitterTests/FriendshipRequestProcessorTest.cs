@@ -17,8 +17,6 @@ namespace LinqToTwitterTests
     [TestClass()]
     public class FriendshipRequestProcessorTest
     {
-        #region Test Data
-
         private string m_testQueryResponse = "<friends>true</friends>";
 
         private string m_testLookupResponse = @"<?xml version=""1.0"" encoding=""UTF-8""?>
@@ -68,8 +66,6 @@ namespace LinqToTwitterTests
 <id>241594327</id>
 </ids>";
 
-        #endregion
-
         private TestContext testContextInstance;
 
         /// <summary>
@@ -88,7 +84,6 @@ namespace LinqToTwitterTests
             }
         }
 
-        #region Additional test attributes
         // 
         //You can use the following additional attributes as you write your tests:
         //
@@ -117,7 +112,6 @@ namespace LinqToTwitterTests
         //{
         //}
         //
-        #endregion
 
         /// <summary>
         ///A test for ProcessResults

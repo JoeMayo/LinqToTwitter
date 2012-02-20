@@ -21,8 +21,6 @@ namespace LinqToTwitterDemo
             //ShowFollowersWithCursorDemo(twitterCtx);
         }
 
-        #region Social Graph Demos
-
         /// <summary>
         /// Shows how to list followers
         /// </summary>
@@ -117,9 +115,5 @@ namespace LinqToTwitterDemo
                 pageNumber++;
             }
         }
-
-
-        #endregion
-
     }
 }

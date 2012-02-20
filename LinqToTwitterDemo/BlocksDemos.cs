@@ -23,8 +23,6 @@ namespace LinqToTwitterDemo
             BlockBlockingProjectionDemo(twitterCtx);
         }
 
-        #region Block Demos
-
         /// <summary>
         /// shows how to unblock a user
         /// </summary>
@@ -124,7 +122,5 @@ namespace LinqToTwitterDemo
                 Console.WriteLine("User not blocked. Twitter Response: " + tqe.Response.Error);
             }
         }
-
-        #endregion
     }
 }

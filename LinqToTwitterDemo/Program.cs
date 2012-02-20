@@ -10,8 +10,6 @@ namespace LinqToTwitterDemo
     {
         static void Main()
         {
-            #region Querying for APIs that don't require authorization
-
             //
             // This first part is for API's that don't require authentication
             //
@@ -37,11 +35,9 @@ namespace LinqToTwitterDemo
                 Console.WriteLine("... that was public statuses with no authentication. Now, you'll see a demo of how to authenticate with OAuth. Press any key to continue...\n");
                 Console.ReadKey();
             }
-            #endregion
 
             ITwitterAuthorizer auth = null;
 
-            #region XAuth Example
             if (DoThis("use XAuth"))
             {
                 // perform XAuth. Generally, XAuth isn't available unless you specifically
@@ -55,9 +51,7 @@ namespace LinqToTwitterDemo
                     Console.ReadKey();
                 }
             }
-            #endregion
 
-            #region Single User Authorization Example
             if (DoThis("use Single User Auth"))
             {
                 // perform single user authorization. Visit Twitter at http://dev.twitter.com/pages/oauth_single_token for more info.
@@ -69,9 +63,7 @@ namespace LinqToTwitterDemo
                     Console.ReadKey();
                 }
             }
-            #endregion
 
-            #region Pin OAuth Authorization Example
             if (DoThis("use OAuth via Pin"))
             {
                 auth = DoPinOAuth();
@@ -82,16 +74,14 @@ namespace LinqToTwitterDemo
                     Console.ReadKey();
                 }
             }
-            #endregion
 
             // if we have no auth yet, get some!
             if (auth == null)
                 auth = new AnonymousAuthorizer();
 
-            #region Demos
             try
             {
-                using (var twitterCtx = new TwitterContext(auth, "https://api.twitter.com/1/", "https://search.twitter.com/"))
+                using (var twitterCtx = new TwitterContext(auth, "https://api.twitter.com/1/", "http://search.twitter.com/"))
                 {
                     //Log
                     twitterCtx.Log = Console.Out;
@@ -142,7 +132,6 @@ namespace LinqToTwitterDemo
             {
                 Console.WriteLine(ex.ToString());
             }
-            #endregion
 
             if (DoThis("end session"))
                 EndSession(auth);

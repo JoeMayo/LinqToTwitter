@@ -1,4 +1,3 @@
-#region Header
 /**
  * JsonMapper.cs
  *   JSON to .Net object and object to JSON conversions.
@@ -6,7 +5,6 @@
  * The authors disclaim copyright to this source code. For more details, see
  * the COPYING file included with this distribution.
  **/
-#endregion
 
 
 using System;
@@ -99,7 +97,6 @@ namespace LitJson
 
     public class JsonMapper
     {
-        #region Fields
         private static int max_nesting_depth;
 
         private static IFormatProvider datetime_format;
@@ -128,10 +125,7 @@ namespace LitJson
 
         private static JsonWriter      static_writer;
         private static readonly object static_writer_lock = new Object ();
-        #endregion
 
-
-        #region Constructors
         static JsonMapper ()
         {
             max_nesting_depth = 100;
@@ -157,10 +151,7 @@ namespace LitJson
             RegisterBaseExporters ();
             RegisterBaseImporters ();
         }
-        #endregion
 
-
-        #region Private Methods
         private static void AddArrayMetadata (Type type)
         {
             if (array_metadata.ContainsKey (type))
@@ -804,7 +795,6 @@ namespace LitJson
             }
             writer.WriteObjectEnd ();
         }
-        #endregion
 
 
         public static string ToJson (object obj)

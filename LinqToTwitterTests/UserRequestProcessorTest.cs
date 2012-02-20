@@ -15,8 +15,6 @@ namespace LinqToTwitterTests
     [TestClass()]
     public class UserRequestProcessorTest
     {
-        #region Test Data
-
         private TestContext testContextInstance;
 
         private string m_testQueryResponse =
@@ -263,8 +261,6 @@ namespace LinqToTwitterTests
 </user>
 </users>";
 
-        #endregion
-
         /// <summary>
         ///Gets or sets the test context which provides
         ///information about and functionality for the current test run.
@@ -281,7 +277,6 @@ namespace LinqToTwitterTests
             }
         }
 
-        #region Additional test attributes
         // 
         //You can use the following additional attributes as you write your tests:
         //
@@ -310,7 +305,6 @@ namespace LinqToTwitterTests
         //{
         //}
         //
-        #endregion
 
         /// <summary>
         ///A test for BuildURL

@@ -15,8 +15,6 @@ namespace LinqToTwitter
     /// </summary>
     public class UserRequestProcessor<T> : IRequestProcessor<T>
     {
-        #region IRequestProcessor Members
-
         /// <summary>
         /// base url for request
         /// </summary>
@@ -445,7 +443,5 @@ namespace LinqToTwitter
 
             return userList.OfType<T>().ToList();
         }
-
-        #endregion
     }
 }

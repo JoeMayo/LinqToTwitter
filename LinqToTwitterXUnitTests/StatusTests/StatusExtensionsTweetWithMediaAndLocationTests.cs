@@ -37,8 +37,6 @@ namespace LinqToTwitterXUnitTests.StatusTests
             }
         };
 
-        #region Test Data
-
         private readonly string testStatusQueryResponse = @"<statuses type=""array"">
     <status>
       <created_at>Fri Nov 27 18:28:57 +0000 2009</created_at>
@@ -81,8 +79,6 @@ namespace LinqToTwitterXUnitTests.StatusTests
       <geo />
     </status>
   </statuses>";
-
-        #endregion
 
         public StatusExtensionsTweetsWithMediaAndLocationTests()
         {

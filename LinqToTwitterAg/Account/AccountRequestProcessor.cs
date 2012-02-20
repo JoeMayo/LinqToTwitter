@@ -20,7 +20,7 @@ namespace LinqToTwitter
         /// <summary>
         /// Type of account query (VerifyCredentials or RateLimitStatus)
         /// </summary>
-        private AccountType Type { get; set; }
+        internal AccountType Type { get; set; }
 
         /// <summary>
         /// extracts parameters from lambda
@@ -45,14 +45,15 @@ namespace LinqToTwitter
         /// <returns>URL conforming to Twitter API</returns>
         public virtual Request BuildURL(Dictionary<string, string> parameters)
         {
-            string url = null;
+            const string typeParam = "Type";
+            string url;
 
-            if (parameters == null || !parameters.ContainsKey("Type"))
+            if (parameters == null || !parameters.ContainsKey(typeParam))
             {
-                throw new ArgumentException("You must set Type.", "Type");
+                throw new ArgumentException("You must set Type.", typeParam);
             }
 
-            Type = RequestProcessorHelper.ParseQueryEnumType<AccountType>(parameters["Type"]);
+            Type = RequestProcessorHelper.ParseQueryEnumType<AccountType>(parameters[typeParam]);
 
             switch (Type)
             {
@@ -78,7 +79,7 @@ namespace LinqToTwitter
         /// <summary>
         /// transforms json into IQueryable of Account
         /// </summary>
-        /// <param name="responseXml">json with Twitter response</param>
+        /// <param name="responseJson">json with Twitter response</param>
         /// <returns>List of Account</returns>
         public virtual List<T> ProcessResults(string responseJson)
         {
@@ -115,7 +116,8 @@ namespace LinqToTwitter
         /// <summary>
         /// transforms json into an action response
         /// </summary>
-        /// <param name="responseXml">json with Twitter response</param>
+        /// <param name="responseJson">json with Twitter response</param>
+        /// <param name="theAction">Used to specify side-effect methods</param>
         /// <returns>Action response</returns>
         public virtual T ProcessActionResult(string responseJson, Enum theAction)
         {

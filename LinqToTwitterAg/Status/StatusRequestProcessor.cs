@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Xml.Linq;
@@ -120,8 +121,9 @@ namespace LinqToTwitter
         /// <returns>URL conforming to Twitter API</returns>
         public virtual Request BuildURL(Dictionary<string, string> parameters)
         {
+            const string typeParam = "Type";
             if (parameters == null || !parameters.ContainsKey("Type"))
-                throw new ArgumentException("You must set Type.", "Type");
+                throw new ArgumentException("You must set Type.", typeParam);
 
             Type = RequestProcessorHelper.ParseQueryEnumType<StatusType>(parameters["Type"]);
 
@@ -275,7 +277,6 @@ namespace LinqToTwitter
         /// <summary>
         /// construct an url for the user timeline
         /// </summary>
-        /// <param name="url">base status url</param>
         /// <returns>base url + user timeline segment</returns>
         private Request BuildUserUrl(Dictionary<string, string> parameters)
         {
@@ -286,7 +287,6 @@ namespace LinqToTwitter
         /// <summary>
         /// construct a base friend url
         /// </summary>
-        /// <param name="url">base status url</param>
         /// <returns>base url + friend segment</returns>
         private Request BuildFriendUrl(Dictionary<string, string> parameters)
         {
@@ -296,7 +296,6 @@ namespace LinqToTwitter
         /// <summary>
         /// construct a base home url
         /// </summary>
-        /// <param name="url">base status url</param>
         /// <returns>base url + home segment</returns>
         private Request BuildHomeUrl(Dictionary<string, string> parameters)
         {
@@ -306,7 +305,7 @@ namespace LinqToTwitter
         /// <summary>
         /// construct a base mentions url
         /// </summary>
-        /// <param name="url">base status url</param>
+        /// <param name="parameters">parameters to build url query with</param>
         /// <returns>base url + friend segment</returns>
         private Request BuildMentionsUrl(Dictionary<string, string> parameters)
         {
@@ -342,7 +341,7 @@ namespace LinqToTwitter
             if (parameters.ContainsKey("Count"))
             {
                 Count = int.Parse(parameters["Count"]);
-                urlParams.Add(new QueryParameter("count", Count.ToString()));
+                urlParams.Add(new QueryParameter("count", Count.ToString(CultureInfo.InvariantCulture)));
             }
 
             return req;
@@ -444,7 +443,8 @@ namespace LinqToTwitter
                     status.IncludeContributorDetails = IncludeContributorDetails;
                 });
 
-            return statusList.OfType<T>().ToList();
+            var tList = statusList.OfType<T>().ToList();
+            return tList;
         }
     }
 }

@@ -16,8 +16,6 @@ namespace LinqToTwitterTests
     {
         private TestContext testContextInstance;
 
-        #region Test Data
-
         private string showResultsXml = @"
 <root type=""array"">
   <item type=""object"">
@@ -296,8 +294,6 @@ namespace LinqToTwitterTests
   </item>
 </root>";
 
-        #endregion
-
         /// <summary>
         ///Gets or sets the test context which provides
         ///information about and functionality for the current test run.
@@ -314,7 +310,6 @@ namespace LinqToTwitterTests
             }
         }
 
-        #region Additional test attributes
         // 
         //You can use the following additional attributes as you write your tests:
         //
@@ -343,7 +338,6 @@ namespace LinqToTwitterTests
         //{
         //}
         //
-        #endregion
 
         /// <summary>
         ///A test for CreateRelatedResults

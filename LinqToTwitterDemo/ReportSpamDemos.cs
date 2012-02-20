@@ -17,8 +17,6 @@ namespace LinqToTwitterDemo
             //ReportSpamDemo(twitterCtx);
         }
 
-        #region Report Spam Demos
-
         /// <summary>
         /// Shows multiple ways to report spammers
         /// </summary>
@@ -38,7 +36,5 @@ namespace LinqToTwitterDemo
             spammer = twitterCtx.ReportSpam(null, "84705854", null);
             Console.WriteLine("Spammer \"{0}\" is so gone! ... and don't come back! :)", spammer.Name);
         }
-
-        #endregion
     }
 }

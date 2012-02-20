@@ -13,8 +13,6 @@ namespace LinqToTwitterTests
     [TestClass]
     public class TwitterContextTest
     {
-        #region Test Data
-
         private string m_testUserQueryResponse =
         @"<user>
           <id>15411837</id>
@@ -163,9 +161,6 @@ namespace LinqToTwitterTests
   ""error"": ""Logged out.""
 }";
 
-        #endregion
-
-        #region Additional test attributes
         // 
         //You can use the following additional attributes as you write your tests:
         //
@@ -194,9 +189,6 @@ namespace LinqToTwitterTests
         //{
         //}
         //
-        #endregion
-
-        #region Constructor Tests
 
         /// <summary>
         ///1 param constructor defaults
@@ -296,10 +288,6 @@ namespace LinqToTwitterTests
                 Assert.AreEqual("execute", ane.ParamName);
             }
         }
-
-        #endregion
-
-        #region CreateRequestProcessor Tests
 
         /// <summary>
         ///A test for CreateRequestProcessor
@@ -491,10 +479,6 @@ namespace LinqToTwitterTests
             Assert.AreEqual("http://api.twitter.com/1/", reqProc.BaseUrl);
         }
 
-        #endregion
-
-        #region Execute Tests
-
         private void InitializeTwitterContextForExecuteTest(out TwitterContext ctx, out Expression expression)
         {
             var exec = new Mock<ITwitterExecute>();
@@ -551,12 +535,6 @@ namespace LinqToTwitterTests
 
             Assert.AreEqual(m_testStatusQueryResponse, ctx.RawResult);
         }
-
-        #endregion
-
-        #region API Tests
-
-        #region Status Tests
 
         [TestMethod]
         public void UpdateStatus_With_Reply_Sets_StatusID()
@@ -732,10 +710,6 @@ namespace LinqToTwitterTests
 
             Assert.IsTrue(wrapLinksIsSetToNull);
         }
-
-        #endregion
-
-        #region Account Tests
 
         [TestMethod]
         public void UpdateAccountProfileTest()
@@ -1167,10 +1141,6 @@ namespace LinqToTwitterTests
             Assert.AreEqual(expected, actual);
         }
 
-        #endregion
-
-        #region Direct Message Tests
-
         [TestMethod]
         public void NewDirectMessageTest()
         {
@@ -1337,10 +1307,6 @@ namespace LinqToTwitterTests
             Assert.AreEqual(expected, actual);
         }
 
-        #endregion
-
-        #region Friendship Tests
-
         [TestMethod]
         public void CreateFriendshipTest()
         {
@@ -1436,10 +1402,6 @@ namespace LinqToTwitterTests
             Assert.AreEqual(expected, actual);
         }
 
-        #endregion
-
-        #region Favorites Tests
-
         [TestMethod]
         public void CreateFavoriteTest()
         {
@@ -1526,10 +1488,6 @@ namespace LinqToTwitterTests
             Assert.AreEqual(expected, actual);
         }
 
-        #endregion
-
-        #region Block Tests
-
         [TestMethod]
         public void CreateBlockTest()
         {
@@ -1615,10 +1573,6 @@ namespace LinqToTwitterTests
 
             Assert.AreEqual(expected, actual);
         }
-
-        #endregion
-
-        #region Raw Request Tests
 
         [TestMethod]
         public void ExecuteRawRequest_Invokes_Executor_Execute()
@@ -1711,10 +1665,6 @@ namespace LinqToTwitterTests
                     parameters, It.IsAny<IRequestProcessor<Raw>>()), Times.Once());
         }
 
-        #endregion
-
-        #region Streaming Tests
-
         [TestMethod]
         public void CreateRequestProcessor_Returns_StreamingRequestProcessor()
         {
@@ -1805,10 +1755,6 @@ namespace LinqToTwitterTests
 
             execMock.Verify(exec => exec.QueryTwitterStream(It.IsAny<Request>()), Times.Once());
         }
-
-        #endregion
-
-        #region List Tests
 
         [TestMethod]
         public void CreateList_Requires_ListName()
@@ -1945,7 +1891,7 @@ namespace LinqToTwitterTests
             }
             catch (ArgumentException ae)
             {
-                Assert.AreEqual("listIdOrSlug", ae.ParamName);
+                Assert.AreEqual("ListIdOrSlug", ae.ParamName);
             }
         }
 
@@ -2572,9 +2518,5 @@ namespace LinqToTwitterTests
                     It.IsAny<IRequestProcessor<List>>()),
                 Times.Once());
         }
-
-        #endregion
-
-        #endregion
     }
 }

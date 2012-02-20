@@ -40,7 +40,6 @@ namespace LinqToTwitterTests
             }
         }
 
-        #region Additional test attributes
         //
         // You can use the following additional attributes as you write your tests:
         //
@@ -63,7 +62,6 @@ namespace LinqToTwitterTests
         // [TestCleanup()]
         // public void MyTestCleanup() { }
         //
-        #endregion
 
         [TestMethod]
         public void GetParameters_Returns_Parameters()

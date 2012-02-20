@@ -11,7 +11,7 @@ using System.Resources;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Joe Mayo")]
 [assembly: AssemblyProduct("LINQ to Twitter for Windows Phone")]
-[assembly: AssemblyCopyright("Copyright ©  2011")]
+[assembly: AssemblyCopyright("Copyright ©  2012")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -32,6 +32,6 @@ using System.Resources;
 //
 // You can specify all the values or you can default the Revision and Build Numbers 
 // by using the '*' as shown below:
-[assembly: AssemblyVersion("2.0.22")]
-[assembly: AssemblyFileVersion("2.0.22")]
+[assembly: AssemblyVersion("2.0.23")]
+[assembly: AssemblyFileVersion("2.0.23")]
 [assembly: NeutralResourcesLanguageAttribute("en-US")]

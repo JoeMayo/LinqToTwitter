@@ -24,8 +24,6 @@ namespace LinqToTwitterDemo
             //RelatedResultsDemo(twitterCtx);
         }
 
-        #region Raw Demos
-
         /// <summary>
         /// Requests the public timeline
         /// </summary>
@@ -167,7 +165,5 @@ namespace LinqToTwitterDemo
 
             //Console.WriteLine("Response from Twitter: \n\n" + rawResult.Result);
         }
-
-        #endregion
     }
 }

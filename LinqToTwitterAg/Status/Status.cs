@@ -29,11 +29,14 @@ namespace LinqToTwitter
                 return null;
             }
 
-            var date = status.Element("created_at") == null ? null : status.Element("created_at").Value;
-            var createdAtDate = String.IsNullOrEmpty(date) 
+            string dateString = null;
+            var createdAtElement = status.Element("created_at");
+            if (createdAtElement != null) dateString = createdAtElement.Value;
+
+            var createdAtDate = String.IsNullOrEmpty(dateString) 
                                 ? DateTime.MinValue
                                 : DateTime.ParseExact(
-                                        date,
+                                        dateString,
                                         "ddd MMM dd HH:mm:ss %zzzz yyyy",
                                         CultureInfo.InvariantCulture,
                                         DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal);

@@ -15,8 +15,6 @@ namespace LinqToTwitterTests
     [TestClass()]
     public class GeoRequestProcessorTest
     {
-        #region Test Data
-
         string m_reverseResponse = @"<root type=""object"">
   <result type=""object"">
     <places type=""array"">
@@ -506,8 +504,6 @@ namespace LinqToTwitterTests
   <country_code type=""string"">US</country_code>
 </root>";
 
-        #endregion
-
         private TestContext testContextInstance;
 
         /// <summary>
@@ -526,7 +522,6 @@ namespace LinqToTwitterTests
             }
         }
 
-        #region Additional test attributes
         // 
         //You can use the following additional attributes as you write your tests:
         //
@@ -555,7 +550,6 @@ namespace LinqToTwitterTests
         //{
         //}
         //
-        #endregion
 
         [TestMethod]
         public void ProcessReverseResultsTest()

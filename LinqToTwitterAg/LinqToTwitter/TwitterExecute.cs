@@ -19,28 +19,19 @@ using System.Diagnostics;
 namespace LinqToTwitter
 {
     /// <summary>
-    /// Makes LINQ to Twitter more testable by isolating 
-    /// execution routines that communicate with Twitter 
-    /// from the rest of the logic.
+    /// Logic that performs actual communication with Twitter
     /// </summary>
     internal class TwitterExecute : ITwitterExecute, IDisposable
     {
-        #region Properties
-
         /// <summary>
         /// Version used in UserAgent
         /// </summary>
-        private const string m_linqToTwitterVersion = "LINQ to Twitter v2.0";
+        const string LinqToTwitterVersion = "LINQ to Twitter v2.0";
 
         /// <summary>
         /// Default for ReadWriteTimeout
         /// </summary>
         public const int DefaultReadWriteTimeout = 300000;
-
-        ///// <summary>
-        ///// Gets or sets the object that can send authorized requests to Twitter.
-        ///// </summary>
-        //public ITwitterAuthorization AuthorizedClient { get; set; }
 
         /// <summary>
         /// Gets or sets the object that can send authorized requests to Twitter.
@@ -53,8 +44,8 @@ namespace LinqToTwitter
         /// </summary>
         public int ReadWriteTimeout
         {
-            get { return (int)this.AuthorizedClient.ReadWriteTimeout.TotalMilliseconds; }
-            set { this.AuthorizedClient.ReadWriteTimeout = TimeSpan.FromMilliseconds(value); }
+            get { return (int)AuthorizedClient.ReadWriteTimeout.TotalMilliseconds; }
+            set { AuthorizedClient.ReadWriteTimeout = TimeSpan.FromMilliseconds(value); }
         }
 
         /// <summary>
@@ -67,8 +58,8 @@ namespace LinqToTwitter
         /// </summary>
         public int Timeout
         {
-            get { return (int)this.AuthorizedClient.Timeout.TotalMilliseconds; }
-            set { this.AuthorizedClient.Timeout = TimeSpan.FromMilliseconds(value); }
+            get { return (int)AuthorizedClient.Timeout.TotalMilliseconds; }
+            set { AuthorizedClient.Timeout = TimeSpan.FromMilliseconds(value); }
         }
 
         /// <summary>
@@ -91,14 +82,14 @@ namespace LinqToTwitter
         {
             get
             {
-                return this.AuthorizedClient.UserAgent;
+                return AuthorizedClient.UserAgent;
             }
             set
             {
-                this.AuthorizedClient.UserAgent =
+                AuthorizedClient.UserAgent =
                     string.IsNullOrEmpty(value) ?
-                        this.AuthorizedClient.UserAgent :
-                        value + ";" + this.AuthorizedClient.UserAgent;
+                        AuthorizedClient.UserAgent :
+                        value + ";" + AuthorizedClient.UserAgent;
             }
         }
 
@@ -107,15 +98,15 @@ namespace LinqToTwitter
         /// </summary>
         public static TextWriter Log { get; set; }
 
-        object streamingCallbackLock = new object();
+        readonly object streamingCallbackLock = new object();
 
         /// <summary>
         /// Allows users to process content returned from stream
         /// </summary>
         public Action<StreamContent> StreamingCallback { get; set; }
 
-        readonly object m_closeStreamLock = new object();
-        private bool m_closeStream;
+        readonly object closeStreamLock = new object();
+        bool closeStream;
 
         /// <summary>
         /// Set to true to close stream, false means stream is still open
@@ -124,16 +115,16 @@ namespace LinqToTwitter
         {
             get
             {
-                lock (m_closeStreamLock)
+                lock (closeStreamLock)
                 {
-                    return m_closeStream;
+                    return closeStream;
                 }
             }
             set
             {
-                lock (m_closeStreamLock)
+                lock (closeStreamLock)
                 {
-                    m_closeStream = value;
+                    closeStream = value;
                 }
             }
         }
@@ -148,16 +139,12 @@ namespace LinqToTwitter
         /// </summary>
         public string StreamingPassword { get; set; }
 
-        object asyncCallbackLock = new object();
+        readonly object asyncCallbackLock = new object();
 
         /// <summary>
         /// Allows users to process content returned from stream
         /// </summary>
         public Delegate AsyncCallback { get; set; }
-
-        #endregion
-
-        #region Events
 
         /// <summary>
         /// Used to notify callers of changes in image upload progress
@@ -168,7 +155,7 @@ namespace LinqToTwitter
         /// Call this to notify users of percentage of completion of operation.
         /// </summary>
         /// <param name="percent">Percent complete.</param>
-        private void OnUploadProgressChanged(int percent)
+        void OnUploadProgressChanged(int percent)
         {
             if (UploadProgressChanged != null)
             {
@@ -180,14 +167,9 @@ namespace LinqToTwitter
             }
         }
 
-        #endregion
-
-        #region Initialization
-
         /// <summary>
         /// supports testing
         /// </summary>
-        /// <param name="oAuthTwitter">IOAuthTwitter Mock</param>
         public TwitterExecute(ITwitterAuthorizer authorizedClient)
         {
             if (authorizedClient == null)
@@ -195,20 +177,16 @@ namespace LinqToTwitter
                 throw new ArgumentNullException("authorizedClient");
             }
 
-            this.AuthorizedClient = authorizedClient;
-            this.AuthorizedClient.UserAgent = m_linqToTwitterVersion;
+            AuthorizedClient = authorizedClient;
+            AuthorizedClient.UserAgent = LinqToTwitterVersion;
         }
-
-        #endregion
-
-        #region Exception and Response Handling
 
         /// <summary>
         /// generates a new TwitterQueryException from a WebException
         /// </summary>
         /// <param name="wex">Web Exception to Translate</param>
         /// <returns>new TwitterQueryException instance</returns>
-        private TwitterQueryException CreateTwitterQueryException(WebException wex)
+        TwitterQueryException CreateTwitterQueryException(WebException wex)
         {
             string responseStr = "[NO RESPONSE]";
             XElement responseXml;
@@ -225,7 +203,7 @@ namespace LinqToTwitter
                 if (wex != null && wex.Response != null)
                     responseUri = wex.Response.ResponseUri.ToString();
 
-                var errorText = (wex ?? ex).ToString()
+                var errorText = (wex ?? ex)
                                 + Environment.NewLine
                                 + responseStr;
 
@@ -258,7 +236,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="resp">WebResponse to extract string from</param>
         /// <returns>XML string response from Twitter</returns>
-        private string GetTwitterResponse(WebResponse resp)
+        string GetTwitterResponse(WebResponse resp)
         {
             string responseBody;
 
@@ -287,7 +265,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="responseStr">XML or JSON string response from Twitter</param>
         /// <param name="status">HTTP Error number</param>
-        private void CheckResultsForTwitterError(string responseStr, string status)
+        void CheckResultsForTwitterError(string responseStr, string status)
         {
             if (responseStr.StartsWith("[", StringComparison.Ordinal)
                 || responseStr.StartsWith("{", StringComparison.Ordinal))
@@ -314,15 +292,7 @@ namespace LinqToTwitter
                     };
                 }
             }
-            else
-            {
-                // what?
-            }
         }
-
-        #endregion
-
-        #region Execution
 
         /// <summary>
         /// makes HTTP call to Twitter API
@@ -443,7 +413,7 @@ namespace LinqToTwitter
         /// Processes stream results and performs error handling
         /// </summary>
         /// <param name="state">The request</param>
-        private void ExecuteTwitterStream(object state)
+        void ExecuteTwitterStream(object state)
         {
             var request = state as Request;
             Debug.Assert(request != null, "state must be a Request object");
@@ -498,7 +468,7 @@ namespace LinqToTwitter
                                                 try
                                                 {
 #endif
-                                                    lock (this.streamingCallbackLock)
+                                                    lock (streamingCallbackLock)
                                                     {
                                                         content = respRdr.ReadLine();
 
@@ -596,8 +566,7 @@ namespace LinqToTwitter
                                     Thread.Sleep(errorWait);
                                 }
 
-                                resetEvent.Set();
-
+                                if (resetEvent != null) resetEvent.Set();
                             }), null);
 
                         resetEvent.WaitOne();
@@ -618,11 +587,11 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="request">Stream endpoint and parameters</param>
         /// <returns>Initialized Request</returns>
-        private HttpWebRequest GetBasicStreamRequest(Request request)
+        HttpWebRequest GetBasicStreamRequest(Request request)
         {
             var streamUrl = request.FullUrl;
             this.LastUrl = streamUrl;
-            var req = HttpWebRequest.Create(streamUrl) as HttpWebRequest;
+            var req = WebRequest.Create(streamUrl) as HttpWebRequest;
             req.Credentials = new NetworkCredential(StreamingUserName, StreamingPassword);
             req.UserAgent = UserAgent;
 
@@ -688,7 +657,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="request">Stream endpoint and parameters</param>
         /// <returns>Initialized Request</returns>
-        private HttpWebRequest GetUserStreamRequest(Request request)
+        HttpWebRequest GetUserStreamRequest(Request request)
         {
             this.LastUrl = request.FullUrl;
             var req = this.AuthorizedClient.Get(request) as HttpWebRequest;
@@ -707,7 +676,7 @@ namespace LinqToTwitter
         /// that will get them rate-limited or black-listed on Twitter.
         /// </remarks>
         /// <param name="content">Content from Twitter</param>
-        private void InvokeStreamCallback(object content)
+        void InvokeStreamCallback(object content)
         {
             try
             {
@@ -715,7 +684,7 @@ namespace LinqToTwitter
             }
             catch (Exception ex)
             {
-                WriteLog("Unhandled exception in your StreamingCallback code.  " + ex.ToString(), "InvokeCallback");
+                WriteLog("Unhandled exception in your StreamingCallback code.  " + ex, "InvokeCallback");
                 throw;
             }
         }
@@ -773,13 +742,13 @@ namespace LinqToTwitter
             var contentDisposition = string.Format("Content-Disposition:form-data); name=\"image\"); filename=\"{0}\"\r\nContent-Type: image/{1}\r\n\r\n", fileName, imageType);
             var endContentBoundary = string.Format("\r\n--{0}--\r\n", contentBoundaryBase);
 
-            var formDataSB = new StringBuilder();
+            var formDataSb = new StringBuilder();
 
             if (postData != null && postData.Count > 0)
             {
                 foreach (var param in postData)
                 {
-                    formDataSB.AppendFormat("--{0}\r\nContent-Disposition: form-data; name=\"{1}\"\r\n\r\n{2}\r\n", contentBoundaryBase, param.Key, param.Value);
+                    formDataSb.AppendFormat("--{0}\r\nContent-Disposition: form-data; name=\"{1}\"\r\n\r\n{2}\r\n", contentBoundaryBase, param.Key, param.Value);
                 }
             }
 
@@ -788,7 +757,7 @@ namespace LinqToTwitter
 
             byte[] imageBytes =
                 encoding.GetBytes(
-                    formDataSB.ToString() +
+                    formDataSb.ToString() +
                     beginContentBoundary +
                     contentDisposition +
                     imageByteString +
@@ -799,11 +768,11 @@ namespace LinqToTwitter
 
             try
             {
-                this.LastUrl = url;
+                LastUrl = url;
                 //Log
-                WriteLog(this.LastUrl, "PostTwitterImage");
+                WriteLog(LastUrl, "PostTwitterImage");
 
-                var req = this.AuthorizedClient.PostRequest(new Request(url), postData);
+                var req = AuthorizedClient.PostRequest(new Request(url), postData);
                 //req.Headers[HttpRequestHeader.Expect] = null;
                 req.ContentType = "multipart/form-data;boundary=" + contentBoundaryBase;
                 //req.PreAuthenticate = true;
@@ -825,7 +794,7 @@ namespace LinqToTwitter
                                     using (var reqStream = req.EndGetRequestStream(ar))
                                     {
                                         int offset = 0;
-                                        int bufferSize = 4096;
+                                        const int bufferSize = 4096;
                                         int lastPercentage = 0;
                                         while (offset < imageBytes.Length)
                                         {
@@ -939,7 +908,7 @@ namespace LinqToTwitter
             string beginContentBoundary = string.Format("--{0}\r\n", contentBoundaryBase);
             var endContentBoundary = string.Format("\r\n--{0}--\r\n", contentBoundaryBase);
 
-            var formDataSB = new StringBuilder();
+            var formDataSb = new StringBuilder();
 
             if (postData != null && postData.Count > 0)
             {
@@ -947,7 +916,9 @@ namespace LinqToTwitter
                 {
                     if (param.Value != null)
                     {
-                        formDataSB.AppendFormat("--{0}\r\nContent-Disposition: form-data; name=\"{1}\"\r\n\r\n{2}\r\n", contentBoundaryBase, param.Key, HttpUtility.HtmlEncode(param.Value));
+                        formDataSb.AppendFormat(
+                            "--{0}\r\nContent-Disposition: form-data; name=\"{1}\"\r\n\r\n{2}\r\n",
+                            contentBoundaryBase, param.Key, HttpUtility.HtmlEncode(param.Value));
                     }
                 }
             }
@@ -957,31 +928,31 @@ namespace LinqToTwitter
             mediaItems.ForEach(
                 media =>
                 {
-                    formDataSB.Append(beginContentBoundary);
-                    formDataSB.Append(
+                    formDataSb.Append(beginContentBoundary);
+                    formDataSb.Append(
                         string.Format(
                             "Content-Disposition: form-data; name=\"media[]\"; " +
-                            "filename=\"{0}\"\r\nContent-Type: image/{1}\r\n\r\n", 
+                            "filename=\"{0}\"\r\nContent-Type: image/{1}\r\n\r\n",
                             media.FileName, media.ContentType));
-                    formDataSB.Append(encoding.GetString(media.Data, 0, media.Data.Length));
+                    formDataSb.Append(encoding.GetString(media.Data, 0, media.Data.Length));
                 });
 
-            formDataSB.Append(endContentBoundary);
+            formDataSb.Append(endContentBoundary);
 
-            byte[] imageBytes = encoding.GetBytes(formDataSB.ToString());
+            byte[] imageBytes = encoding.GetBytes(formDataSb.ToString());
 
             string response = string.Empty;
             string httpStatus = string.Empty;
 
             try
             {
-                this.LastUrl = url;
+                LastUrl = url;
 
                 //Log
-                WriteLog(this.LastUrl, "PostMedia");
+                WriteLog(LastUrl, "PostMedia");
 
                 var dontIncludePostParametersInOAuthSignature = new Dictionary<string, string>();
-                var req = this.AuthorizedClient.PostRequest(new Request(url), dontIncludePostParametersInOAuthSignature);
+                var req = AuthorizedClient.PostRequest(new Request(url), dontIncludePostParametersInOAuthSignature);
                 req.ContentType = "multipart/form-data;boundary=" + contentBoundaryBase;
 #if !WINDOWS_PHONE
                 req.AllowWriteStreamBuffering = true;
@@ -1000,7 +971,7 @@ namespace LinqToTwitter
                                     using (var reqStream = req.EndGetRequestStream(ar))
                                     {
                                         int offset = 0;
-                                        int bufferSize = 4096;
+                                        const int bufferSize = 4096;
                                         int lastPercentage = 0;
                                         while (offset < imageBytes.Length)
                                         {
@@ -1103,7 +1074,7 @@ namespace LinqToTwitter
         /// utility method to perform HTTP POST for Twitter requests with side-effects
         /// </summary>
         /// <param name="url">URL of request</param>
-        /// <param name="parameters">parameters to post</param>
+        /// <param name="postData">Name/value pairs of parameters</param>
         /// <param name="reqProc">Processes results of async requests</param>
         /// <returns>XML response from Twitter</returns>
         public string ExecuteTwitter<T>(string url, IDictionary<string, string> postData, IRequestProcessor<T> reqProc)
@@ -1114,9 +1085,9 @@ namespace LinqToTwitter
             try
             {
                 // for debugging purposes only, so don't worry about ? vs. &???
-                this.LastUrl = url;
+                LastUrl = url;
                 //Log
-                WriteLog(this.LastUrl, "ExecuteTwitter");
+                WriteLog(LastUrl, "ExecuteTwitter");
                 var request = new Request(url);
 
 #if SILVERLIGHT
@@ -1135,8 +1106,10 @@ namespace LinqToTwitter
                                 if (AsyncCallback != null)
                                 {
                                     List<T> responseObj = reqProc.ProcessResults(response);
-                                    var asyncResp = new TwitterAsyncResponse<T>();
-                                    asyncResp.State = responseObj.FirstOrDefault();
+                                    var asyncResp = new TwitterAsyncResponse<T>
+                                    {
+                                        State = responseObj.FirstOrDefault()
+                                    };
                                     (AsyncCallback as Action<TwitterAsyncResponse<T>>)(asyncResp);
                                 } 
                             }
@@ -1230,7 +1203,7 @@ namespace LinqToTwitter
             return response;
         }
 
-        private void WriteLog(string content, string currentMethod)
+        void WriteLog(string content, string currentMethod)
         {
             if (Log != null)
             {
@@ -1242,16 +1215,12 @@ namespace LinqToTwitter
             }
         }
 
-        #endregion
-
-        #region IDisposable Members
-
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
         public void Dispose()
         {
-            this.Dispose(true);
+            Dispose(true);
             GC.SuppressFinalize(this);
         }
 
@@ -1275,7 +1244,5 @@ namespace LinqToTwitter
                 }
             }
         }
-
-        #endregion
     }
 }

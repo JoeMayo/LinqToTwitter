@@ -268,20 +268,30 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void RetweetsQueryDemo(TwitterContext twitterCtx)
         {
-            var friendTweets =
+            var publicTweets =
                 from tweet in twitterCtx.Status
-                where tweet.Type == StatusType.Retweets &&
-                      tweet.ID == "93684902972760066"
+                where tweet.Type == StatusType.RetweetsOfMe
                 select tweet;
 
-            Console.WriteLine("\nReTweets: \n");
-            foreach (var tweet in friendTweets)
-            {
-                Console.WriteLine(
-                    "\nUser: " + tweet.User.Identifier.ScreenName +
-                    "\nTweet: " + tweet.Retweet.Text +
-                    "\nTweet ID: " + tweet.Retweet.ID + "\n");
-            }
+            publicTweets.ToList().ForEach(
+                tweet =>
+                {
+                    Console.WriteLine(
+                        "@{0} {1} ({2})",
+                        tweet.User.Identifier.ScreenName,
+                        tweet.Text,
+                        tweet.RetweetCount);
+
+                    var friendTweets =
+                        (from retweet in twitterCtx.Status
+                         where retweet.Type == StatusType.Retweets && 
+                               retweet.ID == tweet.StatusID
+                         select retweet)
+                        .ToList();
+
+                    friendTweets.ForEach(
+                        friendTweet => Console.WriteLine(".@{0}", friendTweet.User.Identifier.ScreenName));
+                });
         }
 
         /// <summary>
@@ -344,7 +354,8 @@ namespace LinqToTwitterDemo
         {
             var myRetweets =
                 from retweet in twitterCtx.Status
-                where retweet.Type == StatusType.RetweetsOfMe
+                where retweet.Type == StatusType.RetweetsOfMe &&
+                      retweet.Count == 100
                 select retweet;
 
             myRetweets.ToList().ForEach(

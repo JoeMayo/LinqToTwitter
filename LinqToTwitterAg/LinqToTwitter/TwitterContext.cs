@@ -31,7 +31,26 @@ namespace LinqToTwitter
     /// </summary>
     public class TwitterContext : IDisposable
     {
-        #region TwitterContext initialization
+        //
+        // response header constants
+        //
+
+        public const string XRateLimitLimitKey = "X-RateLimit-Limit";
+        public const string XRateLimitRemainingKey = "X-RateLimit-Remaining";
+        public const string XRateLimitResetKey = "X-RateLimit-Reset";
+        public const string RetryAfterKey = "Retry-After";
+        public const string XFeatureRateLimitLimitKey = "X-FeatureRateLimit-Limit";
+        public const string XFeatureRateLimitRemainingKey = "X-FeatureRateLimit-Remaining";
+        public const string XFeatureRateLimitResetKey = "X-FeatureRateLimit-Reset";
+        public const string DateKey = "Date";
+
+        //
+        // Parameter constants
+        //
+
+        const string ListOrSlugParam = "ListIdOrSlug";
+        const string OwnerIDOrOwnerScreenNameParam = "OwnerIdOrOwnerScreenName";
+        const string UserIDOrScreenNameParam = "UserIdOrScreenName";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TwitterContext"/> class.
@@ -56,6 +75,8 @@ namespace LinqToTwitter
         /// Initializes a new instance of the <see cref="TwitterContext"/> class.
         /// </summary>
         /// <param name="authorization">The authorization.</param>
+        /// <param name="baseUrl">Overwrites default base URL</param>
+        /// <param name="searchUrl">Overwrites default search URL</param>
         public TwitterContext(ITwitterAuthorizer authorization, string baseUrl, string searchUrl)
             : this(new TwitterExecute(authorization), baseUrl, searchUrl)
         {
@@ -64,7 +85,7 @@ namespace LinqToTwitter
         /// <summary>
         /// Initializes a new instance of the <see cref="TwitterContext"/> class.
         /// </summary>
-        /// <param name="authorization">The authorization.</param>
+        /// <param name="executor">Can be mocked for testing</param>
         public TwitterContext(ITwitterExecute executor)
             : this(executor, null, null)
         {
@@ -137,35 +158,18 @@ namespace LinqToTwitter
 #endif
         }
 
-        #endregion
-
-        #region Properties
-
         /// <summary>
         /// Gets the screen name of the user.
         /// </summary>
         public string UserName
         {
-            get { return this.AuthorizedClient.ScreenName; }
+            get { return AuthorizedClient.ScreenName; }
         }
-
-        private string baseUrl;
 
         /// <summary>
         /// base URL for accessing Twitter API
         /// </summary>
-        public string BaseUrl
-        {
-            get
-            {
-                return this.baseUrl;
-            }
-
-            set
-            {
-                this.baseUrl = value;
-            }
-        }
+        public string BaseUrl { get; set; }
 
         /// <summary>
         /// base URL for accessing Twitter Search API
@@ -221,10 +225,6 @@ namespace LinqToTwitter
 
         public string RawResult { get; set; }
 
-        #endregion
-
-        #region Events
-
         /// <summary>
         /// Used to notify callers of changes in image upload progress
         /// </summary>
@@ -239,10 +239,6 @@ namespace LinqToTwitter
                 TwitterExecutor.UploadProgressChanged -= value;
             }
         }
-
-        #endregion
-
-        #region TwitterExecute Delegation
 
         //
         // The routines in this region delegate to TwitterExecute
@@ -262,10 +258,7 @@ namespace LinqToTwitter
                 {
                     return TwitterExecutor.UserAgent;
                 }
-                else
-                {
-                    return string.Empty;
-                }
+                return string.Empty;
             }
             set
             {
@@ -288,10 +281,7 @@ namespace LinqToTwitter
                 {
                     return TwitterExecutor.ReadWriteTimeout;
                 }
-                else
-                {
-                    return TwitterExecute.DefaultReadWriteTimeout;
-                }
+                return TwitterExecute.DefaultReadWriteTimeout;
             }
             set
             {
@@ -313,10 +303,7 @@ namespace LinqToTwitter
                 {
                     return TwitterExecutor.Timeout;
                 }
-                else
-                {
-                    return TwitterExecute.DefaultTimeout;
-                }
+                return TwitterExecute.DefaultTimeout;
             }
             set
             {
@@ -327,21 +314,13 @@ namespace LinqToTwitter
             }
         }
 
-        ///// <summary>
-        ///// Gets or sets the authorized client on the <see cref="ITwitterExecute"/> object.
-        ///// </summary>
-        //public ITwitterAuthorization AuthorizedClient {
-        //    get { return this.TwitterExecutor.AuthorizedClient; }
-        //    set { this.TwitterExecutor.AuthorizedClient = value; }
-        //}
-
         /// <summary>
         /// Gets or sets the authorized client on the <see cref="ITwitterExecute"/> object.
         /// </summary>
         public ITwitterAuthorizer AuthorizedClient
         {
-            get { return this.TwitterExecutor.AuthorizedClient; }
-            set { this.TwitterExecutor.AuthorizedClient = value; }
+            get { return TwitterExecutor.AuthorizedClient; }
+            set { TwitterExecutor.AuthorizedClient = value; }
         }
 
         /// <summary>
@@ -352,17 +331,13 @@ namespace LinqToTwitter
         /// </remarks>
         public string LastUrl
         {
-            get { return this.TwitterExecutor.LastUrl; }
+            get { return TwitterExecutor.LastUrl; }
         }
         
         /// <summary>
         /// Methods for communicating with Twitter
         /// </summary>
         internal ITwitterExecute TwitterExecutor { get; set; }
-
-        #endregion
-
-        #region TwitterQueryable Entities
 
         /// <summary>
         /// enables access to Twitter account information, such as Verify Credentials and Rate Limit Status
@@ -573,23 +548,6 @@ namespace LinqToTwitter
             }
         }
 
-        #endregion
-
-        #region Response Headers
-
-        //
-        // response header constants
-        //
-
-        public const string XRateLimitLimitKey = "X-RateLimit-Limit";
-        public const string XRateLimitRemainingKey = "X-RateLimit-Remaining";
-        public const string XRateLimitResetKey = "X-RateLimit-Reset";
-        public const string RetryAfterKey = "Retry-After";
-        public const string XFeatureRateLimitLimitKey = "X-FeatureRateLimit-Limit";
-        public const string XFeatureRateLimitRemainingKey = "X-FeatureRateLimit-Remaining";
-        public const string XFeatureRateLimitResetKey = "X-FeatureRateLimit-Reset";
-        public const string DateKey = "Date";
-
         /// <summary>
         /// retrieves a specified response header, converting it to an int
         /// </summary>
@@ -649,10 +607,7 @@ namespace LinqToTwitter
                 {
                     return TwitterExecutor.ResponseHeaders;
                 }
-                else
-                {
-                    return null;
-                }
+                return null;
             }
         }
 
@@ -792,14 +747,12 @@ namespace LinqToTwitter
                 return GetResponseHeaderAsDateTime(DateKey);
             }
         }
-        #endregion
-
-        #region Twitter Query API
 
         /// <summary>
         /// Called by QueryProvider to execute queries
         /// </summary>
         /// <param name="expression">ExpressionTree to parse</param>
+        /// <param name="isEnumerable">Indicates whether expression is enumerable</param>
         /// <returns>list of objects with query results</returns>
         public virtual object Execute<T>(Expression expression, bool isEnumerable)
             where T: class
@@ -832,19 +785,19 @@ namespace LinqToTwitter
             var queryableList = reqProc.ProcessResults(results);
 
             // Copy the IEnumerable entities to an IQueryable.
-            var queryableItems = queryableList.AsQueryable<T>();
+            var queryableItems = queryableList.AsQueryable();
 
             // Copy the expression tree that was passed in, changing only the first
             // argument of the innermost MethodCallExpression.
             // -- Transforms IQueryable<T> into List<T>, which is (IEnumerable<T>)
-            ExpressionTreeModifier<T> treeCopier = new ExpressionTreeModifier<T>(queryableItems);
+            var treeCopier = new ExpressionTreeModifier<T>(queryableItems);
             Expression newExpressionTree = treeCopier.CopyAndModify(expression);
 
             // This step creates an IQueryable that executes by replacing Queryable methods with Enumerable methods.
             if (isEnumerable)
                 return queryableItems.Provider.CreateQuery(newExpressionTree);
-            else
-                return queryableItems.Provider.Execute(newExpressionTree);
+
+            return queryableItems.Provider.Execute(newExpressionTree);
         }
 
         /// <summary>
@@ -894,7 +847,8 @@ namespace LinqToTwitter
         {
             if (expression == null)
             {
-                throw new ArgumentNullException("Expression passed to CreateRequestProcessor must not be null.");
+                const string nullExpressionMessage = "Expression passed to CreateRequestProcessor must not be null.";
+                throw new ArgumentNullException(nullExpressionMessage);
             }
 
             string requestType = new MethodCallExpressionTypeFinder().GetGenericType(expression).Name;
@@ -906,8 +860,8 @@ namespace LinqToTwitter
         protected internal IRequestProcessor<T> CreateRequestProcessor<T>(string requestType)
             where T : class
         {
-            var baseUrl = this.BaseUrl;
-            IRequestProcessor<T> req = null;
+            var baseUrl = BaseUrl;
+            IRequestProcessor<T> req;
 
             switch (requestType)
             {
@@ -988,12 +942,6 @@ namespace LinqToTwitter
 
             return req;
         }
-
-        #endregion
-
-        #region Twitter Execution API
-
-        #region Status Methods
 
         /// <summary>
         /// sends a status update - overload to make inReplyToStatusID optional
@@ -1604,8 +1552,8 @@ namespace LinqToTwitter
                         {"lat", latitude == -1 ? null : latitude.ToString(CultureInfo.InvariantCulture)},
                         {"long", longitude == -1 ? null : longitude.ToString(CultureInfo.InvariantCulture)},
                         {"place_id", placeID},
-                        {"display_coordinates", displayCoordinates.ToString()},
-                        {"wrap_links", wrapLinks ? wrapLinks.ToString() : null }
+                        {"display_coordinates", displayCoordinates.ToString(CultureInfo.InvariantCulture)},
+                        {"wrap_links", wrapLinks ? true.ToString(CultureInfo.InvariantCulture) : null }
                     },
                     reqProc);
 
@@ -1651,15 +1599,11 @@ namespace LinqToTwitter
             return results.FirstOrDefault();
         }
 
-        #endregion
-
-        #region Direct Message Methods
-
         /// <summary>
         /// sends a new direct message to specified userr
         /// </summary>
         /// <param name="user">UserID or ScreenName of user to send to</param>
-        /// <param name="id">Text to send</param>
+        /// <param name="text">Direct message contents</param>
         /// <returns>Direct message element</returns>
         public virtual DirectMessage NewDirectMessage(string user, string text)
         {
@@ -1670,7 +1614,7 @@ namespace LinqToTwitter
         /// sends a new direct message to specified userr
         /// </summary>
         /// <param name="user">UserID or ScreenName of user to send to</param>
-        /// <param name="id">Text to send</param>
+        /// <param name="text">Direct message contents</param>
         /// <param name="wrapLinks">Shorten links using Twitter's t.co wrapper</param>
         /// <returns>Direct message element</returns>
         public virtual DirectMessage NewDirectMessage(string user, string text, bool wrapLinks)
@@ -1682,7 +1626,7 @@ namespace LinqToTwitter
         /// sends a new direct message to specified userr
         /// </summary>
         /// <param name="user">UserID or ScreenName of user to send to</param>
-        /// <param name="id">Text to send</param>
+        /// <param name="text">Direct message contents</param>
         /// <param name="wrapLinks">Shorten links using Twitter's t.co wrapper</param>
         /// <param name="callback">Async Callback used in Silverlight queries</param>
         /// <returns>Direct message element</returns>
@@ -1710,7 +1654,7 @@ namespace LinqToTwitter
                     {
                         {"user", user},
                         {"text", text},
-                        {"wrap_links", wrapLinks ? wrapLinks.ToString() : null }
+                        {"wrap_links", wrapLinks ? true.ToString(CultureInfo.InvariantCulture) : null }
                     },
                     reqProc);
 
@@ -1756,14 +1700,13 @@ namespace LinqToTwitter
             return results.FirstOrDefault();
         }
 
-        #endregion
-
-        #region Friendship Methods
-
         /// <summary>
         /// lets logged-in user follow another user
         /// </summary>
-        /// <param name="id">id of user to follow</param>
+        /// <param name="id">ID or screen name of user to follow (use userID or ScreenName to avoid ambiguity)</param>
+        /// <param name="userID">Numeric ID of user to follow</param>
+        /// <param name="screenName">Screen name of user to follow</param>
+        /// <param name="follow">Receive notifications for the followed friend</param>
         /// <returns>followed friend user info</returns>
         public virtual User CreateFriendship(string id, string userID, string screenName, bool follow)
         {
@@ -1773,7 +1716,10 @@ namespace LinqToTwitter
         /// <summary>
         /// lets logged-in user follow another user
         /// </summary>
-        /// <param name="id">id of user to follow</param>
+        /// <param name="id">ID or screen name of user to follow (use userID or ScreenName to avoid ambiguity)</param>
+        /// <param name="userID">Numeric ID of user to follow</param>
+        /// <param name="screenName">Screen name of user to follow</param>
+        /// <param name="follow">Receive notifications for the followed friend</param>
         /// <param name="callback">Async Callback used in Silverlight queries</param>
         /// <returns>followed friend user info</returns>
         public virtual User CreateFriendship(string id, string userID, string screenName, bool follow, Action<TwitterAsyncResponse<User>> callback)
@@ -1785,7 +1731,7 @@ namespace LinqToTwitter
                 throw new ArgumentException("Either id, userID, or screenName is a required parameter.");
             }
 
-            string destroyUrl = null;
+            string destroyUrl;
 
             if (!string.IsNullOrEmpty(id))
             {
@@ -1830,7 +1776,9 @@ namespace LinqToTwitter
         /// <summary>
         /// lets logged-in user follow another user
         /// </summary>
-        /// <param name="id">id of user to follow</param>
+        /// <param name="id">ID or screen name of user to unfollow (use userID or ScreenName to avoid ambiguity)</param>
+        /// <param name="userID">Numeric ID of user to unfollow</param>
+        /// <param name="screenName">Screen name of user to unfollow</param>
         /// <returns>followed friend user info</returns>
         public virtual User DestroyFriendship(string id, string userID, string screenName)
         {
@@ -1840,7 +1788,9 @@ namespace LinqToTwitter
         /// <summary>
         /// lets logged-in user follow another user
         /// </summary>
-        /// <param name="id">id of user to follow</param>
+        /// <param name="id">ID or screen name of user to unfollow (use userID or ScreenName to avoid ambiguity)</param>
+        /// <param name="userID">Numeric ID of user to unfollow</param>
+        /// <param name="screenName">Screen name of user to unfollow</param>
         /// <param name="callback">Async Callback used in Silverlight queries</param>
         /// <returns>followed friend user info</returns>
         public virtual User DestroyFriendship(string id, string userID, string screenName, Action<TwitterAsyncResponse<User>> callback)
@@ -1852,7 +1802,7 @@ namespace LinqToTwitter
                 throw new ArgumentException("Either id, userID, or screenName is a required parameter.");
             }
 
-            string destroyUrl = null;
+            string destroyUrl;
 
             if (!string.IsNullOrEmpty(id))
             {
@@ -1879,11 +1829,13 @@ namespace LinqToTwitter
             List<User> results = reqProc.ProcessResults(resultsXml);
             return results.FirstOrDefault();
         }
-        
+
         /// <summary>
         /// lets logged-in user set retweets and/or device notifications for a follower
         /// </summary>
         /// <param name="screenName">screen name of user to update</param>
+        /// <param name="retweets">Enable retweets</param>
+        /// <param name="device">Receive notifications</param>
         /// <returns>updated friend user info</returns>
         public virtual Friendship UpdateFriendshipSettings(string screenName, bool retweets, bool device)
         {
@@ -1894,6 +1846,8 @@ namespace LinqToTwitter
         /// lets logged-in user set retweets and/or device notifications for a follower
         /// </summary>
         /// <param name="screenName">screen name of user to update</param>
+        /// <param name="retweets">Enable retweets</param>
+        /// <param name="device">Receive notifications</param>
         /// <param name="callback">Async Callback used in Silverlight queries</param>
         /// <returns>updated friend user info</returns>
         public virtual Friendship UpdateFriendshipSettings(string screenName, bool retweets, bool device, Action<TwitterAsyncResponse<Friendship>> callback)
@@ -1914,8 +1868,8 @@ namespace LinqToTwitter
                     new Dictionary<string, string>
                     {
                         { "screen_name", screenName },
-                        { "retweets", retweets.ToString().ToLower() },
-                        { "device", device.ToString().ToLower() }
+                        { "retweets", retweets.ToString(CultureInfo.InvariantCulture).ToLower() },
+                        { "device", device.ToString(CultureInfo.InvariantCulture).ToLower() }
                     },
                     reqProc);
 
@@ -1923,10 +1877,6 @@ namespace LinqToTwitter
             return results.FirstOrDefault();
         }
 
-        #endregion
-
-        #region Favorites Methods
-        
         /// <summary>
         /// Adds a favorite to the logged-in user's profile
         /// </summary>
@@ -2003,10 +1953,6 @@ namespace LinqToTwitter
             return results.FirstOrDefault();
         }
 
-        #endregion
-
-        #region Notifications Methods
-
         /// <summary>
         /// Disables notifications from specified user. (Notification Leave)
         /// </summary>
@@ -2042,7 +1988,7 @@ namespace LinqToTwitter
                 throw new ArgumentException("Either id, userID, or screenName is a required parameter.");
             }
 
-            string notificationsUrl = null;
+            string notificationsUrl;
 
             if (!string.IsNullOrEmpty(id))
             {
@@ -2109,7 +2055,7 @@ namespace LinqToTwitter
                 throw new ArgumentException("Either id, userID, or screenName is a required parameter.");
             }
 
-            string notificationsUrl = null;
+            string notificationsUrl;
 
             if (!string.IsNullOrEmpty(id))
             {
@@ -2141,10 +2087,6 @@ namespace LinqToTwitter
             return results.FirstOrDefault();
         }
 
-        #endregion
-
-        #region Block Methods
-        
         /// <summary>
         /// Blocks a user
         /// </summary>
@@ -2221,49 +2163,6 @@ namespace LinqToTwitter
             return results.FirstOrDefault();
         }
 
-        #endregion
-
-        #region Help Methods
-        
-        // TODO: remove deprecated HelpTest side-effects after a few versions - deprecated in 2.0.21
-
-        /// <summary>
-        /// sends a test message to twitter to check connectivity
-        /// </summary>
-        /// <returns>true</returns>
-        [Obsolete("Please use Help Test query instead. This method is being deprecated.", true)]
-        public virtual bool HelpTest()
-        {
-            return HelpTest(null);
-        }
-
-        /// <summary>
-        /// sends a test message to twitter to check connectivity
-        /// </summary>
-        /// <param name="callback">Async Callback used in Silverlight queries</param>
-        /// <returns>true</returns>
-        [Obsolete("Please use Help Test query instead. This method is being deprecated.", true)]
-        public virtual bool HelpTest(Action<TwitterAsyncResponse<bool>> callback)
-        {
-            var helpUrl = BaseUrl + "help/test.xml";
-
-            var reqProc = new HelpRequestProcessor<bool>();
-
-            TwitterExecutor.AsyncCallback = callback;
-            var resultsXml =
-                TwitterExecutor.ExecuteTwitter(
-                    helpUrl,
-                    new Dictionary<string, string>(),
-                    reqProc);
-
-            List<bool> results = reqProc.ProcessResults(resultsXml);
-            return results.FirstOrDefault();
-        }
-
-        #endregion
-
-        #region Account Methods
-        
         /// <summary>
         /// Ends the session for the currently logged in user
         /// </summary>
@@ -2297,10 +2196,7 @@ namespace LinqToTwitter
             {
                 return acct.EndSessionStatus;
             }
-            else
-            {
-                throw new WebException("Unknown Twitter Response.");
-            }
+            throw new WebException("Unknown Twitter Response.");
         }
         
         /// <summary>
@@ -2381,6 +2277,11 @@ namespace LinqToTwitter
             {
                 throw new ArgumentException("At least one of the colors (background, text, link, sidebarFill, or sidebarBorder) must be provided as arguments, but none are specified.");
             }
+
+            Debug.Assert(background != null, "background != null");
+            Debug.Assert(text != null, "text != null");
+            Debug.Assert(link != null, "link != null");
+            Debug.Assert(sidebarFill != null, "sidebarFill != null");
 
             var reqProc = new UserRequestProcessor<User>();
 
@@ -2501,11 +2402,12 @@ namespace LinqToTwitter
             List<User> results = reqProc.ProcessResults(resultsXml);
             return results.FirstOrDefault();
         }
-        
+
         /// <summary>
         /// sends an image file to Twitter to replace background image
         /// </summary>
         /// <param name="imageFilePath">full path to file, including file name</param>
+        /// <param name="tile">Tile image in background</param>
         /// <param name="use">Whether to use uploaded background image or not</param>
         /// <returns>User with new image info</returns>
         public virtual User UpdateAccountBackgroundImage(string imageFilePath, bool tile, bool use)
@@ -2517,6 +2419,7 @@ namespace LinqToTwitter
         /// sends an image file to Twitter to replace background image
         /// </summary>
         /// <param name="imageFilePath">full path to file, including file name</param>
+        /// <param name="tile">Tile image in background</param>
         /// <param name="use">Whether to use uploaded background image or not</param>
         /// <param name="callback">Async Callback used in Silverlight queries</param>
         /// <returns>User with new image info</returns>
@@ -2535,8 +2438,8 @@ namespace LinqToTwitter
             {
                 parameters = new Dictionary<string, string>
                 {
-                    { "tile", tile.ToString().ToLower() },
-                    { "use", use.ToString().ToLower() }
+                    { "tile", true.ToString(CultureInfo.InvariantCulture).ToLower() },
+                    { "use", use.ToString(CultureInfo.InvariantCulture).ToLower() }
                 };
             }
 
@@ -2599,8 +2502,8 @@ namespace LinqToTwitter
             {
                 parameters = new Dictionary<string, string>
                 {
-                    { "tile", tile.ToString().ToLower() },
-                    { "use", use.ToString().ToLower() }
+                    { "tile", true.ToString(CultureInfo.InvariantCulture).ToLower() },
+                    { "use", use.ToString(CultureInfo.InvariantCulture).ToLower() }
                 };
             }
 
@@ -2687,10 +2590,6 @@ namespace LinqToTwitter
             return results.FirstOrDefault();
         }
 
-        #endregion
-
-        #region Saved Search Methods
-        
         /// <summary>
         /// Adds a saved search to your twitter account
         /// </summary>
@@ -2731,11 +2630,10 @@ namespace LinqToTwitter
             List<SavedSearch> results = reqProc.ProcessResults(resultsXml);
             return results.FirstOrDefault();
         }
-        
+
         /// <summary>
         /// Adds a saved search to your twitter account
         /// </summary>
-        /// <param name="query">Search query to add</param>
         /// <returns>SavedSearch object</returns>
         public virtual SavedSearch DestroySavedSearch(int id)
         {
@@ -2745,7 +2643,7 @@ namespace LinqToTwitter
         /// <summary>
         /// Adds a saved search to your twitter account
         /// </summary>
-        /// <param name="query">Search query to add</param>
+        /// <param name="id">ID of saved search</param>
         /// <param name="callback">Async Callback used in Silverlight queries</param>
         /// <returns>SavedSearch object</returns>
         public virtual SavedSearch DestroySavedSearch(int id, Action<TwitterAsyncResponse<SavedSearch>> callback)
@@ -2770,10 +2668,6 @@ namespace LinqToTwitter
             return results.FirstOrDefault();
         }
 
-        #endregion
-
-        #region Spam Methods
-        
         /// <summary>
         /// lets logged-in user report spam
         /// </summary>
@@ -2825,10 +2719,6 @@ namespace LinqToTwitter
             return results.FirstOrDefault();
         }
 
-        #endregion
-
-        #region Retweet Methods
-        
         /// <summary>
         /// retweets a tweet
         /// </summary>
@@ -2867,10 +2757,6 @@ namespace LinqToTwitter
             return results.FirstOrDefault();
         }
 
-        #endregion
-
-        #region List Methods
-        
         /// <summary>
         /// Creates a new list
         /// </summary>
@@ -2948,12 +2834,12 @@ namespace LinqToTwitter
         {
             if (string.IsNullOrEmpty(listID) && string.IsNullOrEmpty(slug))
             {
-                throw new ArgumentException("Either listID or slug is required.", "ListIdOrSlug");
+                throw new ArgumentException("Either listID or slug is required.", ListOrSlugParam);
             }
 
             if (!string.IsNullOrEmpty(slug) && string.IsNullOrEmpty(ownerID) && string.IsNullOrEmpty(ownerScreenName))
             {
-                throw new ArgumentException("If you specify a Slug, you must also specify either OwnerID or OwnerScreenName.", "OwnerIdOrOwnerScreenName");
+                throw new ArgumentException("If you specify a Slug, you must also specify either OwnerID or OwnerScreenName.", OwnerIDOrOwnerScreenNameParam);
             }
 
             var updateListUrl = BaseUrl + "lists/update.xml";
@@ -3005,12 +2891,12 @@ namespace LinqToTwitter
         {
             if (string.IsNullOrEmpty(listID) && string.IsNullOrEmpty(slug))
             {
-                throw new ArgumentException("listID is required.", "listIdOrSlug");
+                throw new ArgumentException("listID is required.", ListOrSlugParam);
             }
 
             if (!string.IsNullOrEmpty(slug) && string.IsNullOrEmpty(ownerID) && string.IsNullOrEmpty(ownerScreenName))
             {
-                throw new ArgumentException("If you specify a Slug, you must also specify either OwnerID or OwnerScreenName.", "OwnerIdOrOwnerScreenName");
+                throw new ArgumentException("If you specify a Slug, you must also specify either OwnerID or OwnerScreenName.", OwnerIDOrOwnerScreenNameParam);
             }
 
             var deleteUrl = BaseUrl + "lists/destroy.xml";
@@ -3064,17 +2950,17 @@ namespace LinqToTwitter
         {
             if (string.IsNullOrEmpty(userID) && string.IsNullOrEmpty(screenName))
             {
-                throw new ArgumentException("Either userID or screenName is required.", "UserIdOrScreenName");
+                throw new ArgumentException("Either userID or screenName is required.", UserIDOrScreenNameParam);
             }
 
             if (string.IsNullOrEmpty(listID) && string.IsNullOrEmpty(slug))
             {
-                throw new ArgumentException("Either listID or slug is required.", "ListIdOrSlug");
+                throw new ArgumentException("Either listID or slug is required.", ListOrSlugParam);
             }
 
             if (!string.IsNullOrEmpty(slug) && string.IsNullOrEmpty(ownerID) && string.IsNullOrEmpty(ownerScreenName))
             {
-                throw new ArgumentException("If using slug, you must also provide either ownerID or ownerScreenName.", "OwnerIdOrOwnerScreenName");
+                throw new ArgumentException("If using slug, you must also provide either ownerID or ownerScreenName.", OwnerIDOrOwnerScreenNameParam);
             }
 
             var addMemberUrl = BaseUrl + "lists/members/create.xml";
@@ -3138,7 +3024,7 @@ namespace LinqToTwitter
 
             return AddMemberRangeToList(listID, slug, ownerID, ownerScreenName, null, screenNames, callback);
         }
-        
+
         /// <summary>
         /// Adds a list of users to a list.
         /// </summary>
@@ -3147,7 +3033,6 @@ namespace LinqToTwitter
         /// <param name="ownerID">ID of user who owns the list.</param>
         /// <param name="ownerScreenName">Screen name of user who owns the list.</param>
         /// <param name="userIDs">List of user IDs to be list members. (max 100)</param>
-        /// <param name="callback">Async Callback used in Silverlight queries</param>
         /// <returns>List info for list members added to.</returns>
         public virtual List AddMemberRangeToList(string listID, string slug, string ownerID, string ownerScreenName, List<ulong> userIDs)
         {
@@ -3190,16 +3075,16 @@ namespace LinqToTwitter
         /// <param name="screenNames">List of user screen names to be list members. (max 100)</param>
         /// <param name="callback">Async Callback used in Silverlight queries</param>
         /// <returns>List info for list members added to.</returns>
-        private List AddMemberRangeToList(string listID, string slug, string ownerID, string ownerScreenName, List<ulong> userIDs, List<string> screenNames, Action<TwitterAsyncResponse<List>> callback)
+        private List AddMemberRangeToList(string listID, string slug, string ownerID, string ownerScreenName, IEnumerable<ulong> userIDs, List<string> screenNames, Action<TwitterAsyncResponse<List>> callback)
         {
             if (string.IsNullOrEmpty(listID) && string.IsNullOrEmpty(slug))
             {
-                throw new ArgumentException("Either listID or slug is required.", "ListIdOrSlug");
+                throw new ArgumentException("Either listID or slug is required.", ListOrSlugParam);
             }
 
             if (!string.IsNullOrEmpty(slug) && string.IsNullOrEmpty(ownerID) && string.IsNullOrEmpty(ownerScreenName))
             {
-                throw new ArgumentException("If using slug, you must also provide either ownerID or ownerScreenName.", "OwnerIdOrOwnerScreenName");
+                throw new ArgumentException("If using slug, you must also provide either ownerID or ownerScreenName.", OwnerIDOrOwnerScreenNameParam);
             }
             
             var addMemberRangeUrl = BaseUrl + "lists/members/create_all.xml";
@@ -3216,7 +3101,7 @@ namespace LinqToTwitter
                         { "slug", slug },
                         { "owner_id", ownerID },
                         { "owner_screen_name", ownerScreenName },
-                        { "user_id", userIDs == null ? null : string.Join(",", userIDs.Select(id => id.ToString()).ToArray()) },                        
+                        { "user_id", userIDs == null ? null : string.Join(",", userIDs.Select(id => id.ToString(CultureInfo.InvariantCulture)).ToArray()) },                        
                         { "screen_name", screenNames == null ? null : string.Join(",", screenNames.ToArray()) }
                     },
                     reqProc);
@@ -3249,22 +3134,23 @@ namespace LinqToTwitter
         /// <param name="slug">Name of list to remove from.</param>
         /// <param name="ownerID">ID of user who owns the list.</param>
         /// <param name="ownerScreenName">Screen name of user who owns the list.</param>
+        /// <param name="callback">Async callback</param>
         /// <returns>List info for list member removed from</returns>
         public virtual List DeleteMemberFromList(string userID, string screenName, string listID, string slug, string ownerID, string ownerScreenName, Action<TwitterAsyncResponse<List>> callback)
         {
             if (string.IsNullOrEmpty(userID) && string.IsNullOrEmpty(screenName))
             {
-                throw new ArgumentException("Either userID or screenName is required.", "UserIdOrScreenName");
+                throw new ArgumentException("Either userID or screenName is required.", UserIDOrScreenNameParam);
             }
 
             if (string.IsNullOrEmpty(listID) && string.IsNullOrEmpty(slug))
             {
-                throw new ArgumentException("Either listID or slug is required.", "ListIdOrSlug");
+                throw new ArgumentException("Either listID or slug is required.", ListOrSlugParam);
             }
 
             if (!string.IsNullOrEmpty(slug) && string.IsNullOrEmpty(ownerID) && string.IsNullOrEmpty(ownerScreenName))
             {
-                throw new ArgumentException("If using slug, you must also provide either ownerID or ownerScreenName.", "OwnerIdOrOwnerScreenName");
+                throw new ArgumentException("If using slug, you must also provide either ownerID or ownerScreenName.", OwnerIDOrOwnerScreenNameParam);
             }
 
             var deleteUrl = BaseUrl + "lists/members/destroy.xml";
@@ -3316,12 +3202,12 @@ namespace LinqToTwitter
         {
             if (string.IsNullOrEmpty(listID) && string.IsNullOrEmpty(slug))
             {
-                throw new ArgumentException("Either listID or slug is required.", "ListIdOrSlug");
+                throw new ArgumentException("Either listID or slug is required.", ListOrSlugParam);
             }
 
             if (!string.IsNullOrEmpty(slug) && string.IsNullOrEmpty(ownerID) && string.IsNullOrEmpty(ownerScreenName))
             {
-                throw new ArgumentException("If using slug, you must also provide either ownerID or ownerScreenName.", "OwnerIdOrOwnerScreenName");
+                throw new ArgumentException("If using slug, you must also provide either ownerID or ownerScreenName.", OwnerIDOrOwnerScreenNameParam);
             }
 
             var subscribeUrl = BaseUrl + "lists/subscribers/create.xml";
@@ -3371,12 +3257,12 @@ namespace LinqToTwitter
         {
             if (string.IsNullOrEmpty(listID) && string.IsNullOrEmpty(slug))
             {
-                throw new ArgumentException("Either listID or slug is required.", "ListIdOrSlug");
+                throw new ArgumentException("Either listID or slug is required.", ListOrSlugParam);
             }
 
             if (!string.IsNullOrEmpty(slug) && string.IsNullOrEmpty(ownerID) && string.IsNullOrEmpty(ownerScreenName))
             {
-                throw new ArgumentException("If using slug, you must also provide either ownerID or ownerScreenName.", "OwnerIdOrOwnerScreenName");
+                throw new ArgumentException("If using slug, you must also provide either ownerID or ownerScreenName.", OwnerIDOrOwnerScreenNameParam);
             }
 
             var unsubscribeUrl = BaseUrl + "lists/subscribers/destroy.xml";
@@ -3399,10 +3285,6 @@ namespace LinqToTwitter
             List<List> results = reqProc.ProcessResults(resultsXml);
             return results.FirstOrDefault();
         }
-
-        #endregion
-
-        #region Raw Requests
 
         /// <summary>
         /// Lets you perform a query by specifying the raw URL and parameters yourself.
@@ -3440,18 +3322,12 @@ namespace LinqToTwitter
             return resultsXml;
         }
 
-        #endregion
-
-        #endregion
-
-        #region IDisposable Members
-
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
         public void Dispose()
         {
-            this.Dispose(true);
+            Dispose(true);
             GC.SuppressFinalize(this);
         }
 
@@ -3463,14 +3339,12 @@ namespace LinqToTwitter
         {
             if (disposing)
             {
-                var disposableExecutor = this.TwitterExecutor as IDisposable;
+                var disposableExecutor = TwitterExecutor as IDisposable;
                 if (disposableExecutor != null)
                 {
                     disposableExecutor.Dispose();
                 }
             }
         }
-
-        #endregion
     }
 }

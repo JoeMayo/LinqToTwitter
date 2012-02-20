@@ -16,7 +16,7 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         public static void Run(TwitterContext twitterCtx)
         {
-            //SearchTwitterDemo(twitterCtx);
+            SearchTwitterDemo(twitterCtx);
             //SearchOperatorDemo(twitterCtx);
             //SearchTwitterSinceIDDemo(twitterCtx);
             //SearchTwitterLocationDemo(twitterCtx);
@@ -36,7 +36,7 @@ namespace LinqToTwitterDemo
             //SearchEntriesQueryDemo(twitterCtx);
             //SearchGeoCodeDemo(twitterCtx);
             //SearchGeoCodeAndShowUserDemo(twitterCtx);
-            SearchIncludingEntities(twitterCtx);
+            //SearchIncludingEntities(twitterCtx);
         }
 
         /// <summary>
@@ -48,9 +48,9 @@ namespace LinqToTwitterDemo
             var queryResults =
                 from search in twitterCtx.Search
                 where search.Type == SearchType.Search &&
-                      search.Query == "LINQ to Twitter" &&
-                      search.Page == 2 &&
-                      search.PageSize == 5
+                      search.Query == "Linq=To=Twitter" // "LINQ to Twitter" &&
+                      //search.Page == 2 &&
+                      //search.PageSize == 5
                 select search;
 
             foreach (var search in queryResults)

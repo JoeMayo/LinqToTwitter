@@ -20,8 +20,6 @@ namespace LinqToTwitterDemo
             //DisableNotificationsDemo(twitterCtx);
         }
 
-        #region Notifications Demos
-
         /// <summary>
         /// Shows how to do a Notifications Follow
         /// </summary>
@@ -73,7 +71,5 @@ namespace LinqToTwitterDemo
 
             Console.WriteLine("User Name: " + user.Name);
         }
-
-        #endregion
     }
 }

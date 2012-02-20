@@ -20,8 +20,6 @@ namespace LinqToTwitterDemo
             //DestroyFavoriteDemo(twitterCtx);
         }
 
-        #region Favorites Demos
-
         private static void DestroyFavoriteDemo(TwitterContext twitterCtx)
         {
             var status = twitterCtx.DestroyFavorite("1552797863");
@@ -62,7 +60,5 @@ namespace LinqToTwitterDemo
                     fav.UserName, fav.Tweet);
             }
         }
-
-        #endregion
     }
 }

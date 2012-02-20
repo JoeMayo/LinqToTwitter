@@ -10,8 +10,6 @@ namespace LinqToTwitterTests
     [TestClass]
     public class HelpRequestProcessorTest
     {
-        #region Test Data
-
         private string helpTestXml = "<ok>true</ok>";
 
         private string helpConfigurationXml = @"<?xml version=""1.0"" encoding=""UTF-8""?>
@@ -193,8 +191,6 @@ namespace LinqToTwitterTests
   </language>
 </languages>";
 
-        #endregion
-
         private TestContext testContextInstance;
 
         /// <summary>
@@ -213,7 +209,6 @@ namespace LinqToTwitterTests
             }
         }
 
-        #region Additional test attributes
         // 
         //You can use the following additional attributes as you write your tests:
         //
@@ -241,7 +236,6 @@ namespace LinqToTwitterTests
         //{
         //}
         //
-        #endregion
 
         [TestMethod]
         public void GetParameters_Reads_All_Parameters()

@@ -1,4 +1,3 @@
-#region Header
 /**
  * Lexer.cs
  *   JSON lexer implementation based on a finite state machine.
@@ -6,7 +5,6 @@
  * The authors disclaim copyright to this source code. For more details, see
  * the COPYING file included with this distribution.
  **/
-#endregion
 
 
 using System;
@@ -28,7 +26,6 @@ namespace LitJson
 
     internal class Lexer
     {
-        #region Fields
         private delegate bool StateHandler (FsmContext ctx);
 
         private static int[]          fsm_return_table;
@@ -46,10 +43,7 @@ namespace LitJson
         private string        string_value;
         private int           token;
         private int           unichar;
-        #endregion
 
-
-        #region Properties
         public bool AllowComments {
             get { return allow_comments; }
             set { allow_comments = value; }
@@ -71,10 +65,7 @@ namespace LitJson
         public string StringValue {
             get { return string_value; }
         }
-        #endregion
 
-
-        #region Constructors
         static Lexer ()
         {
             PopulateFsmTables ();
@@ -94,10 +85,7 @@ namespace LitJson
             fsm_context = new FsmContext ();
             fsm_context.L = this;
         }
-        #endregion
 
-
-        #region Static Methods
         private static int HexValue (int digit)
         {
             switch (digit) {
@@ -847,7 +835,6 @@ namespace LitJson
 
             return true;
         }
-        #endregion
 
 
         private bool GetChar ()
