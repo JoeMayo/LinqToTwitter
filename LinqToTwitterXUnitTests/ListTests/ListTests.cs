@@ -6,7 +6,7 @@ using Xunit;
 
 namespace LinqToTwitterXUnitTests.ListTests
 {
-    class ListTests
+    public class ListTests
     {
         public ListTests()
         {

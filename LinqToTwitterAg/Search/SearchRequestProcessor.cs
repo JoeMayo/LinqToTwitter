@@ -429,6 +429,8 @@ namespace LinqToTwitter
         {
             JsonData search = JsonMapper.ToObject(responseJson);
 
+            var searchHash = search as IDictionary;
+
             var searchResult = new Search
             {
                 Type = Type,
@@ -455,38 +457,48 @@ namespace LinqToTwitter
                 WithLinks = WithLinks,
                 WithRetweets = WithRetweets,
                 IncludeEntities = IncludeEntities,
-                CompletedIn = search["completed_in"] == null ? 0m : (decimal)search["completed_in"],
-                MaxID = search["max_id"] == null ? 0UL : (ulong)search["max_id"],
-                NextPage = search["next_page"] == null ? null : (string)search["next_page"],
-                PageResult = search["page"] == null ? 0 : (int)search["page"],
-                QueryResult = search["query"] == null ? null : (string)search["query"],
-                ResultsPerPageResult = search["results_per_page"] == null ? 0 : (int)search["results_per_page"],
-                SinceIDResult = search["since_id"] == null ? 0UL : (ulong)search["since_id"],
-                RefreshUrl = search["refresh_url"] == null ? null : (string)search["refresh_url"],
+                CompletedIn = !searchHash.Contains("completed_in") || search["completed_in"] == null ?
+                    0m : (decimal)search["completed_in"],
+                MaxID = !searchHash.Contains("max_id") || search["max_id"] == null ?
+                    0UL : (ulong)search["max_id"],
+                NextPage = !searchHash.Contains("next_page") || search["next_page"] == null ?
+                    null : (string)search["next_page"],
+                PageResult = !searchHash.Contains("page") || search["page"] == null ?
+                    0 : (int)search["page"],
+                QueryResult = !searchHash.Contains("query") || search["query"] == null ?
+                    null : (string)search["query"],
+                ResultsPerPageResult = !searchHash.Contains("results_per_page") || search["results_per_page"] == null ?
+                    0 : (int)search["results_per_page"],
+                SinceIDResult = !searchHash.Contains("since_id") || search["since_id"] == null ?
+                    0UL : (ulong)search["since_id"],
+                RefreshUrl = !searchHash.Contains("refresh_url") || search["refresh_url"] == null ?
+                    null : (string)search["refresh_url"],
                 Results =
                     (from JsonData result in search["results"]
+                     let resultHash = result as IDictionary
                      select new SearchEntry
                      {
                          CreatedAt = DateTimeOffset.Parse((string)result["created_at"]),
                          Entities = new Entities
                          {
                              HashTagMentions =
-                                 !(result as IDictionary).Contains("entities") ||
-                                 !(result["entities"] as IDictionary).Contains("hashes") ||
-                                 result["entites"] == null || result["entities"]["hashes"] == null
+                                 !resultHash.Contains("entities") ||
+                                 !(result["entities"] as IDictionary).Contains("hashtags") ||
+                                 result["entities"] == null || result["entities"]["hashtags"] == null
                                      ? new List<HashTagMention>()
-                                     : (from JsonData hash in result["entities"]["hashes"]
+                                     : (from JsonData hash in result["entities"]["hashtags"]
                                         select new HashTagMention
                                         {
-                                            Tag = (string)hash["text"],
-                                            Start = (int)hash["start"],
-                                            End = (int)hash["stop"]
+                                            Tag = !(hash as IDictionary).Contains("text") || hash["text"] == null ?
+                                                null : (string)hash["text"],
+                                            Start = (int)hash["indices"][0],
+                                            End = (int)hash["indices"][1]
                                         })
-                                           .ToList(),
+                                        .ToList(),
                              MediaMentions =
-                                 !(result as IDictionary).Contains("entities") ||
+                                 !resultHash.Contains("entities") ||
                                  !(result["entities"] as IDictionary).Contains("media") ||
-                                 result["entites"] == null || result["entities"]["media"] == null
+                                 result["entities"] == null || result["entities"]["media"] == null
                                      ? new List<MediaMention>()
                                      : (from JsonData media in result["entities"]["media"]
                                         select new MediaMention
@@ -497,25 +509,25 @@ namespace LinqToTwitter
                                             MediaUrl = (string)media["media_url"],
                                             MediaUrlHttps = (string)media["media_url_https"],
                                             Sizes =
-                                                (from JsonData size in media["sizes"]
+                                                (from key in (media["sizes"] as IDictionary).Keys as List<string>
                                                  select new PhotoSize
                                                  {
-                                                     Type = (string)size["type"],
-                                                     Width = (int)size["w"],
-                                                     Height = (int)size["h"],
-                                                     Resize = (string)size["resize"]
+                                                     Type = key,
+                                                     Width = (int)media["sizes"][key]["w"],
+                                                     Height = (int)media["sizes"][key]["h"],
+                                                     Resize = (string)media["sizes"][key]["resize"]
                                                  })
                                                 .ToList(),
                                             Type = (string)media["type"],
                                             Url = (string)media["url"],
-                                            Start = (int)media["start"],
-                                            End = (int)media["stop"]
+                                            Start = (int)media["indices"][0],
+                                            End = (int)media["indices"][1]
                                         })
-                                           .ToList(),
+                                        .ToList(),
                              UrlMentions =
-                                 !(result as IDictionary).Contains("entities") ||
+                                 !resultHash.Contains("entities") ||
                                  !(result["entities"] as IDictionary).Contains("urls") ||
-                                 result["entites"] == null || result["entities"]["urls"] == null
+                                 result["entities"] == null || result["entities"]["urls"] == null
                                      ? new List<UrlMention>()
                                      : (from JsonData url in result["entities"]["urls"]
                                         select new UrlMention
@@ -523,31 +535,34 @@ namespace LinqToTwitter
                                             Url = (string)url["url"],
                                             DisplayUrl = (string)url["display_url"],
                                             ExpandedUrl = (string)url["expanded_url"],
-                                            Start = (int)url["start"],
-                                            End = (int)url["stop"]
+                                            Start = (int)url["indices"][0],
+                                            End = (int)url["indices"][1]
                                         })
                                        .ToList(),
                              UserMentions =
-                                 !(result as IDictionary).Contains("entities") ||
-                                 !(result["entities"] as IDictionary).Contains("users") ||
-                                 result["entites"] == null || result["entities"]["users"] == null
+                                 !resultHash.Contains("entities") ||
+                                 !(result["entities"] as IDictionary).Contains("user_mentions") ||
+                                 result["entities"] == null || result["entities"]["user_mentions"] == null
                                      ? new List<UserMention>()
-                                     : (from JsonData user in result["entities"]["users"]
+                                     : (from JsonData user in result["entities"]["user_mentions"]
                                         select new UserMention
                                         {
                                             ScreenName = (string)user["screen_name"],
                                             Name = (string)user["name"],
-                                            Id = (long)user["id"],
-                                            Start = (int)user["start"],
-                                            End = (int)user["stop"]
+                                            Id = (ulong)user["id"],
+                                            Start = (int)user["indices"][0],
+                                            End = (int)user["indices"][1]
                                         })
                                        .ToList()
                          },
-                         FromUser = (string)result["from_user"],
-                         FromUserID = (ulong)result["from_user_id"],
-                         FromUserName = (string)result["from_user_name"],
+                         FromUser = !resultHash.Contains("from_user") || result["from_user"] == null ?
+                            null : (string)result["from_user"],
+                         FromUserID = !resultHash.Contains("from_user_id") || result["from_user_id"] == null ?
+                            0UL : (ulong)result["from_user_id"],
+                         FromUserName = !resultHash.Contains("from_user_name") || result["from_user_name"] == null ?
+                            null : (string)result["from_user_name"],
                          Geo =
-                             !(result as IDictionary).Contains("geo") || result["geo"] == null
+                             !resultHash.Contains("geo") || result["geo"] == null
                                  ? new Geometry { Coordinates = new List<Coordinate>() }
                                  : new Geometry
                                  {
@@ -556,19 +571,21 @@ namespace LinqToTwitter
                                      {
                                          new Coordinate
                                          {
-                                             Latitude = (double)result["geo"]["latitude"],
-                                             Longitude = (double)result["geo"]["longitude"]
+                                             Latitude = (double)result["geo"]["coordinates"][0],
+                                             Longitude = (double)result["geo"]["coordinates"][1]
                                          }
                                      }
                                  },
-                         ID = (ulong)result["id"],
-                         IsoLanguageCode = (string)result["iso_language_code"],
+                         ID = !resultHash.Contains("id") || result["id"] == null ?
+                            0UL : (ulong)result["id"],
+                         IsoLanguageCode = !resultHash.Contains("iso_language_code") || result["iso_language_code"] == null ?
+                            null : (string)result["iso_language_code"],
                          MetaData =
-                            !(result as IDictionary).Contains("metadata") || result["metadata"] == null ?
-                                new SearchMetaData() : 
+                            !resultHash.Contains("metadata") || result["metadata"] == null ?
+                                new SearchMetaData() :
                                 new SearchMetaData
                                  {
-                                     RecentRetweets = 
+                                     RecentRetweets =
                                         !(result["metadata"] as IDictionary).Contains("recent_retweets") ||
                                         result["metadata"]["recent_retweets"] == null ?
                                             0 :
@@ -579,13 +596,20 @@ namespace LinqToTwitter
                                             ResultType.Mixed :
                                             (ResultType)Enum.Parse(typeof(ResultType), (string)result["metadata"]["result_type"], true)
                                  },
-                         ProfileImageUrl = result["profile_image_url"] == null ? null : (string)result["profile_image_url"],
-                         ProfileImageUrlHttps = result["profile_image_url_https"] == null ? null : (string)result["profile_image_url_https"],
-                         Source = result["source"] == null ? null : (string)result["source"],
-                         Text = result["text"] == null ? null : (string)result["text"],
-                         ToUser = result["to_user"] == null ? null : (string)result["to_user"],
-                         ToUserID = result["to_user"] == null ? 0UL : (ulong)result["to_user_id"],
-                         ToUserName = result["to_user_name"] == null ? null : (string)result["to_user_name"]
+                         ProfileImageUrl = !resultHash.Contains("profile_image_url") || result["profile_image_url"] == null ?
+                            null : (string)result["profile_image_url"],
+                         ProfileImageUrlHttps = !resultHash.Contains("profile_image_url_https") || result["profile_image_url_https"] == null ?
+                            null : (string)result["profile_image_url_https"],
+                         Source = !resultHash.Contains("source") || result["source"] == null ?
+                            null : (string)result["source"],
+                         Text = (!resultHash.Contains("text") || result["text"] == null) ?
+                            null : (string)result["text"],
+                         ToUser = !resultHash.Contains("to_user") || result["to_user"] == null ?
+                            null : (string)result["to_user"],
+                         ToUserID = !resultHash.Contains("to_user_id") || result["to_user_id"] == null ?
+                            0UL : (ulong)result["to_user_id"],
+                         ToUserName = !resultHash.Contains("to_user_name") || result["to_user_name"] == null ?
+                            null : (string)result["to_user_name"]
                      }).ToList()
             };
             return searchResult;

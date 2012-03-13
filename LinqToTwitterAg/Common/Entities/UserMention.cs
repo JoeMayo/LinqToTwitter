@@ -18,7 +18,7 @@ namespace LinqToTwitter
         {
             var mention = new UserMention
             {
-                Id = Int64.Parse(element.Element("id").Value),
+                Id = ulong.Parse(element.Element("id").Value),
                 Name = element.Element("name").Value,
                 ScreenName = element.Element("screen_name").Value
             };
@@ -28,9 +28,9 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// Tweitter user Id
+        /// Twitter user Id
         /// </summary>
-        public long Id { get; set; }
+        public ulong Id { get; set; }
 
         /// <summary>
         /// Screen name of the Twitter User

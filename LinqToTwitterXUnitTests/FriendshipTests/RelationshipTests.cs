@@ -7,7 +7,7 @@ using System.Xml.Linq;
 
 namespace LinqToTwitterXUnitTests.FriendshipTests
 {
-    class RelationshipTests
+    public class RelationshipTests
     {
         public RelationshipTests()
         {
