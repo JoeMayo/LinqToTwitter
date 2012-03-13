@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Globalization;
-using System.IO;
-using System.Runtime.Serialization.Json;
-using System.Text;
 using System.Xml.Linq;
 using System.Collections.Generic;
 
-namespace LinqToTwitter
+namespace LinqToTwitter.Common
 {
     public static class XTwitterElement
     {
@@ -154,8 +151,8 @@ namespace LinqToTwitter
 
             if (epochSeconds == ulong.MaxValue)
                 return defaultValue;
-            else
-                return EpochBase + TimeSpan.FromSeconds(epochSeconds);
+            
+            return EpochBase + TimeSpan.FromSeconds(epochSeconds);
         }
 
         // should get moved to a different helper in Common somewhere...
@@ -165,8 +162,8 @@ namespace LinqToTwitter
 
             if (dictionary.TryGetValue(key, out value))
                 return (T)value;
-            else
-                return default(T);
+            
+            return default(T);
         }
 
         public static T GetValue<T>(this IDictionary<string, object> dictionary, string key, T defaultValue)
@@ -175,8 +172,8 @@ namespace LinqToTwitter
 
             if (dictionary.TryGetValue(key, out value))
                 return (T)value;
-            else
-                return defaultValue;
+            
+            return defaultValue;
         }
     }
 }

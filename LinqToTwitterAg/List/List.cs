@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Xml.Linq;
 
 namespace LinqToTwitter
@@ -102,11 +103,15 @@ namespace LinqToTwitter
         /// <summary>
         /// Add entities to tweets (Query Filter)
         /// </summary>
+        // TODO: remove after 5/14/12
+        [Obsolete("All API methods capable of including entities will return them regardless of the value provided.")]
         public bool IncludeEntities { get; set; }
 
         /// <summary>
         /// Add retweets, in addition to normal tweets (Query Filter)
         /// </summary>
+        // TODO: remove after 5/14/12
+        [Obsolete("All API methods capable of including retweets will return them regardless of the value provided.")]
         public bool IncludeRetweets { get; set; }
 
         /// <summary>

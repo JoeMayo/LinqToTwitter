@@ -25,7 +25,6 @@ namespace LinqToTwitterDemo
             //PublicStatusFilteredQueryDemo(twitterCtx);
             //HomeStatusQueryDemo(twitterCtx);
             //HomeSinceStatusQueryDemo(twitterCtx);
-            //FriendStatusQueryDemo(twitterCtx);
             //UserStatusQueryDemo(twitterCtx);
             //UserStatusSinceIDQueryDemo(twitterCtx);
             //UserStatusByNameQueryDemo(twitterCtx);
@@ -79,26 +78,6 @@ namespace LinqToTwitterDemo
                     "User: " + tweet.User.Name +
                     "\nTweet: " + tweet.Text +
                     "\nTweet ID: " + tweet.ID + "\n");
-            }
-        }
-
-        /// <summary>
-        /// Shows how to get statuses for logged-in user's friends - just like main Twitter page
-        /// </summary>
-        /// <param name="twitterCtx">TwitterContext</param>
-        private static void FriendStatusQueryDemo(TwitterContext twitterCtx)
-        {
-            var friendTweets =
-                from tweet in twitterCtx.Status
-                where tweet.Type == StatusType.Friends
-                select tweet;
-
-            Console.WriteLine("\nTweets for " + twitterCtx.UserName + "\n");
-            foreach (var tweet in friendTweets)
-            {
-                Console.WriteLine(
-                    "Friend: " + tweet.User.Name +
-                    "\nTweet: " + tweet.Text + "\n");
             }
         }
 
@@ -757,77 +736,6 @@ namespace LinqToTwitterDemo
         }
 
         /// <summary>
-        /// shows how to send a public status query and then filter
-        /// </summary>
-        /// <remarks>
-        /// since Twitter API doesn't filter public status,
-        /// you can grab the results and then filter with
-        /// LINQ to Objects.
-        /// </remarks>
-        /// <param name="twitterCtx">TwitterContext</param>
-        private static void PublicStatusFilteredQueryDemo(TwitterContext twitterCtx)
-        {
-            //var publicTweets =
-            //    (from tweet in twitterCtx.Status
-            //     where tweet.Type == StatusType.Public &&
-            //           tweet.User.Name.StartsWith("S")
-            //     orderby tweet.Source descending
-            //     select new MyTweetClass
-            //     {
-            //         UserName = tweet.User.Name,
-            //         Text = tweet.Text
-            //     })
-            //     .ToArray();
-
-            var publicTweets =
-                (from tweet in twitterCtx.Status
-                 where tweet.Type == StatusType.Public
-                 orderby tweet.Source descending, tweet.User.Name
-                 select tweet)
-                 .ToArray();
-
-            publicTweets.ToList().ForEach(
-                tweet => Console.WriteLine(
-                    "Source: {0}, Name: {1}",
-                    tweet.Source,
-                    tweet.User.Name));
-
-            //publicTweets.ToList().ForEach(
-            //    tweet => Console.WriteLine(
-            //        "User Name: {0}, Tweet: {1}",
-            //        tweet.User.Name,
-            //        tweet.Text));
-
-            //var publicTweets = twitterCtx.Status
-            //    .Where(x => x.Type == StatusType.Public)
-            //    .Select(x => x.Text.Replace('\n', ' '))
-            //    .ToArray();
-
-            //publicTweets.ToList().ForEach(
-            //    tweet => Console.WriteLine(
-            //        "Tweet: {0}",
-            //        tweet));
-        }
-
-        /// <summary>
-        /// shows how to send a public status query
-        /// </summary>
-        /// <param name="twitterCtx">TwitterContext</param>
-        private static void PublicStatusQueryDemo(TwitterContext twitterCtx)
-        {
-            var publicTweets =
-                from tweet in twitterCtx.Status
-                where tweet.Type == StatusType.Public
-                select tweet;
-
-            publicTweets.ToList().ForEach(
-                tweet => Console.WriteLine(
-                    "User Name: {0}, Tweet: {1}",
-                    tweet.User.Name,
-                    tweet.Text));
-        }
-
-        /// <summary>
         /// Shows how to read contributor IDs
         /// </summary>
         /// <param name="twitterCtx">TwitterContext</param>
@@ -870,7 +778,7 @@ namespace LinqToTwitterDemo
         {
             var tweets =
                 from tweet in twitterCtx.Status
-                where tweet.Type == StatusType.Friends
+                where tweet.Type == StatusType.Show
                 select tweet;
 
             var tweetCount = tweets.Count();

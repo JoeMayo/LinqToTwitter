@@ -30,17 +30,19 @@ namespace LinqToTwitterDemo
             // force an unreasonable timeout (1 millisecond)
             twitterCtx.Timeout = 1;
 
-            var publicTweets =
-                from tweet in twitterCtx.Status
-                where tweet.Type == StatusType.Public
-                select tweet;
+            var searchResponse =
+                (from search in twitterCtx.Search
+                 where search.Type == SearchType.Search
+                 select search)
+                .SingleOrDefault();
 
             try
             {
-                publicTweets.ToList().ForEach(
+                if (searchResponse != null)
+                    searchResponse.Results.ForEach(
                         tweet => Console.WriteLine(
                             "User Name: {0}, Tweet: {1}",
-                            tweet.User.Name,
+                            tweet.FromUserName,
                             tweet.Text));
             }
             catch (TwitterQueryException tqEx)

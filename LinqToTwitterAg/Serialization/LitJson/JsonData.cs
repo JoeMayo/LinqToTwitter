@@ -28,6 +28,8 @@ namespace LitJson
         private string                        inst_string;
         private string                        json;
         private JsonType                      type;
+        decimal inst_decimal;
+        ulong inst_ulong;
 
         // Used to implement the IOrderedDictionary interface
         private IList<KeyValuePair<string, JsonData>> object_list;
@@ -62,6 +64,16 @@ namespace LitJson
 
         public bool IsString {
             get { return type == JsonType.String; }
+        }
+
+        public bool IsDecimal
+        {
+            get { return type == JsonType.Decimal; }
+        }
+
+        public bool IsULong
+        {
+            get { return type == JsonType.ULong; }
         }
 
         int ICollection.Count {
@@ -290,10 +302,22 @@ namespace LitJson
             inst_int = number;
         }
 
-        public JsonData (long number)
+        public JsonData(long number)
         {
             type = JsonType.Long;
             inst_long = number;
+        }
+
+        public JsonData (decimal number)
+        {
+            type = JsonType.Decimal;
+            inst_decimal = number;
+        }
+
+        public JsonData(ulong number)
+        {
+            type = JsonType.ULong;
+            inst_ulong = number;
         }
 
         public JsonData (object obj)
@@ -319,6 +343,20 @@ namespace LitJson
             if (obj is Int64) {
                 type = JsonType.Long;
                 inst_long = (long) obj;
+                return;
+            }
+
+            if (obj is Decimal)
+            {
+                type = JsonType.Decimal;
+                inst_decimal = (decimal)obj;
+                return;
+            }
+
+            if (obj is UInt64)
+            {
+                type = JsonType.ULong;
+                inst_ulong = (ulong)obj;
                 return;
             }
 
@@ -358,7 +396,17 @@ namespace LitJson
             return new JsonData (data);
         }
 
-        public static implicit operator JsonData (String data)
+        public static implicit operator JsonData(Decimal data)
+        {
+            return new JsonData(data);
+        }
+
+        public static implicit operator JsonData(UInt64 data)
+        {
+            return new JsonData(data);
+        }
+
+        public static implicit operator JsonData(String data)
         {
             return new JsonData (data);
         }
@@ -394,9 +442,44 @@ namespace LitJson
         {
             if (data.type != JsonType.Long)
                 throw new InvalidCastException (
-                    "Instance of JsonData doesn't hold an int");
+                    "Instance of JsonData doesn't hold a long");
 
             return data.inst_long;
+        }
+
+        public static explicit operator Decimal(JsonData data)
+        {
+            if (data.type != JsonType.Decimal && data.type != JsonType.Double)
+                throw new InvalidCastException(
+                    "Instance of JsonData doesn't hold a decimal");
+
+            if (data.type == JsonType.Double)
+            {
+                return (decimal) data.inst_double;
+            }
+
+            return data.inst_decimal;
+        }
+
+        public static explicit operator UInt64(JsonData data)
+        {
+            if (data.type != JsonType.ULong && 
+                data.type != JsonType.Long &&
+                data.type != JsonType.Int)
+                throw new InvalidCastException(
+                    "Instance of JsonData doesn't hold a ulong");
+
+            if (data.type == JsonType.Int)
+            {
+                return (ulong)data.inst_int;
+            }
+
+            if (data.type == JsonType.Long)
+            {
+                return (ulong)data.inst_long;
+            }
+
+            return data.inst_ulong;
         }
 
         public static explicit operator String (JsonData data)
@@ -507,6 +590,45 @@ namespace LitJson
             return inst_string;
         }
 
+        public decimal GetDecimal()
+        {
+            if (type != JsonType.Decimal && type != JsonType.Double)
+            {
+                throw new InvalidOperationException(
+                    "JsonData instance doesn't hold a decimal");
+            }
+
+            if (type == JsonType.Double)
+            {
+                return (decimal)inst_double;
+            }
+
+            return inst_decimal;
+        }
+
+        public ulong GetUlong()
+        {
+            if (type != JsonType.ULong && 
+                type != JsonType.Long &&
+                type != JsonType.Int)
+            {
+                throw new InvalidOperationException(
+                    "JsonData instance doesn't hold a ulong");
+            }
+
+            if (type == JsonType.Int)
+            {
+                return (ulong)inst_int;
+            }
+
+            if (type == JsonType.Long)
+            {
+                return (ulong)inst_long;
+            }
+
+            return inst_ulong;
+        }
+
         void IJsonWrapper.SetBoolean (bool val)
         {
             type = JsonType.Boolean;
@@ -539,6 +661,20 @@ namespace LitJson
         {
             type = JsonType.String;
             inst_string = val;
+            json = null;
+        }
+
+        public void SetDecimal(decimal val)
+        {
+            type = JsonType.Decimal;
+            inst_decimal = val;
+            json = null;
+        }
+
+        public void SetUlong(ulong val)
+        {
+            type = JsonType.ULong;
+            inst_ulong = val;
             json = null;
         }
 
@@ -701,7 +837,20 @@ namespace LitJson
                 return;
             }
 
-            if (obj.IsArray) {
+            if (obj.IsDecimal)
+            {
+                writer.Write(obj.GetDecimal());
+                return;
+            }
+
+            if (obj.IsULong)
+            {
+                writer.Write(obj.GetUlong());
+                return;
+            }
+
+            if (obj.IsArray)
+            {
                 writer.WriteArrayStart ();
                 foreach (object elem in (IList) obj)
                     WriteJson ((JsonData) elem, writer);
@@ -778,6 +927,12 @@ namespace LitJson
 
             case JsonType.Boolean:
                 return this.inst_boolean.Equals (x.inst_boolean);
+
+            case JsonType.Decimal:
+                return inst_decimal.Equals(x.inst_decimal);
+
+            case JsonType.ULong:
+                return inst_ulong.Equals(x.inst_ulong);
             }
 
             return false;
@@ -824,6 +979,14 @@ namespace LitJson
 
             case JsonType.Boolean:
                 inst_boolean = default (Boolean);
+                break;
+
+            case JsonType.Decimal:
+                inst_decimal = default(Decimal);
+                break;
+
+            case JsonType.ULong:
+                inst_ulong = default(UInt64);
                 break;
             }
 
@@ -873,6 +1036,12 @@ namespace LitJson
 
             case JsonType.Long:
                 return inst_long.ToString ();
+
+            case JsonType.Decimal:
+                return inst_decimal.ToString();
+
+            case JsonType.ULong:
+                return inst_ulong.ToString();
 
             case JsonType.Object:
                 return "JsonData object";

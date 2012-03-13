@@ -1,4 +1,6 @@
-﻿using LinqToTwitter;
+﻿using System.Globalization;
+
+using LinqToTwitter;
 using LinqToTwitterTests.Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
@@ -602,19 +604,16 @@ namespace LinqToTwitterTests
             Assert.AreEqual(expected, req.FullUrl);
         }
 
-        [Ignore]
         [TestMethod]
         public void BuildAllListsUrl_Returns_Url_With_UserID()
         {
-            // TODO: ScreenName check in BuilUrl breaks this test. All other list APIs requires ScreenName, except for this one
-            var listReqProc = new ListRequestProcessor<List>() { BaseUrl = "https://api.twitter.com/1/" };
+            var listReqProc = new ListRequestProcessor<List> { BaseUrl = "https://api.twitter.com/1/" };
             var parameters = new Dictionary<string, string>
             {
-                {"Type", ((int) ListType.All).ToString()},
+                {"Type", ((int) ListType.All).ToString(CultureInfo.InvariantCulture)},
                 {"UserID", "123"},
             };
-            string expected =
-                "https://api.twitter.com/1/JoeMayo/lists/all.xml?user_id=123";
+            const string expected = "https://api.twitter.com/1/lists/all.xml?user_id=123";
 
             Request req = listReqProc.BuildURL(parameters);
 

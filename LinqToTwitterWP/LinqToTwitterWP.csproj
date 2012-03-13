@@ -380,15 +380,6 @@
     <Compile Include="..\LinqToTwitterAg\SavedSearch\SavedSearchType.cs">
       <Link>SavedSearch\SavedSearchType.cs</Link>
     </Compile>
-    <Compile Include="..\LinqToTwitterAg\Search\AtomAuthor.cs">
-      <Link>Search\AtomAuthor.cs</Link>
-    </Compile>
-    <Compile Include="..\LinqToTwitterAg\Search\AtomEntry.cs">
-      <Link>Search\AtomEntry.cs</Link>
-    </Compile>
-    <Compile Include="..\LinqToTwitterAg\Search\AtomFeed.cs">
-      <Link>Search\AtomFeed.cs</Link>
-    </Compile>
     <Compile Include="..\LinqToTwitterAg\Search\Attitude.cs">
       <Link>Search\Attitude.cs</Link>
     </Compile>

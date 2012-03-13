@@ -294,20 +294,19 @@ namespace LinqToTwitterTests
         ///</summary>
         public void CreateRequestProcessorTestHelper<T>()
         {
-            TwitterContext_Accessor ctx = new TwitterContext_Accessor();
+            var ctx = new TwitterContext_Accessor();
 
             var publicQuery =
                 from tweet in ctx.Status
-                where tweet.Type == StatusType.Public
+                where tweet.Type == StatusType.Show
                 select tweet;
 
             var statusProc = ctx.CreateRequestProcessor<Status>(publicQuery.Expression);
             Assert.IsInstanceOfType(statusProc, typeof(StatusRequestProcessor<Status>));
         }
 
-        [TestMethod()]
-        [DeploymentItem("LinqToTwitter.dll")]
-        public void CreateRequestProcessorTest()
+        [TestMethod]
+        public void CreateRequestProcessor_Returns_ProperRequestProcessor()
         {
             CreateRequestProcessorTestHelper<GenericParameterHelper>();
         }
@@ -488,7 +487,7 @@ namespace LinqToTwitterTests
             ctx = new TwitterContext(exec.Object);
             var publicQuery = 
                 from tweet in ctx.Status
-                where tweet.Type == StatusType.Public
+                where tweet.Type == StatusType.Show
                 select tweet;
 
             expression = publicQuery.Expression;
@@ -507,7 +506,7 @@ namespace LinqToTwitterTests
 
             var tweets = actual as IEnumerable<Status>;
             Assert.IsNotNull(tweets);
-            Assert.IsTrue(tweets.ToList().Count > 0);
+            Assert.IsTrue(tweets.Any());
         }
 
         [TestMethod]
@@ -902,27 +901,6 @@ namespace LinqToTwitterTests
             User actual = ctx.UpdateAccountImage(imageFilePath);
 
             Assert.AreEqual(expected, actual);
-        }
-
-        [TestMethod]
-        public void UpdateAccountDeliveryDeviceTest()
-        {
-            DeviceType device = new DeviceType();
-            XElement expected = XElement.Parse(m_testUserQueryResponse);
-            var authMock = new Mock<ITwitterAuthorizer>();
-            var execMock = new Mock<ITwitterExecute>();
-            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
-            execMock.Setup(exec =>
-                exec.ExecuteTwitter<User>(
-                    It.IsAny<string>(),
-                    It.IsAny<Dictionary<string, string>>(),
-                    It.IsAny<IRequestProcessor<User>>()))
-                .Returns(m_testUserQueryResponse);
-            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
-
-            User actual = ctx.UpdateAccountDeliveryDevice(device);
-
-            Assert.AreEqual(expected.Element("name").Value, actual.Name);
         }
 
         [TestMethod]
@@ -1711,7 +1689,7 @@ namespace LinqToTwitterTests
             var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
             var statusQuery =
                 from tweet in ctx.Status
-                where tweet.Type == StatusType.Public
+                where tweet.Type == StatusType.Show
                 select tweet;
 
             ctx.Execute<Status>(statusQuery.Expression, isEnumerable: true);

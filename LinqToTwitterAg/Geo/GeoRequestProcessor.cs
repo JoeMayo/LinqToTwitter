@@ -12,6 +12,9 @@ namespace LinqToTwitter
     /// </summary>
     public class GeoRequestProcessor<T> : IRequestProcessor<T>
     {
+        const string AttributeParam = "Attribute";
+        const string IDParam = "ID";
+
         /// <summary>
         /// base url for request
         /// </summary>
@@ -107,8 +110,9 @@ namespace LinqToTwitter
         /// <returns>URL conforming to Twitter API</returns>
         public Request BuildURL(Dictionary<string, string> parameters)
         {
+            const string typeParam = "Type";
             if (parameters == null || !parameters.ContainsKey("Type"))
-                throw new ArgumentException("You must set Type.", "Type");
+                throw new ArgumentException("You must set Type.", typeParam);
 
             Type = RequestProcessorHelper.ParseQueryEnumType<GeoType>(parameters["Type"]);
 
@@ -190,17 +194,17 @@ namespace LinqToTwitter
                 urlParams.Add(new QueryParameter("contained_within", ContainedWithin));
             }
 
-            if (parameters.ContainsKey("Attribute"))
+            if (parameters.ContainsKey(AttributeParam))
             {
                 // TODO should really be able to search for more than one Attribute
-                Attribute = parameters["Attribute"] ?? String.Empty;
+                Attribute = parameters[AttributeParam] ?? String.Empty;
                 var parts = Attribute.Split('=');
 
                 if (parts.Length < 2)
                 {
                     throw new ArgumentException(
                         "Attribute must be a name/value pair (i.e. street_address=123); actual value: " + Attribute,
-                        "Attribute");
+                        AttributeParam);
                 }
 
                 urlParams.Add(new QueryParameter("attribute:" + parts[0], parts[1]));
@@ -212,14 +216,13 @@ namespace LinqToTwitter
         /// <summary>
         /// construct a base show url
         /// </summary>
-        /// <param name="url">base show url</param>
         /// <returns>base url + show segment</returns>
         private Request BuildIDUrl(Dictionary<string, string> parameters)
         {
-            if (!parameters.ContainsKey("ID"))
-                throw new ArgumentException("ID is required for a Geo ID query.", "ID");
+            if (!parameters.ContainsKey(IDParam))
+                throw new ArgumentException("ID is required for a Geo ID query.", IDParam);
 
-            ID = parameters["ID"];
+            ID = parameters[IDParam];
 
             var url = "geo/id/" + ID + ".json";
             return new Request(BaseUrl + url);
@@ -285,7 +288,7 @@ namespace LinqToTwitter
             }
 
             XElement twitterResponse = XElement.Parse(responseXml);
-            List<XElement> responseItems = new List<XElement>();
+            var responseItems = new List<XElement>();
 
             // place_type under root means that it's an ID query
             if (twitterResponse.Element("place_type") != null)
@@ -297,12 +300,16 @@ namespace LinqToTwitter
             }
             else // reverse geocode query
             {
-                if (twitterResponse.Elements("result").Count() > 0)
-                    responseItems =
-                        twitterResponse
-                            .Element("result")
-                                .Element("places")
-                                    .Elements("item").ToList();
+                if (twitterResponse.Elements("result").Any())
+                {
+                    var result = twitterResponse.Element("result");
+                    if (result != null)
+                    {
+                        var places = result.Element("places");
+                        if (places != null)
+                            responseItems = places.Elements("item").ToList();
+                    }
+                }
             }
 
             var geo =
@@ -321,8 +328,10 @@ namespace LinqToTwitter
                    Attribute = Attribute,
                    Places =
                        (from pl in responseItems
-                        select Place.CreatePlace(pl.Element("contained_within").Element("item")))
-                        .ToList()
+                        let containedWithin = pl.Element("contained_within")
+                        where containedWithin != null
+                        select Place.CreatePlace(containedWithin.Element("item")))
+                       .ToList()
                };
 
             return new List<Geo> { geo }.OfType<T>().ToList();

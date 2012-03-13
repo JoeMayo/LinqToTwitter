@@ -313,14 +313,14 @@ namespace LinqToTwitterTests
         public void BuildURLTest()
         {
             UserRequestProcessor<User> reqProc = new UserRequestProcessor<User>();
-            reqProc.BaseUrl = "http://twitter.com/";
+            reqProc.BaseUrl = "https://api.twitter.com/1/";
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                     {
                         { "Type", ((int)UserType.Friends).ToString() },
                         { "ID", "15411837" }
                     };
-            string expected = "http://twitter.com/statuses/friends/15411837.xml";
+            string expected = "https://api.twitter.com/1/statuses/friends/15411837.xml";
 
             Request req = reqProc.BuildURL(parameters);
 
@@ -335,7 +335,7 @@ namespace LinqToTwitterTests
         public void BuildShowUrlTest()
         {
             UserRequestProcessor_Accessor<User> reqProc = new UserRequestProcessor_Accessor<User>();
-            reqProc.BaseUrl = "http://twitter.com/";
+            reqProc.BaseUrl = "https://api.twitter.com/1/";
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                     {
@@ -344,7 +344,7 @@ namespace LinqToTwitterTests
                         { "UserID", "15411837" },
                         { "ScreenName", "JoeMayo" }
                     };
-            string expected = "http://twitter.com/users/show/15411837.xml?user_id=15411837&screen_name=JoeMayo";
+            string expected = "https://api.twitter.com/1/users/show/15411837.xml?user_id=15411837&screen_name=JoeMayo";
 
             Request req = reqProc.BuildShowUrl(parameters);
 
@@ -359,14 +359,14 @@ namespace LinqToTwitterTests
         public void BuildShowUrlWithNoParametersTest()
         {
             UserRequestProcessor_Accessor<User> reqProc = new UserRequestProcessor_Accessor<User>();
-            reqProc.BaseUrl = "http://twitter.com/";
+            reqProc.BaseUrl = "https://api.twitter.com/1/";
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                     {
                         { "Type", ((int)UserType.Show).ToString() },
                         { "ID", "15411837" }
                     };
-            string expected = "http://twitter.com/users/show/15411837.xml";
+            string expected = "https://api.twitter.com/1/users/show/15411837.xml";
 
             Request req = reqProc.BuildShowUrl(parameters);
 
@@ -381,14 +381,14 @@ namespace LinqToTwitterTests
         public void BuildFriendsUrlTest()
         {
             UserRequestProcessor_Accessor<User> reqProc = new UserRequestProcessor_Accessor<User>();
-            reqProc.BaseUrl = "http://twitter.com/";
+            reqProc.BaseUrl = "https://api.twitter.com/1/";
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                     {
                         { "Type", ((int)UserType.Friends).ToString() },
                         { "ID", "15411837" }
                     };
-            string expected = "http://twitter.com/statuses/friends/15411837.xml";
+            string expected = "https://api.twitter.com/1/statuses/friends/15411837.xml";
 
             Request req = reqProc.BuildFriendsUrl(parameters);
 
@@ -403,7 +403,7 @@ namespace LinqToTwitterTests
         public void BuildFriendsAndFollowersUrlParametersTest()
         {
             UserRequestProcessor_Accessor<User> reqProc = new UserRequestProcessor_Accessor<User>();
-            reqProc.BaseUrl = "http://twitter.com/";
+            reqProc.BaseUrl = "https://api.twitter.com/1/";
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                     {
@@ -411,7 +411,7 @@ namespace LinqToTwitterTests
                         { "ID", "15411837" }
                     };
             var url = "statuses/friends.xml";
-            string expected = "http://twitter.com/statuses/friends/15411837.xml";
+            string expected = "https://api.twitter.com/1/statuses/friends/15411837.xml";
 
             Request req = reqProc.BuildFriendsAndFollowersUrlParameters(parameters, url);
 
@@ -495,7 +495,7 @@ namespace LinqToTwitterTests
         public void BuildFollowersUrlTest()
         {
             UserRequestProcessor_Accessor<User> reqProc = new UserRequestProcessor_Accessor<User>();
-            reqProc.BaseUrl = "http://twitter.com/";
+            reqProc.BaseUrl = "https://api.twitter.com/1/";
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                     {
@@ -505,7 +505,7 @@ namespace LinqToTwitterTests
                         { "ScreenName", "JoeMayo" },
                         { "Page", "2" }
                     };
-            string expected = "http://twitter.com/statuses/followers/15411837.xml?user_id=123&screen_name=JoeMayo&page=2";
+            string expected = "https://api.twitter.com/1/statuses/followers/15411837.xml?user_id=123&screen_name=JoeMayo&page=2";
 
             Request req = reqProc.BuildFollowersUrl(parameters);
 
@@ -800,7 +800,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void ProcessResultsSingleResultTest()
         {
-            var statProc = new UserRequestProcessor<User>() { BaseUrl = "http://twitter.com/" };
+            var statProc = new UserRequestProcessor<User>() { BaseUrl = "https://api.twitter.com/1/" };
 
             var actual = statProc.ProcessResults(m_testQueryResponse);
 
@@ -815,7 +815,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void ProcessResultsMultipleResultsTest()
         {
-            var statProc = new UserRequestProcessor<User>() { BaseUrl = "http://twitter.com/" };
+            var statProc = new UserRequestProcessor<User>() { BaseUrl = "https://api.twitter.com/1/" };
 
             var actual = statProc.ProcessResults(m_testQueryResponse);
 
@@ -923,7 +923,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void MissingTypeTest()
         {
-            UserRequestProcessor<User> target = new UserRequestProcessor<User>() { BaseUrl = "http://twitter.com/" };
+            UserRequestProcessor<User> target = new UserRequestProcessor<User>() { BaseUrl = "https://api.twitter.com/1/" };
             Dictionary<string, string> parameters = new Dictionary<string, string> { };
 
             try
@@ -944,7 +944,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void NullParametersTest()
         {
-            UserRequestProcessor<User> target = new UserRequestProcessor<User>() { BaseUrl = "http://twitter.com/" };
+            UserRequestProcessor<User> target = new UserRequestProcessor<User>() { BaseUrl = "https://api.twitter.com/1/" };
             Dictionary<string, string> parameters = null;
 
             try

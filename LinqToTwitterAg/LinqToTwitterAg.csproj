@@ -175,9 +175,6 @@
     <Compile Include="SavedSearch\SavedSearch.cs" />
     <Compile Include="SavedSearch\SavedSearchRequestProcessor.cs" />
     <Compile Include="SavedSearch\SavedSearchType.cs" />
-    <Compile Include="Search\AtomAuthor.cs" />
-    <Compile Include="Search\AtomEntry.cs" />
-    <Compile Include="Search\AtomFeed.cs" />
     <Compile Include="Search\Attitude.cs" />
     <Compile Include="Search\ResultType.cs" />
     <Compile Include="Search\Search.cs" />

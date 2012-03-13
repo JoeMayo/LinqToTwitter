@@ -10,6 +10,8 @@ using System.Linq;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 
+using LinqToTwitter.Common;
+
 namespace LinqToTwitter
 {
     /// <summary>
@@ -249,6 +251,8 @@ namespace LinqToTwitter
         /// By default, user timeline doesn't include retweets,
         /// but you can set this to true to includes retweets
         /// </summary>
+        // TODO: remove after 5/14/12
+        [Obsolete("All API methods capable of including retweets will return them regardless of the value provided.")]
         public bool IncludeRetweets { get; set; }
 
         /// <summary>
@@ -259,6 +263,8 @@ namespace LinqToTwitter
         /// <summary>
         /// Add entities to tweets
         /// </summary>
+        // TODO: remove after 5/14/12
+        [Obsolete("All API methods capable of including entities will return them regardless of the value provided.")]
         public bool IncludeEntities { get; set; }
 
         /// <summary>

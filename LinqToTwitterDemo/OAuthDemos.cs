@@ -34,7 +34,7 @@ namespace LinqToTwitterDemo
             {
                 var tweets =
                     from tweet in twitterCtx.Status
-                    where tweet.Type == StatusType.Friends
+                    where tweet.Type == StatusType.Home
                     select tweet;
 
                 tweets.ToList().ForEach(
@@ -160,7 +160,7 @@ namespace LinqToTwitterDemo
             {
                 var tweets =
                         from tweet in twitterCtx.Status
-                        where tweet.Type == StatusType.Friends
+                        where tweet.Type == StatusType.Show
                         select tweet;
 
                 tweets.ToList().ForEach(

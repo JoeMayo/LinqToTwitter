@@ -2204,6 +2204,8 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="device">type of device to use</param>
         /// <returns>User info</returns>
+        // TODO: remove after deprecation date 
+        [Obsolete("Deprecated as of 5/14/12.", true)]
         public virtual User UpdateAccountDeliveryDevice(DeviceType device)
         {
             return UpdateAccountDeliveryDevice(device, null);
@@ -2215,6 +2217,8 @@ namespace LinqToTwitter
         /// <param name="device">type of device to use</param>
         /// <param name="callback">Async Callback used in Silverlight queries</param>
         /// <returns>User info</returns>
+        // TODO: remove after deprecation date 
+        [Obsolete("Deprecated as of 5/14/12.", true)]
         public virtual User UpdateAccountDeliveryDevice(DeviceType device, Action<TwitterAsyncResponse<User>> callback)
         {
             var accountUrl = BaseUrl + "account/update_delivery_device.xml";

@@ -9,6 +9,8 @@ using System.Collections.Generic;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 
+using LinqToTwitter.Common;
+
 namespace LinqToTwitter
 {
     /// <summary>

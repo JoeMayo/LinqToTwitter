@@ -126,7 +126,7 @@ namespace LinqToTwitter
         /// <returns>Returns a Url encoded string</returns>
         protected string UrlEncode(string value)
         {
-            StringBuilder result = new StringBuilder();
+            var result = new StringBuilder();
 
             if (!string.IsNullOrEmpty(value))
             {
@@ -142,7 +142,11 @@ namespace LinqToTwitter
                     }
                     else
                     {
-                        result.Append(HttpUtility.UrlEncode(symbol.ToString()).ToUpper());
+#if CLIENT_PROFILE
+                        result.Append(WebUtility.HtmlEncode(symbol.ToString(CultureInfo.InvariantCulture)).ToUpper());
+#else
+                        result.Append(HttpUtility.UrlEncode(symbol.ToString(CultureInfo.InvariantCulture)).ToUpper());
+#endif
                     }
                 }
             }
@@ -282,7 +286,11 @@ namespace LinqToTwitter
             switch (signatureType)
             {
                 case OAuthSignatureTypes.PLAINTEXT:
+#if CLIENT_PROFILE
+                    return WebUtility.HtmlEncode(string.Format(CultureInfo.InvariantCulture, "{0}&{1}", consumerSecret, tokenSecret));
+#else
                     return HttpUtility.UrlEncode(string.Format(CultureInfo.InvariantCulture, "{0}&{1}", consumerSecret, tokenSecret));
+#endif
                 case OAuthSignatureTypes.HMACSHA1:
                     string signatureBase = GenerateSignatureBase(request, consumerKey, token, tokenSecret, verifier, callback, httpMethod, timeStamp, nonce, HMACSHA1SignatureType, out normalizedUrl, out normalizedRequestParameters);
                     HMACSHA1 hmacsha1 = new HMACSHA1();

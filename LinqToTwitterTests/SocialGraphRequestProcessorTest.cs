@@ -150,9 +150,9 @@ namespace LinqToTwitterTests
         [ExpectedException(typeof(ArgumentException))]
         public void BuildURLTest()
         {
-            SocialGraphRequestProcessor<SocialGraph> target = new SocialGraphRequestProcessor<SocialGraph>() { BaseUrl = "http://twitter.com/" };
+            SocialGraphRequestProcessor<SocialGraph> target = new SocialGraphRequestProcessor<SocialGraph>() { BaseUrl = "https://api.twitter.com/1/" };
             Dictionary<string, string> parameters = new Dictionary<string, string>();
-            string expected = "http://twitter.com/friends/ids.xml";
+            string expected = "https://api.twitter.com/1/friends/ids.xml";
 
             Request req = target.BuildURL(parameters);
 
@@ -165,7 +165,7 @@ namespace LinqToTwitterTests
         [TestMethod]
         public void BuildSocialGraphFriendsUrlTest()
         {
-            SocialGraphRequestProcessor<SocialGraph> target = new SocialGraphRequestProcessor<SocialGraph>() { BaseUrl = "http://twitter.com/" };
+            SocialGraphRequestProcessor<SocialGraph> target = new SocialGraphRequestProcessor<SocialGraph>() { BaseUrl = "https://api.twitter.com/1/" };
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                 {
@@ -175,7 +175,7 @@ namespace LinqToTwitterTests
                     { "ScreenName", "456" },
                     { "Cursor", "1" }
                 };
-            string expected = "http://twitter.com/friends/ids/JoeMayo.xml?user_id=123&screen_name=456&cursor=1";
+            string expected = "https://api.twitter.com/1/friends/ids/JoeMayo.xml?user_id=123&screen_name=456&cursor=1";
 
             Request req = target.BuildURL(parameters);
 
@@ -185,14 +185,14 @@ namespace LinqToTwitterTests
         [TestMethod]
         public void BuildUrl_Defaults_Cursor_When_Not_Specified()
         {
-            var socialGraph = new SocialGraphRequestProcessor<SocialGraph>() { BaseUrl = "http://twitter.com/" };
+            var socialGraph = new SocialGraphRequestProcessor<SocialGraph>() { BaseUrl = "https://api.twitter.com/1/" };
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                 {
                     { "Type", SocialGraphType.Friends.ToString() },
                     { "ID", "JoeMayo" },
                 };
-            string expected = "http://twitter.com/friends/ids/JoeMayo.xml?cursor=-1";
+            string expected = "https://api.twitter.com/1/friends/ids/JoeMayo.xml?cursor=-1";
 
             Request req = socialGraph.BuildURL(parameters);
             
@@ -202,7 +202,7 @@ namespace LinqToTwitterTests
         [TestMethod]
         public void BuildURL_Creates_URL_For_Followers()
         {
-            var reqProc = new SocialGraphRequestProcessor<SocialGraph>() { BaseUrl = "http://twitter.com/" };
+            var reqProc = new SocialGraphRequestProcessor<SocialGraph>() { BaseUrl = "https://api.twitter.com/1/" };
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                 {
@@ -212,7 +212,7 @@ namespace LinqToTwitterTests
                     { "ScreenName", "456" },
                     { "Cursor", "1" }
                 };
-            string expected = "http://twitter.com/followers/ids/JoeMayo.xml?user_id=123&screen_name=456&cursor=1";
+            string expected = "https://api.twitter.com/1/followers/ids/JoeMayo.xml?user_id=123&screen_name=456&cursor=1";
 
             Request req = reqProc.BuildURL(parameters);
 
@@ -225,7 +225,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void MissingTypeTest()
         {
-            SocialGraphRequestProcessor<SocialGraph> target = new SocialGraphRequestProcessor<SocialGraph>() { BaseUrl = "http://twitter.com/" };
+            SocialGraphRequestProcessor<SocialGraph> target = new SocialGraphRequestProcessor<SocialGraph>() { BaseUrl = "https://api.twitter.com/1/" };
             Dictionary<string, string> parameters = new Dictionary<string, string> { };
 
             try
@@ -246,7 +246,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void NullParametersTest()
         {
-            SocialGraphRequestProcessor<SocialGraph> target = new SocialGraphRequestProcessor<SocialGraph>() { BaseUrl = "http://twitter.com/" };
+            SocialGraphRequestProcessor<SocialGraph> target = new SocialGraphRequestProcessor<SocialGraph>() { BaseUrl = "https://api.twitter.com/1/" };
             Dictionary<string, string> parameters = null;
 
             try

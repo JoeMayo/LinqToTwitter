@@ -54,8 +54,9 @@ namespace LinqToTwitter
         /// <returns>URL conforming to Twitter API</returns>
         public virtual Request BuildURL(Dictionary<string, string> parameters)
         {
+            const string typeParam = "Type";
             if (parameters == null || !parameters.ContainsKey("Type"))
-                throw new ArgumentException("You must set Type.", "Type");
+                throw new ArgumentException("You must set Type.", typeParam);
 
             Type = RequestProcessorHelper.ParseQueryEnumType<FavoritesType>(parameters["Type"]);
 

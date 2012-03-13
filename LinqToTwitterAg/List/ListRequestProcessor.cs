@@ -8,6 +8,11 @@ namespace LinqToTwitter
 {
     public class ListRequestProcessor<T> : IRequestProcessor<T>
     {
+        const string TypeParam = "Type";
+        const string ListIdOrSlugParam = "ListIdOrSlug";
+        const string OwnerIdOrOwnerScreenName = "OwnerIdOrOwnerScreenName";
+        const string UserIdOrScreenName = "UserIdOrScreenName";
+
         /// <summary>
         /// base url for request
         /// </summary>
@@ -81,11 +86,15 @@ namespace LinqToTwitter
         /// <summary>
         /// Add entities to tweets
         /// </summary>
+        // TODO: remove after 5/14/12
+        [Obsolete("All API methods capable of including entities will return them regardless of the value provided.")]
         public bool IncludeEntities { get; set; }
 
         /// <summary>
         /// Add retweets, in addition to normal tweets
         /// </summary>
+        // TODO: remove after 5/14/12
+        [Obsolete("All API methods capable of including retweets will return them regardless of the value provided.")]
         public bool IncludeRetweets { get; set; }
 
         /// <summary>
@@ -209,12 +218,10 @@ namespace LinqToTwitter
         /// <returns>URL conforming to Twitter API</returns>
         public virtual Request BuildURL(Dictionary<string, string> parameters)
         {
-            if (parameters == null || !parameters.ContainsKey("Type"))
-            {
-                throw new ArgumentException("You must set Type.", "Type");
-            }
+            if (parameters == null || !parameters.ContainsKey(TypeParam))
+                throw new ArgumentException("You must set Type.", TypeParam);
 
-            Type = RequestProcessorHelper.ParseQueryEnumType<ListType>(parameters["Type"]);
+            Type = RequestProcessorHelper.ParseQueryEnumType<ListType>(parameters[TypeParam]);
 
             switch (Type)
             {
@@ -222,7 +229,8 @@ namespace LinqToTwitter
                     return BuildAllUrl(parameters);
                 case ListType.Lists:
                     return BuildListsUrl(parameters);
-                case ListType.List: // TODO: Mark List enum as error soon, it's currently only a warning
+                // TODO: List is deprecated
+                //case ListType.List: 
                 case ListType.Show:
                     return BuildShowUrl(parameters);
                 case ListType.Statuses:
@@ -240,7 +248,7 @@ namespace LinqToTwitter
                 case ListType.IsSubscribed:
                     return BuildIsSubcribedUrl(parameters);
                 default:
-                    throw new ArgumentException("Invalid ListType", "Type");
+                    throw new ArgumentException("Invalid ListType", TypeParam);
             }
         }
 
@@ -276,10 +284,11 @@ namespace LinqToTwitter
         /// <returns>Base URL + lists request</returns>
         private Request BuildListsUrl(Dictionary<string, string> parameters)
         {
+            const string userIDOrScreenNameParam = "UserIdOrScreenName";
             if (!(parameters.ContainsKey("UserID") && !string.IsNullOrEmpty(parameters["UserID"])) &&
                 !(parameters.ContainsKey("ScreenName") && !string.IsNullOrEmpty(parameters["ScreenName"])))
             {
-                throw new ArgumentException("Either UserID or ScreenName are required.", "UserIdOrScreenName");
+                throw new ArgumentException("Either UserID or ScreenName are required.", userIDOrScreenNameParam);
             }
 
             var req = new Request(BaseUrl + "lists.xml");
@@ -316,14 +325,14 @@ namespace LinqToTwitter
             if ((!parameters.ContainsKey("ListID") || string.IsNullOrEmpty(parameters["ListID"])) &&
                 (!parameters.ContainsKey("Slug") || string.IsNullOrEmpty(parameters["Slug"])))
             {
-                throw new ArgumentException("You must specify either ListID or Slug.", "ListIdOrSlug");
+                throw new ArgumentException("You must specify either ListID or Slug.", ListIdOrSlugParam);
             }
 
             if (parameters.ContainsKey("Slug") &&
                 !(parameters.ContainsKey("OwnerID") && !string.IsNullOrEmpty(parameters["OwnerID"])) &&
                 !(parameters.ContainsKey("OwnerScreenName") && !string.IsNullOrEmpty(parameters["OwnerScreenName"])))
             {
-                throw new ArgumentException("If you specify a Slug, you must also specify either OwnerID or OwnerScreenName.", "OwnerIdOrOwnerScreenName");
+                throw new ArgumentException("If you specify a Slug, you must also specify either OwnerID or OwnerScreenName.", OwnerIdOrOwnerScreenName);
             }
 
             var req = new Request(BaseUrl + @"lists/show.xml");
@@ -366,14 +375,14 @@ namespace LinqToTwitter
             if ((!parameters.ContainsKey("ListID") || string.IsNullOrEmpty(parameters["ListID"])) &&
                 (!parameters.ContainsKey("Slug") || string.IsNullOrEmpty(parameters["Slug"])))
             {
-                throw new ArgumentException("You must specify either ListID or Slug.", "ListIdOrSlug");
+                throw new ArgumentException("You must specify either ListID or Slug.", ListIdOrSlugParam);
             }
 
             if (parameters.ContainsKey("Slug") &&
                 !(parameters.ContainsKey("OwnerID") && !string.IsNullOrEmpty(parameters["OwnerID"])) &&
                 !(parameters.ContainsKey("OwnerScreenName") && !string.IsNullOrEmpty(parameters["OwnerScreenName"])))
             {
-                throw new ArgumentException("If you specify a Slug, you must also specify either OwnerID or OwnerScreenName.", "OwnerIdOrOwnerScreenName");
+                throw new ArgumentException("If you specify a Slug, you must also specify either OwnerID or OwnerScreenName.", OwnerIdOrOwnerScreenName);
             }
 
             var req = new Request(BaseUrl + "lists/statuses.xml");
@@ -471,7 +480,7 @@ namespace LinqToTwitter
             if (!(parameters.ContainsKey("UserID") && !string.IsNullOrEmpty(parameters["UserID"])) &&
                 !(parameters.ContainsKey("ScreenName") && !string.IsNullOrEmpty(parameters["ScreenName"])))
             {
-                throw new ArgumentException("Either UserID or ScreenName are required.", "UserIdOrScreenName");
+                throw new ArgumentException("Either UserID or ScreenName are required.", UserIdOrScreenName);
             }
 
             var req = new Request(BaseUrl + "lists/memberships.xml");
@@ -517,7 +526,7 @@ namespace LinqToTwitter
             if (!(parameters.ContainsKey("UserID") && !string.IsNullOrEmpty(parameters["UserID"])) &&
                 !(parameters.ContainsKey("ScreenName") && !string.IsNullOrEmpty(parameters["ScreenName"])))
             {
-                throw new ArgumentException("Either UserID or ScreenName are required.", "UserIdOrScreenName");
+                throw new ArgumentException("Either UserID or ScreenName are required.", UserIdOrScreenName);
             }
 
             var req = new Request(BaseUrl + "lists/subscriptions.xml");
@@ -554,14 +563,14 @@ namespace LinqToTwitter
             if ((!parameters.ContainsKey("ListID") || string.IsNullOrEmpty(parameters["ListID"])) &&
                (!parameters.ContainsKey("Slug") || string.IsNullOrEmpty(parameters["Slug"])))
             {
-                throw new ArgumentException("You must specify either ListID or Slug.", "ListIdOrSlug");
+                throw new ArgumentException("You must specify either ListID or Slug.", ListIdOrSlugParam);
             }
 
             if (parameters.ContainsKey("Slug") &&
                 !(parameters.ContainsKey("OwnerID") && !string.IsNullOrEmpty(parameters["OwnerID"])) &&
                 !(parameters.ContainsKey("OwnerScreenName") && !string.IsNullOrEmpty(parameters["OwnerScreenName"])))
             {
-                throw new ArgumentException("If you specify a Slug, you must also specify either OwnerID or OwnerScreenName.", "OwnerIdOrOwnerScreenName");
+                throw new ArgumentException("If you specify a Slug, you must also specify either OwnerID or OwnerScreenName.", OwnerIdOrOwnerScreenName);
             }
 
             var req = new Request(BaseUrl + "lists/members.xml");
@@ -619,20 +628,20 @@ namespace LinqToTwitter
             if ((!parameters.ContainsKey("UserID") || string.IsNullOrEmpty(parameters["UserID"])) &&
                (!parameters.ContainsKey("ScreenName") || string.IsNullOrEmpty(parameters["ScreenName"])))
             {
-                throw new ArgumentException("You must specify either UserID or ScreenName of the user you're checking.", "UserIdOrScreenName");
+                throw new ArgumentException("You must specify either UserID or ScreenName of the user you're checking.", UserIdOrScreenName);
             }
 
             if ((!parameters.ContainsKey("ListID") || string.IsNullOrEmpty(parameters["ListID"])) &&
                (!parameters.ContainsKey("Slug") || string.IsNullOrEmpty(parameters["Slug"])))
             {
-                throw new ArgumentException("You must specify either ListID or Slug.", "ListIdOrSlug");
+                throw new ArgumentException("You must specify either ListID or Slug.", ListIdOrSlugParam);
             }
 
             if (parameters.ContainsKey("Slug") &&
                 !(parameters.ContainsKey("OwnerID") && !string.IsNullOrEmpty(parameters["OwnerID"])) &&
                 !(parameters.ContainsKey("OwnerScreenName") && !string.IsNullOrEmpty(parameters["OwnerScreenName"])))
             {
-                throw new ArgumentException("If you specify a Slug, you must also specify either OwnerID or OwnerScreenName.", "OwnerIdOrOwnerScreenName");
+                throw new ArgumentException("If you specify a Slug, you must also specify either OwnerID or OwnerScreenName.", OwnerIdOrOwnerScreenName);
             }
 
             var req = new Request(BaseUrl + "lists/members/show.xml");
@@ -696,14 +705,14 @@ namespace LinqToTwitter
             if ((!parameters.ContainsKey("ListID") || string.IsNullOrEmpty(parameters["ListID"])) &&
                (!parameters.ContainsKey("Slug") || string.IsNullOrEmpty(parameters["Slug"])))
             {
-                throw new ArgumentException("You must specify either ListID or Slug.", "ListIdOrSlug");
+                throw new ArgumentException("You must specify either ListID or Slug.", ListIdOrSlugParam);
             }
 
             if (parameters.ContainsKey("Slug") &&
                 !(parameters.ContainsKey("OwnerID") && !string.IsNullOrEmpty(parameters["OwnerID"])) &&
                 !(parameters.ContainsKey("OwnerScreenName") && !string.IsNullOrEmpty(parameters["OwnerScreenName"])))
             {
-                throw new ArgumentException("If you specify a Slug, you must also specify either OwnerID or OwnerScreenName.", "OwnerIdOrOwnerScreenName");
+                throw new ArgumentException("If you specify a Slug, you must also specify either OwnerID or OwnerScreenName.", OwnerIdOrOwnerScreenName);
             }
 
             var req = new Request(BaseUrl + "lists/subscribers.xml");
@@ -761,20 +770,20 @@ namespace LinqToTwitter
             if ((!parameters.ContainsKey("UserID") || string.IsNullOrEmpty(parameters["UserID"])) &&
                (!parameters.ContainsKey("ScreenName") || string.IsNullOrEmpty(parameters["ScreenName"])))
             {
-                throw new ArgumentException("You must specify either UserID or ScreenName of the user you're checking.", "UserIdOrScreenName");
+                throw new ArgumentException("You must specify either UserID or ScreenName of the user you're checking.", UserIdOrScreenName);
             }
 
             if ((!parameters.ContainsKey("ListID") || string.IsNullOrEmpty(parameters["ListID"])) &&
                (!parameters.ContainsKey("Slug") || string.IsNullOrEmpty(parameters["Slug"])))
             {
-                throw new ArgumentException("You must specify either ListID or Slug.", "ListIdOrSlug");
+                throw new ArgumentException("You must specify either ListID or Slug.", ListIdOrSlugParam);
             }
 
             if (parameters.ContainsKey("Slug") &&
                 !(parameters.ContainsKey("OwnerID") && !string.IsNullOrEmpty(parameters["OwnerID"])) &&
                 !(parameters.ContainsKey("OwnerScreenName") && !string.IsNullOrEmpty(parameters["OwnerScreenName"])))
             {
-                throw new ArgumentException("If you specify a Slug, you must also specify either OwnerID or OwnerScreenName.", "OwnerIdOrOwnerScreenName");
+                throw new ArgumentException("If you specify a Slug, you must also specify either OwnerID or OwnerScreenName.", OwnerIdOrOwnerScreenName);
             }
 
             var req = new Request(BaseUrl + "lists/subscribers/show.xml");
@@ -841,19 +850,25 @@ namespace LinqToTwitter
             }
 
             XElement twitterResponse = XElement.Parse(responseXml);
-            List<List> lists = new List<List>();
+            var lists = new List<List>();
 
-            if (twitterResponse.Name == "lists_list" || twitterResponse.Name == "lists")
+            if (twitterResponse.Name == "lists_list")
             {
-                IEnumerable<XElement> listElements =
-                    twitterResponse.Name == "lists_list" ?
-                        twitterResponse.Element("lists").Elements("list") :
-                        twitterResponse.Elements("list");
-
+                XElement responseLists = twitterResponse.Element("lists");
+                if (responseLists != null)
+                {
+                    lists =
+                        (from list in responseLists.Elements("list")
+                         select List.CreateList(list, twitterResponse))
+                        .ToList();
+                }
+            }
+            else if (twitterResponse.Name == "lists")
+            {
                 lists =
-                    (from list in listElements
+                    (from list in twitterResponse.Elements("list")
                      select List.CreateList(list, twitterResponse))
-                     .ToList();
+                    .ToList();
             }
             else if (twitterResponse.Name == "list")
             {
@@ -863,15 +878,17 @@ namespace LinqToTwitter
             }
             else if (twitterResponse.Name == "users_list")
             {
-                lists.Add(
-                    new List
-                    {
-                        Users =
-                            (from user in twitterResponse.Element("users").Elements("user")
-                             select User.CreateUser(user))
-                             .ToList(),
-                        CursorMovement = Cursors.CreateCursors(twitterResponse)
-                    });
+                XElement users = twitterResponse.Element("users");
+                if (users != null)
+                    lists.Add(
+                        new List
+                        {
+                            Users =
+                                (from user in users.Elements("user")
+                                 select User.CreateUser(user))
+                                .ToList(),
+                            CursorMovement = Cursors.CreateCursors(twitterResponse)
+                        });
             }
             else if (twitterResponse.Name == "user")
             {

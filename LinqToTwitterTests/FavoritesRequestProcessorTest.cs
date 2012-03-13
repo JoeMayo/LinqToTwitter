@@ -172,7 +172,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void GetParametersTest()
         {
-            FavoritesRequestProcessor<Favorites> target = new FavoritesRequestProcessor<Favorites>() { BaseUrl = "http://twitter.com/" };
+            FavoritesRequestProcessor<Favorites> target = new FavoritesRequestProcessor<Favorites>() { BaseUrl = "https://api.twitter.com/1/" };
             Expression<Func<Favorites, bool>> expression =
                 fav =>
                     fav.Type == FavoritesType.Favorites &&
@@ -199,7 +199,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void BuildURLTest()
         {
-            FavoritesRequestProcessor<Favorites> target = new FavoritesRequestProcessor<Favorites>() { BaseUrl = "http://twitter.com/" };
+            FavoritesRequestProcessor<Favorites> target = new FavoritesRequestProcessor<Favorites>() { BaseUrl = "https://api.twitter.com/1/" };
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                 {
@@ -207,7 +207,7 @@ namespace LinqToTwitterTests
                     { "ID", "123" },
                     { "Page", "1" },
                 };
-            string expected = "http://twitter.com/favorites.xml?page=1&id=123";
+            string expected = "https://api.twitter.com/1/favorites.xml?page=1&id=123";
 
             Request req = target.BuildURL(parameters);
 
@@ -220,7 +220,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void MissingTypeTest()
         {
-            FavoritesRequestProcessor<Favorites> target = new FavoritesRequestProcessor<Favorites>() { BaseUrl = "http://twitter.com/" };
+            FavoritesRequestProcessor<Favorites> target = new FavoritesRequestProcessor<Favorites>() { BaseUrl = "https://api.twitter.com/1/" };
             Dictionary<string, string> parameters = new Dictionary<string, string> { };
 
             try
@@ -241,7 +241,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void NullParametersTest()
         {
-            FavoritesRequestProcessor<Favorites> target = new FavoritesRequestProcessor<Favorites>() { BaseUrl = "http://twitter.com/" };
+            FavoritesRequestProcessor<Favorites> target = new FavoritesRequestProcessor<Favorites>() { BaseUrl = "https://api.twitter.com/1/" };
             Dictionary<string, string> parameters = null;
 
             try

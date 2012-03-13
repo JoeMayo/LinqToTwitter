@@ -180,7 +180,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void GetParameters_Returns_Parameters()
         {
-            FriendshipRequestProcessor<Friendship> target = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "http://twitter.com/" };
+            FriendshipRequestProcessor<Friendship> target = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "https://api.twitter.com/1/" };
             Expression<Func<Friendship, bool>> expression = 
                 friend => 
                     friend.Type == FriendshipType.Exists &&
@@ -231,7 +231,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void BuildExistsURLTest()
         {
-            FriendshipRequestProcessor<Friendship> target = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "http://twitter.com/" };
+            FriendshipRequestProcessor<Friendship> target = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "https://api.twitter.com/1/" };
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                 {
@@ -239,7 +239,7 @@ namespace LinqToTwitterTests
                     { "SubjectUser", "123" },
                     { "FollowingUser", "456" }
                 };
-            string expected = "http://twitter.com/friendships/exists.xml?user_a=123&user_b=456";
+            string expected = "https://api.twitter.com/1/friendships/exists.xml?user_a=123&user_b=456";
 
             Request req = target.BuildURL(parameters);
 
@@ -252,7 +252,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void BuildShowURLTest()
         {
-            FriendshipRequestProcessor<Friendship> target = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "http://twitter.com/" };
+            FriendshipRequestProcessor<Friendship> target = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "https://api.twitter.com/1/" };
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                 {
@@ -262,7 +262,7 @@ namespace LinqToTwitterTests
                     { "TargetUserID", "456" },
                     { "TargetScreenName", "LinqToTweeter" }
                 };
-            string expected = "http://twitter.com/friendships/show.xml?source_id=123&source_screen_name=JoeMayo&target_id=456&target_screen_name=LinqToTweeter";
+            string expected = "https://api.twitter.com/1/friendships/show.xml?source_id=123&source_screen_name=JoeMayo&target_id=456&target_screen_name=LinqToTweeter";
 
             Request req = target.BuildURL(parameters);
 
@@ -276,7 +276,7 @@ namespace LinqToTwitterTests
         [ExpectedException(typeof(ArgumentException))]
         public void BuildShowWithoutSourceURLTest()
         {
-            FriendshipRequestProcessor<Friendship> target = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "http://twitter.com/" };
+            FriendshipRequestProcessor<Friendship> target = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "https://api.twitter.com/1/" };
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                 {
@@ -295,7 +295,7 @@ namespace LinqToTwitterTests
         [ExpectedException(typeof(ArgumentException))]
         public void BuildShowWithoutTargetURLTest()
         {
-            FriendshipRequestProcessor<Friendship> target = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "http://twitter.com/" };
+            FriendshipRequestProcessor<Friendship> target = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "https://api.twitter.com/1/" };
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                 {
@@ -332,7 +332,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void MissingTypeTest()
         {
-            FriendshipRequestProcessor<Friendship> target = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "http://twitter.com/" };
+            FriendshipRequestProcessor<Friendship> target = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "https://api.twitter.com/1/" };
             Dictionary<string, string> parameters = new Dictionary<string, string> { };
 
             try
@@ -353,7 +353,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void NullParametersTest()
         {
-            FriendshipRequestProcessor<Friendship> target = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "http://twitter.com/" };
+            FriendshipRequestProcessor<Friendship> target = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "https://api.twitter.com/1/" };
             Dictionary<string, string> parameters = null;
 
             try

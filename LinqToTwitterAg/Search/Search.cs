@@ -131,6 +131,8 @@ namespace LinqToTwitter
         /// <summary>
         /// Include entities in results
         /// </summary>
+        // TODO: remove after 5/14/12
+        [Obsolete("All API methods capable of including entities will return them regardless of the value provided.")]
         public bool IncludeEntities { get; set; }
 
         //

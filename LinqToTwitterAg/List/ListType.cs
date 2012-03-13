@@ -15,7 +15,9 @@ namespace LinqToTwitter
         /// Show specified list
         /// </summary>
         Show,
-        [Obsolete("This enum value is obsolete and will become an error in a later release. Please use Show instead.")]
+
+        // TODO: deprecated
+        [Obsolete("This enum value is obsolete and will become an error in a later release. Please use Show instead.", true)]
         List,
 
         /// <summary>

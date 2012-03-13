@@ -50,13 +50,14 @@ namespace LinqToTwitter
         /// <returns>URL conforming to Twitter API</returns>
         public virtual Request BuildURL(Dictionary<string, string> parameters)
         {
-            if (!parameters.ContainsKey("QueryString"))
-                throw new ArgumentNullException("QueryString", "QueryString parameter is required.");
+            const string queryStringParam = "QueryString";
+            if (parameters == null || !parameters.ContainsKey("QueryString"))
+                throw new ArgumentNullException(queryStringParam, "QueryString parameter is required.");
 
             QueryString = parameters["QueryString"].Trim();
 
             if (QueryString == string.Empty)
-                throw new ArgumentException("Blank QueryString isn't valid.", "QueryString");
+                throw new ArgumentException("Blank QueryString isn't valid.", queryStringParam);
 
             string url = BaseUrl.TrimEnd('/') + "/" + QueryString.TrimStart('/');
             var parts = url.Split('?');

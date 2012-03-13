@@ -160,18 +160,6 @@ namespace LinqToTwitterDemo
         }
 
         /// <summary>
-        /// Shows how to update a device
-        /// </summary>
-        /// <param name="twitterCtx"></param>
-        private static void UpdateDeliveryDevice(TwitterContext twitterCtx)
-        {
-            // TODO: Receiving 410 Gone - Research if replaced
-            var user = twitterCtx.UpdateAccountDeliveryDevice(DeviceType.None);
-
-            Console.WriteLine("Device Type: {0}", user.Notifications.ToString());
-        }
-
-        /// <summary>
         /// Shows how to end the session for the current account
         /// </summary>
         /// <param name="twitterCtx"></param>

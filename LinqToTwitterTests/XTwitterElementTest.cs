@@ -1,4 +1,5 @@
-﻿using LinqToTwitter;
+﻿using LinqToTwitter.Common;
+
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Xml.Linq;
@@ -27,9 +28,9 @@ namespace LinqToTwitterTests
   <entry>
     <id>tag:search.twitter.com,2005:87232168752988160</id>
     <published>2011-07-02T18:52:24Z</published>
-    <link type=""text/html"" href=""http://twitter.com/amberrmcfly/statuses/87232168752988160"" rel=""alternate""/>
+    <link type=""text/html"" href=""https://api.twitter.com/1/amberrmcfly/statuses/87232168752988160"" rel=""alternate""/>
     <title>@SarahNeateX thankyou :) i was gonna do that but i decided to try it just in case :L x</title>
-    <content type=""html"">&lt;a href=&quot;http://twitter.com/SarahNeateX&quot;&gt;@SarahNeateX&lt;/a&gt; thankyou :) i was gonna do that but i decided to try it just in case :L x</content>
+    <content type=""html"">&lt;a href=&quot;https://api.twitter.com/1/SarahNeateX&quot;&gt;@SarahNeateX&lt;/a&gt; thankyou :) i was gonna do that but i decided to try it just in case :L x</content>
     <updated>2011-07-02T18:52:24Z</updated>
     <link type=""image/png"" href=""http://a3.twimg.com/profile_images/1396078312/cam_062_normal.jpg"" rel=""image""/>
     <google:location>Devizes</google:location>
@@ -38,11 +39,11 @@ namespace LinqToTwitterTests
     <twitter:metadata>
       <twitter:result_type>recent</twitter:result_type>
     </twitter:metadata>
-    <twitter:source>&lt;a href=&quot;http://twitter.com/&quot;&gt;web&lt;/a&gt;</twitter:source>
+    <twitter:source>&lt;a href=&quot;https://api.twitter.com/1/&quot;&gt;web&lt;/a&gt;</twitter:source>
     <twitter:lang>en</twitter:lang>
     <author>
       <name>amberrmcfly (Amber Elliott)</name>
-      <uri>http://twitter.com/amberrmcfly</uri>
+      <uri>https://api.twitter.com/1/amberrmcfly</uri>
     </author>
   </entry>
 </feed>";

@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using LitJson;
 
 #if SILVERLIGHT && !WINDOWS_PHONE
     using System.Windows.Browser;
@@ -78,6 +80,8 @@ namespace LinqToTwitter
         /// <summary>
         /// Include entities in results
         /// </summary>
+        // TODO: remove after 5/14/12
+        [Obsolete("All API methods capable of including entities will return them regardless of the value provided.")]
         public bool IncludeEntities { get; set; }
 
         /// <summary>
@@ -194,10 +198,9 @@ namespace LinqToTwitter
         /// <returns>URL conforming to Twitter API</returns>
         public Request BuildURL(Dictionary<string, string> parameters)
         {
+            const string typeParam = "Type";
             if (parameters == null || !parameters.ContainsKey("Type"))
-            {
-                throw new ArgumentException("You must set Type.", "Type");
-            }
+                throw new ArgumentException("You must set Type.", typeParam);
 
             // Joe: Why force a Type when there is only one Type?
             //
@@ -405,76 +408,258 @@ namespace LinqToTwitter
         /// <returns>List of Search</returns>
         public virtual List<T> ProcessResults(string responseJson)
         {
-            IEnumerable<Search> search = Enumerable.Empty<Search>();
+            IEnumerable<Search> search;
+
+            if (string.IsNullOrEmpty(responseJson))
+            {
+                search = new List<Search> { new Search() };
+            }
+            else
+            {
+                //var searchResult = Serialize(responseJson);
+                var searchResult = JsonSerialize(responseJson);
+
+                search = new List<Search> { searchResult };
+            }
+
+            return search.OfType<T>().ToList();
+        }
+
+        Search JsonSerialize(string responseJson)
+        {
+            JsonData search = JsonMapper.ToObject(responseJson);
+
+            var searchResult = new Search
+            {
+                Type = Type,
+                GeoCode = GeoCode,
+                Page = Page,
+                PageSize = PageSize,
+                Query = Query,
+                ShowUser = ShowUser,
+                SinceID = SinceID,
+                SearchLanguage = SearchLanguage,
+                Locale = Locale,
+                Since = Since.Date,
+                Until = Until.Date,
+                ResultType = ResultType,
+                WordPhrase = WordPhrase,
+                WordAnd = WordAnd,
+                WordOr = WordOr,
+                WordNot = WordNot,
+                Hashtag = Hashtag,
+                PersonFrom = PersonFrom,
+                PersonTo = PersonTo,
+                PersonReference = PersonReference,
+                Attitude = Attitude,
+                WithLinks = WithLinks,
+                WithRetweets = WithRetweets,
+                IncludeEntities = IncludeEntities,
+                CompletedIn = search["completed_in"] == null ? 0m : (decimal)search["completed_in"],
+                MaxID = search["max_id"] == null ? 0UL : (ulong)search["max_id"],
+                NextPage = search["next_page"] == null ? null : (string)search["next_page"],
+                PageResult = search["page"] == null ? 0 : (int)search["page"],
+                QueryResult = search["query"] == null ? null : (string)search["query"],
+                ResultsPerPageResult = search["results_per_page"] == null ? 0 : (int)search["results_per_page"],
+                SinceIDResult = search["since_id"] == null ? 0UL : (ulong)search["since_id"],
+                RefreshUrl = search["refresh_url"] == null ? null : (string)search["refresh_url"],
+                Results =
+                    (from JsonData result in search["results"]
+                     select new SearchEntry
+                     {
+                         CreatedAt = DateTimeOffset.Parse((string)result["created_at"]),
+                         Entities = new Entities
+                         {
+                             HashTagMentions =
+                                 !(result as IDictionary).Contains("entities") ||
+                                 !(result["entities"] as IDictionary).Contains("hashes") ||
+                                 result["entites"] == null || result["entities"]["hashes"] == null
+                                     ? new List<HashTagMention>()
+                                     : (from JsonData hash in result["entities"]["hashes"]
+                                        select new HashTagMention
+                                        {
+                                            Tag = (string)hash["text"],
+                                            Start = (int)hash["start"],
+                                            End = (int)hash["stop"]
+                                        })
+                                           .ToList(),
+                             MediaMentions =
+                                 !(result as IDictionary).Contains("entities") ||
+                                 !(result["entities"] as IDictionary).Contains("media") ||
+                                 result["entites"] == null || result["entities"]["media"] == null
+                                     ? new List<MediaMention>()
+                                     : (from JsonData media in result["entities"]["media"]
+                                        select new MediaMention
+                                        {
+                                            DisplayUrl = (string)media["display_url"],
+                                            ExpandedUrl = (string)media["expanded_url"],
+                                            ID = (ulong)media["id"],
+                                            MediaUrl = (string)media["media_url"],
+                                            MediaUrlHttps = (string)media["media_url_https"],
+                                            Sizes =
+                                                (from JsonData size in media["sizes"]
+                                                 select new PhotoSize
+                                                 {
+                                                     Type = (string)size["type"],
+                                                     Width = (int)size["w"],
+                                                     Height = (int)size["h"],
+                                                     Resize = (string)size["resize"]
+                                                 })
+                                                .ToList(),
+                                            Type = (string)media["type"],
+                                            Url = (string)media["url"],
+                                            Start = (int)media["start"],
+                                            End = (int)media["stop"]
+                                        })
+                                           .ToList(),
+                             UrlMentions =
+                                 !(result as IDictionary).Contains("entities") ||
+                                 !(result["entities"] as IDictionary).Contains("urls") ||
+                                 result["entites"] == null || result["entities"]["urls"] == null
+                                     ? new List<UrlMention>()
+                                     : (from JsonData url in result["entities"]["urls"]
+                                        select new UrlMention
+                                        {
+                                            Url = (string)url["url"],
+                                            DisplayUrl = (string)url["display_url"],
+                                            ExpandedUrl = (string)url["expanded_url"],
+                                            Start = (int)url["start"],
+                                            End = (int)url["stop"]
+                                        })
+                                       .ToList(),
+                             UserMentions =
+                                 !(result as IDictionary).Contains("entities") ||
+                                 !(result["entities"] as IDictionary).Contains("users") ||
+                                 result["entites"] == null || result["entities"]["users"] == null
+                                     ? new List<UserMention>()
+                                     : (from JsonData user in result["entities"]["users"]
+                                        select new UserMention
+                                        {
+                                            ScreenName = (string)user["screen_name"],
+                                            Name = (string)user["name"],
+                                            Id = (long)user["id"],
+                                            Start = (int)user["start"],
+                                            End = (int)user["stop"]
+                                        })
+                                       .ToList()
+                         },
+                         FromUser = (string)result["from_user"],
+                         FromUserID = (ulong)result["from_user_id"],
+                         FromUserName = (string)result["from_user_name"],
+                         Geo =
+                             !(result as IDictionary).Contains("geo") || result["geo"] == null
+                                 ? new Geometry { Coordinates = new List<Coordinate>() }
+                                 : new Geometry
+                                 {
+                                     Type = (string)result["geo"]["type"],
+                                     Coordinates = new List<Coordinate>
+                                     {
+                                         new Coordinate
+                                         {
+                                             Latitude = (double)result["geo"]["latitude"],
+                                             Longitude = (double)result["geo"]["longitude"]
+                                         }
+                                     }
+                                 },
+                         ID = (ulong)result["id"],
+                         IsoLanguageCode = (string)result["iso_language_code"],
+                         MetaData =
+                            !(result as IDictionary).Contains("metadata") || result["metadata"] == null ?
+                                new SearchMetaData() : 
+                                new SearchMetaData
+                                 {
+                                     RecentRetweets = 
+                                        !(result["metadata"] as IDictionary).Contains("recent_retweets") ||
+                                        result["metadata"]["recent_retweets"] == null ?
+                                            0 :
+                                            (int)result["metadata"]["recent_retweets"],
+                                     ResultType =
+                                        !(result["metadata"] as IDictionary).Contains("recent_retweets") ||
+                                        result["metadata"]["recent_retweets"] == null ?
+                                            ResultType.Mixed :
+                                            (ResultType)Enum.Parse(typeof(ResultType), (string)result["metadata"]["result_type"], true)
+                                 },
+                         ProfileImageUrl = result["profile_image_url"] == null ? null : (string)result["profile_image_url"],
+                         ProfileImageUrlHttps = result["profile_image_url_https"] == null ? null : (string)result["profile_image_url_https"],
+                         Source = result["source"] == null ? null : (string)result["source"],
+                         Text = result["text"] == null ? null : (string)result["text"],
+                         ToUser = result["to_user"] == null ? null : (string)result["to_user"],
+                         ToUserID = result["to_user"] == null ? 0UL : (ulong)result["to_user_id"],
+                         ToUserName = result["to_user_name"] == null ? null : (string)result["to_user_name"]
+                     }).ToList()
+            };
+            return searchResult;
+        }
+
+        Search Serialize(string responseJson)
+        {
             var serializer = Json.SearchConverter.GetSerializer();
             var parsedResponse = serializer.Deserialize<Json.Search>(responseJson);
 
-            if (!string.IsNullOrEmpty(responseJson))
+            var searchResult = new Search
             {
-                var searchResult = new Search
-                {
-                    Type = Type,
-                    GeoCode = GeoCode,
-                    Page = Page,
-                    PageSize = PageSize,
-                    Query = Query,
-                    ShowUser = ShowUser,
-                    SinceID = SinceID,
-                    SearchLanguage = SearchLanguage,
-                    Locale = Locale,
-                    Since = Since.Date,
-                    Until = Until.Date,
-                    ResultType = ResultType,
-                    WordPhrase = WordPhrase,
-                    WordAnd = WordAnd,
-                    WordOr = WordOr,
-                    WordNot = WordNot,
-                    Hashtag = Hashtag,
-                    PersonFrom = PersonFrom,
-                    PersonTo = PersonTo,
-                    PersonReference = PersonReference,
-                    Attitude = Attitude,
-                    WithLinks = WithLinks,
-                    WithRetweets = WithRetweets,
-                    IncludeEntities = IncludeEntities,
-                    CompletedIn = parsedResponse.completed_in,
-                    MaxID = parsedResponse.max_id,
-                    NextPage = parsedResponse.next_page,
-                    PageResult = parsedResponse.page,
-                    QueryResult = parsedResponse.query,
-                    ResultsPerPageResult = parsedResponse.results_per_page,
-                    SinceIDResult = parsedResponse.since_id,
-                    RefreshUrl = parsedResponse.refresh_url,
-                    Results =
-                        (from result in parsedResponse.results
-                         select new SearchEntry
+                Type = Type,
+                GeoCode = GeoCode,
+                Page = Page,
+                PageSize = PageSize,
+                Query = Query,
+                ShowUser = ShowUser,
+                SinceID = SinceID,
+                SearchLanguage = SearchLanguage,
+                Locale = Locale,
+                Since = Since.Date,
+                Until = Until.Date,
+                ResultType = ResultType,
+                WordPhrase = WordPhrase,
+                WordAnd = WordAnd,
+                WordOr = WordOr,
+                WordNot = WordNot,
+                Hashtag = Hashtag,
+                PersonFrom = PersonFrom,
+                PersonTo = PersonTo,
+                PersonReference = PersonReference,
+                Attitude = Attitude,
+                WithLinks = WithLinks,
+                WithRetweets = WithRetweets,
+                IncludeEntities = IncludeEntities,
+                CompletedIn = parsedResponse.completed_in,
+                MaxID = parsedResponse.max_id,
+                NextPage = parsedResponse.next_page,
+                PageResult = parsedResponse.page,
+                QueryResult = parsedResponse.query,
+                ResultsPerPageResult = parsedResponse.results_per_page,
+                SinceIDResult = parsedResponse.since_id,
+                RefreshUrl = parsedResponse.refresh_url,
+                Results =
+                    (from result in parsedResponse.results
+                     select new SearchEntry
+                     {
+                         CreatedAt = DateTimeOffset.Parse(result.created_at),
+                         Entities = new Entities
                          {
-                             CreatedAt = DateTimeOffset.Parse(result.created_at),
-                             Entities = new Entities
-                             {
-                                 HashTagMentions =
-                                    result.entities == null || result.entities.hashes == null ?
-                                        new List<HashTagMention>() :
-                                        (from hash in result.entities.hashes
-                                         select new HashTagMention
-                                         {
-                                             Tag = hash.text,
-                                             Start = hash.start,
-                                             End = hash.stop
-                                         })
-                                        .ToList(),
-                                 MediaMentions =
-                                    result.entities == null || result.entities.media == null ?
-                                        new List<MediaMention>() :
-                                        (from media in result.entities.media
-                                         select new MediaMention
-                                         {
-                                             DisplayUrl = media.display_url,
-                                             ExpandedUrl = media.expanded_url,
-                                             ID = media.id,
-                                             MediaUrl = media.media_url,
-                                             MediaUrlHttps = media.media_url_https,
-                                             Sizes =
+                             HashTagMentions =
+                                 result.entities == null || result.entities.hashes == null
+                                     ? new List<HashTagMention>()
+                                     : (from hash in result.entities.hashes
+                                        select new HashTagMention
+                                        {
+                                            Tag = hash.text,
+                                            Start = hash.start,
+                                            End = hash.stop
+                                        })
+                                           .ToList(),
+                             MediaMentions =
+                                 result.entities == null || result.entities.media == null
+                                     ? new List<MediaMention>()
+                                     : (from media in result.entities.media
+                                        select new MediaMention
+                                        {
+                                            DisplayUrl = media.display_url,
+                                            ExpandedUrl = media.expanded_url,
+                                            ID = media.id,
+                                            MediaUrl = media.media_url,
+                                            MediaUrlHttps = media.media_url_https,
+                                            Sizes =
                                                 (from size in media.sizes
                                                  select new PhotoSize
                                                  {
@@ -484,78 +669,74 @@ namespace LinqToTwitter
                                                      Resize = size.resize
                                                  })
                                                 .ToList(),
-                                             Type = media.type,
-                                             Url = media.url,
-                                             Start = media.start,
-                                             End = media.stop
-                                         })
-                                        .ToList(),
-                                 UrlMentions =
-                                    result.entities == null || result.entities.urls == null ?
-                                        new List<UrlMention>() :
-                                        (from url in result.entities.urls
-                                         select new UrlMention
-                                         {
-                                             Url = url.url,
-                                             DisplayUrl = url.display_url,
-                                             ExpandedUrl = url.expanded_url,
-                                             Start = url.start,
-                                             End = url.stop
-                                         })
-                                        .ToList(),
-                                 UserMentions =
-                                    result.entities == null || result.entities.users == null ?
-                                        new List<UserMention>() :
-                                        (from user in result.entities.users
-                                         select new UserMention
-                                         {
-                                             ScreenName = user.screen_name,
-                                             Name = user.name,
-                                             Id = user.id,
-                                             Start = user.start,
-                                             End = user.stop
-                                         })
-                                        .ToList()
-                             },
-                             FromUser = result.from_user,
-                             FromUserID = result.from_user_id,
-                             FromUserName = result.from_user_name,
-                             Geo =
-                                result.geo == null ?
-                                    new Geometry { Coordinates = new List<Coordinate>() } :
-                                    new Geometry
-                                    {
-                                        Type = result.geo.type,
-                                        Coordinates = new List<Coordinate>
+                                            Type = media.type,
+                                            Url = media.url,
+                                            Start = media.start,
+                                            End = media.stop
+                                        })
+                                           .ToList(),
+                             UrlMentions =
+                                 result.entities == null || result.entities.urls == null
+                                     ? new List<UrlMention>()
+                                     : (from url in result.entities.urls
+                                        select new UrlMention
                                         {
-                                            new Coordinate
-                                            {
-                                                Latitude = result.geo.latitude,
-                                                Longitude = result.geo.longitude
-                                            }
-                                        }
-                                    },
-                             ID = result.id,
-                             IsoLanguageCode = result.iso_language_code,
-                             MetaData = new SearchMetaData
-                             {
-                                 RecentRetweets = result.metadata.recent_retweets,
-                                 ResultType = (ResultType)Enum.Parse(typeof(ResultType), result.metadata.result_type, true)
-                             },
-                             ProfileImageUrl = result.profile_image_url,
-                             ProfileImageUrlHttps = result.profile_image_url_https,
-                             Source = result.source,
-                             Text = result.text,
-                             ToUser = result.to_user,
-                             ToUserID = result.to_user_id,
-                             ToUserName = result.to_user_name
-                         }).ToList()
-                };
-
-                search = new List<Search> { searchResult };
-            }
-
-            return search.OfType<T>().ToList();
+                                            Url = url.url,
+                                            DisplayUrl = url.display_url,
+                                            ExpandedUrl = url.expanded_url,
+                                            Start = url.start,
+                                            End = url.stop
+                                        })
+                                           .ToList(),
+                             UserMentions =
+                                 result.entities == null || result.entities.users == null
+                                     ? new List<UserMention>()
+                                     : (from user in result.entities.users
+                                        select new UserMention
+                                        {
+                                            ScreenName = user.screen_name,
+                                            Name = user.name,
+                                            Id = user.id,
+                                            Start = user.start,
+                                            End = user.stop
+                                        })
+                                           .ToList()
+                         },
+                         FromUser = result.from_user,
+                         FromUserID = result.from_user_id,
+                         FromUserName = result.from_user_name,
+                         Geo =
+                             result.geo == null
+                                 ? new Geometry {Coordinates = new List<Coordinate>()}
+                                 : new Geometry
+                                 {
+                                     Type = result.geo.type,
+                                     Coordinates = new List<Coordinate>
+                                     {
+                                         new Coordinate
+                                         {
+                                             Latitude = result.geo.latitude,
+                                             Longitude = result.geo.longitude
+                                         }
+                                     }
+                                 },
+                         ID = result.id,
+                         IsoLanguageCode = result.iso_language_code,
+                         MetaData = new SearchMetaData
+                         {
+                             RecentRetweets = result.metadata.recent_retweets,
+                             ResultType = (ResultType) Enum.Parse(typeof (ResultType), result.metadata.result_type, true)
+                         },
+                         ProfileImageUrl = result.profile_image_url,
+                         ProfileImageUrlHttps = result.profile_image_url_https,
+                         Source = result.source,
+                         Text = result.text,
+                         ToUser = result.to_user,
+                         ToUserID = result.to_user_id,
+                         ToUserName = result.to_user_name
+                     }).ToList()
+            };
+            return searchResult;
         }
     }
 }

@@ -1,9 +1,10 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
+
+using LinqToTwitter.Common;
 
 namespace LinqToTwitter
 {
@@ -13,7 +14,10 @@ namespace LinqToTwitter
     public class TrendRequestProcessor<T>
         : IRequestProcessor<T>
         , IRequestProcessorWithAction<T>
+        where T : class
     {
+        const string WeoIDParam = "WeoID";
+
         /// <summary>
         /// base url for request
         /// </summary>
@@ -22,33 +26,42 @@ namespace LinqToTwitter
         /// <summary>
         /// type of trend to query (Trend (all), Current, Daily, or Weekly)
         /// </summary>
-        private TrendType Type { get; set; }
+        TrendType Type { get; set; }
 
         /// <summary>
         /// exclude all trends with hastags if set to true 
         /// (i.e. include "Wolverine" but not "#Wolverine")
         /// </summary>
-        private bool ExcludeHashtags { get; set; }
+        bool ExcludeHashtags { get; set; }
 
         /// <summary>
         /// date to start
         /// </summary>
-        private DateTime Date { get; set; }
+        DateTime Date { get; set; }
 
         /// <summary>
         /// Latitude
         /// </summary>
-        private string Latitude { get; set; }
+        string Latitude { get; set; }
 
         /// <summary>
         /// Longitude
         /// </summary>
-        private string Longitude { get; set; }
+        string Longitude { get; set; }
 
         /// <summary>
         /// Yahoo Where On Earth ID
         /// </summary>
-        private int WeoID { get; set; }
+        int WeoID { get; set; }
+
+        static readonly Dictionary<string, string> WorldWoeId;
+
+        static TrendRequestProcessor()
+        {
+            var worldOnly = WorldWoeId = new Dictionary<string, string>();
+            worldOnly.Add(WeoIDParam, "1");
+            WorldWoeId = worldOnly;
+        }
 
         /// <summary>
         /// extracts parameters from lambda
@@ -71,15 +84,6 @@ namespace LinqToTwitter
                    .Parameters;
         }
 
-        static TrendRequestProcessor()
-        {
-            var worldOnly = s_WorldWoeId = new Dictionary<string, string>();
-            worldOnly.Add("WeoID", "1");
-            s_WorldWoeId = worldOnly;
-        }
-
-        private static readonly Dictionary<string, string> s_WorldWoeId;
-
         /// <summary>
         /// builds url based on input parameters
         /// </summary>
@@ -87,15 +91,16 @@ namespace LinqToTwitter
         /// <returns>URL conforming to Twitter API</returns>
         public virtual Request BuildURL(Dictionary<string, string> parameters)
         {
+            const string typeParam = "Type";
             if (parameters == null || !parameters.ContainsKey("Type"))
-                throw new ArgumentException("You must set Type.", "Type");
+                throw new ArgumentException("You must set Type.", typeParam);
 
             Type = RequestProcessorHelper.ParseQueryEnumType<TrendType>(parameters["Type"]);
 
             switch (Type)
             {
                 case TrendType.Trend:
-                    return BuildLocationTrendsUrl(s_WorldWoeId);
+                    return BuildLocationTrendsUrl(WorldWoeId);
                 case TrendType.Daily:
                     return BuildDailyTrendsUrl(parameters);
                 case TrendType.Weekly:
@@ -116,11 +121,11 @@ namespace LinqToTwitter
         /// <returns>base url + location segment</returns>
         private Request BuildLocationTrendsUrl(Dictionary<string, string> parameters)
         {
-            if (!parameters.ContainsKey("WeoID"))
-                throw new ArgumentException("WeoID is a required parameter.", "WeoID");
+            if (!parameters.ContainsKey(WeoIDParam))
+                throw new ArgumentException("WeoID is a required parameter.", WeoIDParam);
 
-            WeoID = int.Parse(parameters["WeoID"]);
-            var url = "trends/" + parameters["WeoID"] + ".json";
+            WeoID = int.Parse(parameters[WeoIDParam]);
+            var url = "trends/" + parameters[WeoIDParam] + ".json";
 
             return new Request(BaseUrl + url);
         }
@@ -192,7 +197,7 @@ namespace LinqToTwitter
             }
 
             if (parameters.ContainsKey("ExcludeHashtags") &&
-                bool.Parse(parameters["ExcludeHashtags"]) == true)
+                bool.Parse(parameters["ExcludeHashtags"]))
             {
                 ExcludeHashtags = true;
                 urlParams.Add(new QueryParameter("exclude", "hashtags"));
@@ -239,26 +244,27 @@ namespace LinqToTwitter
         /// <summary>
         /// transforms json into an action response
         /// </summary>
-        /// <param name="responseXml">json with Twitter response</param>
+        /// <param name="responseJson">json with Twitter response</param>
+        /// <param name="theAction">Type of action to process</param>
         /// <returns>Action response</returns>
         public virtual T ProcessActionResult(string responseJson, Enum theAction)
         {
-            Trend trend = null;
+            var trend = new Trend();
 
             if (!string.IsNullOrEmpty(responseJson))
             {
-                //switch ((TrendAction)theAction)
+                //switch ((AccountAction)theAction)
                 //{
-                    //case AccountAction.EndSession:
-                    //    acct = HandleEndSessionResponse(responseJson);
-                    //    break;
+                //    case AccountAction.EndSession:
+                //        acct = HandleEndSessionResponse(responseJson);
+                //        break;
 
-                    //default:
-                        throw new InvalidOperationException("The default case of ProcessActionResult should never execute because a Type must be specified.");
+                //    default:
+                //        throw new InvalidOperationException("The default case of ProcessActionResult should never execute because a Type must be specified.");
                 //}
             }
 
-            return trend.ToEnumerable().OfType<T>().FirstOrDefault();
+            return trend.ItemCast(default(T));
         }
 
         private IEnumerable<Trend> HandleDailyWeeklyResponse(string responseJson)
@@ -268,16 +274,16 @@ namespace LinqToTwitter
             var asOf = XTwitterElement.EpochBase + TimeSpan.FromSeconds(period.as_of);
             var emptyLocations = new List<Location>();
             var flat = from slot in period.slots
-                       let slotTime = slot.time_slot.GetDate(this.Date)
+                       let slotTime = slot.time_slot.GetDate(Date)
                        let trends = (from trend in slot.trends
                                      select new Trend
                                      {
-                                         Type = this.Type,
-                                         ExcludeHashtags = this.ExcludeHashtags,
-                                         Date = this.Date,
-                                         Latitude = this.Latitude,
-                                         Longitude = this.Longitude,
-                                         WeoID = this.WeoID,
+                                         Type = Type,
+                                         ExcludeHashtags = ExcludeHashtags,
+                                         Date = Date,
+                                         Latitude = Latitude,
+                                         Longitude = Longitude,
+                                         WeoID = WeoID,
                                          TrendDate = slotTime,
                                          Name = trend.name,
                                          Query = trend.query,
@@ -305,12 +311,12 @@ namespace LinqToTwitter
                        let trends = (from trend in response.trends
                                      select new Trend
                                      {
-                                         Type = this.Type,
-                                         ExcludeHashtags = this.ExcludeHashtags,
-                                         Date = this.Date,
-                                         Latitude = this.Latitude,
-                                         Longitude = this.Longitude,
-                                         WeoID = this.WeoID,
+                                         Type = Type,
+                                         ExcludeHashtags = ExcludeHashtags,
+                                         Date = Date,
+                                         Latitude = Latitude,
+                                         Longitude = Longitude,
+                                         WeoID = WeoID,
                                          TrendDate = asOf,
                                          AsOf = asOf,
                                          Name = trend.name,
@@ -330,29 +336,24 @@ namespace LinqToTwitter
         {
             var serializer = Json.TrendConverter.GetSerializer();
             var places = serializer.Deserialize<Json.Place[]>(responseJson);
-            var locations = new List<Location>();
-            foreach (var place in places)
-            {
-                var location = place.ToLocation();
-                locations.Add(location);
-            }
+            var locations = places.Select(place => place.ToLocation()).ToList();
 
             var asOf = DateTime.UtcNow;
 
             // we fake a single Trend to hang the locations off of...
             yield return new Trend
             {
-                Type = this.Type,
-                ExcludeHashtags = this.ExcludeHashtags,
-                Date = this.Date,
+                Type = Type,
+                ExcludeHashtags = ExcludeHashtags,
+                Date = Date,
                 Name = string.Empty,
                 Query = string.Empty,
                 SearchUrl = string.Empty,
                 TrendDate = asOf,
                 AsOf = asOf,
-                Latitude = this.Latitude,
-                Longitude = this.Longitude,
-                WeoID = this.WeoID,
+                Latitude = Latitude,
+                Longitude = Longitude,
+                WeoID = WeoID,
                 Location = locations.FirstOrDefault(),
                 Locations = locations
             };

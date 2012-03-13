@@ -305,7 +305,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void MissingTypeTest()
         {
-            AccountRequestProcessor<Account> target = new AccountRequestProcessor<Account>() { BaseUrl = "http://twitter.com/" };
+            AccountRequestProcessor<Account> target = new AccountRequestProcessor<Account>() { BaseUrl = "https://api.twitter.com/1/" };
             Dictionary<string, string> parameters = new Dictionary<string, string> { };
 
             try
@@ -326,7 +326,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void NullParametersTest()
         {
-            AccountRequestProcessor<Account> target = new AccountRequestProcessor<Account>() { BaseUrl = "http://twitter.com/" };
+            AccountRequestProcessor<Account> target = new AccountRequestProcessor<Account>() { BaseUrl = "https://api.twitter.com/1/" };
             Dictionary<string, string> parameters = null;
 
             try

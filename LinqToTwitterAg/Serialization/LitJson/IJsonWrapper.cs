@@ -25,7 +25,9 @@ namespace LitJson
         Int,
         Long,
         Double,
-        Boolean
+        Boolean,
+        Decimal,
+        ULong
     }
 
     public interface IJsonWrapper : IList, IOrderedDictionary
@@ -33,23 +35,29 @@ namespace LitJson
         bool IsArray   { get; }
         bool IsBoolean { get; }
         bool IsDouble  { get; }
+        bool IsDecimal { get; }
         bool IsInt     { get; }
         bool IsLong    { get; }
+        bool IsULong   { get; }
         bool IsObject  { get; }
         bool IsString  { get; }
 
         bool     GetBoolean ();
         double   GetDouble ();
+        decimal  GetDecimal ();
         int      GetInt ();
         JsonType GetJsonType ();
         long     GetLong ();
+        ulong    GetUlong ();
         string   GetString ();
 
         void SetBoolean  (bool val);
         void SetDouble   (double val);
+        void SetDecimal(decimal val);
         void SetInt      (int val);
         void SetJsonType (JsonType type);
         void SetLong     (long val);
+        void SetUlong(ulong val);
         void SetString   (string val);
 
         string ToJson ();

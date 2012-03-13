@@ -286,7 +286,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void BuildExistsURLTest()
         {
-            BlocksRequestProcessor<Blocks> target = new BlocksRequestProcessor<Blocks>() { BaseUrl = "http://twitter.com/" };
+            BlocksRequestProcessor<Blocks> target = new BlocksRequestProcessor<Blocks>() { BaseUrl = "https://api.twitter.com/1/" };
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                 {
@@ -295,7 +295,7 @@ namespace LinqToTwitterTests
                     { "UserID", "456" },
                     { "ScreenName", "789" }
                 };
-            string expected = "http://twitter.com/blocks/exists/123.xml?user_id=456&screen_name=789";
+            string expected = "https://api.twitter.com/1/blocks/exists/123.xml?user_id=456&screen_name=789";
 
             Request req = target.BuildURL(parameters);
 
@@ -308,14 +308,14 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void BuildBlockingURLTest()
         {
-            BlocksRequestProcessor<Blocks> target = new BlocksRequestProcessor<Blocks>() { BaseUrl = "http://twitter.com/" };
+            BlocksRequestProcessor<Blocks> target = new BlocksRequestProcessor<Blocks>() { BaseUrl = "https://api.twitter.com/1/" };
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                 {
                     { "Type", ((int)BlockingType.Blocking).ToString() },
                     { "Page", "2" }
                 };
-            string expected = "http://twitter.com/blocks/blocking.xml?page=2";
+            string expected = "https://api.twitter.com/1/blocks/blocking.xml?page=2";
 
             Request req = target.BuildURL(parameters);
 
@@ -328,13 +328,13 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void BuildIDsURLTest()
         {
-            BlocksRequestProcessor<Blocks> target = new BlocksRequestProcessor<Blocks>() { BaseUrl = "http://twitter.com/" };
+            BlocksRequestProcessor<Blocks> target = new BlocksRequestProcessor<Blocks>() { BaseUrl = "https://api.twitter.com/1/" };
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                 {
                     { "Type", ((int)BlockingType.IDS).ToString() }
                 };
-            string expected = "http://twitter.com/blocks/blocking/ids.xml";
+            string expected = "https://api.twitter.com/1/blocks/blocking/ids.xml";
 
             Request req = target.BuildURL(parameters);
 
@@ -347,7 +347,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void MissingTypeTest()
         {
-            BlocksRequestProcessor<Blocks> target = new BlocksRequestProcessor<Blocks>() { BaseUrl = "http://twitter.com/" };
+            BlocksRequestProcessor<Blocks> target = new BlocksRequestProcessor<Blocks>() { BaseUrl = "https://api.twitter.com/1/" };
             Dictionary<string, string> parameters = new Dictionary<string, string> { };
 
             try
@@ -368,7 +368,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void NullParametersTest()
         {
-            BlocksRequestProcessor<Blocks> target = new BlocksRequestProcessor<Blocks>() { BaseUrl = "http://twitter.com/" };
+            BlocksRequestProcessor<Blocks> target = new BlocksRequestProcessor<Blocks>() { BaseUrl = "https://api.twitter.com/1/" };
             Dictionary<string, string> parameters = null;
 
             try

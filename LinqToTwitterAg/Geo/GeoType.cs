@@ -1,5 +1,4 @@
-﻿using System;
-namespace LinqToTwitter
+﻿namespace LinqToTwitter
 {
     /// <summary>
     /// For working with Twitter Geo places
@@ -15,12 +14,6 @@ namespace LinqToTwitter
         /// Get more details on a place (found via GeoType.Reverse)
         /// </summary>
         ID,
-
-        /// <summary>
-        /// Get a list of nearby places
-        /// </summary>
-        [Obsolete("Nearby has been deprecated, please use Search instead.", true)]
-        Nearby,
 
         /// <summary>
         /// Performs a search, based on various criteria

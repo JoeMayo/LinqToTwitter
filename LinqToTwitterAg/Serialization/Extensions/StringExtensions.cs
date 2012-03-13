@@ -36,7 +36,7 @@ namespace LinqToTwitter.Json
 
         public static long GetLong(this string val)
         {
-            return GetLong(val, 0l);
+            return GetLong(val, 0L);
         }
 
         public static long GetLong(this string val, long defaultValue /* = 0*/)
@@ -111,8 +111,8 @@ namespace LinqToTwitter.Json
 
             if (epochSeconds == ulong.MaxValue)
                 return defaultValue;
-            else
-                return EpochBase + TimeSpan.FromSeconds(epochSeconds);
+            
+            return EpochBase + TimeSpan.FromSeconds(epochSeconds);
         }
     }
 }

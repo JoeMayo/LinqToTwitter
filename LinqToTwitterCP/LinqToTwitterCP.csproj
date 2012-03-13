@@ -3,74 +3,29 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{A214B9F0-6B8C-4E91-BE99-27F55CC860C1}</ProjectGuid>
+    <ProjectGuid>{A430971C-58BB-4BE3-B058-795BDFFD56BC}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>LinqToTwitter</RootNamespace>
-    <AssemblyName>LinqToTwitter</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <RootNamespace>LinqToTwitterCP</RootNamespace>
+    <AssemblyName>LinqToTwitterCP</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SccProjectName>SAK</SccProjectName>
     <SccLocalPath>SAK</SccLocalPath>
     <SccAuxPath>SAK</SccAuxPath>
     <SccProvider>SAK</SccProvider>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <OldToolsVersion>3.5</OldToolsVersion>
-    <UpgradeBackupLocation />
-    <PublishUrl>publish\</PublishUrl>
-    <Install>true</Install>
-    <InstallFrom>Disk</InstallFrom>
-    <UpdateEnabled>false</UpdateEnabled>
-    <UpdateMode>Foreground</UpdateMode>
-    <UpdateInterval>7</UpdateInterval>
-    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
-    <UpdatePeriodically>false</UpdatePeriodically>
-    <UpdateRequired>false</UpdateRequired>
-    <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
-    <UseApplicationTrust>false</UseApplicationTrust>
-    <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkProfile />
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;CLIENT_PROFILE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <CodeContractsEnableRuntimeChecking>True</CodeContractsEnableRuntimeChecking>
-    <CodeContractsCustomRewriterAssembly>
-    </CodeContractsCustomRewriterAssembly>
-    <CodeContractsCustomRewriterClass>
-    </CodeContractsCustomRewriterClass>
-    <CodeContractsRuntimeCheckingLevel>Full</CodeContractsRuntimeCheckingLevel>
-    <CodeContractsRuntimeOnlyPublicSurface>False</CodeContractsRuntimeOnlyPublicSurface>
-    <CodeContractsRuntimeThrowOnFailure>False</CodeContractsRuntimeThrowOnFailure>
-    <CodeContractsRuntimeCallSiteRequires>False</CodeContractsRuntimeCallSiteRequires>
-    <CodeContractsRunCodeAnalysis>True</CodeContractsRunCodeAnalysis>
-    <CodeContractsBuildReferenceAssembly>False</CodeContractsBuildReferenceAssembly>
-    <CodeContractsNonNullObligations>False</CodeContractsNonNullObligations>
-    <CodeContractsBoundsObligations>False</CodeContractsBoundsObligations>
-    <CodeContractsArithmeticObligations>False</CodeContractsArithmeticObligations>
-    <CodeContractsLibPaths>
-    </CodeContractsLibPaths>
-    <CodeContractsPlatformPath>
-    </CodeContractsPlatformPath>
-    <CodeContractsExtraAnalysisOptions>
-    </CodeContractsExtraAnalysisOptions>
-    <CodeContractsBaseLineFile>
-    </CodeContractsBaseLineFile>
-    <CodeContractsUseBaseLine>False</CodeContractsUseBaseLine>
-    <CodeContractsRunInBackground>True</CodeContractsRunInBackground>
-    <CodeContractsShowSquigglies>False</CodeContractsShowSquigglies>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -79,51 +34,14 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x86\Debug\</OutputPath>
-    <DefineConstants>CONTRACTS_FULL;DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
-    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
-    <OutputPath>bin\x86\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
-    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
-  </PropertyGroup>
-  <PropertyGroup>
-    <AssemblyOriginatorKeyFile>..\LinqToTwitterAg\LinqToTwitter.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Core">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
+    <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.ServiceModel.Web">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.Web" />
-    <Reference Include="System.Web.Extensions" />
-    <Reference Include="System.Web.Mvc, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
-    <Reference Include="System.Xml.Linq">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
@@ -218,6 +136,9 @@
     <Compile Include="..\LinqToTwitterAg\Common\JsonConversions.cs">
       <Link>Common\JsonConversions.cs</Link>
     </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\LinqExtensions.cs">
+      <Link>Common\LinqExtensions.cs</Link>
+    </Compile>
     <Compile Include="..\LinqToTwitterAg\Common\Media.cs">
       <Link>Common\Media.cs</Link>
     </Compile>
@@ -238,6 +159,9 @@
     </Compile>
     <Compile Include="..\LinqToTwitterAg\Common\RequestProcessorHelper.cs">
       <Link>Common\RequestProcessorHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\State.cs">
+      <Link>Common\State.cs</Link>
     </Compile>
     <Compile Include="..\LinqToTwitterAg\Common\TwitterAsyncResponse.cs">
       <Link>Common\TwitterAsyncResponse.cs</Link>
@@ -371,8 +295,14 @@
     <Compile Include="..\LinqToTwitterAg\OAuth\IOAuthCredentials.cs">
       <Link>OAuth\IOAuthCredentials.cs</Link>
     </Compile>
+    <Compile Include="..\LinqToTwitterAg\OAuth\IOAuthHelper.cs">
+      <Link>OAuth\IOAuthHelper.cs</Link>
+    </Compile>
     <Compile Include="..\LinqToTwitterAg\OAuth\IOAuthTwitter.cs">
       <Link>OAuth\IOAuthTwitter.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\OAuth\IsolatedStorageCredentials.cs">
+      <Link>OAuth\IsolatedStorageCredentials.cs</Link>
     </Compile>
     <Compile Include="..\LinqToTwitterAg\OAuth\ITwitterAuthorizer.cs">
       <Link>OAuth\ITwitterAuthorizer.cs</Link>
@@ -395,8 +325,14 @@
     <Compile Include="..\LinqToTwitterAg\OAuth\SignInAuthorizer.cs">
       <Link>OAuth\SignInAuthorizer.cs</Link>
     </Compile>
+    <Compile Include="..\LinqToTwitterAg\OAuth\SilverlightAuthorizer.cs">
+      <Link>OAuth\SilverlightAuthorizer.cs</Link>
+    </Compile>
     <Compile Include="..\LinqToTwitterAg\OAuth\SingleUserAuthorizer.cs">
       <Link>OAuth\SingleUserAuthorizer.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\OAuth\SingleUserInMemoryCredentials.cs">
+      <Link>OAuth\SingleUserInMemoryCredentials.cs</Link>
     </Compile>
     <Compile Include="..\LinqToTwitterAg\OAuth\Utilities.cs">
       <Link>OAuth\Utilities.cs</Link>
@@ -455,6 +391,27 @@
     <Compile Include="..\LinqToTwitterAg\Search\SearchType.cs">
       <Link>Search\SearchType.cs</Link>
     </Compile>
+    <Compile Include="..\LinqToTwitterAg\Serialization\Account\AccountConverter.cs">
+      <Link>Serialization\Account\AccountConverter.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Serialization\Account\EndSession.cs">
+      <Link>Serialization\Account\EndSession.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Serialization\Account\RateLimitStatus.cs">
+      <Link>Serialization\Account\RateLimitStatus.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Serialization\Account\Settings.cs">
+      <Link>Serialization\Account\Settings.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Serialization\Account\SleepTime.cs">
+      <Link>Serialization\Account\SleepTime.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Serialization\Account\TimeZone.cs">
+      <Link>Serialization\Account\TimeZone.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Serialization\Account\Totals.cs">
+      <Link>Serialization\Account\Totals.cs</Link>
+    </Compile>
     <Compile Include="..\LinqToTwitterAg\Serialization\Entities\Entities.cs">
       <Link>Serialization\Entities\Entities.cs</Link>
     </Compile>
@@ -476,8 +433,20 @@
     <Compile Include="..\LinqToTwitterAg\Serialization\Entities\UserEntity.cs">
       <Link>Serialization\Entities\UserEntity.cs</Link>
     </Compile>
+    <Compile Include="..\LinqToTwitterAg\Serialization\Extensions\DictionaryExtensions.cs">
+      <Link>Serialization\Extensions\DictionaryExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Serialization\Extensions\StringExtensions.cs">
+      <Link>Serialization\Extensions\StringExtensions.cs</Link>
+    </Compile>
     <Compile Include="..\LinqToTwitterAg\Serialization\Geo\Geometry.cs">
       <Link>Serialization\Geo\Geometry.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Serialization\JavaScriptConverter.cs">
+      <Link>Serialization\JavaScriptConverter.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Serialization\JavaScriptSerializer.cs">
+      <Link>Serialization\JavaScriptSerializer.cs</Link>
     </Compile>
     <Compile Include="..\LinqToTwitterAg\Serialization\LitJson\IJsonWrapper.cs">
       <Link>Serialization\LitJson\IJsonWrapper.cs</Link>
@@ -506,6 +475,12 @@
     <Compile Include="..\LinqToTwitterAg\Serialization\LitJson\ParserToken.cs">
       <Link>Serialization\LitJson\ParserToken.cs</Link>
     </Compile>
+    <Compile Include="..\LinqToTwitterAg\Serialization\Place\Place.cs">
+      <Link>Serialization\Place\Place.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Serialization\Place\PlaceType.cs">
+      <Link>Serialization\Place\PlaceType.cs</Link>
+    </Compile>
     <Compile Include="..\LinqToTwitterAg\Serialization\Search\Search.cs">
       <Link>Serialization\Search\Search.cs</Link>
     </Compile>
@@ -517,6 +492,27 @@
     </Compile>
     <Compile Include="..\LinqToTwitterAg\Serialization\Search\SearchResult.cs">
       <Link>Serialization\Search\SearchResult.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Serialization\Status\Status.cs">
+      <Link>Serialization\Status\Status.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Serialization\Trend\DailyWeeklyTrends.cs">
+      <Link>Serialization\Trend\DailyWeeklyTrends.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Serialization\Trend\SlottedTrend.cs">
+      <Link>Serialization\Trend\SlottedTrend.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Serialization\Trend\Trend.cs">
+      <Link>Serialization\Trend\Trend.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Serialization\Trend\TrendConverter.cs">
+      <Link>Serialization\Trend\TrendConverter.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Serialization\Trend\Trends.cs">
+      <Link>Serialization\Trend\Trends.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Serialization\User\User.cs">
+      <Link>Serialization\User\User.cs</Link>
     </Compile>
     <Compile Include="..\LinqToTwitterAg\SocialGraph\SocialGraph.cs">
       <Link>SocialGraph\SocialGraph.cs</Link>
@@ -596,97 +592,20 @@
     <Compile Include="..\LinqToTwitterAg\User\UserType.cs">
       <Link>User\UserType.cs</Link>
     </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="OAuth\MvcAuthorizer.cs" />
-    <Compile Include="OAuth\MvcOAuthActionResult.cs" />
-    <Compile Include="OAuth\SessionStateCredentials.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="..\LinqToTwitterAg\Common\LinqExtensions.cs">
-      <Link>Common\LinqExtensions.cs</Link>
-    </Compile>
-    <Compile Include="..\LinqToTwitterAg\OAuth\SingleUserInMemoryCredentials.cs">
-      <Link>OAuth\SingleUserInMemoryCredentials.cs</Link>
-    </Compile>
-    <Compile Include="..\LinqToTwitterAg\Serialization\Account\AccountConverter.cs">
-      <Link>Serialization\Account\AccountConverter.cs</Link>
-    </Compile>
-    <Compile Include="..\LinqToTwitterAg\Serialization\Account\EndSession.cs">
-      <Link>Serialization\Account\EndSession.cs</Link>
-    </Compile>
-    <Compile Include="..\LinqToTwitterAg\Serialization\Account\RateLimitStatus.cs">
-      <Link>Serialization\Account\RateLimitStatus.cs</Link>
-    </Compile>
-    <Compile Include="..\LinqToTwitterAg\Serialization\Account\Settings.cs">
-      <Link>Serialization\Account\Settings.cs</Link>
-    </Compile>
-    <Compile Include="..\LinqToTwitterAg\Serialization\Account\SleepTime.cs">
-      <Link>Serialization\Account\SleepTime.cs</Link>
-    </Compile>
-    <Compile Include="..\LinqToTwitterAg\Serialization\Account\TimeZone.cs">
-      <Link>Serialization\Account\TimeZone.cs</Link>
-    </Compile>
-    <Compile Include="..\LinqToTwitterAg\Serialization\Account\Totals.cs">
-      <Link>Serialization\Account\Totals.cs</Link>
-    </Compile>
-    <Compile Include="..\LinqToTwitterAg\Serialization\Extensions\DictionaryExtensions.cs">
-      <Link>Serialization\Extensions\DictionaryExtensions.cs</Link>
-    </Compile>
-    <Compile Include="..\LinqToTwitterAg\Serialization\Extensions\StringExtensions.cs">
-      <Link>Serialization\Extensions\StringExtensions.cs</Link>
-    </Compile>
-    <Compile Include="..\LinqToTwitterAg\Serialization\Place\Place.cs">
-      <Link>Serialization\Place\Place.cs</Link>
-    </Compile>
-    <Compile Include="..\LinqToTwitterAg\Serialization\Place\PlaceType.cs">
-      <Link>Serialization\Place\PlaceType.cs</Link>
-    </Compile>
-    <Compile Include="..\LinqToTwitterAg\Serialization\Status\Status.cs">
-      <Link>Serialization\Status\Status.cs</Link>
-    </Compile>
-    <Compile Include="..\LinqToTwitterAg\Serialization\Trend\DailyWeeklyTrends.cs">
-      <Link>Serialization\Trend\DailyWeeklyTrends.cs</Link>
-    </Compile>
-    <Compile Include="..\LinqToTwitterAg\Serialization\Trend\SlottedTrend.cs">
-      <Link>Serialization\Trend\SlottedTrend.cs</Link>
-    </Compile>
-    <Compile Include="..\LinqToTwitterAg\Serialization\Trend\Trend.cs">
-      <Link>Serialization\Trend\Trend.cs</Link>
-    </Compile>
-    <Compile Include="..\LinqToTwitterAg\Serialization\Trend\TrendConverter.cs">
-      <Link>Serialization\Trend\TrendConverter.cs</Link>
-    </Compile>
-    <Compile Include="..\LinqToTwitterAg\Serialization\Trend\Trends.cs">
-      <Link>Serialization\Trend\Trends.cs</Link>
-    </Compile>
-    <Compile Include="..\LinqToTwitterAg\Serialization\User\User.cs">
-      <Link>Serialization\User\User.cs</Link>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
-      <Visible>False</Visible>
-      <ProductName>Windows Installer 3.1</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="..\LinqToTwitterAg\LinqToTwitter.snk">
       <Link>LinqToTwitter.snk</Link>
     </None>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
 </Project>

@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Reflection;
+
 using LitJson;
 
 namespace LinqToTwitter.Json
@@ -8,6 +11,7 @@ namespace LinqToTwitter.Json
     public class JavaScriptSerializer
     {
         IEnumerable<JavaScriptConverter> converters;
+        Type deserializedType;
 
         public void RegisterConverters(IEnumerable<JavaScriptConverter> converters)
         {
@@ -16,7 +20,7 @@ namespace LinqToTwitter.Json
 
         public T ConvertToType<T>(object obj)
         {
-            Type deserializedType = typeof(T);
+            deserializedType = typeof(T);
 
             var converter = GetConverter(deserializedType);
 
@@ -33,7 +37,7 @@ namespace LinqToTwitter.Json
                 throw new InvalidOperationException("You must assign a converter first.");
             }
 
-            Type deserializedType = typeof(T);
+            deserializedType = typeof(T);
             bool isArray = deserializedType.IsArray;
 
             if (isArray)
@@ -109,8 +113,8 @@ namespace LinqToTwitter.Json
                      select new
                      {
                          Key = key,
-                     Dictionary = BuildDictionaryFromJson(key, data[key]),
-                     Element = data[key] ?? string.Empty
+                         Dictionary = BuildDictionaryFromJson(key, data[key]),
+                         Element = data[key] ?? string.Empty
                      })
                     .ToDictionary(
                         key =>
@@ -123,43 +127,95 @@ namespace LinqToTwitter.Json
                             {
                                 return val.Dictionary[val.Key];
                             }
-                            else
-                            {
-                                return val.Dictionary == null ? 
-                                    ParseValue(val.Element.ToString()) : 
-                                    val.Dictionary as object;
-                            }
+
+                            return val.Dictionary == null ? 
+                                ParseValue(val.Key, val.Element.ToString()) : 
+                                val.Dictionary as object;
                         });
             }
         }
 
         private List<object> BuildList(JsonData data)
         {
-            var elements =
-            (from string key in (data as IOrderedDictionary).Keys
-             select BuildDictionaryFromJson(key, data[key]) as object)
-            .ToList();
+            List<object> elements;
+
+            if (data.IsArray)
+            {
+                elements =
+                    (from object dat in data
+                     select dat)
+                    .ToList();
+            }
+            else
+            {
+                elements =
+                    (from string key in (data as IOrderedDictionary).Keys
+                     select BuildDictionaryFromJson(key, data[key]) as object)
+                    .ToList();
+            }
 
             return elements;
         }
 
-        private object ParseValue(string val)
+        private object ParseValue(string key, string val)
         {
-            int intVal = 0;
-            double doubleVal = 0;
+            PropertyInfo propInfo = deserializedType.GetProperty(key);
+            string propertyType = 
+                propInfo == null ? "Unknown" : propInfo.PropertyType.Name;
 
-            if (int.TryParse(val, out intVal))
+            switch (propertyType)
             {
-                return intVal;
+                case "Int32":
+                    int intVal;
+                    int.TryParse(val, out intVal);
+                    return intVal;
+                case "Int64":
+                    long longVal;
+                    long.TryParse(val, out longVal);
+                    return longVal;
+                case "UInt32":
+                    uint uintVal;
+                    uint.TryParse(val, out uintVal);
+                    return uintVal;
+                case "UInt64":
+                    ulong ulongVal;
+                    ulong.TryParse(val, out ulongVal);
+                    return ulongVal;
+                case "Single":
+                    float floatVal;
+                    float.TryParse(val, out floatVal);
+                    return floatVal;
+                case "Double":
+                    double doubleVal;
+                    double.TryParse(val, out doubleVal);
+                    return doubleVal;
+                case "Decimal":
+                    decimal decimalVal;
+                    decimal.TryParse(val, out decimalVal);
+                    return decimalVal;
+                case "String":
+                    return val.ToString(CultureInfo.InvariantCulture);
+                default:
+                    return val;
             }
-            else if (double.TryParse(val, out doubleVal))
-            {
-                return doubleVal;
-            }
-            else
-	        {
-                return val;
-	        }
+
+            //int intVal = 0;
+            //double doubleVal = 0;
+
+            //if (int.TryParse(val, out intVal))
+            //{
+            //    return intVal;
+            //}
+            //else if (double.TryParse(val, out doubleVal))
+            //{
+            //    return doubleVal;
+            //}
+            //else
+            //{
+            //    return val;
+            //}
+
+            return val;
         }
     }
 }

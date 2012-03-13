@@ -28,6 +28,7 @@ namespace LitJson
 
         Int,
         Long,
+        ULong,
         Double,
 
         String,
@@ -262,6 +263,15 @@ namespace LitJson
             if (Int64.TryParse (number, out n_int64)) {
                 token = JsonToken.Long;
                 token_value = n_int64;
+
+                return;
+            }
+
+            ulong n_uint64;
+            if (UInt64.TryParse(number, out n_uint64))
+            {
+                token = JsonToken.ULong;
+                token_value = n_uint64;
 
                 return;
             }

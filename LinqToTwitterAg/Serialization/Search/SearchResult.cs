@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
-using System.Text;
-#if !SILVERLIGHT
+
+
+#if !SILVERLIGHT && !CLIENT_PROFILE
 using System.Web.Script.Serialization;
 #endif
 

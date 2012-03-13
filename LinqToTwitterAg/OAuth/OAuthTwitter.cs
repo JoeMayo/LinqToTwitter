@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Net;
@@ -217,7 +218,11 @@ namespace LinqToTwitter
                 out outUrl,
                 out queryString);
 
+#if CLIENT_PROFILE
+            queryString += "&oauth_signature=" + WebUtility.HtmlEncode(sig);
+#else
             queryString += "&oauth_signature=" + HttpUtility.UrlEncode(sig);
+#endif
         }
 
         /// <summary>
@@ -284,7 +289,11 @@ namespace LinqToTwitter
                 }
                 else
                 {
-                    var encoded = HttpUtility.UrlEncode(symbol.ToString()).ToUpper();
+#if CLIENT_PROFILE
+                    var encoded = WebUtility.HtmlEncode(symbol.ToString(CultureInfo.InvariantCulture)).ToUpper();
+#else
+                    var encoded = HttpUtility.UrlEncode(symbol.ToString(CultureInfo.InvariantCulture)).ToUpper();
+#endif
 
                     if (!string.IsNullOrEmpty(encoded))
                     {

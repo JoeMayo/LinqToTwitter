@@ -152,7 +152,7 @@ namespace LinqToTwitterTests
         [TestMethod]
         public void Status_Can_Serialize()
         {
-            var tweet = new Status();
+            var tweet = new Status {Type = StatusType.Home};
             var stringBuilder = new StringBuilder();
 
             XmlWriter writer = XmlWriter.Create(stringBuilder);

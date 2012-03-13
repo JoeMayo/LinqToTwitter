@@ -2,7 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-#if !SILVERLIGHT
+
+#if !SILVERLIGHT && !CLIENT_PROFILE
 using System.Web.Script.Serialization;
 #endif
 
@@ -31,6 +32,18 @@ namespace LinqToTwitter.Json
             return defaultValue;
         }
 
+        public static ulong GetULong(this IDictionary<string, object> dictionary, string key)
+        {
+            object value;
+            ulong ulVal;
+            if (dictionary.TryGetValue(key, out value))
+            {
+                return (ulong)(int)value;
+            }
+
+            return 0UL;
+        }
+
         public static T GetNested<T>(this IDictionary<string, object> dictionary, string key, JavaScriptSerializer serializer)
             where T : class
         {
@@ -47,7 +60,7 @@ namespace LinqToTwitter.Json
         public static IEnumerable<T> GetNestedEnumeration<T>(this IDictionary<string, object> dictionary, string key, JavaScriptSerializer serializer)
             where T : class
         {
-#if SILVERLIGHT
+#if SILVERLIGHT || CLIENT_PROFILE
             var array = dictionary.GetValue<List<object>>(key, null);
 #else
             var array = dictionary.GetValue<ArrayList>(key, null);

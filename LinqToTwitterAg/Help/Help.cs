@@ -2,6 +2,8 @@
 using System.Xml.Linq;
 using System.Linq;
 
+using LinqToTwitter.Common;
+
 namespace LinqToTwitter
 {
     public class Help

@@ -1087,106 +1087,10 @@ namespace LinqToTwitterTests
   </status>
 </statuses>";
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
-        public TestContext TestContext
-        {
-            get
-            {
-                return testContextInstance;
-            }
-            set
-            {
-                testContextInstance = value;
-            }
-        }
-
-        // 
-        //You can use the following additional attributes as you write your tests:
-        //
-        //Use ClassInitialize to run code before running the first test in the class
-        [ClassInitialize()]
+        [ClassInitialize]
         public static void MyClassInitialize(TestContext testContext)
         {
             TestCulture.SetCulture();
-        }
-
-        //Use ClassCleanup to run code after all tests in a class have run
-        //[ClassCleanup()]
-        //public static void MyClassCleanup()
-        //{
-        //}
-        //
-        //Use TestInitialize to run code before running each test
-        //[TestInitialize()]
-        //public void MyTestInitialize()
-        //{
-        //}
-        //
-        //Use TestCleanup to run code after each test has run
-        //[TestCleanup()]
-        //public void MyTestCleanup()
-        //{
-        //}
-        //
-
-        /// <summary>
-        ///A test for BuildURL
-        ///</summary>
-        [TestMethod()]
-        public void BuildURLPublicTest()
-        {
-            var statProc = new StatusRequestProcessor<Status>() { BaseUrl = "http://twitter.com/" };
-            Dictionary<string, string> parameters =
-                new Dictionary<string, string>
-                    {
-                        { "Type", ((int)StatusType.Public).ToString() }
-                    };
-            string expected = "http://twitter.com/statuses/public_timeline.xml";
-
-            Request req = statProc.BuildURL(parameters);
-
-            Assert.AreEqual(expected, req.FullUrl);
-        }
-
-        /// <summary>
-        ///A test for BuildURL
-        ///</summary>
-        [TestMethod()]
-        public void BuildURLPublicNullTest()
-        {
-            var statProc = new StatusRequestProcessor<Status>() { BaseUrl = "http://twitter.com/" };
-            Dictionary<string, string> parameters =
-                new Dictionary<string, string>
-                    {
-                        { "Type", ((int)StatusType.Public).ToString() }
-                    };
-            string expected = "http://twitter.com/statuses/public_timeline.xml";
-
-            Request req = statProc.BuildURL(parameters);
-
-            Assert.AreEqual(expected, req.FullUrl);
-        }
-
-        /// <summary>
-        ///A test for BuildURL
-        ///</summary>
-        [TestMethod()]
-        public void BuildURLFriendTest()
-        {
-            var statProc = new StatusRequestProcessor<Status>() { BaseUrl = "http://twitter.com/" };
-            Dictionary<string, string> parameters =
-                new Dictionary<string, string>
-                    {
-                        { "Type", ((int)StatusType.Friends).ToString() }
-                    };
-            string expected = "http://twitter.com/statuses/friends_timeline.xml";
-
-            Request req = statProc.BuildURL(parameters);
-
-            Assert.AreEqual(expected, req.FullUrl);
         }
 
         /// <summary>
@@ -1195,7 +1099,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void BuildURLMentionsTest()
         {
-            var statProc = new StatusRequestProcessor<Status>() { BaseUrl = "http://twitter.com/" };
+            var statProc = new StatusRequestProcessor<Status>() { BaseUrl = "https://api.twitter.com/1/" };
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                     {
@@ -1205,7 +1109,7 @@ namespace LinqToTwitterTests
                         { "Count", "50" },
                         { "Page", "1" }
                     };
-            string expected = "http://twitter.com/statuses/mentions.xml?since_id=123&max_id=145&count=50&page=1";
+            string expected = "https://api.twitter.com/1/statuses/mentions.xml?since_id=123&max_id=145&count=50&page=1";
 
             Request req = statProc.BuildURL(parameters);
 
@@ -1218,7 +1122,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void ProcessResultsMultipleResultsTest()
         {
-            var statProc = new StatusRequestProcessor<Status>() { BaseUrl = "http://twitter.com/" };
+            var statProc = new StatusRequestProcessor<Status>() { BaseUrl = "https://api.twitter.com/1/" };
 
             var actual = statProc.ProcessResults(m_testQueryResponse);
 
@@ -1233,7 +1137,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void ProcessResultsSingleResultTest()
         {
-            var statProc = new StatusRequestProcessor<Status>() { BaseUrl = "http://twitter.com/" };
+            var statProc = new StatusRequestProcessor<Status>() { BaseUrl = "https://api.twitter.com/1/" };
             XElement twitterResponse = XElement.Load(new StringReader(m_testQueryResponse));
 
             var actual = statProc.ProcessResults(twitterResponse.Descendants("status").First().ToString());
@@ -1285,7 +1189,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void TwypocalypseProcessResultsSingleResultTest()
         {
-            var statProc = new StatusRequestProcessor<Status>() { BaseUrl = "http://twitter.com/" };
+            var statProc = new StatusRequestProcessor<Status>() { BaseUrl = "https://api.twitter.com/1/" };
             XElement twitterResponse = XElement.Load(new StringReader(m_testQueryResponse));
             twitterResponse.Element("status").Element("id").Value = ulong.MaxValue.ToString();
 
@@ -1373,14 +1277,14 @@ namespace LinqToTwitterTests
         public void TwypocalypseStatusIDUrlTest()
         {
             var reqProc = new StatusRequestProcessor_Accessor<Status>();
-            reqProc.BaseUrl = "http://twitter.com/";
+            reqProc.BaseUrl = "https://api.twitter.com/1/";
             var twypocalypseID = ulong.MaxValue.ToString();
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                     {
                         { "ID", twypocalypseID }
                     };
-            string expected = "http://twitter.com/statuses/show/18446744073709551615.xml";
+            string expected = "https://api.twitter.com/1/statuses/show/18446744073709551615.xml";
 
             Request req = reqProc.BuildShowUrl(parameters);
 
@@ -1395,7 +1299,7 @@ namespace LinqToTwitterTests
         public void TwypocalypseSinceIDUrlTest()
         {
             var reqProc = new StatusRequestProcessor_Accessor<Status>();
-            reqProc.BaseUrl = "http://twitter.com/";
+            reqProc.BaseUrl = "https://api.twitter.com/1/";
             var twypocalypseID = ulong.MaxValue.ToString();
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
@@ -1406,7 +1310,7 @@ namespace LinqToTwitterTests
                         { "SinceID", twypocalypseID },
                         { "ScreenName", "JoeMayo" },
                     };
-            string expected = "http://twitter.com/statuses/user_timeline/15411837.xml?user_id=15411837&screen_name=JoeMayo&since_id=18446744073709551615";
+            string expected = "https://api.twitter.com/1/statuses/user_timeline/15411837.xml?user_id=15411837&screen_name=JoeMayo&since_id=18446744073709551615";
 
             Request req = reqProc.BuildUserUrl(parameters);
 
@@ -1421,14 +1325,14 @@ namespace LinqToTwitterTests
         public void BuildMentionsUrlTest()
         {
             var reqProc = new StatusRequestProcessor_Accessor<Status>();
-            reqProc.BaseUrl = "http://twitter.com/";
+            reqProc.BaseUrl = "https://api.twitter.com/1/";
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                     {
                         { "Page", "0" },
                         { "SinceID", "934818247" }
                     };
-            string expected = "http://twitter.com/statuses/mentions.xml?since_id=934818247&page=0";
+            string expected = "https://api.twitter.com/1/statuses/mentions.xml?since_id=934818247&page=0";
 
             Request req = reqProc.BuildMentionsUrl(parameters);
 
@@ -1443,14 +1347,14 @@ namespace LinqToTwitterTests
         public void BuildShowUrlTest()
         {
             var reqProc = new StatusRequestProcessor_Accessor<Status>();
-            reqProc.BaseUrl = "http://twitter.com/";
+            reqProc.BaseUrl = "https://api.twitter.com/1/";
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                     {
                         { "Type", ((int)StatusType.Show).ToString() },
                         { "ID", "945932078" }
                     };
-            string expected = "http://twitter.com/statuses/show/945932078.xml";
+            string expected = "https://api.twitter.com/1/statuses/show/945932078.xml";
 
             Request req = reqProc.BuildShowUrl(parameters);
 
@@ -1465,7 +1369,7 @@ namespace LinqToTwitterTests
         public void BuildUserUrlTest()
         {
             var reqProc = new StatusRequestProcessor_Accessor<Status>();
-            reqProc.BaseUrl = "http://twitter.com/";
+            reqProc.BaseUrl = "https://api.twitter.com/1/";
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                     {
@@ -1474,7 +1378,7 @@ namespace LinqToTwitterTests
                         { "UserID", "15411837" },
                         { "ScreenName", "JoeMayo" },
                     };
-            string expected = "http://twitter.com/statuses/user_timeline/15411837.xml?user_id=15411837&screen_name=JoeMayo";
+            string expected = "https://api.twitter.com/1/statuses/user_timeline/15411837.xml?user_id=15411837&screen_name=JoeMayo";
 
             Request req = reqProc.BuildUserUrl(parameters);
 
@@ -1559,16 +1463,13 @@ namespace LinqToTwitterTests
             Assert.AreEqual(expected, req.FullUrl);
         }
 
-        /// <summary>
-        ///A test for BuildFriendAndUrlParameters
-        ///</summary>
-        [TestMethod()]
-        [DeploymentItem("LinqToTwitter.dll")]
-        public void BuildFriendAndUrlParametersTest()
+        [TestMethod]
+        public void BuildFriendAndUrlParameters_Constructs_Proper_URL()
         {
             var reqProc = new StatusRequestProcessor_Accessor<Status>();
-            var url = "http://twitter.com/statuses/user_timeline/15411837.xml";
-            Dictionary<string, string> parameters =
+            const string url = "https://api.twitter.com/1/statuses/user_timeline/15411837.xml";
+            const string expected = "https://api.twitter.com/1/statuses/user_timeline/15411837.xml?since_id=934818247&count=21&page=0&exclude_replies=true&include_entities=true&trim_user=true&contributor_details=true";
+            var parameters =
                 new Dictionary<string, string>
                     {
                         { "Page", "0" },
@@ -1579,49 +1480,8 @@ namespace LinqToTwitterTests
                         { "TrimUser", "True" },
                         { "IncludeContributorDetails", "True" }
                     };
-            string expected = "http://twitter.com/statuses/user_timeline/15411837.xml?since_id=934818247&count=21&page=0&exclude_replies=true&include_entities=true&trim_user=true&contributor_details=true";
 
-            Request req = reqProc.BuildFriendRepliesAndUrlParameters(parameters, url);
-
-            Assert.AreEqual(expected, req.FullUrl);
-        }
-
-        /// <summary>
-        ///A test for BuildFriendUrl
-        ///</summary>
-        [TestMethod()]
-        [DeploymentItem("LinqToTwitter.dll")]
-        public void BuildFriendUrlTest()
-        {
-            var reqProc = new StatusRequestProcessor_Accessor<Status>();
-            reqProc.BaseUrl = "http://twitter.com/";
-            Dictionary<string, string> parameters =
-                new Dictionary<string, string>
-                    {
-                        { "Page", "0" },
-                        { "Count", "21" },
-                        { "SinceID", "934818247" },
-                        { "ExcludeReplies", "true" }
-                    };
-            string expected = "http://twitter.com/statuses/friends_timeline.xml?since_id=934818247&count=21&page=0&exclude_replies=true";
-
-            Request req = reqProc.BuildFriendUrl(parameters);
-
-            Assert.AreEqual(expected, req.FullUrl);
-        }
-
-        /// <summary>
-        ///A test for BuildPublicUrl
-        ///</summary>
-        [TestMethod()]
-        [DeploymentItem("LinqToTwitter.dll")]
-        public void BuildPublicUrlTest()
-        {
-            var reqProc = new StatusRequestProcessor_Accessor<Status>();
-            reqProc.BaseUrl = "http://twitter.com/";
-            string expected = "http://twitter.com/statuses/public_timeline.xml";
-
-            Request req = reqProc.BuildPublicUrl();
+            Request req = reqProc.BuildUrlParameters(parameters, url);
 
             Assert.AreEqual(expected, req.FullUrl);
         }
@@ -1632,7 +1492,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void MissingTypeTest()
         {
-            StatusRequestProcessor<Status> target = new StatusRequestProcessor<Status>() { BaseUrl = "http://twitter.com/" };
+            StatusRequestProcessor<Status> target = new StatusRequestProcessor<Status>() { BaseUrl = "https://api.twitter.com/1/" };
             Dictionary<string, string> parameters = new Dictionary<string, string> { };
 
             try
@@ -1653,7 +1513,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void NullParametersTest()
         {
-            StatusRequestProcessor<Status> target = new StatusRequestProcessor<Status>() { BaseUrl = "http://twitter.com/" };
+            StatusRequestProcessor<Status> target = new StatusRequestProcessor<Status>() { BaseUrl = "https://api.twitter.com/1/" };
             Dictionary<string, string> parameters = null;
 
             try

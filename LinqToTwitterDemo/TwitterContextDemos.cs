@@ -44,7 +44,7 @@ namespace LinqToTwitterDemo
         {
             var publicTweets =
                 (from tweet in twitterCtx.Status
-                 where tweet.Type == StatusType.Public
+                 where tweet.Type == StatusType.Home
                  select tweet)
                 .ToList();
 

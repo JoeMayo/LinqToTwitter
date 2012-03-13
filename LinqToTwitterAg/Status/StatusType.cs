@@ -1,4 +1,6 @@
-﻿namespace LinqToTwitter
+﻿using System;
+
+namespace LinqToTwitter
 {
     /// <summary>
     /// type of status request
@@ -10,19 +12,9 @@
         /// 
         /// - default tweet type with no options
         /// </summary>
+        // TODO: Twitter is deprecating this on 5/14/12.
+        [Obsolete("This option will be obsolete on 5/14/12. Twitter recommends you use the sample stream instead.", true)]
         Public,
-
-        /// <summary>
-        /// tweets from friends
-        /// 
-        /// Available Options:
-        /// 
-        ///     - Since, get tweets since this date
-        ///     - SinceID, get tweets since this ID
-        ///     - Count, number of tweets to retrieve
-        ///     - Page, which page to return
-        /// </summary>
-        Friends,
 
         /// <summary>
         /// tweets from a specific user
@@ -34,6 +26,7 @@
         ///     - SinceID, get tweets since this ID
         ///     - Count, number of tweets to retrieve
         ///     - Page, which page to return
+        // TODO: remove after 5/14/12
         ///     - IncludeRetweets, return retweets too
         /// </summary>
         User,

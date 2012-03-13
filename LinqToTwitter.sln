@@ -7,64 +7,25 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		LocalTestRun.testrunconfig = LocalTestRun.testrunconfig
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Resources", "Resources", "{F7E91FC6-DC3E-47D3-AC5C-09C01C4CEF7F}"
-	ProjectSection(SolutionItems) = preProject
-		Resources\BuildDelphiPrismDemo.bat = Resources\BuildDelphiPrismDemo.bat
-		Resources\DelphiPrismDemo.pas = Resources\DelphiPrismDemo.pas
-		Resources\DelphiPrismReadMe.txt = Resources\DelphiPrismReadMe.txt
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqToTwitter", "LinqToTwitter\LinqToTwitter.csproj", "{A214B9F0-6B8C-4E91-BE99-27F55CC860C1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqToTwitterTests", "LinqToTwitterTests\LinqToTwitterTests.csproj", "{2DC196D0-E574-4F11-A235-8987DC8FFB79}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqToTwitterDemo", "LinqToTwitterDemo\LinqToTwitterDemo.csproj", "{CF26D528-E26B-40DB-A821-DEDE868D2638}"
 EndProject
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "LinqToTwitterWebFormsDemo", "LinqToTwitterWebFormsDemo", "{D22341E7-1F64-44A9-9A60-29FCCDBA5D5C}"
-	ProjectSection(WebsiteProperties) = preProject
-		SccProjectName = "SAK"
-		SccAuxPath = "SAK"
-		SccLocalPath = "SAK"
-		SccProvider = "SAK"
-		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
-		ProjectReferences = "{A214B9F0-6B8C-4E91-BE99-27F55CC860C1}|LinqToTwitter.dll;"
-		Debug.AspNetCompiler.VirtualPath = "/LinqToTwitterWebFormsDemo"
-		Debug.AspNetCompiler.PhysicalPath = "LinqToTwitterWebFormsDemo\"
-		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\LinqToTwitterWebFormsDemo\"
-		Debug.AspNetCompiler.Updateable = "true"
-		Debug.AspNetCompiler.ForceOverwrite = "true"
-		Debug.AspNetCompiler.FixedNames = "false"
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.VirtualPath = "/LinqToTwitterWebFormsDemo"
-		Release.AspNetCompiler.PhysicalPath = "LinqToTwitterWebFormsDemo\"
-		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\LinqToTwitterWebFormsDemo\"
-		Release.AspNetCompiler.Updateable = "true"
-		Release.AspNetCompiler.ForceOverwrite = "true"
-		Release.AspNetCompiler.FixedNames = "false"
-		Release.AspNetCompiler.Debug = "False"
-		VWDPort = "3735"
-		DefaultWebSiteLanguage = "Visual C#"
-	EndProjectSection
-EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "LinqToTwitterDemoVB", "LinqToTwitterDemoVB\LinqToTwitterDemoVB.vbproj", "{C5526BE1-A83C-4E9B-B1EA-43DBBB74C403}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqToTwitterMvcDemo", "LinqToTwitterMvcDemo\LinqToTwitterMvcDemo.csproj", "{54A55783-61E7-43CC-8148-265D84E26248}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqToTwitterAg", "LinqToTwitterAg\LinqToTwitterAg.csproj", "{D6F5E8C4-5A90-4606-B9EF-9478DDA7BF9C}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqToTwitterSilverlightDemo", "LinqToTwitterSilverlightDemo\LinqToTwitterSilverlightDemo.csproj", "{F1F4D80B-4772-4D9A-97F9-F11D57F4E519}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqToTwitterSilverlightDemo.Web", "LinqToTwitterSilverlightDemo.Web\LinqToTwitterSilverlightDemo.Web.csproj", "{509AAAE9-A9DD-4CD1-9807-B315506BC6CE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqToTwitterXUnitTests", "LinqToTwitterXUnitTests\LinqToTwitterXUnitTests.csproj", "{6487F451-98B1-4911-B910-6D4AF27D7442}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqToTwitterWP", "LinqToTwitterWP\LinqToTwitterWP.csproj", "{C6E6BF25-5DED-4349-A5EC-E61DCC598F10}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WindowsPhoneDemo", "WindowsPhoneDemo\WindowsPhoneDemo.csproj", "{33673588-8F27-4B06-93F4-6034CEF9E366}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqToTwitterCP", "LinqToTwitterCP\LinqToTwitterCP.csproj", "{A430971C-58BB-4BE3-B058-795BDFFD56BC}"
 EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 13
+		SccNumberOfProjects = 9
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs01
 		SccLocalPath0 = .
@@ -77,35 +38,21 @@ Global
 		SccProjectUniqueName3 = LinqToTwitterDemoVB\\LinqToTwitterDemoVB.vbproj
 		SccProjectName3 = LinqToTwitterDemoVB
 		SccLocalPath3 = LinqToTwitterDemoVB
-		SccProjectUniqueName4 = LinqToTwitterMvcDemo\\LinqToTwitterMvcDemo.csproj
-		SccProjectName4 = LinqToTwitterMvcDemo
-		SccLocalPath4 = LinqToTwitterMvcDemo
-		SccProjectUniqueName5 = LinqToTwitter\\LinqToTwitter.csproj
-		SccProjectName5 = LinqToTwitter
-		SccLocalPath5 = LinqToTwitter
-		SccProjectUniqueName6 = LinqToTwitterAg\\LinqToTwitterAg.csproj
-		SccProjectName6 = LinqToTwitterAg
-		SccLocalPath6 = LinqToTwitterAg
-		SccProjectUniqueName7 = LinqToTwitterSilverlightDemo\\LinqToTwitterSilverlightDemo.csproj
-		SccProjectName7 = LinqToTwitterSilverlightDemo
-		SccLocalPath7 = LinqToTwitterSilverlightDemo
-		SccProjectUniqueName8 = LinqToTwitterSilverlightDemo.Web\\LinqToTwitterSilverlightDemo.Web.csproj
-		SccProjectName8 = LinqToTwitterSilverlightDemo.Web
-		SccLocalPath8 = LinqToTwitterSilverlightDemo.Web
-		SccProjectUniqueName9 = LinqToTwitterXUnitTests\\LinqToTwitterXUnitTests.csproj
-		SccProjectName9 = LinqToTwitterXUnitTests
-		SccLocalPath9 = LinqToTwitterXUnitTests
-		SccProjectUniqueName10 = LinqToTwitterWP\\LinqToTwitterWP.csproj
-		SccProjectName10 = LinqToTwitterWP
-		SccLocalPath10 = LinqToTwitterWP
-		SccProjectUniqueName11 = WindowsPhoneDemo\\WindowsPhoneDemo.csproj
-		SccProjectName11 = WindowsPhoneDemo
-		SccLocalPath11 = WindowsPhoneDemo
-		SccWebProject12 = true
-		SccProjectUniqueName12 = LinqToTwitterWebFormsDemo
-		SccLocalPath12 = .
-		SccProjectFilePathRelativizedFromConnection12 = LinqToTwitterWebFormsDemo\\
-		SccProjectEnlistmentChoice12 = 2
+		SccProjectUniqueName4 = LinqToTwitter\\LinqToTwitter.csproj
+		SccProjectName4 = LinqToTwitter
+		SccLocalPath4 = LinqToTwitter
+		SccProjectUniqueName5 = LinqToTwitterAg\\LinqToTwitterAg.csproj
+		SccProjectName5 = LinqToTwitterAg
+		SccLocalPath5 = LinqToTwitterAg
+		SccProjectUniqueName6 = LinqToTwitterXUnitTests\\LinqToTwitterXUnitTests.csproj
+		SccProjectName6 = LinqToTwitterXUnitTests
+		SccLocalPath6 = LinqToTwitterXUnitTests
+		SccProjectUniqueName7 = LinqToTwitterWP\\LinqToTwitterWP.csproj
+		SccProjectName7 = LinqToTwitterWP
+		SccLocalPath7 = LinqToTwitterWP
+		SccProjectUniqueName8 = LinqToTwitterCP\\LinqToTwitterCP.csproj
+		SccProjectName8 = LinqToTwitterCP
+		SccLocalPath8 = LinqToTwitterCP
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = LinqToTwitter.vsmdi
@@ -141,44 +88,18 @@ Global
 		{CF26D528-E26B-40DB-A821-DEDE868D2638}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CF26D528-E26B-40DB-A821-DEDE868D2638}.Release|x86.ActiveCfg = Release|Any CPU
 		{CF26D528-E26B-40DB-A821-DEDE868D2638}.Release|x86.Build.0 = Release|Any CPU
-		{D22341E7-1F64-44A9-9A60-29FCCDBA5D5C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D22341E7-1F64-44A9-9A60-29FCCDBA5D5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D22341E7-1F64-44A9-9A60-29FCCDBA5D5C}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{D22341E7-1F64-44A9-9A60-29FCCDBA5D5C}.Debug|x86.Build.0 = Debug|Any CPU
-		{D22341E7-1F64-44A9-9A60-29FCCDBA5D5C}.Release|Any CPU.ActiveCfg = Debug|Any CPU
-		{D22341E7-1F64-44A9-9A60-29FCCDBA5D5C}.Release|Any CPU.Build.0 = Debug|Any CPU
-		{D22341E7-1F64-44A9-9A60-29FCCDBA5D5C}.Release|x86.ActiveCfg = Debug|Any CPU
-		{D22341E7-1F64-44A9-9A60-29FCCDBA5D5C}.Release|x86.Build.0 = Debug|Any CPU
 		{C5526BE1-A83C-4E9B-B1EA-43DBBB74C403}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C5526BE1-A83C-4E9B-B1EA-43DBBB74C403}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C5526BE1-A83C-4E9B-B1EA-43DBBB74C403}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{C5526BE1-A83C-4E9B-B1EA-43DBBB74C403}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C5526BE1-A83C-4E9B-B1EA-43DBBB74C403}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C5526BE1-A83C-4E9B-B1EA-43DBBB74C403}.Release|x86.ActiveCfg = Release|Any CPU
-		{54A55783-61E7-43CC-8148-265D84E26248}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{54A55783-61E7-43CC-8148-265D84E26248}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{54A55783-61E7-43CC-8148-265D84E26248}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{54A55783-61E7-43CC-8148-265D84E26248}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{54A55783-61E7-43CC-8148-265D84E26248}.Release|Any CPU.Build.0 = Release|Any CPU
-		{54A55783-61E7-43CC-8148-265D84E26248}.Release|x86.ActiveCfg = Release|Any CPU
 		{D6F5E8C4-5A90-4606-B9EF-9478DDA7BF9C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D6F5E8C4-5A90-4606-B9EF-9478DDA7BF9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D6F5E8C4-5A90-4606-B9EF-9478DDA7BF9C}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{D6F5E8C4-5A90-4606-B9EF-9478DDA7BF9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D6F5E8C4-5A90-4606-B9EF-9478DDA7BF9C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D6F5E8C4-5A90-4606-B9EF-9478DDA7BF9C}.Release|x86.ActiveCfg = Release|Any CPU
-		{F1F4D80B-4772-4D9A-97F9-F11D57F4E519}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F1F4D80B-4772-4D9A-97F9-F11D57F4E519}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F1F4D80B-4772-4D9A-97F9-F11D57F4E519}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{F1F4D80B-4772-4D9A-97F9-F11D57F4E519}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F1F4D80B-4772-4D9A-97F9-F11D57F4E519}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F1F4D80B-4772-4D9A-97F9-F11D57F4E519}.Release|x86.ActiveCfg = Release|Any CPU
-		{509AAAE9-A9DD-4CD1-9807-B315506BC6CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{509AAAE9-A9DD-4CD1-9807-B315506BC6CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{509AAAE9-A9DD-4CD1-9807-B315506BC6CE}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{509AAAE9-A9DD-4CD1-9807-B315506BC6CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{509AAAE9-A9DD-4CD1-9807-B315506BC6CE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{509AAAE9-A9DD-4CD1-9807-B315506BC6CE}.Release|x86.ActiveCfg = Release|Any CPU
 		{6487F451-98B1-4911-B910-6D4AF27D7442}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6487F451-98B1-4911-B910-6D4AF27D7442}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6487F451-98B1-4911-B910-6D4AF27D7442}.Debug|x86.ActiveCfg = Debug|Any CPU
@@ -191,14 +112,12 @@ Global
 		{C6E6BF25-5DED-4349-A5EC-E61DCC598F10}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C6E6BF25-5DED-4349-A5EC-E61DCC598F10}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C6E6BF25-5DED-4349-A5EC-E61DCC598F10}.Release|x86.ActiveCfg = Release|Any CPU
-		{33673588-8F27-4B06-93F4-6034CEF9E366}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{33673588-8F27-4B06-93F4-6034CEF9E366}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{33673588-8F27-4B06-93F4-6034CEF9E366}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
-		{33673588-8F27-4B06-93F4-6034CEF9E366}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{33673588-8F27-4B06-93F4-6034CEF9E366}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{33673588-8F27-4B06-93F4-6034CEF9E366}.Release|Any CPU.Build.0 = Release|Any CPU
-		{33673588-8F27-4B06-93F4-6034CEF9E366}.Release|Any CPU.Deploy.0 = Release|Any CPU
-		{33673588-8F27-4B06-93F4-6034CEF9E366}.Release|x86.ActiveCfg = Release|Any CPU
+		{A430971C-58BB-4BE3-B058-795BDFFD56BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A430971C-58BB-4BE3-B058-795BDFFD56BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A430971C-58BB-4BE3-B058-795BDFFD56BC}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A430971C-58BB-4BE3-B058-795BDFFD56BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A430971C-58BB-4BE3-B058-795BDFFD56BC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A430971C-58BB-4BE3-B058-795BDFFD56BC}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

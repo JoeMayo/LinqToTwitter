@@ -151,7 +151,7 @@ Module Module1
         If twitterCtx.AuthorizedClient.IsAuthorized Then
             Dim tweets = _
                 From tweet In twitterCtx.Status _
-                Where tweet.Type = StatusType.Friends
+                Where tweet.Type = StatusType.Show
 
             For Each tweet In tweets
                 Console.WriteLine( _
@@ -332,7 +332,7 @@ Module Module1
 
     Private Sub FriendsStatusQueryDemo(ByVal twitterCtx As TwitterContext)
         Dim ts = From t In twitterCtx.Status _
-                 Where t.Type = StatusType.Friends
+                 Where t.Type = StatusType.Show
 
         For Each tweet In ts
             Console.WriteLine("Friend: " & tweet.User.Name & Environment.NewLine & _
@@ -418,33 +418,6 @@ Module Module1
             status.CreatedAt)
     End Sub
 
-    Private Sub PublicStatusQueryDemo(ByVal twitterContext As TwitterContext)
-        Dim publicTweets = _
-            From tweet In twitterContext.Status _
-            Where tweet.Type = StatusType.Public
-
-        For Each tweet In publicTweets
-            Console.WriteLine( _
-                "User Name: {0}, Tweet: {1}", _
-                tweet.User.Name, _
-                tweet.Text)
-        Next
-    End Sub
-
-    Private Sub PublicStatusFilteredQueryDemo(ByVal twitterContext As TwitterContext)
-        Dim publicTweets = _
-            (From tweet In twitterContext.Status _
-             Where tweet.Type = StatusType.Public).ToList()
-
-        Dim filteredTweets = publicTweets.Where(Function(tweet) tweet.User.Name.StartsWith("J"))
-
-        For Each tweet In filteredTweets
-            Console.WriteLine( _
-                "User Name: {0}, Tweet: {1}", _
-                tweet.User.Name, _
-                tweet.Text)
-        Next
-    End Sub
 
     Private Sub UpdateStatusDemo(ByVal twitterCtx As TwitterContext)
         Dim statusMsg As String = "\u00C7 Testing LINQ to Twitter update status (with VB) on " & DateTime.Now.ToString() & " #linqtotwitter"

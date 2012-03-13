@@ -131,8 +131,8 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void BuildUrlSentToSinceIDTest()
         {
-            var dmProc = new DirectMessageRequestProcessor<DirectMessage>() { BaseUrl = "http://twitter.com/" };
-            string expected = "http://twitter.com/direct_messages.xml?since_id=1234567&max_id=357&page=1&count=2";
+            var dmProc = new DirectMessageRequestProcessor<DirectMessage>() { BaseUrl = "https://api.twitter.com/1/" };
+            string expected = "https://api.twitter.com/1/direct_messages.xml?since_id=1234567&max_id=357&page=1&count=2";
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                 {
@@ -154,8 +154,8 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void BuildUrlSentByTest()
         {
-            var dmProc = new DirectMessageRequestProcessor<DirectMessage>() { BaseUrl = "http://twitter.com/" };
-            string expected = "http://twitter.com/direct_messages/sent.xml?since_id=1234567&max_id=357&page=1&count=2";
+            var dmProc = new DirectMessageRequestProcessor<DirectMessage>() { BaseUrl = "https://api.twitter.com/1/" };
+            string expected = "https://api.twitter.com/1/direct_messages/sent.xml?since_id=1234567&max_id=357&page=1&count=2";
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                 {
@@ -217,7 +217,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void ProcessResultsTest()
         {
-            var dmProc = new DirectMessageRequestProcessor<DirectMessage>() { BaseUrl = "http://twitter.com/" };
+            var dmProc = new DirectMessageRequestProcessor<DirectMessage>() { BaseUrl = "https://api.twitter.com/1/" };
 
             var actual = dmProc.ProcessResults(m_testQueryResponse);
 
@@ -229,7 +229,7 @@ namespace LinqToTwitterTests
         [TestMethod]
         public void ProcessResults_Returns_Empty_Collection_When_Empty_Results()
         {
-            var dmProc = new DirectMessageRequestProcessor<DirectMessage>() { BaseUrl = "http://twitter.com/" };
+            var dmProc = new DirectMessageRequestProcessor<DirectMessage>() { BaseUrl = "https://api.twitter.com/1/" };
 
             var dms = dmProc.ProcessResults(string.Empty);
 
@@ -278,7 +278,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void MissingTypeTest()
         {
-            DirectMessageRequestProcessor<DirectMessage> target = new DirectMessageRequestProcessor<DirectMessage>() { BaseUrl = "http://twitter.com/" };
+            DirectMessageRequestProcessor<DirectMessage> target = new DirectMessageRequestProcessor<DirectMessage>() { BaseUrl = "https://api.twitter.com/1/" };
             Dictionary<string, string> parameters = new Dictionary<string, string> { };
 
             try
@@ -299,7 +299,7 @@ namespace LinqToTwitterTests
         [TestMethod()]
         public void NullParametersTest()
         {
-            DirectMessageRequestProcessor<DirectMessage> target = new DirectMessageRequestProcessor<DirectMessage>() { BaseUrl = "http://twitter.com/" };
+            DirectMessageRequestProcessor<DirectMessage> target = new DirectMessageRequestProcessor<DirectMessage>() { BaseUrl = "https://api.twitter.com/1/" };
             Dictionary<string, string> parameters = null;
 
             try

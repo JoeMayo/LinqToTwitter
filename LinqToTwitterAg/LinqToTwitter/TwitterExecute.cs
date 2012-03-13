@@ -207,13 +207,20 @@ namespace LinqToTwitter
                                 + Environment.NewLine
                                 + responseStr;
 
+#if CLIENT_PROFILE
+                string encodedResponseUri = WebUtility.HtmlEncode(responseUri);
+                string encodedErrorText = WebUtility.HtmlEncode(errorText);
+#else
+                string encodedResponseUri = HttpUtility.HtmlEncode(responseUri);
+                string encodedErrorText = HttpUtility.HtmlEncode(errorText);
+#endif
                 // One known reason this can happen is if you don't have an 
                 // Internet connection, meaning that the response will contain
                 // an HTML message, that can't be parsed as normal XML.
                 responseXml = XElement.Parse(
 @"<hash>
-  <request>" + HttpUtility.HtmlEncode(responseUri) + @"</request>
-  <error>" + HttpUtility.HtmlEncode(errorText) + @"</error>
+  <request>" + encodedResponseUri + @"</request>
+  <error>" + encodedErrorText + @"</error>
 </hash>");
             }
 
@@ -347,6 +354,12 @@ namespace LinqToTwitter
                                     var res = req.EndGetResponse(ar) as HttpWebResponse;
                                     httpStatus = res.Headers["Status"];
                                     response = GetTwitterResponse(res);
+
+                                    if (AsyncCallback != null)
+                                    {
+                                        List<T> responseObj = reqProc.ProcessResults(response);
+                                        (AsyncCallback as Action<IEnumerable<T>>)(responseObj); 
+                                    }
                                 }
                                 catch (Exception ex)
                                 {
@@ -916,9 +929,14 @@ namespace LinqToTwitter
                 {
                     if (param.Value != null)
                     {
+#if CLIENT_PROFILE
+                        string encodedParamVal = WebUtility.HtmlEncode(param.Value);
+#else
+                        string encodedParamVal = HttpUtility.HtmlEncode(param.Value);
+#endif
                         formDataSb.AppendFormat(
                             "--{0}\r\nContent-Disposition: form-data; name=\"{1}\"\r\n\r\n{2}\r\n",
-                            contentBoundaryBase, param.Key, HttpUtility.HtmlEncode(param.Value));
+                            contentBoundaryBase, param.Key, encodedParamVal);
                     }
                 }
             }

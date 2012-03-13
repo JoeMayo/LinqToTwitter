@@ -10,32 +10,6 @@ namespace LinqToTwitterDemo
     {
         static void Main()
         {
-            //
-            // This first part is for API's that don't require authentication
-            //
-            if (DoThis("get Public Statuses without authentication"))
-            {
-                Console.Write("Fetching ");
-                var ctx = new TwitterContext();
-
-                var tweets =
-                    (from tweet in ctx.Status
-                     where tweet.Type == StatusType.Public
-                     select tweet)
-                    .ToList();
-
-                Console.WriteLine("complete");
-
-                tweets.ForEach(tweet =>
-                    Console.WriteLine(
-                        "User: {0}\nTweet: {1}\n",
-                        tweet.User.Identifier.ScreenName,
-                        tweet.Text));
-
-                Console.WriteLine("... that was public statuses with no authentication. Now, you'll see a demo of how to authenticate with OAuth. Press any key to continue...\n");
-                Console.ReadKey();
-            }
-
             ITwitterAuthorizer auth = null;
 
             if (DoThis("use XAuth"))

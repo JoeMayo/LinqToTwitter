@@ -18,7 +18,7 @@ namespace LinqToTwitter
         public virtual string BaseUrl { get; set; }
 
         /// <summary>
-        /// type of status request, i.e. Friends or Public
+        /// type of status request, i.e. Show or User
         /// </summary>
         public StatusType Type { get; set; }
 
@@ -61,6 +61,8 @@ namespace LinqToTwitter
         /// Retweets are optional and you must set this to true
         /// before they will be included in the user timeline
         /// </summary>
+        // TODO: remove after 5/14/12
+        [Obsolete("All API methods capable of including retweets will return them regardless of the value provided.")]
         public bool IncludeRetweets { get; set; }
 
         /// <summary>
@@ -71,6 +73,8 @@ namespace LinqToTwitter
         /// <summary>
         /// Include entities in tweets
         /// </summary>
+        // TODO: remove after 5/14/12
+        [Obsolete("All API methods capable of including entities will return them regardless of the value provided.")]
         public bool IncludeEntities { get; set; }
 
         /// <summary>
@@ -129,14 +133,13 @@ namespace LinqToTwitter
 
             switch (Type)
             {
-                case StatusType.Friends:
-                    return BuildFriendUrl(parameters);
                 case StatusType.Home:
                     return BuildHomeUrl(parameters);
                 case StatusType.Mentions:
                     return BuildMentionsUrl(parameters);
-                case StatusType.Public:
-                    return BuildPublicUrl();
+                // TODO: Public deprecated on 5/14/12
+                //case StatusType.Public:
+                //    return BuildPublicUrl();
                 case StatusType.Retweets:
                     return BuildRetweetsUrl(parameters);
                 case StatusType.RetweetedByMe:
@@ -166,7 +169,7 @@ namespace LinqToTwitter
         private Request BuildShowUrl(Dictionary<string, string> parameters)
         {
             var url = BuildUrlHelper.TransformIDUrl(parameters, "statuses/show.xml");
-            return BuildFriendRepliesAndUrlParameters(parameters, url);
+            return BuildUrlParameters(parameters, url);
         }
 
         /// <summary>
@@ -175,7 +178,7 @@ namespace LinqToTwitter
         /// <param name="parameters">list of parameters from expression tree</param>
         /// <param name="url">base url</param>
         /// <returns>base url + parameters</returns>
-        private Request BuildFriendRepliesAndUrlParameters(Dictionary<string, string> parameters, string url)
+        private Request BuildUrlParameters(Dictionary<string, string> parameters, string url)
         {
             var req = new Request(BaseUrl + url);
             var urlParams = req.RequestParameters;
@@ -281,16 +284,7 @@ namespace LinqToTwitter
         private Request BuildUserUrl(Dictionary<string, string> parameters)
         {
             var url = BuildUrlHelper.TransformIDUrl(parameters, "statuses/user_timeline.xml");
-            return BuildFriendRepliesAndUrlParameters(parameters, url);
-        }
-
-        /// <summary>
-        /// construct a base friend url
-        /// </summary>
-        /// <returns>base url + friend segment</returns>
-        private Request BuildFriendUrl(Dictionary<string, string> parameters)
-        {
-            return BuildFriendRepliesAndUrlParameters(parameters, "statuses/friends_timeline.xml");
+            return BuildUrlParameters(parameters, url);
         }
 
         /// <summary>
@@ -299,28 +293,28 @@ namespace LinqToTwitter
         /// <returns>base url + home segment</returns>
         private Request BuildHomeUrl(Dictionary<string, string> parameters)
         {
-            return BuildFriendRepliesAndUrlParameters(parameters, "statuses/home_timeline.xml");
+            return BuildUrlParameters(parameters, "statuses/home_timeline.xml");
         }
 
         /// <summary>
         /// construct a base mentions url
         /// </summary>
         /// <param name="parameters">parameters to build url query with</param>
-        /// <returns>base url + friend segment</returns>
+        /// <returns>base url + mentions segment</returns>
         private Request BuildMentionsUrl(Dictionary<string, string> parameters)
         {
-            return BuildFriendRepliesAndUrlParameters(parameters, "statuses/mentions.xml");
+            return BuildUrlParameters(parameters, "statuses/mentions.xml");
         }
 
-        /// <summary>
-        /// return a public url
-        /// </summary>
-        /// 
-        /// <returns>base url + public segment</returns>
-        private Request BuildPublicUrl()
-        {
-            return new Request(BaseUrl + "statuses/public_timeline.xml");
-        }
+        // TODO: Public deprecated on 5/14/12
+        ///// <summary>
+        ///// return a public url
+        ///// </summary>
+        ///// <returns>base url + public segment</returns>
+        //private Request BuildPublicUrl()
+        //{
+        //    return new Request(BaseUrl + "statuses/public_timeline.xml");
+        //}
 
         /// <summary>
         /// construct a url that will request all the retweets of a given tweet
@@ -354,7 +348,7 @@ namespace LinqToTwitter
         /// <returns>base url + retweeted by me segment</returns>
         private Request BuildRetweetedByMeUrl(Dictionary<string, string> parameters)
         {
-            return BuildFriendRepliesAndUrlParameters(parameters, "statuses/retweeted_by_me.xml");
+            return BuildUrlParameters(parameters, "statuses/retweeted_by_me.xml");
         }
 
         /// <summary>
@@ -364,7 +358,7 @@ namespace LinqToTwitter
         /// <returns>base url + retweeted to me segment</returns>
         private Request BuildRetweetedToMeUrl(Dictionary<string, string> parameters)
         {
-            return BuildFriendRepliesAndUrlParameters(parameters, "statuses/retweeted_to_me.xml");
+            return BuildUrlParameters(parameters, "statuses/retweeted_to_me.xml");
         }
 
         /// <summary>
@@ -374,7 +368,7 @@ namespace LinqToTwitter
         /// <returns>base url + retweeted by user segment</returns>
         private Request BuildRetweetedByUserUrl(Dictionary<string, string> parameters)
         {
-            return BuildFriendRepliesAndUrlParameters(parameters, "statuses/retweeted_by_user.xml");
+            return BuildUrlParameters(parameters, "statuses/retweeted_by_user.xml");
         }
 
         /// <summary>
@@ -384,7 +378,7 @@ namespace LinqToTwitter
         /// <returns>base url + retweeted to user segment</returns>
         private Request BuildRetweetedToUserUrl(Dictionary<string, string> parameters)
         {
-            return BuildFriendRepliesAndUrlParameters(parameters, "statuses/retweeted_to_user.xml");
+            return BuildUrlParameters(parameters, "statuses/retweeted_to_user.xml");
         }
 
         /// <summary>
@@ -394,7 +388,7 @@ namespace LinqToTwitter
         /// <returns>base url + retweets of me segment</returns>
         private Request BuildRetweetsOfMeUrl(Dictionary<string, string> parameters)
         {
-            return BuildFriendRepliesAndUrlParameters(parameters, "statuses/retweets_of_me.xml");
+            return BuildUrlParameters(parameters, "statuses/retweets_of_me.xml");
         }
 
         /// <summary>

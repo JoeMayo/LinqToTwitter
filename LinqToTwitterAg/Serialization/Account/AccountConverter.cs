@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-#if !SILVERLIGHT
+
+#if !SILVERLIGHT && !CLIENT_PROFILE
 using System.Web.Script.Serialization;
 #endif
 

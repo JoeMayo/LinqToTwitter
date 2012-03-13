@@ -1,5 +1,7 @@
 ﻿using System.Xml.Linq;
 
+using LinqToTwitter.Common;
+
 namespace LinqToTwitter
 {
     /// <summary>

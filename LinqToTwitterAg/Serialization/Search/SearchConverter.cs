@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !CLIENT_PROFILE
 using System.Web.Script.Serialization;
 #endif
 
@@ -32,6 +32,7 @@ namespace LinqToTwitter.Json
                     typeof(Json.Search), 
                     typeof(Json.SearchMetaData),
                     typeof(Json.SearchResult),
+                    typeof(Json.SearchResult[]),
                     typeof(Json.HashtagEntity),
                     typeof(Json.MediaEntity),
                     typeof(Json.UrlEntity),
@@ -56,6 +57,10 @@ namespace LinqToTwitter.Json
                 return Json.SearchMetaData.Deserialize(dictionary, serializer);
             }
             else if (type == typeof(Json.SearchResult))
+            {
+                return Json.SearchResult.Deserialize(dictionary, serializer);
+            }
+            else if (type == typeof(Json.SearchResult[]))
             {
                 return Json.SearchResult.Deserialize(dictionary, serializer);
             }
