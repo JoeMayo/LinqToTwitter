@@ -506,18 +506,6 @@
     <Compile Include="..\LinqToTwitterAg\Serialization\LitJson\ParserToken.cs">
       <Link>Serialization\LitJson\ParserToken.cs</Link>
     </Compile>
-    <Compile Include="..\LinqToTwitterAg\Serialization\Search\Search.cs">
-      <Link>Serialization\Search\Search.cs</Link>
-    </Compile>
-    <Compile Include="..\LinqToTwitterAg\Serialization\Search\SearchConverter.cs">
-      <Link>Serialization\Search\SearchConverter.cs</Link>
-    </Compile>
-    <Compile Include="..\LinqToTwitterAg\Serialization\Search\SearchMetaData.cs">
-      <Link>Serialization\Search\SearchMetaData.cs</Link>
-    </Compile>
-    <Compile Include="..\LinqToTwitterAg\Serialization\Search\SearchResult.cs">
-      <Link>Serialization\Search\SearchResult.cs</Link>
-    </Compile>
     <Compile Include="..\LinqToTwitterAg\SocialGraph\SocialGraph.cs">
       <Link>SocialGraph\SocialGraph.cs</Link>
     </Compile>
@@ -687,6 +675,8 @@
       <Link>LinqToTwitter.snk</Link>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Serialization\Search\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

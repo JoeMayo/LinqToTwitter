@@ -481,18 +481,6 @@
     <Compile Include="..\LinqToTwitterAg\Serialization\Place\PlaceType.cs">
       <Link>Serialization\Place\PlaceType.cs</Link>
     </Compile>
-    <Compile Include="..\LinqToTwitterAg\Serialization\Search\Search.cs">
-      <Link>Serialization\Search\Search.cs</Link>
-    </Compile>
-    <Compile Include="..\LinqToTwitterAg\Serialization\Search\SearchConverter.cs">
-      <Link>Serialization\Search\SearchConverter.cs</Link>
-    </Compile>
-    <Compile Include="..\LinqToTwitterAg\Serialization\Search\SearchMetaData.cs">
-      <Link>Serialization\Search\SearchMetaData.cs</Link>
-    </Compile>
-    <Compile Include="..\LinqToTwitterAg\Serialization\Search\SearchResult.cs">
-      <Link>Serialization\Search\SearchResult.cs</Link>
-    </Compile>
     <Compile Include="..\LinqToTwitterAg\Serialization\Status\Status.cs">
       <Link>Serialization\Status\Status.cs</Link>
     </Compile>
@@ -594,7 +582,9 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Serialization\Search\" />
+  </ItemGroup>
   <ItemGroup>
     <None Include="..\LinqToTwitterAg\LinqToTwitter.snk">
       <Link>LinqToTwitter.snk</Link>

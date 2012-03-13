@@ -212,10 +212,6 @@
     <Compile Include="Serialization\LitJson\ParserToken.cs" />
     <Compile Include="Serialization\Place\Place.cs" />
     <Compile Include="Serialization\Place\PlaceType.cs" />
-    <Compile Include="Serialization\Search\Search.cs" />
-    <Compile Include="Serialization\Search\SearchMetaData.cs" />
-    <Compile Include="Serialization\Search\SearchResult.cs" />
-    <Compile Include="Serialization\Search\SearchConverter.cs" />
     <Compile Include="Serialization\Status\Status.cs" />
     <Compile Include="Serialization\Trend\DailyWeeklyTrends.cs" />
     <Compile Include="Serialization\Trend\SlottedTrend.cs" />
