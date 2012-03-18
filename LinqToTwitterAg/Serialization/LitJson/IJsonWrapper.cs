@@ -1,6 +1,6 @@
 /**
  * IJsonWrapper.cs
- *   Interface that represents a type capable of handling all kinds of JSON
+ *   Interface that represents a jsonType capable of handling all kinds of JSON
  *   data. This is mainly used when mapping objects through JsonMapper, and
  *   it's implemented by JsonData.
  *
@@ -55,7 +55,7 @@ namespace LitJson
         void SetDouble   (double val);
         void SetDecimal(decimal val);
         void SetInt      (int val);
-        void SetJsonType (JsonType type);
+        void SetJsonType (JsonType jsonType);
         void SetLong     (long val);
         void SetUlong(ulong val);
         void SetString   (string val);

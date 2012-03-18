@@ -88,8 +88,8 @@ namespace LinqToTwitter.Json
             var retweet_count = retweet_count_str.TrimEnd('+').GetInt(0);
             var text = dictionary.GetValue<String>("text");
             var source = dictionary.GetValue<String>("source");
-            var coordinates = dictionary.GetValue<String>("coordinates");
-            var place = dictionary.GetNested<Place>("place", serializer);
+            //var coordinates = dictionary.GetValue<String>("coordinates");
+            //var place = dictionary.GetNested<Place>("place", serializer);
             //var geo = dictionary.GetNested<Geo>("geo", serializer);
             //var entities = dictionary.GetNested<Entities>("entities", serializer);
 
@@ -108,8 +108,8 @@ namespace LinqToTwitter.Json
                 source = source,
                 user = user,
                 //geo = geo,
-                coordinates = coordinates,
-                place = place,
+                //coordinates = coordinates,
+                //place = place,
                 // entities = entities
             };
         }

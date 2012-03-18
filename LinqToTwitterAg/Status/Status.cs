@@ -206,11 +206,25 @@ namespace LinqToTwitter
             return newStatus;
         }
 
+        [XmlIgnore]
+        StatusType type;
+
         /// <summary>
         /// type of status request, i.e. Friends or Public
         /// </summary>
-        [XmlElement(ElementName="StatusType")]
-        public StatusType Type { get; set; }
+        [XmlIgnore]
+        public StatusType Type
+        {
+            get { return type; }
+            set { type = value; }
+        }
+
+        [XmlAttribute(AttributeName = "Type")]
+        StatusType StatusTypeXml
+        {
+            get { return type; }
+            set { type = value; }
+        }
 
         /// <summary>
         /// TweetID

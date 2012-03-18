@@ -3,11 +3,13 @@ using System.Globalization;
 using System.Xml.Linq;
 using System.Collections.Generic;
 
+using LitJson;
+
 namespace LinqToTwitter.Common
 {
-    public static class XTwitterElement
+    public static class TypeConversionExtensions
     {
-        private static string TagValue(this XElement elem, XName name)
+        internal static string TagValue(this XElement elem, XName name)
         {
             if (elem == null)
                 return null;
@@ -155,14 +157,13 @@ namespace LinqToTwitter.Common
             return EpochBase + TimeSpan.FromSeconds(epochSeconds);
         }
 
-        // should get moved to a different helper in Common somewhere...
         public static T GetValue<T>(this IDictionary<string, object> dictionary, string key)
         {
             object value;
 
             if (dictionary.TryGetValue(key, out value))
                 return (T)value;
-            
+
             return default(T);
         }
 
@@ -174,6 +175,51 @@ namespace LinqToTwitter.Common
                 return (T)value;
             
             return defaultValue;
+        }
+
+        public static T GetValue<T>(this JsonData data, string key)
+        {
+            return GetValue(data, key, default(T));
+        }
+
+        public static T GetValue<T>(this JsonData data, string key, T defaultValue)
+        {
+            object value = defaultValue;
+            if (data != null && data.InstObject.ContainsKey(key) && data.InstObject[key] != null)
+            {
+                var dataItem = data.InstObject[key] as IJsonWrapper;
+
+                string type = typeof (T).Name;
+                switch (type)
+                {
+                    case "String":
+                        value = dataItem.GetString();
+                        break;
+                    case "Int32":
+                        value = dataItem.GetInt();
+                        break;
+                    case "Int64":
+                        value = dataItem.GetLong();
+                        break;
+                    case "Double":
+                        value = dataItem.GetDouble();
+                        break;
+                    case "Boolean":
+                        value = dataItem.GetBoolean();
+                        break;
+                    case "Decimal":
+                        value = dataItem.GetDecimal();
+                        break;
+                    case "UInt64":
+                        value = dataItem.GetUlong();
+                        break;
+                    case "JsonData":
+                        value = data.InstObject[key];
+                        break;
+                }
+            }
+
+            return (T)value;
         }
     }
 }

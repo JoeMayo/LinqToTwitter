@@ -9,12 +9,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace LinqToTwitterTests
 {
-    
-    
-    /// <summary>
-    ///This is a test class for AccountRequestProcessorTest and is intended
-    ///to contain all AccountRequestProcessorTest Unit Tests
-    ///</summary>
     [TestClass]
     public class AccountRequestProcessorTest
     {
@@ -146,15 +140,17 @@ namespace LinqToTwitterTests
         }
 
         [TestMethod]
-        public void ProcessResults_Handles_RateLimitStatus()
+        public void HandleRateLimitStatus_Converts_RateLimit_To_Account()
         {
             var acctReqProc = new AccountRequestProcessor<Account> { Type = AccountType.RateLimitStatus };
+            DateTime expectedDateTime = new DateTimeOffset(2011, 9, 19, 2, 6, 36, 0, new TimeSpan(0, 0, 0)).DateTime;
+            Account acct = acctReqProc.HandleRateLimitResponse(TestRateLimitStatusQueryResponse);
 
-            IList actual = acctReqProc.ProcessResults(TestRateLimitStatusQueryResponse);
-
-            var acct = actual.Cast<Account>().ToList().FirstOrDefault();
             Assert.IsNotNull(acct);
+            Assert.AreEqual(343, acct.RateLimitStatus.RemainingHits);
             Assert.AreEqual(350, acct.RateLimitStatus.HourlyLimit);
+            Assert.AreEqual(1316397996, acct.RateLimitStatus.ResetTimeInSeconds);
+            Assert.AreEqual(expectedDateTime, acct.RateLimitStatus.ResetTime);
         }
 
         [TestMethod]
@@ -173,15 +169,12 @@ namespace LinqToTwitterTests
             Assert.AreEqual(875, acct.Totals.Followers);
         }
 
-        [Ignore]
         [TestMethod]
-        public void ProcessResults_Converts_Settings_To_Account()
+        public void HandleSettingsResponse_Converts_Settings_To_Account()
         {
             var acctReqProc = new AccountRequestProcessor<Account>();
 
-            List<Account> actual = acctReqProc.ProcessResults(TestSettingsResponse);
-
-            var acct = actual.FirstOrDefault();
+            Account acct = acctReqProc.HandleSettingsResponse(TestSettingsResponse);
 
             Assert.IsNotNull(acct);
             Assert.AreEqual("23424977", acct.Settings.TrendLocation.WoeID);
@@ -193,8 +186,8 @@ namespace LinqToTwitterTests
             Assert.AreEqual("http://where.yahooapis.com/v1/place/23424977", acct.Settings.TrendLocation.Url);
             Assert.AreEqual(true, acct.Settings.GeoEnabled);
             Assert.AreEqual(false, acct.Settings.SleepTime.Enabled);
-            Assert.AreEqual(null, acct.Settings.SleepTime.StartHour);
-            Assert.AreEqual(null, acct.Settings.SleepTime.EndHour);
+            Assert.AreEqual(0, acct.Settings.SleepTime.StartHour);
+            Assert.AreEqual(0, acct.Settings.SleepTime.EndHour);
         }
 
         [TestMethod]
@@ -210,7 +203,7 @@ namespace LinqToTwitterTests
         [TestMethod]
         public void ProcessResults_Returns_Empty_Collection_When_Empty_Results()
         {
-            var reqProc = new AccountRequestProcessor<Account>() { BaseUrl = "http://api.twitter.com/1/" };
+            var reqProc = new AccountRequestProcessor<Account> { BaseUrl = "http://api.twitter.com/1/" };
 
             var accts = reqProc.ProcessResults(string.Empty);
 
@@ -231,68 +224,62 @@ namespace LinqToTwitterTests
                     new KeyValuePair<string, string>("Type", ((int)AccountType.RateLimitStatus).ToString(CultureInfo.InvariantCulture))));
         }
 
-        /// <summary>
-        ///A test for BuildURL
-        ///</summary>
-        [TestMethod()]
-        public void BuildVerifyCredentialsStatusURLTest()
+        [TestMethod]
+        public void BuildUrl_Constructs_VerifyCredentials_URL()
         {
-            var target = new AccountRequestProcessor<Account>() { BaseUrl = "https://api.twitter.com/1/" };
+            var acctReqProc = new AccountRequestProcessor<Account> { BaseUrl = "https://api.twitter.com/1/" };
             var parameters =
                 new Dictionary<string, string>
                 {
-                        { "Type", ((int)AccountType.VerifyCredentials).ToString() }
+                        { "Type", ((int)AccountType.VerifyCredentials).ToString(CultureInfo.InvariantCulture) }
                 };
-            string expected = "https://api.twitter.com/1/account/verify_credentials.json";
+            const string expected = "https://api.twitter.com/1/account/verify_credentials.json";
             
-            Request req = target.BuildURL(parameters);
+            Request req = acctReqProc.BuildURL(parameters);
 
             Assert.AreEqual(expected, req.FullUrl);
         }
 
-        /// <summary>
-        ///A test for BuildURL
-        ///</summary>
-        [TestMethod()]
-        public void BuildRateLimitStatusURLTest()
+        [TestMethod]
+        public void BuildUrl_Constructs_RateLimitStatus_URL()
         {
-            AccountRequestProcessor<Account> target = new AccountRequestProcessor<Account>() { BaseUrl = "https://api.twitter.com/1/" };
-            Dictionary<string, string> parameters =
+            var acctReqProc = new AccountRequestProcessor<Account> { BaseUrl = "https://api.twitter.com/1/" };
+            var parameters =
                 new Dictionary<string, string>
                 {
-                        { "Type", ((int)AccountType.RateLimitStatus).ToString() }
+                        { "Type", ((int)AccountType.RateLimitStatus).ToString(CultureInfo.InvariantCulture) }
                 };
-            string expected = "https://api.twitter.com/1/account/rate_limit_status.json";
-
-            Request req = target.BuildURL(parameters);
-
-            Assert.AreEqual(expected, req.FullUrl);
-        }
-
-        [TestMethod()]
-        public void BuildUrl_Returns_Totals_Url()
-        {
-            var acctReqProc = new AccountRequestProcessor<Account>() { BaseUrl = "https://api.twitter.com/1/" };
-            var parameters = new Dictionary<string, string>
-                {
-                        { "Type", ((int)AccountType.Totals).ToString() }
-                };
-            string expected = "https://api.twitter.com/1/account/totals.json";
+            const string expected = "https://api.twitter.com/1/account/rate_limit_status.json";
 
             Request req = acctReqProc.BuildURL(parameters);
 
             Assert.AreEqual(expected, req.FullUrl);
         }
 
-        [TestMethod()]
-        public void BuildUrl_Returns_Settings_Url()
+        [TestMethod]
+        public void BuildUrl_Returns_Totals_Url()
         {
-            var acctReqProc = new AccountRequestProcessor<Account>() { BaseUrl = "https://api.twitter.com/1/" };
+            var acctReqProc = new AccountRequestProcessor<Account> { BaseUrl = "https://api.twitter.com/1/" };
             var parameters = new Dictionary<string, string>
                 {
-                        { "Type", ((int)AccountType.Settings).ToString() }
+                        { "Type", ((int)AccountType.Totals).ToString(CultureInfo.InvariantCulture) }
                 };
-            string expected = "https://api.twitter.com/1/account/settings.json";
+            const string expected = "https://api.twitter.com/1/account/totals.json";
+
+            Request req = acctReqProc.BuildURL(parameters);
+
+            Assert.AreEqual(expected, req.FullUrl);
+        }
+
+        [TestMethod]
+        public void BuildUrl_Returns_Settings_Url()
+        {
+            var acctReqProc = new AccountRequestProcessor<Account> { BaseUrl = "https://api.twitter.com/1/" };
+            var parameters = new Dictionary<string, string>
+                {
+                        { "Type", ((int)AccountType.Settings).ToString(CultureInfo.InvariantCulture) }
+                };
+            const string expected = "https://api.twitter.com/1/account/settings.json";
 
             Request req = acctReqProc.BuildURL(parameters);
 
@@ -302,42 +289,38 @@ namespace LinqToTwitterTests
         /// <summary>
         ///A test for missing type
         ///</summary>
-        [TestMethod()]
-        public void MissingTypeTest()
+        [TestMethod]
+        public void BuildUrl_Throws_When_Type_Not_Provided()
         {
-            AccountRequestProcessor<Account> target = new AccountRequestProcessor<Account>() { BaseUrl = "https://api.twitter.com/1/" };
-            Dictionary<string, string> parameters = new Dictionary<string, string> { };
+            var acctReqProc = new AccountRequestProcessor<Account> { BaseUrl = "https://api.twitter.com/1/" };
+            var parameters = new Dictionary<string, string>();
 
             try
             {
-                target.BuildURL(parameters);
+                acctReqProc.BuildURL(parameters);
 
                 Assert.Fail("Expected ArgumentException.");
             }
             catch (ArgumentException ae)
             {
-                Assert.AreEqual<string>("Type", ae.ParamName);
+                Assert.AreEqual("Type", ae.ParamName);
             }
         }
 
-        /// <summary>
-        ///A test for null parameters
-        ///</summary>
-        [TestMethod()]
-        public void NullParametersTest()
+        [TestMethod]
+        public void BuildUrl_Throws_With_Null_Parameters()
         {
-            AccountRequestProcessor<Account> target = new AccountRequestProcessor<Account>() { BaseUrl = "https://api.twitter.com/1/" };
-            Dictionary<string, string> parameters = null;
+            var acctReqProc = new AccountRequestProcessor<Account> { BaseUrl = "https://api.twitter.com/1/" };
 
             try
             {
-                target.BuildURL(parameters);
+                acctReqProc.BuildURL(null);
 
                 Assert.Fail("Expected ArgumentException.");
             }
             catch (ArgumentException ae)
             {
-                Assert.AreEqual<string>("Type", ae.ParamName);
+                Assert.AreEqual("Type", ae.ParamName);
             }
         }
     }

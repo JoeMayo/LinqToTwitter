@@ -1,6 +1,9 @@
-﻿using System.Xml.Linq;
+﻿using System.Globalization;
+using System.Xml.Linq;
 
 using LinqToTwitter.Common;
+
+using LitJson;
 
 namespace LinqToTwitter
 {
@@ -45,6 +48,23 @@ namespace LinqToTwitter
             }
 
             return null;
+        }
+
+        public static Location Create(JsonData trendLocation)
+        {
+            var placeType = trendLocation.GetValue<JsonData>("placeType");
+
+            return new Location
+            {
+                Country = trendLocation.GetValue<string>("country"),
+                Name = trendLocation.GetValue<string>("name"),
+                CountryCode = trendLocation.GetValue<string>("countryCode"),
+                ParentID = trendLocation.GetValue<int>("parentid").ToString(CultureInfo.InvariantCulture),
+                PlaceTypeName = placeType.GetValue<string>("name"),
+                PlaceTypeNameCode = placeType.GetValue<int>("code"),
+                Url = trendLocation.GetValue<string>("url"),
+                WoeID = trendLocation.GetValue<int>("woeid").ToString(CultureInfo.InvariantCulture)
+            };
         }
 
         /// <summary>

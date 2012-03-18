@@ -121,6 +121,7 @@ namespace LinqToTwitter
         /// <summary>
         /// Tweets that contain links
         /// </summary>
+        [Obsolete("WithLinks (Twitter API filter:links) is undocumented and unsupported by the Twitter API.")]
         public bool WithLinks { get; set; }
 
         /// <summary>

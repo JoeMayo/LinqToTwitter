@@ -218,11 +218,7 @@ namespace LinqToTwitter
                 out outUrl,
                 out queryString);
 
-#if CLIENT_PROFILE
-            queryString += "&oauth_signature=" + WebUtility.HtmlEncode(sig);
-#else
-            queryString += "&oauth_signature=" + HttpUtility.UrlEncode(sig);
-#endif
+            queryString += "&oauth_signature=" + BuildUrlHelper.UrlEncode(sig);
         }
 
         /// <summary>
@@ -260,49 +256,6 @@ namespace LinqToTwitter
                     "\"";
 
             return "OAuth " + string.Join(",", headerItems.ToArray());
-        }
-
-        /// <summary>
-        /// Url Encodes for OAuth Authentication
-        /// </summary>
-        /// <param name="value">string to be encoded</param>
-        /// <returns>UrlEncoded string</returns>
-        public string TwitterParameterUrlEncode(string value)
-        {
-            string ReservedChars = @"`!@#$%^&*()_-+=.~,:;'?/|\[] ";
-            string UnReservedChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_.~";
-
-            var result = new StringBuilder();
-
-            if (string.IsNullOrEmpty(value))
-                return string.Empty;
-
-            foreach (var symbol in value)
-            {
-                if (UnReservedChars.IndexOf(symbol) != -1)
-                {
-                    result.Append(symbol);
-                }
-                else if (ReservedChars.IndexOf(symbol) != -1)
-                {
-                    result.Append('%' + String.Format("{0:X2}", (int)symbol).ToUpper());
-                }
-                else
-                {
-#if CLIENT_PROFILE
-                    var encoded = WebUtility.HtmlEncode(symbol.ToString(CultureInfo.InvariantCulture)).ToUpper();
-#else
-                    var encoded = HttpUtility.UrlEncode(symbol.ToString(CultureInfo.InvariantCulture)).ToUpper();
-#endif
-
-                    if (!string.IsNullOrEmpty(encoded))
-                    {
-                        result.Append(encoded);
-                    }
-                }
-            }
-
-            return result.ToString();
         }
 
         internal string PrepareAuthHeader(string authHeader)
@@ -346,7 +299,7 @@ namespace LinqToTwitter
                     queryParams
                         .Append(entry.Key)
                         .Append('=')
-                        .Append(this.UrlEncode(entry.Value))
+                        .Append(BuildUrlHelper.UrlEncode(entry.Value))
                         .Append('&');
                 }
 
@@ -399,7 +352,7 @@ namespace LinqToTwitter
                 out outUrl,
                 out querystring);
 
-            querystring += "&oauth_signature=" + this.UrlEncode(sig);
+            querystring += "&oauth_signature=" + BuildUrlHelper.UrlEncode(sig);
 
             var ret = WebRequest(method, url, querystring, postData);
             return ret;

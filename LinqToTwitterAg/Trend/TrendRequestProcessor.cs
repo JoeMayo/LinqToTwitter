@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 
 using LinqToTwitter.Common;
+using LitJson;
 
 namespace LinqToTwitter
 {
@@ -26,7 +28,7 @@ namespace LinqToTwitter
         /// <summary>
         /// type of trend to query (Trend (all), Current, Daily, or Weekly)
         /// </summary>
-        TrendType Type { get; set; }
+        internal TrendType Type { get; set; }
 
         /// <summary>
         /// exclude all trends with hastags if set to true 
@@ -269,74 +271,81 @@ namespace LinqToTwitter
 
         private IEnumerable<Trend> HandleDailyWeeklyResponse(string responseJson)
         {
-            var serializer = Json.TrendConverter.GetSerializer();
-            var period = serializer.Deserialize<Json.DailyWeeklyTrends>(responseJson);
-            var asOf = XTwitterElement.EpochBase + TimeSpan.FromSeconds(period.as_of);
+            var period = JsonMapper.ToObject(responseJson);
+            var asOf = TypeConversionExtensions.EpochBase + TimeSpan.FromSeconds(period.GetValue<int>("as_of"));
             var emptyLocations = new List<Location>();
-            var flat = from slot in period.slots
-                       let slotTime = slot.time_slot.GetDate(Date)
-                       let trends = (from trend in slot.trends
-                                     select new Trend
-                                     {
-                                         Type = Type,
-                                         ExcludeHashtags = ExcludeHashtags,
-                                         Date = Date,
-                                         Latitude = Latitude,
-                                         Longitude = Longitude,
-                                         WeoID = WeoID,
-                                         TrendDate = slotTime,
-                                         Name = trend.name,
-                                         Query = trend.query,
-                                         SearchUrl = trend.url,
-                                         AsOf = asOf,
-                                         Events = trend.events,
-                                         PromotedContent = trend.promoted_content,
-                                         Location = null,
-                                         Locations = emptyLocations
-                                     })
-                       select trends;
+            var trendHash = period.GetValue<JsonData>("trends") as IDictionary;
+
+            var flat = 
+                 from string trendDate in trendHash.Keys
+                 let slot = (JsonData)trendHash[trendDate]
+                 let trends =
+                     from JsonData trend in slot
+                     select new Trend
+                     {
+                         Type = Type,
+                         ExcludeHashtags = ExcludeHashtags,
+                         Date = Date,
+                         Latitude = Latitude,
+                         Longitude = Longitude,
+                         WeoID = WeoID,
+                         TrendDate = trendDate.GetDate(Date),
+                         Name = trend.GetValue<string>("name"),
+                         Query = trend.GetValue<string>("query"),
+                         SearchUrl = trend.GetValue<string>("url"),
+                         AsOf = asOf,
+                         Events = trend.GetValue<string>("events"),
+                         PromotedContent = trend.GetValue<string>("promoted_content"),
+                         Location = null,
+                         Locations = emptyLocations
+                     }
+                 select trends;
 
             return flat.SelectMany(trend => trend);
         }
 
         private IEnumerable<Trend> HandleLocationResponse(string responseJson)
         {
-            var now = DateTime.UtcNow;
-            var serializer = Json.TrendConverter.GetSerializer();
-            var responses = serializer.Deserialize<Json.Trends[]>(responseJson);
-            var flat = from response in responses
-                       let asOf = response.as_of.GetDate(now)
-                       let locations = (from place in response.locations
-                                        select place.ToLocation()).ToList()
-                       let trends = (from trend in response.trends
-                                     select new Trend
-                                     {
-                                         Type = Type,
-                                         ExcludeHashtags = ExcludeHashtags,
-                                         Date = Date,
-                                         Latitude = Latitude,
-                                         Longitude = Longitude,
-                                         WeoID = WeoID,
-                                         TrendDate = asOf,
-                                         AsOf = asOf,
-                                         Name = trend.name,
-                                         Query = trend.query,
-                                         SearchUrl = trend.url,
-                                         Events = trend.events,
-                                         PromotedContent = trend.promoted_content,
-                                         Location = locations.FirstOrDefault(),
-                                         Locations = locations
-                                     })
-                       select trends;
+            var responses = JsonMapper.ToObject(responseJson);
+
+            var flat =
+                from JsonData response in responses
+                let asOf = response.GetValue<string>("as_of").GetDate(DateTime.UtcNow)
+                let locations =
+                     (from JsonData place in response.GetValue<JsonData>("locations")
+                      select Location.Create(place)).ToList()
+                let trends =
+                     (from JsonData trend in response.GetValue<JsonData>("trends")
+                      select new Trend
+                      {
+                          Type = Type,
+                          ExcludeHashtags = ExcludeHashtags,
+                          Date = Date,
+                          Latitude = Latitude,
+                          Longitude = Longitude,
+                          WeoID = WeoID,
+                          TrendDate = asOf,
+                          AsOf = asOf,
+                          Name = trend.GetValue<string>("name"),
+                          Query = trend.GetValue<string>("query"),
+                          SearchUrl = trend.GetValue<string>("url"),
+                          Events = trend.GetValue<string>("events"),
+                          PromotedContent = trend.GetValue<string>("promoted_content"),
+                          Location = locations.FirstOrDefault(),
+                          Locations = locations
+                      })
+                select trends;
 
             return flat.SelectMany(trend => trend);
         }
 
         private IEnumerable<Trend> HandleAvailableResponse(string responseJson)
         {
-            var serializer = Json.TrendConverter.GetSerializer();
-            var places = serializer.Deserialize<Json.Place[]>(responseJson);
-            var locations = places.Select(place => place.ToLocation()).ToList();
+            var trends = JsonMapper.ToObject(responseJson);
+            var locations =
+                (from JsonData loc in trends
+                 select Location.Create(loc))
+                .ToList();
 
             var asOf = DateTime.UtcNow;
 

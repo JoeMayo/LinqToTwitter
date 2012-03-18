@@ -129,7 +129,7 @@ namespace LinqToTwitter.Json
                             }
 
                             return val.Dictionary == null ? 
-                                ParseValue(val.Key, val.Element.ToString()) : 
+                                ParseValue(inKey, val.Key, val.Element.ToString()) : 
                                 val.Dictionary as object;
                         });
             }
@@ -157,14 +157,16 @@ namespace LinqToTwitter.Json
             return elements;
         }
 
-        private object ParseValue(string key, string val)
+        object ParseValue(string inKey, string key, string val)
         {
-            PropertyInfo propInfo = deserializedType.GetProperty(key);
-            string propertyType = 
-                propInfo == null ? "Unknown" : propInfo.PropertyType.Name;
+            var propertyType = GetPropertyType(inKey, key);
 
             switch (propertyType)
             {
+                case "Boolean":
+                    bool boolVal;
+                    bool.TryParse(val, out boolVal);
+                    return boolVal;
                 case "Int32":
                     int intVal;
                     int.TryParse(val, out intVal);
@@ -198,24 +200,27 @@ namespace LinqToTwitter.Json
                 default:
                     return val;
             }
+        }
 
-            //int intVal = 0;
-            //double doubleVal = 0;
+        readonly Dictionary<string, Type> typeTable =
+            new Dictionary<string, Type>
+            {
+                {"status", typeof (Status)},
+                {"sleep_time", typeof(SleepTime)},
+                {"time_zone", typeof(TimeZone)},
+                {"trend_location", typeof(Place)}
+            };
 
-            //if (int.TryParse(val, out intVal))
-            //{
-            //    return intVal;
-            //}
-            //else if (double.TryParse(val, out doubleVal))
-            //{
-            //    return doubleVal;
-            //}
-            //else
-            //{
-            //    return val;
-            //}
+        string GetPropertyType(string inKey, string key)
+        {
+            string typeKey = inKey == null ? null : inKey.ToLower();
+            Type currentType =
+                (typeKey == null || !typeTable.ContainsKey(typeKey)) ? deserializedType : typeTable[typeKey];
 
-            return val;
+            PropertyInfo propInfo = currentType.GetProperty(key);
+            string propertyType =
+                propInfo == null ? "Unknown" : propInfo.PropertyType.Name;
+            return propertyType;
         }
     }
 }

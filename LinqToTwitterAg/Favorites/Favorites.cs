@@ -7,11 +7,25 @@ namespace LinqToTwitter
     /// </summary>
     public class Favorites : Status
     {
+        [XmlIgnore]
+        FavoritesType type;
+
         /// <summary>
         /// type of favorites to query
         /// </summary>
-        [XmlElement(ElementName="FavoritesType")]
-        public new FavoritesType Type { get; set; }
+        [XmlIgnore]
+        public new FavoritesType Type
+        {
+            get { return type; }
+            set { type = value; }
+        }
+
+        [XmlAttribute(AttributeName = "Type")]
+        FavoritesType TypeXml
+        {
+            get { return type; }
+            set { type = value; }
+        }
 
         /// <summary>
         /// User identity to search (optional)

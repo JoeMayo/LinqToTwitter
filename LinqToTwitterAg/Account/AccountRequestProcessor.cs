@@ -1,6 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+
+using LinqToTwitter.Common;
+
+using LitJson;
 
 namespace LinqToTwitter
 {
@@ -137,51 +142,74 @@ namespace LinqToTwitter
             return acct.ItemCast(default(T));
         }
 
-        private Account HandleSettingsResponse(string responseJson)
+        internal Account HandleSettingsResponse(string responseJson)
         {
-            var serializer = Json.AccountConverter.GetSerializer();
-            var settings = serializer.Deserialize<Json.Settings>(responseJson);
+            var settings = JsonMapper.ToObject(responseJson);
+            var trendLocation = settings.GetValue<JsonData>("trend_location")[0];
+            var sleepTime = settings.GetValue<JsonData>("sleep_time");
+            var timeZone = settings.GetValue<JsonData>("time_zone");
 
             var acct = new Account
             {
                 Type = Type,
                 Settings = new Settings
                 {
-                    TrendLocation = settings.trend_location.ToLocation(),
-                    GeoEnabled = settings.geo_enabled,
-                    SleepTime = settings.sleep_time.ToSleepTime(),
-                    Language = settings.language,
-                    AlwaysUseHttps = settings.always_use_https,
-                    DiscoverableByEmail = settings.discoverable_by_email,
-                    TimeZone = settings.time_zone.ToTZInfo()
+                    TrendLocation = Location.Create(trendLocation),
+                    GeoEnabled = settings.GetValue<bool>("geo_enabled"),
+                    SleepTime = 
+                        new SleepTime
+                        {
+                            StartHour = sleepTime.GetValue<int>("start_time"),
+                            EndHour = sleepTime.GetValue<int>("end_time"),
+                            Enabled = sleepTime.GetValue<bool>("enabled")
+                        },
+                    Language = settings.GetValue<string>("language"),
+                    AlwaysUseHttps = settings.GetValue<bool>("always_use_https"),
+                    DiscoverableByEmail = settings.GetValue<bool>("discoverable_by_email"),
+                    TimeZone = 
+                        new TZInfo
+                        {
+                            Name = timeZone.GetValue<string>("name"),
+                            TzInfoName = timeZone.GetValue<string>("tzinfo_name"),
+                            UtcOffset = timeZone.GetValue<int>("utc_offset")
+                        }
                 }
             };
+
 
             return acct;
         }
 
-        private Account HandleRateLimitResponse(string responseJson)
+        internal Account HandleRateLimitResponse(string responseJson)
         {
-            var serializer = Json.AccountConverter.GetSerializer();
-            var status = serializer.Deserialize<Json.RateLimitStatus>(responseJson);
+            var status = JsonMapper.ToObject(responseJson);
 
             var acct = new Account
             {
                 Type = Type,
                 RateLimitStatus = new RateLimitStatus
                 {
-                    HourlyLimit = status.hourly_limit,
-                    RemainingHits = status.remaining_hits,
-                    ResetTime = status.reset_time,
-                    ResetTimeInSeconds = status.reset_time_in_seconds
+                    HourlyLimit = status.GetValue<int>("hourly_limit"),
+                    RemainingHits = status.GetValue<int>("remaining_hits"),
+                    ResetTime = status.GetValue<string>("reset_time").GetDate(DateTime.MaxValue),
+                    ResetTimeInSeconds = status.GetValue<int>("reset_time_in_seconds")
                 }
             };
+
 
             return acct;
         }
 
         private Account HandleVerifyCredentialsResponse(string responseJson)
         {
+            //var user = JsonMapper.ToObject(responseJson);
+
+            //var acct = new Account
+            //{
+            //    Type = Type,
+            //    User = User.Create(user)
+            //};
+
             var serializer = Json.AccountConverter.GetSerializer();
             var user = serializer.Deserialize<Json.User>(responseJson);
 

@@ -15,7 +15,7 @@ namespace LinqToTwitter.Json
         [DataMember]
         public string tzinfo_name { get; set; }
         [DataMember]
-        public int? utc_offset { get; set; }
+        public int utc_offset { get; set; }
 
         public static TimeZone Deserialize(IDictionary<string, object> dictionary, JavaScriptSerializer serializer)
         {
@@ -23,7 +23,7 @@ namespace LinqToTwitter.Json
             {
                 name = dictionary.GetValue<string>("name"),
                 tzinfo_name = dictionary.GetValue<string>("tzinfo_name"),
-                utc_offset = dictionary.GetValue<int?>("utc_offset")
+                utc_offset = dictionary.GetValue("utc_offset", 0)
             };
         }
     }

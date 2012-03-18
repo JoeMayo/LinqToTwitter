@@ -489,34 +489,6 @@ namespace LinqToTwitterTests
             }
         }
 
-        [Ignore]
-        [TestMethod]
-        public void BuildLookupUrl_Requires_ScreenName_With_No_Spaces()
-        {
-            var friendReqProc = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "https://api.twitter.com/1/" };
-            Dictionary<string, string> parameters =
-                new Dictionary<string, string>
-                {
-                    { "Type", FriendshipType.Lookup.ToString() },
-                    { "ScreenName", "twitter, joemayo" }
-                };
-
-            try
-            {
-                friendReqProc.BuildURL(parameters);
-
-                Assert.Fail("Expected ArgumentException.");
-            }
-            catch (ArgumentNullException)
-            {
-                Assert.Fail("Expected ArgumentException, not ArgumentNullException.");
-            }
-            catch (ArgumentException ae)
-            {
-                Assert.AreEqual("ScreenName", ae.ParamName);
-            }
-        }
-
         [TestMethod]
         public void UpdateFriendshipSettings_Calls_Execute()
         {

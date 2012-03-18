@@ -18,7 +18,6 @@ namespace LinqToTwitter
         void PostAccessTokenAsync(Request request, IDictionary<string, string> postData, Action<TwitterAsyncResponse<UserIdentifier>> authorizationCompleteCallback);
 
         string AuthorizationLinkGet(string requestToken, string authorizeUrl, string callback, bool forceLogin);
-        string TwitterParameterUrlEncode(string value);       
         void GetOAuthQueryString(HttpMethod method, Request request, string callback, out string outUrl, out string queryString);
         string GetOAuthQueryStringForPost(Request request, IDictionary<string, string> postData);
         string OAuthConsumerKey { get; set; }

@@ -65,9 +65,6 @@ namespace LinqToTwitter
 
         protected Random random = new Random();
 
-        protected static readonly string unreservedChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_.~";
-        protected static readonly string ReservedChars = @"`!@#$%^&*()_-+=.~,:;'?/|\[] ";
-
         /// <summary>
         /// Helper function to compute a hash value
         /// </summary>
@@ -115,43 +112,6 @@ namespace LinqToTwitter
             }
 
             return result;
-        }
-
-        /// <summary>
-        /// This is a different Url Encode implementation since the default .NET one outputs
-        /// the percent encoding in lower case. While this is not a problem with the percent 
-        /// encoding spec, it is used in upper case throughout OAuth
-        /// </summary>
-        /// <param name="value">The value to Url encode</param>
-        /// <returns>Returns a Url encoded string</returns>
-        protected string UrlEncode(string value)
-        {
-            var result = new StringBuilder();
-
-            if (!string.IsNullOrEmpty(value))
-            {
-                foreach (char symbol in value)
-                {
-                    if (unreservedChars.IndexOf(symbol) != -1)
-                    {
-                        result.Append(symbol);
-                    }
-                    else if (ReservedChars.IndexOf(symbol) != -1)
-                    {
-                        result.Append('%' + String.Format("{0:X2}", (int)symbol).ToUpper());
-                    }
-                    else
-                    {
-#if CLIENT_PROFILE
-                        result.Append(WebUtility.HtmlEncode(symbol.ToString(CultureInfo.InvariantCulture)).ToUpper());
-#else
-                        result.Append(HttpUtility.UrlEncode(symbol.ToString(CultureInfo.InvariantCulture)).ToUpper());
-#endif
-                    }
-                }
-            }
-
-            return result.ToString();
         }
 
         /// <summary>
@@ -238,11 +198,11 @@ namespace LinqToTwitter
             // need to UrlEncode (per section 5.1) all the parameter values now, before sorting
             // see: http://hueniverse.com/2008/10/beginners-guide-to-oauth-part-iv-signing-requests/
             foreach (var parm in parameters)
-                parm.Value = UrlEncode(parm.Value);
+                parm.Value = BuildUrlHelper.UrlEncode(parm.Value);
 
             parameters.Sort(QueryParameter.DefaultComparer);
 
-            Uri url = new Uri(request.Endpoint);
+            var url = new Uri(request.Endpoint);
             normalizedUrl = url.Scheme + "://";
 #if !SILVERLIGHT
             normalizedUrl += url.Authority;
@@ -258,11 +218,11 @@ namespace LinqToTwitter
             normalizedUrl += url.AbsolutePath;
             normalizedRequestParameters = NormalizeRequestParameters(parameters);
 
-            StringBuilder signatureBase = new StringBuilder();
+            var signatureBase = new StringBuilder();
 
             signatureBase.AppendFormat(CultureInfo.InvariantCulture, "{0}&", httpMethod.ToUpper(CultureInfo.InvariantCulture));
-            signatureBase.AppendFormat(CultureInfo.InvariantCulture, "{0}&", UrlEncode(normalizedUrl));
-            signatureBase.AppendFormat(CultureInfo.InvariantCulture, "{0}", UrlEncode(normalizedRequestParameters));
+            signatureBase.AppendFormat(CultureInfo.InvariantCulture, "{0}&", BuildUrlHelper.UrlEncode(normalizedUrl));
+            signatureBase.AppendFormat(CultureInfo.InvariantCulture, "{0}", BuildUrlHelper.UrlEncode(normalizedRequestParameters));
 
             return signatureBase.ToString();
         }
@@ -286,15 +246,19 @@ namespace LinqToTwitter
             switch (signatureType)
             {
                 case OAuthSignatureTypes.PLAINTEXT:
-#if CLIENT_PROFILE
-                    return WebUtility.HtmlEncode(string.Format(CultureInfo.InvariantCulture, "{0}&{1}", consumerSecret, tokenSecret));
-#else
-                    return HttpUtility.UrlEncode(string.Format(CultureInfo.InvariantCulture, "{0}&{1}", consumerSecret, tokenSecret));
-#endif
+                    return BuildUrlHelper.UrlEncode(
+                        string.Format(CultureInfo.InvariantCulture, "{0}&{1}", consumerSecret, tokenSecret));
                 case OAuthSignatureTypes.HMACSHA1:
                     string signatureBase = GenerateSignatureBase(request, consumerKey, token, tokenSecret, verifier, callback, httpMethod, timeStamp, nonce, HMACSHA1SignatureType, out normalizedUrl, out normalizedRequestParameters);
-                    HMACSHA1 hmacsha1 = new HMACSHA1();
-                    hmacsha1.Key = Encoding.UTF8.GetBytes(string.Format(CultureInfo.InvariantCulture, "{0}&{1}", UrlEncode(consumerSecret), UrlEncode(tokenSecret)));
+                    var hmacsha1 = new HMACSHA1
+                    {
+                        Key =
+                            Encoding.UTF8.GetBytes(
+                                string.Format(
+                                    CultureInfo.InvariantCulture, "{0}&{1}", 
+                                    BuildUrlHelper.UrlEncode(consumerSecret),
+                                    BuildUrlHelper.UrlEncode(tokenSecret)))
+                    };
                     return ComputeHash(hmacsha1, signatureBase);
                 case OAuthSignatureTypes.RSASHA1:
                     throw new NotImplementedException();

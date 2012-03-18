@@ -180,7 +180,7 @@ namespace LinqToTwitterDemo
             var relationships =
                 (from look in twitterCtx.Friendship
                  where look.Type == FriendshipType.Lookup &&
-                       look.ScreenName == "linq2tweeter,joemayo"
+                       look.ScreenName == "linq2tweeter, joemayo"
                  select look.Relationships)
                 .SingleOrDefault();
 

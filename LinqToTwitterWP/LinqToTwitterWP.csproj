@@ -173,6 +173,9 @@
     <Compile Include="..\LinqToTwitterAg\Common\State.cs">
       <Link>Common\State.cs</Link>
     </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\TargetFramework.cs">
+      <Link>Common\TargetFramework.cs</Link>
+    </Compile>
     <Compile Include="..\LinqToTwitterAg\Common\TwitterAsyncResponse.cs">
       <Link>Common\TwitterAsyncResponse.cs</Link>
     </Compile>
@@ -188,11 +191,11 @@
     <Compile Include="..\LinqToTwitterAg\Common\TwitterQueryException.cs">
       <Link>Common\TwitterQueryException.cs</Link>
     </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\TypeConversionExtensions.cs">
+      <Link>Common\TypeConversionExtensions.cs</Link>
+    </Compile>
     <Compile Include="..\LinqToTwitterAg\Common\TypeSystem.cs">
       <Link>Common\TypeSystem.cs</Link>
-    </Compile>
-    <Compile Include="..\LinqToTwitterAg\Common\XTwitterElement.cs">
-      <Link>Common\XTwitterElement.cs</Link>
     </Compile>
     <Compile Include="..\LinqToTwitterAg\DirectMessage\DirectMessage.cs">
       <Link>DirectMessage\DirectMessage.cs</Link>

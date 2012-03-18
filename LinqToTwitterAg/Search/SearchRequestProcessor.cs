@@ -3,6 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+
+using LinqToTwitter.Common;
+
 using LitJson;
 
 #if SILVERLIGHT && !WINDOWS_PHONE
@@ -416,7 +419,6 @@ namespace LinqToTwitter
             }
             else
             {
-                //var searchResult = Serialize(responseJson);
                 var searchResult = JsonSerialize(responseJson);
 
                 search = new List<Search> { searchResult };
@@ -428,8 +430,6 @@ namespace LinqToTwitter
         Search JsonSerialize(string responseJson)
         {
             JsonData search = JsonMapper.ToObject(responseJson);
-
-            var searchHash = search as IDictionary;
 
             var searchResult = new Search
             {
@@ -457,161 +457,138 @@ namespace LinqToTwitter
                 WithLinks = WithLinks,
                 WithRetweets = WithRetweets,
                 IncludeEntities = IncludeEntities,
-                CompletedIn = !searchHash.Contains("completed_in") || search["completed_in"] == null ?
-                    0m : (decimal)search["completed_in"],
-                MaxID = !searchHash.Contains("max_id") || search["max_id"] == null ?
-                    0UL : (ulong)search["max_id"],
-                NextPage = !searchHash.Contains("next_page") || search["next_page"] == null ?
-                    null : (string)search["next_page"],
-                PageResult = !searchHash.Contains("page") || search["page"] == null ?
-                    0 : (int)search["page"],
-                QueryResult = !searchHash.Contains("query") || search["query"] == null ?
-                    null : (string)search["query"],
-                ResultsPerPageResult = !searchHash.Contains("results_per_page") || search["results_per_page"] == null ?
-                    0 : (int)search["results_per_page"],
-                SinceIDResult = !searchHash.Contains("since_id") || search["since_id"] == null ?
-                    0UL : (ulong)search["since_id"],
-                RefreshUrl = !searchHash.Contains("refresh_url") || search["refresh_url"] == null ?
-                    null : (string)search["refresh_url"],
+                CompletedIn = search.GetValue<decimal>("completed_in"),
+                MaxID = search.GetValue<ulong>("max_id"),
+                NextPage = search.GetValue<string>("next_page"),
+                PageResult = search.GetValue<int>("page"),
+                QueryResult = search.GetValue<string>("query"),
+                ResultsPerPageResult = search.GetValue<int>("results_per_page"),
+                SinceIDResult = search.GetValue<ulong>("since_id"),
+                RefreshUrl = search.GetValue<string>("refresh_url"),
                 Results =
                     (from JsonData result in search["results"]
-                     let resultHash = result as IDictionary
+                     let entities = result.GetValue<JsonData>("entities")
+                     let hashTagEntities = entities.GetValue<JsonData>("hashtags")
+                     let mediaEntities = entities.GetValue<JsonData>("media")
+                     let urlEntities = entities.GetValue<JsonData>("urls")
+                     let userEntities = entities.GetValue<JsonData>("user_mentions")
+                     let geo = result.GetValue<JsonData>("geo")
+                     let coordinates = geo.GetValue<JsonData>("coordinates")
+                     let metadata = result.GetValue<JsonData>("metadata")
                      select new SearchEntry
                      {
-                         CreatedAt = DateTimeOffset.Parse((string)result["created_at"]),
+                         CreatedAt = DateTimeOffset.Parse(result.GetValue<string>("created_at")),
                          Entities = new Entities
                          {
                              HashTagMentions =
-                                 !resultHash.Contains("entities") ||
-                                 !(result["entities"] as IDictionary).Contains("hashtags") ||
-                                 result["entities"] == null || result["entities"]["hashtags"] == null
+                                 hashTagEntities == null
                                      ? new List<HashTagMention>()
-                                     : (from JsonData hash in result["entities"]["hashtags"]
+                                     : (from JsonData hash in hashTagEntities
+                                        let indices = hash.GetValue<JsonData>("indices")
                                         select new HashTagMention
                                         {
-                                            Tag = !(hash as IDictionary).Contains("text") || hash["text"] == null ?
-                                                null : (string)hash["text"],
-                                            Start = (int)hash["indices"][0],
-                                            End = (int)hash["indices"][1]
+                                            Tag = hash.GetValue<string>("text"),
+                                            Start = indices.Count > 0 ? (int)indices[0] : 0,
+                                            End = indices.Count > 1 ? (int)indices[1] : 0
                                         })
                                         .ToList(),
                              MediaMentions =
-                                 !resultHash.Contains("entities") ||
-                                 !(result["entities"] as IDictionary).Contains("media") ||
-                                 result["entities"] == null || result["entities"]["media"] == null
+                                 mediaEntities == null
                                      ? new List<MediaMention>()
-                                     : (from JsonData media in result["entities"]["media"]
+                                     : (from JsonData media in mediaEntities
+                                        let indices = media.GetValue<JsonData>("indices")
+                                        let sizes = media.GetValue<JsonData>("sizes")
                                         select new MediaMention
                                         {
-                                            DisplayUrl = (string)media["display_url"],
-                                            ExpandedUrl = (string)media["expanded_url"],
-                                            ID = (ulong)media["id"],
-                                            MediaUrl = (string)media["media_url"],
-                                            MediaUrlHttps = (string)media["media_url_https"],
+                                            DisplayUrl = media.GetValue<string>("display_url"),
+                                            ExpandedUrl = media.GetValue<string>("expanded_url"),
+                                            ID = media.GetValue<ulong>("id"),
+                                            MediaUrl = media.GetValue<string>("media_url"),
+                                            MediaUrlHttps = media.GetValue<string>("media_url_https"),
                                             Sizes =
-                                                (from key in (media["sizes"] as IDictionary).Keys as List<string>
+                                                (from key in (sizes as IDictionary).Keys as List<string>
+                                                 let sizesKey = sizes.GetValue<JsonData>(key)
                                                  select new PhotoSize
                                                  {
                                                      Type = key,
-                                                     Width = (int)media["sizes"][key]["w"],
-                                                     Height = (int)media["sizes"][key]["h"],
-                                                     Resize = (string)media["sizes"][key]["resize"]
+                                                     Width = sizesKey.GetValue<int>("w"),
+                                                     Height = sizesKey.GetValue<int>("h"),
+                                                     Resize = sizesKey.GetValue<string>("resize")
                                                  })
                                                 .ToList(),
-                                            Type = (string)media["type"],
-                                            Url = (string)media["url"],
-                                            Start = (int)media["indices"][0],
-                                            End = (int)media["indices"][1]
+                                            Type = media.GetValue<string>("type"),
+                                            Url = media.GetValue<string>("url"),
+                                            Start = indices.Count > 0 ? (int)indices[0] : 0,
+                                            End = indices.Count > 1 ? (int)indices[1] : 0
                                         })
                                         .ToList(),
                              UrlMentions =
-                                 !resultHash.Contains("entities") ||
-                                 !(result["entities"] as IDictionary).Contains("urls") ||
-                                 result["entities"] == null || result["entities"]["urls"] == null
+                                 urlEntities == null
                                      ? new List<UrlMention>()
-                                     : (from JsonData url in result["entities"]["urls"]
+                                     : (from JsonData url in urlEntities
+                                        let indices = url.GetValue<JsonData>("indices")
                                         select new UrlMention
                                         {
-                                            Url = (string)url["url"],
-                                            DisplayUrl = (string)url["display_url"],
-                                            ExpandedUrl = (string)url["expanded_url"],
-                                            Start = (int)url["indices"][0],
-                                            End = (int)url["indices"][1]
+                                            Url = url.GetValue<string>("url"),
+                                            DisplayUrl = url.GetValue<string>("display_url"),
+                                            ExpandedUrl = url.GetValue<string>("expanded_url"),
+                                            Start = indices.Count > 0 ? (int)indices[0] : 0,
+                                            End = indices.Count > 1 ? (int)indices[1] : 0
                                         })
                                        .ToList(),
                              UserMentions =
-                                 !resultHash.Contains("entities") ||
-                                 !(result["entities"] as IDictionary).Contains("user_mentions") ||
-                                 result["entities"] == null || result["entities"]["user_mentions"] == null
+                                 userEntities == null
                                      ? new List<UserMention>()
-                                     : (from JsonData user in result["entities"]["user_mentions"]
+                                     : (from JsonData user in userEntities
+                                        let indices = user.GetValue<JsonData>("indices")
                                         select new UserMention
                                         {
-                                            ScreenName = (string)user["screen_name"],
-                                            Name = (string)user["name"],
-                                            Id = (ulong)user["id"],
-                                            Start = (int)user["indices"][0],
-                                            End = (int)user["indices"][1]
+                                            ScreenName = user.GetValue<string>("screen_name"),
+                                            Name = user.GetValue<string>("name"),
+                                            Id = user.GetValue<ulong>("id"),
+                                            Start = indices.Count > 0 ? (int)indices[0] : 0,
+                                            End = indices.Count > 1 ? (int)indices[1] : 0
                                         })
                                        .ToList()
                          },
-                         FromUser = !resultHash.Contains("from_user") || result["from_user"] == null ?
-                            null : (string)result["from_user"],
-                         FromUserID = !resultHash.Contains("from_user_id") || result["from_user_id"] == null ?
-                            0UL : (ulong)result["from_user_id"],
-                         FromUserName = !resultHash.Contains("from_user_name") || result["from_user_name"] == null ?
-                            null : (string)result["from_user_name"],
+                         FromUser = result.GetValue<string>("from_user"),
+                         FromUserID = result.GetValue<ulong>("from_user_id"),
+                         FromUserName = result.GetValue<string>("from_user_name"),
                          Geo =
-                             !resultHash.Contains("geo") || result["geo"] == null
+                             geo == null
                                  ? new Geometry { Coordinates = new List<Coordinate>() }
                                  : new Geometry
                                  {
-                                     Type = (string)result["geo"]["type"],
+                                     Type = geo.GetValue<string>("type"),
                                      Coordinates = new List<Coordinate>
                                      {
                                          new Coordinate
                                          {
-                                             Latitude = (double)result["geo"]["coordinates"][0],
-                                             Longitude = (double)result["geo"]["coordinates"][1]
+                                             Latitude = coordinates.Count > 0 ? (double)coordinates[0] : 0,
+                                             Longitude = coordinates.Count > 1 ? (double)coordinates[1] : 0
                                          }
                                      }
                                  },
-                         ID = !resultHash.Contains("id") || result["id"] == null ?
-                            0UL : (ulong)result["id"],
-                         IsoLanguageCode = !resultHash.Contains("iso_language_code") || result["iso_language_code"] == null ?
-                            null : (string)result["iso_language_code"],
+                         ID = result.GetValue<ulong>("id"),
+                         IsoLanguageCode = result.GetValue<string>("iso_language_code"),
                          MetaData =
-                            !resultHash.Contains("metadata") || result["metadata"] == null ?
+                            metadata == null ?
                                 new SearchMetaData() :
                                 new SearchMetaData
                                  {
-                                     RecentRetweets =
-                                        !(result["metadata"] as IDictionary).Contains("recent_retweets") ||
-                                        result["metadata"]["recent_retweets"] == null ?
-                                            0 :
-                                            (int)result["metadata"]["recent_retweets"],
-                                     ResultType =
-                                        !(result["metadata"] as IDictionary).Contains("recent_retweets") ||
-                                        result["metadata"]["recent_retweets"] == null ?
-                                            ResultType.Mixed :
-                                            (ResultType)Enum.Parse(typeof(ResultType), (string)result["metadata"]["result_type"], true)
+                                     RecentRetweets = metadata.GetValue<int>("recent_retweets"),
+                                     ResultType = TargetFramework.ParseEnum(metadata.GetValue<string>("result_type"), true, ResultType.Mixed)
                                  },
-                         ProfileImageUrl = !resultHash.Contains("profile_image_url") || result["profile_image_url"] == null ?
-                            null : (string)result["profile_image_url"],
-                         ProfileImageUrlHttps = !resultHash.Contains("profile_image_url_https") || result["profile_image_url_https"] == null ?
-                            null : (string)result["profile_image_url_https"],
-                         Source = !resultHash.Contains("source") || result["source"] == null ?
-                            null : (string)result["source"],
-                         Text = (!resultHash.Contains("text") || result["text"] == null) ?
-                            null : (string)result["text"],
-                         ToUser = !resultHash.Contains("to_user") || result["to_user"] == null ?
-                            null : (string)result["to_user"],
-                         ToUserID = !resultHash.Contains("to_user_id") || result["to_user_id"] == null ?
-                            0UL : (ulong)result["to_user_id"],
-                         ToUserName = !resultHash.Contains("to_user_name") || result["to_user_name"] == null ?
-                            null : (string)result["to_user_name"]
+                         ProfileImageUrl = result.GetValue<string>("profile_image_url"),
+                         ProfileImageUrlHttps = result.GetValue<string>("profile_image_url_https"),
+                         Source = result.GetValue<string>("source"),
+                         Text = result.GetValue<string>("text"),
+                         ToUser = result.GetValue<string>("to_user"),
+                         ToUserID = result.GetValue<ulong>("to_user_id"),
+                         ToUserName = result.GetValue<string>("to_user_name")
                      }).ToList()
             };
+
             return searchResult;
         }
     }

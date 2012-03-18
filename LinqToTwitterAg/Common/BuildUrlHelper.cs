@@ -1,5 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
+using System.Net;
+using System.Text;
+
+#if SILVERLIGHT && !WINDOWS_PHONE
+    using System.Windows.Browser;
+#elif !SILVERLIGHT && !WINDOWS_PHONE
+using System.Web;
+#endif
 
 namespace LinqToTwitter
 {
@@ -31,5 +41,50 @@ namespace LinqToTwitter
             }
             return url;
         }
+
+
+        /// <summary>
+        /// Url Encodes a value
+        /// </summary>
+        /// <param name="value">string to be encoded</param>
+        /// <returns>UrlEncoded string</returns>
+        public static string UrlEncode(string value)
+        {
+            const string reservedChars = @"`!@#$%^&*()_-+=.~,:;'?/|\[] ";
+            const string unReservedChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_.~";
+
+            var result = new StringBuilder();
+
+            if (string.IsNullOrEmpty(value))
+                return string.Empty;
+
+            foreach (var symbol in value)
+            {
+                if (unReservedChars.IndexOf(symbol) != -1)
+                {
+                    result.Append(symbol);
+                }
+                else if (reservedChars.IndexOf(symbol) != -1)
+                {
+                    result.Append('%' + String.Format("{0:X2}", (int)symbol).ToUpper());
+                }
+                else
+                {
+#if CLIENT_PROFILE
+                    var encoded = WebUtility.HtmlEncode(symbol.ToString(CultureInfo.InvariantCulture)).ToUpper();
+#else
+                    var encoded = HttpUtility.UrlEncode(symbol.ToString(CultureInfo.InvariantCulture)).ToUpper();
+#endif
+
+                    if (!string.IsNullOrEmpty(encoded))
+                    {
+                        result.Append(encoded);
+                    }
+                }
+            }
+
+            return result.ToString();
+        }
+
     }
 }

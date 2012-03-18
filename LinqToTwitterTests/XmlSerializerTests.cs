@@ -49,15 +49,14 @@ namespace LinqToTwitterTests
             xmlSerializer.Serialize(writer, dm);
         }
 
-        [Ignore]
         [TestMethod]
         public void Favorites_Can_Serialize()
         {
             var favorite = new Favorites();
             var stringBuilder = new StringBuilder();
-
             XmlWriter writer = XmlWriter.Create(stringBuilder);
-            XmlSerializer xmlSerializer = new XmlSerializer(typeof(Favorites));
+            var xmlSerializer = new XmlSerializer(typeof(Favorites));
+
             xmlSerializer.Serialize(writer, favorite);
         }
 

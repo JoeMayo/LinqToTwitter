@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
+using LitJson;
+
 #if !SILVERLIGHT && !CLIENT_PROFILE
 using System.Web.Script.Serialization;
 #endif
@@ -68,7 +70,7 @@ namespace LinqToTwitter.Json
 
             if (array != null)
             {
-                var elements = (from object element in array
+                var elements = (from JsonData element in array
                                 select serializer.ConvertToType<T>(element));
                 return elements;
             }
