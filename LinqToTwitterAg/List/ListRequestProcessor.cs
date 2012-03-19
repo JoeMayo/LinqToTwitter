@@ -473,7 +473,7 @@ namespace LinqToTwitter
         /// <summary>
         /// Build url for getting list memberships
         /// </summary>
-        /// <param name="parameters">None required</param>
+        /// <param name="parameters">NoChange required</param>
         /// <returns>URL for memberships query</returns>
         private Request BuildMembershipsUrl(Dictionary<string, string> parameters)
         {
@@ -519,7 +519,7 @@ namespace LinqToTwitter
         /// <summary>
         /// Build url for getting list subscriptions
         /// </summary>
-        /// <param name="parameters">None required</param>
+        /// <param name="parameters">NoChange required</param>
         /// <returns>URL for subscriptions query</returns>
         private Request BuildSubscriptionsUrl(Dictionary<string, string> parameters)
         {

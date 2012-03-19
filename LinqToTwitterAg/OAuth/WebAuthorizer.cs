@@ -57,7 +57,7 @@ namespace LinqToTwitter
             if (IsAuthorized) return;
 
             string callbackStr = OAuthTwitter.FilterRequestParameters(callback);
-            string link = OAuthTwitter.AuthorizationLinkGet(OAuthRequestTokenUrl, OAuthAuthorizeUrl, callbackStr, forceLogin);
+            string link = OAuthTwitter.AuthorizationLinkGet(OAuthRequestTokenUrl, OAuthAuthorizeUrl, callbackStr, forceLogin, AuthAccessType);
 
             PerformRedirect(link);
         }

@@ -5,6 +5,8 @@ using System.IO;
 using System.Net;
 using System.Text;
 
+using MSEncoder = Microsoft.Security.Application.Encoder;
+
 #if SILVERLIGHT && !WINDOWS_PHONE
     using System.Windows.Browser;
 #elif !SILVERLIGHT && !WINDOWS_PHONE
@@ -70,11 +72,8 @@ namespace LinqToTwitter
                 }
                 else
                 {
-#if CLIENT_PROFILE
-                    var encoded = WebUtility.HtmlEncode(symbol.ToString(CultureInfo.InvariantCulture)).ToUpper();
-#else
-                    var encoded = HttpUtility.UrlEncode(symbol.ToString(CultureInfo.InvariantCulture)).ToUpper();
-#endif
+                    string symbolString = symbol.ToString(CultureInfo.InvariantCulture);
+                    var encoded = MSEncoder.UrlEncode(symbolString, Encoding.UTF8).ToUpper();
 
                     if (!string.IsNullOrEmpty(encoded))
                     {

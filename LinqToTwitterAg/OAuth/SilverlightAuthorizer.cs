@@ -40,7 +40,7 @@ namespace LinqToTwitter
                 throw new InvalidOperationException("GoToTwitterAuthorization must have a handler before calling BeginAuthorize.");
             }
 
-            OAuthTwitter.GetRequestTokenAsync(new Uri(OAuthRequestTokenUrl), new Uri(OAuthAuthorizeUrl), callback.ToString(), false, PerformRedirect, authorizationCompleteCallback);
+            OAuthTwitter.GetRequestTokenAsync(new Uri(OAuthRequestTokenUrl), new Uri(OAuthAuthorizeUrl), callback.ToString(), AuthAccessType, false, PerformRedirect, authorizationCompleteCallback);
         }
 
         public bool IsAuthorizing 
@@ -80,7 +80,7 @@ namespace LinqToTwitter
 
                 if (verifier != null)
                 {
-                    OAuthTwitter.GetAccessTokenAsync(verifier, new Uri(OAuthAccessTokenUrl), null, authorizationCompleteCallback);
+                    OAuthTwitter.GetAccessTokenAsync(verifier, new Uri(OAuthAccessTokenUrl), null, AuthAccessType.NoChange, authorizationCompleteCallback);
                 } 
             }
         }

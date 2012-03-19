@@ -154,13 +154,11 @@ namespace LinqToTwitterTests
         }
 
         [TestMethod]
-        public void ProcessResults_Converts_Totals_To_Account()
+        public void HandleTotalsResponse_Converts_Totals_To_Account()
         {
             var acctReqProc = new AccountRequestProcessor<Account> { Type = AccountType.Totals };
             
-            List<Account> actual = acctReqProc.ProcessResults(TestTotalsResponse);
-
-            var acct = actual.FirstOrDefault();
+            Account acct = acctReqProc.HandleTotalsResponse(TestTotalsResponse);
 
             Assert.IsNotNull(acct);
             Assert.AreEqual(1624, acct.Totals.Updates);
@@ -198,6 +196,17 @@ namespace LinqToTwitterTests
             var acct = acctReqProc.ProcessActionResult(TestEndSessionResponse, AccountAction.EndSession);
 
             Assert.AreEqual("Logged out.", acct.EndSessionStatus.Error);
+        }
+
+        [TestMethod]
+        public void HandleEndSessionResponse_Converts_EndSession_To_Account()
+        {
+            var acctReqProc = new AccountRequestProcessor<Account>();
+
+            var acct = acctReqProc.HandleEndSessionResponse(TestEndSessionResponse);
+
+            Assert.AreEqual("Logged out.", acct.EndSessionStatus.Error);
+            Assert.AreEqual("/1/account/end_session.json", acct.EndSessionStatus.Request);
         }
 
         [TestMethod]

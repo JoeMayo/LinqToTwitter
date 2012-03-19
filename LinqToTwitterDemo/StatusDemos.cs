@@ -18,11 +18,6 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         public static void Run(TwitterContext twitterCtx)
         {
-            //
-            // status tweets
-            //
-            //PublicStatusQueryDemo(twitterCtx);
-            //PublicStatusFilteredQueryDemo(twitterCtx);
             //HomeStatusQueryDemo(twitterCtx);
             //HomeSinceStatusQueryDemo(twitterCtx);
             //UserStatusQueryDemo(twitterCtx);
@@ -803,14 +798,14 @@ namespace LinqToTwitterDemo
 
         static void TweetWithMediaDemo(TwitterContext twitterCtx)
         {
-            string status = "Testing TweetWithMedia #Linq2Twitter £ " + DateTime.Now.ToString();
-            bool possiblySensitive = false;
-            decimal latitude = StatusExtensions.NoCoordinate;//37.78215m;
-            decimal longitude = StatusExtensions.NoCoordinate; // -122.40060m;
-            string placeID = null;
-            bool displayCoordinates = false;
+            //string status = "Testing TweetWithMedia #Linq2Twitter £ " + DateTime.Now.ToString(CultureInfo.InvariantCulture);
+            string status = "Testing TweetWithMedia #Linq2Twitter " + DateTime.Now.ToString(CultureInfo.InvariantCulture);
+            const bool possiblySensitive = false;
+            const decimal latitude = StatusExtensions.NoCoordinate; //37.78215m;
+            const decimal longitude = StatusExtensions.NoCoordinate; // -122.40060m;
+            const bool displayCoordinates = false;
 
-            string replaceThisWithYourImageLocation = @"..\..\images\200xColor_2.png";
+            const string replaceThisWithYourImageLocation = @"..\..\images\200xColor_2.png";
 
             var mediaItems =
                 new List<Media>
@@ -825,7 +820,7 @@ namespace LinqToTwitterDemo
 
             Status tweet = twitterCtx.TweetWithMedia(
                 status, possiblySensitive, latitude, longitude, 
-                placeID, displayCoordinates, mediaItems, null);
+                null, displayCoordinates, mediaItems, null);
 
             Console.WriteLine("Media item sent - Tweet Text: " + tweet.Text);
         }

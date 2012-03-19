@@ -79,10 +79,18 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="readOnly">true for read-only, otherwise read/Write</param>
         /// <returns>The url with a valid request token, or a null string.</returns>
-        public string AuthorizationLinkGet(string requestToken, string authorizeUrl, string callback, bool forceLogin)
+        public string AuthorizationLinkGet(string requestToken, string authorizeUrl, string callback, bool forceLogin, AuthAccessType authAccessToken)
         {
             var request = new Request(requestToken);
+
+            if (authAccessToken != AuthAccessType.NoChange)
+            {
+                request.RequestParameters.Add(
+                    new QueryParameter(OAuthXAccessTypeKey, authAccessToken.ToString().ToLower()));
+            }
+
             var response = OAuthWebRequest(HttpMethod.GET, request, null, callback);
+
             return PrepareAuthorizeUrl(authorizeUrl, forceLogin, response);
         }
 
@@ -313,7 +321,7 @@ namespace LinqToTwitter
         /// Submit a web request using oAuth.
         /// </summary>
         /// <param name="method">GET or POST</param>
-        /// <param name="url">The full url, including the querystring.</param>
+        /// <param name="request">Request details</param>
         /// <param name="postData">Data to post (querystring format)</param>
         /// <returns>The web server response.</returns>
         public string OAuthWebRequest(HttpMethod method, Request request, IDictionary<string, string> postData, string callback)
@@ -327,24 +335,24 @@ namespace LinqToTwitter
                 if (postData != null && postData.Count > 0)
                 {
                     foreach (var postEntry in postData)
-                        if (!String.IsNullOrEmpty(postEntry.Value))
+                        if (!string.IsNullOrEmpty(postEntry.Value))
                             request.RequestParameters.Add(new QueryParameter(postEntry.Key, postEntry.Value));
                 }
             }
 
-            string nonce = this.GenerateNonce();
-            string timeStamp = this.GenerateTimeStamp();
+            string nonce = GenerateNonce();
+            string timeStamp = GenerateTimeStamp();
             string outUrl;
             string querystring;
 
             //Generate Signature
-            string sig = this.GenerateSignature(request,
+            string sig = GenerateSignature(request,
                 this.OAuthConsumerKey,
                 this.OAuthConsumerSecret,
                 this.OAuthToken,
                 this.OAuthTokenSecret,
                 this.OAuthVerifier,
-                callback,
+                callback, 
                 method.ToString(),
                 timeStamp,
                 nonce,
@@ -548,7 +556,7 @@ namespace LinqToTwitter
             return urlParts[Domain] + (filteredParams == string.Empty ? string.Empty : "?" + filteredParams);
         }
 
-        public HttpWebRequest GetHttpGetRequest(Uri oauthUrl, string callbackUrl)
+        public HttpWebRequest GetHttpGetRequest(Uri oauthUrl, string callbackUrl, AuthAccessType authAccessType)
         {
             string signedUrl = null;
             string queryString = null;
@@ -638,11 +646,12 @@ namespace LinqToTwitter
             Uri oauthRequestTokenUrl, 
             Uri oauthAuthorizeUrl, 
             string twitterCallbackUrl, 
+            AuthAccessType authAccessType,
             bool forceLogin, 
             Action<string> authorizationCallback, 
             Action<TwitterAsyncResponse<object>> authenticationCompleteCallback)
         {
-            var req = GetHttpGetRequest(oauthRequestTokenUrl, twitterCallbackUrl);
+            var req = GetHttpGetRequest(oauthRequestTokenUrl, twitterCallbackUrl, authAccessType);
 
             req.BeginGetResponse(
                 new AsyncCallback(
@@ -699,11 +708,12 @@ namespace LinqToTwitter
             string verifier,
             Uri oauthAccessTokenUrl,
             string twitterCallbackUrl,
+            AuthAccessType authAccessType,
             Action<TwitterAsyncResponse<UserIdentifier>> authenticationCompleteCallback)
         {
             OAuthVerifier = verifier;
 
-            var req = GetHttpGetRequest(oauthAccessTokenUrl, twitterCallbackUrl);
+            var req = GetHttpGetRequest(oauthAccessTokenUrl, twitterCallbackUrl, authAccessType);
 
             req.BeginGetResponse(
                 new AsyncCallback(

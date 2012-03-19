@@ -6,10 +6,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 
 using LinqToTwitter.Common;
+
+using LitJson;
 
 namespace LinqToTwitter
 {
@@ -72,6 +75,60 @@ namespace LinqToTwitter
                 FollowRequestSent = user.GetBool("follow_request_sent"),
                 Status = Status.CreateStatus(status),
                 CursorMovement = Cursors.CreateCursors(GrandParentOrNull(user))
+            };
+
+            return newUser;
+        }
+
+        public static User Create(JsonData user)
+        {
+            if (user == null)
+            {
+                return null;
+            }
+
+            var status = user.GetValue<JsonData>("status");
+            var userID = user.GetValue<int>("id").ToString(CultureInfo.InvariantCulture);
+
+            var newUser = new User
+            {
+                Identifier = new UserIdentifier
+                {
+                    ID = userID,
+                    UserID = userID,
+                    ScreenName = user.GetValue<string>("screen_name")
+                },
+                Name = user.GetValue<string>("name"),
+                Location = user.GetValue<string>("location"),
+                Description = user.GetValue<string>("description"),
+                ProfileImageUrl = user.GetValue<string>("profile_image_url"),
+                URL = user.GetValue<string>("url"),
+                Protected = user.GetValue<bool>("protected"),
+                FollowersCount = user.GetValue<int>("followers_count"),
+                ProfileBackgroundColor = user.GetValue<string>("profile_background_color"),
+                ProfileTextColor = user.GetValue<string>("profile_text_color"),
+                ProfileLinkColor = user.GetValue<string>("profile_link_color"),
+                ProfileSidebarFillColor = user.GetValue<string>("profile_sidebar_fill_color"),
+                ProfileSidebarBorderColor = user.GetValue<string>("profile_sidebar_border_color"),
+                FriendsCount = user.GetValue<int>("friends_count"),
+                CreatedAt = user.GetValue<string>("created_at").GetDate(DateTime.MinValue),
+                FavoritesCount = user.GetValue<int>("favourites_count"),
+                UtcOffset = user.GetValue<string>("utc_offset"),
+                TimeZone = user.GetValue<string>("time_zone"),
+                ProfileBackgroundImageUrl = user.GetValue<string>("profile_background_image_url"),
+                ProfileBackgroundImageUrlHttps = user.GetValue<string>("profile_background_image_url_https"),
+                ProfileBackgroundTile = user.GetValue<string>("profile_background_tile"),
+                StatusesCount = user.GetValue<int>("statuses_count"),
+                Notifications = user.GetValue<bool>("notifications"),
+                GeoEnabled = user.GetValue<bool>("geo_enabled"),
+                Verified = user.GetValue<bool>("verified"),
+                ContributorsEnabled = user.GetValue<bool>("contributors_enabled"),
+                Following = user.GetValue<bool>("following"),
+                ShowAllInlineMedia = user.GetValue<bool>("show_all_inline_media"),
+                ListedCount = user.GetValue<int>("listed_count"),
+                FollowRequestSent = user.GetValue<bool>("follow_request_sent"),
+                //Status = Status.Create(status),
+                //CursorMovement = Cursors.Create(GrandParentOrNull(user))
             };
 
             return newUser;

@@ -64,7 +64,7 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void NewDirectMessageWrapLinksDemo(TwitterContext twitterCtx)
         {
-            bool wrapLinks = true;
+            const bool wrapLinks = true;
 
             var message = 
                 twitterCtx.NewDirectMessage(

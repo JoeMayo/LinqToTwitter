@@ -17,7 +17,7 @@ namespace LinqToTwitter
         void PostAccessToken(Request request, IDictionary<string, string> postData, out string screenName, out string userID);
         void PostAccessTokenAsync(Request request, IDictionary<string, string> postData, Action<TwitterAsyncResponse<UserIdentifier>> authorizationCompleteCallback);
 
-        string AuthorizationLinkGet(string requestToken, string authorizeUrl, string callback, bool forceLogin);
+        string AuthorizationLinkGet(string requestToken, string authorizeUrl, string callback, bool forceLogin, AuthAccessType authAccessToken);
         void GetOAuthQueryString(HttpMethod method, Request request, string callback, out string outUrl, out string queryString);
         string GetOAuthQueryStringForPost(Request request, IDictionary<string, string> postData);
         string OAuthConsumerKey { get; set; }
@@ -40,6 +40,7 @@ namespace LinqToTwitter
             Uri oauthRequestTokenUrl, 
             Uri oauthAuthorizeUrl, 
             string twitterCallbackUrl, 
+            AuthAccessType authAccessType,
             bool forceLogin, 
             Action<string> authorizationCallback, 
             Action<TwitterAsyncResponse<object>> authenticationCompleteCallback);
@@ -48,6 +49,7 @@ namespace LinqToTwitter
             string verifier,
             Uri oauthAccessTokenUrl,
             string twitterCallbackUrl,
+            AuthAccessType authAccessType,
             Action<TwitterAsyncResponse<UserIdentifier>> authenticationCompleteCallback);
 
         /// <summary>

@@ -222,71 +222,39 @@ namespace LinqToTwitter
             return acct;
         }
 
-        private Account HandleTotalsResponse(string responseJson)
+        internal Account HandleTotalsResponse(string responseJson)
         {
-            var serializer = Json.AccountConverter.GetSerializer();
-            var totals = serializer.Deserialize<Json.Totals>(responseJson);
+            var totals = JsonMapper.ToObject(responseJson);
 
             var acct = new Account
             {
                 Type = Type,
                 Totals = new Totals
                 {
-                    Favorites = totals.favorites,
-                    Followers = totals.followers,
-                    Friends = totals.friends,
-                    Updates = totals.updates
+                    Favorites = totals.GetValue<int>("favorites"),
+                    Followers = totals.GetValue<int>("followers"),
+                    Friends = totals.GetValue<int>("friends"),
+                    Updates = totals.GetValue<int>("updates")
                 }
             };
 
             return acct;
         }
 
-        private Account HandleEndSessionResponse(string responseJson)
+        internal Account HandleEndSessionResponse(string responseJson)
         {
-            var serializer = Json.AccountConverter.GetSerializer();
-            var endSession = serializer.Deserialize<Json.EndSession>(responseJson);
+            var endSession = JsonMapper.ToObject(responseJson);
 
             var acct = new Account
             {
                 EndSessionStatus = new TwitterHashResponse
                 {
-                    Request = endSession.request,
-                    Error = endSession.error
+                    Request = endSession.GetValue<string>("request"),
+                    Error = endSession.GetValue<string>("error")
                 }
             };
 
             return acct;
         }
-#if THESEDONTSEEMTOBEINJSON
-
-            else if (twitterResponse.Name == "hash")
-            {
-                if (twitterResponse.Element("hourly-limit") != null)
-                {
-                    var rateLimits = new RateLimitStatus
-                    {
-                        HourlyLimit = int.Parse(twitterResponse.Element("hourly-limit").Value),
-                        RemainingHits = int.Parse(twitterResponse.Element("remaining-hits").Value),
-                        ResetTime = DateTime.Parse(twitterResponse.Element("reset-time").Value,
-                                                    CultureInfo.InvariantCulture,
-                                                    DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal),
-                        ResetTimeInSeconds = int.Parse(twitterResponse.Element("reset-time-in-seconds").Value)
-                    };
-
-                    acct.RateLimitStatus = rateLimits;
-                }
-                else if (twitterResponse.Element("request") != null)
-                {
-                    var endSession = new TwitterHashResponse
-                    {
-                        Request = twitterResponse.Element("request").Value,
-                        Error = twitterResponse.Element("error").Value
-                    };
-
-                    acct.EndSessionStatus = endSession;
-                }
-            }
-#endif
     }
 }

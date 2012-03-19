@@ -51,6 +51,7 @@ namespace LinqToTwitter
         protected const string OAuthConsumerKeyKey = "oauth_consumer_key";
         protected const string OAuthCallbackKey = "oauth_callback";
         protected const string OAuthVersionKey = "oauth_version";
+        protected const string OAuthXAccessTypeKey = "x_auth_access_type";
         protected const string OAuthSignatureMethodKey = "oauth_signature_method";
         protected const string OAuthSignatureKey = "oauth_signature";
         protected const string OAuthTimestampKey = "oauth_timestamp";
@@ -139,12 +140,18 @@ namespace LinqToTwitter
         /// <summary>
         /// Generate the signature base that is used to produce the signature
         /// </summary>
-        /// <param name="url">The full url that needs to be signed including its non OAuth url parameters</param>
+        /// <param name="request">Request details</param>
         /// <param name="consumerKey">The consumer key</param>        
         /// <param name="token">The token, if available. If not available pass null or an empty string</param>
         /// <param name="tokenSecret">The token secret, if available. If not available pass null or an empty string</param>
+        /// <param name="callback">Redirect URL for Web apps</param>
         /// <param name="httpMethod">The http method used. Must be a valid HTTP method verb (POST,GET,PUT, etc)</param>
+        /// <param name="nonce">Unique value for this particular request</param>
         /// <param name="signatureType">The signature type. To use the default values use <see cref="OAuthBase.SignatureTypes">OAuthBase.SignatureTypes</see>.</param>
+        /// <param name="verifier">Number if using PIN authorization</param>
+        /// <param name="timeStamp">Timestamp for this request</param>
+        /// <param name="normalizedUrl">Url returned to caller</param>
+        /// <param name="normalizedRequestParameters">Parameters returned to caller</param>
         /// <returns>The signature base</returns>
         public string GenerateSignatureBase(Request request, string consumerKey, string token, string tokenSecret, string verifier, string callback, string httpMethod, string timeStamp, string nonce, string signatureType, out string normalizedUrl, out string normalizedRequestParameters)
         {
@@ -229,14 +236,20 @@ namespace LinqToTwitter
 
         /// <summary>
         /// Generates a signature using the specified signatureType 
-        /// </summary>		
-        /// <param name="url">The full url that needs to be signed including its non OAuth url parameters</param>
+        /// </summary>
+        /// <param name="request">Request details</param>
         /// <param name="consumerKey">The consumer key</param>
         /// <param name="consumerSecret">The consumer seceret</param>
         /// <param name="token">The token, if available. If not available pass null or an empty string</param>
         /// <param name="tokenSecret">The token secret, if available. If not available pass null or an empty string</param>
+        /// <param name="callback">Redirect URL for Web apps</param>
         /// <param name="httpMethod">The http method used. Must be a valid HTTP method verb (POST,GET,PUT, etc)</param>
+        /// <param name="nonce">Unique value for this particular request</param>
         /// <param name="signatureType">The type of signature to use</param>
+        /// <param name="verifier">Number if using PIN authorization</param>
+        /// <param name="timeStamp">Timestamp for this request</param>
+        /// <param name="normalizedUrl">Url returned to caller</param>
+        /// <param name="normalizedRequestParameters">Parameters returned to caller</param>
         /// <returns>A base64 string of the hash value</returns>
         public string GenerateSignature(Request request, string consumerKey, string consumerSecret, string token, string tokenSecret, string verifier, string callback, string httpMethod, string timeStamp, string nonce, OAuthSignatureTypes signatureType, out string normalizedUrl, out string normalizedRequestParameters)
         {

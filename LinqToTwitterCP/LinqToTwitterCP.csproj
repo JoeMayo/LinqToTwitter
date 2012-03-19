@@ -148,11 +148,62 @@
     <Compile Include="..\LinqToTwitterAg\Common\MethodCallExpressionTypeFinder.cs">
       <Link>Common\MethodCallExpressionTypeFinder.cs</Link>
     </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\Microsoft.Security.Application.Encoder\CharExtensions.cs">
+      <Link>Common\Microsoft.Security.Application.Encoder\CharExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\Microsoft.Security.Application.Encoder\CodeCharts.cs">
+      <Link>Common\Microsoft.Security.Application.Encoder\CodeCharts.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\Microsoft.Security.Application.Encoder\CodeCharts\Lower.cs">
+      <Link>Common\Microsoft.Security.Application.Encoder\CodeCharts\Lower.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\Microsoft.Security.Application.Encoder\CodeCharts\LowerMiddle.cs">
+      <Link>Common\Microsoft.Security.Application.Encoder\CodeCharts\LowerMiddle.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\Microsoft.Security.Application.Encoder\CodeCharts\Middle.cs">
+      <Link>Common\Microsoft.Security.Application.Encoder\CodeCharts\Middle.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\Microsoft.Security.Application.Encoder\CodeCharts\Upper.cs">
+      <Link>Common\Microsoft.Security.Application.Encoder\CodeCharts\Upper.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\Microsoft.Security.Application.Encoder\CodeCharts\UpperMiddle.cs">
+      <Link>Common\Microsoft.Security.Application.Encoder\CodeCharts\UpperMiddle.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\Microsoft.Security.Application.Encoder\CssEncoder.cs">
+      <Link>Common\Microsoft.Security.Application.Encoder\CssEncoder.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\Microsoft.Security.Application.Encoder\Encoder.cs">
+      <Link>Common\Microsoft.Security.Application.Encoder\Encoder.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\Microsoft.Security.Application.Encoder\GlobalSuppressions.cs">
+      <Link>Common\Microsoft.Security.Application.Encoder\GlobalSuppressions.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\Microsoft.Security.Application.Encoder\HtmlParameterEncoder.cs">
+      <Link>Common\Microsoft.Security.Application.Encoder\HtmlParameterEncoder.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\Microsoft.Security.Application.Encoder\InvalidSurrogatePairException.cs">
+      <Link>Common\Microsoft.Security.Application.Encoder\InvalidSurrogatePairException.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\Microsoft.Security.Application.Encoder\InvalidUnicodeValueException.cs">
+      <Link>Common\Microsoft.Security.Application.Encoder\InvalidUnicodeValueException.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\Microsoft.Security.Application.Encoder\LdapEncoder.cs">
+      <Link>Common\Microsoft.Security.Application.Encoder\LdapEncoder.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\Microsoft.Security.Application.Encoder\SafeList.cs">
+      <Link>Common\Microsoft.Security.Application.Encoder\SafeList.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\Microsoft.Security.Application.Encoder\UnicodeCharacterEncoder.cs">
+      <Link>Common\Microsoft.Security.Application.Encoder\UnicodeCharacterEncoder.cs</Link>
+    </Compile>
     <Compile Include="..\LinqToTwitterAg\Common\ParameterFinder.cs">
       <Link>Common\ParameterFinder.cs</Link>
     </Compile>
     <Compile Include="..\LinqToTwitterAg\Common\QueryParameter.cs">
       <Link>Common\QueryParameter.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\ReaderWriterLock.cs">
+      <Link>Common\ReaderWriterLock.cs</Link>
     </Compile>
     <Compile Include="..\LinqToTwitterAg\Common\Request.cs">
       <Link>Common\Request.cs</Link>
@@ -291,6 +342,9 @@
     </Compile>
     <Compile Include="..\LinqToTwitterAg\OAuth\AnonymousAuthorizer.cs">
       <Link>OAuth\AnonymousAuthorizer.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\OAuth\AuthAccessType.cs">
+      <Link>OAuth\AuthAccessType.cs</Link>
     </Compile>
     <Compile Include="..\LinqToTwitterAg\OAuth\InMemoryCredentials.cs">
       <Link>OAuth\InMemoryCredentials.cs</Link>

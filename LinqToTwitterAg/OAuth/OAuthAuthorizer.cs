@@ -10,7 +10,7 @@ namespace LinqToTwitter
 {
     public abstract class OAuthAuthorizer
     {
-        public OAuthAuthorizer()
+        protected OAuthAuthorizer()
         {
             OAuthRequestTokenUrl = "https://api.twitter.com/oauth/request_token";
             OAuthAuthorizeUrl = "https://api.twitter.com/oauth/authorize";
@@ -61,12 +61,14 @@ namespace LinqToTwitter
             }
         }
 
+        public AuthAccessType AuthAccessType { get; set; }
+
         /// <summary>
         /// Contains general OAuth functionality
         /// </summary>
         public IOAuthTwitter OAuthTwitter { get; set; }
 
-        private IOAuthCredentials m_credentials;
+        IOAuthCredentials credentials;
 
         /// <summary>
         /// Holds ConsumerKey, ConsumerSecret, and AccessToken
@@ -77,21 +79,21 @@ namespace LinqToTwitter
         {
             get
             {
-                if (m_credentials != null && m_credentials.OAuthToken == null)
+                if (credentials != null && credentials.OAuthToken == null)
                 {
-                    m_credentials.OAuthToken = OAuthTwitter.OAuthToken;
+                    credentials.OAuthToken = OAuthTwitter.OAuthToken;
                 }
 
-                if (m_credentials != null && m_credentials.AccessToken == null)
+                if (credentials != null && credentials.AccessToken == null)
                 {
-                    m_credentials.AccessToken = OAuthTwitter.OAuthTokenSecret;
+                    credentials.AccessToken = OAuthTwitter.OAuthTokenSecret;
                 }
 
-                return m_credentials;
+                return credentials;
             }
             set
             {
-                m_credentials = value;
+                credentials = value;
                 OAuthTwitter.OAuthConsumerKey = value.ConsumerKey;
                 OAuthTwitter.OAuthConsumerSecret = value.ConsumerSecret;
                 OAuthTwitter.OAuthToken = value.OAuthToken;
@@ -105,7 +107,8 @@ namespace LinqToTwitter
             {
                 if (Credentials == null)
                 {
-                    throw new ArgumentNullException("Credentials", "You must set the Credentials property.");
+                    const string credentialsParam = "Credentials";
+                    throw new ArgumentNullException(credentialsParam, "You must set the Credentials property.");
                 }
 
                 return
@@ -137,22 +140,24 @@ namespace LinqToTwitter
 #if !SILVERLIGHT
             var request = webRequest as HttpWebRequest;
 
-            request.UserAgent = UserAgent;
+            if (request != null) {
+                request.UserAgent = UserAgent;
 
-            if (this.ReadWriteTimeout > TimeSpan.Zero)
-            {
-                request.ReadWriteTimeout = (int)ReadWriteTimeout.TotalMilliseconds;
-            }
+                if (ReadWriteTimeout > TimeSpan.Zero)
+                {
+                    request.ReadWriteTimeout = (int)ReadWriteTimeout.TotalMilliseconds;
+                }
 
-            if (this.Timeout > TimeSpan.Zero)
-            {
-                request.Timeout = (int)Timeout.TotalMilliseconds;
-            }
+                if (Timeout > TimeSpan.Zero)
+                {
+                    request.Timeout = (int)Timeout.TotalMilliseconds;
+                }
 
-            if (this.UseCompression)
-            {
-                request.Headers.Add(HttpRequestHeader.AcceptEncoding, "gzip, deflate");
-                request.AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip;
+                if (UseCompression)
+                {
+                    request.Headers.Add(HttpRequestHeader.AcceptEncoding, "gzip, deflate");
+                    request.AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip;
+                }
             }
 #endif
         }
@@ -160,7 +165,7 @@ namespace LinqToTwitter
         /// <summary>
         /// OAuth Get
         /// </summary>
-        /// <param name="url">Twitter Query</param>
+        /// <param name="request">Request details</param>
         /// <returns>Request to be sent to Twitter</returns>
         public WebRequest Get(Request request)
         {
@@ -174,10 +179,12 @@ namespace LinqToTwitter
             var req = HttpWebRequest.Create(fullUrl);
             req.Headers[HttpRequestHeader.Authorization] = new OAuthTwitter().PrepareAuthHeader(queryString);
 #else
-            var req = HttpWebRequest.Create(request.FullUrl) as HttpWebRequest;
-            req.Headers[HttpRequestHeader.Authorization] = new OAuthTwitter().PrepareAuthHeader(queryString, request);
+            var req = WebRequest.Create(request.FullUrl) as HttpWebRequest;
+            if (req != null) {
+                req.Headers[HttpRequestHeader.Authorization] = new OAuthTwitter().PrepareAuthHeader(queryString, request);
 
-            InitializeRequest(req);
+                InitializeRequest(req);
+            }
 #endif
 
             return req;
@@ -188,6 +195,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="request">The request with the endpoint URL and the parameters to 
         /// include in the POST entity.  Must not be null.</param>
+        /// <param name="postData">Hash of parameters</param>
         /// <returns>request to send</returns>
         public virtual HttpWebRequest PostRequest(Request request, IDictionary<string, string> postData)
         {
@@ -199,24 +207,31 @@ namespace LinqToTwitter
                 (string.IsNullOrEmpty(ProxyUrl) ? "?" : "&") +
                 request.QueryString) as HttpWebRequest;
 #else
-            var req = HttpWebRequest.Create(request.FullUrl) as HttpWebRequest;
-            req.ServicePoint.Expect100Continue = false;
-#endif
-            req.Method = HttpMethod.POST.ToString();
-            req.Headers[HttpRequestHeader.Authorization] = auth;
-#if !WINDOWS_PHONE
-            req.ContentLength = 0; 
+            var req = WebRequest.Create(request.FullUrl) as HttpWebRequest;
 #endif
 
-            InitializeRequest(req);
+            if (req != null) {
+#if !SILVERLIGHT
+                req.ServicePoint.Expect100Continue = false;
+#endif
+                req.Method = HttpMethod.POST.ToString();
+                req.Headers[HttpRequestHeader.Authorization] = auth;
+#if !WINDOWS_PHONE
+                req.ContentLength = 0; 
+#endif
+
+                InitializeRequest(req);
+            }
 
             return req;
         }
+
         /// <summary>
         /// OAuth Post
         /// </summary>
         /// <param name="request">The request with the endpoint URL and the parameters to 
         /// include in the POST entity.  Must not be null.</param>
+        /// <param name="postData">Hash of parameters</param>
         /// <returns>request to send</returns>
         public virtual HttpWebResponse Post(Request request, IDictionary<string, string> postData)
         {
@@ -229,6 +244,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="request">The request with the endpoint URL and the parameters to 
         /// include in the POST entity.  Must not be null.</param>
+        /// <param name="postData">Hash of parameters</param>
         /// <returns>HttpWebRequest for post</returns>
         public virtual HttpWebRequest PostAsync(Request request, IDictionary<string, string> postData)
         {
@@ -239,13 +255,16 @@ namespace LinqToTwitter
                     (string.IsNullOrEmpty(ProxyUrl) ? "?" : "&") +
                     request.QueryString)
                 as HttpWebRequest;
-            req.Method = HttpMethod.POST.ToString();
-            req.Headers[HttpRequestHeader.Authorization] = auth;
+
+            if (req != null) {
+                req.Method = HttpMethod.POST.ToString();
+                req.Headers[HttpRequestHeader.Authorization] = auth;
 #if !WINDOWS_PHONE
-            req.ContentLength = 0; 
+                req.ContentLength = 0; 
 #endif
 
-            InitializeRequest(req);
+                InitializeRequest(req);
+            }
 
             return req;
         }

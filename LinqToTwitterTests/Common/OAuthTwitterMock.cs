@@ -6,7 +6,7 @@ namespace LinqToTwitterTests.Common
 {
     class OAuthTwitterMock : IOAuthTwitter
     {
-        public void GetRequestTokenAsync(Uri oauthRequestTokenUrl, Uri oauthAuthorizeUrl, string twitterCallbackUrl, bool forceLogin, Action<string> authorizationCallback, Action<TwitterAsyncResponse<object>> authenticationCompleteCallback)
+        public void GetRequestTokenAsync(Uri oauthRequestTokenUrl, Uri oauthAuthorizeUrl, string twitterCallbackUrl, AuthAccessType authAccessType, bool forceLogin, Action<string> authorizationCallback, Action<TwitterAsyncResponse<object>> authenticationCompleteCallback)
         {
             authenticationCompleteCallback(new TwitterAsyncResponse<object>());
         }
@@ -16,12 +16,7 @@ namespace LinqToTwitterTests.Common
             throw new NotImplementedException();
         }
 
-        public string AuthorizationLinkGet(string requestToken, string authorizeUrl, string callback, bool forceLogin)
-        {
-            throw new NotImplementedException();
-        }
-
-        public string TwitterParameterUrlEncode(string value)
+        public string AuthorizationLinkGet(string requestToken, string authorizeUrl, string callback, bool forceLogin, AuthAccessType authAccessType)
         {
             throw new NotImplementedException();
         }
@@ -108,7 +103,7 @@ namespace LinqToTwitterTests.Common
             }
         }
 
-        public string oAuthWebRequest(HttpMethod method, string url, string postData, string callback)
+        public string oAuthWebRequest(HttpMethod method, string url, string postData, string callback, AuthAccessType authAccessType)
         {
             throw new NotImplementedException();
         }
@@ -128,7 +123,7 @@ namespace LinqToTwitterTests.Common
             throw new NotImplementedException();
         }
 
-        public void GetAccessTokenAsync(string verifier, Uri oauthAccessTokenUrl, Uri twitterCallbackUrl, Action<TwitterAsyncResponse<UserIdentifier>> authenticationCompleteCallback)
+        public void GetAccessTokenAsync(string verifier, Uri oauthAccessTokenUrl, Uri twitterCallbackUrl, AuthAccessType authAccessType, Action<TwitterAsyncResponse<UserIdentifier>> authenticationCompleteCallback)
         {
             authenticationCompleteCallback(new TwitterAsyncResponse<UserIdentifier>());
         }
@@ -145,7 +140,7 @@ namespace LinqToTwitterTests.Common
             }
         }
 
-        public void GetAccessTokenAsync(string verifier, Uri oauthAccessTokenUrl, string twitterCallbackUrl, Action<TwitterAsyncResponse<UserIdentifier>> authenticationCompleteCallback)
+        public void GetAccessTokenAsync(string verifier, Uri oauthAccessTokenUrl, string twitterCallbackUrl, AuthAccessType authAccessType, Action<TwitterAsyncResponse<UserIdentifier>> authenticationCompleteCallback)
         {
             authenticationCompleteCallback(new TwitterAsyncResponse<UserIdentifier>());
         }

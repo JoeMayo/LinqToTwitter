@@ -10,6 +10,8 @@ using System.Xml;
 using System.Xml.Linq;
 using System.Diagnostics;
 
+using MSEncoder = Microsoft.Security.Application.Encoder;
+
 #if SILVERLIGHT && !WINDOWS_PHONE
     using System.Windows.Browser;
 #elif !SILVERLIGHT && !WINDOWS_PHONE
@@ -207,8 +209,8 @@ namespace LinqToTwitter
                                 + Environment.NewLine
                                 + responseStr;
 
-                string encodedResponseUri = BuildUrlHelper.UrlEncode(responseUri);
-                string encodedErrorText = BuildUrlHelper.UrlEncode(errorText);
+                string encodedResponseUri = MSEncoder.UrlEncode(responseUri);
+                string encodedErrorText = MSEncoder.UrlEncode(errorText);
 
                 // One known reason this can happen is if you don't have an 
                 // Internet connection, meaning that the response will contain
@@ -925,7 +927,9 @@ namespace LinqToTwitter
                 {
                     if (param.Value != null)
                     {
-                        string encodedParamVal = BuildUrlHelper.UrlEncode(param.Value);
+                        byte[] paramBytes = Encoding.UTF8.GetBytes(param.Value);
+                        
+                        string encodedParamVal = MSEncoder.HtmlEncode(new UTF8Encoding().GetString(paramBytes, 0, paramBytes.Length));
 
                         formDataSb.AppendFormat(
                             "--{0}\r\nContent-Disposition: form-data; name=\"{1}\"\r\n\r\n{2}\r\n",

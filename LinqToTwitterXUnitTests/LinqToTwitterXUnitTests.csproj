@@ -58,16 +58,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\TestCulture.cs" />
-    <Compile Include="FriendshipTests\RelationshipTests.cs" />
-    <Compile Include="LinqToTwitterTests\TwitterContextCreateRequestProcessorTests.cs" />
-    <Compile Include="ListTests\ListTests.cs" />
-    <Compile Include="SearchTests\SearchRequestProcessorTests.cs" />
-    <Compile Include="StatusTests\StatusExtensionsTweetWithMediaNoLocationTests.cs" />
-    <Compile Include="StatusTests\StatusExtensionsTweetWithMediaAndLocationTests.cs" />
-    <Compile Include="StatusTests\StatusExtensionsReplyWithMediaNoLocationTests.cs" />
-    <Compile Include="StatusTests\StatusExtensionsReplyWithMediaAndLocationTests.cs" />
+    <Compile Include="Friendship\RelationshipTests.cs" />
+    <Compile Include="LinqToTwitter\TwitterContextCreateRequestProcessorTests.cs" />
+    <Compile Include="List\ListTests.cs" />
+    <Compile Include="Search\SearchRequestProcessorTests.cs" />
+    <Compile Include="Status\StatusExtensionsTweetWithMediaNoLocationTests.cs" />
+    <Compile Include="Status\StatusExtensionsTweetWithMediaAndLocationTests.cs" />
+    <Compile Include="Status\StatusExtensionsReplyWithMediaNoLocationTests.cs" />
+    <Compile Include="Status\StatusExtensionsReplyWithMediaAndLocationTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="LinqToTwitterTests\TwitterContextUrlTests.cs" />
+    <Compile Include="LinqToTwitter\TwitterContextUrlTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LinqToTwitter\LinqToTwitter.csproj">
