@@ -1,6 +1,10 @@
 ﻿using System.Linq;
 using System.Xml.Linq;
 
+using LinqToTwitter.Common;
+
+using LitJson;
+
 namespace LinqToTwitter
 {
     /// <summary>
@@ -8,6 +12,27 @@ namespace LinqToTwitter
     /// </summary>
     public class Place
     {
+        public Place() {}
+        internal Place(JsonData place)
+        {
+            if (place == null) return;
+
+            var geometry = new Geometry();
+            var polyLines = place.GetValue<JsonData>("polylines");
+
+            ID = place.GetValue<string>("id");
+            Name = place.GetValue<string>("name");
+            Country = place.GetValue<string>("country");
+            CountryCode = place.GetValue<string>("country_code");
+            FullName = place.GetValue<string>("full_name");
+            PlaceType = place.GetValue<string>("place_type");
+            Url = place.GetValue<string>("url");
+            BoundingBox = new Geometry(place.GetValue<JsonData>("bounding_box"));
+            ContainedWithin = new Place(place.GetValue<JsonData>("item"));
+            Geometry = new Geometry(place.GetValue<JsonData>("geometry"));
+            PolyLines = polyLines == null ? string.Empty : polyLines.GetValue<string>("item");
+        }
+
         /// <summary>
         /// Converts XML to Place
         /// </summary>

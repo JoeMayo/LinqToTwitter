@@ -3,6 +3,8 @@ using System.Globalization;
 using System.Linq;
 using System.Xml.Linq;
 
+using LitJson;
+
 namespace LinqToTwitter
 {
     /// <summary>
@@ -10,6 +12,12 @@ namespace LinqToTwitter
     /// </summary>
     public class Geometry
     {
+        public Geometry() {}
+        internal Geometry(JsonData geometry)
+        {
+            
+        }
+
         /// <summary>
         /// Converts XML to a new Geometry
         /// </summary>

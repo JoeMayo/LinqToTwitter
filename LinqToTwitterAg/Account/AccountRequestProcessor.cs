@@ -145,34 +145,23 @@ namespace LinqToTwitter
         internal Account HandleSettingsResponse(string responseJson)
         {
             var settings = JsonMapper.ToObject(responseJson);
-            var trendLocation = settings.GetValue<JsonData>("trend_location")[0];
             var sleepTime = settings.GetValue<JsonData>("sleep_time");
             var timeZone = settings.GetValue<JsonData>("time_zone");
+            var trendLocationData = settings.GetValue<JsonData>("trend_location");
+            var trendLocation = trendLocationData == null ? null : trendLocationData[0];
 
             var acct = new Account
             {
                 Type = Type,
                 Settings = new Settings
                 {
-                    TrendLocation = Location.Create(trendLocation),
+                    TrendLocation = new Location(trendLocation),
                     GeoEnabled = settings.GetValue<bool>("geo_enabled"),
-                    SleepTime = 
-                        new SleepTime
-                        {
-                            StartHour = sleepTime.GetValue<int>("start_time"),
-                            EndHour = sleepTime.GetValue<int>("end_time"),
-                            Enabled = sleepTime.GetValue<bool>("enabled")
-                        },
+                    SleepTime = new SleepTime(sleepTime),
                     Language = settings.GetValue<string>("language"),
                     AlwaysUseHttps = settings.GetValue<bool>("always_use_https"),
                     DiscoverableByEmail = settings.GetValue<bool>("discoverable_by_email"),
-                    TimeZone = 
-                        new TZInfo
-                        {
-                            Name = timeZone.GetValue<string>("name"),
-                            TzInfoName = timeZone.GetValue<string>("tzinfo_name"),
-                            UtcOffset = timeZone.GetValue<int>("utc_offset")
-                        }
+                    TimeZone = new TZInfo(timeZone)
                 }
             };
 
@@ -202,21 +191,12 @@ namespace LinqToTwitter
 
         private Account HandleVerifyCredentialsResponse(string responseJson)
         {
-            //var user = JsonMapper.ToObject(responseJson);
-
-            //var acct = new Account
-            //{
-            //    Type = Type,
-            //    User = User.Create(user)
-            //};
-
-            var serializer = Json.AccountConverter.GetSerializer();
-            var user = serializer.Deserialize<Json.User>(responseJson);
+            var user = JsonMapper.ToObject(responseJson);
 
             var acct = new Account
             {
                 Type = Type,
-                User = user.ToUser()
+                User = new User(user)
             };
 
             return acct;

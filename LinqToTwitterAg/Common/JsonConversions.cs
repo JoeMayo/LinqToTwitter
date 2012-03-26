@@ -37,7 +37,7 @@ namespace LinqToTwitter
                 ProfileBackgroundColor = user.profile_background_color,
                 ProfileBackgroundImageUrl = user.profile_background_image_url,
                 ProfileBackgroundImageUrlHttps = user.profile_background_image_url,
-                ProfileBackgroundTile = user.profile_background_tile ? "true" : "false", // TODO change type?
+                ProfileBackgroundTile = user.profile_background_tile,
                 ProfileLinkColor = user.profile_link_color,
                 ProfileTextColor = user.profile_text_color,
                 ProfileSidebarBorderColor = user.profile_sidebar_border_color,
@@ -51,7 +51,7 @@ namespace LinqToTwitter
                 Lang = user.lang,
                 GeoEnabled = user.geo_enabled,
                 ShowAllInlineMedia = user.show_all_inline_media,
-                UtcOffset = user.utc_offset.ToString(CultureInfo.InvariantCulture), //TODO change type!
+                UtcOffset = user.utc_offset,
                 IsTranslator = user.is_translator,
                 Protected = user.is_protected,
                 Verified = user.verified,

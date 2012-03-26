@@ -12,6 +12,8 @@ using System.Xml.Serialization;
 
 using LinqToTwitter.Common;
 
+using LitJson;
+
 namespace LinqToTwitter
 {
     /// <summary>
@@ -19,6 +21,27 @@ namespace LinqToTwitter
     /// </summary>
     public class Status
     {
+        public Status() {}
+        internal Status(JsonData status)
+        {
+            if (status == null) return;
+
+            CreatedAt = status.GetValue<string>("created_at").GetDate(DateTime.MaxValue);
+            Favorited = status.GetValue<bool>("favorited");
+            StatusID = status.GetValue<ulong>("id").ToString(CultureInfo.InvariantCulture);
+            InReplyToStatusID = status.GetValue<ulong>("in_reply_to_status_id").ToString(CultureInfo.InvariantCulture);
+            InReplyToUserID = status.GetValue<ulong>("in_reply_to_user_id").ToString(CultureInfo.InvariantCulture);
+            Source = status.GetValue<string>("source");
+            Text = status.GetValue<string>("text");
+            Truncated = status.GetValue<bool>("truncated");
+            InReplyToScreenName = status.GetValue<string>("in_reply_to_screen_name");
+            Contributors = new List<Contributor>();
+            Coordinates = new Coordinate();
+            Place = new Place(status.GetValue<JsonData>("place"));
+            User = new User(status.GetValue<JsonData>("user"));
+        }
+
+
         /// <summary>
         /// Shreds an XML element into a Status object
         /// </summary>

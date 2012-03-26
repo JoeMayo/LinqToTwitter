@@ -1,4 +1,6 @@
-﻿using System.Xml.Linq;
+﻿using LinqToTwitter.Common;
+
+using LitJson;
 
 namespace LinqToTwitter
 {
@@ -8,6 +10,14 @@ namespace LinqToTwitter
     /// </summary>
     public class SleepTime
     {
+        public SleepTime() {}
+        internal SleepTime(JsonData sleepTime)
+        {
+            StartHour = sleepTime.GetValue<int>("start_time");
+            EndHour = sleepTime.GetValue<int>("end_time");
+            Enabled = sleepTime.GetValue<bool>("enabled");
+        }
+
         /// <summary>
         /// Stop sending notifications at this time
         /// </summary>

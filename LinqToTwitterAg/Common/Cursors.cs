@@ -1,6 +1,10 @@
 ﻿using System.Xml.Linq;
 using System.Xml.Serialization;
 
+using LinqToTwitter.Common;
+
+using LitJson;
+
 namespace LinqToTwitter
 {
     /// <summary>
@@ -13,6 +17,13 @@ namespace LinqToTwitter
     /// </remarks>
     public class Cursors
     {
+        public Cursors() {}
+        internal Cursors(JsonData cursors)
+        {
+            Next = cursors.GetValue<string>("next_cursor");
+            Previous = cursors.GetValue<string>("previous_cursor");
+        }
+
         /// <summary>
         /// Transforms XML document into a Cursors
         /// </summary>

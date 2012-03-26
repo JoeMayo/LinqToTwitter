@@ -313,7 +313,7 @@ namespace LinqToTwitter
                 let asOf = response.GetValue<string>("as_of").GetDate(DateTime.UtcNow)
                 let locations =
                      (from JsonData place in response.GetValue<JsonData>("locations")
-                      select Location.Create(place)).ToList()
+                      select new Location(place)).ToList()
                 let trends =
                      (from JsonData trend in response.GetValue<JsonData>("trends")
                       select new Trend
@@ -344,7 +344,7 @@ namespace LinqToTwitter
             var trends = JsonMapper.ToObject(responseJson);
             var locations =
                 (from JsonData loc in trends
-                 select Location.Create(loc))
+                 select new Location(loc))
                 .ToList();
 
             var asOf = DateTime.UtcNow;

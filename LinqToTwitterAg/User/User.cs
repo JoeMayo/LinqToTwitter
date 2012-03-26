@@ -21,6 +21,51 @@ namespace LinqToTwitter
     /// </summary>
     public class User
     {
+        public User() {}
+        internal User(JsonData user)
+        {
+            if (user == null) return;
+
+            var userID = user.GetValue<int>("id").ToString(CultureInfo.InvariantCulture);
+            Identifier = new UserIdentifier
+            {
+                ID = userID,
+                UserID = userID,
+                ScreenName = user.GetValue<string>("screen_name")
+            };
+            Name = user.GetValue<string>("name");
+            Location = user.GetValue<string>("location");
+            Description = user.GetValue<string>("description");
+            ProfileImageUrl = user.GetValue<string>("profile_image_url");
+            URL = user.GetValue<string>("url");
+            Protected = user.GetValue<bool>("protected");
+            FollowersCount = user.GetValue<int>("followers_count");
+            ProfileBackgroundColor = user.GetValue<string>("profile_background_color");
+            ProfileTextColor = user.GetValue<string>("profile_text_color");
+            ProfileLinkColor = user.GetValue<string>("profile_link_color");
+            ProfileSidebarFillColor = user.GetValue<string>("profile_sidebar_fill_color");
+            ProfileSidebarBorderColor = user.GetValue<string>("profile_sidebar_border_color");
+            FriendsCount = user.GetValue<int>("friends_count");
+            CreatedAt = user.GetValue<string>("created_at").GetDate(DateTime.MinValue);
+            FavoritesCount = user.GetValue<int>("favourites_count");
+            UtcOffset = user.GetValue<int>("utc_offset");
+            TimeZone = user.GetValue<string>("time_zone");
+            ProfileBackgroundImageUrl = user.GetValue<string>("profile_background_image_url");
+            ProfileBackgroundImageUrlHttps = user.GetValue<string>("profile_background_image_url_https");
+            ProfileBackgroundTile = user.GetValue<bool>("profile_background_tile");
+            StatusesCount = user.GetValue<int>("statuses_count");
+            Notifications = user.GetValue<bool>("notifications");
+            GeoEnabled = user.GetValue<bool>("geo_enabled");
+            Verified = user.GetValue<bool>("verified");
+            ContributorsEnabled = user.GetValue<bool>("contributors_enabled");
+            Following = user.GetValue<bool>("following");
+            ShowAllInlineMedia = user.GetValue<bool>("show_all_inline_media");
+            ListedCount = user.GetValue<int>("listed_count");
+            FollowRequestSent = user.GetValue<bool>("follow_request_sent");
+            Status = new Status(user.GetValue<JsonData>("status"));
+            CursorMovement = new Cursors(user);
+        }
+
         /// <summary>
         /// creates a new user based on an XML user fragment
         /// </summary>
@@ -59,11 +104,11 @@ namespace LinqToTwitter
                 FriendsCount = user.GetInt("friends_count"),
                 CreatedAt = user.GetDate("created_at", DateTime.MinValue),
                 FavoritesCount = user.GetInt("favourites_count"),
-                UtcOffset = user.GetString("utc_offset"),
+                UtcOffset = user.GetInt("utc_offset"),
                 TimeZone = user.GetString("time_zone"),
                 ProfileBackgroundImageUrl = user.GetString("profile_background_image_url"),
                 ProfileBackgroundImageUrlHttps = user.GetString("profile_background_image_url_https"),
-                ProfileBackgroundTile = user.GetString("profile_background_tile"),
+                ProfileBackgroundTile = user.GetBool("profile_background_tile"),
                 StatusesCount = user.GetInt("statuses_count"),
                 Notifications = user.GetBool("notifications"),
                 GeoEnabled = user.GetBool("geo_enabled"),
@@ -75,60 +120,6 @@ namespace LinqToTwitter
                 FollowRequestSent = user.GetBool("follow_request_sent"),
                 Status = Status.CreateStatus(status),
                 CursorMovement = Cursors.CreateCursors(GrandParentOrNull(user))
-            };
-
-            return newUser;
-        }
-
-        public static User Create(JsonData user)
-        {
-            if (user == null)
-            {
-                return null;
-            }
-
-            var status = user.GetValue<JsonData>("status");
-            var userID = user.GetValue<int>("id").ToString(CultureInfo.InvariantCulture);
-
-            var newUser = new User
-            {
-                Identifier = new UserIdentifier
-                {
-                    ID = userID,
-                    UserID = userID,
-                    ScreenName = user.GetValue<string>("screen_name")
-                },
-                Name = user.GetValue<string>("name"),
-                Location = user.GetValue<string>("location"),
-                Description = user.GetValue<string>("description"),
-                ProfileImageUrl = user.GetValue<string>("profile_image_url"),
-                URL = user.GetValue<string>("url"),
-                Protected = user.GetValue<bool>("protected"),
-                FollowersCount = user.GetValue<int>("followers_count"),
-                ProfileBackgroundColor = user.GetValue<string>("profile_background_color"),
-                ProfileTextColor = user.GetValue<string>("profile_text_color"),
-                ProfileLinkColor = user.GetValue<string>("profile_link_color"),
-                ProfileSidebarFillColor = user.GetValue<string>("profile_sidebar_fill_color"),
-                ProfileSidebarBorderColor = user.GetValue<string>("profile_sidebar_border_color"),
-                FriendsCount = user.GetValue<int>("friends_count"),
-                CreatedAt = user.GetValue<string>("created_at").GetDate(DateTime.MinValue),
-                FavoritesCount = user.GetValue<int>("favourites_count"),
-                UtcOffset = user.GetValue<string>("utc_offset"),
-                TimeZone = user.GetValue<string>("time_zone"),
-                ProfileBackgroundImageUrl = user.GetValue<string>("profile_background_image_url"),
-                ProfileBackgroundImageUrlHttps = user.GetValue<string>("profile_background_image_url_https"),
-                ProfileBackgroundTile = user.GetValue<string>("profile_background_tile"),
-                StatusesCount = user.GetValue<int>("statuses_count"),
-                Notifications = user.GetValue<bool>("notifications"),
-                GeoEnabled = user.GetValue<bool>("geo_enabled"),
-                Verified = user.GetValue<bool>("verified"),
-                ContributorsEnabled = user.GetValue<bool>("contributors_enabled"),
-                Following = user.GetValue<bool>("following"),
-                ShowAllInlineMedia = user.GetValue<bool>("show_all_inline_media"),
-                ListedCount = user.GetValue<int>("listed_count"),
-                FollowRequestSent = user.GetValue<bool>("follow_request_sent"),
-                //Status = Status.Create(status),
-                //CursorMovement = Cursors.Create(GrandParentOrNull(user))
             };
 
             return newUser;
@@ -308,7 +299,7 @@ namespace LinqToTwitter
         /// <summary>
         /// UTC Offset
         /// </summary>
-        public string UtcOffset { get; set; }
+        public int UtcOffset { get; set; }
 
         /// <summary>
         /// Time Zone
@@ -328,7 +319,7 @@ namespace LinqToTwitter
         /// <summary>
         /// Title of profile background
         /// </summary>
-        public string ProfileBackgroundTile { get; set; }
+        public bool ProfileBackgroundTile { get; set; }
 
         /// <summary>
         /// Should we use the profile background image?

@@ -1,4 +1,6 @@
-﻿using System.Xml.Linq;
+﻿using LinqToTwitter.Common;
+
+using LitJson;
 
 namespace LinqToTwitter
 {
@@ -7,6 +9,14 @@ namespace LinqToTwitter
     /// </summary>
     public class TZInfo
     {
+        public TZInfo() {}
+        internal TZInfo(JsonData timeZone)
+        {
+            Name = timeZone.GetValue<string>("name");
+            TzInfoName = timeZone.GetValue<string>("tzinfo_name");
+            UtcOffset = timeZone.GetValue<int>("utc_offset");
+        }
+
         /// <summary>
         /// Human-readable timezone name
         /// </summary>

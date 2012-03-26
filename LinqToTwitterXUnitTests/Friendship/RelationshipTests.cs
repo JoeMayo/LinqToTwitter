@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using LinqToTwitterTests.Common;
 using Xunit;
 using LinqToTwitter;
