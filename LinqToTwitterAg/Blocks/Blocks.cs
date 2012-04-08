@@ -7,30 +7,39 @@ namespace LinqToTwitter
     /// </summary>
     public class Blocks
     {
+        //
+        // Input parameters
+        //
+
         /// <summary>
-        /// type of blocks request to perform
+        /// type of blocks request to perform (input only)
         /// </summary>
         public BlockingType Type { get; set; }
 
         /// <summary>
-        /// id or screen name of user
+        /// id or screen name of user (input only)
         /// </summary>
         public string ID { get; set; }
 
         /// <summary>
-        /// disambiguates when user id is screen name
+        /// disambiguates when user id is screen name (input only)
         /// </summary>
         public ulong UserID { get; set; }
 
         /// <summary>
-        /// disambiguates when screen name is user id
+        /// disambiguates when screen name is user id (input only)
         /// </summary>
         public string ScreenName { get; set; }
 
         /// <summary>
-        /// page to retrieve
+        /// page to retrieve (input only)
         /// </summary>
         public int Page { get; set; }
+
+        /// <summary>
+        /// Listed Count
+        /// </summary>
+        public int ListedCount { get; set; }
 
         /// <summary>
         /// List of blocked IDs

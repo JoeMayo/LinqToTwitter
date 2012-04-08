@@ -18,10 +18,10 @@
     <SilverlightApplication>false</SilverlightApplication>
     <ValidateXaml>true</ValidateXaml>
     <ThrowErrorsInValidation>true</ThrowErrorsInValidation>
-    <SccProjectName>SAK</SccProjectName>
-    <SccLocalPath>SAK</SccLocalPath>
-    <SccAuxPath>SAK</SccAuxPath>
-    <SccProvider>SAK</SccProvider>
+    <SccProjectName />
+    <SccLocalPath />
+    <SccAuxPath />
+    <SccProvider />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -88,6 +88,9 @@
     </Compile>
     <Compile Include="..\LinqToTwitterAg\Blocks\Blocks.cs">
       <Link>Blocks\Blocks.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Blocks\BlocksExtensions.cs">
+      <Link>Blocks\BlocksExtensions.cs</Link>
     </Compile>
     <Compile Include="..\LinqToTwitterAg\Blocks\BlocksRequestProcessor.cs">
       <Link>Blocks\BlocksRequestProcessor.cs</Link>

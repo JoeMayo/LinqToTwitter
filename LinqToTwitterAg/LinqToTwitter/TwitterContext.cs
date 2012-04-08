@@ -835,7 +835,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <typeparam name="T">type of request</typeparam>
         /// <returns>request processor matching type parameter</returns>
-        IRequestProcessor<T> CreateRequestProcessor<T>(Expression expression)
+        internal IRequestProcessor<T> CreateRequestProcessor<T>(Expression expression)
             where T: class
         {
             if (expression == null)
@@ -2074,82 +2074,6 @@ namespace LinqToTwitter
                         {"user_id", userID},
                         {"screen_name", screenName}
                     },
-                    reqProc);
-
-            List<User> results = reqProc.ProcessResults(resultsXml);
-            return results.FirstOrDefault();
-        }
-
-        /// <summary>
-        /// Blocks a user
-        /// </summary>
-        /// <param name="id">id of user to block</param>
-        /// <returns>User that was unblocked</returns>
-        public virtual User CreateBlock(string id)
-        {
-            return CreateBlock(id, null);
-        }
-
-        /// <summary>
-        /// Blocks a user
-        /// </summary>
-        /// <param name="id">id of user to block</param>
-        /// <param name="callback">Async Callback used in Silverlight queries</param>
-        /// <returns>User that was unblocked</returns>
-        public virtual User CreateBlock(string id, Action<TwitterAsyncResponse<User>> callback)
-        {
-            if (string.IsNullOrEmpty(id))
-            {
-                throw new ArgumentException("id is a required parameter.", "id");
-            }
-
-            var blocksUrl = BaseUrl + "blocks/create/" + id + ".xml";
-
-            var reqProc = new UserRequestProcessor<User>();
-
-            TwitterExecutor.AsyncCallback = callback;
-            var resultsXml =
-                TwitterExecutor.ExecuteTwitter(
-                    blocksUrl,
-                    new Dictionary<string, string>(),
-                    reqProc);
-
-            List<User> results = reqProc.ProcessResults(resultsXml);
-            return results.FirstOrDefault();
-        }
-        
-        /// <summary>
-        /// Unblocks a user
-        /// </summary>
-        /// <param name="id">id of user to unblock</param>
-        /// <returns>User that was unblocked</returns>
-        public virtual User DestroyBlock(string id)
-        {
-            return DestroyBlock(id, null);
-        }
-
-        /// <summary>
-        /// Unblocks a user
-        /// </summary>
-        /// <param name="id">id of user to unblock</param>
-        /// <param name="callback">Async Callback used in Silverlight queries</param>
-        /// <returns>User that was unblocked</returns>
-        public virtual User DestroyBlock(string id, Action<TwitterAsyncResponse<User>> callback)
-        {
-            if (string.IsNullOrEmpty(id))
-            {
-                throw new ArgumentException("id is a required parameter.", "id");
-            }
-
-            var blocksUrl = BaseUrl + "blocks/destroy/" + id + ".xml";
-
-            var reqProc = new UserRequestProcessor<User>();
-
-            TwitterExecutor.AsyncCallback = callback;
-            var resultsXml =
-                TwitterExecutor.ExecuteTwitter(
-                    blocksUrl,
-                    new Dictionary<string, string>(),
                     reqProc);
 
             List<User> results = reqProc.ProcessResults(resultsXml);

@@ -12,10 +12,10 @@
     <AssemblyName>LinqToTwitterCP</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <SccProjectName>SAK</SccProjectName>
-    <SccLocalPath>SAK</SccLocalPath>
-    <SccAuxPath>SAK</SccAuxPath>
-    <SccProvider>SAK</SccProvider>
+    <SccProjectName />
+    <SccLocalPath />
+    <SccAuxPath />
+    <SccProvider />
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -78,6 +78,9 @@
     </Compile>
     <Compile Include="..\LinqToTwitterAg\Blocks\Blocks.cs">
       <Link>Blocks\Blocks.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Blocks\BlocksExtensions.cs">
+      <Link>Blocks\BlocksExtensions.cs</Link>
     </Compile>
     <Compile Include="..\LinqToTwitterAg\Blocks\BlocksRequestProcessor.cs">
       <Link>Blocks\BlocksRequestProcessor.cs</Link>

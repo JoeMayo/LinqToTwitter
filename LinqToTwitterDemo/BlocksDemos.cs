@@ -18,9 +18,9 @@ namespace LinqToTwitterDemo
             //CreateBlock(twitterCtx);
             //DestroyBlock(twitterCtx);
             //BlockExistsDemo(twitterCtx);
-            //BlockIDsDemo(twitterCtx);
+            BlockIDsDemo(twitterCtx);
             //BlockBlockingDemo(twitterCtx);
-            BlockBlockingProjectionDemo(twitterCtx);
+            //BlockBlockingProjectionDemo(twitterCtx);
         }
 
         /// <summary>
@@ -29,7 +29,10 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx"></param>
         private static void DestroyBlock(TwitterContext twitterCtx)
         {
-            var user = twitterCtx.DestroyBlock("JoeMayo");
+            Console.Write("User Screen Name to Unblock: ");
+            string userName = Console.ReadLine();
+
+            var user = twitterCtx.DestroyBlock(userName);
 
             if (user == null) return;
 
@@ -42,7 +45,10 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void CreateBlock(TwitterContext twitterCtx)
         {
-            var user = twitterCtx.CreateBlock("JoeMayo");
+            Console.Write("User Screen Name to Block: ");
+            string userName = Console.ReadLine();
+
+            var user = twitterCtx.CreateBlock(userName);
 
             if (user == null) return;
 
@@ -108,9 +114,9 @@ namespace LinqToTwitterDemo
                 var block =
                     (from blockItem in twitterCtx.Blocks
                      where blockItem.Type == BlockingType.Exists &&
-                           blockItem.ScreenName == "JoeMayo"
+                           blockItem.ScreenName == "Linq2Tweeter"
                      select blockItem)
-                     .FirstOrDefault();
+                    .FirstOrDefault();
 
                 Console.WriteLine("User, {0} is blocked.", block.User.Name);
             }

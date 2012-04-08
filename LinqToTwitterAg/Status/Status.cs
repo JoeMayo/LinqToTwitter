@@ -41,7 +41,6 @@ namespace LinqToTwitter
             User = new User(status.GetValue<JsonData>("user"));
         }
 
-
         /// <summary>
         /// Shreds an XML element into a Status object
         /// </summary>

@@ -185,7 +185,8 @@ namespace LinqToTwitter.Common
         public static T GetValue<T>(this JsonData data, string key, T defaultValue)
         {
             object value = defaultValue;
-            if (data != null && data.InstObject.ContainsKey(key) && data.InstObject[key] != null)
+            if (data != null && data.InstObject != null && 
+                data.InstObject.ContainsKey(key) && data.InstObject[key] != null)
             {
                 var dataItem = data.InstObject[key] as IJsonWrapper;
 

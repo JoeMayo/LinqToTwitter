@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Net;
 using System.Text;
 
 using MSEncoder = Microsoft.Security.Application.Encoder;
@@ -10,7 +9,7 @@ using MSEncoder = Microsoft.Security.Application.Encoder;
 #if SILVERLIGHT && !WINDOWS_PHONE
     using System.Windows.Browser;
 #elif !SILVERLIGHT && !WINDOWS_PHONE
-using System.Web;
+
 #endif
 
 namespace LinqToTwitter
@@ -31,7 +30,8 @@ namespace LinqToTwitter
         /// <summary>
         /// makes a parameter part of the URL
         /// </summary>
-        /// <param name="parameters">parameter list</param>
+        /// <param name="parameters">parameter dictionary</param>
+        /// <param name="key">key in paramaters dictionary</param>
         /// <param name="url">original url</param>
         /// <returns>transformed URL with ID</returns>
         public static string TransformParameterUrl(Dictionary<string, string> parameters, string key, string url)
@@ -39,8 +39,10 @@ namespace LinqToTwitter
             if (parameters.ContainsKey(key))
             {
                 var fileExtension = Path.GetExtension(url);
-                url = url.Replace(fileExtension, "/" + parameters[key] + fileExtension);
+                if (fileExtension != null) 
+                    url = url.Replace(fileExtension, "/" + parameters[key] + fileExtension);
             }
+
             return url;
         }
 

@@ -24,36 +24,7 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqToTwitterCP", "LinqToTwitterCP\LinqToTwitterCP.csproj", "{A430971C-58BB-4BE3-B058-795BDFFD56BC}"
 EndProject
 Global
-	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 9
-		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs01
-		SccLocalPath0 = .
-		SccProjectUniqueName1 = LinqToTwitterTests\\LinqToTwitterTests.csproj
-		SccProjectName1 = LinqToTwitterTests
-		SccLocalPath1 = LinqToTwitterTests
-		SccProjectUniqueName2 = LinqToTwitterDemo\\LinqToTwitterDemo.csproj
-		SccProjectName2 = LinqToTwitterDemo
-		SccLocalPath2 = LinqToTwitterDemo
-		SccProjectUniqueName3 = LinqToTwitterDemoVB\\LinqToTwitterDemoVB.vbproj
-		SccProjectName3 = LinqToTwitterDemoVB
-		SccLocalPath3 = LinqToTwitterDemoVB
-		SccProjectUniqueName4 = LinqToTwitter\\LinqToTwitter.csproj
-		SccProjectName4 = LinqToTwitter
-		SccLocalPath4 = LinqToTwitter
-		SccProjectUniqueName5 = LinqToTwitterAg\\LinqToTwitterAg.csproj
-		SccProjectName5 = LinqToTwitterAg
-		SccLocalPath5 = LinqToTwitterAg
-		SccProjectUniqueName6 = LinqToTwitterXUnitTests\\LinqToTwitterXUnitTests.csproj
-		SccProjectName6 = LinqToTwitterXUnitTests
-		SccLocalPath6 = LinqToTwitterXUnitTests
-		SccProjectUniqueName7 = LinqToTwitterWP\\LinqToTwitterWP.csproj
-		SccProjectName7 = LinqToTwitterWP
-		SccLocalPath7 = LinqToTwitterWP
-		SccProjectUniqueName8 = LinqToTwitterCP\\LinqToTwitterCP.csproj
-		SccProjectName8 = LinqToTwitterCP
-		SccLocalPath8 = LinqToTwitterCP
-	EndGlobalSection
+	
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = LinqToTwitter.vsmdi
 	EndGlobalSection

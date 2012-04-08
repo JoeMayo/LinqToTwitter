@@ -17,10 +17,10 @@
     <SilverlightApplication>false</SilverlightApplication>
     <ValidateXaml>true</ValidateXaml>
     <ThrowErrorsInValidation>true</ThrowErrorsInValidation>
-    <SccProjectName>SAK</SccProjectName>
-    <SccLocalPath>SAK</SccLocalPath>
-    <SccAuxPath>SAK</SccAuxPath>
-    <SccProvider>SAK</SccProvider>
+    <SccProjectName />
+    <SccLocalPath />
+    <SccAuxPath />
+    <SccProvider />
   </PropertyGroup>
   <!-- This property group is only here to support building this project using the 
        MSBuild 3.5 toolset. In order to work correctly with this older toolset, it needs 
@@ -83,6 +83,7 @@
     <Compile Include="Account\TZInfo.cs" />
     <Compile Include="Blocks\BlockingType.cs" />
     <Compile Include="Blocks\Blocks.cs" />
+    <Compile Include="Blocks\BlocksExtensions.cs" />
     <Compile Include="Blocks\BlocksRequestProcessor.cs" />
     <Compile Include="Common\BuildUrlHelper.cs" />
     <Compile Include="Common\Cursors.cs" />

@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Xml.Linq;
+
+using LitJson;
 
 namespace LinqToTwitter
 {
@@ -18,22 +19,22 @@ namespace LinqToTwitter
         /// <summary>
         /// type of blocks request to perform
         /// </summary>
-        private BlockingType Type { get; set; }
+        internal BlockingType Type { get; set; }
 
         /// <summary>
         /// id or screen name of user
         /// </summary>
-        private string ID { get; set; }
+        string ID { get; set; }
 
         /// <summary>
         /// disambiguates when user id is screen name
         /// </summary>
-        private ulong UserID { get; set; }
+        ulong UserID { get; set; }
 
         /// <summary>
         /// disambiguates when screen name is user id
         /// </summary>
-        private string ScreenName { get; set; }
+        string ScreenName { get; set; }
 
         /// <summary>
         /// page to retrieve
@@ -83,7 +84,7 @@ namespace LinqToTwitter
                 case BlockingType.Exists:
                     return BuildBlockingExistsUrl(parameters);
                 case BlockingType.IDS:
-                    return BuildBlockingIDsUrl(parameters);
+                    return BuildBlockingIDsUrl();
                 default:
                     throw new InvalidOperationException("The default case of BuildUrl should never execute because a Type must be specified.");
             }
@@ -92,11 +93,10 @@ namespace LinqToTwitter
         /// <summary>
         /// builds an url for getting blocking ids
         /// </summary>
-        /// <param name="parameters">parameter list</param>
         /// <returns>base url + show segment</returns>
-        private Request BuildBlockingIDsUrl(Dictionary<string, string> parameters)
+        Request BuildBlockingIDsUrl()
         {
-           return new Request(BaseUrl + "blocks/blocking/ids.xml");
+           return new Request(BaseUrl + "blocks/blocking/ids.json");
         }
 
         /// <summary>
@@ -104,10 +104,9 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">parameter list</param>
         /// <returns>base url + show segment</returns>
-        private Request BuildBlockingExistsUrl(Dictionary<string, string> parameters)
+        Request BuildBlockingExistsUrl(Dictionary<string, string> parameters)
         {
-            return BuildBlockingExistsUrlParameters(parameters, "blocks/exists.xml");
-
+            return BuildBlockingExistsUrlParameters(parameters, "blocks/exists.json");
         }
 
         /// <summary>
@@ -115,9 +114,9 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">parameter list</param>
         /// <returns>base url + show segment</returns>
-        private Request BuildBlockingUrl(Dictionary<string, string> parameters)
+        Request BuildBlockingUrl(Dictionary<string, string> parameters)
         {
-            return BuildBlockingUrlParameters(parameters, "blocks/blocking.xml");
+            return BuildBlockingUrlParameters(parameters, "blocks/blocking.json");
         }
 
         /// <summary>
@@ -126,7 +125,7 @@ namespace LinqToTwitter
         /// <param name="parameters">list of parameters from expression tree</param>
         /// <param name="url">base url</param>
         /// <returns>base url + parameters</returns>
-        private Request BuildBlockingUrlParameters(Dictionary<string, string> parameters, string url)
+        Request BuildBlockingUrlParameters(Dictionary<string, string> parameters, string url)
         {
             var req = new Request(BaseUrl + url);
             var urlParams = req.RequestParameters;
@@ -146,7 +145,7 @@ namespace LinqToTwitter
         /// <param name="parameters">list of parameters from expression tree</param>
         /// <param name="url">base url</param>
         /// <returns>base url + parameters</returns>
-        private Request BuildBlockingExistsUrlParameters(Dictionary<string, string> parameters, string url)
+        Request BuildBlockingExistsUrlParameters(Dictionary<string, string> parameters, string url)
         {
             if (!parameters.ContainsKey("ID") && !parameters.ContainsKey("UserID") && !parameters.ContainsKey("ScreenName"))
                 throw new ArgumentException("You must specify either ID, UserID, or ScreenName.");
@@ -178,16 +177,12 @@ namespace LinqToTwitter
         /// <summary>
         /// Transforms twitter response into List of Blocks objects
         /// </summary>
-        /// <param name="responseXML">XML response from Twitter</param>
         /// <returns>List of Blocks</returns>
-        public virtual List<T> ProcessResults(string responseXml)
+        public virtual List<T> ProcessResults(string responseJson)
         {
-            if (string.IsNullOrEmpty(responseXml))
-            {
-                responseXml = "<blocks></blocks>";
-            }
 
-            XElement twitterResponse = XElement.Parse(responseXml);
+            var blocksJson = JsonMapper.ToObject(responseJson);
+
             var blocks = new Blocks
             {
                 Type = Type,
@@ -197,26 +192,86 @@ namespace LinqToTwitter
                 Page = Page
             };
 
-            if (twitterResponse.Name == "user")
+            switch (Type)
             {
-                blocks.User = User.CreateUser(twitterResponse);
-            }
-            else if (twitterResponse.Name == "users")
-            {
-                blocks.Users =
-                    (from user in twitterResponse.Elements("user").ToList()
-                     select User.CreateUser(user))
-                     .ToList();
-            }
-            else if (twitterResponse.Name == "ids")
-            {
-                blocks.IDs =
-                    (from id in twitterResponse.Elements("id").ToList()
-                     select id.Value)
-                     .ToList();
+                case BlockingType.Blocking:
+                    HandleBlocking(blocks, blocksJson);
+                    break;
+                case BlockingType.Exists:
+                    HandleBlockingExists(blocks, blocksJson);
+                    break;
+                case BlockingType.IDS:
+                    HandleBlockingIDs(blocks, blocksJson);
+                    break;
+                default:
+                    throw new ArgumentException("Unhandled BlockingType.");
             }
 
-            return new List<Blocks>{ blocks }.OfType<T>().ToList();
+            return new List<Blocks> { blocks }.OfType<T>().ToList();
         }
+
+        private void HandleBlocking(Blocks blocks, JsonData blocksJson)
+        {
+            blocks.Users =
+                (from JsonData user in blocksJson
+                 select new User(user))
+                .ToList();
+        }
+
+        private void HandleBlockingExists(Blocks blocks, JsonData blocksJson)
+        {
+            blocks.User = new User(blocksJson);
+        }
+
+        private void HandleBlockingIDs(Blocks blocks, JsonData blocksJson)
+        {
+            blocks.IDs =
+                (from JsonData id in blocksJson
+                 select id.ToString())
+                .ToList();
+        }
+
+        ///// <summary>
+        ///// Transforms twitter response into List of Blocks objects
+        ///// </summary>
+        ///// <returns>List of Blocks</returns>
+        //public virtual List<T> ProcessResults(string responseXml)
+        //{
+        //    if (string.IsNullOrEmpty(responseXml))
+        //    {
+        //        responseXml = "<blocks></blocks>";
+        //    }
+
+        //    XElement twitterResponse = XElement.Parse(responseXml);
+        //    var blocks = new Blocks
+        //    {
+        //        Type = Type,
+        //        ID = ID,
+        //        UserID = UserID,
+        //        ScreenName = ScreenName,
+        //        Page = Page
+        //    };
+
+        //    if (twitterResponse.Name == "user")
+        //    {
+        //        blocks.User = User.CreateUser(twitterResponse);
+        //    }
+        //    else if (twitterResponse.Name == "users")
+        //    {
+        //        blocks.Users =
+        //            (from user in twitterResponse.Elements("user").ToList()
+        //             select User.CreateUser(user))
+        //             .ToList();
+        //    }
+        //    else if (twitterResponse.Name == "ids")
+        //    {
+        //        blocks.IDs =
+        //            (from id in twitterResponse.Elements("id").ToList()
+        //             select id.Value)
+        //             .ToList();
+        //    }
+
+        //    return new List<Blocks>{ blocks }.OfType<T>().ToList();
+        //}
     }
 }
