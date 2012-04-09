@@ -60,6 +60,9 @@
     <Compile Include="Blocks\BlocksExtensionsTests.cs" />
     <Compile Include="Blocks\BlocksRequestProcessorTests.cs" />
     <Compile Include="Common\TestCulture.cs" />
+    <Compile Include="DirectMessage\DirectMessageExtensionsTests.cs" />
+    <Compile Include="DirectMessage\DirectMessageRequestProcessorTests.cs" />
+    <Compile Include="DirectMessage\DirectMessageTests.cs" />
     <Compile Include="Friendship\RelationshipTests.cs" />
     <Compile Include="LinqToTwitter\TwitterContextCreateRequestProcessorTests.cs" />
     <Compile Include="List\ListTests.cs" />

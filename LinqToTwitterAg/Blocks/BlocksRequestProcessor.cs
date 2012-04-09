@@ -9,7 +9,7 @@ namespace LinqToTwitter
     /// <summary>
     /// processes block queries
     /// </summary>
-    public class BlocksRequestProcessor<T> : IRequestProcessor<T>
+    public class BlocksRequestProcessor<T> : IRequestProcessor<T>, IRequestProcessorWantsJson
     {
         /// <summary>
         /// base url for request
@@ -230,48 +230,5 @@ namespace LinqToTwitter
                  select id.ToString())
                 .ToList();
         }
-
-        ///// <summary>
-        ///// Transforms twitter response into List of Blocks objects
-        ///// </summary>
-        ///// <returns>List of Blocks</returns>
-        //public virtual List<T> ProcessResults(string responseXml)
-        //{
-        //    if (string.IsNullOrEmpty(responseXml))
-        //    {
-        //        responseXml = "<blocks></blocks>";
-        //    }
-
-        //    XElement twitterResponse = XElement.Parse(responseXml);
-        //    var blocks = new Blocks
-        //    {
-        //        Type = Type,
-        //        ID = ID,
-        //        UserID = UserID,
-        //        ScreenName = ScreenName,
-        //        Page = Page
-        //    };
-
-        //    if (twitterResponse.Name == "user")
-        //    {
-        //        blocks.User = User.CreateUser(twitterResponse);
-        //    }
-        //    else if (twitterResponse.Name == "users")
-        //    {
-        //        blocks.Users =
-        //            (from user in twitterResponse.Elements("user").ToList()
-        //             select User.CreateUser(user))
-        //             .ToList();
-        //    }
-        //    else if (twitterResponse.Name == "ids")
-        //    {
-        //        blocks.IDs =
-        //            (from id in twitterResponse.Elements("id").ToList()
-        //             select id.Value)
-        //             .ToList();
-        //    }
-
-        //    return new List<Blocks>{ blocks }.OfType<T>().ToList();
-        //}
     }
 }

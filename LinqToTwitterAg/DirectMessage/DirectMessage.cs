@@ -1,18 +1,46 @@
 ﻿using System;
 
+using LinqToTwitter.Common;
+
+using LitJson;
+
 namespace LinqToTwitter
 {
+    // TODO: Add support for entities (which are included in the JSON response)
     /// <summary>
-    /// DIrect message elements contain a set of values that describe a message, as well as nested <sender> and <recipient> nodes.
+    /// Direct message elements contain a set of values that describe a message.
     /// </summary>
     public class DirectMessage
     {
+        public DirectMessage() { }
+        public DirectMessage(JsonData dmJson)
+        {
+            CreatedAt = dmJson.GetValue<string>("created_at").GetDate(DateTime.MinValue);
+            SenderID = dmJson.GetValue<ulong>("sender_id");
+            SenderScreenName = dmJson.GetValue<string>("sender_screen_name");
+            Sender = new User(dmJson.GetValue<JsonData>("sender"));
+            RecipientID = dmJson.GetValue<ulong>("recipient_id");
+            RecipientScreenName = dmJson.GetValue<string>("recipient_screen_name");
+            Recipient = new User(dmJson.GetValue<JsonData>("recipient"));
+            ID = dmJson.GetValue<ulong>("id");
+            IDString = dmJson.GetValue<string>("id_str");
+            Text = dmJson.GetValue<string>("text");
+        }
+
         public DirectMessageType Type { get; set; }
 
         /// <summary>
         /// Direct Message ID
         /// </summary>
         public ulong ID { get; set; }
+
+        /// <summary>
+        /// Direct Message ID in string format from JSON
+        /// </summary>
+        /// <remarks>>
+        /// Twitter added this to the API because of the possibility that the real ID in ulong format wasn't accurate
+        /// </remarks>
+        public string IDString { get; set; }
 
         /// <summary>
         /// User ID of sender

@@ -15,11 +15,11 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         public static void Run(TwitterContext twitterCtx)
         {
-            //DirectMessageSentByQueryDemo(twitterCtx);
+            DirectMessageSentByQueryDemo(twitterCtx);
             //DirectMessageSentToQueryDemo(twitterCtx);
             //DirectMessageShowDemo(twitterCtx);
             //NewDirectMessageDemo(twitterCtx);
-            NewDirectMessageWrapLinksDemo(twitterCtx);
+            //NewDirectMessageWrapLinksDemo(twitterCtx);
             //DestroyDirectMessageDemo(twitterCtx);
         }
 
@@ -29,7 +29,7 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void DestroyDirectMessageDemo(TwitterContext twitterCtx)
         {
-            var message = twitterCtx.DestroyDirectMessage("96404341");
+            var message = twitterCtx.DestroyDirectMessage("189178687374110720");
 
             if (message != null)
             {
@@ -131,14 +131,16 @@ namespace LinqToTwitterDemo
                  select new
                  {
                      tweet.SenderScreenName,
+                     tweet.ID,
                      tweet.Text
                  })
                 .ToList();
 
             directMessages.ForEach(
                 dm => Console.WriteLine(
-                    "Sender: {0}, Tweet: {1}",
+                    "Sender: {0}, ID: {1}, Tweet: {2}",
                     dm.SenderScreenName,
+                    dm.ID,
                     dm.Text));
         }
     }

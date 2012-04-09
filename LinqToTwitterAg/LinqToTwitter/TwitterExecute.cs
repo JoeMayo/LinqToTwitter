@@ -385,6 +385,7 @@ namespace LinqToTwitter
             }
 
 #if !WINDOWS_PHONE
+            // TODO: Remove this after all is converted to JSON
             var wantsJson = reqProc as IRequestProcessorWantsJson;
 
             if (wantsJson == null && uri.LocalPath.EndsWith("json"))

@@ -3,14 +3,15 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Xml.Linq;
+
+using LitJson;
 
 namespace LinqToTwitter
 {
     /// <summary>
     /// processes Twitter Direct Messages
     /// </summary>
-    public class DirectMessageRequestProcessor<T> : IRequestProcessor<T>
+    public class DirectMessageRequestProcessor<T> : IRequestProcessor<T>, IRequestProcessorWantsJson
     {
         /// <summary>
         /// base url for request
@@ -99,12 +100,13 @@ namespace LinqToTwitter
 
         private Request BuildShowUrl(Dictionary<string, string> parameters)
         {
+            const string idParam = "ID";
             if (parameters == null || !parameters.ContainsKey("ID"))
-                throw new ArgumentNullException("ID", "ID is required.");
+                throw new ArgumentNullException(idParam, "ID is required.");
 
             ID = ulong.Parse(parameters["ID"]);
 
-            var url = BuildUrlHelper.TransformIDUrl(parameters, "direct_messages/show.xml");
+            var url = BuildUrlHelper.TransformIDUrl(parameters, "direct_messages/show.json");
             return new Request(BaseUrl + url);
         }
 
@@ -115,7 +117,7 @@ namespace LinqToTwitter
         /// <returns>new url with parameters</returns>
         private Request BuildSentToUrl(Dictionary<string, string> parameters)
         {
-            return BuildSentUrlParameters(parameters, "direct_messages.xml");
+            return BuildSentUrlParameters(parameters, "direct_messages.json");
         }
 
         /// <summary>
@@ -125,7 +127,7 @@ namespace LinqToTwitter
         /// <returns>new url with parameters</returns>
         private Request BuildSentByUrl(Dictionary<string, string> parameters)
         {
-            return BuildSentUrlParameters(parameters, "direct_messages/sent.xml");
+            return BuildSentUrlParameters(parameters, "direct_messages/sent.json");
         }
 
         /// <summary>
@@ -170,54 +172,25 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// transforms XML into IQueryable of DirectMessage
+        /// Transforms twitter response into List of Blocks objects
         /// </summary>
-        /// <param name="responseXml">xml with Twitter response</param>
+        /// <param name="responseJson">JSON with Twitter response</param>
         /// <returns>List of DirectMessage</returns>
-        public virtual List<T> ProcessResults(string responseXml)
+        public virtual List<T> ProcessResults(string responseJson)
         {
-            if (string.IsNullOrEmpty(responseXml))
-            {
-                responseXml = "<direct_messages></direct_messages>";
-            }
+            if (string.IsNullOrEmpty(responseJson)) return new List<T>();
 
-            XElement twitterResponse = XElement.Parse(responseXml);
-            var responseItems = twitterResponse.Elements("direct_message").ToList();
-
-            // if we get only a single response back,
-            // make sure we get it
-            if (twitterResponse.Name == "direct_message")
-            {
-                responseItems.Add(twitterResponse);
-            }
+            var dmJson = JsonMapper.ToObject(responseJson);
 
             var dmList =
-                from dm in responseItems
-                let sender =
-                    dm.Element("sender")
-                let recipient =
-                    dm.Element("recipient")
-                let createdAtDate =
-                    DateTime.ParseExact(
-                        dm.Element("created_at").Value,
-                        "ddd MMM dd HH:mm:ss %zzzz yyyy",
-                        CultureInfo.InvariantCulture)
-                select new DirectMessage
+                from JsonData dm in dmJson
+                select new DirectMessage(dm)
                 {
                     Type = Type,
                     SinceID = SinceID,
                     MaxID = MaxID,
                     Page = Page,
-                    Count = Count,
-                    ID = ulong.Parse(dm.Element("id").Value),
-                    SenderID = ulong.Parse(dm.Element("sender_id").Value),
-                    Text = dm.Element("text").Value,
-                    RecipientID = ulong.Parse(dm.Element("recipient_id").Value),
-                    CreatedAt = createdAtDate,
-                    SenderScreenName = dm.Element("sender_screen_name").Value,
-                    RecipientScreenName = dm.Element("recipient_screen_name").Value,
-                    Sender = User.CreateUser(sender),
-                    Recipient = User.CreateUser(recipient)
+                    Count = Count
                 };
 
             return dmList.OfType<T>().ToList();

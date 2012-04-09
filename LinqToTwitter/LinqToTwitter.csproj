@@ -320,6 +320,9 @@
     <Compile Include="..\LinqToTwitterAg\DirectMessage\DirectMessage.cs">
       <Link>DirectMessage\DirectMessage.cs</Link>
     </Compile>
+    <Compile Include="..\LinqToTwitterAg\DirectMessage\DirectMessageExtensions.cs">
+      <Link>DirectMessage\DirectMessageExtensions.cs</Link>
+    </Compile>
     <Compile Include="..\LinqToTwitterAg\DirectMessage\DirectMessageRequestProcessor.cs">
       <Link>DirectMessage\DirectMessageRequestProcessor.cs</Link>
     </Compile>

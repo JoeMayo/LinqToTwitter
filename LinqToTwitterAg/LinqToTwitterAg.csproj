@@ -132,6 +132,7 @@
     <Compile Include="Common\TypeConversionExtensions.cs" />
     <Compile Include="Common\TypeSystem.cs" />
     <Compile Include="DirectMessage\DirectMessage.cs" />
+    <Compile Include="DirectMessage\DirectMessageExtensions.cs" />
     <Compile Include="DirectMessage\DirectMessageRequestProcessor.cs" />
     <Compile Include="DirectMessage\DirectMessageType.cs" />
     <Compile Include="Favorites\Favorites.cs" />
