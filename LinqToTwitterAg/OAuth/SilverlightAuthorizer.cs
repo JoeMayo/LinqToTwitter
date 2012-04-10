@@ -47,7 +47,7 @@ namespace LinqToTwitter
         {
             get
             {
-                return !string.IsNullOrWhiteSpace(Credentials.OAuthToken);
+                return !string.IsNullOrEmpty(Credentials.OAuthToken);
             }
         }
 
