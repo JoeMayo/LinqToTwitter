@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Threading;
 using System.Xml;
@@ -11,6 +10,10 @@ using System.Xml.Linq;
 using System.Diagnostics;
 
 using MSEncoder = Microsoft.Security.Application.Encoder;
+
+#if !CLIENT_PROFILE
+using System.Runtime.Serialization.Json;
+#endif
 
 #if SILVERLIGHT && !WINDOWS_PHONE
     using System.Windows.Browser;
@@ -384,7 +387,7 @@ namespace LinqToTwitter
                 throw twitterQueryEx;
             }
 
-#if !WINDOWS_PHONE
+#if !WINDOWS_PHONE && !CLIENT_PROFILE
             // TODO: Remove this after all is converted to JSON
             var wantsJson = reqProc as IRequestProcessorWantsJson;
 

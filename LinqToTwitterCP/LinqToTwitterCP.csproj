@@ -31,7 +31,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;CLIENT_PROFILE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -214,9 +214,6 @@
     <Compile Include="..\LinqToTwitterAg\Common\RequestProcessorHelper.cs">
       <Link>Common\RequestProcessorHelper.cs</Link>
     </Compile>
-    <Compile Include="..\LinqToTwitterAg\Common\State.cs">
-      <Link>Common\State.cs</Link>
-    </Compile>
     <Compile Include="..\LinqToTwitterAg\Common\TargetFramework.cs">
       <Link>Common\TargetFramework.cs</Link>
     </Compile>
@@ -370,9 +367,6 @@
     <Compile Include="..\LinqToTwitterAg\OAuth\IOAuthTwitter.cs">
       <Link>OAuth\IOAuthTwitter.cs</Link>
     </Compile>
-    <Compile Include="..\LinqToTwitterAg\OAuth\IsolatedStorageCredentials.cs">
-      <Link>OAuth\IsolatedStorageCredentials.cs</Link>
-    </Compile>
     <Compile Include="..\LinqToTwitterAg\OAuth\ITwitterAuthorizer.cs">
       <Link>OAuth\ITwitterAuthorizer.cs</Link>
     </Compile>
@@ -393,9 +387,6 @@
     </Compile>
     <Compile Include="..\LinqToTwitterAg\OAuth\SignInAuthorizer.cs">
       <Link>OAuth\SignInAuthorizer.cs</Link>
-    </Compile>
-    <Compile Include="..\LinqToTwitterAg\OAuth\SilverlightAuthorizer.cs">
-      <Link>OAuth\SilverlightAuthorizer.cs</Link>
     </Compile>
     <Compile Include="..\LinqToTwitterAg\OAuth\SingleUserAuthorizer.cs">
       <Link>OAuth\SingleUserAuthorizer.cs</Link>
