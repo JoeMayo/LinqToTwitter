@@ -145,7 +145,6 @@
     <Compile Include="WebAuthorizerTest.cs" />
     <Compile Include="XmlSerializerTests.cs" />
     <Compile Include="ExpressionTreeHelpersTest.cs" />
-    <Compile Include="FavoritesRequestProcessorTest.cs" />
     <Compile Include="FriendshipRequestProcessorTest.cs" />
     <Compile Include="GeoRequestProcessorTest.cs" />
     <Compile Include="ListRequestProcessorTest.cs" />

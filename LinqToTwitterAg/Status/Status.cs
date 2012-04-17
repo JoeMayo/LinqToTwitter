@@ -31,6 +31,7 @@ namespace LinqToTwitter
             StatusID = status.GetValue<ulong>("id").ToString(CultureInfo.InvariantCulture);
             InReplyToStatusID = status.GetValue<ulong>("in_reply_to_status_id").ToString(CultureInfo.InvariantCulture);
             InReplyToUserID = status.GetValue<ulong>("in_reply_to_user_id").ToString(CultureInfo.InvariantCulture);
+            Retweeted = status.GetValue<bool>("retweeted");
             Source = status.GetValue<string>("source");
             Text = status.GetValue<string>("text");
             Truncated = status.GetValue<bool>("truncated");
@@ -407,6 +408,6 @@ namespace LinqToTwitter
         /// <summary>
         /// Has tweet been retweeted
         /// </summary>
-        public object Retweeted { get; set; }
+        public bool Retweeted { get; set; }
     }
 }

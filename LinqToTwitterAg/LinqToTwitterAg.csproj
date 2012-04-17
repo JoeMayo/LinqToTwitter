@@ -136,9 +136,11 @@
     <Compile Include="DirectMessage\DirectMessageRequestProcessor.cs" />
     <Compile Include="DirectMessage\DirectMessageType.cs" />
     <Compile Include="Favorites\Favorites.cs" />
+    <Compile Include="Favorites\FavoritesExtensions.cs" />
     <Compile Include="Favorites\FavoritesRequestProcessor.cs" />
     <Compile Include="Favorites\FavoritesType.cs" />
     <Compile Include="Friendship\Friendship.cs" />
+    <Compile Include="Friendship\FriendshipExtensions.cs" />
     <Compile Include="Friendship\FriendshipRequestProcessor.cs" />
     <Compile Include="Friendship\FriendshipType.cs" />
     <Compile Include="Friendship\Relationship.cs" />

@@ -63,6 +63,9 @@
     <Compile Include="DirectMessage\DirectMessageExtensionsTests.cs" />
     <Compile Include="DirectMessage\DirectMessageRequestProcessorTests.cs" />
     <Compile Include="DirectMessage\DirectMessageTests.cs" />
+    <Compile Include="Favorites\FavoritesRequestProcessorTests.cs" />
+    <Compile Include="Favorites\FavoritesTests.cs" />
+    <Compile Include="Friendship\FriendshipRequestProcessorTests.cs" />
     <Compile Include="Friendship\RelationshipTests.cs" />
     <Compile Include="LinqToTwitter\TwitterContextCreateRequestProcessorTests.cs" />
     <Compile Include="List\ListTests.cs" />

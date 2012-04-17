@@ -1,5 +1,7 @@
 ﻿using System.Xml.Serialization;
 
+using LitJson;
+
 namespace LinqToTwitter
 {
     /// <summary>
@@ -7,6 +9,10 @@ namespace LinqToTwitter
     /// </summary>
     public class Favorites : Status
     {
+        public Favorites() { }
+
+        public Favorites(JsonData favJson) : base(favJson) { }
+
         [XmlIgnore]
         FavoritesType type;
 

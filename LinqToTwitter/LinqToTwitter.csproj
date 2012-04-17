@@ -332,6 +332,9 @@
     <Compile Include="..\LinqToTwitterAg\Favorites\Favorites.cs">
       <Link>Favorites\Favorites.cs</Link>
     </Compile>
+    <Compile Include="..\LinqToTwitterAg\Favorites\FavoritesExtensions.cs">
+      <Link>Favorites\FavoritesExtensions.cs</Link>
+    </Compile>
     <Compile Include="..\LinqToTwitterAg\Favorites\FavoritesRequestProcessor.cs">
       <Link>Favorites\FavoritesRequestProcessor.cs</Link>
     </Compile>
@@ -340,6 +343,9 @@
     </Compile>
     <Compile Include="..\LinqToTwitterAg\Friendship\Friendship.cs">
       <Link>Friendship\Friendship.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Friendship\FriendshipExtensions.cs">
+      <Link>Friendship\FriendshipExtensions.cs</Link>
     </Compile>
     <Compile Include="..\LinqToTwitterAg\Friendship\FriendshipRequestProcessor.cs">
       <Link>Friendship\FriendshipRequestProcessor.cs</Link>
