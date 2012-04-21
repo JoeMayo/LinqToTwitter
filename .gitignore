@@ -6,3 +6,4 @@
 *.vspscc
 *.vssscc
 _Resharper.*
+.JustCode/

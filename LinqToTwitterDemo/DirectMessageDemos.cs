@@ -15,8 +15,8 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         public static void Run(TwitterContext twitterCtx)
         {
-            DirectMessageSentByQueryDemo(twitterCtx);
-            //DirectMessageSentToQueryDemo(twitterCtx);
+            //DirectMessageSentByQueryDemo(twitterCtx);
+            DirectMessageSentToQueryDemo(twitterCtx);
             //DirectMessageShowDemo(twitterCtx);
             //NewDirectMessageDemo(twitterCtx);
             //NewDirectMessageWrapLinksDemo(twitterCtx);
@@ -87,7 +87,7 @@ namespace LinqToTwitterDemo
             var directMsg =
                 (from dm in twitterCtx.DirectMessage
                  where dm.Type == DirectMessageType.Show &&
-                       dm.ID == 478805447
+                       dm.ID == 193540539663126529
                  select dm)
                 .SingleOrDefault();
 

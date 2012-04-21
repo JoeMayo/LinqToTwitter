@@ -21,32 +21,32 @@ namespace LinqToTwitter
         /// <summary>
         /// Type of Direct Message
         /// </summary>
-        private DirectMessageType Type { get; set; }
+        internal DirectMessageType Type { get; set; }
 
         /// <summary>
         /// since this message ID
         /// </summary>
-        private ulong SinceID { get; set; }
+        internal ulong SinceID { get; set; }
 
         /// <summary>
         /// max ID to return
         /// </summary>
-        private ulong MaxID { get; set; }
+        internal ulong MaxID { get; set; }
 
         /// <summary>
         /// page number to return
         /// </summary>
-        private int Page { get; set; }
+        internal int Page { get; set; }
 
         /// <summary>
         /// number of items to return (works for SentBy and SentTo
         /// </summary>
-        private int Count { get; set; }
+        internal int Count { get; set; }
 
         /// <summary>
         /// ID of DM
         /// </summary>
-        private ulong ID { get; set; }
+        internal ulong ID { get; set; }
 
         /// <summary>
         /// extracts parameters from lambda
@@ -79,9 +79,9 @@ namespace LinqToTwitter
         /// <returns>URL conforming to Twitter API</returns>
         public virtual Request BuildURL(Dictionary<string, string> parameters)
         {
-            const string typeParam = "Type";
+            const string TypeParam = "Type";
             if (parameters == null || !parameters.ContainsKey("Type"))
-                throw new ArgumentException("You must set Type.", typeParam);
+                throw new ArgumentException("You must set Type.", TypeParam);
 
             Type = RequestProcessorHelper.ParseQueryEnumType<DirectMessageType>(parameters["Type"]);
 
@@ -100,9 +100,9 @@ namespace LinqToTwitter
 
         private Request BuildShowUrl(Dictionary<string, string> parameters)
         {
-            const string idParam = "ID";
+            const string IdParam = "ID";
             if (parameters == null || !parameters.ContainsKey("ID"))
-                throw new ArgumentNullException(idParam, "ID is required.");
+                throw new ArgumentNullException(IdParam, "ID is required.");
 
             ID = ulong.Parse(parameters["ID"]);
 
@@ -182,6 +182,27 @@ namespace LinqToTwitter
 
             var dmJson = JsonMapper.ToObject(responseJson);
 
+            IEnumerable<DirectMessage> dmList;
+
+            switch (Type)
+            {
+                case DirectMessageType.SentBy:
+                case DirectMessageType.SentTo:
+                    dmList = HandleMultipleDirectMessages(dmJson);
+                    break;
+                case DirectMessageType.Show:
+                    dmList = HandleSingleDirectMessage(dmJson);
+                    break;
+                default:
+                    dmList = new List<DirectMessage>();
+                    break;
+            }
+
+            return dmList.OfType<T>().ToList();
+        }
+  
+        IEnumerable<DirectMessage> HandleMultipleDirectMessages(JsonData dmJson)
+        {
             var dmList =
                 from JsonData dm in dmJson
                 select new DirectMessage(dm)
@@ -190,10 +211,27 @@ namespace LinqToTwitter
                     SinceID = SinceID,
                     MaxID = MaxID,
                     Page = Page,
-                    Count = Count
+                    Count = Count,
+                    ID = ID
                 };
 
-            return dmList.OfType<T>().ToList();
+            return dmList;
+        }
+
+        IEnumerable<DirectMessage> HandleSingleDirectMessage(JsonData dmJson)
+        {
+            return new List<DirectMessage> 
+            { 
+                new DirectMessage(dmJson) 
+                {
+                    Type = Type,
+                    SinceID = SinceID,
+                    MaxID = MaxID,
+                    Page = Page,
+                    Count = Count,
+                    ID = ID
+                }
+            };
         }
     }
 }

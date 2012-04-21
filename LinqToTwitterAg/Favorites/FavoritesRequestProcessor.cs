@@ -1,10 +1,8 @@
 ﻿using System;
+using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Xml.Linq;
-
 using LitJson;
 
 namespace LinqToTwitter
@@ -56,14 +54,14 @@ namespace LinqToTwitter
         /// <returns>URL conforming to Twitter API</returns>
         public virtual Request BuildURL(Dictionary<string, string> parameters)
         {
-            const string typeParam = "Type";
-            const string paramsParam = "parameters";
+            const string TypeParam = "Type";
+            const string ParamsParam = "parameters";
 
             if (parameters == null)
-                throw new ArgumentException("You must pass a \"parameters\" Dictionary<string, string> parameter.", paramsParam);
+                throw new ArgumentException("You must pass a \"parameters\" Dictionary<string, string> parameter.", ParamsParam);
 
             if (!parameters.ContainsKey("Type"))
-                throw new ArgumentException("You must set Type.", typeParam);
+                throw new ArgumentException("You must set Type.", TypeParam);
 
             Type = RequestProcessorHelper.ParseQueryEnumType<FavoritesType>(parameters["Type"]);
 
