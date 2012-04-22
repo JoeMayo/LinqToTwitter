@@ -372,7 +372,7 @@ namespace LinqToTwitterTests
                 };
             string expectedUrl = "https://api.twitter.com/1/related_results/show/123.json";
 
-            Request req = relResultsProc.BuildURL(parameters);
+            Request req = relResultsProc.BuildUrl(parameters);
 
             Assert.AreEqual(expectedUrl, req.FullUrl);
         }
@@ -397,7 +397,7 @@ namespace LinqToTwitterTests
                     { "Type", ((int)RelatedResultsType.Show).ToString() },
                     { "StatusID", "123" }
                 };
-            relResultsProc.BuildURL(parameters);
+            relResultsProc.BuildUrl(parameters);
 
             List<RelatedResults> results = relResultsProc.ProcessResults(this.showResultsXml);
 

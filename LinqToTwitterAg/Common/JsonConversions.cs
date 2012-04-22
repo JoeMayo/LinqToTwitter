@@ -28,7 +28,7 @@ namespace LinqToTwitter
                 Name = user.name,
                 Location = user.location,
                 Description = user.description,
-                URL = user.url,
+                Url = user.url,
 
                 ProfileImageUrl = user.profile_image_url,
                 ProfileImageUrlHttps = user.profile_image_url_https,

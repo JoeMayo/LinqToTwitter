@@ -154,7 +154,7 @@ namespace LinqToTwitterTests
             Dictionary<string, string> parameters = new Dictionary<string, string>();
             string expected = "https://api.twitter.com/1/friends/ids.xml";
 
-            Request req = target.BuildURL(parameters);
+            Request req = target.BuildUrl(parameters);
 
             Assert.AreEqual(expected, req.FullUrl);
         }
@@ -177,7 +177,7 @@ namespace LinqToTwitterTests
                 };
             string expected = "https://api.twitter.com/1/friends/ids/JoeMayo.xml?user_id=123&screen_name=456&cursor=1";
 
-            Request req = target.BuildURL(parameters);
+            Request req = target.BuildUrl(parameters);
 
             Assert.AreEqual(expected, req.FullUrl);
         }
@@ -194,7 +194,7 @@ namespace LinqToTwitterTests
                 };
             string expected = "https://api.twitter.com/1/friends/ids/JoeMayo.xml?cursor=-1";
 
-            Request req = socialGraph.BuildURL(parameters);
+            Request req = socialGraph.BuildUrl(parameters);
             
             Assert.AreEqual(expected, req.FullUrl);
         }
@@ -214,7 +214,7 @@ namespace LinqToTwitterTests
                 };
             string expected = "https://api.twitter.com/1/followers/ids/JoeMayo.xml?user_id=123&screen_name=456&cursor=1";
 
-            Request req = reqProc.BuildURL(parameters);
+            Request req = reqProc.BuildUrl(parameters);
 
             Assert.AreEqual(expected, req.FullUrl);
         }
@@ -230,7 +230,7 @@ namespace LinqToTwitterTests
 
             try
             {
-                target.BuildURL(parameters);
+                target.BuildUrl(parameters);
 
                 Assert.Fail("Expected ArgumentException.");
             }
@@ -251,7 +251,7 @@ namespace LinqToTwitterTests
 
             try
             {
-                target.BuildURL(parameters);
+                target.BuildUrl(parameters);
 
                 Assert.Fail("Expected ArgumentException.");
             }

@@ -22,7 +22,7 @@ namespace LinqToTwitter
             RecipientID = dmJson.GetValue<ulong>("recipient_id");
             RecipientScreenName = dmJson.GetValue<string>("recipient_screen_name");
             Recipient = new User(dmJson.GetValue<JsonData>("recipient"));
-            ID = dmJson.GetValue<ulong>("id");
+            IDResponse = dmJson.GetValue<ulong>("id");
             IDString = dmJson.GetValue<string>("id_str");
             Text = dmJson.GetValue<string>("text");
         }
@@ -30,9 +30,14 @@ namespace LinqToTwitter
         public DirectMessageType Type { get; set; }
 
         /// <summary>
-        /// Direct Message ID
+        /// Direct Message ID input
         /// </summary>
         public ulong ID { get; set; }
+
+        /// <summary>
+        /// Direct Message ID Returned from Twitter
+        /// </summary>
+        public ulong IDResponse { get; set; }
 
         /// <summary>
         /// Direct Message ID in string format from JSON

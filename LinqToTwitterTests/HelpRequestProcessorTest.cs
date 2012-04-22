@@ -262,7 +262,7 @@ namespace LinqToTwitterTests
              };
             string expectedUrl = "https://api.twitter.com/1/help/test.xml";
 
-            Request req = helpReqProc.BuildURL(parameters);
+            Request req = helpReqProc.BuildUrl(parameters);
 
             Assert.AreEqual(expectedUrl, req.FullUrl);
         }
@@ -277,7 +277,7 @@ namespace LinqToTwitterTests
              };
             string expectedUrl = "https://api.twitter.com/1/help/configuration.xml";
 
-            Request req = helpReqProc.BuildURL(parameters);
+            Request req = helpReqProc.BuildUrl(parameters);
 
             Assert.AreEqual(expectedUrl, req.FullUrl);
         }
@@ -292,7 +292,7 @@ namespace LinqToTwitterTests
              };
             string expectedUrl = "https://api.twitter.com/1/help/languages.xml";
 
-            Request req = helpReqProc.BuildURL(parameters);
+            Request req = helpReqProc.BuildUrl(parameters);
 
             Assert.AreEqual(expectedUrl, req.FullUrl);
         }
@@ -308,7 +308,7 @@ namespace LinqToTwitterTests
 
             try
             {
-                helpReqProc.BuildURL(parameters);
+                helpReqProc.BuildUrl(parameters);
 
                 Assert.Fail("Expected ArgumentException.");
             }

@@ -15,10 +15,9 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         public static void Run(TwitterContext twitterCtx)
         {
-            //LookupReverseGeocodeDemo(twitterCtx);
+            LookupReverseGeocodeDemo(twitterCtx);
             //LookupGeoIDDemo(twitterCtx);
-            //LookupGeoNearbyPlacesDemo(twitterCtx);
-            SearchDemo(twitterCtx);
+            //SearchDemo(twitterCtx);
         }
 
         /// <summary>
@@ -41,27 +40,6 @@ namespace LinqToTwitterDemo
                 "Name: {0}, Country: {1}, Type: {2}",
                 place.Name, place.Country, place.PlaceType);
         }
-
-        ///// <summary>
-        ///// Shows how to perform a reverse geocode lookup
-        ///// to find a place, based on latitude and longitude
-        ///// </summary>
-        ///// <param name="twitterCtx">TwitterContext</param>
-        //private static void LookupGeoNearbyPlacesDemo(TwitterContext twitterCtx)
-        //{
-        //    var geo =
-        //        (from g in twitterCtx.Geo
-        //         where g.Type == GeoType.Nearby &&
-        //               g.IP == "168.143.171.180"
-        //         select g)
-        //         .FirstOrDefault();
-
-        //    Place place = geo.Places[0];
-
-        //    Console.WriteLine(
-        //        "Name: {0}, Country: {1}, Type: {2}",
-        //        place.Name, place.Country, place.PlaceType);
-        //}
 
         /// <summary>
         /// Shows how to perform a reverse geocode lookup

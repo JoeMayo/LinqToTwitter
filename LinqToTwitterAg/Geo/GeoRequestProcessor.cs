@@ -3,14 +3,16 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Xml.Linq;
+using System.Text;
+using LinqToTwitter.Serialization.Extensions;
+using LitJson;
 
 namespace LinqToTwitter
 {
     /// <summary>
     /// processes Twitter Saved Search requests
     /// </summary>
-    public class GeoRequestProcessor<T> : IRequestProcessor<T>
+    public class GeoRequestProcessor<T> : IRequestProcessor<T>, IRequestProcessorWantsJson
     {
         const string AttributeParam = "Attribute";
         const string IDParam = "ID";
@@ -23,7 +25,7 @@ namespace LinqToTwitter
         /// <summary>
         /// type of Geo operation (Reverse or ID)
         /// </summary>
-        private GeoType Type { get; set; }
+        internal GeoType Type { get; set; }
 
         /// <summary>
         /// Latitude
@@ -108,11 +110,11 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">criteria for url segments and parameters</param>
         /// <returns>URL conforming to Twitter API</returns>
-        public Request BuildURL(Dictionary<string, string> parameters)
+        public Request BuildUrl(Dictionary<string, string> parameters)
         {
-            const string typeParam = "Type";
+            const string TypeParam = "Type";
             if (parameters == null || !parameters.ContainsKey("Type"))
-                throw new ArgumentException("You must set Type.", typeParam);
+                throw new ArgumentException("You must set Type.", TypeParam);
 
             Type = RequestProcessorHelper.ParseQueryEnumType<GeoType>(parameters["Type"]);
 
@@ -236,7 +238,8 @@ namespace LinqToTwitter
         {
             if (!parameters.ContainsKey("Latitude") || !parameters.ContainsKey("Longitude"))
             {
-                throw new ArgumentException("Latitude and Longitude parameters are required.");
+                const string LatLongParam = "LatLong";
+                throw new ArgumentException("Latitude and Longitude parameters are required.", LatLongParam);
             }
 
             var req = new Request(BaseUrl + "geo/reverse_geocode.json");
@@ -276,65 +279,79 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// transforms XML into IList of SavedSearch
+        /// transforms response into List of SavedSearch
         /// </summary>
-        /// <param name="responseXml">xml with Twitter response</param>
+        /// <param name="responseJson">Json with Twitter response</param>
         /// <returns>List of SavedSearch</returns>
-        public List<T> ProcessResults(string responseXml)
+        public List<T> ProcessResults(string responseJson)
         {
-            if (string.IsNullOrEmpty(responseXml))
+            if (string.IsNullOrEmpty(responseJson)) return new List<T>();
+
+            JsonData geoJson = JsonMapper.ToObject(responseJson);
+
+            Geo geo;
+
+            switch (Type)
             {
-                responseXml = "<result></result>";
+                case GeoType.ID:
+                    geo = HandleIDResponse(geoJson);
+                    break;
+                case GeoType.Reverse:
+                case GeoType.Search:
+                    geo = HandleMultiplePlaceResponse(geoJson);
+                    break;
+                default:
+                    geo = new Geo();
+                    break;
             }
-
-            XElement twitterResponse = XElement.Parse(responseXml);
-            var responseItems = new List<XElement>();
-
-            // place_type under root means that it's an ID query
-            if (twitterResponse.Element("place_type") != null)
-            {
-                responseItems.Add(
-                    new XElement("root",
-                        new XElement("contained_within",
-                            new XElement("item", twitterResponse.Elements()))));
-            }
-            else // reverse geocode query
-            {
-                if (twitterResponse.Elements("result").Any())
-                {
-                    var result = twitterResponse.Element("result");
-                    if (result != null)
-                    {
-                        var places = result.Element("places");
-                        if (places != null)
-                            responseItems = places.Elements("item").ToList();
-                    }
-                }
-            }
-
-            var geo =
-               new Geo
-               {
-                   Type = Type,
-                   Accuracy = Accuracy,
-                   Granularity = Granularity,
-                   ID = ID,
-                   Latitude = Latitude,
-                   Longitude = Longitude,
-                   IP = IP,
-                   MaxResults = MaxResults,
-                   Query = Query,
-                   ContainedWithin = ContainedWithin,
-                   Attribute = Attribute,
-                   Places =
-                       (from pl in responseItems
-                        let containedWithin = pl.Element("contained_within")
-                        where containedWithin != null
-                        select Place.CreatePlace(containedWithin.Element("item")))
-                       .ToList()
-               };
-
+                
             return new List<Geo> { geo }.OfType<T>().ToList();
+        }
+  
+        Geo HandleIDResponse(JsonData placeJson)
+        {
+            var sb = new StringBuilder();
+            var writer = new JsonWriter(sb);
+
+            writer.WriteObjectStart();
+
+                writer.WritePropertyName("result");
+                    writer.WriteObjectStart();
+
+                        writer.WritePropertyName("places");
+                            writer.WriteArrayStart();
+
+                                writer.WriteJsonData(placeJson);
+
+                            writer.WriteArrayEnd();
+
+                    writer.WriteObjectEnd();
+
+            writer.WriteObjectEnd();
+
+            var geoJson = JsonMapper.ToObject(sb.ToString());
+
+            return HandleMultiplePlaceResponse(geoJson);
+        }
+  
+        Geo HandleMultiplePlaceResponse(JsonData geoJson)
+        {
+            var geo =
+                new Geo(geoJson)
+                {
+                    Type = Type,
+                    Accuracy = Accuracy,
+                    Granularity = Granularity,
+                    ID = ID,
+                    Latitude = Latitude,
+                    Longitude = Longitude,
+                    IP = IP,
+                    MaxResults = MaxResults,
+                    Query = Query,
+                    ContainedWithin = ContainedWithin,
+                    Attribute = Attribute
+                };
+            return geo;
         }
     }
 }

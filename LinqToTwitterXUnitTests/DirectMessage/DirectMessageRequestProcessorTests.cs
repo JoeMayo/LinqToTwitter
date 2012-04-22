@@ -34,7 +34,7 @@ namespace LinqToTwitterXUnitTests
                         { "Count", "2" }
                 };
 
-            Request req = dmReqProc.BuildURL(parameters);
+            Request req = dmReqProc.BuildUrl(parameters);
 
             Assert.Equal(Expected, req.FullUrl);
         }
@@ -54,7 +54,7 @@ namespace LinqToTwitterXUnitTests
                         { "Count", "2" }
                 };
 
-            Request req = dmReqProc.BuildURL(parameters);
+            Request req = dmReqProc.BuildUrl(parameters);
 
             Assert.Equal(Expected, req.FullUrl);
         }
@@ -71,7 +71,7 @@ namespace LinqToTwitterXUnitTests
                         { "ID", "478805447" },
                 };
 
-            Request req = dmReqProc.BuildURL(parameters);
+            Request req = dmReqProc.BuildUrl(parameters);
 
             Assert.Equal(Expected, req.FullUrl);
         }
@@ -87,7 +87,7 @@ namespace LinqToTwitterXUnitTests
                         //{ "ID", "478805447" },
                 };
 
-            var ex = Assert.Throws<ArgumentNullException>(() => dmReqProc.BuildURL(parameters));
+            var ex = Assert.Throws<ArgumentNullException>(() => dmReqProc.BuildUrl(parameters));
             
             Assert.Equal("ID", ex.ParamName);
         }
@@ -233,7 +233,7 @@ namespace LinqToTwitterXUnitTests
             var dmReqProc = new DirectMessageRequestProcessor<DirectMessage> { BaseUrl = "https://api.twitter.com/1/" };
             var parameters = new Dictionary<string, string>();
 
-            var ex = Assert.Throws<ArgumentException>(() => dmReqProc.BuildURL(parameters));
+            var ex = Assert.Throws<ArgumentException>(() => dmReqProc.BuildUrl(parameters));
 
             Assert.Equal("Type", ex.ParamName);
         }
@@ -243,7 +243,7 @@ namespace LinqToTwitterXUnitTests
         {
             var dmReqProc = new DirectMessageRequestProcessor<DirectMessage> { BaseUrl = "https://api.twitter.com/1/" };
 
-            var ex = Assert.Throws<ArgumentException>(() => dmReqProc.BuildURL(null));
+            var ex = Assert.Throws<ArgumentException>(() => dmReqProc.BuildUrl(null));
 
             Assert.Equal("Type", ex.ParamName);
         }

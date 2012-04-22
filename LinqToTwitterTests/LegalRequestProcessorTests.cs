@@ -41,7 +41,7 @@ namespace LinqToTwitterTests
                 { "Type", LegalType.Privacy.ToString() }
             };
 
-            Request req = reqProc.BuildURL(parms);
+            Request req = reqProc.BuildUrl(parms);
 
             Assert.AreEqual("http://api.twitter.com/1/privacy.xml", req.FullUrl);
         }
@@ -55,7 +55,7 @@ namespace LinqToTwitterTests
                 { "Type", LegalType.TOS.ToString() }
             };
 
-            Request req = reqProc.BuildURL(parms);
+            Request req = reqProc.BuildUrl(parms);
 
             Assert.AreEqual("http://api.twitter.com/1/tos.xml", req.FullUrl);
         }

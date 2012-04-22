@@ -109,7 +109,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">criteria for url segments and parameters</param>
         /// <returns>URL conforming to Twitter API</returns>
-        public Request BuildURL(Dictionary<string, string> parameters)
+        public Request BuildUrl(Dictionary<string, string> parameters)
         {
             const string typeParam = "Type";
             if (parameters == null || !parameters.ContainsKey("Type"))

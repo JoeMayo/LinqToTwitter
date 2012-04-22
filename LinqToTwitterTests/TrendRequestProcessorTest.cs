@@ -116,7 +116,7 @@ namespace LinqToTwitterTests
                 };
             const string expected = "https://api.twitter.com/1/trends/1.json";
 
-            Request req = trendReqProc.BuildURL(parameters);
+            Request req = trendReqProc.BuildUrl(parameters);
 
             Assert.AreEqual(expected, req.FullUrl);
         }
@@ -134,7 +134,7 @@ namespace LinqToTwitterTests
                 };
             const string expected = "https://api.twitter.com/1/trends/weekly.json?date=2009-01-01&exclude=hashtags";
 
-            Request req = trendReqProc.BuildURL(parameters);
+            Request req = trendReqProc.BuildUrl(parameters);
 
             Assert.AreEqual(expected, req.FullUrl);
         }
@@ -150,7 +150,7 @@ namespace LinqToTwitterTests
                 };
             const string expected = "https://api.twitter.com/1/trends/available.json";
 
-            Request req = trendReqProc.BuildURL(parameters);
+            Request req = trendReqProc.BuildUrl(parameters);
 
             Assert.AreEqual(expected, req.FullUrl);
         }
@@ -168,7 +168,7 @@ namespace LinqToTwitterTests
                 };
             const string expected = "https://api.twitter.com/1/trends/daily.json?date=2009-01-01&exclude=hashtags";
 
-            Request req = trendReqProc.BuildURL(parameters);
+            Request req = trendReqProc.BuildUrl(parameters);
 
             Assert.AreEqual(expected, req.FullUrl);
         }
@@ -186,7 +186,7 @@ namespace LinqToTwitterTests
                 };
             const string expected = "http://api.twitter.com/1/trends/available.json?lat=37.78215&long=-122.40060";
 
-            Request req = trendReqProc.BuildURL(parameters);
+            Request req = trendReqProc.BuildUrl(parameters);
 
             Assert.AreEqual(expected, req.FullUrl);
         }
@@ -203,7 +203,7 @@ namespace LinqToTwitterTests
                     { "Longitude", "-122.40060" }
                 };
 
-            trendReqProc.BuildURL(parameters);
+            trendReqProc.BuildUrl(parameters);
         }
 
         [TestMethod]
@@ -218,7 +218,7 @@ namespace LinqToTwitterTests
                 };
             const string expected = "http://api.twitter.com/1/trends/1.json";
 
-            Request req = trendReqProc.BuildURL(parameters);
+            Request req = trendReqProc.BuildUrl(parameters);
 
             Assert.AreEqual(expected, req.FullUrl);
         }
@@ -234,7 +234,7 @@ namespace LinqToTwitterTests
                     { "Type", ((int)TrendType.Location).ToString(CultureInfo.InvariantCulture) },
                 };
 
-            trendReqProc.BuildURL(parameters);
+            trendReqProc.BuildUrl(parameters);
         }
 
         [TestMethod]
@@ -245,7 +245,7 @@ namespace LinqToTwitterTests
 
             try
             {
-                trendReqProc.BuildURL(parameters);
+                trendReqProc.BuildUrl(parameters);
 
                 Assert.Fail("Expected ArgumentException.");
             }
@@ -262,7 +262,7 @@ namespace LinqToTwitterTests
 
             try
             {
-                target.BuildURL(null);
+                target.BuildUrl(null);
 
                 Assert.Fail("Expected ArgumentException.");
             }

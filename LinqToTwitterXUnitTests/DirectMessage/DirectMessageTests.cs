@@ -31,7 +31,7 @@ namespace LinqToTwitterXUnitTests
             Assert.Equal(16761255ul, dm.RecipientID);
             Assert.Equal("Linq2Tweeter", dm.RecipientScreenName);
             Assert.NotNull(dm.Recipient);
-            Assert.Equal(189086715040903168ul, dm.ID);
+            Assert.Equal(189086715040903168ul, dm.IDResponse);
             Assert.Equal("189086715040903168", dm.IDString);
             Assert.Equal("This is a test.", dm.Text);
         }

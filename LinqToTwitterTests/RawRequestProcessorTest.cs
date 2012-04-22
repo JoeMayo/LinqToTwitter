@@ -886,7 +886,7 @@ namespace LinqToTwitterTests
              };
             string expected = "https://api.twitter.com/1/statuses/public_timeline.xml";
 
-            Request req = rawReqProc.BuildURL(parameters);
+            Request req = rawReqProc.BuildUrl(parameters);
 
             Assert.AreEqual(expected, req.FullUrl);
         }
@@ -902,7 +902,7 @@ namespace LinqToTwitterTests
 
             try
             {
-                rawReqProc.BuildURL(parameters);
+                rawReqProc.BuildUrl(parameters);
 
                 Assert.Fail("Should have thrown ArgumentNullException");
             }
@@ -923,7 +923,7 @@ namespace LinqToTwitterTests
 
             try
             {
-                rawReqProc.BuildURL(parameters);
+                rawReqProc.BuildUrl(parameters);
 
                 Assert.Fail("Should have thrown ArgumentException");
             }
@@ -946,7 +946,7 @@ namespace LinqToTwitterTests
             };
             string expected = "https://api.twitter.com/1/statuses/public_timeline.xml";
 
-            Request req = rawReqProc.BuildURL(parameters);
+            Request req = rawReqProc.BuildUrl(parameters);
 
             Assert.AreEqual(expected, req.FullUrl);
         }
@@ -964,7 +964,7 @@ namespace LinqToTwitterTests
             };
             string expected = "https://api.twitter.com/1/statuses/public_timeline.xml";
 
-            Request req = rawReqProc.BuildURL(parameters);
+            Request req = rawReqProc.BuildUrl(parameters);
 
             Assert.AreEqual(expected, req.FullUrl);
         }

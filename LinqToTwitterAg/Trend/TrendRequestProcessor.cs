@@ -56,13 +56,13 @@ namespace LinqToTwitter
         /// </summary>
         int WeoID { get; set; }
 
-        static readonly Dictionary<string, string> WorldWoeId;
+        static readonly Dictionary<string, string> worldWoeId;
 
         static TrendRequestProcessor()
         {
-            var worldOnly = WorldWoeId = new Dictionary<string, string>();
+            var worldOnly = worldWoeId = new Dictionary<string, string>();
             worldOnly.Add(WeoIDParam, "1");
-            WorldWoeId = worldOnly;
+            worldWoeId = worldOnly;
         }
 
         /// <summary>
@@ -91,18 +91,18 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">criteria for url segments and parameters</param>
         /// <returns>URL conforming to Twitter API</returns>
-        public virtual Request BuildURL(Dictionary<string, string> parameters)
+        public virtual Request BuildUrl(Dictionary<string, string> parameters)
         {
-            const string typeParam = "Type";
+            const string TypeParam = "Type";
             if (parameters == null || !parameters.ContainsKey("Type"))
-                throw new ArgumentException("You must set Type.", typeParam);
+                throw new ArgumentException("You must set Type.", TypeParam);
 
             Type = RequestProcessorHelper.ParseQueryEnumType<TrendType>(parameters["Type"]);
 
             switch (Type)
             {
                 case TrendType.Trend:
-                    return BuildLocationTrendsUrl(WorldWoeId);
+                    return BuildLocationTrendsUrl(worldWoeId);
                 case TrendType.Daily:
                     return BuildDailyTrendsUrl(parameters);
                 case TrendType.Weekly:

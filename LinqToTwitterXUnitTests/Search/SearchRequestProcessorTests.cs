@@ -137,7 +137,7 @@ namespace LinqToTwitterXUnitTests.SearchTests
                };
             const string expected = "http://search.twitter.com/search.json?geocode=40.757929%2C-73.985506%2C25km&lang=en&page=1&rpp=10&q=LINQ%20to%20Twitter&show_user=true&since=2010-07-04&until=2011-07-04&since_id=1&result_type=popular";
 
-            Request req = searchReqProc.BuildURL(parameters);
+            Request req = searchReqProc.BuildUrl(parameters);
 
             Assert.Equal(expected, req.FullUrl);
         }
@@ -154,7 +154,7 @@ namespace LinqToTwitterXUnitTests.SearchTests
                };
             const string expected = "http://search.twitter.com/search.json?since=2010-07-04";
 
-            Request req = searchReqProc.BuildURL(parameters);
+            Request req = searchReqProc.BuildUrl(parameters);
 
             Assert.Equal(expected, req.FullUrl);
         }
@@ -171,7 +171,7 @@ namespace LinqToTwitterXUnitTests.SearchTests
                 };
             const string expected = "http://search.twitter.com/search.json";
 
-            Request req = searchReqProc.BuildURL(parameters);
+            Request req = searchReqProc.BuildUrl(parameters);
 
             Assert.Equal(expected, req.FullUrl);
         }
@@ -192,7 +192,7 @@ namespace LinqToTwitterXUnitTests.SearchTests
                };
             const string expected = "http://search.twitter.com/search.json?exact=LINQ%20to%20Twitter&ands=LINQ%20Twitter&ors=LINQ%20Twitter&nots=LINQ%20Twitter&tag=linqtotwitter";
 
-            Request req = searchReqProc.BuildURL(parameters);
+            Request req = searchReqProc.BuildUrl(parameters);
 
             Assert.Equal(expected, req.FullUrl);
         }
@@ -211,7 +211,7 @@ namespace LinqToTwitterXUnitTests.SearchTests
               };
             const string expected = "http://search.twitter.com/search.json?from=JoeMayo&to=JoeMayo&ref=JoeMayo";
 
-            Request req = searchReqProc.BuildURL(parameters);
+            Request req = searchReqProc.BuildUrl(parameters);
 
             Assert.Equal(expected, req.FullUrl);
         }
@@ -228,7 +228,7 @@ namespace LinqToTwitterXUnitTests.SearchTests
                 };
             const string expected = "http://search.twitter.com/search.json?tude%5B%5D=%3A)&tude%5B%5D=%3A(&tude%5B%5D=%3F";
 
-            Request req = searchReqProc.BuildURL(parameters);
+            Request req = searchReqProc.BuildUrl(parameters);
 
             Assert.Equal(expected, req.FullUrl);
         }
@@ -245,7 +245,7 @@ namespace LinqToTwitterXUnitTests.SearchTests
                 };
             const string expected = "http://search.twitter.com/search.json?tude%5B%5D=%3A(&tude%5B%5D=%3F";
 
-            Request req = searchReqProc.BuildURL(parameters);
+            Request req = searchReqProc.BuildUrl(parameters);
 
             Assert.Equal(expected, req.FullUrl);
         }
@@ -263,7 +263,7 @@ namespace LinqToTwitterXUnitTests.SearchTests
                 };
             const string expected = "http://search.twitter.com/search.json?filter%5B%5D=links&include%5B%5D=retweets";
 
-            Request req = searchReqProc.BuildURL(parameters);
+            Request req = searchReqProc.BuildUrl(parameters);
 
             Assert.Equal(expected, req.FullUrl);
         }
@@ -281,7 +281,7 @@ namespace LinqToTwitterXUnitTests.SearchTests
                 };
             const string expected = "http://search.twitter.com/search.json";
 
-            Request req = searchReqProc.BuildURL(parameters);
+            Request req = searchReqProc.BuildUrl(parameters);
 
             Assert.Equal(expected, req.FullUrl);
         }
@@ -295,7 +295,7 @@ namespace LinqToTwitterXUnitTests.SearchTests
             ArgumentException ex =
                 Assert.Throws<ArgumentException>(() =>
                 {
-                    searchReqProc.BuildURL(parameters);
+                    searchReqProc.BuildUrl(parameters);
                 });
 
             Assert.Equal("Type", ex.ParamName);
@@ -309,7 +309,7 @@ namespace LinqToTwitterXUnitTests.SearchTests
             ArgumentException ex =
                 Assert.Throws<ArgumentException>(() =>
                 {
-                    searchReqProc.BuildURL(null);
+                    searchReqProc.BuildUrl(null);
                 });
 
             Assert.Equal("Type", ex.ParamName);
@@ -327,7 +327,7 @@ namespace LinqToTwitterXUnitTests.SearchTests
                     { "Query", "Contains Space" }
                 };
 
-            Request req = searchReqProc.BuildURL(parameters);
+            Request req = searchReqProc.BuildUrl(parameters);
 
             Assert.Equal(expected, req.FullUrl);
         }
@@ -344,7 +344,7 @@ namespace LinqToTwitterXUnitTests.SearchTests
                 };
             const string expected = "http://search.twitter.com/search.json?include_entities=true";
 
-            Request req = searchProc.BuildURL(parameters);
+            Request req = searchProc.BuildUrl(parameters);
 
             Assert.Equal(expected, req.FullUrl);
         }
@@ -361,7 +361,7 @@ namespace LinqToTwitterXUnitTests.SearchTests
                 };
             const string expected = "http://search.twitter.com/search.json";
 
-            Request req = searchProc.BuildURL(parameters);
+            Request req = searchProc.BuildUrl(parameters);
 
             Assert.Equal(expected, req.FullUrl);
         }

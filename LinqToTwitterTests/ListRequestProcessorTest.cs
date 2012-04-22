@@ -503,7 +503,7 @@ namespace LinqToTwitterTests
                 };
             string expected = "https://api.twitter.com/1/lists.xml?screen_name=JoeMayo";
 
-            Request req = reqProc.BuildURL(parameters);
+            Request req = reqProc.BuildUrl(parameters);
 
             Assert.AreEqual(expected, req.FullUrl);
         }
@@ -523,7 +523,7 @@ namespace LinqToTwitterTests
                 };
             string expected = "https://api.twitter.com/1/JoeMayo/lists.xml";
 
-            Request req = target.BuildURL(parameters);
+            Request req = target.BuildUrl(parameters);
 
             Assert.AreEqual(expected, req.FullUrl);
         }
@@ -540,7 +540,7 @@ namespace LinqToTwitterTests
                 };
             string expected = "https://api.twitter.com/1/JoeMayo/lists.xml";
 
-            Request req = target.BuildURL(parameters);
+            Request req = target.BuildUrl(parameters);
 
             Assert.AreEqual(expected, req.FullUrl);
         }
@@ -556,7 +556,7 @@ namespace LinqToTwitterTests
 
             try
             {
-                target.BuildURL(parameters);
+                target.BuildUrl(parameters);
 
                 Assert.Fail("Expected ArgumentException.");
             }
@@ -577,7 +577,7 @@ namespace LinqToTwitterTests
 
             try
             {
-                target.BuildURL(parameters);
+                target.BuildUrl(parameters);
 
                 Assert.Fail("Expected ArgumentException.");
             }
@@ -599,7 +599,7 @@ namespace LinqToTwitterTests
             string expected =
                 "https://api.twitter.com/1/lists/all.xml?screen_name=JoeMayo";
 
-            Request req = listReqProc.BuildURL(parameters);
+            Request req = listReqProc.BuildUrl(parameters);
 
             Assert.AreEqual(expected, req.FullUrl);
         }
@@ -615,7 +615,7 @@ namespace LinqToTwitterTests
             };
             const string expected = "https://api.twitter.com/1/lists/all.xml?user_id=123";
 
-            Request req = listReqProc.BuildURL(parameters);
+            Request req = listReqProc.BuildUrl(parameters);
 
             Assert.AreEqual(expected, req.FullUrl);
         }
@@ -632,7 +632,7 @@ namespace LinqToTwitterTests
 
             try
             {
-                reqProc.BuildURL(parameters);
+                reqProc.BuildUrl(parameters);
 
                 Assert.Fail("Expected ArgumentException.");
             }
@@ -655,7 +655,7 @@ namespace LinqToTwitterTests
             };
             string expected = "https://api.twitter.com/1/lists.xml?user_id=123&screen_name=JoeMayo&cursor=456";
 
-            Request req = listReqProc.BuildURL(parameters);
+            Request req = listReqProc.BuildUrl(parameters);
 
             Assert.AreEqual(expected, req.FullUrl);
         }
@@ -672,7 +672,7 @@ namespace LinqToTwitterTests
 
             try
             {
-                reqProc.BuildURL(parameters);
+                reqProc.BuildUrl(parameters);
 
                 Assert.Fail("Expected ArgumentException.");
             }
@@ -696,7 +696,7 @@ namespace LinqToTwitterTests
             };
             string expected = "https://api.twitter.com/1/lists/memberships.xml?user_id=123&screen_name=JoeMayo&cursor=456&filter_to_owned_lists=true";
 
-            Request req = listReqProc.BuildURL(parameters);
+            Request req = listReqProc.BuildUrl(parameters);
 
             Assert.AreEqual(expected, req.FullUrl);
         }
@@ -715,7 +715,7 @@ namespace LinqToTwitterTests
             };
             string expected = "https://api.twitter.com/1/lists/memberships.xml?user_id=123&screen_name=JoeMayo&cursor=456";
 
-            Request req = listReqProc.BuildURL(parameters);
+            Request req = listReqProc.BuildUrl(parameters);
 
             Assert.AreEqual(expected, req.FullUrl);
         }
@@ -732,7 +732,7 @@ namespace LinqToTwitterTests
 
             try
             {
-                reqProc.BuildURL(parameters);
+                reqProc.BuildUrl(parameters);
 
                 Assert.Fail("Expected ArgumentException.");
             }
@@ -755,7 +755,7 @@ namespace LinqToTwitterTests
             };
             string expected = "https://api.twitter.com/1/lists/subscriptions.xml?user_id=123&screen_name=JoeMayo&cursor=456";
 
-            Request req = listReqProc.BuildURL(parameters);
+            Request req = listReqProc.BuildUrl(parameters);
 
             Assert.AreEqual(expected, req.FullUrl);
         }
@@ -773,7 +773,7 @@ namespace LinqToTwitterTests
 
             try
             {
-                reqProc.BuildURL(parameters);
+                reqProc.BuildUrl(parameters);
 
                 Assert.Fail("Expected ArgumentException.");
             }
@@ -797,7 +797,7 @@ namespace LinqToTwitterTests
 
             try
             {
-                reqProc.BuildURL(parameters);
+                reqProc.BuildUrl(parameters);
 
                 Assert.Fail("Expected ArgumentException.");
             }
@@ -820,7 +820,7 @@ namespace LinqToTwitterTests
 
             try
             {
-                reqProc.BuildURL(parameters);
+                reqProc.BuildUrl(parameters);
 
                 Assert.Fail("Expected ArgumentException.");
             }
@@ -844,7 +844,7 @@ namespace LinqToTwitterTests
             };
             string expected = "https://api.twitter.com/1/lists/show.xml?slug=test&owner_id=123&owner_screen_name=JoeMayo&list_id=456";
 
-            Request req = listReqProc.BuildURL(parameters);
+            Request req = listReqProc.BuildUrl(parameters);
 
             Assert.AreEqual(expected, req.FullUrl);
         }
@@ -862,7 +862,7 @@ namespace LinqToTwitterTests
 
             try
             {
-                reqProc.BuildURL(parameters);
+                reqProc.BuildUrl(parameters);
 
                 Assert.Fail("Expected ArgumentException.");
             }
@@ -886,7 +886,7 @@ namespace LinqToTwitterTests
 
             try
             {
-                reqProc.BuildURL(parameters);
+                reqProc.BuildUrl(parameters);
 
                 Assert.Fail("Expected ArgumentException.");
             }
@@ -909,7 +909,7 @@ namespace LinqToTwitterTests
 
             try
             {
-                reqProc.BuildURL(parameters);
+                reqProc.BuildUrl(parameters);
 
                 Assert.Fail("Expected ArgumentException.");
             }
@@ -940,7 +940,7 @@ namespace LinqToTwitterTests
             };
             string expected = "https://api.twitter.com/1/lists/statuses.xml?owner_id=123&owner_screen_name=JoeMayo&slug=test&list_id=456&since_id=789&max_id=234&count=25&per_page=25&page=3&trim_user=true&include_entities=true&include_rts=true";
 
-            Request req = listReqProc.BuildURL(parameters);
+            Request req = listReqProc.BuildUrl(parameters);
 
             Assert.AreEqual(expected, req.FullUrl);
         }
@@ -966,7 +966,7 @@ namespace LinqToTwitterTests
             };
             string expected = "https://api.twitter.com/1/lists/statuses.xml?owner_id=123&owner_screen_name=JoeMayo&slug=test&list_id=456&since_id=789&max_id=234&count=25&per_page=25&page=3";
 
-            Request req = listReqProc.BuildURL(parameters);
+            Request req = listReqProc.BuildUrl(parameters);
 
             Assert.AreEqual(expected, req.FullUrl);
         }
@@ -984,7 +984,7 @@ namespace LinqToTwitterTests
 
             try
             {
-                reqProc.BuildURL(parameters);
+                reqProc.BuildUrl(parameters);
 
                 Assert.Fail("Expected ArgumentException.");
             }
@@ -1008,7 +1008,7 @@ namespace LinqToTwitterTests
 
             try
             {
-                reqProc.BuildURL(parameters);
+                reqProc.BuildUrl(parameters);
 
                 Assert.Fail("Expected ArgumentException.");
             }
@@ -1031,7 +1031,7 @@ namespace LinqToTwitterTests
 
             try
             {
-                reqProc.BuildURL(parameters);
+                reqProc.BuildUrl(parameters);
 
                 Assert.Fail("Expected ArgumentException.");
             }
@@ -1057,7 +1057,7 @@ namespace LinqToTwitterTests
             };
             string expected = "https://api.twitter.com/1/lists/members.xml?owner_id=123&owner_screen_name=JoeMayo&slug=test&list_id=456&cursor=789&include_entities=true";
 
-            Request req = listReqProc.BuildURL(parameters);
+            Request req = listReqProc.BuildUrl(parameters);
 
             Assert.AreEqual(expected, req.FullUrl);
         }
@@ -1078,7 +1078,7 @@ namespace LinqToTwitterTests
             };
             string expected = "https://api.twitter.com/1/lists/members.xml?owner_id=123&owner_screen_name=JoeMayo&slug=test&list_id=456&cursor=789";
 
-            Request req = listReqProc.BuildURL(parameters);
+            Request req = listReqProc.BuildUrl(parameters);
 
             Assert.AreEqual(expected, req.FullUrl);
         }
@@ -1097,7 +1097,7 @@ namespace LinqToTwitterTests
 
             try
             {
-                reqProc.BuildURL(parameters);
+                reqProc.BuildUrl(parameters);
 
                 Assert.Fail("Expected ArgumentException.");
             }
@@ -1121,7 +1121,7 @@ namespace LinqToTwitterTests
 
             try
             {
-                reqProc.BuildURL(parameters);
+                reqProc.BuildUrl(parameters);
 
                 Assert.Fail("Expected ArgumentException.");
             }
@@ -1144,7 +1144,7 @@ namespace LinqToTwitterTests
 
             try
             {
-                reqProc.BuildURL(parameters);
+                reqProc.BuildUrl(parameters);
 
                 Assert.Fail("Expected ArgumentException.");
             }
@@ -1171,7 +1171,7 @@ namespace LinqToTwitterTests
             };
             string expected = "https://api.twitter.com/1/lists/members/show.xml?user_id=789&screen_name=JoeMayo&slug=test&owner_id=123&owner_screen_name=JoeMayo&list_id=456&include_entities=true";
 
-            Request req = listReqProc.BuildURL(parameters);
+            Request req = listReqProc.BuildUrl(parameters);
 
             Assert.AreEqual(expected, req.FullUrl);
         }
@@ -1193,7 +1193,7 @@ namespace LinqToTwitterTests
             };
             string expected = "https://api.twitter.com/1/lists/members/show.xml?user_id=789&screen_name=JoeMayo&slug=test&owner_id=123&owner_screen_name=JoeMayo&list_id=456";
 
-            Request req = listReqProc.BuildURL(parameters);
+            Request req = listReqProc.BuildUrl(parameters);
 
             Assert.AreEqual(expected, req.FullUrl);
         }
@@ -1211,7 +1211,7 @@ namespace LinqToTwitterTests
 
             try
             {
-                reqProc.BuildURL(parameters);
+                reqProc.BuildUrl(parameters);
 
                 Assert.Fail("Expected ArgumentException.");
             }
@@ -1235,7 +1235,7 @@ namespace LinqToTwitterTests
 
             try
             {
-                reqProc.BuildURL(parameters);
+                reqProc.BuildUrl(parameters);
 
                 Assert.Fail("Expected ArgumentException.");
             }
@@ -1258,7 +1258,7 @@ namespace LinqToTwitterTests
 
             try
             {
-                reqProc.BuildURL(parameters);
+                reqProc.BuildUrl(parameters);
 
                 Assert.Fail("Expected ArgumentException.");
             }
@@ -1284,7 +1284,7 @@ namespace LinqToTwitterTests
             };
             string expected = "https://api.twitter.com/1/lists/subscribers.xml?owner_id=123&owner_screen_name=JoeMayo&slug=test&list_id=456&cursor=789&include_entities=true";
 
-            Request req = listReqProc.BuildURL(parameters);
+            Request req = listReqProc.BuildUrl(parameters);
 
             Assert.AreEqual(expected, req.FullUrl);
         }
@@ -1305,7 +1305,7 @@ namespace LinqToTwitterTests
             };
             string expected = "https://api.twitter.com/1/lists/subscribers.xml?owner_id=123&owner_screen_name=JoeMayo&slug=test&list_id=456&cursor=789";
 
-            Request req = listReqProc.BuildURL(parameters);
+            Request req = listReqProc.BuildUrl(parameters);
 
             Assert.AreEqual(expected, req.FullUrl);
         }
@@ -1324,7 +1324,7 @@ namespace LinqToTwitterTests
 
             try
             {
-                reqProc.BuildURL(parameters);
+                reqProc.BuildUrl(parameters);
 
                 Assert.Fail("Expected ArgumentException.");
             }
@@ -1348,7 +1348,7 @@ namespace LinqToTwitterTests
 
             try
             {
-                reqProc.BuildURL(parameters);
+                reqProc.BuildUrl(parameters);
 
                 Assert.Fail("Expected ArgumentException.");
             }
@@ -1371,7 +1371,7 @@ namespace LinqToTwitterTests
 
             try
             {
-                reqProc.BuildURL(parameters);
+                reqProc.BuildUrl(parameters);
 
                 Assert.Fail("Expected ArgumentException.");
             }
@@ -1398,7 +1398,7 @@ namespace LinqToTwitterTests
             };
             string expected = "https://api.twitter.com/1/lists/subscribers/show.xml?user_id=789&screen_name=JoeMayo&slug=test&owner_id=123&owner_screen_name=JoeMayo&list_id=456&include_entities=true";
 
-            Request req = listReqProc.BuildURL(parameters);
+            Request req = listReqProc.BuildUrl(parameters);
 
             Assert.AreEqual(expected, req.FullUrl);
         }
@@ -1420,7 +1420,7 @@ namespace LinqToTwitterTests
             };
             string expected = "https://api.twitter.com/1/lists/subscribers/show.xml?user_id=789&screen_name=JoeMayo&slug=test&owner_id=123&owner_screen_name=JoeMayo&list_id=456";
 
-            Request req = listReqProc.BuildURL(parameters);
+            Request req = listReqProc.BuildUrl(parameters);
 
             Assert.AreEqual(expected, req.FullUrl);
         }

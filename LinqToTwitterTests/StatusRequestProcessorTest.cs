@@ -1111,7 +1111,7 @@ namespace LinqToTwitterTests
                     };
             string expected = "https://api.twitter.com/1/statuses/mentions.xml?since_id=123&max_id=145&count=50&page=1";
 
-            Request req = statProc.BuildURL(parameters);
+            Request req = statProc.BuildUrl(parameters);
 
             Assert.AreEqual(expected, req.FullUrl);
         }
@@ -1497,7 +1497,7 @@ namespace LinqToTwitterTests
 
             try
             {
-                target.BuildURL(parameters);
+                target.BuildUrl(parameters);
 
                 Assert.Fail("Expected ArgumentException.");
             }
@@ -1518,7 +1518,7 @@ namespace LinqToTwitterTests
 
             try
             {
-                target.BuildURL(parameters);
+                target.BuildUrl(parameters);
 
                 Assert.Fail("Expected ArgumentException.");
             }

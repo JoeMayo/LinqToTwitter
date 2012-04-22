@@ -67,6 +67,11 @@
     <Compile Include="Favorites\FavoritesTests.cs" />
     <Compile Include="Friendship\FriendshipRequestProcessorTests.cs" />
     <Compile Include="Friendship\RelationshipTests.cs" />
+    <Compile Include="GeoTests\CoordinateTests.cs" />
+    <Compile Include="GeoTests\GeometryTests.cs" />
+    <Compile Include="GeoTests\GeoRequestProcessorTests.cs" />
+    <Compile Include="GeoTests\GeoTests.cs" />
+    <Compile Include="GeoTests\PlaceTests.cs" />
     <Compile Include="LinqToTwitter\TwitterContextCreateRequestProcessorTests.cs" />
     <Compile Include="List\ListTests.cs" />
     <Compile Include="Search\SearchRequestProcessorTests.cs" />

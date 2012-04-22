@@ -220,6 +220,7 @@
     <Compile Include="Serialization\Entities\UrlEntity.cs" />
     <Compile Include="Serialization\Entities\UserEntity.cs" />
     <Compile Include="Serialization\Extensions\DictionaryExtensions.cs" />
+    <Compile Include="Serialization\Extensions\LitJsonExtensions.cs" />
     <Compile Include="Serialization\Extensions\StringExtensions.cs" />
     <Compile Include="Serialization\Geo\Geometry.cs" />
     <Compile Include="Serialization\JavaScriptConverter.cs" />

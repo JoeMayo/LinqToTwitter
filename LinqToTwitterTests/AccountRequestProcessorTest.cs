@@ -244,7 +244,7 @@ namespace LinqToTwitterTests
                 };
             const string expected = "https://api.twitter.com/1/account/verify_credentials.json";
             
-            Request req = acctReqProc.BuildURL(parameters);
+            Request req = acctReqProc.BuildUrl(parameters);
 
             Assert.AreEqual(expected, req.FullUrl);
         }
@@ -260,7 +260,7 @@ namespace LinqToTwitterTests
                 };
             const string expected = "https://api.twitter.com/1/account/rate_limit_status.json";
 
-            Request req = acctReqProc.BuildURL(parameters);
+            Request req = acctReqProc.BuildUrl(parameters);
 
             Assert.AreEqual(expected, req.FullUrl);
         }
@@ -275,7 +275,7 @@ namespace LinqToTwitterTests
                 };
             const string expected = "https://api.twitter.com/1/account/totals.json";
 
-            Request req = acctReqProc.BuildURL(parameters);
+            Request req = acctReqProc.BuildUrl(parameters);
 
             Assert.AreEqual(expected, req.FullUrl);
         }
@@ -290,7 +290,7 @@ namespace LinqToTwitterTests
                 };
             const string expected = "https://api.twitter.com/1/account/settings.json";
 
-            Request req = acctReqProc.BuildURL(parameters);
+            Request req = acctReqProc.BuildUrl(parameters);
 
             Assert.AreEqual(expected, req.FullUrl);
         }
@@ -306,7 +306,7 @@ namespace LinqToTwitterTests
 
             try
             {
-                acctReqProc.BuildURL(parameters);
+                acctReqProc.BuildUrl(parameters);
 
                 Assert.Fail("Expected ArgumentException.");
             }
@@ -323,7 +323,7 @@ namespace LinqToTwitterTests
 
             try
             {
-                acctReqProc.BuildURL(null);
+                acctReqProc.BuildUrl(null);
 
                 Assert.Fail("Expected ArgumentException.");
             }

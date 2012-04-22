@@ -515,6 +515,9 @@
     <Compile Include="..\LinqToTwitterAg\Serialization\Extensions\DictionaryExtensions.cs">
       <Link>Serialization\Extensions\DictionaryExtensions.cs</Link>
     </Compile>
+    <Compile Include="..\LinqToTwitterAg\Serialization\Extensions\LitJsonExtensions.cs">
+      <Link>Serialization\Extensions\LitJsonExtensions.cs</Link>
+    </Compile>
     <Compile Include="..\LinqToTwitterAg\Serialization\Extensions\StringExtensions.cs">
       <Link>Serialization\Extensions\StringExtensions.cs</Link>
     </Compile>

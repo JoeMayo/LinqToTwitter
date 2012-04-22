@@ -8,7 +8,7 @@ namespace LinqToTwitter
     {
         string BaseUrl { get; set; }
         Dictionary<string, string> GetParameters(LambdaExpression lambdaExpression);
-        Request BuildURL(Dictionary<string, string> expressionParameters);
+        Request BuildUrl(Dictionary<string, string> expressionParameters);
         List<T> ProcessResults(string twitterResponse);
     }
 

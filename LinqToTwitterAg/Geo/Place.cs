@@ -1,6 +1,10 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using System.Xml.Linq;
 
+using System.Xml.Serialization;
 using LinqToTwitter.Common;
 
 using LitJson;
@@ -17,9 +21,6 @@ namespace LinqToTwitter
         {
             if (place == null) return;
 
-            var geometry = new Geometry();
-            var polyLines = place.GetValue<JsonData>("polylines");
-
             ID = place.GetValue<string>("id");
             Name = place.GetValue<string>("name");
             Country = place.GetValue<string>("country");
@@ -28,9 +29,37 @@ namespace LinqToTwitter
             PlaceType = place.GetValue<string>("place_type");
             Url = place.GetValue<string>("url");
             BoundingBox = new Geometry(place.GetValue<JsonData>("bounding_box"));
-            ContainedWithin = new Place(place.GetValue<JsonData>("item"));
             Geometry = new Geometry(place.GetValue<JsonData>("geometry"));
-            PolyLines = polyLines == null ? string.Empty : polyLines.GetValue<string>("item");
+
+            var containedWithin = place.GetValue<JsonData>("contained_within");
+            ContainedWithin = 
+                containedWithin != null && containedWithin.Count > 0 ? 
+                    new Place(containedWithin[0]) :
+                    null;
+
+            var polyLines = place.GetValue<JsonData>("polylines");
+            PolyLines = 
+                polyLines == null ? 
+                    new List<string>() 
+                        : 
+                    (from JsonData line in polyLines
+                     select line.ToString())
+                    .ToList();
+
+            var attrDict = place.GetValue<JsonData>("attributes") as IDictionary;
+            Attributes =
+                attrDict == null ?
+                    new Dictionary<string, string>() 
+                        :
+                    (from string key in attrDict.Keys
+                     select new 
+                     { 
+                         Key = key, 
+                         Val = attrDict[key].ToString()
+                     })
+                    .ToDictionary(
+                        attr => attr.Key,
+                        attr => attr.Val);
         }
 
         /// <summary>
@@ -68,10 +97,10 @@ namespace LinqToTwitter
                 BoundingBox = geometry.CreateGeometry(place.Element("bounding_box")),
                 ContainedWithin = CreatePlace(place.Element("item")),
                 Geometry = geometry.CreateGeometry(place.Element("geometry")),
-                PolyLines = 
-                    place.Element("polylines") == null ?
-                        string.Empty :
-                        place.Element("polylines").Element("item").Value
+                //PolyLines = 
+                //    place.Element("polylines") == null ?
+                //        string.Empty :
+                //        place.Element("polylines").Element("item").Value
             };
         }
 
@@ -111,7 +140,13 @@ namespace LinqToTwitter
         public string FullName { get; set; }
 
         /// <summary>
-        /// ?
+        /// Place related metadata
+        /// </summary>
+        [XmlIgnore]
+        public Dictionary<string, string> Attributes { get; set; }
+
+        /// <summary>
+        /// Geographical outline of place
         /// </summary>
         public Geometry BoundingBox { get; set; }
 
@@ -123,7 +158,7 @@ namespace LinqToTwitter
         /// <summary>
         /// ?
         /// </summary>
-        public string PolyLines { get; set; }
+        public List<string> PolyLines { get; set; }
 
         /// <summary>
         /// Containing place (i.e. a neighborhood is contained within a city)

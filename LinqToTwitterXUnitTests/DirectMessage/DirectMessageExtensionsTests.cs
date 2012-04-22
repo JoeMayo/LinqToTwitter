@@ -21,8 +21,8 @@ namespace LinqToTwitterXUnitTests
         [Fact]
         public void NewDirectMessage_Returns_Created_DM()
         {
-            const string userID = "1";
-            const string text = "Hi";
+            const string UserID = "1";
+            const string Text = "Hi";
             var authMock = new Mock<ITwitterAuthorizer>();
             var execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
@@ -34,16 +34,16 @@ namespace LinqToTwitterXUnitTests
                 .Returns(TestQueryResponse);
             var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
 
-            DirectMessage actual = ctx.NewDirectMessage(userID, text);
+            DirectMessage actual = ctx.NewDirectMessage(UserID, Text);
 
-            Assert.Equal(189086715040903168ul, actual.ID);
+            Assert.Equal(189086715040903168ul, actual.IDResponse);
         }
 
         [Fact]
-        public void NewDirectMessage_Constructs_URL()
+        public void NewDirectMessage_Constructs_Url()
         {
-            const string userID = "1";
-            const string text = "Hi";
+            const string UserID = "1";
+            const string Text = "Hi";
             var authMock = new Mock<ITwitterAuthorizer>();
             var execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
@@ -55,7 +55,7 @@ namespace LinqToTwitterXUnitTests
                 .Returns(TestQueryResponse);
             var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
 
-            ctx.NewDirectMessage(userID, text);
+            ctx.NewDirectMessage(UserID, Text);
 
             execMock.Verify(exec =>
                 exec.ExecuteTwitter(
@@ -68,7 +68,7 @@ namespace LinqToTwitterXUnitTests
         [Fact]
         public void NewDirectMessage_Throws_On_Null_Text()
         {
-            const string userID = "1";
+            const string UserID = "1";
             var authMock = new Mock<ITwitterAuthorizer>();
             var execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
@@ -80,7 +80,7 @@ namespace LinqToTwitterXUnitTests
                 .Returns(TestQueryResponse);
             var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
 
-            var ex = Assert.Throws<ArgumentException>(() => ctx.NewDirectMessage(userID, null));
+            var ex = Assert.Throws<ArgumentException>(() => ctx.NewDirectMessage(UserID, null));
 
             Assert.Equal("text", ex.ParamName);
         }
@@ -89,7 +89,7 @@ namespace LinqToTwitterXUnitTests
         public void NewDirectMessage_Throws_On_Empty_UserID()
         {
             string userID = string.Empty;
-            const string text = "Test Text";
+            const string Text = "Test Text";
             var authMock = new Mock<ITwitterAuthorizer>();
             var execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
@@ -101,7 +101,7 @@ namespace LinqToTwitterXUnitTests
                 .Returns(TestQueryResponse);
             var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
 
-            var ex = Assert.Throws<ArgumentException>(() => ctx.NewDirectMessage(userID, text));
+            var ex = Assert.Throws<ArgumentException>(() => ctx.NewDirectMessage(userID, Text));
 
             Assert.Equal("user", ex.ParamName);
         }
@@ -109,9 +109,9 @@ namespace LinqToTwitterXUnitTests
         [Fact]
         public void NewDirectMessage_Sets_WrapLinks()
         {
-            const bool wrapLinks = true;
-            const string userID = "1";
-            const string text = "Hi";
+            const bool WrapLinks = true;
+            const string UserID = "1";
+            const string Text = "Hi";
             var authMock = new Mock<ITwitterAuthorizer>();
             var execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
@@ -127,7 +127,7 @@ namespace LinqToTwitterXUnitTests
                 .Returns(TestQueryResponse);
             var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
 
-            ctx.NewDirectMessage(userID, text, wrapLinks);
+            ctx.NewDirectMessage(UserID, Text, WrapLinks);
 
             Assert.True(wrapLinksPassedToExecute);
         }
@@ -135,9 +135,9 @@ namespace LinqToTwitterXUnitTests
         [Fact]
         public void NewDirectMessage_Sets_WrapLinks_To_Null_When_False()
         {
-            const bool wrapLinks = false;
-            const string userID = "1";
-            const string text = "Hi";
+            const bool WrapLinks = false;
+            const string UserID = "1";
+            const string Text = "Hi";
             var authMock = new Mock<ITwitterAuthorizer>();
             var execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
@@ -153,7 +153,7 @@ namespace LinqToTwitterXUnitTests
                 .Returns(TestQueryResponse);
             var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
 
-            ctx.NewDirectMessage(userID, text, wrapLinks);
+            ctx.NewDirectMessage(UserID, Text, WrapLinks);
 
             Assert.True(wrapLinksIsSetToNull);
         }
@@ -161,7 +161,7 @@ namespace LinqToTwitterXUnitTests
         [Fact]
         public void DestroyDirectMessage_Returns_Deleted_DM()
         {
-            const string id = "1";
+            const string Id = "1";
             var authMock = new Mock<ITwitterAuthorizer>();
             var execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
@@ -173,15 +173,15 @@ namespace LinqToTwitterXUnitTests
                 .Returns(TestQueryResponse);
             var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
 
-            DirectMessage actual = ctx.DestroyDirectMessage(id);
+            DirectMessage actual = ctx.DestroyDirectMessage(Id);
 
-            Assert.Equal(189086715040903168ul, actual.ID);
+            Assert.Equal(189086715040903168ul, actual.IDResponse);
         }
 
         [Fact]
-        public void DestroyDirectMessage_Constructs_URL()
+        public void DestroyDirectMessage_Constructs_Url()
         {
-            const string id = "1";
+            const string Id = "1";
             var authMock = new Mock<ITwitterAuthorizer>();
             var execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
@@ -193,7 +193,7 @@ namespace LinqToTwitterXUnitTests
                 .Returns(TestQueryResponse);
             var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
 
-            ctx.DestroyDirectMessage(id);
+            ctx.DestroyDirectMessage(Id);
 
             execMock.Verify(
                 exec =>

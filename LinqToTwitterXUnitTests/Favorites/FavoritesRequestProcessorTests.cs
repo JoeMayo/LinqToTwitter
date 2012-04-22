@@ -76,7 +76,7 @@ namespace LinqToTwitterXUnitTests
                 };
             const string expected = "https://api.twitter.com/1/favorites.json?page=1&id=123";
 
-            Request req = favReqProc.BuildURL(parameters);
+            Request req = favReqProc.BuildUrl(parameters);
 
             Assert.Equal(expected, req.FullUrl);
         }
@@ -87,7 +87,7 @@ namespace LinqToTwitterXUnitTests
             var favReqProc = new FavoritesRequestProcessor<Favorites> { BaseUrl = "https://api.twitter.com/1/" };
             var parameters = new Dictionary<string, string>();
 
-            var ex = Assert.Throws<ArgumentException>(() => favReqProc.BuildURL(parameters));
+            var ex = Assert.Throws<ArgumentException>(() => favReqProc.BuildUrl(parameters));
 
             Assert.Equal("Type", ex.ParamName);
         }
@@ -97,7 +97,7 @@ namespace LinqToTwitterXUnitTests
         {
             var favReqProc = new FavoritesRequestProcessor<Favorites> { BaseUrl = "https://api.twitter.com/1/" };
 
-            var ex = Assert.Throws<ArgumentException>(() => favReqProc.BuildURL(null));
+            var ex = Assert.Throws<ArgumentException>(() => favReqProc.BuildUrl(null));
 
             Assert.Equal("parameters", ex.ParamName);
         }

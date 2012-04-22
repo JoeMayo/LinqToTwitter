@@ -150,7 +150,7 @@ namespace LinqToTwitterTests
                     { "Type", SavedSearchType.Show.ToString() }
                 };
             string expected = "https://api.twitter.com/1/saved_searches/show/123.xml";
-            Request req = target.BuildURL(parameters);
+            Request req = target.BuildUrl(parameters);
             Assert.AreEqual(expected, req.FullUrl);
         }
 
@@ -169,7 +169,7 @@ namespace LinqToTwitterTests
                     { "ID", "123" }
                 };
             string expected = "https://api.twitter.com/1/saved_searches/show/123.xml";
-            Request req = target.BuildURL(parameters);
+            Request req = target.BuildUrl(parameters);
             Assert.AreEqual(expected, req.FullUrl);
         }
 
@@ -187,7 +187,7 @@ namespace LinqToTwitterTests
                     { "Type", SavedSearchType.Searches.ToString() }
                 };
             string expected = "https://api.twitter.com/1/saved_searches.xml";
-            Request req = target.BuildURL(parameters);
+            Request req = target.BuildUrl(parameters);
             Assert.AreEqual(expected, req.FullUrl);
         }
 
@@ -202,7 +202,7 @@ namespace LinqToTwitterTests
 
             try
             {
-                target.BuildURL(parameters);
+                target.BuildUrl(parameters);
 
                 Assert.Fail("Expected ArgumentException.");
             }
@@ -223,7 +223,7 @@ namespace LinqToTwitterTests
 
             try
             {
-                target.BuildURL(parameters);
+                target.BuildUrl(parameters);
 
                 Assert.Fail("Expected ArgumentException.");
             }

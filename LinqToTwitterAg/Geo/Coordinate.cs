@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Linq;
 using System.Xml.Linq;
+using LitJson;
 
 namespace LinqToTwitter
 {
@@ -12,6 +13,15 @@ namespace LinqToTwitter
     {
         public const int LatitudePos = 0;
         public const int LongitudePos = 1;
+
+        public Coordinate() { }
+        internal Coordinate(JsonData coord)
+        {
+            if (coord == null) return;
+
+            Latitude = (double)coord[LatitudePos];
+            Longitude = (double)coord[LongitudePos];
+        }
 
         /// <summary>
         /// Converts XML to a Coordinate

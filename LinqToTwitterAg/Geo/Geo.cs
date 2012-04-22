@@ -1,4 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using LinqToTwitter.Common;
+using LitJson;
 
 namespace LinqToTwitter
 {
@@ -7,7 +10,20 @@ namespace LinqToTwitter
     /// </summary>
     public class Geo
     {
-        // TODO: add Created method and replace manual Geo parsing elsewhere
+        public Geo() { }
+        public Geo(JsonData geo)
+        {
+            if (geo == null) return;
+
+            JsonData result = geo.GetValue<JsonData>("result");
+            JsonData places = result.GetValue<JsonData>("places");
+
+            Places =
+                (from JsonData place in places
+                 select new Place(place))
+                .ToList();
+        }
+
         /// <summary>
         /// Type of Geo query (Reverse or ID)
         /// </summary>

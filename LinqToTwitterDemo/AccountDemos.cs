@@ -49,7 +49,7 @@ namespace LinqToTwitterDemo
 
             Console.WriteLine(
                 "Name: {0}\nURL: {1}\nLocation: {2}\nDescription: {3}",
-                user.Name, user.URL, user.Location, user.Description);
+                user.Name, user.Url, user.Location, user.Description);
         }
 
         /// <summary>

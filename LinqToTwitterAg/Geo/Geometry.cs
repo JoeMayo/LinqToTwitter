@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Linq;
 using System.Xml.Linq;
 
+using LinqToTwitter.Common;
 using LitJson;
 
 namespace LinqToTwitter
@@ -15,7 +16,16 @@ namespace LinqToTwitter
         public Geometry() {}
         internal Geometry(JsonData geometry)
         {
-            
+            if (geometry == null) return;
+
+            Type = geometry.GetValue<string>("type");
+
+            var coordinates = geometry.GetValue<JsonData>("coordinates");
+            Coordinates =
+                (from JsonData outer in coordinates
+                 from JsonData coord in outer
+                 select new Coordinate(coord))
+                .ToList();
         }
 
         /// <summary>

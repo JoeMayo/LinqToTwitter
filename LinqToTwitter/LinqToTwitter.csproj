@@ -545,6 +545,9 @@
     <Compile Include="..\LinqToTwitterAg\Serialization\Entities\UserEntity.cs">
       <Link>Serialization\Entities\UserEntity.cs</Link>
     </Compile>
+    <Compile Include="..\LinqToTwitterAg\Serialization\Extensions\LitJsonExtensions.cs">
+      <Link>Serialization\Extensions\LitJsonExtensions.cs</Link>
+    </Compile>
     <Compile Include="..\LinqToTwitterAg\Serialization\Geo\Geometry.cs">
       <Link>Serialization\Geo\Geometry.cs</Link>
     </Compile>

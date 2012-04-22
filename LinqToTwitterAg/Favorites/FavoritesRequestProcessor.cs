@@ -52,7 +52,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">criteria for url segments and parameters</param>
         /// <returns>URL conforming to Twitter API</returns>
-        public virtual Request BuildURL(Dictionary<string, string> parameters)
+        public virtual Request BuildUrl(Dictionary<string, string> parameters)
         {
             const string TypeParam = "Type";
             const string ParamsParam = "parameters";
@@ -117,63 +117,5 @@ namespace LinqToTwitter
 
             return statusList.OfType<T>().ToList();
         }
-
-        ///// <summary>
-        ///// transforms Twitter response into list of Favorites
-        ///// </summary>
-        ///// <param name="responseXml">xml with Twitter response</param>
-        ///// <returns>List of Favorite</returns>
-        //public virtual List<T> ProcessResults(string responseXml)
-        //{
-        //    if (string.IsNullOrEmpty(responseXml))
-        //    {
-        //        responseXml = "<statuses></statuses>";
-        //    }
-
-        //    XElement twitterResponse = XElement.Parse(responseXml);
-        //    var responseItems = twitterResponse.Elements("status").ToList();
-
-        //    // if we get only a single response back,
-        //    // such as a Show request, make sure we get it
-        //    if (twitterResponse.Name == "status")
-        //    {
-        //        responseItems.Add(twitterResponse);
-        //    }
-
-        //    var statusList =
-        //        from status in responseItems
-        //        let createdAtDate =
-        //            DateTime.ParseExact(
-        //                status.Element("created_at").Value,
-        //                "ddd MMM dd HH:mm:ss %zzzz yyyy",
-        //                CultureInfo.InvariantCulture,
-        //                DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal)
-        //        let user = status.Element("user")
-        //        select
-        //           new Favorites
-        //           {
-        //               Type = Type,
-        //               Page = Page,
-        //               CreatedAt = createdAtDate,
-        //               Favorited =
-        //                bool.Parse(
-        //                    string.IsNullOrEmpty(status.Element("favorited").Value) ?
-        //                    "true" :
-        //                    status.Element("favorited").Value),
-        //               ID = status.Element("id").Value,
-        //               InReplyToStatusID = status.Element("in_reply_to_status_id").Value,
-        //               InReplyToUserID = status.Element("in_reply_to_user_id").Value,
-        //               Source = status.Element("source").Value,
-        //               Text = status.Element("text").Value,
-        //               Truncated = bool.Parse(status.Element("truncated").Value),
-        //               InReplyToScreenName =
-        //                status.Element("in_reply_to_screen_name") == null ?
-        //                    string.Empty :
-        //                    status.Element("in_reply_to_screen_name").Value,
-        //               User = User.CreateUser(user)
-        //           };
-
-        //    return statusList.OfType<T>().ToList();
-        //}
     }
 }

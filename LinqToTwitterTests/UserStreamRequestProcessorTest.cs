@@ -54,7 +54,7 @@ namespace LinqToTwitterTests
                 { "AllReplies", "True" }
             };
 
-            Request req = reqProc.BuildURL(parms);
+            Request req = reqProc.BuildUrl(parms);
 
             Assert.AreEqual("https://userstream.twitter.com/2/user.json?delimited=length&track=LINQ%20to%20Twitter&with=follow&replies=all", req.FullUrl);
         }
@@ -72,7 +72,7 @@ namespace LinqToTwitterTests
                 { "AllReplies", "True" }
             };
 
-            Request req = reqProc.BuildURL(parms);
+            Request req = reqProc.BuildUrl(parms);
 
             Assert.AreEqual("http://betastream.twitter.com/2b/site.json?delimited=length&follow=1%2C2%2C3&with=follow", req.FullUrl);
         }
@@ -93,7 +93,7 @@ namespace LinqToTwitterTests
 
             try
             {
-                reqProc.BuildURL(parms);
+                reqProc.BuildUrl(parms);
 
                 Assert.Fail("ArgumentException Expected.");
             }
@@ -115,7 +115,7 @@ namespace LinqToTwitterTests
 
             try
             {
-                reqProc.BuildURL(parms);
+                reqProc.BuildUrl(parms);
 
                 Assert.Fail("Expected ArgumentNullException.");
             }
@@ -135,7 +135,7 @@ namespace LinqToTwitterTests
                 { "Follow", "1, 2, 3" },
             };
 
-            Request req = reqProc.BuildURL(parms);
+            Request req = reqProc.BuildUrl(parms);
 
             Assert.AreEqual("http://betastream.twitter.com/2b/site.json?follow=1%2C2%2C3", req.FullUrl);
         }

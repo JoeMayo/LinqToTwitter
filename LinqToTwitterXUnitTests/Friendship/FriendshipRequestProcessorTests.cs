@@ -137,7 +137,7 @@ namespace LinqToTwitterXUnitTests
                 };
             string expected = "https://api.twitter.com/1/friendships/exists.xml?user_a=123&user_b=456";
 
-            Request req = friendReqProc.BuildURL(parameters);
+            Request req = friendReqProc.BuildUrl(parameters);
 
             Assert.Equal(expected, req.FullUrl);
         }
@@ -157,7 +157,7 @@ namespace LinqToTwitterXUnitTests
                 };
             string expected = "https://api.twitter.com/1/friendships/show.xml?source_id=123&source_screen_name=JoeMayo&target_id=456&target_screen_name=LinqToTweeter";
 
-            Request req = friendReqProc.BuildURL(parameters);
+            Request req = friendReqProc.BuildUrl(parameters);
 
             Assert.Equal(expected, req.FullUrl);
         }
@@ -174,7 +174,7 @@ namespace LinqToTwitterXUnitTests
                     { "friendReqProcScreenName", "LinqToTweeter" }
                 };
 
-            Assert.Throws<ArgumentException>(() => friendReqProc.BuildURL(parameters));
+            Assert.Throws<ArgumentException>(() => friendReqProc.BuildUrl(parameters));
         }
 
         [Fact]
@@ -189,7 +189,7 @@ namespace LinqToTwitterXUnitTests
                     { "SourceScreenName", "JoeMayo" },
                 };
 
-            Assert.Throws<ArgumentException>(() => friendReqProc.BuildURL(parameters));
+            Assert.Throws<ArgumentException>(() => friendReqProc.BuildUrl(parameters));
         }
 
         [Fact]
@@ -203,7 +203,7 @@ namespace LinqToTwitterXUnitTests
                 };
             string expected = "http://api.twitter.com/friendships/no_retweet_ids.xml";
 
-            Request req = friendReqProc.BuildURL(parameters);
+            Request req = friendReqProc.BuildUrl(parameters);
 
             Assert.Equal(expected, req.FullUrl);
         }
@@ -214,7 +214,7 @@ namespace LinqToTwitterXUnitTests
             FriendshipRequestProcessor<Friendship> friendReqProc = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "https://api.twitter.com/1/" };
             Dictionary<string, string> parameters = new Dictionary<string, string> { };
 
-            var ex = Assert.Throws<ArgumentException>(() => friendReqProc.BuildURL(parameters));
+            var ex = Assert.Throws<ArgumentException>(() => friendReqProc.BuildUrl(parameters));
 
             Assert.Equal("Type", ex.ParamName);
         }
@@ -225,7 +225,7 @@ namespace LinqToTwitterXUnitTests
             FriendshipRequestProcessor<Friendship> friendReqProc = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "https://api.twitter.com/1/" };
             Dictionary<string, string> parameters = null;
 
-            var ex = Assert.Throws<ArgumentException>(() => friendReqProc.BuildURL(parameters));
+            var ex = Assert.Throws<ArgumentException>(() => friendReqProc.BuildUrl(parameters));
 
             Assert.Equal("Type", ex.ParamName);
         }
@@ -241,7 +241,7 @@ namespace LinqToTwitterXUnitTests
                 };
             string expected = "https://api.twitter.com/1/friendships/incoming.xml";
 
-            Request req = friendReqProc.BuildURL(parameters);
+            Request req = friendReqProc.BuildUrl(parameters);
 
             Assert.Equal(expected, req.FullUrl);
         }
@@ -258,7 +258,7 @@ namespace LinqToTwitterXUnitTests
                 };
             string expected = "https://api.twitter.com/1/friendships/incoming.xml?cursor=-1";
 
-            Request req = friendReqProc.BuildURL(parameters);
+            Request req = friendReqProc.BuildUrl(parameters);
 
             Assert.Equal(expected, req.FullUrl);
         }
@@ -274,7 +274,7 @@ namespace LinqToTwitterXUnitTests
                 };
             string expected = "https://api.twitter.com/1/friendships/outgoing.xml";
 
-            Request req = friendReqProc.BuildURL(parameters);
+            Request req = friendReqProc.BuildUrl(parameters);
 
             Assert.Equal(expected, req.FullUrl);
         }
@@ -291,7 +291,7 @@ namespace LinqToTwitterXUnitTests
                 };
             string expected = "https://api.twitter.com/1/friendships/outgoing.xml?cursor=-1";
 
-            Request req = friendReqProc.BuildURL(parameters);
+            Request req = friendReqProc.BuildUrl(parameters);
 
             Assert.Equal(expected, req.FullUrl);
         }
@@ -308,7 +308,7 @@ namespace LinqToTwitterXUnitTests
                 };
             string expected = "https://api.twitter.com/1/friendships/lookup.xml?screen_name=twitter%2Cjoemayo";
 
-            Request req = friendReqProc.BuildURL(parameters);
+            Request req = friendReqProc.BuildUrl(parameters);
 
             Assert.Equal(expected, req.FullUrl);
         }
@@ -324,7 +324,7 @@ namespace LinqToTwitterXUnitTests
                     //{ "ScreenName", "twitter,joemayo" }
                 };
 
-            var ex = Assert.Throws<ArgumentNullException>(() => friendReqProc.BuildURL(parameters));
+            var ex = Assert.Throws<ArgumentNullException>(() => friendReqProc.BuildUrl(parameters));
                 
             Assert.Equal("ScreenName", ex.ParamName);
         }

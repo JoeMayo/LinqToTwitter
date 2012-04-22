@@ -118,7 +118,7 @@ namespace LinqToTwitterXUnitTests
                 };
             const string expected = "https://api.twitter.com/1/blocks/exists/123.json?user_id=456&screen_name=789";
 
-            Request req = buildReqProc.BuildURL(parameters);
+            Request req = buildReqProc.BuildUrl(parameters);
 
             Assert.Equal(expected, req.FullUrl);
         }
@@ -135,7 +135,7 @@ namespace LinqToTwitterXUnitTests
                 };
             const string expected = "https://api.twitter.com/1/blocks/blocking.json?page=2";
 
-            Request req = blocksReqProc.BuildURL(parameters);
+            Request req = blocksReqProc.BuildUrl(parameters);
 
             Assert.Equal(expected, req.FullUrl);
         }
@@ -151,7 +151,7 @@ namespace LinqToTwitterXUnitTests
                 };
             const string expected = "https://api.twitter.com/1/blocks/blocking/ids.json";
 
-            Request req = blocksReqProc.BuildURL(parameters);
+            Request req = blocksReqProc.BuildUrl(parameters);
 
             Assert.Equal(expected, req.FullUrl);
         }
@@ -162,7 +162,7 @@ namespace LinqToTwitterXUnitTests
             var blockReqProc = new BlocksRequestProcessor<Blocks> { BaseUrl = "https://api.twitter.com/1/" };
             var parameters = new Dictionary<string, string>();
 
-            var ex = Assert.Throws<ArgumentException>(() => blockReqProc.BuildURL(parameters));
+            var ex = Assert.Throws<ArgumentException>(() => blockReqProc.BuildUrl(parameters));
                 
             Assert.Equal("Type", ex.ParamName);
         }
@@ -172,7 +172,7 @@ namespace LinqToTwitterXUnitTests
         {
             var blockReqProc = new BlocksRequestProcessor<Blocks> { BaseUrl = "https://api.twitter.com/1/" };
 
-            var ex = Assert.Throws<ArgumentException>(() => blockReqProc.BuildURL(null));
+            var ex = Assert.Throws<ArgumentException>(() => blockReqProc.BuildUrl(null));
 
             Assert.Equal("Type", ex.ParamName);
         }

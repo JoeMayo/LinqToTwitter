@@ -241,7 +241,7 @@ namespace LinqToTwitterTests
                 };
             string expected = "https://api.twitter.com/1/friendships/exists.xml?user_a=123&user_b=456";
 
-            Request req = target.BuildURL(parameters);
+            Request req = target.BuildUrl(parameters);
 
             Assert.AreEqual(expected, req.FullUrl);
         }
@@ -264,7 +264,7 @@ namespace LinqToTwitterTests
                 };
             string expected = "https://api.twitter.com/1/friendships/show.xml?source_id=123&source_screen_name=JoeMayo&target_id=456&target_screen_name=LinqToTweeter";
 
-            Request req = target.BuildURL(parameters);
+            Request req = target.BuildUrl(parameters);
 
             Assert.AreEqual(expected, req.FullUrl);
         }
@@ -285,7 +285,7 @@ namespace LinqToTwitterTests
                     { "TargetScreenName", "LinqToTweeter" }
                 };
             
-            target.BuildURL(parameters);
+            target.BuildUrl(parameters);
         }
 
         /// <summary>
@@ -304,7 +304,7 @@ namespace LinqToTwitterTests
                     { "SourceScreenName", "JoeMayo" },
                 };
             
-            target.BuildURL(parameters);
+            target.BuildUrl(parameters);
         }
 
         /// <summary>
@@ -321,7 +321,7 @@ namespace LinqToTwitterTests
                 };
             string expected = "http://api.twitter.com/friendships/no_retweet_ids.xml";
 
-            Request req = target.BuildURL(parameters);
+            Request req = target.BuildUrl(parameters);
 
             Assert.AreEqual(expected, req.FullUrl);
         }
@@ -337,7 +337,7 @@ namespace LinqToTwitterTests
 
             try
             {
-                target.BuildURL(parameters);
+                target.BuildUrl(parameters);
 
                 Assert.Fail("Expected ArgumentException.");
             }
@@ -358,7 +358,7 @@ namespace LinqToTwitterTests
 
             try
             {
-                target.BuildURL(parameters);
+                target.BuildUrl(parameters);
 
                 Assert.Fail("Expected ArgumentException.");
             }
@@ -382,7 +382,7 @@ namespace LinqToTwitterTests
                 };
             string expected = "https://api.twitter.com/1/friendships/incoming.xml";
 
-            Request req = target.BuildURL(parameters);
+            Request req = target.BuildUrl(parameters);
 
             Assert.AreEqual(expected, req.FullUrl);
         }
@@ -402,7 +402,7 @@ namespace LinqToTwitterTests
                 };
             string expected = "https://api.twitter.com/1/friendships/incoming.xml?cursor=-1";
 
-            Request req = target.BuildURL(parameters);
+            Request req = target.BuildUrl(parameters);
 
             Assert.AreEqual(expected, req.FullUrl);
         }
@@ -421,7 +421,7 @@ namespace LinqToTwitterTests
                 };
             string expected = "https://api.twitter.com/1/friendships/outgoing.xml";
 
-            Request req = target.BuildURL(parameters);
+            Request req = target.BuildUrl(parameters);
 
             Assert.AreEqual(expected, req.FullUrl);
         }
@@ -441,7 +441,7 @@ namespace LinqToTwitterTests
                 };
             string expected = "https://api.twitter.com/1/friendships/outgoing.xml?cursor=-1";
 
-            Request req = target.BuildURL(parameters);
+            Request req = target.BuildUrl(parameters);
 
             Assert.AreEqual(expected, req.FullUrl);
         }
@@ -461,7 +461,7 @@ namespace LinqToTwitterTests
                 };
             string expected = "https://api.twitter.com/1/friendships/lookup.xml?screen_name=twitter%2Cjoemayo";
 
-            Request req = friendReqProc.BuildURL(parameters);
+            Request req = friendReqProc.BuildUrl(parameters);
 
             Assert.AreEqual(expected, req.FullUrl);
         }
@@ -479,7 +479,7 @@ namespace LinqToTwitterTests
 
             try
             {
-                friendReqProc.BuildURL(parameters);
+                friendReqProc.BuildUrl(parameters);
 
                 Assert.Fail("Expected ArgumentNullException.");
             }

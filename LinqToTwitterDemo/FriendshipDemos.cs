@@ -83,7 +83,7 @@ namespace LinqToTwitterDemo
                 (from friend in twitterCtx.Friendship
                  where friend.Type == FriendshipType.Exists &&
                        friend.SubjectUser == "JoeMayo" &&
-                       friend.FollowingUser == "LinqToTweeter"
+                       friend.FollowingUser == "Linq2Tweeter"
                  select friend)
                  .FirstOrDefault();
 

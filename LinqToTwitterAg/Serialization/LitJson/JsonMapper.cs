@@ -495,7 +495,7 @@ namespace LitJson
 
                 while (true) {
                     IJsonWrapper item = ReadValue (factory, reader);
-                    if (reader.Token == JsonToken.ArrayEnd)
+                    if (item == null && reader.Token == JsonToken.ArrayEnd)
                         break;
 
                     ((IList) instance).Add (item);

@@ -37,7 +37,7 @@ namespace LinqToTwitter
             Location = user.GetValue<string>("location");
             Description = user.GetValue<string>("description");
             ProfileImageUrl = user.GetValue<string>("profile_image_url");
-            URL = user.GetValue<string>("url");
+            Url = user.GetValue<string>("url");
             Protected = user.GetValue<bool>("protected");
             FollowersCount = user.GetValue<int>("followers_count");
             ProfileBackgroundColor = user.GetValue<string>("profile_background_color");
@@ -93,7 +93,7 @@ namespace LinqToTwitter
                 Location = user.GetString("location"),
                 Description = user.GetString("description"),
                 ProfileImageUrl = user.GetString("profile_image_url"),
-                URL = user.GetString("url"),
+                Url = user.GetString("url"),
                 Protected = user.GetBool("protected"),
                 FollowersCount = user.GetInt("followers_count"),
                 ProfileBackgroundColor = user.GetString("profile_background_color"),
@@ -239,7 +239,7 @@ namespace LinqToTwitter
         /// <summary>
         /// user's URL
         /// </summary>
-        public string URL { get; set; }
+        public string Url { get; set; }
 
         /// <summary>
         /// user's profile has not been configured (is just defaults)

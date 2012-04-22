@@ -72,6 +72,17 @@ namespace LinqToTwitterTests
         }
 
         [TestMethod]
+        public void Place_Can_Serialize()
+        {
+            var place = new Place();
+            var stringBuilder = new StringBuilder();
+
+            XmlWriter writer = XmlWriter.Create(stringBuilder);
+            XmlSerializer xmlSerializer = new XmlSerializer(typeof(Place));
+            xmlSerializer.Serialize(writer, place);
+        }
+
+        [TestMethod]
         public void Geometry_Can_Serialize()
         {
             var geo = new Geometry();

@@ -757,7 +757,7 @@ namespace LinqToTwitter
             var parameters = GetRequestParameters(expression, reqProc);
 
             // construct REST endpoint, based on input parameters
-            var request = reqProc.BuildURL(parameters);
+            var request = reqProc.BuildUrl(parameters);
 
             string results;
 
@@ -840,8 +840,8 @@ namespace LinqToTwitter
         {
             if (expression == null)
             {
-                const string nullExpressionMessage = "Expression passed to CreateRequestProcessor must not be null.";
-                throw new ArgumentNullException(nullExpressionMessage);
+                const string NullExpressionMessage = "Expression passed to CreateRequestProcessor must not be null.";
+                throw new ArgumentNullException(NullExpressionMessage);
             }
 
             string requestType = new MethodCallExpressionTypeFinder().GetGenericType(expression).Name;
