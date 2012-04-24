@@ -16,8 +16,8 @@ namespace LinqToTwitterDemo
         public static void Run(TwitterContext twitterCtx)
         {
             //PerformHelpTest(twitterCtx);
-            GetHelpConfiguration(twitterCtx);
-            //GetHelpLanguages(twitterCtx);
+            //GetHelpConfiguration(twitterCtx);
+            GetHelpLanguages(twitterCtx);
         }
 
         /// <summary>

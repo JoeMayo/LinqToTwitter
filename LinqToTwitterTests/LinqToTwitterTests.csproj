@@ -127,7 +127,6 @@
     <Compile Include="Common\DebuggerWriter.cs" />
     <Compile Include="Common\OAuthTwitterMock.cs" />
     <Compile Include="Common\TestCulture.cs" />
-    <Compile Include="HelpRequestProcessorTest.cs" />
     <Compile Include="HelpTest.cs" />
     <Compile Include="MvcAuthorizerTest.cs" />
     <Compile Include="OAuthTwitterTest.cs" />
