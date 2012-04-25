@@ -73,6 +73,7 @@
     <Compile Include="GeoTests\GeoTests.cs" />
     <Compile Include="GeoTests\PlaceTests.cs" />
     <Compile Include="HelpTests\HelpTests.cs" />
+    <Compile Include="LegalTests\LegalRequestProcessorTests.cs" />
     <Compile Include="LinqToTwitter\TwitterContextCreateRequestProcessorTests.cs" />
     <Compile Include="List\ListTests.cs" />
     <Compile Include="Search\SearchRequestProcessorTests.cs" />

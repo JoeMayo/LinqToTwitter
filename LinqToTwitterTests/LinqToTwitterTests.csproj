@@ -133,7 +133,6 @@
     <Compile Include="RelatedResultsRequestProcessorTest.cs" />
     <Compile Include="RelatedResultsTest.cs" />
     <Compile Include="SignInAuthorizerTest.cs" />
-    <Compile Include="LegalRequestProcessorTests.cs" />
     <Compile Include="OAuthAuthorizerTest.cs" />
     <Compile Include="PinAuthorizerTest.cs" />
     <Compile Include="RawRequestProcessorTest.cs" />

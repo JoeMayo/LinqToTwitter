@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Xml.Linq;
+using LinqToTwitter.Common;
+using LitJson;
 
 namespace LinqToTwitter
 {
-    public class LegalRequestProcessor<T> : IRequestProcessor<T>
+    public class LegalRequestProcessor<T> : IRequestProcessor<T>, IRequestProcessorWantsJson
     {
         public string BaseUrl { get; set; }
 
@@ -39,9 +41,9 @@ namespace LinqToTwitter
         /// <returns>URL conforming to Twitter API</returns>
         public Request BuildUrl(Dictionary<string, string> parameters)
         {
-            const string typeParam = "Type";
+            const string TypeParam = "Type";
             if (parameters == null || !parameters.ContainsKey("Type"))
-                throw new ArgumentException("You must set Type.", typeParam);
+                throw new ArgumentException("You must set Type.", TypeParam);
 
             Type = RequestProcessorHelper.ParseQueryEnumType<LegalType>(parameters["Type"]);
 
@@ -65,7 +67,7 @@ namespace LinqToTwitter
         /// <returns>base url + show segment</returns>
         private Request BuildPrivacyUrl()
         {
-            var req = new Request(BaseUrl + "privacy.xml");
+            var req = new Request(BaseUrl + "privacy.json");
             return req;
         }
 
@@ -76,30 +78,38 @@ namespace LinqToTwitter
         /// <returns>base url + show segment</returns>
         private Request BuildTosUrl()
         {
-            var req = new Request(BaseUrl + "tos.xml");
+            var req = new Request(BaseUrl + "tos.json");
             return req;
         }
 
         /// <summary>
-        /// Returns an object for interacting with stream
+        /// Handles legal response from Twitter
         /// </summary>
         /// <param name="notUsed">Response from Twitter</param>
         /// <returns>List with a single Legal</returns>
-        public List<T> ProcessResults(string responseXml)
+        public List<T> ProcessResults(string responseJson)
         {
-            if (string.IsNullOrEmpty(responseXml))
+            JsonData legalJson = JsonMapper.ToObject(responseJson);
+
+            Legal legal = new Legal
             {
-                responseXml = "<legal></legal>";
+                Type = Type
+            };
+
+            switch (Type)
+            {
+                case LegalType.Privacy:
+                    legal.Text = legalJson.GetValue<string>("privacy");
+                    break;
+                case LegalType.TOS:
+                    legal.Text = legalJson.GetValue<string>("tos");
+                    break;
+                default:
+                    legal = new Legal();
+                    break;
             }
 
-            var legalList = new List<Legal>
-            {
-                new Legal
-                {
-                    Type = Type,
-                    Text = XElement.Parse(responseXml).Value
-                }
-            };
+            var legalList = new List<Legal> { legal };
 
             return legalList.OfType<T>().ToList();
         }
