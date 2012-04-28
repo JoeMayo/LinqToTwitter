@@ -356,6 +356,9 @@
     <Compile Include="..\LinqToTwitterAg\List\List.cs">
       <Link>List\List.cs</Link>
     </Compile>
+    <Compile Include="..\LinqToTwitterAg\List\ListExtensions.cs">
+      <Link>List\ListExtensions.cs</Link>
+    </Compile>
     <Compile Include="..\LinqToTwitterAg\List\ListRequestProcessor.cs">
       <Link>List\ListRequestProcessor.cs</Link>
     </Compile>

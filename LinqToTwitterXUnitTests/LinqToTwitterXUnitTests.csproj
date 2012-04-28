@@ -72,10 +72,11 @@
     <Compile Include="GeoTests\GeoRequestProcessorTests.cs" />
     <Compile Include="GeoTests\GeoTests.cs" />
     <Compile Include="GeoTests\PlaceTests.cs" />
-    <Compile Include="HelpTests\HelpTests.cs" />
+    <Compile Include="HelpTests\HelpRequestProcessorTests.cs" />
     <Compile Include="LegalTests\LegalRequestProcessorTests.cs" />
     <Compile Include="LinqToTwitter\TwitterContextCreateRequestProcessorTests.cs" />
-    <Compile Include="List\ListTests.cs" />
+    <Compile Include="ListTests\ListExtensionsTests.cs" />
+    <Compile Include="ListTests\ListRequestProcessorTests.cs" />
     <Compile Include="Search\SearchRequestProcessorTests.cs" />
     <Compile Include="Status\StatusExtensionsTweetWithMediaNoLocationTests.cs" />
     <Compile Include="Status\StatusExtensionsTweetWithMediaAndLocationTests.cs" />
@@ -97,6 +98,7 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

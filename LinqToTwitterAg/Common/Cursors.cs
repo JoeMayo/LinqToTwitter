@@ -20,8 +20,8 @@ namespace LinqToTwitter
         public Cursors() {}
         internal Cursors(JsonData cursors)
         {
-            Next = cursors.GetValue<string>("next_cursor");
-            Previous = cursors.GetValue<string>("previous_cursor");
+            Next = cursors.GetValue<string>("next_cursor_str");
+            Previous = cursors.GetValue<string>("previous_cursor_str");
         }
 
         /// <summary>

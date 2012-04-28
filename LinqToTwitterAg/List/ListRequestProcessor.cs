@@ -2,11 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Xml.Linq;
+using LitJson;
+
+using LinqToTwitter.Common;
 
 namespace LinqToTwitter
 {
-    public class ListRequestProcessor<T> : IRequestProcessor<T>
+    public class ListRequestProcessor<T> : 
+        IRequestProcessor<T>, 
+        IRequestProcessorWantsJson, 
+        IRequestProcessorWithAction<T>
+        where T : class
     {
         const string TypeParam = "Type";
         const string ListIdOrSlugParam = "ListIdOrSlug";
@@ -21,7 +27,7 @@ namespace LinqToTwitter
         /// <summary>
         /// type of list to query
         /// </summary>
-        private ListType Type { get; set; }
+        internal ListType Type { get; set; }
 
         /// <summary>
         /// Helps page results
@@ -259,7 +265,7 @@ namespace LinqToTwitter
         /// <returns>Url of requesting user's subscribed lists</returns>
         private Request BuildAllUrl(Dictionary<string, string> parameters)
         {
-            var req = new Request(BaseUrl + "lists/all.xml");
+            var req = new Request(BaseUrl + "lists/all.json");
             var urlParams = req.RequestParameters;
 
             if (parameters.ContainsKey("UserID"))
@@ -284,14 +290,14 @@ namespace LinqToTwitter
         /// <returns>Base URL + lists request</returns>
         private Request BuildListsUrl(Dictionary<string, string> parameters)
         {
-            const string userIDOrScreenNameParam = "UserIdOrScreenName";
+            const string UserIDOrScreenNameParam = "UserIdOrScreenName";
             if (!(parameters.ContainsKey("UserID") && !string.IsNullOrEmpty(parameters["UserID"])) &&
                 !(parameters.ContainsKey("ScreenName") && !string.IsNullOrEmpty(parameters["ScreenName"])))
             {
-                throw new ArgumentException("Either UserID or ScreenName are required.", userIDOrScreenNameParam);
+                throw new ArgumentException("Either UserID or ScreenName are required.", UserIDOrScreenNameParam);
             }
 
-            var req = new Request(BaseUrl + "lists.xml");
+            var req = new Request(BaseUrl + "lists.json");
             var urlParams = req.RequestParameters;
 
             if (parameters.ContainsKey("UserID"))
@@ -335,7 +341,7 @@ namespace LinqToTwitter
                 throw new ArgumentException("If you specify a Slug, you must also specify either OwnerID or OwnerScreenName.", OwnerIdOrOwnerScreenName);
             }
 
-            var req = new Request(BaseUrl + @"lists/show.xml");
+            var req = new Request(BaseUrl + @"lists/show.json");
             var urlParams = req.RequestParameters;
 
             if (parameters.ContainsKey("Slug"))
@@ -385,7 +391,7 @@ namespace LinqToTwitter
                 throw new ArgumentException("If you specify a Slug, you must also specify either OwnerID or OwnerScreenName.", OwnerIdOrOwnerScreenName);
             }
 
-            var req = new Request(BaseUrl + "lists/statuses.xml");
+            var req = new Request(BaseUrl + "lists/statuses.json");
             var urlParams = req.RequestParameters;
 
             if (parameters.ContainsKey("OwnerID"))
@@ -483,7 +489,7 @@ namespace LinqToTwitter
                 throw new ArgumentException("Either UserID or ScreenName are required.", UserIdOrScreenName);
             }
 
-            var req = new Request(BaseUrl + "lists/memberships.xml");
+            var req = new Request(BaseUrl + "lists/memberships.json");
             var urlParams = req.RequestParameters;
 
             if (parameters.ContainsKey("UserID"))
@@ -529,7 +535,7 @@ namespace LinqToTwitter
                 throw new ArgumentException("Either UserID or ScreenName are required.", UserIdOrScreenName);
             }
 
-            var req = new Request(BaseUrl + "lists/subscriptions.xml");
+            var req = new Request(BaseUrl + "lists/subscriptions.json");
             var urlParams = req.RequestParameters;
 
             if (parameters.ContainsKey("UserID"))
@@ -573,7 +579,7 @@ namespace LinqToTwitter
                 throw new ArgumentException("If you specify a Slug, you must also specify either OwnerID or OwnerScreenName.", OwnerIdOrOwnerScreenName);
             }
 
-            var req = new Request(BaseUrl + "lists/members.xml");
+            var req = new Request(BaseUrl + "lists/members.json");
             var urlParams = req.RequestParameters;
 
             if (parameters.ContainsKey("OwnerID"))
@@ -644,7 +650,7 @@ namespace LinqToTwitter
                 throw new ArgumentException("If you specify a Slug, you must also specify either OwnerID or OwnerScreenName.", OwnerIdOrOwnerScreenName);
             }
 
-            var req = new Request(BaseUrl + "lists/members/show.xml");
+            var req = new Request(BaseUrl + "lists/members/show.json");
             var urlParams = req.RequestParameters;
 
             if (parameters.ContainsKey("UserID"))
@@ -715,7 +721,7 @@ namespace LinqToTwitter
                 throw new ArgumentException("If you specify a Slug, you must also specify either OwnerID or OwnerScreenName.", OwnerIdOrOwnerScreenName);
             }
 
-            var req = new Request(BaseUrl + "lists/subscribers.xml");
+            var req = new Request(BaseUrl + "lists/subscribers.json");
             var urlParams = req.RequestParameters;
 
             if (parameters.ContainsKey("OwnerID"))
@@ -786,7 +792,7 @@ namespace LinqToTwitter
                 throw new ArgumentException("If you specify a Slug, you must also specify either OwnerID or OwnerScreenName.", OwnerIdOrOwnerScreenName);
             }
 
-            var req = new Request(BaseUrl + "lists/subscribers/show.xml");
+            var req = new Request(BaseUrl + "lists/subscribers/show.json");
             var urlParams = req.RequestParameters;
 
             if (parameters.ContainsKey("UserID"))
@@ -838,81 +844,45 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// transforms XML into IList of List
+        /// Transforms Twitter response into List
         /// </summary>
-        /// <param name="responseXml">xml with Twitter response</param>
-        /// <returns>IList of List</returns>
-        public virtual List<T> ProcessResults(string responseXml)
+        /// <param name="responseJson">Json Twitter response</param>
+        /// <returns>List of List</returns>
+        public virtual List<T> ProcessResults(string responseJson)
         {
-            if (string.IsNullOrEmpty(responseXml))
+            if (string.IsNullOrEmpty(responseJson)) return new List<T>();
+
+            JsonData listJson = JsonMapper.ToObject(responseJson);
+
+            List<List> lists;
+            switch (Type)
             {
-                responseXml = "<lists></lists>";
+                case ListType.Lists:
+                case ListType.Memberships:
+                case ListType.Subscriptions:
+                case ListType.All:
+                    lists = HandleMultipleListsResponse(listJson);
+                    break;
+                case ListType.Show:
+                    lists = HandleSingleListResponse(listJson);
+                    break;
+                case ListType.Statuses:
+                    lists = HandleStatusesResponse(listJson);
+                    break;
+                case ListType.Members:
+                case ListType.Subscribers:
+                    lists = HandleMultipleUsersResponse(listJson);
+                    break;
+                case ListType.IsMember:
+                case ListType.IsSubscribed:
+                    lists = HandleSingleUserResponse(listJson);
+                    break;
+                default:
+                    lists = new List<List>();
+                    break;
             }
 
-            XElement twitterResponse = XElement.Parse(responseXml);
-            var lists = new List<List>();
-
-            if (twitterResponse.Name == "lists_list")
-            {
-                XElement responseLists = twitterResponse.Element("lists");
-                if (responseLists != null)
-                {
-                    lists =
-                        (from list in responseLists.Elements("list")
-                         select List.CreateList(list, twitterResponse))
-                        .ToList();
-                }
-            }
-            else if (twitterResponse.Name == "lists")
-            {
-                lists =
-                    (from list in twitterResponse.Elements("list")
-                     select List.CreateList(list, twitterResponse))
-                    .ToList();
-            }
-            else if (twitterResponse.Name == "list")
-            {
-                lists.Add(
-                    List.CreateList(twitterResponse, twitterResponse)
-                    );
-            }
-            else if (twitterResponse.Name == "users_list")
-            {
-                XElement users = twitterResponse.Element("users");
-                if (users != null)
-                    lists.Add(
-                        new List
-                        {
-                            Users =
-                                (from user in users.Elements("user")
-                                 select User.CreateUser(user))
-                                .ToList(),
-                            CursorMovement = Cursors.CreateCursors(twitterResponse)
-                        });
-            }
-            else if (twitterResponse.Name == "user")
-            {
-                lists.Add(
-                    new List
-                    {
-                        Users = new List<User>
-                        {
-                            User.CreateUser(twitterResponse)
-                        }
-                    });
-            }
-            else if (twitterResponse.Name == "statuses")
-            {
-                lists.Add(
-                    new List
-                    {
-                        Statuses =
-                            (from status in twitterResponse.Elements("status")
-                             select Status.CreateStatus(status))
-                             .ToList(),
-                        CursorMovement = Cursors.CreateCursors(twitterResponse)
-                    });
-            }
+            var cursors = new Cursors(listJson);
 
             lists.ForEach(list =>
             {
@@ -935,9 +905,109 @@ namespace LinqToTwitter
                 list.IncludeEntities = IncludeEntities;
                 list.IncludeRetweets = IncludeRetweets;
                 list.FilterToOwnedLists = FilterToOwnedLists;
+                list.CursorMovement = cursors;
             });
 
             return lists.AsEnumerable().OfType<T>().ToList();
+        }
+  
+        private List<List> HandleSingleListResponse(JsonData listJson)
+        {
+            var lists = new List<List>
+            {
+                new List(listJson)
+            };
+
+            return lists;
+        }
+  
+        List<List> HandleMultipleListsResponse(JsonData listJson)
+        {
+            var lists =
+                (from JsonData list in listJson.GetValue<JsonData>("lists")
+                 select new List(list))
+                .ToList();
+
+            return lists;
+        }
+  
+        List<List> HandleSingleUserResponse(JsonData listJson)
+        {
+            var lists = new List<List>
+            {
+                new List
+                {
+                    Users = new List<User> { new User(listJson) }
+                }
+            };
+
+            return lists;
+        }
+
+        List<List> HandleMultipleUsersResponse(JsonData listJson)
+        {
+            var lists = new List<List>
+            {
+                new List
+                {
+                    Users =
+                        (from JsonData user in listJson.GetValue<JsonData>("users")
+                         select new User(user))
+                        .ToList()
+                }
+            };
+
+            return lists;
+        }
+
+        private List<List> HandleStatusesResponse(JsonData listJson)
+        {
+            var lists = new List<List>
+            {
+                new List
+                {
+                    Statuses =
+                        (from JsonData status in listJson
+                         select new Status(status))
+                        .ToList()
+                }
+            };
+
+            return lists;
+        }
+
+        /// <summary>
+        /// transforms json into an action response
+        /// </summary>
+        /// <param name="responseJson">json with Twitter response</param>
+        /// <param name="theAction">Used to specify side-effect methods</param>
+        /// <returns>Action response</returns>
+        public virtual T ProcessActionResult(string responseJson, Enum theAction)
+        {
+            List list = null;
+
+            if (!string.IsNullOrEmpty(responseJson))
+            {
+                JsonData listJson = JsonMapper.ToObject(responseJson);
+
+                switch ((ListAction)theAction)
+                {
+                    case ListAction.Create:
+                    case ListAction.Update:
+                    case ListAction.Delete:
+                    case ListAction.AddMember:
+                    case ListAction.AddMemberRange:
+                    case ListAction.DeleteMember:
+                    case ListAction.Subscribe:
+                    case ListAction.Unsubscribe:
+                        list = new List(listJson);
+                        break;
+                    default:
+                        throw new InvalidOperationException("The default case of ProcessActionResult should never execute because a Type must be specified.");
+                }
+            }
+
+            return list.ItemCast(default(T));
         }
 
         private static bool FlagTrue(IDictionary<string, string> parameters, string key)

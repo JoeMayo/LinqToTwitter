@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Xml.Linq;
+using LinqToTwitter.Common;
+using LitJson;
 
 namespace LinqToTwitter
 {
@@ -9,25 +10,21 @@ namespace LinqToTwitter
     /// </summary>
     public class List
     {
-        public static List CreateList(XElement list, XElement cursorNode)
+        public List() { }
+        public List(JsonData listJson)
         {
-            return new List
-            {
-                ListIDResult = list.Element("id").Value,
-                Name = list.Element("name").Value,
-                FullName = list.Element("full_name").Value,
-                SlugResult = list.Element("slug").Value,
-                Description = list.Element("description").Value,
-                SubscriberCount = int.Parse(list.Element("subscriber_count").Value),
-                MemberCount = int.Parse(list.Element("member_count").Value),
-                Uri = list.Element("uri").Value,
-                Mode = list.Element("mode").Value,
-                Users = new List<User>
-                {
-                    User.CreateUser(list.Element("user"))
-                },
-                CursorMovement = Cursors.CreateCursors(cursorNode)
-            };
+            Name = listJson.GetValue<string>("name");
+            FullName = listJson.GetValue<string>("full_name");
+            MemberCount = listJson.GetValue<int>("member_count");
+            Description = listJson.GetValue<string>("description");
+            Mode = listJson.GetValue<string>("mode");
+            Uri = listJson.GetValue<string>("uri");
+            Users = new List<User> { new User(listJson.GetValue<JsonData>("user")) };
+            ListIDResult = listJson.GetValue<string>("id_str");
+            SubscriberCount = listJson.GetValue<int>("subscriber_count");
+            CreatedAt = listJson.GetValue<string>("created_at").GetDate(DateTime.MaxValue);
+            Following = listJson.GetValue<bool>("following");
+            SlugResult = listJson.GetValue<string>("slug");
         }
 
         /// <summary>
@@ -138,6 +135,16 @@ namespace LinqToTwitter
         /// Number of subscribers (Returned from Twitter)
         /// </summary>
         public int SubscriberCount { get; set; }
+
+        /// <summary>
+        /// When the list was created
+        /// </summary>
+        public DateTime CreatedAt { get; set; }
+
+        /// <summary>
+        /// Is authenticated user following list
+        /// </summary>
+        public bool Following { get; set; }
 
         /// <summary>
         /// Number of members (Returned from Twitter)

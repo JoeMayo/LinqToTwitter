@@ -143,7 +143,6 @@
     <Compile Include="XmlSerializerTests.cs" />
     <Compile Include="ExpressionTreeHelpersTest.cs" />
     <Compile Include="FriendshipRequestProcessorTest.cs" />
-    <Compile Include="ListRequestProcessorTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources\XmlContent.Designer.cs">
       <AutoGen>True</AutoGen>

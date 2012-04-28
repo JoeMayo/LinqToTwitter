@@ -60,4 +60,23 @@ namespace LinqToTwitter
         /// </summary>
         All
     }
+
+    enum ListAction
+    {
+        Create,
+
+        Update,
+
+        Delete,
+
+        AddMember,
+
+        AddMemberRange,
+
+        DeleteMember,
+
+        Subscribe,
+
+        Unsubscribe
+    }
 }

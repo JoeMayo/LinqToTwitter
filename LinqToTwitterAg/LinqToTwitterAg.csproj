@@ -166,6 +166,7 @@
     <Compile Include="LinqToTwitter\TwitterQueryable.cs" />
     <Compile Include="LinqToTwitter\TwitterQueryProvider.cs" />
     <Compile Include="List\List.cs" />
+    <Compile Include="List\ListExtensions.cs" />
     <Compile Include="List\ListRequestProcessor.cs" />
     <Compile Include="List\ListType.cs" />
     <Compile Include="OAuth\AnonymousAuthorizer.cs" />

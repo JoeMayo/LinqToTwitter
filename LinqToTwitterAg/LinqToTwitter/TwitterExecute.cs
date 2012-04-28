@@ -9,6 +9,8 @@ using System.Xml;
 using System.Xml.Linq;
 using System.Diagnostics;
 
+using LinqToTwitter.Common;
+using LitJson;
 using MSEncoder = Microsoft.Security.Application.Encoder;
 
 #if !CLIENT_PROFILE
@@ -195,34 +197,96 @@ namespace LinqToTwitter
         {
             string responseStr = "[NO RESPONSE]";
             XElement responseXml;
+            JsonData responseJson;
 
-            try
+            if (responseStr.StartsWith("[", StringComparison.Ordinal)
+             || responseStr.StartsWith("{", StringComparison.Ordinal))
             {
-                responseStr = GetTwitterResponse(wex.Response);
-                responseXml = XElement.Parse(responseStr);
+                try
+                {
+                    responseStr = GetTwitterResponse(wex.Response);
+                    responseJson = JsonMapper.ToObject(responseStr);
+                }
+                catch (Exception ex)
+                {
+                    string responseUri = string.Empty;
+
+                    if (wex != null && wex.Response != null)
+                        responseUri = wex.Response.ResponseUri.ToString();
+
+                    var errorText = (wex ?? ex)
+                                    + Environment.NewLine
+                                    + responseStr;
+
+                    string encodedResponseUri = MSEncoder.UrlEncode(responseUri);
+                    string encodedErrorText = MSEncoder.UrlEncode(errorText);
+
+                    // One known reason this can happen is if you don't have an 
+                    // Internet connection, meaning that the response will contain
+                    // an HTML message, that can't be parsed as normal XML.
+                    responseJson = 
+                        JsonMapper.ToObject(
+                            @"{""request"":""" + encodedResponseUri + @"""" +
+                            @" ""error"":""" + encodedErrorText + @"""}");
+                }
+
+                return new TwitterQueryException("Error while querying Twitter.", wex)
+                {
+                    HttpError =
+                        wex != null && wex.Response != null ?
+                            wex.Response.Headers["Status"] :
+                            string.Empty,
+                    Response = new TwitterHashResponse
+                    {
+                        Request = responseJson.GetValue<string>("request") == null ? "request URI not received from Twitter" : responseJson.GetValue<string>("request"),
+                        Error = responseJson.GetValue<string>("error") == null ? "error message not received from Twitter" : responseJson.GetValue<string>("error")
+                    }
+                };
             }
-            catch (Exception ex)
+            else
             {
-                string responseUri = string.Empty;
+                // TODO: this can be removed after the conversion to JSON
+                try
+                {
+                    responseStr = GetTwitterResponse(wex.Response);
+                    responseXml = XElement.Parse(responseStr);
+                }
+                catch (Exception ex)
+                {
+                    string responseUri = string.Empty;
 
-                if (wex != null && wex.Response != null)
-                    responseUri = wex.Response.ResponseUri.ToString();
+                    if (wex != null && wex.Response != null)
+                        responseUri = wex.Response.ResponseUri.ToString();
 
-                var errorText = (wex ?? ex)
-                                + Environment.NewLine
-                                + responseStr;
+                    var errorText = (wex ?? ex)
+                                    + Environment.NewLine
+                                    + responseStr;
 
-                string encodedResponseUri = MSEncoder.UrlEncode(responseUri);
-                string encodedErrorText = MSEncoder.UrlEncode(errorText);
+                    string encodedResponseUri = MSEncoder.UrlEncode(responseUri);
+                    string encodedErrorText = MSEncoder.UrlEncode(errorText);
 
-                // One known reason this can happen is if you don't have an 
-                // Internet connection, meaning that the response will contain
-                // an HTML message, that can't be parsed as normal XML.
-                responseXml = XElement.Parse(
-@"<hash>
+                    // One known reason this can happen is if you don't have an 
+                    // Internet connection, meaning that the response will contain
+                    // an HTML message, that can't be parsed as normal XML.
+                    responseXml = XElement.Parse(
+    @"<hash>
   <request>" + encodedResponseUri + @"</request>
   <error>" + encodedErrorText + @"</error>
 </hash>");
+                }
+
+                return new TwitterQueryException("Error while querying Twitter.", wex)
+                {
+                    HttpError =
+                        wex != null && wex.Response != null ?
+                            wex.Response.Headers["Status"] :
+                            string.Empty,
+                    Response = new TwitterHashResponse
+                    {
+                        Request = responseXml.Element("request") == null ? "request URI not received from Twitter" : responseXml.Element("request").Value,
+                        Error = responseXml.Element("error") == null ? "error message not received from Twitter" : responseXml.Element("error").Value
+                    }
+                };
             }
 
             return new TwitterQueryException("Error while querying Twitter.", wex)

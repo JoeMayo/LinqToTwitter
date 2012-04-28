@@ -19,7 +19,6 @@ namespace LinqToTwitterDemo
         public static void Run(TwitterContext twitterCtx)
         {
             GetListsDemo(twitterCtx);
-            //IsListSubscribedDemo(twitterCtx);
             //GetListSubscribersDemo(twitterCtx);
             //IsListMemberDemo(twitterCtx);
             //GetListMembersDemo(twitterCtx);
@@ -27,6 +26,8 @@ namespace LinqToTwitterDemo
             //GetListMembershipsDemo(twitterCtx);
             //GetListStatusesDemo(twitterCtx);
             //ShowListDemo(twitterCtx);
+            //IsListSubscribedDemo(twitterCtx);
+            //GetAllSubscribedListsDemo(twitterCtx);
             //CreateListDemo(twitterCtx);
             //UpdateListDemo(twitterCtx);
             //DeleteListDemo(twitterCtx);
@@ -37,7 +38,6 @@ namespace LinqToTwitterDemo
             //SubscribeToListDemo(twitterCtx);
             //UnsubscribeFromListDemo(twitterCtx);
             //ListSortDemo(twitterCtx);
-            //GetAllSubscribedListsDemo(twitterCtx);
         }
 
         private static void GetAllSubscribedListsDemo(TwitterContext twitterCtx)
@@ -110,7 +110,7 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void UnsubscribeFromListDemo(TwitterContext twitterCtx)
         {
-            List list = twitterCtx.UnsubscribeFromList(null, "twitterhq", null, "JoeMayo");
+            List list = twitterCtx.UnsubscribeFromList(null, "test", null, "Linq2Tweeter");
 
             Console.WriteLine("List Name: {0}, Description: {1}",
                 list.Name, list.Description);
@@ -122,7 +122,7 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void SubscribeToListDemo(TwitterContext twitterCtx)
         {
-            List list = twitterCtx.SubscribeToList(null, "dotnettwittterdevs", null,  "JoeMayo");
+            List list = twitterCtx.SubscribeToList(null, "test", null,  "Linq2Tweeter");
 
             Console.WriteLine("List Name: {0}, Description: {1}",
                 list.Name, list.Description);
@@ -296,9 +296,9 @@ namespace LinqToTwitterDemo
                 var subscribedList =
                    (from list in twitterCtx.List
                     where list.Type == ListType.IsMember &&
-                         list.ScreenName == "MichaelJordan" &&
-                         list.OwnerScreenName == "Linq2Tweeter" &&
-                         list.Slug == "linq"
+                         list.ScreenName == "Linq2Tweeter" &&
+                         list.OwnerScreenName == "JoeMayo" &&
+                         list.Slug == "dotnettwittterdevs"
                     select list)
                     .FirstOrDefault();
 
@@ -308,36 +308,31 @@ namespace LinqToTwitterDemo
                 Console.WriteLine("User: {0} is a member of List: {1}",
                     user.Name, subscribedList.ListID);
             }
-            // whenever user is not subscribed to the specified list, Twitter
+            // whenever user is not a member of the specified list, Twitter
             // returns an HTTP 404 Not Found, response, which results in a
             // .NET exception.  LINQ to Twitter intercepts the HTTP exception
             // and wraps it in a TwitterQueryResponse where you can read the
             // error message from Twitter via the Response property, shown below.
-            catch (TargetInvocationException ex)
+            catch (TwitterQueryException ex)
             {
-                // because of reflection, the original error gets wrapped inside a TargetInvocationException
-                var twitterQryEx = ex.InnerException as TwitterQueryException;
-                if (twitterQryEx == null) throw;
-
                 // TwitterQueryException will always reference the original WebException, so the check is redundant but doesn't hurt
-                var webEx = twitterQryEx.InnerException as WebException;
-                if (webEx == null) throw twitterQryEx;
+                var webEx = ex.InnerException as WebException;
+                if (webEx == null) throw ex;
 
                 // The response holds data from Twitter
                 var webResponse = webEx.Response as HttpWebResponse;
-                if (webResponse == null) throw twitterQryEx;
-
+                if (webResponse == null) throw ex;
 
                 if (webResponse.StatusCode == HttpStatusCode.NotFound)
                 {
                     Console.WriteLine(
                         "HTTP Status Code: {0}. Response from Twitter: {1}",
                         webEx.Response.Headers["Status"],
-                        twitterQryEx.Response.Error); 
+                        ex.Response.Error);
                 }
                 else
                 {
-                    throw twitterQryEx;
+                    throw ex;
                 }
             }
         }
@@ -397,7 +392,7 @@ namespace LinqToTwitterDemo
                           list.Slug == "dotnettwittterdevs" &&
                           list.OwnerScreenName == "JoeMayo"
                     select list)
-                    .FirstOrDefault();
+                   .FirstOrDefault();
 
                 // list will have only one user matching ID in query
                 var user = subscribedList.Users.First();
@@ -410,31 +405,26 @@ namespace LinqToTwitterDemo
             // .NET exception.  LINQ to Twitter intercepts the HTTP exception
             // and wraps it in a TwitterQueryResponse where you can read the
             // error message from Twitter via the Response property, shown below.
-            catch (TargetInvocationException ex)
+            catch (TwitterQueryException ex)
             {
-                // because of reflection, the original error gets wrapped inside a TargetInvocationException
-                var twitterQryEx = ex.InnerException as TwitterQueryException;
-                if (twitterQryEx == null) throw;
-
                 // TwitterQueryException will always reference the original WebException, so the check is redundant but doesn't hurt
-                var webEx = twitterQryEx.InnerException as WebException;
-                if (webEx == null) throw twitterQryEx;
+                var webEx = ex.InnerException as WebException;
+                if (webEx == null) throw ex;
 
                 // The response holds data from Twitter
                 var webResponse = webEx.Response as HttpWebResponse;
-                if (webResponse == null) throw twitterQryEx;
-
+                if (webResponse == null) throw ex;
 
                 if (webResponse.StatusCode == HttpStatusCode.NotFound)
                 {
                     Console.WriteLine(
                         "HTTP Status Code: {0}. Response from Twitter: {1}",
                         webEx.Response.Headers["Status"],
-                        twitterQryEx.Response.Error);
+                        ex.Response.Error);
                 }
                 else
                 {
-                    throw twitterQryEx;
+                    throw ex;
                 }
             }
         }

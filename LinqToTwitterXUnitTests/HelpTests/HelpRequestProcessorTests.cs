@@ -8,9 +8,9 @@ using Xunit;
 
 namespace LinqToTwitterXUnitTests.HelpTests
 {
-    public class HelpTests
+    public class HelpRequestProcessorTests
     {
-        public HelpTests()
+        public HelpRequestProcessorTests()
         {
             TestCulture.SetCulture();
         }
