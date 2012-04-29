@@ -197,6 +197,7 @@
     <Compile Include="RelatedResults\RelatedResultsRequestProcessor.cs" />
     <Compile Include="RelatedResults\RelatedResultsType.cs" />
     <Compile Include="SavedSearch\SavedSearch.cs" />
+    <Compile Include="SavedSearch\SavedSearchExtensions.cs" />
     <Compile Include="SavedSearch\SavedSearchRequestProcessor.cs" />
     <Compile Include="SavedSearch\SavedSearchType.cs" />
     <Compile Include="Search\Attitude.cs" />

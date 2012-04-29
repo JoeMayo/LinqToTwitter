@@ -15,4 +15,11 @@
         /// </summary>
         Show
     }
+
+    enum SavedSearchAction
+    {
+        Create,
+
+        Destroy
+    }
 }

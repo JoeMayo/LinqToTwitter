@@ -500,6 +500,9 @@
     <Compile Include="..\LinqToTwitterAg\SavedSearch\SavedSearch.cs">
       <Link>SavedSearch\SavedSearch.cs</Link>
     </Compile>
+    <Compile Include="..\LinqToTwitterAg\SavedSearch\SavedSearchExtensions.cs">
+      <Link>SavedSearch\SavedSearchExtensions.cs</Link>
+    </Compile>
     <Compile Include="..\LinqToTwitterAg\SavedSearch\SavedSearchRequestProcessor.cs">
       <Link>SavedSearch\SavedSearchRequestProcessor.cs</Link>
     </Compile>

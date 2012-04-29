@@ -78,6 +78,8 @@
     <Compile Include="ListTests\ListExtensionsTests.cs" />
     <Compile Include="ListTests\ListRequestProcessorTests.cs" />
     <Compile Include="RelatedResultsTests\RelatedResultsRequestProcessorTests.cs" />
+    <Compile Include="SavedSearchTests\SavedSearchExtensionsTests.cs" />
+    <Compile Include="SavedSearchTests\SavedSearchRequestProcessorTests.cs" />
     <Compile Include="Search\SearchRequestProcessorTests.cs" />
     <Compile Include="Status\StatusExtensionsTweetWithMediaNoLocationTests.cs" />
     <Compile Include="Status\StatusExtensionsTweetWithMediaAndLocationTests.cs" />
