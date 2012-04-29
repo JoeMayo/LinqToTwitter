@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Xml.Linq;
+using LinqToTwitter.Common;
+using LitJson;
 
 namespace LinqToTwitter
 {
     /// <summary>
     /// Processes Social Graph Requests and responses
     /// </summary>
-    class SocialGraphRequestProcessor<T> : IRequestProcessor<T>
+    class SocialGraphRequestProcessor<T> : IRequestProcessor<T>, IRequestProcessorWantsJson
     {
         /// <summary>
         /// base url for request
@@ -19,7 +21,7 @@ namespace LinqToTwitter
         /// <summary>
         /// type of request
         /// </summary>
-        private SocialGraphType Type { get; set; }
+        internal SocialGraphType Type { get; set; }
 
         /// <summary>
         /// The ID or screen_name of the user to retrieve the friends ID list for
@@ -88,9 +90,9 @@ namespace LinqToTwitter
         /// <returns>URL conforming to Twitter API</returns>
         public Request BuildUrl(Dictionary<string, string> parameters)
         {
-            const string typeParam = "Type";
+            const string TypeParam = "Type";
             if (parameters == null || !parameters.ContainsKey("Type"))
-                throw new ArgumentException("You must set Type.", typeParam);
+                throw new ArgumentException("You must set Type.", TypeParam);
 
             Type = RequestProcessorHelper.ParseQueryEnumType<SocialGraphType>(parameters["Type"]);
 
@@ -112,7 +114,7 @@ namespace LinqToTwitter
         /// <returns>base url + show segment</returns>
         private Request BuildSocialGraphFriendsUrl(Dictionary<string, string> parameters)
         {
-            var url = "friends/ids.xml";
+            var url = "friends/ids.json";
 
             return BuildSocialGraphUrlParameters(parameters, url);
         }
@@ -124,7 +126,7 @@ namespace LinqToTwitter
         /// <returns>base url + show segment</returns>
         private Request BuildSocialGraphFollowersUrl(Dictionary<string, string> parameters)
         {
-            var url = "followers/ids.xml";
+            var url = "followers/ids.json";
 
             return BuildSocialGraphUrlParameters(parameters, url);
         }
@@ -176,18 +178,16 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// transforms XML into IQueryable of User
+        /// Transforms Twitter response into List of SocialGraph
         /// </summary>
-        /// <param name="responseXml">xml with Twitter response</param>
-        /// <returns>IQueryable of User</returns>
-        public List<T> ProcessResults(string responseXml)
+        /// <param name="responseJson">Twitter response</param>
+        /// <returns>List of SocialGraph</returns>
+        public List<T> ProcessResults(string responseJson)
         {
-            if (string.IsNullOrEmpty(responseXml))
-            {
-                responseXml = "<ids></ids>";
-            }
+            if (string.IsNullOrEmpty(responseJson)) return new List<T>();
 
-            XElement twitterResponse = XElement.Parse(responseXml);
+            JsonData graphJson = JsonMapper.ToObject(responseJson);
+
             var graph = new SocialGraph
             {
                 Type = Type,
@@ -195,42 +195,73 @@ namespace LinqToTwitter
                 UserID = UserID,
                 ScreenName = ScreenName,
                 Cursor = Cursor,
-                CursorMovement = new Cursors
-                {
-                    Next =
-                        twitterResponse.Element("next_cursor") == null ?
-                            string.Empty :
-                            twitterResponse.Element("next_cursor").Value,
-                    Previous =
-                        twitterResponse.Element("previous_cursor") == null ?
-                            string.Empty :
-                            twitterResponse.Element("previous_cursor").Value
-                }
+                CursorMovement = new Cursors(graphJson),
             };
 
-            IEnumerable<string> idList = null;
-
-            // TODO: analyze to determine if this (CursorMovement and IDs) can be refactored to use IDList list as done in friendship/incoming and friendship/outgoing. 
-            //  Would be a breaking change, but yet pull API into consistent usage in this area. 
-            //  Because of the if statement this might not be straight forward, but then again, if statement might be OBE since initial API creation and all that is needed is to parse IDs rather than a single ID. - Joe 4/16/2010
-
-            // we get back ids if using cursors but id if not using cursors
-            if (twitterResponse.Element("ids") == null)
+            switch (Type)
             {
-                idList =
-                    from id in twitterResponse.Elements("id").ToList()
-                    select id.Value;
+                case SocialGraphType.Friends:
+                case SocialGraphType.Followers:
+                    graph.IDs =
+                        (from JsonData id in graphJson.GetValue<JsonData>("ids")
+                         select id.ToString())
+                        .ToList();
+                    break;
+                default:
+                    break;
             }
-            else
-            {
-                idList =
-                    from id in twitterResponse.Element("ids").Elements("id").ToList()
-                    select id.Value;
-            }
-
-            graph.IDs = idList.ToList();
 
             return new List<SocialGraph> { graph }.OfType<T>().ToList();
+
+            //if (string.IsNullOrEmpty(responseXml))
+            //{
+            //    responseXml = "<ids></ids>";
+            //}
+
+            //XElement twitterResponse = XElement.Parse(responseXml);
+            //var graph = new SocialGraph
+            //{
+            //    Type = Type,
+            //    ID = ID,
+            //    UserID = UserID,
+            //    ScreenName = ScreenName,
+            //    Cursor = Cursor,
+            //    CursorMovement = new Cursors
+            //    {
+            //        Next =
+            //            twitterResponse.Element("next_cursor") == null ?
+            //                string.Empty :
+            //                twitterResponse.Element("next_cursor").Value,
+            //        Previous =
+            //            twitterResponse.Element("previous_cursor") == null ?
+            //                string.Empty :
+            //                twitterResponse.Element("previous_cursor").Value
+            //    }
+            //};
+
+            //IEnumerable<string> idList = null;
+
+            //// TODO: analyze to determine if this (CursorMovement and IDs) can be refactored to use IDList list as done in friendship/incoming and friendship/outgoing. 
+            ////  Would be a breaking change, but yet pull API into consistent usage in this area. 
+            ////  Because of the if statement this might not be straight forward, but then again, if statement might be OBE since initial API creation and all that is needed is to parse IDs rather than a single ID. - Joe 4/16/2010
+
+            //// we get back ids if using cursors but id if not using cursors
+            //if (twitterResponse.Element("ids") == null)
+            //{
+            //    idList =
+            //        from id in twitterResponse.Elements("id").ToList()
+            //        select id.Value;
+            //}
+            //else
+            //{
+            //    idList =
+            //        from id in twitterResponse.Element("ids").Elements("id").ToList()
+            //        select id.Value;
+            //}
+
+            //graph.IDs = idList.ToList();
+
+            //return new List<SocialGraph> { graph }.OfType<T>().ToList();
         }
     }
 }

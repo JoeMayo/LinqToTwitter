@@ -148,7 +148,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>XmlContent.resx</DependentUpon>
     </Compile>
-    <Compile Include="SocialGraphRequestProcessorTest.cs" />
     <Compile Include="StatusRequestProcessorTest.cs" />
     <Compile Include="TrendRequestProcessorTest.cs" />
     <Compile Include="TwitterContextTest.cs" />

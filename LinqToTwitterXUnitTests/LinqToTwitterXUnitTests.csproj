@@ -81,6 +81,7 @@
     <Compile Include="SavedSearchTests\SavedSearchExtensionsTests.cs" />
     <Compile Include="SavedSearchTests\SavedSearchRequestProcessorTests.cs" />
     <Compile Include="Search\SearchRequestProcessorTests.cs" />
+    <Compile Include="SocialGraphTests\SocialGraphRequestProcessorTests.cs" />
     <Compile Include="Status\StatusExtensionsTweetWithMediaNoLocationTests.cs" />
     <Compile Include="Status\StatusExtensionsTweetWithMediaAndLocationTests.cs" />
     <Compile Include="Status\StatusExtensionsReplyWithMediaNoLocationTests.cs" />

@@ -15,9 +15,9 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         public static void Run(TwitterContext twitterCtx)
         {
-            //ShowFriendsDemo(twitterCtx);
+            ShowFriendsDemo(twitterCtx);
             //ShowFriendsWithCursorDemo(twitterCtx);
-            ShowFollowersDemo(twitterCtx);
+            //ShowFollowersDemo(twitterCtx);
             //ShowFollowersWithCursorDemo(twitterCtx);
         }
 
