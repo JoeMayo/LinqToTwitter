@@ -1,15 +1,17 @@
 ﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Xml.Linq;
+using LinqToTwitter.Common;
+using LitJson;
 
 namespace LinqToTwitter
 {
     /// <summary>
     /// helps process related results requests
     /// </summary>
-    public class RelatedResultsRequestProcessor<T> : IRequestProcessor<T>
+    public class RelatedResultsRequestProcessor<T> : IRequestProcessor<T>, IRequestProcessorWantsJson
     {
         /// <summary>
         /// base url for request
@@ -82,40 +84,26 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// Transforms response from Twitter into List of Trend
+        /// Transforms response from Twitter into List of RelatedResults
         /// </summary>
-        /// <param name="responseXml">XML response from Twitter</param>
-        /// <returns>List of Trend</returns>
-        public virtual List<T> ProcessResults(string responseXml)
+        /// <param name="responseJson">response from Twitter</param>
+        /// <returns>List of RelatedResult</returns>
+        public virtual List<T> ProcessResults(string responseJson)
         {
-            if (string.IsNullOrEmpty(responseXml))
-            {
-                responseXml = "<statuses></statuses>";
-            }
+            if (string.IsNullOrEmpty(responseJson)) return new List<T>();
 
-            XElement twitterResponse = XElement.Parse(responseXml);
+            JsonData resultJson = JsonMapper.ToObject(responseJson);
 
-            List<RelatedResults> results = null;
-
-            if (twitterResponse.Element("item") != null &&
-                twitterResponse.Element("item").Element("results") != null &&
-                twitterResponse.Element("item").Element("results").Elements("item") != null)
-            {
-                results =
-                        (from result in twitterResponse.Element("item").Element("results").Elements("item")
-                         select RelatedResults.CreateRelatedResults(result))
-                        .ToList();
-
-                results.ForEach(result =>
+            List<RelatedResults> results =
+                (from JsonData response in resultJson
+                 from JsonData result in response.GetValue<JsonData>("results")
+                 select
+                    new RelatedResults(result)
                     {
-                        result.StatusID = StatusID;
-                        result.Type = Type;
-                    }); 
-            }
-            else
-            {
-                results = new List<RelatedResults>();
-            }
+                        Type = Type,
+                        StatusID = StatusID
+                    })
+                .ToList();
 
             return results.OfType<T>().ToList();
         }

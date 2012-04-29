@@ -4,6 +4,7 @@ using System.Linq;
 using System.Xml.Linq;
 
 using LinqToTwitter.Common;
+using LitJson;
 
 namespace LinqToTwitter
 {
@@ -12,6 +13,42 @@ namespace LinqToTwitter
     /// </summary>
     public class RelatedResults
     {
+        public RelatedResults() { }
+        public RelatedResults(JsonData resultsJson)
+        {
+            if (resultsJson == null) return;
+
+            ResultAnnotations = new Annotation(resultsJson.GetValue<JsonData>("annotations"));
+            Score = resultsJson.GetValue<double>("score");
+            Kind = resultsJson.GetValue<string>("kind");
+            JsonData value = resultsJson.GetValue<JsonData>("value");
+            ValueAnnotations = new Annotation(value.GetValue<JsonData>("annotations"));
+            Retweeted = value.GetValue<bool>("retweeted");
+            InReplyToScreenName = value.GetValue<string>("in_reply_to_screen_name");
+            var contributors = value.GetValue<JsonData>("contributors");
+            Contributors =
+                contributors == null ?
+                    null :
+                    (from JsonData contributor in contributors
+                     select new Contributor(contributor))
+                    .ToList();
+            Coordinates = new Coordinate(value.GetValue<JsonData>("coordinates"));
+            Place = new Place(value.GetValue<JsonData>("place"));
+            User = new User(value.GetValue<JsonData>("user"));
+            RetweetCount = value.GetValue<int>("retweet_count");
+            IDString = value.GetValue<string>("id_str");
+            InReplyToUserID = value.GetValue<ulong>("in_reply_to_user_id");
+            Favorited = value.GetValue<bool>("favorited");
+            InReplyToStatusIDString = value.GetValue<string>("in_reply_to_status_id_str");
+            InReplyToStatusID = value.GetValue<ulong>("in_reply_to_status_id");
+            Source = value.GetValue<string>("source");
+            CreatedAt = value.GetValue<string>("created_at").GetDate(DateTime.MaxValue);
+            InReplyToUserIDString = value.GetValue<string>("in_reply_to_user_id_str");
+            Truncated = value.GetValue<bool>("truncated");
+            Geo = new Geo(value.GetValue<JsonData>("geo"));
+            Text = value.GetValue<string>("text");
+        }
+
         public static RelatedResults CreateRelatedResults(XElement element)
         {
             var val = element.Element("value");

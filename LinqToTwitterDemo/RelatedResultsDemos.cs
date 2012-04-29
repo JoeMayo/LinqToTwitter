@@ -27,7 +27,7 @@ namespace LinqToTwitterDemo
             var results =
                 (from result in twitterCtx.RelatedResults
                  where result.Type == RelatedResultsType.Show &&
-                       result.StatusID == 64464589072498689ul
+                       result.StatusID == 195992821411495936ul
                  select result)
                 .ToList();
 

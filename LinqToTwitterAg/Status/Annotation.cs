@@ -1,12 +1,36 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 using System.Xml.Serialization;
+using LitJson;
 
 namespace LinqToTwitter
 {
     public class Annotation
     {
+        public Annotation() { }
+        public Annotation(JsonData annotationJson)
+        {
+            if (annotationJson == null)
+            {
+                Attributes = new Dictionary<string, string>();
+                return;
+            }
+
+            var attrDictionary = annotationJson as IDictionary;
+            Attributes =
+                (from object key in attrDictionary.Keys
+                 select new
+                 {
+                     Key = key,
+                     Value = attrDictionary[key]
+                 })
+                .ToDictionary(
+                    atr => atr.Key.ToString(),
+                    atr => atr.Value.ToString());
+        }
+
         public string Type { get; set; }
 
         [XmlIgnore]
