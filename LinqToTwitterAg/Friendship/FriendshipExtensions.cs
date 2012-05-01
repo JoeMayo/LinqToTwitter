@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Linq;
-using System.Net;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 
 namespace LinqToTwitter
 {
@@ -36,22 +35,22 @@ namespace LinqToTwitter
                 string.IsNullOrEmpty(userID) &&
                 string.IsNullOrEmpty(screenName))
             {
-                throw new ArgumentException("Either id, userID, or screenName is a required parameter.");
+                throw new ArgumentException("Either id, userID, or screenName is a required parameter.", "IdUserIDOrScreenName");
             }
 
             string destroyUrl;
 
             if (!string.IsNullOrEmpty(id))
             {
-                destroyUrl = ctx.BaseUrl + "friendships/create/" + id + ".xml";
+                destroyUrl = ctx.BaseUrl + "friendships/create/" + id + ".json";
             }
             else if (!string.IsNullOrEmpty(userID))
             {
-                destroyUrl = ctx.BaseUrl + "friendships/create/" + userID + ".xml";
+                destroyUrl = ctx.BaseUrl + "friendships/create/" + userID + ".json";
             }
             else
             {
-                destroyUrl = ctx.BaseUrl + "friendships/create/" + screenName + ".xml";
+                destroyUrl = ctx.BaseUrl + "friendships/create/" + screenName + ".json";
             }
 
             var createParams = new Dictionary<string, string>
@@ -68,19 +67,19 @@ namespace LinqToTwitter
                 createParams.Add("follow", "true");
             }
 
-            var reqProc = new UserRequestProcessor<User>();
+            var reqProc = new FriendshipRequestProcessor<User>();
 
             ITwitterExecute twitExe = ctx.TwitterExecutor;
 
             twitExe.AsyncCallback = callback;
-            var resultsXml =
+            var resultsJson =
                 twitExe.ExecuteTwitter(
                     destroyUrl,
                     createParams,
                     reqProc);
 
-            List<User> results = reqProc.ProcessResults(resultsXml);
-            return results.FirstOrDefault();
+            User results = reqProc.ProcessActionResult(resultsJson, FriendshipAction.Create);
+            return results;
         }
 
         /// <summary>
@@ -109,26 +108,26 @@ namespace LinqToTwitter
                 string.IsNullOrEmpty(userID) &&
                 string.IsNullOrEmpty(screenName))
             {
-                throw new ArgumentException("Either id, userID, or screenName is a required parameter.");
+                throw new ArgumentException("Either id, userID, or screenName is a required parameter.", "IdUserIDOrScreenName");
             }
 
             string destroyUrl;
 
             if (!string.IsNullOrEmpty(id))
             {
-                destroyUrl = ctx.BaseUrl + "friendships/destroy/" + id + ".xml";
+                destroyUrl = ctx.BaseUrl + "friendships/destroy/" + id + ".json";
             }
             else
             {
-                destroyUrl = ctx.BaseUrl + "friendships/destroy.xml";
+                destroyUrl = ctx.BaseUrl + "friendships/destroy.json";
             }
 
-            var reqProc = new UserRequestProcessor<User>();
+            var reqProc = new FriendshipRequestProcessor<User>();
 
             ITwitterExecute twitExe = ctx.TwitterExecutor;
 
             twitExe.AsyncCallback = callback;
-            var resultsXml =
+            var resultsJson =
                 twitExe.ExecuteTwitter(
                     destroyUrl,
                     new Dictionary<string, string>
@@ -138,8 +137,8 @@ namespace LinqToTwitter
                     },
                     reqProc);
 
-            List<User> results = reqProc.ProcessResults(resultsXml);
-            return results.FirstOrDefault();
+            User results = reqProc.ProcessActionResult(resultsJson, FriendshipAction.Destroy);
+            return results;
         }
 
         /// <summary>
@@ -169,14 +168,14 @@ namespace LinqToTwitter
                 throw new ArgumentNullException("screenName", "screenName is a required parameter.");
             }
 
-            string updateUrl = ctx.BaseUrl + "friendships/update.xml";
+            string updateUrl = ctx.BaseUrl + "friendships/update.json";
 
             var reqProc = new FriendshipRequestProcessor<Friendship>();
 
             ITwitterExecute twitExe = ctx.TwitterExecutor;
 
             twitExe.AsyncCallback = callback;
-            var resultsXml =
+            var resultsJson =
                 twitExe.ExecuteTwitter(
                     updateUrl,
                     new Dictionary<string, string>
@@ -187,8 +186,8 @@ namespace LinqToTwitter
                     },
                     reqProc);
 
-            var results = reqProc.ProcessResults(resultsXml);
-            return results.FirstOrDefault();
+            Friendship results = reqProc.ProcessActionResult(resultsJson, FriendshipAction.Destroy);
+            return results;
         }
     }
 }

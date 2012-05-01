@@ -18,10 +18,13 @@ namespace LinqToTwitter
             JsonData result = geo.GetValue<JsonData>("result");
             JsonData places = result.GetValue<JsonData>("places");
 
-            Places =
-                (from JsonData place in places
-                 select new Place(place))
-                .ToList();
+            if (places != null)
+            {
+                Places =
+                    (from JsonData place in places
+                        select new Place(place))
+                    .ToList(); 
+            }
         }
 
         /// <summary>

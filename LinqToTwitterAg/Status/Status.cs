@@ -26,20 +26,27 @@ namespace LinqToTwitter
         {
             if (status == null) return;
 
-            CreatedAt = status.GetValue<string>("created_at").GetDate(DateTime.MaxValue);
-            Favorited = status.GetValue<bool>("favorited");
-            StatusID = status.GetValue<ulong>("id").ToString(CultureInfo.InvariantCulture);
-            InReplyToStatusID = status.GetValue<ulong>("in_reply_to_status_id").ToString(CultureInfo.InvariantCulture);
-            InReplyToUserID = status.GetValue<ulong>("in_reply_to_user_id").ToString(CultureInfo.InvariantCulture);
             Retweeted = status.GetValue<bool>("retweeted");
             Source = status.GetValue<string>("source");
-            Text = status.GetValue<string>("text");
-            Truncated = status.GetValue<bool>("truncated");
             InReplyToScreenName = status.GetValue<string>("in_reply_to_screen_name");
+            PossiblySensitive = status.GetValue<bool>("possibly_sensitive");
+            RetweetedStatus = new Status(status.GetValue<JsonData>("retweeted_status"));
             Contributors = new List<Contributor>();
             Coordinates = new Coordinate();
             Place = new Place(status.GetValue<JsonData>("place"));
             User = new User(status.GetValue<JsonData>("user"));
+            RetweetCount = status.GetValue<int>("retweet_count");
+            StatusID = status.GetValue<string>("id_str");
+            Favorited = status.GetValue<bool>("favorited");
+            InReplyToStatusID = status.GetValue<string>("in_reply_to_status_id_str");
+            Source = status.GetValue<string>("source");
+            CreatedAt = status.GetValue<string>("created_at").GetDate(DateTime.MaxValue);
+            InReplyToUserID = status.GetValue<string>("in_reply_to_user_id_str");
+            Truncated = status.GetValue<bool>("truncated");
+            Geo = new Geo(status.GetValue<JsonData>("geo"));
+            Text = status.GetValue<string>("text");
+            Annotation = new Annotation(status.GetValue<JsonData>("annotation"));
+            Entities = new Entities(status.GetValue<JsonData>("entities"));
         }
 
         /// <summary>
@@ -201,29 +208,29 @@ namespace LinqToTwitter
                 Entities = entities,
                 Retweeted = retweeted,
                 RetweetCount = retweetCount,
-                Retweet =
-                    retweet == null ?
-                        null :
-                        new Retweet
-                        {
-                            ID = retweet.GetString("id"),
-                            CreatedAt = retweetedAtDate,
-                            Favorited = retweet.GetBool("favorited"),
-                            InReplyToScreenName = retweet.GetString("in_reply_to_screen_name"),
-                            InReplyToStatusID = retweet.GetString("in_reply_to_status_id"),
-                            InReplyToUserID = retweet.GetString("in_reply_to_user_id"),
-                            Source = retweet.GetString("source"),
-                            Text = retweet.GetString("text"),
-                            Retweeted = retweet.GetBool("retweeted"),
-                            RetweetCount = 
-                                //retweet.GetInt("retweet_count"),
-                                retweet.Element("retweet_count") == null ||
-                                retweet.Element("retweet_count").Value == string.Empty ?
-                                    0 :
-                                    int.Parse(retweet.Element("retweet_count").Value.TrimEnd('+')),
-                            Truncated = retweet.GetBool("truncated", true),
-                            RetweetedUser = User.CreateUser(retweet.Element("user"))
-                        }
+                //Retweet =
+                //    retweet == null ?
+                //        null :
+                //        new Retweet
+                //        {
+                //            ID = retweet.GetString("id"),
+                //            CreatedAt = retweetedAtDate,
+                //            Favorited = retweet.GetBool("favorited"),
+                //            InReplyToScreenName = retweet.GetString("in_reply_to_screen_name"),
+                //            InReplyToStatusID = retweet.GetString("in_reply_to_status_id"),
+                //            InReplyToUserID = retweet.GetString("in_reply_to_user_id"),
+                //            Source = retweet.GetString("source"),
+                //            Text = retweet.GetString("text"),
+                //            Retweeted = retweet.GetBool("retweeted"),
+                //            RetweetCount = 
+                //                //retweet.GetInt("retweet_count"),
+                //                retweet.Element("retweet_count") == null ||
+                //                retweet.Element("retweet_count").Value == string.Empty ?
+                //                    0 :
+                //                    int.Parse(retweet.Element("retweet_count").Value.TrimEnd('+')),
+                //            Truncated = retweet.GetBool("truncated", true),
+                //            RetweetedUser = User.CreateUser(retweet.Element("user"))
+                //        }
             };
 
             return newStatus;
@@ -357,6 +364,7 @@ namespace LinqToTwitter
         /// <summary>
         /// Retweet details
         /// </summary>
+        [Obsolete("Deprecated: Use RetweetedStatus instead.", true)]
         public Retweet Retweet { get; set; }
 
         /// <summary>
@@ -403,11 +411,21 @@ namespace LinqToTwitter
         /// <summary>
         /// Number of times retweeted
         /// </summary>
-        public object RetweetCount { get; set; }
+        public int RetweetCount { get; set; }
 
         /// <summary>
         /// Has tweet been retweeted
         /// </summary>
         public bool Retweeted { get; set; }
+
+        /// <summary>
+        /// Is tweet possibly sensitive (can be set via TweetWithMedia)
+        /// </summary>
+        public bool PossiblySensitive { get; set; }
+
+        /// <summary>
+        /// Retweeted status is status is a retweet
+        /// </summary>
+        public Status RetweetedStatus { get; set; }
     }
 }

@@ -8,11 +8,11 @@ using LitJson;
 
 using Xunit;
 
-namespace LinqToTwitterXUnitTests
+namespace LinqToTwitterXUnitTests.FavoritesTests
 {
-    public class FavoritesTests
+    public class FavoritesCtorTests
     {
-        public FavoritesTests()
+        public FavoritesCtorTests()
         {
             TestCulture.SetCulture();
         }

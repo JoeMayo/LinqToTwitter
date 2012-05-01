@@ -89,7 +89,7 @@ namespace LinqToTwitterDemo
                 select new
                 {
                     tweet.User.Name,
-                    tweet.Retweet,
+                    tweet.RetweetedStatus,
                     tweet.Text
                 };
 
@@ -99,9 +99,9 @@ namespace LinqToTwitterDemo
                 Console.WriteLine(
                     "Friend: " + tweet.Name +
                     "\nRetweeted by: " +
-                        (tweet.Retweet == null ?
+                        (tweet.RetweetedStatus == null ?
                             "Original Tweet" :
-                            tweet.Retweet.RetweetedUser.Name) +
+                            tweet.RetweetedStatus.User.Name) +
                     "\nTweet: " + tweet.Text + "\n");
             }
         }
@@ -120,7 +120,7 @@ namespace LinqToTwitterDemo
                 select new
                 {
                     tweet.User.Name,
-                    tweet.Retweet,
+                    tweet.RetweetedStatus,
                     tweet.Text
                 };
 
@@ -130,9 +130,9 @@ namespace LinqToTwitterDemo
                 Console.WriteLine(
                     "Friend: " + tweet.Name +
                     "\nRetweeted by: " +
-                        (tweet.Retweet == null ?
+                        (tweet.RetweetedStatus == null ?
                             "Original Tweet" :
-                            tweet.Retweet.RetweetedUser.Name) +
+                            tweet.RetweetedStatus.User.Name) +
                     "\nTweet: " + tweet.Text + "\n");
             }
         }
@@ -208,13 +208,13 @@ namespace LinqToTwitterDemo
 
         private static void RetweetDemo(TwitterContext twitterCtx)
         {
-            var retweet = twitterCtx.Retweet("11515561768");
+            var retweet = twitterCtx.Retweet("196991337554378752");
 
             Console.WriteLine("Retweeted Tweet: ");
             Console.WriteLine(
-                "\nUser: " + retweet.Retweet.RetweetedUser.Name +
-                "\nTweet: " + retweet.Retweet.Text +
-                "\nTweet ID: " + retweet.Retweet.ID + "\n");
+                "\nUser: " + retweet.RetweetedStatus.User.Name +
+                "\nTweet: " + retweet.RetweetedStatus.Text +
+                "\nTweet ID: " + retweet.RetweetedStatus.ID + "\n");
         }
 
         private static void RetweetsCount(TwitterContext twitterCtx)
@@ -231,9 +231,9 @@ namespace LinqToTwitterDemo
                     "* Tweet: {0}\nRetweeted: {1}, Retweet Count: {2}\n" +
                     "Retweet: {3}\nRetweeted: {4}, Retweet Count: {5}\n",
                     tweet.Text, tweet.Retweeted, tweet.RetweetCount,
-                    tweet.Retweet == null ? "<none>" : tweet.Retweet.Text, 
-                    tweet.Retweet == null ? false : tweet.Retweet.Retweeted, 
-                    tweet.Retweet == null ? 0 : tweet.Retweet.RetweetCount));
+                    tweet.RetweetedStatus == null ? "<none>" : tweet.RetweetedStatus.Text,
+                    tweet.RetweetedStatus == null ? false : tweet.RetweetedStatus.Retweeted,
+                    tweet.RetweetedStatus == null ? 0 : tweet.RetweetedStatus.RetweetCount));
         }
 
         /// <summary>
@@ -282,7 +282,7 @@ namespace LinqToTwitterDemo
             myRetweets.ToList().ForEach(
                 retweet => Console.WriteLine(
                     "Name: {0}, Tweet: {1}\n",
-                    retweet.Retweet.RetweetedUser.Name, retweet.Retweet.Text));
+                    retweet.RetweetedStatus.User.Name, retweet.RetweetedStatus.Text));
         }
 
         /// <summary>
@@ -300,7 +300,7 @@ namespace LinqToTwitterDemo
             myRetweets.ToList().ForEach(
                 retweet => Console.WriteLine(
                     "Name: {0}, Tweet: {1}\n",
-                    retweet.Retweet.RetweetedUser.Name, retweet.Retweet.Text));
+                    retweet.RetweetedStatus.User.Name, retweet.RetweetedStatus.Text));
         }
 
         /// <summary>
@@ -317,7 +317,7 @@ namespace LinqToTwitterDemo
             myRetweets.ToList().ForEach(
                 retweet => Console.WriteLine(
                     "Name: {0}, Tweet: {1}\n",
-                    retweet.Retweet.RetweetedUser.Name, retweet.Retweet.Text));
+                    retweet.RetweetedStatus.User.Name, retweet.RetweetedStatus.Text));
         }
 
         /// <summary>
@@ -348,7 +348,7 @@ namespace LinqToTwitterDemo
                 (from tweet in twitterCtx.Status
                  where tweet.Type == StatusType.RetweetedByUser &&
                        tweet.ScreenName == "JoeMayo"
-                 select tweet.Retweet)
+                 select tweet.RetweetedStatus)
                 .ToList();
 
             myRetweets.ForEach(
@@ -358,7 +358,7 @@ namespace LinqToTwitterDemo
                     {
                         Console.WriteLine(
                             "Name: {0}, Tweet: {1}\n",
-                            retweet.RetweetedUser.Name, retweet.Text); 
+                            retweet.User.Name, retweet.Text); 
                     }
                 });
         }
@@ -373,7 +373,7 @@ namespace LinqToTwitterDemo
                 (from tweet in twitterCtx.Status
                  where tweet.Type == StatusType.RetweetedToUser &&
                        tweet.ScreenName == "JoeMayo"
-                 select tweet.Retweet)
+                 select tweet.RetweetedStatus)
                 .ToList();
 
             myRetweets.ForEach(
@@ -383,7 +383,7 @@ namespace LinqToTwitterDemo
                     {
                         Console.WriteLine(
                             "Name: {0}, Tweet: {1}\n",
-                            retweet.RetweetedUser.Name, retweet.Text);
+                            retweet.User.Name, retweet.Text);
                     }
                 });
         }
@@ -412,7 +412,7 @@ namespace LinqToTwitterDemo
             allTweets.ToList().ForEach(
                 tweet =>
                 {
-                    if (tweet.Retweet == null)
+                    if (tweet.RetweetedStatus == null)
                     {
                         Console.WriteLine(
                             "Name: {0}, Tweet: {1}\n",
@@ -422,7 +422,7 @@ namespace LinqToTwitterDemo
                     {
                         Console.WriteLine(
                             "Name: {0}, ReTweet: {1}\n",
-                            tweet.Retweet.RetweetedUser.Name, tweet.Retweet.Text);
+                            tweet.RetweetedStatus.User.Name, tweet.RetweetedStatus.Text);
                     }
                 });
         }
@@ -477,8 +477,8 @@ namespace LinqToTwitterDemo
             {
                 Console.WriteLine(
                     "(" + tweet.StatusID + ")" +
-                    "[" + tweet.User.ID + "]" + 
-                    ", Is Retweet: " + (tweet.Retweet != null).ToString() + "\n" +
+                    "[" + tweet.User.ID + "]" +
+                    ", Is Retweet: " + (tweet.RetweetedStatus != null).ToString() + "\n" +
                     tweet.User.Name + ", " + "\n" +
                     tweet.Text + ", " +
                     tweet.CreatedAt);
@@ -570,7 +570,7 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void DestroyStatusDemo(TwitterContext twitterCtx)
         {
-            var status = twitterCtx.DestroyStatus("5476861752647680");
+            var status = twitterCtx.DestroyStatus("197005200609910784");
 
             Console.WriteLine(
                 "(" + status.StatusID + ")" +

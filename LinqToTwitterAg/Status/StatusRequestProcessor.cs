@@ -3,14 +3,18 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Xml.Linq;
+using LitJson;
 
 namespace LinqToTwitter
 {
     /// <summary>
     /// processes Twitter Status requests
     /// </summary>
-    public class StatusRequestProcessor<T> : IRequestProcessor<T>
+    public class StatusRequestProcessor<T> :
+        IRequestProcessor<T>,
+        IRequestProcessorWantsJson,
+        IRequestProcessorWithAction<T>
+        where T : class
     {
         /// <summary>
         /// base url for request
@@ -125,9 +129,9 @@ namespace LinqToTwitter
         /// <returns>URL conforming to Twitter API</returns>
         public virtual Request BuildUrl(Dictionary<string, string> parameters)
         {
-            const string typeParam = "Type";
+            const string TypeParam = "Type";
             if (parameters == null || !parameters.ContainsKey("Type"))
-                throw new ArgumentException("You must set Type.", typeParam);
+                throw new ArgumentException("You must set Type.", TypeParam);
 
             Type = RequestProcessorHelper.ParseQueryEnumType<StatusType>(parameters["Type"]);
 
@@ -168,7 +172,7 @@ namespace LinqToTwitter
         /// <returns>base url + show segment</returns>
         private Request BuildShowUrl(Dictionary<string, string> parameters)
         {
-            var url = BuildUrlHelper.TransformIDUrl(parameters, "statuses/show.xml");
+            var url = BuildUrlHelper.TransformIDUrl(parameters, "statuses/show.json");
             return BuildUrlParameters(parameters, url);
         }
 
@@ -283,7 +287,7 @@ namespace LinqToTwitter
         /// <returns>base url + user timeline segment</returns>
         private Request BuildUserUrl(Dictionary<string, string> parameters)
         {
-            var url = BuildUrlHelper.TransformIDUrl(parameters, "statuses/user_timeline.xml");
+            var url = BuildUrlHelper.TransformIDUrl(parameters, "statuses/user_timeline.json");
             return BuildUrlParameters(parameters, url);
         }
 
@@ -293,7 +297,7 @@ namespace LinqToTwitter
         /// <returns>base url + home segment</returns>
         private Request BuildHomeUrl(Dictionary<string, string> parameters)
         {
-            return BuildUrlParameters(parameters, "statuses/home_timeline.xml");
+            return BuildUrlParameters(parameters, "statuses/home_timeline.json");
         }
 
         /// <summary>
@@ -303,7 +307,7 @@ namespace LinqToTwitter
         /// <returns>base url + mentions segment</returns>
         private Request BuildMentionsUrl(Dictionary<string, string> parameters)
         {
-            return BuildUrlParameters(parameters, "statuses/mentions.xml");
+            return BuildUrlParameters(parameters, "statuses/mentions.json");
         }
 
         // TODO: Public deprecated on 5/14/12
@@ -328,7 +332,7 @@ namespace LinqToTwitter
                 ID = parameters["ID"];
             }
 
-            var url = BuildUrlHelper.TransformIDUrl(parameters, "statuses/retweets.xml");
+            var url = BuildUrlHelper.TransformIDUrl(parameters, "statuses/retweets.json");
             var req = new Request(BaseUrl + url);
             var urlParams = req.RequestParameters;
 
@@ -348,7 +352,7 @@ namespace LinqToTwitter
         /// <returns>base url + retweeted by me segment</returns>
         private Request BuildRetweetedByMeUrl(Dictionary<string, string> parameters)
         {
-            return BuildUrlParameters(parameters, "statuses/retweeted_by_me.xml");
+            return BuildUrlParameters(parameters, "statuses/retweeted_by_me.json");
         }
 
         /// <summary>
@@ -358,7 +362,7 @@ namespace LinqToTwitter
         /// <returns>base url + retweeted to me segment</returns>
         private Request BuildRetweetedToMeUrl(Dictionary<string, string> parameters)
         {
-            return BuildUrlParameters(parameters, "statuses/retweeted_to_me.xml");
+            return BuildUrlParameters(parameters, "statuses/retweeted_to_me.json");
         }
 
         /// <summary>
@@ -368,7 +372,7 @@ namespace LinqToTwitter
         /// <returns>base url + retweeted by user segment</returns>
         private Request BuildRetweetedByUserUrl(Dictionary<string, string> parameters)
         {
-            return BuildUrlParameters(parameters, "statuses/retweeted_by_user.xml");
+            return BuildUrlParameters(parameters, "statuses/retweeted_by_user.json");
         }
 
         /// <summary>
@@ -378,7 +382,7 @@ namespace LinqToTwitter
         /// <returns>base url + retweeted to user segment</returns>
         private Request BuildRetweetedToUserUrl(Dictionary<string, string> parameters)
         {
-            return BuildUrlParameters(parameters, "statuses/retweeted_to_user.xml");
+            return BuildUrlParameters(parameters, "statuses/retweeted_to_user.json");
         }
 
         /// <summary>
@@ -388,36 +392,44 @@ namespace LinqToTwitter
         /// <returns>base url + retweets of me segment</returns>
         private Request BuildRetweetsOfMeUrl(Dictionary<string, string> parameters)
         {
-            return BuildUrlParameters(parameters, "statuses/retweets_of_me.xml");
+            return BuildUrlParameters(parameters, "statuses/retweets_of_me.json");
         }
 
         /// <summary>
-        /// transforms XML into IQueryable of Status
+        /// transforms Twitter response into List of Status
         /// </summary>
-        /// <param name="responseXml">xml with Twitter response</param>
+        /// <param name="responseJson">Twitter response</param>
         /// <returns>List of Status</returns>
-        public virtual List<T> ProcessResults(string responseXml)
+        public virtual List<T> ProcessResults(string responseJson)
         {
-            if (string.IsNullOrEmpty(responseXml))
+            if (string.IsNullOrEmpty(responseJson)) return new List<T>();
+
+            JsonData statusJson = JsonMapper.ToObject(responseJson);
+
+            List<Status> statusList;
+            switch (Type)
             {
-                responseXml = "<statuses></statuses>";
+                case StatusType.Show:
+                    statusList = new List<Status> { new Status(statusJson) };
+                    break;
+                case StatusType.Home:
+                case StatusType.Mentions:
+                case StatusType.RetweetedByMe:
+                case StatusType.RetweetedToMe:
+                case StatusType.RetweetedToUser:
+                case StatusType.RetweetedByUser:
+                case StatusType.RetweetsOfMe:
+                case StatusType.Retweets:
+                case StatusType.User:
+                    statusList =
+                        (from JsonData status in statusJson
+                         select new Status(status))
+                        .ToList();
+                    break;
+                default:
+                    statusList = new List<Status>();
+                    break;
             }
-
-            XElement twitterResponse = XElement.Parse(responseXml);
-            var responseItems = twitterResponse.Elements("status").ToList();
-
-            // if we get only a single response back,
-            // such as a Show request, make sure we get it
-            if (twitterResponse.Name == "status")
-            {
-                responseItems.Add(twitterResponse);
-            }
-
-            var statuses =
-                from statusXmlElement in responseItems
-                select Status.CreateStatus(statusXmlElement);
-
-            var statusList = statuses.ToList();
 
             statusList.ForEach(
                 status =>
@@ -437,8 +449,16 @@ namespace LinqToTwitter
                     status.IncludeContributorDetails = IncludeContributorDetails;
                 });
 
-            var tList = statusList.OfType<T>().ToList();
-            return tList;
+            return statusList.OfType<T>().ToList();
+        }
+
+        public T ProcessActionResult(string responseJson, Enum theAction)
+        {
+            JsonData statusJson = JsonMapper.ToObject(responseJson);
+
+            var status = new Status(statusJson);
+
+            return status.ItemCast(default(T));
         }
     }
 }

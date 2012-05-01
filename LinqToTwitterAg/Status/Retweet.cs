@@ -5,6 +5,7 @@ namespace LinqToTwitter
     /// <summary>
     /// Retweet Information
     /// </summary>
+    [Obsolete("Deprecated: Use RetweetedStatus on Status instead.")]
     public class Retweet
     {
         /// <summary>

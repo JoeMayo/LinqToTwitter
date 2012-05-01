@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Xml.Linq;
 using LinqToTwitter.Common;
 using LitJson;
 
@@ -212,56 +211,6 @@ namespace LinqToTwitter
             }
 
             return new List<SocialGraph> { graph }.OfType<T>().ToList();
-
-            //if (string.IsNullOrEmpty(responseXml))
-            //{
-            //    responseXml = "<ids></ids>";
-            //}
-
-            //XElement twitterResponse = XElement.Parse(responseXml);
-            //var graph = new SocialGraph
-            //{
-            //    Type = Type,
-            //    ID = ID,
-            //    UserID = UserID,
-            //    ScreenName = ScreenName,
-            //    Cursor = Cursor,
-            //    CursorMovement = new Cursors
-            //    {
-            //        Next =
-            //            twitterResponse.Element("next_cursor") == null ?
-            //                string.Empty :
-            //                twitterResponse.Element("next_cursor").Value,
-            //        Previous =
-            //            twitterResponse.Element("previous_cursor") == null ?
-            //                string.Empty :
-            //                twitterResponse.Element("previous_cursor").Value
-            //    }
-            //};
-
-            //IEnumerable<string> idList = null;
-
-            //// TODO: analyze to determine if this (CursorMovement and IDs) can be refactored to use IDList list as done in friendship/incoming and friendship/outgoing. 
-            ////  Would be a breaking change, but yet pull API into consistent usage in this area. 
-            ////  Because of the if statement this might not be straight forward, but then again, if statement might be OBE since initial API creation and all that is needed is to parse IDs rather than a single ID. - Joe 4/16/2010
-
-            //// we get back ids if using cursors but id if not using cursors
-            //if (twitterResponse.Element("ids") == null)
-            //{
-            //    idList =
-            //        from id in twitterResponse.Elements("id").ToList()
-            //        select id.Value;
-            //}
-            //else
-            //{
-            //    idList =
-            //        from id in twitterResponse.Element("ids").Elements("id").ToList()
-            //        select id.Value;
-            //}
-
-            //graph.IDs = idList.ToList();
-
-            //return new List<SocialGraph> { graph }.OfType<T>().ToList();
         }
     }
 }

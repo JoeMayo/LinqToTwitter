@@ -91,9 +91,9 @@ namespace LinqToTwitter
 
             twitterCtx.TwitterExecutor.AsyncCallback = callback;
 
-            var updateUrl = twitterCtx.UploadUrl + "statuses/update_with_media.xml";
+            var updateUrl = twitterCtx.UploadUrl + "statuses/update_with_media.json";
 
-            IRequestProcessor<Status> reqProc = twitterCtx.CreateRequestProcessor<Status>();
+            var reqProc = new StatusRequestProcessor<Status>();
 
             string resultString =
                 twitterCtx.TwitterExecutor.PostMedia(
@@ -111,8 +111,706 @@ namespace LinqToTwitter
                     mediaItems,
                     reqProc);
 
-            List<Status> results = reqProc.ProcessResults(resultString);
-            return results.FirstOrDefault();
+            Status result = reqProc.ProcessActionResult(resultString, StatusAction.SingleStatus);
+            return result;
         }
+
+        /// <summary>
+        /// sends a status update - overload to make inReplyToStatusID optional
+        /// </summary>
+        /// <param name="status">(optional @UserName) and (required) status text</param>
+        /// <returns>IQueryable of sent status</returns>
+        public static Status UpdateStatus(this TwitterContext ctx, string status)
+        {
+            return UpdateStatus(ctx, status, false, -1, -1, null, false, null, null);
+        }
+
+        /// <summary>
+        /// sends a status update - overload to make inReplyToStatusID optional
+        /// </summary>
+        /// <param name="status">(optional @UserName) and (required) status text</param>
+        /// <param name="wrapLinks">Shorten links using Twitter's t.co wrapper</param>
+        /// <returns>IQueryable of sent status</returns>
+        public static Status UpdateStatus(this TwitterContext ctx, string status, bool wrapLinks)
+        {
+            return UpdateStatus(ctx, status, wrapLinks, -1, -1, null, false, null, null);
+        }
+
+        /// <summary>
+        /// sends a status update - overload to make inReplyToStatusID optional
+        /// </summary>
+        /// <param name="status">(optional @UserName) and (required) status text</param>
+        /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <returns>IQueryable of sent status</returns>
+        public static Status UpdateStatus(this TwitterContext ctx, string status, Action<TwitterAsyncResponse<Status>> callback)
+        {
+            return UpdateStatus(ctx, status, false, -1, -1, null, false, null, callback);
+        }
+
+        /// <summary>
+        /// sends a status update - overload to make inReplyToStatusID optional
+        /// </summary>
+        /// <param name="status">(optional @UserName) and (required) status text</param>
+        /// <param name="wrapLinks">Shorten links using Twitter's t.co wrapper</param>
+        /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <returns>IQueryable of sent status</returns>
+        public static Status UpdateStatus(this TwitterContext ctx, string status, bool wrapLinks, Action<TwitterAsyncResponse<Status>> callback)
+        {
+            return UpdateStatus(ctx, status, wrapLinks, -1, -1, null, false, null, callback);
+        }
+
+        /// <summary>
+        /// sends a status update
+        /// </summary>
+        /// <param name="status">(optional @UserName) and (required) status text</param>
+        /// <param name="inReplyToStatusID">id of status replying to - optional - pass null if not used</param>
+        /// <returns>IQueryable of sent status</returns>
+        public static Status UpdateStatus(this TwitterContext ctx, string status, string inReplyToStatusID)
+        {
+            return UpdateStatus(ctx, status, false, -1, -1, null, false, inReplyToStatusID, null);
+        }
+
+        /// <summary>
+        /// sends a status update
+        /// </summary>
+        /// <param name="status">(optional @UserName) and (required) status text</param>
+        /// <param name="wrapLinks">Shorten links using Twitter's t.co wrapper</param>
+        /// <param name="inReplyToStatusID">id of status replying to - optional - pass null if not used</param>
+        /// <returns>IQueryable of sent status</returns>
+        public static Status UpdateStatus(this TwitterContext ctx, string status, bool wrapLinks, string inReplyToStatusID)
+        {
+            return UpdateStatus(ctx, status, wrapLinks, -1, -1, null, false, inReplyToStatusID, null);
+        }
+
+        /// <summary>
+        /// sends a status update
+        /// </summary>
+        /// <param name="status">(optional @UserName) and (required) status text</param>
+        /// <param name="inReplyToStatusID">id of status replying to - optional - pass null if not used</param>
+        /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <returns>IQueryable of sent status</returns>
+        public static Status UpdateStatus(this TwitterContext ctx, string status, string inReplyToStatusID, Action<TwitterAsyncResponse<Status>> callback)
+        {
+            return UpdateStatus(ctx, status, false, -1, -1, null, false, inReplyToStatusID, callback);
+        }
+
+        /// <summary>
+        /// sends a status update
+        /// </summary>
+        /// <param name="status">(optional @UserName) and (required) status text</param>
+        /// <param name="wrapLinks">Shorten links using Twitter's t.co wrapper</param>
+        /// <param name="inReplyToStatusID">id of status replying to - optional - pass null if not used</param>
+        /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <returns>IQueryable of sent status</returns>
+        public static Status UpdateStatus(this TwitterContext ctx, string status, bool wrapLinks, string inReplyToStatusID, Action<TwitterAsyncResponse<Status>> callback)
+        {
+            return UpdateStatus(ctx, status, wrapLinks, -1, -1, null, false, inReplyToStatusID, callback);
+        }
+
+        /// <summary>
+        /// sends a status update
+        /// </summary>
+        /// <param name="status">(optional @UserName) and (required) status text</param>
+        /// <param name="latitude">Latitude coordinate of where tweet occurred</param>
+        /// <param name="longitude">Longitude coordinate of where tweet occurred</param>
+        /// <returns>IQueryable of sent status</returns>
+        public static Status UpdateStatus(this TwitterContext ctx, string status, decimal latitude, decimal longitude)
+        {
+            return UpdateStatus(ctx, status, false, latitude, longitude, null, false, null, null);
+        }
+
+        /// <summary>
+        /// sends a status update
+        /// </summary>
+        /// <param name="status">(optional @UserName) and (required) status text</param>
+        /// <param name="wrapLinks">Shorten links using Twitter's t.co wrapper</param>
+        /// <param name="latitude">Latitude coordinate of where tweet occurred</param>
+        /// <param name="longitude">Longitude coordinate of where tweet occurred</param>
+        /// <returns>IQueryable of sent status</returns>
+        public static Status UpdateStatus(this TwitterContext ctx, string status, bool wrapLinks, decimal latitude, decimal longitude)
+        {
+            return UpdateStatus(ctx, status, wrapLinks, latitude, longitude, null, false, null, null);
+        }
+
+        /// <summary>
+        /// sends a status update
+        /// </summary>
+        /// <param name="status">(optional @UserName) and (required) status text</param>
+        /// <param name="latitude">Latitude coordinate of where tweet occurred</param>
+        /// <param name="longitude">Longitude coordinate of where tweet occurred</param>
+        /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <returns>IQueryable of sent status</returns>
+        public static Status UpdateStatus(this TwitterContext ctx, string status, decimal latitude, decimal longitude, Action<TwitterAsyncResponse<Status>> callback)
+        {
+            return UpdateStatus(ctx, status, false, latitude, longitude, null, false, null, callback);
+        }
+
+        /// <summary>
+        /// sends a status update
+        /// </summary>
+        /// <param name="status">(optional @UserName) and (required) status text</param>
+        /// <param name="wrapLinks">Shorten links using Twitter's t.co wrapper</param>
+        /// <param name="latitude">Latitude coordinate of where tweet occurred</param>
+        /// <param name="longitude">Longitude coordinate of where tweet occurred</param>
+        /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <returns>IQueryable of sent status</returns>
+        public static Status UpdateStatus(this TwitterContext ctx, string status, bool wrapLinks, decimal latitude, decimal longitude, Action<TwitterAsyncResponse<Status>> callback)
+        {
+            return UpdateStatus(ctx, status, wrapLinks, latitude, longitude, null, false, null, callback);
+        }
+
+        /// <summary>
+        /// sends a status update
+        /// </summary>
+        /// <param name="status">(optional @UserName) and (required) status text</param>
+        /// <param name="latitude">Latitude coordinate of where tweet occurred</param>
+        /// <param name="longitude">Longitude coordinate of where tweet occurred</param>
+        /// <param name="displayCoordinates">Allow or prevent display of coordinates for this tweet</param>
+        /// <returns>IQueryable of sent status</returns>
+        public static Status UpdateStatus(this TwitterContext ctx, string status, decimal latitude, decimal longitude, bool displayCoordinates)
+        {
+            return UpdateStatus(ctx, status, false, latitude, longitude, null, displayCoordinates, null, null);
+        }
+
+        /// <summary>
+        /// sends a status update
+        /// </summary>
+        /// <param name="status">(optional @UserName) and (required) status text</param>
+        /// <param name="wrapLinks">Shorten links using Twitter's t.co wrapper</param>
+        /// <param name="latitude">Latitude coordinate of where tweet occurred</param>
+        /// <param name="longitude">Longitude coordinate of where tweet occurred</param>
+        /// <param name="displayCoordinates">Allow or prevent display of coordinates for this tweet</param>
+        /// <returns>IQueryable of sent status</returns>
+        public static Status UpdateStatus(this TwitterContext ctx, string status, bool wrapLinks, decimal latitude, decimal longitude, bool displayCoordinates)
+        {
+            return UpdateStatus(ctx, status, wrapLinks, latitude, longitude, null, displayCoordinates, null, null);
+        }
+
+        /// <summary>
+        /// sends a status update
+        /// </summary>
+        /// <param name="status">(optional @UserName) and (required) status text</param>
+        /// <param name="latitude">Latitude coordinate of where tweet occurred</param>
+        /// <param name="longitude">Longitude coordinate of where tweet occurred</param>
+        /// <param name="displayCoordinates">Allow or prevent display of coordinates for this tweet</param>
+        /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <returns>IQueryable of sent status</returns>
+        public static Status UpdateStatus(this TwitterContext ctx, string status, decimal latitude, decimal longitude, bool displayCoordinates, Action<TwitterAsyncResponse<Status>> callback)
+        {
+            return UpdateStatus(ctx, status, false, latitude, longitude, null, displayCoordinates, callback);
+        }
+
+        /// <summary>
+        /// sends a status update
+        /// </summary>
+        /// <param name="status">(optional @UserName) and (required) status text</param>
+        /// <param name="wrapLinks">Shorten links using Twitter's t.co wrapper</param>
+        /// <param name="latitude">Latitude coordinate of where tweet occurred</param>
+        /// <param name="longitude">Longitude coordinate of where tweet occurred</param>
+        /// <param name="displayCoordinates">Allow or prevent display of coordinates for this tweet</param>
+        /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <returns>IQueryable of sent status</returns>
+        public static Status UpdateStatus(this TwitterContext ctx, string status, bool wrapLinks, decimal latitude, decimal longitude, bool displayCoordinates, Action<TwitterAsyncResponse<Status>> callback)
+        {
+            return UpdateStatus(ctx, status, wrapLinks, latitude, longitude, null, displayCoordinates, callback);
+        }
+
+        /// <summary>
+        /// sends a status update
+        /// </summary>
+        /// <param name="status">(optional @UserName) and (required) status text</param>
+        /// <param name="latitude">Latitude coordinate of where tweet occurred</param>
+        /// <param name="longitude">Longitude coordinate of where tweet occurred</param>
+        /// <param name="displayCoordinates">Allow or prevent display of coordinates for this tweet</param>
+        /// <param name="inReplyToStatusID">id of status replying to - optional - pass null if not used</param>
+        /// <returns>IQueryable of sent status</returns>
+        public static Status UpdateStatus(this TwitterContext ctx, string status, decimal latitude, decimal longitude, bool displayCoordinates, string inReplyToStatusID)
+        {
+            return UpdateStatus(ctx, status, false, latitude, longitude, null, displayCoordinates, inReplyToStatusID, null);
+        }
+
+        /// <summary>
+        /// sends a status update
+        /// </summary>
+        /// <param name="status">(optional @UserName) and (required) status text</param>
+        /// <param name="wrapLinks">Shorten links using Twitter's t.co wrapper</param>
+        /// <param name="latitude">Latitude coordinate of where tweet occurred</param>
+        /// <param name="longitude">Longitude coordinate of where tweet occurred</param>
+        /// <param name="displayCoordinates">Allow or prevent display of coordinates for this tweet</param>
+        /// <param name="inReplyToStatusID">id of status replying to - optional - pass null if not used</param>
+        /// <returns>IQueryable of sent status</returns>
+        public static Status UpdateStatus(this TwitterContext ctx, string status, bool wrapLinks, decimal latitude, decimal longitude, bool displayCoordinates, string inReplyToStatusID)
+        {
+            return UpdateStatus(ctx, status, wrapLinks, latitude, longitude, null, displayCoordinates, inReplyToStatusID, null);
+        }
+
+        /// <summary>
+        /// sends a status update
+        /// </summary>
+        /// <param name="status">(optional @UserName) and (required) status text</param>
+        /// <param name="latitude">Latitude coordinate of where tweet occurred</param>
+        /// <param name="longitude">Longitude coordinate of where tweet occurred</param>
+        /// <param name="displayCoordinates">Allow or prevent display of coordinates for this tweet</param>
+        /// <param name="inReplyToStatusID">id of status replying to - optional - pass null if not used</param>
+        /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <returns>IQueryable of sent status</returns>
+        public static Status UpdateStatus(this TwitterContext ctx, string status, decimal latitude, decimal longitude, bool displayCoordinates, string inReplyToStatusID, Action<TwitterAsyncResponse<Status>> callback)
+        {
+            return UpdateStatus(ctx, status, false, latitude, longitude, null, displayCoordinates, inReplyToStatusID, callback);
+        }
+
+        /// <summary>
+        /// sends a status update
+        /// </summary>
+        /// <param name="status">(optional @UserName) and (required) status text</param>
+        /// <param name="wrapLinks">Shorten links using Twitter's t.co wrapper</param>
+        /// <param name="latitude">Latitude coordinate of where tweet occurred</param>
+        /// <param name="longitude">Longitude coordinate of where tweet occurred</param>
+        /// <param name="displayCoordinates">Allow or prevent display of coordinates for this tweet</param>
+        /// <param name="inReplyToStatusID">id of status replying to - optional - pass null if not used</param>
+        /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <returns>IQueryable of sent status</returns>
+        public static Status UpdateStatus(this TwitterContext ctx, string status, bool wrapLinks, decimal latitude, decimal longitude, bool displayCoordinates, string inReplyToStatusID, Action<TwitterAsyncResponse<Status>> callback)
+        {
+            return UpdateStatus(ctx, status, wrapLinks, latitude, longitude, null, displayCoordinates, inReplyToStatusID, callback);
+        }
+
+        /// <summary>
+        /// sends a status update
+        /// </summary>
+        /// <param name="status">(optional @UserName) and (required) status text</param>
+        /// <param name="latitude">Latitude coordinate of where tweet occurred</param>
+        /// <param name="longitude">Longitude coordinate of where tweet occurred</param>
+        /// <param name="placeID">ID of place (found via Geo Reverse lookup query)</param>
+        /// <returns>IQueryable of sent status</returns>
+        public static Status UpdateStatus(this TwitterContext ctx, string status, decimal latitude, decimal longitude, string placeID)
+        {
+            return UpdateStatus(ctx, status, false, latitude, longitude, placeID, false, null, null);
+        }
+
+        /// <summary>
+        /// sends a status update
+        /// </summary>
+        /// <param name="status">(optional @UserName) and (required) status text</param>
+        /// <param name="wrapLinks">Shorten links using Twitter's t.co wrapper</param>
+        /// <param name="latitude">Latitude coordinate of where tweet occurred</param>
+        /// <param name="longitude">Longitude coordinate of where tweet occurred</param>
+        /// <param name="placeID">ID of place (found via Geo Reverse lookup query)</param>
+        /// <returns>IQueryable of sent status</returns>
+        public static Status UpdateStatus(this TwitterContext ctx, string status, bool wrapLinks, decimal latitude, decimal longitude, string placeID)
+        {
+            return UpdateStatus(ctx, status, wrapLinks, latitude, longitude, placeID, false, null, null);
+        }
+
+        /// <summary>
+        /// sends a status update
+        /// </summary>
+        /// <param name="status">(optional @UserName) and (required) status text</param>
+        /// <param name="latitude">Latitude coordinate of where tweet occurred</param>
+        /// <param name="longitude">Longitude coordinate of where tweet occurred</param>
+        /// <param name="placeID">ID of place (found via Geo Reverse lookup query)</param>
+        /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <returns>IQueryable of sent status</returns>
+        public static Status UpdateStatus(this TwitterContext ctx, string status, decimal latitude, decimal longitude, string placeID, Action<TwitterAsyncResponse<Status>> callback)
+        {
+            return UpdateStatus(ctx, status, false, latitude, longitude, placeID, false, null, callback);
+        }
+
+        /// <summary>
+        /// sends a status update
+        /// </summary>
+        /// <param name="status">(optional @UserName) and (required) status text</param>
+        /// <param name="wrapLinks">Shorten links using Twitter's t.co wrapper</param>
+        /// <param name="latitude">Latitude coordinate of where tweet occurred</param>
+        /// <param name="longitude">Longitude coordinate of where tweet occurred</param>
+        /// <param name="placeID">ID of place (found via Geo Reverse lookup query)</param>
+        /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <returns>IQueryable of sent status</returns>
+        public static Status UpdateStatus(this TwitterContext ctx, string status, bool wrapLinks, decimal latitude, decimal longitude, string placeID, Action<TwitterAsyncResponse<Status>> callback)
+        {
+            return UpdateStatus(ctx, status, wrapLinks, latitude, longitude, placeID, false, null, callback);
+        }
+
+        /// <summary>
+        /// sends a status update
+        /// </summary>
+        /// <param name="status">(optional @UserName) and (required) status text</param>
+        /// <param name="latitude">Latitude coordinate of where tweet occurred</param>
+        /// <param name="longitude">Longitude coordinate of where tweet occurred</param>
+        /// <param name="placeID">ID of place (found via Geo Reverse lookup query)</param>
+        /// <param name="inReplyToStatusID">id of status replying to - optional - pass null if not used</param>
+        /// <returns>IQueryable of sent status</returns>
+        public static Status UpdateStatus(this TwitterContext ctx, string status, decimal latitude, decimal longitude, string placeID, string inReplyToStatusID)
+        {
+            return UpdateStatus(ctx, status, false, latitude, longitude, placeID, false, inReplyToStatusID, null);
+        }
+
+        /// <summary>
+        /// sends a status update
+        /// </summary>
+        /// <param name="status">(optional @UserName) and (required) status text</param>
+        /// <param name="wrapLinks">Shorten links using Twitter's t.co wrapper</param>
+        /// <param name="latitude">Latitude coordinate of where tweet occurred</param>
+        /// <param name="longitude">Longitude coordinate of where tweet occurred</param>
+        /// <param name="placeID">ID of place (found via Geo Reverse lookup query)</param>
+        /// <param name="inReplyToStatusID">id of status replying to - optional - pass null if not used</param>
+        /// <returns>IQueryable of sent status</returns>
+        public static Status UpdateStatus(this TwitterContext ctx, string status, bool wrapLinks, decimal latitude, decimal longitude, string placeID, string inReplyToStatusID)
+        {
+            return UpdateStatus(ctx, status, wrapLinks, latitude, longitude, placeID, false, inReplyToStatusID, null);
+        }
+
+        /// <summary>
+        /// sends a status update
+        /// </summary>
+        /// <param name="status">(optional @UserName) and (required) status text</param>
+        /// <param name="latitude">Latitude coordinate of where tweet occurred</param>
+        /// <param name="longitude">Longitude coordinate of where tweet occurred</param>
+        /// <param name="placeID">ID of place (found via Geo Reverse lookup query)</param>
+        /// <param name="inReplyToStatusID">id of status replying to - optional - pass null if not used</param>
+        /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <returns>IQueryable of sent status</returns>
+        public static Status UpdateStatus(this TwitterContext ctx, string status, decimal latitude, decimal longitude, string placeID, string inReplyToStatusID, Action<TwitterAsyncResponse<Status>> callback)
+        {
+            return UpdateStatus(ctx, status, false, latitude, longitude, placeID, false, inReplyToStatusID, callback);
+        }
+
+        /// <summary>
+        /// sends a status update
+        /// </summary>
+        /// <param name="status">(optional @UserName) and (required) status text</param>
+        /// <param name="wrapLinks">Shorten links using Twitter's t.co wrapper</param>
+        /// <param name="latitude">Latitude coordinate of where tweet occurred</param>
+        /// <param name="longitude">Longitude coordinate of where tweet occurred</param>
+        /// <param name="placeID">ID of place (found via Geo Reverse lookup query)</param>
+        /// <param name="inReplyToStatusID">id of status replying to - optional - pass null if not used</param>
+        /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <returns>IQueryable of sent status</returns>
+        public static Status UpdateStatus(this TwitterContext ctx, string status, bool wrapLinks, decimal latitude, decimal longitude, string placeID, string inReplyToStatusID, Action<TwitterAsyncResponse<Status>> callback)
+        {
+            return UpdateStatus(ctx, status, wrapLinks, latitude, longitude, placeID, false, inReplyToStatusID, callback);
+        }
+
+        /// <summary>
+        /// sends a status update
+        /// </summary>
+        /// <param name="status">(optional @UserName) and (required) status text</param>
+        /// <param name="latitude">Latitude coordinate of where tweet occurred</param>
+        /// <param name="longitude">Longitude coordinate of where tweet occurred</param>
+        /// <param name="placeID">ID of place (found via Geo Reverse lookup query)</param>
+        /// <param name="displayCoordinates">Allow or prevent display of coordinates for this tweet</param>
+        /// <returns>IQueryable of sent status</returns>
+        public static Status UpdateStatus(this TwitterContext ctx, string status, decimal latitude, decimal longitude, string placeID, bool displayCoordinates)
+        {
+            return UpdateStatus(ctx, status, false, latitude, longitude, placeID, displayCoordinates, null, null);
+        }
+
+        /// <summary>
+        /// sends a status update
+        /// </summary>
+        /// <param name="status">(optional @UserName) and (required) status text</param>
+        /// <param name="wrapLinks">Shorten links using Twitter's t.co wrapper</param>
+        /// <param name="latitude">Latitude coordinate of where tweet occurred</param>
+        /// <param name="longitude">Longitude coordinate of where tweet occurred</param>
+        /// <param name="placeID">ID of place (found via Geo Reverse lookup query)</param>
+        /// <param name="displayCoordinates">Allow or prevent display of coordinates for this tweet</param>
+        /// <returns>IQueryable of sent status</returns>
+        public static Status UpdateStatus(this TwitterContext ctx, string status, bool wrapLinks, decimal latitude, decimal longitude, string placeID, bool displayCoordinates)
+        {
+            return UpdateStatus(ctx, status, wrapLinks, latitude, longitude, placeID, displayCoordinates, null, null);
+        }
+
+        /// <summary>
+        /// sends a status update
+        /// </summary>
+        /// <param name="status">(optional @UserName) and (required) status text</param>
+        /// <param name="latitude">Latitude coordinate of where tweet occurred</param>
+        /// <param name="longitude">Longitude coordinate of where tweet occurred</param>
+        /// <param name="placeID">ID of place (found via Geo Reverse lookup query)</param>
+        /// <param name="displayCoordinates">Allow or prevent display of coordinates for this tweet</param>
+        /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <returns>IQueryable of sent status</returns>
+        public static Status UpdateStatus(this TwitterContext ctx, string status, decimal latitude, decimal longitude, string placeID, bool displayCoordinates, Action<TwitterAsyncResponse<Status>> callback)
+        {
+            return UpdateStatus(ctx, status, false, latitude, longitude, placeID, displayCoordinates, null, callback);
+        }
+
+        /// <summary>
+        /// sends a status update
+        /// </summary>
+        /// <param name="status">(optional @UserName) and (required) status text</param>
+        /// <param name="wrapLinks">Shorten links using Twitter's t.co wrapper</param>
+        /// <param name="latitude">Latitude coordinate of where tweet occurred</param>
+        /// <param name="longitude">Longitude coordinate of where tweet occurred</param>
+        /// <param name="placeID">ID of place (found via Geo Reverse lookup query)</param>
+        /// <param name="displayCoordinates">Allow or prevent display of coordinates for this tweet</param>
+        /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <returns>IQueryable of sent status</returns>
+        public static Status UpdateStatus(this TwitterContext ctx, string status, bool wrapLinks, decimal latitude, decimal longitude, string placeID, bool displayCoordinates, Action<TwitterAsyncResponse<Status>> callback)
+        {
+            return UpdateStatus(ctx, status, wrapLinks, latitude, longitude, placeID, displayCoordinates, null, callback);
+        }
+
+        /// <summary>
+        /// sends a status update
+        /// </summary>
+        /// <param name="status">(optional @UserName) and (required) status text</param>
+        /// <param name="placeID">ID of place (found via Geo Reverse lookup query)</param>
+        /// <param name="displayCoordinates">Allow or prevent display of coordinates for this tweet</param>
+        /// <returns>IQueryable of sent status</returns>
+        public static Status UpdateStatus(this TwitterContext ctx, string status, string placeID, bool displayCoordinates)
+        {
+            return UpdateStatus(ctx, status, false, -1, -1, placeID, displayCoordinates, null, null);
+        }
+
+        /// <summary>
+        /// sends a status update
+        /// </summary>
+        /// <param name="status">(optional @UserName) and (required) status text</param>
+        /// <param name="wrapLinks">Shorten links using Twitter's t.co wrapper</param>
+        /// <param name="placeID">ID of place (found via Geo Reverse lookup query)</param>
+        /// <param name="displayCoordinates">Allow or prevent display of coordinates for this tweet</param>
+        /// <returns>IQueryable of sent status</returns>
+        public static Status UpdateStatus(this TwitterContext ctx, string status, bool wrapLinks, string placeID, bool displayCoordinates)
+        {
+            return UpdateStatus(ctx, status, wrapLinks, -1, -1, placeID, displayCoordinates, null, null);
+        }
+
+        /// <summary>
+        /// sends a status update
+        /// </summary>
+        /// <param name="status">(optional @UserName) and (required) status text</param>
+        /// <param name="placeID">ID of place (found via Geo Reverse lookup query)</param>
+        /// <param name="displayCoordinates">Allow or prevent display of coordinates for this tweet</param>
+        /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <returns>IQueryable of sent status</returns>
+        public static Status UpdateStatus(this TwitterContext ctx, string status, string placeID, bool displayCoordinates, Action<TwitterAsyncResponse<Status>> callback)
+        {
+            return UpdateStatus(ctx, status, false, -1, -1, placeID, displayCoordinates, null, callback);
+        }
+
+        /// <summary>
+        /// sends a status update
+        /// </summary>
+        /// <param name="status">(optional @UserName) and (required) status text</param>
+        /// <param name="wrapLinks">Shorten links using Twitter's t.co wrapper</param>
+        /// <param name="placeID">ID of place (found via Geo Reverse lookup query)</param>
+        /// <param name="displayCoordinates">Allow or prevent display of coordinates for this tweet</param>
+        /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <returns>IQueryable of sent status</returns>
+        public static Status UpdateStatus(this TwitterContext ctx, string status, bool wrapLinks, string placeID, bool displayCoordinates, Action<TwitterAsyncResponse<Status>> callback)
+        {
+            return UpdateStatus(ctx, status, wrapLinks, -1, -1, placeID, displayCoordinates, null, callback);
+        }
+
+        /// <summary>
+        /// sends a status update
+        /// </summary>
+        /// <param name="status">(optional @UserName) and (required) status text</param>
+        /// <param name="placeID">ID of place (found via Geo Reverse lookup query)</param>
+        /// <param name="displayCoordinates">Allow or prevent display of coordinates for this tweet</param>
+        /// <param name="inReplyToStatusID">id of status replying to - optional - pass null if not used</param>
+        /// <returns>IQueryable of sent status</returns>
+        public static Status UpdateStatus(this TwitterContext ctx, string status, string placeID, bool displayCoordinates, string inReplyToStatusID)
+        {
+            return UpdateStatus(ctx, status, false, -1, -1, placeID, displayCoordinates, inReplyToStatusID, null);
+        }
+
+        /// <summary>
+        /// sends a status update
+        /// </summary>
+        /// <param name="status">(optional @UserName) and (required) status text</param>
+        /// <param name="wrapLinks">Shorten links using Twitter's t.co wrapper</param>
+        /// <param name="placeID">ID of place (found via Geo Reverse lookup query)</param>
+        /// <param name="displayCoordinates">Allow or prevent display of coordinates for this tweet</param>
+        /// <param name="inReplyToStatusID">id of status replying to - optional - pass null if not used</param>
+        /// <returns>IQueryable of sent status</returns>
+        public static Status UpdateStatus(this TwitterContext ctx, string status, bool wrapLinks, string placeID, bool displayCoordinates, string inReplyToStatusID)
+        {
+            return UpdateStatus(ctx, status, wrapLinks, -1, -1, placeID, displayCoordinates, inReplyToStatusID, null);
+        }
+
+        /// <summary>
+        /// sends a status update
+        /// </summary>
+        /// <param name="status">(optional @UserName) and (required) status text</param>
+        /// <param name="placeID">ID of place (found via Geo Reverse lookup query)</param>
+        /// <param name="displayCoordinates">Allow or prevent display of coordinates for this tweet</param>
+        /// <param name="inReplyToStatusID">id of status replying to - optional - pass null if not used</param>
+        /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <returns>IQueryable of sent status</returns>
+        public static Status UpdateStatus(this TwitterContext ctx, string status, string placeID, bool displayCoordinates, string inReplyToStatusID, Action<TwitterAsyncResponse<Status>> callback)
+        {
+            return UpdateStatus(ctx, status, false, -1, -1, placeID, displayCoordinates, inReplyToStatusID, callback);
+        }
+
+        /// <summary>
+        /// sends a status update
+        /// </summary>
+        /// <param name="status">(optional @UserName) and (required) status text</param>
+        /// <param name="wrapLinks">Shorten links using Twitter's t.co wrapper</param>
+        /// <param name="placeID">ID of place (found via Geo Reverse lookup query)</param>
+        /// <param name="displayCoordinates">Allow or prevent display of coordinates for this tweet</param>
+        /// <param name="inReplyToStatusID">id of status replying to - optional - pass null if not used</param>
+        /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <returns>IQueryable of sent status</returns>
+        public static Status UpdateStatus(this TwitterContext ctx, string status, bool wrapLinks, string placeID, bool displayCoordinates, string inReplyToStatusID, Action<TwitterAsyncResponse<Status>> callback)
+        {
+            return UpdateStatus(ctx, status, wrapLinks, -1, -1, placeID, displayCoordinates, inReplyToStatusID, callback);
+        }
+
+        /// <summary>
+        /// sends a status update
+        /// </summary>
+        /// <param name="status">(optional @UserName) and (required) status text</param>
+        /// <param name="latitude">Latitude coordinate of where tweet occurred</param>
+        /// <param name="longitude">Longitude coordinate of where tweet occurred</param>
+        /// <param name="placeID">ID of place (found via Geo Reverse lookup query)</param>
+        /// <param name="displayCoordinates">Allow or prevent display of coordinates for this tweet</param>
+        /// <param name="inReplyToStatusID">id of status replying to - optional - pass null if not used</param>
+        /// <returns>IQueryable of sent status</returns>
+        public static Status UpdateStatus(this TwitterContext ctx, string status, decimal latitude, decimal longitude, string placeID, bool displayCoordinates, string inReplyToStatusID)
+        {
+            return UpdateStatus(ctx, status, false, latitude, longitude, placeID, displayCoordinates, inReplyToStatusID, null);
+        }
+
+        /// <summary>
+        /// sends a status update
+        /// </summary>
+        /// <param name="status">(optional @UserName) and (required) status text</param>
+        /// <param name="wrapLinks">Shorten links using Twitter's t.co wrapper</param>
+        /// <param name="latitude">Latitude coordinate of where tweet occurred</param>
+        /// <param name="longitude">Longitude coordinate of where tweet occurred</param>
+        /// <param name="placeID">ID of place (found via Geo Reverse lookup query)</param>
+        /// <param name="displayCoordinates">Allow or prevent display of coordinates for this tweet</param>
+        /// <param name="inReplyToStatusID">id of status replying to - optional - pass null if not used</param>
+        /// <returns>IQueryable of sent status</returns>
+        public static Status UpdateStatus(this TwitterContext ctx, string status, bool wrapLinks, decimal latitude, decimal longitude, string placeID, bool displayCoordinates, string inReplyToStatusID)
+        {
+            return UpdateStatus(ctx, status, wrapLinks, latitude, longitude, placeID, displayCoordinates, inReplyToStatusID, null);
+        }
+
+        /// <summary>
+        /// sends a status update
+        /// </summary>
+        /// <param name="status">(optional @UserName) and (required) status text</param>
+        /// <param name="wrapLinks">Shorten links using Twitter's t.co wrapper</param>
+        /// <param name="latitude">Latitude coordinate of where tweet occurred</param>
+        /// <param name="longitude">Longitude coordinate of where tweet occurred</param>
+        /// <param name="placeID">ID of place (found via Geo Reverse lookup query)</param>
+        /// <param name="displayCoordinates">Allow or prevent display of coordinates for this tweet</param>
+        /// <param name="inReplyToStatusID">id of status replying to - optional - pass null if not used</param>
+        /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <returns>IQueryable of sent status</returns>
+        public static Status UpdateStatus(this TwitterContext ctx, string status, bool wrapLinks, decimal latitude, decimal longitude, string placeID, bool displayCoordinates, string inReplyToStatusID, Action<TwitterAsyncResponse<Status>> callback)
+        {
+            if (string.IsNullOrEmpty(status))
+            {
+                throw new ArgumentException("status is a required parameter.", "status");
+            }
+
+            var updateUrl = ctx.BaseUrl + "statuses/update.json";
+
+            var reqProc = new StatusRequestProcessor<Status>();
+
+            ITwitterExecute exec = ctx.TwitterExecutor;
+            exec.AsyncCallback = callback;
+            var resultsJson =
+                exec.ExecuteTwitter(
+                    updateUrl,
+                    new Dictionary<string, string>
+                    {
+                        {"status", status},
+                        {"in_reply_to_status_id", inReplyToStatusID},
+                        {"lat", latitude == -1 ? null : latitude.ToString(CultureInfo.InvariantCulture)},
+                        {"long", longitude == -1 ? null : longitude.ToString(CultureInfo.InvariantCulture)},
+                        {"place_id", placeID},
+                        {"display_coordinates", displayCoordinates.ToString(CultureInfo.InvariantCulture)},
+                        {"wrap_links", wrapLinks ? true.ToString(CultureInfo.InvariantCulture) : null }
+                    },
+                    reqProc);
+
+            Status result = reqProc.ProcessActionResult(resultsJson, StatusAction.SingleStatus);
+            return result;
+        }
+
+        /// <summary>
+        /// deletes a status tweet
+        /// </summary>
+        /// <param name="id">id of status tweet</param>
+        /// <returns>deleted status tweet</returns>
+        public static Status DestroyStatus(this TwitterContext ctx, string id)
+        {
+            return DestroyStatus(ctx, id, null);
+        }
+
+        /// <summary>
+        /// deletes a status tweet
+        /// </summary>
+        /// <param name="id">id of status tweet</param>
+        /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <returns>deleted status tweet</returns>
+        public static Status DestroyStatus(this TwitterContext ctx, string id, Action<TwitterAsyncResponse<Status>> callback)
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                throw new ArgumentException("id is a required parameter.", "id");
+            }
+
+            var destroyUrl = ctx.BaseUrl + "statuses/destroy/" + id + ".json";
+
+            var reqProc = new StatusRequestProcessor<Status>();
+
+            ITwitterExecute exec = ctx.TwitterExecutor;
+            exec.AsyncCallback = callback;
+            var resultsJson =
+                exec.ExecuteTwitter(
+                    destroyUrl,
+                    new Dictionary<string, string>(),
+                    reqProc);
+
+            Status result = reqProc.ProcessActionResult(resultsJson, StatusAction.SingleStatus);
+            return result;
+        }
+
+        /// <summary>
+        /// retweets a tweet
+        /// </summary>
+        /// <param name="id">id of status tweet</param>
+        /// <returns>deleted status tweet</returns>
+        public static Status Retweet(this TwitterContext ctx, string id)
+        {
+            return Retweet(ctx, id, null);
+        }
+
+        /// <summary>
+        /// retweets a tweet
+        /// </summary>
+        /// <param name="id">id of status tweet</param>
+        /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <returns>deleted status tweet</returns>
+        public static Status Retweet(this TwitterContext ctx, string id, Action<TwitterAsyncResponse<Status>> callback)
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                throw new ArgumentException("id is a required parameter.", "id");
+            }
+
+            var retweetUrl = ctx.BaseUrl + "statuses/retweet/" + id + ".json";
+
+            var reqProc = new StatusRequestProcessor<Status>();
+
+            ITwitterExecute exec = ctx.TwitterExecutor;
+            exec.AsyncCallback = callback;
+            var resultsJson =
+                exec.ExecuteTwitter(
+                    retweetUrl,
+                    new Dictionary<string, string>(),
+                    reqProc);
+
+            Status result = reqProc.ProcessActionResult(resultsJson, StatusAction.SingleStatus);
+            return result;
+        }
+
     }
 }

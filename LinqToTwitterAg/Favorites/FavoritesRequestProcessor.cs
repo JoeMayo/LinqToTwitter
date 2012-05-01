@@ -10,7 +10,11 @@ namespace LinqToTwitter
     /// <summary>
     /// Manages request processing for favorites
     /// </summary>
-    public class FavoritesRequestProcessor<T> : IRequestProcessor<T>, IRequestProcessorWantsJson
+    public class FavoritesRequestProcessor<T> :
+        IRequestProcessor<T>,
+        IRequestProcessorWantsJson,
+        IRequestProcessorWithAction<T>
+        where T : class
     {
         public virtual string BaseUrl { get; set; }
 
@@ -116,6 +120,15 @@ namespace LinqToTwitter
                 };
 
             return statusList.OfType<T>().ToList();
+        }
+
+        public T ProcessActionResult(string responseJson, Enum theAction)
+        {
+            JsonData statusJson = JsonMapper.ToObject(responseJson);
+
+            var status = new Status(statusJson);
+
+            return status.ItemCast(default(T));
         }
     }
 }

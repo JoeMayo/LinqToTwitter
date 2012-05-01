@@ -218,8 +218,8 @@ namespace LinqToTwitter
                                     + Environment.NewLine
                                     + responseStr;
 
-                    string encodedResponseUri = MSEncoder.UrlEncode(responseUri);
-                    string encodedErrorText = MSEncoder.UrlEncode(errorText);
+                    string encodedResponseUri = MSEncoder.HtmlEncode(responseUri);
+                    string encodedErrorText = MSEncoder.HtmlEncode(errorText);
 
                     // One known reason this can happen is if you don't have an 
                     // Internet connection, meaning that the response will contain

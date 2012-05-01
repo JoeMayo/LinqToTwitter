@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Linq;
-using System.Net;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace LinqToTwitter
 {
@@ -30,21 +29,21 @@ namespace LinqToTwitter
                 throw new ArgumentException("id is a required parameter.", "id");
             }
 
-            var favoritesUrl = ctx.BaseUrl + "favorites/create/" + id + ".xml";
+            var favoritesUrl = ctx.BaseUrl + "favorites/create/" + id + ".json";
 
             var reqProc = new StatusRequestProcessor<Status>();
 
             ITwitterExecute twitExe = ctx.TwitterExecutor;
 
             twitExe.AsyncCallback = callback;
-            var resultsXml =
+            var resultsJson =
                 twitExe.ExecuteTwitter(
                     favoritesUrl,
                     new Dictionary<string, string>(),
                     reqProc);
 
-            List<Status> results = reqProc.ProcessResults(resultsXml);
-            return results.FirstOrDefault();
+            Status result = reqProc.ProcessActionResult(resultsJson, FavoritesAction.SingleStatus);
+            return result;
         }
 
         /// <summary>
@@ -70,21 +69,21 @@ namespace LinqToTwitter
                 throw new ArgumentException("id is a required parameter.", "id");
             }
 
-            var favoritesUrl = ctx.BaseUrl + "favorites/destroy/" + id + ".xml";
+            var favoritesUrl = ctx.BaseUrl + "favorites/destroy/" + id + ".json";
 
             var reqProc = new StatusRequestProcessor<Status>();
 
             ITwitterExecute twitExe = ctx.TwitterExecutor;
 
             twitExe.AsyncCallback = callback;
-            var resultsXml =
+            var resultsJson =
                 twitExe.ExecuteTwitter(
                     favoritesUrl,
                     new Dictionary<string, string>(),
                     reqProc);
 
-            List<Status> results = reqProc.ProcessResults(resultsXml);
-            return results.FirstOrDefault();
+            Status result = reqProc.ProcessActionResult(resultsJson, FavoritesAction.SingleStatus);
+            return result;
         }
 
     }

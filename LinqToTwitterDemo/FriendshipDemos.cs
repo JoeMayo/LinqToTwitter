@@ -22,10 +22,10 @@ namespace LinqToTwitterDemo
             //FriendshipExistsDemo(twitterCtx);
             //FriendshipExistsProjectionDemo(twitterCtx);
             //FriendshipShowDemo(twitterCtx);
-            //FriendshipNoRetweetIDsDemo(twitterCtx);
+            FriendshipNoRetweetIDsDemo(twitterCtx);
             //FriendshipIncomingDemo(twitterCtx);
             //FriendshipOutgoingDemo(twitterCtx);
-            FriendshipLookupDemo(twitterCtx);
+            //FriendshipLookupDemo(twitterCtx);
             //UpdateSettingsDemo(twitterCtx);
         }
 
@@ -118,8 +118,8 @@ namespace LinqToTwitterDemo
             var friendship =
                 (from friend in twitterCtx.Friendship
                  where friend.Type == FriendshipType.Show &&
-                       friend.SourceScreenName == "JoeMayo" &&
-                       friend.TargetScreenName == "LinqToTweeter"
+                       friend.SourceScreenName == "Linq2Tweeter" &&
+                       friend.TargetScreenName == "JoeMayo"
                  select friend)
                  .First();
 
@@ -180,7 +180,7 @@ namespace LinqToTwitterDemo
             var relationships =
                 (from look in twitterCtx.Friendship
                  where look.Type == FriendshipType.Lookup &&
-                       look.ScreenName == "linq2tweeter, joemayo"
+                       look.ScreenName == "joemayo, linq2tweeter"
                  select look.Relationships)
                 .SingleOrDefault();
 

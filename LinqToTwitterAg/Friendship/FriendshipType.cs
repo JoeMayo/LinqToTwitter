@@ -36,4 +36,11 @@
         /// </summary>
         NoRetweetIDs,
     }
+
+    enum FriendshipAction
+    {
+        Create,
+        Destroy,
+        Update
+    }
 }

@@ -10,4 +10,9 @@
         /// </summary>
         Favorites
     }
+
+    enum FavoritesAction
+    {
+        SingleStatus
+    }
 }

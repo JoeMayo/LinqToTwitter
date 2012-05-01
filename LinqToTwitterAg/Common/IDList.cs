@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Xml.Linq;
+using LinqToTwitter.Common;
+using LitJson;
 
 namespace LinqToTwitter
 {
@@ -9,34 +10,17 @@ namespace LinqToTwitter
     /// </summary>
     public class IDList
     {
-        /// <summary>
-        /// Translate XML to IDList
-        /// </summary>
-        /// <param name="idList">XML with IDs and cursor info</param>
-        /// <returns>New IDList instance</returns>
-        public static IDList CreateIDList(XElement idList)
+        public IDList() { }
+        public IDList(JsonData idJson)
         {
-            return new IDList
-            {
-                CursorMovement = Cursors.CreateCursors(idList),
-                IDs =
-                    (from id in idList.Element("ids").Elements("id")
-                     select id.Value)
-                     .ToList()
-            };
-        }
+            if (idJson == null) return;
 
-
-        public static IDList CreateIDs(XElement idList)
-        {
-            return new IDList
-            {
-                CursorMovement = Cursors.CreateCursors(idList),
-                IDs =
-                    (from id in idList.Elements("id")
-                     select id.Value)
-                     .ToList()
-            };
+            CursorMovement = new Cursors(idJson);
+            var ids = idJson.GetValue<JsonData>("ids");
+            IDs =
+                (from JsonData id in ids
+                 select (ulong)id)
+                .ToList();
         }
 
         /// <summary>
@@ -47,6 +31,6 @@ namespace LinqToTwitter
         /// <summary>
         /// List of IDs returned
         /// </summary>
-        public List<string> IDs { get; set; }
+        public List<ulong> IDs { get; set; }
     }
 }

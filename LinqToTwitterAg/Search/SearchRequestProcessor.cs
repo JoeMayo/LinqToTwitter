@@ -201,9 +201,9 @@ namespace LinqToTwitter
         /// <returns>URL conforming to Twitter API</returns>
         public Request BuildUrl(Dictionary<string, string> parameters)
         {
-            const string typeParam = "Type";
+            const string TypeParam = "Type";
             if (parameters == null || !parameters.ContainsKey("Type"))
-                throw new ArgumentException("You must set Type.", typeParam);
+                throw new ArgumentException("You must set Type.", TypeParam);
 
             // Joe: Why force a Type when there is only one Type?
             //

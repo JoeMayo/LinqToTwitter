@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using LinqToTwitter.Common;
+using LitJson;
 
 namespace LinqToTwitter
 {
@@ -7,6 +9,15 @@ namespace LinqToTwitter
     /// </summary>
     public class Friendship
     {
+        public Friendship() { }
+        public Friendship(JsonData friendJson)
+        {
+            if (friendJson == null) return;
+
+            TargetRelationship = new Relationship(friendJson.GetValue<JsonData>("target"));
+            SourceRelationship = new Relationship(friendJson.GetValue<JsonData>("source"));
+        }
+
         /// <summary>
         /// type of friendship (defaults to Exists)
         /// </summary>

@@ -57,16 +57,18 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Blocks\BlocksExtensionsTests.cs" />
-    <Compile Include="Blocks\BlocksRequestProcessorTests.cs" />
+    <Compile Include="BlocksTests\BlocksExtensionsTests.cs" />
+    <Compile Include="BlocksTests\BlocksRequestProcessorTests.cs" />
     <Compile Include="Common\TestCulture.cs" />
-    <Compile Include="DirectMessage\DirectMessageExtensionsTests.cs" />
-    <Compile Include="DirectMessage\DirectMessageRequestProcessorTests.cs" />
-    <Compile Include="DirectMessage\DirectMessageTests.cs" />
-    <Compile Include="Favorites\FavoritesRequestProcessorTests.cs" />
-    <Compile Include="Favorites\FavoritesTests.cs" />
-    <Compile Include="Friendship\FriendshipRequestProcessorTests.cs" />
-    <Compile Include="Friendship\RelationshipTests.cs" />
+    <Compile Include="DirectMessageTests\DirectMessageExtensionsTests.cs" />
+    <Compile Include="DirectMessageTests\DirectMessageRequestProcessorTests.cs" />
+    <Compile Include="DirectMessageTests\DirectMessageTests.cs" />
+    <Compile Include="FavoritesTests\FavoritesExtensionsTests.cs" />
+    <Compile Include="FavoritesTests\FavoritesRequestProcessorTests.cs" />
+    <Compile Include="FavoritesTests\FavoritesCtorTests.cs" />
+    <Compile Include="FriendshipTests\FriendshipExtensionsTests.cs" />
+    <Compile Include="FriendshipTests\FriendshipRequestProcessorTests.cs" />
+    <Compile Include="FriendshipTests\RelationshipTests.cs" />
     <Compile Include="GeoTests\CoordinateTests.cs" />
     <Compile Include="GeoTests\GeometryTests.cs" />
     <Compile Include="GeoTests\GeoRequestProcessorTests.cs" />
@@ -74,20 +76,22 @@
     <Compile Include="GeoTests\PlaceTests.cs" />
     <Compile Include="HelpTests\HelpRequestProcessorTests.cs" />
     <Compile Include="LegalTests\LegalRequestProcessorTests.cs" />
-    <Compile Include="LinqToTwitter\TwitterContextCreateRequestProcessorTests.cs" />
+    <Compile Include="LinqToTwitterTests\TwitterContextCreateRequestProcessorTests.cs" />
     <Compile Include="ListTests\ListExtensionsTests.cs" />
     <Compile Include="ListTests\ListRequestProcessorTests.cs" />
     <Compile Include="RelatedResultsTests\RelatedResultsRequestProcessorTests.cs" />
     <Compile Include="SavedSearchTests\SavedSearchExtensionsTests.cs" />
     <Compile Include="SavedSearchTests\SavedSearchRequestProcessorTests.cs" />
-    <Compile Include="Search\SearchRequestProcessorTests.cs" />
+    <Compile Include="SearchTests\SearchRequestProcessorTests.cs" />
     <Compile Include="SocialGraphTests\SocialGraphRequestProcessorTests.cs" />
-    <Compile Include="Status\StatusExtensionsTweetWithMediaNoLocationTests.cs" />
-    <Compile Include="Status\StatusExtensionsTweetWithMediaAndLocationTests.cs" />
-    <Compile Include="Status\StatusExtensionsReplyWithMediaNoLocationTests.cs" />
-    <Compile Include="Status\StatusExtensionsReplyWithMediaAndLocationTests.cs" />
+    <Compile Include="StatusTests\StatusExtensionsTests.cs" />
+    <Compile Include="StatusTests\StatusExtensionsTweetWithMediaNoLocationTests.cs" />
+    <Compile Include="StatusTests\StatusExtensionsTweetWithMediaAndLocationTests.cs" />
+    <Compile Include="StatusTests\StatusExtensionsReplyWithMediaNoLocationTests.cs" />
+    <Compile Include="StatusTests\StatusExtensionsReplyWithMediaAndLocationTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="LinqToTwitter\TwitterContextUrlTests.cs" />
+    <Compile Include="LinqToTwitterTests\TwitterContextUrlTests.cs" />
+    <Compile Include="StatusTests\StatusRequestProcessorTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LinqToTwitter\LinqToTwitter.csproj">

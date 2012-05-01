@@ -1,15 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Xml.Linq;
+using LinqToTwitter.Common;
+using LitJson;
 
 namespace LinqToTwitter
 {
     /// <summary>
     /// processes Twitter Friendship queries
     /// </summary>
-    class FriendshipRequestProcessor<T> : IRequestProcessor<T>
+    class FriendshipRequestProcessor<T> :
+        IRequestProcessor<T>,
+        IRequestProcessorWantsJson,
+        IRequestProcessorWithAction<T>
+        where T : class
     {
         /// <summary>
         /// base url for request
@@ -19,7 +26,7 @@ namespace LinqToTwitter
         /// <summary>
         /// type of friendship (defaults to Exists)
         /// </summary>
-        private FriendshipType Type { get; set; }
+        internal FriendshipType Type { get; set; }
 
         /// <summary>
         /// The ID or screen_name of the subject user
@@ -126,7 +133,7 @@ namespace LinqToTwitter
         /// <returns>no_retweet_id URL</returns>
         private Request BuildFriendshipNoRetweetIDsUrl()
         {
-            return new Request(BaseUrl + "friendships/no_retweet_ids.xml");
+            return new Request(BaseUrl + "friendships/no_retweet_ids.json");
         }
 
         /// <summary>
@@ -136,7 +143,7 @@ namespace LinqToTwitter
         /// <returns>base url + exists segment</returns>
         private Request BuildFriendshipExistsUrl(Dictionary<string, string> parameters)
         {
-            var req = new Request(BaseUrl + "friendships/exists.xml");
+            var req = new Request(BaseUrl + "friendships/exists.json");
             var urlParams = req.RequestParameters;
 
             if (parameters.ContainsKey("SubjectUser"))
@@ -179,7 +186,7 @@ namespace LinqToTwitter
                 throw new ArgumentException("You must specify either TargetUserID or TargetScreenName");
             }
 
-            var req = new Request(BaseUrl + "friendships/show.xml");
+            var req = new Request(BaseUrl + "friendships/show.json");
             var urlParams = req.RequestParameters;
 
             if (parameters.ContainsKey("SourceUserID"))
@@ -216,7 +223,7 @@ namespace LinqToTwitter
         /// <returns>Url for incoming</returns>
         private Request BuildFriendshipIncomingUrl(Dictionary<string, string> parameters)
         {
-            var req = new Request(BaseUrl + "friendships/incoming.xml");
+            var req = new Request(BaseUrl + "friendships/incoming.json");
             var urlParams = req.RequestParameters;
 
             if (parameters.ContainsKey("Cursor"))
@@ -235,7 +242,7 @@ namespace LinqToTwitter
         /// <returns>Url for lookup</returns>
         private Request BuildLookupUrl(Dictionary<string, string> parameters)
         {
-            var req = new Request(BaseUrl + "friendships/lookup.xml");
+            var req = new Request(BaseUrl + "friendships/lookup.json");
             var urlParams = req.RequestParameters;
 
             if (!parameters.ContainsKey("ScreenName"))
@@ -256,7 +263,7 @@ namespace LinqToTwitter
         /// <returns>Url for outgoing</returns>
         private Request BuildFriendshipOutgoingUrl(Dictionary<string, string> parameters)
         {
-            var req = new Request(BaseUrl + "friendships/outgoing.xml");
+            var req = new Request(BaseUrl + "friendships/outgoing.json");
             var urlParams = req.RequestParameters;
 
             if (parameters.ContainsKey("Cursor"))
@@ -269,62 +276,48 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// transforms XML into IQueryable of User
+        /// transforms Twitter response into List of User
         /// </summary>
-        /// <param name="responseXml">xml with Twitter response</param>
-        /// <returns>IQueryable of User</returns>
-        public virtual List<T> ProcessResults(string responseXml)
+        /// <param name="responseJson">Twitter response</param>
+        /// <returns>List of User</returns>
+        public virtual List<T> ProcessResults(string responseJson)
         {
-            if (string.IsNullOrEmpty(responseXml))
+            if (string.IsNullOrEmpty(responseJson)) return new List<T>();
+
+            Friendship friendship;
+
+            switch (Type)
             {
-                responseXml = "<friendship></friendship>";
+                case FriendshipType.Exists:
+                    friendship = HandleExistsResponse(responseJson);
+                    break;
+                case FriendshipType.Show:
+                    friendship = HandleShowResponse(responseJson);
+                    break;
+                case FriendshipType.Incoming:
+                case FriendshipType.Outgoing:
+                    friendship = HandleIdsResponse(responseJson);
+                    break;
+                case FriendshipType.Lookup:
+                    friendship = HandleLookupResponse(responseJson);
+                    break;
+                case FriendshipType.NoRetweetIDs:
+                    friendship = HandleNoRetweetIDsResponse(responseJson);
+                    break;
+                default:
+                    friendship = new Friendship();
+                    break;
             }
 
-            XElement twitterResponse = XElement.Parse(responseXml);
-            var friendship =
-                new Friendship
-                {
-                    Type = Type,
-                    SubjectUser = SubjectUser,
-                    FollowingUser = FollowingUser,
-                    SourceUserID = SourceUserID,
-                    SourceScreenName = SourceScreenName,
-                    TargetUserID = TargetUserID,
-                    TargetScreenName = TargetScreenName,
-                    Cursor = Cursor,
-                    ScreenName = ScreenName
-                };
-
-            if (twitterResponse.Name == "friendship")
-            {
-                friendship = new Friendship();
-            }
-            else if (twitterResponse.Name == "relationship") // Show
-            {
-                friendship.SourceRelationship =
-                    Relationship.CreateRelationship(twitterResponse.Element("source"));
-                friendship.TargetRelationship =
-                    Relationship.CreateRelationship(twitterResponse.Element("target"));
-            }
-            else if (twitterResponse.Name == "relationships")
-            {
-                friendship.Relationships =
-                    (from relElem in twitterResponse.Elements("relationship")
-                     select Relationship.CreateRelationship(relElem))
-                    .ToList();
-            }
-            else if (twitterResponse.Name == "id_list") // incoming/outgoing
-            {
-                friendship.IDInfo = IDList.CreateIDList(twitterResponse);
-            }
-            else if (twitterResponse.Name == "ids")
-            {
-                friendship.IDInfo = IDList.CreateIDs(twitterResponse);
-            }
-            else // Exists
-            {
-                friendship.IsFriend = bool.Parse(twitterResponse.Value);
-            }
+            friendship.Type = Type;
+            friendship.SubjectUser = SubjectUser;
+            friendship.FollowingUser = FollowingUser;
+            friendship.SourceUserID = SourceUserID;
+            friendship.SourceScreenName = SourceScreenName;
+            friendship.TargetUserID = TargetUserID;
+            friendship.TargetScreenName = TargetScreenName;
+            friendship.Cursor = Cursor;
+            friendship.ScreenName = ScreenName;
 
             var friendList = new List<Friendship>
             {
@@ -332,6 +325,68 @@ namespace LinqToTwitter
             };
 
             return friendList.OfType<T>().ToList();
+        }
+  
+        Friendship HandleExistsResponse(string responseJson)
+        {
+            bool exists;
+            bool.TryParse(responseJson, out exists);
+            var friendship = new Friendship { IsFriend = exists };
+            return friendship;
+        }
+  
+        Friendship HandleShowResponse(string responseJson)
+        {
+            JsonData showJson = JsonMapper.ToObject(responseJson);
+            var friendship = new Friendship(showJson.GetValue<JsonData>("relationship"));
+            return friendship;
+        }
+  
+        Friendship HandleIdsResponse(string responseJson)
+        {
+            JsonData idsJson = JsonMapper.ToObject(responseJson);
+            var friendship = new Friendship
+            {
+                IDInfo = new IDList(idsJson)
+            };
+            return friendship;
+        }
+  
+        Friendship HandleLookupResponse(string responseJson)
+        {
+            JsonData lookupJson = JsonMapper.ToObject(responseJson);
+            var friendship = new Friendship
+            {
+                Relationships =
+                    (from JsonData relationship in lookupJson
+                     select new Relationship(relationship))
+                    .ToList()
+            };
+            return friendship;
+        }
+
+        Friendship HandleNoRetweetIDsResponse(string responseJson)
+        {
+            string idsJson = "{ \"ids\":" + responseJson + " }";
+            return HandleIdsResponse(idsJson);
+        }
+
+        public T ProcessActionResult(string responseJson, Enum theAction)
+        {
+            JsonData friendJson = JsonMapper.ToObject(responseJson);
+
+            switch ((FriendshipAction) theAction)
+            {
+                case FriendshipAction.Create:
+                case FriendshipAction.Destroy:
+                    var user = new User(friendJson);
+                    return user.ItemCast(default(T));
+                case FriendshipAction.Update:
+                    var friendship = new Friendship(friendJson.GetValue<JsonData>("relationship"));
+                    return friendship.ItemCast(default(T));
+                default:
+                    throw new InvalidOperationException("Unknown Action.");
+            }
         }
     }
 }

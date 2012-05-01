@@ -1,6 +1,9 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Xml.Linq;
 using System.Collections.Generic;
+using LinqToTwitter.Common;
+using LitJson;
 
 namespace LinqToTwitter
 {
@@ -9,6 +12,32 @@ namespace LinqToTwitter
     /// </summary>
     public class Relationship
     {
+        public Relationship() { }
+        public Relationship(JsonData relJson)
+        {
+            if (relJson == null) return;
+
+            ScreenName = relJson.GetValue<string>("screen_name");
+            Name = relJson.GetValue<string>("name");
+            RetweetsWanted = relJson.GetValue<bool>("want_retweets");
+            AllReplies = relJson.GetValue<bool>("all_replies");
+            MarkedSpam = relJson.GetValue<bool>("marked_spam");
+            FollowedBy = relJson.GetValue<bool>("followed_by");
+            ID = relJson.GetValue<string>("id_str");
+            Blocking = relJson.GetValue<bool>("blocking");
+            NotificationsEnabled = relJson.GetValue<bool>("notifications_enabled");
+            Following = relJson.GetValue<bool>("following");
+            CanDm = relJson.GetValue<bool>("can_dm");
+            var connections = relJson.GetValue<JsonData>("connections");
+            if (connections != null)
+            {
+                Connections =
+                    (from JsonData connection in connections
+                        select connection.ToString())
+                    .ToList(); 
+            }
+        }
+
         /// <summary>
         /// Creates a new relationship object from XML info
         /// </summary>
@@ -106,6 +135,11 @@ namespace LinqToTwitter
         public string ScreenName { get; set; }
 
         /// <summary>
+        /// User's name
+        /// </summary>
+        public string Name { get; set; }
+
+        /// <summary>
         /// Is this user following the other
         /// </summary>
         public bool Following { get; set; }
@@ -137,5 +171,20 @@ namespace LinqToTwitter
         /// the person identified by this relationship
         /// </summary>
         public List<string> Connections { get; set; }
+
+        /// <summary>
+        /// Sees all replies
+        /// </summary>
+        public bool AllReplies { get; set; }
+
+        /// <summary>
+        /// Marked as SPAM
+        /// </summary>
+        public bool MarkedSpam { get; set; }
+
+        /// <summary>
+        /// Allowed to send direct messages
+        /// </summary>
+        public bool CanDm { get; set; }
     }
 }
