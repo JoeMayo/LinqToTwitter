@@ -73,6 +73,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Account\Account.cs" />
+    <Compile Include="Account\AccountExtensions.cs" />
     <Compile Include="Account\AccountRequestProcessor.cs" />
     <Compile Include="Account\AccountType.cs" />
     <Compile Include="Account\DeviceType.cs" />
@@ -169,6 +170,7 @@
     <Compile Include="List\ListExtensions.cs" />
     <Compile Include="List\ListRequestProcessor.cs" />
     <Compile Include="List\ListType.cs" />
+    <Compile Include="Notifications\NotificationsExtensions.cs" />
     <Compile Include="OAuth\AnonymousAuthorizer.cs" />
     <Compile Include="OAuth\AuthAccessType.cs" />
     <Compile Include="OAuth\InMemoryCredentials.cs" />

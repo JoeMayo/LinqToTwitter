@@ -18,35 +18,17 @@ namespace LinqToTwitterDemo
                 // justify using it with Twitter: http://dev.twitter.com/pages/xauth. You should use OAuth instead.  However,
                 // LINQ to Twitter supports XAuth if you're one of the rare cases that Twitter gives permission to.
                 auth = DoXAuth();
-                if (DoThis("dump Joe's friends"))
-                {
-                    DumpJoeFriends(auth);
-                    Console.WriteLine("Press any key to continue");
-                    Console.ReadKey();
-                }
             }
 
             if (DoThis("use Single User Auth"))
             {
                 // perform single user authorization. Visit Twitter at http://dev.twitter.com/pages/oauth_single_token for more info.
                 auth = DoSingleUserAuth();
-                if (DoThis("dump Joe's friends"))
-                {
-                    DumpJoeFriends(auth);
-                    Console.WriteLine("Press any key to continue");
-                    Console.ReadKey();
-                }
             }
 
             if (DoThis("use OAuth via Pin"))
             {
                 auth = DoPinOAuth();
-                if (DoThis("dump Joe's friends"))
-                {
-                    DumpJoeFriends(auth);
-                    Console.WriteLine("Press any key to continue");
-                    Console.ReadKey();
-                }
             }
 
             // if we have no auth yet, get some!
@@ -135,34 +117,6 @@ namespace LinqToTwitterDemo
                 Console.WriteLine("Request: {0}, Error: {1}"
                     , status.Request
                     , status.Error);
-            }
-        }
-
-        private static void DumpJoeFriends(ITwitterAuthorizer auth)
-        {
-            using (var twitterCtx = new TwitterContext(auth, "https://api.twitter.com/1/", "https://search.twitter.com/"))
-            {
-                //Log
-                twitterCtx.Log = Console.Out;
-
-                var users =
-                    (from tweet in twitterCtx.User
-                     where tweet.Type == UserType.Friends &&
-                           tweet.ScreenName == "JoeMayo"
-                     select tweet)
-                    .ToList();
-
-                users.ForEach(user =>
-                {
-                    var status =
-                        user.Protected || user.Status == null ?
-                            "Status Unavailable" :
-                            user.Status.Text;
-
-                    Console.WriteLine(
-                        "ID: {0}, Name: {1}\nLast Tweet: {2}\n",
-                        user.Identifier.UserID, user.Identifier.ScreenName, status);
-                });
             }
         }
 

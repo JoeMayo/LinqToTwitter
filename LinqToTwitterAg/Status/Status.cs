@@ -31,7 +31,14 @@ namespace LinqToTwitter
             InReplyToScreenName = status.GetValue<string>("in_reply_to_screen_name");
             PossiblySensitive = status.GetValue<bool>("possibly_sensitive");
             RetweetedStatus = new Status(status.GetValue<JsonData>("retweeted_status"));
-            Contributors = new List<Contributor>();
+            var contributors = status.GetValue<JsonData>("contributors");
+            if (contributors != null)
+                Contributors =
+                    (from JsonData contributor in contributors
+                     select (ulong)contributor)
+                    .ToList();
+            else
+                Contributors = new List<ulong>();
             Coordinates = new Coordinate();
             Place = new Place(status.GetValue<JsonData>("place"));
             User = new User(status.GetValue<JsonData>("user"));
@@ -199,7 +206,7 @@ namespace LinqToTwitter
                 Text = status.GetString("text"),
                 Truncated = status.GetBool("truncated"),
                 InReplyToScreenName = status.GetString("in_reply_to_screen_name"),
-                Contributors = contributors,
+                //Contributors = contributors,
                 Geo = geo,
                 Coordinates = coord,
                 Place = place,
@@ -368,9 +375,9 @@ namespace LinqToTwitter
         public Retweet Retweet { get; set; }
 
         /// <summary>
-        /// Contains info on users who have contributed
+        /// IDs of users who have contributed
         /// </summary>
-        public List<Contributor> Contributors { get; set; }
+        public List<ulong> Contributors { get; set; }
 
         /// <summary>
         /// Geographic information on tweet location

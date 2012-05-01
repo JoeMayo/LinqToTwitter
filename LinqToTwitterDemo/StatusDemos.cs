@@ -746,7 +746,7 @@ namespace LinqToTwitterDemo
             Console.WriteLine("Contributors Enabled: {0}\n", contributedStatus.User.ContributorsEnabled);
 
             contributedStatus.Contributors.ForEach(
-                contr => Console.WriteLine("Contributor ID: " + contr.ID));
+                contr => Console.WriteLine("Contributor ID: " + contr));
         }
 
         /// <summary>
@@ -766,7 +766,7 @@ namespace LinqToTwitterDemo
             Console.WriteLine("Contributors Enabled: {0}\n", contributedStatus.User.ContributorsEnabled);
 
             contributedStatus.Contributors.ForEach(
-                contr => Console.WriteLine("ID: {0}, Screen Name: {1}", contr.ID, contr.ScreenName));
+                contr => Console.WriteLine("ID: {0}", contr));
         }
 
         private static void StatusCountDemo(TwitterContext twitterCtx)

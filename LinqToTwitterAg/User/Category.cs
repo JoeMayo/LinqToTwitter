@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
+using LinqToTwitter.Common;
+using LitJson;
 
 namespace LinqToTwitter
 {
@@ -9,6 +11,21 @@ namespace LinqToTwitter
     /// </summary>
     public class Category
     {
+        public Category() { }
+        public Category(JsonData catJson)
+        {
+            Size = catJson.GetValue<int>("size");
+            Name = catJson.GetValue<string>("name");
+            Slug = catJson.GetValue<string>("slug");
+
+            var users = catJson.GetValue<JsonData>("users");
+            if (users != null)
+                Users =
+                    (from JsonData user in users
+                     select new User(user))
+                    .ToList();
+        }
+
         /// <summary>
         /// Converts XML to Category
         /// </summary>
@@ -53,6 +70,11 @@ namespace LinqToTwitter
         /// Category description
         /// </summary>
         public string Slug { get; set; }
+
+        /// <summary>
+        /// Number of users in category
+        /// </summary>
+        public int Size { get; set; }
 
         /// <summary>
         /// ?

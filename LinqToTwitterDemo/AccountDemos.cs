@@ -23,7 +23,6 @@ namespace LinqToTwitterDemo
             ViewAccountTotalsDemo(twitterCtx);
             ViewAccountSettingsDemo(twitterCtx);
             //EndSession(twitterCtx); // really shouldn't do this at all!
-            //UpdateDeliveryDevice(twitterCtx);
             //UpdateAccountColors(twitterCtx);
             //UpdateAccountImage(twitterCtx);
             //UpdateAccountImageCallback(twitterCtx);
@@ -42,10 +41,10 @@ namespace LinqToTwitterDemo
         private static void UpdateAccountInfoDemo(TwitterContext twitterCtx)
         {
             var user = twitterCtx.UpdateAccountProfile(
-                "LINQ to Tweeter Test",
+                "LINQ to Tweeter",
                 "http://linqtotwitter.codeplex.com",
-                "Anywhere In The World",
-                "Testing the LINQ to Twitter Account Profile Update.");
+                "Denver, CO",
+                "Testing the Account Profile Update with LINQ to Twitter.");
 
             Console.WriteLine(
                 "Name: {0}\nURL: {1}\nLocation: {2}\nDescription: {3}",

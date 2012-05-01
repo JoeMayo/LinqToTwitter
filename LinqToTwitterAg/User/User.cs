@@ -37,6 +37,7 @@ namespace LinqToTwitter
             Location = user.GetValue<string>("location");
             Description = user.GetValue<string>("description");
             ProfileImageUrl = user.GetValue<string>("profile_image_url");
+            ProfileImageUrlHttps = user.GetValue<string>("profile_image_url_https");
             Url = user.GetValue<string>("url");
             Protected = user.GetValue<bool>("protected");
             ProfileUseBackgroundImage = user.GetValue<bool>("profile_use_background_image");
@@ -44,7 +45,7 @@ namespace LinqToTwitter
             FollowersCount = user.GetValue<int>("followers_count");
             DefaultProfile = user.GetValue<bool>("default_profile");
             ProfileBackgroundColor = user.GetValue<string>("profile_background_color");
-            Lang = user.GetValue<string>("lang");
+            LangResponse = user.GetValue<string>("lang");
             ProfileTextColor = user.GetValue<string>("profile_text_color");
             ProfileLinkColor = user.GetValue<string>("profile_link_color");
             ProfileSidebarFillColor = user.GetValue<string>("profile_sidebar_fill_color");
@@ -377,11 +378,16 @@ namespace LinqToTwitter
         public List<Category> Categories { get; set; }
 
         /// <summary>
+        /// Input param for Category queries
+        /// </summary>
+        public string Lang { get; set; }
+
+        /// <summary>
         /// Return results for specified language
         ///  Note: Twitter only supports a limited number of languages,
         ///  which include en, fr, de, es, it when this feature was added.
         /// </summary>
-        public string Lang { get; set; }
+        public string LangResponse { get; set; }
 
         /// <summary>
         /// Indicates if user has inline media enabled

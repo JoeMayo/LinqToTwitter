@@ -15,7 +15,7 @@ namespace LinqToTwitterDemo
         public static void Run(TwitterContext twitterCtx)
         {
             //EnableNotificationsDemo(twitterCtx);
-            //EnableNotificationsWithScreenNameDemo(twitterCtx);
+            EnableNotificationsWithScreenNameDemo(twitterCtx);
             //EnableNotificationsWithUserIDDemo(twitterCtx);
             //DisableNotificationsDemo(twitterCtx);
         }

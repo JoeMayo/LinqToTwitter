@@ -49,6 +49,9 @@
     <Compile Include="..\LinqToTwitterAg\Account\Account.cs">
       <Link>Account\Account.cs</Link>
     </Compile>
+    <Compile Include="..\LinqToTwitterAg\Account\AccountExtensions.cs">
+      <Link>Account\AccountExtensions.cs</Link>
+    </Compile>
     <Compile Include="..\LinqToTwitterAg\Account\AccountRequestProcessor.cs">
       <Link>Account\AccountRequestProcessor.cs</Link>
     </Compile>
@@ -351,6 +354,9 @@
     </Compile>
     <Compile Include="..\LinqToTwitterAg\List\ListType.cs">
       <Link>List\ListType.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Notifications\NotificationsExtensions.cs">
+      <Link>Notifications\NotificationsExtensions.cs</Link>
     </Compile>
     <Compile Include="..\LinqToTwitterAg\OAuth\AnonymousAuthorizer.cs">
       <Link>OAuth\AnonymousAuthorizer.cs</Link>

@@ -18,19 +18,13 @@ namespace LinqToTwitterDemo
         {
             //UserShowWithIDQueryDemo(twitterCtx);
             //UserShowWithScreenNameQueryDemo(twitterCtx);
-            UserShowForAuthenticatedUser(twitterCtx);
-            //UserFriendsQueryDemo(twitterCtx);
-            //UserFriendsWithCursorQueryDemo(twitterCtx);
+            //UserShowForAuthenticatedUser(twitterCtx);
             //UsersLookupDemo(twitterCtx);
-            //UserSearchDemo(twitterCtx);        
-            //UserFollowersQueryDemo(twitterCtx);
-            //UserFollowersWithCursorsQueryDemo(twitterCtx);
-            //GetAllFollowersQueryDemo(twitterCtx);
+            UserSearchDemo(twitterCtx);
             //UserSuggestedCategoriesListQueryDemo(twitterCtx);
             //UserSuggestedCategoriesListWithLangQueryDemo(twitterCtx);
             //UsersInSuggestedCategoryQueryDemo(twitterCtx);
             //UserShowLoggedInUserQueryDemo(twitterCtx);
-            //VerifiedAndGeoEnabledDemo(twitterCtx);
             //CategoryStatusDemo(twitterCtx);
         }
 
@@ -210,195 +204,13 @@ namespace LinqToTwitterDemo
             var user =
                 (from tweet in twitterCtx.User
                  where tweet.Type == UserType.Show &&
-                      tweet.ID == "6253282"
+                      tweet.UserID == "6253282"
                  select tweet)
                  .SingleOrDefault();
 
             Console.WriteLine(
                 "The password to Chirp is: {0}",
                 user.Identifier.ScreenName);
-        }
-
-        /// <summary>
-        /// shows how to query friends of a specified user
-        /// </summary>
-        /// <param name="twitterCtx">TwitterContext</param>
-        private static void UserFriendsQueryDemo(TwitterContext twitterCtx)
-        {
-            var users =
-                from tweet in twitterCtx.User
-                where tweet.Type == UserType.Friends &&
-                      tweet.ID == "JoeMayo" // <-- user to get friends for
-                select tweet;
-
-            foreach (var user in users)
-            {
-                var status =
-                    user.Protected || user.Status == null ?
-                        "Status Unavailable" :
-                        user.Status.Text;
-
-                Console.WriteLine(
-                    "ID: {0}, Name: {1}\nLast Tweet: {2}\n",
-                    user.Identifier.ID, user.Identifier.ScreenName, status);
-            }
-        }
-
-        /// <summary>
-        /// shows how to check the verified and geoenabled tags for users
-        /// </summary>
-        /// <param name="twitterCtx">TwitterContext</param>
-        private static void VerifiedAndGeoEnabledDemo(TwitterContext twitterCtx)
-        {
-            var users =
-                from tweet in twitterCtx.User
-                where tweet.Type == UserType.Friends &&
-                      tweet.ID == "15411837" // <-- user to get friends for
-                select tweet;
-
-            foreach (var user in users)
-            {
-                var status =
-                    user.Protected || user.Status == null ?
-                        "Status Unavailable" :
-                        user.Status.Text;
-
-                Console.WriteLine(
-                        "ID: {0}, Verified: {1}, GeoEnabled: {2}, Name: {3}\nLast Tweet: {4}\n",
-                        user.ID, user.Verified, user.GeoEnabled, user.Name, status);
-            }
-        }
-
-        /// <summary>
-        /// shows how to query friends of a specified user
-        /// </summary>
-        /// <param name="twitterCtx">TwitterContext</param>
-        private static void UserFriendsWithCursorQueryDemo(TwitterContext twitterCtx)
-        {
-            int pageNumber = 1;
-            string nextCursor = "-1";
-            while (!string.IsNullOrEmpty(nextCursor) && nextCursor != "0")
-            {
-                var users =
-                     (from user in twitterCtx.User
-                      where user.Type == UserType.Friends &&
-                            user.ID == "15411837" &&
-                            user.Cursor == nextCursor
-                      select user)
-                      .ToList();
-
-                Console.WriteLine(
-                    "Page #" + pageNumber + " has " + users.Count + " users.");
-
-                nextCursor = users[0].CursorMovement.Next;
-                pageNumber++;
-            }
-        }
-
-        /// <summary>
-        /// shows how to query users
-        /// </summary>
-        /// <param name="twitterCtx">TwitterContext</param>
-        private static void UserFollowersQueryDemo(TwitterContext twitterCtx)
-        {
-            var users =
-                from tweet in twitterCtx.User
-                where tweet.Type == UserType.Followers &&
-                      tweet.ID == "15411837"
-                select tweet;
-
-            foreach (var user in users)
-            {
-                var status =
-                    user.Protected || user.Status == null ?
-                        "Status Unavailable" :
-                        user.Status.Text;
-
-                Console.WriteLine(
-                        "Name: {0}, Last Tweet: {1}\n",
-                        user.Name, status);
-            }
-        }
-
-        /// <summary>
-        /// shows how to query users
-        /// </summary>
-        /// <param name="twitterCtx">TwitterContext</param>
-        private static void UserFollowersWithCursorsQueryDemo(TwitterContext twitterCtx)
-        {
-            int pageNumber = 1;
-            string nextCursor = "-1";
-            while (!string.IsNullOrEmpty(nextCursor) && nextCursor != "0")
-            {
-                var users =
-                    (from user in twitterCtx.User
-                     where user.Type == UserType.Followers &&
-                           user.ID == "15411837" &&
-                           user.Cursor == nextCursor
-                     select user)
-                     .ToList();
-
-                Console.WriteLine(
-                    "Page #" + pageNumber + " has " + users.Count + " users.");
-
-                nextCursor = users[0].CursorMovement.Next;
-                pageNumber++;
-            }
-        }
-
-        /// <summary>
-        /// shows how to query all followers
-        /// </summary>
-        /// <remarks>
-        /// uses the Page property because Twitter doesn't
-        /// return all followers in a single call; you
-        /// must page through results until you get all
-        /// </remarks>
-        /// <param name="twitterCtx">TwitterContext</param>
-        private static void GetAllFollowersQueryDemo(TwitterContext twitterCtx)
-        {
-            //
-            // Paging has been deprecated for Friends and Followers
-            // Please use cursors instead
-            //
-
-            var followerList = new List<User>();
-
-            List<User> followers = new List<User>();
-            int pageNumber = 1;
-
-            do
-            {
-                followers.Clear();
-
-                followers =
-                    (from follower in twitterCtx.User
-                     where follower.Type == UserType.Followers &&
-                           follower.ScreenName == "JoeMayo" &&
-                           follower.Page == pageNumber
-                     select follower)
-                     .ToList();
-
-                pageNumber++;
-                followerList.AddRange(followers);
-            }
-            while (followers.Count > 0);
-
-            Console.WriteLine("\nFollowers: \n");
-
-            foreach (var user in followerList)
-            {
-                var status =
-                    user.Protected || user.Status == null ?
-                        "Status Unavailable" :
-                        user.Status.Text;
-
-                Console.WriteLine(
-                        "Name: {0}, Last Tweet: {1}\n",
-                        user.Name, status);
-            }
-
-            Console.WriteLine("\nFollower Count: {0}\n", followerList.Count);
         }
     }
 }

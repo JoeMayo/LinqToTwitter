@@ -123,7 +123,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AccountRequestProcessorTest.cs" />
     <Compile Include="Common\DebuggerWriter.cs" />
     <Compile Include="Common\OAuthTwitterMock.cs" />
     <Compile Include="Common\TestCulture.cs" />
@@ -149,7 +148,6 @@
     </Compile>
     <Compile Include="TrendRequestProcessorTest.cs" />
     <Compile Include="TwitterContextTest.cs" />
-    <Compile Include="UserRequestProcessorTest.cs" />
     <Compile Include="UserTest.cs" />
     <Compile Include="TypeConversionExtensionsTest.cs" />
   </ItemGroup>
