@@ -23,13 +23,13 @@
         <!--TitlePanel contains the name of the application and page title-->
         <StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="12,17,0,28">
             <TextBlock x:Name="ApplicationTitle" Text="LINQ to Twitter" Style="{StaticResource PhoneTextNormalStyle}"/>
-            <TextBlock x:Name="PageTitle" Text="Public Tweets" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}" FontSize="72" />
+            <TextBlock x:Name="PageTitle" Text="Twitter Search" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}" FontSize="72" />
         </StackPanel>
 
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
-            <Button Content="Get Public Timeline" Height="72" HorizontalAlignment="Left" Margin="51,66,0,0" Name="PublicTimelineButton" VerticalAlignment="Top" Width="365" Click="PublicTimelineButton_Click" />
-            <ListBox Height="465" HorizontalAlignment="Left" Margin="5,144,0,0" Name="PublicTweetListBox" VerticalAlignment="Top" Width="451">
+            <Button Content="Perform Search" Height="72" HorizontalAlignment="Left" Margin="51,175,0,0" Name="SearchButton" VerticalAlignment="Top" Width="365" Click="SearchButton_Click" />
+            <ListBox Height="356" HorizontalAlignment="Left" Margin="5,253,0,0" Name="SearchListBox" VerticalAlignment="Top" Width="451">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal" Height="132">
@@ -43,6 +43,8 @@
                 </ListBox.ItemTemplate>
             </ListBox>
             <HyperlinkButton Content="Status Update" Height="30" HorizontalAlignment="Left" Margin="122,6,0,0" Name="StatusUpdateHyperlink" VerticalAlignment="Top" Width="200" NavigateUri="/StatusUpdate.xaml" />
+            <TextBox Height="72" HorizontalAlignment="Left" Margin="3,104,0,0" Name="QueryTextBox" Text="LINQ to Twitter" VerticalAlignment="Top" Width="460" />
+            <TextBlock Height="30" HorizontalAlignment="Left" Margin="14,80,0,0" Name="SearchLabel" Text="Enter Search Query:" VerticalAlignment="Top" />
         </Grid>
     </Grid>
  

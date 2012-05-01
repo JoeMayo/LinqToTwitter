@@ -5,7 +5,6 @@
  ***********************************************************/
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -926,93 +925,6 @@ namespace LinqToTwitter
                 req.BaseUrl = baseUrl;
 
             return req;
-        }
-
-        /// <summary>
-        /// lets logged-in user report spam
-        /// </summary>
-        /// <param name="id">id of alleged spammer</param>
-        /// <param name="userID">user id of alleged spammer</param>
-        /// <param name="screenName">screen name of alleged spammer</param>
-        /// <returns>Alleged spammer user info</returns>
-        public virtual User ReportSpam(string id, string userID, string screenName)
-        {
-            return ReportSpam(id, userID, screenName, null);
-        }
-
-        /// <summary>
-        /// lets logged-in user report spam
-        /// </summary>
-        /// <param name="id">id of alleged spammer</param>
-        /// <param name="userID">user id of alleged spammer</param>
-        /// <param name="screenName">screen name of alleged spammer</param>
-        /// <param name="callback">Async Callback used in Silverlight queries</param>
-        /// <returns>Alleged spammer user info</returns>
-        public virtual User ReportSpam(string id, string userID, string screenName, Action<TwitterAsyncResponse<User>> callback)
-        {
-            if (string.IsNullOrEmpty(id) &&
-                string.IsNullOrEmpty(userID) &&
-                string.IsNullOrEmpty(screenName))
-            {
-                throw new ArgumentException("Either id, userID, or screenName is a required parameter.");
-            }
-
-            string reportSpamUrl = BaseUrl + "report_spam.xml";
-
-            var createParams = new Dictionary<string, string>
-                {
-                    { "id", id },
-                    { "user_id", userID },
-                    { "screen_name", screenName }
-                };
-
-            var reqProc = new UserRequestProcessor<User>();
-
-            TwitterExecutor.AsyncCallback = callback;
-            var resultsXml =
-                TwitterExecutor.ExecuteTwitter(
-                    reportSpamUrl,
-                    createParams,
-                    reqProc);
-
-            List<User> results = reqProc.ProcessResults(resultsXml);
-            return results.FirstOrDefault();
-        }
-
-        /// <summary>
-        /// Lets you perform a query by specifying the raw URL and parameters yourself.
-        /// Useful for when Twitter changes or adds new features before they are added to LINQ to Twitter.
-        /// </summary>
-        /// <param name="queryString">The segments that follow the base URL. i.e. "statuses/public_timeline.xml" for a public status query</param>
-        /// <param name="parameters">Querystring parameters that will be appended to the URL</param>
-        /// <returns></returns>
-        public string ExecuteRaw(string queryString, Dictionary<string, string> parameters)
-        {
-            return ExecuteRaw(queryString, parameters, null);
-        }
-
-        /// <summary>
-        /// Lets you perform a query by specifying the raw URL and parameters yourself.
-        /// Useful for when Twitter changes or adds new features before they are added to LINQ to Twitter.
-        /// </summary>
-        /// <param name="queryString">The segments that follow the base URL. i.e. "statuses/public_timeline.xml" for a public status query</param>
-        /// <param name="parameters">Querystring parameters that will be appended to the URL</param>
-        /// <param name="callback">Async Callback used in Silverlight queries</param>
-        /// <returns></returns>
-        public string ExecuteRaw(string queryString, Dictionary<string, string> parameters, Action<TwitterAsyncResponse<string>> callback)
-        {
-            string rawUrl = BaseUrl.TrimEnd('/') + "/" + queryString.TrimStart('/');
-
-            var reqProc = new RawRequestProcessor<Raw>();
-
-            TwitterExecutor.AsyncCallback = callback;
-            var resultsXml =
-                TwitterExecutor.ExecuteTwitter(
-                    rawUrl,
-                    parameters,
-                    reqProc);
-
-            return resultsXml;
         }
 
         /// <summary>

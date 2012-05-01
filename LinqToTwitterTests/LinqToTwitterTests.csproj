@@ -126,10 +126,8 @@
     <Compile Include="Common\DebuggerWriter.cs" />
     <Compile Include="Common\OAuthTwitterMock.cs" />
     <Compile Include="Common\TestCulture.cs" />
-    <Compile Include="HelpTest.cs" />
     <Compile Include="MvcAuthorizerTest.cs" />
     <Compile Include="OAuthTwitterTest.cs" />
-    <Compile Include="RelatedResultsTest.cs" />
     <Compile Include="SignInAuthorizerTest.cs" />
     <Compile Include="OAuthAuthorizerTest.cs" />
     <Compile Include="PinAuthorizerTest.cs" />
@@ -148,7 +146,6 @@
     </Compile>
     <Compile Include="TrendRequestProcessorTest.cs" />
     <Compile Include="TwitterContextTest.cs" />
-    <Compile Include="UserTest.cs" />
     <Compile Include="TypeConversionExtensionsTest.cs" />
   </ItemGroup>
   <ItemGroup>

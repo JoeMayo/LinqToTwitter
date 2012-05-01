@@ -9,7 +9,7 @@ using System.Linq.Expressions;
 namespace LinqToTwitter
 {
     /// <summary>
-    /// processes Twitter Status requests
+    /// Raw requests, allowing free-form url and query strings
     /// </summary>
     public class RawRequestProcessor<T> : IRequestProcessor<T>
     {
@@ -50,14 +50,14 @@ namespace LinqToTwitter
         /// <returns>URL conforming to Twitter API</returns>
         public virtual Request BuildUrl(Dictionary<string, string> parameters)
         {
-            const string queryStringParam = "QueryString";
+            const string QueryStringParam = "QueryString";
             if (parameters == null || !parameters.ContainsKey("QueryString"))
-                throw new ArgumentNullException(queryStringParam, "QueryString parameter is required.");
+                throw new ArgumentNullException(QueryStringParam, "QueryString parameter is required.");
 
             QueryString = parameters["QueryString"].Trim();
 
             if (QueryString == string.Empty)
-                throw new ArgumentException("Blank QueryString isn't valid.", queryStringParam);
+                throw new ArgumentException("Blank QueryString isn't valid.", QueryStringParam);
 
             string url = BaseUrl.TrimEnd('/') + "/" + QueryString.TrimStart('/');
             var parts = url.Split('?');
@@ -78,27 +78,26 @@ namespace LinqToTwitter
                         key => key.Key,
                         val => val.Val);
 
-                //var qsparms = HttpUtility.ParseQueryString(url);  // probably will return an empty collection
                 foreach (KeyValuePair<string, string> parm in qsParms)
-                    urlParams.Add(new QueryParameter(parm.Key, parm.Value)); // may need to unescape
+                    urlParams.Add(new QueryParameter(parm.Key, parm.Value));
             }
 
             return req;
         }
 
         /// <summary>
-        /// transforms XML into IQueryable of Status
+        /// transforms response into List of Raw
         /// </summary>
-        /// <param name="responseXml">xml with Twitter response</param>
-        /// <returns>List of Status</returns>
-        public virtual List<T> ProcessResults(string responseXml)
+        /// <param name="response">Twitter response</param>
+        /// <returns>List of Raw</returns>
+        public virtual List<T> ProcessResults(string response)
         {
             var rawList = new List<Raw>
             {
                 new Raw
                 {
                     QueryString = QueryString,
-                    Result = responseXml
+                    Result = response
                 }
             };
 

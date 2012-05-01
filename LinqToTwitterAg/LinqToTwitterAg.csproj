@@ -194,10 +194,12 @@
     <Compile Include="OAuth\XAuthCredentials.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Raw\Raw.cs" />
+    <Compile Include="Raw\RawExtensions.cs" />
     <Compile Include="Raw\RawRequestProcessor.cs" />
     <Compile Include="RelatedResults\RelatedResults.cs" />
     <Compile Include="RelatedResults\RelatedResultsRequestProcessor.cs" />
     <Compile Include="RelatedResults\RelatedResultsType.cs" />
+    <Compile Include="ReportSpam\ReportSpamExtensions.cs" />
     <Compile Include="SavedSearch\SavedSearch.cs" />
     <Compile Include="SavedSearch\SavedSearchExtensions.cs" />
     <Compile Include="SavedSearch\SavedSearchRequestProcessor.cs" />

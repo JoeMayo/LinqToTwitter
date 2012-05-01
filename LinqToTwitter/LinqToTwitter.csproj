@@ -491,6 +491,9 @@
     <Compile Include="..\LinqToTwitterAg\Raw\Raw.cs">
       <Link>Raw\Raw.cs</Link>
     </Compile>
+    <Compile Include="..\LinqToTwitterAg\Raw\RawExtensions.cs">
+      <Link>Raw\RawExtensions.cs</Link>
+    </Compile>
     <Compile Include="..\LinqToTwitterAg\Raw\RawRequestProcessor.cs">
       <Link>Raw\RawRequestProcessor.cs</Link>
     </Compile>
@@ -502,6 +505,9 @@
     </Compile>
     <Compile Include="..\LinqToTwitterAg\RelatedResults\RelatedResultsType.cs">
       <Link>RelatedResults\RelatedResultsType.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\ReportSpam\ReportSpamExtensions.cs">
+      <Link>ReportSpam\ReportSpamExtensions.cs</Link>
     </Compile>
     <Compile Include="..\LinqToTwitterAg\SavedSearch\SavedSearch.cs">
       <Link>SavedSearch\SavedSearch.cs</Link>

@@ -14,7 +14,7 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         public static void Run(TwitterContext twitterCtx)
         {
-            //ReportSpamDemo(twitterCtx);
+            ReportSpamDemo(twitterCtx);
         }
 
         /// <summary>

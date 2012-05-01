@@ -21,42 +21,42 @@ namespace LinqToTwitterTests
         [TestMethod]
         public void TwitterContext_Single_Param_Constructor_Sets_Defaults()
         {
-            const string baseUrl = "https://api.twitter.com/1/";
-            const string searchUrl = "https://search.twitter.com/";
+            const string BaseUrl = "https://api.twitter.com/1/";
+            const string SearchUrl = "https://search.twitter.com/";
             ITwitterAuthorizer authorizedClient = new PinAuthorizer();
             var ctx = new TwitterContext(authorizedClient);
 
             Assert.AreSame(authorizedClient, ctx.AuthorizedClient);
-            Assert.AreEqual(baseUrl, ctx.BaseUrl);
-            Assert.AreEqual(searchUrl, ctx.SearchUrl);
+            Assert.AreEqual(BaseUrl, ctx.BaseUrl);
+            Assert.AreEqual(SearchUrl, ctx.SearchUrl);
         }
 
         [TestMethod]
         public void TwitterContext_Three_Param_Constructor_Sets_Defaults()
         {
             ITwitterExecute execute = new TwitterExecute(new PinAuthorizer());
-            const string baseUrl = "http://api.twitter.com/1/";
-            const string searchUrl = "http://search.twitter.com/";
-            var ctx = new TwitterContext(execute, baseUrl, searchUrl);
+            const string BaseUrl = "http://api.twitter.com/1/";
+            const string SearchUrl = "http://search.twitter.com/";
+            var ctx = new TwitterContext(execute, BaseUrl, SearchUrl);
 
-            Assert.AreEqual(baseUrl, ctx.BaseUrl);
-            Assert.AreEqual(searchUrl, ctx.SearchUrl);
+            Assert.AreEqual(BaseUrl, ctx.BaseUrl);
+            Assert.AreEqual(SearchUrl, ctx.SearchUrl);
         }
 
         [TestMethod]
         public void TwitterContext_No_Param_Works_With_Object_Initialization()
         {
-            const string baseUrl = "http://api.twitter.com/1/";
-            const string searchUrl = "http://search.twitter.com/";
+            const string BaseUrl = "http://api.twitter.com/1/";
+            const string SearchUrl = "http://search.twitter.com/";
             var ctx =
                 new TwitterContext
                 {
-                    BaseUrl = baseUrl,
-                    SearchUrl = searchUrl,
+                    BaseUrl = BaseUrl,
+                    SearchUrl = SearchUrl,
                 };
 
-            Assert.AreEqual(baseUrl, ctx.BaseUrl);
-            Assert.AreEqual(searchUrl, ctx.SearchUrl);
+            Assert.AreEqual(BaseUrl, ctx.BaseUrl);
+            Assert.AreEqual(SearchUrl, ctx.SearchUrl);
         }
 
         [TestMethod]
@@ -338,97 +338,6 @@ namespace LinqToTwitterTests
             ctx.Execute<Status>(expression, true);
 
             Assert.AreEqual(SingleStatusResponse, ctx.RawResult);
-        }
-
-        [TestMethod]
-        public void ExecuteRawRequest_Invokes_Executor_Execute()
-        {
-            var authMock = new Mock<ITwitterAuthorizer>();
-            var execMock = new Mock<ITwitterExecute>();
-            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
-            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
-            const string queryString = "statuses/update.xml";
-            var parameters = new Dictionary<string, string>
-            {
-                { "status", "Testing" }
-            };
-
-            ctx.ExecuteRaw(queryString, parameters);
-
-            execMock.Verify(exec => 
-                exec.ExecuteTwitter(
-                    "https://api.twitter.com/1/statuses/update.xml",
-                    parameters, 
-                    It.IsAny<IRequestProcessor<Raw>>()), 
-                Times.Once());
-        }
-
-        [TestMethod]
-        public void ExecuteRawRequest_Returns_Raw_Result()
-        {
-            var authMock = new Mock<ITwitterAuthorizer>();
-            var execMock = new Mock<ITwitterExecute>();
-            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
-            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
-            const string queryString = "statuses/update.xml";
-            var parameters = new Dictionary<string, string>
-            {
-                { "status", "Testing" }
-            };
-            const string expectedResult = "<status>xxx</status>";
-            const string fullUrl = "https://api.twitter.com/1/statuses/update.xml";
-            execMock.Setup(exec => exec.ExecuteTwitter(fullUrl, parameters, It.IsAny<IRequestProcessor<Raw>>())).Returns(expectedResult);
-
-            string actualResult = ctx.ExecuteRaw(queryString, parameters);
-
-            Assert.AreEqual(expectedResult, actualResult);
-        }
-
-        [TestMethod]
-        public void ExecuteRawRequest_Resolves_Too_Many_Url_Slashes()
-        {
-            const string baseUrlWithTrailingSlash = "https://api.twitter.com/1/";
-            const string queryStringWithBeginningSlash = "/statuses/update.xml";
-            const string fullUrl = "https://api.twitter.com/1/statuses/update.xml";
-            var authMock = new Mock<ITwitterAuthorizer>();
-            var execMock = new Mock<ITwitterExecute>();
-            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
-            var ctx = new TwitterContext(authMock.Object, execMock.Object, baseUrlWithTrailingSlash, "");
-            var parameters = new Dictionary<string, string>
-            {
-                { "status", "Testing" }
-            };
-
-            ctx.ExecuteRaw(queryStringWithBeginningSlash, parameters);
-
-            execMock.Verify(exec =>
-                exec.ExecuteTwitter(
-                    fullUrl,
-                    parameters, 
-                    It.IsAny<IRequestProcessor<Raw>>()), Times.Once());
-        }
-
-        [TestMethod]
-        public void ExecuteRawRequest_Resolves_Too_Few_Url_Slashes()
-        {
-            const string baseUrlWithoutTrailingSlash = "https://api.twitter.com/1";
-            const string queryStringWithoutBeginningSlash = "statuses/update.xml";
-            const string fullUrl = "https://api.twitter.com/1/statuses/update.xml";
-            var authMock = new Mock<ITwitterAuthorizer>();
-            var execMock = new Mock<ITwitterExecute>();
-            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
-            var ctx = new TwitterContext(authMock.Object, execMock.Object, baseUrlWithoutTrailingSlash, "");
-            var parameters = new Dictionary<string, string>
-            {
-                { "status", "Testing" }
-            };
-
-            ctx.ExecuteRaw(queryStringWithoutBeginningSlash, parameters);
-
-            execMock.Verify(exec =>
-                exec.ExecuteTwitter(
-                    fullUrl,
-                    parameters, It.IsAny<IRequestProcessor<Raw>>()), Times.Once());
         }
 
         [TestMethod]

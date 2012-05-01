@@ -24,7 +24,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqToTwitterCP", "LinqToTwitterCP\LinqToTwitterCP.csproj", "{A430971C-58BB-4BE3-B058-795BDFFD56BC}"
 EndProject
 Global
-	
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = LinqToTwitter.vsmdi
 	EndGlobalSection

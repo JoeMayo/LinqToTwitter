@@ -82,6 +82,7 @@
     <Compile Include="ListTests\ListExtensionsTests.cs" />
     <Compile Include="ListTests\ListRequestProcessorTests.cs" />
     <Compile Include="NotificationsTests\NotificationsExtensionsTests.cs" />
+    <Compile Include="RawTests\RawExtensionsTests.cs" />
     <Compile Include="RelatedResultsTests\RelatedResultsRequestProcessorTests.cs" />
     <Compile Include="SavedSearchTests\SavedSearchExtensionsTests.cs" />
     <Compile Include="SavedSearchTests\SavedSearchRequestProcessorTests.cs" />
