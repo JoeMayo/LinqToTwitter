@@ -35,9 +35,4 @@
         /// </summary>
         Search
     }
-
-    enum UserAction
-    {
-        SingleUser
-    }
 }

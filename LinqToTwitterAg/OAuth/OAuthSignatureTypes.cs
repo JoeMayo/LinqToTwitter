@@ -24,8 +24,8 @@ namespace LinqToTwitter
     /// </summary>
     public enum OAuthSignatureTypes
     {
-        HMACSHA1,
-        PLAINTEXT,
-        RSASHA1
+        Hmacsha1,
+        Plaintext,
+        Rsasha1
     }
 }

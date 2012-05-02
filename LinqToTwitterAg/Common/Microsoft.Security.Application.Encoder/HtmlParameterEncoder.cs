@@ -49,12 +49,12 @@ namespace Microsoft.Security.Application
         /// <summary>
         /// A lock object to use when performing safe listing.
         /// </summary>
-        private static readonly ReaderWriterLock SyncLock = new ReaderWriterLock();
+        private static readonly ReaderWriterLock syncLock = new ReaderWriterLock();
 
         /// <summary>
         /// The value to use when encoding a space for query strings.
         /// </summary>
-        private static readonly char[] QueryStringSpace = "%20".ToCharArray();
+        private static readonly char[] queryStringSpace = "%20".ToCharArray();
 
         /// <summary>
         /// The value to use when encoding a space for form data.
@@ -143,7 +143,7 @@ namespace Microsoft.Security.Application
                         switch (encodingType)
                         {
                             case EncodingType.QueryString:
-                                encodedCharacter = QueryStringSpace;
+                                encodedCharacter = queryStringSpace;
                                 break;
                             
                             // Special case for Html Form data, from http://www.w3.org/TR/html401/appendix/notes.html#non-ascii-chars
@@ -180,7 +180,7 @@ namespace Microsoft.Security.Application
         /// </summary>
         private static void InitialiseSafeList()
         {
-            SyncLock.EnterWriteLock();
+            syncLock.EnterWriteLock();
             try
             {
                 characterValues = SafeList.Generate(255, SafeList.PercentThenHexValueGenerator);
@@ -188,7 +188,7 @@ namespace Microsoft.Security.Application
             }
             finally
             {
-                SyncLock.ExitWriteLock();
+                syncLock.ExitWriteLock();
             }
         }
 

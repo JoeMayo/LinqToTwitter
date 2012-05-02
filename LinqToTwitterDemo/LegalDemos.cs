@@ -27,7 +27,7 @@ namespace LinqToTwitterDemo
         {
             var tosPolicy =
                 (from legal in twitterCtx.Legal
-                 where legal.Type == LegalType.TOS
+                 where legal.Type == LegalType.Tos
                  select legal.Text)
                 .SingleOrDefault();
 

@@ -5,27 +5,27 @@ namespace LinqToTwitter
 {
     public class SessionStateCredentials : InMemoryCredentials
     {
-        private HttpSessionState m_session;
+        private HttpSessionState session;
 
         public SessionStateCredentials()
         {
-            m_session = HttpContext.Current.Session;
+            session = HttpContext.Current.Session;
         }
 
         public SessionStateCredentials(HttpSessionState session)
         {
-            m_session = session;
+            this.session = session;
         }
 
         public override string ConsumerKey
         {
             get
             {
-                return m_session["OAuthConsumerKey"] as string;
+                return session["OAuthConsumerKey"] as string;
             }
             set
             {
-                m_session["OAuthConsumerKey"] = value;
+                session["OAuthConsumerKey"] = value;
             }
         }
 
@@ -33,11 +33,11 @@ namespace LinqToTwitter
         {
             get
             {
-                return m_session["OAuthConsumerSecret"] as string;
+                return session["OAuthConsumerSecret"] as string;
             }
             set
             {
-                m_session["OAuthConsumerSecret"] = value;
+                session["OAuthConsumerSecret"] = value;
             }
         }
 
@@ -45,11 +45,11 @@ namespace LinqToTwitter
         {
             get
             {
-                return m_session["OAuthToken"] as string;
+                return session["OAuthToken"] as string;
             }
             set
             {
-                m_session["OAuthToken"] = value;
+                session["OAuthToken"] = value;
             }
         }
 
@@ -57,11 +57,11 @@ namespace LinqToTwitter
         {
             get
             {
-                return m_session["OAuthAccessToken"] as string;
+                return session["OAuthAccessToken"] as string;
             }
             set
             {
-                m_session["OAuthAccessToken"] = value;
+                session["OAuthAccessToken"] = value;
             }
         }
     }

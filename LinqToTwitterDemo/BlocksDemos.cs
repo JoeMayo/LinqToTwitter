@@ -96,7 +96,7 @@ namespace LinqToTwitterDemo
         {
             var result =
                 (from blockItem in twitterCtx.Blocks
-                 where blockItem.Type == BlockingType.IDS
+                 where blockItem.Type == BlockingType.Ids
                  select blockItem)
                  .SingleOrDefault();
 

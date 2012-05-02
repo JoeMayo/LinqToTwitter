@@ -107,8 +107,8 @@ namespace LinqToTwitter
             {
                 if (Credentials == null)
                 {
-                    const string credentialsParam = "Credentials";
-                    throw new ArgumentNullException(credentialsParam, "You must set the Credentials property.");
+                    const string CredentialsParam = "Credentials";
+                    throw new ArgumentNullException(CredentialsParam, "You must set the Credentials property.");
                 }
 
                 return

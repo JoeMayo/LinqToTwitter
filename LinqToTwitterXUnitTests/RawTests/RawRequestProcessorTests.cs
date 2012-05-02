@@ -4,14 +4,123 @@ using System.Linq;
 using System.Linq.Expressions;
 using LinqToTwitter;
 using LinqToTwitterTests.Common;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Xunit;
 
-namespace LinqToTwitterTests
+namespace LinqToTwitterXUnitTests.RawTests
 {
-    [TestClass]
-    public class RawRequestProcessorTest
+    public class RawRequestProcessorTests
     {
-        private string m_testQueryResponse = @"<statuses type=""array"">
+        public RawRequestProcessorTests()
+        {
+            TestCulture.SetCulture();
+        }
+
+        [Fact]
+        public void GetParameters_Returns_Parameters()
+        {
+            var rawReqProc = new RawRequestProcessor<Raw>();
+            Expression<Func<Raw, bool>> expression =
+                raw =>
+                    raw.QueryString == "/statuses/public_timeline.xml";
+            var lambdaExpression = expression as LambdaExpression;
+
+            var queryParams = rawReqProc.GetParameters(lambdaExpression);
+
+            Assert.True(
+                queryParams.Contains(
+                    new KeyValuePair<string, string>("QueryString", "/statuses/public_timeline.xml")));
+        }
+
+        [Fact]
+        public void BuildUrl_Returns_Full_Url()
+        {
+            var rawReqProc = new RawRequestProcessor<Raw> { BaseUrl = "https://api.twitter.com/1/" };
+            var parameters = new Dictionary<string, string>
+             {
+                 {"QueryString", "statuses/public_timeline.xml"},
+             };
+            string expected = "https://api.twitter.com/1/statuses/public_timeline.xml";
+
+            Request req = rawReqProc.BuildUrl(parameters);
+
+            Assert.Equal(expected, req.FullUrl);
+        }
+
+        [Fact]
+        public void BuildUrl_Requires_NonNull_QueryString()
+        {
+            var rawReqProc = new RawRequestProcessor<Raw> { BaseUrl = "https://api.twitter.com/1/" };
+            var parameters = new Dictionary<string, string>
+            {
+                //{"QueryString", "statuses/public_timeline.xml"},
+            };
+
+            var ex = Assert.Throws<ArgumentNullException>(() => rawReqProc.BuildUrl(parameters));
+
+            Assert.Equal("QueryString", ex.ParamName);
+        }
+
+        [Fact]
+        public void BuildUrl_Requires_NonBlank_QueryString()
+        {
+            var rawReqProc = new RawRequestProcessor<Raw> { BaseUrl = "https://api.twitter.com/1/" };
+            var parameters = new Dictionary<string, string>
+            {
+                {"QueryString", " "},
+            };
+
+            var ex = Assert.Throws<ArgumentException>(() => rawReqProc.BuildUrl(parameters));
+
+            Assert.Equal("QueryString", ex.ParamName);
+        }
+
+        [Fact]
+        public void BuildUrl_Resolves_Extra_Slash_Between_BaseUrl_And_QueryString()
+        {
+            string baseUrlWithTrailingSlash = "https://api.twitter.com/1/";
+            string queryStringWithPrecedingSlash = "/statuses/public_timeline.xml";
+
+            var rawReqProc = new RawRequestProcessor<Raw> { BaseUrl = baseUrlWithTrailingSlash };
+            var parameters = new Dictionary<string, string>
+            {
+                {"QueryString", queryStringWithPrecedingSlash},
+            };
+            string expected = "https://api.twitter.com/1/statuses/public_timeline.xml";
+
+            Request req = rawReqProc.BuildUrl(parameters);
+
+            Assert.Equal(expected, req.FullUrl);
+        }
+
+        [Fact]
+        public void BuildUrl_Resolves_No_Slash_Between_BaseUrl_And_QueryString()
+        {
+            string baseUrlWithoutTrailingSlash = "https://api.twitter.com/1";
+            string queryStringWithoutPrecedingSlash = "statuses/public_timeline.xml";
+
+            var rawReqProc = new RawRequestProcessor<Raw> { BaseUrl = baseUrlWithoutTrailingSlash };
+            var parameters = new Dictionary<string, string>
+            {
+                {"QueryString", queryStringWithoutPrecedingSlash},
+            };
+            string expected = "https://api.twitter.com/1/statuses/public_timeline.xml";
+
+            Request req = rawReqProc.BuildUrl(parameters);
+
+            Assert.Equal(expected, req.FullUrl);
+        }
+
+        [Fact]
+        public void ProcessIDResultsTest()
+        {
+            var rawReqProc = new RawRequestProcessor<Raw>();
+
+            List<Raw> result = rawReqProc.ProcessResults(QueryResponse);
+
+            Assert.Equal(QueryResponse, result.First().Result);
+        }
+
+        const string QueryResponse = @"<statuses type=""array"">
   <status>
     <created_at>Fri Nov 27 18:28:57 +0000 2009</created_at>
     <id>6118906745</id>
@@ -853,130 +962,5 @@ namespace LinqToTwitterTests
     <geo />
   </status>
 </statuses>";
-
-        [ClassInitialize()]
-        public static void MyClassInitialize(TestContext testContext)
-        {
-            TestCulture.SetCulture();
-        }
-
-        [TestMethod()]
-        public void GetParameters_Returns_Parameters()
-        {
-            var rawReqProc = new RawRequestProcessor<Raw>();
-            Expression<Func<Raw, bool>> expression =
-                raw =>
-                    raw.QueryString == "/statuses/public_timeline.xml";
-            LambdaExpression lambdaExpression = expression as LambdaExpression;
-
-            var queryParams = rawReqProc.GetParameters(lambdaExpression);
-
-            Assert.IsTrue(
-                queryParams.Contains(
-                    new KeyValuePair<string, string>("QueryString", "/statuses/public_timeline.xml")));
-        }
-
-        [TestMethod()]
-        public void BuildUrl_Returns_Full_Url()
-        {
-            var rawReqProc = new RawRequestProcessor<Raw> { BaseUrl = "https://api.twitter.com/1/" };
-            var parameters = new Dictionary<string, string>
-             {
-                 {"QueryString", "statuses/public_timeline.xml"},
-             };
-            string expected = "https://api.twitter.com/1/statuses/public_timeline.xml";
-
-            Request req = rawReqProc.BuildUrl(parameters);
-
-            Assert.AreEqual(expected, req.FullUrl);
-        }
-
-        [TestMethod()]
-        public void BuildUrl_Requires_NonNull_QueryString()
-        {
-            var rawReqProc = new RawRequestProcessor<Raw> { BaseUrl = "https://api.twitter.com/1/" };
-            var parameters = new Dictionary<string, string>
-             {
-                 //{"QueryString", "statuses/public_timeline.xml"},
-             };
-
-            try
-            {
-                rawReqProc.BuildUrl(parameters);
-
-                Assert.Fail("Should have thrown ArgumentNullException");
-            }
-            catch (ArgumentNullException ane)
-            {
-                Assert.AreEqual("QueryString", ane.ParamName);
-            }
-        }
-
-        [TestMethod()]
-        public void BuildUrl_Requires_NonBlank_QueryString()
-        {
-            var rawReqProc = new RawRequestProcessor<Raw> { BaseUrl = "https://api.twitter.com/1/" };
-            var parameters = new Dictionary<string, string>
-            {
-                {"QueryString", " "},
-            };
-
-            try
-            {
-                rawReqProc.BuildUrl(parameters);
-
-                Assert.Fail("Should have thrown ArgumentException");
-            }
-            catch (ArgumentException ane)
-            {
-                Assert.AreEqual("QueryString", ane.ParamName);
-            }
-        }
-     
-        [TestMethod()]
-        public void BuildUrl_Resolves_Extra_Slash_Between_BaseUrl_And_QueryString()
-        {
-            string baseUrlWithTrailingSlash = "https://api.twitter.com/1/";
-            string queryStringWithPrecedingSlash = "/statuses/public_timeline.xml";
-
-            var rawReqProc = new RawRequestProcessor<Raw> { BaseUrl = baseUrlWithTrailingSlash };
-            var parameters = new Dictionary<string, string>
-            {
-                {"QueryString", queryStringWithPrecedingSlash},
-            };
-            string expected = "https://api.twitter.com/1/statuses/public_timeline.xml";
-
-            Request req = rawReqProc.BuildUrl(parameters);
-
-            Assert.AreEqual(expected, req.FullUrl);
-        }
-
-        [TestMethod()]
-        public void BuildUrl_Resolves_No_Slash_Between_BaseUrl_And_QueryString()
-        {
-            string baseUrlWithoutTrailingSlash = "https://api.twitter.com/1";
-            string queryStringWithoutPrecedingSlash = "statuses/public_timeline.xml";
-
-            var rawReqProc = new RawRequestProcessor<Raw> { BaseUrl = baseUrlWithoutTrailingSlash };
-            var parameters = new Dictionary<string, string>
-            {
-                {"QueryString", queryStringWithoutPrecedingSlash},
-            };
-            string expected = "https://api.twitter.com/1/statuses/public_timeline.xml";
-
-            Request req = rawReqProc.BuildUrl(parameters);
-
-            Assert.AreEqual(expected, req.FullUrl);
-        }
-
-        [TestMethod()]
-        public void ProcessIDResultsTest()
-        {
-            var rawReqProc = new RawRequestProcessor<Raw>();
-
-            List<Raw> result = rawReqProc.ProcessResults(m_testQueryResponse);
-
-            Assert.AreEqual(m_testQueryResponse, result.First().Result);
-        }
     }
 }

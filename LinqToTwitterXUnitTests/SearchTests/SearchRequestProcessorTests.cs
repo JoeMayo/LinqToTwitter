@@ -44,7 +44,7 @@ namespace LinqToTwitterXUnitTests.SearchTests
                     search.WithLinks == true &&
                     search.WithRetweets == true &&
                     search.IncludeEntities == true;
-            LambdaExpression lambdaExpression = expression as LambdaExpression;
+            var lambdaExpression = expression as LambdaExpression;
 
             var queryParams = target.GetParameters(lambdaExpression);
 
@@ -117,7 +117,7 @@ namespace LinqToTwitterXUnitTests.SearchTests
         }
 
         [Fact]
-        public void BuildURL_Includes_Parameters()
+        public void BuildUrl_Includes_Parameters()
         {
             var searchReqProc = new SearchRequestProcessor<Search> { BaseUrl = "http://search.twitter.com/" };
             var parameters =
@@ -135,15 +135,15 @@ namespace LinqToTwitterXUnitTests.SearchTests
                     { "Until", new DateTime(2011, 7, 4).ToString(CultureInfo.InvariantCulture) },
                     { "ResultType", ResultType.Popular.ToString() },
                };
-            const string expected = "http://search.twitter.com/search.json?geocode=40.757929%2C-73.985506%2C25km&lang=en&page=1&rpp=10&q=LINQ%20to%20Twitter&show_user=true&since=2010-07-04&until=2011-07-04&since_id=1&result_type=popular";
+            const string Expected = "http://search.twitter.com/search.json?geocode=40.757929%2C-73.985506%2C25km&lang=en&page=1&rpp=10&q=LINQ%20to%20Twitter&show_user=true&since=2010-07-04&until=2011-07-04&since_id=1&result_type=popular";
 
             Request req = searchReqProc.BuildUrl(parameters);
 
-            Assert.Equal(expected, req.FullUrl);
+            Assert.Equal(Expected, req.FullUrl);
         }
 
         [Fact]
-        public void BuildURL_Uses_Only_Date_Part_Of_Since()
+        public void BuildUrl_Uses_Only_Date_Part_Of_Since()
         {
             var searchReqProc = new SearchRequestProcessor<Search> { BaseUrl = "http://search.twitter.com/" };
             var parameters =
@@ -152,15 +152,15 @@ namespace LinqToTwitterXUnitTests.SearchTests
                     { "Type", SearchType.Search.ToString() },
                     { "Since", new DateTime(2010, 7, 4, 7, 30, 10).ToString(CultureInfo.InvariantCulture) },
                };
-            const string expected = "http://search.twitter.com/search.json?since=2010-07-04";
+            const string Expected = "http://search.twitter.com/search.json?since=2010-07-04";
 
             Request req = searchReqProc.BuildUrl(parameters);
 
-            Assert.Equal(expected, req.FullUrl);
+            Assert.Equal(Expected, req.FullUrl);
         }
 
         [Fact]
-        public void BuildUrl_Does_Not_Include_false_ShowUser()
+        public void BuildUrl_Does_Not_Include_False_ShowUser()
         {
             var searchReqProc = new SearchRequestProcessor<Search> { BaseUrl = "http://search.twitter.com/" };
             var parameters =
@@ -169,11 +169,11 @@ namespace LinqToTwitterXUnitTests.SearchTests
                     { "Type", SearchType.Search.ToString() },
                     { "ShowUser", false.ToString(CultureInfo.InvariantCulture) },
                 };
-            const string expected = "http://search.twitter.com/search.json";
+            const string Expected = "http://search.twitter.com/search.json";
 
             Request req = searchReqProc.BuildUrl(parameters);
 
-            Assert.Equal(expected, req.FullUrl);
+            Assert.Equal(Expected, req.FullUrl);
         }
 
         [Fact]
@@ -190,11 +190,11 @@ namespace LinqToTwitterXUnitTests.SearchTests
                     { "WordNot", "LINQ Twitter" },
                     { "Hashtag", "linqtotwitter" },
                };
-            const string expected = "http://search.twitter.com/search.json?exact=LINQ%20to%20Twitter&ands=LINQ%20Twitter&ors=LINQ%20Twitter&nots=LINQ%20Twitter&tag=linqtotwitter";
+            const string Expected = "http://search.twitter.com/search.json?exact=LINQ%20to%20Twitter&ands=LINQ%20Twitter&ors=LINQ%20Twitter&nots=LINQ%20Twitter&tag=linqtotwitter";
 
             Request req = searchReqProc.BuildUrl(parameters);
 
-            Assert.Equal(expected, req.FullUrl);
+            Assert.Equal(Expected, req.FullUrl);
         }
 
         [Fact]
@@ -209,11 +209,11 @@ namespace LinqToTwitterXUnitTests.SearchTests
                     { "PersonTo", "JoeMayo" },
                     { "PersonReference", "JoeMayo" },
               };
-            const string expected = "http://search.twitter.com/search.json?from=JoeMayo&to=JoeMayo&ref=JoeMayo";
+            const string Expected = "http://search.twitter.com/search.json?from=JoeMayo&to=JoeMayo&ref=JoeMayo";
 
             Request req = searchReqProc.BuildUrl(parameters);
 
-            Assert.Equal(expected, req.FullUrl);
+            Assert.Equal(Expected, req.FullUrl);
         }
 
         [Fact]
@@ -226,11 +226,11 @@ namespace LinqToTwitterXUnitTests.SearchTests
                     { "Type", SearchType.Search.ToString() },
                     { "Attitude", (Attitude.Positive | Attitude.Negative | Attitude.Question).ToString() },
                 };
-            const string expected = "http://search.twitter.com/search.json?tude%5B%5D=%3A)&tude%5B%5D=%3A(&tude%5B%5D=%3F";
+            const string Expected = "http://search.twitter.com/search.json?tude%5B%5D=%3A)&tude%5B%5D=%3A(&tude%5B%5D=%3F";
 
             Request req = searchReqProc.BuildUrl(parameters);
 
-            Assert.Equal(expected, req.FullUrl);
+            Assert.Equal(Expected, req.FullUrl);
         }
 
         [Fact]
@@ -243,11 +243,11 @@ namespace LinqToTwitterXUnitTests.SearchTests
                     { "Type", SearchType.Search.ToString() },
                     { "Attitude", (Attitude.Negative | Attitude.Question).ToString() },
                 };
-            const string expected = "http://search.twitter.com/search.json?tude%5B%5D=%3A(&tude%5B%5D=%3F";
+            const string Expected = "http://search.twitter.com/search.json?tude%5B%5D=%3A(&tude%5B%5D=%3F";
 
             Request req = searchReqProc.BuildUrl(parameters);
 
-            Assert.Equal(expected, req.FullUrl);
+            Assert.Equal(Expected, req.FullUrl);
         }
 
         [Fact]
@@ -261,15 +261,15 @@ namespace LinqToTwitterXUnitTests.SearchTests
                     { "WithLinks", true.ToString(CultureInfo.InvariantCulture) },
                     { "WithRetweets", true.ToString(CultureInfo.InvariantCulture) }
                 };
-            const string expected = "http://search.twitter.com/search.json?filter%5B%5D=links&include%5B%5D=retweets";
+            const string Expected = "http://search.twitter.com/search.json?filter%5B%5D=links&include%5B%5D=retweets";
 
             Request req = searchReqProc.BuildUrl(parameters);
 
-            Assert.Equal(expected, req.FullUrl);
+            Assert.Equal(Expected, req.FullUrl);
         }
 
         [Fact]
-        public void BuildUrl_Does_Not_Include_false_WithX_Parameters()
+        public void BuildUrl_Does_Not_Include_False_WithX_Parameters()
         {
             var searchReqProc = new SearchRequestProcessor<Search> { BaseUrl = "http://search.twitter.com/" };
             var parameters =
@@ -279,11 +279,11 @@ namespace LinqToTwitterXUnitTests.SearchTests
                     { "WithLinks", false.ToString(CultureInfo.InvariantCulture) },
                     { "WithRetweets", false.ToString(CultureInfo.InvariantCulture) }
                 };
-            const string expected = "http://search.twitter.com/search.json";
+            const string Expected = "http://search.twitter.com/search.json";
 
             Request req = searchReqProc.BuildUrl(parameters);
 
-            Assert.Equal(expected, req.FullUrl);
+            Assert.Equal(Expected, req.FullUrl);
         }
 
         [Fact]
@@ -333,7 +333,7 @@ namespace LinqToTwitterXUnitTests.SearchTests
         }
 
         [Fact]
-        public void BuildUrl_Adds_true_IncludeEntities()
+        public void BuildUrl_Adds_True_IncludeEntities()
         {
             var searchProc = new SearchRequestProcessor<Search> { BaseUrl = "http://search.twitter.com/" };
             var parameters =
@@ -342,15 +342,15 @@ namespace LinqToTwitterXUnitTests.SearchTests
                     { "Type", SearchType.Search.ToString() },
                     { "IncludeEntities", true.ToString(CultureInfo.InvariantCulture) }
                 };
-            const string expected = "http://search.twitter.com/search.json?include_entities=true";
+            const string Expected = "http://search.twitter.com/search.json?include_entities=true";
 
             Request req = searchProc.BuildUrl(parameters);
 
-            Assert.Equal(expected, req.FullUrl);
+            Assert.Equal(Expected, req.FullUrl);
         }
 
         [Fact]
-        public void BuildUrl_Does_Not_Add_false_IncludeEntities()
+        public void BuildUrl_Does_Not_Add_False_IncludeEntities()
         {
             var searchProc = new SearchRequestProcessor<Search> { BaseUrl = "http://search.twitter.com/" };
             var parameters =
@@ -359,11 +359,11 @@ namespace LinqToTwitterXUnitTests.SearchTests
                     { "Type", SearchType.Search.ToString() },
                     { "IncludeEntities", false.ToString(CultureInfo.InvariantCulture) }
                 };
-            const string expected = "http://search.twitter.com/search.json";
+            const string Expected = "http://search.twitter.com/search.json";
 
             Request req = searchProc.BuildUrl(parameters);
 
-            Assert.Equal(expected, req.FullUrl);
+            Assert.Equal(Expected, req.FullUrl);
         }
 
         [Fact]
@@ -447,7 +447,7 @@ namespace LinqToTwitterXUnitTests.SearchTests
         }
 
         [Fact]
-        public void ProcessResults_Creates_List_of_SearchResult()
+        public void ProcessResults_Creates_List_Of_SearchResult()
         {
             var searchProc = new SearchRequestProcessor<Search> { BaseUrl = "http://search.twitter.com/" };
 

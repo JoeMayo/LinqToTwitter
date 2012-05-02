@@ -193,7 +193,7 @@ Module Module1
     Private Sub BlockIDsDemo(ByVal twitterCtx As TwitterContext)
         Dim result = _
             From blockItem In twitterCtx.Blocks _
-            Where blockItem.Type = BlockingType.IDS
+            Where blockItem.Type = BlockingType.Ids
 
 
         If result.ToList().Count = 0 Then

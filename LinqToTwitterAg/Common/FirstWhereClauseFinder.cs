@@ -21,7 +21,7 @@ namespace LinqToTwitter
         /// <summary>
         /// holds first where expression when found
         /// </summary>
-        private MethodCallExpression m_firstWhereExpression;
+        private MethodCallExpression firstWhereExpression;
 
         /// <summary>
         /// initiates search for first where clause
@@ -31,7 +31,7 @@ namespace LinqToTwitter
         public MethodCallExpression GetFirstWhere(Expression expression)
         {
             Visit(expression);
-            return m_firstWhereExpression;
+            return firstWhereExpression;
         }
 
         /// <summary>
@@ -43,7 +43,7 @@ namespace LinqToTwitter
         protected override Expression VisitMethodCall(MethodCallExpression expression)
         {
             if (expression.Method.Name == "Where")
-                m_firstWhereExpression = expression;
+                firstWhereExpression = expression;
 
             // look at extension source to see if there is an earlier where
             Visit(expression.Arguments[0]);

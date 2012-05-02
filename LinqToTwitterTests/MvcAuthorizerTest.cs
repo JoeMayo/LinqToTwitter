@@ -1,7 +1,6 @@
-﻿using LinqToTwitter;
+﻿using System;
+using LinqToTwitter;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Web.Mvc;
 
 namespace LinqToTwitterTests
 {

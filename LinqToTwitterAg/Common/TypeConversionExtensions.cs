@@ -127,7 +127,7 @@ namespace LinqToTwitter.Common
             return val.GetDate(defaultValue);
         }
 
-        private static readonly string[] DateFormats = { "ddd MMM dd HH:mm:ss %zzzz yyyy",
+        private static readonly string[] dateFormats = { "ddd MMM dd HH:mm:ss %zzzz yyyy",
                                                          "yyyy-MM-dd\\THH:mm:ss\\Z",
                                                          "yyyy-MM-dd HH:mm:ss",
                                                          "yyyy-MM-dd HH:mm"};
@@ -138,7 +138,7 @@ namespace LinqToTwitter.Common
 
             return String.IsNullOrEmpty(date) ||
                 !DateTime.TryParseExact(date,
-                        DateFormats,
+                        dateFormats,
                         CultureInfo.InvariantCulture,
                         DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal, out result)
                     ? defaultValue

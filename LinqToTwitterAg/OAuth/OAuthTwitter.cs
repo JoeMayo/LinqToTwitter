@@ -222,7 +222,7 @@ namespace LinqToTwitter
                 method.ToString(),
                 timeStamp,
                 nonce,
-                OAuthSignatureTypes.HMACSHA1,
+                OAuthSignatureTypes.Hmacsha1,
                 out outUrl,
                 out queryString);
 
@@ -356,7 +356,7 @@ namespace LinqToTwitter
                 method.ToString(),
                 timeStamp,
                 nonce,
-                OAuthSignatureTypes.HMACSHA1,
+                OAuthSignatureTypes.Hmacsha1,
                 out outUrl,
                 out querystring);
 

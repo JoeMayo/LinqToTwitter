@@ -33,7 +33,7 @@ namespace LinqToTwitterXUnitTests.StatusTests
             {
                 Data = new byte[] { 0xFF },
                 FileName = "AnImage.jpg",
-                ContentType = MediaContentType.JPEG
+                ContentType = MediaContentType.Jpeg
             }
         };
 

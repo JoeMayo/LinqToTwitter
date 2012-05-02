@@ -71,9 +71,9 @@ namespace LinqToTwitter
         /// <returns>URL conforming to Twitter API</returns>
         public virtual Request BuildUrl(Dictionary<string, string> parameters)
         {
-            const string typeParam = "Type";
+            const string TypeParam = "Type";
             if (parameters == null || !parameters.ContainsKey("Type"))
-                throw new ArgumentException("You must set Type.", typeParam);
+                throw new ArgumentException("You must set Type.", TypeParam);
 
             Type = RequestProcessorHelper.ParseQueryEnumType<BlockingType>(parameters["Type"]);
 
@@ -83,7 +83,7 @@ namespace LinqToTwitter
                     return BuildBlockingUrl(parameters);
                 case BlockingType.Exists:
                     return BuildBlockingExistsUrl(parameters);
-                case BlockingType.IDS:
+                case BlockingType.Ids:
                     return BuildBlockingIDsUrl();
                 default:
                     throw new InvalidOperationException("The default case of BuildUrl should never execute because a Type must be specified.");
@@ -200,7 +200,7 @@ namespace LinqToTwitter
                 case BlockingType.Exists:
                     HandleBlockingExists(blocks, blocksJson);
                     break;
-                case BlockingType.IDS:
+                case BlockingType.Ids:
                     HandleBlockingIDs(blocks, blocksJson);
                     break;
                 default:

@@ -23,7 +23,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 using System.Globalization;
@@ -31,7 +30,6 @@ using System.Globalization;
 #if SILVERLIGHT && !WINDOWS_PHONE
     using System.Windows.Browser;
 #elif !SILVERLIGHT && !WINDOWS_PHONE
-    using System.Web;
 #endif
 
 namespace LinqToTwitter
@@ -60,9 +58,9 @@ namespace LinqToTwitter
         protected const string OAuthVerifierKey = "oauth_verifier";
         protected const string OAuthTokenSecretKey = "oauth_token_secret";
 
-        protected const string HMACSHA1SignatureType = "HMAC-SHA1";
+        protected const string Hmacsha1SignatureType = "HMAC-SHA1";
         protected const string PlainTextSignatureType = "PLAINTEXT";
-        protected const string RSASHA1SignatureType = "RSA-SHA1";
+        protected const string Rsasha1SignatureType = "RSA-SHA1";
 
         protected Random random = new Random();
 
@@ -207,7 +205,7 @@ namespace LinqToTwitter
             foreach (var parm in parameters)
                 parm.Value = BuildUrlHelper.UrlEncode(parm.Value);
 
-            parameters.Sort(QueryParameter.DefaultComparer);
+            parameters.Sort(QueryParameter.defaultComparer);
 
             var url = new Uri(request.Endpoint);
             normalizedUrl = url.Scheme + "://";
@@ -258,11 +256,11 @@ namespace LinqToTwitter
 
             switch (signatureType)
             {
-                case OAuthSignatureTypes.PLAINTEXT:
+                case OAuthSignatureTypes.Plaintext:
                     return BuildUrlHelper.UrlEncode(
                         string.Format(CultureInfo.InvariantCulture, "{0}&{1}", consumerSecret, tokenSecret));
-                case OAuthSignatureTypes.HMACSHA1:
-                    string signatureBase = GenerateSignatureBase(request, consumerKey, token, tokenSecret, verifier, callback, httpMethod, timeStamp, nonce, HMACSHA1SignatureType, out normalizedUrl, out normalizedRequestParameters);
+                case OAuthSignatureTypes.Hmacsha1:
+                    string signatureBase = GenerateSignatureBase(request, consumerKey, token, tokenSecret, verifier, callback, httpMethod, timeStamp, nonce, Hmacsha1SignatureType, out normalizedUrl, out normalizedRequestParameters);
                     var hmacsha1 = new HMACSHA1
                     {
                         Key =
@@ -273,7 +271,7 @@ namespace LinqToTwitter
                                     BuildUrlHelper.UrlEncode(tokenSecret)))
                     };
                     return ComputeHash(hmacsha1, signatureBase);
-                case OAuthSignatureTypes.RSASHA1:
+                case OAuthSignatureTypes.Rsasha1:
                     throw new NotImplementedException();
                 default:
                     throw new ArgumentException("Unknown signature type", "signatureType");

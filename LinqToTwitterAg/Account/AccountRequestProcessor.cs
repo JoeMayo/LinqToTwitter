@@ -51,11 +51,11 @@ namespace LinqToTwitter
         {
             string url;
 
-            const string typeParam = "Type";
+            const string TypeParam = "Type";
             if (parameters == null || !parameters.ContainsKey("Type"))
-                throw new ArgumentException("You must set Type.", typeParam);
+                throw new ArgumentException("You must set Type.", TypeParam);
 
-            Type = RequestProcessorHelper.ParseQueryEnumType<AccountType>(parameters[typeParam]);
+            Type = RequestProcessorHelper.ParseQueryEnumType<AccountType>(parameters[TypeParam]);
 
             switch (Type)
             {

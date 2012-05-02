@@ -10,7 +10,6 @@ using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Net;
-
 using LinqToTwitter.Common;
 #if SILVERLIGHT
 using System.Net.Browser;

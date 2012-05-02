@@ -26,10 +26,10 @@ namespace LinqToTwitterXUnitTests.FriendshipTests
         [Fact]
         public void CreateFriendshipTest()
         {
-            const string id = "1";
-            const string userID = "2";
-            const string screenName = "JoeMayo";
-            const bool follow = false;
+            const string Id = "1";
+            const string UserID = "2";
+            const string ScreenName = "JoeMayo";
+            const bool Follow = false;
             string expectedName = "Joe Mayo";
             var authMock = new Mock<ITwitterAuthorizer>();
             var execMock = new Mock<ITwitterExecute>();
@@ -42,7 +42,7 @@ namespace LinqToTwitterXUnitTests.FriendshipTests
                 .Returns(SingleUserResponse);
             var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
 
-            User actual = ctx.CreateFriendship(id, userID, screenName, follow);
+            User actual = ctx.CreateFriendship(Id, UserID, ScreenName, Follow);
 
             Assert.Equal(expectedName, actual.Name);
         }
@@ -52,8 +52,7 @@ namespace LinqToTwitterXUnitTests.FriendshipTests
         {
             string id = string.Empty;
             string userID = string.Empty;
-            const bool follow = false;
-            var expected = new User();
+            const bool Follow = false;
             var authMock = new Mock<ITwitterAuthorizer>();
             var execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
@@ -65,7 +64,7 @@ namespace LinqToTwitterXUnitTests.FriendshipTests
                 .Returns(SingleUserResponse);
             var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
 
-            var ex = Assert.Throws<ArgumentException>(() => ctx.CreateFriendship(id, userID, null, follow));
+            var ex = Assert.Throws<ArgumentException>(() => ctx.CreateFriendship(id, userID, null, Follow));
 
             Assert.Equal("IdUserIDOrScreenName", ex.ParamName);
         }
@@ -73,9 +72,9 @@ namespace LinqToTwitterXUnitTests.FriendshipTests
         [Fact]
         public void DestroyFriendshipTest()
         {
-            const string id = "1";
-            const string userID = "2";
-            const string screenName = "JoeMayo";
+            const string Id = "1";
+            const string UserID = "2";
+            const string ScreenName = "JoeMayo";
             string expectedName = "Joe Mayo";
             var authMock = new Mock<ITwitterAuthorizer>();
             var execMock = new Mock<ITwitterExecute>();
@@ -88,7 +87,7 @@ namespace LinqToTwitterXUnitTests.FriendshipTests
                 .Returns(SingleUserResponse);
             var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
 
-            User actual = ctx.DestroyFriendship(id, userID, screenName);
+            User actual = ctx.DestroyFriendship(Id, UserID, ScreenName);
 
             Assert.Equal(expectedName, actual.Name);
         }
@@ -97,7 +96,6 @@ namespace LinqToTwitterXUnitTests.FriendshipTests
         public void DestroyFriendshipNoInputTest()
         {
             string userID = string.Empty;
-            var expected = new User();
             var authMock = new Mock<ITwitterAuthorizer>();
             var execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);

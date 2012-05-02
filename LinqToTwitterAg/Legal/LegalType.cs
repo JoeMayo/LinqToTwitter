@@ -13,6 +13,6 @@
         /// <summary>
         /// Terms of Service
         /// </summary>
-        TOS
+        Tos
     }
 }

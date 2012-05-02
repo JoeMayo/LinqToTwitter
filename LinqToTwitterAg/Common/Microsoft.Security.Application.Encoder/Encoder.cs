@@ -55,7 +55,7 @@ namespace Microsoft.Security.Application
         /// <summary>
         /// Initializes character Html encoding array
         /// </summary>
-        private static readonly char[][] SafeListCodes = InitializeSafeList();
+        private static readonly char[][] safeListCodes = InitializeSafeList();
 
         /// <summary>
         /// Encodes input strings for use as a value  in Lightweight Directory Access Protocol (LDAP) filter queries.
@@ -728,7 +728,7 @@ namespace Microsoft.Security.Application
             {
                 int currentCharacterAsInteger = input[i];
                 char currentCharacter = input[i];
-                if (SafeListCodes[currentCharacterAsInteger] != null || currentCharacterAsInteger == 92 || (currentCharacterAsInteger >= 123 && currentCharacterAsInteger <= 127))
+                if (safeListCodes[currentCharacterAsInteger] != null || currentCharacterAsInteger == 92 || (currentCharacterAsInteger >= 123 && currentCharacterAsInteger <= 127))
                 {
                     // character needs to be encoded
                     if (currentCharacterAsInteger >= 127)
@@ -815,7 +815,7 @@ namespace Microsoft.Security.Application
             {
                 int currentCharacterAsInteger = input[i];
                 char currentCharacter = input[i];
-                if (SafeListCodes[currentCharacterAsInteger] != null)
+                if (safeListCodes[currentCharacterAsInteger] != null)
                 {
                     // character needs to be encoded
 

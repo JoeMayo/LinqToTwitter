@@ -15,6 +15,6 @@
         /// <summary>
         /// Retrieve a list of IDs of users being blocked
         /// </summary>
-        IDS
+        Ids
     }
 }

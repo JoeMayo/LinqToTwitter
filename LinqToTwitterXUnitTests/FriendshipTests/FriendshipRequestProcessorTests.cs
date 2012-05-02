@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using LinqToTwitter;
 using LinqToTwitterTests.Common;
-using Moq;
 using Xunit;
 
 namespace LinqToTwitterXUnitTests.FriendshipTests
@@ -217,7 +215,7 @@ namespace LinqToTwitterXUnitTests.FriendshipTests
         }
 
         [Fact]
-        public void BuildExistsURLTest()
+        public void BuildUrl_Constructs_Exists_Url()
         {
             FriendshipRequestProcessor<Friendship> friendReqProc = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "https://api.twitter.com/1/" };
             Dictionary<string, string> parameters =
@@ -235,7 +233,7 @@ namespace LinqToTwitterXUnitTests.FriendshipTests
         }
 
         [Fact]
-        public void BuildShowURLTest()
+        public void BuildUrl_Constructs_Show_Url()
         {
             FriendshipRequestProcessor<Friendship> friendReqProc = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "https://api.twitter.com/1/" };
             Dictionary<string, string> parameters =
@@ -255,7 +253,7 @@ namespace LinqToTwitterXUnitTests.FriendshipTests
         }
 
         [Fact]
-        public void BuildShowWithoutSourceURLTest()
+        public void BuildUrl_Throws_Without_Source_Url()
         {
             FriendshipRequestProcessor<Friendship> friendReqProc = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "https://api.twitter.com/1/" };
             Dictionary<string, string> parameters =
@@ -270,16 +268,15 @@ namespace LinqToTwitterXUnitTests.FriendshipTests
         }
 
         [Fact]
-        public void BuildShowWithoutfriendReqProcURLTest()
+        public void BuildUrl_Throws_Without_FriendsReqProcUrl()
         {
-            FriendshipRequestProcessor<Friendship> friendReqProc = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "https://api.twitter.com/1/" };
-            Dictionary<string, string> parameters =
-                new Dictionary<string, string>
-                {
-                    { "Type", FriendshipType.Show.ToString() },
-                    { "SourceUserID", "123" },
-                    { "SourceScreenName", "JoeMayo" },
-                };
+            var friendReqProc = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "https://api.twitter.com/1/" };
+            var parameters = new Dictionary<string, string>
+            {
+                { "Type", FriendshipType.Show.ToString() },
+                { "SourceUserID", "123" },
+                { "SourceScreenName", "JoeMayo" },
+            };
 
             Assert.Throws<ArgumentException>(() => friendReqProc.BuildUrl(parameters));
         }
@@ -323,7 +320,7 @@ namespace LinqToTwitterXUnitTests.FriendshipTests
         }
 
         [Fact]
-        public void BuildIncomingURLTest()
+        public void BuildUrl_Constructs_Incoming_Url()
         {
             FriendshipRequestProcessor<Friendship> friendReqProc = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "https://api.twitter.com/1/" };
             Dictionary<string, string> parameters =
@@ -339,7 +336,7 @@ namespace LinqToTwitterXUnitTests.FriendshipTests
         }
 
         [Fact]
-        public void BuildIncomingWithCursorURLTest()
+        public void BuildUrl_With_Cursor_Param_Constructs_Incoming_Url()
         {
             FriendshipRequestProcessor<Friendship> friendReqProc = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "https://api.twitter.com/1/" };
             Dictionary<string, string> parameters =
@@ -356,7 +353,7 @@ namespace LinqToTwitterXUnitTests.FriendshipTests
         }
 
         [Fact]
-        public void BuildOutgoingURLTest()
+        public void BuildUrl_Constructs_Outgoing_Url()
         {
             FriendshipRequestProcessor<Friendship> friendReqProc = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "https://api.twitter.com/1/" };
             Dictionary<string, string> parameters =
@@ -372,7 +369,7 @@ namespace LinqToTwitterXUnitTests.FriendshipTests
         }
 
         [Fact]
-        public void BuildOutgoingWithCursorURLTest()
+        public void BuildUrl_With_Cursor_Param_Constructs_Outgoing_Url()
         {
             FriendshipRequestProcessor<Friendship> friendReqProc = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "https://api.twitter.com/1/" };
             Dictionary<string, string> parameters =

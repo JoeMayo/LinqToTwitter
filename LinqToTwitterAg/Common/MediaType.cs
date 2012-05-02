@@ -7,16 +7,16 @@ namespace LinqToTwitter
         /// <summary>
         /// image/gif
         /// </summary>
-        GIF,
+        Gif,
 
         /// <summary>
         /// image/jpeg
         /// </summary>
-        JPEG,
+        Jpeg,
 
         /// <summary>
         /// image/png
         /// </summary>
-        PNG,
+        Png,
     }
 }

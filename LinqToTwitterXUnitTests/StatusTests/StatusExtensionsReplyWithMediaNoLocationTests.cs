@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Threading;
 using LinqToTwitter;
 using Moq;
 using Xunit;
@@ -17,14 +15,9 @@ namespace LinqToTwitterXUnitTests.StatusTests
         readonly Mock<ITwitterExecute> twitterExecute;
         readonly Mock<IRequestProcessor<Status>> statusReqProc;
          
-        readonly string frenchLocale = "FR-fr";
-
         string status = "test";
         bool possiblySensitive = true;
         decimal latitude = 37.78215m;
-        decimal longitude = -122.40060m;
-        string placeID = "place";
-        bool displayCoordinates = true;
         ulong inReplyToStatusID = 23030327348932ul;
 
         List<Media> mediaItems = new List<Media> 
@@ -33,7 +26,7 @@ namespace LinqToTwitterXUnitTests.StatusTests
             {
                 Data = new byte[] { 0xFF },
                 FileName = "AnImage.jpg",
-                ContentType = MediaContentType.JPEG
+                ContentType = MediaContentType.Jpeg
             }
         };
 
@@ -180,6 +173,18 @@ namespace LinqToTwitterXUnitTests.StatusTests
             .Returns(this.statusReqProc.Object);
         }
 
+        public decimal Latitude
+        {
+            get
+            {
+                return latitude;
+            }
+            set
+            {
+                latitude = value;
+            }
+        }
+
         [Fact]
         public void ReplyWithMedia_Without_Location_Params_Throws_On_Null_Status()
         {
@@ -214,7 +219,7 @@ namespace LinqToTwitterXUnitTests.StatusTests
         }
 
         [Fact]
-        public void ReplyWithMedia_Without_Location_Params_Passes_Properly_Formatted_Url_to_PostMedia()
+        public void ReplyWithMedia_Without_Location_Params_Passes_Properly_Formatted_Url_To_PostMedia()
         {
             StatusExtensions.ReplyWithMedia(
                 this.twitterCtx.Object, this.inReplyToStatusID,
@@ -231,7 +236,7 @@ namespace LinqToTwitterXUnitTests.StatusTests
         }
 
         [Fact]
-        public void ReplyWithMedia_Without_Location_Params_Passes_Status_via_Parameter_Dictionary_to_PostMedia()
+        public void ReplyWithMedia_Without_Location_Params_Passes_Status_Via_Parameter_Dictionary_To_PostMedia()
         {
             StatusExtensions.ReplyWithMedia(
                 this.twitterCtx.Object, this.inReplyToStatusID,
@@ -248,7 +253,7 @@ namespace LinqToTwitterXUnitTests.StatusTests
         }
 
         [Fact]
-        public void ReplyWithMedia_Without_Location_Params_Passes_possiblySensitive_via_Parameter_Dictionary_to_PostMedia()
+        public void ReplyWithMedia_Without_Location_Params_Passes_PossiblySensitive_Via_Parameter_Dictionary_To_PostMedia()
         {
             StatusExtensions.ReplyWithMedia(
                 this.twitterCtx.Object, this.inReplyToStatusID,
@@ -265,7 +270,7 @@ namespace LinqToTwitterXUnitTests.StatusTests
         }
 
         [Fact]
-        public void ReplyWithMedia_Without_Location_Params_DoesNot_Pass_false_possiblySensitive_via_Parameter_Dictionary_to_PostMedia()
+        public void ReplyWithMedia_Without_Location_Params_DoesNot_Pass_False_PossiblySensitive_Via_Parameter_Dictionary_To_PostMedia()
         {
             this.possiblySensitive = false;
 
@@ -284,7 +289,7 @@ namespace LinqToTwitterXUnitTests.StatusTests
         }
 
         [Fact]
-        public void ReplyWithMedia_Without_Location_Params_DoesNot_Pass_placeID_via_Parameter_Dictionary_to_PostMedia()
+        public void ReplyWithMedia_Without_Location_Params_DoesNot_Pass_PlaceID_Via_Parameter_Dictionary_To_PostMedia()
         {
             StatusExtensions.ReplyWithMedia(
                 this.twitterCtx.Object, this.inReplyToStatusID,
@@ -301,7 +306,7 @@ namespace LinqToTwitterXUnitTests.StatusTests
         }
 
         [Fact]
-        public void ReplyWithMedia_Without_Location_Params_DoesNot_Pass_displayCoordinates_via_Parameter_Dictionary_to_PostMedia()
+        public void ReplyWithMedia_Without_Location_Params_DoesNot_Pass_DisplayCoordinates_Via_Parameter_Dictionary_To_PostMedia()
         {
             StatusExtensions.ReplyWithMedia(
                 this.twitterCtx.Object, this.inReplyToStatusID,
@@ -318,7 +323,7 @@ namespace LinqToTwitterXUnitTests.StatusTests
         }
 
         [Fact]
-        public void ReplyWithMedia_Without_Location_Params_Passes_inReplyToStatusID_via_Parameter_Dictionary_to_PostMedia()
+        public void ReplyWithMedia_Without_Location_Params_Passes_InReplyToStatusID_Via_Parameter_Dictionary_To_PostMedia()
         {
             StatusExtensions.ReplyWithMedia(
                 this.twitterCtx.Object, this.inReplyToStatusID,
@@ -335,7 +340,7 @@ namespace LinqToTwitterXUnitTests.StatusTests
         }
 
         [Fact]
-        public void ReplyWithMedia_Without_Location_Params_DoesNot_Pass_NoReply_inReplyToStatusID_via_Parameter_Dictionary_to_PostMedia()
+        public void ReplyWithMedia_Without_Location_Params_DoesNot_Pass_NoReply_InReplyToStatusID_Via_Parameter_Dictionary_To_PostMedia()
         {
             this.inReplyToStatusID = StatusExtensions.NoReply;
 
@@ -357,7 +362,6 @@ namespace LinqToTwitterXUnitTests.StatusTests
         public void ReplyWithMedia_Without_Location_Params_DoesNot_Pass_Lat_And_Long_To_PostMedia()
         {
             this.latitude = StatusExtensions.NoCoordinate;
-            this.longitude = StatusExtensions.NoCoordinate;
 
             StatusExtensions.ReplyWithMedia(
                 this.twitterCtx.Object, this.inReplyToStatusID,
@@ -377,7 +381,7 @@ namespace LinqToTwitterXUnitTests.StatusTests
         }
 
         [Fact]
-        public void ReplyWithMedia_Without_Location_Params_Passes_Media_to_PostMedia()
+        public void ReplyWithMedia_Without_Location_Params_Passes_Media_To_PostMedia()
         {
             StatusExtensions.ReplyWithMedia(
                 this.twitterCtx.Object, this.inReplyToStatusID,
@@ -394,7 +398,7 @@ namespace LinqToTwitterXUnitTests.StatusTests
         }
 
         [Fact]
-        public void ReplyWithMedia_Without_Location_Params_Requires_NonNull_mediaItems()
+        public void ReplyWithMedia_Without_Location_Params_Requires_NonNull_MediaItems()
         {
             this.mediaItems = null;
 

@@ -142,9 +142,4 @@ namespace LinqToTwitter
         RetweetsOfMe,
 
     }
-
-    enum StatusAction
-    {
-        SingleStatus
-    }
 }

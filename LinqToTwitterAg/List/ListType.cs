@@ -1,4 +1,5 @@
 ﻿using System;
+
 namespace LinqToTwitter
 {
     /// <summary>
@@ -59,24 +60,5 @@ namespace LinqToTwitter
         /// Get all lists subscribed to
         /// </summary>
         All
-    }
-
-    enum ListAction
-    {
-        Create,
-
-        Update,
-
-        Delete,
-
-        AddMember,
-
-        AddMemberRange,
-
-        DeleteMember,
-
-        Subscribe,
-
-        Unsubscribe
     }
 }

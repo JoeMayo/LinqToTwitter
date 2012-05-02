@@ -18,11 +18,11 @@ namespace LinqToTwitterTests
         [TestMethod]
         public void Authorize_Gets_Request_Token()
         {
-            const string authLink = "https://authorizationlink";
+            const string AuthLink = "https://authorizationlink";
             var pinAuth = new PinAuthorizer {Credentials = new InMemoryCredentials()};
             var oAuthMock = new Mock<IOAuthTwitter>();
             oAuthMock.Setup(oAuth => oAuth.AuthorizationLinkGet(It.IsAny<string>(), It.IsAny<string>(), "oob", false, AuthAccessType.NoChange))
-                     .Returns(authLink);
+                     .Returns(AuthLink);
             pinAuth.OAuthTwitter = oAuthMock.Object;
             pinAuth.GetPin = () => "1234567";
             string destinationUrl = string.Empty;
@@ -31,16 +31,17 @@ namespace LinqToTwitterTests
             pinAuth.Authorize();
 
             oAuthMock.Verify(oAuth => oAuth.AuthorizationLinkGet(It.IsAny<string>(), It.IsAny<string>(), "oob", false, AuthAccessType.NoChange), Times.Once());
+            Assert.AreEqual(AuthLink, destinationUrl);
         }
 
         [TestMethod]
         public void Authorize_Launches_Browser()
         {
-            const string authLink = "https://authorizationlink";
+            const string AuthLink = "https://authorizationlink";
             var pinAuth = new PinAuthorizer {Credentials = new InMemoryCredentials()};
             var oAuthMock = new Mock<IOAuthTwitter>();
             oAuthMock.Setup(oAuth => oAuth.AuthorizationLinkGet(It.IsAny<string>(), It.IsAny<string>(), "oob", false, AuthAccessType.NoChange))
-                     .Returns(authLink);
+                     .Returns(AuthLink);
             pinAuth.OAuthTwitter = oAuthMock.Object;
             pinAuth.GetPin = () => "1234567";
             string destinationUrl = string.Empty;
@@ -48,17 +49,17 @@ namespace LinqToTwitterTests
 
             pinAuth.Authorize();
 
-            Assert.AreEqual(authLink, destinationUrl);
+            Assert.AreEqual(AuthLink, destinationUrl);
         }
 
         [TestMethod]
         public void Authorize_Gets_Pin()
         {
-            const string authLink = "https://authorizationlink";
+            const string AuthLink = "https://authorizationlink";
             var pinAuth = new PinAuthorizer {Credentials = new InMemoryCredentials()};
             var oAuthMock = new Mock<IOAuthTwitter>();
             oAuthMock.Setup(oAuth => oAuth.AuthorizationLinkGet(It.IsAny<string>(), It.IsAny<string>(), "oob", false, AuthAccessType.NoChange))
-                     .Returns(authLink);
+                     .Returns(AuthLink);
             pinAuth.OAuthTwitter = oAuthMock.Object;
             bool pinSet = false;
             pinAuth.GetPin = () => { pinSet = true; return "1234567"; };
@@ -68,16 +69,17 @@ namespace LinqToTwitterTests
             pinAuth.Authorize();
 
             Assert.IsTrue(pinSet);
+            Assert.AreEqual(AuthLink, destinationUrl);
         }
 
         [TestMethod]
         public void Authorize_Requires_GetPin_Handler()
         {
-            const string authLink = "https://authorizationlink";
+            const string AuthLink = "https://authorizationlink";
             var pinAuth = new PinAuthorizer {Credentials = new InMemoryCredentials()};
             var oAuthMock = new Mock<IOAuthTwitter>();
             oAuthMock.Setup(oAuth => oAuth.AuthorizationLinkGet(It.IsAny<string>(), It.IsAny<string>(), "oob", false, AuthAccessType.NoChange))
-                     .Returns(authLink);
+                     .Returns(AuthLink);
             pinAuth.OAuthTwitter = oAuthMock.Object;
             string destinationUrl = string.Empty;
             pinAuth.GoToTwitterAuthorization = link => destinationUrl = link;
@@ -85,6 +87,7 @@ namespace LinqToTwitterTests
             try
             {
                 pinAuth.Authorize();
+                Assert.AreEqual(AuthLink, destinationUrl);
 
                 Assert.Fail("Expected InvalidOperationException.");
             }
@@ -97,14 +100,13 @@ namespace LinqToTwitterTests
         [TestMethod]
         public void Authorize_Requires_GoToTwitterAuthorization_Handler()
         {
-            const string authLink = "https://authorizationlink";
+            const string AuthLink = "https://authorizationlink";
             var pinAuth = new PinAuthorizer {Credentials = new InMemoryCredentials()};
             var oAuthMock = new Mock<IOAuthTwitter>();
             oAuthMock.Setup(oAuth => oAuth.AuthorizationLinkGet(It.IsAny<string>(), It.IsAny<string>(), "oob", false, AuthAccessType.NoChange))
-                     .Returns(authLink);
+                     .Returns(AuthLink);
             pinAuth.OAuthTwitter = oAuthMock.Object;
-            bool pinSet = false;
-            pinAuth.GetPin = () => { pinSet = true; return "1234567"; };
+            pinAuth.GetPin = () => { return "1234567"; };
 
             try
             {
@@ -140,24 +142,25 @@ namespace LinqToTwitterTests
         {
             string screenName = "JoeMayo";
             string userID = "123";
-            const string pinCode = "1234567";
-            const string authToken = "token";
-            const string authLink = "https://authorizationlink?oauth_token=" + authToken;
+            const string PinCode = "1234567";
+            const string AuthToken = "token";
+            const string AuthLink = "https://authorizationlink?oauth_token=" + AuthToken;
             var pinAuth = new PinAuthorizer {Credentials = new InMemoryCredentials()};
             var oAuthMock = new Mock<IOAuthTwitter>();
             oAuthMock.Setup(oAuth => oAuth.AuthorizationLinkGet(It.IsAny<string>(), It.IsAny<string>(), "oob", false, AuthAccessType.NoChange))
-                     .Returns(authLink);
-            oAuthMock.Setup(oAuth => oAuth.AccessTokenGet(authToken, pinCode, It.IsAny<string>(), string.Empty, out screenName, out userID));
+                     .Returns(AuthLink);
+            oAuthMock.Setup(oAuth => oAuth.AccessTokenGet(AuthToken, PinCode, It.IsAny<string>(), string.Empty, out screenName, out userID));
             pinAuth.OAuthTwitter = oAuthMock.Object;
-            pinAuth.GetPin = () => pinCode;
+            pinAuth.GetPin = () => PinCode;
             string destinationUrl = string.Empty;
             pinAuth.GoToTwitterAuthorization = link => destinationUrl = link;
 
             pinAuth.Authorize();
 
-            oAuthMock.Verify(oauth => oauth.AccessTokenGet(authToken, pinCode, It.IsAny<string>(), string.Empty, out screenName, out userID), Times.Once());
+            oAuthMock.Verify(oauth => oauth.AccessTokenGet(AuthToken, PinCode, It.IsAny<string>(), string.Empty, out screenName, out userID), Times.Once());
             Assert.AreEqual(screenName, pinAuth.ScreenName);
             Assert.AreEqual(userID, pinAuth.UserId);
+            Assert.AreEqual(AuthLink, destinationUrl);
         }
 
         [TestMethod]
@@ -252,10 +255,11 @@ namespace LinqToTwitterTests
             oAuthMock.Verify(oauth =>
                 oauth.GetRequestTokenAsync(It.IsAny<Uri>(), It.IsAny<Uri>(), "oob", AuthAccessType.NoChange, false, It.IsAny<Action<string>>(), It.IsAny<Action<TwitterAsyncResponse<object>>>()), 
                 Times.Never());
+            Assert.IsNull(twitterResp);
         }
 
         [TestMethod]
-        public void BeginAuthorize_Invokes_authorizationCompleteCallback()
+        public void BeginAuthorize_Invokes_AuthorizationCompleteCallback()
         {
             var pinAuth = new PinAuthorizer
             {
@@ -273,7 +277,7 @@ namespace LinqToTwitterTests
         [TestMethod]
         public void CompleteAuthorize_Gets_Access_Token()
         {
-            const string pin = "1234567";
+            const string Pin = "1234567";
             Action<TwitterAsyncResponse<UserIdentifier>> callback = resp => { };
             var oauthAccessTokenUrl = new Uri("https://api.twitter.com/oauth/access_token");
             var oAuthMock = new Mock<IOAuthTwitter>();
@@ -284,15 +288,15 @@ namespace LinqToTwitterTests
                 GoToTwitterAuthorization = link => { }
             };
 
-            pinAuth.CompleteAuthorize(pin, callback);
+            pinAuth.CompleteAuthorize(Pin, callback);
 
             oAuthMock.Verify(oAuth =>
-                oAuth.GetAccessTokenAsync(pin, oauthAccessTokenUrl, "oob", AuthAccessType.NoChange, callback),
+                oAuth.GetAccessTokenAsync(Pin, oauthAccessTokenUrl, "oob", AuthAccessType.NoChange, callback),
                 Times.Once());
         }
 
         [TestMethod]
-        public void CompleteAuthorize_Invokes_authorizationCompleteCallback()
+        public void CompleteAuthorize_Invokes_AuthorizationCompleteCallback()
         {
             var pinAuth = new PinAuthorizer
             {
@@ -332,7 +336,7 @@ namespace LinqToTwitterTests
         [TestMethod]
         public void CompleteAuthorize_Returns_If_Already_Authorized()
         {
-            const string pin = "1234567";
+            const string Pin = "1234567";
             Action<TwitterAsyncResponse<UserIdentifier>> callback = resp => { };
             var oauthAccessTokenUrl = new Uri("https://api.twitter.com/oauth/access_token");
             var oAuthMock = new Mock<IOAuthTwitter>();
@@ -349,10 +353,10 @@ namespace LinqToTwitterTests
                 GoToTwitterAuthorization = link => { }
             };
 
-            pinAuth.CompleteAuthorize(pin, callback);
+            pinAuth.CompleteAuthorize(Pin, callback);
 
             oAuthMock.Verify(oAuth =>
-                oAuth.GetAccessTokenAsync(pin, oauthAccessTokenUrl, "oob", AuthAccessType.NoChange, callback),
+                oAuth.GetAccessTokenAsync(Pin, oauthAccessTokenUrl, "oob", AuthAccessType.NoChange, callback),
                 Times.Never());
         }
     }

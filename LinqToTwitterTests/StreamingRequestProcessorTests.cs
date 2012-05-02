@@ -75,7 +75,7 @@ namespace LinqToTwitterTests
                     strm.Follow == "1,2,3" &&
                     strm.Track == "twitter,API,LINQ to Twitter" &&
                     strm.Locations == "-122.75,36.8,-121.75,37.8,-74,40,-73,41";
-            LambdaExpression lambdaExpression = expression as LambdaExpression;
+            var lambdaExpression = expression as LambdaExpression;
 
             var parms = reqProc.GetParameters(lambdaExpression);
 

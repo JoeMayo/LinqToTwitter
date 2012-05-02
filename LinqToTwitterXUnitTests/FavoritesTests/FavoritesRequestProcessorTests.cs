@@ -64,7 +64,7 @@ namespace LinqToTwitterXUnitTests
         }
 
         [Fact]
-        public void BuildURL_Constructs_Favorites_URL()
+        public void BuildUrl_Constructs_Favorites_Url()
         {
             var favReqProc = new FavoritesRequestProcessor<Favorites> { BaseUrl = "https://api.twitter.com/1/" };
             var parameters =
@@ -74,11 +74,11 @@ namespace LinqToTwitterXUnitTests
                     { "ID", "123" },
                     { "Page", "1" },
                 };
-            const string expected = "https://api.twitter.com/1/favorites.json?page=1&id=123";
+            const string Expected = "https://api.twitter.com/1/favorites.json?page=1&id=123";
 
             Request req = favReqProc.BuildUrl(parameters);
 
-            Assert.Equal(expected, req.FullUrl);
+            Assert.Equal(Expected, req.FullUrl);
         }
 
         [Fact]

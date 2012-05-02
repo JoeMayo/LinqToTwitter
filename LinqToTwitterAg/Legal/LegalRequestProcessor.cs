@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Xml.Linq;
 using LinqToTwitter.Common;
 using LitJson;
 
@@ -51,7 +50,7 @@ namespace LinqToTwitter
             {
                 case LegalType.Privacy:
                     return BuildPrivacyUrl();
-                case LegalType.TOS:
+                case LegalType.Tos:
                     return BuildTosUrl();
                 default:
                     break;
@@ -101,7 +100,7 @@ namespace LinqToTwitter
                 case LegalType.Privacy:
                     legal.Text = legalJson.GetValue<string>("privacy");
                     break;
-                case LegalType.TOS:
+                case LegalType.Tos:
                     legal.Text = legalJson.GetValue<string>("tos");
                     break;
                 default:

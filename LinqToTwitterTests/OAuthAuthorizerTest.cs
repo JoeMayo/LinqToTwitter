@@ -36,7 +36,7 @@ namespace LinqToTwitterTests
         public void InitializeRequest_Sets_Request_Headers()
         {
             var req = new Request("https://api.twitter.com/statuses/public.xml");
-            const string userAgent = "LINQ to Twitter v2.0";
+            const string UserAgent = "LINQ to Twitter v2.0";
             var pinAuth = new PinAuthorizer();
             var oAuthMock = new Mock<IOAuthTwitter>();
             string outUrl;
@@ -44,7 +44,7 @@ namespace LinqToTwitterTests
             oAuthMock.Setup(oAuth => oAuth.GetOAuthQueryString(HttpMethod.GET, req, string.Empty, out outUrl, out queryString));
             pinAuth.OAuthTwitter = oAuthMock.Object;
 
-            pinAuth.UserAgent = userAgent;
+            pinAuth.UserAgent = UserAgent;
             pinAuth.ReadWriteTimeout = new TimeSpan(0, 0, 1);
             pinAuth.Timeout = new TimeSpan(0, 0, 2);
             pinAuth.UseCompression = true;
@@ -52,7 +52,7 @@ namespace LinqToTwitterTests
             var httpReq = pinAuth.Get(req) as HttpWebRequest;
 
             Assert.IsNotNull(httpReq);
-            Assert.AreEqual(userAgent, httpReq.UserAgent);
+            Assert.AreEqual(UserAgent, httpReq.UserAgent);
             Assert.AreEqual(1000, httpReq.ReadWriteTimeout);
             Assert.AreEqual(2000, httpReq.Timeout);
             Assert.AreEqual("gzip, deflate", httpReq.Headers[HttpRequestHeader.AcceptEncoding]);

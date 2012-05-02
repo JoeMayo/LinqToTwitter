@@ -23,7 +23,7 @@ namespace LinqToTwitterTests
                     strm.Track == "twitter,API,LINQ to Twitter" &&
                     strm.With == "Follow" &&
                     strm.AllReplies == true;
-            LambdaExpression lambdaExpression = expression as LambdaExpression;
+            var lambdaExpression = expression as LambdaExpression;
 
             var parms = reqProc.GetParameters(lambdaExpression);
 

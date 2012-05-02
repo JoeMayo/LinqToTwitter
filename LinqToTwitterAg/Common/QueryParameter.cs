@@ -8,7 +8,7 @@ namespace LinqToTwitter
     /// </summary>
     public class QueryParameter : IComparable<QueryParameter>, IComparable
     {
-        private string name = null;
+        private readonly string name = null;
         private string value = null;
 
         public QueryParameter(string name, string value)
@@ -39,10 +39,10 @@ namespace LinqToTwitter
 
         public int CompareTo(QueryParameter other)
         {
-            return DefaultComparer.Compare(this, other);
+            return defaultComparer.Compare(this, other);
         }
 
-        public static IComparer<QueryParameter> DefaultComparer = new QueryParameterComparer();
+        public static IComparer<QueryParameter> defaultComparer = new QueryParameterComparer();
     }
 
     /// <summary>

@@ -49,6 +49,9 @@
     <Compile Include="..\LinqToTwitterAg\Account\Account.cs">
       <Link>Account\Account.cs</Link>
     </Compile>
+    <Compile Include="..\LinqToTwitterAg\Account\AccountAction.cs">
+      <Link>Account\AccountAction.cs</Link>
+    </Compile>
     <Compile Include="..\LinqToTwitterAg\Account\AccountExtensions.cs">
       <Link>Account\AccountExtensions.cs</Link>
     </Compile>
@@ -256,6 +259,9 @@
     <Compile Include="..\LinqToTwitterAg\Favorites\Favorites.cs">
       <Link>Favorites\Favorites.cs</Link>
     </Compile>
+    <Compile Include="..\LinqToTwitterAg\Favorites\FavoritesAction.cs">
+      <Link>Favorites\FavoritesAction.cs</Link>
+    </Compile>
     <Compile Include="..\LinqToTwitterAg\Favorites\FavoritesExtensions.cs">
       <Link>Favorites\FavoritesExtensions.cs</Link>
     </Compile>
@@ -267,6 +273,9 @@
     </Compile>
     <Compile Include="..\LinqToTwitterAg\Friendship\Friendship.cs">
       <Link>Friendship\Friendship.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Friendship\FriendshipAction.cs">
+      <Link>Friendship\FriendshipAction.cs</Link>
     </Compile>
     <Compile Include="..\LinqToTwitterAg\Friendship\FriendshipExtensions.cs">
       <Link>Friendship\FriendshipExtensions.cs</Link>
@@ -345,6 +354,9 @@
     </Compile>
     <Compile Include="..\LinqToTwitterAg\List\List.cs">
       <Link>List\List.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\List\ListAction.cs">
+      <Link>List\ListAction.cs</Link>
     </Compile>
     <Compile Include="..\LinqToTwitterAg\List\ListExtensions.cs">
       <Link>List\ListExtensions.cs</Link>
@@ -438,6 +450,9 @@
     </Compile>
     <Compile Include="..\LinqToTwitterAg\SavedSearch\SavedSearch.cs">
       <Link>SavedSearch\SavedSearch.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\SavedSearch\SavedSearchAction.cs">
+      <Link>SavedSearch\SavedSearchAction.cs</Link>
     </Compile>
     <Compile Include="..\LinqToTwitterAg\SavedSearch\SavedSearchExtensions.cs">
       <Link>SavedSearch\SavedSearchExtensions.cs</Link>
@@ -604,6 +619,9 @@
     <Compile Include="..\LinqToTwitterAg\Status\Status.cs">
       <Link>Status\Status.cs</Link>
     </Compile>
+    <Compile Include="..\LinqToTwitterAg\Status\StatusAction.cs">
+      <Link>Status\StatusAction.cs</Link>
+    </Compile>
     <Compile Include="..\LinqToTwitterAg\Status\StatusExtensions.cs">
       <Link>Status\StatusExtensions.cs</Link>
     </Compile>
@@ -651,6 +669,9 @@
     </Compile>
     <Compile Include="..\LinqToTwitterAg\User\User.cs">
       <Link>User\User.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\User\UserAction.cs">
+      <Link>User\UserAction.cs</Link>
     </Compile>
     <Compile Include="..\LinqToTwitterAg\User\UserIdentifier.cs">
       <Link>User\UserIdentifier.cs</Link>

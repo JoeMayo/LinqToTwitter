@@ -73,6 +73,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Account\Account.cs" />
+    <Compile Include="Account\AccountAction.cs" />
     <Compile Include="Account\AccountExtensions.cs" />
     <Compile Include="Account\AccountRequestProcessor.cs" />
     <Compile Include="Account\AccountType.cs" />
@@ -137,10 +138,12 @@
     <Compile Include="DirectMessage\DirectMessageRequestProcessor.cs" />
     <Compile Include="DirectMessage\DirectMessageType.cs" />
     <Compile Include="Favorites\Favorites.cs" />
+    <Compile Include="Favorites\FavoritesAction.cs" />
     <Compile Include="Favorites\FavoritesExtensions.cs" />
     <Compile Include="Favorites\FavoritesRequestProcessor.cs" />
     <Compile Include="Favorites\FavoritesType.cs" />
     <Compile Include="Friendship\Friendship.cs" />
+    <Compile Include="Friendship\FriendshipAction.cs" />
     <Compile Include="Friendship\FriendshipExtensions.cs" />
     <Compile Include="Friendship\FriendshipRequestProcessor.cs" />
     <Compile Include="Friendship\FriendshipType.cs" />
@@ -167,6 +170,7 @@
     <Compile Include="LinqToTwitter\TwitterQueryable.cs" />
     <Compile Include="LinqToTwitter\TwitterQueryProvider.cs" />
     <Compile Include="List\List.cs" />
+    <Compile Include="List\ListAction.cs" />
     <Compile Include="List\ListExtensions.cs" />
     <Compile Include="List\ListRequestProcessor.cs" />
     <Compile Include="List\ListType.cs" />
@@ -201,6 +205,7 @@
     <Compile Include="RelatedResults\RelatedResultsType.cs" />
     <Compile Include="ReportSpam\ReportSpamExtensions.cs" />
     <Compile Include="SavedSearch\SavedSearch.cs" />
+    <Compile Include="SavedSearch\SavedSearchAction.cs" />
     <Compile Include="SavedSearch\SavedSearchExtensions.cs" />
     <Compile Include="SavedSearch\SavedSearchRequestProcessor.cs" />
     <Compile Include="SavedSearch\SavedSearchType.cs" />
@@ -262,6 +267,7 @@
     <Compile Include="Common\Entities\UserMention.cs" />
     <Compile Include="Status\Retweet.cs" />
     <Compile Include="Status\Status.cs" />
+    <Compile Include="Status\StatusAction.cs" />
     <Compile Include="Status\StatusExtensions.cs" />
     <Compile Include="Status\StatusRequestProcessor.cs" />
     <Compile Include="Status\StatusType.cs" />
@@ -278,6 +284,7 @@
     <Compile Include="Trend\TrendType.cs" />
     <Compile Include="User\Category.cs" />
     <Compile Include="User\User.cs" />
+    <Compile Include="User\UserAction.cs" />
     <Compile Include="User\UserIdentifier.cs" />
     <Compile Include="User\UserRequestProcessor.cs" />
     <Compile Include="User\UserType.cs" />

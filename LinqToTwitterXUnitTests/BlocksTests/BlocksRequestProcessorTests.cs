@@ -39,7 +39,7 @@ namespace LinqToTwitterXUnitTests
         {
             var blockReqProc = new BlocksRequestProcessor<Blocks>
             {
-                Type = BlockingType.IDS
+                Type = BlockingType.Ids
             };
 
             IList<Blocks> blocksResponse = blockReqProc.ProcessResults(BlockedIDsJson);
@@ -105,7 +105,7 @@ namespace LinqToTwitterXUnitTests
         }
 
         [Fact]
-        public void BuildUrl_Creates_Exists_URL()
+        public void BuildUrl_Creates_Exists_Url()
         {
             var buildReqProc = new BlocksRequestProcessor<Blocks> { BaseUrl = "https://api.twitter.com/1/" };
             var parameters =
@@ -116,15 +116,15 @@ namespace LinqToTwitterXUnitTests
                     { "UserID", "456" },
                     { "ScreenName", "789" }
                 };
-            const string expected = "https://api.twitter.com/1/blocks/exists/123.json?user_id=456&screen_name=789";
+            const string Expected = "https://api.twitter.com/1/blocks/exists/123.json?user_id=456&screen_name=789";
 
             Request req = buildReqProc.BuildUrl(parameters);
 
-            Assert.Equal(expected, req.FullUrl);
+            Assert.Equal(Expected, req.FullUrl);
         }
 
         [Fact]
-        public void BuildUrl_Creates_Blocking_URL()
+        public void BuildUrl_Creates_Blocking_Url()
         {
             var blocksReqProc = new BlocksRequestProcessor<Blocks> { BaseUrl = "https://api.twitter.com/1/" };
             var parameters =
@@ -133,27 +133,27 @@ namespace LinqToTwitterXUnitTests
                     { "Type", ((int)BlockingType.Blocking).ToString(CultureInfo.InvariantCulture) },
                     { "Page", "2" }
                 };
-            const string expected = "https://api.twitter.com/1/blocks/blocking.json?page=2";
+            const string Expected = "https://api.twitter.com/1/blocks/blocking.json?page=2";
 
             Request req = blocksReqProc.BuildUrl(parameters);
 
-            Assert.Equal(expected, req.FullUrl);
+            Assert.Equal(Expected, req.FullUrl);
         }
 
         [Fact]
-        public void BuildUrl_Creates_BlockingIDs_URL()
+        public void BuildUrl_Creates_BlockingIDs_Url()
         {
             var blocksReqProc = new BlocksRequestProcessor<Blocks> { BaseUrl = "https://api.twitter.com/1/" };
             var parameters =
                 new Dictionary<string, string>
                 {
-                    { "Type", ((int)BlockingType.IDS).ToString(CultureInfo.InvariantCulture) }
+                    { "Type", ((int)BlockingType.Ids).ToString(CultureInfo.InvariantCulture) }
                 };
-            const string expected = "https://api.twitter.com/1/blocks/blocking/ids.json";
+            const string Expected = "https://api.twitter.com/1/blocks/blocking/ids.json";
 
             Request req = blocksReqProc.BuildUrl(parameters);
 
-            Assert.Equal(expected, req.FullUrl);
+            Assert.Equal(Expected, req.FullUrl);
         }
 
         [Fact]

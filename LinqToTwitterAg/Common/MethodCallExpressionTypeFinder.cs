@@ -5,7 +5,7 @@ namespace LinqToTwitter.Common
 {
     internal class MethodCallExpressionTypeFinder : ExpressionVisitor
     {
-        private Type m_genericType;
+        private Type genericType;
 
         /// <summary>
         /// Gets the underlying type of the whole method call expression
@@ -15,7 +15,7 @@ namespace LinqToTwitter.Common
         public Type GetGenericType(Expression exp)
         {
             Visit(exp);
-            return m_genericType;
+            return genericType;
         }
 
 
@@ -27,7 +27,7 @@ namespace LinqToTwitter.Common
         protected override Expression VisitMethodCall(MethodCallExpression expression)
         {
             if (expression.Arguments.Count > 0)
-                m_genericType = expression.Method.GetGenericArguments()[0];
+                genericType = expression.Method.GetGenericArguments()[0];
 
             // look at extension source to see if there is an inner type
             Visit(expression.Arguments[0]);

@@ -13,7 +13,7 @@
         /// <summary>
         /// use SMS text
         /// </summary>
-        SMS,
+        Sms,
 
         /// <summary>
         /// use IM

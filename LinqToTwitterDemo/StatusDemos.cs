@@ -814,7 +814,7 @@ namespace LinqToTwitterDemo
                     {
                         Data = Utilities.GetFileBytes(replaceThisWithYourImageLocation),
                         FileName = "200xColor_2.png",
-                        ContentType = MediaContentType.PNG
+                        ContentType = MediaContentType.Png
                     }
                 };
 

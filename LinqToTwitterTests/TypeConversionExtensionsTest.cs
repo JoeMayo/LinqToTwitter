@@ -53,9 +53,9 @@ namespace LinqToTwitterTests
         {
             XElement resultElem = XElement.Parse(TestStatusTweet);
             XElement elem = resultElem.Element("status");
-            const string tagName = "text";
+            const string TagName = "text";
 
-            string value = elem.TagValue(tagName);
+            string value = elem.TagValue(TagName);
 
             Assert.IsTrue(value.StartsWith("RT"));
         }
@@ -65,9 +65,9 @@ namespace LinqToTwitterTests
         {
             XElement resultElem = XElement.Parse(TestStatusTweet);
             XElement elem = resultElem.Element("status");
-            const string tagName = "text";
+            const string TagName = "text";
 
-            string value = elem.GetString(tagName);
+            string value = elem.GetString(TagName);
 
             Assert.IsTrue(value.StartsWith("RT"));
         }
@@ -77,12 +77,12 @@ namespace LinqToTwitterTests
         {
             XElement resultElem = XElement.Parse(TestStatusTweet);
             XElement elem = resultElem.Element("status");
-            const string tagName = "in_reply_to_status_id";
-            const string defaultVal = "0";
+            const string TagName = "in_reply_to_status_id";
+            const string DefaultVal = "0";
 
-            string value = elem.GetString(tagName, defaultVal);
+            string value = elem.GetString(TagName, DefaultVal);
 
-            Assert.AreEqual(defaultVal, value);
+            Assert.AreEqual(DefaultVal, value);
         }
 
         [TestMethod]
@@ -90,9 +90,9 @@ namespace LinqToTwitterTests
         {
             XElement resultElem = XElement.Parse(TestStatusTweet);
             XElement elem = resultElem.Element("status");
-            const string tagName = "favorited";
+            const string TagName = "favorited";
 
-            bool value = elem.GetBool(tagName);
+            bool value = elem.GetBool(TagName);
 
             Assert.IsFalse(value);
         }
@@ -102,10 +102,10 @@ namespace LinqToTwitterTests
         {
             XElement resultElem = XElement.Parse(TestStatusTweet);
             XElement elem = resultElem.Element("status");
-            const string tagName = "truncated";
-            const bool defaultVal = true;
+            const string TagName = "truncated";
+            const bool DefaultVal = true;
 
-            bool value = elem.GetBool(tagName, defaultVal);
+            bool value = elem.GetBool(TagName, DefaultVal);
 
             Assert.IsTrue(value);
         }
@@ -115,9 +115,9 @@ namespace LinqToTwitterTests
         {
             XElement resultElem = XElement.Parse(TestStatusTweet);
             XElement elem = resultElem.Element("status");
-            const string tagName = "in_reply_to_user_id";
+            const string TagName = "in_reply_to_user_id";
 
-            int value = elem.GetInt(tagName);
+            int value = elem.GetInt(TagName);
 
             Assert.AreEqual(1, value);
         }
@@ -127,12 +127,12 @@ namespace LinqToTwitterTests
         {
             XElement resultElem = XElement.Parse(TestStatusTweet);
             XElement elem = resultElem.Element("status");
-            const string tagName = "in_reply_to_status_id";
-            const int defaultVal = 1;
+            const string TagName = "in_reply_to_status_id";
+            const int DefaultVal = 1;
 
-            int value = elem.GetInt(tagName, defaultVal);
+            int value = elem.GetInt(TagName, DefaultVal);
 
-            Assert.AreEqual(defaultVal, value);
+            Assert.AreEqual(DefaultVal, value);
         }
 
         [TestMethod]
@@ -140,9 +140,9 @@ namespace LinqToTwitterTests
         {
             XElement resultElem = XElement.Parse(TestStatusTweet);
             XElement elem = resultElem.Element("status");
-            const string tagName = "in_reply_to_user_id";
+            const string TagName = "in_reply_to_user_id";
 
-            ulong value = elem.GetULong(tagName);
+            ulong value = elem.GetULong(TagName);
 
             Assert.AreEqual(1ul, value);
         }
@@ -152,12 +152,12 @@ namespace LinqToTwitterTests
         {
             XElement resultElem = XElement.Parse(TestStatusTweet);
             XElement elem = resultElem.Element("status");
-            const string tagName = "in_reply_to_status_id";
-            const ulong defaultVal = 1;
+            const string TagName = "in_reply_to_status_id";
+            const ulong DefaultVal = 1;
 
-            ulong value = elem.GetULong(tagName, defaultVal);
+            ulong value = elem.GetULong(TagName, DefaultVal);
 
-            Assert.AreEqual(defaultVal, value);
+            Assert.AreEqual(DefaultVal, value);
         }
 
         [TestMethod]
@@ -165,9 +165,9 @@ namespace LinqToTwitterTests
         {
             XElement resultElem = XElement.Parse(TestStatusTweet);
             XElement elem = resultElem.Element("status");
-            const string tagName = "in_reply_to_user_id";
+            const string TagName = "in_reply_to_user_id";
 
-            double value = elem.GetDouble(tagName);
+            double value = elem.GetDouble(TagName);
 
             Assert.AreEqual(1, value);
         }
@@ -177,12 +177,12 @@ namespace LinqToTwitterTests
         {
             XElement resultElem = XElement.Parse(TestStatusTweet);
             XElement elem = resultElem.Element("status");
-            const string tagName = "in_reply_to_status_id";
-            const int defaultVal = 1;
+            const string TagName = "in_reply_to_status_id";
+            const int DefaultVal = 1;
 
-            double value = elem.GetDouble(tagName, defaultVal);
+            double value = elem.GetDouble(TagName, DefaultVal);
 
-            Assert.AreEqual(defaultVal, value);
+            Assert.AreEqual(DefaultVal, value);
         }
 
         [TestMethod]
@@ -190,9 +190,9 @@ namespace LinqToTwitterTests
         {
             XElement resultElem = XElement.Parse(TestStatusTweet);
             XElement elem = resultElem.Element("status");
-            const string tagName = "created_at";
+            const string TagName = "created_at";
 
-            DateTime value = elem.GetDate(tagName);
+            DateTime value = elem.GetDate(TagName);
 
             var expectedDate = new DateTime(2010, 10, 2, 2, 12, 34, DateTimeKind.Utc);
             Assert.AreEqual(expectedDate, value);
@@ -203,10 +203,10 @@ namespace LinqToTwitterTests
         {
             XElement resultElem = XElement.Parse(TestStatusTweet);
             XElement elem = resultElem.Element("status");
-            const string tagName = "in_reply_to_status_id";
+            const string TagName = "in_reply_to_status_id";
             DateTime defaultVal = DateTime.Now;
 
-            DateTime value = elem.GetDate(tagName, defaultVal);
+            DateTime value = elem.GetDate(TagName, defaultVal);
 
             Assert.AreEqual(defaultVal, value);
         }

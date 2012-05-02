@@ -2,11 +2,11 @@
 {
     public class StreamContent
     {
-        private ITwitterExecute m_exec;
+        private readonly ITwitterExecute exec;
 
         public StreamContent(ITwitterExecute exec, string content)
         {
-            m_exec = exec;
+            this.exec = exec;
             Content = content;
         }
 
@@ -14,7 +14,7 @@
 
         public void CloseStream()
         {
-            m_exec.CloseStream = true;
+            exec.CloseStream = true;
         }
     }
 }

@@ -54,8 +54,8 @@ namespace LinqToTwitter
         /// <returns>UrlEncoded string</returns>
         public static string UrlEncode(string value)
         {
-            const string reservedChars = @"`!@#$%^&*()_-+=.~,:;'?/|\[] ";
-            const string unReservedChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_.~";
+            const string ReservedChars = @"`!@#$%^&*()_-+=.~,:;'?/|\[] ";
+            const string UnReservedChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_.~";
 
             var result = new StringBuilder();
 
@@ -64,11 +64,11 @@ namespace LinqToTwitter
 
             foreach (var symbol in value)
             {
-                if (unReservedChars.IndexOf(symbol) != -1)
+                if (UnReservedChars.IndexOf(symbol) != -1)
                 {
                     result.Append(symbol);
                 }
-                else if (reservedChars.IndexOf(symbol) != -1)
+                else if (ReservedChars.IndexOf(symbol) != -1)
                 {
                     result.Append('%' + String.Format("{0:X2}", (int)symbol).ToUpper());
                 }

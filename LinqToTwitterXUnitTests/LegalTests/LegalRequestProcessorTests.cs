@@ -49,7 +49,7 @@ namespace LinqToTwitterXUnitTests.LegalTests
             var reqProc = new LegalRequestProcessor<Legal>() { BaseUrl = "https://api.twitter.com/1/" };
             var parms = new Dictionary<string, string>
             {
-                { "Type", LegalType.TOS.ToString() }
+                { "Type", LegalType.Tos.ToString() }
             };
 
             Request req = reqProc.BuildUrl(parms);
@@ -86,7 +86,7 @@ namespace LinqToTwitterXUnitTests.LegalTests
         {
             var reqProc = new LegalRequestProcessor<Legal>()
             {
-                Type = LegalType.TOS,
+                Type = LegalType.Tos,
                 BaseUrl = "https://api.twitter.com/1/"
             };
 

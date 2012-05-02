@@ -18,28 +18,29 @@ namespace LinqToTwitterTests
         [TestMethod]
         public void BeginAuthorization_Gets_Request_Token()
         {
-            const string requestUrl = "https://api.twitter.com/";
+            const string RequestUrl = "https://api.twitter.com/";
             var webAuth = new WebAuthorizer {Credentials = new InMemoryCredentials()};
             var oAuthMock = new Mock<IOAuthTwitter>();
             webAuth.OAuthTwitter = oAuthMock.Object;
-            oAuthMock.Setup(oauth => oauth.FilterRequestParameters(It.IsAny<Uri>())).Returns(requestUrl);
+            oAuthMock.Setup(oauth => oauth.FilterRequestParameters(It.IsAny<Uri>())).Returns(RequestUrl);
             string authUrl = string.Empty;
             webAuth.PerformRedirect = url => authUrl = url;
 
-            webAuth.BeginAuthorization(new Uri(requestUrl));
+            webAuth.BeginAuthorization(new Uri(RequestUrl));
 
-            oAuthMock.Verify(oAuth => oAuth.AuthorizationLinkGet(It.IsAny<string>(), It.IsAny<string>(), requestUrl, false, AuthAccessType.NoChange), Times.Once());
+            oAuthMock.Verify(oAuth => oAuth.AuthorizationLinkGet(It.IsAny<string>(), It.IsAny<string>(), RequestUrl, false, AuthAccessType.NoChange), Times.Once());
+            Assert.IsNull(authUrl);
         }
 
         [TestMethod]
         public void BeginAuthorize_Requires_Credentials()
         {
-            const string requestUrl = "https://api.twitter.com/";
+            const string RequestUrl = "https://api.twitter.com/";
             var webAuth = new WebAuthorizer();
 
             try
             {
-                webAuth.BeginAuthorization(new Uri(requestUrl));
+                webAuth.BeginAuthorization(new Uri(RequestUrl));
 
                 Assert.Fail("Expected ArgumentNullException.");
             }
@@ -59,20 +60,21 @@ namespace LinqToTwitterTests
             webAuth.PerformRedirect = url => authUrl = url;
 
             webAuth.BeginAuthorization(null);
+            Assert.IsNull(authUrl);
         }
 
         [TestMethod]
         public void BeginAuthorization_Calls_PerformRedirect()
         {
-            const string requestUrl = "https://api.twitter.com/";
+            const string RequestUrl = "https://api.twitter.com/";
             var webAuth = new WebAuthorizer {Credentials = new InMemoryCredentials()};
             var oAuthMock = new Mock<IOAuthTwitter>();
-            oAuthMock.Setup(oauth => oauth.FilterRequestParameters(It.IsAny<Uri>())).Returns(requestUrl);
+            oAuthMock.Setup(oauth => oauth.FilterRequestParameters(It.IsAny<Uri>())).Returns(RequestUrl);
             webAuth.OAuthTwitter = oAuthMock.Object;
             string authUrl = string.Empty;
             webAuth.PerformRedirect = url => authUrl = url;
 
-            webAuth.BeginAuthorization(new Uri(requestUrl));
+            webAuth.BeginAuthorization(new Uri(RequestUrl));
 
             Assert.IsNull(authUrl);
         }
@@ -82,21 +84,21 @@ namespace LinqToTwitterTests
         {
             string screenName = "JoeMayo";
             string userID = "123";
-            const string verifier = "1234567";
-            const string authToken = "token";
-            const string authLink = "https://authorizationlink?oauth_token=" + authToken + "&oauth_verifier=" + verifier;
+            const string Verifier = "1234567";
+            const string AuthToken = "token";
+            const string AuthLink = "https://authorizationlink?oauth_token=" + AuthToken + "&oauth_verifier=" + Verifier;
             var webAuth = new WebAuthorizer {Credentials = new InMemoryCredentials()};
             var oAuthMock = new Mock<IOAuthTwitter>();
-            oAuthMock.Setup(oauth => oauth.GetUrlParamValue(It.IsAny<string>(), "oauth_verifier")).Returns(verifier);
-            oAuthMock.Setup(oauth => oauth.GetUrlParamValue(It.IsAny<string>(), "oauth_token")).Returns(authToken);
+            oAuthMock.Setup(oauth => oauth.GetUrlParamValue(It.IsAny<string>(), "oauth_verifier")).Returns(Verifier);
+            oAuthMock.Setup(oauth => oauth.GetUrlParamValue(It.IsAny<string>(), "oauth_token")).Returns(AuthToken);
             oAuthMock.Setup(oAuth => oAuth.AuthorizationLinkGet(It.IsAny<string>(), It.IsAny<string>(), "https://authorizationlink", false, AuthAccessType.NoChange))
-                     .Returns(authLink);
-            oAuthMock.Setup(oAuth => oAuth.AccessTokenGet(authToken, verifier, It.IsAny<string>(), string.Empty, out screenName, out userID));
+                     .Returns(AuthLink);
+            oAuthMock.Setup(oAuth => oAuth.AccessTokenGet(AuthToken, Verifier, It.IsAny<string>(), string.Empty, out screenName, out userID));
             webAuth.OAuthTwitter = oAuthMock.Object;
 
-            webAuth.CompleteAuthorization(new Uri(authLink));
+            webAuth.CompleteAuthorization(new Uri(AuthLink));
 
-            oAuthMock.Verify(oauth => oauth.AccessTokenGet(authToken, verifier, It.IsAny<string>(), string.Empty, out screenName, out userID), Times.Once());
+            oAuthMock.Verify(oauth => oauth.AccessTokenGet(AuthToken, Verifier, It.IsAny<string>(), string.Empty, out screenName, out userID), Times.Once());
             Assert.AreEqual(screenName, webAuth.ScreenName);
             Assert.AreEqual(userID, webAuth.UserId);
         }
@@ -123,12 +125,12 @@ namespace LinqToTwitterTests
         [TestMethod]
         public void CompleteAuthorization_Requires_Credentials()
         {
-            const string authLink = "https://authorizationlink";
+            const string AuthLink = "https://authorizationlink";
             var webAuth = new WebAuthorizer();
 
             try
             {
-                webAuth.CompleteAuthorization(new Uri(authLink));
+                webAuth.CompleteAuthorization(new Uri(AuthLink));
 
                 Assert.Fail("Expected ArgumentNullException.");
             }

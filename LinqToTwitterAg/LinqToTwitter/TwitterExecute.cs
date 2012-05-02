@@ -5,7 +5,6 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading;
-using System.Xml;
 using System.Xml.Linq;
 using System.Diagnostics;
 
@@ -14,7 +13,6 @@ using LitJson;
 using MSEncoder = Microsoft.Security.Application.Encoder;
 
 #if !CLIENT_PROFILE
-using System.Runtime.Serialization.Json;
 #endif
 
 #if SILVERLIGHT && !WINDOWS_PHONE
@@ -288,19 +286,6 @@ namespace LinqToTwitter
                     }
                 };
             }
-
-            return new TwitterQueryException("Error while querying Twitter.", wex)
-            {
-                HttpError =
-                    wex != null && wex.Response != null ?
-                        wex.Response.Headers["Status"] :
-                        string.Empty,
-                Response = new TwitterHashResponse
-                {
-                    Request = responseXml.Element("request") == null ? "request URI not received from Twitter" : responseXml.Element("request").Value,
-                    Error = responseXml.Element("error") == null ? "error message not received from Twitter" : responseXml.Element("error").Value
-                }
-            };
         }
 
         /// <summary>
@@ -451,22 +436,6 @@ namespace LinqToTwitter
                 throw twitterQueryEx;
             }
 
-#if !WINDOWS_PHONE && !CLIENT_PROFILE
-            // TODO: Remove this after all is converted to JSON
-            var wantsJson = reqProc as IRequestProcessorWantsJson;
-
-            if (wantsJson == null && uri.LocalPath.EndsWith("json"))
-            {
-                // we've got a .json endpoint that needs morphing to
-                // Xmlish stuff...
-                using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(response)))
-                using (var reader = JsonReaderWriterFactory.CreateJsonReader(stream, XmlDictionaryReaderQuotas.Max))
-                {
-                    var doc = XDocument.Load(reader);
-                    response = doc.ToString();
-                }
-            }
-#endif
 #if !SILVERLIGHT
             CheckResultsForTwitterError(response, httpStatus);
 #endif

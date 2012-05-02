@@ -31,7 +31,7 @@ namespace Microsoft.Security.Application
         /// <summary>
         /// A lock object to use when performing safe listing.
         /// </summary>
-        private static readonly ReaderWriterLock SyncLock = new ReaderWriterLock();
+        private static readonly ReaderWriterLock syncLock = new ReaderWriterLock();
 
         /// <summary>
         /// The values to output for each character.
@@ -64,7 +64,7 @@ namespace Microsoft.Security.Application
             int inputLength = inputAsArray.Length;
             char[] encodedInput = new char[inputLength * 7]; // Worse case scenario - CSS encoding wants \XXXXXX for encoded characters.
 
-            SyncLock.EnterReadLock();
+            syncLock.EnterReadLock();
             try
             {
                 for (int i = 0; i < inputLength; i++)
@@ -137,7 +137,7 @@ namespace Microsoft.Security.Application
             }
             finally
             {
-                SyncLock.ExitReadLock();
+                syncLock.ExitReadLock();
             }
 
             return new string(encodedInput, 0, outputLength);
@@ -148,7 +148,7 @@ namespace Microsoft.Security.Application
         /// </summary>
         private static void InitialiseSafeList()
         {
-            SyncLock.EnterWriteLock();
+            syncLock.EnterWriteLock();
             try
             {
                 if (characterValues == null)
@@ -159,7 +159,7 @@ namespace Microsoft.Security.Application
             }
             finally
             {
-                SyncLock.ExitWriteLock();
+                syncLock.ExitWriteLock();
             }
         }
 

@@ -21,7 +21,7 @@ namespace LinqToTwitterXUnitTests
         [Fact]
         public void CreateBlock_Handles_Response()
         {
-            const string id = "1";
+            const string Id = "1";
             var authMock = new Mock<ITwitterAuthorizer>();
             var execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
@@ -33,15 +33,15 @@ namespace LinqToTwitterXUnitTests
                 .Returns(BlocksUserJson);
             var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
 
-            User actual = ctx.CreateBlock(id);
+            User actual = ctx.CreateBlock(Id);
 
             Assert.Equal("LINQ to Tweeter Test", actual.Name);
         }
 
         [Fact]
-        public void CreateBlock_Builds_URL()
+        public void CreateBlock_Builds_Url()
         {
-            const string id = "1";
+            const string Id = "1";
             var authMock = new Mock<ITwitterAuthorizer>();
             var execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
@@ -53,7 +53,7 @@ namespace LinqToTwitterXUnitTests
                 .Returns(BlocksUserJson);
             var ctx = new TwitterContext(authMock.Object, execMock.Object, "https://api.twitter.com/1/", "");
 
-            ctx.CreateBlock(id);
+            ctx.CreateBlock(Id);
 
             execMock.Verify(exec =>
                 exec.ExecuteTwitter(
@@ -85,7 +85,7 @@ namespace LinqToTwitterXUnitTests
         [Fact]
         public void DestroyBlock_Handles_Response()
         {
-            const string id = "1";
+            const string Id = "1";
             var authMock = new Mock<ITwitterAuthorizer>();
             var execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
@@ -97,15 +97,15 @@ namespace LinqToTwitterXUnitTests
                 .Returns(BlocksUserJson);
             var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
 
-            User actual = ctx.DestroyBlock(id);
+            User actual = ctx.DestroyBlock(Id);
 
             Assert.Equal("LINQ to Tweeter Test", actual.Name);
         }
 
         [Fact]
-        public void DestroyBlock_Builds_URL()
+        public void DestroyBlock_Builds_Url()
         {
-            const string id = "1";
+            const string Id = "1";
             var authMock = new Mock<ITwitterAuthorizer>();
             var execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
@@ -117,7 +117,7 @@ namespace LinqToTwitterXUnitTests
                 .Returns(BlocksUserJson);
             var ctx = new TwitterContext(authMock.Object, execMock.Object, "https://api.twitter.com/1/", "");
 
-            ctx.DestroyBlock(id);
+            ctx.DestroyBlock(Id);
 
             execMock.Verify(exec =>
                 exec.ExecuteTwitter(

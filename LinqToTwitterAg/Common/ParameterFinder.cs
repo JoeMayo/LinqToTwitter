@@ -26,12 +26,12 @@ namespace LinqToTwitter
         /// <summary>
         /// expression being searched
         /// </summary>
-        private Expression m_expression;
+        private Expression expression;
 
         /// <summary>
         /// parameters to search for
         /// </summary>
-        private Dictionary<string, string> m_parameters;
+        private Dictionary<string, string> parameters;
 
         /// <summary>
         /// keep track of expression and parameter list
@@ -40,7 +40,7 @@ namespace LinqToTwitter
         /// <param name="parameters">parameters to search for</param>
         public ParameterFinder(Expression exp, List<string> parameters)
         {
-            m_expression = exp;
+            expression = exp;
             ParameterNames = parameters;
         }
 
@@ -51,12 +51,12 @@ namespace LinqToTwitter
         {
             get
             {
-                if (m_parameters == null)
+                if (parameters == null)
                 {
-                    m_parameters = new Dictionary<string, string>();
-                    Visit(m_expression);
+                    parameters = new Dictionary<string, string>();
+                    Visit(expression);
                 }
-                return m_parameters;
+                return parameters;
             }
         }
 
@@ -83,7 +83,7 @@ namespace LinqToTwitter
                 {
                     if (ExpressionTreeHelpers.IsMemberEqualsValueExpression(be, typeof(T), param))
                     {
-                        m_parameters.Add(param, ExpressionTreeHelpers.GetValueFromEqualsExpression(be, typeof(T), param));
+                        parameters.Add(param, ExpressionTreeHelpers.GetValueFromEqualsExpression(be, typeof(T), param));
                         return be;
                     }
                 }
