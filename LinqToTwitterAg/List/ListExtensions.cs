@@ -8,9 +8,9 @@ namespace LinqToTwitter
 {
     public static class ListExtensions
     {
-        const string ListOrSlugParam = "ListIdOrSlug";
-        const string OwnerIDOrOwnerScreenNameParam = "OwnerIdOrOwnerScreenName";
-        const string UserIDOrScreenNameParam = "UserIdOrScreenName";
+        public const string ListIDOrSlugParam = "ListIdOrSlug";
+        public const string OwnerIDOrOwnerScreenNameParam = "OwnerIdOrOwnerScreenName";
+        public const string UserIDOrScreenNameParam = "UserIdOrScreenName";
 
         /// <summary>
         /// Creates a new list
@@ -90,7 +90,7 @@ namespace LinqToTwitter
         {
             if (string.IsNullOrEmpty(listID) && string.IsNullOrEmpty(slug))
             {
-                throw new ArgumentException("Either listID or slug is required.", ListOrSlugParam);
+                throw new ArgumentException("Either listID or slug is required.", ListIDOrSlugParam);
             }
 
             if (!string.IsNullOrEmpty(slug) && string.IsNullOrEmpty(ownerID) && string.IsNullOrEmpty(ownerScreenName))
@@ -148,7 +148,7 @@ namespace LinqToTwitter
         {
             if (string.IsNullOrEmpty(listID) && string.IsNullOrEmpty(slug))
             {
-                throw new ArgumentException("listID is required.", ListOrSlugParam);
+                throw new ArgumentException("listID is required.", ListIDOrSlugParam);
             }
 
             if (!string.IsNullOrEmpty(slug) && string.IsNullOrEmpty(ownerID) && string.IsNullOrEmpty(ownerScreenName))
@@ -213,7 +213,7 @@ namespace LinqToTwitter
 
             if (string.IsNullOrEmpty(listID) && string.IsNullOrEmpty(slug))
             {
-                throw new ArgumentException("Either listID or slug is required.", ListOrSlugParam);
+                throw new ArgumentException("Either listID or slug is required.", ListIDOrSlugParam);
             }
 
             if (!string.IsNullOrEmpty(slug) && string.IsNullOrEmpty(ownerID) && string.IsNullOrEmpty(ownerScreenName))
@@ -338,7 +338,7 @@ namespace LinqToTwitter
         {
             if (string.IsNullOrEmpty(listID) && string.IsNullOrEmpty(slug))
             {
-                throw new ArgumentException("Either listID or slug is required.", ListOrSlugParam);
+                throw new ArgumentException("Either listID or slug is required.", ListIDOrSlugParam);
             }
 
             if (!string.IsNullOrEmpty(slug) && string.IsNullOrEmpty(ownerID) && string.IsNullOrEmpty(ownerScreenName))
@@ -405,7 +405,7 @@ namespace LinqToTwitter
 
             if (string.IsNullOrEmpty(listID) && string.IsNullOrEmpty(slug))
             {
-                throw new ArgumentException("Either listID or slug is required.", ListOrSlugParam);
+                throw new ArgumentException("Either listID or slug is required.", ListIDOrSlugParam);
             }
 
             if (!string.IsNullOrEmpty(slug) && string.IsNullOrEmpty(ownerID) && string.IsNullOrEmpty(ownerScreenName))
@@ -463,7 +463,7 @@ namespace LinqToTwitter
         {
             if (string.IsNullOrEmpty(listID) && string.IsNullOrEmpty(slug))
             {
-                throw new ArgumentException("Either listID or slug is required.", ListOrSlugParam);
+                throw new ArgumentException("Either listID or slug is required.", ListIDOrSlugParam);
             }
 
             if (!string.IsNullOrEmpty(slug) && string.IsNullOrEmpty(ownerID) && string.IsNullOrEmpty(ownerScreenName))
@@ -519,7 +519,7 @@ namespace LinqToTwitter
         {
             if (string.IsNullOrEmpty(listID) && string.IsNullOrEmpty(slug))
             {
-                throw new ArgumentException("Either listID or slug is required.", ListOrSlugParam);
+                throw new ArgumentException("Either listID or slug is required.", ListIDOrSlugParam);
             }
 
             if (!string.IsNullOrEmpty(slug) && string.IsNullOrEmpty(ownerID) && string.IsNullOrEmpty(ownerScreenName))
@@ -546,6 +546,69 @@ namespace LinqToTwitter
                     reqProc);
 
             List results = reqProc.ProcessActionResult(resultsJson, ListAction.Unsubscribe);
+            return results;
+        }
+
+        /// <summary>
+        /// Deletes membership for a comma-separated list of users
+        /// </summary>
+        /// <param name="listID">ID of list.</param>
+        /// <param name="slug">Name of list to remove from.</param>
+        /// <param name="userIds">Comma-separated list of user IDs of users to remove from list membership.</param>
+        /// <param name="screenNames">Comma-separated list of screen names of users to remove from list membership.</param>
+        /// <param name="ownerID">ID of users who owns the list.</param>
+        /// <param name="ownerScreenName">Screen name of user who owns the list.</param>
+        /// <returns>List info for list subscription removed from</returns>
+        public static List DestroyAllFromList(this TwitterContext ctx, string listID, string slug, string userIds, string screenNames, string ownerID, string ownerScreenName)
+        {
+            return DestroyAllFromList(ctx, listID, slug, userIds, screenNames, ownerID, ownerScreenName, null);
+        }
+
+        /// <summary>
+        /// Deletes membership for a comma-separated list of users
+        /// </summary>
+        /// <param name="listID">ID of list.</param>
+        /// <param name="slug">Name of list to remove from.</param>
+        /// <param name="userIds">Comma-separated list of user IDs of users to remove from list membership.</param>
+        /// <param name="screenNames">Comma-separated list of screen names of users to remove from list membership.</param>
+        /// <param name="ownerID">ID of users who owns the list.</param>
+        /// <param name="ownerScreenName">Screen name of user who owns the list.</param>
+        /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <returns>List info for list subscription removed from</returns>
+        public static List DestroyAllFromList(this TwitterContext ctx, string listID, string slug, string userIds, string screenNames, string ownerID, string ownerScreenName, Action<TwitterAsyncResponse<List>> callback)
+        {
+            if (string.IsNullOrEmpty(listID) && string.IsNullOrEmpty(slug))
+            {
+                throw new ArgumentException("Either listID or slug is required.", ListIDOrSlugParam);
+            }
+
+            if (string.IsNullOrEmpty(listID) && !string.IsNullOrEmpty(slug) && 
+                string.IsNullOrEmpty(ownerID) && string.IsNullOrEmpty(ownerScreenName))
+            {
+                throw new ArgumentException("If using slug, you must also provide either ownerID or ownerScreenName.", OwnerIDOrOwnerScreenNameParam);
+            }
+
+            var destroyAllUrl = ctx.BaseUrl + "lists/members/destroy_all.json";
+
+            var reqProc = new ListRequestProcessor<List>();
+
+            ITwitterExecute exec = ctx.TwitterExecutor;
+            exec.AsyncCallback = callback;
+            var resultsJson =
+                exec.ExecuteTwitter(
+                    destroyAllUrl,
+                    new Dictionary<string, string>
+                    {
+                        { "list_id", listID },
+                        { "slug", slug },
+                        { "user_id", userIds == null ? null : userIds.Replace(" ", "") },
+                        { "screen_name", screenNames == null ? null : screenNames.Replace(" ", "") },
+                        { "owner_id", ownerID },
+                        { "owner_screen_name", ownerScreenName },
+                    },
+                    reqProc);
+
+            List results = reqProc.ProcessActionResult(resultsJson, ListAction.DestroyAll);
             return results;
         }
     }

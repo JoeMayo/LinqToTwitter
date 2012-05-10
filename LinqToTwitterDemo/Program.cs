@@ -64,7 +64,7 @@ namespace LinqToTwitterDemo
                     //GeoDemos.Run(twitterCtx);
                     //HelpDemos.Run(twitterCtx);
                     //LegalDemos.Run(twitterCtx);
-                    //ListDemos.Run(twitterCtx);
+                    ListDemos.Run(twitterCtx);
                     //RawDemos.Run(twitterCtx);
                     //RelatedResultsDemos.Run(twitterCtx);
                     //SavedSearchDemos.Run(twitterCtx);

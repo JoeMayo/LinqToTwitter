@@ -18,7 +18,7 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         public static void Run(TwitterContext twitterCtx)
         {
-            GetListsDemo(twitterCtx);
+            //GetListsDemo(twitterCtx);
             //GetListSubscribersDemo(twitterCtx);
             //IsListMemberDemo(twitterCtx);
             //GetListMembersDemo(twitterCtx);
@@ -38,8 +38,9 @@ namespace LinqToTwitterDemo
             //SubscribeToListDemo(twitterCtx);
             //UnsubscribeFromListDemo(twitterCtx);
             //ListSortDemo(twitterCtx);
+            DestroyAllDemo(twitterCtx);
         }
-
+  
         private static void GetAllSubscribedListsDemo(TwitterContext twitterCtx)
         {
             var lists =
@@ -427,6 +428,14 @@ namespace LinqToTwitterDemo
                     throw ex;
                 }
             }
+        }
+
+        private static void DestroyAllDemo(TwitterContext twitterCtx)
+        {
+            List list = twitterCtx.DestroyAllFromList(null, "test", null, "JoeMayo,mp2kmag", null, "Linq2Tweeter");
+
+            Console.WriteLine("List Name: {0}, Description: {1}",
+                list.Name, list.Description);
         }
     }
 }

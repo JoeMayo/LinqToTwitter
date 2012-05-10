@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Globalization;
-using System.Xml.Linq;
 using System.Collections.Generic;
 
 using LitJson;
@@ -9,66 +8,6 @@ namespace LinqToTwitter.Common
 {
     public static class TypeConversionExtensions
     {
-        internal static string TagValue(this XElement elem, XName name)
-        {
-            if (elem == null)
-                return null;
-
-            var val = name == null ? elem : elem.Element(name);
-            return val == null ? null : val.Value;
-        }
-
-        public static bool GetBool(this XElement elem, XName name)
-        {
-            return elem.GetBool(name, default(bool));
-        }
-
-        public static bool GetBool(this XElement elem, XName name, bool defaultValue /* = false*/)
-        {
-            var val = elem.TagValue(name);
-            return val.GetBool(defaultValue);
-        }
-
-        public static bool GetBool(this string val, bool defaultValue /* = false*/)
-        {
-            bool result;
-
-            return String.IsNullOrEmpty(val) ||
-                !bool.TryParse(val, out result)
-                    ? defaultValue
-                    : result;
-        }
-
-        public static int GetInt(this XElement elem, XName name)
-        {
-            return elem.GetInt(name, default(int));
-        }
-
-        public static int GetInt(this XElement elem, XName name, int defaultValue /*= 0*/)
-        {
-            var val = elem.TagValue(name);
-            return val.GetInt(defaultValue);
-        }
-
-        public static int GetInt(this string val, int defaultValue /* = 0*/)
-        {
-            int result;
-            return String.IsNullOrEmpty(val) ||
-                !int.TryParse(val, out result)
-                    ? defaultValue
-                    : result;
-        }
-
-        public static ulong GetULong(this XElement elem, XName name)
-        {
-            return elem.GetULong(name, default(ulong));
-        }
-
-        public static ulong GetULong(this XElement elem, XName name, ulong defaultValue /* = 0*/)
-        {
-            var val = elem.TagValue(name);
-            return val.GetULong(defaultValue);
-        }
 
         public static ulong GetULong(this string val, ulong defaultValue /* = 0*/)
         {
@@ -80,17 +19,6 @@ namespace LinqToTwitter.Common
                     : result;
         }
 
-        public static double GetDouble(this XElement elem, XName name)
-        {
-            return elem.GetDouble(name, default(double));
-        }
-
-        public static double GetDouble(this XElement elem, XName name, double defaultValue /* = 0*/)
-        {
-            var val = elem.TagValue(name);
-            return val.GetDouble(defaultValue);
-        }
-
         public static double GetDouble(this string val, double defaultValue /* = 0*/)
         {
             double result;
@@ -99,32 +27,6 @@ namespace LinqToTwitter.Common
                 !double.TryParse(val, out result)
                     ? defaultValue
                     : result;
-        }
-
-        public static string GetString(this XElement elem, XName tagName)
-        {
-            return elem.GetString(tagName, String.Empty);
-        }
-
-        public static string GetString(this XElement elem, XName tagName, string defaultValue /* = ""*/)
-        {
-            var val = elem.TagValue(tagName);
-
-            return string.IsNullOrEmpty(val)
-                    ? defaultValue
-                    : val;
-        }
-
-        public static DateTime GetDate(this XElement elem, XName name)
-        {
-            return elem.GetDate(name, DateTime.MinValue);
-        }
-
-        public static DateTime GetDate(this XElement elem, XName name, DateTime defaultValue)
-        {
-            var val = elem.TagValue(name);
-
-            return val.GetDate(defaultValue);
         }
 
         private static readonly string[] dateFormats = { "ddd MMM dd HH:mm:ss %zzzz yyyy",

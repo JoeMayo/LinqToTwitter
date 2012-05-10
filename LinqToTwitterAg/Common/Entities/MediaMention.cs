@@ -1,47 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Xml.Linq;
-
-using LinqToTwitter.Common;
 
 namespace LinqToTwitter
 {
     public class MediaMention : MentionBase
     {
-        /// <summary>
-        /// Create MediaMention out of the XElement
-        /// </summary>
-        /// <param name="element">the entry node</param>
-        /// <returns>MediaMention</returns>
-        public static MediaMention FromXElement(XElement element)
-        {
-            var mention = new MediaMention 
-            {
-                ID = element.GetULong("id_str"),
-                MediaUrl = element.GetString("media_url"),
-                MediaUrlHttps = element.GetString("media_url_https"),
-                Url = element.GetString("url"),
-                DisplayUrl = element.GetString("display_url"),
-                ExpandedUrl = element.GetString("expanded_url"),
-                Sizes =
-                    (from photo in element.Element("sizes").Elements()
-                     select new PhotoSize
-                     {
-                         Type = photo.Name.ToString(),
-                         Width = photo.GetInt("w"),
-                         Height = photo.GetInt("h"),
-                         Resize = photo.GetString("resize")
-                     })
-                    .ToList(),
-                Type = element.GetString("type"),
-                Indices = null
-            };
-
-            mention.SetStartEndValues(element);
-            return mention;
-        }
-
         /// <summary>
         /// ID of the media
         /// </summary>

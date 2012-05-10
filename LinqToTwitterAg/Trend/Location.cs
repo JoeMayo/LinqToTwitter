@@ -1,6 +1,4 @@
 ﻿using System.Globalization;
-using System.Xml.Linq;
-
 using LinqToTwitter.Common;
 
 using LitJson;
@@ -22,44 +20,6 @@ namespace LinqToTwitter
             PlaceTypeNameCode = placeType.GetValue<int>("code");
             Url = trendLocation.GetValue<string>("url");
             WoeID = trendLocation.GetValue<int>("woeid").ToString(CultureInfo.InvariantCulture);
-        }
-
-        /// <summary>
-        /// Converts XML into a new location object
-        /// </summary>
-        /// <param name="loc">XML</param>
-        /// <returns>Location</returns>
-        public static Location CreateLocation(XElement loc)
-        {
-            if (loc != null)
-            {
-                XElement country = loc.Element("country");
-                XElement placeType = loc.Element("placeTypeName");
-
-                return new Location
-                {
-                    Country = country.GetString(null, string.Empty),
-                    CountryCode =
-                        country == null ?
-                            string.Empty :
-                            country.Attribute("code") == null ?
-                                string.Empty :
-                                country.Attribute("code").Value,
-                    Name = loc.GetString("name"),
-                    PlaceTypeName = placeType.GetString(null, string.Empty),
-                    PlaceTypeNameCode = int.Parse(
-                        placeType == null ?
-                            "0" :
-                            placeType.Attribute("code") == null ?
-                                "0" :
-                                placeType.Attribute("code").Value),
-                    Url = loc.GetString("url"),
-                    WoeID =  loc.GetString("woeid"),
-                    ParentID = loc.GetString("parentid")
-                };
-            }
-
-            return null;
         }
 
         /// <summary>

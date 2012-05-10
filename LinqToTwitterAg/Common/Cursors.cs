@@ -1,5 +1,4 @@
-﻿using System.Xml.Linq;
-using System.Xml.Serialization;
+﻿using System.Xml.Serialization;
 
 using LinqToTwitter.Common;
 
@@ -22,27 +21,6 @@ namespace LinqToTwitter
         {
             Next = cursors.GetValue<string>("next_cursor_str");
             Previous = cursors.GetValue<string>("previous_cursor_str");
-        }
-
-        /// <summary>
-        /// Transforms XML document into a Cursors
-        /// </summary>
-        /// <param name="cursors">XElement with info</param>
-        /// <returns>New Cursors instance</returns>
-        public static Cursors CreateCursors(XElement cursors)
-        {
-            return
-                new Cursors
-                {
-                    Next =
-                        cursors == null || cursors.Element("next_cursor") == null ?
-                            string.Empty :
-                            cursors.Element("next_cursor").Value,
-                    Previous =
-                        cursors == null || cursors.Element("previous_cursor") == null ?
-                            string.Empty :
-                            cursors.Element("previous_cursor").Value
-                };
         }
 
         /// <summary>

@@ -70,7 +70,7 @@ namespace LinqToTwitter
         /// <param name="hashAlgorithm">The hashing algoirhtm used. If that algorithm needs some initialization, like HMAC and its derivatives, they should be initialized prior to passing it to this function</param>
         /// <param name="data">The data to hash</param>
         /// <returns>a Base64 string of the hash value</returns>
-        private string ComputeHash(HashAlgorithm hashAlgorithm, string data)
+        internal string ComputeHash(HashAlgorithm hashAlgorithm, string data)
         {
             if (hashAlgorithm == null)
             {
