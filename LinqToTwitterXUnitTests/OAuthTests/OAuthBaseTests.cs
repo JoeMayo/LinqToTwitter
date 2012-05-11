@@ -16,21 +16,7 @@ namespace LinqToTwitterXUnitTests.OAuthTests
             TestCulture.SetCulture();
         }
 
-<<<<<<< HEAD
 #if NETFX_CORE
-        [Fact]
-        public void ComputeHash_Calculates_Hash()
-        {
-            const string ExpectedHashValue = "";
-            const string SignatureData = "";
-            const string HashKey = "";
-
-            var oauthBase = new OAuthBase();
-
-            string hash = oauthBase.HashWith(SignatureData, HashKey);
-        }
-#endif
-=======
         [Fact]
         public void ComputeHash_Calculates_Hash()
         {
@@ -47,6 +33,6 @@ namespace LinqToTwitterXUnitTests.OAuthTests
 
             Assert.Equal(ExpectedHashValue, hash);
         }
->>>>>>> 68f9e42eb55e395aaae2af2f686bda6a7c3e5414
+#endif
     }
 }
