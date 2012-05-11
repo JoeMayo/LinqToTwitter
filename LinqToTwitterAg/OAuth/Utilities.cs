@@ -103,6 +103,7 @@ namespace LinqToTwitter
             return builder.ToString();
         }
 
+#if !NETFX_CORE
         /// <summary>
         /// Reads a file into a byte array
         /// </summary>
@@ -129,6 +130,7 @@ namespace LinqToTwitter
             }
 
             return fileBytes;
-        }
+        } 
+#endif
     }
 }

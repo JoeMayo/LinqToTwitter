@@ -50,6 +50,7 @@ namespace LinqToTwitter
         /// <returns>XML Response from Twitter</returns>
         string ExecuteTwitter<T>(string url, IDictionary<string, string> postData, IRequestProcessor<T> reqProc);
 
+#if !NETFX_CORE
         /// <summary>
         /// performs HTTP POST file upload to Twitter
         /// </summary>
@@ -58,6 +59,7 @@ namespace LinqToTwitter
         /// <param name="url">url to upload to</param>
         /// <returns>XML Results from Twitter</returns>
         string PostTwitterFile<T>(string url, IDictionary<string, string> postData, string filePath, IRequestProcessor<T> reqProc);
+#endif
 
         /// <summary>
         /// performs HTTP POST image byte array upload to Twitter

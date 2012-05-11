@@ -28,7 +28,7 @@ using System.Threading;
 
 #if SILVERLIGHT && !WINDOWS_PHONE
     using System.Windows.Browser;
-#elif !SILVERLIGHT && !WINDOWS_PHONE
+#elif !SILVERLIGHT && !WINDOWS_PHONE && !NETFX_CORE
     using System.Web;
 #endif
 
@@ -379,7 +379,7 @@ namespace LinqToTwitter
 
             var webRequest = System.Net.WebRequest.Create(ProxyUrl + url) as HttpWebRequest;
             webRequest.Method = method.ToString();
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !NETFX_CORE
             webRequest.ServicePoint.Expect100Continue = false;
             webRequest.UserAgent = OAuthUserAgent; 
 #endif
@@ -570,7 +570,7 @@ namespace LinqToTwitter
             req.Headers[HttpRequestHeader.Authorization] = PrepareAuthHeader(queryString);
             req.Method = HttpMethod.GET.ToString();
 
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !NETFX_CORE
             req.ServicePoint.Expect100Continue = false;
             req.UserAgent = OAuthUserAgent;
 #endif
@@ -590,7 +590,7 @@ namespace LinqToTwitter
             req.Headers[HttpRequestHeader.Authorization] = oauthSig;
             req.Method = HttpMethod.POST.ToString();
 
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !NETFX_CORE
             req.ServicePoint.Expect100Continue = false;
             req.UserAgent = OAuthUserAgent;
 #endif

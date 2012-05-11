@@ -67,7 +67,7 @@ namespace LinqToTwitter
                     {
                         {"user", user},
                         {"text", text},
-                        {"wrap_links", wrapLinks ? true.ToString(CultureInfo.InvariantCulture) : null }
+                        {"wrap_links", wrapLinks ? true.ToString() : null }
                     },
                     reqProc);
 

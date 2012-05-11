@@ -74,7 +74,7 @@ namespace LinqToTwitter
                 }
                 else
                 {
-                    string symbolString = symbol.ToString(CultureInfo.InvariantCulture);
+                    string symbolString = symbol.ToString();
                     var encoded = MSEncoder.UrlEncode(symbolString, Encoding.UTF8).ToUpper();
 
                     if (!string.IsNullOrEmpty(encoded))

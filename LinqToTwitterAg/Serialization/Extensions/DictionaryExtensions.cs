@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-#if !SILVERLIGHT && !CLIENT_PROFILE
+#if !SILVERLIGHT && !CLIENT_PROFILE && !NETFX_CORE
 using System.Web.Script.Serialization;
 #endif
 

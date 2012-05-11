@@ -20,6 +20,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 
 namespace LinqToTwitter
 {
@@ -63,10 +64,17 @@ namespace LinqToTwitter
                 throw new ArgumentNullException("expression");
             }
 
+#if NETFX_CORE
+            if (!typeof(IQueryable<T>).GetTypeInfo().IsAssignableFrom(expression.Type.GetTypeInfo()))
+            {
+                throw new ArgumentOutOfRangeException("expression");
+            }
+#else
             if (!typeof(IQueryable<T>).IsAssignableFrom(expression.Type))
             {
                 throw new ArgumentOutOfRangeException("expression");
             }
+#endif
 
             Provider = provider;
             Expression = expression;

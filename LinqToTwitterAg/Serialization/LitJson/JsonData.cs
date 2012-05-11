@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using LinqToTwitter;
 
 
 namespace LitJson
@@ -96,33 +97,23 @@ namespace LitJson
             }
         }
 
-        bool IDictionary.IsFixedSize {
-            get {
-                return EnsureDictionary ().IsFixedSize;
-            }
-        }
-
-        bool IDictionary.IsReadOnly {
-            get {
-                return EnsureDictionary ().IsReadOnly;
-            }
-        }
-
-        ICollection IDictionary.Keys {
+        ICollection<string> IDictionary<string, JsonData>.Keys
+        {
             get {
                 EnsureDictionary ();
                 IList<string> keys = objectList.Select(entry => entry.Key).ToList();
 
-                return (ICollection) keys;
+                return (ICollection<string>) keys;
             }
         }
 
-        ICollection IDictionary.Values {
+        ICollection<JsonData> IDictionary<string, JsonData>.Values
+        {
             get {
                 EnsureDictionary ();
                 IList<JsonData> values = objectList.Select(entry => entry.Value).ToList();
 
-                return (ICollection) values;
+                return (ICollection<JsonData>) values;
             }
         }
 
@@ -166,8 +157,9 @@ namespace LitJson
             }
         }
 
-        object IDictionary.this[object key] {
-            get {
+        JsonData IDictionary<string, JsonData>.this[string key]
+        {
+           get {
                 return EnsureDictionary ()[key];
             }
 
@@ -486,7 +478,7 @@ namespace LitJson
             EnsureCollection ().CopyTo (array, index);
         }
 
-        void IDictionary.Add (object key, object value)
+        void IDictionary<string, JsonData>.Add (string key, JsonData value)
         {
             JsonData data = ToJsonData (value);
 
@@ -498,26 +490,14 @@ namespace LitJson
             json = null;
         }
 
-        void IDictionary.Clear ()
+        bool IDictionary<string, JsonData>.ContainsKey(string key)
         {
-            EnsureDictionary ().Clear ();
-            objectList.Clear ();
-            json = null;
+            return EnsureDictionary().ContainsKey(key);
         }
 
-        bool IDictionary.Contains (object key)
+        bool IDictionary<string, JsonData>.Remove(string key)
         {
-            return EnsureDictionary ().Contains (key);
-        }
-
-        IDictionaryEnumerator IDictionary.GetEnumerator ()
-        {
-            return ((IOrderedDictionary) this).GetEnumerator ();
-        }
-
-        void IDictionary.Remove (object key)
-        {
-            EnsureDictionary ().Remove (key);
+            bool removed = EnsureDictionary ().Remove (key);
 
             for (int i = 0; i < objectList.Count; i++) {
                 if (objectList[i].Key == (string) key) {
@@ -527,6 +507,8 @@ namespace LitJson
             }
 
             json = null;
+
+            return removed;
         }
 
         IEnumerator IEnumerable.GetEnumerator ()
@@ -756,10 +738,10 @@ namespace LitJson
                 "The JsonData instance has to be initialized first");
         }
 
-        private IDictionary EnsureDictionary ()
+        private IDictionary<string, JsonData> EnsureDictionary ()
         {
             if (type == JsonType.Object)
-                return (IDictionary) InstObject;
+                return (IDictionary<string, JsonData>)InstObject;
 
             if (type != JsonType.None)
                 throw new InvalidOperationException (
@@ -769,7 +751,7 @@ namespace LitJson
             InstObject = new Dictionary<string, JsonData> ();
             objectList = new List<KeyValuePair<string, JsonData>> ();
 
-            return (IDictionary) InstObject;
+            return (IDictionary<string, JsonData>)InstObject;
         }
 
         private IList EnsureList ()
@@ -850,7 +832,7 @@ namespace LitJson
             if (obj.IsObject) {
                 writer.WriteObjectStart ();
 
-                foreach (DictionaryEntry entry in ((IDictionary) obj)) {
+                foreach (var entry in ((IDictionary<string, JsonData>) obj)) {
                     writer.WritePropertyName ((string) entry.Key);
                     WriteJson ((JsonData) entry.Value, writer);
                 }
@@ -871,7 +853,7 @@ namespace LitJson
         public void Clear ()
         {
             if (IsObject) {
-                ((IDictionary) this).Clear ();
+                ((IDictionary<string, JsonData>)this).Clear();
                 return;
             }
 
@@ -1010,7 +992,7 @@ namespace LitJson
                 return "JsonData array";
 
             case JsonType.Boolean:
-                return instBoolean.ToString (CultureInfo.InvariantCulture);
+                return instBoolean.ToString ();
 
             case JsonType.Double:
                 return instDouble.ToString (CultureInfo.InvariantCulture);
@@ -1035,6 +1017,42 @@ namespace LitJson
             }
 
             return "Uninitialized JsonData";
+        }
+
+
+        public bool TryGetValue(string key, out JsonData value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Add(KeyValuePair<string, JsonData> item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Contains(KeyValuePair<string, JsonData> item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CopyTo(KeyValuePair<string, JsonData>[] array, int arrayIndex)
+        {
+            throw new NotImplementedException();
+        }
+
+        bool ICollection<KeyValuePair<string, JsonData>>.IsReadOnly
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public bool Remove(KeyValuePair<string, JsonData> item)
+        {
+            throw new NotImplementedException();
+        }
+
+        IEnumerator<KeyValuePair<string, JsonData>> IEnumerable<KeyValuePair<string, JsonData>>.GetEnumerator()
+        {
+            throw new NotImplementedException();
         }
     }
 

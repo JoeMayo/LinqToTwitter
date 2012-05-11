@@ -1,4 +1,5 @@
-﻿using System.Xml.Linq;
+﻿#if !NETFX_CORE
+using System.Xml.Linq;
 
 namespace LinqToTwitter
 {
@@ -90,3 +91,5 @@ namespace LinqToTwitter
         }
     }
 }
+
+#endif

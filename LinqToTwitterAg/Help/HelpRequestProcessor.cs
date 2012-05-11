@@ -99,7 +99,7 @@ namespace LinqToTwitter
         {
             JsonData helpJson = JsonMapper.ToObject(responseJson);
 
-            var photoSizeDict = helpJson.GetValue<JsonData>("photo_sizes") as IDictionary;
+            var photoSizeDict = helpJson.GetValue<JsonData>("photo_sizes") as IDictionary<string, JsonData>;
 
             return new Help
             {

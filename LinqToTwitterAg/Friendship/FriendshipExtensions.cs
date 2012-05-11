@@ -181,8 +181,8 @@ namespace LinqToTwitter
                     new Dictionary<string, string>
                     {
                         { "screen_name", screenName },
-                        { "retweets", retweets.ToString(CultureInfo.InvariantCulture).ToLower() },
-                        { "device", device.ToString(CultureInfo.InvariantCulture).ToLower() }
+                        { "retweets", retweets.ToString().ToLower() },
+                        { "device", device.ToString().ToLower() }
                     },
                     reqProc);
 

@@ -506,7 +506,7 @@ namespace LinqToTwitter
                                             MediaUrl = media.GetValue<string>("media_url"),
                                             MediaUrlHttps = media.GetValue<string>("media_url_https"),
                                             Sizes =
-                                                (from key in (sizes as IDictionary).Keys as List<string>
+                                                (from key in (sizes as IDictionary<string, JsonData>).Keys as List<string>
                                                  let sizesKey = sizes.GetValue<JsonData>(key)
                                                  select new PhotoSize
                                                  {

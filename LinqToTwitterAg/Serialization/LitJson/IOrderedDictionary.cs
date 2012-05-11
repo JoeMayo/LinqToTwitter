@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
+using LinqToTwitter;
 
 namespace LitJson
 {
-    public interface IOrderedDictionary : IDictionary, ICollection, IEnumerable
+    public interface IOrderedDictionary : IDictionary<string, JsonData>, ICollection, IEnumerable
     {
         object this[int index] { get; set; }
 

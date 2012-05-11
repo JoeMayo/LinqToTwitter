@@ -23,10 +23,16 @@
 
 using System;
 using System.Collections.Generic;
-using System.Security.Cryptography;
 using System.Text;
 using System.Globalization;
 
+#if NETFX_CORE
+using Windows.Security.Cryptography.Core;
+using Windows.Security.Cryptography;
+using Windows.Storage.Streams;
+#else
+using System.Security.Cryptography;
+#endif
 #if SILVERLIGHT && !WINDOWS_PHONE
     using System.Windows.Browser;
 #elif !SILVERLIGHT && !WINDOWS_PHONE
@@ -64,6 +70,18 @@ namespace LinqToTwitter
 
         protected Random random = new Random();
 
+#if NETFX_CORE
+
+        internal string HashWith(string input, string key)
+        {
+            MacAlgorithmProvider mac = MacAlgorithmProvider.OpenAlgorithm("SHA1");
+            IBuffer keyMaterial = CryptographicBuffer.ConvertStringToBinary(key, BinaryStringEncoding.Utf8);
+            CryptographicKey cryptoKey = mac.CreateKey(keyMaterial);
+            //IBuffer hash = hashProvider.HashData(CryptographicBuffer.ConvertStringToBinary(input, BinaryStringEncoding.Utf8));
+            IBuffer hash = CryptographicEngine.Sign(cryptoKey, CryptographicBuffer.ConvertStringToBinary(input, BinaryStringEncoding.Utf8));
+            return CryptographicBuffer.EncodeToBase64String(hash);
+        }
+#else
         /// <summary>
         /// Helper function to compute a hash value
         /// </summary>
@@ -86,7 +104,8 @@ namespace LinqToTwitter
             byte[] hashBytes = hashAlgorithm.ComputeHash(dataBuffer);
 
             return Convert.ToBase64String(hashBytes);
-        }
+        } 
+#endif
 
         /// <summary>
         /// Internal function to cut out all non oauth query string parameters (all parameters not begining with "oauth_")
@@ -225,7 +244,7 @@ namespace LinqToTwitter
 
             var signatureBase = new StringBuilder();
 
-            signatureBase.AppendFormat(CultureInfo.InvariantCulture, "{0}&", httpMethod.ToUpper(CultureInfo.InvariantCulture));
+            signatureBase.AppendFormat(CultureInfo.InvariantCulture, "{0}&", httpMethod.ToUpper());
             signatureBase.AppendFormat(CultureInfo.InvariantCulture, "{0}&", BuildUrlHelper.UrlEncode(normalizedUrl));
             signatureBase.AppendFormat(CultureInfo.InvariantCulture, "{0}", BuildUrlHelper.UrlEncode(normalizedRequestParameters));
 
@@ -261,7 +280,15 @@ namespace LinqToTwitter
                         string.Format(CultureInfo.InvariantCulture, "{0}&{1}", consumerSecret, tokenSecret));
                 case OAuthSignatureTypes.Hmacsha1:
                     string signatureBase = GenerateSignatureBase(request, consumerKey, token, tokenSecret, verifier, callback, httpMethod, timeStamp, nonce, Hmacsha1SignatureType, out normalizedUrl, out normalizedRequestParameters);
-                    var hmacsha1 = new HMACSHA1
+#if NETFX_CORE
+                    string hashKey =
+                        string.Format(
+                            CultureInfo.InvariantCulture, "{0}&{1}",
+                            BuildUrlHelper.UrlEncode(consumerSecret),
+                            BuildUrlHelper.UrlEncode(tokenSecret));
+                    return HashWith(signatureBase, hashKey);
+#else
+                var hmacsha1 = new HMACSHA1
                     {
                         Key =
                             Encoding.UTF8.GetBytes(
@@ -271,6 +298,7 @@ namespace LinqToTwitter
                                     BuildUrlHelper.UrlEncode(tokenSecret)))
                     };
                     return ComputeHash(hmacsha1, signatureBase);
+#endif
                 case OAuthSignatureTypes.Rsasha1:
                     throw new NotImplementedException();
                 default:

@@ -137,7 +137,7 @@ namespace LinqToTwitter
         /// <param name="webRequest">The request to initialize.</param>
         protected void InitializeRequest(WebRequest webRequest)
         {
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !NETFX_CORE
             var request = webRequest as HttpWebRequest;
 
             if (request != null) {
@@ -211,12 +211,12 @@ namespace LinqToTwitter
 #endif
 
             if (req != null) {
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !NETFX_CORE
                 req.ServicePoint.Expect100Continue = false;
 #endif
                 req.Method = HttpMethod.POST.ToString();
                 req.Headers[HttpRequestHeader.Authorization] = auth;
-#if !WINDOWS_PHONE
+#if !WINDOWS_PHONE && !NETFX_CORE
                 req.ContentLength = 0; 
 #endif
 
@@ -259,7 +259,7 @@ namespace LinqToTwitter
             if (req != null) {
                 req.Method = HttpMethod.POST.ToString();
                 req.Headers[HttpRequestHeader.Authorization] = auth;
-#if !WINDOWS_PHONE
+#if !WINDOWS_PHONE && !NETFX_CORE
                 req.ContentLength = 0; 
 #endif
 

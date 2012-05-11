@@ -101,11 +101,11 @@ namespace LinqToTwitter
                     new Dictionary<string, string>
                     {
                         {"status", status},
-                        {"possibly_sensitive", possiblySensitive ? true.ToString(CultureInfo.InvariantCulture) : null },
-                        {"lat", latitude == NoCoordinate ? null : latitude.ToString(CultureInfo.InvariantCulture) },
+                        {"possibly_sensitive", possiblySensitive ? true.ToString() : null },
+                        {"lat", latitude == NoCoordinate ? null : latitude.ToString() },
                         {"long", longitude == NoCoordinate ? null : longitude.ToString(CultureInfo.InvariantCulture) },
                         {"place_id", string.IsNullOrEmpty(placeID) ? null : placeID },
-                        {"display_coordinates", displayCoordinates ? true.ToString(CultureInfo.InvariantCulture) : null },
+                        {"display_coordinates", displayCoordinates ? true.ToString() : null },
                         {"in_reply_to_status_id", inReplyToStatusID == NoReply ? null : inReplyToStatusID.ToString(CultureInfo.InvariantCulture)}
                     },
                     mediaItems,
@@ -722,11 +722,11 @@ namespace LinqToTwitter
                     {
                         {"status", status},
                         {"in_reply_to_status_id", inReplyToStatusID},
-                        {"lat", latitude == -1 ? null : latitude.ToString(CultureInfo.InvariantCulture)},
-                        {"long", longitude == -1 ? null : longitude.ToString(CultureInfo.InvariantCulture)},
+                        {"lat", latitude == -1 ? null : latitude.ToString()},
+                        {"long", longitude == -1 ? null : longitude.ToString()},
                         {"place_id", placeID},
-                        {"display_coordinates", displayCoordinates.ToString(CultureInfo.InvariantCulture)},
-                        {"wrap_links", wrapLinks ? true.ToString(CultureInfo.InvariantCulture) : null }
+                        {"display_coordinates", displayCoordinates.ToString()},
+                        {"wrap_links", wrapLinks ? true.ToString() : null }
                     },
                     reqProc);
 

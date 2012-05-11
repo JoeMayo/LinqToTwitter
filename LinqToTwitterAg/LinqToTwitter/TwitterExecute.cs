@@ -12,12 +12,16 @@ using LinqToTwitter.Common;
 using LitJson;
 using MSEncoder = Microsoft.Security.Application.Encoder;
 
+#if NETFX_CORE
+using System.Threading.Tasks;
+#endif
+
 #if !CLIENT_PROFILE
 #endif
 
 #if SILVERLIGHT && !WINDOWS_PHONE
     using System.Windows.Browser;
-#elif !SILVERLIGHT && !WINDOWS_PHONE
+#elif !SILVERLIGHT && !WINDOWS_PHONE && !NETFX_CORE
     using System.Web;
 #endif
 
@@ -453,7 +457,11 @@ namespace LinqToTwitter
         /// </returns>
         public string QueryTwitterStream(Request request)
         {
+#if NETFX_CORE
+            Task.Run(() => ExecuteTwitterStream(request));
+#else
             ThreadPool.QueueUserWorkItem(ExecuteTwitterStream, request);
+#endif
             return "<streaming></streaming>";
         }
 
@@ -512,7 +520,7 @@ namespace LinqToTwitter
                                         {
                                             do
                                             {
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !NETFX_CORE
                                                 try
                                                 {
 #endif
@@ -522,11 +530,15 @@ namespace LinqToTwitter
 
                                                         // launch on a separate thread to keep user's 
                                                         // callback code from blocking the stream.
+#if NETFX_CORE
+                                                        Task.Run(() => InvokeStreamCallback(content));
+#else
                                                         new Thread(InvokeStreamCallback).Start(content); 
+#endif
                                                     }
 
                                                     errorWait = 250;
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !NETFX_CORE
                                                 }
                                                 catch (WebException wex)
                                                 {
@@ -584,7 +596,11 @@ namespace LinqToTwitter
                                                 req.Abort();
                                             }
 
+#if NETFX_CORE
+                                            Task.Delay(errorWait);
+#else
                                             Thread.Sleep(errorWait);
+#endif
                                         }
                                     }
                                 }
@@ -611,7 +627,11 @@ namespace LinqToTwitter
                                         req.Abort();
                                     }
 
+#if NETFX_CORE
+                                    Task.Delay(errorWait);
+#else
                                     Thread.Sleep(errorWait);
+#endif
                                 }
 
                                 if (resetEvent != null) resetEvent.Set();
@@ -624,7 +644,11 @@ namespace LinqToTwitter
                 catch (Exception ex)
                 {
                     WriteLog(ex.ToString(), "ExecuteTwitterStream");
-                    Thread.Sleep(errorWait);
+#if NETFX_CORE
+                    Task.Delay(errorWait);
+#else
+                    Thread.Sleep(errorWait); 
+#endif
                     throw;
                 }
             }
@@ -641,7 +665,11 @@ namespace LinqToTwitter
             this.LastUrl = streamUrl;
             var req = WebRequest.Create(streamUrl) as HttpWebRequest;
             req.Credentials = new NetworkCredential(StreamingUserName, StreamingPassword);
+#if SILVERLIGHT || NETFX_CORE
+            req.Headers[HttpRequestHeader.UserAgent] = UserAgent;
+#else
             req.UserAgent = UserAgent;
+#endif
 
             byte[] bytes = new byte[0];
 
@@ -656,7 +684,7 @@ namespace LinqToTwitter
                 bytes = Encoding.UTF8.GetBytes(urlParams);
                 req.Method = "POST";
                 req.ContentType = "x-www-form-urlencoded";
-#if !WINDOWS_PHONE
+#if !WINDOWS_PHONE && !NETFX_CORE
                 req.ContentLength = bytes.Length;
 #endif
                 //#if !SILVERLIGHT
@@ -709,7 +737,9 @@ namespace LinqToTwitter
         {
             this.LastUrl = request.FullUrl;
             var req = this.AuthorizedClient.Get(request) as HttpWebRequest;
+#if !SILVERLIGHT && !NETFX_CORE
             req.UserAgent = UserAgent;
+#endif
 
             return req;
         }
@@ -737,6 +767,7 @@ namespace LinqToTwitter
             }
         }
 
+#if !NETFX_CORE
         /// <summary>
         /// performs HTTP POST file upload to Twitter
         /// </summary>
@@ -772,6 +803,7 @@ namespace LinqToTwitter
 
             return PostTwitterImage(url, postData, fileBytes, fileName, imageType, reqProc);
         }
+#endif
 
         /// <summary>
         /// performs HTTP POST image byte array upload to Twitter
@@ -824,7 +856,7 @@ namespace LinqToTwitter
                 //req.Headers[HttpRequestHeader.Expect] = null;
                 req.ContentType = "multipart/form-data;boundary=" + contentBoundaryBase;
                 //req.PreAuthenticate = true;
-#if !WINDOWS_PHONE
+#if !WINDOWS_PHONE && !NETFX_CORE
                 req.AllowWriteStreamBuffering = true;
                 req.ContentLength = imageBytes.Length; 
 #endif
@@ -977,17 +1009,16 @@ namespace LinqToTwitter
 
             var encoding = Encoding.GetEncoding("iso-8859-1");
 
-            mediaItems.ForEach(
-                media =>
-                {
-                    formDataSb.Append(beginContentBoundary);
-                    formDataSb.Append(
-                        string.Format(
-                            "Content-Disposition: form-data; name=\"media[]\"; " +
-                            "filename=\"{0}\"\r\nContent-Type: image/{1}\r\n\r\n",
-                            media.FileName, media.ContentType));
-                    formDataSb.Append(encoding.GetString(media.Data, 0, media.Data.Length));
-                });
+            foreach (var media in mediaItems)
+            {
+                formDataSb.Append(beginContentBoundary);
+                formDataSb.Append(
+                    string.Format(
+                        "Content-Disposition: form-data; name=\"media[]\"; " +
+                        "filename=\"{0}\"\r\nContent-Type: image/{1}\r\n\r\n",
+                        media.FileName, media.ContentType));
+                formDataSb.Append(encoding.GetString(media.Data, 0, media.Data.Length));
+            }
 
             formDataSb.Append(endContentBoundary);
 
@@ -1006,7 +1037,7 @@ namespace LinqToTwitter
                 var dontIncludePostParametersInOAuthSignature = new Dictionary<string, string>();
                 var req = AuthorizedClient.PostRequest(new Request(url), dontIncludePostParametersInOAuthSignature);
                 req.ContentType = "multipart/form-data;boundary=" + contentBoundaryBase;
-#if !WINDOWS_PHONE
+#if !WINDOWS_PHONE && !NETFX_CORE
                 req.AllowWriteStreamBuffering = true;
                 req.ContentLength = imageBytes.Length; 
 #endif
@@ -1211,7 +1242,9 @@ namespace LinqToTwitter
                                 }
                             }),
                             null);
-
+#if NETFX_CORE
+                    arResp.AsyncWaitHandle.WaitOne(5000);
+#else
                     ThreadPool.RegisterWaitForSingleObject(arResp.AsyncWaitHandle,
                         (state, timedOut) =>
                         {
@@ -1233,6 +1266,7 @@ namespace LinqToTwitter
                         null,
                         Timeout,
                         true);
+#endif
                 }
                 else
                 {
@@ -1292,7 +1326,7 @@ namespace LinqToTwitter
 
                 if (Log != null)
                 {
-                    Log.Close();
+                    Log.Dispose();
                 }
             }
         }

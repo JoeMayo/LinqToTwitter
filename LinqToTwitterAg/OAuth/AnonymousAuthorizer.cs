@@ -94,7 +94,7 @@ namespace LinqToTwitter
             //req.ServicePoint.Expect100Continue = false;
             req.Headers[HttpRequestHeader.Expect] = null;
             req.ContentType = "x-www-form-urlencoded";
-#if !WINDOWS_PHONE
+#if !WINDOWS_PHONE && !NETFX_CORE
             req.ContentLength = queryStringBytes.Length; 
 #endif
 

@@ -884,7 +884,7 @@ namespace LinqToTwitter
 
             var cursors = new Cursors(listJson);
 
-            lists.ForEach(list =>
+            foreach (var list in lists)
             {
                 list.Type = Type;
                 list.Cursor = Cursor;
@@ -906,7 +906,7 @@ namespace LinqToTwitter
                 list.IncludeRetweets = IncludeRetweets;
                 list.FilterToOwnedLists = FilterToOwnedLists;
                 list.CursorMovement = cursors;
-            });
+            };
 
             return lists.AsEnumerable().OfType<T>().ToList();
         }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if !NETFX_CORE
+using System;
 using System.Web.Mvc;
 
 namespace LinqToTwitter
@@ -17,3 +18,5 @@ namespace LinqToTwitter
         }
     }
 }
+
+#endif

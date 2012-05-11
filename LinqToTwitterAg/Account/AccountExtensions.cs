@@ -112,6 +112,7 @@ namespace LinqToTwitter
             return user;
         }
 
+#if !NETFX_CORE
         /// <summary>
         /// sends an image file to Twitter to replace user image
         /// </summary>
@@ -154,7 +155,8 @@ namespace LinqToTwitter
 
             User user = reqProc.ProcessActionResult(resultsJson, UserAction.SingleUser);
             return user;
-        }
+        } 
+#endif
 
         /// <summary>
         /// sends an image file to Twitter to replace user image
@@ -214,6 +216,7 @@ namespace LinqToTwitter
             return user;
         }
 
+#if !NETFX_CORE
         /// <summary>
         /// sends an image file to Twitter to replace background image
         /// </summary>
@@ -249,8 +252,8 @@ namespace LinqToTwitter
             {
                 parameters = new Dictionary<string, string>
                 {
-                    { "tile", true.ToString(CultureInfo.InvariantCulture).ToLower() },
-                    { "use", use.ToString(CultureInfo.InvariantCulture).ToLower() }
+                    { "tile", true.ToString().ToLower() },
+                    { "use", use.ToString().ToLower() }
                 };
             }
 
@@ -264,6 +267,7 @@ namespace LinqToTwitter
             User user = reqProc.ProcessActionResult(resultsJson, UserAction.SingleUser);
             return user;
         }
+#endif
 
         /// <summary>
         /// sends an image file to Twitter to replace background image
@@ -314,8 +318,8 @@ namespace LinqToTwitter
             {
                 parameters = new Dictionary<string, string>
                 {
-                    { "tile", true.ToString(CultureInfo.InvariantCulture).ToLower() },
-                    { "use", use.ToString(CultureInfo.InvariantCulture).ToLower() }
+                    { "tile", true.ToString().ToLower() },
+                    { "use", use.ToString().ToLower() }
                 };
             }
 

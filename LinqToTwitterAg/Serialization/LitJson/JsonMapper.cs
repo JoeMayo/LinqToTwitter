@@ -12,7 +12,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Reflection;
+using LinqToTwitter;
 
 
 namespace LitJson
@@ -161,10 +163,17 @@ namespace LitJson
 
             data.IsArray = type.IsArray;
 
+#if NETFX_CORE
+            var typeInfo = type.GetTypeInfo();
+            data.IsList = typeInfo.IsAssignableFrom(typeof(IList).GetTypeInfo());
+            var props = typeInfo.DeclaredProperties;
+#else
             if (type.GetInterface ("System.Collections.IList", false) != null)
                 data.IsList = true;
+            var props = type.GetProperties ();
+#endif
 
-            foreach (PropertyInfo p_info in type.GetProperties ()) {
+            foreach (PropertyInfo p_info in props) {
                 if (p_info.Name != "Item")
                     continue;
 
@@ -193,12 +202,21 @@ namespace LitJson
 
             ObjectMetadata data = new ObjectMetadata ();
 
+#if NETFX_CORE
+            var typeInfo = type.GetTypeInfo();
+            data.IsDictionary = typeInfo.IsAssignableFrom(typeof(IDictionary<string, JsonData>).GetTypeInfo());
+            var props = typeInfo.DeclaredProperties;
+            var fields = typeInfo.DeclaredFields;
+#else
             if (type.GetInterface("System.Collections.IDictionary", false) != null)
                 data.IsDictionary = true;
+            var props = type.GetProperties ();
+            var fields = type.GetFields ();
+#endif
 
             data.Properties = new Dictionary<string, PropertyMetadata> ();
 
-            foreach (PropertyInfo p_info in type.GetProperties ()) {
+            foreach (PropertyInfo p_info in props) {
                 if (p_info.Name == "Item") {
                     ParameterInfo[] parameters = p_info.GetIndexParameters ();
 
@@ -218,7 +236,7 @@ namespace LitJson
                 data.Properties.Add (p_info.Name, p_data);
             }
 
-            foreach (FieldInfo f_info in type.GetFields ()) {
+            foreach (FieldInfo f_info in fields) {
                 PropertyMetadata p_data = new PropertyMetadata ();
                 p_data.Info = f_info;
                 p_data.IsField = true;
@@ -243,7 +261,17 @@ namespace LitJson
 
             IList<PropertyMetadata> props = new List<PropertyMetadata> ();
 
-            foreach (PropertyInfo p_info in type.GetProperties ()) {
+#if NETFX_CORE
+            var typeInfo = type.GetTypeInfo();
+            var propInfos = typeInfo.DeclaredProperties;
+            var fields = typeInfo.DeclaredFields;
+#else
+            var propInfos = type.GetProperties ();
+            var fields = type.GetFields ();
+#endif
+
+            foreach (PropertyInfo p_info in propInfos)
+            {
                 if (p_info.Name == "Item")
                     continue;
 
@@ -253,7 +281,7 @@ namespace LitJson
                 props.Add (p_data);
             }
 
-            foreach (FieldInfo f_info in type.GetFields ()) {
+            foreach (FieldInfo f_info in fields) {
                 PropertyMetadata p_data = new PropertyMetadata ();
                 p_data.Info = f_info;
                 p_data.IsField = true;
@@ -280,8 +308,16 @@ namespace LitJson
             if (conv_ops[t1].ContainsKey (t2))
                 return conv_ops[t1][t2];
 
+#if NETFX_CORE
+            MethodInfo op = 
+                t1.GetTypeInfo()
+                  .DeclaredMethods
+                  .Where(meth => meth.Name == "op_Implicit" && meth.IsGenericMethod)
+                  .First();
+#else
             MethodInfo op = t1.GetMethod (
                 "op_Implicit", new Type[] { t2 });
+#endif
 
             lock (conv_ops_lock) {
                 try {
@@ -303,7 +339,11 @@ namespace LitJson
 
             if (reader.Token == JsonToken.Null) {
 
+#if NETFX_CORE
+                if (!inst_type.GetTypeInfo().IsClass)
+#else
                 if (! inst_type.IsClass)
+#endif
                     throw new JsonException (String.Format (
                             "Can't assign null to an instance of type {0}",
                             inst_type));
@@ -319,7 +359,11 @@ namespace LitJson
 
                 Type json_type = reader.Value.GetType ();
 
+#if NETFX_CORE
+                if (inst_type.GetTypeInfo().IsAssignableFrom(json_type.GetTypeInfo()))
+#else
                 if (inst_type.IsAssignableFrom (json_type))
+#endif
                     return reader.Value;
 
                 // If there's a custom importer that fits, use it
@@ -345,7 +389,11 @@ namespace LitJson
                 }
 
                 // Maybe it's an enum
+#if NETFX_CORE
+                if (inst_type.GetTypeInfo().IsEnum)
+#else
                 if (inst_type.IsEnum)
+#endif
                     return Enum.ToObject (inst_type, reader.Value);
 
                 // Try using an implicit conversion operator
@@ -442,8 +490,8 @@ namespace LitJson
                                     "The type {0} doesn't have the " +
                                     "property '{1}'", inst_type, property));
 
-                        ((IDictionary) instance).Add (
-                            property, ReadValue (
+                        ((IDictionary<string, JsonData>)instance).Add(
+                            property, (JsonData)ReadValue (
                                 t_data.ElementType, reader));
                     }
 
@@ -512,7 +560,7 @@ namespace LitJson
 
                     string property = (string) reader.Value;
 
-                    ((IDictionary) instance)[property] = ReadValue (
+                    ((IDictionary<string, JsonData>)instance)[property] = (JsonData)ReadValue(
                         factory, reader);
                 }
 
@@ -727,9 +775,11 @@ namespace LitJson
                 return;
             }
 
-            if (obj is IDictionary) {
+            if (obj is IDictionary<string, JsonData>)
+            {
                 writer.WriteObjectStart ();
-                foreach (DictionaryEntry entry in (IDictionary) obj) {
+                foreach (var entry in (IDictionary<string, JsonData>)obj)
+                {
                     writer.WritePropertyName ((string) entry.Key);
                     WriteValue (entry.Value, writer, writer_is_private,
                                 depth + 1);

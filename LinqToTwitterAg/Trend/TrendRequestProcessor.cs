@@ -274,7 +274,7 @@ namespace LinqToTwitter
             var period = JsonMapper.ToObject(responseJson);
             var asOf = TypeConversionExtensions.EpochBase + TimeSpan.FromSeconds(period.GetValue<int>("as_of"));
             var emptyLocations = new List<Location>();
-            var trendHash = period.GetValue<JsonData>("trends") as IDictionary;
+            var trendHash = period.GetValue<JsonData>("trends") as IDictionary<string, JsonData>;
 
             var flat = 
                  from string trendDate in trendHash.Keys

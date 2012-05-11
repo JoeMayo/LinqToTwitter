@@ -431,23 +431,22 @@ namespace LinqToTwitter
                     break;
             }
 
-            statusList.ForEach(
-                status =>
-                {
-                    status.Type = Type;
-                    status.ID = ID;
-                    status.UserID = UserID;
-                    status.ScreenName = ScreenName;
-                    status.SinceID = SinceID;
-                    status.MaxID = MaxID;
-                    status.Count = Count;
-                    status.Page = Page;
-                    status.IncludeRetweets = IncludeRetweets;
-                    status.ExcludeReplies = ExcludeReplies;
-                    status.IncludeEntities = IncludeEntities;
-                    status.TrimUser = TrimUser;
-                    status.IncludeContributorDetails = IncludeContributorDetails;
-                });
+            foreach (var status in statusList)
+            {
+                status.Type = Type;
+                status.ID = ID;
+                status.UserID = UserID;
+                status.ScreenName = ScreenName;
+                status.SinceID = SinceID;
+                status.MaxID = MaxID;
+                status.Count = Count;
+                status.Page = Page;
+                status.IncludeRetweets = IncludeRetweets;
+                status.ExcludeReplies = ExcludeReplies;
+                status.IncludeEntities = IncludeEntities;
+                status.TrimUser = TrimUser;
+                status.IncludeContributorDetails = IncludeContributorDetails;
+            };
 
             return statusList.OfType<T>().ToList();
         }

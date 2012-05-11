@@ -18,9 +18,9 @@ namespace LinqToTwitter
                 return;
             }
 
-            var attrDictionary = annotationJson as IDictionary;
+            var attrDictionary = annotationJson as IDictionary<string, JsonData>;
             Attributes =
-                (from object key in attrDictionary.Keys
+                (from string key in attrDictionary.Keys
                  select new
                  {
                      Key = key,

@@ -78,9 +78,15 @@ namespace LinqToTwitter
         {
             Type elementType = TypeSystem.GetElementType(expression.Type);
 
+#if NETFX_CORE
+            return GetType().GetTypeInfo()
+                .DeclaredMethods.Where(meth => meth.IsGenericMethod && meth.Name == "Execute").First()
+                .Invoke(this, new object[] { expression });
+#else
             return GetType()
                 .GetMethod("Execute", new[] { elementType })
                 .Invoke(this, new object[] { expression });
+#endif
         }
 
         /// <summary>
@@ -100,7 +106,11 @@ namespace LinqToTwitter
             var genericArguments = new[] { resultType };
 
             // generic method instance via reflection
+#if NETFX_CORE
+            var methodInfo = Context.GetType().GetTypeInfo().GetDeclaredMethod("Execute");
+#else
             var methodInfo = Context.GetType().GetMethod("Execute", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+#endif
             MethodInfo genericMethodInfo = methodInfo.MakeGenericMethod(genericArguments);
 
             // use reflection to execute the generic method with the proper arguments

@@ -46,7 +46,7 @@ namespace LinqToTwitter
                      select line.ToString())
                     .ToList();
 
-            var attrDict = place.GetValue<JsonData>("attributes") as IDictionary;
+            var attrDict = place.GetValue<JsonData>("attributes") as IDictionary<string, JsonData>;
             Attributes =
                 attrDict == null ?
                     new Dictionary<string, string>() 

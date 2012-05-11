@@ -14,6 +14,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Linq.Expressions;
 
 namespace LinqToTwitter
@@ -257,7 +258,13 @@ namespace LinqToTwitter
             }
             if (list != null)
             {
+#if NETFX_CORE
+                ReadOnlyCollection<Expression> collection =
+                    new ReadOnlyCollection<Expression>(list);
+                return collection;
+#else
                 return list.AsReadOnly();
+#endif
             }
             return original;
         }

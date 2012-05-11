@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Xml.Linq;
 using LitJson;
@@ -341,19 +340,18 @@ namespace LinqToTwitter
                     break;
             }
 
-            userList.ForEach(
-                user =>
-                {
-                    user.Type = Type;
-                    user.ID = ID;
-                    user.UserID = UserID;
-                    user.ScreenName = ScreenName;
-                    user.Page = Page;
-                    user.Cursor = Cursor;
-                    user.Slug = Slug;
-                    user.Lang = Lang;
-                    user.Query = Query;
-                });
+            foreach(var user in userList)
+            {
+                user.Type = Type;
+                user.ID = ID;
+                user.UserID = UserID;
+                user.ScreenName = ScreenName;
+                user.Page = Page;
+                user.Cursor = Cursor;
+                user.Slug = Slug;
+                user.Lang = Lang;
+                user.Query = Query;
+            };
 
             return userList.OfType<T>().ToList();
         }

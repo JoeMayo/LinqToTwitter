@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if !NETFX_CORE
+using System;
 using System.Web;
 using System.Web.Mvc;
 
@@ -20,12 +21,14 @@ namespace LinqToTwitter
                 HttpContext.Current.Response.Redirect(authUrl);
             };
 
-            Uri callback = 
-                webAuth.Callback == null ? 
-                    HttpContext.Current.Request.Url : 
+            Uri callback =
+                webAuth.Callback == null ?
+                    HttpContext.Current.Request.Url :
                     webAuth.Callback;
 
             webAuth.BeginAuthorization(callback);
         }
     }
 }
+
+#endif

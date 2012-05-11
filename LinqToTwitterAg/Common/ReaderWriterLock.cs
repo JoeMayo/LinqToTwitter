@@ -243,15 +243,23 @@ namespace LinqToTwitter.Common
             if (Interlocked.CompareExchange(ref myLock, 1, 0) != 0)
                 EnterMyLockSpin();
         }
-
+        
         private void EnterMyLockSpin()
         {
             for (int i = 0; ; i++)
             {
                 if (i < 3 && Environment.ProcessorCount > 1)
-                    Thread.SpinWait(20);    // Wait a few dozen instructions to let another processor release lock. 
+#if NETFX_CORE
+                    SpinWait.SpinUntil(() => false, 20);
+#else
+                Thread.SpinWait(20);    // Wait a few dozen instructions to let another processor release lock. 
+#endif
                 else
+#if NETFX_CORE
+                    SpinWait.SpinUntil(() => false, 0);
+#else
                     Thread.Sleep(0);        // Give up my quantum.  
+#endif
 
                 if (Interlocked.CompareExchange(ref myLock, 1, 0) == 0)
                     return;

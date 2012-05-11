@@ -126,11 +126,11 @@ namespace LinqToTwitter
                     break;
             }
 
-            savedSearchList.ForEach(search =>
+            foreach (var search in savedSearchList)
             {
                 search.Type = Type;
                 search.ID = ID;
-            });
+            };
 
             return savedSearchList.OfType<T>().ToList();
         }
