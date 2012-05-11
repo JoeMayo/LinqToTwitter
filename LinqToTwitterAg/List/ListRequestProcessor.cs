@@ -1000,6 +1000,7 @@ namespace LinqToTwitter
                     case ListAction.DeleteMember:
                     case ListAction.Subscribe:
                     case ListAction.Unsubscribe:
+                    case ListAction.DestroyAll:
                         list = new List(listJson);
                         break;
                     default:

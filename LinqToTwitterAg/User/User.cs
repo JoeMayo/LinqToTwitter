@@ -7,7 +7,6 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Xml.Linq;
 using System.Xml.Serialization;
 
 using LinqToTwitter.Common;
@@ -70,73 +69,6 @@ namespace LinqToTwitter
             FollowRequestSent = user.GetValue<bool>("follow_request_sent");
             Status = new Status(user.GetValue<JsonData>("status"));
             CursorMovement = new Cursors(user);
-        }
-
-        /// <summary>
-        /// creates a new user based on an XML user fragment
-        /// </summary>
-        /// <param name="user">XML user fragment</param>
-        /// <returns>new User instance</returns>
-        public static User CreateUser(XElement user)
-        {
-            if (user == null)
-            {
-                return null;
-            }
-
-            var status = user.Element("status");
-            var userID = user.GetString("id", "0");
-
-            var newUser = new User
-            {
-                Identifier = new UserIdentifier
-                {
-                    ID = userID,
-                    UserID = userID,
-                    ScreenName = user.GetString("screen_name")
-                },
-                Name = user.GetString("name"),
-                Location = user.GetString("location"),
-                Description = user.GetString("description"),
-                ProfileImageUrl = user.GetString("profile_image_url"),
-                Url = user.GetString("url"),
-                Protected = user.GetBool("protected"),
-                FollowersCount = user.GetInt("followers_count"),
-                ProfileBackgroundColor = user.GetString("profile_background_color"),
-                ProfileTextColor = user.GetString("profile_text_color"),
-                ProfileLinkColor = user.GetString("profile_link_color"),
-                ProfileSidebarFillColor = user.GetString("profile_sidebar_fill_color"),
-                ProfileSidebarBorderColor = user.GetString("profile_sidebar_border_color"),
-                FriendsCount = user.GetInt("friends_count"),
-                CreatedAt = user.GetDate("created_at", DateTime.MinValue),
-                FavoritesCount = user.GetInt("favourites_count"),
-                UtcOffset = user.GetInt("utc_offset"),
-                TimeZone = user.GetString("time_zone"),
-                ProfileBackgroundImageUrl = user.GetString("profile_background_image_url"),
-                ProfileBackgroundImageUrlHttps = user.GetString("profile_background_image_url_https"),
-                ProfileBackgroundTile = user.GetBool("profile_background_tile"),
-                StatusesCount = user.GetInt("statuses_count"),
-                Notifications = user.GetBool("notifications"),
-                GeoEnabled = user.GetBool("geo_enabled"),
-                Verified = user.GetBool("verified"),
-                ContributorsEnabled = user.GetBool("contributors_enabled"),
-                Following = user.GetBool("following"),
-                ShowAllInlineMedia = user.GetBool("show_all_inline_media"),
-                ListedCount = user.GetInt("listed_count"),
-                FollowRequestSent = user.GetBool("follow_request_sent"),
-                Status = Status.CreateStatus(status),
-                CursorMovement = Cursors.CreateCursors(GrandParentOrNull(user))
-            };
-
-            return newUser;
-        }
-
-        private static XElement GrandParentOrNull(XElement node)
-        {
-            if (node != null && node.Parent != null && node.Parent.Parent != null)
-                return node.Parent.Parent;
-
-            return null;
         }
 
         /// <summary>

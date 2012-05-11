@@ -16,6 +16,8 @@ namespace LinqToTwitter
 
         Subscribe,
 
-        Unsubscribe
+        Unsubscribe, 
+
+        DestroyAll
     }
 }

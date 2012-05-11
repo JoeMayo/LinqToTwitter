@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Xml.Linq;
-
 using LinqToTwitter.Common;
 using LitJson;
 
@@ -49,48 +47,48 @@ namespace LinqToTwitter
             Text = value.GetValue<string>("text");
         }
 
-        public static RelatedResults CreateRelatedResults(XElement element)
-        {
-            var val = element.Element("value");
-            return new RelatedResults
-            {
-                Contributors =
-                    val.Element("contributors") == null ||
-                    string.IsNullOrEmpty(val.Element("contributors").Value) ? null :
-                    (from contributor in val.Element("contributors").Elements("contributor")
-                     select new Contributor
-                     {
-                         ID = contributor.Element("id").Value,
-                         ScreenName = contributor.Element("screen_name").Value
-                     })
-                    .ToList(),
-                Coordinates = Coordinate.CreateCoordinate(val.Element("coordinates")),
-                CreatedAt = val.GetDate("created_at"),
-                Favorited = val.GetBool("favorited"),
-                //Geo = null,
-                IDString = val.GetString("id_str"),
-                InReplyToScreenName = val.GetString("in_reply_to_screen_name"),
-                InReplyToStatusID = val.GetULong("in_reply_to_status_id"),
-                InReplyToStatusIDString = val.GetString("in_reply_to_status_id_str"),
-                InReplyToUserID = val.GetULong("in_reply_to_user_id"),
-                InReplyToUserIDString = val.GetString("in_reply_to_user_id_str"),
-                Place = Place.CreatePlace(val.Element("place")),
-                ResultAnnotations = Annotation.CreateAnnotation(element.Element("annotations")),
-                RetweetCount =
-                    val.Element("retweet_count") == null ||
-                    val.Element("retweet_count").Value == string.Empty
-                        ? 0
-                        : int.Parse(val.Element("retweet_count").Value.TrimEnd('+')),
-                Retweeted = val.GetBool("retweeted"),
-                Source = val.GetString("source"),
-                Text = val.GetString("text"),
-                Truncated = val.GetBool("truncated"),
-                ValueAnnotations = Annotation.CreateAnnotation(val.Element("annotations")),
-                User = User.CreateUser(val.Element("user")),
-                Score = element.GetDouble("score"),
-                Kind = element.GetString("kind")
-            };
-        }
+        //public static RelatedResults CreateRelatedResults(XElement element)
+        //{
+        //    var val = element.Element("value");
+        //    return new RelatedResults
+        //    {
+        //        Contributors =
+        //            val.Element("contributors") == null ||
+        //            string.IsNullOrEmpty(val.Element("contributors").Value) ? null :
+        //            (from contributor in val.Element("contributors").Elements("contributor")
+        //             select new Contributor
+        //             {
+        //                 ID = contributor.Element("id").Value,
+        //                 ScreenName = contributor.Element("screen_name").Value
+        //             })
+        //            .ToList(),
+        //        Coordinates = Coordinate.CreateCoordinate(val.Element("coordinates")),
+        //        CreatedAt = val.GetDate("created_at"),
+        //        Favorited = val.GetBool("favorited"),
+        //        //Geo = null,
+        //        IDString = val.GetString("id_str"),
+        //        InReplyToScreenName = val.GetString("in_reply_to_screen_name"),
+        //        InReplyToStatusID = val.GetULong("in_reply_to_status_id"),
+        //        InReplyToStatusIDString = val.GetString("in_reply_to_status_id_str"),
+        //        InReplyToUserID = val.GetULong("in_reply_to_user_id"),
+        //        InReplyToUserIDString = val.GetString("in_reply_to_user_id_str"),
+        //        Place = Place.CreatePlace(val.Element("place")),
+        //        ResultAnnotations = Annotation.CreateAnnotation(element.Element("annotations")),
+        //        RetweetCount =
+        //            val.Element("retweet_count") == null ||
+        //            val.Element("retweet_count").Value == string.Empty
+        //                ? 0
+        //                : int.Parse(val.Element("retweet_count").Value.TrimEnd('+')),
+        //        Retweeted = val.GetBool("retweeted"),
+        //        Source = val.GetString("source"),
+        //        Text = val.GetString("text"),
+        //        Truncated = val.GetBool("truncated"),
+        //        ValueAnnotations = Annotation.CreateAnnotation(val.Element("annotations")),
+        //        User = User.CreateUser(val.Element("user")),
+        //        Score = element.GetDouble("score"),
+        //        Kind = element.GetString("kind")
+        //    };
+        //}
 
         /// <summary>
         /// Type of result

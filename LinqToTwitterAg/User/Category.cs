@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Xml.Linq;
 using LinqToTwitter.Common;
 using LitJson;
 
@@ -26,40 +25,40 @@ namespace LinqToTwitter
                     .ToList();
         }
 
-        /// <summary>
-        /// Converts XML to Category
-        /// </summary>
-        /// <param name="category">XML with category info</param>
-        /// <returns>Category with info from XML</returns>
-        public static Category CreateCategory(XElement category)
-        {
-            if (category == null)
-            {
-                return null;
-            }
+        ///// <summary>
+        ///// Converts XML to Category
+        ///// </summary>
+        ///// <param name="category">XML with category info</param>
+        ///// <returns>Category with info from XML</returns>
+        //public static Category CreateCategory(XElement category)
+        //{
+        //    if (category == null)
+        //    {
+        //        return null;
+        //    }
 
-            return new Category
-            {
-                 Name =
-                    category.Element("name") == null ?
-                        string.Empty :
-                        category.Element("name").Value,
-                 Categories =
-                    (from cat in category.Elements("category")
-                     select CreateCategory(cat))
-                     .ToList(),
-                 Slug =
-                    category.Element("slug") == null ?
-                        string.Empty :
-                        category.Element("slug").Value,
-                 Users =
-                    category.Element("users") == null ?
-                    null :
-                    (from user in category.Element("users").Elements("user")
-                     select User.CreateUser(user))
-                     .ToList()
-            };
-        }
+        //    return new Category
+        //    {
+        //         Name =
+        //            category.Element("name") == null ?
+        //                string.Empty :
+        //                category.Element("name").Value,
+        //         Categories =
+        //            (from cat in category.Elements("category")
+        //             select CreateCategory(cat))
+        //             .ToList(),
+        //         Slug =
+        //            category.Element("slug") == null ?
+        //                string.Empty :
+        //                category.Element("slug").Value,
+        //         Users =
+        //            category.Element("users") == null ?
+        //            null :
+        //            (from user in category.Element("users").Elements("user")
+        //             select User.CreateUser(user))
+        //             .ToList()
+        //    };
+        //}
 
         /// <summary>
         /// Category name
