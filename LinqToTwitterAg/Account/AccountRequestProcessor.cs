@@ -132,7 +132,9 @@ namespace LinqToTwitter
                     case AccountAction.EndSession:
                         acct = HandleEndSessionResponse(responseJson);
                         break;
-
+                    case AccountAction.Settings:
+                        acct = HandleSettingsResponse(responseJson);
+                        break;
                     default:
                         throw new InvalidOperationException("The default case of ProcessActionResult should never execute because a Type must be specified.");
                 }

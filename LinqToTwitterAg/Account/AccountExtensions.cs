@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Net;
 
@@ -406,6 +405,68 @@ namespace LinqToTwitter
 
             User user = reqProc.ProcessActionResult(resultsJson, UserAction.SingleUser);
             return user;
+        }
+
+        /// <summary>
+        /// Updates user's account settings
+        /// </summary>
+        /// <param name="trendLocationWeoid">WEOID for Trend Location the user is interested in.</param>
+        /// <param name="sleepTimeEnabled">Turn on time periods when notifications won't be sent.</param>
+        /// <param name="startSleepTime">Don't send notifications at this time or later this time.</param>
+        /// <param name="endSleepTime">Start sending notifications again after this time.</param>
+        /// <param name="timeZone">User's time zone.</param>
+        /// <param name="lang">User's language.</param>
+        /// <returns>Account information with Settings property populated.</returns>
+        public static Account UpdateAccountSettings(this TwitterContext ctx, int? trendLocationWoeid, bool? sleepTimeEnabled, int? startSleepTime, int? endSleepTime, string timeZone, string lang)
+        {
+            return UpdateAccountSettings(ctx, trendLocationWoeid, sleepTimeEnabled, startSleepTime, endSleepTime, timeZone, lang, null);
+        }
+
+        /// <summary>
+        /// Updates user's account settings
+        /// </summary>
+        /// <param name="trendLocationWeoid">WEOID for Trend Location the user is interested in.</param>
+        /// <param name="sleepTimeEnabled">Turn on time periods when notifications won't be sent.</param>
+        /// <param name="startSleepTime">Don't send notifications at this time or later this time. (hour from 00 to 23)</param>
+        /// <param name="endSleepTime">Start sending notifications again after this time. (hour from 00 to 23)</param>
+        /// <param name="timeZone">User's time zone.</param>
+        /// <param name="lang">User's language.</param>
+        /// <param name="callback">Async Callback.</param>
+        /// <returns>Account information with Settings property populated.</returns>
+        public static Account UpdateAccountSettings(this TwitterContext ctx, int? trendLocationWoeid, bool? sleepTimeEnabled, int? startSleepTime, int? endSleepTime, string timeZone, string lang, Action<TwitterAsyncResponse<User>> callback)
+        {
+            var accountUrl = ctx.BaseUrl + "account/settings.json";
+
+            if (trendLocationWoeid == null &&
+                sleepTimeEnabled == null &&
+                startSleepTime == null &&
+                endSleepTime == null &&
+                string.IsNullOrEmpty(timeZone) &&
+                string.IsNullOrEmpty(lang))
+            {
+                throw new ArgumentException("At least one parameter must be provided as arguments, but none are specified.", NoInputParam);
+            }
+
+            var reqProc = new AccountRequestProcessor<Account>();
+
+            ITwitterExecute exec = ctx.TwitterExecutor;
+            exec.AsyncCallback = callback;
+            var resultsJson =
+                exec.ExecuteTwitter(
+                    accountUrl,
+                    new Dictionary<string, string>
+                    {
+                        { "trend_location_woeid", trendLocationWoeid.ToString() },
+                        { "sleep_time_enabled", sleepTimeEnabled.ToString() },
+                        { "start_sleep_time", startSleepTime.ToString() },
+                        { "end_sleep_time", endSleepTime.ToString() },
+                        { "time_zone", timeZone },
+                        { "lang", lang }
+                    },
+                    reqProc);
+
+            Account acct = reqProc.ProcessActionResult(resultsJson, AccountAction.Settings);
+            return acct;
         }
     }
 }

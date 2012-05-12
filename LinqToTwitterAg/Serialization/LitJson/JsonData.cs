@@ -163,14 +163,15 @@ namespace LitJson
                 return EnsureDictionary ()[key];
             }
 
-            set {
+            set
+            {
                 if (! (key is String))
                     throw new ArgumentException (
                         "The key has to be a string");
 
                 JsonData data = ToJsonData (value);
 
-                this[(string) key] = data;
+                this[key] = data;
             }
         }
 
@@ -484,8 +485,8 @@ namespace LitJson
 
             EnsureDictionary ().Add (key, data);
 
-            var entry = new KeyValuePair<string, JsonData> ((string) key, data);
-            objectList.Add (entry);
+            var entry = new KeyValuePair<string, JsonData>(key, data);
+            objectList.Add(entry);
 
             json = null;
         }
@@ -500,8 +501,9 @@ namespace LitJson
             bool removed = EnsureDictionary ().Remove (key);
 
             for (int i = 0; i < objectList.Count; i++) {
-                if (objectList[i].Key == (string) key) {
-                    objectList.RemoveAt (i);
+                if (objectList[i].Key == key)
+                {
+                    objectList.RemoveAt(i);
                     break;
                 }
             }
@@ -741,7 +743,7 @@ namespace LitJson
         private IDictionary<string, JsonData> EnsureDictionary ()
         {
             if (type == JsonType.Object)
-                return (IDictionary<string, JsonData>)InstObject;
+                return InstObject;
 
             if (type != JsonType.None)
                 throw new InvalidOperationException (
@@ -751,7 +753,7 @@ namespace LitJson
             InstObject = new Dictionary<string, JsonData> ();
             objectList = new List<KeyValuePair<string, JsonData>> ();
 
-            return (IDictionary<string, JsonData>)InstObject;
+            return InstObject;
         }
 
         private IList EnsureList ()
@@ -832,9 +834,10 @@ namespace LitJson
             if (obj.IsObject) {
                 writer.WriteObjectStart ();
 
-                foreach (var entry in ((IDictionary<string, JsonData>) obj)) {
-                    writer.WritePropertyName ((string) entry.Key);
-                    WriteJson ((JsonData) entry.Value, writer);
+                foreach (var entry in ((IDictionary<string, JsonData>) obj))
+                {
+                    writer.WritePropertyName(entry.Key);
+                    WriteJson(entry.Value, writer);
                 }
                 writer.WriteObjectEnd ();
             }
@@ -1022,37 +1025,37 @@ namespace LitJson
 
         public bool TryGetValue(string key, out JsonData value)
         {
-            throw new NotImplementedException();
+            return EnsureDictionary().TryGetValue(key, out value);
         }
 
         public void Add(KeyValuePair<string, JsonData> item)
         {
-            throw new NotImplementedException();
+            EnsureDictionary().Add(item);
         }
 
         public bool Contains(KeyValuePair<string, JsonData> item)
         {
-            throw new NotImplementedException();
+            return EnsureDictionary().Contains(item);
         }
 
         public void CopyTo(KeyValuePair<string, JsonData>[] array, int arrayIndex)
         {
-            throw new NotImplementedException();
+            EnsureDictionary().CopyTo(array, arrayIndex);
         }
 
         bool ICollection<KeyValuePair<string, JsonData>>.IsReadOnly
         {
-            get { throw new NotImplementedException(); }
+            get { return EnsureDictionary().IsReadOnly; }
         }
 
         public bool Remove(KeyValuePair<string, JsonData> item)
         {
-            throw new NotImplementedException();
+            return EnsureDictionary().Remove(item.Key);
         }
 
         IEnumerator<KeyValuePair<string, JsonData>> IEnumerable<KeyValuePair<string, JsonData>>.GetEnumerator()
         {
-            throw new NotImplementedException();
+            return EnsureDictionary().GetEnumerator();
         }
     }
 

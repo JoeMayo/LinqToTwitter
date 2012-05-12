@@ -32,6 +32,7 @@ namespace LinqToTwitterDemo
             //UpdateAccountBackgroundImageAndTileButDontUseDemo(twitterCtx);
             //UpdateAccountBackgroundImageWithProgressUpdates(twitterCtx);
             //UpdateAccountInfoDemo(twitterCtx);
+            //UpdateAccountSettingsDemo(twitterCtx);
         }
 
         /// <summary>
@@ -306,6 +307,16 @@ namespace LinqToTwitterDemo
             {
                 Console.WriteLine("Twitter did not recognize the credentials. Response from Twitter: " + wex.Message);
             }
+        }
+
+        private static void UpdateAccountSettingsDemo(TwitterContext twitterCtx)
+        {
+            Account acct = twitterCtx.UpdateAccountSettings(null, true, 20, 6, null, null);
+
+            SleepTime sleep = acct.Settings.SleepTime;
+            Console.WriteLine(
+                "Enabled: {0}, Start: {1}, End: {2}",
+                sleep.Enabled, sleep.StartHour, sleep.EndHour);
         }
     }
 }

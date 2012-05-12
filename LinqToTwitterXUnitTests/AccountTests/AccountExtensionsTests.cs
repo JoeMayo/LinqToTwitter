@@ -345,6 +345,63 @@ namespace LinqToTwitterXUnitTests.AccountTests
             Assert.Equal(ExpectedErrorResponse, actual.Error);
         }
 
+        [Fact]
+        public void UpdateAccountSettings_Invokes_Executor_Execute()
+        {
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
+            execMock.Setup(exec =>
+                exec.ExecuteTwitter(
+                    It.IsAny<string>(),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<IRequestProcessor<Account>>()))
+                .Returns(SettingsResponse);
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
+            var parameters = new Dictionary<string, string>
+            {
+                { "trend_location_woeid", "1" },
+                { "sleep_time_enabled", "True" },
+                { "start_sleep_time", "20" },
+                { "end_sleep_time", "6" },
+                { "time_zone", "MST" },
+                { "lang", "en" }
+            };
+
+            Account acct = ctx.UpdateAccountSettings(1, true, 20, 6, "MST", "en");
+
+            execMock.Verify(exec =>
+                exec.ExecuteTwitter(
+                    "https://api.twitter.com/1/account/settings.json",
+                    parameters,
+                    It.IsAny<IRequestProcessor<Account>>()),
+                Times.Once());
+            Assert.NotNull(acct);
+            Settings settings = acct.Settings;
+            Assert.NotNull(settings);
+            Assert.Equal("en", settings.Language);
+        }
+
+        [Fact]
+        public void UpdateAccountSettings_Throws_On_No_Input()
+        {
+            const string ExpectedParamName = "NoInput";
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
+            execMock.Setup(exec =>
+                exec.ExecuteTwitter(
+                    It.IsAny<string>(),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<IRequestProcessor<User>>()))
+                .Returns(SettingsResponse);
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
+
+            var ex = Assert.Throws<ArgumentException>(() => ctx.UpdateAccountSettings(null, null, null, null, null, null));
+
+            Assert.Equal(ExpectedParamName, ex.ParamName);
+        }
+
         const string SingleUserResponse = @"{
    ""id"":6253282,
    ""id_str"":""6253282"",
@@ -412,6 +469,40 @@ namespace LinqToTwitterXUnitTests.AccountTests
         const string EndSessionResponse = @"{
   ""request"": ""/1/account/end_session.json"",
   ""error"": ""Logged out.""
+}";
+
+        const string SettingsResponse = @"{
+   ""screen_name"":""Linq2Tweeter"",
+   ""protected"":false,
+   ""geo_enabled"":false,
+   ""time_zone"":{
+      ""name"":""Mountain Time (US & Canada)"",
+      ""utc_offset"":-25200,
+      ""tzinfo_name"":""America\/Denver""
+   },
+   ""sleep_time"":{
+      ""enabled"":true,
+      ""start_time"":20,
+      ""end_time"":8
+   },
+   ""show_all_inline_media"":true,
+   ""discoverable_by_email"":true,
+   ""trend_location"":[
+      {
+         ""woeid"":23424977,
+         ""name"":""United States"",
+         ""country"":""United States"",
+         ""countryCode"":""US"",
+         ""placeType"":{
+            ""name"":""Country"",
+            ""code"":12
+         },
+         ""url"":""http:\/\/where.yahooapis.com\/v1\/place\/23424977"",
+         ""parentid"":1
+      }
+   ],
+   ""language"":""en"",
+   ""always_use_https"":true
 }";
     }
 }
