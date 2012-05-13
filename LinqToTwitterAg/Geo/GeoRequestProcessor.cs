@@ -12,7 +12,11 @@ namespace LinqToTwitter
     /// <summary>
     /// processes Twitter Saved Search requests
     /// </summary>
-    public class GeoRequestProcessor<T> : IRequestProcessor<T>, IRequestProcessorWantsJson
+    public class GeoRequestProcessor<T> :
+        IRequestProcessor<T>,
+        IRequestProcessorWantsJson,
+        IRequestProcessorWithAction<T>
+        where T: class
     {
         const string AttributeParam = "Attribute";
         const string IDParam = "ID";
@@ -30,17 +34,17 @@ namespace LinqToTwitter
         /// <summary>
         /// Latitude
         /// </summary>
-        private double Latitude { get; set; }
+        internal double Latitude { get; set; }
 
         /// <summary>
         /// Longitude
         /// </summary>
-        private double Longitude { get; set; }
+        internal double Longitude { get; set; }
 
         /// <summary>
         /// IP address to find nearby places
         /// </summary>
-        private string IP { get; set; }
+        internal string IP { get; set; }
 
         /// <summary>
         /// How accurate the results should be.
@@ -48,37 +52,42 @@ namespace LinqToTwitter
         ///     - Default is 0m
         ///     - Feet is ft (as in 10ft)
         /// </summary>
-        private string Accuracy { get; set; }
+        internal string Accuracy { get; set; }
 
         /// <summary>
         /// Size of place (i.e. neighborhood is default or city)
         /// </summary>
-        private string Granularity { get; set; }
+        internal string Granularity { get; set; }
 
         /// <summary>
         /// Number of places to return
         /// </summary>
-        private int MaxResults { get; set; }
+        internal int MaxResults { get; set; }
 
         /// <summary>
         /// Place ID
         /// </summary>
-        private string ID { get; set; }
+        internal string ID { get; set; }
 
         /// <summary>
         /// Any text you want to add to help find a place
         /// </summary>
-        private string Query { get; set; }
+        internal string Query { get; set; }
 
         /// <summary>
         /// Place ID to restrict search to
         /// </summary>
-        private string ContainedWithin { get; set; }
+        internal string ContainedWithin { get; set; }
 
         /// <summary>
         /// Name/value pair separated by "=" (i.e. "street_address=123 4th Street")
         /// </summary>
-        private string Attribute { get; set; }
+        internal string Attribute { get; set; }
+
+        /// <summary>
+        /// Name of place in similar places query
+        /// </summary>
+        internal string PlaceName { get; set; }
 
         /// <summary>
         /// extracts parameters from lambda
@@ -100,7 +109,8 @@ namespace LinqToTwitter
                    "ID",
                    "Query",
                    "ContainedWithin",
-                   "Attribute"
+                   "Attribute",
+                   "PlaceName"
                })
                .Parameters;
         }
@@ -126,8 +136,29 @@ namespace LinqToTwitter
                     return BuildReverseUrl(parameters);
                 case GeoType.Search:
                     return BuildSearchUrl(parameters);
+                case GeoType.SimilarPlaces:
+                    return BuildSimilarPlacesUrl(parameters);
                 default:
                     throw new InvalidOperationException("The default case of BuildUrl should never execute because a Type must be specified.");
+            }
+        }
+
+        void HandleAttributeParams(Dictionary<string, string> parameters, IList<QueryParameter> urlParams)
+        {
+            if (parameters.ContainsKey(AttributeParam))
+            {
+                // TODO should really be able to search for more than one Attribute
+                Attribute = parameters[AttributeParam] ?? String.Empty;
+                var parts = Attribute.Split('=');
+
+                if (parts.Length < 2)
+                {
+                    throw new ArgumentException(
+                        "Attribute must be a name/value pair (i.e. street_address=123); actual value: " + Attribute,
+                        AttributeParam);
+                }
+
+                urlParams.Add(new QueryParameter("attribute:" + parts[0], parts[1]));
             }
         }
 
@@ -136,7 +167,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">URL parameters</param>
         /// <returns>URL for nearby places + parameters</returns>
-        private Request BuildSearchUrl(Dictionary<string, string> parameters)
+        Request BuildSearchUrl(Dictionary<string, string> parameters)
         {
             if (!parameters.ContainsKey("IP") &&
                 !(parameters.ContainsKey("Latitude") &&
@@ -196,21 +227,7 @@ namespace LinqToTwitter
                 urlParams.Add(new QueryParameter("contained_within", ContainedWithin));
             }
 
-            if (parameters.ContainsKey(AttributeParam))
-            {
-                // TODO should really be able to search for more than one Attribute
-                Attribute = parameters[AttributeParam] ?? String.Empty;
-                var parts = Attribute.Split('=');
-
-                if (parts.Length < 2)
-                {
-                    throw new ArgumentException(
-                        "Attribute must be a name/value pair (i.e. street_address=123); actual value: " + Attribute,
-                        AttributeParam);
-                }
-
-                urlParams.Add(new QueryParameter("attribute:" + parts[0], parts[1]));
-            }
+            HandleAttributeParams(parameters, urlParams);
 
             return req;
         }
@@ -219,7 +236,7 @@ namespace LinqToTwitter
         /// construct a base show url
         /// </summary>
         /// <returns>base url + show segment</returns>
-        private Request BuildIDUrl(Dictionary<string, string> parameters)
+        Request BuildIDUrl(Dictionary<string, string> parameters)
         {
             if (!parameters.ContainsKey(IDParam))
                 throw new ArgumentException("ID is required for a Geo ID query.", IDParam);
@@ -234,7 +251,7 @@ namespace LinqToTwitter
         /// return a saved searches url
         /// </summary>
         /// <returns>saved search url</returns>
-        private Request BuildReverseUrl(Dictionary<string, string> parameters)
+        Request BuildReverseUrl(Dictionary<string, string> parameters)
         {
             if (!parameters.ContainsKey("Latitude") || !parameters.ContainsKey("Longitude"))
             {
@@ -279,6 +296,56 @@ namespace LinqToTwitter
         }
 
         /// <summary>
+        /// return a url for similar places
+        /// </summary>
+        /// <returns>saved search url</returns>
+        Request BuildSimilarPlacesUrl(Dictionary<string, string> parameters)
+        {
+            if (!parameters.ContainsKey("Latitude") || !parameters.ContainsKey("Longitude"))
+            {
+                const string LatLongParam = "LatLong";
+                throw new ArgumentException("Latitude and Longitude parameters are required.", LatLongParam);
+            }
+
+            if (!parameters.ContainsKey("PlaceName"))
+            {
+                const string LatLongParam = "PlaceName";
+                throw new ArgumentException("PlaceName is required.", LatLongParam);
+            }
+
+            var req = new Request(BaseUrl + "geo/similar_places.json");
+            var urlParams = req.RequestParameters;
+
+            if (parameters.ContainsKey("Latitude"))
+            {
+                Latitude = double.Parse(parameters["Latitude"]);
+                urlParams.Add(new QueryParameter("lat", Latitude.ToString(CultureInfo.InvariantCulture)));
+            }
+
+            if (parameters.ContainsKey("Longitude"))
+            {
+                Longitude = double.Parse(parameters["Longitude"]);
+                urlParams.Add(new QueryParameter("long", Longitude.ToString(CultureInfo.InvariantCulture)));
+            }
+
+            if (parameters.ContainsKey("PlaceName"))
+            {
+                PlaceName = parameters["PlaceName"];
+                urlParams.Add(new QueryParameter("name", PlaceName));
+            }
+
+            if (parameters.ContainsKey("ContainedWithin"))
+            {
+                ContainedWithin = parameters["ContainedWithin"];
+                urlParams.Add(new QueryParameter("contained_within", ContainedWithin));
+            }
+
+            HandleAttributeParams(parameters, urlParams);
+
+            return req;
+        }
+
+        /// <summary>
         /// transforms response into List of SavedSearch
         /// </summary>
         /// <param name="responseJson">Json with Twitter response</param>
@@ -298,6 +365,7 @@ namespace LinqToTwitter
                     break;
                 case GeoType.Reverse:
                 case GeoType.Search:
+                case GeoType.SimilarPlaces:
                     geo = HandleMultiplePlaceResponse(geoJson);
                     break;
                 default:
@@ -349,9 +417,24 @@ namespace LinqToTwitter
                     MaxResults = MaxResults,
                     Query = Query,
                     ContainedWithin = ContainedWithin,
-                    Attribute = Attribute
+                    Attribute = Attribute,
+                    PlaceName = PlaceName
                 };
             return geo;
+        }
+
+        public T ProcessActionResult(string responseJson, Enum theAction)
+        {
+            JsonData geoJson = JsonMapper.ToObject(responseJson);
+
+            switch ((GeoAction)theAction)
+            {
+                case GeoAction.CreatePlace:
+                    var place = new Place(geoJson);
+                    return place.ItemCast(default(T));
+                default:
+                    throw new InvalidOperationException("Unknown Action.");
+            }
         }
     }
 }

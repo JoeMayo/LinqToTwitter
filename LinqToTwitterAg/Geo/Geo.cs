@@ -18,6 +18,8 @@ namespace LinqToTwitter
             JsonData result = geo.GetValue<JsonData>("result");
             JsonData places = result.GetValue<JsonData>("places");
 
+            Token = result.GetValue<string>("token");
+
             if (places != null)
             {
                 Places =
@@ -80,6 +82,16 @@ namespace LinqToTwitter
         /// Name/value pair separated by "=" (i.e. "street_address=123 4th Street")
         /// </summary>
         public string Attribute { get; set; }
+
+        /// <summary>
+        /// Name of place in similar places query
+        /// </summary>
+        public string PlaceName { get; set; }
+
+        /// <summary>
+        /// Place token returned from a Similar Places query and used in CreatePlace
+        /// </summary>
+        public string Token { get; set; }
 
         /// <summary>
         /// Results showing places matching query

@@ -18,6 +18,11 @@
         /// <summary>
         /// Performs a search, based on various criteria
         /// </summary>
-        Search
+        Search,
+
+        /// <summary>
+        /// Gets a list of nearby places with similar names
+        /// </summary>
+        SimilarPlaces
     }
 }

@@ -16,69 +16,6 @@ namespace LinqToTwitterXUnitTests.GeoTests
         }
 
         [Fact]
-        public void GeoRequestProcessor_Processes_Json_Format_Responses()
-        {
-            var geoReqProc = new GeoRequestProcessor<Geo>();
-
-            Assert.IsAssignableFrom<IRequestProcessorWantsJson>(geoReqProc);
-        }
-
-        [Fact]
-        public void ProcessResults_Handles_ReverseGeoCode_Response()
-        {
-            const int ExpectedPlacesCount = 4;
-            var geoReqProc = new GeoRequestProcessor<Geo>();
-
-            List<Geo> geo = geoReqProc.ProcessResults(MultiPlaceResponse);
-
-            Assert.NotNull(geo);
-            Assert.Single(geo);
-            Assert.NotNull(geo.Single().Places);
-            Assert.Equal(ExpectedPlacesCount, geo.Single().Places.Count);
-        }
-
-        [Fact]
-        public void ProcessResults_Handles_ID_Response()
-        {
-            const string ExpectedPlaceName = "San Francisco";
-            var geoReqProc = new GeoRequestProcessor<Geo> { Type = GeoType.ID };
-
-            List<Geo> geo = geoReqProc.ProcessResults(IDResponse);
-
-            Assert.NotNull(geo);
-            Assert.Single(geo);
-            Assert.NotNull(geo.Single().Places);
-            Assert.Equal(ExpectedPlaceName, geo.Single().Places.First().Name);
-        }
-
-        [Fact]
-        public void ProcessResults_Handles_Search_Response()
-        {
-            const int ExpectedPlacesCount = 4;
-            const string ExpectedPlaceFullName = "SoMa, San Francisco";
-            var geoReqProc = new GeoRequestProcessor<Geo> { Type = GeoType.Search };
-
-            List<Geo> geo = geoReqProc.ProcessResults(MultiPlaceResponse);
-
-            Assert.NotNull(geo);
-            Assert.Single(geo);
-            Assert.NotNull(geo.Single().Places);
-            Assert.Equal(ExpectedPlacesCount, geo.Single().Places.Count);
-            Assert.Equal(ExpectedPlaceFullName, geo.Single().Places.First().FullName);
-        }
-
-        [Fact]
-        public void ProcessResults_Returns_Empty_Collection_When_Empty_Results()
-        {
-            var geoReqProc = new GeoRequestProcessor<Geo>() { BaseUrl = "https://api.twitter.com/1/" };
-
-            var geo = geoReqProc.ProcessResults(string.Empty);
-
-            Assert.NotNull(geo);
-            Assert.Empty(geo);
-        }
-
-        [Fact]
         public void GetParameters_Parses_Parameters()
         {
             var geoReqProc = new GeoRequestProcessor<Geo>();
@@ -94,7 +31,8 @@ namespace LinqToTwitterXUnitTests.GeoTests
                     geo.IP == "168.143.171.180" &&
                     geo.Query == "place" &&
                     geo.ContainedWithin == "abc" &&
-                    geo.Attribute == "street_address=123";
+                    geo.Attribute == "street_address=123" &&
+                    geo.PlaceName == "placeName";
 
             var lambdaExpression = expression as LambdaExpression;
 
@@ -133,6 +71,9 @@ namespace LinqToTwitterXUnitTests.GeoTests
             Assert.True(
                 queryParams.Contains(
                     new KeyValuePair<string, string>("Attribute", "street_address=123")));
+            Assert.True(
+                queryParams.Contains(
+                    new KeyValuePair<string, string>("PlaceName", "placeName")));
         }
 
         [Fact]
@@ -205,7 +146,7 @@ namespace LinqToTwitterXUnitTests.GeoTests
         }
 
         [Fact]
-        public void BuildUrl_Generates_Search_Url()
+        public void BuildUrl_Constructs_Search_Url()
         {
             const string ExpectedUrl = "https://api.twitter.com/1/geo/search.json?lat=37.78215&long=-122.4006&query=Twitter%20HQ&ip=168.143.171.180&accuracy=city&granularity=10&max_results=10&contained_within=123&attribute%3Astreet_address=123";
             var geoReqProc = new GeoRequestProcessor<Geo>() { BaseUrl = "https://api.twitter.com/1/" };
@@ -245,6 +186,149 @@ namespace LinqToTwitterXUnitTests.GeoTests
              Assert.Equal(ExpectedAttributeParam, ex.ParamName);
         }
 
+        [Fact]
+        public void BuildUrl_Constructs_Similar_Places_Url()
+        {
+            const string ExpectedUrl = "https://api.twitter.com/1/geo/similar_places.json?lat=37.78215&long=-122.4006&name=placeName&contained_within=123&attribute%3Astreet_address=123";
+            var geoReqProc = new GeoRequestProcessor<Geo>() { BaseUrl = "https://api.twitter.com/1/" };
+            var parameters = new Dictionary<string, string>
+             {
+                 {"Type", ((int) GeoType.SimilarPlaces).ToString()},
+                 {"Latitude", "37.78215"},
+                 {"Longitude", "-122.40060"},
+                 {"PlaceName", "placeName" },
+                 {"ContainedWithin", "123" },
+                 {"Attribute", "street_address=123" }
+             };
+
+            Request req = geoReqProc.BuildUrl(parameters);
+
+            Assert.Equal(ExpectedUrl, req.FullUrl);
+        }
+
+        [Fact]
+        public void BuildUrl_For_Similar_Places_Requires_Lat_And_Long()
+        {
+            const string ExpectedParamName = "LatLong";
+            var geoReqProc = new GeoRequestProcessor<Geo>() { BaseUrl = "https://api.twitter.com/1/" };
+            var parameters = new Dictionary<string, string>
+             {
+                 {"Type", ((int) GeoType.SimilarPlaces).ToString()},
+                 //{"Latitude", "37.78215"},
+                 //{"Longitude", "-122.40060"},
+                 {"PlaceName", "placeName" },
+                 {"ContainedWithin", "123" },
+                 {"Attribute", "street_address=123" }
+             };
+
+            var ex = Assert.Throws<ArgumentException>(() => geoReqProc.BuildUrl(parameters));
+
+            Assert.Equal(ExpectedParamName, ex.ParamName);
+        }
+
+        [Fact]
+        public void BuildUrl_For_Similar_Places_Requires_PlaceName()
+        {
+            const string ExpectedParamName = "PlaceName";
+            var geoReqProc = new GeoRequestProcessor<Geo>() { BaseUrl = "https://api.twitter.com/1/" };
+            var parameters = new Dictionary<string, string>
+             {
+                 {"Type", ((int) GeoType.SimilarPlaces).ToString()},
+                 {"Latitude", "37.78215"},
+                 {"Longitude", "-122.40060"},
+                 //{"PlaceName", "placeName" },
+                 {"ContainedWithin", "123" },
+                 {"Attribute", "street_address=123" }
+             };
+
+            var ex = Assert.Throws<ArgumentException>(() => geoReqProc.BuildUrl(parameters));
+
+            Assert.Equal(ExpectedParamName, ex.ParamName);
+        }
+
+        [Fact]
+        public void GeoRequestProcessor_Processes_Json_Format_Responses()
+        {
+            var geoReqProc = new GeoRequestProcessor<Geo>();
+
+            Assert.IsAssignableFrom<IRequestProcessorWantsJson>(geoReqProc);
+        }
+
+        [Fact]
+        public void ProcessResults_Handles_ReverseGeoCode_Response()
+        {
+            const int ExpectedPlacesCount = 4;
+            var geoReqProc = new GeoRequestProcessor<Geo>();
+
+            List<Geo> geo = geoReqProc.ProcessResults(MultiPlaceResponse);
+
+            Assert.NotNull(geo);
+            Assert.Single(geo);
+            Assert.NotNull(geo.Single().Places);
+            Assert.Equal(ExpectedPlacesCount, geo.Single().Places.Count);
+        }
+
+        [Fact]
+        public void ProcessResults_Handles_ID_Response()
+        {
+            const string ExpectedPlaceName = "San Francisco";
+            var geoReqProc = new GeoRequestProcessor<Geo> { Type = GeoType.ID };
+
+            List<Geo> geo = geoReqProc.ProcessResults(IDResponse);
+
+            Assert.NotNull(geo);
+            Assert.Single(geo);
+            Assert.NotNull(geo.Single().Places);
+            Assert.Equal(ExpectedPlaceName, geo.Single().Places.First().Name);
+        }
+
+        [Fact]
+        public void ProcessResults_Handles_Search_Response()
+        {
+            const int ExpectedPlacesCount = 4;
+            const string ExpectedPlaceFullName = "SoMa, San Francisco";
+            var geoReqProc = new GeoRequestProcessor<Geo> { Type = GeoType.Search };
+
+            List<Geo> geo = geoReqProc.ProcessResults(MultiPlaceResponse);
+
+            Assert.NotNull(geo);
+            Assert.Single(geo);
+            Assert.NotNull(geo.Single().Places);
+            Assert.Equal(ExpectedPlacesCount, geo.Single().Places.Count);
+            Assert.Equal(ExpectedPlaceFullName, geo.Single().Places.First().FullName);
+        }
+
+        [Fact]
+        public void ProcessResults_Handles_Simlar_Places_Response()
+        {
+            const int ExpectedPlacesCount = 4;
+            const string ExpectedPlaceFullName = "SoMa, San Francisco";
+            const string ExpectedToken = "15f3c6f2b94ba19faee70d9d61aaebee";
+            var geoReqProc = new GeoRequestProcessor<Geo> { Type = GeoType.SimilarPlaces };
+
+            List<Geo> geoResponse = geoReqProc.ProcessResults(MultiPlaceResponse);
+
+            Assert.NotNull(geoResponse);
+            Assert.Single(geoResponse);
+            var geo = geoResponse.Single();
+            Assert.Equal(ExpectedToken, geo.Token);
+            var places = geo.Places;
+            Assert.NotNull(places);
+            Assert.Equal(ExpectedPlacesCount, places.Count);
+            Assert.Equal(ExpectedPlaceFullName, places.First().FullName);
+        }
+
+        [Fact]
+        public void ProcessResults_Returns_Empty_Collection_When_Empty_Results()
+        {
+            var geoReqProc = new GeoRequestProcessor<Geo>() { BaseUrl = "https://api.twitter.com/1/" };
+
+            var geo = geoReqProc.ProcessResults(string.Empty);
+
+            Assert.NotNull(geo);
+            Assert.Empty(geo);
+        }
+
         const string MultiPlaceResponse = @"{
    ""query"":{
       ""type"":""reverse_geocode"",
@@ -262,6 +346,7 @@ namespace LinqToTwitterXUnitTests.GeoTests
       ""url"":""http:\/\/api.twitter.com\/1\/geo\/reverse_geocode.json?long=-122.4006&accuracy=0&granularity=neighborhood&lat=37.78215""
    },
    ""result"":{
+      ""token"":""15f3c6f2b94ba19faee70d9d61aaebee"",
       ""places"":[
          {
             ""contained_within"":[

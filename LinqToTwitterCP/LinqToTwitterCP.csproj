@@ -295,6 +295,12 @@
     <Compile Include="..\LinqToTwitterAg\Geo\Geo.cs">
       <Link>Geo\Geo.cs</Link>
     </Compile>
+    <Compile Include="..\LinqToTwitterAg\Geo\GeoAction.cs">
+      <Link>Geo\GeoAction.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Geo\GeoExtensions.cs">
+      <Link>Geo\GeoExtensions.cs</Link>
+    </Compile>
     <Compile Include="..\LinqToTwitterAg\Geo\Geometry.cs">
       <Link>Geo\Geometry.cs</Link>
     </Compile>

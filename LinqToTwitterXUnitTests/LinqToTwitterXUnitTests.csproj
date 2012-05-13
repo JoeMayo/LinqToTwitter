@@ -72,6 +72,7 @@
     <Compile Include="FriendshipTests\FriendshipRequestProcessorTests.cs" />
     <Compile Include="FriendshipTests\RelationshipTests.cs" />
     <Compile Include="GeoTests\CoordinateTests.cs" />
+    <Compile Include="GeoTests\GeoExtensionsTests.cs" />
     <Compile Include="GeoTests\GeometryTests.cs" />
     <Compile Include="GeoTests\GeoRequestProcessorTests.cs" />
     <Compile Include="GeoTests\GeoTests.cs" />
