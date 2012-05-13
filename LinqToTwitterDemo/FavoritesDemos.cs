@@ -45,19 +45,17 @@ namespace LinqToTwitterDemo
         private static void FavoritesQueryDemo(TwitterContext twitterCtx)
         {
             var favorites =
-                from fav in twitterCtx.Favorites
-                where fav.Type == FavoritesType.Favorites
-                select new
-                {
-                    UserName = fav.User.Name,
-                    Tweet = fav.Text
-                };
+                (from fav in twitterCtx.Favorites
+                 where fav.Type == FavoritesType.Favorites &&
+                       fav.IncludeEntities == true
+                 select fav)
+                .ToList();
 
             foreach (var fav in favorites)
             {
                 Console.WriteLine(
                     "User Name: {0}, Tweet: {1}",
-                    fav.UserName, fav.Tweet);
+                    fav.User.Name, fav.Text);
             }
         }
     }

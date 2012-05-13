@@ -46,8 +46,13 @@ namespace LinqToTwitterXUnitTests
             Expression<Func<Favorites, bool>> expression =
                 fav =>
                     fav.Type == FavoritesType.Favorites &&
+                    fav.UserID == "123" &&
+                    fav.ScreenName == "JoeMayo" &&
+                    fav.Count == 100 &&
+                    fav.SinceID == 456 &&
+                    fav.MaxID == 789 &&
                     fav.Page == 1 &&
-                    fav.ID == "123";
+                    fav.IncludeEntities == true;
             var lambdaExpression = expression as LambdaExpression;
 
             var queryParams = favReqProc.GetParameters(lambdaExpression);
@@ -57,28 +62,49 @@ namespace LinqToTwitterXUnitTests
                     new KeyValuePair<string, string>("Type", ((int)FavoritesType.Favorites).ToString(CultureInfo.InvariantCulture))));
             Assert.True(
                 queryParams.Contains(
+                    new KeyValuePair<string, string>("UserID", "123")));
+            Assert.True(
+                queryParams.Contains(
+                    new KeyValuePair<string, string>("ScreenName", "JoeMayo")));
+            Assert.True(
+                queryParams.Contains(
+                    new KeyValuePair<string, string>("Count", "100")));
+            Assert.True(
+                queryParams.Contains(
+                    new KeyValuePair<string, string>("SinceID", "456")));
+            Assert.True(
+                queryParams.Contains(
+                    new KeyValuePair<string, string>("MaxID", "789")));
+            Assert.True(
+                queryParams.Contains(
                     new KeyValuePair<string, string>("Page", "1")));
             Assert.True(
                 queryParams.Contains(
-                    new KeyValuePair<string, string>("ID", "123")));
+                    new KeyValuePair<string, string>("IncludeEntities", "True")));
         }
 
         [Fact]
         public void BuildUrl_Constructs_Favorites_Url()
         {
+            const string ExpectedUrl = "https://api.twitter.com/1/favorites.json?user_id=123&screen_name=JoeMayo&count=100&since_id=456&max_id=789&page=1&include_entities=true";
             var favReqProc = new FavoritesRequestProcessor<Favorites> { BaseUrl = "https://api.twitter.com/1/" };
             var parameters =
                 new Dictionary<string, string>
                 {
                     { "Type", FavoritesType.Favorites.ToString() },
-                    { "ID", "123" },
+                    { "UserID", "123" },
+                    { "ScreenName", "JoeMayo" },
+                    { "Count", "100" },
+                    { "SinceID", "456" },
+                    { "MaxID", "789" },
                     { "Page", "1" },
+                    { "IncludeEntities", true.ToString() }
+
                 };
-            const string Expected = "https://api.twitter.com/1/favorites.json?page=1&id=123";
 
             Request req = favReqProc.BuildUrl(parameters);
 
-            Assert.Equal(Expected, req.FullUrl);
+            Assert.Equal(ExpectedUrl, req.FullUrl);
         }
 
         [Fact]

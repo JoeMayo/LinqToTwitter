@@ -13,9 +13,6 @@ namespace LinqToTwitter
 
         public Favorites(JsonData favJson) : base(favJson) { }
 
-        [XmlIgnore]
-        FavoritesType type;
-
         /// <summary>
         /// type of favorites to query
         /// </summary>
@@ -26,6 +23,54 @@ namespace LinqToTwitter
             set { type = value; }
         }
 
+        /// <summary>
+        /// User identity to search (optional)
+        /// </summary>
+        [XmlIgnore]
+        public new string UserID { get; set; }
+
+        /// <summary>
+        /// Screen name of user to search (optional)
+        /// </summary>
+        [XmlIgnore]
+        public new string ScreenName { get; set; }
+
+        /// <summary>
+        /// Number of items to return in a single request (optional)
+        /// </summary>
+        [XmlIgnore]
+        public new int Count { get; set; }
+
+        /// <summary>
+        /// Start search at this ID (optional)
+        /// </summary>
+        [XmlIgnore]
+        public new ulong SinceID { get; set; }
+
+        /// <summary>
+        /// Don't return results past this ID (optional)
+        /// </summary>
+        [XmlIgnore]
+        public new ulong MaxID { get; set; }
+
+        /// <summary>
+        /// Page to retrieve (optional)
+        /// </summary>
+        [XmlIgnore]
+        public new int Page { get; set; }
+
+        /// <summary>
+        /// Add entities to results (optional)
+        /// </summary>
+        [XmlIgnore]
+        public new bool IncludeEntities { get; set; }
+
+        //
+        // The following types support XML serialization
+        //
+
+        [XmlIgnore]
+        FavoritesType type;
         [XmlAttribute(AttributeName = "Type")]
         FavoritesType TypeXml
         {
@@ -33,14 +78,67 @@ namespace LinqToTwitter
             set { type = value; }
         }
 
-        /// <summary>
-        /// User identity to search (optional)
-        /// </summary>
-        public new string ID { get; set; }
+        [XmlIgnore]
+        string userID;
+        [XmlAttribute(AttributeName="UserID")]
+        public string UserIDXml
+        {
+            get { return userID; }
+            set { userID = value; }
+        }
 
-        /// <summary>
-        /// Page to retrieve (optional)
-        /// </summary>
-        public new int Page { get; set; }
+        [XmlIgnore]
+        string screenName;
+        [XmlAttribute(AttributeName="ScreenName")]
+        public string ScreenNameXml
+        {
+            get { return screenName; }
+            set { screenName = value; }
+        }
+
+        [XmlIgnore]
+        int count;
+        [XmlAttribute(AttributeName="Count")]
+        public int CountXml
+        {
+            get { return count; }
+            set { count = value; }
+        }
+
+        [XmlIgnore]
+        ulong sinceID;
+        [XmlAttribute(AttributeName="SinceID")]
+        public ulong SinceIDXml
+        {
+            get { return sinceID; }
+            set { sinceID = value; }
+        }
+
+        [XmlIgnore]
+        ulong maxID;
+        [XmlAttribute(AttributeName="MaxID")]
+        public ulong MaxIDXml
+        {
+            get { return maxID; }
+            set { maxID = value; }
+        }
+
+        [XmlIgnore]
+        int page;
+        [XmlAttribute(AttributeName="Page")]
+        public int PageXml
+        {
+            get { return page; }
+            set { page = value; }
+        }
+        
+        [XmlIgnore]
+        bool includeEntities;
+        [XmlAttribute(AttributeName="IncludeEntities")]
+        public bool IncludeEntitiesXml
+        {
+            get { return includeEntities; }
+            set { includeEntities = value; }
+        }
     }
 }

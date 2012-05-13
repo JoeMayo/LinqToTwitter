@@ -25,12 +25,37 @@ namespace LinqToTwitter
         /// <summary>
         /// User identity to search (optional)
         /// </summary>
-        private string ID { get; set; }
+        private string UserID { get; set; }
+
+        /// <summary>
+        /// Screen name of user to search (optional)
+        /// </summary>
+        public string ScreenName { get; set; }
+
+        /// <summary>
+        /// Number of items to return in a single request (optional)
+        /// </summary>
+        public int Count { get; set; }
+
+        /// <summary>
+        /// Start search at this ID (optional)
+        /// </summary>
+        public ulong SinceID { get; set; }
+
+        /// <summary>
+        /// Don't return results past this ID (optional)
+        /// </summary>
+        public ulong MaxID { get; set; }
 
         /// <summary>
         /// Page to retrieve (optional)
         /// </summary>
         private int Page { get; set; }
+
+        /// <summary>
+        /// Add entities to results (optional)
+        /// </summary>
+        public bool IncludeEntities { get; set; }
 
         /// <summary>
         /// extracts parameters from lambda
@@ -44,8 +69,13 @@ namespace LinqToTwitter
                    lambdaExpression.Body,
                    new List<string> { 
                        "Type",
+                       "UserID",
+                       "ScreenName",
+                       "Count",
+                       "SinceID",
+                       "MaxID",
                        "Page",
-                       "ID"
+                       "IncludeEntities"
                    })
                    .Parameters;
         }
@@ -82,16 +112,46 @@ namespace LinqToTwitter
             var req = new Request(BaseUrl + "favorites.json");
             var urlParams = req.RequestParameters;
 
+            if (parameters.ContainsKey("UserID"))
+            {
+                UserID = parameters["UserID"];
+                urlParams.Add(new QueryParameter("user_id", parameters["UserID"]));
+            }
+
+            if (parameters.ContainsKey("ScreenName"))
+            {
+                ScreenName = parameters["ScreenName"];
+                urlParams.Add(new QueryParameter("screen_name", parameters["ScreenName"]));
+            }
+
+            if (parameters.ContainsKey("Count"))
+            {
+                Count = int.Parse(parameters["Count"]);
+                urlParams.Add(new QueryParameter("count", parameters["Count"]));
+            }
+
+            if (parameters.ContainsKey("SinceID"))
+            {
+                SinceID = ulong.Parse(parameters["SinceID"]);
+                urlParams.Add(new QueryParameter("since_id", parameters["SinceID"]));
+            }
+
+            if (parameters.ContainsKey("MaxID"))
+            {
+                MaxID = ulong.Parse(parameters["MaxID"]);
+                urlParams.Add(new QueryParameter("max_id", parameters["MaxID"]));
+            }
+
             if (parameters.ContainsKey("Page"))
             {
                 Page = int.Parse(parameters["Page"]);
                 urlParams.Add(new QueryParameter("page", parameters["Page"]));
             }
 
-            if (parameters.ContainsKey("ID"))
+            if (parameters.ContainsKey("IncludeEntities"))
             {
-                ID = parameters["ID"];
-                urlParams.Add(new QueryParameter("id", parameters["ID"]));
+                IncludeEntities = bool.Parse(parameters["IncludeEntities"]);
+                urlParams.Add(new QueryParameter("include_entities", parameters["IncludeEntities"].ToLower()));
             }
 
             return req;
@@ -114,8 +174,13 @@ namespace LinqToTwitter
                 select new Favorites(favJson)
                 {
                     Type = Type,
+                    UserID = UserID,
+                    ScreenName = ScreenName,
+                    Count = Count,
+                    SinceID = SinceID,
+                    MaxID = MaxID,
                     Page = Page,
-                    ID = ID
+                    IncludeEntities = IncludeEntities
                 };
 
             return statusList.OfType<T>().ToList();

@@ -54,6 +54,9 @@ namespace LinqToTwitter
             Entities = new Entities(status.GetValue<JsonData>("entities"));
         }
 
+        /// <summary>
+        /// Supports XML serialization
+        /// </summary>
         [XmlIgnore]
         StatusType type;
 
