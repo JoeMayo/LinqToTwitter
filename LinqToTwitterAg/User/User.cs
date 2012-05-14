@@ -133,6 +133,16 @@ namespace LinqToTwitter
         public string Query { get; set; }
 
         /// <summary>
+        /// Add entities to results
+        /// </summary>
+        public bool IncludeEntities { get; set; }
+
+        /// <summary>
+        /// Remove status from results
+        /// </summary>
+        public bool SkipStatus { get; set; }
+
+        /// <summary>
         /// Contains Next and Previous cursors
         /// </summary>
         /// <remarks>

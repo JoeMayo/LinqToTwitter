@@ -236,6 +236,44 @@ namespace LinqToTwitterXUnitTests.UserTests
         }
 
         [Fact]
+        public void BuildUrl_Constructs_Contributees_Url()
+        {
+            const string ExpectedUrl = "https://api.twitter.com/1/users/contributees.json?user_id=123&screen_name=JoeMayo&include_entities=true&skip_status=true";
+            var reqProc = new UserRequestProcessor<User> { BaseUrl = "https://api.twitter.com/1/" };
+            var parameters = new Dictionary<string, string>
+            {
+                { "Type", ((int)UserType.Contributees).ToString() },
+                { "UserID", "123" },
+                { "ScreenName", "JoeMayo" },
+                { "IncludeEntities", true.ToString() },
+                { "SkipStatus", true.ToString() }
+            };
+
+            Request req = reqProc.BuildUrl(parameters);
+
+            Assert.Equal(ExpectedUrl, req.FullUrl);
+        }
+
+        [Fact]
+        public void BuildUrl_Constructs_Contributors_Url()
+        {
+            const string ExpectedUrl = "https://api.twitter.com/1/users/contributors.json?user_id=123&screen_name=JoeMayo&include_entities=true&skip_status=true";
+            var reqProc = new UserRequestProcessor<User> { BaseUrl = "https://api.twitter.com/1/" };
+            var parameters = new Dictionary<string, string>
+            {
+                { "Type", ((int)UserType.Contributors).ToString() },
+                { "UserID", "123" },
+                { "ScreenName", "JoeMayo" },
+                { "IncludeEntities", true.ToString() },
+                { "SkipStatus", true.ToString() }
+            };
+
+            Request req = reqProc.BuildUrl(parameters);
+
+            Assert.Equal(ExpectedUrl, req.FullUrl);
+        }
+
+        [Fact]
         public void GetParameters_Handles_Input_Params()
         {
             var reqProc = new UserRequestProcessor<User>();
@@ -251,7 +289,9 @@ namespace LinqToTwitterXUnitTests.UserTests
                 user.Query == "Joe Mayo" &&
                 user.Page == 2 &&
                 user.PerPage == 10 &&
-                user.Lang == "it";
+                user.Lang == "it" &&
+                user.IncludeEntities == true &&
+                user.SkipStatus == true;
 
             var lambdaExpression = expression as LambdaExpression;
 
@@ -287,6 +327,12 @@ namespace LinqToTwitterXUnitTests.UserTests
             Assert.True(
               queryParams.Contains(
                   new KeyValuePair<string, string>("Lang", "it")));
+            Assert.True(
+              queryParams.Contains(
+                  new KeyValuePair<string, string>("IncludeEntities", "True")));
+            Assert.True(
+              queryParams.Contains(
+                  new KeyValuePair<string, string>("SkipStatus", "True")));
         }
 
         [Fact]
@@ -459,6 +505,18 @@ namespace LinqToTwitterXUnitTests.UserTests
         public void ProcessResults_Parses_Search_Response()
         {
             TestMultipleUserResponse(UserType.Search);
+        }
+
+        [Fact]
+        public void ProcessResults_Parses_Contributee_Response()
+        {
+            TestMultipleUserResponse(UserType.Contributees);
+        }
+
+        [Fact]
+        public void ProcessResults_Parses_Contributor_Response()
+        {
+            TestMultipleUserResponse(UserType.Contributors);
         }
 
         [Fact]

@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Xml.Linq;
 using LitJson;
+
 #if SILVERLIGHT && !WINDOWS_PHONE
     using System.Windows.Browser;
 #endif
@@ -82,6 +82,16 @@ namespace LinqToTwitter
         private string Lang { get; set; }
 
         /// <summary>
+        /// Add entities to results
+        /// </summary>
+        public bool IncludeEntities { get; set; }
+
+        /// <summary>
+        /// Remove status from results
+        /// </summary>
+        public bool SkipStatus { get; set; }
+
+        /// <summary>
         /// extracts parameters from lambda
         /// </summary>
         /// <param name="lambdaExpression">lambda expression with where clause</param>
@@ -101,7 +111,9 @@ namespace LinqToTwitter
                        "Cursor",
                        "Slug",
                        "Query",
-                       "Lang"
+                       "Lang",
+                       "IncludeEntities",
+                       "SkipStatus"
                    });
 
             var parameters = paramFinder.Parameters;
@@ -136,9 +148,77 @@ namespace LinqToTwitter
                     return BuildLookupUrl(parameters);
                 case UserType.Search:
                     return BuildSearchUrl(parameters);
+                case UserType.Contributees:
+                    return BuildContributeesUrl(parameters);
+                case UserType.Contributors:
+                    return BuildContributorsUrl(parameters);
                 default:
                     throw new InvalidOperationException("The default case of BuildUrl should never execute because a Type must be specified.");
             }
+        }
+
+        Request BuildContributorsUrl(Dictionary<string, string> parameters)
+        {
+            var req = new Request(BaseUrl + "users/contributors.json");
+            var urlParams = req.RequestParameters;
+
+            if (parameters.ContainsKey("UserID"))
+            {
+                UserID = parameters["UserID"];
+                urlParams.Add(new QueryParameter("user_id", parameters["UserID"]));
+            }
+
+            if (parameters.ContainsKey("ScreenName"))
+            {
+                ScreenName = parameters["ScreenName"];
+                urlParams.Add(new QueryParameter("screen_name", parameters["ScreenName"]));
+            }
+
+            if (parameters.ContainsKey("IncludeEntities"))
+            {
+                IncludeEntities = bool.Parse(parameters["IncludeEntities"]);
+                urlParams.Add(new QueryParameter("include_entities", parameters["IncludeEntities"].ToLower()));
+            }
+
+            if (parameters.ContainsKey("SkipStatus"))
+            {
+                SkipStatus = bool.Parse(parameters["SkipStatus"]);
+                urlParams.Add(new QueryParameter("skip_status", parameters["SkipStatus"].ToLower()));
+            }
+
+            return req;
+        }
+ 
+        Request BuildContributeesUrl(Dictionary<string, string> parameters)
+        {
+            var req = new Request(BaseUrl + "users/contributees.json");
+            var urlParams = req.RequestParameters;
+
+            if (parameters.ContainsKey("UserID"))
+            {
+                UserID = parameters["UserID"];
+                urlParams.Add(new QueryParameter("user_id", parameters["UserID"]));
+            }
+
+            if (parameters.ContainsKey("ScreenName"))
+            {
+                ScreenName = parameters["ScreenName"];
+                urlParams.Add(new QueryParameter("screen_name", parameters["ScreenName"]));
+            }
+
+            if (parameters.ContainsKey("IncludeEntities"))
+            {
+                IncludeEntities = bool.Parse(parameters["IncludeEntities"]);
+                urlParams.Add(new QueryParameter("include_entities", parameters["IncludeEntities"].ToLower()));
+            }
+
+            if (parameters.ContainsKey("SkipStatus"))
+            {
+                SkipStatus = bool.Parse(parameters["SkipStatus"]);
+                urlParams.Add(new QueryParameter("skip_status", parameters["SkipStatus"].ToLower()));
+            }
+
+            return req;
         }
 
         /// <summary>
@@ -330,6 +410,8 @@ namespace LinqToTwitter
                 case UserType.Category:
                     userList = HandleSingleCategoryResponse(userJson);
                     break;
+                case UserType.Contributees:
+                case UserType.Contributors:
                 case UserType.CategoryStatus:
                 case UserType.Lookup:
                 case UserType.Search:
@@ -351,6 +433,8 @@ namespace LinqToTwitter
                 user.Slug = Slug;
                 user.Lang = Lang;
                 user.Query = Query;
+                user.IncludeEntities = IncludeEntities;
+                user.SkipStatus = SkipStatus;
             };
 
             return userList.OfType<T>().ToList();

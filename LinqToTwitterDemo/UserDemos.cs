@@ -20,12 +20,14 @@ namespace LinqToTwitterDemo
             //UserShowWithScreenNameQueryDemo(twitterCtx);
             //UserShowForAuthenticatedUser(twitterCtx);
             //UsersLookupDemo(twitterCtx);
-            UserSearchDemo(twitterCtx);
+            //UserSearchDemo(twitterCtx);
             //UserSuggestedCategoriesListQueryDemo(twitterCtx);
             //UserSuggestedCategoriesListWithLangQueryDemo(twitterCtx);
             //UsersInSuggestedCategoryQueryDemo(twitterCtx);
             //UserShowLoggedInUserQueryDemo(twitterCtx);
             //CategoryStatusDemo(twitterCtx);
+            ContributeeDemo(twitterCtx);
+            ContributorDemo(twitterCtx);
         }
 
         private static void CategoryStatusDemo(TwitterContext twitterCtx)
@@ -211,6 +213,32 @@ namespace LinqToTwitterDemo
             Console.WriteLine(
                 "The password to Chirp is: {0}",
                 user.Identifier.ScreenName);
+        }
+
+        static void ContributeeDemo(TwitterContext twitterCtx)
+        {
+            var users =
+                (from user in twitterCtx.User
+                 where user.Type == UserType.Contributees &&
+                       user.ScreenName == "biz"
+                 select user)
+                .ToList();
+
+            users.ForEach(
+                user => Console.WriteLine("User: " + user.Name));
+        }
+
+        static void ContributorDemo(TwitterContext twitterCtx)
+        {
+            var users =
+                (from user in twitterCtx.User
+                 where user.Type == UserType.Contributors &&
+                       user.ScreenName == "twitter"
+                 select user)
+                .ToList();
+
+            users.ForEach(
+                user => Console.WriteLine("User: " + user.Name));
         }
     }
 }

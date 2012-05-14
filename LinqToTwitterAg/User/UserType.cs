@@ -33,6 +33,16 @@
         /// <summary>
         /// Perform a user search
         /// </summary>
-        Search
+        Search,
+
+        /// <summary>
+        /// Users that specified user can contribute to
+        /// </summary>
+        Contributees,
+
+        /// <summary>
+        /// Users who can contribute to an account
+        /// </summary>
+        Contributors
     }
 }
