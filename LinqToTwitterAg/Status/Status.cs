@@ -37,7 +37,15 @@ namespace LinqToTwitter
                     .ToList();
             else
                 Contributors = new List<ulong>();
-            Coordinates = new Coordinate();
+            var coords = status.GetValue<JsonData>("coordinates");
+            if (coords != null)
+            {
+                Coordinates = new Coordinate(coords.GetValue<JsonData>("coordinates"));
+            }
+            else
+            {
+                Coordinates = new Coordinate();
+            }
             Place = new Place(status.GetValue<JsonData>("place"));
             User = new User(status.GetValue<JsonData>("user"));
             RetweetCount = status.GetValue<int>("retweet_count");

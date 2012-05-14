@@ -42,6 +42,11 @@ namespace LinqToTwitter
         }
 
         /// <summary>
+        /// Type of Coordinate
+        /// </summary>
+        public string Type { get; set; }
+
+        /// <summary>
         /// Latitude
         /// </summary>
         public double Latitude { get; set; }

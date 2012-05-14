@@ -399,7 +399,7 @@ namespace LinqToTwitterDemo
                  where tweet.Type == StatusType.User
                       && tweet.ScreenName == "JoeMayo"
                  select tweet)
-                 .ToList();
+                .ToList();
 
             var myRetweets =
                 (from retweet in twitterCtx.Status

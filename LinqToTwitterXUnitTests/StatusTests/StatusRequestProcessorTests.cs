@@ -62,8 +62,10 @@ namespace LinqToTwitterXUnitTests.StatusTests
             Assert.True(retweetedStatus.Text.StartsWith("I just blogged about"));
             Assert.NotNull(status.Contributors);
             Assert.Empty(status.Contributors);
-            Assert.NotNull(status.Coordinates);
-            Assert.Equal(0, status.Coordinates.Latitude);
+            var coords = status.Coordinates;
+            Assert.NotNull(coords);
+            Assert.Equal(-122.40060, coords.Latitude);
+            Assert.Equal(37.78215, coords.Longitude);
             Assert.NotNull(status.Place);
             Assert.Null(status.Place.Name);
             Assert.NotNull(status.User);
@@ -107,8 +109,10 @@ namespace LinqToTwitterXUnitTests.StatusTests
             Assert.True(retweetedStatus.Text.StartsWith("I just blogged about"));
             Assert.NotNull(status.Contributors);
             Assert.Empty(status.Contributors);
-            Assert.NotNull(status.Coordinates);
-            Assert.Equal(0, status.Coordinates.Latitude);
+            var coords = status.Coordinates;
+            Assert.NotNull(coords);
+            Assert.Equal(-122.40060, coords.Latitude);
+            Assert.Equal(37.78215, coords.Longitude);
             Assert.NotNull(status.Place);
             Assert.Null(status.Place.Name);
             Assert.NotNull(status.User);
@@ -424,7 +428,13 @@ namespace LinqToTwitterXUnitTests.StatusTests
          ""text"":""I just blogged about http:\/\/t.co\/YWHGwOq6 MVC, Web API, Razor and Open Source - Now with Contributions: http:\/\/t.co\/qpevLMZd""
       },
       ""contributors"":null,
-      ""coordinates"":null,
+      ""coordinates"":{
+          ""type"":""Point"",
+          ""coordinates"":[
+              -122.40060,
+              37.78215
+          ]
+      },
       ""place"":null,
       ""user"":{
          ""id"":15411837,
@@ -548,7 +558,13 @@ namespace LinqToTwitterXUnitTests.StatusTests
          ""text"":""I just blogged about http:\/\/t.co\/YWHGwOq6 MVC, Web API, Razor and Open Source - Now with Contributions: http:\/\/t.co\/qpevLMZd""
       },
       ""contributors"":null,
-      ""coordinates"":null,
+      ""coordinates"":{
+          ""type"":""Point"",
+          ""coordinates"":[
+              -122.40060,
+              37.78215
+          ]
+      },
       ""place"":null,
       ""user"":{
          ""id"":15411837,
