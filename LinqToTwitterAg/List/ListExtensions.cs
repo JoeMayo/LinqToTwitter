@@ -53,7 +53,7 @@ namespace LinqToTwitter
                         { "mode", mode },
                         { "description", description }
                     },
-                    reqProc);
+                    response => reqProc.ProcessActionResult(response, ListAction.Create));
 
             List results = reqProc.ProcessActionResult(resultsJson, ListAction.Create);
             return results;
@@ -115,7 +115,7 @@ namespace LinqToTwitter
                         { "mode", mode },
                         { "description", description }
                     },
-                    reqProc);
+                    response => reqProc.ProcessActionResult(response, ListAction.Update));
 
             List results = reqProc.ProcessActionResult(resultsJson, ListAction.Update);
             return results;
@@ -171,7 +171,7 @@ namespace LinqToTwitter
                         { "owner_id", ownerID },
                         { "owner_screen_name", ownerScreenName }
                     },
-                    reqProc);
+                    response => reqProc.ProcessActionResult(response, ListAction.Delete));
 
             List results = reqProc.ProcessActionResult(resultsJson, ListAction.Delete);
             return results;
@@ -238,7 +238,7 @@ namespace LinqToTwitter
                         { "owner_id", ownerID },
                         { "owner_screen_name", ownerScreenName },
                     },
-                    reqProc);
+                    response => reqProc.ProcessActionResult(response, ListAction.AddMember));
 
             List results = reqProc.ProcessActionResult(resultsJson, ListAction.AddMember);
             return results;
@@ -363,7 +363,7 @@ namespace LinqToTwitter
                         { "user_id", userIDs == null ? null : string.Join(",", userIDs.Select(id => id.ToString(CultureInfo.InvariantCulture)).ToArray()) },                        
                         { "screen_name", screenNames == null ? null : string.Join(",", screenNames.ToArray()) }
                     },
-                    reqProc);
+                    response => reqProc.ProcessActionResult(response, ListAction.AddMember));
 
             List results = reqProc.ProcessActionResult(resultsJson, ListAction.AddMember);
             return results;
@@ -430,7 +430,7 @@ namespace LinqToTwitter
                         { "owner_id", ownerID },
                         { "owner_screen_name", ownerScreenName },
                     },
-                    reqProc);
+                    response => reqProc.ProcessActionResult(response, ListAction.DeleteMember));
 
             List results = reqProc.ProcessActionResult(resultsJson, ListAction.DeleteMember);
             return results;
@@ -486,7 +486,7 @@ namespace LinqToTwitter
                         { "owner_id", ownerID },
                         { "owner_screen_name", ownerScreenName },
                     },
-                    reqProc);
+                    response => reqProc.ProcessActionResult(response, ListAction.Subscribe));
 
             List results = reqProc.ProcessActionResult(resultsJson, ListAction.Subscribe);
             return results;
@@ -542,7 +542,7 @@ namespace LinqToTwitter
                         { "owner_id", ownerID },
                         { "owner_screen_name", ownerScreenName },
                     },
-                    reqProc);
+                    response => reqProc.ProcessActionResult(response, ListAction.Unsubscribe));
 
             List results = reqProc.ProcessActionResult(resultsJson, ListAction.Unsubscribe);
             return results;
@@ -605,7 +605,7 @@ namespace LinqToTwitter
                         { "owner_id", ownerID },
                         { "owner_screen_name", ownerScreenName },
                     },
-                    reqProc);
+                    response => reqProc.ProcessActionResult(response, ListAction.DestroyAll));
 
             List results = reqProc.ProcessActionResult(resultsJson, ListAction.DestroyAll);
             return results;

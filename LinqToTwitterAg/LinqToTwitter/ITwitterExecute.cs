@@ -48,7 +48,7 @@ namespace LinqToTwitter
         /// <param name="url">URL of request</param>
         /// <param name="parameters">parameters to post</param>
         /// <returns>XML Response from Twitter</returns>
-        string ExecuteTwitter<T>(string url, IDictionary<string, string> postData, IRequestProcessor<T> reqProc);
+        string ExecuteTwitter<T>(string url, IDictionary<string, string> postData, Func<string, T> getResult);
 
 #if !NETFX_CORE
         /// <summary>

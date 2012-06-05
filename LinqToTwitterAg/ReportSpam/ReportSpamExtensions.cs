@@ -52,7 +52,7 @@ namespace LinqToTwitter
                 exec.ExecuteTwitter(
                     reportSpamUrl,
                     createParams,
-                    reqProc);
+                    response => reqProc.ProcessActionResult(response, UserAction.SingleUser));
 
             User user = reqProc.ProcessActionResult(resultsJson, UserAction.SingleUser);
             return user;

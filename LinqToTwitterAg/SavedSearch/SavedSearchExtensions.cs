@@ -42,7 +42,7 @@ namespace LinqToTwitter
                     {
                         { "query", query }
                     },
-                    reqProc);
+                    response => reqProc.ProcessActionResult(response, SavedSearchAction.Create));
 
             SavedSearch result = reqProc.ProcessActionResult(resultsJson, SavedSearchAction.Create);
             return result;
@@ -80,7 +80,7 @@ namespace LinqToTwitter
                 exec.ExecuteTwitter(
                     savedSearchUrl,
                     new Dictionary<string, string>(),
-                    reqProc);
+                    response => reqProc.ProcessActionResult(response, SavedSearchAction.Destroy));
 
             SavedSearch result = reqProc.ProcessActionResult(resultsJson, SavedSearchAction.Destroy);
             result.ID = id.ToString();

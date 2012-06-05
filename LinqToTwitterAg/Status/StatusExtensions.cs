@@ -728,7 +728,7 @@ namespace LinqToTwitter
                         {"display_coordinates", displayCoordinates.ToString()},
                         {"wrap_links", wrapLinks ? true.ToString() : null }
                     },
-                    reqProc);
+                    response => reqProc.ProcessActionResult(response, StatusAction.SingleStatus));
 
             Status result = reqProc.ProcessActionResult(resultsJson, StatusAction.SingleStatus);
             return result;
@@ -767,7 +767,7 @@ namespace LinqToTwitter
                 exec.ExecuteTwitter(
                     destroyUrl,
                     new Dictionary<string, string>(),
-                    reqProc);
+                    response => reqProc.ProcessActionResult(response, StatusAction.SingleStatus));
 
             Status result = reqProc.ProcessActionResult(resultsJson, StatusAction.SingleStatus);
             return result;
@@ -806,7 +806,7 @@ namespace LinqToTwitter
                 exec.ExecuteTwitter(
                     retweetUrl,
                     new Dictionary<string, string>(),
-                    reqProc);
+                    response => reqProc.ProcessActionResult(response, StatusAction.SingleStatus));
 
             Status result = reqProc.ProcessActionResult(resultsJson, StatusAction.SingleStatus);
             return result;

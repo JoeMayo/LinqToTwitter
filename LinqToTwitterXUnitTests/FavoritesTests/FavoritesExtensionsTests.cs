@@ -35,7 +35,7 @@ namespace LinqToTwitterXUnitTests.FavoritesTests
                 exec.ExecuteTwitter(
                     It.IsAny<string>(),
                     It.IsAny<Dictionary<string, string>>(),
-                    It.IsAny<IRequestProcessor<Status>>()))
+                    It.IsAny<Func<string, Status>>()))
                 .Returns(SingleStatusResponse);
             var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
 
@@ -54,7 +54,7 @@ namespace LinqToTwitterXUnitTests.FavoritesTests
                 exec.ExecuteTwitter(
                     It.IsAny<string>(),
                     It.IsAny<Dictionary<string, string>>(),
-                    It.IsAny<IRequestProcessor<Status>>()))
+                    It.IsAny<Func<string, Status>>()))
                 .Returns(SingleStatusResponse);
             var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
 
@@ -75,7 +75,7 @@ namespace LinqToTwitterXUnitTests.FavoritesTests
                 exec.ExecuteTwitter(
                     It.IsAny<string>(),
                     It.IsAny<Dictionary<string, string>>(),
-                    It.IsAny<IRequestProcessor<Status>>()))
+                    It.IsAny<Func<string, Status>>()))
                 .Returns(SingleStatusResponse);
             var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
 
@@ -95,7 +95,7 @@ namespace LinqToTwitterXUnitTests.FavoritesTests
                 exec.ExecuteTwitter(
                     It.IsAny<string>(),
                     It.IsAny<Dictionary<string, string>>(),
-                    It.IsAny<IRequestProcessor<Status>>()))
+                    It.IsAny<Func<string, Status>>()))
                 .Returns(SingleStatusResponse);
             var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
 

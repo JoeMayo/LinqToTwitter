@@ -40,7 +40,7 @@ namespace LinqToTwitter
                 twitExe.ExecuteTwitter(
                     favoritesUrl,
                     new Dictionary<string, string>(),
-                    reqProc);
+                    response => reqProc.ProcessActionResult(response, FavoritesAction.SingleStatus));
 
             Status result = reqProc.ProcessActionResult(resultsJson, FavoritesAction.SingleStatus);
             return result;
@@ -80,7 +80,7 @@ namespace LinqToTwitter
                 twitExe.ExecuteTwitter(
                     favoritesUrl,
                     new Dictionary<string, string>(),
-                    reqProc);
+                    response => reqProc.ProcessActionResult(response, FavoritesAction.SingleStatus));
 
             Status result = reqProc.ProcessActionResult(resultsJson, FavoritesAction.SingleStatus);
             return result;

@@ -29,7 +29,7 @@ namespace LinqToTwitterXUnitTests.NotificationsTests
                 exec.ExecuteTwitter(
                     It.IsAny<string>(),
                     It.IsAny<Dictionary<string, string>>(),
-                    It.IsAny<IRequestProcessor<User>>()))
+                    It.IsAny<Func<string, User>>()))
                 .Returns(SingleUserResponse);
             var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
 
@@ -39,7 +39,7 @@ namespace LinqToTwitterXUnitTests.NotificationsTests
                 exec.ExecuteTwitter(
                     "https://api.twitter.com/1/notifications/follow/1.json",
                     It.IsAny<Dictionary<string, string>>(),
-                    It.IsAny<IRequestProcessor<User>>()),
+                    It.IsAny<Func<string, User>>()),
                 Times.Once());
             Assert.Equal(ExpectedName, actual.Name);
         }
@@ -56,7 +56,7 @@ namespace LinqToTwitterXUnitTests.NotificationsTests
                 exec.ExecuteTwitter(
                     It.IsAny<string>(),
                     It.IsAny<Dictionary<string, string>>(),
-                    It.IsAny<IRequestProcessor<User>>()))
+                    It.IsAny<Func<string, User>>()))
                 .Returns(SingleUserResponse);
             var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
 
@@ -79,7 +79,7 @@ namespace LinqToTwitterXUnitTests.NotificationsTests
                 exec.ExecuteTwitter(
                     It.IsAny<string>(),
                     It.IsAny<Dictionary<string, string>>(),
-                    It.IsAny<IRequestProcessor<User>>()))
+                    It.IsAny<Func<string, User>>()))
                 .Returns(SingleUserResponse);
             var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
 
@@ -89,7 +89,7 @@ namespace LinqToTwitterXUnitTests.NotificationsTests
                 exec.ExecuteTwitter(
                     "https://api.twitter.com/1/notifications/leave/1.json",
                     It.IsAny<Dictionary<string, string>>(),
-                    It.IsAny<IRequestProcessor<User>>()),
+                    It.IsAny<Func<string, User>>()),
                 Times.Once());
             Assert.Equal(ExpectedName, actual.Name);
         }
@@ -107,7 +107,7 @@ namespace LinqToTwitterXUnitTests.NotificationsTests
                 exec.ExecuteTwitter(
                     It.IsAny<string>(),
                     It.IsAny<Dictionary<string, string>>(),
-                    It.IsAny<IRequestProcessor<User>>()))
+                    It.IsAny<Func<string, User>>()))
                 .Returns(SingleUserResponse);
             var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
 

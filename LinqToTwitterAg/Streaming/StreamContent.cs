@@ -1,6 +1,6 @@
 ﻿namespace LinqToTwitter
 {
-    public class StreamContent
+    public class StreamContent : IStreamContent
     {
         private readonly ITwitterExecute exec;
 
@@ -12,7 +12,7 @@
 
         public string Content { get; set; }
 
-        public void CloseStream()
+        public virtual void CloseStream()
         {
             exec.CloseStream = true;
         }

@@ -637,6 +637,9 @@
     <Compile Include="..\LinqToTwitterAg\Status\StatusType.cs">
       <Link>Status\StatusType.cs</Link>
     </Compile>
+    <Compile Include="..\LinqToTwitterAg\Streaming\IStreamContent.cs">
+      <Link>Streaming\IStreamContent.cs</Link>
+    </Compile>
     <Compile Include="..\LinqToTwitterAg\Streaming\StreamContent.cs">
       <Link>Streaming\StreamContent.cs</Link>
     </Compile>

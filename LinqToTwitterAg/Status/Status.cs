@@ -20,7 +20,7 @@ namespace LinqToTwitter
     public class Status
     {
         public Status() {}
-        internal Status(JsonData status)
+        public Status(JsonData status)
         {
             if (status == null) return;
 

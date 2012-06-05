@@ -70,7 +70,7 @@ namespace LinqToTwitter
                         {"user_id", userID},
                         {"screen_name", screenName}
                     },
-                    reqProc);
+                    response => reqProc.ProcessActionResult(response, UserAction.SingleUser));
 
             User user = reqProc.ProcessActionResult(resultsJson, UserAction.SingleUser);
             return user;
@@ -138,7 +138,7 @@ namespace LinqToTwitter
                         {"user_id", userID},
                         {"screen_name", screenName}
                     },
-                    reqProc);
+                    response => reqProc.ProcessActionResult(response, UserAction.SingleUser));
 
             User user = reqProc.ProcessActionResult(resultsJson, UserAction.SingleUser);
             return user;

@@ -36,7 +36,7 @@ namespace LinqToTwitterXUnitTests.ListTests
                 exec.ExecuteTwitter(
                     It.IsAny<string>(),
                     It.IsAny<Dictionary<string, string>>(),
-                    It.IsAny<IRequestProcessor<List>>()))
+                    It.IsAny<Func<string, List>>()))
                 .Returns(TestStatusQueryResponse);
             ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
         }
@@ -68,7 +68,7 @@ namespace LinqToTwitterXUnitTests.ListTests
                 exec.ExecuteTwitter(
                     "https://api.twitter.com/1/lists/create.json",
                     parameters,
-                    It.IsAny<IRequestProcessor<List>>()),
+                    It.IsAny<Func<string, List>>()),
                 Times.Once());
         }
 
@@ -112,7 +112,7 @@ namespace LinqToTwitterXUnitTests.ListTests
                 exec.ExecuteTwitter(
                     "https://api.twitter.com/1/lists/update.json",
                     parameters,
-                    It.IsAny<IRequestProcessor<List>>()),
+                    It.IsAny<Func<string, List>>()),
                 Times.Once());
         }
 
@@ -170,7 +170,7 @@ namespace LinqToTwitterXUnitTests.ListTests
                 exec.ExecuteTwitter(
                     "https://api.twitter.com/1/lists/destroy.json",
                     parameters,
-                    It.IsAny<IRequestProcessor<List>>()),
+                    It.IsAny<Func<string, List>>()),
                 Times.Once());
         }
 
@@ -224,7 +224,7 @@ namespace LinqToTwitterXUnitTests.ListTests
                 exec.ExecuteTwitter(
                     "https://api.twitter.com/1/lists/members/create.json",
                     parameters,
-                    It.IsAny<IRequestProcessor<List>>()),
+                    It.IsAny<Func<string, List>>()),
                 Times.Once());
         }
 
@@ -300,7 +300,7 @@ namespace LinqToTwitterXUnitTests.ListTests
                 exec.ExecuteTwitter(
                     "https://api.twitter.com/1/lists/members/create_all.json",
                     parameters,
-                    It.IsAny<IRequestProcessor<List>>()),
+                    It.IsAny<Func<string, List>>()),
                 Times.Once());
         }
 
@@ -356,7 +356,7 @@ namespace LinqToTwitterXUnitTests.ListTests
                 exec.ExecuteTwitter(
                     "https://api.twitter.com/1/lists/members/create_all.json",
                     parameters,
-                    It.IsAny<IRequestProcessor<List>>()),
+                    It.IsAny<Func<string, List>>()),
                 Times.Once());
         }
 
@@ -410,7 +410,7 @@ namespace LinqToTwitterXUnitTests.ListTests
                 exec.ExecuteTwitter(
                     "https://api.twitter.com/1/lists/members/destroy.json",
                     parameters,
-                    It.IsAny<IRequestProcessor<List>>()),
+                    It.IsAny<Func<string, List>>()),
                 Times.Once());
         }
 
@@ -452,7 +452,7 @@ namespace LinqToTwitterXUnitTests.ListTests
                 exec.ExecuteTwitter(
                     "https://api.twitter.com/1/lists/subscribers/create.json",
                     parameters,
-                    It.IsAny<IRequestProcessor<List>>()),
+                    It.IsAny<Func<string, List>>()),
                 Times.Once());
         }
 
@@ -494,7 +494,7 @@ namespace LinqToTwitterXUnitTests.ListTests
                 exec.ExecuteTwitter(
                     "https://api.twitter.com/1/lists/subscribers/destroy.json",
                     parameters,
-                    It.IsAny<IRequestProcessor<List>>()),
+                    It.IsAny<Func<string, List>>()),
                 Times.Once());
         }
 
@@ -518,7 +518,7 @@ namespace LinqToTwitterXUnitTests.ListTests
                 exec.ExecuteTwitter(
                     "https://api.twitter.com/1/lists/members/destroy_all.json",
                     parameters,
-                    It.IsAny<IRequestProcessor<List>>()),
+                    It.IsAny<Func<string, List>>()),
                 Times.Once());
         }
 
@@ -589,7 +589,7 @@ namespace LinqToTwitterXUnitTests.ListTests
                 exec.ExecuteTwitter(
                     "https://api.twitter.com/1/lists/members/destroy_all.json",
                     parameters,
-                    It.IsAny<IRequestProcessor<List>>()),
+                    It.IsAny<Func<string, List>>()),
                 Times.Once());
         }
 
@@ -614,7 +614,7 @@ namespace LinqToTwitterXUnitTests.ListTests
                 exec.ExecuteTwitter(
                     "https://api.twitter.com/1/lists/members/destroy_all.json",
                     parameters,
-                    It.IsAny<IRequestProcessor<List>>()),
+                    It.IsAny<Func<string, List>>()),
                 Times.Once());
         }
 

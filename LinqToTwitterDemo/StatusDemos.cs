@@ -20,7 +20,7 @@ namespace LinqToTwitterDemo
         {
             //HomeStatusQueryDemo(twitterCtx);
             //HomeSinceStatusQueryDemo(twitterCtx);
-            //UserStatusQueryDemo(twitterCtx);
+            UserStatusQueryDemo(twitterCtx);
             //UserStatusSinceIDQueryDemo(twitterCtx);
             //UserStatusByNameQueryDemo(twitterCtx);
             //UserStatusWithRetweetsQueryDemo(twitterCtx);
@@ -32,7 +32,7 @@ namespace LinqToTwitterDemo
             //UpdateStatusWrapLinksDemo(twitterCtx);
             //UpdateStatusWithCallbackDemo(twitterCtx);
             //UpdateStatusWithReplyDemo(twitterCtx);
-            UpdateStatusWithLocationDemo(twitterCtx);
+            //UpdateStatusWithLocationDemo(twitterCtx);
             //UpdateStatusWithPlaceDemo(twitterCtx);
             //DestroyStatusDemo(twitterCtx);
             //RetweetedByMeStatusQueryDemo(twitterCtx);
@@ -486,27 +486,56 @@ namespace LinqToTwitterDemo
         }
 
         /// <summary>
-        /// shows how to query status
+        /// shows how to query user status
         /// </summary>
         /// <param name="twitterCtx">TwitterContext</param>
         private static void UserStatusQueryDemo(TwitterContext twitterCtx)
         {
-            Console.WriteLine();
+            int maxStatuses = 30;
+            int lastStatusCount = 0;
+            ulong sinceID = 182583822993465346; // last tweet processed on previous query
+            ulong maxID;
+            int count = 10;
+            var statusList = new List<Status>();
 
-            var statusTweets =
-                from tweet in twitterCtx.Status
-                where tweet.Type == StatusType.User
-                      && tweet.ID == "15411837"  // ID for User
-                select tweet;
+            // only count
+            var userStatusResponse =
+                (from tweet in twitterCtx.Status
+                 where tweet.Type == StatusType.User &&
+                       tweet.ScreenName == "JoeMayo" &&
+                       tweet.Count == count
+                 select tweet)
+                .ToList();
 
-            foreach (var tweet in statusTweets)
+            maxID = userStatusResponse.Min(status => ulong.Parse(status.StatusID)) - 1; // first tweet processed on current query
+            statusList.AddRange(userStatusResponse);
+
+            do
             {
-                Console.WriteLine(
-                    "(" + tweet.StatusID + ")" +
-                    "[" + tweet.User.ID + "]" +
-                    tweet.User.Name + ", " +
-                    tweet.Text + ", " +
-                    tweet.CreatedAt);
+                // now add sinceID and maxID
+                userStatusResponse =
+                    (from tweet in twitterCtx.Status
+                     where tweet.Type == StatusType.User &&
+                           tweet.ScreenName == "JoeMayo" &&
+                           tweet.Count == count &&
+                           tweet.SinceID == sinceID &&
+                           tweet.MaxID == maxID
+                     select tweet)
+                    .ToList();
+
+                maxID = userStatusResponse.Min(status => ulong.Parse(status.StatusID)) - 1; // first tweet processed on current query
+                statusList.AddRange(userStatusResponse);
+
+                lastStatusCount = userStatusResponse.Count;
+            }
+            while (lastStatusCount != 0 && statusList.Count < maxStatuses);
+
+            for (int i = 0; i < statusList.Count; i++)
+            {
+                Status status = statusList[i];
+
+                Console.WriteLine("{0, 4}. [{1}] User: {2}\nStatus: {3}",
+                    i + 1, status.StatusID, status.User.Name, status.Text);
             }
         }
 
