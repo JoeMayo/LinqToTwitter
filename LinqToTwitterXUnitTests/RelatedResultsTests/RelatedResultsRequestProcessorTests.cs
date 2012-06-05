@@ -80,7 +80,9 @@ namespace LinqToTwitterXUnitTests.RelatedResultsTests
             Assert.Empty(result.ValueAnnotations.Attributes);
             Assert.False(result.Retweeted);
             Assert.Equal("swhitley", result.InReplyToScreenName);
-            Assert.Null(result.Contributors);
+            var contributors = result.Contributors;
+            Assert.NotNull(contributors);
+            Assert.Empty(contributors);
             Assert.NotNull(result.Coordinates);
             Assert.Equal(0, result.Coordinates.Latitude);
             Assert.NotNull(result.Place);

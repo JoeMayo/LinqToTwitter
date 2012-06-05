@@ -382,7 +382,6 @@ namespace LinqToTwitterXUnitTests.UserTests
             Assert.NotEmpty(contributors);
             var contributor = contributors.First();
             Assert.NotNull(contributor);
-            Assert.Equal(14927800ul, contributor);
             Assert.True(user.ContributorsEnabled);
             Assert.False(user.IsTranslator);
             Assert.Equal("E8F2F7", user.ProfileBackgroundColor);

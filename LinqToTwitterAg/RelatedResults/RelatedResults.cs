@@ -26,7 +26,7 @@ namespace LinqToTwitter
             var contributors = value.GetValue<JsonData>("contributors");
             Contributors =
                 contributors == null ?
-                    null :
+                    new List<Contributor>() :
                     (from JsonData contributor in contributors
                      select new Contributor(contributor))
                     .ToList();
