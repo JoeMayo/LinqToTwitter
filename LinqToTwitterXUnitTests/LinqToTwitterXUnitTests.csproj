@@ -99,6 +99,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="LinqToTwitterTests\TwitterContextUrlTests.cs" />
     <Compile Include="StatusTests\StatusRequestProcessorTests.cs" />
+    <Compile Include="TrendTests\TrendRequestProcessorTests.cs" />
     <Compile Include="UserTests\UserRequestProcessorTests.cs" />
   </ItemGroup>
   <ItemGroup>

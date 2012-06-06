@@ -3,52 +3,52 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Text;
+using System.Threading;
 using LinqToTwitter;
 using LinqToTwitterTests.Common;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Xunit;
 
-namespace LinqToTwitterTests
+namespace LinqToTwitterXUnitTests.TrendTests
 {
-    [TestClass]
-    public class TrendRequestProcessorTest
+    public class TrendRequestProcessorTests
     {
-        [ClassInitialize]
-        public static void MyClassInitialize(TestContext testContext)
+        public TrendRequestProcessorTests()
         {
             TestCulture.SetCulture();
         }
 
-        [TestMethod]
+        [Fact]
         public void ProcessResults_Handles_Trends()
         {
             var trendReqProc = new TrendRequestProcessor<Trend> { Type = TrendType.Trend };
 
             List<Trend> trends = trendReqProc.ProcessResults(TestTrendQueryResponse);
 
-            Assert.AreEqual(10, trends.Count);
-            Assert.AreEqual(DateTime.Parse("2011-09-19").Date, trends[0].AsOf.Date);
+            Assert.Equal(10, trends.Count);
+            Assert.Equal(DateTime.Parse("2011-09-19").Date, trends[0].AsOf.Date);
         }
 
-        [TestMethod]
+        [Fact]
         public void ProcessResults_Handles_Available()
         {
             var trendReqProc = new TrendRequestProcessor<Trend> { Type = TrendType.Available };
 
             List<Trend> trends = trendReqProc.ProcessResults(TestAvailableQueryResponse);
 
-            Assert.AreEqual(2, trends[0].Locations.Count);
+            Assert.Equal(2, trends[0].Locations.Count);
             Location loc = trends[0].Location;
-            Assert.AreEqual("Country", loc.PlaceTypeName);
-            Assert.AreEqual(12, loc.PlaceTypeNameCode);
-            Assert.AreEqual("Turkey", loc.Name);
-            Assert.AreEqual("http://where.yahooapis.com/v1/place/23424969", loc.Url);
-            Assert.AreEqual("23424969", loc.WoeID);
-            Assert.AreEqual("TR", loc.CountryCode);
-            Assert.AreEqual("1", loc.ParentID);
-            Assert.AreEqual("Turkey", loc.Country);
+            Assert.Equal("Country", loc.PlaceTypeName);
+            Assert.Equal(12, loc.PlaceTypeNameCode);
+            Assert.Equal("Turkey", loc.Name);
+            Assert.Equal("http://where.yahooapis.com/v1/place/23424969", loc.Url);
+            Assert.Equal("23424969", loc.WoeID);
+            Assert.Equal("TR", loc.CountryCode);
+            Assert.Equal("1", loc.ParentID);
+            Assert.Equal("Turkey", loc.Country);
         }
 
-        [TestMethod]
+        [Fact]
         public void ProcessResults_Handles_Daily()
         {
             var expectedDateTime = new DateTime(2011, 9, 5, 11, 0, 0);
@@ -56,35 +56,35 @@ namespace LinqToTwitterTests
 
             List<Trend> trends = trendReqProc.ProcessResults(TestDailyQueryResponse);
 
-            Assert.AreEqual(4, trends.Count);
-            Assert.AreEqual(expectedDateTime, trends.First().TrendDate);
+            Assert.Equal(4, trends.Count);
+            Assert.Equal(expectedDateTime, trends.First().TrendDate);
         }
 
-        [TestMethod]
+        [Fact]
         public void ProcessResults_Parses_Location()
         {
             var trendProc = new TrendRequestProcessor<Trend> { Type = TrendType.Location };
 
             List<Trend> trends = trendProc.ProcessResults(TestTrendQueryResponse);
 
-            Assert.AreEqual(1, trends[0].Locations.Count);
+            Assert.Equal(1, trends[0].Locations.Count);
 
             Location loc = trends[0].Locations.First();
-            Assert.AreEqual("Worldwide", loc.Name);
-            Assert.AreEqual("1", loc.WoeID);
+            Assert.Equal("Worldwide", loc.Name);
+            Assert.Equal("1", loc.WoeID);
         }
 
-        [TestMethod]
+        [Fact]
         public void ProcessResults_Returns_Empty_Collection_When_Empty_Results()
         {
             var trendProc = new TrendRequestProcessor<Trend>();
 
             var trends = trendProc.ProcessResults(string.Empty);
 
-            Assert.AreEqual(0, trends.Count);
+            Assert.Equal(0, trends.Count);
         }
 
-        [TestMethod]
+        [Fact]
         public void GetParameters_Collects_Parameters()
         {
             const bool ShouldExcludeHashtags = true;
@@ -97,33 +97,34 @@ namespace LinqToTwitterTests
 
             var queryParams = trendReqProc.GetParameters(lambdaExpression);
 
-            Assert.IsTrue(
+            Assert.True(
                 queryParams.Contains(
                     new KeyValuePair<string, string>("Type", ((int)TrendType.Available).ToString(CultureInfo.InvariantCulture))));
-            Assert.IsTrue(
+            Assert.True(
                 queryParams.Contains(
                     new KeyValuePair<string, string>("ExcludeHashtags", "True")));
         }
 
-        [TestMethod]
+        [Fact]
         public void BuildUrl_Constructs_Trends_Url()
         {
+            const string ExpectedUrl = "https://api.twitter.com/1/trends/1.json";
             var trendReqProc = new TrendRequestProcessor<Trend> { BaseUrl = "https://api.twitter.com/1/" };
             var parameters =
                 new Dictionary<string, string>
                 {
                     { "Type", ((int)TrendType.Trend).ToString(CultureInfo.InvariantCulture) }
                 };
-            const string Expected = "https://api.twitter.com/1/trends/1.json";
 
             Request req = trendReqProc.BuildUrl(parameters);
 
-            Assert.AreEqual(Expected, req.FullUrl);
+            Assert.Equal(ExpectedUrl, req.FullUrl);
         }
 
-        [TestMethod]
+        [Fact]
         public void BuildWeeklyTrendsUrlTest()
         {
+            const string ExpectedUrl = "https://api.twitter.com/1/trends/weekly.json?date=2009-01-01&exclude=hashtags";
             var trendReqProc = new TrendRequestProcessor<Trend> { BaseUrl = "https://api.twitter.com/1/" };
             var parameters =
                 new Dictionary<string, string>
@@ -132,32 +133,32 @@ namespace LinqToTwitterTests
                     { "Date", "2009-01-01" },
                     { "ExcludeHashtags", "true" }
                 };
-            const string Expected = "https://api.twitter.com/1/trends/weekly.json?date=2009-01-01&exclude=hashtags";
 
             Request req = trendReqProc.BuildUrl(parameters);
 
-            Assert.AreEqual(Expected, req.FullUrl);
+            Assert.Equal(ExpectedUrl, req.FullUrl);
         }
 
-        [TestMethod]
+        [Fact]
         public void BuildUrl_Handles_Available_Trends()
         {
+            const string ExpectedUrl = "https://api.twitter.com/1/trends/available.json";
             var trendReqProc = new TrendRequestProcessor<Trend> { BaseUrl = "https://api.twitter.com/1/" };
             var parameters =
                 new Dictionary<string, string>
                 {
                     { "Type", ((int)TrendType.Available).ToString(CultureInfo.InvariantCulture) }
                 };
-            const string Expected = "https://api.twitter.com/1/trends/available.json";
 
             Request req = trendReqProc.BuildUrl(parameters);
 
-            Assert.AreEqual(Expected, req.FullUrl);
+            Assert.Equal(ExpectedUrl, req.FullUrl);
         }
 
-        [TestMethod]
+        [Fact]
         public void BuildUrl_Constructs_Daily_Trends()
         {
+            const string ExpectedUrl = "https://api.twitter.com/1/trends/daily.json?date=2009-01-01&exclude=hashtags";
             var trendReqProc = new TrendRequestProcessor<Trend> { BaseUrl = "https://api.twitter.com/1/" };
             var parameters =
                 new Dictionary<string, string>
@@ -166,16 +167,34 @@ namespace LinqToTwitterTests
                     { "Date", "2009-01-01" },
                     { "ExcludeHashtags", "true" }
                 };
-            const string Expected = "https://api.twitter.com/1/trends/daily.json?date=2009-01-01&exclude=hashtags";
 
             Request req = trendReqProc.BuildUrl(parameters);
 
-            Assert.AreEqual(Expected, req.FullUrl);
+            Assert.Equal(ExpectedUrl, req.FullUrl);
         }
 
-        [TestMethod]
+        [Fact]
+        public void BuildUrl_Handles_DateTime_Param()
+        {
+            Thread.CurrentThread.CurrentUICulture = new CultureInfo("fr-FR");
+            const string ExpectedUrl = "https://api.twitter.com/1/trends/daily.json?date=2012-03-26";
+            var trendReqProc = new TrendRequestProcessor<Trend> { BaseUrl = "https://api.twitter.com/1/" };
+            var parameters =
+                new Dictionary<string, string>
+                {
+                    { "Type", ((int)TrendType.Daily).ToString(CultureInfo.InvariantCulture) },
+                    { "Date", "26/03/2012 00:00:00" }
+                };
+
+            Request req = trendReqProc.BuildUrl(parameters);
+
+            Assert.Equal(ExpectedUrl, req.FullUrl);
+        }
+
+        [Fact]
         public void BuildUrl_Constructs_AvailableTrends_Url()
         {
+            const string ExpectedUrl = "http://api.twitter.com/1/trends/available.json?lat=37.78215&long=-122.40060";
             var trendReqProc = new TrendRequestProcessor<Trend> { BaseUrl = "http://api.twitter.com/1/" };
             var parameters =
                 new Dictionary<string, string>
@@ -184,15 +203,13 @@ namespace LinqToTwitterTests
                     { "Latitude", "37.78215" },
                     { "Longitude", "-122.40060" }
                 };
-            const string Expected = "http://api.twitter.com/1/trends/available.json?lat=37.78215&long=-122.40060";
 
             Request req = trendReqProc.BuildUrl(parameters);
 
-            Assert.AreEqual(Expected, req.FullUrl);
+            Assert.Equal(ExpectedUrl, req.FullUrl);
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
+        [Fact]
         public void BuildUrl_Throws_On_AvailableTrends_Without_Latitude()
         {
             var trendReqProc = new TrendRequestProcessor<Trend> { BaseUrl = "http://api.twitter.com/1/" };
@@ -203,12 +220,15 @@ namespace LinqToTwitterTests
                     { "Longitude", "-122.40060" }
                 };
 
-            trendReqProc.BuildUrl(parameters);
+            var ex = Assert.Throws<ArgumentException>(() => trendReqProc.BuildUrl(parameters));
+
+            Assert.Equal("Latitude/Longitude", ex.ParamName);
         }
 
-        [TestMethod]
+        [Fact]
         public void BuildUrl_Constructs_LocationTrends_Url()
         {
+            const string ExpectedUrl = "http://api.twitter.com/1/trends/1.json";
             var trendReqProc = new TrendRequestProcessor<Trend> { BaseUrl = "http://api.twitter.com/1/" };
             var parameters =
                 new Dictionary<string, string>
@@ -216,16 +236,14 @@ namespace LinqToTwitterTests
                     { "Type", ((int)TrendType.Location).ToString(CultureInfo.InvariantCulture) },
                     { "WeoID", "1" }
                 };
-            const string Expected = "http://api.twitter.com/1/trends/1.json";
 
             Request req = trendReqProc.BuildUrl(parameters);
 
-            Assert.AreEqual(Expected, req.FullUrl);
+            Assert.Equal(ExpectedUrl, req.FullUrl);
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
-        public void BuildUrl_Throws_On_LocationTrends_WithoutWeoID()
+        [Fact]
+        public void BuildUrl_Throws_On_LocationTrends_WithoutWoeID()
         {
             var trendReqProc = new TrendRequestProcessor<Trend> { BaseUrl = "http://api.twitter.com/1/" };
             var parameters =
@@ -234,42 +252,30 @@ namespace LinqToTwitterTests
                     { "Type", ((int)TrendType.Location).ToString(CultureInfo.InvariantCulture) },
                 };
 
-            trendReqProc.BuildUrl(parameters);
+            var ex = Assert.Throws<ArgumentException>(() => trendReqProc.BuildUrl(parameters));
+
+            Assert.Equal("WeoID", ex.ParamName);
         }
 
-        [TestMethod]
+        [Fact]
         public void BuildUrl_Throws_When_Type_Not_Provided()
         {
             var trendReqProc = new TrendRequestProcessor<Trend> { BaseUrl = "https://api.twitter.com/1/" };
             var parameters = new Dictionary<string, string>();
 
-            try
-            {
-                trendReqProc.BuildUrl(parameters);
+            var ex = Assert.Throws<ArgumentException>(() => trendReqProc.BuildUrl(parameters));
 
-                Assert.Fail("Expected ArgumentException.");
-            }
-            catch (ArgumentException ae)
-            {
-                Assert.AreEqual("Type", ae.ParamName);
-            }
+            Assert.Equal("Type", ex.ParamName);
         }
 
-        [TestMethod]
+        [Fact]
         public void BuildUrl_Throws_With_No_Parameters()
         {
-            var target = new TrendRequestProcessor<Trend> { BaseUrl = "https://api.twitter.com/1/" };
+            var trendReqProc = new TrendRequestProcessor<Trend> { BaseUrl = "https://api.twitter.com/1/" };
 
-            try
-            {
-                target.BuildUrl(null);
+            var ex = Assert.Throws<ArgumentException>(() => trendReqProc.BuildUrl(null));
 
-                Assert.Fail("Expected ArgumentException.");
-            }
-            catch (ArgumentException ae)
-            {
-                Assert.AreEqual("Type", ae.ParamName);
-            }
+            Assert.Equal("Type", ex.ParamName);
         }
 
         const string TestTrendQueryResponse = @"[

@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 
+using System.Threading;
 using LinqToTwitter.Common;
 using LitJson;
 
@@ -141,7 +142,7 @@ namespace LinqToTwitter
         {
             if ((parameters.ContainsKey("Latitude") && !parameters.ContainsKey("Longitude")) ||
                 (!parameters.ContainsKey("Latitude") && parameters.ContainsKey("Longitude")))
-                throw new ArgumentException("If you pass either Latitude or Longitude then you must pass both. Otherwise, don't pass either.");
+                throw new ArgumentException("If you pass either Latitude or Longitude then you must pass both. Otherwise, don't pass either.", "Latitude/Longitude");
 
             var req = new Request(BaseUrl + "trends/available.json");
             var urlParams = req.RequestParameters;
@@ -194,7 +195,7 @@ namespace LinqToTwitter
 
             if (parameters.ContainsKey("Date"))
             {
-                Date = DateTime.Parse(parameters["Date"], CultureInfo.InvariantCulture);
+                Date = DateTime.Parse(parameters["Date"], Thread.CurrentThread.CurrentUICulture);//, CultureInfo.InvariantCulture);
                 urlParams.Add(new QueryParameter("date", Date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)));
             }
 
