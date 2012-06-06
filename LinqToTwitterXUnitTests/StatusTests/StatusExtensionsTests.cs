@@ -33,7 +33,7 @@ namespace LinqToTwitterXUnitTests.StatusTests
             var execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
             var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
-            execMock.Setup(exec => exec.ExecuteTwitter(It.IsAny<string>(), It.IsAny<Dictionary<string, string>>(), It.IsAny<IRequestProcessor<Status>>()))
+            execMock.Setup(exec => exec.ExecuteTwitter(It.IsAny<string>(), It.IsAny<Dictionary<string, string>>(), It.IsAny<Func<string, Status>>()))
                     .Returns(SingleStatusResponse);
 
             Status actual = ctx.UpdateStatus(Status, InReplyToStatusID);
@@ -52,7 +52,7 @@ namespace LinqToTwitterXUnitTests.StatusTests
                 exec.ExecuteTwitter(
                     It.IsAny<string>(),
                     It.IsAny<Dictionary<string, string>>(),
-                    It.IsAny<IRequestProcessor<Status>>()))
+                    It.IsAny<Func<string, Status>>()))
                 .Returns(SingleStatusResponse);
             var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
 
@@ -70,7 +70,7 @@ namespace LinqToTwitterXUnitTests.StatusTests
             var execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
             var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
-            execMock.Setup(exec => exec.ExecuteTwitter(It.IsAny<string>(), It.IsAny<Dictionary<string, string>>(), It.IsAny<IRequestProcessor<Status>>()))
+            execMock.Setup(exec => exec.ExecuteTwitter(It.IsAny<string>(), It.IsAny<Dictionary<string, string>>(), It.IsAny<Func<string, Status>>()))
                     .Returns(SingleStatusResponse);
 
             Status actual = ctx.UpdateStatus(Status);
@@ -90,7 +90,7 @@ namespace LinqToTwitterXUnitTests.StatusTests
                 exec.ExecuteTwitter(
                     It.IsAny<string>(),
                     It.IsAny<Dictionary<string, string>>(),
-                    It.IsAny<IRequestProcessor<Status>>()))
+                    It.IsAny<Func<string, Status>>()))
                 .Returns(SingleStatusResponse);
             var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
 
@@ -110,7 +110,7 @@ namespace LinqToTwitterXUnitTests.StatusTests
                 exec.ExecuteTwitter(
                     It.IsAny<string>(),
                     It.IsAny<Dictionary<string, string>>(),
-                    It.IsAny<IRequestProcessor<Status>>()))
+                    It.IsAny<Func<string, Status>>()))
                 .Returns(SingleStatusResponse);
             var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
 
@@ -132,8 +132,8 @@ namespace LinqToTwitterXUnitTests.StatusTests
                 exec.ExecuteTwitter(
                     It.IsAny<string>(),
                     It.IsAny<Dictionary<string, string>>(),
-                    It.IsAny<IRequestProcessor<Status>>()))
-                .Callback<string, IDictionary<string, string>, IRequestProcessor<Status>>(
+                    It.IsAny<Func<string, Status>>()))
+                .Callback<string, IDictionary<string, string>, Func<string, Status>>(
                     (url, postData, reqProc) => wrapLinksPassedToExecute =
                         postData.ContainsKey("wrap_links") && bool.Parse(postData["wrap_links"]))
                 .Returns(SingleStatusResponse);
@@ -157,8 +157,8 @@ namespace LinqToTwitterXUnitTests.StatusTests
                 exec.ExecuteTwitter(
                     It.IsAny<string>(),
                     It.IsAny<Dictionary<string, string>>(),
-                    It.IsAny<IRequestProcessor<Status>>()))
-                .Callback<string, IDictionary<string, string>, IRequestProcessor<Status>>(
+                    It.IsAny<Func<string, Status>>()))
+                .Callback<string, IDictionary<string, string>, Func<string, Status>>(
                     (url, postData, reqProc) =>
                         wrapLinksIsSetToNull = postData["wrap_links"] == null)
                 .Returns(SingleStatusResponse);

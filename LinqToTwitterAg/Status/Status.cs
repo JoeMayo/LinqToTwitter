@@ -20,7 +20,7 @@ namespace LinqToTwitter
     public class Status
     {
         public Status() {}
-        internal Status(JsonData status)
+        public Status(JsonData status)
         {
             if (status == null) return;
 
@@ -30,13 +30,12 @@ namespace LinqToTwitter
             PossiblySensitive = status.GetValue<bool>("possibly_sensitive");
             RetweetedStatus = new Status(status.GetValue<JsonData>("retweeted_status"));
             var contributors = status.GetValue<JsonData>("contributors");
-            if (contributors != null)
-                Contributors =
+            Contributors =
+                contributors == null ?
+                    new List<Contributor>() :
                     (from JsonData contributor in contributors
-                     select (ulong)contributor)
+                     select new Contributor(contributor))
                     .ToList();
-            else
-                Contributors = new List<ulong>();
             var coords = status.GetValue<JsonData>("coordinates");
             if (coords != null)
             {
@@ -197,9 +196,9 @@ namespace LinqToTwitter
         public Retweet Retweet { get; set; }
 
         /// <summary>
-        /// IDs of users who have contributed
+        /// users who have contributed
         /// </summary>
-        public List<ulong> Contributors { get; set; }
+        public List<Contributor> Contributors { get; set; }
 
         /// <summary>
         /// Geographic information on tweet location

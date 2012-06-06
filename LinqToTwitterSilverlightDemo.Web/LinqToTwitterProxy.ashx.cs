@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -27,15 +28,7 @@ namespace LinqToTwitterSilverlightDemo.Web
                 req = SetCookies(req, context.Request);
                 req = SetHeaders(req, context.Request.Headers);
 
-                using (WebResponse resp = req.GetResponse())
-                {
-                    using (var respStream = resp.GetResponseStream())
-                    using (var respReader = new StreamReader(respStream))
-                    {
-                        string respString = respReader.ReadToEnd();
-                        context.Response.Write(respString);
-                    }
-                }
+                ProcessResponse(req, context);
             }
 
             if (context.Request.HttpMethod == "POST")
@@ -58,14 +51,53 @@ namespace LinqToTwitterSilverlightDemo.Web
                     reqStream.Flush();
                 }
 
-                using (WebResponse resp = req.GetResponse())
+                ProcessResponse(req, context);
+            }
+        }
+  
+        private void ProcessResponse(HttpWebRequest req, HttpContext context)
+        {
+            using (WebResponse resp = req.GetResponse())
+            {
+                //using (var respStream = resp.GetResponseStream())
+                //    using (var respReader = new StreamReader(respStream))
+                //    {
+                //        string respString = respReader.ReadToEnd();
+                //        context.Response.Write(respString);
+                //    }
+                using (var respStream = resp.GetResponseStream())
                 {
-                    using (var respStream = resp.GetResponseStream())
-                    using (var respReader = new StreamReader(respStream))
+                    string responseData = "";
+                    string contentEncoding = resp.Headers["Content-Encoding"] ?? "";
+                    if (contentEncoding.ToLower().Contains("gzip"))
                     {
-                        string respString = respReader.ReadToEnd();
-                        context.Response.Write(respString);
+                        using (var gzip = new GZipStream(respStream, CompressionMode.Decompress))
+                        {
+                            using (var reader = new StreamReader(gzip))
+                            {
+                                responseData = reader.ReadToEnd();
+                            }
+                        }
                     }
+                    else if (contentEncoding.ToLower().Contains("deflate"))
+                    {
+                        using (var gzip = new DeflateStream(respStream, CompressionMode.Decompress))
+                        {
+                            using (var reader = new StreamReader(gzip))
+                            {
+                                responseData = reader.ReadToEnd();
+                            }
+                        }
+                    }
+                    else
+                    {
+                        using (var respReader = new StreamReader(respStream))
+                        {
+                            responseData = respReader.ReadToEnd();
+                        }
+                    }
+
+                    context.Response.Write(responseData);
                 }
             }
         }
@@ -162,6 +194,8 @@ namespace LinqToTwitterSilverlightDemo.Web
             proxyReq.ServicePoint.Expect100Continue = false;
 
             proxyReq.UserAgent = "LINQ to Twitter v2.0";
+
+            proxyReq.Headers[HttpRequestHeader.AcceptEncoding] = "deflate,gzip";
 
             return proxyReq;
         }

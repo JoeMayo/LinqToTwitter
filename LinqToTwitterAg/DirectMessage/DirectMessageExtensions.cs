@@ -8,7 +8,7 @@ namespace LinqToTwitter
     public static class DirectMessageExtensions
     {
         /// <summary>
-        /// sends a new direct message to specified userr
+        /// sends a new direct message to specified user
         /// </summary>
         /// <param name="ctx">Twitter Context</param>
         /// <param name="user">UserID or ScreenName of user to send to</param>
@@ -20,7 +20,7 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// sends a new direct message to specified userr
+        /// sends a new direct message to specified user
         /// </summary>
         /// <param name="ctx">Twitter Context</param>
         /// <param name="user">UserID or ScreenName of user to send to</param>
@@ -69,10 +69,10 @@ namespace LinqToTwitter
                         {"text", text},
                         {"wrap_links", wrapLinks ? true.ToString() : null }
                     },
-                    reqProc);
+                    response => reqProc.ProcessActionResult(response, DirectMessageType.Show));
 
-            List<DirectMessage> results = reqProc.ProcessResults("[" + resultsJson + "]");
-            return results.FirstOrDefault();
+            DirectMessage dm = reqProc.ProcessActionResult(resultsJson, DirectMessageType.Show);
+            return dm;
         }
 
         /// <summary>
@@ -111,10 +111,10 @@ namespace LinqToTwitter
                 twitExe.ExecuteTwitter(
                     destroyUrl,
                     new Dictionary<string, string>(),
-                    reqProc);
+                    response => reqProc.ProcessActionResult(response, DirectMessageType.Show));
 
-            List<DirectMessage> results = reqProc.ProcessResults("[" + resultsJson + "]");
-            return results.FirstOrDefault();
+            DirectMessage dm = reqProc.ProcessActionResult(resultsJson, DirectMessageType.Show);
+            return dm;
         }
     }
 }

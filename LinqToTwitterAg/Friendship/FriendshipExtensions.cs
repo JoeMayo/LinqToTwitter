@@ -76,7 +76,7 @@ namespace LinqToTwitter
                 twitExe.ExecuteTwitter(
                     destroyUrl,
                     createParams,
-                    reqProc);
+                    response => reqProc.ProcessActionResult(response, FriendshipAction.Create));
 
             User results = reqProc.ProcessActionResult(resultsJson, FriendshipAction.Create);
             return results;
@@ -135,7 +135,7 @@ namespace LinqToTwitter
                         { "user_id", userID },
                         { "screen_name", screenName }
                     },
-                    reqProc);
+                    response => reqProc.ProcessActionResult(response, FriendshipAction.Destroy));
 
             User results = reqProc.ProcessActionResult(resultsJson, FriendshipAction.Destroy);
             return results;
@@ -184,9 +184,9 @@ namespace LinqToTwitter
                         { "retweets", retweets.ToString().ToLower() },
                         { "device", device.ToString().ToLower() }
                     },
-                    reqProc);
+                    response => reqProc.ProcessActionResult(response, FriendshipAction.Update));
 
-            Friendship results = reqProc.ProcessActionResult(resultsJson, FriendshipAction.Destroy);
+            Friendship results = reqProc.ProcessActionResult(resultsJson, FriendshipAction.Update);
             return results;
         }
     }

@@ -164,25 +164,25 @@ namespace LinqToTwitterSilverlightDemo.Views
 
         private void FriendsButton_Click(object sender, RoutedEventArgs e)
         {
-            var result =
-                (from tweet in m_twitterCtx.Status
-                 where tweet.Type == StatusType.Friends
-                 select tweet)
-                .AsyncCallback(tweets =>
-                    Dispatcher.BeginInvoke(() =>
-                    {
-                        var projectedTweets =
-                           (from tweet in tweets
-                            select new MyTweet
-                            {
-                                ScreenName = tweet.User.Identifier.ScreenName,
-                                Tweet = tweet.Text
-                            })
-                           .ToList();
+            //var result =
+            //    (from tweet in m_twitterCtx.Status
+            //     where tweet.Type == StatusType.Friends
+            //     select tweet)
+            //    .AsyncCallback(tweets =>
+            //        Dispatcher.BeginInvoke(() =>
+            //        {
+            //            var projectedTweets =
+            //               (from tweet in tweets
+            //                select new MyTweet
+            //                {
+            //                    ScreenName = tweet.User.Identifier.ScreenName,
+            //                    Tweet = tweet.Text
+            //                })
+            //               .ToList();
 
-                        FriendsDataGrid.ItemsSource = projectedTweets;
-                    }))
-                .SingleOrDefault();
+            //            FriendsDataGrid.ItemsSource = projectedTweets;
+            //        }))
+            //    .SingleOrDefault();
         }
 
         private void DoXAuth()

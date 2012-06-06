@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using LinqToTwitter;
 using Moq;
 using Xunit;
@@ -10,7 +9,6 @@ namespace LinqToTwitterXUnitTests.GeoTests
 {
     public class GeoExtensionsTests
     {
-
         [Fact]
         public void GeoRequestProcessor_Works_With_Actions()
         {
@@ -27,7 +25,7 @@ namespace LinqToTwitterXUnitTests.GeoTests
             execMock.Setup(exec => exec.ExecuteTwitter(
                 It.IsAny<string>(),
                 It.IsAny<Dictionary<string, string>>(),
-                It.IsAny<IRequestProcessor<Place>>()))
+                It.IsAny<Func<string, Place>>()))
                     .Returns(PlaceResponse);
             var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
             return ctx;

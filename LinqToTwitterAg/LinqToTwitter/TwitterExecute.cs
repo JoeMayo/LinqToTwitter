@@ -1160,7 +1160,7 @@ namespace LinqToTwitter
         /// <param name="postData">Name/value pairs of parameters</param>
         /// <param name="reqProc">Processes results of async requests</param>
         /// <returns>XML response from Twitter</returns>
-        public string ExecuteTwitter<T>(string url, IDictionary<string, string> postData, IRequestProcessor<T> reqProc)
+        public string ExecuteTwitter<T>(string url, IDictionary<string, string> postData, Func<string, T> getResult)//, IRequestProcessor<T> reqProc)
         {
             string httpStatus = string.Empty;
             string response = string.Empty;
@@ -1188,10 +1188,9 @@ namespace LinqToTwitter
 
                                 if (AsyncCallback != null)
                                 {
-                                    List<T> responseObj = reqProc.ProcessResults(response);
                                     var asyncResp = new TwitterAsyncResponse<T>
                                     {
-                                        State = responseObj.FirstOrDefault()
+                                        State = getResult(response)
                                     };
                                     (AsyncCallback as Action<TwitterAsyncResponse<T>>)(asyncResp);
                                 } 
@@ -1235,9 +1234,10 @@ namespace LinqToTwitter
                                     response = GetTwitterResponse(resp);
                                     CheckResultsForTwitterError(response, httpStatus);
 
-                                    List<T> responseObj = reqProc.ProcessResults(response);
+                                    //List<T> responseObj = reqProc.ProcessResults(response);
                                     var asyncResp = new TwitterAsyncResponse<T>();
-                                    asyncResp.State = responseObj.FirstOrDefault();
+                                    asyncResp.State = getResult(response);
+                                    //asyncResp.State = responseObj.FirstOrDefault();
                                     (AsyncCallback as Action<TwitterAsyncResponse<T>>)(asyncResp); 
                                 }
                             }),

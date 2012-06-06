@@ -11,7 +11,10 @@ namespace LinqToTwitter
     /// <summary>
     /// Raw requests, allowing free-form url and query strings
     /// </summary>
-    public class RawRequestProcessor<T> : IRequestProcessor<T>
+    public class RawRequestProcessor<T> : 
+        IRequestProcessor<T>,
+        IRequestProcessorWithAction<T>
+        where T : class
     {
         /// <summary>
         /// base url for request
@@ -102,6 +105,16 @@ namespace LinqToTwitter
             };
 
             return rawList.OfType<T>().ToList();
+        }
+
+        public T ProcessActionResult(string responseJson, Enum theAction)
+        {
+            var raw = new Raw
+            {
+                Result = responseJson
+            };
+
+            return raw.ItemCast(default(T));
         }
     }
 }

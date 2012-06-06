@@ -26,8 +26,13 @@ using System.Net;
 using System.IO;
 using System.Threading;
 
+#if !SILVERLIGHT
+using System.IO.Compression;
+#else
+using Ionic.Zlib;
+#endif
 #if SILVERLIGHT && !WINDOWS_PHONE
-    using System.Windows.Browser;
+using System.Windows.Browser;
 #elif !SILVERLIGHT && !WINDOWS_PHONE && !NETFX_CORE
     using System.Web;
 #endif
@@ -384,6 +389,7 @@ namespace LinqToTwitter
             webRequest.UserAgent = OAuthUserAgent; 
 #endif
             webRequest.Headers[HttpRequestHeader.Authorization] = PrepareAuthHeader(authHeader);
+            webRequest.Headers[HttpRequestHeader.AcceptEncoding] = "deflate,gzip";
 
             if (method == HttpMethod.POST)
             {
@@ -469,9 +475,35 @@ namespace LinqToTwitter
                             {
                                 res = webRequest.EndGetResponse(ar) as HttpWebResponse;
                                 using (var respStream = res.GetResponseStream())
-                                using (var respReader = new StreamReader(respStream))
                                 {
-                                    responseData = respReader.ReadToEnd();
+                                    string contentEncoding = res.Headers["Content-Encoding"] ?? "";
+                                    if (contentEncoding.ToLower().Contains("gzip"))
+                                    {
+                                        using (var gzip = new GZipStream(respStream, CompressionMode.Decompress))
+                                        {
+                                            using (var reader = new StreamReader(gzip))
+                                            {
+                                                responseData = reader.ReadToEnd();
+                                            }
+                                        }
+                                    }
+                                    else if (contentEncoding.ToLower().Contains("deflate"))
+                                    {
+                                        using (var gzip = new DeflateStream(respStream, CompressionMode.Decompress))
+                                        {
+                                            using (var reader = new StreamReader(gzip))
+                                            {
+                                                responseData = reader.ReadToEnd();
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        using (var respReader = new StreamReader(respStream))
+                                        {
+                                            responseData = respReader.ReadToEnd();
+                                        }
+                                    }
                                 }
                             }
                             catch (Exception ex)
@@ -570,6 +602,10 @@ namespace LinqToTwitter
             req.Headers[HttpRequestHeader.Authorization] = PrepareAuthHeader(queryString);
             req.Method = HttpMethod.GET.ToString();
 
+#if !SILVERLIGHT || WINDOWS_PHONE
+            req.Headers[HttpRequestHeader.AcceptEncoding] = "deflate,gzip";
+#endif
+
 #if !SILVERLIGHT && !NETFX_CORE
             req.ServicePoint.Expect100Continue = false;
             req.UserAgent = OAuthUserAgent;
@@ -661,15 +697,9 @@ namespace LinqToTwitter
 
                         try
                         {
-                            string requestTokenResponse = string.Empty;
-
                             var res = req.EndGetResponse(ar) as HttpWebResponse;
 
-                            using (var respStream = res.GetResponseStream())
-                            using (var respReader = new StreamReader(respStream))
-                            {
-                                requestTokenResponse = respReader.ReadToEnd();
-                            }
+                            string requestTokenResponse = GetHttpResponse(res);
 
                             string authorizationUrl = PrepareAuthorizeUrl(oauthAuthorizeUrl.ToString(), forceLogin, requestTokenResponse);
 
@@ -696,7 +726,7 @@ namespace LinqToTwitter
                         }
                     }), null);
         }
-
+  
         /// <summary>
         /// Asynchronous request for OAuth access token
         /// </summary>
@@ -726,15 +756,10 @@ namespace LinqToTwitter
 
                         try
                         {
-                            string accessTokenResponse = string.Empty;
 
                             var res = req.EndGetResponse(ar) as HttpWebResponse;
 
-                            using (var respStream = res.GetResponseStream())
-                            using (var respReader = new StreamReader(respStream))
-                            {
-                                accessTokenResponse = respReader.ReadToEnd();
-                            }
+                            string accessTokenResponse = GetHttpResponse(res);
 
                             ProcessAccessTokenResponse(ref screenName, ref userID, accessTokenResponse);
                         }
@@ -766,6 +791,66 @@ namespace LinqToTwitter
                         }
                     }), null);
 
+        }
+
+        string GetHttpResponse(HttpWebResponse res)
+        {
+            const int WorkingBufferSize = 1024;
+            string requestTokenResponse = string.Empty;
+
+            using (var respStream = res.GetResponseStream())
+            {
+                string contentEncoding = res.Headers["Content-Encoding"] ?? "";
+                if (contentEncoding.ToLower().Contains("gzip"))
+                {
+                    using (var gzip = new GZipStream(respStream, CompressionMode.Decompress))
+                    {
+                        using (var memStr = new MemoryStream())
+                        {
+                            byte[] buffer = new byte[WorkingBufferSize];
+                            int n;
+                            while ((n = gzip.Read(buffer, 0, buffer.Length)) != 0)
+                            {
+                                memStr.Write(buffer, 0, n);
+                            }
+                            memStr.Position = 0;
+                            using (var strmRdr = new StreamReader(memStr))
+                            {
+                                requestTokenResponse = strmRdr.ReadToEnd();
+                            }
+                        }
+                    }
+                }
+                else if (contentEncoding.ToLower().Contains("deflate"))
+                {
+                    using (var gzip = new DeflateStream(respStream, CompressionMode.Decompress))
+                    {
+                        using (var memStr = new MemoryStream())
+                        {
+                            byte[] buffer = new byte[WorkingBufferSize];
+                            int n;
+                            while ((n = gzip.Read(buffer, 0, buffer.Length)) != 0)
+                            {
+                                memStr.Write(buffer, 0, n);
+                            }
+                            memStr.Position = 0;
+                            using (var strmRdr = new StreamReader(memStr))
+                            {
+                                requestTokenResponse = strmRdr.ReadToEnd();
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    using (var respReader = new StreamReader(respStream))
+                    {
+                        requestTokenResponse = respReader.ReadToEnd();
+                    }
+                }
+            }
+
+            return requestTokenResponse;
         }
 
         /// <summary>

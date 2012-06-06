@@ -24,7 +24,7 @@ namespace LinqToTwitterDemo
             //GetListMembersDemo(twitterCtx);
             //GetListSubscriptionsDemo(twitterCtx);
             //GetListMembershipsDemo(twitterCtx);
-            //GetListStatusesDemo(twitterCtx);
+            GetListStatusesDemo(twitterCtx);
             //ShowListDemo(twitterCtx);
             //IsListSubscribedDemo(twitterCtx);
             //GetAllSubscribedListsDemo(twitterCtx);
@@ -38,7 +38,7 @@ namespace LinqToTwitterDemo
             //SubscribeToListDemo(twitterCtx);
             //UnsubscribeFromListDemo(twitterCtx);
             //ListSortDemo(twitterCtx);
-            DestroyAllDemo(twitterCtx);
+            //DestroyAllDemo(twitterCtx);
         }
   
         private static void GetAllSubscribedListsDemo(TwitterContext twitterCtx)
@@ -213,18 +213,57 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void GetListStatusesDemo(TwitterContext twitterCtx)
         {
-            var statusList =
+            int maxStatuses = 30;
+            int lastStatusCount = 0;
+            ulong sinceID = 204251866668871681; // last tweet processed on previous query
+            ulong maxID;
+            int count = 10;
+            var statusList = new List<Status>();
+
+            // only count
+            var listResponse =
                 (from list in twitterCtx.List
                  where list.Type == ListType.Statuses &&
                        list.OwnerScreenName == "JoeMayo" &&
-                       list.Slug == "dotnettwittterdevs" // name of list to get statuses for
+                       list.Slug == "dotnettwittterdevs" &&
+                       list.IncludeRetweets == true &&
+                       list.Count == count
                  select list)
-                 .First();
+                .First();
 
-            foreach (var status in statusList.Statuses)
+            List<Status> newStatuses = listResponse.Statuses;
+            maxID = newStatuses.Min(status => ulong.Parse(status.StatusID)) - 1; // first tweet processed on current query
+            statusList.AddRange(newStatuses);
+
+            do
             {
-                Console.WriteLine("User: {0}, Status: {1}",
-                    status.User.Name, status.Text);
+                // now add sinceID and maxID
+                listResponse =
+                    (from list in twitterCtx.List
+                     where list.Type == ListType.Statuses &&
+                           list.OwnerScreenName == "JoeMayo" &&
+                           list.Slug == "dotnettwittterdevs" &&
+                           list.IncludeRetweets == true &&
+                           list.Count == count &&
+                           list.SinceID == sinceID &&
+                           list.MaxID == maxID
+                     select list)
+                    .First();
+
+                newStatuses = listResponse.Statuses;
+                maxID = newStatuses.Min(status => ulong.Parse(status.StatusID)) - 1; // first tweet processed on current query
+                statusList.AddRange(newStatuses);
+
+                lastStatusCount = newStatuses.Count;
+            }
+            while (lastStatusCount != 0 && statusList.Count < maxStatuses);
+
+            for (int i = 0; i < statusList.Count; i++)
+            {
+                Status status = statusList[i];
+
+                Console.WriteLine("{0, 4}. [{1}] User: {2}\nStatus: {3}",
+                    i + 1, status.StatusID, status.User.Name, status.Text);
             }
         }
 

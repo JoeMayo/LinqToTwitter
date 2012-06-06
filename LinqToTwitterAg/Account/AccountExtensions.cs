@@ -35,7 +35,7 @@ namespace LinqToTwitter
                 exec.ExecuteTwitter(
                     accountUrl,
                     new Dictionary<string, string>(),
-                    reqProc);
+                    response => reqProc.ProcessActionResult(response, AccountAction.EndSession));
 
             var acct = reqProc.ProcessActionResult(results, AccountAction.EndSession);
 
@@ -105,7 +105,7 @@ namespace LinqToTwitter
                         { "profile_sidebar_fill_color", sidebarFill.TrimStart('#') },
                         { "profile_sidebar_border_color", sidebarBorder.TrimStart('#') }
                     },
-                    reqProc);
+                    response => reqProc.ProcessActionResult(response, UserAction.SingleUser));
 
             User user = reqProc.ProcessActionResult(resultsJson, UserAction.SingleUser);
             return user;
@@ -401,7 +401,7 @@ namespace LinqToTwitter
                         { "location", location },
                         { "description", description }
                     },
-                    reqProc);
+                    response => reqProc.ProcessActionResult(response, UserAction.SingleUser));
 
             User user = reqProc.ProcessActionResult(resultsJson, UserAction.SingleUser);
             return user;
@@ -463,7 +463,7 @@ namespace LinqToTwitter
                         { "time_zone", timeZone },
                         { "lang", lang }
                     },
-                    reqProc);
+                    response => reqProc.ProcessActionResult(response, AccountAction.Settings));
 
             Account acct = reqProc.ProcessActionResult(resultsJson, AccountAction.Settings);
             return acct;

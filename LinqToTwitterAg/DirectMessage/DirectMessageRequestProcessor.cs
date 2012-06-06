@@ -11,7 +11,11 @@ namespace LinqToTwitter
     /// <summary>
     /// processes Twitter Direct Messages
     /// </summary>
-    public class DirectMessageRequestProcessor<T> : IRequestProcessor<T>, IRequestProcessorWantsJson
+    public class DirectMessageRequestProcessor<T> :
+        IRequestProcessor<T>,
+        IRequestProcessorWantsJson,
+        IRequestProcessorWithAction<T>
+        where T : class
     {
         /// <summary>
         /// base url for request
@@ -232,6 +236,15 @@ namespace LinqToTwitter
                     ID = ID
                 }
             };
+        }
+
+        public T ProcessActionResult(string responseJson, Enum theAction)
+        {
+            JsonData dmJson = JsonMapper.ToObject(responseJson);
+
+            var dm = new DirectMessage(dmJson);
+
+            return dm.ItemCast(default(T));
         }
     }
 }

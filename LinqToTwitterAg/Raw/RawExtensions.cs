@@ -37,7 +37,7 @@ namespace LinqToTwitter
                 exec.ExecuteTwitter(
                     rawUrl,
                     parameters,
-                    reqProc);
+                    response => reqProc.ProcessActionResult(response, HttpMethod.POST));
 
             return results;
         }

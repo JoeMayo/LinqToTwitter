@@ -9,7 +9,11 @@ namespace LinqToTwitter
     /// <summary>
     /// processes block queries
     /// </summary>
-    public class BlocksRequestProcessor<T> : IRequestProcessor<T>, IRequestProcessorWantsJson
+    public class BlocksRequestProcessor<T> :
+        IRequestProcessor<T>,
+        IRequestProcessorWantsJson,
+        IRequestProcessorWithAction<T>
+        where T : class
     {
         /// <summary>
         /// base url for request
@@ -40,7 +44,7 @@ namespace LinqToTwitter
         /// page to retrieve
         /// </summary>
         public int Page { get; set; }
-        
+
         /// <summary>
         /// extracts parameters from lambda
         /// </summary>
@@ -229,6 +233,15 @@ namespace LinqToTwitter
                 (from JsonData id in blocksJson
                  select id.ToString())
                 .ToList();
+        }
+
+        public T ProcessActionResult(string responseJson, Enum theAction)
+        {
+            JsonData blocksJson = JsonMapper.ToObject(responseJson);
+
+            var user = new User(blocksJson);
+
+            return user.ItemCast(default(T));
         }
     }
 }

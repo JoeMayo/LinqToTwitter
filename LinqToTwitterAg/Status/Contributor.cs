@@ -8,7 +8,7 @@ namespace LinqToTwitter
         public Contributor() { }
         public Contributor(JsonData contributorJson)
         {
-            ID = contributorJson.GetValue<string>("id");
+            ID = contributorJson.GetValue<string>("id_str");
             ScreenName = contributorJson.GetValue<string>("screen_name");
         }
 

@@ -16,6 +16,14 @@ namespace LinqToTwitterXUnitTests.RawTests
         }
 
         [Fact]
+        public void RawRequestProcessor_Works_With_Actions()
+        {
+            var rawReqProc = new RawRequestProcessor<Raw>();
+
+            Assert.IsAssignableFrom<IRequestProcessorWithAction<Raw>>(rawReqProc);
+        }
+
+        [Fact]
         public void ExecuteRawRequest_Invokes_Executor_Execute()
         {
             var authMock = new Mock<ITwitterAuthorizer>();
@@ -34,7 +42,7 @@ namespace LinqToTwitterXUnitTests.RawTests
                 exec.ExecuteTwitter(
                     "https://api.twitter.com/1/statuses/update.xml",
                     parameters,
-                    It.IsAny<IRequestProcessor<Raw>>()),
+                    It.IsAny<Func<string, Raw>>()),
                 Times.Once());
         }
 
@@ -52,7 +60,7 @@ namespace LinqToTwitterXUnitTests.RawTests
             };
             const string ExpectedResult = "<status>xxx</status>";
             const string FullUrl = "https://api.twitter.com/1/statuses/update.xml";
-            execMock.Setup(exec => exec.ExecuteTwitter(FullUrl, parameters, It.IsAny<IRequestProcessor<Raw>>())).Returns(ExpectedResult);
+            execMock.Setup(exec => exec.ExecuteTwitter(FullUrl, parameters, It.IsAny<Func<string, Raw>>())).Returns(ExpectedResult);
 
             string actualResult = ctx.ExecuteRaw(QueryString, parameters);
 
@@ -80,7 +88,7 @@ namespace LinqToTwitterXUnitTests.RawTests
                 exec.ExecuteTwitter(
                     FullUrl,
                     parameters,
-                    It.IsAny<IRequestProcessor<Raw>>()), Times.Once());
+                    It.IsAny<Func<string, Raw>>()), Times.Once());
         }
 
         [Fact]
@@ -103,7 +111,7 @@ namespace LinqToTwitterXUnitTests.RawTests
             execMock.Verify(exec =>
                 exec.ExecuteTwitter(
                     FullUrl,
-                    parameters, It.IsAny<IRequestProcessor<Raw>>()), Times.Once());
+                    parameters, It.IsAny<Func<string, Raw>>()), Times.Once());
         }
     }
 }

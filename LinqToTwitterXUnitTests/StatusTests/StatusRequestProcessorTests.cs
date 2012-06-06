@@ -60,8 +60,9 @@ namespace LinqToTwitterXUnitTests.StatusTests
             Assert.NotNull(retweetedStatus);
             Assert.NotNull(retweetedStatus.Text);
             Assert.True(retweetedStatus.Text.StartsWith("I just blogged about"));
-            Assert.NotNull(status.Contributors);
-            Assert.Empty(status.Contributors);
+            var contributors = status.Contributors;
+            Assert.NotNull(contributors);
+            Assert.Empty(contributors);
             var coords = status.Coordinates;
             Assert.NotNull(coords);
             Assert.Equal(-122.40060, coords.Latitude);
@@ -107,8 +108,9 @@ namespace LinqToTwitterXUnitTests.StatusTests
             Assert.NotNull(retweetedStatus);
             Assert.NotNull(retweetedStatus.Text);
             Assert.True(retweetedStatus.Text.StartsWith("I just blogged about"));
-            Assert.NotNull(status.Contributors);
-            Assert.Empty(status.Contributors);
+            var contributors = status.Contributors;
+            Assert.NotNull(contributors);
+            Assert.Empty(contributors);
             var coords = status.Coordinates;
             Assert.NotNull(coords);
             Assert.Equal(-122.40060, coords.Latitude);

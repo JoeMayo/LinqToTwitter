@@ -33,7 +33,7 @@ namespace LinqToTwitter
 
             var blocksUrl = twitterCtx.BaseUrl + "blocks/create/" + id + ".json";
 
-            var reqProc = new BlocksRequestProcessor<Blocks>();
+            var reqProc = new BlocksRequestProcessor<User>();
 
             ITwitterExecute twitExe = twitterCtx.TwitterExecutor;
 
@@ -42,10 +42,10 @@ namespace LinqToTwitter
                 twitExe.ExecuteTwitter(
                     blocksUrl,
                     new Dictionary<string, string>(),
-                    reqProc);
+                    response => reqProc.ProcessActionResult(response, UserAction.SingleUser));
 
-            List<Blocks> results = reqProc.ProcessResults(resultsJson);
-            return results.First().User;
+            User results = reqProc.ProcessActionResult(resultsJson, UserAction.SingleUser);
+            return results;
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace LinqToTwitter
 
             var blocksUrl = twitterCtx.BaseUrl + "blocks/destroy/" + id + ".json";
 
-            var reqProc = new BlocksRequestProcessor<Blocks>();
+            var reqProc = new BlocksRequestProcessor<User>();
 
             ITwitterExecute twitExe = twitterCtx.TwitterExecutor;
 
@@ -84,10 +84,10 @@ namespace LinqToTwitter
                 twitExe.ExecuteTwitter(
                     blocksUrl,
                     new Dictionary<string, string>(),
-                    reqProc);
+                    response => reqProc.ProcessActionResult(response, UserAction.SingleUser));
 
-            List<Blocks> results = reqProc.ProcessResults(resultsJson);
-            return results.First().User;
+            User results = reqProc.ProcessActionResult(resultsJson, UserAction.SingleUser);
+            return results;
         }
 
     }

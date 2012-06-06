@@ -21,7 +21,7 @@ namespace LinqToTwitter
     public class User
     {
         public User() {}
-        internal User(JsonData user)
+        public User(JsonData user)
         {
             if (user == null) return;
 

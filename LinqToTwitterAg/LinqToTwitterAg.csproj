@@ -95,6 +95,20 @@
     <Compile Include="Common\ExpressionTreeVisitor.cs" />
     <Compile Include="Common\FirstWhereClauseFinder.cs" />
     <Compile Include="Common\HttpMethod.cs" />
+    <Compile Include="Common\Iconic.ZLib\CRC32.cs" />
+    <Compile Include="Common\Iconic.ZLib\Deflate.cs" />
+    <Compile Include="Common\Iconic.ZLib\DeflateStream.cs" />
+    <Compile Include="Common\Iconic.ZLib\GZipStream.cs" />
+    <Compile Include="Common\Iconic.ZLib\Inflate.cs" />
+    <Compile Include="Common\Iconic.ZLib\InfTree.cs" />
+    <Compile Include="Common\Iconic.ZLib\Iso8859Dash1Encoding.cs" />
+    <Compile Include="Common\Iconic.ZLib\ParallelDeflateOutputStream.cs" />
+    <Compile Include="Common\Iconic.ZLib\Tree.cs" />
+    <Compile Include="Common\Iconic.ZLib\Zlib.cs" />
+    <Compile Include="Common\Iconic.ZLib\ZlibBaseStream.cs" />
+    <Compile Include="Common\Iconic.ZLib\ZlibCodec.cs" />
+    <Compile Include="Common\Iconic.ZLib\ZlibConstants.cs" />
+    <Compile Include="Common\Iconic.ZLib\ZlibStream.cs" />
     <Compile Include="Common\IDList.cs" />
     <Compile Include="Common\InvalidQueryException.cs" />
     <Compile Include="Common\IRequestProcessor.cs" />
@@ -273,6 +287,7 @@
     <Compile Include="Status\StatusExtensions.cs" />
     <Compile Include="Status\StatusRequestProcessor.cs" />
     <Compile Include="Status\StatusType.cs" />
+    <Compile Include="Streaming\IStreamContent.cs" />
     <Compile Include="Streaming\StreamContent.cs" />
     <Compile Include="Streaming\Streaming.cs" />
     <Compile Include="Streaming\StreamingRequestProcessor.cs" />
@@ -301,6 +316,10 @@
     <None Include="Serialization\LitJson\COPYING" />
     <None Include="Serialization\LitJson\HACKING" />
     <None Include="Serialization\LitJson\README" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Common\Iconic.ZLib\LICENSE.jzlib.txt" />
+    <Content Include="Common\Iconic.ZLib\License.zlib.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Silverlight\$(SilverlightVersion)\Microsoft.Silverlight.CSharp.targets" />
   <ProjectExtensions>

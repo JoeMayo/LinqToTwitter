@@ -17,24 +17,24 @@ namespace LinqToTwitterSilverlightDemo.Views
         {
             var twitterCtx = new TwitterContext();
 
-            (from tweet in twitterCtx.Status
-             where tweet.Type == StatusType.Public
-             select tweet)
-            .AsyncCallback(tweets =>
-                Dispatcher.BeginInvoke(() =>
-                {
-                    var projectedTweets =
-                        (from tweet in tweets
-                        select new MyTweet
-                        {
-                            ScreenName = tweet.User.Identifier.ScreenName,
-                            Tweet = tweet.Text
-                        })
-                        .ToList();
+            //(from tweet in twitterCtx.Status
+            // where tweet.Type == StatusType.Public
+            // select tweet)
+            //.AsyncCallback(tweets =>
+            //    Dispatcher.BeginInvoke(() =>
+            //    {
+            //        var projectedTweets =
+            //            (from tweet in tweets
+            //            select new MyTweet
+            //            {
+            //                ScreenName = tweet.User.Identifier.ScreenName,
+            //                Tweet = tweet.Text
+            //            })
+            //            .ToList();
 
-                    dataGrid1.ItemsSource = projectedTweets;
-                }))
-            .SingleOrDefault();
+            //        dataGrid1.ItemsSource = projectedTweets;
+            //    }))
+            //.SingleOrDefault();
         }
 
     }

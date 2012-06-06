@@ -54,7 +54,7 @@ namespace LinqToTwitterXUnitTests.SavedSearchTests
                 exec.ExecuteTwitter(
                     It.IsAny<string>(),
                     It.IsAny<Dictionary<string, string>>(),
-                    It.IsAny<IRequestProcessor<SavedSearch>>()))
+                    It.IsAny<Func<string, SavedSearch>>()))
                 .Returns(SavedSearchResponse);
             var parameters = new Dictionary<string, string>
             {
@@ -67,7 +67,7 @@ namespace LinqToTwitterXUnitTests.SavedSearchTests
                 exec.ExecuteTwitter(
                     "https://api.twitter.com/1/saved_searches/create.json",
                     parameters,
-                    It.IsAny<IRequestProcessor<SavedSearch>>()),
+                    It.IsAny<Func<string, SavedSearch>>()),
                 Times.Once());
 
             Assert.NotNull(search);
@@ -94,7 +94,7 @@ namespace LinqToTwitterXUnitTests.SavedSearchTests
                 exec.ExecuteTwitter(
                     It.IsAny<string>(),
                     It.IsAny<Dictionary<string, string>>(),
-                    It.IsAny<IRequestProcessor<SavedSearch>>()))
+                    It.IsAny<Func<string, SavedSearch>>()))
                 .Returns(SavedSearchResponse);
             var parameters = new Dictionary<string, string>();
 
@@ -104,7 +104,7 @@ namespace LinqToTwitterXUnitTests.SavedSearchTests
                 exec.ExecuteTwitter(
                     "https://api.twitter.com/1/saved_searches/destroy/123.json",
                     parameters,
-                    It.IsAny<IRequestProcessor<SavedSearch>>()),
+                    It.IsAny<Func<string, SavedSearch>>()),
                 Times.Once());
 
             Assert.NotNull(search);

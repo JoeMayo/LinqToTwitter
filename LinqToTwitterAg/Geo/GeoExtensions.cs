@@ -59,7 +59,7 @@ namespace LinqToTwitter
                 twitExe.ExecuteTwitter(
                     placeUrl,
                     createParams,
-                    reqProc);
+                    response => reqProc.ProcessActionResult(response, GeoAction.CreatePlace));
 
             Place results = reqProc.ProcessActionResult(resultsJson, GeoAction.CreatePlace);
             return results;

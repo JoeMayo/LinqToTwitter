@@ -13,25 +13,41 @@ namespace LinqToTwitterXUnitTests
 {
     public class BlocksExtensionsTests
     {
+        Mock<ITwitterAuthorizer> authMock;
+        Mock<ITwitterExecute> execMock;
+
         public BlocksExtensionsTests()
         {
             TestCulture.SetCulture();
         }
 
         [Fact]
+        public void BlocksRequestProcessor_Works_With_Actions()
+        {
+            var blocksReqProc = new BlocksRequestProcessor<User>();
+
+            Assert.IsAssignableFrom<IRequestProcessorWithAction<User>>(blocksReqProc);
+        }
+
+        TwitterContext InitializeTwitterContext()
+        {
+            authMock = new Mock<ITwitterAuthorizer>();
+            execMock = new Mock<ITwitterExecute>();
+            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
+            execMock.Setup(exec => exec.ExecuteTwitter(
+                It.IsAny<string>(),
+                It.IsAny<Dictionary<string, string>>(),
+                It.IsAny<Func<string, User>>()))
+                    .Returns(BlocksUserJson);
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "https://api.twitter.com/1/", "");
+            return ctx;
+        }
+
+        [Fact]
         public void CreateBlock_Handles_Response()
         {
             const string Id = "1";
-            var authMock = new Mock<ITwitterAuthorizer>();
-            var execMock = new Mock<ITwitterExecute>();
-            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
-            execMock.Setup(exec =>
-                exec.ExecuteTwitter(
-                    It.IsAny<string>(),
-                    It.IsAny<Dictionary<string, string>>(),
-                    It.IsAny<IRequestProcessor<Blocks>>()))
-                .Returns(BlocksUserJson);
-            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
+            var ctx = InitializeTwitterContext();
 
             User actual = ctx.CreateBlock(Id);
 
@@ -42,16 +58,7 @@ namespace LinqToTwitterXUnitTests
         public void CreateBlock_Builds_Url()
         {
             const string Id = "1";
-            var authMock = new Mock<ITwitterAuthorizer>();
-            var execMock = new Mock<ITwitterExecute>();
-            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
-            execMock.Setup(exec =>
-                exec.ExecuteTwitter(
-                    It.IsAny<string>(),
-                    It.IsAny<Dictionary<string, string>>(),
-                    It.IsAny<IRequestProcessor<Blocks>>()))
-                .Returns(BlocksUserJson);
-            var ctx = new TwitterContext(authMock.Object, execMock.Object, "https://api.twitter.com/1/", "");
+            var ctx = InitializeTwitterContext();
 
             ctx.CreateBlock(Id);
 
@@ -59,23 +66,14 @@ namespace LinqToTwitterXUnitTests
                 exec.ExecuteTwitter(
                     "https://api.twitter.com/1/blocks/create/1.json",
                     It.IsAny<Dictionary<string, string>>(),
-                    It.IsAny<IRequestProcessor<Blocks>>()),
+                    It.IsAny<Func<string, User>>()),
                 Times.Once());
         }
 
         [Fact]
         public void CreateBlock_Throws_On_Null_ID()
         {
-            var authMock = new Mock<ITwitterAuthorizer>();
-            var execMock = new Mock<ITwitterExecute>();
-            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
-            execMock.Setup(exec =>
-                exec.ExecuteTwitter(
-                    It.IsAny<string>(),
-                    It.IsAny<Dictionary<string, string>>(),
-                    It.IsAny<IRequestProcessor<Blocks>>()))
-                .Returns(BlocksUserJson);
-            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
+            var ctx = InitializeTwitterContext();
 
             var ex = Assert.Throws<ArgumentException>(() => ctx.CreateBlock(null));
 
@@ -86,16 +84,7 @@ namespace LinqToTwitterXUnitTests
         public void DestroyBlock_Handles_Response()
         {
             const string Id = "1";
-            var authMock = new Mock<ITwitterAuthorizer>();
-            var execMock = new Mock<ITwitterExecute>();
-            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
-            execMock.Setup(exec =>
-                exec.ExecuteTwitter(
-                    It.IsAny<string>(),
-                    It.IsAny<Dictionary<string, string>>(),
-                    It.IsAny<IRequestProcessor<Blocks>>()))
-                .Returns(BlocksUserJson);
-            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
+            var ctx = InitializeTwitterContext();
 
             User actual = ctx.DestroyBlock(Id);
 
@@ -106,16 +95,7 @@ namespace LinqToTwitterXUnitTests
         public void DestroyBlock_Builds_Url()
         {
             const string Id = "1";
-            var authMock = new Mock<ITwitterAuthorizer>();
-            var execMock = new Mock<ITwitterExecute>();
-            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
-            execMock.Setup(exec =>
-                exec.ExecuteTwitter(
-                    It.IsAny<string>(),
-                    It.IsAny<Dictionary<string, string>>(),
-                    It.IsAny<IRequestProcessor<Blocks>>()))
-                .Returns(BlocksUserJson);
-            var ctx = new TwitterContext(authMock.Object, execMock.Object, "https://api.twitter.com/1/", "");
+            var ctx = InitializeTwitterContext();
 
             ctx.DestroyBlock(Id);
 
@@ -123,23 +103,14 @@ namespace LinqToTwitterXUnitTests
                 exec.ExecuteTwitter(
                     "https://api.twitter.com/1/blocks/destroy/1.json",
                     It.IsAny<Dictionary<string, string>>(),
-                    It.IsAny<IRequestProcessor<Blocks>>()),
+                    It.IsAny<Func<string, User>>()),
                 Times.Once());
         }
 
         [Fact]
         public void DestroyBlockNullIDTest()
         {
-            var authMock = new Mock<ITwitterAuthorizer>();
-            var execMock = new Mock<ITwitterExecute>();
-            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
-            execMock.Setup(exec =>
-                exec.ExecuteTwitter(
-                    It.IsAny<string>(),
-                    It.IsAny<Dictionary<string, string>>(),
-                    It.IsAny<IRequestProcessor<Blocks>>()))
-                .Returns(BlocksUserJson);
-            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
+            var ctx = InitializeTwitterContext();
 
             var ex = Assert.Throws<ArgumentException>(() => ctx.DestroyBlock(null));
 

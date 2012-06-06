@@ -143,6 +143,48 @@
     <Compile Include="..\LinqToTwitterAg\Common\HttpMethod.cs">
       <Link>Common\HttpMethod.cs</Link>
     </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\Iconic.ZLib\CRC32.cs">
+      <Link>Common\Iconic.ZLib\CRC32.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\Iconic.ZLib\Deflate.cs">
+      <Link>Common\Iconic.ZLib\Deflate.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\Iconic.ZLib\DeflateStream.cs">
+      <Link>Common\Iconic.ZLib\DeflateStream.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\Iconic.ZLib\GZipStream.cs">
+      <Link>Common\Iconic.ZLib\GZipStream.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\Iconic.ZLib\Inflate.cs">
+      <Link>Common\Iconic.ZLib\Inflate.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\Iconic.ZLib\InfTree.cs">
+      <Link>Common\Iconic.ZLib\InfTree.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\Iconic.ZLib\Iso8859Dash1Encoding.cs">
+      <Link>Common\Iconic.ZLib\Iso8859Dash1Encoding.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\Iconic.ZLib\ParallelDeflateOutputStream.cs">
+      <Link>Common\Iconic.ZLib\ParallelDeflateOutputStream.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\Iconic.ZLib\Tree.cs">
+      <Link>Common\Iconic.ZLib\Tree.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\Iconic.ZLib\Zlib.cs">
+      <Link>Common\Iconic.ZLib\Zlib.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\Iconic.ZLib\ZlibBaseStream.cs">
+      <Link>Common\Iconic.ZLib\ZlibBaseStream.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\Iconic.ZLib\ZlibCodec.cs">
+      <Link>Common\Iconic.ZLib\ZlibCodec.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\Iconic.ZLib\ZlibConstants.cs">
+      <Link>Common\Iconic.ZLib\ZlibConstants.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\Iconic.ZLib\ZlibStream.cs">
+      <Link>Common\Iconic.ZLib\ZlibStream.cs</Link>
+    </Compile>
     <Compile Include="..\LinqToTwitterAg\Common\IDList.cs">
       <Link>Common\IDList.cs</Link>
     </Compile>
@@ -656,6 +698,9 @@
     <Compile Include="..\LinqToTwitterAg\Status\StatusType.cs">
       <Link>Status\StatusType.cs</Link>
     </Compile>
+    <Compile Include="..\LinqToTwitterAg\Streaming\IStreamContent.cs">
+      <Link>Streaming\IStreamContent.cs</Link>
+    </Compile>
     <Compile Include="..\LinqToTwitterAg\Streaming\StreamContent.cs">
       <Link>Streaming\StreamContent.cs</Link>
     </Compile>
@@ -729,6 +774,14 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Serialization\Search\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\LinqToTwitterAg\Common\Iconic.ZLib\LICENSE.jzlib.txt">
+      <Link>Common\Iconic.ZLib\LICENSE.jzlib.txt</Link>
+    </Content>
+    <Content Include="..\LinqToTwitterAg\Common\Iconic.ZLib\License.zlib.txt">
+      <Link>Common\Iconic.ZLib\License.zlib.txt</Link>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.$(TargetFrameworkProfile).Overrides.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.CSharp.targets" />

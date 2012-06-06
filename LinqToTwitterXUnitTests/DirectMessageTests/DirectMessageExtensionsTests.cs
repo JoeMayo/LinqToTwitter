@@ -13,9 +13,34 @@ namespace LinqToTwitterXUnitTests
 {
     public class DirectMessageExtensionsTests
     {
+        Mock<ITwitterAuthorizer> authMock;
+        Mock<ITwitterExecute> execMock;
+
         public DirectMessageExtensionsTests()
         {
             TestCulture.SetCulture();
+        }
+
+        [Fact]
+        public void DirectMessageRequestProcessor_Works_With_Actions()
+        {
+            var dmReqProc = new DirectMessageRequestProcessor<DirectMessage>();
+
+            Assert.IsAssignableFrom<IRequestProcessorWithAction<DirectMessage>>(dmReqProc);
+        }
+
+        TwitterContext InitializeTwitterContext()
+        {
+            authMock = new Mock<ITwitterAuthorizer>();
+            execMock = new Mock<ITwitterExecute>();
+            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
+            execMock.Setup(exec => exec.ExecuteTwitter(
+                It.IsAny<string>(),
+                It.IsAny<Dictionary<string, string>>(),
+                It.IsAny<Func<string, DirectMessage>>()))
+                    .Returns(TestQueryResponse);
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "https://api.twitter.com/1/", "");
+            return ctx;
         }
 
         [Fact]
@@ -23,16 +48,7 @@ namespace LinqToTwitterXUnitTests
         {
             const string UserID = "1";
             const string Text = "Hi";
-            var authMock = new Mock<ITwitterAuthorizer>();
-            var execMock = new Mock<ITwitterExecute>();
-            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
-            execMock.Setup(exec =>
-                exec.ExecuteTwitter(
-                    It.IsAny<string>(),
-                    It.IsAny<Dictionary<string, string>>(),
-                    It.IsAny<IRequestProcessor<DirectMessage>>()))
-                .Returns(TestQueryResponse);
-            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
+            var ctx = InitializeTwitterContext();
 
             DirectMessage actual = ctx.NewDirectMessage(UserID, Text);
 
@@ -44,16 +60,7 @@ namespace LinqToTwitterXUnitTests
         {
             const string UserID = "1";
             const string Text = "Hi";
-            var authMock = new Mock<ITwitterAuthorizer>();
-            var execMock = new Mock<ITwitterExecute>();
-            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
-            execMock.Setup(exec =>
-                exec.ExecuteTwitter(
-                    It.IsAny<string>(),
-                    It.IsAny<Dictionary<string, string>>(),
-                    It.IsAny<IRequestProcessor<DirectMessage>>()))
-                .Returns(TestQueryResponse);
-            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
+            var ctx = InitializeTwitterContext();
 
             ctx.NewDirectMessage(UserID, Text);
 
@@ -61,7 +68,7 @@ namespace LinqToTwitterXUnitTests
                 exec.ExecuteTwitter(
                     "https://api.twitter.com/1/direct_messages/new.json",
                     It.IsAny<Dictionary<string, string>>(),
-                    It.IsAny<IRequestProcessor<DirectMessage>>()),
+                    It.IsAny<Func<string, DirectMessage>>()),
                 Times.Once());
         }
 
@@ -69,16 +76,7 @@ namespace LinqToTwitterXUnitTests
         public void NewDirectMessage_Throws_On_Null_Text()
         {
             const string UserID = "1";
-            var authMock = new Mock<ITwitterAuthorizer>();
-            var execMock = new Mock<ITwitterExecute>();
-            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
-            execMock.Setup(exec =>
-                exec.ExecuteTwitter(
-                    It.IsAny<string>(),
-                    It.IsAny<Dictionary<string, string>>(),
-                    It.IsAny<IRequestProcessor<DirectMessage>>()))
-                .Returns(TestQueryResponse);
-            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
+            var ctx = InitializeTwitterContext();
 
             var ex = Assert.Throws<ArgumentException>(() => ctx.NewDirectMessage(UserID, null));
 
@@ -90,16 +88,7 @@ namespace LinqToTwitterXUnitTests
         {
             string userID = string.Empty;
             const string Text = "Test Text";
-            var authMock = new Mock<ITwitterAuthorizer>();
-            var execMock = new Mock<ITwitterExecute>();
-            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
-            execMock.Setup(exec =>
-                exec.ExecuteTwitter(
-                    It.IsAny<string>(),
-                    It.IsAny<Dictionary<string, string>>(),
-                    It.IsAny<IRequestProcessor<DirectMessage>>()))
-                .Returns(TestQueryResponse);
-            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
+            var ctx = InitializeTwitterContext();
 
             var ex = Assert.Throws<ArgumentException>(() => ctx.NewDirectMessage(userID, Text));
 
@@ -120,8 +109,8 @@ namespace LinqToTwitterXUnitTests
                 exec.ExecuteTwitter(
                     It.IsAny<string>(),
                     It.IsAny<Dictionary<string, string>>(),
-                    It.IsAny<IRequestProcessor<DirectMessage>>()))
-                .Callback<string, IDictionary<string, string>, IRequestProcessor<DirectMessage>>(
+                    It.IsAny<Func<string, DirectMessage>>()))
+                .Callback<string, IDictionary<string, string>, Func<string, DirectMessage>>(
                     (url, postData, reqProc) => wrapLinksPassedToExecute =
                         postData.ContainsKey("wrap_links") && bool.Parse(postData["wrap_links"]))
                 .Returns(TestQueryResponse);
@@ -146,8 +135,8 @@ namespace LinqToTwitterXUnitTests
                 exec.ExecuteTwitter(
                     It.IsAny<string>(),
                     It.IsAny<Dictionary<string, string>>(),
-                    It.IsAny<IRequestProcessor<DirectMessage>>()))
-                .Callback<string, IDictionary<string, string>, IRequestProcessor<DirectMessage>>(
+                    It.IsAny<Func<string, DirectMessage>>()))
+                .Callback<string, IDictionary<string, string>, Func<string, DirectMessage>>(
                     (url, postData, reqProc) =>
                         wrapLinksIsSetToNull = postData["wrap_links"] == null)
                 .Returns(TestQueryResponse);
@@ -162,16 +151,7 @@ namespace LinqToTwitterXUnitTests
         public void DestroyDirectMessage_Returns_Deleted_DM()
         {
             const string Id = "1";
-            var authMock = new Mock<ITwitterAuthorizer>();
-            var execMock = new Mock<ITwitterExecute>();
-            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
-            execMock.Setup(exec =>
-                exec.ExecuteTwitter(
-                    It.IsAny<string>(),
-                    It.IsAny<Dictionary<string, string>>(),
-                    It.IsAny<IRequestProcessor<DirectMessage>>()))
-                .Returns(TestQueryResponse);
-            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
+            var ctx = InitializeTwitterContext();
 
             DirectMessage actual = ctx.DestroyDirectMessage(Id);
 
@@ -182,16 +162,7 @@ namespace LinqToTwitterXUnitTests
         public void DestroyDirectMessage_Constructs_Url()
         {
             const string Id = "1";
-            var authMock = new Mock<ITwitterAuthorizer>();
-            var execMock = new Mock<ITwitterExecute>();
-            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
-            execMock.Setup(exec =>
-                exec.ExecuteTwitter(
-                    It.IsAny<string>(),
-                    It.IsAny<Dictionary<string, string>>(),
-                    It.IsAny<IRequestProcessor<DirectMessage>>()))
-                .Returns(TestQueryResponse);
-            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
+            var ctx = InitializeTwitterContext();
 
             ctx.DestroyDirectMessage(Id);
 
@@ -200,23 +171,14 @@ namespace LinqToTwitterXUnitTests
                 exec.ExecuteTwitter(
                     "https://api.twitter.com/1/direct_messages/destroy/1.json",
                     It.IsAny<Dictionary<string, string>>(),
-                    It.IsAny<IRequestProcessor<DirectMessage>>()),
+                    It.IsAny<Func<string, DirectMessage>>()),
                 Times.Once());
         }
 
         [Fact]
         public void DestroyDirectMessage_Throws_On_Null_ID()
         {
-            var authMock = new Mock<ITwitterAuthorizer>();
-            var execMock = new Mock<ITwitterExecute>();
-            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
-            execMock.Setup(exec =>
-                exec.ExecuteTwitter(
-                    It.IsAny<string>(),
-                    It.IsAny<Dictionary<string, string>>(),
-                    It.IsAny<IRequestProcessor<DirectMessage>>()))
-                .Returns(TestQueryResponse);
-            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
+            var ctx = InitializeTwitterContext();
 
             var ex = Assert.Throws<ArgumentException>(() => ctx.DestroyDirectMessage(null));
 
