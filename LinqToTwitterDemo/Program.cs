@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Configuration;
 using System.Linq;
+using System.Net;
 using LinqToTwitter;
 using System.Diagnostics;
 
@@ -70,7 +71,7 @@ namespace LinqToTwitterDemo
                     //SavedSearchDemos.Run(twitterCtx);
                     //SearchDemos.Run(twitterCtx);
                     //SocialGraphDemos.Run(twitterCtx);
-                    StatusDemos.Run(twitterCtx);
+                    //StatusDemos.Run(twitterCtx);
                     //StreamingDemo.Run(twitterCtx);
 
                     if (DoThis("demo trend"))
@@ -96,7 +97,7 @@ namespace LinqToTwitterDemo
             Console.ReadKey();
         }
 
-        private static bool DoThis(string what)
+        static bool DoThis(string what)
         {
             Console.Write("Would you like to " + what + " (y or n): ");
             var choice = Console.ReadKey();
@@ -105,22 +106,40 @@ namespace LinqToTwitterDemo
             return doIt;
         }
 
-        private static void EndSession(ITwitterAuthorizer auth)
+        static void EndSession(ITwitterAuthorizer auth)
         {
             using (var twitterCtx = new TwitterContext(auth, "https://api.twitter.com/1/", "https://search.twitter.com/"))
             {
-                //Log
-                twitterCtx.Log = Console.Out;
+                try
+                {
+                    //Log
+                    twitterCtx.Log = Console.Out;
 
-                var status = twitterCtx.EndAccountSession();
+                    var status = twitterCtx.EndAccountSession();
 
-                Console.WriteLine("Request: {0}, Error: {1}"
-                    , status.Request
-                    , status.Error);
+                    Console.WriteLine("Request: {0}, Error: {1}"
+                        , status.Request
+                        , status.Error);
+                }
+                catch (TwitterQueryException tqe)
+                {
+                    var webEx = tqe.InnerException as WebException;
+                    if (webEx != null)
+                    {
+                        var webResp = webEx.Response as HttpWebResponse;
+                        if (webResp != null && webResp.StatusCode == HttpStatusCode.Unauthorized)
+                            Console.WriteLine("Twitter didn't recognize you as having been logged in. Therefore, your request to end session is illogical.\n");
+                    }
+
+                    var status = tqe.Response;
+                    Console.WriteLine("Request: {0}, Error: {1}"
+                        , status.Request
+                        , status.Error);
+                }
             }
         }
 
-        private static ITwitterAuthorizer DoSingleUserAuth()
+        static ITwitterAuthorizer DoSingleUserAuth()
         {
             // validate that credentials are present
             if (ConfigurationManager.AppSettings["twitterConsumerKey"].IsNullOrWhiteSpace() ||
@@ -151,7 +170,7 @@ namespace LinqToTwitterDemo
             return auth;
         }
 
-        private static ITwitterAuthorizer DoXAuth()
+        static ITwitterAuthorizer DoXAuth()
         {
             // validate that credentials are present
             if (ConfigurationManager.AppSettings["twitterConsumerKey"].IsNullOrWhiteSpace() ||
@@ -181,7 +200,7 @@ namespace LinqToTwitterDemo
             return auth;
         }
 
-        private static ITwitterAuthorizer DoPinOAuth()
+        static ITwitterAuthorizer DoPinOAuth()
         {
             // validate that credentials are present
             if (ConfigurationManager.AppSettings["twitterConsumerKey"].IsNullOrWhiteSpace() ||
