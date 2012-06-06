@@ -74,7 +74,7 @@ namespace LinqToTwitter
 
         internal string HashWith(string input, string key)
         {
-            MacAlgorithmProvider mac = MacAlgorithmProvider.OpenAlgorithm("SHA1");
+            MacAlgorithmProvider mac = MacAlgorithmProvider.OpenAlgorithm("HMAC_SHA1");
             IBuffer keyMaterial = CryptographicBuffer.ConvertStringToBinary(key, BinaryStringEncoding.Utf8);
             CryptographicKey cryptoKey = mac.CreateKey(keyMaterial);
             //IBuffer hash = hashProvider.HashData(CryptographicBuffer.ConvertStringToBinary(input, BinaryStringEncoding.Utf8));
