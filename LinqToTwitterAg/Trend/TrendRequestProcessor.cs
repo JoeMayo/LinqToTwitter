@@ -195,7 +195,12 @@ namespace LinqToTwitter
 
             if (parameters.ContainsKey("Date"))
             {
-                Date = DateTime.Parse(parameters["Date"], Thread.CurrentThread.CurrentUICulture);//, CultureInfo.InvariantCulture);
+#if NETFX_CORE
+                CultureInfo currUiCulture = CultureInfo.CurrentCulture;
+#else
+                CultureInfo currUiCulture = Thread.CurrentThread.CurrentUICulture;
+#endif
+                Date = DateTime.Parse(parameters["Date"], currUiCulture);
                 urlParams.Add(new QueryParameter("date", Date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)));
             }
 
