@@ -1112,9 +1112,9 @@ namespace LinqToTwitter
 
                                             if (AsyncCallback != null)
                                             {
-                                                List<T> responseObj = reqProc.ProcessResults(response);
+                                                T responseObj = (reqProc as IRequestProcessorWithAction<T>).ProcessActionResult(response, StatusAction.SingleStatus);
                                                 var asyncResp = new TwitterAsyncResponse<T>();
-                                                asyncResp.State = responseObj.FirstOrDefault();
+                                                asyncResp.State = responseObj;
                                                 (AsyncCallback as Action<TwitterAsyncResponse<T>>)(asyncResp);
                                             }
 
@@ -1129,12 +1129,15 @@ namespace LinqToTwitter
                                 }
                                 finally
                                 {
+#if !WINDOWS_PHONE && !NETFX_CORE
                                     resetEvent.Set();
+#endif
                                 }
                             }), null);
 
+#if !WINDOWS_PHONE && !NETFX_CORE
                     resetEvent.WaitOne();
-
+#endif
                     if (asyncException != null)
                         throw asyncException;
                 }

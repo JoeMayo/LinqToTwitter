@@ -18,9 +18,9 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         public static void Run(TwitterContext twitterCtx)
         {
-            //HomeStatusQueryDemo(twitterCtx);
+            HomeStatusQueryDemo(twitterCtx);
             //HomeSinceStatusQueryDemo(twitterCtx);
-            UserStatusQueryDemo(twitterCtx);
+            //UserStatusQueryDemo(twitterCtx);
             //UserStatusSinceIDQueryDemo(twitterCtx);
             //UserStatusByNameQueryDemo(twitterCtx);
             //UserStatusWithRetweetsQueryDemo(twitterCtx);
