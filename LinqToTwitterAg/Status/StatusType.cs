@@ -141,5 +141,15 @@ namespace LinqToTwitter
         /// </summary>
         RetweetsOfMe,
 
+        /// <summary>
+        /// lists up to 100 users who retweeted a status
+        /// 
+        /// Available Options:
+        /// 
+        ///     - ID, retweeted tweet ID
+        ///     - Count, number of tweets - Max 100
+        ///     - Page, page to return
+        /// </summary>
+        RetweetedBy,
     }
 }

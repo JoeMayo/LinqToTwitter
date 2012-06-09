@@ -190,6 +190,11 @@ namespace LinqToTwitter
         public User User { get; set; }
 
         /// <summary>
+        /// Users who retweeted a tweet (used in StatusType.RetweetedBy queries)
+        /// </summary>
+        public List<User> Users { get; set; }
+
+        /// <summary>
         /// Retweet details
         /// </summary>
         [Obsolete("Deprecated: Use RetweetedStatus instead.", true)]

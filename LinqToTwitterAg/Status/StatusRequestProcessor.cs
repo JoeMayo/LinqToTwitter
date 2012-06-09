@@ -141,9 +141,6 @@ namespace LinqToTwitter
                     return BuildHomeUrl(parameters);
                 case StatusType.Mentions:
                     return BuildMentionsUrl(parameters);
-                // TODO: Public deprecated on 5/14/12
-                //case StatusType.Public:
-                //    return BuildPublicUrl();
                 case StatusType.Retweets:
                     return BuildRetweetsUrl(parameters);
                 case StatusType.RetweetedByMe:
@@ -160,20 +157,11 @@ namespace LinqToTwitter
                     return BuildShowUrl(parameters);
                 case StatusType.User:
                     return BuildUserUrl(parameters);
+                case StatusType.RetweetedBy:
+                    return BuildRetweetedByUrl(parameters);
                 default:
                     throw new InvalidOperationException("The default case of BuildUrl should never execute because a Type must be specified.");
             }
-        }
-
-        /// <summary>
-        /// builds an url for showing status of user
-        /// </summary>
-        /// <param name="parameters">parameter list</param>
-        /// <returns>base url + show segment</returns>
-        private Request BuildShowUrl(Dictionary<string, string> parameters)
-        {
-            var url = BuildUrlHelper.TransformIDUrl(parameters, "statuses/show.json");
-            return BuildUrlParameters(parameters, url);
         }
 
         /// <summary>
@@ -182,7 +170,7 @@ namespace LinqToTwitter
         /// <param name="parameters">list of parameters from expression tree</param>
         /// <param name="url">base url</param>
         /// <returns>base url + parameters</returns>
-        private Request BuildUrlParameters(Dictionary<string, string> parameters, string url)
+        Request BuildUrlParameters(Dictionary<string, string> parameters, string url)
         {
             var req = new Request(BaseUrl + url);
             var urlParams = req.RequestParameters;
@@ -280,12 +268,23 @@ namespace LinqToTwitter
 
             return req;
         }
+  
+        /// <summary>
+        /// builds an url for showing status of user
+        /// </summary>
+        /// <param name="parameters">parameter list</param>
+        /// <returns>base url + show segment</returns>
+        Request BuildShowUrl(Dictionary<string, string> parameters)
+        {
+            var url = BuildUrlHelper.TransformIDUrl(parameters, "statuses/show.json");
+            return BuildUrlParameters(parameters, url);
+        }
 
         /// <summary>
         /// construct an url for the user timeline
         /// </summary>
         /// <returns>base url + user timeline segment</returns>
-        private Request BuildUserUrl(Dictionary<string, string> parameters)
+        Request BuildUserUrl(Dictionary<string, string> parameters)
         {
             var url = BuildUrlHelper.TransformIDUrl(parameters, "statuses/user_timeline.json");
             return BuildUrlParameters(parameters, url);
@@ -295,7 +294,7 @@ namespace LinqToTwitter
         /// construct a base home url
         /// </summary>
         /// <returns>base url + home segment</returns>
-        private Request BuildHomeUrl(Dictionary<string, string> parameters)
+        Request BuildHomeUrl(Dictionary<string, string> parameters)
         {
             return BuildUrlParameters(parameters, "statuses/home_timeline.json");
         }
@@ -305,27 +304,17 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">parameters to build url query with</param>
         /// <returns>base url + mentions segment</returns>
-        private Request BuildMentionsUrl(Dictionary<string, string> parameters)
+        Request BuildMentionsUrl(Dictionary<string, string> parameters)
         {
             return BuildUrlParameters(parameters, "statuses/mentions.json");
         }
-
-        // TODO: Public deprecated on 5/14/12
-        ///// <summary>
-        ///// return a public url
-        ///// </summary>
-        ///// <returns>base url + public segment</returns>
-        //private Request BuildPublicUrl()
-        //{
-        //    return new Request(BaseUrl + "statuses/public_timeline.xml");
-        //}
 
         /// <summary>
         /// construct a url that will request all the retweets of a given tweet
         /// </summary>
         /// <param name="parameters">input parameters</param>
         /// <returns>base url + retweet segment</returns>
-        private Request BuildRetweetsUrl(Dictionary<string, string> parameters)
+        Request BuildRetweetsUrl(Dictionary<string, string> parameters)
         {
             if (parameters.ContainsKey("ID"))
             {
@@ -350,7 +339,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">input parameters</param>
         /// <returns>base url + retweeted by me segment</returns>
-        private Request BuildRetweetedByMeUrl(Dictionary<string, string> parameters)
+        Request BuildRetweetedByMeUrl(Dictionary<string, string> parameters)
         {
             return BuildUrlParameters(parameters, "statuses/retweeted_by_me.json");
         }
@@ -360,7 +349,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">input parameters</param>
         /// <returns>base url + retweeted to me segment</returns>
-        private Request BuildRetweetedToMeUrl(Dictionary<string, string> parameters)
+        Request BuildRetweetedToMeUrl(Dictionary<string, string> parameters)
         {
             return BuildUrlParameters(parameters, "statuses/retweeted_to_me.json");
         }
@@ -370,7 +359,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">input parameters</param>
         /// <returns>base url + retweeted by user segment</returns>
-        private Request BuildRetweetedByUserUrl(Dictionary<string, string> parameters)
+        Request BuildRetweetedByUserUrl(Dictionary<string, string> parameters)
         {
             return BuildUrlParameters(parameters, "statuses/retweeted_by_user.json");
         }
@@ -380,7 +369,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">input parameters</param>
         /// <returns>base url + retweeted to user segment</returns>
-        private Request BuildRetweetedToUserUrl(Dictionary<string, string> parameters)
+        Request BuildRetweetedToUserUrl(Dictionary<string, string> parameters)
         {
             return BuildUrlParameters(parameters, "statuses/retweeted_to_user.json");
         }
@@ -390,9 +379,40 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">input parameters</param>
         /// <returns>base url + retweets of me segment</returns>
-        private Request BuildRetweetsOfMeUrl(Dictionary<string, string> parameters)
+        Request BuildRetweetsOfMeUrl(Dictionary<string, string> parameters)
         {
             return BuildUrlParameters(parameters, "statuses/retweets_of_me.json");
+        }
+
+        Request BuildRetweetedByUrl(Dictionary<string, string> parameters)
+        {
+            if (!parameters.ContainsKey("ID"))
+                throw new ArgumentException("ID is required.", "ID");
+                
+            ID = parameters["ID"];
+
+            var url = string.Format("{0}statuses/{1}/retweeted_by.json", BaseUrl, ID);
+            var req = new Request(url);
+
+            var urlParams = req.RequestParameters;
+
+            if (parameters.ContainsKey("Count"))
+            {
+                Count = int.Parse(parameters["Count"]);
+
+                if (Count > 100)
+                    throw new ArgumentException("Max Count is 100.", "Count");
+
+                urlParams.Add(new QueryParameter("count", Count.ToString(CultureInfo.InvariantCulture)));
+            }
+
+            if (parameters.ContainsKey("Page"))
+            {
+                Page = int.Parse(parameters["Page"]);
+                urlParams.Add(new QueryParameter("page", Page.ToString(CultureInfo.InvariantCulture)));
+            }
+
+            return req;
         }
 
         /// <summary>
@@ -426,6 +446,18 @@ namespace LinqToTwitter
                          select new Status(status))
                         .ToList();
                     break;
+                case StatusType.RetweetedBy:
+                    statusList = new List<Status>
+                    {
+                        new Status
+                        {
+                            Users =
+                                (from JsonData user in statusJson
+                                 select new User(user))
+                                .ToList()
+                        }
+                    };
+                    break;
                 default:
                     statusList = new List<Status>();
                     break;
@@ -446,7 +478,7 @@ namespace LinqToTwitter
                 status.IncludeEntities = IncludeEntities;
                 status.TrimUser = TrimUser;
                 status.IncludeContributorDetails = IncludeContributorDetails;
-            };
+            }
 
             return statusList.OfType<T>().ToList();
         }

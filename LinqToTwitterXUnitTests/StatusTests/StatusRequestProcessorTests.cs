@@ -24,26 +24,7 @@ namespace LinqToTwitterXUnitTests.StatusTests
         }
 
         [Fact]
-        public void BuildUrl_Constructs_Mentions_Url()
-        {
-            const string ExpectedUrl = "https://api.twitter.com/1/statuses/mentions.json?since_id=123&max_id=145&count=50&page=1";
-            var statProc = new StatusRequestProcessor<Status> { BaseUrl = "https://api.twitter.com/1/" };
-            var parameters = new Dictionary<string, string>
-            {
-                { "Type", ((int)StatusType.Mentions).ToString() },
-                { "SinceID", "123" },
-                { "MaxID", "145" },
-                { "Count", "50" },
-                { "Page", "1" }
-            };
-
-            Request req = statProc.BuildUrl(parameters);
-
-            Assert.Equal(ExpectedUrl, req.FullUrl);
-        }
-
-        [Fact]
-        public void ProcessResultsMultipleResultsTest()
+        public void ProcessResults_Handles_Multiple_Statuses()
         {
             var statProc = new StatusRequestProcessor<Status> { Type = StatusType.Home, BaseUrl = "https://api.twitter.com/1/" };
 
@@ -91,7 +72,7 @@ namespace LinqToTwitterXUnitTests.StatusTests
         }
 
         [Fact]
-        public void ProcessResultsSingleResultTest()
+        public void ProcessResults_Handles_A_Single_Status()
         {
             var statProc = new StatusRequestProcessor<Status> { Type = StatusType.Show, BaseUrl = "https://api.twitter.com/1/" };
 
@@ -136,6 +117,25 @@ namespace LinqToTwitterXUnitTests.StatusTests
             Assert.Empty(status.Annotation.Attributes);
             Assert.NotNull(status.Entities);
             Assert.Null(status.Entities.HashTagMentions);
+        }
+
+        [Fact]
+        public void ProcessResults_Handles_Multiple_Users()
+        {
+            var statProc = new StatusRequestProcessor<Status> { Type = StatusType.RetweetedBy, BaseUrl = "https://api.twitter.com/1/" };
+
+            var statuses = statProc.ProcessResults(MultipleUsersResponse);
+
+            Assert.NotNull(statuses);
+            Assert.Single(statuses);
+            var status = statuses.Single();
+            Assert.NotNull(status);
+            var users = status.Users;
+            Assert.NotNull(users);
+            Assert.Equal(5, users.Count);
+            var user = users.First();
+            Assert.NotNull(user.Identifier);
+            Assert.Equal("gcaughey", user.Identifier.ScreenName);
         }
 
         [Fact]
@@ -215,6 +215,25 @@ namespace LinqToTwitterXUnitTests.StatusTests
             Assert.True(
               queryParams.Contains(
                   new KeyValuePair<string, string>("IncludeContributorDetails", "True")));
+        }
+
+        [Fact]
+        public void BuildUrl_Constructs_Mentions_Url()
+        {
+            const string ExpectedUrl = "https://api.twitter.com/1/statuses/mentions.json?since_id=123&max_id=145&count=50&page=1";
+            var statProc = new StatusRequestProcessor<Status> { BaseUrl = "https://api.twitter.com/1/" };
+            var parameters = new Dictionary<string, string>
+            {
+                { "Type", ((int)StatusType.Mentions).ToString() },
+                { "SinceID", "123" },
+                { "MaxID", "145" },
+                { "Count", "50" },
+                { "Page", "1" }
+            };
+
+            Request req = statProc.BuildUrl(parameters);
+
+            Assert.Equal(ExpectedUrl, req.FullUrl);
         }
 
         [Fact]
@@ -344,6 +363,72 @@ namespace LinqToTwitterXUnitTests.StatusTests
         }
 
         [Fact]
+        public void BuildUrl_Returns_Url_For_RetweetedBy()
+        {
+            const string ExpectedUrl = "https://api.twitter.com/1/statuses/123/retweeted_by.json?count=25&page=2";
+            var reqProc = new StatusRequestProcessor<Status>
+            {
+                Type = StatusType.RetweetedBy,
+                BaseUrl = "https://api.twitter.com/1/"
+            };
+            var parameters = new Dictionary<string, string>
+            {
+                { "Type", ((int)StatusType.RetweetedBy).ToString() },
+                { "ID", "123" },
+                { "Count", "25" },
+                { "Page", "2" }
+            };
+
+            Request req = reqProc.BuildUrl(parameters);
+
+            Assert.Equal(ExpectedUrl, req.FullUrl);
+        }
+
+        [Fact]
+        public void BuildUrl_RetweetedBy_Throws_On_Missing_ID()
+        {
+            const string ExpectedParam = "ID";
+            var reqProc = new StatusRequestProcessor<Status>
+            {
+                Type = StatusType.RetweetedBy,
+                BaseUrl = "https://api.twitter.com/1/"
+            };
+            var parameters = new Dictionary<string, string>
+            {
+                { "Type", ((int)StatusType.RetweetedBy).ToString() },
+                //{ "ID", "123" },
+                { "Count", "25" },
+                { "Page", "2" }
+            };
+
+            var ex = Assert.Throws<ArgumentException>(() => reqProc.BuildUrl(parameters));
+
+            Assert.Equal(ExpectedParam, ex.ParamName);
+        }
+
+        [Fact]
+        public void BuildUrl_RetweetedBy_Throws_On_Count_Over_100()
+        {
+            const string ExpectedParam = "Count";
+            var reqProc = new StatusRequestProcessor<Status>
+            {
+                Type = StatusType.RetweetedBy,
+                BaseUrl = "https://api.twitter.com/1/"
+            };
+            var parameters = new Dictionary<string, string>
+            {
+                { "Type", ((int)StatusType.RetweetedBy).ToString() },
+                { "ID", "123" },
+                { "Count", "101" },
+                { "Page", "2" }
+            };
+
+            var ex = Assert.Throws<ArgumentException>(() => reqProc.BuildUrl(parameters));
+
+            Assert.Equal(ExpectedParam, ex.ParamName);
+        }
+
+        [Fact]
         public void BuildUrl_Throws_On_Missing_Type()
         {
             var statusReqProc = new StatusRequestProcessor<Status> { BaseUrl = "https://api.twitter.com/1/" };
@@ -355,7 +440,7 @@ namespace LinqToTwitterXUnitTests.StatusTests
         }
 
         [Fact]
-        public void NullParametersTest()
+        public void BuildUrl_Throws_On_Null_Parameter()
         {
             var target = new StatusRequestProcessor<Status> { BaseUrl = "https://api.twitter.com/1/" };
 
@@ -743,6 +828,269 @@ namespace LinqToTwitterXUnitTests.StatusTests
       ""id"":183620070084325376,
       ""geo"":null,
       ""text"":""Free ebook: Introducing Microsoft SQL Server 2012: http:\/\/t.co\/VZ52WIZf""
+   }
+]";
+
+        const string MultipleUsersResponse = @"[
+   {
+      ""show_all_inline_media"":false,
+      ""id"":106069564,
+      ""default_profile"":true,
+      ""profile_background_color"":""C0DEED"",
+      ""profile_image_url"":""http:\/\/a0.twimg.com\/profile_images\/1440573976\/Ginny2011_normal.jpg"",
+      ""following"":false,
+      ""statuses_count"":19611,
+      ""followers_count"":2793,
+      ""utc_offset"":-18000,
+      ""profile_background_image_url"":""http:\/\/a0.twimg.com\/images\/themes\/theme1\/bg.png"",
+      ""screen_name"":""gcaughey"",
+      ""name"":""Ginny Caughey"",
+      ""profile_link_color"":""0084B4"",
+      ""profile_background_image_url_https"":""https:\/\/si0.twimg.com\/images\/themes\/theme1\/bg.png"",
+      ""listed_count"":234,
+      ""url"":null,
+      ""protected"":false,
+      ""follow_request_sent"":false,
+      ""created_at"":""Mon Jan 18 11:55:17 +0000 2010"",
+      ""profile_use_background_image"":true,
+      ""verified"":false,
+      ""profile_image_url_https"":""https:\/\/si0.twimg.com\/profile_images\/1440573976\/Ginny2011_normal.jpg"",
+      ""is_translator"":false,
+      ""profile_text_color"":""333333"",
+      ""description"":""Ginny is a Windows Phone Development MVP."",
+      ""notifications"":false,
+      ""time_zone"":""Eastern Time (US & Canada)"",
+      ""id_str"":""106069564"",
+      ""default_profile_image"":false,
+      ""location"":""North Carolina"",
+      ""profile_sidebar_border_color"":""C0DEED"",
+      ""favourites_count"":340,
+      ""contributors_enabled"":false,
+      ""lang"":""en"",
+      ""geo_enabled"":false,
+      ""friends_count"":570,
+      ""profile_background_tile"":false,
+      ""status"":{
+         ""in_reply_to_status_id_str"":""211432937089011712"",
+         ""truncated"":false,
+         ""in_reply_to_user_id_str"":""16864582"",
+         ""coordinates"":null,
+         ""geo"":null,
+         ""in_reply_to_user_id"":16864582,
+         ""retweeted"":false,
+         ""in_reply_to_screen_name"":""DDReaper"",
+         ""contributors"":null,
+         ""created_at"":""Sat Jun 09 13:22:33 +0000 2012"",
+         ""retweet_count"":0,
+         ""source"":""\u003Ca href=\""http:\/\/www.metrotwit.com\/\"" rel=\""nofollow\""\u003EMetroTwit\u003C\/a\u003E"",
+         ""id_str"":""211448196407377920"",
+         ""place"":null,
+         ""in_reply_to_status_id"":211432937089011712,
+         ""id"":211448196407377920,
+         ""favorited"":false,
+         ""text"":""@DDReaper Oh yes definitely. But for me that ends up taking a couple of days usually.""
+      },
+      ""profile_sidebar_fill_color"":""DDEEF6""
+   },
+   {
+      ""show_all_inline_media"":false,
+      ""id"":34649740,
+      ""default_profile"":false,
+      ""profile_background_color"":""131516"",
+      ""profile_image_url"":""http:\/\/a0.twimg.com\/profile_images\/2102800167\/223368_23679679112_773624112_392961_1835_n_normal.jpg"",
+      ""following"":false,
+      ""statuses_count"":257,
+      ""followers_count"":38,
+      ""utc_offset"":null,
+      ""profile_background_image_url"":""http:\/\/a0.twimg.com\/images\/themes\/theme14\/bg.gif"",
+      ""screen_name"":""AdamBenoit"",
+      ""name"":""Adam Benoit"",
+      ""profile_link_color"":""009999"",
+      ""profile_background_image_url_https"":""https:\/\/si0.twimg.com\/images\/themes\/theme14\/bg.gif"",
+      ""listed_count"":0,
+      ""url"":""http:\/\/AdamBenoit.com"",
+      ""protected"":false,
+      ""follow_request_sent"":false,
+      ""created_at"":""Thu Apr 23 16:00:56 +0000 2009"",
+      ""profile_use_background_image"":true,
+      ""verified"":false,
+      ""profile_image_url_https"":""https:\/\/si0.twimg.com\/profile_images\/2102800167\/223368_23679679112_773624112_392961_1835_n_normal.jpg"",
+      ""is_translator"":false,
+      ""profile_text_color"":""333333"",
+      ""description"":""Father, Bass Player, Paintball enthusiast, Windows Phone developer and Quality Assurance Analyst at Web.com eCommerce."",
+      ""notifications"":false,
+      ""time_zone"":null,
+      ""id_str"":""34649740"",
+      ""default_profile_image"":false,
+      ""location"":""Barrie, Ontario, Canada"",
+      ""profile_sidebar_border_color"":""eeeeee"",
+      ""favourites_count"":6,
+      ""contributors_enabled"":false,
+      ""lang"":""en"",
+      ""geo_enabled"":false,
+      ""friends_count"":102,
+      ""profile_background_tile"":true,
+      ""profile_sidebar_fill_color"":""efefef""
+   },
+   {
+      ""show_all_inline_media"":true,
+      ""id"":6411122,
+      ""default_profile"":false,
+      ""profile_background_color"":""9ae4e8"",
+      ""profile_image_url"":""http:\/\/a0.twimg.com\/profile_images\/1142064000\/dc2334a6-814c-4113-856f-ce2b37c2cc7a_normal.png"",
+      ""following"":false,
+      ""statuses_count"":5181,
+      ""followers_count"":450,
+      ""utc_offset"":36000,
+      ""profile_background_image_url"":""http:\/\/a0.twimg.com\/images\/themes\/theme1\/bg.png"",
+      ""screen_name"":""indyfromoz"",
+      ""name"":""Indrajit Chakrabarty"",
+      ""profile_link_color"":""0000ff"",
+      ""profile_background_image_url_https"":""https:\/\/si0.twimg.com\/images\/themes\/theme1\/bg.png"",
+      ""listed_count"":31,
+      ""url"":""http:\/\/indyfromoz.wordpress.com\/"",
+      ""protected"":false,
+      ""follow_request_sent"":false,
+      ""created_at"":""Tue May 29 10:39:17 +0000 2007"",
+      ""profile_use_background_image"":true,
+      ""verified"":false,
+      ""profile_image_url_https"":""https:\/\/si0.twimg.com\/profile_images\/1142064000\/dc2334a6-814c-4113-856f-ce2b37c2cc7a_normal.png"",
+      ""is_translator"":false,
+      ""profile_text_color"":""000000"",
+      ""description"":""C# Web\/WPF\/Silverlight & WinPhone\/Android\/iOS App developer, HAM - VK2IJC, entrepreneur, dad. Runs @lianasolutions, a micro-ISV in Sydney, Australia "",
+      ""notifications"":false,
+      ""time_zone"":""Sydney"",
+      ""id_str"":""6411122"",
+      ""default_profile_image"":false,
+      ""location"":""Sydney, Australia"",
+      ""profile_sidebar_border_color"":""87bc44"",
+      ""favourites_count"":6259,
+      ""contributors_enabled"":false,
+      ""lang"":""en"",
+      ""geo_enabled"":true,
+      ""friends_count"":272,
+      ""profile_background_tile"":false,
+      ""profile_sidebar_fill_color"":""e0ff92""
+   },
+   {
+      ""show_all_inline_media"":false,
+      ""id"":152318142,
+      ""default_profile"":false,
+      ""profile_background_color"":""8B542B"",
+      ""profile_image_url"":""http:\/\/a0.twimg.com\/profile_images\/1346401100\/solaIyanu_normal.jpg"",
+      ""following"":false,
+      ""statuses_count"":5522,
+      ""followers_count"":434,
+      ""utc_offset"":0,
+      ""profile_background_image_url"":""http:\/\/a0.twimg.com\/images\/themes\/theme8\/bg.gif"",
+      ""screen_name"":""solaadio"",
+      ""name"":""Olusola Adio"",
+      ""profile_link_color"":""7d7069"",
+      ""profile_background_image_url_https"":""https:\/\/si0.twimg.com\/images\/themes\/theme8\/bg.gif"",
+      ""listed_count"":8,
+      ""url"":""http:\/\/www.logion.co.uk"",
+      ""protected"":false,
+      ""follow_request_sent"":false,
+      ""created_at"":""Sat Jun 05 16:31:20 +0000 2010"",
+      ""profile_use_background_image"":true,
+      ""verified"":false,
+      ""profile_image_url_https"":""https:\/\/si0.twimg.com\/profile_images\/1346401100\/solaIyanu_normal.jpg"",
+      ""is_translator"":false,
+      ""profile_text_color"":""333333"",
+      ""description"":""Jesus lover, Husband, Father, Developer with  (MCTS in #WPF4 & #Silverlight4). Director in @iLogion. Jesus is the ONLY way to heaven. #Gooner"",
+      ""notifications"":false,
+      ""time_zone"":""London"",
+      ""id_str"":""152318142"",
+      ""default_profile_image"":false,
+      ""location"":""UK"",
+      ""profile_sidebar_border_color"":""D9B17E"",
+      ""favourites_count"":2024,
+      ""contributors_enabled"":false,
+      ""lang"":""en"",
+      ""geo_enabled"":true,
+      ""friends_count"":774,
+      ""profile_background_tile"":false,
+      ""status"":{
+         ""in_reply_to_status_id_str"":null,
+         ""truncated"":false,
+         ""in_reply_to_user_id_str"":null,
+         ""coordinates"":null,
+         ""geo"":null,
+         ""in_reply_to_user_id"":null,
+         ""retweeted"":false,
+         ""in_reply_to_screen_name"":null,
+         ""contributors"":null,
+         ""retweeted_status"":{
+            ""in_reply_to_status_id_str"":null,
+            ""truncated"":false,
+            ""in_reply_to_user_id_str"":null,
+            ""coordinates"":null,
+            ""geo"":null,
+            ""in_reply_to_user_id"":null,
+            ""retweeted"":false,
+            ""in_reply_to_screen_name"":null,
+            ""contributors"":null,
+            ""created_at"":""Sat Jun 09 06:47:02 +0000 2012"",
+            ""retweet_count"":785,
+            ""source"":""\u003Ca href=\""http:\/\/bufferapp.com\"" rel=\""nofollow\""\u003EBuffer\u003C\/a\u003E"",
+            ""id_str"":""211348662993960960"",
+            ""place"":null,
+            ""in_reply_to_status_id"":null,
+            ""id"":211348662993960960,
+            ""favorited"":false,
+            ""text"":""In 2010, Verizon, GE and Boeing all earned over $1 billion, but paid absolutely no federal taxes.""
+         },
+         ""created_at"":""Sat Jun 09 07:04:49 +0000 2012"",
+         ""retweet_count"":785,
+         ""source"":""\u003Ca href=\""http:\/\/twitter.com\/#!\/download\/iphone\"" rel=\""nofollow\""\u003ETwitter for iPhone\u003C\/a\u003E"",
+         ""id_str"":""211353138324701184"",
+         ""place"":null,
+         ""in_reply_to_status_id"":null,
+         ""id"":211353138324701184,
+         ""favorited"":false,
+         ""text"":""RT @UberFacts: In 2010, Verizon, GE and Boeing all earned over $1 billion, but paid absolutely no federal taxes.""
+      },
+      ""profile_sidebar_fill_color"":""EADEAA""
+   },
+   {
+      ""show_all_inline_media"":false,
+      ""id"":72197816,
+      ""default_profile"":false,
+      ""profile_background_color"":""C0DEED"",
+      ""profile_image_url"":""http:\/\/a0.twimg.com\/profile_images\/456137779\/6140_98319542965_628617965_2172691_4400036_n_normal.jpg"",
+      ""following"":false,
+      ""statuses_count"":3234,
+      ""followers_count"":272,
+      ""utc_offset"":-18000,
+      ""profile_background_image_url"":""http:\/\/a0.twimg.com\/profile_background_images\/43195547\/white.jpg"",
+      ""screen_name"":""gecheverry"",
+      ""name"":""Gustavo Echeverry"",
+      ""profile_link_color"":""0084B4"",
+      ""profile_background_image_url_https"":""https:\/\/si0.twimg.com\/profile_background_images\/43195547\/white.jpg"",
+      ""listed_count"":4,
+      ""url"":null,
+      ""protected"":false,
+      ""follow_request_sent"":false,
+      ""created_at"":""Mon Sep 07 03:47:54 +0000 2009"",
+      ""profile_use_background_image"":true,
+      ""verified"":false,
+      ""profile_image_url_https"":""https:\/\/si0.twimg.com\/profile_images\/456137779\/6140_98319542965_628617965_2172691_4400036_n_normal.jpg"",
+      ""is_translator"":false,
+      ""profile_text_color"":""333333"",
+      ""description"":""technology enthusiast, developer -c#, java, iPhone-, poker player, fun-addict"",
+      ""notifications"":false,
+      ""time_zone"":""Eastern Time (US & Canada)"",
+      ""id_str"":""72197816"",
+      ""default_profile_image"":false,
+      ""location"":""Colombia"",
+      ""profile_sidebar_border_color"":""C0DEED"",
+      ""favourites_count"":1,
+      ""contributors_enabled"":false,
+      ""lang"":""en"",
+      ""geo_enabled"":false,
+      ""friends_count"":536,
+      ""profile_background_tile"":false,
+      ""profile_sidebar_fill_color"":""DDEEF6""
    }
 ]";
     }

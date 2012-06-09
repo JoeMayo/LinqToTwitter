@@ -18,7 +18,7 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         public static void Run(TwitterContext twitterCtx)
         {
-            HomeStatusQueryDemo(twitterCtx);
+            //HomeStatusQueryDemo(twitterCtx);
             //HomeSinceStatusQueryDemo(twitterCtx);
             //UserStatusQueryDemo(twitterCtx);
             //UserStatusSinceIDQueryDemo(twitterCtx);
@@ -52,6 +52,7 @@ namespace LinqToTwitterDemo
             //TrimUserDemo(twitterCtx);
             //TweetWithMediaDemo(twitterCtx);
             //TweetEntityDemo(twitterCtx);
+            RetweetedByDemo(twitterCtx);
         }
 
         /// <summary>
@@ -386,6 +387,19 @@ namespace LinqToTwitterDemo
                             retweet.User.Name, retweet.Text);
                     }
                 });
+        }
+
+        private static void RetweetedByDemo(TwitterContext twitterCtx)
+        {
+            var status =
+                (from tweet in twitterCtx.Status
+                 where tweet.Type == StatusType.RetweetedBy &&
+                       tweet.ID == "210591841312190464"
+                 select tweet)
+                .SingleOrDefault();
+
+            status.Users.ForEach(
+                user => Console.WriteLine("User: " + user.Identifier.ScreenName));
         }
 
         /// <summary>
