@@ -59,9 +59,9 @@ namespace LinqToTwitterDemo
                         AccountDemos.Run(twitterCtx);
 
                     //BlocksDemos.Run(twitterCtx);
-                    DirectMessageDemos.Run(twitterCtx);
+                    //DirectMessageDemos.Run(twitterCtx);
                     //FavoritesDemos.Run(twitterCtx);
-                    //FriendshipDemos.Run(twitterCtx);
+                    FriendshipDemos.Run(twitterCtx);
                     //GeoDemos.Run(twitterCtx);
                     //HelpDemos.Run(twitterCtx);
                     //LegalDemos.Run(twitterCtx);

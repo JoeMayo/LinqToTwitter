@@ -29,47 +29,47 @@ namespace LinqToTwitter
         /// <summary>
         /// The ID or screen_name of the subject user
         /// </summary>
-        private string SubjectUser { get; set; }
+        internal string SubjectUser { get; set; }
 
         /// <summary>
         /// The ID or screen_name of the user to test for following
         /// </summary>
-        private string FollowingUser { get; set; }
+        internal string FollowingUser { get; set; }
 
         /// <summary>
         /// ID of source user
         /// </summary>
-        private string SourceUserID { get; set; }
+        internal string SourceUserID { get; set; }
 
         /// <summary>
         /// Screen name of source user
         /// </summary>
-        private string SourceScreenName { get; set; }
+        internal string SourceScreenName { get; set; }
 
         /// <summary>
         /// ID of target user
         /// </summary>
-        private string TargetUserID { get; set; }
+        internal string TargetUserID { get; set; }
 
         /// <summary>
         /// Screen name of target user
         /// </summary>
-        private string TargetScreenName { get; set; }
+        internal string TargetScreenName { get; set; }
 
         /// <summary>
         /// Comma-separated list of names for lookup
         /// </summary>
-        private string ScreenName { get; set; }
+        internal string ScreenName { get; set; }
 
         /// <summary>
         /// Comma-separated list of user IDs to lookup
         /// </summary>
-        public string UserID { get; set; }
+        internal string UserID { get; set; }
 
         /// <summary>
         /// Helps in paging results for queries such as incoming and outgoing
         /// </summary>
-        public string Cursor { get; set; }
+        internal string Cursor { get; set; }
 
         /// <summary>
         /// extracts parameters from lambda
@@ -331,6 +331,7 @@ namespace LinqToTwitter
             friendship.TargetScreenName = TargetScreenName;
             friendship.Cursor = Cursor;
             friendship.ScreenName = ScreenName;
+            friendship.UserID = UserID;
 
             var friendList = new List<Friendship>
             {

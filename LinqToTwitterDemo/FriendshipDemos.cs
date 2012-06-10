@@ -22,10 +22,11 @@ namespace LinqToTwitterDemo
             //FriendshipExistsDemo(twitterCtx);
             //FriendshipExistsProjectionDemo(twitterCtx);
             //FriendshipShowDemo(twitterCtx);
-            FriendshipNoRetweetIDsDemo(twitterCtx);
+            //FriendshipNoRetweetIDsDemo(twitterCtx);
             //FriendshipIncomingDemo(twitterCtx);
             //FriendshipOutgoingDemo(twitterCtx);
-            //FriendshipLookupDemo(twitterCtx);
+            //FriendshipScreenNameLookupDemo(twitterCtx);
+            FriendshipUserIDLookupDemo(twitterCtx);
             //UpdateSettingsDemo(twitterCtx);
         }
 
@@ -175,12 +176,25 @@ namespace LinqToTwitterDemo
             request.IDInfo.IDs.ForEach(req => Console.WriteLine(req));
         }
 
-        private static void FriendshipLookupDemo(TwitterContext twitterCtx)
+        private static void FriendshipScreenNameLookupDemo(TwitterContext twitterCtx)
         {
             var relationships =
                 (from look in twitterCtx.Friendship
                  where look.Type == FriendshipType.Lookup &&
-                       look.ScreenName == "joemayo, linq2tweeter"
+                       look.ScreenName == "joemayo,linq2tweeter"
+                 select look.Relationships)
+                .SingleOrDefault();
+
+            relationships.ForEach(rel => Console.WriteLine(
+                "Relationship to " + rel.ScreenName + " is Following: " + rel.Following + " Followed By: " + rel.FollowedBy));
+        }
+
+        private static void FriendshipUserIDLookupDemo(TwitterContext twitterCtx)
+        {
+            var relationships =
+                (from look in twitterCtx.Friendship
+                 where look.Type == FriendshipType.Lookup &&
+                       look.UserID == "15411837,16761255"
                  select look.Relationships)
                 .SingleOrDefault();
 

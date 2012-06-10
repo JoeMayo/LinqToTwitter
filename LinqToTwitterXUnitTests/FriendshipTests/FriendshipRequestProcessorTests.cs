@@ -89,18 +89,6 @@ namespace LinqToTwitterXUnitTests.FriendshipTests
             Assert.False(srcRel.CanDm);
         }
 
-        [Fact]
-        public void ProcessActionResult_Translates_Relationships_From_UpdateSettings()
-        {
-            var friendReqProc = new FriendshipRequestProcessor<Friendship>();
-
-            Friendship friend = friendReqProc.ProcessActionResult(RelationshipResponse, FriendshipAction.Update);
-
-            var srcRel = friend.SourceRelationship;
-            Assert.Equal(true, srcRel.RetweetsWanted);
-            Assert.Equal(true, srcRel.NotificationsEnabled);
-        }
-
         void TestParsingIds(FriendshipType friendType)
         {
             var friendReqProc = new FriendshipRequestProcessor<Friendship> { Type = friendType };
@@ -164,6 +152,62 @@ namespace LinqToTwitterXUnitTests.FriendshipTests
             List<Friendship> friendships = reqProc.ProcessResults(string.Empty);
 
             Assert.Empty(friendships);
+        }
+
+        [Fact]
+        public void ProcessResults_Retains_Original_Input_Params()
+        {
+            const string SubjUser = "Joe";
+            const string FollUser = "May";
+            const string SrcUsrID = "1";
+            const string SrcScrNm = "JoeMayo";
+            const string TgtUsrID = "2";
+            const string TgtScrNm = "MayMayo";
+            const string Cursor = "123";
+            const string ScrNm = "JoeMayo,MayMayo";
+            const string UsrID = "1,2";
+            var friendReqProc = new FriendshipRequestProcessor<Friendship> 
+            { 
+                Type = FriendshipType.Lookup,
+                SubjectUser = SubjUser,
+                FollowingUser = FollUser,
+                SourceUserID = SrcUsrID,
+                SourceScreenName = SrcScrNm,
+                TargetUserID = TgtUsrID,
+                TargetScreenName = TgtScrNm,
+                Cursor = Cursor,
+                ScreenName = ScrNm,
+                UserID = UsrID
+            };
+
+            List<Friendship> friendships = friendReqProc.ProcessResults(LookupResponse);
+
+            Assert.NotNull(friendships);
+            Assert.NotEmpty(friendships);
+            var friendship = friendships.First();
+            Assert.NotNull(friendship);
+            Assert.Equal(FriendshipType.Lookup, friendship.Type);
+            Assert.Equal(SubjUser, friendship.SubjectUser);
+            Assert.Equal(FollUser, friendship.FollowingUser);
+            Assert.Equal(SrcUsrID, friendship.SourceUserID);
+            Assert.Equal(SrcScrNm, friendship.SourceScreenName);
+            Assert.Equal(TgtUsrID, friendship.TargetUserID);
+            Assert.Equal(TgtScrNm, friendship.TargetScreenName);
+            Assert.Equal(Cursor, friendship.Cursor);
+            Assert.Equal(ScrNm, friendship.ScreenName);
+            Assert.Equal(UsrID, friendship.UserID);
+        }
+
+        [Fact]
+        public void ProcessActionResult_Translates_Relationships_From_UpdateSettings()
+        {
+            var friendReqProc = new FriendshipRequestProcessor<Friendship>();
+
+            Friendship friend = friendReqProc.ProcessActionResult(RelationshipResponse, FriendshipAction.Update);
+
+            var srcRel = friend.SourceRelationship;
+            Assert.Equal(true, srcRel.RetweetsWanted);
+            Assert.Equal(true, srcRel.NotificationsEnabled);
         }
 
         [Fact]
@@ -302,7 +346,7 @@ namespace LinqToTwitterXUnitTests.FriendshipTests
         }
 
         [Fact]
-        public void MissingTypeTest()
+        public void BuildUrl_Throws_When_Missing_Type()
         {
             FriendshipRequestProcessor<Friendship> friendReqProc = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "https://api.twitter.com/1/" };
             Dictionary<string, string> parameters = new Dictionary<string, string> { };
@@ -313,7 +357,7 @@ namespace LinqToTwitterXUnitTests.FriendshipTests
         }
 
         [Fact]
-        public void NullParametersTest()
+        public void BuildUrl_Throws_On_Null_Parameters()
         {
             FriendshipRequestProcessor<Friendship> friendReqProc = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "https://api.twitter.com/1/" };
             Dictionary<string, string> parameters = null;
@@ -436,7 +480,7 @@ namespace LinqToTwitterXUnitTests.FriendshipTests
 
             var ex = Assert.Throws<ArgumentNullException>(() => friendReqProc.BuildUrl(parameters));
                  
-            Assert.Equal("ScreenNameOrUserID ", ex.ParamName);
+            Assert.Equal("ScreenNameOrUserID", ex.ParamName);
         }
 
         const string FrienshipExistsResponse = "true";
