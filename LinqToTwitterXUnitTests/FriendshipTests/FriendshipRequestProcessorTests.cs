@@ -180,7 +180,8 @@ namespace LinqToTwitterXUnitTests.FriendshipTests
                          friend.TargetUserID == "2" &&
                          friend.TargetScreenName == "Name" &&
                          friend.Cursor == "-1" &&
-                         friend.ScreenName == "twitter,joemayo";
+                         friend.ScreenName == "twitter,joemayo" &&
+                         friend.UserID == "123,456";
             var lambdaExpression = expression as LambdaExpression;
 
             var queryParams = friendReqProc.GetParameters(lambdaExpression);
@@ -212,6 +213,9 @@ namespace LinqToTwitterXUnitTests.FriendshipTests
             Assert.True(
                 queryParams.Contains(
                     new KeyValuePair<string, string>("ScreenName", "twitter,joemayo")));
+            Assert.True(
+                queryParams.Contains(
+                    new KeyValuePair<string, string>("UserID", "123,456")));
         }
 
         [Fact]
@@ -386,7 +390,7 @@ namespace LinqToTwitterXUnitTests.FriendshipTests
         }
 
         [Fact]
-        public void BuildLookupUrl_Returns_Url()
+        public void BuildLookupUrl_Returns_Url_For_ScreenName()
         {
             var friendReqProc = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "https://api.twitter.com/1/" };
             Dictionary<string, string> parameters =
@@ -403,7 +407,24 @@ namespace LinqToTwitterXUnitTests.FriendshipTests
         }
 
         [Fact]
-        public void BuildLookupUrl_Requires_ScreenName()
+        public void BuildLookupUrl_Returns_Url_For_UserID()
+        {
+            var friendReqProc = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "https://api.twitter.com/1/" };
+            Dictionary<string, string> parameters =
+                new Dictionary<string, string>
+                {
+                    { "Type", FriendshipType.Lookup.ToString() },
+                    { "UserID", "123,456" }
+                };
+            string expected = "https://api.twitter.com/1/friendships/lookup.json?user_id=123%2C456";
+
+            Request req = friendReqProc.BuildUrl(parameters);
+
+            Assert.Equal(expected, req.FullUrl);
+        }
+
+        [Fact]
+        public void BuildLookupUrl_Requires_ScreenName_Or_UserID()
         {
             var friendReqProc = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "https://api.twitter.com/1/" };
             Dictionary<string, string> parameters =
@@ -415,7 +436,7 @@ namespace LinqToTwitterXUnitTests.FriendshipTests
 
             var ex = Assert.Throws<ArgumentNullException>(() => friendReqProc.BuildUrl(parameters));
                  
-            Assert.Equal("ScreenName", ex.ParamName);
+            Assert.Equal("ScreenNameOrUserID ", ex.ParamName);
         }
 
         const string FrienshipExistsResponse = "true";

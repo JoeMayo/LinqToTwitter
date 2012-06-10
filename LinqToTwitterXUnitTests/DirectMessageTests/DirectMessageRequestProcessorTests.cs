@@ -23,7 +23,7 @@ namespace LinqToTwitterXUnitTests
         public void BuildUrl_Constructs_SentTo_Url()
         {
             var dmReqProc = new DirectMessageRequestProcessor<DirectMessage> { BaseUrl = "https://api.twitter.com/1/" };
-            const string Expected = "https://api.twitter.com/1/direct_messages.json?since_id=1234567&max_id=357&page=1&count=2";
+            const string Expected = "https://api.twitter.com/1/direct_messages.json?since_id=1234567&max_id=357&page=1&count=2&skip_status=true";
             var parameters =
                 new Dictionary<string, string>
                 {
@@ -31,7 +31,8 @@ namespace LinqToTwitterXUnitTests
                         { "SinceID", "1234567" },
                         { "MaxID", "357" },
                         { "Page", "1" },
-                        { "Count", "2" }
+                        { "Count", "2" },
+                        { "SkipStatus", true.ToString() }
                 };
 
             Request req = dmReqProc.BuildUrl(parameters);
@@ -137,6 +138,7 @@ namespace LinqToTwitterXUnitTests
             const int Page = 3;
             const int Count = 4;
             const ulong ID = 5;
+            const bool SkipStatus = true;
 
             var dmReqProc = new DirectMessageRequestProcessor<DirectMessage>
             {
@@ -146,7 +148,8 @@ namespace LinqToTwitterXUnitTests
                 MaxID = MaxID,
                 Page = Page,
                 Count = Count,
-                ID = ID
+                ID = ID,
+                SkipStatus = SkipStatus
             };
 
             var dms = dmReqProc.ProcessResults(TestQuerySingleResponse);
@@ -158,6 +161,7 @@ namespace LinqToTwitterXUnitTests
             Assert.Equal(Page, dm.Page);
             Assert.Equal(Count, dm.Count);
             Assert.Equal(ID, dm.ID);
+            Assert.Equal(SkipStatus, dm.SkipStatus);
         }
 
         [Fact]
@@ -168,6 +172,7 @@ namespace LinqToTwitterXUnitTests
             const int Page = 3;
             const int Count = 4;
             const ulong ID = 5;
+            const bool SkipStatus = true;
 
             var dmReqProc = new DirectMessageRequestProcessor<DirectMessage>
             {
@@ -177,7 +182,8 @@ namespace LinqToTwitterXUnitTests
                 MaxID = MaxID,
                 Page = Page,
                 Count = Count,
-                ID = ID
+                ID = ID,
+                SkipStatus = SkipStatus
             };
 
             var dms = dmReqProc.ProcessResults(TestQueryResponse);
@@ -189,6 +195,7 @@ namespace LinqToTwitterXUnitTests
             Assert.Equal(Page, dm.Page);
             Assert.Equal(Count, dm.Count);
             Assert.Equal(ID, dm.ID);
+            Assert.Equal(SkipStatus, SkipStatus);
         }
 
         [Fact]
@@ -202,7 +209,8 @@ namespace LinqToTwitterXUnitTests
                     dm.MaxID == 789 &&
                     dm.Page == 1 &&
                     dm.SinceID == 123 &&
-                    dm.ID == 456;
+                    dm.ID == 456 &&
+                    dm.SkipStatus == true;
             var lambdaExpression = expression as LambdaExpression;
 
             var queryParams = dmReqProc.GetParameters(lambdaExpression);
@@ -225,6 +233,9 @@ namespace LinqToTwitterXUnitTests
             Assert.True(
                 queryParams.Contains(
                     new KeyValuePair<string, string>("ID", "456")));
+            Assert.True(
+                queryParams.Contains(
+                    new KeyValuePair<string, string>("SkipStatus", "True")));
         }
 
         [Fact]

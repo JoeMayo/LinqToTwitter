@@ -106,5 +106,10 @@ namespace LinqToTwitter
         /// User object for recipient
         /// </summary>
         public User Recipient { get; set; }
+
+        /// <summary>
+        /// Set to true to not include statuses
+        /// </summary>
+        public bool SkipStatus { get; set; }
     }
 }

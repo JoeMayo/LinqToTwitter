@@ -109,7 +109,7 @@ namespace LinqToTwitterDemo
                  where tweet.Type == DirectMessageType.SentTo &&
                        tweet.Count == 2
                  select tweet)
-                 .ToList();
+                .ToList();
 
             directMessages.ForEach(
                 dm => Console.WriteLine(

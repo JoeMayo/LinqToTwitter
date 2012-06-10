@@ -53,6 +53,11 @@ namespace LinqToTwitter
         internal ulong ID { get; set; }
 
         /// <summary>
+        /// Don't include statuses in response
+        /// </summary>
+        public bool SkipStatus { get; set; }
+
+        /// <summary>
         /// extracts parameters from lambda
         /// </summary>
         /// <param name="lambdaExpression">lambda expression with where clause</param>
@@ -68,7 +73,8 @@ namespace LinqToTwitter
                        "MaxID",
                        "Page",
                        "Count",
-                       "ID"
+                       "ID",
+                       "SkipStatus"
                    });
 
             var parameters = paramFinder.Parameters;
@@ -172,6 +178,12 @@ namespace LinqToTwitter
                 urlParams.Add(new QueryParameter("count", Count.ToString(CultureInfo.InvariantCulture)));
             }
 
+            if (parameters.ContainsKey("SkipStatus"))
+            {
+                SkipStatus = bool.Parse(parameters["SkipStatus"]);
+                urlParams.Add(new QueryParameter("skip_status", SkipStatus.ToString().ToLower()));
+            }
+
             return req;
         }
 
@@ -216,7 +228,8 @@ namespace LinqToTwitter
                     MaxID = MaxID,
                     Page = Page,
                     Count = Count,
-                    ID = ID
+                    ID = ID,
+                    SkipStatus = SkipStatus
                 };
 
             return dmList;
@@ -233,7 +246,8 @@ namespace LinqToTwitter
                     MaxID = MaxID,
                     Page = Page,
                     Count = Count,
-                    ID = ID
+                    ID = ID,
+                    SkipStatus = SkipStatus
                 }
             };
         }

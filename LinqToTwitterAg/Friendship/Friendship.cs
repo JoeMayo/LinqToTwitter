@@ -89,6 +89,11 @@ namespace LinqToTwitter
         public string ScreenName { get; set; }
 
         /// <summary>
+        /// Comma-separated list of user IDs for Lookup query
+        /// </summary>
+        public string UserID { get; set; }
+
+        /// <summary>
         /// List of relationships from Lookup query
         /// </summary>
         public List<Relationship> Relationships { get; set; }

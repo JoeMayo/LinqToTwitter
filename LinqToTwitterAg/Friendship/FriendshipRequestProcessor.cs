@@ -57,9 +57,14 @@ namespace LinqToTwitter
         private string TargetScreenName { get; set; }
 
         /// <summary>
-        /// List of names for lookup
+        /// Comma-separated list of names for lookup
         /// </summary>
         private string ScreenName { get; set; }
+
+        /// <summary>
+        /// Comma-separated list of user IDs to lookup
+        /// </summary>
+        public string UserID { get; set; }
 
         /// <summary>
         /// Helps in paging results for queries such as incoming and outgoing
@@ -85,7 +90,8 @@ namespace LinqToTwitter
                        "TargetUserID",
                        "TargetScreenName",
                        "Cursor",
-                       "ScreenName"
+                       "ScreenName",
+                       "UserID"
                    });
 
             var parameters = paramFinder.Parameters;
@@ -243,13 +249,22 @@ namespace LinqToTwitter
             var req = new Request(BaseUrl + "friendships/lookup.json");
             var urlParams = req.RequestParameters;
 
-            if (!parameters.ContainsKey("ScreenName"))
+            if (!parameters.ContainsKey("ScreenName") && !parameters.ContainsKey("UserID"))
             {
-                throw new ArgumentNullException("ScreenName", "Requires ScreenName with a comma-separated list of twitter screen names");
+                throw new ArgumentNullException("ScreenNameOrUserID", "Requires ScreenName or UserID with a comma-separated list of twitter screen names or user IDs, respectively.");
             }
 
-            ScreenName = parameters["ScreenName"];
-            urlParams.Add(new QueryParameter("screen_name", ScreenName));
+            if (parameters.ContainsKey("ScreenName"))
+            {
+                ScreenName = parameters["ScreenName"];
+                urlParams.Add(new QueryParameter("screen_name", ScreenName));
+            }
+
+            if (parameters.ContainsKey("UserID"))
+            {
+                UserID = parameters["UserID"];
+                urlParams.Add(new QueryParameter("user_id", UserID));
+            }
 
             return req;
         }
