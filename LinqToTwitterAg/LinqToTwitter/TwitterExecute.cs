@@ -25,6 +25,12 @@ using System.Threading.Tasks;
     using System.Web;
 #endif
 
+#if !SILVERLIGHT
+using System.IO.Compression;
+#else
+using Ionic.Zlib;
+#endif
+
 namespace LinqToTwitter
 {
     /// <summary>
@@ -301,10 +307,41 @@ namespace LinqToTwitter
         {
             string responseBody;
 
+            //using (var respStream = resp.GetResponseStream())
+            //using (var respReader = new StreamReader(respStream))
+            //{
+            //    responseBody = respReader.ReadToEnd();
+            //}
             using (var respStream = resp.GetResponseStream())
-            using (var respReader = new StreamReader(respStream))
             {
-                responseBody = respReader.ReadToEnd();
+                string contentEncoding = resp.Headers["Content-Encoding"] ?? "";
+                if (contentEncoding.ToLower().Contains("gzip"))
+                {
+                    using (var gzip = new GZipStream(respStream, CompressionMode.Decompress))
+                    {
+                        using (var reader = new StreamReader(gzip))
+                        {
+                            responseBody = reader.ReadToEnd();
+                        }
+                    }
+                }
+                else if (contentEncoding.ToLower().Contains("deflate"))
+                {
+                    using (var gzip = new DeflateStream(respStream, CompressionMode.Decompress))
+                    {
+                        using (var reader = new StreamReader(gzip))
+                        {
+                            responseBody = reader.ReadToEnd();
+                        }
+                    }
+                }
+                else
+                {
+                    using (var respReader = new StreamReader(respStream))
+                    {
+                        responseBody = respReader.ReadToEnd();
+                    }
+                }
             }
 
             var responseHeaders = new Dictionary<string, string>();
@@ -665,11 +702,11 @@ namespace LinqToTwitter
             this.LastUrl = streamUrl;
             var req = WebRequest.Create(streamUrl) as HttpWebRequest;
             req.Credentials = new NetworkCredential(StreamingUserName, StreamingPassword);
-#if SILVERLIGHT || NETFX_CORE
-            req.Headers[HttpRequestHeader.UserAgent] = UserAgent;
-#else
-            req.UserAgent = UserAgent;
-#endif
+//#if SILVERLIGHT || NETFX_CORE
+//            req.Headers[HttpRequestHeader.UserAgent] = UserAgent;
+//#else
+//            req.UserAgent = UserAgent;
+//#endif
 
             byte[] bytes = new byte[0];
 

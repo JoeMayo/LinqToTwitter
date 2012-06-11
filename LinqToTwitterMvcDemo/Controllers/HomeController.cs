@@ -39,7 +39,8 @@ namespace LinqToTwitterMvcDemo.Controllers
 
             var friendTweets =
                 (from tweet in twitterCtx.Status
-                 where tweet.Type == StatusType.Friends
+                 where tweet.Type == StatusType.User &&
+                       tweet.ScreenName == "AndreMayo1"                       
                  select new TweetViewModel
                  {
                      ImageUrl = tweet.User.ProfileImageUrl,

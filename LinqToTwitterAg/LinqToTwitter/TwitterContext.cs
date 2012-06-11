@@ -142,7 +142,7 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// Gets the screen name of the user.
+        /// Gets the screen name of the user (only populated when a request for access token occurs)
         /// </summary>
         public string UserName
         {
