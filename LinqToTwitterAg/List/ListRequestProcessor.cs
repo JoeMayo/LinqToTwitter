@@ -32,82 +32,87 @@ namespace LinqToTwitter
         /// <summary>
         /// Helps page results
         /// </summary>
-        public string Cursor { get; set; }
+        internal string Cursor { get; set; }
 
         /// <summary>
         /// User ID
         /// </summary>
-        public string UserID { get; set; }
+        internal string UserID { get; set; }
 
         /// <summary>
         /// List ID
         /// </summary>
-        public string ListID { get; set; }
+        internal string ListID { get; set; }
 
         /// <summary>
         /// Catchword for list
         /// </summary>
-        public string Slug { get; set; }
+        internal string Slug { get; set; }
 
         /// <summary>
         /// ID of List Owner
         /// </summary>
-        public string OwnerID { get; set; }
+        internal string OwnerID { get; set; }
 
         /// <summary>
         /// ScreenName of List Owner
         /// </summary>
-        public string OwnerScreenName { get; set; }
+        internal string OwnerScreenName { get; set; }
 
         /// <summary>
         /// Statuses since status ID
         /// </summary>
-        public ulong SinceID { get; set; }
+        internal ulong SinceID { get; set; }
 
         /// <summary>
         /// Max ID to retrieve for statuses
         /// </summary>
-        public ulong MaxID { get; set; }
+        internal ulong MaxID { get; set; }
 
         /// <summary>
         /// Number of statuses per page
         /// </summary>
-        public int Count { get; set; }
+        internal int Count { get; set; }
 
         /// <summary>
         /// Page number for statuses
         /// </summary>
-        public int Page { get; set; }
+        internal int Page { get; set; }
 
         /// <summary>
         /// ScreenName of user for query
         /// </summary>
-        public string ScreenName { get; set; }
+        internal string ScreenName { get; set; }
 
         /// <summary>
         /// Truncate all user info, except for ID
         /// </summary>
-        public bool TrimUser { get; set; }
+        internal bool TrimUser { get; set; }
 
         /// <summary>
         /// Add entities to tweets
         /// </summary>
         // TODO: remove after 5/14/12
         [Obsolete("All API methods capable of including entities will return them regardless of the value provided.")]
-        public bool IncludeEntities { get; set; }
+        internal bool IncludeEntities { get; set; }
 
         /// <summary>
         /// Add retweets, in addition to normal tweets
         /// </summary>
         // TODO: remove after 5/14/12
         [Obsolete("All API methods capable of including retweets will return them regardless of the value provided.")]
-        public bool IncludeRetweets { get; set; }
+        internal bool IncludeRetweets { get; set; }
 
         /// <summary>
         /// Only returns lists that belong to authenticated 
         /// user or user identified by ID or ScreenName
         /// </summary>
-        public bool FilterToOwnedLists { get; set; }
+        internal bool FilterToOwnedLists { get; set; }
+
+        /// <summary>
+        /// Don't include statuses in response
+        /// </summary>
+        internal bool SkipStatus { get; set; }
 
         /// <summary>
         /// extracts parameters from lambda
@@ -135,7 +140,8 @@ namespace LinqToTwitter
                        "TrimUser",
                        "IncludeEntities",
                        "IncludeRetweets",
-                       "FilterToOwnedLists"
+                       "FilterToOwnedLists",
+                       "SkipStatus"
                    })
                    .Parameters;
 
@@ -621,6 +627,15 @@ namespace LinqToTwitter
                 }
             }
 
+            if (parameters.ContainsKey("SkipStatus"))
+            {
+                if (FlagTrue(parameters, "SkipStatus"))
+                {
+                    SkipStatus = true;
+                    urlParams.Add(new QueryParameter("skip_status", "true"));
+                }
+            }
+
             return req;
         }
 
@@ -698,6 +713,15 @@ namespace LinqToTwitter
                 }
             }
 
+            if (parameters.ContainsKey("SkipStatus"))
+            {
+                if (FlagTrue(parameters, "SkipStatus"))
+                {
+                    SkipStatus = true;
+                    urlParams.Add(new QueryParameter("skip_status", "true"));
+                }
+            }
+
             return req;
         }
 
@@ -760,6 +784,15 @@ namespace LinqToTwitter
                 {
                     IncludeEntities = true;
                     urlParams.Add(new QueryParameter("include_entities", "true"));
+                }
+            }
+
+            if (parameters.ContainsKey("SkipStatus"))
+            {
+                if (FlagTrue(parameters, "SkipStatus"))
+                {
+                    SkipStatus = true;
+                    urlParams.Add(new QueryParameter("skip_status", "true"));
                 }
             }
 
@@ -840,6 +873,15 @@ namespace LinqToTwitter
                 }
             }
 
+            if (parameters.ContainsKey("SkipStatus"))
+            {
+                if (FlagTrue(parameters, "SkipStatus"))
+                {
+                    SkipStatus = true;
+                    urlParams.Add(new QueryParameter("skip_status", "true"));
+                }
+            }
+
             return req;
         }
 
@@ -906,7 +948,8 @@ namespace LinqToTwitter
                 list.IncludeRetweets = IncludeRetweets;
                 list.FilterToOwnedLists = FilterToOwnedLists;
                 list.CursorMovement = cursors;
-            };
+                list.SkipStatus = SkipStatus;
+            }
 
             return lists.AsEnumerable().OfType<T>().ToList();
         }

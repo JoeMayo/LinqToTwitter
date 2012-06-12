@@ -37,7 +37,8 @@ namespace LinqToTwitterXUnitTests.ListTests
                     list.FilterToOwnedLists == true &&
                     list.TrimUser == true &&
                     list.IncludeEntities == true &&
-                    list.IncludeRetweets == true;
+                    list.IncludeRetweets == true &&
+                    list.SkipStatus == true;
 
             var queryParams = listReqProc.GetParameters(expression);
 
@@ -89,6 +90,9 @@ namespace LinqToTwitterXUnitTests.ListTests
             Assert.True(
                 queryParams.Contains(
                     new KeyValuePair<string, string>("IncludeRetweets", "True")));
+            Assert.True(
+                queryParams.Contains(
+                    new KeyValuePair<string, string>("SkipStatus", "True")));
         }
 
         [Fact]
@@ -543,7 +547,7 @@ namespace LinqToTwitterXUnitTests.ListTests
         [Fact]
         public void BuildMembersUrl_Returns_Url()
         {
-            const string ExpectedUrl = "https://api.twitter.com/1/lists/members.json?owner_id=123&owner_screen_name=JoeMayo&slug=test&list_id=456&cursor=789&include_entities=true";
+            const string ExpectedUrl = "https://api.twitter.com/1/lists/members.json?owner_id=123&owner_screen_name=JoeMayo&slug=test&list_id=456&cursor=789&include_entities=true&skip_status=true";
             var listReqProc = new ListRequestProcessor<List>() { BaseUrl = "https://api.twitter.com/1/" };
             var parameters = new Dictionary<string, string>
             {
@@ -553,7 +557,8 @@ namespace LinqToTwitterXUnitTests.ListTests
                 { "OwnerScreenName", "JoeMayo" },
                 { "ListID", "456" },
                 { "Cursor", "789" },
-                { "IncludeEntities", "true" }
+                { "IncludeEntities", true.ToString() },
+                { "SkipStatus", true.ToString() }
             };
 
             Request req = listReqProc.BuildUrl(parameters);
@@ -638,7 +643,7 @@ namespace LinqToTwitterXUnitTests.ListTests
         [Fact]
         public void BuildIsMemberUrl_Returns_Url()
         {
-            const string ExpectedUrl = "https://api.twitter.com/1/lists/members/show.json?user_id=789&screen_name=JoeMayo&slug=test&owner_id=123&owner_screen_name=JoeMayo&list_id=456&include_entities=true";
+            const string ExpectedUrl = "https://api.twitter.com/1/lists/members/show.json?user_id=789&screen_name=JoeMayo&slug=test&owner_id=123&owner_screen_name=JoeMayo&list_id=456&include_entities=true&skip_status=true";
             var listReqProc = new ListRequestProcessor<List>() { BaseUrl = "https://api.twitter.com/1/" };
             var parameters = new Dictionary<string, string>
             {
@@ -649,7 +654,8 @@ namespace LinqToTwitterXUnitTests.ListTests
                 { "OwnerID", "123" },
                 { "OwnerScreenName", "JoeMayo" },
                 { "ListID", "456" },
-                { "IncludeEntities", "true" }
+                { "IncludeEntities", true.ToString() },
+                { "SkipStatus", true.ToString() }
             };
 
             Request req = listReqProc.BuildUrl(parameters);
@@ -732,9 +738,9 @@ namespace LinqToTwitterXUnitTests.ListTests
         }
 
         [Fact]
-        public void BuildSubscribersUrl_Returns_Url()
+        public void BuildUrl_Returns_SubscribersUrl()
         {
-            const string ExpectedUrl = "https://api.twitter.com/1/lists/subscribers.json?owner_id=123&owner_screen_name=JoeMayo&slug=test&list_id=456&cursor=789&include_entities=true";
+            const string ExpectedUrl = "https://api.twitter.com/1/lists/subscribers.json?owner_id=123&owner_screen_name=JoeMayo&slug=test&list_id=456&cursor=789&include_entities=true&skip_status=true";
             var listReqProc = new ListRequestProcessor<List>() { BaseUrl = "https://api.twitter.com/1/" };
             var parameters = new Dictionary<string, string>
             {
@@ -744,7 +750,8 @@ namespace LinqToTwitterXUnitTests.ListTests
                 { "OwnerScreenName", "JoeMayo" },
                 { "ListID", "456" },
                 { "Cursor", "789" },
-                { "IncludeEntities", "true" }
+                { "IncludeEntities", true.ToString() },
+                { "SkipStatus", true.ToString() }
             };
 
             Request req = listReqProc.BuildUrl(parameters);
@@ -827,9 +834,9 @@ namespace LinqToTwitterXUnitTests.ListTests
         }
 
         [Fact]
-        public void BuildIsSubscriberUrl_Returns_Url()
+        public void BuildUrl_Returns_IsSubscribedUrl()
         {
-            const string ExpectedUrl = "https://api.twitter.com/1/lists/subscribers/show.json?user_id=789&screen_name=JoeMayo&slug=test&owner_id=123&owner_screen_name=JoeMayo&list_id=456&include_entities=true";
+            const string ExpectedUrl = "https://api.twitter.com/1/lists/subscribers/show.json?user_id=789&screen_name=JoeMayo&slug=test&owner_id=123&owner_screen_name=JoeMayo&list_id=456&include_entities=true&skip_status=true";
             var listReqProc = new ListRequestProcessor<List>() { BaseUrl = "https://api.twitter.com/1/" };
             var parameters = new Dictionary<string, string>
             {
@@ -840,7 +847,8 @@ namespace LinqToTwitterXUnitTests.ListTests
                 { "OwnerID", "123" },
                 { "OwnerScreenName", "JoeMayo" },
                 { "ListID", "456" },
-                { "IncludeEntities", "true" }
+                { "IncludeEntities", true.ToString() },
+                { "SkipStatus", true.ToString() }
             };
 
             Request req = listReqProc.BuildUrl(parameters);
@@ -1036,6 +1044,55 @@ namespace LinqToTwitterXUnitTests.ListTests
             var results = listReqProc.ProcessResults(string.Empty);
 
             Assert.Equal(0, results.Count);
+        }
+
+        [Fact]
+        public void ProcessResults_Retains_Original_Input_Parameters()
+        {
+            var listProc = new ListRequestProcessor<List> 
+            { 
+                Type = ListType.Show,
+                UserID = "123",
+                ScreenName = "JoeMayo",
+                Cursor = "456",
+                ListID = "789",
+                Slug = "MyList",
+                OwnerID = "123",
+                OwnerScreenName = "JoeMayo",
+                MaxID = 150,
+                Count = 50,
+                Page = 1,
+                SinceID = 25,
+                TrimUser = true,
+                IncludeEntities = true,
+                IncludeRetweets = true,
+                FilterToOwnedLists = true,
+                SkipStatus = true
+            };
+
+            var listsResponse = listProc.ProcessResults(SingleListResponse);
+
+            var lists = listsResponse as IList<List>;
+            Assert.NotNull(lists);
+            Assert.Single(lists);
+            var list = lists.Single();
+            Assert.Equal(ListType.Show, list.Type);
+            Assert.Equal("123", list.UserID);
+            Assert.Equal("JoeMayo", list.ScreenName);
+            Assert.Equal("456", list.Cursor);
+            Assert.Equal("789", list.ListID);
+            Assert.Equal("MyList", list.Slug);
+            Assert.Equal("123", list.OwnerID);
+            Assert.Equal("JoeMayo", list.OwnerScreenName);
+            Assert.Equal(150ul, list.MaxID);
+            Assert.Equal(50, list.Count);
+            Assert.Equal(1, list.Page);
+            Assert.Equal(25ul, list.SinceID);
+            Assert.True(list.TrimUser);
+            Assert.True(list.IncludeEntities);
+            Assert.True(list.IncludeRetweets);
+            Assert.True(list.FilterToOwnedLists);
+            Assert.True(list.SkipStatus);
         }
 
         const string SingleListResponse = @"{

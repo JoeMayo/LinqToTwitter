@@ -307,11 +307,6 @@ namespace LinqToTwitter
         {
             string responseBody;
 
-            //using (var respStream = resp.GetResponseStream())
-            //using (var respReader = new StreamReader(respStream))
-            //{
-            //    responseBody = respReader.ReadToEnd();
-            //}
             using (var respStream = resp.GetResponseStream())
             {
                 string contentEncoding = resp.Headers["Content-Encoding"] ?? "";
@@ -1009,7 +1004,6 @@ namespace LinqToTwitter
 
             return response;
         }
-
 
         /// <summary>
         /// performs HTTP POST media byte array upload to Twitter

@@ -21,10 +21,10 @@ namespace LinqToTwitterDemo
             //GetListsDemo(twitterCtx);
             //GetListSubscribersDemo(twitterCtx);
             //IsListMemberDemo(twitterCtx);
-            //GetListMembersDemo(twitterCtx);
+            GetListMembersDemo(twitterCtx);
             //GetListSubscriptionsDemo(twitterCtx);
             //GetListMembershipsDemo(twitterCtx);
-            GetListStatusesDemo(twitterCtx);
+            //GetListStatusesDemo(twitterCtx);
             //ShowListDemo(twitterCtx);
             //IsListSubscribedDemo(twitterCtx);
             //GetAllSubscribedListsDemo(twitterCtx);
@@ -315,9 +315,10 @@ namespace LinqToTwitterDemo
                 (from list in twitterCtx.List
                  where list.Type == ListType.Members &&
                        list.OwnerScreenName == "JoeMayo" &&
-                       list.Slug == "dotnettwittterdevs"
+                       list.Slug == "dotnettwittterdevs" &&
+                       list.SkipStatus == true
                  select list)
-                 .First();
+                .First();
 
             foreach (var user in lists.Users)
             {
