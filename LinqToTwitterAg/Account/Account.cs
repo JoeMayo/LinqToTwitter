@@ -11,6 +11,11 @@
         public AccountType Type { get; set; }
 
         /// <summary>
+        /// Don't include statuses in response (input)
+        /// </summary>
+        public bool SkipStatus { get; set; }
+
+        /// <summary>
         /// User returned by VerifyCredentials Queries
         /// </summary>
         public User User { get; set; }

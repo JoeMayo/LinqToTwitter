@@ -66,7 +66,7 @@ namespace LinqToTwitterDemo
 
             try
             {
-                var user = twitterCtx.UpdateAccountImage(@"C:\Users\jmayo\Pictures\JoeTwitter.jpg");
+                var user = twitterCtx.UpdateAccountImage(@"C:\Users\jmayo\Pictures\JoeTwitter.jpg", true);
             }
             catch (TwitterQueryException tqe)
             {

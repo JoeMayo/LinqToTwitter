@@ -77,7 +77,7 @@ namespace LinqToTwitterXUnitTests.ListTests
         {
             InitializeTwitterContext();
 
-            var ex = Assert.Throws<ArgumentException>(() => ctx.UpdateList(null, null, null, null, null, null));
+            var ex = Assert.Throws<ArgumentException>(() => ctx.UpdateList(null, null, null, null, null, null, null));
 
             Assert.Equal("ListIdOrSlug", ex.ParamName);
         }
@@ -87,7 +87,7 @@ namespace LinqToTwitterXUnitTests.ListTests
         {
             InitializeTwitterContext();
 
-            var ex = Assert.Throws<ArgumentException>(() => ctx.UpdateList("123", "test", null, null, null, null));
+            var ex = Assert.Throws<ArgumentException>(() => ctx.UpdateList("123", "test", null, null, null, null, null));
 
             Assert.Equal("OwnerIdOrOwnerScreenName", ex.ParamName);
         }
@@ -103,10 +103,11 @@ namespace LinqToTwitterXUnitTests.ListTests
                 { "owner_id", "456" },
                 { "owner_screen_name", "JoeMayo" },
                 { "mode", "public" },
-                { "description", "desc" }
+                { "description", "desc" },
+                { "name", "Test List" }
             };
 
-            ctx.UpdateList("123", "test", "456", "JoeMayo", "public", "desc");
+            ctx.UpdateList("123", "test", "Test List", "456", "JoeMayo", "public", "desc");
 
             execMock.Verify(exec =>
                 exec.ExecuteTwitter(

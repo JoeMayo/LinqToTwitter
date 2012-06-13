@@ -129,7 +129,6 @@ namespace LinqToTwitterXUnitTests
             Assert.Single(dms);
         }
 
-
         [Fact]
         public void ProcessResults_Replaces_Input_Params_For_Show()
         {

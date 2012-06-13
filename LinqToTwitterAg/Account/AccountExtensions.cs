@@ -58,10 +58,11 @@ namespace LinqToTwitter
         /// <param name="link">link color</param>
         /// <param name="sidebarFill">sidebar color</param>
         /// <param name="sidebarBorder">sidebar border color</param>
+        /// <param name="skipStatus">Don't include status with response.</param>
         /// <returns>User info with new colors</returns>
-        public static User UpdateAccountColors(this TwitterContext ctx, string background, string text, string link, string sidebarFill, string sidebarBorder)
+        public static User UpdateAccountColors(this TwitterContext ctx, string background, string text, string link, string sidebarFill, string sidebarBorder, bool skipStatus)
         {
-            return UpdateAccountColors(ctx, background, text, link, sidebarFill, sidebarBorder, null);
+            return UpdateAccountColors(ctx, background, text, link, sidebarFill, sidebarBorder, skipStatus, null);
         }
 
         /// <summary>
@@ -75,9 +76,10 @@ namespace LinqToTwitter
         /// <param name="link">link color</param>
         /// <param name="sidebarFill">sidebar color</param>
         /// <param name="sidebarBorder">sidebar border color</param>
+        /// <param name="skipStatus">Don't include status with response.</param>
         /// <param name="callback">Async Callback used in Silverlight queries</param>
         /// <returns>User info with new colors</returns>
-        public static User UpdateAccountColors(this TwitterContext ctx, string background, string text, string link, string sidebarFill, string sidebarBorder, Action<TwitterAsyncResponse<User>> callback)
+        public static User UpdateAccountColors(this TwitterContext ctx, string background, string text, string link, string sidebarFill, string sidebarBorder, bool skipStatus, Action<TwitterAsyncResponse<User>> callback)
         {
             var accountUrl = ctx.BaseUrl + "account/update_profile_colors.json";
 
@@ -103,7 +105,8 @@ namespace LinqToTwitter
                         { "profile_text_color", text.TrimStart('#') },
                         { "profile_link_color", link.TrimStart('#') },
                         { "profile_sidebar_fill_color", sidebarFill.TrimStart('#') },
-                        { "profile_sidebar_border_color", sidebarBorder.TrimStart('#') }
+                        { "profile_sidebar_border_color", sidebarBorder.TrimStart('#') },
+                        { "skip_status", skipStatus.ToString().ToLower() }
                     },
                     response => reqProc.ProcessActionResult(response, UserAction.SingleUser));
 
@@ -120,10 +123,11 @@ namespace LinqToTwitter
         /// otherwise you get WebException errors from Twitter
         /// </remarks>
         /// <param name="imageFilePath">full path to file, including file name</param>
+        /// <param name="skipStatus">Don't include status with response.</param>
         /// <returns>User with new image info</returns>
-        public static User UpdateAccountImage(this TwitterContext ctx, string imageFilePath)
+        public static User UpdateAccountImage(this TwitterContext ctx, string imageFilePath, bool skipStatus)
         {
-            return UpdateAccountImage(ctx, imageFilePath, null);
+            return UpdateAccountImage(ctx, imageFilePath, skipStatus, null);
         }
 
         /// <summary>
@@ -134,9 +138,10 @@ namespace LinqToTwitter
         /// otherwise you get WebException errors from Twitter
         /// </remarks>
         /// <param name="imageFilePath">full path to file, including file name</param>
+        /// <param name="skipStatus">Don't include status with response.</param>
         /// <param name="callback">Async Callback used in Silverlight queries</param>
         /// <returns>User with new image info</returns>
-        public static User UpdateAccountImage(this TwitterContext ctx, string imageFilePath, Action<TwitterAsyncResponse<User>> callback)
+        public static User UpdateAccountImage(this TwitterContext ctx, string imageFilePath, bool skipStatus, Action<TwitterAsyncResponse<User>> callback)
         {
             var accountUrl = ctx.BaseUrl + "account/update_profile_image.json";
 
@@ -146,11 +151,15 @@ namespace LinqToTwitter
             }
 
             var reqProc = new UserRequestProcessor<User>();
+            var parameters = new Dictionary<string, string>
+                    {
+                        { "skip_status", skipStatus.ToString().ToLower() }
+                    };
 
             ITwitterExecute exec = ctx.TwitterExecutor;
             exec.AsyncCallback = callback;
             var resultsJson =
-                exec.PostTwitterFile(accountUrl, null, imageFilePath, reqProc);
+                exec.PostTwitterFile(accountUrl, parameters, imageFilePath, reqProc);
 
             User user = reqProc.ProcessActionResult(resultsJson, UserAction.SingleUser);
             return user;
@@ -167,10 +176,11 @@ namespace LinqToTwitter
         /// <param name="image">byte array of image to upload</param>
         /// <param name="fileName">name to pass to Twitter for the file</param>
         /// <param name="imageType">type of image: must be one of jpg, gif, or png</param>
+        /// <param name="skipStatus">Don't include status with response.</param>
         /// <returns>User with new image info</returns>
-        public static User UpdateAccountImage(this TwitterContext ctx, byte[] image, string fileName, string imageType)
+        public static User UpdateAccountImage(this TwitterContext ctx, byte[] image, string fileName, string imageType, bool skipStatus)
         {
-            return UpdateAccountImage(ctx, image, fileName, imageType, null);
+            return UpdateAccountImage(ctx, image, fileName, imageType, skipStatus, null);
         }
 
         /// <summary>
@@ -183,9 +193,10 @@ namespace LinqToTwitter
         /// <param name="image">byte array of image to upload</param>
         /// <param name="fileName">name to pass to Twitter for the file</param>
         /// <param name="imageType">type of image: must be one of jpg, gif, or png</param>
+        /// <param name="skipStatus">Don't include status with response.</param>
         /// <param name="callback">Async Callback used in Silverlight queries</param>
         /// <returns>User with new image info</returns>
-        public static User UpdateAccountImage(this TwitterContext ctx, byte[] image, string fileName, string imageType, Action<TwitterAsyncResponse<User>> callback)
+        public static User UpdateAccountImage(this TwitterContext ctx, byte[] image, string fileName, string imageType, bool skipStatus, Action<TwitterAsyncResponse<User>> callback)
         {
             var accountUrl = ctx.BaseUrl + "account/update_profile_image.json";
 
@@ -205,11 +216,15 @@ namespace LinqToTwitter
             }
 
             var reqProc = new UserRequestProcessor<User>();
+            var parameters = new Dictionary<string, string>
+                    {
+                        { "skip_status", skipStatus.ToString().ToLower() }
+                    };
 
             ITwitterExecute exec = ctx.TwitterExecutor;
             exec.AsyncCallback = callback;
             var resultsJson =
-                exec.PostTwitterImage(accountUrl, null, image, fileName, imageType, reqProc);
+                exec.PostTwitterImage(accountUrl, parameters, image, fileName, imageType, reqProc);
 
             User user = reqProc.ProcessActionResult(resultsJson, UserAction.SingleUser);
             return user;
@@ -222,10 +237,11 @@ namespace LinqToTwitter
         /// <param name="imageFilePath">full path to file, including file name</param>
         /// <param name="tile">Tile image in background</param>
         /// <param name="use">Whether to use uploaded background image or not</param>
+        /// <param name="skipStatus">Don't include status with response.</param>
         /// <returns>User with new image info</returns>
-        public static User UpdateAccountBackgroundImage(this TwitterContext ctx, string imageFilePath, bool tile, bool use)
+        public static User UpdateAccountBackgroundImage(this TwitterContext ctx, string imageFilePath, bool tile, bool use, bool skipStatus)
         {
-            return UpdateAccountBackgroundImage(ctx, imageFilePath, tile, use, null);
+            return UpdateAccountBackgroundImage(ctx, imageFilePath, tile, use, skipStatus, null);
         }
 
         /// <summary>
@@ -234,9 +250,10 @@ namespace LinqToTwitter
         /// <param name="imageFilePath">full path to file, including file name</param>
         /// <param name="tile">Tile image in background</param>
         /// <param name="use">Whether to use uploaded background image or not</param>
+        /// <param name="skipStatus">Don't include status with response.</param>
         /// <param name="callback">Async Callback used in Silverlight queries</param>
         /// <returns>User with new image info</returns>
-        public static User UpdateAccountBackgroundImage(this TwitterContext ctx, string imageFilePath, bool tile, bool use, Action<TwitterAsyncResponse<User>> callback)
+        public static User UpdateAccountBackgroundImage(this TwitterContext ctx, string imageFilePath, bool tile, bool use, bool skipStatus, Action<TwitterAsyncResponse<User>> callback)
         {
             var accountUrl = ctx.BaseUrl + "account/update_profile_background_image.json";
 
@@ -245,15 +262,15 @@ namespace LinqToTwitter
                 throw new ArgumentException("imageFilePath is required.", "imageFilePath");
             }
 
-            Dictionary<string, string> parameters = null;
+            var parameters = new Dictionary<string, string>
+            {
+                { "skip_status", skipStatus.ToString().ToLower() }
+            };
 
             if (tile)
             {
-                parameters = new Dictionary<string, string>
-                {
-                    { "tile", true.ToString().ToLower() },
-                    { "use", use.ToString().ToLower() }
-                };
+                parameters.Add("tile", true.ToString().ToLower());
+                parameters.Add("use", use.ToString().ToLower());
             }
 
             var reqProc = new UserRequestProcessor<User>();
@@ -276,10 +293,11 @@ namespace LinqToTwitter
         /// <param name="imageType">type of image: must be one of jpg, gif, or png</param>
         /// <param name="tile">Tile image across background.</param>
         /// <param name="use">Whether to use uploaded background image or not</param>
+        /// <param name="skipStatus">Don't include status with response.</param>
         /// <returns>User with new image info</returns>
-        public static User UpdateAccountBackgroundImage(this TwitterContext ctx, byte[] image, string fileName, string imageType, bool tile, bool use)
+        public static User UpdateAccountBackgroundImage(this TwitterContext ctx, byte[] image, string fileName, string imageType, bool tile, bool use, bool skipStatus)
         {
-            return UpdateAccountBackgroundImage(ctx, image, fileName, imageType, tile, use, null);
+            return UpdateAccountBackgroundImage(ctx, image, fileName, imageType, tile, use, skipStatus, null);
         }
 
         /// <summary>
@@ -291,8 +309,9 @@ namespace LinqToTwitter
         /// <param name="tile">Tile image across background.</param>
         /// <param name="use">Whether to use uploaded background image or not</param>
         /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <param name="skipStatus">Don't include status with response.</param>
         /// <returns>User with new image info</returns>
-        public static User UpdateAccountBackgroundImage(this TwitterContext ctx, byte[] image, string fileName, string imageType, bool tile, bool use, Action<TwitterAsyncResponse<User>> callback)
+        public static User UpdateAccountBackgroundImage(this TwitterContext ctx, byte[] image, string fileName, string imageType, bool tile, bool use, bool skipStatus, Action<TwitterAsyncResponse<User>> callback)
         {
             var accountUrl = ctx.BaseUrl + "account/update_profile_background_image.json";
 
@@ -311,15 +330,15 @@ namespace LinqToTwitter
                 throw new ArgumentException("imageType is required.", "imageType");
             }
 
-            Dictionary<string, string> parameters = null;
+            var parameters = new Dictionary<string, string>
+            {
+                { "skip_status", skipStatus.ToString().ToLower() }
+            };
 
             if (tile)
             {
-                parameters = new Dictionary<string, string>
-                {
-                    { "tile", true.ToString().ToLower() },
-                    { "use", use.ToString().ToLower() }
-                };
+                parameters.Add("tile", true.ToString().ToLower());
+                parameters.Add("use", use.ToString().ToLower());
             }
 
             var reqProc = new UserRequestProcessor<User>();
@@ -340,10 +359,11 @@ namespace LinqToTwitter
         /// <param name="url">Web Address</param>
         /// <param name="location">Geographic Location</param>
         /// <param name="description">Personal Description</param>
+        /// <param name="skipStatus">Don't include status with response.</param>
         /// <returns>User with new info</returns>
-        public static User UpdateAccountProfile(this TwitterContext ctx, string name, string url, string location, string description)
+        public static User UpdateAccountProfile(this TwitterContext ctx, string name, string url, string location, string description, bool skipStatus)
         {
-            return UpdateAccountProfile(ctx, name, url, location, description, null);
+            return UpdateAccountProfile(ctx, name, url, location, description, skipStatus, null);
         }
 
         /// <summary>
@@ -353,9 +373,10 @@ namespace LinqToTwitter
         /// <param name="url">Web Address</param>
         /// <param name="location">Geographic Location</param>
         /// <param name="description">Personal Description</param>
+        /// <param name="skipStatus">Don't include status with response.</param>
         /// <param name="callback">Async Callback used in Silverlight queries</param>
         /// <returns>User with new info</returns>
-        public static User UpdateAccountProfile(this TwitterContext ctx, string name, string url, string location, string description, Action<TwitterAsyncResponse<User>> callback)
+        public static User UpdateAccountProfile(this TwitterContext ctx, string name, string url, string location, string description, bool skipStatus, Action<TwitterAsyncResponse<User>> callback)
         {
             var accountUrl = ctx.BaseUrl + "account/update_profile.json";
 
@@ -399,7 +420,8 @@ namespace LinqToTwitter
                         { "name", name },
                         { "url", url },
                         { "location", location },
-                        { "description", description }
+                        { "description", description },
+                        { "skip_status", skipStatus.ToString().ToLower() }
                     },
                     response => reqProc.ProcessActionResult(response, UserAction.SingleUser));
 

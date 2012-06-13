@@ -112,14 +112,14 @@ namespace LinqToTwitter
         public bool IncludeRetweets { get; set; }
 
         /// <summary>
-        /// Don't include statuses in response
-        /// </summary>
-        public bool SkipStatus { get; set; }
-
-        /// <summary>
         /// Statuses since status ID (Query Filter)
         /// </summary>
         public ulong SinceID { get; set; }
+
+        /// <summary>
+        /// Don't include statuses in response (Query Filter)
+        /// </summary>
+        public bool SkipStatus { get; set; }
 
         /// <summary>
         /// Short name of List (Returned from Twitter)

@@ -27,6 +27,11 @@ namespace LinqToTwitter
         internal AccountType Type { get; set; }
 
         /// <summary>
+        /// Don't include status in response
+        /// </summary>
+        internal bool SkipStatus { get; set; }
+
+        /// <summary>
         /// extracts parameters from lambda
         /// </summary>
         /// <param name="lambdaExpression">lambda expression with where clause</param>
@@ -37,7 +42,8 @@ namespace LinqToTwitter
                new ParameterFinder<Account>(
                    lambdaExpression.Body,
                    new List<string> { 
-                       "Type"
+                       "Type",
+                       "SkipStatus"
                    })
                    .Parameters;
         }
@@ -60,7 +66,7 @@ namespace LinqToTwitter
             switch (Type)
             {
                 case AccountType.VerifyCredentials:
-                    url = BaseUrl + "account/verify_credentials.json";
+                    url = BuildVerifyCredentialsUrl(parameters).FullUrl;
                     break;
                 case AccountType.RateLimitStatus:
                     url = BaseUrl + "account/rate_limit_status.json";
@@ -76,6 +82,23 @@ namespace LinqToTwitter
             }
 
             return new Request(url);
+        }
+  
+        private Request BuildVerifyCredentialsUrl(Dictionary<string, string> parameters)
+        {
+            var req = new Request(BaseUrl + "account/verify_credentials.json");
+            var urlParams = req.RequestParameters;
+
+            if (parameters.ContainsKey("SkipStatus"))
+            {
+                if (RequestProcessorHelper.FlagTrue(parameters, "SkipStatus"))
+                {
+                    SkipStatus = true;
+                    urlParams.Add(new QueryParameter("skip_status", "true"));
+                }
+            }
+
+            return req;
         }
 
         /// <summary>
@@ -110,6 +133,9 @@ namespace LinqToTwitter
                     default:
                         throw new InvalidOperationException("The default case of ProcessResults should never execute because a Type must be specified.");
                 }
+
+                acct.Type = Type;
+                acct.SkipStatus = SkipStatus;
             }
 
             return new List<Account> { acct }.OfType<T>().ToList();

@@ -69,9 +69,9 @@ namespace LinqToTwitter
         /// <param name="mode">public or private</param>
         /// <param name="description">list description</param>
         /// <returns>List info for modified list</returns>
-        public static List UpdateList(this TwitterContext ctx, string listID, string slug, string ownerID, string ownerScreenName, string mode, string description)
+        public static List UpdateList(this TwitterContext ctx, string listID, string slug, string name, string ownerID, string ownerScreenName, string mode, string description)
         {
-            return UpdateList(ctx, listID, slug, ownerID, ownerScreenName, mode, description, null);
+            return UpdateList(ctx, listID, slug, name, ownerID, ownerScreenName, mode, description, null);
         }
 
         /// <summary>
@@ -85,7 +85,7 @@ namespace LinqToTwitter
         /// <param name="description">list description</param>
         /// <param name="callback">Async Callback used in Silverlight queries</param>
         /// <returns>List info for modified list</returns>
-        public static List UpdateList(this TwitterContext ctx, string listID, string slug, string ownerID, string ownerScreenName, string mode, string description, Action<TwitterAsyncResponse<List>> callback)
+        public static List UpdateList(this TwitterContext ctx, string listID, string slug, string name, string ownerID, string ownerScreenName, string mode, string description, Action<TwitterAsyncResponse<List>> callback)
         {
             if (string.IsNullOrEmpty(listID) && string.IsNullOrEmpty(slug))
             {
@@ -113,7 +113,8 @@ namespace LinqToTwitter
                         { "owner_id", ownerID },
                         { "owner_screen_name", ownerScreenName },
                         { "mode", mode },
-                        { "description", description }
+                        { "description", description },
+                        { "name", name }
                     },
                     response => reqProc.ProcessActionResult(response, ListAction.Update));
 

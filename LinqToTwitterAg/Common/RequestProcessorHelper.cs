@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace LinqToTwitter
 {
@@ -37,6 +38,24 @@ namespace LinqToTwitter
             }
 
             return statusType;
+        }
+
+        /// <summary>
+        /// Determines if a parameter is true
+        /// </summary>
+        /// <param name="parameters">Name/Value list of parameters</param>
+        /// <param name="key">Name of parameter to check.</param>
+        /// <returns>Boolean value of parameter (false if value is false or not bool)</returns>
+        internal static bool FlagTrue(IDictionary<string, string> parameters, string key)
+        {
+            bool flag;
+
+            if (!bool.TryParse(parameters[key], out flag))
+            {
+                flag = false;
+            }
+
+            return flag;
         }
     }
 }

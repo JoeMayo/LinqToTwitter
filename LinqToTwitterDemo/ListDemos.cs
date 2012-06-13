@@ -171,7 +171,7 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void UpdateListDemo(TwitterContext twitterCtx)
         {
-            List list = twitterCtx.UpdateList(null, "test", null, "Linq2Tweeter", "public", "This is a test2");
+            List list = twitterCtx.UpdateList(null, "test", null, "Test List", "Linq2Tweeter", "public", "This is a test2");
 
             Console.WriteLine("List Name: {0}, Description: {1}",
                 list.Name, list.Description);
