@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using LitJson;
+using LinqToTwitter.Common;
 
 #if SILVERLIGHT && !WINDOWS_PHONE
     using System.Windows.Browser;
@@ -32,28 +33,28 @@ namespace LinqToTwitter
         /// <summary>
         /// user's Twitter ID
         /// </summary>
-        private string ID { get; set; }
+        internal string ID { get; set; }
 
         /// <summary>
         /// User ID for disambiguating when ID is screen name
         /// </summary>
-        private string UserID { get; set; }
+        internal string UserID { get; set; }
 
         /// <summary>
         /// user's screen name
         /// On Input - disambiguates when ID is User ID
         /// </summary>
-        private string ScreenName { get; set; }
+        internal string ScreenName { get; set; }
 
         /// <summary>
         /// page number of results to retrieve
         /// </summary>
-        private int Page { get; set; }
+        internal int Page { get; set; }
 
         /// <summary>
         /// Number of users to return for each page
         /// </summary>
-        private int PerPage { get; set; }
+        internal int PerPage { get; set; }
 
         /// <summary>
         /// Indicator for which page to get next
@@ -64,32 +65,37 @@ namespace LinqToTwitter
         /// are Previous and Next, which you can find in the
         /// CursorResponse property when your response comes back.
         /// </remarks>
-        private string Cursor { get; set; }
+        internal string Cursor { get; set; }
 
         /// <summary>
         /// Used to identify suggested users category
         /// </summary>
-        private string Slug { get; set; }
+        internal string Slug { get; set; }
 
         /// <summary>
         /// Query for User Search
         /// </summary>
-        private string Query { get; set; }
+        internal string Query { get; set; }
 
         /// <summary>
         /// Supports various languages
         /// </summary>
-        private string Lang { get; set; }
+        internal string Lang { get; set; }
 
         /// <summary>
         /// Add entities to results
         /// </summary>
-        public bool IncludeEntities { get; set; }
+        internal bool IncludeEntities { get; set; }
 
         /// <summary>
         /// Remove status from results
         /// </summary>
-        public bool SkipStatus { get; set; }
+        internal bool SkipStatus { get; set; }
+
+        /// <summary>
+        /// Size for UserProfileImage query
+        /// </summary>
+        internal ProfileImageSize ImageSize { get; set; }
 
         /// <summary>
         /// extracts parameters from lambda
@@ -113,7 +119,8 @@ namespace LinqToTwitter
                        "Query",
                        "Lang",
                        "IncludeEntities",
-                       "SkipStatus"
+                       "SkipStatus",
+                       "ImageSize"
                    });
 
             var parameters = paramFinder.Parameters;
@@ -152,6 +159,8 @@ namespace LinqToTwitter
                     return BuildContributeesUrl(parameters);
                 case UserType.Contributors:
                     return BuildContributorsUrl(parameters);
+                case UserType.ProfileImage:
+                    return BuildProfileImageUrl(parameters);
                 default:
                     throw new InvalidOperationException("The default case of BuildUrl should never execute because a Type must be specified.");
             }
@@ -386,6 +395,31 @@ namespace LinqToTwitter
             return req;
         }
 
+        Request BuildProfileImageUrl(Dictionary<string, string> parameters)
+        {
+            if (!parameters.ContainsKey("ScreenName"))
+            {
+                throw new ArgumentException("Parameters must include either UserID or ScreenName.", "ScreenName");
+            }
+
+            var req = new Request(BaseUrl + "users/profile_image.json");
+            var urlParams = req.RequestParameters;
+
+            if (parameters.ContainsKey("ScreenName"))
+            {
+                ScreenName = parameters["ScreenName"];
+                urlParams.Add(new QueryParameter("screen_name", parameters["ScreenName"]));
+            }
+
+            if (parameters.ContainsKey("ImageSize"))
+            {
+                ImageSize = (ProfileImageSize)Enum.Parse(typeof(ProfileImageSize), parameters["ImageSize"], true);
+                urlParams.Add(new QueryParameter("size", ImageSize.ToString().ToLower()));
+            }
+
+            return req;
+        }
+
         /// <summary>
         /// Transforms Twitter response into List of User
         /// </summary>
@@ -417,6 +451,9 @@ namespace LinqToTwitter
                 case UserType.Search:
                     userList = HandleMultipleUserResponse(userJson);
                     break;
+                case UserType.ProfileImage:
+                    userList = HandleProfileImageResponse(userJson);
+                    break;
                 default:
                     userList = new List<User>();
                     break;
@@ -429,13 +466,16 @@ namespace LinqToTwitter
                 user.UserID = UserID;
                 user.ScreenName = ScreenName;
                 user.Page = Page;
+                user.PerPage = PerPage;
                 user.Cursor = Cursor;
                 user.Slug = Slug;
                 user.Lang = Lang;
                 user.Query = Query;
                 user.IncludeEntities = IncludeEntities;
                 user.SkipStatus = SkipStatus;
-            };
+                user.ImageSize = ImageSize;
+            }
+;
 
             return userList.OfType<T>().ToList();
         }
@@ -483,6 +523,17 @@ namespace LinqToTwitter
                 .ToList();
 
             return userList;
+        }
+
+        private List<User> HandleProfileImageResponse(JsonData userJson)
+        {
+            return new List<User>
+            {
+                new User
+                {
+                    ProfileImage = userJson.GetValue<string>("imageUrl")
+                }
+            };
         }
 
         public T ProcessActionResult(string responseJson, Enum theAction)

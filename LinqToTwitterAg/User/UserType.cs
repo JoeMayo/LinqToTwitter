@@ -43,6 +43,11 @@
         /// <summary>
         /// Users who can contribute to an account
         /// </summary>
-        Contributors
+        Contributors,
+
+        /// <summary>
+        /// Get Profile Image URL
+        /// </summary>
+        ProfileImage
     }
 }

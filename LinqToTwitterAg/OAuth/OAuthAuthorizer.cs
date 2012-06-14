@@ -180,7 +180,8 @@ namespace LinqToTwitter
             req.Headers[HttpRequestHeader.Authorization] = new OAuthTwitter().PrepareAuthHeader(queryString);
 #else
             var req = WebRequest.Create(request.FullUrl) as HttpWebRequest;
-            if (req != null) {
+            if (req != null)
+            {
                 req.Headers[HttpRequestHeader.Authorization] = new OAuthTwitter().PrepareAuthHeader(queryString, request);
 
                 InitializeRequest(req);

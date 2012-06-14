@@ -330,6 +330,10 @@ namespace LinqToTwitter
                         }
                     }
                 }
+                else if (resp.ContentType.StartsWith("image"))
+                {
+                    responseBody = "{ \"imageUrl\": \"" + resp.ResponseUri.ToString() + "\" }";
+                }
                 else
                 {
                     using (var respReader = new StreamReader(respStream))
@@ -419,8 +423,9 @@ namespace LinqToTwitter
                             lock (this.asyncCallbackLock)
                             {
                                 var res = reqEx.EndGetResponse(ar) as HttpWebResponse;
-                                //httpStatus = res.Headers["Status"];
-                                response = GetTwitterResponse(res);
+
+                                response = GetTwitterResponse(res); 
+
                                 List<T> responseObj = reqProc.ProcessResults(response);
                                 (AsyncCallback as Action<IEnumerable<T>>)(responseObj); 
                             }

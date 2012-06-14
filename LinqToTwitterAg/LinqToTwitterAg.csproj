@@ -300,6 +300,7 @@
     <Compile Include="Trend\TrendRequestProcessor.cs" />
     <Compile Include="Trend\TrendType.cs" />
     <Compile Include="User\Category.cs" />
+    <Compile Include="User\ProfileImageSize.cs" />
     <Compile Include="User\User.cs" />
     <Compile Include="User\UserAction.cs" />
     <Compile Include="User\UserIdentifier.cs" />

@@ -274,6 +274,60 @@ namespace LinqToTwitterXUnitTests.UserTests
         }
 
         [Fact]
+        public void BuildUrl_Constructs_ProfileImage_Url()
+        {
+            const string ExpectedUrl = "https://api.twitter.com/1/users/profile_image.json?screen_name=JoeMayo&size=bigger";
+            var reqProc = new UserRequestProcessor<User> { BaseUrl = "https://api.twitter.com/1/" };
+            var parameters = new Dictionary<string, string>
+            {
+                { "Type", ((int)UserType.ProfileImage).ToString() },
+                { "ScreenName", "JoeMayo" },
+                { "ImageSize", ProfileImageSize.Bigger.ToString() }
+            };
+
+            Request req = reqProc.BuildUrl(parameters);
+
+            Assert.Equal(ExpectedUrl, req.FullUrl);
+        }
+
+        [Fact]
+        public void BuildUrl_Throws_On_Missing_ScreenName_For_ProfileImage()
+        {
+            var reqProc = new UserRequestProcessor<User> { BaseUrl = "https://api.twitter.com/1/" };
+            var parameters = new Dictionary<string, string>
+            {
+                { "Type", ((int)UserType.ProfileImage).ToString() },
+                //{ "ScreenName", "JoeMayo" },
+                { "ImageSize", ProfileImageSize.Bigger.ToString() }
+            };
+
+            var ex = Assert.Throws<ArgumentException>(() => reqProc.BuildUrl(parameters));
+
+            Assert.Equal("ScreenName", ex.ParamName);
+        }
+
+        [Fact]
+        public void BuildUrl_Throws_On_Missing_Type()
+        {
+            var reqProc = new UserRequestProcessor<User> { BaseUrl = "https://api.twitter.com/1/" };
+            var parameters = new Dictionary<string, string> { };
+
+            var ex = Assert.Throws<ArgumentException>(() => reqProc.BuildUrl(parameters));
+
+            Assert.Equal<string>("Type", ex.ParamName);
+        }
+
+        [Fact]
+        public void BuildUrl_Throws_On_Null_Params()
+        {
+            var reqProc = new UserRequestProcessor<User> { BaseUrl = "https://api.twitter.com/1/" };
+
+            var ex = Assert.Throws<ArgumentException>(() => reqProc.BuildUrl(null));
+
+            Assert.Equal<string>("Type", ex.ParamName);
+        }
+
+        [Fact]
         public void GetParameters_Handles_Input_Params()
         {
             var reqProc = new UserRequestProcessor<User>();
@@ -291,7 +345,8 @@ namespace LinqToTwitterXUnitTests.UserTests
                 user.PerPage == 10 &&
                 user.Lang == "it" &&
                 user.IncludeEntities == true &&
-                user.SkipStatus == true;
+                user.SkipStatus == true &&
+                user.ImageSize == ProfileImageSize.Mini;
 
             var lambdaExpression = expression as LambdaExpression;
 
@@ -333,6 +388,47 @@ namespace LinqToTwitterXUnitTests.UserTests
             Assert.True(
               queryParams.Contains(
                   new KeyValuePair<string, string>("SkipStatus", "True")));
+            Assert.True(
+                queryParams.Contains(
+                    new KeyValuePair<string, string>("ImageSize", ((int)ProfileImageSize.Mini).ToString())));
+        }
+
+        [Fact]
+        public void ProcessResults_Retains_Original_Input_Parameters()
+        {
+            var reqProc = new UserRequestProcessor<User> 
+            { 
+                Type = UserType.Show, 
+                BaseUrl = "https://api.twitter.com/1/",
+                ID = "123",
+                UserID = "123",
+                ScreenName = "JoeMayo",
+                Page = 1,
+                PerPage = 10,
+                Cursor = "456",
+                Slug = "myslug",
+                Query = "myquery",
+                Lang = "en-US",
+                SkipStatus = true,
+                ImageSize = ProfileImageSize.Bigger
+            };
+
+            List<User> users = reqProc.ProcessResults(SingleUserResponse);
+
+            Assert.NotNull(users);
+            Assert.Single(users);
+            var user = users.First();
+            Assert.Equal("123", user.ID);
+            Assert.Equal("123", user.UserID);
+            Assert.Equal("JoeMayo", user.ScreenName);
+            Assert.Equal(1, user.Page);
+            Assert.Equal(10, user.PerPage);
+            Assert.Equal("456", user.Cursor);
+            Assert.Equal("myslug", user.Slug);
+            Assert.Equal("myquery", user.Query);
+            Assert.Equal("en-US", user.Lang);
+            Assert.True(user.SkipStatus);
+            Assert.Equal(ProfileImageSize.Bigger, user.ImageSize);
         }
 
         [Fact]
@@ -529,24 +625,18 @@ namespace LinqToTwitterXUnitTests.UserTests
         }
 
         [Fact]
-        public void BuildUrl_Throws_On_Missing_Type()
+        public void ProcessResults_Parses_ProfileImage_Response()
         {
-            var reqProc = new UserRequestProcessor<User> { BaseUrl = "https://api.twitter.com/1/" };
-            var parameters = new Dictionary<string, string> { };
+            const string ExpectedUrl = "http://myuri.jpg";
+            var reqProc = new UserRequestProcessor<User> { Type = UserType.ProfileImage, BaseUrl = "http://api.twitter.com/1/" };
 
-            var ex = Assert.Throws<ArgumentException>(() => reqProc.BuildUrl(parameters));
+            List<User> userList = reqProc.ProcessResults(ImageResponse);
 
-            Assert.Equal<string>("Type", ex.ParamName);
-        }
-
-        [Fact]
-        public void BuildUrl_Throws_On_Null_Params()
-        {
-            var reqProc = new UserRequestProcessor<User> { BaseUrl = "https://api.twitter.com/1/" };
-
-            var ex = Assert.Throws<ArgumentException>(() => reqProc.BuildUrl(null));
-
-            Assert.Equal<string>("Type", ex.ParamName);
+            Assert.NotNull(userList);
+            Assert.Single(userList);
+            var user = userList.Single();
+            Assert.NotNull(user);
+            Assert.Equal(ExpectedUrl, user.ProfileImage);
         }
 
         const string SingleUserResponse = @"{
@@ -885,6 +975,6 @@ namespace LinqToTwitterXUnitTests.UserTests
       ""followers_count"":6266743
    }
 ]";
-
+        const string ImageResponse = @"{ ""imageUrl"": ""http:\/\/myuri.jpg"" }";
     }
 }

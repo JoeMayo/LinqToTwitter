@@ -143,6 +143,11 @@ namespace LinqToTwitter
         public bool SkipStatus { get; set; }
 
         /// <summary>
+        /// Size for UserProfileImage query
+        /// </summary>
+        public ProfileImageSize ImageSize { get; set; }
+
+        /// <summary>
         /// Contains Next and Previous cursors
         /// </summary>
         /// <remarks>
@@ -345,5 +350,10 @@ namespace LinqToTwitter
         /// If authenticated user has requested to follow this use
         /// </summary>
         public bool FollowRequestSent { get; set; }
+
+        /// <summary>
+        /// Response from ProfileImage query
+        /// </summary>
+        public string ProfileImage { get; set; }
     }
 }

@@ -71,13 +71,13 @@ namespace LinqToTwitterDemo
                     //SavedSearchDemos.Run(twitterCtx);
                     //SearchDemos.Run(twitterCtx);
                     //SocialGraphDemos.Run(twitterCtx);
-                    StatusDemos.Run(twitterCtx);
+                    //StatusDemos.Run(twitterCtx);
                     //StreamingDemo.Run(twitterCtx);
 
                     if (DoThis("demo trend"))
                         TrendsDemos.Run(twitterCtx);
 
-                    //UserDemos.Run(twitterCtx);
+                    UserDemos.Run(twitterCtx);
                     //NotificationsDemos.Run(twitterCtx);
                     //ReportSpamDemos.Run(twitterCtx);
                     //ErrorHandlingDemos.Run(twitterCtx);
