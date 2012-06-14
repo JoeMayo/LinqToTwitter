@@ -77,15 +77,46 @@ namespace LinqToTwitterXUnitTests
         }
 
         [Fact]
+        public void ProcessResults_Retains_Original_Input_Parameters()
+        {
+            var blockedReqProc = new BlocksRequestProcessor<Blocks>
+            {
+                Type = BlockingType.Blocking,
+                ID = "123",
+                ScreenName = "JoeMayo",
+                Page = 1,
+                PerPage = 10,
+                SkipStatus = true,
+                Cursor = "789"
+            };
+
+            var blocks = blockedReqProc.ProcessResults(BlockedUsersJson);
+
+            Assert.NotNull(blocks);
+            Assert.Single(blocks);
+            var block = blocks.Single();
+            Assert.Equal(BlockingType.Blocking, block.Type);
+            Assert.Equal("123", block.ID);
+            Assert.Equal("JoeMayo", block.ScreenName);
+            Assert.Equal(1, block.Page);
+            Assert.Equal(10, block.PerPage);
+            Assert.True(block.SkipStatus);
+            Assert.Equal("789", block.Cursor);
+        }
+
+        [Fact]
         public void GetParameters_Parses_Parameters()
         {
             var blocksReqProc = new BlocksRequestProcessor<Blocks>();
             Expression<Func<Blocks, bool>> expression =
-                graph =>
-                    graph.Type == BlockingType.Blocking &&
-                    graph.ID == "123" &&
-                    graph.ScreenName == "456" &&
-                    graph.Page == 1;
+                block =>
+                    block.Type == BlockingType.Blocking &&
+                    block.ID == "123" &&
+                    block.ScreenName == "JoeMayo" &&
+                    block.Page == 1 &&
+                    block.PerPage == 10 &&
+                    block.SkipStatus == true &&
+                    block.Cursor == "789";
             var lambdaExpression = expression as LambdaExpression;
 
             var queryParams = blocksReqProc.GetParameters(lambdaExpression);
@@ -98,15 +129,25 @@ namespace LinqToTwitterXUnitTests
                     new KeyValuePair<string, string>("ID", "123")));
             Assert.True(
                 queryParams.Contains(
-                    new KeyValuePair<string, string>("ScreenName", "456")));
+                    new KeyValuePair<string, string>("ScreenName", "JoeMayo")));
             Assert.True(
                 queryParams.Contains(
                     new KeyValuePair<string, string>("Page", "1")));
+            Assert.True(
+                queryParams.Contains(
+                    new KeyValuePair<string, string>("PerPage", "10")));
+            Assert.True(
+                queryParams.Contains(
+                    new KeyValuePair<string, string>("SkipStatus", "True")));
+            Assert.True(
+                queryParams.Contains(
+                    new KeyValuePair<string, string>("Cursor", "789")));
         }
 
         [Fact]
         public void BuildUrl_Creates_Exists_Url()
         {
+            const string ExpectedUrl = "https://api.twitter.com/1/blocks/exists/123.json?user_id=456&screen_name=789&skip_status=true";
             var buildReqProc = new BlocksRequestProcessor<Blocks> { BaseUrl = "https://api.twitter.com/1/" };
             var parameters =
                 new Dictionary<string, string>
@@ -114,46 +155,50 @@ namespace LinqToTwitterXUnitTests
                     { "Type", ((int)BlockingType.Exists).ToString(CultureInfo.InvariantCulture) },
                     { "ID", "123" },
                     { "UserID", "456" },
-                    { "ScreenName", "789" }
+                    { "ScreenName", "789" },
+                    { "SkipStatus", true.ToString() }
                 };
-            const string Expected = "https://api.twitter.com/1/blocks/exists/123.json?user_id=456&screen_name=789";
 
             Request req = buildReqProc.BuildUrl(parameters);
 
-            Assert.Equal(Expected, req.FullUrl);
+            Assert.Equal(ExpectedUrl, req.FullUrl);
         }
 
         [Fact]
         public void BuildUrl_Creates_Blocking_Url()
         {
+            const string ExpectedUrl = "https://api.twitter.com/1/blocks/blocking.json?page=2&per_page=10&skip_status=true&cursor=789";
             var blocksReqProc = new BlocksRequestProcessor<Blocks> { BaseUrl = "https://api.twitter.com/1/" };
             var parameters =
                 new Dictionary<string, string>
                 {
                     { "Type", ((int)BlockingType.Blocking).ToString(CultureInfo.InvariantCulture) },
-                    { "Page", "2" }
+                    { "Page", "2" },
+                    { "PerPage", "10" },
+                    { "SkipStatus", true.ToString() },
+                    { "Cursor", "789" }
                 };
-            const string Expected = "https://api.twitter.com/1/blocks/blocking.json?page=2";
 
             Request req = blocksReqProc.BuildUrl(parameters);
 
-            Assert.Equal(Expected, req.FullUrl);
+            Assert.Equal(ExpectedUrl, req.FullUrl);
         }
 
         [Fact]
         public void BuildUrl_Creates_BlockingIDs_Url()
         {
+            const string ExpectedUrl = "https://api.twitter.com/1/blocks/blocking/ids.json?cursor=789";
             var blocksReqProc = new BlocksRequestProcessor<Blocks> { BaseUrl = "https://api.twitter.com/1/" };
             var parameters =
                 new Dictionary<string, string>
                 {
-                    { "Type", ((int)BlockingType.Ids).ToString(CultureInfo.InvariantCulture) }
+                    { "Type", ((int)BlockingType.Ids).ToString(CultureInfo.InvariantCulture) },
+                    { "Cursor", "789" }
                 };
-            const string Expected = "https://api.twitter.com/1/blocks/blocking/ids.json";
 
             Request req = blocksReqProc.BuildUrl(parameters);
 
-            Assert.Equal(Expected, req.FullUrl);
+            Assert.Equal(ExpectedUrl, req.FullUrl);
         }
 
         [Fact]

@@ -37,6 +37,25 @@ namespace LinqToTwitter
         public int Page { get; set; }
 
         /// <summary>
+        /// Number of items per page to return (input only)
+        /// </summary>
+        public int PerPage { get; set; }
+
+        /// <summary>
+        /// Don't include statuses in response (input only)
+        /// </summary>
+        public bool SkipStatus { get; set; }
+
+        /// <summary>
+        /// Identifier for previous or next page to query (input only)
+        /// </summary>
+        public string Cursor { get; set; }
+
+        //
+        // Output parameters
+        //
+
+        /// <summary>
         /// Listed Count
         /// </summary>
         public int ListedCount { get; set; }

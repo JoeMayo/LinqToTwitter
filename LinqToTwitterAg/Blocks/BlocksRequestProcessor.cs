@@ -28,22 +28,37 @@ namespace LinqToTwitter
         /// <summary>
         /// id or screen name of user
         /// </summary>
-        string ID { get; set; }
+        internal string ID { get; set; }
 
         /// <summary>
         /// disambiguates when user id is screen name
         /// </summary>
-        ulong UserID { get; set; }
+        internal ulong UserID { get; set; }
 
         /// <summary>
         /// disambiguates when screen name is user id
         /// </summary>
-        string ScreenName { get; set; }
+        internal string ScreenName { get; set; }
 
         /// <summary>
         /// page to retrieve
         /// </summary>
-        public int Page { get; set; }
+        internal int Page { get; set; }
+
+        /// <summary>
+        /// Number of items per page to return (input only)
+        /// </summary>
+        internal int PerPage { get; set; }
+
+        /// <summary>
+        /// Don't include statuses in response (input only)
+        /// </summary>
+        internal bool SkipStatus { get; set; }
+
+        /// <summary>
+        /// Identifier for previous or next page to query (input only)
+        /// </summary>
+        internal string Cursor { get; set; }
 
         /// <summary>
         /// extracts parameters from lambda
@@ -60,7 +75,10 @@ namespace LinqToTwitter
                        "ID",
                        "UserID",
                        "ScreenName",
-                       "Page"
+                       "Page",
+                       "PerPage",
+                       "SkipStatus",
+                       "Cursor"
                    });
 
             var parameters = paramFinder.Parameters;
@@ -88,7 +106,7 @@ namespace LinqToTwitter
                 case BlockingType.Exists:
                     return BuildBlockingExistsUrl(parameters);
                 case BlockingType.Ids:
-                    return BuildBlockingIDsUrl();
+                    return BuildBlockingIDsUrl(parameters);
                 default:
                     throw new InvalidOperationException("The default case of BuildUrl should never execute because a Type must be specified.");
             }
@@ -98,9 +116,18 @@ namespace LinqToTwitter
         /// builds an url for getting blocking ids
         /// </summary>
         /// <returns>base url + show segment</returns>
-        Request BuildBlockingIDsUrl()
+        Request BuildBlockingIDsUrl(Dictionary<string, string> parameters)
         {
-           return new Request(BaseUrl + "blocks/blocking/ids.json");
+            var req = new Request(BaseUrl + "blocks/blocking/ids.json");
+            var urlParams = req.RequestParameters;
+
+            if (parameters.ContainsKey("Cursor"))
+            {
+                Cursor = parameters["Cursor"];
+                urlParams.Add(new QueryParameter("cursor", parameters["Cursor"]));
+            }
+
+            return req;
         }
 
         /// <summary>
@@ -140,6 +167,24 @@ namespace LinqToTwitter
                 urlParams.Add(new QueryParameter("page", parameters["Page"]));
             }
 
+            if (parameters.ContainsKey("PerPage"))
+            {
+                PerPage = int.Parse(parameters["PerPage"]);
+                urlParams.Add(new QueryParameter("per_page", parameters["PerPage"]));
+            }
+
+            if (parameters.ContainsKey("SkipStatus"))
+            {
+                SkipStatus = bool.Parse(parameters["SkipStatus"]);
+                urlParams.Add(new QueryParameter("skip_status", parameters["SkipStatus"].ToLower()));
+            }
+
+            if (parameters.ContainsKey("Cursor"))
+            {
+                Cursor = parameters["Cursor"];
+                urlParams.Add(new QueryParameter("cursor", parameters["Cursor"]));
+            }
+
             return req;
         }
 
@@ -175,6 +220,12 @@ namespace LinqToTwitter
                 urlParams.Add(new QueryParameter("screen_name", parameters["ScreenName"]));
             }
 
+            if (parameters.ContainsKey("SkipStatus"))
+            {
+                SkipStatus = bool.Parse(parameters["SkipStatus"]);
+                urlParams.Add(new QueryParameter("skip_status", parameters["SkipStatus"].ToLower()));
+            }
+
             return req;
         }
 
@@ -193,7 +244,10 @@ namespace LinqToTwitter
                 ID = ID,
                 UserID = UserID,
                 ScreenName = ScreenName,
-                Page = Page
+                Page = Page,
+                PerPage = PerPage,
+                SkipStatus = SkipStatus,
+                Cursor = Cursor
             };
 
             switch (Type)

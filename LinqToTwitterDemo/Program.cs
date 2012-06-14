@@ -58,14 +58,14 @@ namespace LinqToTwitterDemo
                     if (DoThis("demo account"))
                         AccountDemos.Run(twitterCtx);
 
-                    //BlocksDemos.Run(twitterCtx);
+                    BlocksDemos.Run(twitterCtx);
                     //DirectMessageDemos.Run(twitterCtx);
                     //FavoritesDemos.Run(twitterCtx);
                     //FriendshipDemos.Run(twitterCtx);
                     //GeoDemos.Run(twitterCtx);
                     //HelpDemos.Run(twitterCtx);
                     //LegalDemos.Run(twitterCtx);
-                    ListDemos.Run(twitterCtx);
+                    //ListDemos.Run(twitterCtx);
                     //RawDemos.Run(twitterCtx);
                     //RelatedResultsDemos.Run(twitterCtx);
                     //SavedSearchDemos.Run(twitterCtx);

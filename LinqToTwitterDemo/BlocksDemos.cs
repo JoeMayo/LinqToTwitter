@@ -32,7 +32,7 @@ namespace LinqToTwitterDemo
             Console.Write("User Screen Name to Unblock: ");
             string userName = Console.ReadLine();
 
-            var user = twitterCtx.DestroyBlock(userName);
+            var user = twitterCtx.DestroyBlock(userName, true);
 
             if (user == null) return;
 
@@ -48,7 +48,7 @@ namespace LinqToTwitterDemo
             Console.Write("User Screen Name to Block: ");
             string userName = Console.ReadLine();
 
-            var user = twitterCtx.CreateBlock(userName);
+            var user = twitterCtx.CreateBlock(userName, true);
 
             if (user == null) return;
 

@@ -11,10 +11,11 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="twitterCtx">Twitter Context</param>
         /// <param name="id">id of user to block</param>
+        /// <param name="skipStatus">Don't include status</param>
         /// <returns>User that was unblocked</returns>
-        public static User CreateBlock(this TwitterContext twitterCtx, string id)
+        public static User CreateBlock(this TwitterContext twitterCtx, string id, bool skipStatus)
         {
-            return CreateBlock(twitterCtx, id, null);
+            return CreateBlock(twitterCtx, id, skipStatus, null);
         }
 
         /// <summary>
@@ -22,9 +23,10 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="twitterCtx">Twitter Context</param>
         /// <param name="id">id of user to block</param>
+        /// <param name="skipStatus">Don't include status</param>
         /// <param name="callback">Async Callback used in Silverlight queries</param>
         /// <returns>User that was unblocked</returns>
-        public static User CreateBlock(this TwitterContext twitterCtx, string id, Action<TwitterAsyncResponse<User>> callback)
+        public static User CreateBlock(this TwitterContext twitterCtx, string id, bool skipStatus, Action<TwitterAsyncResponse<User>> callback)
         {
             if (string.IsNullOrEmpty(id))
             {
@@ -41,7 +43,10 @@ namespace LinqToTwitter
             var resultsJson =
                 twitExe.ExecuteTwitter(
                     blocksUrl,
-                    new Dictionary<string, string>(),
+                    new Dictionary<string, string>
+                    {
+                        { "skip_status", skipStatus.ToString().ToLower() }
+                    },
                     response => reqProc.ProcessActionResult(response, UserAction.SingleUser));
 
             User results = reqProc.ProcessActionResult(resultsJson, UserAction.SingleUser);
@@ -53,10 +58,11 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="twitterCtx">Twitter Context</param>
         /// <param name="id">id of user to unblock</param>
+        /// <param name="skipStatus">Don't include status</param>
         /// <returns>User that was unblocked</returns>
-        public static User DestroyBlock(this TwitterContext twitterCtx, string id)
+        public static User DestroyBlock(this TwitterContext twitterCtx, string id, bool skipStatus)
         {
-            return DestroyBlock(twitterCtx, id, null);
+            return DestroyBlock(twitterCtx, id, skipStatus, null);
         }
 
         /// <summary>
@@ -64,9 +70,10 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="twitterCtx">Twitter Context</param>
         /// <param name="id">id of user to unblock</param>
+        /// <param name="skipStatus">Don't include status</param>
         /// <param name="callback">Async Callback used in Silverlight queries</param>
         /// <returns>User that was unblocked</returns>
-        public static User DestroyBlock(this TwitterContext twitterCtx, string id, Action<TwitterAsyncResponse<User>> callback)
+        public static User DestroyBlock(this TwitterContext twitterCtx, string id, bool skipStatus, Action<TwitterAsyncResponse<User>> callback)
         {
             if (string.IsNullOrEmpty(id))
             {
@@ -83,12 +90,14 @@ namespace LinqToTwitter
             var resultsJson =
                 twitExe.ExecuteTwitter(
                     blocksUrl,
-                    new Dictionary<string, string>(),
+                    new Dictionary<string, string>
+                    {
+                        { "skip_status", skipStatus.ToString().ToLower() }
+                    },
                     response => reqProc.ProcessActionResult(response, UserAction.SingleUser));
 
             User results = reqProc.ProcessActionResult(resultsJson, UserAction.SingleUser);
             return results;
         }
-
     }
 }

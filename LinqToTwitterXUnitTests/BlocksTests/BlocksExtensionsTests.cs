@@ -47,9 +47,10 @@ namespace LinqToTwitterXUnitTests
         public void CreateBlock_Handles_Response()
         {
             const string Id = "1";
+            const bool SkipStatus = true;
             var ctx = InitializeTwitterContext();
 
-            User actual = ctx.CreateBlock(Id);
+            User actual = ctx.CreateBlock(Id, SkipStatus);
 
             Assert.Equal("LINQ to Tweeter Test", actual.Name);
         }
@@ -58,9 +59,10 @@ namespace LinqToTwitterXUnitTests
         public void CreateBlock_Builds_Url()
         {
             const string Id = "1";
+            const bool SkipStatus = true;
             var ctx = InitializeTwitterContext();
 
-            ctx.CreateBlock(Id);
+            ctx.CreateBlock(Id, SkipStatus);
 
             execMock.Verify(exec =>
                 exec.ExecuteTwitter(
@@ -75,7 +77,7 @@ namespace LinqToTwitterXUnitTests
         {
             var ctx = InitializeTwitterContext();
 
-            var ex = Assert.Throws<ArgumentException>(() => ctx.CreateBlock(null));
+            var ex = Assert.Throws<ArgumentException>(() => ctx.CreateBlock(null, true));
 
             Assert.Equal("id", ex.ParamName);
         }
@@ -84,9 +86,10 @@ namespace LinqToTwitterXUnitTests
         public void DestroyBlock_Handles_Response()
         {
             const string Id = "1";
+            const bool SkipStatus = true;
             var ctx = InitializeTwitterContext();
 
-            User actual = ctx.DestroyBlock(Id);
+            User actual = ctx.DestroyBlock(Id, SkipStatus);
 
             Assert.Equal("LINQ to Tweeter Test", actual.Name);
         }
@@ -95,9 +98,10 @@ namespace LinqToTwitterXUnitTests
         public void DestroyBlock_Builds_Url()
         {
             const string Id = "1";
+            const bool SkipStatus = true;
             var ctx = InitializeTwitterContext();
 
-            ctx.DestroyBlock(Id);
+            ctx.DestroyBlock(Id, SkipStatus);
 
             execMock.Verify(exec =>
                 exec.ExecuteTwitter(
@@ -112,7 +116,7 @@ namespace LinqToTwitterXUnitTests
         {
             var ctx = InitializeTwitterContext();
 
-            var ex = Assert.Throws<ArgumentException>(() => ctx.DestroyBlock(null));
+            var ex = Assert.Throws<ArgumentException>(() => ctx.DestroyBlock(null, true));
 
             Assert.Equal("id", ex.ParamName);
         }
