@@ -1015,6 +1015,7 @@ namespace LinqToTwitter
         /// <returns>XML results From Twitter</returns>
         public string PostMedia<T>(string url, IDictionary<string, string> postData, List<Media> mediaItems, IRequestProcessor<T> reqProc)
         {
+            var encoding = Encoding.GetEncoding("iso-8859-1");
             string contentBoundaryBase = DateTime.Now.Ticks.ToString("x");
             string beginContentBoundary = string.Format("--{0}\r\n", contentBoundaryBase);
             var endContentBoundary = string.Format("\r\n--{0}--\r\n", contentBoundaryBase);
@@ -1028,8 +1029,7 @@ namespace LinqToTwitter
                     if (param.Value != null)
                     {
                         byte[] paramBytes = Encoding.UTF8.GetBytes(param.Value);
-                        
-                        string encodedParamVal = MSEncoder.HtmlEncode(new UTF8Encoding().GetString(paramBytes, 0, paramBytes.Length));
+                        string encodedParamVal = encoding.GetString(paramBytes, 0, paramBytes.Length);
 
                         formDataSb.AppendFormat(
                             "--{0}\r\nContent-Disposition: form-data; name=\"{1}\"\r\n\r\n{2}\r\n",
@@ -1037,8 +1037,6 @@ namespace LinqToTwitter
                     }
                 }
             }
-
-            var encoding = Encoding.GetEncoding("iso-8859-1");
 
             foreach (var media in mediaItems)
             {
@@ -1085,11 +1083,11 @@ namespace LinqToTwitter
                                     using (var reqStream = req.EndGetRequestStream(ar))
                                     {
                                         int offset = 0;
-                                        const int bufferSize = 4096;
+                                        const int BufferSize = 4096;
                                         int lastPercentage = 0;
                                         while (offset < imageBytes.Length)
                                         {
-                                            int bytesToWrite = Math.Min(bufferSize, imageBytes.Length - offset);
+                                            int bytesToWrite = Math.Min(BufferSize, imageBytes.Length - offset);
                                             reqStream.Write(imageBytes, offset, bytesToWrite);
                                             offset += bytesToWrite;
 

@@ -58,7 +58,7 @@ namespace LinqToTwitterDemo
                     if (DoThis("demo account"))
                         AccountDemos.Run(twitterCtx);
 
-                    BlocksDemos.Run(twitterCtx);
+                    //BlocksDemos.Run(twitterCtx);
                     //DirectMessageDemos.Run(twitterCtx);
                     //FavoritesDemos.Run(twitterCtx);
                     //FriendshipDemos.Run(twitterCtx);
@@ -71,7 +71,7 @@ namespace LinqToTwitterDemo
                     //SavedSearchDemos.Run(twitterCtx);
                     //SearchDemos.Run(twitterCtx);
                     //SocialGraphDemos.Run(twitterCtx);
-                    //StatusDemos.Run(twitterCtx);
+                    StatusDemos.Run(twitterCtx);
                     //StreamingDemo.Run(twitterCtx);
 
                     if (DoThis("demo trend"))
