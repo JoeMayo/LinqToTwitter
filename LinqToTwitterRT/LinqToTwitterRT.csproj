@@ -685,6 +685,9 @@
     <Compile Include="..\LinqToTwitterAg\User\Category.cs">
       <Link>User\Category.cs</Link>
     </Compile>
+    <Compile Include="..\LinqToTwitterAg\User\ProfileImageSize.cs">
+      <Link>User\ProfileImageSize.cs</Link>
+    </Compile>
     <Compile Include="..\LinqToTwitterAg\User\User.cs">
       <Link>User\User.cs</Link>
     </Compile>
