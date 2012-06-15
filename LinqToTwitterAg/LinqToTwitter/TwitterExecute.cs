@@ -890,9 +890,8 @@ namespace LinqToTwitter
                 WriteLog(LastUrl, "PostTwitterImage");
 
                 var req = AuthorizedClient.PostRequest(new Request(url), postData);
-                //req.Headers[HttpRequestHeader.Expect] = null;
                 req.ContentType = "multipart/form-data;boundary=" + contentBoundaryBase;
-                //req.PreAuthenticate = true;
+
 #if !WINDOWS_PHONE && !NETFX_CORE
                 req.AllowWriteStreamBuffering = true;
                 req.ContentLength = imageBytes.Length; 
@@ -911,11 +910,11 @@ namespace LinqToTwitter
                                     using (var reqStream = req.EndGetRequestStream(ar))
                                     {
                                         int offset = 0;
-                                        const int bufferSize = 4096;
+                                        const int BufferSize = 4096;
                                         int lastPercentage = 0;
                                         while (offset < imageBytes.Length)
                                         {
-                                            int bytesToWrite = Math.Min(bufferSize, imageBytes.Length - offset);
+                                            int bytesToWrite = Math.Min(BufferSize, imageBytes.Length - offset);
                                             reqStream.Write(imageBytes, offset, bytesToWrite);
                                             offset += bytesToWrite;
 
@@ -986,11 +985,15 @@ namespace LinqToTwitter
                                 }
                                 finally
                                 {
-                                    resetEvent.Set();
+#if !WINDOWS_PHONE && !NETFX_CORE
+                                   resetEvent.Set();
+#endif
                                 }
                             }), null);
 
+#if !WINDOWS_PHONE && !NETFX_CORE
                     resetEvent.WaitOne();
+#endif
 
                     if (asyncException != null)
                         throw asyncException;
