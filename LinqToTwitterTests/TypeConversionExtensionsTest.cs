@@ -1,5 +1,6 @@
 ﻿using System;
 using LinqToTwitter.Common;
+using LinqToTwitterTests.Common;
 using LitJson;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -8,6 +9,11 @@ namespace LinqToTwitterTests
     [TestClass]
     public class TypeConversionExtensionsTest
     {
+        public TypeConversionExtensionsTest()
+        {
+            TestCulture.SetCulture();
+        }
+
         [TestMethod]
         public void GetValue_Returns_Decimal()
         {

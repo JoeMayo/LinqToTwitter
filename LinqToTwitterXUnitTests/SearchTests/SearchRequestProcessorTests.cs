@@ -131,8 +131,8 @@ namespace LinqToTwitterXUnitTests.SearchTests
                     { "Query", "LINQ to Twitter" },
                     { "ShowUser", "true" },
                     { "SinceID", "1" },
-                    { "Since", new DateTime(2010, 7, 4).ToString(CultureInfo.InvariantCulture) },
-                    { "Until", new DateTime(2011, 7, 4).ToString(CultureInfo.InvariantCulture) },
+                    { "Since", new DateTime(2010, 7, 4).ToString() },
+                    { "Until", new DateTime(2011, 7, 4).ToString() },
                     { "ResultType", ResultType.Popular.ToString() },
                };
             const string Expected = "http://search.twitter.com/search.json?geocode=40.757929%2C-73.985506%2C25km&lang=en&page=1&rpp=10&q=LINQ%20to%20Twitter&show_user=true&since=2010-07-04&until=2011-07-04&since_id=1&result_type=popular";
@@ -150,7 +150,7 @@ namespace LinqToTwitterXUnitTests.SearchTests
                 new Dictionary<string, string>
                 {
                     { "Type", SearchType.Search.ToString() },
-                    { "Since", new DateTime(2010, 7, 4, 7, 30, 10).ToString(CultureInfo.InvariantCulture) },
+                    { "Since", new DateTime(2010, 7, 4, 7, 30, 10).ToString() },
                };
             const string Expected = "http://search.twitter.com/search.json?since=2010-07-04";
 
@@ -712,6 +712,22 @@ namespace LinqToTwitterXUnitTests.SearchTests
             Assert.Equal("Joe Mayo", results.First().Results.First().ToUserName);
         }
 
+        [Fact]
+        public void ProcessResults_Handles_Response_With_No_Results()
+        {
+            var searchProc = new SearchRequestProcessor<Search> { BaseUrl = "http://search.twitter.com/" };
+
+            List<Search> searches = searchProc.ProcessResults(EmptyResponse);
+
+            Assert.NotNull(searches);
+            Assert.Single(searches);
+            var search = searches.Single();
+            Assert.NotNull(search);
+            var results = search.Results;
+            Assert.NotNull(results);
+            Assert.Empty(results);
+        }
+
         const string SearchJson = @"{
    ""completed_in"":0.057,
    ""max_id"":155786587962224641,
@@ -934,6 +950,21 @@ namespace LinqToTwitterXUnitTests.SearchTests
    ""results_per_page"":15,
    ""since_id"":3,
    ""since_id_str"":""3""
+}";
+
+        const string EmptyResponse = @"{
+   ""completed_in"":0.012,
+   ""max_id"":213377470991314944,
+   ""max_id_str"":""213377470991314944"",
+   ""page"":1,
+   ""query"":""%23FluentSecurity"",
+   ""refresh_url"":""?since_id=213377470991314944&q=%23FluentSecurity"",
+   ""results"":[
+
+   ],
+   ""results_per_page"":5,
+   ""since_id"":0,
+   ""since_id_str"":""0""
 }";
     }
 }

@@ -264,13 +264,13 @@ namespace LinqToTwitter
 
             if (parameters.ContainsKey("Latitude"))
             {
-                Latitude = double.Parse(parameters["Latitude"]);
+                Latitude = double.Parse(parameters["Latitude"], CultureInfo.InvariantCulture);
                 urlParams.Add(new QueryParameter("lat", Latitude.ToString(CultureInfo.InvariantCulture)));
             }
 
             if (parameters.ContainsKey("Longitude"))
             {
-                Longitude = double.Parse(parameters["Longitude"]);
+                Longitude = double.Parse(parameters["Longitude"], CultureInfo.InvariantCulture);
                 urlParams.Add(new QueryParameter("long", Longitude.ToString(CultureInfo.InvariantCulture)));
             }
 

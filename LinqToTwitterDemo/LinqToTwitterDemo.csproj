@@ -16,7 +16,8 @@
     <SccLocalPath />
     <SccAuxPath />
     <SccProvider />
-    <FileUpgradeFlags></FileUpgradeFlags>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
     <OldToolsVersion>3.5</OldToolsVersion>
     <UpgradeBackupLocation />
     <PublishUrl>publish\</PublishUrl>

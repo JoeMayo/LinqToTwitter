@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using LinqToTwitter;
@@ -19,6 +20,7 @@ namespace LinqToTwitterXUnitTests.GeoTests
         public void GetParameters_Parses_Parameters()
         {
             var geoReqProc = new GeoRequestProcessor<Geo>();
+            var culture = new CultureInfo("en-US");
             Expression<Func<Geo, bool>> expression =
                 geo =>
                     geo.Type == GeoType.Reverse &&
@@ -49,10 +51,10 @@ namespace LinqToTwitterXUnitTests.GeoTests
                     new KeyValuePair<string, string>("Granularity", "city")));
             Assert.True(
                 queryParams.Contains(
-                    new KeyValuePair<string, string>("Latitude", "37.78215")));
+                    new KeyValuePair<string, string>("Latitude", (37.78215).ToString())));
             Assert.True(
                 queryParams.Contains(
-                    new KeyValuePair<string, string>("Longitude", "-122.4006")));
+                    new KeyValuePair<string, string>("Longitude", (-122.4006).ToString())));
             Assert.True(
                 queryParams.Contains(
                     new KeyValuePair<string, string>("MaxResults", "10")));
@@ -150,11 +152,12 @@ namespace LinqToTwitterXUnitTests.GeoTests
         {
             const string ExpectedUrl = "https://api.twitter.com/1/geo/search.json?lat=37.78215&long=-122.4006&query=Twitter%20HQ&ip=168.143.171.180&accuracy=city&granularity=10&max_results=10&contained_within=123&attribute%3Astreet_address=123";
             var geoReqProc = new GeoRequestProcessor<Geo>() { BaseUrl = "https://api.twitter.com/1/" };
+            var culture = new CultureInfo("en-US");
             var parameters = new Dictionary<string, string>
              {
                  {"Type", ((int) GeoType.Search).ToString()},
-                 {"Latitude", "37.78215"},
-                 {"Longitude", "-122.40060"},
+                 {"Latitude", (37.78215).ToString()},
+                 {"Longitude", (-122.40060).ToString()},
                  {"Query", "Twitter HQ" },
                  {"IP", "168.143.171.180"},
                  {"Accuracy", "city" },
@@ -194,8 +197,8 @@ namespace LinqToTwitterXUnitTests.GeoTests
             var parameters = new Dictionary<string, string>
              {
                  {"Type", ((int) GeoType.SimilarPlaces).ToString()},
-                 {"Latitude", "37.78215"},
-                 {"Longitude", "-122.40060"},
+                 {"Latitude", (37.78215).ToString()},
+                 {"Longitude", (-122.40060).ToString()},
                  {"PlaceName", "placeName" },
                  {"ContainedWithin", "123" },
                  {"Attribute", "street_address=123" }
