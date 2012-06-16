@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using LinqToTwitter;
 
-namespace LinqToTwitterTests.Common
+namespace LinqToTwitterXUnitTests.Common
 {
     class OAuthTwitterMock : IOAuthTwitter
     {

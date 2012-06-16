@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-using LinqToTwitterTests.Common;
+using LinqToTwitterXUnitTests.Common;
 using Xunit;
 using LinqToTwitter;
 using System.Xml.Linq;

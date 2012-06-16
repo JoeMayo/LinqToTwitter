@@ -3,15 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using LinqToTwitter;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using LinqToTwitterXUnitTests.Common;
 using Moq;
+using Xunit;
 
-namespace LinqToTwitterTests
+namespace LinqToTwitterXUnitTests
 {
-    [TestClass]
     public class UserStreamRequestProcessorTest
     {
-        [TestMethod]
+        public UserStreamRequestProcessorTest()
+        {
+            TestCulture.SetCulture();
+        }
+
+        [Fact]
         public void GetParameters_Returns_Parameters()
         {
             var reqProc = new UserStreamRequestProcessor<UserStream>();
@@ -27,21 +32,21 @@ namespace LinqToTwitterTests
 
             var parms = reqProc.GetParameters(lambdaExpression);
 
-            Assert.IsTrue(parms.Contains(
+            Assert.True(parms.Contains(
                     new KeyValuePair<string, string>("Type", ((int)UserStreamType.User).ToString())));
-            Assert.IsTrue(parms.Contains(
+            Assert.True(parms.Contains(
                   new KeyValuePair<string, string>("Delimited", "length")));
-            Assert.IsTrue(parms.Contains(
+            Assert.True(parms.Contains(
                    new KeyValuePair<string, string>("Track", "twitter,API,LINQ to Twitter")));
-            Assert.IsTrue(parms.Contains(
+            Assert.True(parms.Contains(
                   new KeyValuePair<string, string>("With", "Follow")));
-            Assert.IsTrue(parms.Contains(
+            Assert.True(parms.Contains(
                   new KeyValuePair<string, string>("AllReplies", "True")));
-            Assert.IsTrue(parms.Contains(
+            Assert.True(parms.Contains(
                   new KeyValuePair<string, string>("Follow", "1,2,3")));
         }
 
-        [TestMethod]
+        [Fact]
         public void BuildUserUrl_Returns_Url()
         {
             var reqProc = new UserStreamRequestProcessor<UserStream>() { UserStreamUrl = "https://userstream.twitter.com/2/" };
@@ -56,10 +61,10 @@ namespace LinqToTwitterTests
 
             Request req = reqProc.BuildUrl(parms);
 
-            Assert.AreEqual("https://userstream.twitter.com/2/user.json?delimited=length&track=LINQ%20to%20Twitter&with=follow&replies=all", req.FullUrl);
+            Assert.Equal("https://userstream.twitter.com/2/user.json?delimited=length&track=LINQ%20to%20Twitter&with=follow&replies=all", req.FullUrl);
         }
 
-        [TestMethod]
+        [Fact]
         public void BuildSiteUrl_Returns_Url()
         {
             var reqProc = new UserStreamRequestProcessor<UserStream>() { SiteStreamUrl = "http://betastream.twitter.com/2b/" };
@@ -74,10 +79,10 @@ namespace LinqToTwitterTests
 
             Request req = reqProc.BuildUrl(parms);
 
-            Assert.AreEqual("http://betastream.twitter.com/2b/site.json?delimited=length&follow=1%2C2%2C3&with=follow", req.FullUrl);
+            Assert.Equal("http://betastream.twitter.com/2b/site.json?delimited=length&follow=1%2C2%2C3&with=follow", req.FullUrl);
         }
 
-        [TestMethod]
+        [Fact]
         public void BuildSiteUrl_Throws_On_Track()
         {
             var reqProc = new UserStreamRequestProcessor<UserStream>() { SiteStreamUrl = "http://betastream.twitter.com/2b/" };
@@ -91,19 +96,12 @@ namespace LinqToTwitterTests
                 { "AllReplies", "True" }
             };
 
-            try
-            {
-                reqProc.BuildUrl(parms);
+            var ex = Assert.Throws<ArgumentException>(() => reqProc.BuildUrl(parms));
 
-                Assert.Fail("ArgumentException Expected.");
-            }
-            catch (ArgumentException ae)
-            {
-                Assert.AreEqual("Track", ae.ParamName);
-            }
+            Assert.Equal("Track", ex.ParamName);
         }
 
-        [TestMethod]
+        [Fact]
         public void BuildSiteUrl_Requires_Follow()
         {
             var reqProc = new UserStreamRequestProcessor<UserStream>() { SiteStreamUrl = "http://betastream.twitter.com/2b/" };
@@ -113,19 +111,12 @@ namespace LinqToTwitterTests
                 //{ "Follow", "1,2,3" },
             };
 
-            try
-            {
-                reqProc.BuildUrl(parms);
+            var ex = Assert.Throws<ArgumentNullException>(() => reqProc.BuildUrl(parms));
 
-                Assert.Fail("Expected ArgumentNullException.");
-            }
-            catch (ArgumentNullException ane)
-            {
-                Assert.AreEqual("Follow", ane.ParamName);
-            }
+            Assert.Equal("Follow", ex.ParamName);
         }
 
-        [TestMethod]
+        [Fact]
         public void BuildSiteUrl_Removes_Spaces_From_Follow()
         {
             var reqProc = new UserStreamRequestProcessor<UserStream>() { SiteStreamUrl = "http://betastream.twitter.com/2b/" };
@@ -137,10 +128,10 @@ namespace LinqToTwitterTests
 
             Request req = reqProc.BuildUrl(parms);
 
-            Assert.AreEqual("http://betastream.twitter.com/2b/site.json?follow=1%2C2%2C3", req.FullUrl);
+            Assert.Equal("http://betastream.twitter.com/2b/site.json?follow=1%2C2%2C3", req.FullUrl);
         }
 
-        [TestMethod]
+        [Fact]
         public void ProcessResults_Returns_A_UserStream()
         {
             var execMock = new Mock<ITwitterExecute>();
@@ -152,8 +143,8 @@ namespace LinqToTwitterTests
 
             var streamList = reqProc.ProcessResults(string.Empty);
 
-            Assert.AreEqual(1, streamList.Count);
-            Assert.AreEqual(execMock.Object, streamList.First().TwitterExecutor);
+            Assert.Equal(1, streamList.Count);
+            Assert.Equal(execMock.Object, streamList.First().TwitterExecutor);
         }
     }
 }

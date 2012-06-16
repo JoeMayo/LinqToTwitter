@@ -1,22 +1,20 @@
-﻿using LinqToTwitter;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
+﻿using System;
 using System.Net;
-using LinqToTwitterTests.Common;
+using LinqToTwitter;
+using LinqToTwitterXUnitTests.Common;
 using Moq;
+using Xunit;
 
-namespace LinqToTwitterTests
+namespace LinqToTwitterXUnitTests
 {
-    [TestClass]
-    public class OAuthAuthorizerTest
+    public class OAuthAuthorizerTests
     {
-        [ClassInitialize]
-        public static void MyClassInitialize(TestContext testContext)
+        public OAuthAuthorizerTests()
         {
             TestCulture.SetCulture();
         }
 
-        [TestMethod]
+        [Fact]
         public void Get_Calls_GetOAuthQueryString()
         {
             var req = new Request("https://api.twitter.com/statuses/public.xml");
@@ -32,7 +30,7 @@ namespace LinqToTwitterTests
             oAuthMock.Verify(oAuth => oAuth.GetOAuthQueryString(HttpMethod.GET, req, string.Empty, out outUrl, out queryString), Times.Once());
         }
 
-        [TestMethod]
+        [Fact]
         public void InitializeRequest_Sets_Request_Headers()
         {
             var req = new Request("https://api.twitter.com/statuses/public.xml");
@@ -51,31 +49,23 @@ namespace LinqToTwitterTests
 
             var httpReq = pinAuth.Get(req) as HttpWebRequest;
 
-            Assert.IsNotNull(httpReq);
-            Assert.AreEqual(UserAgent, httpReq.UserAgent);
-            Assert.AreEqual(1000, httpReq.ReadWriteTimeout);
-            Assert.AreEqual(2000, httpReq.Timeout);
-            Assert.AreEqual("gzip, deflate", httpReq.Headers[HttpRequestHeader.AcceptEncoding]);
-            Assert.AreEqual(DecompressionMethods.Deflate | DecompressionMethods.GZip, httpReq.AutomaticDecompression);
+            Assert.NotNull(httpReq);
+            Assert.Equal(UserAgent, httpReq.UserAgent);
+            Assert.Equal(1000, httpReq.ReadWriteTimeout);
+            Assert.Equal(2000, httpReq.Timeout);
+            Assert.Equal("gzip, deflate", httpReq.Headers[HttpRequestHeader.AcceptEncoding]);
+            Assert.Equal(DecompressionMethods.Deflate | DecompressionMethods.GZip, httpReq.AutomaticDecompression);
         }
 
-        [TestMethod]
+        [Fact]
         public void IsAuthorized_Throws_ArgumentNullException_For_Null_Credentials()
         {
-            try
-            {
-                bool isAuth = new PinAuthorizer().IsAuthorized;
-                Assert.AreEqual(isAuth, false);
+            var ex = Assert.Throws<ArgumentNullException>(() => new PinAuthorizer().IsAuthorized);
 
-                Assert.Fail("Expected ArgumentNullException.");
-            }
-            catch (ArgumentNullException ane)
-            {
-                Assert.AreEqual("Credentials", ane.ParamName);
-            }
+            Assert.Equal("Credentials", ex.ParamName);
         }
 
-        [TestMethod]
+        [Fact]
         public void IsAuthorized_Returns_True_When_Credentials_Are_Present()
         {
             var pinAuth = new PinAuthorizer
@@ -91,10 +81,10 @@ namespace LinqToTwitterTests
 
             bool isAuth = pinAuth.IsAuthorized;
 
-            Assert.IsTrue(isAuth);
+            Assert.True(isAuth);
         }
 
-        [TestMethod]
+        [Fact]
         public void IsAuthorized_Returns_False_When_4_Credentials_Are_Empty()
         {
             var pinAuth = new PinAuthorizer
@@ -110,10 +100,10 @@ namespace LinqToTwitterTests
 
             bool isAuth = pinAuth.IsAuthorized;
 
-            Assert.IsFalse(isAuth);
+            Assert.False(isAuth);
         }
 
-        [TestMethod]
+        [Fact]
         public void IsAuthorized_Returns_False_When_3_Credentials_Are_Empty()
         {
             var pinAuth = new PinAuthorizer
@@ -129,10 +119,10 @@ namespace LinqToTwitterTests
 
             bool isAuth = pinAuth.IsAuthorized;
 
-            Assert.IsFalse(isAuth);
+            Assert.False(isAuth);
         }
 
-        [TestMethod]
+        [Fact]
         public void IsAuthorized_Returns_False_When_2_Credentials_Are_Empty()
         {
             var pinAuth = new PinAuthorizer
@@ -148,10 +138,10 @@ namespace LinqToTwitterTests
 
             bool isAuth = pinAuth.IsAuthorized;
 
-            Assert.IsFalse(isAuth);
+            Assert.False(isAuth);
         }
 
-        [TestMethod]
+        [Fact]
         public void IsAuthorized_Returns_False_When_1_Credential_Is_Empty()
         {
             var pinAuth = new PinAuthorizer
@@ -167,10 +157,10 @@ namespace LinqToTwitterTests
 
             bool isAuth = pinAuth.IsAuthorized;
 
-            Assert.IsFalse(isAuth);
+            Assert.False(isAuth);
         }
 
-        [TestMethod]
+        [Fact]
         public void IsAuthorized_Returns_False_When_4_Credentials_Are_Null()
         {
             var pinAuth = new PinAuthorizer
@@ -186,10 +176,10 @@ namespace LinqToTwitterTests
 
             bool isAuth = pinAuth.IsAuthorized;
 
-            Assert.IsFalse(isAuth);
+            Assert.False(isAuth);
         }
 
-        [TestMethod]
+        [Fact]
         public void IsAuthorized_Returns_False_When_3_Credentials_Are_Null()
         {
             var pinAuth = new PinAuthorizer
@@ -205,10 +195,10 @@ namespace LinqToTwitterTests
 
             bool isAuth = pinAuth.IsAuthorized;
 
-            Assert.IsFalse(isAuth);
+            Assert.False(isAuth);
         }
 
-        [TestMethod]
+        [Fact]
         public void IsAuthorized_Returns_False_When_2_Credentials_Are_Null()
         {
             var pinAuth = new PinAuthorizer
@@ -224,10 +214,10 @@ namespace LinqToTwitterTests
 
             bool isAuth = pinAuth.IsAuthorized;
 
-            Assert.IsFalse(isAuth);
+            Assert.False(isAuth);
         }
 
-        [TestMethod]
+        [Fact]
         public void IsAuthorized_Returns_False_When_1_Credential_Is_Null()
         {
             var pinAuth = new PinAuthorizer
@@ -243,7 +233,7 @@ namespace LinqToTwitterTests
 
             bool isAuth = pinAuth.IsAuthorized;
 
-            Assert.IsFalse(isAuth);
+            Assert.False(isAuth);
         }
     }
 }

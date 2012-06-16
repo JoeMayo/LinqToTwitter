@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -109,7 +108,7 @@ namespace LinqToTwitter
                     CharactersReservedPerMedia = helpJson.GetValue<int>("characters_reserved_per_media"),
                     PhotoSizes =
                         (from string key in photoSizeDict.Keys
-                         let photoSize = photoSizeDict[key] as JsonData
+                         let photoSize = photoSizeDict[key]
                          select new PhotoSize
                          {
                              Type = key,

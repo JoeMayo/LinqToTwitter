@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using LinqToTwitter;
-using LinqToTwitterTests.Common;
+using LinqToTwitterXUnitTests.Common;
 using Xunit;
 
 namespace LinqToTwitterXUnitTests.ListTests

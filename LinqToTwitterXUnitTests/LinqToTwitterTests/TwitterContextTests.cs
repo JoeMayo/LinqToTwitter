@@ -3,22 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using LinqToTwitter;
-using LinqToTwitterTests.Common;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using LinqToTwitterXUnitTests.Common;
 using Moq;
+using Xunit;
 
-namespace LinqToTwitterTests
+namespace LinqToTwitterXUnitTests
 {
-    [TestClass]
-    public class TwitterContextTest
+    public class TwitterContextTests
     {
-        [ClassInitialize]
-        public static void MyClassInitialize(TestContext testContext)
+        public TwitterContextTests()
         {
             TestCulture.SetCulture();
         }
 
-        [TestMethod]
+        [Fact]
         public void TwitterContext_Single_Param_Constructor_Sets_Defaults()
         {
             const string BaseUrl = "https://api.twitter.com/1/";
@@ -26,12 +24,12 @@ namespace LinqToTwitterTests
             ITwitterAuthorizer authorizedClient = new PinAuthorizer();
             var ctx = new TwitterContext(authorizedClient);
 
-            Assert.AreSame(authorizedClient, ctx.AuthorizedClient);
-            Assert.AreEqual(BaseUrl, ctx.BaseUrl);
-            Assert.AreEqual(SearchUrl, ctx.SearchUrl);
+            Assert.Same(authorizedClient, ctx.AuthorizedClient);
+            Assert.Equal(BaseUrl, ctx.BaseUrl);
+            Assert.Equal(SearchUrl, ctx.SearchUrl);
         }
 
-        [TestMethod]
+        [Fact]
         public void TwitterContext_Three_Param_Constructor_Sets_Defaults()
         {
             ITwitterExecute execute = new TwitterExecute(new PinAuthorizer());
@@ -39,11 +37,11 @@ namespace LinqToTwitterTests
             const string SearchUrl = "http://search.twitter.com/";
             var ctx = new TwitterContext(execute, BaseUrl, SearchUrl);
 
-            Assert.AreEqual(BaseUrl, ctx.BaseUrl);
-            Assert.AreEqual(SearchUrl, ctx.SearchUrl);
+            Assert.Equal(BaseUrl, ctx.BaseUrl);
+            Assert.Equal(SearchUrl, ctx.SearchUrl);
         }
 
-        [TestMethod]
+        [Fact]
         public void TwitterContext_No_Param_Works_With_Object_Initialization()
         {
             const string BaseUrl = "http://api.twitter.com/1/";
@@ -55,58 +53,39 @@ namespace LinqToTwitterTests
                     SearchUrl = SearchUrl,
                 };
 
-            Assert.AreEqual(BaseUrl, ctx.BaseUrl);
-            Assert.AreEqual(SearchUrl, ctx.SearchUrl);
+            Assert.Equal(BaseUrl, ctx.BaseUrl);
+            Assert.Equal(SearchUrl, ctx.SearchUrl);
         }
 
-        [TestMethod]
+        [Fact]
         public void TwitterContext_1_Param_Requres_NonNull_Authorization()
         {
-            try
-            {
-                new TwitterContext((PinAuthorizer)null);
+            var ex = Assert.Throws<ArgumentNullException>(() => new TwitterContext((PinAuthorizer)null));
 
-                Assert.Fail("Expected ArgumentNullException.");
-            }
-            catch (ArgumentNullException ane)
-            {
-                Assert.AreEqual("authorizedClient", ane.ParamName);
-            }
+            Assert.Equal("authorizedClient", ex.ParamName);
         }
 
-        [TestMethod]
+        [Fact]
         public void TwitterContext_4_Params_Requres_NonNull_Authorization()
         {
-            try
-            {
-                var execMock = new Mock<ITwitterExecute>();
-                new TwitterContext(null, execMock.Object, "", "");
+            var execMock = new Mock<ITwitterExecute>();
+            
+            var ex = Assert.Throws<ArgumentNullException>(() => new TwitterContext(null, execMock.Object, "", ""));
 
-                Assert.Fail("Expected ArgumentNullException.");
-            }
-            catch (ArgumentNullException ane)
-            {
-                Assert.AreEqual("authorization", ane.ParamName);
-            }
+            Assert.Equal("authorization", ex.ParamName);
         }
 
-        [TestMethod]
+        [Fact]
         public void TwitterContext_Requres_NonNull_Executor()
         {
-            try
-            {
-                var authMock = new Mock<ITwitterAuthorizer>();
-                new TwitterContext(authMock.Object, null, "", "");
+            var authMock = new Mock<ITwitterAuthorizer>();
 
-                Assert.Fail("Expected ArgumentNullException.");
-            }
-            catch (ArgumentNullException ane)
-            {
-                Assert.AreEqual("execute", ane.ParamName);
-            }
+            var ex = Assert.Throws<ArgumentNullException>(() => new TwitterContext(authMock.Object, null, "", ""));
+
+            Assert.Equal("execute", ex.ParamName);
         }
 
-        [TestMethod]
+        [Fact]
         public void CreateRequestProcessor_Returns_ProperRequestProcessor()
         {
             var ctx = new TwitterContext();
@@ -117,10 +96,10 @@ namespace LinqToTwitterTests
                 select tweet;
 
             var statusProc = ctx.CreateRequestProcessor<Status>(showQuery.Expression);
-            Assert.IsInstanceOfType(statusProc, typeof(StatusRequestProcessor<Status>));
+            Assert.IsType(typeof(StatusRequestProcessor<Status>), statusProc);
         }
 
-        [TestMethod]
+        [Fact]
         public void CreateStatusRequestProcessorTest()
         {
             var ctx = new TwitterContext();
@@ -128,10 +107,10 @@ namespace LinqToTwitterTests
             var queryResult = from tweet in ctx.Status select tweet;
 
             IRequestProcessor<Status> actual = ctx.CreateRequestProcessor<Status>(queryResult.Expression);
-            Assert.IsInstanceOfType(actual, typeof(StatusRequestProcessor<Status>));
+            Assert.IsType(typeof(StatusRequestProcessor<Status>), actual);
         }
 
-        [TestMethod]
+        [Fact]
         public void CreateAccountRequestProcessorTest()
         {
             var ctx = new TwitterContext();
@@ -139,10 +118,10 @@ namespace LinqToTwitterTests
             var queryResult = from tweet in ctx.Account select tweet;
 
             IRequestProcessor<Account> actual = ctx.CreateRequestProcessor<Account>(queryResult.Expression);
-            Assert.IsInstanceOfType(actual, typeof(AccountRequestProcessor<Account>));
+            Assert.IsType(typeof(AccountRequestProcessor<Account>), actual);
         }
 
-        [TestMethod]
+        [Fact]
         public void CreateBlocksRequestProcessorTest()
         {
             var ctx = new TwitterContext();
@@ -150,10 +129,10 @@ namespace LinqToTwitterTests
             var queryResult = from tweet in ctx.Blocks select tweet;
 
             IRequestProcessor<Blocks> actual = ctx.CreateRequestProcessor<Blocks>(queryResult.Expression);
-            Assert.IsInstanceOfType(actual, typeof(BlocksRequestProcessor<Blocks>));
+            Assert.IsType(typeof(BlocksRequestProcessor<Blocks>), actual);
         }
 
-        [TestMethod]
+        [Fact]
         public void CreateDirectMessageRequestProcessorTest()
         {
             var ctx = new TwitterContext();
@@ -161,10 +140,10 @@ namespace LinqToTwitterTests
             var queryResult = from tweet in ctx.DirectMessage select tweet;
 
             IRequestProcessor<DirectMessage> actual = ctx.CreateRequestProcessor<DirectMessage>(queryResult.Expression);
-            Assert.IsInstanceOfType(actual, typeof(DirectMessageRequestProcessor<DirectMessage>));
+            Assert.IsType(typeof(DirectMessageRequestProcessor<DirectMessage>), actual);
         }
 
-        [TestMethod]
+        [Fact]
         public void CreateFavoritesRequestProcessorTest()
         {
             var ctx = new TwitterContext();
@@ -172,10 +151,10 @@ namespace LinqToTwitterTests
             var queryResult = from tweet in ctx.Favorites select tweet;
 
             IRequestProcessor<Favorites> actual = ctx.CreateRequestProcessor<Favorites>(queryResult.Expression);
-            Assert.IsInstanceOfType(actual, typeof(FavoritesRequestProcessor<Favorites>));
+            Assert.IsType(typeof(FavoritesRequestProcessor<Favorites>), actual);
         }
 
-        [TestMethod]
+        [Fact]
         public void CreateFriendshipRequestProcessorTest()
         {
             var ctx = new TwitterContext();
@@ -183,10 +162,10 @@ namespace LinqToTwitterTests
             var queryResult = from tweet in ctx.Friendship select tweet;
 
             IRequestProcessor<Friendship> actual = ctx.CreateRequestProcessor<Friendship>(queryResult.Expression);
-            Assert.IsInstanceOfType(actual, typeof(FriendshipRequestProcessor<Friendship>));
+            Assert.IsType(typeof(FriendshipRequestProcessor<Friendship>), actual);
         }
 
-        [TestMethod]
+        [Fact]
         public void CreateSearchRequestProcessor_Returns_RawRequestProcessor()
         {
             var ctx = new TwitterContext();
@@ -194,10 +173,10 @@ namespace LinqToTwitterTests
             var queryResult = from raw in ctx.RawQuery select raw;
 
             IRequestProcessor<Raw> actual = ctx.CreateRequestProcessor<Raw>(queryResult.Expression);
-            Assert.IsInstanceOfType(actual, typeof(RawRequestProcessor<Raw>));
+            Assert.IsType(typeof(RawRequestProcessor<Raw>), actual);
         }
 
-        [TestMethod]
+        [Fact]
         public void CreateSearchRequestProcessorTest()
         {
             var ctx = new TwitterContext();
@@ -205,10 +184,10 @@ namespace LinqToTwitterTests
             var queryResult = from tweet in ctx.Search select tweet;
 
             IRequestProcessor<Search> actual = ctx.CreateRequestProcessor<Search>(queryResult.Expression);
-            Assert.IsInstanceOfType(actual, typeof(SearchRequestProcessor<Search>));
+            Assert.IsType(typeof(SearchRequestProcessor<Search>), actual);
         }
 
-        [TestMethod]
+        [Fact]
         public void CreateSocialGraphRequestProcessorTest()
         {
             var ctx = new TwitterContext();
@@ -216,10 +195,10 @@ namespace LinqToTwitterTests
             var queryResult = from tweet in ctx.SocialGraph select tweet;
 
             IRequestProcessor<SocialGraph> actual = ctx.CreateRequestProcessor<SocialGraph>(queryResult.Expression);
-            Assert.IsInstanceOfType(actual, typeof(SocialGraphRequestProcessor<SocialGraph>));
+            Assert.IsType(typeof(SocialGraphRequestProcessor<SocialGraph>), actual);
         }
 
-        [TestMethod]
+        [Fact]
         public void CreateTrendRequestProcessorTest()
         {
             var ctx = new TwitterContext();
@@ -227,10 +206,10 @@ namespace LinqToTwitterTests
             var queryResult = from tweet in ctx.Trends select tweet;
 
             IRequestProcessor<Trend> actual = ctx.CreateRequestProcessor<Trend>(queryResult.Expression);
-            Assert.IsInstanceOfType(actual, typeof(TrendRequestProcessor<Trend>));
+            Assert.IsType(typeof(TrendRequestProcessor<Trend>), actual);
         }
 
-        [TestMethod]
+        [Fact]
         public void CreateUserRequestProcessorTest()
         {
             var ctx = new TwitterContext();
@@ -238,19 +217,20 @@ namespace LinqToTwitterTests
             var queryResult = from tweet in ctx.User select tweet;
 
             IRequestProcessor<User> actual = ctx.CreateRequestProcessor<User>(queryResult.Expression);
-            Assert.IsInstanceOfType(actual, typeof(UserRequestProcessor<User>));
+            Assert.IsType(typeof(UserRequestProcessor<User>), actual);
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
+        [Fact]
         public void CreateRequestProcessorNullExpressionTest1()
         {
             var ctx = new TwitterContext();
 
-            ctx.CreateRequestProcessor<Status>((Expression)null);
+            var ex = Assert.Throws<ArgumentNullException>(() => ctx.CreateRequestProcessor<Status>((Expression)null));
+
+            Assert.Equal("Expression", ex.ParamName);
         }
 
-        [TestMethod]
+        [Fact]
         public void CreateRequestProcessor_Returns_LegalRequestProcessor()
         {
             var ctx = new TwitterContext {BaseUrl = "https://stream.twitter.com/1/"};
@@ -263,11 +243,11 @@ namespace LinqToTwitterTests
 
             var reqProc = ctx.CreateRequestProcessor<Legal>(legalQuery.Expression);
 
-            Assert.IsInstanceOfType(reqProc, typeof(LegalRequestProcessor<Legal>));
-            Assert.AreEqual("https://stream.twitter.com/1/", reqProc.BaseUrl);
+            Assert.IsType(typeof(LegalRequestProcessor<Legal>), reqProc);
+            Assert.Equal("https://stream.twitter.com/1/", reqProc.BaseUrl);
         }
 
-        [TestMethod]
+        [Fact]
         public void CreateRequestProcessor_Returns_RelatedResultsRequestProcessor()
         {
             var ctx = new TwitterContext {BaseUrl = "https://api.twitter.com/1/"};
@@ -280,8 +260,8 @@ namespace LinqToTwitterTests
 
             var reqProc = ctx.CreateRequestProcessor<RelatedResults>(resultsQuery.Expression);
 
-            Assert.IsInstanceOfType(reqProc, typeof(RelatedResultsRequestProcessor<RelatedResults>));
-            Assert.AreEqual("https://api.twitter.com/1/", reqProc.BaseUrl);
+            Assert.IsType(typeof(RelatedResultsRequestProcessor<RelatedResults>), reqProc);
+            Assert.Equal("https://api.twitter.com/1/", reqProc.BaseUrl);
         }
 
         void InitializeTwitterContextForExecuteTest(out TwitterContext ctx, out Expression expression)
@@ -299,7 +279,7 @@ namespace LinqToTwitterTests
             expression = publicQuery.Expression;
         }
 
-        [TestMethod]
+        [Fact]
         public void Execute_Returns_List_Of_Status()
         {
             TwitterContext ctx;
@@ -310,11 +290,11 @@ namespace LinqToTwitterTests
             var actual = ctx.Execute<Status>(expression, true);
 
             var tweets = actual as IEnumerable<Status>;
-            Assert.IsNotNull(tweets);
-            Assert.IsTrue(tweets.Any());
+            Assert.NotNull(tweets);
+            Assert.True(tweets.Any());
         }
 
-        [TestMethod]
+        [Fact]
         public void Execute_Logs_Results()
         {
             TwitterContext ctx;
@@ -324,11 +304,11 @@ namespace LinqToTwitterTests
             var actual = ctx.Execute<Status>(expression, true);
 
             var tweets = actual as IEnumerable<Status>;
-            Assert.IsNotNull(tweets);
-            Assert.IsTrue(tweets.Any());
+            Assert.NotNull(tweets);
+            Assert.True(tweets.Any());
         }
   
-        [TestMethod]
+        [Fact]
         public void Execute_Sets_RawResults_Property()
         {
             TwitterContext ctx;
@@ -337,10 +317,10 @@ namespace LinqToTwitterTests
 
             ctx.Execute<Status>(expression, true);
 
-            Assert.AreEqual(SingleStatusResponse, ctx.RawResult);
+            Assert.Equal(SingleStatusResponse, ctx.RawResult);
         }
 
-        [TestMethod]
+        [Fact]
         public void CreateRequestProcessor_Returns_StreamingRequestProcessor()
         {
             var ctx = new TwitterContext {StreamingUrl = "https://stream.twitter.com/1/"};
@@ -353,14 +333,14 @@ namespace LinqToTwitterTests
 
             var reqProc = ctx.CreateRequestProcessor<Streaming>(streamingQuery.Expression);
 
-            Assert.IsInstanceOfType(reqProc, typeof(StreamingRequestProcessor<Streaming>));
-            Assert.AreEqual("https://stream.twitter.com/1/", reqProc.BaseUrl);
+            Assert.IsType(typeof(StreamingRequestProcessor<Streaming>), reqProc);
+            Assert.Equal("https://stream.twitter.com/1/", reqProc.BaseUrl);
             var streamingRequestProcessor = reqProc as StreamingRequestProcessor<Streaming>;
             if (streamingRequestProcessor != null)
-                Assert.AreEqual(execMock.Object, streamingRequestProcessor.TwitterExecutor);
+                Assert.Equal(execMock.Object, streamingRequestProcessor.TwitterExecutor);
         }
 
-        [TestMethod]
+        [Fact]
         public void Execute_Calls_QueryTwitterStream_For_Streaming_Queries()
         {
             var authMock = new Mock<ITwitterAuthorizer>();
@@ -377,7 +357,7 @@ namespace LinqToTwitterTests
             execMock.Verify(exec => exec.QueryTwitterStream(It.IsAny<Request>()), Times.Once());
         }
 
-        [TestMethod]
+        [Fact]
         public void Execute_Calls_QueryTwitter_InsteadOf_QueryTwitterStream_For_NonStreaming_Queries()
         {
             var authMock = new Mock<ITwitterAuthorizer>();
@@ -396,7 +376,7 @@ namespace LinqToTwitterTests
             execMock.Verify(exec => exec.QueryTwitter(It.IsAny<Request>(), It.IsAny<StatusRequestProcessor<Status>>()), Times.Once());
         }
 
-        [TestMethod]
+        [Fact]
         public void CreateRequestProcessor_Returns_UserStreamRequestProcessor()
         {
             var ctx = new TwitterContext {StreamingUrl = "https://userstream.twitter.com/2/"};
@@ -409,16 +389,16 @@ namespace LinqToTwitterTests
 
             var reqProc = ctx.CreateRequestProcessor<UserStream>(streamingQuery.Expression);
 
-            Assert.IsInstanceOfType(reqProc, typeof(UserStreamRequestProcessor<UserStream>));
+            Assert.IsType(typeof(UserStreamRequestProcessor<UserStream>), reqProc);
             var userStreamRequestProcessor = reqProc as UserStreamRequestProcessor<UserStream>;
             if (userStreamRequestProcessor != null)
-                Assert.AreEqual("https://userstream.twitter.com/2/", userStreamRequestProcessor.UserStreamUrl);
+                Assert.Equal("https://userstream.twitter.com/2/", userStreamRequestProcessor.UserStreamUrl);
             var streamRequestProcessor = reqProc as UserStreamRequestProcessor<UserStream>;
             if (streamRequestProcessor != null)
-                Assert.AreEqual(execMock.Object, streamRequestProcessor.TwitterExecutor);
+                Assert.Equal(execMock.Object, streamRequestProcessor.TwitterExecutor);
         }
 
-        [TestMethod]
+        [Fact]
         public void Execute_Calls_QueryTwitterStream_For_UserStream_Queries()
         {
             var authMock = new Mock<ITwitterAuthorizer>();

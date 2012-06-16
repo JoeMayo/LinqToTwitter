@@ -19,7 +19,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
+using System.Linq;
 using System.Linq;
 using System.Text;
 using System.Net;
@@ -34,7 +34,6 @@ using Ionic.Zlib;
 #if SILVERLIGHT && !WINDOWS_PHONE
 using System.Windows.Browser;
 #elif !SILVERLIGHT && !WINDOWS_PHONE && !NETFX_CORE
-    using System.Web;
 #endif
 
 namespace LinqToTwitter

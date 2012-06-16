@@ -1,14 +1,19 @@
 ﻿using System;
 using LinqToTwitter;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using LinqToTwitterXUnitTests.Common;
 using Moq;
+using Xunit;
 
-namespace LinqToTwitterTests
+namespace LinqToTwitterXUnitTests
 {
-    [TestClass]
-    public class TwitterExtensionsTest
+    public class TwitterExtensionsTests
     {
-        [TestMethod]
+        public TwitterExtensionsTests()
+        {
+            TestCulture.SetCulture();
+        }
+
+        [Fact]
         public void StreamingCallback_Sets_TwitterExecutor_StreamCallback()
         {
             var authMock = new Mock<ITwitterAuthorizer>();

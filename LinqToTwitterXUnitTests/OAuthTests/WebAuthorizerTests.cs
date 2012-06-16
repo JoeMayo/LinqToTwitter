@@ -1,21 +1,19 @@
 ﻿using System;
 using LinqToTwitter;
-using LinqToTwitterTests.Common;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using LinqToTwitterXUnitTests.Common;
 using Moq;
+using Xunit;
 
-namespace LinqToTwitterTests
+namespace LinqToTwitterXUnitTests
 {
-    [TestClass]
-    public class WebAuthorizerTest
+    public class WebAuthorizerTests
     {
-        [ClassInitialize]
-        public static void MyClassInitialize(TestContext testContext)
+        public WebAuthorizerTests()
         {
             TestCulture.SetCulture();
         }
 
-        [TestMethod]
+        [Fact]
         public void BeginAuthorization_Gets_Request_Token()
         {
             const string RequestUrl = "https://api.twitter.com/";
@@ -29,28 +27,21 @@ namespace LinqToTwitterTests
             webAuth.BeginAuthorization(new Uri(RequestUrl));
 
             oAuthMock.Verify(oAuth => oAuth.AuthorizationLinkGet(It.IsAny<string>(), It.IsAny<string>(), RequestUrl, false, AuthAccessType.NoChange), Times.Once());
-            Assert.IsNull(authUrl);
+            Assert.Null(authUrl);
         }
 
-        [TestMethod]
+        [Fact]
         public void BeginAuthorize_Requires_Credentials()
         {
             const string RequestUrl = "https://api.twitter.com/";
             var webAuth = new WebAuthorizer();
 
-            try
-            {
-                webAuth.BeginAuthorization(new Uri(RequestUrl));
+            var ex = Assert.Throws<ArgumentNullException>(() => webAuth.BeginAuthorization(new Uri(RequestUrl)));
 
-                Assert.Fail("Expected ArgumentNullException.");
-            }
-            catch (ArgumentNullException ane)
-            {
-                Assert.AreEqual("Credentials", ane.ParamName);
-            }
+            Assert.Equal("Credentials", ex.ParamName);
         }
 
-        [TestMethod]
+        [Fact]
         public void BeginAuthorize_Does_Not_Require_A_Uri()
         {
             var webAuth = new WebAuthorizer {Credentials = new InMemoryCredentials()};
@@ -60,10 +51,10 @@ namespace LinqToTwitterTests
             webAuth.PerformRedirect = url => authUrl = url;
 
             webAuth.BeginAuthorization(null);
-            Assert.IsNull(authUrl);
+            Assert.Null(authUrl);
         }
 
-        [TestMethod]
+        [Fact]
         public void BeginAuthorization_Calls_PerformRedirect()
         {
             const string RequestUrl = "https://api.twitter.com/";
@@ -76,10 +67,10 @@ namespace LinqToTwitterTests
 
             webAuth.BeginAuthorization(new Uri(RequestUrl));
 
-            Assert.IsNull(authUrl);
+            Assert.Null(authUrl);
         }
 
-        [TestMethod]
+        [Fact]
         public void CompleteAuthorization_Gets_Access_Token()
         {
             string screenName = "JoeMayo";
@@ -99,45 +90,31 @@ namespace LinqToTwitterTests
             webAuth.CompleteAuthorization(new Uri(AuthLink));
 
             oAuthMock.Verify(oauth => oauth.AccessTokenGet(AuthToken, Verifier, It.IsAny<string>(), string.Empty, out screenName, out userID), Times.Once());
-            Assert.AreEqual(screenName, webAuth.ScreenName);
-            Assert.AreEqual(userID, webAuth.UserId);
+            Assert.Equal(screenName, webAuth.ScreenName);
+            Assert.Equal(userID, webAuth.UserId);
         }
 
-        [TestMethod]
+        [Fact]
         public void CompleteAuthorization_Requires_A_Uri()
         {
             var webAuth = new WebAuthorizer {Credentials = new InMemoryCredentials()};
             var oAuthMock = new Mock<IOAuthTwitter>();
             webAuth.OAuthTwitter = oAuthMock.Object;
 
-            try
-            {
-                webAuth.CompleteAuthorization(null);
+            var ex = Assert.Throws<ArgumentNullException>(() => webAuth.CompleteAuthorization(null));
 
-                Assert.Fail("Expected ArgumentNullException.");
-            }
-            catch (ArgumentNullException ane)
-            {
-                Assert.AreEqual("callback", ane.ParamName);
-            }
+            Assert.Equal("callback", ex.ParamName);
         }
 
-        [TestMethod]
+        [Fact]
         public void CompleteAuthorization_Requires_Credentials()
         {
             const string AuthLink = "https://authorizationlink";
             var webAuth = new WebAuthorizer();
 
-            try
-            {
-                webAuth.CompleteAuthorization(new Uri(AuthLink));
+            var ex = Assert.Throws<ArgumentNullException>(() => webAuth.CompleteAuthorization(new Uri(AuthLink)));
 
-                Assert.Fail("Expected ArgumentNullException.");
-            }
-            catch (ArgumentNullException ane)
-            {
-                Assert.AreEqual("Credentials", ane.ParamName);
-            }
+            Assert.Equal("Credentials", ex.ParamName);
         }
     }
 }

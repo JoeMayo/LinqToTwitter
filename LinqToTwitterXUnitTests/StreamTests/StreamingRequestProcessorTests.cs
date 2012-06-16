@@ -3,67 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using LinqToTwitter;
-using LinqToTwitterTests.Common;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using LinqToTwitterXUnitTests.Common;
 using Moq;
+using Xunit;
 
-namespace LinqToTwitterTests
+namespace LinqToTwitterXUnitTests
 {
-    /// <summary>
-    /// Summary description for StreamingTests
-    /// </summary>
-    [TestClass]
     public class StreamingRequestProcessorTests
     {
         public StreamingRequestProcessorTests()
         {
-            //
-            // TODO: Add constructor logic here
-            //
-        }
-
-        private TestContext testContextInstance;
-
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
-        public TestContext TestContext
-        {
-            get
-            {
-                return testContextInstance;
-            }
-            set
-            {
-                testContextInstance = value;
-            }
-        }
-
-        //
-        // You can use the following additional attributes as you write your tests:
-        //
-        // Use ClassInitialize to run code before running the first test in the class
-        [ClassInitialize()]
-        public static void MyClassInitialize(TestContext testContext)
-        {
             TestCulture.SetCulture();
         }
 
-        // Use ClassCleanup to run code after all tests in a class have run
-        // [ClassCleanup()]
-        // public static void MyClassCleanup() { }
-        //
-        // Use TestInitialize to run code before running each test 
-        // [TestInitialize()]
-        // public void MyTestInitialize() { }
-        //
-        // Use TestCleanup to run code after each test has run
-        // [TestCleanup()]
-        // public void MyTestCleanup() { }
-        //
-
-        [TestMethod]
+        [Fact]
         public void GetParameters_Returns_Parameters()
         {
             var reqProc = new StreamingRequestProcessor<Streaming>();
@@ -79,21 +32,21 @@ namespace LinqToTwitterTests
 
             var parms = reqProc.GetParameters(lambdaExpression);
 
-            Assert.IsTrue(parms.Contains(
+            Assert.True(parms.Contains(
                     new KeyValuePair<string, string>("Type", ((int)StreamingType.Sample).ToString())));
-            Assert.IsTrue(parms.Contains(
+            Assert.True(parms.Contains(
                    new KeyValuePair<string, string>("Count", "10")));
-            Assert.IsTrue(parms.Contains(
+            Assert.True(parms.Contains(
                   new KeyValuePair<string, string>("Delimited", "length")));
-            Assert.IsTrue(parms.Contains(
+            Assert.True(parms.Contains(
                    new KeyValuePair<string, string>("Follow", "1,2,3")));
-            Assert.IsTrue(parms.Contains(
+            Assert.True(parms.Contains(
                    new KeyValuePair<string, string>("Track", "twitter,API,LINQ to Twitter")));
-            Assert.IsTrue(parms.Contains(
+            Assert.True(parms.Contains(
                   new KeyValuePair<string, string>("Locations", "-122.75,36.8,-121.75,37.8,-74,40,-73,41")));
         }
 
-        [TestMethod]
+        [Fact]
         public void BuildFilterUrl_Returns_Url()
         {
             var reqProc = new StreamingRequestProcessor<Streaming>() { BaseUrl = "http://stream.twitter.com/1/" };
@@ -105,10 +58,10 @@ namespace LinqToTwitterTests
 
             Request req = reqProc.BuildUrl(parms);
 
-            Assert.AreEqual("http://stream.twitter.com/1/statuses/filter.json?track=LINQ%20to%20Twitter", req.FullUrl);
+            Assert.Equal("http://stream.twitter.com/1/statuses/filter.json?track=LINQ%20to%20Twitter", req.FullUrl);
         }
 
-        [TestMethod]
+        [Fact]
         public void BuildFilterUrl_Requires_FollowOrLocationsOrTrack()
         {
             var reqProc = new StreamingRequestProcessor<Streaming>() { BaseUrl = "http://stream.twitter.com/1/" };
@@ -118,19 +71,12 @@ namespace LinqToTwitterTests
                 { "Count", "10" }
             };
 
-            try
-            {
-                reqProc.BuildUrl(parms);
+            var ex = Assert.Throws<ArgumentException>(() => reqProc.BuildUrl(parms));
 
-                Assert.Fail("Expected ArgumentException.");
-            }
-            catch (ArgumentException aex)
-            {
-                Assert.AreEqual("FollowOrLocationsOrTrack", aex.ParamName);
-            }
+            Assert.Equal("FollowOrLocationsOrTrack", ex.ParamName);
         }
 
-        [TestMethod]
+        [Fact]
         public void BuildFirehoseUrl_Returns_Url()
         {
             var reqProc = new StreamingRequestProcessor<Streaming>() { BaseUrl = "http://stream.twitter.com/1/" };
@@ -143,10 +89,10 @@ namespace LinqToTwitterTests
 
             Request req = reqProc.BuildUrl(parms);
 
-            Assert.AreEqual("http://stream.twitter.com/1/statuses/firehose.json?count=25&delimited=length", req.FullUrl);
+            Assert.Equal("http://stream.twitter.com/1/statuses/firehose.json?count=25&delimited=length", req.FullUrl);
         }
 
-        [TestMethod]
+        [Fact]
         public void BuildLinksUrl_Returns_Url()
         {
             var reqProc = new StreamingRequestProcessor<Streaming>() { BaseUrl = "http://stream.twitter.com/1/" };
@@ -159,10 +105,10 @@ namespace LinqToTwitterTests
 
             Request req = reqProc.BuildUrl(parms);
 
-            Assert.AreEqual("http://stream.twitter.com/1/statuses/links.json?count=25&delimited=length", req.FullUrl);
+            Assert.Equal("http://stream.twitter.com/1/statuses/links.json?count=25&delimited=length", req.FullUrl);
         }
 
-        [TestMethod]
+        [Fact]
         public void BuildRetweetUrl_Returns_Url()
         {
             var reqProc = new StreamingRequestProcessor<Streaming>() { BaseUrl = "http://stream.twitter.com/1/" };
@@ -174,10 +120,10 @@ namespace LinqToTwitterTests
 
             Request req = reqProc.BuildUrl(parms);
 
-            Assert.AreEqual("http://stream.twitter.com/1/statuses/retweet.json?delimited=length", req.FullUrl);
+            Assert.Equal("http://stream.twitter.com/1/statuses/retweet.json?delimited=length", req.FullUrl);
         }
 
-        [TestMethod]
+        [Fact]
         public void BuildSampleUrl_Returns_Url()
         {
             var reqProc = new StreamingRequestProcessor<Streaming>() { BaseUrl = "http://stream.twitter.com/1/" };
@@ -188,10 +134,10 @@ namespace LinqToTwitterTests
 
             Request req = reqProc.BuildUrl(parms);
 
-            Assert.AreEqual("http://stream.twitter.com/1/statuses/sample.json", req.FullUrl);
+            Assert.Equal("http://stream.twitter.com/1/statuses/sample.json", req.FullUrl);
         }
 
-        [TestMethod]
+        [Fact]
         public void BuildUrl_Requires_Type()
         {
             var reqProc = new StreamingRequestProcessor<Streaming>() { BaseUrl = "http://stream.twitter.com/1/" };
@@ -200,19 +146,12 @@ namespace LinqToTwitterTests
                 //{ "Type", StreamingType.Sample.ToString() },
             };
 
-            try
-            {
-                reqProc.BuildUrl(parms);
+            var ex = Assert.Throws<ArgumentException>(() => reqProc.BuildUrl(parms));
 
-                Assert.Fail("Expected ArgumentException.");
-            }
-            catch (ArgumentException ae)
-            {
-                Assert.AreEqual("Type", ae.ParamName);
-            }
+             Assert.Equal("Type", ex.ParamName);
         }
 
-        [TestMethod]
+        [Fact]
         public void BuildSampleUrl_Forbids_Count()
         {
             var reqProc = new StreamingRequestProcessor<Streaming>() { BaseUrl = "http://stream.twitter.com/1/" };
@@ -222,19 +161,12 @@ namespace LinqToTwitterTests
                 { "Count", "5" }
             };
 
-            try
-            {
-                reqProc.BuildUrl(parms);
+            var ex = Assert.Throws<ArgumentException>(() => reqProc.BuildUrl(parms));
 
-                Assert.Fail("Expected ArgumentException.");
-            }
-            catch (ArgumentException ae)
-            {
-                Assert.AreEqual("Count", ae.ParamName);
-            }
+            Assert.Equal("Count", ex.ParamName);
         }
 
-        [TestMethod]
+        [Fact]
         public void BuildSampleUrl_Only_Adds_Delimited_To_Url()
         {
             var reqProc = new StreamingRequestProcessor<Streaming>() { BaseUrl = "http://stream.twitter.com/1/" };
@@ -249,10 +181,10 @@ namespace LinqToTwitterTests
 
             Request req = reqProc.BuildUrl(parms);
 
-            Assert.AreEqual("http://stream.twitter.com/1/statuses/sample.json?delimited=length", req.FullUrl);
+            Assert.Equal("http://stream.twitter.com/1/statuses/sample.json?delimited=length", req.FullUrl);
         }
 
-        [TestMethod]
+        [Fact]
         public void ProcessResults_Returns_A_Streaming()
         {
             var execMock = new Mock<ITwitterExecute>();
@@ -264,8 +196,8 @@ namespace LinqToTwitterTests
 
             var streamList = reqProc.ProcessResults(string.Empty);
 
-            Assert.AreEqual(1, streamList.Count);
-            Assert.AreEqual(execMock.Object, streamList.First().TwitterExecutor);
+            Assert.Equal(1, streamList.Count);
+            Assert.Equal(execMock.Object, streamList.First().TwitterExecutor);
         }
     }
 }

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using LinqToTwitter;
-using LinqToTwitterTests.Common;
+using LinqToTwitterXUnitTests.Common;
 using Xunit;
 
 namespace LinqToTwitterXUnitTests.OAuthTests

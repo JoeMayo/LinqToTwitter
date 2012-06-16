@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using LinqToTwitter;
-using LinqToTwitterTests.Common;
+using LinqToTwitterXUnitTests.Common;
 using LitJson;
 using Xunit;
 

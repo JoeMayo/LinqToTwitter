@@ -1,21 +1,19 @@
 ﻿using System;
 using LinqToTwitter;
-using LinqToTwitterTests.Common;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using LinqToTwitterXUnitTests.Common;
 using Moq;
+using Xunit;
 
-namespace LinqToTwitterTests
+namespace LinqToTwitterXUnitTests
 {
-    [TestClass]
-    public class SignInAuthorizerTest
+    public class SignInAuthorizerTests
     {
-        [ClassInitialize]
-        public static void MyClassInitialize(TestContext testContext)
+        public SignInAuthorizerTests()
         {
             TestCulture.SetCulture();
         }
 
-        [TestMethod]
+        [Fact]
         public void BeginAuthorization_Sets_ForceLogin()
         {
             const string RequestUrl = "https://api.twitter.com/";
@@ -29,7 +27,7 @@ namespace LinqToTwitterTests
             signInAuth.BeginAuthorization(new Uri(RequestUrl), forceLogin: true);
 
             oAuthMock.Verify(oAuth => oAuth.AuthorizationLinkGet(It.IsAny<string>(), It.IsAny<string>(), RequestUrl, true, AuthAccessType.NoChange), Times.Once());
-            Assert.IsNull(authUrl);
+            Assert.Null(authUrl);
         }
     }
 }

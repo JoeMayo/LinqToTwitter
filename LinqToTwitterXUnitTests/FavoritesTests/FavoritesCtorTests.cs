@@ -2,7 +2,7 @@
 
 using LinqToTwitter;
 
-using LinqToTwitterTests.Common;
+using LinqToTwitterXUnitTests.Common;
 
 using LitJson;
 

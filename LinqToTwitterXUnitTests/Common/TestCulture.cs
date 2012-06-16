@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Threading;
 
-namespace LinqToTwitterTests.Common
+namespace LinqToTwitterXUnitTests.Common
 {
     public class TestCulture
     {

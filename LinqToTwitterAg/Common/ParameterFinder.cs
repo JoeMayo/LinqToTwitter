@@ -26,7 +26,7 @@ namespace LinqToTwitter
         /// <summary>
         /// expression being searched
         /// </summary>
-        private Expression expression;
+        private readonly Expression expression;
 
         /// <summary>
         /// parameters to search for

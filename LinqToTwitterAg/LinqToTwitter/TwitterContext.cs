@@ -831,7 +831,7 @@ namespace LinqToTwitter
             if (expression == null)
             {
                 const string NullExpressionMessage = "Expression passed to CreateRequestProcessor must not be null.";
-                throw new ArgumentNullException(NullExpressionMessage);
+                throw new ArgumentNullException("Expression", NullExpressionMessage);
             }
 
             string requestType = new MethodCallExpressionTypeFinder().GetGenericType(expression).Name;

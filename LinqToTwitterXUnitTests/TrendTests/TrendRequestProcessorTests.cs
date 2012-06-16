@@ -6,7 +6,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading;
 using LinqToTwitter;
-using LinqToTwitterTests.Common;
+using LinqToTwitterXUnitTests.Common;
 using Xunit;
 
 namespace LinqToTwitterXUnitTests.TrendTests

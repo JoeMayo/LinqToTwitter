@@ -6,7 +6,7 @@ using System.Linq.Expressions;
 
 using LinqToTwitter;
 
-using LinqToTwitterTests.Common;
+using LinqToTwitterXUnitTests.Common;
 
 using Xunit;
 

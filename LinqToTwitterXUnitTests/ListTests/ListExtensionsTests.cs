@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using LinqToTwitter;
-using LinqToTwitterTests.Common;
+using LinqToTwitterXUnitTests.Common;
 using Moq;
 using Xunit;
 

@@ -1,27 +1,26 @@
 ﻿using System;
 using LinqToTwitter.Common;
-using LinqToTwitterTests.Common;
+using LinqToTwitterXUnitTests.Common;
 using LitJson;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Xunit;
 
-namespace LinqToTwitterTests
+namespace LinqToTwitterXUnitTests
 {
-    [TestClass]
-    public class TypeConversionExtensionsTest
+    public class TypeConversionExtensionsTests
     {
-        public TypeConversionExtensionsTest()
+        public TypeConversionExtensionsTests()
         {
             TestCulture.SetCulture();
         }
 
-        [TestMethod]
+        [Fact]
         public void GetValue_Returns_Decimal()
         {
             JsonData search = JsonMapper.ToObject(SearchJson);
 
             var val = search.GetValue<decimal>("completed_in");
 
-            Assert.AreEqual(.057m, val);
+            Assert.Equal(.057m, val);
         }
 
 const string SearchJson = @"{

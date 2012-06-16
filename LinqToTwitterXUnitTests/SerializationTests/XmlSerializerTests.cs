@@ -2,193 +2,191 @@
 using System.Xml;
 using System.Xml.Serialization;
 using LinqToTwitter;
-using LinqToTwitterTests.Common;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using LinqToTwitterXUnitTests.Common;
+using Xunit;
 
-namespace LinqToTwitterTests
+namespace LinqToTwitterXUnitTests
 {
-    [TestClass]
     public class XmlSerializerTests
     {
-        [ClassInitialize()]
-        public static void MyClassInitialize(TestContext testContext)
+        public XmlSerializerTests()
         {
             TestCulture.SetCulture();
         }
 
-        [TestMethod]
+        [Fact]
         public void Account_Can_Serialize()
         {
             var acct = new Account();
             var stringBuilder = new StringBuilder();
 
-            XmlWriter writer = XmlWriter.Create(stringBuilder);
-            XmlSerializer xmlSerializer = new XmlSerializer(typeof(Account));
+            var writer = XmlWriter.Create(stringBuilder);
+            var xmlSerializer = new XmlSerializer(typeof(Account));
             xmlSerializer.Serialize(writer, acct);
         }
 
-        [TestMethod]
+        [Fact]
         public void Blocks_Can_Serialize()
         {
             var block = new Blocks();
             var stringBuilder = new StringBuilder();
 
-            XmlWriter writer = XmlWriter.Create(stringBuilder);
-            XmlSerializer xmlSerializer = new XmlSerializer(typeof(Blocks));
+            var writer = XmlWriter.Create(stringBuilder);
+            var xmlSerializer = new XmlSerializer(typeof(Blocks));
             xmlSerializer.Serialize(writer, block);
         }
 
-        [TestMethod]
+        [Fact]
         public void DirectMessage_Can_Serialize()
         {
             var dm = new DirectMessage();
             var stringBuilder = new StringBuilder();
 
-            XmlWriter writer = XmlWriter.Create(stringBuilder);
-            XmlSerializer xmlSerializer = new XmlSerializer(typeof(DirectMessage));
+            var writer = XmlWriter.Create(stringBuilder);
+            var xmlSerializer = new XmlSerializer(typeof(DirectMessage));
             xmlSerializer.Serialize(writer, dm);
         }
 
-        [TestMethod]
+        [Fact]
         public void Favorites_Can_Serialize()
         {
             var favorite = new Favorites();
             var stringBuilder = new StringBuilder();
-            XmlWriter writer = XmlWriter.Create(stringBuilder);
+            var writer = XmlWriter.Create(stringBuilder);
             var xmlSerializer = new XmlSerializer(typeof(Favorites));
 
             xmlSerializer.Serialize(writer, favorite);
         }
 
-        [TestMethod]
+        [Fact]
         public void Friendship_Can_Serialize()
         {
             var friend = new Friendship();
             var stringBuilder = new StringBuilder();
 
-            XmlWriter writer = XmlWriter.Create(stringBuilder);
-            XmlSerializer xmlSerializer = new XmlSerializer(typeof(Friendship));
+            var writer = XmlWriter.Create(stringBuilder);
+            var xmlSerializer = new XmlSerializer(typeof(Friendship));
             xmlSerializer.Serialize(writer, friend);
         }
 
-        [TestMethod]
+        [Fact]
         public void Place_Can_Serialize()
         {
             var place = new Place();
             var stringBuilder = new StringBuilder();
 
-            XmlWriter writer = XmlWriter.Create(stringBuilder);
-            XmlSerializer xmlSerializer = new XmlSerializer(typeof(Place));
+            var writer = XmlWriter.Create(stringBuilder);
+            var xmlSerializer = new XmlSerializer(typeof(Place));
             xmlSerializer.Serialize(writer, place);
         }
 
-        [TestMethod]
+        [Fact]
         public void Geometry_Can_Serialize()
         {
             var geo = new Geometry();
             var stringBuilder = new StringBuilder();
 
-            XmlWriter writer = XmlWriter.Create(stringBuilder);
-            XmlSerializer xmlSerializer = new XmlSerializer(typeof(Geometry));
+            var writer = XmlWriter.Create(stringBuilder);
+            var xmlSerializer = new XmlSerializer(typeof(Geometry));
             xmlSerializer.Serialize(writer, geo);
         }
 
-        [TestMethod]
+        [Fact]
         public void IDList_Can_Serialize()
         {
             var ids = new IDList();
             var stringBuilder = new StringBuilder();
 
-            XmlWriter writer = XmlWriter.Create(stringBuilder);
-            XmlSerializer xmlSerializer = new XmlSerializer(typeof(IDList));
+            var writer = XmlWriter.Create(stringBuilder);
+            var xmlSerializer = new XmlSerializer(typeof(IDList));
             xmlSerializer.Serialize(writer, ids);
         }
 
-        [TestMethod]
+        [Fact]
         public void List_Can_Serialize()
         {
             var list = new List();
             var stringBuilder = new StringBuilder();
 
-            XmlWriter writer = XmlWriter.Create(stringBuilder);
-            XmlSerializer xmlSerializer = new XmlSerializer(typeof(List));
+            var writer = XmlWriter.Create(stringBuilder);
+            var xmlSerializer = new XmlSerializer(typeof(List));
             xmlSerializer.Serialize(writer, list);
         }
 
-        [TestMethod]
+        [Fact]
         public void Raw_Can_Serialize()
         {
             var raw = new Raw();
             var stringBuilder = new StringBuilder();
 
-            XmlWriter writer = XmlWriter.Create(stringBuilder);
-            XmlSerializer xmlSerializer = new XmlSerializer(typeof(Raw));
+            var writer = XmlWriter.Create(stringBuilder);
+            var xmlSerializer = new XmlSerializer(typeof(Raw));
             xmlSerializer.Serialize(writer, raw);
         }
 
-        [TestMethod]
+        [Fact]
         public void SavedSearch_Can_Serialize()
         {
             var saveSrch = new SavedSearch();
             var stringBuilder = new StringBuilder();
 
-            XmlWriter writer = XmlWriter.Create(stringBuilder);
-            XmlSerializer xmlSerializer = new XmlSerializer(typeof(SavedSearch));
+            var writer = XmlWriter.Create(stringBuilder);
+            var xmlSerializer = new XmlSerializer(typeof(SavedSearch));
             xmlSerializer.Serialize(writer, saveSrch);
         }
 
-        [TestMethod]
+        [Fact]
         public void Search_Can_Serialize()
         {
             var search = new Search();
             var stringBuilder = new StringBuilder();
 
-            XmlWriter writer = XmlWriter.Create(stringBuilder);
-            XmlSerializer xmlSerializer = new XmlSerializer(typeof(Search));
+            var writer = XmlWriter.Create(stringBuilder);
+            var xmlSerializer = new XmlSerializer(typeof(Search));
             xmlSerializer.Serialize(writer, search);
         }
 
-        [TestMethod]
+        [Fact]
         public void SocialGraph_Can_Serialize()
         {
             var graph = new SocialGraph();
             var stringBuilder = new StringBuilder();
 
-            XmlWriter writer = XmlWriter.Create(stringBuilder);
-            XmlSerializer xmlSerializer = new XmlSerializer(typeof(SocialGraph));
+            var writer = XmlWriter.Create(stringBuilder);
+            var xmlSerializer = new XmlSerializer(typeof(SocialGraph));
             xmlSerializer.Serialize(writer, graph);
         }
 
-        [TestMethod]
+        [Fact]
         public void Status_Can_Serialize()
         {
             var tweet = new Status {Type = StatusType.Home};
             var stringBuilder = new StringBuilder();
 
-            XmlWriter writer = XmlWriter.Create(stringBuilder);
-            XmlSerializer xmlSerializer = new XmlSerializer(typeof(Status));
+            var writer = XmlWriter.Create(stringBuilder);
+            var xmlSerializer = new XmlSerializer(typeof(Status));
             xmlSerializer.Serialize(writer, tweet);
         }
 
-        [TestMethod]
+        [Fact]
         public void Trend_Can_Serialize()
         {
             var trend = new Trend();
             var stringBuilder = new StringBuilder();
 
-            XmlWriter writer = XmlWriter.Create(stringBuilder);
-            XmlSerializer xmlSerializer = new XmlSerializer(typeof(Trend));
+            var writer = XmlWriter.Create(stringBuilder);
+            var xmlSerializer = new XmlSerializer(typeof(Trend));
             xmlSerializer.Serialize(writer, trend);
         }
 
-        [TestMethod]
+        [Fact]
         public void User_Can_Serialize()
         {
             var user = new User();
             var stringBuilder = new StringBuilder();
 
-            XmlWriter writer = XmlWriter.Create(stringBuilder);
-            XmlSerializer xmlSerializer = new XmlSerializer(typeof(User));
+            var writer = XmlWriter.Create(stringBuilder);
+            var xmlSerializer = new XmlSerializer(typeof(User));
             xmlSerializer.Serialize(writer, user);
         }
     }

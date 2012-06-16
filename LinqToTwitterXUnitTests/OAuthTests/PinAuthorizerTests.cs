@@ -1,21 +1,19 @@
 ﻿using LinqToTwitter;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using Moq;
-using LinqToTwitterTests.Common;
+using LinqToTwitterXUnitTests.Common;
+using Xunit;
 
-namespace LinqToTwitterTests
+namespace LinqToTwitterXUnitTests
 {
-    [TestClass]
-    public class PinAuthorizerTest
+    public class PinAuthorizerTests
     {
-        [ClassInitialize]
-        public static void MyClassInitialize(TestContext testContext)
+        public PinAuthorizerTests()
         {
             TestCulture.SetCulture();
         }
 
-        [TestMethod]
+        [Fact]
         public void Authorize_Gets_Request_Token()
         {
             const string AuthLink = "https://authorizationlink";
@@ -31,10 +29,10 @@ namespace LinqToTwitterTests
             pinAuth.Authorize();
 
             oAuthMock.Verify(oAuth => oAuth.AuthorizationLinkGet(It.IsAny<string>(), It.IsAny<string>(), "oob", false, AuthAccessType.NoChange), Times.Once());
-            Assert.AreEqual(AuthLink, destinationUrl);
+            Assert.Equal(AuthLink, destinationUrl);
         }
 
-        [TestMethod]
+        [Fact]
         public void Authorize_Launches_Browser()
         {
             const string AuthLink = "https://authorizationlink";
@@ -49,10 +47,10 @@ namespace LinqToTwitterTests
 
             pinAuth.Authorize();
 
-            Assert.AreEqual(AuthLink, destinationUrl);
+            Assert.Equal(AuthLink, destinationUrl);
         }
 
-        [TestMethod]
+        [Fact]
         public void Authorize_Gets_Pin()
         {
             const string AuthLink = "https://authorizationlink";
@@ -68,11 +66,11 @@ namespace LinqToTwitterTests
 
             pinAuth.Authorize();
 
-            Assert.IsTrue(pinSet);
-            Assert.AreEqual(AuthLink, destinationUrl);
+            Assert.True(pinSet);
+            Assert.Equal(AuthLink, destinationUrl);
         }
 
-        [TestMethod]
+        [Fact]
         public void Authorize_Requires_GetPin_Handler()
         {
             const string AuthLink = "https://authorizationlink";
@@ -84,20 +82,12 @@ namespace LinqToTwitterTests
             string destinationUrl = string.Empty;
             pinAuth.GoToTwitterAuthorization = link => destinationUrl = link;
 
-            try
-            {
-                pinAuth.Authorize();
-                Assert.AreEqual(AuthLink, destinationUrl);
+            var ex = Assert.Throws<InvalidOperationException>(() => pinAuth.Authorize());
 
-                Assert.Fail("Expected InvalidOperationException.");
-            }
-            catch (InvalidOperationException ioe)
-            {
-                Assert.IsTrue(ioe.Message.Contains("GetPin"));
-            }
+            Assert.True(ex.Message.Contains("GetPin"));
         }
 
-        [TestMethod]
+        [Fact]
         public void Authorize_Requires_GoToTwitterAuthorization_Handler()
         {
             const string AuthLink = "https://authorizationlink";
@@ -108,36 +98,22 @@ namespace LinqToTwitterTests
             pinAuth.OAuthTwitter = oAuthMock.Object;
             pinAuth.GetPin = () => { return "1234567"; };
 
-            try
-            {
-                pinAuth.Authorize();
+            var ex = Assert.Throws<InvalidOperationException>(() => pinAuth.Authorize());
 
-                Assert.Fail("Expected InvalidOperationException.");
-            }
-            catch (InvalidOperationException ioe)
-            {
-                Assert.IsTrue(ioe.Message.Contains("GoToTwitterAuthorization"));
-            }
+            Assert.True(ex.Message.Contains("GoToTwitterAuthorization"));
         }
 
-        [TestMethod]
+        [Fact]
         public void Authorize_Requires_Credentials()
         {
             var pinAuth = new PinAuthorizer();
 
-            try
-            {
-                pinAuth.Authorize();
+            var ex = Assert.Throws<ArgumentNullException>(() => pinAuth.Authorize());
 
-                Assert.Fail("Expected ArgumentNullException.");
-            }
-            catch (ArgumentNullException ane)
-            {
-                Assert.AreEqual("Credentials", ane.ParamName);
-            }
+            Assert.Equal("Credentials", ex.ParamName);
         }
 
-        [TestMethod]
+        [Fact]
         public void Authorize_Gets_Access_Token()
         {
             string screenName = "JoeMayo";
@@ -158,12 +134,12 @@ namespace LinqToTwitterTests
             pinAuth.Authorize();
 
             oAuthMock.Verify(oauth => oauth.AccessTokenGet(AuthToken, PinCode, It.IsAny<string>(), string.Empty, out screenName, out userID), Times.Once());
-            Assert.AreEqual(screenName, pinAuth.ScreenName);
-            Assert.AreEqual(userID, pinAuth.UserId);
-            Assert.AreEqual(AuthLink, destinationUrl);
+            Assert.Equal(screenName, pinAuth.ScreenName);
+            Assert.Equal(userID, pinAuth.UserId);
+            Assert.Equal(AuthLink, destinationUrl);
         }
 
-        [TestMethod]
+        [Fact]
         public void Authorize_Returns_If_Already_Authorized()
         {
             var oAuthMock = new Mock<IOAuthTwitter>();
@@ -188,7 +164,7 @@ namespace LinqToTwitterTests
                 Times.Never());
         }
 
-        [TestMethod]
+        [Fact]
         public void BeginAuthorize_Gets_Request_Token()
         {
             var oauthRequestTokenUrl = new Uri("https://api.twitter.com/oauth/request_token");
@@ -209,7 +185,7 @@ namespace LinqToTwitterTests
                 Times.Once());
         }
 
-        [TestMethod]
+        [Fact]
         public void BeginAuthorize_Requires_GoToTwitterAuthorization_Handler()
         {
             var pinAuth = new PinAuthorizer
@@ -219,19 +195,12 @@ namespace LinqToTwitterTests
                 GetPin = () => "1234567",
             };
 
-            try
-            {
-                pinAuth.BeginAuthorize(resp => { });
+            var ex = Assert.Throws<InvalidOperationException>(() => pinAuth.BeginAuthorize(resp => { }));
 
-                Assert.Fail("Expected InvalidOperationException.");
-            }
-            catch (InvalidOperationException ioe)
-            {
-                Assert.IsTrue(ioe.Message.Contains("GoToTwitterAuthorization"));
-            }
+            Assert.True(ex.Message.Contains("GoToTwitterAuthorization"));
         }
 
-        [TestMethod]
+        [Fact]
         public void BeginAuthorize_Returns_If_Already_Authorized()
         {
             var oAuthMock = new Mock<IOAuthTwitter>();
@@ -255,10 +224,10 @@ namespace LinqToTwitterTests
             oAuthMock.Verify(oauth =>
                 oauth.GetRequestTokenAsync(It.IsAny<Uri>(), It.IsAny<Uri>(), "oob", AuthAccessType.NoChange, false, It.IsAny<Action<string>>(), It.IsAny<Action<TwitterAsyncResponse<object>>>()), 
                 Times.Never());
-            Assert.IsNull(twitterResp);
+            Assert.Null(twitterResp);
         }
 
-        [TestMethod]
+        [Fact]
         public void BeginAuthorize_Invokes_AuthorizationCompleteCallback()
         {
             var pinAuth = new PinAuthorizer
@@ -271,10 +240,10 @@ namespace LinqToTwitterTests
             TwitterAsyncResponse<object> twitterResp = null;
             pinAuth.BeginAuthorize(resp => twitterResp = resp);
 
-            Assert.IsNotNull(twitterResp);
+            Assert.NotNull(twitterResp);
         }
 
-        [TestMethod]
+        [Fact]
         public void CompleteAuthorize_Gets_Access_Token()
         {
             const string Pin = "1234567";
@@ -295,7 +264,7 @@ namespace LinqToTwitterTests
                 Times.Once());
         }
 
-        [TestMethod]
+        [Fact]
         public void CompleteAuthorize_Invokes_AuthorizationCompleteCallback()
         {
             var pinAuth = new PinAuthorizer
@@ -308,10 +277,10 @@ namespace LinqToTwitterTests
 
             pinAuth.CompleteAuthorize("1234567", resp => twitterResp = resp);
 
-            Assert.IsNotNull(twitterResp);
+            Assert.NotNull(twitterResp);
         }
 
-        [TestMethod]
+        [Fact]
         public void CompleteAuthorize_Requires_Pin()
         {
             var pinAuth = new PinAuthorizer
@@ -321,19 +290,12 @@ namespace LinqToTwitterTests
                 GoToTwitterAuthorization = link => { }
             };
 
-            try
-            {
-                pinAuth.CompleteAuthorize(null, resp => { });
+            var ex = Assert.Throws<ArgumentNullException>(() => pinAuth.CompleteAuthorize(null, resp => { }));
 
-                Assert.Fail("Expected Exception.");
-            }
-            catch (ArgumentNullException ex)
-            {
-                Assert.AreEqual("pin", ex.ParamName);
-            }
+            Assert.Equal("pin", ex.ParamName);
         }
 
-        [TestMethod]
+        [Fact]
         public void CompleteAuthorize_Returns_If_Already_Authorized()
         {
             const string Pin = "1234567";
