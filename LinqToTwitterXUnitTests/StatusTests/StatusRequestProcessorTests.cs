@@ -61,8 +61,6 @@ namespace LinqToTwitterXUnitTests.StatusTests
             Assert.Equal(new DateTime(2012, 3, 28, 2, 51, 45), status.CreatedAt);
             Assert.Null(status.InReplyToUserID);
             Assert.False(status.Truncated);
-            Assert.NotNull(status.Geo);
-            Assert.Null(status.Geo.Query);
             Assert.NotNull(status.Text);
             Assert.True(status.Text.StartsWith("RT @scottgu: I just blogged about"));
             Assert.NotNull(status.Annotation);
@@ -109,8 +107,6 @@ namespace LinqToTwitterXUnitTests.StatusTests
             Assert.Equal(new DateTime(2012, 3, 28, 2, 51, 45), status.CreatedAt);
             Assert.Null(status.InReplyToUserID);
             Assert.False(status.Truncated);
-            Assert.NotNull(status.Geo);
-            Assert.Null(status.Geo.Query);
             Assert.NotNull(status.Text);
             Assert.True(status.Text.StartsWith("RT @scottgu: I just blogged about"));
             Assert.NotNull(status.Annotation);

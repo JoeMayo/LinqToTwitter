@@ -107,7 +107,7 @@
     <Compile Include="SocialGraphTests\SocialGraphRequestProcessorTests.cs" />
     <Compile Include="StatusTests\StatusExtensionsTests.cs" />
     <Compile Include="StatusTests\StatusExtensionsTweetWithMediaNoLocationTests.cs" />
-    <Compile Include="StatusTests\StatusExtensionsTweetWithMediaAndLocationTests.cs" />
+    <Compile Include="StatusTests\StatusExtensionsTweetsWithMediaAndLocationTests.cs" />
     <Compile Include="StatusTests\StatusExtensionsReplyWithMediaNoLocationTests.cs" />
     <Compile Include="StatusTests\StatusExtensionsReplyWithMediaAndLocationTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

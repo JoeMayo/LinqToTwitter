@@ -226,7 +226,6 @@ namespace LinqToTwitterDemo
                  where list.Type == ListType.Statuses &&
                        list.OwnerScreenName == "JoeMayo" &&
                        list.Slug == "dotnettwittterdevs" &&
-                       list.IncludeRetweets == true &&
                        list.Count == count
                  select list)
                 .First();
@@ -243,7 +242,6 @@ namespace LinqToTwitterDemo
                      where list.Type == ListType.Statuses &&
                            list.OwnerScreenName == "JoeMayo" &&
                            list.Slug == "dotnettwittterdevs" &&
-                           list.IncludeRetweets == true &&
                            list.Count == count &&
                            list.SinceID == sinceID &&
                            list.MaxID == maxID

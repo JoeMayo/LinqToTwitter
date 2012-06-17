@@ -551,48 +551,6 @@
     <Compile Include="..\LinqToTwitterAg\Search\SearchType.cs">
       <Link>Search\SearchType.cs</Link>
     </Compile>
-    <Compile Include="..\LinqToTwitterAg\Serialization\Account\AccountConverter.cs">
-      <Link>Serialization\Account\AccountConverter.cs</Link>
-    </Compile>
-    <Compile Include="..\LinqToTwitterAg\Serialization\Account\EndSession.cs">
-      <Link>Serialization\Account\EndSession.cs</Link>
-    </Compile>
-    <Compile Include="..\LinqToTwitterAg\Serialization\Account\RateLimitStatus.cs">
-      <Link>Serialization\Account\RateLimitStatus.cs</Link>
-    </Compile>
-    <Compile Include="..\LinqToTwitterAg\Serialization\Account\Settings.cs">
-      <Link>Serialization\Account\Settings.cs</Link>
-    </Compile>
-    <Compile Include="..\LinqToTwitterAg\Serialization\Account\SleepTime.cs">
-      <Link>Serialization\Account\SleepTime.cs</Link>
-    </Compile>
-    <Compile Include="..\LinqToTwitterAg\Serialization\Account\TimeZone.cs">
-      <Link>Serialization\Account\TimeZone.cs</Link>
-    </Compile>
-    <Compile Include="..\LinqToTwitterAg\Serialization\Account\Totals.cs">
-      <Link>Serialization\Account\Totals.cs</Link>
-    </Compile>
-    <Compile Include="..\LinqToTwitterAg\Serialization\Entities\Entities.cs">
-      <Link>Serialization\Entities\Entities.cs</Link>
-    </Compile>
-    <Compile Include="..\LinqToTwitterAg\Serialization\Entities\EntityBase.cs">
-      <Link>Serialization\Entities\EntityBase.cs</Link>
-    </Compile>
-    <Compile Include="..\LinqToTwitterAg\Serialization\Entities\HashtagEntity.cs">
-      <Link>Serialization\Entities\HashtagEntity.cs</Link>
-    </Compile>
-    <Compile Include="..\LinqToTwitterAg\Serialization\Entities\ImageSize.cs">
-      <Link>Serialization\Entities\ImageSize.cs</Link>
-    </Compile>
-    <Compile Include="..\LinqToTwitterAg\Serialization\Entities\MediaEntity.cs">
-      <Link>Serialization\Entities\MediaEntity.cs</Link>
-    </Compile>
-    <Compile Include="..\LinqToTwitterAg\Serialization\Entities\UrlEntity.cs">
-      <Link>Serialization\Entities\UrlEntity.cs</Link>
-    </Compile>
-    <Compile Include="..\LinqToTwitterAg\Serialization\Entities\UserEntity.cs">
-      <Link>Serialization\Entities\UserEntity.cs</Link>
-    </Compile>
     <Compile Include="..\LinqToTwitterAg\Serialization\Extensions\DictionaryExtensions.cs">
       <Link>Serialization\Extensions\DictionaryExtensions.cs</Link>
     </Compile>
@@ -601,15 +559,6 @@
     </Compile>
     <Compile Include="..\LinqToTwitterAg\Serialization\Extensions\StringExtensions.cs">
       <Link>Serialization\Extensions\StringExtensions.cs</Link>
-    </Compile>
-    <Compile Include="..\LinqToTwitterAg\Serialization\Geo\Geometry.cs">
-      <Link>Serialization\Geo\Geometry.cs</Link>
-    </Compile>
-    <Compile Include="..\LinqToTwitterAg\Serialization\JavaScriptConverter.cs">
-      <Link>Serialization\JavaScriptConverter.cs</Link>
-    </Compile>
-    <Compile Include="..\LinqToTwitterAg\Serialization\JavaScriptSerializer.cs">
-      <Link>Serialization\JavaScriptSerializer.cs</Link>
     </Compile>
     <Compile Include="..\LinqToTwitterAg\Serialization\LitJson\IJsonWrapper.cs">
       <Link>Serialization\LitJson\IJsonWrapper.cs</Link>
@@ -637,33 +586,6 @@
     </Compile>
     <Compile Include="..\LinqToTwitterAg\Serialization\LitJson\ParserToken.cs">
       <Link>Serialization\LitJson\ParserToken.cs</Link>
-    </Compile>
-    <Compile Include="..\LinqToTwitterAg\Serialization\Place\Place.cs">
-      <Link>Serialization\Place\Place.cs</Link>
-    </Compile>
-    <Compile Include="..\LinqToTwitterAg\Serialization\Place\PlaceType.cs">
-      <Link>Serialization\Place\PlaceType.cs</Link>
-    </Compile>
-    <Compile Include="..\LinqToTwitterAg\Serialization\Status\Status.cs">
-      <Link>Serialization\Status\Status.cs</Link>
-    </Compile>
-    <Compile Include="..\LinqToTwitterAg\Serialization\Trend\DailyWeeklyTrends.cs">
-      <Link>Serialization\Trend\DailyWeeklyTrends.cs</Link>
-    </Compile>
-    <Compile Include="..\LinqToTwitterAg\Serialization\Trend\SlottedTrend.cs">
-      <Link>Serialization\Trend\SlottedTrend.cs</Link>
-    </Compile>
-    <Compile Include="..\LinqToTwitterAg\Serialization\Trend\Trend.cs">
-      <Link>Serialization\Trend\Trend.cs</Link>
-    </Compile>
-    <Compile Include="..\LinqToTwitterAg\Serialization\Trend\TrendConverter.cs">
-      <Link>Serialization\Trend\TrendConverter.cs</Link>
-    </Compile>
-    <Compile Include="..\LinqToTwitterAg\Serialization\Trend\Trends.cs">
-      <Link>Serialization\Trend\Trends.cs</Link>
-    </Compile>
-    <Compile Include="..\LinqToTwitterAg\Serialization\User\User.cs">
-      <Link>Serialization\User\User.cs</Link>
     </Compile>
     <Compile Include="..\LinqToTwitterAg\SocialGraph\SocialGraph.cs">
       <Link>SocialGraph\SocialGraph.cs</Link>
@@ -775,9 +697,7 @@
       <Link>Serialization\LitJson\README</Link>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Serialization\Search\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="..\LinqToTwitterAg\Common\Iconic.ZLib\LICENSE.jzlib.txt">
       <Link>Common\Iconic.ZLib\LICENSE.jzlib.txt</Link>

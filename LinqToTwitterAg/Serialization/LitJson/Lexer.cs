@@ -5,13 +5,9 @@
  * The authors disclaim copyright to this source code. For more details, see
  * the COPYING file included with this distribution.
  **/
-
-
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Text;
-
 
 namespace LitJson
 {

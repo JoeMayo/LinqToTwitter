@@ -1,11 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
+using LinqToTwitterXUnitTests.Common;
+
+#if NETFX_CORE
 using System.Security.Cryptography;
 using System.Text;
 using LinqToTwitter;
-using LinqToTwitterXUnitTests.Common;
 using Xunit;
+#endif
 
 namespace LinqToTwitterXUnitTests.OAuthTests
 {

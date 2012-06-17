@@ -121,7 +121,7 @@ namespace LinqToTwitter
         /// <summary>
         /// Tweets that contain links
         /// </summary>
-        [Obsolete("WithLinks (Twitter API filter:links) is undocumented and unsupported by the Twitter API.")]
+        [Obsolete("WithLinks (Twitter API filter:links) is undocumented and unsupported by the Twitter API.", true)]
         public bool WithLinks { get; set; }
 
         /// <summary>
@@ -132,8 +132,8 @@ namespace LinqToTwitter
         /// <summary>
         /// Include entities in results
         /// </summary>
-        // TODO: remove after 5/14/12
-        [Obsolete("All API methods capable of including entities will return them regardless of the value provided.")]
+        // TODO: was scheduled for deprecation on 5/14/12, but delayed by Twitter - need to follow up.
+        //[Obsolete("All API methods capable of including entities will return them regardless of the value provided.")]
         public bool IncludeEntities { get; set; }
 
         //

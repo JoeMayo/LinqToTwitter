@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -83,8 +82,8 @@ namespace LinqToTwitter
         /// <summary>
         /// Include entities in results
         /// </summary>
-        // TODO: remove after 5/14/12
-        [Obsolete("All API methods capable of including entities will return them regardless of the value provided.")]
+        // TODO: was scheduled for deprecation on 5/14/12, but delayed by Twitter - need to follow up.
+        //[Obsolete("All API methods capable of including entities will return them regardless of the value provided.")]
         public bool IncludeEntities { get; set; }
 
         /// <summary>
@@ -454,7 +453,7 @@ namespace LinqToTwitter
                 PersonTo = PersonTo,
                 PersonReference = PersonReference,
                 Attitude = Attitude,
-                WithLinks = WithLinks,
+                //WithLinks = WithLinks,
                 WithRetweets = WithRetweets,
                 IncludeEntities = IncludeEntities,
                 CompletedIn = search.GetValue<decimal>("completed_in"),

@@ -65,8 +65,8 @@ namespace LinqToTwitter
         /// Retweets are optional and you must set this to true
         /// before they will be included in the user timeline
         /// </summary>
-        // TODO: remove after 5/14/12
-        [Obsolete("All API methods capable of including retweets will return them regardless of the value provided.")]
+        // TODO: was scheduled for deprecation on 5/14/12, but delayed by Twitter - need to follow up.
+        //[Obsolete("All API methods capable of including retweets will return them regardless of the value provided.")]
         public bool IncludeRetweets { get; set; }
 
         /// <summary>
@@ -77,8 +77,8 @@ namespace LinqToTwitter
         /// <summary>
         /// Include entities in tweets
         /// </summary>
-        // TODO: remove after 5/14/12
-        [Obsolete("All API methods capable of including entities will return them regardless of the value provided.")]
+        // TODO: was scheduled for deprecation on 5/14/12, but delayed by Twitter - need to follow up.
+        //[Obsolete("All API methods capable of including entities will return them regardless of the value provided.")]
         public bool IncludeEntities { get; set; }
 
         /// <summary>

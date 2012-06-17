@@ -41,7 +41,6 @@ namespace LinqToTwitterXUnitTests.SearchTests
                     search.PersonTo == "JoeMayo" &&
                     search.PersonReference == "JoeMayo" &&
                     search.Attitude == Attitude.Positive &&
-                    search.WithLinks == true &&
                     search.WithRetweets == true &&
                     search.IncludeEntities == true;
             var lambdaExpression = expression as LambdaExpression;
@@ -105,9 +104,6 @@ namespace LinqToTwitterXUnitTests.SearchTests
             Assert.True(
               queryParams.Contains(
                   new KeyValuePair<string, string>("Attitude", ((int)Attitude.Positive).ToString(CultureInfo.InvariantCulture))));
-            Assert.True(
-              queryParams.Contains(
-                  new KeyValuePair<string, string>("WithLinks", "True")));
             Assert.True(
               queryParams.Contains(
                   new KeyValuePair<string, string>("WithRetweets", "True")));

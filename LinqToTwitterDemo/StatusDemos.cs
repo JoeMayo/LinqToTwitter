@@ -21,9 +21,7 @@ namespace LinqToTwitterDemo
             //HomeStatusQueryDemo(twitterCtx);
             //HomeSinceStatusQueryDemo(twitterCtx);
             //UserStatusQueryDemo(twitterCtx);
-            //UserStatusSinceIDQueryDemo(twitterCtx);
             //UserStatusByNameQueryDemo(twitterCtx);
-            //UserStatusWithRetweetsQueryDemo(twitterCtx);
             //MentionsStatusQueryDemo(twitterCtx);
             //MentionsWithSinceIDStatusQueryDemo(twitterCtx);
             //MentionsWithPagingQueryDemo(twitterCtx);
@@ -42,7 +40,6 @@ namespace LinqToTwitterDemo
             //RetweetedByUserStatusQueryDemo(twitterCtx);
             //RetweetDemo(twitterCtx);
             //RetweetsQueryDemo(twitterCtx);
-            //RetweetsCount(twitterCtx);
             //FirstStatusQueryDemo(twitterCtx);
             //GetAllTweetsAndRetweetsDemo(twitterCtx);
             //ContributorIDsDemo(twitterCtx);
@@ -216,25 +213,6 @@ namespace LinqToTwitterDemo
                 "\nUser: " + retweet.RetweetedStatus.User.Name +
                 "\nTweet: " + retweet.RetweetedStatus.Text +
                 "\nTweet ID: " + retweet.RetweetedStatus.ID + "\n");
-        }
-
-        private static void RetweetsCount(TwitterContext twitterCtx)
-        {
-            var tweets =
-                (from tweet in twitterCtx.Status
-                 where tweet.Type == StatusType.Home &&
-                       tweet.IncludeRetweets == true
-                 select tweet)
-                .ToList();
-
-            tweets.ForEach(tweet =>
-                Console.WriteLine(
-                    "* Tweet: {0}\nRetweeted: {1}, Retweet Count: {2}\n" +
-                    "Retweet: {3}\nRetweeted: {4}, Retweet Count: {5}\n",
-                    tweet.Text, tweet.Retweeted, tweet.RetweetCount,
-                    tweet.RetweetedStatus == null ? "<none>" : tweet.RetweetedStatus.Text,
-                    tweet.RetweetedStatus == null ? false : tweet.RetweetedStatus.Retweeted,
-                    tweet.RetweetedStatus == null ? 0 : tweet.RetweetedStatus.RetweetCount));
         }
 
         /// <summary>
@@ -471,35 +449,6 @@ namespace LinqToTwitterDemo
         }
 
         /// <summary>
-        /// shows how to include retweets with user statuses
-        /// </summary>
-        /// <param name="twitterCtx">TwitterContext</param>
-        private static void UserStatusWithRetweetsQueryDemo(TwitterContext twitterCtx)
-        {
-            Console.WriteLine();
-
-            var screenName = "JoeMayo";
-
-            var statusTweets =
-                from tweet in twitterCtx.Status
-                where tweet.Type == StatusType.User
-                      && tweet.ScreenName == screenName
-                      && tweet.IncludeRetweets == true
-                select tweet;
-
-            foreach (var tweet in statusTweets)
-            {
-                Console.WriteLine(
-                    "(" + tweet.StatusID + ")" +
-                    "[" + tweet.User.ID + "]" +
-                    ", Is Retweet: " + (tweet.RetweetedStatus != null).ToString() + "\n" +
-                    tweet.User.Name + ", " + "\n" +
-                    tweet.Text + ", " +
-                    tweet.CreatedAt);
-            }
-        }
-
-        /// <summary>
         /// shows how to query user status
         /// </summary>
         /// <param name="twitterCtx">TwitterContext</param>
@@ -550,33 +499,6 @@ namespace LinqToTwitterDemo
 
                 Console.WriteLine("{0, 4}. [{1}] User: {2}\nStatus: {3}",
                     i + 1, status.StatusID, status.User.Name, status.Text);
-            }
-        }
-
-        /// <summary>
-        /// shows how to query status
-        /// </summary>
-        /// <param name="twitterCtx">TwitterContext</param>
-        private static void UserStatusSinceIDQueryDemo(TwitterContext twitterCtx)
-        {
-            Console.WriteLine();
-
-            var statusTweets =
-                from tweet in twitterCtx.Status
-                where tweet.Type == StatusType.User &&
-                      tweet.ScreenName == "JoeMayo" &&
-                      tweet.SinceID == 79608230359212032 &&
-                      tweet.IncludeRetweets == true
-                select tweet;
-
-            foreach (var tweet in statusTweets)
-            {
-                Console.WriteLine(
-                    "(" + tweet.StatusID + ")" +
-                    "[" + tweet.User.ID + "]" +
-                    tweet.User.Name + ", " +
-                    tweet.Text + ", " +
-                    tweet.CreatedAt);
             }
         }
 
@@ -872,7 +794,6 @@ namespace LinqToTwitterDemo
             var tweets =
                 (from tweet in twitterCtx.Status
                  where tweet.Type == StatusType.Home &&
-                       tweet.IncludeEntities == true &&
                        tweet.Count == 100
                  select tweet)
                 .ToList();

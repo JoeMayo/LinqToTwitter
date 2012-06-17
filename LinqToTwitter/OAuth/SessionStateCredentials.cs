@@ -5,7 +5,7 @@ namespace LinqToTwitter
 {
     public class SessionStateCredentials : InMemoryCredentials
     {
-        private HttpSessionState session;
+        readonly HttpSessionState session;
 
         public SessionStateCredentials()
         {

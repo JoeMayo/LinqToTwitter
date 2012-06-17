@@ -25,7 +25,7 @@ namespace LinqToTwitterXUnitTests
 
             twQueryable.StreamingCallback(callback);
 
-            execMock.VerifySet(exec => exec.StreamingCallback);
+            execMock.VerifySet(exec => exec.StreamingCallback = It.IsAny<Action<StreamContent>>());
         }
     }
 }

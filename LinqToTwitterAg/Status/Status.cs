@@ -55,7 +55,6 @@ namespace LinqToTwitter
             CreatedAt = status.GetValue<string>("created_at").GetDate(DateTime.MaxValue);
             InReplyToUserID = status.GetValue<string>("in_reply_to_user_id_str");
             Truncated = status.GetValue<bool>("truncated");
-            Geo = new Geo(status.GetValue<JsonData>("geo"));
             Text = status.GetValue<string>("text");
             Annotation = new Annotation(status.GetValue<JsonData>("annotation"));
             Entities = new Entities(status.GetValue<JsonData>("entities"));
@@ -78,7 +77,7 @@ namespace LinqToTwitter
         }
 
         [XmlAttribute(AttributeName = "Type")]
-        StatusType StatusTypeXml
+        internal StatusType StatusTypeXml
         {
             get { return type; }
             set { type = value; }
@@ -123,8 +122,8 @@ namespace LinqToTwitter
         /// By default, user timeline doesn't include retweets,
         /// but you can set this to true to includes retweets
         /// </summary>
-        // TODO: remove after 5/14/12
-        [Obsolete("All API methods capable of including retweets will return them regardless of the value provided.")]
+        // TODO: was scheduled for deprecation on 5/14/12, but delayed by Twitter - need to follow up.
+        //[Obsolete("All API methods capable of including retweets will return them regardless of the value provided.")]
         public bool IncludeRetweets { get; set; }
 
         /// <summary>
@@ -135,8 +134,8 @@ namespace LinqToTwitter
         /// <summary>
         /// Add entities to tweets
         /// </summary>
-        // TODO: remove after 5/14/12
-        [Obsolete("All API methods capable of including entities will return them regardless of the value provided.")]
+        // TODO: was scheduled for deprecation on 5/14/12, but delayed by Twitter - need to follow up.
+        //[Obsolete("All API methods capable of including entities will return them regardless of the value provided.")]
         public bool IncludeEntities { get; set; }
 
         /// <summary>
@@ -208,7 +207,7 @@ namespace LinqToTwitter
         /// <summary>
         /// Geographic information on tweet location
         /// </summary>
-        [Obsolete("Soon to be deprecated. Use Coordinates instead.")]
+        [Obsolete("Soon to be deprecated. Use Coordinates instead.", true)]
         public Geo Geo { get; set; }
 
         /// <summary>

@@ -475,7 +475,6 @@ namespace LinqToTwitter
                 user.SkipStatus = SkipStatus;
                 user.ImageSize = ImageSize;
             }
-;
 
             return userList.OfType<T>().ToList();
         }

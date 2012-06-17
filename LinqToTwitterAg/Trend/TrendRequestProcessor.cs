@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
-
 using System.Threading;
 using LinqToTwitter.Common;
 using LitJson;
@@ -284,9 +282,9 @@ namespace LinqToTwitter
 
             var flat = 
                  from string trendDate in trendHash.Keys
-                 let slot = (JsonData)trendHash[trendDate]
+                 let slot = trendHash[trendDate]
                  let trends =
-                     from JsonData trend in slot
+                 from JsonData trend in slot
                      select new Trend
                      {
                          Type = Type,

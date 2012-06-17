@@ -92,15 +92,15 @@ namespace LinqToTwitter
         /// <summary>
         /// Add entities to tweets
         /// </summary>
-        // TODO: remove after 5/14/12
-        [Obsolete("All API methods capable of including entities will return them regardless of the value provided.")]
+        // TODO: was scheduled for deprecation on 5/14/12, but delayed by Twitter - need to follow up.
+        //[Obsolete("All API methods capable of including entities will return them regardless of the value provided.")]
         internal bool IncludeEntities { get; set; }
 
         /// <summary>
         /// Add retweets, in addition to normal tweets
         /// </summary>
-        // TODO: remove after 5/14/12
-        [Obsolete("All API methods capable of including retweets will return them regardless of the value provided.")]
+        // TODO: was scheduled for deprecation on 5/14/12, but delayed by Twitter - need to follow up.
+        //[Obsolete("All API methods capable of including retweets will return them regardless of the value provided.")]
         internal bool IncludeRetweets { get; set; }
 
         /// <summary>

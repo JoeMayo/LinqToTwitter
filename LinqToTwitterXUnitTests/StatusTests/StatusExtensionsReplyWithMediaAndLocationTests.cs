@@ -564,14 +564,14 @@ namespace LinqToTwitterXUnitTests.StatusTests
         [Fact]
         public void ReplyWithMedia_Sets_Callback()
         {
-            twitterExecute.SetupSet(exec => exec.AsyncCallback);
+            twitterExecute.SetupSet(exec => exec.AsyncCallback = It.IsAny<Delegate>());
 
             StatusExtensions.ReplyWithMedia(
                 twitterCtx.Object, inReplyToStatusID, status, possiblySensitive,
                 latitude, longitude, placeID, displayCoordinates,
                 mediaItems, null);
 
-            twitterExecute.VerifySet(exec => exec.AsyncCallback, Times.Once());
+            twitterExecute.VerifySet(exec => exec.AsyncCallback = It.IsAny<Delegate>());
         }
     }
 }
