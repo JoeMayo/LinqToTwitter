@@ -142,9 +142,6 @@
     <Compile Include="..\LinqToTwitterAg\Common\IRequestProcessor.cs">
       <Link>Common\IRequestProcessor.cs</Link>
     </Compile>
-    <Compile Include="..\LinqToTwitterAg\Common\JsonConversions.cs">
-      <Link>Common\JsonConversions.cs</Link>
-    </Compile>
     <Compile Include="..\LinqToTwitterAg\Common\LinqExtensions.cs">
       <Link>Common\LinqExtensions.cs</Link>
     </Compile>

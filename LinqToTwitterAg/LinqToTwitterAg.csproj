@@ -112,7 +112,6 @@
     <Compile Include="Common\IDList.cs" />
     <Compile Include="Common\InvalidQueryException.cs" />
     <Compile Include="Common\IRequestProcessor.cs" />
-    <Compile Include="Common\JsonConversions.cs" />
     <Compile Include="Common\LinqExtensions.cs" />
     <Compile Include="Common\Media.cs" />
     <Compile Include="Common\MediaType.cs" />

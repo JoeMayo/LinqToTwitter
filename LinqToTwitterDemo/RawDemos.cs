@@ -153,17 +153,5 @@ namespace LinqToTwitterDemo
 
             Console.WriteLine("Result from create favorite: \n\n" + result);
         }
-
-        private static void RelatedResultsDemo(TwitterContext twitterCtx)
-        {
-            // TODO: This query is returning errors, should revisit to seem if it's temporary
-            //var rawResult =
-            //    (from raw in twitterCtx.RawQuery
-            //     where raw.QueryString == "related_results/show/12345678.json"
-            //     select raw)
-            //    .FirstOrDefault();
-
-            //Console.WriteLine("Response from Twitter: \n\n" + rawResult.Result);
-        }
     }
 }

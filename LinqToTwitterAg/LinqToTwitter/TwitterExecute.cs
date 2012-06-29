@@ -120,29 +120,10 @@ namespace LinqToTwitter
         /// </summary>
         public Action<StreamContent> StreamingCallback { get; set; }
 
-        readonly object closeStreamLock = new object();
-        bool closeStream;
-
         /// <summary>
         /// Set to true to close stream, false means stream is still open
         /// </summary>
-        public bool CloseStream
-        {
-            get
-            {
-                lock (closeStreamLock)
-                {
-                    return closeStream;
-                }
-            }
-            set
-            {
-                lock (closeStreamLock)
-                {
-                    closeStream = value;
-                }
-            }
-        }
+        public bool CloseStream { get; set; }
 
         /// <summary>
         /// Only for streaming credentials, use OAuth for non-streaming APIs
@@ -253,7 +234,6 @@ namespace LinqToTwitter
             }
             else
             {
-                // TODO: this can be removed after the conversion to JSON
                 try
                 {
                     responseStr = GetTwitterResponse(wex.Response);
@@ -298,6 +278,24 @@ namespace LinqToTwitter
             }
         }
 
+        string ReadStreamBytes(Stream stream)
+        {
+            const int ByteCount = 4096;
+            var buffer = new char[ByteCount];
+            var sb = new StringBuilder();
+
+            using (var reader = new StreamReader(stream))
+            {
+                while (reader.Peek() >= 0)
+                {
+                    reader.Read(buffer, 0, ByteCount);
+                    sb.Append(buffer);
+                }
+            }
+
+            return sb.ToString().Trim('\0');
+        }
+
         /// <summary>
         /// gets WebResponse contents from Twitter
         /// </summary>
@@ -314,20 +312,14 @@ namespace LinqToTwitter
                 {
                     using (var gzip = new GZipStream(respStream, CompressionMode.Decompress))
                     {
-                        using (var reader = new StreamReader(gzip))
-                        {
-                            responseBody = reader.ReadToEnd();
-                        }
+                        responseBody = ReadStreamBytes(gzip);
                     }
                 }
                 else if (contentEncoding.ToLower().Contains("deflate"))
                 {
-                    using (var gzip = new DeflateStream(respStream, CompressionMode.Decompress))
+                    using (var dflate = new DeflateStream(respStream, CompressionMode.Decompress))
                     {
-                        using (var reader = new StreamReader(gzip))
-                        {
-                            responseBody = reader.ReadToEnd();
-                        }
+                        responseBody = ReadStreamBytes(dflate);
                     }
                 }
                 else if (resp.ContentType.StartsWith("image"))
@@ -336,10 +328,7 @@ namespace LinqToTwitter
                 }
                 else
                 {
-                    using (var respReader = new StreamReader(respStream))
-                    {
-                        responseBody = respReader.ReadToEnd();
-                    }
+                    responseBody = ReadStreamBytes(respStream);
                 }
             }
 

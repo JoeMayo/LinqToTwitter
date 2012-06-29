@@ -94,7 +94,6 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void UpdateAccountBackgroundImageAndTileButDontUseDemo(TwitterContext twitterCtx)
         {
-            // TODO: Twitter doesn't let us upload and mark as not used
             byte[] fileBytes = Utilities.GetFileBytes(@"..\..\images\200xColor_2.png");
             var user = twitterCtx.UpdateAccountBackgroundImage(fileBytes, "200xColor_2.png", "png", /*tile:*/ true, /*use:*/ false, true);
 

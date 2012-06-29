@@ -587,7 +587,7 @@ namespace Ionic.Zlib
                                 "Write    take     wi({0}) lf({1})",
                                 ix,
                                 _lastFilled);
-                    ++_lastFilled; // TODO: consider rollover?
+                    ++_lastFilled;
                 }
 
                 WorkItem workitem = _pool[ix];
