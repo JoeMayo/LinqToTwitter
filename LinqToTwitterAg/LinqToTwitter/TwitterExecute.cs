@@ -281,13 +281,14 @@ namespace LinqToTwitter
         string ReadStreamBytes(Stream stream)
         {
             const int ByteCount = 4096;
-            var buffer = new char[ByteCount];
+            //var buffer = new char[ByteCount];
             var sb = new StringBuilder();
 
             using (var reader = new StreamReader(stream))
             {
                 while (reader.Peek() >= 0)
                 {
+                    var buffer = new char[ByteCount];
                     reader.Read(buffer, 0, ByteCount);
                     sb.Append(buffer);
                 }
