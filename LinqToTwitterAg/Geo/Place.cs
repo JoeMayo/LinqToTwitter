@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Xml.Linq;
 
 using System.Xml.Serialization;
 using LinqToTwitter.Common;
@@ -59,48 +58,6 @@ namespace LinqToTwitter
                     .ToDictionary(
                         attr => attr.Key,
                         attr => attr.Val);
-        }
-
-        /// <summary>
-        /// Converts XML to Place
-        /// </summary>
-        /// <param name="place">XML containing place info</param>
-        /// <returns>Place populated from XML</returns>
-        public static Place CreatePlace(XElement place)
-        {
-            if (place == null || place.Descendants().Count() == 0)
-            {
-                return null;
-            }
-
-            var geometry = new Geometry();
-
-            return new Place
-            {
-                ID = place.Element("id").Value,
-                Name = place.Element("name").Value,
-                Country = 
-                    place.Element("country") == null ?
-                        string.Empty :
-                        place.Element("country").Value,
-                CountryCode = 
-                    place.Element("country_code") == null ?
-                        place.Element("country") != null &&
-                        place.Element("country").Attribute("code") != null ?
-                            place.Element("country").Attribute("code").Value :
-                            string.Empty :
-                        place.Element("country_code").Value,
-                FullName = place.Element("full_name").Value,
-                PlaceType = place.Element("place_type").Value,
-                Url = place.Element("url").Value,
-                BoundingBox = geometry.CreateGeometry(place.Element("bounding_box")),
-                ContainedWithin = CreatePlace(place.Element("item")),
-                Geometry = geometry.CreateGeometry(place.Element("geometry")),
-                //PolyLines = 
-                //    place.Element("polylines") == null ?
-                //        string.Empty :
-                //        place.Element("polylines").Element("item").Value
-            };
         }
 
         /// <summary>

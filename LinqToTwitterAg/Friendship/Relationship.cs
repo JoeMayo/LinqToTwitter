@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Xml.Linq;
 using System.Collections.Generic;
 using LinqToTwitter.Common;
 using LitJson;
@@ -36,92 +35,6 @@ namespace LinqToTwitter
                         select connection.ToString())
                     .ToList(); 
             }
-        }
-
-        /// <summary>
-        /// Creates a new relationship object from XML info
-        /// </summary>
-        /// <param name="relationship">XML with info</param>
-        /// <returns>Relationship instance</returns>
-        public static Relationship CreateRelationship(XElement relationshipXml)
-        {
-            if (relationshipXml == null || relationshipXml.Value == null)
-            {
-                return null;
-            }
-
-            var relationship = new Relationship
-            {
-                ID = relationshipXml.Element("id").Value,
-                ScreenName = 
-                    relationshipXml.Element("screen_name") == null ?
-                        string.Empty :
-                        relationshipXml.Element("screen_name").Value,
-                Following =
-                    relationshipXml.Element("following") == null ||
-                    relationshipXml.Element("following").Value == string.Empty ?
-                        false :
-                        bool.Parse(relationshipXml.Element("following").Value),
-                FollowedBy =
-                    relationshipXml.Element("followed_by") == null ||
-                    relationshipXml.Element("followed_by").Value == string.Empty ?
-                        false :
-                        bool.Parse(relationshipXml.Element("followed_by").Value),
-                Blocking =
-                    relationshipXml.Element("blocking") == null ||
-                    relationshipXml.Element("blocking").Value == string.Empty ?
-                        (bool?)null :
-                        bool.Parse(relationshipXml.Element("blocking").Value),
-                NotificationsEnabled =
-                    relationshipXml.Element("notifications_enabled") == null ||
-                    relationshipXml.Element("notifications_enabled").Value == string.Empty ?
-                        (bool?)null :
-                        bool.Parse(relationshipXml.Element("notifications_enabled").Value),
-                RetweetsWanted =
-                    relationshipXml.Element("want_retweets") == null ||
-                    relationshipXml.Element("want_retweets").Value == string.Empty ?
-                        false :
-                        bool.Parse(relationshipXml.Element("want_retweets").Value)
-            };
-
-            List<string> connections = null;
-
-            if (relationshipXml.Element("connections") != null &&
-                relationshipXml.Element("connections").Elements("connection") != null)
-            {
-                connections =
-                    (from rel in relationshipXml.Element("connections").Elements("connection")
-                        select rel.Value)
-                    .ToList(); 
-            }
-            else
-            {
-                connections = new List<string>();
-            }
-
-            if (relationship.FollowedBy)
-            {
-                connections.Add("followed_by");
-            }
-
-            if (relationship.Following)
-            {
-                connections.Add("following");
-            }
-
-            if (connections.Contains("followed_by"))
-            {
-                relationship.FollowedBy = true;
-            }
-
-            if (connections.Contains("following"))
-            {
-                relationship.Following = true;
-            }
-
-            relationship.Connections = connections;
-
-            return relationship;
         }
 
         /// <summary>

@@ -1,4 +1,4 @@
-﻿#if !NETFX_CORE
+﻿#if !NETFX_CORE && !L2T_PCL
 using System;
 using System.IO;
 using System.IO.IsolatedStorage;

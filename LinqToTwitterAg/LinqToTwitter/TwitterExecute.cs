@@ -5,12 +5,15 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading;
-using System.Xml.Linq;
 using System.Diagnostics;
 
 using LinqToTwitter.Common;
 using LitJson;
 using MSEncoder = Microsoft.Security.Application.Encoder;
+
+#if !L2T_PCL
+using System.Xml.Linq;
+#endif
 
 #if NETFX_CORE
 using System.Threading.Tasks;
@@ -21,11 +24,11 @@ using System.Threading.Tasks;
 
 #if SILVERLIGHT && !WINDOWS_PHONE
     using System.Windows.Browser;
-#elif !SILVERLIGHT && !WINDOWS_PHONE && !NETFX_CORE
+#elif !SILVERLIGHT && !WINDOWS_PHONE && !NETFX_CORE && !L2T_PCL
     using System.Web;
 #endif
 
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !L2T_PCL
 using System.IO.Compression;
 #else
 using Ionic.Zlib;
@@ -281,7 +284,6 @@ namespace LinqToTwitter
         string ReadStreamBytes(Stream stream)
         {
             const int ByteCount = 4096;
-            //var buffer = new char[ByteCount];
             var sb = new StringBuilder();
 
             using (var reader = new StreamReader(stream))
@@ -289,7 +291,7 @@ namespace LinqToTwitter
                 while (reader.Peek() >= 0)
                 {
                     var buffer = new char[ByteCount];
-                    reader.Read(buffer, 0, ByteCount);
+                    reader.ReadBlock(buffer, 0, ByteCount);
                     sb.Append(buffer);
                 }
             }

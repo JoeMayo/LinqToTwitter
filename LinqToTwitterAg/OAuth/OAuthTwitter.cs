@@ -25,7 +25,7 @@ using System.Net;
 using System.IO;
 using System.Threading;
 
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !L2T_PCL
 using System.IO.Compression;
 #else
 using Ionic.Zlib;

@@ -74,7 +74,6 @@
     <Compile Include="FavoritesTests\FavoritesCtorTests.cs" />
     <Compile Include="FriendshipTests\FriendshipExtensionsTests.cs" />
     <Compile Include="FriendshipTests\FriendshipRequestProcessorTests.cs" />
-    <Compile Include="FriendshipTests\RelationshipTests.cs" />
     <Compile Include="GeoTests\CoordinateTests.cs" />
     <Compile Include="GeoTests\GeoExtensionsTests.cs" />
     <Compile Include="GeoTests\GeometryTests.cs" />
