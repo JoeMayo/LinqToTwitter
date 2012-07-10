@@ -201,7 +201,7 @@ Module Module1
         End If
 
         For Each block In result
-            Console.WriteLine("ID: {0}", block.ID)
+            Console.WriteLine("ID: {0}", block.UserID)
         Next
     End Sub
 
@@ -261,7 +261,7 @@ Module Module1
              And graph.ScreenName = "LinqToTweeter").ToList()
 
         For Each frnd In friends
-            Console.WriteLine("Friend ID: " & frnd.ID)
+            Console.WriteLine("Friend ID: " & frnd.UserID)
         Next
     End Sub
 

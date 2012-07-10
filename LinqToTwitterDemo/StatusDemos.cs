@@ -30,7 +30,7 @@ namespace LinqToTwitterDemo
             //UpdateStatusWrapLinksDemo(twitterCtx);
             //UpdateStatusWithCallbackDemo(twitterCtx);
             //UpdateStatusWithReplyDemo(twitterCtx);
-            //UpdateStatusWithLocationDemo(twitterCtx);
+            UpdateStatusWithLocationDemo(twitterCtx);
             //UpdateStatusWithPlaceDemo(twitterCtx);
             //DestroyStatusDemo(twitterCtx);
             //RetweetedByMeStatusQueryDemo(twitterCtx);
@@ -47,7 +47,7 @@ namespace LinqToTwitterDemo
             //StatusCountDemo(twitterCtx);
             //StatusJoinDemo(twitterCtx);
             //TrimUserDemo(twitterCtx);
-            TweetWithMediaDemo(twitterCtx);
+            //TweetWithMediaDemo(twitterCtx);
             //TweetEntityDemo(twitterCtx);
             //RetweetedByDemo(twitterCtx);
         }

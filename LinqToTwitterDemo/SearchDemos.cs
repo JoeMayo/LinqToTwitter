@@ -9,10 +9,13 @@ namespace LinqToTwitterDemo
     {
         public static void Run(TwitterContext twitterCtx)
         {
+            string geocode_melb = "37.7833,144.9667,60km";
+
+
             var srch =
                 (from search in twitterCtx.Search
                  where search.Type == SearchType.Search &&
-                       search.Query == "LINQ to Twitter"
+                       search.Query == "place:247f43d441defc03"
                  select search)
                 .Single();
 

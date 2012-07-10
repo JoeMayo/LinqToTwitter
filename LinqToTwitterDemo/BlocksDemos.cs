@@ -18,8 +18,8 @@ namespace LinqToTwitterDemo
             //CreateBlock(twitterCtx);
             //DestroyBlock(twitterCtx);
             //BlockExistsDemo(twitterCtx);
-            BlockIDsDemo(twitterCtx);
-            //BlockBlockingDemo(twitterCtx);
+            //BlockIDsDemo(twitterCtx);
+            BlockBlockingDemo(twitterCtx);
             //BlockBlockingProjectionDemo(twitterCtx);
         }
 

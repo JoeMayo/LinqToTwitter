@@ -82,7 +82,6 @@ namespace LinqToTwitterXUnitTests
             var blockedReqProc = new BlocksRequestProcessor<Blocks>
             {
                 Type = BlockingType.Blocking,
-                ID = "123",
                 ScreenName = "JoeMayo",
                 Page = 1,
                 PerPage = 10,
@@ -96,7 +95,6 @@ namespace LinqToTwitterXUnitTests
             Assert.Single(blocks);
             var block = blocks.Single();
             Assert.Equal(BlockingType.Blocking, block.Type);
-            Assert.Equal("123", block.ID);
             Assert.Equal("JoeMayo", block.ScreenName);
             Assert.Equal(1, block.Page);
             Assert.Equal(10, block.PerPage);
@@ -111,7 +109,7 @@ namespace LinqToTwitterXUnitTests
             Expression<Func<Blocks, bool>> expression =
                 block =>
                     block.Type == BlockingType.Blocking &&
-                    block.ID == "123" &&
+                    block.UserID == 123ul &&
                     block.ScreenName == "JoeMayo" &&
                     block.Page == 1 &&
                     block.PerPage == 10 &&
@@ -126,7 +124,7 @@ namespace LinqToTwitterXUnitTests
                     new KeyValuePair<string, string>("Type", ((int)BlockingType.Blocking).ToString(CultureInfo.InvariantCulture))));
             Assert.True(
                 queryParams.Contains(
-                    new KeyValuePair<string, string>("ID", "123")));
+                    new KeyValuePair<string, string>("UserID", "123")));
             Assert.True(
                 queryParams.Contains(
                     new KeyValuePair<string, string>("ScreenName", "JoeMayo")));
@@ -147,13 +145,12 @@ namespace LinqToTwitterXUnitTests
         [Fact]
         public void BuildUrl_Creates_Exists_Url()
         {
-            const string ExpectedUrl = "https://api.twitter.com/1/blocks/exists/123.json?user_id=456&screen_name=789&skip_status=true";
+            const string ExpectedUrl = "https://api.twitter.com/1/blocks/exists.json?user_id=456&screen_name=789&skip_status=true";
             var buildReqProc = new BlocksRequestProcessor<Blocks> { BaseUrl = "https://api.twitter.com/1/" };
             var parameters =
                 new Dictionary<string, string>
                 {
                     { "Type", ((int)BlockingType.Exists).ToString(CultureInfo.InvariantCulture) },
-                    { "ID", "123" },
                     { "UserID", "456" },
                     { "ScreenName", "789" },
                     { "SkipStatus", true.ToString() }

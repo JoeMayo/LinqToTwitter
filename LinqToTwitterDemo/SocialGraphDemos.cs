@@ -30,7 +30,7 @@ namespace LinqToTwitterDemo
             var followers =
                 (from follower in twitterCtx.SocialGraph
                  where follower.Type == SocialGraphType.Followers &&
-                       follower.ID == "15411837"
+                       follower.UserID == 15411837ul
                  select follower)
                  .SingleOrDefault();
 
@@ -55,7 +55,7 @@ namespace LinqToTwitterDemo
                 var followers =
                     (from follower in twitterCtx.SocialGraph
                      where follower.Type == SocialGraphType.Followers &&
-                           follower.ID == "15411837" &&
+                           follower.UserID == 15411837ul &&
                            follower.Cursor == nextCursor // <-- set this to use cursors
                      select follower)
                      .FirstOrDefault();

@@ -26,11 +26,6 @@ namespace LinqToTwitter
         internal BlockingType Type { get; set; }
 
         /// <summary>
-        /// id or screen name of user
-        /// </summary>
-        internal string ID { get; set; }
-
-        /// <summary>
         /// disambiguates when user id is screen name
         /// </summary>
         internal ulong UserID { get; set; }
@@ -72,7 +67,6 @@ namespace LinqToTwitter
                    lambdaExpression.Body,
                    new List<string> { 
                        "Type",
-                       "ID",
                        "UserID",
                        "ScreenName",
                        "Page",
@@ -199,12 +193,6 @@ namespace LinqToTwitter
             if (!parameters.ContainsKey("ID") && !parameters.ContainsKey("UserID") && !parameters.ContainsKey("ScreenName"))
                 throw new ArgumentException("You must specify either ID, UserID, or ScreenName.");
 
-            if (parameters.ContainsKey("ID"))
-            {
-                ID = parameters["ID"];
-                url = BuildUrlHelper.TransformIDUrl(parameters, url);
-            }
-
             var req = new Request(BaseUrl + url);
             var urlParams = req.RequestParameters;
 
@@ -241,7 +229,6 @@ namespace LinqToTwitter
             var blocks = new Blocks
             {
                 Type = Type,
-                ID = ID,
                 UserID = UserID,
                 ScreenName = ScreenName,
                 Page = Page,

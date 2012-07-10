@@ -15,11 +15,6 @@ namespace LinqToTwitter
         public SocialGraphType Type { get; set; }
 
         /// <summary>
-        /// The ID or screen_name of the user to retrieve the friends ID list for
-        /// </summary>
-        public string ID { get; set; }
-
-        /// <summary>
         /// Specfies the ID of the user for whom to return the friends list. 
         /// Helpful for disambiguating when a valid user ID is also a valid screen name. 
         /// </summary>

@@ -23,11 +23,6 @@ namespace LinqToTwitter
         internal SocialGraphType Type { get; set; }
 
         /// <summary>
-        /// The ID or screen_name of the user to retrieve the friends ID list for
-        /// </summary>
-        private string ID { get; set; }
-
-        /// <summary>
         /// Specfies the ID of the user for whom to return the friends list. 
         /// Helpful for disambiguating when a valid user ID is also a valid screen name. 
         /// </summary>
@@ -62,7 +57,6 @@ namespace LinqToTwitter
                    lambdaExpression.Body,
                    new List<string> { 
                        "Type",
-                       "ID",
                        "UserID",
                        "ScreenName",
                        "Page",
@@ -130,14 +124,8 @@ namespace LinqToTwitter
         /// <returns>base url + parameters</returns>
         private Request BuildSocialGraphUrlParameters(Dictionary<string, string> parameters, string url)
         {
-            if (!parameters.ContainsKey("ID") && !parameters.ContainsKey("UserID") && !parameters.ContainsKey("ScreenName"))
-                throw new ArgumentException("You must specify either ID, UserID, or ScreenName.");
-
-            if (parameters.ContainsKey("ID"))
-            {
-                ID = parameters["ID"];
-                url = BuildUrlHelper.TransformIDUrl(parameters, url);
-            }
+            if (!parameters.ContainsKey("UserID") && !parameters.ContainsKey("ScreenName"))
+                throw new ArgumentException("You must specify either UserID or ScreenName.");
 
             var req = new Request(BaseUrl + url);
             var urlParams = req.RequestParameters;
@@ -182,7 +170,6 @@ namespace LinqToTwitter
             var graph = new SocialGraph
             {
                 Type = Type,
-                ID = ID,
                 UserID = UserID,
                 ScreenName = ScreenName,
                 Cursor = Cursor,

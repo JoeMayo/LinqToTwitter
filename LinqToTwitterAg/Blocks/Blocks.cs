@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace LinqToTwitter
 {
@@ -15,11 +16,6 @@ namespace LinqToTwitter
         /// type of blocks request to perform (input only)
         /// </summary>
         public BlockingType Type { get; set; }
-
-        /// <summary>
-        /// id or screen name of user (input only)
-        /// </summary>
-        public string ID { get; set; }
 
         /// <summary>
         /// disambiguates when user id is screen name (input only)
