@@ -21,6 +21,7 @@ Module Module1
         Dim auth As PinAuthorizer = New PinAuthorizer()
         auth.Credentials = credentials
         auth.GetPin = AddressOf VerifierCallback
+        auth.GoToTwitterAuthorization = Function(pageLink) Process.Start(pageLink)
         auth.Authorize()
 
         Dim twitterCtx As TwitterContext = New TwitterContext(auth, "https://twitter.com/", "http://search.twitter.com/")
