@@ -20,6 +20,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+#if NETFX_CORE
+using System.Reflection;
+#endif
 
 namespace LinqToTwitter
 {
