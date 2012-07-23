@@ -18,8 +18,8 @@ namespace LinqToTwitterDemo
 
         private static void FilterDemo(TwitterContext twitterCtx)
         {
-            twitterCtx.StreamingUserName = "Linq2Tweeter";
-            twitterCtx.StreamingPassword = "JamTwi10";
+            twitterCtx.StreamingUserName = "";
+            twitterCtx.StreamingPassword = "";
 
             if (twitterCtx.StreamingUserName == string.Empty ||
                 twitterCtx.StreamingPassword == string.Empty)
@@ -33,7 +33,7 @@ namespace LinqToTwitterDemo
 
             (from strm in twitterCtx.Streaming
                 where strm.Type == StreamingType.Filter &&
-                    strm.Track == "Twitter"
+                    strm.Track == "twitter"
                 select strm)
             .StreamingCallback(strm =>
                 {

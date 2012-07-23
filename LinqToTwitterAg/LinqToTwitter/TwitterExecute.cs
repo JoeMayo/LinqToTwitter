@@ -690,36 +690,32 @@ namespace LinqToTwitter
         /// <returns>Initialized Request</returns>
         HttpWebRequest GetBasicStreamRequest(Request request)
         {
-            var streamUrl = request.FullUrl;
-            this.LastUrl = streamUrl;
-            var req = WebRequest.Create(streamUrl) as HttpWebRequest;
-            req.Credentials = new NetworkCredential(StreamingUserName, StreamingPassword);
-//#if SILVERLIGHT || NETFX_CORE
-//            req.Headers[HttpRequestHeader.UserAgent] = UserAgent;
-//#else
-//            req.UserAgent = UserAgent;
-//#endif
-
+            HttpWebRequest req = null;
             byte[] bytes = new byte[0];
-
-            bool shouldPostQuery = streamUrl.Contains("filter.json");
+            LastUrl = request.FullUrl;
+            bool shouldPostQuery = LastUrl.Contains("filter.json");
 
             if (shouldPostQuery)
             {
-                int qIndex = streamUrl.IndexOf('?');
-                string urlParams = streamUrl.Substring(qIndex);
-                streamUrl = streamUrl.Substring(qIndex - 1);
+                int qIndex = LastUrl.IndexOf('?');
 
+                string urlParams = LastUrl.Substring(qIndex + 1);
                 bytes = Encoding.UTF8.GetBytes(urlParams);
+
+                //LastUrl = LastUrl.Substring(0, qIndex);
+                req = WebRequest.Create(LastUrl) as HttpWebRequest;
+
                 req.Method = "POST";
                 req.ContentType = "x-www-form-urlencoded";
+
 #if !WINDOWS_PHONE && !NETFX_CORE
                 req.ContentLength = bytes.Length;
 #endif
-                //#if !SILVERLIGHT
-                //                req.Timeout = Timeout;
-                //                req.ReadWriteTimeout = ReadWriteTimeout;
-                //#endif
+
+#if !SILVERLIGHT && !NETFX_CORE
+                req.Timeout = Timeout;
+                req.ReadWriteTimeout = ReadWriteTimeout;
+#endif
 
                 using (var resetEvent = new ManualResetEvent(/*initialState:*/ false))
                 {
@@ -753,6 +749,16 @@ namespace LinqToTwitter
                         throw asyncException;
                 }
             }
+            else
+            {
+                req = WebRequest.Create(LastUrl) as HttpWebRequest;
+            }
+
+            req.Credentials = new NetworkCredential(StreamingUserName, StreamingPassword);
+
+#if !SILVERLIGHT && !NETFX_CORE
+            req.UserAgent = UserAgent;
+#endif
 
             return req;
         }

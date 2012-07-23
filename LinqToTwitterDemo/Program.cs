@@ -11,34 +11,11 @@ namespace LinqToTwitterDemo
     {
         static void Main()
         {
-            ITwitterAuthorizer auth = null;
-
-            if (DoThis("use XAuth"))
-            {
-                // perform XAuth. Generally, XAuth isn't available unless you specifically
-                // justify using it with Twitter: http://dev.twitter.com/pages/xauth. You should use OAuth instead.  However,
-                // LINQ to Twitter supports XAuth if you're one of the rare cases that Twitter gives permission to.
-                auth = DoXAuth();
-            }
-
-            if (DoThis("use Single User Auth"))
-            {
-                // perform single user authorization. Visit Twitter at http://dev.twitter.com/pages/oauth_single_token for more info.
-                auth = DoSingleUserAuth();
-            }
-
-            if (DoThis("use OAuth via Pin"))
-            {
-                auth = DoPinOAuth();
-            }
-
-            // if we have no auth yet, get some!
-            if (auth == null)
-                auth = new AnonymousAuthorizer();
+            ITwitterAuthorizer auth = ChooseAuthenticationStrategy();
 
             try
             {
-                using (var twitterCtx = new TwitterContext(auth, "https://api.twitter.com/1/", "http://search.twitter.com/"))
+                using (var twitterCtx = new TwitterContext(auth))
                 {
                     //Log
                     twitterCtx.Log = Console.Out;
@@ -71,7 +48,7 @@ namespace LinqToTwitterDemo
                     //SavedSearchDemos.Run(twitterCtx);
                     //SearchDemos.Run(twitterCtx);
                     //SocialGraphDemos.Run(twitterCtx);
-                    StatusDemos.Run(twitterCtx);
+                    //StatusDemos.Run(twitterCtx);
                     //StreamingDemo.Run(twitterCtx);
 
                     if (DoThis("demo trend"))
@@ -96,47 +73,40 @@ namespace LinqToTwitterDemo
             Console.WriteLine("Press any key to end this demo.");
             Console.ReadKey();
         }
-
-        static bool DoThis(string what)
+  
+        static ITwitterAuthorizer ChooseAuthenticationStrategy()
         {
-            Console.Write("Would you like to " + what + " (y or n): ");
-            var choice = Console.ReadKey();
-            var doIt = choice.KeyChar != 'n' && choice.KeyChar != 'N';
-            Console.WriteLine(doIt ? "es" : "o");
-            return doIt;
-        }
+            Console.WriteLine("Authentication Strategy:\n\n");
 
-        static void EndSession(ITwitterAuthorizer auth)
-        {
-            using (var twitterCtx = new TwitterContext(auth, "https://api.twitter.com/1/", "https://search.twitter.com/"))
+            Console.WriteLine("  1 - Pin");
+            Console.WriteLine("  2 - Single User");
+            Console.WriteLine("  3 - XAuth");
+            Console.WriteLine("  4 - None\n");
+
+            Console.Write("Please choose (1, 2, 3, or 4): ");
+
+            ConsoleKeyInfo input = Console.ReadKey();
+
+            ITwitterAuthorizer auth = null;
+
+            switch (input.Key)
             {
-                try
-                {
-                    //Log
-                    twitterCtx.Log = Console.Out;
 
-                    var status = twitterCtx.EndAccountSession();
-
-                    Console.WriteLine("Request: {0}, Error: {1}"
-                        , status.Request
-                        , status.Error);
-                }
-                catch (TwitterQueryException tqe)
-                {
-                    var webEx = tqe.InnerException as WebException;
-                    if (webEx != null)
-                    {
-                        var webResp = webEx.Response as HttpWebResponse;
-                        if (webResp != null && webResp.StatusCode == HttpStatusCode.Unauthorized)
-                            Console.WriteLine("Twitter didn't recognize you as having been logged in. Therefore, your request to end session is illogical.\n");
-                    }
-
-                    var status = tqe.Response;
-                    Console.WriteLine("Request: {0}, Error: {1}"
-                        , status.Request
-                        , status.Error);
-                }
+                case ConsoleKey.D1:
+                    auth = DoPinOAuth();
+                    break;
+                case ConsoleKey.D2:
+                    auth = DoSingleUserAuth();
+                    break;
+                case ConsoleKey.D3:
+                    auth = DoXAuth();
+                    break;
+                default:
+                    auth = new AnonymousAuthorizer();
+                    break;
             }
+
+            return auth;
         }
 
         static ITwitterAuthorizer DoSingleUserAuth()
@@ -235,6 +205,51 @@ namespace LinqToTwitterDemo
             // start the authorization process (launches Twitter authorization page).
             auth.Authorize();
             return auth;
+        }
+
+        static bool DoThis(string what)
+        {
+            Console.Write("Would you like to " + what + " (y or n): ");
+
+            var choice = Console.ReadKey();
+            var doIt = choice.KeyChar != 'n' && choice.KeyChar != 'N';
+
+            Console.WriteLine(doIt ? "es" : "o");
+
+            return doIt;
+        }
+
+        static void EndSession(ITwitterAuthorizer auth)
+        {
+            using (var twitterCtx = new TwitterContext(auth, "https://api.twitter.com/1/", "https://search.twitter.com/"))
+            {
+                try
+                {
+                    //Log
+                    twitterCtx.Log = Console.Out;
+
+                    var status = twitterCtx.EndAccountSession();
+
+                    Console.WriteLine("Request: {0}, Error: {1}"
+                        , status.Request
+                        , status.Error);
+                }
+                catch (TwitterQueryException tqe)
+                {
+                    var webEx = tqe.InnerException as WebException;
+                    if (webEx != null)
+                    {
+                        var webResp = webEx.Response as HttpWebResponse;
+                        if (webResp != null && webResp.StatusCode == HttpStatusCode.Unauthorized)
+                            Console.WriteLine("Twitter didn't recognize you as having been logged in. Therefore, your request to end session is illogical.\n");
+                    }
+
+                    var status = tqe.Response;
+                    Console.WriteLine("Request: {0}, Error: {1}"
+                        , status.Request
+                        , status.Error);
+                }
+            }
         }
     }
 }
