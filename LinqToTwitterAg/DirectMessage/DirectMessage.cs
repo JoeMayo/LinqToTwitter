@@ -25,6 +25,7 @@ namespace LinqToTwitter
             IDResponse = dmJson.GetValue<ulong>("id");
             IDString = dmJson.GetValue<string>("id_str");
             Text = dmJson.GetValue<string>("text");
+            Entities = new Entities(dmJson.GetValue<JsonData>("entities"));
         }
 
         public DirectMessageType Type { get; set; }
@@ -73,6 +74,11 @@ namespace LinqToTwitter
         public int Count { get; set; }
 
         /// <summary>
+        /// Set to true to not include statuses
+        /// </summary>
+        public bool SkipStatus { get; set; }
+
+        /// <summary>
         /// DM Text
         /// </summary>
         public string Text { get; set; }
@@ -108,8 +114,8 @@ namespace LinqToTwitter
         public User Recipient { get; set; }
 
         /// <summary>
-        /// Set to true to not include statuses
+        /// Entities withing this DM
         /// </summary>
-        public bool SkipStatus { get; set; }
+        public Entities Entities { get; set; }
     }
 }
