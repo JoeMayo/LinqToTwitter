@@ -45,8 +45,8 @@ namespace LinqToTwitter
                     { "name", name },
                     { "contained_within", containedWithin },
                     { "token", token },
-                    { "lat", latitude.ToString(CultureInfo.InvariantCulture) },
-                    { "long", longitude.ToString(CultureInfo.InvariantCulture) },
+                    { "lat", latitude.ToString(Culture.US) },
+                    { "long", longitude.ToString(Culture.US) },
                     { "attribute", name }
                 };
 

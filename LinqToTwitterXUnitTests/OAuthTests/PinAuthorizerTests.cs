@@ -260,7 +260,9 @@ namespace LinqToTwitterXUnitTests
             pinAuth.CompleteAuthorize(Pin, callback);
 
             oAuthMock.Verify(oAuth =>
-                oAuth.GetAccessTokenAsync(Pin, oauthAccessTokenUrl, "oob", AuthAccessType.NoChange, callback),
+                oAuth.GetAccessTokenAsync(
+                    Pin, oauthAccessTokenUrl, "oob", AuthAccessType.NoChange, 
+                    It.IsAny<Action<TwitterAsyncResponse<UserIdentifier>>>()),
                 Times.Once());
         }
 

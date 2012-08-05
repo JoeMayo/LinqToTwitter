@@ -178,6 +178,9 @@
     <Compile Include="..\LinqToTwitterAg\Common\BuildUrlHelper.cs">
       <Link>Common\BuildUrlHelper.cs</Link>
     </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\Culture.cs">
+      <Link>Common\Culture.cs</Link>
+    </Compile>
     <Compile Include="..\LinqToTwitterAg\Common\Cursors.cs">
       <Link>Common\Cursors.cs</Link>
     </Compile>

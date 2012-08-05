@@ -15,10 +15,10 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         public static void Run(TwitterContext twitterCtx)
         {
-            //LookupReverseGeocodeDemo(twitterCtx);
+            LookupReverseGeocodeDemo(twitterCtx);
             //LookupGeoIDDemo(twitterCtx);
             //SearchDemo(twitterCtx);
-            SimilarPlacesDemo(twitterCtx);
+            //SimilarPlacesDemo(twitterCtx);
             //CreatePlaceDemo(twitterCtx);
         }
 

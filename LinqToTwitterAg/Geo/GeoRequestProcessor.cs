@@ -182,13 +182,13 @@ namespace LinqToTwitter
             if (parameters.ContainsKey("Latitude"))
             {
                 Latitude = double.Parse(parameters["Latitude"]);
-                urlParams.Add(new QueryParameter("lat", Latitude.ToString(CultureInfo.InvariantCulture)));
+                urlParams.Add(new QueryParameter("lat", Latitude.ToString(Culture.US)));
             }
 
             if (parameters.ContainsKey("Longitude"))
             {
                 Longitude = double.Parse(parameters["Longitude"]);
-                urlParams.Add(new QueryParameter("long", Longitude.ToString(CultureInfo.InvariantCulture)));
+                urlParams.Add(new QueryParameter("long", Longitude.ToString(Culture.US)));
             }
 
             if (parameters.ContainsKey("Query"))
@@ -265,13 +265,13 @@ namespace LinqToTwitter
             if (parameters.ContainsKey("Latitude"))
             {
                 Latitude = double.Parse(parameters["Latitude"], CultureInfo.InvariantCulture);
-                urlParams.Add(new QueryParameter("lat", Latitude.ToString(CultureInfo.InvariantCulture)));
+                urlParams.Add(new QueryParameter("lat", Latitude.ToString(Culture.US)));
             }
 
             if (parameters.ContainsKey("Longitude"))
             {
                 Longitude = double.Parse(parameters["Longitude"], CultureInfo.InvariantCulture);
-                urlParams.Add(new QueryParameter("long", Longitude.ToString(CultureInfo.InvariantCulture)));
+                urlParams.Add(new QueryParameter("long", Longitude.ToString(Culture.US)));
             }
 
             if (parameters.ContainsKey("Accuracy"))
@@ -319,13 +319,13 @@ namespace LinqToTwitter
             if (parameters.ContainsKey("Latitude"))
             {
                 Latitude = double.Parse(parameters["Latitude"]);
-                urlParams.Add(new QueryParameter("lat", Latitude.ToString(CultureInfo.InvariantCulture)));
+                urlParams.Add(new QueryParameter("lat", Latitude.ToString(Culture.US)));
             }
 
             if (parameters.ContainsKey("Longitude"))
             {
                 Longitude = double.Parse(parameters["Longitude"]);
-                urlParams.Add(new QueryParameter("long", Longitude.ToString(CultureInfo.InvariantCulture)));
+                urlParams.Add(new QueryParameter("long", Longitude.ToString(Culture.US)));
             }
 
             if (parameters.ContainsKey("PlaceName"))

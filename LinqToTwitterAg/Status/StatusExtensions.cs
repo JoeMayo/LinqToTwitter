@@ -102,8 +102,8 @@ namespace LinqToTwitter
                     {
                         {"status", status},
                         {"possibly_sensitive", possiblySensitive ? true.ToString() : null },
-                        {"lat", latitude == NoCoordinate ? null : latitude.ToString() },
-                        {"long", longitude == NoCoordinate ? null : longitude.ToString(CultureInfo.InvariantCulture) },
+                        {"lat", latitude == NoCoordinate ? null : latitude.ToString(Culture.US) },
+                        {"long", longitude == NoCoordinate ? null : longitude.ToString(Culture.US) },
                         {"place_id", string.IsNullOrEmpty(placeID) ? null : placeID },
                         {"display_coordinates", displayCoordinates ? true.ToString() : null },
                         {"in_reply_to_status_id", inReplyToStatusID == NoReply ? null : inReplyToStatusID.ToString(CultureInfo.InvariantCulture)}
@@ -722,8 +722,8 @@ namespace LinqToTwitter
                     {
                         {"status", status},
                         {"in_reply_to_status_id", inReplyToStatusID},
-                        {"lat", latitude == -1 ? null : latitude.ToString()},
-                        {"long", longitude == -1 ? null : longitude.ToString()},
+                        {"lat", latitude == -1 ? null : latitude.ToString(Culture.US)},
+                        {"long", longitude == -1 ? null : longitude.ToString(Culture.US)},
                         {"place_id", placeID},
                         {"display_coordinates", displayCoordinates.ToString()},
                         {"wrap_links", wrapLinks ? true.ToString() : null }

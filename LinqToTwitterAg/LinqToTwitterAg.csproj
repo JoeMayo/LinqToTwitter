@@ -88,6 +88,7 @@
     <Compile Include="Blocks\BlocksExtensions.cs" />
     <Compile Include="Blocks\BlocksRequestProcessor.cs" />
     <Compile Include="Common\BuildUrlHelper.cs" />
+    <Compile Include="Common\Culture.cs" />
     <Compile Include="Common\Cursors.cs" />
     <Compile Include="Common\Evaluator.cs" />
     <Compile Include="Common\ExpressionTreeHelpers.cs" />
