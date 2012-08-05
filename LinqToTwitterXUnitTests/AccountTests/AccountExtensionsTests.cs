@@ -261,32 +261,6 @@ namespace LinqToTwitterXUnitTests.AccountTests
         }
 
         [Fact]
-        public void EndAccountSession_Invokes_Executor_Execute()
-        {
-            const string ExpectedErrorResponse = "Logged out.";
-            var authMock = new Mock<ITwitterAuthorizer>();
-            var execMock = new Mock<ITwitterExecute>();
-            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
-            execMock.Setup(exec =>
-                exec.ExecuteTwitter(
-                    It.IsAny<string>(),
-                    It.IsAny<Dictionary<string, string>>(),
-                    It.IsAny<Func<string, Account>>()))
-                .Returns(EndSessionResponse);
-            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
-
-            TwitterHashResponse actual = ctx.EndAccountSession();
-
-            execMock.Verify(exec =>
-                exec.ExecuteTwitter(
-                    "https://api.twitter.com/1/account/end_session.json",
-                    It.IsAny<Dictionary<string, string>>(),
-                    It.IsAny<Func<string, Account>>()),
-                Times.Once());
-            Assert.Equal(ExpectedErrorResponse, actual.Error);
-        }
-
-        [Fact]
         public void UpdateAccountSettings_Invokes_Executor_Execute()
         {
             var authMock = new Mock<ITwitterAuthorizer>();

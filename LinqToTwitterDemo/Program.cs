@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Configuration;
-using System.Linq;
-using System.Net;
-using LinqToTwitter;
 using System.Diagnostics;
+using System.Linq;
+using LinqToTwitter;
 
 namespace LinqToTwitterDemo
 {
@@ -66,9 +65,6 @@ namespace LinqToTwitterDemo
             {
                 Console.WriteLine(ex.ToString());
             }
-
-            if (DoThis("end session"))
-                EndSession(auth);
 
             Console.WriteLine("Press any key to end this demo.");
             Console.ReadKey();
@@ -217,39 +213,6 @@ namespace LinqToTwitterDemo
             Console.WriteLine(doIt ? "es" : "o");
 
             return doIt;
-        }
-
-        static void EndSession(ITwitterAuthorizer auth)
-        {
-            using (var twitterCtx = new TwitterContext(auth, "https://api.twitter.com/1/", "https://search.twitter.com/"))
-            {
-                try
-                {
-                    //Log
-                    twitterCtx.Log = Console.Out;
-
-                    var status = twitterCtx.EndAccountSession();
-
-                    Console.WriteLine("Request: {0}, Error: {1}"
-                        , status.Request
-                        , status.Error);
-                }
-                catch (TwitterQueryException tqe)
-                {
-                    var webEx = tqe.InnerException as WebException;
-                    if (webEx != null)
-                    {
-                        var webResp = webEx.Response as HttpWebResponse;
-                        if (webResp != null && webResp.StatusCode == HttpStatusCode.Unauthorized)
-                            Console.WriteLine("Twitter didn't recognize you as having been logged in. Therefore, your request to end session is illogical.\n");
-                    }
-
-                    var status = tqe.Response;
-                    Console.WriteLine("Request: {0}, Error: {1}"
-                        , status.Request
-                        , status.Error);
-                }
-            }
         }
     }
 }

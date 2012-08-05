@@ -13,6 +13,7 @@ namespace LinqToTwitter
         /// Ends the session for the currently logged in user
         /// </summary>
         /// <returns>true</returns>
+        [Obsolete("Twitter is deprecating this endpoint.")]
         public static TwitterHashResponse EndAccountSession(this TwitterContext ctx)
         {
             return EndAccountSession(ctx, null);
@@ -23,6 +24,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="callback">Async Callback used in Silverlight queries</param>
         /// <returns>true</returns>
+        [Obsolete("Twitter is deprecating this endpoint.")]
         public static TwitterHashResponse EndAccountSession(this TwitterContext ctx, Action<TwitterAsyncResponse<Account>> callback)
         {
             var accountUrl = ctx.BaseUrl + "account/end_session.json";

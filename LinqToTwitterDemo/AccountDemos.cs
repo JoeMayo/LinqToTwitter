@@ -22,7 +22,6 @@ namespace LinqToTwitterDemo
             ViewRateLimitResponseHeadersDemo(twitterCtx);
             ViewAccountTotalsDemo(twitterCtx);
             ViewAccountSettingsDemo(twitterCtx);
-            //EndSession(twitterCtx); // really shouldn't do this at all!
             //UpdateAccountColors(twitterCtx);
             //UpdateAccountImage(twitterCtx);
             //UpdateAccountImageCallback(twitterCtx);
@@ -157,20 +156,6 @@ namespace LinqToTwitterDemo
             Console.WriteLine("Link:           " + user.ProfileLinkColor);
             Console.WriteLine("Sidebar Fill:   " + user.ProfileSidebarFillColor);
             Console.WriteLine("Sidebar Border: " + user.ProfileSidebarBorderColor);
-        }
-
-        /// <summary>
-        /// Shows how to end the session for the current account
-        /// </summary>
-        /// <param name="twitterCtx"></param>
-        private static void EndSession(TwitterContext twitterCtx)
-        {
-            var endSessionStatus = twitterCtx.EndAccountSession();
-
-            Console.WriteLine(
-                "Request: {0}, Error: {1}",
-                endSessionStatus.Request,
-                endSessionStatus.Error);
         }
 
         private static void ViewAccountSettingsDemo(TwitterContext twitterCtx)
