@@ -97,7 +97,7 @@ namespace LinqToTwitter
             return PrepareAuthorizeUrl(authorizeUrl, forceLogin, response);
         }
 
-        private string PrepareAuthorizeUrl(string authorizeUrl, bool forceLogin, string response)
+        string PrepareAuthorizeUrl(string authorizeUrl, bool forceLogin, string response)
         {
             string authUrl = string.Empty;
 
@@ -152,8 +152,8 @@ namespace LinqToTwitter
             screenName = string.Empty;
             userID = string.Empty;
 
-            this.OAuthToken = authToken;
-            this.OAuthVerifier = verifier;
+            OAuthToken = authToken;
+            OAuthVerifier = verifier;
             var request = new Request(accessTokenUrl);
             var response = OAuthWebRequest(HttpMethod.GET, request, null, callback);
 
@@ -184,12 +184,12 @@ namespace LinqToTwitter
 
                 if (qs["oauth_token"] != null)
                 {
-                    this.OAuthToken = qs["oauth_token"];
+                    OAuthToken = qs["oauth_token"];
                 }
 
                 if (qs["oauth_token_secret"] != null)
                 {
-                    this.OAuthTokenSecret = qs["oauth_token_secret"];
+                    OAuthTokenSecret = qs["oauth_token_secret"];
                 }
 
                 if (qs["screen_name"] != null)
@@ -211,15 +211,15 @@ namespace LinqToTwitter
         /// <returns>Query string with OAuth parameters</returns>
         public void GetOAuthQueryString(HttpMethod method, Request request, string callback, out string outUrl, out string queryString)
         {
-            string nonce = this.GenerateNonce();
-            string timeStamp = this.GenerateTimeStamp();
+            string nonce = GenerateNonce();
+            string timeStamp = GenerateTimeStamp();
 
             //Generate Signature
-            string sig = this.GenerateSignature(request,
-                this.OAuthConsumerKey,
-                this.OAuthConsumerSecret,
-                this.OAuthToken,
-                this.OAuthTokenSecret,
+            string sig = GenerateSignature(request,
+                OAuthConsumerKey,
+                OAuthConsumerSecret,
+                OAuthToken,
+                OAuthTokenSecret,
                 null, //this.OAuthVerifier,
                 callback,
                 method.ToString(),
@@ -350,11 +350,11 @@ namespace LinqToTwitter
 
             //Generate Signature
             string sig = GenerateSignature(request,
-                this.OAuthConsumerKey,
-                this.OAuthConsumerSecret,
-                this.OAuthToken,
-                this.OAuthTokenSecret,
-                this.OAuthVerifier,
+                OAuthConsumerKey,
+                OAuthConsumerSecret,
+                OAuthToken,
+                OAuthTokenSecret,
+                OAuthVerifier,
                 callback, 
                 method.ToString(),
                 timeStamp,

@@ -84,8 +84,8 @@ namespace LinqToTwitterDemo
             Console.WriteLine("  4 - None\n");
 
             Console.Write("Please choose (1, 2, 3, or 4): ");
-
             ConsoleKeyInfo input = Console.ReadKey();
+            Console.WriteLine("");
 
             ITwitterAuthorizer auth = null;
 

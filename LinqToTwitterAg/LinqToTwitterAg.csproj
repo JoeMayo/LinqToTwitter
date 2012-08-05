@@ -197,6 +197,7 @@
     <Compile Include="OAuth\IOAuthHelper.cs" />
     <Compile Include="OAuth\IOAuthTwitter.cs" />
     <Compile Include="OAuth\IsolatedStorageCredentials.cs" />
+    <Compile Include="OAuth\ZIsolatedStorageCredentialsTest.cs" />
     <Compile Include="OAuth\ITwitterAuthorizer.cs" />
     <Compile Include="OAuth\OAuthAuthorizer.cs" />
     <Compile Include="OAuth\OAuthBase.cs" />

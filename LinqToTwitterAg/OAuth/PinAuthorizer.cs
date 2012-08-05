@@ -89,7 +89,15 @@ namespace LinqToTwitter
                 throw new ArgumentNullException("pin", "pin is required");
             }
 
-            OAuthTwitter.GetAccessTokenAsync(pin, new Uri(OAuthAccessTokenUrl), "oob", AuthAccessType.NoChange, authorizationCompleteCallback);
+            OAuthTwitter.GetAccessTokenAsync(
+                pin, new Uri(OAuthAccessTokenUrl), "oob", AuthAccessType.NoChange, 
+                resp =>
+                {
+                    Credentials.OAuthToken = OAuthTwitter.OAuthToken;
+                    Credentials.AccessToken = OAuthTwitter.OAuthTokenSecret;
+
+                    authorizationCompleteCallback(resp);
+                });
         }
     }
 }

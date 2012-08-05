@@ -1,95 +1,166 @@
-﻿#if !NETFX_CORE && !L2T_PCL
-using System.Xml.Linq;
+﻿using System;
+using System.IO;
+using System.IO.IsolatedStorage;
 
 namespace LinqToTwitter
 {
-    public class IsolatedStorageCredentials : InMemoryCredentials
+    public class IsolatedStorageCredentials : IOAuthCredentials
     {
-        private const string StateFile = "LinqToTwitter.xml";
-        private const string ConsumerKeyElement = "consumer_key";
-        private const string ConsumerSecretElement = "consumer_secret";
-        private const string CodeElement = "code";
-        private const string AccessTokenElement = "access_token";
-        private const string AuthorizingElement = "authorizing";
+        const int ConsumerKeyIdx = 0;
+        const int ConsumerSecretIdx = 1;
+        const int OAuthTokenIdx = 2;
+        const int AccessTokenIdx = 3;
 
-        public override string ConsumerKey
+        readonly string[] credentials = new string[4];
+
+        public IsolatedStorageCredentials()
+        {
+            LoadCredentialsFromIsolatedStorage();
+        }
+
+        public void Load(string credentialsString)
+        {
+            string[] tempCredentials = credentialsString.Split(',');
+
+            for (int i = 0; i < tempCredentials.Length; i++)
+            {
+                credentials[i] = tempCredentials[i];
+            }
+
+            SaveCredentialsToIsolatedStorage();
+        }
+
+        public override string ToString()
+        {
+            if (credentials == null)
+            {
+                LoadCredentialsFromIsolatedStorage();
+            }
+
+            return string.Join(",", credentials);
+        }
+
+        public void Save()
+        {
+            SaveCredentialsToIsolatedStorage();
+        }
+
+        public void Clear()
+        {
+            for (int i = 0; i < credentials.Length; i++)
+            {
+                credentials[i] = string.Empty;
+            }
+
+            SaveCredentialsToIsolatedStorage();
+        }
+
+        void LoadCredentialsFromIsolatedStorage()
+        {
+            string tempCredentialsString = null;
+
+            IsolatedStorageFile credentialsStore = IsolatedStorageFile.GetUserStoreForApplication();
+
+            using (var isoFileStream = new IsolatedStorageFileStream("Linq2TwitterCredentials.txt", FileMode.OpenOrCreate, credentialsStore))
+            {
+                using (var isoFileReader = new StreamReader(isoFileStream))
+                {
+                    tempCredentialsString = isoFileReader.ReadLine();
+                }
+            }
+
+            if (tempCredentialsString != null)
+            {
+                string[] tempCredentialsArr = tempCredentialsString.Split(',');
+
+                for (int i = 0; i < tempCredentialsArr.Length; i++)
+                {
+                    credentials[i] = tempCredentialsArr[i];
+                }
+            }
+        }
+
+        void SaveCredentialsToIsolatedStorage()
+        {
+            var credentialsString = string.Join(",", credentials);
+
+            IsolatedStorageFile credentialsStore = IsolatedStorageFile.GetUserStoreForApplication();
+
+            using (var isoFileStream = new IsolatedStorageFileStream("Linq2TwitterCredentials.txt", FileMode.OpenOrCreate, credentialsStore))
+            {
+                using (var isoFileWriter = new StreamWriter(isoFileStream))
+                {
+                    isoFileWriter.WriteLine(credentialsString);
+                }
+            }
+        }
+
+        public string AccessToken
         {
             get
             {
-                return GetState(ConsumerKeyElement);
+                if (credentials[AccessTokenIdx] == null)
+                {
+                    LoadCredentialsFromIsolatedStorage();
+                }
+
+                return credentials[AccessTokenIdx];
             }
             set
             {
-                SetState(ConsumerKeyElement, value);
+                credentials[AccessTokenIdx] = value;
             }
         }
 
-        public override string ConsumerSecret
+        public string ConsumerSecret
         {
             get
             {
-                return GetState(ConsumerSecretElement);
+                if (credentials[ConsumerSecretIdx] == null)
+                {
+                    LoadCredentialsFromIsolatedStorage();
+                }
+
+                return credentials[ConsumerSecretIdx];
             }
             set
             {
-                SetState(ConsumerSecretElement, value);
+                credentials[ConsumerSecretIdx] = value;
             }
         }
 
-        public override string OAuthToken
+        public string OAuthToken
         {
             get
             {
-                return GetState(CodeElement);
+                if (credentials[OAuthTokenIdx] == null)
+                {
+                    LoadCredentialsFromIsolatedStorage();
+                }
+
+                return credentials[OAuthTokenIdx];
             }
             set
             {
-                SetState(CodeElement, value);
+                credentials[OAuthTokenIdx] = value;
             }
         }
 
-        public override string AccessToken
+        public string ConsumerKey
         {
             get
             {
-                return GetState(AccessTokenElement);
+                if (credentials[ConsumerKeyIdx] == null)
+                {
+                    LoadCredentialsFromIsolatedStorage();
+                }
+
+                return credentials[ConsumerKeyIdx];
             }
             set
             {
-                SetState(AccessTokenElement, value);
+                credentials[ConsumerKeyIdx] = value;
             }
-        }
-
-        private void SetState(string elementName, string value)
-        {
-            var state = XElement.Parse(State.Load(StateFile));
-
-            if (state.Element(elementName).Value != value)
-            {
-                state.Element(elementName).Value = value;
-                State.Save(state.ToString(), StateFile);
-            }
-        }
-
-        private string GetState(string elementName)
-        {
-            var state = XElement.Parse(State.Load(StateFile));
-            return state.Element(elementName).Value;
-        }
-
-        public void ClearState()
-        {
-            var state = XElement.Parse(State.Load(StateFile));
-
-            state.Element(ConsumerKeyElement).Value = string.Empty;
-            state.Element(ConsumerSecretElement).Value = string.Empty;
-            state.Element(CodeElement).Value = string.Empty;
-            state.Element(AccessTokenElement).Value = string.Empty;
-            state.Element(AuthorizingElement).Value = string.Empty;
-
-            State.Save(state.ToString(), StateFile);
         }
     }
 }
-
-#endif
