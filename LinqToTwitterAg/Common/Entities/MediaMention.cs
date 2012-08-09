@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace LinqToTwitter
 {
-    public class MediaMention : MentionBase
+    public class MediaMention : UrlMention
     {
         /// <summary>
         /// ID of the media
@@ -20,21 +20,6 @@ namespace LinqToTwitter
         /// SSL version of media URL
         /// </summary>
         public string MediaUrlHttps { get; set; }
-
-        /// <summary>
-        /// Media Url extracted
-        /// </summary>
-        public string Url { get; set; }
-
-        /// <summary>
-        /// String to display for Url
-        /// </summary>
-        public string DisplayUrl { get; set; }
-
-        /// <summary>
-        /// Media Url that has been fully resolved
-        /// </summary>
-        public string ExpandedUrl { get; set; }
 
         /// <summary>
         /// Supported media sizes
