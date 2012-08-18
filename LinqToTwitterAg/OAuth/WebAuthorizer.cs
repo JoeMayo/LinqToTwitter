@@ -27,11 +27,7 @@ namespace LinqToTwitter
         /// </summary>
         public void Authorize()
         {
-            if (IsAuthorized) return;
-
-            BeginAuthorization(Callback);
-
-            CompleteAuthorization(Callback);
+            throw new InvalidOperationException("For ASP.NET apps, you should use BeginAuthorization and CompleteAuthorization instead. Please visit the LINQ to Twitter documentation and samples for examples on how to do this.");
         }
 
         /// <summary>
