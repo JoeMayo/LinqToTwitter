@@ -310,7 +310,12 @@ namespace LinqToTwitter
 
             using (var respStream = resp.GetResponseStream())
             {
-                string contentEncoding = resp.Headers["Content-Encoding"] ?? "";
+                string contentEncoding = string.Empty;
+                
+#if !SILVERLIGHT
+                contentEncoding = resp.Headers["Content-Encoding"] ?? "";
+#endif
+
                 if (contentEncoding.ToLower().Contains("gzip"))
                 {
                     using (var gzip = new GZipStream(respStream, CompressionMode.Decompress))
@@ -414,24 +419,39 @@ namespace LinqToTwitter
                         {
                             lock (this.asyncCallbackLock)
                             {
-                                var res = reqEx.EndGetResponse(ar) as HttpWebResponse;
+                                var asyncResp = new TwitterAsyncResponse<IEnumerable<T>>();
+                                try
+                                {
+                                    var res = req.EndGetResponse(ar) as HttpWebResponse;
+                                    response = GetTwitterResponse(res);
 
-                                response = GetTwitterResponse(res); 
+                                    asyncResp.State = reqProc.ProcessResults(response);
+                                }
+                                catch (Exception ex)
+                                {
+                                    asyncResp.Status = TwitterErrorStatus.RequestProcessingException;
+                                    asyncResp.Message = "Processing failed. See Error property for more details.";
+                                    asyncResp.Error = ex;
+                                }
+                                finally
+                                {
+                                    if (AsyncCallback is Action<IEnumerable<T>>)
+                                        (AsyncCallback as Action<IEnumerable<T>>)(asyncResp.State);
+                                    else
+                                        (AsyncCallback as Action<TwitterAsyncResponse<IEnumerable<T>>>)(asyncResp);
 
-                                List<T> responseObj = reqProc.ProcessResults(response);
-                                (AsyncCallback as Action<IEnumerable<T>>)(responseObj); 
+                                    AsyncCallback = null;
+                                }
                             }
                         }), null);
 #else
-                Exception asyncException = null;
-
                 using (var resetEvent = new ManualResetEvent(/*initialState:*/ false))
                 {
-
                     req.BeginGetResponse(
                         new AsyncCallback(
                             ar =>
                             {
+                                var asyncResp = new TwitterAsyncResponse<IEnumerable<T>>();
                                 try
                                 {
                                     var res = req.EndGetResponse(ar) as HttpWebResponse;
@@ -439,27 +459,34 @@ namespace LinqToTwitter
                                     response = GetTwitterResponse(res);
 
                                     if (AsyncCallback != null)
-                                    {
-                                        List<T> responseObj = reqProc.ProcessResults(response);
-                                        (AsyncCallback as Action<IEnumerable<T>>)(responseObj); 
-                                    }
+                                        asyncResp.State = reqProc.ProcessResults(response);
                                 }
                                 catch (Exception ex)
                                 {
-                                    asyncException = ex;
+                                    if (AsyncCallback == null)
+                                        throw;
+
+                                    asyncResp.Status = TwitterErrorStatus.RequestProcessingException;
+                                    asyncResp.Message = "Processing failed. See Error property for more details.";
+                                    asyncResp.Error = ex;
                                 }
                                 finally
                                 {
+                                    if (AsyncCallback != null)
+                                    {
+                                        if (AsyncCallback is Action<IEnumerable<T>>)
+                                            (AsyncCallback as Action<IEnumerable<T>>)(asyncResp.State);
+                                        else
+                                            (AsyncCallback as Action<TwitterAsyncResponse<IEnumerable<T>>>)(asyncResp);
+
+                                        AsyncCallback = null;
+                                    }
+
                                     resetEvent.Set();
                                 }
                             }), null);
 
                     resetEvent.WaitOne();
-                }
-
-                if (asyncException != null)
-                {
-                    throw asyncException;
                 }
 #endif
             }

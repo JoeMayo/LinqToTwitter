@@ -2,6 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Navigation;
 using LinqToTwitter;
+using System;
 
 namespace LinqToTwitterSilverlightDemo.Views
 {
@@ -17,25 +18,22 @@ namespace LinqToTwitterSilverlightDemo.Views
         {
             var twitterCtx = new TwitterContext();
 
-            //(from tweet in twitterCtx.Status
-            // where tweet.Type == StatusType.Public
-            // select tweet)
-            //.AsyncCallback(tweets =>
-            //    Dispatcher.BeginInvoke(() =>
-            //    {
-            //        var projectedTweets =
-            //            (from tweet in tweets
-            //            select new MyTweet
-            //            {
-            //                ScreenName = tweet.User.Identifier.ScreenName,
-            //                Tweet = tweet.Text
-            //            })
-            //            .ToList();
+            (from search in twitterCtx.Search
+             where search.Type == SearchType.Search &&
+                   search.Query == "LINQ To Twitter"
+             select search)
+            .MaterializedAsyncCallback(resp => Dispatcher.BeginInvoke(() =>
+            {
+                if (resp.Status != TwitterErrorStatus.Success)
+                {
+                    Exception ex = resp.Error;
+                    // handle exception
+                    throw ex;
+                }
 
-            //        dataGrid1.ItemsSource = projectedTweets;
-            //    }))
-            //.SingleOrDefault();
+                Search srch = resp.State.First();
+                dataGrid1.ItemsSource = srch.Results; 
+            }));
         }
-
     }
 }

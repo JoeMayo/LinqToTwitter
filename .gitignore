@@ -1,5 +1,6 @@
 [Oo]bj/
 [Bb]in/
+/ClientBin/
 *.suo
 *.user
 /TestResults

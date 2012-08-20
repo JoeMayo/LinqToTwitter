@@ -43,7 +43,7 @@
                     <Rectangle x:Name="Divider1" Style="{StaticResource DividerStyle}"/>
 					
                     <HyperlinkButton x:Name="PublicLink" Style="{StaticResource LinkStyle}" 
-                                     NavigateUri="/PublicStatusQuery" TargetName="ContentFrame" Content="Public Status"/>
+                                     NavigateUri="/PublicStatusQuery" TargetName="ContentFrame" Content="Search"/>
 
                     <Rectangle x:Name="Divider2" Style="{StaticResource DividerStyle}"/>
 

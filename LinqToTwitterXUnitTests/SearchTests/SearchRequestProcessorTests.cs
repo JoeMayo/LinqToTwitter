@@ -222,7 +222,7 @@ namespace LinqToTwitterXUnitTests.SearchTests
                     { "Type", SearchType.Search.ToString() },
                     { "Attitude", (Attitude.Positive | Attitude.Negative | Attitude.Question).ToString() },
                 };
-            const string Expected = "http://search.twitter.com/search.json?tude%5B%5D=%3A)&tude%5B%5D=%3A(&tude%5B%5D=%3F";
+            const string Expected = "http://search.twitter.com/search.json?tude%5B%5D=%3A%29&tude%5B%5D=%3A%28&tude%5B%5D=%3F";
 
             Request req = searchReqProc.BuildUrl(parameters);
 
@@ -239,7 +239,7 @@ namespace LinqToTwitterXUnitTests.SearchTests
                     { "Type", SearchType.Search.ToString() },
                     { "Attitude", (Attitude.Negative | Attitude.Question).ToString() },
                 };
-            const string Expected = "http://search.twitter.com/search.json?tude%5B%5D=%3A(&tude%5B%5D=%3F";
+            const string Expected = "http://search.twitter.com/search.json?tude%5B%5D=%3A%28&tude%5B%5D=%3F";
 
             Request req = searchReqProc.BuildUrl(parameters);
 

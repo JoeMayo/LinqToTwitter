@@ -71,5 +71,15 @@ namespace LinqToTwitter
 
             return queryType;
         }
+
+        public static void MaterializedAsyncCallback<T>(this IQueryable<T> queryType, Action<TwitterAsyncResponse<IEnumerable<T>>> callback)
+        {
+            (queryType.Provider as TwitterQueryProvider)
+                .Context
+                .TwitterExecutor
+                .AsyncCallback = callback;
+
+            queryType.ToList();
+        }
     }
 }
