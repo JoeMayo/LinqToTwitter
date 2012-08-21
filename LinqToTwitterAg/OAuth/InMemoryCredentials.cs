@@ -14,6 +14,10 @@
 
         public virtual string AccessToken { get; set; }
 
+        public virtual string ScreenName { get; set; }
+
+        public virtual string UserId { get; set; }
+
         /// <summary>
         /// Sets ConsumerKey, ConsumerSecret, and AccessToken with a comma-separated 
         /// list. You must reassign credentials to Authorizer after changing them.
@@ -27,6 +31,8 @@
             ConsumerSecret = credentials[1];
             OAuthToken = credentials[2];
             AccessToken = credentials[3];
+            ScreenName = credentials[4];
+            UserId = credentials[5];
         }
 
         /// <summary>
@@ -36,7 +42,7 @@
         /// <returns></returns>
         public override string ToString()
         {
-            return ConsumerKey + "," + ConsumerSecret + "," + OAuthToken + "," + AccessToken;
+            return ConsumerKey + "," + ConsumerSecret + "," + OAuthToken + "," + AccessToken + "," + ScreenName + "," + UserId;
         }
     }
 }

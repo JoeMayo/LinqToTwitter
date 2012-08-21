@@ -11,8 +11,10 @@ namespace LinqToTwitter
         const int ConsumerSecretIdx = 1;
         const int OAuthTokenIdx = 2;
         const int AccessTokenIdx = 3;
+        const int ScreenNameIdx = 4;
+        const int UserIdIdx = 5;
 
-        readonly string[] credentials = new string[4];
+        readonly string[] credentials = new string[6];
 
         public IsolatedStorageCredentials()
         {
@@ -161,6 +163,44 @@ namespace LinqToTwitter
             set
             {
                 credentials[ConsumerKeyIdx] = value;
+            }
+        }
+
+        /// <summary>
+        /// Added by Sumit to enable Serialization of ScreenName
+        /// </summary>
+        public string ScreenName
+        {
+            get
+            {
+                if (credentials[ScreenNameIdx] == null)
+                {
+                    LoadCredentialsFromIsolatedStorage();
+                }
+                return credentials[ScreenNameIdx];
+            }
+            set
+            {
+                credentials[ScreenNameIdx] = value;
+            }
+        }
+
+        /// <summary>
+        /// Added by Sumit to enable serialization of UserId 
+        /// </summary>
+        public string UserId
+        {
+            get
+            {
+                if (credentials[UserIdIdx] == null)
+                {
+                    LoadCredentialsFromIsolatedStorage();
+                }
+                return credentials[UserIdIdx];
+            }
+            set
+            {
+                credentials[UserIdIdx] = value;
             }
         }
     }

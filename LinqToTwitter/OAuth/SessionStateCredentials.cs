@@ -64,5 +64,29 @@ namespace LinqToTwitter
                 session["OAuthAccessToken"] = value;
             }
         }
+
+        public override string ScreenName
+        {
+            get
+            {
+                return session["ScreenNameToken"] as string;
+            }
+            set
+            {
+                session["ScreenNameToken"] = value;
+            }
+        }
+
+        public override string UserId
+        {
+            get
+            {
+                return session["UserIdToken"] as string;
+            }
+            set
+            {
+                session["UserIdToken"] = value;
+            }
+        }
     }
 }

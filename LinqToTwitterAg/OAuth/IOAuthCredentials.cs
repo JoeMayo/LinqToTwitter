@@ -36,6 +36,17 @@
         /// </summary>
         string AccessToken { get; set; }
 
+
+        /// <summary>
+        /// Twitter screen name
+        /// </summary>
+        string ScreenName { get; set; }
+
+        /// <summary>
+        /// Twitter user ID
+        /// </summary>
+        string UserId { get; set; }
+
         /// <summary>
         /// Populates this with credential values
         /// </summary>
