@@ -28,9 +28,9 @@ namespace LinqToTwitterDemo
             //SingleStatusQueryDemo(twitterCtx);
             //UpdateStatusDemo(twitterCtx);
             //UpdateStatusWrapLinksDemo(twitterCtx);
-            //UpdateStatusWithCallbackDemo(twitterCtx);
+            UpdateStatusWithCallbackDemo(twitterCtx);
             //UpdateStatusWithReplyDemo(twitterCtx);
-            UpdateStatusWithLocationDemo(twitterCtx);
+            //UpdateStatusWithLocationDemo(twitterCtx);
             //UpdateStatusWithPlaceDemo(twitterCtx);
             //DestroyStatusDemo(twitterCtx);
             //RetweetedByMeStatusQueryDemo(twitterCtx);

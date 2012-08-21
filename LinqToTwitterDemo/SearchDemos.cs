@@ -9,8 +9,8 @@ namespace LinqToTwitterDemo
     {
         public static void Run(TwitterContext twitterCtx)
         {
-            //BasicSearchSample(twitterCtx);
-            AsyncSearchSample(twitterCtx);
+            BasicSearchSample(twitterCtx);
+            //AsyncSearchSample(twitterCtx);
         }
 
         static void BasicSearchSample(TwitterContext twitterCtx)
@@ -18,7 +18,8 @@ namespace LinqToTwitterDemo
             var srch =
                 (from search in twitterCtx.Search
                  where search.Type == SearchType.Search &&
-                       search.Query == "LINQ To Twitter"
+                       search.Query == "LINQ To Twitter" &&
+                       search.PageSize == 100
                  select search)
                 .Single();
 

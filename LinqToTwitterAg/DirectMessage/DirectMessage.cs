@@ -6,7 +6,6 @@ using LitJson;
 
 namespace LinqToTwitter
 {
-    // TODO: Add support for entities (which are included in the JSON response)
     /// <summary>
     /// Direct message elements contain a set of values that describe a message.
     /// </summary>

@@ -364,6 +364,8 @@ namespace LinqToTwitter
             if (responseStr.StartsWith("[", StringComparison.Ordinal)
                 || responseStr.StartsWith("{", StringComparison.Ordinal))
             {
+                // TODO: end_session.json is deprecated, so we can refactor this.
+
                 // json response... but DO NOT assume there's an error for now
                 // because the correct response from things like end_sesson.json
                 // is "error": "Logged out."
@@ -740,8 +742,11 @@ namespace LinqToTwitter
 #endif
 
 #if !SILVERLIGHT && !NETFX_CORE
-                req.Timeout = Timeout;
-                req.ReadWriteTimeout = ReadWriteTimeout;
+                if (Timeout > 0)
+                    req.Timeout = Timeout;
+
+                if (ReadWriteTimeout > 0)
+                    req.ReadWriteTimeout = ReadWriteTimeout;
 #endif
 
                 using (var resetEvent = new ManualResetEvent(/*initialState:*/ false))
@@ -1225,16 +1230,14 @@ namespace LinqToTwitter
         /// <param name="postData">Name/value pairs of parameters</param>
         /// <param name="reqProc">Processes results of async requests</param>
         /// <returns>XML response from Twitter</returns>
-        public string ExecuteTwitter<T>(string url, IDictionary<string, string> postData, Func<string, T> getResult)//, IRequestProcessor<T> reqProc)
+        public string ExecuteTwitter<T>(string url, IDictionary<string, string> postData, Func<string, T> getResult)
         {
             string httpStatus = string.Empty;
             string response = string.Empty;
 
             try
             {
-                // for debugging purposes only, so don't worry about ? vs. &???
                 LastUrl = url;
-                //Log
                 WriteLog(LastUrl, "ExecuteTwitter");
                 var request = new Request(url);
 
@@ -1293,17 +1296,27 @@ namespace LinqToTwitter
                         new AsyncCallback(
                             ar =>
                             {
-                                lock (this.asyncCallbackLock)
+                                lock (asyncCallbackLock)
                                 {
-                                    var resp = req.EndGetResponse(ar) as HttpWebResponse;
-                                    response = GetTwitterResponse(resp);
-                                    CheckResultsForTwitterError(response, httpStatus);
-
-                                    //List<T> responseObj = reqProc.ProcessResults(response);
                                     var asyncResp = new TwitterAsyncResponse<T>();
-                                    asyncResp.State = getResult(response);
-                                    //asyncResp.State = responseObj.FirstOrDefault();
-                                    (AsyncCallback as Action<TwitterAsyncResponse<T>>)(asyncResp); 
+                                    try
+                                    {
+                                        var resp = req.EndGetResponse(ar) as HttpWebResponse;
+                                        response = GetTwitterResponse(resp);
+                                        CheckResultsForTwitterError(response, httpStatus);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        asyncResp.Status = TwitterErrorStatus.RequestProcessingException;
+                                        asyncResp.Message = "Processing failed. See Error property for more details.";
+                                        asyncResp.Error = ex;
+                                    }
+                                    finally
+                                    {
+                                        asyncResp.State = getResult(response);
+                                        (AsyncCallback as Action<TwitterAsyncResponse<T>>)(asyncResp);
+                                        AsyncCallback = null;
+                                    }
                                 }
                             }),
                             null);
@@ -1313,7 +1326,7 @@ namespace LinqToTwitter
                     ThreadPool.RegisterWaitForSingleObject(arResp.AsyncWaitHandle,
                         (state, timedOut) =>
                         {
-                            lock (this.asyncCallbackLock)
+                            lock (asyncCallbackLock)
                             {
                                 if (timedOut)
                                 {
@@ -1335,7 +1348,7 @@ namespace LinqToTwitter
                 }
                 else
                 {
-                    var req = this.AuthorizedClient.PostRequest(request, postData);
+                    var req = AuthorizedClient.PostRequest(request, postData);
                     using (var resp = Utilities.AsyncGetResponse(req))
                     {
                         httpStatus = resp.Headers["Status"];
