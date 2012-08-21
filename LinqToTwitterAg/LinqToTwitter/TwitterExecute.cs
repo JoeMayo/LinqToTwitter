@@ -1244,49 +1244,33 @@ namespace LinqToTwitter
 #if SILVERLIGHT
                 HttpWebRequest req = AuthorizedClient.PostAsync(request, postData);
 
-                IAsyncResult arResp = req.BeginGetResponse(
+                req.BeginGetResponse(
                     new AsyncCallback(
                         ar =>
                         {
-                            lock (this.asyncCallbackLock)
+                            lock (asyncCallbackLock)
                             {
-                                var resp = req.EndGetResponse(ar) as HttpWebResponse;
-                                response = GetTwitterResponse(resp);
-                                CheckResultsForTwitterError(response, httpStatus);
-
-                                if (AsyncCallback != null)
+                                var asyncResp = new TwitterAsyncResponse<T>();
+                                try
                                 {
-                                    var asyncResp = new TwitterAsyncResponse<T>
-                                    {
-                                        State = getResult(response)
-                                    };
+                                    var resp = req.EndGetResponse(ar) as HttpWebResponse;
+                                    response = GetTwitterResponse(resp);
+                                    CheckResultsForTwitterError(response, httpStatus);
+                                }
+                                catch (Exception ex)
+                                {
+                                    asyncResp.Status = TwitterErrorStatus.RequestProcessingException;
+                                    asyncResp.Message = "Processing failed. See Error property for more details.";
+                                    asyncResp.Error = ex;
+                                }
+                                finally
+                                {
+                                    asyncResp.State = getResult(response);
                                     (AsyncCallback as Action<TwitterAsyncResponse<T>>)(asyncResp);
-                                } 
+                                    AsyncCallback = null;
+                                }
                             }
                         }), null);
-
-                // TODO: this doesn't work for Silverlight, replace with manual timeout method - perhaps DispatcherTimer that calls Abort of request.
-                //ThreadPool.RegisterWaitForSingleObject(arResp.AsyncWaitHandle,
-                //    (state, timedOut) =>
-                //    {
-                //        if (timedOut)
-                //        {
-                //            lock (this.asyncCallbackLock)
-                //            {
-                //                HttpWebRequest reqState = state as HttpWebRequest;
-                //                if (reqState != null)
-                //                {
-                //                    reqState.Abort();
-                //                    var asyncResp = new TwitterAsyncResponse<T>();
-                //                    asyncResp.Error = new TwitterQueryException("Async query timed out.", asyncResp.Error);
-                //                    (AsyncCallback as Action<TwitterAsyncResponse<T>>)(asyncResp);
-                //                } 
-                //            }
-                //        }
-                //    },
-                //    null,
-                //    Timeout,
-                //    true);
 #else
                 if (AsyncCallback != null)
                 {
