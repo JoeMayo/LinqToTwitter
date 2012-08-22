@@ -52,5 +52,15 @@
         /// </summary>
         /// <param name="credentialsString">comma separated string of ConsumerKey,ConsumerSecret,AccessToken</param>
         void Load(string credentialsString);
+
+        /// <summary>
+        /// Saves current credentials to storage
+        /// </summary>
+        void Save();
+
+        /// <summary>
+        /// Removes credentials from storage
+        /// </summary>
+        void Clear();
     }
 }

@@ -44,5 +44,20 @@
         {
             return ConsumerKey + "," + ConsumerSecret + "," + OAuthToken + "," + AccessToken + "," + ScreenName + "," + UserId;
         }
+
+        public virtual void Save()
+        {
+            // do nothing - not implemented
+        }
+
+        public virtual void Clear()
+        {
+            ConsumerKey = string.Empty;
+            ConsumerSecret = string.Empty;
+            OAuthToken = string.Empty;
+            AccessToken = string.Empty;
+            ScreenName = string.Empty;
+            UserId = string.Empty;
+        }
     }
 }
