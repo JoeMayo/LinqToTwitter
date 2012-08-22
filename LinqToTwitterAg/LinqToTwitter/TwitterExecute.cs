@@ -539,8 +539,8 @@ namespace LinqToTwitter
                 int errorWait = 250;
                 bool firstConnection = true;
 
-                try
-                {
+                //try
+                //{
                     HttpWebRequest req = null;
 
                     while (!CloseStream)
@@ -586,12 +586,16 @@ namespace LinqToTwitter
                                                     {
                                                         content = respRdr.ReadLine();
 
-                                                        // launch on a separate thread to keep user's 
-                                                        // callback code from blocking the stream.
+                                                        if (respRdr.EndOfStream)
+                                                        {
+                                                            CloseStream = true;
+                                                            throw new WebException("Twitter closed the stream.", WebExceptionStatus.ConnectFailure);
+                                                        }
+
 #if NETFX_CORE
                                                         Task.Run(() => InvokeStreamCallback(content));
 #else
-                                                        new Thread(InvokeStreamCallback).Start(content); 
+                                                        ThreadPool.QueueUserWorkItem(InvokeStreamCallback, content);
 #endif
                                                     }
 
@@ -616,6 +620,7 @@ namespace LinqToTwitter
                                                 case WebExceptionStatus.Success:
                                                     break;
                                                 case WebExceptionStatus.ConnectFailure:
+                                                    throw;
                                                 case WebExceptionStatus.MessageLengthLimitExceeded:
                                                 case WebExceptionStatus.Pending:
                                                 case WebExceptionStatus.RequestCanceled:
@@ -642,10 +647,11 @@ namespace LinqToTwitter
                                                     }
                                                     break;
                                             }
-                                        }
-                                        catch (Exception ex)
-                                        {
-                                            WriteLog(ex.ToString(), "ExecuteTwitterStream");
+#if NETFX_CORE
+                                            Task.Delay(errorWait);
+#else
+                                            Thread.Sleep(errorWait);
+#endif
                                         }
                                         finally
                                         {
@@ -653,14 +659,19 @@ namespace LinqToTwitter
                                             {
                                                 req.Abort();
                                             }
-
-#if NETFX_CORE
-                                            Task.Delay(errorWait);
-#else
-                                            Thread.Sleep(errorWait);
-#endif
                                         }
                                     }
+                                }
+                                catch (WebException ex)
+                                {
+                                    WriteLog(ex.ToString(), "ExecuteTwitterStream");
+
+#if NETFX_CORE
+                                    Task.Run(() => InvokeStreamCallback(ex));
+#else
+                                    ThreadPool.QueueUserWorkItem(InvokeStreamCallback, ex);
+#endif
+                                    return;
                                 }
                                 catch (Exception ex)
                                 {
@@ -677,6 +688,11 @@ namespace LinqToTwitter
                                         }
                                     }
                                     WriteLog(ex.ToString() + ", Waiting " + errorWait / 1000 + " seconds.  ", "ExecuteStream");
+#if NETFX_CORE
+                                    Task.Delay(errorWait);
+#else
+                                    Thread.Sleep(errorWait);
+#endif
                                 }
                                 finally
                                 {
@@ -685,30 +701,24 @@ namespace LinqToTwitter
                                         req.Abort();
                                     }
 
-#if NETFX_CORE
-                                    Task.Delay(errorWait);
-#else
-                                    Thread.Sleep(errorWait);
-#endif
+                                    if (resetEvent != null) resetEvent.Set();
                                 }
-
-                                if (resetEvent != null) resetEvent.Set();
                             }), null);
 
                         resetEvent.WaitOne();
                         resetEvent.Reset();
                     }
-                }
-                catch (Exception ex)
-                {
-                    WriteLog(ex.ToString(), "ExecuteTwitterStream");
-#if NETFX_CORE
-                    Task.Delay(errorWait);
-#else
-                    Thread.Sleep(errorWait); 
-#endif
-                    throw;
-                }
+//                }
+//                catch (Exception ex)
+//                {
+//                    WriteLog(ex.ToString(), "ExecuteTwitterStream");
+
+//#if NETFX_CORE
+//                    Task.Run(() => InvokeStreamCallback(ex));
+//#else
+//                    ThreadPool.QueueUserWorkItem(InvokeStreamCallback, ex);
+//#endif
+//                }
             }
         }
 
@@ -731,7 +741,6 @@ namespace LinqToTwitter
                 string urlParams = LastUrl.Substring(qIndex + 1);
                 bytes = Encoding.UTF8.GetBytes(urlParams);
 
-                //LastUrl = LastUrl.Substring(0, qIndex);
                 req = WebRequest.Create(LastUrl) as HttpWebRequest;
 
                 req.Method = "POST";
@@ -825,7 +834,27 @@ namespace LinqToTwitter
         {
             try
             {
-                StreamingCallback(new StreamContent(this, content as string));
+                StreamContent strmContent = null;
+
+                if (content is string)
+                {
+                    strmContent = new StreamContent(this, content as string); 
+                }
+                else
+                {
+                    const string Message =
+                        "An error has occurred during processing. " +
+                        "This is sometimes an unknown error. " +
+                        "It can also happen when Twitter closes the stream. " +
+                        "Whatever the cause, your stream has been closed. " +
+                        "You can find more information about this exception in the 'Error' property.";
+
+                    strmContent = new StreamContent(this, Message);
+                    strmContent.Status = TwitterErrorStatus.RequestProcessingException;
+                    strmContent.Error = content as Exception;
+                }
+
+                StreamingCallback(strmContent);
             }
             catch (Exception ex)
             {

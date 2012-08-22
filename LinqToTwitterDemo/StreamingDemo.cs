@@ -36,14 +36,20 @@ namespace LinqToTwitterDemo
                     strm.Track == "twitter"
                 select strm)
             .StreamingCallback(strm =>
+            {
+                if (strm.Status != TwitterErrorStatus.Success)
                 {
-                    Console.WriteLine(strm.Content + "\n");
+                    Console.WriteLine(strm.Error.ToString());
+                    return;
+                }
 
-                    if (count++ >= 2)
-                    {
-                        strm.CloseStream();
-                    }
-                })
+                Console.WriteLine(strm.Content + "\n");
+
+                if (count++ >= 2)
+                {
+                    strm.CloseStream();
+                }
+            })
             .SingleOrDefault();
         }
 
@@ -67,6 +73,12 @@ namespace LinqToTwitterDemo
                 select strm)
             .StreamingCallback(strm =>
             {
+                if (strm.Status == TwitterErrorStatus.RequestProcessingException)
+                {
+                    Console.WriteLine(strm.Error.ToString());
+                    return;
+                }
+
                 Console.WriteLine(strm.Content + "\n");
 
                 if (count++ >= 10)
@@ -89,6 +101,12 @@ namespace LinqToTwitterDemo
              select strm)
             .StreamingCallback(strm =>
             {
+                if (strm.Status == TwitterErrorStatus.RequestProcessingException)
+                {
+                    Console.WriteLine(strm.Error.ToString());
+                    return;
+                }
+
                 Console.WriteLine(strm.Content + "\n");
 
                 if (count++ >= 25)
@@ -115,6 +133,12 @@ namespace LinqToTwitterDemo
              select strm)
             .StreamingCallback(strm =>
             {
+                if (strm.Status != TwitterErrorStatus.Success)
+                {
+                    Console.WriteLine(strm.Error.ToString());
+                    return;
+                }
+
                 strmCont = strm;
                 Console.WriteLine(strm.Content + "\n");
 
