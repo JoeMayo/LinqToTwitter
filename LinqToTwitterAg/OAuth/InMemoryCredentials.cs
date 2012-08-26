@@ -47,7 +47,7 @@
 
         public virtual void Save()
         {
-            // do nothing - not implemented
+            // do nothing - in-memory means that it's already saved in memory :)
         }
 
         public virtual void Clear()

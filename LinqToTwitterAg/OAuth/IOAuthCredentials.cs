@@ -12,7 +12,7 @@
     /// 
     /// Custom implementations of this interface will save
     /// and retrieve credentials from their own unique data
-    /// store
+    /// store.
     /// </summary>
     public interface IOAuthCredentials
     {

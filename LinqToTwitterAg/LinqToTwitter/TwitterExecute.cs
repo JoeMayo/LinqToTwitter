@@ -539,8 +539,8 @@ namespace LinqToTwitter
                 int errorWait = 250;
                 bool firstConnection = true;
 
-                //try
-                //{
+                try
+                {
                     HttpWebRequest req = null;
 
                     while (!CloseStream)
@@ -569,11 +569,6 @@ namespace LinqToTwitter
                                         firstConnection = true;
                                         string content = null;
 
-                                        // will cause WebException with Status set to "Timeout"
-                                        // - keeps stream from blocking in
-                                        //   case user wants to cancel.
-                                        respRdr.BaseStream.ReadTimeout = ReadWriteTimeout == 0 ? 300000 : ReadWriteTimeout;
-
                                         try
                                         {
                                             do
@@ -586,6 +581,10 @@ namespace LinqToTwitter
                                                     {
                                                         content = respRdr.ReadLine();
 
+                                                        // When Twitter breaks the connection, we need to exit the
+                                                        // entire loop and start over. Otherwise, the readlines
+                                                        // keep returning blank lines that are incorrectly interpreted
+                                                        // as keep-alive messages in a tight loop.
                                                         if (respRdr.EndOfStream)
                                                         {
                                                             CloseStream = true;
@@ -620,6 +619,7 @@ namespace LinqToTwitter
                                                 case WebExceptionStatus.Success:
                                                     break;
                                                 case WebExceptionStatus.ConnectFailure:
+                                                    // Twitter closed the connection, so keep backing out
                                                     throw;
                                                 case WebExceptionStatus.MessageLengthLimitExceeded:
                                                 case WebExceptionStatus.Pending:
@@ -666,6 +666,9 @@ namespace LinqToTwitter
                                 {
                                     WriteLog(ex.ToString(), "ExecuteTwitterStream");
 
+                                    // Twitter closed the connection, so send the appropriate
+                                    // exception, WebException with ConnectionFailed status to
+                                    // the user's callback so they can decide whether to reconnect.
 #if NETFX_CORE
                                     Task.Run(() => InvokeStreamCallback(ex));
 #else
@@ -708,17 +711,13 @@ namespace LinqToTwitter
                         resetEvent.WaitOne();
                         resetEvent.Reset();
                     }
-//                }
-//                catch (Exception ex)
-//                {
-//                    WriteLog(ex.ToString(), "ExecuteTwitterStream");
-
-//#if NETFX_CORE
-//                    Task.Run(() => InvokeStreamCallback(ex));
-//#else
-//                    ThreadPool.QueueUserWorkItem(InvokeStreamCallback, ex);
-//#endif
-//                }
+                }
+                finally
+                {
+                    // user might want to try to reconnect with
+                    // the same instance of TwitterContext
+                    CloseStream = false;
+                }
             }
         }
 
