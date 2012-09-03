@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Net;
 using System.Threading;
 using LinqToTwitter;
 
@@ -103,6 +104,12 @@ namespace LinqToTwitterDemo
             {
                 if (strm.Status == TwitterErrorStatus.RequestProcessingException)
                 {
+                    WebException wex = strm.Error as WebException;
+                    if (wex != null && wex.Status == WebExceptionStatus.ConnectFailure)
+                    {
+                        Console.WriteLine(wex.Message + " You might want to reconnect.");
+                    }
+
                     Console.WriteLine(strm.Error.ToString());
                     return;
                 }

@@ -20,13 +20,13 @@ namespace LinqToTwitterDemo
         {
             //HomeStatusQueryDemo(twitterCtx);
             //HomeSinceStatusQueryDemo(twitterCtx);
-            //UserStatusQueryDemo(twitterCtx);
+            UserStatusQueryDemo(twitterCtx);
             //UserStatusByNameQueryDemo(twitterCtx);
             //MentionsStatusQueryDemo(twitterCtx);
             //MentionsWithSinceIDStatusQueryDemo(twitterCtx);
             //MentionsWithPagingQueryDemo(twitterCtx);
             //SingleStatusQueryDemo(twitterCtx);
-            UpdateStatusDemo(twitterCtx);
+            //UpdateStatusDemo(twitterCtx);
             //UpdateStatusWrapLinksDemo(twitterCtx);
             //UpdateStatusWithCallbackDemo(twitterCtx);
             //UpdateStatusWithReplyDemo(twitterCtx);
@@ -454,24 +454,27 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void UserStatusQueryDemo(TwitterContext twitterCtx)
         {
-            int maxStatuses = 30;
-            int lastStatusCount = 0;
-            ulong sinceID = 182583822993465346; // last tweet processed on previous query
+            // last tweet processed on previous query set
+            ulong sinceID = 210024053698867204;
+
             ulong maxID;
-            int count = 10;
+            const int Count = 10;
             var statusList = new List<Status>();
 
-            // only count
             var userStatusResponse =
                 (from tweet in twitterCtx.Status
                  where tweet.Type == StatusType.User &&
                        tweet.ScreenName == "JoeMayo" &&
-                       tweet.Count == count
+                       tweet.SinceID == sinceID &&
+                       tweet.Count == Count
                  select tweet)
                 .ToList();
 
-            maxID = userStatusResponse.Min(status => ulong.Parse(status.StatusID)) - 1; // first tweet processed on current query
             statusList.AddRange(userStatusResponse);
+
+            // first tweet processed on current query
+            maxID = userStatusResponse.Min(
+                status => ulong.Parse(status.StatusID)) - 1;
 
             do
             {
@@ -480,18 +483,22 @@ namespace LinqToTwitterDemo
                     (from tweet in twitterCtx.Status
                      where tweet.Type == StatusType.User &&
                            tweet.ScreenName == "JoeMayo" &&
-                           tweet.Count == count &&
+                           tweet.Count == Count &&
                            tweet.SinceID == sinceID &&
                            tweet.MaxID == maxID
                      select tweet)
                     .ToList();
 
-                maxID = userStatusResponse.Min(status => ulong.Parse(status.StatusID)) - 1; // first tweet processed on current query
-                statusList.AddRange(userStatusResponse);
+                if (userStatusResponse.Count > 0)
+                {
+                    // first tweet processed on current query
+                    maxID = userStatusResponse.Min(
+                        status => ulong.Parse(status.StatusID)) - 1;
 
-                lastStatusCount = userStatusResponse.Count;
+                    statusList.AddRange(userStatusResponse); 
+                }
             }
-            while (lastStatusCount != 0 && statusList.Count < maxStatuses);
+            while (userStatusResponse.Count != 0 && statusList.Count < 30);
 
             for (int i = 0; i < statusList.Count; i++)
             {
