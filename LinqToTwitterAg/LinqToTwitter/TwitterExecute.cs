@@ -194,32 +194,21 @@ namespace LinqToTwitter
             if (responseStr.StartsWith("[", StringComparison.Ordinal)
              || responseStr.StartsWith("{", StringComparison.Ordinal))
             {
-                try
+                if (wex != null && wex.Response != null)
                 {
-                    responseStr = GetTwitterResponse(wex.Response);
-                    responseJson = JsonMapper.ToObject(responseStr);
+                    try
+                    {
+                        responseStr = GetTwitterResponse(wex.Response);
+                        responseJson = JsonMapper.ToObject(responseStr);
+                    }
+                    catch (Exception ex)
+                    {
+                        responseJson = BuildJsonResponse(wex, responseStr, ex);
+                    }
                 }
-                catch (Exception ex)
+                else
                 {
-                    string responseUri = string.Empty;
-
-                    if (wex != null && wex.Response != null)
-                        responseUri = wex.Response.ResponseUri.ToString();
-
-                    var errorText = (wex ?? ex)
-                                    + Environment.NewLine
-                                    + responseStr;
-
-                    string encodedResponseUri = MSEncoder.HtmlEncode(responseUri);
-                    string encodedErrorText = MSEncoder.HtmlEncode(errorText);
-
-                    // One known reason this can happen is if you don't have an 
-                    // Internet connection, meaning that the response will contain
-                    // an HTML message, that can't be parsed as normal XML.
-                    responseJson = 
-                        JsonMapper.ToObject(
-                            @"{""request"":""" + encodedResponseUri + @"""" +
-                            @" ""error"":""" + encodedErrorText + @"""}");
+                    responseJson = BuildJsonResponse(wex, responseStr, null);
                 }
 
                 return new TwitterQueryException("Error while querying Twitter.", wex)
@@ -279,6 +268,33 @@ namespace LinqToTwitter
                     }
                 };
             }
+        }
+
+        static JsonData BuildJsonResponse(WebException wex, string responseStr, Exception ex)
+        {
+            JsonData responseJson;
+            string responseUri = string.Empty;
+
+            if (wex != null && wex.Response != null)
+                responseUri = wex.Response.ResponseUri.ToString();
+
+            var errorText = (wex ?? ex ?? new Exception("Please see inner exception for details.") )
+                            + Environment.NewLine
+                            + responseStr;
+
+            var response = new TwitterHashResponse
+            {
+                Request = responseUri,
+                Error = errorText
+            };
+
+            string jsonResponse = JsonMapper.ToJson(response);
+
+            // One known reason this can happen is if you don't have an 
+            // Internet connection, meaning that the response will contain
+            // an HTML message, that can't be parsed as normal XML.
+            responseJson = JsonMapper.ToObject(jsonResponse);
+            return responseJson;
         }
 
         string ReadStreamBytes(Stream stream)
