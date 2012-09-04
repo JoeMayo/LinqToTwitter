@@ -98,7 +98,7 @@ namespace LinqToTwitter
             req.ContentLength = queryStringBytes.Length; 
 #endif
 
-            var resetEvent = new ManualResetEvent(/*initialState:*/ false);
+            var resetEvent = new ManualResetEvent(/*initialStateSignaled:*/ false);
 
             req.BeginGetRequestStream(
                 new AsyncCallback(

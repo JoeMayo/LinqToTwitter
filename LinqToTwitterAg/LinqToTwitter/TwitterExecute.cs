@@ -19,9 +19,6 @@ using System.Xml.Linq;
 using System.Threading.Tasks;
 #endif
 
-#if !CLIENT_PROFILE
-#endif
-
 #if SILVERLIGHT && !WINDOWS_PHONE
     using System.Windows.Browser;
 #elif !SILVERLIGHT && !WINDOWS_PHONE && !NETFX_CORE && !L2T_PCL
@@ -427,44 +424,12 @@ namespace LinqToTwitter
             try
             {
                 var req = this.AuthorizedClient.Get(request);
+#if !SILVERLIGHT
+                bool initialStateSignaled = AsyncCallback != null;
 
-#if SILVERLIGHT
-                var reqEx = req as HttpWebRequest;
-
-                reqEx.BeginGetResponse(
-                    new AsyncCallback(
-                        ar =>
-                        {
-                            lock (this.asyncCallbackLock)
-                            {
-                                var asyncResp = new TwitterAsyncResponse<IEnumerable<T>>();
-                                try
-                                {
-                                    var res = req.EndGetResponse(ar) as HttpWebResponse;
-                                    response = GetTwitterResponse(res);
-
-                                    asyncResp.State = reqProc.ProcessResults(response);
-                                }
-                                catch (Exception ex)
-                                {
-                                    asyncResp.Status = TwitterErrorStatus.RequestProcessingException;
-                                    asyncResp.Message = "Processing failed. See Error property for more details.";
-                                    asyncResp.Error = ex;
-                                }
-                                finally
-                                {
-                                    if (AsyncCallback is Action<IEnumerable<T>>)
-                                        (AsyncCallback as Action<IEnumerable<T>>)(asyncResp.State);
-                                    else
-                                        (AsyncCallback as Action<TwitterAsyncResponse<IEnumerable<T>>>)(asyncResp);
-
-                                    AsyncCallback = null;
-                                }
-                            }
-                        }), null);
-#else
-                using (var resetEvent = new ManualResetEvent(/*initialState:*/ false))
+                using (var resetEvent = new ManualResetEvent(initialStateSignaled))
                 {
+#endif
                     req.BeginGetResponse(
                         new AsyncCallback(
                             ar =>
@@ -473,7 +438,7 @@ namespace LinqToTwitter
                                 try
                                 {
                                     var res = req.EndGetResponse(ar) as HttpWebResponse;
-                                    httpStatus = res.Headers["Status"];
+                                    httpStatus = (int)res.StatusCode + " " + res.StatusDescription;
                                     response = GetTwitterResponse(res);
 
                                     if (AsyncCallback != null)
@@ -499,12 +464,15 @@ namespace LinqToTwitter
 
                                         AsyncCallback = null;
                                     }
-
-                                    resetEvent.Set();
+#if !SILVERLIGHT
+                                    else
+                                        resetEvent.Set();
+#endif
                                 }
                             }), null);
-
-                    resetEvent.WaitOne();
+#if !SILVERLIGHT
+                    if (AsyncCallback == null)
+                        resetEvent.WaitOne(); 
                 }
 #endif
             }
@@ -514,9 +482,7 @@ namespace LinqToTwitter
                 throw twitterQueryEx;
             }
 
-#if !SILVERLIGHT
             CheckResultsForTwitterError(response, httpStatus);
-#endif
 
             return response;
         }
@@ -550,7 +516,7 @@ namespace LinqToTwitter
 
             var streamUrl = request.Endpoint;
 
-            using (var resetEvent = new ManualResetEvent(/*initialState:*/ false))
+            using (var resetEvent = new ManualResetEvent(/*initialStateSignaled:*/ false))
             {
                 int errorWait = 250;
                 bool firstConnection = true;
@@ -773,7 +739,7 @@ namespace LinqToTwitter
                     req.ReadWriteTimeout = ReadWriteTimeout;
 #endif
 
-                using (var resetEvent = new ManualResetEvent(/*initialState:*/ false))
+                using (var resetEvent = new ManualResetEvent(/*initialStateSignaled:*/ false))
                 {
                     Exception asyncException = null;
 
@@ -972,7 +938,7 @@ namespace LinqToTwitter
 #endif
 
                 Exception asyncException = null;
-                using (var resetEvent = new ManualResetEvent(/*initialState:*/ false))
+                using (var resetEvent = new ManualResetEvent(/*initialStateSignaled:*/ false))
                 {
 
                     req.BeginGetRequestStream(
@@ -1154,7 +1120,7 @@ namespace LinqToTwitter
 #endif
 
                 Exception asyncException = null;
-                using (var resetEvent = new ManualResetEvent(/*initialState:*/ false))
+                using (var resetEvent = new ManualResetEvent(/*initialStateSignaled:*/ false))
                 {
                     req.BeginGetRequestStream(
                         new AsyncCallback(

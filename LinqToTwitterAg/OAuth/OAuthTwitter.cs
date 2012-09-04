@@ -408,7 +408,7 @@ namespace LinqToTwitter
 #else
                 Exception asyncException = null;
 
-                using (var resetEvent = new ManualResetEvent(/*initialState:*/ false))
+                using (var resetEvent = new ManualResetEvent(/*initialStateSignaled:*/ false))
                 {
                     webRequest.BeginGetRequestStream(
                         new AsyncCallback(
@@ -461,7 +461,7 @@ namespace LinqToTwitter
 
             Exception asyncException = null;
 
-            using (var resetEvent = new ManualResetEvent(/*initialState:*/ false))
+            using (var resetEvent = new ManualResetEvent(/*initialStateSignaled:*/ false))
             {
                 HttpWebResponse res = null;
 
@@ -931,7 +931,7 @@ namespace LinqToTwitter
 #else
             Exception asyncException = null;
 
-            using (var resetEvent = new ManualResetEvent(/*initialState:*/ false))
+            using (var resetEvent = new ManualResetEvent(/*initialStateSignaled:*/ false))
             {
                 req.BeginGetRequestStream(
                     new AsyncCallback(

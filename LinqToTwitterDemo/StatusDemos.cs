@@ -20,13 +20,14 @@ namespace LinqToTwitterDemo
         {
             //HomeStatusQueryDemo(twitterCtx);
             //HomeSinceStatusQueryDemo(twitterCtx);
-            UserStatusQueryDemo(twitterCtx);
+            //HomeStatusQueryWithAsyncCallbackDemo(twitterCtx);
+            //UserStatusQueryDemo(twitterCtx);
             //UserStatusByNameQueryDemo(twitterCtx);
             //MentionsStatusQueryDemo(twitterCtx);
             //MentionsWithSinceIDStatusQueryDemo(twitterCtx);
             //MentionsWithPagingQueryDemo(twitterCtx);
             //SingleStatusQueryDemo(twitterCtx);
-            //UpdateStatusDemo(twitterCtx);
+            UpdateStatusDemo(twitterCtx);
             //UpdateStatusWrapLinksDemo(twitterCtx);
             //UpdateStatusWithCallbackDemo(twitterCtx);
             //UpdateStatusWithReplyDemo(twitterCtx);
@@ -102,6 +103,34 @@ namespace LinqToTwitterDemo
                             tweet.RetweetedStatus.User.Name) +
                     "\nTweet: " + tweet.Text + "\n");
             }
+        }
+
+        /// <summary>
+        /// Shows how to get statuses for logged-in user's friends, including retweets
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void HomeStatusQueryWithAsyncCallbackDemo(TwitterContext twitterCtx)
+        {
+            (from tweet in twitterCtx.Status
+             where tweet.Type == StatusType.Home
+             select tweet)
+            .MaterializedAsyncCallback(resp =>
+             {
+                 if (resp.Status != TwitterErrorStatus.Success)
+                     throw resp.Error;
+
+                 Console.WriteLine("\nTweets for " + twitterCtx.UserName + "\n");
+                 foreach (var tweet in resp.State)
+                 {
+                     Console.WriteLine(
+                         "Friend: " + tweet.User.Identifier.ScreenName +
+                         "\nRetweeted by: " +
+                             (tweet.Retweeted ?
+                                tweet.RetweetedStatus.User.Name :
+                                "Original Tweet") +
+                         "\nTweet: " + tweet.Text + "\n");
+                 }
+             });
         }
 
         /// <summary>

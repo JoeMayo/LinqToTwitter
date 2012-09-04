@@ -29,7 +29,7 @@ namespace LinqToTwitter
         {
             Exception asyncException = null;
 
-            var resetEvent = new ManualResetEvent(/*initialState:*/ false);
+            var resetEvent = new ManualResetEvent(/*initialStateSignaled:*/ false);
             HttpWebResponse res = null;
 
             req.BeginGetResponse(
