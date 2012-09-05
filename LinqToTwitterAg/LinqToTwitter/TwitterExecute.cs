@@ -1292,7 +1292,7 @@ namespace LinqToTwitter
                             }),
                             null);
 
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !NETFX_CORE
                     if (AsyncCallback == null)
                         ThreadPool.RegisterWaitForSingleObject(arResp.AsyncWaitHandle,
                             (state, timedOut) =>
@@ -1315,6 +1315,8 @@ namespace LinqToTwitter
                             null,
                             Timeout,
                             true);
+#endif
+#if !SILVERLIGHT
                 }
                 else
                 {
