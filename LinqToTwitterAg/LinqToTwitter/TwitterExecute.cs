@@ -434,40 +434,43 @@ namespace LinqToTwitter
                         new AsyncCallback(
                             ar =>
                             {
-                                var asyncResp = new TwitterAsyncResponse<IEnumerable<T>>();
-                                try
+                                lock (asyncCallbackLock)
                                 {
-                                    var res = req.EndGetResponse(ar) as HttpWebResponse;
-                                    httpStatus = (int)res.StatusCode + " " + res.StatusDescription;
-                                    response = GetTwitterResponse(res);
-
-                                    if (AsyncCallback != null)
-                                        asyncResp.State = reqProc.ProcessResults(response);
-                                }
-                                catch (Exception ex)
-                                {
-                                    if (AsyncCallback == null)
-                                        throw;
-
-                                    asyncResp.Status = TwitterErrorStatus.RequestProcessingException;
-                                    asyncResp.Message = "Processing failed. See Error property for more details.";
-                                    asyncResp.Error = ex;
-                                }
-                                finally
-                                {
-                                    if (AsyncCallback != null)
+                                    var asyncResp = new TwitterAsyncResponse<IEnumerable<T>>();
+                                    try
                                     {
-                                        if (AsyncCallback is Action<IEnumerable<T>>)
-                                            (AsyncCallback as Action<IEnumerable<T>>)(asyncResp.State);
-                                        else
-                                            (AsyncCallback as Action<TwitterAsyncResponse<IEnumerable<T>>>)(asyncResp);
+                                        var res = req.EndGetResponse(ar) as HttpWebResponse;
+                                        httpStatus = (int)res.StatusCode + " " + res.StatusDescription;
+                                        response = GetTwitterResponse(res);
 
-                                        AsyncCallback = null;
+                                        if (AsyncCallback != null)
+                                            asyncResp.State = reqProc.ProcessResults(response);
                                     }
+                                    catch (Exception ex)
+                                    {
+                                        if (AsyncCallback == null)
+                                            throw;
+
+                                        asyncResp.Status = TwitterErrorStatus.RequestProcessingException;
+                                        asyncResp.Message = "Processing failed. See Error property for more details.";
+                                        asyncResp.Error = ex;
+                                    }
+                                    finally
+                                    {
+                                        if (AsyncCallback != null)
+                                        {
+                                            if (AsyncCallback is Action<IEnumerable<T>>)
+                                                (AsyncCallback as Action<IEnumerable<T>>)(asyncResp.State);
+                                            else
+                                                (AsyncCallback as Action<TwitterAsyncResponse<IEnumerable<T>>>)(asyncResp);
+
+                                            AsyncCallback = null;
+                                        }
 #if !SILVERLIGHT
-                                    else
-                                        resetEvent.Set();
+                                        else
+                                            resetEvent.Set();
 #endif
+                                    }
                                 }
                             }), null);
 #if !SILVERLIGHT
@@ -1251,43 +1254,17 @@ namespace LinqToTwitter
                 WriteLog(LastUrl, "ExecuteTwitter");
                 var request = new Request(url);
 
-#if SILVERLIGHT
-                HttpWebRequest req = AuthorizedClient.PostAsync(request, postData);
-
-                req.BeginGetResponse(
-                    new AsyncCallback(
-                        ar =>
-                        {
-                            lock (asyncCallbackLock)
-                            {
-                                var asyncResp = new TwitterAsyncResponse<T>();
-                                try
-                                {
-                                    var resp = req.EndGetResponse(ar) as HttpWebResponse;
-                                    response = GetTwitterResponse(resp);
-                                    CheckResultsForTwitterError(response, httpStatus);
-                                }
-                                catch (Exception ex)
-                                {
-                                    asyncResp.Status = TwitterErrorStatus.RequestProcessingException;
-                                    asyncResp.Message = "Processing failed. See Error property for more details.";
-                                    asyncResp.Error = ex;
-                                }
-                                finally
-                                {
-                                    asyncResp.State = getResult(response);
-                                    (AsyncCallback as Action<TwitterAsyncResponse<T>>)(asyncResp);
-                                    AsyncCallback = null;
-                                }
-                            }
-                        }), null);
-#else
+#if !SILVERLIGHT
                 if (AsyncCallback != null)
                 {
-                    var req = AuthorizedClient.PostAsync(request, postData);
+#endif
+                    HttpWebRequest req = AuthorizedClient.PostAsync(request, postData);
 
-                    IAsyncResult arResp = req.BeginGetResponse(
-                        new AsyncCallback(
+#if !SILVERLIGHT
+                    IAsyncResult arResp = 
+#endif
+                        req.BeginGetResponse(
+                          new AsyncCallback(
                             ar =>
                             {
                                 lock (asyncCallbackLock)
@@ -1314,31 +1291,30 @@ namespace LinqToTwitter
                                 }
                             }),
                             null);
-#if NETFX_CORE
-                    arResp.AsyncWaitHandle.WaitOne(5000);
-#else
-                    ThreadPool.RegisterWaitForSingleObject(arResp.AsyncWaitHandle,
-                        (state, timedOut) =>
-                        {
-                            lock (asyncCallbackLock)
+
+#if !SILVERLIGHT
+                    if (AsyncCallback == null)
+                        ThreadPool.RegisterWaitForSingleObject(arResp.AsyncWaitHandle,
+                            (state, timedOut) =>
                             {
-                                if (timedOut)
+                                lock (asyncCallbackLock)
                                 {
-                                    var reqState = state as HttpWebRequest;
-                                    if (reqState != null)
+                                    if (timedOut)
                                     {
-                                        reqState.Abort();
-                                        var asyncResp = new TwitterAsyncResponse<T>();
-                                        asyncResp.Error = new TwitterQueryException("Async query timed out.", asyncResp.Error);
-                                        (AsyncCallback as Action<TwitterAsyncResponse<T>>)(asyncResp);
-                                    }
-                                } 
-                            }
-                        },
-                        null,
-                        Timeout,
-                        true);
-#endif
+                                        var reqState = state as HttpWebRequest;
+                                        if (reqState != null)
+                                        {
+                                            reqState.Abort();
+                                            var asyncResp = new TwitterAsyncResponse<T>();
+                                            asyncResp.Error = new TwitterQueryException("Async query timed out.", asyncResp.Error);
+                                            (AsyncCallback as Action<TwitterAsyncResponse<T>>)(asyncResp);
+                                        }
+                                    } 
+                                }
+                            },
+                            null,
+                            Timeout,
+                            true);
                 }
                 else
                 {

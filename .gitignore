@@ -1,6 +1,7 @@
 [Oo]bj/
 [Bb]in/
-/ClientBin/
+/ClientBin/*
+*.xap
 *.suo
 *.user
 /TestResults

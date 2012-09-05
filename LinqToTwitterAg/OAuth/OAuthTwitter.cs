@@ -795,10 +795,13 @@ namespace LinqToTwitter
         {
             const int WorkingBufferSize = 1024;
             string requestTokenResponse = string.Empty;
+            string contentEncoding = string.Empty;
 
             using (var respStream = res.GetResponseStream())
             {
-                string contentEncoding = res.Headers["Content-Encoding"] ?? "";
+#if !SILVERLIGHT || WINDOWS_PHONE
+                contentEncoding = res.Headers["Content-Encoding"] ?? "";
+#endif
                 if (contentEncoding.ToLower().Contains("gzip"))
                 {
                     using (var gzip = new GZipStream(respStream, CompressionMode.Decompress))
