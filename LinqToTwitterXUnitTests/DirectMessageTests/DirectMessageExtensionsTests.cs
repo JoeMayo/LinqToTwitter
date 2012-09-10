@@ -169,7 +169,7 @@ namespace LinqToTwitterXUnitTests
             execMock.Verify(
                 exec =>
                 exec.ExecuteTwitter(
-                    "https://api.twitter.com/1/direct_messages/destroy/1.json",
+                    "https://api.twitter.com/1/direct_messages/destroy.json",
                     It.IsAny<Dictionary<string, string>>(),
                     It.IsAny<Func<string, DirectMessage>>()),
                 Times.Once());

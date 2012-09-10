@@ -17,10 +17,8 @@ namespace LinqToTwitterDemo
         {
             //CreateBlock(twitterCtx);
             //DestroyBlock(twitterCtx);
-            //BlockExistsDemo(twitterCtx);
+            BlockListDemo(twitterCtx);
             //BlockIDsDemo(twitterCtx);
-            BlockBlockingDemo(twitterCtx);
-            //BlockBlockingProjectionDemo(twitterCtx);
         }
 
         /// <summary>
@@ -32,7 +30,7 @@ namespace LinqToTwitterDemo
             Console.Write("User Screen Name to Unblock: ");
             string userName = Console.ReadLine();
 
-            var user = twitterCtx.DestroyBlock(userName, true);
+            var user = twitterCtx.DestroyBlock(0, userName, true);
 
             if (user == null) return;
 
@@ -48,7 +46,7 @@ namespace LinqToTwitterDemo
             Console.Write("User Screen Name to Block: ");
             string userName = Console.ReadLine();
 
-            var user = twitterCtx.CreateBlock(userName, true);
+            var user = twitterCtx.CreateBlock(0, userName, true);
 
             if (user == null) return;
 
@@ -63,7 +61,7 @@ namespace LinqToTwitterDemo
         {
             var block =
                 (from blockItem in twitterCtx.Blocks
-                 where blockItem.Type == BlockingType.Blocking
+                 where blockItem.Type == BlockingType.List
                  select blockItem)
                  .FirstOrDefault();
 
@@ -80,7 +78,7 @@ namespace LinqToTwitterDemo
         {
             var blockedUsers =
                 (from blockItem in twitterCtx.Blocks
-                 where blockItem.Type == BlockingType.Blocking
+                 where blockItem.Type == BlockingType.List
                  select blockItem.Users)
                 .FirstOrDefault();
 
@@ -107,25 +105,17 @@ namespace LinqToTwitterDemo
         /// shows how to see if a specific user is being blocked
         /// </summary>
         /// <param name="twitterCtx">TwitterContext</param>
-        private static void BlockExistsDemo(TwitterContext twitterCtx)
+        private static void BlockListDemo(TwitterContext twitterCtx)
         {
-            try
-            {
-                var block =
-                    (from blockItem in twitterCtx.Blocks
-                     where blockItem.Type == BlockingType.Exists &&
-                           blockItem.ScreenName == "Linq2Tweeter"
-                     select blockItem)
-                    .FirstOrDefault();
+            var blocks =
+                (from blockItem in twitterCtx.Blocks
+                 where blockItem.Type == BlockingType.List
+                 select blockItem)
+                .FirstOrDefault();
 
-                Console.WriteLine("User, {0} is blocked.", block.User.Name);
-            }
-            catch (TwitterQueryException tqe)
+            foreach (var user in blocks.Users)
             {
-                // Twitter returns HTTP 404 when user is not blocked
-                // An HTTP error generates an exception, 
-                // which is why User Not Blocked is handled this way
-                Console.WriteLine("User not blocked. Twitter Response: " + tqe.Response.Error);
+                Console.WriteLine("User, {0} is blocked.", user.Name);
             }
         }
     }

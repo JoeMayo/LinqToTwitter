@@ -77,8 +77,6 @@ namespace LinqToTwitter
         /// <summary>
         /// Include entities in tweets
         /// </summary>
-        // TODO: was scheduled for deprecation on 5/14/12, but delayed by Twitter - need to follow up.
-        //[Obsolete("All API methods capable of including entities will return them regardless of the value provided.")]
         public bool IncludeEntities { get; set; }
 
         /// <summary>
@@ -306,7 +304,7 @@ namespace LinqToTwitter
         /// <returns>base url + mentions segment</returns>
         Request BuildMentionsUrl(Dictionary<string, string> parameters)
         {
-            return BuildUrlParameters(parameters, "statuses/mentions.json");
+            return BuildUrlParameters(parameters, "statuses/mentions_timeline.json");
         }
 
         /// <summary>

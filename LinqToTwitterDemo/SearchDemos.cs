@@ -19,12 +19,12 @@ namespace LinqToTwitterDemo
                 (from search in twitterCtx.Search
                  where search.Type == SearchType.Search &&
                        search.Query == "LINQ To Twitter" &&
-                       search.PageSize == 100
+                       search.PageSize == 4
                  select search)
                 .Single();
 
-            Console.WriteLine("\nQuery: {0}\n", srch.QueryResult);
-            srch.Results.ForEach(entry =>
+            Console.WriteLine("\nQuery: {0}\n", srch.SearchMetaData.Query);
+            srch.Statuses.ForEach(entry =>
                 Console.WriteLine(
                     "ID: {0, -15}, Source: {1}\nContent: {2}\n",
                     entry.ID, entry.Source, entry.Text));
@@ -48,9 +48,9 @@ namespace LinqToTwitterDemo
                 }
 
                 Search srch = resp.State.First();
-                Console.WriteLine("\nQuery: {0}\n", srch.QueryResult);
+                Console.WriteLine("\nQuery: {0}\n", srch.SearchMetaData.Query);
 
-                srch.Results.ForEach(entry =>
+                srch.Statuses.ForEach(entry =>
                     Console.WriteLine(
                         "ID: {0, -15}, Source: {1}\nContent: {2}\n",
                         entry.ID, entry.Source, entry.Text));

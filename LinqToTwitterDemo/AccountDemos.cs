@@ -16,11 +16,8 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         public static void Run(TwitterContext twitterCtx)
         {
-            //VerifyAccountCredentials(twitterCtx);
-            ViewRateLimitStatus(twitterCtx);
-            ViewRateLimitStatusProjection(twitterCtx);
+            VerifyAccountCredentials(twitterCtx);
             ViewRateLimitResponseHeadersDemo(twitterCtx);
-            ViewAccountTotalsDemo(twitterCtx);
             ViewAccountSettingsDemo(twitterCtx);
             //UpdateAccountColors(twitterCtx);
             //UpdateAccountImage(twitterCtx);
@@ -173,22 +170,6 @@ namespace LinqToTwitterDemo
                 accountSettings.SleepTime.Enabled);
         }
 
-        private static void ViewAccountTotalsDemo(TwitterContext twitterCtx)
-        {
-            var accountTotals =
-                (from acct in twitterCtx.Account
-                 where acct.Type == AccountType.Totals
-                 select acct.Totals)
-                .SingleOrDefault();
-
-            Console.WriteLine(
-                "Updates: {0}\nFriends: {1}\nFollowers: {2}\nFavorites: {3}",
-                accountTotals.Updates,
-                accountTotals.Friends,
-                accountTotals.Followers,
-                accountTotals.Favorites);
-        }
-
         /// <summary>
         /// Shows how to extract rate limit info from response headers
         /// </summary>
@@ -223,46 +204,6 @@ namespace LinqToTwitterDemo
                 .ToLocalTime();
 
             Console.WriteLine("Rate Limit Reset in current time: {0}", resetTime);
-        }
-
-        /// <summary>
-        /// Shows how to query an account's rate limit status info
-        /// </summary>
-        /// <param name="twitterCtx">TwitterContext</param>
-        private static void ViewRateLimitStatus(TwitterContext twitterCtx)
-        {
-            var accounts =
-                from acct in twitterCtx.Account
-                where acct.Type == AccountType.RateLimitStatus
-                select acct;
-
-            foreach (var account in accounts)
-            {
-                Console.WriteLine("\nRate Limit Status: \n");
-                Console.WriteLine("Remaining Hits: {0}", account.RateLimitStatus.RemainingHits);
-                Console.WriteLine("Hourly Limit: {0}", account.RateLimitStatus.HourlyLimit);
-                Console.WriteLine("Reset Time: {0}", account.RateLimitStatus.ResetTime);
-                Console.WriteLine("Reset Time in Seconds: {0}", account.RateLimitStatus.ResetTimeInSeconds);
-            }
-        }
-
-        /// <summary>
-        /// Shows how to query an account's rate limit status info with a custom projection
-        /// </summary>
-        /// <param name="twitterCtx">TwitterContext</param>
-        private static void ViewRateLimitStatusProjection(TwitterContext twitterCtx)
-        {
-            var rateLimitStatus =
-                (from acct in twitterCtx.Account
-                 where acct.Type == AccountType.RateLimitStatus
-                 select acct.RateLimitStatus)
-                .SingleOrDefault();
-
-            Console.WriteLine("\nRate Limit Status: \n");
-            Console.WriteLine("Remaining Hits: {0}", rateLimitStatus.RemainingHits);
-            Console.WriteLine("Hourly Limit: {0}", rateLimitStatus.HourlyLimit);
-            Console.WriteLine("Reset Time: {0}", rateLimitStatus.ResetTime);
-            Console.WriteLine("Reset Time in Seconds: {0}", rateLimitStatus.ResetTimeInSeconds);
         }
 
         /// <summary>

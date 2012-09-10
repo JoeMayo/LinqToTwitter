@@ -10,30 +10,32 @@ namespace LinqToTwitter
         /// Blocks a user
         /// </summary>
         /// <param name="twitterCtx">Twitter Context</param>
-        /// <param name="id">id of user to block</param>
+        /// <param name="userID">ID of user to block</param>
+        /// <param name="screenName">Screen name of user to block</param>
         /// <param name="skipStatus">Don't include status</param>
         /// <returns>User that was unblocked</returns>
-        public static User CreateBlock(this TwitterContext twitterCtx, string id, bool skipStatus)
+        public static User CreateBlock(this TwitterContext twitterCtx, ulong userID, string screenName, bool skipStatus)
         {
-            return CreateBlock(twitterCtx, id, skipStatus, null);
+            return CreateBlock(twitterCtx, userID, screenName, skipStatus, null);
         }
 
         /// <summary>
         /// Blocks a user
         /// </summary>
         /// <param name="twitterCtx">Twitter Context</param>
-        /// <param name="id">id of user to block</param>
+        /// <param name="userID">ID of user to block</param>
+        /// <param name="screenName">Screen name of user to block</param>
         /// <param name="skipStatus">Don't include status</param>
         /// <param name="callback">Async Callback used in Silverlight queries</param>
         /// <returns>User that was unblocked</returns>
-        public static User CreateBlock(this TwitterContext twitterCtx, string id, bool skipStatus, Action<TwitterAsyncResponse<User>> callback)
+        public static User CreateBlock(this TwitterContext twitterCtx, ulong userID, string screenName, bool skipStatus, Action<TwitterAsyncResponse<User>> callback)
         {
-            if (string.IsNullOrEmpty(id))
+            if (userID <= 0 && string.IsNullOrEmpty(screenName))
             {
-                throw new ArgumentException("id is a required parameter.", "id");
+                throw new ArgumentException("Either userID or screenName are required parameters.", "UserIDOrScreenName");
             }
 
-            var blocksUrl = twitterCtx.BaseUrl + "blocks/create/" + id + ".json";
+            var blocksUrl = twitterCtx.BaseUrl + "blocks/create.json";
 
             var reqProc = new BlocksRequestProcessor<User>();
 
@@ -45,6 +47,8 @@ namespace LinqToTwitter
                     blocksUrl,
                     new Dictionary<string, string>
                     {
+                        { "user_id", userID <= 0 ? (string)null : userID.ToString() },
+                        { "screen_name", screenName },
                         { "skip_status", skipStatus.ToString().ToLower() }
                     },
                     response => reqProc.ProcessActionResult(response, UserAction.SingleUser));
@@ -57,30 +61,32 @@ namespace LinqToTwitter
         /// Unblocks a user
         /// </summary>
         /// <param name="twitterCtx">Twitter Context</param>
-        /// <param name="id">id of user to unblock</param>
+        /// <param name="userID">ID of user to block</param>
+        /// <param name="screenName">Screen name of user to block</param>
         /// <param name="skipStatus">Don't include status</param>
         /// <returns>User that was unblocked</returns>
-        public static User DestroyBlock(this TwitterContext twitterCtx, string id, bool skipStatus)
+        public static User DestroyBlock(this TwitterContext twitterCtx, ulong userID, string screenName, bool skipStatus)
         {
-            return DestroyBlock(twitterCtx, id, skipStatus, null);
+            return DestroyBlock(twitterCtx, userID, screenName, skipStatus, null);
         }
 
         /// <summary>
         /// Unblocks a user
         /// </summary>
         /// <param name="twitterCtx">Twitter Context</param>
-        /// <param name="id">id of user to unblock</param>
+        /// <param name="userID">ID of user to block</param>
+        /// <param name="screenName">Screen name of user to block</param>
         /// <param name="skipStatus">Don't include status</param>
         /// <param name="callback">Async Callback used in Silverlight queries</param>
         /// <returns>User that was unblocked</returns>
-        public static User DestroyBlock(this TwitterContext twitterCtx, string id, bool skipStatus, Action<TwitterAsyncResponse<User>> callback)
+        public static User DestroyBlock(this TwitterContext twitterCtx, ulong userID, string screenName, bool skipStatus, Action<TwitterAsyncResponse<User>> callback)
         {
-            if (string.IsNullOrEmpty(id))
+            if (userID <= 0 && string.IsNullOrEmpty(screenName))
             {
-                throw new ArgumentException("id is a required parameter.", "id");
+                throw new ArgumentException("Either userID or screenName are required parameters.", "UserIDOrScreenName");
             }
 
-            var blocksUrl = twitterCtx.BaseUrl + "blocks/destroy/" + id + ".json";
+            var blocksUrl = twitterCtx.BaseUrl + "blocks/destroy.json";
 
             var reqProc = new BlocksRequestProcessor<User>();
 
@@ -92,6 +98,8 @@ namespace LinqToTwitter
                     blocksUrl,
                     new Dictionary<string, string>
                     {
+                        { "user_id", userID <= 0 ? (string)null : userID.ToString() },
+                        { "screen_name", screenName },
                         { "skip_status", skipStatus.ToString().ToLower() }
                     },
                     response => reqProc.ProcessActionResult(response, UserAction.SingleUser));

@@ -9,9 +9,10 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Net;
 using LinqToTwitter.Common;
+
 #if SILVERLIGHT
+using System.Net;
 using System.Net.Browser;
 #endif
 
@@ -41,8 +42,8 @@ namespace LinqToTwitter
         public TwitterContext()
             : this(new AnonymousAuthorizer())
         {
-            BaseUrl = "https://api.twitter.com/1/";
-            SearchUrl = "https://search.twitter.com/";
+            BaseUrl = "https://api.twitter.com/1.1/";
+            SearchUrl = "https://api.twitter.com/1.1/search/";
         }
 
         /// <summary>
@@ -78,8 +79,8 @@ namespace LinqToTwitter
         /// Initializes a new instance of the <see cref="TwitterContext"/> class.
         /// </summary>
         /// <param name="execute">The <see cref="ITwitterExecute"/> object to use.</param>
-        /// <param name="baseUrl">Base url of Twitter API.  May be null to use the default "https://api.twitter.com/1/" value.</param>
-        /// <param name="searchUrl">Base url of Twitter Search API.  May be null to use the default "https://search.twitter.com/" value.</param>
+        /// <param name="baseUrl">Base url of Twitter API.  May be null to use the default "https://api.twitter.com/1.1/" value.</param>
+        /// <param name="searchUrl">Base url of Twitter Search API.  May be null to use the default "https://api.twitter.com/1.1/search/" value.</param>
         public TwitterContext(ITwitterExecute execute, string baseUrl, string searchUrl)
         {
             if (execute == null)
@@ -88,12 +89,12 @@ namespace LinqToTwitter
             }
 
             TwitterExecutor = execute;
-            BaseUrl = string.IsNullOrEmpty(baseUrl) ? "https://api.twitter.com/1/" : baseUrl;
-            SearchUrl = string.IsNullOrEmpty(searchUrl) ? "https://search.twitter.com/" : searchUrl;
-            StreamingUrl = "https://stream.twitter.com/1/";
-            UserStreamUrl = "https://userstream.twitter.com/2/";
-            SiteStreamUrl = "https://sitestream.twitter.com/2b/";
-            UploadUrl = "https://upload.twitter.com/1/";
+            BaseUrl = string.IsNullOrEmpty(baseUrl) ? "https://api.twitter.com/1.1/" : baseUrl;
+            SearchUrl = string.IsNullOrEmpty(searchUrl) ? "https://api.twitter.com/1.1/search/" : searchUrl;
+            StreamingUrl = "https://stream.twitter.com/1.1/";
+            UserStreamUrl = "https://userstream.twitter.com/1.1/";
+            SiteStreamUrl = "https://sitestream.twitter.com/1.1/";
+            UploadUrl = "https://upload.twitter.com/1.1/";
 
 #if SILVERLIGHT && !WINDOWS_PHONE
 
@@ -116,8 +117,8 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="authorization">OAuth provider</param>
         /// <param name="execute">The <see cref="ITwitterExecute"/> object to use.</param>
-        /// <param name="baseUrl">Base url of Twitter API.  May be null to use the default "https://api.twitter.com/1/" value.</param>
-        /// <param name="searchUrl">Base url of Twitter Search API.  May be null to use the default "https://search.twitter.com/" value.</param>
+        /// <param name="baseUrl">Base url of Twitter API.  May be null to use the default "https://api.twitter.com/1.1/" value.</param>
+        /// <param name="searchUrl">Base url of Twitter Search API.  May be null to use the default "https://api.twitter.com/1.1/search/" value.</param>
         public TwitterContext(ITwitterAuthorizer authorization, ITwitterExecute execute, string baseUrl, string searchUrl)
         {
             if (authorization == null)
@@ -132,8 +133,8 @@ namespace LinqToTwitter
 
             TwitterExecutor = execute;
             TwitterExecutor.AuthorizedClient = authorization;
-            BaseUrl = string.IsNullOrEmpty(baseUrl) ? "https://api.twitter.com/1/" : baseUrl;
-            SearchUrl = string.IsNullOrEmpty(searchUrl) ? "https://search.twitter.com/" : searchUrl;
+            BaseUrl = string.IsNullOrEmpty(baseUrl) ? "https://api.twitter.com/1.1/" : baseUrl;
+            SearchUrl = string.IsNullOrEmpty(searchUrl) ? "https://api.twitter.com/1.1/" : searchUrl;
 
 #if SILVERLIGHT
             WebRequest.RegisterPrefix("http://", WebRequestCreator.ClientHttp);

@@ -95,10 +95,8 @@ namespace LinqToTwitter
 
             switch (Type)
             {
-                case BlockingType.Blocking:
-                    return BuildBlockingUrl(parameters);
-                case BlockingType.Exists:
-                    return BuildBlockingExistsUrl(parameters);
+                case BlockingType.List:
+                    return BuildListUrl(parameters);
                 case BlockingType.Ids:
                     return BuildBlockingIDsUrl(parameters);
                 default:
@@ -112,7 +110,7 @@ namespace LinqToTwitter
         /// <returns>base url + show segment</returns>
         Request BuildBlockingIDsUrl(Dictionary<string, string> parameters)
         {
-            var req = new Request(BaseUrl + "blocks/blocking/ids.json");
+            var req = new Request(BaseUrl + "blocks/ids.json");
             var urlParams = req.RequestParameters;
 
             if (parameters.ContainsKey("Cursor"))
@@ -125,23 +123,13 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// builds an url for seeing if a block exists on a user
-        /// </summary>
-        /// <param name="parameters">parameter list</param>
-        /// <returns>base url + show segment</returns>
-        Request BuildBlockingExistsUrl(Dictionary<string, string> parameters)
-        {
-            return BuildBlockingExistsUrlParameters(parameters, "blocks/exists.json");
-        }
-
-        /// <summary>
         /// builds an url for getting a list of blocked users
         /// </summary>
         /// <param name="parameters">parameter list</param>
         /// <returns>base url + show segment</returns>
-        Request BuildBlockingUrl(Dictionary<string, string> parameters)
+        Request BuildListUrl(Dictionary<string, string> parameters)
         {
-            return BuildBlockingUrlParameters(parameters, "blocks/blocking.json");
+            return BuildBlockingUrlParameters(parameters, "blocks/list.json");
         }
 
         /// <summary>
@@ -223,9 +211,6 @@ namespace LinqToTwitter
         /// <returns>List of Blocks</returns>
         public virtual List<T> ProcessResults(string responseJson)
         {
-
-            var blocksJson = JsonMapper.ToObject(responseJson);
-
             var blocks = new Blocks
             {
                 Type = Type,
@@ -237,35 +222,36 @@ namespace LinqToTwitter
                 Cursor = Cursor
             };
 
-            switch (Type)
+            if (string.IsNullOrEmpty(responseJson))
             {
-                case BlockingType.Blocking:
-                    HandleBlocking(blocks, blocksJson);
-                    break;
-                case BlockingType.Exists:
-                    HandleBlockingExists(blocks, blocksJson);
-                    break;
-                case BlockingType.Ids:
-                    HandleBlockingIDs(blocks, blocksJson);
-                    break;
-                default:
-                    throw new ArgumentException("Unhandled BlockingType.");
+                blocks.Users = new List<User>();
+            }
+            else
+            {
+                var blocksJson = JsonMapper.ToObject(responseJson);
+
+                switch (Type)
+                {
+                    case BlockingType.List:
+                        HandleList(blocks, blocksJson);
+                        break;
+                    case BlockingType.Ids:
+                        HandleBlockingIDs(blocks, blocksJson);
+                        break;
+                    default:
+                        throw new ArgumentException("Unhandled BlockingType.");
+                }
             }
 
             return new List<Blocks> { blocks }.OfType<T>().ToList();
         }
 
-        private void HandleBlocking(Blocks blocks, JsonData blocksJson)
+        private void HandleList(Blocks blocks, JsonData blocksJson)
         {
             blocks.Users =
                 (from JsonData user in blocksJson
                  select new User(user))
                 .ToList();
-        }
-
-        private void HandleBlockingExists(Blocks blocks, JsonData blocksJson)
-        {
-            blocks.User = new User(blocksJson);
         }
 
         private void HandleBlockingIDs(Blocks blocks, JsonData blocksJson)

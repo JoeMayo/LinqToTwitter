@@ -68,12 +68,6 @@ namespace LinqToTwitter
                 case AccountType.VerifyCredentials:
                     url = BuildVerifyCredentialsUrl(parameters).FullUrl;
                     break;
-                case AccountType.RateLimitStatus:
-                    url = BaseUrl + "account/rate_limit_status.json";
-                    break;
-                case AccountType.Totals:
-                    url = BaseUrl + "account/totals.json";
-                    break;
                 case AccountType.Settings:
                     url = BaseUrl + "account/settings.json";
                     break;
@@ -122,14 +116,6 @@ namespace LinqToTwitter
                         acct = HandleVerifyCredentialsResponse(responseJson);
                         break;
 
-                    case AccountType.RateLimitStatus:
-                        acct = HandleRateLimitResponse(responseJson);
-                        break;
-
-                    case AccountType.Totals:
-                        acct = HandleTotalsResponse(responseJson);
-                        break;
-
                     default:
                         throw new InvalidOperationException("The default case of ProcessResults should never execute because a Type must be specified.");
                 }
@@ -155,9 +141,6 @@ namespace LinqToTwitter
             {
                 switch ((AccountAction)theAction)
                 {
-                    case AccountAction.EndSession:
-                        acct = HandleEndSessionResponse(responseJson);
-                        break;
                     case AccountAction.Settings:
                         acct = HandleSettingsResponse(responseJson);
                         break;
@@ -196,25 +179,25 @@ namespace LinqToTwitter
             return acct;
         }
 
-        internal Account HandleRateLimitResponse(string responseJson)
-        {
-            var status = JsonMapper.ToObject(responseJson);
+        //internal Account HandleRateLimitResponse(string responseJson)
+        //{
+        //    var status = JsonMapper.ToObject(responseJson);
 
-            var acct = new Account
-            {
-                Type = Type,
-                RateLimitStatus = new RateLimitStatus
-                {
-                    HourlyLimit = status.GetValue<int>("hourly_limit"),
-                    RemainingHits = status.GetValue<int>("remaining_hits"),
-                    ResetTime = status.GetValue<string>("reset_time").GetDate(DateTime.MaxValue),
-                    ResetTimeInSeconds = status.GetValue<int>("reset_time_in_seconds")
-                }
-            };
+        //    var acct = new Account
+        //    {
+        //        Type = Type,
+        //        RateLimitStatus = new RateLimitStatus
+        //        {
+        //            HourlyLimit = status.GetValue<int>("hourly_limit"),
+        //            RemainingHits = status.GetValue<int>("remaining_hits"),
+        //            ResetTime = status.GetValue<string>("reset_time").GetDate(DateTime.MaxValue),
+        //            ResetTimeInSeconds = status.GetValue<int>("reset_time_in_seconds")
+        //        }
+        //    };
 
 
-            return acct;
-        }
+        //    return acct;
+        //}
 
         private Account HandleVerifyCredentialsResponse(string responseJson)
         {
@@ -224,41 +207,6 @@ namespace LinqToTwitter
             {
                 Type = Type,
                 User = new User(user)
-            };
-
-            return acct;
-        }
-
-        internal Account HandleTotalsResponse(string responseJson)
-        {
-            var totals = JsonMapper.ToObject(responseJson);
-
-            var acct = new Account
-            {
-                Type = Type,
-                Totals = new Totals
-                {
-                    Favorites = totals.GetValue<int>("favorites"),
-                    Followers = totals.GetValue<int>("followers"),
-                    Friends = totals.GetValue<int>("friends"),
-                    Updates = totals.GetValue<int>("updates")
-                }
-            };
-
-            return acct;
-        }
-
-        internal Account HandleEndSessionResponse(string responseJson)
-        {
-            var endSession = JsonMapper.ToObject(responseJson);
-
-            var acct = new Account
-            {
-                EndSessionStatus = new TwitterHashResponse
-                {
-                    Request = endSession.GetValue<string>("request"),
-                    Error = endSession.GetValue<string>("error")
-                }
             };
 
             return acct;

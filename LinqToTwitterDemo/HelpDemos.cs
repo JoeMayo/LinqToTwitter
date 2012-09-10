@@ -15,24 +15,8 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         public static void Run(TwitterContext twitterCtx)
         {
-            //PerformHelpTest(twitterCtx);
             //GetHelpConfiguration(twitterCtx);
-            GetHelpLanguages(twitterCtx);
-        }
-
-        /// <summary>
-        /// shows how to perform a help test
-        /// </summary>
-        /// <param name="twitterCtx">TwitterContext</param>
-        private static void PerformHelpTest(TwitterContext twitterCtx)
-        {
-            var helpResult =
-                (from test in twitterCtx.Help
-                 where test.Type == HelpType.Test
-                 select test)
-                .SingleOrDefault();
-
-            Console.WriteLine("Test Result: " + helpResult.OK);
+            //GetHelpLanguages(twitterCtx);
         }
 
         /// <summary>

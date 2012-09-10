@@ -46,7 +46,7 @@ namespace LinqToTwitterXUnitTests.AccountTests
 
             execMock.Verify(exec =>
                 exec.ExecuteTwitter(
-                    "https://api.twitter.com/1/account/update_profile.json",
+                    "https://api.twitter.com/1.1/account/update_profile.json",
                     It.IsAny<Dictionary<string, string>>(),
                     It.IsAny<Func<string, User>>()),
                 Times.Once());
@@ -148,7 +148,7 @@ namespace LinqToTwitterXUnitTests.AccountTests
 
             execMock.Verify(exec =>
                 exec.PostTwitterFile(
-                    "https://api.twitter.com/1/account/update_profile_image.json",
+                    "https://api.twitter.com/1.1/account/update_profile_image.json",
                     It.IsAny<Dictionary<string, string>>(),
                     It.IsAny<string>(),
                     It.IsAny<IRequestProcessor<User>>()),
@@ -184,7 +184,7 @@ namespace LinqToTwitterXUnitTests.AccountTests
 
             execMock.Verify(exec =>
                 exec.ExecuteTwitter(
-                    "https://api.twitter.com/1/account/update_profile_colors.json",
+                    "https://api.twitter.com/1.1/account/update_profile_colors.json",
                     It.IsAny<Dictionary<string, string>>(),
                     It.IsAny<Func<string, User>>()),
                 Times.Once());
@@ -219,13 +219,13 @@ namespace LinqToTwitterXUnitTests.AccountTests
                     It.IsAny<string>(),
                     It.IsAny<IRequestProcessor<User>>()))
                 .Returns(SingleUserResponse);
-            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "https://api.twitter.com/1.1/", "");
 
             User actual = ctx.UpdateAccountBackgroundImage(ImageFilePath, Tile, Use, SkipStatus);
 
             execMock.Verify(exec =>
                 exec.PostTwitterFile(
-                    "https://api.twitter.com/1/account/update_profile_background_image.json",
+                    "https://api.twitter.com/1.1/account/update_profile_background_image.json",
                     It.IsAny<Dictionary<string, string>>(),
                     It.IsAny<string>(),
                     It.IsAny<IRequestProcessor<User>>()),
@@ -287,7 +287,7 @@ namespace LinqToTwitterXUnitTests.AccountTests
 
             execMock.Verify(exec =>
                 exec.ExecuteTwitter(
-                    "https://api.twitter.com/1/account/settings.json",
+                    "https://api.twitter.com/1.1/account/settings.json",
                     parameters,
                     It.IsAny<Func<string, Account>>()),
                 Times.Once());

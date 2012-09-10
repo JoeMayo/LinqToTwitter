@@ -31,7 +31,7 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void DestroySavedSearchDemo(TwitterContext twitterCtx)
         {
-            var savedSearch = twitterCtx.DestroySavedSearch(101352438);
+            var savedSearch = twitterCtx.DestroySavedSearch(167246334);
 
             Console.WriteLine("ID: {0}, Search: {1}", savedSearch.ID, savedSearch.Name);
         }
@@ -81,7 +81,7 @@ namespace LinqToTwitterDemo
 
             foreach (var search in savedSearches)
             {
-                Console.WriteLine("ID: {0}, Search: {1}", search.ID, search.Name);
+                Console.WriteLine("ID: {0}, Search: {1}", search.IDString, search.Name);
             }
         }
     }

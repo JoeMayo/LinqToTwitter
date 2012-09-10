@@ -109,7 +109,7 @@ namespace LinqToTwitter
         /// <returns>base url + parameters</returns>
         private Request BuildFavoritesUrlParameters(Dictionary<string, string> parameters)
         {
-            var req = new Request(BaseUrl + "favorites.json");
+            var req = new Request(BaseUrl + "favorites/list.json");
             var urlParams = req.RequestParameters;
 
             if (parameters.ContainsKey("UserID"))

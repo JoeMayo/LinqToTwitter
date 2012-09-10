@@ -274,39 +274,6 @@ namespace LinqToTwitterXUnitTests.UserTests
         }
 
         [Fact]
-        public void BuildUrl_Constructs_ProfileImage_Url()
-        {
-            const string ExpectedUrl = "https://api.twitter.com/1/users/profile_image.json?screen_name=JoeMayo&size=bigger";
-            var reqProc = new UserRequestProcessor<User> { BaseUrl = "https://api.twitter.com/1/" };
-            var parameters = new Dictionary<string, string>
-            {
-                { "Type", ((int)UserType.ProfileImage).ToString() },
-                { "ScreenName", "JoeMayo" },
-                { "ImageSize", ProfileImageSize.Bigger.ToString() }
-            };
-
-            Request req = reqProc.BuildUrl(parameters);
-
-            Assert.Equal(ExpectedUrl, req.FullUrl);
-        }
-
-        [Fact]
-        public void BuildUrl_Throws_On_Missing_ScreenName_For_ProfileImage()
-        {
-            var reqProc = new UserRequestProcessor<User> { BaseUrl = "https://api.twitter.com/1/" };
-            var parameters = new Dictionary<string, string>
-            {
-                { "Type", ((int)UserType.ProfileImage).ToString() },
-                //{ "ScreenName", "JoeMayo" },
-                { "ImageSize", ProfileImageSize.Bigger.ToString() }
-            };
-
-            var ex = Assert.Throws<ArgumentException>(() => reqProc.BuildUrl(parameters));
-
-            Assert.Equal("ScreenName", ex.ParamName);
-        }
-
-        [Fact]
         public void BuildUrl_Throws_On_Missing_Type()
         {
             var reqProc = new UserRequestProcessor<User> { BaseUrl = "https://api.twitter.com/1/" };
@@ -622,21 +589,6 @@ namespace LinqToTwitterXUnitTests.UserTests
             List<User> users = userProc.ProcessResults(string.Empty);
 
             Assert.Empty(users);
-        }
-
-        [Fact]
-        public void ProcessResults_Parses_ProfileImage_Response()
-        {
-            const string ExpectedUrl = "http://myuri.jpg";
-            var reqProc = new UserRequestProcessor<User> { Type = UserType.ProfileImage, BaseUrl = "http://api.twitter.com/1/" };
-
-            List<User> userList = reqProc.ProcessResults(ImageResponse);
-
-            Assert.NotNull(userList);
-            Assert.Single(userList);
-            var user = userList.Single();
-            Assert.NotNull(user);
-            Assert.Equal(ExpectedUrl, user.ProfileImage);
         }
 
         const string SingleUserResponse = @"{

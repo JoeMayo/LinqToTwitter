@@ -165,18 +165,6 @@ Module Module1
 
     End Sub
 
-    Private Sub SearchCurrentTrendsDemo(ByVal twitterCtx As TwitterContext)
-        Dim trends = _
-            From trnd In twitterCtx.Trends _
-            Where trnd.Type = TrendType.Trend _
-            And trnd.ExcludeHashtags = True
-
-        For Each trnd In trends
-            Console.WriteLine("Name: {0}, Query: {1}", _
-                              trnd.Name, trnd.Query)
-        Next
-    End Sub
-
     Private Sub VerifyAccountCredentialsDemo(ByVal twitterCtx As TwitterContext)
         Dim accounts = _
             From acct In twitterCtx.Account _
@@ -247,7 +235,7 @@ Module Module1
         Console.WriteLine("Query: " & Environment.NewLine)
 
         For Each searchResult In queryResults
-            For Each entry In searchResult.Results
+            For Each entry In searchResult.Statuses
                 Console.WriteLine( _
                     "ID: {0}, Source: {1} - Content: {2}" & Environment.NewLine, _
                     entry.ID, entry.Source, entry.Text)

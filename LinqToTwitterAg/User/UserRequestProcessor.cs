@@ -159,8 +159,6 @@ namespace LinqToTwitter
                     return BuildContributeesUrl(parameters);
                 case UserType.Contributors:
                     return BuildContributorsUrl(parameters);
-                case UserType.ProfileImage:
-                    return BuildProfileImageUrl(parameters);
                 default:
                     throw new InvalidOperationException("The default case of BuildUrl should never execute because a Type must be specified.");
             }
@@ -395,31 +393,6 @@ namespace LinqToTwitter
             return req;
         }
 
-        Request BuildProfileImageUrl(Dictionary<string, string> parameters)
-        {
-            if (!parameters.ContainsKey("ScreenName"))
-            {
-                throw new ArgumentException("Parameters must include either UserID or ScreenName.", "ScreenName");
-            }
-
-            var req = new Request(BaseUrl + "users/profile_image.json");
-            var urlParams = req.RequestParameters;
-
-            if (parameters.ContainsKey("ScreenName"))
-            {
-                ScreenName = parameters["ScreenName"];
-                urlParams.Add(new QueryParameter("screen_name", parameters["ScreenName"]));
-            }
-
-            if (parameters.ContainsKey("ImageSize"))
-            {
-                ImageSize = (ProfileImageSize)Enum.Parse(typeof(ProfileImageSize), parameters["ImageSize"], true);
-                urlParams.Add(new QueryParameter("size", ImageSize.ToString().ToLower()));
-            }
-
-            return req;
-        }
-
         /// <summary>
         /// Transforms Twitter response into List of User
         /// </summary>
@@ -450,9 +423,6 @@ namespace LinqToTwitter
                 case UserType.Lookup:
                 case UserType.Search:
                     userList = HandleMultipleUserResponse(userJson);
-                    break;
-                case UserType.ProfileImage:
-                    userList = HandleProfileImageResponse(userJson);
                     break;
                 default:
                     userList = new List<User>();
@@ -522,17 +492,6 @@ namespace LinqToTwitter
                 .ToList();
 
             return userList;
-        }
-
-        private List<User> HandleProfileImageResponse(JsonData userJson)
-        {
-            return new List<User>
-            {
-                new User
-                {
-                    ProfileImage = userJson.GetValue<string>("imageUrl")
-                }
-            };
         }
 
         public T ProcessActionResult(string responseJson, Enum theAction)

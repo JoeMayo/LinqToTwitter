@@ -39,10 +39,10 @@ namespace LinqToTwitterDemo
             try
             {
                 if (searchResponse != null)
-                    searchResponse.Results.ForEach(
+                    searchResponse.Statuses.ForEach(
                         tweet => Console.WriteLine(
                             "User Name: {0}, Tweet: {1}",
-                            tweet.FromUserName,
+                            tweet.User.Identifier.ScreenName,
                             tweet.Text));
             }
             catch (TwitterQueryException tqEx)

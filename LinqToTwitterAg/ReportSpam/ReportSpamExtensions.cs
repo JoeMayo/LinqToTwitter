@@ -35,7 +35,7 @@ namespace LinqToTwitter
                 throw new ArgumentException("Either id, userID, or screenName is a required parameter.");
             }
 
-            string reportSpamUrl = ctx.BaseUrl + "report_spam.json";
+            string reportSpamUrl = ctx.BaseUrl + "users/report_spam.json";
 
             var createParams = new Dictionary<string, string>
                 {

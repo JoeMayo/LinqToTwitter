@@ -111,13 +111,16 @@ namespace LinqToTwitter
         private Request BuildShowUrl(Dictionary<string, string> parameters)
         {
             const string IdParam = "ID";
-            if (parameters == null || !parameters.ContainsKey("ID"))
+            if (parameters == null || !parameters.ContainsKey(IdParam))
                 throw new ArgumentNullException(IdParam, "ID is required.");
 
-            ID = ulong.Parse(parameters["ID"]);
+            var req = new Request(BaseUrl + "direct_messages/show.json");
+            var urlParams = req.RequestParameters;
 
-            var url = BuildUrlHelper.TransformIDUrl(parameters, "direct_messages/show.json");
-            return new Request(BaseUrl + url);
+            ID = ulong.Parse(parameters[IdParam]);
+            urlParams.Add(new QueryParameter("id", ID.ToString()));
+
+            return req;
         }
 
         /// <summary>

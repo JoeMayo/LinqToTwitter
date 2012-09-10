@@ -211,7 +211,7 @@ namespace LinqToTwitter
             // then adding this later would break a lot of code - Joe
             Type = RequestProcessorHelper.ParseQueryEnumType<SearchType>(parameters["Type"]);
 
-            return BuildSearchUrlParameters(parameters, "search.json");
+            return BuildSearchUrlParameters(parameters, "tweets.json");
         }
 
         /// <summary>
@@ -456,136 +456,12 @@ namespace LinqToTwitter
                 //WithLinks = WithLinks,
                 WithRetweets = WithRetweets,
                 IncludeEntities = IncludeEntities,
-                CompletedIn = search.GetValue<decimal>("completed_in"),
-                MaxID = search.GetValue<ulong>("max_id"),
-                NextPage = search.GetValue<string>("next_page"),
-                PageResult = search.GetValue<int>("page"),
-                QueryResult = search.GetValue<string>("query"),
-                ResultsPerPageResult = search.GetValue<int>("results_per_page"),
-                SinceIDResult = search.GetValue<ulong>("since_id"),
-                RefreshUrl = search.GetValue<string>("refresh_url"),
-                Results =
-                    (from JsonData result in search["results"]
-                     let entities = result.GetValue<JsonData>("entities")
-                     let hashTagEntities = entities.GetValue<JsonData>("hashtags")
-                     let mediaEntities = entities.GetValue<JsonData>("media")
-                     let urlEntities = entities.GetValue<JsonData>("urls")
-                     let userEntities = entities.GetValue<JsonData>("user_mentions")
-                     let geo = result.GetValue<JsonData>("geo")
-                     let coordinates = geo.GetValue<JsonData>("coordinates")
-                     let metadata = result.GetValue<JsonData>("metadata")
-                     select new SearchEntry
-                     {
-                         CreatedAt = DateTimeOffset.Parse(result.GetValue<string>("created_at")),
-                         Entities = new Entities
-                         {
-                             HashTagMentions =
-                                 hashTagEntities == null
-                                     ? new List<HashTagMention>()
-                                     : (from JsonData hash in hashTagEntities
-                                        let indices = hash.GetValue<JsonData>("indices")
-                                        select new HashTagMention
-                                        {
-                                            Tag = hash.GetValue<string>("text"),
-                                            Start = indices.Count > 0 ? (int)indices[0] : 0,
-                                            End = indices.Count > 1 ? (int)indices[1] : 0
-                                        })
-                                        .ToList(),
-                             MediaMentions =
-                                 mediaEntities == null
-                                     ? new List<MediaMention>()
-                                     : (from JsonData media in mediaEntities
-                                        let indices = media.GetValue<JsonData>("indices")
-                                        let sizes = media.GetValue<JsonData>("sizes")
-                                        select new MediaMention
-                                        {
-                                            DisplayUrl = media.GetValue<string>("display_url"),
-                                            ExpandedUrl = media.GetValue<string>("expanded_url"),
-                                            ID = media.GetValue<ulong>("id"),
-                                            MediaUrl = media.GetValue<string>("media_url"),
-                                            MediaUrlHttps = media.GetValue<string>("media_url_https"),
-                                            Sizes =
-                                                (from key in (sizes as IDictionary<string, JsonData>).Keys as List<string>
-                                                 let sizesKey = sizes.GetValue<JsonData>(key)
-                                                 select new PhotoSize
-                                                 {
-                                                     Type = key,
-                                                     Width = sizesKey.GetValue<int>("w"),
-                                                     Height = sizesKey.GetValue<int>("h"),
-                                                     Resize = sizesKey.GetValue<string>("resize")
-                                                 })
-                                                .ToList(),
-                                            Type = media.GetValue<string>("type"),
-                                            Url = media.GetValue<string>("url"),
-                                            Start = indices.Count > 0 ? (int)indices[0] : 0,
-                                            End = indices.Count > 1 ? (int)indices[1] : 0
-                                        })
-                                        .ToList(),
-                             UrlMentions =
-                                 urlEntities == null
-                                     ? new List<UrlMention>()
-                                     : (from JsonData url in urlEntities
-                                        let indices = url.GetValue<JsonData>("indices")
-                                        select new UrlMention
-                                        {
-                                            Url = url.GetValue<string>("url"),
-                                            DisplayUrl = url.GetValue<string>("display_url"),
-                                            ExpandedUrl = url.GetValue<string>("expanded_url"),
-                                            Start = indices.Count > 0 ? (int)indices[0] : 0,
-                                            End = indices.Count > 1 ? (int)indices[1] : 0
-                                        })
-                                       .ToList(),
-                             UserMentions =
-                                 userEntities == null
-                                     ? new List<UserMention>()
-                                     : (from JsonData user in userEntities
-                                        let indices = user.GetValue<JsonData>("indices")
-                                        select new UserMention
-                                        {
-                                            ScreenName = user.GetValue<string>("screen_name"),
-                                            Name = user.GetValue<string>("name"),
-                                            Id = user.GetValue<ulong>("id"),
-                                            Start = indices.Count > 0 ? (int)indices[0] : 0,
-                                            End = indices.Count > 1 ? (int)indices[1] : 0
-                                        })
-                                       .ToList()
-                         },
-                         FromUser = result.GetValue<string>("from_user"),
-                         FromUserID = result.GetValue<ulong>("from_user_id"),
-                         FromUserName = result.GetValue<string>("from_user_name"),
-                         Geo =
-                             geo == null
-                                 ? new Geometry { Coordinates = new List<Coordinate>() }
-                                 : new Geometry
-                                 {
-                                     Type = geo.GetValue<string>("type"),
-                                     Coordinates = new List<Coordinate>
-                                     {
-                                         new Coordinate
-                                         {
-                                             Latitude = coordinates.Count > 0 ? (double)coordinates[0] : 0,
-                                             Longitude = coordinates.Count > 1 ? (double)coordinates[1] : 0
-                                         }
-                                     }
-                                 },
-                         ID = result.GetValue<ulong>("id"),
-                         IsoLanguageCode = result.GetValue<string>("iso_language_code"),
-                         MetaData =
-                            metadata == null ?
-                                new SearchMetaData() :
-                                new SearchMetaData
-                                 {
-                                     RecentRetweets = metadata.GetValue<int>("recent_retweets"),
-                                     ResultType = TargetFramework.ParseEnum(metadata.GetValue<string>("result_type"), true, ResultType.Mixed)
-                                 },
-                         ProfileImageUrl = result.GetValue<string>("profile_image_url"),
-                         ProfileImageUrlHttps = result.GetValue<string>("profile_image_url_https"),
-                         Source = result.GetValue<string>("source"),
-                         Text = result.GetValue<string>("text"),
-                         ToUser = result.GetValue<string>("to_user"),
-                         ToUserID = result.GetValue<ulong>("to_user_id"),
-                         ToUserName = result.GetValue<string>("to_user_name")
-                     }).ToList()
+                Statuses =
+                    (from JsonData result in search["statuses"]
+                     select new Status(result))
+                    .ToList(),
+                SearchMetaData = 
+                    new SearchMetaData(search.GetValue<JsonData>("search_metadata"))
             };
 
             return searchResult;

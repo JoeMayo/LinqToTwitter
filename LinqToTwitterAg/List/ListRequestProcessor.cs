@@ -241,8 +241,6 @@ namespace LinqToTwitter
                     return BuildAllUrl(parameters);
                 case ListType.Lists:
                     return BuildListsUrl(parameters);
-                // TODO: List is deprecated
-                //case ListType.List: 
                 case ListType.Show:
                     return BuildShowUrl(parameters);
                 case ListType.Statuses:
@@ -303,7 +301,7 @@ namespace LinqToTwitter
                 throw new ArgumentException("Either UserID or ScreenName are required.", UserIDOrScreenNameParam);
             }
 
-            var req = new Request(BaseUrl + "lists.json");
+            var req = new Request(BaseUrl + "lists/list.json");
             var urlParams = req.RequestParameters;
 
             if (parameters.ContainsKey("UserID"))
@@ -966,8 +964,11 @@ namespace LinqToTwitter
   
         List<List> HandleMultipleListsResponse(JsonData listJson)
         {
+            JsonData listsEnumerable =
+                listJson.GetValue<JsonData>("lists") ?? listJson; 
+
             var lists =
-                (from JsonData list in listJson.GetValue<JsonData>("lists")
+                (from JsonData list in listsEnumerable
                  select new List(list))
                 .ToList();
 

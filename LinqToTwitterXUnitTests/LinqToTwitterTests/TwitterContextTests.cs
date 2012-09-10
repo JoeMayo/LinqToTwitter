@@ -19,8 +19,8 @@ namespace LinqToTwitterXUnitTests
         [Fact]
         public void TwitterContext_Single_Param_Constructor_Sets_Defaults()
         {
-            const string BaseUrl = "https://api.twitter.com/1/";
-            const string SearchUrl = "https://search.twitter.com/";
+            const string BaseUrl = "https://api.twitter.com/1.1/";
+            const string SearchUrl = "https://api.twitter.com/1.1/search/";
             ITwitterAuthorizer authorizedClient = new PinAuthorizer();
             var ctx = new TwitterContext(authorizedClient);
 
@@ -250,7 +250,7 @@ namespace LinqToTwitterXUnitTests
         [Fact]
         public void CreateRequestProcessor_Returns_RelatedResultsRequestProcessor()
         {
-            var ctx = new TwitterContext {BaseUrl = "https://api.twitter.com/1/"};
+            var ctx = new TwitterContext {BaseUrl = "https://api.twitter.com/1.1/"};
             var execMock = new Mock<ITwitterExecute>();
             ctx.TwitterExecutor = execMock.Object;
             var resultsQuery =
@@ -261,7 +261,7 @@ namespace LinqToTwitterXUnitTests
             var reqProc = ctx.CreateRequestProcessor<RelatedResults>(resultsQuery.Expression);
 
             Assert.IsType(typeof(RelatedResultsRequestProcessor<RelatedResults>), reqProc);
-            Assert.Equal("https://api.twitter.com/1/", reqProc.BaseUrl);
+            Assert.Equal("https://api.twitter.com/1.1/", reqProc.BaseUrl);
         }
 
         void InitializeTwitterContextForExecuteTest(out TwitterContext ctx, out Expression expression)
@@ -379,7 +379,7 @@ namespace LinqToTwitterXUnitTests
         [Fact]
         public void CreateRequestProcessor_Returns_UserStreamRequestProcessor()
         {
-            var ctx = new TwitterContext {StreamingUrl = "https://userstream.twitter.com/2/"};
+            var ctx = new TwitterContext {StreamingUrl = "https://userstream.twitter.com/1.1/"};
             var execMock = new Mock<ITwitterExecute>();
             ctx.TwitterExecutor = execMock.Object;
             var streamingQuery =
@@ -392,7 +392,7 @@ namespace LinqToTwitterXUnitTests
             Assert.IsType(typeof(UserStreamRequestProcessor<UserStream>), reqProc);
             var userStreamRequestProcessor = reqProc as UserStreamRequestProcessor<UserStream>;
             if (userStreamRequestProcessor != null)
-                Assert.Equal("https://userstream.twitter.com/2/", userStreamRequestProcessor.UserStreamUrl);
+                Assert.Equal("https://userstream.twitter.com/1.1/", userStreamRequestProcessor.UserStreamUrl);
             var streamRequestProcessor = reqProc as UserStreamRequestProcessor<UserStream>;
             if (streamRequestProcessor != null)
                 Assert.Equal(execMock.Object, streamRequestProcessor.TwitterExecutor);

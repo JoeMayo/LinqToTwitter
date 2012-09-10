@@ -29,7 +29,7 @@ namespace LinqToTwitter
                 throw new ArgumentException("id is a required parameter.", "id");
             }
 
-            var favoritesUrl = ctx.BaseUrl + "favorites/create/" + id + ".json";
+            var favoritesUrl = ctx.BaseUrl + "favorites/create.json";
 
             var reqProc = new StatusRequestProcessor<Status>();
 
@@ -39,7 +39,10 @@ namespace LinqToTwitter
             var resultsJson =
                 twitExe.ExecuteTwitter(
                     favoritesUrl,
-                    new Dictionary<string, string>(),
+                    new Dictionary<string, string>
+                    {
+                        {"id", id},
+                    },
                     response => reqProc.ProcessActionResult(response, FavoritesAction.SingleStatus));
 
             Status result = reqProc.ProcessActionResult(resultsJson, FavoritesAction.SingleStatus);
@@ -69,7 +72,7 @@ namespace LinqToTwitter
                 throw new ArgumentException("id is a required parameter.", "id");
             }
 
-            var favoritesUrl = ctx.BaseUrl + "favorites/destroy/" + id + ".json";
+            var favoritesUrl = ctx.BaseUrl + "favorites/destroy.json";
 
             var reqProc = new StatusRequestProcessor<Status>();
 
@@ -79,7 +82,10 @@ namespace LinqToTwitter
             var resultsJson =
                 twitExe.ExecuteTwitter(
                     favoritesUrl,
-                    new Dictionary<string, string>(),
+                    new Dictionary<string, string>
+                    {
+                        {"id", id},
+                    },
                     response => reqProc.ProcessActionResult(response, FavoritesAction.SingleStatus));
 
             Status result = reqProc.ProcessActionResult(resultsJson, FavoritesAction.SingleStatus);
