@@ -122,6 +122,7 @@
       <Link>Serialization\LitJson\README</Link>
     </None>
     <None Include="obj\Debug\DesignTimeResolveAssemblyReferencesInput.cache" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\LinqToTwitterAg\Account\Account.cs">
@@ -704,6 +705,7 @@
     <Compile Include="OAuth\LocalDataCredentials.cs" />
     <Compile Include="OAuth\RoamingDataCredentials.cs" />
     <Compile Include="OAuth\TemporaryDataCredentials.cs" />
+    <Compile Include="OAuth\WinRtAuthorizer.cs" />
     <Compile Include="OAuth\WinRtCredentials.cs" />
     <Compile Include="obj\Debug\TemporaryGeneratedFile_036C0B5B-1481-4323-8D20-8F5ADCB23D92.cs" />
     <Compile Include="obj\Debug\TemporaryGeneratedFile_E7A71F73-0F8D-4B9B-B56E-8E70B10BC5D3.cs" />
@@ -728,6 +730,17 @@
     <Folder Include="Serialization\Status\" />
     <Folder Include="Serialization\Trend\" />
     <Folder Include="Serialization\User\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.4.5.9\lib\winrt45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="SuiteValue.UI.Metro.Authentications">
+      <HintPath>..\packages\SuiteValue.UI.Metro.Authentications.0.0.2-rc\lib\winrt45\SuiteValue.UI.Metro.Authentications.dll</HintPath>
+    </Reference>
+    <Reference Include="SuiteValue.UI.Metro.TwitterAuthentication">
+      <HintPath>..\packages\SuiteValue.UI.Metro.TwitterAuthentication.0.0.1-rc\lib\winrt45\SuiteValue.UI.Metro.TwitterAuthentication.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' ">
     <VisualStudioVersion>11.0</VisualStudioVersion>

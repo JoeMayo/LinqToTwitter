@@ -2,12 +2,8 @@
  * Contributor: Sumit Maitra - Twitter @sumitkm
  * Date: 8/21/2012
  ******************************************/
-
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Windows.Storage;
 
 namespace LinqToTwitter
@@ -67,21 +63,17 @@ namespace LinqToTwitter
             SaveCredentialsToStorageFileAsync();
         }
 
-        void LoadCredentialsFromStorageFile()
+        async void LoadCredentialsFromStorageFile()
         {
-            Task<StorageFile> credentialsFileTask =
-                folder.CreateFileAsync(
+            var credentialsFile =
+                await folder.CreateFileAsync(
                     "Linq2TwitterCredentials.txt",
-                    CreationCollisionOption.OpenIfExists)
-                    .AsTask();
-            credentialsFileTask.Wait();
+                    CreationCollisionOption.OpenIfExists);
 
-            Task<string> credentialsStringTask = 
-                 FileIO.ReadTextAsync(credentialsFileTask.Result)
-                 .AsTask();
-            credentialsStringTask.Wait();
 
-            string credentialsString = credentialsStringTask.Result;
+            var credentialsString = await
+                 FileIO.ReadTextAsync(credentialsFile);
+            
             if (!string.IsNullOrWhiteSpace(credentialsString))
             {
                 string[] tempCredentialsArr = credentialsString.Split(',');
