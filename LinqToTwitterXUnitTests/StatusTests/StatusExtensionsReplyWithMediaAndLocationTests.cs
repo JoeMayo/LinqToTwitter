@@ -10,7 +10,7 @@ namespace LinqToTwitterXUnitTests.StatusTests
 {
     public class StatusExtensionsReplyWithMediaAndLocationTests
     {
-        const string ExpectedUploadUrl = "https://upload.twitter.com/1.1/statuses/update_with_media.json";
+        const string ExpectedUploadUrl = "https://api.twitter.com/1.1/statuses/update_with_media.json";
         const string FrenchLocale = "FR-fr";
 
         readonly Mock<TwitterContext> twitterCtx;

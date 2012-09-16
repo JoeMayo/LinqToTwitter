@@ -94,7 +94,6 @@ namespace LinqToTwitter
             StreamingUrl = "https://stream.twitter.com/1.1/";
             UserStreamUrl = "https://userstream.twitter.com/1.1/";
             SiteStreamUrl = "https://sitestream.twitter.com/1.1/";
-            UploadUrl = "https://upload.twitter.com/1.1/";
 
 #if SILVERLIGHT && !WINDOWS_PHONE
 
@@ -174,11 +173,6 @@ namespace LinqToTwitter
         /// base URL for accessing site stream APIs
         /// </summary>
         public string SiteStreamUrl { get; set; }
-
-        /// <summary>
-        /// twitter endpoint for update with media requests
-        /// </summary>
-        public string UploadUrl { get; set; }
 
         /// <summary>
         /// Only for streaming credentials, use OAuth for non-streaming APIs

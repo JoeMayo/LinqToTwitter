@@ -48,7 +48,7 @@ namespace LinqToTwitterDemo
             //StatusCountDemo(twitterCtx);
             //StatusJoinDemo(twitterCtx);
             //TrimUserDemo(twitterCtx);
-            //TweetWithMediaDemo(twitterCtx);
+            TweetWithMediaDemo(twitterCtx);
             //TweetEntityDemo(twitterCtx);
             //RetweetedByDemo(twitterCtx);
         }

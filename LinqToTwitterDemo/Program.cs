@@ -39,7 +39,7 @@ namespace LinqToTwitterDemo
                     //FavoritesDemos.Run(twitterCtx);
                     //FriendshipDemos.Run(twitterCtx);
                     //GeoDemos.Run(twitterCtx);
-                    HelpDemos.Run(twitterCtx);
+                    //HelpDemos.Run(twitterCtx);
                     //LegalDemos.Run(twitterCtx);
                     //ListDemos.Run(twitterCtx);
                     //RawDemos.Run(twitterCtx);

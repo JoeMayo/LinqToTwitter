@@ -11,7 +11,7 @@ namespace LinqToTwitterXUnitTests.StatusTests
 {
     public class StatusExtensionsTweetsWithMediaAndLocationTests
     {
-        readonly string expectedUploadUrl = "https://upload.twitter.com/1.1/statuses/update_with_media.json";
+        readonly string expectedUploadUrl = "https://api.twitter.com/1.1/statuses/update_with_media.json";
 
         readonly Mock<TwitterContext> twitterCtx;
         readonly Mock<ITwitterExecute> twitterExecute;

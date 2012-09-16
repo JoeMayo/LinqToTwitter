@@ -14,16 +14,6 @@ namespace LinqToTwitterXUnitTests.LinqToTwitterTests
         }
 
         [Fact]
-        public void UploadUrl_Returns_Default()
-        {
-            const string DefaultUploadUrl = "https://upload.twitter.com/1.1/";
-
-            string uploadUrl = new TwitterContext().UploadUrl;
-
-            Assert.Equal(DefaultUploadUrl, uploadUrl);
-        }
-
-        [Fact]
         public void StreamingUrl_Returns_Default()
         {
             const string DefaultStreamingUrl = "https://stream.twitter.com/1.1/";

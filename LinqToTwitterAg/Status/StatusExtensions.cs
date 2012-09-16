@@ -91,7 +91,7 @@ namespace LinqToTwitter
 
             twitterCtx.TwitterExecutor.AsyncCallback = callback;
 
-            var updateUrl = twitterCtx.UploadUrl + "statuses/update_with_media.json";
+            var updateUrl = twitterCtx.BaseUrl + "statuses/update_with_media.json";
 
             var reqProc = new StatusRequestProcessor<Status>();
 
