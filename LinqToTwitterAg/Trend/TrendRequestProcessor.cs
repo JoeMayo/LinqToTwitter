@@ -100,16 +100,10 @@ namespace LinqToTwitter
 
             switch (Type)
             {
-                case TrendType.Trend:
-                    return BuildLocationTrendsUrl(worldWoeId);
-                case TrendType.Daily:
-                    return BuildDailyTrendsUrl(parameters);
-                case TrendType.Weekly:
-                    return BuildWeeklyTrendsUrl(parameters);
                 case TrendType.Available:
                     return BuildAvailableTrendsUrl(parameters);
-                case TrendType.Location:
-                    return BuildLocationTrendsUrl(parameters);
+                case TrendType.Place:
+                    return BuildPlaceTrendsUrl(parameters);
                 default:
                     throw new InvalidOperationException("The default case of BuildUrl should never execute because a Type must be specified.");
             }
@@ -120,15 +114,18 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">parameters should contain WeoID</param>
         /// <returns>base url + location segment</returns>
-        private Request BuildLocationTrendsUrl(Dictionary<string, string> parameters)
+        private Request BuildPlaceTrendsUrl(Dictionary<string, string> parameters)
         {
             if (!parameters.ContainsKey(WeoIDParam))
                 throw new ArgumentException("WeoID is a required parameter.", WeoIDParam);
 
-            WeoID = int.Parse(parameters[WeoIDParam]);
-            var url = "trends/" + parameters[WeoIDParam] + ".json";
+            var req = new Request(BaseUrl + "trends/place.json");
+            var urlParams = req.RequestParameters;
 
-            return new Request(BaseUrl + url);
+            WeoID = int.Parse(parameters[WeoIDParam]);
+            urlParams.Add(new QueryParameter("id", parameters[WeoIDParam]));
+
+            return req;
         }
 
         /// <summary>
@@ -158,26 +155,6 @@ namespace LinqToTwitter
             }
 
             return req;
-        }
-
-        /// <summary>
-        /// builds an url for showing daily trends
-        /// </summary>
-        /// <param name="parameters">parameter list</param>
-        /// <returns>base url + show segment</returns>
-        private Request BuildDailyTrendsUrl(Dictionary<string, string> parameters)
-        {
-            return BuildTrendsUrlParameters(parameters, "trends/daily.json");
-        }
-
-        /// <summary>
-        /// builds an url for showing weekly trends
-        /// </summary>
-        /// <param name="parameters">parameter list</param>
-        /// <returns>base url + show segment</returns>
-        private Request BuildWeeklyTrendsUrl(Dictionary<string, string> parameters)
-        {
-            return BuildTrendsUrlParameters(parameters, "trends/weekly.json");
         }
 
         /// <summary>
@@ -229,14 +206,8 @@ namespace LinqToTwitter
                         trends = HandleAvailableResponse(responseJson);
                         break;
 
-                    case TrendType.Daily:
-                    case TrendType.Weekly:
-                        trends = HandleDailyWeeklyResponse(responseJson);
-                        break;
-
-                    case TrendType.Location:
-                    case TrendType.Trend:
-                        trends = HandleLocationResponse(responseJson);
+                    case TrendType.Place:
+                        trends = HandlePlaceResponse(responseJson);
                         break;
 
                     default:
@@ -257,58 +228,10 @@ namespace LinqToTwitter
         {
             var trend = new Trend();
 
-            if (!string.IsNullOrEmpty(responseJson))
-            {
-                //switch ((AccountAction)theAction)
-                //{
-                //    case AccountAction.EndSession:
-                //        acct = HandleEndSessionResponse(responseJson);
-                //        break;
-
-                //    default:
-                //        throw new InvalidOperationException("The default case of ProcessActionResult should never execute because a Type must be specified.");
-                //}
-            }
-
             return trend.ItemCast(default(T));
         }
 
-        private IEnumerable<Trend> HandleDailyWeeklyResponse(string responseJson)
-        {
-            var period = JsonMapper.ToObject(responseJson);
-            var asOf = TypeConversionExtensions.EpochBase + TimeSpan.FromSeconds(period.GetValue<int>("as_of"));
-            var emptyLocations = new List<Location>();
-            var trendHash = period.GetValue<JsonData>("trends") as IDictionary<string, JsonData>;
-
-            var flat = 
-                 from string trendDate in trendHash.Keys
-                 let slot = trendHash[trendDate]
-                 let trends =
-                 from JsonData trend in slot
-                     select new Trend
-                     {
-                         Type = Type,
-                         ExcludeHashtags = ExcludeHashtags,
-                         Date = Date,
-                         Latitude = Latitude,
-                         Longitude = Longitude,
-                         WeoID = WeoID,
-                         TrendDate = trendDate.GetDate(Date),
-                         Name = trend.GetValue<string>("name"),
-                         Query = trend.GetValue<string>("query"),
-                         SearchUrl = trend.GetValue<string>("url"),
-                         AsOf = asOf,
-                         Events = trend.GetValue<string>("events"),
-                         PromotedContent = trend.GetValue<string>("promoted_content"),
-                         Location = null,
-                         Locations = emptyLocations
-                     }
-                 select trends;
-
-            return flat.SelectMany(trend => trend);
-        }
-
-        private IEnumerable<Trend> HandleLocationResponse(string responseJson)
+        private IEnumerable<Trend> HandlePlaceResponse(string responseJson)
         {
             var responses = JsonMapper.ToObject(responseJson);
 

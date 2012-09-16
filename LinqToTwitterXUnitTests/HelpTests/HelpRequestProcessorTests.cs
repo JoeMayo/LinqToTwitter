@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using LinqToTwitter;
 using LinqToTwitterXUnitTests.Common;
 using Xunit;
@@ -13,35 +12,6 @@ namespace LinqToTwitterXUnitTests.HelpTests
         public HelpRequestProcessorTests()
         {
             TestCulture.SetCulture();
-        }
-
-        [Fact]
-        public void GetParameters_Reads_All_Parameters()
-        {
-            var helpReqProc = new HelpRequestProcessor<Help>();
-            Expression<Func<Help, bool>> expression =
-                help => help.Type == HelpType.Test;
-
-            var queryParams = helpReqProc.GetParameters(expression);
-
-            Assert.True(
-                queryParams.Contains(
-                    new KeyValuePair<string, string>("Type", ((int)HelpType.Test).ToString())));
-        }
-
-        [Fact]
-        public void BuildUrl_Generates_Test_Url()
-        {
-            const string ExpectedUrl = "https://api.twitter.com/1/help/test.json";
-            var helpReqProc = new HelpRequestProcessor<Help> { BaseUrl = "https://api.twitter.com/1/" };
-            var parameters = new Dictionary<string, string>
-             {
-                 {"Type", ((int) HelpType.Test).ToString()}
-             };
-
-            Request req = helpReqProc.BuildUrl(parameters);
-
-            Assert.Equal(ExpectedUrl, req.FullUrl);
         }
 
         [Fact]
@@ -94,20 +64,6 @@ namespace LinqToTwitterXUnitTests.HelpTests
             var helpReqProc = new HelpRequestProcessor<Help>();
 
             Assert.IsAssignableFrom<IRequestProcessorWantsJson>(helpReqProc);
-        }
-
-        [Fact]
-        public void ProcessResults_Handles_Test_Results()
-        {
-            var helpReqProc = new HelpRequestProcessor<Help> { BaseUrl = "https://api.twitter.com/1/" };
-
-            List<Help> helpList = helpReqProc.ProcessResults(HelpTestResponse);
-
-            Assert.NotNull(helpList);
-            Assert.Single(helpList);
-            Help help = helpList.Single();
-            Assert.Equal(HelpType.Test, help.Type);
-            Assert.True(help.OK);
         }
 
         [Fact]
@@ -185,8 +141,6 @@ namespace LinqToTwitterXUnitTests.HelpTests
             Assert.Equal(ExpectedLanguageStatus, language.Status);
             Assert.Equal(ExpectedLanguageCode, language.Code);
         }
-
-        const string HelpTestResponse = "ok";
 
         const string HelpConfigurationResponse = @"{
    ""characters_reserved_per_media"":21,

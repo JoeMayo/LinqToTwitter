@@ -18,17 +18,6 @@ namespace LinqToTwitterXUnitTests.TrendTests
         }
 
         [Fact]
-        public void ProcessResults_Handles_Trends()
-        {
-            var trendReqProc = new TrendRequestProcessor<Trend> { Type = TrendType.Trend };
-
-            List<Trend> trends = trendReqProc.ProcessResults(TestTrendQueryResponse);
-
-            Assert.Equal(10, trends.Count);
-            Assert.Equal(DateTime.Parse("2011-09-19").Date, trends[0].AsOf.Date);
-        }
-
-        [Fact]
         public void ProcessResults_Handles_Available()
         {
             var trendReqProc = new TrendRequestProcessor<Trend> { Type = TrendType.Available };
@@ -48,21 +37,9 @@ namespace LinqToTwitterXUnitTests.TrendTests
         }
 
         [Fact]
-        public void ProcessResults_Handles_Daily()
-        {
-            var expectedDateTime = new DateTime(2011, 9, 5, 11, 0, 0);
-            var trendReqProc = new TrendRequestProcessor<Trend> { Type = TrendType.Daily };
-
-            List<Trend> trends = trendReqProc.ProcessResults(TestDailyQueryResponse);
-
-            Assert.Equal(4, trends.Count);
-            Assert.Equal(expectedDateTime, trends.First().TrendDate);
-        }
-
-        [Fact]
         public void ProcessResults_Parses_Location()
         {
-            var trendProc = new TrendRequestProcessor<Trend> { Type = TrendType.Location };
+            var trendProc = new TrendRequestProcessor<Trend> { Type = TrendType.Place };
 
             List<Trend> trends = trendProc.ProcessResults(TestTrendQueryResponse);
 
@@ -105,44 +82,10 @@ namespace LinqToTwitterXUnitTests.TrendTests
         }
 
         [Fact]
-        public void BuildUrl_Constructs_Trends_Url()
-        {
-            const string ExpectedUrl = "https://api.twitter.com/1/trends/1.json";
-            var trendReqProc = new TrendRequestProcessor<Trend> { BaseUrl = "https://api.twitter.com/1/" };
-            var parameters =
-                new Dictionary<string, string>
-                {
-                    { "Type", ((int)TrendType.Trend).ToString(CultureInfo.InvariantCulture) }
-                };
-
-            Request req = trendReqProc.BuildUrl(parameters);
-
-            Assert.Equal(ExpectedUrl, req.FullUrl);
-        }
-
-        [Fact]
-        public void BuildWeeklyTrendsUrlTest()
-        {
-            const string ExpectedUrl = "https://api.twitter.com/1/trends/weekly.json?date=2009-01-01&exclude=hashtags";
-            var trendReqProc = new TrendRequestProcessor<Trend> { BaseUrl = "https://api.twitter.com/1/" };
-            var parameters =
-                new Dictionary<string, string>
-                {
-                    { "Type", ((int)TrendType.Weekly).ToString(CultureInfo.InvariantCulture) },
-                    { "Date", "2009-01-01" },
-                    { "ExcludeHashtags", "true" }
-                };
-
-            Request req = trendReqProc.BuildUrl(parameters);
-
-            Assert.Equal(ExpectedUrl, req.FullUrl);
-        }
-
-        [Fact]
         public void BuildUrl_Handles_Available_Trends()
         {
-            const string ExpectedUrl = "https://api.twitter.com/1/trends/available.json";
-            var trendReqProc = new TrendRequestProcessor<Trend> { BaseUrl = "https://api.twitter.com/1/" };
+            const string ExpectedUrl = "https://api.twitter.com/1.1/trends/available.json";
+            var trendReqProc = new TrendRequestProcessor<Trend> { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters =
                 new Dictionary<string, string>
                 {
@@ -155,46 +98,10 @@ namespace LinqToTwitterXUnitTests.TrendTests
         }
 
         [Fact]
-        public void BuildUrl_Constructs_Daily_Trends()
-        {
-            const string ExpectedUrl = "https://api.twitter.com/1/trends/daily.json?date=2009-01-01&exclude=hashtags";
-            var trendReqProc = new TrendRequestProcessor<Trend> { BaseUrl = "https://api.twitter.com/1/" };
-            var parameters =
-                new Dictionary<string, string>
-                {
-                    { "Type", ((int)TrendType.Daily).ToString(CultureInfo.InvariantCulture) },
-                    { "Date", "2009-01-01" },
-                    { "ExcludeHashtags", "true" }
-                };
-
-            Request req = trendReqProc.BuildUrl(parameters);
-
-            Assert.Equal(ExpectedUrl, req.FullUrl);
-        }
-
-        [Fact]
-        public void BuildUrl_Handles_DateTime_Param()
-        {
-            Thread.CurrentThread.CurrentUICulture = new CultureInfo("fr-FR");
-            const string ExpectedUrl = "https://api.twitter.com/1/trends/daily.json?date=2012-03-26";
-            var trendReqProc = new TrendRequestProcessor<Trend> { BaseUrl = "https://api.twitter.com/1/" };
-            var parameters =
-                new Dictionary<string, string>
-                {
-                    { "Type", ((int)TrendType.Daily).ToString(CultureInfo.InvariantCulture) },
-                    { "Date", "26/03/2012 00:00:00" }
-                };
-
-            Request req = trendReqProc.BuildUrl(parameters);
-
-            Assert.Equal(ExpectedUrl, req.FullUrl);
-        }
-
-        [Fact]
         public void BuildUrl_Constructs_AvailableTrends_Url()
         {
-            const string ExpectedUrl = "http://api.twitter.com/1/trends/available.json?lat=37.78215&long=-122.40060";
-            var trendReqProc = new TrendRequestProcessor<Trend> { BaseUrl = "http://api.twitter.com/1/" };
+            const string ExpectedUrl = "https://api.twitter.com/1.1/trends/available.json?lat=37.78215&long=-122.40060";
+            var trendReqProc = new TrendRequestProcessor<Trend> { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters =
                 new Dictionary<string, string>
                 {
@@ -211,7 +118,7 @@ namespace LinqToTwitterXUnitTests.TrendTests
         [Fact]
         public void BuildUrl_Throws_On_AvailableTrends_Without_Latitude()
         {
-            var trendReqProc = new TrendRequestProcessor<Trend> { BaseUrl = "http://api.twitter.com/1/" };
+            var trendReqProc = new TrendRequestProcessor<Trend> { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters =
                 new Dictionary<string, string>
                 {
@@ -225,14 +132,14 @@ namespace LinqToTwitterXUnitTests.TrendTests
         }
 
         [Fact]
-        public void BuildUrl_Constructs_LocationTrends_Url()
+        public void BuildUrl_Constructs_Place_Trends_Url()
         {
-            const string ExpectedUrl = "http://api.twitter.com/1/trends/1.json";
-            var trendReqProc = new TrendRequestProcessor<Trend> { BaseUrl = "http://api.twitter.com/1/" };
+            const string ExpectedUrl = "https://api.twitter.com/1.1/trends/place.json?id=1";
+            var trendReqProc = new TrendRequestProcessor<Trend> { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters =
                 new Dictionary<string, string>
                 {
-                    { "Type", ((int)TrendType.Location).ToString(CultureInfo.InvariantCulture) },
+                    { "Type", ((int)TrendType.Place).ToString(CultureInfo.InvariantCulture) },
                     { "WeoID", "1" }
                 };
 
@@ -242,13 +149,13 @@ namespace LinqToTwitterXUnitTests.TrendTests
         }
 
         [Fact]
-        public void BuildUrl_Throws_On_LocationTrends_WithoutWoeID()
+        public void BuildUrl_Throws_On_Place_Trends_WithoutWoeID()
         {
-            var trendReqProc = new TrendRequestProcessor<Trend> { BaseUrl = "http://api.twitter.com/1/" };
+            var trendReqProc = new TrendRequestProcessor<Trend> { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters =
                 new Dictionary<string, string>
                 {
-                    { "Type", ((int)TrendType.Location).ToString(CultureInfo.InvariantCulture) },
+                    { "Type", ((int)TrendType.Place).ToString(CultureInfo.InvariantCulture) },
                 };
 
             var ex = Assert.Throws<ArgumentException>(() => trendReqProc.BuildUrl(parameters));
@@ -259,7 +166,7 @@ namespace LinqToTwitterXUnitTests.TrendTests
         [Fact]
         public void BuildUrl_Throws_When_Type_Not_Provided()
         {
-            var trendReqProc = new TrendRequestProcessor<Trend> { BaseUrl = "https://api.twitter.com/1/" };
+            var trendReqProc = new TrendRequestProcessor<Trend> { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>();
 
             var ex = Assert.Throws<ArgumentException>(() => trendReqProc.BuildUrl(parameters));
@@ -270,7 +177,7 @@ namespace LinqToTwitterXUnitTests.TrendTests
         [Fact]
         public void BuildUrl_Throws_With_No_Parameters()
         {
-            var trendReqProc = new TrendRequestProcessor<Trend> { BaseUrl = "https://api.twitter.com/1/" };
+            var trendReqProc = new TrendRequestProcessor<Trend> { BaseUrl = "https://api.twitter.com/1.1/" };
 
             var ex = Assert.Throws<ArgumentException>(() => trendReqProc.BuildUrl(null));
 

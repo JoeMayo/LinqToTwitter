@@ -34,12 +34,12 @@ namespace LinqToTwitterXUnitTests.RawTests
         [Fact]
         public void BuildUrl_Returns_Full_Url()
         {
-            var rawReqProc = new RawRequestProcessor<Raw> { BaseUrl = "https://api.twitter.com/1/" };
+            var rawReqProc = new RawRequestProcessor<Raw> { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
              {
                  {"QueryString", "statuses/public_timeline.xml"},
              };
-            string expected = "https://api.twitter.com/1/statuses/public_timeline.xml";
+            string expected = "https://api.twitter.com/1.1/statuses/public_timeline.xml";
 
             Request req = rawReqProc.BuildUrl(parameters);
 
@@ -49,7 +49,7 @@ namespace LinqToTwitterXUnitTests.RawTests
         [Fact]
         public void BuildUrl_Requires_NonNull_QueryString()
         {
-            var rawReqProc = new RawRequestProcessor<Raw> { BaseUrl = "https://api.twitter.com/1/" };
+            var rawReqProc = new RawRequestProcessor<Raw> { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
             {
                 //{"QueryString", "statuses/public_timeline.xml"},
@@ -63,7 +63,7 @@ namespace LinqToTwitterXUnitTests.RawTests
         [Fact]
         public void BuildUrl_Requires_NonBlank_QueryString()
         {
-            var rawReqProc = new RawRequestProcessor<Raw> { BaseUrl = "https://api.twitter.com/1/" };
+            var rawReqProc = new RawRequestProcessor<Raw> { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
             {
                 {"QueryString", " "},
@@ -77,7 +77,7 @@ namespace LinqToTwitterXUnitTests.RawTests
         [Fact]
         public void BuildUrl_Resolves_Extra_Slash_Between_BaseUrl_And_QueryString()
         {
-            string baseUrlWithTrailingSlash = "https://api.twitter.com/1/";
+            string baseUrlWithTrailingSlash = "https://api.twitter.com/1.1/";
             string queryStringWithPrecedingSlash = "/statuses/public_timeline.xml";
 
             var rawReqProc = new RawRequestProcessor<Raw> { BaseUrl = baseUrlWithTrailingSlash };
@@ -85,7 +85,7 @@ namespace LinqToTwitterXUnitTests.RawTests
             {
                 {"QueryString", queryStringWithPrecedingSlash},
             };
-            string expected = "https://api.twitter.com/1/statuses/public_timeline.xml";
+            string expected = "https://api.twitter.com/1.1/statuses/public_timeline.xml";
 
             Request req = rawReqProc.BuildUrl(parameters);
 
@@ -95,7 +95,7 @@ namespace LinqToTwitterXUnitTests.RawTests
         [Fact]
         public void BuildUrl_Resolves_No_Slash_Between_BaseUrl_And_QueryString()
         {
-            string baseUrlWithoutTrailingSlash = "https://api.twitter.com/1";
+            string baseUrlWithoutTrailingSlash = "https://api.twitter.com/1.1";
             string queryStringWithoutPrecedingSlash = "statuses/public_timeline.xml";
 
             var rawReqProc = new RawRequestProcessor<Raw> { BaseUrl = baseUrlWithoutTrailingSlash };
@@ -103,7 +103,7 @@ namespace LinqToTwitterXUnitTests.RawTests
             {
                 {"QueryString", queryStringWithoutPrecedingSlash},
             };
-            string expected = "https://api.twitter.com/1/statuses/public_timeline.xml";
+            string expected = "https://api.twitter.com/1.1/statuses/public_timeline.xml";
 
             Request req = rawReqProc.BuildUrl(parameters);
 

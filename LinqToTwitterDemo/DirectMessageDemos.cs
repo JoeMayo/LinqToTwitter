@@ -29,7 +29,7 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void DestroyDirectMessageDemo(TwitterContext twitterCtx)
         {
-            var message = twitterCtx.DestroyDirectMessage("189178687374110720");
+            var message = twitterCtx.DestroyDirectMessage("243563161037455360");
 
             if (message != null)
             {
@@ -87,7 +87,7 @@ namespace LinqToTwitterDemo
             var directMsg =
                 (from dm in twitterCtx.DirectMessage
                  where dm.Type == DirectMessageType.Show &&
-                       dm.ID == 193540539663126529
+                       dm.ID == 2078013265
                  select dm)
                 .SingleOrDefault();
 
@@ -125,15 +125,9 @@ namespace LinqToTwitterDemo
         private static void DirectMessageSentByQueryDemo(TwitterContext twitterCtx)
         {
             var directMessages =
-                (from tweet in twitterCtx.DirectMessage
-                 where tweet.Type == DirectMessageType.SentBy &&
-                       tweet.Count == 2
-                 select new
-                 {
-                     tweet.SenderScreenName,
-                     tweet.ID,
-                     tweet.Text
-                 })
+                (from dm in twitterCtx.DirectMessage
+                 where dm.Type == DirectMessageType.SentBy
+                 select dm)
                 .ToList();
 
             directMessages.ForEach(

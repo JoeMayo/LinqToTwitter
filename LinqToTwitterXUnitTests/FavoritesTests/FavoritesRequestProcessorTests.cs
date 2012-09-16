@@ -32,7 +32,7 @@ namespace LinqToTwitterXUnitTests
         [Fact]
         public void ProcessResults_Returns_Empty_Collection_When_Empty_Results()
         {
-            var reqProc = new FavoritesRequestProcessor<Favorites> { BaseUrl = "http://api.twitter.com/1/" };
+            var reqProc = new FavoritesRequestProcessor<Favorites> { BaseUrl = "https://api.twitter.com/1.1/" };
 
             var favorites = reqProc.ProcessResults(string.Empty);
 
@@ -42,7 +42,7 @@ namespace LinqToTwitterXUnitTests
         [Fact]
         public void GetParameters_Handles_Input_Parameters()
         {
-            var favReqProc = new FavoritesRequestProcessor<Favorites> { BaseUrl = "https://api.twitter.com/1/" };
+            var favReqProc = new FavoritesRequestProcessor<Favorites> { BaseUrl = "https://api.twitter.com/1.1/" };
             Expression<Func<Favorites, bool>> expression =
                 fav =>
                     fav.Type == FavoritesType.Favorites &&
@@ -86,8 +86,8 @@ namespace LinqToTwitterXUnitTests
         [Fact]
         public void BuildUrl_Constructs_Favorites_Url()
         {
-            const string ExpectedUrl = "https://api.twitter.com/1/favorites.json?user_id=123&screen_name=JoeMayo&count=100&since_id=456&max_id=789&page=1&include_entities=true";
-            var favReqProc = new FavoritesRequestProcessor<Favorites> { BaseUrl = "https://api.twitter.com/1/" };
+            const string ExpectedUrl = "https://api.twitter.com/1.1/favorites/list.json?user_id=123&screen_name=JoeMayo&count=100&since_id=456&max_id=789&page=1&include_entities=true";
+            var favReqProc = new FavoritesRequestProcessor<Favorites> { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters =
                 new Dictionary<string, string>
                 {
@@ -110,7 +110,7 @@ namespace LinqToTwitterXUnitTests
         [Fact]
         public void BuildUrl_Throws_On_Missing_Type_Param()
         {
-            var favReqProc = new FavoritesRequestProcessor<Favorites> { BaseUrl = "https://api.twitter.com/1/" };
+            var favReqProc = new FavoritesRequestProcessor<Favorites> { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>();
 
             var ex = Assert.Throws<ArgumentException>(() => favReqProc.BuildUrl(parameters));
@@ -121,7 +121,7 @@ namespace LinqToTwitterXUnitTests
         [Fact]
         public void BuildUrl_Throws_On_Null_Params_Dictionary()
         {
-            var favReqProc = new FavoritesRequestProcessor<Favorites> { BaseUrl = "https://api.twitter.com/1/" };
+            var favReqProc = new FavoritesRequestProcessor<Favorites> { BaseUrl = "https://api.twitter.com/1.1/" };
 
             var ex = Assert.Throws<ArgumentException>(() => favReqProc.BuildUrl(null));
 

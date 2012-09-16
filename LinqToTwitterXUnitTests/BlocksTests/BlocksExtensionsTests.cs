@@ -39,18 +39,18 @@ namespace LinqToTwitterXUnitTests
                 It.IsAny<Dictionary<string, string>>(),
                 It.IsAny<Func<string, User>>()))
                     .Returns(BlocksUserJson);
-            var ctx = new TwitterContext(authMock.Object, execMock.Object, "https://api.twitter.com/1/", "");
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "https://api.twitter.com/1.1/", "");
             return ctx;
         }
 
         [Fact]
         public void CreateBlock_Handles_Response()
         {
-            const string Id = "1";
+            const ulong Id = 1;
             const bool SkipStatus = true;
             var ctx = InitializeTwitterContext();
 
-            User actual = ctx.CreateBlock(Id, SkipStatus);
+            User actual = ctx.CreateBlock(Id, null, SkipStatus);
 
             Assert.Equal("LINQ to Tweeter Test", actual.Name);
         }
@@ -58,38 +58,38 @@ namespace LinqToTwitterXUnitTests
         [Fact]
         public void CreateBlock_Builds_Url()
         {
-            const string Id = "1";
+            const ulong Id = 1;
             const bool SkipStatus = true;
             var ctx = InitializeTwitterContext();
 
-            ctx.CreateBlock(Id, SkipStatus);
+            ctx.CreateBlock(Id, null, SkipStatus);
 
             execMock.Verify(exec =>
                 exec.ExecuteTwitter(
-                    "https://api.twitter.com/1/blocks/create/1.json",
+                    "https://api.twitter.com/1.1/blocks/create.json",
                     It.IsAny<Dictionary<string, string>>(),
                     It.IsAny<Func<string, User>>()),
                 Times.Once());
         }
 
         [Fact]
-        public void CreateBlock_Throws_On_Null_ID()
+        public void CreateBlock_Throws_On_Null_UserID_And_ScreenName()
         {
             var ctx = InitializeTwitterContext();
 
-            var ex = Assert.Throws<ArgumentException>(() => ctx.CreateBlock(null, true));
+            var ex = Assert.Throws<ArgumentException>(() => ctx.CreateBlock(0, null, true));
 
-            Assert.Equal("id", ex.ParamName);
+            Assert.Equal("UserIDOrScreenName", ex.ParamName);
         }
 
         [Fact]
         public void DestroyBlock_Handles_Response()
         {
-            const string Id = "1";
+            const ulong Id = 1;
             const bool SkipStatus = true;
             var ctx = InitializeTwitterContext();
 
-            User actual = ctx.DestroyBlock(Id, SkipStatus);
+            User actual = ctx.DestroyBlock(Id, null, SkipStatus);
 
             Assert.Equal("LINQ to Tweeter Test", actual.Name);
         }
@@ -97,15 +97,15 @@ namespace LinqToTwitterXUnitTests
         [Fact]
         public void DestroyBlock_Builds_Url()
         {
-            const string Id = "1";
+            const ulong Id = 1;
             const bool SkipStatus = true;
             var ctx = InitializeTwitterContext();
 
-            ctx.DestroyBlock(Id, SkipStatus);
+            ctx.DestroyBlock(Id, null, SkipStatus);
 
             execMock.Verify(exec =>
                 exec.ExecuteTwitter(
-                    "https://api.twitter.com/1/blocks/destroy/1.json",
+                    "https://api.twitter.com/1.1/blocks/destroy.json",
                     It.IsAny<Dictionary<string, string>>(),
                     It.IsAny<Func<string, User>>()),
                 Times.Once());
@@ -116,9 +116,9 @@ namespace LinqToTwitterXUnitTests
         {
             var ctx = InitializeTwitterContext();
 
-            var ex = Assert.Throws<ArgumentException>(() => ctx.DestroyBlock(null, true));
+            var ex = Assert.Throws<ArgumentException>(() => ctx.DestroyBlock(0, null, true));
 
-            Assert.Equal("id", ex.ParamName);
+            Assert.Equal("UserIDOrScreenName", ex.ParamName);
         }
 
         const string BlocksUserJson = @"{

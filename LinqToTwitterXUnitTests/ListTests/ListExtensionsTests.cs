@@ -66,7 +66,7 @@ namespace LinqToTwitterXUnitTests.ListTests
 
             execMock.Verify(exec =>
                 exec.ExecuteTwitter(
-                    "https://api.twitter.com/1/lists/create.json",
+                    "https://api.twitter.com/1.1/lists/create.json",
                     parameters,
                     It.IsAny<Func<string, List>>()),
                 Times.Once());
@@ -111,7 +111,7 @@ namespace LinqToTwitterXUnitTests.ListTests
 
             execMock.Verify(exec =>
                 exec.ExecuteTwitter(
-                    "https://api.twitter.com/1/lists/update.json",
+                    "https://api.twitter.com/1.1/lists/update.json",
                     parameters,
                     It.IsAny<Func<string, List>>()),
                 Times.Once());
@@ -169,7 +169,7 @@ namespace LinqToTwitterXUnitTests.ListTests
 
             execMock.Verify(exec =>
                 exec.ExecuteTwitter(
-                    "https://api.twitter.com/1/lists/destroy.json",
+                    "https://api.twitter.com/1.1/lists/destroy.json",
                     parameters,
                     It.IsAny<Func<string, List>>()),
                 Times.Once());
@@ -223,7 +223,7 @@ namespace LinqToTwitterXUnitTests.ListTests
 
             execMock.Verify(exec =>
                 exec.ExecuteTwitter(
-                    "https://api.twitter.com/1/lists/members/create.json",
+                    "https://api.twitter.com/1.1/lists/members/create.json",
                     parameters,
                     It.IsAny<Func<string, List>>()),
                 Times.Once());
@@ -299,7 +299,7 @@ namespace LinqToTwitterXUnitTests.ListTests
 
             execMock.Verify(exec =>
                 exec.ExecuteTwitter(
-                    "https://api.twitter.com/1/lists/members/create_all.json",
+                    "https://api.twitter.com/1.1/lists/members/create_all.json",
                     parameters,
                     It.IsAny<Func<string, List>>()),
                 Times.Once());
@@ -355,7 +355,7 @@ namespace LinqToTwitterXUnitTests.ListTests
 
             execMock.Verify(exec =>
                 exec.ExecuteTwitter(
-                    "https://api.twitter.com/1/lists/members/create_all.json",
+                    "https://api.twitter.com/1.1/lists/members/create_all.json",
                     parameters,
                     It.IsAny<Func<string, List>>()),
                 Times.Once());
@@ -409,7 +409,7 @@ namespace LinqToTwitterXUnitTests.ListTests
 
             execMock.Verify(exec =>
                 exec.ExecuteTwitter(
-                    "https://api.twitter.com/1/lists/members/destroy.json",
+                    "https://api.twitter.com/1.1/lists/members/destroy.json",
                     parameters,
                     It.IsAny<Func<string, List>>()),
                 Times.Once());
@@ -451,7 +451,7 @@ namespace LinqToTwitterXUnitTests.ListTests
 
             execMock.Verify(exec =>
                 exec.ExecuteTwitter(
-                    "https://api.twitter.com/1/lists/subscribers/create.json",
+                    "https://api.twitter.com/1.1/lists/subscribers/create.json",
                     parameters,
                     It.IsAny<Func<string, List>>()),
                 Times.Once());
@@ -493,7 +493,7 @@ namespace LinqToTwitterXUnitTests.ListTests
 
             execMock.Verify(exec =>
                 exec.ExecuteTwitter(
-                    "https://api.twitter.com/1/lists/subscribers/destroy.json",
+                    "https://api.twitter.com/1.1/lists/subscribers/destroy.json",
                     parameters,
                     It.IsAny<Func<string, List>>()),
                 Times.Once());
@@ -517,7 +517,7 @@ namespace LinqToTwitterXUnitTests.ListTests
 
             execMock.Verify(exec =>
                 exec.ExecuteTwitter(
-                    "https://api.twitter.com/1/lists/members/destroy_all.json",
+                    "https://api.twitter.com/1.1/lists/members/destroy_all.json",
                     parameters,
                     It.IsAny<Func<string, List>>()),
                 Times.Once());
@@ -588,7 +588,7 @@ namespace LinqToTwitterXUnitTests.ListTests
 
             execMock.Verify(exec =>
                 exec.ExecuteTwitter(
-                    "https://api.twitter.com/1/lists/members/destroy_all.json",
+                    "https://api.twitter.com/1.1/lists/members/destroy_all.json",
                     parameters,
                     It.IsAny<Func<string, List>>()),
                 Times.Once());
@@ -613,7 +613,7 @@ namespace LinqToTwitterXUnitTests.ListTests
 
             execMock.Verify(exec =>
                 exec.ExecuteTwitter(
-                    "https://api.twitter.com/1/lists/members/destroy_all.json",
+                    "https://api.twitter.com/1.1/lists/members/destroy_all.json",
                     parameters,
                     It.IsAny<Func<string, List>>()),
                 Times.Once());

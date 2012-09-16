@@ -65,7 +65,7 @@ namespace LinqToTwitterXUnitTests.SavedSearchTests
 
             execMock.Verify(exec =>
                 exec.ExecuteTwitter(
-                    "https://api.twitter.com/1/saved_searches/create.json",
+                    "https://api.twitter.com/1.1/saved_searches/create.json",
                     parameters,
                     It.IsAny<Func<string, SavedSearch>>()),
                 Times.Once());
@@ -102,7 +102,7 @@ namespace LinqToTwitterXUnitTests.SavedSearchTests
 
             execMock.Verify(exec =>
                 exec.ExecuteTwitter(
-                    "https://api.twitter.com/1/saved_searches/destroy/123.json",
+                    "https://api.twitter.com/1.1/saved_searches/destroy/123.json",
                     parameters,
                     It.IsAny<Func<string, SavedSearch>>()),
                 Times.Once());

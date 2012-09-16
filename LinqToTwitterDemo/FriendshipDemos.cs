@@ -21,18 +21,18 @@ namespace LinqToTwitterDemo
             //CreateFriendshipAsyncDemo(twitterCtx);
             //FriendshipExistsDemo(twitterCtx);
             //FriendshipExistsProjectionDemo(twitterCtx);
-            //FriendshipShowDemo(twitterCtx);
+            FriendshipShowDemo(twitterCtx);
             //FriendshipNoRetweetIDsDemo(twitterCtx);
             //FriendshipIncomingDemo(twitterCtx);
             //FriendshipOutgoingDemo(twitterCtx);
             //FriendshipScreenNameLookupDemo(twitterCtx);
-            FriendshipUserIDLookupDemo(twitterCtx);
+            //FriendshipUserIDLookupDemo(twitterCtx);
             //UpdateSettingsDemo(twitterCtx);
         }
 
         private static void DestroyFriendshipDemo(TwitterContext twitterCtx)
         {
-            var user = twitterCtx.DestroyFriendship("LinqToTweeter", string.Empty, string.Empty);
+            var user = twitterCtx.DestroyFriendship("LinqToTweeter", string.Empty);
 
             Console.WriteLine(
                 "User Name: {0}, Status: {1}",
@@ -42,7 +42,7 @@ namespace LinqToTwitterDemo
 
         private static void CreateFriendshipFollowDemo(TwitterContext twitterCtx)
         {
-            var user = twitterCtx.CreateFriendship("JoeMayo", string.Empty, string.Empty, true);
+            var user = twitterCtx.CreateFriendship(string.Empty, "JoeMayo", true);
 
             Console.WriteLine(
                 "User Name: {0}, Status: {1}",
@@ -52,7 +52,7 @@ namespace LinqToTwitterDemo
 
         private static void CreateFriendshipNoDeviceUpdatesDemo(TwitterContext twitterCtx)
         {
-            var user = twitterCtx.CreateFriendship("JoeMayo", string.Empty, string.Empty, false);
+            var user = twitterCtx.CreateFriendship(string.Empty, "JoeMayo", false);
 
             Console.WriteLine(
                 "User Name: {0}, Status: {1}",
@@ -62,7 +62,7 @@ namespace LinqToTwitterDemo
 
         private static void CreateFriendshipAsyncDemo(TwitterContext twitterCtx)
         {
-            twitterCtx.CreateFriendship("JoeMayo", string.Empty, string.Empty, false,
+            twitterCtx.CreateFriendship(string.Empty, "JoeMayo", false,
                 response =>
                 {
                     User usr = response.State;

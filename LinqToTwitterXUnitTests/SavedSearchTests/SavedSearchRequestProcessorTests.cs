@@ -72,7 +72,7 @@ namespace LinqToTwitterXUnitTests.SavedSearchTests
         [Fact]
         public void GetParameters_Handles_Input_Parameters()
         {
-            var searchReqProc = new SavedSearchRequestProcessor<SavedSearch> { BaseUrl = "https://api.twitter.com/1/" };
+            var searchReqProc = new SavedSearchRequestProcessor<SavedSearch> { BaseUrl = "https://api.twitter.com/1.1/" };
             Expression<Func<SavedSearch, bool>> expression =
                 search =>
                     search.Type == SavedSearchType.Show &&
@@ -92,7 +92,7 @@ namespace LinqToTwitterXUnitTests.SavedSearchTests
         [Fact]
         public void BuildUrl_Show_Throws_On_Missing_ID()
         {
-            var searchReqProc = new SavedSearchRequestProcessor<SavedSearch> { BaseUrl = "https://api.twitter.com/1/" };
+            var searchReqProc = new SavedSearchRequestProcessor<SavedSearch> { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
             {
                 { "Type", SavedSearchType.Show.ToString() }
@@ -106,8 +106,8 @@ namespace LinqToTwitterXUnitTests.SavedSearchTests
         [Fact]
         public void BuildUrl_Constructs_Show_Url()
         {
-            const string ExpectedUrl = "https://api.twitter.com/1/saved_searches/show/123.json";
-            var searchReqProc = new SavedSearchRequestProcessor<SavedSearch> { BaseUrl = "https://api.twitter.com/1/" };
+            const string ExpectedUrl = "https://api.twitter.com/1.1/saved_searches/show/123.json";
+            var searchReqProc = new SavedSearchRequestProcessor<SavedSearch> { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
             {
                 { "Type", SavedSearchType.Show.ToString() },
@@ -122,8 +122,8 @@ namespace LinqToTwitterXUnitTests.SavedSearchTests
         [Fact]
         public void BuildUrl_Constructs_SavedSearches_Url()
         {
-            const string ExpectedUrl = "https://api.twitter.com/1/saved_searches.json";
-            var searchReqProc = new SavedSearchRequestProcessor<SavedSearch> { BaseUrl = "https://api.twitter.com/1/" };
+            const string ExpectedUrl = "https://api.twitter.com/1.1/saved_searches/list.json";
+            var searchReqProc = new SavedSearchRequestProcessor<SavedSearch> { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
             {
                 { "Type", SavedSearchType.Searches.ToString() }
@@ -137,7 +137,7 @@ namespace LinqToTwitterXUnitTests.SavedSearchTests
         [Fact]
         public void BuildUrl_Throws_On_Missing_Type()
         {
-            var searchReqProc = new SavedSearchRequestProcessor<SavedSearch>() { BaseUrl = "https://api.twitter.com/1/" };
+            var searchReqProc = new SavedSearchRequestProcessor<SavedSearch>() { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string> { };
 
             var ex = Assert.Throws<ArgumentException>(() => searchReqProc.BuildUrl(parameters));
@@ -148,7 +148,7 @@ namespace LinqToTwitterXUnitTests.SavedSearchTests
         [Fact]
         public void BuildUrl_Throws_On_Null_Parameters()
         {
-            var searchReqProc = new SavedSearchRequestProcessor<SavedSearch>() { BaseUrl = "https://api.twitter.com/1/" };
+            var searchReqProc = new SavedSearchRequestProcessor<SavedSearch>() { BaseUrl = "https://api.twitter.com/1.1/" };
 
             var ex = Assert.Throws<ArgumentException>(() => searchReqProc.BuildUrl(null));
 

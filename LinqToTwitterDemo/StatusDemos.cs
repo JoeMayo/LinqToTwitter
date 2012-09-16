@@ -27,7 +27,7 @@ namespace LinqToTwitterDemo
             //MentionsWithSinceIDStatusQueryDemo(twitterCtx);
             //MentionsWithPagingQueryDemo(twitterCtx);
             //SingleStatusQueryDemo(twitterCtx);
-            UpdateStatusDemo(twitterCtx);
+            //UpdateStatusDemo(twitterCtx);
             //UpdateStatusWrapLinksDemo(twitterCtx);
             //UpdateStatusWithCallbackDemo(twitterCtx);
             //UpdateStatusWithReplyDemo(twitterCtx);
@@ -81,26 +81,21 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void HomeStatusQueryDemo(TwitterContext twitterCtx)
         {
-            var friendTweets =
+            var tweets =
                 from tweet in twitterCtx.Status
                 where tweet.Type == StatusType.Home &&
-                      tweet.Page == 2
-                select new
-                {
-                    tweet.User.Name,
-                    tweet.RetweetedStatus,
-                    tweet.Text
-                };
+                      tweet.Count == 5
+                select tweet;
 
             Console.WriteLine("\nTweets for " + twitterCtx.UserName + "\n");
-            foreach (var tweet in friendTweets)
+            foreach (var tweet in tweets)
             {
                 Console.WriteLine(
-                    "Friend: " + tweet.Name +
+                    "Friend: " + tweet.User.Identifier.ScreenName +
                     "\nRetweeted by: " +
-                        (tweet.RetweetedStatus == null ?
-                            "Original Tweet" :
-                            tweet.RetweetedStatus.User.Name) +
+                        (tweet.Retweeted ?
+                           tweet.RetweetedStatus.User.Name :
+                           "Original Tweet") +
                     "\nTweet: " + tweet.Text + "\n");
             }
         }
@@ -235,7 +230,7 @@ namespace LinqToTwitterDemo
 
         private static void RetweetDemo(TwitterContext twitterCtx)
         {
-            var retweet = twitterCtx.Retweet("196991337554378752");
+            var retweet = twitterCtx.Retweet("242475182780973056");
 
             Console.WriteLine("Retweeted Tweet: ");
             Console.WriteLine(
@@ -252,7 +247,8 @@ namespace LinqToTwitterDemo
         {
             var publicTweets =
                 from tweet in twitterCtx.Status
-                where tweet.Type == StatusType.RetweetsOfMe
+                where tweet.Type == StatusType.Retweets &&
+                      tweet.ID == "196991337554378752"
                 select tweet;
 
             publicTweets.ToList().ForEach(
@@ -571,7 +567,7 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void DestroyStatusDemo(TwitterContext twitterCtx)
         {
-            var status = twitterCtx.DestroyStatus("197005200609910784");
+            var status = twitterCtx.DestroyStatus("243500255973351425");
 
             Console.WriteLine(
                 "(" + status.StatusID + ")" +

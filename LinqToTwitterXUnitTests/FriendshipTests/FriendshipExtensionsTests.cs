@@ -26,7 +26,6 @@ namespace LinqToTwitterXUnitTests.FriendshipTests
         [Fact]
         public void CreateFriendshipTest()
         {
-            const string Id = "1";
             const string UserID = "2";
             const string ScreenName = "JoeMayo";
             const bool Follow = false;
@@ -42,7 +41,7 @@ namespace LinqToTwitterXUnitTests.FriendshipTests
                 .Returns(SingleUserResponse);
             var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
 
-            User actual = ctx.CreateFriendship(Id, UserID, ScreenName, Follow);
+            User actual = ctx.CreateFriendship(UserID, ScreenName, Follow);
 
             Assert.Equal(expectedName, actual.Name);
         }
@@ -50,7 +49,6 @@ namespace LinqToTwitterXUnitTests.FriendshipTests
         [Fact]
         public void CreateFriendshipNoInputTest()
         {
-            string id = string.Empty;
             string userID = string.Empty;
             const bool Follow = false;
             var authMock = new Mock<ITwitterAuthorizer>();
@@ -64,15 +62,14 @@ namespace LinqToTwitterXUnitTests.FriendshipTests
                 .Returns(SingleUserResponse);
             var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
 
-            var ex = Assert.Throws<ArgumentException>(() => ctx.CreateFriendship(id, userID, null, Follow));
+            var ex = Assert.Throws<ArgumentException>(() => ctx.CreateFriendship(userID, null, Follow));
 
-            Assert.Equal("IdUserIDOrScreenName", ex.ParamName);
+            Assert.Equal("UserIDOrScreenName", ex.ParamName);
         }
 
         [Fact]
         public void DestroyFriendshipTest()
         {
-            const string Id = "1";
             const string UserID = "2";
             const string ScreenName = "JoeMayo";
             string expectedName = "Joe Mayo";
@@ -87,7 +84,7 @@ namespace LinqToTwitterXUnitTests.FriendshipTests
                 .Returns(SingleUserResponse);
             var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
 
-            User actual = ctx.DestroyFriendship(Id, UserID, ScreenName);
+            User actual = ctx.DestroyFriendship(UserID, ScreenName);
 
             Assert.Equal(expectedName, actual.Name);
         }
@@ -109,7 +106,7 @@ namespace LinqToTwitterXUnitTests.FriendshipTests
 
             var ex = Assert.Throws<ArgumentException>(() => ctx.DestroyFriendship(null, userID, null));
 
-            Assert.Equal("IdUserIDOrScreenName", ex.ParamName);
+            Assert.Equal("UserIDOrScreenName", ex.ParamName);
         }
 
         [Fact]

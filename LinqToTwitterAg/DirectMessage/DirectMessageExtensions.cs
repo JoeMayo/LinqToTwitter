@@ -99,7 +99,7 @@ namespace LinqToTwitter
                 throw new ArgumentException("id is a required parameter.", "id");
             }
 
-            var destroyUrl = ctx.BaseUrl + "direct_messages/destroy/" + id + ".json";
+            var destroyUrl = ctx.BaseUrl + "direct_messages/destroy.json";
 
             var reqProc = new DirectMessageRequestProcessor<DirectMessage>();
 
@@ -109,7 +109,10 @@ namespace LinqToTwitter
             var resultsJson =
                 twitExe.ExecuteTwitter(
                     destroyUrl,
-                    new Dictionary<string, string>(),
+                    new Dictionary<string, string>
+                    {
+                        {"id", id}
+                    },
                     response => reqProc.ProcessActionResult(response, DirectMessageType.Show));
 
             DirectMessage dm = reqProc.ProcessActionResult(resultsJson, DirectMessageType.Show);

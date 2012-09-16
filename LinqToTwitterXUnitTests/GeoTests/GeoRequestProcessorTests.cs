@@ -79,8 +79,8 @@ namespace LinqToTwitterXUnitTests.GeoTests
         [Fact]
         public void BuildUrl_Constructs_Reverse_Url()
         {
-            const string ExpectedUrl = "https://api.twitter.com/1/geo/reverse_geocode.json?lat=37.78215&long=-122.4006&accuracy=city&granularity=10&max_results=10";
-            var geoReqProc = new GeoRequestProcessor<Geo>() { BaseUrl = "https://api.twitter.com/1/" };
+            const string ExpectedUrl = "https://api.twitter.com/1.1/geo/reverse_geocode.json?lat=37.78215&long=-122.4006&accuracy=city&granularity=10&max_results=10";
+            var geoReqProc = new GeoRequestProcessor<Geo>() { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
              {
                  {"Type", ((int) GeoType.Reverse).ToString()},
@@ -100,7 +100,7 @@ namespace LinqToTwitterXUnitTests.GeoTests
         public void BuildUrl_ReverseL_Without_LatLong_Throws()
         {
             const string ExpectedLatLongParamName = "LatLong";
-            var geoReqProc = new GeoRequestProcessor<Geo>() { BaseUrl = "https://api.twitter.com/1/" };
+            var geoReqProc = new GeoRequestProcessor<Geo>() { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
              {
                  {"Type", ((int) GeoType.Reverse).ToString()},
@@ -117,8 +117,8 @@ namespace LinqToTwitterXUnitTests.GeoTests
         [Fact]
         public void BuildUrl_Constructs_ID_Url()
         {
-            const string ExpectedUrl = "https://api.twitter.com/1/geo/id/7695dd2ec2f86f2b.json";
-            var geoReqProc = new GeoRequestProcessor<Geo>() { BaseUrl = "https://api.twitter.com/1/" };
+            const string ExpectedUrl = "https://api.twitter.com/1.1/geo/id/7695dd2ec2f86f2b.json";
+            var geoReqProc = new GeoRequestProcessor<Geo>() { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
              {
                  {"Type", ((int) GeoType.ID).ToString()},
@@ -134,7 +134,7 @@ namespace LinqToTwitterXUnitTests.GeoTests
         public void BuildUrl_ID_Without_ID_Throws()
         {
             const string ExpectedIDParamName = "ID";
-            var geoReqProc = new GeoRequestProcessor<Geo>() { BaseUrl = "https://api.twitter.com/1/" };
+            var geoReqProc = new GeoRequestProcessor<Geo>() { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
              {
                  {"Type", ((int) GeoType.ID).ToString()},
@@ -148,8 +148,8 @@ namespace LinqToTwitterXUnitTests.GeoTests
         [Fact]
         public void BuildUrl_Constructs_Search_Url()
         {
-            const string ExpectedUrl = "https://api.twitter.com/1/geo/search.json?lat=37.78215&long=-122.4006&query=Twitter%20HQ&ip=168.143.171.180&accuracy=city&granularity=10&max_results=10&contained_within=123&attribute%3Astreet_address=123";
-            var geoReqProc = new GeoRequestProcessor<Geo>() { BaseUrl = "https://api.twitter.com/1/" };
+            const string ExpectedUrl = "https://api.twitter.com/1.1/geo/search.json?lat=37.78215&long=-122.4006&query=Twitter%20HQ&ip=168.143.171.180&accuracy=city&granularity=10&max_results=10&contained_within=123&attribute%3Astreet_address=123";
+            var geoReqProc = new GeoRequestProcessor<Geo>() { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
              {
                  {"Type", ((int) GeoType.Search).ToString()},
@@ -173,7 +173,7 @@ namespace LinqToTwitterXUnitTests.GeoTests
         public void BuildUrl_Search_With_Attribute_Missing_Equals_Symbol_Throws()
         {
             const string ExpectedAttributeParam = "Attribute";
-            var geoReqProc = new GeoRequestProcessor<Geo>() { BaseUrl = "https://api.twitter.com/1/" };
+            var geoReqProc = new GeoRequestProcessor<Geo>() { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
              {
                  {"Type", ((int) GeoType.Search).ToString()},
@@ -189,8 +189,8 @@ namespace LinqToTwitterXUnitTests.GeoTests
         [Fact]
         public void BuildUrl_Constructs_Similar_Places_Url()
         {
-            const string ExpectedUrl = "https://api.twitter.com/1/geo/similar_places.json?lat=37.78215&long=-122.4006&name=placeName&contained_within=123&attribute%3Astreet_address=123";
-            var geoReqProc = new GeoRequestProcessor<Geo>() { BaseUrl = "https://api.twitter.com/1/" };
+            const string ExpectedUrl = "https://api.twitter.com/1.1/geo/similar_places.json?lat=37.78215&long=-122.4006&name=placeName&contained_within=123&attribute%3Astreet_address=123";
+            var geoReqProc = new GeoRequestProcessor<Geo>() { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
              {
                  {"Type", ((int) GeoType.SimilarPlaces).ToString()},
@@ -210,7 +210,7 @@ namespace LinqToTwitterXUnitTests.GeoTests
         public void BuildUrl_For_Similar_Places_Requires_Lat_And_Long()
         {
             const string ExpectedParamName = "LatLong";
-            var geoReqProc = new GeoRequestProcessor<Geo>() { BaseUrl = "https://api.twitter.com/1/" };
+            var geoReqProc = new GeoRequestProcessor<Geo>() { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
              {
                  {"Type", ((int) GeoType.SimilarPlaces).ToString()},
@@ -230,7 +230,7 @@ namespace LinqToTwitterXUnitTests.GeoTests
         public void BuildUrl_For_Similar_Places_Requires_PlaceName()
         {
             const string ExpectedParamName = "PlaceName";
-            var geoReqProc = new GeoRequestProcessor<Geo>() { BaseUrl = "https://api.twitter.com/1/" };
+            var geoReqProc = new GeoRequestProcessor<Geo>() { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
              {
                  {"Type", ((int) GeoType.SimilarPlaces).ToString()},
@@ -321,7 +321,7 @@ namespace LinqToTwitterXUnitTests.GeoTests
         [Fact]
         public void ProcessResults_Returns_Empty_Collection_When_Empty_Results()
         {
-            var geoReqProc = new GeoRequestProcessor<Geo>() { BaseUrl = "https://api.twitter.com/1/" };
+            var geoReqProc = new GeoRequestProcessor<Geo>() { BaseUrl = "https://api.twitter.com/1.1/" };
 
             var geo = geoReqProc.ProcessResults(string.Empty);
 

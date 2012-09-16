@@ -18,7 +18,7 @@ namespace LinqToTwitterXUnitTests.StatusTests
         [Fact]
         public void StatusRequestProcessor_Works_With_Json_Format_Data()
         {
-            var statProc = new StatusRequestProcessor<Status> { BaseUrl = "https://api.twitter.com/1/" };
+            var statProc = new StatusRequestProcessor<Status> { BaseUrl = "https://api.twitter.com/1.1/" };
 
             Assert.IsAssignableFrom<IRequestProcessorWantsJson>(statProc);
         }
@@ -26,7 +26,7 @@ namespace LinqToTwitterXUnitTests.StatusTests
         [Fact]
         public void ProcessResults_Handles_Multiple_Statuses()
         {
-            var statProc = new StatusRequestProcessor<Status> { Type = StatusType.Home, BaseUrl = "https://api.twitter.com/1/" };
+            var statProc = new StatusRequestProcessor<Status> { Type = StatusType.Home, BaseUrl = "https://api.twitter.com/1.1/" };
 
             var statuses = statProc.ProcessResults(MultipleStatusResponse);
 
@@ -72,7 +72,7 @@ namespace LinqToTwitterXUnitTests.StatusTests
         [Fact]
         public void ProcessResults_Handles_A_Single_Status()
         {
-            var statProc = new StatusRequestProcessor<Status> { Type = StatusType.Show, BaseUrl = "https://api.twitter.com/1/" };
+            var statProc = new StatusRequestProcessor<Status> { Type = StatusType.Show, BaseUrl = "https://api.twitter.com/1.1/" };
 
             var statuses = statProc.ProcessResults(SingleStatusResponse);
 
@@ -118,7 +118,7 @@ namespace LinqToTwitterXUnitTests.StatusTests
         [Fact]
         public void ProcessResults_Handles_Multiple_Users()
         {
-            var statProc = new StatusRequestProcessor<Status> { Type = StatusType.RetweetedBy, BaseUrl = "https://api.twitter.com/1/" };
+            var statProc = new StatusRequestProcessor<Status> { Type = StatusType.RetweetedBy, BaseUrl = "https://api.twitter.com/1.1/" };
 
             var statuses = statProc.ProcessResults(MultipleUsersResponse);
 
@@ -137,7 +137,7 @@ namespace LinqToTwitterXUnitTests.StatusTests
         [Fact]
         public void ProcessResults_Returns_Empty_Collection_When_Empty_Results()
         {
-            var statProc = new StatusRequestProcessor<Status>() { BaseUrl = "https://api.twitter.com/1/" };
+            var statProc = new StatusRequestProcessor<Status>() { BaseUrl = "https://api.twitter.com/1.1/" };
 
             var stats = statProc.ProcessResults(string.Empty);
 
@@ -216,8 +216,8 @@ namespace LinqToTwitterXUnitTests.StatusTests
         [Fact]
         public void BuildUrl_Constructs_Mentions_Url()
         {
-            const string ExpectedUrl = "https://api.twitter.com/1/statuses/mentions.json?since_id=123&max_id=145&count=50&page=1";
-            var statProc = new StatusRequestProcessor<Status> { BaseUrl = "https://api.twitter.com/1/" };
+            const string ExpectedUrl = "https://api.twitter.com/1.1/statuses/mentions_timeline.json?since_id=123&max_id=145&count=50&page=1";
+            var statProc = new StatusRequestProcessor<Status> { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
             {
                 { "Type", ((int)StatusType.Mentions).ToString() },
@@ -235,11 +235,11 @@ namespace LinqToTwitterXUnitTests.StatusTests
         [Fact]
         public void BuildUrl_Constructs_Show_Url()
         {
-            const string ExpectedUrl = "https://api.twitter.com/1/statuses/show/945932078.json";
+            const string ExpectedUrl = "https://api.twitter.com/1.1/statuses/show/945932078.json";
             var reqProc = new StatusRequestProcessor<Status> 
             { 
                 Type = StatusType.Show,
-                BaseUrl = "https://api.twitter.com/1/" 
+                BaseUrl = "https://api.twitter.com/1.1/" 
             };
             var parameters = new Dictionary<string, string>
             {
@@ -255,16 +255,15 @@ namespace LinqToTwitterXUnitTests.StatusTests
         [Fact]
         public void BuildUrl_Constructs_User_Url()
         {
-            const string ExpectedUrl = "https://api.twitter.com/1/statuses/user_timeline/15411837.json?user_id=15411837&screen_name=JoeMayo";
+            const string ExpectedUrl = "https://api.twitter.com/1.1/statuses/user_timeline.json?user_id=15411837&screen_name=JoeMayo";
             var reqProc = new StatusRequestProcessor<Status>
             {
                 Type = StatusType.User,
-                BaseUrl = "https://api.twitter.com/1/"
+                BaseUrl = "https://api.twitter.com/1.1/"
             };
             var parameters = new Dictionary<string, string>
             {
                 { "Type", ((int)StatusType.User).ToString() },
-                { "ID", "15411837" },
                 { "UserID", "15411837" },
                 { "ScreenName", "JoeMayo" },
             };
@@ -275,13 +274,53 @@ namespace LinqToTwitterXUnitTests.StatusTests
         }
 
         [Fact]
-        public void BuildUrl_Returns_Url_For_Retweets()
+        public void BuildUrl_Constructs_Home_Url()
         {
-            const string ExpectedUrl = "https://api.twitter.com/1/statuses/user_timeline/15411837.json?include_rts=true";
+            const string ExpectedUrl = "https://api.twitter.com/1.1/statuses/home_timeline.json?count=5";
             var reqProc = new StatusRequestProcessor<Status>
             {
                 Type = StatusType.User,
-                BaseUrl = "https://api.twitter.com/1/"
+                BaseUrl = "https://api.twitter.com/1.1/"
+            };
+            var parameters = new Dictionary<string, string>
+            {
+                { "Type", ((int)StatusType.Home).ToString() },
+                { "Count", "5" }
+            };
+
+            Request req = reqProc.BuildUrl(parameters);
+
+            Assert.Equal(ExpectedUrl, req.FullUrl);
+        }
+
+        [Fact]
+        public void BuildUrl_Returns_Url_For_Retweets()
+        {
+            const string ExpectedUrl = "https://api.twitter.com/1.1/statuses/retweets/15411837.json";
+            var reqProc = new StatusRequestProcessor<Status>
+            {
+                Type = StatusType.User,
+                BaseUrl = "https://api.twitter.com/1.1/"
+            };
+            var parameters = new Dictionary<string, string>
+            {
+                { "Type", ((int)StatusType.Retweets).ToString() },
+                { "ID", "15411837" }
+            };
+
+            Request req = reqProc.BuildUrl(parameters);
+
+            Assert.Equal(ExpectedUrl, req.FullUrl);
+        }
+
+        [Fact]
+        public void BuildUrl_Returns_Url_For_IncludeRetweets_On_User_Timeline()
+        {
+            const string ExpectedUrl = "https://api.twitter.com/1.1/statuses/user_timeline/15411837.json?include_rts=true";
+            var reqProc = new StatusRequestProcessor<Status>
+            {
+                Type = StatusType.User,
+                BaseUrl = "https://api.twitter.com/1.1/"
             };
             var parameters = new Dictionary<string, string>
             {
@@ -298,11 +337,11 @@ namespace LinqToTwitterXUnitTests.StatusTests
         [Fact()]
         public void BuildUrl_Returns_Url_Without_Include_Rts_Param_For_False_Retweets()
         {
-            const string ExpectedUrl = "https://api.twitter.com/1/statuses/user_timeline/15411837.json";
+            const string ExpectedUrl = "https://api.twitter.com/1.1/statuses/user_timeline/15411837.json";
             var reqProc = new StatusRequestProcessor<Status>
             {
                 Type = StatusType.User,
-                BaseUrl = "https://api.twitter.com/1/"
+                BaseUrl = "https://api.twitter.com/1.1/"
             };
             var parameters = new Dictionary<string, string>
             {
@@ -361,11 +400,11 @@ namespace LinqToTwitterXUnitTests.StatusTests
         [Fact]
         public void BuildUrl_Returns_Url_For_RetweetedBy()
         {
-            const string ExpectedUrl = "https://api.twitter.com/1/statuses/123/retweeted_by.json?count=25&page=2";
+            const string ExpectedUrl = "https://api.twitter.com/1.1/statuses/123/retweeted_by.json?count=25&page=2";
             var reqProc = new StatusRequestProcessor<Status>
             {
                 Type = StatusType.RetweetedBy,
-                BaseUrl = "https://api.twitter.com/1/"
+                BaseUrl = "https://api.twitter.com/1.1/"
             };
             var parameters = new Dictionary<string, string>
             {
@@ -387,7 +426,7 @@ namespace LinqToTwitterXUnitTests.StatusTests
             var reqProc = new StatusRequestProcessor<Status>
             {
                 Type = StatusType.RetweetedBy,
-                BaseUrl = "https://api.twitter.com/1/"
+                BaseUrl = "https://api.twitter.com/1.1/"
             };
             var parameters = new Dictionary<string, string>
             {
@@ -409,7 +448,7 @@ namespace LinqToTwitterXUnitTests.StatusTests
             var reqProc = new StatusRequestProcessor<Status>
             {
                 Type = StatusType.RetweetedBy,
-                BaseUrl = "https://api.twitter.com/1/"
+                BaseUrl = "https://api.twitter.com/1.1/"
             };
             var parameters = new Dictionary<string, string>
             {
@@ -427,7 +466,7 @@ namespace LinqToTwitterXUnitTests.StatusTests
         [Fact]
         public void BuildUrl_Throws_On_Missing_Type()
         {
-            var statusReqProc = new StatusRequestProcessor<Status> { BaseUrl = "https://api.twitter.com/1/" };
+            var statusReqProc = new StatusRequestProcessor<Status> { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string> { };
 
             var ex = Assert.Throws<ArgumentException>(() => statusReqProc.BuildUrl(parameters));
@@ -438,7 +477,7 @@ namespace LinqToTwitterXUnitTests.StatusTests
         [Fact]
         public void BuildUrl_Throws_On_Null_Parameter()
         {
-            var target = new StatusRequestProcessor<Status> { BaseUrl = "https://api.twitter.com/1/" };
+            var target = new StatusRequestProcessor<Status> { BaseUrl = "https://api.twitter.com/1.1/" };
 
             var ex = Assert.Throws<ArgumentException>(() => target.BuildUrl(null));
 

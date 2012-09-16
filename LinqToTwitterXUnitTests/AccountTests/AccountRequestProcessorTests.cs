@@ -29,35 +29,6 @@ namespace LinqToTwitterXUnitTests.AccountTests
         }
 
         [Fact]
-        public void HandleRateLimitStatus_Converts_RateLimit_To_Account()
-        {
-            var acctReqProc = new AccountRequestProcessor<Account> { Type = AccountType.RateLimitStatus };
-            DateTime expectedDateTime = new DateTimeOffset(2011, 9, 19, 2, 6, 36, 0, new TimeSpan(0, 0, 0)).DateTime;
-
-            Account acct = acctReqProc.HandleRateLimitResponse(TestRateLimitStatusQueryResponse);
-
-            Assert.NotNull(acct);
-            Assert.Equal(343, acct.RateLimitStatus.RemainingHits);
-            Assert.Equal(350, acct.RateLimitStatus.HourlyLimit);
-            Assert.Equal(1316397996, acct.RateLimitStatus.ResetTimeInSeconds);
-            Assert.Equal(expectedDateTime, acct.RateLimitStatus.ResetTime);
-        }
-
-        [Fact]
-        public void HandleTotalsResponse_Converts_Totals_To_Account()
-        {
-            var acctReqProc = new AccountRequestProcessor<Account> { Type = AccountType.Totals };
-
-            Account acct = acctReqProc.HandleTotalsResponse(TestTotalsResponse);
-
-            Assert.NotNull(acct);
-            Assert.Equal(1624, acct.Totals.Updates);
-            Assert.Equal(161, acct.Totals.Friends);
-            Assert.Equal(65, acct.Totals.Favorites);
-            Assert.Equal(875, acct.Totals.Followers);
-        }
-
-        [Fact]
         public void HandleSettingsResponse_Converts_Settings_To_Account()
         {
             var acctReqProc = new AccountRequestProcessor<Account>();
@@ -79,30 +50,9 @@ namespace LinqToTwitterXUnitTests.AccountTests
         }
 
         [Fact]
-        public void ProcessActionResult_Handles_EndSession()
-        {
-            var acctReqProc = new AccountRequestProcessor<Account>();
-
-            var acct = acctReqProc.ProcessActionResult(TestEndSessionResponse, AccountAction.EndSession);
-
-            Assert.Equal("Logged out.", acct.EndSessionStatus.Error);
-        }
-
-        [Fact]
-        public void HandleEndSessionResponse_Converts_EndSession_To_Account()
-        {
-            var acctReqProc = new AccountRequestProcessor<Account>();
-
-            var acct = acctReqProc.HandleEndSessionResponse(TestEndSessionResponse);
-
-            Assert.Equal("Logged out.", acct.EndSessionStatus.Error);
-            Assert.Equal("/1/account/end_session.json", acct.EndSessionStatus.Request);
-        }
-
-        [Fact]
         public void ProcessResults_Returns_Empty_Collection_When_Empty_Results()
         {
-            var reqProc = new AccountRequestProcessor<Account> { BaseUrl = "http://api.twitter.com/1/" };
+            var reqProc = new AccountRequestProcessor<Account> { BaseUrl = "https://api.twitter.com/1.1/" };
 
             var accts = reqProc.ProcessResults(string.Empty);
 
@@ -133,8 +83,8 @@ namespace LinqToTwitterXUnitTests.AccountTests
         [Fact]
         public void BuildUrl_Constructs_VerifyCredentials_Url()
         {
-            const string ExpectedUrl = "https://api.twitter.com/1/account/verify_credentials.json?skip_status=true";
-            var acctReqProc = new AccountRequestProcessor<Account> { BaseUrl = "https://api.twitter.com/1/" };
+            const string ExpectedUrl = "https://api.twitter.com/1.1/account/verify_credentials.json?skip_status=true";
+            var acctReqProc = new AccountRequestProcessor<Account> { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters =
                 new Dictionary<string, string>
                 {
@@ -148,41 +98,10 @@ namespace LinqToTwitterXUnitTests.AccountTests
         }
 
         [Fact]
-        public void BuildUrl_Constructs_RateLimitStatus_Url()
-        {
-            const string ExpectedUrl = "https://api.twitter.com/1/account/rate_limit_status.json";
-            var acctReqProc = new AccountRequestProcessor<Account> { BaseUrl = "https://api.twitter.com/1/" };
-            var parameters =
-                new Dictionary<string, string>
-                {
-                        { "Type", ((int)AccountType.RateLimitStatus).ToString(CultureInfo.InvariantCulture) }
-                };
-
-            Request req = acctReqProc.BuildUrl(parameters);
-
-            Assert.Equal(ExpectedUrl, req.FullUrl);
-        }
-
-        [Fact]
-        public void BuildUrl_Returns_Totals_Url()
-        {
-            const string ExpectedUrl = "https://api.twitter.com/1/account/totals.json";
-            var acctReqProc = new AccountRequestProcessor<Account> { BaseUrl = "https://api.twitter.com/1/" };
-            var parameters = new Dictionary<string, string>
-                {
-                        { "Type", ((int)AccountType.Totals).ToString(CultureInfo.InvariantCulture) }
-                };
-
-            Request req = acctReqProc.BuildUrl(parameters);
-
-            Assert.Equal(ExpectedUrl, req.FullUrl);
-        }
-
-        [Fact]
         public void BuildUrl_Returns_Settings_Url()
         {
-            const string ExpectedUrl = "https://api.twitter.com/1/account/settings.json";
-            var acctReqProc = new AccountRequestProcessor<Account> { BaseUrl = "https://api.twitter.com/1/" };
+            const string ExpectedUrl = "https://api.twitter.com/1.1/account/settings.json";
+            var acctReqProc = new AccountRequestProcessor<Account> { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
                 {
                         { "Type", ((int)AccountType.Settings).ToString(CultureInfo.InvariantCulture) }
@@ -196,7 +115,7 @@ namespace LinqToTwitterXUnitTests.AccountTests
         [Fact]
         public void BuildUrl_Throws_When_Type_Not_Provided()
         {
-            var acctReqProc = new AccountRequestProcessor<Account> { BaseUrl = "https://api.twitter.com/1/" };
+            var acctReqProc = new AccountRequestProcessor<Account> { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>();
 
             var ex = Assert.Throws<ArgumentException>(() => acctReqProc.BuildUrl(parameters));
@@ -207,7 +126,7 @@ namespace LinqToTwitterXUnitTests.AccountTests
         [Fact]
         public void BuildUrl_Throws_With_Null_Parameters()
         {
-            var acctReqProc = new AccountRequestProcessor<Account> { BaseUrl = "https://api.twitter.com/1/" };
+            var acctReqProc = new AccountRequestProcessor<Account> { BaseUrl = "https://api.twitter.com/1.1/" };
 
             var ex = Assert.Throws<ArgumentException>(() => acctReqProc.BuildUrl(null));
 

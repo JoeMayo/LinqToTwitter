@@ -42,8 +42,6 @@ namespace LinqToTwitter
 
             switch (Type)
             {
-                case HelpType.Test:
-                    return new Request(BaseUrl + "help/test.json");
                 case HelpType.Configuration:
                     return new Request(BaseUrl + "help/configuration.json");
                 case HelpType.Languages:
@@ -64,9 +62,6 @@ namespace LinqToTwitter
 
             switch (Type)
             {
-                case HelpType.Test:
-                    help = HandleHelpTest(responseJson);
-                    break;
                 case HelpType.Configuration:
                     help = HandleHelpConfiguration(responseJson);
                     break;
@@ -81,17 +76,6 @@ namespace LinqToTwitter
             var helpList = new List<Help> { help };
 
             return helpList.OfType<T>().ToList();
-        }
-  
-        Help HandleHelpTest(string responseJson)
-        {
-            const string TestResponse = "ok";
-
-            return new Help
-            {
-                Type = HelpType.Test,
-                OK = responseJson == TestResponse
-            };
         }
 
         Help HandleHelpConfiguration(string responseJson)

@@ -29,7 +29,6 @@ namespace LinqToTwitterDemo
             //CategoryStatusDemo(twitterCtx);
             //ContributeeDemo(twitterCtx);
             //ContributorDemo(twitterCtx);
-            ProfileImageDemo(twitterCtx);
         }
 
         private static void CategoryStatusDemo(TwitterContext twitterCtx)
@@ -241,18 +240,6 @@ namespace LinqToTwitterDemo
 
             users.ForEach(
                 user => Console.WriteLine("User: " + user.Name));
-        }
-
-        static void ProfileImageDemo(TwitterContext twitterCtx)
-        {
-            var user =
-                (from usr in twitterCtx.User
-                 where usr.Type == UserType.ProfileImage &&
-                       usr.ScreenName == "JoeMayo"
-                 select usr)
-                .SingleOrDefault();
-
-            Process.Start(user.ProfileImage);
         }
     }
 }

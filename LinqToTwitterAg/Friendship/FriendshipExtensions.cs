@@ -9,48 +9,32 @@ namespace LinqToTwitter
         /// <summary>
         /// lets logged-in user follow another user
         /// </summary>
-        /// <param name="id">ID or screen name of user to follow (use userID or ScreenName to avoid ambiguity)</param>
         /// <param name="userID">Numeric ID of user to follow</param>
         /// <param name="screenName">Screen name of user to follow</param>
         /// <param name="follow">Receive notifications for the followed friend</param>
         /// <returns>followed friend user info</returns>
-        public static User CreateFriendship(this TwitterContext ctx, string id, string userID, string screenName, bool follow)
+        public static User CreateFriendship(this TwitterContext ctx, string userID, string screenName, bool follow)
         {
-            return CreateFriendship(ctx, id, userID, screenName, follow, null);
+            return CreateFriendship(ctx, userID, screenName, follow, null);
         }
 
         /// <summary>
         /// lets logged-in user follow another user
         /// </summary>
-        /// <param name="id">ID or screen name of user to follow (use userID or ScreenName to avoid ambiguity)</param>
         /// <param name="userID">Numeric ID of user to follow</param>
         /// <param name="screenName">Screen name of user to follow</param>
         /// <param name="follow">Receive notifications for the followed friend</param>
         /// <param name="callback">Async Callback used in Silverlight queries</param>
         /// <returns>followed friend user info</returns>
-        public static User CreateFriendship(this TwitterContext ctx, string id, string userID, string screenName, bool follow, Action<TwitterAsyncResponse<User>> callback)
+        public static User CreateFriendship(this TwitterContext ctx, string userID, string screenName, bool follow, Action<TwitterAsyncResponse<User>> callback)
         {
-            if (string.IsNullOrEmpty(id) &&
-                string.IsNullOrEmpty(userID) &&
+            if (string.IsNullOrEmpty(userID) &&
                 string.IsNullOrEmpty(screenName))
             {
-                throw new ArgumentException("Either id, userID, or screenName is a required parameter.", "IdUserIDOrScreenName");
+                throw new ArgumentException("Either userID or screenName is a required parameter.", "UserIDOrScreenName");
             }
 
-            string destroyUrl;
-
-            if (!string.IsNullOrEmpty(id))
-            {
-                destroyUrl = ctx.BaseUrl + "friendships/create/" + id + ".json";
-            }
-            else if (!string.IsNullOrEmpty(userID))
-            {
-                destroyUrl = ctx.BaseUrl + "friendships/create/" + userID + ".json";
-            }
-            else
-            {
-                destroyUrl = ctx.BaseUrl + "friendships/create/" + screenName + ".json";
-            }
+            string destroyUrl = ctx.BaseUrl + "friendships/create.json";
 
             var createParams = new Dictionary<string, string>
                 {
@@ -84,42 +68,30 @@ namespace LinqToTwitter
         /// <summary>
         /// lets logged-in user follow another user
         /// </summary>
-        /// <param name="id">ID or screen name of user to unfollow (use userID or ScreenName to avoid ambiguity)</param>
         /// <param name="userID">Numeric ID of user to unfollow</param>
         /// <param name="screenName">Screen name of user to unfollow</param>
         /// <returns>followed friend user info</returns>
-        public static User DestroyFriendship(this TwitterContext ctx, string id, string userID, string screenName)
+        public static User DestroyFriendship(this TwitterContext ctx, string userID, string screenName)
         {
-            return DestroyFriendship(ctx, id, userID, screenName, null);
+            return DestroyFriendship(ctx, userID, screenName, null);
         }
 
         /// <summary>
         /// lets logged-in user follow another user
         /// </summary>
-        /// <param name="id">ID or screen name of user to unfollow (use userID or ScreenName to avoid ambiguity)</param>
         /// <param name="userID">Numeric ID of user to unfollow</param>
         /// <param name="screenName">Screen name of user to unfollow</param>
         /// <param name="callback">Async Callback used in Silverlight queries</param>
         /// <returns>followed friend user info</returns>
-        public static User DestroyFriendship(this TwitterContext ctx, string id, string userID, string screenName, Action<TwitterAsyncResponse<User>> callback)
+        public static User DestroyFriendship(this TwitterContext ctx, string userID, string screenName, Action<TwitterAsyncResponse<User>> callback)
         {
-            if (string.IsNullOrEmpty(id) &&
-                string.IsNullOrEmpty(userID) &&
+            if (string.IsNullOrEmpty(userID) &&
                 string.IsNullOrEmpty(screenName))
             {
-                throw new ArgumentException("Either id, userID, or screenName is a required parameter.", "IdUserIDOrScreenName");
+                throw new ArgumentException("Either id, userID, or screenName is a required parameter.", "UserIDOrScreenName");
             }
 
-            string destroyUrl;
-
-            if (!string.IsNullOrEmpty(id))
-            {
-                destroyUrl = ctx.BaseUrl + "friendships/destroy/" + id + ".json";
-            }
-            else
-            {
-                destroyUrl = ctx.BaseUrl + "friendships/destroy.json";
-            }
+            string destroyUrl = ctx.BaseUrl + "friendships/destroy.json";
 
             var reqProc = new FriendshipRequestProcessor<User>();
 

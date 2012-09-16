@@ -21,20 +21,6 @@ namespace LinqToTwitterXUnitTests
         }
 
         [Fact]
-        public void ProcessResults_Handles_Exists()
-        {
-            var blocksReqProc = new BlocksRequestProcessor<Blocks>
-            {
-                Type = BlockingType.Exists
-            };
-
-            IList<Blocks> blocksResponse = blocksReqProc.ProcessResults(BlockExistsJson);
-
-            Assert.NotNull(blocksResponse);
-            Assert.Equal(blocksResponse.Count(), 1);
-        }
-
-        [Fact]
         public void ProcessResults_Handles_IDs()
         {
             var blockReqProc = new BlocksRequestProcessor<Blocks>
@@ -56,7 +42,7 @@ namespace LinqToTwitterXUnitTests
         {
             var blockedReqProc = new BlocksRequestProcessor<Blocks>
             {
-                Type = BlockingType.Blocking
+                Type = BlockingType.List
             };
 
             IList actual = blockedReqProc.ProcessResults(BlockedUsersJson);
@@ -69,7 +55,7 @@ namespace LinqToTwitterXUnitTests
         [Fact]
         public void ProcessResults_Returns_Empty_Collection_When_Empty_Results()
         {
-            var blocksReqProc = new BlocksRequestProcessor<Blocks> { BaseUrl = "https://api.twitter.com/1/" };
+            var blocksReqProc = new BlocksRequestProcessor<Blocks> { BaseUrl = "https://api.twitter.com/1.1/" };
 
             var blocks = blocksReqProc.ProcessResults(string.Empty);
 
@@ -81,7 +67,7 @@ namespace LinqToTwitterXUnitTests
         {
             var blockedReqProc = new BlocksRequestProcessor<Blocks>
             {
-                Type = BlockingType.Blocking,
+                Type = BlockingType.List,
                 ScreenName = "JoeMayo",
                 Page = 1,
                 PerPage = 10,
@@ -94,7 +80,7 @@ namespace LinqToTwitterXUnitTests
             Assert.NotNull(blocks);
             Assert.Single(blocks);
             var block = blocks.Single();
-            Assert.Equal(BlockingType.Blocking, block.Type);
+            Assert.Equal(BlockingType.List, block.Type);
             Assert.Equal("JoeMayo", block.ScreenName);
             Assert.Equal(1, block.Page);
             Assert.Equal(10, block.PerPage);
@@ -108,7 +94,7 @@ namespace LinqToTwitterXUnitTests
             var blocksReqProc = new BlocksRequestProcessor<Blocks>();
             Expression<Func<Blocks, bool>> expression =
                 block =>
-                    block.Type == BlockingType.Blocking &&
+                    block.Type == BlockingType.List &&
                     block.UserID == 123ul &&
                     block.ScreenName == "JoeMayo" &&
                     block.Page == 1 &&
@@ -121,7 +107,7 @@ namespace LinqToTwitterXUnitTests
 
             Assert.True(
                 queryParams.Contains(
-                    new KeyValuePair<string, string>("Type", ((int)BlockingType.Blocking).ToString(CultureInfo.InvariantCulture))));
+                    new KeyValuePair<string, string>("Type", ((int)BlockingType.List).ToString(CultureInfo.InvariantCulture))));
             Assert.True(
                 queryParams.Contains(
                     new KeyValuePair<string, string>("UserID", "123")));
@@ -143,33 +129,14 @@ namespace LinqToTwitterXUnitTests
         }
 
         [Fact]
-        public void BuildUrl_Creates_Exists_Url()
+        public void BuildUrl_Creates_List_Url()
         {
-            const string ExpectedUrl = "https://api.twitter.com/1/blocks/exists.json?user_id=456&screen_name=789&skip_status=true";
-            var buildReqProc = new BlocksRequestProcessor<Blocks> { BaseUrl = "https://api.twitter.com/1/" };
+            const string ExpectedUrl = "https://api.twitter.com/1.1/blocks/list.json?page=2&per_page=10&skip_status=true&cursor=789";
+            var blocksReqProc = new BlocksRequestProcessor<Blocks> { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters =
                 new Dictionary<string, string>
                 {
-                    { "Type", ((int)BlockingType.Exists).ToString(CultureInfo.InvariantCulture) },
-                    { "UserID", "456" },
-                    { "ScreenName", "789" },
-                    { "SkipStatus", true.ToString() }
-                };
-
-            Request req = buildReqProc.BuildUrl(parameters);
-
-            Assert.Equal(ExpectedUrl, req.FullUrl);
-        }
-
-        [Fact]
-        public void BuildUrl_Creates_Blocking_Url()
-        {
-            const string ExpectedUrl = "https://api.twitter.com/1/blocks/blocking.json?page=2&per_page=10&skip_status=true&cursor=789";
-            var blocksReqProc = new BlocksRequestProcessor<Blocks> { BaseUrl = "https://api.twitter.com/1/" };
-            var parameters =
-                new Dictionary<string, string>
-                {
-                    { "Type", ((int)BlockingType.Blocking).ToString(CultureInfo.InvariantCulture) },
+                    { "Type", ((int)BlockingType.List).ToString(CultureInfo.InvariantCulture) },
                     { "Page", "2" },
                     { "PerPage", "10" },
                     { "SkipStatus", true.ToString() },
@@ -184,8 +151,8 @@ namespace LinqToTwitterXUnitTests
         [Fact]
         public void BuildUrl_Creates_BlockingIDs_Url()
         {
-            const string ExpectedUrl = "https://api.twitter.com/1/blocks/blocking/ids.json?cursor=789";
-            var blocksReqProc = new BlocksRequestProcessor<Blocks> { BaseUrl = "https://api.twitter.com/1/" };
+            const string ExpectedUrl = "https://api.twitter.com/1.1/blocks/ids.json?cursor=789";
+            var blocksReqProc = new BlocksRequestProcessor<Blocks> { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters =
                 new Dictionary<string, string>
                 {
@@ -201,7 +168,7 @@ namespace LinqToTwitterXUnitTests
         [Fact]
         public void BuildUrl_Throws_On_Missing_Type_Parameter()
         {
-            var blockReqProc = new BlocksRequestProcessor<Blocks> { BaseUrl = "https://api.twitter.com/1/" };
+            var blockReqProc = new BlocksRequestProcessor<Blocks> { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>();
 
             var ex = Assert.Throws<ArgumentException>(() => blockReqProc.BuildUrl(parameters));
@@ -212,7 +179,7 @@ namespace LinqToTwitterXUnitTests
         [Fact]
         public void BuildUrl_Throws_On_Null_Parameters()
         {
-            var blockReqProc = new BlocksRequestProcessor<Blocks> { BaseUrl = "https://api.twitter.com/1/" };
+            var blockReqProc = new BlocksRequestProcessor<Blocks> { BaseUrl = "https://api.twitter.com/1.1/" };
 
             var ex = Assert.Throws<ArgumentException>(() => blockReqProc.BuildUrl(null));
 

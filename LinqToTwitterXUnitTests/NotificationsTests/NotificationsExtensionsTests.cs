@@ -37,7 +37,7 @@ namespace LinqToTwitterXUnitTests.NotificationsTests
 
             execMock.Verify(exec =>
                 exec.ExecuteTwitter(
-                    "https://api.twitter.com/1/notifications/follow/1.json",
+                    "https://api.twitter.com/1.1/notifications/follow/1.json",
                     It.IsAny<Dictionary<string, string>>(),
                     It.IsAny<Func<string, User>>()),
                 Times.Once());
@@ -87,7 +87,7 @@ namespace LinqToTwitterXUnitTests.NotificationsTests
 
             execMock.Verify(exec =>
                 exec.ExecuteTwitter(
-                    "https://api.twitter.com/1/notifications/leave/1.json",
+                    "https://api.twitter.com/1.1/notifications/leave/1.json",
                     It.IsAny<Dictionary<string, string>>(),
                     It.IsAny<Func<string, User>>()),
                 Times.Once());

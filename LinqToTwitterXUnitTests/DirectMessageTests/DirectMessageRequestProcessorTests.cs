@@ -64,7 +64,7 @@ namespace LinqToTwitterXUnitTests
         public void BuildUrl_Constructs_Show_Url()
         {
             var dmReqProc = new DirectMessageRequestProcessor<DirectMessage> { BaseUrl = "https://api.twitter.com/1/" };
-            const string Expected = "https://api.twitter.com/1/direct_messages/show/478805447.json";
+            const string Expected = "https://api.twitter.com/1/direct_messages/show.json?id=478805447";
             var parameters =
                 new Dictionary<string, string>
                 {

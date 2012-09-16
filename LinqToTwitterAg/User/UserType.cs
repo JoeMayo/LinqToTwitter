@@ -44,10 +44,5 @@
         /// Users who can contribute to an account
         /// </summary>
         Contributors,
-
-        /// <summary>
-        /// Get Profile Image URL
-        /// </summary>
-        ProfileImage
     }
 }

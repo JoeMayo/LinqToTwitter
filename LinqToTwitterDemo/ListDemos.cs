@@ -18,10 +18,10 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         public static void Run(TwitterContext twitterCtx)
         {
-            //GetListsDemo(twitterCtx);
+            //ListsDemo(twitterCtx);
             //GetListSubscribersDemo(twitterCtx);
             //IsListMemberDemo(twitterCtx);
-            GetListMembersDemo(twitterCtx);
+            //GetListMembersDemo(twitterCtx);
             //GetListSubscriptionsDemo(twitterCtx);
             //GetListMembershipsDemo(twitterCtx);
             //GetListStatusesDemo(twitterCtx);
@@ -37,7 +37,6 @@ namespace LinqToTwitterDemo
             //DeleteMemberFromListDemo(twitterCtx);
             //SubscribeToListDemo(twitterCtx);
             //UnsubscribeFromListDemo(twitterCtx);
-            //ListSortDemo(twitterCtx);
             //DestroyAllDemo(twitterCtx);
         }
   
@@ -86,10 +85,10 @@ namespace LinqToTwitterDemo
         }
 
         /// <summary>
-        /// Shows how to get a list and sort it
+        /// Shows how to get all lists
         /// </summary>
         /// <param name="twitterCtx">TwitterContext</param>
-        private static void ListSortDemo(TwitterContext twitterCtx)
+        private static void ListsDemo(TwitterContext twitterCtx)
         {
             var lists =
                 from list in twitterCtx.List
@@ -198,8 +197,8 @@ namespace LinqToTwitterDemo
             var requestedList =
                 (from list in twitterCtx.List
                  where list.Type == ListType.Show &&
-                       list.OwnerScreenName == "JoeMayo" && // user who owns list
-                       list.Slug == "dotnettwittterdevs" // list name
+                       list.OwnerScreenName == "Linq2Tweeter" && // user who owns list
+                       list.Slug == "linq" // list name
                  select list)
                 .FirstOrDefault();
 
@@ -213,6 +212,8 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void GetListStatusesDemo(TwitterContext twitterCtx)
         {
+            string ownerScreenName = "Linq2Tweeter";
+            string slug = "linq";
             int maxStatuses = 30;
             int lastStatusCount = 0;
             ulong sinceID = 204251866668871681; // last tweet processed on previous query
@@ -224,8 +225,8 @@ namespace LinqToTwitterDemo
             var listResponse =
                 (from list in twitterCtx.List
                  where list.Type == ListType.Statuses &&
-                       list.OwnerScreenName == "JoeMayo" &&
-                       list.Slug == "dotnettwittterdevs" &&
+                       list.OwnerScreenName == ownerScreenName &&
+                       list.Slug == slug &&
                        list.Count == count
                  select list)
                 .First();
@@ -240,8 +241,8 @@ namespace LinqToTwitterDemo
                 listResponse =
                     (from list in twitterCtx.List
                      where list.Type == ListType.Statuses &&
-                           list.OwnerScreenName == "JoeMayo" &&
-                           list.Slug == "dotnettwittterdevs" &&
+                           list.OwnerScreenName == ownerScreenName &&
+                           list.Slug == slug &&
                            list.Count == count &&
                            list.SinceID == sinceID &&
                            list.MaxID == maxID
@@ -312,8 +313,8 @@ namespace LinqToTwitterDemo
             var lists =
                 (from list in twitterCtx.List
                  where list.Type == ListType.Members &&
-                       list.OwnerScreenName == "JoeMayo" &&
-                       list.Slug == "dotnettwittterdevs" &&
+                       list.OwnerScreenName == "Linq2Tweeter" &&
+                       list.Slug == "linq" &&
                        list.SkipStatus == true
                  select list)
                 .First();
@@ -335,9 +336,9 @@ namespace LinqToTwitterDemo
                 var subscribedList =
                    (from list in twitterCtx.List
                     where list.Type == ListType.IsMember &&
-                         list.ScreenName == "Linq2Tweeter" &&
-                         list.OwnerScreenName == "JoeMayo" &&
-                         list.Slug == "dotnettwittterdevs"
+                         list.ScreenName == "JoeMayo" &&
+                         list.OwnerScreenName == "Linq2Tweeter" &&
+                         list.Slug == "linq"
                     select list)
                     .FirstOrDefault();
 
@@ -385,8 +386,8 @@ namespace LinqToTwitterDemo
             var lists =
                 (from list in twitterCtx.List
                  where list.Type == ListType.Subscribers &&
-                       list.Slug == "dotnettwittterdevs" &&
-                       list.OwnerScreenName == "JoeMayo"
+                       list.Slug == "linq" &&
+                       list.OwnerScreenName == "Linq2Tweeter"
                  select list)
                  .First();
 
@@ -427,9 +428,9 @@ namespace LinqToTwitterDemo
                 var subscribedList =
                    (from list in twitterCtx.List
                     where list.Type == ListType.IsSubscribed &&
-                          list.ScreenName == "Linq2Tweeter" &&
-                          list.Slug == "dotnettwittterdevs" &&
-                          list.OwnerScreenName == "JoeMayo"
+                          list.ScreenName == "JoeMayo" &&
+                          list.Slug == "linq" &&
+                          list.OwnerScreenName == "Linq2Tweeter"
                     select list)
                    .FirstOrDefault();
 

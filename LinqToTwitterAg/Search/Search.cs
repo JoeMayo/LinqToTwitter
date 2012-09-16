@@ -59,6 +59,11 @@ namespace LinqToTwitter
         public ulong SinceID { get; set; }
 
         /// <summary>
+        /// first status ID
+        /// </summary>
+        public ulong MaxID { get; set; }
+
+        /// <summary>
         /// location, specified as "latitude,longitude,radius"
         /// </summary>
         public string GeoCode { get; set; }
@@ -132,8 +137,6 @@ namespace LinqToTwitter
         /// <summary>
         /// Include entities in results
         /// </summary>
-        // TODO: was scheduled for deprecation on 5/14/12, but delayed by Twitter - need to follow up.
-        //[Obsolete("All API methods capable of including entities will return them regardless of the value provided.")]
         public bool IncludeEntities { get; set; }
 
         //
@@ -143,46 +146,11 @@ namespace LinqToTwitter
         /// <summary>
         /// Tweet data returned from the search
         /// </summary>
-        public List<SearchEntry> Results { get; set; }
+        public List<Status> Statuses { get; set; }
 
         /// <summary>
-        /// Max ID returned in search
+        /// Tweet metadata returned from search
         /// </summary>
-        public ulong MaxID { get; set; }
-
-        /// <summary>
-        /// Processing time for search
-        /// </summary>
-        public decimal CompletedIn { get; set; }
-
-        /// <summary>
-        /// Query string for the next page
-        /// </summary>
-        public string NextPage { get; set; }
-
-        /// <summary>
-        /// Page number returned from Twitter
-        /// </summary>
-        public int PageResult { get; set; }
-
-        /// <summary>
-        /// Your query, echo'd back by Twitter
-        /// </summary>
-        public string QueryResult { get; set; }
-
-        /// <summary>
-        /// Results per page returned from Twitter
-        /// </summary>
-        public int ResultsPerPageResult { get; set; }
-
-        /// <summary>
-        /// SinceID returned from Twitter
-        /// </summary>
-        public ulong SinceIDResult { get; set; }
-
-        /// <summary>
-        /// Query string to refresh this search
-        /// </summary>
-        public string RefreshUrl { get; set; }
+        public SearchMetaData SearchMetaData { get; set; }
     }
 }

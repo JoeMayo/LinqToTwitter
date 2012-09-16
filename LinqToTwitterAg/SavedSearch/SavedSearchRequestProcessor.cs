@@ -95,7 +95,7 @@ namespace LinqToTwitter
         /// <returns>saved search url</returns>
         Request BuildSearchesUrl()
         {
-            return new Request(BaseUrl + "saved_searches.json");
+            return new Request(BaseUrl + "saved_searches/list.json");
         }
 
         /// <summary>

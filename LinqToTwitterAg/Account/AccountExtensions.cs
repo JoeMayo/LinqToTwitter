@@ -10,46 +10,6 @@ namespace LinqToTwitter
         const string NoInputParam = "NoInput";
 
         /// <summary>
-        /// Ends the session for the currently logged in user
-        /// </summary>
-        /// <returns>true</returns>
-        [Obsolete("Twitter is deprecating this endpoint.")]
-        public static TwitterHashResponse EndAccountSession(this TwitterContext ctx)
-        {
-            return EndAccountSession(ctx, null);
-        }
-
-        /// <summary>
-        /// Ends the session for the currently logged in user
-        /// </summary>
-        /// <param name="callback">Async Callback used in Silverlight queries</param>
-        /// <returns>true</returns>
-        [Obsolete("Twitter is deprecating this endpoint.")]
-        public static TwitterHashResponse EndAccountSession(this TwitterContext ctx, Action<TwitterAsyncResponse<Account>> callback)
-        {
-            var accountUrl = ctx.BaseUrl + "account/end_session.json";
-
-            var reqProc = new AccountRequestProcessor<Account>();
-
-            ITwitterExecute exec = ctx.TwitterExecutor;
-            exec.AsyncCallback = callback;
-            var results =
-                exec.ExecuteTwitter(
-                    accountUrl,
-                    new Dictionary<string, string>(),
-                    response => reqProc.ProcessActionResult(response, AccountAction.EndSession));
-
-            var acct = reqProc.ProcessActionResult(results, AccountAction.EndSession);
-
-            if (acct != null)
-            {
-                return acct.EndSessionStatus;
-            }
-
-            throw new WebException("Unknown Twitter Response.");
-        }
-
-        /// <summary>
         /// Update Twitter colors
         /// </summary>
         /// <remarks>
