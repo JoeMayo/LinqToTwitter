@@ -1,0 +1,5 @@
+Changes in 1.0.15.0
+
+- Updated version information to .NET 4.5 RTM
+- Added symbol package with source information for debugging
+- Updated branding to say "Windows Store Apps" instead of "Metro style apps"
