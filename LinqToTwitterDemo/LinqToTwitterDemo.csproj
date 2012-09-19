@@ -101,7 +101,6 @@
     <Compile Include="StringExtensions.cs" />
     <Compile Include="RelatedResultsDemos.cs" />
     <Compile Include="DirectMessageDemos.cs" />
-    <Compile Include="ErrorHandlingDemos.cs" />
     <Compile Include="FavoritesDemos.cs" />
     <Compile Include="FriendshipDemos.cs" />
     <Compile Include="GeoDemos.cs" />

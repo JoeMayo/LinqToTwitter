@@ -56,7 +56,6 @@ namespace LinqToTwitterDemo
                     //UserDemos.Run(twitterCtx);
                     //NotificationsDemos.Run(twitterCtx);
                     //ReportSpamDemos.Run(twitterCtx);
-                    //ErrorHandlingDemos.Run(twitterCtx);
                     //OAuthDemos.Run(twitterCtx);
                     //TwitterContextDemos.Run(twitterCtx);
                 }
@@ -74,12 +73,11 @@ namespace LinqToTwitterDemo
         {
             Console.WriteLine("Authentication Strategy:\n\n");
 
-            Console.WriteLine("  1 - Pin");
+            Console.WriteLine("  1 - Pin (default)");
             Console.WriteLine("  2 - Single User");
             Console.WriteLine("  3 - XAuth");
-            Console.WriteLine("  4 - None\n");
 
-            Console.Write("Please choose (1, 2, 3, or 4): ");
+            Console.Write("Please choose (1, 2, or 3): ");
             ConsoleKeyInfo input = Console.ReadKey();
             Console.WriteLine("");
 
@@ -98,7 +96,7 @@ namespace LinqToTwitterDemo
                     auth = DoXAuth();
                     break;
                 default:
-                    auth = new AnonymousAuthorizer();
+                    auth = DoPinOAuth();
                     break;
             }
 

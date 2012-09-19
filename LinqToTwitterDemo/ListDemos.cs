@@ -146,10 +146,19 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void AddMemberToListDemo(TwitterContext twitterCtx)
         {
-            List list = twitterCtx.AddMemberToList(null, "Linq2Tweeter",  null, "test", null, "Linq2Tweeter");
+            try
+            {
+                List list = twitterCtx.AddMemberToList(null, "Linq2Tweeter", null, "test", null, "Linq2Tweeter");
 
-            Console.WriteLine("List Name: {0}, Description: {1}",
-                list.Name, list.Description);
+                Console.WriteLine("List Name: {0}, Description: {1}",
+                    list.Name, list.Description);
+            }
+            catch (TwitterQueryException tqex)
+            {
+                Console.WriteLine(
+                    "Error querying Twitter - Code: {0}, Message: {1}", 
+                    tqex.ErrorCode, tqex.Message);
+            }
         }
 
         /// <summary>
@@ -340,7 +349,7 @@ namespace LinqToTwitterDemo
                          list.OwnerScreenName == "Linq2Tweeter" &&
                          list.Slug == "linq"
                     select list)
-                    .FirstOrDefault();
+                   .FirstOrDefault();
 
                 // list will have only one user matching ID in query
                 var user = subscribedList.Users.First();
@@ -355,7 +364,8 @@ namespace LinqToTwitterDemo
             // error message from Twitter via the Response property, shown below.
             catch (TwitterQueryException ex)
             {
-                // TwitterQueryException will always reference the original WebException, so the check is redundant but doesn't hurt
+                // TwitterQueryException will always reference the original WebException, 
+                // so the check is redundant but doesn't hurt
                 var webEx = ex.InnerException as WebException;
                 if (webEx == null) throw ex;
 
@@ -368,7 +378,7 @@ namespace LinqToTwitterDemo
                     Console.WriteLine(
                         "HTTP Status Code: {0}. Response from Twitter: {1}",
                         webEx.Response.Headers["Status"],
-                        ex.Response.Error);
+                        ex.Message);
                 }
                 else
                 {

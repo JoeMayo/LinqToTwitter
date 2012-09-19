@@ -85,6 +85,7 @@
     <Compile Include="LinqToTwitterTests\TwitterContextCreateRequestProcessorTests.cs" />
     <Compile Include="Common\TwitterExtensionsTests.cs" />
     <Compile Include="LinqToTwitterTests\TwitterContextTests.cs" />
+    <Compile Include="LinqToTwitterTests\TwitterExecuteErrorHandlingTests.cs" />
     <Compile Include="ListTests\ListExtensionsTests.cs" />
     <Compile Include="ListTests\ListRequestProcessorTests.cs" />
     <Compile Include="NotificationsTests\NotificationsExtensionsTests.cs" />

@@ -178,120 +178,91 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// generates a new TwitterQueryException from a WebException
+        /// Common code to construct a TwitterQueryException instance
         /// </summary>
-        /// <param name="wex">Web Exception to Translate</param>
-        /// <returns>new TwitterQueryException instance</returns>
-        TwitterQueryException CreateTwitterQueryException(WebException wex)
+        /// <param name="responseStr">Response from Twitter</param>
+        /// <param name="wex">WebException assigned as InnerException if available</param>
+        /// <returns>An Instance of TwitterQueryException</returns>
+        TwitterQueryException ConstructTwitterQueryException(string responseStr, WebException wex)
         {
-            string responseStr = "[NO RESPONSE]";
-            XElement responseXml;
-            JsonData responseJson;
+            JsonData responseJson = JsonMapper.ToObject(responseStr);
 
-            if (responseStr.StartsWith("[", StringComparison.Ordinal)
-             || responseStr.StartsWith("{", StringComparison.Ordinal))
+            TwitterQueryException twitterQueryEx = null;
+
+            var errors = responseJson.GetValue<JsonData>("errors");
+            if (errors != null && errors.Count > 0)
             {
-                if (wex != null && wex.Response != null)
+                var error = errors[0];
+                twitterQueryEx = new TwitterQueryException(error.GetValue<string>("message"), wex)
                 {
-                    try
-                    {
-                        responseStr = GetTwitterResponse(wex.Response);
-                        responseJson = JsonMapper.ToObject(responseStr);
-                    }
-                    catch (Exception ex)
-                    {
-                        responseJson = BuildJsonResponse(wex, responseStr, ex);
-                    }
-                }
-                else
-                {
-                    responseJson = BuildJsonResponse(wex, responseStr, null);
-                }
-
-                return new TwitterQueryException("Error while querying Twitter.", wex)
-                {
-                    HttpError =
-                        wex != null && wex.Response != null ?
-                            wex.Response.Headers["Status"] :
-                            string.Empty,
-                    Response = new TwitterHashResponse
-                    {
-                        Request = responseJson.GetValue<string>("request") == null ? "request URI not received from Twitter" : responseJson.GetValue<string>("request"),
-                        Error = responseJson.GetValue<string>("error") == null ? "error message not received from Twitter" : responseJson.GetValue<string>("error")
-                    }
+                    HttpError = wex == null ? string.Empty : wex.Status.ToString(),
+                    ErrorCode = error.GetValue<int>("code")
                 };
             }
             else
             {
-                try
-                {
-                    responseStr = GetTwitterResponse(wex.Response);
-                    responseXml = XElement.Parse(responseStr);
-                }
-                catch (Exception ex)
-                {
-                    string responseUri = string.Empty;
+                twitterQueryEx = new TwitterQueryException("Error while querying Twitter.", wex);
+            }
 
-                    if (wex != null && wex.Response != null)
-                        responseUri = wex.Response.ResponseUri.ToString();
+            return twitterQueryEx;
+        }
 
-                    var errorText = (wex ?? ex)
-                                    + Environment.NewLine
-                                    + responseStr;
+        /// <summary>
+        /// Throws exception if error returned from Twitter
+        /// </summary>
+        /// <param name="responseStr">XML or JSON string response from Twitter</param>
+        /// <param name="status">HTTP Error number</param>
+        internal void CheckResultsForTwitterError(string responseStr, string status)
+        {
+            if (responseStr.StartsWith("{", StringComparison.Ordinal))
+            {
+                TwitterQueryException twitterQueryEx = ConstructTwitterQueryException(responseStr, null);
 
-                    string encodedResponseUri = MSEncoder.UrlEncode(responseUri);
-                    string encodedErrorText = MSEncoder.UrlEncode(errorText);
+                if (twitterQueryEx.ErrorCode != 0)
+                    throw twitterQueryEx;
+                //var responseJson = JsonMapper.ToObject(responseStr);
 
-                    // One known reason this can happen is if you don't have an 
-                    // Internet connection, meaning that the response will contain
-                    // an HTML message, that can't be parsed as normal XML.
-                    responseXml = XElement.Parse(
-    @"<hash>
-  <request>" + encodedResponseUri + @"</request>
-  <error>" + encodedErrorText + @"</error>
-</hash>");
-                }
-
-                return new TwitterQueryException("Error while querying Twitter.", wex)
-                {
-                    HttpError =
-                        wex != null && wex.Response != null ?
-                            wex.Response.Headers["Status"] :
-                            string.Empty,
-                    Response = new TwitterHashResponse
-                    {
-                        Request = responseXml.Element("request") == null ? "request URI not received from Twitter" : responseXml.Element("request").Value,
-                        Error = responseXml.Element("error") == null ? "error message not received from Twitter" : responseXml.Element("error").Value
-                    }
-                };
+                //var errors = responseJson.GetValue<JsonData>("errors");
+                //if (errors != null && errors.Count > 0)
+                //{
+                //    var error = errors[0];
+                //    throw new TwitterQueryException(error.GetValue<string>("message"))
+                //    {
+                //        HttpError = status,
+                //        ErrorCode = error.GetValue<int>("code")
+                //    };
+                //}
             }
         }
 
-        static JsonData BuildJsonResponse(WebException wex, string responseStr, Exception ex)
+        /// <summary>
+        /// generates a new TwitterQueryException from a WebException
+        /// </summary>
+        /// <param name="wex">Web Exception to Translate</param>
+        /// <returns>new TwitterQueryException instance</returns>
+        internal TwitterQueryException CreateTwitterQueryException(WebException wex)
         {
-            JsonData responseJson;
-            string responseUri = string.Empty;
+            const string DefaultResponse = @"{""errors"":[{""message"":""No message from Twitter"",""code"":0}]}";
+            string responseStr = DefaultResponse;
 
-            if (wex != null && wex.Response != null)
-                responseUri = wex.Response.ResponseUri.ToString();
-
-            var errorText = (wex ?? ex ?? new Exception("Please see inner exception for details.") )
-                            + Environment.NewLine
-                            + responseStr;
-
-            var response = new TwitterHashResponse
+            try
             {
-                Request = responseUri,
-                Error = errorText
-            };
+                if (wex != null && wex.Response != null)
+                {
+                    responseStr = GetTwitterResponse(wex.Response);
+                }
+            }
+            catch (Exception)
+            {
+                responseStr = DefaultResponse;
+            }
 
-            string jsonResponse = JsonMapper.ToJson(response);
+            if (!responseStr.StartsWith("{", StringComparison.Ordinal))
+                responseStr = DefaultResponse;
 
-            // One known reason this can happen is if you don't have an 
-            // Internet connection, meaning that the response will contain
-            // an HTML message, that can't be parsed as normal XML.
-            responseJson = JsonMapper.ToObject(jsonResponse);
-            return responseJson;
+            TwitterQueryException twitterQueryEx = ConstructTwitterQueryException(responseStr, wex);
+
+            return twitterQueryEx;
         }
 
         string ReadStreamBytes(Stream stream)
@@ -368,42 +339,6 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// Throws exception if error returned from Twitter
-        /// </summary>
-        /// <param name="responseStr">XML or JSON string response from Twitter</param>
-        /// <param name="status">HTTP Error number</param>
-        void CheckResultsForTwitterError(string responseStr, string status)
-        {
-            if (responseStr.StartsWith("[", StringComparison.Ordinal)
-                || responseStr.StartsWith("{", StringComparison.Ordinal))
-            {
-                // TODO: end_session.json is deprecated, so we can refactor this.
-
-                // json response... but DO NOT assume there's an error for now
-                // because the correct response from things like end_sesson.json
-                // is "error": "Logged out."
-            }
-            else if (responseStr.StartsWith("<", StringComparison.Ordinal))
-            {
-                var responseXml = XElement.Parse(responseStr);
-
-                if (responseXml.Name == "hash" &&
-                    responseXml.Element("error") != null)
-                {
-                    throw new TwitterQueryException("Error while querying Twitter.")
-                    {
-                        HttpError = status,
-                        Response = new TwitterHashResponse
-                        {
-                            Request = responseXml.Element("request").Value,
-                            Error = responseXml.Element("error").Value
-                        }
-                    };
-                }
-            }
-        }
-
-        /// <summary>
         /// makes HTTP call to Twitter API
         /// </summary>
         /// <param name="request">Request with url endpoint and all query parameters</param>
@@ -414,16 +349,17 @@ namespace LinqToTwitter
             //Log
             var url = request.Endpoint;
             var parameters = request.RequestParameters;
-            this.LastUrl = request.FullUrl;
-            WriteLog(this.LastUrl, "QueryTwitter");
+            LastUrl = request.FullUrl;
+            WriteLog(LastUrl, "QueryTwitter");
 
-            var uri = new Uri(this.LastUrl);
+            var uri = new Uri(LastUrl);
             string response = string.Empty;
             string httpStatus = string.Empty;
+            Exception thrownException = null;
 
             try
             {
-                var req = this.AuthorizedClient.Get(request);
+                var req = AuthorizedClient.Get(request);
 #if !SILVERLIGHT
                 bool initialStateSignaled = AsyncCallback != null;
 
@@ -449,7 +385,7 @@ namespace LinqToTwitter
                                     catch (Exception ex)
                                     {
                                         if (AsyncCallback == null)
-                                            throw;
+                                            thrownException = ex;
 
                                         asyncResp.Status = TwitterErrorStatus.RequestProcessingException;
                                         asyncResp.Message = "Processing failed. See Error property for more details.";
@@ -475,7 +411,12 @@ namespace LinqToTwitter
                             }), null);
 #if !SILVERLIGHT
                     if (AsyncCallback == null)
-                        resetEvent.WaitOne(); 
+                    {
+                        resetEvent.WaitOne();
+
+                        if (thrownException != null)
+                            throw thrownException;
+                    }
                 }
 #endif
             }

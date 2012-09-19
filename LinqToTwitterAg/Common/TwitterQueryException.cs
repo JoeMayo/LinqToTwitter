@@ -33,11 +33,17 @@ namespace LinqToTwitter
         /// <summary>
         /// provides the request url and error response message
         /// </summary>
+        [Obsolete("TwitterHashResponse is deprecated. You can use ErrorCode and Message to see what Twitter's response is.")]
         public TwitterHashResponse Response { get; set; }
 
         /// <summary>
         /// the HTTP error from the original exception
         /// </summary>
         public string HttpError { get; set; }
+
+        /// <summary>
+        /// Error code assigned by Twitter
+        /// </summary>
+        public int ErrorCode { get; set; }
     }
 }
