@@ -1,19 +1,17 @@
-﻿using System;
+﻿using LinqToTwitter.OAuth;
+using System;
 using System.Dynamic;
 using System.Linq;
 using System.Threading.Tasks;
-using CodeValue.SuiteValue.UI.Metro.TwitterAuthentication;
 
-namespace LinqToTwitter.OAuth
+namespace LinqToTwitter
 {
     public class WinRtAuthorizer : OAuthAuthorizer, ITwitterAuthorizer
     {
-
         /// <summary>
         /// Url that Twitter redirects to after user authorizes your app
         /// </summary>
         public Uri Callback { get; set; }
-
 
         /// <summary>
         /// Perform authorization
@@ -30,13 +28,14 @@ namespace LinqToTwitter.OAuth
             configuration.TwitterRedirectUrl = Callback.ToString();
             var twitAuthentication = new TwitterAuthProvider();
             twitAuthentication.Configure(configuration);
-            var user = await twitAuthentication.Authenticate();
+            var user = await twitAuthentication.AuthenticateAsync();
             OAuthTwitter.OAuthToken = twitAuthentication.OAuthToken;
             OAuthTwitter.OAuthTokenSecret = twitAuthentication.OAuthTokenSecret;
             Credentials.ScreenName = user.UserName;
             Credentials.UserId = user.Id;
             Credentials.OAuthToken = twitAuthentication.OAuthToken;
-            Credentials.AccessToken = OAuthTwitter.OAuthTokenSecret;
+            Credentials.AccessToken = twitAuthentication.OAuthTokenSecret;
+            Credentials.Save();
             return this;
         }
 
