@@ -53,6 +53,11 @@ namespace LinqToTwitter
         internal ulong ID { get; set; }
 
         /// <summary>
+        /// Include entities in tweets
+        /// </summary>
+        internal bool IncludeEntities { get; set; }
+
+        /// <summary>
         /// Don't include statuses in response
         /// </summary>
         public bool SkipStatus { get; set; }
@@ -74,6 +79,7 @@ namespace LinqToTwitter
                        "Page",
                        "Count",
                        "ID",
+                       "IncludeEntities",
                        "SkipStatus"
                    });
 
@@ -119,6 +125,12 @@ namespace LinqToTwitter
 
             ID = ulong.Parse(parameters[IdParam]);
             urlParams.Add(new QueryParameter("id", ID.ToString()));
+
+            if (parameters.ContainsKey("IncludeEntities"))
+            {
+                IncludeEntities = bool.Parse(parameters["IncludeEntities"]);
+                urlParams.Add(new QueryParameter("include_entities", parameters["IncludeEntities"].ToLower()));
+            }
 
             return req;
         }
@@ -181,6 +193,12 @@ namespace LinqToTwitter
                 urlParams.Add(new QueryParameter("count", Count.ToString(CultureInfo.InvariantCulture)));
             }
 
+            if (parameters.ContainsKey("IncludeEntities"))
+            {
+                IncludeEntities = bool.Parse(parameters["IncludeEntities"]);
+                urlParams.Add(new QueryParameter("include_entities", parameters["IncludeEntities"].ToLower()));
+            }
+
             if (parameters.ContainsKey("SkipStatus"))
             {
                 SkipStatus = bool.Parse(parameters["SkipStatus"]);
@@ -232,6 +250,7 @@ namespace LinqToTwitter
                     Page = Page,
                     Count = Count,
                     ID = ID,
+                    IncludeEntities = IncludeEntities,
                     SkipStatus = SkipStatus
                 };
 
@@ -250,6 +269,7 @@ namespace LinqToTwitter
                     Page = Page,
                     Count = Count,
                     ID = ID,
+                    IncludeEntities = IncludeEntities,
                     SkipStatus = SkipStatus
                 }
             };

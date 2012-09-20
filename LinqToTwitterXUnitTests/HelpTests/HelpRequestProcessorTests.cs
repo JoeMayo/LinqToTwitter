@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using LinqToTwitter;
 using LinqToTwitterXUnitTests.Common;
 using Xunit;
@@ -15,10 +16,31 @@ namespace LinqToTwitterXUnitTests.HelpTests
         }
 
         [Fact]
+        public void GetParameters_Parses_Parameters()
+        {
+            var helpReqProc = new HelpRequestProcessor<Help>();
+            Expression<Func<Help, bool>> expression =
+                help =>
+                    help.Type == HelpType.RateLimits &&
+                    help.Resources == "search";
+
+            var lambdaExpression = expression as LambdaExpression;
+
+            var queryParams = helpReqProc.GetParameters(lambdaExpression);
+
+            Assert.True(
+                queryParams.Contains(
+                    new KeyValuePair<string, string>("Type", ((int)HelpType.RateLimits).ToString())));
+            Assert.True(
+                queryParams.Contains(
+                    new KeyValuePair<string, string>("Resources", "search")));
+        }
+
+        [Fact]
         public void BuildUrl_Generates_Configuration_Url()
         {
-            const string ExpectedUrl = "https://api.twitter.com/1/help/configuration.json";
-            var helpReqProc = new HelpRequestProcessor<Help> { BaseUrl = "https://api.twitter.com/1/" };
+            const string ExpectedUrl = "https://api.twitter.com/1.1/help/configuration.json";
+            var helpReqProc = new HelpRequestProcessor<Help> { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
              {
                  {"Type", ((int) HelpType.Configuration).ToString()}
@@ -32,11 +54,43 @@ namespace LinqToTwitterXUnitTests.HelpTests
         [Fact]
         public void BuildUrl_Generates_Languages_Url()
         {
-            const string ExpectedUrl = "https://api.twitter.com/1/help/languages.json";
-            var helpReqProc = new HelpRequestProcessor<Help> { BaseUrl = "https://api.twitter.com/1/" };
+            const string ExpectedUrl = "https://api.twitter.com/1.1/help/languages.json";
+            var helpReqProc = new HelpRequestProcessor<Help> { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
              {
                  {"Type", ((int) HelpType.Languages).ToString()}
+             };
+
+            Request req = helpReqProc.BuildUrl(parameters);
+
+            Assert.Equal(ExpectedUrl, req.FullUrl);
+        }
+
+        [Fact]
+        public void BuildUrl_Generates_RateLimits_Url()
+        {
+            const string ExpectedUrl = "https://api.twitter.com/1.1/application/rate_limit_status.json?resources=search%2Cusers";
+            var helpReqProc = new HelpRequestProcessor<Help> { BaseUrl = "https://api.twitter.com/1.1/" };
+            var parameters = new Dictionary<string, string>
+             {
+                 {"Type", ((int) HelpType.RateLimits).ToString()},
+                 {"Resources", "search,users"}
+             };
+
+            Request req = helpReqProc.BuildUrl(parameters);
+
+            Assert.Equal(ExpectedUrl, req.FullUrl);
+        }
+
+        [Fact]
+        public void BuildUrl_Removes_Parameter_Spaces_In_RateLimits_Url()
+        {
+            const string ExpectedUrl = "https://api.twitter.com/1.1/application/rate_limit_status.json?resources=search%2Cusers";
+            var helpReqProc = new HelpRequestProcessor<Help> { BaseUrl = "https://api.twitter.com/1.1/" };
+            var parameters = new Dictionary<string, string>
+             {
+                 {"Type", ((int) HelpType.RateLimits).ToString()},
+                 {"Resources", "search, users"}
              };
 
             Request req = helpReqProc.BuildUrl(parameters);
@@ -84,7 +138,7 @@ namespace LinqToTwitterXUnitTests.HelpTests
             var helpReqProc = new HelpRequestProcessor<Help> 
             {
                 Type = HelpType.Configuration,
-                BaseUrl = "https://api.twitter.com/1/" 
+                BaseUrl = "https://api.twitter.com/1.1/" 
             };
 
             List<Help> helpList = helpReqProc.ProcessResults(HelpConfigurationResponse);
@@ -124,7 +178,7 @@ namespace LinqToTwitterXUnitTests.HelpTests
             var helpReqProc = new HelpRequestProcessor<Help> 
             {
                 Type = HelpType.Languages,
-                BaseUrl = "https://api.twitter.com/1/" 
+                BaseUrl = "https://api.twitter.com/1.1/" 
             };
 
             List<Help> helpList = helpReqProc.ProcessResults(HelpLanguagesXml);
@@ -140,6 +194,37 @@ namespace LinqToTwitterXUnitTests.HelpTests
             Assert.Equal(ExpectedLanguageName, language.Name);
             Assert.Equal(ExpectedLanguageStatus, language.Status);
             Assert.Equal(ExpectedLanguageCode, language.Code);
+        }
+
+        [Fact]
+        public void ProcessResults_Handles_RateLimits_Results()
+        {
+            var helpReqProc = new HelpRequestProcessor<Help>
+            {
+                Type = HelpType.RateLimits,
+                BaseUrl = "https://api.twitter.com/1.1/"
+            };
+
+            List<Help> helpList = helpReqProc.ProcessResults(RateLimitsResponse);
+
+            Assert.NotNull(helpList);
+            Assert.Single(helpList);
+            Help help = helpList.Single();
+            Assert.Equal(HelpType.RateLimits, help.Type);
+            Assert.Equal("15411837-3wGGrD7CY0Hb0tguLA3pSH7EMwSWWcnuD3DEQ1E27", help.RateLimitAccountContext);
+            Assert.NotNull(help.RateLimits);
+            Assert.NotEmpty(help.RateLimits);
+            Dictionary<string, List<RateLimits>> rateLimits = help.RateLimits;
+            Assert.True(rateLimits.ContainsKey("lists"));
+            List<RateLimits> limitsList = rateLimits["lists"];
+            Assert.NotNull(limitsList);
+            Assert.NotEmpty(limitsList);
+            RateLimits limits = limitsList.First();
+            Assert.NotNull(limits);
+            Assert.Equal("/lists/subscriptions", limits.Resource);
+            Assert.Equal(15, limits.Limit);
+            Assert.Equal(15, limits.Remaining);
+            Assert.Equal(1348087186ul, limits.Reset);
         }
 
         const string HelpConfigurationResponse = @"{
@@ -398,5 +483,298 @@ namespace LinqToTwitterXUnitTests.HelpTests
       ""code"":""es""
    }
 ]";
+
+        const string RateLimitsResponse = @"{
+   ""rate_limit_context"":{
+      ""access_token"":""15411837-3wGGrD7CY0Hb0tguLA3pSH7EMwSWWcnuD3DEQ1E27""
+   },
+   ""resources"":{
+      ""lists"":{
+         ""/lists/subscriptions"":{
+            ""limit"":15,
+            ""remaining"":15,
+            ""reset"":1348087186
+         },
+         ""/lists/subscribers/show"":{
+            ""limit"":15,
+            ""remaining"":15,
+            ""reset"":1348087186
+         },
+         ""/lists/members"":{
+            ""limit"":15,
+            ""remaining"":15,
+            ""reset"":1348087186
+         },
+         ""/lists/subscribers"":{
+            ""limit"":15,
+            ""remaining"":15,
+            ""reset"":1348087186
+         },
+         ""/lists/list"":{
+            ""limit"":15,
+            ""remaining"":15,
+            ""reset"":1348087186
+         },
+         ""/lists/memberships"":{
+            ""limit"":15,
+            ""remaining"":15,
+            ""reset"":1348087186
+         },
+         ""/lists/show"":{
+            ""limit"":15,
+            ""remaining"":15,
+            ""reset"":1348087186
+         },
+         ""/lists/statuses"":{
+            ""limit"":15,
+            ""remaining"":15,
+            ""reset"":1348087186
+         },
+         ""/lists/members/show"":{
+            ""limit"":15,
+            ""remaining"":15,
+            ""reset"":1348087186
+         }
+      },
+      ""friendships"":{
+         ""/friendships/incoming"":{
+            ""limit"":15,
+            ""remaining"":15,
+            ""reset"":1348087186
+         },
+         ""/friendships/show"":{
+            ""limit"":15,
+            ""remaining"":15,
+            ""reset"":1348087186
+         },
+         ""/friendships/lookup"":{
+            ""limit"":15,
+            ""remaining"":15,
+            ""reset"":1348087186
+         },
+         ""/friendships/outgoing"":{
+            ""limit"":15,
+            ""remaining"":15,
+            ""reset"":1348087186
+         }
+      },
+      ""blocks"":{
+         ""/blocks/ids"":{
+            ""limit"":15,
+            ""remaining"":15,
+            ""reset"":1348087186
+         },
+         ""/blocks/list"":{
+            ""limit"":15,
+            ""remaining"":15,
+            ""reset"":1348087186
+         }
+      },
+      ""geo"":{
+         ""/geo/id/:place_id"":{
+            ""limit"":15,
+            ""remaining"":15,
+            ""reset"":1348087186
+         },
+         ""/geo/reverse_geocode"":{
+            ""limit"":15,
+            ""remaining"":15,
+            ""reset"":1348087186
+         },
+         ""/geo/search"":{
+            ""limit"":15,
+            ""remaining"":15,
+            ""reset"":1348087186
+         },
+         ""/geo/similar_places"":{
+            ""limit"":15,
+            ""remaining"":15,
+            ""reset"":1348087186
+         }
+      },
+      ""users"":{
+         ""/users/suggestions/:slug/members"":{
+            ""limit"":15,
+            ""remaining"":15,
+            ""reset"":1348087186
+         },
+         ""/users/search"":{
+            ""limit"":180,
+            ""remaining"":180,
+            ""reset"":1348087186
+         },
+         ""/users/show"":{
+            ""limit"":180,
+            ""remaining"":180,
+            ""reset"":1348087186
+         },
+         ""/users/contributees"":{
+            ""limit"":15,
+            ""remaining"":15,
+            ""reset"":1348087186
+         },
+         ""/users/contributors"":{
+            ""limit"":15,
+            ""remaining"":15,
+            ""reset"":1348087186
+         },
+         ""/users/suggestions"":{
+            ""limit"":15,
+            ""remaining"":15,
+            ""reset"":1348087186
+         },
+         ""/users/lookup"":{
+            ""limit"":180,
+            ""remaining"":180,
+            ""reset"":1348087186
+         },
+         ""/users/suggestions/:slug"":{
+            ""limit"":15,
+            ""remaining"":15,
+            ""reset"":1348087186
+         }
+      },
+      ""followers"":{
+         ""/followers/ids"":{
+            ""limit"":15,
+            ""remaining"":15,
+            ""reset"":1348087186
+         }
+      },
+      ""statuses"":{
+         ""/statuses/home_timeline"":{
+            ""limit"":15,
+            ""remaining"":15,
+            ""reset"":1348087186
+         },
+         ""/statuses/mentions_timeline"":{
+            ""limit"":15,
+            ""remaining"":15,
+            ""reset"":1348087186
+         },
+         ""/statuses/show/:id"":{
+            ""limit"":180,
+            ""remaining"":180,
+            ""reset"":1348087186
+         },
+         ""/statuses/retweets/:id"":{
+            ""limit"":15,
+            ""remaining"":15,
+            ""reset"":1348087186
+         },
+         ""/statuses/user_timeline"":{
+            ""limit"":180,
+            ""remaining"":180,
+            ""reset"":1348087186
+         },
+         ""/statuses/oembed"":{
+            ""limit"":180,
+            ""remaining"":180,
+            ""reset"":1348087186
+         }
+      },
+      ""help"":{
+         ""/help/privacy"":{
+            ""limit"":15,
+            ""remaining"":15,
+            ""reset"":1348087186
+         },
+         ""/help/tos"":{
+            ""limit"":15,
+            ""remaining"":15,
+            ""reset"":1348087186
+         },
+         ""/help/configuration"":{
+            ""limit"":15,
+            ""remaining"":15,
+            ""reset"":1348087186
+         },
+         ""/help/languages"":{
+            ""limit"":15,
+            ""remaining"":15,
+            ""reset"":1348087186
+         }
+      },
+      ""friends"":{
+         ""/friends/ids"":{
+            ""limit"":15,
+            ""remaining"":15,
+            ""reset"":1348087186
+         }
+      },
+      ""direct_messages"":{
+         ""/direct_messages"":{
+            ""limit"":15,
+            ""remaining"":15,
+            ""reset"":1348087186
+         },
+         ""/direct_messages/show"":{
+            ""limit"":15,
+            ""remaining"":15,
+            ""reset"":1348087186
+         },
+         ""/direct_messages/sent"":{
+            ""limit"":15,
+            ""remaining"":15,
+            ""reset"":1348087186
+         }
+      },
+      ""account"":{
+         ""/account/verify_credentials"":{
+            ""limit"":15,
+            ""remaining"":15,
+            ""reset"":1348087186
+         },
+         ""/account/settings"":{
+            ""limit"":15,
+            ""remaining"":15,
+            ""reset"":1348087186
+         }
+      },
+      ""favorites"":{
+         ""/favorites/list"":{
+            ""limit"":15,
+            ""remaining"":15,
+            ""reset"":1348087186
+         }
+      },
+      ""saved_searches"":{
+         ""/saved_searches/list"":{
+            ""limit"":15,
+            ""remaining"":15,
+            ""reset"":1348087186
+         },
+         ""/saved_searches/show/:id"":{
+            ""limit"":15,
+            ""remaining"":15,
+            ""reset"":1348087186
+         }
+      },
+      ""search"":{
+         ""/search/tweets"":{
+            ""limit"":180,
+            ""remaining"":180,
+            ""reset"":1348087186
+         }
+      },
+      ""trends"":{
+         ""/trends/available"":{
+            ""limit"":15,
+            ""remaining"":15,
+            ""reset"":1348087186
+         },
+         ""/trends/closest"":{
+            ""limit"":15,
+            ""remaining"":15,
+            ""reset"":1348087186
+         },
+         ""/trends/place"":{
+            ""limit"":15,
+            ""remaining"":15,
+            ""reset"":1348087186
+         }
+      }
+   }
+}";
     }
 }

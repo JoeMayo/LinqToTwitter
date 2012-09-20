@@ -467,9 +467,9 @@ namespace LinqToTwitterXUnitTests.ListTests
         }
 
         [Fact]
-        public void BuildStatusesUrl_Does_Not_Include_False_Parameters()
+        public void BuildStatusesUrl_Includes_False_Parameters()
         {
-            const string ExpectedUrl = "https://api.twitter.com/1.1/lists/statuses.json?owner_id=123&owner_screen_name=JoeMayo&slug=test&list_id=456&since_id=789&max_id=234&count=25&per_page=25&page=3";
+            const string ExpectedUrl = "https://api.twitter.com/1.1/lists/statuses.json?owner_id=123&owner_screen_name=JoeMayo&slug=test&list_id=456&since_id=789&max_id=234&count=25&per_page=25&page=3&trim_user=false&include_entities=false&include_rts=false";
             var listReqProc = new ListRequestProcessor<List>() { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
             {
@@ -567,9 +567,9 @@ namespace LinqToTwitterXUnitTests.ListTests
         }
 
         [Fact]
-        public void BuildMembersUrl_Does_Not_Include_False_Parameters()
+        public void BuildMembersUrl_Includes_False_Parameters()
         {
-            const string ExpectedUrl = "https://api.twitter.com/1.1/lists/members.json?owner_id=123&owner_screen_name=JoeMayo&slug=test&list_id=456&cursor=789";
+            const string ExpectedUrl = "https://api.twitter.com/1.1/lists/members.json?owner_id=123&owner_screen_name=JoeMayo&slug=test&list_id=456&cursor=789&include_entities=false";
             var listReqProc = new ListRequestProcessor<List>() { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
             {
@@ -664,9 +664,9 @@ namespace LinqToTwitterXUnitTests.ListTests
         }
 
         [Fact]
-        public void BuildIsMemberUrl_Does_Not_Include_False_Parameters()
+        public void BuildIsMemberUrl_Includes_False_Parameters()
         {
-            const string ExpectedUrl = "https://api.twitter.com/1.1/lists/members/show.json?user_id=789&screen_name=JoeMayo&slug=test&owner_id=123&owner_screen_name=JoeMayo&list_id=456";
+            const string ExpectedUrl = "https://api.twitter.com/1.1/lists/members/show.json?user_id=789&screen_name=JoeMayo&slug=test&owner_id=123&owner_screen_name=JoeMayo&list_id=456&include_entities=false";
             var listReqProc = new ListRequestProcessor<List>() { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
             {
@@ -760,9 +760,9 @@ namespace LinqToTwitterXUnitTests.ListTests
         }
 
         [Fact]
-        public void BuildSubscribersUrl_Does_Not_Include_False_Parameters()
+        public void BuildSubscribersUrl_Includes_False_Parameters()
         {
-            const string ExpectedUrl = "https://api.twitter.com/1.1/lists/subscribers.json?owner_id=123&owner_screen_name=JoeMayo&slug=test&list_id=456&cursor=789";
+            const string ExpectedUrl = "https://api.twitter.com/1.1/lists/subscribers.json?owner_id=123&owner_screen_name=JoeMayo&slug=test&list_id=456&cursor=789&include_entities=false";
             var listReqProc = new ListRequestProcessor<List>() { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
             {
@@ -857,9 +857,9 @@ namespace LinqToTwitterXUnitTests.ListTests
         }
 
         [Fact]
-        public void BuildIsSubscriberUrl_Does_Not_Include_False_Parameters()
+        public void BuildIsSubscriberUrl_Includes_False_Parameters()
         {
-            const string ExpectedUrl = "https://api.twitter.com/1.1/lists/subscribers/show.json?user_id=789&screen_name=JoeMayo&slug=test&owner_id=123&owner_screen_name=JoeMayo&list_id=456";
+            const string ExpectedUrl = "https://api.twitter.com/1.1/lists/subscribers/show.json?user_id=789&screen_name=JoeMayo&slug=test&owner_id=123&owner_screen_name=JoeMayo&list_id=456&include_entities=false";
             var listReqProc = new ListRequestProcessor<List>() { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
             {

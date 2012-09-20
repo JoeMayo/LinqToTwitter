@@ -176,6 +176,7 @@
     <Compile Include="Help\HelpType.cs" />
     <Compile Include="Help\Language.cs" />
     <Compile Include="Help\PhotoSize.cs" />
+    <Compile Include="Help\RateLimits.cs" />
     <Compile Include="Legal\Legal.cs" />
     <Compile Include="Legal\LegalRequestProcessor.cs" />
     <Compile Include="Legal\LegalType.cs" />

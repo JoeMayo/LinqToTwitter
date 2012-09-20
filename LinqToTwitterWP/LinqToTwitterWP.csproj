@@ -386,6 +386,9 @@
     <Compile Include="..\LinqToTwitterAg\Help\PhotoSize.cs">
       <Link>Help\PhotoSize.cs</Link>
     </Compile>
+    <Compile Include="..\LinqToTwitterAg\Help\RateLimits.cs">
+      <Link>Help\RateLimits.cs</Link>
+    </Compile>
     <Compile Include="..\LinqToTwitterAg\Legal\Legal.cs">
       <Link>Legal\Legal.cs</Link>
     </Compile>

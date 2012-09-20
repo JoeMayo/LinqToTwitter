@@ -334,10 +334,10 @@ namespace LinqToTwitterXUnitTests.StatusTests
             Assert.Equal(ExpectedUrl, req.FullUrl);
         }
 
-        [Fact()]
-        public void BuildUrl_Returns_Url_Without_Include_Rts_Param_For_False_Retweets()
+        [Fact]
+        public void BuildUrl_Includes_False_Include_Rts_Param()
         {
-            const string ExpectedUrl = "https://api.twitter.com/1.1/statuses/user_timeline/15411837.json";
+            const string ExpectedUrl = "https://api.twitter.com/1.1/statuses/user_timeline/15411837.json?include_rts=false";
             var reqProc = new StatusRequestProcessor<Status>
             {
                 Type = StatusType.User,
@@ -347,7 +347,7 @@ namespace LinqToTwitterXUnitTests.StatusTests
             {
                 { "Type", ((int)StatusType.User).ToString() },
                 { "ID", "15411837" },
-                { "IncludeRetweets", "False" }
+                { "IncludeRetweets", false.ToString() }
             };
 
             Request req = reqProc.BuildUrl(parameters);

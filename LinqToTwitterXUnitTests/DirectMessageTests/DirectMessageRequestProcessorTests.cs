@@ -23,7 +23,7 @@ namespace LinqToTwitterXUnitTests
         public void BuildUrl_Constructs_SentTo_Url()
         {
             var dmReqProc = new DirectMessageRequestProcessor<DirectMessage> { BaseUrl = "https://api.twitter.com/1/" };
-            const string Expected = "https://api.twitter.com/1/direct_messages.json?since_id=1234567&max_id=357&page=1&count=2&skip_status=true";
+            const string Expected = "https://api.twitter.com/1/direct_messages.json?since_id=1234567&max_id=357&page=1&count=2&include_entities=true&skip_status=true";
             var parameters =
                 new Dictionary<string, string>
                 {
@@ -32,6 +32,7 @@ namespace LinqToTwitterXUnitTests
                         { "MaxID", "357" },
                         { "Page", "1" },
                         { "Count", "2" },
+                        { "IncludeEntities", true.ToString() },
                         { "SkipStatus", true.ToString() }
                 };
 
@@ -44,7 +45,7 @@ namespace LinqToTwitterXUnitTests
         public void BuildUrl_Constructs_SentBy_Url()
         {
             var dmReqProc = new DirectMessageRequestProcessor<DirectMessage> { BaseUrl = "https://api.twitter.com/1/" };
-            const string Expected = "https://api.twitter.com/1/direct_messages/sent.json?since_id=1234567&max_id=357&page=1&count=2";
+            const string Expected = "https://api.twitter.com/1/direct_messages/sent.json?since_id=1234567&max_id=357&page=1&count=2&include_entities=true";
             var parameters =
                 new Dictionary<string, string>
                 {
@@ -52,7 +53,8 @@ namespace LinqToTwitterXUnitTests
                         { "SinceID", "1234567" },
                         { "MaxID", "357" },
                         { "Page", "1" },
-                        { "Count", "2" }
+                        { "Count", "2" },
+                        { "IncludeEntities", true.ToString() }
                 };
 
             Request req = dmReqProc.BuildUrl(parameters);
@@ -209,6 +211,7 @@ namespace LinqToTwitterXUnitTests
                     dm.Page == 1 &&
                     dm.SinceID == 123 &&
                     dm.ID == 456 &&
+                    dm.IncludeEntities == true &&
                     dm.SkipStatus == true;
             var lambdaExpression = expression as LambdaExpression;
 
@@ -232,6 +235,9 @@ namespace LinqToTwitterXUnitTests
             Assert.True(
                 queryParams.Contains(
                     new KeyValuePair<string, string>("ID", "456")));
+            Assert.True(
+                queryParams.Contains(
+                    new KeyValuePair<string, string>("IncludeEntities", "True")));
             Assert.True(
                 queryParams.Contains(
                     new KeyValuePair<string, string>("SkipStatus", "True")));

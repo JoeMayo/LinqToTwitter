@@ -22,12 +22,18 @@ namespace LinqToTwitter
         /// </summary>
         public HelpType Type { get; set; }
 
+        /// <summary>
+        /// Comma-separated list of resources for rate limit status request (setting to null returns all)
+        /// </summary>
+        internal string Resources { get; set; }
+
         public virtual Dictionary<string, string> GetParameters(LambdaExpression lambdaExpression)
         {
             return new ParameterFinder<Help>(
                lambdaExpression.Body,
                new List<string> { 
-                   "Type"
+                   "Type",
+                   "Resources"
                })
                .Parameters;
         }
@@ -46,9 +52,26 @@ namespace LinqToTwitter
                     return new Request(BaseUrl + "help/configuration.json");
                 case HelpType.Languages:
                     return new Request(BaseUrl + "help/languages.json");
+                case HelpType.RateLimits:
+                    return BuildRateLimitsUrl(parameters);
                 default:
                     throw new InvalidOperationException("The default case of BuildUrl should never execute because a Type must be specified.");
             }
+        }
+
+        private Request BuildRateLimitsUrl(Dictionary<string, string> parameters)
+        {
+            var req = new Request(BaseUrl + "application/rate_limit_status.json");
+
+            var urlParams = req.RequestParameters;
+
+            if (parameters.ContainsKey("Resources"))
+            {
+                Resources = parameters["Resources"];
+                urlParams.Add(new QueryParameter("resources", Resources.Replace(" ", "")));
+            }
+
+            return req;
         }
 
         /// <summary>
@@ -67,6 +90,9 @@ namespace LinqToTwitter
                     break;
                 case HelpType.Languages:
                     help = HandleHelpLanguages(responseJson);
+                    break;
+                case HelpType.RateLimits:
+                    help = HandleHelpRateLimits(responseJson);
                     break;
                 default:
                     help = new Help();
@@ -129,6 +155,42 @@ namespace LinqToTwitter
                          Status = lang.GetValue<string>("status")
                      })
                     .ToList()
+            };
+        }
+
+        Help HandleHelpRateLimits(string responseJson)
+        {
+            JsonData helpJson = JsonMapper.ToObject(responseJson);
+
+            var context = helpJson.GetValue<JsonData>("rate_limit_context");
+            var resources = helpJson.GetValue<JsonData>("resources") as IDictionary<string, JsonData>;
+
+            return new Help
+            {
+                Type = HelpType.RateLimits,
+                Resources = Resources,
+                RateLimitAccountContext = context.GetValue<string>("access_token"),
+                RateLimits = 
+                    (from key in resources.Keys
+                     let category = resources[key] as IDictionary<string, JsonData>
+                     select new
+                     {
+                         Key = key,
+                         Value =
+                            (from cat in category.Keys
+                             let limit = category[cat]
+                             select new RateLimits
+                             {
+                                 Resource = cat,
+                                 Limit = limit.GetValue<int>("limit"),
+                                 Remaining = limit.GetValue<int>("remaining"),
+                                 Reset = limit.GetValue<ulong>("reset")
+                             })
+                            .ToList()
+                     })
+                    .ToDictionary(
+                        key => key.Key,
+                        val => val.Value)
             };
         }
     }

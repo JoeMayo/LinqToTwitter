@@ -377,7 +377,8 @@ namespace LinqToTwitterXUnitTests.UserTests
                 Query = "myquery",
                 Lang = "en-US",
                 SkipStatus = true,
-                ImageSize = ProfileImageSize.Bigger
+                ImageSize = ProfileImageSize.Bigger,
+                IncludeEntities = true
             };
 
             List<User> users = reqProc.ProcessResults(SingleUserResponse);
@@ -396,6 +397,7 @@ namespace LinqToTwitterXUnitTests.UserTests
             Assert.Equal("en-US", user.Lang);
             Assert.True(user.SkipStatus);
             Assert.Equal(ProfileImageSize.Bigger, user.ImageSize);
+            Assert.True(user.IncludeEntities);
         }
 
         [Fact]

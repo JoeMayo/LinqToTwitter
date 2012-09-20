@@ -115,6 +115,7 @@ namespace LinqToTwitterXUnitTests.SearchTests
         [Fact]
         public void BuildUrl_Includes_Parameters()
         {
+            const string ExpectedUrl = "https://api.twitter.com/1.1/search/tweets.json?geocode=40.757929%2C-73.985506%2C25km&lang=en&page=1&rpp=10&q=LINQ%20to%20Twitter&show_user=true&since=2010-07-04&until=2011-07-04&since_id=1&result_type=popular&include_entities=false";
             var searchReqProc = new SearchRequestProcessor<Search> { BaseUrl = "https://api.twitter.com/1.1/search/" };
             var parameters =
                 new Dictionary<string, string>
@@ -130,12 +131,12 @@ namespace LinqToTwitterXUnitTests.SearchTests
                     { "Since", new DateTime(2010, 7, 4).ToString() },
                     { "Until", new DateTime(2011, 7, 4).ToString() },
                     { "ResultType", ResultType.Popular.ToString() },
+                    { "IncludeEntities", false.ToString() }
                };
-            const string Expected = "https://api.twitter.com/1.1/search/tweets.json?geocode=40.757929%2C-73.985506%2C25km&lang=en&page=1&rpp=10&q=LINQ%20to%20Twitter&show_user=true&since=2010-07-04&until=2011-07-04&since_id=1&result_type=popular";
 
             Request req = searchReqProc.BuildUrl(parameters);
 
-            Assert.Equal(Expected, req.FullUrl);
+            Assert.Equal(ExpectedUrl, req.FullUrl);
         }
 
         [Fact]
@@ -341,23 +342,6 @@ namespace LinqToTwitterXUnitTests.SearchTests
                     { "IncludeEntities", true.ToString(CultureInfo.InvariantCulture) }
                 };
             const string Expected = "https://api.twitter.com/1.1/search/tweets.json?include_entities=true";
-
-            Request req = searchProc.BuildUrl(parameters);
-
-            Assert.Equal(Expected, req.FullUrl);
-        }
-
-        [Fact]
-        public void BuildUrl_Does_Not_Add_False_IncludeEntities()
-        {
-            var searchProc = new SearchRequestProcessor<Search> { BaseUrl = "https://api.twitter.com/1.1/search/" };
-            var parameters =
-                new Dictionary<string, string>
-                {
-                    { "Type", SearchType.Search.ToString() },
-                    { "IncludeEntities", false.ToString(CultureInfo.InvariantCulture) }
-                };
-            const string Expected = "https://api.twitter.com/1.1/search/tweets.json";
 
             Request req = searchProc.BuildUrl(parameters);
 

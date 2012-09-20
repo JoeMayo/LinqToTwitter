@@ -53,7 +53,7 @@ namespace LinqToTwitter
         private int Page { get; set; }
 
         /// <summary>
-        /// Add entities to results (optional)
+        /// Add entities to results (default: true)
         /// </summary>
         public bool IncludeEntities { get; set; }
 

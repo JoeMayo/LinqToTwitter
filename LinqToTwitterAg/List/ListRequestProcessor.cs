@@ -90,17 +90,13 @@ namespace LinqToTwitter
         internal bool TrimUser { get; set; }
 
         /// <summary>
-        /// Add entities to tweets
+        /// Add entities to tweets (default: true)
         /// </summary>
-        // TODO: was scheduled for deprecation on 5/14/12, but delayed by Twitter - need to follow up.
-        //[Obsolete("All API methods capable of including entities will return them regardless of the value provided.")]
         internal bool IncludeEntities { get; set; }
 
         /// <summary>
         /// Add retweets, in addition to normal tweets
         /// </summary>
-        // TODO: was scheduled for deprecation on 5/14/12, but delayed by Twitter - need to follow up.
-        //[Obsolete("All API methods capable of including retweets will return them regardless of the value provided.")]
         internal bool IncludeRetweets { get; set; }
 
         /// <summary>
@@ -451,29 +447,20 @@ namespace LinqToTwitter
 
             if (parameters.ContainsKey("TrimUser"))
             {
-                if (RequestProcessorHelper.FlagTrue(parameters, "TrimUser"))
-                {
-                    TrimUser = true;
-                    urlParams.Add(new QueryParameter("trim_user", "true"));
-                }
+                TrimUser = bool.Parse(parameters["TrimUser"]);
+                urlParams.Add(new QueryParameter("trim_user", parameters["TrimUser"].ToLower()));
             }
 
             if (parameters.ContainsKey("IncludeEntities"))
             {
-                if (RequestProcessorHelper.FlagTrue(parameters, "IncludeEntities"))
-                {
-                    IncludeEntities = true;
-                    urlParams.Add(new QueryParameter("include_entities", "true"));
-                }
+                IncludeEntities = bool.Parse(parameters["IncludeEntities"]);
+                urlParams.Add(new QueryParameter("include_entities", parameters["IncludeEntities"].ToLower()));
             }
 
             if (parameters.ContainsKey("IncludeRetweets"))
             {
-                if (RequestProcessorHelper.FlagTrue(parameters, "IncludeRetweets"))
-                {
-                    IncludeRetweets = true;
-                    urlParams.Add(new QueryParameter("include_rts", "true"));
-                }
+                IncludeRetweets = bool.Parse(parameters["IncludeRetweets"]);
+                urlParams.Add(new QueryParameter("include_rts", parameters["IncludeRetweets"].ToLower()));
             }
 
             return req;
@@ -618,11 +605,8 @@ namespace LinqToTwitter
 
             if (parameters.ContainsKey("IncludeEntities"))
             {
-                if (RequestProcessorHelper.FlagTrue(parameters, "IncludeEntities"))
-                {
-                    IncludeEntities = true;
-                    urlParams.Add(new QueryParameter("include_entities", "true"));
-                }
+                IncludeEntities = bool.Parse(parameters["IncludeEntities"]);
+                urlParams.Add(new QueryParameter("include_entities", parameters["IncludeEntities"].ToLower()));
             }
 
             if (parameters.ContainsKey("SkipStatus"))
@@ -704,11 +688,8 @@ namespace LinqToTwitter
 
             if (parameters.ContainsKey("IncludeEntities"))
             {
-                if (RequestProcessorHelper.FlagTrue(parameters, "IncludeEntities"))
-                {
-                    IncludeEntities = true;
-                    urlParams.Add(new QueryParameter("include_entities", "true"));
-                }
+                IncludeEntities = bool.Parse(parameters["IncludeEntities"]);
+                urlParams.Add(new QueryParameter("include_entities", parameters["IncludeEntities"].ToLower()));
             }
 
             if (parameters.ContainsKey("SkipStatus"))
@@ -778,11 +759,8 @@ namespace LinqToTwitter
 
             if (parameters.ContainsKey("IncludeEntities"))
             {
-                if (RequestProcessorHelper.FlagTrue(parameters, "IncludeEntities"))
-                {
-                    IncludeEntities = true;
-                    urlParams.Add(new QueryParameter("include_entities", "true"));
-                }
+                IncludeEntities = bool.Parse(parameters["IncludeEntities"]);
+                urlParams.Add(new QueryParameter("include_entities", parameters["IncludeEntities"].ToLower()));
             }
 
             if (parameters.ContainsKey("SkipStatus"))
@@ -864,11 +842,8 @@ namespace LinqToTwitter
 
             if (parameters.ContainsKey("IncludeEntities"))
             {
-                if (RequestProcessorHelper.FlagTrue(parameters, "IncludeEntities"))
-                {
-                    IncludeEntities = true;
-                    urlParams.Add(new QueryParameter("include_entities", "true"));
-                }
+                IncludeEntities = bool.Parse(parameters["IncludeEntities"]);
+                urlParams.Add(new QueryParameter("include_entities", parameters["IncludeEntities"].ToLower()));
             }
 
             if (parameters.ContainsKey("SkipStatus"))

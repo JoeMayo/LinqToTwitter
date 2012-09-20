@@ -11,6 +11,11 @@ namespace LinqToTwitter
         public HelpType Type { get; set; }
 
         /// <summary>
+        /// Comma-separated list of resources for rate limit status request (setting to null returns all)
+        /// </summary>
+        public string Resources { get; set; }
+
+        /// <summary>
         /// Will be true if help Test succeeds
         /// </summary>
         public bool OK { get; set; }
@@ -24,5 +29,15 @@ namespace LinqToTwitter
         /// List of languages, codes, and statuses
         /// </summary>
         public List<Language> Languages { get; set; }
+
+        /// <summary>
+        /// Access token for which rate limit applies
+        /// </summary>
+        public string RateLimitAccountContext { get; set; }
+
+        /// <summary>
+        /// Rate limit statuses
+        /// </summary>
+        public Dictionary<string, List<RateLimits>> RateLimits { get; set; }
     }
 }

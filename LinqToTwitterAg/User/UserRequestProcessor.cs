@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using LitJson;
-using LinqToTwitter.Common;
 
 #if SILVERLIGHT && !WINDOWS_PHONE
     using System.Windows.Browser;

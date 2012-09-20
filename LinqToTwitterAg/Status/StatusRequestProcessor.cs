@@ -65,8 +65,6 @@ namespace LinqToTwitter
         /// Retweets are optional and you must set this to true
         /// before they will be included in the user timeline
         /// </summary>
-        // TODO: was scheduled for deprecation on 5/14/12, but delayed by Twitter - need to follow up.
-        //[Obsolete("All API methods capable of including retweets will return them regardless of the value provided.")]
         public bool IncludeRetweets { get; set; }
 
         /// <summary>
@@ -75,7 +73,7 @@ namespace LinqToTwitter
         public bool ExcludeReplies { get; set; }
 
         /// <summary>
-        /// Include entities in tweets
+        /// Include entities in tweets (default: true)
         /// </summary>
         public bool IncludeEntities { get; set; }
 
@@ -217,51 +215,31 @@ namespace LinqToTwitter
             if (parameters.ContainsKey("IncludeRetweets"))
             {
                 IncludeRetweets = bool.Parse(parameters["IncludeRetweets"]);
-
-                if (IncludeRetweets)
-                {
-                    urlParams.Add(new QueryParameter("include_rts", "true"));
-                }
+                urlParams.Add(new QueryParameter("include_rts", parameters["IncludeRetweets"].ToLower()));
             }
 
             if (parameters.ContainsKey("ExcludeReplies"))
             {
                 ExcludeReplies = bool.Parse(parameters["ExcludeReplies"]);
-
-                if (ExcludeReplies)
-                {
-                    urlParams.Add(new QueryParameter("exclude_replies", "true"));
-                }
+                urlParams.Add(new QueryParameter("exclude_replies", parameters["ExcludeReplies"].ToLower()));
             }
 
             if (parameters.ContainsKey("IncludeEntities"))
             {
                 IncludeEntities = bool.Parse(parameters["IncludeEntities"]);
-
-                if (IncludeEntities)
-                {
-                    urlParams.Add(new QueryParameter("include_entities", "true"));
-                }
+                urlParams.Add(new QueryParameter("include_entities", parameters["IncludeEntities"].ToLower()));
             }
 
             if (parameters.ContainsKey("TrimUser"))
             {
                 TrimUser = bool.Parse(parameters["TrimUser"]);
-
-                if (TrimUser)
-                {
-                    urlParams.Add(new QueryParameter("trim_user", "true"));
-                }
+                urlParams.Add(new QueryParameter("trim_user", parameters["TrimUser"].ToLower()));
             }
 
             if (parameters.ContainsKey("IncludeContributorDetails"))
             {
                 IncludeContributorDetails = bool.Parse(parameters["IncludeContributorDetails"]);
-
-                if (IncludeContributorDetails)
-                {
-                    urlParams.Add(new QueryParameter("contributor_details", "true"));
-                }
+                urlParams.Add(new QueryParameter("contributor_details", parameters["IncludeContributorDetails"].ToLower()));
             }
 
             return req;

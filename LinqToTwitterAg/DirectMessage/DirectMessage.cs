@@ -73,6 +73,11 @@ namespace LinqToTwitter
         public int Count { get; set; }
 
         /// <summary>
+        /// Add entities to tweets (default: true)
+        /// </summary>
+        public bool IncludeEntities { get; set; }
+
+        /// <summary>
         /// Set to true to not include statuses
         /// </summary>
         public bool SkipStatus { get; set; }

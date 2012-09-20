@@ -13,8 +13,14 @@
         Languages,
 
         /// <summary>
+        /// Provides Rate Limit Status
+        /// </summary>
+        RateLimits,
+
+        /// <summary>
         /// Get Twitter Terms of Service
         /// </summary>
         Tos
+
     }
 }

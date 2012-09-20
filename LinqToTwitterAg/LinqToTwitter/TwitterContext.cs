@@ -27,9 +27,9 @@ namespace LinqToTwitter
         // response header constants
         //
 
-        public const string XRateLimitLimitKey = "X-RateLimit-Limit";
-        public const string XRateLimitRemainingKey = "X-RateLimit-Remaining";
-        public const string XRateLimitResetKey = "X-RateLimit-Reset";
+        public const string XRateLimitLimitKey = "X-Rate-Limit-Limit";
+        public const string XRateLimitRemainingKey = "X-Rate-Limit-Remaining";
+        public const string XRateLimitResetKey = "X-Rate-Limit-Reset";
         public const string RetryAfterKey = "Retry-After";
         public const string XFeatureRateLimitLimitKey = "X-FeatureRateLimit-Limit";
         public const string XFeatureRateLimitRemainingKey = "X-FeatureRateLimit-Remaining";

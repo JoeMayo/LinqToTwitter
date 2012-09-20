@@ -17,6 +17,7 @@ namespace LinqToTwitterDemo
         {
             //GetHelpConfiguration(twitterCtx);
             //GetHelpLanguages(twitterCtx);
+            GetHelpRateLimits(twitterCtx);
         }
 
         /// <summary>
@@ -68,6 +69,28 @@ namespace LinqToTwitterDemo
             foreach (var lang in helpResult.Languages)
             {
                 Console.WriteLine("{0}({1}): {2}", lang.Name, lang.Code, lang.Status);
+            }
+        }
+
+        static void GetHelpRateLimits(TwitterContext twitterCtx)
+        {
+            var helpResult =
+                (from help in twitterCtx.Help
+                 where help.Type == HelpType.RateLimits &&
+                       help.Resources == "search,users"
+                 select help)
+                .SingleOrDefault();
+
+            foreach (var category in helpResult.RateLimits)
+            {
+                Console.WriteLine("\nCategory: {0}", category.Key);
+
+                foreach (var limit in category.Value)
+                {
+                    Console.WriteLine(
+                        "\n  Resource: {0}\n    Remaining: {1}\n    Reset: {2}\n    Limit: {3}",
+                        limit.Resource, limit.Remaining, limit.Reset, limit.Limit);
+                }
             }
         }
     }

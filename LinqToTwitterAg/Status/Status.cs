@@ -122,8 +122,6 @@ namespace LinqToTwitter
         /// By default, user timeline doesn't include retweets,
         /// but you can set this to true to includes retweets
         /// </summary>
-        // TODO: was scheduled for deprecation on 5/14/12, but delayed by Twitter - need to follow up.
-        //[Obsolete("All API methods capable of including retweets will return them regardless of the value provided.")]
         public bool IncludeRetweets { get; set; }
 
         /// <summary>
@@ -132,10 +130,8 @@ namespace LinqToTwitter
         public bool ExcludeReplies { get; set; }
 
         /// <summary>
-        /// Add entities to tweets
+        /// Add entities to tweets (default: true)
         /// </summary>
-        // TODO: was scheduled for deprecation on 5/14/12, but delayed by Twitter - need to follow up.
-        //[Obsolete("All API methods capable of including entities will return them regardless of the value provided.")]
         public bool IncludeEntities { get; set; }
 
         /// <summary>

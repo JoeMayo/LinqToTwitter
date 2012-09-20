@@ -133,7 +133,7 @@ namespace LinqToTwitter
         public string Query { get; set; }
 
         /// <summary>
-        /// Add entities to results
+        /// Add entities to results (default: true)
         /// </summary>
         public bool IncludeEntities { get; set; }
 
