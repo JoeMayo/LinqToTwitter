@@ -2,7 +2,7 @@
 
 namespace WindowsPhoneDemo
 {
-    public class PublicTweet
+    public class Tweet
     {
         public string UserName { get; set; }
 

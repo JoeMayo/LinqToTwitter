@@ -95,19 +95,16 @@ namespace LinqToTwitter
             UserStreamUrl = "https://userstream.twitter.com/1.1/";
             SiteStreamUrl = "https://sitestream.twitter.com/1.1/";
 
+#if SILVERLIGHT
+            IWebRequestCreate webReqCreator = WebRequestCreator.ClientHttp;
+#endif
 #if SILVERLIGHT && !WINDOWS_PHONE
-
-            if (System.Windows.Application.Current.IsRunningOutOfBrowser)
-            {
-                WebRequest.RegisterPrefix("http://", WebRequestCreator.ClientHttp);
-                WebRequest.RegisterPrefix("https://", WebRequestCreator.ClientHttp);
-            }
-            else
-            {
-                WebRequest.RegisterPrefix("http://", WebRequestCreator.BrowserHttp);
-                WebRequest.RegisterPrefix("https://", WebRequestCreator.BrowserHttp);
-            }
-
+            if (!System.Windows.Application.Current.IsRunningOutOfBrowser)
+                webReqCreator = WebRequestCreator.BrowserHttp;
+#endif
+#if SILVERLIGHT
+            WebRequest.RegisterPrefix("http://", webReqCreator);
+            WebRequest.RegisterPrefix("https://", webReqCreator);
 #endif
         }
 

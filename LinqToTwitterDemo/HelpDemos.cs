@@ -76,8 +76,8 @@ namespace LinqToTwitterDemo
         {
             var helpResult =
                 (from help in twitterCtx.Help
-                 where help.Type == HelpType.RateLimits &&
-                       help.Resources == "search,users"
+                 where help.Type == HelpType.RateLimits //&&
+                       //help.Resources == "search,users"
                  select help)
                 .SingleOrDefault();
 

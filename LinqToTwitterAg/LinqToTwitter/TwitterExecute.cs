@@ -220,18 +220,6 @@ namespace LinqToTwitter
 
                 if (twitterQueryEx.ErrorCode != 0)
                     throw twitterQueryEx;
-                //var responseJson = JsonMapper.ToObject(responseStr);
-
-                //var errors = responseJson.GetValue<JsonData>("errors");
-                //if (errors != null && errors.Count > 0)
-                //{
-                //    var error = errors[0];
-                //    throw new TwitterQueryException(error.GetValue<string>("message"))
-                //    {
-                //        HttpError = status,
-                //        ErrorCode = error.GetValue<int>("code")
-                //    };
-                //}
             }
         }
 
@@ -682,7 +670,9 @@ namespace LinqToTwitter
                 if (ReadWriteTimeout > 0)
                     req.ReadWriteTimeout = ReadWriteTimeout;
 #endif
-
+#if WINDOWS_PHONE
+                req.AllowReadStreamBuffering = false;
+#endif
                 using (var resetEvent = new ManualResetEvent(/*initialStateSignaled:*/ false))
                 {
                     Exception asyncException = null;
@@ -740,6 +730,9 @@ namespace LinqToTwitter
             var req = this.AuthorizedClient.Get(request) as HttpWebRequest;
 #if !SILVERLIGHT && !NETFX_CORE
             req.UserAgent = UserAgent;
+#endif
+#if WINDOWS_PHONE
+            req.AllowReadStreamBuffering = false;
 #endif
 
             return req;
