@@ -50,11 +50,6 @@ namespace LinqToTwitter
         private string Locale { get; set; }
 
         /// <summary>
-        /// page number
-        /// </summary>
-        private int Page { get; set; }
-
-        /// <summary>
         /// Metadata for type of result (mixed, recent, or popular)
         /// </summary>
         private ResultType ResultType { get; set; }
@@ -62,7 +57,7 @@ namespace LinqToTwitter
         /// <summary>
         /// number of results for each page
         /// </summary>
-        private int PageSize { get; set; }
+        private int Count { get; set; }
 
         /// <summary>
         /// adds user information for each tweet if true (default = false)
@@ -165,7 +160,7 @@ namespace LinqToTwitter
                        "Query",
                        "SearchLanguage",
                        "Locale",
-                       "PageSize",
+                       "Count",
                        "Page",
                        "Since",
                        "Until",
@@ -241,16 +236,10 @@ namespace LinqToTwitter
                 urlParams.Add(new QueryParameter("locale", Locale));
             }
 
-            if (parameters.ContainsKey("Page"))
+            if (parameters.ContainsKey("Count"))
             {
-                Page = int.Parse(parameters["Page"]);
-                urlParams.Add(new QueryParameter("page", Page.ToString(CultureInfo.InvariantCulture)));
-            }
-
-            if (parameters.ContainsKey("PageSize"))
-            {
-                PageSize = int.Parse(parameters["PageSize"]);
-                urlParams.Add(new QueryParameter("rpp", PageSize.ToString(CultureInfo.InvariantCulture)));
+                Count = int.Parse(parameters["Count"]);
+                urlParams.Add(new QueryParameter("count", Count.ToString(CultureInfo.InvariantCulture)));
             }
 
             if (parameters.ContainsKey("Query"))
@@ -428,8 +417,7 @@ namespace LinqToTwitter
             {
                 Type = Type,
                 GeoCode = GeoCode,
-                Page = Page,
-                PageSize = PageSize,
+                Count = Count,
                 Query = Query,
                 ShowUser = ShowUser,
                 SinceID = SinceID,

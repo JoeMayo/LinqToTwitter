@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Threading;
 using LinqToTwitter.Common;
 using LitJson;
 
@@ -17,7 +15,7 @@ namespace LinqToTwitter
         , IRequestProcessorWithAction<T>
         where T : class
     {
-        const string WeoIDParam = "WeoID";
+        const string WoeIDParam = "WoeID";
 
         /// <summary>
         /// base url for request
@@ -28,17 +26,6 @@ namespace LinqToTwitter
         /// type of trend to query (Trend (all), Current, Daily, or Weekly)
         /// </summary>
         internal TrendType Type { get; set; }
-
-        /// <summary>
-        /// exclude all trends with hastags if set to true 
-        /// (i.e. include "Wolverine" but not "#Wolverine")
-        /// </summary>
-        bool ExcludeHashtags { get; set; }
-
-        /// <summary>
-        /// date to start
-        /// </summary>
-        DateTime Date { get; set; }
 
         /// <summary>
         /// Latitude
@@ -53,16 +40,7 @@ namespace LinqToTwitter
         /// <summary>
         /// Yahoo Where On Earth ID
         /// </summary>
-        int WeoID { get; set; }
-
-        static readonly Dictionary<string, string> worldWoeId;
-
-        static TrendRequestProcessor()
-        {
-            var worldOnly = worldWoeId = new Dictionary<string, string>();
-            worldOnly.Add(WeoIDParam, "1");
-            worldWoeId = worldOnly;
-        }
+        int WoeID { get; set; }
 
         /// <summary>
         /// extracts parameters from lambda
@@ -76,11 +54,9 @@ namespace LinqToTwitter
                    lambdaExpression.Body,
                    new List<string> { 
                        "Type",
-                       "Date",
-                       "ExcludeHashtags",
                        "Latitude",
                        "Longitude",
-                       "WeoID"
+                       "WoeID"
                    })
                    .Parameters;
         }
@@ -101,7 +77,9 @@ namespace LinqToTwitter
             switch (Type)
             {
                 case TrendType.Available:
-                    return BuildAvailableTrendsUrl(parameters);
+                    return BuildAvailableTrendsUrl();
+                case TrendType.Closest:
+                    return BuildClosestTrendsUrl(parameters);
                 case TrendType.Place:
                     return BuildPlaceTrendsUrl(parameters);
                 default:
@@ -112,18 +90,18 @@ namespace LinqToTwitter
         /// <summary>
         /// Builds a url for finding trends at a specified location
         /// </summary>
-        /// <param name="parameters">parameters should contain WeoID</param>
+        /// <param name="parameters">parameters should contain WoeID</param>
         /// <returns>base url + location segment</returns>
         private Request BuildPlaceTrendsUrl(Dictionary<string, string> parameters)
         {
-            if (!parameters.ContainsKey(WeoIDParam))
-                throw new ArgumentException("WeoID is a required parameter.", WeoIDParam);
+            if (!parameters.ContainsKey(WoeIDParam))
+                throw new ArgumentException("WoeID is a required parameter.", WoeIDParam);
 
             var req = new Request(BaseUrl + "trends/place.json");
             var urlParams = req.RequestParameters;
 
-            WeoID = int.Parse(parameters[WeoIDParam]);
-            urlParams.Add(new QueryParameter("id", parameters[WeoIDParam]));
+            WoeID = int.Parse(parameters[WoeIDParam]);
+            urlParams.Add(new QueryParameter("id", parameters[WoeIDParam]));
 
             return req;
         }
@@ -131,15 +109,24 @@ namespace LinqToTwitter
         /// <summary>
         /// Builds an URL for finding where trends are occurring
         /// </summary>
-        /// <param name="parameters">parameters can include Latitude and Longitude (must have either both parameter or neither)</param>
         /// <returns>base url + Available segment</returns>
-        private Request BuildAvailableTrendsUrl(Dictionary<string, string> parameters)
+        private Request BuildAvailableTrendsUrl()
+        {
+            return new Request(BaseUrl + "trends/available.json");
+        }
+
+        /// <summary>
+        /// Builds an URL for finding trends closest to a lat/long
+        /// </summary>
+        /// <param name="parameters">parameters can include Latitude and Longitude (must have either both parameters or neither)</param>
+        /// <returns>base url + Available segment</returns>
+        private Request BuildClosestTrendsUrl(Dictionary<string, string> parameters)
         {
             if ((parameters.ContainsKey("Latitude") && !parameters.ContainsKey("Longitude")) ||
                 (!parameters.ContainsKey("Latitude") && parameters.ContainsKey("Longitude")))
                 throw new ArgumentException("If you pass either Latitude or Longitude then you must pass both. Otherwise, don't pass either.", "Latitude/Longitude");
 
-            var req = new Request(BaseUrl + "trends/available.json");
+            var req = new Request(BaseUrl + "trends/closest.json");
             var urlParams = req.RequestParameters;
 
             if (parameters.ContainsKey("Latitude"))
@@ -152,38 +139,6 @@ namespace LinqToTwitter
             {
                 Longitude = parameters["Longitude"];
                 urlParams.Add(new QueryParameter("long", parameters["Longitude"]));
-            }
-
-            return req;
-        }
-
-        /// <summary>
-        /// appends parameters for trends
-        /// </summary>
-        /// <param name="parameters">list of parameters from expression tree</param>
-        /// <param name="url">base url</param>
-        /// <returns>base url + parameters</returns>
-        private Request BuildTrendsUrlParameters(Dictionary<string, string> parameters, string url)
-        {
-            var req = new Request(BaseUrl + url);
-            var urlParams = req.RequestParameters;
-
-            if (parameters.ContainsKey("Date"))
-            {
-#if NETFX_CORE
-                CultureInfo currUiCulture = CultureInfo.CurrentCulture;
-#else
-                CultureInfo currUiCulture = Thread.CurrentThread.CurrentUICulture;
-#endif
-                Date = DateTime.Parse(parameters["Date"], currUiCulture);
-                urlParams.Add(new QueryParameter("date", Date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)));
-            }
-
-            if (parameters.ContainsKey("ExcludeHashtags") &&
-                bool.Parse(parameters["ExcludeHashtags"]))
-            {
-                ExcludeHashtags = true;
-                urlParams.Add(new QueryParameter("exclude", "hashtags"));
             }
 
             return req;
@@ -203,7 +158,8 @@ namespace LinqToTwitter
                 switch (Type)
                 {
                     case TrendType.Available:
-                        trends = HandleAvailableResponse(responseJson);
+                    case TrendType.Closest:
+                        trends = HandleAvailableOrClosestResponse(responseJson);
                         break;
 
                     case TrendType.Place:
@@ -231,13 +187,14 @@ namespace LinqToTwitter
             return trend.ItemCast(default(T));
         }
 
-        private IEnumerable<Trend> HandlePlaceResponse(string responseJson)
+        IEnumerable<Trend> HandlePlaceResponse(string responseJson)
         {
             var responses = JsonMapper.ToObject(responseJson);
 
             var flat =
                 from JsonData response in responses
                 let asOf = response.GetValue<string>("as_of").GetDate(DateTime.UtcNow)
+                let createdAt = response.GetValue<string>("created_at").GetDate(DateTime.UtcNow)
                 let locations =
                      (from JsonData place in response.GetValue<JsonData>("locations")
                       select new Location(place)).ToList()
@@ -246,19 +203,16 @@ namespace LinqToTwitter
                       select new Trend
                       {
                           Type = Type,
-                          ExcludeHashtags = ExcludeHashtags,
-                          Date = Date,
+                          AsOf = asOf,
+                          CreatedAt = createdAt,
                           Latitude = Latitude,
                           Longitude = Longitude,
-                          WeoID = WeoID,
-                          TrendDate = asOf,
-                          AsOf = asOf,
+                          WoeID = WoeID,
                           Name = trend.GetValue<string>("name"),
                           Query = trend.GetValue<string>("query"),
                           SearchUrl = trend.GetValue<string>("url"),
                           Events = trend.GetValue<string>("events"),
                           PromotedContent = trend.GetValue<string>("promoted_content"),
-                          Location = locations.FirstOrDefault(),
                           Locations = locations
                       })
                 select trends;
@@ -266,7 +220,7 @@ namespace LinqToTwitter
             return flat.SelectMany(trend => trend);
         }
 
-        private IEnumerable<Trend> HandleAvailableResponse(string responseJson)
+        IEnumerable<Trend> HandleAvailableOrClosestResponse(string responseJson)
         {
             var trends = JsonMapper.ToObject(responseJson);
             var locations =
@@ -274,23 +228,14 @@ namespace LinqToTwitter
                  select new Location(loc))
                 .ToList();
 
-            var asOf = DateTime.UtcNow;
-
             // we fake a single Trend to hang the locations off of...
             yield return new Trend
             {
                 Type = Type,
-                ExcludeHashtags = ExcludeHashtags,
-                Date = Date,
-                Name = string.Empty,
-                Query = string.Empty,
-                SearchUrl = string.Empty,
-                TrendDate = asOf,
-                AsOf = asOf,
+                AsOf = DateTime.UtcNow,
                 Latitude = Latitude,
                 Longitude = Longitude,
-                WeoID = WeoID,
-                Location = locations.FirstOrDefault(),
+                WoeID = WoeID,
                 Locations = locations
             };
         }

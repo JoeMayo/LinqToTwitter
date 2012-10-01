@@ -176,8 +176,7 @@ namespace LinqToTwitter
 #if SILVERLIGHT
             var fullUrl = ProxyUrl + request.FullUrl;
 
-            var req = WebRequest.Create(request.FullUrl) as HttpWebRequest;
-            //var req = HttpWebRequest.Create(fullUrl);
+            var req = WebRequest.Create(fullUrl) as HttpWebRequest;
             req.Headers[HttpRequestHeader.Authorization] = new OAuthTwitter().PrepareAuthHeader(queryString);
 #else
             var req = WebRequest.Create(request.FullUrl) as HttpWebRequest;

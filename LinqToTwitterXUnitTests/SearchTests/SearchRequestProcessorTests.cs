@@ -25,8 +25,7 @@ namespace LinqToTwitterXUnitTests.SearchTests
                     search.Type == SearchType.Search &&
                     search.GeoCode == "40.757929,-73.985506,25km" &&
                     search.SearchLanguage == "en" &&
-                    search.Page == 1 &&
-                    search.PageSize == 10 &&
+                    search.Count == 10 &&
                     search.Query == "LINQ to Twitter" &&
                     search.ShowUser == true &&
                     search.SinceID == 123 &&
@@ -58,10 +57,7 @@ namespace LinqToTwitterXUnitTests.SearchTests
                     new KeyValuePair<string, string>("SearchLanguage", "en")));
             Assert.True(
                 queryParams.Contains(
-                    new KeyValuePair<string, string>("Page", "1")));
-            Assert.True(
-                queryParams.Contains(
-                    new KeyValuePair<string, string>("PageSize", "10")));
+                    new KeyValuePair<string, string>("Count", "10")));
             Assert.True(
                 queryParams.Contains(
                     new KeyValuePair<string, string>("Query", "LINQ to Twitter")));
@@ -115,7 +111,7 @@ namespace LinqToTwitterXUnitTests.SearchTests
         [Fact]
         public void BuildUrl_Includes_Parameters()
         {
-            const string ExpectedUrl = "https://api.twitter.com/1.1/search/tweets.json?geocode=40.757929%2C-73.985506%2C25km&lang=en&page=1&rpp=10&q=LINQ%20to%20Twitter&show_user=true&since=2010-07-04&until=2011-07-04&since_id=1&result_type=popular&include_entities=false";
+            const string ExpectedUrl = "https://api.twitter.com/1.1/search/tweets.json?geocode=40.757929%2C-73.985506%2C25km&lang=en&count=10&q=LINQ%20to%20Twitter&show_user=true&since=2010-07-04&until=2011-07-04&since_id=1&result_type=popular&include_entities=false";
             var searchReqProc = new SearchRequestProcessor<Search> { BaseUrl = "https://api.twitter.com/1.1/search/" };
             var parameters =
                 new Dictionary<string, string>
@@ -123,8 +119,7 @@ namespace LinqToTwitterXUnitTests.SearchTests
                     { "Type", SearchType.Search.ToString() },
                     { "GeoCode", "40.757929,-73.985506,25km" },
                     { "SearchLanguage", "en" },
-                    { "Page", "1" },
-                    { "PageSize", "10" },
+                    { "Count", "10" },
                     { "Query", "LINQ to Twitter" },
                     { "ShowUser", "true" },
                     { "SinceID", "1" },

@@ -16,40 +16,22 @@ namespace LinqToTwitterDemo
         public static void Run(TwitterContext twitterCtx)
         {
             SearchAvailableTrendsDemo(twitterCtx);
-            //SearchPlaceTrendsDemo(twitterCtx);
+            SearchClosestTrendsDemo(twitterCtx);
+            SearchPlaceTrendsDemo(twitterCtx);
         }
 
         /// <summary>
-        /// Find locations where trending topics are occurring
+        /// Find current trends
         /// </summary>
         /// <param name="twitterCtx">TwitterContext</param>
-        private static void SearchPlaceTrendsDemo(TwitterContext twitterCtx)
-        {
-            var trends =
-                (from trnd in twitterCtx.Trends
-                 where trnd.Type == TrendType.Place &&
-                       trnd.WeoID == 2486982 // something other than 1
-                 select trnd)
-                 .ToList();
-
-            // Location is the same for each trending item, so just read the first
-            Console.WriteLine("Location: {0}\n", trends[0].Location.Name);
-
-            trends.ForEach(trnd => EmitTrend(trnd));
-        }
-
-        /// <summary>
-        /// Find locations where trending topics are occurring
-        /// </summary>
-        /// <param name="twitterCtx">TwitterContext</param>
-        private static void SearchAvailableTrendsDemo(TwitterContext twitterCtx)
+        static void SearchAvailableTrendsDemo(TwitterContext twitterCtx)
         {
             var trends =
                 from trnd in twitterCtx.Trends
                 where trnd.Type == TrendType.Available
                 select trnd;
 
-            var trend = trends.FirstOrDefault();
+            var trend = trends.SingleOrDefault();
 
             trend.Locations.ToList().ForEach(
                 loc => Console.WriteLine(
@@ -57,11 +39,48 @@ namespace LinqToTwitterDemo
                     loc.Name, loc.Country, loc.WoeID));
         }
 
-        private static void EmitTrend(Trend trnd)
+        /// <summary>
+        /// Find trends near a specified lat/long
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        static void SearchClosestTrendsDemo(TwitterContext twitterCtx)
         {
+            var trends =
+                from trnd in twitterCtx.Trends
+                where trnd.Type == TrendType.Closest &&
+                      trnd.Latitude == "37.78215" &&
+                      trnd.Longitude == "-122.40060"
+                select trnd;
+
+            var trend = trends.SingleOrDefault();
+
+            trend.Locations.ToList().ForEach(
+                loc => Console.WriteLine(
+                    "Name: {0}, Country: {1}, WoeID: {2}",
+                    loc.Name, loc.Country, loc.WoeID));
+        }
+
+        /// <summary>
+        /// Find trends at a specified WeoID
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        static void SearchPlaceTrendsDemo(TwitterContext twitterCtx)
+        {
+            var trends =
+                (from trnd in twitterCtx.Trends
+                 where trnd.Type == TrendType.Place &&
+                       trnd.WoeID == 2486982 // something other than 1
+                 select trnd)
+                .ToList();
+
             Console.WriteLine(
+                "Location: {0}\n", 
+                trends.First().Locations.First().Name);
+
+            trends.ForEach(trnd => 
+                Console.WriteLine(
                     "Name: {0}, Date: {1}, Query: {2}\nSearchUrl: {3}",
-                    trnd.Name, trnd.TrendDate, trnd.Query, trnd.SearchUrl);
+                    trnd.Name, trnd.CreatedAt, trnd.Query, trnd.SearchUrl));
         }
     }
 }

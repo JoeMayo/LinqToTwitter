@@ -36,12 +36,7 @@ namespace LinqToTwitter
         /// <summary>
         /// number of results for each page
         /// </summary>
-        public int PageSize { get; set; }
-
-        /// <summary>
-        /// page number
-        /// </summary>
-        public int Page { get; set; }
+        public int Count { get; set; }
 
         /// <summary>
         /// Return tweets since this date

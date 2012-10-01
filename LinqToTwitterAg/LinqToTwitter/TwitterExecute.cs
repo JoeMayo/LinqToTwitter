@@ -9,11 +9,6 @@ using System.Diagnostics;
 
 using LinqToTwitter.Common;
 using LitJson;
-using MSEncoder = Microsoft.Security.Application.Encoder;
-
-#if !L2T_PCL
-using System.Xml.Linq;
-#endif
 
 #if NETFX_CORE
 using System.Threading.Tasks;
@@ -22,7 +17,6 @@ using System.Threading.Tasks;
 #if SILVERLIGHT && !WINDOWS_PHONE
     using System.Windows.Browser;
 #elif !SILVERLIGHT && !WINDOWS_PHONE && !NETFX_CORE && !L2T_PCL
-    using System.Web;
 #endif
 
 #if !SILVERLIGHT && !L2T_PCL

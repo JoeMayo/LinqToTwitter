@@ -14,26 +14,15 @@ namespace LinqToTwitter
         public TrendType Type { get; set; }
 
         /// <summary>
-        /// exclude all trends with hastags if set to true 
-        /// (i.e. include "Wolverine" but not "#Wolverine")
+        /// When place trend was created
         /// </summary>
-        public bool ExcludeHashtags { get; set; }
-
-        /// <summary>
-        /// date to start
-        /// </summary>
-        public DateTime Date { get; set; }
+        public DateTime CreatedAt { get; set; }
 
         /// <summary>
         /// time of request
         /// </summary>
         public DateTime AsOf { get; set; }
 
-        /// <summary>
-        /// date/hour of trend
-        /// </summary>
-        public DateTime TrendDate { get; set; }
-        
         /// <summary>
         /// twitter search query on topic
         /// </summary>
@@ -62,7 +51,7 @@ namespace LinqToTwitter
         /// <summary>
         /// Yahoo Where On Earth ID
         /// </summary>
-        public int WeoID { get; set; }
+        public int WoeID { get; set; }
 
         /// <summary>
         /// No idea, perhaps the event associated with a trend
@@ -73,11 +62,6 @@ namespace LinqToTwitter
         /// Flag indicating this is a promoted trend (as opposed to organic)
         /// </summary>
         public string PromotedContent { get; set; }
-
-        /// <summary>
-        /// Location where trend is occurring
-        /// </summary>
-        public Location Location { get; set; }
 
         /// <summary>
         /// Return value for Avalable query listing locations of trending topics

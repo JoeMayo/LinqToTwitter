@@ -19,7 +19,7 @@ namespace LinqToTwitterDemo
                 (from search in twitterCtx.Search
                  where search.Type == SearchType.Search &&
                        search.Query == "LINQ To Twitter" &&
-                       search.PageSize == 4
+                       search.Count == 4
                  select search)
                 .Single();
 

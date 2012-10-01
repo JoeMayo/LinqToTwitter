@@ -171,41 +171,6 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// appends parameters for Blocking queries
-        /// </summary>
-        /// <param name="parameters">list of parameters from expression tree</param>
-        /// <param name="url">base url</param>
-        /// <returns>base url + parameters</returns>
-        Request BuildBlockingExistsUrlParameters(Dictionary<string, string> parameters, string url)
-        {
-            if (!parameters.ContainsKey("ID") && !parameters.ContainsKey("UserID") && !parameters.ContainsKey("ScreenName"))
-                throw new ArgumentException("You must specify either ID, UserID, or ScreenName.");
-
-            var req = new Request(BaseUrl + url);
-            var urlParams = req.RequestParameters;
-
-            if (parameters.ContainsKey("UserID"))
-            {
-                UserID = ulong.Parse(parameters["UserID"]);
-                urlParams.Add(new QueryParameter("user_id", parameters["UserID"]));
-            }
-
-            if (parameters.ContainsKey("ScreenName"))
-            {
-                ScreenName = parameters["ScreenName"];
-                urlParams.Add(new QueryParameter("screen_name", parameters["ScreenName"]));
-            }
-
-            if (parameters.ContainsKey("SkipStatus"))
-            {
-                SkipStatus = bool.Parse(parameters["SkipStatus"]);
-                urlParams.Add(new QueryParameter("skip_status", parameters["SkipStatus"].ToLower()));
-            }
-
-            return req;
-        }
-
-        /// <summary>
         /// Transforms twitter response into List of Blocks objects
         /// </summary>
         /// <returns>List of Blocks</returns>
