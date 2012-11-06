@@ -91,9 +91,9 @@ namespace LinqToTwitter
             StringBuilder builder = new StringBuilder();
             foreach (var pair in parameters.Where(p => !string.IsNullOrEmpty(p.Value)))
             {
-                builder.Append(Uri.EscapeDataString(pair.Name));
+                builder.Append(BuildUrlHelper.UrlEncode(pair.Name));
                 builder.Append('=');
-                builder.Append(Uri.EscapeDataString(pair.Value));
+                builder.Append(BuildUrlHelper.UrlEncode(pair.Value));
                 builder.Append('&');
             }
 

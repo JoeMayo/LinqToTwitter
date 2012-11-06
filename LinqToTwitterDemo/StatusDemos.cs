@@ -18,10 +18,10 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         public static void Run(TwitterContext twitterCtx)
         {
-            HomeStatusQueryDemo(twitterCtx);
+            //HomeStatusQueryDemo(twitterCtx);
             //HomeSinceStatusQueryDemo(twitterCtx);
             //HomeStatusQueryWithAsyncCallbackDemo(twitterCtx);
-            //UserStatusQueryDemo(twitterCtx);
+            UserStatusQueryDemo(twitterCtx);
             //UserStatusByNameQueryDemo(twitterCtx);
             //MentionsStatusQueryDemo(twitterCtx);
             //MentionsWithSinceIDStatusQueryDemo(twitterCtx);
@@ -62,7 +62,7 @@ namespace LinqToTwitterDemo
             var friendTweets =
                 from tweet in twitterCtx.Status
                 where tweet.Type == StatusType.Show &&
-                      tweet.ID == "10520783556"
+                      tweet.ID == "263843354817732608"
                 select tweet;
 
             Console.WriteLine("\nRequested Tweet: \n");
