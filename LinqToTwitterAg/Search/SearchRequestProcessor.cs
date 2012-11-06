@@ -134,16 +134,16 @@ namespace LinqToTwitter
         /// </summary>
         private Attitude Attitude { get; set; }
 
-        // TODO: can't find WithLinks or WithRetweets in docs - research to find out if they should be here
-        /// <summary>
-        /// Tweets that contain links
-        /// </summary>
-        private bool WithLinks { get; set; }
+        // No longer supported in Twitter API v1.1
+        ///// <summary>
+        ///// Tweets that contain links
+        ///// </summary>
+        //private bool WithLinks { get; set; }
 
-        /// <summary>
-        /// Tweets that have been retweeted
-        /// </summary>
-        private bool WithRetweets { get; set; }
+        ///// <summary>
+        ///// Tweets that have been retweeted
+        ///// </summary>
+        //private bool WithRetweets { get; set; }
 
         /// <summary>
         /// extracts parameters from lambda
@@ -357,25 +357,28 @@ namespace LinqToTwitter
                 }
             }
 
-            if (parameters.ContainsKey("WithLinks"))
-            {
-                WithLinks = bool.Parse(parameters["WithLinks"]);
+            // no longer supported by Twitter API v1.1
+            //if (parameters.ContainsKey("WithLinks"))
+            //{
+            //    WithLinks = bool.Parse(parameters["WithLinks"]);
 
-                if (WithLinks)
-                {
-                    urlParams.Add(new QueryParameter("filter[]", "links"));
-                }
-            }
+            //    if (WithLinks)
+            //    {
+            //        urlParams.Add(new QueryParameter("filter[]", "links"));
+            //    }
+            //}
 
-            if (parameters.ContainsKey("WithRetweets"))
-            {
-                WithRetweets = bool.Parse(parameters["WithRetweets"]);
+            // no longer supported by Twitter API v1.1
+            //if (parameters.ContainsKey("WithRetweets"))
+            //{
+            //    WithRetweets = bool.Parse(parameters["WithRetweets"]);
+            //    urlParams.Add(new QueryParameter("include_rts", parameters["WithRetweets"].ToLower()));
 
-                if (WithRetweets)
-                {
-                    urlParams.Add(new QueryParameter("include[]", "retweets"));
-                }
-            }
+            //    //if (WithRetweets)
+            //    //{
+            //    //    urlParams.Add(new QueryParameter("include", "retweets"));
+            //    //}
+            //}
 
             if (parameters.ContainsKey("IncludeEntities"))
             {
@@ -420,6 +423,7 @@ namespace LinqToTwitter
                 Count = Count,
                 Query = Query,
                 ShowUser = ShowUser,
+                MaxID = MaxID,
                 SinceID = SinceID,
                 SearchLanguage = SearchLanguage,
                 Locale = Locale,
@@ -436,7 +440,7 @@ namespace LinqToTwitter
                 PersonReference = PersonReference,
                 Attitude = Attitude,
                 //WithLinks = WithLinks,
-                WithRetweets = WithRetweets,
+                //WithRetweets = WithRetweets,
                 IncludeEntities = IncludeEntities,
                 Statuses =
                     (from JsonData result in search["statuses"]

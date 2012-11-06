@@ -12,6 +12,7 @@ namespace LinqToTwitter
 {
     public class AnonymousAuthorizer : OAuthAuthorizer, ITwitterAuthorizer
     {
+        [Obsolete("Twitter API v1.1 requires all queries to be authorized. Please visit http://linqtotwitter.codeplex.com/wikipage?title=Securing%20Your%20Applications for more guidance on how to use OAuth in your application.", true)]
         public void Authorize()
         {
             throw new NotImplementedException();

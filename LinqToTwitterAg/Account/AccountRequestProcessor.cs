@@ -179,26 +179,6 @@ namespace LinqToTwitter
             return acct;
         }
 
-        //internal Account HandleRateLimitResponse(string responseJson)
-        //{
-        //    var status = JsonMapper.ToObject(responseJson);
-
-        //    var acct = new Account
-        //    {
-        //        Type = Type,
-        //        RateLimitStatus = new RateLimitStatus
-        //        {
-        //            HourlyLimit = status.GetValue<int>("hourly_limit"),
-        //            RemainingHits = status.GetValue<int>("remaining_hits"),
-        //            ResetTime = status.GetValue<string>("reset_time").GetDate(DateTime.MaxValue),
-        //            ResetTimeInSeconds = status.GetValue<int>("reset_time_in_seconds")
-        //        }
-        //    };
-
-
-        //    return acct;
-        //}
-
         private Account HandleVerifyCredentialsResponse(string responseJson)
         {
             var user = JsonMapper.ToObject(responseJson);

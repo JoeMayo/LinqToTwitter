@@ -127,6 +127,7 @@ namespace LinqToTwitter
         /// <summary>
         /// Tweets that have been retweeted
         /// </summary>
+        [Obsolete("WithRetweets (Twitter API include:retweets) is not supported by the Twitter API v1.1. All queries return retweets by default.", true)]
         public bool WithRetweets { get; set; }
 
         /// <summary>

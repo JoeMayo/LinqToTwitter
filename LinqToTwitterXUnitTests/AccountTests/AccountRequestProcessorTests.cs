@@ -65,7 +65,7 @@ namespace LinqToTwitterXUnitTests.AccountTests
             var target = new AccountRequestProcessor<Account>();
             Expression<Func<Account, bool>> expression = 
                 acct => 
-                    acct.Type == AccountType.RateLimitStatus &&
+                    acct.Type == AccountType.Settings &&
                     acct.SkipStatus == true;
             var lambdaExpression = expression as LambdaExpression;
 
@@ -73,7 +73,7 @@ namespace LinqToTwitterXUnitTests.AccountTests
 
             Assert.True(
                 queryParams.Contains(
-                    new KeyValuePair<string, string>("Type", ((int)AccountType.RateLimitStatus).ToString(CultureInfo.InvariantCulture))));
+                    new KeyValuePair<string, string>("Type", ((int)AccountType.Settings).ToString(CultureInfo.InvariantCulture))));
 
             Assert.True(
                 queryParams.Contains(

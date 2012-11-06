@@ -18,7 +18,7 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         public static void Run(TwitterContext twitterCtx)
         {
-            //HomeStatusQueryDemo(twitterCtx);
+            HomeStatusQueryDemo(twitterCtx);
             //HomeSinceStatusQueryDemo(twitterCtx);
             //HomeStatusQueryWithAsyncCallbackDemo(twitterCtx);
             //UserStatusQueryDemo(twitterCtx);
@@ -48,7 +48,7 @@ namespace LinqToTwitterDemo
             //StatusCountDemo(twitterCtx);
             //StatusJoinDemo(twitterCtx);
             //TrimUserDemo(twitterCtx);
-            TweetWithMediaDemo(twitterCtx);
+            //TweetWithMediaDemo(twitterCtx);
             //TweetEntityDemo(twitterCtx);
             //RetweetedByDemo(twitterCtx);
         }
@@ -82,10 +82,11 @@ namespace LinqToTwitterDemo
         private static void HomeStatusQueryDemo(TwitterContext twitterCtx)
         {
             var tweets =
-                from tweet in twitterCtx.Status
-                where tweet.Type == StatusType.Home &&
-                      tweet.Count == 5
-                select tweet;
+                (from tweet in twitterCtx.Status
+                 where tweet.Type == StatusType.Home &&
+                       tweet.Count == 100
+                 select tweet)
+                .ToList();
 
             Console.WriteLine("\nTweets for " + twitterCtx.UserName + "\n");
             foreach (var tweet in tweets)
@@ -584,8 +585,8 @@ namespace LinqToTwitterDemo
         private static void UpdateStatusWithReplyDemo(TwitterContext twitterCtx)
         {
             var tweet = twitterCtx.UpdateStatus(
-                "@LinqToTweeter Testing LINQ to Twitter with reply on " + DateTime.Now.ToString() + " #linqtotwitter", 
-                "961760788");
+                "@JoeMayo Testing LINQ to Twitter with reply on " + DateTime.Now.ToString() + " #linqtotwitter",
+                "249241028782088193");
 
             Console.WriteLine(
                 "(" + tweet.StatusID + ")" +

@@ -2,6 +2,7 @@
 using System.Linq;
 
 using LinqToTwitter;
+using System.Collections.Generic;
 
 namespace LinqToTwitterDemo
 {
@@ -18,10 +19,10 @@ namespace LinqToTwitterDemo
             var srch =
                 (from search in twitterCtx.Search
                  where search.Type == SearchType.Search &&
-                       search.Query == "LINQ To Twitter" &&
-                       search.Count == 4
+                       search.Query == "LINQ to Twitter" &&
+                       search.Count == 7
                  select search)
-                .Single();
+                .SingleOrDefault();
 
             Console.WriteLine("\nQuery: {0}\n", srch.SearchMetaData.Query);
             srch.Statuses.ForEach(entry =>

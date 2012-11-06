@@ -39,6 +39,7 @@ namespace LinqToTwitter
         /// <summary>
         /// Initializes a new instance of the <see cref="TwitterContext"/> class.
         /// </summary>
+        [Obsolete("Twitter API v1.1 requires all queries to be authorized. Please visit http://linqtotwitter.codeplex.com/wikipage?title=Securing%20Your%20Applications for more guidance on how to use OAuth in your application.")]
         public TwitterContext()
             : this(new AnonymousAuthorizer())
         {
