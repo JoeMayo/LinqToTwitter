@@ -21,7 +21,7 @@ namespace LinqToTwitterDemo
             //HomeStatusQueryDemo(twitterCtx);
             //HomeSinceStatusQueryDemo(twitterCtx);
             //HomeStatusQueryWithAsyncCallbackDemo(twitterCtx);
-            UserStatusQueryDemo(twitterCtx);
+            //UserStatusQueryDemo(twitterCtx);
             //UserStatusByNameQueryDemo(twitterCtx);
             //MentionsStatusQueryDemo(twitterCtx);
             //MentionsWithSinceIDStatusQueryDemo(twitterCtx);
@@ -41,7 +41,7 @@ namespace LinqToTwitterDemo
             //RetweetedByUserStatusQueryDemo(twitterCtx);
             //RetweetDemo(twitterCtx);
             //RetweetsQueryDemo(twitterCtx);
-            //FirstStatusQueryDemo(twitterCtx);
+            FirstStatusQueryDemo(twitterCtx);
             //GetAllTweetsAndRetweetsDemo(twitterCtx);
             //ContributorIDsDemo(twitterCtx);
             //ContributorDetailsDemo(twitterCtx);

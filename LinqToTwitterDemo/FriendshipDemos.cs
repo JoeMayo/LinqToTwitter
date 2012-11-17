@@ -19,8 +19,6 @@ namespace LinqToTwitterDemo
             //DestroyFriendshipDemo(twitterCtx);
             //CreateFriendshipNoDeviceUpdatesDemo(twitterCtx);
             //CreateFriendshipAsyncDemo(twitterCtx);
-            //FriendshipExistsDemo(twitterCtx);
-            //FriendshipExistsProjectionDemo(twitterCtx);
             FriendshipShowDemo(twitterCtx);
             //FriendshipNoRetweetIDsDemo(twitterCtx);
             //FriendshipIncomingDemo(twitterCtx);
@@ -72,42 +70,6 @@ namespace LinqToTwitterDemo
                         usr.Name,
                         usr.Status.Text);
                 });
-        }
-
-        /// <summary>
-        /// shows how to show that one user follows another with Friendship Exists
-        /// </summary>
-        /// <param name="twitterCtx"></param>
-        private static void FriendshipExistsDemo(TwitterContext twitterCtx)
-        {
-            var friendship =
-                (from friend in twitterCtx.Friendship
-                 where friend.Type == FriendshipType.Exists &&
-                       friend.SubjectUser == "JoeMayo" &&
-                       friend.FollowingUser == "Linq2Tweeter"
-                 select friend)
-                 .FirstOrDefault();
-
-            Console.WriteLine(
-                "LinqToTweeter follows JoeMayo: " +
-                friendship.IsFriend);
-        }
-
-        /// <summary>
-        /// Show how to perform a custom projection
-        /// </summary>
-        /// <param name="twitterCtx">TwitterContext</param>
-        private static void FriendshipExistsProjectionDemo(TwitterContext twitterCtx)
-        {
-            var isFriend =
-                (from friend in twitterCtx.Friendship
-                 where friend.Type == FriendshipType.Exists &&
-                       friend.SubjectUser == "JoeMayo" &&
-                       friend.FollowingUser == "LinqToTweeter"
-                 select friend.IsFriend)
-                .FirstOrDefault();
-
-            Console.WriteLine("LinqToTweeter follows JoeMayo: " + isFriend);
         }
 
         /// <summary>

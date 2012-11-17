@@ -24,16 +24,6 @@ namespace LinqToTwitter
         public FriendshipType Type { get; set; }
 
         /// <summary>
-        /// The ID or screen_name of the subject user
-        /// </summary>
-        public string SubjectUser { get; set; }
-
-        /// <summary>
-        /// The ID or screen_name of the user to test for following
-        /// </summary>
-        public string FollowingUser { get; set; }
-
-        /// <summary>
         /// ID of source user (Show query)
         /// </summary>
         public string SourceUserID { get; set; }
@@ -57,11 +47,6 @@ namespace LinqToTwitter
         /// Helps in paging results for queries such as incoming and outgoing
         /// </summary>
         public string Cursor { get; set; }
-
-        /// <summary>
-        /// FollowingUser is following SubjectUser returned from Twitter (Exists query)
-        /// </summary>
-        public bool IsFriend { get; set; }
 
         /// <summary>
         /// info on friend

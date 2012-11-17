@@ -254,19 +254,6 @@ Module Module1
         Next
     End Sub
 
-    Private Sub FriendshipExistsDemo(ByVal twitterCtx As TwitterContext)
-        Dim friendships = _
-            From frnd In twitterCtx.Friendship _
-            Where frnd.Type = FriendshipType.Exists _
-            And frnd.SubjectUser = "LinqToTweeter" _
-            And frnd.FollowingUser = "JoeMayo"
-
-        Dim frndship As Friendship = friendships.FirstOrDefault()
-        Dim isFriend As Boolean = IIf(frndship Is Nothing, False, frndship.IsFriend)
-
-        Console.WriteLine("JoeMayo follows LinqToTweeter: " & isFriend)
-    End Sub
-
     Private Sub DirectMessageSentByQueryDemo(ByVal twitterContext As TwitterContext)
         Dim directMessages = _
             From dm In twitterContext.DirectMessage _

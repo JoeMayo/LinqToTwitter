@@ -24,21 +24,6 @@ namespace LinqToTwitterXUnitTests.FriendshipTests
         }
 
         [Fact]
-        public void ProcessResults_Parses_Exists()
-        {
-            const bool ExpectedResponse = true;
-            var friendReqProc = new FriendshipRequestProcessor<Friendship> { Type = FriendshipType.Exists };
-
-            var friends = friendReqProc.ProcessResults(FrienshipExistsResponse);
-
-            Assert.NotNull(friends);
-            Assert.Single(friends);
-            var friend = friends.Single();
-            Assert.NotNull(friend);
-            Assert.Equal(ExpectedResponse, friend.IsFriend);
-        }
-
-        [Fact]
         public void ProcessResults_Translates_Relationships_From_LookupQuery()
         {
             var friendReqProc = new FriendshipRequestProcessor<Friendship> { Type = FriendshipType.Lookup };
@@ -169,8 +154,6 @@ namespace LinqToTwitterXUnitTests.FriendshipTests
             var friendReqProc = new FriendshipRequestProcessor<Friendship> 
             { 
                 Type = FriendshipType.Lookup,
-                SubjectUser = SubjUser,
-                FollowingUser = FollUser,
                 SourceUserID = SrcUsrID,
                 SourceScreenName = SrcScrNm,
                 TargetUserID = TgtUsrID,
@@ -187,8 +170,6 @@ namespace LinqToTwitterXUnitTests.FriendshipTests
             var friendship = friendships.First();
             Assert.NotNull(friendship);
             Assert.Equal(FriendshipType.Lookup, friendship.Type);
-            Assert.Equal(SubjUser, friendship.SubjectUser);
-            Assert.Equal(FollUser, friendship.FollowingUser);
             Assert.Equal(SrcUsrID, friendship.SourceUserID);
             Assert.Equal(SrcScrNm, friendship.SourceScreenName);
             Assert.Equal(TgtUsrID, friendship.TargetUserID);
@@ -216,9 +197,7 @@ namespace LinqToTwitterXUnitTests.FriendshipTests
             FriendshipRequestProcessor<Friendship> friendReqProc = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "https://api.twitter.com/1/" };
             Expression<Func<Friendship, bool>> expression =
                 friend =>
-                         friend.Type == FriendshipType.Exists &&
-                         friend.SubjectUser == "123" &&
-                         friend.FollowingUser == "456" &&
+                         friend.Type == FriendshipType.Show &&
                          friend.SourceUserID == "1" &&
                          friend.SourceScreenName == "Name" &&
                          friend.TargetUserID == "2" &&
@@ -232,7 +211,7 @@ namespace LinqToTwitterXUnitTests.FriendshipTests
 
             Assert.True(
                 queryParams.Contains(
-                    new KeyValuePair<string, string>("Type", ((int)FriendshipType.Exists).ToString())));
+                    new KeyValuePair<string, string>("Type", ((int)FriendshipType.Show).ToString())));
             Assert.True(
                 queryParams.Contains(
                     new KeyValuePair<string, string>("SubjectUser", "123")));
@@ -260,24 +239,6 @@ namespace LinqToTwitterXUnitTests.FriendshipTests
             Assert.True(
                 queryParams.Contains(
                     new KeyValuePair<string, string>("UserID", "123,456")));
-        }
-
-        [Fact]
-        public void BuildUrl_Constructs_Exists_Url()
-        {
-            FriendshipRequestProcessor<Friendship> friendReqProc = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "https://api.twitter.com/1/" };
-            Dictionary<string, string> parameters =
-                new Dictionary<string, string>
-                {
-                    { "Type", FriendshipType.Exists.ToString() },
-                    { "SubjectUser", "123" },
-                    { "FollowingUser", "456" }
-                };
-            string expected = "https://api.twitter.com/1/friendships/exists.json?user_a=123&user_b=456";
-
-            Request req = friendReqProc.BuildUrl(parameters);
-
-            Assert.Equal(expected, req.FullUrl);
         }
 
         [Fact]

@@ -26,33 +26,69 @@ namespace WindowsPhoneDemo
             {
                 var twitterCtx = new TwitterContext(auth);
 
-                (from search in twitterCtx.Search
-                 where search.Type == SearchType.Search &&
-                       search.Query == QueryTextBox.Text
-                 select search)
-                .MaterializedAsyncCallback(asyncResponse =>
-                    Dispatcher.BeginInvoke(() =>
-                    {
-                        if (asyncResponse.Status != TwitterErrorStatus.Success)
+                (from tweet in twitterCtx.Status
+                 where tweet.Type == StatusType.Home
+                 select tweet)
+                .MaterializedAsyncCallback(tweets =>
+                {
+                        if (tweets.Status != TwitterErrorStatus.Success)
+                            throw tweets.Error;
+
+                        if (tweets == null)
                         {
-                            MessageBox.Show("Error during query: " + asyncResponse.Error.Message);
                             return;
                         }
+                        //Dispatcher.BeginInvoke(() =>
+                        //                           {
+                        //                               this.sinceID =
+                        //                                   tweets.State.Max(
+                        //                                       x =>
+                        //                                       ulong.Parse(
+                        //                                           x.StatusID));
 
-                        Search search = asyncResponse.State.SingleOrDefault();
 
-                        var tweets =
-                            (from status in search.Statuses
-                             select new Tweet
-                             {
-                                 UserName = status.User.Identifier.ScreenName,
-                                 Message = status.Text,
-                                 ImageSource = status.User.ProfileImageUrl
-                             })
-                            .ToList();
+                        //                               maxID =
+                        //                                   tweets.State.Min(
+                        //                                       status =>
+                        //                                       ulong.Parse(
+                        //                                           status.
+                        //                                               StatusID)) -
+                        //                                   1;
+                        //                               sinceID =
+                        //                                   tweets.State.Max(
+                        //                                       status =>
+                        //                                       ulong.Parse(
+                        //                                           status.
+                        //                                               StatusID)) -
+                        //                                   1;
+                    });
+                //(from search in twitterCtx.Search
+                // where search.Type == SearchType.Search &&
+                //       search.Query == QueryTextBox.Text
+                // select search)
+                //.MaterializedAsyncCallback(asyncResponse =>
+                //    Dispatcher.BeginInvoke(() =>
+                //    {
+                //        if (asyncResponse.Status != TwitterErrorStatus.Success)
+                //        {
+                //            MessageBox.Show("Error during query: " + asyncResponse.Error.Message);
+                //            return;
+                //        }
 
-                        SearchListBox.ItemsSource = tweets;
-                    }));
+                //        Search search = asyncResponse.State.SingleOrDefault();
+
+                //        var tweets =
+                //            (from status in search.Statuses
+                //             select new Tweet
+                //             {
+                //                 UserName = status.User.Identifier.ScreenName,
+                //                 Message = status.Text,
+                //                 ImageSource = status.User.ProfileImageUrl
+                //             })
+                //            .ToList();
+
+                //        SearchListBox.ItemsSource = tweets;
+                //    }));
             }
         }
     }

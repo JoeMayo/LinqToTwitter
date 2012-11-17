@@ -27,16 +27,6 @@ namespace LinqToTwitter
         internal FriendshipType Type { get; set; }
 
         /// <summary>
-        /// The ID or screen_name of the subject user
-        /// </summary>
-        internal string SubjectUser { get; set; }
-
-        /// <summary>
-        /// The ID or screen_name of the user to test for following
-        /// </summary>
-        internal string FollowingUser { get; set; }
-
-        /// <summary>
         /// ID of source user
         /// </summary>
         internal string SourceUserID { get; set; }
@@ -83,8 +73,6 @@ namespace LinqToTwitter
                    lambdaExpression.Body,
                    new List<string> { 
                        "Type",
-                       "SubjectUser",
-                       "FollowingUser",
                        "SourceUserID",
                        "SourceScreenName",
                        "TargetUserID",
@@ -114,8 +102,6 @@ namespace LinqToTwitter
 
             switch (Type)
             {
-                case FriendshipType.Exists:
-                    return BuildFriendshipExistsUrl(parameters);
                 case FriendshipType.Incoming:
                     return BuildFriendshipIncomingUrl(parameters);
                 case FriendshipType.Lookup:
@@ -138,39 +124,6 @@ namespace LinqToTwitter
         private Request BuildFriendshipNoRetweetIDsUrl()
         {
             return new Request(BaseUrl + "friendships/no_retweet_ids.json");
-        }
-
-        /// <summary>
-        /// builds an url for determining if friendship exists between two users
-        /// </summary>
-        /// <param name="parameters">parameter list</param>
-        /// <returns>base url + exists segment</returns>
-        private Request BuildFriendshipExistsUrl(Dictionary<string, string> parameters)
-        {
-            var req = new Request(BaseUrl + "friendships/exists.json");
-            var urlParams = req.RequestParameters;
-
-            if (parameters.ContainsKey("SubjectUser"))
-            {
-                SubjectUser = parameters["SubjectUser"];
-                urlParams.Add(new QueryParameter("user_a", SubjectUser));
-            }
-            else
-            {
-                throw new ArgumentException("SubjectUser is required.", "SubjectUser");
-            }
-
-            if (parameters.ContainsKey("FollowingUser"))
-            {
-                FollowingUser = parameters["FollowingUser"];
-                urlParams.Add(new QueryParameter("user_b", FollowingUser));
-            }
-            else
-            {
-                throw new ArgumentException("FollowingUser is required.", "FollowingUser");
-            }
-
-            return req;
         }
 
         /// <summary>
@@ -301,9 +254,6 @@ namespace LinqToTwitter
 
             switch (Type)
             {
-                case FriendshipType.Exists:
-                    friendship = HandleExistsResponse(responseJson);
-                    break;
                 case FriendshipType.Show:
                     friendship = HandleShowResponse(responseJson);
                     break;
@@ -323,8 +273,6 @@ namespace LinqToTwitter
             }
 
             friendship.Type = Type;
-            friendship.SubjectUser = SubjectUser;
-            friendship.FollowingUser = FollowingUser;
             friendship.SourceUserID = SourceUserID;
             friendship.SourceScreenName = SourceScreenName;
             friendship.TargetUserID = TargetUserID;
@@ -339,14 +287,6 @@ namespace LinqToTwitter
             };
 
             return friendList.OfType<T>().ToList();
-        }
-  
-        Friendship HandleExistsResponse(string responseJson)
-        {
-            bool exists;
-            bool.TryParse(responseJson, out exists);
-            var friendship = new Friendship { IsFriend = exists };
-            return friendship;
         }
   
         Friendship HandleShowResponse(string responseJson)

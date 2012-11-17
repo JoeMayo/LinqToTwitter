@@ -6,11 +6,6 @@
     public enum FriendshipType
     {
         /// <summary>
-        /// does freindship exist between two users
-        /// </summary>
-        Exists,
-
-        /// <summary>
         /// Detailed information on the relationship between two people
         /// </summary>
         Show,
