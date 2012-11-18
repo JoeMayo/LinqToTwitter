@@ -31,6 +31,21 @@ namespace LinqToTwitterXUnitTests.AccountTests
             return ctx;
         }
 
+        TwitterContext InitTwitterContextWithPostTwitterImage()
+        {
+            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
+            execMock.Setup(exec => exec.PostTwitterImage(
+                It.IsAny<string>(),
+                It.IsAny<IDictionary<string, string>>(),
+                It.IsAny<byte[]>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<IRequestProcessor<User>>()))
+                    .Returns(SingleUserResponse);
+            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
+            return ctx;
+        }
+
         [Fact]
         public void UpdateAccountProfile_Invokes_Executor_Execute()
         {
@@ -241,19 +256,7 @@ namespace LinqToTwitterXUnitTests.AccountTests
             const bool Tile = false;
             const bool Use = false;
             const bool SkipStatus = true;
-            var authMock = new Mock<ITwitterAuthorizer>();
-            var execMock = new Mock<ITwitterExecute>();
-            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
-            execMock.Setup(exec =>
-                exec.PostTwitterImage(
-                    It.IsAny<string>(),
-                    It.IsAny<IDictionary<string, string>>(),
-                    It.IsAny<byte[]>(),
-                    It.IsAny<string>(),
-                    It.IsAny<string>(),
-                    It.IsAny<IRequestProcessor<User>>()))
-                .Returns(SingleUserResponse);
-            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
+            var ctx = InitTwitterContextWithPostTwitterImage();
 
             var ex = Assert.Throws<ArgumentException>(() => ctx.UpdateAccountBackgroundImage(imageFilePath, Tile, Use, SkipStatus));
 
@@ -308,6 +311,159 @@ namespace LinqToTwitterXUnitTests.AccountTests
             Assert.Equal(ExpectedParamName, ex.ParamName);
         }
 
+        [Fact]
+        public void UpdateProfileBanner_Invokes_Executor_Execute()
+        {
+            const string ExpectedProfileBannerUrl = "https://si0.twimg.com/profile_images/1438634086/avatar_normal.png";
+            byte[] banner = new byte[]{ 1, 2, 3 };
+            const string FileName = "MyImage.png";
+            const string FileType = "png";
+            const int Width = 1252;
+            const int Height = 626;
+            const int OffsetLeft = 1;
+            const int OffsetRight = 1;
+            var ctx = InitTwitterContextWithPostTwitterImage();
+
+            User actual = ctx.UpdateProfileBanner(banner, FileName, FileType, Width, Height, OffsetLeft, OffsetRight, null);
+
+            execMock.Verify(exec =>
+                exec.PostTwitterImage(
+                    "https://api.twitter.com/1.1/account/update_profile_banner.json",
+                    It.IsAny<IDictionary<string, string>>(),
+                    It.IsAny<byte[]>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<IRequestProcessor<User>>()),
+                Times.Once());
+            Assert.NotNull(actual);
+            Assert.NotNull(actual.ProfileBannerUrl);
+            Assert.Equal(ExpectedProfileBannerUrl, actual.ProfileBannerUrl);
+        }
+
+        [Fact]
+        public void UpdateProfileBanner_Throws_On_Null_Banner()
+        {
+            const string ExpectedParamName = "banner";
+            byte[] banner = null;
+            const string FileName = "MyImage.png";
+            const string FileType = "png";
+            const int Width = 1252;
+            const int Height = 626;
+            const int OffsetLeft = 1;
+            const int OffsetRight = 1;
+            var ctx = InitTwitterContextWithPostTwitterImage();
+
+            var ex = Assert.Throws<ArgumentException>(() => ctx.UpdateProfileBanner(banner, FileName, FileType, Width, Height, OffsetLeft, OffsetRight, null));
+
+            Assert.Equal(ExpectedParamName, ex.ParamName);
+        }
+
+        [Fact]
+        public void UpdateProfileBanner_Throws_On_Empty_Banner()
+        {
+            const string ExpectedParamName = "banner";
+            byte[] banner = new byte[0];
+            const string FileName = "MyImage.png";
+            const string FileType = "png";
+            const int Width = 1252;
+            const int Height = 626;
+            const int OffsetLeft = 1;
+            const int OffsetRight = 1;
+            var ctx = InitTwitterContextWithPostTwitterImage();
+
+            var ex = Assert.Throws<ArgumentException>(() => ctx.UpdateProfileBanner(banner, FileName, FileType, Width, Height, OffsetLeft, OffsetRight, null));
+
+            Assert.Equal(ExpectedParamName, ex.ParamName);
+        }
+
+        [Fact]
+        public void UpdateProfileBanner_Throws_On_Null_FileName()
+        {
+            const string ExpectedParamName = "fileName";
+            byte[] banner = new byte[] { 1, 2, 3 };
+            const string FileName = null;
+            const string FileType = "png";
+            const int Width = 1252;
+            const int Height = 626;
+            const int OffsetLeft = 1;
+            const int OffsetRight = 1;
+            var ctx = InitTwitterContextWithPostTwitterImage();
+
+            var ex = Assert.Throws<ArgumentException>(() => ctx.UpdateProfileBanner(banner, FileName, FileType, Width, Height, OffsetLeft, OffsetRight, null));
+
+            Assert.Equal(ExpectedParamName, ex.ParamName);
+        }
+
+        [Fact]
+        public void UpdateProfileBanner_Throws_On_Empty_FileName()
+        {
+            const string ExpectedParamName = "fileName";
+            byte[] banner = new byte[] { 1, 2, 3 };
+            const string FileName = "";
+            const string FileType = "png";
+            const int Width = 1252;
+            const int Height = 626;
+            const int OffsetLeft = 1;
+            const int OffsetRight = 1;
+            var ctx = InitTwitterContextWithPostTwitterImage();
+
+            var ex = Assert.Throws<ArgumentException>(() => ctx.UpdateProfileBanner(banner, FileName, FileType, Width, Height, OffsetLeft, OffsetRight, null));
+
+            Assert.Equal(ExpectedParamName, ex.ParamName);
+        }
+
+        [Fact]
+        public void UpdateProfileBanner_Throws_On_Null_FileType()
+        {
+            const string ExpectedParamName = "imageType";
+            byte[] banner = new byte[] { 1, 2, 3 };
+            const string FileName = "MyFile.png";
+            const string FileType = null;
+            const int Width = 1252;
+            const int Height = 626;
+            const int OffsetLeft = 1;
+            const int OffsetRight = 1;
+            var ctx = InitTwitterContextWithPostTwitterImage();
+
+            var ex = Assert.Throws<ArgumentException>(() => ctx.UpdateProfileBanner(banner, FileName, FileType, Width, Height, OffsetLeft, OffsetRight, null));
+
+            Assert.Equal(ExpectedParamName, ex.ParamName);
+        }
+
+        [Fact]
+        public void UpdateProfileBanner_Throws_On_Empty_FileType()
+        {
+            const string ExpectedParamName = "imageType";
+            byte[] banner = new byte[] { 1, 2, 3 };
+            const string FileName = "MyFile.png";
+            const string FileType = "";
+            const int Width = 1252;
+            const int Height = 626;
+            const int OffsetLeft = 1;
+            const int OffsetRight = 1;
+            var ctx = InitTwitterContextWithPostTwitterImage();
+
+            var ex = Assert.Throws<ArgumentException>(() => ctx.UpdateProfileBanner(banner, FileName, FileType, Width, Height, OffsetLeft, OffsetRight, null));
+
+            Assert.Equal(ExpectedParamName, ex.ParamName);
+        }
+
+        [Fact]
+        public void RemoveProfileBanner_Invokes_Executor_Execute()
+        {
+            var ctx = InitTwitterContextWithExecuteTwitter();
+
+            User actual = ctx.RemoveProfileBanner(null);
+
+            execMock.Verify(exec =>
+                exec.ExecuteTwitter(
+                    "https://api.twitter.com/1.1/account/remove_profile_banner.json",
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<Func<string, User>>()),
+                Times.Once());
+            Assert.NotNull(actual);
+        }
+
         const string SingleUserResponse = @"{
    ""id"":6253282,
    ""id_str"":""6253282"",
@@ -359,6 +515,7 @@ namespace LinqToTwitterXUnitTests.AccountTests
    ""profile_background_tile"":false,
    ""profile_image_url"":""http:\/\/a0.twimg.com\/profile_images\/1438634086\/avatar_normal.png"",
    ""profile_image_url_https"":""https:\/\/si0.twimg.com\/profile_images\/1438634086\/avatar_normal.png"",
+   ""profile_banner_url"":""https:\/\/si0.twimg.com\/profile_images\/1438634086\/avatar_normal.png"",   
    ""profile_link_color"":""0094C2"",
    ""profile_sidebar_border_color"":""0094C2"",
    ""profile_sidebar_fill_color"":""A9D9F1"",
@@ -370,11 +527,6 @@ namespace LinqToTwitterXUnitTests.AccountTests
    ""following"":false,
    ""follow_request_sent"":false,
    ""notifications"":false
-}";
-
-        const string EndSessionResponse = @"{
-  ""request"": ""/1/account/end_session.json"",
-  ""error"": ""Logged out.""
 }";
 
         const string SettingsResponse = @"{

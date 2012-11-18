@@ -451,5 +451,135 @@ namespace LinqToTwitter
             Account acct = reqProc.ProcessActionResult(resultsJson, AccountAction.Settings);
             return acct;
         }
+
+        /// <summary>
+        /// Sends an image to Twitter to be placed as the user's profile banner.
+        /// </summary>
+        /// <param name="banner">byte[] containing image data.</param>
+        /// <param name="callback">Async callback routine.</param>
+        /// <returns>
+        /// Account of authenticated user who's profile banner will be updated.
+        /// Url of new banner will appear in ProfileBannerUrl property.
+        /// </returns>
+        public static User UpdateProfileBanner(this TwitterContext ctx, byte[] banner, string fileName, string imageType)
+        {
+            return UpdateProfileBanner(ctx, banner, fileName, imageType, 1252, 626, 0, 0, null);
+        }
+       
+        /// <summary>
+        /// Sends an image to Twitter to be placed as the user's profile banner.
+        /// </summary>
+        /// <param name="banner">byte[] containing image data.</param>
+        /// <param name="callback">Async callback routine.</param>
+        /// <returns>
+        /// Account of authenticated user who's profile banner will be updated.
+        /// Url of new banner will appear in ProfileBannerUrl property.
+        /// </returns>
+        public static User UpdateProfileBanner(this TwitterContext ctx, byte[] banner, string fileName, string imageType, Action<TwitterAsyncResponse<User>> callback)
+        {
+            return UpdateProfileBanner(ctx, banner, fileName, imageType, 1252, 626, 0, 0, callback);
+        }
+
+        /// <summary>
+        /// Sends an image to Twitter to be placed as the user's profile banner.
+        /// </summary>
+        /// <param name="banner">byte[] containing image data.</param>
+        /// <param name="width">Pixel width to clip image.</param>
+        /// <param name="height">Pixel height to clip image.</param>
+        /// <param name="offsetLeft">Pixels to offset start of image from the left.</param>
+        /// <param name="offsetTop">Pixels to offset start of image from the top.</param>
+        /// <param name="callback">Async callback routine.</param>
+        /// <returns>
+        /// Account of authenticated user who's profile banner will be updated.
+        /// Url of new banner will appear in ProfileBannerUrl property.
+        /// </returns>
+        public static User UpdateProfileBanner(this TwitterContext ctx, byte[] banner, string fileName, string imageType, int width, int height, int offsetLeft, int offsetTop)
+        {
+            return UpdateProfileBanner(ctx, banner, fileName, imageType, width, height, offsetLeft, offsetTop, null);
+        }
+
+        /// <summary>
+        /// Sends an image to Twitter to be placed as the user's profile banner.
+        /// </summary>
+        /// <param name="banner">byte[] containing image data.</param>
+        /// <param name="width">Pixel width to clip image.</param>
+        /// <param name="height">Pixel height to clip image.</param>
+        /// <param name="offsetLeft">Pixels to offset start of image from the left.</param>
+        /// <param name="offsetTop">Pixels to offset start of image from the top.</param>
+        /// <param name="callback">Async callback routine.</param>
+        /// <returns>
+        /// Account of authenticated user who's profile banner will be updated.
+        /// Url of new banner will appear in ProfileBannerUrl property.
+        /// </returns>
+        public static User UpdateProfileBanner(this TwitterContext ctx, byte[] banner, string fileName, string imageType, int width, int height, int offsetLeft, int offsetTop, Action<TwitterAsyncResponse<User>> callback)
+        {
+            var accountUrl = ctx.BaseUrl + "account/update_profile_banner.json";
+
+            if (banner == null || banner.Length == 0)
+            {
+                throw new ArgumentException("banner is required.", "banner");
+            }
+
+            if (string.IsNullOrEmpty(fileName))
+            {
+                throw new ArgumentException("fileName is required.", "fileName");
+            }
+
+            if (string.IsNullOrEmpty(imageType))
+            {
+                throw new ArgumentException("imageType is required.", "imageType");
+            }
+
+            var parameters = new Dictionary<string, string>
+            {
+                { "width", width.ToString() },
+                { "height", height.ToString() },
+                { "offset_left", offsetLeft.ToString() },
+                { "offset_top", offsetTop.ToString() },
+                { "banner", "IMAGE_DATA" }
+            };
+
+            var reqProc = new UserRequestProcessor<User>();
+
+            ITwitterExecute exec = ctx.TwitterExecutor;
+            exec.AsyncCallback = callback;
+            var resultsJson =
+                exec.PostTwitterImage(accountUrl, parameters, banner, fileName, imageType, reqProc);
+
+            User user = reqProc.ProcessActionResult(resultsJson, UserAction.SingleUser);
+            return user;
+        }
+
+        /// <summary>
+        /// Removes banner from authenticated user's profile.
+        /// </summary>
+        /// <returns>Empty User instance.</returns>
+        public static User RemoveProfileBanner(this TwitterContext ctx)
+        {
+            return RemoveProfileBanner(null);
+        }
+
+        /// <summary>
+        /// Removes banner from authenticated user's profile.
+        /// </summary>
+        /// <param name="callback">Async Callback.</param>
+        /// <returns>Empty User instance.</returns>
+        public static User RemoveProfileBanner(this TwitterContext ctx, Action<TwitterAsyncResponse<User>> callback)
+        {
+            var accountUrl = ctx.BaseUrl + "account/remove_profile_banner.json";
+
+            var reqProc = new UserRequestProcessor<User>();
+
+            ITwitterExecute exec = ctx.TwitterExecutor;
+            exec.AsyncCallback = callback;
+            var resultsJson =
+                exec.ExecuteTwitter(
+                    accountUrl,
+                    new Dictionary<string, string>(),
+                    response => reqProc.ProcessActionResult(response, UserAction.SingleUser));
+
+            User user = reqProc.ProcessActionResult(resultsJson, UserAction.SingleUser);
+            return user;
+        }
     }
 }

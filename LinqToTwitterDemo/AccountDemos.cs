@@ -29,13 +29,15 @@ namespace LinqToTwitterDemo
             //UpdateAccountBackgroundImageWithProgressUpdates(twitterCtx);
             //UpdateAccountInfoDemo(twitterCtx);
             //UpdateAccountSettingsDemo(twitterCtx);
+            //UpdateProfileBanner(twitterCtx);
+            //RemoveProfileBanner(twitterCtx);
         }
 
         /// <summary>
         /// Shows how to update account profile info
         /// </summary>
         /// <param name="twitterCtx">TwitterContext</param>
-        private static void UpdateAccountInfoDemo(TwitterContext twitterCtx)
+        static void UpdateAccountInfoDemo(TwitterContext twitterCtx)
         {
             var user = twitterCtx.UpdateAccountProfile(
                 "LINQ to Tweeter",
@@ -53,7 +55,7 @@ namespace LinqToTwitterDemo
         /// Shows how to update the background image in an account
         /// </summary>
         /// <param name="twitterCtx">TwitterContext</param>
-        private static void UpdateAccountBackgroundImage(TwitterContext twitterCtx)
+        static void UpdateAccountBackgroundImage(TwitterContext twitterCtx)
         {
             var user = twitterCtx.UpdateAccountBackgroundImage(@"..\..\images\200xColor_2.png", /*tile:*/ false, /*use:*/ true, true);
 
@@ -64,7 +66,7 @@ namespace LinqToTwitterDemo
         /// Shows how to update the background image in an account
         /// </summary>
         /// <param name="twitterCtx">TwitterContext</param>
-        private static void UpdateAccountBackgroundImageBytes(TwitterContext twitterCtx)
+        static void UpdateAccountBackgroundImageBytes(TwitterContext twitterCtx)
         {
             byte[] fileBytes = Utilities.GetFileBytes(@"..\..\images\200xColor_2.png");
             var user = twitterCtx.UpdateAccountBackgroundImage(fileBytes, "200xColor_2.png", "png", /*tile:*/ false, /*use:*/ true, true);
@@ -76,7 +78,7 @@ namespace LinqToTwitterDemo
         /// Shows how to update the background image in an account and tiles the image
         /// </summary>
         /// <param name="twitterCtx">TwitterContext</param>
-        private static void UpdateAccountBackgroundImageAndTileDemo(TwitterContext twitterCtx)
+        static void UpdateAccountBackgroundImageAndTileDemo(TwitterContext twitterCtx)
         {
             byte[] fileBytes = Utilities.GetFileBytes(@"..\..\images\200xColor_2.png");
             var user = twitterCtx.UpdateAccountBackgroundImage(fileBytes, "200xColor_2.png", "png", /*tile:*/ true, /*use:*/ true, true);
@@ -88,7 +90,7 @@ namespace LinqToTwitterDemo
         /// Shows how to update the background image in an account and tiles the image, but doesn't use the uploaded background
         /// </summary>
         /// <param name="twitterCtx">TwitterContext</param>
-        private static void UpdateAccountBackgroundImageAndTileButDontUseDemo(TwitterContext twitterCtx)
+        static void UpdateAccountBackgroundImageAndTileButDontUseDemo(TwitterContext twitterCtx)
         {
             byte[] fileBytes = Utilities.GetFileBytes(@"..\..\images\200xColor_2.png");
             var user = twitterCtx.UpdateAccountBackgroundImage(fileBytes, "200xColor_2.png", "png", /*tile:*/ true, /*use:*/ false, true);
@@ -97,10 +99,32 @@ namespace LinqToTwitterDemo
         }
 
         /// <summary>
+        /// Shows how to update the profile image in an account
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        static void UpdateProfileBanner(TwitterContext twitterCtx)
+        {
+            byte[] fileBytes = Utilities.GetFileBytes(@"..\..\images\WP_000003.jpg");
+            var user = twitterCtx.UpdateProfileBanner(fileBytes, "WP_000003.jpg", "jpg", 1252, 626, 0, 0);
+
+            Console.WriteLine("User Image: " + user.ProfileBannerUrl);
+        }
+
+        /// <summary>
+        /// Shows how to remove the profile image in an account
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        static void RemoveProfileBanner(TwitterContext twitterCtx)
+        {
+            var user = twitterCtx.RemoveProfileBanner();
+            Console.WriteLine("Profile Banner: " + user.ProfileBannerUrl ?? "None");
+        }
+
+        /// <summary>
         /// Shows how to update the background image in an account
         /// </summary>
         /// <param name="twitterCtx">TwitterContext</param>
-        private static void UpdateAccountBackgroundImageWithProgressUpdates(TwitterContext twitterCtx)
+        static void UpdateAccountBackgroundImageWithProgressUpdates(TwitterContext twitterCtx)
         {
             twitterCtx.UploadProgressChanged +=
                 (sender, e) =>
@@ -117,7 +141,7 @@ namespace LinqToTwitterDemo
         /// Shows how to update the image in an account
         /// </summary>
         /// <param name="twitterCtx">TwitterContext</param>
-        private static void UpdateAccountImage(TwitterContext twitterCtx)
+        static void UpdateAccountImage(TwitterContext twitterCtx)
         {
             var user = twitterCtx.UpdateAccountImage(@"..\..\images\200xColor_2.png", true);
 
@@ -128,7 +152,7 @@ namespace LinqToTwitterDemo
         /// Shows how to asynchronously update the image in an account
         /// </summary>
         /// <param name="twitterCtx">TwitterContext</param>
-        private static void UpdateAccountImageCallback(TwitterContext twitterCtx)
+        static void UpdateAccountImageCallback(TwitterContext twitterCtx)
         {
             var user = twitterCtx.UpdateAccountImage(
                 @"..\..\images\200xColor_2.png", true,
@@ -141,8 +165,8 @@ namespace LinqToTwitterDemo
         /// <summary>
         /// Shows how to update Twitter colors
         /// </summary>
-        /// <param name="twitterCtx"></param>
-        private static void UpdateAccountColors(TwitterContext twitterCtx)
+        /// <param name="twitterCtx">TwitterContext</param>
+        static void UpdateAccountColors(TwitterContext twitterCtx)
         {
             var user = twitterCtx.UpdateAccountColors("9ae4e8", "#000000", "#0000ff", "#e0ff92", "#87bc44", true);
 
@@ -155,7 +179,11 @@ namespace LinqToTwitterDemo
             Console.WriteLine("Sidebar Border: " + user.ProfileSidebarBorderColor);
         }
 
-        private static void ViewAccountSettingsDemo(TwitterContext twitterCtx)
+        /// <summary>
+        /// Shows how to obtain account settings.
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        static void ViewAccountSettingsDemo(TwitterContext twitterCtx)
         {
             var accountSettings =
                 (from acct in twitterCtx.Account
@@ -174,7 +202,7 @@ namespace LinqToTwitterDemo
         /// Shows how to extract rate limit info from response headers
         /// </summary>
         /// <param name="twitterCtx">TwitterContext</param>
-        private static void ViewRateLimitResponseHeadersDemo(TwitterContext twitterCtx)
+        static void ViewRateLimitResponseHeadersDemo(TwitterContext twitterCtx)
         {
             var myMentions =
                 from mention in twitterCtx.Status
@@ -210,7 +238,7 @@ namespace LinqToTwitterDemo
         /// verifies that account credentials are correct
         /// </summary>
         /// <param name="twitterCtx">TwitterContext</param>
-        private static void VerifyAccountCredentials(TwitterContext twitterCtx)
+        static void VerifyAccountCredentials(TwitterContext twitterCtx)
         {
             var accounts =
                 from acct in twitterCtx.Account
@@ -235,7 +263,11 @@ namespace LinqToTwitterDemo
             }
         }
 
-        private static void UpdateAccountSettingsDemo(TwitterContext twitterCtx)
+        /// <summary>
+        /// Shows how to update account settings.
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        static void UpdateAccountSettingsDemo(TwitterContext twitterCtx)
         {
             Account acct = twitterCtx.UpdateAccountSettings(null, true, 20, 6, null, null);
 

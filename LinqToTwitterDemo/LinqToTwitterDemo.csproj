@@ -146,6 +146,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="images\200xColor_2.png" />
+    <Content Include="images\WP_000003.jpg" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LinqToTwitter\LinqToTwitter.csproj">

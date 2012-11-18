@@ -3,7 +3,6 @@
  * 
  * Created By: Joe Mayo, 8/26/08
  * *********************************************************/
-
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -58,6 +57,7 @@ namespace LinqToTwitter
             ProfileBackgroundImageUrl = user.GetValue<string>("profile_background_image_url");
             ProfileBackgroundImageUrlHttps = user.GetValue<string>("profile_background_image_url_https");
             ProfileBackgroundTile = user.GetValue<bool>("profile_background_tile");
+            ProfileBannerUrl = user.GetValue<string>("profile_banner_url");
             StatusesCount = user.GetValue<int>("statuses_count");
             Notifications = user.GetValue<bool>("notifications");
             GeoEnabled = user.GetValue<bool>("geo_enabled");
@@ -355,5 +355,10 @@ namespace LinqToTwitter
         /// Response from ProfileImage query
         /// </summary>
         public string ProfileImage { get; set; }
+
+        /// <summary>
+        /// Url of Profile Banner image.
+        /// </summary>
+        public string ProfileBannerUrl { get; set; }
     }
 }

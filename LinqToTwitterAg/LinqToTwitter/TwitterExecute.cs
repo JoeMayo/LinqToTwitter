@@ -836,7 +836,14 @@ namespace LinqToTwitter
             {
                 foreach (var param in postData)
                 {
-                    formDataSb.AppendFormat("--{0}\r\nContent-Disposition: form-data; name=\"{1}\"\r\n\r\n{2}\r\n", contentBoundaryBase, param.Key, param.Value);
+                    if (param.Value == "IMAGE_DATA")
+                    {
+                        contentDisposition = contentDisposition.Replace("name=\"image\"", "name=\"" + param.Key + "\"");
+                    }
+                    else
+                    {
+                        formDataSb.AppendFormat("--{0}\r\nContent-Disposition: form-data; name=\"{1}\"\r\n\r\n{2}\r\n", contentBoundaryBase, param.Key, param.Value);
+                    }
                 }
             }
 
@@ -860,7 +867,7 @@ namespace LinqToTwitter
                 //Log
                 WriteLog(LastUrl, "PostTwitterImage");
 
-                var req = AuthorizedClient.PostRequest(new Request(url), postData);
+                var req = AuthorizedClient.PostRequest(new Request(url), new Dictionary<string, string>());
                 req.ContentType = "multipart/form-data;boundary=" + contentBoundaryBase;
 
 #if !WINDOWS_PHONE && !NETFX_CORE
