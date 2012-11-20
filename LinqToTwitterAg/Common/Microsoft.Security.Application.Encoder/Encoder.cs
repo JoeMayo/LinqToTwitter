@@ -18,8 +18,7 @@
 //   various contexts.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
-
-namespace Microsoft.Security.Application
+namespace LinqToTwitter.Security.Application
 {
     using System;
     using System.Globalization;

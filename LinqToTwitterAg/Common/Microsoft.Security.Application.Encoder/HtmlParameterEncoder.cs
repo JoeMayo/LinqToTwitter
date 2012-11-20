@@ -19,7 +19,7 @@
 
 using LinqToTwitter.Common;
 
-namespace Microsoft.Security.Application
+namespace LinqToTwitter.Security.Application
 {
     using System;
     using System.Collections;

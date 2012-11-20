@@ -16,8 +16,7 @@
 //   Provides safe character positions for the upper middle section of the UTF code tables.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
-
-namespace Microsoft.Security.Application.CodeCharts
+namespace LinqToTwitter.Security.Application.CodeCharts
 {
     using System.Collections;
 

@@ -19,9 +19,8 @@
 
 using LinqToTwitter.Common;
 
-namespace Microsoft.Security.Application
+namespace LinqToTwitter.Security.Application
 {
-
     /// <summary>
     /// Provides HTML encoding methods.
     /// </summary>

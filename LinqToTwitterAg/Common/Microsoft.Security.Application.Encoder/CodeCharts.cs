@@ -16,8 +16,7 @@
 //   Enumerations for the various printable code tables within the Unicode UTF space.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
-
-namespace Microsoft.Security.Application
+namespace LinqToTwitter.Security.Application
 {
     using System;
 

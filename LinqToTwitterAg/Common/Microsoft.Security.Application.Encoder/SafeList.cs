@@ -16,8 +16,7 @@
 //   Provides safe list utility functions.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
-
-namespace Microsoft.Security.Application
+namespace LinqToTwitter.Security.Application
 {
     using System.Collections;
     using System.Globalization;

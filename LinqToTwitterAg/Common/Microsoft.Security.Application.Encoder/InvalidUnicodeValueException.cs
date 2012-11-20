@@ -16,8 +16,7 @@
 //   Thrown when a invalid Unicode valid is encountered.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
-
-namespace Microsoft.Security.Application
+namespace LinqToTwitter.Security.Application
 {
     using System;
     using System.Globalization;

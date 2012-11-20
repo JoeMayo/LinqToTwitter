@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-using MSEncoder = Microsoft.Security.Application.Encoder;
+using MSEncoder = LinqToTwitter.Security.Application.Encoder;
 
 #if SILVERLIGHT && !WINDOWS_PHONE
     using System.Windows.Browser;
