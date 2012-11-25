@@ -12,6 +12,7 @@ namespace LinqToTwitterDemo
         {
             BasicSearchSample(twitterCtx);
             //AsyncSearchSample(twitterCtx);
+            //GeocodeSample(twitterCtx);
         }
 
         static void BasicSearchSample(TwitterContext twitterCtx)
@@ -59,5 +60,25 @@ namespace LinqToTwitterDemo
                 Console.WriteLine("\n More Search demos can be downloaded from LINQ to Twitter's on-line samples at http://linqtotwitter.codeplex.com/wikipage?title=LINQ%20to%20Twitter%20Samples&referringTitle=Home");
             });
         }
+
+        static void GeocodeSample(TwitterContext twitterCtx)
+        {
+            var srch =
+                (from search in twitterCtx.Search
+                 where search.Type == SearchType.Search &&
+                       search.Query == "Twitter" &&
+                       search.GeoCode == "37.781157,-122.398720,1mi"
+                 select search)
+                .SingleOrDefault();
+
+            Console.WriteLine("\nQuery: {0}\n", srch.SearchMetaData.Query);
+            srch.Statuses.ForEach(entry =>
+                Console.WriteLine(
+                    "ID: {0, -15}, Source: {1}\nContent: {2}\n",
+                    entry.ID, entry.Source, entry.Text));
+
+            Console.WriteLine("\n More Search demos can be downloaded from LINQ to Twitter's on-line samples at http://linqtotwitter.codeplex.com/wikipage?title=LINQ%20to%20Twitter%20Samples&referringTitle=Home");
+        }
+
     }
 }

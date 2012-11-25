@@ -39,9 +39,9 @@ namespace LinqToTwitterDemo
             //RetweetedToMeStatusQueryDemo(twitterCtx);
             //RetweetsOfMeStatusQueryDemo(twitterCtx);
             //RetweetedByUserStatusQueryDemo(twitterCtx);
-            //RetweetDemo(twitterCtx);
+            RetweetDemo(twitterCtx);
             //RetweetsQueryDemo(twitterCtx);
-            FirstStatusQueryDemo(twitterCtx);
+            //FirstStatusQueryDemo(twitterCtx);
             //GetAllTweetsAndRetweetsDemo(twitterCtx);
             //ContributorIDsDemo(twitterCtx);
             //ContributorDetailsDemo(twitterCtx);
@@ -231,7 +231,7 @@ namespace LinqToTwitterDemo
 
         private static void RetweetDemo(TwitterContext twitterCtx)
         {
-            var retweet = twitterCtx.Retweet("242475182780973056");
+            var retweet = twitterCtx.Retweet("267070822643023874");
 
             Console.WriteLine("Retweeted Tweet: ");
             Console.WriteLine(

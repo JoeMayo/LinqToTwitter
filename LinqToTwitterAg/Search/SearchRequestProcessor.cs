@@ -60,11 +60,6 @@ namespace LinqToTwitter
         private int Count { get; set; }
 
         /// <summary>
-        /// adds user information for each tweet if true (default = false)
-        /// </summary>
-        private bool ShowUser { get; set; }
-
-        /// <summary>
         /// Return tweets before this date
         /// </summary>
         private DateTime Until { get; set; }
@@ -80,70 +75,9 @@ namespace LinqToTwitter
         public bool IncludeEntities { get; set; }
 
         /// <summary>
-        /// Return tweets since this date
-        /// </summary>
-        private DateTime Since { get; set; }
-
-        /// <summary>
         /// for getting tweets with ID that is less than or equal to this value
         /// </summary>
         private ulong MaxID { get; set; }
-
-        /// <summary>
-        /// With exact phrase
-        /// </summary>
-        private string WordPhrase { get; set; }
-
-        /// <summary>
-        /// With all words
-        /// </summary>
-        private string WordAnd { get; set; }
-
-        /// <summary>
-        /// With any of the words
-        /// </summary>
-        private string WordOr { get; set; }
-
-        /// <summary>
-        /// Without the words
-        /// </summary>
-        private string WordNot { get; set; }
-
-        /// <summary>
-        /// With hashtag (add a single hashtag without the #)
-        /// </summary>
-        private string Hashtag { get; set; }
-
-        /// <summary>
-        /// From this person
-        /// </summary>
-        private string PersonFrom { get; set; }
-
-        /// <summary>
-        /// To this person
-        /// </summary>
-        private string PersonTo { get; set; }
-
-        /// <summary>
-        /// Person mentioned in tweet
-        /// </summary>
-        private string PersonReference { get; set; }
-
-        /// <summary>
-        /// Tweets with an attitude (Positive, Negative, or Question)
-        /// </summary>
-        private Attitude Attitude { get; set; }
-
-        // No longer supported in Twitter API v1.1
-        ///// <summary>
-        ///// Tweets that contain links
-        ///// </summary>
-        //private bool WithLinks { get; set; }
-
-        ///// <summary>
-        ///// Tweets that have been retweeted
-        ///// </summary>
-        //private bool WithRetweets { get; set; }
 
         /// <summary>
         /// extracts parameters from lambda
@@ -158,28 +92,14 @@ namespace LinqToTwitter
                    new List<string> { 
                        "Type",
                        "Query",
+                       "GeoCode",
                        "SearchLanguage",
                        "Locale",
+                       "ResultType",
                        "Count",
-                       "Page",
-                       "Since",
                        "Until",
                        "SinceID",
                        "MaxID",
-                       "GeoCode",
-                       "ShowUser",
-                       "ResultType",
-                       "WordPhrase",
-                       "WordAnd",
-                       "WordOr",
-                       "WordNot",
-                       "Hashtag",
-                       "PersonFrom",
-                       "PersonTo",
-                       "PersonReference",
-                       "Attitude",
-                       "WithLinks",
-                       "WithRetweets",
                        "IncludeEntities"
                    });
 
@@ -249,22 +169,6 @@ namespace LinqToTwitter
                 urlParams.Add(new QueryParameter("q", Query));
             }
 
-            if (parameters.ContainsKey("ShowUser"))
-            {
-                ShowUser = bool.Parse(parameters["ShowUser"]);
-
-                if (ShowUser)
-                {
-                    urlParams.Add(new QueryParameter("show_user", "true")); 
-                }
-            }
-
-            if (parameters.ContainsKey("Since"))
-            {
-                Since = DateTime.Parse(parameters["Since"]).Date;
-                urlParams.Add(new QueryParameter("since", Since.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)));
-            }
-
             if (parameters.ContainsKey("Until"))
             {
                 Until = DateTime.Parse(parameters["Until"]).Date;
@@ -288,97 +192,6 @@ namespace LinqToTwitter
                 ResultType = RequestProcessorHelper.ParseQueryEnumType<ResultType>(parameters["ResultType"]);
                 urlParams.Add(new QueryParameter("result_type" , ResultType.ToString().ToLower()));
             }
-
-            if (parameters.ContainsKey("WordPhrase"))
-            {
-                WordPhrase = parameters["WordPhrase"];
-                urlParams.Add(new QueryParameter("exact" , WordPhrase));
-            }
-
-            if (parameters.ContainsKey("WordAnd"))
-            {
-                WordAnd = parameters["WordAnd"];
-                urlParams.Add(new QueryParameter("ands" , WordAnd));
-            }
-
-            if (parameters.ContainsKey("WordOr"))
-            {
-                WordOr = parameters["WordOr"];
-                urlParams.Add(new QueryParameter("ors" , WordOr));
-            }
-
-            if (parameters.ContainsKey("WordNot"))
-            {
-                WordNot = parameters["WordNot"];
-                urlParams.Add(new QueryParameter("nots" , WordNot));
-            }
-
-            if (parameters.ContainsKey("Hashtag"))
-            {
-                Hashtag = parameters["Hashtag"];
-                urlParams.Add(new QueryParameter("tag" ,Hashtag));
-            }
-
-            if (parameters.ContainsKey("PersonFrom"))
-            {
-                PersonFrom = parameters["PersonFrom"];
-                urlParams.Add(new QueryParameter("from", PersonFrom));
-            }
-
-            if (parameters.ContainsKey("PersonTo"))
-            {
-                PersonTo = parameters["PersonTo"];
-                urlParams.Add(new QueryParameter("to" ,PersonTo));
-            }
-
-            if (parameters.ContainsKey("PersonReference"))
-            {
-                PersonReference = parameters["PersonReference"];
-                urlParams.Add(new QueryParameter("ref" ,PersonReference));
-            }
-
-            if (parameters.ContainsKey("Attitude"))
-            {
-                Attitude = RequestProcessorHelper.ParseQueryEnumType<Attitude>(parameters["Attitude"]);
-
-                if ((Attitude & Attitude.Positive) == Attitude.Positive)
-                {
-                    urlParams.Add(new QueryParameter("tude[]", ":)")); 
-                }
-
-                if ((Attitude & Attitude.Negative) == Attitude.Negative)
-                {
-                    urlParams.Add(new QueryParameter("tude[]", ":("));
-                }
-
-                if ((Attitude & Attitude.Question) == Attitude.Question)
-                {
-                    urlParams.Add(new QueryParameter("tude[]", "?"));
-                }
-            }
-
-            // no longer supported by Twitter API v1.1
-            //if (parameters.ContainsKey("WithLinks"))
-            //{
-            //    WithLinks = bool.Parse(parameters["WithLinks"]);
-
-            //    if (WithLinks)
-            //    {
-            //        urlParams.Add(new QueryParameter("filter[]", "links"));
-            //    }
-            //}
-
-            // no longer supported by Twitter API v1.1
-            //if (parameters.ContainsKey("WithRetweets"))
-            //{
-            //    WithRetweets = bool.Parse(parameters["WithRetweets"]);
-            //    urlParams.Add(new QueryParameter("include_rts", parameters["WithRetweets"].ToLower()));
-
-            //    //if (WithRetweets)
-            //    //{
-            //    //    urlParams.Add(new QueryParameter("include", "retweets"));
-            //    //}
-            //}
 
             if (parameters.ContainsKey("IncludeEntities"))
             {
@@ -422,25 +235,12 @@ namespace LinqToTwitter
                 GeoCode = GeoCode,
                 Count = Count,
                 Query = Query,
-                ShowUser = ShowUser,
                 MaxID = MaxID,
                 SinceID = SinceID,
                 SearchLanguage = SearchLanguage,
                 Locale = Locale,
-                Since = Since.Date,
                 Until = Until.Date,
                 ResultType = ResultType,
-                WordPhrase = WordPhrase,
-                WordAnd = WordAnd,
-                WordOr = WordOr,
-                WordNot = WordNot,
-                Hashtag = Hashtag,
-                PersonFrom = PersonFrom,
-                PersonTo = PersonTo,
-                PersonReference = PersonReference,
-                Attitude = Attitude,
-                //WithLinks = WithLinks,
-                //WithRetweets = WithRetweets,
                 IncludeEntities = IncludeEntities,
                 Statuses =
                     (from JsonData result in search["statuses"]

@@ -214,12 +214,6 @@ namespace LinqToTwitterXUnitTests.FriendshipTests
                     new KeyValuePair<string, string>("Type", ((int)FriendshipType.Show).ToString())));
             Assert.True(
                 queryParams.Contains(
-                    new KeyValuePair<string, string>("SubjectUser", "123")));
-            Assert.True(
-                queryParams.Contains(
-                    new KeyValuePair<string, string>("FollowingUser", "456")));
-            Assert.True(
-                queryParams.Contains(
                     new KeyValuePair<string, string>("SourceUserID", "1")));
             Assert.True(
                 queryParams.Contains(
