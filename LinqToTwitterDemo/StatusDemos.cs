@@ -39,7 +39,7 @@ namespace LinqToTwitterDemo
             //RetweetedToMeStatusQueryDemo(twitterCtx);
             //RetweetsOfMeStatusQueryDemo(twitterCtx);
             //RetweetedByUserStatusQueryDemo(twitterCtx);
-            //RetweetDemo(twitterCtx);
+            RetweetDemo(twitterCtx);
             //RetweetsQueryDemo(twitterCtx);
             //FirstStatusQueryDemo(twitterCtx);
             //GetAllTweetsAndRetweetsDemo(twitterCtx);
