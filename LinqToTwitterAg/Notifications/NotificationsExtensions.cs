@@ -63,7 +63,7 @@ namespace LinqToTwitter
             ITwitterExecute exec = ctx.TwitterExecutor;
             exec.AsyncCallback = callback;
             var resultsJson =
-                exec.ExecuteTwitter(
+                exec.PostToTwitter(
                     notificationsUrl,
                     new Dictionary<string, string>
                     {
@@ -131,7 +131,7 @@ namespace LinqToTwitter
             ITwitterExecute exec = ctx.TwitterExecutor;
             exec.AsyncCallback = callback;
             var resultsJson =
-                exec.ExecuteTwitter(
+                exec.PostToTwitter(
                     notificationsUrl,
                     new Dictionary<string, string>
                     {

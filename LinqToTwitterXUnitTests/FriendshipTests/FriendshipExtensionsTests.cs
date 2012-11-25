@@ -34,7 +34,7 @@ namespace LinqToTwitterXUnitTests.FriendshipTests
             var execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
             execMock.Setup(exec =>
-                exec.ExecuteTwitter(
+                exec.PostToTwitter(
                     It.IsAny<string>(),
                     It.IsAny<Dictionary<string, string>>(),
                     It.IsAny<Func<string, User>>()))
@@ -55,7 +55,7 @@ namespace LinqToTwitterXUnitTests.FriendshipTests
             var execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
             execMock.Setup(exec =>
-                exec.ExecuteTwitter(
+                exec.PostToTwitter(
                     It.IsAny<string>(),
                     It.IsAny<Dictionary<string, string>>(),
                     It.IsAny<Func<string, User>>()))
@@ -77,7 +77,7 @@ namespace LinqToTwitterXUnitTests.FriendshipTests
             var execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
             execMock.Setup(exec =>
-                exec.ExecuteTwitter(
+                exec.PostToTwitter(
                     It.IsAny<string>(),
                     It.IsAny<Dictionary<string, string>>(),
                     It.IsAny<Func<string, User>>()))
@@ -97,7 +97,7 @@ namespace LinqToTwitterXUnitTests.FriendshipTests
             var execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
             execMock.Setup(exec =>
-                exec.ExecuteTwitter(
+                exec.PostToTwitter(
                     It.IsAny<string>(),
                     It.IsAny<Dictionary<string, string>>(),
                     It.IsAny<Func<string, User>>()))
@@ -115,12 +115,12 @@ namespace LinqToTwitterXUnitTests.FriendshipTests
             var authMock = new Mock<ITwitterAuthorizer>();
             var execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
-            execMock.Setup(exec => exec.ExecuteTwitter(It.IsAny<string>(), It.IsAny<Dictionary<string, string>>(), It.IsAny<Func<string, Friendship>>())).Returns(RelationshipResponse);
+            execMock.Setup(exec => exec.PostToTwitter(It.IsAny<string>(), It.IsAny<Dictionary<string, string>>(), It.IsAny<Func<string, Friendship>>())).Returns(RelationshipResponse);
             var ctx = new TwitterContext(authMock.Object, execMock.Object, "https://api.twitter.com/1/", "");
 
             ctx.UpdateFriendshipSettings("joemayo", true, true);
 
-            execMock.Verify(exec => exec.ExecuteTwitter(
+            execMock.Verify(exec => exec.PostToTwitter(
                 "https://api.twitter.com/1/friendships/update.json",
                 It.IsAny<Dictionary<string, string>>(),
                 It.IsAny<Func<string, Friendship>>()),
@@ -133,7 +133,7 @@ namespace LinqToTwitterXUnitTests.FriendshipTests
             var authMock = new Mock<ITwitterAuthorizer>();
             var execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
-            execMock.Setup(exec => exec.ExecuteTwitter(It.IsAny<string>(), It.IsAny<Dictionary<string, string>>(), It.IsAny<Func<string, Friendship>>())).Returns(RelationshipResponse);
+            execMock.Setup(exec => exec.PostToTwitter(It.IsAny<string>(), It.IsAny<Dictionary<string, string>>(), It.IsAny<Func<string, Friendship>>())).Returns(RelationshipResponse);
             var ctx = new TwitterContext(authMock.Object, execMock.Object, "https://api.twitter.com/1/", "");
 
             var ex = Assert.Throws<ArgumentNullException>(() => ctx.UpdateFriendshipSettings(/*"joemayo"*/ null, true, true));

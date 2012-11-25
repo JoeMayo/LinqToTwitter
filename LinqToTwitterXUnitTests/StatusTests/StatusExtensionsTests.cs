@@ -33,7 +33,7 @@ namespace LinqToTwitterXUnitTests.StatusTests
             var execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
             var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
-            execMock.Setup(exec => exec.ExecuteTwitter(It.IsAny<string>(), It.IsAny<Dictionary<string, string>>(), It.IsAny<Func<string, Status>>()))
+            execMock.Setup(exec => exec.PostToTwitter(It.IsAny<string>(), It.IsAny<Dictionary<string, string>>(), It.IsAny<Func<string, Status>>()))
                     .Returns(SingleStatusResponse);
 
             Status actual = ctx.UpdateStatus(Status, InReplyToStatusID);
@@ -49,7 +49,7 @@ namespace LinqToTwitterXUnitTests.StatusTests
             var execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
             execMock.Setup(exec =>
-                exec.ExecuteTwitter(
+                exec.PostToTwitter(
                     It.IsAny<string>(),
                     It.IsAny<Dictionary<string, string>>(),
                     It.IsAny<Func<string, Status>>()))
@@ -70,7 +70,7 @@ namespace LinqToTwitterXUnitTests.StatusTests
             var execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
             var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
-            execMock.Setup(exec => exec.ExecuteTwitter(It.IsAny<string>(), It.IsAny<Dictionary<string, string>>(), It.IsAny<Func<string, Status>>()))
+            execMock.Setup(exec => exec.PostToTwitter(It.IsAny<string>(), It.IsAny<Dictionary<string, string>>(), It.IsAny<Func<string, Status>>()))
                     .Returns(SingleStatusResponse);
 
             Status actual = ctx.UpdateStatus(Status);
@@ -87,7 +87,7 @@ namespace LinqToTwitterXUnitTests.StatusTests
             var execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
             execMock.Setup(exec =>
-                exec.ExecuteTwitter(
+                exec.PostToTwitter(
                     It.IsAny<string>(),
                     It.IsAny<Dictionary<string, string>>(),
                     It.IsAny<Func<string, Status>>()))
@@ -107,7 +107,7 @@ namespace LinqToTwitterXUnitTests.StatusTests
             var execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
             execMock.Setup(exec =>
-                exec.ExecuteTwitter(
+                exec.PostToTwitter(
                     It.IsAny<string>(),
                     It.IsAny<Dictionary<string, string>>(),
                     It.IsAny<Func<string, Status>>()))
@@ -129,7 +129,7 @@ namespace LinqToTwitterXUnitTests.StatusTests
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
             bool wrapLinksPassedToExecute = false;
             execMock.Setup(exec =>
-                exec.ExecuteTwitter(
+                exec.PostToTwitter(
                     It.IsAny<string>(),
                     It.IsAny<Dictionary<string, string>>(),
                     It.IsAny<Func<string, Status>>()))
@@ -154,7 +154,7 @@ namespace LinqToTwitterXUnitTests.StatusTests
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
             bool wrapLinksIsSetToNull = false;
             execMock.Setup(exec =>
-                exec.ExecuteTwitter(
+                exec.PostToTwitter(
                     It.IsAny<string>(),
                     It.IsAny<Dictionary<string, string>>(),
                     It.IsAny<Func<string, Status>>()))

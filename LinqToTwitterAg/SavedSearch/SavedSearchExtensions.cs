@@ -36,7 +36,7 @@ namespace LinqToTwitter
             ITwitterExecute exec = ctx.TwitterExecutor;
             exec.AsyncCallback = callback;
             var resultsJson =
-                exec.ExecuteTwitter(
+                exec.PostToTwitter(
                     savedSearchUrl,
                     new Dictionary<string, string>
                     {
@@ -77,7 +77,7 @@ namespace LinqToTwitter
             ITwitterExecute exec = ctx.TwitterExecutor;
             exec.AsyncCallback = callback;
             var resultsJson =
-                exec.ExecuteTwitter(
+                exec.PostToTwitter(
                     savedSearchUrl,
                     new Dictionary<string, string>(),
                     response => reqProc.ProcessActionResult(response, SavedSearchAction.Destroy));

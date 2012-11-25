@@ -45,7 +45,7 @@ namespace LinqToTwitterDemo
                     //RawDemos.Run(twitterCtx);
                     //RelatedResultsDemos.Run(twitterCtx);
                     //SavedSearchDemos.Run(twitterCtx);
-                    SearchDemos.Run(twitterCtx);
+                    //SearchDemos.Run(twitterCtx);
                     //SocialGraphDemos.Run(twitterCtx);
                     //StatusDemos.Run(twitterCtx);
                     //StreamingDemo.Run(twitterCtx);
@@ -77,7 +77,7 @@ namespace LinqToTwitterDemo
             Console.WriteLine("  2 - Single User");
             Console.WriteLine("  3 - XAuth");
 
-            Console.Write("Please choose (1, 2, or 3): ");
+            Console.Write("\nPlease choose (1, 2, or 3): ");
             ConsoleKeyInfo input = Console.ReadKey();
             Console.WriteLine("");
 

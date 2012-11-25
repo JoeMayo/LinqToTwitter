@@ -29,7 +29,7 @@ namespace LinqToTwitterDemo
             //SingleStatusQueryDemo(twitterCtx);
             //UpdateStatusDemo(twitterCtx);
             //UpdateStatusWrapLinksDemo(twitterCtx);
-            //UpdateStatusWithCallbackDemo(twitterCtx);
+            UpdateStatusWithCallbackDemo(twitterCtx);
             //UpdateStatusWithReplyDemo(twitterCtx);
             //UpdateStatusWithLocationDemo(twitterCtx);
             //UpdateStatusWithPlaceDemo(twitterCtx);
@@ -41,7 +41,7 @@ namespace LinqToTwitterDemo
             //RetweetedByUserStatusQueryDemo(twitterCtx);
             //RetweetDemo(twitterCtx);
             //RetweetsQueryDemo(twitterCtx);
-            FirstStatusQueryDemo(twitterCtx);
+            //FirstStatusQueryDemo(twitterCtx);
             //GetAllTweetsAndRetweetsDemo(twitterCtx);
             //ContributorIDsDemo(twitterCtx);
             //ContributorDetailsDemo(twitterCtx);
@@ -231,7 +231,7 @@ namespace LinqToTwitterDemo
 
         private static void RetweetDemo(TwitterContext twitterCtx)
         {
-            var retweet = twitterCtx.Retweet("242475182780973056");
+            var retweet = twitterCtx.Retweet("267070822643023874");
 
             Console.WriteLine("Retweeted Tweet: ");
             Console.WriteLine(
@@ -568,7 +568,7 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void DestroyStatusDemo(TwitterContext twitterCtx)
         {
-            var status = twitterCtx.DestroyStatus("243500255973351425");
+            var status = twitterCtx.DestroyStatus("280433519057068033");
 
             Console.WriteLine(
                 "(" + status.StatusID + ")" +
@@ -602,8 +602,12 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void UpdateStatusDemo(TwitterContext twitterCtx)
         {
-            // the \u00C7 is C Cedilla, which I've included to ensure that non-ascii characters appear properly
-            var status = "\u00C7 Testing LINQ to Twitter update status on " + DateTime.Now.ToString() + " #linqtotwitter";
+            var status = 
+                " Testing LINQ to Twitter update status on " + 
+                DateTime.Now.ToString() + " #linqtotwitter "
+                //+
+                //@"`!@#$%^&*()_-+=.~,:;'?/|\[] éü\u00C7"
+                ;
 
             Console.WriteLine("\nStatus being sent: \n\n\"{0}\"", status);
             Console.WriteLine("\nPress any key to post tweet...\n");
@@ -648,9 +652,13 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void UpdateStatusWithCallbackDemo(TwitterContext twitterCtx)
         {
-            // the \u00C7 is C Cedilla, which I've included to ensure that non-ascii characters appear properly
-            var status = "\u00C7 Testing LINQ to Twitter update status on " + DateTime.Now.ToString() + " #linqtotwitter";
-            //var status = "Testing LINQ to Twitter update status on " + DateTime.Now.ToString() + " #linqtotwitter";
+            //Thread.CurrentThread.CurrentCulture = new CultureInfo("nn-NO");
+            //Thread.CurrentThread.CurrentUICulture = new CultureInfo("nn-NO");
+            var status =
+                " Testing LINQ to Twitter update status on " +
+                DateTime.Now.ToString() + " #linqtotwitter "
+                //+ @"`!@#$%^&*()_-+=.~,:;'?/|\[] éü\u00C7"
+                ;
 
             Console.WriteLine("\nStatus being sent: \n\n\"{0}\"", status);
             Console.WriteLine("\nPress any key to post tweet...\n");

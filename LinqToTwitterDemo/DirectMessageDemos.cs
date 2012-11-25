@@ -16,9 +16,9 @@ namespace LinqToTwitterDemo
         public static void Run(TwitterContext twitterCtx)
         {
             //DirectMessageSentByQueryDemo(twitterCtx);
-            DirectMessageSentToQueryDemo(twitterCtx);
+            //DirectMessageSentToQueryDemo(twitterCtx);
             //DirectMessageShowDemo(twitterCtx);
-            //NewDirectMessageDemo(twitterCtx);
+            NewDirectMessageDemo(twitterCtx);
             //NewDirectMessageWrapLinksDemo(twitterCtx);
             //DestroyDirectMessageDemo(twitterCtx);
         }
@@ -46,7 +46,8 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void NewDirectMessageDemo(TwitterContext twitterCtx)
         {
-            var message = twitterCtx.NewDirectMessage("16761255", "Direct Message Test - " + DateTime.Now);
+            var message = twitterCtx.NewDirectMessage("16761255", "Test message with (parentheses)");
+            //var message = twitterCtx.NewDirectMessage("16761255", "Direct Message Test - " + DateTime.Now);
 
             if (message != null)
             {

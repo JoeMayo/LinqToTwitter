@@ -19,7 +19,7 @@ namespace LinqToTwitterXUnitTests.AccountTests
         [Fact]
         public void ProcessResults_Handles_VerifyCredentials()
         {
-            var target = new AccountRequestProcessor<Account>();
+            var target = new AccountRequestProcessor<Account> { Type = AccountType.VerifyCredentials };
 
             List<Account> actual = target.ProcessResults(TestVerifyCredentialsQueryResponse);
 

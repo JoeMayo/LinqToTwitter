@@ -43,12 +43,13 @@ namespace LinqToTwitter
         int Timeout { get; set; }
 
         /// <summary>
-        /// utility method to perform HTTP POST for Twitter change requests
+        /// performs HTTP POST to Twitter
         /// </summary>
         /// <param name="url">URL of request</param>
-        /// <param name="parameters">parameters to post</param>
-        /// <returns>XML Response from Twitter</returns>
-        string ExecuteTwitter<T>(string url, IDictionary<string, string> postData, Func<string, T> getResult);
+        /// <param name="postData">parameters to post</param>
+        /// <param name="getResult">callback for handling async Json response - null if synchronous</param>
+        /// <returns>Json Response from Twitter - empty string if async</returns>
+        string PostToTwitter<T>(string url, IDictionary<string, string> postData, Func<string, T> getResult);
 
 #if !NETFX_CORE
         /// <summary>
