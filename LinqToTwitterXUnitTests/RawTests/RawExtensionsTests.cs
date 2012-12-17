@@ -39,7 +39,7 @@ namespace LinqToTwitterXUnitTests.RawTests
             ctx.ExecuteRaw(QueryString, parameters);
 
             execMock.Verify(exec =>
-                exec.ExecuteTwitter(
+                exec.PostToTwitter(
                     "https://api.twitter.com/1.1/statuses/update.xml",
                     parameters,
                     It.IsAny<Func<string, Raw>>()),
@@ -60,7 +60,7 @@ namespace LinqToTwitterXUnitTests.RawTests
             };
             const string ExpectedResult = "<status>xxx</status>";
             const string FullUrl = "https://api.twitter.com/1.1/statuses/update.xml";
-            execMock.Setup(exec => exec.ExecuteTwitter(FullUrl, parameters, It.IsAny<Func<string, Raw>>())).Returns(ExpectedResult);
+            execMock.Setup(exec => exec.PostToTwitter(FullUrl, parameters, It.IsAny<Func<string, Raw>>())).Returns(ExpectedResult);
 
             string actualResult = ctx.ExecuteRaw(QueryString, parameters);
 
@@ -85,7 +85,7 @@ namespace LinqToTwitterXUnitTests.RawTests
             ctx.ExecuteRaw(QueryStringWithBeginningSlash, parameters);
 
             execMock.Verify(exec =>
-                exec.ExecuteTwitter(
+                exec.PostToTwitter(
                     FullUrl,
                     parameters,
                     It.IsAny<Func<string, Raw>>()), Times.Once());
@@ -109,7 +109,7 @@ namespace LinqToTwitterXUnitTests.RawTests
             ctx.ExecuteRaw(QueryStringWithoutBeginningSlash, parameters);
 
             execMock.Verify(exec =>
-                exec.ExecuteTwitter(
+                exec.PostToTwitter(
                     FullUrl,
                     parameters, It.IsAny<Func<string, Raw>>()), Times.Once());
         }

@@ -34,7 +34,7 @@ namespace LinqToTwitterXUnitTests
             authMock = new Mock<ITwitterAuthorizer>();
             execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
-            execMock.Setup(exec => exec.ExecuteTwitter(
+            execMock.Setup(exec => exec.PostToTwitter(
                 It.IsAny<string>(),
                 It.IsAny<Dictionary<string, string>>(),
                 It.IsAny<Func<string, DirectMessage>>()))
@@ -65,7 +65,7 @@ namespace LinqToTwitterXUnitTests
             ctx.NewDirectMessage(UserID, Text);
 
             execMock.Verify(exec =>
-                exec.ExecuteTwitter(
+                exec.PostToTwitter(
                     "https://api.twitter.com/1/direct_messages/new.json",
                     It.IsAny<Dictionary<string, string>>(),
                     It.IsAny<Func<string, DirectMessage>>()),
@@ -106,7 +106,7 @@ namespace LinqToTwitterXUnitTests
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
             bool wrapLinksPassedToExecute = false;
             execMock.Setup(exec =>
-                exec.ExecuteTwitter(
+                exec.PostToTwitter(
                     It.IsAny<string>(),
                     It.IsAny<Dictionary<string, string>>(),
                     It.IsAny<Func<string, DirectMessage>>()))
@@ -132,7 +132,7 @@ namespace LinqToTwitterXUnitTests
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
             bool wrapLinksIsSetToNull = false;
             execMock.Setup(exec =>
-                exec.ExecuteTwitter(
+                exec.PostToTwitter(
                     It.IsAny<string>(),
                     It.IsAny<Dictionary<string, string>>(),
                     It.IsAny<Func<string, DirectMessage>>()))
@@ -168,7 +168,7 @@ namespace LinqToTwitterXUnitTests
 
             execMock.Verify(
                 exec =>
-                exec.ExecuteTwitter(
+                exec.PostToTwitter(
                     "https://api.twitter.com/1/direct_messages/destroy.json",
                     It.IsAny<Dictionary<string, string>>(),
                     It.IsAny<Func<string, DirectMessage>>()),

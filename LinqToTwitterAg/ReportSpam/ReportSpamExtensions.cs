@@ -49,7 +49,7 @@ namespace LinqToTwitter
             ITwitterExecute exec = ctx.TwitterExecutor;
             exec.AsyncCallback = callback;
             var resultsJson =
-                exec.ExecuteTwitter(
+                exec.PostToTwitter(
                     reportSpamUrl,
                     createParams,
                     response => reqProc.ProcessActionResult(response, UserAction.SingleUser));

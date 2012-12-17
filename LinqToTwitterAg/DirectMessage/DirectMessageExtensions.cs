@@ -60,7 +60,7 @@ namespace LinqToTwitter
 
             twitExe.AsyncCallback = callback;
             var resultsJson =
-                twitExe.ExecuteTwitter(
+                twitExe.PostToTwitter(
                     newUrl,
                     new Dictionary<string, string>
                     {
@@ -107,7 +107,7 @@ namespace LinqToTwitter
 
             twitExe.AsyncCallback = callback;
             var resultsJson =
-                twitExe.ExecuteTwitter(
+                twitExe.PostToTwitter(
                     destroyUrl,
                     new Dictionary<string, string>
                     {

@@ -30,6 +30,7 @@ namespace LinqToTwitterDemo
             UpdateStatusDemo(twitterCtx);
             //UpdateStatusWrapLinksDemo(twitterCtx);
             //UpdateStatusWithCallbackDemo(twitterCtx);
+            UpdateStatusWithCallbackDemo(twitterCtx);
             //UpdateStatusWithReplyDemo(twitterCtx);
             //UpdateStatusWithLocationDemo(twitterCtx);
             //UpdateStatusWithPlaceDemo(twitterCtx);
@@ -39,7 +40,6 @@ namespace LinqToTwitterDemo
             //RetweetedToMeStatusQueryDemo(twitterCtx);
             //RetweetsOfMeStatusQueryDemo(twitterCtx);
             //RetweetedByUserStatusQueryDemo(twitterCtx);
-            //RetweetDemo(twitterCtx);
             //RetweetsQueryDemo(twitterCtx);
             //FirstStatusQueryDemo(twitterCtx);
             //GetAllTweetsAndRetweetsDemo(twitterCtx);
@@ -568,7 +568,6 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void DestroyStatusDemo(TwitterContext twitterCtx)
         {
-            var status = twitterCtx.DestroyStatus("243500255973351425");
 
             Console.WriteLine(
                 "(" + status.StatusID + ")" +
@@ -602,9 +601,13 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void UpdateStatusDemo(TwitterContext twitterCtx)
         {
-            // the \u00C7 is C Cedilla, which I've included to ensure that non-ascii characters appear properly
-            //var status = "\u00C7 Testing LINQ to Twitter update status on " + DateTime.Now.ToString() + " #linqtotwitter";
-            var status = "ü http://bing.com/ ";
+            var status = 
+                " Testing LINQ to Twitter update status on " + 
+                DateTime.Now.ToString() + " #linqtotwitter "
+                //+
+                //@"`!@#$%^&*()_-+=.~,:;'?/|\[] éü\u00C7"
+                ;
+
             Console.WriteLine("\nStatus being sent: \n\n\"{0}\"", status);
             Console.WriteLine("\nPress any key to post tweet...\n");
             Console.ReadKey();
@@ -648,9 +651,13 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void UpdateStatusWithCallbackDemo(TwitterContext twitterCtx)
         {
-            // the \u00C7 is C Cedilla, which I've included to ensure that non-ascii characters appear properly
-            var status = "\u00C7 Testing LINQ to Twitter update status on " + DateTime.Now.ToString() + " #linqtotwitter";
-            //var status = "Testing LINQ to Twitter update status on " + DateTime.Now.ToString() + " #linqtotwitter";
+            //Thread.CurrentThread.CurrentCulture = new CultureInfo("nn-NO");
+            //Thread.CurrentThread.CurrentUICulture = new CultureInfo("nn-NO");
+            var status =
+                " Testing LINQ to Twitter update status on " +
+                DateTime.Now.ToString() + " #linqtotwitter "
+                //+ @"`!@#$%^&*()_-+=.~,:;'?/|\[] éü\u00C7"
+                ;
 
             Console.WriteLine("\nStatus being sent: \n\n\"{0}\"", status);
             Console.WriteLine("\nPress any key to post tweet...\n");

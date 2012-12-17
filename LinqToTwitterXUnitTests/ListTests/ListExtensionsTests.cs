@@ -33,7 +33,7 @@ namespace LinqToTwitterXUnitTests.ListTests
             execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
             execMock.Setup(exec => 
-                exec.ExecuteTwitter(
+                exec.PostToTwitter(
                     It.IsAny<string>(),
                     It.IsAny<Dictionary<string, string>>(),
                     It.IsAny<Func<string, List>>()))
@@ -65,7 +65,7 @@ namespace LinqToTwitterXUnitTests.ListTests
             ctx.CreateList("test", "public", "desc");
 
             execMock.Verify(exec =>
-                exec.ExecuteTwitter(
+                exec.PostToTwitter(
                     "https://api.twitter.com/1.1/lists/create.json",
                     parameters,
                     It.IsAny<Func<string, List>>()),
@@ -110,7 +110,7 @@ namespace LinqToTwitterXUnitTests.ListTests
             ctx.UpdateList("123", "test", "Test List", "456", "JoeMayo", "public", "desc");
 
             execMock.Verify(exec =>
-                exec.ExecuteTwitter(
+                exec.PostToTwitter(
                     "https://api.twitter.com/1.1/lists/update.json",
                     parameters,
                     It.IsAny<Func<string, List>>()),
@@ -168,7 +168,7 @@ namespace LinqToTwitterXUnitTests.ListTests
             ctx.DeleteList("123", "test", "456", "JoeMayo");
 
             execMock.Verify(exec =>
-                exec.ExecuteTwitter(
+                exec.PostToTwitter(
                     "https://api.twitter.com/1.1/lists/destroy.json",
                     parameters,
                     It.IsAny<Func<string, List>>()),
@@ -222,7 +222,7 @@ namespace LinqToTwitterXUnitTests.ListTests
             ctx.AddMemberToList("789", "JoeMayo", "123", "test", "456", "JoeMayo");
 
             execMock.Verify(exec =>
-                exec.ExecuteTwitter(
+                exec.PostToTwitter(
                     "https://api.twitter.com/1.1/lists/members/create.json",
                     parameters,
                     It.IsAny<Func<string, List>>()),
@@ -298,7 +298,7 @@ namespace LinqToTwitterXUnitTests.ListTests
             ctx.AddMemberRangeToList("123", "test", "456", "JoeMayo", screenNames);
 
             execMock.Verify(exec =>
-                exec.ExecuteTwitter(
+                exec.PostToTwitter(
                     "https://api.twitter.com/1.1/lists/members/create_all.json",
                     parameters,
                     It.IsAny<Func<string, List>>()),
@@ -354,7 +354,7 @@ namespace LinqToTwitterXUnitTests.ListTests
             ctx.AddMemberRangeToList("123", "test", "456", "JoeMayo", userIDs);
 
             execMock.Verify(exec =>
-                exec.ExecuteTwitter(
+                exec.PostToTwitter(
                     "https://api.twitter.com/1.1/lists/members/create_all.json",
                     parameters,
                     It.IsAny<Func<string, List>>()),
@@ -408,7 +408,7 @@ namespace LinqToTwitterXUnitTests.ListTests
             ctx.DeleteMemberFromList("789", "JoeMayo", "123", "test", "456", "JoeMayo");
 
             execMock.Verify(exec =>
-                exec.ExecuteTwitter(
+                exec.PostToTwitter(
                     "https://api.twitter.com/1.1/lists/members/destroy.json",
                     parameters,
                     It.IsAny<Func<string, List>>()),
@@ -450,7 +450,7 @@ namespace LinqToTwitterXUnitTests.ListTests
             ctx.SubscribeToList("123", "test", "456", "JoeMayo");
 
             execMock.Verify(exec =>
-                exec.ExecuteTwitter(
+                exec.PostToTwitter(
                     "https://api.twitter.com/1.1/lists/subscribers/create.json",
                     parameters,
                     It.IsAny<Func<string, List>>()),
@@ -492,7 +492,7 @@ namespace LinqToTwitterXUnitTests.ListTests
             ctx.UnsubscribeFromList("123", "test", "456", "JoeMayo");
 
             execMock.Verify(exec =>
-                exec.ExecuteTwitter(
+                exec.PostToTwitter(
                     "https://api.twitter.com/1.1/lists/subscribers/destroy.json",
                     parameters,
                     It.IsAny<Func<string, List>>()),
@@ -516,7 +516,7 @@ namespace LinqToTwitterXUnitTests.ListTests
             ctx.DestroyAllFromList("123", "test", "456", "JoeMayo", "789", "JoeMayo");
 
             execMock.Verify(exec =>
-                exec.ExecuteTwitter(
+                exec.PostToTwitter(
                     "https://api.twitter.com/1.1/lists/members/destroy_all.json",
                     parameters,
                     It.IsAny<Func<string, List>>()),
@@ -587,7 +587,7 @@ namespace LinqToTwitterXUnitTests.ListTests
             ctx.DestroyAllFromList("123", "test", "456, 789", "JoeMayo", "789", "JoeMayo");
 
             execMock.Verify(exec =>
-                exec.ExecuteTwitter(
+                exec.PostToTwitter(
                     "https://api.twitter.com/1.1/lists/members/destroy_all.json",
                     parameters,
                     It.IsAny<Func<string, List>>()),
@@ -612,7 +612,7 @@ namespace LinqToTwitterXUnitTests.ListTests
             ctx.DestroyAllFromList("123", "test", "456", "JoeMayo, Linq2Tweeter", "789", "JoeMayo");
 
             execMock.Verify(exec =>
-                exec.ExecuteTwitter(
+                exec.PostToTwitter(
                     "https://api.twitter.com/1.1/lists/members/destroy_all.json",
                     parameters,
                     It.IsAny<Func<string, List>>()),

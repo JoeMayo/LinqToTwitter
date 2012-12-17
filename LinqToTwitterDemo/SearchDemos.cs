@@ -23,6 +23,7 @@ namespace LinqToTwitterDemo
                 (from search in twitterCtx.Search
                  where search.Type == SearchType.Search &&
                        search.Query == "LINQ to Twitter" &&
+                       //search.Query == @"`!@#$%^&*()_-+=.~,:;'?/|\[] éü\u00C7" &&
                        search.Count == 7
                  select search)
                 .SingleOrDefault();

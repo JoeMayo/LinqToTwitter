@@ -34,7 +34,7 @@ namespace LinqToTwitter
             ITwitterExecute exec = ctx.TwitterExecutor;
             exec.AsyncCallback = callback;
             var results =
-                exec.ExecuteTwitter(
+                exec.PostToTwitter(
                     rawUrl,
                     parameters,
                     response => reqProc.ProcessActionResult(response, HttpMethod.POST));

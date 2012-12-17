@@ -51,7 +51,7 @@ namespace LinqToTwitterXUnitTests.SavedSearchTests
             TwitterContext ctx = InitializeTwitterContextMock();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
             execMock.Setup(exec =>
-                exec.ExecuteTwitter(
+                exec.PostToTwitter(
                     It.IsAny<string>(),
                     It.IsAny<Dictionary<string, string>>(),
                     It.IsAny<Func<string, SavedSearch>>()))
@@ -64,7 +64,7 @@ namespace LinqToTwitterXUnitTests.SavedSearchTests
             SavedSearch search = ctx.CreateSavedSearch("#LinqToTwitter");
 
             execMock.Verify(exec =>
-                exec.ExecuteTwitter(
+                exec.PostToTwitter(
                     "https://api.twitter.com/1.1/saved_searches/create.json",
                     parameters,
                     It.IsAny<Func<string, SavedSearch>>()),
@@ -91,7 +91,7 @@ namespace LinqToTwitterXUnitTests.SavedSearchTests
             TwitterContext ctx = InitializeTwitterContextMock();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
             execMock.Setup(exec =>
-                exec.ExecuteTwitter(
+                exec.PostToTwitter(
                     It.IsAny<string>(),
                     It.IsAny<Dictionary<string, string>>(),
                     It.IsAny<Func<string, SavedSearch>>()))
@@ -101,7 +101,7 @@ namespace LinqToTwitterXUnitTests.SavedSearchTests
             SavedSearch search = ctx.DestroySavedSearch(123);
 
             execMock.Verify(exec =>
-                exec.ExecuteTwitter(
+                exec.PostToTwitter(
                     "https://api.twitter.com/1.1/saved_searches/destroy/123.json",
                     parameters,
                     It.IsAny<Func<string, SavedSearch>>()),

@@ -55,7 +55,7 @@ namespace LinqToTwitter
 
             twitExe.AsyncCallback = callback;
             var resultsJson =
-                twitExe.ExecuteTwitter(
+                twitExe.PostToTwitter(
                     placeUrl,
                     createParams,
                     response => reqProc.ProcessActionResult(response, GeoAction.CreatePlace));

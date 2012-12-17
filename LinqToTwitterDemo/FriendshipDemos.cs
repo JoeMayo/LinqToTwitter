@@ -105,7 +105,12 @@ namespace LinqToTwitterDemo
                  select friend)
                 .First();
 
-            Console.WriteLine("\nIDs: " + string.Join(",", friendship.IDInfo.IDs.ToArray()));
+            var ids =
+                (from id in friendship.IDInfo.IDs
+                 select id.ToString())
+                .ToArray();
+
+            Console.WriteLine("\nIDs: " + string.Join(",", ids));
         }
 
         /// <summary>

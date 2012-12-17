@@ -26,7 +26,7 @@ namespace LinqToTwitterXUnitTests.NotificationsTests
             var execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
             execMock.Setup(exec =>
-                exec.ExecuteTwitter(
+                exec.PostToTwitter(
                     It.IsAny<string>(),
                     It.IsAny<Dictionary<string, string>>(),
                     It.IsAny<Func<string, User>>()))
@@ -36,7 +36,7 @@ namespace LinqToTwitterXUnitTests.NotificationsTests
             User actual = ctx.EnableNotifications(Id, UserID, ScreenName);
 
             execMock.Verify(exec =>
-                exec.ExecuteTwitter(
+                exec.PostToTwitter(
                     "https://api.twitter.com/1.1/notifications/follow/1.json",
                     It.IsAny<Dictionary<string, string>>(),
                     It.IsAny<Func<string, User>>()),
@@ -53,7 +53,7 @@ namespace LinqToTwitterXUnitTests.NotificationsTests
             var execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
             execMock.Setup(exec =>
-                exec.ExecuteTwitter(
+                exec.PostToTwitter(
                     It.IsAny<string>(),
                     It.IsAny<Dictionary<string, string>>(),
                     It.IsAny<Func<string, User>>()))
@@ -76,7 +76,7 @@ namespace LinqToTwitterXUnitTests.NotificationsTests
             var execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
             execMock.Setup(exec =>
-                exec.ExecuteTwitter(
+                exec.PostToTwitter(
                     It.IsAny<string>(),
                     It.IsAny<Dictionary<string, string>>(),
                     It.IsAny<Func<string, User>>()))
@@ -86,7 +86,7 @@ namespace LinqToTwitterXUnitTests.NotificationsTests
             User actual = ctx.DisableNotifications(Id, UserID, ScreenName);
 
             execMock.Verify(exec =>
-                exec.ExecuteTwitter(
+                exec.PostToTwitter(
                     "https://api.twitter.com/1.1/notifications/leave/1.json",
                     It.IsAny<Dictionary<string, string>>(),
                     It.IsAny<Func<string, User>>()),
@@ -104,7 +104,7 @@ namespace LinqToTwitterXUnitTests.NotificationsTests
             var execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
             execMock.Setup(exec =>
-                exec.ExecuteTwitter(
+                exec.PostToTwitter(
                     It.IsAny<string>(),
                     It.IsAny<Dictionary<string, string>>(),
                     It.IsAny<Func<string, User>>()))
