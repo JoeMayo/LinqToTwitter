@@ -24,7 +24,7 @@ public partial class _Default : System.Web.UI.Page
             PerformRedirect = authUrl => Response.Redirect(authUrl)
         };
 
-        if (!Page.IsPostBack)
+        if (!Page.IsPostBack && Request.QueryString["oauth_token"] != null)
         {
             auth.CompleteAuthorization(Request.Url);
         }
@@ -46,15 +46,20 @@ public partial class _Default : System.Web.UI.Page
             PrivateDataMultiView.SetActiveView(AuthorizeTwitter);
         }
 
-        twitterCtx = auth.IsAuthorized ? new TwitterContext(auth) : new TwitterContext();
+        if (auth.IsAuthorized)
+        {
+            twitterCtx = new TwitterContext(auth);
 
-        var tweets =
-            from tweet in twitterCtx.Status
-            where tweet.Type == (auth.IsAuthorized ? StatusType.Friends : StatusType.Public)
-            select tweet;
+            var search =
+                (from srch in twitterCtx.Search
+                 where srch.Type == SearchType.Search &&
+                       srch.Query == "LINQ to Twitter"
+                 select srch)
+                .SingleOrDefault();
 
-        TwitterListView.DataSource = tweets;
-        TwitterListView.DataBind();
+            TwitterListView.DataSource = search.Statuses;
+            TwitterListView.DataBind(); 
+        }
     }
 
     protected override void OnPreRender(EventArgs e)

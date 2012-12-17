@@ -27,7 +27,7 @@ namespace LinqToTwitterDemo
             //MentionsWithSinceIDStatusQueryDemo(twitterCtx);
             //MentionsWithPagingQueryDemo(twitterCtx);
             //SingleStatusQueryDemo(twitterCtx);
-            //UpdateStatusDemo(twitterCtx);
+            UpdateStatusDemo(twitterCtx);
             //UpdateStatusWrapLinksDemo(twitterCtx);
             //UpdateStatusWithCallbackDemo(twitterCtx);
             //UpdateStatusWithReplyDemo(twitterCtx);
@@ -39,7 +39,7 @@ namespace LinqToTwitterDemo
             //RetweetedToMeStatusQueryDemo(twitterCtx);
             //RetweetsOfMeStatusQueryDemo(twitterCtx);
             //RetweetedByUserStatusQueryDemo(twitterCtx);
-            RetweetDemo(twitterCtx);
+            //RetweetDemo(twitterCtx);
             //RetweetsQueryDemo(twitterCtx);
             //FirstStatusQueryDemo(twitterCtx);
             //GetAllTweetsAndRetweetsDemo(twitterCtx);
@@ -603,8 +603,8 @@ namespace LinqToTwitterDemo
         private static void UpdateStatusDemo(TwitterContext twitterCtx)
         {
             // the \u00C7 is C Cedilla, which I've included to ensure that non-ascii characters appear properly
-            var status = "\u00C7 Testing LINQ to Twitter update status on " + DateTime.Now.ToString() + " #linqtotwitter";
-
+            //var status = "\u00C7 Testing LINQ to Twitter update status on " + DateTime.Now.ToString() + " #linqtotwitter";
+            var status = "ü http://bing.com/ ";
             Console.WriteLine("\nStatus being sent: \n\n\"{0}\"", status);
             Console.WriteLine("\nPress any key to post tweet...\n");
             Console.ReadKey();

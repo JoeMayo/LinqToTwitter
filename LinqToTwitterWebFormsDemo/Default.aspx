@@ -27,7 +27,7 @@
 			</p>
 			<asp:Button runat="server" Text="Cool!  Authorize now." ID="authorizeTwitterButton"
 				OnClick="authorizeTwitterButton_Click" />
-			<p>Until you authorize this web app, we can only show you the <b>public</b> feed.</p>
+			<p>Once you authorize this app, you'll see the results of a search on &quot;LINQ to Twitter&quot;.</p>
 		</asp:View>
 		<asp:View ID="ViewPrivateUpdates" runat="server">
 			<p>Twitter has authorized us to download your feeds and now we're displaying your

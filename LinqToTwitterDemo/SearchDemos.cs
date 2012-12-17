@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 
+using System.Linq.Expressions;
 using LinqToTwitter;
 using System.Collections.Generic;
 
@@ -10,9 +11,10 @@ namespace LinqToTwitterDemo
     {
         public static void Run(TwitterContext twitterCtx)
         {
-            BasicSearchSample(twitterCtx);
+            //BasicSearchSample(twitterCtx);
             //AsyncSearchSample(twitterCtx);
             //GeocodeSample(twitterCtx);
+            ConditionalSearchDemo(twitterCtx);
         }
 
         static void BasicSearchSample(TwitterContext twitterCtx)
@@ -78,6 +80,77 @@ namespace LinqToTwitterDemo
                     entry.ID, entry.Source, entry.Text));
 
             Console.WriteLine("\n More Search demos can be downloaded from LINQ to Twitter's on-line samples at http://linqtotwitter.codeplex.com/wikipage?title=LINQ%20to%20Twitter%20Samples&referringTitle=Home");
+        }
+
+        static void ConditionalSearchDemo(TwitterContext twitterCtx)
+        {
+            const string TwitterSearchGeocodeFormat = "{0},{1},{2}";
+            string query = "Twitter";
+            string language = null;
+            string locale = null;
+            string latitude = "37.781157";
+            string longitude = "-122.398720";
+            uint radius = 1;
+            string radiusUnitType = "mi";
+
+            Type searchType = typeof(Search);
+            ParameterExpression srch = Expression.Parameter(searchType, "srch");
+
+            var predicates = new List<Expression>();
+
+            if (!string.IsNullOrWhiteSpace(query))
+            {
+                predicates.Add(
+                    Expression.Equal(
+                        Expression.Property(srch, "Query"),
+                        Expression.Constant(query)));
+            }
+
+            if (!string.IsNullOrWhiteSpace(language))
+            {
+                predicates.Add(
+                    Expression.Equal(
+                        Expression.Property(srch, "SearchLanguage"),
+                        Expression.Constant(language)));
+            }
+
+            if (!string.IsNullOrWhiteSpace(locale))
+            {
+                predicates.Add(
+                    Expression.Equal(
+                        Expression.Property(srch, "Locale"),
+                        Expression.Constant(locale)));
+            }
+
+            if (!string.IsNullOrWhiteSpace(longitude) && !string.IsNullOrWhiteSpace(latitude) && radius > 0)
+            {
+                var radiusString = string.Format("{0}{1}", radius, radiusUnitType.ToString().ToLower());
+                var geoCodeParameter = String.Format(TwitterSearchGeocodeFormat, latitude, longitude, radiusString);
+                predicates.Add(
+                    Expression.Equal(
+                        Expression.Property(srch, "GeoCode"),
+                        Expression.Constant(geoCodeParameter)));
+            }
+
+            BinaryExpression expr = Expression.Equal(
+                Expression.Property(srch, "Type"),
+                Expression.Constant(SearchType.Search));
+
+            predicates.ForEach(pred => expr = Expression.AndAlso(expr, pred));
+
+            var searchLambda =
+                Expression.Lambda(expr, srch) as Expression<Func<Search, bool>>;
+
+            var response = 
+                twitterCtx.Search
+                    .Where(searchLambda)
+                    .SingleOrDefault();
+
+            Console.WriteLine("\nQuery: {0}\n", response.SearchMetaData.Query);
+            response.Statuses.ForEach(entry =>
+                Console.WriteLine(
+                    "ID: {0, -15}, Source: {1}\nContent: {2}\n",
+                    entry.ID, entry.Source, entry.Text));
         }
 
     }
