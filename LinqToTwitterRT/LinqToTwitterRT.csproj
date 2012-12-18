@@ -169,6 +169,9 @@
     <Compile Include="..\LinqToTwitterAg\Blocks\BlocksRequestProcessor.cs">
       <Link>Blocks\BlocksRequestProcessor.cs</Link>
     </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\BannerSize.cs">
+      <Link>Common\BannerSize.cs</Link>
+    </Compile>
     <Compile Include="..\LinqToTwitterAg\Common\BuildUrlHelper.cs">
       <Link>Common\BuildUrlHelper.cs</Link>
     </Compile>
@@ -204,9 +207,6 @@
     </Compile>
     <Compile Include="..\LinqToTwitterAg\Common\ExpressionTreeVisitor.cs">
       <Link>Common\ExpressionTreeVisitor.cs</Link>
-    </Compile>
-    <Compile Include="..\LinqToTwitterAg\Common\FirstWhereClauseFinder.cs">
-      <Link>Common\FirstWhereClauseFinder.cs</Link>
     </Compile>
     <Compile Include="..\LinqToTwitterAg\Common\HttpMethod.cs">
       <Link>Common\HttpMethod.cs</Link>
@@ -321,6 +321,9 @@
     </Compile>
     <Compile Include="..\LinqToTwitterAg\Common\TypeSystem.cs">
       <Link>Common\TypeSystem.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\WhereClauseFinder.cs">
+      <Link>Common\WhereClauseFinder.cs</Link>
     </Compile>
     <Compile Include="..\LinqToTwitterAg\DirectMessage\DirectMessage.cs">
       <Link>DirectMessage\DirectMessage.cs</Link>
