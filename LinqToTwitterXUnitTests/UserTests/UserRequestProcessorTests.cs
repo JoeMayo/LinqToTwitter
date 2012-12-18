@@ -16,10 +16,112 @@ namespace LinqToTwitterXUnitTests.UserTests
         }
 
         [Fact]
+        public void BuildUrl_Constructs_BannerSize_Url()
+        {
+            const string ExpectedUrl = "https://api.twitter.com/1.1/users/profile_banner.json?user_id=15411837&screen_name=JoeMayo";
+            var reqProc = new UserRequestProcessor<User> { BaseUrl = "https://api.twitter.com/1.1/" };
+            var parameters = new Dictionary<string, string>
+            {
+                { "Type", ((int)UserType.BannerSizes).ToString() },
+                { "UserID", "15411837" },
+                { "ScreenName", "JoeMayo" }
+            };
+
+            Request req = reqProc.BuildUrl(parameters);
+
+            Assert.Equal(ExpectedUrl, req.FullUrl);
+        }
+
+        [Fact]
+        public void BuildUrl_BannerSize_Requires_ScreenName_Or_UserID()
+        {
+            const string ExpectedParamName = "ScreenNameOrUserID";
+            var reqProc = new UserRequestProcessor<User> { BaseUrl = "https://api.twitter.com/1.1/" };
+            var parameters = new Dictionary<string, string>
+            {
+                { "Type", ((int)UserType.BannerSizes).ToString() },
+                //{ "UserID", "15411837" },
+                //{ "ScreenName", "JoeMayo" }
+            };
+
+            var ex = Assert.Throws<ArgumentException>(() => reqProc.BuildUrl(parameters));
+
+            Assert.Equal(ExpectedParamName, ex.ParamName);
+        }
+
+        [Fact]
+        public void BuildUrl_BannerSize_Requires_NonNull_UserID()
+        {
+            const string ExpectedParamName = "UserID";
+            var reqProc = new UserRequestProcessor<User> { BaseUrl = "https://api.twitter.com/1.1/" };
+            var parameters = new Dictionary<string, string>
+            {
+                { "Type", ((int)UserType.BannerSizes).ToString() },
+                { "UserID", null },
+                //{ "ScreenName", "JoeMayo" }
+            };
+
+            var ex = Assert.Throws<ArgumentNullException>(() => reqProc.BuildUrl(parameters));
+
+            Assert.Equal(ExpectedParamName, ex.ParamName);
+        }
+
+        [Fact]
+        public void BuildUrl_BannerSize_Requires_NonEmpty_UserID()
+        {
+            const string ExpectedParamName = "UserID";
+            var reqProc = new UserRequestProcessor<User> { BaseUrl = "https://api.twitter.com/1.1/" };
+            var parameters = new Dictionary<string, string>
+            {
+                { "Type", ((int)UserType.BannerSizes).ToString() },
+                { "UserID", "" },
+                //{ "ScreenName", "JoeMayo" }
+            };
+
+            var ex = Assert.Throws<ArgumentNullException>(() => reqProc.BuildUrl(parameters));
+
+            Assert.Equal(ExpectedParamName, ex.ParamName);
+        }
+
+        [Fact]
+        public void BuildUrl_BannerSize_Requires_NonNull_ScreenName()
+        {
+            const string ExpectedParamName = "ScreenName";
+            var reqProc = new UserRequestProcessor<User> { BaseUrl = "https://api.twitter.com/1.1/" };
+            var parameters = new Dictionary<string, string>
+            {
+                { "Type", ((int)UserType.BannerSizes).ToString() },
+                //{ "UserID", null },
+                { "ScreenName", null }
+            };
+
+            var ex = Assert.Throws<ArgumentNullException>(() => reqProc.BuildUrl(parameters));
+
+            Assert.Equal(ExpectedParamName, ex.ParamName);
+        }
+
+        [Fact]
+        public void BuildUrl_BannerSize_Requires_NonEmpty_ScreenName()
+        {
+            const string ExpectedParamName = "ScreenName";
+            var reqProc = new UserRequestProcessor<User> { BaseUrl = "https://api.twitter.com/1.1/" };
+            var parameters = new Dictionary<string, string>
+            {
+                { "Type", ((int)UserType.BannerSizes).ToString() },
+                //{ "UserID", "" },
+                { "ScreenName", "" }
+            };
+
+            var ex = Assert.Throws<ArgumentNullException>(() => reqProc.BuildUrl(parameters));
+
+            Assert.Equal(ExpectedParamName, ex.ParamName);
+        }
+
+        [Fact]
         public void BuildUrl_Constructs_Show_Url()
         {
-            const string ExpectedUrl = "https://api.twitter.com/1/users/show.json?user_id=15411837&screen_name=JoeMayo";
-            var reqProc = new UserRequestProcessor<User> { BaseUrl = "https://api.twitter.com/1/" };
+            const string ExpectedUrl = "https://api.twitter.com/1.1/users/show.json?user_id=15411837&screen_name=JoeMayo";
+            var reqProc = new UserRequestProcessor<User> { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
             {
                 { "Type", ((int)UserType.Show).ToString() },
@@ -35,7 +137,7 @@ namespace LinqToTwitterXUnitTests.UserTests
         [Fact]
         public void BuildUrl_Show_Throws_On_Null_UserID()
         {
-            var reqProc = new UserRequestProcessor<User> { BaseUrl = "https://api.twitter.com/" };
+            var reqProc = new UserRequestProcessor<User> { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
             {
                 { "Type", ((int)UserType.Show).ToString() },
@@ -65,8 +167,8 @@ namespace LinqToTwitterXUnitTests.UserTests
         [Fact]
         public void BuildUrl_Constructs_Categories_Url()
         {
-            const string ExpectedUrl = "https://api.twitter.com/1/users/suggestions/technology/members.json";
-            var reqProc = new UserRequestProcessor<User> { BaseUrl = "https://api.twitter.com/1/" };
+            const string ExpectedUrl = "https://api.twitter.com/1.1/users/suggestions/technology/members.json";
+            var reqProc = new UserRequestProcessor<User> { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
             {
                 { "Type", ((int)UserType.CategoryStatus).ToString() },
@@ -97,8 +199,8 @@ namespace LinqToTwitterXUnitTests.UserTests
         [Fact]
         public void BuildUrl_Categories_Constructs_Url_For_Lang_Param()
         {
-            const string ExpectedUrl = "https://api.twitter.com/1/users/suggestions.json?lang=it";
-            var reqProc = new UserRequestProcessor<User> { BaseUrl = "https://api.twitter.com/1/" };
+            const string ExpectedUrl = "https://api.twitter.com/1.1/users/suggestions.json?lang=it";
+            var reqProc = new UserRequestProcessor<User> { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
             {
                 { "Type", ((int)UserType.Categories).ToString() },
@@ -113,8 +215,8 @@ namespace LinqToTwitterXUnitTests.UserTests
         [Fact]
         public void BuildUrl_Category_Constructs_Url_For_Slug_And_Lang_Params()
         {
-            const string ExpectedUrl = "https://api.twitter.com/1/users/suggestions/twitter.json?lang=it";
-            var reqProc = new UserRequestProcessor<User> { BaseUrl = "https://api.twitter.com/1/" };
+            const string ExpectedUrl = "https://api.twitter.com/1.1/users/suggestions/twitter.json?lang=it";
+            var reqProc = new UserRequestProcessor<User> { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
             {
                 { "Type", ((int)UserType.Category).ToString() },
@@ -144,8 +246,8 @@ namespace LinqToTwitterXUnitTests.UserTests
         [Fact]
         public void BuildUrl_Lookup_Constructs_Url_With_ScreenName_Param()
         {
-            const string ExpectedUrl = "https://api.twitter.com/1/users/lookup.json?screen_name=JoeMayo%2CLinqToTweeter";
-            var reqProc = new UserRequestProcessor<User> { BaseUrl = "https://api.twitter.com/1/" };
+            const string ExpectedUrl = "https://api.twitter.com/1.1/users/lookup.json?screen_name=JoeMayo%2CLinqToTweeter";
+            var reqProc = new UserRequestProcessor<User> { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
             {
                 { "Type", ((int)UserType.Lookup).ToString() },
@@ -160,8 +262,8 @@ namespace LinqToTwitterXUnitTests.UserTests
         [Fact]
         public void BuildUrl_Constructs_Url_With_UserID_Param()
         {
-            const string ExpectedUrl = "https://api.twitter.com/1/users/lookup.json?user_id=1%2C2";
-            var reqProc = new UserRequestProcessor<User> { BaseUrl = "https://api.twitter.com/1/" };
+            const string ExpectedUrl = "https://api.twitter.com/1.1/users/lookup.json?user_id=1%2C2";
+            var reqProc = new UserRequestProcessor<User> { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
             {
                 { "Type", ((int)UserType.Lookup).ToString() },
@@ -176,7 +278,7 @@ namespace LinqToTwitterXUnitTests.UserTests
         [Fact]
         public void BuildUrl_Lookup_Throws_On_Missing_ScreenName()
         {
-            var reqProc = new UserRequestProcessor<User> { BaseUrl = "https://api.twitter.com/1/" };
+            var reqProc = new UserRequestProcessor<User> { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
             {
                 { "Type", ((int)UserType.Lookup).ToString() },
@@ -190,7 +292,7 @@ namespace LinqToTwitterXUnitTests.UserTests
         [Fact]
         public void BuildUrl_Lookup_Throws_On_Both_UserID_And_ScreenName_Params()
         {
-            var reqProc = new UserRequestProcessor<User> { BaseUrl = "https://api.twitter.com/1/" };
+            var reqProc = new UserRequestProcessor<User> { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
             {
                 { "Type", ((int)UserType.Lookup).ToString() },
@@ -206,8 +308,8 @@ namespace LinqToTwitterXUnitTests.UserTests
         [Fact]
         public void BuildUrl_Constructs_Search_Url()
         {
-            const string ExpectedUrl = "https://api.twitter.com/1/users/search.json?q=Joe%20Mayo&page=2&per_page=10";
-            var reqProc = new UserRequestProcessor<User> { BaseUrl = "https://api.twitter.com/1/" };
+            const string ExpectedUrl = "https://api.twitter.com/1.1/users/search.json?q=Joe%20Mayo&page=2&per_page=10";
+            var reqProc = new UserRequestProcessor<User> { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
             {
                 { "Type", ((int)UserType.Search).ToString() },
@@ -224,7 +326,7 @@ namespace LinqToTwitterXUnitTests.UserTests
         [Fact]
         public void BuildUrl_Search_Throws_On_Missing_Query()
         {
-            var reqProc = new UserRequestProcessor<User> { BaseUrl = "https://api.twitter.com/1/" };
+            var reqProc = new UserRequestProcessor<User> { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
             {
                 { "Type", ((int)UserType.Search).ToString() },
@@ -238,8 +340,8 @@ namespace LinqToTwitterXUnitTests.UserTests
         [Fact]
         public void BuildUrl_Constructs_Contributees_Url()
         {
-            const string ExpectedUrl = "https://api.twitter.com/1/users/contributees.json?user_id=123&screen_name=JoeMayo&include_entities=true&skip_status=true";
-            var reqProc = new UserRequestProcessor<User> { BaseUrl = "https://api.twitter.com/1/" };
+            const string ExpectedUrl = "https://api.twitter.com/1.1/users/contributees.json?user_id=123&screen_name=JoeMayo&include_entities=true&skip_status=true";
+            var reqProc = new UserRequestProcessor<User> { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
             {
                 { "Type", ((int)UserType.Contributees).ToString() },
@@ -257,8 +359,8 @@ namespace LinqToTwitterXUnitTests.UserTests
         [Fact]
         public void BuildUrl_Constructs_Contributors_Url()
         {
-            const string ExpectedUrl = "https://api.twitter.com/1/users/contributors.json?user_id=123&screen_name=JoeMayo&include_entities=true&skip_status=true";
-            var reqProc = new UserRequestProcessor<User> { BaseUrl = "https://api.twitter.com/1/" };
+            const string ExpectedUrl = "https://api.twitter.com/1.1/users/contributors.json?user_id=123&screen_name=JoeMayo&include_entities=true&skip_status=true";
+            var reqProc = new UserRequestProcessor<User> { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
             {
                 { "Type", ((int)UserType.Contributors).ToString() },
@@ -276,7 +378,7 @@ namespace LinqToTwitterXUnitTests.UserTests
         [Fact]
         public void BuildUrl_Throws_On_Missing_Type()
         {
-            var reqProc = new UserRequestProcessor<User> { BaseUrl = "https://api.twitter.com/1/" };
+            var reqProc = new UserRequestProcessor<User> { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string> { };
 
             var ex = Assert.Throws<ArgumentException>(() => reqProc.BuildUrl(parameters));
@@ -287,7 +389,7 @@ namespace LinqToTwitterXUnitTests.UserTests
         [Fact]
         public void BuildUrl_Throws_On_Null_Params()
         {
-            var reqProc = new UserRequestProcessor<User> { BaseUrl = "https://api.twitter.com/1/" };
+            var reqProc = new UserRequestProcessor<User> { BaseUrl = "https://api.twitter.com/1.1/" };
 
             var ex = Assert.Throws<ArgumentException>(() => reqProc.BuildUrl(null));
 
@@ -366,7 +468,7 @@ namespace LinqToTwitterXUnitTests.UserTests
             var reqProc = new UserRequestProcessor<User> 
             { 
                 Type = UserType.Show, 
-                BaseUrl = "https://api.twitter.com/1/",
+                BaseUrl = "https://api.twitter.com/1.1/",
                 ID = "123",
                 UserID = "123",
                 ScreenName = "JoeMayo",
@@ -482,7 +584,7 @@ namespace LinqToTwitterXUnitTests.UserTests
         [Fact]
         public void ProcessResults_Parses_Show_Response()
         {
-            var reqProc = new UserRequestProcessor<User> { Type = UserType.Show, BaseUrl = "https://api.twitter.com/1/" };
+            var reqProc = new UserRequestProcessor<User> { Type = UserType.Show, BaseUrl = "https://api.twitter.com/1.1/" };
 
             List<User> users = reqProc.ProcessResults(SingleUserResponse);
 
@@ -495,7 +597,7 @@ namespace LinqToTwitterXUnitTests.UserTests
         [Fact]
         public void ProcessResults_Parses_Categories_Response()
         {
-            var reqProc = new UserRequestProcessor<User> { Type = UserType.Categories, BaseUrl = "http://api.twitter.com/1/" };
+            var reqProc = new UserRequestProcessor<User> { Type = UserType.Categories, BaseUrl = "http://api.twitter.com/1.1/" };
 
             List<User> userList = reqProc.ProcessResults(CategoriesResponse);
 
@@ -516,7 +618,7 @@ namespace LinqToTwitterXUnitTests.UserTests
         [Fact]
         public void ProcessResults_Parses_Category_Response()
         {
-            var reqProc = new UserRequestProcessor<User> { Type = UserType.Category, BaseUrl = "http://api.twitter.com/1/" };
+            var reqProc = new UserRequestProcessor<User> { Type = UserType.Category, BaseUrl = "http://api.twitter.com/1.1/" };
 
             List<User> userList = reqProc.ProcessResults(CategoryResponse);
 
@@ -542,7 +644,7 @@ namespace LinqToTwitterXUnitTests.UserTests
 
         void TestMultipleUserResponse(UserType type)
         {
-            var reqProc = new UserRequestProcessor<User> { Type = type, BaseUrl = "http://api.twitter.com/1/" };
+            var reqProc = new UserRequestProcessor<User> { Type = type, BaseUrl = "http://api.twitter.com/1.1/" };
 
             List<User> userList = reqProc.ProcessResults(MultipleUserResponse);
 
@@ -584,9 +686,32 @@ namespace LinqToTwitterXUnitTests.UserTests
         }
 
         [Fact]
+        public void ProcessResults_Parses_BannerSizes_Response()
+        {
+            var reqProc = new UserRequestProcessor<User> { Type = UserType.BannerSizes, BaseUrl = "http://api.twitter.com/1.1/" };
+
+            List<User> userList = reqProc.ProcessResults(BannerSizesResponse);
+
+            Assert.NotNull(userList);
+            Assert.NotEmpty(userList);
+            Assert.Single(userList);
+            var user = userList.Single();
+            Assert.NotNull(user);
+            var bannerSizes = user.BannerSizes;
+            Assert.NotNull(bannerSizes);
+            Assert.Equal(6, bannerSizes.Count);
+            var firstSize = bannerSizes.First();
+            Assert.NotNull(firstSize);
+            Assert.Equal("ipad_retina", firstSize.Label);
+            Assert.Equal(1252, firstSize.Width);
+            Assert.Equal(626, firstSize.Height);
+            Assert.Equal("https://si0.twimg.com/profile_banners/16761255/1355801341/ipad_retina", firstSize.Url);
+        }
+
+        [Fact]
         public void ProcessResults_Returns_Empty_Collection_When_Empty_Results()
         {
-            var userProc = new UserRequestProcessor<User> { BaseUrl = "http://api.twitter.com/1/" };
+            var userProc = new UserRequestProcessor<User> { BaseUrl = "http://api.twitter.com/1.1/" };
 
             List<User> users = userProc.ProcessResults(string.Empty);
 
@@ -930,5 +1055,40 @@ namespace LinqToTwitterXUnitTests.UserTests
    }
 ]";
         const string ImageResponse = @"{ ""imageUrl"": ""http:\/\/myuri.jpg"" }";
+
+        const string BannerSizesResponse = @"{
+   ""sizes"":{
+      ""ipad_retina"":{
+         ""w"":1252,
+         ""url"":""https:\/\/si0.twimg.com\/profile_banners\/16761255\/1355801341\/ipad_retina"",
+         ""h"":626
+      },
+      ""mobile"":{
+         ""w"":320,
+         ""url"":""https:\/\/si0.twimg.com\/profile_banners\/16761255\/1355801341\/mobile"",
+         ""h"":160
+      },
+      ""web"":{
+         ""w"":520,
+         ""url"":""https:\/\/si0.twimg.com\/profile_banners\/16761255\/1355801341\/web"",
+         ""h"":260
+      },
+      ""web_retina"":{
+         ""w"":1040,
+         ""url"":""https:\/\/si0.twimg.com\/profile_banners\/16761255\/1355801341\/web_retina"",
+         ""h"":520
+      },
+      ""mobile_retina"":{
+         ""w"":640,
+         ""url"":""https:\/\/si0.twimg.com\/profile_banners\/16761255\/1355801341\/mobile_retina"",
+         ""h"":320
+      },
+      ""ipad"":{
+         ""w"":626,
+         ""url"":""https:\/\/si0.twimg.com\/profile_banners\/16761255\/1355801341\/ipad"",
+         ""h"":313
+      }
+   }
+}";
     }
 }

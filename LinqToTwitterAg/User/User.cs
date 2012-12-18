@@ -360,5 +360,10 @@ namespace LinqToTwitter
         /// Url of Profile Banner image.
         /// </summary>
         public string ProfileBannerUrl { get; set; }
+
+        /// <summary>
+        /// Available sizes to use in account banners.
+        /// </summary>
+        public List<BannerSize> BannerSizes { get; set; }
     }
 }

@@ -87,6 +87,7 @@
     <Compile Include="Blocks\Blocks.cs" />
     <Compile Include="Blocks\BlocksExtensions.cs" />
     <Compile Include="Blocks\BlocksRequestProcessor.cs" />
+    <Compile Include="Common\BannerSize.cs" />
     <Compile Include="Common\BuildUrlHelper.cs" />
     <Compile Include="Common\Culture.cs" />
     <Compile Include="Common\Cursors.cs" />
@@ -94,7 +95,7 @@
     <Compile Include="Common\ExpressionTreeHelpers.cs" />
     <Compile Include="Common\ExpressionTreeModifier.cs" />
     <Compile Include="Common\ExpressionTreeVisitor.cs" />
-    <Compile Include="Common\FirstWhereClauseFinder.cs" />
+    <Compile Include="Common\WhereClauseFinder.cs" />
     <Compile Include="Common\HttpMethod.cs" />
     <Compile Include="Common\Iconic.ZLib\CRC32.cs" />
     <Compile Include="Common\Iconic.ZLib\Deflate.cs" />

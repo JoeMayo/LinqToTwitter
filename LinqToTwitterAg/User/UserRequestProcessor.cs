@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using LinqToTwitter.Common;
 using LitJson;
 
 #if SILVERLIGHT && !WINDOWS_PHONE
@@ -19,6 +20,7 @@ namespace LinqToTwitter
         IRequestProcessorWithAction<T>
         where T : class
     {
+        const string ScreenNameOrUserID = "ScreenNameOrUserID";
         /// <summary>
         /// base url for request
         /// </summary>
@@ -158,6 +160,8 @@ namespace LinqToTwitter
                     return BuildContributeesUrl(parameters);
                 case UserType.Contributors:
                     return BuildContributorsUrl(parameters);
+                case UserType.BannerSizes:
+                    return BuildBannerSizesUrl(parameters);
                 default:
                     throw new InvalidOperationException("The default case of BuildUrl should never execute because a Type must be specified.");
             }
@@ -361,7 +365,7 @@ namespace LinqToTwitter
             if (!parameters.ContainsKey("UserID") &&
                 !parameters.ContainsKey("ScreenName"))
             {
-                throw new ArgumentException("Parameters must include either UserID or ScreenName.");
+                throw new ArgumentException("Parameters must include either UserID or ScreenName.", ScreenNameOrUserID);
             }
 
             if (parameters.ContainsKey("UserID") && string.IsNullOrEmpty(parameters["UserID"]))
@@ -376,6 +380,42 @@ namespace LinqToTwitter
 
             var req = new Request(BaseUrl + "users/show.json");
             var urlParams = req.RequestParameters;
+
+            if (parameters.ContainsKey("UserID"))
+            {
+                UserID = parameters["UserID"];
+                urlParams.Add(new QueryParameter("user_id", parameters["UserID"]));
+            }
+
+            if (parameters.ContainsKey("ScreenName"))
+            {
+                ScreenName = parameters["ScreenName"];
+                urlParams.Add(new QueryParameter("screen_name", parameters["ScreenName"]));
+            }
+
+            return req;
+        }
+
+        Request BuildBannerSizesUrl(Dictionary<string, string> parameters)
+        {
+            var req = new Request(BaseUrl + "users/profile_banner.json");
+            var urlParams = req.RequestParameters;
+
+            if (!parameters.ContainsKey("UserID") &&
+                !parameters.ContainsKey("ScreenName"))
+            {
+                throw new ArgumentException("Parameters must include either UserID or ScreenName.", ScreenNameOrUserID);
+            }
+
+            if (parameters.ContainsKey("UserID") && string.IsNullOrEmpty(parameters["UserID"]))
+            {
+                throw new ArgumentNullException("UserID", "If specified, UserID can't be null or an empty string.");
+            }
+
+            if (parameters.ContainsKey("ScreenName") && string.IsNullOrEmpty(parameters["ScreenName"]))
+            {
+                throw new ArgumentNullException("ScreenName", "If specified, ScreenName can't be null or an empty string.");
+            }
 
             if (parameters.ContainsKey("UserID"))
             {
@@ -422,6 +462,9 @@ namespace LinqToTwitter
                 case UserType.Lookup:
                 case UserType.Search:
                     userList = HandleMultipleUserResponse(userJson);
+                    break;
+                case UserType.BannerSizes:
+                    userList = HandleBannerSizesResponse(userJson);
                     break;
                 default:
                     userList = new List<User>();
@@ -489,6 +532,30 @@ namespace LinqToTwitter
                 (from JsonData user in userJson
                  select new User(user))
                 .ToList();
+
+            return userList;
+        }
+
+        private List<User> HandleBannerSizesResponse(JsonData userJson)
+        {
+            var sizes = userJson.GetValue<JsonData>("sizes");
+            var userList = new List<User>
+            {
+                new User
+                {
+                    BannerSizes =     
+                        (from key in (sizes as IDictionary<string, JsonData>).Keys as List<string>
+                         let sizesKey = sizes.GetValue<JsonData>(key)
+                         select new BannerSize
+                         {
+                             Label = key,
+                             Width = sizesKey.GetValue<int>("w"),
+                             Height = sizesKey.GetValue<int>("h"),
+                             Url = sizesKey.GetValue<string>("url")
+                         })
+                        .ToList()
+                }
+            };
 
             return userList;
         }

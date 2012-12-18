@@ -44,5 +44,10 @@
         /// Users who can contribute to an account
         /// </summary>
         Contributors,
+
+        /// <summary>
+        /// List of sizes for account banners
+        /// </summary>
+        BannerSizes
     }
 }

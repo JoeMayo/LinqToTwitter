@@ -29,6 +29,7 @@ namespace LinqToTwitterDemo
             //CategoryStatusDemo(twitterCtx);
             //ContributeeDemo(twitterCtx);
             //ContributorDemo(twitterCtx);
+            BannerSizesDemo(twitterCtx);
         }
 
         private static void CategoryStatusDemo(TwitterContext twitterCtx)
@@ -240,6 +241,21 @@ namespace LinqToTwitterDemo
 
             users.ForEach(
                 user => Console.WriteLine("User: " + user.Name));
+        }
+
+        static void BannerSizesDemo(TwitterContext twitterCtx)
+        {
+            var user =
+                (from usr in twitterCtx.User
+                 where usr.Type == UserType.BannerSizes &&
+                       usr.ScreenName == "Linq2Tweeter"
+                 select usr)
+                .SingleOrDefault();
+
+            user.BannerSizes.ForEach(size => 
+                Console.WriteLine(
+                    "Label: {0}, W: {1} H: {2} URL: {3}",
+                    size.Label, size.Width, size.Height, size.Url));
         }
     }
 }
