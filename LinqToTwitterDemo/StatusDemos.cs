@@ -30,7 +30,7 @@ namespace LinqToTwitterDemo
             UpdateStatusDemo(twitterCtx);
             //UpdateStatusWrapLinksDemo(twitterCtx);
             //UpdateStatusWithCallbackDemo(twitterCtx);
-            UpdateStatusWithCallbackDemo(twitterCtx);
+            //UpdateStatusWithCallbackDemo(twitterCtx);
             //UpdateStatusWithReplyDemo(twitterCtx);
             //UpdateStatusWithLocationDemo(twitterCtx);
             //UpdateStatusWithPlaceDemo(twitterCtx);
@@ -568,6 +568,7 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void DestroyStatusDemo(TwitterContext twitterCtx)
         {
+            var status = twitterCtx.DestroyStatus("280433519057068033");
 
             Console.WriteLine(
                 "(" + status.StatusID + ")" +

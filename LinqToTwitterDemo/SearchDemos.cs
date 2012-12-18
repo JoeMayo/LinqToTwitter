@@ -14,7 +14,8 @@ namespace LinqToTwitterDemo
             //BasicSearchSample(twitterCtx);
             //AsyncSearchSample(twitterCtx);
             //GeocodeSample(twitterCtx);
-            ConditionalSearchDemo(twitterCtx);
+            //ConditionalSearchDemo(twitterCtx);
+            DynamicSearchDemo(twitterCtx);
         }
 
         static void BasicSearchSample(TwitterContext twitterCtx)
@@ -32,7 +33,7 @@ namespace LinqToTwitterDemo
             srch.Statuses.ForEach(entry =>
                 Console.WriteLine(
                     "ID: {0, -15}, Source: {1}\nContent: {2}\n",
-                    entry.ID, entry.Source, entry.Text));
+                    entry.StatusID, entry.Source, entry.Text));
 
             Console.WriteLine("\n More Search demos can be downloaded from LINQ to Twitter's on-line samples at http://linqtotwitter.codeplex.com/wikipage?title=LINQ%20to%20Twitter%20Samples&referringTitle=Home");
         }
@@ -58,7 +59,7 @@ namespace LinqToTwitterDemo
                 srch.Statuses.ForEach(entry =>
                     Console.WriteLine(
                         "ID: {0, -15}, Source: {1}\nContent: {2}\n",
-                        entry.ID, entry.Source, entry.Text));
+                        entry.StatusID, entry.Source, entry.Text));
 
                 Console.WriteLine("\n More Search demos can be downloaded from LINQ to Twitter's on-line samples at http://linqtotwitter.codeplex.com/wikipage?title=LINQ%20to%20Twitter%20Samples&referringTitle=Home");
             });
@@ -78,9 +79,57 @@ namespace LinqToTwitterDemo
             srch.Statuses.ForEach(entry =>
                 Console.WriteLine(
                     "ID: {0, -15}, Source: {1}\nContent: {2}\n",
-                    entry.ID, entry.Source, entry.Text));
+                    entry.StatusID, entry.Source, entry.Text));
 
             Console.WriteLine("\n More Search demos can be downloaded from LINQ to Twitter's on-line samples at http://linqtotwitter.codeplex.com/wikipage?title=LINQ%20to%20Twitter%20Samples&referringTitle=Home");
+        }
+
+        static void DynamicSearchDemo(TwitterContext twitterCtx)
+        {
+            const string TwitterSearchGeocodeFormat = "{0},{1},{2}";
+            string query = "Twitter";
+            string language = null;
+            string locale = null;
+            string latitude = "37.781157";
+            string longitude = "-122.398720";
+            uint radius = 1;
+            string radiusUnitType = "mi";
+
+            var srchQuery =
+                from srch in twitterCtx.Search
+                where srch.Type == SearchType.Search
+                select srch;
+
+            if (!string.IsNullOrWhiteSpace(query))
+            {
+                srchQuery = srchQuery.Where(srch => srch.Query == query);
+            }
+
+            if (!string.IsNullOrWhiteSpace(language))
+            {
+                srchQuery = srchQuery.Where(srch => srch.SearchLanguage == language);
+            }
+
+            if (!string.IsNullOrWhiteSpace(locale))
+            {
+                srchQuery = srchQuery.Where(srch => srch.Locale == locale);
+            }
+
+            if (!string.IsNullOrWhiteSpace(longitude) && !string.IsNullOrWhiteSpace(latitude) && radius > 0)
+            {
+                var radiusString = string.Format("{0}{1}", radius, radiusUnitType.ToString().ToLower());
+                var geoCodeParameter = String.Format(TwitterSearchGeocodeFormat, latitude, longitude, radiusString);
+
+                srchQuery = srchQuery.Where(srch => srch.GeoCode == geoCodeParameter);
+            }
+
+            var srchResult = srchQuery.SingleOrDefault();
+
+            Console.WriteLine("\nQuery: {0}\n", srchResult.SearchMetaData.Query);
+            srchResult.Statuses.ForEach(entry =>
+                Console.WriteLine(
+                    "ID: {0, -15}, Source: {1}\nContent: {2}\n",
+                    entry.StatusID, entry.Source, entry.Text));
         }
 
         static void ConditionalSearchDemo(TwitterContext twitterCtx)
@@ -151,7 +200,7 @@ namespace LinqToTwitterDemo
             response.Statuses.ForEach(entry =>
                 Console.WriteLine(
                     "ID: {0, -15}, Source: {1}\nContent: {2}\n",
-                    entry.ID, entry.Source, entry.Text));
+                    entry.StatusID, entry.Source, entry.Text));
         }
 
     }

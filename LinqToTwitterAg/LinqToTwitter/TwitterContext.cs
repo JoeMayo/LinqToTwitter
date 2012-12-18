@@ -784,20 +784,25 @@ namespace LinqToTwitter
         /// <returns>Name/value pairs of query parameters</returns>
         private static Dictionary<string, string> GetRequestParameters<T>(Expression expression, IRequestProcessor<T> reqProc)
         {
-            Dictionary<string, string> parameters = null;
+            var parameters = new Dictionary<string, string>();
 
-            // the where clause holds query arguments
-            var whereExpression = new FirstWhereClauseFinder().GetFirstWhere(expression);
-
-            if (whereExpression != null)
+            // GHK FIX: Handle all wheres
+            var whereExpressions = new WhereClauseFinder().GetAllWheres(expression);
+            foreach (var whereExpression in whereExpressions)
             {
-                var lambdaExpression = (LambdaExpression)
-                    ((UnaryExpression)(whereExpression.Arguments[1])).Operand;
+                var lambdaExpression = (LambdaExpression)((UnaryExpression)(whereExpression.Arguments[1])).Operand;
 
                 // translate variable references in expression into constants
                 lambdaExpression = (LambdaExpression)Evaluator.PartialEval(lambdaExpression);
 
-                parameters = reqProc.GetParameters(lambdaExpression);
+                var newParameters = reqProc.GetParameters(lambdaExpression);
+                foreach (var newParameter in newParameters)
+                {
+                    if (!parameters.ContainsKey(newParameter.Key))
+                    {
+                        parameters.Add(newParameter.Key, newParameter.Value);
+                    }
+                }
             }
 
             return parameters;
