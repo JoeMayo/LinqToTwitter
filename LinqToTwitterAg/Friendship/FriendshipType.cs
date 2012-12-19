@@ -30,5 +30,15 @@
         /// List of user IDs logged in user doesn't want to receive retweets for
         /// </summary>
         NoRetweetIDs,
+
+        /// <summary>
+        /// List of User entities of friends (people the authenticated user follows)
+        /// </summary>
+        FriendsList,
+
+        /// <summary>
+        /// List of User entities of followers (people who follow the authenticated user)
+        /// </summary>
+        FollowersList
     }
 }

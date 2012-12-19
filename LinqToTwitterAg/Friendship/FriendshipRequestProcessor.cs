@@ -62,6 +62,16 @@ namespace LinqToTwitter
         internal string Cursor { get; set; }
 
         /// <summary>
+        /// Removes status when set to true (false by default)
+        /// </summary>
+        public bool SkipStatus { get; set; }
+
+        /// <summary>
+        /// Removes entities when set to false (true by default)
+        /// </summary>
+        public bool IncludeEntities { get; set; }
+
+        /// <summary>
         /// extracts parameters from lambda
         /// </summary>
         /// <param name="lambdaExpression">lambda expression with where clause</param>
@@ -79,7 +89,9 @@ namespace LinqToTwitter
                        "TargetScreenName",
                        "Cursor",
                        "ScreenName",
-                       "UserID"
+                       "UserID",
+                       "SkipStatus",
+                       "IncludeEntities"
                    });
 
             var parameters = paramFinder.Parameters;
@@ -112,6 +124,10 @@ namespace LinqToTwitter
                     return BuildFriendshipShowUrl(parameters);
                 case FriendshipType.NoRetweetIDs:
                     return BuildFriendshipNoRetweetIDsUrl();
+                case FriendshipType.FollowersList:
+                    return BuildFollowersListUrl(parameters);
+                case FriendshipType.FriendsList:
+                    return BuildFriendsListUrl(parameters);
                 default:
                     throw new ArgumentException("Invalid FriendshipType", "Type");
             }
@@ -241,6 +257,92 @@ namespace LinqToTwitter
             return req;
         }
 
+        Request BuildFollowersListUrl(Dictionary<string, string> parameters)
+        {
+            var req = new Request(BaseUrl + "followers/list.json");
+            var urlParams = req.RequestParameters;
+
+            if (!parameters.ContainsKey("ScreenName") && !parameters.ContainsKey("UserID"))
+            {
+                throw new ArgumentNullException("ScreenNameOrUserID", "Requires ScreenName or UserID with a comma-separated list of twitter screen names or user IDs, respectively.");
+            }
+
+            if (parameters.ContainsKey("UserID"))
+            {
+                UserID = parameters["UserID"];
+                urlParams.Add(new QueryParameter("user_id", UserID));
+            }
+
+            if (parameters.ContainsKey("ScreenName"))
+            {
+                ScreenName = parameters["ScreenName"];
+                urlParams.Add(new QueryParameter("screen_name", ScreenName));
+            }
+
+            if (parameters.ContainsKey("Cursor"))
+            {
+                Cursor = parameters["Cursor"];
+                urlParams.Add(new QueryParameter("cursor", Cursor));
+            }
+
+            if (parameters.ContainsKey("SkipStatus"))
+            {
+                SkipStatus = bool.Parse(parameters["SkipStatus"]);
+                urlParams.Add(new QueryParameter("skip_status", SkipStatus.ToString().ToLower()));
+            }
+
+            if (parameters.ContainsKey("IncludeEntities"))
+            {
+                IncludeEntities = bool.Parse(parameters["IncludeEntities"]);
+                urlParams.Add(new QueryParameter("include_entities", IncludeEntities.ToString().ToLower()));
+            }
+
+            return req;
+        }
+
+        Request BuildFriendsListUrl(Dictionary<string, string> parameters)
+        {
+            var req = new Request(BaseUrl + "friends/list.json");
+            var urlParams = req.RequestParameters;
+
+            if (!parameters.ContainsKey("ScreenName") && !parameters.ContainsKey("UserID"))
+            {
+                throw new ArgumentNullException("ScreenNameOrUserID", "Requires ScreenName or UserID with a comma-separated list of twitter screen names or user IDs, respectively.");
+            }
+
+            if (parameters.ContainsKey("UserID"))
+            {
+                UserID = parameters["UserID"];
+                urlParams.Add(new QueryParameter("user_id", UserID));
+            }
+
+            if (parameters.ContainsKey("ScreenName"))
+            {
+                ScreenName = parameters["ScreenName"];
+                urlParams.Add(new QueryParameter("screen_name", ScreenName));
+            }
+
+            if (parameters.ContainsKey("Cursor"))
+            {
+                Cursor = parameters["Cursor"];
+                urlParams.Add(new QueryParameter("cursor", Cursor));
+            }
+
+            if (parameters.ContainsKey("SkipStatus"))
+            {
+                SkipStatus = bool.Parse(parameters["SkipStatus"]);
+                urlParams.Add(new QueryParameter("skip_status", SkipStatus.ToString().ToLower()));
+            }
+
+            if (parameters.ContainsKey("IncludeEntities"))
+            {
+                IncludeEntities = bool.Parse(parameters["IncludeEntities"]);
+                urlParams.Add(new QueryParameter("include_entities", IncludeEntities.ToString().ToLower()));
+            }
+
+            return req;
+        }
+
         /// <summary>
         /// transforms Twitter response into List of User
         /// </summary>
@@ -267,6 +369,10 @@ namespace LinqToTwitter
                 case FriendshipType.NoRetweetIDs:
                     friendship = HandleNoRetweetIDsResponse(responseJson);
                     break;
+                case FriendshipType.FriendsList:
+                case FriendshipType.FollowersList:
+                    friendship = HandleFriendsListOrFollowersListResponse(responseJson);
+                    break;
                 default:
                     friendship = new Friendship();
                     break;
@@ -280,6 +386,8 @@ namespace LinqToTwitter
             friendship.Cursor = Cursor;
             friendship.ScreenName = ScreenName;
             friendship.UserID = UserID;
+            friendship.SkipStatus = SkipStatus;
+            friendship.IncludeEntities = IncludeEntities;
 
             var friendList = new List<Friendship>
             {
@@ -323,6 +431,22 @@ namespace LinqToTwitter
         {
             string idsJson = "{ \"ids\":" + responseJson + " }";
             return HandleIdsResponse(idsJson);
+        }
+
+        private Friendship HandleFriendsListOrFollowersListResponse(string responseJson)
+        {
+            JsonData friendsOrFollowersJson = JsonMapper.ToObject(responseJson);
+            var users = friendsOrFollowersJson.GetValue<JsonData>("users");
+
+            var friendship = new Friendship
+            {
+                CursorMovement = new Cursors(friendsOrFollowersJson),
+                Users =
+                    (from JsonData user in users
+                     select new User(user))
+                    .ToList()
+            };
+            return friendship;
         }
 
         public T ProcessActionResult(string responseJson, Enum theAction)

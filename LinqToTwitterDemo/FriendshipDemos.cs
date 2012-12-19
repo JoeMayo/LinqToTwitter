@@ -19,13 +19,15 @@ namespace LinqToTwitterDemo
             //DestroyFriendshipDemo(twitterCtx);
             //CreateFriendshipNoDeviceUpdatesDemo(twitterCtx);
             //CreateFriendshipAsyncDemo(twitterCtx);
-            FriendshipShowDemo(twitterCtx);
+            //FriendshipShowDemo(twitterCtx);
             //FriendshipNoRetweetIDsDemo(twitterCtx);
             //FriendshipIncomingDemo(twitterCtx);
             //FriendshipOutgoingDemo(twitterCtx);
             //FriendshipScreenNameLookupDemo(twitterCtx);
             //FriendshipUserIDLookupDemo(twitterCtx);
             //UpdateSettingsDemo(twitterCtx);
+            FriendsListDemo(twitterCtx);
+            FollowersListDemo(twitterCtx);
         }
 
         private static void DestroyFriendshipDemo(TwitterContext twitterCtx)
@@ -177,6 +179,45 @@ namespace LinqToTwitterDemo
                 friend.SourceRelationship.ScreenName, 
                 friend.SourceRelationship.RetweetsWanted, 
                 friend.SourceRelationship.NotificationsEnabled);
+        }
+
+        private static void FriendsListDemo(TwitterContext twitterCtx)
+        {
+            Friendship friendship;
+            string cursor = "-1";
+            do
+            {
+                friendship =
+                    (from friend in twitterCtx.Friendship
+                     where friend.Type == FriendshipType.FriendsList &&
+                           friend.ScreenName == "JoeMayo" &&
+                           friend.Cursor == cursor                         
+                     select friend)
+                    .SingleOrDefault();
+
+                cursor = friendship.CursorMovement.Next;       
+
+                friendship.Users.ForEach(friend =>
+                    Console.WriteLine(
+                        "ID: {0} Name: {1}",
+                        friend.Identifier.UserID, friend.Identifier.ScreenName)); 
+
+            } while (cursor != "0");
+        }
+
+        private static void FollowersListDemo(TwitterContext twitterCtx)
+        {
+            var friendship =
+                (from friend in twitterCtx.Friendship
+                 where friend.Type == FriendshipType.FollowersList &&
+                       friend.ScreenName == "JoeMayo"
+                 select friend)
+                .SingleOrDefault();
+
+            friendship.Users.ForEach(friend =>
+                Console.WriteLine(
+                    "ID: {0} Name: {1}",
+                    friend.Identifier.UserID, friend.Identifier.ScreenName));
         }
     }
 }

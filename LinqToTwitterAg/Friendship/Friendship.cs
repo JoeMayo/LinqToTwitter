@@ -49,6 +49,26 @@ namespace LinqToTwitter
         public string Cursor { get; set; }
 
         /// <summary>
+        /// Comma-separated list of screen names for Lookup query
+        /// </summary>
+        public string ScreenName { get; set; }
+
+        /// <summary>
+        /// Comma-separated list of user IDs for Lookup query
+        /// </summary>
+        public string UserID { get; set; }
+
+        /// <summary>
+        /// Removes status when set to true (false by default)
+        /// </summary>
+        public bool SkipStatus { get; set; }
+
+        /// <summary>
+        /// Removes entities when set to false (true by default)
+        /// </summary>
+        public bool IncludeEntities { get; set; }
+
+        /// <summary>
         /// info on friend
         /// </summary>
         public User Friend { get; set; }
@@ -69,18 +89,18 @@ namespace LinqToTwitter
         public IDList IDInfo { get; set; }
 
         /// <summary>
-        /// Comma-separated list of screen names for Lookup query
-        /// </summary>
-        public string ScreenName { get; set; }
-
-        /// <summary>
-        /// Comma-separated list of user IDs for Lookup query
-        /// </summary>
-        public string UserID { get; set; }
-
-        /// <summary>
         /// List of relationships from Lookup query
         /// </summary>
         public List<Relationship> Relationships { get; set; }
+
+        /// <summary>
+        /// Holds prev/next cursors
+        /// </summary>
+        public Cursors CursorMovement { get; set; }
+
+        /// <summary>
+        /// List of User that are friends or followers, depending on type of query
+        /// </summary>
+        public List<User> Users { get; set; }
     }
 }
