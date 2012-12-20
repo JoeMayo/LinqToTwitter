@@ -294,7 +294,7 @@ namespace LinqToTwitter
             if (parameters.ContainsKey("IncludeEntities"))
             {
                 IncludeEntities = bool.Parse(parameters["IncludeEntities"]);
-                urlParams.Add(new QueryParameter("include_entities", IncludeEntities.ToString().ToLower()));
+                urlParams.Add(new QueryParameter("include_user_entities", IncludeEntities.ToString().ToLower()));
             }
 
             return req;
@@ -337,7 +337,7 @@ namespace LinqToTwitter
             if (parameters.ContainsKey("IncludeEntities"))
             {
                 IncludeEntities = bool.Parse(parameters["IncludeEntities"]);
-                urlParams.Add(new QueryParameter("include_entities", IncludeEntities.ToString().ToLower()));
+                urlParams.Add(new QueryParameter("include_user_entities", IncludeEntities.ToString().ToLower()));
             }
 
             return req;

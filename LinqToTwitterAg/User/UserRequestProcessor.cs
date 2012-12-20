@@ -21,6 +21,7 @@ namespace LinqToTwitter
         where T : class
     {
         const string ScreenNameOrUserID = "ScreenNameOrUserID";
+
         /// <summary>
         /// base url for request
         /// </summary>
@@ -172,6 +173,10 @@ namespace LinqToTwitter
             var req = new Request(BaseUrl + "users/contributors.json");
             var urlParams = req.RequestParameters;
 
+            if (!(parameters.ContainsKey("ScreenName") || parameters.ContainsKey("UserID")) ||
+                (parameters.ContainsKey("ScreenName") && parameters.ContainsKey("UserID")))
+                throw new ArgumentException("Query must contain one of either ScreenName or UserID parameters, but not both.", ScreenNameOrUserID);
+
             if (parameters.ContainsKey("UserID"))
             {
                 UserID = parameters["UserID"];
@@ -201,6 +206,10 @@ namespace LinqToTwitter
  
         Request BuildContributeesUrl(Dictionary<string, string> parameters)
         {
+            if (!(parameters.ContainsKey("ScreenName") || parameters.ContainsKey("UserID")) ||
+                (parameters.ContainsKey("ScreenName") && parameters.ContainsKey("UserID")))
+                throw new ArgumentException("Query must contain one of either ScreenName or UserID parameters, but not both.", ScreenNameOrUserID);
+
             var req = new Request(BaseUrl + "users/contributees.json");
             var urlParams = req.RequestParameters;
 
@@ -273,7 +282,6 @@ namespace LinqToTwitter
         /// <returns>URL for performing lookups</returns>
         private Request BuildLookupUrl(Dictionary<string, string> parameters)
         {
-            const string ScreenNameOrUserID = "ScreenNameOrUserID";
             if (!(parameters.ContainsKey("ScreenName") || parameters.ContainsKey("UserID")) ||
                 (parameters.ContainsKey("ScreenName") && parameters.ContainsKey("UserID")))
                 throw new ArgumentException("Query must contain one of either ScreenName or UserID parameters, but not both.", ScreenNameOrUserID);

@@ -472,7 +472,7 @@ namespace LinqToTwitterXUnitTests.FriendshipTests
         [Fact]
         public void BuildUrl_Constructs_FriendsList_Url()
         {
-            const string ExpectedUrl = "https://api.twitter.com/1.1/friends/list.json?user_id=1&screen_name=abc&cursor=def&skip_status=true&include_entities=false";
+            const string ExpectedUrl = "https://api.twitter.com/1.1/friends/list.json?user_id=1&screen_name=abc&cursor=def&skip_status=true&include_user_entities=false";
             var friendReqProc = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
             {
@@ -509,7 +509,7 @@ namespace LinqToTwitterXUnitTests.FriendshipTests
         [Fact]
         public void BuildUrl_Constructs_FollowersList_Url()
         {
-            const string ExpectedUrl = "https://api.twitter.com/1.1/followers/list.json?user_id=1&screen_name=abc&cursor=def&skip_status=true&include_entities=false";
+            const string ExpectedUrl = "https://api.twitter.com/1.1/followers/list.json?user_id=1&screen_name=abc&cursor=def&skip_status=true&include_user_entities=false";
             var friendReqProc = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
             {

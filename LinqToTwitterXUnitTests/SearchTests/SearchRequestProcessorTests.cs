@@ -152,87 +152,7 @@ namespace LinqToTwitterXUnitTests.SearchTests
         }
 
         [Fact]
-        public void ProcessResults_Populates_CompletedIn()
-        {
-            var searchProc = new SearchRequestProcessor<Search> { BaseUrl = "https://api.twitter.com/1.1/search/" };
-
-            List<Search> results = searchProc.ProcessResults(SearchJson);
-
-            Assert.Equal(0.038m, results.First().SearchMetaData.CompletedIn);
-        }
-
-        [Fact]
-        public void ProcessResults_Populates_MaxID()
-        {
-            var searchProc = new SearchRequestProcessor<Search> { BaseUrl = "https://api.twitter.com/1.1/search/" };
-
-            List<Search> results = searchProc.ProcessResults(SearchJson);
-
-            Assert.Equal(243501315039322112ul, results.First().SearchMetaData.MaxID);
-        }
-
-        [Fact]
-        public void ProcessResults_Populates_NextPage()
-        {
-            var searchProc = new SearchRequestProcessor<Search> { BaseUrl = "https://api.twitter.com/1.1/search/" };
-
-            List<Search> results = searchProc.ProcessResults(SearchJson);
-
-            Assert.Equal("?page=2&max_id=155786587962224641&q=LINQ%20To%20Twitter&include_entities=1", results.First().SearchMetaData.NextPage);
-        }
-
-        [Fact]
-        public void ProcessResults_Populates_PageResult()
-        {
-            var searchProc = new SearchRequestProcessor<Search> { BaseUrl = "https://api.twitter.com/1.1/search/" };
-
-            List<Search> results = searchProc.ProcessResults(SearchJson);
-
-            Assert.Equal(1, results.First().SearchMetaData.Page);
-        }
-
-        [Fact]
-        public void ProcessResults_Populates_QueryResult()
-        {
-            var searchProc = new SearchRequestProcessor<Search> { BaseUrl = "https://api.twitter.com/1.1/search/" };
-
-            List<Search> results = searchProc.ProcessResults(SearchJson);
-
-            Assert.Equal("LINQ+To+Twitter", results.First().SearchMetaData.Query);
-        }
-
-        [Fact]
-        public void ProcessResults_Populates_ResultsPerPageResult()
-        {
-            var searchProc = new SearchRequestProcessor<Search> { BaseUrl = "https://api.twitter.com/1.1/search/" };
-
-            List<Search> results = searchProc.ProcessResults(SearchJson);
-
-            Assert.Equal(15, results.First().SearchMetaData.ResultsPerPage);
-        }
-
-        [Fact]
-        public void ProcessResults_Populates_SinceIDResult()
-        {
-            var searchProc = new SearchRequestProcessor<Search> { BaseUrl = "https://api.twitter.com/1.1/search/" };
-
-            List<Search> results = searchProc.ProcessResults(SearchJson);
-
-            Assert.Equal(3ul, results.First().SearchMetaData.SinceID);
-        }
-
-        [Fact]
-        public void ProcessResults_Populates_RefreshUrl()
-        {
-            var searchProc = new SearchRequestProcessor<Search> { BaseUrl = "https://api.twitter.com/1.1/search/" };
-
-            List<Search> results = searchProc.ProcessResults(SearchJson);
-
-            Assert.Equal("?since_id=243501315039322112&q=LINQ%20To%20Twitter&include_entities=1", results.First().SearchMetaData.RefreshUrl);
-        }
-
-        [Fact]
-        public void ProcessResults_Creates_List_Of_SearchResult()
+        public void ProcessResults_Creates_List_Of_Status()
         {
             var searchProc = new SearchRequestProcessor<Search> { BaseUrl = "https://api.twitter.com/1.1/search/" };
 
@@ -352,10 +272,23 @@ namespace LinqToTwitterXUnitTests.SearchTests
 
             List<Search> results = searchProc.ProcessResults(SearchJson);
 
-            Search firstEntry = results.First();
-            Assert.NotNull(firstEntry);
-            SearchMetaData metaData = firstEntry.SearchMetaData;
-            Assert.Equal(15, metaData.ResultsPerPage);
+            Assert.NotNull(results);
+            Assert.Single(results);
+            Search search = results.Single();
+            Assert.NotNull(search);
+            SearchMetaData metaData = search.SearchMetaData;
+            Assert.NotNull(metaData);
+            Assert.Equal(0.046m, metaData.CompletedIn);
+            Assert.Equal(281604225014824960ul, metaData.MaxID);
+            Assert.Equal(5ul, metaData.SinceID);
+            Assert.Equal(10, metaData.Count);
+            Assert.Equal("Twitter", metaData.Query);
+            Assert.Equal(
+                "?max_id=281562053162979328&q=Twitter&geocode=37.781157%2C-122.398720%2C1mi&include_entities=1",
+                metaData.NextResults);
+            Assert.Equal(
+                "?since_id=281604225014824960&q=Twitter&geocode=37.781157%2C-122.398720%2C1mi&include_entities=1", 
+                metaData.RefreshUrl);
         }
 
         [Fact]
@@ -941,16 +874,15 @@ namespace LinqToTwitterXUnitTests.SearchTests
       }
    ],
    ""search_metadata"":{
-      ""completed_in"":0.038,
-      ""max_id"":243501315039322112,
-      ""max_id_str"":""243501315039322112"",
-      ""page"":1,
-      ""query"":""LINQ+To+Twitter"",
-      ""refresh_url"":""?since_id=243501315039322112&q=LINQ%20To%20Twitter&include_entities=1"",
-      ""next_page"":""?page=2&max_id=155786587962224641&q=LINQ%20To%20Twitter&include_entities=1"",
-      ""results_per_page"":15,
-      ""since_id"":3,
-      ""since_id_str"":""3""
+       ""completed_in"":0.046,
+       ""max_id"":281604225014824960,
+       ""max_id_str"":""281604225014824960"",
+       ""next_results"":""?max_id=281562053162979328&q=Twitter&geocode=37.781157%2C-122.398720%2C1mi&include_entities=1"",
+       ""query"":""Twitter"",
+       ""refresh_url"":""?since_id=281604225014824960&q=Twitter&geocode=37.781157%2C-122.398720%2C1mi&include_entities=1"",
+       ""count"":10,
+       ""since_id"":5,
+       ""since_id_str"":""5""
    }
 }";
 

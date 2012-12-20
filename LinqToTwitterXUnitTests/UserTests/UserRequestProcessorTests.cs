@@ -260,7 +260,7 @@ namespace LinqToTwitterXUnitTests.UserTests
         }
 
         [Fact]
-        public void BuildUrl_Constructs_Url_With_UserID_Param()
+        public void BuildUrl_Lookup_Constructs_Url_With_UserID_Param()
         {
             const string ExpectedUrl = "https://api.twitter.com/1.1/users/lookup.json?user_id=1%2C2";
             var reqProc = new UserRequestProcessor<User> { BaseUrl = "https://api.twitter.com/1.1/" };

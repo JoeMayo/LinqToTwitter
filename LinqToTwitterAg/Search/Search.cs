@@ -39,11 +39,6 @@ namespace LinqToTwitter
         public int Count { get; set; }
 
         /// <summary>
-        /// Return tweets since this date
-        /// </summary>
-        public DateTime Since { get; set; }
-
-        /// <summary>
         /// Return tweets before this date
         /// </summary>
         public DateTime Until { get; set; }
