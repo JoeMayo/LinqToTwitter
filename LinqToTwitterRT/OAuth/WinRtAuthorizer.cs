@@ -26,16 +26,22 @@ namespace LinqToTwitter
             configuration.TwitterClientId = this.Credentials.ConsumerKey;
             configuration.TwitterClientSecret = this.Credentials.ConsumerSecret;
             configuration.TwitterRedirectUrl = Callback.ToString();
+
             var twitAuthentication = new TwitterAuthProvider();
             twitAuthentication.Configure(configuration);
+
             var user = await twitAuthentication.AuthenticateAsync();
-            OAuthTwitter.OAuthToken = twitAuthentication.OAuthToken;
-            OAuthTwitter.OAuthTokenSecret = twitAuthentication.OAuthTokenSecret;
-            Credentials.ScreenName = user.UserName;
-            Credentials.UserId = user.Id;
-            Credentials.OAuthToken = twitAuthentication.OAuthToken;
-            Credentials.AccessToken = twitAuthentication.OAuthTokenSecret;
-            Credentials.Save();
+            if (twitAuthentication.OAuthToken != null && twitAuthentication.OAuthTokenSecret != null)
+            {
+                OAuthTwitter.OAuthToken = twitAuthentication.OAuthToken;
+                OAuthTwitter.OAuthTokenSecret = twitAuthentication.OAuthTokenSecret;
+                Credentials.ScreenName = user.UserName;
+                Credentials.UserId = user.Id;
+                Credentials.OAuthToken = twitAuthentication.OAuthToken;
+                Credentials.AccessToken = twitAuthentication.OAuthTokenSecret;
+                Credentials.Save(); 
+            }
+
             return this;
         }
 
