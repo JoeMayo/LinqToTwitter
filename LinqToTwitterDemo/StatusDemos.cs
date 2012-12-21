@@ -113,7 +113,7 @@ namespace LinqToTwitterDemo
             .MaterializedAsyncCallback(resp =>
              {
                  if (resp.Status != TwitterErrorStatus.Success)
-                     throw resp.Error;
+                     throw resp.Exception;
 
                  Console.WriteLine("\nTweets for " + twitterCtx.UserName + "\n");
                  foreach (var tweet in resp.State)
@@ -681,7 +681,7 @@ namespace LinqToTwitterDemo
                     }
                     else
                     {
-                        Console.WriteLine(response.Error.ToString());
+                        Console.WriteLine(response.Exception.ToString());
                     }
                 });
         }

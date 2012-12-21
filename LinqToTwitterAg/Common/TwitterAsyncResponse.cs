@@ -27,7 +27,7 @@ namespace LinqToTwitter
         /// <summary>
         /// Will contain Exception if there was an error
         /// </summary>
-        public Exception Error { get; set; }
+        public Exception Exception { get; set; }
 
         /// <summary>
         /// Request specific info

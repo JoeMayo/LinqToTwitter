@@ -50,7 +50,7 @@ namespace WindowsPhoneDemo
                             case TwitterErrorStatus.TwitterApiError:
                             case TwitterErrorStatus.RequestProcessingException:
                                 MessageBox.Show(
-                                    updateResp.Error.ToString(),
+                                    updateResp.Exception.ToString(),
                                     updateResp.Message,
                                     MessageBoxButton.OK);
                                 break;

@@ -48,7 +48,7 @@ namespace LinqToTwitterDemo
             {
                 if (resp.Status != TwitterErrorStatus.Success)
                 {
-                    Exception ex = resp.Error;
+                    Exception ex = resp.Exception;
                     // handle error
                     throw ex;
                 }

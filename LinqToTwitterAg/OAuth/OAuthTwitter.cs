@@ -707,13 +707,13 @@ namespace LinqToTwitter
                         {
                             twitterResponse.Status = TwitterErrorStatus.TwitterApiError;
                             twitterResponse.Message = "Error while communicating with Twitter. Please see Error property for details.";
-                            twitterResponse.Error = tqe;
+                            twitterResponse.Exception = tqe;
                         }
                         catch (Exception ex)
                         {
                             twitterResponse.Status = TwitterErrorStatus.TwitterApiError;
                             twitterResponse.Message = "Error during LINQ to Twitter processing. Please see Error property for details.";
-                            twitterResponse.Error = ex;
+                            twitterResponse.Exception = ex;
                         }
                         finally
                         {
@@ -765,13 +765,13 @@ namespace LinqToTwitter
                         {
                             twitterResponse.Status = TwitterErrorStatus.TwitterApiError;
                             twitterResponse.Message = "Error while communicating with Twitter. Please see Error property for details.";
-                            twitterResponse.Error = tqe;
+                            twitterResponse.Exception = tqe;
                         }
                         catch (Exception ex)
                         {
                             twitterResponse.Status = TwitterErrorStatus.TwitterApiError;
                             twitterResponse.Message = "Error during LINQ to Twitter processing. Please see Error property for details.";
-                            twitterResponse.Error = ex;
+                            twitterResponse.Exception = ex;
                         }
                         finally
                         {
@@ -907,13 +907,13 @@ namespace LinqToTwitter
                                         {
                                             twitterResponse.Status = TwitterErrorStatus.TwitterApiError;
                                             twitterResponse.Message = "Error while communicating with Twitter. Please see Error property for details.";
-                                            twitterResponse.Error = tqe;
+                                            twitterResponse.Exception = tqe;
                                         }
                                         catch (Exception ex)
                                         {
                                             twitterResponse.Status = TwitterErrorStatus.TwitterApiError;
                                             twitterResponse.Message = "Error during LINQ to Twitter processing. Please see Error property for details.";
-                                            twitterResponse.Error = ex;
+                                            twitterResponse.Exception = ex;
                                         }
                                         finally
                                         {
@@ -992,13 +992,13 @@ namespace LinqToTwitter
                         {
                             twitterResponse.Status = TwitterErrorStatus.TwitterApiError;
                             twitterResponse.Message = "Error while communicating with Twitter. Please see Error property for details.";
-                            twitterResponse.Error = tqe;
+                            twitterResponse.Exception = tqe;
                         }
                         catch (Exception ex)
                         {
                             twitterResponse.Status = TwitterErrorStatus.TwitterApiError;
                             twitterResponse.Message = "Error during LINQ to Twitter processing. Please see Error property for details.";
-                            twitterResponse.Error = ex;
+                            twitterResponse.Exception = ex;
                         }
                         finally
                         {

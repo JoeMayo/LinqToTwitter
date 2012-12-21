@@ -371,7 +371,7 @@ namespace LinqToTwitter
 
                                         asyncResp.Status = TwitterErrorStatus.RequestProcessingException;
                                         asyncResp.Message = "Processing failed. See Error property for more details.";
-                                        asyncResp.Error = ex;
+                                        asyncResp.Exception = ex;
                                     }
                                     finally
                                     {
@@ -1313,11 +1313,19 @@ namespace LinqToTwitter
                                         var asyncResp = new TwitterAsyncResponse<T>();
                                         asyncResp.Status = TwitterErrorStatus.RequestProcessingException;
                                         asyncResp.Message = "Processing failed. See Error property for more details.";
-                                        asyncResp.Error = ex;
+                                        if (ex is WebException)
+                                        {
+                                            var twitterQueryEx = CreateTwitterQueryException(ex as WebException);
+                                            asyncResp.Exception = twitterQueryEx;
+                                        }
+                                        else
+                                        {
+                                            asyncResp.Exception = ex; 
+                                        }
                                         (AsyncCallback as Action<TwitterAsyncResponse<T>>)(asyncResp); 
                                     }
 
-                                    Log.Write("Error querying Twitter: " + ex.ToString());
+                                    WriteLog("PostToTwitter", "Error querying Twitter: " + ex.ToString());
                                 }
                                 finally
                                 {

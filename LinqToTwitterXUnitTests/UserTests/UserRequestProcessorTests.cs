@@ -340,12 +340,12 @@ namespace LinqToTwitterXUnitTests.UserTests
         [Fact]
         public void BuildUrl_Constructs_Contributees_Url()
         {
-            const string ExpectedUrl = "https://api.twitter.com/1.1/users/contributees.json?user_id=123&screen_name=JoeMayo&include_entities=true&skip_status=true";
+            const string ExpectedUrl = "https://api.twitter.com/1.1/users/contributees.json?screen_name=JoeMayo&include_entities=true&skip_status=true";
             var reqProc = new UserRequestProcessor<User> { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
             {
                 { "Type", ((int)UserType.Contributees).ToString() },
-                { "UserID", "123" },
+                //{ "UserID", "123" },
                 { "ScreenName", "JoeMayo" },
                 { "IncludeEntities", true.ToString() },
                 { "SkipStatus", true.ToString() }
@@ -359,13 +359,13 @@ namespace LinqToTwitterXUnitTests.UserTests
         [Fact]
         public void BuildUrl_Constructs_Contributors_Url()
         {
-            const string ExpectedUrl = "https://api.twitter.com/1.1/users/contributors.json?user_id=123&screen_name=JoeMayo&include_entities=true&skip_status=true";
+            const string ExpectedUrl = "https://api.twitter.com/1.1/users/contributors.json?user_id=123&include_entities=true&skip_status=true";
             var reqProc = new UserRequestProcessor<User> { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
             {
                 { "Type", ((int)UserType.Contributors).ToString() },
                 { "UserID", "123" },
-                { "ScreenName", "JoeMayo" },
+                //{ "ScreenName", "JoeMayo" },
                 { "IncludeEntities", true.ToString() },
                 { "SkipStatus", true.ToString() }
             };
