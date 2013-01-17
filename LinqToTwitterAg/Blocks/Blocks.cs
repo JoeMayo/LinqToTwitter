@@ -52,6 +52,11 @@ namespace LinqToTwitter
         //
 
         /// <summary>
+        /// Prev/Next cursor to move through ID and User lists.
+        /// </summary>
+        public Cursors Cursors { get; set; }
+
+        /// <summary>
         /// Listed Count
         /// </summary>
         public int ListedCount { get; set; }

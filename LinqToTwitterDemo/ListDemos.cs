@@ -470,7 +470,7 @@ namespace LinqToTwitterDemo
                     Console.WriteLine(
                         "HTTP Status Code: {0}. Response from Twitter: {1}",
                         webEx.Response.Headers["Status"],
-                        ex.Response.Error);
+                        ex.Message);
                 }
                 else
                 {

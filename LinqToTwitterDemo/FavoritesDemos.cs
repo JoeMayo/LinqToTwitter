@@ -22,7 +22,7 @@ namespace LinqToTwitterDemo
 
         private static void DestroyFavoriteDemo(TwitterContext twitterCtx)
         {
-            var status = twitterCtx.DestroyFavorite("243935469346369536");
+            var status = twitterCtx.DestroyFavorite("265675496581373952");
 
             Console.WriteLine("User: {0}, Tweet: {1}", status.User.Name, status.Text);
         }
@@ -33,7 +33,7 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx"></param>
         private static void CreateFavoriteDemo(TwitterContext twitterCtx)
         {
-            var status = twitterCtx.CreateFavorite("243935469346369536");
+            var status = twitterCtx.CreateFavorite("265675496581373952");
 
             Console.WriteLine("User: {0}, Tweet: {1}", status.User.Name, status.Text);
         }

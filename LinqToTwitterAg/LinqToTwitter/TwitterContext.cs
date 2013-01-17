@@ -393,17 +393,6 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// enables access to Twitter Legal info
-        /// </summary>
-        public TwitterQueryable<Legal> Legal
-        {
-            get
-            {
-                return new TwitterQueryable<Legal>(this);
-            }
-        }
-
-        /// <summary>
         /// enables access to Twitter List info
         /// </summary>
         public TwitterQueryable<List> List
@@ -866,9 +855,6 @@ namespace LinqToTwitter
                     break;
                 case "Help":
                     req = new HelpRequestProcessor<T>();
-                    break;
-                case "Legal":
-                    req = new LegalRequestProcessor<T>();
                     break;
                 case "List":
                     req = new ListRequestProcessor<T>();

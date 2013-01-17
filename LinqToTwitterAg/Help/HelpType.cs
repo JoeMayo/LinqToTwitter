@@ -21,6 +21,5 @@
         /// Get Twitter Terms of Service
         /// </summary>
         Tos
-
     }
 }

@@ -12,6 +12,8 @@ namespace LinqToTwitterDemo
         {
             ITwitterAuthorizer auth = ChooseAuthenticationStrategy();
 
+            if (auth == null) return;
+
             try
             {
                 using (var twitterCtx = new TwitterContext(auth))
@@ -40,9 +42,9 @@ namespace LinqToTwitterDemo
                     //FriendshipDemos.Run(twitterCtx);
                     //GeoDemos.Run(twitterCtx);
                     //HelpDemos.Run(twitterCtx);
-                    //LegalDemos.Run(twitterCtx);
                     //ListDemos.Run(twitterCtx);
                     //RawDemos.Run(twitterCtx);
+                    //ReportSpamDemos.Run(twitterCtx);
                     //RelatedResultsDemos.Run(twitterCtx);
                     //SavedSearchDemos.Run(twitterCtx);
                     //SearchDemos.Run(twitterCtx);
@@ -54,8 +56,6 @@ namespace LinqToTwitterDemo
                         TrendsDemos.Run(twitterCtx);
 
                     //UserDemos.Run(twitterCtx);
-                    //NotificationsDemos.Run(twitterCtx);
-                    //ReportSpamDemos.Run(twitterCtx);
                     //OAuthDemos.Run(twitterCtx);
                     //TwitterContextDemos.Run(twitterCtx);
                 }

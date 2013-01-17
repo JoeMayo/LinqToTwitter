@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using LinqToTwitter.Common;
 using LitJson;
 
 namespace LinqToTwitter
@@ -194,6 +195,7 @@ namespace LinqToTwitter
             else
             {
                 var blocksJson = JsonMapper.ToObject(responseJson);
+                blocks.Cursors = new Cursors(blocksJson);
 
                 switch (Type)
                 {
@@ -211,18 +213,22 @@ namespace LinqToTwitter
             return new List<Blocks> { blocks }.OfType<T>().ToList();
         }
 
-        private void HandleList(Blocks blocks, JsonData blocksJson)
+        void HandleList(Blocks blocks, JsonData blocksJson)
         {
+            var users = blocksJson.GetValue<JsonData>("users");
+
             blocks.Users =
-                (from JsonData user in blocksJson
+                (from JsonData user in users
                  select new User(user))
                 .ToList();
         }
 
-        private void HandleBlockingIDs(Blocks blocks, JsonData blocksJson)
+        void HandleBlockingIDs(Blocks blocks, JsonData blocksJson)
         {
+            var ids = blocksJson.GetValue<JsonData>("ids");
+
             blocks.IDs =
-                (from JsonData id in blocksJson
+                (from JsonData id in ids
                  select id.ToString())
                 .ToList();
         }

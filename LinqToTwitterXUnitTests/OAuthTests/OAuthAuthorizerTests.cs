@@ -17,7 +17,7 @@ namespace LinqToTwitterXUnitTests
         [Fact]
         public void Get_Calls_GetOAuthQueryString()
         {
-            var req = new Request("https://api.twitter.com/statuses/public.xml");
+            var req = new Request("https://api.twitter.com/statuses/public.json");
             var pinAuth = new PinAuthorizer();
             var oAuthMock = new Mock<IOAuthTwitter>();
             string outUrl;
@@ -33,7 +33,7 @@ namespace LinqToTwitterXUnitTests
         [Fact]
         public void InitializeRequest_Sets_Request_Headers()
         {
-            var req = new Request("https://api.twitter.com/statuses/public.xml");
+            var req = new Request("https://api.twitter.com/statuses/public.json");
             const string UserAgent = "LINQ to Twitter v2.0";
             var pinAuth = new PinAuthorizer();
             var oAuthMock = new Mock<IOAuthTwitter>();

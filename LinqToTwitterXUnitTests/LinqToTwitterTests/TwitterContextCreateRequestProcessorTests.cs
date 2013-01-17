@@ -2,6 +2,7 @@
 using System.Linq;
 using LinqToTwitter;
 using LinqToTwitterXUnitTests.Common;
+using Moq;
 using Xunit;
 
 namespace LinqToTwitterXUnitTests.LinqToTwitterTests
@@ -16,7 +17,9 @@ namespace LinqToTwitterXUnitTests.LinqToTwitterTests
         [Fact]
         public void CreateRequestProcessor_Returns_StatusRequestProcessor()
         {
-            var reqProc = new TwitterContext().CreateRequestProcessor<Status>();
+            ITwitterAuthorizer auth = new Mock<ITwitterAuthorizer>().Object;
+
+            var reqProc = new TwitterContext(auth).CreateRequestProcessor<Status>();
 
             Assert.IsType<StatusRequestProcessor<Status>>(reqProc);
         }

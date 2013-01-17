@@ -11,9 +11,12 @@ namespace LinqToTwitterXUnitTests
 {
     public class TwitterContextTests
     {
+        ITwitterAuthorizer auth;
+
         public TwitterContextTests()
         {
             TestCulture.SetCulture();
+            auth = new Mock<ITwitterAuthorizer>().Object;
         }
 
         [Fact]
@@ -47,7 +50,7 @@ namespace LinqToTwitterXUnitTests
             const string BaseUrl = "http://api.twitter.com/1/";
             const string SearchUrl = "http://search.twitter.com/";
             var ctx =
-                new TwitterContext
+                new TwitterContext(auth)
                 {
                     BaseUrl = BaseUrl,
                     SearchUrl = SearchUrl,
@@ -88,7 +91,7 @@ namespace LinqToTwitterXUnitTests
         [Fact]
         public void CreateRequestProcessor_Returns_ProperRequestProcessor()
         {
-            var ctx = new TwitterContext();
+            var ctx = new TwitterContext(auth);
 
             var showQuery =
                 from tweet in ctx.Status
@@ -102,7 +105,7 @@ namespace LinqToTwitterXUnitTests
         [Fact]
         public void CreateStatusRequestProcessorTest()
         {
-            var ctx = new TwitterContext();
+            var ctx = new TwitterContext(auth);
 
             var queryResult = from tweet in ctx.Status select tweet;
 
@@ -113,7 +116,7 @@ namespace LinqToTwitterXUnitTests
         [Fact]
         public void CreateAccountRequestProcessorTest()
         {
-            var ctx = new TwitterContext();
+            var ctx = new TwitterContext(auth);
 
             var queryResult = from tweet in ctx.Account select tweet;
 
@@ -124,7 +127,7 @@ namespace LinqToTwitterXUnitTests
         [Fact]
         public void CreateBlocksRequestProcessorTest()
         {
-            var ctx = new TwitterContext();
+            var ctx = new TwitterContext(auth);
 
             var queryResult = from tweet in ctx.Blocks select tweet;
 
@@ -135,7 +138,7 @@ namespace LinqToTwitterXUnitTests
         [Fact]
         public void CreateDirectMessageRequestProcessorTest()
         {
-            var ctx = new TwitterContext();
+            var ctx = new TwitterContext(auth);
 
             var queryResult = from tweet in ctx.DirectMessage select tweet;
 
@@ -146,7 +149,7 @@ namespace LinqToTwitterXUnitTests
         [Fact]
         public void CreateFavoritesRequestProcessorTest()
         {
-            var ctx = new TwitterContext();
+            var ctx = new TwitterContext(auth);
 
             var queryResult = from tweet in ctx.Favorites select tweet;
 
@@ -157,7 +160,7 @@ namespace LinqToTwitterXUnitTests
         [Fact]
         public void CreateFriendshipRequestProcessorTest()
         {
-            var ctx = new TwitterContext();
+            var ctx = new TwitterContext(auth);
 
             var queryResult = from tweet in ctx.Friendship select tweet;
 
@@ -168,7 +171,7 @@ namespace LinqToTwitterXUnitTests
         [Fact]
         public void CreateSearchRequestProcessor_Returns_RawRequestProcessor()
         {
-            var ctx = new TwitterContext();
+            var ctx = new TwitterContext(auth);
 
             var queryResult = from raw in ctx.RawQuery select raw;
 
@@ -179,7 +182,7 @@ namespace LinqToTwitterXUnitTests
         [Fact]
         public void CreateSearchRequestProcessorTest()
         {
-            var ctx = new TwitterContext();
+            var ctx = new TwitterContext(auth);
 
             var queryResult = from tweet in ctx.Search select tweet;
 
@@ -190,7 +193,7 @@ namespace LinqToTwitterXUnitTests
         [Fact]
         public void CreateSocialGraphRequestProcessorTest()
         {
-            var ctx = new TwitterContext();
+            var ctx = new TwitterContext(auth);
 
             var queryResult = from tweet in ctx.SocialGraph select tweet;
 
@@ -201,7 +204,7 @@ namespace LinqToTwitterXUnitTests
         [Fact]
         public void CreateTrendRequestProcessorTest()
         {
-            var ctx = new TwitterContext();
+            var ctx = new TwitterContext(auth);
 
             var queryResult = from tweet in ctx.Trends select tweet;
 
@@ -212,7 +215,7 @@ namespace LinqToTwitterXUnitTests
         [Fact]
         public void CreateUserRequestProcessorTest()
         {
-            var ctx = new TwitterContext();
+            var ctx = new TwitterContext(auth);
 
             var queryResult = from tweet in ctx.User select tweet;
 
@@ -223,7 +226,7 @@ namespace LinqToTwitterXUnitTests
         [Fact]
         public void CreateRequestProcessorNullExpressionTest1()
         {
-            var ctx = new TwitterContext();
+            var ctx = new TwitterContext(auth);
 
             var ex = Assert.Throws<ArgumentNullException>(() => ctx.CreateRequestProcessor<Status>((Expression)null));
 
@@ -231,26 +234,9 @@ namespace LinqToTwitterXUnitTests
         }
 
         [Fact]
-        public void CreateRequestProcessor_Returns_LegalRequestProcessor()
-        {
-            var ctx = new TwitterContext {BaseUrl = "https://stream.twitter.com/1/"};
-            var execMock = new Mock<ITwitterExecute>();
-            ctx.TwitterExecutor = execMock.Object;
-            var legalQuery =
-                from tweet in ctx.Legal
-                where tweet.Type == LegalType.Privacy
-                select tweet;
-
-            var reqProc = ctx.CreateRequestProcessor<Legal>(legalQuery.Expression);
-
-            Assert.IsType(typeof(LegalRequestProcessor<Legal>), reqProc);
-            Assert.Equal("https://stream.twitter.com/1/", reqProc.BaseUrl);
-        }
-
-        [Fact]
         public void CreateRequestProcessor_Returns_RelatedResultsRequestProcessor()
         {
-            var ctx = new TwitterContext {BaseUrl = "https://api.twitter.com/1.1/"};
+            var ctx = new TwitterContext(auth) {BaseUrl = "https://api.twitter.com/1.1/"};
             var execMock = new Mock<ITwitterExecute>();
             ctx.TwitterExecutor = execMock.Object;
             var resultsQuery =
@@ -323,7 +309,7 @@ namespace LinqToTwitterXUnitTests
         [Fact]
         public void CreateRequestProcessor_Returns_StreamingRequestProcessor()
         {
-            var ctx = new TwitterContext {StreamingUrl = "https://stream.twitter.com/1/"};
+            var ctx = new TwitterContext(auth) {StreamingUrl = "https://stream.twitter.com/1/"};
             var execMock = new Mock<ITwitterExecute>();
             ctx.TwitterExecutor = execMock.Object;
             var streamingQuery =
@@ -379,7 +365,7 @@ namespace LinqToTwitterXUnitTests
         [Fact]
         public void CreateRequestProcessor_Returns_UserStreamRequestProcessor()
         {
-            var ctx = new TwitterContext {StreamingUrl = "https://userstream.twitter.com/1.1/"};
+            var ctx = new TwitterContext(auth) {StreamingUrl = "https://userstream.twitter.com/1.1/"};
             var execMock = new Mock<ITwitterExecute>();
             ctx.TwitterExecutor = execMock.Object;
             var streamingQuery =

@@ -178,9 +178,6 @@
     <Compile Include="Help\Language.cs" />
     <Compile Include="Help\PhotoSize.cs" />
     <Compile Include="Help\RateLimits.cs" />
-    <Compile Include="Legal\Legal.cs" />
-    <Compile Include="Legal\LegalRequestProcessor.cs" />
-    <Compile Include="Legal\LegalType.cs" />
     <Compile Include="LinqToTwitter\ITwitterExecute.cs" />
     <Compile Include="LinqToTwitter\TwitterContext.cs" />
     <Compile Include="LinqToTwitter\TwitterExecute.cs" />
@@ -192,7 +189,6 @@
     <Compile Include="List\ListExtensions.cs" />
     <Compile Include="List\ListRequestProcessor.cs" />
     <Compile Include="List\ListType.cs" />
-    <Compile Include="Notifications\NotificationsExtensions.cs" />
     <Compile Include="OAuth\AnonymousAuthorizer.cs" />
     <Compile Include="OAuth\AuthAccessType.cs" />
     <Compile Include="OAuth\InMemoryCredentials.cs" />

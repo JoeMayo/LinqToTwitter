@@ -16,6 +16,352 @@ namespace LinqToTwitterXUnitTests.StatusTests
         }
 
         [Fact]
+        public void GetParameters_Handles_Input_Params()
+        {
+            var reqProc = new StatusRequestProcessor<Status>();
+
+            Expression<Func<Status, bool>> expression =
+            status =>
+                status.Type == StatusType.Home &&
+                status.ID == "10" &&
+                status.UserID == "10" &&
+                status.ScreenName == "JoeMayo" &&
+                status.SinceID == 123 &&
+                status.MaxID == 456 &&
+                status.Count == 50 &&
+                status.Page == 2 &&
+                status.IncludeRetweets == true &&
+                status.ExcludeReplies == true &&
+                status.IncludeEntities == true &&
+                status.TrimUser == true &&
+                status.IncludeContributorDetails == true &&
+                status.IncludeMyRetweet == true;
+
+            var lambdaExpression = expression as LambdaExpression;
+
+            var queryParams = reqProc.GetParameters(lambdaExpression);
+
+            Assert.True(
+                queryParams.Contains(
+                    new KeyValuePair<string, string>("Type", ((int)StatusType.Home).ToString())));
+            Assert.True(
+               queryParams.Contains(
+                   new KeyValuePair<string, string>("ID", "10")));
+            Assert.True(
+              queryParams.Contains(
+                  new KeyValuePair<string, string>("UserID", "10")));
+            Assert.True(
+               queryParams.Contains(
+                   new KeyValuePair<string, string>("ScreenName", "JoeMayo")));
+            Assert.True(
+               queryParams.Contains(
+                   new KeyValuePair<string, string>("SinceID", "123")));
+            Assert.True(
+              queryParams.Contains(
+                  new KeyValuePair<string, string>("MaxID", "456")));
+            Assert.True(
+               queryParams.Contains(
+                   new KeyValuePair<string, string>("Count", "50")));
+            Assert.True(
+              queryParams.Contains(
+                  new KeyValuePair<string, string>("Page", "2")));
+            Assert.True(
+              queryParams.Contains(
+                  new KeyValuePair<string, string>("Page", "2")));
+            Assert.True(
+              queryParams.Contains(
+                  new KeyValuePair<string, string>("IncludeRetweets", "True")));
+            Assert.True(
+              queryParams.Contains(
+                  new KeyValuePair<string, string>("ExcludeReplies", "True")));
+            Assert.True(
+              queryParams.Contains(
+                  new KeyValuePair<string, string>("IncludeEntities", "True")));
+            Assert.True(
+              queryParams.Contains(
+                  new KeyValuePair<string, string>("TrimUser", "True")));
+            Assert.True(
+              queryParams.Contains(
+                  new KeyValuePair<string, string>("IncludeContributorDetails", "True")));
+            Assert.True(
+              queryParams.Contains(
+                  new KeyValuePair<string, string>("IncludeMyRetweet", "True")));
+        }
+
+        [Fact]
+        public void BuildUrl_Constructs_Mentions_Url()
+        {
+            const string ExpectedUrl = "https://api.twitter.com/1.1/statuses/mentions_timeline.json?since_id=123&max_id=145&count=50&page=1";
+            var statProc = new StatusRequestProcessor<Status> { BaseUrl = "https://api.twitter.com/1.1/" };
+            var parameters = new Dictionary<string, string>
+            {
+                { "Type", ((int)StatusType.Mentions).ToString() },
+                { "SinceID", "123" },
+                { "MaxID", "145" },
+                { "Count", "50" },
+                { "Page", "1" }
+            };
+
+            Request req = statProc.BuildUrl(parameters);
+
+            Assert.Equal(ExpectedUrl, req.FullUrl);
+        }
+
+        [Fact]
+        public void BuildUrl_Constructs_Show_Url()
+        {
+            const string ExpectedUrl = "https://api.twitter.com/1.1/statuses/show.json?id=945932078&include_my_retweet=true&include_entities=true&trim_user=true";
+            var reqProc = new StatusRequestProcessor<Status> 
+            { 
+                Type = StatusType.Show,
+                BaseUrl = "https://api.twitter.com/1.1/" 
+            };
+            var parameters = new Dictionary<string, string>
+            {
+                { "Type", ((int)StatusType.Show).ToString() },
+                { "ID", "945932078" },
+                { "TrimUser", true.ToString() },
+                { "IncludeMyRetweet", true.ToString() },
+                { "IncludeEntities", true.ToString() }
+            };
+
+            Request req = reqProc.BuildUrl(parameters);
+
+            Assert.Equal(ExpectedUrl, req.FullUrl);
+        }
+
+        [Fact]
+        public void BuildUrl_Constructs_User_Url()
+        {
+            const string ExpectedUrl = "https://api.twitter.com/1.1/statuses/user_timeline.json?id=15411837&user_id=15411837&screen_name=JoeMayo";
+            var reqProc = new StatusRequestProcessor<Status>
+            {
+                Type = StatusType.User,
+                BaseUrl = "https://api.twitter.com/1.1/"
+            };
+            var parameters = new Dictionary<string, string>
+            {
+                { "Type", ((int)StatusType.User).ToString() },
+                { "ID", "15411837" },
+                { "UserID", "15411837" },
+                { "ScreenName", "JoeMayo" },
+            };
+
+            Request req = reqProc.BuildUrl(parameters);
+
+            Assert.Equal(ExpectedUrl, req.FullUrl);
+        }
+
+        [Fact]
+        public void BuildUrl_Constructs_Home_Url()
+        {
+            const string ExpectedUrl = "https://api.twitter.com/1.1/statuses/home_timeline.json?count=5";
+            var reqProc = new StatusRequestProcessor<Status>
+            {
+                Type = StatusType.User,
+                BaseUrl = "https://api.twitter.com/1.1/"
+            };
+            var parameters = new Dictionary<string, string>
+            {
+                { "Type", ((int)StatusType.Home).ToString() },
+                { "Count", "5" }
+            };
+
+            Request req = reqProc.BuildUrl(parameters);
+
+            Assert.Equal(ExpectedUrl, req.FullUrl);
+        }
+
+        [Fact]
+        public void BuildUrl_Returns_Url_For_Retweets()
+        {
+            const string ExpectedUrl = "https://api.twitter.com/1.1/statuses/retweets/15411837.json";
+            var reqProc = new StatusRequestProcessor<Status>
+            {
+                Type = StatusType.User,
+                BaseUrl = "https://api.twitter.com/1.1/"
+            };
+            var parameters = new Dictionary<string, string>
+            {
+                { "Type", ((int)StatusType.Retweets).ToString() },
+                { "ID", "15411837" }
+            };
+
+            Request req = reqProc.BuildUrl(parameters);
+
+            Assert.Equal(ExpectedUrl, req.FullUrl);
+        }
+
+        [Fact]
+        public void BuildUrl_Returns_Url_For_IncludeRetweets_On_User_Timeline()
+        {
+            const string ExpectedUrl = "https://api.twitter.com/1.1/statuses/user_timeline.json?id=15411837&include_rts=true";
+            var reqProc = new StatusRequestProcessor<Status>
+            {
+                Type = StatusType.User,
+                BaseUrl = "https://api.twitter.com/1.1/"
+            };
+            var parameters = new Dictionary<string, string>
+            {
+                { "Type", ((int)StatusType.User).ToString() },
+                { "ID", "15411837" },
+                { "IncludeRetweets", "True" }
+            };
+
+            Request req = reqProc.BuildUrl(parameters);
+
+            Assert.Equal(ExpectedUrl, req.FullUrl);
+        }
+
+        [Fact]
+        public void BuildUrl_Includes_False_Include_Rts_Param()
+        {
+            const string ExpectedUrl = "https://api.twitter.com/1.1/statuses/user_timeline.json?id=15411837&include_rts=false";
+            var reqProc = new StatusRequestProcessor<Status>
+            {
+                Type = StatusType.User,
+                BaseUrl = "https://api.twitter.com/1.1/"
+            };
+            var parameters = new Dictionary<string, string>
+            {
+                { "Type", ((int)StatusType.User).ToString() },
+                { "ID", "15411837" },
+                { "IncludeRetweets", false.ToString() }
+            };
+
+            Request req = reqProc.BuildUrl(parameters);
+
+            Assert.Equal(ExpectedUrl, req.FullUrl);
+        }
+
+        [Fact]
+        public void BuildUrl_Constructs_Url_For_RetweetedByUser()
+        {
+            const string ExpectedUrl = "http://api.twitter.com/1/statuses/retweeted_by_user.json?screen_name=JoeMayo";
+            var reqProc = new StatusRequestProcessor<Status>
+            {
+                Type = StatusType.RetweetedByUser,
+                BaseUrl = "http://api.twitter.com/1/"
+            };
+            var parameters = new Dictionary<string, string>
+            {
+                { "Type", ((int)StatusType.RetweetedByUser).ToString() },
+                { "ScreenName", "JoeMayo" }
+            };
+
+            Request req = reqProc.BuildUrl(parameters);
+
+            Assert.Equal(ExpectedUrl, req.FullUrl);
+        }
+
+        [Fact()]
+        public void BuildUrl_Constructs_Url_For_RetweetedToUser()
+        {
+            const string ExpectedUrl = "http://api.twitter.com/1/statuses/retweeted_to_user.json?screen_name=JoeMayo";
+            var reqProc = new StatusRequestProcessor<Status>
+            {
+                Type = StatusType.RetweetedToUser,
+                BaseUrl = "http://api.twitter.com/1/"
+            };
+            var parameters = new Dictionary<string, string>
+            {
+                { "Type", ((int)StatusType.RetweetedToUser).ToString() },
+                { "ScreenName", "JoeMayo" }
+            };
+
+            Request req = reqProc.BuildUrl(parameters);
+
+            Assert.Equal(ExpectedUrl, req.FullUrl);
+        }
+
+        [Fact]
+        public void BuildUrl_Returns_Url_For_RetweetedBy()
+        {
+            const string ExpectedUrl = "https://api.twitter.com/1.1/statuses/123/retweeted_by.json?count=25&page=2";
+            var reqProc = new StatusRequestProcessor<Status>
+            {
+                Type = StatusType.RetweetedBy,
+                BaseUrl = "https://api.twitter.com/1.1/"
+            };
+            var parameters = new Dictionary<string, string>
+            {
+                { "Type", ((int)StatusType.RetweetedBy).ToString() },
+                { "ID", "123" },
+                { "Count", "25" },
+                { "Page", "2" }
+            };
+
+            Request req = reqProc.BuildUrl(parameters);
+
+            Assert.Equal(ExpectedUrl, req.FullUrl);
+        }
+
+        [Fact]
+        public void BuildUrl_RetweetedBy_Throws_On_Missing_ID()
+        {
+            const string ExpectedParam = "ID";
+            var reqProc = new StatusRequestProcessor<Status>
+            {
+                Type = StatusType.RetweetedBy,
+                BaseUrl = "https://api.twitter.com/1.1/"
+            };
+            var parameters = new Dictionary<string, string>
+            {
+                { "Type", ((int)StatusType.RetweetedBy).ToString() },
+                //{ "ID", "123" },
+                { "Count", "25" },
+                { "Page", "2" }
+            };
+
+            var ex = Assert.Throws<ArgumentException>(() => reqProc.BuildUrl(parameters));
+
+            Assert.Equal(ExpectedParam, ex.ParamName);
+        }
+
+        [Fact]
+        public void BuildUrl_RetweetedBy_Throws_On_Count_Over_100()
+        {
+            const string ExpectedParam = "Count";
+            var reqProc = new StatusRequestProcessor<Status>
+            {
+                Type = StatusType.RetweetedBy,
+                BaseUrl = "https://api.twitter.com/1.1/"
+            };
+            var parameters = new Dictionary<string, string>
+            {
+                { "Type", ((int)StatusType.RetweetedBy).ToString() },
+                { "ID", "123" },
+                { "Count", "101" },
+                { "Page", "2" }
+            };
+
+            var ex = Assert.Throws<ArgumentException>(() => reqProc.BuildUrl(parameters));
+
+            Assert.Equal(ExpectedParam, ex.ParamName);
+        }
+
+        [Fact]
+        public void BuildUrl_Throws_On_Missing_Type()
+        {
+            var statusReqProc = new StatusRequestProcessor<Status> { BaseUrl = "https://api.twitter.com/1.1/" };
+            var parameters = new Dictionary<string, string> { };
+
+            var ex = Assert.Throws<ArgumentException>(() => statusReqProc.BuildUrl(parameters));
+
+            Assert.Equal<string>("Type", ex.ParamName);
+        }
+
+        [Fact]
+        public void BuildUrl_Throws_On_Null_Parameter()
+        {
+            var target = new StatusRequestProcessor<Status> { BaseUrl = "https://api.twitter.com/1.1/" };
+
+            var ex = Assert.Throws<ArgumentException>(() => target.BuildUrl(null));
+
+            Assert.Equal<string>("Type", ex.ParamName);
+        }
+
+        [Fact]
         public void StatusRequestProcessor_Works_With_Json_Format_Data()
         {
             var statProc = new StatusRequestProcessor<Status> { BaseUrl = "https://api.twitter.com/1.1/" };
@@ -145,343 +491,47 @@ namespace LinqToTwitterXUnitTests.StatusTests
         }
 
         [Fact]
-        public void GetParameters_Handles_Input_Params()
+        public void ProcessResults_Populates_Input_Parameters()
         {
-            var reqProc = new StatusRequestProcessor<Status>();
-
-            Expression<Func<Status, bool>> expression =
-            status =>
-                status.Type == StatusType.Home &&
-                status.ID == "10" &&
-                status.UserID == "10" &&
-                status.ScreenName == "JoeMayo" &&
-                status.SinceID == 123 &&
-                status.MaxID == 456 &&
-                status.Count == 50 &&
-                status.Page == 2 &&
-                status.IncludeRetweets == true &&
-                status.ExcludeReplies == true &&
-                status.IncludeEntities == true &&
-                status.TrimUser == true &&
-                status.IncludeContributorDetails == true;
-
-            var lambdaExpression = expression as LambdaExpression;
-
-            var queryParams = reqProc.GetParameters(lambdaExpression);
-
-            Assert.True(
-                queryParams.Contains(
-                    new KeyValuePair<string, string>("Type", ((int)StatusType.Home).ToString())));
-            Assert.True(
-               queryParams.Contains(
-                   new KeyValuePair<string, string>("ID", "10")));
-            Assert.True(
-              queryParams.Contains(
-                  new KeyValuePair<string, string>("UserID", "10")));
-            Assert.True(
-               queryParams.Contains(
-                   new KeyValuePair<string, string>("ScreenName", "JoeMayo")));
-            Assert.True(
-               queryParams.Contains(
-                   new KeyValuePair<string, string>("SinceID", "123")));
-            Assert.True(
-              queryParams.Contains(
-                  new KeyValuePair<string, string>("MaxID", "456")));
-            Assert.True(
-               queryParams.Contains(
-                   new KeyValuePair<string, string>("Count", "50")));
-            Assert.True(
-              queryParams.Contains(
-                  new KeyValuePair<string, string>("Page", "2")));
-            Assert.True(
-              queryParams.Contains(
-                  new KeyValuePair<string, string>("Page", "2")));
-            Assert.True(
-              queryParams.Contains(
-                  new KeyValuePair<string, string>("IncludeRetweets", "True")));
-            Assert.True(
-              queryParams.Contains(
-                  new KeyValuePair<string, string>("ExcludeReplies", "True")));
-            Assert.True(
-              queryParams.Contains(
-                  new KeyValuePair<string, string>("IncludeEntities", "True")));
-            Assert.True(
-              queryParams.Contains(
-                  new KeyValuePair<string, string>("TrimUser", "True")));
-            Assert.True(
-              queryParams.Contains(
-                  new KeyValuePair<string, string>("IncludeContributorDetails", "True")));
-        }
-
-        [Fact]
-        public void BuildUrl_Constructs_Mentions_Url()
-        {
-            const string ExpectedUrl = "https://api.twitter.com/1.1/statuses/mentions_timeline.json?since_id=123&max_id=145&count=50&page=1";
-            var statProc = new StatusRequestProcessor<Status> { BaseUrl = "https://api.twitter.com/1.1/" };
-            var parameters = new Dictionary<string, string>
-            {
-                { "Type", ((int)StatusType.Mentions).ToString() },
-                { "SinceID", "123" },
-                { "MaxID", "145" },
-                { "Count", "50" },
-                { "Page", "1" }
-            };
-
-            Request req = statProc.BuildUrl(parameters);
-
-            Assert.Equal(ExpectedUrl, req.FullUrl);
-        }
-
-        [Fact]
-        public void BuildUrl_Constructs_Show_Url()
-        {
-            const string ExpectedUrl = "https://api.twitter.com/1.1/statuses/show/945932078.json";
-            var reqProc = new StatusRequestProcessor<Status> 
+            var statProc = new StatusRequestProcessor<Status>() 
             { 
+                BaseUrl = "https://api.twitter.com/1.1/",
                 Type = StatusType.Show,
-                BaseUrl = "https://api.twitter.com/1.1/" 
-            };
-            var parameters = new Dictionary<string, string>
-            {
-                { "Type", ((int)StatusType.Show).ToString() },
-                { "ID", "945932078" }
-            };
-
-            Request req = reqProc.BuildUrl(parameters);
-
-            Assert.Equal(ExpectedUrl, req.FullUrl);
-        }
-
-        [Fact]
-        public void BuildUrl_Constructs_User_Url()
-        {
-            const string ExpectedUrl = "https://api.twitter.com/1.1/statuses/user_timeline.json?user_id=15411837&screen_name=JoeMayo";
-            var reqProc = new StatusRequestProcessor<Status>
-            {
-                Type = StatusType.User,
-                BaseUrl = "https://api.twitter.com/1.1/"
-            };
-            var parameters = new Dictionary<string, string>
-            {
-                { "Type", ((int)StatusType.User).ToString() },
-                { "UserID", "15411837" },
-                { "ScreenName", "JoeMayo" },
+                ID = "123",
+                UserID = "123",
+                ScreenName = "abc",
+                SinceID = 1,
+                MaxID = 2,
+                Count = 3,
+                Page = 4,
+                IncludeRetweets = true,
+                ExcludeReplies = true,
+                IncludeEntities = true,
+                TrimUser = true,
+                IncludeContributorDetails = true,
+                IncludeMyRetweet = true,
             };
 
-            Request req = reqProc.BuildUrl(parameters);
+            var statuses = statProc.ProcessResults(SingleStatusResponse);
 
-            Assert.Equal(ExpectedUrl, req.FullUrl);
-        }
-
-        [Fact]
-        public void BuildUrl_Constructs_Home_Url()
-        {
-            const string ExpectedUrl = "https://api.twitter.com/1.1/statuses/home_timeline.json?count=5";
-            var reqProc = new StatusRequestProcessor<Status>
-            {
-                Type = StatusType.User,
-                BaseUrl = "https://api.twitter.com/1.1/"
-            };
-            var parameters = new Dictionary<string, string>
-            {
-                { "Type", ((int)StatusType.Home).ToString() },
-                { "Count", "5" }
-            };
-
-            Request req = reqProc.BuildUrl(parameters);
-
-            Assert.Equal(ExpectedUrl, req.FullUrl);
-        }
-
-        [Fact]
-        public void BuildUrl_Returns_Url_For_Retweets()
-        {
-            const string ExpectedUrl = "https://api.twitter.com/1.1/statuses/retweets/15411837.json";
-            var reqProc = new StatusRequestProcessor<Status>
-            {
-                Type = StatusType.User,
-                BaseUrl = "https://api.twitter.com/1.1/"
-            };
-            var parameters = new Dictionary<string, string>
-            {
-                { "Type", ((int)StatusType.Retweets).ToString() },
-                { "ID", "15411837" }
-            };
-
-            Request req = reqProc.BuildUrl(parameters);
-
-            Assert.Equal(ExpectedUrl, req.FullUrl);
-        }
-
-        [Fact]
-        public void BuildUrl_Returns_Url_For_IncludeRetweets_On_User_Timeline()
-        {
-            const string ExpectedUrl = "https://api.twitter.com/1.1/statuses/user_timeline/15411837.json?include_rts=true";
-            var reqProc = new StatusRequestProcessor<Status>
-            {
-                Type = StatusType.User,
-                BaseUrl = "https://api.twitter.com/1.1/"
-            };
-            var parameters = new Dictionary<string, string>
-            {
-                { "Type", ((int)StatusType.User).ToString() },
-                { "ID", "15411837" },
-                { "IncludeRetweets", "True" }
-            };
-
-            Request req = reqProc.BuildUrl(parameters);
-
-            Assert.Equal(ExpectedUrl, req.FullUrl);
-        }
-
-        [Fact]
-        public void BuildUrl_Includes_False_Include_Rts_Param()
-        {
-            const string ExpectedUrl = "https://api.twitter.com/1.1/statuses/user_timeline/15411837.json?include_rts=false";
-            var reqProc = new StatusRequestProcessor<Status>
-            {
-                Type = StatusType.User,
-                BaseUrl = "https://api.twitter.com/1.1/"
-            };
-            var parameters = new Dictionary<string, string>
-            {
-                { "Type", ((int)StatusType.User).ToString() },
-                { "ID", "15411837" },
-                { "IncludeRetweets", false.ToString() }
-            };
-
-            Request req = reqProc.BuildUrl(parameters);
-
-            Assert.Equal(ExpectedUrl, req.FullUrl);
-        }
-
-        [Fact]
-        public void BuildUrl_Constructs_Url_For_RetweetedByUser()
-        {
-            const string ExpectedUrl = "http://api.twitter.com/1/statuses/retweeted_by_user.json?screen_name=JoeMayo";
-            var reqProc = new StatusRequestProcessor<Status>
-            {
-                Type = StatusType.RetweetedByUser,
-                BaseUrl = "http://api.twitter.com/1/"
-            };
-            var parameters = new Dictionary<string, string>
-            {
-                { "Type", ((int)StatusType.RetweetedByUser).ToString() },
-                { "ID", "15411837" },
-                { "ScreenName", "JoeMayo" }
-            };
-
-            Request req = reqProc.BuildUrl(parameters);
-
-            Assert.Equal(ExpectedUrl, req.FullUrl);
-        }
-
-        [Fact()]
-        public void BuildUrl_Constructs_Url_For_RetweetedToUser()
-        {
-            const string ExpectedUrl = "http://api.twitter.com/1/statuses/retweeted_to_user.json?screen_name=JoeMayo";
-            var reqProc = new StatusRequestProcessor<Status>
-            {
-                Type = StatusType.RetweetedToUser,
-                BaseUrl = "http://api.twitter.com/1/"
-            };
-            var parameters = new Dictionary<string, string>
-            {
-                { "Type", ((int)StatusType.RetweetedToUser).ToString() },
-                { "ID", "15411837" },
-                { "ScreenName", "JoeMayo" }
-            };
-
-            Request req = reqProc.BuildUrl(parameters);
-
-            Assert.Equal(ExpectedUrl, req.FullUrl);
-        }
-
-        [Fact]
-        public void BuildUrl_Returns_Url_For_RetweetedBy()
-        {
-            const string ExpectedUrl = "https://api.twitter.com/1.1/statuses/123/retweeted_by.json?count=25&page=2";
-            var reqProc = new StatusRequestProcessor<Status>
-            {
-                Type = StatusType.RetweetedBy,
-                BaseUrl = "https://api.twitter.com/1.1/"
-            };
-            var parameters = new Dictionary<string, string>
-            {
-                { "Type", ((int)StatusType.RetweetedBy).ToString() },
-                { "ID", "123" },
-                { "Count", "25" },
-                { "Page", "2" }
-            };
-
-            Request req = reqProc.BuildUrl(parameters);
-
-            Assert.Equal(ExpectedUrl, req.FullUrl);
-        }
-
-        [Fact]
-        public void BuildUrl_RetweetedBy_Throws_On_Missing_ID()
-        {
-            const string ExpectedParam = "ID";
-            var reqProc = new StatusRequestProcessor<Status>
-            {
-                Type = StatusType.RetweetedBy,
-                BaseUrl = "https://api.twitter.com/1.1/"
-            };
-            var parameters = new Dictionary<string, string>
-            {
-                { "Type", ((int)StatusType.RetweetedBy).ToString() },
-                //{ "ID", "123" },
-                { "Count", "25" },
-                { "Page", "2" }
-            };
-
-            var ex = Assert.Throws<ArgumentException>(() => reqProc.BuildUrl(parameters));
-
-            Assert.Equal(ExpectedParam, ex.ParamName);
-        }
-
-        [Fact]
-        public void BuildUrl_RetweetedBy_Throws_On_Count_Over_100()
-        {
-            const string ExpectedParam = "Count";
-            var reqProc = new StatusRequestProcessor<Status>
-            {
-                Type = StatusType.RetweetedBy,
-                BaseUrl = "https://api.twitter.com/1.1/"
-            };
-            var parameters = new Dictionary<string, string>
-            {
-                { "Type", ((int)StatusType.RetweetedBy).ToString() },
-                { "ID", "123" },
-                { "Count", "101" },
-                { "Page", "2" }
-            };
-
-            var ex = Assert.Throws<ArgumentException>(() => reqProc.BuildUrl(parameters));
-
-            Assert.Equal(ExpectedParam, ex.ParamName);
-        }
-
-        [Fact]
-        public void BuildUrl_Throws_On_Missing_Type()
-        {
-            var statusReqProc = new StatusRequestProcessor<Status> { BaseUrl = "https://api.twitter.com/1.1/" };
-            var parameters = new Dictionary<string, string> { };
-
-            var ex = Assert.Throws<ArgumentException>(() => statusReqProc.BuildUrl(parameters));
-
-            Assert.Equal<string>("Type", ex.ParamName);
-        }
-
-        [Fact]
-        public void BuildUrl_Throws_On_Null_Parameter()
-        {
-            var target = new StatusRequestProcessor<Status> { BaseUrl = "https://api.twitter.com/1.1/" };
-
-            var ex = Assert.Throws<ArgumentException>(() => target.BuildUrl(null));
-
-            Assert.Equal<string>("Type", ex.ParamName);
+            Assert.NotNull(statuses);
+            Assert.Single(statuses);
+            var status = statuses.Single();
+            Assert.NotNull(status);
+            Assert.Equal(StatusType.Show, status.Type);
+            Assert.Equal("123", status.ID);
+            Assert.Equal("123", status.UserID);
+            Assert.Equal("abc", status.ScreenName);
+            Assert.Equal(1ul, status.SinceID);
+            Assert.Equal(2ul, status.MaxID);
+            Assert.Equal(3, status.Count);
+            Assert.Equal(4, status.Page);
+            Assert.True(status.IncludeRetweets);
+            Assert.True(status.ExcludeReplies);
+            Assert.True(status.IncludeEntities);
+            Assert.True(status.TrimUser);
+            Assert.True(status.IncludeContributorDetails);
+            Assert.True(status.IncludeMyRetweet);
         }
 
         const string SingleStatusResponse = @"{

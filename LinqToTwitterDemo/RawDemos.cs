@@ -13,30 +13,14 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         public static void Run(TwitterContext twitterCtx)
         {
-            //PublicTimelineDemo(twitterCtx);
             //AccountTotalsDemo(twitterCtx);
             //AccountSettingsDemo(twitterCtx);
-            CategoryStatusDemo(twitterCtx);
+            //CategoryStatusDemo(twitterCtx);
             //RetweetedToUserDemo(twitterCtx);
             //SearchDemo(twitterCtx);
-            //UpdateStatusDemo(twitterCtx);
+            UpdateStatusDemo(twitterCtx);
             //CreateFavoriteDemo(twitterCtx);
             //RelatedResultsDemo(twitterCtx);
-        }
-
-        /// <summary>
-        /// Requests the public timeline
-        /// </summary>
-        /// <param name="twitterCtx">TwitterContext</param>
-        private static void PublicTimelineDemo(TwitterContext twitterCtx)
-        {
-            var rawResult =
-                (from raw in twitterCtx.RawQuery
-                 where raw.QueryString == "statuses/public_timeline.xml"
-                 select raw)
-                .FirstOrDefault();
-
-            Console.WriteLine("Response from Twitter: \n\n" + rawResult.Result);
         }
 
         /// <summary>
@@ -47,7 +31,7 @@ namespace LinqToTwitterDemo
         {
             var rawResult =
                 (from raw in twitterCtx.RawQuery
-                 where raw.QueryString == "account/totals.xml"
+                 where raw.QueryString == "account/totals.json"
                  select raw)
                 .FirstOrDefault();
 
@@ -62,7 +46,7 @@ namespace LinqToTwitterDemo
         {
             var rawResult =
                 (from raw in twitterCtx.RawQuery
-                 where raw.QueryString == "account/settings.xml"
+                 where raw.QueryString == "account/settings.json"
                  select raw.Result)
                 .FirstOrDefault();
 
@@ -77,7 +61,7 @@ namespace LinqToTwitterDemo
         {
             var rawResult =
                 (from raw in twitterCtx.RawQuery
-                 where raw.QueryString == "users/suggestions/technology/members.xml"
+                 where raw.QueryString == "users/suggestions/technology/members.json"
                  select raw.Result)
                 .FirstOrDefault();
 
@@ -92,7 +76,7 @@ namespace LinqToTwitterDemo
         {
             var rawResult =
                 (from raw in twitterCtx.RawQuery
-                 where raw.QueryString == "statuses/retweeted_to_user.xml?screen_name=twitterapi"
+                 where raw.QueryString == "statuses/retweeted_to_user.json?screen_name=twitterapi"
                  select raw)
                 .FirstOrDefault();
 
@@ -131,7 +115,7 @@ namespace LinqToTwitterDemo
                 { "status", status }
             };
 
-            string queryString = "/statuses/update.xml";
+            string queryString = "/statuses/update.json";
 
             string result = twitterCtx.ExecuteRaw(queryString, parameters);
 
@@ -147,7 +131,7 @@ namespace LinqToTwitterDemo
             string status = "Testing LINQ to Twitter Raw Interface: " + DateTime.Now.ToString();
             var parameters = new Dictionary<string, string>();
 
-            string queryString = "/favorites/create/25786742388.xml";
+            string queryString = "/favorites/create/25786742388.json";
 
             string result = twitterCtx.ExecuteRaw(queryString, parameters);
 

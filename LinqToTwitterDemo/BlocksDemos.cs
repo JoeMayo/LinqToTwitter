@@ -17,8 +17,8 @@ namespace LinqToTwitterDemo
         {
             //CreateBlock(twitterCtx);
             //DestroyBlock(twitterCtx);
-            BlockListDemo(twitterCtx);
-            //BlockIDsDemo(twitterCtx);
+            //BlockListDemo(twitterCtx);
+            BlockIDsDemo(twitterCtx);
         }
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace LinqToTwitterDemo
                 (from blockItem in twitterCtx.Blocks
                  where blockItem.Type == BlockingType.List
                  select blockItem)
-                 .FirstOrDefault();
+                .FirstOrDefault();
 
             block.Users.ForEach(
                 user => Console.WriteLine("User, {0} is blocked.", user.Name));
@@ -96,7 +96,7 @@ namespace LinqToTwitterDemo
                 (from blockItem in twitterCtx.Blocks
                  where blockItem.Type == BlockingType.Ids
                  select blockItem)
-                 .SingleOrDefault();
+                .SingleOrDefault();
 
             result.IDs.ForEach(block => Console.WriteLine("ID: {0}", block));
         }

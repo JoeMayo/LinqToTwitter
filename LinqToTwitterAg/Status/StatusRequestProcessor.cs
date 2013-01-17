@@ -24,68 +24,73 @@ namespace LinqToTwitter
         /// <summary>
         /// type of status request, i.e. Show or User
         /// </summary>
-        public StatusType Type { get; set; }
+        internal StatusType Type { get; set; }
 
         /// <summary>
         /// TweetID
         /// </summary>
-        public string ID { get; set; }
+        internal string ID { get; set; }
 
         /// <summary>
         /// User ID to disambiguate when ID is same as screen name
         /// </summary>
-        public string UserID { get; set; }
+        internal string UserID { get; set; }
 
         /// <summary>
         /// Screen Name to disambiguate when ID is same as UserD
         /// </summary>
-        public string ScreenName { get; set; }
+        internal string ScreenName { get; set; }
 
         /// <summary>
         /// filter results to after this status id
         /// </summary>
-        public ulong SinceID { get; set; }
+        internal ulong SinceID { get; set; }
 
         /// <summary>
         /// max ID to retrieve
         /// </summary>
-        public ulong MaxID { get; set; }
+        internal ulong MaxID { get; set; }
 
         /// <summary>
         /// only return this many results
         /// </summary>
-        public int Count { get; set; }
+        internal int Count { get; set; }
 
         /// <summary>
         /// page of results to return
         /// </summary>
-        public int Page { get; set; }
+        internal int Page { get; set; }
 
         /// <summary>
         /// Retweets are optional and you must set this to true
         /// before they will be included in the user timeline
         /// </summary>
-        public bool IncludeRetweets { get; set; }
+        internal bool IncludeRetweets { get; set; }
 
         /// <summary>
         /// Don't include replies in responses
         /// </summary>
-        public bool ExcludeReplies { get; set; }
+        internal bool ExcludeReplies { get; set; }
 
         /// <summary>
         /// Include entities in tweets (default: true)
         /// </summary>
-        public bool IncludeEntities { get; set; }
+        internal bool IncludeEntities { get; set; }
 
         /// <summary>
         /// Remove all user info, except for User ID
         /// </summary>
-        public bool TrimUser { get; set; }
+        internal bool TrimUser { get; set; }
 
         /// <summary>
         /// Enhances contributor info, beyond the default ID
         /// </summary>
-        public bool IncludeContributorDetails { get; set; }
+        internal bool IncludeContributorDetails { get; set; }
+
+        /// <summary>
+        /// Populates CurrentUserRetweet in response if set to true
+        /// </summary>
+        internal bool IncludeMyRetweet { get; set; }
 
         /// <summary>
         /// extracts parameters from lambda
@@ -110,7 +115,8 @@ namespace LinqToTwitter
                        "ExcludeReplies",
                        "IncludeEntities",
                        "TrimUser",
-                       "IncludeContributorDetails"
+                       "IncludeContributorDetails",
+                       "IncludeMyRetweet"
                    });
 
             var parameters = paramFinder.Parameters;
@@ -174,6 +180,7 @@ namespace LinqToTwitter
             if (parameters.ContainsKey("ID"))
             {
                 ID = parameters["ID"];
+                urlParams.Add(new QueryParameter("id", parameters["ID"]));
             }
 
             if (parameters.ContainsKey("UserID"))
@@ -224,6 +231,12 @@ namespace LinqToTwitter
                 urlParams.Add(new QueryParameter("exclude_replies", parameters["ExcludeReplies"].ToLower()));
             }
 
+            if (parameters.ContainsKey("IncludeMyRetweet"))
+            {
+                IncludeMyRetweet = bool.Parse(parameters["IncludeMyRetweet"]);
+                urlParams.Add(new QueryParameter("include_my_retweet", parameters["IncludeMyRetweet"].ToLower()));
+            }
+
             if (parameters.ContainsKey("IncludeEntities"))
             {
                 IncludeEntities = bool.Parse(parameters["IncludeEntities"]);
@@ -252,8 +265,7 @@ namespace LinqToTwitter
         /// <returns>base url + show segment</returns>
         Request BuildShowUrl(Dictionary<string, string> parameters)
         {
-            var url = BuildUrlHelper.TransformIDUrl(parameters, "statuses/show.json");
-            return BuildUrlParameters(parameters, url);
+            return BuildUrlParameters(parameters, "statuses/show.json");
         }
 
         /// <summary>
@@ -262,8 +274,7 @@ namespace LinqToTwitter
         /// <returns>base url + user timeline segment</returns>
         Request BuildUserUrl(Dictionary<string, string> parameters)
         {
-            var url = BuildUrlHelper.TransformIDUrl(parameters, "statuses/user_timeline.json");
-            return BuildUrlParameters(parameters, url);
+            return BuildUrlParameters(parameters, "statuses/user_timeline.json");
         }
 
         /// <summary>
@@ -454,6 +465,7 @@ namespace LinqToTwitter
                 status.IncludeEntities = IncludeEntities;
                 status.TrimUser = TrimUser;
                 status.IncludeContributorDetails = IncludeContributorDetails;
+                status.IncludeMyRetweet = IncludeMyRetweet;
             }
 
             return statusList.OfType<T>().ToList();

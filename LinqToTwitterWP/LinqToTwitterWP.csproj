@@ -392,15 +392,6 @@
     <Compile Include="..\LinqToTwitterAg\Help\RateLimits.cs">
       <Link>Help\RateLimits.cs</Link>
     </Compile>
-    <Compile Include="..\LinqToTwitterAg\Legal\Legal.cs">
-      <Link>Legal\Legal.cs</Link>
-    </Compile>
-    <Compile Include="..\LinqToTwitterAg\Legal\LegalRequestProcessor.cs">
-      <Link>Legal\LegalRequestProcessor.cs</Link>
-    </Compile>
-    <Compile Include="..\LinqToTwitterAg\Legal\LegalType.cs">
-      <Link>Legal\LegalType.cs</Link>
-    </Compile>
     <Compile Include="..\LinqToTwitterAg\LinqToTwitter\ITwitterExecute.cs">
       <Link>LinqToTwitter\ITwitterExecute.cs</Link>
     </Compile>
@@ -433,9 +424,6 @@
     </Compile>
     <Compile Include="..\LinqToTwitterAg\List\ListType.cs">
       <Link>List\ListType.cs</Link>
-    </Compile>
-    <Compile Include="..\LinqToTwitterAg\Notifications\NotificationsExtensions.cs">
-      <Link>Notifications\NotificationsExtensions.cs</Link>
     </Compile>
     <Compile Include="..\LinqToTwitterAg\OAuth\AnonymousAuthorizer.cs">
       <Link>OAuth\AnonymousAuthorizer.cs</Link>

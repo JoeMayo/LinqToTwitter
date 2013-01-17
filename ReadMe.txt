@@ -48,9 +48,17 @@ Use with .NET v4.0 Full Profile. This includes ASP.NET WebForms, ASP.NET MVC, or
 
 Use only with projects set to .NET v4.0 Client Profile, which is the default for Console and WPF applications.
 
+*\net45\LinqToTwitter.dll
+
+Use with .NET v4.5 Full Profile. This includes ASP.NET WebForms, ASP.NET MVC, or any other type of regular .NET Framework.
+
+*\net45-client\LinqToTwitterCP.dll
+
+Use only with projects set to .NET v4.5 Client Profile. Note: Unlike earlier versions of Visual Studio, VS 2012 does not set the default framework to Client Profile on client applications, such as Console and WPF.
+
 *\sl4-windowsphone71\LinqToTwitterWP.dll
 
-This version is for Windows Phone v7.1.  Warning: Windows Phone 7.0 is not supported.  LINQ to Twitter is an IQueryable LINQ provider and IQueryable was not supported in Windows Phone 7.0.  However, Windows Phone 7.1 works fine.
+This version is for Windows Phone v7.1. This version works on Windows Phone 8, which is supported.  Warning: Windows Phone 7.0 is not supported.  LINQ to Twitter is an IQueryable LINQ provider and IQueryable was not supported in Windows Phone 7.0.  However, Windows Phone 7.1 and 8.0 work fine.
 
 *\sl4\LinqToTwitterAg.dll
 

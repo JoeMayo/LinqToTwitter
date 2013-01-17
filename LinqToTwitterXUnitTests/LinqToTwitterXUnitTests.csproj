@@ -81,14 +81,12 @@
     <Compile Include="GeoTests\GeoTests.cs" />
     <Compile Include="GeoTests\PlaceTests.cs" />
     <Compile Include="HelpTests\HelpRequestProcessorTests.cs" />
-    <Compile Include="LegalTests\LegalRequestProcessorTests.cs" />
     <Compile Include="LinqToTwitterTests\TwitterContextCreateRequestProcessorTests.cs" />
     <Compile Include="Common\TwitterExtensionsTests.cs" />
     <Compile Include="LinqToTwitterTests\TwitterContextTests.cs" />
     <Compile Include="LinqToTwitterTests\TwitterExecuteErrorHandlingTests.cs" />
     <Compile Include="ListTests\ListExtensionsTests.cs" />
     <Compile Include="ListTests\ListRequestProcessorTests.cs" />
-    <Compile Include="NotificationsTests\NotificationsExtensionsTests.cs" />
     <Compile Include="OAuthTests\MvcAuthorizerTests.cs" />
     <Compile Include="OAuthTests\OAuthAuthorizerTests.cs" />
     <Compile Include="OAuthTests\OAuthBaseTests.cs" />

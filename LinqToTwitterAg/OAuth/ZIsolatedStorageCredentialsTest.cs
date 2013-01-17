@@ -5,7 +5,7 @@ namespace LinqToTwitter
 {
     public class ZIsolatedStorageCredentialsTest : InMemoryCredentials
     {
-        private const string StateFile = "LinqToTwitter.xml";
+        private const string StateFile = "LinqToTwitter.json";
         private const string ConsumerKeyElement = "consumer_key";
         private const string ConsumerSecretElement = "consumer_secret";
         private const string CodeElement = "code";

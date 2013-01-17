@@ -2,15 +2,19 @@
 using System.Linq;
 using LinqToTwitter;
 using LinqToTwitterXUnitTests.Common;
+using Moq;
 using Xunit;
 
 namespace LinqToTwitterXUnitTests.LinqToTwitterTests
 {
     public class TwitterContextUrlTests
     {
+        ITwitterAuthorizer auth;
+
         public TwitterContextUrlTests()
         {
             TestCulture.SetCulture();
+            auth = new Mock<ITwitterAuthorizer>().Object;
         }
 
         [Fact]
@@ -18,7 +22,7 @@ namespace LinqToTwitterXUnitTests.LinqToTwitterTests
         {
             const string DefaultStreamingUrl = "https://stream.twitter.com/1.1/";
 
-            string streamingUrl = new TwitterContext().StreamingUrl;
+            string streamingUrl = new TwitterContext(auth).StreamingUrl;
 
             Assert.Equal(DefaultStreamingUrl, streamingUrl);
         }
@@ -28,7 +32,7 @@ namespace LinqToTwitterXUnitTests.LinqToTwitterTests
         {
             const string DefaultUserStreamUrl = "https://userstream.twitter.com/1.1/";
 
-            string userStreamUrl = new TwitterContext().UserStreamUrl;
+            string userStreamUrl = new TwitterContext(auth).UserStreamUrl;
 
             Assert.Equal(DefaultUserStreamUrl, userStreamUrl);
         }
@@ -38,7 +42,7 @@ namespace LinqToTwitterXUnitTests.LinqToTwitterTests
         {
             const string DefaultSiteStreamUrl = "https://sitestream.twitter.com/1.1/";
 
-            string siteStreamUrl = new TwitterContext().SiteStreamUrl;
+            string siteStreamUrl = new TwitterContext(auth).SiteStreamUrl;
 
             Assert.Equal(DefaultSiteStreamUrl, siteStreamUrl);
         }

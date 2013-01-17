@@ -415,15 +415,6 @@
     <Compile Include="..\LinqToTwitterAg\Help\RateLimits.cs">
       <Link>Help\RateLimits.cs</Link>
     </Compile>
-    <Compile Include="..\LinqToTwitterAg\Legal\Legal.cs">
-      <Link>Legal\Legal.cs</Link>
-    </Compile>
-    <Compile Include="..\LinqToTwitterAg\Legal\LegalRequestProcessor.cs">
-      <Link>Legal\LegalRequestProcessor.cs</Link>
-    </Compile>
-    <Compile Include="..\LinqToTwitterAg\Legal\LegalType.cs">
-      <Link>Legal\LegalType.cs</Link>
-    </Compile>
     <Compile Include="..\LinqToTwitterAg\LinqToTwitter\ITwitterExecute.cs">
       <Link>LinqToTwitter\ITwitterExecute.cs</Link>
     </Compile>
@@ -456,9 +447,6 @@
     </Compile>
     <Compile Include="..\LinqToTwitterAg\List\ListType.cs">
       <Link>List\ListType.cs</Link>
-    </Compile>
-    <Compile Include="..\LinqToTwitterAg\Notifications\NotificationsExtensions.cs">
-      <Link>Notifications\NotificationsExtensions.cs</Link>
     </Compile>
     <Compile Include="..\LinqToTwitterAg\OAuth\AnonymousAuthorizer.cs">
       <Link>OAuth\AnonymousAuthorizer.cs</Link>
@@ -714,8 +702,6 @@
     <Compile Include="OAuth\TwitterAuthProviderUser.cs" />
     <Compile Include="OAuth\WinRtAuthorizer.cs" />
     <Compile Include="OAuth\WinRtCredentials.cs" />
-    <Compile Include="obj\Debug\TemporaryGeneratedFile_036C0B5B-1481-4323-8D20-8F5ADCB23D92.cs" />
-    <Compile Include="obj\Debug\TemporaryGeneratedFile_E7A71F73-0F8D-4B9B-B56E-8E70B10BC5D3.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Serialization\LitJson\IDictionary.cs" />
   </ItemGroup>

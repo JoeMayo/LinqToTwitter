@@ -24,7 +24,7 @@ Module Module1
         auth.GoToTwitterAuthorization = Function(pageLink) Process.Start(pageLink)
         auth.Authorize()
 
-        Dim twitterCtx As TwitterContext = New TwitterContext(auth, "https://twitter.com/", "http://search.twitter.com/")
+        Dim twitterCtx As TwitterContext = New TwitterContext(auth)
 
 		twitterCtx.Log = Console.Out
 
@@ -192,26 +192,6 @@ Module Module1
         For Each block In result
             Console.WriteLine("ID: {0}", block.UserID)
         Next
-    End Sub
-
-    Private Sub EnableNotificationsDemo(ByVal twitterCtx As TwitterContext)
-        Dim usr As User = twitterCtx.EnableNotifications(Nothing, Nothing, "JoeMayo")
-
-        If usr Is Nothing Then
-            Return
-        End If
-
-        Console.WriteLine("Enabled Notifications for User Name: " & usr.Name)
-    End Sub
-
-    Private Sub DisableNotificationsDemo(ByVal twitterCtx As TwitterContext)
-        Dim usr As User = twitterCtx.DisableNotifications(Nothing, Nothing, "JoeMayo")
-
-        If usr Is Nothing Then
-            Return
-        End If
-
-        Console.WriteLine("Disabled Notifications for User Name: " & usr.Name)
     End Sub
 
     Private Sub FavoritesQueryDemo(ByVal twitterCtx As TwitterContext)

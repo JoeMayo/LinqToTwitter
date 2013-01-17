@@ -58,6 +58,7 @@ namespace LinqToTwitter
             Text = status.GetValue<string>("text");
             Annotation = new Annotation(status.GetValue<JsonData>("annotation"));
             Entities = new Entities(status.GetValue<JsonData>("entities"));
+            CurrentUserRetweet = status.GetValue<ulong>("current_user_retweet");
         }
 
         /// <summary>
@@ -133,6 +134,11 @@ namespace LinqToTwitter
         /// Add entities to tweets (default: true)
         /// </summary>
         public bool IncludeEntities { get; set; }
+
+        /// <summary>
+        /// Populates CurrentUserRetweet in response if set to true
+        /// </summary>
+        public bool IncludeMyRetweet { get; set; }
 
         /// <summary>
         /// when was the tweet created
@@ -255,5 +261,12 @@ namespace LinqToTwitter
         /// Retweeted status is status is a retweet
         /// </summary>
         public Status RetweetedStatus { get; set; }
+
+        /// <summary>
+        /// ID of source status of retweet if IncludeMyRetweet is true.
+        /// Set to 0 if IncludeMyRetweet is false or tweet not retweeted
+        /// by authenticating user.
+        /// </summary>
+        public ulong CurrentUserRetweet { get; set; }
     }
 }

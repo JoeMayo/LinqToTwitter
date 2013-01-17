@@ -109,9 +109,7 @@
     <Compile Include="FriendshipDemos.cs" />
     <Compile Include="GeoDemos.cs" />
     <Compile Include="HelpDemos.cs" />
-    <Compile Include="LegalDemos.cs" />
     <Compile Include="ListDemos.cs" />
-    <Compile Include="NotificationsDemos.cs" />
     <Compile Include="OAuthDemos.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
