@@ -535,6 +535,9 @@
     <Compile Include="..\LinqToTwitterAg\Status\Contributor.cs">
       <Link>Status\Contributor.cs</Link>
     </Compile>
+    <Compile Include="..\LinqToTwitterAg\Status\FilterLevel.cs">
+      <Link>Status\FilterLevel.cs</Link>
+    </Compile>
     <Compile Include="..\LinqToTwitterAg\Status\Retweet.cs">
       <Link>Status\Retweet.cs</Link>
     </Compile>
@@ -546,6 +549,9 @@
     </Compile>
     <Compile Include="..\LinqToTwitterAg\Status\StatusExtensions.cs">
       <Link>Status\StatusExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Status\StatusMetaData.cs">
+      <Link>Status\StatusMetaData.cs</Link>
     </Compile>
     <Compile Include="..\LinqToTwitterAg\Status\StatusRequestProcessor.cs">
       <Link>Status\StatusRequestProcessor.cs</Link>

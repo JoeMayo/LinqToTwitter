@@ -59,6 +59,39 @@ namespace LinqToTwitter
             Annotation = new Annotation(status.GetValue<JsonData>("annotation"));
             Entities = new Entities(status.GetValue<JsonData>("entities"));
             CurrentUserRetweet = status.GetValue<ulong>("current_user_retweet");
+            var scopes = status.GetValue<JsonData>("scopes");
+            Scopes =
+                scopes == null ? new Dictionary<string, string>() :
+                (from key in (scopes as IDictionary<string, JsonData>).Keys as List<string>
+                 select new
+                 {
+                     Key = key,
+                     Value = scopes[key].ToString()
+                 })
+                .ToDictionary(
+                    key => key.Key,
+                    val => val.Value);
+            WithheldCopyright = status.GetValue<bool>("withheld_copyright");
+            var withheldCountries = status.GetValue<JsonData>("withheld_in_countries");
+            WithheldInCountries =
+                withheldCountries == null ? new List<string>() :
+                (from JsonData country in status.GetValue<JsonData>("withheld_in_countries")
+                 select country.ToString())
+                .ToList();
+            WithheldScope = status.GetValue<string>("withheld_scope");
+            MetaData = new StatusMetaData(status.GetValue<JsonData>("metadata"));
+            Lang = status.GetValue<string>("lang");
+            string filterLvl = status.GetValue<string>("filter_level");
+            try
+            {
+                FilterLevel =
+                    filterLvl == null ? FilterLevel.None :
+                    (FilterLevel)Enum.Parse(typeof(FilterLevel), filterLvl, ignoreCase: true);
+            }
+            catch (ArgumentException)
+            {
+                FilterLevel = FilterLevel.None;
+            }
         }
 
         /// <summary>
@@ -268,5 +301,43 @@ namespace LinqToTwitter
         /// by authenticating user.
         /// </summary>
         public ulong CurrentUserRetweet { get; set; }
+
+        /// <summary>
+        /// Set of key/value pairs to support promoted tweets
+        /// </summary>
+        [XmlIgnore]
+        public Dictionary<string, string> Scopes { get; set; }
+
+        /// <summary>
+        /// Indicates that you shouldn't display because there
+        /// is currently a DMCA complaint against the tweet.
+        /// </summary>
+        public bool WithheldCopyright { get; set; }
+
+        /// <summary>
+        /// Don't display tweet in countries in this list
+        /// </summary>
+        public List<string> WithheldInCountries { get; set; }
+
+        /// <summary>
+        /// Part of the tweet that should not be displayed.
+        /// </summary>
+        public string WithheldScope { get; set; }
+
+        /// <summary>
+        /// Status meta-data returned from searches
+        /// </summary>
+        public StatusMetaData MetaData { get; set; }
+
+        /// <summary>
+        /// Twitter machine-detected prediction of language tweet is written in
+        /// </summary>
+        public string Lang { get; set; }
+
+        /// <summary>
+        /// Twitter's evaluation of tweet quality
+        /// </summary>
+        public FilterLevel FilterLevel { get; set; }
+
     }
 }

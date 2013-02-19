@@ -254,10 +254,12 @@
     <Compile Include="Common\Entities\MentionBase.cs" />
     <Compile Include="Common\Entities\UrlMention.cs" />
     <Compile Include="Common\Entities\UserMention.cs" />
+    <Compile Include="Status\FilterLevel.cs" />
     <Compile Include="Status\Retweet.cs" />
     <Compile Include="Status\Status.cs" />
     <Compile Include="Status\StatusAction.cs" />
     <Compile Include="Status\StatusExtensions.cs" />
+    <Compile Include="Status\StatusMetaData.cs" />
     <Compile Include="Status\StatusRequestProcessor.cs" />
     <Compile Include="Status\StatusType.cs" />
     <Compile Include="Streaming\IStreamContent.cs" />

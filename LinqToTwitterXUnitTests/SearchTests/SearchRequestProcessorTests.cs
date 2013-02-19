@@ -266,7 +266,7 @@ namespace LinqToTwitterXUnitTests.SearchTests
         }
 
         [Fact]
-        public void ProcessResults_Populates_MetaData()
+        public void ProcessResults_Populates_Search_MetaData()
         {
             var searchProc = new SearchRequestProcessor<Search> { BaseUrl = "https://api.twitter.com/1.1/search/" };
 
@@ -289,6 +289,28 @@ namespace LinqToTwitterXUnitTests.SearchTests
             Assert.Equal(
                 "?since_id=281604225014824960&q=Twitter&geocode=37.781157%2C-122.398720%2C1mi&include_entities=1", 
                 metaData.RefreshUrl);
+        }
+
+        [Fact]
+        public void ProcessResults_Populates_Status_MetaData()
+        {
+            var searchProc = new SearchRequestProcessor<Search> { BaseUrl = "https://api.twitter.com/1.1/search/" };
+
+            List<Search> results = searchProc.ProcessResults(SearchJson);
+
+            Assert.NotNull(results);
+            Assert.Single(results);
+            Search search = results.Single();
+            Assert.NotNull(search);
+            List<Status> statuses = search.Statuses;
+            Assert.NotNull(statuses);
+            Assert.NotEmpty(statuses);
+            Status status = search.Statuses.First();
+            Assert.NotNull(status);
+            StatusMetaData metaData = status.MetaData;
+            Assert.NotNull(metaData);
+            Assert.Equal("recent", metaData.ResultType);
+            Assert.Equal("en", metaData.IsoLanguageCode);
         }
 
         [Fact]
