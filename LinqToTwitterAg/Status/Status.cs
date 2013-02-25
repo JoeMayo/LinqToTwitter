@@ -174,6 +174,46 @@ namespace LinqToTwitter
         public bool IncludeMyRetweet { get; set; }
 
         /// <summary>
+        /// Url of tweet to embed
+        /// </summary>
+        public string OEmbedUrl { get; set; }
+
+        /// <summary>
+        /// Max number of pixels for width
+        /// </summary>
+        public int OEmbedMaxWidth { get; set; }
+
+        /// <summary>
+        /// Don't initially expand image
+        /// </summary>
+        public bool OEmbedHideMedia { get; set; }
+
+        /// <summary>
+        /// Show original message for replies
+        /// </summary>
+        public bool OEmbedHideThread { get; set; }
+
+        /// <summary>
+        /// Don't include widgets.js script
+        /// </summary>
+        public bool OEmbedOmitScript { get; set; }
+
+        /// <summary>
+        /// Image alignment: Left, Right, Center, or None
+        /// </summary>
+        public EmbeddedStatusAlignment OEmbedAlign { get; set; }
+
+        /// <summary>
+        /// Suggested accounts for the viewer to follow
+        /// </summary>
+        public string OEmbedRelated { get; set; }
+
+        /// <summary>
+        /// Language code for rendered tweet
+        /// </summary>
+        public string OEmbedLanguage { get; set; }
+
+        /// <summary>
         /// when was the tweet created
         /// </summary>
         public DateTime CreatedAt { get; set; }
@@ -339,5 +379,9 @@ namespace LinqToTwitter
         /// </summary>
         public FilterLevel FilterLevel { get; set; }
 
+        /// <summary>
+        /// Populated with OEmbed response for StatusType.OEmbed queries
+        /// </summary>
+        public EmbeddedStatus EmbeddedStatus { get; set; }
     }
 }

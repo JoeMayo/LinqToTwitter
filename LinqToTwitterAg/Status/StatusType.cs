@@ -151,5 +151,22 @@ namespace LinqToTwitter
         ///     - Page, page to return
         /// </summary>
         RetweetedBy,
+
+        /// <summary>
+        /// provides information, such as HTML, to embed a tweet in a Web page
+        /// 
+        /// Available Options:
+        /// 
+        ///     - ID, tweet ID
+        ///     - OEmbedUrl, Url of tweet to embed
+        ///     - OEmbedMaxWidth, Max number of pixels for width
+        ///     - OEmbedHideMedia, Don't initially expand image
+        ///     - OEmbedHideThread, Show original message for replies
+        ///     - OEmbedOmitScript, Don't include widgets.js script
+        ///     - OEmbedAlign, Image alignment: Left, Right, Center, or None
+        ///     - OEmbedRelated, Suggested accounts for the viewer to follow
+        ///     - OEmbedLanguage, Language code for rendered tweet
+        /// </summary>
+        Oembed,
     }
 }

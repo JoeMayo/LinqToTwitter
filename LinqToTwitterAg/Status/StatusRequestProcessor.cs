@@ -93,6 +93,46 @@ namespace LinqToTwitter
         internal bool IncludeMyRetweet { get; set; }
 
         /// <summary>
+        /// Url of tweet to embed
+        /// </summary>
+        internal string OEmbedUrl { get; set; }
+
+        /// <summary>
+        /// Max number of pixels for width
+        /// </summary>
+        internal int OEmbedMaxWidth { get; set; }
+
+        /// <summary>
+        /// Don't initially expand image
+        /// </summary>
+        internal bool OEmbedHideMedia { get; set; }
+
+        /// <summary>
+        /// Show original message for replies
+        /// </summary>
+        internal bool OEmbedHideThread { get; set; }
+
+        /// <summary>
+        /// Don't include widgets.js script
+        /// </summary>
+        internal bool OEmbedOmitScript { get; set; }
+
+        /// <summary>
+        /// Image alignment: Left, Right, Center, or None
+        /// </summary>
+        internal EmbeddedStatusAlignment OEmbedAlign { get; set; }
+
+        /// <summary>
+        /// Suggested accounts for the viewer to follow
+        /// </summary>
+        internal string OEmbedRelated { get; set; }
+
+        /// <summary>
+        /// Language code for rendered tweet
+        /// </summary>
+        internal string OEmbedLanguage { get; set; }
+
+        /// <summary>
         /// extracts parameters from lambda
         /// </summary>
         /// <param name="lambdaExpression">lambda expression with where clause</param>
@@ -116,7 +156,15 @@ namespace LinqToTwitter
                        "IncludeEntities",
                        "TrimUser",
                        "IncludeContributorDetails",
-                       "IncludeMyRetweet"
+                       "IncludeMyRetweet",
+                       "OEmbedUrl",
+                       "OEmbedMaxWidth",
+                       "OEmbedHideMedia",
+                       "OEmbedHideThread",
+                       "OEmbedOmitScript",
+                       "OEmbedAlign",
+                       "OEmbedRelated",
+                       "OEmbedLanguage"
                    });
 
             var parameters = paramFinder.Parameters;
@@ -143,6 +191,8 @@ namespace LinqToTwitter
                     return BuildHomeUrl(parameters);
                 case StatusType.Mentions:
                     return BuildMentionsUrl(parameters);
+                case StatusType.Oembed:
+                    return BuildOembedUrl(parameters);
                 case StatusType.Retweets:
                     return BuildRetweetsUrl(parameters);
                 case StatusType.RetweetedByMe:
@@ -371,6 +421,73 @@ namespace LinqToTwitter
             return BuildUrlParameters(parameters, "statuses/retweets_of_me.json");
         }
 
+        /// <summary>
+        /// construct an oembed url
+        /// </summary>
+        /// <param name="parameters">input parameters</param>
+        /// <returns>base url + url segment</returns>
+        Request BuildOembedUrl(Dictionary<string, string> parameters)
+        {
+            var req = new Request(BaseUrl + "statuses/oembed.json");
+            var urlParams = req.RequestParameters;
+
+            if (parameters.ContainsKey("ID"))
+            {
+                ID = parameters["ID"];
+                urlParams.Add(new QueryParameter("id", parameters["ID"]));
+            }
+
+            if (parameters.ContainsKey("OEmbedUrl"))
+            {
+                OEmbedUrl = parameters["OEmbedUrl"];
+                urlParams.Add(new QueryParameter("url", parameters["OEmbedUrl"]));
+            }
+
+            if (parameters.ContainsKey("OEmbedMaxWidth"))
+            {
+                OEmbedMaxWidth = int.Parse(parameters["OEmbedMaxWidth"]);
+                urlParams.Add(new QueryParameter("maxwidth", parameters["OEmbedMaxWidth"]));
+            }
+
+            if (parameters.ContainsKey("OEmbedHideMedia"))
+            {
+                OEmbedHideMedia = bool.Parse(parameters["OEmbedHideMedia"]);
+                urlParams.Add(new QueryParameter("hide_media", parameters["OEmbedHideMedia"].ToLower()));
+            }
+
+            if (parameters.ContainsKey("OEmbedHideThread"))
+            {
+                OEmbedHideThread = bool.Parse(parameters["OEmbedHideThread"]);
+                urlParams.Add(new QueryParameter("hide_thread", parameters["OEmbedHideThread"].ToLower()));
+            }
+
+            if (parameters.ContainsKey("OEmbedOmitScript"))
+            {
+                OEmbedOmitScript = bool.Parse(parameters["OEmbedOmitScript"]);
+                urlParams.Add(new QueryParameter("omit_script", parameters["OEmbedOmitScript"].ToLower()));
+            }
+
+            if (parameters.ContainsKey("OEmbedAlign"))
+            {
+                OEmbedAlign = (EmbeddedStatusAlignment)Enum.Parse(typeof(EmbeddedStatusAlignment), parameters["OEmbedAlign"], true);
+                urlParams.Add(new QueryParameter("align", OEmbedAlign.ToString().ToLower()));
+            }
+
+            if (parameters.ContainsKey("OEmbedRelated"))
+            {
+                OEmbedRelated = parameters["OEmbedRelated"];
+                urlParams.Add(new QueryParameter("related", parameters["OEmbedRelated"].Replace(" ", "")));
+            }
+
+            if (parameters.ContainsKey("OEmbedLanguage"))
+            {
+                OEmbedLanguage = parameters["OEmbedLanguage"];
+                urlParams.Add(new QueryParameter("lang", parameters["OEmbedLanguage"].ToLower()));
+            }
+
+            return req;
+        }
+
         Request BuildRetweetedByUrl(Dictionary<string, string> parameters)
         {
             if (!parameters.ContainsKey("ID"))
@@ -445,6 +562,15 @@ namespace LinqToTwitter
                         }
                     };
                     break;
+                case StatusType.Oembed:
+                    statusList = new List<Status>
+                    {
+                        new Status
+                        {
+                            EmbeddedStatus = new EmbeddedStatus(statusJson)
+                        }
+                    };
+                    break;
                 default:
                     statusList = new List<Status>();
                     break;
@@ -466,6 +592,14 @@ namespace LinqToTwitter
                 status.TrimUser = TrimUser;
                 status.IncludeContributorDetails = IncludeContributorDetails;
                 status.IncludeMyRetweet = IncludeMyRetweet;
+                status.OEmbedAlign = OEmbedAlign;
+                status.OEmbedHideMedia = OEmbedHideMedia;
+                status.OEmbedHideThread = OEmbedHideThread;
+                status.OEmbedMaxWidth = OEmbedMaxWidth;
+                status.OEmbedOmitScript = OEmbedOmitScript;
+                status.OEmbedRelated = OEmbedRelated;
+                status.OEmbedUrl = OEmbedUrl;
+                status.OEmbedLanguage = OEmbedLanguage;
             }
 
             return statusList.OfType<T>().ToList();

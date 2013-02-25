@@ -27,7 +27,7 @@ namespace LinqToTwitterDemo
             //MentionsWithSinceIDStatusQueryDemo(twitterCtx);
             //MentionsWithPagingQueryDemo(twitterCtx);
             //SingleStatusQueryDemo(twitterCtx);
-            UpdateStatusDemo(twitterCtx);
+            //UpdateStatusDemo(twitterCtx);
             //UpdateStatusWrapLinksDemo(twitterCtx);
             //UpdateStatusWithCallbackDemo(twitterCtx);
             //UpdateStatusWithCallbackDemo(twitterCtx);
@@ -51,6 +51,7 @@ namespace LinqToTwitterDemo
             //TweetWithMediaDemo(twitterCtx);
             //TweetEntityDemo(twitterCtx);
             //RetweetedByDemo(twitterCtx);
+            OEmbedStatusDemo(twitterCtx);
         }
 
         /// <summary>
@@ -850,6 +851,18 @@ namespace LinqToTwitterDemo
                     tweet.Entities.UrlMentions.Count,
                     tweet.Entities.UserMentions.Count);
             });
+        }
+
+        static void OEmbedStatusDemo(TwitterContext twitterCtx)
+        {
+            var embeddedStatus =
+                (from tweet in twitterCtx.Status
+                 where tweet.Type == StatusType.Oembed &&
+                       tweet.ID == "305050067973312514"
+                 select tweet.EmbeddedStatus)
+                .SingleOrDefault();
+
+            Console.WriteLine("Embedded Status Html: " + embeddedStatus.Html);
         }
     }
 }

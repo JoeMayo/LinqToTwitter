@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Joe Mayo")]
 [assembly: AssemblyProduct("LINQ to Twitter - Client Profile")]
-[assembly: AssemblyCopyright("Copyright ©  2012 - 2013")]
+[assembly: AssemblyCopyright("Copyright ©  2008 - 2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

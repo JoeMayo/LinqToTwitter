@@ -35,7 +35,15 @@ namespace LinqToTwitterXUnitTests.StatusTests
                 status.IncludeEntities == true &&
                 status.TrimUser == true &&
                 status.IncludeContributorDetails == true &&
-                status.IncludeMyRetweet == true;
+                status.IncludeMyRetweet == true &&
+                status.OEmbedUrl == "http://myurl.com" &&
+                status.OEmbedAlign == EmbeddedStatusAlignment.Center &&
+                status.OEmbedHideMedia == true &&
+                status.OEmbedHideThread == true &&
+                status.OEmbedLanguage == "en" &&
+                status.OEmbedMaxWidth == 300 &&
+                status.OEmbedOmitScript == true &&
+                status.OEmbedRelated == "JoeMayo";
 
             var lambdaExpression = expression as LambdaExpression;
 
@@ -86,6 +94,30 @@ namespace LinqToTwitterXUnitTests.StatusTests
             Assert.True(
               queryParams.Contains(
                   new KeyValuePair<string, string>("IncludeMyRetweet", "True")));
+            Assert.True(
+              queryParams.Contains(
+                  new KeyValuePair<string, string>("OEmbedUrl", "http://myurl.com")));
+            Assert.True(
+              queryParams.Contains(
+                  new KeyValuePair<string, string>("OEmbedAlign", ((int)EmbeddedStatusAlignment.Center).ToString())));
+            Assert.True(
+              queryParams.Contains(
+                  new KeyValuePair<string, string>("OEmbedHideMedia", "True")));
+            Assert.True(
+              queryParams.Contains(
+                  new KeyValuePair<string, string>("OEmbedHideThread", "True")));
+            Assert.True(
+              queryParams.Contains(
+                  new KeyValuePair<string, string>("OEmbedLanguage", "en")));
+            Assert.True(
+              queryParams.Contains(
+                  new KeyValuePair<string, string>("OEmbedMaxWidth", "300")));
+            Assert.True(
+              queryParams.Contains(
+                  new KeyValuePair<string, string>("OEmbedOmitScript", "True")));
+            Assert.True(
+              queryParams.Contains(
+                  new KeyValuePair<string, string>("OEmbedRelated", "JoeMayo")));
         }
 
         [Fact]
@@ -297,6 +329,34 @@ namespace LinqToTwitterXUnitTests.StatusTests
         }
 
         [Fact]
+        public void BuildUrl_Returns_Url_For_OEmbed()
+        {
+            const string ExpectedUrl = "https://api.twitter.com/1.1/statuses/oembed.json?id=1&url=abc&maxwidth=300&hide_media=true&hide_thread=true&omit_script=true&align=left&related=JoeMayo%2CTwitterAPI&lang=en";
+            var reqProc = new StatusRequestProcessor<Status>
+            {
+                Type = StatusType.Oembed,
+                BaseUrl = "https://api.twitter.com/1.1/"
+            };
+            var parameters = new Dictionary<string, string>
+            {
+                { "Type", ((int)StatusType.Oembed).ToString() },
+                { "ID", "1" },
+                { "OEmbedUrl", "abc" },
+                { "OEmbedMaxWidth", "300" },
+                { "OEmbedHideMedia", true.ToString() },
+                { "OEmbedHideThread", true.ToString() },
+                { "OEmbedOmitScript", true.ToString() },
+                { "OEmbedAlign", ((int)EmbeddedStatusAlignment.Left).ToString() },
+                { "OEmbedRelated", "JoeMayo, TwitterAPI" },
+                { "OEmbedLanguage", "en" }
+            };
+
+            Request req = reqProc.BuildUrl(parameters);
+
+            Assert.Equal(ExpectedUrl, req.FullUrl);
+        }
+
+        [Fact]
         public void BuildUrl_RetweetedBy_Throws_On_Missing_ID()
         {
             const string ExpectedParam = "ID";
@@ -491,6 +551,43 @@ namespace LinqToTwitterXUnitTests.StatusTests
         }
 
         [Fact]
+        public void ProcessResults_Handles_An_Embedded_Status()
+        {
+            var statProc = new StatusRequestProcessor<Status> { Type = StatusType.Oembed, BaseUrl = "https://api.twitter.com/1.1/" };
+            const string ExpectedType = "rich";
+            const string ExpectedCacheAge = "31536000000";
+            const string ExpectedVersion = "1.0";
+            const string ExpectedProviderName = "Twitter";
+            const string ExpectedUrl = "https://twitter.com/JoeMayo/status/305050067973312514";
+            const int ExpectedWidth = 550;
+            const int ExpectedHeight = 0;
+            const string ExpectedHtml = "some html";
+            const string ExpectedProviderUrl = "http://twitter.com";
+            const string ExpectedAuthorUrl = "https://twitter.com/JoeMayo";
+            const string ExpectedAuthorName = "Joe Mayo";
+
+            var statuses = statProc.ProcessResults(OEmbedResponse);
+
+            Assert.NotNull(statuses);
+            Assert.Single(statuses);
+            var status = statuses.Single();
+            Assert.NotNull(status);
+            var embeddedStatus = status.EmbeddedStatus;
+            Assert.NotNull(embeddedStatus);
+            Assert.Equal(ExpectedType, embeddedStatus.Type);
+            Assert.Equal(ExpectedCacheAge, embeddedStatus.CacheAge);
+            Assert.Equal(ExpectedVersion, embeddedStatus.Version);
+            Assert.Equal(ExpectedProviderName, embeddedStatus.ProviderName);
+            Assert.Equal(ExpectedUrl, embeddedStatus.Url);
+            Assert.Equal(ExpectedWidth, embeddedStatus.Width);
+            Assert.Equal(ExpectedHeight, embeddedStatus.Height);
+            Assert.Equal(ExpectedHtml, embeddedStatus.Html);
+            Assert.Equal(ExpectedProviderUrl, embeddedStatus.ProviderUrl);
+            Assert.Equal(ExpectedAuthorUrl, embeddedStatus.AuthorUrl);
+            Assert.Equal(ExpectedAuthorName, embeddedStatus.AuthorName);
+        }
+
+        [Fact]
         public void ProcessResults_Populates_Input_Parameters()
         {
             var statProc = new StatusRequestProcessor<Status>() 
@@ -532,6 +629,42 @@ namespace LinqToTwitterXUnitTests.StatusTests
             Assert.True(status.TrimUser);
             Assert.True(status.IncludeContributorDetails);
             Assert.True(status.IncludeMyRetweet);
+        }
+
+        [Fact]
+        public void ProcessResults_Populates_EmbeddedStatus_Parameters()
+        {
+            var statProc = new StatusRequestProcessor<Status>()
+            {
+                BaseUrl = "https://api.twitter.com/1.1/",
+                Type = StatusType.Oembed,
+                ID = "123",
+                OEmbedUrl = "http://myurl.com",
+                OEmbedMaxWidth = 300,
+                OEmbedHideMedia = true,
+                OEmbedHideThread = true,
+                OEmbedOmitScript = true,
+                OEmbedAlign = EmbeddedStatusAlignment.Left,
+                OEmbedRelated = "JoeMayo,TwitterAPI",
+                OEmbedLanguage = "en"
+            };
+
+            var statuses = statProc.ProcessResults(OEmbedResponse);
+
+            Assert.NotNull(statuses);
+            Assert.Single(statuses);
+            var status = statuses.Single();
+            Assert.NotNull(status);
+            Assert.Equal(StatusType.Oembed, status.Type);
+            Assert.Equal("123", status.ID);
+            Assert.Equal("http://myurl.com", status.OEmbedUrl);
+            Assert.Equal(300, status.OEmbedMaxWidth);
+            Assert.True(status.OEmbedHideMedia);
+            Assert.True(status.OEmbedHideThread);
+            Assert.True(status.OEmbedOmitScript);
+            Assert.Equal(EmbeddedStatusAlignment.Left, status.OEmbedAlign);
+            Assert.Equal("JoeMayo,TwitterAPI", status.OEmbedRelated);
+            Assert.Equal("en", status.OEmbedLanguage);
         }
 
         const string SingleStatusResponse = @"{
@@ -1178,5 +1311,19 @@ namespace LinqToTwitterXUnitTests.StatusTests
       ""profile_sidebar_fill_color"":""DDEEF6""
    }
 ]";
+
+        const string OEmbedResponse = @"{
+   ""type"":""rich"",
+   ""cache_age"":""31536000000"",
+   ""version"":""1.0"",
+   ""provider_name"":""Twitter"",
+   ""url"":""https://twitter.com/JoeMayo/status/305050067973312514"",
+   ""width"":550,
+   ""height"":null,
+   ""html"":""some html"",
+   ""provider_url"":""http://twitter.com"",
+   ""author_url"":""https://twitter.com/JoeMayo"",
+   ""author_name"":""Joe Mayo""
+}";
     }
 }

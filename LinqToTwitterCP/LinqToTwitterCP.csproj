@@ -535,6 +535,12 @@
     <Compile Include="..\LinqToTwitterAg\Status\Contributor.cs">
       <Link>Status\Contributor.cs</Link>
     </Compile>
+    <Compile Include="..\LinqToTwitterAg\Status\EmbeddedStatus.cs">
+      <Link>Status\EmbeddedStatus.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Status\EmbeddedStatusAlignment.cs">
+      <Link>Status\EmbeddedStatusAlignment.cs</Link>
+    </Compile>
     <Compile Include="..\LinqToTwitterAg\Status\FilterLevel.cs">
       <Link>Status\FilterLevel.cs</Link>
     </Compile>

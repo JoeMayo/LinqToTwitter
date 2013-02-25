@@ -254,6 +254,8 @@
     <Compile Include="Common\Entities\MentionBase.cs" />
     <Compile Include="Common\Entities\UrlMention.cs" />
     <Compile Include="Common\Entities\UserMention.cs" />
+    <Compile Include="Status\EmbeddedStatus.cs" />
+    <Compile Include="Status\EmbeddedStatusAlignment.cs" />
     <Compile Include="Status\FilterLevel.cs" />
     <Compile Include="Status\Retweet.cs" />
     <Compile Include="Status\Status.cs" />
