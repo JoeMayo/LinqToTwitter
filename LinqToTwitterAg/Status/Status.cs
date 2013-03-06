@@ -169,6 +169,11 @@ namespace LinqToTwitter
         public bool IncludeEntities { get; set; }
 
         /// <summary>
+        /// Add entities to user (default: true)
+        /// </summary>
+        public bool IncludeUserEntities { get; set; }
+
+        /// <summary>
         /// Populates CurrentUserRetweet in response if set to true
         /// </summary>
         public bool IncludeMyRetweet { get; set; }

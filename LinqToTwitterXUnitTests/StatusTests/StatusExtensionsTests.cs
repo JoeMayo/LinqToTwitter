@@ -119,56 +119,6 @@ namespace LinqToTwitterXUnitTests.StatusTests
             Assert.Equal("id", ex.ParamName);
         }
 
-        [Fact]
-        public void UpdateStatus_Sets_WrapLinks()
-        {
-            const bool WrapLinks = true;
-            const string Status = "Test";
-            var authMock = new Mock<ITwitterAuthorizer>();
-            var execMock = new Mock<ITwitterExecute>();
-            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
-            bool wrapLinksPassedToExecute = false;
-            execMock.Setup(exec =>
-                exec.PostToTwitter(
-                    It.IsAny<string>(),
-                    It.IsAny<Dictionary<string, string>>(),
-                    It.IsAny<Func<string, Status>>()))
-                .Callback<string, IDictionary<string, string>, Func<string, Status>>(
-                    (url, postData, reqProc) => wrapLinksPassedToExecute =
-                        postData.ContainsKey("wrap_links") && bool.Parse(postData["wrap_links"]))
-                .Returns(SingleStatusResponse);
-            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
-
-            ctx.UpdateStatus(Status, WrapLinks);
-
-            Assert.True(wrapLinksPassedToExecute);
-        }
-
-        [Fact]
-        public void UpdateStatus_Sets_WrapLinks_To_Null_When_False()
-        {
-            const bool WrapLinks = false;
-            const string Status = "Test";
-            var authMock = new Mock<ITwitterAuthorizer>();
-            var execMock = new Mock<ITwitterExecute>();
-            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
-            bool wrapLinksIsSetToNull = false;
-            execMock.Setup(exec =>
-                exec.PostToTwitter(
-                    It.IsAny<string>(),
-                    It.IsAny<Dictionary<string, string>>(),
-                    It.IsAny<Func<string, Status>>()))
-                .Callback<string, IDictionary<string, string>, Func<string, Status>>(
-                    (url, postData, reqProc) =>
-                        wrapLinksIsSetToNull = postData["wrap_links"] == null)
-                .Returns(SingleStatusResponse);
-            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
-
-            ctx.UpdateStatus(Status, WrapLinks);
-
-            Assert.True(wrapLinksIsSetToNull);
-        }
-
         const string SingleStatusResponse = @"{
       ""retweeted"":false,
       ""in_reply_to_screen_name"":null,

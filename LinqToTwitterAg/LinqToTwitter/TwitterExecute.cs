@@ -35,7 +35,7 @@ namespace LinqToTwitter
         /// <summary>
         /// Version used in UserAgent
         /// </summary>
-        const string LinqToTwitterVersion = "LINQ to Twitter v2.0";
+        const string LinqToTwitterVersion = "LINQ to Twitter v2.1";
 
         /// <summary>
         /// Default for ReadWriteTimeout

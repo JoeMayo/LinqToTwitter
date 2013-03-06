@@ -6,6 +6,7 @@ namespace LinqToTwitter
 {
     public class EmbeddedStatus
     {
+        public EmbeddedStatus() { }
         public EmbeddedStatus(JsonData embeddedStatusJson)
         {
             Html = embeddedStatusJson.GetValue<string>("html");

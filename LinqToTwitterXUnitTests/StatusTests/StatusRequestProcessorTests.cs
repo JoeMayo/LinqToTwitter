@@ -33,6 +33,7 @@ namespace LinqToTwitterXUnitTests.StatusTests
                 status.IncludeRetweets == true &&
                 status.ExcludeReplies == true &&
                 status.IncludeEntities == true &&
+                status.IncludeUserEntities == true &&
                 status.TrimUser == true &&
                 status.IncludeContributorDetails == true &&
                 status.IncludeMyRetweet == true &&
@@ -84,7 +85,10 @@ namespace LinqToTwitterXUnitTests.StatusTests
                   new KeyValuePair<string, string>("ExcludeReplies", "True")));
             Assert.True(
               queryParams.Contains(
-                  new KeyValuePair<string, string>("IncludeEntities", "True")));
+                  new KeyValuePair<string, string>("IncludeUserEntities", "True")));
+            Assert.True(
+              queryParams.Contains(
+                  new KeyValuePair<string, string>("OEmbedRelated", "JoeMayo")));
             Assert.True(
               queryParams.Contains(
                   new KeyValuePair<string, string>("TrimUser", "True")));
@@ -357,6 +361,51 @@ namespace LinqToTwitterXUnitTests.StatusTests
         }
 
         [Fact]
+        public void BuildUrl_Returns_Url_For_RetweetsOfMe()
+        {
+            const string ExpectedUrl = "https://api.twitter.com/1.1/statuses/retweets_of_me.json?since_id=2&max_id=3&count=1&include_entities=true&include_user_entities=true&trim_user=true";
+            var reqProc = new StatusRequestProcessor<Status>
+            {
+                Type = StatusType.Oembed,
+                BaseUrl = "https://api.twitter.com/1.1/"
+            };
+            var parameters = new Dictionary<string, string>
+            {
+                { "Type", ((int)StatusType.RetweetsOfMe).ToString() },
+                { "Count", "1" },
+                { "SinceID", "2" },
+                { "MaxID", "3" },
+                { "TrimUser", true.ToString() },
+                { "IncludeEntities", true.ToString() },
+                { "IncludeUserEntities", true.ToString() },
+            };
+
+            Request req = reqProc.BuildUrl(parameters);
+
+            Assert.Equal(ExpectedUrl, req.FullUrl);
+        }
+
+        [Fact]
+        public void BuildUrl_Includes_False_IncludeUserEntities_Param()
+        {
+            const string ExpectedUrl = "https://api.twitter.com/1.1/statuses/retweets_of_me.json?include_user_entities=false";
+            var reqProc = new StatusRequestProcessor<Status>
+            {
+                Type = StatusType.User,
+                BaseUrl = "https://api.twitter.com/1.1/"
+            };
+            var parameters = new Dictionary<string, string>
+            {
+                { "Type", ((int)StatusType.RetweetsOfMe).ToString() },
+                { "IncludeUserEntities", false.ToString() },
+            };
+
+            Request req = reqProc.BuildUrl(parameters);
+
+            Assert.Equal(ExpectedUrl, req.FullUrl);
+        }
+
+        [Fact]
         public void BuildUrl_RetweetedBy_Throws_On_Missing_ID()
         {
             const string ExpectedParam = "ID";
@@ -604,6 +653,7 @@ namespace LinqToTwitterXUnitTests.StatusTests
                 IncludeRetweets = true,
                 ExcludeReplies = true,
                 IncludeEntities = true,
+                IncludeUserEntities = true,
                 TrimUser = true,
                 IncludeContributorDetails = true,
                 IncludeMyRetweet = true,
@@ -626,6 +676,7 @@ namespace LinqToTwitterXUnitTests.StatusTests
             Assert.True(status.IncludeRetweets);
             Assert.True(status.ExcludeReplies);
             Assert.True(status.IncludeEntities);
+            Assert.True(status.IncludeUserEntities);
             Assert.True(status.TrimUser);
             Assert.True(status.IncludeContributorDetails);
             Assert.True(status.IncludeMyRetweet);

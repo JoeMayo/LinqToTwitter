@@ -78,6 +78,11 @@ namespace LinqToTwitter
         internal bool IncludeEntities { get; set; }
 
         /// <summary>
+        /// Include entities in users (default: true)
+        /// </summary>
+        internal bool IncludeUserEntities { get; set; }
+
+        /// <summary>
         /// Remove all user info, except for User ID
         /// </summary>
         internal bool TrimUser { get; set; }
@@ -154,6 +159,7 @@ namespace LinqToTwitter
                        "IncludeRetweets",
                        "ExcludeReplies",
                        "IncludeEntities",
+                       "IncludeUserEntities",
                        "TrimUser",
                        "IncludeContributorDetails",
                        "IncludeMyRetweet",
@@ -291,6 +297,12 @@ namespace LinqToTwitter
             {
                 IncludeEntities = bool.Parse(parameters["IncludeEntities"]);
                 urlParams.Add(new QueryParameter("include_entities", parameters["IncludeEntities"].ToLower()));
+            }
+
+            if (parameters.ContainsKey("IncludeUserEntities"))
+            {
+                IncludeUserEntities = bool.Parse(parameters["IncludeUserEntities"]);
+                urlParams.Add(new QueryParameter("include_user_entities", parameters["IncludeUserEntities"].ToLower()));
             }
 
             if (parameters.ContainsKey("TrimUser"))
@@ -589,6 +601,7 @@ namespace LinqToTwitter
                 status.IncludeRetweets = IncludeRetweets;
                 status.ExcludeReplies = ExcludeReplies;
                 status.IncludeEntities = IncludeEntities;
+                status.IncludeUserEntities = IncludeUserEntities;
                 status.TrimUser = TrimUser;
                 status.IncludeContributorDetails = IncludeContributorDetails;
                 status.IncludeMyRetweet = IncludeMyRetweet;
