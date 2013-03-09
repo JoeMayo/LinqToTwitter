@@ -19,7 +19,6 @@ namespace LinqToTwitterDemo
             //DirectMessageSentToQueryDemo(twitterCtx);
             //DirectMessageShowDemo(twitterCtx);
             NewDirectMessageDemo(twitterCtx);
-            //NewDirectMessageWrapLinksDemo(twitterCtx);
             //DestroyDirectMessageDemo(twitterCtx);
         }
 
@@ -29,7 +28,7 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void DestroyDirectMessageDemo(TwitterContext twitterCtx)
         {
-            var message = twitterCtx.DestroyDirectMessage("243563161037455360");
+            var message = twitterCtx.DestroyDirectMessage("243563161037455360", true);
 
             if (message != null)
             {
@@ -48,30 +47,6 @@ namespace LinqToTwitterDemo
         {
             var message = twitterCtx.NewDirectMessage("16761255", "Test message with (parentheses)");
             //var message = twitterCtx.NewDirectMessage("16761255", "Direct Message Test - " + DateTime.Now);
-
-            if (message != null)
-            {
-                Console.WriteLine(
-                    "Recipient: {0}, Message: {1}, Date: {2}",
-                    message.RecipientScreenName,
-                    message.Text,
-                    message.CreatedAt);
-            }
-        }
-
-        /// <summary>
-        /// shows how to send a new direct message and wrap links
-        /// </summary>
-        /// <param name="twitterCtx">TwitterContext</param>
-        private static void NewDirectMessageWrapLinksDemo(TwitterContext twitterCtx)
-        {
-            const bool wrapLinks = true;
-
-            var message = 
-                twitterCtx.NewDirectMessage(
-                    "16761255", 
-                    "Direct Message Test - " + DateTime.Now + " http://linqtotwitter.codeplex.com",
-                    wrapLinks);
 
             if (message != null)
             {

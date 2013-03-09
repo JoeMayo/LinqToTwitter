@@ -96,64 +96,12 @@ namespace LinqToTwitterXUnitTests
         }
 
         [Fact]
-        public void NewDirectMessage_Sets_WrapLinks()
-        {
-            const bool WrapLinks = true;
-            const string UserID = "1";
-            const string Text = "Hi";
-            var authMock = new Mock<ITwitterAuthorizer>();
-            var execMock = new Mock<ITwitterExecute>();
-            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
-            bool wrapLinksPassedToExecute = false;
-            execMock.Setup(exec =>
-                exec.PostToTwitter(
-                    It.IsAny<string>(),
-                    It.IsAny<Dictionary<string, string>>(),
-                    It.IsAny<Func<string, DirectMessage>>()))
-                .Callback<string, IDictionary<string, string>, Func<string, DirectMessage>>(
-                    (url, postData, reqProc) => wrapLinksPassedToExecute =
-                        postData.ContainsKey("wrap_links") && bool.Parse(postData["wrap_links"]))
-                .Returns(TestQueryResponse);
-            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
-
-            ctx.NewDirectMessage(UserID, Text, WrapLinks);
-
-            Assert.True(wrapLinksPassedToExecute);
-        }
-
-        [Fact]
-        public void NewDirectMessage_Sets_WrapLinks_To_Null_When_False()
-        {
-            const bool WrapLinks = false;
-            const string UserID = "1";
-            const string Text = "Hi";
-            var authMock = new Mock<ITwitterAuthorizer>();
-            var execMock = new Mock<ITwitterExecute>();
-            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
-            bool wrapLinksIsSetToNull = false;
-            execMock.Setup(exec =>
-                exec.PostToTwitter(
-                    It.IsAny<string>(),
-                    It.IsAny<Dictionary<string, string>>(),
-                    It.IsAny<Func<string, DirectMessage>>()))
-                .Callback<string, IDictionary<string, string>, Func<string, DirectMessage>>(
-                    (url, postData, reqProc) =>
-                        wrapLinksIsSetToNull = postData["wrap_links"] == null)
-                .Returns(TestQueryResponse);
-            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
-
-            ctx.NewDirectMessage(UserID, Text, WrapLinks);
-
-            Assert.True(wrapLinksIsSetToNull);
-        }
-
-        [Fact]
         public void DestroyDirectMessage_Returns_Deleted_DM()
         {
             const string Id = "1";
             var ctx = InitializeTwitterContext();
 
-            DirectMessage actual = ctx.DestroyDirectMessage(Id);
+            DirectMessage actual = ctx.DestroyDirectMessage(Id, true);
 
             Assert.Equal(189086715040903168ul, actual.IDResponse);
         }
@@ -164,7 +112,7 @@ namespace LinqToTwitterXUnitTests
             const string Id = "1";
             var ctx = InitializeTwitterContext();
 
-            ctx.DestroyDirectMessage(Id);
+            ctx.DestroyDirectMessage(Id, true);
 
             execMock.Verify(
                 exec =>
@@ -180,7 +128,7 @@ namespace LinqToTwitterXUnitTests
         {
             var ctx = InitializeTwitterContext();
 
-            var ex = Assert.Throws<ArgumentException>(() => ctx.DestroyDirectMessage(null));
+            var ex = Assert.Throws<ArgumentException>(() => ctx.DestroyDirectMessage(null, true));
 
             Assert.Equal("id", ex.ParamName);
         }

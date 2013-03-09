@@ -15,20 +15,7 @@ namespace LinqToTwitter
         /// <returns>Direct message element</returns>
         public static DirectMessage NewDirectMessage(this TwitterContext ctx, string user, string text)
         {
-            return NewDirectMessage(ctx, user, text, false, null);
-        }
-
-        /// <summary>
-        /// sends a new direct message to specified user
-        /// </summary>
-        /// <param name="ctx">Twitter Context</param>
-        /// <param name="user">UserID or ScreenName of user to send to</param>
-        /// <param name="text">Direct message contents</param>
-        /// <param name="wrapLinks">Shorten links using Twitter's t.co wrapper</param>
-        /// <returns>Direct message element</returns>
-        public static DirectMessage NewDirectMessage(this TwitterContext ctx, string user, string text, bool wrapLinks)
-        {
-            return NewDirectMessage(ctx, user, text, wrapLinks, null);
+            return NewDirectMessage(ctx, user, text, null);
         }
 
         /// <summary>
@@ -40,7 +27,7 @@ namespace LinqToTwitter
         /// <param name="wrapLinks">Shorten links using Twitter's t.co wrapper</param>
         /// <param name="callback">Async Callback</param>
         /// <returns>Direct message element</returns>
-        public static DirectMessage NewDirectMessage(this TwitterContext ctx, string user, string text, bool wrapLinks, Action<TwitterAsyncResponse<DirectMessage>> callback)
+        public static DirectMessage NewDirectMessage(this TwitterContext ctx, string user, string text, Action<TwitterAsyncResponse<DirectMessage>> callback)
         {
             if (string.IsNullOrEmpty(user))
             {
@@ -65,8 +52,7 @@ namespace LinqToTwitter
                     new Dictionary<string, string>
                     {
                         {"user", user},
-                        {"text", text},
-                        {"wrap_links", wrapLinks ? true.ToString() : null }
+                        {"text", text}
                     },
                     response => reqProc.ProcessActionResult(response, DirectMessageType.Show));
 
@@ -80,9 +66,9 @@ namespace LinqToTwitter
         /// <param name="ctx">Twitter Context</param>
         /// <param name="id">id of direct message</param>
         /// <returns>direct message element</returns>
-        public static DirectMessage DestroyDirectMessage(this TwitterContext ctx, string id)
+        public static DirectMessage DestroyDirectMessage(this TwitterContext ctx, string id, bool includeEntites)
         {
-            return DestroyDirectMessage(ctx, id, null);
+            return DestroyDirectMessage(ctx, id, includeEntites, null);
         }
 
         /// <summary>
@@ -92,7 +78,7 @@ namespace LinqToTwitter
         /// <param name="id">id of direct message</param>
         /// <param name="callback">Async Callback</param>
         /// <returns>direct message element</returns>
-        public static DirectMessage DestroyDirectMessage(this TwitterContext ctx, string id, Action<TwitterAsyncResponse<DirectMessage>> callback)
+        public static DirectMessage DestroyDirectMessage(this TwitterContext ctx, string id, bool includeEntites, Action<TwitterAsyncResponse<DirectMessage>> callback)
         {
             if (string.IsNullOrEmpty(id))
             {
@@ -111,7 +97,8 @@ namespace LinqToTwitter
                     destroyUrl,
                     new Dictionary<string, string>
                     {
-                        {"id", id}
+                        {"id", id},
+                        {"include_entities", includeEntites.ToString().ToLower()}
                     },
                     response => reqProc.ProcessActionResult(response, DirectMessageType.Show));
 
