@@ -79,7 +79,7 @@ namespace LinqToTwitterXUnitTests.FavoritesTests
                 .Returns(SingleStatusResponse);
             var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
 
-            Status actual = ctx.DestroyFavorite(Id);
+            Status actual = ctx.DestroyFavorite(Id, true);
 
             Assert.Equal(ExpectedStatusID, actual.StatusID);
         }
@@ -99,7 +99,7 @@ namespace LinqToTwitterXUnitTests.FavoritesTests
                 .Returns(SingleStatusResponse);
             var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
 
-            var ex = Assert.Throws<ArgumentException>(() => ctx.DestroyFavorite(id));
+            var ex = Assert.Throws<ArgumentException>(() => ctx.DestroyFavorite(id, true));
 
             Assert.Equal("id", ex.ParamName);
         }

@@ -13,16 +13,28 @@ namespace LinqToTwitter
         /// <returns>status of favorite</returns>
         public static Status CreateFavorite(this TwitterContext ctx, string id)
         {
-            return CreateFavorite(ctx, id, null);
+            return CreateFavorite(ctx, id, true, null);
         }
 
         /// <summary>
         /// Adds a favorite to the logged-in user's profile
         /// </summary>
         /// <param name="id">id of status to add to favorites</param>
+        /// <param name="includeEntities">Response doesn't include entities when false. (default: true)</param>
+        /// <returns>status of favorite</returns>
+        public static Status CreateFavorite(this TwitterContext ctx, string id, bool includeEntities)
+        {
+            return CreateFavorite(ctx, id, true, null);
+        }
+
+        /// <summary>
+        /// Adds a favorite to the logged-in user's profile
+        /// </summary>
+        /// <param name="id">id of status to add to favorites</param>
+        /// <param name="includeEntities">Response doesn't include entities when false. (default: true)</param>
         /// <param name="callback">Async Callback used in Silverlight queries</param>
         /// <returns>status of favorite</returns>
-        public static Status CreateFavorite(this TwitterContext ctx, string id, Action<TwitterAsyncResponse<Status>> callback)
+        public static Status CreateFavorite(this TwitterContext ctx, string id, bool includeEntities, Action<TwitterAsyncResponse<Status>> callback)
         {
             if (string.IsNullOrEmpty(id))
             {
@@ -42,6 +54,7 @@ namespace LinqToTwitter
                     new Dictionary<string, string>
                     {
                         {"id", id},
+                        {"include_entities", includeEntities.ToString()}
                     },
                     response => reqProc.ProcessActionResult(response, FavoritesAction.SingleStatus));
 
@@ -56,16 +69,28 @@ namespace LinqToTwitter
         /// <returns>status of favorite</returns>
         public static Status DestroyFavorite(this TwitterContext ctx, string id)
         {
-            return DestroyFavorite(ctx, id, null);
+            return DestroyFavorite(ctx, id, true, null);
         }
 
         /// <summary>
         /// Deletes a favorite from the logged-in user's profile
         /// </summary>
         /// <param name="id">id of status to add to favorites</param>
+        /// <param name="includeEntities">Response doesn't include entities when false. (default: true)</param>
+        /// <returns>status of favorite</returns>
+        public static Status DestroyFavorite(this TwitterContext ctx, string id, bool includeEntities)
+        {
+            return DestroyFavorite(ctx, id, includeEntities, null);
+        }
+
+        /// <summary>
+        /// Deletes a favorite from the logged-in user's profile
+        /// </summary>
+        /// <param name="id">id of status to add to favorites</param>
+        /// <param name="includeEntities">Response doesn't include entities when false. (default: true)</param>
         /// <param name="callback">Async Callback used in Silverlight queries</param>
         /// <returns>status of favorite</returns>
-        public static Status DestroyFavorite(this TwitterContext ctx, string id, Action<TwitterAsyncResponse<Status>> callback)
+        public static Status DestroyFavorite(this TwitterContext ctx, string id, bool includeEntities, Action<TwitterAsyncResponse<Status>> callback)
         {
             if (string.IsNullOrEmpty(id))
             {
@@ -85,6 +110,7 @@ namespace LinqToTwitter
                     new Dictionary<string, string>
                     {
                         {"id", id},
+                        {"include_entities", includeEntities.ToString()}
                     },
                     response => reqProc.ProcessActionResult(response, FavoritesAction.SingleStatus));
 

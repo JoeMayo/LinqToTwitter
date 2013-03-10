@@ -22,7 +22,7 @@ namespace LinqToTwitterDemo
 
         private static void DestroyFavoriteDemo(TwitterContext twitterCtx)
         {
-            var status = twitterCtx.DestroyFavorite("265675496581373952");
+            var status = twitterCtx.DestroyFavorite("265675496581373952", true);
 
             Console.WriteLine("User: {0}, Tweet: {1}", status.User.Name, status.Text);
         }

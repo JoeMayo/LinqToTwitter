@@ -115,29 +115,52 @@ namespace LinqToTwitter
         /// <summary>
         /// lets logged-in user set retweets and/or device notifications for a follower
         /// </summary>
+        /// <param name="userID">Twitter's ID for user</param>
         /// <param name="screenName">screen name of user to update</param>
         /// <param name="retweets">Enable retweets</param>
         /// <param name="device">Receive notifications</param>
         /// <returns>updated friend user info</returns>
         public static Friendship UpdateFriendshipSettings(this TwitterContext ctx, string screenName, bool retweets, bool device)
         {
-            return UpdateFriendshipSettings(ctx, screenName, retweets, device, null);
+            return UpdateFriendshipSettings(ctx, 0, screenName, retweets, device, null);
         }
 
         /// <summary>
         /// lets logged-in user set retweets and/or device notifications for a follower
         /// </summary>
+        /// <param name="userID">Twitter's ID for user</param>
+        /// <param name="retweets">Enable retweets</param>
+        /// <param name="device">Receive notifications</param>
+        /// <returns>updated friend user info</returns>
+        public static Friendship UpdateFriendshipSettings(this TwitterContext ctx, ulong userID, bool retweets, bool device)
+        {
+            return UpdateFriendshipSettings(ctx, 0, null, retweets, device, null);
+        }
+
+        /// <summary>
+        /// lets logged-in user set retweets and/or device notifications for a follower
+        /// </summary>
+        /// <param name="userID">Twitter's ID for user</param>
         /// <param name="screenName">screen name of user to update</param>
         /// <param name="retweets">Enable retweets</param>
         /// <param name="device">Receive notifications</param>
         /// <param name="callback">Async Callback used in Silverlight queries</param>
         /// <returns>updated friend user info</returns>
-        public static Friendship UpdateFriendshipSettings(this TwitterContext ctx, string screenName, bool retweets, bool device, Action<TwitterAsyncResponse<Friendship>> callback)
+        public static Friendship UpdateFriendshipSettings(this TwitterContext ctx, ulong userID, string screenName, bool retweets, bool device, Action<TwitterAsyncResponse<Friendship>> callback)
         {
-            if (string.IsNullOrEmpty(screenName))
+            if (string.IsNullOrEmpty(screenName) && userID <= 0)
             {
-                throw new ArgumentNullException("screenName", "screenName is a required parameter.");
+                throw new ArgumentNullException("screenNameOrUserID", "Either screenName or UserID is a required parameter.");
             }
+
+            var parms = new Dictionary<string, string>
+            {
+                { "retweets", retweets.ToString().ToLower() },
+                { "device", device.ToString().ToLower() }
+            };
+
+            if (screenName != null) parms.Add("screen_name", screenName);
+            if (userID > 0) parms.Add("user_id", userID.ToString());
 
             string updateUrl = ctx.BaseUrl + "friendships/update.json";
 
@@ -149,12 +172,7 @@ namespace LinqToTwitter
             var resultsJson =
                 twitExe.PostToTwitter(
                     updateUrl,
-                    new Dictionary<string, string>
-                    {
-                        { "screen_name", screenName },
-                        { "retweets", retweets.ToString().ToLower() },
-                        { "device", device.ToString().ToLower() }
-                    },
+                    parms,
                     response => reqProc.ProcessActionResult(response, FriendshipAction.Update));
 
             Friendship results = reqProc.ProcessActionResult(resultsJson, FriendshipAction.Update);

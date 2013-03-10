@@ -54,12 +54,6 @@ namespace LinqToTwitter
         public new ulong MaxID { get; set; }
 
         /// <summary>
-        /// Page to retrieve (optional)
-        /// </summary>
-        [XmlIgnore]
-        public new int Page { get; set; }
-
-        /// <summary>
         /// Add entities to results (optional)
         /// </summary>
         [XmlIgnore]
@@ -121,15 +115,6 @@ namespace LinqToTwitter
         {
             get { return maxID; }
             set { maxID = value; }
-        }
-
-        [XmlIgnore]
-        int page;
-        [XmlAttribute(AttributeName="Page")]
-        public int PageXml
-        {
-            get { return page; }
-            set { page = value; }
         }
         
         [XmlIgnore]

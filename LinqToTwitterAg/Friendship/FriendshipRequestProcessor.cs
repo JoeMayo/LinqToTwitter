@@ -64,12 +64,17 @@ namespace LinqToTwitter
         /// <summary>
         /// Removes status when set to true (false by default)
         /// </summary>
-        public bool SkipStatus { get; set; }
+        internal bool SkipStatus { get; set; }
 
         /// <summary>
         /// Removes entities when set to false (true by default)
         /// </summary>
-        public bool IncludeEntities { get; set; }
+        internal bool IncludeEntities { get; set; }
+
+        /// <summary>
+        /// Removes entities on users when set to false (true by default)
+        /// </summary>
+        internal bool IncludeUserEntities { get; set; }
 
         /// <summary>
         /// extracts parameters from lambda
@@ -91,7 +96,8 @@ namespace LinqToTwitter
                        "ScreenName",
                        "UserID",
                        "SkipStatus",
-                       "IncludeEntities"
+                       "IncludeEntities",
+                       "IncludeUserEntities"
                    });
 
             var parameters = paramFinder.Parameters;
@@ -297,6 +303,12 @@ namespace LinqToTwitter
                 urlParams.Add(new QueryParameter("include_user_entities", IncludeEntities.ToString().ToLower()));
             }
 
+            if (parameters.ContainsKey("IncludeUserEntities"))
+            {
+                IncludeEntities = bool.Parse(parameters["IncludeUserEntities"]);
+                urlParams.Add(new QueryParameter("include_user_entities", IncludeEntities.ToString().ToLower()));
+            }
+
             return req;
         }
 
@@ -334,10 +346,10 @@ namespace LinqToTwitter
                 urlParams.Add(new QueryParameter("skip_status", SkipStatus.ToString().ToLower()));
             }
 
-            if (parameters.ContainsKey("IncludeEntities"))
+            if (parameters.ContainsKey("IncludeUserEntities"))
             {
-                IncludeEntities = bool.Parse(parameters["IncludeEntities"]);
-                urlParams.Add(new QueryParameter("include_user_entities", IncludeEntities.ToString().ToLower()));
+                IncludeUserEntities = bool.Parse(parameters["IncludeUserEntities"]);
+                urlParams.Add(new QueryParameter("include_user_entities", IncludeUserEntities.ToString().ToLower()));
             }
 
             return req;
@@ -387,7 +399,7 @@ namespace LinqToTwitter
             friendship.ScreenName = ScreenName;
             friendship.UserID = UserID;
             friendship.SkipStatus = SkipStatus;
-            friendship.IncludeEntities = IncludeEntities;
+            friendship.IncludeUserEntities = IncludeUserEntities;
 
             var friendList = new List<Friendship>
             {

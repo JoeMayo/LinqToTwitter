@@ -118,7 +118,7 @@ namespace LinqToTwitterXUnitTests.FriendshipTests
             execMock.Setup(exec => exec.PostToTwitter(It.IsAny<string>(), It.IsAny<Dictionary<string, string>>(), It.IsAny<Func<string, Friendship>>())).Returns(RelationshipResponse);
             var ctx = new TwitterContext(authMock.Object, execMock.Object, "https://api.twitter.com/1/", "");
 
-            ctx.UpdateFriendshipSettings("joemayo", true, true);
+            ctx.UpdateFriendshipSettings("Linq2Tweeter", true, true);
 
             execMock.Verify(exec => exec.PostToTwitter(
                 "https://api.twitter.com/1/friendships/update.json",
@@ -128,7 +128,7 @@ namespace LinqToTwitterXUnitTests.FriendshipTests
         }
 
         [Fact]
-        public void UpdateFriendshipSettings_Requires_ScreenName()
+        public void UpdateFriendshipSettings_Throws_Without_ScreenName_Or_UserID()
         {
             var authMock = new Mock<ITwitterAuthorizer>();
             var execMock = new Mock<ITwitterExecute>();
@@ -136,9 +136,9 @@ namespace LinqToTwitterXUnitTests.FriendshipTests
             execMock.Setup(exec => exec.PostToTwitter(It.IsAny<string>(), It.IsAny<Dictionary<string, string>>(), It.IsAny<Func<string, Friendship>>())).Returns(RelationshipResponse);
             var ctx = new TwitterContext(authMock.Object, execMock.Object, "https://api.twitter.com/1/", "");
 
-            var ex = Assert.Throws<ArgumentNullException>(() => ctx.UpdateFriendshipSettings(/*"joemayo"*/ null, true, true));
+            var ex = Assert.Throws<ArgumentNullException>(() => ctx.UpdateFriendshipSettings(null, true, true));
 
-            Assert.Equal("screenName", ex.ParamName);
+            Assert.Equal("screenNameOrUserID", ex.ParamName);
         }
 
         const string SingleUserResponse = @"{

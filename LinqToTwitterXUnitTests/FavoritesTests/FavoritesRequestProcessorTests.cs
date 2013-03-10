@@ -51,7 +51,6 @@ namespace LinqToTwitterXUnitTests
                     fav.Count == 100 &&
                     fav.SinceID == 456 &&
                     fav.MaxID == 789 &&
-                    fav.Page == 1 &&
                     fav.IncludeEntities == true;
             var lambdaExpression = expression as LambdaExpression;
 
@@ -75,9 +74,6 @@ namespace LinqToTwitterXUnitTests
             Assert.True(
                 queryParams.Contains(
                     new KeyValuePair<string, string>("MaxID", "789")));
-            Assert.True(
-                queryParams.Contains(
-                    new KeyValuePair<string, string>("Page", "1")));
             Assert.True(
                 queryParams.Contains(
                     new KeyValuePair<string, string>("IncludeEntities", "True")));

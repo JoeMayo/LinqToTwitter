@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using LinqToTwitter.Common;
 using LitJson;
 
@@ -9,6 +10,9 @@ namespace LinqToTwitter
     /// </summary>
     public class Friendship
     {
+        public const ulong UserIDNotIncluded = 0;
+        public const string ScreenNameNotIncluded = null;
+
         public Friendship() { }
         public Friendship(JsonData friendJson)
         {
@@ -66,7 +70,13 @@ namespace LinqToTwitter
         /// <summary>
         /// Removes entities when set to false (true by default)
         /// </summary>
+        [Obsolete("Please use IncludeUserEntities instead.")]
         public bool IncludeEntities { get; set; }
+
+        /// <summary>
+        /// Removes entities on users when set to false (true by default)
+        /// </summary>
+        public bool IncludeUserEntities { get; set; }
 
         /// <summary>
         /// info on friend

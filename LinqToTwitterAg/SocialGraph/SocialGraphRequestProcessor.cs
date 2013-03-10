@@ -59,7 +59,6 @@ namespace LinqToTwitter
                        "Type",
                        "UserID",
                        "ScreenName",
-                       "Page",
                        "Cursor"
                    });
 

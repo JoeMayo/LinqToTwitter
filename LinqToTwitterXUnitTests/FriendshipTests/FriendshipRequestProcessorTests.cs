@@ -169,7 +169,7 @@ namespace LinqToTwitterXUnitTests.FriendshipTests
             const string ScrNm = "JoeMayo,MayMayo";
             const string UsrID = "1,2";
             const bool SkipStatus = true;
-            const bool IncludeEntities = true;
+            const bool IncludeUserEntities = true;
             var friendReqProc = new FriendshipRequestProcessor<Friendship> 
             { 
                 Type = FriendshipType.Lookup,
@@ -181,7 +181,7 @@ namespace LinqToTwitterXUnitTests.FriendshipTests
                 ScreenName = ScrNm,
                 UserID = UsrID,
                 SkipStatus = SkipStatus,
-                IncludeEntities = IncludeEntities
+                IncludeUserEntities = IncludeUserEntities
             };
 
             List<Friendship> friendships = friendReqProc.ProcessResults(LookupResponse);
@@ -199,7 +199,7 @@ namespace LinqToTwitterXUnitTests.FriendshipTests
             Assert.Equal(ScrNm, friendship.ScreenName);
             Assert.Equal(UsrID, friendship.UserID);
             Assert.Equal(SkipStatus, friendship.SkipStatus);
-            Assert.Equal(IncludeEntities, friendship.IncludeEntities);
+            Assert.Equal(IncludeUserEntities, friendship.IncludeUserEntities);
         }
 
         [Fact]
@@ -229,7 +229,7 @@ namespace LinqToTwitterXUnitTests.FriendshipTests
                          friend.ScreenName == "twitter,joemayo" &&
                          friend.UserID == "123,456" &&
                          friend.SkipStatus == true &&
-                         friend.IncludeEntities == true;
+                         friend.IncludeUserEntities == true;
             var lambdaExpression = expression as LambdaExpression;
 
             var queryParams = friendReqProc.GetParameters(lambdaExpression);
@@ -263,7 +263,7 @@ namespace LinqToTwitterXUnitTests.FriendshipTests
                     new KeyValuePair<string, string>("SkipStatus", "True")));
             Assert.True(
                 queryParams.Contains(
-                    new KeyValuePair<string, string>("IncludeEntities", "True")));
+                    new KeyValuePair<string, string>("IncludeUserEntities", "True")));
         }
 
         [Fact]
@@ -481,7 +481,7 @@ namespace LinqToTwitterXUnitTests.FriendshipTests
                 { "ScreenName", "abc" },
                 { "Cursor", "def" },
                 { "SkipStatus", true.ToString() },
-                { "IncludeEntities", false.ToString() }
+                { "IncludeUserEntities", false.ToString() }
             };
 
             Request req = friendReqProc.BuildUrl(parameters);
@@ -518,7 +518,7 @@ namespace LinqToTwitterXUnitTests.FriendshipTests
                 { "ScreenName", "abc" },
                 { "Cursor", "def" },
                 { "SkipStatus", true.ToString() },
-                { "IncludeEntities", false.ToString() }
+                { "IncludeUserEntities", false.ToString() }
             };
 
             Request req = friendReqProc.BuildUrl(parameters);

@@ -27,12 +27,6 @@ namespace LinqToTwitter
         public string ScreenName { get; set; }
 
         /// <summary>
-        /// Page to return
-        /// </summary>
-        [Obsolete("This property has been deprecated and will be ignored by Twitter. Please use Cursor/CursorMovement properties instead.")]
-        public int Page { get; set; }
-
-        /// <summary>
         /// Indicator for which page to get next
         /// </summary>
         /// <remarks>

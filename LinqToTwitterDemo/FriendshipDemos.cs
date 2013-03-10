@@ -26,8 +26,8 @@ namespace LinqToTwitterDemo
             //FriendshipScreenNameLookupDemo(twitterCtx);
             //FriendshipUserIDLookupDemo(twitterCtx);
             //UpdateSettingsDemo(twitterCtx);
-            FriendsListDemo(twitterCtx);
-            FollowersListDemo(twitterCtx);
+            //FriendsListDemo(twitterCtx);
+            //FollowersListDemo(twitterCtx);
         }
 
         private static void DestroyFriendshipDemo(TwitterContext twitterCtx)
@@ -173,7 +173,7 @@ namespace LinqToTwitterDemo
 
         private static void UpdateSettingsDemo(TwitterContext twitterCtx)
         {
-            Friendship friend = twitterCtx.UpdateFriendshipSettings("JoeMayo", /*retweets:*/ true, /*device:*/ true);
+            Friendship friend = twitterCtx.UpdateFriendshipSettings("Linq2Tweeter", true, true);
 
             Console.WriteLine("Settings for {0} are: Can Retweet is {1} and Can Send Device Notifications is {2}",
                 friend.SourceRelationship.ScreenName, 
