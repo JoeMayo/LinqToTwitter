@@ -16,6 +16,11 @@
         public bool SkipStatus { get; set; }
 
         /// <summary>
+        /// Removes entities when set to false (true by default)
+        /// </summary>
+        public bool IncludeEntities { get; set; }
+
+        /// <summary>
         /// User returned by VerifyCredentials Queries
         /// </summary>
         public User User { get; set; }

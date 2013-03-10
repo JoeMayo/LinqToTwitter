@@ -14,10 +14,5 @@
         /// use SMS text
         /// </summary>
         Sms,
-
-        /// <summary>
-        /// use IM
-        /// </summary>
-        IM
     }
 }

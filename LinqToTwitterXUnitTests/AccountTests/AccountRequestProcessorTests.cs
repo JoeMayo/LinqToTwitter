@@ -66,7 +66,8 @@ namespace LinqToTwitterXUnitTests.AccountTests
             Expression<Func<Account, bool>> expression = 
                 acct => 
                     acct.Type == AccountType.Settings &&
-                    acct.SkipStatus == true;
+                    acct.SkipStatus == true &&
+                    acct.IncludeEntities == true;
             var lambdaExpression = expression as LambdaExpression;
 
             var queryParams = target.GetParameters(lambdaExpression);
@@ -74,22 +75,25 @@ namespace LinqToTwitterXUnitTests.AccountTests
             Assert.True(
                 queryParams.Contains(
                     new KeyValuePair<string, string>("Type", ((int)AccountType.Settings).ToString(CultureInfo.InvariantCulture))));
-
             Assert.True(
                 queryParams.Contains(
                     new KeyValuePair<string, string>("SkipStatus", "True")));
+            Assert.True(
+                queryParams.Contains(
+                    new KeyValuePair<string, string>("IncludeEntities", "True")));
         }
 
         [Fact]
         public void BuildUrl_Constructs_VerifyCredentials_Url()
         {
-            const string ExpectedUrl = "https://api.twitter.com/1.1/account/verify_credentials.json?skip_status=true";
+            const string ExpectedUrl = "https://api.twitter.com/1.1/account/verify_credentials.json?skip_status=true&include_entities=false";
             var acctReqProc = new AccountRequestProcessor<Account> { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters =
                 new Dictionary<string, string>
                 {
                         { "Type", ((int)AccountType.VerifyCredentials).ToString(CultureInfo.InvariantCulture) },
-                        { "SkipStatus", true.ToString() }
+                        { "SkipStatus", true.ToString() },
+                        { "IncludeEntities", false.ToString() }
                 };
 
             Request req = acctReqProc.BuildUrl(parameters);
@@ -139,7 +143,8 @@ namespace LinqToTwitterXUnitTests.AccountTests
             var acctReqProc = new AccountRequestProcessor<Account>
             {
                 Type = AccountType.VerifyCredentials,
-                SkipStatus = true
+                SkipStatus = true,
+                IncludeEntities = true
             };
 
             var accounts = acctReqProc.ProcessResults(TestVerifyCredentialsQueryResponse);
@@ -149,6 +154,7 @@ namespace LinqToTwitterXUnitTests.AccountTests
             var account = accounts.Single();
             Assert.Equal(AccountType.VerifyCredentials, account.Type);
             Assert.True(account.SkipStatus);
+            Assert.True(account.IncludeEntities);
         }
 
         const string TestVerifyCredentialsQueryResponse = @"{

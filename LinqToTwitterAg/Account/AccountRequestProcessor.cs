@@ -32,6 +32,11 @@ namespace LinqToTwitter
         internal bool SkipStatus { get; set; }
 
         /// <summary>
+        /// Removes entities when set to false (true by default)
+        /// </summary>
+        internal bool IncludeEntities { get; set; }
+
+        /// <summary>
         /// extracts parameters from lambda
         /// </summary>
         /// <param name="lambdaExpression">lambda expression with where clause</param>
@@ -43,7 +48,8 @@ namespace LinqToTwitter
                    lambdaExpression.Body,
                    new List<string> { 
                        "Type",
-                       "SkipStatus"
+                       "SkipStatus",
+                       "IncludeEntities"
                    })
                    .Parameters;
         }
@@ -92,6 +98,12 @@ namespace LinqToTwitter
                 }
             }
 
+            if (parameters.ContainsKey("IncludeEntities"))
+            {
+                IncludeEntities = bool.Parse(parameters["IncludeEntities"]);
+                urlParams.Add(new QueryParameter("include_entities", parameters["IncludeEntities"].ToLower()));
+            }
+
             return req;
         }
 
@@ -122,6 +134,7 @@ namespace LinqToTwitter
 
                 acct.Type = Type;
                 acct.SkipStatus = SkipStatus;
+                acct.IncludeEntities = IncludeEntities;
             }
 
             return new List<Account> { acct }.OfType<T>().ToList();
