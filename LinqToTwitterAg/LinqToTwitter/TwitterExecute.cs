@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Diagnostics;
@@ -573,7 +574,7 @@ namespace LinqToTwitter
                                 catch (IOException ex)
                                 {
                                     // Timeout by ReadWriteTimeout also throws IOException. However in this case the request has closed and needs to reopen
-                                    uint hr = unchecked((uint)System.Runtime.InteropServices.Marshal.GetHRForException(ex));
+                                    uint hr = unchecked((uint)Marshal.GetHRForException(ex));
                                     if (hr != 0x80131620)
                                         throw;
                                 }
