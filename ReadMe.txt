@@ -19,6 +19,10 @@ There are a few ways to get the latest version of LINQ to Twitter:
 1. Via NuGet, which is the easiest way to create a reference in Visual Studio
 
 	http://nuget.org/packages/linqtotwitter
+
+Through Visual Studio, you can type the following command in the NuGet Package Manager Console:
+	
+	PM> Install-Package linqtotwitter 
 	
 2. By visiting the LINQ to Twitter Releases page on the Downloads tab at
 
@@ -34,45 +38,49 @@ NuGet is the easiest method of referencing LINQ to Twitter because it automatica
 
 *\net35\LinqToTwitter.dll
 
-Use with .NET v3.5 Full Profile. This includes ASP.NET WebForms, ASP.NET MVC, or any other type of regular .NET Framework.  Warning: When you create a new client application and reference this DLL, you'll receive an error because the default profile on Console and WPF applications is Client profile.  You can either change the profile to full profile or use the client profile dll, explained next.
+	Use with .NET v3.5 Full Profile. This includes ASP.NET WebForms, ASP.NET MVC, or any other type of regular .NET Framework.  Warning: When you create a new client application and reference this DLL, you'll receive an error because the default profile on Console and WPF applications is Client profile.  You can either change the profile to full profile or use the client profile dll, explained next.
 
 *\net35-client\LinqToTwitterCP.dll
 
-Use only with projects set to .NET v3.5 Client Profile, which is the default for Console and WPF applications.
+	Use only with projects set to .NET v3.5 Client Profile, which is the default for Console and WPF applications.
 
 *\net40\LinqToTwitter.dll
 
-Use with .NET v4.0 Full Profile. This includes ASP.NET WebForms, ASP.NET MVC, or any other type of regular .NET Framework.  Warning: When you create a new client application and reference this DLL, you'll receive an error because the default profile on Console and WPF applications is Client profile.  You can either change the profile to full profile or use the client profile dll, explained next.
+	Use with .NET v4.0 Full Profile. This includes ASP.NET WebForms, ASP.NET MVC, or any other type of regular .NET Framework.  Warning: When you create a new client application and reference this DLL, you'll receive an error because the default profile on Console and WPF applications is Client profile.  You can either change the profile to full profile or use the client profile dll, explained next.
 
 *\net40-client\LinqToTwitterCP.dll
 
-Use only with projects set to .NET v4.0 Client Profile, which is the default for Console and WPF applications.
+	Use only with projects set to .NET v4.0 Client Profile, which is the default for Console and WPF applications.
 
 *\net45\LinqToTwitter.dll
 
-Use with .NET v4.5 Full Profile. This includes ASP.NET WebForms, ASP.NET MVC, or any other type of regular .NET Framework.
+	Use with .NET v4.5 Full Profile. This includes ASP.NET WebForms, ASP.NET MVC, or any other type of regular .NET Framework.
 
 *\net45-client\LinqToTwitterCP.dll
 
-Use only with projects set to .NET v4.5 Client Profile. Note: Unlike earlier versions of Visual Studio, VS 2012 does not set the default framework to Client Profile on client applications, such as Console and WPF.
+	Use only with projects set to .NET v4.5 Client Profile. Note: Unlike earlier versions of Visual Studio, VS 2012 does not set the default framework to Client Profile on client applications, such as Console and WPF.
 
 *\sl4-windowsphone71\LinqToTwitterWP.dll
 
-This version is for Windows Phone v7.1. This version works on Windows Phone 8, which is supported.  Warning: Windows Phone 7.0 is not supported.  LINQ to Twitter is an IQueryable LINQ provider and IQueryable was not supported in Windows Phone 7.0.  However, Windows Phone 7.1 and 8.0 work fine.
+	This version is for Windows Phone v7.1. This version also works on Windows Phone 8, which is supported.
 
 *\sl4\LinqToTwitterAg.dll
 
-This version supports Silverlight 4.0. Important: Twitter does not offer either a crossdomain.xml or clientaccesspolicy.xml file, which means you can't make requests to them directly.  Therefore, you must copy the HttpHandler proxy in *\LinqToTwitterProxy to the root of your Silverlight Web Application.
+	This version supports Silverlight 4.0. Important: Twitter does not offer either a crossdomain.xml or clientaccesspolicy.xml file, which means you can't make requests to them directly.  Therefore, you must copy the HttpHandler proxy in *\LinqToTwitterProxy to the root of your Silverlight Web Application.
 
 *\winrt45\LinqToTwitterRT.dll
 
-LINQ to Twitter supports Windows 8 and this is the DLL you'll need to use for Windows 8 Metro style applications.
+	LINQ to Twitter supports Windows 8 and this is the DLL you'll need to use for Windows 8 Metro style applications.
+
+Note: LINQ to Twitter works on Windows Azure too. Just select the .NET version you need.
 
 How to Get More Help
 --------------------
 1. You can learn how to use LINQ to Twitter by reading the API reference on the Documentation page at
 
 	http://linqtotwitter.codeplex.com/
+
+	The documentation also includes a FAQ, which is a very important resource if you encounter HTTP 401 errors.
 
 2. For help with LINQ to Twitter, you can visit the Discussion forum at
 

@@ -54,6 +54,11 @@ namespace LinqToTwitter
         public int WoeID { get; set; }
 
         /// <summary>
+        /// Set to true to omit hashtags from results
+        /// </summary>
+        public bool Exclude { get; set; }
+
+        /// <summary>
         /// No idea, perhaps the event associated with a trend
         /// </summary>
         public string Events { get; set; }

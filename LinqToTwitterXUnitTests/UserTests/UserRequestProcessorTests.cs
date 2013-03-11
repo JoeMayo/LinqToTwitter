@@ -120,13 +120,14 @@ namespace LinqToTwitterXUnitTests.UserTests
         [Fact]
         public void BuildUrl_Constructs_Show_Url()
         {
-            const string ExpectedUrl = "https://api.twitter.com/1.1/users/show.json?user_id=15411837&screen_name=JoeMayo";
+            const string ExpectedUrl = "https://api.twitter.com/1.1/users/show.json?user_id=15411837&screen_name=JoeMayo&include_entities=true";
             var reqProc = new UserRequestProcessor<User> { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
             {
                 { "Type", ((int)UserType.Show).ToString() },
                 { "UserID", "15411837" },
-                { "ScreenName", "JoeMayo" }
+                { "ScreenName", "JoeMayo" },
+                { "IncludeEntities", true.ToString() }
             };
 
             Request req = reqProc.BuildUrl(parameters);
@@ -308,14 +309,15 @@ namespace LinqToTwitterXUnitTests.UserTests
         [Fact]
         public void BuildUrl_Constructs_Search_Url()
         {
-            const string ExpectedUrl = "https://api.twitter.com/1.1/users/search.json?q=Joe%20Mayo&page=2&per_page=10";
+            const string ExpectedUrl = "https://api.twitter.com/1.1/users/search.json?q=Joe%20Mayo&page=2&count=10&include_entities=true";
             var reqProc = new UserRequestProcessor<User> { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
             {
                 { "Type", ((int)UserType.Search).ToString() },
                 { "Query", "Joe Mayo" },
                 { "Page", "2" },
-                { "PerPage", "10" }
+                { "Count", "10" },
+                { "IncludeEntities", true.ToString() }
             };
 
             Request req = reqProc.BuildUrl(parameters);
@@ -397,6 +399,24 @@ namespace LinqToTwitterXUnitTests.UserTests
         }
 
         [Fact]
+        public void BuildUrl_Constructs_Lookup_Url()
+        {
+            const string ExpectedUrl = "https://api.twitter.com/1.1/users/lookup.json?screen_name=JoeMayo&include_entities=true";
+            var reqProc = new UserRequestProcessor<User> { BaseUrl = "https://api.twitter.com/1.1/" };
+            var parameters = new Dictionary<string, string>
+            {
+                { "Type", ((int)UserType.Lookup).ToString() },
+                //{ "UserID", "123" },
+                { "ScreenName", "JoeMayo" },
+                { "IncludeEntities", true.ToString() }
+            };
+
+            Request req = reqProc.BuildUrl(parameters);
+
+            Assert.Equal(ExpectedUrl, req.FullUrl);
+        }
+
+        [Fact]
         public void GetParameters_Handles_Input_Params()
         {
             var reqProc = new UserRequestProcessor<User>();
@@ -411,7 +431,7 @@ namespace LinqToTwitterXUnitTests.UserTests
                 user.Slug == "twitter" &&
                 user.Query == "Joe Mayo" &&
                 user.Page == 2 &&
-                user.PerPage == 10 &&
+                user.Count == 10 &&
                 user.Lang == "it" &&
                 user.IncludeEntities == true &&
                 user.SkipStatus == true &&
@@ -447,7 +467,7 @@ namespace LinqToTwitterXUnitTests.UserTests
                   new KeyValuePair<string, string>("Page", "2")));
             Assert.True(
               queryParams.Contains(
-                  new KeyValuePair<string, string>("PerPage", "10")));
+                  new KeyValuePair<string, string>("Count", "10")));
             Assert.True(
               queryParams.Contains(
                   new KeyValuePair<string, string>("Lang", "it")));
@@ -473,7 +493,7 @@ namespace LinqToTwitterXUnitTests.UserTests
                 UserID = "123",
                 ScreenName = "JoeMayo",
                 Page = 1,
-                PerPage = 10,
+                Count = 10,
                 Cursor = "456",
                 Slug = "myslug",
                 Query = "myquery",
@@ -492,7 +512,7 @@ namespace LinqToTwitterXUnitTests.UserTests
             Assert.Equal("123", user.UserID);
             Assert.Equal("JoeMayo", user.ScreenName);
             Assert.Equal(1, user.Page);
-            Assert.Equal(10, user.PerPage);
+            Assert.Equal(10, user.Count);
             Assert.Equal("456", user.Cursor);
             Assert.Equal("myslug", user.Slug);
             Assert.Equal("myquery", user.Query);

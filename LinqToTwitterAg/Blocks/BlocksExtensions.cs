@@ -16,7 +16,7 @@ namespace LinqToTwitter
         /// <returns>User that was unblocked</returns>
         public static User CreateBlock(this TwitterContext twitterCtx, ulong userID, string screenName, bool skipStatus)
         {
-            return CreateBlock(twitterCtx, userID, screenName, skipStatus, null);
+            return CreateBlock(twitterCtx, userID, screenName, true, skipStatus, null);
         }
 
         /// <summary>
@@ -25,10 +25,25 @@ namespace LinqToTwitter
         /// <param name="twitterCtx">Twitter Context</param>
         /// <param name="userID">ID of user to block</param>
         /// <param name="screenName">Screen name of user to block</param>
+        /// <param name="includeEntities">Set to false to not include entities (default: true)</param>
+        /// <param name="skipStatus">Don't include status</param>
+        /// <returns>User that was unblocked</returns>
+        public static User CreateBlock(this TwitterContext twitterCtx, ulong userID, string screenName, bool includeEntities, bool skipStatus)
+        {
+            return CreateBlock(twitterCtx, userID, screenName, includeEntities, skipStatus, null);
+        }
+
+        /// <summary>
+        /// Blocks a user
+        /// </summary>
+        /// <param name="twitterCtx">Twitter Context</param>
+        /// <param name="userID">ID of user to block</param>
+        /// <param name="screenName">Screen name of user to block</param>
+        /// <param name="includeEntities">Set to false to not include entities (default: true)</param>
         /// <param name="skipStatus">Don't include status</param>
         /// <param name="callback">Async Callback used in Silverlight queries</param>
         /// <returns>User that was unblocked</returns>
-        public static User CreateBlock(this TwitterContext twitterCtx, ulong userID, string screenName, bool skipStatus, Action<TwitterAsyncResponse<User>> callback)
+        public static User CreateBlock(this TwitterContext twitterCtx, ulong userID, string screenName, bool includeEntities, bool skipStatus, Action<TwitterAsyncResponse<User>> callback)
         {
             if (userID <= 0 && string.IsNullOrEmpty(screenName))
             {
@@ -49,6 +64,7 @@ namespace LinqToTwitter
                     {
                         { "user_id", userID <= 0 ? (string)null : userID.ToString() },
                         { "screen_name", screenName },
+                        { "include_entities", includeEntities.ToString().ToLower() },
                         { "skip_status", skipStatus.ToString().ToLower() }
                     },
                     response => reqProc.ProcessActionResult(response, UserAction.SingleUser));
@@ -67,7 +83,7 @@ namespace LinqToTwitter
         /// <returns>User that was unblocked</returns>
         public static User DestroyBlock(this TwitterContext twitterCtx, ulong userID, string screenName, bool skipStatus)
         {
-            return DestroyBlock(twitterCtx, userID, screenName, skipStatus, null);
+            return DestroyBlock(twitterCtx, userID, screenName, true, skipStatus, null);
         }
 
         /// <summary>
@@ -77,9 +93,23 @@ namespace LinqToTwitter
         /// <param name="userID">ID of user to block</param>
         /// <param name="screenName">Screen name of user to block</param>
         /// <param name="skipStatus">Don't include status</param>
+        /// <returns>User that was unblocked</returns>
+        public static User DestroyBlock(this TwitterContext twitterCtx, ulong userID, string screenName, bool includeEntities, bool skipStatus)
+        {
+            return DestroyBlock(twitterCtx, userID, screenName, true, skipStatus, null);
+        }
+
+        /// <summary>
+        /// Unblocks a user
+        /// </summary>
+        /// <param name="twitterCtx">Twitter Context</param>
+        /// <param name="userID">ID of user to block</param>
+        /// <param name="screenName">Screen name of user to block</param>
+        /// <param name="includeEntities">Set to false to not include entities (default: true)</param>
+        /// <param name="skipStatus">Don't include status</param>
         /// <param name="callback">Async Callback used in Silverlight queries</param>
         /// <returns>User that was unblocked</returns>
-        public static User DestroyBlock(this TwitterContext twitterCtx, ulong userID, string screenName, bool skipStatus, Action<TwitterAsyncResponse<User>> callback)
+        public static User DestroyBlock(this TwitterContext twitterCtx, ulong userID, string screenName, bool includeEntities, bool skipStatus, Action<TwitterAsyncResponse<User>> callback)
         {
             if (userID <= 0 && string.IsNullOrEmpty(screenName))
             {
@@ -100,6 +130,7 @@ namespace LinqToTwitter
                     {
                         { "user_id", userID <= 0 ? (string)null : userID.ToString() },
                         { "screen_name", screenName },
+                        { "include_entities", includeEntities.ToString().ToLower() },
                         { "skip_status", skipStatus.ToString().ToLower() }
                     },
                     response => reqProc.ProcessActionResult(response, UserAction.SingleUser));

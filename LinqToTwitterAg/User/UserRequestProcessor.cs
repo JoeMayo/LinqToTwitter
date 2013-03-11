@@ -56,7 +56,7 @@ namespace LinqToTwitter
         /// <summary>
         /// Number of users to return for each page
         /// </summary>
-        internal int PerPage { get; set; }
+        internal int Count { get; set; }
 
         /// <summary>
         /// Indicator for which page to get next
@@ -115,7 +115,7 @@ namespace LinqToTwitter
                        "UserID",
                        "ScreenName",
                        "Page",
-                       "PerPage",
+                       "Count",
                        "Cursor",
                        "Slug",
                        "Query",
@@ -243,9 +243,9 @@ namespace LinqToTwitter
         /// <summary>
         /// Builds a URL to perform a user search
         /// </summary>
-        /// <param name="parameters">Query, Page, and PerPage</param>
+        /// <param name="parameters">Query, Page, and Count</param>
         /// <returns>URL for performing user search</returns>
-        private Request BuildSearchUrl(Dictionary<string, string> parameters)
+        Request BuildSearchUrl(Dictionary<string, string> parameters)
         {
             const string QueryParam = "Query";
             if (!parameters.ContainsKey("Query"))
@@ -266,10 +266,16 @@ namespace LinqToTwitter
                 urlParams.Add(new QueryParameter("page", parameters["Page"]));
             }
 
-            if (parameters.ContainsKey("PerPage"))
+            if (parameters.ContainsKey("Count"))
             {
-                PerPage = int.Parse(parameters["PerPage"]);
-                urlParams.Add(new QueryParameter("per_page", parameters["PerPage"]));
+                Count = int.Parse(parameters["Count"]);
+                urlParams.Add(new QueryParameter("count", parameters["Count"]));
+            }
+
+            if (parameters.ContainsKey("IncludeEntities"))
+            {
+                IncludeEntities = bool.Parse(parameters["IncludeEntities"]);
+                urlParams.Add(new QueryParameter("include_entities", parameters["IncludeEntities"].ToLower()));
             }
 
             return req;
@@ -280,7 +286,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">Either UserID or ScreenName</param>
         /// <returns>URL for performing lookups</returns>
-        private Request BuildLookupUrl(Dictionary<string, string> parameters)
+        Request BuildLookupUrl(Dictionary<string, string> parameters)
         {
             if (!(parameters.ContainsKey("ScreenName") || parameters.ContainsKey("UserID")) ||
                 (parameters.ContainsKey("ScreenName") && parameters.ContainsKey("UserID")))
@@ -301,6 +307,12 @@ namespace LinqToTwitter
                 urlParams.Add(new QueryParameter("user_id", parameters["UserID"]));
             }
 
+            if (parameters.ContainsKey("IncludeEntities"))
+            {
+                IncludeEntities = bool.Parse(parameters["IncludeEntities"]);
+                urlParams.Add(new QueryParameter("include_entities", parameters["IncludeEntities"].ToLower()));
+            }
+
             return req;
         }
 
@@ -309,7 +321,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">Contains Slug. Required.</param>
         /// <returns>Url for query + slug</returns>
-        private Request BuildUsersInCategoryUrl(Dictionary<string, string> parameters)
+        Request BuildUsersInCategoryUrl(Dictionary<string, string> parameters)
         {
             if (!parameters.ContainsKey("Slug"))
                 throw new ArgumentException("Slug parameter is required.", "Slug");
@@ -333,7 +345,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">Not used</param>
         /// <returns>Url for suggested user categories</returns>
-        private Request BuildCategoriesUrl(Dictionary<string, string> parameters)
+        Request BuildCategoriesUrl(Dictionary<string, string> parameters)
         {
             var req = new Request(BaseUrl + "users/suggestions.json");
             var urlParams = req.RequestParameters;
@@ -352,7 +364,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">Reads Slug param</param>
         /// <returns>Url for category statuses</returns>
-        private Request BuildCategoryStatusUrl(Dictionary<string, string> parameters)
+        Request BuildCategoryStatusUrl(Dictionary<string, string> parameters)
         {
             if (!parameters.ContainsKey("Slug"))
                 throw new ArgumentNullException("Slug", "You must set the Slug property, which is the suggested category.");
@@ -368,7 +380,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">url parameters</param>
         /// <returns>new url for request</returns>
-        private Request BuildShowUrl(Dictionary<string, string> parameters)
+        Request BuildShowUrl(Dictionary<string, string> parameters)
         {
             if (!parameters.ContainsKey("UserID") &&
                 !parameters.ContainsKey("ScreenName"))
@@ -399,6 +411,12 @@ namespace LinqToTwitter
             {
                 ScreenName = parameters["ScreenName"];
                 urlParams.Add(new QueryParameter("screen_name", parameters["ScreenName"]));
+            }
+
+            if (parameters.ContainsKey("IncludeEntities"))
+            {
+                IncludeEntities = bool.Parse(parameters["IncludeEntities"]);
+                urlParams.Add(new QueryParameter("include_entities", parameters["IncludeEntities"].ToLower()));
             }
 
             return req;
@@ -486,7 +504,7 @@ namespace LinqToTwitter
                 user.UserID = UserID;
                 user.ScreenName = ScreenName;
                 user.Page = Page;
-                user.PerPage = PerPage;
+                user.Count = Count;
                 user.Cursor = Cursor;
                 user.Slug = Slug;
                 user.Lang = Lang;
@@ -544,7 +562,7 @@ namespace LinqToTwitter
             return userList;
         }
 
-        private List<User> HandleBannerSizesResponse(JsonData userJson)
+        List<User> HandleBannerSizesResponse(JsonData userJson)
         {
             var sizes = userJson.GetValue<JsonData>("sizes");
             var userList = new List<User>

@@ -302,13 +302,14 @@ namespace LinqToTwitterXUnitTests.ListTests
         [Fact]
         public void BuildSubscriptionsUrl_Returns_Url()
         {
-            const string ExpectedUrl = "https://api.twitter.com/1.1/lists/subscriptions.json?user_id=123&screen_name=JoeMayo&cursor=456";
+            const string ExpectedUrl = "https://api.twitter.com/1.1/lists/subscriptions.json?user_id=123&screen_name=JoeMayo&count=10&cursor=456";
             var listReqProc = new ListRequestProcessor<List>() { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
             {
                 { "Type", ((int) ListType.Subscriptions).ToString() },
                 { "UserID", "123" },
                 { "ScreenName", "JoeMayo" },
+                { "Count", "10" },
                 { "Cursor", "456" }
             };
 

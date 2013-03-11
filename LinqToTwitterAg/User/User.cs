@@ -109,7 +109,13 @@ namespace LinqToTwitter
         /// <summary>
         /// Number of users to return for each page
         /// </summary>
+        [Obsolete("Please use Count instead.", true)]
         public int PerPage { get; set; }
+
+        /// <summary>
+        /// Number of users to return for each page
+        /// </summary>
+        public int Count { get; set; }
 
         /// <summary>
         /// Indicator for which page to get next

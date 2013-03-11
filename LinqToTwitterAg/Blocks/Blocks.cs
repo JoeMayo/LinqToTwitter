@@ -38,6 +38,11 @@ namespace LinqToTwitter
         public int PerPage { get; set; }
 
         /// <summary>
+        /// Removes entities when set to false (true by default)
+        /// </summary>
+        public bool IncludeEntities { get; set; }
+
+        /// <summary>
         /// Don't include statuses in response (input only)
         /// </summary>
         public bool SkipStatus { get; set; }

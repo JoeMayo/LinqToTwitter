@@ -47,6 +47,11 @@ namespace LinqToTwitter
         internal int PerPage { get; set; }
 
         /// <summary>
+        /// Removes entities when set to false (true by default)
+        /// </summary>
+        internal bool IncludeEntities { get; set; }
+
+        /// <summary>
         /// Don't include statuses in response (input only)
         /// </summary>
         internal bool SkipStatus { get; set; }
@@ -72,6 +77,7 @@ namespace LinqToTwitter
                        "ScreenName",
                        "Page",
                        "PerPage",
+                       "IncludeEntities",
                        "SkipStatus",
                        "Cursor"
                    });
@@ -156,6 +162,12 @@ namespace LinqToTwitter
                 urlParams.Add(new QueryParameter("per_page", parameters["PerPage"]));
             }
 
+            if (parameters.ContainsKey("IncludeEntities"))
+            {
+                IncludeEntities = bool.Parse(parameters["IncludeEntities"]);
+                urlParams.Add(new QueryParameter("include_entities", parameters["IncludeEntities"].ToLower()));
+            }
+
             if (parameters.ContainsKey("SkipStatus"))
             {
                 SkipStatus = bool.Parse(parameters["SkipStatus"]);
@@ -184,6 +196,7 @@ namespace LinqToTwitter
                 ScreenName = ScreenName,
                 Page = Page,
                 PerPage = PerPage,
+                IncludeEntities = IncludeEntities,
                 SkipStatus = SkipStatus,
                 Cursor = Cursor
             };

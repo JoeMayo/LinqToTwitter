@@ -30,17 +30,22 @@ namespace LinqToTwitter
         /// <summary>
         /// Latitude
         /// </summary>
-        string Latitude { get; set; }
+        internal string Latitude { get; set; }
 
         /// <summary>
         /// Longitude
         /// </summary>
-        string Longitude { get; set; }
+        internal string Longitude { get; set; }
 
         /// <summary>
         /// Yahoo Where On Earth ID
         /// </summary>
-        int WoeID { get; set; }
+        internal int WoeID { get; set; }
+
+        /// <summary>
+        /// Set to true to omit hashtags from results
+        /// </summary>
+        internal bool Exclude { get; set; }
 
         /// <summary>
         /// extracts parameters from lambda
@@ -56,7 +61,8 @@ namespace LinqToTwitter
                        "Type",
                        "Latitude",
                        "Longitude",
-                       "WoeID"
+                       "WoeID",
+                       "Exclude"
                    })
                    .Parameters;
         }
@@ -208,6 +214,7 @@ namespace LinqToTwitter
                           Latitude = Latitude,
                           Longitude = Longitude,
                           WoeID = WoeID,
+                          Exclude = Exclude,
                           Name = trend.GetValue<string>("name"),
                           Query = trend.GetValue<string>("query"),
                           SearchUrl = trend.GetValue<string>("url"),
@@ -236,6 +243,7 @@ namespace LinqToTwitter
                 Latitude = Latitude,
                 Longitude = Longitude,
                 WoeID = WoeID,
+                Exclude = Exclude,
                 Locations = locations
             };
         }

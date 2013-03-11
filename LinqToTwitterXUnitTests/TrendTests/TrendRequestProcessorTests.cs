@@ -25,7 +25,8 @@ namespace LinqToTwitterXUnitTests.TrendTests
                     trend.Type == TrendType.Available &&
                     trend.WoeID == 1 &&
                     trend.Latitude == "1.2" &&
-                    trend.Longitude == "3.4";
+                    trend.Longitude == "3.4" &&
+                    trend.Exclude == true;
             var lambdaExpression = expression as LambdaExpression;
 
             var queryParams = trendReqProc.GetParameters(lambdaExpression);
@@ -42,6 +43,34 @@ namespace LinqToTwitterXUnitTests.TrendTests
             Assert.True(
                 queryParams.Contains(
                     new KeyValuePair<string, string>("Longitude", "3.4")));
+            Assert.True(
+                queryParams.Contains(
+                    new KeyValuePair<string, string>("Exclude", "True")));
+        }
+
+        [Fact]
+        public void ProcessResults_Populates_Input_Parameters()
+        {
+            var trendProc = new TrendRequestProcessor<Trend>()
+            {
+                BaseUrl = "https://api.twitter.com/1.1/",
+                Type = TrendType.Place,
+                Exclude = true,
+                Latitude = "1.1",
+                Longitude = "2.2",
+                WoeID = 1
+            };
+
+            var trends = trendProc.ProcessResults(TestTrendQueryResponse);
+
+            Assert.NotNull(trends);
+            Assert.NotEmpty(trends);
+            var trend = trends.First();
+            Assert.NotNull(trend);
+            Assert.True(trend.Exclude);
+            Assert.Equal("1.1", trend.Latitude);
+            Assert.Equal("2.2", trend.Longitude);
+            Assert.Equal(1, trend.WoeID);
         }
 
         [Fact]
