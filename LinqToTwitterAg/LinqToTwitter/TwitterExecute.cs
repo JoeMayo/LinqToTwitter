@@ -570,6 +570,13 @@ namespace LinqToTwitter
                                         }
                                     }
                                 }
+                                catch (IOException ex)
+                                {
+                                    // Timeout by ReadWriteTimeout also throws IOException. However in this case the request has closed and needs to reopen
+                                    uint hr = unchecked((uint)System.Runtime.InteropServices.Marshal.GetHRForException(ex));
+                                    if (hr != 0x80131620)
+                                        throw;
+                                }
                                 catch (WebException ex)
                                 {
                                     WriteLog(ex.ToString(), "ExecuteTwitterStream");
