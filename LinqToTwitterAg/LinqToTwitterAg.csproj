@@ -190,6 +190,7 @@
     <Compile Include="List\ListRequestProcessor.cs" />
     <Compile Include="List\ListType.cs" />
     <Compile Include="OAuth\AnonymousAuthorizer.cs" />
+    <Compile Include="OAuth\ApplicationOnlyAuthorizer.cs" />
     <Compile Include="OAuth\AuthAccessType.cs" />
     <Compile Include="OAuth\InMemoryCredentials.cs" />
     <Compile Include="OAuth\IOAuthCredentials.cs" />

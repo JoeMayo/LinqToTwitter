@@ -454,6 +454,9 @@
     <Compile Include="..\LinqToTwitterAg\OAuth\AnonymousAuthorizer.cs">
       <Link>OAuth\AnonymousAuthorizer.cs</Link>
     </Compile>
+    <Compile Include="..\LinqToTwitterAg\OAuth\ApplicationOnlyAuthorizer.cs">
+      <Link>OAuth\ApplicationOnlyAuthorizer.cs</Link>
+    </Compile>
     <Compile Include="..\LinqToTwitterAg\OAuth\AuthAccessType.cs">
       <Link>OAuth\AuthAccessType.cs</Link>
     </Compile>

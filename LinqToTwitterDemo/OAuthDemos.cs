@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.Linq;
 using LinqToTwitter;
 
@@ -16,12 +17,13 @@ namespace LinqToTwitterDemo
         {
             //HandleOAuthQueryDemo(twitterCtx);
             //HandleOAuthSideEffectDemo(twitterCtx);
-            HandleOAuthFilePostDemo(twitterCtx);
+            //HandleOAuthFilePostDemo(twitterCtx);
             //HandleOAuthReadOnlyQueryDemo(twitterCtx);
             //HandleOAuthSideEffectReadOnlyDemo(twitterCtx);
             //HandleOAuthUpdateAccountBackgroundImageWithProgressUpdatesDemo(twitterCtx);
             //HandleOAuthRequestResponseDetailsDemo(twitterCtx);
             //OAuthForceLoginDemo(twitterCtx);
+            HandleApplicationOnlyAuthentication(twitterCtx);
         }
 
         /// <summary>
@@ -174,5 +176,40 @@ namespace LinqToTwitterDemo
                         tweet.Text)); 
             }
         }
+
+        /// <summary>
+        /// Demonstrates how to use ApplicationOnlyAuthorizer
+        /// </summary>
+        /// <param name="twitterCtx"></param>
+        private static void HandleApplicationOnlyAuthentication(TwitterContext twitterCtx)
+        {
+            //var auth = new ApplicationOnlyAuthorizer
+            //{
+            //    Credentials = new InMemoryCredentials
+            //    {
+            //        ConsumerKey = ConfigurationManager.AppSettings["twitterConsumerKey"],
+            //        ConsumerSecret = ConfigurationManager.AppSettings["twitterConsumerSecret"]
+            //    }
+            //};
+
+            //auth.Authorize();
+            //auth.Invalidate();
+
+            //var twitterCtx = new TwitterContext(auth);
+
+            var srch =
+                (from search in twitterCtx.Search
+                 where search.Type == SearchType.Search &&
+                       search.Query == "LINQ to Twitter"
+                 select search)
+                .SingleOrDefault();
+
+            Console.WriteLine("\nQuery: {0}\n", srch.SearchMetaData.Query);
+            srch.Statuses.ForEach(entry =>
+                Console.WriteLine(
+                    "ID: {0, -15}, Source: {1}\nContent: {2}\n",
+                    entry.StatusID, entry.Source, entry.Text));
+        }
+
     }
 }

@@ -87,6 +87,7 @@
     <Compile Include="LinqToTwitterTests\TwitterExecuteErrorHandlingTests.cs" />
     <Compile Include="ListTests\ListExtensionsTests.cs" />
     <Compile Include="ListTests\ListRequestProcessorTests.cs" />
+    <Compile Include="OAuthTests\ApplicationOnlyAuthorizerTests.cs" />
     <Compile Include="OAuthTests\MvcAuthorizerTests.cs" />
     <Compile Include="OAuthTests\OAuthAuthorizerTests.cs" />
     <Compile Include="OAuthTests\OAuthBaseTests.cs" />

@@ -76,8 +76,9 @@ namespace LinqToTwitterDemo
             Console.WriteLine("  1 - Pin (default)");
             Console.WriteLine("  2 - Single User");
             Console.WriteLine("  3 - XAuth");
+            Console.WriteLine("  4 - Application-Only");
 
-            Console.Write("\nPlease choose (1, 2, or 3): ");
+            Console.Write("\nPlease choose (1, 2, 3, or 4): ");
             ConsoleKeyInfo input = Console.ReadKey();
             Console.WriteLine("");
 
@@ -94,6 +95,9 @@ namespace LinqToTwitterDemo
                     break;
                 case ConsoleKey.D3:
                     auth = DoXAuth();
+                    break;
+                case ConsoleKey.D4:
+                    auth = DoApplicationOnly();
                     break;
                 default:
                     auth = DoPinOAuth();
@@ -197,6 +201,21 @@ namespace LinqToTwitterDemo
             };
 
             // start the authorization process (launches Twitter authorization page).
+            auth.Authorize();
+            return auth;
+        }
+
+        static ITwitterAuthorizer DoApplicationOnly()
+        {
+            var auth = new ApplicationOnlyAuthorizer
+            {
+                Credentials = new InMemoryCredentials
+                {
+                    ConsumerKey = ConfigurationManager.AppSettings["twitterConsumerKey"],
+                    ConsumerSecret = ConfigurationManager.AppSettings["twitterConsumerSecret"]
+                }
+            };
+
             auth.Authorize();
             return auth;
         }
