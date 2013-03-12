@@ -6,7 +6,10 @@ using Windows.Storage;
 
 namespace LinqToTwitter
 {
-    public class WinRtSettingsCredentials : IOAuthCredentials
+    /// <summary>
+    /// Synchronous persistence for WinRtAuthorizer
+    /// </summary>
+    public class WinRtSettingsCredentials : IOAuthCredentials, IWinRtSettingsCredentials
     {
         const int ConsumerKeyIdx = 0;
         const int ConsumerSecretIdx = 1;
@@ -61,7 +64,7 @@ namespace LinqToTwitter
             SaveCredentialsToSettings();
         }
 
-        void LoadCredentialsFromSettings()
+        public void LoadCredentialsFromSettings()
         {
             ApplicationDataContainer fbSettings = settings.CreateContainer("TWStore", ApplicationDataCreateDisposition.Always);
 
@@ -81,7 +84,7 @@ namespace LinqToTwitter
             }
         }
 
-        void SaveCredentialsToSettings()
+        public void SaveCredentialsToSettings()
         {
             ApplicationDataContainer fbSettings = settings.CreateContainer("TWStore", ApplicationDataCreateDisposition.Always);
             var credentialsString = string.Join(",", credentials);

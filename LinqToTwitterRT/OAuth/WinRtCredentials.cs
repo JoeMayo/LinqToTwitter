@@ -1,14 +1,12 @@
-﻿/******************************************
- * Contributor: Sumit Maitra - Twitter @sumitkm
- * Date: 8/21/2012
- ******************************************/
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Windows.Storage;
 
 namespace LinqToTwitter
 {
-    public class WinRtCredentials : IOAuthCredentials
+    public class WinRtCredentials : InMemoryCredentials, IAsyncOAuthCredentials
     {
         const int ConsumerKeyIdx = 0;
         const int ConsumerSecretIdx = 1;
@@ -17,59 +15,34 @@ namespace LinqToTwitter
         const int ScreenNameIdx = 4;
         const int UserIdIdx = 5;
 
-        readonly string[] credentials = new string[6];
         readonly StorageFolder folder;
 
-        public WinRtCredentials(StorageFolder folder)
+        public string FileName { get; set; }
+
+        public WinRtCredentials(StorageFolder folder, string fileName)
         {
             this.folder = folder;
-            LoadCredentialsFromStorageFile();
+            FileName = fileName ?? "Linq2TwitterCredentials.txt";
         }
 
-        public void Load(string credentialsString)
+        public async Task Clear()
         {
-            string[] tempCredentials = credentialsString.Split(',');
+            ConsumerKey = String.Empty;
+            ConsumerSecret = String.Empty;
+            OAuthToken = String.Empty;
+            AccessToken = String.Empty;
+            ScreenName = String.Empty;
+            UserId = String.Empty;
 
-            for (int i = 0; i < tempCredentials.Length; i++)
-            {
-                credentials[i] = tempCredentials[i];
-            }
-
-            SaveCredentialsToStorageFileAsync();
+            await SaveCredentialsToStorageFileAsync();
         }
 
-        public override string ToString()
-        {
-            if (credentials == null)
-            {
-                LoadCredentialsFromStorageFile();
-            }
-
-            return string.Join(",", credentials);
-        }
-
-        public void Save()
-        {
-            SaveCredentialsToStorageFileAsync();
-        }
-
-        public void Clear()
-        {
-            for (int i = 0; i < credentials.Length; i++)
-            {
-                credentials[i] = string.Empty;
-            }
-
-            SaveCredentialsToStorageFileAsync();
-        }
-
-        async void LoadCredentialsFromStorageFile()
+        public async Task LoadCredentialsFromStorageFileAsync()
         {
             var credentialsFile =
                 await folder.CreateFileAsync(
-                    "Linq2TwitterCredentials.txt",
+                    FileName,
                     CreationCollisionOption.OpenIfExists);
-
 
             var credentialsString = await
                  FileIO.ReadTextAsync(credentialsFile);
@@ -78,125 +51,34 @@ namespace LinqToTwitter
             {
                 string[] tempCredentialsArr = credentialsString.Split(',');
 
-                for (int i = 0; i < tempCredentialsArr.Length; i++)
-                {
-                    credentials[i] = tempCredentialsArr[i];
-                }
+                ConsumerKey = tempCredentialsArr[ConsumerKeyIdx];
+                ConsumerSecret = tempCredentialsArr[ConsumerSecretIdx];
+                OAuthToken = tempCredentialsArr[OAuthTokenIdx];
+                AccessToken = tempCredentialsArr[AccessTokenIdx];
+                ScreenName = tempCredentialsArr[ScreenNameIdx];
+                UserId = tempCredentialsArr[UserIdIdx];
             }
         }
 
-        async void SaveCredentialsToStorageFileAsync()
+        public async Task SaveCredentialsToStorageFileAsync()
         {
-            var credentialsString = string.Join(",", credentials);
+            var credentialsString =
+                string.Join(",",
+                    new List<string>
+                    {
+                        ConsumerKey, ConsumerSecret,
+                        OAuthToken, AccessToken,
+                        ScreenName, UserId
+                    });
 
             if (!string.IsNullOrWhiteSpace(credentialsString))
             {
                 StorageFile sampleFile =
                     await folder.CreateFileAsync(
-                        "Linq2TwitterCredentials.txt",
+                        FileName,
                         CreationCollisionOption.ReplaceExisting);
 
                 await FileIO.WriteTextAsync(sampleFile, credentialsString); 
-            }
-        }
-
-        public string AccessToken
-        {
-            get
-            {
-                if (credentials[AccessTokenIdx] == null)
-                {
-                    LoadCredentialsFromStorageFile();
-                }
-
-                return credentials[AccessTokenIdx];
-            }
-            set
-            {
-                credentials[AccessTokenIdx] = value;
-            }
-        }
-
-        public string ConsumerSecret
-        {
-            get
-            {
-                if (credentials[ConsumerSecretIdx] == null)
-                {
-                    LoadCredentialsFromStorageFile();
-                }
-
-                return credentials[ConsumerSecretIdx];
-            }
-            set
-            {
-                credentials[ConsumerSecretIdx] = value;
-            }
-        }
-
-        public string OAuthToken
-        {
-            get
-            {
-                if (credentials[OAuthTokenIdx] == null)
-                {
-                    LoadCredentialsFromStorageFile();
-                }
-
-                return credentials[OAuthTokenIdx];
-            }
-            set
-            {
-                credentials[OAuthTokenIdx] = value;
-            }
-        }
-
-        public string ConsumerKey
-        {
-            get
-            {
-                if (credentials[ConsumerKeyIdx] == null)
-                {
-                    LoadCredentialsFromStorageFile();
-                }
-
-                return credentials[ConsumerKeyIdx];
-            }
-            set
-            {
-                credentials[ConsumerKeyIdx] = value;
-            }
-        }
-
-        public string ScreenName
-        {
-            get
-            {
-                if (credentials[ScreenNameIdx] == null)
-                {
-                    LoadCredentialsFromStorageFile();
-                }
-                return credentials[ScreenNameIdx];
-            }
-            set
-            {
-                credentials[ScreenNameIdx] = value;
-            }
-        }
-
-        public string UserId
-        {
-            get
-            {
-                if (credentials[UserIdIdx] == null)
-                {
-                    LoadCredentialsFromStorageFile();
-                }
-                return credentials[UserIdIdx];
-            }
-            set
-            {
-                credentials[UserIdIdx] = value;
             }
         }
     }

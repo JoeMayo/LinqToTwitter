@@ -710,6 +710,8 @@
       <Link>User\UserType.cs</Link>
     </Compile>
     <Compile Include="Common\Culture.cs" />
+    <Compile Include="OAuth\IAsyncOAuthCredentials.cs" />
+    <Compile Include="OAuth\IWinRtSettingsCredentials.cs" />
     <Compile Include="OAuth\LocalDataCredentials.cs" />
     <Compile Include="OAuth\LocalSettingsCredentials.cs" />
     <Compile Include="OAuth\RoamingDataCredentials.cs" />

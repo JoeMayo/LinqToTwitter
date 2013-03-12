@@ -14,17 +14,23 @@ namespace LinqToTwitter
         public Uri Callback { get; set; }
 
         /// <summary>
-        /// Perform authorization
+        /// Don't use - call AuthorizeAsync instead.
         /// </summary>
         public void Authorize()
         {
+            throw new InvalidOperationException("Please call AuthorizeAsync instead.");
         }
 
-        public async Task<WinRtAuthorizer> AuthorizeAsync()
+        /// <summary>
+        /// Perform Authorization
+        /// </summary>
+        public async Task AuthorizeAsync()
         {
+            await LoadCredentials();
+
             dynamic configuration = new ExpandoObject();
-            configuration.TwitterClientId = this.Credentials.ConsumerKey;
-            configuration.TwitterClientSecret = this.Credentials.ConsumerSecret;
+            configuration.TwitterClientId = Credentials.ConsumerKey;
+            configuration.TwitterClientSecret = Credentials.ConsumerSecret;
             configuration.TwitterRedirectUrl = Callback.ToString();
 
             var twitAuthentication = new TwitterAuthProvider();
@@ -39,11 +45,29 @@ namespace LinqToTwitter
                 Credentials.UserId = user.Id;
                 Credentials.OAuthToken = twitAuthentication.OAuthToken;
                 Credentials.AccessToken = twitAuthentication.OAuthTokenSecret;
-                Credentials.Save(); 
-            }
 
-            return this;
+                await SaveCredentials();
+            }
         }
 
+        async Task LoadCredentials()
+        {
+            var creds = Credentials as IAsyncOAuthCredentials;
+
+            if (creds == null)
+                (Credentials as IWinRtSettingsCredentials).LoadCredentialsFromSettings();
+            else
+                await creds.LoadCredentialsFromStorageFileAsync();
+        }
+
+        async Task SaveCredentials()
+        {
+            var creds = Credentials as IAsyncOAuthCredentials;
+
+            if (creds == null)
+                (Credentials as IWinRtSettingsCredentials).SaveCredentialsToSettings();
+            else
+                await creds.SaveCredentialsToStorageFileAsync();
+        }
     }
 }

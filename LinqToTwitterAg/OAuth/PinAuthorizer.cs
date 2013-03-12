@@ -59,7 +59,6 @@ namespace LinqToTwitter
             Credentials.AccessToken = OAuthTwitter.OAuthTokenSecret;
             Credentials.ScreenName = screenName;
             Credentials.UserId = userID;
-            Credentials.Save();
         }
 
         /// <summary>
@@ -104,7 +103,6 @@ namespace LinqToTwitter
                         Credentials.ScreenName = user.ScreenName;
                         Credentials.UserId = user.UserID;
                     }
-                    Credentials.Save();
 
                     authorizationCompleteCallback(resp);
                 });

@@ -9,10 +9,6 @@
     /// the user authorizes your app.  Each user has a
     /// unique access token that can be stored and reused
     /// any time the same user uses your app again.
-    /// 
-    /// Custom implementations of this interface will save
-    /// and retrieve credentials from their own unique data
-    /// store.
     /// </summary>
     public interface IOAuthCredentials
     {
@@ -52,15 +48,5 @@
         /// </summary>
         /// <param name="credentialsString">comma separated string of ConsumerKey,ConsumerSecret,AccessToken</param>
         void Load(string credentialsString);
-
-        /// <summary>
-        /// Saves current credentials to storage
-        /// </summary>
-        void Save();
-
-        /// <summary>
-        /// Removes credentials from storage
-        /// </summary>
-        void Clear();
     }
 }
