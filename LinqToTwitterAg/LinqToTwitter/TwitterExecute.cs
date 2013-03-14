@@ -651,12 +651,20 @@ namespace LinqToTwitter
 
             if (shouldPostQuery)
             {
+                var postData =
+                    (from data in request.RequestParameters
+                     select new
+                     {
+                         data.Name,
+                         data.Value
+                     })
+                    .ToDictionary(key => key.Name, val => val.Value);
+
+                req = this.AuthorizedClient.PostRequest(request, postData) as HttpWebRequest;
                 int qIndex = LastUrl.IndexOf('?');
 
                 string urlParams = LastUrl.Substring(qIndex + 1);
                 bytes = Encoding.UTF8.GetBytes(urlParams);
-
-                req = WebRequest.Create(LastUrl) as HttpWebRequest;
 
                 req.Method = "POST";
                 req.ContentType = "x-www-form-urlencoded";
@@ -709,10 +717,8 @@ namespace LinqToTwitter
             }
             else
             {
-                req = WebRequest.Create(LastUrl) as HttpWebRequest;
+                req = this.AuthorizedClient.Get(request) as HttpWebRequest;
             }
-
-            req.Credentials = new NetworkCredential(StreamingUserName, StreamingPassword);
 
 #if !SILVERLIGHT && !NETFX_CORE
             req.UserAgent = UserAgent;

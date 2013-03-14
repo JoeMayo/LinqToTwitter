@@ -24,7 +24,7 @@ namespace LinqToTwitter
         /// <summary>
         /// Perform Authorization
         /// </summary>
-        public async Task AuthorizeAsync()
+        public async Task<WinRtAuthorizer> AuthorizeAsync()
         {
             await LoadCredentials();
 
@@ -48,6 +48,8 @@ namespace LinqToTwitter
 
                 await SaveCredentials();
             }
+
+            return this;
         }
 
         async Task LoadCredentials()

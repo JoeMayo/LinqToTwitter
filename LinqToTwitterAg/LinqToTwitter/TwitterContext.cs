@@ -175,6 +175,7 @@ namespace LinqToTwitter
         /// <summary>
         /// Only for streaming credentials, use OAuth for non-streaming APIs
         /// </summary>
+        [Obsolete("Please use OAuth instead.", true)]
         public string StreamingUserName 
         {
             get { return TwitterExecutor.StreamingUserName; }
@@ -184,6 +185,7 @@ namespace LinqToTwitter
         /// <summary>
         /// Only for streaming credentials, use OAuth for non-streaming APIs
         /// </summary>
+        [Obsolete("Please use OAuth instead.", true)]
         public string StreamingPassword
         {
             get { return TwitterExecutor.StreamingPassword; }
@@ -199,6 +201,9 @@ namespace LinqToTwitter
             set { TwitterExecute.Log = value; }
         }
 
+        /// <summary>
+        /// This contains the JSON string from the Twitter response to the most recent query.
+        /// </summary>
         public string RawResult { get; set; }
 
         /// <summary>

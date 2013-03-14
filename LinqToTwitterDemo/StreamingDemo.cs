@@ -10,32 +10,22 @@ namespace LinqToTwitterDemo
     {
         public static void Run(TwitterContext twitterCtx)
         {
-            //SamplesDemo(twitterCtx);
+            SamplesDemo(twitterCtx);
             //FilterDemo(twitterCtx);
-            UserStreamDemo(twitterCtx);
+            //UserStreamDemo(twitterCtx);
             //UserStreamWithTimeoutDemo(twitterCtx);
             //SiteStreamDemo(twitterCtx);
         }
 
         private static void FilterDemo(TwitterContext twitterCtx)
         {
-            twitterCtx.StreamingUserName = "";
-            twitterCtx.StreamingPassword = "";
-
-            if (twitterCtx.StreamingUserName == string.Empty ||
-                twitterCtx.StreamingPassword == string.Empty)
-            {
-                Console.WriteLine("\n*** This won't work until you set the StreamingUserName and StreamingPassword on TwitterContext to valid values.\n");
-                return;
-            }
-
             Console.WriteLine("\nStreamed Content: \n");
             int count = 0;
 
             (from strm in twitterCtx.Streaming
-                where strm.Type == StreamingType.Filter &&
-                    strm.Track == "twitter"
-                select strm)
+             where strm.Type == StreamingType.Filter &&
+                   strm.Track == "twitter"
+             select strm)
             .StreamingCallback(strm =>
             {
                 if (strm.Status != TwitterErrorStatus.Success)
@@ -56,16 +46,6 @@ namespace LinqToTwitterDemo
 
         private static void SamplesDemo(TwitterContext twitterCtx)
         {
-            twitterCtx.StreamingUserName = "";
-            twitterCtx.StreamingPassword = "";
-
-            if (twitterCtx.StreamingUserName == string.Empty ||
-                twitterCtx.StreamingPassword == string.Empty)
-            {
-                Console.WriteLine("\n*** This won't work until you set the StreamingUserName and StreamingPassword on TwitterContext to valid values.\n");
-                return;
-            }
-
             Console.WriteLine("\nStreamed Content: \n");
             int count = 0;
 
