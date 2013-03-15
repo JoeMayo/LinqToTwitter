@@ -329,13 +329,14 @@ namespace LinqToTwitter
         /// <returns>XML Respose from Twitter</returns>
         public string QueryTwitter<T>(Request request, IRequestProcessor<T> reqProc)
         {
+#if SILVERLIGHT && !NETFX_CORE
+            if (AsyncCallback == null)
+                throw new InvalidOperationException("Silverlight and Windows Phone applications require async queries.");
+#endif
             //Log
-            var url = request.Endpoint;
-            var parameters = request.RequestParameters;
             LastUrl = request.FullUrl;
             WriteLog(LastUrl, "QueryTwitter");
 
-            var uri = new Uri(LastUrl);
             string response = string.Empty;
             string httpStatus = string.Empty;
             Exception thrownException = null;
@@ -660,7 +661,7 @@ namespace LinqToTwitter
                      })
                     .ToDictionary(key => key.Name, val => val.Value);
 
-                req = this.AuthorizedClient.PostRequest(request, postData) as HttpWebRequest;
+                req = this.AuthorizedClient.PostRequest(request, postData);
                 int qIndex = LastUrl.IndexOf('?');
 
                 string urlParams = LastUrl.Substring(qIndex + 1);
@@ -839,6 +840,10 @@ namespace LinqToTwitter
         /// <returns>XML Response from Twitter</returns>
         public string PostTwitterImage<T>(string url, IDictionary<string, string> postData, byte[] image, string fileName, string imageType, IRequestProcessor<T> reqProc)
         {
+#if SILVERLIGHT && !NETFX_CORE
+            if (AsyncCallback == null)
+                throw new InvalidOperationException("Silverlight and Windows Phone applications require async commands.");
+#endif
             string contentBoundaryBase = DateTime.Now.Ticks.ToString("x");
             string beginContentBoundary = string.Format("--{0}\r\n", contentBoundaryBase);
             var contentDisposition = string.Format("Content-Disposition:form-data); name=\"image\"); filename=\"{0}\"\r\nContent-Type: image/{1}\r\n\r\n", fileName, imageType);
@@ -1015,6 +1020,10 @@ namespace LinqToTwitter
         /// <returns>XML results From Twitter</returns>
         public string PostMedia<T>(string url, IDictionary<string, string> postData, List<Media> mediaItems, IRequestProcessor<T> reqProc)
         {
+#if SILVERLIGHT && !NETFX_CORE
+            if (AsyncCallback == null)
+                throw new InvalidOperationException("Silverlight and Windows Phone applications require async commands.");
+#endif
             var encoding = Encoding.GetEncoding("iso-8859-1");
             string contentBoundaryBase = DateTime.Now.Ticks.ToString("x");
             string beginContentBoundary = string.Format("--{0}\r\n", contentBoundaryBase);
@@ -1194,9 +1203,11 @@ namespace LinqToTwitter
         /// <returns>Json Response from Twitter - empty string if async</returns>
         public string PostToTwitter<T>(string url, IDictionary<string, string> postData, Func<string, T> getResult)
         {
+#if SILVERLIGHT && !NETFX_CORE
+            if (AsyncCallback == null)
+                throw new InvalidOperationException("Silverlight and Windows Phone applications require async commands.");
+#endif
             var encoding = Encoding.GetEncoding("iso-8859-1");
-
-            var formDataSb = new StringBuilder();
 
             var paramList = new List<string>();
 
