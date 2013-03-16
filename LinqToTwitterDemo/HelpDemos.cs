@@ -1,4 +1,6 @@
-﻿using LinqToTwitter;
+﻿using System.Diagnostics;
+using System.Net;
+using LinqToTwitter;
 using System;
 using System.Linq;
 
@@ -18,6 +20,7 @@ namespace LinqToTwitterDemo
             //GetHelpConfiguration(twitterCtx);
             //GetHelpLanguages(twitterCtx);
             GetHelpRateLimits(twitterCtx);
+            //ExceedRateLimitDemo(twitterCtx);
         }
 
         /// <summary>
@@ -93,5 +96,35 @@ namespace LinqToTwitterDemo
                 }
             }
         }
+
+        /// <summary>
+        /// Intentionally exceeds rate limits so you can see and know how to handle the Twitter error.
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void ExceedRateLimitDemo(TwitterContext twitterCtx)
+        {
+            try
+            {
+                while (true)
+                {
+                    var statusResponse =
+                        (from status in twitterCtx.Status
+                         where status.Type == StatusType.Home
+                         select status)
+                        .ToList();
+                } 
+            }
+            catch (TwitterQueryException tqEx)
+            {
+                const int TooManyRequests = 429;
+
+                var webEx = tqEx.InnerException as WebException;
+                if (webEx != null && (int)((HttpWebResponse)webEx.Response).StatusCode == TooManyRequests)
+                    Console.WriteLine("Rate Limit Exceeded: " + tqEx.ToString());
+                else
+                    Console.WriteLine("Some other exception occurred: " + tqEx.ToString());
+            }
+        }
+
     }
 }

@@ -56,12 +56,7 @@ namespace LinqToTwitter
 
         public void Clear()
         {
-            for (int i = 0; i < credentials.Length; i++)
-            {
-                credentials[i] = string.Empty;
-            }
-
-            SaveCredentialsToSettings();
+            settings.DeleteContainer("TWStore");
         }
 
         public void LoadCredentialsFromSettings()

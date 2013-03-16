@@ -17,8 +17,8 @@ namespace LinqToTwitterDemo
             //AccountSettingsDemo(twitterCtx);
             //CategoryStatusDemo(twitterCtx);
             //RetweetedToUserDemo(twitterCtx);
-            //SearchDemo(twitterCtx);
-            UpdateStatusDemo(twitterCtx);
+            SearchDemo(twitterCtx);
+            //UpdateStatusDemo(twitterCtx);
             //CreateFavoriteDemo(twitterCtx);
             //RelatedResultsDemo(twitterCtx);
         }
@@ -89,10 +89,9 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void SearchDemo(TwitterContext twitterCtx)
         {
-            twitterCtx.BaseUrl = "http://search.twitter.com";
             string unencodedStatus = "LINQ to Twitter";
             string encodedStatus = Uri.EscapeDataString(unencodedStatus);
-            string queryString = "search.atom?q=" + encodedStatus;
+            string queryString = "search/tweets.json?q=" + encodedStatus;
 
             var rawResult =
                 (from raw in twitterCtx.RawQuery

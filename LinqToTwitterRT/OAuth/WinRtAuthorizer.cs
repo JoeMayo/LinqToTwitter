@@ -1,8 +1,7 @@
-﻿using LinqToTwitter.OAuth;
-using System;
-using System.Dynamic;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using LinqToTwitter.OAuth;
 
 namespace LinqToTwitter
 {
@@ -28,13 +27,7 @@ namespace LinqToTwitter
         {
             await LoadCredentials();
 
-            dynamic configuration = new ExpandoObject();
-            configuration.TwitterClientId = Credentials.ConsumerKey;
-            configuration.TwitterClientSecret = Credentials.ConsumerSecret;
-            configuration.TwitterRedirectUrl = Callback.ToString();
-
-            var twitAuthentication = new TwitterAuthProvider();
-            twitAuthentication.Configure(configuration);
+            var twitAuthentication = new TwitterAuthProvider(Credentials.ConsumerKey, Credentials.ConsumerSecret, Callback);
 
             var user = await twitAuthentication.AuthenticateAsync();
             if (twitAuthentication.OAuthToken != null && twitAuthentication.OAuthTokenSecret != null)
@@ -70,6 +63,16 @@ namespace LinqToTwitter
                 (Credentials as IWinRtSettingsCredentials).SaveCredentialsToSettings();
             else
                 await creds.SaveCredentialsToStorageFileAsync();
+        }
+
+        async Task ClearCredentials()
+        {
+            var creds = Credentials as IAsyncOAuthCredentials;
+
+            if (creds == null)
+                (Credentials as IWinRtSettingsCredentials).Clear();
+            else
+                await creds.ClearAsync();
         }
     }
 }

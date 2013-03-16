@@ -5,7 +5,7 @@ namespace LinqToTwitter
 {
     public interface IAsyncOAuthCredentials : IOAuthCredentials
     {
-        Task Clear();
+        Task ClearAsync();
 
         Task LoadCredentialsFromStorageFileAsync();
 

@@ -1,8 +1,5 @@
-﻿using LitJson;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Windows.Security.Authentication.Web;
 
@@ -17,17 +14,13 @@ namespace LinqToTwitter.OAuth
     /// </remarks>
     class TwitterAuthProvider : OAuthAuthorizer
     {
-        dynamic configuration;
+        Uri callback;
 
-        /// <summary>
-        /// Set up configuration information
-        /// </summary>
-        /// <param name="configuration"></param>
-        internal void Configure(dynamic configuration)
+        public TwitterAuthProvider(string consumerKey, string consumerSecret, Uri callback)
         {
-            this.configuration = configuration;
-            OAuthTwitter.OAuthConsumerKey = configuration.TwitterClientId;
-            OAuthTwitter.OAuthConsumerSecret = configuration.TwitterClientSecret;
+            OAuthTwitter.OAuthConsumerKey = consumerKey;
+            OAuthTwitter.OAuthConsumerSecret = consumerSecret;
+            this.callback = callback;
         }
 
         /// <summary>
@@ -36,18 +29,18 @@ namespace LinqToTwitter.OAuth
         /// <returns>TwitterAuthProviderUser with ScreenName and ID</returns>
         internal async Task<TwitterAuthProviderUser> AuthenticateAsync()
         {
-            string callbackStr = OAuthTwitter.FilterRequestParameters(new Uri(configuration.TwitterRedirectUrl));
+            string callbackStr = OAuthTwitter.FilterRequestParameters(callback);
             string link = OAuthTwitter.AuthorizationLinkGet(OAuthRequestTokenUrl, OAuthAuthorizeUrl, callbackStr, false, AuthAccessType);
 
-            WebAuthenticationResult WebAuthenticationResult = 
+            WebAuthenticationResult webAuthenticationResult = 
                 await WebAuthenticationBroker.AuthenticateAsync(
                     WebAuthenticationOptions.None,
                     new Uri(link),
-                    new Uri(configuration.TwitterRedirectUrl));
+                    callback);
 
-            if (WebAuthenticationResult.ResponseStatus == WebAuthenticationStatus.Success)
+            if (webAuthenticationResult.ResponseStatus == WebAuthenticationStatus.Success)
             {
-                var authCallbackUri = new Uri(WebAuthenticationResult.ResponseData);
+                var authCallbackUri = new Uri(webAuthenticationResult.ResponseData);
 
                 string verifier = OAuthTwitter.GetUrlParamValue(authCallbackUri.Query, "oauth_verifier");
 

@@ -25,16 +25,14 @@ namespace LinqToTwitter
             FileName = fileName ?? "Linq2TwitterCredentials.txt";
         }
 
-        public async Task Clear()
+        public async Task ClearAsync()
         {
-            ConsumerKey = String.Empty;
-            ConsumerSecret = String.Empty;
-            OAuthToken = String.Empty;
-            AccessToken = String.Empty;
-            ScreenName = String.Empty;
-            UserId = String.Empty;
-
-            await SaveCredentialsToStorageFileAsync();
+            var files = await ApplicationData.Current.LocalFolder.GetFilesAsync();
+            if (files.Any(storFile => storFile.Name == FileName))
+            {
+                var file = await ApplicationData.Current.LocalFolder.GetFileAsync(FileName);
+                await file.DeleteAsync();
+            }
         }
 
         public async Task LoadCredentialsFromStorageFileAsync()
