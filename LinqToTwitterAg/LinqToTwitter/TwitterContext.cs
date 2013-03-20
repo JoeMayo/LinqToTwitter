@@ -569,7 +569,7 @@ namespace LinqToTwitter
         /// <summary>
         /// Response headers from Twitter Queries
         /// </summary>
-        public Dictionary<string, string> ResponseHeaders
+        public IDictionary<string, string> ResponseHeaders
         {
             get
             {
