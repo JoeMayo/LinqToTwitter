@@ -83,7 +83,7 @@ namespace LinqToTwitter
         /// <summary>
         /// list of response headers from query
         /// </summary>
-        public Dictionary<string, string> ResponseHeaders { get; set; }
+        public IDictionary<string, string> ResponseHeaders { get; set; }
 
         /// <summary>
         /// Gets and sets HTTP UserAgent header
@@ -307,7 +307,7 @@ namespace LinqToTwitter
                 }
             }
 
-            var responseHeaders = new Dictionary<string, string>();
+            var responseHeaders = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
 #if !SILVERLIGHT
             foreach (string key in resp.Headers.AllKeys)

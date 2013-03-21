@@ -24,7 +24,7 @@ namespace LinqToTwitter
         /// <summary>
         /// list of response headers from query
         /// </summary>
-        Dictionary<string, string> ResponseHeaders { get; set; }
+        IDictionary<string, string> ResponseHeaders { get; set; }
 
         /// <summary>
         /// Gets and sets HTTP UserAgent header
