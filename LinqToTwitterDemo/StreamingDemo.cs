@@ -10,8 +10,8 @@ namespace LinqToTwitterDemo
     {
         public static void Run(TwitterContext twitterCtx)
         {
-            SamplesDemo(twitterCtx);
-            //FilterDemo(twitterCtx);
+            //SamplesDemo(twitterCtx);
+            FilterDemo(twitterCtx);
             //UserStreamDemo(twitterCtx);
             //UserStreamWithTimeoutDemo(twitterCtx);
             //SiteStreamDemo(twitterCtx);
@@ -24,7 +24,7 @@ namespace LinqToTwitterDemo
 
             (from strm in twitterCtx.Streaming
              where strm.Type == StreamingType.Filter &&
-                   strm.Track == "twitter"
+                   strm.Track == "twitter,JoeMayo,linq2twitter,microsoft,google,oracle"
              select strm)
             .StreamingCallback(strm =>
             {

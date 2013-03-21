@@ -969,6 +969,7 @@ namespace LinqToTwitter
                                                 var asyncResp = new TwitterAsyncResponse<T>();
                                                 asyncResp.State = responseObj.FirstOrDefault();
                                                 (AsyncCallback as Action<TwitterAsyncResponse<T>>)(asyncResp);
+                                                AsyncCallback = null; // set to null because the next query might not be async
                                             }
 
                                             // almost done
@@ -1154,6 +1155,7 @@ namespace LinqToTwitter
                                                 var asyncResp = new TwitterAsyncResponse<T>();
                                                 asyncResp.State = responseObj;
                                                 (AsyncCallback as Action<TwitterAsyncResponse<T>>)(asyncResp);
+                                                AsyncCallback = null; // set to null because the next query might not be async
                                             }
 
                                             // almost done
@@ -1320,6 +1322,7 @@ namespace LinqToTwitter
                                                 var asyncResp = new TwitterAsyncResponse<T>();
                                                 asyncResp.State = getResult(response);
                                                 (AsyncCallback as Action<TwitterAsyncResponse<T>>)(asyncResp);
+                                                AsyncCallback = null; // set to null because the next query might not be async
                                             }
 
                                             // almost done

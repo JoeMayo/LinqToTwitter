@@ -239,15 +239,6 @@ namespace LinqToTwitter
         /// <param name="args">extra query-string parameters</param>
         public string GetOAuthQueryStringForPost(Request request, IDictionary<string, string> postData)
         {
-            if (postData != null)
-            {
-                foreach (var postEntry in postData)
-                {
-                    if (!String.IsNullOrEmpty(postEntry.Key) && !String.IsNullOrEmpty(postEntry.Value))
-                        request.RequestParameters.Add(new QueryParameter(postEntry.Key, postEntry.Value));
-                }
-            }
-
             OAuthVerifier = null;
 
             string outUrl;
