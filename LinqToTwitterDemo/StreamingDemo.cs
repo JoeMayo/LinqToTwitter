@@ -11,8 +11,8 @@ namespace LinqToTwitterDemo
         public static void Run(TwitterContext twitterCtx)
         {
             //SamplesDemo(twitterCtx);
-            FilterDemo(twitterCtx);
-            //UserStreamDemo(twitterCtx);
+            //FilterDemo(twitterCtx);
+            UserStreamDemo(twitterCtx);
             //UserStreamWithTimeoutDemo(twitterCtx);
             //SiteStreamDemo(twitterCtx);
         }
@@ -95,10 +95,11 @@ namespace LinqToTwitterDemo
                 }
 
                 string message = string.IsNullOrEmpty(strm.Content) ? "Keep-Alive" : strm.Content;
-                Console.WriteLine(DateTime.Now + ": " + message + "\n");
+                Console.WriteLine((count + 1).ToString() + ". " + DateTime.Now + ": " + message + "\n");
 
-                if (count++ >= 25)
+                if (count++ == 25)
                 {
+                    Console.WriteLine("Demo only prints 25 entries. Closing stream.");
                     strm.CloseStream();
                 }
             })

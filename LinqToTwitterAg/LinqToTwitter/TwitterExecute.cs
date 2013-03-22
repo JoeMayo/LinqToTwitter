@@ -739,6 +739,8 @@ namespace LinqToTwitter
             var req = this.AuthorizedClient.Get(request) as HttpWebRequest;
 #if !SILVERLIGHT && !NETFX_CORE
             req.UserAgent = UserAgent;
+            req.Headers.Remove(HttpRequestHeader.AcceptEncoding);
+            req.AutomaticDecompression = DecompressionMethods.None;
 #endif
 #if WINDOWS_PHONE
             req.AllowReadStreamBuffering = false;
