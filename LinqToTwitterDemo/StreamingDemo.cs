@@ -10,9 +10,9 @@ namespace LinqToTwitterDemo
     {
         public static void Run(TwitterContext twitterCtx)
         {
-            //SamplesDemo(twitterCtx);
+            SamplesDemo(twitterCtx);
             //FilterDemo(twitterCtx);
-            UserStreamDemo(twitterCtx);
+            //UserStreamDemo(twitterCtx);
             //UserStreamWithTimeoutDemo(twitterCtx);
             //SiteStreamDemo(twitterCtx);
         }
@@ -50,8 +50,8 @@ namespace LinqToTwitterDemo
             int count = 0;
 
             (from strm in twitterCtx.Streaming
-                where strm.Type == StreamingType.Sample
-                select strm)
+             where strm.Type == StreamingType.Sample
+             select strm)
             .StreamingCallback(strm =>
             {
                 if (strm.Status == TwitterErrorStatus.RequestProcessingException)
@@ -72,6 +72,7 @@ namespace LinqToTwitterDemo
 
         private static void UserStreamDemo(TwitterContext twitterCtx)
         {
+            twitterCtx.AuthorizedClient.UseCompression = false;
             Console.WriteLine("\nStreamed Content: \n");
             int count = 0;
 
@@ -99,7 +100,7 @@ namespace LinqToTwitterDemo
 
                 if (count++ == 25)
                 {
-                    Console.WriteLine("Demo only prints 25 entries. Closing stream.");
+                    Console.WriteLine("Demo is ending. Closing stream...");
                     strm.CloseStream();
                 }
             })
@@ -109,6 +110,7 @@ namespace LinqToTwitterDemo
 
         private static void UserStreamWithTimeoutDemo(TwitterContext twitterCtx)
         {
+            twitterCtx.AuthorizedClient.UseCompression = false;
             twitterCtx.ReadWriteTimeout = 3000;
             StreamContent strmCont = null;
 
@@ -151,16 +153,23 @@ namespace LinqToTwitterDemo
 
         private static void SiteStreamDemo(TwitterContext twitterCtx)
         {
+            twitterCtx.AuthorizedClient.UseCompression = false;
             Console.WriteLine("\nStreamed Content: \n");
             int count = 0;
 
             (from strm in twitterCtx.UserStream
              where strm.Type == UserStreamType.Site &&
                    //strm.With == "followings" &&
-                   strm.Follow == "15411837"//,16761255"
+                   strm.Follow == "15411837"/*, "16761255"*/
              select strm)
             .StreamingCallback(strm =>
             {
+                if (strm.Status == TwitterErrorStatus.RequestProcessingException)
+                {
+                    Console.WriteLine(strm.Error.ToString());
+                    return;
+                }
+
                 Console.WriteLine(strm.Content + "\n");
 
                 if (count++ >= 10)

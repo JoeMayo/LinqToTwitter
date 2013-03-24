@@ -6,8 +6,6 @@ using System.Net;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
-using System.Diagnostics;
-
 using LinqToTwitter.Common;
 using LitJson;
 
@@ -440,194 +438,80 @@ namespace LinqToTwitter
         void ExecuteTwitterStream(object state)
         {
             var request = state as Request;
-            Debug.Assert(request != null, "state must be a Request object");
-
             var streamUrl = request.Endpoint;
 
             using (var resetEvent = new ManualResetEvent(/*initialStateSignaled:*/ false))
             {
-                int errorWait = 250;
-                bool firstConnection = true;
-
                 try
                 {
                     HttpWebRequest req = null;
 
-                    while (!CloseStream)
+                    if (streamUrl.Contains("user.json") || streamUrl.Contains("site.json"))
                     {
-                        if (streamUrl.Contains("user.json") || streamUrl.Contains("site.json"))
-                        {
-                            req = GetUserStreamRequest(request);
-                        }
-                        else
-                        {
-                            req = GetBasicStreamRequest(request);
-                        }
-
-                        req.BeginGetResponse(
-                            new AsyncCallback(ar =>
-                            {
-                                HttpWebResponse resp = null;
-
-                                try
-                                {
-                                    resp = req.EndGetResponse(ar) as HttpWebResponse;
-
-                                    using (var stream = resp.GetResponseStream())
-                                    using (var respRdr = new StreamReader(stream, Encoding.UTF8))
-                                    {
-                                        firstConnection = true;
-                                        string content = null;
-
-                                        try
-                                        {
-                                            do
-                                            {
-#if !SILVERLIGHT && !NETFX_CORE
-                                                try
-                                                {
-#endif
-                                                    lock (streamingCallbackLock)
-                                                    {
-                                                        content = respRdr.ReadLine();
-
-                                                        // When Twitter breaks the connection, we need to exit the
-                                                        // entire loop and start over. Otherwise, the readlines
-                                                        // keep returning blank lines that are incorrectly interpreted
-                                                        // as keep-alive messages in a tight loop.
-                                                        if (respRdr.EndOfStream)
-                                                        {
-                                                            CloseStream = true;
-                                                            throw new WebException("Twitter closed the stream.", WebExceptionStatus.ConnectFailure);
-                                                        }
-
-#if NETFX_CORE
-                                                        Task.Run(() => InvokeStreamCallback(content));
-#else
-                                                        ThreadPool.QueueUserWorkItem(InvokeStreamCallback, content);
-#endif
-                                                    }
-
-                                                    errorWait = 250;
-#if !SILVERLIGHT && !NETFX_CORE
-                                                }
-                                                catch (WebException wex)
-                                                {
-                                                    // Timeouts are expected, as set by ReadWriteTimeout
-                                                    // on respRdr.BaseStream.ReadTimeout
-                                                    if (wex.Status != WebExceptionStatus.Timeout)
-                                                        throw;
-                                                }
-#endif
-                                            }
-                                            while (!CloseStream);
-                                        }
-                                        catch (WebException wex)
-                                        {
-                                            switch (wex.Status)
-                                            {
-                                                case WebExceptionStatus.Success:
-                                                    break;
-                                                case WebExceptionStatus.ConnectFailure:
-                                                    // Twitter closed the connection, so keep backing out
-                                                    throw;
-                                                case WebExceptionStatus.MessageLengthLimitExceeded:
-                                                case WebExceptionStatus.Pending:
-                                                case WebExceptionStatus.RequestCanceled:
-                                                case WebExceptionStatus.SendFailure:
-                                                case WebExceptionStatus.UnknownError:
-                                                    if (errorWait < 10000)
-                                                    {
-                                                        errorWait = 10000;
-                                                    }
-                                                    else
-                                                    {
-                                                        if (errorWait < 240000)
-                                                        {
-                                                            errorWait *= 2;
-                                                        }
-                                                    }
-
-                                                    WriteLog(wex.ToString() + ", Waiting " + errorWait / 1000 + " seconds.  ", "ExecuteStream");
-                                                    break;
-                                                default:
-                                                    if (errorWait < 16000)
-                                                    {
-                                                        errorWait += 250;
-                                                    }
-                                                    break;
-                                            }
-#if NETFX_CORE
-                                            Task.Delay(errorWait);
-#else
-                                            Thread.Sleep(errorWait);
-#endif
-                                        }
-                                        finally
-                                        {
-                                            if (req != null)
-                                            {
-                                                req.Abort();
-                                            }
-                                        }
-                                    }
-                                }
-                                catch (IOException ex)
-                                {
-                                    // Timeout by ReadWriteTimeout also throws IOException. However in this case the request has closed and needs to reopen
-                                    uint hr = unchecked((uint)Marshal.GetHRForException(ex));
-                                    if (hr != 0x80131620)
-                                        throw;
-                                }
-                                catch (WebException ex)
-                                {
-                                    WriteLog(ex.ToString(), "ExecuteTwitterStream");
-
-                                    // Twitter closed the connection, so send the appropriate
-                                    // exception, WebException with ConnectionFailed status to
-                                    // the user's callback so they can decide whether to reconnect.
-#if NETFX_CORE
-                                    Task.Run(() => InvokeStreamCallback(ex));
-#else
-                                    ThreadPool.QueueUserWorkItem(InvokeStreamCallback, ex);
-#endif
-                                    return;
-                                }
-                                catch (Exception ex)
-                                {
-                                    if (firstConnection)
-                                    {
-                                        firstConnection = false;
-                                        errorWait = new Random().Next(20000, 40000);
-                                    }
-                                    else
-                                    {
-                                        if (errorWait < 300000)
-                                        {
-                                            errorWait *= 2;
-                                        }
-                                    }
-                                    WriteLog(ex.ToString() + ", Waiting " + errorWait / 1000 + " seconds.  ", "ExecuteStream");
-#if NETFX_CORE
-                                    Task.Delay(errorWait);
-#else
-                                    Thread.Sleep(errorWait);
-#endif
-                                }
-                                finally
-                                {
-                                    if (req != null)
-                                    {
-                                        req.Abort();
-                                    }
-
-                                    if (resetEvent != null) resetEvent.Set();
-                                }
-                            }), null);
-
-                        resetEvent.WaitOne();
-                        resetEvent.Reset();
+                        req = GetUserStreamRequest(request);
                     }
+                    else
+                    {
+                        req = GetBasicStreamRequest(request);
+                    }
+
+                    req.BeginGetResponse(
+                        new AsyncCallback(ar =>
+                        {
+                            HttpWebResponse resp = null;
+
+                            try
+                            {
+                                resp = req.EndGetResponse(ar) as HttpWebResponse;
+
+                                using (var stream = resp.GetResponseStream())
+                                using (var respRdr = new StreamReader(stream, Encoding.UTF8))
+                                {
+                                    string content = null;
+
+                                    try
+                                    {
+                                        do
+                                        {
+                                            lock (streamingCallbackLock)
+                                            {
+                                                content = respRdr.ReadLine();
+
+                                                // When Twitter breaks the connection, we need to exit the
+                                                // entire loop and start over. Otherwise, the readlines
+                                                // keep returning blank lines that are incorrectly interpreted
+                                                // as keep-alive messages in a tight loop.
+                                                if (respRdr.EndOfStream)
+                                                {
+                                                    CloseStream = true;
+                                                    throw new WebException("Twitter closed the stream.", WebExceptionStatus.ConnectFailure);
+                                                }
+                                                    
+                                                DoAsyncCallback(content);
+                                            }
+                                        }
+                                        while (!CloseStream);
+                                    }
+                                    finally
+                                    {
+                                        if (req != null) req.Abort();
+                                    }
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                WriteLog(ex.ToString(), "ExecuteTwitterStream");
+                                DoAsyncCallback(ex);
+                            }
+                            finally
+                            {
+                                if (req != null) req.Abort();
+                                if (resetEvent != null) resetEvent.Set();
+                            }
+                        }), null);
+
+                    resetEvent.WaitOne();
+                    resetEvent.Reset();
                 }
                 finally
                 {
@@ -739,14 +623,21 @@ namespace LinqToTwitter
             var req = this.AuthorizedClient.Get(request) as HttpWebRequest;
 #if !SILVERLIGHT && !NETFX_CORE
             req.UserAgent = UserAgent;
-            req.Headers.Remove(HttpRequestHeader.AcceptEncoding);
-            req.AutomaticDecompression = DecompressionMethods.None;
 #endif
 #if WINDOWS_PHONE
             req.AllowReadStreamBuffering = false;
 #endif
 
             return req;
+        }
+
+        void DoAsyncCallback(object state)
+        {
+#if NETFX_CORE
+            Task.Run(() => InvokeStreamCallback(state));
+#else
+            ThreadPool.QueueUserWorkItem(InvokeStreamCallback, state);
+#endif
         }
 
         /// <summary>
