@@ -29,7 +29,7 @@ namespace LinqToTwitter
     /// <summary>
     /// Logic that performs actual communication with Twitter
     /// </summary>
-    internal class TwitterExecute : ITwitterExecute, IDisposable
+    internal partial class TwitterExecute : ITwitterExecute, IDisposable
     {
         /// <summary>
         /// Version used in UserAgent

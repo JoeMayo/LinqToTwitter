@@ -15,7 +15,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+#if !ASYNC
 using LinqToTwitter.Common;
+#endif
 
 namespace LinqToTwitter
 {

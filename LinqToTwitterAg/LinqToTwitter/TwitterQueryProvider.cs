@@ -101,11 +101,9 @@ namespace LinqToTwitter
                 typeof(TResult).Name == "IEnumerable`1" ||
                 typeof(TResult).Name == "IEnumerable";
 
-            // generic parameter type for method call
             Type resultType = new MethodCallExpressionTypeFinder().GetGenericType(expression);
             var genericArguments = new[] { resultType };
 
-            // generic method instance via reflection
 #if NETFX_CORE
             var methodInfo = Context.GetType().GetTypeInfo().GetDeclaredMethod("Execute");
 #else
@@ -113,8 +111,6 @@ namespace LinqToTwitter
 #endif
             MethodInfo genericMethodInfo = methodInfo.MakeGenericMethod(genericArguments);
 
-            // use reflection to execute the generic method with the proper arguments
-            //  Note: look at ProcessResults method in PostProcessor and you'll see what is being executed
             try
             {
                 var result = (TResult)genericMethodInfo.Invoke(Context, new object[] { expression, isEnumerable });

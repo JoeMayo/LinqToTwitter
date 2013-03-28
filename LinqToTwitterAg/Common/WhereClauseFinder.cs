@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 
 namespace LinqToTwitter.Common
@@ -8,6 +9,8 @@ namespace LinqToTwitter.Common
     /// </summary>
     internal class WhereClauseFinder : LinqToTwitter.ExpressionVisitor
     {
+        static readonly string[] WhereMethodNames = { "Where", "Single", "SingleOrDefault", "First", "FirstOrDefault" };
+
         // holds all where expressions
         readonly List<MethodCallExpression> whereExpressions = new List<MethodCallExpression>();
 
@@ -30,7 +33,7 @@ namespace LinqToTwitter.Common
         /// <returns>expression that was passed in</returns>
         protected override Expression VisitMethodCall(MethodCallExpression expression)
         {
-            if (expression.Method.Name == "Where")
+            if (WhereMethodNames.Contains(expression.Method.Name) && expression.Arguments.Count == 2)
             {
                 whereExpressions.Add(expression);
             }

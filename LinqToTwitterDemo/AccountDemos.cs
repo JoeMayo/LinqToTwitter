@@ -240,14 +240,15 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         static void VerifyAccountCredentials(TwitterContext twitterCtx)
         {
-            var accounts =
-                from acct in twitterCtx.Account
-                where acct.Type == AccountType.VerifyCredentials
-                select acct;
+            //var accounts =
+            //    from acct in twitterCtx.Account
+            //    where acct.Type == AccountType.VerifyCredentials
+            //    select acct;
 
             try
             {
-                Account account = accounts.SingleOrDefault();
+                //Account account = accounts.SingleOrDefault();
+                Account account = twitterCtx.Account.Single(acct => acct.Type == AccountType.VerifyCredentials);
                 User user = account.User;
                 Status tweet = user.Status ?? new Status();
                 Console.WriteLine("User (#" + user.Identifier.ID
