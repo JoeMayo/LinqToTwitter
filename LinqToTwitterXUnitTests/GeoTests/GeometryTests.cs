@@ -25,8 +25,8 @@ namespace LinqToTwitterXUnitTests.GeoTests
             Assert.NotNull(geometry.Coordinates);
             Assert.Equal(4, geometry.Coordinates.Count);
             Coordinate coord = geometry.Coordinates.First();
-            Assert.Equal(-122.51368188, coord.Latitude);
-            Assert.Equal(37.70813196, coord.Longitude);
+            Assert.Equal(-122.51368188, coord.Longitude);
+            Assert.Equal(37.70813196, coord.Latitude);
         }
 
         [Fact]

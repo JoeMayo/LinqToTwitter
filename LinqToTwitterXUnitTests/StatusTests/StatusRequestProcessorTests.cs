@@ -501,8 +501,8 @@ namespace LinqToTwitterXUnitTests.StatusTests
             Assert.Empty(contributors);
             var coords = status.Coordinates;
             Assert.NotNull(coords);
-            Assert.Equal(-122.40060, coords.Latitude);
-            Assert.Equal(37.78215, coords.Longitude);
+            Assert.Equal(-122.40060, coords.Longitude);
+            Assert.Equal(37.78215, coords.Latitude);
             Assert.NotNull(status.Place);
             Assert.Null(status.Place.Name);
             Assert.NotNull(status.User);
@@ -547,8 +547,8 @@ namespace LinqToTwitterXUnitTests.StatusTests
             Assert.Empty(contributors);
             var coords = status.Coordinates;
             Assert.NotNull(coords);
-            Assert.Equal(-122.40060, coords.Latitude);
-            Assert.Equal(37.78215, coords.Longitude);
+            Assert.Equal(-122.40060, coords.Longitude);
+            Assert.Equal(37.78215, coords.Latitude);
             Assert.NotNull(status.Place);
             Assert.Null(status.Place.Name);
             Assert.NotNull(status.User);

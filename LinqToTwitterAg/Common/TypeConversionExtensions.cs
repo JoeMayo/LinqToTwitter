@@ -119,6 +119,14 @@ namespace LinqToTwitter.Common
                     case "JsonData":
                         value = data.InstObject[key];
                         break;
+                    case "Nullable`1":
+                        if (typeof(T) == typeof(int?) && dataItem.IsInt) { value = dataItem.GetInt(); break; }
+                        if (typeof(T) == typeof(long?) && dataItem.IsLong) { value = dataItem.GetLong(); break; }
+                        if (typeof(T) == typeof(double?) && dataItem.IsDouble) { value = dataItem.GetDouble(); break; }
+                        if (typeof(T) == typeof(bool?) && dataItem.IsBoolean) { value = dataItem.GetBoolean(); break; }
+                        if (typeof(T) == typeof(decimal?) && dataItem.IsDecimal) { value = dataItem.GetDecimal(); break; }
+                        if (typeof(T) == typeof(ulong?) && dataItem.IsULong) { value = dataItem.GetUlong(); break; }
+                        break;
                 }
             }
 

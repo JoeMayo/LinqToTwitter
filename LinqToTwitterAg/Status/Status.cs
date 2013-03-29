@@ -49,6 +49,7 @@ namespace LinqToTwitter
             User = new User(status.GetValue<JsonData>("user"));
             RetweetCount = status.GetValue<int>("retweet_count");
             StatusID = status.GetValue<string>("id_str");
+            FavoriteCount = status.GetValue<int?>("favorite_count");
             Favorited = status.GetValue<bool>("favorited");
             InReplyToStatusID = status.GetValue<string>("in_reply_to_status_id_str");
             Source = status.GetValue<string>("source");
@@ -252,6 +253,11 @@ namespace LinqToTwitter
         /// id of user being replied to, if it is a reply
         /// </summary>
         public string InReplyToUserID { get; set; }
+
+        /// <summary>
+        /// Number of times this tweet has been favorited
+        /// </summary>
+        public int? FavoriteCount { get; set; }
 
         /// <summary>
         /// is listed as a favorite

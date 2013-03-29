@@ -21,8 +21,8 @@ namespace LinqToTwitterXUnitTests.GeoTests
 
             var coord = new Coordinate(coordJson);
 
-            Assert.Equal(-122.51368188, coord.Latitude);
-            Assert.Equal(37.70813196, coord.Longitude);
+            Assert.Equal(-122.51368188, coord.Longitude);
+            Assert.Equal(37.70813196, coord.Latitude);
         }
 
         [Fact]
@@ -30,8 +30,8 @@ namespace LinqToTwitterXUnitTests.GeoTests
         {
             var coord = new Coordinate(null);
 
-            Assert.Equal(0, coord.Latitude);
             Assert.Equal(0, coord.Longitude);
+            Assert.Equal(0, coord.Latitude);
         }
 
         const string CoordinateJson = @"[

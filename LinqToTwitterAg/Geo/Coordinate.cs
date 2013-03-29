@@ -8,8 +8,8 @@ namespace LinqToTwitter
     /// </summary>
     public class Coordinate
     {
-        public const int LatitudePos = 0;
-        public const int LongitudePos = 1;
+        public const int LongitudePos = 0;
+        public const int LatitudePos = 1;
 
         public Coordinate() { }
         internal Coordinate(JsonData coord)

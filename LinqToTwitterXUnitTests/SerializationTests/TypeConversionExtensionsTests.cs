@@ -23,12 +23,22 @@ namespace LinqToTwitterXUnitTests
             Assert.Equal(.057m, val);
         }
 
+        [Fact]
+        public void GetValue_Returns_NullableInt()
+        {
+            JsonData search = JsonMapper.ToObject(SearchJson);
+
+            var val = search.GetValue<int?>("page");
+
+            Assert.Null(val);
+        }
+
 const string SearchJson = @"{
    ""completed_in"":0.057,
    ""max_id"":155786587962224641,
    ""max_id_str"":""155786587962224641"",
    ""next_page"":""?page=2&max_id=155786587962224641&q=blue%20angels&include_entities=1"",
-   ""page"":1,
+   ""page"":null,
    ""query"":""blue+angels"",
    ""refresh_url"":""?since_id=155786587962224641&q=blue%20angels&include_entities=1"",
    ""results"":[
