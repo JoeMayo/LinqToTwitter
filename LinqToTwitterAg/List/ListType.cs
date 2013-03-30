@@ -59,6 +59,11 @@ namespace LinqToTwitter
         /// <summary>
         /// Get all lists subscribed to
         /// </summary>
-        All
+        All,
+
+        /// <summary>
+        /// Get lists belonging to the specified user
+        /// </summary>
+        Ownerships
     }
 }

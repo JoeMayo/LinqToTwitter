@@ -38,6 +38,7 @@ namespace LinqToTwitterDemo
             //SubscribeToListDemo(twitterCtx);
             //UnsubscribeFromListDemo(twitterCtx);
             //DestroyAllDemo(twitterCtx);
+            OwnershipsDemo(twitterCtx);
         }
   
         private static void GetAllSubscribedListsDemo(TwitterContext twitterCtx)
@@ -485,6 +486,27 @@ namespace LinqToTwitterDemo
 
             Console.WriteLine("List Name: {0}, Description: {1}",
                 list.Name, list.Description);
+        }
+
+
+        /// <summary>
+        /// Gets lists that user created
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        private static void OwnershipsDemo(TwitterContext twitterCtx)
+        {
+            var lists =
+                (from list in twitterCtx.List
+                 where list.Type == ListType.Ownerships &&
+                       list.ScreenName == "Linq2Tweeter"
+                 select list)
+                .ToList();
+
+            foreach (var list in lists)
+            {
+                Console.WriteLine("ID: {0}  Slug: {1} Description: {2}",
+                    list.ListIDResult, list.SlugResult, list.Description);
+            }
         }
     }
 }

@@ -253,6 +253,8 @@ namespace LinqToTwitter
                     return BuildSubscribersUrl(parameters);
                 case ListType.IsSubscribed:
                     return BuildIsSubcribedUrl(parameters);
+                case ListType.Ownerships:
+                    return BuildOwnershipsUrl(parameters);
                 default:
                     throw new ArgumentException("Invalid ListType", TypeParam);
             }
@@ -263,7 +265,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">ScreenName or UserID</param>
         /// <returns>Url of requesting user's subscribed lists</returns>
-        private Request BuildAllUrl(Dictionary<string, string> parameters)
+        Request BuildAllUrl(Dictionary<string, string> parameters)
         {
             var req = new Request(BaseUrl + "lists/all.json");
             var urlParams = req.RequestParameters;
@@ -288,7 +290,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">Parameter List</param>
         /// <returns>Base URL + lists request</returns>
-        private Request BuildListsUrl(Dictionary<string, string> parameters)
+        Request BuildListsUrl(Dictionary<string, string> parameters)
         {
             const string UserIDOrScreenNameParam = "UserIdOrScreenName";
             if (!(parameters.ContainsKey("UserID") && !string.IsNullOrEmpty(parameters["UserID"])) &&
@@ -326,7 +328,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">Contains ID for List</param>
         /// <returns>URL for List query</returns>
-        private Request BuildShowUrl(Dictionary<string, string> parameters)
+        Request BuildShowUrl(Dictionary<string, string> parameters)
         {
             if ((!parameters.ContainsKey("ListID") || string.IsNullOrEmpty(parameters["ListID"])) &&
                 (!parameters.ContainsKey("Slug") || string.IsNullOrEmpty(parameters["Slug"])))
@@ -376,7 +378,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">Contains ListID and optionally MaxID, SinceID, Count, and Page</param>
         /// <returns>URL for statuses query</returns>
-        private Request BuildStatusesUrl(Dictionary<string, string> parameters)
+        Request BuildStatusesUrl(Dictionary<string, string> parameters)
         {
             if ((!parameters.ContainsKey("ListID") || string.IsNullOrEmpty(parameters["ListID"])) &&
                 (!parameters.ContainsKey("Slug") || string.IsNullOrEmpty(parameters["Slug"])))
@@ -466,13 +468,12 @@ namespace LinqToTwitter
             return req;
         }
 
-
         /// <summary>
         /// Build url for getting list memberships
         /// </summary>
         /// <param name="parameters">NoChange required</param>
         /// <returns>URL for memberships query</returns>
-        private Request BuildMembershipsUrl(Dictionary<string, string> parameters)
+        Request BuildMembershipsUrl(Dictionary<string, string> parameters)
         {
             if (!(parameters.ContainsKey("UserID") && !string.IsNullOrEmpty(parameters["UserID"])) &&
                 !(parameters.ContainsKey("ScreenName") && !string.IsNullOrEmpty(parameters["ScreenName"])))
@@ -518,7 +519,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">NoChange required</param>
         /// <returns>URL for subscriptions query</returns>
-        private Request BuildSubscriptionsUrl(Dictionary<string, string> parameters)
+        Request BuildSubscriptionsUrl(Dictionary<string, string> parameters)
         {
             if (!(parameters.ContainsKey("UserID") && !string.IsNullOrEmpty(parameters["UserID"])) &&
                 !(parameters.ContainsKey("ScreenName") && !string.IsNullOrEmpty(parameters["ScreenName"])))
@@ -561,7 +562,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">Contains ListID and optionally Cursor</param>
         /// <returns>URL for members query</returns>
-        private Request BuildMembersUrl(Dictionary<string, string> parameters)
+        Request BuildMembersUrl(Dictionary<string, string> parameters)
         {
             if ((!parameters.ContainsKey("ListID") || string.IsNullOrEmpty(parameters["ListID"])) &&
                (!parameters.ContainsKey("Slug") || string.IsNullOrEmpty(parameters["Slug"])))
@@ -632,7 +633,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">Contains ID and ListID</param>
         /// <returns>URL for list members query</returns>
-        private Request BuildIsMemberUrl(Dictionary<string, string> parameters)
+        Request BuildIsMemberUrl(Dictionary<string, string> parameters)
         {
             if ((!parameters.ContainsKey("UserID") || string.IsNullOrEmpty(parameters["UserID"])) &&
                (!parameters.ContainsKey("ScreenName") || string.IsNullOrEmpty(parameters["ScreenName"])))
@@ -715,7 +716,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters"></param>
         /// <returns>URL for list subscribers query</returns>
-        private Request BuildSubscribersUrl(Dictionary<string, string> parameters)
+        Request BuildSubscribersUrl(Dictionary<string, string> parameters)
         {
             if ((!parameters.ContainsKey("ListID") || string.IsNullOrEmpty(parameters["ListID"])) &&
                (!parameters.ContainsKey("Slug") || string.IsNullOrEmpty(parameters["Slug"])))
@@ -786,7 +787,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">Should contain ID and ListID</param>
         /// <returns>URL for IsSubscribed query</returns>
-        private Request BuildIsSubcribedUrl(Dictionary<string, string> parameters)
+        Request BuildIsSubcribedUrl(Dictionary<string, string> parameters)
         {
             if ((!parameters.ContainsKey("UserID") || string.IsNullOrEmpty(parameters["UserID"])) &&
                (!parameters.ContainsKey("ScreenName") || string.IsNullOrEmpty(parameters["ScreenName"])))
@@ -865,6 +866,49 @@ namespace LinqToTwitter
         }
 
         /// <summary>
+        /// Build URL to see if user is subscribed to a list
+        /// </summary>
+        /// <param name="parameters">Should contain ID and ListID</param>
+        /// <returns>URL for IsSubscribed query</returns>
+        Request BuildOwnershipsUrl(Dictionary<string, string> parameters)
+        {
+            if ((!parameters.ContainsKey("UserID") || string.IsNullOrEmpty(parameters["UserID"])) &&
+               (!parameters.ContainsKey("ScreenName") || string.IsNullOrEmpty(parameters["ScreenName"])))
+            {
+                throw new ArgumentException("You must specify either UserID or ScreenName of the user you're checking.", UserIdOrScreenName);
+            }
+
+            var req = new Request(BaseUrl + "lists/ownerships.json");
+            var urlParams = req.RequestParameters;
+
+            if (parameters.ContainsKey("UserID"))
+            {
+                UserID = parameters["UserID"];
+                urlParams.Add(new QueryParameter("user_id", parameters["UserID"]));
+            }
+
+            if (parameters.ContainsKey("ScreenName"))
+            {
+                ScreenName = parameters["ScreenName"];
+                urlParams.Add(new QueryParameter("screen_name", parameters["ScreenName"]));
+            }
+
+            if (parameters.ContainsKey("Count"))
+            {
+                Count = int.Parse(parameters["Count"]);
+                urlParams.Add(new QueryParameter("count", parameters["Count"]));
+            }
+
+            if (parameters.ContainsKey("Cursor"))
+            {
+                Cursor = parameters["Cursor"];
+                urlParams.Add(new QueryParameter("cursor", parameters["Cursor"]));
+            }
+
+            return req;
+        }
+
+        /// <summary>
         /// Transforms Twitter response into List
         /// </summary>
         /// <param name="responseJson">Json Twitter response</param>
@@ -882,6 +926,7 @@ namespace LinqToTwitter
                 case ListType.Memberships:
                 case ListType.Subscriptions:
                 case ListType.All:
+                case ListType.Ownerships:
                     lists = HandleMultipleListsResponse(listJson);
                     break;
                 case ListType.Show:

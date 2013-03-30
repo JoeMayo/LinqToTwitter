@@ -879,6 +879,25 @@ namespace LinqToTwitterXUnitTests.ListTests
             Assert.Equal(ExpectedUrl, req.FullUrl);
         }
 
+        [Fact]
+        public void BuildUrl_Returns_Ownerships_Url()
+        {
+            const string ExpectedUrl = "https://api.twitter.com/1.1/lists/ownerships.json?user_id=789&screen_name=JoeMayo&count=10&cursor=1";
+            var listReqProc = new ListRequestProcessor<List>() { BaseUrl = "https://api.twitter.com/1.1/" };
+            var parameters = new Dictionary<string, string>
+            {
+                { "Type", ((int) ListType.Ownerships).ToString() },
+                { "UserID", "789" },
+                { "ScreenName", "JoeMayo" },
+                { "Count", "10" },
+                { "Cursor", "1" }
+            };
+
+            Request req = listReqProc.BuildUrl(parameters);
+
+            Assert.Equal(ExpectedUrl, req.FullUrl);
+        }
+
         void TestMultipleListsResponse(ListRequestProcessor<List> listProc)
         {
             var listsResponse = listProc.ProcessResults(MultipleListsResponse);
