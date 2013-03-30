@@ -137,9 +137,9 @@ namespace LinqToTwitter
         /// <param name="webRequest">The request to initialize.</param>
         protected void InitializeRequest(WebRequest webRequest)
         {
-#if !SILVERLIGHT && !NETFX_CORE
             var request = webRequest as HttpWebRequest;
 
+#if !SILVERLIGHT && !NETFX_CORE
             if (request != null) {
                 request.UserAgent = UserAgent;
 
@@ -159,6 +159,11 @@ namespace LinqToTwitter
                     request.AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip;
                 }
             }
+#else
+            //if (UseCompression)
+            //{
+            //    request.Headers["accept-encoding"] = "gzip, deflate";
+            //}
 #endif
         }
 
@@ -178,6 +183,7 @@ namespace LinqToTwitter
 
             var req = WebRequest.Create(fullUrl) as HttpWebRequest;
             req.Headers[HttpRequestHeader.Authorization] = new OAuthTwitter().PrepareAuthHeader(queryString);
+            InitializeRequest(req);
 #else
             var req = WebRequest.Create(request.FullUrl) as HttpWebRequest;
             if (req != null)

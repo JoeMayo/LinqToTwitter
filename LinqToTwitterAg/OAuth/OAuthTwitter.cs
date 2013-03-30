@@ -476,16 +476,6 @@ namespace LinqToTwitter
                                             }
                                         }
                                     }
-                                    else if (contentEncoding.ToLower().Contains("deflate"))
-                                    {
-                                        using (var gzip = new DeflateStream(respStream, CompressionMode.Decompress))
-                                        {
-                                            using (var reader = new StreamReader(gzip))
-                                            {
-                                                responseData = reader.ReadToEnd();
-                                            }
-                                        }
-                                    }
                                     else
                                     {
                                         using (var respReader = new StreamReader(respStream))
@@ -796,26 +786,6 @@ namespace LinqToTwitter
                 if (contentEncoding.ToLower().Contains("gzip"))
                 {
                     using (var gzip = new GZipStream(respStream, CompressionMode.Decompress))
-                    {
-                        using (var memStr = new MemoryStream())
-                        {
-                            byte[] buffer = new byte[WorkingBufferSize];
-                            int n;
-                            while ((n = gzip.Read(buffer, 0, buffer.Length)) != 0)
-                            {
-                                memStr.Write(buffer, 0, n);
-                            }
-                            memStr.Position = 0;
-                            using (var strmRdr = new StreamReader(memStr))
-                            {
-                                requestTokenResponse = strmRdr.ReadToEnd();
-                            }
-                        }
-                    }
-                }
-                else if (contentEncoding.ToLower().Contains("deflate"))
-                {
-                    using (var gzip = new DeflateStream(respStream, CompressionMode.Decompress))
                     {
                         using (var memStr = new MemoryStream())
                         {

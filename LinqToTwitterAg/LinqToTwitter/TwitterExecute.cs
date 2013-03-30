@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using LinqToTwitter.Common;
@@ -288,13 +287,6 @@ namespace LinqToTwitter
                         responseBody = ReadStreamBytes(gzip);
                     }
                 }
-                else if (contentEncoding.ToLower().Contains("deflate"))
-                {
-                    using (var dflate = new DeflateStream(respStream, CompressionMode.Decompress))
-                    {
-                        responseBody = ReadStreamBytes(dflate);
-                    }
-                }
                 else if (resp.ContentType.StartsWith("image"))
                 {
                     responseBody = "{ \"imageUrl\": \"" + resp.ResponseUri.ToString() + "\" }";
@@ -465,32 +457,67 @@ namespace LinqToTwitter
                                 resp = req.EndGetResponse(ar) as HttpWebResponse;
 
                                 using (var stream = resp.GetResponseStream())
-                                using (var respRdr = new StreamReader(stream, Encoding.UTF8))
+                                using (MemoryStream memory = new MemoryStream())
+                                using (GZipStream gzip = new GZipStream(memory, CompressionMode.Decompress))
                                 {
-                                    string content = null;
+                                    byte[] compressedBuffer = new byte[8192];
+                                    byte[] uncompressedBuffer = new byte[8192];
+                                    List<byte> output = new List<byte>();
 
                                     try
                                     {
-                                        do
+                                        lock (streamingCallbackLock)
                                         {
-                                            lock (streamingCallbackLock)
+                                            while (stream.CanRead && !CloseStream)
                                             {
-                                                content = respRdr.ReadLine();
+                                                int readCount = stream.Read(compressedBuffer, 0, compressedBuffer.Length);
 
                                                 // When Twitter breaks the connection, we need to exit the
-                                                // entire loop and start over. Otherwise, the readlines
+                                                // entire loop and start over. Otherwise, the reads
                                                 // keep returning blank lines that are incorrectly interpreted
                                                 // as keep-alive messages in a tight loop.
-                                                if (respRdr.EndOfStream)
+                                                if (readCount == 0)
                                                 {
                                                     CloseStream = true;
                                                     throw new WebException("Twitter closed the stream.", WebExceptionStatus.ConnectFailure);
                                                 }
-                                                    
-                                                DoAsyncCallback(content);
+                     
+                                                memory.Write(compressedBuffer.Take(readCount).ToArray(), 0, readCount);
+                                                memory.Position = 0;
+
+                                                int uncompressedLength = 0;
+
+                                                if (resp.Headers["content-encoding"] != null &&
+                                                    resp.Headers["content-encoding"].Contains("gzip"))
+                                                {
+                                                    uncompressedLength = gzip.Read(uncompressedBuffer, 0, uncompressedBuffer.Length);
+                                                }
+                                                else
+                                                {
+                                                    compressedBuffer.CopyTo(uncompressedBuffer, 0);
+                                                    uncompressedLength = compressedBuffer.Length;
+                                                }
+
+                                                output.AddRange(uncompressedBuffer.Take(uncompressedLength));
+
+                                                if (!output.Contains(0x0A)) continue;
+
+                                                byte[] bytesToDecode = output.Take(output.LastIndexOf(0x0A) + 1).ToArray();
+                                                string outputString = Encoding.UTF8.GetString(bytesToDecode, 0, bytesToDecode.Length);
+                                                output.RemoveRange(0, bytesToDecode.Length);
+
+                                                string[] lines = outputString.Split(new[] { Environment.NewLine }, new StringSplitOptions());
+                                                for (int i = 0; i < (lines.Length - 1); i++)
+                                                {
+                                                    DoAsyncCallback(lines[i]);
+                                                }
+
+                                                compressedBuffer = new byte[8192];
+                                                uncompressedBuffer = new byte[8192];
+                                                output = new List<byte>();
+                                                memory.SetLength(0);
                                             }
                                         }
-                                        while (!CloseStream);
                                     }
                                     finally
                                     {
@@ -564,6 +591,8 @@ namespace LinqToTwitter
 
                 if (ReadWriteTimeout > 0)
                     req.ReadWriteTimeout = ReadWriteTimeout;
+
+                req.AutomaticDecompression = DecompressionMethods.None;
 #endif
 #if WINDOWS_PHONE
                 req.AllowReadStreamBuffering = false;
@@ -623,6 +652,7 @@ namespace LinqToTwitter
             var req = this.AuthorizedClient.Get(request) as HttpWebRequest;
 #if !SILVERLIGHT && !NETFX_CORE
             req.UserAgent = UserAgent;
+            req.AutomaticDecompression = DecompressionMethods.None;
 #endif
 #if WINDOWS_PHONE
             req.AllowReadStreamBuffering = false;

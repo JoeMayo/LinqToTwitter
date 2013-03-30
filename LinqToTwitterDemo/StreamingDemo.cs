@@ -12,13 +12,14 @@ namespace LinqToTwitterDemo
         {
             //SamplesDemo(twitterCtx);
             //FilterDemo(twitterCtx);
-            //UserStreamDemo(twitterCtx);
+            UserStreamDemo(twitterCtx);
             //UserStreamWithTimeoutDemo(twitterCtx);
-            SiteStreamDemo(twitterCtx);
+            //SiteStreamDemo(twitterCtx);
         }
 
         private static void FilterDemo(TwitterContext twitterCtx)
         {
+            twitterCtx.AuthorizedClient.UseCompression = false;
             Console.WriteLine("\nStreamed Content: \n");
             int count = 0;
 
@@ -72,7 +73,6 @@ namespace LinqToTwitterDemo
 
         private static void UserStreamDemo(TwitterContext twitterCtx)
         {
-            twitterCtx.AuthorizedClient.UseCompression = false;
             Console.WriteLine("\nStreamed Content: \n");
             int count = 0;
 
