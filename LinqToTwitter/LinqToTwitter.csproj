@@ -641,6 +641,27 @@
     <Compile Include="..\LinqToTwitterAg\Status\StatusType.cs">
       <Link>Status\StatusType.cs</Link>
     </Compile>
+    <Compile Include="..\LinqToTwitterAg\Streaming\ControlStream.cs">
+      <Link>Streaming\ControlStream.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Streaming\ControlStreamExtensions.cs">
+      <Link>Streaming\ControlStreamExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Streaming\ControlStreamFollow.cs">
+      <Link>Streaming\ControlStreamFollow.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Streaming\ControlStreamInfo.cs">
+      <Link>Streaming\ControlStreamInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Streaming\ControlStreamRequestProcessor.cs">
+      <Link>Streaming\ControlStreamRequestProcessor.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Streaming\ControlStreamType.cs">
+      <Link>Streaming\ControlStreamType.cs</Link>
+    </Compile>
+    <Compile Include="..\LinqToTwitterAg\Streaming\ControlStreamUser.cs">
+      <Link>Streaming\ControlStreamUser.cs</Link>
+    </Compile>
     <Compile Include="..\LinqToTwitterAg\Streaming\IStreamContent.cs">
       <Link>Streaming\IStreamContent.cs</Link>
     </Compile>

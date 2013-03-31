@@ -343,6 +343,17 @@ namespace LinqToTwitter
         }
 
         /// <summary>
+        /// enables access to Twitter Control Streams, which manage and query Site Streams
+        /// </summary>
+        public TwitterQueryable<ControlStream> ControlStream
+        {
+            get
+            {
+                return new TwitterQueryable<ControlStream>(this);
+            }
+        }
+
+        /// <summary>
         /// enables access to Twitter User messages, such as Friends and Followers
         /// </summary>
         public TwitterQueryable<DirectMessage> DirectMessage
@@ -845,6 +856,12 @@ namespace LinqToTwitter
                     break;
                 case "Blocks":
                     req = new BlocksRequestProcessor<T>();
+                    break;
+                case "ControlStream":
+                    req = new ControlStreamRequestProcessor<T>
+                        {
+                            SiteStreamUrl = SiteStreamUrl
+                        };
                     break;
                 case "DirectMessage":
                     req = new DirectMessageRequestProcessor<T>();

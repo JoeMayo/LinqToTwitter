@@ -115,6 +115,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="LinqToTwitterTests\TwitterContextUrlTests.cs" />
     <Compile Include="StatusTests\StatusRequestProcessorTests.cs" />
+    <Compile Include="StreamTests\ControlStreamExtensionsTest.cs" />
+    <Compile Include="StreamTests\ControlStreamTest.cs" />
     <Compile Include="StreamTests\StreamingRequestProcessorTests.cs" />
     <Compile Include="StreamTests\UserStreamRequestProcessorTest.cs" />
     <Compile Include="TrendTests\TrendRequestProcessorTests.cs" />

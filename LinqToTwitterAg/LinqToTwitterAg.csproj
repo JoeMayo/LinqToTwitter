@@ -271,6 +271,13 @@
     <Compile Include="Status\StatusMetaData.cs" />
     <Compile Include="Status\StatusRequestProcessor.cs" />
     <Compile Include="Status\StatusType.cs" />
+    <Compile Include="Streaming\ControlStream.cs" />
+    <Compile Include="Streaming\ControlStreamExtensions.cs" />
+    <Compile Include="Streaming\ControlStreamFollow.cs" />
+    <Compile Include="Streaming\ControlStreamInfo.cs" />
+    <Compile Include="Streaming\ControlStreamRequestProcessor.cs" />
+    <Compile Include="Streaming\ControlStreamType.cs" />
+    <Compile Include="Streaming\ControlStreamUser.cs" />
     <Compile Include="Streaming\IStreamContent.cs" />
     <Compile Include="Streaming\StreamContent.cs" />
     <Compile Include="Streaming\Streaming.cs" />

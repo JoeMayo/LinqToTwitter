@@ -581,13 +581,13 @@ namespace LinqToTwitterXUnitTests.FriendshipTests
 }";
 
         const string IdsResponse = @"{
-   ""previous_cursor"":0,
+   ""previous_cursor"":2,
    ""next_cursor_str"":""1"",
    ""ids"":[
       5676142
    ],
    ""previous_cursor_str"":""2"",
-   ""next_cursor"":0
+   ""next_cursor"":1
 }";
 
         const string NoRetweetIDsResponse = @"[

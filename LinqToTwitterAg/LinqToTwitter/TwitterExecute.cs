@@ -334,6 +334,7 @@ namespace LinqToTwitter
             try
             {
                 var req = AuthorizedClient.Get(request);
+                //var req = GetHttpRequest(request);
 #if !SILVERLIGHT
                 bool initialStateSignaled = AsyncCallback != null;
 
@@ -444,7 +445,7 @@ namespace LinqToTwitter
                     }
                     else
                     {
-                        req = GetBasicStreamRequest(request);
+                        req = GetHttpRequest(request);
                     }
 
                     req.BeginGetResponse(
@@ -554,12 +555,14 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="request">Stream endpoint and parameters</param>
         /// <returns>Initialized Request</returns>
-        HttpWebRequest GetBasicStreamRequest(Request request)
+        HttpWebRequest GetHttpRequest(Request request)
         {
             HttpWebRequest req = null;
             byte[] bytes = new byte[0];
             LastUrl = request.FullUrl;
-            bool shouldPostQuery = LastUrl.Contains("filter.json");
+            bool shouldPostQuery = 
+                LastUrl.Contains("filter.json") ||
+                (LastUrl.Contains("/site/c/") && LastUrl.Contains("friends/ids.json"));
 
             if (shouldPostQuery)
             {
