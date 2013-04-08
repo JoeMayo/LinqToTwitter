@@ -36,7 +36,7 @@ Module Module1
 		' Status Demos
 		'
 
-        UpdateStatusDemo(twitterCtx)
+        'UpdateStatusDemo(twitterCtx)
 		'UpdateStatusWithReplyDemo(twitterCtx)
 		'DestroyStatusDemo(twitterCtx)
 		'MentionsDemo(twitterCtx)
@@ -59,7 +59,8 @@ Module Module1
 		' Direct Message Demos
 		'
 
-		'DirectMessageSentByQueryDemo(twitterCtx)
+        'DirectMessageSentByQueryDemo(twitterCtx)
+        NewDirectMessageDemo(twitterCtx)
 
 		'
 		' Friendship Demos
@@ -418,6 +419,17 @@ Module Module1
             tweet.User.Name & ", " & _
             tweet.Text & ", " & _
             tweet.CreatedAt)
+    End Sub
+
+    Private Sub NewDirectMessageDemo(twitterCtx As TwitterContext)
+        Dim message = twitterCtx.NewDirectMessage("16761255", "Direct Message VB Test - " + DateTime.Now + "!'")
+
+        Console.WriteLine(
+            "Recipient: {0}, Message: {1}, Date: {2}",
+            message.RecipientScreenName,
+            message.Text,
+            message.CreatedAt)
+
     End Sub
 
 End Module

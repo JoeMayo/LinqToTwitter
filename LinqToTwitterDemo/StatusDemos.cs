@@ -18,7 +18,7 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         public static void Run(TwitterContext twitterCtx)
         {
-            HomeStatusQueryDemo(twitterCtx);
+            //HomeStatusQueryDemo(twitterCtx);
             //HomeSinceStatusQueryDemo(twitterCtx);
             //HomeStatusQueryWithAsyncCallbackDemo(twitterCtx);
             //UserStatusQueryDemo(twitterCtx);
@@ -30,7 +30,7 @@ namespace LinqToTwitterDemo
             //UpdateStatusDemo(twitterCtx);
             //UpdateStatusWithCallbackDemo(twitterCtx);
             //UpdateStatusWithReplyDemo(twitterCtx);
-            //UpdateStatusWithLocationDemo(twitterCtx);
+            UpdateStatusWithLocationDemo(twitterCtx);
             //UpdateStatusWithPlaceDemo(twitterCtx);
             //DestroyStatusDemo(twitterCtx);
             //RetweetedByMeStatusQueryDemo(twitterCtx);

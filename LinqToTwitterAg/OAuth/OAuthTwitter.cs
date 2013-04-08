@@ -220,7 +220,7 @@ namespace LinqToTwitter
                 OAuthConsumerSecret,
                 OAuthToken,
                 OAuthTokenSecret,
-                null, //this.OAuthVerifier,
+                callback == "oob" ? this.OAuthVerifier : null,
                 callback,
                 method.ToString(),
                 timeStamp,

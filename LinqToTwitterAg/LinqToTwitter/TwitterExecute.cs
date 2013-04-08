@@ -479,8 +479,13 @@ namespace LinqToTwitter
                                                 // as keep-alive messages in a tight loop.
                                                 if (readCount == 0)
                                                 {
-                                                    CloseStream = true;
-                                                    throw new WebException("Twitter closed the stream.", WebExceptionStatus.ConnectFailure);
+                                                    if (!CloseStream)
+                                                    {
+                                                        CloseStream = true;
+                                                        throw new WebException("Twitter closed the stream.", WebExceptionStatus.ConnectFailure);
+                                                    }
+
+                                                    return;
                                                 }
                      
                                                 memory.Write(compressedBuffer.Take(readCount).ToArray(), 0, readCount);
@@ -895,7 +900,7 @@ namespace LinqToTwitter
                                                 var asyncResp = new TwitterAsyncResponse<T>();
                                                 asyncResp.State = responseObj.FirstOrDefault();
                                                 (AsyncCallback as Action<TwitterAsyncResponse<T>>)(asyncResp);
-                                                AsyncCallback = null; // set to null because the next query might not be async
+                                                AsyncCallback = null; // set to null because (unlikely, but possible) the next query might not be async
                                             }
 
                                             // almost done
