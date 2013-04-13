@@ -1,10 +1,8 @@
-﻿
+﻿using System;
+using System.Linq;
 
 namespace LinqToTwitterMvcDemo.Models
 {
-    /// <summary>
-    /// Info on friend tweets
-    /// </summary>
     public class TweetViewModel
     {
         /// <summary>

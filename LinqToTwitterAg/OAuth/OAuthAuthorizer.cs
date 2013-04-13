@@ -160,6 +160,8 @@ namespace LinqToTwitter
                 }
             }
 #else
+            request.Headers["user-agent"] = UserAgent;
+            request.Headers["host"] = request.RequestUri.Host;
             //if (UseCompression)
             //{
             //    request.Headers["accept-encoding"] = "gzip, deflate";

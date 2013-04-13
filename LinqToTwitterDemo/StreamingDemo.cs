@@ -13,9 +13,9 @@ namespace LinqToTwitterDemo
     {
         public static void Run(TwitterContext twitterCtx)
         {
-            SamplesDemo(twitterCtx);
+            //SamplesDemo(twitterCtx);
             //FilterDemo(twitterCtx);
-            //UserStreamDemo(twitterCtx);
+            UserStreamDemo(twitterCtx);
             //UserStreamWithTimeoutDemo(twitterCtx);
             //SiteStreamDemo(twitterCtx);
             //ControlStreamsFollowersDemo(twitterCtx);
@@ -116,7 +116,7 @@ namespace LinqToTwitterDemo
         static void UserStreamWithTimeoutDemo(TwitterContext twitterCtx)
         {
             twitterCtx.AuthorizedClient.UseCompression = false;
-            twitterCtx.ReadWriteTimeout = 3000;
+            twitterCtx.Timeout = 3000;
             StreamContent strmCont = null;
 
             Console.WriteLine("\nStreamed Content: \n");

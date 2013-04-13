@@ -1,18 +1,19 @@
 ﻿using System;
-using LinqToTwitter;
-using LinqToTwitterMvcDemo.Models;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Web.Mvc;
+using LinqToTwitter;
+using LinqToTwitterMvcDemo.Models;
 
 namespace LinqToTwitterMvcDemo.Controllers
 {
     public class HomeController : Controller
     {
-        private IOAuthCredentials credentials = new SessionStateCredentials();
+        readonly IOAuthCredentials credentials = new SessionStateCredentials();
 
-        private MvcAuthorizer auth;
-        private TwitterContext twitterCtx;
+        MvcAuthorizer auth;
+        TwitterContext twitterCtx;
 
         public ActionResult Index()
         {
@@ -27,20 +28,27 @@ namespace LinqToTwitterMvcDemo.Controllers
                 Credentials = credentials
             };
 
+            // internally, this doesn't execute if BeginAuthorization hasn't been called yet
+            //  but it will execute after the user authorizes your application
             auth.CompleteAuthorization(Request.Url);
 
+            // this will only execute if we don't have all 4 keys, which is what IsAuthorized checks
             if (!auth.IsAuthorized)
             {
                 Uri specialUri = new Uri(Request.Url.ToString());
+
+                // url param is optional, it lets you specify the page Twitter redirects to.
+                // You can use it to complete the OAuth process on another action/controller - in which
+                // case you would move auth.CompleteAuthorization to that action/controller.
                 return auth.BeginAuthorization(specialUri);
             }
 
             twitterCtx = new TwitterContext(auth);
 
-            var friendTweets =
+            List<TweetViewModel> friendTweets = 
                 (from tweet in twitterCtx.Status
                  where tweet.Type == StatusType.User &&
-                       tweet.ScreenName == "AndreMayo1"                       
+                       tweet.ScreenName == "JoeMayo"
                  select new TweetViewModel
                  {
                      ImageUrl = tweet.User.ProfileImageUrl,
@@ -54,6 +62,15 @@ namespace LinqToTwitterMvcDemo.Controllers
 
         public ActionResult About()
         {
+            ViewBag.Message = "Your app description page.";
+
+            return View();
+        }
+
+        public ActionResult Contact()
+        {
+            ViewBag.Message = "Your contact page.";
+
             return View();
         }
     }

@@ -17,9 +17,9 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         public static void Run(TwitterContext twitterCtx)
         {
-            //GetHelpConfiguration(twitterCtx);
+            GetHelpConfiguration(twitterCtx);
             //GetHelpLanguages(twitterCtx);
-            GetHelpRateLimits(twitterCtx);
+            //GetHelpRateLimits(twitterCtx);
             //ExceedRateLimitDemo(twitterCtx);
         }
 
