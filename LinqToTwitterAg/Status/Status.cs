@@ -59,7 +59,11 @@ namespace LinqToTwitter
             Text = status.GetValue<string>("text");
             Annotation = new Annotation(status.GetValue<JsonData>("annotation"));
             Entities = new Entities(status.GetValue<JsonData>("entities"));
-            CurrentUserRetweet = status.GetValue<ulong>("current_user_retweet");
+            var currentUserRetweet = status.GetValue<JsonData>("current_user_retweet");
+            if (currentUserRetweet != null)
+            {
+                CurrentUserRetweet = currentUserRetweet.GetValue<ulong>("id");
+            }
             var scopes = status.GetValue<JsonData>("scopes");
             Scopes =
                 scopes == null ? new Dictionary<string, string>() :
