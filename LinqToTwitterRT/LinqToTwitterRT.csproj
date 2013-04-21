@@ -190,6 +190,9 @@
     <Compile Include="..\LinqToTwitterAg\Common\Entities\MentionBase.cs">
       <Link>Common\Entities\MentionBase.cs</Link>
     </Compile>
+    <Compile Include="..\LinqToTwitterAg\Common\Entities\SymbolEntity.cs">
+      <Link>Common\Entities\SymbolEntity.cs</Link>
+    </Compile>
     <Compile Include="..\LinqToTwitterAg\Common\Entities\UrlMention.cs">
       <Link>Common\Entities\UrlMention.cs</Link>
     </Compile>

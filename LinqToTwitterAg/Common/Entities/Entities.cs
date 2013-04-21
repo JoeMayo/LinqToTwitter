@@ -19,6 +19,7 @@ namespace LinqToTwitter
             var mediaEntities = entityJson.GetValue<JsonData>("media");
             var urlEntities = entityJson.GetValue<JsonData>("urls");
             var userEntities = entityJson.GetValue<JsonData>("user_mentions");
+            var symbolEntities = entityJson.GetValue<JsonData>("symbols");
             HashTagMentions =
                 hashTagEntities == null
                     ? new List<HashTagMention>()
@@ -89,6 +90,18 @@ namespace LinqToTwitter
                            End = indices.Count > 1 ? (int)indices[1] : 0
                        })
                       .ToList();
+            Symbols =
+                symbolEntities == null
+                    ? new List<SymbolEntity>()
+                    : (from JsonData user in symbolEntities
+                       let indices = user.GetValue<JsonData>("indices")
+                       select new SymbolEntity
+                       {
+                           Text = user.GetValue<string>("text"),
+                           Start = indices.Count > 0 ? (int)indices[0] : 0,
+                           End = indices.Count > 1 ? (int)indices[1] : 0
+                       })
+                      .ToList();
         }
 
         /// <summary>
@@ -110,5 +123,10 @@ namespace LinqToTwitter
         /// Media mentions in the tweet
         /// </summary>
         public List<MediaMention> MediaMentions { get; set; }
+
+        /// <summary>
+        /// Symbol entities in the tweet
+        /// </summary>
+        public List<SymbolEntity> Symbols { get; set; }
     }
 }

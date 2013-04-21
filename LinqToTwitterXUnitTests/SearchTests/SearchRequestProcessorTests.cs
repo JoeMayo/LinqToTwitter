@@ -266,6 +266,22 @@ namespace LinqToTwitterXUnitTests.SearchTests
         }
 
         [Fact]
+        public void ProcessResults_Populates_Entity_Symbols()
+        {
+            var searchProc = new SearchRequestProcessor<Search> { BaseUrl = "https://api.twitter.com/1.1/search/" };
+
+            List<Search> results = searchProc.ProcessResults(SearchJson);
+
+            List<SymbolEntity> symbols = results.First().Statuses[0].Entities.Symbols;
+            Assert.NotNull(symbols);
+            Assert.Equal(2, symbols.Count);
+            SymbolEntity symbol = symbols.First();
+            Assert.Equal("PEP", symbol.Text);
+            Assert.Equal(114, symbol.Start);
+            Assert.Equal(118, symbol.End);
+        }
+
+        [Fact]
         public void ProcessResults_Populates_Search_MetaData()
         {
             var searchProc = new SearchRequestProcessor<Search> { BaseUrl = "https://api.twitter.com/1.1/search/" };
@@ -418,6 +434,22 @@ namespace LinqToTwitterXUnitTests.SearchTests
                      11
                   ]
                }
+            ],
+            ""symbols"": [
+                {
+                    ""text"": ""PEP"",
+                    ""indices"": [
+                        114,
+                        118
+                    ]
+                    },
+                    {
+                    ""text"": ""COKE"",
+                    ""indices"": [
+                        128,
+                        133
+                    ]
+                }
             ],
             ""media"":[
                {
