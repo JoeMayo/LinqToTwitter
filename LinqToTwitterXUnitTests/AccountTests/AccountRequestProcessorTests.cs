@@ -36,7 +36,7 @@ namespace LinqToTwitterXUnitTests.AccountTests
             Account acct = acctReqProc.HandleSettingsResponse(TestSettingsResponse);
 
             Assert.NotNull(acct);
-            Assert.Equal("23424977", acct.Settings.TrendLocation.WoeID);
+            Assert.Equal(23424977, acct.Settings.TrendLocation.WoeID);
             Assert.Equal("United States", acct.Settings.TrendLocation.Name);
             Assert.Equal(12, acct.Settings.TrendLocation.PlaceTypeNameCode);
             Assert.Equal("Country", acct.Settings.TrendLocation.PlaceTypeName);

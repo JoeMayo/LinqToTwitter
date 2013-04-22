@@ -194,7 +194,7 @@ namespace LinqToTwitterXUnitTests.TrendTests
             Assert.Equal(12, location.PlaceTypeNameCode);
             Assert.Equal("Turkey", location.Name);
             Assert.Equal("http://where.yahooapis.com/v1/place/23424969", location.Url);
-            Assert.Equal("23424969", location.WoeID);
+            Assert.Equal(23424969, location.WoeID);
             Assert.Equal("TR", location.CountryCode);
             Assert.Equal("1", location.ParentID);
             Assert.Equal("Turkey", location.Country);
@@ -219,7 +219,7 @@ namespace LinqToTwitterXUnitTests.TrendTests
             Assert.Equal(7, location.PlaceTypeNameCode);
             Assert.Equal("Birmingham", location.Name);
             Assert.Equal("http://where.yahooapis.com/v1/place/2364559", location.Url);
-            Assert.Equal("2364559", location.WoeID);
+            Assert.Equal(2364559, location.WoeID);
             Assert.Equal("US", location.CountryCode);
             Assert.Equal("23424977", location.ParentID);
             Assert.Equal("United States", location.Country);
@@ -240,7 +240,7 @@ namespace LinqToTwitterXUnitTests.TrendTests
             Assert.Equal(1, locations.Count);
             Location location = locations[0];
             Assert.Equal("Worldwide", location.Name);
-            Assert.Equal("1", location.WoeID);
+            Assert.Equal(1, location.WoeID);
             Assert.Equal("%22Julianna%20Margulies%22", trends.Query);
             Assert.Equal("Julianna Margulies", trends.Name);
             Assert.Null(trends.PromotedContent);

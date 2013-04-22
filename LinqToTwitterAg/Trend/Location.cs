@@ -19,13 +19,13 @@ namespace LinqToTwitter
             PlaceTypeName = placeType.GetValue<string>("name");
             PlaceTypeNameCode = placeType.GetValue<int>("code");
             Url = trendLocation.GetValue<string>("url");
-            WoeID = trendLocation.GetValue<int>("woeid").ToString(CultureInfo.InvariantCulture);
+            WoeID = trendLocation.GetValue<int>("woeid");
         }
 
         /// <summary>
         /// Yahoo Where On Earth ID
         /// </summary>
-        public string WoeID { get; set; }
+        public int WoeID { get; set; }
 
         /// <summary>
         /// Name of location
