@@ -38,10 +38,10 @@ namespace LinqToTwitterXUnitTests
             Assert.Equal("Testing entities from @JoeMayo : http://t.co/Q1CQHi2 #entitytest", dm.Text);
             Entities entities = dm.Entities;
             Assert.NotNull(entities);
-            List<UserMention> userMentions = entities.UserMentions;
+            List<UserMentionEntity> userMentions = entities.UserMentionEntities;
             Assert.NotNull(userMentions);
             Assert.NotEmpty(userMentions);
-            UserMention usrMention = userMentions.FirstOrDefault();
+            UserMentionEntity usrMention = userMentions.FirstOrDefault();
             Assert.NotNull(usrMention);
             Assert.Equal("Joe Mayo", usrMention.Name);
         }

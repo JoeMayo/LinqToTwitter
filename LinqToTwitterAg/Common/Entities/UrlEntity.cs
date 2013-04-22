@@ -6,7 +6,7 @@ namespace LinqToTwitter
     /// Url mention in the tweet
     /// </summary>
     /// <example>http://bit.ly/129Ad</example>
-    public class UrlMention : MentionBase
+    public class UrlEntity : EntityBase
     {
         /// <summary>
         /// Absolute Url in the tweet

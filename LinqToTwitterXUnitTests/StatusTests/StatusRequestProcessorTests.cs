@@ -521,7 +521,7 @@ namespace LinqToTwitterXUnitTests.StatusTests
             Assert.NotNull(status.Annotation);
             Assert.Empty(status.Annotation.Attributes);
             Assert.NotNull(status.Entities);
-            Assert.Null(status.Entities.HashTagMentions);
+            Assert.Null(status.Entities.HashTagEntities);
         }
 
         [Fact]
@@ -567,7 +567,7 @@ namespace LinqToTwitterXUnitTests.StatusTests
             Assert.NotNull(status.Annotation);
             Assert.Empty(status.Annotation.Attributes);
             Assert.NotNull(status.Entities);
-            Assert.Null(status.Entities.HashTagMentions);
+            Assert.Null(status.Entities.HashTagEntities);
         }
 
         [Fact]

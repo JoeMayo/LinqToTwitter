@@ -191,10 +191,10 @@ namespace LinqToTwitterXUnitTests.SearchTests
 
             List<Search> results = searchProc.ProcessResults(SearchJson);
 
-            List<UrlMention> urls = results.First().Statuses.First().Entities.UrlMentions;
+            List<UrlEntity> urls = results.First().Statuses.First().Entities.UrlEntities;
             Assert.NotNull(urls);
             Assert.Equal(1, urls.Count);
-            UrlMention firstUrl = urls.First();
+            UrlEntity firstUrl = urls.First();
             Assert.Equal("http://t.co/Cc85Yzpj", firstUrl.Url);
             Assert.Equal("http://bit.ly/PSOVso", firstUrl.ExpandedUrl);
             Assert.Equal("bit.ly/PSOVso", firstUrl.DisplayUrl);
@@ -209,10 +209,10 @@ namespace LinqToTwitterXUnitTests.SearchTests
 
             List<Search> results = searchProc.ProcessResults(SearchJson);
 
-            List<HashTagMention> hashes = results.First().Statuses[0].Entities.HashTagMentions;
+            List<HashTagEntity> hashes = results.First().Statuses[0].Entities.HashTagEntities;
             Assert.NotNull(hashes);
             Assert.Equal(3, hashes.Count);
-            HashTagMention firstHash = hashes.First();
+            HashTagEntity firstHash = hashes.First();
             Assert.Equal("twitterapi", firstHash.Tag);
             Assert.Equal(89, firstHash.Start);
             Assert.Equal(100, firstHash.End);
@@ -225,10 +225,10 @@ namespace LinqToTwitterXUnitTests.SearchTests
 
             List<Search> results = searchProc.ProcessResults(SearchJson);
 
-            List<UserMention> users = results.First().Statuses[0].Entities.UserMentions;
+            List<UserMentionEntity> users = results.First().Statuses[0].Entities.UserMentionEntities;
             Assert.NotNull(users);
             Assert.Equal(1, users.Count);
-            UserMention firstUser = users.First();
+            UserMentionEntity firstUser = users.First();
             Assert.Equal("JoeMayo", firstUser.ScreenName);
             Assert.Equal("Joe Mayo", firstUser.Name);
             Assert.Equal(15411837ul, firstUser.Id);
@@ -243,10 +243,10 @@ namespace LinqToTwitterXUnitTests.SearchTests
 
             List<Search> results = searchProc.ProcessResults(SearchJson);
 
-            List<MediaMention> media = results.First().Statuses[0].Entities.MediaMentions;
+            List<MediaEntity> media = results.First().Statuses[0].Entities.MediaEntities;
             Assert.NotNull(media);
             Assert.Equal(1, media.Count);
-            MediaMention firstMedia = media.First();
+            MediaEntity firstMedia = media.First();
             Assert.Equal(155683816676134913ul, firstMedia.ID);
             Assert.Equal("http://p.twimg.com/AikZmz5CEAESBHD.jpg", firstMedia.MediaUrl);
             Assert.Equal("https://p.twimg.com/AikZmz5CEAESBHD.jpg", firstMedia.MediaUrlHttps);
@@ -272,7 +272,7 @@ namespace LinqToTwitterXUnitTests.SearchTests
 
             List<Search> results = searchProc.ProcessResults(SearchJson);
 
-            List<SymbolEntity> symbols = results.First().Statuses[0].Entities.Symbols;
+            List<SymbolEntity> symbols = results.First().Statuses[0].Entities.SymbolEntities;
             Assert.NotNull(symbols);
             Assert.Equal(2, symbols.Count);
             SymbolEntity symbol = symbols.First();

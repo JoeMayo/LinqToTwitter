@@ -3,10 +3,10 @@ using System;
 namespace LinqToTwitter
 {
     /// <summary>
-    /// Twitter user mention in the tweet
+    /// Twitter user mention entity in the tweet
     /// </summary>
     /// <example>@linkedin</example>
-    public class UserMention : MentionBase
+    public class UserMentionEntity : EntityBase
     {
         /// <summary>
         /// Twitter user Id

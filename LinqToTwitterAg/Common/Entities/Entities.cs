@@ -20,25 +20,25 @@ namespace LinqToTwitter
             var urlEntities = entityJson.GetValue<JsonData>("urls");
             var userEntities = entityJson.GetValue<JsonData>("user_mentions");
             var symbolEntities = entityJson.GetValue<JsonData>("symbols");
-            HashTagMentions =
+            HashTagEntities =
                 hashTagEntities == null
-                    ? new List<HashTagMention>()
+                    ? new List<HashTagEntity>()
                     : (from JsonData hash in hashTagEntities
                        let indices = hash.GetValue<JsonData>("indices")
-                       select new HashTagMention
+                       select new HashTagEntity
                        {
                            Tag = hash.GetValue<string>("text"),
                            Start = indices.Count > 0 ? (int)indices[0] : 0,
                            End = indices.Count > 1 ? (int)indices[1] : 0
                        })
                        .ToList();
-            MediaMentions =
+            MediaEntities =
                 mediaEntities == null
-                    ? new List<MediaMention>()
+                    ? new List<MediaEntity>()
                     : (from JsonData media in mediaEntities
                        let indices = media.GetValue<JsonData>("indices")
                        let sizes = media.GetValue<JsonData>("sizes")
-                       select new MediaMention
+                       select new MediaEntity
                        {
                            DisplayUrl = media.GetValue<string>("display_url"),
                            ExpandedUrl = media.GetValue<string>("expanded_url"),
@@ -62,12 +62,12 @@ namespace LinqToTwitter
                            End = indices.Count > 1 ? (int)indices[1] : 0
                        })
                        .ToList();
-            UrlMentions =
+            UrlEntities =
                 urlEntities == null
-                    ? new List<UrlMention>()
+                    ? new List<UrlEntity>()
                     : (from JsonData url in urlEntities
                        let indices = url.GetValue<JsonData>("indices")
-                       select new UrlMention
+                       select new UrlEntity
                        {
                            Url = url.GetValue<string>("url"),
                            DisplayUrl = url.GetValue<string>("display_url"),
@@ -76,12 +76,12 @@ namespace LinqToTwitter
                            End = indices.Count > 1 ? (int)indices[1] : 0
                        })
                       .ToList();
-            UserMentions =
+            UserMentionEntities =
                 userEntities == null
-                    ? new List<UserMention>()
+                    ? new List<UserMentionEntity>()
                     : (from JsonData user in userEntities
                        let indices = user.GetValue<JsonData>("indices")
-                       select new UserMention
+                       select new UserMentionEntity
                        {
                            ScreenName = user.GetValue<string>("screen_name"),
                            Name = user.GetValue<string>("name"),
@@ -90,7 +90,7 @@ namespace LinqToTwitter
                            End = indices.Count > 1 ? (int)indices[1] : 0
                        })
                       .ToList();
-            Symbols =
+            SymbolEntities =
                 symbolEntities == null
                     ? new List<SymbolEntity>()
                     : (from JsonData user in symbolEntities
@@ -105,28 +105,28 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// Mentions of the user
+        /// Mentions of the user in the tweet
         /// </summary>
-        public List<UserMention> UserMentions { get; set; }
+        public List<UserMentionEntity> UserMentionEntities { get; set; }
 
         /// <summary>
-        /// Url mentions in the tweet
+        /// Url entities in the tweet
         /// </summary>
-        public List<UrlMention> UrlMentions { get; set; }
+        public List<UrlEntity> UrlEntities { get; set; }
 
         /// <summary>
-        /// Hash tags mentions in the tweet
+        /// Hash tag entities in the tweet
         /// </summary>
-        public List<HashTagMention> HashTagMentions { get; set; }
+        public List<HashTagEntity> HashTagEntities { get; set; }
 
         /// <summary>
-        /// Media mentions in the tweet
+        /// Media entities in the tweet
         /// </summary>
-        public List<MediaMention> MediaMentions { get; set; }
+        public List<MediaEntity> MediaEntities { get; set; }
 
         /// <summary>
         /// Symbol entities in the tweet
         /// </summary>
-        public List<SymbolEntity> Symbols { get; set; }
+        public List<SymbolEntity> SymbolEntities { get; set; }
     }
 }

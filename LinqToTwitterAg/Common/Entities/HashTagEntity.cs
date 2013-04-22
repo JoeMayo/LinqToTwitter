@@ -1,10 +1,10 @@
 namespace LinqToTwitter
 {
     /// <summary>
-    /// Hash tag mention
+    /// Hash tag entity
     /// </summary>
     /// <example>#linqtotwitter</example>
-    public class HashTagMention : MentionBase
+    public class HashTagEntity : EntityBase
     {
         /// <summary>
         /// Tag name without the # sign

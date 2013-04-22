@@ -4,17 +4,17 @@ using System.Linq;
 namespace LinqToTwitter
 {
     /// <summary>
-    /// Base for all entity mentions
+    /// Base for all entities
     /// </summary>
-    public abstract class MentionBase
+    public abstract class EntityBase
     {
         /// <summary>
-        /// Start of the mention in the tweet
+        /// Start of the entity in the tweet
         /// </summary>
         public int Start { get; set; }
 
         /// <summary>
-        /// End of the mention in the tweet
+        /// End of the entity in the tweet
         /// </summary>
         public int End { get; set; }
     }

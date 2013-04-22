@@ -181,23 +181,23 @@
     <Compile Include="..\LinqToTwitterAg\Common\Entities\Entities.cs">
       <Link>Common\Entities\Entities.cs</Link>
     </Compile>
-    <Compile Include="..\LinqToTwitterAg\Common\Entities\HashTagMention.cs">
-      <Link>Common\Entities\HashTagMention.cs</Link>
+    <Compile Include="..\LinqToTwitterAg\Common\Entities\EntityBase.cs">
+      <Link>Common\Entities\EntityBase.cs</Link>
     </Compile>
-    <Compile Include="..\LinqToTwitterAg\Common\Entities\MediaMention.cs">
-      <Link>Common\Entities\MediaMention.cs</Link>
+    <Compile Include="..\LinqToTwitterAg\Common\Entities\HashTagEntity.cs">
+      <Link>Common\Entities\HashTagEntity.cs</Link>
     </Compile>
-    <Compile Include="..\LinqToTwitterAg\Common\Entities\MentionBase.cs">
-      <Link>Common\Entities\MentionBase.cs</Link>
+    <Compile Include="..\LinqToTwitterAg\Common\Entities\MediaEntity.cs">
+      <Link>Common\Entities\MediaEntity.cs</Link>
     </Compile>
     <Compile Include="..\LinqToTwitterAg\Common\Entities\SymbolEntity.cs">
       <Link>Common\Entities\SymbolEntity.cs</Link>
     </Compile>
-    <Compile Include="..\LinqToTwitterAg\Common\Entities\UrlMention.cs">
-      <Link>Common\Entities\UrlMention.cs</Link>
+    <Compile Include="..\LinqToTwitterAg\Common\Entities\UrlEntity.cs">
+      <Link>Common\Entities\UrlEntity.cs</Link>
     </Compile>
-    <Compile Include="..\LinqToTwitterAg\Common\Entities\UserMention.cs">
-      <Link>Common\Entities\UserMention.cs</Link>
+    <Compile Include="..\LinqToTwitterAg\Common\Entities\UserMentionEntity.cs">
+      <Link>Common\Entities\UserMentionEntity.cs</Link>
     </Compile>
     <Compile Include="..\LinqToTwitterAg\Common\Evaluator.cs">
       <Link>Common\Evaluator.cs</Link>

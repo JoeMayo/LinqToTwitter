@@ -822,10 +822,10 @@ namespace LinqToTwitterDemo
                 Console.WriteLine("Tweet: " + tweet.Text);
                 Console.WriteLine(
                     "Entities: \n\tHashes: {0}\n\tMedia: {1}\n\tUrl: {2}\n\tUser: {3}\n",
-                    tweet.Entities.HashTagMentions.Count,
-                    tweet.Entities.MediaMentions.Count,
-                    tweet.Entities.UrlMentions.Count,
-                    tweet.Entities.UserMentions.Count);
+                    tweet.Entities.HashTagEntities.Count,
+                    tweet.Entities.MediaEntities.Count,
+                    tweet.Entities.UrlEntities.Count,
+                    tweet.Entities.UserMentionEntities.Count);
             });
         }
 

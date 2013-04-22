@@ -6,7 +6,7 @@ namespace LinqToTwitter
     /// Twitter symbol entity in the tweet
     /// </summary>
     /// <example>@linkedin</example>
-    public class SymbolEntity : MentionBase
+    public class SymbolEntity : EntityBase
     {
         /// <summary>
         /// Symbol

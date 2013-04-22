@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace LinqToTwitter
 {
-    public class MediaMention : UrlMention
+    public class MediaEntity : UrlEntity
     {
         /// <summary>
         /// ID of the media

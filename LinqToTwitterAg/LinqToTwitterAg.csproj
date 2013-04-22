@@ -257,11 +257,11 @@
     <Compile Include="Status\Annotation.cs" />
     <Compile Include="Status\Contributor.cs" />
     <Compile Include="Common\Entities\Entities.cs" />
-    <Compile Include="Common\Entities\HashTagMention.cs" />
-    <Compile Include="Common\Entities\MediaMention.cs" />
-    <Compile Include="Common\Entities\MentionBase.cs" />
-    <Compile Include="Common\Entities\UrlMention.cs" />
-    <Compile Include="Common\Entities\UserMention.cs" />
+    <Compile Include="Common\Entities\HashTagEntity.cs" />
+    <Compile Include="Common\Entities\MediaEntity.cs" />
+    <Compile Include="Common\Entities\EntityBase.cs" />
+    <Compile Include="Common\Entities\UrlEntity.cs" />
+    <Compile Include="Common\Entities\UserMentionEntity.cs" />
     <Compile Include="Status\EmbeddedStatus.cs" />
     <Compile Include="Status\EmbeddedStatusAlignment.cs" />
     <Compile Include="Status\FilterLevel.cs" />
