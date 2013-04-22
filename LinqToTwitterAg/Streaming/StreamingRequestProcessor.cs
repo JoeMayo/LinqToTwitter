@@ -19,27 +19,32 @@ namespace LinqToTwitter
         /// <summary>
         /// Number of tweets to go back to when reconnecting
         /// </summary>
-        public int Count { get; set; }
+        internal int Count { get; set; }
 
         /// <summary>
         /// Tweets are delimeted in the stream
         /// </summary>
-        public string Delimited { get; set; }
+        internal string Delimited { get; set; }
 
         /// <summary>
         /// Limit results to a comma-separated set of users
         /// </summary>
-        public string Follow { get; set; }
+        internal string Follow { get; set; }
 
         /// <summary>
         /// Comma-separated list of keywords to get tweets for
         /// </summary>
-        public string Track { get; set; }
+        internal string Track { get; set; }
 
         /// <summary>
         /// Get tweets in the comma-separated list of lat/lon's
         /// </summary>
-        public string Locations { get; set; }
+        internal string Locations { get; set; }
+
+        /// <summary>
+        /// Tell Twitter to send stall warnings
+        /// </summary>
+        internal bool StallWarnings { get; set; }
 
         /// <summary>
         /// extracts parameters from lambda
@@ -57,7 +62,8 @@ namespace LinqToTwitter
                        "Delimited",
                        "Follow",
                        "Track",
-                       "Locations"
+                       "Locations",
+                       "StallWarnings"
                    }).Parameters;
 
             if (parameters.ContainsKey("Count"))
@@ -83,6 +89,11 @@ namespace LinqToTwitter
             if (parameters.ContainsKey("Locations"))
             {
                 Locations = parameters["Locations"];
+            }
+
+            if (parameters.ContainsKey("StallWarnings"))
+            {
+                StallWarnings = bool.Parse(parameters["StallWarnings"]);
             }
 
             return parameters;
@@ -162,6 +173,11 @@ namespace LinqToTwitter
                 urlParams.Add(new QueryParameter("track", parameters["Track"]));
             }
 
+            if (parameters.ContainsKey("StallWarnings"))
+            {
+                urlParams.Add(new QueryParameter("stall_warnings", parameters["StallWarnings"].ToLower()));
+            }
+
             return req;
         }
 
@@ -183,6 +199,11 @@ namespace LinqToTwitter
             if (parameters.ContainsKey("Delimited"))
             {
                 urlParams.Add(new QueryParameter("delimited", parameters["Delimited"]));
+            }
+
+            if (parameters.ContainsKey("StallWarnings"))
+            {
+                urlParams.Add(new QueryParameter("stall_warnings", parameters["StallWarnings"].ToLower()));
             }
 
             return req;
@@ -245,6 +266,11 @@ namespace LinqToTwitter
             if (parameters.ContainsKey("Delimited"))
             {
                 urlParams.Add(new QueryParameter("delimited", parameters["Delimited"]));
+            }
+
+            if (parameters.ContainsKey("StallWarnings"))
+            {
+                urlParams.Add(new QueryParameter("stall_warnings", parameters["StallWarnings"].ToLower()));
             }
 
             return req;

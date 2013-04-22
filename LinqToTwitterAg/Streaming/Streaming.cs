@@ -36,6 +36,11 @@
         public string Locations { get; set; }
 
         /// <summary>
+        /// Tell Twitter to send stall warnings
+        /// </summary>
+        public bool StallWarnings { get; set; }
+
+        /// <summary>
         /// Executor managing stream
         /// </summary>
         internal ITwitterExecute TwitterExecutor { get; set; }

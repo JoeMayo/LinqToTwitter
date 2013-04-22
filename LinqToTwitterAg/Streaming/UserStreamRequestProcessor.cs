@@ -28,34 +28,44 @@ namespace LinqToTwitter
         /// <summary>
         /// Type of user stream
         /// </summary>
-        public UserStreamType Type { get; set; }
+        internal UserStreamType Type { get; set; }
 
         /// <summary>
         /// Stream delimiter
         /// </summary>
         /// <remarks>Should always be "length" </remarks>
-        public string Delimited { get; set; }
+        internal string Delimited { get; set; }
 
         /// <summary>
         /// Comma-separated list (no spaces) of users to add to Site Stream
         /// </summary>
-        public string Follow { get; set; }
+        internal string Follow { get; set; }
 
         /// <summary>
         /// Search terms
         /// </summary>
-        public string Track { get; set; }
+        internal string Track { get; set; }
 
         /// <summary>
         /// Type of entities to return, i.e. "followings" or "user".
         /// </summary>
-        public string With { get; set; }
+        internal string With { get; set; }
 
         /// <summary>
         /// Normally, only replies between two users that follow each other show.
         /// Setting this to true will show replies, regardless of follow status.
         /// </summary>
-        public bool AllReplies { get; set; }
+        internal bool AllReplies { get; set; }
+
+        /// <summary>
+        /// Tell Twitter to send stall warnings
+        /// </summary>
+        internal bool StallWarnings { get; set; }
+
+        /// <summary>
+        /// Bounding box of locations to include tweets
+        /// </summary>
+        internal string Locations { get; set; }
 
         /// <summary>
         /// extracts parameters from lambda
@@ -73,7 +83,9 @@ namespace LinqToTwitter
                        "Follow",
                        "Track",
                        "With",
-                       "AllReplies"
+                       "AllReplies",
+                       "StallWarnings",
+                       "Locations"
                    }).Parameters;
 
             if (parameters.ContainsKey("Delimited"))
@@ -99,6 +111,16 @@ namespace LinqToTwitter
             if (parameters.ContainsKey("AllReplies"))
             {
                 AllReplies = bool.Parse(parameters["AllReplies"]);
+            }
+
+            if (parameters.ContainsKey("StallWarnings"))
+            {
+                StallWarnings = bool.Parse(parameters["StallWarnings"]);
+            }
+
+            if (parameters.ContainsKey("Locations"))
+            {
+                Locations = parameters["Locations"];
             }
 
             return parameters;
@@ -166,6 +188,18 @@ namespace LinqToTwitter
                 }
             }
 
+            if (parameters.ContainsKey("StallWarnings"))
+            {
+                StallWarnings = bool.Parse(parameters["StallWarnings"]);
+                urlParams.Add(new QueryParameter("stall_warnings", parameters["StallWarnings"].ToLower()));
+            }
+
+            if (parameters.ContainsKey("Locations"))
+            {
+                Locations = parameters["Locations"];
+                urlParams.Add(new QueryParameter("locations", Locations));
+            }
+
             return req;
         }
 
@@ -207,15 +241,21 @@ namespace LinqToTwitter
                 urlParams.Add(new QueryParameter("with", With.ToLower()));
             }
 
-            //if (parameters.ContainsKey("AllReplies"))
-            //{
-            //    AllReplies = bool.Parse(parameters["AllReplies"]);
+            if (parameters.ContainsKey("AllReplies"))
+            {
+                AllReplies = bool.Parse(parameters["AllReplies"]);
 
-            //    if (AllReplies)
-            //    {
-            //        urlParams.Add(new QueryParameter("replies", "all"));
-            //    }
-            //}
+                if (AllReplies)
+                {
+                    urlParams.Add(new QueryParameter("replies", "all"));
+                }
+            }
+
+            if (parameters.ContainsKey("StallWarnings"))
+            {
+                StallWarnings = bool.Parse(parameters["StallWarnings"]);
+                urlParams.Add(new QueryParameter("stall_warnings", parameters["StallWarnings"].ToLower()));
+            }
 
             return req;
         }

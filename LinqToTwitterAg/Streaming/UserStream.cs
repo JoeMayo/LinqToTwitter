@@ -37,6 +37,16 @@
         public bool AllReplies { get; set; }
 
         /// <summary>
+        /// Tell Twitter to send stall warnings
+        /// </summary>
+        public bool StallWarnings { get; set; }
+
+        /// <summary>
+        /// Bounding box of locations to include tweets
+        /// </summary>
+        public string Locations { get; set; }
+
+        /// <summary>
         /// Executor managing stream
         /// </summary>
         internal ITwitterExecute TwitterExecutor { get; set; }

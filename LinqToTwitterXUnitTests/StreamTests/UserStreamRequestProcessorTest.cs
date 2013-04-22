@@ -27,7 +27,9 @@ namespace LinqToTwitterXUnitTests
                     strm.Follow == "1,2,3" &&
                     strm.Track == "twitter,API,LINQ to Twitter" &&
                     strm.With == "Follow" &&
-                    strm.AllReplies == true;
+                    strm.AllReplies == true &&
+                    strm.StallWarnings == true &&
+                    strm.Locations == "-122.75,36.8,-121.75,37.8";
             var lambdaExpression = expression as LambdaExpression;
 
             var parms = reqProc.GetParameters(lambdaExpression);
@@ -44,48 +46,57 @@ namespace LinqToTwitterXUnitTests
                   new KeyValuePair<string, string>("AllReplies", "True")));
             Assert.True(parms.Contains(
                   new KeyValuePair<string, string>("Follow", "1,2,3")));
+            Assert.True(parms.Contains(
+                  new KeyValuePair<string, string>("StallWarnings", "True")));
+            Assert.True(parms.Contains(
+                  new KeyValuePair<string, string>("Locations", "-122.75,36.8,-121.75,37.8")));
         }
 
         [Fact]
         public void BuildUserUrl_Returns_Url()
         {
-            var reqProc = new UserStreamRequestProcessor<UserStream>() { UserStreamUrl = "https://userstream.twitter.com/2/" };
+            const string ExpectedUrl = "https://userstream.twitter.com/1.1/user.json?delimited=length&track=LINQ%20to%20Twitter&with=follow&replies=all&stall_warnings=true&locations=3";
+            var reqProc = new UserStreamRequestProcessor<UserStream>() { UserStreamUrl = "https://userstream.twitter.com/1.1/" };
             var parms = new Dictionary<string, string>
             {
                 { "Type", UserStreamType.User.ToString() },
                 { "Delimited", "length" },
                 { "Track", "LINQ to Twitter" },
                 { "With", "Follow" },
-                { "AllReplies", "True" }
+                { "AllReplies", true.ToString() },
+                { "StallWarnings", true.ToString() },
+                { "Locations", "3" }
             };
 
             Request req = reqProc.BuildUrl(parms);
 
-            Assert.Equal("https://userstream.twitter.com/2/user.json?delimited=length&track=LINQ%20to%20Twitter&with=follow&replies=all", req.FullUrl);
+            Assert.Equal(ExpectedUrl, req.FullUrl);
         }
 
         [Fact]
         public void BuildSiteUrl_Returns_Url()
         {
-            var reqProc = new UserStreamRequestProcessor<UserStream>() { SiteStreamUrl = "http://betastream.twitter.com/2b/" };
+            const string ExpectedUrl = "https://userstream.twitter.com/1.1/site.json?delimited=length&follow=1%2C2%2C3&with=follow&replies=all&stall_warnings=true";
+            var reqProc = new UserStreamRequestProcessor<UserStream>() { SiteStreamUrl = "https://userstream.twitter.com/1.1/" };
             var parms = new Dictionary<string, string>
             {
                 { "Type", UserStreamType.Site.ToString() },
                 { "Delimited", "length" },
                 { "Follow", "1,2,3" },
                 { "With", "Follow" },
-                { "AllReplies", "True" }
+                { "AllReplies", true.ToString() },
+                { "StallWarnings", true.ToString() }
             };
 
             Request req = reqProc.BuildUrl(parms);
 
-            Assert.Equal("http://betastream.twitter.com/2b/site.json?delimited=length&follow=1%2C2%2C3&with=follow", req.FullUrl);
+            Assert.Equal(ExpectedUrl, req.FullUrl);
         }
 
         [Fact]
         public void BuildSiteUrl_Throws_On_Track()
         {
-            var reqProc = new UserStreamRequestProcessor<UserStream>() { SiteStreamUrl = "http://betastream.twitter.com/2b/" };
+            var reqProc = new UserStreamRequestProcessor<UserStream>() { SiteStreamUrl = "https://userstream.twitter.com/1.1/" };
             var parms = new Dictionary<string, string>
             {
                 { "Type", UserStreamType.Site.ToString() },
@@ -104,7 +115,7 @@ namespace LinqToTwitterXUnitTests
         [Fact]
         public void BuildSiteUrl_Requires_Follow()
         {
-            var reqProc = new UserStreamRequestProcessor<UserStream>() { SiteStreamUrl = "http://betastream.twitter.com/2b/" };
+            var reqProc = new UserStreamRequestProcessor<UserStream>() { SiteStreamUrl = "https://userstream.twitter.com/1.1/" };
             var parms = new Dictionary<string, string>
             {
                 { "Type", UserStreamType.Site.ToString() },
@@ -119,7 +130,7 @@ namespace LinqToTwitterXUnitTests
         [Fact]
         public void BuildSiteUrl_Removes_Spaces_From_Follow()
         {
-            var reqProc = new UserStreamRequestProcessor<UserStream>() { SiteStreamUrl = "http://betastream.twitter.com/2b/" };
+            var reqProc = new UserStreamRequestProcessor<UserStream>() { SiteStreamUrl = "https://userstream.twitter.com/1.1/" };
             var parms = new Dictionary<string, string>
             {
                 { "Type", UserStreamType.Site.ToString() },
@@ -128,7 +139,7 @@ namespace LinqToTwitterXUnitTests
 
             Request req = reqProc.BuildUrl(parms);
 
-            Assert.Equal("http://betastream.twitter.com/2b/site.json?follow=1%2C2%2C3", req.FullUrl);
+            Assert.Equal("https://userstream.twitter.com/1.1/site.json?follow=1%2C2%2C3", req.FullUrl);
         }
 
         [Fact]
@@ -137,7 +148,7 @@ namespace LinqToTwitterXUnitTests
             var execMock = new Mock<ITwitterExecute>();
             var reqProc = new UserStreamRequestProcessor<UserStream>()
             {
-                UserStreamUrl = "https://userstream.twitter.com/2/",
+                UserStreamUrl = "https://userstream.twitter.com/1.1/",
                 TwitterExecutor = execMock.Object
             };
 
