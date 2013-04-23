@@ -38,7 +38,8 @@ namespace LinqToTwitterXUnitTests.ListTests
                     list.TrimUser == true &&
                     list.IncludeEntities == true &&
                     list.IncludeRetweets == true &&
-                    list.SkipStatus == true;
+                    list.SkipStatus == true &&
+                    list.Reverse == true;
 
             var queryParams = listReqProc.GetParameters(expression);
 
@@ -93,6 +94,9 @@ namespace LinqToTwitterXUnitTests.ListTests
             Assert.True(
                 queryParams.Contains(
                     new KeyValuePair<string, string>("SkipStatus", "True")));
+            Assert.True(
+                queryParams.Contains(
+                    new KeyValuePair<string, string>("Reverse", "True")));
         }
 
         [Fact]
@@ -214,14 +218,15 @@ namespace LinqToTwitterXUnitTests.ListTests
         [Fact]
         public void BuildListsUrl_Returns_Url()
         {
-            const string ExpectedUrl = "https://api.twitter.com/1.1/lists/list.json?user_id=123&screen_name=JoeMayo&cursor=456";
+            const string ExpectedUrl = "https://api.twitter.com/1.1/lists/list.json?user_id=123&screen_name=JoeMayo&cursor=456&reverse=true";
             var listReqProc = new ListRequestProcessor<List>() { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
             {
                 { "Type", ((int) ListType.Lists).ToString() },
                 { "UserID", "123" },
                 { "ScreenName", "JoeMayo" },
-                { "Cursor", "456" }
+                { "Cursor", "456" },
+                { "Reverse", true.ToString() }
             };
 
             Request req = listReqProc.BuildUrl(parameters);
@@ -1083,7 +1088,8 @@ namespace LinqToTwitterXUnitTests.ListTests
                 IncludeEntities = true,
                 IncludeRetweets = true,
                 FilterToOwnedLists = true,
-                SkipStatus = true
+                SkipStatus = true,
+                Reverse = true
             };
 
             var listsResponse = listProc.ProcessResults(SingleListResponse);
@@ -1109,6 +1115,7 @@ namespace LinqToTwitterXUnitTests.ListTests
             Assert.True(list.IncludeRetweets);
             Assert.True(list.FilterToOwnedLists);
             Assert.True(list.SkipStatus);
+            Assert.True(list.Reverse);
         }
 
         const string SingleListResponse = @"{

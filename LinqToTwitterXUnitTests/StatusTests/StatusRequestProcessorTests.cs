@@ -290,48 +290,6 @@ namespace LinqToTwitterXUnitTests.StatusTests
             Assert.Equal(ExpectedUrl, req.FullUrl);
         }
 
-        [Fact()]
-        public void BuildUrl_Constructs_Url_For_RetweetedToUser()
-        {
-            const string ExpectedUrl = "http://api.twitter.com/1/statuses/retweeted_to_user.json?screen_name=JoeMayo";
-            var reqProc = new StatusRequestProcessor<Status>
-            {
-                Type = StatusType.RetweetedToUser,
-                BaseUrl = "http://api.twitter.com/1/"
-            };
-            var parameters = new Dictionary<string, string>
-            {
-                { "Type", ((int)StatusType.RetweetedToUser).ToString() },
-                { "ScreenName", "JoeMayo" }
-            };
-
-            Request req = reqProc.BuildUrl(parameters);
-
-            Assert.Equal(ExpectedUrl, req.FullUrl);
-        }
-
-        [Fact]
-        public void BuildUrl_Returns_Url_For_RetweetedBy()
-        {
-            const string ExpectedUrl = "https://api.twitter.com/1.1/statuses/123/retweeted_by.json?count=25&page=2";
-            var reqProc = new StatusRequestProcessor<Status>
-            {
-                Type = StatusType.RetweetedBy,
-                BaseUrl = "https://api.twitter.com/1.1/"
-            };
-            var parameters = new Dictionary<string, string>
-            {
-                { "Type", ((int)StatusType.RetweetedBy).ToString() },
-                { "ID", "123" },
-                { "Count", "25" },
-                { "Page", "2" }
-            };
-
-            Request req = reqProc.BuildUrl(parameters);
-
-            Assert.Equal(ExpectedUrl, req.FullUrl);
-        }
-
         [Fact]
         public void BuildUrl_Returns_Url_For_OEmbed()
         {

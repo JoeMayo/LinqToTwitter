@@ -118,6 +118,11 @@ namespace LinqToTwitter
         public bool SkipStatus { get; set; }
 
         /// <summary>
+        /// Causes Twitter to return the lists owned by the authenticated user first (Query Filter)
+        /// </summary>
+        public bool Reverse { get; set; }
+
+        /// <summary>
         /// Short name of List (Returned from Twitter)
         /// </summary>
         public string Name { get; set; }

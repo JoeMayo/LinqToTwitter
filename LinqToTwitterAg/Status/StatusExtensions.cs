@@ -122,7 +122,7 @@ namespace LinqToTwitter
         /// <returns>IQueryable of sent status</returns>
         public static Status UpdateStatus(this TwitterContext ctx, string status)
         {
-            return UpdateStatus(ctx, status, -1, -1, null, false, null, null);
+            return UpdateStatus(ctx, status, -1, -1, null, false, null, false, null);
         }
 
         /// <summary>
@@ -133,7 +133,7 @@ namespace LinqToTwitter
         /// <returns>IQueryable of sent status</returns>
         public static Status UpdateStatus(this TwitterContext ctx, string status, Action<TwitterAsyncResponse<Status>> callback)
         {
-            return UpdateStatus(ctx, status, -1, -1, null, false, null, callback);
+            return UpdateStatus(ctx, status, -1, -1, null, false, null, false, callback);
         }
 
         /// <summary>
@@ -144,7 +144,7 @@ namespace LinqToTwitter
         /// <returns>IQueryable of sent status</returns>
         public static Status UpdateStatus(this TwitterContext ctx, string status, string inReplyToStatusID)
         {
-            return UpdateStatus(ctx, status, -1, -1, null, false, inReplyToStatusID, null);
+            return UpdateStatus(ctx, status, -1, -1, null, false, inReplyToStatusID, false, null);
         }
 
         /// <summary>
@@ -156,7 +156,7 @@ namespace LinqToTwitter
         /// <returns>IQueryable of sent status</returns>
         public static Status UpdateStatus(this TwitterContext ctx, string status, string inReplyToStatusID, Action<TwitterAsyncResponse<Status>> callback)
         {
-            return UpdateStatus(ctx, status, -1, -1, null, false, inReplyToStatusID, callback);
+            return UpdateStatus(ctx, status, -1, -1, null, false, inReplyToStatusID, false, callback);
         }
 
         /// <summary>
@@ -168,7 +168,7 @@ namespace LinqToTwitter
         /// <returns>IQueryable of sent status</returns>
         public static Status UpdateStatus(this TwitterContext ctx, string status, decimal latitude, decimal longitude)
         {
-            return UpdateStatus(ctx, status, latitude, longitude, null, false, null, null);
+            return UpdateStatus(ctx, status, latitude, longitude, null, false, null, false, null);
         }
 
         /// <summary>
@@ -181,7 +181,7 @@ namespace LinqToTwitter
         /// <returns>IQueryable of sent status</returns>
         public static Status UpdateStatus(this TwitterContext ctx, string status, decimal latitude, decimal longitude, Action<TwitterAsyncResponse<Status>> callback)
         {
-            return UpdateStatus(ctx, status, latitude, longitude, null, false, null, callback);
+            return UpdateStatus(ctx, status, latitude, longitude, null, false, null, false, callback);
         }
 
         /// <summary>
@@ -194,7 +194,7 @@ namespace LinqToTwitter
         /// <returns>IQueryable of sent status</returns>
         public static Status UpdateStatus(this TwitterContext ctx, string status, decimal latitude, decimal longitude, bool displayCoordinates)
         {
-            return UpdateStatus(ctx, status, latitude, longitude, null, displayCoordinates, null, null);
+            return UpdateStatus(ctx, status, latitude, longitude, null, displayCoordinates, null, false, null);
         }
 
         /// <summary>
@@ -222,7 +222,7 @@ namespace LinqToTwitter
         /// <returns>IQueryable of sent status</returns>
         public static Status UpdateStatus(this TwitterContext ctx, string status, decimal latitude, decimal longitude, bool displayCoordinates, string inReplyToStatusID)
         {
-            return UpdateStatus(ctx, status, latitude, longitude, null, displayCoordinates, inReplyToStatusID, null);
+            return UpdateStatus(ctx, status, latitude, longitude, null, displayCoordinates, inReplyToStatusID, false, null);
         }
 
         /// <summary>
@@ -237,7 +237,7 @@ namespace LinqToTwitter
         /// <returns>IQueryable of sent status</returns>
         public static Status UpdateStatus(this TwitterContext ctx, string status, decimal latitude, decimal longitude, bool displayCoordinates, string inReplyToStatusID, Action<TwitterAsyncResponse<Status>> callback)
         {
-            return UpdateStatus(ctx, status, latitude, longitude, null, displayCoordinates, inReplyToStatusID, callback);
+            return UpdateStatus(ctx, status, latitude, longitude, null, displayCoordinates, inReplyToStatusID, false, callback);
         }
 
         /// <summary>
@@ -248,9 +248,9 @@ namespace LinqToTwitter
         /// <param name="longitude">Longitude coordinate of where tweet occurred</param>
         /// <param name="placeID">ID of place (found via Geo Reverse lookup query)</param>
         /// <returns>IQueryable of sent status</returns>
-        public static Status UpdateStatus(this TwitterContext ctx, string status, decimal latitude, decimal longitude, string placeID)
+        public static Status UpdateStatus(this TwitterContext ctx, string status, decimal latitude, decimal longitude, string placeID, bool trimUser)
         {
-            return UpdateStatus(ctx, status, latitude, longitude, placeID, false, null, null);
+            return UpdateStatus(ctx, status, latitude, longitude, placeID, false, null, trimUser, null);
         }
 
         /// <summary>
@@ -262,9 +262,9 @@ namespace LinqToTwitter
         /// <param name="placeID">ID of place (found via Geo Reverse lookup query)</param>
         /// <param name="callback">Async Callback used in Silverlight queries</param>
         /// <returns>IQueryable of sent status</returns>
-        public static Status UpdateStatus(this TwitterContext ctx, string status, decimal latitude, decimal longitude, string placeID, Action<TwitterAsyncResponse<Status>> callback)
+        public static Status UpdateStatus(this TwitterContext ctx, string status, decimal latitude, decimal longitude, string placeID, bool trimUser, Action<TwitterAsyncResponse<Status>> callback)
         {
-            return UpdateStatus(ctx, status, latitude, longitude, placeID, false, null, callback);
+            return UpdateStatus(ctx, status, latitude, longitude, placeID, false, null, trimUser, callback);
         }
 
         /// <summary>
@@ -276,9 +276,9 @@ namespace LinqToTwitter
         /// <param name="placeID">ID of place (found via Geo Reverse lookup query)</param>
         /// <param name="inReplyToStatusID">id of status replying to - optional - pass null if not used</param>
         /// <returns>IQueryable of sent status</returns>
-        public static Status UpdateStatus(this TwitterContext ctx, string status, decimal latitude, decimal longitude, string placeID, string inReplyToStatusID)
+        public static Status UpdateStatus(this TwitterContext ctx, string status, decimal latitude, decimal longitude, string placeID, string inReplyToStatusID, bool trimUser)
         {
-            return UpdateStatus(ctx, status, latitude, longitude, placeID, false, inReplyToStatusID, null);
+            return UpdateStatus(ctx, status, latitude, longitude, placeID, false, inReplyToStatusID, trimUser, null);
         }
 
         /// <summary>
@@ -291,9 +291,9 @@ namespace LinqToTwitter
         /// <param name="inReplyToStatusID">id of status replying to - optional - pass null if not used</param>
         /// <param name="callback">Async Callback used in Silverlight queries</param>
         /// <returns>IQueryable of sent status</returns>
-        public static Status UpdateStatus(this TwitterContext ctx, string status, decimal latitude, decimal longitude, string placeID, string inReplyToStatusID, Action<TwitterAsyncResponse<Status>> callback)
+        public static Status UpdateStatus(this TwitterContext ctx, string status, decimal latitude, decimal longitude, string placeID, string inReplyToStatusID, bool trimUser, Action<TwitterAsyncResponse<Status>> callback)
         {
-            return UpdateStatus(ctx, status, latitude, longitude, placeID, false, inReplyToStatusID, callback);
+            return UpdateStatus(ctx, status, latitude, longitude, placeID, false, inReplyToStatusID, trimUser, callback);
         }
 
         /// <summary>
@@ -305,9 +305,9 @@ namespace LinqToTwitter
         /// <param name="placeID">ID of place (found via Geo Reverse lookup query)</param>
         /// <param name="displayCoordinates">Allow or prevent display of coordinates for this tweet</param>
         /// <returns>IQueryable of sent status</returns>
-        public static Status UpdateStatus(this TwitterContext ctx, string status, decimal latitude, decimal longitude, string placeID, bool displayCoordinates)
+        public static Status UpdateStatus(this TwitterContext ctx, string status, decimal latitude, decimal longitude, string placeID, bool displayCoordinates, bool trimUser)
         {
-            return UpdateStatus(ctx, status, latitude, longitude, placeID, displayCoordinates, null, null);
+            return UpdateStatus(ctx, status, latitude, longitude, placeID, displayCoordinates, null, trimUser, null);
         }
 
         /// <summary>
@@ -320,9 +320,9 @@ namespace LinqToTwitter
         /// <param name="displayCoordinates">Allow or prevent display of coordinates for this tweet</param>
         /// <param name="callback">Async Callback used in Silverlight queries</param>
         /// <returns>IQueryable of sent status</returns>
-        public static Status UpdateStatus(this TwitterContext ctx, string status, decimal latitude, decimal longitude, string placeID, bool displayCoordinates, Action<TwitterAsyncResponse<Status>> callback)
+        public static Status UpdateStatus(this TwitterContext ctx, string status, decimal latitude, decimal longitude, string placeID, bool displayCoordinates, bool trimUser, Action<TwitterAsyncResponse<Status>> callback)
         {
-            return UpdateStatus(ctx, status, latitude, longitude, placeID, displayCoordinates, null, callback);
+            return UpdateStatus(ctx, status, latitude, longitude, placeID, displayCoordinates, null, trimUser, callback);
         }
 
         /// <summary>
@@ -332,9 +332,9 @@ namespace LinqToTwitter
         /// <param name="placeID">ID of place (found via Geo Reverse lookup query)</param>
         /// <param name="displayCoordinates">Allow or prevent display of coordinates for this tweet</param>
         /// <returns>IQueryable of sent status</returns>
-        public static Status UpdateStatus(this TwitterContext ctx, string status, string placeID, bool displayCoordinates)
+        public static Status UpdateStatus(this TwitterContext ctx, string status, string placeID, bool displayCoordinates, bool trimUser)
         {
-            return UpdateStatus(ctx, status, -1, -1, placeID, displayCoordinates, null, null);
+            return UpdateStatus(ctx, status, -1, -1, placeID, displayCoordinates, null, trimUser, null);
         }
 
         /// <summary>
@@ -345,9 +345,9 @@ namespace LinqToTwitter
         /// <param name="displayCoordinates">Allow or prevent display of coordinates for this tweet</param>
         /// <param name="callback">Async Callback used in Silverlight queries</param>
         /// <returns>IQueryable of sent status</returns>
-        public static Status UpdateStatus(this TwitterContext ctx, string status, string placeID, bool displayCoordinates, Action<TwitterAsyncResponse<Status>> callback)
+        public static Status UpdateStatus(this TwitterContext ctx, string status, string placeID, bool displayCoordinates, bool trimUser, Action<TwitterAsyncResponse<Status>> callback)
         {
-            return UpdateStatus(ctx, status, -1, -1, placeID, displayCoordinates, null, callback);
+            return UpdateStatus(ctx, status, -1, -1, placeID, displayCoordinates, null, trimUser, callback);
         }
 
         /// <summary>
@@ -358,9 +358,9 @@ namespace LinqToTwitter
         /// <param name="displayCoordinates">Allow or prevent display of coordinates for this tweet</param>
         /// <param name="inReplyToStatusID">id of status replying to - optional - pass null if not used</param>
         /// <returns>IQueryable of sent status</returns>
-        public static Status UpdateStatus(this TwitterContext ctx, string status, string placeID, bool displayCoordinates, string inReplyToStatusID)
+        public static Status UpdateStatus(this TwitterContext ctx, string status, string placeID, bool displayCoordinates, string inReplyToStatusID, bool trimUser)
         {
-            return UpdateStatus(ctx, status, -1, -1, placeID, displayCoordinates, inReplyToStatusID, null);
+            return UpdateStatus(ctx, status, -1, -1, placeID, displayCoordinates, inReplyToStatusID, trimUser, null);
         }
 
         /// <summary>
@@ -372,9 +372,9 @@ namespace LinqToTwitter
         /// <param name="inReplyToStatusID">id of status replying to - optional - pass null if not used</param>
         /// <param name="callback">Async Callback used in Silverlight queries</param>
         /// <returns>IQueryable of sent status</returns>
-        public static Status UpdateStatus(this TwitterContext ctx, string status, string placeID, bool displayCoordinates, string inReplyToStatusID, Action<TwitterAsyncResponse<Status>> callback)
+        public static Status UpdateStatus(this TwitterContext ctx, string status, string placeID, bool displayCoordinates, string inReplyToStatusID, bool trimUser, Action<TwitterAsyncResponse<Status>> callback)
         {
-            return UpdateStatus(ctx, status, -1, -1, placeID, displayCoordinates, inReplyToStatusID, callback);
+            return UpdateStatus(ctx, status, -1, -1, placeID, displayCoordinates, inReplyToStatusID, trimUser, callback);
         }
 
         /// <summary>
@@ -387,9 +387,9 @@ namespace LinqToTwitter
         /// <param name="displayCoordinates">Allow or prevent display of coordinates for this tweet</param>
         /// <param name="inReplyToStatusID">id of status replying to - optional - pass null if not used</param>
         /// <returns>IQueryable of sent status</returns>
-        public static Status UpdateStatus(this TwitterContext ctx, string status, decimal latitude, decimal longitude, string placeID, bool displayCoordinates, string inReplyToStatusID)
+        public static Status UpdateStatus(this TwitterContext ctx, string status, decimal latitude, decimal longitude, string placeID, bool displayCoordinates, string inReplyToStatusID, bool trimUser)
         {
-            return UpdateStatus(ctx, status, latitude, longitude, placeID, displayCoordinates, inReplyToStatusID, null);
+            return UpdateStatus(ctx, status, latitude, longitude, placeID, displayCoordinates, inReplyToStatusID, trimUser, null);
         }
 
         /// <summary>
@@ -403,7 +403,7 @@ namespace LinqToTwitter
         /// <param name="inReplyToStatusID">id of status replying to - optional - pass null if not used</param>
         /// <param name="callback">Async Callback used in Silverlight queries</param>
         /// <returns>IQueryable of sent status</returns>
-        public static Status UpdateStatus(this TwitterContext ctx, string status, decimal latitude, decimal longitude, string placeID, bool displayCoordinates, string inReplyToStatusID, Action<TwitterAsyncResponse<Status>> callback)
+        public static Status UpdateStatus(this TwitterContext ctx, string status, decimal latitude, decimal longitude, string placeID, bool displayCoordinates, string inReplyToStatusID, bool trimUser, Action<TwitterAsyncResponse<Status>> callback)
         {
             if (string.IsNullOrEmpty(status))
             {
@@ -426,7 +426,8 @@ namespace LinqToTwitter
                         {"lat", latitude == -1 ? null : latitude.ToString(Culture.US)},
                         {"long", longitude == -1 ? null : longitude.ToString(Culture.US)},
                         {"place_id", placeID},
-                        {"display_coordinates", displayCoordinates.ToString()}
+                        {"display_coordinates", displayCoordinates.ToString()},
+                        {"trim_user", trimUser.ToString().ToLower() }
                     },
                     response => reqProc.ProcessActionResult(response, StatusAction.SingleStatus));
 

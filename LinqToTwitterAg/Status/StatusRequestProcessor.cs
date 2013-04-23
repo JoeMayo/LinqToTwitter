@@ -201,16 +201,10 @@ namespace LinqToTwitter
                     return BuildOembedUrl(parameters);
                 case StatusType.Retweets:
                     return BuildRetweetsUrl(parameters);
-                case StatusType.RetweetedByMe:
-                    return BuildRetweetedByMeUrl(parameters);
-                case StatusType.RetweetedToMe:
-                    return BuildRetweetedToMeUrl(parameters);
                 case StatusType.RetweetsOfMe:
                     return BuildRetweetsOfMeUrl(parameters);
                 case StatusType.RetweetedByUser:
                     return BuildRetweetedByUserUrl(parameters);
-                case StatusType.RetweetedToUser:
-                    return BuildRetweetedToUserUrl(parameters);
                 case StatusType.Show:
                     return BuildShowUrl(parameters);
                 case StatusType.User:
@@ -384,26 +378,6 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// construct a base retweeted by me url
-        /// </summary>
-        /// <param name="parameters">input parameters</param>
-        /// <returns>base url + retweeted by me segment</returns>
-        Request BuildRetweetedByMeUrl(Dictionary<string, string> parameters)
-        {
-            return BuildUrlParameters(parameters, "statuses/retweeted_by_me.json");
-        }
-
-        /// <summary>
-        /// construct a base mentions url
-        /// </summary>
-        /// <param name="parameters">input parameters</param>
-        /// <returns>base url + retweeted to me segment</returns>
-        Request BuildRetweetedToMeUrl(Dictionary<string, string> parameters)
-        {
-            return BuildUrlParameters(parameters, "statuses/retweeted_to_me.json");
-        }
-
-        /// <summary>
         /// construct a base retweeted by user url
         /// </summary>
         /// <param name="parameters">input parameters</param>
@@ -411,16 +385,6 @@ namespace LinqToTwitter
         Request BuildRetweetedByUserUrl(Dictionary<string, string> parameters)
         {
             return BuildUrlParameters(parameters, "statuses/retweeted_by_user.json");
-        }
-
-        /// <summary>
-        /// construct a base retweeted to user url
-        /// </summary>
-        /// <param name="parameters">input parameters</param>
-        /// <returns>base url + retweeted to user segment</returns>
-        Request BuildRetweetedToUserUrl(Dictionary<string, string> parameters)
-        {
-            return BuildUrlParameters(parameters, "statuses/retweeted_to_user.json");
         }
 
         /// <summary>
@@ -550,9 +514,6 @@ namespace LinqToTwitter
                     break;
                 case StatusType.Home:
                 case StatusType.Mentions:
-                case StatusType.RetweetedByMe:
-                case StatusType.RetweetedToMe:
-                case StatusType.RetweetedToUser:
                 case StatusType.RetweetedByUser:
                 case StatusType.RetweetsOfMe:
                 case StatusType.Retweets:

@@ -27,24 +27,19 @@ namespace LinqToTwitterDemo
             //MentionsWithSinceIDStatusQueryDemo(twitterCtx);
             //MentionsWithPagingQueryDemo(twitterCtx);
             //SingleStatusQueryDemo(twitterCtx);
-            //UpdateStatusDemo(twitterCtx);
+            UpdateStatusDemo(twitterCtx);
             //UpdateStatusWithCallbackDemo(twitterCtx);
             //UpdateStatusWithReplyDemo(twitterCtx);
-            UpdateStatusWithLocationDemo(twitterCtx);
+            //UpdateStatusWithLocationDemo(twitterCtx);
             //UpdateStatusWithPlaceDemo(twitterCtx);
             //DestroyStatusDemo(twitterCtx);
-            //RetweetedByMeStatusQueryDemo(twitterCtx);
-            //RetweetedByMeWithCountStatusQueryDemo(twitterCtx);
-            //RetweetedToMeStatusQueryDemo(twitterCtx);
             //RetweetsOfMeStatusQueryDemo(twitterCtx);
             //RetweetedByUserStatusQueryDemo(twitterCtx);
             //RetweetsQueryDemo(twitterCtx);
             //FirstStatusQueryDemo(twitterCtx);
-            //GetAllTweetsAndRetweetsDemo(twitterCtx);
             //ContributorIDsDemo(twitterCtx);
             //ContributorDetailsDemo(twitterCtx);
             //StatusCountDemo(twitterCtx);
-            //StatusJoinDemo(twitterCtx);
             //TrimUserDemo(twitterCtx);
             //TweetWithMediaDemo(twitterCtx);
             //TweetEntityDemo(twitterCtx);
@@ -273,58 +268,6 @@ namespace LinqToTwitterDemo
         }
 
         /// <summary>
-        /// Shows how to query retweets by the logged-in user
-        /// </summary>
-        /// <param name="twitterCtx">TwitterContext</param>
-        private static void RetweetedByMeStatusQueryDemo(TwitterContext twitterCtx)
-        {
-            var myRetweets =
-                from retweet in twitterCtx.Status
-                where retweet.Type == StatusType.RetweetedByMe
-                select retweet;
-
-            myRetweets.ToList().ForEach(
-                retweet => Console.WriteLine(
-                    "Name: {0}, Tweet: {1}\n",
-                    retweet.RetweetedStatus.User.Name, retweet.RetweetedStatus.Text));
-        }
-
-        /// <summary>
-        /// Shows how to query retweets by the logged-in user, specifying the number of tweets
-        /// </summary>
-        /// <param name="twitterCtx">TwitterContext</param>
-        private static void RetweetedByMeWithCountStatusQueryDemo(TwitterContext twitterCtx)
-        {
-            var myRetweets =
-                from retweet in twitterCtx.Status
-                where retweet.Type == StatusType.RetweetedByMe
-                   && retweet.Count == 5
-                select retweet;
-
-            myRetweets.ToList().ForEach(
-                retweet => Console.WriteLine(
-                    "Name: {0}, Tweet: {1}\n",
-                    retweet.RetweetedStatus.User.Name, retweet.RetweetedStatus.Text));
-        }
-
-        /// <summary>
-        /// Shows how to query retweets to the logged-in user
-        /// </summary>
-        /// <param name="twitterCtx">TwitterContext</param>
-        private static void RetweetedToMeStatusQueryDemo(TwitterContext twitterCtx)
-        {
-            var myRetweets =
-                from retweet in twitterCtx.Status
-                where retweet.Type == StatusType.RetweetedToMe
-                select retweet;
-
-            myRetweets.ToList().ForEach(
-                retweet => Console.WriteLine(
-                    "Name: {0}, Tweet: {1}\n",
-                    retweet.RetweetedStatus.User.Name, retweet.RetweetedStatus.Text));
-        }
-
-        /// <summary>
         /// Shows how to query retweets about the logged-in user
         /// </summary>
         /// <param name="twitterCtx">TwitterContext</param>
@@ -367,31 +310,6 @@ namespace LinqToTwitterDemo
                 });
         }
 
-        /// <summary>
-        /// Shows how to query retweets to the specified user
-        /// </summary>
-        /// <param name="twitterCtx">TwitterContext</param>
-        private static void RetweetedToUserStatusQueryDemo(TwitterContext twitterCtx)
-        {
-            var myRetweets =
-                (from tweet in twitterCtx.Status
-                 where tweet.Type == StatusType.RetweetedToUser &&
-                       tweet.ScreenName == "JoeMayo"
-                 select tweet.RetweetedStatus)
-                .ToList();
-
-            myRetweets.ForEach(
-                retweet =>
-                {
-                    if (retweet != null)
-                    {
-                        Console.WriteLine(
-                            "Name: {0}, Tweet: {1}\n",
-                            retweet.User.Name, retweet.Text);
-                    }
-                });
-        }
-
         private static void RetweetedByDemo(TwitterContext twitterCtx)
         {
             var status =
@@ -403,45 +321,6 @@ namespace LinqToTwitterDemo
 
             status.Users.ForEach(
                 user => Console.WriteLine("User: " + user.Identifier.ScreenName));
-        }
-
-        /// <summary>
-        /// Shows how to get tweets and retweets by the logged-in user through a union
-        /// </summary>
-        /// <param name="twitterCtx">TwitterContext</param>
-        private static void GetAllTweetsAndRetweetsDemo(TwitterContext twitterCtx)
-        {
-            var myTweets =
-                (from tweet in twitterCtx.Status
-                 where tweet.Type == StatusType.User
-                      && tweet.ScreenName == "JoeMayo"
-                 select tweet)
-                .ToList();
-
-            var myRetweets =
-                (from retweet in twitterCtx.Status
-                 where retweet.Type == StatusType.RetweetedByMe
-                 select retweet)
-                 .ToList();
-
-            var allTweets = myTweets.Union(myRetweets);
-
-            allTweets.ToList().ForEach(
-                tweet =>
-                {
-                    if (tweet.RetweetedStatus == null)
-                    {
-                        Console.WriteLine(
-                            "Name: {0}, Tweet: {1}\n",
-                            tweet.User.Name, tweet.Text);
-                    }
-                    else
-                    {
-                        Console.WriteLine(
-                            "Name: {0}, ReTweet: {1}\n",
-                            tweet.RetweetedStatus.User.Name, tweet.RetweetedStatus.Text);
-                    }
-                });
         }
 
         /// <summary>
@@ -480,7 +359,8 @@ namespace LinqToTwitterDemo
         private static void UserStatusQueryDemo(TwitterContext twitterCtx)
         {
             // last tweet processed on previous query set
-            ulong sinceID = 210024053698867204;
+            //ulong sinceID = 210024053698867204;
+            ulong sinceID = 1;
 
             ulong maxID;
             const int Count = 10;
@@ -673,7 +553,7 @@ namespace LinqToTwitterDemo
 
             Console.WriteLine("Status being sent: " + status);
 
-            var tweet = twitterCtx.UpdateStatus(status, 37.78215m, -122.40060m, "fbd6d2f5a4e4a15e");
+            var tweet = twitterCtx.UpdateStatus(status, 37.78215m, -122.40060m, "fbd6d2f5a4e4a15e", trimUser: false);
 
             Console.WriteLine(
                 "User: {0}, Tweet: {1}\nLatitude: {2}, Longitude: {3}, Place: {4}",

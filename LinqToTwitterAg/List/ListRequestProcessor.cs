@@ -111,6 +111,11 @@ namespace LinqToTwitter
         internal bool SkipStatus { get; set; }
 
         /// <summary>
+        /// Causes Twitter to return the lists owned by the authenticated user first (Query Filter)
+        /// </summary>
+        internal bool Reverse { get; set; }
+
+        /// <summary>
         /// extracts parameters from lambda
         /// </summary>
         /// <param name="lambdaExpression">lambda expression with where clause</param>
@@ -137,7 +142,8 @@ namespace LinqToTwitter
                        "IncludeEntities",
                        "IncludeRetweets",
                        "FilterToOwnedLists",
-                       "SkipStatus"
+                       "SkipStatus",
+                       "Reverse"
                    })
                    .Parameters;
 
@@ -214,6 +220,11 @@ namespace LinqToTwitter
             if (parameters.ContainsKey("FilterToOwnedLists"))
             {
                 FilterToOwnedLists = bool.Parse(parameters["FilterToOwnedLists"]);
+            }
+
+            if (parameters.ContainsKey("Reverse"))
+            {
+                Reverse = bool.Parse(parameters["Reverse"]);
             }
 
             return parameters;
@@ -318,6 +329,12 @@ namespace LinqToTwitter
             {
                 Cursor = parameters["Cursor"];
                 urlParams.Add(new QueryParameter("cursor", parameters["Cursor"]));
+            }
+
+            if (parameters.ContainsKey("Reverse"))
+            {
+                Reverse = bool.Parse(parameters["Reverse"]);
+                urlParams.Add(new QueryParameter("reverse", parameters["Reverse"].ToLower()));
             }
 
             return req;
@@ -973,6 +990,7 @@ namespace LinqToTwitter
                 list.FilterToOwnedLists = FilterToOwnedLists;
                 list.CursorMovement = cursors;
                 list.SkipStatus = SkipStatus;
+                list.Reverse = Reverse;
             }
 
             return lists.AsEnumerable().OfType<T>().ToList();

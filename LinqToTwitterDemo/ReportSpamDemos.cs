@@ -23,7 +23,7 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void ReportSpamDemo(TwitterContext twitterCtx)
         {
-            var spammer = twitterCtx.ReportSpam(null, null, "Greer_105");
+            var spammer = twitterCtx.ReportSpam(null, "Greer_105");
             Console.WriteLine("Spammer \"{0}\" Zapped! He he :)", spammer.Name);
 
             // after the first one, subsequent calls won't report spam to Twitter

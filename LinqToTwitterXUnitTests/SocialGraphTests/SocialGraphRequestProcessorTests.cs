@@ -73,7 +73,8 @@ namespace LinqToTwitterXUnitTests.SocialGraphTests
                     graph.Type == SocialGraphType.Followers &&
                     graph.UserID == 123ul &&
                     graph.ScreenName == "456" &&
-                    graph.Cursor == "-1";
+                    graph.Cursor == "-1" &&
+                    graph.Count == 1;
             var lambdaExpression = expression as LambdaExpression;
 
             var queryParams = graphReqProc.GetParameters(lambdaExpression);
@@ -90,12 +91,41 @@ namespace LinqToTwitterXUnitTests.SocialGraphTests
             Assert.True(
                 queryParams.Contains(
                     new KeyValuePair<string, string>("Cursor", "-1")));
+            Assert.True(
+                queryParams.Contains(
+                    new KeyValuePair<string, string>("Count", "1")));
+        }
+
+        [Fact]
+        public void ProcessResults_Populates_Input_Parameters()
+        {
+            var statProc = new SocialGraphRequestProcessor<SocialGraph>()
+            {
+                BaseUrl = "https://api.twitter.com/1.1/",
+                Type = SocialGraphType.Friends,
+                UserID = 123,
+                ScreenName = "abc",
+                Cursor = "-1",
+                Count = 3,
+            };
+
+            var graphResult = statProc.ProcessResults(TestQueryResponse);
+
+            Assert.NotNull(graphResult);
+            Assert.Single(graphResult);
+            var graph = graphResult.Single();
+            Assert.NotNull(graph);
+            Assert.Equal(SocialGraphType.Friends, graph.Type);
+            Assert.Equal(123ul, graph.UserID);
+            Assert.Equal("abc", graph.ScreenName);
+            Assert.Equal("-1", graph.Cursor);
+            Assert.Equal(3, graph.Count);
         }
 
         [Fact]
         public void BuildUrl_Throws_On_Missing_Type()
         {
-            var graphReqProc = new SocialGraphRequestProcessor<SocialGraph>() { BaseUrl = "https://api.twitter.com/1/" };
+            var graphReqProc = new SocialGraphRequestProcessor<SocialGraph>() { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>();
 
             var ex = Assert.Throws<ArgumentException>(() => graphReqProc.BuildUrl(parameters));
@@ -106,14 +136,15 @@ namespace LinqToTwitterXUnitTests.SocialGraphTests
         [Fact]
         public void BuildUrl_Constructs_Friends_Url()
         {
-            const string ExpectedUrl = "https://api.twitter.com/1/friends/ids.json?user_id=123&screen_name=456&cursor=1";
-            var graphReqProc = new SocialGraphRequestProcessor<SocialGraph> { BaseUrl = "https://api.twitter.com/1/" };
+            const string ExpectedUrl = "https://api.twitter.com/1.1/friends/ids.json?user_id=123&screen_name=456&cursor=1&count=1";
+            var graphReqProc = new SocialGraphRequestProcessor<SocialGraph> { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
             {
                 { "Type", "0" },
                 { "UserID", "123" },
                 { "ScreenName", "456" },
-                { "Cursor", "1" }
+                { "Cursor", "1" },
+                { "Count", "1" }
             };
 
             Request req = graphReqProc.BuildUrl(parameters);
@@ -124,8 +155,8 @@ namespace LinqToTwitterXUnitTests.SocialGraphTests
         [Fact]
         public void BuildUrl_Defaults_Cursor_When_Not_Specified()
         {
-            const string ExpectedUrl = "https://api.twitter.com/1/friends/ids.json?screen_name=JoeMayo&cursor=-1";
-            var socialGraph = new SocialGraphRequestProcessor<SocialGraph>() { BaseUrl = "https://api.twitter.com/1/" };
+            const string ExpectedUrl = "https://api.twitter.com/1.1/friends/ids.json?screen_name=JoeMayo&cursor=-1";
+            var socialGraph = new SocialGraphRequestProcessor<SocialGraph>() { BaseUrl = "https://api.twitter.com/1.1/" };
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                 {
@@ -141,14 +172,15 @@ namespace LinqToTwitterXUnitTests.SocialGraphTests
         [Fact]
         public void BuildUrl_Constructs_Followers_Url()
         {
-            const string ExpectedUrl = "https://api.twitter.com/1/followers/ids.json?user_id=123&screen_name=456&cursor=1";
-            var reqProc = new SocialGraphRequestProcessor<SocialGraph>() { BaseUrl = "https://api.twitter.com/1/" };
+            const string ExpectedUrl = "https://api.twitter.com/1.1/followers/ids.json?user_id=123&screen_name=456&cursor=1&count=1";
+            var reqProc = new SocialGraphRequestProcessor<SocialGraph>() { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
             {
                 { "Type", ((int)SocialGraphType.Followers).ToString() },
                 { "UserID", "123" },
                 { "ScreenName", "456" },
-                { "Cursor", "1" }
+                { "Cursor", "1" },
+                { "Count", "1" }
             };
 
             Request req = reqProc.BuildUrl(parameters);
@@ -159,7 +191,7 @@ namespace LinqToTwitterXUnitTests.SocialGraphTests
         [Fact]
         public void BuildUrl_Throws_On_Null_Params()
         {
-            var graphReqProc = new SocialGraphRequestProcessor<SocialGraph> { BaseUrl = "https://api.twitter.com/1/" };
+            var graphReqProc = new SocialGraphRequestProcessor<SocialGraph> { BaseUrl = "https://api.twitter.com/1.1/" };
 
             var ex = Assert.Throws<ArgumentException>(() => graphReqProc.BuildUrl(null));
 

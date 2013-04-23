@@ -9,37 +9,33 @@ namespace LinqToTwitter
         /// <summary>
         /// lets logged-in user report spam
         /// </summary>
-        /// <param name="id">id of alleged spammer</param>
         /// <param name="userID">user id of alleged spammer</param>
         /// <param name="screenName">screen name of alleged spammer</param>
         /// <returns>Alleged spammer user info</returns>
-        public static User ReportSpam(this TwitterContext ctx, string id, string userID, string screenName)
+        public static User ReportSpam(this TwitterContext ctx, string userID, string screenName)
         {
-            return ReportSpam(ctx, id, userID, screenName, null);
+            return ReportSpam(ctx, userID, screenName, null);
         }
 
         /// <summary>
         /// lets logged-in user report spam
         /// </summary>
-        /// <param name="id">id of alleged spammer</param>
         /// <param name="userID">user id of alleged spammer</param>
         /// <param name="screenName">screen name of alleged spammer</param>
         /// <param name="callback">Async Callback used in Silverlight queries</param>
         /// <returns>Alleged spammer user info</returns>
-        public static User ReportSpam(this TwitterContext ctx, string id, string userID, string screenName, Action<TwitterAsyncResponse<User>> callback)
+        public static User ReportSpam(this TwitterContext ctx, string userID, string screenName, Action<TwitterAsyncResponse<User>> callback)
         {
-            if (string.IsNullOrEmpty(id) &&
-                string.IsNullOrEmpty(userID) &&
+            if (string.IsNullOrEmpty(userID) &&
                 string.IsNullOrEmpty(screenName))
             {
-                throw new ArgumentException("Either id, userID, or screenName is a required parameter.");
+                throw new ArgumentException("Either userID or screenName is a required parameter.");
             }
 
             string reportSpamUrl = ctx.BaseUrl + "users/report_spam.json";
 
             var createParams = new Dictionary<string, string>
                 {
-                    { "id", id },
                     { "user_id", userID },
                     { "screen_name", screenName }
                 };

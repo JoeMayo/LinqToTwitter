@@ -26,13 +26,13 @@ namespace LinqToTwitter
         /// Specfies the ID of the user for whom to return the friends list. 
         /// Helpful for disambiguating when a valid user ID is also a valid screen name. 
         /// </summary>
-        private ulong UserID { get; set; }
+        internal ulong UserID { get; set; }
 
         /// <summary>
         /// Specfies the screen name of the user for whom to return the friends list. 
         /// Helpful for disambiguating when a valid screen name is also a user ID.
         /// </summary>
-        private string ScreenName { get; set; }
+        internal string ScreenName { get; set; }
 
         /// <summary>
         /// Indicator for which page to get next
@@ -43,7 +43,12 @@ namespace LinqToTwitter
         /// are Previous and Next, which you can find in the
         /// CursorResponse property when your response comes back.
         /// </remarks>
-        private string Cursor { get; set; }
+        internal string Cursor { get; set; }
+
+        /// <summary>
+        /// Number of ids to return for each request (max: 5000)
+        /// </summary>
+        internal int Count { get; set; }
 
         /// <summary>
         /// extracts parameters from lambda
@@ -59,7 +64,8 @@ namespace LinqToTwitter
                        "Type",
                        "UserID",
                        "ScreenName",
-                       "Cursor"
+                       "Cursor",
+                       "Count"
                    });
 
             var parameters = paramFinder.Parameters;
@@ -152,6 +158,12 @@ namespace LinqToTwitter
                 urlParams.Add(new QueryParameter("cursor", Cursor));
             }
 
+            if (parameters.ContainsKey("Count"))
+            {
+                Count = int.Parse(parameters["Count"]);
+                urlParams.Add(new QueryParameter("count", parameters["Count"]));
+            }
+
             return req;
         }
 
@@ -172,7 +184,8 @@ namespace LinqToTwitter
                 UserID = UserID,
                 ScreenName = ScreenName,
                 Cursor = Cursor,
-                CursorMovement = new Cursors(graphJson),
+                Count = Count,
+                CursorMovement = new Cursors(graphJson)
             };
 
             switch (Type)

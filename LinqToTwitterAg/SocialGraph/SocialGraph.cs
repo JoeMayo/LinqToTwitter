@@ -38,6 +38,11 @@ namespace LinqToTwitter
         public string Cursor { get; set; }
 
         /// <summary>
+        /// Number of ids to return for each request (max: 5000)
+        /// </summary>
+        public int Count { get; set; }
+
+        /// <summary>
         /// Contains Next and Previous cursors
         /// </summary>
         /// <remarks>

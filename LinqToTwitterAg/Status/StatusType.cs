@@ -8,15 +8,6 @@ namespace LinqToTwitter
     public enum StatusType
     {
         /// <summary>
-        /// tweets of all users on Twitter
-        /// 
-        /// - default tweet type with no options
-        /// </summary>
-        // TODO: Twitter is deprecating this on 5/14/12.
-        [Obsolete("This option will be obsolete on 5/14/12. Twitter recommends you use the sample stream instead.", true)]
-        Public,
-
-        /// <summary>
         /// tweets from a specific user
         /// 
         /// Available Options:
@@ -26,7 +17,6 @@ namespace LinqToTwitter
         ///     - SinceID, get tweets since this ID
         ///     - Count, number of tweets to retrieve
         ///     - Page, which page to return
-        // TODO: remove after 5/14/12
         ///     - IncludeRetweets, return retweets too
         /// </summary>
         User,
@@ -73,46 +63,6 @@ namespace LinqToTwitter
         ///     - Count, number of tweets to retrieve
         /// </summary>
         Retweets,
-
-        /// <summary>
-        /// lists the 20 most recent re-tweets by the logged-in user
-        /// 
-        /// Available Options:
-        /// 
-        ///     - SinceID, get tweets since this ID
-        ///     - MaxID, gets tweets less than this ID
-        ///     - Count, max number of tweets to return
-        ///     - Page, which page to return
-        /// </summary>
-        RetweetedByMe,
-
-        /// <summary>
-        /// lists the 20 most recent re-tweets to the logged-in user
-        /// 
-        /// Available Options:
-        /// 
-        ///     - SinceID, get tweets since this ID
-        ///     - MaxID, gets tweets less than this ID
-        ///     - Count, max number of tweets to return
-        ///     - Page, which page to return
-        /// </summary>
-        RetweetedToMe,
-
-
-        /// <summary>
-        /// lists the 20 most recent re-tweets by the specified user
-        /// 
-        /// Available Options:
-        /// 
-        ///     - ID, ID or ScreenName of User to get Retweets for
-        ///     - UserID, ID of User to get Retweets for
-        ///     - ScreenName, Name of user to get Retweets for
-        ///     - SinceID, get tweets since this ID
-        ///     - MaxID, gets tweets less than this ID
-        ///     - Count, max number of tweets to return
-        ///     - Page, which page to return
-        /// </summary>
-        RetweetedToUser,
 
         /// <summary>
         /// lists the 20 most recent re-tweets to the specified user
