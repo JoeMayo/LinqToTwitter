@@ -27,7 +27,7 @@ namespace LinqToTwitterDemo
             //MentionsWithSinceIDStatusQueryDemo(twitterCtx);
             //MentionsWithPagingQueryDemo(twitterCtx);
             //SingleStatusQueryDemo(twitterCtx);
-            UpdateStatusDemo(twitterCtx);
+            //UpdateStatusDemo(twitterCtx);
             //UpdateStatusWithCallbackDemo(twitterCtx);
             //UpdateStatusWithReplyDemo(twitterCtx);
             //UpdateStatusWithLocationDemo(twitterCtx);
@@ -44,7 +44,7 @@ namespace LinqToTwitterDemo
             //TweetWithMediaDemo(twitterCtx);
             //TweetEntityDemo(twitterCtx);
             //RetweetedByDemo(twitterCtx);
-            //OEmbedStatusDemo(twitterCtx);
+            OEmbedStatusDemo(twitterCtx);
         }
 
         /// <summary>

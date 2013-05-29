@@ -19,7 +19,7 @@ namespace LinqToTwitter
             Type = embeddedStatusJson.GetValue<string>("type");
             Height = embeddedStatusJson.GetValue<int>("height");
             Width = embeddedStatusJson.GetValue<int>("width");
-            CacheAge = embeddedStatusJson.GetValue<string>("cache_age");
+            CacheAge = embeddedStatusJson.GetValue<ulong>("cache_age");
         }
 
         public string Html { get; set; }
@@ -38,7 +38,7 @@ namespace LinqToTwitter
 
         public int Height { get; set; }
 
-        public string CacheAge { get; set; }
+        public ulong CacheAge { get; set; }
 
         public string AuthorUrl { get; set; }
 

@@ -27,6 +27,14 @@ namespace LinqToTwitter
             GetBearerToken();
         }
 
+        public override bool IsAuthorized
+        {
+            get
+            {
+                return !string.IsNullOrEmpty(BearerToken);
+            }
+        }
+
         public void Invalidate()
         {
             EncodeCredentials();

@@ -562,14 +562,14 @@ namespace LinqToTwitterXUnitTests.StatusTests
         {
             var statProc = new StatusRequestProcessor<Status> { Type = StatusType.Oembed, BaseUrl = "https://api.twitter.com/1.1/" };
             const string ExpectedType = "rich";
-            const string ExpectedCacheAge = "31536000000";
+            const ulong ExpectedCacheAge = 3153600000;
             const string ExpectedVersion = "1.0";
             const string ExpectedProviderName = "Twitter";
-            const string ExpectedUrl = "https://twitter.com/JoeMayo/status/305050067973312514";
+            const string ExpectedUrl = "https://twitter.com/JoeMayo/statuses/305050067973312514";
             const int ExpectedWidth = 550;
             const int ExpectedHeight = 0;
             const string ExpectedHtml = "some html";
-            const string ExpectedProviderUrl = "http://twitter.com";
+            const string ExpectedProviderUrl = "https://twitter.com";
             const string ExpectedAuthorUrl = "https://twitter.com/JoeMayo";
             const string ExpectedAuthorName = "Joe Mayo";
 
@@ -1321,18 +1321,32 @@ namespace LinqToTwitterXUnitTests.StatusTests
    }
 ]";
 
+//        const string OEmbedResponse = @"{
+//   ""type"":""rich"",
+//   ""cache_age"":""31536000000"",
+//   ""version"":""1.0"",
+//   ""provider_name"":""Twitter"",
+//   ""url"":""https://twitter.com/JoeMayo/status/305050067973312514"",
+//   ""width"":550,
+//   ""height"":null,
+//   ""html"":""some html"",
+//   ""provider_url"":""http://twitter.com"",
+//   ""author_url"":""https://twitter.com/JoeMayo"",
+//   ""author_name"":""Joe Mayo""
+//}";
+
         const string OEmbedResponse = @"{
-   ""type"":""rich"",
-   ""cache_age"":""31536000000"",
-   ""version"":""1.0"",
-   ""provider_name"":""Twitter"",
-   ""url"":""https://twitter.com/JoeMayo/status/305050067973312514"",
-   ""width"":550,
+   ""cache_age"":3153600000,
+   ""url"":""https://twitter.com/JoeMayo/statuses/305050067973312514"",
    ""height"":null,
-   ""html"":""some html"",
-   ""provider_url"":""http://twitter.com"",
+   ""provider_url"":""https://twitter.com"",
+   ""provider_name"":""Twitter"",
+   ""author_name"":""Joe Mayo"",
+   ""version"":""1.0"",
    ""author_url"":""https://twitter.com/JoeMayo"",
-   ""author_name"":""Joe Mayo""
+   ""type"":""rich"",
+   ""html"":""some html"",
+   ""width"":550
 }";
     }
 }

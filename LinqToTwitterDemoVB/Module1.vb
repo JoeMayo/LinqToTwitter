@@ -60,7 +60,7 @@ Module Module1
 		'
 
         'DirectMessageSentByQueryDemo(twitterCtx)
-        NewDirectMessageDemo(twitterCtx)
+        'NewDirectMessageDemo(twitterCtx)
 
 		'
 		' Friendship Demos
@@ -78,7 +78,7 @@ Module Module1
 		' Search Demos
 		'
 
-		'SearchTwitterDemo(twitterCtx)
+        SearchTwitterDemo(twitterCtx)
 
 		'
 		' Favorites Demos

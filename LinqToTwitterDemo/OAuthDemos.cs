@@ -23,7 +23,7 @@ namespace LinqToTwitterDemo
             //HandleOAuthUpdateAccountBackgroundImageWithProgressUpdatesDemo(twitterCtx);
             //HandleOAuthRequestResponseDetailsDemo(twitterCtx);
             //OAuthForceLoginDemo(twitterCtx);
-            HandleApplicationOnlyAuthentication(twitterCtx);
+            HandleApplicationOnlyAuthentication();
         }
 
         /// <summary>
@@ -181,21 +181,21 @@ namespace LinqToTwitterDemo
         /// Demonstrates how to use ApplicationOnlyAuthorizer
         /// </summary>
         /// <param name="twitterCtx"></param>
-        private static void HandleApplicationOnlyAuthentication(TwitterContext twitterCtx)
+        private static void HandleApplicationOnlyAuthentication()
         {
-            //var auth = new ApplicationOnlyAuthorizer
-            //{
-            //    Credentials = new InMemoryCredentials
-            //    {
-            //        ConsumerKey = ConfigurationManager.AppSettings["twitterConsumerKey"],
-            //        ConsumerSecret = ConfigurationManager.AppSettings["twitterConsumerSecret"]
-            //    }
-            //};
+            var auth = new ApplicationOnlyAuthorizer
+            {
+                Credentials = new InMemoryCredentials
+                {
+                    ConsumerKey = ConfigurationManager.AppSettings["twitterConsumerKey"],
+                    ConsumerSecret = ConfigurationManager.AppSettings["twitterConsumerSecret"]
+                }
+            };
 
-            //auth.Authorize();
+            auth.Authorize();
             //auth.Invalidate();
 
-            //var twitterCtx = new TwitterContext(auth);
+            var twitterCtx = new TwitterContext(auth);
 
             var srch =
                 (from search in twitterCtx.Search

@@ -62,14 +62,14 @@
 				<td><asp:Label ID="NameLabel" runat="server" Text='<%#Eval("User.Name") %>' /> </td>
 				<td><asp:Label ID="TweetLabel" runat="server" Text='<%#Eval("Text") %>' /> </td>
                 <td>
-                    <asp:Repeater runat="server" DataSource='<%#Eval("Entities.UserMentions") %>'>
+                    <asp:Repeater runat="server" DataSource='<%#Eval("Entities.UserMentionEntities") %>'>
                         <ItemTemplate><%# Eval("ScreenName")%>,</ItemTemplate>
                     </asp:Repeater>
-                    <asp:Repeater ID="Repeater1" runat="server" DataSource='<%#Eval("Entities.UrlMentions") %>'>
+                    <asp:Repeater ID="Repeater1" runat="server" DataSource='<%#Eval("Entities.UrlEntities") %>'>
                         <ItemTemplate><%# Eval("Url")%>,</ItemTemplate>
                     </asp:Repeater>
 
-                    <asp:Repeater ID="Repeater2" runat="server" DataSource='<%#Eval("Entities.HashTagMentions") %>'>
+                    <asp:Repeater ID="Repeater2" runat="server" DataSource='<%#Eval("Entities.HashTagEntities") %>'>
                         <ItemTemplate><%# Eval("Tag")%>,</ItemTemplate>
                     </asp:Repeater>
                 </td>

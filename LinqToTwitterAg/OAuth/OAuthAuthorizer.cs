@@ -101,7 +101,7 @@ namespace LinqToTwitter
             }
         }
 
-        public bool IsAuthorized
+        public virtual bool IsAuthorized
         {
             get
             {
