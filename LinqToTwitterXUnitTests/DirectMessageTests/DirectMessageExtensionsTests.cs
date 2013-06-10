@@ -39,7 +39,7 @@ namespace LinqToTwitterXUnitTests
                 It.IsAny<Dictionary<string, string>>(),
                 It.IsAny<Func<string, DirectMessage>>()))
                     .Returns(TestQueryResponse);
-            var ctx = new TwitterContext(authMock.Object, execMock.Object, "https://api.twitter.com/1/", "");
+            var ctx = new TwitterContext(execMock.Object);
             return ctx;
         }
 
@@ -66,7 +66,7 @@ namespace LinqToTwitterXUnitTests
 
             execMock.Verify(exec =>
                 exec.PostToTwitter(
-                    "https://api.twitter.com/1/direct_messages/new.json",
+                    "https://api.twitter.com/1.1/direct_messages/new.json",
                     It.IsAny<Dictionary<string, string>>(),
                     It.IsAny<Func<string, DirectMessage>>()),
                 Times.Once());
@@ -117,7 +117,7 @@ namespace LinqToTwitterXUnitTests
             execMock.Verify(
                 exec =>
                 exec.PostToTwitter(
-                    "https://api.twitter.com/1/direct_messages/destroy.json",
+                    "https://api.twitter.com/1.1/direct_messages/destroy.json",
                     It.IsAny<Dictionary<string, string>>(),
                     It.IsAny<Func<string, DirectMessage>>()),
                 Times.Once());

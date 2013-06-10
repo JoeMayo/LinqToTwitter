@@ -24,7 +24,7 @@ namespace WindowsPhoneDemo
             }
             else
             {
-                var twitterCtx = new TwitterContext(auth);
+                var twitterCtx = new TwitterContext(auth, SharpGIS.WebRequestCreator.GZip);
 
                 (from search in twitterCtx.Search
                  where search.Type == SearchType.Search &&

@@ -10,9 +10,20 @@ namespace LinqToTwitterXUnitTests.RawTests
 {
     public class RawExtensionsTests
     {
+        TwitterContext ctx;
+        Mock<ITwitterExecute> execMock;
+
         public RawExtensionsTests()
         {
             TestCulture.SetCulture();
+        }
+
+        void InitializeTwitterContext()
+        {
+            var authMock = new Mock<ITwitterAuthorizer>();
+            execMock = new Mock<ITwitterExecute>();
+            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
+            ctx = new TwitterContext(execMock.Object);
         }
 
         [Fact]
@@ -26,10 +37,7 @@ namespace LinqToTwitterXUnitTests.RawTests
         [Fact]
         public void ExecuteRawRequest_Invokes_Executor_Execute()
         {
-            var authMock = new Mock<ITwitterAuthorizer>();
-            var execMock = new Mock<ITwitterExecute>();
-            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
-            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
+            InitializeTwitterContext();
             const string QueryString = "statuses/update.json";
             var parameters = new Dictionary<string, string>
             {
@@ -49,10 +57,7 @@ namespace LinqToTwitterXUnitTests.RawTests
         [Fact]
         public void ExecuteRawRequest_Returns_Raw_Result()
         {
-            var authMock = new Mock<ITwitterAuthorizer>();
-            var execMock = new Mock<ITwitterExecute>();
-            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
-            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
+            InitializeTwitterContext();
             const string QueryString = "statuses/update.json";
             var parameters = new Dictionary<string, string>
             {
@@ -70,13 +75,9 @@ namespace LinqToTwitterXUnitTests.RawTests
         [Fact]
         public void ExecuteRawRequest_Resolves_Too_Many_Url_Slashes()
         {
-            const string BaseUrlWithTrailingSlash = "https://api.twitter.com/1.1/";
             const string QueryStringWithBeginningSlash = "/statuses/update.json";
             const string FullUrl = "https://api.twitter.com/1.1/statuses/update.json";
-            var authMock = new Mock<ITwitterAuthorizer>();
-            var execMock = new Mock<ITwitterExecute>();
-            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
-            var ctx = new TwitterContext(authMock.Object, execMock.Object, BaseUrlWithTrailingSlash, "");
+            InitializeTwitterContext();
             var parameters = new Dictionary<string, string>
             {
                 { "status", "Testing" }
@@ -94,13 +95,9 @@ namespace LinqToTwitterXUnitTests.RawTests
         [Fact]
         public void ExecuteRawRequest_Resolves_Too_Few_Url_Slashes()
         {
-            const string BaseUrlWithoutTrailingSlash = "https://api.twitter.com/1.1/";
             const string QueryStringWithoutBeginningSlash = "statuses/update.json";
             const string FullUrl = "https://api.twitter.com/1.1/statuses/update.json";
-            var authMock = new Mock<ITwitterAuthorizer>();
-            var execMock = new Mock<ITwitterExecute>();
-            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
-            var ctx = new TwitterContext(authMock.Object, execMock.Object, BaseUrlWithoutTrailingSlash, "");
+            InitializeTwitterContext();
             var parameters = new Dictionary<string, string>
             {
                 { "status", "Testing" }

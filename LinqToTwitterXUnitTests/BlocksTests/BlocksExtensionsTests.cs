@@ -39,7 +39,7 @@ namespace LinqToTwitterXUnitTests
                 It.IsAny<Dictionary<string, string>>(),
                 It.IsAny<Func<string, User>>()))
                     .Returns(BlocksUserJson);
-            var ctx = new TwitterContext(authMock.Object, execMock.Object, "https://api.twitter.com/1.1/", "");
+            var ctx = new TwitterContext(execMock.Object);
             return ctx;
         }
 

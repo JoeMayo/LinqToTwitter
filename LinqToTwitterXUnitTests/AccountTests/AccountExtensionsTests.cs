@@ -10,39 +10,43 @@ namespace LinqToTwitterXUnitTests.AccountTests
 {
     public class AccountExtensionsTests
     {
-        readonly Mock<ITwitterAuthorizer> authMock = new Mock<ITwitterAuthorizer>();
-        readonly Mock<ITwitterExecute> execMock = new Mock<ITwitterExecute>();
+        Mock<ITwitterExecute> execMock;
 
         public AccountExtensionsTests()
         {
             TestCulture.SetCulture();
         }
   
-        TwitterContext InitTwitterContextWithPostToTwitter()
+        TwitterContext InitTwitterContextWithPostToTwitter<TEntity>(string response)
         {
+            var authMock = new Mock<ITwitterAuthorizer>();
+            execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
             execMock.Setup(
                 exec => exec.PostToTwitter(
                     It.IsAny<string>(),
                     It.IsAny<Dictionary<string, string>>(),
-                    It.IsAny<Func<string, User>>()))
-                    .Returns(SingleUserResponse);
-            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
+                    It.IsAny<Func<string, TEntity>>()))
+                    .Returns(response);
+            var ctx = new TwitterContext(execMock.Object);
             return ctx;
         }
 
         TwitterContext InitTwitterContextWithPostTwitterImage()
         {
+            var authMock = new Mock<ITwitterAuthorizer>();
+            execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
-            execMock.Setup(exec => exec.PostTwitterImage(
-                It.IsAny<string>(),
-                It.IsAny<IDictionary<string, string>>(),
-                It.IsAny<byte[]>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<IRequestProcessor<User>>()))
+            execMock.Setup(
+                exec => exec.PostTwitterImage(
+                    It.IsAny<string>(),
+                    It.IsAny<IDictionary<string, string>>(),
+                    It.IsAny<byte[]>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<IRequestProcessor<User>>()))
                     .Returns(SingleUserResponse);
-            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
+            var ctx = new TwitterContext(execMock.Object);
             return ctx;
         }
 
@@ -55,7 +59,7 @@ namespace LinqToTwitterXUnitTests.AccountTests
             const string Location = "San Francisco, CA";
             const string Description = "The Real Twitter API.";
             const bool SkipStatus = true;
-            var ctx = InitTwitterContextWithPostToTwitter();
+            var ctx = InitTwitterContextWithPostToTwitter<User>(SingleUserResponse);
 
             User actual = ctx.UpdateAccountProfile(Name, Url, Location, Description, true, SkipStatus);
 
@@ -72,7 +76,7 @@ namespace LinqToTwitterXUnitTests.AccountTests
         public void UpdateAccountProfile_Throws_On_Null_Input()
         {
             const string ExpectedParamName = "NoInput";
-            var ctx = InitTwitterContextWithPostToTwitter();
+            var ctx = InitTwitterContextWithPostToTwitter<User>(SingleUserResponse);
 
             var ex = Assert.Throws<ArgumentException>(() => ctx.UpdateAccountProfile(null, null, null, null, true, false));
 
@@ -88,7 +92,7 @@ namespace LinqToTwitterXUnitTests.AccountTests
             const string Location = "San Francisco, CA";
             const string Description = "The Real Twitter API.";
             const bool SkipStatus = true;
-            var ctx = InitTwitterContextWithPostToTwitter();
+            var ctx = InitTwitterContextWithPostToTwitter<User>(SingleUserResponse);
 
             var ex = Assert.Throws<ArgumentException>(() => ctx.UpdateAccountProfile(name, Url, Location, Description, true, SkipStatus));
 
@@ -104,7 +108,7 @@ namespace LinqToTwitterXUnitTests.AccountTests
             const string Location = "Denver, CO";
             const string Description = "Open source developer for LINQ to Twitter";
             const bool SkipStatus = true;
-            var ctx = InitTwitterContextWithPostToTwitter();
+            var ctx = InitTwitterContextWithPostToTwitter<User>(SingleUserResponse);
 
             var ex = Assert.Throws<ArgumentException>(() => ctx.UpdateAccountProfile(Name, url, Location, Description, true, SkipStatus));
 
@@ -120,7 +124,7 @@ namespace LinqToTwitterXUnitTests.AccountTests
             var location = new string(Enumerable.Repeat('x', 31).ToArray());
             const string Description = "Open source developer for LINQ to Twitter";
             const bool SkipStatus = true;
-            var ctx = InitTwitterContextWithPostToTwitter();
+            var ctx = InitTwitterContextWithPostToTwitter<User>(SingleUserResponse);
 
             var ex = Assert.Throws<ArgumentException>(() => ctx.UpdateAccountProfile(Name, Url, location, Description, true, SkipStatus));
 
@@ -136,7 +140,7 @@ namespace LinqToTwitterXUnitTests.AccountTests
             const string Location = "Denver, CO";
             var description = new string(Enumerable.Repeat('x', 161).ToArray());
             const bool SkipStatus = true;
-            var ctx = InitTwitterContextWithPostToTwitter();
+            var ctx = InitTwitterContextWithPostToTwitter<User>(SingleUserResponse);
 
             var ex = Assert.Throws<ArgumentException>(() => ctx.UpdateAccountProfile(Name, Url, Location, description, true, SkipStatus));
 
@@ -149,7 +153,7 @@ namespace LinqToTwitterXUnitTests.AccountTests
             const string ImageFilePath = "c:\\image.jpg";
             const string ExpectedName = "Twitter API";
             const bool SkipStatus = true;
-            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
+            var ctx = InitTwitterContextWithPostToTwitter<User>(SingleUserResponse);
             execMock.Setup(exec =>
                 exec.PostTwitterFile(
                     It.IsAny<string>(),
@@ -157,7 +161,6 @@ namespace LinqToTwitterXUnitTests.AccountTests
                     It.IsAny<string>(),
                     It.IsAny<IRequestProcessor<User>>()))
                 .Returns(SingleUserResponse);
-            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
 
             User actual = ctx.UpdateAccountImage(ImageFilePath, SkipStatus);
 
@@ -176,7 +179,7 @@ namespace LinqToTwitterXUnitTests.AccountTests
         {
             const string ExpectedParamName = "imageFilePath";
             const bool SkipStatus = true;
-            var ctx = InitTwitterContextWithPostToTwitter();
+            var ctx = InitTwitterContextWithPostToTwitter<User>(SingleUserResponse);
 
             var ex = Assert.Throws<ArgumentException>(() => ctx.UpdateAccountImage(null, SkipStatus));
 
@@ -193,7 +196,7 @@ namespace LinqToTwitterXUnitTests.AccountTests
             const string SidebarBorder = "#87bc44";
             string expectedName = "Twitter API";
             const bool SkipStatus = true;
-            var ctx = InitTwitterContextWithPostToTwitter();
+            var ctx = InitTwitterContextWithPostToTwitter<User>(SingleUserResponse);
 
             User actual = ctx.UpdateAccountColors(Background, Text, Link, SidebarFill, SidebarBorder, true, SkipStatus);
 
@@ -211,7 +214,7 @@ namespace LinqToTwitterXUnitTests.AccountTests
         {
             const string ExpectedParamName = "NoInput";
             const bool SkipStatus = true;
-            var ctx = InitTwitterContextWithPostToTwitter();
+            var ctx = InitTwitterContextWithPostToTwitter<User>(SingleUserResponse);
 
             var ex = Assert.Throws<ArgumentException>(() => ctx.UpdateAccountColors(null, null, null, null, null, true, SkipStatus));
 
@@ -226,15 +229,14 @@ namespace LinqToTwitterXUnitTests.AccountTests
             const bool Use = false;
             const string ExpectedName = "Twitter API";
             const bool SkipStatus = true;
-            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
+            var ctx = InitTwitterContextWithPostToTwitter<User>(SingleUserResponse);
             execMock.Setup(exec =>
-                exec.PostTwitterFile(
-                    It.IsAny<string>(),
-                    It.IsAny<Dictionary<string, string>>(),
-                    It.IsAny<string>(),
-                    It.IsAny<IRequestProcessor<User>>()))
+            exec.PostTwitterFile(
+                It.IsAny<string>(),
+                It.IsAny<Dictionary<string, string>>(),
+                It.IsAny<string>(),
+                It.IsAny<IRequestProcessor<User>>()))
                 .Returns(SingleUserResponse);
-            var ctx = new TwitterContext(authMock.Object, execMock.Object, "https://api.twitter.com/1.1/", "");
 
             User actual = ctx.UpdateAccountBackgroundImage(ImageFilePath, Tile, Use, true, SkipStatus);
 
@@ -266,16 +268,7 @@ namespace LinqToTwitterXUnitTests.AccountTests
         [Fact]
         public void UpdateAccountSettings_Invokes_Executor_Execute()
         {
-            var authMock = new Mock<ITwitterAuthorizer>();
-            var execMock = new Mock<ITwitterExecute>();
-            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
-            execMock.Setup(exec =>
-                exec.PostToTwitter(
-                    It.IsAny<string>(),
-                    It.IsAny<Dictionary<string, string>>(),
-                    It.IsAny<Func<string, Account>>()))
-                .Returns(SettingsResponse);
-            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
+            var ctx = InitTwitterContextWithPostToTwitter<Account>(SettingsResponse);
             var parameters = new Dictionary<string, string>
             {
                 { "trend_location_woeid", "1" },
@@ -304,7 +297,7 @@ namespace LinqToTwitterXUnitTests.AccountTests
         public void UpdateAccountSettings_Throws_On_No_Input()
         {
             const string ExpectedParamName = "NoInput";
-            var ctx = InitTwitterContextWithPostToTwitter();
+            var ctx = InitTwitterContextWithPostToTwitter<User>(SingleUserResponse);
 
             var ex = Assert.Throws<ArgumentException>(() => ctx.UpdateAccountSettings(null, null, null, null, null, null));
 
@@ -314,16 +307,7 @@ namespace LinqToTwitterXUnitTests.AccountTests
         [Fact]
         public void UpdateDeliveryDevice_Invokes_Executor_Execute()
         {
-            var authMock = new Mock<ITwitterAuthorizer>();
-            var execMock = new Mock<ITwitterExecute>();
-            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
-            execMock.Setup(exec =>
-                exec.PostToTwitter(
-                    It.IsAny<string>(),
-                    It.IsAny<Dictionary<string, string>>(),
-                    It.IsAny<Func<string, Account>>()))
-                .Returns(SettingsResponse);
-            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
+            var ctx = InitTwitterContextWithPostToTwitter<Account>(SettingsResponse);
             var parameters = new Dictionary<string, string>
             {
                 { "device", DeviceType.Sms.ToString().ToLower() },
@@ -483,7 +467,7 @@ namespace LinqToTwitterXUnitTests.AccountTests
         [Fact]
         public void RemoveProfileBanner_Invokes_Executor_Execute()
         {
-            var ctx = InitTwitterContextWithPostToTwitter();
+            var ctx = InitTwitterContextWithPostToTwitter<User>(SingleUserResponse);
 
             User actual = ctx.RemoveProfileBanner(null);
 

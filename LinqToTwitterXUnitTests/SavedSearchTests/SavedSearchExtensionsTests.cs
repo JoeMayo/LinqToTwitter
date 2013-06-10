@@ -22,7 +22,7 @@ namespace LinqToTwitterXUnitTests.SavedSearchTests
         {
             authMock = new Mock<ITwitterAuthorizer>();
             execMock = new Mock<ITwitterExecute>();
-            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
+            var ctx = new TwitterContext(execMock.Object);
             return ctx;
         }
 

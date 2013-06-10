@@ -19,14 +19,6 @@ namespace LinqToTwitterXUnitTests.ListTests
             TestCulture.SetCulture();
         }
 
-        [Fact]
-        public void ListRequestProcessor_Handles_Actions()
-        {
-            var listReqProc = new ListRequestProcessor<List>();
-
-            Assert.IsAssignableFrom<IRequestProcessorWithAction<List>>(listReqProc);
-        }
-
         void InitializeTwitterContext()
         {
             var authMock = new Mock<ITwitterAuthorizer>();
@@ -38,7 +30,15 @@ namespace LinqToTwitterXUnitTests.ListTests
                     It.IsAny<Dictionary<string, string>>(),
                     It.IsAny<Func<string, List>>()))
                 .Returns(TestStatusQueryResponse);
-            ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
+            ctx = new TwitterContext(execMock.Object);
+        }
+
+        [Fact]
+        public void ListRequestProcessor_Handles_Actions()
+        {
+            var listReqProc = new ListRequestProcessor<List>();
+
+            Assert.IsAssignableFrom<IRequestProcessorWithAction<List>>(listReqProc);
         }
 
         [Fact]

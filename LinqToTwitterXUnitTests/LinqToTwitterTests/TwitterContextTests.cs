@@ -19,6 +19,21 @@ namespace LinqToTwitterXUnitTests
             auth = new Mock<ITwitterAuthorizer>().Object;
         }
 
+        void InitializeTwitterContextForExecuteTest(out TwitterContext ctx, out Expression expression)
+        {
+            var exec = new Mock<ITwitterExecute>();
+            exec.Setup(exc => exc.QueryTwitter(It.IsAny<Request>(), It.IsAny<IRequestProcessor<Status>>()))
+                .Returns(SingleStatusResponse);
+
+            ctx = new TwitterContext(exec.Object);
+            var publicQuery =
+                from tweet in ctx.Status
+                where tweet.Type == StatusType.Show
+                select tweet;
+
+            expression = publicQuery.Expression;
+        }
+
         [Fact]
         public void TwitterContext_Single_Param_Constructor_Sets_Defaults()
         {
@@ -33,34 +48,6 @@ namespace LinqToTwitterXUnitTests
         }
 
         [Fact]
-        public void TwitterContext_Three_Param_Constructor_Sets_Defaults()
-        {
-            ITwitterExecute execute = new TwitterExecute(new PinAuthorizer());
-            const string BaseUrl = "http://api.twitter.com/1/";
-            const string SearchUrl = "http://search.twitter.com/";
-            var ctx = new TwitterContext(execute, BaseUrl, SearchUrl);
-
-            Assert.Equal(BaseUrl, ctx.BaseUrl);
-            Assert.Equal(SearchUrl, ctx.SearchUrl);
-        }
-
-        [Fact]
-        public void TwitterContext_No_Param_Works_With_Object_Initialization()
-        {
-            const string BaseUrl = "http://api.twitter.com/1/";
-            const string SearchUrl = "http://search.twitter.com/";
-            var ctx =
-                new TwitterContext(auth)
-                {
-                    BaseUrl = BaseUrl,
-                    SearchUrl = SearchUrl,
-                };
-
-            Assert.Equal(BaseUrl, ctx.BaseUrl);
-            Assert.Equal(SearchUrl, ctx.SearchUrl);
-        }
-
-        [Fact]
         public void TwitterContext_1_Param_Requres_NonNull_Authorization()
         {
             var ex = Assert.Throws<ArgumentNullException>(() => new TwitterContext((PinAuthorizer)null));
@@ -69,21 +56,11 @@ namespace LinqToTwitterXUnitTests
         }
 
         [Fact]
-        public void TwitterContext_4_Params_Requres_NonNull_Authorization()
-        {
-            var execMock = new Mock<ITwitterExecute>();
-            
-            var ex = Assert.Throws<ArgumentNullException>(() => new TwitterContext(null, execMock.Object, "", ""));
-
-            Assert.Equal("authorization", ex.ParamName);
-        }
-
-        [Fact]
         public void TwitterContext_Requres_NonNull_Executor()
         {
             var authMock = new Mock<ITwitterAuthorizer>();
 
-            var ex = Assert.Throws<ArgumentNullException>(() => new TwitterContext(authMock.Object, null, "", ""));
+            var ex = Assert.Throws<ArgumentNullException>(() => new TwitterContext((ITwitterExecute)null));
 
             Assert.Equal("execute", ex.ParamName);
         }
@@ -250,21 +227,6 @@ namespace LinqToTwitterXUnitTests
             Assert.Equal("https://api.twitter.com/1.1/", reqProc.BaseUrl);
         }
 
-        void InitializeTwitterContextForExecuteTest(out TwitterContext ctx, out Expression expression)
-        {
-            var exec = new Mock<ITwitterExecute>();
-            exec.Setup(exc => exc.QueryTwitter(It.IsAny<Request>(), It.IsAny<IRequestProcessor<Status>>()))
-                .Returns(SingleStatusResponse);
-
-            ctx = new TwitterContext(exec.Object);
-            var publicQuery = 
-                from tweet in ctx.Status
-                where tweet.Type == StatusType.Show
-                select tweet;
-
-            expression = publicQuery.Expression;
-        }
-
         [Fact]
         public void Execute_Returns_List_Of_Status()
         {
@@ -332,7 +294,7 @@ namespace LinqToTwitterXUnitTests
             var authMock = new Mock<ITwitterAuthorizer>();
             var execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
-            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
+            var ctx = new TwitterContext(execMock.Object);
             var streamingQuery =
                 from tweet in ctx.Streaming
                 where tweet.Type == StreamingType.Sample
@@ -350,7 +312,7 @@ namespace LinqToTwitterXUnitTests
             var execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
             execMock.Setup(exec => exec.QueryTwitter(It.IsAny<Request>(), It.IsAny<StatusRequestProcessor<Status>>())).Returns(SingleStatusResponse);
-            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
+            var ctx = new TwitterContext(execMock.Object);
             var statusQuery =
                 from tweet in ctx.Status
                 where tweet.Type == StatusType.Show
@@ -390,7 +352,7 @@ namespace LinqToTwitterXUnitTests
             var authMock = new Mock<ITwitterAuthorizer>();
             var execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
-            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
+            var ctx = new TwitterContext(execMock.Object);
             var streamingQuery =
                 from tweet in ctx.UserStream
                 where tweet.Type == UserStreamType.User

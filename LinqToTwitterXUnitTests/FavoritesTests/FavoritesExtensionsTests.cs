@@ -15,6 +15,21 @@ namespace LinqToTwitterXUnitTests.FavoritesTests
             TestCulture.SetCulture();
         }
 
+        TwitterContext InitializeTwitterContext()
+        {
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
+            execMock.Setup(exec =>
+                exec.PostToTwitter(
+                    It.IsAny<string>(),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<Func<string, Status>>()))
+                .Returns(SingleStatusResponse);
+            var ctx = new TwitterContext(execMock.Object);
+            return ctx;
+        }
+
         [Fact]
         public void CreateFavoritesRequestProcessor_Works_With_Actions()
         {
@@ -28,16 +43,7 @@ namespace LinqToTwitterXUnitTests.FavoritesTests
         {
             const string Id = "1";
             const string ExpectedStatusID = "184835136037191681";
-            var authMock = new Mock<ITwitterAuthorizer>();
-            var execMock = new Mock<ITwitterExecute>();
-            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
-            execMock.Setup(exec =>
-                exec.PostToTwitter(
-                    It.IsAny<string>(),
-                    It.IsAny<Dictionary<string, string>>(),
-                    It.IsAny<Func<string, Status>>()))
-                .Returns(SingleStatusResponse);
-            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
+            var ctx = InitializeTwitterContext();
 
             Status actual = ctx.CreateFavorite(Id);
 
@@ -47,16 +53,7 @@ namespace LinqToTwitterXUnitTests.FavoritesTests
         [Fact]
         public void CreateFavoriteNoIDTest()
         {
-            var authMock = new Mock<ITwitterAuthorizer>();
-            var execMock = new Mock<ITwitterExecute>();
-            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
-            execMock.Setup(exec =>
-                exec.PostToTwitter(
-                    It.IsAny<string>(),
-                    It.IsAny<Dictionary<string, string>>(),
-                    It.IsAny<Func<string, Status>>()))
-                .Returns(SingleStatusResponse);
-            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
+            var ctx = InitializeTwitterContext();
 
             var ex = Assert.Throws<ArgumentException>(() => ctx.CreateFavorite(null));
 
@@ -68,16 +65,7 @@ namespace LinqToTwitterXUnitTests.FavoritesTests
         {
             const string Id = "1";
             const string ExpectedStatusID = "184835136037191681";
-            var authMock = new Mock<ITwitterAuthorizer>();
-            var execMock = new Mock<ITwitterExecute>();
-            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
-            execMock.Setup(exec =>
-                exec.PostToTwitter(
-                    It.IsAny<string>(),
-                    It.IsAny<Dictionary<string, string>>(),
-                    It.IsAny<Func<string, Status>>()))
-                .Returns(SingleStatusResponse);
-            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
+            var ctx = InitializeTwitterContext();
 
             Status actual = ctx.DestroyFavorite(Id, true);
 
@@ -88,16 +76,7 @@ namespace LinqToTwitterXUnitTests.FavoritesTests
         public void DestroyFavoriteNullIDTest()
         {
             string id = string.Empty;
-            var authMock = new Mock<ITwitterAuthorizer>();
-            var execMock = new Mock<ITwitterExecute>();
-            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
-            execMock.Setup(exec =>
-                exec.PostToTwitter(
-                    It.IsAny<string>(),
-                    It.IsAny<Dictionary<string, string>>(),
-                    It.IsAny<Func<string, Status>>()))
-                .Returns(SingleStatusResponse);
-            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
+            var ctx = InitializeTwitterContext();
 
             var ex = Assert.Throws<ArgumentException>(() => ctx.DestroyFavorite(id, true));
 

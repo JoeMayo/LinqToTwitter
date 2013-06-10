@@ -27,7 +27,7 @@ namespace LinqToTwitterXUnitTests.GeoTests
                 It.IsAny<Dictionary<string, string>>(),
                 It.IsAny<Func<string, Place>>()))
                     .Returns(PlaceResponse);
-            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
+            var ctx = new TwitterContext(execMock.Object);
             return ctx;
         }
 

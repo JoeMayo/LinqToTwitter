@@ -19,7 +19,7 @@ namespace LinqToTwitterXUnitTests
             var authMock = new Mock<ITwitterAuthorizer>();
             var execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
-            var ctxMock = new Mock<TwitterContext>(authMock.Object, execMock.Object, string.Empty, string.Empty);
+            var ctxMock = new Mock<TwitterContext>(execMock.Object);
             var twQueryable = new TwitterQueryable<Streaming>(ctxMock.Object);
             Action<StreamContent> callback = content => Console.WriteLine(content.Content);
 

@@ -36,10 +36,12 @@ namespace LinqToTwitter
         public const string XFeatureRateLimitResetKey = "X-FeatureRateLimit-Reset";
         public const string DateKey = "Date";
 
+        // TODO: Obsolete constructors that were once warnings are now errors. Remove in the following version.
+
         /// <summary>
         /// Initializes a new instance of the <see cref="TwitterContext"/> class.
         /// </summary>
-        [Obsolete("Twitter API v1.1 requires all queries to be authorized. Please visit http://linqtotwitter.codeplex.com/wikipage?title=Securing%20Your%20Applications for more guidance on how to use OAuth in your application.")]
+        [Obsolete("Twitter API v1.1 requires all queries to be authorized. Please visit http://linqtotwitter.codeplex.com/wikipage?title=Securing%20Your%20Applications for more guidance on how to use OAuth in your application.", true)]
         public TwitterContext()
             : this(new AnonymousAuthorizer())
         {
@@ -52,7 +54,11 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="authorization">The authorization.</param>
         public TwitterContext(ITwitterAuthorizer authorization)
-            : this(new TwitterExecute(authorization), null, null)
+#if SILVERLIGHT
+            : this(authorization, (IWebRequestCreate)null)
+#else
+            : this(new TwitterExecute(authorization))
+#endif
         {
         }
 
@@ -62,17 +68,9 @@ namespace LinqToTwitter
         /// <param name="authorization">The authorization.</param>
         /// <param name="baseUrl">Overwrites default base URL</param>
         /// <param name="searchUrl">Overwrites default search URL</param>
+        [Obsolete("The Search URL is now the same as the Base URL in Twitter API v1.1.", true)]
         public TwitterContext(ITwitterAuthorizer authorization, string baseUrl, string searchUrl)
-            : this(new TwitterExecute(authorization), baseUrl, searchUrl)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TwitterContext"/> class.
-        /// </summary>
-        /// <param name="executor">Can be mocked for testing</param>
-        public TwitterContext(ITwitterExecute executor)
-            : this(executor, null, null)
+            : this(new TwitterExecute(authorization))
         {
         }
 
@@ -80,9 +78,7 @@ namespace LinqToTwitter
         /// Initializes a new instance of the <see cref="TwitterContext"/> class.
         /// </summary>
         /// <param name="execute">The <see cref="ITwitterExecute"/> object to use.</param>
-        /// <param name="baseUrl">Base url of Twitter API.  May be null to use the default "https://api.twitter.com/1.1/" value.</param>
-        /// <param name="searchUrl">Base url of Twitter Search API.  May be null to use the default "https://api.twitter.com/1.1/search/" value.</param>
-        public TwitterContext(ITwitterExecute execute, string baseUrl, string searchUrl)
+        public TwitterContext(ITwitterExecute execute)
         {
             if (execute == null)
             {
@@ -90,24 +86,35 @@ namespace LinqToTwitter
             }
 
             TwitterExecutor = execute;
-            BaseUrl = string.IsNullOrEmpty(baseUrl) ? "https://api.twitter.com/1.1/" : baseUrl;
-            SearchUrl = string.IsNullOrEmpty(searchUrl) ? "https://api.twitter.com/1.1/search/" : searchUrl;
+            BaseUrl = "https://api.twitter.com/1.1/";
+            SearchUrl = "https://api.twitter.com/1.1/search/";
             StreamingUrl = "https://stream.twitter.com/1.1/";
             UserStreamUrl = "https://userstream.twitter.com/1.1/";
             SiteStreamUrl = "https://sitestream.twitter.com/1.1/";
+        }
+
 
 #if SILVERLIGHT
-            IWebRequestCreate webReqCreator = WebRequestCreator.ClientHttp;
-#endif
-#if SILVERLIGHT && !WINDOWS_PHONE
-            if (!System.Windows.Application.Current.IsRunningOutOfBrowser)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TwitterContext"/> class.
+        /// </summary>
+        /// <param name="authorization">The authorization.</param>
+        public TwitterContext(ITwitterAuthorizer authorization, IWebRequestCreate webReqCreateInput)
+            : this(new TwitterExecute(authorization))
+        {
+            IWebRequestCreate webReqCreator = webReqCreateInput;
+                
+            if (webReqCreateInput == null)
+                webReqCreator =WebRequestCreator.ClientHttp;
+#if !WINDOWS_PHONE
+            if (webReqCreateInput == null && 
+                !System.Windows.Application.Current.IsRunningOutOfBrowser)
                 webReqCreator = WebRequestCreator.BrowserHttp;
 #endif
-#if SILVERLIGHT
             WebRequest.RegisterPrefix("http://", webReqCreator);
             WebRequest.RegisterPrefix("https://", webReqCreator);
-#endif
         }
+#endif
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TwitterContext"/> class.
@@ -116,27 +123,28 @@ namespace LinqToTwitter
         /// <param name="execute">The <see cref="ITwitterExecute"/> object to use.</param>
         /// <param name="baseUrl">Base url of Twitter API.  May be null to use the default "https://api.twitter.com/1.1/" value.</param>
         /// <param name="searchUrl">Base url of Twitter Search API.  May be null to use the default "https://api.twitter.com/1.1/search/" value.</param>
-        public TwitterContext(ITwitterAuthorizer authorization, ITwitterExecute execute, string baseUrl, string searchUrl)
+        [Obsolete("No longer used.", true)]
+        public TwitterContext(ITwitterAuthorizer authorization, ITwitterExecute execute)
         {
-            if (authorization == null)
-            {
-                throw new ArgumentNullException("authorization");
-            }
+//            if (authorization == null)
+//            {
+//                throw new ArgumentNullException("authorization");
+//            }
 
-            if (execute == null)
-            {
-                throw new ArgumentNullException("execute");
-            }
+//            if (execute == null)
+//            {
+//                throw new ArgumentNullException("execute");
+//            }
 
-            TwitterExecutor = execute;
-            TwitterExecutor.AuthorizedClient = authorization;
-            BaseUrl = string.IsNullOrEmpty(baseUrl) ? "https://api.twitter.com/1.1/" : baseUrl;
-            SearchUrl = string.IsNullOrEmpty(searchUrl) ? "https://api.twitter.com/1.1/" : searchUrl;
+//            TwitterExecutor = execute;
+//            TwitterExecutor.AuthorizedClient = authorization;
+//            BaseUrl = string.IsNullOrEmpty(baseUrl) ? "https://api.twitter.com/1.1/" : baseUrl;
+//            SearchUrl = string.IsNullOrEmpty(searchUrl) ? "https://api.twitter.com/1.1/" : searchUrl;
 
-#if SILVERLIGHT
-            WebRequest.RegisterPrefix("http://", WebRequestCreator.ClientHttp);
-            WebRequest.RegisterPrefix("https://", WebRequestCreator.ClientHttp);
-#endif
+//#if SILVERLIGHT
+//            WebRequest.RegisterPrefix("http://", WebRequestCreator.ClientHttp);
+//            WebRequest.RegisterPrefix("https://", WebRequestCreator.ClientHttp);
+//#endif
         }
 
         /// <summary>
@@ -152,6 +160,7 @@ namespace LinqToTwitter
         /// </summary>
         public string BaseUrl { get; set; }
 
+        // TODO: BaseUrl and SearchUrl are the same in Twitter API v1.1. Remove SearchUrl and refactor as necessary.
         /// <summary>
         /// base URL for accessing Twitter Search API
         /// </summary>

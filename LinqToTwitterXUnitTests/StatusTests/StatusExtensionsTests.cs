@@ -15,6 +15,21 @@ namespace LinqToTwitterXUnitTests.StatusTests
             TestCulture.SetCulture();
         }
 
+        TwitterContext InitializeTwitterContext()
+        {
+            var authMock = new Mock<ITwitterAuthorizer>();
+            var execMock = new Mock<ITwitterExecute>();
+            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
+            execMock.Setup(exec =>
+                exec.PostToTwitter(
+                    It.IsAny<string>(),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<Func<string, Status>>()))
+                .Returns(SingleStatusResponse);
+            var ctx = new TwitterContext(execMock.Object);
+            return ctx;
+        }
+
         [Fact]
         public void StatusRequestProcessor_Handles_Actions()
         {
@@ -29,12 +44,7 @@ namespace LinqToTwitterXUnitTests.StatusTests
             const string Status = "Hello";
             const string InReplyToStatusID = "1";
             string expectedStatusID = "184835136037191681";
-            var authMock = new Mock<ITwitterAuthorizer>();
-            var execMock = new Mock<ITwitterExecute>();
-            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
-            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
-            execMock.Setup(exec => exec.PostToTwitter(It.IsAny<string>(), It.IsAny<Dictionary<string, string>>(), It.IsAny<Func<string, Status>>()))
-                    .Returns(SingleStatusResponse);
+            var ctx = InitializeTwitterContext();
 
             Status actual = ctx.UpdateStatus(Status, InReplyToStatusID);
 
@@ -45,16 +55,7 @@ namespace LinqToTwitterXUnitTests.StatusTests
         public void UpdateStatus_Throws_On_Null_Tweet()
         {
             const string InReplyToStatusID = "184835136037191681";
-            var authMock = new Mock<ITwitterAuthorizer>();
-            var execMock = new Mock<ITwitterExecute>();
-            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
-            execMock.Setup(exec =>
-                exec.PostToTwitter(
-                    It.IsAny<string>(),
-                    It.IsAny<Dictionary<string, string>>(),
-                    It.IsAny<Func<string, Status>>()))
-                .Returns(SingleStatusResponse);
-            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
+            var ctx = InitializeTwitterContext();
 
             var ex = Assert.Throws<ArgumentException>(() => ctx.UpdateStatus(null, InReplyToStatusID));
 
@@ -66,12 +67,7 @@ namespace LinqToTwitterXUnitTests.StatusTests
         {
             const string Status = "Hello";
             string expectedStatusID = "184835136037191681";
-            var authMock = new Mock<ITwitterAuthorizer>();
-            var execMock = new Mock<ITwitterExecute>();
-            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
-            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
-            execMock.Setup(exec => exec.PostToTwitter(It.IsAny<string>(), It.IsAny<Dictionary<string, string>>(), It.IsAny<Func<string, Status>>()))
-                    .Returns(SingleStatusResponse);
+            var ctx = InitializeTwitterContext();
 
             Status actual = ctx.UpdateStatus(Status);
 
@@ -83,16 +79,7 @@ namespace LinqToTwitterXUnitTests.StatusTests
         {
             const string Id = "184835136037191681";
             string expectedStatusID = "184835136037191681";
-            var authMock = new Mock<ITwitterAuthorizer>();
-            var execMock = new Mock<ITwitterExecute>();
-            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
-            execMock.Setup(exec =>
-                exec.PostToTwitter(
-                    It.IsAny<string>(),
-                    It.IsAny<Dictionary<string, string>>(),
-                    It.IsAny<Func<string, Status>>()))
-                .Returns(SingleStatusResponse);
-            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
+            var ctx = InitializeTwitterContext();
 
             Status actual = ctx.DestroyStatus(Id);
 
@@ -103,16 +90,7 @@ namespace LinqToTwitterXUnitTests.StatusTests
         public void DestroyStatus_Throws_On_Null_ID()
         {
             string id = string.Empty;
-            var authMock = new Mock<ITwitterAuthorizer>();
-            var execMock = new Mock<ITwitterExecute>();
-            execMock.SetupGet(exec => exec.AuthorizedClient).Returns(authMock.Object);
-            execMock.Setup(exec =>
-                exec.PostToTwitter(
-                    It.IsAny<string>(),
-                    It.IsAny<Dictionary<string, string>>(),
-                    It.IsAny<Func<string, Status>>()))
-                .Returns(SingleStatusResponse);
-            var ctx = new TwitterContext(authMock.Object, execMock.Object, "", "");
+            var ctx = InitializeTwitterContext();
 
             var ex = Assert.Throws<ArgumentException>(() => ctx.DestroyStatus(id));
 
