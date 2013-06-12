@@ -1336,7 +1336,7 @@ namespace LinqToTwitterXUnitTests.StatusTests
 //}";
 
         const string OEmbedResponse = @"{
-   ""cache_age"":3153600000,
+   ""cache_age"":""3153600000"",
    ""url"":""https://twitter.com/JoeMayo/statuses/305050067973312514"",
    ""height"":null,
    ""provider_url"":""https://twitter.com"",

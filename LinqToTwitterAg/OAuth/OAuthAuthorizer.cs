@@ -159,13 +159,10 @@ namespace LinqToTwitter
                     request.AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip;
                 }
             }
-#else
+#endif
+#if SILVERLIGHT && !NETFX_CORE
             request.Headers["user-agent"] = UserAgent;
             request.Headers["host"] = request.RequestUri.Host;
-            //if (UseCompression)
-            //{
-            //    request.Headers["accept-encoding"] = "gzip, deflate";
-            //}
 #endif
         }
 
