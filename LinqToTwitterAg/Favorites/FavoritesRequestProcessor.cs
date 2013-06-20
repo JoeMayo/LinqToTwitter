@@ -48,11 +48,6 @@ namespace LinqToTwitter
         public ulong MaxID { get; set; }
 
         /// <summary>
-        /// Page to retrieve (optional)
-        /// </summary>
-        private int Page { get; set; }
-
-        /// <summary>
         /// Add entities to results (default: true)
         /// </summary>
         public bool IncludeEntities { get; set; }
@@ -74,7 +69,6 @@ namespace LinqToTwitter
                        "Count",
                        "SinceID",
                        "MaxID",
-                       "Page",
                        "IncludeEntities"
                    })
                    .Parameters;
@@ -142,12 +136,6 @@ namespace LinqToTwitter
                 urlParams.Add(new QueryParameter("max_id", parameters["MaxID"]));
             }
 
-            if (parameters.ContainsKey("Page"))
-            {
-                Page = int.Parse(parameters["Page"]);
-                urlParams.Add(new QueryParameter("page", parameters["Page"]));
-            }
-
             if (parameters.ContainsKey("IncludeEntities"))
             {
                 IncludeEntities = bool.Parse(parameters["IncludeEntities"]);
@@ -179,7 +167,6 @@ namespace LinqToTwitter
                     Count = Count,
                     SinceID = SinceID,
                     MaxID = MaxID,
-                    Page = Page,
                     IncludeEntities = IncludeEntities
                 };
 

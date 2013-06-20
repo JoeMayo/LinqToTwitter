@@ -82,7 +82,7 @@ namespace LinqToTwitterXUnitTests
         [Fact]
         public void BuildUrl_Constructs_Favorites_Url()
         {
-            const string ExpectedUrl = "https://api.twitter.com/1.1/favorites/list.json?user_id=123&screen_name=JoeMayo&count=100&since_id=456&max_id=789&page=1&include_entities=true";
+            const string ExpectedUrl = "https://api.twitter.com/1.1/favorites/list.json?user_id=123&screen_name=JoeMayo&count=100&since_id=456&max_id=789&include_entities=true";
             var favReqProc = new FavoritesRequestProcessor<Favorites> { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters =
                 new Dictionary<string, string>
@@ -93,7 +93,6 @@ namespace LinqToTwitterXUnitTests
                     { "Count", "100" },
                     { "SinceID", "456" },
                     { "MaxID", "789" },
-                    { "Page", "1" },
                     { "IncludeEntities", true.ToString() }
 
                 };

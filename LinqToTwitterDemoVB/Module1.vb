@@ -341,7 +341,6 @@ Module Module1
         Dim statusTweets = From tweet In twitterCtx.Status _
                  Where tweet.Type = StatusType.User _
                  And tweet.ID = "15411837" _
-                 And tweet.Page = 1 _
                  And tweet.Count = 20 _
                  And tweet.SinceID = 4444196804
 
@@ -361,7 +360,6 @@ Module Module1
         Dim statusTweets = From tweet In twitterCtx.Status _
                  Where tweet.Type = StatusType.User _
                  And tweet.ID = "15411837" _
-                 And tweet.Page = 1 _
                  And tweet.Count = 20 _
                  And tweet.SinceID = 4444196804
 

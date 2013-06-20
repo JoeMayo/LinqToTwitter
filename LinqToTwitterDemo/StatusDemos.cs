@@ -43,8 +43,8 @@ namespace LinqToTwitterDemo
             //TrimUserDemo(twitterCtx);
             //TweetWithMediaDemo(twitterCtx);
             //TweetEntityDemo(twitterCtx);
-            //RetweetedByDemo(twitterCtx);
-            OEmbedStatusDemo(twitterCtx);
+            RetweetersDemo(twitterCtx);
+            //OEmbedStatusDemo(twitterCtx);
         }
 
         /// <summary>
@@ -203,7 +203,6 @@ namespace LinqToTwitterDemo
                 var myMentions =
                     (from mention in twitterCtx.Status
                      where mention.Type == StatusType.Mentions
-                        && mention.Page == page
                      select mention)
                      .ToList();
 
@@ -310,17 +309,17 @@ namespace LinqToTwitterDemo
                 });
         }
 
-        private static void RetweetedByDemo(TwitterContext twitterCtx)
+        private static void RetweetersDemo(TwitterContext twitterCtx)
         {
             var status =
                 (from tweet in twitterCtx.Status
-                 where tweet.Type == StatusType.RetweetedBy &&
+                 where tweet.Type == StatusType.Retweeters &&
                        tweet.ID == "210591841312190464"
                  select tweet)
                 .SingleOrDefault();
 
             status.Users.ForEach(
-                user => Console.WriteLine("User: " + user.Identifier.ScreenName));
+                userID => Console.WriteLine("User ID: " + userID));
         }
 
         /// <summary>
@@ -426,7 +425,6 @@ namespace LinqToTwitterDemo
                 from tweet in twitterCtx.Status
                 where tweet.Type == StatusType.User
                       && tweet.ID == "15411837"  // ID for User
-                      && tweet.Page == 1
                       && tweet.Count == 20
                       && tweet.SinceID == 931894254
                 select tweet;

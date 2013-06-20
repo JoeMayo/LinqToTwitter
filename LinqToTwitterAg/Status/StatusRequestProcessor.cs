@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
+using LinqToTwitter.Common;
 using LitJson;
 
 namespace LinqToTwitter
@@ -57,9 +58,9 @@ namespace LinqToTwitter
         internal int Count { get; set; }
 
         /// <summary>
-        /// page of results to return
+        /// Next page of data to return
         /// </summary>
-        internal int Page { get; set; }
+        internal string Cursor { get; set; }
 
         /// <summary>
         /// Retweets are optional and you must set this to true
@@ -155,7 +156,7 @@ namespace LinqToTwitter
                        "SinceID",
                        "MaxID",
                        "Count",
-                       "Page",
+                       "Cursor",
                        "IncludeRetweets",
                        "ExcludeReplies",
                        "IncludeEntities",
@@ -209,8 +210,8 @@ namespace LinqToTwitter
                     return BuildShowUrl(parameters);
                 case StatusType.User:
                     return BuildUserUrl(parameters);
-                case StatusType.RetweetedBy:
-                    return BuildRetweetedByUrl(parameters);
+                case StatusType.Retweeters:
+                    return BuildRetweetersUrl(parameters);
                 default:
                     throw new InvalidOperationException("The default case of BuildUrl should never execute because a Type must be specified.");
             }
@@ -263,11 +264,11 @@ namespace LinqToTwitter
                 urlParams.Add(new QueryParameter("count", parameters["Count"]));
             }
 
-            if (parameters.ContainsKey("Page"))
-            {
-                Page = int.Parse(parameters["Page"]);
-                urlParams.Add(new QueryParameter("page", parameters["Page"]));
-            }
+            //if (parameters.ContainsKey("Page"))
+            //{
+            //    Page = int.Parse(parameters["Page"]);
+            //    urlParams.Add(new QueryParameter("page", parameters["Page"]));
+            //}
 
             if (parameters.ContainsKey("IncludeRetweets"))
             {
@@ -464,32 +465,23 @@ namespace LinqToTwitter
             return req;
         }
 
-        Request BuildRetweetedByUrl(Dictionary<string, string> parameters)
+        Request BuildRetweetersUrl(Dictionary<string, string> parameters)
         {
             if (!parameters.ContainsKey("ID"))
                 throw new ArgumentException("ID is required.", "ID");
-                
-            ID = parameters["ID"];
 
-            var url = string.Format("{0}statuses/{1}/retweeted_by.json", BaseUrl, ID);
+            var url = BaseUrl + "statuses/retweeters/ids.json";
             var req = new Request(url);
-
             var urlParams = req.RequestParameters;
 
-            if (parameters.ContainsKey("Count"))
+            ID = parameters["ID"];
+            urlParams.Add(new QueryParameter("id", ID));
+
+            if (parameters.ContainsKey("Cursor"))
             {
-                Count = int.Parse(parameters["Count"]);
+                Cursor = parameters["Cursor"];
 
-                if (Count > 100)
-                    throw new ArgumentException("Max Count is 100.", "Count");
-
-                urlParams.Add(new QueryParameter("count", Count.ToString(CultureInfo.InvariantCulture)));
-            }
-
-            if (parameters.ContainsKey("Page"))
-            {
-                Page = int.Parse(parameters["Page"]);
-                urlParams.Add(new QueryParameter("page", Page.ToString(CultureInfo.InvariantCulture)));
+                urlParams.Add(new QueryParameter("cursor", Cursor));
             }
 
             return req;
@@ -523,15 +515,16 @@ namespace LinqToTwitter
                          select new Status(status))
                         .ToList();
                     break;
-                case StatusType.RetweetedBy:
+                case StatusType.Retweeters:
                     statusList = new List<Status>
                     {
                         new Status
                         {
                             Users =
-                                (from JsonData user in statusJson
-                                 select new User(user))
-                                .ToList()
+                                (from JsonData id in statusJson.GetValue<JsonData>("ids")
+                                 select (ulong)id)
+                                .ToList(),
+                            CursorMovement = new Cursors(statusJson)
                         }
                     };
                     break;
@@ -558,7 +551,7 @@ namespace LinqToTwitter
                 status.SinceID = SinceID;
                 status.MaxID = MaxID;
                 status.Count = Count;
-                status.Page = Page;
+                status.Cursor = Cursor;
                 status.IncludeRetweets = IncludeRetweets;
                 status.ExcludeReplies = ExcludeReplies;
                 status.IncludeEntities = IncludeEntities;

@@ -153,9 +153,9 @@ namespace LinqToTwitter
         public int Count { get; set; }
 
         /// <summary>
-        /// page of results to return
+        /// Next page of data to return
         /// </summary>
-        public int Page { get; set; }
+        public string Cursor { get; set; }
 
         /// <summary>
         /// By default, user timeline doesn't include retweets,
@@ -281,7 +281,7 @@ namespace LinqToTwitter
         /// <summary>
         /// Users who retweeted a tweet (used in StatusType.RetweetedBy queries)
         /// </summary>
-        public List<User> Users { get; set; }
+        public List<ulong> Users { get; set; }
 
         /// <summary>
         /// Retweet details
@@ -398,5 +398,10 @@ namespace LinqToTwitter
         /// Populated with OEmbed response for StatusType.OEmbed queries
         /// </summary>
         public EmbeddedStatus EmbeddedStatus { get; set; }
+
+        /// <summary>
+        /// Manage paging through a list (e.g. IDs from Users collection)
+        /// </summary>
+        public Cursors CursorMovement { get; set; }
     }
 }
