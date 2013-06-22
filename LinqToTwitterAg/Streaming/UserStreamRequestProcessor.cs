@@ -37,6 +37,11 @@ namespace LinqToTwitter
         internal string Delimited { get; set; }
 
         /// <summary>
+        /// Comma-separated list of languages to filter results on
+        /// </summary>
+        internal string Language { get; set; }
+
+        /// <summary>
         /// Comma-separated list (no spaces) of users to add to Site Stream
         /// </summary>
         internal string Follow { get; set; }
@@ -80,6 +85,7 @@ namespace LinqToTwitter
                    new List<string> { 
                        "Type",
                        "Delimited",
+                       "Language",
                        "Follow",
                        "Track",
                        "With",
@@ -91,6 +97,11 @@ namespace LinqToTwitter
             if (parameters.ContainsKey("Delimited"))
             {
                 Delimited = parameters["Delimited"];
+            }
+
+            if (parameters.ContainsKey("Language"))
+            {
+                Language = parameters["Language"];
             }
 
             if (parameters.ContainsKey("Follow"))
@@ -166,6 +177,12 @@ namespace LinqToTwitter
                 urlParams.Add(new QueryParameter("delimited", Delimited.ToLower()));
             }
 
+            if (parameters.ContainsKey("Language"))
+            {
+                Language = parameters["Language"].Replace(" ", "");
+                urlParams.Add(new QueryParameter("language", Language));
+            }
+
             if (parameters.ContainsKey("Track"))
             {
                 Track = parameters["Track"];
@@ -222,6 +239,12 @@ namespace LinqToTwitter
             {
                 Delimited = parameters["Delimited"];
                 urlParams.Add(new QueryParameter("delimited", Delimited.ToLower()));
+            }
+
+            if (parameters.ContainsKey("Language"))
+            {
+                Language = parameters["Language"].Replace(" ", "");
+                urlParams.Add(new QueryParameter("language", Language));
             }
 
             if (parameters.ContainsKey("Follow"))

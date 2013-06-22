@@ -12,11 +12,13 @@
         /// </summary>
         Firehose,
 
+        // TODO: Not documented on Twitter API 1.1
         /// <summary>
         /// Tweets containing http or https
         /// </summary>
         Links,
 
+        // TODO: Not documented on Twitter API 1.1
         /// <summary>
         /// Retweets...
         /// </summary>

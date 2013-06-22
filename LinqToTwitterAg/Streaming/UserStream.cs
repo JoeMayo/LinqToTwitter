@@ -16,6 +16,11 @@
         public string Delimited { get; set; }
 
         /// <summary>
+        /// Comma-separated list of languages to filter results on
+        /// </summary>
+        public string Language { get; set; }
+
+        /// <summary>
         /// Comma-separated list (no spaces) of users to add to Site Stream
         /// </summary>
         public string Follow { get; set; }

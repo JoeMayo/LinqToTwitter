@@ -98,7 +98,7 @@ namespace LinqToTwitterXUnitTests.FriendshipTests
             ctx.UpdateFriendshipSettings("Linq2Tweeter", true, true);
 
             execMock.Verify(exec => exec.PostToTwitter(
-                "https://api.twitter.com/1/friendships/update.json",
+                "https://api.twitter.com/1.1/friendships/update.json",
                 It.IsAny<Dictionary<string, string>>(),
                 It.IsAny<Func<string, Friendship>>()),
                 Times.Once());

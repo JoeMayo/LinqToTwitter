@@ -27,6 +27,11 @@ namespace LinqToTwitter
         internal string Delimited { get; set; }
 
         /// <summary>
+        /// Comma-separated list of languages to filter results on
+        /// </summary>
+        internal string Language { get; set; }
+
+        /// <summary>
         /// Limit results to a comma-separated set of users
         /// </summary>
         internal string Follow { get; set; }
@@ -60,6 +65,7 @@ namespace LinqToTwitter
                        "Type",
                        "Count",
                        "Delimited",
+                       "Language",
                        "Follow",
                        "Track",
                        "Locations",
@@ -74,6 +80,11 @@ namespace LinqToTwitter
             if (parameters.ContainsKey("Delimited"))
             {
                 Delimited = parameters["Delimited"];
+            }
+
+            if (parameters.ContainsKey("Language"))
+            {
+                Language = parameters["Language"];
             }
 
             if (parameters.ContainsKey("Follow"))
@@ -158,6 +169,11 @@ namespace LinqToTwitter
                 urlParams.Add(new QueryParameter("delimited", parameters["Delimited"]));
             }
 
+            if (parameters.ContainsKey("Language"))
+            {
+                urlParams.Add(new QueryParameter("language", parameters["Language"].Replace(" ", "")));
+            }
+
             if (parameters.ContainsKey("Follow"))
             {
                 urlParams.Add(new QueryParameter("follow", parameters["Follow"]));
@@ -199,6 +215,11 @@ namespace LinqToTwitter
             if (parameters.ContainsKey("Delimited"))
             {
                 urlParams.Add(new QueryParameter("delimited", parameters["Delimited"]));
+            }
+
+            if (parameters.ContainsKey("Language"))
+            {
+                urlParams.Add(new QueryParameter("language", parameters["Language"].Replace(" ", "")));
             }
 
             if (parameters.ContainsKey("StallWarnings"))
@@ -266,6 +287,11 @@ namespace LinqToTwitter
             if (parameters.ContainsKey("Delimited"))
             {
                 urlParams.Add(new QueryParameter("delimited", parameters["Delimited"]));
+            }
+
+            if (parameters.ContainsKey("Language"))
+            {
+                urlParams.Add(new QueryParameter("language", parameters["Language"].Replace(" ", "")));
             }
 
             if (parameters.ContainsKey("StallWarnings"))

@@ -25,6 +25,7 @@ namespace LinqToTwitterXUnitTests
                     strm.Type == StreamingType.Sample &&
                     strm.Count == 10 &&
                     strm.Delimited == "length" &&
+                    strm.Language == "en,fr" &&
                     strm.Follow == "1,2,3" &&
                     strm.Track == "twitter,API,LINQ to Twitter" &&
                     strm.Locations == "-122.75,36.8,-121.75,37.8,-74,40,-73,41" &&
@@ -40,6 +41,8 @@ namespace LinqToTwitterXUnitTests
             Assert.True(parms.Contains(
                   new KeyValuePair<string, string>("Delimited", "length")));
             Assert.True(parms.Contains(
+                   new KeyValuePair<string, string>("Language", "en,fr")));
+            Assert.True(parms.Contains(
                    new KeyValuePair<string, string>("Follow", "1,2,3")));
             Assert.True(parms.Contains(
                    new KeyValuePair<string, string>("Track", "twitter,API,LINQ to Twitter")));
@@ -52,13 +55,14 @@ namespace LinqToTwitterXUnitTests
         [Fact]
         public void BuildFilterUrl_Returns_Url()
         {
-            const string ExpectedUrl = "https://stream.twitter.com/1.1/statuses/filter.json?track=LINQ%20to%20Twitter&stall_warnings=true";
+            const string ExpectedUrl = "https://stream.twitter.com/1.1/statuses/filter.json?language=en%2Cfr&track=LINQ%20to%20Twitter&stall_warnings=true";
             var reqProc = new StreamingRequestProcessor<Streaming>() { BaseUrl = "https://stream.twitter.com/1.1/" };
             var parms = new Dictionary<string, string>
             {
                 { "Type", StreamingType.Filter.ToString() },
                 { "Track", "LINQ to Twitter" },
-                { "StallWarnings", true.ToString() }
+                { "StallWarnings", true.ToString() },
+                { "Language", "en,fr" }
             };
 
             Request req = reqProc.BuildUrl(parms);
@@ -84,14 +88,15 @@ namespace LinqToTwitterXUnitTests
         [Fact]
         public void BuildFirehoseUrl_Returns_Url()
         {
-            const string ExpectedUrl = "https://stream.twitter.com/1.1/statuses/firehose.json?count=25&delimited=length&stall_warnings=true";
+            const string ExpectedUrl = "https://stream.twitter.com/1.1/statuses/firehose.json?count=25&delimited=length&language=en%2Cfr&stall_warnings=true";
             var reqProc = new StreamingRequestProcessor<Streaming>() { BaseUrl = "https://stream.twitter.com/1.1/" };
             var parms = new Dictionary<string, string>
             {
                 { "Type", StreamingType.Firehose.ToString() },
                 { "Count", "25" },
                 { "Delimited", "length" },
-                { "StallWarnings", true.ToString() }
+                { "StallWarnings", true.ToString() },
+                { "Language", "en,fr" }
             };
 
             Request req = reqProc.BuildUrl(parms);
@@ -133,12 +138,13 @@ namespace LinqToTwitterXUnitTests
         [Fact]
         public void BuildSampleUrl_Returns_Url()
         {
-            const string ExpectedUrl = "https://stream.twitter.com/1.1/statuses/sample.json?stall_warnings=true";
+            const string ExpectedUrl = "https://stream.twitter.com/1.1/statuses/sample.json?language=en%2Cfr&stall_warnings=true";
             var reqProc = new StreamingRequestProcessor<Streaming>() { BaseUrl = "https://stream.twitter.com/1.1/" };
             var parms = new Dictionary<string, string>
             {
                 { "Type", StreamingType.Sample.ToString() },
-                { "StallWarnings", true.ToString() }
+                { "StallWarnings", true.ToString() },
+                { "Language", "en,fr" }
             };
 
             Request req = reqProc.BuildUrl(parms);

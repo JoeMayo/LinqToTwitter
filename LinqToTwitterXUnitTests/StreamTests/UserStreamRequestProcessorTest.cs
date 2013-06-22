@@ -24,6 +24,7 @@ namespace LinqToTwitterXUnitTests
                 strm =>
                     strm.Type == UserStreamType.User &&
                     strm.Delimited == "length" &&
+                    strm.Language == "en,fr" &&
                     strm.Follow == "1,2,3" &&
                     strm.Track == "twitter,API,LINQ to Twitter" &&
                     strm.With == "Follow" &&
@@ -45,6 +46,8 @@ namespace LinqToTwitterXUnitTests
             Assert.True(parms.Contains(
                   new KeyValuePair<string, string>("AllReplies", "True")));
             Assert.True(parms.Contains(
+                  new KeyValuePair<string, string>("Language", "en,fr")));
+            Assert.True(parms.Contains(
                   new KeyValuePair<string, string>("Follow", "1,2,3")));
             Assert.True(parms.Contains(
                   new KeyValuePair<string, string>("StallWarnings", "True")));
@@ -55,7 +58,7 @@ namespace LinqToTwitterXUnitTests
         [Fact]
         public void BuildUserUrl_Returns_Url()
         {
-            const string ExpectedUrl = "https://userstream.twitter.com/1.1/user.json?delimited=length&track=LINQ%20to%20Twitter&with=follow&replies=all&stall_warnings=true&locations=3";
+            const string ExpectedUrl = "https://userstream.twitter.com/1.1/user.json?delimited=length&language=en%2Cfr&track=LINQ%20to%20Twitter&with=follow&replies=all&stall_warnings=true&locations=3";
             var reqProc = new UserStreamRequestProcessor<UserStream>() { UserStreamUrl = "https://userstream.twitter.com/1.1/" };
             var parms = new Dictionary<string, string>
             {
@@ -65,7 +68,8 @@ namespace LinqToTwitterXUnitTests
                 { "With", "Follow" },
                 { "AllReplies", true.ToString() },
                 { "StallWarnings", true.ToString() },
-                { "Locations", "3" }
+                { "Locations", "3" },
+                { "Language", "en,fr" }
             };
 
             Request req = reqProc.BuildUrl(parms);
@@ -76,7 +80,7 @@ namespace LinqToTwitterXUnitTests
         [Fact]
         public void BuildSiteUrl_Returns_Url()
         {
-            const string ExpectedUrl = "https://userstream.twitter.com/1.1/site.json?delimited=length&follow=1%2C2%2C3&with=follow&replies=all&stall_warnings=true";
+            const string ExpectedUrl = "https://userstream.twitter.com/1.1/site.json?delimited=length&language=en%2Cfr&follow=1%2C2%2C3&with=follow&replies=all&stall_warnings=true";
             var reqProc = new UserStreamRequestProcessor<UserStream>() { SiteStreamUrl = "https://userstream.twitter.com/1.1/" };
             var parms = new Dictionary<string, string>
             {
@@ -85,7 +89,8 @@ namespace LinqToTwitterXUnitTests
                 { "Follow", "1,2,3" },
                 { "With", "Follow" },
                 { "AllReplies", true.ToString() },
-                { "StallWarnings", true.ToString() }
+                { "StallWarnings", true.ToString() },
+                { "Language", "en,fr" }
             };
 
             Request req = reqProc.BuildUrl(parms);

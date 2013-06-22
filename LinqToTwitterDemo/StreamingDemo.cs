@@ -31,7 +31,8 @@ namespace LinqToTwitterDemo
 
             (from strm in twitterCtx.Streaming
              where strm.Type == StreamingType.Filter &&
-                   strm.Track == "twitter,JoeMayo,linq2twitter,microsoft,google,oracle"
+                   strm.Language == "fr,jp,en" &&
+                   strm.Track == "twitter,JoeMayo,linq2twitter,microsoft,google,facebook"
              select strm)
             .StreamingCallback(strm =>
             {
@@ -43,7 +44,7 @@ namespace LinqToTwitterDemo
 
                 Console.WriteLine(strm.Content + "\n");
 
-                if (count++ >= 2)
+                if (count++ >= 25)
                 {
                     strm.CloseStream();
                 }

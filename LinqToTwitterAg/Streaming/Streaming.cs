@@ -21,6 +21,11 @@
         public string Delimited { get; set; }
 
         /// <summary>
+        /// Comma-separated list of languages to filter results on
+        /// </summary>
+        public string Language { get; set; }
+
+        /// <summary>
         /// Limit results to a comma-separated set of users
         /// </summary>
         public string Follow { get; set; }
