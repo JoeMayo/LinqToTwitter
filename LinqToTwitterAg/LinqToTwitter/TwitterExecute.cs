@@ -506,13 +506,13 @@ namespace LinqToTwitter
 
                                                 output.AddRange(uncompressedBuffer.Take(uncompressedLength));
 
-                                                if (!output.Contains(0x0A)) continue;
+                                                if (!output.Contains(0x0D)) continue;
 
-                                                byte[] bytesToDecode = output.Take(output.LastIndexOf(0x0A) + 1).ToArray();
+                                                byte[] bytesToDecode = output.Take(output.LastIndexOf(0x0D) + 2).ToArray();
                                                 string outputString = Encoding.UTF8.GetString(bytesToDecode, 0, bytesToDecode.Length);
                                                 output.RemoveRange(0, bytesToDecode.Length);
 
-                                                string[] lines = outputString.Split(new[] { Environment.NewLine }, new StringSplitOptions());
+                                                string[] lines = outputString.Split(new[] { "\r\n" }, new StringSplitOptions());
                                                 for (int i = 0; i < (lines.Length - 1); i++)
                                                 {
                                                     DoAsyncCallback(lines[i]);
