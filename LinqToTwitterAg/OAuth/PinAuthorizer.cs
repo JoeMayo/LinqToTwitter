@@ -23,6 +23,15 @@ namespace LinqToTwitter
         /// </summary>
         public void Authorize()
         {
+            Authorize(false);
+        }
+
+        /// <summary>
+        /// Perform authorization
+        /// </summary>
+        /// <param name="forceLogin">Force the user to enter their name.</param>
+        public void Authorize(bool forceLogin)
+        {
             if (IsAuthorized) return;
 
             if (GetPin == null)
@@ -35,7 +44,7 @@ namespace LinqToTwitter
                 throw new InvalidOperationException("GoToTwitterAuthorization must have a handler before calling Authorize.");
             }
 
-            string link = OAuthTwitter.AuthorizationLinkGet(OAuthRequestTokenUrl, OAuthAuthorizeUrl, "oob", false, AuthAccessType);
+            string link = OAuthTwitter.AuthorizationLinkGet(OAuthRequestTokenUrl, OAuthAuthorizeUrl, "oob", forceLogin, AuthAccessType);
             GoToTwitterAuthorization(link);
 
             string verifier = GetPin();

@@ -201,7 +201,7 @@ namespace LinqToTwitterDemo
             };
 
             // start the authorization process (launches Twitter authorization page).
-            auth.Authorize();
+            auth.Authorize(true);
             return auth;
         }
 
