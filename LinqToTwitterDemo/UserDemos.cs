@@ -20,7 +20,7 @@ namespace LinqToTwitterDemo
             //UserShowWithIDQueryDemo(twitterCtx);
             //UserShowWithScreenNameQueryDemo(twitterCtx);
             //UserShowForAuthenticatedUser(twitterCtx);
-            //UsersLookupDemo(twitterCtx);
+            UsersLookupDemo(twitterCtx);
             //UserSearchDemo(twitterCtx);
             //UserSuggestedCategoriesListQueryDemo(twitterCtx);
             //UserSuggestedCategoriesListWithLangQueryDemo(twitterCtx);
@@ -29,12 +29,12 @@ namespace LinqToTwitterDemo
             //CategoryStatusDemo(twitterCtx);
             //ContributeeDemo(twitterCtx);
             //ContributorDemo(twitterCtx);
-            BannerSizesDemo(twitterCtx);
+            //BannerSizesDemo(twitterCtx);
         }
 
         private static void CategoryStatusDemo(TwitterContext twitterCtx)
         {
-            var catTweets =
+            var catUsers =
                 (from user in twitterCtx.User
                  where user.Type == UserType.CategoryStatus &&
                        user.Slug == "Technology"
@@ -43,13 +43,13 @@ namespace LinqToTwitterDemo
 
             Console.WriteLine("Tweets from Suggested Users in Technology Category: \n");
 
-            catTweets.ForEach(tweet => 
+            catUsers.ForEach(user => 
                 Console.WriteLine(
                     "User: {0}\nTweet: {1}\n", 
-                    tweet.Name, 
-                    tweet.Status == null ?
+                    user.Identifier.ScreenName, 
+                    user.Status == null ?
                         "<Tweet not available.>" : 
-                        tweet.Status.Text));
+                        user.Status.Text));
         }
 
         /// <summary>
@@ -65,7 +65,7 @@ namespace LinqToTwitterDemo
                  select usr)
                  .FirstOrDefault();
 
-            Console.WriteLine("User Name: " + user.Name);
+            Console.WriteLine("User Name: " + user.Identifier.ScreenName);
         }
 
         /// <summary>
@@ -81,7 +81,7 @@ namespace LinqToTwitterDemo
                  select user)
                  .ToList();
 
-            users.ForEach(user => Console.WriteLine("Name: " + user.Name));
+            users.ForEach(user => Console.WriteLine("Name: " + user.Identifier.ScreenName));
         }
 
         /// <summary>
@@ -98,7 +98,7 @@ namespace LinqToTwitterDemo
                  .ToList();
 
             users.ForEach(
-                user => Console.WriteLine("User: " + user.Name));
+                user => Console.WriteLine("User: " + user.Identifier.ScreenName));
         }
 
         /// <summary>
@@ -125,10 +125,10 @@ namespace LinqToTwitterDemo
         private static void UserSuggestedCategoriesListWithLangQueryDemo(TwitterContext twitterCtx)
         {
             var users =
-                from tweet in twitterCtx.User
-                where tweet.Type == UserType.Categories &&
-                      tweet.Lang == "it"
-                select tweet;
+                from usr in twitterCtx.User
+                where usr.Type == UserType.Categories &&
+                      usr.Lang == "it"
+                select usr;
 
             var user = users.SingleOrDefault();
 
@@ -151,7 +151,7 @@ namespace LinqToTwitterDemo
                  select usr)
                 .SingleOrDefault();
 
-            var name = user.Name;
+            var name = user.Identifier.ScreenName;
             var lastStatus = user.Status == null ? "No Status" : user.Status.Text;
 
             Console.WriteLine("\nName: {0}, Last Tweet: {1}\n", name, lastStatus);
@@ -171,7 +171,7 @@ namespace LinqToTwitterDemo
 
             var user = users.SingleOrDefault();
 
-            var name = user.Name;
+            var name = user.Identifier.ScreenName;
             var lastStatus = user.Status == null ? "No Status" : user.Status.Text;
 
             Console.WriteLine();
@@ -192,7 +192,7 @@ namespace LinqToTwitterDemo
 
             var user = users.SingleOrDefault();
 
-            var name = user.Name;
+            var name = user.Identifier.ScreenName;
             var lastStatus = user.Status == null ? "No Status" : user.Status.Text;
 
             Console.WriteLine();
@@ -206,10 +206,10 @@ namespace LinqToTwitterDemo
         private static void UserShowWithIDQueryDemo(TwitterContext twitterCtx)
         {
             var user =
-                (from tweet in twitterCtx.User
-                 where tweet.Type == UserType.Show &&
-                      tweet.UserID == "6253282"
-                 select tweet)
+                (from usr in twitterCtx.User
+                 where usr.Type == UserType.Show &&
+                      usr.UserID == "6253282"
+                 select usr)
                  .SingleOrDefault();
 
             Console.WriteLine(
@@ -227,7 +227,7 @@ namespace LinqToTwitterDemo
                 .ToList();
 
             users.ForEach(
-                user => Console.WriteLine("User: " + user.Name));
+                user => Console.WriteLine("User: " + user.Identifier.ScreenName));
         }
 
         static void ContributorDemo(TwitterContext twitterCtx)
@@ -240,7 +240,7 @@ namespace LinqToTwitterDemo
                 .ToList();
 
             users.ForEach(
-                user => Console.WriteLine("User: " + user.Name));
+                user => Console.WriteLine("User: " + user.Identifier.ScreenName));
         }
 
         static void BannerSizesDemo(TwitterContext twitterCtx)
@@ -248,7 +248,7 @@ namespace LinqToTwitterDemo
             var user =
                 (from usr in twitterCtx.User
                  where usr.Type == UserType.BannerSizes &&
-                       usr.ScreenName == "Linq2Tweeter"
+                       usr.ScreenName == "JoeMayo"
                  select usr)
                 .SingleOrDefault();
 

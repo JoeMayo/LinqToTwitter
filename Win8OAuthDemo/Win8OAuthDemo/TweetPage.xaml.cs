@@ -12,24 +12,11 @@ namespace MetroOAuthDemo
 {
     public sealed partial class TweetPage : LayoutAwarePage
     {
-        WinRtAuthorizer auth;
-
         public TweetPage()
         {
             this.InitializeComponent();
 
             SearchTextBox.Text = "LINQ to Twitter";
-
-            auth = new WinRtAuthorizer
-            {
-                Credentials = new LocalDataCredentials
-                {
-                    ConsumerKey = "",
-                    ConsumerSecret = ""
-                },
-                UseCompression = true,
-                Callback = new Uri("http://linqtotwitter.codeplex.com/")
-            };
         }
 
         async void SearchButton_Click(object sender, RoutedEventArgs e)

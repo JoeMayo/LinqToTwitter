@@ -110,6 +110,8 @@ namespace LinqToTwitter
 
             using (var resetEvent = new ManualResetEvent(/*initialStateSignaled:*/ false))
             {
+                Exception thrownException = null;
+
                 req.BeginGetRequestStream(
                     ar =>
                     {
@@ -119,11 +121,21 @@ namespace LinqToTwitter
                         req.BeginGetResponse(
                             ar2 =>
                             {
-                                var resp = req.EndGetResponse(ar2);
-                                response = resp.ReadReponse();
+                                try
+                                {
+                                    var resp = req.EndGetResponse(ar2);
+                                    response = resp.ReadReponse();
+                                }
+                                catch (Exception ex)
+                                {
+                                    thrownException = ex;
+                                }
+                                finally
+                                {
 #if !WINDOWS_PHONE && !NETFX_CORE
                                     resetEvent.Set();
 #endif
+                                }
                             },
                             null);
                     },
@@ -131,6 +143,7 @@ namespace LinqToTwitter
 #if !WINDOWS_PHONE && !NETFX_CORE
                 resetEvent.WaitOne();
 #endif
+                if (thrownException != null) throw thrownException;
 
                 if (response != null)
                 {
