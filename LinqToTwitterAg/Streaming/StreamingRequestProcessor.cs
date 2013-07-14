@@ -169,11 +169,6 @@ namespace LinqToTwitter
                 urlParams.Add(new QueryParameter("delimited", parameters["Delimited"]));
             }
 
-            if (parameters.ContainsKey("Language"))
-            {
-                urlParams.Add(new QueryParameter("language", parameters["Language"].Replace(" ", "")));
-            }
-
             if (parameters.ContainsKey("Follow"))
             {
                 urlParams.Add(new QueryParameter("follow", parameters["Follow"]));
@@ -192,6 +187,11 @@ namespace LinqToTwitter
             if (parameters.ContainsKey("StallWarnings"))
             {
                 urlParams.Add(new QueryParameter("stall_warnings", parameters["StallWarnings"].ToLower()));
+            }
+
+            if (parameters.ContainsKey("Language"))
+            {
+                urlParams.Add(new QueryParameter("language", parameters["Language"].Replace(" ", "")));
             }
 
             return req;

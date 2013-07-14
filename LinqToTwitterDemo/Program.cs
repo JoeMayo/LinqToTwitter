@@ -112,8 +112,8 @@ namespace LinqToTwitterDemo
             // validate that credentials are present
             if (ConfigurationManager.AppSettings["twitterConsumerKey"].IsNullOrWhiteSpace() ||
                 ConfigurationManager.AppSettings["twitterConsumerSecret"].IsNullOrWhiteSpace() ||
-                ConfigurationManager.AppSettings["twitterOAuthToken"].IsNullOrWhiteSpace() ||
-                ConfigurationManager.AppSettings["twitterAccessToken"].IsNullOrWhiteSpace())
+                ConfigurationManager.AppSettings["twitterAccessToken"].IsNullOrWhiteSpace() ||
+                ConfigurationManager.AppSettings["twitterAccessTokenSecret"].IsNullOrWhiteSpace())
             {
                 Console.WriteLine("You need to set credentials in App.config/appSettings. Visit http://dev.twitter.com/apps for more info.\n");
                 Console.Write("Press any key to exit...");
@@ -124,12 +124,12 @@ namespace LinqToTwitterDemo
             // configure the OAuth object
             var auth = new SingleUserAuthorizer
             {
-                Credentials = new InMemoryCredentials
+                Credentials = new SingleUserInMemoryCredentials
                 {
                     ConsumerKey = ConfigurationManager.AppSettings["twitterConsumerKey"],
                     ConsumerSecret = ConfigurationManager.AppSettings["twitterConsumerSecret"],
-                    OAuthToken = ConfigurationManager.AppSettings["twitterOAuthToken"],
-                    AccessToken = ConfigurationManager.AppSettings["twitterAccessToken"]
+                    TwitterAccessToken = ConfigurationManager.AppSettings["twitterAccessToken"],
+                    TwitterAccessTokenSecret = ConfigurationManager.AppSettings["twitterAccessTokenSecret"]
                 }
             };
 

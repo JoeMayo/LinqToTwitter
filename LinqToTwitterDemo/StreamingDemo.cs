@@ -31,8 +31,9 @@ namespace LinqToTwitterDemo
 
             (from strm in twitterCtx.Streaming
              where strm.Type == StreamingType.Filter &&
-                   strm.Language == "fr,jp,en" &&
-                   strm.Track == "twitter,JoeMayo,linq2twitter,microsoft,google,facebook"
+                   //strm.Follow == "15411837"
+                   //strm.Language == "fr,jp,en" &&
+                   strm.Track == "twitter"//,JoeMayo,linq2twitter,microsoft,google,facebook"
              select strm)
             .StreamingCallback(strm =>
             {
