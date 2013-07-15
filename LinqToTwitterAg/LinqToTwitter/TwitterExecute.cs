@@ -580,14 +580,14 @@ namespace LinqToTwitter
                      })
                     .ToDictionary(key => key.Name, val => val.Value);
 
-                req = this.AuthorizedClient.PostRequest(request, postData);
+                req = this.AuthorizedClient.PostRequest(request, null);
                 int qIndex = LastUrl.IndexOf('?');
 
                 string urlParams = LastUrl.Substring(qIndex + 1);
                 bytes = Encoding.UTF8.GetBytes(urlParams);
 
                 req.Method = "POST";
-                req.ContentType = "x-www-form-urlencoded";
+                req.ContentType = "application/x-www-form-urlencoded";
 
 #if !WINDOWS_PHONE && !NETFX_CORE
                 req.ContentLength = bytes.Length;

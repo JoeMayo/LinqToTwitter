@@ -213,7 +213,7 @@ namespace LinqToTwitter
                 (string.IsNullOrEmpty(ProxyUrl) ? "?" : "&") +
                 request.QueryString) as HttpWebRequest;
 #else
-            var req = WebRequest.Create(request.FullUrl) as HttpWebRequest;
+            var req = WebRequest.Create(request.Endpoint) as HttpWebRequest;
 #endif
 
             if (req != null) {
