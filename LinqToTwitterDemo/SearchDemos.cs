@@ -11,11 +11,11 @@ namespace LinqToTwitterDemo
     {
         public static void Run(TwitterContext twitterCtx)
         {
-            //BasicSearchSample(twitterCtx);
+            BasicSearchSample(twitterCtx);
             //AsyncSearchSample(twitterCtx);
             //GeocodeSample(twitterCtx);
             //ConditionalSearchDemo(twitterCtx);
-            DynamicSearchDemo(twitterCtx);
+            //DynamicSearchDemo(twitterCtx);
         }
 
         static void BasicSearchSample(TwitterContext twitterCtx)
@@ -25,7 +25,7 @@ namespace LinqToTwitterDemo
                  where search.Type == SearchType.Search &&
                        search.Query == "LINQ to Twitter" &&
                        //search.Query == @"`!@#$%^&*()_-+=.~,:;'?/|\[] éü\u00C7" &&
-                       search.Count == 7
+                       search.Count == 25
                  select search)
                 .SingleOrDefault();
 

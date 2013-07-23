@@ -1173,7 +1173,13 @@ namespace LinqToTwitter
                 WriteLog(LastUrl, "PostToTwitter");
 
                 var dontIncludePostParametersInOAuthSignature = new Dictionary<string, string>();
-                var req = AuthorizedClient.PostRequest(new Request(url), dontIncludePostParametersInOAuthSignature);
+                var request = new Request(url);
+                foreach (var key in postData.Keys)
+                {
+                    if (postData[key] != null)
+                        request.RequestParameters.Add(new QueryParameter(key, postData[key]));
+                }
+                var req = AuthorizedClient.PostRequest(request, dontIncludePostParametersInOAuthSignature);
 
 #if !WINDOWS_PHONE && !NETFX_CORE
                 req.AllowWriteStreamBuffering = true;

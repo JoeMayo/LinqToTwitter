@@ -27,7 +27,7 @@ namespace LinqToTwitterDemo
             //MentionsWithSinceIDStatusQueryDemo(twitterCtx);
             //MentionsWithPagingQueryDemo(twitterCtx);
             //SingleStatusQueryDemo(twitterCtx);
-            //UpdateStatusDemo(twitterCtx);
+            UpdateStatusDemo(twitterCtx);
             //UpdateStatusWithCallbackDemo(twitterCtx);
             //UpdateStatusWithReplyDemo(twitterCtx);
             //UpdateStatusWithLocationDemo(twitterCtx);
@@ -43,7 +43,7 @@ namespace LinqToTwitterDemo
             //TrimUserDemo(twitterCtx);
             //TweetWithMediaDemo(twitterCtx);
             //TweetEntityDemo(twitterCtx);
-            RetweetersDemo(twitterCtx);
+            //RetweetersDemo(twitterCtx);
             //OEmbedStatusDemo(twitterCtx);
         }
 
@@ -479,8 +479,8 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void UpdateStatusDemo(TwitterContext twitterCtx)
         {
-            var status = 
-                " Testing LINQ to Twitter update status on " + 
+            var status =
+                " Testing LINQ to Twitter update status on \n " +
                 DateTime.Now.ToString() + " #linqtotwitter "
                 //+
                 //@"`!@#$%^&*()_-+=.~,:;'?/|\[] éü\u00C7"

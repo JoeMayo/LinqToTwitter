@@ -426,8 +426,8 @@ namespace LinqToTwitter
                         {"lat", latitude == -1 ? null : latitude.ToString(Culture.US)},
                         {"long", longitude == -1 ? null : longitude.ToString(Culture.US)},
                         {"place_id", placeID},
-                        {"display_coordinates", displayCoordinates.ToString()},
-                        {"trim_user", trimUser.ToString().ToLower() }
+                        {"display_coordinates", displayCoordinates ? displayCoordinates.ToString().ToLower() : null},
+                        {"trim_user", trimUser ? trimUser.ToString().ToLower() : null }
                     },
                     response => reqProc.ProcessActionResult(response, StatusAction.SingleStatus));
 
