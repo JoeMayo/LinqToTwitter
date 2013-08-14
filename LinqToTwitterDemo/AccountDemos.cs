@@ -248,7 +248,10 @@ namespace LinqToTwitterDemo
             try
             {
                 //Account account = accounts.SingleOrDefault();
-                Account account = twitterCtx.Account.Single(acct => acct.Type == AccountType.VerifyCredentials);
+                Account account = twitterCtx.Account.Single(acct => acct.Type == AccountType.VerifyCredentials && acct.SkipStatus == true);
+                //var account = twitterCtx.Account
+                //    .Where(t => t.Type == AccountType.VerifyCredentials)
+                //    .FirstOrDefault(t => t.SkipStatus == true);
                 User user = account.User;
                 Status tweet = user.Status ?? new Status();
                 Console.WriteLine("User (#" + user.Identifier.ID

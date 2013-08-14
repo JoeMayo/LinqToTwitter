@@ -61,8 +61,6 @@ namespace LinqToTwitter
         /// <returns>URL conforming to Twitter API</returns>
         public virtual Request BuildUrl(Dictionary<string, string> parameters)
         {
-            string url;
-
             const string TypeParam = "Type";
             if (parameters == null || !parameters.ContainsKey("Type"))
                 throw new ArgumentException("You must set Type.", TypeParam);
@@ -72,16 +70,12 @@ namespace LinqToTwitter
             switch (Type)
             {
                 case AccountType.VerifyCredentials:
-                    url = BuildVerifyCredentialsUrl(parameters).FullUrl;
-                    break;
+                    return BuildVerifyCredentialsUrl(parameters);
                 case AccountType.Settings:
-                    url = BaseUrl + "account/settings.json";
-                    break;
+                    return new Request(BaseUrl + "account/settings.json");
                 default:
                     throw new InvalidOperationException("The default case of BuildUrl should never execute because a Type must be specified.");
             }
-
-            return new Request(url);
         }
   
         private Request BuildVerifyCredentialsUrl(Dictionary<string, string> parameters)

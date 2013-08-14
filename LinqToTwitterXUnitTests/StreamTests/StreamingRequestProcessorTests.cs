@@ -55,7 +55,7 @@ namespace LinqToTwitterXUnitTests
         [Fact]
         public void BuildFilterUrl_Returns_Url()
         {
-            const string ExpectedUrl = "https://stream.twitter.com/1.1/statuses/filter.json?language=en%2Cfr&track=LINQ%20to%20Twitter&stall_warnings=true";
+            const string ExpectedUrl = "https://stream.twitter.com/1.1/statuses/filter.json?track=LINQ%20to%20Twitter&stall_warnings=true&language=en%2Cfr";
             var reqProc = new StreamingRequestProcessor<Streaming>() { BaseUrl = "https://stream.twitter.com/1.1/" };
             var parms = new Dictionary<string, string>
             {
