@@ -985,8 +985,8 @@ namespace LinqToTwitter
                 formDataSb.Append(
                     string.Format(
                         "Content-Disposition: form-data; name=\"media[]\"; " +
-                        "filename=\"{0}\"\r\nContent-Type: image/{1}\r\n\r\n",
-                        media.FileName, media.ContentType));
+                        "filename=\"{0}\"\r\nContent-Type: application/octet-stream\r\n\r\n",
+                        media.FileName));
                 formDataSb.Append(encoding.GetString(media.Data, 0, media.Data.Length));
             }
 
