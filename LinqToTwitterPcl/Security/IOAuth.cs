@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace LinqToTwitter.OAuth
+namespace LinqToTwitter.Security
 {
     public interface IOAuth
     {

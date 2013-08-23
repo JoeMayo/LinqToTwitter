@@ -28,6 +28,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqToTwitterPcl", "LinqToT
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqToTwitterPcl.Tests", "LinqToTwitterPcl.Tests\LinqToTwitterPcl.Tests.csproj", "{C909EBD0-9CA3-49FB-8B78-F4EE4426D4F6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqToTwitterDemoPcl", "LinqToTwitterDemoPcl\LinqToTwitterDemoPcl.csproj", "{96687B04-F911-47ED-9E85-7772ECDC4C3C}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = LinqToTwitter.vsmdi
@@ -153,6 +155,16 @@ Global
 		{C909EBD0-9CA3-49FB-8B78-F4EE4426D4F6}.Release|ARM.ActiveCfg = Release|Any CPU
 		{C909EBD0-9CA3-49FB-8B78-F4EE4426D4F6}.Release|x64.ActiveCfg = Release|Any CPU
 		{C909EBD0-9CA3-49FB-8B78-F4EE4426D4F6}.Release|x86.ActiveCfg = Release|Any CPU
+		{96687B04-F911-47ED-9E85-7772ECDC4C3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{96687B04-F911-47ED-9E85-7772ECDC4C3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{96687B04-F911-47ED-9E85-7772ECDC4C3C}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{96687B04-F911-47ED-9E85-7772ECDC4C3C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{96687B04-F911-47ED-9E85-7772ECDC4C3C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{96687B04-F911-47ED-9E85-7772ECDC4C3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{96687B04-F911-47ED-9E85-7772ECDC4C3C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{96687B04-F911-47ED-9E85-7772ECDC4C3C}.Release|ARM.ActiveCfg = Release|Any CPU
+		{96687B04-F911-47ED-9E85-7772ECDC4C3C}.Release|x64.ActiveCfg = Release|Any CPU
+		{96687B04-F911-47ED-9E85-7772ECDC4C3C}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

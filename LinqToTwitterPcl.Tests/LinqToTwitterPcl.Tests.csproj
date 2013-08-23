@@ -52,6 +52,8 @@
   <ItemGroup>
     <Compile Include="OAuthTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Sha1Tests.cs" />
+    <Compile Include="HmacTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LinqToTwitterPcl\LinqToTwitterPcl.csproj">
