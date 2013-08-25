@@ -13,6 +13,8 @@ namespace LinqToTwitterPcl.Tests
         const string Url = "https://api.twitter.com/1/statuses/update.json";
         const string StatusKey = "status";
         const string EntitiesKey = "include_entities";
+        const string ConsumerSecret = "kAcSOqF21Fu85e7zjz7ZN2U4ZRhfV3WpwPAoE3Z7kBw";
+        const string OAuthTokenSecret = "LswwdoUaIvS8ltyTt5jkRh4J50vUPVVHtR2YPi5kE";
 
         IDictionary<string, string> parameters;
         OAuth oAuth;
@@ -23,8 +25,6 @@ namespace LinqToTwitterPcl.Tests
             oAuth = new OAuth();
 
             // No security vulnerability - credentials are from Twitter's Creating a signature documentation: https://dev.twitter.com/docs/auth/creating-signature
-            oAuth.ConsumerKey = "xvz1evFS4wEEPTGEFPHBog";
-            oAuth.OAuthToken = "370773112-GmHxMAgYyLbNEtIKZeRNFsMKPR9EyMZeS9weJAEb";
             parameters =
                 new Dictionary<string, string>
                 {
@@ -43,12 +43,30 @@ namespace LinqToTwitterPcl.Tests
         public void GetAuthorizationStringReturnsValidString()
         {
             const string ExpectedAuthorizationString = "OAuth oauth_consumer_key=\"xvz1evFS4wEEPTGEFPHBog\", oauth_nonce=\"kYjzVBB8Y0ZFabxSWbWovY3uYSQ2pTgmZeNu2VS4cg\", oauth_signature=\"tnnArxj06cWHq44gCs1OSKk%2FjLY%3D\", oauth_signature_method=\"HMAC-SHA1\", oauth_timestamp=\"1318622958\", oauth_token=\"370773112-GmHxMAgYyLbNEtIKZeRNFsMKPR9EyMZeS9weJAEb\", oauth_version=\"1.0\"";
-            oAuth.ConsumerSecret = "kAcSOqF21Fu85e7zjz7ZN2U4ZRhfV3WpwPAoE3Z7kBw";
-            oAuth.OAuthTokenSecret = "LswwdoUaIvS8ltyTt5jkRh4J50vUPVVHtR2YPi5kE";
 
-            string authString = oAuth.GetAuthorizationString(Method, Url, parameters);
+            string authString = oAuth.GetAuthorizationString(Method, Url, parameters, ConsumerSecret, OAuthTokenSecret);
 
             Assert.AreEqual(ExpectedAuthorizationString, authString);
+        }
+
+        [TestMethod]
+        public void GetAuthorizationStringAddsMissingParameters()
+        {
+            parameters =
+                new Dictionary<string, string>
+                {
+                    {StatusKey, "Hello Ladies + Gentlemen, a signed OAuth request!"},
+                    {EntitiesKey, "true"},
+                    {"oauth_consumer_key", "xvz1evFS4wEEPTGEFPHBog" },
+                    {"oauth_token", "370773112-GmHxMAgYyLbNEtIKZeRNFsMKPR9EyMZeS9weJAEb" }, 
+                };
+
+            string authString = oAuth.GetAuthorizationString(Method, Url, parameters, ConsumerSecret, OAuthTokenSecret);
+
+            Assert.IsTrue(parameters.ContainsKey("oauth_nonce"));
+            Assert.IsTrue(parameters.ContainsKey("oauth_timestamp"));
+            Assert.IsTrue(parameters.ContainsKey("oauth_signature_method"));
+            Assert.IsTrue(parameters.ContainsKey("oauth_version"));
         }
 
         [TestMethod]
@@ -76,8 +94,6 @@ namespace LinqToTwitterPcl.Tests
         public void CreateSigningKeyReturnsProcessedConsumerSecretAndOAuthTokenSecret()
         {
             const string ExpectedSigningKey = "kAcSOqF21Fu85e7zjz7ZN2U4ZRhfV3WpwPAoE3Z7kBw&LswwdoUaIvS8ltyTt5jkRh4J50vUPVVHtR2YPi5kE";
-            const string ConsumerSecret = "kAcSOqF21Fu85e7zjz7ZN2U4ZRhfV3WpwPAoE3Z7kBw";
-            const string OAuthTokenSecret = "LswwdoUaIvS8ltyTt5jkRh4J50vUPVVHtR2YPi5kE";
 
             string signingKey = oAuth.BuildSigningKey(ConsumerSecret, OAuthTokenSecret);
 

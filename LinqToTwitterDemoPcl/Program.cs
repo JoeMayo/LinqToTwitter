@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
 using System.Threading.Tasks;
 using LinqToTwitter.Security;
 
@@ -23,29 +21,29 @@ namespace LinqToTwitterDemoPcl
 
         async static Task VerifyCredentials()
         {
-            Uri verifyUrl = new Uri("https://api.twitter.com/1.1/account/verify_credentials.json");
+            var verifyUrl = new Uri("https://api.twitter.com/1.1/account/verify_credentials.json?skip_status=true&include_entities=false");
             var client = new HttpClient();
 
-            var req = new HttpRequestMessage(HttpMethod.Get, verifyUrl);
-            var oAuth = new OAuth();
-            oAuth.ConsumerKey = ConfigurationManager.AppSettings["twitterConsumerKey"];
-            oAuth.ConsumerSecret = ConfigurationManager.AppSettings["twitterConsumerSecret"];
-            oAuth.OAuthToken = ConfigurationManager.AppSettings["twitterOAuthToken"];
-            oAuth.OAuthTokenSecret = ConfigurationManager.AppSettings["twitterAccessToken"];
+            string consumerSecret = ConfigurationManager.AppSettings["twitterConsumerSecret"];
+            string oAuthTokenSecret = ConfigurationManager.AppSettings["twitterAccessToken"];
+            string consumerKey = ConfigurationManager.AppSettings["twitterConsumerKey"];
+            string oAuthToken = ConfigurationManager.AppSettings["twitterOAuthToken"];
 
             var parameters =
                 new Dictionary<string, string>
                 {
-                    {"oauth_consumer_key", oAuth.ConsumerKey },
-                    {"oauth_nonce", oAuth.GenerateNonce() },
-                    {"oauth_signature_method", "HMAC-SHA1" },
-                    {"oauth_timestamp", oAuth.GenerateTimeStamp() },
-                    {"oauth_token", oAuth.OAuthToken }, 
-                    {"oauth_version", "1.0" }
+                    { "oauth_consumer_key", consumerKey },
+                    { "oauth_token", oAuthToken },
+                    { "skip_status", "true" },
+                    { "include_entities", "false"}
                 };
 
+            var req = new HttpRequestMessage(HttpMethod.Get, verifyUrl);
+            string authorizationString = new OAuth().GetAuthorizationString(HttpMethod.Get.ToString(), verifyUrl.ToString(), parameters, consumerSecret, oAuthTokenSecret);
+            req.Headers.Add("Authorization", authorizationString);
+            req.Headers.Add("User-Agent", "LINQ to Twitter v3.0");
             req.Headers.ExpectContinue = false;
-            req.Headers.Add("Authorization", oAuth.GetAuthorizationString(HttpMethod.Get.ToString(), verifyUrl.ToString(), parameters));
+
             var msg = await client.SendAsync(req);
 
             string response = await msg.Content.ReadAsStringAsync();

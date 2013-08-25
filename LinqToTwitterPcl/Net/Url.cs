@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Text;
 
-namespace LinqToTwitter.Common
+namespace LinqToTwitter.Net
 {
     public class Url
     {
