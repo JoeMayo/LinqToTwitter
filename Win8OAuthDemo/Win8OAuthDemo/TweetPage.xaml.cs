@@ -21,7 +21,14 @@ namespace MetroOAuthDemo
 
         async void SearchButton_Click(object sender, RoutedEventArgs e)
         {
+            // Linq2TwitterCredentials.txt is the default isolated store file name,
+            // but you can change it and pass as an argument to LocalDataCredentials
             string fileName = "Linq2TwitterCredentials.txt";
+
+            //
+            // The code below demonstrates how to remove credentials from isolated storage
+            //
+
             //var files = await ApplicationData.Current.LocalFolder.GetFilesAsync();
             //if (files.Any(storFile => storFile.Name == fileName))
             //{
@@ -43,22 +50,25 @@ namespace MetroOAuthDemo
                 Callback = new Uri("http://linqtotwitter.codeplex.com/")
             };
 
+            //
+            // Comment above and uncomment below to test WinRtApplicationOnlyAuthorizer
+            //
+
+            //var auth = new WinRtApplicationOnlyAuthorizer
+            //{
+            //    Credentials = new InMemoryCredentials
+            //    {
+            //        ConsumerKey = "",
+            //        ConsumerSecret = ""
+            //    }
+            //};
+
             if (auth == null || !auth.IsAuthorized)
             {
                 await auth.AuthorizeAsync();
             }
 
             var twitterCtx = new TwitterContext(auth);
-
-            string status = "twitter sending test: " + DateTime.Now.ToString();
-            Debug.WriteLine("------------ status: {0}", status);
-            var ppp = new Dictionary<string, string>
-			{
-				{ "status", status }
-			};
-            string queryString = "/statuses/update.json";
-            string result = twitterCtx.ExecuteRaw(queryString, ppp);
-            Debug.WriteLine("------------ result: {0}", result);
 
             var searchResponse =
                 (from search in twitterCtx.Search

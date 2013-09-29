@@ -88,7 +88,7 @@ namespace LinqToTwitter
             }
         }
   
-        private void GetBearerToken()
+        void GetBearerToken()
         {
             string url = OAuth2Token;
 #if SILVERLIGHT
@@ -98,7 +98,7 @@ namespace LinqToTwitter
             var req = WebRequest.Create(url) as HttpWebRequest;
 
             req.Method = HttpMethod.POST.ToString();
-            req.Headers[HttpRequestHeader.Authorization] = "Basic " + BasicToken; ;
+            req.Headers[HttpRequestHeader.Authorization] = "Basic " + BasicToken;
             req.ContentType = "application/x-www-form-urlencoded;charset=UTF-8";
             byte[] data = System.Text.Encoding.UTF8.GetBytes("grant_type=client_credentials");
 #if !WINDOWS_PHONE && !NETFX_CORE
@@ -221,7 +221,7 @@ namespace LinqToTwitter
                 req.ServicePoint.Expect100Continue = false;
 #endif
                 req.Method = HttpMethod.POST.ToString();
-                req.Headers[HttpRequestHeader.Authorization] = "Bearer " + BearerToken; ;
+                req.Headers[HttpRequestHeader.Authorization] = "Bearer " + BearerToken;
 #if !WINDOWS_PHONE && !NETFX_CORE
                 req.ContentLength = 0;
 #endif
