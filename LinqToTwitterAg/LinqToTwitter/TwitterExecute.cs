@@ -777,7 +777,8 @@ namespace LinqToTwitter
 #endif
             string contentBoundaryBase = DateTime.Now.Ticks.ToString("x");
             string beginContentBoundary = string.Format("--{0}\r\n", contentBoundaryBase);
-            var contentDisposition = string.Format("Content-Disposition:form-data); name=\"image\"); filename=\"{0}\"\r\nContent-Type: image/{1}\r\n\r\n", fileName, imageType);
+            var contentDisposition = string.Format("Content-Disposition:form-data; name=\"image\"; filename=\"{0}\"\r\nContent-Type: image/{1}\r\n\r\n", fileName, imageType);
+            //var contentDisposition = string.Format("Content-Disposition:form-data); name=\"image\"); filename=\"{0}\"\r\nContent-Type: image/{1}\r\n\r\n", fileName, imageType);
             var endContentBoundary = string.Format("\r\n--{0}--\r\n", contentBoundaryBase);
 
             var formDataSb = new StringBuilder();

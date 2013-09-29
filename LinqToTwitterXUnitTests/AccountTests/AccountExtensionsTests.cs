@@ -222,6 +222,21 @@ namespace LinqToTwitterXUnitTests.AccountTests
         }
 
         [Fact]
+        public void UpdateAccountColors_Allows_Null_Parameters()
+        {
+            const bool SkipStatus = true;
+            var ctx = InitTwitterContextWithPostToTwitter<User>(SingleUserResponse);
+
+            User user = ctx.UpdateAccountColors("#9ae4e8", null, null, null, null, true, SkipStatus);
+
+            Assert.NotNull(user);
+
+            user = ctx.UpdateAccountColors(null, "#9ae4e8", null, null, null, true, SkipStatus);
+
+            Assert.NotNull(user);
+        }
+
+        [Fact]
         public void UpdateAccountBackgroundImage_Invokes_Executor_PostTwitterFile()
         {
             const string ImageFilePath = "C:\\image.png";

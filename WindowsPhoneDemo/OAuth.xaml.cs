@@ -28,16 +28,11 @@ namespace WindowsPhoneDemo
 
         void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            this.pinAuth = new PinAuthorizer
+            pinAuth = new PinAuthorizer
             {
-                Credentials = new InMemoryCredentials
-                {
-                    ConsumerKey = "",
-                    ConsumerSecret = ""
-                },
+                Credentials = new InMemoryCredentials { ConsumerKey = "", ConsumerSecret = "" },
                 UseCompression = true,
-                GoToTwitterAuthorization = pageLink =>
-                    Dispatcher.BeginInvoke(() => OAuthWebBrowser.Navigate(new Uri(pageLink, UriKind.Absolute)))
+                GoToTwitterAuthorization = pageLink => Dispatcher.BeginInvoke(() => OAuthWebBrowser.Navigate(new Uri(pageLink, UriKind.Absolute)))
             };
 
             this.pinAuth.BeginAuthorize(resp =>
@@ -56,6 +51,25 @@ namespace WindowsPhoneDemo
                             break;
                     }
                 }));
+
+            //
+            // comment out the code above and uncomment this code to use SingleUserAuthorizer
+            //
+
+            //var auth = new SingleUserAuthorizer
+            //{
+            //    Credentials = new SingleUserInMemoryCredentials
+            //    {
+            //        ConsumerKey = "", // twitter Consumer key
+            //        ConsumerSecret = "", // twitter Consumer secret
+            //        TwitterAccessToken = "", // twitter Access token
+            //        TwitterAccessTokenSecret = "" // twitter Access token secret
+            //    }
+            //};
+
+            //SharedState.Authorizer = auth;
+
+            //NavigationService.GoBack();
         }
 
         private void AuthenticateButton_Click(object sender, RoutedEventArgs e)

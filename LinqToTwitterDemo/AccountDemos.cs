@@ -168,7 +168,7 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         static void UpdateAccountColors(TwitterContext twitterCtx)
         {
-            var user = twitterCtx.UpdateAccountColors("9ae4e8", "#000000", "#0000ff", "#e0ff92", "#87bc44", true, true);
+            var user = twitterCtx.UpdateAccountColors(null /*"9ae4e8"*/, "#000000", "#0000ff", "#e0ff92", "#87bc44", true, true);
 
             Console.WriteLine("\nAccount Colors:\n");
 

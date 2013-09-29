@@ -82,11 +82,11 @@ namespace LinqToTwitter
                     accountUrl,
                     new Dictionary<string, string>
                     {
-                        { "profile_background_color", background.TrimStart('#') },
-                        { "profile_text_color", text.TrimStart('#') },
-                        { "profile_link_color", link.TrimStart('#') },
-                        { "profile_sidebar_fill_color", sidebarFill.TrimStart('#') },
-                        { "profile_sidebar_border_color", sidebarBorder.TrimStart('#') },
+                        { "profile_background_color", string.IsNullOrEmpty(background) ? (string)null : background.TrimStart('#') },
+                        { "profile_text_color", string.IsNullOrEmpty(text) ? (string)null : text.TrimStart('#') },
+                        { "profile_link_color", string.IsNullOrEmpty(link) ? (string)null : link.TrimStart('#') },
+                        { "profile_sidebar_fill_color", string.IsNullOrEmpty(sidebarFill) ? (string)null : sidebarFill.TrimStart('#') },
+                        { "profile_sidebar_border_color", string.IsNullOrEmpty(sidebarBorder) ? (string)null : sidebarBorder.TrimStart('#') },
                         { "include_entities", includeEntities.ToString().ToLower() },
                         { "skip_status", skipStatus.ToString().ToLower() }
                     },
@@ -531,7 +531,6 @@ namespace LinqToTwitter
             return acct;
         }
 
-
         /// <summary>
         /// Modify device information
         /// </summary>
@@ -676,7 +675,7 @@ namespace LinqToTwitter
         /// <returns>Empty User instance.</returns>
         public static User RemoveProfileBanner(this TwitterContext ctx)
         {
-            return RemoveProfileBanner(null);
+            return RemoveProfileBanner(ctx, null);
         }
 
         /// <summary>
