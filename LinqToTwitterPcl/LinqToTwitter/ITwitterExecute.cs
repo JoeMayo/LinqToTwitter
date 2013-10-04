@@ -9,10 +9,10 @@ namespace LinqToTwitter
     /// </summary>
     public interface ITwitterExecute
     {
-//        /// <summary>
-//        /// Gets or sets the object that can send authorized requests to Twitter.
-//        /// </summary>
-//        ITwitterAuthorizer AuthorizedClient { get; set; }
+        /// <summary>
+        /// Gets or sets the object that can send authorized requests to Twitter.
+        /// </summary>
+        IAuthorizer Authorizer { get; set; }
 
         /// <summary>
         /// Gets the most recent URL executed
@@ -27,10 +27,10 @@ namespace LinqToTwitter
         /// </summary>
         IDictionary<string, string> ResponseHeaders { get; set; }
 
-//        /// <summary>
-//        /// Gets and sets HTTP UserAgent header
-//        /// </summary>
-//        string UserAgent { get; set; }
+        /// <summary>
+        /// Gets and sets HTTP UserAgent header
+        /// </summary>
+        string UserAgent { get; set; }
 
         ///// <summary>
         ///// Timeout (milliseconds) for writing to request 

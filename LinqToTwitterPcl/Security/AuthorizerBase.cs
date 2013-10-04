@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using LinqToTwitter.Net;
+using LinqToTwitter.Security;
 
-namespace LinqToTwitter.Security
+namespace LinqToTwitter
 {
     public class AuthorizerBase
     {
@@ -70,6 +70,9 @@ namespace LinqToTwitter.Security
             CredentialStore = store;
             ForceLogin = forceLogin;
             AccessType = accessType;
+
+            if (string.IsNullOrWhiteSpace(UserAgent))
+                UserAgent = TwitterContext.DefaultUserAgent;
 
             OAuthRequestTokenUrl = "https://api.twitter.com/oauth/request_token";
             OAuthAuthorizeUrl = "https://api.twitter.com/oauth/authorize";

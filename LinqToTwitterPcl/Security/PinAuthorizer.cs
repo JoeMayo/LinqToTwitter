@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
-namespace LinqToTwitter.Security
+namespace LinqToTwitter
 {
-    public class PinAuthorizer : AuthorizerBase
+    public class PinAuthorizer : AuthorizerBase, IAuthorizer
     {
         /// <summary>
         /// PIN-based authorization requires a 7-digit pin that is provided by Twitter.

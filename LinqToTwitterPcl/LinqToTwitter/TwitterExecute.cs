@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using LinqToTwitter.Security;
 
 //using LinqToTwitter.Common;
 //using LitJson;
@@ -42,10 +44,10 @@ namespace LinqToTwitter
         /// </summary>
         public const int DefaultReadWriteTimeout = 300000;
 
-//        /// <summary>
-//        /// Gets or sets the object that can send authorized requests to Twitter.
-//        /// </summary>
-//        public ITwitterAuthorizer AuthorizedClient { get; set; }
+        /// <summary>
+        /// Gets or sets the object that can send authorized requests to Twitter.
+        /// </summary>
+        public IAuthorizer Authorizer { get; set; }
 
 //        /// <summary>
 //        /// Timeout (milliseconds) for writing to request 
@@ -84,23 +86,23 @@ namespace LinqToTwitter
         /// </summary>
         public IDictionary<string, string> ResponseHeaders { get; set; }
 
-//        /// <summary>
-//        /// Gets and sets HTTP UserAgent header
-//        /// </summary>
-//        public string UserAgent
-//        {
-//            get
-//            {
-//                return AuthorizedClient.UserAgent;
-//            }
-//            set
-//            {
-//                AuthorizedClient.UserAgent =
-//                    string.IsNullOrEmpty(value) ?
-//                        AuthorizedClient.UserAgent :
-//                        value + ";" + AuthorizedClient.UserAgent;
-//            }
-//        }
+        /// <summary>
+        /// Gets and sets HTTP UserAgent header
+        /// </summary>
+        public string UserAgent
+        {
+            get
+            {
+                return Authorizer.UserAgent;
+            }
+            set
+            {
+                Authorizer.UserAgent =
+                    string.IsNullOrEmpty(value) ?
+                        Authorizer.UserAgent :
+                        value + ";" + Authorizer.UserAgent;
+            }
+        }
 
         /// <summary>
         /// Assign your TextWriter instance to receive LINQ to Twitter output
@@ -157,19 +159,19 @@ namespace LinqToTwitter
             }
         }
 
-//        /// <summary>
-//        /// supports testing
-//        /// </summary>
-//        public TwitterExecute(ITwitterAuthorizer authorizedClient)
-//        {
-//            if (authorizedClient == null)
-//            {
-//                throw new ArgumentNullException("authorizedClient");
-//            }
+        /// <summary>
+        /// supports testing
+        /// </summary>
+        public TwitterExecute(IAuthorizer authorizer)
+        {
+            if (authorizer == null)
+            {
+                throw new ArgumentNullException("authorizedClient");
+            }
 
-//            AuthorizedClient = authorizedClient;
-//            AuthorizedClient.UserAgent = LinqToTwitterVersion;
-//        }
+            Authorizer = authorizer;
+            Authorizer.UserAgent = Authorizer.UserAgent ?? LinqToTwitterVersion;
+        }
 
 //        /// <summary>
 //        /// Common code to construct a TwitterQueryException instance
@@ -322,91 +324,37 @@ namespace LinqToTwitter
         public async Task<string> QueryTwitter<T>(Request request, IRequestProcessor<T> reqProc)
         {
             await Task.Delay(1);
-//#if SILVERLIGHT && !NETFX_CORE
-//            if (AsyncCallback == null)
-//                throw new InvalidOperationException("Silverlight and Windows Phone applications require async queries.");
-//#endif
-//            //Log
-//            LastUrl = request.FullUrl;
-//            WriteLog(LastUrl, "QueryTwitter");
+            WriteLog(LastUrl, "QueryTwitter");
 
-            string response = string.Empty;
-//            string httpStatus = string.Empty;
-//            Exception thrownException = null;
+            var req = new HttpRequestMessage(HttpMethod.Get, request.Endpoint);
 
-//            try
-//            {
-//                var req = AuthorizedClient.Get(request);
-//                //var req = GetHttpRequest(request);
-//#if !SILVERLIGHT
-//                bool initialStateSignaled = AsyncCallback != null;
+            SetAuthorizationHeader(request, req);
+            req.Headers.Add("User-Agent", UserAgent);
+            //req.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
+            req.Headers.ExpectContinue = false;
 
-//                using (var resetEvent = new ManualResetEvent(initialStateSignaled))
-//                {
-//#endif
-//                    req.BeginGetResponse(
-//                        new AsyncCallback(
-//                            ar =>
-//                            {
-//                                lock (asyncCallbackLock)
-//                                {
-//                                    var asyncResp = new TwitterAsyncResponse<IEnumerable<T>>();
-//                                    try
-//                                    {
-//                                        var res = req.EndGetResponse(ar) as HttpWebResponse;
-//                                        httpStatus = (int)res.StatusCode + " " + res.StatusDescription;
-//                                        response = GetTwitterResponse(res);
+            var msg = await new HttpClient().SendAsync(req);
 
-//                                        if (AsyncCallback != null)
-//                                            asyncResp.State = reqProc.ProcessResults(response);
-//                                    }
-//                                    catch (Exception ex)
-//                                    {
-//                                        if (AsyncCallback == null)
-//                                            thrownException = ex;
+            return await msg.Content.ReadAsStringAsync();
+        }
+  
+        void SetAuthorizationHeader(Request request, HttpRequestMessage req)
+        {
+            string consumerSecret = Authorizer.CredentialStore.ConsumerSecret ?? "";
+            string oAuthTokenSecret = Authorizer.CredentialStore.OAuthTokenSecret ?? "";
 
-//                                        asyncResp.Status = TwitterErrorStatus.RequestProcessingException;
-//                                        asyncResp.Message = "Processing failed. See Error property for more details.";
-//                                        asyncResp.Exception = ex;
-//                                    }
-//                                    finally
-//                                    {
-//                                        if (AsyncCallback != null)
-//                                        {
-//                                            if (AsyncCallback is Action<IEnumerable<T>>)
-//                                                (AsyncCallback as Action<IEnumerable<T>>)(asyncResp.State);
-//                                            else
-//                                                (AsyncCallback as Action<TwitterAsyncResponse<IEnumerable<T>>>)(asyncResp);
+            var parms = request.RequestParameters
+                               .ToDictionary(
+                                    key => key.Name,
+                                    val => val.Value);
+            parms.Add("oauth_consumer_key", Authorizer.CredentialStore.ConsumerKey);
+            parms.Add("oauth_token", Authorizer.CredentialStore.OAuthToken);
 
-//                                            AsyncCallback = null;
-//                                        }
-//#if !SILVERLIGHT
-//                                        else
-//                                            resetEvent.Set();
-//#endif
-//                                    }
-//                                }
-//                            }), null);
-//#if !SILVERLIGHT
-//                    if (AsyncCallback == null)
-//                    {
-//                        resetEvent.WaitOne();
+            string authorizationString =
+                new OAuth().GetAuthorizationString(
+                    HttpMethod.Get.ToString(), request.FullUrl, parms, consumerSecret, oAuthTokenSecret);
 
-//                        if (thrownException != null)
-//                            throw thrownException;
-//                    }
-//                }
-//#endif
-//            }
-//            catch (WebException wex)
-//            {
-//                var twitterQueryEx = CreateTwitterQueryException(wex);
-//                throw twitterQueryEx;
-//            }
-
-//            CheckResultsForTwitterError(response, httpStatus);
-
-            return response;
+            req.Headers.Add("Authorization", authorizationString);
         }
 
         /// <summary>
@@ -1325,17 +1273,17 @@ namespace LinqToTwitter
 //            return response;
 //        }
 
-//        void WriteLog(string content, string currentMethod)
-//        {
-//            if (Log != null)
-//            {
-//                Log.WriteLine("--Log Starts Here--");
-//                Log.WriteLine("Query:" + content);
-//                Log.WriteLine("Method:" + currentMethod);
-//                Log.WriteLine("--Log Ends Here--");
-//                Log.Flush();
-//            }
-//        }
+        void WriteLog(string content, string currentMethod)
+        {
+            if (Log != null)
+            {
+                Log.WriteLine("--Log Starts Here--");
+                Log.WriteLine("Query:" + content);
+                Log.WriteLine("Method:" + currentMethod);
+                Log.WriteLine("--Log Ends Here--");
+                Log.Flush();
+            }
+        }
 
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
@@ -1354,16 +1302,16 @@ namespace LinqToTwitter
         {
             if (disposing)
             {
-                //var disposableClient = this.AuthorizedClient as IDisposable;
-                //if (disposableClient != null)
-                //{
-                //    disposableClient.Dispose();
-                //}
+                var disposableClient = Authorizer as IDisposable;
+                if (disposableClient != null)
+                {
+                    disposableClient.Dispose();
+                }
 
-                //if (Log != null)
-                //{
-                //    Log.Dispose();
-                //}
+                if (Log != null)
+                {
+                    Log.Dispose();
+                }
             }
         }
     }

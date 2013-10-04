@@ -36,60 +36,37 @@ namespace LinqToTwitter
         public const string XFeatureRateLimitRemainingKey = "X-FeatureRateLimit-Remaining";
         public const string XFeatureRateLimitResetKey = "X-FeatureRateLimit-Reset";
         public const string DateKey = "Date";
-
-        // TODO: Obsolete constructors that were once warnings are now errors. Remove in the following version.
+        public const string DefaultUserAgent = "LINQ to Twitter v3.0";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TwitterContext"/> class.
         /// </summary>
-        [Obsolete("Twitter API v1.1 requires all queries to be authorized. Please visit http://linqtotwitter.codeplex.com/wikipage?title=Securing%20Your%20Applications for more guidance on how to use OAuth in your application.", true)]
-        public TwitterContext()
+        /// <param name="authorizer">The authorizer.</param>
+        public TwitterContext(IAuthorizer authorizer)
+            : this(new TwitterExecute(authorizer))
         {
         }
 
-//        /// <summary>
-//        /// Initializes a new instance of the <see cref="TwitterContext"/> class.
-//        /// </summary>
-//        /// <param name="authorization">The authorization.</param>
-//        public TwitterContext(ITwitterAuthorizer authorization)
-//#if SILVERLIGHT
-//            : this(authorization, (IWebRequestCreate)null)
-//#else
-//            : this(new TwitterExecute(authorization))
-//#endif
-//        {
-//        }
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TwitterContext"/> class.
+        /// </summary>
+        /// <param name="execute">The <see cref="ITwitterExecute"/> object to use.</param>
+        public TwitterContext(ITwitterExecute execute)
+        {
+            if (execute == null)
+                throw new ArgumentNullException("execute", "TwitterExecutor is required.");
 
-//        /// <summary>
-//        /// Initializes a new instance of the <see cref="TwitterContext"/> class.
-//        /// </summary>
-//        /// <param name="authorization">The authorization.</param>
-//        /// <param name="baseUrl">Overwrites default base URL</param>
-//        /// <param name="searchUrl">Overwrites default search URL</param>
-//        [Obsolete("The Search URL is now the same as the Base URL in Twitter API v1.1.", true)]
-//        public TwitterContext(ITwitterAuthorizer authorization, string baseUrl, string searchUrl)
-//            : this(new TwitterExecute(authorization))
-//        {
-//        }
+            TwitterExecutor = execute;
 
-//        /// <summary>
-//        /// Initializes a new instance of the <see cref="TwitterContext"/> class.
-//        /// </summary>
-//        /// <param name="execute">The <see cref="ITwitterExecute"/> object to use.</param>
-//        public TwitterContext(ITwitterExecute execute)
-//        {
-//            if (execute == null)
-//            {
-//                throw new ArgumentNullException("execute");
-//            }
+            if (string.IsNullOrWhiteSpace(UserAgent))
+                UserAgent = DefaultUserAgent;
 
-//            TwitterExecutor = execute;
-//            BaseUrl = "https://api.twitter.com/1.1/";
-//            SearchUrl = "https://api.twitter.com/1.1/search/";
-//            StreamingUrl = "https://stream.twitter.com/1.1/";
-//            UserStreamUrl = "https://userstream.twitter.com/1.1/";
-//            SiteStreamUrl = "https://sitestream.twitter.com/1.1/";
-//        }
+            BaseUrl = "https://api.twitter.com/1.1/";
+            SearchUrl = "https://api.twitter.com/1.1/search/";
+            StreamingUrl = "https://stream.twitter.com/1.1/";
+            UserStreamUrl = "https://userstream.twitter.com/1.1/";
+            SiteStreamUrl = "https://sitestream.twitter.com/1.1/";
+        }
 
 
 //#if SILVERLIGHT
@@ -113,37 +90,6 @@ namespace LinqToTwitter
 //            WebRequest.RegisterPrefix("https://", webReqCreator);
 //        }
 //#endif
-
-//        /// <summary>
-//        /// Initializes a new instance of the <see cref="TwitterContext"/> class.
-//        /// </summary>
-//        /// <param name="authorization">OAuth provider</param>
-//        /// <param name="execute">The <see cref="ITwitterExecute"/> object to use.</param>
-//        /// <param name="baseUrl">Base url of Twitter API.  May be null to use the default "https://api.twitter.com/1.1/" value.</param>
-//        /// <param name="searchUrl">Base url of Twitter Search API.  May be null to use the default "https://api.twitter.com/1.1/search/" value.</param>
-//        [Obsolete("No longer used.", true)]
-//        public TwitterContext(ITwitterAuthorizer authorization, ITwitterExecute execute)
-//        {
-////            if (authorization == null)
-////            {
-////                throw new ArgumentNullException("authorization");
-////            }
-
-////            if (execute == null)
-////            {
-////                throw new ArgumentNullException("execute");
-////            }
-
-////            TwitterExecutor = execute;
-////            TwitterExecutor.AuthorizedClient = authorization;
-////            BaseUrl = string.IsNullOrEmpty(baseUrl) ? "https://api.twitter.com/1.1/" : baseUrl;
-////            SearchUrl = string.IsNullOrEmpty(searchUrl) ? "https://api.twitter.com/1.1/" : searchUrl;
-
-////#if SILVERLIGHT
-////            WebRequest.RegisterPrefix("http://", WebRequestCreator.ClientHttp);
-////            WebRequest.RegisterPrefix("https://", WebRequestCreator.ClientHttp);
-////#endif
-//        }
 
         ///// <summary>
         ///// Gets the screen name of the user (only populated when a request for access token occurs)
@@ -235,27 +181,26 @@ namespace LinqToTwitter
         // more testable, using IoC.
         //
 
-        ///// <summary>
-        ///// Gets and sets HTTP UserAgent header
-        ///// </summary>
-        //public string UserAgent
-        //{
-        //    get
-        //    {
-        //        if (TwitterExecutor != null)
-        //        {
-        //            return TwitterExecutor.UserAgent;
-        //        }
-        //        return string.Empty;
-        //    }
-        //    set
-        //    {
-        //        if (TwitterExecutor != null)
-        //        {
-        //            TwitterExecutor.UserAgent = value;
-        //        }
-        //    }
-        //}
+        /// <summary>
+        /// Gets and sets HTTP UserAgent header
+        /// </summary>
+        public string UserAgent
+        {
+            get
+            {
+                if (TwitterExecutor != null)
+                    return TwitterExecutor.UserAgent;
+                else
+                    return string.Empty;
+            }
+            set
+            {
+                if (TwitterExecutor != null)
+                    TwitterExecutor.UserAgent = value;
+                if (Authorizer != null)
+                    Authorizer.UserAgent = value;
+            }
+        }
 
         ///// <summary>
         ///// Gets or sets the read write timeout.
@@ -302,14 +247,14 @@ namespace LinqToTwitter
         //    }
         //}
 
-        ///// <summary>
-        ///// Gets or sets the authorized client on the <see cref="ITwitterExecute"/> object.
-        ///// </summary>
-        //public ITwitterAuthorizer AuthorizedClient
-        //{
-        //    get { return TwitterExecutor.AuthorizedClient; }
-        //    set { TwitterExecutor.AuthorizedClient = value; }
-        //}
+        /// <summary>
+        /// Gets or sets the authorized client on the <see cref="ITwitterExecute"/> object.
+        /// </summary>
+        public IAuthorizer Authorizer
+        {
+            get { return TwitterExecutor.Authorizer; }
+            set { TwitterExecutor.Authorizer = value; }
+        }
 
         /// <summary>
         /// Gets the most recent URL executed
@@ -481,16 +426,16 @@ namespace LinqToTwitter
         //    }
         //}
 
-        ///// <summary>
-        ///// enables access to Twitter Status messages, such as Friends and Public
-        ///// </summary>
-        //public TwitterQueryable<Status> Status
-        //{
-        //    get
-        //    {
-        //        return new TwitterQueryable<Status>(this);
-        //    }
-        //}
+        /// <summary>
+        /// enables access to Twitter Status messages
+        /// </summary>
+        public TwitterQueryable<Status> Status
+        {
+            get
+            {
+                return new TwitterQueryable<Status>(this);
+            }
+        }
 
         ///// <summary>
         ///// enables access to Twitter Status messages, such as Friends and Public
@@ -742,7 +687,7 @@ namespace LinqToTwitter
         /// <param name="expression">ExpressionTree to parse</param>
         /// <param name="isEnumerable">Indicates whether expression is enumerable</param>
         /// <returns>list of objects with query results</returns>
-        public virtual async Task<object> ExecuteAsync<T>(Expression expression, bool isEnumerable)
+        public virtual async Task<dynamic> ExecuteAsync<T>(Expression expression, bool isEnumerable)
             where T: class
         {
             // request processor is specific to request type (i.e. Status, User, etc.)
@@ -785,7 +730,7 @@ namespace LinqToTwitter
             if (isEnumerable)
                 return queryableItems.Provider.CreateQuery(newExpressionTree);
 
-            return queryableItems.Provider.Execute(newExpressionTree);
+            return queryableItems.Provider.Execute<dynamic>(newExpressionTree);
         }
 
         /// <summary>

@@ -105,13 +105,13 @@ namespace LinqToTwitter
             Type resultType = new MethodCallExpressionTypeFinder().GetGenericType(expression);
             var genericArguments = new[] { resultType };
 
-            var methodInfo = Context.GetType().GetTypeInfo().GetDeclaredMethod("Execute");
+            var methodInfo = Context.GetType().GetTypeInfo().GetDeclaredMethod("ExecuteAsync");
             MethodInfo genericMethodInfo = methodInfo.MakeGenericMethod(genericArguments);
 
             try
             {
-                var result = (TResult)genericMethodInfo.Invoke(Context, new object[] { expression, isEnumerable });
-                return result;
+                var exeTask = (Task<dynamic>)genericMethodInfo.Invoke(Context, new object[] { expression, isEnumerable });
+                return exeTask.Result;
             }
             catch (TargetInvocationException tex)
             {
@@ -121,7 +121,9 @@ namespace LinqToTwitter
                 throw;
             }
         }
-        public async Task<TResult> ExecuteAsync<TResult>(Expression expression)
+
+        public async Task<dynamic> ExecuteAsync<TResult>(Expression expression)
+            where TResult : class
         {
             bool isEnumerable =
                 typeof(TResult).Name == "IEnumerable`1" ||
@@ -130,12 +132,13 @@ namespace LinqToTwitter
             Type resultType = new MethodCallExpressionTypeFinder().GetGenericType(expression);
             var genericArguments = new[] { resultType };
 
-            var methodInfo = Context.GetType().GetTypeInfo().GetDeclaredMethod("Execute");
+            var methodInfo = Context.GetType().GetTypeInfo().GetDeclaredMethod("ExecuteAsync");
             MethodInfo genericMethodInfo = methodInfo.MakeGenericMethod(genericArguments);
 
             try
             {
-                return await (Task<TResult>)genericMethodInfo.Invoke(Context, new object[] { expression, isEnumerable });
+                var result = await (Task<dynamic>)genericMethodInfo.Invoke(Context, new object[] { expression, isEnumerable });
+                return result;
             }
             catch (TargetInvocationException tex)
             {

@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace LinqToTwitter.Security
+namespace LinqToTwitter
 {
     /// <summary>
     /// These credentials just reside in memory and only

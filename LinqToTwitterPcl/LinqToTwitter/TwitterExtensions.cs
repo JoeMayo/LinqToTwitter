@@ -85,12 +85,21 @@ namespace LinqToTwitter
 
         public static async Task<List<T>> ToListAsync<T>(this IQueryable<T> query)
         {
-            await Task.Delay(1000);
             var provider = query.Provider as TwitterQueryProvider;
 
-            IEnumerable<T> results = provider.Execute<IEnumerable<T>>(query.Expression);
+            IEnumerable<T> results = await provider.ExecuteAsync<IEnumerable<T>>(query.Expression);
 
             return results.ToList();
+        }
+
+        public static async Task<T> FirstOrDefaultAsync<T>(this IQueryable<T> query)
+            where T : class
+        {
+            var provider = query.Provider as TwitterQueryProvider;
+
+            IEnumerable<T> results = await provider.ExecuteAsync<T>(query.Expression);
+
+            return results.FirstOrDefault();
         }
     }
 }

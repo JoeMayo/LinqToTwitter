@@ -77,8 +77,8 @@ namespace LinqToTwitterDemo
         {
             var tweets =
                 (from tweet in twitterCtx.Status
-                 where tweet.Type == StatusType.Home &&
-                       tweet.Count == 100
+                 where tweet.Type == StatusType.Home// &&
+                       //tweet.Count == 100
                  select tweet)
                 .ToList();
 

@@ -14,20 +14,15 @@ namespace LinqToTwitterDemoPcl
     {
         static void Main()
         {
-            Task verifyTask = VerifyCredentials();
+            Task verifyTask = TestLinqToTwitterAsync();
             verifyTask.Wait();
 
             Console.Write("\nPress any key to continue...");
             Console.ReadKey();
         }
 
-        async static Task VerifyCredentials()
+        async static Task TestLinqToTwitterAsync()
         {
-            var verifyUrl = new Uri("https://api.twitter.com/1.1/account/verify_credentials.json?skip_status=true&include_entities=false");
-            var client = new HttpClient();
-
-            const string UserAgent = "LINQ to Twitter v3.0";
-
             var credStore = new InMemoryCredentialStore
             {
                 ConsumerKey = ConfigurationManager.AppSettings["twitterConsumerKey"],
@@ -36,7 +31,6 @@ namespace LinqToTwitterDemoPcl
 
             var auth = new PinAuthorizer(credStore, false, AuthAccessType.NoChange, null)
             {
-                UserAgent = UserAgent,
                 GoToTwitterAuthorization = pageLink => Process.Start(pageLink),
                 GetPin = () =>
                 {
@@ -49,26 +43,24 @@ namespace LinqToTwitterDemoPcl
 
             await auth.AuthorizeAsync();
 
-            var parameters =
-                new Dictionary<string, string>
-                {
-                    { "oauth_consumer_key", credStore.ConsumerKey },
-                    { "oauth_token", credStore.OAuthToken },
-                    { "skip_status", "true" },
-                    { "include_entities", "false"}
-                };
+            var ctx = new TwitterContext(auth);
 
-            var req = new HttpRequestMessage(HttpMethod.Get, verifyUrl);
-            string authorizationString = new OAuth().GetAuthorizationString(HttpMethod.Get.ToString(), verifyUrl.ToString(), parameters, credStore.ConsumerSecret, credStore.OAuthTokenSecret);
-            req.Headers.Add("Authorization", authorizationString);
-            req.Headers.Add("User-Agent", UserAgent);
-            req.Headers.ExpectContinue = false;
+            var tweets = await
+                (from tweet in ctx.Status
+                 where tweet.Type == StatusType.Home
+                 select tweet)
+                .ToListAsync();
 
-            var msg = await client.SendAsync(req);
+            tweets.ForEach(tweet =>
+                Console.WriteLine("\nName:\n{0}\nTweet:{1}\n", tweet.ScreenName, tweet.Text));
 
-            string response = await msg.Content.ReadAsStringAsync();
+            var firstTweet = await
+                (from twt in ctx.Status
+                 where twt.Type == StatusType.Home
+                 select twt)
+                .FirstOrDefaultAsync();
 
-            Console.WriteLine("\nResponse: " + response);
+            Console.WriteLine("\nName:\n{0}\nTweet:{1}\n", firstTweet.ScreenName, firstTweet.Text);
         }
     }
 }

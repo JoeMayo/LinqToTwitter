@@ -92,6 +92,7 @@
     <Compile Include="Security\AuthAccessType.cs" />
     <Compile Include="Security\AuthorizerBase.cs" />
     <Compile Include="Security\Hmac.cs" />
+    <Compile Include="Security\IAuthorizer.cs" />
     <Compile Include="Security\ICredentialStore.cs" />
     <Compile Include="Security\IHmac.cs" />
     <Compile Include="Security\InMemoryCredentialStore.cs" />
