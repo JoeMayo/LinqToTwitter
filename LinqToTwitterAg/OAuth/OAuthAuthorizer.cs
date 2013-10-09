@@ -222,8 +222,10 @@ namespace LinqToTwitter
 #endif
                 req.Method = HttpMethod.POST.ToString();
                 req.Headers[HttpRequestHeader.Authorization] = auth;
-#if !WINDOWS_PHONE && !NETFX_CORE
+#if !WINDOWS_PHONE && NETFX_CORE
                 req.ContentType = "application/x-www-form-urlencoded";
+#endif
+#if !WINDOWS_PHONE && !NETFX_CORE
                 req.ContentLength = 0; 
 #endif
 
