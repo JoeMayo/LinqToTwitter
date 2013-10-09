@@ -20,11 +20,25 @@ namespace LinqToTwitter
         /// </summary>
         public Action<string> GoToTwitterAuthorization { get; set; }
 
-        public PinAuthorizer(ICredentialStore credentialStore, bool forceLogin, AuthAccessType accessType, string preFillScreenName) 
-            : base(credentialStore, forceLogin, accessType, preFillScreenName) { }
+        public PinAuthorizer()
+            : base(false, AuthAccessType.NoChange, null) { }
+
+        public PinAuthorizer(bool forceLogin)
+            : base(forceLogin, AuthAccessType.NoChange, null) { }
+
+        public PinAuthorizer(bool forceLogin, AuthAccessType accessType) 
+            : base(forceLogin, accessType, null) { }
+
+        public PinAuthorizer(bool forceLogin, AuthAccessType accessType, string preFillScreenName)
+            : base(forceLogin, accessType, preFillScreenName) { }
 
         public async Task AuthorizeAsync()
         {
+            if (CredentialStore == null)
+                throw new NullReferenceException(
+                    "The authorization process requires a minimum of ConsumerKey and ConsumerSecret tokens. " +
+                    "You must assign the CredentialStore property (with tokens) before calling AuthorizeAsync().");
+
             if (CredentialStore.HasAllCredentials()) return;
 
             if (string.IsNullOrWhiteSpace(CredentialStore.ConsumerKey) || string.IsNullOrWhiteSpace(CredentialStore.ConsumerSecret))

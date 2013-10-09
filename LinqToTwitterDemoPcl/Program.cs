@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 using LinqToTwitter;
-using LinqToTwitter.Security;
 
 namespace LinqToTwitterDemoPcl
 {
@@ -23,14 +20,13 @@ namespace LinqToTwitterDemoPcl
 
         async static Task TestLinqToTwitterAsync()
         {
-            var credStore = new InMemoryCredentialStore
+            var auth = new PinAuthorizer()
             {
-                ConsumerKey = ConfigurationManager.AppSettings["twitterConsumerKey"],
-                ConsumerSecret = ConfigurationManager.AppSettings["twitterConsumerSecret"]
-            };
-
-            var auth = new PinAuthorizer(credStore, false, AuthAccessType.NoChange, null)
-            {
+                CredentialStore = new InMemoryCredentialStore
+                {
+                    ConsumerKey = ConfigurationManager.AppSettings["twitterConsumerKey"],
+                    ConsumerSecret = ConfigurationManager.AppSettings["twitterConsumerSecret"]
+                },
                 GoToTwitterAuthorization = pageLink => Process.Start(pageLink),
                 GetPin = () =>
                 {

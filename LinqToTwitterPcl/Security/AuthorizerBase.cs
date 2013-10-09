@@ -65,9 +65,8 @@ namespace LinqToTwitter
             }
         }
 
-        public AuthorizerBase(ICredentialStore store, bool forceLogin, AuthAccessType accessType, string prefillScreenName)
+        public AuthorizerBase(bool forceLogin, AuthAccessType accessType, string prefillScreenName)
         {
-            CredentialStore = store;
             ForceLogin = forceLogin;
             AccessType = accessType;
 
@@ -84,7 +83,7 @@ namespace LinqToTwitter
             if (string.IsNullOrWhiteSpace(callback))
                 throw new ArgumentNullException("callback", "callback is required.");
 
-            Parameters.Add("oauth_callback", callback);
+            Parameters.Add("oauth_callback", EncodeToProtectMultiByteCharUrls(callback));
             Parameters.Remove("oauth_token");
 
             if (AccessType != AuthAccessType.NoChange)
@@ -96,6 +95,11 @@ namespace LinqToTwitter
                 throw new ArgumentNullException("Empty response to request token response from Twitter.");
 
             UpdateCredentialsFromRequestTokenResponse(response);
+        }
+  
+        string EncodeToProtectMultiByteCharUrls(string callback)
+        {
+            return new Uri(callback).AbsoluteUri;
         }
 
         public string PrepareAuthorizeUrl(bool forceLogin)

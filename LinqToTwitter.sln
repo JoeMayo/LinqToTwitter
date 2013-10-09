@@ -30,6 +30,27 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqToTwitterPcl.Tests", "L
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqToTwitterDemoPcl", "LinqToTwitterDemoPcl\LinqToTwitterDemoPcl.csproj", "{96687B04-F911-47ED-9E85-7772ECDC4C3C}"
 EndProject
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "LinqToTwitterWebFormsDemo", "LinqToTwitterWebFormsDemo\", "{CCA31518-30BF-407A-833F-B2C25AE56A47}"
+	ProjectSection(WebsiteProperties) = preProject
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
+		ProjectReferences = "{a214b9f0-6b8c-4e91-be99-27f55cc860c1}|LinqToTwitter.dll;"
+		Debug.AspNetCompiler.VirtualPath = "/LinqToTwitterWebFormsDemo"
+		Debug.AspNetCompiler.PhysicalPath = "LinqToTwitterWebFormsDemo\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\LinqToTwitterWebFormsDemo\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/LinqToTwitterWebFormsDemo"
+		Release.AspNetCompiler.PhysicalPath = "LinqToTwitterWebFormsDemo\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\LinqToTwitterWebFormsDemo\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "4573"
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = LinqToTwitter.vsmdi
@@ -165,6 +186,16 @@ Global
 		{96687B04-F911-47ED-9E85-7772ECDC4C3C}.Release|ARM.ActiveCfg = Release|Any CPU
 		{96687B04-F911-47ED-9E85-7772ECDC4C3C}.Release|x64.ActiveCfg = Release|Any CPU
 		{96687B04-F911-47ED-9E85-7772ECDC4C3C}.Release|x86.ActiveCfg = Release|Any CPU
+		{CCA31518-30BF-407A-833F-B2C25AE56A47}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CCA31518-30BF-407A-833F-B2C25AE56A47}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CCA31518-30BF-407A-833F-B2C25AE56A47}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{CCA31518-30BF-407A-833F-B2C25AE56A47}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{CCA31518-30BF-407A-833F-B2C25AE56A47}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{CCA31518-30BF-407A-833F-B2C25AE56A47}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{CCA31518-30BF-407A-833F-B2C25AE56A47}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{CCA31518-30BF-407A-833F-B2C25AE56A47}.Release|ARM.ActiveCfg = Debug|Any CPU
+		{CCA31518-30BF-407A-833F-B2C25AE56A47}.Release|x64.ActiveCfg = Debug|Any CPU
+		{CCA31518-30BF-407A-833F-B2C25AE56A47}.Release|x86.ActiveCfg = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

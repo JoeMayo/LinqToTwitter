@@ -92,9 +92,14 @@ namespace LinqToTwitter
                     new QueryParameter(OAuthXAccessTypeKey, authAccessToken.ToString().ToLower()));
             }
 
-            var response = OAuthWebRequest(HttpMethod.GET, request, null, callback);
+            var response = OAuthWebRequest(HttpMethod.GET, request, null, EncodeToProtectMultiByteCharUrl(callback));
 
             return PrepareAuthorizeUrl(authorizeUrl, forceLogin, response);
+        }
+  
+        string EncodeToProtectMultiByteCharUrl(string callback)
+        {
+            return new Uri(callback).AbsoluteUri;
         }
 
         string PrepareAuthorizeUrl(string authorizeUrl, bool forceLogin, string response)
