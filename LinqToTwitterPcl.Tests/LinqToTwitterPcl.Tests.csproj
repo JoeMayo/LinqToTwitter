@@ -63,15 +63,15 @@
     <Compile Include="HmacTests.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\Resources\LinqToTwitter.snk">
+      <Link>LinqToTwitter.snk</Link>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\LinqToTwitterPcl\LinqToTwitterPcl.csproj">
       <Project>{caaff164-a681-4183-bb83-a07b668f7ffc}</Project>
       <Name>LinqToTwitterPcl</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\Resources\LinqToTwitter.snk">
-      <Link>LinqToTwitter.snk</Link>
-    </None>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
