@@ -99,7 +99,7 @@ namespace LinqToTwitter
   
         string EncodeToProtectMultiByteCharUrls(string callback)
         {
-            return new Uri(callback).AbsoluteUri;
+            return callback == "oob" ? "oob" : new Uri(callback).AbsoluteUri;
         }
 
         public string PrepareAuthorizeUrl(bool forceLogin)
