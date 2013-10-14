@@ -12,17 +12,12 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using LinqToTwitter.Common;
 
-#if SILVERLIGHT
-using System.Net;
-using System.Net.Browser;
-#endif
-
 namespace LinqToTwitter
 {
     /// <summary>
     /// manages access to Twitter API
     /// </summary>
-    public class TwitterContext : IDisposable
+    public partial class TwitterContext : IDisposable
     {
         //
         // response header constants
@@ -62,7 +57,6 @@ namespace LinqToTwitter
                 UserAgent = DefaultUserAgent;
 
             BaseUrl = "https://api.twitter.com/1.1/";
-            SearchUrl = "https://api.twitter.com/1.1/search/";
             StreamingUrl = "https://stream.twitter.com/1.1/";
             UserStreamUrl = "https://userstream.twitter.com/1.1/";
             SiteStreamUrl = "https://sitestream.twitter.com/1.1/";
@@ -104,12 +98,6 @@ namespace LinqToTwitter
         /// </summary>
         public string BaseUrl { get; set; }
 
-        // TODO: BaseUrl and SearchUrl are the same in Twitter API v1.1. Remove SearchUrl and refactor as necessary.
-        /// <summary>
-        /// base URL for accessing Twitter Search API
-        /// </summary>
-        public string SearchUrl { get; set; }
-
         /// <summary>
         /// base URL for accessing streaming APIs
         /// </summary>
@@ -124,26 +112,6 @@ namespace LinqToTwitter
         /// base URL for accessing site stream APIs
         /// </summary>
         public string SiteStreamUrl { get; set; }
-
-        /// <summary>
-        /// Only for streaming credentials, use OAuth for non-streaming APIs
-        /// </summary>
-        [Obsolete("Please use OAuth instead.", true)]
-        public string StreamingUserName 
-        {
-            get { return TwitterExecutor.StreamingUserName; }
-            set { TwitterExecutor.StreamingUserName = value; }
-        }
-
-        /// <summary>
-        /// Only for streaming credentials, use OAuth for non-streaming APIs
-        /// </summary>
-        [Obsolete("Please use OAuth instead.", true)]
-        public string StreamingPassword
-        {
-            get { return TwitterExecutor.StreamingPassword; }
-            set { TwitterExecutor.StreamingPassword = value; }
-        }
 
         /// <summary>
         /// Assign the Log to the context
@@ -271,215 +239,6 @@ namespace LinqToTwitter
         /// Methods for communicating with Twitter
         /// </summary>
         internal ITwitterExecute TwitterExecutor { get; set; }
-
-        ///// <summary>
-        ///// enables access to Twitter account information, such as Verify Credentials and Rate Limit Status
-        ///// </summary>
-        //public TwitterQueryable<Account> Account
-        //{
-        //    get
-        //    {
-        //        return new TwitterQueryable<Account>(this);
-        //    }
-        //}
-
-        ///// <summary>
-        ///// enables access to Twitter blocking information, such as Exists, Blocks, and IDs
-        ///// </summary>
-        //public TwitterQueryable<Blocks> Blocks
-        //{
-        //    get
-        //    {
-        //        return new TwitterQueryable<Blocks>(this);
-        //    }
-        //}
-
-        ///// <summary>
-        ///// enables access to Twitter Control Streams, which manage and query Site Streams
-        ///// </summary>
-        //public TwitterQueryable<ControlStream> ControlStream
-        //{
-        //    get
-        //    {
-        //        return new TwitterQueryable<ControlStream>(this);
-        //    }
-        //}
-
-        ///// <summary>
-        ///// enables access to Twitter User messages, such as Friends and Followers
-        ///// </summary>
-        //public TwitterQueryable<DirectMessage> DirectMessage
-        //{
-        //    get
-        //    {
-        //        return new TwitterQueryable<DirectMessage>(this);
-        //    }
-        //}
-
-        ///// <summary>
-        ///// enables access to Twitter Favorites
-        ///// </summary>
-        //public TwitterQueryable<Favorites> Favorites
-        //{
-        //    get
-        //    {
-        //        return new TwitterQueryable<Favorites>(this);
-        //    }
-        //}
-
-        ///// <summary>
-        ///// enables access to Twitter Friendship info
-        ///// </summary>
-        //public TwitterQueryable<Friendship> Friendship
-        //{
-        //    get
-        //    {
-        //        return new TwitterQueryable<Friendship>(this);
-        //    }
-        //}
-
-        ///// <summary>
-        ///// enables access to Twitter Geo info
-        ///// </summary>
-        //public TwitterQueryable<Geo> Geo
-        //{
-        //    get
-        //    {
-        //        return new TwitterQueryable<Geo>(this);
-        //    }
-        //}
-
-        ///// <summary>
-        ///// enables access to Twitter Help info
-        ///// </summary>
-        //public TwitterQueryable<Help> Help
-        //{
-        //    get
-        //    {
-        //        return new TwitterQueryable<Help>(this);
-        //    }
-        //}
-
-        ///// <summary>
-        ///// enables access to Twitter List info
-        ///// </summary>
-        //public TwitterQueryable<List> List
-        //{
-        //    get
-        //    {
-        //        return new TwitterQueryable<List>(this);
-        //    }
-        //}
-
-        ///// <summary>
-        ///// enables access to Raw Query Extensibility
-        ///// </summary>
-        //public TwitterQueryable<Raw> RawQuery
-        //{
-        //    get
-        //    {
-        //        return new TwitterQueryable<Raw>(this);
-        //    }
-        //}
-
-        ///// <summary>
-        ///// enables access to Related Results Query Extensibility
-        ///// </summary>
-        //public TwitterQueryable<RelatedResults> RelatedResults
-        //{
-        //    get
-        //    {
-        //        return new TwitterQueryable<RelatedResults>(this);
-        //    }
-        //}
-
-        ///// <summary>
-        ///// enables access to Twitter Saved Searches
-        ///// </summary>
-        //public TwitterQueryable<SavedSearch> SavedSearch
-        //{
-        //    get
-        //    {
-        //        return new TwitterQueryable<SavedSearch>(this);
-        //    }
-        //}
-
-        ///// <summary>
-        ///// enables access to Twitter SocialGraph to discover Friends and Followers
-        ///// </summary>
-        //public TwitterQueryable<SocialGraph> SocialGraph
-        //{
-        //    get
-        //    {
-        //        return new TwitterQueryable<SocialGraph>(this);
-        //    }
-        //}
-
-        ///// <summary>
-        ///// enables access to Twitter Search to query tweets
-        ///// </summary>
-        //public TwitterQueryable<Search> Search
-        //{
-        //    get
-        //    {
-        //        return new TwitterQueryable<Search>(this);
-        //    }
-        //}
-
-        /// <summary>
-        /// enables access to Twitter Status messages
-        /// </summary>
-        public TwitterQueryable<Status> Status
-        {
-            get
-            {
-                return new TwitterQueryable<Status>(this);
-            }
-        }
-
-        ///// <summary>
-        ///// enables access to Twitter Status messages, such as Friends and Public
-        ///// </summary>
-        //public TwitterQueryable<Streaming> Streaming
-        //{
-        //    get
-        //    {
-        //        return new TwitterQueryable<Streaming>(this);
-        //    }
-        //}
-
-        ///// <summary>
-        ///// enables access to Twitter Trends, such as Trend, Current, Daily, and Weekly
-        ///// </summary>
-        //public TwitterQueryable<Trend> Trends
-        //{
-        //    get
-        //    {
-        //        return new TwitterQueryable<Trend>(this);
-        //    }
-        //}
-
-        ///// <summary>
-        ///// enables access to Twitter User messages, such as Friends and Followers
-        ///// </summary>
-        //public TwitterQueryable<User> User
-        //{
-        //    get
-        //    {
-        //        return new TwitterQueryable<User>(this);
-        //    }
-        //}
-
-        ///// <summary>
-        ///// enables access to Twitter UserStream for streaming access to user info
-        ///// </summary>
-        //public TwitterQueryable<UserStream> UserStream
-        //{
-        //    get
-        //    {
-        //        return new TwitterQueryable<UserStream>(this);
-        //    }
-        //}
 
         /// <summary>
         /// retrieves a specified response header, converting it to an int
@@ -709,7 +468,7 @@ namespace LinqToTwitter
             //}
             //else
             //{
-                results = await TwitterExecutor.QueryTwitter(request, reqProc);
+                results = await TwitterExecutor.QueryTwitterAsync(request, reqProc);
             //}
 
             RawResult = results;
@@ -845,10 +604,9 @@ namespace LinqToTwitter
                 //case "SocialGraph":
                 //    req = new SocialGraphRequestProcessor<T>();
                 //    break;
-                //case "Search":
-                //    baseUrl = SearchUrl;
-                //    req = new SearchRequestProcessor<T>();
-                //    break;
+                case "Search":
+                    req = new SearchRequestProcessor<T>();
+                    break;
                 case "Status":
                     req = new StatusRequestProcessor<T>();
                     break;

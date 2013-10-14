@@ -102,7 +102,7 @@ namespace LinqToTwitter.Security
 
         internal virtual string GenerateNonce()
         {
-            return Convert.ToBase64String(Encoding.UTF8.GetBytes(DateTime.Now.Ticks.ToString()));
+            return new Random().Next(111111, 9999999).ToString(CultureInfo.InvariantCulture);
         }
     }
 }

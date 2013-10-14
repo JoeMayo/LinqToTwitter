@@ -55,6 +55,8 @@
     <Compile Include="Common\InvalidQueryException.cs" />
     <Compile Include="Common\IRequestProcessor.cs" />
     <Compile Include="Common\LinqExtensions.cs" />
+    <Compile Include="Common\Media.cs" />
+    <Compile Include="Common\MediaContentType.cs" />
     <Compile Include="Common\MethodCallExpressionTypeFinder.cs" />
     <Compile Include="Common\ParameterFinder.cs" />
     <Compile Include="Common\QueryParameter.cs" />
@@ -84,11 +86,20 @@
     <Compile Include="Help\RateLimits.cs" />
     <Compile Include="LinqToTwitter\ITwitterExecute.cs" />
     <Compile Include="LinqToTwitter\TwitterContext.cs" />
+    <Compile Include="LinqToTwitter\TwitterContextEntities.cs" />
     <Compile Include="LinqToTwitter\TwitterExecute.cs" />
     <Compile Include="LinqToTwitter\TwitterExtensions.cs" />
     <Compile Include="LinqToTwitter\TwitterQueryable.cs" />
     <Compile Include="LinqToTwitter\TwitterQueryProvider.cs" />
     <Compile Include="Net\Url.cs" />
+    <Compile Include="Search\Attitude.cs" />
+    <Compile Include="Search\ResultType.cs" />
+    <Compile Include="Search\Search.cs" />
+    <Compile Include="Search\SearchEntry.cs" />
+    <Compile Include="Search\SearchMetaData.cs" />
+    <Compile Include="Search\SearchRequestProcessor.cs" />
+    <Compile Include="Search\SearchType.cs" />
+    <Compile Include="Security\ApplicationOnlyAuthorizer.cs" />
     <Compile Include="Security\AuthAccessType.cs" />
     <Compile Include="Security\AuthorizerBase.cs" />
     <Compile Include="Security\Hmac.cs" />
@@ -125,6 +136,7 @@
     <Compile Include="Status\StatusMetaData.cs" />
     <Compile Include="Status\StatusRequestProcessor.cs" />
     <Compile Include="Status\StatusType.cs" />
+    <Compile Include="Status\TwitterContextStatusCommands.cs" />
     <Compile Include="Streaming\IStreamContent.cs" />
     <Compile Include="Streaming\StreamContent.cs" />
     <Compile Include="Streaming\Streaming.cs" />

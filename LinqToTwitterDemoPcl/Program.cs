@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
 using System.Linq;
@@ -20,6 +21,77 @@ namespace LinqToTwitterDemoPcl
 
         async static Task TestLinqToTwitterAsync()
         {
+            var auth = ChooseAuthenticationStrategy();
+
+            await auth.AuthorizeAsync();
+
+            var ctx = new TwitterContext(auth);
+
+            //var tweets = await
+            //    (from tweet in ctx.Status
+            //     where tweet.Type == StatusType.Home &&
+            //           tweet.Count == 5
+            //     select tweet)
+            //    .ToListAsync();
+
+            //tweets.ForEach(tweet =>
+            //    Console.WriteLine("\nName:\n{0}\nTweet:{1}\n", tweet.ScreenName, tweet.Text));
+
+            //var searchResponse = await
+            //    (from search in ctx.Search
+            //     where search.Type == SearchType.Search &&
+            //           search.Query == "LINQ to Twitter"
+            //     select search)
+            //    .FirstOrDefaultAsync();
+
+            //searchResponse.Statuses.ForEach(tweet =>
+            //    Console.WriteLine("\nName:\n{0}\nTweet:{1}\n", tweet.ScreenName, tweet.Text));
+
+            Status newTweet = await ctx.UpdateStatusAsync("Testing UpdateStatusAsync in LINQ to Twitter - " + DateTime.Now);
+
+            Console.WriteLine("\nName:\n{0}\nTweet:{1}\n", newTweet.ScreenName, newTweet.Text);
+        }
+  
+        static IAuthorizer ChooseAuthenticationStrategy()
+        {
+            Console.WriteLine("Authentication Strategy:\n\n");
+
+            Console.WriteLine("  1 - Pin (default)");
+            Console.WriteLine("  2 - Application-Only");
+            Console.WriteLine("  3 - Single User");
+            Console.WriteLine("  4 - XAuth");
+
+            Console.Write("\nPlease choose (1, 2, 3, or 4): ");
+            ConsoleKeyInfo input = Console.ReadKey();
+            Console.WriteLine("");
+
+            IAuthorizer auth = null;
+
+            switch (input.Key)
+            {
+
+                case ConsoleKey.D1:
+                    auth = DoPinOAuth();
+                    break;
+                case ConsoleKey.D2:
+                    auth = DoApplicationOnly();
+                    break;
+                //case ConsoleKey.D3:
+                //    auth = DoSingleUserAuth();
+                //    break;
+                //case ConsoleKey.D4:
+                //    auth = DoXAuth();
+                //    break;
+                default:
+                    auth = DoPinOAuth();
+                    break;
+            }
+
+            return auth;
+        }
+  
+        static IAuthorizer DoPinOAuth()
+        {
             var auth = new PinAuthorizer()
             {
                 CredentialStore = new InMemoryCredentialStore
@@ -36,27 +108,20 @@ namespace LinqToTwitterDemoPcl
                     return Console.ReadLine();
                 }
             };
+            return auth;
+        }
 
-            await auth.AuthorizeAsync();
-
-            var ctx = new TwitterContext(auth);
-
-            var tweets = await
-                (from tweet in ctx.Status
-                 where tweet.Type == StatusType.Home
-                 select tweet)
-                .ToListAsync();
-
-            tweets.ForEach(tweet =>
-                Console.WriteLine("\nName:\n{0}\nTweet:{1}\n", tweet.ScreenName, tweet.Text));
-
-            var firstTweet = await
-                (from twt in ctx.Status
-                 where twt.Type == StatusType.Home
-                 select twt)
-                .FirstOrDefaultAsync();
-
-            Console.WriteLine("\nName:\n{0}\nTweet:{1}\n", firstTweet.ScreenName, firstTweet.Text);
+        static IAuthorizer DoApplicationOnly()
+        {
+            var auth = new ApplicationOnlyAuthorizer()
+            {
+                CredentialStore = new InMemoryCredentialStore
+                {
+                    ConsumerKey = ConfigurationManager.AppSettings["twitterConsumerKey"],
+                    ConsumerSecret = ConfigurationManager.AppSettings["twitterConsumerSecret"]
+                },
+            };
+            return auth;
         }
     }
 }

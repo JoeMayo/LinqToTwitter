@@ -43,14 +43,14 @@ namespace LinqToTwitter
         ///// </summary>
         //int Timeout { get; set; }
 
-//        /// <summary>
-//        /// performs HTTP POST to Twitter
-//        /// </summary>
-//        /// <param name="url">URL of request</param>
-//        /// <param name="postData">parameters to post</param>
-//        /// <param name="getResult">callback for handling async Json response - null if synchronous</param>
-//        /// <returns>Json Response from Twitter - empty string if async</returns>
-//        string PostToTwitter<T>(string url, IDictionary<string, string> postData, Func<string, T> getResult);
+        /// <summary>
+        /// performs HTTP POST to Twitter
+        /// </summary>
+        /// <param name="url">URL of request</param>
+        /// <param name="postData">parameters to post</param>
+        /// <param name="getResult">callback for handling async Json response - null if synchronous</param>
+        /// <returns>Json Response from Twitter - empty string if async</returns>
+        Task<string> PostToTwitterAsync<T>(string url, IDictionary<string, string> postData, Func<string, T> getResult);
 
 //#if !NETFX_CORE
 //        /// <summary>
@@ -89,7 +89,7 @@ namespace LinqToTwitter
         /// <param name="url">URL with all query info</param>
         /// <param name="reqProc">Request Processor for Async Results</param>
         /// <returns>XML Results from Twitter</returns>
-        Task<string> QueryTwitter<T>(Request req, IRequestProcessor<T> reqProc);
+        Task<string> QueryTwitterAsync<T>(Request req, IRequestProcessor<T> reqProc);
 
         /// <summary>
         /// Query for Twitter Streaming APIs

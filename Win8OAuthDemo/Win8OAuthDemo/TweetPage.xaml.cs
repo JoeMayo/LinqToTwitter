@@ -5,6 +5,7 @@ using System.Linq;
 using LinqToTwitter;
 using MetroOAuthDemo.Common;
 using Windows.Storage;
+using Windows.UI.Core;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 
@@ -70,19 +71,24 @@ namespace MetroOAuthDemo
 
             var twitterCtx = new TwitterContext(auth);
 
-            var searchResponse =
-                (from search in twitterCtx.Search
-                 where search.Type == SearchType.Search &&
-                       search.Query == SearchTextBox.Text
-                 select search)
-                .SingleOrDefault();
+            (from search in twitterCtx.Search
+             where search.Type == SearchType.Search &&
+                   search.Query == SearchTextBox.Text
+             select search)
+            .MaterializedAsyncCallback(
+                async response =>
+                    await Dispatcher.RunAsync(
+                        CoreDispatcherPriority.Normal,
+                        async () =>
+                        {
+                            Search searchResponse = response.State.Single();
+                            string message =
+                                string.Format(
+                                    "Search returned {0} statuses",
+                                    searchResponse.Statuses.Count);
 
-            string message =
-                string.Format(
-                    "Search returned {0} statuses",
-                    searchResponse.Statuses.Count);
-
-            await new MessageDialog(message, "Search Complete").ShowAsync();
+                            await new MessageDialog(message, "Search Complete").ShowAsync();
+                        }));
         }
     }
 }

@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using LinqToTwitter.Net;
 using LinqToTwitter.Security;
 
 //using LinqToTwitter.Common;
@@ -321,14 +322,17 @@ namespace LinqToTwitter
         /// <param name="request">Request with url endpoint and all query parameters</param>
         /// <param name="reqProc">Request Processor for Async Results</param>
         /// <returns>XML Respose from Twitter</returns>
-        public async Task<string> QueryTwitter<T>(Request request, IRequestProcessor<T> reqProc)
+        public async Task<string> QueryTwitterAsync<T>(Request request, IRequestProcessor<T> reqProc)
         {
-            await Task.Delay(1);
-            WriteLog(LastUrl, "QueryTwitter");
+            WriteLog(LastUrl, "QueryTwitterAsync");
 
-            var req = new HttpRequestMessage(HttpMethod.Get, request.Endpoint);
+            var req = new HttpRequestMessage(HttpMethod.Get, request.FullUrl);
 
-            SetAuthorizationHeader(request, req);
+            var parms = request.RequestParameters
+                               .ToDictionary(
+                                    key => key.Name,
+                                    val => val.Value);
+            SetAuthorizationHeader(HttpMethod.Get, request.FullUrl, parms, req);
             req.Headers.Add("User-Agent", UserAgent);
             //req.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
             req.Headers.ExpectContinue = false;
@@ -338,21 +342,13 @@ namespace LinqToTwitter
             return await msg.Content.ReadAsStringAsync();
         }
   
-        void SetAuthorizationHeader(Request request, HttpRequestMessage req)
+        internal void SetAuthorizationHeader(HttpMethod method, string url, IDictionary<string, string> parms, HttpRequestMessage req)
         {
-            string consumerSecret = Authorizer.CredentialStore.ConsumerSecret ?? "";
-            string oAuthTokenSecret = Authorizer.CredentialStore.OAuthTokenSecret ?? "";
+            var authStringParms = parms.ToDictionary(parm => parm.Key, elm => elm.Value);
+            authStringParms.Add("oauth_consumer_key", Authorizer.CredentialStore.ConsumerKey);
+            authStringParms.Add("oauth_token", Authorizer.CredentialStore.OAuthToken);
 
-            var parms = request.RequestParameters
-                               .ToDictionary(
-                                    key => key.Name,
-                                    val => val.Value);
-            parms.Add("oauth_consumer_key", Authorizer.CredentialStore.ConsumerKey);
-            parms.Add("oauth_token", Authorizer.CredentialStore.OAuthToken);
-
-            string authorizationString =
-                new OAuth().GetAuthorizationString(
-                    HttpMethod.Get.ToString(), request.FullUrl, parms, consumerSecret, oAuthTokenSecret);
+            string authorizationString = Authorizer.GetAuthorizationString(method, url, authStringParms);
 
             req.Headers.Add("Authorization", authorizationString);
         }
@@ -1079,15 +1075,87 @@ namespace LinqToTwitter
 //            return response;
 //        }
 
-//        /// <summary>
-//        /// performs HTTP POST to Twitter
-//        /// </summary>
-//        /// <param name="url">URL of request</param>
-//        /// <param name="postData">parameters to post</param>
-//        /// <param name="getResult">callback for handling async Json response - null if synchronous</param>
-//        /// <returns>Json Response from Twitter - empty string if async</returns>
-//        public string PostToTwitter<T>(string url, IDictionary<string, string> postData, Func<string, T> getResult)
-//        {
+        /// <summary>
+        /// performs HTTP POST to Twitter
+        /// </summary>
+        /// <param name="url">URL of request</param>
+        /// <param name="postData">parameters to post</param>
+        /// <param name="getResult">callback for handling async Json response - null if synchronous</param>
+        /// <returns>Json Response from Twitter - empty string if async</returns>
+        public async Task<string> PostToTwitterAsync<T>(string url, IDictionary<string, string> postData, Func<string, T> getResult)
+        {
+            await Task.Delay(1);
+            WriteLog(LastUrl, "PostToTwitterAsync");
+
+            //var req = new HttpRequestMessage(HttpMethod.Post, url);
+
+            var cleanPostData = new Dictionary<string, string>();
+
+            foreach (var pair in postData)
+            {
+                if (pair.Value != null)
+                    cleanPostData.Add(pair.Key, pair.Value);
+            }
+
+            //SetAuthorizationHeader(HttpMethod.Post, url, cleanPostData, req);
+            //req.Headers.Add("User-Agent", UserAgent);
+            ////req.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
+            //req.Headers.ExpectContinue = false;
+
+            //var encoding = Encoding.GetEncoding("iso-8859-1");
+
+            //var paramList = new List<string>();
+
+            //if (postData != null && postData.Count > 0)
+            //{
+            //    foreach (var param in postData)
+            //    {
+            //        if (param.Value != null)
+            //        {
+            //            string urlEncodedValue = Url.PercentEncode(param.Value);
+            //            byte[] valueBytes = Encoding.UTF8.GetBytes(urlEncodedValue);
+            //            string encodedParamVal = encoding.GetString(valueBytes, 0, valueBytes.Length);
+
+            //            paramList.Add(param.Key + "=" + encodedParamVal);
+            //        }
+            //    }
+            //}
+
+            //string postDataString = string.Join("&", paramList.ToArray());
+            ////byte[] paramBytes = encoding.GetBytes(postDataString);
+            //req.Content = new StringContent(postDataString);
+
+            //var postPairs = new List<KeyValuePair<string, string>>();
+            //foreach (var pair in cleanPostData)
+            //{
+            //    if (!pair.Key.StartsWith("oauth_"))
+            //    {
+            //        string urlEncodedValue = Url.PercentEncode(pair.Value);
+            //        byte[] valueBytes = Encoding.UTF8.GetBytes(urlEncodedValue);
+            //        string encodedParamVal = encoding.GetString(valueBytes, 0, valueBytes.Length);
+            //        postPairs.Add(new KeyValuePair<string, string>(pair.Key, encodedParamVal));
+            //    }
+            //}
+            //var postDataString = string.Join("&",
+            //    (from pair in cleanPostData
+            //     where !pair.Key.StartsWith("oauth_")
+            //     select pair.Key + "=" + Url.PercentEncode(pair.Value))
+            //    .ToArray());
+
+            //postData.Add(new KeyValuePair<string, string>("Name", "test"));
+            //postData.Add(new KeyValuePair<string, string>("Price ", "100"));
+
+            //req.Content = new FormUrlEncodedContent(postPairs); 
+            //req.Content = new StringContent(postString, Encoding.UTF8, "application/x-www-form-urlencoded");
+
+            var content = new FormUrlEncodedContent(cleanPostData);
+
+            //var content = new StringContent(postDataString, Encoding.UTF8, "application/x-www-form-urlencoded");
+            var client = new HttpClient(new PostMessageHandler(this, cleanPostData, url));
+            var msg = await client.PostAsync(url, content);
+            //var msg = await new HttpClient().SendAsync(req);
+
+            return await msg.Content.ReadAsStringAsync();
 //#if SILVERLIGHT && !NETFX_CORE
 //            if (AsyncCallback == null)
 //                throw new InvalidOperationException("Silverlight and Windows Phone applications require async commands.");
@@ -1271,7 +1339,32 @@ namespace LinqToTwitter
 //            CheckResultsForTwitterError(response, httpStatus);
 
 //            return response;
-//        }
+        }
+
+        class PostMessageHandler : DelegatingHandler
+        {
+            TwitterExecute exe;
+            IDictionary<string, string> postData;
+            string url;
+
+            public PostMessageHandler(TwitterExecute exe, IDictionary<string, string> postData, string url)
+                : base(new HttpClientHandler())
+            {
+                this.exe = exe;
+                this.postData = postData;
+                this.url = url;
+            }
+
+            protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+            {
+                exe.SetAuthorizationHeader(HttpMethod.Post, url, postData, request);
+                request.Headers.Add("User-Agent", exe.UserAgent);
+                request.Headers.Add("Accept-Encoding", "gzip");
+                request.Headers.ExpectContinue = false;
+                
+                return base.SendAsync(request, cancellationToken);
+            }
+        }
 
         void WriteLog(string content, string currentMethod)
         {

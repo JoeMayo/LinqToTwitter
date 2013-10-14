@@ -65,10 +65,13 @@ namespace LinqToTwitter
             }
         }
 
+        public AuthorizerBase() : this(false, AuthAccessType.NoChange, string.Empty) { }
+
         public AuthorizerBase(bool forceLogin, AuthAccessType accessType, string prefillScreenName)
         {
             ForceLogin = forceLogin;
             AccessType = accessType;
+            PreFillScreenName = prefillScreenName;
 
             if (string.IsNullOrWhiteSpace(UserAgent))
                 UserAgent = TwitterContext.DefaultUserAgent;
@@ -175,22 +178,26 @@ namespace LinqToTwitter
                 CredentialStore.UserID = responseParams["user_id"];
         }
 
-        async Task<string> HttpGetAsync(string oauthUrl, IDictionary<string, string> parameters)
+        public async Task<string> HttpGetAsync(string oauthUrl, IDictionary<string, string> parameters)
         {
-            string consumerSecret = CredentialStore.ConsumerSecret ?? "";
-            string oAuthTokenSecret = CredentialStore.OAuthTokenSecret ?? "";
-            string authorizationString = 
-                new OAuth().GetAuthorizationString(
-                    HttpMethod.Get.ToString(), oauthUrl, parameters, consumerSecret, oAuthTokenSecret);
-
             var req = new HttpRequestMessage(HttpMethod.Get, oauthUrl);
-            req.Headers.Add("Authorization", authorizationString);
+            req.Headers.Add("Authorization", GetAuthorizationString(HttpMethod.Get, oauthUrl, parameters));
             req.Headers.Add("User-Agent", UserAgent);
             req.Headers.ExpectContinue = false;
 
             var msg = await new HttpClient().SendAsync(req);
 
             return await msg.Content.ReadAsStringAsync();
+        }
+  
+        public virtual string GetAuthorizationString(HttpMethod method, string oauthUrl, IDictionary<string, string> parameters)
+        {
+            string consumerSecret = CredentialStore.ConsumerSecret ?? "";
+            string oAuthTokenSecret = CredentialStore.OAuthTokenSecret ?? "";
+            string authorizationString =
+                new OAuth().GetAuthorizationString(
+                    method.ToString(), oauthUrl, parameters, consumerSecret, oAuthTokenSecret);
+            return authorizationString;
         }
     }
 }

@@ -100,10 +100,6 @@ namespace LinqToTwitter
         /// <returns>Request to be sent to Twitter</returns>
         public new WebRequest Get(Request request)
         {
-            string outUrl;
-            string queryString;
-            OAuthTwitter.GetOAuthQueryString(HttpMethod.GET, request, string.Empty, out outUrl, out queryString);
-
             var req = WebRequest.Create(request.FullUrl) as HttpWebRequest;
             if (req != null)
             {

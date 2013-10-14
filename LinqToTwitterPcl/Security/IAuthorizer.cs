@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace LinqToTwitter
@@ -10,5 +12,7 @@ namespace LinqToTwitter
         string UserAgent { get; set; }
 
         ICredentialStore CredentialStore { get; set; }
+
+        string GetAuthorizationString(HttpMethod method, string oauthUrl, IDictionary<string, string> parameters);
     }
 }
