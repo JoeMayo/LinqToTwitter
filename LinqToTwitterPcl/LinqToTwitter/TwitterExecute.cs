@@ -1084,10 +1084,7 @@ namespace LinqToTwitter
         /// <returns>Json Response from Twitter - empty string if async</returns>
         public async Task<string> PostToTwitterAsync<T>(string url, IDictionary<string, string> postData, Func<string, T> getResult)
         {
-            await Task.Delay(1);
             WriteLog(LastUrl, "PostToTwitterAsync");
-
-            //var req = new HttpRequestMessage(HttpMethod.Post, url);
 
             var cleanPostData = new Dictionary<string, string>();
 
@@ -1097,248 +1094,11 @@ namespace LinqToTwitter
                     cleanPostData.Add(pair.Key, pair.Value);
             }
 
-            //SetAuthorizationHeader(HttpMethod.Post, url, cleanPostData, req);
-            //req.Headers.Add("User-Agent", UserAgent);
-            ////req.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
-            //req.Headers.ExpectContinue = false;
-
-            //var encoding = Encoding.GetEncoding("iso-8859-1");
-
-            //var paramList = new List<string>();
-
-            //if (postData != null && postData.Count > 0)
-            //{
-            //    foreach (var param in postData)
-            //    {
-            //        if (param.Value != null)
-            //        {
-            //            string urlEncodedValue = Url.PercentEncode(param.Value);
-            //            byte[] valueBytes = Encoding.UTF8.GetBytes(urlEncodedValue);
-            //            string encodedParamVal = encoding.GetString(valueBytes, 0, valueBytes.Length);
-
-            //            paramList.Add(param.Key + "=" + encodedParamVal);
-            //        }
-            //    }
-            //}
-
-            //string postDataString = string.Join("&", paramList.ToArray());
-            ////byte[] paramBytes = encoding.GetBytes(postDataString);
-            //req.Content = new StringContent(postDataString);
-
-            //var postPairs = new List<KeyValuePair<string, string>>();
-            //foreach (var pair in cleanPostData)
-            //{
-            //    if (!pair.Key.StartsWith("oauth_"))
-            //    {
-            //        string urlEncodedValue = Url.PercentEncode(pair.Value);
-            //        byte[] valueBytes = Encoding.UTF8.GetBytes(urlEncodedValue);
-            //        string encodedParamVal = encoding.GetString(valueBytes, 0, valueBytes.Length);
-            //        postPairs.Add(new KeyValuePair<string, string>(pair.Key, encodedParamVal));
-            //    }
-            //}
-            //var postDataString = string.Join("&",
-            //    (from pair in cleanPostData
-            //     where !pair.Key.StartsWith("oauth_")
-            //     select pair.Key + "=" + Url.PercentEncode(pair.Value))
-            //    .ToArray());
-
-            //postData.Add(new KeyValuePair<string, string>("Name", "test"));
-            //postData.Add(new KeyValuePair<string, string>("Price ", "100"));
-
-            //req.Content = new FormUrlEncodedContent(postPairs); 
-            //req.Content = new StringContent(postString, Encoding.UTF8, "application/x-www-form-urlencoded");
-
             var content = new FormUrlEncodedContent(cleanPostData);
-
-            //var content = new StringContent(postDataString, Encoding.UTF8, "application/x-www-form-urlencoded");
             var client = new HttpClient(new PostMessageHandler(this, cleanPostData, url));
-            var msg = await client.PostAsync(url, content);
-            //var msg = await new HttpClient().SendAsync(req);
+            HttpResponseMessage msg = await client.PostAsync(url, content);
 
             return await msg.Content.ReadAsStringAsync();
-//#if SILVERLIGHT && !NETFX_CORE
-//            if (AsyncCallback == null)
-//                throw new InvalidOperationException("Silverlight and Windows Phone applications require async commands.");
-//#endif
-//            var encoding = Encoding.GetEncoding("iso-8859-1");
-
-//            var paramList = new List<string>();
-
-//            if (postData != null && postData.Count > 0)
-//            {
-//                foreach (var param in postData)
-//                {
-//                    if (param.Value != null)
-//                    {
-//                        string urlEncodedValue = BuildUrlHelper.UrlEncode(param.Value);
-//                        byte[] valueBytes = Encoding.UTF8.GetBytes(urlEncodedValue);
-//                        string encodedParamVal = encoding.GetString(valueBytes, 0, valueBytes.Length);
-
-//                        paramList.Add(param.Key + "=" + encodedParamVal);
-//                    }
-//                }
-//            }
-
-//            string postDataString = string.Join("&", paramList.ToArray());
-//            byte[] paramBytes = encoding.GetBytes(postDataString);
-
-//            string response = string.Empty;
-//            string httpStatus = string.Empty;
-
-//            try
-//            {
-//                LastUrl = url;
-
-//                //Log
-//                WriteLog(LastUrl, "PostToTwitter");
-
-//                var dontIncludePostParametersInOAuthSignature = new Dictionary<string, string>();
-//                var request = new Request(url);
-//                foreach (var key in postData.Keys)
-//                {
-//                    if (postData[key] != null)
-//                        request.RequestParameters.Add(new QueryParameter(key, postData[key]));
-//                }
-//                var req = AuthorizedClient.PostRequest(request, dontIncludePostParametersInOAuthSignature);
-
-//#if !WINDOWS_PHONE && !NETFX_CORE
-//                req.AllowWriteStreamBuffering = true;
-//                req.ContentLength = paramBytes.Length;
-//#endif
-
-//                Exception asyncException = null;
-//                using (var resetEvent = new ManualResetEvent(/*initialStateSignaled:*/ false))
-//                {
-//                    req.BeginGetRequestStream(
-//                        new AsyncCallback(
-//                            ar =>
-//                            {
-//                                try
-//                                {
-//                                    using (var reqStream = req.EndGetRequestStream(ar))
-//                                    {
-//                                        int offset = 0;
-//                                        const int BufferSize = 4096;
-//                                        int lastPercentage = 0;
-//                                        while (offset < paramBytes.Length)
-//                                        {
-//                                            int bytesToWrite = Math.Min(BufferSize, paramBytes.Length - offset);
-//                                            reqStream.Write(paramBytes, offset, bytesToWrite);
-//                                            offset += bytesToWrite;
-
-//                                            int percentComplete =
-//                                                (int)((double)offset / (double)paramBytes.Length * 100);
-
-//                                            // since we still need to get the response later
-//                                            // in the algorithm, interpolate the results to
-//                                            // give user a more accurate picture of completion.
-//                                            // i.e. we don't want to shoot up to 100% here when
-//                                            // we know there is more processing to do.
-//                                            lastPercentage = percentComplete >= 98 ?
-//                                                100 - ((98 - lastPercentage) / 2) :
-//                                                percentComplete;
-
-//                                            OnUploadProgressChanged(lastPercentage);
-//                                        }
-
-//                                        reqStream.Flush();
-//                                    }
-//                                }
-//                                catch (Exception ex)
-//                                {
-//                                    asyncException = ex;
-//                                }
-//                                finally
-//                                {
-//                                    resetEvent.Set();
-//                                }
-//                            }), null);
-
-//                    resetEvent.WaitOne();
-
-//                    if (asyncException != null)
-//                        throw asyncException;
-
-//                    resetEvent.Reset();
-
-//                    req.BeginGetResponse(
-//                        new AsyncCallback(
-//                            ar =>
-//                            {
-//                                try
-//                                {
-//                                    lock (this.asyncCallbackLock)
-//                                    {
-//                                        using (var res = req.EndGetResponse(ar) as HttpWebResponse)
-//                                        {
-//                                            httpStatus = res.Headers["Status"];
-//                                            response = GetTwitterResponse(res);
-
-//                                            if (AsyncCallback != null)
-//                                            {
-//                                                var asyncResp = new TwitterAsyncResponse<T>();
-//                                                asyncResp.State = getResult(response);
-//                                                (AsyncCallback as Action<TwitterAsyncResponse<T>>)(asyncResp);
-//                                                AsyncCallback = null; // set to null because the next query might not be async
-//                                            }
-
-//                                            // almost done
-//                                            OnUploadProgressChanged(99);
-//                                        }
-//                                    }
-//                                }
-//                                catch (Exception ex)
-//                                {
-//                                    if (AsyncCallback == null)
-//                                    {
-//                                        asyncException = ex;
-//                                    }
-//                                    else
-//                                    {
-//                                        var asyncResp = new TwitterAsyncResponse<T>();
-//                                        asyncResp.Status = TwitterErrorStatus.RequestProcessingException;
-//                                        asyncResp.Message = "Processing failed. See Error property for more details.";
-//                                        if (ex is WebException)
-//                                        {
-//                                            var twitterQueryEx = CreateTwitterQueryException(ex as WebException);
-//                                            asyncResp.Exception = twitterQueryEx;
-//                                        }
-//                                        else
-//                                        {
-//                                            asyncResp.Exception = ex;
-//                                        }
-//                                        (AsyncCallback as Action<TwitterAsyncResponse<T>>)(asyncResp);
-//                                    }
-
-//                                    WriteLog("PostToTwitter", "Error querying Twitter: " + ex.ToString());
-//                                }
-//                                finally
-//                                {
-//#if !WINDOWS_PHONE && !NETFX_CORE
-//                                    resetEvent.Set();
-//#endif
-//                                }
-//                            }), null);
-
-//#if !WINDOWS_PHONE && !NETFX_CORE
-//                    resetEvent.WaitOne();
-//#endif
-//                    if (asyncException != null)
-//                        throw asyncException;
-//                }
-//            }
-//            catch (WebException wex)
-//            {
-//                var twitterQueryEx = CreateTwitterQueryException(wex);
-//                throw twitterQueryEx;
-//            }
-
-//            // make sure the caller knows it's done
-//            OnUploadProgressChanged(100);
-
-//            CheckResultsForTwitterError(response, httpStatus);
-
-//            return response;
         }
 
         class PostMessageHandler : DelegatingHandler
@@ -1355,14 +1115,14 @@ namespace LinqToTwitter
                 this.url = url;
             }
 
-            protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+            protected async override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
             {
                 exe.SetAuthorizationHeader(HttpMethod.Post, url, postData, request);
                 request.Headers.Add("User-Agent", exe.UserAgent);
-                request.Headers.Add("Accept-Encoding", "gzip");
+                //request.Headers.Add("Accept-Encoding", "gzip");
                 request.Headers.ExpectContinue = false;
                 
-                return base.SendAsync(request, cancellationToken);
+                return await base.SendAsync(request, cancellationToken);
             }
         }
 

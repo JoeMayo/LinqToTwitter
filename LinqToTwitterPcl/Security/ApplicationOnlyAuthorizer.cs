@@ -88,45 +88,5 @@ namespace LinqToTwitter
         {
             return "Bearer " + BearerToken;
         }
-
-        //public override HttpWebRequest PostRequest(Request request, IDictionary<string, string> postData)
-        //{
-        //    var req = WebRequest.Create(request.FullUrl) as HttpWebRequest;
-
-        //    if (req != null)
-        //    {
-        //        req.Method = HttpMethod.POST.ToString();
-        //        req.Headers[HttpRequestHeader.Authorization] = "Bearer " + BearerToken;
-
-        //        InitializeRequest(req);
-        //    }
-
-        //    return req;
-        //}
-
-        //public override HttpWebResponse Post(Request request, IDictionary<string, string> postData)
-        //{
-        //    var req = PostRequest(request, postData);
-        //    return Utilities.AsyncGetResponse(req);
-        //}
-
-        //public override HttpWebRequest PostAsync(Request request, IDictionary<string, string> postData)
-        //{
-        //    var req = WebRequest.Create(
-        //            ProxyUrl + request.Endpoint +
-        //            (string.IsNullOrEmpty(ProxyUrl) ? "?" : "&") +
-        //            request.QueryString)
-        //        as HttpWebRequest;
-
-        //    if (req != null)
-        //    {
-        //        req.Method = HttpMethod.POST.ToString();
-        //        req.Headers[HttpRequestHeader.Authorization] = "Bearer " + BearerToken;
-
-        //        InitializeRequest(req);
-        //    }
-
-        //    return req;
-        //}
     }
 }
