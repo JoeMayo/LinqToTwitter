@@ -64,7 +64,7 @@ namespace MetroOAuthDemo
             //    }
             //};
 
-            if (auth == null || !auth.IsAuthorized)
+            if (auth != null && !auth.IsAuthorized)
             {
                 await auth.AuthorizeAsync();
             }

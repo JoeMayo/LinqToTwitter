@@ -7,6 +7,7 @@ namespace LinqToTwitter
 {
     public partial class TwitterContext
     {
+        public const ulong MissingID = 0ul;
         public const ulong NoReply = 0ul;
         public const decimal NoCoordinate = -1m;
 
@@ -113,401 +114,220 @@ namespace LinqToTwitter
         //}
 
         /// <summary>
-        /// sends a status update - overload to make inReplyToStatusID optional
+        /// Replies to a tweet.
         /// </summary>
-        /// <param name="status">(optional @UserName) and (required) status text</param>
-        /// <returns>IQueryable of sent status</returns>
-        public async Task<Status> UpdateStatusAsync(string status)
+        /// <param name="tweetID">ID (aka StatusID) of tweet to reply to.</param>
+        /// <param name="status">Reply status text.</param>
+        /// <returns>Reply status.</returns>
+        public async Task<Status> ReplyAsync(ulong tweetID, string status)
         {
-            return await UpdateStatusAsync(status, -1, -1, null, false, null, false, null);
+            return await ReplyAsync(tweetID, status, NoCoordinate, NoCoordinate, null, false, false);
         }
 
         /// <summary>
-        /// sends a status update - overload to make inReplyToStatusID optional
+        /// Replies to a tweet with coordinates.
         /// </summary>
-        /// <param name="status">(optional @UserName) and (required) status text</param>
-        /// <param name="callback">Async Callback used in Silverlight queries</param>
-        /// <returns>IQueryable of sent status</returns>
-        public async Task<Status> UpdateStatusAsync(string status, Action<TwitterAsyncResponse<Status>> callback)
+        /// <param name="tweetID">ID (aka StatusID) of tweet to reply to.</param>
+        /// <param name="status">Reply status text.</param>
+        /// <param name="latitude">Latitude coordinate of where tweet occurred.</param>
+        /// <param name="longitude">Longitude coordinate of where tweet occurred.</param>
+        /// <param name="displayCoordinates">Allow or prevent display of coordinates for this tweet.</param>
+        /// <returns>Reply status.</returns>
+        public async Task<Status> ReplyAsync(ulong tweetID, string status, decimal latitude, decimal longitude, bool displayCoordinates)
         {
-            return await UpdateStatusAsync(status, -1, -1, null, false, null, false, callback);
+            return await ReplyAsync(tweetID, status, latitude, longitude, null, displayCoordinates, false);
         }
 
         /// <summary>
-        /// sends a status update
+        /// Replies to a tweet with.
         /// </summary>
-        /// <param name="status">(optional @UserName) and (required) status text</param>
-        /// <param name="inReplyToStatusID">id of status replying to - optional - pass null if not used</param>
-        /// <returns>IQueryable of sent status</returns>
-        public async Task<Status> UpdateStatusAsync(string status, string inReplyToStatusID)
+        /// <param name="tweetID">ID (aka StatusID) of tweet to reply to.</param>
+        /// <param name="status">Reply status text.</param>
+        /// <param name="latitude">Latitude coordinate of where tweet occurred.</param>
+        /// <param name="longitude">Longitude coordinate of where tweet occurred.</param>
+        /// <param name="placeID">ID of place (found via Geo Reverse lookup query).</param>
+        /// <returns>Reply status.</returns>
+        public async Task<Status> ReplyAsync(ulong tweetID, string status, decimal latitude, decimal longitude, string placeID, bool trimUser)
         {
-            return await UpdateStatusAsync(status, -1, -1, null, false, inReplyToStatusID, false, null);
+            return await ReplyAsync(tweetID, status, latitude, longitude, placeID, false, trimUser);
         }
 
         /// <summary>
-        /// sends a status update
+        /// Replies to a tweet.
         /// </summary>
-        /// <param name="status">(optional @UserName) and (required) status text</param>
-        /// <param name="inReplyToStatusID">id of status replying to - optional - pass null if not used</param>
-        /// <param name="callback">Async Callback used in Silverlight queries</param>
-        /// <returns>IQueryable of sent status</returns>
-        public async Task<Status> UpdateStatusAsync(string status, string inReplyToStatusID, Action<TwitterAsyncResponse<Status>> callback)
+        /// <param name="tweetID">ID (aka StatusID) of tweet to reply to.</param>
+        /// <param name="status">Reply status text.</param>
+        /// <param name="placeID">ID of place (found via Geo Reverse lookup query).</param>
+        /// <param name="displayCoordinates">Allow or prevent display of coordinates for this tweet.</param>
+        /// <returns>Reply status.</returns>
+        public async Task<Status> ReplyAsync(ulong tweetID, string status, string placeID, bool displayCoordinates, bool trimUser)
         {
-            return await UpdateStatusAsync(status, -1, -1, null, false, inReplyToStatusID, false, callback);
+            return await ReplyAsync(tweetID, status, NoCoordinate, NoCoordinate, placeID, displayCoordinates, trimUser);
         }
 
         /// <summary>
-        /// sends a status update
+        /// Replies to a tweet.
         /// </summary>
-        /// <param name="status">(optional @UserName) and (required) status text</param>
-        /// <param name="latitude">Latitude coordinate of where tweet occurred</param>
-        /// <param name="longitude">Longitude coordinate of where tweet occurred</param>
-        /// <returns>IQueryable of sent status</returns>
-        public async Task<Status> UpdateStatusAsync(string status, decimal latitude, decimal longitude)
+        /// <param name="tweetID">ID (aka StatusID) of tweet to reply to.</param>
+        /// <param name="status">Reply status text.</param>
+        /// <param name="latitude">Latitude coordinate of where tweet occurred.</param>
+        /// <param name="longitude">Longitude coordinate of where tweet occurred.</param>
+        /// <param name="placeID">ID of place (found via Geo Reverse lookup query).</param>
+        /// <param name="displayCoordinates">Allow or prevent display of coordinates for this tweet.</param>
+        /// <returns>Reply status.</returns>
+        public async Task<Status> ReplyAsync(ulong tweetID, string status, decimal latitude, decimal longitude, string placeID, bool displayCoordinates, bool trimUser)
         {
-            return await UpdateStatusAsync(status, latitude, longitude, null, false, null, false, null);
+            if (tweetID == MissingID)
+                throw new ArgumentException("0 is *not* a valid tweetID. You must provide the ID of the tweet you're replying to.", "tweetID");
+
+            return await TweetOrReplyAsync(tweetID, status, latitude, longitude, placeID, displayCoordinates, trimUser);
         }
 
         /// <summary>
-        /// sends a status update
+        /// Sends a status update.
         /// </summary>
-        /// <param name="status">(optional @UserName) and (required) status text</param>
-        /// <param name="latitude">Latitude coordinate of where tweet occurred</param>
-        /// <param name="longitude">Longitude coordinate of where tweet occurred</param>
-        /// <param name="callback">Async Callback used in Silverlight queries</param>
-        /// <returns>IQueryable of sent status</returns>
-        public async Task<Status> UpdateStatusAsync(string status, decimal latitude, decimal longitude, Action<TwitterAsyncResponse<Status>> callback)
+        /// <param name="status">Status text.</param>
+        /// <returns>Tweeted status.</returns>
+        public async Task<Status> TweetAsync(string status)
         {
-            return await UpdateStatusAsync(status, latitude, longitude, null, false, null, false, callback);
+            return await TweetOrReplyAsync(NoReply, status, NoCoordinate, NoCoordinate, null, false, false);
         }
 
         /// <summary>
-        /// sends a status update
+        /// Sends a status update.
         /// </summary>
-        /// <param name="status">(optional @UserName) and (required) status text</param>
-        /// <param name="latitude">Latitude coordinate of where tweet occurred</param>
-        /// <param name="longitude">Longitude coordinate of where tweet occurred</param>
-        /// <param name="displayCoordinates">Allow or prevent display of coordinates for this tweet</param>
-        /// <returns>IQueryable of sent status</returns>
-        public async Task<Status> UpdateStatusAsync(string status, decimal latitude, decimal longitude, bool displayCoordinates)
+        /// <param name="status">Status text.</param>
+        /// <param name="latitude">Latitude coordinate of where tweet occurred.</param>
+        /// <param name="longitude">Longitude coordinate of where tweet occurred.</param>
+        /// <returns>Tweeted status.</returns>
+        public async Task<Status> TweetAsync(string status, decimal latitude, decimal longitude)
         {
-            return await UpdateStatusAsync(status, latitude, longitude, null, displayCoordinates, null, false, null);
+            return await TweetOrReplyAsync(NoReply, status, latitude, longitude, null, false, false);
         }
 
         /// <summary>
-        /// sends a status update
+        /// Sends a status update.
         /// </summary>
-        /// <param name="status">(optional @UserName) and (required) status text</param>
-        /// <param name="latitude">Latitude coordinate of where tweet occurred</param>
-        /// <param name="longitude">Longitude coordinate of where tweet occurred</param>
-        /// <param name="displayCoordinates">Allow or prevent display of coordinates for this tweet</param>
-        /// <param name="callback">Async Callback used in Silverlight queries</param>
-        /// <returns>IQueryable of sent status</returns>
-        public async Task<Status> UpdateStatusAsync(string status, decimal latitude, decimal longitude, bool displayCoordinates, Action<TwitterAsyncResponse<Status>> callback)
+        /// <param name="status">Status text.</param>
+        /// <param name="latitude">Latitude coordinate of where tweet occurred.</param>
+        /// <param name="longitude">Longitude coordinate of where tweet occurred.</param>
+        /// <param name="displayCoordinates">Allow or prevent display of coordinates for this tweet.</param>
+        /// <returns>Tweeted status.</returns>
+        public async Task<Status> TweetAsync(string status, decimal latitude, decimal longitude, bool displayCoordinates)
         {
-            return await UpdateStatusAsync(status, latitude, longitude, null, displayCoordinates, callback);
+            return await TweetOrReplyAsync(NoReply, status, latitude, longitude, null, displayCoordinates, false);
         }
 
         /// <summary>
-        /// sends a status update
+        /// Sends a status update.
         /// </summary>
-        /// <param name="status">(optional @UserName) and (required) status text</param>
-        /// <param name="latitude">Latitude coordinate of where tweet occurred</param>
-        /// <param name="longitude">Longitude coordinate of where tweet occurred</param>
-        /// <param name="displayCoordinates">Allow or prevent display of coordinates for this tweet</param>
-        /// <param name="inReplyToStatusID">id of status replying to - optional - pass null if not used</param>
-        /// <returns>IQueryable of sent status</returns>
-        public async Task<Status> UpdateStatusAsync(string status, decimal latitude, decimal longitude, bool displayCoordinates, string inReplyToStatusID)
+        /// <param name="status">Status text.</param>
+        /// <param name="latitude">Latitude coordinate of where tweet occurred.</param>
+        /// <param name="longitude">Longitude coordinate of where tweet occurred.</param>
+        /// <param name="placeID">ID of place (found via Geo Reverse lookup query).</param>
+        /// <returns>Tweeted status.</returns>
+        public async Task<Status> TweetAsync(string status, decimal latitude, decimal longitude, string placeID, bool trimUser)
         {
-            return await UpdateStatusAsync(status, latitude, longitude, null, displayCoordinates, inReplyToStatusID, false, null);
+            return await TweetOrReplyAsync(NoReply, status, latitude, longitude, placeID, false, trimUser);
         }
 
         /// <summary>
-        /// sends a status update
+        /// Sends a status update.
         /// </summary>
-        /// <param name="status">(optional @UserName) and (required) status text</param>
-        /// <param name="latitude">Latitude coordinate of where tweet occurred</param>
-        /// <param name="longitude">Longitude coordinate of where tweet occurred</param>
-        /// <param name="displayCoordinates">Allow or prevent display of coordinates for this tweet</param>
-        /// <param name="inReplyToStatusID">id of status replying to - optional - pass null if not used</param>
-        /// <param name="callback">Async Callback used in Silverlight queries</param>
-        /// <returns>IQueryable of sent status</returns>
-        public async Task<Status> UpdateStatusAsync(string status, decimal latitude, decimal longitude, bool displayCoordinates, string inReplyToStatusID, Action<TwitterAsyncResponse<Status>> callback)
+        /// <param name="status">Status text.</param>
+        /// <param name="latitude">Latitude coordinate of where tweet occurred.</param>
+        /// <param name="longitude">Longitude coordinate of where tweet occurred.</param>
+        /// <param name="placeID">ID of place (found via Geo Reverse lookup query).</param>
+        /// <param name="displayCoordinates">Allow or prevent display of coordinates for this tweet.</param>
+        /// <returns>Tweeted status.</returns>
+        public async Task<Status> TweetAsync(string status, decimal latitude, decimal longitude, string placeID, bool displayCoordinates, bool trimUser)
         {
-            return await UpdateStatusAsync(status, latitude, longitude, null, displayCoordinates, inReplyToStatusID, false, callback);
+            return await TweetOrReplyAsync(NoReply, status, latitude, longitude, placeID, displayCoordinates, trimUser);
         }
 
         /// <summary>
-        /// sends a status update
+        /// Sends a status update.
         /// </summary>
-        /// <param name="status">(optional @UserName) and (required) status text</param>
-        /// <param name="latitude">Latitude coordinate of where tweet occurred</param>
-        /// <param name="longitude">Longitude coordinate of where tweet occurred</param>
-        /// <param name="placeID">ID of place (found via Geo Reverse lookup query)</param>
-        /// <returns>IQueryable of sent status</returns>
-        public async Task<Status> UpdateStatusAsync(string status, decimal latitude, decimal longitude, string placeID, bool trimUser)
+        /// <param name="status">Status text.</param>
+        /// <param name="placeID">ID of place (found via Geo Reverse lookup query).</param>
+        /// <param name="displayCoordinates">Allow or prevent display of coordinates for this tweet.</param>
+        /// <returns>Tweeted status.</returns>
+        public async Task<Status> TweetAsync(string status, string placeID, bool displayCoordinates, bool trimUser)
         {
-            return await UpdateStatusAsync(status, latitude, longitude, placeID, false, null, trimUser, null);
+            return await TweetOrReplyAsync(NoReply, status, NoCoordinate, NoCoordinate, placeID, displayCoordinates, trimUser);
         }
 
         /// <summary>
-        /// sends a status update
+        /// Sends a status update.
         /// </summary>
-        /// <param name="status">(optional @UserName) and (required) status text</param>
-        /// <param name="latitude">Latitude coordinate of where tweet occurred</param>
-        /// <param name="longitude">Longitude coordinate of where tweet occurred</param>
-        /// <param name="placeID">ID of place (found via Geo Reverse lookup query)</param>
-        /// <param name="callback">Async Callback used in Silverlight queries</param>
-        /// <returns>IQueryable of sent status</returns>
-        public async Task<Status> UpdateStatusAsync(string status, decimal latitude, decimal longitude, string placeID, bool trimUser, Action<TwitterAsyncResponse<Status>> callback)
+        /// <param name="tweetID">ID (aka StatusID) of tweet to reply to. Sent via ReplyAsync overloads.</param>
+        /// <param name="status">Status text.</param>
+        /// <param name="latitude">Latitude coordinate of where tweet occurred.</param>
+        /// <param name="longitude">Longitude coordinate of where tweet occurred.</param>
+        /// <param name="placeID">ID of place (found via Geo Reverse lookup query).</param>
+        /// <param name="displayCoordinates">Allow or prevent display of coordinates for this tweet.</param>
+        /// <returns>Tweeted status.</returns>
+        internal async Task<Status> TweetOrReplyAsync(ulong tweetID, string status, decimal latitude, decimal longitude, string placeID, bool displayCoordinates, bool trimUser)
         {
-            return await UpdateStatusAsync(status, latitude, longitude, placeID, false, null, trimUser, callback);
-        }
-
-        /// <summary>
-        /// sends a status update
-        /// </summary>
-        /// <param name="status">(optional @UserName) and (required) status text</param>
-        /// <param name="latitude">Latitude coordinate of where tweet occurred</param>
-        /// <param name="longitude">Longitude coordinate of where tweet occurred</param>
-        /// <param name="placeID">ID of place (found via Geo Reverse lookup query)</param>
-        /// <param name="inReplyToStatusID">id of status replying to - optional - pass null if not used</param>
-        /// <returns>IQueryable of sent status</returns>
-        public async Task<Status> UpdateStatusAsync(string status, decimal latitude, decimal longitude, string placeID, string inReplyToStatusID, bool trimUser)
-        {
-            return await UpdateStatusAsync(status, latitude, longitude, placeID, false, inReplyToStatusID, trimUser, null);
-        }
-
-        /// <summary>
-        /// sends a status update
-        /// </summary>
-        /// <param name="status">(optional @UserName) and (required) status text</param>
-        /// <param name="latitude">Latitude coordinate of where tweet occurred</param>
-        /// <param name="longitude">Longitude coordinate of where tweet occurred</param>
-        /// <param name="placeID">ID of place (found via Geo Reverse lookup query)</param>
-        /// <param name="inReplyToStatusID">id of status replying to - optional - pass null if not used</param>
-        /// <param name="callback">Async Callback used in Silverlight queries</param>
-        /// <returns>IQueryable of sent status</returns>
-        public async Task<Status> UpdateStatusAsync(string status, decimal latitude, decimal longitude, string placeID, string inReplyToStatusID, bool trimUser, Action<TwitterAsyncResponse<Status>> callback)
-        {
-            return await UpdateStatusAsync(status, latitude, longitude, placeID, false, inReplyToStatusID, trimUser, callback);
-        }
-
-        /// <summary>
-        /// sends a status update
-        /// </summary>
-        /// <param name="status">(optional @UserName) and (required) status text</param>
-        /// <param name="latitude">Latitude coordinate of where tweet occurred</param>
-        /// <param name="longitude">Longitude coordinate of where tweet occurred</param>
-        /// <param name="placeID">ID of place (found via Geo Reverse lookup query)</param>
-        /// <param name="displayCoordinates">Allow or prevent display of coordinates for this tweet</param>
-        /// <returns>IQueryable of sent status</returns>
-        public async Task<Status> UpdateStatusAsync(string status, decimal latitude, decimal longitude, string placeID, bool displayCoordinates, bool trimUser)
-        {
-            return await UpdateStatusAsync(status, latitude, longitude, placeID, displayCoordinates, null, trimUser, null);
-        }
-
-        /// <summary>
-        /// sends a status update
-        /// </summary>
-        /// <param name="status">(optional @UserName) and (required) status text</param>
-        /// <param name="latitude">Latitude coordinate of where tweet occurred</param>
-        /// <param name="longitude">Longitude coordinate of where tweet occurred</param>
-        /// <param name="placeID">ID of place (found via Geo Reverse lookup query)</param>
-        /// <param name="displayCoordinates">Allow or prevent display of coordinates for this tweet</param>
-        /// <param name="callback">Async Callback used in Silverlight queries</param>
-        /// <returns>IQueryable of sent status</returns>
-        public async Task<Status> UpdateStatusAsync(string status, decimal latitude, decimal longitude, string placeID, bool displayCoordinates, bool trimUser, Action<TwitterAsyncResponse<Status>> callback)
-        {
-            return await UpdateStatusAsync(status, latitude, longitude, placeID, displayCoordinates, null, trimUser, callback);
-        }
-
-        /// <summary>
-        /// sends a status update
-        /// </summary>
-        /// <param name="status">(optional @UserName) and (required) status text</param>
-        /// <param name="placeID">ID of place (found via Geo Reverse lookup query)</param>
-        /// <param name="displayCoordinates">Allow or prevent display of coordinates for this tweet</param>
-        /// <returns>IQueryable of sent status</returns>
-        public async Task<Status> UpdateStatusAsync(string status, string placeID, bool displayCoordinates, bool trimUser)
-        {
-            return await UpdateStatusAsync(status, -1, -1, placeID, displayCoordinates, null, trimUser, null);
-        }
-
-        /// <summary>
-        /// sends a status update
-        /// </summary>
-        /// <param name="status">(optional @UserName) and (required) status text</param>
-        /// <param name="placeID">ID of place (found via Geo Reverse lookup query)</param>
-        /// <param name="displayCoordinates">Allow or prevent display of coordinates for this tweet</param>
-        /// <param name="callback">Async Callback used in Silverlight queries</param>
-        /// <returns>IQueryable of sent status</returns>
-        public async Task<Status> UpdateStatusAsync(string status, string placeID, bool displayCoordinates, bool trimUser, Action<TwitterAsyncResponse<Status>> callback)
-        {
-            return await UpdateStatusAsync(status, -1, -1, placeID, displayCoordinates, null, trimUser, callback);
-        }
-
-        /// <summary>
-        /// sends a status update
-        /// </summary>
-        /// <param name="status">(optional @UserName) and (required) status text</param>
-        /// <param name="placeID">ID of place (found via Geo Reverse lookup query)</param>
-        /// <param name="displayCoordinates">Allow or prevent display of coordinates for this tweet</param>
-        /// <param name="inReplyToStatusID">id of status replying to - optional - pass null if not used</param>
-        /// <returns>IQueryable of sent status</returns>
-        public async Task<Status> UpdateStatusAsync(string status, string placeID, bool displayCoordinates, string inReplyToStatusID, bool trimUser)
-        {
-            return await UpdateStatusAsync(status, -1, -1, placeID, displayCoordinates, inReplyToStatusID, trimUser, null);
-        }
-
-        /// <summary>
-        /// sends a status update
-        /// </summary>
-        /// <param name="status">(optional @UserName) and (required) status text</param>
-        /// <param name="placeID">ID of place (found via Geo Reverse lookup query)</param>
-        /// <param name="displayCoordinates">Allow or prevent display of coordinates for this tweet</param>
-        /// <param name="inReplyToStatusID">id of status replying to - optional - pass null if not used</param>
-        /// <param name="callback">Async Callback used in Silverlight queries</param>
-        /// <returns>IQueryable of sent status</returns>
-        public async Task<Status> UpdateStatusAsync(string status, string placeID, bool displayCoordinates, string inReplyToStatusID, bool trimUser, Action<TwitterAsyncResponse<Status>> callback)
-        {
-            return await UpdateStatusAsync(status, -1, -1, placeID, displayCoordinates, inReplyToStatusID, trimUser, callback);
-        }
-
-        /// <summary>
-        /// sends a status update
-        /// </summary>
-        /// <param name="status">(optional @UserName) and (required) status text</param>
-        /// <param name="latitude">Latitude coordinate of where tweet occurred</param>
-        /// <param name="longitude">Longitude coordinate of where tweet occurred</param>
-        /// <param name="placeID">ID of place (found via Geo Reverse lookup query)</param>
-        /// <param name="displayCoordinates">Allow or prevent display of coordinates for this tweet</param>
-        /// <param name="inReplyToStatusID">id of status replying to - optional - pass null if not used</param>
-        /// <returns>IQueryable of sent status</returns>
-        public async Task<Status> UpdateStatusAsync(string status, decimal latitude, decimal longitude, string placeID, bool displayCoordinates, string inReplyToStatusID, bool trimUser)
-        {
-            return await UpdateStatusAsync(status, latitude, longitude, placeID, displayCoordinates, inReplyToStatusID, trimUser, null);
-        }
-
-        /// <summary>
-        /// sends a status update
-        /// </summary>
-        /// <param name="status">(optional @UserName) and (required) status text</param>
-        /// <param name="latitude">Latitude coordinate of where tweet occurred</param>
-        /// <param name="longitude">Longitude coordinate of where tweet occurred</param>
-        /// <param name="placeID">ID of place (found via Geo Reverse lookup query)</param>
-        /// <param name="displayCoordinates">Allow or prevent display of coordinates for this tweet</param>
-        /// <param name="inReplyToStatusID">id of status replying to - optional - pass null if not used</param>
-        /// <param name="callback">Async Callback used in Silverlight queries</param>
-        /// <returns>IQueryable of sent status</returns>
-        public async Task<Status> UpdateStatusAsync(string status, decimal latitude, decimal longitude, string placeID, bool displayCoordinates, string inReplyToStatusID, bool trimUser, Action<TwitterAsyncResponse<Status>> callback)
-        {
-            if (string.IsNullOrEmpty(status))
-            {
+            if (string.IsNullOrWhiteSpace(status))
                 throw new ArgumentException("status is a required parameter.", "status");
-            }
 
             var updateUrl = BaseUrl + "statuses/update.json";
 
-            var reqProc = new StatusRequestProcessor<Status>();
-
-            ITwitterExecute exec = TwitterExecutor;
-            exec.AsyncCallback = callback;
-            var resultsJson =
-                await exec.PostToTwitterAsync(
+            string resultsJson =
+                await TwitterExecutor.PostToTwitterAsync<Status>(
                     updateUrl,
                     new Dictionary<string, string>
                     {
                         {"status", status},
-                        {"in_reply_to_status_id", inReplyToStatusID},
-                        {"lat", latitude == -1 ? null : latitude.ToString(Culture.US)},
-                        {"long", longitude == -1 ? null : longitude.ToString(Culture.US)},
+                        {"in_reply_to_status_id", tweetID == NoReply ? null : tweetID.ToString()},
+                        {"lat", latitude == NoCoordinate ? null : latitude.ToString(Culture.US)},
+                        {"long", longitude == NoCoordinate ? null : longitude.ToString(Culture.US)},
                         {"place_id", placeID},
                         {"display_coordinates", displayCoordinates ? displayCoordinates.ToString().ToLower() : null},
                         {"trim_user", trimUser ? trimUser.ToString().ToLower() : null }
-                    },
-                    response => reqProc.ProcessActionResult(response, StatusAction.SingleStatus));
+                    });
 
-            Status result = reqProc.ProcessActionResult(resultsJson, StatusAction.SingleStatus);
-            return result;
+            return new StatusRequestProcessor<Status>()
+                .ProcessActionResult(resultsJson, StatusAction.SingleStatus);
         }
 
         /// <summary>
-        /// deletes a status tweet
+        /// Deletes a tweet.
         /// </summary>
-        /// <param name="id">id of status tweet</param>
-        /// <returns>deleted status tweet</returns>
-        public async Task<Status> DestroyStatusAsync(string id)
+        /// <param name="tweetID">ID of tweet to delete.</param>
+        /// <returns>Deleted tweet.</returns>
+        public async Task<Status> DeleteTweetAsync(ulong tweetID)
         {
-            return await DestroyStatusAsync(id, null);
+            if (tweetID == MissingID)
+                throw new ArgumentException("0 is *not* a valid tweetID. You must provide the ID of the tweet you're deleting.", "tweetID");
+
+            var destroyUrl = BaseUrl + "statuses/destroy/" + tweetID + ".json";
+
+            string resultsJson = await TwitterExecutor
+                .PostToTwitterAsync<Status>(destroyUrl, new Dictionary<string, string>());
+
+            return new StatusRequestProcessor<Status>()
+                .ProcessActionResult(resultsJson, StatusAction.SingleStatus);
         }
 
         /// <summary>
-        /// deletes a status tweet
+        /// Retweets a tweet.
         /// </summary>
-        /// <param name="id">id of status tweet</param>
-        /// <param name="callback">Async Callback used in Silverlight queries</param>
-        /// <returns>deleted status tweet</returns>
-        public async Task<Status> DestroyStatusAsync(string id, Action<TwitterAsyncResponse<Status>> callback)
+        /// <param name="tweetID">ID of tweet being retweeted.</param>
+        /// <returns>Retweeted tweet.</returns>
+        public async Task<Status> RetweetAsync(ulong tweetID)
         {
-            if (string.IsNullOrEmpty(id))
-            {
-                throw new ArgumentException("id is a required parameter.", "id");
-            }
+            if (tweetID == MissingID)
+                throw new ArgumentException("0 is *not* a valid tweetID. You must provide the ID of the tweet you're retweeting.", "tweetID");
 
-            var destroyUrl = BaseUrl + "statuses/destroy/" + id + ".json";
+            var retweetUrl = BaseUrl + "statuses/retweet/" + tweetID + ".json";
 
-            var reqProc = new StatusRequestProcessor<Status>();
+            string resultsJson = await TwitterExecutor
+                .PostToTwitterAsync<Status>(retweetUrl, new Dictionary<string, string>());
 
-            ITwitterExecute exec = TwitterExecutor;
-            exec.AsyncCallback = callback;
-            var resultsJson =
-                await exec.PostToTwitterAsync(
-                    destroyUrl,
-                    new Dictionary<string, string>(),
-                    response => reqProc.ProcessActionResult(response, StatusAction.SingleStatus));
-
-            Status result = reqProc.ProcessActionResult(resultsJson, StatusAction.SingleStatus);
-            return result;
-        }
-
-        /// <summary>
-        /// retweets a tweet
-        /// </summary>
-        /// <param name="id">id of status tweet</param>
-        /// <returns>deleted status tweet</returns>
-        public async Task<Status> RetweetAsync(string id)
-        {
-            return await RetweetAsync(id, null);
-        }
-
-        /// <summary>
-        /// retweets a tweet
-        /// </summary>
-        /// <param name="id">id of status tweet</param>
-        /// <param name="callback">Async Callback used in Silverlight queries</param>
-        /// <returns>deleted status tweet</returns>
-        public async Task<Status> RetweetAsync(string id, Action<TwitterAsyncResponse<Status>> callback)
-        {
-            if (string.IsNullOrEmpty(id))
-            {
-                throw new ArgumentException("id is a required parameter.", "id");
-            }
-
-            var retweetUrl = BaseUrl + "statuses/retweet/" + id + ".json";
-
-            var reqProc = new StatusRequestProcessor<Status>();
-
-            ITwitterExecute exec = TwitterExecutor;
-            exec.AsyncCallback = callback;
-            var resultsJson =
-                await exec.PostToTwitterAsync(
-                    retweetUrl,
-                    new Dictionary<string, string>(),
-                    response => reqProc.ProcessActionResult(response, StatusAction.SingleStatus));
-
-            Status result = reqProc.ProcessActionResult(resultsJson, StatusAction.SingleStatus);
-            return result;
+            return new StatusRequestProcessor<Status>()
+                .ProcessActionResult(resultsJson, StatusAction.SingleStatus);
         }
     }
 }

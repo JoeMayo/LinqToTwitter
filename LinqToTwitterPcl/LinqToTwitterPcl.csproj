@@ -147,7 +147,6 @@
     <Compile Include="User\ProfileImageSize.cs" />
     <Compile Include="User\User.cs" />
     <Compile Include="User\UserAction.cs" />
-    <Compile Include="User\UserIdentifier.cs" />
     <Compile Include="User\UserRequestProcessor.cs" />
     <Compile Include="User\UserType.cs" />
   </ItemGroup>

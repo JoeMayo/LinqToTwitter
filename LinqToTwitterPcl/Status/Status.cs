@@ -48,7 +48,7 @@ namespace LinqToTwitter
             Place = new Place(status.GetValue<JsonData>("place"));
             User = new User(status.GetValue<JsonData>("user"));
             RetweetCount = status.GetValue<int>("retweet_count");
-            StatusID = status.GetValue<string>("id_str");
+            StatusID = status.GetValue<ulong>("id");
             FavoriteCount = status.GetValue<int?>("favorite_count");
             Favorited = status.GetValue<bool>("favorited");
             InReplyToStatusID = status.GetValue<string>("in_reply_to_status_id_str");
@@ -128,12 +128,12 @@ namespace LinqToTwitter
         public string ID { get; set; }
 
         /// <summary>
-        /// User ID to disambiguate when ID is same as screen name
+        /// ID of User
         /// </summary>
         public string UserID { get; set; }
 
         /// <summary>
-        /// Screen Name to disambiguate when ID is same as UserD
+        /// User Screen Name
         /// </summary>
         public string ScreenName { get; set; }
 
@@ -231,7 +231,7 @@ namespace LinqToTwitter
         /// <summary>
         /// ID of this status
         /// </summary>
-        public string StatusID { get; set; }
+        public ulong StatusID { get; set; }
 
         /// <summary>
         /// Tweet Text (140)characters

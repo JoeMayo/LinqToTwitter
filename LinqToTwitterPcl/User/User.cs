@@ -24,13 +24,8 @@ namespace LinqToTwitter
         {
             if (user == null) return;
 
-            var userID = user.GetValue<int>("id").ToString(CultureInfo.InvariantCulture);
-            Identifier = new UserIdentifier
-            {
-                ID = userID,
-                UserID = userID,
-                ScreenName = user.GetValue<string>("screen_name")
-            };
+            UserIDResponse = user.GetValue<int>("id").ToString(CultureInfo.InvariantCulture);
+            ScreenNameResponse = user.GetValue<string>("screen_name");
             Name = user.GetValue<string>("name");
             Location = user.GetValue<string>("location");
             Description = user.GetValue<string>("description");
@@ -77,25 +72,14 @@ namespace LinqToTwitter
         public UserType Type { get; set; }
 
         /// <summary>
-        /// Query user's Twitter ID
-        /// </summary>
-        public string ID { get; set; }
-
-        /// <summary>
-        /// Query User ID for disambiguating when ID is screen name
+        /// Query User ID
         /// </summary>
         public string UserID { get; set; }
 
         /// <summary>
         /// Query screen name
-        /// On Input - disambiguates when ID is User ID
         /// </summary>
         public string ScreenName { get; set; }
-
-        /// <summary>
-        /// Identity properties of this specific user
-        /// </summary>
-        public UserIdentifier Identifier { get; set; }
 
         /// <summary>
         /// Page to return
@@ -105,12 +89,6 @@ namespace LinqToTwitter
         /// </remarks>
         //[Obsolete("This property has been deprecated and will be ignored by Twitter. Please use Cursor/CursorMovement properties instead.")]
         public int Page { get; set; }
-
-        /// <summary>
-        /// Number of users to return for each page
-        /// </summary>
-        [Obsolete("Please use Count instead.", true)]
-        public int PerPage { get; set; }
 
         /// <summary>
         /// Number of users to return for each page
@@ -147,6 +125,16 @@ namespace LinqToTwitter
         /// Remove status from results
         /// </summary>
         public bool SkipStatus { get; set; }
+
+        /// <summary>
+        /// Query User ID
+        /// </summary>
+        public string UserIDResponse { get; set; }
+
+        /// <summary>
+        /// Query screen name
+        /// </summary>
+        public string ScreenNameResponse { get; set; }
 
         /// <summary>
         /// Size for UserProfileImage query

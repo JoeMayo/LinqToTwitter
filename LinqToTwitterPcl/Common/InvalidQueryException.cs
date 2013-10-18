@@ -13,7 +13,7 @@
  * 
  * Modified By: Joe Mayo, 5/2/09 -
  * 
- * Refactored as standard exception: 
+ * ReTestMethodored as standard exception: 
  * 
  *      - derives from Application
  *      - has standard exception constructors

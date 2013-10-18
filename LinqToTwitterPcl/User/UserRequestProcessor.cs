@@ -5,10 +5,6 @@ using System.Linq.Expressions;
 using LinqToTwitter.Common;
 using LitJson;
 
-#if SILVERLIGHT && !WINDOWS_PHONE
-    using System.Windows.Browser;
-#endif
-
 namespace LinqToTwitter
 {
     /// <summary>
@@ -31,11 +27,6 @@ namespace LinqToTwitter
         /// type of user request (i.e. Friends, Followers, or Show)
         /// </summary>
         internal UserType Type { get; set; }
-
-        /// <summary>
-        /// user's Twitter ID
-        /// </summary>
-        internal string ID { get; set; }
 
         /// <summary>
         /// User ID for disambiguating when ID is screen name
@@ -111,7 +102,6 @@ namespace LinqToTwitter
                    lambdaExpression.Body,
                    new List<string> { 
                        "Type",
-                       "ID",
                        "UserID",
                        "ScreenName",
                        "Page",
@@ -500,7 +490,6 @@ namespace LinqToTwitter
             foreach(var user in userList)
             {
                 user.Type = Type;
-                user.ID = ID;
                 user.UserID = UserID;
                 user.ScreenName = ScreenName;
                 user.Page = Page;

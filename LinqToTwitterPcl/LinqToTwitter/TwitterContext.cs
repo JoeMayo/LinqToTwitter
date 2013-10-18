@@ -535,7 +535,7 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// factory method for returning a request processor
+        /// TestMethodory method for returning a request processor
         /// </summary>
         /// <typeparam name="T">type of request</typeparam>
         /// <returns>request processor matching type parameter</returns>
@@ -620,9 +620,9 @@ namespace LinqToTwitter
                 //case "Trend":
                 //    req = new TrendRequestProcessor<T>();
                 //    break;
-                //case "User":
-                //    req = new UserRequestProcessor<T>();
-                //    break;
+                case "User":
+                    req = new UserRequestProcessor<T>();
+                    break;
                 //case "UserStream":
                 //    baseUrl = null; // don't set that..
                 //    req = new UserStreamRequestProcessor<T>

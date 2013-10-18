@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using LinqToTwitter.Common;
@@ -200,8 +199,6 @@ namespace LinqToTwitter
                     return BuildMentionsUrl(parameters);
                 case StatusType.Oembed:
                     return BuildOembedUrl(parameters);
-                //case StatusType.Retweets:
-                //    return BuildRetweetsUrl(parameters);
                 case StatusType.RetweetsOfMe:
                     return BuildRetweetsOfMeUrl(parameters);
                 case StatusType.RetweetedByUser:
@@ -263,12 +260,6 @@ namespace LinqToTwitter
                 Count = int.Parse(parameters["Count"]);
                 urlParams.Add(new QueryParameter("count", parameters["Count"]));
             }
-
-            //if (parameters.ContainsKey("Page"))
-            //{
-            //    Page = int.Parse(parameters["Page"]);
-            //    urlParams.Add(new QueryParameter("page", parameters["Page"]));
-            //}
 
             if (parameters.ContainsKey("IncludeRetweets"))
             {
@@ -352,31 +343,6 @@ namespace LinqToTwitter
         {
             return BuildUrlParameters(parameters, "statuses/mentions_timeline.json");
         }
-
-        ///// <summary>
-        ///// construct a url that will request all the retweets of a given tweet
-        ///// </summary>
-        ///// <param name="parameters">input parameters</param>
-        ///// <returns>base url + retweet segment</returns>
-        //Request BuildRetweetsUrl(Dictionary<string, string> parameters)
-        //{
-        //    if (parameters.ContainsKey("ID"))
-        //    {
-        //        ID = parameters["ID"];
-        //    }
-
-        //    var url = BuildUrlHelper.TransformIDUrl(parameters, "statuses/retweets.json");
-        //    var req = new Request(BaseUrl + url);
-        //    var urlParams = req.RequestParameters;
-
-        //    if (parameters.ContainsKey("Count"))
-        //    {
-        //        Count = int.Parse(parameters["Count"]);
-        //        urlParams.Add(new QueryParameter("count", Count.ToString(CultureInfo.InvariantCulture)));
-        //    }
-
-        //    return req;
-        //}
 
         /// <summary>
         /// construct a base retweeted by user url

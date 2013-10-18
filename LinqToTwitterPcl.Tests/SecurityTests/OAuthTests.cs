@@ -4,7 +4,7 @@ using System.Linq;
 using LinqToTwitter.Security;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace LinqToTwitterPcl.Tests
+namespace LinqToTwitterPcl.Tests.SecurityTests
 {
     [TestClass]
     public class OAuthTests

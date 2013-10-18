@@ -3,7 +3,7 @@ using System.Text;
 using LinqToTwitter.Security;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace LinqToTwitterPcl.Tests
+namespace LinqToTwitterPcl.Tests.SecurityTests
 {
     /// <summary>
     /// Tests from RFC 3174

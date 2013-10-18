@@ -47,7 +47,7 @@ namespace LinqToTwitterDemoPcl
             //searchResponse.Statuses.ForEach(tweet =>
             //    Console.WriteLine("\nName:\n{0}\nTweet:{1}\n", tweet.ScreenName, tweet.Text));
 
-            Status newTweet = await ctx.UpdateStatusAsync("Testing UpdateStatusAsync in LINQ to Twitter - " + DateTime.Now);
+            Status newTweet = await ctx.TweetAsync("Testing UpdateStatusAsync in LINQ to Twitter - " + DateTime.Now);
 
             Console.WriteLine("\nName:\n{0}\nTweet:{1}\n", newTweet.ScreenName, newTweet.Text);
         }

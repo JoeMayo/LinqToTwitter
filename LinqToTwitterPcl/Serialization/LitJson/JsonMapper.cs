@@ -92,7 +92,7 @@ namespace LitJson
     internal delegate object ImporterFunc                (object input);
     public   delegate TValue ImporterFunc<TJson, TValue> (TJson input);
 
-    public delegate IJsonWrapper WrapperFactory ();
+    public delegate IJsonWrapper WrapperTestMethodory ();
 
 
     public class JsonMapper
@@ -500,7 +500,7 @@ namespace LitJson
             return instance;
         }
 
-        private static IJsonWrapper ReadValue (WrapperFactory factory,
+        private static IJsonWrapper ReadValue (WrapperTestMethodory TestMethodory,
                                                JsonReader reader)
         {
             reader.Read ();
@@ -509,7 +509,7 @@ namespace LitJson
                 reader.Token == JsonToken.Null)
                 return null;
 
-            IJsonWrapper instance = factory ();
+            IJsonWrapper instance = TestMethodory ();
 
             if (reader.Token == JsonToken.String) {
                 instance.SetString ((string) reader.Value);
@@ -540,7 +540,7 @@ namespace LitJson
                 instance.SetJsonType (JsonType.Array);
 
                 while (true) {
-                    IJsonWrapper item = ReadValue (factory, reader);
+                    IJsonWrapper item = ReadValue (TestMethodory, reader);
                     if (item == null && reader.Token == JsonToken.ArrayEnd)
                         break;
 
@@ -559,7 +559,7 @@ namespace LitJson
                     string property = (string) reader.Value;
 
                     ((IDictionary<string, JsonData>)instance)[property] = (JsonData)ReadValue(
-                        factory, reader);
+                        TestMethodory, reader);
                 }
 
             }
@@ -900,18 +900,18 @@ namespace LitJson
             return (T) ReadValue (typeof (T), reader);
         }
 
-        public static IJsonWrapper ToWrapper (WrapperFactory factory,
+        public static IJsonWrapper ToWrapper (WrapperTestMethodory TestMethodory,
                                               JsonReader reader)
         {
-            return ReadValue (factory, reader);
+            return ReadValue (TestMethodory, reader);
         }
 
-        public static IJsonWrapper ToWrapper (WrapperFactory factory,
+        public static IJsonWrapper ToWrapper (WrapperTestMethodory TestMethodory,
                                               string json)
         {
             JsonReader reader = new JsonReader (json);
 
-            return ReadValue (factory, reader);
+            return ReadValue (TestMethodory, reader);
         }
 
         public static void RegisterExporter<T> (ExporterFunc<T> exporter)

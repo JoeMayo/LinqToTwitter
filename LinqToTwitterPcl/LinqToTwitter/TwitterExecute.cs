@@ -1082,7 +1082,7 @@ namespace LinqToTwitter
         /// <param name="postData">parameters to post</param>
         /// <param name="getResult">callback for handling async Json response - null if synchronous</param>
         /// <returns>Json Response from Twitter - empty string if async</returns>
-        public async Task<string> PostToTwitterAsync<T>(string url, IDictionary<string, string> postData, Func<string, T> getResult)
+        public async Task<string> PostToTwitterAsync<T>(string url, IDictionary<string, string> postData)
         {
             WriteLog(LastUrl, "PostToTwitterAsync");
 
