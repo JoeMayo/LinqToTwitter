@@ -6,7 +6,7 @@ using LinqToTwitter;
 using LinqToTwitterPcl.Tests.Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace LinqToTwitterXUnitTests.UserTests
+namespace LinqToTwitterPcl.Tests.UserTests
 {
     [TestClass]
     public class UserRequestProcessorTests
@@ -255,14 +255,14 @@ namespace LinqToTwitterXUnitTests.UserTests
         }
 
         [TestMethod]
-        public void BuildUrl_Lookup_Constructs_Url_With_ScreenName_Param()
+        public void BuildUrl_Lookup_Constructs_Url_With_ScreenNameList_Param()
         {
             const string ExpectedUrl = "https://api.twitter.com/1.1/users/lookup.json?screen_name=JoeMayo%2CLinqToTweeter";
             var reqProc = new UserRequestProcessor<User> { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
             {
                 { "Type", ((int)UserType.Lookup).ToString() },
-                { "ScreenName", "JoeMayo,LinqToTweeter" }
+                { "ScreenNameList", "JoeMayo,LinqToTweeter" }
             };
 
             Request req = reqProc.BuildUrl(parameters);
@@ -271,14 +271,14 @@ namespace LinqToTwitterXUnitTests.UserTests
         }
 
         [TestMethod]
-        public void BuildUrl_Lookup_Constructs_Url_With_UserID_Param()
+        public void BuildUrl_Lookup_Constructs_Url_With_UserIDList_Param()
         {
             const string ExpectedUrl = "https://api.twitter.com/1.1/users/lookup.json?user_id=1%2C2";
             var reqProc = new UserRequestProcessor<User> { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
             {
                 { "Type", ((int)UserType.Lookup).ToString() },
-                { "UserID", "1,2" }
+                { "UserIdList", "1,2" }
             };
 
             Request req = reqProc.BuildUrl(parameters);
@@ -416,13 +416,12 @@ namespace LinqToTwitterXUnitTests.UserTests
         [TestMethod]
         public void BuildUrl_Constructs_Lookup_Url()
         {
-            const string ExpectedUrl = "https://api.twitter.com/1.1/users/lookup.json?screen_name=JoeMayo&include_entities=true";
+            const string ExpectedUrl = "https://api.twitter.com/1.1/users/lookup.json?user_id=1%2C2&include_entities=true";
             var reqProc = new UserRequestProcessor<User> { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
             {
                 { "Type", ((int)UserType.Lookup).ToString() },
-                //{ "UserID", "123" },
-                { "ScreenName", "JoeMayo" },
+                { "UserIdList", "1,2" },
                 { "IncludeEntities", true.ToString() }
             };
 
@@ -439,9 +438,11 @@ namespace LinqToTwitterXUnitTests.UserTests
             Expression<Func<User, bool>> expression =
             user =>
                 user.Type == UserType.Show &&
-                user.UserID == "10" &&
+                user.UserID == 10 &&
+                user.UserIdList == "1,2" &&
                 user.ScreenName == "JoeMayo" &&
-                user.Cursor == "10819235" &&
+                user.ScreenNameList == "JoeMayo,Linq2Tweeter" &&
+                user.Cursor == 10819235ul &&
                 user.Slug == "twitter" &&
                 user.Query == "Joe Mayo" &&
                 user.Page == 2 &&
@@ -459,14 +460,17 @@ namespace LinqToTwitterXUnitTests.UserTests
                 queryParams.Contains(
                     new KeyValuePair<string, string>("Type", ((int)UserType.Show).ToString())));
             Assert.IsTrue(
-               queryParams.Contains(
-                   new KeyValuePair<string, string>("ID", "10")));
-            Assert.IsTrue(
               queryParams.Contains(
                   new KeyValuePair<string, string>("UserID", "10")));
             Assert.IsTrue(
+              queryParams.Contains(
+                  new KeyValuePair<string, string>("UserIdList", "1,2")));
+            Assert.IsTrue(
                queryParams.Contains(
                    new KeyValuePair<string, string>("ScreenName", "JoeMayo")));
+            Assert.IsTrue(
+               queryParams.Contains(
+                   new KeyValuePair<string, string>("ScreenNameList", "JoeMayo,Linq2Tweeter")));
             Assert.IsTrue(
               queryParams.Contains(
                   new KeyValuePair<string, string>("Cursor", "10819235")));
@@ -503,11 +507,13 @@ namespace LinqToTwitterXUnitTests.UserTests
             { 
                 Type = UserType.Show, 
                 BaseUrl = "https://api.twitter.com/1.1/",
-                UserID = "123",
+                UserID = 123ul,
+                UserIdList = "1,2",
                 ScreenName = "JoeMayo",
+                ScreenNameList = "JoeMayo,Linq2Tweeter",
                 Page = 1,
                 Count = 10,
-                Cursor = "456",
+                Cursor = 456ul,
                 Slug = "myslug",
                 Query = "myquery",
                 Lang = "en-US",
@@ -521,11 +527,13 @@ namespace LinqToTwitterXUnitTests.UserTests
             Assert.IsNotNull(users);
             Assert.AreEqual(1, users.Count);
             var user = users.First();
-            Assert.AreEqual("123", user.UserID);
+            Assert.AreEqual(123ul, user.UserID);
+            Assert.AreEqual("1,2", user.UserIdList);
             Assert.AreEqual("JoeMayo", user.ScreenName);
+            Assert.AreEqual("JoeMayo,Linq2Tweeter", user.ScreenNameList);
             Assert.AreEqual(1, user.Page);
             Assert.AreEqual(10, user.Count);
-            Assert.AreEqual("456", user.Cursor);
+            Assert.AreEqual(456ul, user.Cursor);
             Assert.AreEqual("myslug", user.Slug);
             Assert.AreEqual("myquery", user.Query);
             Assert.AreEqual("en-US", user.Lang);

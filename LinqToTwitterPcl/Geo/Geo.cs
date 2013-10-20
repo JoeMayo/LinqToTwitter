@@ -89,7 +89,7 @@ namespace LinqToTwitter
         public string PlaceName { get; set; }
 
         /// <summary>
-        /// Place token returned from a Similar Places query and used in CreatePlace
+        /// Place token returned from a Similar Places query and used in CreatePlaceAsync
         /// </summary>
         public string Token { get; set; }
 

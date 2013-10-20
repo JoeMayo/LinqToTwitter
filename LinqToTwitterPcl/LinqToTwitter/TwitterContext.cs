@@ -562,48 +562,45 @@ namespace LinqToTwitter
 
             switch (requestType)
             {
-                //case "Account":
-                //    req = new AccountRequestProcessor<T>();
-                //    break;
-                //case "Blocks":
-                //    req = new BlocksRequestProcessor<T>();
-                //    break;
+                case "Account":
+                    req = new AccountRequestProcessor<T>();
+                    break;
+                case "Blocks":
+                    req = new BlocksRequestProcessor<T>();
+                    break;
                 //case "ControlStream":
                 //    req = new ControlStreamRequestProcessor<T>
                 //        {
                 //            SiteStreamUrl = SiteStreamUrl
                 //        };
                 //    break;
-                //case "DirectMessage":
-                //    req = new DirectMessageRequestProcessor<T>();
-                //    break;
-                //case "Favorites":
-                //    req = new FavoritesRequestProcessor<T>();
-                //    break;
-                //case "Friendship":
-                //    req = new FriendshipRequestProcessor<T>();
-                //    break;
-                //case "Geo":
-                //    req = new GeoRequestProcessor<T>();
-                //    break;
-                //case "Help":
-                //    req = new HelpRequestProcessor<T>();
-                //    break;
-                //case "List":
-                //    req = new ListRequestProcessor<T>();
-                //    break;
-                //case "Raw":
-                //    req = new RawRequestProcessor<T>();
-                //    break;
-                //case "RelatedResults":
-                //    req = new RelatedResultsRequestProcessor<T>();
-                //    break;
-                //case "SavedSearch":
-                //    req = new SavedSearchRequestProcessor<T>();
-                //    break;
-                //case "SocialGraph":
-                //    req = new SocialGraphRequestProcessor<T>();
-                //    break;
+                case "DirectMessage":
+                    req = new DirectMessageRequestProcessor<T>();
+                    break;
+                case "Favorites":
+                    req = new FavoritesRequestProcessor<T>();
+                    break;
+                case "Friendship":
+                    req = new FriendshipRequestProcessor<T>();
+                    break;
+                case "Geo":
+                    req = new GeoRequestProcessor<T>();
+                    break;
+                case "Help":
+                    req = new HelpRequestProcessor<T>();
+                    break;
+                case "List":
+                    req = new ListRequestProcessor<T>();
+                    break;
+                case "Raw":
+                    req = new RawRequestProcessor<T>();
+                    break;
+                case "SavedSearch":
+                    req = new SavedSearchRequestProcessor<T>();
+                    break;
+                case "SocialGraph":
+                    req = new SocialGraphRequestProcessor<T>();
+                    break;
                 case "Search":
                     req = new SearchRequestProcessor<T>();
                     break;
@@ -617,9 +614,9 @@ namespace LinqToTwitter
                 //        TwitterExecutor = TwitterExecutor
                 //    };
                 //    break;
-                //case "Trend":
-                //    req = new TrendRequestProcessor<T>();
-                //    break;
+                case "Trend":
+                    req = new TrendRequestProcessor<T>();
+                    break;
                 case "User":
                     req = new UserRequestProcessor<T>();
                     break;

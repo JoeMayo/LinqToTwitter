@@ -124,7 +124,7 @@ namespace LinqToTwitter
             // then adding this later would break a lot of code - Joe
             Type = RequestProcessorHelper.ParseQueryEnumType<SearchType>(parameters["Type"]);
 
-            return BuildSearchUrlParameters(parameters, "tweets.json");
+            return BuildSearchUrlParameters(parameters, "search/tweets.json");
         }
 
         /// <summary>

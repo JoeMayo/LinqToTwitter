@@ -29,15 +29,25 @@ namespace LinqToTwitter
         internal UserType Type { get; set; }
 
         /// <summary>
-        /// User ID for disambiguating when ID is screen name
+        /// User ID
         /// </summary>
-        internal string UserID { get; set; }
+        internal ulong UserID { get; set; }
+
+        /// <summary>
+        /// Comma-separated list of user IDs (e.g. for Lookup query)
+        /// </summary>
+        internal string UserIdList { get; set; }
 
         /// <summary>
         /// user's screen name
         /// On Input - disambiguates when ID is User ID
         /// </summary>
         internal string ScreenName { get; set; }
+
+        /// <summary>
+        /// Comma-separated list of screen names (e.g. for Lookup query)
+        /// </summary>
+        public string ScreenNameList { get; set; }
 
         /// <summary>
         /// page number of results to retrieve
@@ -58,7 +68,7 @@ namespace LinqToTwitter
         /// are Previous and Next, which you can find in the
         /// CursorResponse property when your response comes back.
         /// </remarks>
-        internal string Cursor { get; set; }
+        internal ulong Cursor { get; set; }
 
         /// <summary>
         /// Used to identify suggested users category
@@ -103,7 +113,9 @@ namespace LinqToTwitter
                    new List<string> { 
                        "Type",
                        "UserID",
+                       "UserIdList",
                        "ScreenName",
+                       "ScreenNameList",
                        "Page",
                        "Count",
                        "Cursor",
@@ -169,7 +181,7 @@ namespace LinqToTwitter
 
             if (parameters.ContainsKey("UserID"))
             {
-                UserID = parameters["UserID"];
+                UserID = ulong.Parse(parameters["UserID"]);
                 urlParams.Add(new QueryParameter("user_id", parameters["UserID"]));
             }
 
@@ -205,7 +217,7 @@ namespace LinqToTwitter
 
             if (parameters.ContainsKey("UserID"))
             {
-                UserID = parameters["UserID"];
+                UserID = ulong.Parse(parameters["UserID"]);
                 urlParams.Add(new QueryParameter("user_id", parameters["UserID"]));
             }
 
@@ -278,23 +290,23 @@ namespace LinqToTwitter
         /// <returns>URL for performing lookups</returns>
         Request BuildLookupUrl(Dictionary<string, string> parameters)
         {
-            if (!(parameters.ContainsKey("ScreenName") || parameters.ContainsKey("UserID")) ||
-                (parameters.ContainsKey("ScreenName") && parameters.ContainsKey("UserID")))
+            if (!(parameters.ContainsKey("ScreenNameList") || parameters.ContainsKey("UserIdList")) ||
+                (parameters.ContainsKey("ScreenNameList") && parameters.ContainsKey("UserIdList")))
                 throw new ArgumentException("Query must contain one of either ScreenName or UserID parameters, but not both.", ScreenNameOrUserID);
 
             var req = new Request(BaseUrl + "users/lookup.json");
             var urlParams = req.RequestParameters;
 
-            if (parameters.ContainsKey("ScreenName"))
+            if (parameters.ContainsKey("ScreenNameList"))
             {
-                ScreenName = parameters["ScreenName"];
-                urlParams.Add(new QueryParameter("screen_name", parameters["ScreenName"]));
+                ScreenName = parameters["ScreenNameList"];
+                urlParams.Add(new QueryParameter("screen_name", parameters["ScreenNameList"]));
             }
 
-            if (parameters.ContainsKey("UserID"))
+            if (parameters.ContainsKey("UserIdList"))
             {
-                UserID = parameters["UserID"];
-                urlParams.Add(new QueryParameter("user_id", parameters["UserID"]));
+                UserIdList = parameters["UserIdList"];
+                urlParams.Add(new QueryParameter("user_id", parameters["UserIdList"].Replace(" ", "")));
             }
 
             if (parameters.ContainsKey("IncludeEntities"))
@@ -393,7 +405,7 @@ namespace LinqToTwitter
 
             if (parameters.ContainsKey("UserID"))
             {
-                UserID = parameters["UserID"];
+                UserID = ulong.Parse(parameters["UserID"]);
                 urlParams.Add(new QueryParameter("user_id", parameters["UserID"]));
             }
 
@@ -435,7 +447,7 @@ namespace LinqToTwitter
 
             if (parameters.ContainsKey("UserID"))
             {
-                UserID = parameters["UserID"];
+                UserID = ulong.Parse(parameters["UserID"]);
                 urlParams.Add(new QueryParameter("user_id", parameters["UserID"]));
             }
 
@@ -491,7 +503,9 @@ namespace LinqToTwitter
             {
                 user.Type = Type;
                 user.UserID = UserID;
+                user.UserIdList = UserIdList;
                 user.ScreenName = ScreenName;
+                user.ScreenNameList = ScreenNameList;
                 user.Page = Page;
                 user.Count = Count;
                 user.Cursor = Cursor;

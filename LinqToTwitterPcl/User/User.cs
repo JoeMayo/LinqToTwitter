@@ -74,12 +74,22 @@ namespace LinqToTwitter
         /// <summary>
         /// Query User ID
         /// </summary>
-        public string UserID { get; set; }
+        public ulong UserID { get; set; }
+
+        /// <summary>
+        /// Comma-separated list of user IDs (e.g. for Lookup query)
+        /// </summary>
+        public string UserIdList { get; set; }
 
         /// <summary>
         /// Query screen name
         /// </summary>
         public string ScreenName { get; set; }
+
+        /// <summary>
+        /// Comma-separated list of screen names (e.g. for Lookup queries)
+        /// </summary>
+        public string ScreenNameList { get; set; }
 
         /// <summary>
         /// Page to return
@@ -104,7 +114,7 @@ namespace LinqToTwitter
         /// are Previous and Next, which you can find in the
         /// CursorResponse property when your response comes back.
         /// </remarks>
-        public string Cursor { get; set; }
+        public ulong Cursor { get; set; }
 
         /// <summary>
         /// Used to identify suggested users category

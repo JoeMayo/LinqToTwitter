@@ -26,15 +26,15 @@ namespace LinqToTwitterPcl.Tests.StatusTests
             var tcsAuth = new TaskCompletionSource<IAuthorizer>();
             tcsAuth.SetResult(authMock.Object);
 
-            var tcsStatus = new TaskCompletionSource<string>();
-            tcsStatus.SetResult(SingleStatusResponse);
+            var tcsResponse = new TaskCompletionSource<string>();
+            tcsResponse.SetResult(SingleStatusResponse);
 
             execMock.SetupGet(exec => exec.Authorizer).Returns(authMock.Object);
             execMock.Setup(exec =>
                 exec.PostToTwitterAsync<Status>(
                     It.IsAny<string>(),
                     It.IsAny<IDictionary<string, string>>()))
-                .Returns(tcsStatus.Task);
+                .Returns(tcsResponse.Task);
             var ctx = new TwitterContext(execMock.Object);
             return ctx;
         }
