@@ -82,6 +82,7 @@
     <Compile Include="Common\TwitterErrorStatus.cs" />
     <Compile Include="Common\TwitterHashResponse.cs" />
     <Compile Include="Common\TwitterProgressEventArgs.cs" />
+    <Compile Include="Common\TwitterQueryException.cs" />
     <Compile Include="Common\TypeConversionExtensions.cs" />
     <Compile Include="Common\TypeSystem.cs" />
     <Compile Include="Common\Utilities.cs" />
@@ -119,6 +120,7 @@
     <Compile Include="LinqToTwitter\ITwitterExecute.cs" />
     <Compile Include="LinqToTwitter\TwitterContext.cs" />
     <Compile Include="LinqToTwitter\TwitterContextEntities.cs" />
+    <Compile Include="LinqToTwitter\TwitterErrorHandler.cs" />
     <Compile Include="LinqToTwitter\TwitterExecute.cs" />
     <Compile Include="LinqToTwitter\TwitterExtensions.cs" />
     <Compile Include="LinqToTwitter\TwitterQueryable.cs" />

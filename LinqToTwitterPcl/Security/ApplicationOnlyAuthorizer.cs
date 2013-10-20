@@ -47,6 +47,8 @@ namespace LinqToTwitter
 
             var msg = await client.SendAsync(req);
 
+            await TwitterErrorHandler.ThrowIfErrorAsync(msg);
+
             string response = await msg.Content.ReadAsStringAsync();
 
             var responseJson = JsonMapper.ToObject(response);
@@ -63,6 +65,8 @@ namespace LinqToTwitter
             req.Content = new StringContent("grant_type=client_credentials", Encoding.UTF8, "application/x-www-form-urlencoded");
 
             var msg = await client.SendAsync(req);
+
+            await TwitterErrorHandler.ThrowIfErrorAsync(msg);
 
             string response = await msg.Content.ReadAsStringAsync();
 

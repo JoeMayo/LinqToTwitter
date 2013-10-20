@@ -52,17 +52,6 @@ namespace LinqToTwitter
         /// <returns>Json Response from Twitter - empty string if async</returns>
         Task<string> PostToTwitterAsync<T>(string url, IDictionary<string, string> postData);
 
-//#if !NETFX_CORE
-//        /// <summary>
-//        /// performs HTTP POST file upload to Twitter
-//        /// </summary>
-//        /// <param name="filePath">full path of file to upload</param>
-//        /// <param name="parameters">query string parameters</param>
-//        /// <param name="url">url to upload to</param>
-//        /// <returns>XML Results from Twitter</returns>
-//        string PostTwitterFile<T>(string url, IDictionary<string, string> postData, string filePath, IRequestProcessor<T> reqProc);
-//#endif
-
 //        /// <summary>
 //        /// performs HTTP POST image byte array upload to Twitter
 //        /// </summary>
@@ -73,15 +62,14 @@ namespace LinqToTwitter
 //        /// <returns>XML results From Twitter</returns>
 //        string PostTwitterImage<T>(string url, IDictionary<string, string> postData, byte[] image, string fileName, string imageType, IRequestProcessor<T> reqProc);
 
-//        /// <summary>
-//        /// performs HTTP POST media byte array upload to Twitter
-//        /// </summary>
-//        /// <param name="url">url to upload to</param>
-//        /// <param name="postData">request parameters</param>
-//        /// <param name="mediaItems">list of Media each media item to upload</param>
-//        /// <param name="reqProc">request processor for handling results</param>
-//        /// <returns>XML results From Twitter</returns>
-//        string PostMedia<T>(string url, IDictionary<string, string> postData, List<Media> mediaItems, IRequestProcessor<T> reqProc);
+        /// <summary>
+        /// performs HTTP POST media byte array upload to Twitter
+        /// </summary>
+        /// <param name="url">url to upload to</param>
+        /// <param name="postData">request parameters</param>
+        /// <param name="mediaItems">list of Media each media item to upload</param>
+        /// <returns>XML results From Twitter</returns>
+        Task<string> PostMediaAsync(string url, IDictionary<string, string> postData, byte[] image);
 
         /// <summary>
         /// makes HTTP call to Twitter API

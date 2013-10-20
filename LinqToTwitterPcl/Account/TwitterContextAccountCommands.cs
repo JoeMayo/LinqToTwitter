@@ -73,152 +73,136 @@ namespace LinqToTwitter
             return reqProc.ProcessActionResult(resultsJson, UserAction.SingleUser);
         }
 
-        ///// <summary>
-        ///// sends an image file to Twitter to replace user image
-        ///// </summary>
-        ///// <remarks>
-        ///// You can only run this method with a period of time between executions; 
-        ///// otherwise you get WebException errors from Twitter
-        ///// </remarks>
-        ///// <param name="image">byte array of image to upload</param>
-        ///// <param name="fileName">name to pass to Twitter for the file</param>
-        ///// <param name="imageType">type of image: must be one of jpg, gif, or png</param>
-        ///// <param name="skipStatus">Don't include status with response.</param>
-        ///// <returns>User with new image info</returns>
-        //public async Task<User> UpdateAccountImageAsync(byte[] image, string fileName, string imageType, bool skipStatus)
-        //{
-        //    return await UpdateAccountImageAsync(image, fileName, imageType, true, skipStatus);
-        //}
+        /// <summary>
+        /// sends an image file to Twitter to replace user image
+        /// </summary>
+        /// <remarks>
+        /// You can only run this method with a period of time between executions; 
+        /// otherwise you get WebException errors from Twitter
+        /// </remarks>
+        /// <param name="image">byte array of image to upload</param>
+        /// <param name="fileName">name to pass to Twitter for the file</param>
+        /// <param name="imageType">type of image: must be one of jpg, gif, or png</param>
+        /// <param name="skipStatus">Don't include status with response.</param>
+        /// <returns>User with new image info</returns>
+        public async Task<User> UpdateAccountImageAsync(byte[] image, string fileName, string imageType, bool skipStatus)
+        {
+            return await UpdateAccountImageAsync(image, fileName, imageType, true, skipStatus);
+        }
 
-        ///// <summary>
-        ///// sends an image file to Twitter to replace user image
-        ///// </summary>
-        ///// <remarks>
-        ///// You can only run this method with a period of time between executions; 
-        ///// otherwise you get WebException errors from Twitter
-        ///// </remarks>
-        ///// <param name="image">byte array of image to upload</param>
-        ///// <param name="fileName">name to pass to Twitter for the file</param>
-        ///// <param name="imageType">type of image: must be one of jpg, gif, or png</param>
-        ///// <param name="includeEntities">Set to false to not include entities. (default: true)</param>
-        ///// <param name="skipStatus">Don't include status with response.</param>
-        ///// <param name="callback">Async Callback used in Silverlight queries</param>
-        ///// <returns>User with new image info</returns>
-        //public async Task<User> UpdateAccountImageAsync(byte[] image, string fileName, string imageType, bool includeEntities, bool skipStatus)
-        //{
-        //    var accountUrl = BaseUrl + "account/update_profile_image.json";
+        /// <summary>
+        /// sends an image file to Twitter to replace user image
+        /// </summary>
+        /// <remarks>
+        /// You can only run this method with a period of time between executions; 
+        /// otherwise you get WebException errors from Twitter
+        /// </remarks>
+        /// <param name="image">byte array of image to upload</param>
+        /// <param name="fileName">name to pass to Twitter for the file</param>
+        /// <param name="imageType">type of image: must be one of jpg, gif, or png</param>
+        /// <param name="includeEntities">Set to false to not include entities. (default: true)</param>
+        /// <param name="skipStatus">Don't include status with response.</param>
+        /// <returns>User with new image info</returns>
+        public async Task<User> UpdateAccountImageAsync(byte[] image, string fileName, string imageType, bool includeEntities, bool skipStatus)
+        {
+            var accountUrl = BaseUrl + "account/update_profile_image.json";
 
-        //    if (image == null || image.Length == 0)
-        //    {
-        //        throw new ArgumentException("image is required.", "image");
-        //    }
+            if (image == null || image.Length == 0)
+            {
+                throw new ArgumentException("image is required.", "image");
+            }
 
-        //    if (string.IsNullOrEmpty(fileName))
-        //    {
-        //        throw new ArgumentException("fileName is required.", "fileName");
-        //    }
+            if (string.IsNullOrEmpty(fileName))
+            {
+                throw new ArgumentException("fileName is required.", "fileName");
+            }
 
-        //    if (string.IsNullOrEmpty(imageType))
-        //    {
-        //        throw new ArgumentException("imageType is required.", "imageType");
-        //    }
+            if (string.IsNullOrEmpty(imageType))
+            {
+                throw new ArgumentException("imageType is required.", "imageType");
+            }
 
-        //    var reqProc = new UserRequestProcessor<User>();
-        //    var parameters = new Dictionary<string, string>
-        //            {
-        //                { "include_entities", includeEntities.ToString().ToLower() },
-        //                { "skip_status", skipStatus.ToString().ToLower() }
-        //            };
+            var reqProc = new UserRequestProcessor<User>();
+            var parameters = new Dictionary<string, string>
+                    {
+                        { "include_entities", includeEntities.ToString().ToLower() },
+                        { "skip_status", skipStatus.ToString().ToLower() }
+                    };
 
-        //    var resultsJson =
-        //        await TwitterExecutor.PostTwitterImageAsync<User>(accountUrl, parameters, image, fileName, imageType, reqProc);
+            //var resultsJson =
+            //    await TwitterExecutor.PostMediaAsync<User>(accountUrl, parameters, image, fileName, imageType, reqProc);
+            var resultsJson = await TwitterExecutor.PostMediaAsync(accountUrl, parameters, image);
 
-        //    User user = reqProc.ProcessActionResult(resultsJson, UserAction.SingleUser);
-        //    return user;
-        //}
+            return reqProc.ProcessActionResult(resultsJson, UserAction.SingleUser);
+        }
 
-        ///// <summary>
-        ///// sends an image file to Twitter to replace background image
-        ///// </summary>
-        ///// <param name="image">full path to file, including file name</param>
-        ///// <param name="fileName">name to pass to Twitter for the file</param>
-        ///// <param name="imageType">type of image: must be one of jpg, gif, or png</param>
-        ///// <param name="tile">Tile image across background.</param>
-        ///// <param name="use">Whether to use uploaded background image or not</param>
-        ///// <param name="skipStatus">Don't include status with response.</param>
-        ///// <returns>User with new image info</returns>
-        //public async Task<User> UpdateAccountBackgroundImage(byte[] image, string fileName, string imageType, bool tile, bool use, bool skipStatus)
-        //{
-        //    return await UpdateAccountBackgroundImage(image, fileName, imageType, tile, use, true, skipStatus);
-        //}
+        /// <summary>
+        /// sends an image file to Twitter to replace background image
+        /// </summary>
+        /// <param name="image">full path to file, including file name</param>
+        /// <param name="fileName">name to pass to Twitter for the file</param>
+        /// <param name="imageType">type of image: must be one of jpg, gif, or png</param>
+        /// <param name="tile">Tile image across background.</param>
+        /// <param name="use">Whether to use uploaded background image or not</param>
+        /// <param name="skipStatus">Don't include status with response.</param>
+        /// <returns>User with new image info</returns>
+        public async Task<User> UpdateAccountBackgroundImageAsync(byte[] image, string fileName, string imageType, bool tile, bool use, bool skipStatus)
+        {
+            return await UpdateAccountBackgroundImageAsync(image, fileName, imageType, tile, use, true, skipStatus);
+        }
 
-        ///// <summary>
-        ///// sends an image file to Twitter to replace background image
-        ///// </summary>
-        ///// <param name="image">full path to file, including file name</param>
-        ///// <param name="fileName">name to pass to Twitter for the file</param>
-        ///// <param name="imageType">type of image: must be one of jpg, gif, or png</param>
-        ///// <param name="tile">Tile image across background.</param>
-        ///// <param name="use">Whether to use uploaded background image or not</param>
-        ///// <param name="includeEntities">Set to false to not include entities. (default: true)</param>
-        ///// <param name="skipStatus">Don't include status with response.</param>
-        ///// <returns>User with new image info</returns>
-        //public async Task<User> UpdateAccountBackgroundImage(byte[] image, string fileName, string imageType, bool tile, bool use, bool includeEntities, bool skipStatus)
-        //{
-        //    return await UpdateAccountBackgroundImage(image, fileName, imageType, tile, use, includeEntities, skipStatus);
-        //}
+        /// <summary>
+        /// sends an image file to Twitter to replace background image
+        /// </summary>
+        /// <param name="image">full path to file, including file name</param>
+        /// <param name="fileName">name to pass to Twitter for the file</param>
+        /// <param name="imageType">type of image: must be one of jpg, gif, or png</param>
+        /// <param name="tile">Tile image across background.</param>
+        /// <param name="use">Whether to use uploaded background image or not</param>
+        /// <param name="callback">Async Callback used in Silverlight queries</param>
+        /// <param name="includeEntities">Set to false to not include entities. (default: true)</param>
+        /// <param name="skipStatus">Don't include status with response.</param>
+        /// <returns>User with new image info</returns>
+        public async Task<User> UpdateAccountBackgroundImageAsync(byte[] image, string fileName, string imageType, bool tile, bool use, bool includeEntities, bool skipStatus)
+        {
+            var accountUrl = BaseUrl + "account/update_profile_background_image.json";
 
-        ///// <summary>
-        ///// sends an image file to Twitter to replace background image
-        ///// </summary>
-        ///// <param name="image">full path to file, including file name</param>
-        ///// <param name="fileName">name to pass to Twitter for the file</param>
-        ///// <param name="imageType">type of image: must be one of jpg, gif, or png</param>
-        ///// <param name="tile">Tile image across background.</param>
-        ///// <param name="use">Whether to use uploaded background image or not</param>
-        ///// <param name="callback">Async Callback used in Silverlight queries</param>
-        ///// <param name="includeEntities">Set to false to not include entities. (default: true)</param>
-        ///// <param name="skipStatus">Don't include status with response.</param>
-        ///// <returns>User with new image info</returns>
-        //public async Task<User> UpdateAccountBackgroundImage(byte[] image, string fileName, string imageType, bool tile, bool use, bool includeEntities, bool skipStatus, Action<TwitterAsyncResponse<User>> callback)
-        //{
-        //    var accountUrl = BaseUrl + "account/update_profile_background_image.json";
+            if (image == null || image.Length == 0)
+            {
+                throw new ArgumentException("image is required.", "image");
+            }
 
-        //    if (image == null || image.Length == 0)
-        //    {
-        //        throw new ArgumentException("image is required.", "image");
-        //    }
+            if (string.IsNullOrEmpty(fileName))
+            {
+                throw new ArgumentException("fileName is required.", "fileName");
+            }
 
-        //    if (string.IsNullOrEmpty(fileName))
-        //    {
-        //        throw new ArgumentException("fileName is required.", "fileName");
-        //    }
+            if (string.IsNullOrEmpty(imageType))
+            {
+                throw new ArgumentException("imageType is required.", "imageType");
+            }
 
-        //    if (string.IsNullOrEmpty(imageType))
-        //    {
-        //        throw new ArgumentException("imageType is required.", "imageType");
-        //    }
+            var parameters = new Dictionary<string, string>
+            {
+                { "include_entities", includeEntities.ToString().ToLower() },
+                { "skip_status", skipStatus.ToString().ToLower() }
+            };
 
-        //    var parameters = new Dictionary<string, string>
-        //    {
-        //        { "include_entities", includeEntities.ToString().ToLower() },
-        //        { "skip_status", skipStatus.ToString().ToLower() }
-        //    };
+            if (tile)
+            {
+                parameters.Add("tile", true.ToString().ToLower());
+                parameters.Add("use", use.ToString().ToLower());
+            }
 
-        //    if (tile)
-        //    {
-        //        parameters.Add("tile", true.ToString().ToLower());
-        //        parameters.Add("use", use.ToString().ToLower());
-        //    }
+            var reqProc = new UserRequestProcessor<User>();
 
-        //    var reqProc = new UserRequestProcessor<User>();
+            //var resultsJson =
+            //    await TwitterExecutor.PostTwitterImageAsync(accountUrl, parameters, image, fileName, imageType, reqProc);
+            var resultsJson = await TwitterExecutor.PostMediaAsync(accountUrl, parameters, image);
 
-        //    var resultsJson =
-        //        await TwitterExecutor.PostTwitterImageAsync(accountUrl, parameters, image, fileName, imageType, reqProc);
-
-        //    User user = reqProc.ProcessActionResult(resultsJson, UserAction.SingleUser);
-        //    return user;
-        //}
+            User user = reqProc.ProcessActionResult(resultsJson, UserAction.SingleUser);
+            return user;
+        }
 
         /// <summary>
         /// Update account profile info

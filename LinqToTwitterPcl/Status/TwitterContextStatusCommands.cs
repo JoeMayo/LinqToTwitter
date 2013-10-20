@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -11,107 +12,73 @@ namespace LinqToTwitter
         public const ulong NoReply = 0ul;
         public const decimal NoCoordinate = -1m;
 
-        ///// <summary>
-        ///// sends a status update with attached media
-        ///// </summary>
-        ///// <param name="status">(optional @UserName) and (required) status text</param>
-        ///// <param name="possiblySensitive">Set to true if media does not contain age appropriate content</param>
-        ///// <param name="mediaItems">List of Media to send</param>
-        ///// <returns>Status containing new tweet</returns>
-        //public async Task<Status> TweetWithMedia(string status, bool possiblySensitive, List<Media> mediaItems)
-        //{
-        //    Status results = ReplyWithMedia(NoReply, status, possiblySensitive, NoCoordinate, NoCoordinate, null, false, mediaItems, null);
-        //    return results;
-        //}
+        /// <summary>
+        /// sends a status update with attached media
+        /// </summary>
+        /// <param name="status">Status text</param>
+        /// <param name="possiblySensitive">Set to true if media does not contain age appropriate content</param>
+        /// <param name="image">Media to send</param>
+        /// <returns>Status containing new tweet</returns>
+        public async Task<Status> TweetWithMediaAsync(string status, bool possiblySensitive, byte[] image)
+        {
+            return await ReplyWithMediaAsync(NoReply, status, possiblySensitive, NoCoordinate, NoCoordinate, null, false, image);
+        }
 
-        ///// <summary>
-        ///// sends a status update with attached media
-        ///// </summary>
-        ///// <param name="status">(optional @UserName) and (required) status text</param>
-        ///// <param name="possiblySensitive">Set to true if media does not contain age appropriate content</param>
-        ///// <param name="latitude">Latitude coordinate of where tweet occurred</param>
-        ///// <param name="longitude">Longitude coordinate of where tweet occurred</param>
-        ///// <param name="placeID">ID of place (found via Geo Reverse lookup query)</param>
-        ///// <param name="displayCoordinates">Allow or prevent display of coordinates for this tweet</param>
-        ///// <param name="mediaItems">List of Media to send</param>
-        ///// <param name="callback">Async callback handler</param>
-        ///// <returns>Status containing new tweet</returns>
-        //public async Task<Status> TweetWithMedia(string status, bool possiblySensitive, decimal latitude, decimal longitude, string placeID, bool displayCoordinates, List<Media> mediaItems, Action<TwitterAsyncResponse<Status>> callback)
-        //{
-        //    Status results = ReplyWithMedia(NoReply, status, possiblySensitive, latitude, longitude, placeID, displayCoordinates, mediaItems, callback);
-        //    return results;
-        //}
+        /// <summary>
+        /// sends a status update with attached media
+        /// </summary>
+        /// <param name="inReplyToStatusID">id of status replying to - optional - pass null if not used</param>
+        /// <param name="status">Status text</param>
+        /// <param name="possiblySensitive">Set to true if media does not contain age appropriate content</param>
+        /// <param name="image">Media to send</param>
+        /// <returns>Status containing new reply</returns>
+        public async Task<Status> ReplyWithMediaAsync(ulong inReplyToStatusID, string status, bool possiblySensitive, byte[] image)
+        {
+            return await ReplyWithMediaAsync(inReplyToStatusID, status, possiblySensitive, NoCoordinate, NoCoordinate, null, false, image);
+        }
 
-        ///// <summary>
-        ///// sends a status update with attached media
-        ///// </summary>
-        ///// <param name="inReplyToStatusID">id of status replying to - optional - pass null if not used</param>
-        ///// <param name="status">(optional @UserName) and (required) status text</param>
-        ///// <param name="possiblySensitive">Set to true if media does not contain age appropriate content</param>
-        ///// <param name="mediaItems">List of Media to send</param>
-        ///// <returns>Status containing new reply</returns>
-        //public async Task<Status> ReplyWithMedia(ulong inReplyToStatusID, string status, bool possiblySensitive, List<Media> mediaItems)
-        //{
-        //    Status result = ReplyWithMedia(inReplyToStatusID, status, possiblySensitive, NoCoordinate, NoCoordinate, null, false, mediaItems, null);
-        //    return result;
-        //}
+        /// <summary>
+        /// sends a status update with attached media
+        /// </summary>
+        /// <param name="twitterCtx">Your instance of TwitterContext</param>
+        /// <param name="inReplyToStatusID">id of status replying to - optional - pass null if not used</param>
+        /// <param name="status">Status text</param>
+        /// <param name="possiblySensitive">Set to true if media does not contain age appropriate content</param>
+        /// <param name="latitude">Latitude coordinate of where tweet occurred</param>
+        /// <param name="longitude">Longitude coordinate of where tweet occurred</param>
+        /// <param name="placeID">ID of place (found via Geo Reverse lookup query)</param>
+        /// <param name="displayCoordinates">Allow or prevent display of coordinates for this tweet</param>
+        /// <param name="image">Media to send</param>
+        /// <returns>Status containing new reply</returns>
+        public async Task<Status> ReplyWithMediaAsync(ulong inReplyToStatusID, string status, bool possiblySensitive, decimal latitude, decimal longitude, string placeID, bool displayCoordinates, byte[] image)
+        {
+            if (string.IsNullOrWhiteSpace(status))
+                throw new ArgumentNullException("status", "status is a required parameter.");
 
-        ///// <summary>
-        ///// sends a status update with attached media
-        ///// </summary>
-        ///// <param name="twitterCtx">Your instance of TwitterContext</param>
-        ///// <param name="inReplyToStatusID">id of status replying to - optional - pass null if not used</param>
-        ///// <param name="status">(optional @UserName) and (required) status text</param>
-        ///// <param name="possiblySensitive">Set to true if media does not contain age appropriate content</param>
-        ///// <param name="latitude">Latitude coordinate of where tweet occurred</param>
-        ///// <param name="longitude">Longitude coordinate of where tweet occurred</param>
-        ///// <param name="placeID">ID of place (found via Geo Reverse lookup query)</param>
-        ///// <param name="displayCoordinates">Allow or prevent display of coordinates for this tweet</param>
-        ///// <param name="mediaItems">List of Media to send</param>
-        ///// <param name="callback">Async callback handler</param>
-        ///// <returns>Status containing new reply</returns>
-        //public async Task<Status> ReplyWithMedia(ulong inReplyToStatusID, string status, bool possiblySensitive, decimal latitude, decimal longitude, string placeID, bool displayCoordinates, List<Media> mediaItems, Action<TwitterAsyncResponse<Status>> callback)
-        //{
-        //    if (string.IsNullOrEmpty(status))
-        //    {
-        //        throw new ArgumentNullException("status", "status is a required parameter.");
-        //    }
+            if (image == null)
+                throw new ArgumentNullException("image", "You must provide a byte[] of image data.");
 
-        //    if (mediaItems == null)
-        //    {
-        //        throw new ArgumentNullException("mediaItems", "You must pass at least one Media in mediaItems.");
-        //    }
+            var updateUrl = BaseUrl + "statuses/update_with_media.json";
 
-        //    if (mediaItems.Count == 0)
-        //    {
-        //        throw new ArgumentException("You must pass at least one Media in mediaItems.", "mediaItems");
-        //    }
+            var reqProc = new StatusRequestProcessor<Status>();
 
-        //    TwitterExecutor.AsyncCallback = callback;
+            string resultString =
+                await TwitterExecutor.PostMediaAsync(
+                    updateUrl,
+                    new Dictionary<string, string>
+                    {
+                        {"status", status},
+                        {"possibly_sensitive", possiblySensitive ? true.ToString() : null },
+                        {"lat", latitude == NoCoordinate ? null : latitude.ToString(Culture.US) },
+                        {"long", longitude == NoCoordinate ? null : longitude.ToString(Culture.US) },
+                        {"place_id", string.IsNullOrEmpty(placeID) ? null : placeID },
+                        {"display_coordinates", displayCoordinates ? true.ToString() : null },
+                        {"in_reply_to_status_id", inReplyToStatusID == NoReply ? null : inReplyToStatusID.ToString(CultureInfo.InvariantCulture)}
+                    },
+                    image);
 
-        //    var updateUrl = BaseUrl + "statuses/update_with_media.json";
-
-        //    var reqProc = new StatusRequestProcessor<Status>();
-
-        //    string resultString =
-        //        TwitterExecutor.PostMedia(
-        //            updateUrl,
-        //            new Dictionary<string, string>
-        //            {
-        //                {"status", status},
-        //                {"possibly_sensitive", possiblySensitive ? true.ToString() : null },
-        //                {"lat", latitude == NoCoordinate ? null : latitude.ToString(Culture.US) },
-        //                {"long", longitude == NoCoordinate ? null : longitude.ToString(Culture.US) },
-        //                {"place_id", string.IsNullOrEmpty(placeID) ? null : placeID },
-        //                {"display_coordinates", displayCoordinates ? true.ToString() : null },
-        //                {"in_reply_to_status_id", inReplyToStatusID == NoReply ? null : inReplyToStatusID.ToString(CultureInfo.InvariantCulture)}
-        //            },
-        //            mediaItems,
-        //            reqProc);
-
-        //    Status result = reqProc.ProcessActionResult(resultString, StatusAction.SingleStatus);
-        //    return result;
-        //}
+            return reqProc.ProcessActionResult(resultString, StatusAction.SingleStatus);
+        }
 
         /// <summary>
         /// Replies to a tweet.

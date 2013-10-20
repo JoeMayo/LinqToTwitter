@@ -187,6 +187,8 @@ namespace LinqToTwitter
 
             var msg = await new HttpClient().SendAsync(req);
 
+            await TwitterErrorHandler.ThrowIfErrorAsync(msg);
+
             return await msg.Content.ReadAsStringAsync();
         }
   

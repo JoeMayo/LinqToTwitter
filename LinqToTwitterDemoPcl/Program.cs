@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using LinqToTwitter;
@@ -37,19 +38,29 @@ namespace LinqToTwitterDemoPcl
             //tweets.ForEach(tweet =>
             //    Console.WriteLine("\nName:\n{0}\nTweet:{1}\n", tweet.ScreenName, tweet.Text));
 
-            var searchResponse = await
-                (from search in ctx.Search
-                 where search.Type == SearchType.Search &&
-                       search.Query == "LINQ to Twitter"
-                 select search)
-                .FirstOrDefaultAsync();
+            //var searchResponse = await
+            //    (from search in ctx.Search
+            //     where search.Type == SearchType.Search &&
+            //           search.Query == "LINQ to Twitter"
+            //     select search)
+            //    .FirstOrDefaultAsync();
 
-            searchResponse.Statuses.ForEach(tweet =>
-                Console.WriteLine("\nName:\n{0}\nTweet:{1}\n", tweet.ScreenName, tweet.Text));
+            //searchResponse.Statuses.ForEach(tweet =>
+            //    Console.WriteLine("\nName:\n{0}\nTweet:{1}\n", tweet.ScreenName, tweet.Text));
 
-            Status newTweet = await ctx.TweetAsync("Testing UpdateStatusAsync in LINQ to Twitter - " + DateTime.Now);
+            string statusText = "Testing UpdateStatusAsync in LINQ to Twitter - " + DateTime.Now;
+
+            //Status newTweet = await ctx.TweetAsync(statusText);
+
+            byte[] imageBytes = File.ReadAllBytes(@"..\..\Images\200xColor_2.png");
+
+            Status newTweet = await ctx.TweetWithMediaAsync(statusText, false, imageBytes);
 
             Console.WriteLine("\nName:\n{0}\nTweet:{1}\n", newTweet.ScreenName, newTweet.Text);
+
+            //User user = await ctx.UpdateAccountImageAsync(imageBytes, "200xColor_2.png", "png", false);
+
+            //Console.WriteLine("\nName:\n{0}\nImage URL:{1}\n", user.ScreenNameResponse, user.ProfileBackgroundImageUrl);
         }
   
         static IAuthorizer ChooseAuthenticationStrategy()
