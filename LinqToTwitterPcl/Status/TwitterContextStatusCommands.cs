@@ -58,7 +58,10 @@ namespace LinqToTwitter
             if (image == null)
                 throw new ArgumentNullException("image", "You must provide a byte[] of image data.");
 
-            var updateUrl = BaseUrl + "statuses/update_with_media.json";
+            string updateUrl = BaseUrl + "statuses/update_with_media.json";
+            string imageType = "application/octet-stream";
+            string name = "media[]";
+            string randomUnusedFileName = new Random().Next(100, 999).ToString();
 
             var reqProc = new StatusRequestProcessor<Status>();
 
@@ -75,7 +78,10 @@ namespace LinqToTwitter
                         {"display_coordinates", displayCoordinates ? true.ToString() : null },
                         {"in_reply_to_status_id", inReplyToStatusID == NoReply ? null : inReplyToStatusID.ToString(CultureInfo.InvariantCulture)}
                     },
-                    image);
+                    image, 
+                    name,
+                    randomUnusedFileName,
+                    imageType);
 
             return reqProc.ProcessActionResult(resultString, StatusAction.SingleStatus);
         }

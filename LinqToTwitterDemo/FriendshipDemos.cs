@@ -16,7 +16,7 @@ namespace LinqToTwitterDemo
         public static void Run(TwitterContext twitterCtx)
         {
             //CreateFriendshipFollowDemo(twitterCtx);
-            //DestroyFriendshipDemo(twitterCtx);
+            DestroyFriendshipDemo(twitterCtx);
             //CreateFriendshipNoDeviceUpdatesDemo(twitterCtx);
             //CreateFriendshipAsyncDemo(twitterCtx);
             //FriendshipShowDemo(twitterCtx);
@@ -32,7 +32,7 @@ namespace LinqToTwitterDemo
 
         private static void DestroyFriendshipDemo(TwitterContext twitterCtx)
         {
-            var user = twitterCtx.DestroyFriendship("LinqToTweeter", string.Empty);
+            var user = twitterCtx.DestroyFriendship(null, "Linq2Tweeter");
 
             Console.WriteLine(
                 "User Name: {0}, Status: {1}",
@@ -42,7 +42,7 @@ namespace LinqToTwitterDemo
 
         private static void CreateFriendshipFollowDemo(TwitterContext twitterCtx)
         {
-            var user = twitterCtx.CreateFriendship(string.Empty, "JoeMayo", true);
+            var user = twitterCtx.CreateFriendship(null, "JoeMayo", true);
 
             Console.WriteLine(
                 "User Name: {0}, Status: {1}",
@@ -52,7 +52,7 @@ namespace LinqToTwitterDemo
 
         private static void CreateFriendshipNoDeviceUpdatesDemo(TwitterContext twitterCtx)
         {
-            var user = twitterCtx.CreateFriendship(string.Empty, "JoeMayo", false);
+            var user = twitterCtx.CreateFriendship(null, "JoeMayo", false);
 
             Console.WriteLine(
                 "User Name: {0}, Status: {1}",
@@ -62,7 +62,7 @@ namespace LinqToTwitterDemo
 
         private static void CreateFriendshipAsyncDemo(TwitterContext twitterCtx)
         {
-            twitterCtx.CreateFriendship(string.Empty, "JoeMayo", false,
+            twitterCtx.CreateFriendship(null, "JoeMayo", false,
                 response =>
                 {
                     User usr = response.State;

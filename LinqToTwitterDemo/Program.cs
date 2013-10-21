@@ -49,7 +49,7 @@ namespace LinqToTwitterDemo
                     //SavedSearchDemos.Run(twitterCtx);
                     //SearchDemos.Run(twitterCtx);
                     //SocialGraphDemos.Run(twitterCtx);
-                    StatusDemos.Run(twitterCtx);
+                    //StatusDemos.Run(twitterCtx);
                     //StreamingDemo.Run(twitterCtx);
 
                     if (DoThis("demo trend"))

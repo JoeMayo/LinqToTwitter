@@ -58,9 +58,9 @@ namespace LinqToTwitterDemoPcl
 
             Console.WriteLine("\nName:\n{0}\nTweet:{1}\n", newTweet.ScreenName, newTweet.Text);
 
-            //User user = await ctx.UpdateAccountImageAsync(imageBytes, "200xColor_2.png", "png", false);
+            User user = await ctx.UpdateAccountImageAsync(imageBytes, "200xColor_2.png", "png", false);
 
-            //Console.WriteLine("\nName:\n{0}\nImage URL:{1}\n", user.ScreenNameResponse, user.ProfileBackgroundImageUrl);
+            Console.WriteLine("\nName:\n{0}\nImage URL:{1}\n", user.ScreenNameResponse, user.ProfileBackgroundImageUrl);
         }
   
         static IAuthorizer ChooseAuthenticationStrategy()

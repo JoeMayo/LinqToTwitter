@@ -129,9 +129,11 @@ namespace LinqToTwitter
                         { "skip_status", skipStatus.ToString().ToLower() }
                     };
 
+            string name = "image";
+            string imageMimeType = "image/" + imageType;
             //var resultsJson =
             //    await TwitterExecutor.PostMediaAsync<User>(accountUrl, parameters, image, fileName, imageType, reqProc);
-            var resultsJson = await TwitterExecutor.PostMediaAsync(accountUrl, parameters, image);
+            var resultsJson = await TwitterExecutor.PostMediaAsync(accountUrl, parameters, image, name, fileName, imageMimeType);
 
             return reqProc.ProcessActionResult(resultsJson, UserAction.SingleUser);
         }
@@ -196,9 +198,11 @@ namespace LinqToTwitter
 
             var reqProc = new UserRequestProcessor<User>();
 
+            string name = "image";
+            string imageMimeType = "image/" + image;
             //var resultsJson =
             //    await TwitterExecutor.PostTwitterImageAsync(accountUrl, parameters, image, fileName, imageType, reqProc);
-            var resultsJson = await TwitterExecutor.PostMediaAsync(accountUrl, parameters, image);
+            var resultsJson = await TwitterExecutor.PostMediaAsync(accountUrl, parameters, image, name, fileName, imageMimeType);
 
             User user = reqProc.ProcessActionResult(resultsJson, UserAction.SingleUser);
             return user;

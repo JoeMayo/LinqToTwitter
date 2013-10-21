@@ -20,7 +20,7 @@ namespace LinqToTwitterDemo
             ViewRateLimitResponseHeadersDemo(twitterCtx);
             ViewAccountSettingsDemo(twitterCtx);
             //UpdateAccountColors(twitterCtx);
-            //UpdateAccountImage(twitterCtx);
+            UpdateAccountImage(twitterCtx);
             //UpdateAccountImageCallback(twitterCtx);
             //UpdateAccountBackgroundImage(twitterCtx);
             //UpdateAccountBackgroundImageBytes(twitterCtx);
@@ -143,7 +143,7 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         static void UpdateAccountImage(TwitterContext twitterCtx)
         {
-            var user = twitterCtx.UpdateAccountImage(@"..\..\images\200xColor_2.png", true);
+            var user = twitterCtx.UpdateAccountImage(@"..\..\images\200xColor_2.png", false);
 
             Console.WriteLine("User Image: " + user.ProfileImageUrl);
         }
@@ -154,7 +154,7 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         static void UpdateAccountImageCallback(TwitterContext twitterCtx)
         {
-            var user = twitterCtx.UpdateAccountImage(
+            twitterCtx.UpdateAccountImage(
                 @"..\..\images\200xColor_2.png", true,
                 response =>
                 {

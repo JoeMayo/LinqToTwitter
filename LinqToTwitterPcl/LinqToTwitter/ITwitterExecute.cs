@@ -59,7 +59,7 @@ namespace LinqToTwitter
 //        /// <param name="url">url to upload to</param>
 //        /// <param name="fileName">name to pass to Twitter for the file</param>
 //        /// <param name="imageType">type of image: must be one of jpg, gif, or png</param>
-//        /// <returns>XML results From Twitter</returns>
+//        /// <returns>JSON results From Twitter</returns>
 //        string PostTwitterImage<T>(string url, IDictionary<string, string> postData, byte[] image, string fileName, string imageType, IRequestProcessor<T> reqProc);
 
         /// <summary>
@@ -67,23 +67,26 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="url">url to upload to</param>
         /// <param name="postData">request parameters</param>
-        /// <param name="mediaItems">list of Media each media item to upload</param>
-        /// <returns>XML results From Twitter</returns>
-        Task<string> PostMediaAsync(string url, IDictionary<string, string> postData, byte[] image);
+        /// <param name="image">Image data in a byte[]</param>
+        /// <param name="name">Name of parameter to pass to Twitter.</param>
+        /// <param name="fileName">name to pass to Twitter for the file</param>
+        /// <param name="contentType">Type of image: must be one of jpg, gif, or png</param>
+        /// <returns>JSON results From Twitter</returns>
+        Task<string> PostMediaAsync(string url, IDictionary<string, string> postData, byte[] image, string name, string fileName, string contentType);
 
         /// <summary>
         /// makes HTTP call to Twitter API
         /// </summary>
         /// <param name="url">URL with all query info</param>
         /// <param name="reqProc">Request Processor for Async Results</param>
-        /// <returns>XML Results from Twitter</returns>
+        /// <returns>JSON Results from Twitter</returns>
         Task<string> QueryTwitterAsync<T>(Request req, IRequestProcessor<T> reqProc);
 
         /// <summary>
         /// Query for Twitter Streaming APIs
         /// </summary>
         /// <param name="url">URL with all query info</param>
-        /// <returns>Raw results from Twitter</returns>
+        /// <returns>Raw JSON results from Twitter</returns>
         string QueryTwitterStream(Request req);
 
         /// <summary>

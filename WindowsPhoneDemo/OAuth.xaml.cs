@@ -30,7 +30,11 @@ namespace WindowsPhoneDemo
         {
             pinAuth = new PinAuthorizer
             {
-                Credentials = new InMemoryCredentials { ConsumerKey = "", ConsumerSecret = "" },
+                Credentials = new InMemoryCredentials 
+                { 
+                    ConsumerKey = "", 
+                    ConsumerSecret = "" 
+                },
                 UseCompression = true,
                 GoToTwitterAuthorization = pageLink => Dispatcher.BeginInvoke(() => OAuthWebBrowser.Navigate(new Uri(pageLink, UriKind.Absolute)))
             };
