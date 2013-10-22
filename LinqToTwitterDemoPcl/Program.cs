@@ -38,15 +38,15 @@ namespace LinqToTwitterDemoPcl
             //tweets.ForEach(tweet =>
             //    Console.WriteLine("\nName:\n{0}\nTweet:{1}\n", tweet.ScreenName, tweet.Text));
 
-            var searchResponse = await
-                (from search in ctx.Search
-                 where search.Type == SearchType.Search &&
-                       search.Query == "LINQ to Twitter"
-                 select search)
-                .FirstOrDefaultAsync();
+            //var searchResponse = await
+            //    (from search in ctx.Search
+            //     where search.Type == SearchType.Search &&
+            //           search.Query == "LINQ to Twitter"
+            //     select search)
+            //    .FirstOrDefaultAsync();
 
-            searchResponse.Statuses.ForEach(tweet =>
-                Console.WriteLine("\nName:\n{0}\nTweet:{1}\n", tweet.ScreenName, tweet.Text));
+            //searchResponse.Statuses.ForEach(tweet =>
+            //    Console.WriteLine("\nName:\n{0}\nTweet:{1}\n", tweet.ScreenName, tweet.Text));
 
             string statusText = "Testing UpdateStatusAsync in LINQ to Twitter - " + DateTime.Now;
 
@@ -61,6 +61,30 @@ namespace LinqToTwitterDemoPcl
             //User user = await ctx.UpdateAccountImageAsync(imageBytes, "200xColor_2.png", "png", false);
 
             //Console.WriteLine("\nName:\n{0}\nImage URL:{1}\n", user.ScreenNameResponse, user.ProfileBackgroundImageUrl);
+
+            Console.WriteLine("\nStreamed Content: \n");
+            int count = 0;
+
+            await
+            (from strm in ctx.Streaming
+             where strm.Type == StreamingType.Sample
+             select strm)
+            .StreamingCallback(async strm =>
+            {
+                if (strm.Status == TwitterErrorStatus.RequestProcessingException)
+                {
+                    Console.WriteLine(strm.Error.ToString());
+                    return;
+                }
+
+                Console.WriteLine(strm.Content + "\n");
+
+                if (count++ >= 10)
+                {
+                    strm.CloseStream();
+                }
+            })
+            .ToListAsync();
         }
   
         static IAuthorizer ChooseAuthenticationStrategy()

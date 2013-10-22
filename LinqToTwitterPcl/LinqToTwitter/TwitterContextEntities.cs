@@ -30,16 +30,16 @@ namespace LinqToTwitter
             }
         }
 
-        ///// <summary>
-        ///// enables access to Twitter Control Streams, which manage and query Site Streams
-        ///// </summary>
-        //public TwitterQueryable<ControlStream> ControlStream
-        //{
-        //    get
-        //    {
-        //        return new TwitterQueryable<ControlStream>(this);
-        //    }
-        //}
+        /// <summary>
+        /// enables access to Twitter Control Streams, which manage and query Site Streams
+        /// </summary>
+        public TwitterQueryable<ControlStream> ControlStream
+        {
+            get
+            {
+                return new TwitterQueryable<ControlStream>(this);
+            }
+        }
 
         /// <summary>
         /// enables access to Twitter User messages, such as Friends and Followers
@@ -162,16 +162,16 @@ namespace LinqToTwitter
             }
         }
 
-        ///// <summary>
-        ///// enables access to Twitter Status messages, such as Friends and Public
-        ///// </summary>
-        //public TwitterQueryable<Streaming> Streaming
-        //{
-        //    get
-        //    {
-        //        return new TwitterQueryable<Streaming>(this);
-        //    }
-        //}
+        /// <summary>
+        /// enables access to Twitter Status messages, such as Friends and Public
+        /// </summary>
+        public TwitterQueryable<Streaming> Streaming
+        {
+            get
+            {
+                return new TwitterQueryable<Streaming>(this);
+            }
+        }
 
         /// <summary>
         /// enables access to Twitter Trends, such as Trend, Current, Daily, and Weekly
@@ -195,15 +195,15 @@ namespace LinqToTwitter
             }
         }
 
-        ///// <summary>
-        ///// enables access to Twitter UserStream for streaming access to user info
-        ///// </summary>
-        //public TwitterQueryable<UserStream> UserStream
-        //{
-        //    get
-        //    {
-        //        return new TwitterQueryable<UserStream>(this);
-        //    }
-        //}
+        /// <summary>
+        /// enables access to Twitter UserStream for streaming access to user info
+        /// </summary>
+        public TwitterQueryable<UserStream> UserStream
+        {
+            get
+            {
+                return new TwitterQueryable<UserStream>(this);
+            }
+        }
     }
 }

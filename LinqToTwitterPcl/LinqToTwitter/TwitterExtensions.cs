@@ -15,12 +15,12 @@ namespace LinqToTwitter
         /// <param name="streaming">Query being extended</param>
         /// <param name="callback">Your code for handling Twitter content</param>
         /// <returns>Streaming instance to support further LINQ opertations</returns>
-        public static IQueryable<Streaming> StreamingCallback(this IQueryable<Streaming> streaming, Action<StreamContent> callback)
+        public static IQueryable<Streaming> StreamingCallback(this IQueryable<Streaming> streaming, Func<StreamContent, Task> callback)
         {
             (streaming.Provider as TwitterQueryProvider)
                 .Context
                 .TwitterExecutor
-                .StreamingCallback = callback;
+                .StreamingCallbackAsync = callback;
 
             return streaming;
         }
@@ -33,12 +33,12 @@ namespace LinqToTwitter
         /// <param name="streaming">Query being extended</param>
         /// <param name="callback">Your code for handling Twitter content</param>
         /// <returns>Streaming instance to support further LINQ opertations</returns>
-        public static IQueryable<UserStream> StreamingCallback(this IQueryable<UserStream> streaming, Action<StreamContent> callback)
+        public static IQueryable<UserStream> StreamingCallback(this IQueryable<UserStream> streaming, Func<StreamContent, Task> callback)
         {
             (streaming.Provider as TwitterQueryProvider)
                 .Context
                 .TwitterExecutor
-                .StreamingCallback = callback;
+                .StreamingCallbackAsync = callback;
 
             return streaming;
         }

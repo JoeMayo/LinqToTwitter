@@ -116,7 +116,7 @@ namespace LinqToTwitter
         /// <summary>
         /// Allows users to process content returned from stream
         /// </summary>
-        public Action<StreamContent> StreamingCallback { get; set; }
+        public Func<StreamContent, Task> StreamingCallbackAsync { get; set; }
 
         /// <summary>
         /// Set to true to close stream, false means stream is still open
@@ -298,15 +298,25 @@ namespace LinqToTwitter
             {
                 httpClient.Timeout = TimeSpan.FromMilliseconds(Timeout.Infinite);
 
-                var formUrlEncodedContent = new FormUrlEncodedContent(
-                    new List<KeyValuePair<string, string>>() { 
-                        new KeyValuePair<string, string>("userId", "1000") });
+                var parameters =
+                    (from parm in request.RequestParameters
+                     select new KeyValuePair<string, string>(parm.Name, parm.Value))
+                    .ToList();
+                var formUrlEncodedContent = new FormUrlEncodedContent(parameters);
 
                 formUrlEncodedContent.Headers.ContentType =
                     new MediaTypeHeaderValue("application/x-www-form-urlencoded");
 
-                var httpRequest = new HttpRequestMessage(HttpMethod.Post, request.Endpoint);
-                httpRequest.Content = formUrlEncodedContent;
+                var httpRequest = new HttpRequestMessage(HttpMethod.Get, request.Endpoint);
+                //httpRequest.Content = formUrlEncodedContent;
+
+                var parms = request.RequestParameters
+                                  .ToDictionary(
+                                       key => key.Name,
+                                       val => val.Value);
+                SetAuthorizationHeader(HttpMethod.Get, request.FullUrl, parms, httpRequest);
+                httpRequest.Headers.Add("User-Agent", UserAgent);
+                httpRequest.Headers.ExpectContinue = false;
 
                 var response = httpClient.SendAsync(
                     httpRequest, HttpCompletionOption.ResponseHeadersRead).Result;
@@ -317,9 +327,10 @@ namespace LinqToTwitter
 
                     while (!reader.EndOfStream)
                     {
+                        var content = reader.ReadLine();
 
-                        //We are ready to read the stream
-                        var currentLine = reader.ReadLine();
+                        var strmContent = new StreamContent(this, content);
+                        await StreamingCallbackAsync(strmContent);
                     }
                 }
             }

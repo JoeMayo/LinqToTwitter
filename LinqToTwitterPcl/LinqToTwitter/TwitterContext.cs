@@ -460,16 +460,16 @@ namespace LinqToTwitter
 
             string results;
 
-            // process request through Twitter
-            //if (typeof(T) == typeof(Streaming) ||
-            //    typeof(T) == typeof(UserStream))
-            //{
-            //    results = TwitterExecutor.QueryTwitterStream(request);
-            //}
-            //else
-            //{
+             //process request through Twitter
+            if (typeof(T) == typeof(Streaming) ||
+                typeof(T) == typeof(UserStream))
+            {
+                results = await TwitterExecutor.QueryTwitterStreamAsync(request);
+            }
+            else
+            {
                 results = await TwitterExecutor.QueryTwitterAsync(request, reqProc);
-            //}
+            }
 
             RawResult = results;
 
@@ -607,13 +607,13 @@ namespace LinqToTwitter
                 case "Status":
                     req = new StatusRequestProcessor<T>();
                     break;
-                //case "Streaming":
-                //    baseUrl = StreamingUrl;
-                //    req = new StreamingRequestProcessor<T>
-                //    {
-                //        TwitterExecutor = TwitterExecutor
-                //    };
-                //    break;
+                case "Streaming":
+                    baseUrl = StreamingUrl;
+                    req = new StreamingRequestProcessor<T>
+                    {
+                        TwitterExecutor = TwitterExecutor
+                    };
+                    break;
                 case "Trend":
                     req = new TrendRequestProcessor<T>();
                     break;

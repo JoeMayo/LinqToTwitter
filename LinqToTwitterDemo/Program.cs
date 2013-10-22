@@ -50,12 +50,12 @@ namespace LinqToTwitterDemo
                     //SearchDemos.Run(twitterCtx);
                     //SocialGraphDemos.Run(twitterCtx);
                     //StatusDemos.Run(twitterCtx);
-                    //StreamingDemo.Run(twitterCtx);
+                    StreamingDemo.Run(twitterCtx);
 
                     if (DoThis("demo trend"))
                         TrendsDemos.Run(twitterCtx);
 
-                    UserDemos.Run(twitterCtx);
+                    //UserDemos.Run(twitterCtx);
                     //OAuthDemos.Run(twitterCtx);
                     //TwitterContextDemos.Run(twitterCtx);
                 }

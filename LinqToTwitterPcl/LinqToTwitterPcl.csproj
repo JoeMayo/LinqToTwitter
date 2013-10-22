@@ -187,11 +187,20 @@
     <Compile Include="Status\StatusRequestProcessor.cs" />
     <Compile Include="Status\StatusType.cs" />
     <Compile Include="Status\TwitterContextStatusCommands.cs" />
+    <Compile Include="Streaming\ControlStream.cs" />
+    <Compile Include="Streaming\ControlStreamExtensions.cs" />
+    <Compile Include="Streaming\ControlStreamFollow.cs" />
+    <Compile Include="Streaming\ControlStreamInfo.cs" />
+    <Compile Include="Streaming\ControlStreamRequestProcessor.cs" />
+    <Compile Include="Streaming\ControlStreamType.cs" />
+    <Compile Include="Streaming\ControlStreamUser.cs" />
     <Compile Include="Streaming\IStreamContent.cs" />
     <Compile Include="Streaming\StreamContent.cs" />
     <Compile Include="Streaming\Streaming.cs" />
+    <Compile Include="Streaming\StreamingRequestProcessor.cs" />
     <Compile Include="Streaming\StreamingType.cs" />
     <Compile Include="Streaming\UserStream.cs" />
+    <Compile Include="Streaming\UserStreamRequestProcessor.cs" />
     <Compile Include="Streaming\UserStreamType.cs" />
     <Compile Include="Trends\Location.cs" />
     <Compile Include="Trends\Trend.cs" />
@@ -207,6 +216,7 @@
   <ItemGroup>
     <Reference Include="System.Net.Http">
       <HintPath>..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\System.Net.Http.dll</HintPath>
+      <Private>True</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
