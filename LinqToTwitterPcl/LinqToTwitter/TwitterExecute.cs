@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -243,7 +244,7 @@ namespace LinqToTwitter
 //        }
 
         /// <summary>
-        /// makes HTTP call to Twitter API
+        /// Used in queries to read information from Twitter API endpoints.
         /// </summary>
         /// <param name="request">Request with url endpoint and all query parameters</param>
         /// <param name="reqProc">Request Processor for Async Results</param>
@@ -262,11 +263,14 @@ namespace LinqToTwitter
             req.Headers.Add("User-Agent", UserAgent);
             req.Headers.ExpectContinue = false;
 
-            var msg = await new HttpClient().SendAsync(req);
+            using (var client = new HttpClient())
+            {
+                var msg = await client.SendAsync(req);
 
-            await TwitterErrorHandler.ThrowIfErrorAsync(msg);
+                await TwitterErrorHandler.ThrowIfErrorAsync(msg);
 
-            return await msg.Content.ReadAsStringAsync();
+                return await msg.Content.ReadAsStringAsync();
+            }
         }
   
         internal void SetAuthorizationHeader(HttpMethod method, string url, IDictionary<string, string> parms, HttpRequestMessage req)
@@ -281,20 +285,45 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// Performs a query on the Twitter Stream
+        /// Performs a query on the Twitter Stream.
         /// </summary>
-        /// <param name="request">Request with url endpoint and all query parameters</param>
+        /// <param name="request">Request with url endpoint and all query parameters.</param>
         /// <returns>
-        /// Caller expects an XML formatted string response, but
-        /// real response(s) with streams is fed to the callback
+        /// Caller expects an JSON formatted string response, but
+        /// real response(s) with streams is fed to the callback.
         /// </returns>
-        public string QueryTwitterStream(Request request)
+        public async Task<string> QueryTwitterStreamAsync(Request request)
         {
-//#if NETFX_CORE
-//            Task.Run(() => ExecuteTwitterStream(request));
-//#else
-//            ThreadPool.QueueUserWorkItem(ExecuteTwitterStream, request);
-//#endif
+            using (var httpClient = new HttpClient())
+            {
+                httpClient.Timeout = TimeSpan.FromMilliseconds(Timeout.Infinite);
+
+                var formUrlEncodedContent = new FormUrlEncodedContent(
+                    new List<KeyValuePair<string, string>>() { 
+                        new KeyValuePair<string, string>("userId", "1000") });
+
+                formUrlEncodedContent.Headers.ContentType =
+                    new MediaTypeHeaderValue("application/x-www-form-urlencoded");
+
+                var httpRequest = new HttpRequestMessage(HttpMethod.Post, request.Endpoint);
+                httpRequest.Content = formUrlEncodedContent;
+
+                var response = httpClient.SendAsync(
+                    httpRequest, HttpCompletionOption.ResponseHeadersRead).Result;
+                var stream = response.Content.ReadAsStreamAsync().Result;
+
+                using (var reader = new StreamReader(stream))
+                {
+
+                    while (!reader.EndOfStream)
+                    {
+
+                        //We are ready to read the stream
+                        var currentLine = reader.ReadLine();
+                    }
+                }
+            }
+            
             return "<streaming></streaming>";
         }
 
@@ -662,12 +691,15 @@ namespace LinqToTwitter
                 }
             }
 
-            var client = new HttpClient(new PostMessageHandler(this, new Dictionary<string, string>(), url));
-            HttpResponseMessage msg = await client.PostAsync(url, multiPartContent);
+            var handler = new PostMessageHandler(this, new Dictionary<string, string>(), url);
+            using (var client = new HttpClient(handler))
+            {
+                HttpResponseMessage msg = await client.PostAsync(url, multiPartContent);
 
-            await TwitterErrorHandler.ThrowIfErrorAsync(msg);
+                await TwitterErrorHandler.ThrowIfErrorAsync(msg);
 
-            return await msg.Content.ReadAsStringAsync();
+                return await msg.Content.ReadAsStringAsync();
+            }
         }
 
         /// <summary>
@@ -690,12 +722,15 @@ namespace LinqToTwitter
             }
 
             var content = new FormUrlEncodedContent(cleanPostData);
-            var client = new HttpClient(new PostMessageHandler(this, cleanPostData, url));
-            HttpResponseMessage msg = await client.PostAsync(url, content);
+            var handler = new PostMessageHandler(this, cleanPostData, url);
+            using (var client = new HttpClient(handler))
+            {
+                HttpResponseMessage msg = await client.PostAsync(url, content);
 
-            await TwitterErrorHandler.ThrowIfErrorAsync(msg);
+                await TwitterErrorHandler.ThrowIfErrorAsync(msg);
 
-            return await msg.Content.ReadAsStringAsync();
+                return await msg.Content.ReadAsStringAsync();
+            }
         }
 
         class PostMessageHandler : DelegatingHandler

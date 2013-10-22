@@ -52,16 +52,6 @@ namespace LinqToTwitter
         /// <returns>Json Response from Twitter - empty string if async</returns>
         Task<string> PostToTwitterAsync<T>(string url, IDictionary<string, string> postData);
 
-//        /// <summary>
-//        /// performs HTTP POST image byte array upload to Twitter
-//        /// </summary>
-//        /// <param name="image">byte array containing image to upload</param>
-//        /// <param name="url">url to upload to</param>
-//        /// <param name="fileName">name to pass to Twitter for the file</param>
-//        /// <param name="imageType">type of image: must be one of jpg, gif, or png</param>
-//        /// <returns>JSON results From Twitter</returns>
-//        string PostTwitterImage<T>(string url, IDictionary<string, string> postData, byte[] image, string fileName, string imageType, IRequestProcessor<T> reqProc);
-
         /// <summary>
         /// performs HTTP POST media byte array upload to Twitter
         /// </summary>
@@ -85,9 +75,9 @@ namespace LinqToTwitter
         /// <summary>
         /// Query for Twitter Streaming APIs
         /// </summary>
-        /// <param name="url">URL with all query info</param>
-        /// <returns>Raw JSON results from Twitter</returns>
-        string QueryTwitterStream(Request req);
+        /// <param name="req">Request URL and parameters.</param>
+        /// <returns>Placeholder - real data flows from stream into callback you define.</returns>
+        Task<string> QueryTwitterStreamAsync(Request req);
 
         /// <summary>
         /// Used to notify callers of changes in image upload progress

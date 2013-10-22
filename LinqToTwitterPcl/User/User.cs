@@ -24,7 +24,7 @@ namespace LinqToTwitter
         {
             if (user == null) return;
 
-            UserIDResponse = user.GetValue<int>("id").ToString(CultureInfo.InvariantCulture);
+            UserIDResponse = user.GetValue<ulong>("id").ToString(CultureInfo.InvariantCulture);
             ScreenNameResponse = user.GetValue<string>("screen_name");
             Name = user.GetValue<string>("name");
             Location = user.GetValue<string>("location");

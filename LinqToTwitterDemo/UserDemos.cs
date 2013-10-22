@@ -77,7 +77,7 @@ namespace LinqToTwitterDemo
             var users =
                 (from user in twitterCtx.User
                  where user.Type == UserType.Lookup &&
-                       user.ScreenName == "JoeMayo,LinqToTweeter"
+                       user.ScreenName == "JoeMayo,LinqToTweeter,NewStarCw46"
                  select user)
                  .ToList();
 

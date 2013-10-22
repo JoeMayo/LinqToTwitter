@@ -38,29 +38,29 @@ namespace LinqToTwitterDemoPcl
             //tweets.ForEach(tweet =>
             //    Console.WriteLine("\nName:\n{0}\nTweet:{1}\n", tweet.ScreenName, tweet.Text));
 
-            //var searchResponse = await
-            //    (from search in ctx.Search
-            //     where search.Type == SearchType.Search &&
-            //           search.Query == "LINQ to Twitter"
-            //     select search)
-            //    .FirstOrDefaultAsync();
+            var searchResponse = await
+                (from search in ctx.Search
+                 where search.Type == SearchType.Search &&
+                       search.Query == "LINQ to Twitter"
+                 select search)
+                .FirstOrDefaultAsync();
 
-            //searchResponse.Statuses.ForEach(tweet =>
-            //    Console.WriteLine("\nName:\n{0}\nTweet:{1}\n", tweet.ScreenName, tweet.Text));
+            searchResponse.Statuses.ForEach(tweet =>
+                Console.WriteLine("\nName:\n{0}\nTweet:{1}\n", tweet.ScreenName, tweet.Text));
 
             string statusText = "Testing UpdateStatusAsync in LINQ to Twitter - " + DateTime.Now;
 
             //Status newTweet = await ctx.TweetAsync(statusText);
 
-            byte[] imageBytes = File.ReadAllBytes(@"..\..\Images\200xColor_2.png");
+            //byte[] imageBytes = File.ReadAllBytes(@"..\..\Images\200xColor_2.png");
 
-            Status newTweet = await ctx.TweetWithMediaAsync(statusText, false, imageBytes);
+            //Status newTweet = await ctx.TweetWithMediaAsync(statusText, false, imageBytes);
 
-            Console.WriteLine("\nName:\n{0}\nTweet:{1}\n", newTweet.ScreenName, newTweet.Text);
+            //Console.WriteLine("\nName:\n{0}\nTweet:{1}\n", newTweet.ScreenName, newTweet.Text);
 
-            User user = await ctx.UpdateAccountImageAsync(imageBytes, "200xColor_2.png", "png", false);
+            //User user = await ctx.UpdateAccountImageAsync(imageBytes, "200xColor_2.png", "png", false);
 
-            Console.WriteLine("\nName:\n{0}\nImage URL:{1}\n", user.ScreenNameResponse, user.ProfileBackgroundImageUrl);
+            //Console.WriteLine("\nName:\n{0}\nImage URL:{1}\n", user.ScreenNameResponse, user.ProfileBackgroundImageUrl);
         }
   
         static IAuthorizer ChooseAuthenticationStrategy()
