@@ -65,6 +65,29 @@ namespace LinqToTwitterDemoPcl
             Console.WriteLine("\nStreamed Content: \n");
             int count = 0;
 
+            //(from strm in ctx.Streaming
+            // where strm.Type == StreamingType.Filter &&
+            //       //strm.Follow == "15411837"
+            //       //strm.Language == "fr,jp,en" &&
+            //       strm.Track == "twitter"//,JoeMayo,linq2twitter,microsoft,google,facebook"
+            // select strm)
+            //.StreamingCallback(async strm =>
+            //{
+            //    if (strm.Status != TwitterErrorStatus.Success)
+            //    {
+            //        Console.WriteLine(strm.Error.ToString());
+            //        return;
+            //    }
+
+            //    Console.WriteLine(strm.Content + "\n");
+
+            //    if (count++ >= 25)
+            //    {
+            //        strm.CloseStream();
+            //    }
+            //})
+            //.ToListAsync();
+
             await
             (from strm in ctx.Streaming
              where strm.Type == StreamingType.Sample

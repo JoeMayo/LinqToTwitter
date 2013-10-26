@@ -37,7 +37,7 @@ namespace LinqToTwitter.Security
 
         uint CircularShift(int bits, uint word)
         {
-            return ((word << bits) | (word >> (32 - bits)));
+            return (((word) << (bits)) | ((word) >> (32 - (bits))));
         }
 
         public byte[] Compute(byte[] message)
@@ -88,13 +88,13 @@ namespace LinqToTwitter.Security
             ctx.E = ctx.IntermediateHash[4];
 
             for (int t = 0; t < 20; t++)
-                RotateWordBuffers(ctx, (b, c, d) => b & c | ~b & d, w[t], K0);
+                RotateWordBuffers(ctx, (b, c, d) => (b & c) | ((~b) & d), w[t], K0);
 
             for (int t = 20; t < 40; t++)
                 RotateWordBuffers(ctx, (b, c, d) => b ^ c ^ d, w[t], K1);
 
             for (int t = 40; t < 60; t++)
-                RotateWordBuffers(ctx, (b, c, d) => b & c | b & d | c & d, w[t], K2);
+                RotateWordBuffers(ctx, (b, c, d) => (b & c) | (b & d) | (c & d), w[t], K2);
 
             for (int t = 60; t < 80; t++)
                 RotateWordBuffers(ctx, (b, c, d) => b ^ c ^ d, w[t], K3);
@@ -110,7 +110,7 @@ namespace LinqToTwitter.Security
   
         void RotateWordBuffers(Context ctx, Func<uint, uint, uint, uint> f, uint wt, uint kt)
         {
-            uint temp = CircularShift(5, ctx.A) + f(ctx.B, ctx.C, ctx.D) + ctx.E + wt + kt;
+            uint temp = CircularShift(5, ctx.A) + (f(ctx.B, ctx.C, ctx.D)) + ctx.E + wt + kt;
 
             ctx.E = ctx.D;
             ctx.D = ctx.C;
@@ -121,18 +121,25 @@ namespace LinqToTwitter.Security
 
         void PadMessage(Context ctx)
         {
-            ctx.MessageBlock[ctx.MessageBlockIndex++] = 0x80;
-
             if (ctx.MessageBlockIndex > 55)
             {
+                ctx.MessageBlock[ctx.MessageBlockIndex++] = 0x80;
+
                 while (ctx.MessageBlockIndex < 64)
                     ctx.MessageBlock[ctx.MessageBlockIndex++] = 0;
 
                 ProcessMessageBlock(ctx);
-            }
 
-            while (ctx.MessageBlockIndex < 56)
-                ctx.MessageBlock[ctx.MessageBlockIndex++] = 0;
+                while (ctx.MessageBlockIndex < 56)
+                    ctx.MessageBlock[ctx.MessageBlockIndex++] = 0;
+            }
+            else
+            {
+                ctx.MessageBlock[ctx.MessageBlockIndex++] = 0x80;
+
+                while (ctx.MessageBlockIndex < 56)
+                    ctx.MessageBlock[ctx.MessageBlockIndex++] = 0;
+            }
 
             ctx.MessageBlock[56] = (byte)(ctx.LengthHigh >> 24);
             ctx.MessageBlock[57] = (byte)(ctx.LengthHigh >> 16);

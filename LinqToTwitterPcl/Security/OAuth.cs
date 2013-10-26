@@ -65,7 +65,10 @@ namespace LinqToTwitter.Security
 
         internal string BuildSigningKey(string consumerSecret, string oAuthTokenSecret)
         {
-            return Url.PercentEncode(consumerSecret) + "&" + Url.PercentEncode(oAuthTokenSecret);
+            return string.Format(
+                CultureInfo.InvariantCulture, "{0}&{1}", 
+                Url.PercentEncode(consumerSecret),
+                Url.PercentEncode(oAuthTokenSecret));
         }
 
         internal string CalculateSignature(string signingKey, string signatureBaseString)
