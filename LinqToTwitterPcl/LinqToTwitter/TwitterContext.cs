@@ -461,8 +461,7 @@ namespace LinqToTwitter
             string results;
 
              //process request through Twitter
-            if (typeof(T) == typeof(Streaming) ||
-                typeof(T) == typeof(UserStream))
+            if (typeof(T) == typeof(Streaming))
             {
                 results = await TwitterExecutor.QueryTwitterStreamAsync(request);
             }
@@ -568,12 +567,12 @@ namespace LinqToTwitter
                 case "Blocks":
                     req = new BlocksRequestProcessor<T>();
                     break;
-                //case "ControlStream":
-                //    req = new ControlStreamRequestProcessor<T>
-                //        {
-                //            SiteStreamUrl = SiteStreamUrl
-                //        };
-                //    break;
+                case "ControlStream":
+                    req = new ControlStreamRequestProcessor<T>
+                        {
+                            SiteStreamUrl = SiteStreamUrl
+                        };
+                    break;
                 case "DirectMessage":
                     req = new DirectMessageRequestProcessor<T>();
                     break;
@@ -611,6 +610,8 @@ namespace LinqToTwitter
                     baseUrl = StreamingUrl;
                     req = new StreamingRequestProcessor<T>
                     {
+                        UserStreamUrl = UserStreamUrl,
+                        SiteStreamUrl = SiteStreamUrl,
                         TwitterExecutor = TwitterExecutor
                     };
                     break;
@@ -620,15 +621,6 @@ namespace LinqToTwitter
                 case "User":
                     req = new UserRequestProcessor<T>();
                     break;
-                //case "UserStream":
-                //    baseUrl = null; // don't set that..
-                //    req = new UserStreamRequestProcessor<T>
-                //    {
-                //        UserStreamUrl = UserStreamUrl,
-                //        SiteStreamUrl = SiteStreamUrl,
-                //        TwitterExecutor = TwitterExecutor
-                //    };
-                //    break;
                 default:
                     throw new ArgumentException("Type, " + requestType + " isn't a supported LINQ to Twitter entity.", "requestType");
             }

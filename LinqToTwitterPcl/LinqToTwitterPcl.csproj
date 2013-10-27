@@ -188,7 +188,7 @@
     <Compile Include="Status\StatusType.cs" />
     <Compile Include="Status\TwitterContextStatusCommands.cs" />
     <Compile Include="Streaming\ControlStream.cs" />
-    <Compile Include="Streaming\ControlStreamExtensions.cs" />
+    <Compile Include="Streaming\TwitterContextStreamCommands.cs" />
     <Compile Include="Streaming\ControlStreamFollow.cs" />
     <Compile Include="Streaming\ControlStreamInfo.cs" />
     <Compile Include="Streaming\ControlStreamRequestProcessor.cs" />
@@ -199,9 +199,6 @@
     <Compile Include="Streaming\Streaming.cs" />
     <Compile Include="Streaming\StreamingRequestProcessor.cs" />
     <Compile Include="Streaming\StreamingType.cs" />
-    <Compile Include="Streaming\UserStream.cs" />
-    <Compile Include="Streaming\UserStreamRequestProcessor.cs" />
-    <Compile Include="Streaming\UserStreamType.cs" />
     <Compile Include="Trends\Location.cs" />
     <Compile Include="Trends\Trend.cs" />
     <Compile Include="Trends\TrendRequestProcessor.cs" />

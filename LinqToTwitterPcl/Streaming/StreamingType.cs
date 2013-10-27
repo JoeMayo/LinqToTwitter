@@ -8,25 +8,23 @@
         Filter,
 
         /// <summary>
-        /// All public tweets
+        /// All tweets
         /// </summary>
         Firehose,
-
-        // TODO: Not documented on Twitter API 1.1
-        /// <summary>
-        /// Tweets containing http or https
-        /// </summary>
-        Links,
-
-        // TODO: Not documented on Twitter API 1.1
-        /// <summary>
-        /// Retweets...
-        /// </summary>
-        Retweet,
 
         /// <summary>
         /// Random (as defined by Twitter) tweets
         /// </summary>
-        Sample
+        Sample,
+
+        /// <summary>
+        /// Activity for multiple users
+        /// </summary>
+        Site,
+
+        /// <summary>
+        /// A single user's activity
+        /// </summary>
+        User
     }
 }

@@ -34,9 +34,12 @@ namespace LinqToTwitter
         /// </summary>
         public Exception Error { get; set; }
 
+        /// <summary>
+        /// Closes Twitter stream.
+        /// </summary>
         public virtual void CloseStream()
         {
-            exec.CloseStream = true;
+            exec.CloseStream();
         }
     }
 }

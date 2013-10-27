@@ -194,16 +194,5 @@ namespace LinqToTwitter
                 return new TwitterQueryable<User>(this);
             }
         }
-
-        /// <summary>
-        /// enables access to Twitter UserStream for streaming access to user info
-        /// </summary>
-        public TwitterQueryable<UserStream> UserStream
-        {
-            get
-            {
-                return new TwitterQueryable<UserStream>(this);
-            }
-        }
     }
 }

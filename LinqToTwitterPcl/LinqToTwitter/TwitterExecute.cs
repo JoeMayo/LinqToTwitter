@@ -119,26 +119,16 @@ namespace LinqToTwitter
         public Func<StreamContent, Task> StreamingCallbackAsync { get; set; }
 
         /// <summary>
+        /// HttpClient instance being used in a streaming operation
+        /// </summary>
+        internal HttpClient StreamingClient { get; set; }
+
+        /// <summary>
         /// Set to true to close stream, false means stream is still open
         /// </summary>
-        public bool CloseStream { get; set; }
-
-        /// <summary>
-        /// Only for streaming credentials, use OAuth for non-streaming APIs
-        /// </summary>
-        public string StreamingUserName { get; set; }
-
-        /// <summary>
-        /// Only for streaming credentials, use OAuth for non-streaming APIs
-        /// </summary>
-        public string StreamingPassword { get; set; }
+        public bool IsStreamClosed { get; set; }
 
         readonly object asyncCallbackLock = new object();
-
-        /// <summary>
-        /// Allows users to process content returned from stream
-        /// </summary>
-        public Delegate AsyncCallback { get; set; }
 
         /// <summary>
         /// Used to notify callers of changes in image upload progress
@@ -294,9 +284,9 @@ namespace LinqToTwitter
         /// </returns>
         public async Task<string> QueryTwitterStreamAsync(Request request)
         {
-            using (var httpClient = new HttpClient())
+            using (StreamingClient = new HttpClient())
             {
-                httpClient.Timeout = TimeSpan.FromMilliseconds(Timeout.Infinite);
+                StreamingClient.Timeout = TimeSpan.FromMilliseconds(Timeout.Infinite);
 
                 var parameters =
                     (from parm in request.RequestParameters
@@ -318,14 +308,13 @@ namespace LinqToTwitter
                 httpRequest.Headers.Add("User-Agent", UserAgent);
                 httpRequest.Headers.ExpectContinue = false;
 
-                var response = httpClient.SendAsync(
+                var response = StreamingClient.SendAsync(
                     httpRequest, HttpCompletionOption.ResponseHeadersRead).Result;
                 var stream = response.Content.ReadAsStreamAsync().Result;
 
                 using (var reader = new StreamReader(stream))
                 {
-
-                    while (!reader.EndOfStream)
+                    while (!reader.EndOfStream && !IsStreamClosed)
                     {
                         var content = reader.ReadLine();
 
@@ -334,8 +323,21 @@ namespace LinqToTwitter
                     }
                 }
             }
-            
+
+            IsStreamClosed = false;
+
             return "<streaming></streaming>";
+        }
+
+        /// <summary>
+        /// Closes the stream
+        /// </summary>
+        public void CloseStream()
+        {
+            IsStreamClosed = true;
+
+            if (StreamingClient != null)
+                StreamingClient.CancelPendingRequests();
         }
 
         /// <summary>
@@ -468,6 +470,8 @@ namespace LinqToTwitter
                 {
                     disposableClient.Dispose();
                 }
+
+                StreamingCallbackAsync = null;
 
                 if (Log != null)
                 {

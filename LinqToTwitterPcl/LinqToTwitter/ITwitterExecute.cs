@@ -92,21 +92,11 @@ namespace LinqToTwitter
         /// <summary>
         /// Set to true to close stream, false means stream is still open
         /// </summary>
-        bool CloseStream { get; set; }
+        bool IsStreamClosed { get; set; }
 
         /// <summary>
-        /// Only for streaming credentials, use OAuth for non-streaming APIs
+        /// Closes the stream
         /// </summary>
-        string StreamingUserName { get; set; }
-
-        /// <summary>
-        /// Only for streaming credentials, use OAuth for non-streaming APIs
-        /// </summary>
-        string StreamingPassword { get; set; }
-
-        /// <summary>
-        /// Executed for async calls
-        /// </summary>
-        Delegate AsyncCallback { get; set; }
+        void CloseStream();
     }
 }
