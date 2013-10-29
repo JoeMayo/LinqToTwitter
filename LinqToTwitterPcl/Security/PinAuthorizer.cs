@@ -61,5 +61,34 @@ namespace LinqToTwitter
             accessTokenParams.Add("oauth_verifier", verifier);
             await GetAccessTokenAsync(accessTokenParams);
         }
+
+        public async Task BeginAuthorizeAsync()
+        {
+            if (CredentialStore == null)
+                throw new NullReferenceException(
+                    "The authorization process requires a minimum of ConsumerKey and ConsumerSecret tokens. " +
+                    "You must assign the CredentialStore property (with tokens) before calling AuthorizeAsync().");
+
+            if (CredentialStore.HasAllCredentials()) return;
+
+            if (string.IsNullOrWhiteSpace(CredentialStore.ConsumerKey) || string.IsNullOrWhiteSpace(CredentialStore.ConsumerSecret))
+                throw new ArgumentException("You must populate CredentialStore with ConsumerKey and ConsumerSecret tokens before calling AuthorizeAsync.", "CredentialStore");
+
+            if (GoToTwitterAuthorization == null)
+                throw new InvalidOperationException("You must provide an Action<string> delegate/lambda for GoToTwitterAuthorization.");
+
+            await GetRequestTokenAsync("oob");
+
+            string authUrl = PrepareAuthorizeUrl(ForceLogin);
+            GoToTwitterAuthorization(authUrl);
+        }
+
+
+        public async Task CompleteAuthorizeAsync(string pin)
+        {
+            var accessTokenParams = new Dictionary<string, string>();
+            accessTokenParams.Add("oauth_verifier", pin);
+            await GetAccessTokenAsync(accessTokenParams);
+        }
     }
 }

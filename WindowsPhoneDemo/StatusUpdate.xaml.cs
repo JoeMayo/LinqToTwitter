@@ -24,7 +24,7 @@ namespace WindowsPhoneDemo
 
             ITwitterAuthorizer auth = SharedState.Authorizer;
 
-            if (auth == null || !auth.IsAuthorized)
+            if (auth == null && !auth.IsAuthorized)
             {
                 NavigationService.Navigate(new Uri("/OAuth.xaml", UriKind.Relative));
             }

@@ -34,7 +34,7 @@ namespace LinqToTwitter
         /// <summary>
         /// Twitter user ID
         /// </summary>
-        string UserID { get; set; }
+        ulong UserID { get; set; }
 
         /// <summary>
         /// Does this CredentialStore have all credentials populated?

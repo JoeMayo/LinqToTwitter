@@ -175,7 +175,11 @@ namespace LinqToTwitter
                 CredentialStore.ScreenName = responseParams["screen_name"];
 
             if (responseParams["user_id"] != null)
-                CredentialStore.UserID = responseParams["user_id"];
+            {
+                ulong userID = 0;
+                ulong.TryParse(responseParams["user_id"], out userID);
+                CredentialStore.UserID = userID;
+            }
         }
 
         public async Task<string> HttpGetAsync(string oauthUrl, IDictionary<string, string> parameters)

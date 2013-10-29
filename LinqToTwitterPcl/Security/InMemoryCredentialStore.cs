@@ -20,7 +20,7 @@ namespace LinqToTwitter
 
         public string ScreenName { get; set; }
 
-        public string UserID { get; set; }
+        public ulong UserID { get; set; }
 
         public bool HasAllCredentials()
         {
