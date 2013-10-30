@@ -49,6 +49,27 @@ namespace LinqToTwitter
         /// </summary>
         public string UserAgent { get; set; }
 
+        /// <summary>
+        /// Url that Twitter redirects to after user authorizes your app.
+        /// </summary>
+        public string Callback { get; set; }
+
+        protected string ParseVerifierFromResponseUrl(string responseUrl)
+        {
+            string[] keyValPairs = new Uri(responseUrl).Query.TrimStart('?').Split('&');
+
+            string verifier =
+                (from keyValPair in keyValPairs
+                 let pair = keyValPair.Split('=')
+                 let key = pair[0]
+                 let val = pair[1]
+                 where key == "oauth_verifier"
+                 select val)
+                .SingleOrDefault();
+
+            return verifier;
+        }
+
         IDictionary<string, string> parameters;
         public IDictionary<string, string> Parameters
         {

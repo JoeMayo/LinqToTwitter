@@ -10,17 +10,17 @@ namespace LinqToTwitter
     /// </summary>
     public class InMemoryCredentialStore : ICredentialStore
     {
-        public string ConsumerKey { get; set; }
+        public virtual string ConsumerKey { get; set; }
 
-        public string ConsumerSecret { get; set; }
+        public virtual string ConsumerSecret { get; set; }
 
-        public string OAuthToken { get; set; }
+        public virtual string OAuthToken { get; set; }
 
-        public string OAuthTokenSecret { get; set; }
+        public virtual string OAuthTokenSecret { get; set; }
 
-        public string ScreenName { get; set; }
+        public virtual string ScreenName { get; set; }
 
-        public ulong UserID { get; set; }
+        public virtual ulong UserID { get; set; }
 
         public bool HasAllCredentials()
         {
@@ -38,13 +38,13 @@ namespace LinqToTwitter
         // with a data store other than memory.
         //
 
-        public async Task LoadAsync()
+        public virtual async Task LoadAsync()
         {
         }
 
-        public async Task StoreAsync() { }
+        public virtual async Task StoreAsync() { }
 
-        public async Task ClearAsync() { }
+        public virtual async Task ClearAsync() { }
 
 #pragma warning restore 1998
     }
