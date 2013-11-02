@@ -48,7 +48,7 @@ namespace LinqToTwitterDemoPcl
             //searchResponse.Statuses.ForEach(tweet =>
             //    Console.WriteLine("\nName:\n{0}\nTweet:{1}\n", tweet.ScreenName, tweet.Text));
 
-            string statusText = "Testing UpdateStatusAsync in LINQ to Twitter - " + DateTime.Now;
+            string statusText = "Testing TweetAsync in LINQ to Twitter - " + DateTime.Now;
 
             //Status newTweet = await ctx.TweetAsync(statusText);
 
@@ -65,28 +65,28 @@ namespace LinqToTwitterDemoPcl
             Console.WriteLine("\nStreamed Content: \n");
             int count = 0;
 
-            //(from strm in ctx.Streaming
-            // where strm.Type == StreamingType.Filter &&
-            //       //strm.Follow == "15411837"
-            //       //strm.Language == "fr,jp,en" &&
-            //       strm.Track == "twitter"//,JoeMayo,linq2twitter,microsoft,google,facebook"
-            // select strm)
-            //.StreamingCallback(async strm =>
-            //{
-            //    if (strm.Status != TwitterErrorStatus.Success)
-            //    {
-            //        Console.WriteLine(strm.Error.ToString());
-            //        return;
-            //    }
+            (from strm in ctx.Streaming
+             where strm.Type == StreamingType.Filter &&
+                 //strm.Follow == "15411837"
+                 //strm.Language == "fr,jp,en" &&
+                   strm.Track == "twitter"//,JoeMayo,linq2twitter,microsoft,google,facebook"
+             select strm)
+            .StreamingCallback(async strm =>
+            {
+                if (strm.Status != TwitterErrorStatus.Success)
+                {
+                    Console.WriteLine(strm.Error.ToString());
+                    return;
+                }
 
-            //    Console.WriteLine(strm.Content + "\n");
+                Console.WriteLine(strm.Content + "\n");
 
-            //    if (count++ >= 25)
-            //    {
-            //        strm.CloseStream();
-            //    }
-            //})
-            //.ToListAsync();
+                if (count++ >= 25)
+                {
+                    strm.CloseStream();
+                }
+            })
+            .ToListAsync();
 
             //await
             //(from strm in ctx.Streaming
@@ -109,41 +109,41 @@ namespace LinqToTwitterDemoPcl
             //})
             //.ToListAsync();
 
-            StreamContent strmContent = null;
-            Task.Run(() =>
-            {
-                (from strm in ctx.Streaming
-                 where strm.Type == StreamingType.User
-                 select strm)
-                .StreamingCallback(async strm =>
-                 {
-                    if (strmContent == null) strmContent = strm;
+            //StreamContent strmContent = null;
+            //Task.Run(() =>
+            //{
+            //    (from strm in ctx.Streaming
+            //     where strm.Type == StreamingType.User
+            //     select strm)
+            //    .StreamingCallback(async strm =>
+            //     {
+            //        if (strmContent == null) strmContent = strm;
 
-                    if (strm.Status == TwitterErrorStatus.RequestProcessingException)
-                    {
-                        //WebException wex = strm.Error as WebException;
-                        //if (wex != null && wex.Status == WebExceptionStatus.ConnectFailure)
-                        //{
-                        //    Console.WriteLine(wex.Message + " You might want to reconnect.");
-                        //}
+            //        if (strm.Status == TwitterErrorStatus.RequestProcessingException)
+            //        {
+            //            //WebException wex = strm.Error as WebException;
+            //            //if (wex != null && wex.Status == WebExceptionStatus.ConnectFailure)
+            //            //{
+            //            //    Console.WriteLine(wex.Message + " You might want to reconnect.");
+            //            //}
 
-                        Console.WriteLine(strm.Error.ToString());
-                        return;
-                    }
+            //            Console.WriteLine(strm.Error.ToString());
+            //            return;
+            //        }
 
-                    string message = string.IsNullOrEmpty(strm.Content) ? "Keep-Alive" : strm.Content;
-                    Console.WriteLine((count + 1).ToString() + ". " + DateTime.Now + ": " + message + "\n");
+            //        string message = string.IsNullOrEmpty(strm.Content) ? "Keep-Alive" : strm.Content;
+            //        Console.WriteLine((count + 1).ToString() + ". " + DateTime.Now + ": " + message + "\n");
 
-                    if (count++ == 10)
-                    {
-                        Console.WriteLine("Demo is ending. Closing stream...");
-                        strm.CloseStream();
-                    }
-                 })
-                .FirstOrDefaultAsync();
-            });
-            await Task.Delay(5000);
-            if (strmContent != null) strmContent.CloseStream();
+            //        if (count++ == 10)
+            //        {
+            //            Console.WriteLine("Demo is ending. Closing stream...");
+            //            strm.CloseStream();
+            //        }
+            //     })
+            //    .FirstOrDefaultAsync();
+            //});
+            //await Task.Delay(5000);
+            //if (strmContent != null) strmContent.CloseStream();
         }
   
         static IAuthorizer ChooseAuthenticationStrategy()

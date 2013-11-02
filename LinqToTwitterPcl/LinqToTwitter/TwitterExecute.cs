@@ -5,29 +5,9 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using LinqToTwitter.Net;
-using LinqToTwitter.Security;
-
-//using LinqToTwitter.Common;
-//using LitJson;
-
-#if NETFX_CORE
-using System.Threading.Tasks;
-#endif
-
-#if SILVERLIGHT && !WINDOWS_PHONE
-    using System.Windows.Browser;
-#elif !SILVERLIGHT && !WINDOWS_PHONE && !NETFX_CORE && !L2T_PCL
-#endif
-
-//#if !SILVERLIGHT && !L2T_PCL
-//using System.IO.Compression;
-//#else
-//using Ionic.Zlib;
-//#endif
 
 namespace LinqToTwitter
 {
@@ -165,74 +145,6 @@ namespace LinqToTwitter
             Authorizer.UserAgent = Authorizer.UserAgent ?? LinqToTwitterVersion;
         }
 
-
-
-//        string ReadStreamBytes(Stream stream)
-//        {
-//            const int ByteCount = 4096;
-//            var sb = new StringBuilder();
-
-//            using (var reader = new StreamReader(stream))
-//            {
-//                while (reader.Peek() >= 0)
-//                {
-//                    var buffer = new char[ByteCount];
-//                    reader.ReadBlock(buffer, 0, ByteCount);
-//                    sb.Append(buffer);
-//                }
-//            }
-
-//            return sb.ToString().Trim('\0');
-//        }
-
-//        /// <summary>
-//        /// gets WebResponse contents from Twitter
-//        /// </summary>
-//        /// <param name="resp">WebResponse to extract string from</param>
-//        /// <returns>XML string response from Twitter</returns>
-//        string GetTwitterResponse(WebResponse resp)
-//        {
-//            string responseBody;
-
-//            using (var respStream = resp.GetResponseStream())
-//            {
-//                string contentEncoding = string.Empty;
-
-//#if !SILVERLIGHT
-//                contentEncoding = resp.Headers["Content-Encoding"] ?? "";
-//#endif
-
-//                if (contentEncoding.ToLower().Contains("gzip"))
-//                {
-//                    using (var gzip = new GZipStream(respStream, CompressionMode.Decompress))
-//                    {
-//                        responseBody = ReadStreamBytes(gzip);
-//                    }
-//                }
-//                else if (resp.ContentType.StartsWith("image"))
-//                {
-//                    responseBody = "{ \"imageUrl\": \"" + resp.ResponseUri.ToString() + "\" }";
-//                }
-//                else
-//                {
-//                    responseBody = ReadStreamBytes(respStream);
-//                }
-//            }
-
-//            var responseHeaders = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-
-//#if !SILVERLIGHT
-//            foreach (string key in resp.Headers.AllKeys)
-//            {
-//                responseHeaders.Add(key, resp.Headers[key].ToString());
-//            }
-//#endif
-
-//            ResponseHeaders = responseHeaders;
-
-//            return responseBody;
-//        }
-
         /// <summary>
         /// Used in queries to read information from Twitter API endpoints.
         /// </summary>
@@ -249,11 +161,9 @@ namespace LinqToTwitter
                                .ToDictionary(
                                     key => key.Name,
                                     val => val.Value);
-            SetAuthorizationHeader(HttpMethod.Get, request.FullUrl, parms, req);
-            req.Headers.Add("User-Agent", UserAgent);
-            req.Headers.ExpectContinue = false;
+            var handler = new GetMessageHandler(this, parms, request.FullUrl);
 
-            using (var client = new HttpClient())
+            using (var client = new HttpClient(handler))
             {
                 var msg = await client.SendAsync(req);
 
@@ -284,7 +194,10 @@ namespace LinqToTwitter
         /// </returns>
         public async Task<string> QueryTwitterStreamAsync(Request request)
         {
-            using (StreamingClient = new HttpClient())
+            var handler = new HttpClientHandler();
+            handler.AutomaticDecompression = DecompressionMethods.GZip;
+
+            using (StreamingClient = new HttpClient(handler))
             {
                 StreamingClient.Timeout = TimeSpan.FromMilliseconds(Timeout.Infinite);
 
@@ -411,31 +324,6 @@ namespace LinqToTwitter
                 await TwitterErrorHandler.ThrowIfErrorAsync(msg);
 
                 return await msg.Content.ReadAsStringAsync();
-            }
-        }
-
-        class PostMessageHandler : DelegatingHandler
-        {
-            TwitterExecute exe;
-            IDictionary<string, string> postData;
-            string url;
-
-            public PostMessageHandler(TwitterExecute exe, IDictionary<string, string> postData, string url)
-                : base(new HttpClientHandler())
-            {
-                this.exe = exe;
-                this.postData = postData;
-                this.url = url;
-            }
-
-            protected async override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
-            {
-                exe.SetAuthorizationHeader(HttpMethod.Post, url, postData, request);
-                request.Headers.Add("User-Agent", exe.UserAgent);
-                request.Headers.ExpectContinue = false;
-                //request.Headers.Add("Accept-Encoding", "gzip");
-                
-                return await base.SendAsync(request, cancellationToken);
             }
         }
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using LinqToTwitter.Security;
@@ -210,7 +211,10 @@ namespace LinqToTwitter
             req.Headers.Add("User-Agent", UserAgent);
             req.Headers.ExpectContinue = false;
 
-            var msg = await new HttpClient().SendAsync(req);
+            var handler = new HttpClientHandler();
+            handler.AutomaticDecompression = DecompressionMethods.GZip;
+
+            var msg = await new HttpClient(handler).SendAsync(req);
 
             await TwitterErrorHandler.ThrowIfErrorAsync(msg);
 

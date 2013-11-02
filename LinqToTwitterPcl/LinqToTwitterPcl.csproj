@@ -118,6 +118,7 @@
     <Compile Include="Help\PhotoSize.cs" />
     <Compile Include="Help\RateLimits.cs" />
     <Compile Include="LinqToTwitter\ITwitterExecute.cs" />
+    <Compile Include="Net\GetMessageHandler.cs" />
     <Compile Include="LinqToTwitter\TwitterContext.cs" />
     <Compile Include="LinqToTwitter\TwitterContextEntities.cs" />
     <Compile Include="LinqToTwitter\TwitterErrorHandler.cs" />
@@ -130,6 +131,7 @@
     <Compile Include="List\TwitterContextListCommands.cs" />
     <Compile Include="List\ListRequestProcessor.cs" />
     <Compile Include="List\ListType.cs" />
+    <Compile Include="Net\PostMessageHandler.cs" />
     <Compile Include="Net\Url.cs" />
     <Compile Include="Raw\Raw.cs" />
     <Compile Include="Raw\TwitterContextRawCommands.cs" />
