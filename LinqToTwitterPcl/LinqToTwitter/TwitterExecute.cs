@@ -310,6 +310,9 @@ namespace LinqToTwitter
 
                 var response = StreamingClient.SendAsync(
                     httpRequest, HttpCompletionOption.ResponseHeadersRead).Result;
+
+                await TwitterErrorHandler.ThrowIfErrorAsync(response);
+
                 var stream = response.Content.ReadAsStreamAsync().Result;
 
                 using (var reader = new StreamReader(stream))
