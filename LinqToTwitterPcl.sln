@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linq2TwitterDemos_WebForms"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqToTwitter.AspNet", "LinqToTwitter.AspNet\LinqToTwitter.AspNet.csproj", "{946A0061-58F9-467D-9907-3046CEFB4524}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linq2TwitterDemos_MVC", "Linq2TwitterDemos_MVC\Linq2TwitterDemos_MVC.csproj", "{66D527FE-E2F4-43E3-8A7C-BAE342617668}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -225,6 +227,22 @@ Global
 		{946A0061-58F9-467D-9907-3046CEFB4524}.Release|Win32.ActiveCfg = Release|Any CPU
 		{946A0061-58F9-467D-9907-3046CEFB4524}.Release|x64.ActiveCfg = Release|Any CPU
 		{946A0061-58F9-467D-9907-3046CEFB4524}.Release|x86.ActiveCfg = Release|Any CPU
+		{66D527FE-E2F4-43E3-8A7C-BAE342617668}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{66D527FE-E2F4-43E3-8A7C-BAE342617668}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{66D527FE-E2F4-43E3-8A7C-BAE342617668}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{66D527FE-E2F4-43E3-8A7C-BAE342617668}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{66D527FE-E2F4-43E3-8A7C-BAE342617668}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{66D527FE-E2F4-43E3-8A7C-BAE342617668}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{66D527FE-E2F4-43E3-8A7C-BAE342617668}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{66D527FE-E2F4-43E3-8A7C-BAE342617668}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{66D527FE-E2F4-43E3-8A7C-BAE342617668}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{66D527FE-E2F4-43E3-8A7C-BAE342617668}.Release|Any CPU.Build.0 = Release|Any CPU
+		{66D527FE-E2F4-43E3-8A7C-BAE342617668}.Release|ARM.ActiveCfg = Release|Any CPU
+		{66D527FE-E2F4-43E3-8A7C-BAE342617668}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{66D527FE-E2F4-43E3-8A7C-BAE342617668}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{66D527FE-E2F4-43E3-8A7C-BAE342617668}.Release|Win32.ActiveCfg = Release|Any CPU
+		{66D527FE-E2F4-43E3-8A7C-BAE342617668}.Release|x64.ActiveCfg = Release|Any CPU
+		{66D527FE-E2F4-43E3-8A7C-BAE342617668}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

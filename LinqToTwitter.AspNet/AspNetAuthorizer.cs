@@ -58,7 +58,7 @@ namespace LinqToTwitter
         /// 1. Obtains a request token and then
         /// 2. Redirects to the Twitter authorization page
         /// </summary>
-        public async Task BeginAuthorizeAsync(Uri callback)
+        public virtual async Task BeginAuthorizeAsync(Uri callback)
         {
             if (CredentialStore == null)
                 throw new NullReferenceException(
@@ -94,7 +94,7 @@ namespace LinqToTwitter
         /// we need to finish the OAuth process.
         /// </param>
         /// <returns>True if successful</returns>
-        public async Task CompleteAuthorizeAsync(Uri responseUrl)
+        public virtual async Task CompleteAuthorizeAsync(Uri responseUrl)
         {
             if (responseUrl == null)
                 throw new ArgumentNullException("responseUrl", "You must pass in the callback that Twitter returned after authentication.");
