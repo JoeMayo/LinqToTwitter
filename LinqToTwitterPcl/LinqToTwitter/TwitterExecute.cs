@@ -5,7 +5,6 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Threading;
 using System.Threading.Tasks;
 using LinqToTwitter.Net;
 
@@ -194,9 +193,6 @@ namespace LinqToTwitter
 
             using (StreamingClient = new HttpClient(handler))
             {
-                if (Timeout != 0)
-                    StreamingClient.Timeout = new TimeSpan(0, 0, 0, Timeout);
-
                 StreamingClient.Timeout = TimeSpan.FromMilliseconds(System.Threading.Timeout.Infinite);
 
                 var parameters =
@@ -230,7 +226,7 @@ namespace LinqToTwitter
                 {
                     while (!reader.EndOfStream && !IsStreamClosed)
                     {
-                        var content = reader.ReadLine();
+                        var content = await reader.ReadLineAsync();
 
                         var strmContent = new StreamContent(this, content);
                         await StreamingCallbackAsync(strmContent);

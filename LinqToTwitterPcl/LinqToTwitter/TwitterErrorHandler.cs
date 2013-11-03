@@ -52,7 +52,7 @@ namespace LinqToTwitter
   
         static void HandleTwitterError(string responseStr, HttpResponseMessage msg)
         {
-            if (!responseStr.StartsWith("{"))
+            if (responseStr.StartsWith("{"))
             {
                 JsonData responseJson = JsonMapper.ToObject(responseStr);
 

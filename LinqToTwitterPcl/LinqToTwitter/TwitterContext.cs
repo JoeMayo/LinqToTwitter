@@ -62,37 +62,6 @@ namespace LinqToTwitter
             SiteStreamUrl = "https://sitestream.twitter.com/1.1/";
         }
 
-
-//#if SILVERLIGHT
-//        /// <summary>
-//        /// Initializes a new instance of the <see cref="TwitterContext"/> class.
-//        /// </summary>
-//        /// <param name="authorization">The authorization.</param>
-//        public TwitterContext(ITwitterAuthorizer authorization, IWebRequestCreate webReqCreateInput)
-//            : this(new TwitterExecute(authorization))
-//        {
-//            IWebRequestCreate webReqCreator = webReqCreateInput;
-                
-//            if (webReqCreateInput == null)
-//                webReqCreator =WebRequestCreator.ClientHttp;
-//#if !WINDOWS_PHONE
-//            if (webReqCreateInput == null && 
-//                !System.Windows.Application.Current.IsRunningOutOfBrowser)
-//                webReqCreator = WebRequestCreator.BrowserHttp;
-//#endif
-//            WebRequest.RegisterPrefix("http://", webReqCreator);
-//            WebRequest.RegisterPrefix("https://", webReqCreator);
-//        }
-//#endif
-
-        ///// <summary>
-        ///// Gets the screen name of the user (only populated when a request for access token occurs)
-        ///// </summary>
-        //public string UserName
-        //{
-        //    get { return AuthorizedClient.ScreenName; }
-        //}
-
         /// <summary>
         /// base URL for accessing Twitter API
         /// </summary>
