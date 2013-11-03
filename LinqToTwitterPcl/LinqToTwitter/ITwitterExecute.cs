@@ -32,16 +32,16 @@ namespace LinqToTwitter
         /// </summary>
         string UserAgent { get; set; }
 
-        ///// <summary>
-        ///// Timeout (milliseconds) for writing to request 
-        ///// stream or reading from response stream
-        ///// </summary>
-        //int ReadWriteTimeout { get; set; }
+        /// <summary>
+        /// Timeout (milliseconds) for writing to request 
+        /// stream or reading from response stream
+        /// </summary>
+        int ReadWriteTimeout { get; set; }
 
-        ///// <summary>
-        ///// Timeout (milliseconds) to wait for a server response
-        ///// </summary>
-        //int Timeout { get; set; }
+        /// <summary>
+        /// Timeout (milliseconds) to wait for a server response
+        /// </summary>
+        int Timeout { get; set; }
 
         /// <summary>
         /// performs HTTP POST to Twitter

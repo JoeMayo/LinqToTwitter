@@ -50,43 +50,43 @@ namespace LinqToTwitterDemoPcl
 
             string statusText = "Testing TweetAsync in LINQ to Twitter - " + DateTime.Now;
 
-            //Status newTweet = await ctx.TweetAsync(statusText);
+            Status newTweet = await ctx.TweetAsync(statusText);
 
             //byte[] imageBytes = File.ReadAllBytes(@"..\..\Images\200xColor_2.png");
 
             //Status newTweet = await ctx.TweetWithMediaAsync(statusText, false, imageBytes);
 
-            //Console.WriteLine("\nName:\n{0}\nTweet:{1}\n", newTweet.ScreenName, newTweet.Text);
+            Console.WriteLine("\nName:\n{0}\nTweet:{1}\n", newTweet.ScreenName, newTweet.Text);
 
             //User user = await ctx.UpdateAccountImageAsync(imageBytes, "200xColor_2.png", "png", false);
 
             //Console.WriteLine("\nName:\n{0}\nImage URL:{1}\n", user.ScreenNameResponse, user.ProfileBackgroundImageUrl);
 
-            Console.WriteLine("\nStreamed Content: \n");
-            int count = 0;
+            //Console.WriteLine("\nStreamed Content: \n");
+            //int count = 0;
 
-            (from strm in ctx.Streaming
-             where strm.Type == StreamingType.Filter &&
-                 //strm.Follow == "15411837"
-                 //strm.Language == "fr,jp,en" &&
-                   strm.Track == "twitter"//,JoeMayo,linq2twitter,microsoft,google,facebook"
-             select strm)
-            .StreamingCallback(async strm =>
-            {
-                if (strm.Status != TwitterErrorStatus.Success)
-                {
-                    Console.WriteLine(strm.Error.ToString());
-                    return;
-                }
+            //(from strm in ctx.Streaming
+            // where strm.Type == StreamingType.Filter &&
+            //     //strm.Follow == "15411837"
+            //     //strm.Language == "fr,jp,en" &&
+            //       strm.Track == "twitter"//,JoeMayo,linq2twitter,microsoft,google,facebook"
+            // select strm)
+            //.StreamingCallback(async strm =>
+            //{
+            //    if (strm.Status != TwitterErrorStatus.Success)
+            //    {
+            //        Console.WriteLine(strm.Error.ToString());
+            //        return;
+            //    }
 
-                Console.WriteLine(strm.Content + "\n");
+            //    Console.WriteLine(strm.Content + "\n");
 
-                if (count++ >= 25)
-                {
-                    strm.CloseStream();
-                }
-            })
-            .ToListAsync();
+            //    if (count++ >= 25)
+            //    {
+            //        strm.CloseStream();
+            //    }
+            //})
+            //.ToListAsync();
 
             //await
             //(from strm in ctx.Streaming

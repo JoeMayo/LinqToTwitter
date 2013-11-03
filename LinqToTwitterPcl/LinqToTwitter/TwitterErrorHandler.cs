@@ -38,10 +38,16 @@ namespace LinqToTwitter
             catch (Exception)
             {
                 throw new TwitterQueryException(
-                    "Unknown error - please report issue if reproducible.");
+                    "Unknown error - please report issue if reproducible.") 
+                { 
+                    StatusCode = msg.StatusCode
+                };
             }
 
-            throw new TwitterQueryException(responseStr);
+            throw new TwitterQueryException(responseStr)
+            {
+                StatusCode = msg.StatusCode
+            };
         }
   
         static void HandleTwitterError(string responseStr, HttpResponseMessage msg)

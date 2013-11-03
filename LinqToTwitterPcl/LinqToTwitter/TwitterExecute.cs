@@ -31,29 +31,21 @@ namespace LinqToTwitter
         /// </summary>
         public IAuthorizer Authorizer { get; set; }
 
-//        /// <summary>
-//        /// Timeout (milliseconds) for writing to request 
-//        /// stream or reading from response stream
-//        /// </summary>
-//        public int ReadWriteTimeout
-//        {
-//            get { return (int)AuthorizedClient.ReadWriteTimeout.TotalMilliseconds; }
-//            set { AuthorizedClient.ReadWriteTimeout = TimeSpan.FromMilliseconds(value); }
-//        }
+        /// <summary>
+        /// Timeout (milliseconds) for writing to request 
+        /// stream or reading from response stream
+        /// </summary>
+        public int ReadWriteTimeout { get; set; }
 
-//        /// <summary>
-//        /// Default for Timeout
-//        /// </summary>
-//        public const int DefaultTimeout = 100000;
+        /// <summary>
+        /// Default for Timeout
+        /// </summary>
+        public const int DefaultTimeout = 100000;
 
-//        /// <summary>
-//        /// Timeout (milliseconds) to wait for a server response
-//        /// </summary>
-//        public int Timeout
-//        {
-//            get { return (int)AuthorizedClient.Timeout.TotalMilliseconds; }
-//            set { AuthorizedClient.Timeout = TimeSpan.FromMilliseconds(value); }
-//        }
+        /// <summary>
+        /// Timeout (milliseconds) to wait for a server response
+        /// </summary>
+        public int Timeout { get; set; }
 
         /// <summary>
         /// Gets the most recent URL executed
@@ -165,6 +157,9 @@ namespace LinqToTwitter
 
             using (var client = new HttpClient(handler))
             {
+                if (Timeout != 0)
+                    client.Timeout = new TimeSpan(0, 0, 0, Timeout);
+
                 var msg = await client.SendAsync(req);
 
                 await TwitterErrorHandler.ThrowIfErrorAsync(msg);
@@ -199,7 +194,10 @@ namespace LinqToTwitter
 
             using (StreamingClient = new HttpClient(handler))
             {
-                StreamingClient.Timeout = TimeSpan.FromMilliseconds(Timeout.Infinite);
+                if (Timeout != 0)
+                    StreamingClient.Timeout = new TimeSpan(0, 0, 0, Timeout);
+
+                StreamingClient.Timeout = TimeSpan.FromMilliseconds(System.Threading.Timeout.Infinite);
 
                 var parameters =
                     (from parm in request.RequestParameters
@@ -288,6 +286,9 @@ namespace LinqToTwitter
             var handler = new PostMessageHandler(this, new Dictionary<string, string>(), url);
             using (var client = new HttpClient(handler))
             {
+                if (Timeout != 0)
+                    client.Timeout = new TimeSpan(0, 0, 0, Timeout);
+
                 HttpResponseMessage msg = await client.PostAsync(url, multiPartContent);
 
                 await TwitterErrorHandler.ThrowIfErrorAsync(msg);
@@ -319,6 +320,9 @@ namespace LinqToTwitter
             var handler = new PostMessageHandler(this, cleanPostData, url);
             using (var client = new HttpClient(handler))
             {
+                if (Timeout != 0)
+                    client.Timeout = new TimeSpan(0, 0, 0, Timeout);
+
                 HttpResponseMessage msg = await client.PostAsync(url, content);
 
                 await TwitterErrorHandler.ThrowIfErrorAsync(msg);

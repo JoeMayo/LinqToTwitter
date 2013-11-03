@@ -170,50 +170,50 @@ namespace LinqToTwitter
             }
         }
 
-        ///// <summary>
-        ///// Gets or sets the read write timeout.
-        ///// </summary>
-        ///// <value>The read write timeout.</value>
-        //public int ReadWriteTimeout
-        //{
-        //    get
-        //    {
-        //        if (TwitterExecutor != null)
-        //        {
-        //            return TwitterExecutor.ReadWriteTimeout;
-        //        }
-        //        return TwitterExecute.DefaultReadWriteTimeout;
-        //    }
-        //    set
-        //    {
-        //        if (TwitterExecutor != null)
-        //        {
-        //            TwitterExecutor.ReadWriteTimeout = value;
-        //        }
-        //    }
-        //}
+        /// <summary>
+        /// Gets or sets the read write timeout.
+        /// </summary>
+        /// <value>The read write timeout.</value>
+        public int ReadWriteTimeout
+        {
+            get
+            {
+                if (TwitterExecutor != null)
+                {
+                    return TwitterExecutor.ReadWriteTimeout;
+                }
+                return TwitterExecute.DefaultReadWriteTimeout;
+            }
+            set
+            {
+                if (TwitterExecutor != null)
+                {
+                    TwitterExecutor.ReadWriteTimeout = value;
+                }
+            }
+        }
 
-        ///// <summary>
-        ///// Gets and sets HTTP UserAgent header
-        ///// </summary>
-        //public int Timeout
-        //{
-        //    get
-        //    {
-        //        if (TwitterExecutor != null)
-        //        {
-        //            return TwitterExecutor.Timeout;
-        //        }
-        //        return TwitterExecute.DefaultTimeout;
-        //    }
-        //    set
-        //    {
-        //        if (TwitterExecutor != null)
-        //        {
-        //            TwitterExecutor.Timeout = value;
-        //        }
-        //    }
-        //}
+        /// <summary>
+        /// Gets and sets HTTP UserAgent header
+        /// </summary>
+        public int Timeout
+        {
+            get
+            {
+                if (TwitterExecutor != null)
+                {
+                    return TwitterExecutor.Timeout;
+                }
+                return TwitterExecute.DefaultTimeout;
+            }
+            set
+            {
+                if (TwitterExecutor != null)
+                {
+                    TwitterExecutor.Timeout = value;
+                }
+            }
+        }
 
         /// <summary>
         /// Gets or sets the authorized client on the <see cref="ITwitterExecute"/> object.
