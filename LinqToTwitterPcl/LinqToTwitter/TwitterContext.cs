@@ -31,7 +31,7 @@ namespace LinqToTwitter
         public const string XFeatureRateLimitRemainingKey = "X-FeatureRateLimit-Remaining";
         public const string XFeatureRateLimitResetKey = "X-FeatureRateLimit-Reset";
         public const string DateKey = "Date";
-        public const string DefaultUserAgent = "LINQ to Twitter v3.0";
+        public const string DefaultUserAgent = "LINQ-To-Twitter/3.0";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TwitterContext"/> class.
@@ -194,10 +194,10 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// Gets the most recent URL executed
+        /// Gets the most recent URL executed.
         /// </summary>
         /// <remarks>
-        /// This is very useful for debugging
+        /// Supports debugging.
         /// </remarks>
         public string LastUrl
         {
@@ -205,7 +205,7 @@ namespace LinqToTwitter
         }
         
         /// <summary>
-        /// Methods for communicating with Twitter
+        /// Methods for communicating with Twitter.
         /// </summary>
         internal ITwitterExecute TwitterExecutor { get; set; }
 

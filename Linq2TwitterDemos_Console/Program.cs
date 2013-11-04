@@ -81,11 +81,10 @@ namespace Linq2TwitterDemos_Console
 
             Console.WriteLine("  1 - Pin (default)");
             Console.WriteLine("  2 - Application-Only");
-            //Console.WriteLine("  3 - Single User");
-            //Console.WriteLine("  4 - XAuth");
+            Console.WriteLine("  3 - Single User");
+            Console.WriteLine("  4 - XAuth");
 
-            //Console.Write("\nPlease choose (1, 2, 3, or 4): ");
-            Console.Write("\nPlease choose (1 or 2): ");
+            Console.Write("\nPlease choose (1, 2, 3, or 4): ");
             ConsoleKeyInfo input = Console.ReadKey();
             Console.WriteLine("");
 
@@ -100,12 +99,12 @@ namespace Linq2TwitterDemos_Console
                 case ConsoleKey.D2:
                     auth = DoApplicationOnly();
                     break;
-                //case ConsoleKey.D3:
-                //    auth = DoSingleUserAuth();
-                //    break;
-                //case ConsoleKey.D4:
-                //    auth = DoXAuth();
-                //    break;
+                case ConsoleKey.D3:
+                    auth = DoSingleUserAuth();
+                    break;
+                case ConsoleKey.D4:
+                    auth = DoXAuth();
+                    break;
                 default:
                     auth = DoPinOAuth();
                     break;
@@ -120,8 +119,8 @@ namespace Linq2TwitterDemos_Console
             {
                 CredentialStore = new InMemoryCredentialStore
                 {
-                    ConsumerKey = ConfigurationManager.AppSettings["twitterConsumerKey"],
-                    ConsumerSecret = ConfigurationManager.AppSettings["twitterConsumerSecret"]
+                    ConsumerKey = ConfigurationManager.AppSettings["consumerKey"],
+                    ConsumerSecret = ConfigurationManager.AppSettings["consumerSecret"]
                 },
                 GoToTwitterAuthorization = pageLink => Process.Start(pageLink),
                 GetPin = () =>
@@ -132,6 +131,7 @@ namespace Linq2TwitterDemos_Console
                     return Console.ReadLine();
                 }
             };
+
             return auth;
         }
 
@@ -141,10 +141,42 @@ namespace Linq2TwitterDemos_Console
             {
                 CredentialStore = new InMemoryCredentialStore
                 {
-                    ConsumerKey = ConfigurationManager.AppSettings["twitterConsumerKey"],
-                    ConsumerSecret = ConfigurationManager.AppSettings["twitterConsumerSecret"]
+                    ConsumerKey = ConfigurationManager.AppSettings["consumerKey"],
+                    ConsumerSecret = ConfigurationManager.AppSettings["consumerSecret"]
                 },
             };
+
+            return auth;
+        }
+        static IAuthorizer DoSingleUserAuth()
+        {
+            var auth = new SingleUserAuthorizer
+            {
+                CredentialStore = new SingleUserInMemoryCredentialStore
+                {
+                    ConsumerKey = ConfigurationManager.AppSettings["consumerKey"],
+                    ConsumerSecret = ConfigurationManager.AppSettings["consumerSecret"],
+                    AccessToken = ConfigurationManager.AppSettings["accessToken"],
+                    AccessTokenSecret = ConfigurationManager.AppSettings["accessTokenSecret"]
+                }
+            };
+
+            return auth;
+        }
+
+        static IAuthorizer DoXAuth()
+        {
+            var auth = new XAuthAuthorizer
+            {
+                CredentialStore = new XAuthCredentials
+                {
+                    ConsumerKey = ConfigurationManager.AppSettings["consumerKey"],
+                    ConsumerSecret = ConfigurationManager.AppSettings["consumerSecret"],
+                    UserName = "YourUserName",
+                    Password = "YourPassword"
+                }
+            };
+
             return auth;
         }
     }

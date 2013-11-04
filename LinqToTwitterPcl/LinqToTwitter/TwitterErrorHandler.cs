@@ -31,26 +31,20 @@ namespace LinqToTwitter
         {
             string responseStr = await msg.Content.ReadAsStringAsync();
 
-            try
-            {
-                HandleTwitterError(responseStr, msg);
-            }
-            catch (Exception)
-            {
-                throw new TwitterQueryException(
-                    "Unknown error - please report issue if reproducible.") 
-                { 
-                    StatusCode = msg.StatusCode
-                };
-            }
+            BuildAndThrowTwitterQueryException(responseStr, msg);
 
+            ThrowRawDataBecauseBuildAndThrowDidNotWork(responseStr, msg);
+        }
+  
+        private static void ThrowRawDataBecauseBuildAndThrowDidNotWork(string responseStr, HttpResponseMessage msg)
+        {
             throw new TwitterQueryException(responseStr)
             {
                 StatusCode = msg.StatusCode
             };
         }
   
-        static void HandleTwitterError(string responseStr, HttpResponseMessage msg)
+        static void BuildAndThrowTwitterQueryException(string responseStr, HttpResponseMessage msg)
         {
             if (responseStr.StartsWith("{"))
             {

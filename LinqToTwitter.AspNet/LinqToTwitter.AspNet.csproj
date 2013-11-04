@@ -53,9 +53,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AspNetAuthorizer.cs" />
+    <Compile Include="MvcSignInAuthorizer.cs" />
     <Compile Include="MvcAuthorizer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SessionStateCredentialStore.cs" />
+    <Compile Include="AspNetSignInAuthorizer.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LinqToTwitterPcl\LinqToTwitterPcl.csproj">

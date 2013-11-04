@@ -10,9 +10,9 @@ namespace LinqToTwitter.Net
 {
     class PostMessageHandler : WebRequestHandler
     {
-        TwitterExecute exe;
-        IDictionary<string, string> postData;
-        string url;
+        readonly TwitterExecute exe;
+        readonly IDictionary<string, string> postData;
+        readonly string url;
 
         public PostMessageHandler(TwitterExecute exe, IDictionary<string, string> postData, string url)
         {

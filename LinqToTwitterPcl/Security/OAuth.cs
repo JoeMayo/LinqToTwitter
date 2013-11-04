@@ -88,7 +88,7 @@ namespace LinqToTwitter.Security
                 string.Join(", ",
                     (from parm in allParms
                      let keyVal = parm.Split('=')
-                     where parm.StartsWith("oauth")
+                     where parm.StartsWith("oauth") || parm.StartsWith("x_auth")
                      orderby keyVal[0]
                      select keyVal[0] + "=\"" + keyVal[1] + "\"")
                     .ToList());

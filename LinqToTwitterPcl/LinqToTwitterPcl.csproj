@@ -162,6 +162,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Security\PinAuthorizer.cs" />
     <Compile Include="Security\Sha1.cs" />
+    <Compile Include="Security\SingleUserAuthorizer.cs" />
+    <Compile Include="Security\SingleUserInMemoryCredentialStore.cs" />
+    <Compile Include="Security\XAuthAuthorizer.cs" />
+    <Compile Include="Security\XAuthCredentials.cs" />
     <Compile Include="Serialization\Extensions\DictionaryExtensions.cs" />
     <Compile Include="Serialization\Extensions\LitJsonExtensions.cs" />
     <Compile Include="Serialization\Extensions\StringExtensions.cs" />
@@ -234,6 +238,7 @@
     </Reference>
     <Reference Include="System.Net.Http.WebRequest">
       <HintPath>..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\System.Net.Http.WebRequest.dll</HintPath>
+      <Private>True</Private>
     </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />

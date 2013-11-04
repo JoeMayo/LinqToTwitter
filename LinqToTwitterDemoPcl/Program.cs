@@ -38,15 +38,15 @@ namespace LinqToTwitterDemoPcl
             //tweets.ForEach(tweet =>
             //    Console.WriteLine("\nName:\n{0}\nTweet:{1}\n", tweet.ScreenName, tweet.Text));
 
-            //var searchResponse = await
-            //    (from search in ctx.Search
-            //     where search.Type == SearchType.Search &&
-            //           search.Query == "LINQ to Twitter"
-            //     select search)
-            //    .SingleAsync();
+            var searchResponse = await
+                (from search in ctx.Search
+                 where search.Type == SearchType.Search &&
+                       search.Query == "LINQ to Twitter"
+                 select search)
+                .SingleAsync();
 
-            //searchResponse.Statuses.ForEach(tweet =>
-            //    Console.WriteLine("\nName:\n{0}\nTweet:{1}\n", tweet.ScreenName, tweet.Text));
+            searchResponse.Statuses.ForEach(tweet =>
+                Console.WriteLine("\nName:\n{0}\nTweet:{1}\n", tweet.ScreenName, tweet.Text));
 
             //string statusText = "Testing TweetAsync in LINQ to Twitter - " + DateTime.Now;
 

@@ -157,8 +157,8 @@ namespace LinqToTwitterDemo
                 {
                     ConsumerKey = ConfigurationManager.AppSettings["twitterConsumerKey"],
                     ConsumerSecret = ConfigurationManager.AppSettings["twitterConsumerSecret"],
-                    UserName = "YourUserName",
-                    Password = "YourPassword"
+                    UserName = "JoeMayo",// "YourUserName",
+                    Password = "MajTwi10"// "YourPassword"
                 }
             };
 
