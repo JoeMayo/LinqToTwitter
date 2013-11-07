@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace LinqToTwitter.Net
 {
-    class GetMessageHandler : WebRequestHandler
+    class GetMessageHandler : HttpClientHandler
     {
         TwitterExecute exe;
         IDictionary<string, string> parameters;
@@ -29,8 +29,8 @@ namespace LinqToTwitter.Net
             request.Headers.ExpectContinue = false;
             AutomaticDecompression = DecompressionMethods.GZip;
 
-            if (exe.ReadWriteTimeout != 0)
-                ReadWriteTimeout = exe.ReadWriteTimeout;
+            //if (exe.ReadWriteTimeout != 0)
+            //    ReadWriteTimeout = exe.ReadWriteTimeout;
 
             return await base.SendAsync(request, cancellationToken);
         }

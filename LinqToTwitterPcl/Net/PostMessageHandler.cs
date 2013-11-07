@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace LinqToTwitter.Net
 {
-    class PostMessageHandler : WebRequestHandler
+    class PostMessageHandler : HttpClientHandler
     {
         readonly TwitterExecute exe;
         readonly IDictionary<string, string> postData;
@@ -28,8 +28,8 @@ namespace LinqToTwitter.Net
             request.Headers.ExpectContinue = false;
             AutomaticDecompression = DecompressionMethods.GZip;
 
-            if (exe.ReadWriteTimeout != 0)
-                ReadWriteTimeout = exe.ReadWriteTimeout;
+            //if (exe.ReadWriteTimeout != 0)
+            //    ReadWriteTimeout = exe.ReadWriteTimeout;
 
             return await base.SendAsync(request, cancellationToken);
         }

@@ -38,15 +38,15 @@ namespace LinqToTwitterDemoPcl
             //tweets.ForEach(tweet =>
             //    Console.WriteLine("\nName:\n{0}\nTweet:{1}\n", tweet.ScreenName, tweet.Text));
 
-            var searchResponse = await
-                (from search in ctx.Search
-                 where search.Type == SearchType.Search &&
-                       search.Query == "LINQ to Twitter"
-                 select search)
-                .SingleAsync();
+            //var searchResponse = await
+            //    (from search in ctx.Search
+            //     where search.Type == SearchType.Search &&
+            //           search.Query == "LINQ to Twitter"
+            //     select search)
+            //    .SingleAsync();
 
-            searchResponse.Statuses.ForEach(tweet =>
-                Console.WriteLine("\nName:\n{0}\nTweet:{1}\n", tweet.ScreenName, tweet.Text));
+            //searchResponse.Statuses.ForEach(tweet =>
+            //    Console.WriteLine("\nName:\n{0}\nTweet:{1}\n", tweet.ScreenName, tweet.Text));
 
             //string statusText = "Testing TweetAsync in LINQ to Twitter - " + DateTime.Now;
 
@@ -62,8 +62,8 @@ namespace LinqToTwitterDemoPcl
 
             //Console.WriteLine("\nName:\n{0}\nImage URL:{1}\n", user.ScreenNameResponse, user.ProfileBackgroundImageUrl);
 
-            //Console.WriteLine("\nStreamed Content: \n");
-            //int count = 0;
+            Console.WriteLine("\nStreamed Content: \n");
+            int count = 0;
 
             //await
             //    (from strm in ctx.Streaming
@@ -108,36 +108,36 @@ namespace LinqToTwitterDemoPcl
             //        }
             //    });
 
-            //StreamContent strmContent = null;
-            //await
-            //    (from strm in ctx.Streaming
-            //     where strm.Type == StreamingType.User
-            //     select strm)
-            //    .StartAsync(async strm =>
-            //     {
-            //         if (strmContent == null) strmContent = strm;
+            StreamContent strmContent = null;
+            await
+                (from strm in ctx.Streaming
+                 where strm.Type == StreamingType.User
+                 select strm)
+                .StartAsync(async strm =>
+                 {
+                     if (strmContent == null) strmContent = strm;
 
-            //         if (strm.Status == TwitterErrorStatus.RequestProcessingException)
-            //         {
-            //             //WebException wex = strm.Error as WebException;
-            //             //if (wex != null && wex.Status == WebExceptionStatus.ConnectFailure)
-            //             //{
-            //             //    Console.WriteLine(wex.Message + " You might want to reconnect.");
-            //             //}
+                     if (strm.Status == TwitterErrorStatus.RequestProcessingException)
+                     {
+                         //WebException wex = strm.Error as WebException;
+                         //if (wex != null && wex.Status == WebExceptionStatus.ConnectFailure)
+                         //{
+                         //    Console.WriteLine(wex.Message + " You might want to reconnect.");
+                         //}
 
-            //             Console.WriteLine(strm.Error.ToString());
-            //             return;
-            //         }
+                         Console.WriteLine(strm.Error.ToString());
+                         return;
+                     }
 
-            //         string message = string.IsNullOrEmpty(strm.Content) ? "Keep-Alive" : strm.Content;
-            //         Console.WriteLine((count + 1).ToString() + ". " + DateTime.Now + ": " + message + "\n");
+                     string message = string.IsNullOrEmpty(strm.Content) ? "Keep-Alive" : strm.Content;
+                     Console.WriteLine((count + 1).ToString() + ". " + DateTime.Now + ": " + message + "\n");
 
-            //         if (count++ == 10)
-            //         {
-            //             Console.WriteLine("Demo is ending. Closing stream...");
-            //             strm.CloseStream();
-            //         }
-            //     });
+                     if (count++ == 10)
+                     {
+                         Console.WriteLine("Demo is ending. Closing stream...");
+                         strm.CloseStream();
+                     }
+                 });
         }
   
         static IAuthorizer ChooseAuthenticationStrategy()
@@ -184,8 +184,8 @@ namespace LinqToTwitterDemoPcl
             {
                 CredentialStore = new InMemoryCredentialStore
                 {
-                    ConsumerKey = ConfigurationManager.AppSettings["twitterConsumerKey"],
-                    ConsumerSecret = ConfigurationManager.AppSettings["twitterConsumerSecret"]
+                    ConsumerKey = ConfigurationManager.AppSettings["consumerKey"],
+                    ConsumerSecret = ConfigurationManager.AppSettings["consumerSecret"]
                 },
                 GoToTwitterAuthorization = pageLink => Process.Start(pageLink),
                 GetPin = () =>
@@ -205,8 +205,8 @@ namespace LinqToTwitterDemoPcl
             {
                 CredentialStore = new InMemoryCredentialStore
                 {
-                    ConsumerKey = ConfigurationManager.AppSettings["twitterConsumerKey"],
-                    ConsumerSecret = ConfigurationManager.AppSettings["twitterConsumerSecret"]
+                    ConsumerKey = ConfigurationManager.AppSettings["consumerKey"],
+                    ConsumerSecret = ConfigurationManager.AppSettings["consumerSecret"]
                 },
             };
             return auth;

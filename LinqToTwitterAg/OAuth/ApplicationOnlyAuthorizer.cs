@@ -46,12 +46,15 @@ namespace LinqToTwitter
             var req = WebRequest.Create(url) as HttpWebRequest;
 
             req.Method = HttpMethod.POST.ToString();
-            req.Headers[HttpRequestHeader.Authorization] = "Basic " + BasicToken; ;
+            req.Headers[HttpRequestHeader.Authorization] = "Basic " + BasicToken;
             req.ContentType = "application/x-www-form-urlencoded;charset=UTF-8";
             byte[] data = System.Text.Encoding.UTF8.GetBytes("access_token=" + BearerToken);
 #if !WINDOWS_PHONE && !NETFX_CORE
             req.UserAgent = UserAgent;
             req.ContentLength = data.Length;
+#endif
+#if !SILVERLIGHT && !NETFX_CORE
+            req.Timeout = (int)Timeout.TotalMilliseconds;
 #endif
 
             string response = null;
@@ -104,6 +107,9 @@ namespace LinqToTwitter
 #if !WINDOWS_PHONE && !NETFX_CORE
             req.UserAgent = UserAgent;
             req.ContentLength = data.Length;
+#endif
+#if !SILVERLIGHT && !NETFX_CORE
+            req.Timeout = (int)Timeout.TotalMilliseconds;
 #endif
 
             string response = null;

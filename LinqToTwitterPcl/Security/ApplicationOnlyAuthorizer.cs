@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,11 +24,6 @@ namespace LinqToTwitter
             OAuth2InvalidateToken = "https://api.twitter.com/oauth2/invalidate_token";
         }
 
-        public void Authorize()
-        {
-            throw new NotImplementedException("Please call AuthorizeAsync instead.");
-        }
-
         public async Task AuthorizeAsync()
         {
             EncodeCredentials();
@@ -38,40 +34,50 @@ namespace LinqToTwitter
         {
             EncodeCredentials();
 
-            var client = new HttpClient();
             var req = new HttpRequestMessage(System.Net.Http.HttpMethod.Post, OAuth2InvalidateToken);
             req.Headers.Add("Authorization", "Basic " + BasicToken);
             req.Headers.Add("User-Agent", UserAgent);
-            req.Headers.Add("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8");
             req.Headers.ExpectContinue = false;
+            req.Content = new StringContent("access_token=" + BearerToken, Encoding.UTF8, "application/x-www-form-urlencoded");
 
-            var msg = await client.SendAsync(req);
+            var handler = new HttpClientHandler();
+            handler.AutomaticDecompression = DecompressionMethods.GZip;
 
-            await TwitterErrorHandler.ThrowIfErrorAsync(msg);
+            using (var client = new HttpClient(handler))
+            {
+                var msg = await client.SendAsync(req);
 
-            string response = await msg.Content.ReadAsStringAsync();
+                await TwitterErrorHandler.ThrowIfErrorAsync(msg);
 
-            var responseJson = JsonMapper.ToObject(response);
-            BearerToken = responseJson.GetValue<string>("access_token");
+                string response = await msg.Content.ReadAsStringAsync();
+
+                var responseJson = JsonMapper.ToObject(response);
+                BearerToken = responseJson.GetValue<string>("access_token"); 
+            }
         }
   
         async Task GetBearerTokenAsync()
         {
-            var client = new HttpClient();
             var req = new HttpRequestMessage(System.Net.Http.HttpMethod.Post, OAuth2Token);
             req.Headers.Add("Authorization", "Basic " + BasicToken);
             req.Headers.Add("User-Agent", UserAgent);
             req.Headers.ExpectContinue = false;
             req.Content = new StringContent("grant_type=client_credentials", Encoding.UTF8, "application/x-www-form-urlencoded");
 
-            var msg = await client.SendAsync(req);
+            var handler = new HttpClientHandler();
+            handler.AutomaticDecompression = DecompressionMethods.GZip;
 
-            await TwitterErrorHandler.ThrowIfErrorAsync(msg);
+            using (var client = new HttpClient(handler))
+            {
+                var msg = await client.SendAsync(req);
 
-            string response = await msg.Content.ReadAsStringAsync();
+                await TwitterErrorHandler.ThrowIfErrorAsync(msg);
 
-            var responseJson = JsonMapper.ToObject(response);
-            BearerToken = responseJson.GetValue<string>("access_token");
+                string response = await msg.Content.ReadAsStringAsync();
+
+                var responseJson = JsonMapper.ToObject(response);
+                BearerToken = responseJson.GetValue<string>("access_token"); 
+            }
         }
 
         internal void EncodeCredentials()

@@ -50,7 +50,7 @@ namespace LinqToTwitterDemo
                     //SearchDemos.Run(twitterCtx);
                     //SocialGraphDemos.Run(twitterCtx);
                     //StatusDemos.Run(twitterCtx);
-                    StreamingDemo.Run(twitterCtx);
+                    //StreamingDemo.Run(twitterCtx);
 
                     if (DoThis("demo trend"))
                         TrendsDemos.Run(twitterCtx);
@@ -157,8 +157,8 @@ namespace LinqToTwitterDemo
                 {
                     ConsumerKey = ConfigurationManager.AppSettings["twitterConsumerKey"],
                     ConsumerSecret = ConfigurationManager.AppSettings["twitterConsumerSecret"],
-                    UserName = "JoeMayo",// "YourUserName",
-                    Password = "MajTwi10"// "YourPassword"
+                    UserName = "YourUserName",
+                    Password = "YourPassword"
                 }
             };
 
@@ -217,6 +217,7 @@ namespace LinqToTwitterDemo
             };
 
             auth.Authorize();
+
             return auth;
         }
 
