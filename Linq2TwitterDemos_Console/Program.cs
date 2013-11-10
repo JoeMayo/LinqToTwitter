@@ -11,8 +11,15 @@ namespace Linq2TwitterDemos_Console
     {
         static void Main()
         {
-            Task demoTask = DoDemosAsync();
-            demoTask.Wait();
+            try
+            {
+                Task demoTask = DoDemosAsync();
+                demoTask.Wait();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
 
             Console.Write("\nPress any key to close console window...");
             Console.ReadKey(true);
@@ -51,7 +58,11 @@ namespace Linq2TwitterDemos_Console
                 {
                     case '0':
                         Console.WriteLine("\n\tRunning Status Demos...\n");
-                        await StatusDemos.RunStatusDemosAsync(twitterCtx);
+                        await StatusDemos.RunAsync(twitterCtx);
+                        break;
+                    case '1':
+                        Console.WriteLine("\n\tRunning Streaming Demos...\n");
+                        await StreamingDemos.RunAsync(twitterCtx);
                         break;
                     case 'q':
                     case 'Q':
@@ -70,6 +81,7 @@ namespace Linq2TwitterDemos_Console
             Console.WriteLine("\nPlease select category:\n");
 
             Console.WriteLine("\t 0. Status Demos");
+            Console.WriteLine("\t 1. Streaming Demos");
             Console.WriteLine();
             Console.WriteLine("\t Q. End Program");
         }

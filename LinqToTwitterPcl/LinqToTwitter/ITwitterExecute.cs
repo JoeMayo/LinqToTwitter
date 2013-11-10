@@ -92,7 +92,7 @@ namespace LinqToTwitter
         /// <summary>
         /// Set to true to close stream, false means stream is still open
         /// </summary>
-        bool IsStreamClosed { get; set; }
+        bool IsStreamClosed { get; }
 
         /// <summary>
         /// Closes the stream

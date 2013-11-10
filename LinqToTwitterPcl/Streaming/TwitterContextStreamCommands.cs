@@ -13,7 +13,7 @@ namespace LinqToTwitter
         /// <param name="userIDs">List of user IDs to add to Site Stream</param>
         /// <param name="streamID">ID of Site Stream to add users to</param>
         /// <returns>Control Stream with CommandResponse property for Twitter's response message</returns>
-        public async Task<ControlStream> AddSiteStreamUser(List<ulong> userIDs, string streamID)
+        public async Task<ControlStream> AddSiteStreamUserAsync(List<ulong> userIDs, string streamID)
         {
             if (string.IsNullOrWhiteSpace(streamID)) throw new ArgumentNullException("streamID", "streamID is required.");
 
@@ -40,7 +40,7 @@ namespace LinqToTwitter
         /// <param name="userIDs">List of user IDs to remove from Site Stream</param>
         /// <param name="streamID">ID of Site Stream to remove users from</param>
         /// <returns>Control Stream with CommandResponse property for Twitter's response message</returns>
-        public async Task<ControlStream> RemoveSiteStreamUser(List<ulong> userIDs, string streamID)
+        public async Task<ControlStream> RemoveSiteStreamUserAsync(List<ulong> userIDs, string streamID)
         {
             if (string.IsNullOrWhiteSpace(streamID)) throw new ArgumentNullException("streamID", "streamID is required.");
 

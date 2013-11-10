@@ -6,7 +6,7 @@ using System.Linq;
 namespace LinqToTwitter
 {
     /// <summary>
-    /// Filled out by ControlStreams Info query
+    /// Response from ControlStreams Info query
     /// </summary>
     public class ControlStreamInfo
     {

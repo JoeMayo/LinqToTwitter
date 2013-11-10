@@ -9,7 +9,7 @@ namespace Linq2TwitterDemos_Console
 {
     class StatusDemos
     {
-        internal static async Task RunStatusDemosAsync(TwitterContext twitterCtx)
+        internal static async Task RunAsync(TwitterContext twitterCtx)
         {
             char key;
             

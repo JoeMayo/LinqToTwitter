@@ -32,7 +32,7 @@ namespace LinqToTwitter
         public ControlStreamFollow Follow { get; set; }
 
         /// <summary>
-        /// Response from a command, such as AddSiteStreamUser or RemoveSiteStreamUser
+        /// Response from a command, such as AddSiteStreamUserAsync or RemoveSiteStreamUserAsync
         /// </summary>
         public string CommandResponse { get; set; }
     }

@@ -66,7 +66,7 @@
         /// </summary>
         public void CloseStream()
         {
-            TwitterExecutor.IsStreamClosed = true;
+            TwitterExecutor.CloseStream();
         }
     }
 }

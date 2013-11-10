@@ -117,18 +117,6 @@ namespace LinqToTwitterDemoPcl
                  {
                      if (strmContent == null) strmContent = strm;
 
-                     if (strm.Status == TwitterErrorStatus.RequestProcessingException)
-                     {
-                         //WebException wex = strm.Error as WebException;
-                         //if (wex != null && wex.Status == WebExceptionStatus.ConnectFailure)
-                         //{
-                         //    Console.WriteLine(wex.Message + " You might want to reconnect.");
-                         //}
-
-                         Console.WriteLine(strm.Error.ToString());
-                         return;
-                     }
-
                      string message = string.IsNullOrEmpty(strm.Content) ? "Keep-Alive" : strm.Content;
                      Console.WriteLine((count + 1).ToString() + ". " + DateTime.Now + ": " + message + "\n");
 

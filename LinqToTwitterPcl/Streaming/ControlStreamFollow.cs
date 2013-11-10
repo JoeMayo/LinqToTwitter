@@ -7,7 +7,7 @@ using System.Linq;
 namespace LinqToTwitter
 {
     /// <summary>
-    /// Follower component of a ControlStreams Followers query response
+    /// Response from ControlStreams Followers query
     /// </summary>
     public class ControlStreamFollow
     {

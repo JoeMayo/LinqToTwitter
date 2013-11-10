@@ -362,7 +362,7 @@ namespace LinqToTwitterDemo
             PrintUserInfo(twitterCtx, streamID);
 
             ControlStream csRemove = twitterCtx.RemoveSiteStreamUser(new List<ulong> { 15411837 }, streamID);
-            Console.WriteLine("Command Response: " + csAdd.CommandResponse);
+            Console.WriteLine("Command Response: " + csRemove.CommandResponse);
             Console.WriteLine("\nAfter Removing a User: ");
             PrintUserInfo(twitterCtx, streamID);
         }

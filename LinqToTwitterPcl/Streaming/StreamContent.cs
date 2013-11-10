@@ -13,8 +13,6 @@ namespace LinqToTwitter
         {
             this.exec = exec;
             Content = content;
-
-            Status = TwitterErrorStatus.Success;
         }
 
         /// <summary>
@@ -22,17 +20,6 @@ namespace LinqToTwitter
         /// formats or empty string for keep-alive message
         /// </summary>
         public string Content { get; set; }
-
-        /// <summary>
-        /// You can check this value in the callback to
-        /// see if the request succeeded or failed
-        /// </summary>
-        public TwitterErrorStatus Status { get; set; }
-
-        /// <summary>
-        /// Will contain Exception if there was an error
-        /// </summary>
-        public Exception Error { get; set; }
 
         /// <summary>
         /// Closes Twitter stream.
