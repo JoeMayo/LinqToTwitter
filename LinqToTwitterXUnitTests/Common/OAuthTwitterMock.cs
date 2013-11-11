@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using LinqToTwitter;
 
 namespace LinqToTwitterXUnitTests.Common
@@ -139,6 +140,8 @@ namespace LinqToTwitterXUnitTests.Common
                 throw new NotImplementedException();
             }
         }
+
+        public WebProxy Proxy { get; set; }
 
         public void GetAccessTokenAsync(string verifier, Uri oauthAccessTokenUrl, string twitterCallbackUrl, AuthAccessType authAccessType, Action<TwitterAsyncResponse<UserIdentifier>> authenticationCompleteCallback)
         {

@@ -189,7 +189,10 @@ namespace LinqToTwitter
         public async Task<string> QueryTwitterStreamAsync(Request request)
         {
             var handler = new HttpClientHandler();
-            handler.AutomaticDecompression = DecompressionMethods.GZip;
+            if (handler.SupportsAutomaticDecompression)
+                handler.AutomaticDecompression = DecompressionMethods.GZip;
+            if (Authorizer.Proxy != null && handler.SupportsProxy)
+                handler.Proxy = Authorizer.Proxy;
 
             using (StreamingClient = new HttpClient(handler))
             {

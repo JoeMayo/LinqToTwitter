@@ -91,5 +91,12 @@ namespace LinqToTwitter
         /// Indicates if you want to use enable compressed responses (GZip/deflate)
         /// </summary>
         bool UseCompression { get; set; }
+
+#if !SILVERLIGHT && !NETFX_CORE
+        /// <summary>
+        /// Proxy for authorization requests.
+        /// </summary>
+        WebProxy Proxy { get; set; }
+#endif
     }
 }

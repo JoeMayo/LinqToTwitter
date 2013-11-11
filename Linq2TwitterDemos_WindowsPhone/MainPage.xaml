@@ -32,6 +32,17 @@
                     </phone:LongListSelector.ItemTemplate>
                 </phone:LongListSelector>
             </phone:PanoramaItem>
+            <phone:PanoramaItem Header="streaming">
+                <phone:LongListSelector Margin="0,0,-22,0" ItemsSource="{Binding Streams}">
+                    <phone:LongListSelector.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Margin="0,-6,0,12">
+                                <Button Name="DemoButton" Content="{Binding Operation}" Tag="{Binding PageUri}" Click="DemoButton_Click" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </phone:LongListSelector.ItemTemplate>
+                </phone:LongListSelector>
+            </phone:PanoramaItem>
 
             <!--Panorama item two-->
             <phone:PanoramaItem>

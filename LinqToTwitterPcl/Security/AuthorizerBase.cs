@@ -55,6 +55,8 @@ namespace LinqToTwitter
         /// </summary>
         public string Callback { get; set; }
 
+        public IWebProxy Proxy { get; set; }
+
         protected string ParseVerifierFromResponseUrl(string responseUrl)
         {
             string[] keyValPairs = new Uri(responseUrl).Query.TrimStart('?').Split('&');
@@ -63,7 +65,7 @@ namespace LinqToTwitter
                 (from keyValPair in keyValPairs
                  let pair = keyValPair.Split('=')
                  let key = pair[0]
-                 let val = pair[1]
+                 let val = pair.Length == 2 ? pair[1] : string.Empty
                  where key == "oauth_verifier"
                  select val)
                 .SingleOrDefault();
@@ -230,7 +232,10 @@ namespace LinqToTwitter
             req.Headers.ExpectContinue = false;
 
             var handler = new HttpClientHandler();
-            handler.AutomaticDecompression = DecompressionMethods.GZip;
+            if (handler.SupportsAutomaticDecompression)
+                handler.AutomaticDecompression = DecompressionMethods.GZip;
+            if (Proxy != null && handler.SupportsProxy)
+                handler.Proxy = Proxy;
 
             var msg = await new HttpClient(handler).SendAsync(req);
 
@@ -254,7 +259,10 @@ namespace LinqToTwitter
             req.Content = new FormUrlEncodedContent(postData);
 
             var handler = new HttpClientHandler();
-            handler.AutomaticDecompression = DecompressionMethods.GZip;
+            if (handler.SupportsAutomaticDecompression)
+                handler.AutomaticDecompression = DecompressionMethods.GZip;
+            if (Proxy != null && handler.SupportsProxy)
+                handler.Proxy = Proxy;
 
             var msg = await new HttpClient(handler).SendAsync(req);
 

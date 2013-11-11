@@ -77,6 +77,13 @@ namespace LinqToTwitter
         /// </summary>
         public string ProxyUrl { get; set; }
 
+#if !SILVERLIGHT && !NETFX_CORE
+        /// <summary>
+        /// Proxy for authorization requests.
+        /// </summary>
+        public WebProxy Proxy { get; set; }
+#endif
+
         /// <summary>
         /// Get the link to Twitter's authorization page for this application.
         /// </summary>
@@ -380,7 +387,9 @@ namespace LinqToTwitter
             webRequest.Method = method.ToString();
 #if !SILVERLIGHT && !NETFX_CORE
             webRequest.ServicePoint.Expect100Continue = false;
-            webRequest.UserAgent = OAuthUserAgent; 
+            webRequest.UserAgent = OAuthUserAgent;
+            if (Proxy != null)
+                webRequest.Proxy = Proxy;
 #endif
             webRequest.Headers[HttpRequestHeader.Authorization] = PrepareAuthHeader(authHeader);
             webRequest.Headers[HttpRequestHeader.AcceptEncoding] = "deflate,gzip";
@@ -530,9 +539,9 @@ namespace LinqToTwitter
                 (from keyValPair in keyValPairs
                  let pair = keyValPair.Split('=')
                  let key = pair[0]
-                 let val = pair[1]
+                 let val = pair.Length == 2 ? pair[1] : string.Empty
                  where key == paramKey
-                 select val)
+                 select pair[1])
                 .SingleOrDefault();
 
             return paramVal;
@@ -593,6 +602,8 @@ namespace LinqToTwitter
 #if !SILVERLIGHT && !NETFX_CORE
             req.ServicePoint.Expect100Continue = false;
             req.UserAgent = OAuthUserAgent;
+            if (Proxy != null)
+                req.Proxy = Proxy;
 #endif
             return req;
         }

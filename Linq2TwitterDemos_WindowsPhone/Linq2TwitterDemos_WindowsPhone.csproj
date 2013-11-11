@@ -113,6 +113,17 @@
     <Compile Include="StatusDemos\TweetDemo.xaml.cs">
       <DependentUpon>TweetDemo.xaml</DependentUpon>
     </Compile>
+    <Compile Include="StreamingDemos\FilterStreamDemo.xaml.cs">
+      <DependentUpon>FilterStreamDemo.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="StreamingDemos\SampleStreamDemo.xaml.cs">
+      <DependentUpon>SampleStreamDemo.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="StreamingDemos\UserStreamDemo.xaml.cs">
+      <DependentUpon>UserStreamDemo.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModels\JsonContent.cs" />
+    <Compile Include="ViewModels\StreamViewModel.cs" />
     <Compile Include="ViewModels\ItemViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\Tweet.cs" />
@@ -140,6 +151,18 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="StatusDemos\TweetDemo.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="StreamingDemos\FilterStreamDemo.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="StreamingDemos\SampleStreamDemo.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="StreamingDemos\UserStreamDemo.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

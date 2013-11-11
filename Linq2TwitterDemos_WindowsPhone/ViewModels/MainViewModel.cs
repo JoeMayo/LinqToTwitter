@@ -9,8 +9,9 @@ namespace Linq2TwitterDemos_WindowsPhone.ViewModels
     {
         public MainViewModel()
         {
-            this.Items = new ObservableCollection<ItemViewModel>();
+            Items = new ObservableCollection<ItemViewModel>();
             Statuses = new ObservableCollection<ItemViewModel>();
+            Streams = new ObservableCollection<ItemViewModel>();
         }
 
         /// <summary>
@@ -22,6 +23,11 @@ namespace Linq2TwitterDemos_WindowsPhone.ViewModels
         /// A collection for ItemViewModel objects with Statuses.
         /// </summary>
         public ObservableCollection<ItemViewModel> Statuses { get; private set; }
+
+        /// <summary>
+        /// A collection for ItemViewModel objects with Statuses.
+        /// </summary>
+        public ObservableCollection<ItemViewModel> Streams { get; private set; }
 
         private string _sampleProperty = "Sample Runtime Property Value";
         /// <summary>
@@ -68,6 +74,10 @@ namespace Linq2TwitterDemos_WindowsPhone.ViewModels
         {
             Statuses.Add(new ItemViewModel { Operation = "tweet", PageUri = "/StatusDemos/TweetDemo.xaml" });
             Statuses.Add(new ItemViewModel { Operation = "home timeline", PageUri = "/StatusDemos/HomeTimelineDemo.xaml" });
+
+            Streams.Add(new ItemViewModel { Operation = "filter stream", PageUri = "/StreamingDemos/FilterStreamDemo.xaml" });
+            Streams.Add(new ItemViewModel { Operation = "sample stream", PageUri = "/StreamingDemos/SampleStreamDemo.xaml" });
+            Streams.Add(new ItemViewModel { Operation = "user stream", PageUri = "/StreamingDemos/UserStreamDemo.xaml" });
 
             // Sample data; replace with real data
             this.Items.Add(new ItemViewModel() { Operation = "runtime one", PageUri = "Maecenas praesent accumsan bibendum" });

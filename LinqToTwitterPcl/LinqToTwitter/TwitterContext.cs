@@ -9,6 +9,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Net;
 using System.Threading.Tasks;
 using LinqToTwitter.Common;
 
@@ -191,6 +192,15 @@ namespace LinqToTwitter
         {
             get { return TwitterExecutor.Authorizer; }
             set { TwitterExecutor.Authorizer = value; }
+        }
+
+        /// <summary>
+        /// Allows setting the IWebProxy for all HTTP requests.
+        /// </summary>
+        public IWebProxy Proxy
+        {
+            get { return Authorizer.Proxy; }
+            set { Authorizer.Proxy = value; }
         }
 
         /// <summary>

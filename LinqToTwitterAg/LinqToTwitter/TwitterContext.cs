@@ -9,10 +9,10 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Net;
 using LinqToTwitter.Common;
 
 #if SILVERLIGHT
-using System.Net;
 using System.Net.Browser;
 #endif
 
@@ -312,6 +312,17 @@ namespace LinqToTwitter
             get { return TwitterExecutor.AuthorizedClient; }
             set { TwitterExecutor.AuthorizedClient = value; }
         }
+
+#if !SILVERLIGHT && !NETFX_CORE
+        /// <summary>
+        /// Proxy for all HTTP communications
+        /// </summary>
+        public WebProxy Proxy
+        {
+            get { return AuthorizedClient.Proxy; }
+            set { AuthorizedClient.Proxy = value; }
+        }
+#endif
 
         /// <summary>
         /// Gets the most recent URL executed

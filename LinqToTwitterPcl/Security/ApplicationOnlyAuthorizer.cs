@@ -41,7 +41,10 @@ namespace LinqToTwitter
             req.Content = new StringContent("access_token=" + BearerToken, Encoding.UTF8, "application/x-www-form-urlencoded");
 
             var handler = new HttpClientHandler();
-            handler.AutomaticDecompression = DecompressionMethods.GZip;
+            if (handler.SupportsAutomaticDecompression)
+                handler.AutomaticDecompression = DecompressionMethods.GZip;
+            if (Proxy != null && handler.SupportsProxy)
+                handler.Proxy = Proxy;
 
             using (var client = new HttpClient(handler))
             {
@@ -65,7 +68,10 @@ namespace LinqToTwitter
             req.Content = new StringContent("grant_type=client_credentials", Encoding.UTF8, "application/x-www-form-urlencoded");
 
             var handler = new HttpClientHandler();
-            handler.AutomaticDecompression = DecompressionMethods.GZip;
+            if (handler.SupportsAutomaticDecompression)
+                handler.AutomaticDecompression = DecompressionMethods.GZip;
+            if (Proxy != null && handler.SupportsProxy)
+                handler.Proxy = Proxy;
 
             using (var client = new HttpClient(handler))
             {

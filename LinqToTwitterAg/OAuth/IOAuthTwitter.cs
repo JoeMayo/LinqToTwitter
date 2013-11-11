@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 
 namespace LinqToTwitter
 {
@@ -31,6 +32,13 @@ namespace LinqToTwitter
         /// URL for Silverlight Proxy
         /// </summary>
         string ProxyUrl { get; set; }
+
+#if !SILVERLIGHT && !NETFX_CORE
+        /// <summary>
+        /// Proxy for authorization requests.
+        /// </summary>
+        WebProxy Proxy { get; set; }
+#endif
 
         string OAuthWebRequest(HttpMethod method, Request request, IDictionary<string, string> postData, string callback);
         string WebRequest(HttpMethod method, string url, string authHeader, IDictionary<string, string> postData);

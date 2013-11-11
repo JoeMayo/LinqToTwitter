@@ -60,6 +60,16 @@ namespace LinqToTwitter
                 OAuthTwitter.ProxyUrl = value;
             }
         }
+#if !SILVERLIGHT && !NETFX_CORE
+        /// <summary>
+        /// Proxy for authorization requests.
+        /// </summary>
+        public WebProxy Proxy
+        {
+            get { return OAuthTwitter.Proxy; }
+            set { OAuthTwitter.Proxy = value; }
+        }
+#endif
 
         public AuthAccessType AuthAccessType { get; set; }
 
@@ -144,14 +154,13 @@ namespace LinqToTwitter
                 request.UserAgent = UserAgent;
 
                 if (ReadWriteTimeout > TimeSpan.Zero)
-                {
                     request.ReadWriteTimeout = (int)ReadWriteTimeout.TotalMilliseconds;
-                }
 
                 if (Timeout > TimeSpan.Zero)
-                {
                     request.Timeout = (int)Timeout.TotalMilliseconds;
-                }
+
+                if (Proxy != null)
+                    request.Proxy = Proxy;
 
                 if (UseCompression)
                 {

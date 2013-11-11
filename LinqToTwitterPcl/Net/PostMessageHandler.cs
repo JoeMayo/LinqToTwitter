@@ -26,7 +26,10 @@ namespace LinqToTwitter.Net
             exe.SetAuthorizationHeader(HttpMethod.Post, url, postData, request);
             request.Headers.Add("User-Agent", exe.UserAgent);
             request.Headers.ExpectContinue = false;
-            AutomaticDecompression = DecompressionMethods.GZip;
+            if (SupportsAutomaticDecompression)
+                AutomaticDecompression = DecompressionMethods.GZip;
+            if (exe.Authorizer.Proxy != null && SupportsProxy)
+                Proxy = exe.Authorizer.Proxy;
 
             //if (exe.ReadWriteTimeout != 0)
             //    ReadWriteTimeout = exe.ReadWriteTimeout;
