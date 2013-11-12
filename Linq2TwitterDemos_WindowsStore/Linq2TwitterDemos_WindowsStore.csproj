@@ -118,9 +118,14 @@
     </Compile>
     <Compile Include="Common\BooleanNegationConverter.cs" />
     <Compile Include="Common\BooleanToVisibilityConverter.cs" />
+    <Compile Include="DataModel\SampleStreamViewModel.cs" />
+    <Compile Include="DataModel\FilterStreamViewModel.cs" />
+    <Compile Include="DataModel\JsonContent.cs" />
+    <Compile Include="DataModel\StreamViewModel.cs" />
     <Compile Include="DataModel\Tweet.cs" />
     <Compile Include="DataModel\TweetViewModel.cs" />
     <Compile Include="DataModel\TwitterCommand.cs" />
+    <Compile Include="DataModel\UserStreamViewModel.cs" />
     <Compile Include="GroupedItemsPage.xaml.cs">
       <DependentUpon>GroupedItemsPage.xaml</DependentUpon>
     </Compile>
@@ -142,6 +147,15 @@
     </Compile>
     <Compile Include="StatusDemos\TweetDemo.xaml.cs">
       <DependentUpon>TweetDemo.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="StreamDemos\FilterStreamDemo.xaml.cs">
+      <DependentUpon>FilterStreamDemo.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="StreamDemos\SampleStreamDemo.xaml.cs">
+      <DependentUpon>SampleStreamDemo.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="StreamDemos\UserStreamDemo.xaml.cs">
+      <DependentUpon>UserStreamDemo.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -184,6 +198,18 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="StatusDemos\TweetDemo.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="StreamDemos\FilterStreamDemo.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="StreamDemos\SampleStreamDemo.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="StreamDemos\UserStreamDemo.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
