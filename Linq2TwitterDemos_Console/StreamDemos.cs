@@ -8,7 +8,7 @@ using LitJson;
 
 namespace Linq2TwitterDemos_Console
 {
-    class StreamingDemos
+    class StreamDemos
     {
         internal static async Task RunAsync(TwitterContext twitterCtx)
         {
@@ -225,20 +225,20 @@ namespace Linq2TwitterDemos_Console
 
             Console.WriteLine("\nInitial Stream Users: ");
 
-            PrintUserInfo(twitterCtx, streamID);
+            await PrintUserInfoAsync(twitterCtx, streamID);
 
             ControlStream csAdd = await twitterCtx.AddSiteStreamUserAsync(new List<ulong> { 16761255 }, streamID);
             Console.WriteLine("Command Response: " + csAdd.CommandResponse);
             Console.WriteLine("\nAfter Adding a User: ");
-            PrintUserInfo(twitterCtx, streamID);
+            await PrintUserInfoAsync(twitterCtx, streamID);
 
             ControlStream csRemove = await twitterCtx.RemoveSiteStreamUserAsync(new List<ulong> { 16761255 }, streamID);
             Console.WriteLine("Command Response: " + csRemove.CommandResponse);
             Console.WriteLine("\nAfter Removing a User: ");
-            PrintUserInfo(twitterCtx, streamID);
+            await PrintUserInfoAsync(twitterCtx, streamID);
         }
 
-        static async Task PrintUserInfo(TwitterContext twitterCtx, string streamID)
+        static async Task PrintUserInfoAsync(TwitterContext twitterCtx, string streamID)
         {
             var ctrlStrm =
                 await
@@ -256,6 +256,5 @@ namespace Linq2TwitterDemos_Console
 
             Console.WriteLine();
         }
-
     }
 }

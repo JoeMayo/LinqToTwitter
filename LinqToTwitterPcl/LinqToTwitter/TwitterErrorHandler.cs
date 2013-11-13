@@ -32,19 +32,38 @@ namespace LinqToTwitter
             string responseStr = await msg.Content.ReadAsStringAsync();
 
             BuildAndThrowTwitterQueryException(responseStr, msg);
-
-            ThrowRawDataBecauseBuildAndThrowDidNotWork(responseStr, msg);
-        }
-  
-        private static void ThrowRawDataBecauseBuildAndThrowDidNotWork(string responseStr, HttpResponseMessage msg)
-        {
-            throw new TwitterQueryException(responseStr)
-            {
-                StatusCode = msg.StatusCode
-            };
         }
   
         static void BuildAndThrowTwitterQueryException(string responseStr, HttpResponseMessage msg)
+        {
+            TwitterErrorDetails error = ParseTwitterErrorMessage(responseStr);
+
+            throw new TwitterQueryException(error.Message)
+            {
+                ErrorCode = error.Code,
+                StatusCode = msg.StatusCode,
+                ReasonPhrase = msg.ReasonPhrase
+            };
+        }
+  
+        async static Task HandleUnauthorizedAsync(HttpResponseMessage msg)
+        {
+            string responseStr = await msg.Content.ReadAsStringAsync();
+
+            TwitterErrorDetails error = ParseTwitterErrorMessage(responseStr);
+
+            string message = error.Message + " - Please visit the LINQ to Twitter FAQ (at the HelpLink) for help on resolving this error.";
+
+            throw new TwitterQueryException(message)
+            {
+                HelpLink = "https://linqtotwitter.codeplex.com/wikipage?title=LINQ%20to%20Twitter%20FAQ",
+                ErrorCode = error.Code,
+                StatusCode = HttpStatusCode.Unauthorized,
+                ReasonPhrase = msg.ReasonPhrase
+            };
+        }
+
+        static TwitterErrorDetails ParseTwitterErrorMessage(string responseStr)
         {
             if (responseStr.StartsWith("{"))
             {
@@ -54,29 +73,21 @@ namespace LinqToTwitter
                 if (errors != null && errors.Count > 0)
                 {
                     var error = errors[0];
-                    error.GetValue<string>("message");
-
-                    throw new TwitterQueryException(error.GetValue<string>("message"))
+                    return new TwitterErrorDetails
                     {
-                        ErrorCode = error.GetValue<int>("code"),
-                        StatusCode = msg.StatusCode,
-                        ReasonPhrase = msg.ReasonPhrase
+                        Message = error.GetValue<string>("message"),
+                        Code = error.GetValue<int>("code")
                     };
                 }
             }
+
+            return new TwitterErrorDetails { Message = responseStr };
         }
-  
-        async static Task HandleUnauthorizedAsync(HttpResponseMessage msg)
+
+        class TwitterErrorDetails
         {
-            string responseStr = await msg.Content.ReadAsStringAsync();
-
-            string message = responseStr + " - Please visit the LINQ to Twitter FAQ (at the HelpLink) for help on resolving this error.";
-
-            throw new TwitterQueryException(message)
-                {
-                    HelpLink = "https://linqtotwitter.codeplex.com/wikipage?title=LINQ%20to%20Twitter%20FAQ",
-                    StatusCode = HttpStatusCode.Unauthorized
-                };
+            public int Code { get; set; }
+            public string Message { get; set; }
         }
     }
 }

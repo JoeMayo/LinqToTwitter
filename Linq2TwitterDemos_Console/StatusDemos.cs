@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using LinqToTwitter;
 
@@ -57,7 +56,7 @@ namespace Linq2TwitterDemos_Console
             tweets.ForEach(
                 tweet => Console.WriteLine(
                 "Name: {0}, Tweet: {1}",
-                tweet.User.Name, tweet.Text));
+                tweet.User.ScreenNameResponse, tweet.Text));
 
             var tweetey = tweets.FirstOrDefault();
 

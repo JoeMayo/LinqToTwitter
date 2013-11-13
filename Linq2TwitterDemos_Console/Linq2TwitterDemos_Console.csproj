@@ -50,10 +50,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="UserDemos.cs" />
+    <Compile Include="TrendDemos.cs" />
+    <Compile Include="SocialGraphDemos.cs" />
+    <Compile Include="SavedSearchDemos.cs" />
+    <Compile Include="RawDemos.cs" />
+    <Compile Include="ListDemos.cs" />
+    <Compile Include="HelpDemos.cs" />
+    <Compile Include="GeoDemos.cs" />
+    <Compile Include="FriendshipDemos.cs" />
+    <Compile Include="FavoriteDemos.cs" />
+    <Compile Include="DirectMessageDemos.cs" />
+    <Compile Include="BlockDemos.cs" />
+    <Compile Include="AccountDemos.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SearchDemos.cs" />
     <Compile Include="StatusDemos.cs" />
-    <Compile Include="StreamingDemos.cs" />
+    <Compile Include="StreamDemos.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">

@@ -319,7 +319,7 @@ namespace LinqToTwitter
 
             if (!parameters.ContainsKey("ScreenName") && !parameters.ContainsKey("UserID"))
             {
-                throw new ArgumentNullException("ScreenNameOrUserID", "Requires ScreenName or UserID with a comma-separated list of twitter screen names or user IDs, respectively.");
+                throw new ArgumentNullException("ScreenNameOrUserID", "Requires ScreenName or UserID.");
             }
 
             if (parameters.ContainsKey("UserID"))
