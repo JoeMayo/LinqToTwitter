@@ -67,7 +67,7 @@ namespace LinqToTwitterXUnitTests.SearchTests
         [Fact]
         public void BuildUrl_Includes_Parameters()
         {
-            const string ExpectedUrl = "https://api.twitter.com/1.1/search/tweets.json?geocode=40.757929%2C-73.985506%2C25km&lang=en&count=10&q=LINQ%20to%20Twitter&until=2011-07-04&since_id=1&result_type=popular&include_entities=false";
+            const string ExpectedUrl = "https://api.twitter.com/1.1/search/tweets.json?q=LINQ%20to%20Twitter&geocode=40.757929%2C-73.985506%2C25km&lang=en&count=10&until=2011-07-04&since_id=1&result_type=popular&include_entities=false";
             var searchReqProc = new SearchRequestProcessor<Search> { BaseUrl = "https://api.twitter.com/1.1/search/" };
             var parameters =
                 new Dictionary<string, string>
@@ -135,6 +135,24 @@ namespace LinqToTwitterXUnitTests.SearchTests
         }
 
         [Fact]
+        public void BuildUrl_Requires_Query()
+        {
+            var searchReqProc = new SearchRequestProcessor<Search> { BaseUrl = "https://api.twitter.com/1.1/search/" };
+            var parameters =
+                new Dictionary<string, string>
+                {
+                    { "Type", SearchType.Search.ToString() },
+                    { "Query", null }
+                };
+
+            ArgumentException ex =
+                Assert.Throws<ArgumentNullException>(() =>
+                    searchReqProc.BuildUrl(parameters));
+
+            Assert.Equal("Query", ex.ParamName);
+        }
+
+        [Fact]
         public void BuildUrl_Adds_True_IncludeEntities()
         {
             var searchProc = new SearchRequestProcessor<Search> { BaseUrl = "https://api.twitter.com/1.1/search/" };
@@ -142,9 +160,10 @@ namespace LinqToTwitterXUnitTests.SearchTests
                 new Dictionary<string, string>
                 {
                     { "Type", SearchType.Search.ToString() },
+                    { "Query", "LINQ to Twitter" },
                     { "IncludeEntities", true.ToString(CultureInfo.InvariantCulture) }
                 };
-            const string Expected = "https://api.twitter.com/1.1/search/tweets.json?include_entities=true";
+            const string Expected = "https://api.twitter.com/1.1/search/tweets.json?q=LINQ%20to%20Twitter&include_entities=true";
 
             Request req = searchProc.BuildUrl(parameters);
 

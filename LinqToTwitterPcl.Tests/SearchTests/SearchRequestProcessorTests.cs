@@ -68,8 +68,8 @@ namespace LinqToTwitterPcl.Tests.SearchTests
         [TestMethod]
         public void BuildUrl_Includes_Parameters()
         {
-            const string ExpectedUrl = "https://api.twitter.com/1.1/search/tweets.json?geocode=40.757929%2C-73.985506%2C25km&lang=en&count=10&q=LINQ%20to%20Twitter&until=2011-07-04&since_id=1&result_type=popular&include_entities=false";
-            var searchReqProc = new SearchRequestProcessor<Search> { BaseUrl = "https://api.twitter.com/1.1/search/" };
+            const string ExpectedUrl = "https://api.twitter.com/1.1/search/tweets.json?q=LINQ%20to%20Twitter&geocode=40.757929%2C-73.985506%2C25km&lang=en&count=10&until=2011-07-04&since_id=1&result_type=popular&include_entities=false";
+            var searchReqProc = new SearchRequestProcessor<Search> { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters =
                 new Dictionary<string, string>
                 {
@@ -123,8 +123,8 @@ namespace LinqToTwitterPcl.Tests.SearchTests
         [TestMethod]
         public void BuildUrl_Encodes_Query()
         {
-            var searchReqProc = new SearchRequestProcessor<Search> { BaseUrl = "https://api.twitter.com/1.1/search/" };
-            string expected = searchReqProc.BaseUrl + "tweets.json?q=Contains%20Space";
+            var searchReqProc = new SearchRequestProcessor<Search> { BaseUrl = "https://api.twitter.com/1.1/" };
+            string expected = searchReqProc.BaseUrl + "search/tweets.json?q=Contains%20Space";
             var parameters =
                 new Dictionary<string, string>
                 {
@@ -138,16 +138,35 @@ namespace LinqToTwitterPcl.Tests.SearchTests
         }
 
         [TestMethod]
-        public void BuildUrl_Adds_True_IncludeEntities()
+        public void BuildUrl_Requires_Query()
         {
-            var searchProc = new SearchRequestProcessor<Search> { BaseUrl = "https://api.twitter.com/1.1/search/" };
+            var searchReqProc = new SearchRequestProcessor<Search> { BaseUrl = "https://api.twitter.com/1.1/search/" };
             var parameters =
                 new Dictionary<string, string>
                 {
                     { "Type", SearchType.Search.ToString() },
+                    { "Query", null }
+                };
+
+            //ArgumentException ex =
+            //    Assert.Throws<ArgumentNullException>(() =>
+            //        searchReqProc.BuildUrl(parameters));
+
+            //Assert.Equal("Query", ex.ParamName);
+        }
+
+        [TestMethod]
+        public void BuildUrl_Adds_True_IncludeEntities()
+        {
+            var searchProc = new SearchRequestProcessor<Search> { BaseUrl = "https://api.twitter.com/1.1/" };
+            const string Expected = "https://api.twitter.com/1.1/search/tweets.json?q=LINQ%20to%20Twitter&include_entities=true";
+            var parameters =
+                new Dictionary<string, string>
+                {
+                    { "Type", SearchType.Search.ToString() },
+                    { "Query", "LINQ to Twitter"},
                     { "IncludeEntities", true.ToString(CultureInfo.InvariantCulture) }
                 };
-            const string Expected = "https://api.twitter.com/1.1/search/tweets.json?include_entities=true";
 
             Request req = searchProc.BuildUrl(parameters);
 

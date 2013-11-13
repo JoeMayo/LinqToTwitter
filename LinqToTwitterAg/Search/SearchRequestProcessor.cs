@@ -138,6 +138,17 @@ namespace LinqToTwitter
             var req = new Request(BaseUrl + url);
             var urlParams = req.RequestParameters;
 
+            if (parameters.ContainsKey("Query") && !string.IsNullOrEmpty(parameters["Query"]))
+            {
+                Query = parameters["Query"];
+
+                urlParams.Add(new QueryParameter("q", Query));
+            }
+            else
+            {
+                throw new ArgumentNullException("Query", "Query filter in where clause is required.");
+            }
+
             if (parameters.ContainsKey("GeoCode"))
             {
                 GeoCode = parameters["GeoCode"];
@@ -160,13 +171,6 @@ namespace LinqToTwitter
             {
                 Count = int.Parse(parameters["Count"]);
                 urlParams.Add(new QueryParameter("count", Count.ToString(CultureInfo.InvariantCulture)));
-            }
-
-            if (parameters.ContainsKey("Query"))
-            {
-                Query = parameters["Query"];
-
-                urlParams.Add(new QueryParameter("q", Query));
             }
 
             if (parameters.ContainsKey("Until"))
