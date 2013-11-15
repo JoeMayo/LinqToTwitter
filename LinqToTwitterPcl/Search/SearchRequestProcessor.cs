@@ -4,12 +4,7 @@ using System.Globalization;
 using System.Linq;
 
 using LinqToTwitter.Common;
-
 using LitJson;
-
-//#if SILVERLIGHT && !WINDOWS_PHONE
-//    using System.Windows.Browser;
-//#endif
 
 namespace LinqToTwitter
 {
@@ -113,16 +108,8 @@ namespace LinqToTwitter
         /// <returns>URL conforming to Twitter API</returns>
         public Request BuildUrl(Dictionary<string, string> parameters)
         {
-            const string TypeParam = "Type";
-            if (parameters == null || !parameters.ContainsKey("Type"))
-                throw new ArgumentException("You must set Type.", TypeParam);
-
-            // Joe: Why force a Type when there is only one Type?
-            //
-            // Answer: This is a LINQ to Twitter idiom and is necessary for extensibility.  
-            // If we add another member to the enum in the future and this wasn't here, 
-            // then adding this later would break a lot of code - Joe
-            Type = RequestProcessorHelper.ParseQueryEnumType<SearchType>(parameters["Type"]);
+            if (parameters.ContainsKey("Type"))
+                Type = RequestProcessorHelper.ParseQueryEnumType<SearchType>(parameters["Type"]);
 
             return BuildSearchUrlParameters(parameters, "search/tweets.json");
         }
@@ -215,7 +202,7 @@ namespace LinqToTwitter
         {
             IEnumerable<Search> search;
 
-            if (string.IsNullOrEmpty(responseJson))
+            if (string.IsNullOrWhiteSpace(responseJson))
             {
                 search = new List<Search> { new Search() };
             }

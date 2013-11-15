@@ -91,22 +91,6 @@ namespace LinqToTwitterPcl.Tests.SearchTests
 
         [TestMethod]
         [Ignore]
-        public void BuildUrl_Throws_With_Missing_Type_Parameter()
-        {
-            var searchReqProc = new SearchRequestProcessor<Search> { BaseUrl = "https://api.twitter.com/1.1/search/" };
-            var parameters = new Dictionary<string, string> { };
-
-            //ArgumentException ex =
-            //    Assert.Throws<ArgumentException>(() =>
-            //    {
-            //        searchReqProc.BuildUrl(parameters);
-            //    });
-
-            //Assert.AreEqual("Type", ex.ParamName);
-        }
-
-        [TestMethod]
-        [Ignore]
         public void BuildUrl_Throws_When_Parameters_Null()
         {
             var searchReqProc = new SearchRequestProcessor<Search> { BaseUrl = "https://api.twitter.com/1.1/search/" };

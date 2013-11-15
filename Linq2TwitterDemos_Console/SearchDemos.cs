@@ -41,7 +41,7 @@ namespace Linq2TwitterDemos_Console
                 await
                 (from search in twitterCtx.Search
                  where search.Type == SearchType.Search &&
-                       search.Query == "LINQ to Twitter"
+                       search.Query == "\"LINQ to Twitter\""
                  select search)
                 .SingleOrDefaultAsync();
 
