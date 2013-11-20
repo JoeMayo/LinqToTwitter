@@ -18,7 +18,7 @@ namespace LinqToTwitter.Net
 
             var result = new StringBuilder();
 
-            if (string.IsNullOrEmpty(value))
+            if (string.IsNullOrWhiteSpace(value))
                 return string.Empty;
 
             foreach (char symbol in value)
@@ -36,7 +36,7 @@ namespace LinqToTwitter.Net
                     string symbolString = symbol.ToString();
                     var encoded = Uri.EscapeDataString(symbolString).ToUpper();
 
-                    if (!string.IsNullOrEmpty(encoded))
+                    if (!string.IsNullOrWhiteSpace(encoded))
                     {
                         result.Append(encoded);
                     }

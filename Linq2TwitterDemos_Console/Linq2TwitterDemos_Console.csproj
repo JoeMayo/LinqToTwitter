@@ -52,7 +52,6 @@
   <ItemGroup>
     <Compile Include="UserDemos.cs" />
     <Compile Include="TrendDemos.cs" />
-    <Compile Include="SocialGraphDemos.cs" />
     <Compile Include="SavedSearchDemos.cs" />
     <Compile Include="RawDemos.cs" />
     <Compile Include="ListDemos.cs" />
@@ -80,6 +79,10 @@
       <Project>{caaff164-a681-4183-bb83-a07b668f7ffc}</Project>
       <Name>LinqToTwitterPcl</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Images\200xColor_2.png" />
+    <Content Include="Images\WP_000003.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.10\tools\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.10\tools\Microsoft.Bcl.Build.targets')" />

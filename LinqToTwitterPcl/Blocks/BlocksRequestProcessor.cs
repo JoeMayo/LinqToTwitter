@@ -82,13 +82,11 @@ namespace LinqToTwitter
                        "Cursor"
                    });
 
-            var parameters = paramFinder.Parameters;
-
-            return parameters;
+            return paramFinder.Parameters;
         }
 
         /// <summary>
-        /// builds url based on input parameters
+        /// Builds url based on input parameters.
         /// </summary>
         /// <param name="parameters">criteria for url segments and parameters</param>
         /// <returns>URL conforming to Twitter API</returns>
@@ -136,18 +134,7 @@ namespace LinqToTwitter
         /// <returns>base url + show segment</returns>
         Request BuildListUrl(Dictionary<string, string> parameters)
         {
-            return BuildBlockingUrlParameters(parameters, "blocks/list.json");
-        }
-
-        /// <summary>
-        /// appends parameters for Blocking queries
-        /// </summary>
-        /// <param name="parameters">list of parameters from expression tree</param>
-        /// <param name="url">base url</param>
-        /// <returns>base url + parameters</returns>
-        Request BuildBlockingUrlParameters(Dictionary<string, string> parameters, string url)
-        {
-            var req = new Request(BaseUrl + url);
+            var req = new Request(BaseUrl + "blocks/list.json");
             var urlParams = req.RequestParameters;
 
             if (parameters.ContainsKey("Page"))
@@ -201,7 +188,7 @@ namespace LinqToTwitter
                 Cursor = Cursor
             };
 
-            if (string.IsNullOrEmpty(responseJson))
+            if (string.IsNullOrWhiteSpace(responseJson))
             {
                 blocks.Users = new List<User>();
             }

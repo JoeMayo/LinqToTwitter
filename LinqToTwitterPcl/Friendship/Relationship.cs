@@ -21,26 +21,32 @@ namespace LinqToTwitter
             RetweetsWanted = relJson.GetValue<bool>("want_retweets");
             AllReplies = relJson.GetValue<bool>("all_replies");
             MarkedSpam = relJson.GetValue<bool>("marked_spam");
-            FollowedBy = relJson.GetValue<bool>("followed_by");
-            ID = relJson.GetValue<string>("id_str");
+            ID = relJson.GetValue<ulong>("id");
             Blocking = relJson.GetValue<bool>("blocking");
             NotificationsEnabled = relJson.GetValue<bool>("notifications_enabled");
-            Following = relJson.GetValue<bool>("following");
             CanDm = relJson.GetValue<bool>("can_dm");
+
             var connections = relJson.GetValue<JsonData>("connections");
             if (connections != null)
-            {
                 Connections =
                     (from JsonData connection in connections
-                        select connection.ToString())
-                    .ToList(); 
-            }
+                     select connection.ToString())
+                    .ToList();
+            else
+                Connections = new List<string>();
+
+            FollowedBy = 
+                relJson.GetValue<bool>("followed_by") ||
+                Connections.Contains("followed_by");
+            Following = 
+                relJson.GetValue<bool>("following") ||
+                Connections.Contains("following");
         }
 
         /// <summary>
         /// User ID
         /// </summary>
-        public string ID { get; set; }
+        public ulong ID { get; set; }
 
         /// <summary>
         /// User's screen name

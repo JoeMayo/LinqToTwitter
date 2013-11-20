@@ -9,7 +9,7 @@ using LitJson;
 namespace LinqToTwitter
 {
     /// <summary>
-    /// processes Twitter Direct Messages
+    /// Processes Twitter Direct Messages.
     /// </summary>
     public class DirectMessageRequestProcessor<T> :
         IRequestProcessor<T>,
@@ -60,7 +60,7 @@ namespace LinqToTwitter
         /// <summary>
         /// Don't include statuses in response
         /// </summary>
-        public bool SkipStatus { get; set; }
+        internal bool SkipStatus { get; set; }
 
         /// <summary>
         /// extracts parameters from lambda
@@ -114,7 +114,7 @@ namespace LinqToTwitter
             }
         }
 
-        private Request BuildShowUrl(Dictionary<string, string> parameters)
+        Request BuildShowUrl(Dictionary<string, string> parameters)
         {
             const string IdParam = "ID";
             if (parameters == null || !parameters.ContainsKey(IdParam))
@@ -140,7 +140,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">parameters to add</param>
         /// <returns>new url with parameters</returns>
-        private Request BuildSentToUrl(Dictionary<string, string> parameters)
+        Request BuildSentToUrl(Dictionary<string, string> parameters)
         {
             return BuildSentUrlParameters(parameters, "direct_messages.json");
         }
@@ -150,18 +150,18 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">parameters to add</param>
         /// <returns>new url with parameters</returns>
-        private Request BuildSentByUrl(Dictionary<string, string> parameters)
+        Request BuildSentByUrl(Dictionary<string, string> parameters)
         {
             return BuildSentUrlParameters(parameters, "direct_messages/sent.json");
         }
 
         /// <summary>
-        /// common code for building parameter list for both sent by and sent to urls
+        /// Common code for building parameter list for both sent by and sent to urls.
         /// </summary>
         /// <param name="parameters">parameters to add</param>
         /// <param name="url">url to start with</param>
         /// <returns>new url with parameters</returns>
-        private Request BuildSentUrlParameters(Dictionary<string, string> parameters, string url)
+        Request BuildSentUrlParameters(Dictionary<string, string> parameters, string url)
         {
             var req = new Request(BaseUrl + url);
             var urlParams = req.RequestParameters;
@@ -215,7 +215,7 @@ namespace LinqToTwitter
         /// <returns>List of DirectMessage</returns>
         public virtual List<T> ProcessResults(string responseJson)
         {
-            if (string.IsNullOrEmpty(responseJson)) return new List<T>();
+            if (string.IsNullOrWhiteSpace(responseJson)) return new List<T>();
 
             var dmJson = JsonMapper.ToObject(responseJson);
 

@@ -98,7 +98,7 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
         [TestMethod]
         public async Task DestroyDirectMessage_Returns_Deleted_DM()
         {
-            const string Id = "1";
+            const ulong Id = 1;
             var ctx = InitializeTwitterContext();
 
             DirectMessage actual = await ctx.DestroyDirectMessageAsync(Id, true);
@@ -109,7 +109,7 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
         [TestMethod]
         public async Task DestroyDirectMessage_Constructs_Url()
         {
-            const string Id = "1";
+            const ulong Id = 1;
             var ctx = InitializeTwitterContext();
 
             ctx.DestroyDirectMessageAsync(Id, true);

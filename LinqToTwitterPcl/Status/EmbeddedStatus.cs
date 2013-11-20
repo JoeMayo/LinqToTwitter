@@ -20,7 +20,7 @@ namespace LinqToTwitter
             Height = embeddedStatusJson.GetValue<int>("height");
             Width = embeddedStatusJson.GetValue<int>("width");
             string cacheAgeStr = embeddedStatusJson.GetValue<string>("cache_age");
-            if (!string.IsNullOrEmpty(cacheAgeStr)) 
+            if (!string.IsNullOrWhiteSpace(cacheAgeStr)) 
                 CacheAge = ulong.Parse(cacheAgeStr);
         }
 

@@ -59,7 +59,7 @@ namespace LinqToTwitterPcl.Tests.FriendshipTests
             Assert.IsNotNull(tgtRel);
             Assert.AreEqual("JoeMayo", tgtRel.ScreenName);
             Assert.IsTrue(tgtRel.FollowedBy);
-            Assert.AreEqual("15411837", tgtRel.ID);
+            Assert.AreEqual(15411837ul, tgtRel.ID);
             Assert.IsFalse(tgtRel.Following);
             var srcRel = friend.SourceRelationship;
             Assert.IsNotNull(srcRel);
@@ -68,7 +68,7 @@ namespace LinqToTwitterPcl.Tests.FriendshipTests
             Assert.IsFalse(srcRel.AllReplies);
             Assert.IsFalse(srcRel.MarkedSpam);
             Assert.IsFalse(srcRel.FollowedBy);
-            Assert.AreEqual("16761255", srcRel.ID);
+            Assert.AreEqual(16761255ul, srcRel.ID);
             Assert.IsFalse((bool)srcRel.Blocking);
             Assert.IsTrue((bool)srcRel.NotificationsEnabled);
             Assert.IsTrue(srcRel.Following);
@@ -89,8 +89,8 @@ namespace LinqToTwitterPcl.Tests.FriendshipTests
             Assert.IsNotNull(idList);
             var cursor = idList.CursorMovement;
             Assert.IsNotNull(cursor);
-            Assert.AreEqual("2", cursor.Previous);
-            Assert.AreEqual("1", cursor.Next);
+            Assert.AreEqual(2, cursor.Previous);
+            Assert.AreEqual(1, cursor.Next);
             var ids = idList.IDs;
             Assert.IsNotNull(ids);
             Assert.IsTrue(ids.Any());
@@ -133,7 +133,7 @@ namespace LinqToTwitterPcl.Tests.FriendshipTests
         [TestMethod]
         public void ProcessResults_Returns_Empty_Collection_When_Empty_Results()
         {
-            var reqProc = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "http://api.twitter.com/1/" };
+            var reqProc = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "http://api.twitter.com/1.1/" };
 
             List<Friendship> friendships = reqProc.ProcessResults(string.Empty);
 
@@ -145,7 +145,7 @@ namespace LinqToTwitterPcl.Tests.FriendshipTests
         {
             var friendReqProc = new FriendshipRequestProcessor<Friendship> { Type = FriendshipType.FriendsList };
 
-            List<Friendship> friendshipList = friendReqProc.ProcessResults(FreindsFollowersResponse);
+            List<Friendship> friendshipList = friendReqProc.ProcessResults(FriendsFollowersResponse);
 
             Assert.IsNotNull(friendshipList);
             Assert.IsNotNull(friendshipList.SingleOrDefault());
@@ -162,11 +162,11 @@ namespace LinqToTwitterPcl.Tests.FriendshipTests
         [TestMethod]
         public void ProcessResults_Retains_Original_Input_Params()
         {
-            const string SrcUsrID = "1";
+            const ulong SrcUsrID = 1;
             const string SrcScrNm = "JoeMayo";
-            const string TgtUsrID = "2";
+            const ulong TgtUsrID = 2;
             const string TgtScrNm = "MayMayo";
-            const string Cursor = "123";
+            const long Cursor = 123;
             const string ScrNm = "JoeMayo,MayMayo";
             const string UsrID = "1,2";
             const bool SkipStatus = true;
@@ -218,19 +218,20 @@ namespace LinqToTwitterPcl.Tests.FriendshipTests
         [TestMethod]
         public void GetParameters_Returns_Parameters()
         {
-            FriendshipRequestProcessor<Friendship> friendReqProc = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "https://api.twitter.com/1/" };
+            var friendReqProc = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "https://api.twitter.com/1.1/" };
             Expression<Func<Friendship, bool>> expression =
                 friend =>
                          friend.Type == FriendshipType.Show &&
-                         friend.SourceUserID == "1" &&
+                         friend.SourceUserID == 1 &&
                          friend.SourceScreenName == "Name" &&
-                         friend.TargetUserID == "2" &&
+                         friend.TargetUserID == 2 &&
                          friend.TargetScreenName == "Name" &&
-                         friend.Cursor == "-1" &&
+                         friend.Cursor == -1 &&
                          friend.ScreenName == "twitter,joemayo" &&
                          friend.UserID == "123,456" &&
                          friend.SkipStatus == true &&
-                         friend.IncludeUserEntities == true;
+                         friend.IncludeUserEntities == true &&
+                         friend.Count == 7;
             var lambdaExpression = expression as LambdaExpression;
 
             var queryParams = friendReqProc.GetParameters(lambdaExpression);
@@ -265,12 +266,15 @@ namespace LinqToTwitterPcl.Tests.FriendshipTests
             Assert.IsTrue(
                 queryParams.Contains(
                     new KeyValuePair<string, string>("IncludeUserEntities", "True")));
+            Assert.IsTrue(
+                queryParams.Contains(
+                    new KeyValuePair<string, string>("Count", "7")));
         }
 
         [TestMethod]
         public void BuildUrl_Constructs_Show_Url()
         {
-            FriendshipRequestProcessor<Friendship> friendReqProc = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "https://api.twitter.com/1/" };
+            var friendReqProc = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "https://api.twitter.com/1.1/" };
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                 {
@@ -280,7 +284,7 @@ namespace LinqToTwitterPcl.Tests.FriendshipTests
                     { "TargetUserID", "456" },
                     { "TargetScreenName", "LinqToTweeter" }
                 };
-            string expected = "https://api.twitter.com/1/friendships/show.json?source_id=123&source_screen_name=JoeMayo&target_id=456&target_screen_name=LinqToTweeter";
+            string expected = "https://api.twitter.com/1.1/friendships/show.json?source_id=123&source_screen_name=JoeMayo&target_id=456&target_screen_name=LinqToTweeter";
 
             Request req = friendReqProc.BuildUrl(parameters);
 
@@ -291,7 +295,7 @@ namespace LinqToTwitterPcl.Tests.FriendshipTests
         [Ignore]
         public void BuildUrl_Throws_Without_Source_Url()
         {
-            FriendshipRequestProcessor<Friendship> friendReqProc = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "https://api.twitter.com/1/" };
+            var friendReqProc = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "https://api.twitter.com/1.1/" };
             Dictionary<string, string> parameters =
                 new Dictionary<string, string>
                 {
@@ -307,7 +311,7 @@ namespace LinqToTwitterPcl.Tests.FriendshipTests
         [Ignore]
         public void BuildUrl_Throws_Without_FriendsReqProcUrl()
         {
-            var friendReqProc = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "https://api.twitter.com/1/" };
+            var friendReqProc = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
             {
                 { "Type", FriendshipType.Show.ToString() },
@@ -321,12 +325,12 @@ namespace LinqToTwitterPcl.Tests.FriendshipTests
         [TestMethod]
         public void BuildUrl_Creates_No_Retweet_Url()
         {
-            var friendReqProc = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "http://api.twitter.com/" };
+            var friendReqProc = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "http://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
             {
                 { "Type", FriendshipType.NoRetweetIDs.ToString() }
             };
-            string expected = "http://api.twitter.com/friendships/no_retweet_ids.json";
+            string expected = "http://api.twitter.com/1.1/friendships/no_retweets/ids.json";
 
             Request req = friendReqProc.BuildUrl(parameters);
 
@@ -337,7 +341,7 @@ namespace LinqToTwitterPcl.Tests.FriendshipTests
         [Ignore]
         public void BuildUrl_Throws_When_Missing_Type()
         {
-            var friendReqProc = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "https://api.twitter.com/1/" };
+            var friendReqProc = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string> { };
 
             //var ex = Assert.Throws<ArgumentException>(() => friendReqProc.BuildUrl(parameters));
@@ -349,7 +353,7 @@ namespace LinqToTwitterPcl.Tests.FriendshipTests
         [Ignore]
         public void BuildUrl_Throws_On_Null_Parameters()
         {
-            var friendReqProc = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "https://api.twitter.com/1/" };
+            var friendReqProc = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "https://api.twitter.com/1.1/" };
             Dictionary<string, string> parameters = null;
 
             //var ex = Assert.Throws<ArgumentException>(() => friendReqProc.BuildUrl(parameters));
@@ -360,12 +364,12 @@ namespace LinqToTwitterPcl.Tests.FriendshipTests
         [TestMethod]
         public void BuildUrl_Constructs_Incoming_Url()
         {
-            var friendReqProc = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "https://api.twitter.com/1/" };
+            var friendReqProc = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
             {
                 { "Type", FriendshipType.Incoming.ToString() }
             };
-            string expected = "https://api.twitter.com/1/friendships/incoming.json";
+            string expected = "https://api.twitter.com/1.1/friendships/incoming.json";
 
             Request req = friendReqProc.BuildUrl(parameters);
 
@@ -375,13 +379,13 @@ namespace LinqToTwitterPcl.Tests.FriendshipTests
         [TestMethod]
         public void BuildUrl_With_Cursor_Param_Constructs_Incoming_Url()
         {
-            var friendReqProc = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "https://api.twitter.com/1/" };
+            var friendReqProc = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
             {
                 { "Type", FriendshipType.Incoming.ToString() },
                 { "Cursor", "-1" }
             };
-            string expected = "https://api.twitter.com/1/friendships/incoming.json?cursor=-1";
+            string expected = "https://api.twitter.com/1.1/friendships/incoming.json?cursor=-1";
 
             Request req = friendReqProc.BuildUrl(parameters);
 
@@ -391,12 +395,12 @@ namespace LinqToTwitterPcl.Tests.FriendshipTests
         [TestMethod]
         public void BuildUrl_Constructs_Outgoing_Url()
         {
-            var friendReqProc = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "https://api.twitter.com/1/" };
+            var friendReqProc = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
             {
                 { "Type", FriendshipType.Outgoing.ToString() }
             };
-            string expected = "https://api.twitter.com/1/friendships/outgoing.json";
+            string expected = "https://api.twitter.com/1.1/friendships/outgoing.json";
 
             Request req = friendReqProc.BuildUrl(parameters);
 
@@ -406,13 +410,13 @@ namespace LinqToTwitterPcl.Tests.FriendshipTests
         [TestMethod]
         public void BuildUrl_With_Cursor_Param_Constructs_Outgoing_Url()
         {
-            var friendReqProc = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "https://api.twitter.com/1/" };
+            var friendReqProc = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
             {
                 { "Type", FriendshipType.Outgoing.ToString() },
                 { "Cursor", "-1" }
             };
-            string expected = "https://api.twitter.com/1/friendships/outgoing.json?cursor=-1";
+            string expected = "https://api.twitter.com/1.1/friendships/outgoing.json?cursor=-1";
 
             Request req = friendReqProc.BuildUrl(parameters);
 
@@ -422,13 +426,13 @@ namespace LinqToTwitterPcl.Tests.FriendshipTests
         [TestMethod]
         public void BuildLookupUrl_Returns_Url_For_ScreenName()
         {
-            var friendReqProc = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "https://api.twitter.com/1/" };
+            var friendReqProc = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
             {
                 { "Type", FriendshipType.Lookup.ToString() },
                 { "ScreenName", "twitter,joemayo" }
             };
-            string expected = "https://api.twitter.com/1/friendships/lookup.json?screen_name=twitter%2Cjoemayo";
+            string expected = "https://api.twitter.com/1.1/friendships/lookup.json?screen_name=twitter%2Cjoemayo";
 
             Request req = friendReqProc.BuildUrl(parameters);
 
@@ -438,13 +442,13 @@ namespace LinqToTwitterPcl.Tests.FriendshipTests
         [TestMethod]
         public void BuildLookupUrl_Returns_Url_For_UserID()
         {
-            var friendReqProc = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "https://api.twitter.com/1/" };
+            var friendReqProc = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
             {
                 { "Type", FriendshipType.Lookup.ToString() },
                 { "UserID", "123,456" }
             };
-            string expected = "https://api.twitter.com/1/friendships/lookup.json?user_id=123%2C456";
+            string expected = "https://api.twitter.com/1.1/friendships/lookup.json?user_id=123%2C456";
 
             Request req = friendReqProc.BuildUrl(parameters);
 
@@ -455,7 +459,7 @@ namespace LinqToTwitterPcl.Tests.FriendshipTests
         [Ignore]
         public void BuildLookupUrl_Requires_ScreenName_Or_UserID()
         {
-            var friendReqProc = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "https://api.twitter.com/1/" };
+            var friendReqProc = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
             {
                 { "Type", FriendshipType.Lookup.ToString() },
@@ -470,14 +474,14 @@ namespace LinqToTwitterPcl.Tests.FriendshipTests
         [TestMethod]
         public void BuildUrl_Constructs_FriendsList_Url()
         {
-            const string ExpectedUrl = "https://api.twitter.com/1.1/friends/list.json?user_id=1&screen_name=abc&cursor=def&skip_status=true&include_user_entities=false";
+            const string ExpectedUrl = "https://api.twitter.com/1.1/friends/list.json?user_id=1&screen_name=abc&cursor=234&skip_status=true&include_user_entities=false";
             var friendReqProc = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
             {
                 { "Type", FriendshipType.FriendsList.ToString() },
                 { "UserID", "1" },
                 { "ScreenName", "abc" },
-                { "Cursor", "def" },
+                { "Cursor", "234" },
                 { "SkipStatus", true.ToString() },
                 { "IncludeUserEntities", false.ToString() }
             };
@@ -507,14 +511,14 @@ namespace LinqToTwitterPcl.Tests.FriendshipTests
         [TestMethod]
         public void BuildUrl_Constructs_FollowersList_Url()
         {
-            const string ExpectedUrl = "https://api.twitter.com/1.1/followers/list.json?user_id=1&screen_name=abc&cursor=def&skip_status=true&include_user_entities=false";
+            const string ExpectedUrl = "https://api.twitter.com/1.1/followers/list.json?user_id=1&screen_name=abc&cursor=234&skip_status=true&include_user_entities=false";
             var friendReqProc = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
             {
                 { "Type", FriendshipType.FollowersList.ToString() },
                 { "UserID", "1" },
                 { "ScreenName", "abc" },
-                { "Cursor", "def" },
+                { "Cursor", "234" },
                 { "SkipStatus", true.ToString() },
                 { "IncludeUserEntities", false.ToString() }
             };
@@ -539,6 +543,61 @@ namespace LinqToTwitterPcl.Tests.FriendshipTests
             //var ex = Assert.Throws<ArgumentNullException>(() => friendReqProc.BuildUrl(parameters));
 
             //Assert.AreEqual("ScreenNameOrUserID", ex.ParamName);
+        }
+
+        [TestMethod]
+        public void BuildUrl_Constructs_FollowerIDs_Url()
+        {
+            const string ExpectedUrl = "https://api.twitter.com/1.1/followers/ids.json?user_id=123&screen_name=456&cursor=1&count=1";
+            var friendReqProc = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "https://api.twitter.com/1.1/" };
+            var parameters = new Dictionary<string, string>
+                    {
+                        { "Type", ((int)FriendshipType.FollowerIDs).ToString() },
+                        { "UserID", "123" },
+                        { "ScreenName", "456" },
+                        { "Cursor", "1" },
+                        { "Count", "1" }
+                    };
+
+            Request req = friendReqProc.BuildUrl(parameters);
+
+            Assert.AreEqual(ExpectedUrl, req.FullUrl);
+        }
+
+        [TestMethod]
+        public void BuildUrl_Constructs_FriendIDs_Url()
+        {
+            const string ExpectedUrl = "https://api.twitter.com/1.1/friends/ids.json?user_id=123&screen_name=456&cursor=1&count=1";
+            var friendReqProc = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "https://api.twitter.com/1.1/" };
+            var parameters = new Dictionary<string, string>
+                    {
+                        { "Type", ((int)FriendshipType.FriendIDs).ToString() },
+                        { "UserID", "123" },
+                        { "ScreenName", "456" },
+                        { "Cursor", "1" },
+                        { "Count", "1" }
+                    };
+
+            Request req = friendReqProc.BuildUrl(parameters);
+
+            Assert.AreEqual(ExpectedUrl, req.FullUrl);
+        }
+
+        [TestMethod]
+        public void BuildUrl_Defaults_Cursor_When_Not_Specified()
+        {
+            const string ExpectedUrl = "https://api.twitter.com/1.1/friends/ids.json?screen_name=JoeMayo&cursor=-1";
+            var friendReqProc = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "https://api.twitter.com/1.1/" };
+            Dictionary<string, string> parameters =
+                new Dictionary<string, string>
+                    {
+                        { "Type", ((int)FriendshipType.FriendIDs).ToString() },
+                        { "ScreenName", "JoeMayo" },
+                    };
+
+            Request req = friendReqProc.BuildUrl(parameters);
+
+            Assert.AreEqual(ExpectedUrl, req.FullUrl);
         }
 
         const string LookupResponse = @"[
@@ -593,7 +652,7 @@ namespace LinqToTwitterPcl.Tests.FriendshipTests
 241594327
 ]";
 
-        const string FreindsFollowersResponse = @"{
+        const string FriendsFollowersResponse = @"{
    ""users"":[
       {
          ""id"":93604443,
@@ -870,8 +929,8 @@ namespace LinqToTwitterPcl.Tests.FriendshipTests
          ""notifications"":false
       }
    ],
-   ""next_cursor"":1412318031598699496,
-   ""next_cursor_str"":""1412318031598699496"",
+   ""next_cursor"":2,
+   ""next_cursor_str"":""1"",
    ""previous_cursor"":0,
    ""previous_cursor_str"":""0""
 }";

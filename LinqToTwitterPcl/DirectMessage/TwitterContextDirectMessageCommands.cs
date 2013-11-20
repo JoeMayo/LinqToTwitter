@@ -8,24 +8,18 @@ namespace LinqToTwitter
     public partial class TwitterContext
     {
         /// <summary>
-        /// sends a new direct message to specified userr
+        /// Sends a new direct message to specified user.
         /// </summary>
-        /// <param name="ctx">Twitter Context</param>
-        /// <param name="user">UserID or ScreenName of user to send to</param>
-        /// <param name="text">Direct message contents</param>
-        /// <param name="wrapLinks">Shorten links using Twitter's t.co wrapper</param>
-        /// <returns>Direct message element</returns>
-        public async Task<DirectMessage> NewDirectMessageAsync(string user, string text)
+        /// <param name="screenName">ScreenName of user to send to.</param>
+        /// <param name="text">Direct message contents.</param>
+        /// <returns>Direct message element.</returns>
+        public async Task<DirectMessage> NewDirectMessageAsync(string screenName, string text)
         {
-            if (string.IsNullOrEmpty(user))
-            {
-                throw new ArgumentException("user is a required parameter.", "user");
-            }
+            if (string.IsNullOrWhiteSpace(screenName))
+                throw new ArgumentException("screenName is a required parameter.", "screenName");
 
-            if (string.IsNullOrEmpty(text))
-            {
+            if (string.IsNullOrWhiteSpace(text))
                 throw new ArgumentException("text is a required parameter.", "text");
-            }
 
             var newUrl = BaseUrl + "direct_messages/new.json";
 
@@ -36,7 +30,7 @@ namespace LinqToTwitter
                     newUrl,
                     new Dictionary<string, string>
                     {
-                        {"user", user},
+                        {"screen_name", screenName},
                         {"text", text}
                     });
 
@@ -44,18 +38,43 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// deletes a direct message
+        /// Sends a new direct message to specified user.
+        /// </summary>
+        /// <param name="userID">User ID of user to send to.</param>
+        /// <param name="text">Direct message contents.</param>
+        /// <returns>Direct message element.</returns>
+        public async Task<DirectMessage> NewDirectMessageAsync(ulong userID, string text)
+        {
+            if (userID == 0)
+                throw new ArgumentException("userID must be set.", "userID");
+
+            if (string.IsNullOrWhiteSpace(text))
+                throw new ArgumentException("text is a required parameter.", "text");
+
+            var newUrl = BaseUrl + "direct_messages/new.json";
+
+            var reqProc = new DirectMessageRequestProcessor<DirectMessage>();
+
+            var resultsJson =
+                await TwitterExecutor.PostToTwitterAsync<DirectMessage>(
+                    newUrl,
+                    new Dictionary<string, string>
+                    {
+                        {"user_id", userID.ToString()},
+                        {"text", text}
+                    });
+
+            return reqProc.ProcessActionResult(resultsJson, DirectMessageType.Show);
+        }
+
+        /// <summary>
+        /// Deletes a direct message.
         /// </summary>
         /// <param name="id">id of direct message</param>
         /// <param name="includeEntites">Set to false to prevent entities from being included (default: true).</param>
         /// <returns>direct message element</returns>
-        public async Task<DirectMessage> DestroyDirectMessageAsync(string id, bool includeEntites)
+        public async Task<DirectMessage> DestroyDirectMessageAsync(ulong id, bool includeEntites)
         {
-            if (string.IsNullOrEmpty(id))
-            {
-                throw new ArgumentException("id is a required parameter.", "id");
-            }
-
             var destroyUrl = BaseUrl + "direct_messages/destroy.json";
 
             var reqProc = new DirectMessageRequestProcessor<DirectMessage>();
@@ -65,7 +84,7 @@ namespace LinqToTwitter
                     destroyUrl,
                     new Dictionary<string, string>
                     {
-                        {"id", id},
+                        {"id", id.ToString()},
                         {"include_entities", includeEntites.ToString().ToLower()}
                     });
 

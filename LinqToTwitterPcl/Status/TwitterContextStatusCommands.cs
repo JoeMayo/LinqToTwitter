@@ -74,7 +74,7 @@ namespace LinqToTwitter
                         {"possibly_sensitive", possiblySensitive ? true.ToString() : null },
                         {"lat", latitude == NoCoordinate ? null : latitude.ToString(Culture.US) },
                         {"long", longitude == NoCoordinate ? null : longitude.ToString(Culture.US) },
-                        {"place_id", string.IsNullOrEmpty(placeID) ? null : placeID },
+                        {"place_id", string.IsNullOrWhiteSpace(placeID) ? null : placeID },
                         {"display_coordinates", displayCoordinates ? true.ToString() : null },
                         {"in_reply_to_status_id", inReplyToStatusID == NoReply ? null : inReplyToStatusID.ToString(CultureInfo.InvariantCulture)}
                     },

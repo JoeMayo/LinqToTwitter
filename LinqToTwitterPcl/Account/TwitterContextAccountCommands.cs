@@ -45,14 +45,12 @@ namespace LinqToTwitter
         {
             var accountUrl = BaseUrl + "account/update_profile_colors.json";
 
-            if (string.IsNullOrEmpty(background) &&
-                string.IsNullOrEmpty(text) &&
-                string.IsNullOrEmpty(link) &&
-                string.IsNullOrEmpty(sidebarFill) &&
-                string.IsNullOrEmpty(sidebarBorder))
-            {
+            if (string.IsNullOrWhiteSpace(background) &&
+                string.IsNullOrWhiteSpace(text) &&
+                string.IsNullOrWhiteSpace(link) &&
+                string.IsNullOrWhiteSpace(sidebarFill) &&
+                string.IsNullOrWhiteSpace(sidebarBorder))
                 throw new ArgumentException("At least one of the colors (background, text, link, sidebarFill, or sidebarBorder) must be provided as arguments, but none are specified.", NoInputParam);
-            }
 
             var reqProc = new UserRequestProcessor<User>();
 
@@ -91,12 +89,8 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// sends an image file to Twitter to replace user image
+        /// Sends an image file to Twitter to replace user image.
         /// </summary>
-        /// <remarks>
-        /// You can only run this method with a period of time between executions; 
-        /// otherwise you get WebException errors from Twitter
-        /// </remarks>
         /// <param name="image">byte array of image to upload</param>
         /// <param name="fileName">name to pass to Twitter for the file</param>
         /// <param name="imageType">type of image: must be one of jpg, gif, or png</param>
@@ -108,19 +102,13 @@ namespace LinqToTwitter
             var accountUrl = BaseUrl + "account/update_profile_image.json";
 
             if (image == null || image.Length == 0)
-            {
                 throw new ArgumentException("image is required.", "image");
-            }
 
-            if (string.IsNullOrEmpty(fileName))
-            {
+            if (string.IsNullOrWhiteSpace(fileName))
                 throw new ArgumentException("fileName is required.", "fileName");
-            }
 
-            if (string.IsNullOrEmpty(imageType))
-            {
+            if (string.IsNullOrWhiteSpace(imageType))
                 throw new ArgumentException("imageType is required.", "imageType");
-            }
 
             var reqProc = new UserRequestProcessor<User>();
             var parameters = new Dictionary<string, string>
@@ -131,8 +119,7 @@ namespace LinqToTwitter
 
             string name = "image";
             string imageMimeType = "image/" + imageType;
-            //var resultsJson =
-            //    await TwitterExecutor.PostMediaAsync<User>(accountUrl, parameters, image, fileName, imageType, reqProc);
+
             var resultsJson = await TwitterExecutor.PostMediaAsync(accountUrl, parameters, image, name, fileName, imageMimeType);
 
             return reqProc.ProcessActionResult(resultsJson, UserAction.SingleUser);
@@ -154,14 +141,13 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// sends an image file to Twitter to replace background image
+        /// Sends an image file to Twitter to replace background image.
         /// </summary>
         /// <param name="image">full path to file, including file name</param>
         /// <param name="fileName">name to pass to Twitter for the file</param>
         /// <param name="imageType">type of image: must be one of jpg, gif, or png</param>
         /// <param name="tile">Tile image across background.</param>
         /// <param name="use">Whether to use uploaded background image or not</param>
-        /// <param name="callback">Async Callback used in Silverlight queries</param>
         /// <param name="includeEntities">Set to false to not include entities. (default: true)</param>
         /// <param name="skipStatus">Don't include status with response.</param>
         /// <returns>User with new image info</returns>
@@ -170,19 +156,13 @@ namespace LinqToTwitter
             var accountUrl = BaseUrl + "account/update_profile_background_image.json";
 
             if (image == null || image.Length == 0)
-            {
                 throw new ArgumentException("image is required.", "image");
-            }
 
-            if (string.IsNullOrEmpty(fileName))
-            {
+            if (string.IsNullOrWhiteSpace(fileName))
                 throw new ArgumentException("fileName is required.", "fileName");
-            }
 
-            if (string.IsNullOrEmpty(imageType))
-            {
+            if (string.IsNullOrWhiteSpace(imageType))
                 throw new ArgumentException("imageType is required.", "imageType");
-            }
 
             var parameters = new Dictionary<string, string>
             {
@@ -199,13 +179,11 @@ namespace LinqToTwitter
             var reqProc = new UserRequestProcessor<User>();
 
             string name = "image";
-            string imageMimeType = "image/" + image;
-            //var resultsJson =
-            //    await TwitterExecutor.PostTwitterImageAsync(accountUrl, parameters, image, fileName, imageType, reqProc);
+            string imageMimeType = "image/" + imageType;
+
             var resultsJson = await TwitterExecutor.PostMediaAsync(accountUrl, parameters, image, name, fileName, imageMimeType);
 
-            User user = reqProc.ProcessActionResult(resultsJson, UserAction.SingleUser);
-            return user;
+            return reqProc.ProcessActionResult(resultsJson, UserAction.SingleUser);
         }
 
         /// <summary>
@@ -236,33 +214,23 @@ namespace LinqToTwitter
         {
             var accountUrl = BaseUrl + "account/update_profile.json";
 
-            if (string.IsNullOrEmpty(name) &&
-                string.IsNullOrEmpty(url) &&
-                string.IsNullOrEmpty(location) &&
-                string.IsNullOrEmpty(description))
-            {
+            if (string.IsNullOrWhiteSpace(name) &&
+                string.IsNullOrWhiteSpace(url) &&
+                string.IsNullOrWhiteSpace(location) &&
+                string.IsNullOrWhiteSpace(description))
                 throw new ArgumentException("At least one of the text fields (name, email, url, location, or description) must be provided as arguments, but none are specified.", NoInputParam);
-            }
 
-            if (!string.IsNullOrEmpty(name) && name.Length > 20)
-            {
+            if (!string.IsNullOrWhiteSpace(name) && name.Length > 20)
                 throw new ArgumentException("name must be no longer than 20 characters", "name");
-            }
 
-            if (!string.IsNullOrEmpty(url) && url.Length > 100)
-            {
+            if (!string.IsNullOrWhiteSpace(url) && url.Length > 100)
                 throw new ArgumentException("url must be no longer than 100 characters", "url");
-            }
 
-            if (!string.IsNullOrEmpty(location) && location.Length > 30)
-            {
+            if (!string.IsNullOrWhiteSpace(location) && location.Length > 30)
                 throw new ArgumentException("location must be no longer than 30 characters", "location");
-            }
 
-            if (!string.IsNullOrEmpty(description) && description.Length > 160)
-            {
+            if (!string.IsNullOrWhiteSpace(description) && description.Length > 160)
                 throw new ArgumentException("description must be no longer than 160 characters", "description");
-            }
 
             var reqProc = new UserRequestProcessor<User>();
 
@@ -300,11 +268,9 @@ namespace LinqToTwitter
                 sleepTimeEnabled == null &&
                 startSleepTime == null &&
                 endSleepTime == null &&
-                string.IsNullOrEmpty(timeZone) &&
-                string.IsNullOrEmpty(lang))
-            {
+                string.IsNullOrWhiteSpace(timeZone) &&
+                string.IsNullOrWhiteSpace(lang))
                 throw new ArgumentException("At least one parameter must be provided as arguments, but none are specified.", NoInputParam);
-            }
 
             var reqProc = new AccountRequestProcessor<Account>();
 
@@ -314,7 +280,7 @@ namespace LinqToTwitter
                     new Dictionary<string, string>
                     {
                         { "trend_location_woeid", trendLocationWoeid.ToString() },
-                        { "sleep_time_enabled", sleepTimeEnabled.ToString() },
+                        { "sleep_time_enabled", sleepTimeEnabled.ToString().ToLower() },
                         { "start_sleep_time", startSleepTime.ToString() },
                         { "end_sleep_time", endSleepTime.ToString() },
                         { "time_zone", timeZone },
@@ -348,68 +314,66 @@ namespace LinqToTwitter
             return reqProc.ProcessActionResult(resultsJson, AccountAction.Settings);
         }
 
-        ///// <summary>
-        ///// Sends an image to Twitter to be placed as the user's profile banner.
-        ///// </summary>
-        ///// <param name="banner">byte[] containing image data.</param>
-        ///// <param name="callback">Async callback routine.</param>
-        ///// <returns>
-        ///// Account of authenticated user who's profile banner will be updated.
-        ///// Url of new banner will appear in ProfileBannerUrl property.
-        ///// </returns>
-        //public async Task<User> UpdateProfileBannerAsync(byte[] banner, string fileName, string imageType)
-        //{
-        //    return await UpdateProfileBannerAsync(banner, fileName, imageType, 1252, 626, 0, 0);
-        //}
+        /// <summary>
+        /// Sends an image to Twitter to be placed as the user's profile banner.
+        /// </summary>
+        /// <param name="banner">byte[] containing image data.</param>
+        /// <param name="fileName">Name of file.</param>
+        /// <param name="imageType">Type of file (e.g. png or jpg)</param>
+        /// <returns>
+        /// Account of authenticated user who's profile banner will be updated.
+        /// Url of new banner will appear in ProfileBannerUrl property.
+        /// </returns>
+        public async Task<User> UpdateProfileBannerAsync(byte[] banner, string fileName, string imageType)
+        {
+            return await UpdateProfileBannerAsync(banner, fileName, imageType, 1252, 626, 0, 0);
+        }
 
-        ///// <summary>
-        ///// Sends an image to Twitter to be placed as the user's profile banner.
-        ///// </summary>
-        ///// <param name="banner">byte[] containing image data.</param>
-        ///// <param name="width">Pixel width to clip image.</param>
-        ///// <param name="height">Pixel height to clip image.</param>
-        ///// <param name="offsetLeft">Pixels to offset start of image from the left.</param>
-        ///// <param name="offsetTop">Pixels to offset start of image from the top.</param>
-        ///// <param name="callback">Async callback routine.</param>
-        ///// <returns>
-        ///// Account of authenticated user who's profile banner will be updated.
-        ///// Url of new banner will appear in ProfileBannerUrl property.
-        ///// </returns>
-        //public async Task<User> UpdateProfileBannerAsync(byte[] banner, string fileName, string imageType, int width, int height, int offsetLeft, int offsetTop)
-        //{
-        //    var accountUrl = BaseUrl + "account/update_profile_banner.json";
+        /// <summary>
+        /// Sends an image to Twitter to be placed as the user's profile banner.
+        /// </summary>
+        /// <param name="banner">byte[] containing image data.</param>
+        /// <param name="fileName">Name of file.</param>
+        /// <param name="imageType">Type of file (e.g. png or jpg)</param>
+        /// <param name="width">Pixel width to clip image.</param>
+        /// <param name="height">Pixel height to clip image.</param>
+        /// <param name="offsetLeft">Pixels to offset start of image from the left.</param>
+        /// <param name="offsetTop">Pixels to offset start of image from the top.</param>
+        /// <returns>
+        /// Account of authenticated user who's profile banner will be updated.
+        /// Url of new banner will appear in ProfileBannerUrl property.
+        /// </returns>
+        public async Task<User> UpdateProfileBannerAsync(byte[] banner, string fileName, string imageType, int width, int height, int offsetLeft, int offsetTop)
+        {
+            var accountUrl = BaseUrl + "account/update_profile_banner.json";
 
-        //    if (banner == null || banner.Length == 0)
-        //    {
-        //        throw new ArgumentException("banner is required.", "banner");
-        //    }
+            if (banner == null || banner.Length == 0)
+                throw new ArgumentException("banner is required.", "banner");
 
-        //    if (string.IsNullOrEmpty(fileName))
-        //    {
-        //        throw new ArgumentException("fileName is required.", "fileName");
-        //    }
+            if (string.IsNullOrWhiteSpace(fileName))
+                throw new ArgumentException("fileName is required.", "fileName");
 
-        //    if (string.IsNullOrEmpty(imageType))
-        //    {
-        //        throw new ArgumentException("imageType is required.", "imageType");
-        //    }
+            if (string.IsNullOrWhiteSpace(imageType))
+                throw new ArgumentException("imageType is required.", "imageType");
 
-        //    var parameters = new Dictionary<string, string>
-        //    {
-        //        { "width", width.ToString() },
-        //        { "height", height.ToString() },
-        //        { "offset_left", offsetLeft.ToString() },
-        //        { "offset_top", offsetTop.ToString() },
-        //        { "banner", "IMAGE_DATA" }
-        //    };
+            var parameters = new Dictionary<string, string>
+            {
+                { "width", width.ToString() },
+                { "height", height.ToString() },
+                { "offset_left", offsetLeft.ToString() },
+                { "offset_top", offsetTop.ToString() },
+                { "banner", "IMAGE_DATA" }
+            };
 
-        //    var reqProc = new UserRequestProcessor<User>();
+            var reqProc = new UserRequestProcessor<User>();
 
-        //    var resultsJson =
-        //        await TwitterExecutor.PostTwitterImageAsync(accountUrl, parameters, banner, fileName, imageType, reqProc);
+            string name = "image";
+            string imageMimeType = "image/" + imageType;
 
-        //    return reqProc.ProcessActionResult(resultsJson, UserAction.SingleUser);
-        //}
+            var resultsJson = await TwitterExecutor.PostMediaAsync(accountUrl, parameters, banner, name, fileName, imageMimeType);
+
+            return reqProc.ProcessActionResult(resultsJson, UserAction.SingleUser);
+        }
 
         /// <summary>
         /// Removes banner from authenticated user's profile.

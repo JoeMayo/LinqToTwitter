@@ -30,7 +30,7 @@ namespace LinqToTwitter
         /// <summary>
         /// ID of source user (Show query)
         /// </summary>
-        public string SourceUserID { get; set; }
+        public ulong SourceUserID { get; set; }
 
         /// <summary>
         /// Screen name of source user (Show query)
@@ -40,7 +40,7 @@ namespace LinqToTwitter
         /// <summary>
         /// ID of target user (Show query)
         /// </summary>
-        public string TargetUserID { get; set; }
+        public ulong TargetUserID { get; set; }
 
         /// <summary>
         /// Screen name of target user (Show query)
@@ -50,7 +50,7 @@ namespace LinqToTwitter
         /// <summary>
         /// Helps in paging results for queries such as incoming and outgoing
         /// </summary>
-        public string Cursor { get; set; }
+        public long Cursor { get; set; }
 
         /// <summary>
         /// Comma-separated list of screen names for Lookup query
@@ -77,6 +77,11 @@ namespace LinqToTwitter
         /// Removes entities on users when set to false (true by default)
         /// </summary>
         public bool IncludeUserEntities { get; set; }
+
+        /// <summary>
+        /// Number of ids to return for each request (max: 5000)
+        /// </summary>
+        public int Count { get; set; }
 
         /// <summary>
         /// info on friend

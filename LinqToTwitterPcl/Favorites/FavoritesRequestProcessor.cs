@@ -20,37 +20,37 @@ namespace LinqToTwitter
         /// <summary>
         /// type of favorites to query
         /// </summary>
-        private FavoritesType Type { get; set; }
+        internal FavoritesType Type { get; set; }
 
         /// <summary>
         /// User identity to search (optional)
         /// </summary>
-        private string UserID { get; set; }
+        internal ulong UserID { get; set; }
 
         /// <summary>
         /// Screen name of user to search (optional)
         /// </summary>
-        public string ScreenName { get; set; }
+        internal string ScreenName { get; set; }
 
         /// <summary>
         /// Number of items to return in a single request (optional)
         /// </summary>
-        public int Count { get; set; }
+        internal int Count { get; set; }
 
         /// <summary>
         /// Start search at this ID (optional)
         /// </summary>
-        public ulong SinceID { get; set; }
+        internal ulong SinceID { get; set; }
 
         /// <summary>
         /// Don't return results past this ID (optional)
         /// </summary>
-        public ulong MaxID { get; set; }
+        internal ulong MaxID { get; set; }
 
         /// <summary>
         /// Add entities to results (default: true)
         /// </summary>
-        public bool IncludeEntities { get; set; }
+        internal bool IncludeEntities { get; set; }
 
         /// <summary>
         /// extracts parameters from lambda
@@ -101,14 +101,14 @@ namespace LinqToTwitter
         /// <param name="parameters">list of parameters from expression tree</param>
         /// <param name="url">base url</param>
         /// <returns>base url + parameters</returns>
-        private Request BuildFavoritesUrlParameters(Dictionary<string, string> parameters)
+        Request BuildFavoritesUrlParameters(Dictionary<string, string> parameters)
         {
             var req = new Request(BaseUrl + "favorites/list.json");
             var urlParams = req.RequestParameters;
 
             if (parameters.ContainsKey("UserID"))
             {
-                UserID = parameters["UserID"];
+                UserID = ulong.Parse(parameters["UserID"]);
                 urlParams.Add(new QueryParameter("user_id", parameters["UserID"]));
             }
 
@@ -153,7 +153,7 @@ namespace LinqToTwitter
         /// <returns>List of Favorite</returns>
         public virtual List<T> ProcessResults(string responseJson)
         {
-            if (string.IsNullOrEmpty(responseJson)) return new List<T>();
+            if (string.IsNullOrWhiteSpace(responseJson)) return new List<T>();
 
             JsonData favoritesJson = JsonMapper.ToObject(responseJson);
 

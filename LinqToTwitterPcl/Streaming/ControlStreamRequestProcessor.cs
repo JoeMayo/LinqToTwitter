@@ -129,7 +129,7 @@ namespace LinqToTwitter
         /// <returns>List of DirectMessage</returns>
         public virtual List<T> ProcessResults(string responseJson)
         {
-            if (string.IsNullOrEmpty(responseJson)) return new List<T>();
+            if (string.IsNullOrWhiteSpace(responseJson)) return new List<T>();
 
             var csJson = JsonMapper.ToObject(responseJson);
 

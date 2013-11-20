@@ -71,7 +71,7 @@ namespace LinqToTwitter
             set
             {
                 Authorizer.UserAgent =
-                    string.IsNullOrEmpty(value) ?
+                    string.IsNullOrWhiteSpace(value) ?
                         Authorizer.UserAgent :
                         value + ";" + Authorizer.UserAgent;
             }

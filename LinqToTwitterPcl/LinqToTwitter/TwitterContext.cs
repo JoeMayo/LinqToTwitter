@@ -576,9 +576,6 @@ namespace LinqToTwitter
                 case "SavedSearch":
                     req = new SavedSearchRequestProcessor<T>();
                     break;
-                case "SocialGraph":
-                    req = new SocialGraphRequestProcessor<T>();
-                    break;
                 case "Search":
                     req = new SearchRequestProcessor<T>();
                     break;

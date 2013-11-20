@@ -390,12 +390,12 @@ namespace LinqToTwitter
                 throw new ArgumentException("Parameters must include either UserID or ScreenName.", ScreenNameOrUserID);
             }
 
-            if (parameters.ContainsKey("UserID") && string.IsNullOrEmpty(parameters["UserID"]))
+            if (parameters.ContainsKey("UserID") && string.IsNullOrWhiteSpace(parameters["UserID"]))
             {
                 throw new ArgumentNullException("UserID", "If specified, UserID can't be null or an empty string.");
             }
 
-            if (parameters.ContainsKey("ScreenName") && string.IsNullOrEmpty(parameters["ScreenName"]))
+            if (parameters.ContainsKey("ScreenName") && string.IsNullOrWhiteSpace(parameters["ScreenName"]))
             {
                 throw new ArgumentNullException("ScreenName", "If specified, ScreenName can't be null or an empty string.");
             }
@@ -435,12 +435,12 @@ namespace LinqToTwitter
                 throw new ArgumentException("Parameters must include either UserID or ScreenName.", ScreenNameOrUserID);
             }
 
-            if (parameters.ContainsKey("UserID") && string.IsNullOrEmpty(parameters["UserID"]))
+            if (parameters.ContainsKey("UserID") && string.IsNullOrWhiteSpace(parameters["UserID"]))
             {
                 throw new ArgumentNullException("UserID", "If specified, UserID can't be null or an empty string.");
             }
 
-            if (parameters.ContainsKey("ScreenName") && string.IsNullOrEmpty(parameters["ScreenName"]))
+            if (parameters.ContainsKey("ScreenName") && string.IsNullOrWhiteSpace(parameters["ScreenName"]))
             {
                 throw new ArgumentNullException("ScreenName", "If specified, ScreenName can't be null or an empty string.");
             }
@@ -467,7 +467,7 @@ namespace LinqToTwitter
         /// <returns>List of User</returns>
         public virtual List<T> ProcessResults(string responseJson)
         {
-            if (string.IsNullOrEmpty(responseJson)) return new List<T>();
+            if (string.IsNullOrWhiteSpace(responseJson)) return new List<T>();
 
             List<User> userList = null;
 

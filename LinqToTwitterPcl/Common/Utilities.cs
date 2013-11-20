@@ -90,7 +90,7 @@ namespace LinqToTwitter
                 throw new ArgumentNullException("parameters");
 
             StringBuilder builder = new StringBuilder();
-            foreach (var pair in parameters.Where(p => !string.IsNullOrEmpty(p.Value)))
+            foreach (var pair in parameters.Where(p => !string.IsNullOrWhiteSpace(p.Value)))
             {
                 builder.Append(Url.PercentEncode(pair.Name));
                 builder.Append('=');

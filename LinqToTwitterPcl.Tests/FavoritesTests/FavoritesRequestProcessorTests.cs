@@ -43,7 +43,7 @@ namespace LinqToTwitterPcl.Tests.FavoritesTests
             Expression<Func<Favorites, bool>> expression =
                 fav =>
                     fav.Type == FavoritesType.Favorites &&
-                    fav.UserID == "123" &&
+                    fav.UserID == 123ul &&
                     fav.ScreenName == "JoeMayo" &&
                     fav.Count == 100 &&
                     fav.SinceID == 456 &&

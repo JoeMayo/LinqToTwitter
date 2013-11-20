@@ -46,13 +46,12 @@ namespace LinqToTwitterPcl.Tests.FriendshipTests
         [TestMethod]
         public async Task CreateFriendshipTest()
         {
-            const ulong UserID = 2ul;
             const string ScreenName = "JoeMayo";
             const bool Follow = false;
             string expectedName = "Joe Mayo";
             InitializeTwitterContext<User>(SingleUserResponse);
 
-            User actual = await ctx.CreateFriendshipAsync(UserID, ScreenName, Follow);
+            User actual = await ctx.CreateFriendshipAsync(ScreenName, Follow);
 
             Assert.AreEqual(expectedName, actual.Name);
         }
@@ -78,7 +77,7 @@ namespace LinqToTwitterPcl.Tests.FriendshipTests
             string expectedName = "Joe Mayo";
             InitializeTwitterContext<User>(SingleUserResponse);
 
-            User actual = await ctx.DestroyFriendshipAsync(UserID, ScreenName);
+            User actual = await ctx.DestroyFriendshipAsync(ScreenName);
 
             Assert.AreEqual(expectedName, actual.Name);
         }

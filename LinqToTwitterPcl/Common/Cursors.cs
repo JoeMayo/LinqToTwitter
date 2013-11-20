@@ -19,20 +19,20 @@ namespace LinqToTwitter
         public Cursors() {}
         internal Cursors(JsonData cursors)
         {
-            Next = cursors.GetValue<ulong>("next_cursor").ToString();
-            Previous = cursors.GetValue<ulong>("previous_cursor").ToString();
+            Next = cursors.GetValue<long>("next_cursor");
+            Previous = cursors.GetValue<long>("previous_cursor");
         }
 
         /// <summary>
         /// Use this value to retrieve the next page
         /// </summary>
         [XmlIgnore]
-        public string Next { get; internal set; }
+        public long Next { get; internal set; }
 
         /// <summary>
         /// Use this value to go back to the previous page
         /// </summary>
         [XmlIgnore]
-        public string Previous { get; internal set; }
+        public long Previous { get; internal set; }
     }
 }

@@ -304,8 +304,8 @@ namespace LinqToTwitter
         Request BuildListsUrl(Dictionary<string, string> parameters)
         {
             const string UserIDOrScreenNameParam = "UserIdOrScreenName";
-            if (!(parameters.ContainsKey("UserID") && !string.IsNullOrEmpty(parameters["UserID"])) &&
-                !(parameters.ContainsKey("ScreenName") && !string.IsNullOrEmpty(parameters["ScreenName"])))
+            if (!(parameters.ContainsKey("UserID") && !string.IsNullOrWhiteSpace(parameters["UserID"])) &&
+                !(parameters.ContainsKey("ScreenName") && !string.IsNullOrWhiteSpace(parameters["ScreenName"])))
             {
                 throw new ArgumentException("Either UserID or ScreenName are required.", UserIDOrScreenNameParam);
             }
@@ -347,15 +347,15 @@ namespace LinqToTwitter
         /// <returns>URL for List query</returns>
         Request BuildShowUrl(Dictionary<string, string> parameters)
         {
-            if ((!parameters.ContainsKey("ListID") || string.IsNullOrEmpty(parameters["ListID"])) &&
-                (!parameters.ContainsKey("Slug") || string.IsNullOrEmpty(parameters["Slug"])))
+            if ((!parameters.ContainsKey("ListID") || string.IsNullOrWhiteSpace(parameters["ListID"])) &&
+                (!parameters.ContainsKey("Slug") || string.IsNullOrWhiteSpace(parameters["Slug"])))
             {
                 throw new ArgumentException("You must specify either ListID or Slug.", ListIdOrSlugParam);
             }
 
             if (parameters.ContainsKey("Slug") &&
-                !(parameters.ContainsKey("OwnerID") && !string.IsNullOrEmpty(parameters["OwnerID"])) &&
-                !(parameters.ContainsKey("OwnerScreenName") && !string.IsNullOrEmpty(parameters["OwnerScreenName"])))
+                !(parameters.ContainsKey("OwnerID") && !string.IsNullOrWhiteSpace(parameters["OwnerID"])) &&
+                !(parameters.ContainsKey("OwnerScreenName") && !string.IsNullOrWhiteSpace(parameters["OwnerScreenName"])))
             {
                 throw new ArgumentException("If you specify a Slug, you must also specify either OwnerID or OwnerScreenName.", OwnerIdOrOwnerScreenName);
             }
@@ -397,15 +397,15 @@ namespace LinqToTwitter
         /// <returns>URL for statuses query</returns>
         Request BuildStatusesUrl(Dictionary<string, string> parameters)
         {
-            if ((!parameters.ContainsKey("ListID") || string.IsNullOrEmpty(parameters["ListID"])) &&
-                (!parameters.ContainsKey("Slug") || string.IsNullOrEmpty(parameters["Slug"])))
+            if ((!parameters.ContainsKey("ListID") || string.IsNullOrWhiteSpace(parameters["ListID"])) &&
+                (!parameters.ContainsKey("Slug") || string.IsNullOrWhiteSpace(parameters["Slug"])))
             {
                 throw new ArgumentException("You must specify either ListID or Slug.", ListIdOrSlugParam);
             }
 
             if (parameters.ContainsKey("Slug") &&
-                !(parameters.ContainsKey("OwnerID") && !string.IsNullOrEmpty(parameters["OwnerID"])) &&
-                !(parameters.ContainsKey("OwnerScreenName") && !string.IsNullOrEmpty(parameters["OwnerScreenName"])))
+                !(parameters.ContainsKey("OwnerID") && !string.IsNullOrWhiteSpace(parameters["OwnerID"])) &&
+                !(parameters.ContainsKey("OwnerScreenName") && !string.IsNullOrWhiteSpace(parameters["OwnerScreenName"])))
             {
                 throw new ArgumentException("If you specify a Slug, you must also specify either OwnerID or OwnerScreenName.", OwnerIdOrOwnerScreenName);
             }
@@ -492,8 +492,8 @@ namespace LinqToTwitter
         /// <returns>URL for memberships query</returns>
         Request BuildMembershipsUrl(Dictionary<string, string> parameters)
         {
-            if (!(parameters.ContainsKey("UserID") && !string.IsNullOrEmpty(parameters["UserID"])) &&
-                !(parameters.ContainsKey("ScreenName") && !string.IsNullOrEmpty(parameters["ScreenName"])))
+            if (!(parameters.ContainsKey("UserID") && !string.IsNullOrWhiteSpace(parameters["UserID"])) &&
+                !(parameters.ContainsKey("ScreenName") && !string.IsNullOrWhiteSpace(parameters["ScreenName"])))
             {
                 throw new ArgumentException("Either UserID or ScreenName are required.", UserIdOrScreenName);
             }
@@ -538,8 +538,8 @@ namespace LinqToTwitter
         /// <returns>URL for subscriptions query</returns>
         Request BuildSubscriptionsUrl(Dictionary<string, string> parameters)
         {
-            if (!(parameters.ContainsKey("UserID") && !string.IsNullOrEmpty(parameters["UserID"])) &&
-                !(parameters.ContainsKey("ScreenName") && !string.IsNullOrEmpty(parameters["ScreenName"])))
+            if (!(parameters.ContainsKey("UserID") && !string.IsNullOrWhiteSpace(parameters["UserID"])) &&
+                !(parameters.ContainsKey("ScreenName") && !string.IsNullOrWhiteSpace(parameters["ScreenName"])))
             {
                 throw new ArgumentException("Either UserID or ScreenName are required.", UserIdOrScreenName);
             }
@@ -581,15 +581,15 @@ namespace LinqToTwitter
         /// <returns>URL for members query</returns>
         Request BuildMembersUrl(Dictionary<string, string> parameters)
         {
-            if ((!parameters.ContainsKey("ListID") || string.IsNullOrEmpty(parameters["ListID"])) &&
-               (!parameters.ContainsKey("Slug") || string.IsNullOrEmpty(parameters["Slug"])))
+            if ((!parameters.ContainsKey("ListID") || string.IsNullOrWhiteSpace(parameters["ListID"])) &&
+               (!parameters.ContainsKey("Slug") || string.IsNullOrWhiteSpace(parameters["Slug"])))
             {
                 throw new ArgumentException("You must specify either ListID or Slug.", ListIdOrSlugParam);
             }
 
             if (parameters.ContainsKey("Slug") &&
-                !(parameters.ContainsKey("OwnerID") && !string.IsNullOrEmpty(parameters["OwnerID"])) &&
-                !(parameters.ContainsKey("OwnerScreenName") && !string.IsNullOrEmpty(parameters["OwnerScreenName"])))
+                !(parameters.ContainsKey("OwnerID") && !string.IsNullOrWhiteSpace(parameters["OwnerID"])) &&
+                !(parameters.ContainsKey("OwnerScreenName") && !string.IsNullOrWhiteSpace(parameters["OwnerScreenName"])))
             {
                 throw new ArgumentException("If you specify a Slug, you must also specify either OwnerID or OwnerScreenName.", OwnerIdOrOwnerScreenName);
             }
@@ -652,21 +652,21 @@ namespace LinqToTwitter
         /// <returns>URL for list members query</returns>
         Request BuildIsMemberUrl(Dictionary<string, string> parameters)
         {
-            if ((!parameters.ContainsKey("UserID") || string.IsNullOrEmpty(parameters["UserID"])) &&
-               (!parameters.ContainsKey("ScreenName") || string.IsNullOrEmpty(parameters["ScreenName"])))
+            if ((!parameters.ContainsKey("UserID") || string.IsNullOrWhiteSpace(parameters["UserID"])) &&
+               (!parameters.ContainsKey("ScreenName") || string.IsNullOrWhiteSpace(parameters["ScreenName"])))
             {
                 throw new ArgumentException("You must specify either UserID or ScreenName of the user you're checking.", UserIdOrScreenName);
             }
 
-            if ((!parameters.ContainsKey("ListID") || string.IsNullOrEmpty(parameters["ListID"])) &&
-               (!parameters.ContainsKey("Slug") || string.IsNullOrEmpty(parameters["Slug"])))
+            if ((!parameters.ContainsKey("ListID") || string.IsNullOrWhiteSpace(parameters["ListID"])) &&
+               (!parameters.ContainsKey("Slug") || string.IsNullOrWhiteSpace(parameters["Slug"])))
             {
                 throw new ArgumentException("You must specify either ListID or Slug.", ListIdOrSlugParam);
             }
 
             if (parameters.ContainsKey("Slug") &&
-                !(parameters.ContainsKey("OwnerID") && !string.IsNullOrEmpty(parameters["OwnerID"])) &&
-                !(parameters.ContainsKey("OwnerScreenName") && !string.IsNullOrEmpty(parameters["OwnerScreenName"])))
+                !(parameters.ContainsKey("OwnerID") && !string.IsNullOrWhiteSpace(parameters["OwnerID"])) &&
+                !(parameters.ContainsKey("OwnerScreenName") && !string.IsNullOrWhiteSpace(parameters["OwnerScreenName"])))
             {
                 throw new ArgumentException("If you specify a Slug, you must also specify either OwnerID or OwnerScreenName.", OwnerIdOrOwnerScreenName);
             }
@@ -735,15 +735,15 @@ namespace LinqToTwitter
         /// <returns>URL for list subscribers query</returns>
         Request BuildSubscribersUrl(Dictionary<string, string> parameters)
         {
-            if ((!parameters.ContainsKey("ListID") || string.IsNullOrEmpty(parameters["ListID"])) &&
-               (!parameters.ContainsKey("Slug") || string.IsNullOrEmpty(parameters["Slug"])))
+            if ((!parameters.ContainsKey("ListID") || string.IsNullOrWhiteSpace(parameters["ListID"])) &&
+               (!parameters.ContainsKey("Slug") || string.IsNullOrWhiteSpace(parameters["Slug"])))
             {
                 throw new ArgumentException("You must specify either ListID or Slug.", ListIdOrSlugParam);
             }
 
             if (parameters.ContainsKey("Slug") &&
-                !(parameters.ContainsKey("OwnerID") && !string.IsNullOrEmpty(parameters["OwnerID"])) &&
-                !(parameters.ContainsKey("OwnerScreenName") && !string.IsNullOrEmpty(parameters["OwnerScreenName"])))
+                !(parameters.ContainsKey("OwnerID") && !string.IsNullOrWhiteSpace(parameters["OwnerID"])) &&
+                !(parameters.ContainsKey("OwnerScreenName") && !string.IsNullOrWhiteSpace(parameters["OwnerScreenName"])))
             {
                 throw new ArgumentException("If you specify a Slug, you must also specify either OwnerID or OwnerScreenName.", OwnerIdOrOwnerScreenName);
             }
@@ -806,21 +806,21 @@ namespace LinqToTwitter
         /// <returns>URL for IsSubscribed query</returns>
         Request BuildIsSubcribedUrl(Dictionary<string, string> parameters)
         {
-            if ((!parameters.ContainsKey("UserID") || string.IsNullOrEmpty(parameters["UserID"])) &&
-               (!parameters.ContainsKey("ScreenName") || string.IsNullOrEmpty(parameters["ScreenName"])))
+            if ((!parameters.ContainsKey("UserID") || string.IsNullOrWhiteSpace(parameters["UserID"])) &&
+               (!parameters.ContainsKey("ScreenName") || string.IsNullOrWhiteSpace(parameters["ScreenName"])))
             {
                 throw new ArgumentException("You must specify either UserID or ScreenName of the user you're checking.", UserIdOrScreenName);
             }
 
-            if ((!parameters.ContainsKey("ListID") || string.IsNullOrEmpty(parameters["ListID"])) &&
-               (!parameters.ContainsKey("Slug") || string.IsNullOrEmpty(parameters["Slug"])))
+            if ((!parameters.ContainsKey("ListID") || string.IsNullOrWhiteSpace(parameters["ListID"])) &&
+               (!parameters.ContainsKey("Slug") || string.IsNullOrWhiteSpace(parameters["Slug"])))
             {
                 throw new ArgumentException("You must specify either ListID or Slug.", ListIdOrSlugParam);
             }
 
             if (parameters.ContainsKey("Slug") &&
-                !(parameters.ContainsKey("OwnerID") && !string.IsNullOrEmpty(parameters["OwnerID"])) &&
-                !(parameters.ContainsKey("OwnerScreenName") && !string.IsNullOrEmpty(parameters["OwnerScreenName"])))
+                !(parameters.ContainsKey("OwnerID") && !string.IsNullOrWhiteSpace(parameters["OwnerID"])) &&
+                !(parameters.ContainsKey("OwnerScreenName") && !string.IsNullOrWhiteSpace(parameters["OwnerScreenName"])))
             {
                 throw new ArgumentException("If you specify a Slug, you must also specify either OwnerID or OwnerScreenName.", OwnerIdOrOwnerScreenName);
             }
@@ -889,8 +889,8 @@ namespace LinqToTwitter
         /// <returns>URL for IsSubscribed query</returns>
         Request BuildOwnershipsUrl(Dictionary<string, string> parameters)
         {
-            if ((!parameters.ContainsKey("UserID") || string.IsNullOrEmpty(parameters["UserID"])) &&
-               (!parameters.ContainsKey("ScreenName") || string.IsNullOrEmpty(parameters["ScreenName"])))
+            if ((!parameters.ContainsKey("UserID") || string.IsNullOrWhiteSpace(parameters["UserID"])) &&
+               (!parameters.ContainsKey("ScreenName") || string.IsNullOrWhiteSpace(parameters["ScreenName"])))
             {
                 throw new ArgumentException("You must specify either UserID or ScreenName of the user you're checking.", UserIdOrScreenName);
             }
@@ -932,7 +932,7 @@ namespace LinqToTwitter
         /// <returns>List of List</returns>
         public virtual List<T> ProcessResults(string responseJson)
         {
-            if (string.IsNullOrEmpty(responseJson)) return new List<T>();
+            if (string.IsNullOrWhiteSpace(responseJson)) return new List<T>();
 
             JsonData listJson = JsonMapper.ToObject(responseJson);
 
@@ -973,7 +973,7 @@ namespace LinqToTwitter
                 list.Cursor = Cursor;
                 list.UserID = UserID;
 
-                if (String.IsNullOrEmpty(list.ListID) && !String.IsNullOrEmpty(ListID))
+                if (String.IsNullOrWhiteSpace(list.ListID) && !String.IsNullOrWhiteSpace(ListID))
                     list.ListID = ListID;
 
                 list.Slug = Slug;
@@ -1074,7 +1074,7 @@ namespace LinqToTwitter
         {
             List list = null;
 
-            if (!string.IsNullOrEmpty(responseJson))
+            if (!string.IsNullOrWhiteSpace(responseJson))
             {
                 JsonData listJson = JsonMapper.ToObject(responseJson);
 

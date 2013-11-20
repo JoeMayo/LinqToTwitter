@@ -95,7 +95,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SecurityTests\Sha1Tests.cs" />
     <Compile Include="SecurityTests\HmacTests.cs" />
-    <Compile Include="SocialGraphTests\SocialGraphRequestProcessorTests.cs" />
     <Compile Include="StatusTests\StatusExtensionsReplyWithMediaAndLocationTests.cs" />
     <Compile Include="StatusTests\StatusExtensionsReplyWithMediaNoLocationTests.cs" />
     <Compile Include="StatusTests\StatusCommandsTests.cs" />

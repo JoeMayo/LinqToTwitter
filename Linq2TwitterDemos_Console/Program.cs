@@ -103,26 +103,21 @@ namespace Linq2TwitterDemos_Console
                         break;
                     case 'b':
                     case 'B':
-                        Console.WriteLine("\n\tRunning Social Graph Demos...\n");
-                        await SocialGraphDemos.RunAsync(twitterCtx);
-                        break;
-                    case 'c':
-                    case 'C':
                         Console.WriteLine("\n\tRunning Status Demos...\n");
                         await StatusDemos.RunAsync(twitterCtx);
                         break;
-                    case 'd':
-                    case 'D':
+                    case 'c':
+                    case 'C':
                         Console.WriteLine("\n\tRunning Stream Demos...\n");
                         await StreamDemos.RunAsync(twitterCtx);
                         break;
-                    case 'e':
-                    case 'E':
+                    case 'd':
+                    case 'D':
                         Console.WriteLine("\n\tRunning Trend Demos...\n");
                         await TrendDemos.RunAsync(twitterCtx);
                         break;
-                    case 'f':
-                    case 'F':
+                    case 'e':
+                    case 'E':
                         Console.WriteLine("\n\tRunning User Demos...\n");
                         await UserDemos.RunAsync(twitterCtx);
                         break;
@@ -153,11 +148,10 @@ namespace Linq2TwitterDemos_Console
             Console.WriteLine("\t 8. Raw Demos");
             Console.WriteLine("\t 9. Saved Search Demos");
             Console.WriteLine("\t A. Search Demos");
-            Console.WriteLine("\t B. Social Graph Demos");
-            Console.WriteLine("\t C. Status Demos");
-            Console.WriteLine("\t D. Stream Demos");
-            Console.WriteLine("\t E. Trend Demos");
-            Console.WriteLine("\t F. User Demos");
+            Console.WriteLine("\t B. Status Demos");
+            Console.WriteLine("\t C. Stream Demos");
+            Console.WriteLine("\t D. Trend Demos");
+            Console.WriteLine("\t E. User Demos");
             Console.WriteLine();
             Console.WriteLine("\t Q. End Program");
         }

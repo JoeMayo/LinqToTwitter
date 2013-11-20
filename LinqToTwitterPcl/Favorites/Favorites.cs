@@ -27,7 +27,7 @@ namespace LinqToTwitter
         /// User identity to search (optional)
         /// </summary>
         [XmlIgnore]
-        public new string UserID { get; set; }
+        public new ulong UserID { get; set; }
 
         /// <summary>
         /// Screen name of user to search (optional)
@@ -73,9 +73,9 @@ namespace LinqToTwitter
         }
 
         [XmlIgnore]
-        string userID;
+        ulong userID;
         [XmlAttribute(AttributeName="UserID")]
-        public string UserIDXml
+        public ulong UserIDXml
         {
             get { return userID; }
             set { userID = value; }

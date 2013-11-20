@@ -29,7 +29,7 @@ namespace LinqToTwitter
         /// <summary>
         /// ID of source user
         /// </summary>
-        internal string SourceUserID { get; set; }
+        internal ulong SourceUserID { get; set; }
 
         /// <summary>
         /// Screen name of source user
@@ -39,7 +39,7 @@ namespace LinqToTwitter
         /// <summary>
         /// ID of target user
         /// </summary>
-        internal string TargetUserID { get; set; }
+        internal ulong TargetUserID { get; set; }
 
         /// <summary>
         /// Screen name of target user
@@ -59,7 +59,7 @@ namespace LinqToTwitter
         /// <summary>
         /// Helps in paging results for queries such as incoming and outgoing
         /// </summary>
-        internal string Cursor { get; set; }
+        internal long Cursor { get; set; }
 
         /// <summary>
         /// Removes status when set to true (false by default)
@@ -75,6 +75,11 @@ namespace LinqToTwitter
         /// Removes entities on users when set to false (true by default)
         /// </summary>
         internal bool IncludeUserEntities { get; set; }
+
+        /// <summary>
+        /// Number of ids to return for each request (max: 5000)
+        /// </summary>
+        internal int Count { get; set; }
 
         /// <summary>
         /// extracts parameters from lambda
@@ -97,7 +102,8 @@ namespace LinqToTwitter
                        "UserID",
                        "SkipStatus",
                        "IncludeEntities",
-                       "IncludeUserEntities"
+                       "IncludeUserEntities",
+                       "Count"
                    });
 
             var parameters = paramFinder.Parameters;
@@ -134,6 +140,10 @@ namespace LinqToTwitter
                     return BuildFollowersListUrl(parameters);
                 case FriendshipType.FriendsList:
                     return BuildFriendsListUrl(parameters);
+                case FriendshipType.FollowerIDs:
+                    return BuildFollowerIDsUrl(parameters);
+                case FriendshipType.FriendIDs:
+                    return BuildFriendIDsUrl(parameters);
                 default:
                     throw new ArgumentException("Invalid FriendshipType", "Type");
             }
@@ -143,9 +153,9 @@ namespace LinqToTwitter
         /// Builds an url that retrieves ids of people who the logged in user doesn't want retweets for
         /// </summary>
         /// <returns>no_retweet_id URL</returns>
-        private Request BuildFriendshipNoRetweetIDsUrl()
+        Request BuildFriendshipNoRetweetIDsUrl()
         {
-            return new Request(BaseUrl + "friendships/no_retweet_ids.json");
+            return new Request(BaseUrl + "friendships/no_retweets/ids.json");
         }
 
         /// <summary>
@@ -153,25 +163,21 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">parameter list</param>
         /// <returns>base url + show segment</returns>
-        private Request BuildFriendshipShowUrl(Dictionary<string, string> parameters)
+        Request BuildFriendshipShowUrl(Dictionary<string, string> parameters)
         {
             if (!parameters.ContainsKey("SourceUserID") && !parameters.ContainsKey("SourceScreenName"))
-            {
                 throw new ArgumentException("You must specify either SourceUserID or SourceScreenName");
-            }
 
             if (!parameters.ContainsKey("TargetUserID") && !parameters.ContainsKey("TargetScreenName"))
-            {
                 throw new ArgumentException("You must specify either TargetUserID or TargetScreenName");
-            }
 
             var req = new Request(BaseUrl + "friendships/show.json");
             var urlParams = req.RequestParameters;
 
             if (parameters.ContainsKey("SourceUserID"))
             {
-                SourceUserID = parameters["SourceUserID"];
-                urlParams.Add(new QueryParameter("source_id", SourceUserID));
+                SourceUserID = ulong.Parse(parameters["SourceUserID"]);
+                urlParams.Add(new QueryParameter("source_id", parameters["SourceUserID"]));
             }
 
             if (parameters.ContainsKey("SourceScreenName"))
@@ -182,8 +188,8 @@ namespace LinqToTwitter
 
             if (parameters.ContainsKey("TargetUserID"))
             {
-                TargetUserID = parameters["TargetUserID"];
-                urlParams.Add(new QueryParameter("target_id", TargetUserID));
+                TargetUserID = ulong.Parse(parameters["TargetUserID"]);
+                urlParams.Add(new QueryParameter("target_id", parameters["TargetUserID"]));
             }
 
             if (parameters.ContainsKey("TargetScreenName"))
@@ -200,15 +206,15 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">Can optionally contain Cursor</param>
         /// <returns>Url for incoming</returns>
-        private Request BuildFriendshipIncomingUrl(Dictionary<string, string> parameters)
+        Request BuildFriendshipIncomingUrl(Dictionary<string, string> parameters)
         {
             var req = new Request(BaseUrl + "friendships/incoming.json");
             var urlParams = req.RequestParameters;
 
             if (parameters.ContainsKey("Cursor"))
             {
-                Cursor = parameters["Cursor"];
-                urlParams.Add(new QueryParameter("cursor", Cursor));
+                Cursor = long.Parse(parameters["Cursor"]);
+                urlParams.Add(new QueryParameter("cursor", parameters["Cursor"]));
             }
 
             return req;
@@ -219,15 +225,13 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">Should contain ScreenName</param>
         /// <returns>Url for lookup</returns>
-        private Request BuildLookupUrl(Dictionary<string, string> parameters)
+        Request BuildLookupUrl(Dictionary<string, string> parameters)
         {
             var req = new Request(BaseUrl + "friendships/lookup.json");
             var urlParams = req.RequestParameters;
 
             if (!parameters.ContainsKey("ScreenName") && !parameters.ContainsKey("UserID"))
-            {
                 throw new ArgumentNullException("ScreenNameOrUserID", "Requires ScreenName or UserID with a comma-separated list of twitter screen names or user IDs, respectively.");
-            }
 
             if (parameters.ContainsKey("ScreenName"))
             {
@@ -249,15 +253,15 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">Can optionally contain Cursor</param>
         /// <returns>Url for outgoing</returns>
-        private Request BuildFriendshipOutgoingUrl(Dictionary<string, string> parameters)
+        Request BuildFriendshipOutgoingUrl(Dictionary<string, string> parameters)
         {
             var req = new Request(BaseUrl + "friendships/outgoing.json");
             var urlParams = req.RequestParameters;
 
             if (parameters.ContainsKey("Cursor"))
             {
-                Cursor = parameters["Cursor"];
-                urlParams.Add(new QueryParameter("cursor", Cursor));
+                Cursor = long.Parse(parameters["Cursor"]);
+                urlParams.Add(new QueryParameter("cursor", parameters["Cursor"]));
             }
 
             return req;
@@ -269,9 +273,7 @@ namespace LinqToTwitter
             var urlParams = req.RequestParameters;
 
             if (!parameters.ContainsKey("ScreenName") && !parameters.ContainsKey("UserID"))
-            {
                 throw new ArgumentNullException("ScreenNameOrUserID", "Requires ScreenName or UserID with a comma-separated list of twitter screen names or user IDs, respectively.");
-            }
 
             if (parameters.ContainsKey("UserID"))
             {
@@ -287,8 +289,8 @@ namespace LinqToTwitter
 
             if (parameters.ContainsKey("Cursor"))
             {
-                Cursor = parameters["Cursor"];
-                urlParams.Add(new QueryParameter("cursor", Cursor));
+                Cursor = long.Parse(parameters["Cursor"]);
+                urlParams.Add(new QueryParameter("cursor", parameters["Cursor"]));
             }
 
             if (parameters.ContainsKey("SkipStatus"))
@@ -300,13 +302,13 @@ namespace LinqToTwitter
             if (parameters.ContainsKey("IncludeEntities"))
             {
                 IncludeEntities = bool.Parse(parameters["IncludeEntities"]);
-                urlParams.Add(new QueryParameter("include_user_entities", IncludeEntities.ToString().ToLower()));
+                urlParams.Add(new QueryParameter("include_user_entities", parameters["IncludeEntities"].ToLower()));
             }
 
             if (parameters.ContainsKey("IncludeUserEntities"))
             {
                 IncludeEntities = bool.Parse(parameters["IncludeUserEntities"]);
-                urlParams.Add(new QueryParameter("include_user_entities", IncludeEntities.ToString().ToLower()));
+                urlParams.Add(new QueryParameter("include_user_entities", parameters["IncludeUserEntities"].ToLower()));
             }
 
             return req;
@@ -318,9 +320,7 @@ namespace LinqToTwitter
             var urlParams = req.RequestParameters;
 
             if (!parameters.ContainsKey("ScreenName") && !parameters.ContainsKey("UserID"))
-            {
                 throw new ArgumentNullException("ScreenNameOrUserID", "Requires ScreenName or UserID.");
-            }
 
             if (parameters.ContainsKey("UserID"))
             {
@@ -336,20 +336,74 @@ namespace LinqToTwitter
 
             if (parameters.ContainsKey("Cursor"))
             {
-                Cursor = parameters["Cursor"];
-                urlParams.Add(new QueryParameter("cursor", Cursor));
+                Cursor = long.Parse(parameters["Cursor"]);
+                urlParams.Add(new QueryParameter("cursor", parameters["Cursor"]));
             }
 
             if (parameters.ContainsKey("SkipStatus"))
             {
                 SkipStatus = bool.Parse(parameters["SkipStatus"]);
-                urlParams.Add(new QueryParameter("skip_status", SkipStatus.ToString().ToLower()));
+                urlParams.Add(new QueryParameter("skip_status", parameters["SkipStatus"].ToLower()));
             }
 
             if (parameters.ContainsKey("IncludeUserEntities"))
             {
                 IncludeUserEntities = bool.Parse(parameters["IncludeUserEntities"]);
-                urlParams.Add(new QueryParameter("include_user_entities", IncludeUserEntities.ToString().ToLower()));
+                urlParams.Add(new QueryParameter("include_user_entities", parameters["IncludeUserEntities"].ToLower()));
+            }
+
+            return req;
+        }
+
+        Request BuildFollowerIDsUrl(Dictionary<string, string> parameters)
+        {
+            var url = "followers/ids.json";
+
+            return BuildIdQueryUrlParameters(parameters, url);
+        }
+
+        Request BuildFriendIDsUrl(Dictionary<string, string> parameters)
+        {
+            var url = "friends/ids.json";
+
+            return BuildIdQueryUrlParameters(parameters, url);
+        }
+
+        Request BuildIdQueryUrlParameters(Dictionary<string, string> parameters, string url)
+        {
+            if (!parameters.ContainsKey("UserID") && !parameters.ContainsKey("ScreenName"))
+                throw new ArgumentException("You must specify either UserID or ScreenName.");
+
+            var req = new Request(BaseUrl + url);
+            var urlParams = req.RequestParameters;
+
+            if (parameters.ContainsKey("UserID"))
+            {
+                UserID = parameters["UserID"];
+                urlParams.Add(new QueryParameter("user_id", parameters["UserID"]));
+            }
+
+            if (parameters.ContainsKey("ScreenName"))
+            {
+                ScreenName = parameters["ScreenName"];
+                urlParams.Add(new QueryParameter("screen_name", parameters["ScreenName"]));
+            }
+
+            if (parameters.ContainsKey("Cursor"))
+            {
+                Cursor = long.Parse(parameters["Cursor"]);
+                urlParams.Add(new QueryParameter("cursor", parameters["Cursor"]));
+            }
+            else
+            {
+                Cursor = -1;
+                urlParams.Add(new QueryParameter("cursor", Cursor.ToString()));
+            }
+
+            if (parameters.ContainsKey("Count"))
+            {
+                Count = int.Parse(parameters["Count"]);
+                urlParams.Add(new QueryParameter("count", parameters["Count"]));
             }
 
             return req;
@@ -362,7 +416,7 @@ namespace LinqToTwitter
         /// <returns>List of User</returns>
         public virtual List<T> ProcessResults(string responseJson)
         {
-            if (string.IsNullOrEmpty(responseJson)) return new List<T>();
+            if (string.IsNullOrWhiteSpace(responseJson)) return new List<T>();
 
             Friendship friendship;
 
@@ -373,6 +427,8 @@ namespace LinqToTwitter
                     break;
                 case FriendshipType.Incoming:
                 case FriendshipType.Outgoing:
+                case FriendshipType.FollowerIDs:
+                case FriendshipType.FriendIDs:
                     friendship = HandleIdsResponse(responseJson);
                     break;
                 case FriendshipType.Lookup:
@@ -400,6 +456,7 @@ namespace LinqToTwitter
             friendship.UserID = UserID;
             friendship.SkipStatus = SkipStatus;
             friendship.IncludeUserEntities = IncludeUserEntities;
+            friendship.Count = Count;
 
             var friendList = new List<Friendship>
             {
@@ -445,7 +502,7 @@ namespace LinqToTwitter
             return HandleIdsResponse(idsJson);
         }
 
-        private Friendship HandleFriendsListOrFollowersListResponse(string responseJson)
+        Friendship HandleFriendsListOrFollowersListResponse(string responseJson)
         {
             JsonData friendsOrFollowersJson = JsonMapper.ToObject(responseJson);
             var users = friendsOrFollowersJson.GetValue<JsonData>("users");

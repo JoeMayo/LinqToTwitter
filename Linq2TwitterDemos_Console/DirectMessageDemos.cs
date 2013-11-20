@@ -21,7 +21,23 @@ namespace Linq2TwitterDemos_Console
                 {
                     case '0':
                         Console.WriteLine("\n\tShowing sent DMs...\n");
-                        await ShowSentDMs(twitterCtx);
+                        await ShowSentDMsAsync(twitterCtx);
+                        break;
+                    case '1':
+                        Console.WriteLine("\n\tShowing received DMs...\n");
+                        await ShowReceivedDMsAsync(twitterCtx);
+                        break;
+                    case '2':
+                        Console.WriteLine("\n\tShowing DM...\n");
+                        await ShowSpecificDMAsync(twitterCtx);
+                        break;
+                    case '3':
+                        Console.WriteLine("\n\tSending DM...\n");
+                        await NewDirectMessageAsync(twitterCtx);
+                        break;
+                    case '4':
+                        Console.WriteLine("\n\tShowing DM...\n");
+                        await DestroyDirectMessageAsync(twitterCtx);
                         break;
                     case 'q':
                     case 'Q':
@@ -35,7 +51,20 @@ namespace Linq2TwitterDemos_Console
             } while (char.ToUpper(key) != 'Q');
         }
 
-        static async Task ShowSentDMs(TwitterContext twitterCtx)
+        static void ShowMenu()
+        {
+            Console.WriteLine("\nDirect Message Demos - Please select:\n");
+
+            Console.WriteLine("\t 0. Sent DMs");
+            Console.WriteLine("\t 1. Received DMs");
+            Console.WriteLine("\t 2. Show DM");
+            Console.WriteLine("\t 3. Send DM");
+            Console.WriteLine("\t 4. Delete DM");
+            Console.WriteLine();
+            Console.WriteLine("\t Q. Return to Main menu");
+        }
+
+        static async Task ShowSentDMsAsync(TwitterContext twitterCtx)
         {
             var dmResponse =
                 await
@@ -50,13 +79,58 @@ namespace Linq2TwitterDemos_Console
                     dm.Recipient.ScreenNameResponse, dm.Text));
         }
 
-        static void ShowMenu()
+        static async Task ShowReceivedDMsAsync(TwitterContext twitterCtx)
         {
-            Console.WriteLine("\nDirect Message Demos - Please select:\n");
+            var dmResponse =
+                await
+                    (from dm in twitterCtx.DirectMessage
+                     where dm.Type == DirectMessageType.SentTo
+                     select dm)
+                    .ToListAsync();
 
-            Console.WriteLine("\t 0. Sent DMs");
-            Console.WriteLine();
-            Console.WriteLine("\t Q. Return to Main menu");
+            dmResponse.ForEach(dm =>
+                Console.WriteLine(
+                    "Name: {0}, Tweet: {1}",
+                    dm.Recipient.ScreenNameResponse, dm.Text));
+        }
+
+        static async Task ShowSpecificDMAsync(TwitterContext twitterCtx)
+        {
+            var dmResponse =
+                await
+                    (from dm in twitterCtx.DirectMessage
+                     where dm.Type == DirectMessageType.Show &&
+                           dm.ID == 2078013265
+                     select dm)
+                    .SingleOrDefaultAsync();
+
+            Console.WriteLine(
+                "From: {0}\nTo:  {1}\nMessage: {2}",
+                dmResponse.Sender.Name,
+                dmResponse.Recipient.Name,
+                dmResponse.Text);
+        }
+
+        static async Task DestroyDirectMessageAsync(TwitterContext twitterCtx)
+        {
+            var message = await twitterCtx.DestroyDirectMessageAsync(243563161037455360ul, true);
+
+            Console.WriteLine(
+                "Recipient: {0}, Message: {1}",
+                message.RecipientScreenName,
+                message.Text);
+        }
+
+        static async Task NewDirectMessageAsync(TwitterContext twitterCtx)
+        {
+            var message = await twitterCtx.NewDirectMessageAsync(
+                "Linq2Tweeter", "Direct Message Test - " + DateTime.Now + "!'");
+
+            Console.WriteLine(
+                "Recipient: {0}, Message: {1}, Date: {2}",
+                message.RecipientScreenName,
+                message.Text,
+                message.CreatedAt);
         }
     }
 }

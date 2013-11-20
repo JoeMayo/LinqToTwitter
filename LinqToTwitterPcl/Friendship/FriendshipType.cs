@@ -39,6 +39,16 @@
         /// <summary>
         /// List of User entities of followers (people who follow the authenticated user)
         /// </summary>
-        FollowersList
+        FollowersList,
+
+        /// <summary>
+        /// people user is following
+        /// </summary>
+        FriendIDs,
+
+        /// <summary>
+        /// people following user
+        /// </summary>
+        FollowerIDs
     }
 }

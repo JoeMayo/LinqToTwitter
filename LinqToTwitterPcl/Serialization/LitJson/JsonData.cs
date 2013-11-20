@@ -545,11 +545,13 @@ namespace LitJson
 
         long IJsonWrapper.GetLong ()
         {
-            if (type != JsonType.Long)
+            if (type == JsonType.Long)
+                return instLong;
+            else if (type == JsonType.Int)
+                return instInt;
+            else
                 throw new InvalidOperationException (
                     "JsonData instance doesn't hold a long");
-
-            return instLong;
         }
 
         string IJsonWrapper.GetString ()

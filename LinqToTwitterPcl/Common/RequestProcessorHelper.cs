@@ -51,9 +51,7 @@ namespace LinqToTwitter
             bool flag;
 
             if (!bool.TryParse(parameters[key], out flag))
-            {
                 flag = false;
-            }
 
             return flag;
         }

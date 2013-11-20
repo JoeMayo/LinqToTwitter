@@ -26,7 +26,11 @@ namespace Linq2TwitterDemos_Console
                         break;
                     case '1':
                         Console.WriteLine("\n\tShowing home timeline...\n");
-                        await RunHomeStatusQueryAsync(twitterCtx);
+                        await RunHomeTimelineQueryAsync(twitterCtx);
+                        break;
+                    case '2':
+                        Console.WriteLine("\n\tShowing user timeline...\n");
+                        await RunUserTimelineQueryAsync(twitterCtx);
                         break;
                     case 'q':
                     case 'Q':
@@ -46,6 +50,7 @@ namespace Linq2TwitterDemos_Console
 
             Console.WriteLine("\t 0. Update Status");
             Console.WriteLine("\t 1. Home Timeline");
+            Console.WriteLine("\t 2. User Timeline");
             Console.WriteLine();
             Console.WriteLine("\t Q. Return to Main menu");
         }
@@ -102,12 +107,25 @@ namespace Linq2TwitterDemos_Console
             }
         }
 
-        static async Task RunHomeStatusQueryAsync(TwitterContext twitterCtx)
+        static async Task RunHomeTimelineQueryAsync(TwitterContext twitterCtx)
         {
             var tweets =
                 await
                 (from tweet in twitterCtx.Status
                  where tweet.Type == StatusType.Home
+                 select tweet)
+                .ToListAsync();
+
+            PrintTweetsResults(tweets);
+        }
+
+        static async Task RunUserTimelineQueryAsync(TwitterContext twitterCtx)
+        {
+            var tweets =
+                await
+                (from tweet in twitterCtx.Status
+                 where tweet.Type == StatusType.User &&
+                       tweet.ScreenName == "JoeMayo"
                  select tweet)
                 .ToListAsync();
 

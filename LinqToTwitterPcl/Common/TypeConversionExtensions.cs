@@ -13,7 +13,7 @@ namespace LinqToTwitter.Common
         {
             ulong result;
 
-            return String.IsNullOrEmpty(val) ||
+            return String.IsNullOrWhiteSpace(val) ||
                 !ulong.TryParse(val, out result)
                     ? defaultValue
                     : result;
@@ -23,7 +23,7 @@ namespace LinqToTwitter.Common
         {
             double result;
 
-            return String.IsNullOrEmpty(val) ||
+            return String.IsNullOrWhiteSpace(val) ||
                 !double.TryParse(val, out result)
                     ? defaultValue
                     : result;
@@ -38,7 +38,7 @@ namespace LinqToTwitter.Common
         {
             DateTime result;
 
-            return String.IsNullOrEmpty(date) ||
+            return String.IsNullOrWhiteSpace(date) ||
                 !DateTime.TryParseExact(date,
                         dateFormats,
                         CultureInfo.InvariantCulture,

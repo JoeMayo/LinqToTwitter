@@ -14,7 +14,7 @@ namespace LinqToTwitter
         /// <returns>SavedSearch object</returns>
         public async Task<SavedSearch> CreateSavedSearchAsync(string query)
         {
-            if (string.IsNullOrEmpty(query))
+            if (string.IsNullOrWhiteSpace(query))
             {
                 throw new ArgumentException("query is required.", "query");
             }

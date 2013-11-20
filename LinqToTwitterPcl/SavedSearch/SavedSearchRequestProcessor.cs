@@ -106,7 +106,7 @@ namespace LinqToTwitter
         /// <returns>List of SavedSearch</returns>
         public List<T> ProcessResults(string responseJson)
         {
-            if (string.IsNullOrEmpty(responseJson)) return new List<T>();
+            if (string.IsNullOrWhiteSpace(responseJson)) return new List<T>();
 
             JsonData searchJson = JsonMapper.ToObject(responseJson);
 

@@ -178,9 +178,6 @@
     <Compile Include="Serialization\LitJson\JsonWriter.cs" />
     <Compile Include="Serialization\LitJson\Lexer.cs" />
     <Compile Include="Serialization\LitJson\ParserToken.cs" />
-    <Compile Include="SocialGraph\SocialGraph.cs" />
-    <Compile Include="SocialGraph\SocialGraphRequestProcessor.cs" />
-    <Compile Include="SocialGraph\SocialGraphType.cs" />
     <Compile Include="Status\Annotation.cs" />
     <Compile Include="Status\Contributor.cs" />
     <Compile Include="Status\EmbeddedStatus.cs" />

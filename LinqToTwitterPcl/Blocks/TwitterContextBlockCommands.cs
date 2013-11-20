@@ -8,9 +8,8 @@ namespace LinqToTwitter
     public partial class TwitterContext
     {
         /// <summary>
-        /// Blocks a user
+        /// Blocks a user.
         /// </summary>
-        /// <param name="twitterCtx">Twitter Context</param>
         /// <param name="userID">ID of user to block</param>
         /// <param name="screenName">Screen name of user to block</param>
         /// <param name="skipStatus">Don't include status</param>
@@ -21,9 +20,8 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// Blocks a user
+        /// Blocks a user.
         /// </summary>
-        /// <param name="twitterCtx">Twitter Context</param>
         /// <param name="userID">ID of user to block</param>
         /// <param name="screenName">Screen name of user to block</param>
         /// <param name="includeEntities">Set to false to not include entities (default: true)</param>
@@ -31,10 +29,8 @@ namespace LinqToTwitter
         /// <returns>User that was unblocked</returns>
         public async Task<User> CreateBlockAsync(ulong userID, string screenName, bool includeEntities, bool skipStatus)
         {
-            if (userID <= 0 && string.IsNullOrEmpty(screenName))
-            {
+            if (userID <= 0 && string.IsNullOrWhiteSpace(screenName))
                 throw new ArgumentException("Either userID or screenName are required parameters.", "UserIDOrScreenName");
-            }
 
             var blocksUrl = BaseUrl + "blocks/create.json";
 
@@ -55,9 +51,8 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// Unblocks a user
+        /// Unblocks a user.
         /// </summary>
-        /// <param name="twitterCtx">Twitter Context</param>
         /// <param name="userID">ID of user to block</param>
         /// <param name="screenName">Screen name of user to block</param>
         /// <param name="skipStatus">Don't include status</param>
@@ -68,9 +63,8 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// Unblocks a user
+        /// Unblocks a user.
         /// </summary>
-        /// <param name="twitterCtx">Twitter Context</param>
         /// <param name="userID">ID of user to block</param>
         /// <param name="screenName">Screen name of user to block</param>
         /// <param name="includeEntities">Set to false to not include entities (default: true)</param>
@@ -78,10 +72,8 @@ namespace LinqToTwitter
         /// <returns>User that was unblocked</returns>
         public async Task<User> DestroyBlockAsync(ulong userID, string screenName, bool includeEntities, bool skipStatus)
         {
-            if (userID <= 0 && string.IsNullOrEmpty(screenName))
-            {
+            if (userID <= 0 && string.IsNullOrWhiteSpace(screenName))
                 throw new ArgumentException("Either userID or screenName are required parameters.", "UserIDOrScreenName");
-            }
 
             var blocksUrl = BaseUrl + "blocks/destroy.json";
 

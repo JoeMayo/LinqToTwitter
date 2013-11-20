@@ -21,7 +21,15 @@ namespace Linq2TwitterDemos_Console
                 {
                     case '0':
                         Console.WriteLine("\n\tShowing favorites...\n");
-                        await ShowFavorites(twitterCtx);
+                        await ShowFavoritesAsync(twitterCtx);
+                        break;
+                    case '1':
+                        Console.WriteLine("\n\tFavoriting...\n");
+                        await CreateFavoriteAsync(twitterCtx);
+                        break;
+                    case '2':
+                        Console.WriteLine("\n\tUnfavoriting...\n");
+                        await DestroyFavoriteAsync(twitterCtx);
                         break;
                     case 'q':
                     case 'Q':
@@ -35,7 +43,18 @@ namespace Linq2TwitterDemos_Console
             } while (char.ToUpper(key) != 'Q');
         }
 
-        static async Task ShowFavorites(TwitterContext twitterCtx)
+        static void ShowMenu()
+        {
+            Console.WriteLine("\nFavorite Demos - Please select:\n");
+
+            Console.WriteLine("\t 0. Show Favorites");
+            Console.WriteLine("\t 1. Favorite a tweet");
+            Console.WriteLine("\t 2. Unfavorite a tweet");
+            Console.WriteLine();
+            Console.WriteLine("\t Q. Return to Main menu");
+        }
+
+        static async Task ShowFavoritesAsync(TwitterContext twitterCtx)
         {
             var favsResponse =
                 await
@@ -49,14 +68,18 @@ namespace Linq2TwitterDemos_Console
                     "Name: {0}, Tweet: {1}",
                     fav.User.ScreenNameResponse, fav.Text));
         }
-
-        static void ShowMenu()
+        static async Task DestroyFavoriteAsync(TwitterContext twitterCtx)
         {
-            Console.WriteLine("\nFavorite Demos - Please select:\n");
+            var status = await twitterCtx.DestroyFavoriteAsync(401033367283453953ul, true);
 
-            Console.WriteLine("\t 0. Show Favorites");
-            Console.WriteLine();
-            Console.WriteLine("\t Q. Return to Main menu");
+            Console.WriteLine("User: {0}, Tweet: {1}", status.User.Name, status.Text);
+        }
+
+        static async Task CreateFavoriteAsync(TwitterContext twitterCtx)
+        {
+            var status = await twitterCtx.CreateFavoriteAsync(401033367283453953ul);
+
+            Console.WriteLine("User: {0}, Tweet: {1}", status.User.Name, status.Text);
         }
     }
 }

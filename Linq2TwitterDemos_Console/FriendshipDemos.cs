@@ -21,7 +21,53 @@ namespace Linq2TwitterDemos_Console
                 {
                     case '0':
                         Console.WriteLine("\n\tShowing friends...\n");
-                        await ShowFriends(twitterCtx);
+                        await ShowFriendsAsync(twitterCtx);
+                        break;
+                    case '1':
+                        Console.WriteLine("\n\tLooking up user ids...\n");
+                        await LookupUserIDsAsync(twitterCtx);
+                        break;
+                    case '2':
+                        Console.WriteLine("\n\tGetting incoming...\n");
+                        await IncomingFriendshipsAsync(twitterCtx);
+                        break;
+                    case '3':
+                        Console.WriteLine("\n\tGetting Outgoing...\n");
+                        await OutgoingFriendshipsAsync(twitterCtx);
+                        break;
+                    case '4':
+                        Console.WriteLine("\n\tShowing no retweet IDs...\n");
+                        await NoRetweetIDsAsync(twitterCtx);
+                        break;
+                    case '5':
+                        Console.WriteLine("\n\tGetting friends list...\n");
+                        await FriendsListAsync(twitterCtx);
+                        break;
+                    case '6':
+                        Console.WriteLine("\n\tGetting followers list...\n");
+                        await FollowersListAsync(twitterCtx);
+                        break;
+                    case '7':
+                        Console.WriteLine("\n\tShowing followers ids...\n");
+                        await ShowFollowerIDsAsync(twitterCtx);
+                        break;
+                    case '8':
+                        Console.WriteLine("\n\tShowing friend ids...\n");
+                        await ShowFriendIDsAsync(twitterCtx);
+                        break;
+                    case '9':
+                        Console.WriteLine("\n\tCreating friendship...\n");
+                        await CreateFriendshipAsync(twitterCtx);
+                        break;
+                    case 'a':
+                    case 'A':
+                        Console.WriteLine("\n\tUnfollowing...\n");
+                        await DestroyFriendshipAsync(twitterCtx);
+                        break;
+                    case 'b':
+                    case 'B':
+                        Console.WriteLine("\n\tUpdating friend settings...\n");
+                        await UpdateFreindshipSettingsAsync(twitterCtx);
                         break;
                     case 'q':
                     case 'Q':
@@ -35,7 +81,27 @@ namespace Linq2TwitterDemos_Console
             } while (char.ToUpper(key) != 'Q');
         }
 
-        static async Task ShowFriends(TwitterContext twitterCtx)
+        static void ShowMenu()
+        {
+            Console.WriteLine("\nFriendship Demos - Please select:\n");
+
+            Console.WriteLine("\t 0. Show Friends");
+            Console.WriteLine("\t 1. Lookup User IDs");
+            Console.WriteLine("\t 2. Incoming Friendships");
+            Console.WriteLine("\t 3. Outgoing Friendships");
+            Console.WriteLine("\t 4. No Retweet IDs");
+            Console.WriteLine("\t 5. Friends List");
+            Console.WriteLine("\t 6. Followers List");
+            Console.WriteLine("\t 7. Follower IDs");
+            Console.WriteLine("\t 8. Friend IDs");
+            Console.WriteLine("\t 9. Create Friendship");
+            Console.WriteLine("\t A. Delete Friendship");
+            Console.WriteLine("\t B. Update Friendship Settings");
+            Console.WriteLine();
+            Console.WriteLine("\t Q. Return to Main menu");
+        }
+
+        static async Task ShowFriendsAsync(TwitterContext twitterCtx)
         {
             var friendshipResponse =
                 await
@@ -51,13 +117,160 @@ namespace Linq2TwitterDemos_Console
                     friend.ScreenNameResponse));
         }
 
-        static void ShowMenu()
+        static async Task LookupUserIDsAsync(TwitterContext twitterCtx)
         {
-            Console.WriteLine("\nFriendship Demos - Please select:\n");
+            var relationships =
+                await
+                (from look in twitterCtx.Friendship
+                 where look.Type == FriendshipType.Lookup &&
+                       look.UserID == "15411837,16761255"
+                 select look.Relationships)
+                .SingleOrDefaultAsync();
 
-            Console.WriteLine("\t 0. Show Friends");
-            Console.WriteLine();
-            Console.WriteLine("\t Q. Return to Main menu");
+            relationships.ForEach(rel => 
+                Console.WriteLine(
+                    "Relationship to " + rel.ScreenName + 
+                    ", is Following: " + rel.Following + 
+                    ", Followed By: " + rel.FollowedBy));
+        }
+
+        static async Task IncomingFriendshipsAsync(TwitterContext twitterCtx)
+        {
+            var request =
+                await
+                (from req in twitterCtx.Friendship
+                 where req.Type == FriendshipType.Incoming
+                 select req)
+                .SingleOrDefaultAsync();
+
+            request.IDInfo.IDs.ForEach(req => Console.WriteLine(req));
+        }
+
+        static async Task OutgoingFriendshipsAsync(TwitterContext twitterCtx)
+        {
+            var request =
+                await
+                (from req in twitterCtx.Friendship
+                 where req.Type == FriendshipType.Outgoing
+                 select req)
+                .SingleOrDefaultAsync();
+
+            request.IDInfo.IDs.ForEach(req => Console.WriteLine(req));
+        }
+
+        static async Task NoRetweetIDsAsync(TwitterContext twitterCtx)
+        {
+            var friendship =
+                await
+                (from friend in twitterCtx.Friendship
+                 where friend.Type == FriendshipType.NoRetweetIDs
+                 select friend)
+                .SingleOrDefaultAsync();
+
+            var ids =
+                (from id in friendship.IDInfo.IDs
+                 select id.ToString())
+                .ToArray();
+
+            Console.WriteLine("\nIDs: " + string.Join(",", ids));
+        }
+
+        static async Task FriendsListAsync(TwitterContext twitterCtx)
+        {
+            Friendship friendship;
+            long cursor = -1;
+            do
+            {
+                friendship =
+                    await
+                    (from friend in twitterCtx.Friendship
+                     where friend.Type == FriendshipType.FriendsList &&
+                           friend.ScreenName == "JoeMayo" &&
+                           friend.Cursor == cursor
+                     select friend)
+                    .SingleOrDefaultAsync();
+
+                cursor = friendship.CursorMovement.Next;
+
+                friendship.Users.ForEach(friend =>
+                    Console.WriteLine(
+                        "ID: {0} Name: {1}",
+                        friend.UserIDResponse, friend.ScreenNameResponse));
+
+            } while (cursor != 0);
+        }
+
+        static async Task FollowersListAsync(TwitterContext twitterCtx)
+        {
+            var friendship =
+                await
+                (from friend in twitterCtx.Friendship
+                 where friend.Type == FriendshipType.FollowersList &&
+                       friend.ScreenName == "JoeMayo"
+                 select friend)
+                .SingleOrDefaultAsync();
+
+            friendship.Users.ForEach(friend =>
+                Console.WriteLine(
+                    "ID: {0} Name: {1}",
+                    friend.UserIDResponse, friend.ScreenNameResponse));
+        }
+
+        static async Task ShowFollowerIDsAsync(TwitterContext twitterCtx)
+        {
+            var followers =
+                await
+                (from follower in twitterCtx.Friendship
+                 where follower.Type == FriendshipType.FollowerIDs &&
+                       follower.UserID == "15411837"
+                 select follower)
+                .SingleOrDefaultAsync();
+
+            followers.IDInfo.IDs.ForEach(id => Console.WriteLine("Follower ID: " + id));
+        }
+
+        static async Task ShowFriendIDsAsync(TwitterContext twitterCtx)
+        {
+            var friendList =
+                await
+                (from friend in twitterCtx.Friendship
+                 where friend.Type == FriendshipType.FriendIDs &&
+                       friend.ScreenName == "JoeMayo"
+                 select friend)
+                .SingleOrDefaultAsync();
+
+            friendList.IDInfo.IDs.ForEach(id => Console.WriteLine("Follower ID: " + id));
+        }
+
+        static async Task CreateFriendshipAsync(TwitterContext twitterCtx)
+        {
+            var user = await twitterCtx.CreateFriendshipAsync("JoeMayo", true);
+
+            Console.WriteLine(
+                "User Name: {0}, Status: {1}",
+                user.Name,
+                user.Status.Text);
+        }
+
+        static async Task DestroyFriendshipAsync(TwitterContext twitterCtx)
+        {
+            var user = await twitterCtx.DestroyFriendshipAsync("Linq2Tweeter");
+
+            Console.WriteLine(
+                "User Name: {0}, Status: {1}",
+                user.Name,
+                user.Status.Text);
+        }
+
+        static async Task UpdateFreindshipSettingsAsync(TwitterContext twitterCtx)
+        {
+            Friendship friend = await twitterCtx.UpdateFriendshipSettingsAsync("Linq2Tweeter", true, true);
+
+            Console.WriteLine(
+                "Settings for {0} are: Can Retweet is {1} and Can Send Device Notifications is {2}",
+                friend.SourceRelationship.ScreenName,
+                friend.SourceRelationship.RetweetsWanted,
+                friend.SourceRelationship.NotificationsEnabled);
         }
     }
 }

@@ -78,18 +78,16 @@ namespace LinqToTwitter
             }
         }
   
-        private Request BuildVerifyCredentialsUrl(Dictionary<string, string> parameters)
+        Request BuildVerifyCredentialsUrl(Dictionary<string, string> parameters)
         {
             var req = new Request(BaseUrl + "account/verify_credentials.json");
             var urlParams = req.RequestParameters;
 
-            if (parameters.ContainsKey("SkipStatus"))
+            if (parameters.ContainsKey("SkipStatus") &&
+                RequestProcessorHelper.FlagTrue(parameters, "SkipStatus"))
             {
-                if (RequestProcessorHelper.FlagTrue(parameters, "SkipStatus"))
-                {
                     SkipStatus = true;
                     urlParams.Add(new QueryParameter("skip_status", "true"));
-                }
             }
 
             if (parameters.ContainsKey("IncludeEntities"))
@@ -110,7 +108,7 @@ namespace LinqToTwitter
         {
             Account acct = null;
 
-            if (!string.IsNullOrEmpty(responseJson))
+            if (!string.IsNullOrWhiteSpace(responseJson))
             {
                 switch (Type)
                 {
@@ -144,7 +142,7 @@ namespace LinqToTwitter
         {
             Account acct = null;
 
-            if (!string.IsNullOrEmpty(responseJson))
+            if (!string.IsNullOrWhiteSpace(responseJson))
             {
                 switch ((AccountAction)theAction)
                 {

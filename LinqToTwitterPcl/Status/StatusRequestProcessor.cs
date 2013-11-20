@@ -460,7 +460,7 @@ namespace LinqToTwitter
         /// <returns>List of Status</returns>
         public virtual List<T> ProcessResults(string responseJson)
         {
-            if (string.IsNullOrEmpty(responseJson)) return new List<T>();
+            if (string.IsNullOrWhiteSpace(responseJson)) return new List<T>();
 
             JsonData statusJson = JsonMapper.ToObject(responseJson);
 

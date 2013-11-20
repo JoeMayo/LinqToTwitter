@@ -8,7 +8,7 @@ namespace LinqToTwitter
     public partial class TwitterContext
     {
         /// <summary>
-        /// Adds a favorite to the logged-in user's profile
+        /// Adds a favorite to the logged-in user's profile.
         /// </summary>
         /// <param name="id">id of status to add to favorites</param>
         /// <returns>status of favorite</returns>
@@ -41,12 +41,11 @@ namespace LinqToTwitter
                         {"include_entities", includeEntities.ToString()}
                     });
 
-            Status result = reqProc.ProcessActionResult(resultsJson, FavoritesAction.SingleStatus);
-            return result;
+            return reqProc.ProcessActionResult(resultsJson, FavoritesAction.SingleStatus);
         }
 
         /// <summary>
-        /// Deletes a favorite from the logged-in user's profile
+        /// Deletes a favorite from the logged-in user's profile.
         /// </summary>
         /// <param name="id">id of status to add to favorites</param>
         /// <returns>status of favorite</returns>
@@ -56,7 +55,7 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// Deletes a favorite from the logged-in user's profile
+        /// Deletes a favorite from the logged-in user's profile.
         /// </summary>
         /// <param name="id">id of status to add to favorites</param>
         /// <param name="includeEntities">Response doesn't include entities when false. (default: true)</param>

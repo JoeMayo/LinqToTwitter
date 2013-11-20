@@ -224,7 +224,7 @@ namespace LinqToTwitterDemo
 
         private static void RetweetDemo(TwitterContext twitterCtx)
         {
-            var retweet = twitterCtx.Retweet("267070822643023874");
+            var retweet = twitterCtx.Retweet("401033367283453953");
 
             Console.WriteLine("Retweeted Tweet: ");
             Console.WriteLine(

@@ -8,32 +8,28 @@ namespace LinqToTwitter
     public partial class TwitterContext
     {
         /// <summary>
-        /// lets logged-in user follow another user
+        /// Lets logged-in user follow another user.
         /// </summary>
         /// <param name="userID">ID of user to follow</param>
-        /// <param name="screenName">Screen name of user to follow</param>
         /// <param name="follow">Receive notifications for the followed friend</param>
         /// <returns>followed friend user info</returns>
-        public async Task<User> CreateFriendshipAsync(ulong userID, string screenName, bool follow)
+        public async Task<User> CreateFriendshipAsync(ulong userID, bool follow)
         {
-            if (userID == 0 && string.IsNullOrEmpty(screenName))
-                throw new ArgumentException("Either userID or screenName is a required parameter.", "UserIDOrScreenName");
+            if (userID == 0)
+                throw new ArgumentException("userID is a required parameter.", "userID");
 
             string destroyUrl = BaseUrl + "friendships/create.json";
 
             var createParams = new Dictionary<string, string>
                 {
-                    { "user_id", userID.ToString() },
-                    { "screen_name", screenName }
+                    { "user_id", userID.ToString() }
                 };
 
             // If follow exists in the parameter list, Twitter will
             // always treat it as true, even if the value is false;
             // Therefore, only add follow if it is true.
             if (follow)
-            {
                 createParams.Add("follow", "true");
-            }
 
             var reqProc = new FriendshipRequestProcessor<User>();
 
@@ -46,15 +42,48 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// lets logged-in user follow another user
+        /// Lets logged-in user follow another user.
+        /// </summary>
+        /// <param name="screenName">Screen name of user to follow</param>
+        /// <param name="follow">Receive notifications for the followed friend</param>
+        /// <returns>followed friend user info</returns>
+        public async Task<User> CreateFriendshipAsync(string screenName, bool follow)
+        {
+            if (string.IsNullOrWhiteSpace(screenName))
+                throw new ArgumentException("screenName is a required parameter.", "screenName");
+
+            string destroyUrl = BaseUrl + "friendships/create.json";
+
+            var createParams = new Dictionary<string, string>
+                {
+                    { "screen_name", screenName }
+                };
+
+            // If follow exists in the parameter list, Twitter will
+            // always treat it as true, even if the value is false;
+            // Therefore, only add follow if it is true.
+            if (follow)
+                createParams.Add("follow", "true");
+
+            var reqProc = new FriendshipRequestProcessor<User>();
+
+            var resultsJson =
+                await TwitterExecutor.PostToTwitterAsync<User>(
+                    destroyUrl,
+                    createParams);
+
+            return reqProc.ProcessActionResult(resultsJson, FriendshipAction.Create);
+        }
+
+        /// <summary>
+        /// Lets logged-in user un-follow another user.
         /// </summary>
         /// <param name="userID">ID of user to unfollow</param>
-        /// <param name="screenName">Screen name of user to unfollow</param>
         /// <returns>followed friend user info</returns>
-        public async Task<User> DestroyFriendshipAsync(string userID, string screenName)
+        public async Task<User> DestroyFriendshipAsync(ulong userID)
         {
-            if (string.IsNullOrEmpty(userID) && string.IsNullOrEmpty(screenName))
-                throw new ArgumentException("Either id, userID, or screenName is a required parameter.", "UserIDOrScreenName");
+            if (userID == 0)
+                throw new ArgumentException("userID is a required parameter.", "userID");
 
             string destroyUrl = BaseUrl + "friendships/destroy.json";
 
@@ -65,7 +94,31 @@ namespace LinqToTwitter
                     destroyUrl,
                     new Dictionary<string, string>
                     {
-                        { "user_id", userID },
+                        { "user_id", userID.ToString() }
+                    });
+
+            return reqProc.ProcessActionResult(resultsJson, FriendshipAction.Destroy);
+        }
+
+        /// <summary>
+        /// Lets logged-in user un-follow another user.
+        /// </summary>
+        /// <param name="screenName">Screen name of user to unfollow</param>
+        /// <returns>followed friend user info</returns>
+        public async Task<User> DestroyFriendshipAsync(string screenName)
+        {
+            if (string.IsNullOrWhiteSpace(screenName))
+                throw new ArgumentException("screenName is a required parameter.", "screenName");
+
+            string destroyUrl = BaseUrl + "friendships/destroy.json";
+
+            var reqProc = new FriendshipRequestProcessor<User>();
+
+            var resultsJson =
+                await TwitterExecutor.PostToTwitterAsync<User>(
+                    destroyUrl,
+                    new Dictionary<string, string>
+                    {
                         { "screen_name", screenName }
                     });
 
@@ -73,7 +126,7 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// lets logged-in user set retweets and/or device notifications for a follower
+        /// Lets logged-in user set retweets and/or device notifications for a follower.
         /// </summary>
         /// <param name="userID">Twitter's ID for user</param>
         /// <param name="screenName">screen name of user to update</param>
@@ -86,7 +139,7 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// lets logged-in user set retweets and/or device notifications for a follower
+        /// Lets logged-in user set retweets and/or device notifications for a follower.
         /// </summary>
         /// <param name="userID">Twitter's ID for user</param>
         /// <param name="retweets">Enable retweets</param>
@@ -98,7 +151,7 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// lets logged-in user set retweets and/or device notifications for a follower
+        /// Lets logged-in user set retweets and/or device notifications for a follower.
         /// </summary>
         /// <param name="userID">Twitter's ID for user</param>
         /// <param name="screenName">screen name of user to update</param>
@@ -107,7 +160,7 @@ namespace LinqToTwitter
         /// <returns>updated friend user info</returns>
         public async Task<Friendship> UpdateFriendshipSettingsAsync(ulong userID, string screenName, bool retweets, bool device)
         {
-            if (string.IsNullOrEmpty(screenName) && userID == 0)
+            if (string.IsNullOrWhiteSpace(screenName) && userID == 0)
                 throw new ArgumentNullException("screenNameOrUserID", "Either screenName or UserID is a required parameter.");
 
             var parms = new Dictionary<string, string>

@@ -14,7 +14,7 @@ namespace LinqToTwitter.Json
         {
             bool result;
 
-            return String.IsNullOrEmpty(val) ||
+            return String.IsNullOrWhiteSpace(val) ||
                 !bool.TryParse(val, out result)
                     ? defaultValue
                     : result;
@@ -28,7 +28,7 @@ namespace LinqToTwitter.Json
         public static int GetInt(this string val, int defaultValue /* = 0*/)
         {
             int result;
-            return String.IsNullOrEmpty(val) ||
+            return String.IsNullOrWhiteSpace(val) ||
                 !int.TryParse(val, out result)
                     ? defaultValue
                     : result;
@@ -43,7 +43,7 @@ namespace LinqToTwitter.Json
         {
             long result;
 
-            return String.IsNullOrEmpty(val) ||
+            return String.IsNullOrWhiteSpace(val) ||
                 !long.TryParse(val, out result)
                     ? defaultValue
                     : result;
@@ -58,7 +58,7 @@ namespace LinqToTwitter.Json
         {
             ulong result;
 
-            return String.IsNullOrEmpty(val) ||
+            return String.IsNullOrWhiteSpace(val) ||
                 !ulong.TryParse(val, out result)
                     ? defaultValue
                     : result;
@@ -73,7 +73,7 @@ namespace LinqToTwitter.Json
         {
             double result;
 
-            return String.IsNullOrEmpty(val) ||
+            return String.IsNullOrWhiteSpace(val) ||
                 !double.TryParse(val, NumberStyles.Any, CultureInfo.InvariantCulture, out result)
                     ? defaultValue
                     : result;
@@ -94,7 +94,7 @@ namespace LinqToTwitter.Json
         {
             DateTime result;
 
-            return String.IsNullOrEmpty(date) ||
+            return String.IsNullOrWhiteSpace(date) ||
                 !DateTime.TryParseExact(date,
                         DateFormats,
                         CultureInfo.InvariantCulture,

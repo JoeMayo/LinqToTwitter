@@ -127,17 +127,6 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// enables access to Twitter SocialGraph to discover Friends and Followers
-        /// </summary>
-        public TwitterQueryable<SocialGraph> SocialGraph
-        {
-            get
-            {
-                return new TwitterQueryable<SocialGraph>(this);
-            }
-        }
-
-        /// <summary>
         /// enables access to Twitter Search to query tweets
         /// </summary>
         public TwitterQueryable<Search> Search

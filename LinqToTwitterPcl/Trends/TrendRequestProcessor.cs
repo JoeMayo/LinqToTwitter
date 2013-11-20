@@ -159,7 +159,7 @@ namespace LinqToTwitter
         {
             IEnumerable<Trend> trends = Enumerable.Empty<Trend>();
 
-            if (!string.IsNullOrEmpty(responseJson))
+            if (!string.IsNullOrWhiteSpace(responseJson))
             {
                 switch (Type)
                 {
