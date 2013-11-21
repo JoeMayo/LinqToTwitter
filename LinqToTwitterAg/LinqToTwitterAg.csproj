@@ -173,7 +173,6 @@
     <Compile Include="Geo\Coordinate.cs" />
     <Compile Include="Geo\Geo.cs" />
     <Compile Include="Geo\GeoAction.cs" />
-    <Compile Include="Geo\GeoExtensions.cs" />
     <Compile Include="Geo\Geometry.cs" />
     <Compile Include="Geo\GeoRequestProcessor.cs" />
     <Compile Include="Geo\GeoType.cs" />

@@ -10,7 +10,7 @@ using LitJson;
 namespace LinqToTwitter
 {
     /// <summary>
-    /// processes Twitter Saved Search requests
+    /// processes Twitter Geo requests
     /// </summary>
     public class GeoRequestProcessor<T> :
         IRequestProcessor<T>,
@@ -116,7 +116,7 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// builds url based on input parameters
+        /// Builds url based on input parameters.
         /// </summary>
         /// <param name="parameters">criteria for url segments and parameters</param>
         /// <returns>URL conforming to Twitter API</returns>
@@ -147,7 +147,7 @@ namespace LinqToTwitter
         {
             if (parameters.ContainsKey(AttributeParam))
             {
-                // TODO should really be able to search for more than one Attribute
+                // TODO: should really be able to search for more than one Attribute
                 Attribute = parameters[AttributeParam] ?? String.Empty;
                 var parts = Attribute.Split('=');
 
@@ -162,19 +162,12 @@ namespace LinqToTwitter
             }
         }
 
-        /// <summary>
-        /// Builds an url for search query
-        /// </summary>
-        /// <param name="parameters">URL parameters</param>
-        /// <returns>URL for nearby places + parameters</returns>
         Request BuildSearchUrl(Dictionary<string, string> parameters)
         {
             if (!parameters.ContainsKey("IP") &&
                 !(parameters.ContainsKey("Latitude") &&
                   parameters.ContainsKey("Longitude")))
-            {
                 throw new ArgumentException("Either Latitude and Longitude or IP address is required.");
-            }
 
             var req = new Request(BaseUrl + "geo/search.json");
             var urlParams = req.RequestParameters;
@@ -232,10 +225,6 @@ namespace LinqToTwitter
             return req;
         }
 
-        /// <summary>
-        /// construct a base show url
-        /// </summary>
-        /// <returns>base url + show segment</returns>
         Request BuildIDUrl(Dictionary<string, string> parameters)
         {
             if (!parameters.ContainsKey(IDParam))
@@ -247,10 +236,6 @@ namespace LinqToTwitter
             return new Request(BaseUrl + url);
         }
 
-        /// <summary>
-        /// return a saved searches url
-        /// </summary>
-        /// <returns>saved search url</returns>
         Request BuildReverseUrl(Dictionary<string, string> parameters)
         {
             if (!parameters.ContainsKey("Latitude") || !parameters.ContainsKey("Longitude"))
@@ -295,10 +280,6 @@ namespace LinqToTwitter
             return req;
         }
 
-        /// <summary>
-        /// return a url for similar places
-        /// </summary>
-        /// <returns>saved search url</returns>
         Request BuildSimilarPlacesUrl(Dictionary<string, string> parameters)
         {
             if (!parameters.ContainsKey("Latitude") || !parameters.ContainsKey("Longitude"))
@@ -346,7 +327,7 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// transforms response into List of SavedSearch
+        /// Transforms response into List of Geo.
         /// </summary>
         /// <param name="responseJson">Json with Twitter response</param>
         /// <returns>List of SavedSearch</returns>

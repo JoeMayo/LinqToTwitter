@@ -21,7 +21,19 @@ namespace Linq2TwitterDemos_Console
                 {
                     case '0':
                         Console.WriteLine("\n\tSearching by IP...\n");
-                        await SearchByIP(twitterCtx);
+                        await SearchByIPAsync(twitterCtx);
+                        break;
+                    case '1':
+                        Console.WriteLine("\n\tLooking for geo...\n");
+                        await LookupGeoIDAsync(twitterCtx);
+                        break;
+                    case '2':
+                        Console.WriteLine("\n\tFinding reverse geocode...\n");
+                        await LookupReverseGeocodeAsync(twitterCtx);
+                        break;
+                    case '3':
+                        Console.WriteLine("\n\tFinding similar places...\n");
+                        await FindSimilarPlacesAsync(twitterCtx);
                         break;
                     case 'q':
                     case 'Q':
@@ -35,7 +47,19 @@ namespace Linq2TwitterDemos_Console
             } while (char.ToUpper(key) != 'Q');
         }
 
-        static async Task SearchByIP(TwitterContext twitterCtx)
+        static void ShowMenu()
+        {
+            Console.WriteLine("\nGeo Demos - Please select:\n");
+
+            Console.WriteLine("\t 0. Search by IP");
+            Console.WriteLine("\t 1. Lookup Geo by ID");
+            Console.WriteLine("\t 2. Lookup Reverse Geocode");
+            Console.WriteLine("\t 3. Find Similar Places");
+            Console.WriteLine();
+            Console.WriteLine("\t Q. Return to Main menu");
+        }
+
+        static async Task SearchByIPAsync(TwitterContext twitterCtx)
         {
             var geoResponse =
                 await
@@ -52,13 +76,58 @@ namespace Linq2TwitterDemos_Console
                 place.Name, place.Country, place.PlaceType);
         }
 
-        static void ShowMenu()
+        static async Task LookupGeoIDAsync(TwitterContext twitterCtx)
         {
-            Console.WriteLine("\nGeo Demos - Please select:\n");
+            var geo =
+                await
+                (from g in twitterCtx.Geo
+                 where g.Type == GeoType.ID &&
+                       g.ID == "5a110d312052166f"
+                 select g)
+                .SingleOrDefaultAsync();
 
-            Console.WriteLine("\t 0. Search by IP");
-            Console.WriteLine();
-            Console.WriteLine("\t Q. Return to Main menu");
+            Place place = geo.Places.First();
+
+            Console.WriteLine(
+                "Name: {0}, Country: {1}, Type: {2}",
+                place.Name, place.Country, place.PlaceType);
+        }
+
+        static async Task LookupReverseGeocodeAsync(TwitterContext twitterCtx)
+        {
+            var geo =
+                await
+                (from g in twitterCtx.Geo
+                 where g.Type == GeoType.Reverse &&
+                       g.Latitude == 37.78215 &&
+                       g.Longitude == -122.40060
+                 select g)
+                .SingleOrDefaultAsync();
+
+            geo.Places.ForEach(
+                place =>
+                    Console.WriteLine(
+                        "Name: {0}, Country: {1}, Type: {2}",
+                        place.Name, place.Country, place.PlaceType));
+        }
+
+        static async Task FindSimilarPlacesAsync(TwitterContext twitterCtx)
+        {
+            var geo =
+                await
+                (from g in twitterCtx.Geo
+                 where g.Type == GeoType.SimilarPlaces &&
+                       g.Latitude == 37.78215 &&
+                       g.Longitude == -122.40060 &&
+                       g.PlaceName == "Twitter HQ"
+                 select g)
+                .SingleOrDefaultAsync();
+
+            geo.Places.ForEach(
+                place =>
+                    Console.WriteLine(
+                        "Name: {0}, Country: {1}, Type: {2}",
+                        place.Name, place.Country, place.PlaceType));
         }
     }
 }

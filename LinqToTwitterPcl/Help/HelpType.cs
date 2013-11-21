@@ -11,6 +11,11 @@
         /// Languages supported by Twitter
         /// </summary>
         Languages,
+        
+        /// <summary>
+        /// Get Twitter Privacy Policy
+        /// </summary>
+        Privacy,
 
         /// <summary>
         /// Provides Rate Limit Status

@@ -21,7 +21,23 @@ namespace Linq2TwitterDemos_Console
                 {
                     case '0':
                         Console.WriteLine("\n\tGetting Rate Limits...\n");
-                        await GettingRateLimits(twitterCtx);
+                        await GettingRateLimitsAsync(twitterCtx);
+                        break;
+                    case '1':
+                        Console.WriteLine("\n\tGetting configuration...\n");
+                        await GetHelpConfigurationAsync(twitterCtx);
+                        break;
+                    case '2':
+                        Console.WriteLine("\n\tGetting languages...\n");
+                        await GetHelpLanguagesAsync(twitterCtx);
+                        break;
+                    case '3':
+                        Console.WriteLine("\n\tGetting privacy...\n");
+                        await GetPrivacyAsync(twitterCtx);
+                        break;
+                    case '4':
+                        Console.WriteLine("\n\tGetting tos...\n");
+                        await GetTosAsync(twitterCtx);
                         break;
                     case 'q':
                     case 'Q':
@@ -35,7 +51,20 @@ namespace Linq2TwitterDemos_Console
             } while (char.ToUpper(key) != 'Q');
         }
 
-        static async Task GettingRateLimits(TwitterContext twitterCtx)
+        static void ShowMenu()
+        {
+            Console.WriteLine("\nHelp Demos - Please select:\n");
+
+            Console.WriteLine("\t 0. Get Rate Limits");
+            Console.WriteLine("\t 1. Get Configuration");
+            Console.WriteLine("\t 2. Get Languages");
+            Console.WriteLine("\t 3. Get Privacy Policy");
+            Console.WriteLine("\t 4. Get Terms of Service");
+            Console.WriteLine();
+            Console.WriteLine("\t Q. Return to Main menu");
+        }
+
+        static async Task GettingRateLimitsAsync(TwitterContext twitterCtx)
         {
             var helpResponse =
                 await
@@ -57,13 +86,72 @@ namespace Linq2TwitterDemos_Console
             }
         }
 
-        static void ShowMenu()
+        static async Task GetHelpConfigurationAsync(TwitterContext twitterCtx)
         {
-            Console.WriteLine("\nHelp Demos - Please select:\n");
+            var helpResult =
+                await
+                (from test in twitterCtx.Help
+                 where test.Type == HelpType.Configuration
+                 select test)
+                .SingleOrDefaultAsync();
 
-            Console.WriteLine("\t 0. Get Rate Limits");
-            Console.WriteLine();
-            Console.WriteLine("\t Q. Return to Main menu");
+            Configuration cfg = helpResult.Configuration;
+
+            Console.WriteLine("Short URL Length: " + cfg.ShortUrlLength);
+            Console.WriteLine("Short URL HTTPS Length: " + cfg.ShortUrlLengthHttps);
+            Console.WriteLine("Non-UserName Paths: ");
+            foreach (var name in cfg.NonUserNamePaths)
+            {
+                Console.WriteLine("\t" + name);
+            }
+            Console.WriteLine("Photo Size Limit: " + cfg.PhotoSizeLimit);
+            Console.WriteLine("Max Media Per Upload: " + cfg.MaxMediaPerUpload);
+            Console.WriteLine("Characters Reserved Per Media: " + cfg.CharactersReservedPerMedia);
+            Console.WriteLine("Photo Sizes");
+            foreach (var photo in cfg.PhotoSizes)
+            {
+                Console.WriteLine("\t" + photo.Type);
+                Console.WriteLine("\t\t" + photo.Width);
+                Console.WriteLine("\t\t" + photo.Height);
+                Console.WriteLine("\t\t" + photo.Resize);
+            }
+        }
+
+        static async Task GetHelpLanguagesAsync(TwitterContext twitterCtx)
+        {
+            var helpResult =
+                await
+                (from test in twitterCtx.Help
+                 where test.Type == HelpType.Languages
+                 select test)
+                .SingleOrDefaultAsync();
+
+            helpResult.Languages.ForEach(lang => 
+                Console.WriteLine("{0}({1}): {2}", lang.Name, lang.Code, lang.Status));
+        }
+
+        static async Task GetPrivacyAsync(TwitterContext twitterCtx)
+        {
+            var helpResult =
+                await
+                (from test in twitterCtx.Help
+                 where test.Type == HelpType.Privacy
+                 select test)
+                .SingleOrDefaultAsync();
+
+            Console.WriteLine(helpResult.Policies);
+        }
+
+        static async Task GetTosAsync(TwitterContext twitterCtx)
+        {
+            var helpResult =
+                await
+                (from test in twitterCtx.Help
+                 where test.Type == HelpType.Tos
+                 select test)
+                .SingleOrDefaultAsync();
+
+            Console.WriteLine(helpResult.Policies);
         }
     }
 }

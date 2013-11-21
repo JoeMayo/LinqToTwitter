@@ -135,6 +135,9 @@ namespace LinqToTwitter
         /// <returns>updated friend user info</returns>
         public async Task<Friendship> UpdateFriendshipSettingsAsync(string screenName, bool retweets, bool device)
         {
+            if (string.IsNullOrWhiteSpace(screenName))
+                throw new ArgumentNullException("screenName", "screenName is a required parameter.");
+
             return await UpdateFriendshipSettingsAsync(0, screenName, retweets, device);
         }
 
@@ -147,6 +150,9 @@ namespace LinqToTwitter
         /// <returns>updated friend user info</returns>
         public async Task<Friendship> UpdateFriendshipSettingsAsync(ulong userID, bool retweets, bool device)
         {
+            if (userID == 0)
+                throw new ArgumentNullException("userID", "userID is a required parameter.");
+
             return await UpdateFriendshipSettingsAsync(0, null, retweets, device);
         }
 
@@ -158,11 +164,8 @@ namespace LinqToTwitter
         /// <param name="retweets">Enable retweets</param>
         /// <param name="device">Receive notifications</param>
         /// <returns>updated friend user info</returns>
-        public async Task<Friendship> UpdateFriendshipSettingsAsync(ulong userID, string screenName, bool retweets, bool device)
+        async Task<Friendship> UpdateFriendshipSettingsAsync(ulong userID, string screenName, bool retweets, bool device)
         {
-            if (string.IsNullOrWhiteSpace(screenName) && userID == 0)
-                throw new ArgumentNullException("screenNameOrUserID", "Either screenName or UserID is a required parameter.");
-
             var parms = new Dictionary<string, string>
             {
                 { "retweets", retweets.ToString().ToLower() },

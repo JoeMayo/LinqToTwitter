@@ -21,6 +21,11 @@ namespace LinqToTwitter
         public bool OK { get; set; }
 
         /// <summary>
+        /// Terms of service or Privacy
+        /// </summary>
+        public string Policies { get; set; }
+
+        /// <summary>
         /// Populated for Help Configuration query
         /// </summary>
         public Configuration Configuration { get; set; }

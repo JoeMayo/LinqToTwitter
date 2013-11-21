@@ -155,7 +155,9 @@ namespace LinqToTwitterDemo
                 .SingleOrDefault();
 
             relationships.ForEach(rel => Console.WriteLine(
-                "Relationship to " + rel.ScreenName + " is Following: " + rel.Following + " Followed By: " + rel.FollowedBy));
+                "Relationship to " + rel.ScreenName + 
+                " is Following: " + rel.Following + 
+                " Followed By: " + rel.FollowedBy));
         }
 
         private static void FriendshipUserIDLookupDemo(TwitterContext twitterCtx)

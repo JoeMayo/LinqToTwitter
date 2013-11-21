@@ -103,11 +103,5 @@ namespace LinqToTwitterDemo
                         "Name: {0}, Country: {1}, Type: {2}",
                         place.Name, place.Country, place.PlaceType));
         }
-
-        static void CreatePlaceDemo(TwitterContext twitterCtx)
-        {
-            Place place = twitterCtx.CreatePlace("Bird Feeder", "247f43d441defc03", "15f3c6f2b94ba19faee70d9d61aaebee", 37.78215, -122.4006, "795 Folsom St");
-            Console.WriteLine(place.Name);
-        }
     }
 }

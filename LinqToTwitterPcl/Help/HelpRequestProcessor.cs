@@ -8,7 +8,7 @@ using LitJson;
 namespace LinqToTwitter
 {
     /// <summary>
-    /// used for processing help messages - we only use the request processing part
+    /// Used for Help queries
     /// </summary>
     public class HelpRequestProcessor<T> : IRequestProcessor<T>, IRequestProcessorWantsJson
     {
@@ -52,8 +52,12 @@ namespace LinqToTwitter
                     return new Request(BaseUrl + "help/configuration.json");
                 case HelpType.Languages:
                     return new Request(BaseUrl + "help/languages.json");
+                case HelpType.Privacy:
+                    return new Request(BaseUrl + "help/privacy.json");
                 case HelpType.RateLimits:
                     return BuildRateLimitsUrl(parameters);
+                case HelpType.Tos:
+                    return new Request(BaseUrl + "help/tos.json");
                 default:
                     throw new InvalidOperationException("The default case of BuildUrl should never execute because a Type must be specified.");
             }
@@ -82,17 +86,32 @@ namespace LinqToTwitter
         public virtual List<T> ProcessResults(string responseJson)
         {
             Help help;
+            JsonData helpJson = JsonMapper.ToObject(responseJson);
 
             switch (Type)
             {
                 case HelpType.Configuration:
-                    help = HandleHelpConfiguration(responseJson);
+                    help = HandleHelpConfiguration(helpJson);
                     break;
                 case HelpType.Languages:
-                    help = HandleHelpLanguages(responseJson);
+                    help = HandleHelpLanguages(helpJson);
                     break;
                 case HelpType.RateLimits:
-                    help = HandleHelpRateLimits(responseJson);
+                    help = HandleHelpRateLimits(helpJson);
+                    break;
+                case HelpType.Privacy:
+                    help = new Help 
+                    { 
+                        Type = HelpType.Privacy,
+                        Policies = helpJson.GetValue<string>("privacy") 
+                    };
+                    break;
+                case HelpType.Tos:
+                    help = new Help 
+                    { 
+                        Type = HelpType.Tos,
+                        Policies = helpJson.GetValue<string>("tos") 
+                    };
                     break;
                 default:
                     help = new Help();
@@ -104,10 +123,8 @@ namespace LinqToTwitter
             return helpList.OfType<T>().ToList();
         }
 
-        Help HandleHelpConfiguration(string responseJson)
+        Help HandleHelpConfiguration(JsonData helpJson)
         {
-            JsonData helpJson = JsonMapper.ToObject(responseJson);
-
             var photoSizeDict = helpJson.GetValue<JsonData>("photo_sizes") as IDictionary<string, JsonData>;
 
             return new Help
@@ -139,10 +156,8 @@ namespace LinqToTwitter
             };
         }
 
-        Help HandleHelpLanguages(string responseJson)
+        Help HandleHelpLanguages(JsonData helpJson)
         {
-            JsonData helpJson = JsonMapper.ToObject(responseJson);
-
             return new Help
             {
                 Type = HelpType.Languages,
@@ -158,10 +173,8 @@ namespace LinqToTwitter
             };
         }
 
-        Help HandleHelpRateLimits(string responseJson)
+        Help HandleHelpRateLimits(JsonData helpJson)
         {
-            JsonData helpJson = JsonMapper.ToObject(responseJson);
-
             var context = helpJson.GetValue<JsonData>("rate_limit_context");
             var resources = helpJson.GetValue<JsonData>("resources") as IDictionary<string, JsonData>;
 
