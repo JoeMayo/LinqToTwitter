@@ -121,29 +121,39 @@ namespace LinqToTwitter
                 req.BeginGetRequestStream(
                     ar =>
                     {
-                        using (var reqStream = req.EndGetRequestStream(ar))
-                            reqStream.Write(data, 0, data.Length);
+                        try
+                        {
+                            using (var reqStream = req.EndGetRequestStream(ar))
+                                reqStream.Write(data, 0, data.Length);
 
-                        req.BeginGetResponse(
-                            ar2 =>
-                            {
-                                try
+                            req.BeginGetResponse(
+                                ar2 =>
                                 {
-                                    var resp = req.EndGetResponse(ar2);
-                                    response = resp.ReadReponse();
-                                }
-                                catch (Exception ex)
-                                {
-                                    thrownException = ex;
-                                }
-                                finally
-                                {
+                                    try
+                                    {
+                                        var resp = req.EndGetResponse(ar2);
+                                        response = resp.ReadReponse();
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        thrownException = ex;
+                                    }
+                                    finally
+                                    {
 #if !WINDOWS_PHONE && !NETFX_CORE
                                     resetEvent.Set();
 #endif
-                                }
-                            },
-                            null);
+                                    }
+                                },
+                                null);
+                        }
+                        catch (Exception ex)
+                        {
+                            thrownException = ex;
+#if !WINDOWS_PHONE && !NETFX_CORE
+                            resetEvent.Set();
+#endif
+                        }
                     },
                     null);
 #if !WINDOWS_PHONE && !NETFX_CORE
