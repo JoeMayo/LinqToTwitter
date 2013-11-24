@@ -8,17 +8,13 @@ namespace LinqToTwitter
     public enum ListType
     {
         /// <summary>
-        /// Lists for specified user
-        /// </summary>
-        Lists,
-
-        /// <summary>
         /// Show specified list
         /// </summary>
         Show,
 
-        // TODO: deprecated
-        [Obsolete("This enum value is obsolete and will become an error in a later release. Please use Show instead.", true)]
+        /// <summary>
+        /// Show lists user is subscribed to
+        /// </summary>
         List,
 
         /// <summary>
@@ -54,12 +50,7 @@ namespace LinqToTwitter
         /// <summary>
         /// Check if a user subscribes to the specified list
         /// </summary>
-        IsSubscribed,
-
-        /// <summary>
-        /// Get all lists subscribed to
-        /// </summary>
-        All,
+        IsSubscriber,
 
         /// <summary>
         /// Get lists belonging to the specified user

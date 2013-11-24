@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
 using LinqToTwitter;
 using LinqToTwitterPcl.Tests.Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -19,19 +18,19 @@ namespace LinqToTwitterPcl.Tests.ListTests
         }
 
         [TestMethod]
-        public async Task GetParameters_Parses_All_Available_Parameters()
+        public void GetParameters_Parses_All_Available_Parameters()
         {
             var listReqProc = new ListRequestProcessor<List>();
             Expression<Func<List, bool>> expression =
                 list =>
                     list.Type == ListType.Members &&
-                    list.UserID == "456" &&
+                    list.UserID == 456ul &&
                     list.ScreenName == "JoeMayo" &&
-                    list.ListID == "456" &&
+                    list.ListID == 456ul &&
                     list.Slug == "test" &&
-                    list.OwnerID == "789" &&
+                    list.OwnerID == 789ul &&
                     list.OwnerScreenName == "JoeMayo" &&
-                    list.Cursor == "123" &&
+                    list.Cursor == 123 &&
                     list.MaxID == 789 &&
                     list.Page == 1 &&
                     list.Count == 10 &&
@@ -102,7 +101,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
         }
 
         [TestMethod]
-        public async Task BuildUrl_Works_With_Json_Format_Data()
+        public void BuildUrl_Works_With_Json_Format_Data()
         {
             var listReqProc = new ListRequestProcessor<List>();
 
@@ -110,14 +109,14 @@ namespace LinqToTwitterPcl.Tests.ListTests
         }
 
         [TestMethod]
-        public async Task BuildUrl_Creates_Lists_Url()
+        public void BuildUrl_Creates_Lists_Url()
         {
             const string ExpectedUrl = "https://api.twitter.com/1.1/lists/list.json?screen_name=JoeMayo";
             var listReqProc = new ListRequestProcessor<List> { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters =
                 new Dictionary<string, string>
                 {
-                    { "Type", ((int)ListType.Lists).ToString() },
+                    { "Type", ((int)ListType.List).ToString() },
                     { "ScreenName", "JoeMayo" }
                 };
 
@@ -128,7 +127,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
 
         [TestMethod]
         [Ignore]
-        public async Task BuildUrl_Throws_On_Missing_Type()
+        public void BuildUrl_Throws_On_Missing_Type()
         {
             const string ExpectedParam = "Type";
             var listReqProc = new ListRequestProcessor<List> { BaseUrl = "https://api.twitter.com/1.1/" };
@@ -145,7 +144,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
 
         [TestMethod]
         [Ignore]
-        public async Task BuildUrl_Throws_On_Missing_ScreenName()
+        public void BuildUrl_Throws_On_Missing_ScreenName()
         {
             const string ExpectedParamName = "UserIdOrScreenName";
             var listReqProc = new ListRequestProcessor<List> { BaseUrl = "https://api.twitter.com/1.1/" };
@@ -162,7 +161,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
 
         [TestMethod]
         [Ignore]
-        public async Task BuildUrl_Throws_On_Null_Param_List()
+        public void BuildUrl_Throws_On_Null_Param_List()
         {
             const string ExpectedParamName = "Type";
             var listReqProc = new ListRequestProcessor<List> { BaseUrl = "https://api.twitter.com/1.1/" };
@@ -173,46 +172,14 @@ namespace LinqToTwitterPcl.Tests.ListTests
         }
 
         [TestMethod]
-        public async Task BuildAllListsUrl_Returns_Url_With_ScreenName()
-        {
-            const string ExpectedUrl = "https://api.twitter.com/1.1/lists/all.json?screen_name=JoeMayo";
-            var listReqProc = new ListRequestProcessor<List>() { BaseUrl = "https://api.twitter.com/1.1/" };
-            var parameters = new Dictionary<string, string>
-            {
-                {"Type", ((int) ListType.All).ToString()},
-                {"ScreenName", "JoeMayo"},
-            };
-
-            Request req = listReqProc.BuildUrl(parameters);
-
-            Assert.AreEqual(ExpectedUrl, req.FullUrl);
-        }
-
-        [TestMethod]
-        public async Task BuildAllListsUrl_Returns_Url_With_UserID()
-        {
-            const string ExpectedUrl = "https://api.twitter.com/1.1/lists/all.json?user_id=123";
-            var listReqProc = new ListRequestProcessor<List> { BaseUrl = "https://api.twitter.com/1.1/" };
-            var parameters = new Dictionary<string, string>
-            {
-                {"Type", ((int) ListType.All).ToString(CultureInfo.InvariantCulture)},
-                {"UserID", "123"},
-            };
-
-            Request req = listReqProc.BuildUrl(parameters);
-
-            Assert.AreEqual(ExpectedUrl, req.FullUrl);
-        }
-
-        [TestMethod]
         [Ignore]
-        public async Task BuildListUrl_Requires_UserID_Or_ScreenName()
+        public void BuildListUrl_Requires_UserID_Or_ScreenName()
         {
             const string ExpectedParamName = "UserIdOrScreenName";
             var listReqProc = new ListRequestProcessor<List> { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
             {
-                {"Type", ((int) ListType.Lists).ToString()},
+                {"Type", ((int) ListType.List).ToString()},
                 //{"UserID", "123"},
             };
 
@@ -222,13 +189,13 @@ namespace LinqToTwitterPcl.Tests.ListTests
         }
 
         [TestMethod]
-        public async Task BuildListsUrl_Returns_Url()
+        public void BuildListsUrl_Returns_Url()
         {
             const string ExpectedUrl = "https://api.twitter.com/1.1/lists/list.json?user_id=123&screen_name=JoeMayo&cursor=456&reverse=true";
             var listReqProc = new ListRequestProcessor<List>() { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
             {
-                { "Type", ((int) ListType.Lists).ToString() },
+                { "Type", ((int) ListType.List).ToString() },
                 { "UserID", "123" },
                 { "ScreenName", "JoeMayo" },
                 { "Cursor", "456" },
@@ -242,7 +209,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
 
         [TestMethod]
         [Ignore]
-        public async Task BuildMembershipsUrl_Requires_UserID_Or_ScreenName()
+        public void BuildMembershipsUrl_Requires_UserID_Or_ScreenName()
         {
             const string ExpectedParamName = "UserIdOrScreenName";
             var listReqProc = new ListRequestProcessor<List> { BaseUrl = "https://api.twitter.com/1.1/" };
@@ -258,7 +225,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
         }
 
         [TestMethod]
-        public async Task BuildMembershipsUrl_Returns_Url()
+        public void BuildMembershipsUrl_Returns_Url()
         {
             const string ExpectedUrl = "https://api.twitter.com/1.1/lists/memberships.json?user_id=123&screen_name=JoeMayo&cursor=456&filter_to_owned_lists=true";
             var listReqProc = new ListRequestProcessor<List>() { BaseUrl = "https://api.twitter.com/1.1/" };
@@ -277,7 +244,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
         }
 
         [TestMethod]
-        public async Task BuildMembershipsUrl_Does_Not_Add_False_Filter_To_Url()
+        public void BuildMembershipsUrl_Does_Not_Add_False_Filter_To_Url()
         {
             const string ExpectedUrl = "https://api.twitter.com/1.1/lists/memberships.json?user_id=123&screen_name=JoeMayo&cursor=456";
             var listReqProc = new ListRequestProcessor<List>() { BaseUrl = "https://api.twitter.com/1.1/" };
@@ -297,7 +264,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
 
         [TestMethod]
         [Ignore]
-        public async Task BuildSubscriptionsUrl_Requires_UserID_Or_ScreenName()
+        public void BuildSubscriptionsUrl_Requires_UserID_Or_ScreenName()
         {
             const string ExpectedParamName = "UserIdOrScreenName";
             var listReqProc = new ListRequestProcessor<List> { BaseUrl = "https://api.twitter.com/1.1/" };
@@ -313,7 +280,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
         }
 
         [TestMethod]
-        public async Task BuildSubscriptionsUrl_Returns_Url()
+        public void BuildSubscriptionsUrl_Returns_Url()
         {
             const string ExpectedUrl = "https://api.twitter.com/1.1/lists/subscriptions.json?user_id=123&screen_name=JoeMayo&count=10&cursor=456";
             var listReqProc = new ListRequestProcessor<List>() { BaseUrl = "https://api.twitter.com/1.1/" };
@@ -333,7 +300,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
 
         [TestMethod]
         [Ignore]
-        public async Task BuildShowUrl_Requires_ListID_Or_Slug()
+        public void BuildShowUrl_Requires_ListID_Or_Slug()
         {
             const string ExpecteParamName = "ListIdOrSlug";
             var listReqProc = new ListRequestProcessor<List> { BaseUrl = "https://api.twitter.com/1.1/" };
@@ -351,7 +318,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
 
         [TestMethod]
         [Ignore]
-        public async Task BuildShowUrl_Requires_Non_Null_And_Not_Empty_ListID_Or_Slug()
+        public void BuildShowUrl_Requires_Non_Null_And_Not_Empty_ListID_Or_Slug()
         {
             const string ExpectedParamName = "ListIdOrSlug";
             var listReqProc = new ListRequestProcessor<List> { BaseUrl = "https://api.twitter.com/1.1/" };
@@ -370,7 +337,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
 
         [TestMethod]
         [Ignore]
-        public async Task BuildShowUrl_Requires_OwnerID_Or_OwnerScreenName_If_Slug_Used()
+        public void BuildShowUrl_Requires_OwnerID_Or_OwnerScreenName_If_Slug_Used()
         {
             const string ExpectedParamName = "OwnerIdOrOwnerScreenName";
             var listReqProc = new ListRequestProcessor<List> { BaseUrl = "https://api.twitter.com/1.1/" };
@@ -387,7 +354,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
         }
 
         [TestMethod]
-        public async Task BuildShowUrl_Returns_Url()
+        public void BuildShowUrl_Returns_Url()
         {
             const string ExpectedUrl = "https://api.twitter.com/1.1/lists/show.json?slug=test&owner_id=123&owner_screen_name=JoeMayo&list_id=456";
             var listReqProc = new ListRequestProcessor<List>() { BaseUrl = "https://api.twitter.com/1.1/" };
@@ -407,7 +374,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
 
         [TestMethod]
         [Ignore]
-        public async Task BuildStatusesUrl_Requires_ListID_Or_Slug()
+        public void BuildStatusesUrl_Requires_ListID_Or_Slug()
         {
             const string ExpectedParamName = "ListIdOrSlug";
             var listReqProc = new ListRequestProcessor<List> { BaseUrl = "https://api.twitter.com/1.1/" };
@@ -425,7 +392,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
 
         [TestMethod]
         [Ignore]
-        public async Task BuildStatusesUrl_Requires_Non_Null_And_Not_Empty_ListID_Or_Slug()
+        public void BuildStatusesUrl_Requires_Non_Null_And_Not_Empty_ListID_Or_Slug()
         {
             const string ExpectedParamName = "ListIdOrSlug";
             var listReqProc = new ListRequestProcessor<List> { BaseUrl = "https://api.twitter.com/1.1/" };
@@ -444,7 +411,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
 
         [TestMethod]
         [Ignore]
-        public async Task BuildStatusesUrl_Requires_OwnerID_Or_OwnerScreenName_If_Slug_Used()
+        public void BuildStatusesUrl_Requires_OwnerID_Or_OwnerScreenName_If_Slug_Used()
         {
             const string ExpectedParamName = "OwnerIdOrOwnerScreenName";
             var listReqProc = new ListRequestProcessor<List> { BaseUrl = "https://api.twitter.com/1.1/" };
@@ -461,7 +428,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
         }
 
         [TestMethod]
-        public async Task BuildStatusesUrl_Returns_Url()
+        public void BuildStatusesUrl_Returns_Url()
         {
             const string ExpectedUrl = "https://api.twitter.com/1.1/lists/statuses.json?owner_id=123&owner_screen_name=JoeMayo&slug=test&list_id=456&since_id=789&max_id=234&count=25&per_page=25&page=3&trim_user=true&include_entities=true&include_rts=true";
             var listReqProc = new ListRequestProcessor<List>() { BaseUrl = "https://api.twitter.com/1.1/" };
@@ -487,7 +454,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
         }
 
         [TestMethod]
-        public async Task BuildStatusesUrl_Includes_False_Parameters()
+        public void BuildStatusesUrl_Includes_False_Parameters()
         {
             const string ExpectedUrl = "https://api.twitter.com/1.1/lists/statuses.json?owner_id=123&owner_screen_name=JoeMayo&slug=test&list_id=456&since_id=789&max_id=234&count=25&per_page=25&page=3&trim_user=false&include_entities=false&include_rts=false";
             var listReqProc = new ListRequestProcessor<List>() { BaseUrl = "https://api.twitter.com/1.1/" };
@@ -514,7 +481,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
 
         [TestMethod]
         [Ignore]
-        public async Task BuildMembersUrl_Requires_ListID_Or_Slug()
+        public void BuildMembersUrl_Requires_ListID_Or_Slug()
         {
             const string ExpectedParamName = "ListIdOrSlug";
             var listReqProc = new ListRequestProcessor<List> { BaseUrl = "https://api.twitter.com/1.1/" };
@@ -532,7 +499,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
 
         [TestMethod]
         [Ignore]
-        public async Task BuildMembersUrl_Requires_Non_Null_And_Not_Empty_ListID_Or_Slug()
+        public void BuildMembersUrl_Requires_Non_Null_And_Not_Empty_ListID_Or_Slug()
         {
             const string ExpectedParamName = "ListIdOrSlug";
             var listReqProc = new ListRequestProcessor<List> { BaseUrl = "https://api.twitter.com/1.1/" };
@@ -551,7 +518,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
 
         [TestMethod]
         [Ignore]
-        public async Task BuildMembersUrl_Requires_OwnerID_Or_OwnerScreenName_If_Slug_Used()
+        public void BuildMembersUrl_Requires_OwnerID_Or_OwnerScreenName_If_Slug_Used()
         {
             const string ExpectedParamName = "OwnerIdOrOwnerScreenName";
             var listReqProc = new ListRequestProcessor<List> { BaseUrl = "https://api.twitter.com/1.1/" };
@@ -568,7 +535,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
         }
 
         [TestMethod]
-        public async Task BuildMembersUrl_Returns_Url()
+        public void BuildMembersUrl_Returns_Url()
         {
             const string ExpectedUrl = "https://api.twitter.com/1.1/lists/members.json?owner_id=123&owner_screen_name=JoeMayo&slug=test&list_id=456&cursor=789&include_entities=true&skip_status=true";
             var listReqProc = new ListRequestProcessor<List>() { BaseUrl = "https://api.twitter.com/1.1/" };
@@ -590,7 +557,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
         }
 
         [TestMethod]
-        public async Task BuildMembersUrl_Includes_False_Parameters()
+        public void BuildMembersUrl_Includes_False_Parameters()
         {
             const string ExpectedUrl = "https://api.twitter.com/1.1/lists/members.json?owner_id=123&owner_screen_name=JoeMayo&slug=test&list_id=456&cursor=789&include_entities=false";
             var listReqProc = new ListRequestProcessor<List>() { BaseUrl = "https://api.twitter.com/1.1/" };
@@ -612,7 +579,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
 
         [TestMethod]
         [Ignore]
-        public async Task BuildIsMemberUrl_Requires_ListID_Or_Slug()
+        public void BuildIsMemberUrl_Requires_ListID_Or_Slug()
         {
             const string ExpectedParamName = "ListIdOrSlug";
             var listReqProc = new ListRequestProcessor<List> { BaseUrl = "https://api.twitter.com/1.1/" };
@@ -631,7 +598,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
 
         [TestMethod]
         [Ignore]
-        public async Task BuildIsMemberUrl_Requires_OwnerID_Or_OwnerScreenName_If_Slug_Used()
+        public void BuildIsMemberUrl_Requires_OwnerID_Or_OwnerScreenName_If_Slug_Used()
         {
             const string ExpectedParamName = "OwnerIdOrOwnerScreenName";
             var listReqProc = new ListRequestProcessor<List> { BaseUrl = "https://api.twitter.com/1.1/" };
@@ -650,7 +617,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
 
         [TestMethod]
         [Ignore]
-        public async Task BuildIsMemberUrl_Requires_UserID_Or_ScreenName()
+        public void BuildIsMemberUrl_Requires_UserID_Or_ScreenName()
         {
             const string ExpectedParamName = "UserIdOrScreenName";
             var listReqProc = new ListRequestProcessor<List> { BaseUrl = "https://api.twitter.com/1.1/" };
@@ -667,7 +634,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
         }
 
         [TestMethod]
-        public async Task BuildIsMemberUrl_Returns_Url()
+        public void BuildIsMemberUrl_Returns_Url()
         {
             const string ExpectedUrl = "https://api.twitter.com/1.1/lists/members/show.json?user_id=789&screen_name=JoeMayo&slug=test&owner_id=123&owner_screen_name=JoeMayo&list_id=456&include_entities=true&skip_status=true";
             var listReqProc = new ListRequestProcessor<List>() { BaseUrl = "https://api.twitter.com/1.1/" };
@@ -690,7 +657,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
         }
 
         [TestMethod]
-        public async Task BuildIsMemberUrl_Includes_False_Parameters()
+        public void BuildIsMemberUrl_Includes_False_Parameters()
         {
             const string ExpectedUrl = "https://api.twitter.com/1.1/lists/members/show.json?user_id=789&screen_name=JoeMayo&slug=test&owner_id=123&owner_screen_name=JoeMayo&list_id=456&include_entities=false";
             var listReqProc = new ListRequestProcessor<List>() { BaseUrl = "https://api.twitter.com/1.1/" };
@@ -713,7 +680,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
 
         [TestMethod]
         [Ignore]
-        public async Task BuildSubscribersUrl_Requires_ListID_Or_Slug()
+        public void BuildSubscribersUrl_Requires_ListID_Or_Slug()
         {
             const string ExpectedParamName = "ListIdOrSlug";
             var listReqProc = new ListRequestProcessor<List> { BaseUrl = "https://api.twitter.com/1.1/" };
@@ -731,7 +698,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
 
         [TestMethod]
         [Ignore]
-        public async Task BuildSubscribersUrl_Requires_Non_Null_And_Not_Empty_ListID_Or_Slug()
+        public void BuildSubscribersUrl_Requires_Non_Null_And_Not_Empty_ListID_Or_Slug()
         {
             const string ExpectedParamName = "ListIdOrSlug";
             var listReqProc = new ListRequestProcessor<List> { BaseUrl = "https://api.twitter.com/1.1/" };
@@ -750,7 +717,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
 
         [TestMethod]
         [Ignore]
-        public async Task BuildSubscribersUrl_Requires_OwnerID_Or_OwnerScreenName_If_Slug_Used()
+        public void BuildSubscribersUrl_Requires_OwnerID_Or_OwnerScreenName_If_Slug_Used()
         {
             const string ExpectedParamName = "OwnerIdOrOwnerScreenName";
             var listReqProc = new ListRequestProcessor<List> { BaseUrl = "https://api.twitter.com/1.1/" };
@@ -767,7 +734,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
         }
 
         [TestMethod]
-        public async Task BuildUrl_Returns_SubscribersUrl()
+        public void BuildUrl_Returns_SubscribersUrl()
         {
             const string ExpectedUrl = "https://api.twitter.com/1.1/lists/subscribers.json?owner_id=123&owner_screen_name=JoeMayo&slug=test&list_id=456&cursor=789&include_entities=true&skip_status=true";
             var listReqProc = new ListRequestProcessor<List>() { BaseUrl = "https://api.twitter.com/1.1/" };
@@ -789,7 +756,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
         }
 
         [TestMethod]
-        public async Task BuildSubscribersUrl_Includes_False_Parameters()
+        public void BuildSubscribersUrl_Includes_False_Parameters()
         {
             const string ExpectedUrl = "https://api.twitter.com/1.1/lists/subscribers.json?owner_id=123&owner_screen_name=JoeMayo&slug=test&list_id=456&cursor=789&include_entities=false";
             var listReqProc = new ListRequestProcessor<List>() { BaseUrl = "https://api.twitter.com/1.1/" };
@@ -811,13 +778,13 @@ namespace LinqToTwitterPcl.Tests.ListTests
 
         [TestMethod]
         [Ignore]
-        public async Task BuildIsSubscribedUrl_Requires_ListID_Or_Slug()
+        public void BuildIsSubscribedUrl_Requires_ListID_Or_Slug()
         {
             const string ExpectedParamName = "ListIdOrSlug";
             var listReqProc = new ListRequestProcessor<List> { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
             {
-                { "Type", ((int) ListType.IsSubscribed).ToString()},
+                { "Type", ((int) ListType.IsSubscriber).ToString()},
                 { "ScreenName", "JoeMayo" },
                 //{ "Slug", "test" }
                 //{"OwnerID", "123"},
@@ -830,13 +797,13 @@ namespace LinqToTwitterPcl.Tests.ListTests
 
         [TestMethod]
         [Ignore]
-        public async Task BuildIsSubscriberUrl_Requires_OwnerID_Or_OwnerScreenName_If_Slug_Used()
+        public void BuildIsSubscriberUrl_Requires_OwnerID_Or_OwnerScreenName_If_Slug_Used()
         {
             const string ExpectedParamName = "OwnerIdOrOwnerScreenName";
             var listReqProc = new ListRequestProcessor<List> { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
             {
-                { "Type", ((int) ListType.IsSubscribed).ToString()},
+                { "Type", ((int) ListType.IsSubscriber).ToString()},
                 { "ScreenName", "JoeMayo" },
                 { "Slug", "test" }
                 //{"UserID", "123"},
@@ -849,13 +816,13 @@ namespace LinqToTwitterPcl.Tests.ListTests
 
         [TestMethod]
         [Ignore]
-        public async Task BuildIsSubscriberUrl_Requires_UserID_Or_ScreenName()
+        public void BuildIsSubscriberUrl_Requires_UserID_Or_ScreenName()
         {
             const string ExpectedParamName = "UserIdOrScreenName";
             var listReqProc = new ListRequestProcessor<List> { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
             {
-                { "Type", ((int) ListType.IsSubscribed).ToString()},
+                { "Type", ((int) ListType.IsSubscriber).ToString()},
                 { "Slug", "test" },
                 {"OwnerID", "123"},
             };
@@ -866,13 +833,13 @@ namespace LinqToTwitterPcl.Tests.ListTests
         }
 
         [TestMethod]
-        public async Task BuildUrl_Returns_IsSubscribedUrl()
+        public void BuildUrl_Returns_IsSubscribedUrl()
         {
             const string ExpectedUrl = "https://api.twitter.com/1.1/lists/subscribers/show.json?user_id=789&screen_name=JoeMayo&slug=test&owner_id=123&owner_screen_name=JoeMayo&list_id=456&include_entities=true&skip_status=true";
             var listReqProc = new ListRequestProcessor<List>() { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
             {
-                { "Type", ((int) ListType.IsSubscribed).ToString() },
+                { "Type", ((int) ListType.IsSubscriber).ToString() },
                 { "UserID", "789" },
                 { "ScreenName", "JoeMayo" },
                 { "Slug", "test" },
@@ -889,13 +856,13 @@ namespace LinqToTwitterPcl.Tests.ListTests
         }
 
         [TestMethod]
-        public async Task BuildIsSubscriberUrl_Includes_False_Parameters()
+        public void BuildIsSubscriberUrl_Includes_False_Parameters()
         {
             const string ExpectedUrl = "https://api.twitter.com/1.1/lists/subscribers/show.json?user_id=789&screen_name=JoeMayo&slug=test&owner_id=123&owner_screen_name=JoeMayo&list_id=456&include_entities=false";
             var listReqProc = new ListRequestProcessor<List>() { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
             {
-                { "Type", ((int) ListType.IsSubscribed).ToString() },
+                { "Type", ((int) ListType.IsSubscriber).ToString() },
                 { "UserID", "789" },
                 { "ScreenName", "JoeMayo" },
                 { "Slug", "test" },
@@ -911,7 +878,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
         }
 
         [TestMethod]
-        public async Task BuildUrl_Returns_Ownerships_Url()
+        public void BuildUrl_Returns_Ownerships_Url()
         {
             const string ExpectedUrl = "https://api.twitter.com/1.1/lists/ownerships.json?user_id=789&screen_name=JoeMayo&count=10&cursor=1";
             var listReqProc = new ListRequestProcessor<List>() { BaseUrl = "https://api.twitter.com/1.1/" };
@@ -955,15 +922,15 @@ namespace LinqToTwitterPcl.Tests.ListTests
         }
 
         [TestMethod]
-        public async Task ProcessResults_Handles_Lists_Response()
+        public void ProcessResults_Handles_Lists_Response()
         {
-            var listProc = new ListRequestProcessor<List> { Type = ListType.Lists };
+            var listProc = new ListRequestProcessor<List> { Type = ListType.List };
 
             TestMultipleListsResponse(listProc);
         }
 
         [TestMethod]
-        public async Task ProcessResults_Handles_Subscriptions_Response()
+        public void ProcessResults_Handles_Subscriptions_Response()
         {
             var listProc = new ListRequestProcessor<List> { Type = ListType.Subscriptions };
 
@@ -971,7 +938,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
         }
 
         [TestMethod]
-        public async Task ProcessResults_Handles_Memberships_Response()
+        public void ProcessResults_Handles_Memberships_Response()
         {
             var listProc = new ListRequestProcessor<List> { Type = ListType.Memberships };
 
@@ -979,15 +946,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
         }
 
         [TestMethod]
-        public async Task ProcessResults_Handles_All_Response()
-        {
-            var listProc = new ListRequestProcessor<List> { Type = ListType.All };
-
-            TestMultipleListsResponse(listProc);
-        }
-
-        [TestMethod]
-        public async Task ProcessResults_Handles_Show_Response()
+        public void ProcessResults_Handles_Show_Response()
         {
             var listProc = new ListRequestProcessor<List> { Type = ListType.Show };
 
@@ -1023,7 +982,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
         }
 
         [TestMethod]
-        public async Task ProcessResults_Handles_Subscribers_Response()
+        public void ProcessResults_Handles_Subscribers_Response()
         {
             var listProc = new ListRequestProcessor<List> { Type = ListType.Subscribers };
 
@@ -1031,7 +990,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
         }
 
         [TestMethod]
-        public async Task ProcessResults_Handles_Members_Response()
+        public void ProcessResults_Handles_Members_Response()
         {
             var listProc = new ListRequestProcessor<List> { Type = ListType.Members };
 
@@ -1052,7 +1011,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
         }
 
         [TestMethod]
-        public async Task ProcessResults_Handles_IsMember_Response()
+        public void ProcessResults_Handles_IsMember_Response()
         {
             var listProc = new ListRequestProcessor<List> { Type = ListType.IsMember };
 
@@ -1060,15 +1019,15 @@ namespace LinqToTwitterPcl.Tests.ListTests
         }
 
         [TestMethod]
-        public async Task ProcessResults_Handles_IsSubscribed_Response()
+        public void ProcessResults_Handles_IsSubscribed_Response()
         {
-            var listProc = new ListRequestProcessor<List> { Type = ListType.IsSubscribed };
+            var listProc = new ListRequestProcessor<List> { Type = ListType.IsSubscriber };
 
             TestSingleUserResponse(listProc);
         }
 
         [TestMethod]
-        public async Task ProcessResults_Handles_Statuses_Response()
+        public void ProcessResults_Handles_Statuses_Response()
         {
             var listProc = new ListRequestProcessor<List> { Type = ListType.Statuses };
 
@@ -1084,7 +1043,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
         }
 
         [TestMethod]
-        public async Task ProcessResults_Returns_Empty_Collection_When_Empty_Results()
+        public void ProcessResults_Returns_Empty_Collection_When_Empty_Results()
         {
             var listReqProc = new ListRequestProcessor<List>();
 
@@ -1094,17 +1053,17 @@ namespace LinqToTwitterPcl.Tests.ListTests
         }
 
         [TestMethod]
-        public async Task ProcessResults_Retains_Original_Input_Parameters()
+        public void ProcessResults_Retains_Original_Input_Parameters()
         {
             var listProc = new ListRequestProcessor<List> 
             { 
                 Type = ListType.Show,
-                UserID = "123",
+                UserID = 123ul,
                 ScreenName = "JoeMayo",
-                Cursor = "456",
-                ListID = "789",
+                Cursor = 456,
+                ListID = 789ul,
                 Slug = "MyList",
-                OwnerID = "123",
+                OwnerID = 123ul,
                 OwnerScreenName = "JoeMayo",
                 MaxID = 150,
                 Count = 50,

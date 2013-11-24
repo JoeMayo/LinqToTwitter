@@ -20,7 +20,7 @@ namespace LinqToTwitter
             Mode = listJson.GetValue<string>("mode");
             Uri = listJson.GetValue<string>("uri");
             Users = new List<User> { new User(listJson.GetValue<JsonData>("user")) };
-            ListIDResult = listJson.GetValue<string>("id_str");
+            ListIDResult = listJson.GetValue<ulong>("id");
             SubscriberCount = listJson.GetValue<int>("subscriber_count");
             CreatedAt = listJson.GetValue<string>("created_at").GetDate(DateTime.MaxValue);
             Following = listJson.GetValue<bool>("following");
@@ -35,12 +35,12 @@ namespace LinqToTwitter
         /// <summary>
         /// Helps page results (Query Filter)
         /// </summary>
-        public string Cursor { get; set; }
+        public long Cursor { get; set; }
 
         /// <summary>
         /// User ID (Query Filter)
         /// </summary>
-        public string UserID { get; set; }
+        public ulong UserID { get; set; }
 
         /// <summary>
         /// ScreenName of user for query
@@ -50,12 +50,12 @@ namespace LinqToTwitter
         /// <summary>
         /// List ID (Query Filter)
         /// </summary>
-        public string ListID { get; set; }
+        public ulong ListID { get; set; }
 
         /// <summary>
         /// List ID (Returned from Twitter)
         /// </summary>
-        public string ListIDResult { get; set; }
+        public ulong ListIDResult { get; set; }
 
         /// <summary>
         /// Catchword for list (Query Filter)
@@ -70,7 +70,7 @@ namespace LinqToTwitter
         /// <summary>
         /// ID of List Owner (Query Filter)
         /// </summary>
-        public string OwnerID { get; set; }
+        public ulong OwnerID { get; set; }
 
         /// <summary>
         /// ScreenName of List Owner (Query Filter)

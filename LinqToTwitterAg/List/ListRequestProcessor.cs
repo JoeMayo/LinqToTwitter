@@ -244,8 +244,6 @@ namespace LinqToTwitter
 
             switch (Type)
             {
-                case ListType.All:
-                    return BuildAllUrl(parameters);
                 case ListType.Lists:
                     return BuildListsUrl(parameters);
                 case ListType.Show:
@@ -269,31 +267,6 @@ namespace LinqToTwitter
                 default:
                     throw new ArgumentException("Invalid ListType", TypeParam);
             }
-        }
-
-        /// <summary>
-        /// Builds URL to retrieve all lists a user is subscribed to
-        /// </summary>
-        /// <param name="parameters">ScreenName or UserID</param>
-        /// <returns>Url of requesting user's subscribed lists</returns>
-        Request BuildAllUrl(Dictionary<string, string> parameters)
-        {
-            var req = new Request(BaseUrl + "lists/all.json");
-            var urlParams = req.RequestParameters;
-
-            if (parameters.ContainsKey("UserID"))
-            {
-                UserID = parameters["UserID"];
-                urlParams.Add(new QueryParameter("user_id", parameters["UserID"]));
-            }
-
-            if (parameters.ContainsKey("ScreenName"))
-            {
-                ScreenName = parameters["ScreenName"];
-                urlParams.Add(new QueryParameter("screen_name", parameters["ScreenName"]));
-            }
-
-            return req;
         }
 
         /// <summary>
@@ -942,7 +915,6 @@ namespace LinqToTwitter
                 case ListType.Lists:
                 case ListType.Memberships:
                 case ListType.Subscriptions:
-                case ListType.All:
                 case ListType.Ownerships:
                     lists = HandleMultipleListsResponse(listJson);
                     break;

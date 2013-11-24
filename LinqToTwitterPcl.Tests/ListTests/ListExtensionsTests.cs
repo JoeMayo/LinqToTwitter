@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using LinqToTwitter;
@@ -37,7 +36,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
         }
 
         [TestMethod]
-        public async Task ListRequestProcessor_Handles_Actions()
+        public void ListRequestProcessor_Handles_Actions()
         {
             var listReqProc = new ListRequestProcessor<List>();
 
@@ -46,7 +45,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
 
         [TestMethod]
         [Ignore]
-        public async Task CreateList_Requires_ListName()
+        public void CreateList_Requires_ListName()
         {
             InitializeTwitterContext();
 
@@ -77,7 +76,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
 
         [TestMethod]
         [Ignore]
-        public async Task UpdateList_Requires_ListID_Or_Slug()
+        public void UpdateList_Requires_ListID_Or_Slug()
         {
             InitializeTwitterContext();
 
@@ -88,7 +87,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
 
         [TestMethod]
         [Ignore]
-        public async Task UpdateList_Requires_OwnerID_Or_OwnerScreenName_If_Slug_Used()
+        public void UpdateList_Requires_OwnerID_Or_OwnerScreenName_If_Slug_Used()
         {
             InitializeTwitterContext();
 
@@ -112,7 +111,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
                 { "name", "Test List" }
             };
 
-            await ctx.UpdateListAsync("123", "test", "Test List", "456", "JoeMayo", "public", "desc");
+            await ctx.UpdateListAsync(123, "test", "Test List", 456, "JoeMayo", "public", "desc");
 
             execMock.Verify(exec =>
                 exec.PostToTwitterAsync<List>(
@@ -123,7 +122,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
 
         [TestMethod]
         [Ignore]
-        public async Task DeleteList_Requires_ListID_Or_Slug()
+        public void DeleteList_Requires_ListID_Or_Slug()
         {
             InitializeTwitterContext();
 
@@ -134,7 +133,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
 
         [TestMethod]
         [Ignore]
-        public async Task DeleteList_Requires_OwnerID_Or_OwnerScreenName_If_Slug_Used()
+        public void DeleteList_Requires_OwnerID_Or_OwnerScreenName_If_Slug_Used()
         {
             InitializeTwitterContext();
 
@@ -148,7 +147,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
         {
             InitializeTwitterContext();
 
-            await ctx.DeleteListAsync(null, "test", "456", null);
+            await ctx.DeleteListAsync(0, "test", 456, null);
         }
 
         [TestMethod]
@@ -156,7 +155,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
         {
             InitializeTwitterContext();
 
-            await ctx.DeleteListAsync("123", null, null, null);
+            await ctx.DeleteListAsync(123, null, 0, null);
         }
 
         [TestMethod]
@@ -171,7 +170,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
                 { "owner_screen_name", "JoeMayo" }
             };
 
-            await ctx.DeleteListAsync("123", "test", "456", "JoeMayo");
+            await ctx.DeleteListAsync(123, "test", 456, "JoeMayo");
 
             execMock.Verify(exec =>
                 exec.PostToTwitterAsync<List>(
@@ -182,7 +181,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
 
         [TestMethod]
         [Ignore]
-        public async Task AddMemberToList_Requires_UserID_Or_ScreenName()
+        public void AddMemberToList_Requires_UserID_Or_ScreenName()
         {
             InitializeTwitterContext();
 
@@ -193,7 +192,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
 
         [TestMethod]
         [Ignore]
-        public async Task AddMemberToList_Requires_ListID_Or_Slug()
+        public void AddMemberToList_Requires_ListID_Or_Slug()
         {
             InitializeTwitterContext();
 
@@ -204,7 +203,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
 
         [TestMethod]
         [Ignore]
-        public async Task AddMemberToList_Requires_OwnerID_Or_OwnerScreenName_If_Slug_Used()
+        public void AddMemberToList_Requires_OwnerID_Or_OwnerScreenName_If_Slug_Used()
         {
             InitializeTwitterContext();
 
@@ -227,7 +226,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
                 { "owner_screen_name", "JoeMayo" }
             };
 
-            await ctx.AddMemberToListAsync("789", "JoeMayo", "123", "test", "456", "JoeMayo");
+            await ctx.AddMemberToListAsync("JoeMayo", 123, "test", 456, "JoeMayo");
 
             execMock.Verify(exec =>
                 exec.PostToTwitterAsync<List>(
@@ -238,7 +237,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
 
         [TestMethod]
         [Ignore]
-        public async Task AddMemberRangeToList_For_ScreenNames_Requires_ListID_Or_Slug()
+        public void AddMemberRangeToList_For_ScreenNames_Requires_ListID_Or_Slug()
         {
             InitializeTwitterContext();
 
@@ -249,7 +248,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
 
         [TestMethod]
         [Ignore]
-        public async Task AddMemberRangeToList_For_ScreenNames_Requires_OwnerID_Or_OwnerScreenName_If_Slug_Used()
+        public void AddMemberRangeToList_For_ScreenNames_Requires_OwnerID_Or_OwnerScreenName_If_Slug_Used()
         {
             InitializeTwitterContext();
 
@@ -260,7 +259,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
 
         [TestMethod]
         [Ignore]
-        public async Task AddMemberRangeToList_For_ScreenNames_Requires_ScreenNames()
+        public void AddMemberRangeToList_For_ScreenNames_Requires_ScreenNames()
         {
             InitializeTwitterContext();
 
@@ -271,7 +270,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
 
         [TestMethod]
         [Ignore]
-        public async Task AddMemberRangeToList_For_ScreenNames_Requires_ScreenNames_With_Values()
+        public void AddMemberRangeToList_For_ScreenNames_Requires_ScreenNames_With_Values()
         {
             InitializeTwitterContext();
 
@@ -282,10 +281,10 @@ namespace LinqToTwitterPcl.Tests.ListTests
 
         [TestMethod]
         [Ignore]
-        public async Task AddMemberRangeToList_For_ScreenNames_Requires_ScreenNames_Count_LessThanOrEqualTo_100()
+        public void AddMemberRangeToList_For_ScreenNames_Requires_ScreenNames_Count_LessThanOrEqualTo_100()
         {
             InitializeTwitterContext();
-            var screenNames = Enumerable.Range(1, 101).Select(item => item.ToString(CultureInfo.InvariantCulture)).ToList();
+            //var screenNames = Enumerable.Range(1, 101).Select(item => item.ToString(CultureInfo.InvariantCulture)).ToList();
 
             //var ex = Assert.Throws<ArgumentException>(() => ctx.AddMemberRangeToListAsync(null, "test", "123", null, screenNames));
 
@@ -307,7 +306,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
             };
             var screenNames = new List<string> { "JoeMayo", "Linq2Tweeter", "SomeOneElse" };
 
-            await ctx.AddMemberRangeToListAsync("123", "test", "456", "JoeMayo", screenNames);
+            await ctx.AddMemberRangeToListAsync(123, "test", 456, "JoeMayo", screenNames);
 
             execMock.Verify(exec =>
                 exec.PostToTwitterAsync<List>(
@@ -318,7 +317,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
 
         [TestMethod]
         [Ignore]
-        public async Task AddMemberRangeToList_For_UserIDs_Requires_UserIDs()
+        public void AddMemberRangeToList_For_UserIDs_Requires_UserIDs()
         {
             InitializeTwitterContext();
 
@@ -329,7 +328,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
 
         [TestMethod]
         [Ignore]
-        public async Task AddMemberRangeToList_For_UserIDs_Requires_UserIDs_With_Values()
+        public void AddMemberRangeToList_For_UserIDs_Requires_UserIDs_With_Values()
         {
             InitializeTwitterContext();
 
@@ -340,10 +339,10 @@ namespace LinqToTwitterPcl.Tests.ListTests
 
         [TestMethod]
         [Ignore]
-        public async Task AddMemberRangeToList_For_UserIDs_Requires_UserIDs_Count_LessThanOrEqualTo_100()
+        public void AddMemberRangeToList_For_UserIDs_Requires_UserIDs_Count_LessThanOrEqualTo_100()
         {
             InitializeTwitterContext();
-            var userIDs = Enumerable.Range(1, 101).Select(item => (ulong)item).ToList();
+            //var userIDs = Enumerable.Range(1, 101).Select(item => (ulong)item).ToList();
 
             //var ex = Assert.Throws<ArgumentException>(() => ctx.AddMemberRangeToListAsync(null, "test", "123", null, userIDs));
 
@@ -365,7 +364,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
             };
             var userIDs = new List<ulong> { 123ul, 234ul, 345ul };
 
-            await ctx.AddMemberRangeToListAsync("123", "test", "456", "JoeMayo", userIDs);
+            await ctx.AddMemberRangeToListAsync(123, "test", 456, "JoeMayo", userIDs);
 
             execMock.Verify(exec =>
                 exec.PostToTwitterAsync<List>(
@@ -376,7 +375,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
 
         [TestMethod]
         [Ignore]
-        public async Task DeleteMemberFromList_Requires_UserID_Or_ScreenName()
+        public void DeleteMemberFromList_Requires_UserID_Or_ScreenName()
         {
             InitializeTwitterContext();
 
@@ -387,7 +386,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
 
         [TestMethod]
         [Ignore]
-        public async Task DeleteMemberFromList_Requires_ListID_Or_Slug()
+        public void DeleteMemberFromList_Requires_ListID_Or_Slug()
         {
             InitializeTwitterContext();
 
@@ -398,7 +397,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
 
         [TestMethod]
         [Ignore]
-        public async Task DeleteMemberFromList_Requires_OwnerID_Or_OwnerScreenName_If_Slug_Used()
+        public void DeleteMemberFromList_Requires_OwnerID_Or_OwnerScreenName_If_Slug_Used()
         {
             InitializeTwitterContext();
 
@@ -421,7 +420,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
                 { "owner_screen_name", "JoeMayo" }
             };
 
-            await ctx.DeleteMemberFromListAsync("789", "JoeMayo", "123", "test", "456", "JoeMayo");
+            await ctx.DeleteMemberFromListAsync(789, "JoeMayo", 123, "test", 456, "JoeMayo");
 
             execMock.Verify(exec =>
                 exec.PostToTwitterAsync<List>(
@@ -432,7 +431,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
 
         [TestMethod]
         [Ignore]
-        public async Task SubscribeToList_Requires_ListID_Or_Slug()
+        public void SubscribeToList_Requires_ListID_Or_Slug()
         {
             InitializeTwitterContext();
 
@@ -443,7 +442,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
 
         [TestMethod]
         [Ignore]
-        public async Task SubscribeToList_Requires_OwnerID_Or_OwnerScreenName_If_Slug_Used()
+        public void SubscribeToList_Requires_OwnerID_Or_OwnerScreenName_If_Slug_Used()
         {
             InitializeTwitterContext();
 
@@ -464,7 +463,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
                 { "owner_screen_name", "JoeMayo" }
             };
 
-            await ctx.SubscribeToListAsync("123", "test", "456", "JoeMayo");
+            await ctx.SubscribeToListAsync(123, "test", 456, "JoeMayo");
 
             execMock.Verify(exec =>
                 exec.PostToTwitterAsync<List>(
@@ -475,7 +474,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
 
         [TestMethod]
         [Ignore]
-        public async Task UnsubscribeFromList_Requires_ListID_Or_Slug()
+        public void UnsubscribeFromList_Requires_ListID_Or_Slug()
         {
             InitializeTwitterContext();
 
@@ -486,7 +485,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
 
         [TestMethod]
         [Ignore]
-        public async Task UnsubscribeFromList_Requires_OwnerID_Or_OwnerScreenName_If_Slug_Used()
+        public void UnsubscribeFromList_Requires_OwnerID_Or_OwnerScreenName_If_Slug_Used()
         {
             InitializeTwitterContext();
 
@@ -507,7 +506,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
                 { "owner_screen_name", "JoeMayo" }
             };
 
-            await ctx.UnsubscribeFromListAsync("123", "test", "456", "JoeMayo");
+            await ctx.UnsubscribeFromListAsync(123, "test", 456, "JoeMayo");
 
             execMock.Verify(exec =>
                 exec.PostToTwitterAsync<List>(
@@ -520,6 +519,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
         public async Task DestroyAllFromList_Invokes_Executor_Execute()
         {
             InitializeTwitterContext();
+            var userIDs = new List<ulong> { 456 };
             var parameters = new Dictionary<string, string>
             {
                 { "list_id", "123" },
@@ -530,7 +530,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
                 { "owner_screen_name", "JoeMayo" }
             };
 
-            await ctx.DestroyAllFromListAsync("123", "test", "456", "JoeMayo", "789", "JoeMayo");
+            await ctx.DeleteMemberRangeFromListAsync(123, "test", userIDs, 789, "JoeMayo");
 
             execMock.Verify(exec =>
                 exec.PostToTwitterAsync<List>(
@@ -541,98 +541,35 @@ namespace LinqToTwitterPcl.Tests.ListTests
 
         [TestMethod]
         [Ignore]
-        public async Task DestroyAllFromList_Requires_Either_ListID_Or_Slug()
+        public void DestroyAllFromList_Requires_Either_ListID_Or_Slug()
         {
             InitializeTwitterContext();
 
             //var ex = Assert.Throws<ArgumentException>(
-            //    () => ctx.DestroyAllFromListAsync(null, null, "1,2,3", null, null, null));
+            //    () => ctx.DeleteMemberRangeFromListAsync(null, null, "1,2,3", null, null, null));
 
             //Assert.AreEqual("ListIdOrSlug", ex.ParamName);
         }
 
         [TestMethod]
         [Ignore]
-        public async Task DestroyAllFromList_Requires_OwnerID_Or_OwnerScreenName_If_Using_Slug()
+        public void DestroyAllFromList_Requires_OwnerID_Or_OwnerScreenName_If_Using_Slug()
         {
             InitializeTwitterContext();
 
             //var ex = Assert.Throws<ArgumentException>(
-            //    () => ctx.DestroyAllFromListAsync(null, "slug", "1,2,3", null, null, null));
+            //    () => ctx.DeleteMemberRangeFromListAsync(null, "slug", "1,2,3", null, null, null));
 
             //Assert.AreEqual("OwnerIdOrOwnerScreenName", ex.ParamName);
         }
 
         [TestMethod]
-        public async Task DestroyAllFromList_Accepts_Missing_OwnerID_And_OwnerScreenName_If_Using_ListID()
+        public async Task DeleteMemberRangeFromListAsync_Accepts_Missing_OwnerID_And_OwnerScreenName_If_Using_ListID()
         {
             InitializeTwitterContext();
+            var userIDs = new List<ulong> { 1, 2, 3 };
 
-            await ctx.DestroyAllFromListAsync("1", "slug", "1,2,3", null, null, null);
-        }
-
-        [TestMethod]
-        public async Task DestroyAllFromList_Handles_Null_UserIDs()
-        {
-            InitializeTwitterContext();
-
-            await ctx.DestroyAllFromListAsync("1", "slug", null, "", null, null);
-        }
-
-        [TestMethod]
-        public async Task DestroyAllFromList_Handles_Null_ScreenNames()
-        {
-            InitializeTwitterContext();
-
-            await ctx.DestroyAllFromListAsync("1", "slug", "", null, null, null);
-        }
-
-        [TestMethod]
-        public async Task DestroyAllFromList_Removes_Spaces_From_ID_List()
-        {
-            const string ExpectedUserIDs = "456,789";
-            InitializeTwitterContext();
-            var parameters = new Dictionary<string, string>
-            {
-                { "list_id", "123" },
-                { "slug", "test" },
-                { "user_id", ExpectedUserIDs },
-                { "screen_name", "JoeMayo" },
-                { "owner_id", "789" },
-                { "owner_screen_name", "JoeMayo" }
-            };
-
-            await ctx.DestroyAllFromListAsync("123", "test", "456, 789", "JoeMayo", "789", "JoeMayo");
-
-            execMock.Verify(exec =>
-                exec.PostToTwitterAsync<List>(
-                    "https://api.twitter.com/1.1/lists/members/destroy_all.json",
-                    parameters),
-                Times.Once());
-        }
-
-        [TestMethod]
-        public async Task DestroyAllFromList_Removes_Spaces_From_ScreenNames()
-        {
-            const string ExpectedScreenNames = "JoeMayo,Linq2Tweeter";
-            InitializeTwitterContext();
-            var parameters = new Dictionary<string, string>
-            {
-                { "list_id", "123" },
-                { "slug", "test" },
-                { "user_id", "456" },
-                { "screen_name", ExpectedScreenNames },
-                { "owner_id", "789" },
-                { "owner_screen_name", "JoeMayo" }
-            };
-
-            await ctx.DestroyAllFromListAsync("123", "test", "456", "JoeMayo, Linq2Tweeter", "789", "JoeMayo");
-
-            execMock.Verify(exec =>
-                exec.PostToTwitterAsync<List>(
-                    "https://api.twitter.com/1.1/lists/members/destroy_all.json",
-                    parameters),
-                Times.Once());
+            await ctx.DeleteMemberRangeFromListAsync(1, "slug", userIDs, 0, null);
         }
 
         const string TestStatusQueryResponse = @"{

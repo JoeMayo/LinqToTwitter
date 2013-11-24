@@ -27,7 +27,6 @@ namespace LinqToTwitterDemo
             //GetListStatusesDemo(twitterCtx);
             //ShowListDemo(twitterCtx);
             //IsListSubscribedDemo(twitterCtx);
-            //GetAllSubscribedListsDemo(twitterCtx);
             //CreateListDemo(twitterCtx);
             //UpdateListDemo(twitterCtx);
             //DeleteListDemo(twitterCtx);
@@ -39,18 +38,6 @@ namespace LinqToTwitterDemo
             //UnsubscribeFromListDemo(twitterCtx);
             //DestroyAllDemo(twitterCtx);
             OwnershipsDemo(twitterCtx);
-        }
-  
-        private static void GetAllSubscribedListsDemo(TwitterContext twitterCtx)
-        {
-            var lists =
-                (from list in twitterCtx.List
-                 where list.Type == ListType.All &&
-                       list.ScreenName == "JoeMayo"
-                 select list)
-                .ToList();
-
-            lists.ForEach(list => Console.WriteLine("Slug: " + list.Slug));
         }
 
         private static void AddMemberRangeToListWithScreenNamesDemo(TwitterContext twitterCtx)

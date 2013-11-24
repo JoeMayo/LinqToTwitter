@@ -168,38 +168,6 @@ namespace LinqToTwitterXUnitTests.ListTests
         }
 
         [Fact]
-        public void BuildAllListsUrl_Returns_Url_With_ScreenName()
-        {
-            const string ExpectedUrl = "https://api.twitter.com/1.1/lists/all.json?screen_name=JoeMayo";
-            var listReqProc = new ListRequestProcessor<List>() { BaseUrl = "https://api.twitter.com/1.1/" };
-            var parameters = new Dictionary<string, string>
-            {
-                {"Type", ((int) ListType.All).ToString()},
-                {"ScreenName", "JoeMayo"},
-            };
-
-            Request req = listReqProc.BuildUrl(parameters);
-
-            Assert.Equal(ExpectedUrl, req.FullUrl);
-        }
-
-        [Fact]
-        public void BuildAllListsUrl_Returns_Url_With_UserID()
-        {
-            const string ExpectedUrl = "https://api.twitter.com/1.1/lists/all.json?user_id=123";
-            var listReqProc = new ListRequestProcessor<List> { BaseUrl = "https://api.twitter.com/1.1/" };
-            var parameters = new Dictionary<string, string>
-            {
-                {"Type", ((int) ListType.All).ToString(CultureInfo.InvariantCulture)},
-                {"UserID", "123"},
-            };
-
-            Request req = listReqProc.BuildUrl(parameters);
-
-            Assert.Equal(ExpectedUrl, req.FullUrl);
-        }
-
-        [Fact]
         public void BuildListUrl_Requires_UserID_Or_ScreenName()
         {
             const string ExpectedParamName = "UserIdOrScreenName";
@@ -948,14 +916,6 @@ namespace LinqToTwitterXUnitTests.ListTests
         public void ProcessResults_Handles_Memberships_Response()
         {
             var listProc = new ListRequestProcessor<List> { Type = ListType.Memberships };
-
-            TestMultipleListsResponse(listProc);
-        }
-
-        [Fact]
-        public void ProcessResults_Handles_All_Response()
-        {
-            var listProc = new ListRequestProcessor<List> { Type = ListType.All };
 
             TestMultipleListsResponse(listProc);
         }

@@ -17,10 +17,6 @@ namespace LinqToTwitter
         /// </summary>
         Show,
 
-        // TODO: deprecated
-        [Obsolete("This enum value is obsolete and will become an error in a later release. Please use Show instead.", true)]
-        List,
-
         /// <summary>
         /// Show tweet timeline for members of the specified list
         /// </summary>
@@ -55,11 +51,6 @@ namespace LinqToTwitter
         /// Check if a user subscribes to the specified list
         /// </summary>
         IsSubscribed,
-
-        /// <summary>
-        /// Get all lists subscribed to
-        /// </summary>
-        All,
 
         /// <summary>
         /// Get lists belonging to the specified user
