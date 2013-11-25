@@ -2,14 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-#if SILVERLIGHT
-#else
-#endif
 
 namespace LinqToTwitter
 {
     /// <summary>
-    /// Raw requests, allowing free-form url and query strings
+    /// Raw requests, allowing free-form url and query strings.
     /// </summary>
     public class RawRequestProcessor<T> : 
         IRequestProcessor<T>,
@@ -24,12 +21,12 @@ namespace LinqToTwitter
         /// <summary>
         /// Actual query string sent to twitter
         /// </summary>
-        public string QueryString { get; set; }
+        internal string QueryString { get; set; }
 
         /// <summary>
         /// TweetID
         /// </summary>
-        public string Result { get; set; }
+        internal string Result { get; set; }
 
         /// <summary>
         /// extracts parameters from lambda
@@ -47,7 +44,7 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// builds url based on input parameters
+        /// Builds url based on input parameters.
         /// </summary>
         /// <param name="parameters">criteria for url segments and parameters</param>
         /// <returns>URL conforming to Twitter API</returns>
@@ -100,7 +97,7 @@ namespace LinqToTwitter
                 new Raw
                 {
                     QueryString = QueryString,
-                    Result = response
+                    Response = response
                 }
             };
 
@@ -111,7 +108,7 @@ namespace LinqToTwitter
         {
             var raw = new Raw
             {
-                Result = responseJson
+                Response = responseJson
             };
 
             return raw.ItemCast(default(T));

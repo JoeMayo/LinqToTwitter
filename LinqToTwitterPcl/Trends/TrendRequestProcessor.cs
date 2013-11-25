@@ -30,12 +30,12 @@ namespace LinqToTwitter
         /// <summary>
         /// Latitude
         /// </summary>
-        internal string Latitude { get; set; }
+        internal double Latitude { get; set; }
 
         /// <summary>
         /// Longitude
         /// </summary>
-        internal string Longitude { get; set; }
+        internal double Longitude { get; set; }
 
         /// <summary>
         /// Yahoo Where On Earth ID
@@ -98,7 +98,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">parameters should contain WoeID</param>
         /// <returns>base url + location segment</returns>
-        private Request BuildPlaceTrendsUrl(Dictionary<string, string> parameters)
+        Request BuildPlaceTrendsUrl(Dictionary<string, string> parameters)
         {
             if (!parameters.ContainsKey(WoeIDParam))
                 throw new ArgumentException("WoeID is a required parameter.", WoeIDParam);
@@ -116,7 +116,7 @@ namespace LinqToTwitter
         /// Builds an URL for finding where trends are occurring
         /// </summary>
         /// <returns>base url + Available segment</returns>
-        private Request BuildAvailableTrendsUrl()
+        Request BuildAvailableTrendsUrl()
         {
             return new Request(BaseUrl + "trends/available.json");
         }
@@ -126,7 +126,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">parameters can include Latitude and Longitude (must have either both parameters or neither)</param>
         /// <returns>base url + Available segment</returns>
-        private Request BuildClosestTrendsUrl(Dictionary<string, string> parameters)
+        Request BuildClosestTrendsUrl(Dictionary<string, string> parameters)
         {
             if ((parameters.ContainsKey("Latitude") && !parameters.ContainsKey("Longitude")) ||
                 (!parameters.ContainsKey("Latitude") && parameters.ContainsKey("Longitude")))
@@ -137,13 +137,13 @@ namespace LinqToTwitter
 
             if (parameters.ContainsKey("Latitude"))
             {
-                Latitude = parameters["Latitude"];
+                Latitude = double.Parse(parameters["Latitude"]);
                 urlParams.Add(new QueryParameter("lat", parameters["Latitude"]));
             }
 
             if (parameters.ContainsKey("Longitude"))
             {
-                Longitude = parameters["Longitude"];
+                Longitude = double.Parse(parameters["Longitude"]);
                 urlParams.Add(new QueryParameter("long", parameters["Longitude"]));
             }
 

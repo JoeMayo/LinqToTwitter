@@ -51,10 +51,10 @@ namespace LinqToTwitter
             StatusID = status.GetValue<ulong>("id");
             FavoriteCount = status.GetValue<int?>("favorite_count");
             Favorited = status.GetValue<bool>("favorited");
-            InReplyToStatusID = status.GetValue<string>("in_reply_to_status_id_str");
+            InReplyToStatusID = status.GetValue<ulong>("in_reply_to_status_id");
             Source = status.GetValue<string>("source");
             CreatedAt = status.GetValue<string>("created_at").GetDate(DateTime.MaxValue);
-            InReplyToUserID = status.GetValue<string>("in_reply_to_user_id_str");
+            InReplyToUserID = status.GetValue<ulong>("in_reply_to_user_id");
             Truncated = status.GetValue<bool>("truncated");
             Text = status.GetValue<string>("text");
             Annotation = new Annotation(status.GetValue<JsonData>("annotation"));
@@ -125,12 +125,12 @@ namespace LinqToTwitter
         /// <summary>
         /// TweetID
         /// </summary>
-        public string ID { get; set; }
+        public ulong ID { get; set; }
 
         /// <summary>
         /// ID of User
         /// </summary>
-        public string UserID { get; set; }
+        public ulong UserID { get; set; }
 
         /// <summary>
         /// User Screen Name
@@ -155,7 +155,7 @@ namespace LinqToTwitter
         /// <summary>
         /// Next page of data to return
         /// </summary>
-        public string Cursor { get; set; }
+        public long Cursor { get; set; }
 
         /// <summary>
         /// By default, user timeline doesn't include retweets,
@@ -251,12 +251,12 @@ namespace LinqToTwitter
         /// <summary>
         /// id of tweet being replied to, if it is a reply
         /// </summary>
-        public string InReplyToStatusID { get; set; }
+        public ulong InReplyToStatusID { get; set; }
 
         /// <summary>
         /// id of user being replied to, if it is a reply
         /// </summary>
-        public string InReplyToUserID { get; set; }
+        public ulong InReplyToUserID { get; set; }
 
         /// <summary>
         /// Number of times this tweet has been favorited

@@ -15,7 +15,7 @@ namespace LinqToTwitter
             Query = searchJson.GetValue<string>("query");
             Name = searchJson.GetValue<string>("name");
             Postition = searchJson.GetValue<int>("position");
-            IDString = searchJson.GetValue<string>("id_str");
+            IDResponse = searchJson.GetValue<ulong>("id");
             CreatedAt = searchJson.GetValue<string>("created_at").GetDate(DateTime.MaxValue);
         }
 
@@ -27,12 +27,12 @@ namespace LinqToTwitter
         /// <summary>
         /// search item ID
         /// </summary>
-        public string ID { get; set; }
+        public ulong ID { get; set; }
 
         /// <summary>
-        /// search item ID
+        /// Search item ID.
         /// </summary>
-        public string IDString { get; set; }
+        public ulong IDResponse { get; set; }
 
         /// <summary>
         /// name of search

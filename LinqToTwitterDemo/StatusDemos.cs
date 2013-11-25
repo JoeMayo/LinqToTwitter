@@ -25,8 +25,7 @@ namespace LinqToTwitterDemo
             //UserStatusByNameQueryDemo(twitterCtx);
             //MentionsStatusQueryDemo(twitterCtx);
             //MentionsWithSinceIDStatusQueryDemo(twitterCtx);
-            //MentionsWithPagingQueryDemo(twitterCtx);
-            //SingleStatusQueryDemo(twitterCtx);
+            SingleStatusQueryDemo(twitterCtx);
             //UpdateStatusDemo(twitterCtx);
             //UpdateStatusWithCallbackDemo(twitterCtx);
             //UpdateStatusWithReplyDemo(twitterCtx);
@@ -41,7 +40,7 @@ namespace LinqToTwitterDemo
             //ContributorDetailsDemo(twitterCtx);
             //StatusCountDemo(twitterCtx);
             //TrimUserDemo(twitterCtx);
-            TweetWithMediaDemo(twitterCtx);
+            //TweetWithMediaDemo(twitterCtx);
             //TweetEntityDemo(twitterCtx);
             //RetweetersDemo(twitterCtx);
             //OEmbedStatusDemo(twitterCtx);
@@ -53,10 +52,12 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         private static void SingleStatusQueryDemo(TwitterContext twitterCtx)
         {
+            string statusID = "263843354817732608";
+
             var friendTweets =
                 from tweet in twitterCtx.Status
                 where tweet.Type == StatusType.Show &&
-                      tweet.ID == "263843354817732608"
+                      tweet.ID == statusID
                 select tweet;
 
             Console.WriteLine("\nRequested Tweet: \n");
@@ -187,39 +188,6 @@ namespace LinqToTwitterDemo
                 mention => Console.WriteLine(
                     "Name: {0}, Tweet[{1}]: {2}\n",
                     mention.User.Name, mention.StatusID, mention.Text));
-        }
-
-        /// <summary>
-        /// Shows how to query tweets menioning logged-in user
-        /// </summary>
-        /// <param name="twitterCtx">TwitterContext</param>
-        private static void MentionsWithPagingQueryDemo(TwitterContext twitterCtx)
-        {
-            bool hasMoreTweets;
-            int page = 1;
-
-            do
-            {
-                var myMentions =
-                    (from mention in twitterCtx.Status
-                     where mention.Type == StatusType.Mentions
-                     select mention)
-                     .ToList();
-
-                hasMoreTweets = myMentions.Count > 0;
-                if (hasMoreTweets)
-                {
-                    Console.WriteLine("\n*** Page {0} ***\n", page);
-
-                    myMentions.ForEach(
-                        mention => Console.WriteLine(
-                            "Name: {0}, Tweet[{1}]: {2}\n",
-                            mention.User.Name, mention.StatusID, mention.Text));
-                }
-
-                page++;
-
-            } while (hasMoreTweets);
         }
 
         private static void RetweetDemo(TwitterContext twitterCtx)

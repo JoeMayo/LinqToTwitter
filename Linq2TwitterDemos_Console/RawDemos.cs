@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using LinqToTwitter;
@@ -20,8 +21,12 @@ namespace Linq2TwitterDemos_Console
                 switch (key)
                 {
                     case '0':
-                        Console.WriteLine("\n\tGetting account settings...\n");
-                        await GetAccountSettings(twitterCtx);
+                        Console.WriteLine("\n\tSearching...\n");
+                        await PerformSearchRawAsync(twitterCtx);
+                        break;
+                    case '1':
+                        Console.WriteLine("\n\tTweeting...");
+                        await TweetRawAsync(twitterCtx);
                         break;
                     case 'q':
                     case 'Q':
@@ -35,25 +40,50 @@ namespace Linq2TwitterDemos_Console
             } while (char.ToUpper(key) != 'Q');
         }
 
-        static async Task GetAccountSettings(TwitterContext twitterCtx)
-        {
-            var rawResponse =
-                await
-                    (from raw in twitterCtx.RawQuery
-                     where raw.QueryString == "account/settings.json"
-                     select raw)
-                    .SingleAsync();
-
-            Console.WriteLine("JSON Result: " + rawResponse.Result);
-        }
-
         static void ShowMenu()
         {
             Console.WriteLine("\nRaw Demos - Please select:\n");
 
-            Console.WriteLine("\t 0. Query Account Settings");
+            Console.WriteLine("\t 0. Perform Search (Query)");
+            Console.WriteLine("\t 1. Update Status (Command)");
             Console.WriteLine();
             Console.WriteLine("\t Q. Return to Main menu");
+        }
+
+        static async Task PerformSearchRawAsync(TwitterContext twitterCtx)
+        {
+            string unencodedStatus = "LINQ to Twitter";
+            string encodedStatus = Uri.EscapeDataString(unencodedStatus);
+            string queryString = "search/tweets.json?q=" + encodedStatus;
+
+            var rawResult =
+                await
+                (from raw in twitterCtx.RawQuery
+                 where raw.QueryString == queryString
+                 select raw)
+                .SingleOrDefaultAsync();
+
+            Console.WriteLine("Response from Twitter: \n\n" + rawResult.Response);
+        }
+
+        static async Task TweetRawAsync(TwitterContext twitterCtx)
+        {
+            string status = 
+                "Testing LINQ to Twitter Raw Interface - " + 
+                DateTime.Now.ToString() + " #Linq2Twitter";
+            var parameters = new Dictionary<string, string>
+            {
+                { "status", status }
+            };
+
+            string queryString = "/statuses/update.json";
+
+            string result = 
+                await twitterCtx.ExecuteRawAsync(
+                    queryString, parameters);
+
+            Console.WriteLine(
+                "\nResponse from update status: \n\n\t" + result);
         }
     }
 }

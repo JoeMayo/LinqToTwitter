@@ -21,7 +21,19 @@ namespace Linq2TwitterDemos_Console
                 {
                     case '0':
                         Console.WriteLine("\n\tShowing saved searches...\n");
-                        await ShowSavedSearches(twitterCtx);
+                        await ShowSavedSearchesAsync(twitterCtx);
+                        break;
+                    case '1':
+                        Console.WriteLine("\n\tShowing saved search...\n");
+                        await ShowSavedSearchAsync(twitterCtx);
+                        break;
+                    case '2':
+                        Console.WriteLine("\n\tCreating...\n");
+                        await CreateSavedSearchAsync(twitterCtx);
+                        break;
+                    case '3':
+                        Console.WriteLine("\n\tDeleting...\n");
+                        await DestroySavedSearchAsync(twitterCtx);
                         break;
                     case 'q':
                     case 'Q':
@@ -35,7 +47,19 @@ namespace Linq2TwitterDemos_Console
             } while (char.ToUpper(key) != 'Q');
         }
 
-        static async Task ShowSavedSearches(TwitterContext twitterCtx)
+        static void ShowMenu()
+        {
+            Console.WriteLine("\nSaved Search Demos - Please select:\n");
+
+            Console.WriteLine("\t 0. Show Saved Searches");
+            Console.WriteLine("\t 1. Show Saved Search");
+            Console.WriteLine("\t 2. Create Saved Search");
+            Console.WriteLine("\t 3. Destroy Saved Search");
+            Console.WriteLine();
+            Console.WriteLine("\t Q. Return to Main menu");
+        }
+
+        static async Task ShowSavedSearchesAsync(TwitterContext twitterCtx)
         {
             var savedSearches =
                 await
@@ -44,16 +68,47 @@ namespace Linq2TwitterDemos_Console
                      select search)
                     .ToListAsync();
 
-            savedSearches.ForEach(search => Console.WriteLine("Search: " + search.Query));
+            savedSearches.ForEach(
+                search => Console.WriteLine("Search: " + search.Query));
         }
 
-        static void ShowMenu()
+        static async Task ShowSavedSearchAsync(TwitterContext twitterCtx)
         {
-            Console.WriteLine("\nSaved Search Demos - Please select:\n");
+            ulong savedSearchID = 306668698;
 
-            Console.WriteLine("\t 0. Show Saved Searches");
-            Console.WriteLine();
-            Console.WriteLine("\t Q. Return to Main menu");
+            var savedSearch =
+                await
+                (from search in twitterCtx.SavedSearch
+                 where search.Type == SavedSearchType.Show &&
+                       search.ID == savedSearchID
+                 select search)
+                .SingleOrDefaultAsync();
+
+            Console.WriteLine(
+                "ID: {0}, Search: {1}", 
+                savedSearch.ID, savedSearch.Name);
+        }
+
+        static async Task CreateSavedSearchAsync(TwitterContext twitterCtx)
+        {
+            SavedSearch savedSearch = 
+                await twitterCtx.CreateSavedSearchAsync("linq");
+
+            Console.WriteLine(
+                "ID: {0}, Search: {1}", 
+                savedSearch.IDResponse, savedSearch.Query);
+        }
+
+        static async Task DestroySavedSearchAsync(TwitterContext twitterCtx)
+        {
+            ulong savedSearchID = 0;
+
+            SavedSearch savedSearch = 
+                await twitterCtx.DestroySavedSearchAsync(savedSearchID);
+
+            Console.WriteLine(
+                "ID: {0}, Search: {1}", 
+                savedSearch.ID, savedSearch.Name);
         }
     }
 }

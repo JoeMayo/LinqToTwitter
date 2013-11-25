@@ -23,7 +23,7 @@ namespace LinqToTwitterPcl.Tests.FavoritesTests
 
             var favorite = new Favorites(favJson);
 
-            Assert.AreEqual("1234", favorite.InReplyToStatusID);
+            Assert.AreEqual(1234ul, favorite.InReplyToStatusID);
             Assert.AreEqual(new DateTimeOffset(2012, 4, 5, 16, 44, 8, new TimeSpan(0)).DateTime, favorite.CreatedAt);
             Assert.IsFalse(favorite.Truncated);
             Assert.AreEqual(false, favorite.Retweeted);

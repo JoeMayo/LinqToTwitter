@@ -24,13 +24,13 @@ namespace LinqToTwitterPcl.Tests.StatusTests
             Expression<Func<Status, bool>> expression =
             status =>
                 status.Type == StatusType.Home &&
-                status.ID == "10" &&
-                status.UserID == "10" &&
+                status.ID == 10 &&
+                status.UserID == 10 &&
                 status.ScreenName == "JoeMayo" &&
                 status.SinceID == 123 &&
                 status.MaxID == 456 &&
                 status.Count == 50 &&
-                status.Cursor == "789" &&
+                status.Cursor == 789 &&
                 status.IncludeRetweets == true &&
                 status.ExcludeReplies == true &&
                 status.IncludeEntities == true &&
@@ -240,26 +240,6 @@ namespace LinqToTwitterPcl.Tests.StatusTests
                 { "Type", ((int)StatusType.User).ToString() },
                 { "ID", "15411837" },
                 { "IncludeRetweets", false.ToString() }
-            };
-
-            Request req = reqProc.BuildUrl(parameters);
-
-            Assert.AreEqual(ExpectedUrl, req.FullUrl);
-        }
-
-        [TestMethod]
-        public void BuildUrl_Constructs_Url_For_RetweetedByUser()
-        {
-            const string ExpectedUrl = "http://api.twitter.com/1/statuses/retweeted_by_user.json?screen_name=JoeMayo";
-            var reqProc = new StatusRequestProcessor<Status>
-            {
-                Type = StatusType.RetweetedByUser,
-                BaseUrl = "http://api.twitter.com/1/"
-            };
-            var parameters = new Dictionary<string, string>
-            {
-                { "Type", ((int)StatusType.RetweetedByUser).ToString() },
-                { "ScreenName", "JoeMayo" }
             };
 
             Request req = reqProc.BuildUrl(parameters);
@@ -582,13 +562,13 @@ namespace LinqToTwitterPcl.Tests.StatusTests
             { 
                 BaseUrl = "https://api.twitter.com/1.1/",
                 Type = StatusType.Show,
-                ID = "123",
-                UserID = "123",
+                ID = 123,
+                UserID = 123,
                 ScreenName = "abc",
                 SinceID = 1,
                 MaxID = 2,
                 Count = 3,
-                Cursor="123",
+                Cursor= 123,
                 IncludeRetweets = true,
                 ExcludeReplies = true,
                 IncludeEntities = true,
@@ -628,7 +608,7 @@ namespace LinqToTwitterPcl.Tests.StatusTests
             {
                 BaseUrl = "https://api.twitter.com/1.1/",
                 Type = StatusType.Oembed,
-                ID = "123",
+                ID = 123,
                 OEmbedUrl = "http://myurl.com",
                 OEmbedMaxWidth = 300,
                 OEmbedHideMedia = true,

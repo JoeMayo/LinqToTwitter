@@ -15,9 +15,7 @@ namespace LinqToTwitter
         public async Task<SavedSearch> CreateSavedSearchAsync(string query)
         {
             if (string.IsNullOrWhiteSpace(query))
-            {
                 throw new ArgumentException("query is required.", "query");
-            }
 
             var savedSearchUrl = BaseUrl + "saved_searches/create.json";
 
@@ -42,7 +40,7 @@ namespace LinqToTwitter
         /// <returns>SavedSearch object</returns>
         public async Task<SavedSearch> DestroySavedSearchAsync(ulong id)
         {
-            if (id < 1)
+            if (id == 0)
                 throw new ArgumentException("Invalid Saved Search ID: " + id, "id");
 
             var savedSearchUrl = BaseUrl + "saved_searches/destroy/" + id + ".json";
@@ -55,7 +53,7 @@ namespace LinqToTwitter
                     new Dictionary<string, string>());
 
             SavedSearch result = reqProc.ProcessActionResult(resultsJson, SavedSearchAction.Destroy);
-            result.ID = id.ToString();
+            result.ID = id;
 
             return result;
         }

@@ -7,7 +7,7 @@ using LitJson;
 namespace LinqToTwitter
 {
     /// <summary>
-    /// processes Twitter Saved Search requests
+    ///Processes Twitter Saved Search requests.
     /// </summary>
     public class SavedSearchRequestProcessor<T> :
         IRequestProcessor<T>,
@@ -28,7 +28,7 @@ namespace LinqToTwitter
         /// <summary>
         /// search item ID
         /// </summary>
-        private string ID { get; set; }
+        internal ulong ID { get; set; }
 
         /// <summary>
         /// extracts parameters from lambda
@@ -83,7 +83,7 @@ namespace LinqToTwitter
             if (!parameters.ContainsKey("ID"))
                 throw new ArgumentException("ID is required for a Saved Search Show query.", "ID");
 
-            ID = parameters["ID"];
+            ID = ulong.Parse(parameters["ID"]);
 
             var url = BaseUrl + "saved_searches/show/" + ID + ".json";
 

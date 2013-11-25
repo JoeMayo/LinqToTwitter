@@ -29,12 +29,12 @@ namespace LinqToTwitter
         /// <summary>
         /// TweetID
         /// </summary>
-        internal string ID { get; set; }
+        internal ulong ID { get; set; }
 
         /// <summary>
         /// User ID to disambiguate when ID is same as screen name
         /// </summary>
-        internal string UserID { get; set; }
+        internal ulong UserID { get; set; }
 
         /// <summary>
         /// Screen Name to disambiguate when ID is same as UserD
@@ -59,7 +59,7 @@ namespace LinqToTwitter
         /// <summary>
         /// Next page of data to return
         /// </summary>
-        internal string Cursor { get; set; }
+        internal long Cursor { get; set; }
 
         /// <summary>
         /// Retweets are optional and you must set this to true
@@ -201,8 +201,8 @@ namespace LinqToTwitter
                     return BuildOembedUrl(parameters);
                 case StatusType.RetweetsOfMe:
                     return BuildRetweetsOfMeUrl(parameters);
-                case StatusType.RetweetedByUser:
-                    return BuildRetweetedByUserUrl(parameters);
+                case StatusType.Retweets:
+                    return BuildRetweets(parameters);
                 case StatusType.Show:
                     return BuildShowUrl(parameters);
                 case StatusType.User:
@@ -227,13 +227,13 @@ namespace LinqToTwitter
 
             if (parameters.ContainsKey("ID"))
             {
-                ID = parameters["ID"];
+                ID = ulong.Parse(parameters["ID"]);
                 urlParams.Add(new QueryParameter("id", parameters["ID"]));
             }
 
             if (parameters.ContainsKey("UserID"))
             {
-                UserID = parameters["UserID"];
+                UserID = ulong.Parse(parameters["UserID"]);
                 urlParams.Add(new QueryParameter("user_id", parameters["UserID"]));
             }
 
@@ -349,9 +349,31 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">input parameters</param>
         /// <returns>base url + retweeted by user segment</returns>
-        Request BuildRetweetedByUserUrl(Dictionary<string, string> parameters)
+        Request BuildRetweets(Dictionary<string, string> parameters)
         {
-            return BuildUrlParameters(parameters, "statuses/retweeted_by_user.json");
+            string urlSegment = null;
+            if (!parameters.ContainsKey("ID"))
+                throw new ArgumentNullException("ID", "ID is required.");
+
+            ID = ulong.Parse(parameters["ID"]);
+
+            var req = new Request(BaseUrl + "statuses/retweets/" + ID + ".json");
+            var urlParams = req.RequestParameters;
+
+            if (parameters.ContainsKey("Count"))
+            {
+                Count = int.Parse(parameters["Count"]);
+                urlParams.Add(new QueryParameter("count", parameters["Count"]));
+            }
+
+            if (parameters.ContainsKey("TrimUser"))
+            {
+                TrimUser = bool.Parse(parameters["TrimUser"]);
+                urlParams.Add(new QueryParameter("trim_user", parameters["TrimUser"].ToLower()));
+            }
+
+            return req;
+
         }
 
         /// <summary>
@@ -376,7 +398,7 @@ namespace LinqToTwitter
 
             if (parameters.ContainsKey("ID"))
             {
-                ID = parameters["ID"];
+                ID = ulong.Parse(parameters["ID"]);
                 urlParams.Add(new QueryParameter("id", parameters["ID"]));
             }
 
@@ -440,14 +462,14 @@ namespace LinqToTwitter
             var req = new Request(url);
             var urlParams = req.RequestParameters;
 
-            ID = parameters["ID"];
-            urlParams.Add(new QueryParameter("id", ID));
+            ID = ulong.Parse(parameters["ID"]);
+            urlParams.Add(new QueryParameter("id", parameters["ID"]));
 
             if (parameters.ContainsKey("Cursor"))
             {
-                Cursor = parameters["Cursor"];
+                Cursor = long.Parse(parameters["Cursor"]);
 
-                urlParams.Add(new QueryParameter("cursor", Cursor));
+                urlParams.Add(new QueryParameter("cursor", parameters["Cursor"]));
             }
 
             return req;
@@ -472,7 +494,6 @@ namespace LinqToTwitter
                     break;
                 case StatusType.Home:
                 case StatusType.Mentions:
-                case StatusType.RetweetedByUser:
                 case StatusType.RetweetsOfMe:
                 case StatusType.Retweets:
                 case StatusType.User:

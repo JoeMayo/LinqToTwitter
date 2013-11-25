@@ -10,7 +10,7 @@ namespace LinqToTwitter
     {
         public const ulong MissingID = 0ul;
         public const ulong NoReply = 0ul;
-        public const decimal NoCoordinate = -1m;
+        public const decimal NoCoordinate = Decimal.MaxValue;
 
         /// <summary>
         /// sends a status update with attached media
@@ -22,6 +22,22 @@ namespace LinqToTwitter
         public async Task<Status> TweetWithMediaAsync(string status, bool possiblySensitive, byte[] image)
         {
             return await ReplyWithMediaAsync(NoReply, status, possiblySensitive, NoCoordinate, NoCoordinate, null, false, image);
+        }
+
+        /// <summary>
+        /// Sends a status update with attached media
+        /// </summary>
+        /// <param name="status">Status text</param>
+        /// <param name="possiblySensitive">Set to true if media does not contain age appropriate content</param>
+        /// <param name="latitude">Latitude coordinate of where tweet occurred</param>
+        /// <param name="longitude">Longitude coordinate of where tweet occurred</param>
+        /// <param name="placeID">ID of place (found via Geo Reverse lookup query)</param>
+        /// <param name="displayCoordinates">Allow or prevent display of coordinates for this tweet</param>
+        /// <param name="image">Media to send</param>
+        /// <returns>Status containing new reply</returns>
+        public async Task<Status> TweetWithMediaAsync(string status, bool possiblySensitive, decimal latitude, decimal longitude, string placeID, bool displayCoordinates, byte[] image)
+        {
+            return await ReplyWithMediaAsync(NoReply, status, possiblySensitive, latitude, longitude, placeID, displayCoordinates, image);
         }
 
         /// <summary>

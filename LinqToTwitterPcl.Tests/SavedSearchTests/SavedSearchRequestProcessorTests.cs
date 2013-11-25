@@ -38,7 +38,7 @@ namespace LinqToTwitterPcl.Tests.SavedSearchTests
             Assert.AreEqual("#LinqToTwitter", search.Query);
             Assert.AreEqual("#LinqToTwitter", search.Name);
             Assert.AreEqual(0, search.Postition);
-            Assert.AreEqual("3275867", search.IDString);
+            Assert.AreEqual(3275867, search.IDResponse);
             Assert.AreEqual(new DateTime(2009, 12, 18, 4, 17, 24), search.CreatedAt);
         }
 
@@ -56,7 +56,7 @@ namespace LinqToTwitterPcl.Tests.SavedSearchTests
             Assert.AreEqual("#LinqToTwitter", search.Query);
             Assert.AreEqual("#LinqToTwitter", search.Name);
             Assert.AreEqual(0, search.Postition);
-            Assert.AreEqual("3275867", search.IDString);
+            Assert.AreEqual(3275867, search.IDResponse);
             Assert.AreEqual(new DateTime(2009, 12, 18, 4, 17, 24), search.CreatedAt);
         }
 
@@ -77,7 +77,7 @@ namespace LinqToTwitterPcl.Tests.SavedSearchTests
             Expression<Func<SavedSearch, bool>> expression =
                 search =>
                     search.Type == SavedSearchType.Show &&
-                    search.ID == "123";
+                    search.ID == 123;
             var lambdaExpression = expression as LambdaExpression;
 
             var queryParams = searchReqProc.GetParameters(lambdaExpression);

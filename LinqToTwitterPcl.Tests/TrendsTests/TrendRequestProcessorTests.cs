@@ -24,8 +24,8 @@ namespace LinqToTwitterPcl.Tests.TrendTests
                 trend =>
                     trend.Type == TrendType.Available &&
                     trend.WoeID == 1 &&
-                    trend.Latitude == "1.2" &&
-                    trend.Longitude == "3.4" &&
+                    trend.Latitude == 1.2 &&
+                    trend.Longitude == 3.4 &&
                     trend.Exclude == true;
             var lambdaExpression = expression as LambdaExpression;
 
@@ -56,8 +56,8 @@ namespace LinqToTwitterPcl.Tests.TrendTests
                 BaseUrl = "https://api.twitter.com/1.1/",
                 Type = TrendType.Place,
                 Exclude = true,
-                Latitude = "1.1",
-                Longitude = "2.2",
+                Latitude = 1.1,
+                Longitude = 2.2,
                 WoeID = 1
             };
 

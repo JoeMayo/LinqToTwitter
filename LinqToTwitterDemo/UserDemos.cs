@@ -17,10 +17,10 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         public static void Run(TwitterContext twitterCtx)
         {
-            //UserShowWithIDQueryDemo(twitterCtx);
+            UserShowWithIDQueryDemo(twitterCtx);
             //UserShowWithScreenNameQueryDemo(twitterCtx);
             //UserShowForAuthenticatedUser(twitterCtx);
-            UsersLookupDemo(twitterCtx);
+            //UsersLookupDemo(twitterCtx);
             //UserSearchDemo(twitterCtx);
             //UserSuggestedCategoriesListQueryDemo(twitterCtx);
             //UserSuggestedCategoriesListWithLangQueryDemo(twitterCtx);

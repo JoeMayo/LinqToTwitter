@@ -121,7 +121,7 @@ namespace LinqToTwitterPcl.Tests.RawTests
 
             List<Raw> result = rawReqProc.ProcessResults(QueryResponse);
 
-            Assert.AreEqual(QueryResponse, result.First().Result);
+            Assert.AreEqual(QueryResponse, result.First().Response);
         }
 
         const string QueryResponse = @"<statuses type=""array"">

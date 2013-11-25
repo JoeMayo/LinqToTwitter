@@ -16,8 +16,7 @@
 
         /// <summary>
         /// Raw result, returned directly from Twitter.
-        /// Currently only supports XML formatted results.
         /// </summary>
-        public string Result { get; set; }
+        public string Response { get; set; }
     }
 }
