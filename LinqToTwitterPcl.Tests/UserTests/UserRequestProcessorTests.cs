@@ -442,7 +442,7 @@ namespace LinqToTwitterPcl.Tests.UserTests
                 user.UserIdList == "1,2" &&
                 user.ScreenName == "JoeMayo" &&
                 user.ScreenNameList == "JoeMayo,Linq2Tweeter" &&
-                user.Cursor == 10819235ul &&
+                user.Cursor == 10819235 &&
                 user.Slug == "twitter" &&
                 user.Query == "Joe Mayo" &&
                 user.Page == 2 &&
@@ -513,7 +513,7 @@ namespace LinqToTwitterPcl.Tests.UserTests
                 ScreenNameList = "JoeMayo,Linq2Tweeter",
                 Page = 1,
                 Count = 10,
-                Cursor = 456ul,
+                Cursor = 456,
                 Slug = "myslug",
                 Query = "myquery",
                 Lang = "en-US",
@@ -533,7 +533,7 @@ namespace LinqToTwitterPcl.Tests.UserTests
             Assert.AreEqual("JoeMayo,Linq2Tweeter", user.ScreenNameList);
             Assert.AreEqual(1, user.Page);
             Assert.AreEqual(10, user.Count);
-            Assert.AreEqual(456ul, user.Cursor);
+            Assert.AreEqual(456l, user.Cursor);
             Assert.AreEqual("myslug", user.Slug);
             Assert.AreEqual("myquery", user.Query);
             Assert.AreEqual("en-US", user.Lang);

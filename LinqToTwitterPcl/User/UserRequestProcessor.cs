@@ -8,7 +8,7 @@ using LitJson;
 namespace LinqToTwitter
 {
     /// <summary>
-    /// processes Twitter User requests
+    /// Processes Twitter User requests.
     /// </summary>
     public class UserRequestProcessor<T> :
         IRequestProcessor<T>,
@@ -68,7 +68,7 @@ namespace LinqToTwitter
         /// are Previous and Next, which you can find in the
         /// CursorResponse property when your response comes back.
         /// </remarks>
-        internal ulong Cursor { get; set; }
+        internal long Cursor { get; set; }
 
         /// <summary>
         /// Used to identify suggested users category
@@ -127,9 +127,7 @@ namespace LinqToTwitter
                        "ImageSize"
                    });
 
-            var parameters = paramFinder.Parameters;
-
-            return parameters;
+            return paramFinder.Parameters;
         }
 
         /// <summary>
@@ -299,7 +297,7 @@ namespace LinqToTwitter
 
             if (parameters.ContainsKey("ScreenNameList"))
             {
-                ScreenName = parameters["ScreenNameList"];
+                ScreenNameList = parameters["ScreenNameList"];
                 urlParams.Add(new QueryParameter("screen_name", parameters["ScreenNameList"]));
             }
 

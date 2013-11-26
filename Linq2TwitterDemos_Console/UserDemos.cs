@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using LinqToTwitter;
@@ -20,8 +21,40 @@ namespace Linq2TwitterDemos_Console
                 switch (key)
                 {
                     case '0':
-                        Console.WriteLine("\n\tSearching for Waldo...\n");
-                        await FindWaldo(twitterCtx);
+                        Console.WriteLine("\n\tLooking...\n");
+                        await LookupUsersAsync(twitterCtx);
+                        break;
+                    case '1':
+                        Console.WriteLine("\n\tShowing...\n");
+                        await ShowUserDetailsAsync(twitterCtx);
+                        break;
+                    case '2':
+                        Console.WriteLine("\n\tSearching...\n");
+                        await FindUsersAsync(twitterCtx);
+                        break;
+                    case '3':
+                        Console.WriteLine("\n\tShowing...\n");
+                        await GetContributeesAsync(twitterCtx);
+                        break;
+                    case '4':
+                        Console.WriteLine("\n\tSearching...\n");
+                        await GetContributorsAsync(twitterCtx);
+                        break;
+                    case '5':
+                        Console.WriteLine("\n\tGetting...\n");
+                        await GetBannerSizesAsync(twitterCtx);
+                        break;
+                    case '6':
+                        Console.WriteLine("\n\tGetting...\n");
+                        await GetUsersInSuggestedCategoriesAsync(twitterCtx);
+                        break;
+                    case '7':
+                        Console.WriteLine("\n\tGetting  ...\n");
+                        await GetSuggestedCategoryListQueryAsync(twitterCtx);
+                        break;
+                    case '8':
+                        Console.WriteLine("\n\tGetting...\n");
+                        await ShowUsersInCategoryAsync(twitterCtx);
                         break;
                     case 'q':
                     case 'Q':
@@ -34,27 +67,163 @@ namespace Linq2TwitterDemos_Console
 
             } while (char.ToUpper(key) != 'Q');
         }
-  
-        static async Task FindWaldo(TwitterContext twitterCtx)
+ 
+        static void ShowMenu()
+        {
+            Console.WriteLine("\nUser Demos - Please select:\n");
+
+            Console.WriteLine("\t 0. Lookup Users");
+            Console.WriteLine("\t 1. Show User Info");
+            Console.WriteLine("\t 2. Search for Users");
+            Console.WriteLine("\t 3. Contributee Accounts");
+            Console.WriteLine("\t 4. Account Contributors");
+            Console.WriteLine("\t 5. Get Profile Banner Sizes");
+            Console.WriteLine("\t 6. Get Suggested Users");
+            Console.WriteLine("\t 7. Get Suggestion Categories");
+            Console.WriteLine("\t 8. Get Suggested User Tweets");
+            Console.WriteLine();
+            Console.WriteLine("\t Q. Return to Main menu");
+        }
+
+        static async Task LookupUsersAsync(TwitterContext twitterCtx)
+        {
+            var userResponse =
+                await
+                (from user in twitterCtx.User
+                 where user.Type == UserType.Lookup &&
+                       user.ScreenNameList == "JoeMayo,Linq2Tweeter"
+                 select user)
+                .ToListAsync();
+
+            userResponse.ForEach(user => 
+                Console.WriteLine("Name: " + user.ScreenNameResponse));
+        }
+
+        static async Task ShowUserDetailsAsync(TwitterContext twitterCtx)
+        {
+            var user =
+                await
+                (from tweet in twitterCtx.User
+                 where tweet.Type == UserType.Show &&
+                       tweet.ScreenName == "JoeMayo"
+                 select tweet)
+                .SingleOrDefaultAsync();
+
+            var name = user.ScreenNameResponse;
+            var lastStatus = 
+                user.Status == null ? "No Status" : user.Status.Text;
+
+            Console.WriteLine();
+            Console.WriteLine(
+                "Name: {0}, Last Tweet: {1}\n", name, lastStatus);
+        }
+ 
+        static async Task FindUsersAsync(TwitterContext twitterCtx)
         {
             var foundUsers =
                 await
                 (from user in twitterCtx.User
                  where user.Type == UserType.Search &&
-                       user.Query == "Waldo"
+                       user.Query == "JoeMayo"
                  select user)
                 .ToListAsync();
 
-            foundUsers.ForEach(user => Console.WriteLine("User: " + user.ScreenNameResponse));
+            foundUsers.ForEach(user => 
+                Console.WriteLine("User: " + user.ScreenNameResponse));
         }
 
-        static void ShowMenu()
+        static async Task GetContributeesAsync(TwitterContext twitterCtx)
         {
-            Console.WriteLine("\nUser Demos - Please select:\n");
+            var users =
+                await
+                (from user in twitterCtx.User
+                 where user.Type == UserType.Contributees &&
+                       user.ScreenName == "biz"
+                 select user)
+                .ToListAsync();
 
-            Console.WriteLine("\t 0. Where is Waldo?");
-            Console.WriteLine();
-            Console.WriteLine("\t Q. Return to Main menu");
+            users.ForEach(user => 
+                Console.WriteLine("User: " + user.ScreenNameResponse));
+        }
+
+        static async Task GetContributorsAsync(TwitterContext twitterCtx)
+        {
+            var users =
+                await
+                (from user in twitterCtx.User
+                 where user.Type == UserType.Contributors &&
+                       user.ScreenName == "twitter"
+                 select user)
+                .ToListAsync();
+
+            users.ForEach(user => 
+                Console.WriteLine("User: " + user.ScreenNameResponse));
+        }
+
+        static async Task GetBannerSizesAsync(TwitterContext twitterCtx)
+        {
+            var user =
+                await
+                (from usr in twitterCtx.User
+                 where usr.Type == UserType.BannerSizes &&
+                       usr.ScreenName == "JoeMayo"
+                 select usr)
+                .SingleOrDefaultAsync();
+
+            user.BannerSizes.ForEach(size =>
+                Console.WriteLine(
+                    "Label: {0}, W: {1} H: {2} URL: {3}",
+                    size.Label, size.Width, size.Height, size.Url));
+        }
+
+        static async Task GetUsersInSuggestedCategoriesAsync(TwitterContext twitterCtx)
+        {
+            var userResponse =
+                await
+                (from tweet in twitterCtx.User
+                 where tweet.Type == UserType.Category &&
+                       tweet.Slug == "Funny"
+                 select tweet)
+                .SingleOrDefaultAsync();
+
+            List<User> users = userResponse.Categories.First().Users;
+
+            users.ForEach(user => 
+                Console.WriteLine("User: " + user.ScreenNameResponse));
+        }
+
+        static async Task GetSuggestedCategoryListQueryAsync(TwitterContext twitterCtx)
+        {
+            var user =
+                await
+                (from tweet in twitterCtx.User
+                 where tweet.Type == UserType.Categories
+                 select tweet)
+                .SingleOrDefaultAsync();
+
+            user.Categories.ForEach(cat => 
+                Console.WriteLine("Category: " + cat.Name));
+        }
+
+        static async Task ShowUsersInCategoryAsync(TwitterContext twitterCtx)
+        {
+            var catUsers =
+                await
+                (from user in twitterCtx.User
+                 where user.Type == UserType.CategoryStatus &&
+                       user.Slug == "Technology"
+                 select user)
+                .ToListAsync();
+
+            Console.WriteLine("Tweets: \n");
+
+            catUsers.ForEach(user =>
+                Console.WriteLine(
+                    "User: {0}\nTweet: {1}\n",
+                    user.ScreenNameResponse,
+                    user.Status == null ?
+                        "<Tweet not available.>" :
+                        user.Status.Text));
         }
     }
 }

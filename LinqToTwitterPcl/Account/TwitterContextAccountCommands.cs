@@ -273,19 +273,25 @@ namespace LinqToTwitter
                 throw new ArgumentException("At least one parameter must be provided as arguments, but none are specified.", NoInputParam);
 
             var reqProc = new AccountRequestProcessor<Account>();
+            var parameters = new Dictionary<string, string>
+                    {
+                        { "time_zone", timeZone },
+                        { "lang", lang }
+                    };
+
+            if (trendLocationWoeid != null)
+                parameters.Add("trend_location_woeid", trendLocationWoeid.ToString());
+            if (sleepTimeEnabled != null)
+                parameters.Add("sleep_time_enabled", sleepTimeEnabled.ToString().ToLower());
+            if (startSleepTime != null)
+                parameters.Add("start_sleep_time", startSleepTime.ToString());
+            if (endSleepTime != null)
+                parameters.Add("end_sleep_time", endSleepTime.ToString());
 
             var resultsJson =
                 await TwitterExecutor.PostToTwitterAsync<Account>(
                     accountUrl,
-                    new Dictionary<string, string>
-                    {
-                        { "trend_location_woeid", trendLocationWoeid.ToString() },
-                        { "sleep_time_enabled", sleepTimeEnabled.ToString().ToLower() },
-                        { "start_sleep_time", startSleepTime.ToString() },
-                        { "end_sleep_time", endSleepTime.ToString() },
-                        { "time_zone", timeZone },
-                        { "lang", lang }
-                    });
+                    parameters);
 
             return reqProc.ProcessActionResult(resultsJson, AccountAction.Settings);
         }
@@ -296,20 +302,24 @@ namespace LinqToTwitter
         /// <param name="device">Which device to use.</param>
         /// <param name="includeEntitites">Set this to false to not add entitites to response. (default: true)</param>
         /// <returns></returns>
-        public async Task<Account> UpdateDeliveryDeviceAsync(DeviceType device, bool includeEntitites)
+        public async Task<Account> UpdateDeliveryDeviceAsync(DeviceType device, bool? includeEntitites)
         {
             var accountUrl = BaseUrl + "account/update_delivery_device.json";
 
             var reqProc = new AccountRequestProcessor<Account>();
 
+            var parameters = new Dictionary<string, string>
+                    {
+                        { "device", device.ToString().ToLower() }
+                    };
+
+            if (includeEntitites != null)
+                parameters.Add("include_entities", includeEntitites.ToString().ToLower());
+
             var resultsJson =
                 await TwitterExecutor.PostToTwitterAsync<Account>(
                     accountUrl,
-                    new Dictionary<string, string>
-                    {
-                        { "device", device.ToString().ToLower() },
-                        { "include_entities", includeEntitites.ToString().ToLower() }
-                    });
+                    parameters);
 
             return reqProc.ProcessActionResult(resultsJson, AccountAction.Settings);
         }

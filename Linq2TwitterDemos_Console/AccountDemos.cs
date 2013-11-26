@@ -191,9 +191,9 @@ namespace Linq2TwitterDemos_Console
 
         static async Task UpdateDeliveryDeviceAsync(TwitterContext twitterCtx)
         {
-            Account acct = await twitterCtx.UpdateDeliveryDeviceAsync(DeviceType.None, false);
+            Account acct = await twitterCtx.UpdateDeliveryDeviceAsync(DeviceType.None, null);
 
-            Console.WriteLine("Delivery Device: ");
+            Console.WriteLine("Update for: ", acct.User.ScreenNameResponse);
         }
         
         static async Task UpdateProfileBannerAsync(TwitterContext twitterCtx)

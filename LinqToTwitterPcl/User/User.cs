@@ -114,7 +114,7 @@ namespace LinqToTwitter
         /// are Previous and Next, which you can find in the
         /// CursorResponse property when your response comes back.
         /// </remarks>
-        public ulong Cursor { get; set; }
+        public long Cursor { get; set; }
 
         /// <summary>
         /// Used to identify suggested users category
