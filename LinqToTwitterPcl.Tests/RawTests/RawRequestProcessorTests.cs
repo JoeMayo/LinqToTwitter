@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
 using LinqToTwitter;
 using LinqToTwitterPcl.Tests.Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -18,7 +17,7 @@ namespace LinqToTwitterPcl.Tests.RawTests
         }
 
         [TestMethod]
-        public async Task GetParameters_Returns_Parameters()
+        public void GetParameters_Returns_Parameters()
         {
             var rawReqProc = new RawRequestProcessor<Raw>();
             Expression<Func<Raw, bool>> expression =
@@ -34,7 +33,7 @@ namespace LinqToTwitterPcl.Tests.RawTests
         }
 
         [TestMethod]
-        public async Task BuildUrl_Returns_Full_Url()
+        public void BuildUrl_Returns_Full_Url()
         {
             var rawReqProc = new RawRequestProcessor<Raw> { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
@@ -49,8 +48,7 @@ namespace LinqToTwitterPcl.Tests.RawTests
         }
 
         [TestMethod]
-        [Ignore]
-        public async Task BuildUrl_Requires_NonNull_QueryString()
+        public void BuildUrl_Requires_NonNull_QueryString()
         {
             var rawReqProc = new RawRequestProcessor<Raw> { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
@@ -58,14 +56,13 @@ namespace LinqToTwitterPcl.Tests.RawTests
                 //{"QueryString", "statuses/public_timeline.json"},
             };
 
-            //var ex = Assert.Throws<ArgumentNullException>(() => rawReqProc.BuildUrl(parameters));
+            var ex = L2TAssert.Throws<ArgumentNullException>(() => rawReqProc.BuildUrl(parameters));
 
-            //Assert.AreEqual("QueryString", ex.ParamName);
+            Assert.AreEqual("QueryString", ex.ParamName);
         }
 
         [TestMethod]
-        [Ignore]
-        public async Task BuildUrl_Requires_NonBlank_QueryString()
+        public void BuildUrl_Requires_NonBlank_QueryString()
         {
             var rawReqProc = new RawRequestProcessor<Raw> { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
@@ -73,13 +70,13 @@ namespace LinqToTwitterPcl.Tests.RawTests
                 {"QueryString", " "},
             };
 
-            //var ex = Assert.Throws<ArgumentException>(() => rawReqProc.BuildUrl(parameters));
+            var ex = L2TAssert.Throws<ArgumentException>(() => rawReqProc.BuildUrl(parameters));
 
-            //Assert.AreEqual("QueryString", ex.ParamName);
+            Assert.AreEqual("QueryString", ex.ParamName);
         }
 
         [TestMethod]
-        public async Task BuildUrl_Resolves_Extra_Slash_Between_BaseUrl_And_QueryString()
+        public void BuildUrl_Resolves_Extra_Slash_Between_BaseUrl_And_QueryString()
         {
             string baseUrlWithTrailingSlash = "https://api.twitter.com/1.1/";
             string queryStringWithPrecedingSlash = "/statuses/public_timeline.json";
@@ -97,7 +94,7 @@ namespace LinqToTwitterPcl.Tests.RawTests
         }
 
         [TestMethod]
-        public async Task BuildUrl_Resolves_No_Slash_Between_BaseUrl_And_QueryString()
+        public void BuildUrl_Resolves_No_Slash_Between_BaseUrl_And_QueryString()
         {
             string baseUrlWithoutTrailingSlash = "https://api.twitter.com/1.1";
             string queryStringWithoutPrecedingSlash = "statuses/public_timeline.json";
@@ -115,7 +112,7 @@ namespace LinqToTwitterPcl.Tests.RawTests
         }
 
         [TestMethod]
-        public async Task ProcessIDResultsTest()
+        public void ProcessIDResultsTest()
         {
             var rawReqProc = new RawRequestProcessor<Raw>();
 

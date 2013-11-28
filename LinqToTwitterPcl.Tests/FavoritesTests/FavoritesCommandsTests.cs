@@ -10,9 +10,9 @@ using Moq;
 namespace LinqToTwitterPcl.Tests.FavoritesTests
 {
     [TestClass]
-    public class FavoritesExtensionsTests
+    public class FavoritesCommandsTests
     {
-        public FavoritesExtensionsTests()
+        public FavoritesCommandsTests()
         {
             TestCulture.SetCulture();
         }
@@ -34,7 +34,7 @@ namespace LinqToTwitterPcl.Tests.FavoritesTests
         }
 
         [TestMethod]
-        public async Task CreateFavoritesRequestProcessor_Works_With_Actions()
+        public void CreateFavoritesRequestProcessor_Works_With_Actions()
         {
             var favReqProc = new FavoritesRequestProcessor<Favorites>();
 
@@ -54,14 +54,14 @@ namespace LinqToTwitterPcl.Tests.FavoritesTests
         }
 
         [TestMethod]
-        [Ignore]
-        public async Task CreateFavoriteNoIDTest()
+        public async Task CreateFavoriteAsync_Throws_On_Zero_ID()
         {
             var ctx = InitializeTwitterContext();
 
-            //var ex = Assert.Throws<ArgumentException>(() => ctx.CreateFavoriteAsync(null));
+            var ex = await L2TAssert.Throws<ArgumentException>(
+                async () => await ctx.CreateFavoriteAsync(0));
 
-            //Assert.AreEqual("id", ex.ParamName);
+            Assert.AreEqual("id", ex.ParamName);
         }
 
         [TestMethod]
@@ -77,15 +77,15 @@ namespace LinqToTwitterPcl.Tests.FavoritesTests
         }
 
         [TestMethod]
-        [Ignore]
-        public async Task DestroyFavoriteNullIDTest()
+        public async Task DestroyFavoriteAsync_Throws_On_Zero_ID()
         {
-            string id = string.Empty;
+            const ulong ID = 0;
             var ctx = InitializeTwitterContext();
 
-            //var ex = Assert.Throws<ArgumentException>(() => ctx.DestroyFavoriteAsync(id, true));
+            var ex = await L2TAssert.Throws<ArgumentException>(
+                async () => await ctx.DestroyFavoriteAsync(ID, true));
 
-            //Assert.AreEqual("id", ex.ParamName);
+            Assert.AreEqual("id", ex.ParamName);
         }
 
         const string SingleStatusResponse = @"{

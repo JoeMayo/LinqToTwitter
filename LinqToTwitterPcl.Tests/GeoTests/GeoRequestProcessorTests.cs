@@ -98,7 +98,6 @@ namespace LinqToTwitterPcl.Tests.GeoTests
         }
 
         [TestMethod]
-        [Ignore]
         public void BuildUrl_ReverseL_Without_LatLong_Throws()
         {
             const string ExpectedLatLongParamName = "LatLong";
@@ -111,9 +110,9 @@ namespace LinqToTwitterPcl.Tests.GeoTests
                  {"MaxResults", "10" }
              };
 
-            //var ex = Assert.Throws<ArgumentException>(() => geoReqProc.BuildUrl(parameters));
+            var ex = L2TAssert.Throws<ArgumentException>(() => geoReqProc.BuildUrl(parameters));
 
-            //Assert.AreEqual(ExpectedLatLongParamName, ex.ParamName);
+            Assert.AreEqual(ExpectedLatLongParamName, ex.ParamName);
         }
 
         [TestMethod]
@@ -133,7 +132,6 @@ namespace LinqToTwitterPcl.Tests.GeoTests
         }
 
         [TestMethod]
-        [Ignore]
         public void BuildUrl_ID_Without_ID_Throws()
         {
             const string ExpectedIDParamName = "ID";
@@ -143,9 +141,9 @@ namespace LinqToTwitterPcl.Tests.GeoTests
                  {"Type", ((int) GeoType.ID).ToString()},
              };
 
-            //var ex = Assert.Throws<ArgumentException>(() => geoReqProc.BuildUrl(parameters));
+            var ex = L2TAssert.Throws<ArgumentException>(() => geoReqProc.BuildUrl(parameters));
 
-            //Assert.AreEqual(ExpectedIDParamName, ex.ParamName);
+            Assert.AreEqual(ExpectedIDParamName, ex.ParamName);
         }
 
         [TestMethod]
@@ -173,7 +171,6 @@ namespace LinqToTwitterPcl.Tests.GeoTests
         }
 
         [TestMethod]
-        [Ignore]
         public void BuildUrl_Search_With_Attribute_Missing_Equals_Symbol_Throws()
         {
             const string ExpectedAttributeParam = "Attribute";
@@ -185,9 +182,9 @@ namespace LinqToTwitterPcl.Tests.GeoTests
                  {"Attribute", "street_address" }
              };
 
-             //var ex = Assert.Throws<ArgumentException>(() => geoReqProc.BuildUrl(parameters));
+            var ex = L2TAssert.Throws<ArgumentException>(() => geoReqProc.BuildUrl(parameters));
 
-             //Assert.AreEqual(ExpectedAttributeParam, ex.ParamName);
+            Assert.AreEqual(ExpectedAttributeParam, ex.ParamName);
         }
 
         [TestMethod]
@@ -211,7 +208,6 @@ namespace LinqToTwitterPcl.Tests.GeoTests
         }
 
         [TestMethod]
-        [Ignore]
         public void BuildUrl_For_Similar_Places_Requires_Lat_And_Long()
         {
             const string ExpectedParamName = "LatLong";
@@ -226,13 +222,12 @@ namespace LinqToTwitterPcl.Tests.GeoTests
                  {"Attribute", "street_address=123" }
              };
 
-            //var ex = Assert.Throws<ArgumentException>(() => geoReqProc.BuildUrl(parameters));
+            var ex = L2TAssert.Throws<ArgumentException>(() => geoReqProc.BuildUrl(parameters));
 
-            //Assert.AreEqual(ExpectedParamName, ex.ParamName);
+            Assert.AreEqual(ExpectedParamName, ex.ParamName);
         }
 
         [TestMethod]
-        [Ignore]
         public void BuildUrl_For_Similar_Places_Requires_PlaceName()
         {
             const string ExpectedParamName = "PlaceName";
@@ -247,9 +242,9 @@ namespace LinqToTwitterPcl.Tests.GeoTests
                  {"Attribute", "street_address=123" }
              };
 
-            //var ex = Assert.Throws<ArgumentException>(() => geoReqProc.BuildUrl(parameters));
+            var ex = L2TAssert.Throws<ArgumentException>(() => geoReqProc.BuildUrl(parameters));
 
-            //Assert.AreEqual(ExpectedParamName, ex.ParamName);
+            Assert.AreEqual(ExpectedParamName, ex.ParamName);
         }
 
         [TestMethod]

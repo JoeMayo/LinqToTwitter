@@ -61,7 +61,7 @@ namespace LinqToTwitterPcl.Tests.SecurityTests
                     {"oauth_token", "370773112-GmHxMAgYyLbNEtIKZeRNFsMKPR9EyMZeS9weJAEb" }, 
                 };
 
-            string authString = oAuth.GetAuthorizationString(Method, Url, parameters, ConsumerSecret, OAuthTokenSecret);
+            oAuth.GetAuthorizationString(Method, Url, parameters, ConsumerSecret, OAuthTokenSecret);
 
             Assert.IsTrue(parameters.ContainsKey("oauth_nonce"));
             Assert.IsTrue(parameters.ContainsKey("oauth_timestamp"));

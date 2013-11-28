@@ -171,26 +171,24 @@ namespace LinqToTwitterPcl.Tests.BlocksTests
         }
 
         [TestMethod]
-        [Ignore]
         public void BuildUrl_Throws_On_Missing_Type_Parameter()
         {
             var blockReqProc = new BlocksRequestProcessor<Blocks> { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>();
 
-            //var ex = Assert.Throws<ArgumentException>(() => blockReqProc.BuildUrl(parameters));
-                
-            //Assert.AreEqual("Type", ex.ParamName);
+            var ex = L2TAssert.Throws<ArgumentException>(() => blockReqProc.BuildUrl(parameters));
+
+            Assert.AreEqual("Type", ex.ParamName);
         }
 
         [TestMethod]
-        [Ignore]
         public void BuildUrl_Throws_On_Null_Parameters()
         {
             var blockReqProc = new BlocksRequestProcessor<Blocks> { BaseUrl = "https://api.twitter.com/1.1/" };
 
-            //var ex = Assert.Throws<ArgumentException>(() => blockReqProc.BuildUrl(null));
+            var ex = L2TAssert.Throws<ArgumentException>(() => blockReqProc.BuildUrl(null));
 
-            //Assert.AreEqual("Type", ex.ParamName);
+            Assert.AreEqual("Type", ex.ParamName);
         }
 
 

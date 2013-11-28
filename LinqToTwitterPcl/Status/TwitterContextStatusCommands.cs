@@ -71,7 +71,7 @@ namespace LinqToTwitter
             if (string.IsNullOrWhiteSpace(status))
                 throw new ArgumentNullException("status", "status is a required parameter.");
 
-            if (image == null)
+            if (image == null || image.Length == 0)
                 throw new ArgumentNullException("image", "You must provide a byte[] of image data.");
 
             string updateUrl = BaseUrl + "statuses/update_with_media.json";

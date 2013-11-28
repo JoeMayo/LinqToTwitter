@@ -9,11 +9,12 @@ using Moq;
 
 namespace LinqToTwitterPcl.Tests.AccountTests
 {
-    public class AccountExtensionsTests
+    [TestClass]
+    public class AccountCommandsTests
     {
         Mock<ITwitterExecute> execMock;
 
-        public AccountExtensionsTests()
+        public AccountCommandsTests()
         {
             TestCulture.SetCulture();
         }
@@ -30,24 +31,20 @@ namespace LinqToTwitterPcl.Tests.AccountTests
                     It.IsAny<string>(),
                     It.IsAny<Dictionary<string, string>>()))
                     .Returns(tcsResponse.Task);
-            var ctx = new TwitterContext(execMock.Object);
-            return ctx;
-        }
-
-        TwitterContext InitTwitterContextWithPostTwitterImage()
-        {
-            var authMock = new Mock<IAuthorizer>();
-            execMock = new Mock<ITwitterExecute>();
-            //execMock.SetupGet(exec => exec.Authorizer).Returns(authMock.Object);
-            //execMock.Setup(
-            //    exec => exec.PostTwitterImage(
-            //        It.IsAny<string>(),
-            //        It.IsAny<IDictionary<string, string>>(),
-            //        It.IsAny<byte[]>(),
-            //        It.IsAny<string>(),
-            //        It.IsAny<string>(),
-            //        It.IsAny<IRequestProcessor<User>>()))
-            //        .Returns(SingleUserResponse);
+            execMock.Setup(
+                exec => exec.PostToTwitterAsync<User>(
+                    It.IsAny<string>(),
+                    It.IsAny<Dictionary<string, string>>()))
+                    .Returns(tcsResponse.Task);
+            execMock.Setup(
+                exec => exec.PostMediaAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<byte[]>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>()))
+                    .Returns(tcsResponse.Task);
             var ctx = new TwitterContext(execMock.Object);
             return ctx;
         }
@@ -74,20 +71,19 @@ namespace LinqToTwitterPcl.Tests.AccountTests
         }
 
         [TestMethod]
-        [Ignore]
-        public async Task UpdateAccountProfile_Throws_On_Null_Input()
+        public async Task UpdateAccountProfileAsync_Throws_On_Null_Input()
         {
             const string ExpectedParamName = "NoInput";
             var ctx = InitTwitterContextWithPostToTwitter<User>(SingleUserResponse);
 
-            //var ex = Assert.Throws<ArgumentException>(() => ctx.UpdateAccountProfile(null, null, null, null, true, false));
+            var ex = await L2TAssert.Throws<ArgumentException>(
+                async () => await ctx.UpdateAccountProfileAsync(null, null, null, null, true, false));
 
-            //Assert.AreEqual(ExpectedParamName, ex.ParamName);
+            Assert.AreEqual(ExpectedParamName, ex.ParamName);
         }
 
         [TestMethod]
-        [Ignore]
-        public async Task UpdateAccountProfile_Throws_On_Name_Over_20_Chars()
+        public async Task UpdateAccountProfileAsync_Throws_On_Name_Over_20_Chars()
         {
             const string ExpectedParamName = "name";
             string name = new string(Enumerable.Repeat('x', 21).ToArray());
@@ -97,13 +93,13 @@ namespace LinqToTwitterPcl.Tests.AccountTests
             const bool SkipStatus = true;
             var ctx = InitTwitterContextWithPostToTwitter<User>(SingleUserResponse);
 
-            //var ex = Assert.Throws<ArgumentException>(() => ctx.UpdateAccountProfile(name, Url, Location, Description, true, SkipStatus));
+            var ex = await L2TAssert.Throws<ArgumentException>(
+                async () => await ctx.UpdateAccountProfileAsync(name, Url, Location, Description, true, SkipStatus));
 
-            //Assert.AreEqual(ExpectedParamName, ex.ParamName);
+            Assert.AreEqual(ExpectedParamName, ex.ParamName);
         }
 
         [TestMethod]
-        [Ignore]
         public async Task UpdateAccountProfile_Throws_On_Url_Over_100_Chars()
         {
             const string ExpectedParamName = "url";
@@ -114,14 +110,14 @@ namespace LinqToTwitterPcl.Tests.AccountTests
             const bool SkipStatus = true;
             var ctx = InitTwitterContextWithPostToTwitter<User>(SingleUserResponse);
 
-            //var ex = Assert.Throws<ArgumentException>(() => ctx.UpdateAccountProfile(Name, url, Location, Description, true, SkipStatus));
+            var ex = await L2TAssert.Throws<ArgumentException>(
+                async () => await ctx.UpdateAccountProfileAsync(Name, url, Location, Description, true, SkipStatus));
 
-            //Assert.AreEqual(ExpectedParamName, ex.ParamName);
+            Assert.AreEqual(ExpectedParamName, ex.ParamName);
         }
 
         [TestMethod]
-        [Ignore]
-        public async Task UpdateAccountProfile_Throws_On_Location_Over_30_Chars()
+        public async Task UpdateAccountProfileAsync_Throws_On_Location_Over_30_Chars()
         {
             const string ExpectedParamName = "location";
             const string Name = "Joe";
@@ -131,14 +127,14 @@ namespace LinqToTwitterPcl.Tests.AccountTests
             const bool SkipStatus = true;
             var ctx = InitTwitterContextWithPostToTwitter<User>(SingleUserResponse);
 
-            //var ex = Assert.Throws<ArgumentException>(() => ctx.UpdateAccountProfile(Name, Url, location, Description, true, SkipStatus));
+            var ex = await L2TAssert.Throws<ArgumentException>(
+                async () => await ctx.UpdateAccountProfileAsync(Name, Url, location, Description, true, SkipStatus));
 
-            //Assert.AreEqual(ExpectedParamName, ex.ParamName);
+            Assert.AreEqual(ExpectedParamName, ex.ParamName);
         }
 
         [TestMethod]
-        [Ignore]
-        public async Task UpdateAccountProfile_Throws_On_Description_Over_160_Chars()
+        public async Task UpdateAccountProfileAsync_Throws_On_Description_Over_160_Chars()
         {
             const string ExpectedParamName = "description";
             const string Name = "Joe";
@@ -148,50 +144,57 @@ namespace LinqToTwitterPcl.Tests.AccountTests
             const bool SkipStatus = true;
             var ctx = InitTwitterContextWithPostToTwitter<User>(SingleUserResponse);
 
-            //var ex = Assert.Throws<ArgumentException>(() => ctx.UpdateAccountProfile(Name, Url, Location, description, true, SkipStatus));
+            var ex = await L2TAssert.Throws<ArgumentException>(
+                async () => await ctx.UpdateAccountProfileAsync(Name, Url, Location, description, true, SkipStatus));
 
-            //Assert.AreEqual(ExpectedParamName, ex.ParamName);
+            Assert.AreEqual(ExpectedParamName, ex.ParamName);
         }
 
         [TestMethod]
-        [Ignore]
-        public async Task UpdateAccountImage_Invokes_Executor_Execute()
+        public async Task UpdateAccountImageAsync_Invokes_Executor_Execute()
         {
-            const string ImageFilePath = "c:\\image.jpg";
             const string ExpectedName = "Twitter API";
             const bool SkipStatus = true;
             var ctx = InitTwitterContextWithPostToTwitter<User>(SingleUserResponse);
-            //execMock.Setup(exec =>
-            //    exec.PostTwitterFile(
-            //        It.IsAny<string>(),
-            //        It.IsAny<Dictionary<string, string>>(),
-            //        It.IsAny<string>(),
-            //        It.IsAny<IRequestProcessor<User>>()))
-            //    .Returns(SingleUserResponse);
 
-            //User actual = await ctx.UpdateAccountImageAsync(ImageFilePath, SkipStatus);
+            User actual = await ctx.UpdateAccountImageAsync(new byte[] { 1 }, "myFile.jpg", "jpg", SkipStatus);
 
-            //execMock.Verify(exec =>
-            //    exec.PostTwitterFile(
-            //        "https://api.twitter.com/1.1/account/update_profile_image.json",
-            //        It.IsAny<Dictionary<string, string>>(),
-            //        It.IsAny<string>(),
-            //        It.IsAny<IRequestProcessor<User>>()),
-            //    Times.Once());
-            //Assert.AreEqual(ExpectedName, actual.Name);
+            execMock.Verify(exec =>
+                exec.PostMediaAsync(
+                    "https://api.twitter.com/1.1/account/update_profile_image.json",
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<byte[]>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>()),
+                Times.Once());
+            Assert.AreEqual(ExpectedName, actual.Name);
         }
 
         [TestMethod]
-        [Ignore]
-        public async Task UpdateAccountImage_Throws_On_Null_Path()
+        public async Task UpdateAccountImageAsync_Throws_On_Empty_Image()
         {
-            const string ExpectedParamName = "imageFilePath";
+            const string ExpectedParamName = "image";
             const bool SkipStatus = true;
             var ctx = InitTwitterContextWithPostToTwitter<User>(SingleUserResponse);
 
-            //var ex = Assert.Throws<ArgumentException>(() => ctx.UpdateAccountImage(null, SkipStatus));
+            var ex = await L2TAssert.Throws<ArgumentException>(
+                async () => await ctx.UpdateAccountImageAsync(new byte[] { }, "myImage.jpg", "jpg", SkipStatus));
 
-            //Assert.AreEqual(ExpectedParamName, ex.ParamName);
+            Assert.AreEqual(ExpectedParamName, ex.ParamName);
+        }
+
+        [TestMethod]
+        public async Task UpdateAccountImageAsync_Throws_On_Null_Image()
+        {
+            const string ExpectedParamName = "image";
+            const bool SkipStatus = true;
+            var ctx = InitTwitterContextWithPostToTwitter<User>(SingleUserResponse);
+
+            var ex = await L2TAssert.Throws<ArgumentException>(
+                async () => await ctx.UpdateAccountImageAsync(null, "myImage.jpg", "jpg", SkipStatus));
+
+            Assert.AreEqual(ExpectedParamName, ex.ParamName);
         }
 
         [TestMethod]
@@ -217,21 +220,20 @@ namespace LinqToTwitterPcl.Tests.AccountTests
         }
 
         [TestMethod]
-        [Ignore]
-        public void UpdateAccountColors_Throws_On_No_Input()
+        public async Task UpdateAccountColorsAsync_Throws_On_No_Input()
         {
             const string ExpectedParamName = "NoInput";
             const bool SkipStatus = true;
             var ctx = InitTwitterContextWithPostToTwitter<User>(SingleUserResponse);
 
-            //var ex = Assert.Throws<ArgumentException>(() => ctx.UpdateAccountColors(null, null, null, null, null, true, SkipStatus));
+            var ex = await L2TAssert.Throws<ArgumentException>(
+                async () => await ctx.UpdateAccountColorsAsync(null, null, null, null, null, true, SkipStatus));
 
-            //Assert.AreEqual(ExpectedParamName, ex.ParamName);
+            Assert.AreEqual(ExpectedParamName, ex.ParamName);
         }
 
         [TestMethod]
-        [Ignore]
-        public async Task UpdateAccountColors_Allows_Null_Parameters()
+        public async Task UpdateAccountColorsAsync_Allows_Null_Parameters()
         {
             const bool SkipStatus = true;
             var ctx = InitTwitterContextWithPostToTwitter<User>(SingleUserResponse);
@@ -246,49 +248,57 @@ namespace LinqToTwitterPcl.Tests.AccountTests
         }
 
         [TestMethod]
-        [Ignore]
         public async Task UpdateAccountBackgroundImage_Invokes_Executor_PostTwitterFile()
         {
-            const string ImageFilePath = "C:\\image.png";
             const bool Tile = false;
             const bool Use = false;
-            const string ExpectedName = "Twitter API";
             const bool SkipStatus = true;
             var ctx = InitTwitterContextWithPostToTwitter<User>(SingleUserResponse);
-            //execMock.Setup(exec =>
-            //    exec.PostTwitterFileAsync(
-            //        It.IsAny<string>(),
-            //        It.IsAny<Dictionary<string, string>>(),
-            //        It.IsAny<string>(),
-            //        It.IsAny<IRequestProcessor<User>>()))
-            //        .Returns(SingleUserResponse);
 
-            //User actual = await ctx.UpdateAccountBackgroundImageAsync(ImageFilePath, Tile, Use, true, SkipStatus);
+            await ctx.UpdateAccountBackgroundImageAsync(
+                new byte[] {1}, "image.png", "png", Tile, Use, true, SkipStatus);
 
-            //execMock.Verify(exec =>
-            //    exec.PostTwitterFileAsync(
-            //        "https://api.twitter.com/1.1/account/update_profile_background_image.json",
-            //        It.IsAny<Dictionary<string, string>>(),
-            //        It.IsAny<string>(),
-            //        It.IsAny<IRequestProcessor<User>>()),
-            //    Times.Once());
-            //Assert.AreEqual(ExpectedName, actual.Name);
+            execMock.Verify(exec =>
+                exec.PostMediaAsync(
+                    "https://api.twitter.com/1.1/account/update_profile_background_image.json",
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<byte[]>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>()),
+                Times.Once());
         }
 
         [TestMethod]
-        [Ignore]
-        public async Task UpdateAccountBackgroundImage_Throws_On_Null_Path()
+        public async Task UpdateAccountBackgroundImageAsync_Throws_On_Empty_Image()
         {
-            const string ExpectedParamName = "imageFilePath";
-            string imageFilePath = string.Empty;
+            const string ExpectedParamName = "image";
             const bool Tile = false;
             const bool Use = false;
             const bool SkipStatus = true;
-            var ctx = InitTwitterContextWithPostTwitterImage();
+            var ctx = InitTwitterContextWithPostToTwitter<User>(SingleUserResponse);
 
-            //var ex = Assert.Throws<ArgumentException>(() => ctx.UpdateAccountBackgroundImage(imageFilePath, Tile, Use, true, SkipStatus));
+            var ex = await L2TAssert.Throws<ArgumentException>(
+                async () => await ctx.UpdateAccountBackgroundImageAsync(
+                    new byte[] {  }, "image.png", "png", Tile, Use, true, SkipStatus));
 
-            //Assert.AreEqual(ExpectedParamName, ex.ParamName);
+            Assert.AreEqual(ExpectedParamName, ex.ParamName);
+        }
+
+        [TestMethod]
+        public async Task UpdateAccountBackgroundImageAsync_Throws_On_Null_Image()
+        {
+            const string ExpectedParamName = "image";
+            const bool Tile = false;
+            const bool Use = false;
+            const bool SkipStatus = true;
+            var ctx = InitTwitterContextWithPostToTwitter<User>(SingleUserResponse);
+
+            var ex = await L2TAssert.Throws<ArgumentException>(
+                async () => await ctx.UpdateAccountBackgroundImageAsync(
+                    null, "image.png", "png", Tile, Use, true, SkipStatus));
+
+            Assert.AreEqual(ExpectedParamName, ex.ParamName);
         }
 
         [TestMethod]
@@ -297,12 +307,12 @@ namespace LinqToTwitterPcl.Tests.AccountTests
             var ctx = InitTwitterContextWithPostToTwitter<Account>(SettingsResponse);
             var parameters = new Dictionary<string, string>
             {
+                { "time_zone", "MST" },
+                { "lang", "en" },
                 { "trend_location_woeid", "1" },
-                { "sleep_time_enabled", "True" },
+                { "sleep_time_enabled", "true" },
                 { "start_sleep_time", "20" },
                 { "end_sleep_time", "6" },
-                { "time_zone", "MST" },
-                { "lang", "en" }
             };
 
             Account acct = await ctx.UpdateAccountSettingsAsync(1, true, 20, 6, "MST", "en");
@@ -319,15 +329,15 @@ namespace LinqToTwitterPcl.Tests.AccountTests
         }
 
         [TestMethod]
-        [Ignore]
-        public void UpdateAccountSettings_Throws_On_No_Input()
+        public async Task UpdateAccountSettingsAsync_Throws_On_No_Input()
         {
             const string ExpectedParamName = "NoInput";
             var ctx = InitTwitterContextWithPostToTwitter<User>(SingleUserResponse);
 
-            //var ex = Assert.Throws<ArgumentException>(() => ctx.UpdateAccountSettings(null, null, null, null, null, null));
+            var ex = await L2TAssert.Throws<ArgumentException>(
+                async () => await ctx.UpdateAccountSettingsAsync(null, null, null, null, null, null));
 
-            //Assert.AreEqual(ExpectedParamName, ex.ParamName);
+            Assert.AreEqual(ExpectedParamName, ex.ParamName);
         }
 
         [TestMethod]
@@ -359,140 +369,112 @@ namespace LinqToTwitterPcl.Tests.AccountTests
             byte[] banner = new byte[]{ 1, 2, 3 };
             const string FileName = "MyImage.png";
             const string FileType = "png";
-            const int Width = 1252;
-            const int Height = 626;
-            const int OffsetLeft = 1;
-            const int OffsetRight = 1;
-            var ctx = InitTwitterContextWithPostTwitterImage();
+            var ctx = InitTwitterContextWithPostToTwitter<User>(SingleUserResponse);
 
-            //User actual = await ctx.UpdateProfileBannerAsync(banner, FileName, FileType, Width, Height, OffsetLeft, OffsetRight, null);
+            User actual = await ctx.UpdateProfileBannerAsync(banner, FileName, FileType);
 
-            //execMock.Verify(exec =>
-            //    exec.PostTwitterImageAsync(
-            //        "https://api.twitter.com/1.1/account/update_profile_banner.json",
-            //        It.IsAny<IDictionary<string, string>>(),
-            //        It.IsAny<byte[]>(),
-            //        It.IsAny<string>(),
-            //        It.IsAny<string>(),
-            //        It.IsAny<IRequestProcessor<User>>()),
-            //    Times.Once());
-            //Assert.IsNotNull(actual);
-            //Assert.IsNotNull(actual.ProfileBannerUrl);
-            //Assert.AreEqual(ExpectedProfileBannerUrl, actual.ProfileBannerUrl);
+            execMock.Verify(exec =>
+                exec.PostMediaAsync(
+                    "https://api.twitter.com/1.1/account/update_profile_banner.json",
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<byte[]>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>()),
+                Times.Once());
+            Assert.IsNotNull(actual);
+            Assert.IsNotNull(actual.ProfileBannerUrl);
+            Assert.AreEqual(ExpectedProfileBannerUrl, actual.ProfileBannerUrl);
         }
 
         [TestMethod]
-        [Ignore]
-        public void UpdateProfileBanner_Throws_On_Null_Banner()
+        public async Task UpdateProfileBannerAsync_Throws_On_Null_Banner()
         {
             const string ExpectedParamName = "banner";
             byte[] banner = null;
             const string FileName = "MyImage.png";
             const string FileType = "png";
-            const int Width = 1252;
-            const int Height = 626;
-            const int OffsetLeft = 1;
-            const int OffsetRight = 1;
-            var ctx = InitTwitterContextWithPostTwitterImage();
+            var ctx = InitTwitterContextWithPostToTwitter<User>(SingleUserResponse);
 
-            //var ex = Assert.Throws<ArgumentException>(() => ctx.UpdateProfileBanner(banner, FileName, FileType, Width, Height, OffsetLeft, OffsetRight, null));
+            var ex = await L2TAssert.Throws<ArgumentException>(
+                async () => await ctx.UpdateProfileBannerAsync(banner, FileName, FileType));
 
-            //Assert.AreEqual(ExpectedParamName, ex.ParamName);
+            Assert.AreEqual(ExpectedParamName, ex.ParamName);
         }
 
         [TestMethod]
-        [Ignore]
-        public void UpdateProfileBanner_Throws_On_Empty_Banner()
+        public async Task UpdateProfileBannerAsync_Throws_On_Empty_Banner()
         {
             const string ExpectedParamName = "banner";
             byte[] banner = new byte[0];
             const string FileName = "MyImage.png";
             const string FileType = "png";
-            const int Width = 1252;
-            const int Height = 626;
-            const int OffsetLeft = 1;
-            const int OffsetRight = 1;
-            var ctx = InitTwitterContextWithPostTwitterImage();
+            var ctx = InitTwitterContextWithPostToTwitter<User>(SingleUserResponse);
 
-            //var ex = Assert.Throws<ArgumentException>(() => ctx.UpdateProfileBanner(banner, FileName, FileType, Width, Height, OffsetLeft, OffsetRight, null));
+            var ex = await L2TAssert.Throws<ArgumentException>(
+                async () => await ctx.UpdateProfileBannerAsync(banner, FileName, FileType));
 
-            //Assert.AreEqual(ExpectedParamName, ex.ParamName);
+            Assert.AreEqual(ExpectedParamName, ex.ParamName);
         }
 
         [TestMethod]
-        [Ignore]
-        public void UpdateProfileBanner_Throws_On_Null_FileName()
+        public async Task UpdateProfileBannerAsync_Throws_On_Null_FileName()
         {
             const string ExpectedParamName = "fileName";
             byte[] banner = new byte[] { 1, 2, 3 };
             const string FileName = null;
             const string FileType = "png";
-            const int Width = 1252;
-            const int Height = 626;
-            const int OffsetLeft = 1;
-            const int OffsetRight = 1;
-            var ctx = InitTwitterContextWithPostTwitterImage();
+            var ctx = InitTwitterContextWithPostToTwitter<User>(SingleUserResponse);
 
-            //var ex = Assert.Throws<ArgumentException>(() => ctx.UpdateProfileBanner(banner, FileName, FileType, Width, Height, OffsetLeft, OffsetRight, null));
+            var ex = await L2TAssert.Throws<ArgumentException>(
+                async () => await ctx.UpdateProfileBannerAsync(banner, FileName, FileType));
 
-            //Assert.AreEqual(ExpectedParamName, ex.ParamName);
+            Assert.AreEqual(ExpectedParamName, ex.ParamName);
         }
 
         [TestMethod]
-        [Ignore]
-        public void UpdateProfileBanner_Throws_On_Empty_FileName()
+        public async Task UpdateProfileBannerAsync_Throws_On_Empty_FileName()
         {
             const string ExpectedParamName = "fileName";
             byte[] banner = new byte[] { 1, 2, 3 };
             const string FileName = "";
             const string FileType = "png";
-            const int Width = 1252;
-            const int Height = 626;
-            const int OffsetLeft = 1;
-            const int OffsetRight = 1;
-            var ctx = InitTwitterContextWithPostTwitterImage();
+            var ctx = InitTwitterContextWithPostToTwitter<User>(SingleUserResponse);
 
-            //var ex = Assert.Throws<ArgumentException>(() => ctx.UpdateProfileBanner(banner, FileName, FileType, Width, Height, OffsetLeft, OffsetRight, null));
+            var ex = await L2TAssert.Throws<ArgumentException>(
+                async () => await ctx.UpdateProfileBannerAsync(banner, FileName, FileType));
 
-            //Assert.AreEqual(ExpectedParamName, ex.ParamName);
+            Assert.AreEqual(ExpectedParamName, ex.ParamName);
         }
 
         [TestMethod]
-        [Ignore]
-        public void UpdateProfileBanner_Throws_On_Null_FileType()
+        public async Task UpdateProfileBannerAsync_Throws_On_Null_FileType()
         {
             const string ExpectedParamName = "imageType";
             byte[] banner = new byte[] { 1, 2, 3 };
             const string FileName = "MyFile.png";
             const string FileType = null;
-            const int Width = 1252;
-            const int Height = 626;
-            const int OffsetLeft = 1;
-            const int OffsetRight = 1;
-            var ctx = InitTwitterContextWithPostTwitterImage();
+            var ctx = InitTwitterContextWithPostToTwitter<User>(SingleUserResponse);
 
-            //var ex = Assert.Throws<ArgumentException>(() => ctx.UpdateProfileBanner(banner, FileName, FileType, Width, Height, OffsetLeft, OffsetRight, null));
+            var ex = await L2TAssert.Throws<ArgumentException>(
+                async () => await ctx.UpdateProfileBannerAsync(banner, FileName, FileType));
 
-            //Assert.AreEqual(ExpectedParamName, ex.ParamName);
+            Assert.AreEqual(ExpectedParamName, ex.ParamName);
         }
 
         [TestMethod]
-        [Ignore]
-        public void UpdateProfileBanner_Throws_On_Empty_FileType()
+        public async Task UpdateProfileBannerAsync_Throws_On_Empty_FileType()
         {
             const string ExpectedParamName = "imageType";
             byte[] banner = new byte[] { 1, 2, 3 };
             const string FileName = "MyFile.png";
             const string FileType = "";
-            const int Width = 1252;
-            const int Height = 626;
-            const int OffsetLeft = 1;
-            const int OffsetRight = 1;
-            var ctx = InitTwitterContextWithPostTwitterImage();
+            var ctx = InitTwitterContextWithPostToTwitter<User>(SingleUserResponse);
 
-            //var ex = Assert.Throws<ArgumentException>(() => ctx.UpdateProfileBanner(banner, FileName, FileType, Width, Height, OffsetLeft, OffsetRight, null));
+            var ex = await L2TAssert.Throws<ArgumentException>(
+                async () => await ctx.UpdateProfileBannerAsync(banner, FileName, FileType));
 
-            //Assert.AreEqual(ExpectedParamName, ex.ParamName);
+            Assert.AreEqual(ExpectedParamName, ex.ParamName);
         }
 
         [TestMethod]

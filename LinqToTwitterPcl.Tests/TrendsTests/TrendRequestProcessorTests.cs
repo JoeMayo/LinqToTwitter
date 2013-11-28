@@ -9,6 +9,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace LinqToTwitterPcl.Tests.TrendTests
 {
+    [TestClass]
     public class TrendRequestProcessorTests
     {
         public TrendRequestProcessorTests()
@@ -68,8 +69,8 @@ namespace LinqToTwitterPcl.Tests.TrendTests
             var trend = trends.First();
             Assert.IsNotNull(trend);
             Assert.IsTrue(trend.Exclude);
-            Assert.AreEqual("1.1", trend.Latitude);
-            Assert.AreEqual("2.2", trend.Longitude);
+            Assert.AreEqual(1.1, trend.Latitude);
+            Assert.AreEqual(2.2, trend.Longitude);
             Assert.AreEqual(1, trend.WoeID);
         }
 
@@ -141,7 +142,6 @@ namespace LinqToTwitterPcl.Tests.TrendTests
         }
 
         [TestMethod]
-        [Ignore]
         public void BuildUrl_Throws_On_Place_Trends_WithoutWoeID()
         {
             var trendReqProc = new TrendRequestProcessor<Trend> { BaseUrl = "https://api.twitter.com/1.1/" };
@@ -151,32 +151,30 @@ namespace LinqToTwitterPcl.Tests.TrendTests
                     { "Type", ((int)TrendType.Place).ToString(CultureInfo.InvariantCulture) },
                 };
 
-            //var ex = Assert.Throws<ArgumentException>(() => trendReqProc.BuildUrl(parameters));
+            var ex = L2TAssert.Throws<ArgumentException>(() => trendReqProc.BuildUrl(parameters));
 
-            //Assert.AreEqual("WoeID", ex.ParamName);
+            Assert.AreEqual("WoeID", ex.ParamName);
         }
 
         [TestMethod]
-        [Ignore]
         public void BuildUrl_Throws_When_Type_Not_Provided()
         {
             var trendReqProc = new TrendRequestProcessor<Trend> { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>();
 
-            //var ex = Assert.Throws<ArgumentException>(() => trendReqProc.BuildUrl(parameters));
+            var ex = L2TAssert.Throws<ArgumentException>(() => trendReqProc.BuildUrl(parameters));
 
-            //Assert.AreEqual("Type", ex.ParamName);
+            Assert.AreEqual("Type", ex.ParamName);
         }
 
         [TestMethod]
-        [Ignore]
         public void BuildUrl_Throws_With_No_Parameters()
         {
             var trendReqProc = new TrendRequestProcessor<Trend> { BaseUrl = "https://api.twitter.com/1.1/" };
 
-            //var ex = Assert.Throws<ArgumentException>(() => trendReqProc.BuildUrl(null));
+            var ex = L2TAssert.Throws<ArgumentException>(() => trendReqProc.BuildUrl(null));
 
-            //Assert.AreEqual("Type", ex.ParamName);
+            Assert.AreEqual("Type", ex.ParamName);
         }
 
         [TestMethod]

@@ -118,26 +118,24 @@ namespace LinqToTwitterPcl.Tests.AccountTests
         }
 
         [TestMethod]
-        [Ignore]
         public void BuildUrl_Throws_When_Type_Not_Provided()
         {
             var acctReqProc = new AccountRequestProcessor<Account> { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>();
 
-            //var ex = Assert.Throws<ArgumentException>(() => acctReqProc.BuildUrl(parameters));
+            var ex = L2TAssert.Throws<ArgumentException>(() => acctReqProc.BuildUrl(parameters));
 
-            //Assert.AreEqual("Type", ex.ParamName);
+            Assert.AreEqual("Type", ex.ParamName);
         }
 
         [TestMethod]
-        [Ignore]
         public void BuildUrl_Throws_With_Null_Parameters()
         {
             var acctReqProc = new AccountRequestProcessor<Account> { BaseUrl = "https://api.twitter.com/1.1/" };
 
-            //var ex = Assert.Throws<ArgumentException>(() => acctReqProc.BuildUrl(null));
+            var ex = L2TAssert.Throws<ArgumentException>(() => acctReqProc.BuildUrl(null));
 
-            //Assert.AreEqual("Type", ex.ParamName);
+            Assert.AreEqual("Type", ex.ParamName);
         }
 
         [TestMethod]
@@ -220,25 +218,6 @@ namespace LinqToTwitterPcl.Tests.AccountTests
    ""profile_background_image_url_https"":""https:\/\/si0.twimg.com\/profile_background_images\/13330711\/200xColor_2.png"",
    ""profile_background_image_url"":""http:\/\/a1.twimg.com\/profile_background_images\/13330711\/200xColor_2.png"",
    ""profile_image_url_https"":""https:\/\/si0.twimg.com\/profile_images\/520626655\/JoeTwitterBW_-_150_x_150_normal.jpg""
-}";
-
-        const string TestRateLimitStatusQueryResponse = @"{
-   ""remaining_hits"":343,
-   ""hourly_limit"":350,
-   ""reset_time_in_seconds"":1316397996,
-   ""reset_time"":""Mon Sep 19 02:06:36 +0000 2011""
-}";
-
-        const string TestEndSessionResponse = @"{
-  ""request"": ""/1/account/end_session.json"",
-  ""error"": ""Logged out.""
-}";
-
-        const string TestTotalsResponse = @"{
-   ""followers"":875,
-   ""favorites"":65,
-   ""friends"":161,
-   ""updates"":1624
 }";
 
         const string TestSettingsResponse = @"{

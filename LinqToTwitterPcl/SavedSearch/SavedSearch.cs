@@ -14,7 +14,7 @@ namespace LinqToTwitter
         {
             Query = searchJson.GetValue<string>("query");
             Name = searchJson.GetValue<string>("name");
-            Postition = searchJson.GetValue<int>("position");
+            Position = searchJson.GetValue<int>("position");
             IDResponse = searchJson.GetValue<ulong>("id");
             CreatedAt = searchJson.GetValue<string>("created_at").GetDate(DateTime.MaxValue);
         }
@@ -47,7 +47,7 @@ namespace LinqToTwitter
         /// <summary>
         /// position in search list
         /// </summary>
-        public int Postition { get; set; }
+        public int Position { get; set; }
 
         /// <summary>
         /// when search was created

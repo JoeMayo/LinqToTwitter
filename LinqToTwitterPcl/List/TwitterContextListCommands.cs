@@ -205,7 +205,7 @@ namespace LinqToTwitter
             if (screenNames != null && screenNames.Count > 100)
                 throw new ArgumentException("Max screenNames is 100 at a time.", "screenNames");
 
-            return await AddMemberRangeToListAsync(listID, slug, ownerID, ownerScreenName, null, screenNames);
+            return await AddMemberRangeToListAsync(listID, slug, ownerID, ownerScreenName, userIDs: null, screenNames: screenNames);
         }
 
         /// <summary>
@@ -225,7 +225,7 @@ namespace LinqToTwitter
             if (userIDs != null && userIDs.Count > 100)
                 throw new ArgumentException("Max user IDs is 100 at a time.", "userIDs");
 
-            return await AddMemberRangeToListAsync(listID, slug, ownerID, ownerScreenName, userIDs);
+            return await AddMemberRangeToListAsync(listID, slug, ownerID, ownerScreenName, userIDs, screenNames: null);
         }
 
         /// <summary>

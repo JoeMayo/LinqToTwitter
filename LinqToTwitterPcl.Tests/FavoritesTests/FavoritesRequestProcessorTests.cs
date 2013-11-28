@@ -9,6 +9,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace LinqToTwitterPcl.Tests.FavoritesTests
 {
+    [TestClass]
     public class FavoritesRequestProcessorTests
     {
         public FavoritesRequestProcessorTests()
@@ -100,26 +101,24 @@ namespace LinqToTwitterPcl.Tests.FavoritesTests
         }
 
         [TestMethod]
-        [Ignore]
         public void BuildUrl_Throws_On_Missing_Type_Param()
         {
             var favReqProc = new FavoritesRequestProcessor<Favorites> { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>();
 
-            //var ex = Assert.Throws<ArgumentException>(() => favReqProc.BuildUrl(parameters));
+            var ex = L2TAssert.Throws<ArgumentException>(() => favReqProc.BuildUrl(parameters));
 
-            //Assert.AreEqual("Type", ex.ParamName);
+            Assert.AreEqual("Type", ex.ParamName);
         }
 
         [TestMethod]
-        [Ignore]
         public void BuildUrl_Throws_On_Null_Params_Dictionary()
         {
             var favReqProc = new FavoritesRequestProcessor<Favorites> { BaseUrl = "https://api.twitter.com/1.1/" };
 
-            //var ex = Assert.Throws<ArgumentException>(() => favReqProc.BuildUrl(null));
+            var ex = L2TAssert.Throws<ArgumentException>(() => favReqProc.BuildUrl(null));
 
-            //Assert.AreEqual("parameters", ex.ParamName);
+            Assert.AreEqual("parameters", ex.ParamName);
         }
 
         const string TwitterResponse = @"[

@@ -61,14 +61,14 @@ namespace LinqToTwitterPcl.Tests.StatusTests
         }
 
         [TestMethod]
-        [Ignore]
         public async Task TweetAsync_Throws_On_Null_Tweet()
         {
             var ctx = await InitializeTwitterContext();
 
-            //var ex = Assert.Throws<ArgumentException>(() => ctx.TweetAsync(null));
+            var ex = await L2TAssert.Throws<ArgumentException>(
+                async () => await ctx.TweetAsync(null));
 
-            //Assert.AreEqual("status", ex.ParamName);
+            Assert.AreEqual("status", ex.ParamName);
         }
 
         [TestMethod]
@@ -96,15 +96,15 @@ namespace LinqToTwitterPcl.Tests.StatusTests
         }
 
         [TestMethod]
-        [Ignore]
-        public async Task DeleteTweetAsync_Throws_On_Null_ID()
+        public async Task DeleteTweetAsync_Throws_On_Zero_ID()
         {
-            ulong id = TwitterContext.MissingID;
+            const ulong ID = 0;
             var ctx = await InitializeTwitterContext();
 
-            //var ex = Assert.Throws<ArgumentException>(() => ctx.DeleteTweetAsync(id));
+            var ex = await L2TAssert.Throws<ArgumentException>(
+                async () => await ctx.DeleteTweetAsync(ID));
 
-            //Assert.AreEqual("id", ex.ParamName);
+            Assert.AreEqual("tweetID", ex.ParamName);
         }
 
         const string SingleStatusResponse = @"{

@@ -9,18 +9,18 @@ using Moq;
 namespace LinqToTwitterPcl.Tests.DirectMessageTests
 {
     [TestClass]
-    public class DirectMessageExtensionsTests
+    public class DirectMessageCommandsTests
     {
         Mock<IAuthorizer> authMock;
         Mock<ITwitterExecute> execMock;
 
-        public DirectMessageExtensionsTests()
+        public DirectMessageCommandsTests()
         {
             TestCulture.SetCulture();
         }
 
         [TestMethod]
-        public async Task DirectMessageRequestProcessor_Works_With_Actions()
+        public void DirectMessageRequestProcessor_Works_With_Actions()
         {
             var dmReqProc = new DirectMessageRequestProcessor<DirectMessage>();
 
@@ -71,28 +71,41 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
         }
 
         [TestMethod]
-        [Ignore]
-        public async Task NewDirectMessage_Throws_On_Null_Text()
+        public async Task NewDirectMessageAsync_Throws_On_Null_Text()
         {
-            const string UserID = "1";
+            const string ScreenName = "JoeMayo";
             var ctx = InitializeTwitterContext();
 
-            //var ex = Assert.Throws<ArgumentException>(() => ctx.NewDirectMessage(UserID, null));
+            var ex = await L2TAssert.Throws<ArgumentException>(
+                async () => await ctx.NewDirectMessageAsync(ScreenName, null));
 
-            //Assert.AreEqual("text", ex.ParamName);
+            Assert.AreEqual("text", ex.ParamName);
         }
 
         [TestMethod]
-        [Ignore]
-        public async Task NewDirectMessage_Throws_On_Empty_UserID()
+        public async Task NewDirectMessageAsync_Throws_On_Empty_ScreenName()
         {
-            string userID = string.Empty;
+            string screenName = string.Empty;
             const string Text = "Test Text";
             var ctx = InitializeTwitterContext();
 
-            //var ex = Assert.Throws<ArgumentException>(() => ctx.NewDirectMessage(userID, Text));
+            var ex = await L2TAssert.Throws<ArgumentException>(
+                async () => await ctx.NewDirectMessageAsync(screenName, Text));
 
-            //Assert.AreEqual("user", ex.ParamName);
+            Assert.AreEqual("screenName", ex.ParamName);
+        }
+
+        [TestMethod]
+        public async Task NewDirectMessageAsync_Throws_On_Zero_UserID()
+        {
+            const int UserID = 0;
+            const string Text = "Test Text";
+            var ctx = InitializeTwitterContext();
+
+            var ex = await L2TAssert.Throws<ArgumentException>(
+                async () => await ctx.NewDirectMessageAsync(UserID, Text));
+
+            Assert.AreEqual("userID", ex.ParamName);
         }
 
         [TestMethod]
@@ -112,7 +125,7 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
             const ulong Id = 1;
             var ctx = InitializeTwitterContext();
 
-            ctx.DestroyDirectMessageAsync(Id, true);
+            await ctx.DestroyDirectMessageAsync(Id, true);
 
             execMock.Verify(
                 exec =>
@@ -123,14 +136,14 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
         }
 
         [TestMethod]
-        [Ignore]
-        public async Task DestroyDirectMessage_Throws_On_Null_ID()
+        public async Task DestroyDirectMessageAsync_Throws_On_Zero_ID()
         {
             var ctx = InitializeTwitterContext();
 
-            //var ex = Assert.Throws<ArgumentException>(() => ctx.DestroyDirectMessageAsync(null, true));
+            var ex = await L2TAssert.Throws<ArgumentException>(
+                async () => await ctx.DestroyDirectMessageAsync(0, true));
 
-            //Assert.AreEqual("id", ex.ParamName);
+            Assert.AreEqual("id", ex.ParamName);
         }
 
         const string TestQueryResponse = @"

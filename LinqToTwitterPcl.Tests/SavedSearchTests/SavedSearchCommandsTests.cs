@@ -10,12 +10,12 @@ using Moq;
 namespace LinqToTwitterPcl.Tests.SavedSearchTests
 {
     [TestClass]
-    public class SavedSearchExtensionsTests
+    public class SavedSearchCommandsTests
     {
         Mock<IAuthorizer> authMock;
         Mock<ITwitterExecute> execMock;
 
-        public SavedSearchExtensionsTests()
+        public SavedSearchCommandsTests()
         {
             TestCulture.SetCulture();
         }
@@ -37,14 +37,14 @@ namespace LinqToTwitterPcl.Tests.SavedSearchTests
         }
 
         [TestMethod]
-        [Ignore]
-        public async Task CreateSavedSearch_Throws_On_Missing_Query()
+        public async Task CreateSavedSearchAsync_Throws_On_Missing_Query()
         {
             TwitterContext ctx = InitializeTwitterContextMock();
 
-            //var ex = Assert.Throws<ArgumentException>(() => ctx.CreateSavedSearchAsync(null));
+            var ex = await L2TAssert.Throws<ArgumentException>(
+                async () => await ctx.CreateSavedSearchAsync(null));
 
-            //Assert.AreEqual("query", ex.ParamName);
+            Assert.AreEqual("query", ex.ParamName);
         }
 
         [TestMethod]
@@ -79,14 +79,14 @@ namespace LinqToTwitterPcl.Tests.SavedSearchTests
         }
 
         [TestMethod]
-        [Ignore]
         public async Task DestroySavedSearch_Throws_On_Invalid_ID()
         {
             TwitterContext ctx = InitializeTwitterContextMock();
 
-            //var ex = Assert.Throws<ArgumentException>(() => ctx.DestroySavedSearchAsync(0));
+            var ex = await L2TAssert.Throws<ArgumentException>(
+                async () => await ctx.DestroySavedSearchAsync(0));
 
-            //Assert.AreEqual("id", ex.ParamName);
+            Assert.AreEqual("id", ex.ParamName);
         }
 
         [TestMethod]
@@ -113,7 +113,7 @@ namespace LinqToTwitterPcl.Tests.SavedSearchTests
 
             Assert.IsNotNull(search);
             Assert.AreEqual("#LinqToTwitter", search.Name);
-            Assert.AreEqual("123", search.ID);
+            Assert.AreEqual(123ul, search.ID);
         }
 
         const string SavedSearchResponse = @"{

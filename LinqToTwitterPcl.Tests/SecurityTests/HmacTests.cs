@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Text;
-using LinqToTwitter.Net;
 using LinqToTwitter.Security;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

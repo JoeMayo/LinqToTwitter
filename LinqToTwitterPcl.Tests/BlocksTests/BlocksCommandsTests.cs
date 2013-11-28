@@ -9,18 +9,18 @@ using Moq;
 namespace LinqToTwitterPcl.Tests.BlocksTests
 {
     [TestClass]
-    public class BlocksExtensionsTests
+    public class BlocksCommandsTests
     {
         Mock<IAuthorizer> authMock;
         Mock<ITwitterExecute> execMock;
 
-        public BlocksExtensionsTests()
+        public BlocksCommandsTests()
         {
             TestCulture.SetCulture();
         }
 
         [TestMethod]
-        public async Task BlocksRequestProcessor_Works_With_Actions()
+        public void BlocksRequestProcessor_Works_With_Actions()
         {
             var blocksReqProc = new BlocksRequestProcessor<User>();
 
@@ -71,14 +71,14 @@ namespace LinqToTwitterPcl.Tests.BlocksTests
         }
 
         [TestMethod]
-        [Ignore]
-        public async Task CreateBlock_Throws_On_Null_UserID_And_ScreenName()
+        public async Task CreateBlockAsync_Throws_On_Null_UserID_And_ScreenName()
         {
             var ctx = InitializeTwitterContext();
 
-            //var ex = Assert.Throws<ArgumentException>(() => ctx.CreateBlockAsync(0, null, true));
+            var ex = await L2TAssert.Throws<ArgumentException>(
+                async () => await ctx.CreateBlockAsync(0, null, true));
 
-            //Assert.AreEqual("UserIDOrScreenName", ex.ParamName);
+            Assert.AreEqual("UserIDOrScreenName", ex.ParamName);
         }
 
         [TestMethod]
@@ -100,7 +100,7 @@ namespace LinqToTwitterPcl.Tests.BlocksTests
             const bool SkipStatus = true;
             var ctx = InitializeTwitterContext();
 
-            ctx.DestroyBlockAsync(Id, null, SkipStatus);
+            await ctx.DestroyBlockAsync(Id, null, SkipStatus);
 
             execMock.Verify(exec =>
                 exec.PostToTwitterAsync<User>(
@@ -110,14 +110,14 @@ namespace LinqToTwitterPcl.Tests.BlocksTests
         }
 
         [TestMethod]
-        [Ignore]
-        public async Task DestroyBlockNullIDTest()
+        public async Task DestroyBlockAsync_Throws_On_No_ID_Or_ScreenName()
         {
             var ctx = InitializeTwitterContext();
 
-            //var ex = Assert.Throws<ArgumentException>(() => ctx.DestroyBlockAsync(0, null, true));
+            var ex = await L2TAssert.Throws<ArgumentException>(
+                async () => await ctx.DestroyBlockAsync(0, null, true));
 
-            //Assert.AreEqual("UserIDOrScreenName", ex.ParamName);
+            Assert.AreEqual("UserIDOrScreenName", ex.ParamName);
         }
 
         const string BlocksUserJson = @"{

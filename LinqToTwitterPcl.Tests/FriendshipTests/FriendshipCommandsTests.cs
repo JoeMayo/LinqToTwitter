@@ -10,12 +10,12 @@ using Moq;
 namespace LinqToTwitterPcl.Tests.FriendshipTests
 {
     [TestClass]
-    class FriendshipExtensionsTests
+    class FriendshipCommandsTests
     {
         TwitterContext ctx;
         Mock<ITwitterExecute> execMock;
 
-        public FriendshipExtensionsTests()
+        public FriendshipCommandsTests()
         {
             TestCulture.SetCulture();
         }
@@ -36,7 +36,7 @@ namespace LinqToTwitterPcl.Tests.FriendshipTests
         }
 
         [TestMethod]
-        public async Task FriendshipRequestProcessor_Works_With_Actions()
+        public void FriendshipRequestProcessor_Works_With_Actions()
         {
             var freindReqProc = new FriendshipRequestProcessor<Friendship>();
 
@@ -57,22 +57,21 @@ namespace LinqToTwitterPcl.Tests.FriendshipTests
         }
 
         [TestMethod]
-        [Ignore]
-        public async Task CreateFriendshipNoInputTest()
+        public async Task CreateFriendshipAsync_Throws_On_Zero_UserID()
         {
-            string userID = string.Empty;
+            const ulong UserID = 0;
             const bool Follow = false;
             InitializeTwitterContext<User>(SingleUserResponse);
 
-            //var ex = Assert.Throws<ArgumentException>(() => ctx.CreateFriendshipAsync(userID, null, Follow));
+            var ex = await L2TAssert.Throws<ArgumentException>(
+                async () => await ctx.CreateFriendshipAsync(UserID, Follow));
 
-            //Assert.AreEqual("UserIDOrScreenName", ex.ParamName);
+            Assert.AreEqual("userID", ex.ParamName);
         }
 
         [TestMethod]
         public async Task DestroyFriendshipTest()
         {
-            const string UserID = "2";
             const string ScreenName = "JoeMayo";
             string expectedName = "Joe Mayo";
             InitializeTwitterContext<User>(SingleUserResponse);
@@ -83,15 +82,39 @@ namespace LinqToTwitterPcl.Tests.FriendshipTests
         }
 
         [TestMethod]
-        [Ignore]
-        public async Task DestroyFriendshipNoInputTest()
+        public async Task DestroyFriendshipAsync_Throws_On_Empty_ScreenName()
         {
-            string userID = string.Empty;
+            string screenName = string.Empty;
             InitializeTwitterContext<User>(SingleUserResponse);
 
-            //var ex = Assert.Throws<ArgumentException>(() => ctx.DestroyFriendshipAsync(null, userID, null));
+            var ex = await L2TAssert.Throws<ArgumentException>(
+                async () => await ctx.DestroyFriendshipAsync(screenName));
 
-            //Assert.AreEqual("UserIDOrScreenName", ex.ParamName);
+            Assert.AreEqual("screenName", ex.ParamName);
+        }
+
+        [TestMethod]
+        public async Task DestroyFriendshipAsync_Throws_On_Null_ScreenName()
+        {
+            string screenName = null;
+            InitializeTwitterContext<User>(SingleUserResponse);
+
+            var ex = await L2TAssert.Throws<ArgumentException>(
+                async () => await ctx.DestroyFriendshipAsync(screenName));
+
+            Assert.AreEqual("screenName", ex.ParamName);
+        }
+
+        [TestMethod]
+        public async Task DestroyFriendshipAsync_Throws_On_Zero_UserID()
+        {
+            const ulong UserID = 0;
+            InitializeTwitterContext<User>(SingleUserResponse);
+
+            var ex = await L2TAssert.Throws<ArgumentException>(
+                async () => await ctx.DestroyFriendshipAsync(UserID));
+
+            Assert.AreEqual("userID", ex.ParamName);
         }
 
         [TestMethod]
@@ -108,14 +131,39 @@ namespace LinqToTwitterPcl.Tests.FriendshipTests
         }
 
         [TestMethod]
-        [Ignore]
-        public async Task UpdateFriendshipSettings_Throws_Without_ScreenName_Or_UserID()
+        public async Task UpdateFriendshipSettingsAsync_Throws_With_Null_ScreenName()
         {
+            string screenName = null;
             InitializeTwitterContext<Friendship>(RelationshipResponse);
 
-            //var ex = Assert.Throws<ArgumentNullException>(() => ctx.UpdateFriendshipSettingsAsync(null, true, true));
+            var ex = await L2TAssert.Throws<ArgumentNullException>(
+                async () => await ctx.UpdateFriendshipSettingsAsync(screenName, true, true));
 
-            //Assert.AreEqual("screenNameOrUserID", ex.ParamName);
+            Assert.AreEqual("screenName", ex.ParamName);
+        }
+
+        [TestMethod]
+        public async Task UpdateFriendshipSettingsAsync_Throws_With_Empty_ScreenName()
+        {
+            const string ScreenName = "";
+            InitializeTwitterContext<Friendship>(RelationshipResponse);
+
+            var ex = await L2TAssert.Throws<ArgumentNullException>(
+                async () => await ctx.UpdateFriendshipSettingsAsync(ScreenName, true, true));
+
+            Assert.AreEqual("screenName", ex.ParamName);
+        }
+
+        [TestMethod]
+        public async Task UpdateFriendshipSettingsAsync_Throws_With_Zero_UserID()
+        {
+            const ulong UserID = 0;
+            InitializeTwitterContext<Friendship>(RelationshipResponse);
+
+            var ex = await L2TAssert.Throws<ArgumentNullException>(
+                async () => await ctx.UpdateFriendshipSettingsAsync(UserID, true, true));
+
+            Assert.AreEqual("userID", ex.ParamName);
         }
 
         const string SingleUserResponse = @"{

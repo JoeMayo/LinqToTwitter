@@ -34,7 +34,6 @@ namespace LinqToTwitterPcl.Tests.UserTests
         }
 
         [TestMethod]
-        [Ignore]
         public void BuildUrl_BannerSize_Requires_ScreenName_Or_UserID()
         {
             const string ExpectedParamName = "ScreenNameOrUserID";
@@ -46,13 +45,12 @@ namespace LinqToTwitterPcl.Tests.UserTests
                 //{ "ScreenName", "JoeMayo" }
             };
 
-            //var ex = Assert.Throws<ArgumentException>(() => reqProc.BuildUrl(parameters));
+            var ex = L2TAssert.Throws<ArgumentException>(() => reqProc.BuildUrl(parameters));
 
-            //Assert.AreEqual(ExpectedParamName, ex.ParamName);
+            Assert.AreEqual(ExpectedParamName, ex.ParamName);
         }
 
         [TestMethod]
-        [Ignore]
         public void BuildUrl_BannerSize_Requires_NonNull_UserID()
         {
             const string ExpectedParamName = "UserID";
@@ -64,13 +62,12 @@ namespace LinqToTwitterPcl.Tests.UserTests
                 //{ "ScreenName", "JoeMayo" }
             };
 
-            //var ex = Assert.Throws<ArgumentNullException>(() => reqProc.BuildUrl(parameters));
+            var ex = L2TAssert.Throws<ArgumentNullException>(() => reqProc.BuildUrl(parameters));
 
-            //Assert.AreEqual(ExpectedParamName, ex.ParamName);
+            Assert.AreEqual(ExpectedParamName, ex.ParamName);
         }
 
         [TestMethod]
-        [Ignore]
         public void BuildUrl_BannerSize_Requires_NonEmpty_UserID()
         {
             const string ExpectedParamName = "UserID";
@@ -82,13 +79,12 @@ namespace LinqToTwitterPcl.Tests.UserTests
                 //{ "ScreenName", "JoeMayo" }
             };
 
-            //var ex = Assert.Throws<ArgumentNullException>(() => reqProc.BuildUrl(parameters));
+            var ex = L2TAssert.Throws<ArgumentNullException>(() => reqProc.BuildUrl(parameters));
 
-            //Assert.AreEqual(ExpectedParamName, ex.ParamName);
+            Assert.AreEqual(ExpectedParamName, ex.ParamName);
         }
 
         [TestMethod]
-        [Ignore]
         public void BuildUrl_BannerSize_Requires_NonNull_ScreenName()
         {
             const string ExpectedParamName = "ScreenName";
@@ -100,13 +96,12 @@ namespace LinqToTwitterPcl.Tests.UserTests
                 { "ScreenName", null }
             };
 
-            //var ex = Assert.Throws<ArgumentNullException>(() => reqProc.BuildUrl(parameters));
+            var ex = L2TAssert.Throws<ArgumentNullException>(() => reqProc.BuildUrl(parameters));
 
-            //Assert.AreEqual(ExpectedParamName, ex.ParamName);
+            Assert.AreEqual(ExpectedParamName, ex.ParamName);
         }
 
         [TestMethod]
-        [Ignore]
         public void BuildUrl_BannerSize_Requires_NonEmpty_ScreenName()
         {
             const string ExpectedParamName = "ScreenName";
@@ -118,9 +113,9 @@ namespace LinqToTwitterPcl.Tests.UserTests
                 { "ScreenName", "" }
             };
 
-            //var ex = Assert.Throws<ArgumentNullException>(() => reqProc.BuildUrl(parameters));
+            var ex = L2TAssert.Throws<ArgumentNullException>(() => reqProc.BuildUrl(parameters));
 
-            //Assert.AreEqual(ExpectedParamName, ex.ParamName);
+            Assert.AreEqual(ExpectedParamName, ex.ParamName);
         }
 
         [TestMethod]
@@ -142,7 +137,6 @@ namespace LinqToTwitterPcl.Tests.UserTests
         }
 
         [TestMethod]
-        [Ignore]
         public void BuildUrl_Show_Throws_On_Null_UserID()
         {
             var reqProc = new UserRequestProcessor<User> { BaseUrl = "https://api.twitter.com/1.1/" };
@@ -152,13 +146,12 @@ namespace LinqToTwitterPcl.Tests.UserTests
                 { "UserID", null }
             };
 
-            //var ex = Assert.Throws<ArgumentNullException>(() => reqProc.BuildUrl(parameters));
+            var ex = L2TAssert.Throws<ArgumentNullException>(() => reqProc.BuildUrl(parameters));
 
-            //Assert.AreEqual("UserID", ex.ParamName);
+            Assert.AreEqual("UserID", ex.ParamName);
         }
 
         [TestMethod]
-        [Ignore]
         public void BuildUrl_Show_Throws_On_Null_ScreenName()
         {
             var reqProc = new UserRequestProcessor<User> { BaseUrl = "https://api.twitter.com/" };
@@ -168,9 +161,9 @@ namespace LinqToTwitterPcl.Tests.UserTests
                 { "ScreenName", null }
             };
 
-            //var ex = Assert.Throws<ArgumentNullException>(() => reqProc.BuildUrl(parameters));
+            var ex = L2TAssert.Throws<ArgumentNullException>(() => reqProc.BuildUrl(parameters));
 
-            //Assert.AreEqual("ScreenName", ex.ParamName);
+            Assert.AreEqual("ScreenName", ex.ParamName);
         }
 
         [TestMethod]
@@ -190,7 +183,6 @@ namespace LinqToTwitterPcl.Tests.UserTests
         }
 
         [TestMethod]
-        [Ignore]
         public void BuildUrl_Categores_Throws_On_Missing_Slug()
         {
             var reqProc = new UserRequestProcessor<User>();
@@ -201,9 +193,9 @@ namespace LinqToTwitterPcl.Tests.UserTests
                         //{ "Slug", "Technology" }
                     };
 
-            //var ex = Assert.Throws<ArgumentNullException>(() => reqProc.BuildUrl(parameters));
+            var ex = L2TAssert.Throws<ArgumentNullException>(() => reqProc.BuildUrl(parameters));
 
-            //Assert.AreEqual("Slug", ex.ParamName);
+            Assert.AreEqual("Slug", ex.ParamName);
         }
 
         [TestMethod]
@@ -240,7 +232,6 @@ namespace LinqToTwitterPcl.Tests.UserTests
         }
 
         [TestMethod]
-        [Ignore]
         public void BuildUrl_Category_Thows_On_Missing_Slug()
         {
             var reqProc = new UserRequestProcessor<User> { BaseUrl = "https://api.twitter.com/1/" };
@@ -249,9 +240,9 @@ namespace LinqToTwitterPcl.Tests.UserTests
                 { "Type", ((int)UserType.Category).ToString() },
             };
 
-            //var ex = Assert.Throws<ArgumentException>(() => reqProc.BuildUrl(parameters));
+            var ex = L2TAssert.Throws<ArgumentException>(() => reqProc.BuildUrl(parameters));
 
-            //Assert.AreEqual("Slug", ex.ParamName);
+            Assert.AreEqual("Slug", ex.ParamName);
         }
 
         [TestMethod]
@@ -287,7 +278,6 @@ namespace LinqToTwitterPcl.Tests.UserTests
         }
 
         [TestMethod]
-        [Ignore]
         public void BuildUrl_Lookup_Throws_On_Missing_ScreenName()
         {
             var reqProc = new UserRequestProcessor<User> { BaseUrl = "https://api.twitter.com/1.1/" };
@@ -296,13 +286,12 @@ namespace LinqToTwitterPcl.Tests.UserTests
                 { "Type", ((int)UserType.Lookup).ToString() },
             };
 
-            //var ex = Assert.Throws<ArgumentException>(() => reqProc.BuildUrl(parameters));
+            var ex = L2TAssert.Throws<ArgumentException>(() => reqProc.BuildUrl(parameters));
 
-            //Assert.AreEqual("ScreenNameOrUserID", ex.ParamName);
+            Assert.AreEqual("ScreenNameOrUserID", ex.ParamName);
         }
 
         [TestMethod]
-        [Ignore]
         public void BuildUrl_Lookup_Throws_On_Both_UserID_And_ScreenName_Params()
         {
             var reqProc = new UserRequestProcessor<User> { BaseUrl = "https://api.twitter.com/1.1/" };
@@ -313,9 +302,9 @@ namespace LinqToTwitterPcl.Tests.UserTests
                 { "UserID", "1,2" }
             };
 
-            //var ex = Assert.Throws<ArgumentException>(() => reqProc.BuildUrl(parameters));
+            var ex = L2TAssert.Throws<ArgumentException>(() => reqProc.BuildUrl(parameters));
 
-            //Assert.AreEqual("ScreenNameOrUserID", ex.ParamName);
+            Assert.AreEqual("ScreenNameOrUserID", ex.ParamName);
         }
 
         [TestMethod]
@@ -338,7 +327,6 @@ namespace LinqToTwitterPcl.Tests.UserTests
         }
 
         [TestMethod]
-        [Ignore]
         public void BuildUrl_Search_Throws_On_Missing_Query()
         {
             var reqProc = new UserRequestProcessor<User> { BaseUrl = "https://api.twitter.com/1.1/" };
@@ -347,9 +335,9 @@ namespace LinqToTwitterPcl.Tests.UserTests
                 { "Type", ((int)UserType.Search).ToString() },
             };
 
-            //var ex = Assert.Throws<ArgumentException>(() => reqProc.BuildUrl(parameters));
+            var ex = L2TAssert.Throws<ArgumentException>(() => reqProc.BuildUrl(parameters));
 
-            //Assert.AreEqual("Query", ex.ParamName);
+            Assert.AreEqual("Query", ex.ParamName);
         }
 
         [TestMethod]
@@ -391,26 +379,24 @@ namespace LinqToTwitterPcl.Tests.UserTests
         }
 
         [TestMethod]
-        [Ignore]
         public void BuildUrl_Throws_On_Missing_Type()
         {
             var reqProc = new UserRequestProcessor<User> { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string> { };
 
-            //var ex = Assert.Throws<ArgumentException>(() => reqProc.BuildUrl(parameters));
+            var ex = L2TAssert.Throws<ArgumentException>(() => reqProc.BuildUrl(parameters));
 
-            //Assert.AreEqual<string>("Type", ex.ParamName);
+            Assert.AreEqual<string>("Type", ex.ParamName);
         }
 
         [TestMethod]
-        [Ignore]
         public void BuildUrl_Throws_On_Null_Params()
         {
             var reqProc = new UserRequestProcessor<User> { BaseUrl = "https://api.twitter.com/1.1/" };
 
-            //var ex = Assert.Throws<ArgumentException>(() => reqProc.BuildUrl(null));
+            var ex = L2TAssert.Throws<ArgumentException>(() => reqProc.BuildUrl(null));
 
-            //Assert.AreEqual<string>("Type", ex.ParamName);
+            Assert.AreEqual<string>("Type", ex.ParamName);
         }
 
         [TestMethod]
@@ -1092,7 +1078,6 @@ namespace LinqToTwitterPcl.Tests.UserTests
       ""followers_count"":6266743
    }
 ]";
-        const string ImageResponse = @"{ ""imageUrl"": ""http:\/\/myuri.jpg"" }";
 
         const string BannerSizesResponse = @"{
    ""sizes"":{

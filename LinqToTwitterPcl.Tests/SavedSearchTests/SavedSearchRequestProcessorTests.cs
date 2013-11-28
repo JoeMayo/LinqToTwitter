@@ -37,8 +37,8 @@ namespace LinqToTwitterPcl.Tests.SavedSearchTests
             Assert.IsNotNull(search);
             Assert.AreEqual("#LinqToTwitter", search.Query);
             Assert.AreEqual("#LinqToTwitter", search.Name);
-            Assert.AreEqual(0, search.Postition);
-            Assert.AreEqual(3275867, search.IDResponse);
+            Assert.AreEqual(0, search.Position);
+            Assert.AreEqual(3275867ul, search.IDResponse);
             Assert.AreEqual(new DateTime(2009, 12, 18, 4, 17, 24), search.CreatedAt);
         }
 
@@ -55,8 +55,8 @@ namespace LinqToTwitterPcl.Tests.SavedSearchTests
             Assert.IsNotNull(search);
             Assert.AreEqual("#LinqToTwitter", search.Query);
             Assert.AreEqual("#LinqToTwitter", search.Name);
-            Assert.AreEqual(0, search.Postition);
-            Assert.AreEqual(3275867, search.IDResponse);
+            Assert.AreEqual(0, search.Position);
+            Assert.AreEqual(3275867ul, search.IDResponse);
             Assert.AreEqual(new DateTime(2009, 12, 18, 4, 17, 24), search.CreatedAt);
         }
 
@@ -91,7 +91,6 @@ namespace LinqToTwitterPcl.Tests.SavedSearchTests
         }
 
         [TestMethod]
-        [Ignore]
         public void BuildUrl_Show_Throws_On_Missing_ID()
         {
             var searchReqProc = new SavedSearchRequestProcessor<SavedSearch> { BaseUrl = "https://api.twitter.com/1.1/" };
@@ -100,9 +99,9 @@ namespace LinqToTwitterPcl.Tests.SavedSearchTests
                 { "Type", SavedSearchType.Show.ToString() }
             };
 
-            //var ex = Assert.Throws<ArgumentException>(() => searchReqProc.BuildUrl(parameters));
+            var ex = L2TAssert.Throws<ArgumentException>(() => searchReqProc.BuildUrl(parameters));
 
-            //Assert.AreEqual("ID", ex.ParamName);
+            Assert.AreEqual("ID", ex.ParamName);
         }
 
         [TestMethod]
@@ -137,26 +136,24 @@ namespace LinqToTwitterPcl.Tests.SavedSearchTests
         }
 
         [TestMethod]
-        [Ignore]
         public void BuildUrl_Throws_On_Missing_Type()
         {
             var searchReqProc = new SavedSearchRequestProcessor<SavedSearch>() { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string> { };
 
-            //var ex = Assert.Throws<ArgumentException>(() => searchReqProc.BuildUrl(parameters));
+            var ex = L2TAssert.Throws<ArgumentException>(() => searchReqProc.BuildUrl(parameters));
 
-            //Assert.AreEqual<string>("Type", ex.ParamName);
+            Assert.AreEqual<string>("Type", ex.ParamName);
         }
 
         [TestMethod]
-        [Ignore]
         public void BuildUrl_Throws_On_Null_Parameters()
         {
             var searchReqProc = new SavedSearchRequestProcessor<SavedSearch>() { BaseUrl = "https://api.twitter.com/1.1/" };
 
-            //var ex = Assert.Throws<ArgumentException>(() => searchReqProc.BuildUrl(null));
+            var ex = L2TAssert.Throws<ArgumentException>(() => searchReqProc.BuildUrl(null));
 
-            //Assert.AreEqual<string>("Type", ex.ParamName);
+            Assert.AreEqual<string>("Type", ex.ParamName);
         }
 
 

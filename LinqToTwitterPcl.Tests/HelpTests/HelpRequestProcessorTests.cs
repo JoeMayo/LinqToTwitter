@@ -100,7 +100,6 @@ namespace LinqToTwitterPcl.Tests.HelpTests
         }
 
         [TestMethod]
-        [Ignore]
         public void BuildUrl_Throws_With_No_Type()
         {
             var helpReqProc = new HelpRequestProcessor<Help> { BaseUrl = "https://api.twitter.com/1/" };
@@ -109,9 +108,9 @@ namespace LinqToTwitterPcl.Tests.HelpTests
                 //{"Type", ((int) HelpType.Languages).ToString()}
             };
 
-            //var ex = Assert.Throws<ArgumentException>(() => helpReqProc.BuildUrl(parameters));
+            var ex = L2TAssert.Throws<ArgumentException>(() => helpReqProc.BuildUrl(parameters));
 
-            //Assert.AreEqual("Type", ex.ParamName);
+            Assert.AreEqual("Type", ex.ParamName);
         }
 
         [TestMethod]

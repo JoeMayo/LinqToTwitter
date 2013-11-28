@@ -342,7 +342,6 @@ namespace LinqToTwitterPcl.Tests.StatusTests
         }
 
         [TestMethod]
-        [Ignore]
         public void BuildUrl_RetweetedBy_Throws_On_Missing_ID()
         {
             const string ExpectedParam = "ID";
@@ -358,32 +357,30 @@ namespace LinqToTwitterPcl.Tests.StatusTests
                 { "Cursor", "25" }
             };
 
-            //var ex = Assert.Throws<ArgumentException>(() => reqProc.BuildUrl(parameters));
+            var ex = L2TAssert.Throws<ArgumentException>(() => reqProc.BuildUrl(parameters));
 
-            //Assert.AreEqual(ExpectedParam, ex.ParamName);
+            Assert.AreEqual(ExpectedParam, ex.ParamName);
         }
 
         [TestMethod]
-        [Ignore]
         public void BuildUrl_Throws_On_Missing_Type()
         {
             var statusReqProc = new StatusRequestProcessor<Status> { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string> { };
 
-            //var ex = Assert.Throws<ArgumentException>(() => statusReqProc.BuildUrl(parameters));
+            var ex = L2TAssert.Throws<ArgumentException>(() => statusReqProc.BuildUrl(parameters));
 
-            //Assert.AreEqual<string>("Type", ex.ParamName);
+            Assert.AreEqual<string>("Type", ex.ParamName);
         }
 
         [TestMethod]
-        [Ignore]
         public void BuildUrl_Throws_On_Null_Parameter()
         {
             var target = new StatusRequestProcessor<Status> { BaseUrl = "https://api.twitter.com/1.1/" };
 
-            //var ex = Assert.Throws<ArgumentException>(() => target.BuildUrl(null));
+            var ex = L2TAssert.Throws<ArgumentException>(() => target.BuildUrl(null));
 
-            //Assert.AreEqual<string>("Type", ex.ParamName);
+            Assert.AreEqual<string>("Type", ex.ParamName);
         }
 
         [TestMethod]
@@ -425,12 +422,12 @@ namespace LinqToTwitterPcl.Tests.StatusTests
             Assert.AreEqual("Joe Mayo", status.User.Name);
             Assert.AreEqual(393, status.RetweetCount);
             Assert.AreEqual(184835136037191681ul, status.StatusID);
-            Assert.IsNull(status.InReplyToUserID);
+            Assert.AreEqual(0ul, status.InReplyToUserID);
             Assert.IsFalse(status.Favorited);
-            Assert.IsNull(status.InReplyToStatusID);
+            Assert.AreEqual(0ul, status.InReplyToStatusID);
             Assert.AreEqual("web", status.Source);
             Assert.AreEqual(new DateTime(2012, 3, 28, 2, 51, 45), status.CreatedAt);
-            Assert.IsNull(status.InReplyToUserID);
+            Assert.AreEqual(0ul, status.InReplyToUserID);
             Assert.IsFalse(status.Truncated);
             Assert.IsNotNull(status.Text);
             Assert.IsTrue(status.Text.StartsWith("RT @scottgu: I just blogged about"));
@@ -471,12 +468,12 @@ namespace LinqToTwitterPcl.Tests.StatusTests
             Assert.AreEqual("Joe Mayo", status.User.Name);
             Assert.AreEqual(393, status.RetweetCount);
             Assert.AreEqual(184835136037191681ul, status.StatusID);
-            Assert.IsNull(status.InReplyToUserID);
+            Assert.AreEqual(0ul, status.InReplyToUserID);
             Assert.IsFalse(status.Favorited);
-            Assert.IsNull(status.InReplyToStatusID);
+            Assert.AreEqual(0ul, status.InReplyToStatusID);
             Assert.AreEqual("web", status.Source);
             Assert.AreEqual(new DateTime(2012, 3, 28, 2, 51, 45), status.CreatedAt);
-            Assert.IsNull(status.InReplyToUserID);
+            Assert.AreEqual(0ul, status.InReplyToUserID);
             Assert.IsFalse(status.Truncated);
             Assert.IsNotNull(status.Text);
             Assert.IsTrue(status.Text.StartsWith("RT @scottgu: I just blogged about"));
@@ -504,8 +501,8 @@ namespace LinqToTwitterPcl.Tests.StatusTests
             Assert.AreEqual(34649740ul, user);
             var cursor = status.CursorMovement;
             Assert.IsNotNull(cursor);
-            Assert.AreEqual("123", cursor.Next);
-            Assert.AreEqual("456", cursor.Previous);
+            Assert.AreEqual(123l, cursor.Next);
+            Assert.AreEqual(456l, cursor.Previous);
         }
 
         [TestMethod]
@@ -585,13 +582,13 @@ namespace LinqToTwitterPcl.Tests.StatusTests
             var status = statuses.Single();
             Assert.IsNotNull(status);
             Assert.AreEqual(StatusType.Show, status.Type);
-            Assert.AreEqual("123", status.ID);
-            Assert.AreEqual("123", status.UserID);
+            Assert.AreEqual(123ul, status.ID);
+            Assert.AreEqual(123ul, status.UserID);
             Assert.AreEqual("abc", status.ScreenName);
             Assert.AreEqual(1ul, status.SinceID);
             Assert.AreEqual(2ul, status.MaxID);
             Assert.AreEqual(3, status.Count);
-            Assert.AreEqual("123", status.Cursor);
+            Assert.AreEqual(123l, status.Cursor);
             Assert.IsTrue(status.IncludeRetweets);
             Assert.IsTrue(status.ExcludeReplies);
             Assert.IsTrue(status.IncludeEntities);
@@ -626,7 +623,7 @@ namespace LinqToTwitterPcl.Tests.StatusTests
             var status = statuses.Single();
             Assert.IsNotNull(status);
             Assert.AreEqual(StatusType.Oembed, status.Type);
-            Assert.AreEqual("123", status.ID);
+            Assert.AreEqual(123ul, status.ID);
             Assert.AreEqual("http://myurl.com", status.OEmbedUrl);
             Assert.AreEqual(300, status.OEmbedMaxWidth);
             Assert.IsTrue(status.OEmbedHideMedia);

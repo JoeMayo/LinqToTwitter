@@ -75,6 +75,9 @@ namespace LinqToTwitter
         /// <returns>direct message element</returns>
         public async Task<DirectMessage> DestroyDirectMessageAsync(ulong id, bool includeEntites)
         {
+            if (id == 0)
+                throw new ArgumentNullException("id", "id is required.");
+
             var destroyUrl = BaseUrl + "direct_messages/destroy.json";
 
             var reqProc = new DirectMessageRequestProcessor<DirectMessage>();

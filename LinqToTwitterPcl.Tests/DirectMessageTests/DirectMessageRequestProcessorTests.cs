@@ -78,7 +78,6 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
         }
 
         [TestMethod]
-        [Ignore]
         public void BuildUrl_Show_Requires_ID()
         {
             var dmReqProc = new DirectMessageRequestProcessor<DirectMessage> { BaseUrl = "https://api.twitter.com/1/" };
@@ -89,9 +88,9 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
                         //{ "ID", "478805447" },
                 };
 
-            //var ex = Assert.Throws<ArgumentNullException>(() => dmReqProc.BuildUrl(parameters));
-            
-            //Assert.AreEqual("ID", ex.ParamName);
+            var ex = L2TAssert.Throws<ArgumentNullException>(() => dmReqProc.BuildUrl(parameters));
+
+            Assert.AreEqual("ID", ex.ParamName);
         }
 
         [TestMethod]
@@ -243,26 +242,24 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
         }
 
         [TestMethod]
-        [Ignore]
         public void BuildUrl_Throws_On_Missing_Type_Param()
         {
             var dmReqProc = new DirectMessageRequestProcessor<DirectMessage> { BaseUrl = "https://api.twitter.com/1/" };
             var parameters = new Dictionary<string, string>();
 
-            //var ex = Assert.Throws<ArgumentException>(() => dmReqProc.BuildUrl(parameters));
+            var ex = L2TAssert.Throws<ArgumentException>(() => dmReqProc.BuildUrl(parameters));
 
-            //Assert.AreEqual("Type", ex.ParamName);
+            Assert.AreEqual("Type", ex.ParamName);
         }
 
         [TestMethod]
-        [Ignore]
         public void BuildUrl_Throws_On_Null_Param_Dictionary()
         {
             var dmReqProc = new DirectMessageRequestProcessor<DirectMessage> { BaseUrl = "https://api.twitter.com/1/" };
 
-            //var ex = Assert.Throws<ArgumentException>(() => dmReqProc.BuildUrl(null));
+            var ex = L2TAssert.Throws<ArgumentException>(() => dmReqProc.BuildUrl(null));
 
-            //Assert.AreEqual("Type", ex.ParamName);
+            Assert.AreEqual("Type", ex.ParamName);
         }
 
         const string TestQueryResponse = @"[

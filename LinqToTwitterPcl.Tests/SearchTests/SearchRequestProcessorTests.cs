@@ -90,7 +90,6 @@ namespace LinqToTwitterPcl.Tests.SearchTests
         }
 
         [TestMethod]
-        [Ignore]
         public void BuildUrl_Throws_When_Parameters_Null()
         {
             var searchReqProc = new SearchRequestProcessor<Search> { BaseUrl = "https://api.twitter.com/1.1/search/" };
@@ -132,11 +131,11 @@ namespace LinqToTwitterPcl.Tests.SearchTests
                     { "Query", null }
                 };
 
-            //ArgumentException ex =
-            //    Assert.Throws<ArgumentNullException>(() =>
-            //        searchReqProc.BuildUrl(parameters));
+            ArgumentException ex =
+                L2TAssert.Throws<ArgumentNullException>(() =>
+                    searchReqProc.BuildUrl(parameters));
 
-            //Assert.Equal("Query", ex.ParamName);
+            Assert.AreEqual("Query", ex.ParamName);
         }
 
         [TestMethod]

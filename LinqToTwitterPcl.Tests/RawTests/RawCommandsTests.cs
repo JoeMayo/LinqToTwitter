@@ -10,12 +10,12 @@ using Moq;
 namespace LinqToTwitterPcl.Tests.RawTests
 {
     [TestClass]
-    public class RawExtensionsTests
+    public class RawCommandsTests
     {
         TwitterContext ctx;
         Mock<ITwitterExecute> execMock;
 
-        public RawExtensionsTests()
+        public RawCommandsTests()
         {
             TestCulture.SetCulture();
         }
@@ -25,11 +25,18 @@ namespace LinqToTwitterPcl.Tests.RawTests
             var authMock = new Mock<IAuthorizer>();
             execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.Authorizer).Returns(authMock.Object);
+            var tcsResponse = new TaskCompletionSource<string>();
+            tcsResponse.SetResult("{}");
+            execMock.Setup(
+                exec => exec.PostToTwitterAsync<Raw>(
+                    It.IsAny<string>(),
+                    It.IsAny<Dictionary<string, string>>()))
+                    .Returns(tcsResponse.Task);
             ctx = new TwitterContext(execMock.Object);
         }
 
         [TestMethod]
-        public async Task RawRequestProcessor_Works_With_Actions()
+        public void RawRequestProcessor_Works_With_Actions()
         {
             var rawReqProc = new RawRequestProcessor<Raw>();
 
@@ -46,7 +53,7 @@ namespace LinqToTwitterPcl.Tests.RawTests
                 { "status", "Testing" }
             };
 
-            ctx.ExecuteRawAsync(QueryString, parameters);
+            await ctx.ExecuteRawAsync(QueryString, parameters);
 
             execMock.Verify(exec =>
                 exec.PostToTwitterAsync<Raw>(

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using LinqToTwitter;
@@ -126,7 +125,6 @@ namespace LinqToTwitterPcl.Tests.ListTests
         }
 
         [TestMethod]
-        [Ignore]
         public void BuildUrl_Throws_On_Missing_Type()
         {
             const string ExpectedParam = "Type";
@@ -137,13 +135,12 @@ namespace LinqToTwitterPcl.Tests.ListTests
                     { "ScreenName", "JoeMayo" }
                 };
 
-            //var ex = Assert.Throws<ArgumentException>(() => listReqProc.BuildUrl(parameters));
+            var ex = L2TAssert.Throws<ArgumentException>(() => listReqProc.BuildUrl(parameters));
 
-            //Assert.AreEqual(ExpectedParam, ex.ParamName);
+            Assert.AreEqual(ExpectedParam, ex.ParamName);
         }
 
         [TestMethod]
-        [Ignore]
         public void BuildUrl_Throws_On_Missing_ScreenName()
         {
             const string ExpectedParamName = "UserIdOrScreenName";
@@ -151,28 +148,26 @@ namespace LinqToTwitterPcl.Tests.ListTests
             var parameters =
                 new Dictionary<string, string>
                 {
-                    { "Type", "0" },
+                    { "Type", ((int)ListType.List).ToString() },
                 };
 
-            //var ex = Assert.Throws<ArgumentException>(() => listReqProc.BuildUrl(parameters));
+            var ex = L2TAssert.Throws<ArgumentException>(() => listReqProc.BuildUrl(parameters));
 
-            //Assert.AreEqual(ExpectedParamName, ex.ParamName);
+            Assert.AreEqual(ExpectedParamName, ex.ParamName);
         }
 
         [TestMethod]
-        [Ignore]
         public void BuildUrl_Throws_On_Null_Param_List()
         {
             const string ExpectedParamName = "Type";
             var listReqProc = new ListRequestProcessor<List> { BaseUrl = "https://api.twitter.com/1.1/" };
 
-            //var ex = Assert.Throws<ArgumentException>(() => listReqProc.BuildUrl(null));
+            var ex = L2TAssert.Throws<ArgumentException>(() => listReqProc.BuildUrl(null));
 
-            //Assert.AreEqual<string>(ExpectedParamName, ex.ParamName);
+            Assert.AreEqual<string>(ExpectedParamName, ex.ParamName);
         }
 
         [TestMethod]
-        [Ignore]
         public void BuildListUrl_Requires_UserID_Or_ScreenName()
         {
             const string ExpectedParamName = "UserIdOrScreenName";
@@ -183,9 +178,9 @@ namespace LinqToTwitterPcl.Tests.ListTests
                 //{"UserID", "123"},
             };
 
-            //var ex = Assert.Throws<ArgumentException>(() => listReqProc.BuildUrl(parameters));
+            var ex = L2TAssert.Throws<ArgumentException>(() => listReqProc.BuildUrl(parameters));
 
-            //Assert.AreEqual(ExpectedParamName, ex.ParamName);
+            Assert.AreEqual(ExpectedParamName, ex.ParamName);
         }
 
         [TestMethod]
@@ -208,7 +203,6 @@ namespace LinqToTwitterPcl.Tests.ListTests
         }
 
         [TestMethod]
-        [Ignore]
         public void BuildMembershipsUrl_Requires_UserID_Or_ScreenName()
         {
             const string ExpectedParamName = "UserIdOrScreenName";
@@ -219,9 +213,9 @@ namespace LinqToTwitterPcl.Tests.ListTests
                 //{"UserID", "123"},
             };
 
-            //var ex = Assert.Throws<ArgumentException>(() => listReqProc.BuildUrl(parameters));
+            var ex = L2TAssert.Throws<ArgumentException>(() => listReqProc.BuildUrl(parameters));
 
-            //Assert.AreEqual(ExpectedParamName, ex.ParamName);
+            Assert.AreEqual(ExpectedParamName, ex.ParamName);
         }
 
         [TestMethod]
@@ -263,7 +257,6 @@ namespace LinqToTwitterPcl.Tests.ListTests
         }
 
         [TestMethod]
-        [Ignore]
         public void BuildSubscriptionsUrl_Requires_UserID_Or_ScreenName()
         {
             const string ExpectedParamName = "UserIdOrScreenName";
@@ -274,9 +267,9 @@ namespace LinqToTwitterPcl.Tests.ListTests
                 //{"UserID", "123"},
             };
 
-            //var ex = Assert.Throws<ArgumentException>(() => listReqProc.BuildUrl(parameters));
+            var ex = L2TAssert.Throws<ArgumentException>(() => listReqProc.BuildUrl(parameters));
 
-            //Assert.AreEqual(ExpectedParamName, ex.ParamName);
+            Assert.AreEqual(ExpectedParamName, ex.ParamName);
         }
 
         [TestMethod]
@@ -299,7 +292,6 @@ namespace LinqToTwitterPcl.Tests.ListTests
         }
 
         [TestMethod]
-        [Ignore]
         public void BuildShowUrl_Requires_ListID_Or_Slug()
         {
             const string ExpecteParamName = "ListIdOrSlug";
@@ -311,13 +303,12 @@ namespace LinqToTwitterPcl.Tests.ListTests
                 //{"OwnerID", "123"},
             };
 
-            //var ex = Assert.Throws<ArgumentException>(() => listReqProc.BuildUrl(parameters));
+            var ex = L2TAssert.Throws<ArgumentException>(() => listReqProc.BuildUrl(parameters));
 
-            //Assert.AreEqual(ExpecteParamName, ex.ParamName);
+            Assert.AreEqual(ExpecteParamName, ex.ParamName);
         }
 
         [TestMethod]
-        [Ignore]
         public void BuildShowUrl_Requires_Non_Null_And_Not_Empty_ListID_Or_Slug()
         {
             const string ExpectedParamName = "ListIdOrSlug";
@@ -330,13 +321,12 @@ namespace LinqToTwitterPcl.Tests.ListTests
                 //{"OwnerID", "123"},
             };
 
-            //var ex = Assert.Throws<ArgumentException>(() => listReqProc.BuildUrl(parameters));
+            var ex = L2TAssert.Throws<ArgumentException>(() => listReqProc.BuildUrl(parameters));
 
-            //Assert.AreEqual(ExpectedParamName, ex.ParamName);
+            Assert.AreEqual(ExpectedParamName, ex.ParamName);
         }
 
         [TestMethod]
-        [Ignore]
         public void BuildShowUrl_Requires_OwnerID_Or_OwnerScreenName_If_Slug_Used()
         {
             const string ExpectedParamName = "OwnerIdOrOwnerScreenName";
@@ -348,9 +338,9 @@ namespace LinqToTwitterPcl.Tests.ListTests
                 //{"OwnerID", "123"},
             };
 
-            //var ex = Assert.Throws<ArgumentException>(() => listReqProc.BuildUrl(parameters));
+            var ex = L2TAssert.Throws<ArgumentException>(() => listReqProc.BuildUrl(parameters));
 
-            //Assert.AreEqual(ExpectedParamName, ex.ParamName);
+            Assert.AreEqual(ExpectedParamName, ex.ParamName);
         }
 
         [TestMethod]
@@ -373,7 +363,6 @@ namespace LinqToTwitterPcl.Tests.ListTests
         }
 
         [TestMethod]
-        [Ignore]
         public void BuildStatusesUrl_Requires_ListID_Or_Slug()
         {
             const string ExpectedParamName = "ListIdOrSlug";
@@ -385,13 +374,12 @@ namespace LinqToTwitterPcl.Tests.ListTests
                 //{"OwnerID", "123"},
             };
 
-            //var ex = Assert.Throws<ArgumentException>(() => listReqProc.BuildUrl(parameters));
+            var ex = L2TAssert.Throws<ArgumentException>(() => listReqProc.BuildUrl(parameters));
 
-            //Assert.AreEqual(ExpectedParamName, ex.ParamName);
+            Assert.AreEqual(ExpectedParamName, ex.ParamName);
         }
 
         [TestMethod]
-        [Ignore]
         public void BuildStatusesUrl_Requires_Non_Null_And_Not_Empty_ListID_Or_Slug()
         {
             const string ExpectedParamName = "ListIdOrSlug";
@@ -404,13 +392,12 @@ namespace LinqToTwitterPcl.Tests.ListTests
                 //{"OwnerID", "123"},
             };
 
-            //var ex = Assert.Throws<ArgumentException>(() => listReqProc.BuildUrl(parameters));
+            var ex = L2TAssert.Throws<ArgumentException>(() => listReqProc.BuildUrl(parameters));
 
-            //Assert.AreEqual(ExpectedParamName, ex.ParamName);
+            Assert.AreEqual(ExpectedParamName, ex.ParamName);
         }
 
         [TestMethod]
-        [Ignore]
         public void BuildStatusesUrl_Requires_OwnerID_Or_OwnerScreenName_If_Slug_Used()
         {
             const string ExpectedParamName = "OwnerIdOrOwnerScreenName";
@@ -422,9 +409,9 @@ namespace LinqToTwitterPcl.Tests.ListTests
                 //{"OwnerID", "123"},
             };
 
-            //var ex = Assert.Throws<ArgumentException>(() => listReqProc.BuildUrl(parameters));
+            var ex = L2TAssert.Throws<ArgumentException>(() => listReqProc.BuildUrl(parameters));
 
-            //Assert.AreEqual(ExpectedParamName, ex.ParamName);
+            Assert.AreEqual(ExpectedParamName, ex.ParamName);
         }
 
         [TestMethod]
@@ -480,7 +467,6 @@ namespace LinqToTwitterPcl.Tests.ListTests
         }
 
         [TestMethod]
-        [Ignore]
         public void BuildMembersUrl_Requires_ListID_Or_Slug()
         {
             const string ExpectedParamName = "ListIdOrSlug";
@@ -492,13 +478,12 @@ namespace LinqToTwitterPcl.Tests.ListTests
                 //{"OwnerID", "123"},
             };
 
-            //var ex = Assert.Throws<ArgumentException>(() => listReqProc.BuildUrl(parameters));
+            var ex = L2TAssert.Throws<ArgumentException>(() => listReqProc.BuildUrl(parameters));
 
-            //Assert.AreEqual(ExpectedParamName, ex.ParamName);
+            Assert.AreEqual(ExpectedParamName, ex.ParamName);
         }
 
         [TestMethod]
-        [Ignore]
         public void BuildMembersUrl_Requires_Non_Null_And_Not_Empty_ListID_Or_Slug()
         {
             const string ExpectedParamName = "ListIdOrSlug";
@@ -511,13 +496,12 @@ namespace LinqToTwitterPcl.Tests.ListTests
                 //{"OwnerID", "123"},
             };
 
-            //var ex = Assert.Throws<ArgumentException>(() => listReqProc.BuildUrl(parameters));
+            var ex = L2TAssert.Throws<ArgumentException>(() => listReqProc.BuildUrl(parameters));
 
-            //Assert.AreEqual(ExpectedParamName, ex.ParamName);
+            Assert.AreEqual(ExpectedParamName, ex.ParamName);
         }
 
         [TestMethod]
-        [Ignore]
         public void BuildMembersUrl_Requires_OwnerID_Or_OwnerScreenName_If_Slug_Used()
         {
             const string ExpectedParamName = "OwnerIdOrOwnerScreenName";
@@ -529,9 +513,9 @@ namespace LinqToTwitterPcl.Tests.ListTests
                 //{"UserID", "123"},
             };
 
-            //var ex = Assert.Throws<ArgumentException>(() => listReqProc.BuildUrl(parameters));
+            var ex = L2TAssert.Throws<ArgumentException>(() => listReqProc.BuildUrl(parameters));
 
-            //Assert.AreEqual(ExpectedParamName, ex.ParamName);
+            Assert.AreEqual(ExpectedParamName, ex.ParamName);
         }
 
         [TestMethod]
@@ -578,7 +562,6 @@ namespace LinqToTwitterPcl.Tests.ListTests
         }
 
         [TestMethod]
-        [Ignore]
         public void BuildIsMemberUrl_Requires_ListID_Or_Slug()
         {
             const string ExpectedParamName = "ListIdOrSlug";
@@ -591,13 +574,12 @@ namespace LinqToTwitterPcl.Tests.ListTests
                 //{"OwnerID", "123"},
             };
 
-            //var ex = Assert.Throws<ArgumentException>(() => listReqProc.BuildUrl(parameters));
+            var ex = L2TAssert.Throws<ArgumentException>(() => listReqProc.BuildUrl(parameters));
 
-            //Assert.AreEqual(ExpectedParamName, ex.ParamName);
+            Assert.AreEqual(ExpectedParamName, ex.ParamName);
         }
 
         [TestMethod]
-        [Ignore]
         public void BuildIsMemberUrl_Requires_OwnerID_Or_OwnerScreenName_If_Slug_Used()
         {
             const string ExpectedParamName = "OwnerIdOrOwnerScreenName";
@@ -610,13 +592,12 @@ namespace LinqToTwitterPcl.Tests.ListTests
                 //{"UserID", "123"},
             };
 
-            //var ex = Assert.Throws<ArgumentException>(() => listReqProc.BuildUrl(parameters));
+            var ex = L2TAssert.Throws<ArgumentException>(() => listReqProc.BuildUrl(parameters));
 
-            //Assert.AreEqual(ExpectedParamName, ex.ParamName);
+            Assert.AreEqual(ExpectedParamName, ex.ParamName);
         }
 
         [TestMethod]
-        [Ignore]
         public void BuildIsMemberUrl_Requires_UserID_Or_ScreenName()
         {
             const string ExpectedParamName = "UserIdOrScreenName";
@@ -628,9 +609,9 @@ namespace LinqToTwitterPcl.Tests.ListTests
                 {"OwnerID", "123"},
             };
 
-            //var ex = Assert.Throws<ArgumentException>(() => listReqProc.BuildUrl(parameters));
+            var ex = L2TAssert.Throws<ArgumentException>(() => listReqProc.BuildUrl(parameters));
 
-            //Assert.AreEqual(ExpectedParamName, ex.ParamName);
+            Assert.AreEqual(ExpectedParamName, ex.ParamName);
         }
 
         [TestMethod]
@@ -679,7 +660,6 @@ namespace LinqToTwitterPcl.Tests.ListTests
         }
 
         [TestMethod]
-        [Ignore]
         public void BuildSubscribersUrl_Requires_ListID_Or_Slug()
         {
             const string ExpectedParamName = "ListIdOrSlug";
@@ -691,13 +671,12 @@ namespace LinqToTwitterPcl.Tests.ListTests
                 //{"OwnerID", "123"},
             };
 
-            //var ex = Assert.Throws<ArgumentException>(() => listReqProc.BuildUrl(parameters));
+            var ex = L2TAssert.Throws<ArgumentException>(() => listReqProc.BuildUrl(parameters));
 
-            //Assert.AreEqual(ExpectedParamName, ex.ParamName);
+            Assert.AreEqual(ExpectedParamName, ex.ParamName);
         }
 
         [TestMethod]
-        [Ignore]
         public void BuildSubscribersUrl_Requires_Non_Null_And_Not_Empty_ListID_Or_Slug()
         {
             const string ExpectedParamName = "ListIdOrSlug";
@@ -710,13 +689,12 @@ namespace LinqToTwitterPcl.Tests.ListTests
                 //{"OwnerID", "123"},
             };
 
-            //var ex = Assert.Throws<ArgumentException>(() => listReqProc.BuildUrl(parameters));
+            var ex = L2TAssert.Throws<ArgumentException>(() => listReqProc.BuildUrl(parameters));
 
-            //Assert.AreEqual(ExpectedParamName, ex.ParamName);
+            Assert.AreEqual(ExpectedParamName, ex.ParamName);
         }
 
         [TestMethod]
-        [Ignore]
         public void BuildSubscribersUrl_Requires_OwnerID_Or_OwnerScreenName_If_Slug_Used()
         {
             const string ExpectedParamName = "OwnerIdOrOwnerScreenName";
@@ -728,9 +706,9 @@ namespace LinqToTwitterPcl.Tests.ListTests
                 //{"UserID", "123"},
             };
 
-            //var ex = Assert.Throws<ArgumentException>(() => listReqProc.BuildUrl(parameters));
+            var ex = L2TAssert.Throws<ArgumentException>(() => listReqProc.BuildUrl(parameters));
 
-            //Assert.AreEqual(ExpectedParamName, ex.ParamName);
+            Assert.AreEqual(ExpectedParamName, ex.ParamName);
         }
 
         [TestMethod]
@@ -777,7 +755,6 @@ namespace LinqToTwitterPcl.Tests.ListTests
         }
 
         [TestMethod]
-        [Ignore]
         public void BuildIsSubscribedUrl_Requires_ListID_Or_Slug()
         {
             const string ExpectedParamName = "ListIdOrSlug";
@@ -790,13 +767,12 @@ namespace LinqToTwitterPcl.Tests.ListTests
                 //{"OwnerID", "123"},
             };
 
-            //var ex = Assert.Throws<ArgumentException>(() => listReqProc.BuildUrl(parameters));
+            var ex = L2TAssert.Throws<ArgumentException>(() => listReqProc.BuildUrl(parameters));
 
-            //Assert.AreEqual(ExpectedParamName, ex.ParamName);
+            Assert.AreEqual(ExpectedParamName, ex.ParamName);
         }
 
         [TestMethod]
-        [Ignore]
         public void BuildIsSubscriberUrl_Requires_OwnerID_Or_OwnerScreenName_If_Slug_Used()
         {
             const string ExpectedParamName = "OwnerIdOrOwnerScreenName";
@@ -809,13 +785,12 @@ namespace LinqToTwitterPcl.Tests.ListTests
                 //{"UserID", "123"},
             };
 
-            //var ex = Assert.Throws<ArgumentException>(() => listReqProc.BuildUrl(parameters));
+            var ex = L2TAssert.Throws<ArgumentException>(() => listReqProc.BuildUrl(parameters));
 
-            //Assert.AreEqual(ExpectedParamName, ex.ParamName);
+            Assert.AreEqual(ExpectedParamName, ex.ParamName);
         }
 
         [TestMethod]
-        [Ignore]
         public void BuildIsSubscriberUrl_Requires_UserID_Or_ScreenName()
         {
             const string ExpectedParamName = "UserIdOrScreenName";
@@ -827,9 +802,9 @@ namespace LinqToTwitterPcl.Tests.ListTests
                 {"OwnerID", "123"},
             };
 
-            //var ex = Assert.Throws<ArgumentException>(() => listReqProc.BuildUrl(parameters));
+            var ex = L2TAssert.Throws<ArgumentException>(() => listReqProc.BuildUrl(parameters));
 
-            //Assert.AreEqual(ExpectedParamName, ex.ParamName);
+            Assert.AreEqual(ExpectedParamName, ex.ParamName);
         }
 
         [TestMethod]
@@ -914,7 +889,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
             Assert.IsNotNull(users);
             Assert.IsNotNull(users.SingleOrDefault());
             Assert.AreEqual("LINQ to Tweeter", users.First().Name);
-            Assert.AreEqual("44758373", list.ListIDResult);
+            Assert.AreEqual(44758373ul, list.ListIDResult);
             Assert.AreEqual(0, list.SubscriberCount);
             Assert.AreEqual(new DateTime(2011, 5, 8, 2, 0, 33), list.CreatedAt);
             Assert.AreEqual(false, list.Following);
@@ -977,8 +952,8 @@ namespace LinqToTwitterPcl.Tests.ListTests
             Assert.AreEqual("LINQ to Tweeter Test", users.First().Name);
             var cursor = list.CursorMovement;
             Assert.IsNotNull(cursor);
-            Assert.AreEqual("1352721896474871923", cursor.Next);
-            Assert.AreEqual("7", cursor.Previous);
+            Assert.AreEqual(1352721896474871923, cursor.Next);
+            Assert.AreEqual(7, cursor.Previous);
         }
 
         [TestMethod]
@@ -1060,7 +1035,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
                 Type = ListType.Show,
                 UserID = 123ul,
                 ScreenName = "JoeMayo",
-                Cursor = 456,
+                Cursor = 456l,
                 ListID = 789ul,
                 Slug = "MyList",
                 OwnerID = 123ul,
@@ -1084,12 +1059,12 @@ namespace LinqToTwitterPcl.Tests.ListTests
             Assert.IsNotNull(lists);
             var list = lists.Single();
             Assert.AreEqual(ListType.Show, list.Type);
-            Assert.AreEqual("123", list.UserID);
+            Assert.AreEqual(123ul, list.UserID);
             Assert.AreEqual("JoeMayo", list.ScreenName);
-            Assert.AreEqual("456", list.Cursor);
-            Assert.AreEqual("789", list.ListID);
+            Assert.AreEqual(456l, list.Cursor);
+            Assert.AreEqual(789ul, list.ListID);
             Assert.AreEqual("MyList", list.Slug);
-            Assert.AreEqual("123", list.OwnerID);
+            Assert.AreEqual(123ul, list.OwnerID);
             Assert.AreEqual("JoeMayo", list.OwnerScreenName);
             Assert.AreEqual(150ul, list.MaxID);
             Assert.AreEqual(50, list.Count);

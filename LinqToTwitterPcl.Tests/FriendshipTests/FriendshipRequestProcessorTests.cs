@@ -292,7 +292,6 @@ namespace LinqToTwitterPcl.Tests.FriendshipTests
         }
 
         [TestMethod]
-        [Ignore]
         public void BuildUrl_Throws_Without_Source_Url()
         {
             var friendReqProc = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "https://api.twitter.com/1.1/" };
@@ -304,11 +303,10 @@ namespace LinqToTwitterPcl.Tests.FriendshipTests
                     { "friendReqProcScreenName", "LinqToTweeter" }
                 };
 
-            //Assert.Throws<ArgumentException>(() => friendReqProc.BuildUrl(parameters));
+            L2TAssert.Throws<ArgumentException>(() => friendReqProc.BuildUrl(parameters));
         }
 
         [TestMethod]
-        [Ignore]
         public void BuildUrl_Throws_Without_FriendsReqProcUrl()
         {
             var friendReqProc = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "https://api.twitter.com/1.1/" };
@@ -319,7 +317,7 @@ namespace LinqToTwitterPcl.Tests.FriendshipTests
                 { "SourceScreenName", "JoeMayo" },
             };
 
-            //Assert.Throws<ArgumentException>(() => friendReqProc.BuildUrl(parameters));
+            L2TAssert.Throws<ArgumentException>(() => friendReqProc.BuildUrl(parameters));
         }
 
         [TestMethod]
@@ -338,27 +336,25 @@ namespace LinqToTwitterPcl.Tests.FriendshipTests
         }
 
         [TestMethod]
-        [Ignore]
         public void BuildUrl_Throws_When_Missing_Type()
         {
             var friendReqProc = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string> { };
 
-            //var ex = Assert.Throws<ArgumentException>(() => friendReqProc.BuildUrl(parameters));
+            var ex = L2TAssert.Throws<ArgumentException>(() => friendReqProc.BuildUrl(parameters));
 
-            //Assert.AreEqual("Type", ex.ParamName);
+            Assert.AreEqual("Type", ex.ParamName);
         }
 
         [TestMethod]
-        [Ignore]
         public void BuildUrl_Throws_On_Null_Parameters()
         {
             var friendReqProc = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "https://api.twitter.com/1.1/" };
             Dictionary<string, string> parameters = null;
 
-            //var ex = Assert.Throws<ArgumentException>(() => friendReqProc.BuildUrl(parameters));
+            var ex = L2TAssert.Throws<ArgumentException>(() => friendReqProc.BuildUrl(parameters));
 
-            //Assert.AreEqual("Type", ex.ParamName);
+            Assert.AreEqual("Type", ex.ParamName);
         }
 
         [TestMethod]
@@ -456,7 +452,6 @@ namespace LinqToTwitterPcl.Tests.FriendshipTests
         }
 
         [TestMethod]
-        [Ignore]
         public void BuildLookupUrl_Requires_ScreenName_Or_UserID()
         {
             var friendReqProc = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "https://api.twitter.com/1.1/" };
@@ -466,9 +461,9 @@ namespace LinqToTwitterPcl.Tests.FriendshipTests
                 //{ "ScreenName", "twitter,joemayo" }
             };
 
-            //var ex = Assert.Throws<ArgumentNullException>(() => friendReqProc.BuildUrl(parameters));
-                 
-            //Assert.AreEqual("ScreenNameOrUserID", ex.ParamName);
+            var ex = L2TAssert.Throws<ArgumentNullException>(() => friendReqProc.BuildUrl(parameters));
+
+            Assert.AreEqual("ScreenNameOrUserID", ex.ParamName);
         }
 
         [TestMethod]
@@ -492,7 +487,6 @@ namespace LinqToTwitterPcl.Tests.FriendshipTests
         }
 
         [TestMethod]
-        [Ignore]
         public void BuildFriendListUrl_Requires_ScreenName_Or_UserID()
         {
             var friendReqProc = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "https://api.twitter.com/1.1/" };
@@ -503,9 +497,9 @@ namespace LinqToTwitterPcl.Tests.FriendshipTests
                 //{ "ScreenName", "abc" }
             };
 
-            //var ex = Assert.Throws<ArgumentNullException>(() => friendReqProc.BuildUrl(parameters));
+            var ex = L2TAssert.Throws<ArgumentNullException>(() => friendReqProc.BuildUrl(parameters));
 
-            //Assert.AreEqual("ScreenNameOrUserID", ex.ParamName);
+            Assert.AreEqual("ScreenNameOrUserID", ex.ParamName);
         }
 
         [TestMethod]
@@ -529,7 +523,6 @@ namespace LinqToTwitterPcl.Tests.FriendshipTests
         }
 
         [TestMethod]
-        [Ignore]
         public void BuildFollowerListUrl_Requires_ScreenName_Or_UserID()
         {
             var friendReqProc = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "https://api.twitter.com/1.1/" };
@@ -540,9 +533,9 @@ namespace LinqToTwitterPcl.Tests.FriendshipTests
                 //{ "ScreenName", "abc" }
             };
 
-            //var ex = Assert.Throws<ArgumentNullException>(() => friendReqProc.BuildUrl(parameters));
+            var ex = L2TAssert.Throws<ArgumentNullException>(() => friendReqProc.BuildUrl(parameters));
 
-            //Assert.AreEqual("ScreenNameOrUserID", ex.ParamName);
+            Assert.AreEqual("ScreenNameOrUserID", ex.ParamName);
         }
 
         [TestMethod]
