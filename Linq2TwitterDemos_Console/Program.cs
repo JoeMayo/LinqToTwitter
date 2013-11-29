@@ -207,8 +207,9 @@ namespace Linq2TwitterDemos_Console
                 GoToTwitterAuthorization = pageLink => Process.Start(pageLink),
                 GetPin = () =>
                 {
-                    // this executes after user authorizes, which begins with the call to auth.Authorize() below.
-                    Console.WriteLine("\nAfter authorizing this application, Twitter will give you a 7-digit PIN Number.\n");
+                    Console.WriteLine(
+                        "\nAfter authorizing this application, Twitter " +
+                        "will give you a 7-digit PIN Number.\n");
                     Console.Write("Enter the PIN number here: ");
                     return Console.ReadLine();
                 }

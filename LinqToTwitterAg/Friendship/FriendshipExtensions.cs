@@ -93,6 +93,10 @@ namespace LinqToTwitter
 
             string destroyUrl = ctx.BaseUrl + "friendships/destroy.json";
 
+            var parms = new Dictionary<string, string>();
+            if (screenName != null) parms.Add("screen_name", screenName);
+            if (userID != null) parms.Add("user_id", userID);
+
             var reqProc = new FriendshipRequestProcessor<User>();
 
             ITwitterExecute twitExe = ctx.TwitterExecutor;
@@ -101,11 +105,7 @@ namespace LinqToTwitter
             var resultsJson =
                 twitExe.PostToTwitter(
                     destroyUrl,
-                    new Dictionary<string, string>
-                    {
-                        { "user_id", userID },
-                        { "screen_name", screenName }
-                    },
+                    parms,
                     response => reqProc.ProcessActionResult(response, FriendshipAction.Destroy));
 
             User results = reqProc.ProcessActionResult(resultsJson, FriendshipAction.Destroy);
