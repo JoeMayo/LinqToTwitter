@@ -64,14 +64,19 @@ namespace Linq2TwitterDemos_Console
                  select trend)
                 .ToListAsync();
 
-            Console.WriteLine(
-                "Location: {0}\n",
-                trends.First().Locations.First().Name);
-
-            trends.ForEach(trnd =>
+            if (trends != null && 
+                trends.Any() && 
+                trends.First().Locations != null)
+            {
                 Console.WriteLine(
-                    "Name: {0}, Date: {1}, Query: {2}\nSearchUrl: {3}",
-                    trnd.Name, trnd.CreatedAt, trnd.Query, trnd.SearchUrl));
+                    "Location: {0}\n",
+                    trends.First().Locations.First().Name);
+
+                trends.ForEach(trnd =>
+                    Console.WriteLine(
+                        "Name: {0}, Date: {1}, Query: {2}\nSearchUrl: {3}",
+                        trnd.Name, trnd.CreatedAt, trnd.Query, trnd.SearchUrl)); 
+            }
         }
 
         static async Task GetAvailableTrendLocationsAsync(TwitterContext twitterCtx)
@@ -83,8 +88,9 @@ namespace Linq2TwitterDemos_Console
                  select trend)
                 .SingleOrDefaultAsync();
 
-            trendsResponse.Locations.ForEach(
-                loc => Console.WriteLine("Location: " + loc.Name));
+            if (trendsResponse != null && trendsResponse.Locations != null)
+                trendsResponse.Locations.ForEach(
+                    loc => Console.WriteLine("Location: " + loc.Name));
         }
 
         static async Task GetClosestTrendsAsync(TwitterContext twitterCtx)
@@ -98,10 +104,11 @@ namespace Linq2TwitterDemos_Console
                  select trnd)
                 .SingleOrDefaultAsync();
 
-            trend.Locations.ForEach(
-                loc => Console.WriteLine(
-                    "Name: {0}, Country: {1}, WoeID: {2}",
-                    loc.Name, loc.Country, loc.WoeID));
+            if (trend != null && trend.Locations != null)
+                trend.Locations.ForEach(
+                    loc => Console.WriteLine(
+                        "Name: {0}, Country: {1}, WoeID: {2}",
+                        loc.Name, loc.Country, loc.WoeID));
         }
     }
 }

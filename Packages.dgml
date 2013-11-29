@@ -1,0 +1,231 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<DirectedGraph GraphDirection="LeftToRight" xmlns="http://schemas.microsoft.com/vs/2009/dgml">
+  <Nodes>
+    <Node Id="Linq2TwitterDemos_MVC" Label="Linq2TwitterDemos_MVC" Category="Project" />
+    <Node Id="Antlr 3.4.1.9004" Label="Antlr 3.4.1.9004" Category="Package" />
+    <Node Id="bootstrap 3.0.0" Label="bootstrap 3.0.0" Category="Package" />
+    <Node Id="EntityFramework 6.0.0" Label="EntityFramework 6.0.0" Category="Package" />
+    <Node Id="jQuery 1.10.2" Label="jQuery 1.10.2" Category="Package" />
+    <Node Id="jQuery.Validation 1.11.1" Label="jQuery.Validation 1.11.1" Category="Package" />
+    <Node Id="Microsoft.AspNet.Identity.Core 1.0.0" Label="Microsoft.AspNet.Identity.Core 1.0.0" Category="Package" />
+    <Node Id="Microsoft.AspNet.Identity.EntityFramework 1.0.0" Label="Microsoft.AspNet.Identity.EntityFramework 1.0.0" Category="Package" />
+    <Node Id="Microsoft.AspNet.Identity.Owin 1.0.0" Label="Microsoft.AspNet.Identity.Owin 1.0.0" Category="Package" />
+    <Node Id="Microsoft.AspNet.Mvc 5.0.0" Label="Microsoft.AspNet.Mvc 5.0.0" Category="Package" />
+    <Node Id="Microsoft.AspNet.Razor 3.0.0" Label="Microsoft.AspNet.Razor 3.0.0" Category="Package" />
+    <Node Id="Microsoft.AspNet.Web.Optimization 1.1.1" Label="Microsoft.AspNet.Web.Optimization 1.1.1" Category="Package" />
+    <Node Id="Microsoft.AspNet.WebApi 5.0.0" Label="Microsoft.AspNet.WebApi 5.0.0" Category="Package" />
+    <Node Id="Microsoft.AspNet.WebApi.Client 5.0.0" Label="Microsoft.AspNet.WebApi.Client 5.0.0" Category="Package" />
+    <Node Id="Microsoft.AspNet.WebApi.Core 5.0.0" Label="Microsoft.AspNet.WebApi.Core 5.0.0" Category="Package" />
+    <Node Id="Microsoft.AspNet.WebApi.WebHost 5.0.0" Label="Microsoft.AspNet.WebApi.WebHost 5.0.0" Category="Package" />
+    <Node Id="Microsoft.AspNet.WebPages 3.0.0" Label="Microsoft.AspNet.WebPages 3.0.0" Category="Package" />
+    <Node Id="Microsoft.Bcl 1.1.3" Label="Microsoft.Bcl 1.1.3" Category="Package" />
+    <Node Id="Microsoft.Bcl.Build 1.0.10" Label="Microsoft.Bcl.Build 1.0.10" Category="Package" />
+    <Node Id="Microsoft.jQuery.Unobtrusive.Validation 3.0.0" Label="Microsoft.jQuery.Unobtrusive.Validation 3.0.0" Category="Package" />
+    <Node Id="Microsoft.Net.Http 2.2.15" Label="Microsoft.Net.Http 2.2.15" Category="Package" />
+    <Node Id="Microsoft.Owin 2.0.0" Label="Microsoft.Owin 2.0.0" Category="Package" />
+    <Node Id="Microsoft.Owin.Host.SystemWeb 2.0.0" Label="Microsoft.Owin.Host.SystemWeb 2.0.0" Category="Package" />
+    <Node Id="Microsoft.Owin.Security 2.0.0" Label="Microsoft.Owin.Security 2.0.0" Category="Package" />
+    <Node Id="Microsoft.Owin.Security.Cookies 2.0.0" Label="Microsoft.Owin.Security.Cookies 2.0.0" Category="Package" />
+    <Node Id="Microsoft.Owin.Security.Facebook 2.0.0" Label="Microsoft.Owin.Security.Facebook 2.0.0" Category="Package" />
+    <Node Id="Microsoft.Owin.Security.Google 2.0.0" Label="Microsoft.Owin.Security.Google 2.0.0" Category="Package" />
+    <Node Id="Microsoft.Owin.Security.MicrosoftAccount 2.0.0" Label="Microsoft.Owin.Security.MicrosoftAccount 2.0.0" Category="Package" />
+    <Node Id="Microsoft.Owin.Security.OAuth 2.0.0" Label="Microsoft.Owin.Security.OAuth 2.0.0" Category="Package" />
+    <Node Id="Microsoft.Owin.Security.Twitter 2.0.0" Label="Microsoft.Owin.Security.Twitter 2.0.0" Category="Package" />
+    <Node Id="Microsoft.Web.Infrastructure 1.0.0.0" Label="Microsoft.Web.Infrastructure 1.0.0.0" Category="Package" />
+    <Node Id="Modernizr 2.6.2" Label="Modernizr 2.6.2" Category="Package" />
+    <Node Id="Newtonsoft.Json 5.0.6" Label="Newtonsoft.Json 5.0.6" Category="Package" />
+    <Node Id="Owin 1.0" Label="Owin 1.0" Category="Package" />
+    <Node Id="Respond 1.2.0" Label="Respond 1.2.0" Category="Package" />
+    <Node Id="WebGrease 1.5.2" Label="WebGrease 1.5.2" Category="Package" />
+    <Node Id="LinqToTwitter.AspNet" Label="LinqToTwitter.AspNet" Category="Project" />
+    <Node Id="Microsoft.Bcl 1.1.3" Label="Microsoft.Bcl 1.1.3" Category="Package" />
+    <Node Id="Microsoft.Bcl.Build 1.0.10" Label="Microsoft.Bcl.Build 1.0.10" Category="Package" />
+    <Node Id="Microsoft.Net.Http 2.2.15" Label="Microsoft.Net.Http 2.2.15" Category="Package" />
+    <Node Id="Linq2TwitterDemos_WebForms" Label="Linq2TwitterDemos_WebForms" Category="Project" />
+    <Node Id="Antlr 3.4.1.9004" Label="Antlr 3.4.1.9004" Category="Package" />
+    <Node Id="AspNet.ScriptManager.bootstrap 3.0.0" Label="AspNet.ScriptManager.bootstrap 3.0.0" Category="Package" />
+    <Node Id="AspNet.ScriptManager.jQuery 1.10.2" Label="AspNet.ScriptManager.jQuery 1.10.2" Category="Package" />
+    <Node Id="bootstrap 3.0.0" Label="bootstrap 3.0.0" Category="Package" />
+    <Node Id="jQuery 1.10.2" Label="jQuery 1.10.2" Category="Package" />
+    <Node Id="Microsoft.AspNet.FriendlyUrls 1.0.2" Label="Microsoft.AspNet.FriendlyUrls 1.0.2" Category="Package" />
+    <Node Id="Microsoft.AspNet.FriendlyUrls.Core 1.0.2" Label="Microsoft.AspNet.FriendlyUrls.Core 1.0.2" Category="Package" />
+    <Node Id="Microsoft.AspNet.ScriptManager.MSAjax 5.0.0" Label="Microsoft.AspNet.ScriptManager.MSAjax 5.0.0" Category="Package" />
+    <Node Id="Microsoft.AspNet.ScriptManager.WebForms 5.0.0" Label="Microsoft.AspNet.ScriptManager.WebForms 5.0.0" Category="Package" />
+    <Node Id="Microsoft.AspNet.Web.Optimization 1.1.1" Label="Microsoft.AspNet.Web.Optimization 1.1.1" Category="Package" />
+    <Node Id="Microsoft.AspNet.Web.Optimization.WebForms 1.1.1" Label="Microsoft.AspNet.Web.Optimization.WebForms 1.1.1" Category="Package" />
+    <Node Id="Microsoft.Bcl 1.1.3" Label="Microsoft.Bcl 1.1.3" Category="Package" />
+    <Node Id="Microsoft.Bcl.Build 1.0.10" Label="Microsoft.Bcl.Build 1.0.10" Category="Package" />
+    <Node Id="Microsoft.Net.Http 2.2.15" Label="Microsoft.Net.Http 2.2.15" Category="Package" />
+    <Node Id="Microsoft.Web.Infrastructure 1.0.0.0" Label="Microsoft.Web.Infrastructure 1.0.0.0" Category="Package" />
+    <Node Id="Modernizr 2.6.2" Label="Modernizr 2.6.2" Category="Package" />
+    <Node Id="Newtonsoft.Json 5.0.6" Label="Newtonsoft.Json 5.0.6" Category="Package" />
+    <Node Id="Respond 1.2.0" Label="Respond 1.2.0" Category="Package" />
+    <Node Id="WebGrease 1.5.2" Label="WebGrease 1.5.2" Category="Package" />
+    <Node Id="LinqToTwitter.WindowsStore" Label="LinqToTwitter.WindowsStore" Category="Project" />
+    <Node Id="Microsoft.Bcl 1.1.3" Label="Microsoft.Bcl 1.1.3" Category="Package" />
+    <Node Id="Microsoft.Bcl.Build 1.0.10" Label="Microsoft.Bcl.Build 1.0.10" Category="Package" />
+    <Node Id="Microsoft.Net.Http 2.2.15" Label="Microsoft.Net.Http 2.2.15" Category="Package" />
+    <Node Id="Linq2TwitterDemos_WindowsPhone" Label="Linq2TwitterDemos_WindowsPhone" Category="Project" />
+    <Node Id="Microsoft.Bcl 1.1.3" Label="Microsoft.Bcl 1.1.3" Category="Package" />
+    <Node Id="Microsoft.Bcl.Build 1.0.10" Label="Microsoft.Bcl.Build 1.0.10" Category="Package" />
+    <Node Id="Microsoft.Net.Http 2.2.15" Label="Microsoft.Net.Http 2.2.15" Category="Package" />
+    <Node Id="Linq2TwitterDemos_WindowsStore" Label="Linq2TwitterDemos_WindowsStore" Category="Project" />
+    <Node Id="Microsoft.Bcl 1.1.3" Label="Microsoft.Bcl 1.1.3" Category="Package" />
+    <Node Id="Microsoft.Bcl.Build 1.0.10" Label="Microsoft.Bcl.Build 1.0.10" Category="Package" />
+    <Node Id="Microsoft.Net.Http 2.2.15" Label="Microsoft.Net.Http 2.2.15" Category="Package" />
+    <Node Id="Linq2TwitterDemos_Console" Label="Linq2TwitterDemos_Console" Category="Project" />
+    <Node Id="Microsoft.Bcl 1.1.3" Label="Microsoft.Bcl 1.1.3" Category="Package" />
+    <Node Id="Microsoft.Bcl.Build 1.0.10" Label="Microsoft.Bcl.Build 1.0.10" Category="Package" />
+    <Node Id="Microsoft.Net.Http 2.2.15" Label="Microsoft.Net.Http 2.2.15" Category="Package" />
+    <Node Id="LinqToTwitterPcl.Tests" Label="LinqToTwitterPcl.Tests" Category="Project" />
+    <Node Id="Moq 4.1.1309.1617" Label="Moq 4.1.1309.1617" Category="Package" />
+    <Node Id="xunit 1.9.2" Label="xunit 1.9.2" Category="Package" />
+    <Node Id="xunit.extensions 1.9.2" Label="xunit.extensions 1.9.2" Category="Package" />
+    <Node Id="LinqToTwitterDemoPcl" Label="LinqToTwitterDemoPcl" Category="Project" />
+    <Node Id="Microsoft.Bcl 1.1.3" Label="Microsoft.Bcl 1.1.3" Category="Package" />
+    <Node Id="Microsoft.Bcl.Build 1.0.10" Label="Microsoft.Bcl.Build 1.0.10" Category="Package" />
+    <Node Id="Microsoft.Net.Http 2.2.15" Label="Microsoft.Net.Http 2.2.15" Category="Package" />
+    <Node Id="LinqToTwitterPcl" Label="LinqToTwitterPcl" Category="Project" />
+    <Node Id="Microsoft.Bcl 1.1.3" Label="Microsoft.Bcl 1.1.3" Category="Package" />
+    <Node Id="Microsoft.Bcl.Build 1.0.10" Label="Microsoft.Bcl.Build 1.0.10" Category="Package" />
+    <Node Id="Microsoft.Net.Http 2.2.15" Label="Microsoft.Net.Http 2.2.15" Category="Package" />
+  </Nodes>
+  <Links>
+    <Link Source="jQuery.Validation 1.11.1" Target="jQuery 1.10.2" Category="Package Dependency" />
+    <Link Source="Microsoft.AspNet.Identity.EntityFramework 1.0.0" Target="Microsoft.AspNet.Identity.Core 1.0.0" Category="Package Dependency" />
+    <Link Source="Microsoft.AspNet.Identity.EntityFramework 1.0.0" Target="EntityFramework 6.0.0" Category="Package Dependency" />
+    <Link Source="Microsoft.AspNet.Identity.Owin 1.0.0" Target="Microsoft.AspNet.Identity.Core 1.0.0" Category="Package Dependency" />
+    <Link Source="Microsoft.AspNet.Identity.Owin 1.0.0" Target="Microsoft.Owin.Security 2.0.0" Category="Package Dependency" />
+    <Link Source="Microsoft.AspNet.Identity.Owin 1.0.0" Target="Microsoft.Owin.Security.Cookies 2.0.0" Category="Package Dependency" />
+    <Link Source="Microsoft.AspNet.Identity.Owin 1.0.0" Target="Microsoft.Owin.Security.OAuth 2.0.0" Category="Package Dependency" />
+    <Link Source="Microsoft.AspNet.Mvc 5.0.0" Target="Microsoft.AspNet.WebPages 3.0.0" Category="Package Dependency" />
+    <Link Source="Microsoft.AspNet.Mvc 5.0.0" Target="Microsoft.AspNet.Razor 3.0.0" Category="Package Dependency" />
+    <Link Source="Microsoft.AspNet.Web.Optimization 1.1.1" Target="Microsoft.Web.Infrastructure 1.0.0.0" Category="Package Dependency" />
+    <Link Source="Microsoft.AspNet.Web.Optimization 1.1.1" Target="WebGrease 1.5.2" Category="Package Dependency" />
+    <Link Source="Microsoft.AspNet.WebApi 5.0.0" Target="Microsoft.AspNet.WebApi.WebHost 5.0.0" Category="Package Dependency" />
+    <Link Source="Microsoft.AspNet.WebApi.Client 5.0.0" Target="Newtonsoft.Json 5.0.6" Category="Package Dependency" />
+    <Link Source="Microsoft.AspNet.WebApi.Client 5.0.0" Target="Newtonsoft.Json 5.0.6" Category="Package Dependency" />
+    <Link Source="Microsoft.AspNet.WebApi.Client 5.0.0" Target="Microsoft.Net.Http 2.2.15" Category="Package Dependency" />
+    <Link Source="Microsoft.AspNet.WebApi.Core 5.0.0" Target="Microsoft.AspNet.WebApi.Client 5.0.0" Category="Package Dependency" />
+    <Link Source="Microsoft.AspNet.WebApi.WebHost 5.0.0" Target="Microsoft.AspNet.WebApi.Core 5.0.0" Category="Package Dependency" />
+    <Link Source="Microsoft.AspNet.WebPages 3.0.0" Target="Microsoft.Web.Infrastructure 1.0.0.0" Category="Package Dependency" />
+    <Link Source="Microsoft.AspNet.WebPages 3.0.0" Target="Microsoft.AspNet.Razor 3.0.0" Category="Package Dependency" />
+    <Link Source="Microsoft.Bcl 1.1.3" Target="Microsoft.Bcl.Build 1.0.10" Category="Package Dependency" />
+    <Link Source="Microsoft.jQuery.Unobtrusive.Validation 3.0.0" Target="jQuery.Validation 1.11.1" Category="Package Dependency" />
+    <Link Source="Microsoft.Net.Http 2.2.15" Target="Microsoft.Bcl 1.1.3" Category="Package Dependency" />
+    <Link Source="Microsoft.Net.Http 2.2.15" Target="Microsoft.Bcl.Build 1.0.10" Category="Package Dependency" />
+    <Link Source="Microsoft.Owin 2.0.0" Target="Owin 1.0" Category="Package Dependency" />
+    <Link Source="Microsoft.Owin.Host.SystemWeb 2.0.0" Target="Owin 1.0" Category="Package Dependency" />
+    <Link Source="Microsoft.Owin.Host.SystemWeb 2.0.0" Target="Microsoft.Owin 2.0.0" Category="Package Dependency" />
+    <Link Source="Microsoft.Owin.Host.SystemWeb 2.0.0" Target="Microsoft.Web.Infrastructure 1.0.0.0" Category="Package Dependency" />
+    <Link Source="Microsoft.Owin.Host.SystemWeb 2.0.0" Target="Owin 1.0" Category="Package Dependency" />
+    <Link Source="Microsoft.Owin.Host.SystemWeb 2.0.0" Target="Microsoft.Owin 2.0.0" Category="Package Dependency" />
+    <Link Source="Microsoft.Owin.Security 2.0.0" Target="Owin 1.0" Category="Package Dependency" />
+    <Link Source="Microsoft.Owin.Security 2.0.0" Target="Microsoft.Owin 2.0.0" Category="Package Dependency" />
+    <Link Source="Microsoft.Owin.Security.Cookies 2.0.0" Target="Owin 1.0" Category="Package Dependency" />
+    <Link Source="Microsoft.Owin.Security.Cookies 2.0.0" Target="Microsoft.Owin 2.0.0" Category="Package Dependency" />
+    <Link Source="Microsoft.Owin.Security.Cookies 2.0.0" Target="Microsoft.Owin.Security 2.0.0" Category="Package Dependency" />
+    <Link Source="Microsoft.Owin.Security.Facebook 2.0.0" Target="Owin 1.0" Category="Package Dependency" />
+    <Link Source="Microsoft.Owin.Security.Facebook 2.0.0" Target="Newtonsoft.Json 5.0.6" Category="Package Dependency" />
+    <Link Source="Microsoft.Owin.Security.Facebook 2.0.0" Target="Microsoft.Owin 2.0.0" Category="Package Dependency" />
+    <Link Source="Microsoft.Owin.Security.Facebook 2.0.0" Target="Microsoft.Owin.Security 2.0.0" Category="Package Dependency" />
+    <Link Source="Microsoft.Owin.Security.Google 2.0.0" Target="Owin 1.0" Category="Package Dependency" />
+    <Link Source="Microsoft.Owin.Security.Google 2.0.0" Target="Microsoft.Owin 2.0.0" Category="Package Dependency" />
+    <Link Source="Microsoft.Owin.Security.Google 2.0.0" Target="Microsoft.Owin.Security 2.0.0" Category="Package Dependency" />
+    <Link Source="Microsoft.Owin.Security.MicrosoftAccount 2.0.0" Target="Owin 1.0" Category="Package Dependency" />
+    <Link Source="Microsoft.Owin.Security.MicrosoftAccount 2.0.0" Target="Microsoft.Owin 2.0.0" Category="Package Dependency" />
+    <Link Source="Microsoft.Owin.Security.MicrosoftAccount 2.0.0" Target="Newtonsoft.Json 5.0.6" Category="Package Dependency" />
+    <Link Source="Microsoft.Owin.Security.MicrosoftAccount 2.0.0" Target="Microsoft.Owin.Security 2.0.0" Category="Package Dependency" />
+    <Link Source="Microsoft.Owin.Security.OAuth 2.0.0" Target="Owin 1.0" Category="Package Dependency" />
+    <Link Source="Microsoft.Owin.Security.OAuth 2.0.0" Target="Microsoft.Owin 2.0.0" Category="Package Dependency" />
+    <Link Source="Microsoft.Owin.Security.OAuth 2.0.0" Target="Newtonsoft.Json 5.0.6" Category="Package Dependency" />
+    <Link Source="Microsoft.Owin.Security.OAuth 2.0.0" Target="Microsoft.Owin.Security 2.0.0" Category="Package Dependency" />
+    <Link Source="Microsoft.Owin.Security.Twitter 2.0.0" Target="Owin 1.0" Category="Package Dependency" />
+    <Link Source="Microsoft.Owin.Security.Twitter 2.0.0" Target="Microsoft.Owin 2.0.0" Category="Package Dependency" />
+    <Link Source="Microsoft.Owin.Security.Twitter 2.0.0" Target="Newtonsoft.Json 5.0.6" Category="Package Dependency" />
+    <Link Source="Microsoft.Owin.Security.Twitter 2.0.0" Target="Microsoft.Owin.Security 2.0.0" Category="Package Dependency" />
+    <Link Source="WebGrease 1.5.2" Target="Antlr 3.4.1.9004" Category="Package Dependency" />
+    <Link Source="WebGrease 1.5.2" Target="Newtonsoft.Json 5.0.6" Category="Package Dependency" />
+    <Link Source="Linq2TwitterDemos_MVC" Target="bootstrap 3.0.0" Category="Installed Package" />
+    <Link Source="Linq2TwitterDemos_MVC" Target="Microsoft.AspNet.Identity.EntityFramework 1.0.0" Category="Installed Package" />
+    <Link Source="Linq2TwitterDemos_MVC" Target="Microsoft.AspNet.Identity.Owin 1.0.0" Category="Installed Package" />
+    <Link Source="Linq2TwitterDemos_MVC" Target="Microsoft.AspNet.Mvc 5.0.0" Category="Installed Package" />
+    <Link Source="Linq2TwitterDemos_MVC" Target="Microsoft.AspNet.Web.Optimization 1.1.1" Category="Installed Package" />
+    <Link Source="Linq2TwitterDemos_MVC" Target="Microsoft.AspNet.WebApi 5.0.0" Category="Installed Package" />
+    <Link Source="Linq2TwitterDemos_MVC" Target="Microsoft.jQuery.Unobtrusive.Validation 3.0.0" Category="Installed Package" />
+    <Link Source="Linq2TwitterDemos_MVC" Target="Microsoft.Owin.Host.SystemWeb 2.0.0" Category="Installed Package" />
+    <Link Source="Linq2TwitterDemos_MVC" Target="Microsoft.Owin.Security.Facebook 2.0.0" Category="Installed Package" />
+    <Link Source="Linq2TwitterDemos_MVC" Target="Microsoft.Owin.Security.Google 2.0.0" Category="Installed Package" />
+    <Link Source="Linq2TwitterDemos_MVC" Target="Microsoft.Owin.Security.MicrosoftAccount 2.0.0" Category="Installed Package" />
+    <Link Source="Linq2TwitterDemos_MVC" Target="Microsoft.Owin.Security.Twitter 2.0.0" Category="Installed Package" />
+    <Link Source="Linq2TwitterDemos_MVC" Target="Modernizr 2.6.2" Category="Installed Package" />
+    <Link Source="Linq2TwitterDemos_MVC" Target="Respond 1.2.0" Category="Installed Package" />
+    <Link Source="Microsoft.Bcl 1.1.3" Target="Microsoft.Bcl.Build 1.0.10" Category="Package Dependency" />
+    <Link Source="Microsoft.Net.Http 2.2.15" Target="Microsoft.Bcl 1.1.3" Category="Package Dependency" />
+    <Link Source="Microsoft.Net.Http 2.2.15" Target="Microsoft.Bcl.Build 1.0.10" Category="Package Dependency" />
+    <Link Source="LinqToTwitter.AspNet" Target="Microsoft.Net.Http 2.2.15" Category="Installed Package" />
+    <Link Source="AspNet.ScriptManager.bootstrap 3.0.0" Target="bootstrap 3.0.0" Category="Package Dependency" />
+    <Link Source="AspNet.ScriptManager.jQuery 1.10.2" Target="jQuery 1.10.2" Category="Package Dependency" />
+    <Link Source="Microsoft.AspNet.FriendlyUrls 1.0.2" Target="Microsoft.AspNet.FriendlyUrls.Core 1.0.2" Category="Package Dependency" />
+    <Link Source="Microsoft.AspNet.FriendlyUrls.Core 1.0.2" Target="Microsoft.Web.Infrastructure 1.0.0.0" Category="Package Dependency" />
+    <Link Source="Microsoft.AspNet.Web.Optimization 1.1.1" Target="Microsoft.Web.Infrastructure 1.0.0.0" Category="Package Dependency" />
+    <Link Source="Microsoft.AspNet.Web.Optimization 1.1.1" Target="WebGrease 1.5.2" Category="Package Dependency" />
+    <Link Source="Microsoft.AspNet.Web.Optimization.WebForms 1.1.1" Target="Microsoft.Web.Infrastructure 1.0.0.0" Category="Package Dependency" />
+    <Link Source="Microsoft.AspNet.Web.Optimization.WebForms 1.1.1" Target="Microsoft.AspNet.Web.Optimization 1.1.1" Category="Package Dependency" />
+    <Link Source="Microsoft.Bcl 1.1.3" Target="Microsoft.Bcl.Build 1.0.10" Category="Package Dependency" />
+    <Link Source="Microsoft.Net.Http 2.2.15" Target="Microsoft.Bcl 1.1.3" Category="Package Dependency" />
+    <Link Source="Microsoft.Net.Http 2.2.15" Target="Microsoft.Bcl.Build 1.0.10" Category="Package Dependency" />
+    <Link Source="WebGrease 1.5.2" Target="Antlr 3.4.1.9004" Category="Package Dependency" />
+    <Link Source="WebGrease 1.5.2" Target="Newtonsoft.Json 5.0.6" Category="Package Dependency" />
+    <Link Source="Linq2TwitterDemos_WebForms" Target="AspNet.ScriptManager.bootstrap 3.0.0" Category="Installed Package" />
+    <Link Source="Linq2TwitterDemos_WebForms" Target="AspNet.ScriptManager.jQuery 1.10.2" Category="Installed Package" />
+    <Link Source="Linq2TwitterDemos_WebForms" Target="Microsoft.AspNet.FriendlyUrls 1.0.2" Category="Installed Package" />
+    <Link Source="Linq2TwitterDemos_WebForms" Target="Microsoft.AspNet.ScriptManager.MSAjax 5.0.0" Category="Installed Package" />
+    <Link Source="Linq2TwitterDemos_WebForms" Target="Microsoft.AspNet.ScriptManager.WebForms 5.0.0" Category="Installed Package" />
+    <Link Source="Linq2TwitterDemos_WebForms" Target="Microsoft.AspNet.Web.Optimization.WebForms 1.1.1" Category="Installed Package" />
+    <Link Source="Linq2TwitterDemos_WebForms" Target="Microsoft.Net.Http 2.2.15" Category="Installed Package" />
+    <Link Source="Linq2TwitterDemos_WebForms" Target="Modernizr 2.6.2" Category="Installed Package" />
+    <Link Source="Linq2TwitterDemos_WebForms" Target="Respond 1.2.0" Category="Installed Package" />
+    <Link Source="Microsoft.Bcl 1.1.3" Target="Microsoft.Bcl.Build 1.0.10" Category="Package Dependency" />
+    <Link Source="Microsoft.Net.Http 2.2.15" Target="Microsoft.Bcl 1.1.3" Category="Package Dependency" />
+    <Link Source="Microsoft.Net.Http 2.2.15" Target="Microsoft.Bcl.Build 1.0.10" Category="Package Dependency" />
+    <Link Source="LinqToTwitter.WindowsStore" Target="Microsoft.Net.Http 2.2.15" Category="Installed Package" />
+    <Link Source="Microsoft.Bcl 1.1.3" Target="Microsoft.Bcl.Build 1.0.10" Category="Package Dependency" />
+    <Link Source="Microsoft.Net.Http 2.2.15" Target="Microsoft.Bcl 1.1.3" Category="Package Dependency" />
+    <Link Source="Microsoft.Net.Http 2.2.15" Target="Microsoft.Bcl.Build 1.0.10" Category="Package Dependency" />
+    <Link Source="Linq2TwitterDemos_WindowsPhone" Target="Microsoft.Net.Http 2.2.15" Category="Installed Package" />
+    <Link Source="Microsoft.Bcl 1.1.3" Target="Microsoft.Bcl.Build 1.0.10" Category="Package Dependency" />
+    <Link Source="Microsoft.Net.Http 2.2.15" Target="Microsoft.Bcl 1.1.3" Category="Package Dependency" />
+    <Link Source="Microsoft.Net.Http 2.2.15" Target="Microsoft.Bcl.Build 1.0.10" Category="Package Dependency" />
+    <Link Source="Linq2TwitterDemos_WindowsStore" Target="Microsoft.Net.Http 2.2.15" Category="Installed Package" />
+    <Link Source="Microsoft.Bcl 1.1.3" Target="Microsoft.Bcl.Build 1.0.10" Category="Package Dependency" />
+    <Link Source="Microsoft.Net.Http 2.2.15" Target="Microsoft.Bcl 1.1.3" Category="Package Dependency" />
+    <Link Source="Microsoft.Net.Http 2.2.15" Target="Microsoft.Bcl.Build 1.0.10" Category="Package Dependency" />
+    <Link Source="Linq2TwitterDemos_Console" Target="Microsoft.Net.Http 2.2.15" Category="Installed Package" />
+    <Link Source="xunit.extensions 1.9.2" Target="xunit 1.9.2" Category="Package Dependency" />
+    <Link Source="LinqToTwitterPcl.Tests" Target="Moq 4.1.1309.1617" Category="Installed Package" />
+    <Link Source="LinqToTwitterPcl.Tests" Target="xunit.extensions 1.9.2" Category="Installed Package" />
+    <Link Source="Microsoft.Bcl 1.1.3" Target="Microsoft.Bcl.Build 1.0.10" Category="Package Dependency" />
+    <Link Source="Microsoft.Net.Http 2.2.15" Target="Microsoft.Bcl 1.1.3" Category="Package Dependency" />
+    <Link Source="Microsoft.Net.Http 2.2.15" Target="Microsoft.Bcl.Build 1.0.10" Category="Package Dependency" />
+    <Link Source="LinqToTwitterDemoPcl" Target="Microsoft.Net.Http 2.2.15" Category="Installed Package" />
+    <Link Source="Microsoft.Bcl 1.1.3" Target="Microsoft.Bcl.Build 1.0.10" Category="Package Dependency" />
+    <Link Source="Microsoft.Net.Http 2.2.15" Target="Microsoft.Bcl 1.1.3" Category="Package Dependency" />
+    <Link Source="Microsoft.Net.Http 2.2.15" Target="Microsoft.Bcl.Build 1.0.10" Category="Package Dependency" />
+    <Link Source="LinqToTwitterPcl" Target="Microsoft.Net.Http 2.2.15" Category="Installed Package" />
+  </Links>
+  <Categories>
+    <Category Id="Project" />
+    <Category Id="Package" />
+  </Categories>
+  <Styles>
+    <Style TargetType="Node" GroupLabel="Project" ValueLabel="True">
+      <Condition Expression="HasCategory('Project')" />
+      <Setter Property="Background" Value="Blue" />
+    </Style>
+    <Style TargetType="Link" GroupLabel="Package Dependency" ValueLabel="True">
+      <Condition Expression="HasCategory('Package Dependency')" />
+      <Setter Property="Background" Value="Yellow" />
+    </Style>
+  </Styles>
+</DirectedGraph>

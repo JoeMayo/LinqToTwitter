@@ -63,23 +63,33 @@ namespace Linq2TwitterDemos_Console
                      select fav)
                     .ToListAsync();
 
-            favsResponse.ForEach(fav => 
-                Console.WriteLine(
-                    "Name: {0}, Tweet: {1}",
-                    fav.User.ScreenNameResponse, fav.Text));
+            if (favsResponse != null)
+                favsResponse.ForEach(fav => 
+                {
+                    if (fav != null && fav.User != null)
+                        Console.WriteLine(
+                            "Name: {0}, Tweet: {1}",
+                            fav.User.ScreenNameResponse, fav.Text);
+                });
         }
         static async Task DestroyFavoriteAsync(TwitterContext twitterCtx)
         {
-            var status = await twitterCtx.DestroyFavoriteAsync(401033367283453953ul, true);
+            var status = 
+                await twitterCtx.DestroyFavoriteAsync(
+                    401033367283453953ul, true);
 
-            Console.WriteLine("User: {0}, Tweet: {1}", status.User.Name, status.Text);
+            if (status != null)
+                Console.WriteLine(
+                    "User: {0}, Tweet: {1}", status.User.Name, status.Text);
         }
 
         static async Task CreateFavoriteAsync(TwitterContext twitterCtx)
         {
             var status = await twitterCtx.CreateFavoriteAsync(401033367283453953ul);
 
-            Console.WriteLine("User: {0}, Tweet: {1}", status.User.Name, status.Text);
+            if (status != null)
+                Console.WriteLine(
+                    "User: {0}, Tweet: {1}", status.User.Name, status.Text);
         }
     }
 }

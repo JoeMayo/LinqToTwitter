@@ -73,17 +73,18 @@ namespace Linq2TwitterDemos_Console
                      select help)
                     .SingleOrDefaultAsync();
 
-            foreach (var category in helpResponse.RateLimits)
-            {
-                Console.WriteLine("\nCategory: {0}", category.Key);
-
-                foreach (var limit in category.Value)
+            if (helpResponse != null && helpResponse.RateLimits != null)
+                foreach (var category in helpResponse.RateLimits)
                 {
-                    Console.WriteLine(
-                        "\n  Resource: {0}\n    Remaining: {1}\n    Reset: {2}\n    Limit: {3}",
-                        limit.Resource, limit.Remaining, limit.Reset, limit.Limit);
+                    Console.WriteLine("\nCategory: {0}", category.Key);
+
+                    foreach (var limit in category.Value)
+                    {
+                        Console.WriteLine(
+                            "\n  Resource: {0}\n    Remaining: {1}\n    Reset: {2}\n    Limit: {3}",
+                            limit.Resource, limit.Remaining, limit.Reset, limit.Limit);
+                    }
                 }
-            }
         }
 
         static async Task GetHelpConfigurationAsync(TwitterContext twitterCtx)
@@ -95,25 +96,32 @@ namespace Linq2TwitterDemos_Console
                  select test)
                 .SingleOrDefaultAsync();
 
-            Configuration cfg = helpResult.Configuration;
+            if (helpResult != null && 
+                helpResult.Configuration != null && 
+                helpResult.Configuration.NonUserNamePaths != null && 
+                helpResult.Configuration.PhotoSizes != null)
+            {
+                Configuration cfg = helpResult.Configuration;
 
-            Console.WriteLine("Short URL Length: " + cfg.ShortUrlLength);
-            Console.WriteLine("Short URL HTTPS Length: " + cfg.ShortUrlLengthHttps);
-            Console.WriteLine("Non-UserName Paths: ");
-            foreach (var name in cfg.NonUserNamePaths)
-            {
-                Console.WriteLine("\t" + name);
-            }
-            Console.WriteLine("Photo Size Limit: " + cfg.PhotoSizeLimit);
-            Console.WriteLine("Max Media Per Upload: " + cfg.MaxMediaPerUpload);
-            Console.WriteLine("Characters Reserved Per Media: " + cfg.CharactersReservedPerMedia);
-            Console.WriteLine("Photo Sizes");
-            foreach (var photo in cfg.PhotoSizes)
-            {
-                Console.WriteLine("\t" + photo.Type);
-                Console.WriteLine("\t\t" + photo.Width);
-                Console.WriteLine("\t\t" + photo.Height);
-                Console.WriteLine("\t\t" + photo.Resize);
+                Console.WriteLine("Short URL Length: " + cfg.ShortUrlLength);
+                Console.WriteLine("Short URL HTTPS Length: " + cfg.ShortUrlLengthHttps);
+                Console.WriteLine("Non-UserName Paths: ");
+                foreach (var name in cfg.NonUserNamePaths)
+                {
+                    Console.WriteLine("\t" + name);
+                }
+                Console.WriteLine("Photo Size Limit: " + cfg.PhotoSizeLimit);
+                Console.WriteLine("Max Media Per Upload: " + cfg.MaxMediaPerUpload);
+                Console.WriteLine(
+                    "Characters Reserved Per Media: " + cfg.CharactersReservedPerMedia);
+                Console.WriteLine("Photo Sizes");
+                foreach (var photo in cfg.PhotoSizes)
+                {
+                    Console.WriteLine("\t" + photo.Type);
+                    Console.WriteLine("\t\t" + photo.Width);
+                    Console.WriteLine("\t\t" + photo.Height);
+                    Console.WriteLine("\t\t" + photo.Resize);
+                } 
             }
         }
 
@@ -126,8 +134,9 @@ namespace Linq2TwitterDemos_Console
                  select test)
                 .SingleOrDefaultAsync();
 
-            helpResult.Languages.ForEach(lang => 
-                Console.WriteLine("{0}({1}): {2}", lang.Name, lang.Code, lang.Status));
+            if (helpResult != null && helpResult.Languages != null)
+                helpResult.Languages.ForEach(lang => 
+                    Console.WriteLine("{0}({1}): {2}", lang.Name, lang.Code, lang.Status));
         }
 
         static async Task GetPrivacyAsync(TwitterContext twitterCtx)
@@ -139,7 +148,8 @@ namespace Linq2TwitterDemos_Console
                  select test)
                 .SingleOrDefaultAsync();
 
-            Console.WriteLine(helpResult.Policies);
+            if (helpResult != null)
+                Console.WriteLine(helpResult.Policies);
         }
 
         static async Task GetTosAsync(TwitterContext twitterCtx)
@@ -151,7 +161,8 @@ namespace Linq2TwitterDemos_Console
                  select test)
                 .SingleOrDefaultAsync();
 
-            Console.WriteLine(helpResult.Policies);
+            if (helpResult != null)
+                Console.WriteLine(helpResult.Policies);
         }
     }
 }

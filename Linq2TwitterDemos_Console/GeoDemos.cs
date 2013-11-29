@@ -69,16 +69,19 @@ namespace Linq2TwitterDemos_Console
                      select geo)
                     .SingleOrDefaultAsync();
 
-            Place place = geoResponse.Places.First();
+            if (geoResponse != null && geoResponse.Places != null)
+            {
+                Place place = geoResponse.Places.First();
 
-            Console.WriteLine(
-                "Name: {0}, Country: {1}, Type: {2}",
-                place.Name, place.Country, place.PlaceType);
+                Console.WriteLine(
+                    "Name: {0}, Country: {1}, Type: {2}",
+                    place.Name, place.Country, place.PlaceType); 
+            }
         }
 
         static async Task LookupGeoIDAsync(TwitterContext twitterCtx)
         {
-            var geo =
+            var geoResponse =
                 await
                 (from g in twitterCtx.Geo
                  where g.Type == GeoType.ID &&
@@ -86,16 +89,19 @@ namespace Linq2TwitterDemos_Console
                  select g)
                 .SingleOrDefaultAsync();
 
-            Place place = geo.Places.First();
+            if (geoResponse != null && geoResponse.Places != null)
+            {
+                Place place = geoResponse.Places.First();
 
-            Console.WriteLine(
-                "Name: {0}, Country: {1}, Type: {2}",
-                place.Name, place.Country, place.PlaceType);
+                Console.WriteLine(
+                    "Name: {0}, Country: {1}, Type: {2}",
+                    place.Name, place.Country, place.PlaceType);
+            }
         }
 
         static async Task LookupReverseGeocodeAsync(TwitterContext twitterCtx)
         {
-            var geo =
+            var geoResponse =
                 await
                 (from g in twitterCtx.Geo
                  where g.Type == GeoType.Reverse &&
@@ -104,8 +110,8 @@ namespace Linq2TwitterDemos_Console
                  select g)
                 .SingleOrDefaultAsync();
 
-            geo.Places.ForEach(
-                place =>
+            if (geoResponse != null && geoResponse.Places != null)
+                geoResponse.Places.ForEach(place =>
                     Console.WriteLine(
                         "Name: {0}, Country: {1}, Type: {2}",
                         place.Name, place.Country, place.PlaceType));
@@ -113,7 +119,7 @@ namespace Linq2TwitterDemos_Console
 
         static async Task FindSimilarPlacesAsync(TwitterContext twitterCtx)
         {
-            var geo =
+            var geoResponse =
                 await
                 (from g in twitterCtx.Geo
                  where g.Type == GeoType.SimilarPlaces &&
@@ -123,8 +129,8 @@ namespace Linq2TwitterDemos_Console
                  select g)
                 .SingleOrDefaultAsync();
 
-            geo.Places.ForEach(
-                place =>
+            if (geoResponse != null && geoResponse.Places != null)
+                geoResponse.Places.ForEach(place =>
                     Console.WriteLine(
                         "Name: {0}, Country: {1}, Type: {2}",
                         place.Name, place.Country, place.PlaceType));

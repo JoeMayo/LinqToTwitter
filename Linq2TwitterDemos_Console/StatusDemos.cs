@@ -107,10 +107,14 @@ namespace Linq2TwitterDemos_Console
 
         static void PrintTweetsResults(List<Status> tweets)
         {
-            tweets.ForEach(
-                tweet => Console.WriteLine(
-                    "Name: {0}, Tweet: {1}",
-                    tweet.User.ScreenNameResponse, tweet.Text));
+            if (tweets != null)
+                tweets.ForEach(tweet => 
+                {
+                    if (tweet != null && tweet.User != null)
+                        Console.WriteLine(
+                            "Name: {0}, Tweet: {1}",
+                            tweet.User.ScreenNameResponse, tweet.Text);
+                });
         }
   
         static async Task ShowMentionsTimelineAsync(TwitterContext twitterCtx)
@@ -161,10 +165,7 @@ namespace Linq2TwitterDemos_Console
                  select retweet)
                 .ToListAsync();
 
-            myRetweets.ForEach(
-                retweet => Console.WriteLine(
-                    "Name: {0}, Tweet: {1}\n",
-                    retweet.User.Name, retweet.Text));
+            PrintTweetsResults(myRetweets);
         }
 
         static async Task RetweetsQueryAsync(TwitterContext twitterCtx)
@@ -179,12 +180,16 @@ namespace Linq2TwitterDemos_Console
                  select tweet)
                 .ToListAsync();
 
-            publicTweets.ForEach(tweet =>
-                Console.WriteLine(
-                    "@{0} {1} ({2})",
-                    tweet.User.ScreenNameResponse,
-                    tweet.Text,
-                    tweet.RetweetCount));
+            if (publicTweets != null)
+                publicTweets.ForEach(tweet =>
+                {
+                    if (tweet != null && tweet.User != null)
+                        Console.WriteLine(
+                            "@{0} {1} ({2})",
+                            tweet.User.ScreenNameResponse,
+                            tweet.Text,
+                            tweet.RetweetCount);
+                });
         }
 
         static async Task SingleStatusQueryAsync(TwitterContext twitterCtx)
@@ -199,12 +204,18 @@ namespace Linq2TwitterDemos_Console
                  select tweet)
                 .ToListAsync();
 
-            Console.WriteLine("\nRequested Tweet: \n");
-            friendTweets.ForEach(tweet =>
-                Console.WriteLine(
-                    "User: " + tweet.User.Name +
-                    "\nTweet: " + tweet.Text +
-                    "\nTweet ID: " + tweet.ID + "\n"));
+            if (friendTweets != null)
+            {
+                Console.WriteLine("\nTweets: \n");
+                friendTweets.ForEach(tweet =>
+                {
+                    if (tweet != null && tweet.User != null)
+                        Console.WriteLine(
+                            "User: " + tweet.User.Name +
+                            "\nTweet: " + tweet.Text +
+                            "\nTweet ID: " + tweet.ID + "\n");
+                }); 
+            }
         }
 
         static async Task DeleteTweetAsync(TwitterContext twitterCtx)
@@ -214,12 +225,13 @@ namespace Linq2TwitterDemos_Console
             Status status = 
                 await twitterCtx.DeleteTweetAsync(tweetID);
 
-            Console.WriteLine(
-                "(" + status.StatusID + ")" +
-                "[" + status.User.UserID + "]" +
-                status.User.ScreenNameResponse + ", " +
-                status.Text + ", " +
-                status.CreatedAt);
+            if (status != null && status.User != null)
+                Console.WriteLine(
+                    "(" + status.StatusID + ")" +
+                    "[" + status.User.UserID + "]" +
+                    status.User.ScreenNameResponse + ", " +
+                    status.Text + ", " +
+                    status.CreatedAt);
         }
 
         static async Task TweetAsync(TwitterContext twitterCtx)
@@ -242,11 +254,12 @@ namespace Linq2TwitterDemos_Console
 
                 var tweet = await twitterCtx.TweetAsync(status);
 
-                Console.WriteLine(
-                    "Status returned: " +
-                    "(" + tweet.StatusID + ")" +
-                    tweet.User.Name + ", " +
-                    tweet.Text + "\n");
+                if (tweet != null)
+                    Console.WriteLine(
+                        "Status returned: " +
+                        "(" + tweet.StatusID + ")" +
+                        tweet.User.Name + ", " +
+                        tweet.Text + "\n");
             }
             else
             {
@@ -260,11 +273,16 @@ namespace Linq2TwitterDemos_Console
 
             var retweet = await twitterCtx.RetweetAsync(tweetID);
 
-            Console.WriteLine("Retweeted Tweet: ");
-            Console.WriteLine(
-                "\nUser: " + retweet.RetweetedStatus.User.ScreenNameResponse +
-                "\nTweet: " + retweet.RetweetedStatus.Text +
-                "\nTweet ID: " + retweet.RetweetedStatus.ID + "\n");
+            if (retweet != null && 
+                retweet.RetweetedStatus != null && 
+                retweet.RetweetedStatus.User != null)
+            {
+                Console.WriteLine("Retweeted Tweet: ");
+                Console.WriteLine(
+                    "\nUser: " + retweet.RetweetedStatus.User.ScreenNameResponse +
+                    "\nTweet: " + retweet.RetweetedStatus.Text +
+                    "\nTweet ID: " + retweet.RetweetedStatus.ID + "\n"); 
+            }
         }
 
         static async Task TweetWithMediaAsync(TwitterContext twitterCtx)
@@ -287,7 +305,9 @@ namespace Linq2TwitterDemos_Console
                 status, PossiblySensitive, Latitude, Longitude,
                 PlaceID, DisplayCoordinates, imageBytes);
 
-            Console.WriteLine("Media item sent - Tweet Text: " + tweet.Text);
+            if (tweet != null)
+                Console.WriteLine(
+                    "Media item sent - Tweet Text: " + tweet.Text);
         }
 
         static async Task OEmbedStatusAsync(TwitterContext twitterCtx)
@@ -302,8 +322,9 @@ namespace Linq2TwitterDemos_Console
                  select tweet.EmbeddedStatus)
                 .SingleOrDefaultAsync();
 
-            Console.WriteLine(
-                "Embedded Status Html: \n\n" + embeddedStatus.Html);
+            if (embeddedStatus != null)
+                Console.WriteLine(
+                    "Embedded Status Html: \n\n" + embeddedStatus.Html);
         }
 
         static async Task RetweetersAsync(TwitterContext twitterCtx)
@@ -318,8 +339,9 @@ namespace Linq2TwitterDemos_Console
                  select tweet)
                 .SingleOrDefaultAsync();
 
-            status.Users.ForEach(
-                userID => Console.WriteLine("User ID: " + userID));
+            if (status != null && status.User != null)
+                status.Users.ForEach(
+                    userID => Console.WriteLine("User ID: " + userID));
         }
     }
 }

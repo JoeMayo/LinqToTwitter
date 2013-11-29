@@ -63,7 +63,9 @@ namespace Linq2TwitterDemos_Console
                  select raw)
                 .SingleOrDefaultAsync();
 
-            Console.WriteLine("Response from Twitter: \n\n" + rawResult.Response);
+            if (rawResult != null)
+                Console.WriteLine(
+                    "Response from Twitter: \n\n" + rawResult.Response);
         }
 
         static async Task TweetRawAsync(TwitterContext twitterCtx)
@@ -82,8 +84,9 @@ namespace Linq2TwitterDemos_Console
                 await twitterCtx.ExecuteRawAsync(
                     queryString, parameters);
 
-            Console.WriteLine(
-                "\nResponse from update status: \n\n\t" + result);
+            if (result != null)
+                Console.WriteLine(
+                    "\nResponse from update status: \n\n\t" + result);
         }
     }
 }

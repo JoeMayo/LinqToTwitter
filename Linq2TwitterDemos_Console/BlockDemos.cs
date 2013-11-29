@@ -68,8 +68,9 @@ namespace Linq2TwitterDemos_Console
                      select block)
                     .SingleOrDefaultAsync();
 
-            blockResponse.Users.ForEach(user => 
-                Console.WriteLine(user.ScreenNameResponse));
+            if (blockResponse != null && blockResponse.Users != null)
+                blockResponse.Users.ForEach(user =>
+                        Console.WriteLine(user.ScreenNameResponse)); 
         }
         
         static async Task ListBlockIDsAsyc(TwitterContext twitterCtx)
@@ -81,7 +82,8 @@ namespace Linq2TwitterDemos_Console
                  select blockItem)
                 .SingleOrDefaultAsync();
 
-            result.IDs.ForEach(block => Console.WriteLine("ID: {0}", block));
+            if (result != null && result.IDs != null)
+                result.IDs.ForEach(block => Console.WriteLine("ID: {0}", block)); 
         }
 
         static async Task CreateBlockAsync(TwitterContext twitterCtx)

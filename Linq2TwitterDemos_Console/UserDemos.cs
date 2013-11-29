@@ -95,8 +95,9 @@ namespace Linq2TwitterDemos_Console
                  select user)
                 .ToListAsync();
 
-            userResponse.ForEach(user => 
-                Console.WriteLine("Name: " + user.ScreenNameResponse));
+            if (userResponse != null)
+                userResponse.ForEach(user => 
+                    Console.WriteLine("Name: " + user.ScreenNameResponse));
         }
 
         static async Task ShowUserDetailsAsync(TwitterContext twitterCtx)
@@ -109,13 +110,16 @@ namespace Linq2TwitterDemos_Console
                  select tweet)
                 .SingleOrDefaultAsync();
 
-            var name = user.ScreenNameResponse;
-            var lastStatus = 
-                user.Status == null ? "No Status" : user.Status.Text;
+            if (user != null)
+            {
+                var name = user.ScreenNameResponse;
+                var lastStatus =
+                    user.Status == null ? "No Status" : user.Status.Text;
 
-            Console.WriteLine();
-            Console.WriteLine(
-                "Name: {0}, Last Tweet: {1}\n", name, lastStatus);
+                Console.WriteLine();
+                Console.WriteLine(
+                    "Name: {0}, Last Tweet: {1}\n", name, lastStatus); 
+            }
         }
  
         static async Task FindUsersAsync(TwitterContext twitterCtx)
@@ -128,8 +132,9 @@ namespace Linq2TwitterDemos_Console
                  select user)
                 .ToListAsync();
 
-            foundUsers.ForEach(user => 
-                Console.WriteLine("User: " + user.ScreenNameResponse));
+            if (foundUsers != null)
+                foundUsers.ForEach(user => 
+                    Console.WriteLine("User: " + user.ScreenNameResponse));
         }
 
         static async Task GetContributeesAsync(TwitterContext twitterCtx)
@@ -142,8 +147,9 @@ namespace Linq2TwitterDemos_Console
                  select user)
                 .ToListAsync();
 
-            users.ForEach(user => 
-                Console.WriteLine("User: " + user.ScreenNameResponse));
+            if (users != null)
+                users.ForEach(user => 
+                    Console.WriteLine("User: " + user.ScreenNameResponse));
         }
 
         static async Task GetContributorsAsync(TwitterContext twitterCtx)
@@ -156,8 +162,9 @@ namespace Linq2TwitterDemos_Console
                  select user)
                 .ToListAsync();
 
-            users.ForEach(user => 
-                Console.WriteLine("User: " + user.ScreenNameResponse));
+            if (users != null)
+                users.ForEach(user => 
+                    Console.WriteLine("User: " + user.ScreenNameResponse));
         }
 
         static async Task GetBannerSizesAsync(TwitterContext twitterCtx)
@@ -170,10 +177,11 @@ namespace Linq2TwitterDemos_Console
                  select usr)
                 .SingleOrDefaultAsync();
 
-            user.BannerSizes.ForEach(size =>
-                Console.WriteLine(
-                    "Label: {0}, W: {1} H: {2} URL: {3}",
-                    size.Label, size.Width, size.Height, size.Url));
+            if (user != null && user.BannerSizes != null)
+                user.BannerSizes.ForEach(size =>
+                    Console.WriteLine(
+                        "Label: {0}, W: {1} H: {2} URL: {3}",
+                        size.Label, size.Width, size.Height, size.Url));
         }
 
         static async Task GetUsersInSuggestedCategoriesAsync(TwitterContext twitterCtx)
@@ -186,10 +194,16 @@ namespace Linq2TwitterDemos_Console
                  select tweet)
                 .SingleOrDefaultAsync();
 
-            List<User> users = userResponse.Categories.First().Users;
+            if (userResponse != null && 
+                userResponse.Categories != null && 
+                userResponse.Categories.Any() && 
+                userResponse.Categories.First().Users != null)
+            {
+                List<User> users = userResponse.Categories.First().Users;
 
-            users.ForEach(user => 
-                Console.WriteLine("User: " + user.ScreenNameResponse));
+                users.ForEach(user =>
+                    Console.WriteLine("User: " + user.ScreenNameResponse)); 
+            }
         }
 
         static async Task GetSuggestedCategoryListQueryAsync(TwitterContext twitterCtx)
@@ -201,8 +215,9 @@ namespace Linq2TwitterDemos_Console
                  select tweet)
                 .SingleOrDefaultAsync();
 
-            user.Categories.ForEach(cat => 
-                Console.WriteLine("Category: " + cat.Name));
+            if (user != null && user.Categories != null)
+                user.Categories.ForEach(cat => 
+                    Console.WriteLine("Category: " + cat.Name));
         }
 
         static async Task ShowUsersInCategoryAsync(TwitterContext twitterCtx)
@@ -215,15 +230,21 @@ namespace Linq2TwitterDemos_Console
                  select user)
                 .ToListAsync();
 
-            Console.WriteLine("Tweets: \n");
+            if (catUsers != null)
+            {
+                Console.WriteLine("Tweets: \n");
 
-            catUsers.ForEach(user =>
-                Console.WriteLine(
-                    "User: {0}\nTweet: {1}\n",
-                    user.ScreenNameResponse,
-                    user.Status == null ?
-                        "<Tweet not available.>" :
-                        user.Status.Text));
+                catUsers.ForEach(user =>
+                {
+                    if (user != null && user.Status != null)
+                        Console.WriteLine(
+                            "User: {0}\nTweet: {1}\n",
+                            user.ScreenNameResponse,
+                            user.Status == null ?
+                                "<Tweet not available.>" :
+                                user.Status.Text);
+                }); 
+            }
         }
     }
 }

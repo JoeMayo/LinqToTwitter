@@ -73,10 +73,14 @@ namespace Linq2TwitterDemos_Console
                      select dm)
                     .ToListAsync();
 
-            dmResponse.ForEach(dm => 
-                Console.WriteLine(
-                    "Name: {0}, Tweet: {1}",
-                    dm.Recipient.ScreenNameResponse, dm.Text));
+            if (dmResponse != null)
+                dmResponse.ForEach(dm => 
+                {
+                    if (dm != null && dm.Recipient != null)
+                        Console.WriteLine(
+                            "Name: {0}, Tweet: {1}",
+                            dm.Recipient.ScreenNameResponse, dm.Text);
+                });
         }
 
         static async Task ShowReceivedDMsAsync(TwitterContext twitterCtx)
@@ -88,10 +92,14 @@ namespace Linq2TwitterDemos_Console
                      select dm)
                     .ToListAsync();
 
-            dmResponse.ForEach(dm =>
-                Console.WriteLine(
-                    "Name: {0}, Tweet: {1}",
-                    dm.Recipient.ScreenNameResponse, dm.Text));
+            if (dmResponse != null)
+                dmResponse.ForEach(dm => 
+                {
+                    if (dm != null && dm.Recipient != null)
+                        Console.WriteLine(
+                            "Name: {0}, Tweet: {1}",
+                            dm.Recipient.ScreenNameResponse, dm.Text);
+                });
         }
 
         static async Task ShowSpecificDMAsync(TwitterContext twitterCtx)
@@ -104,21 +112,29 @@ namespace Linq2TwitterDemos_Console
                      select dm)
                     .SingleOrDefaultAsync();
 
-            Console.WriteLine(
-                "From: {0}\nTo:  {1}\nMessage: {2}",
-                dmResponse.Sender.Name,
-                dmResponse.Recipient.Name,
-                dmResponse.Text);
+            if (dmResponse != null &&
+                dmResponse.Recipient != null &&
+                dmResponse.Sender != null)
+            {
+                Console.WriteLine(
+                    "From: {0}\nTo:  {1}\nMessage: {2}",
+                    dmResponse.Sender.Name,
+                    dmResponse.Recipient.Name,
+                    dmResponse.Text);
+            }
         }
 
         static async Task DestroyDirectMessageAsync(TwitterContext twitterCtx)
         {
-            var message = await twitterCtx.DestroyDirectMessageAsync(243563161037455360ul, true);
+            var message = 
+                await twitterCtx.DestroyDirectMessageAsync(
+                    243563161037455360ul, true);
 
-            Console.WriteLine(
-                "Recipient: {0}, Message: {1}",
-                message.RecipientScreenName,
-                message.Text);
+            if (message != null)
+                Console.WriteLine(
+                    "Recipient: {0}, Message: {1}",
+                    message.RecipientScreenName,
+                    message.Text);
         }
 
         static async Task NewDirectMessageAsync(TwitterContext twitterCtx)
@@ -126,11 +142,12 @@ namespace Linq2TwitterDemos_Console
             var message = await twitterCtx.NewDirectMessageAsync(
                 "Linq2Tweeter", "Direct Message Test - " + DateTime.Now + "!'");
 
-            Console.WriteLine(
-                "Recipient: {0}, Message: {1}, Date: {2}",
-                message.RecipientScreenName,
-                message.Text,
-                message.CreatedAt);
+            if (message != null)
+                Console.WriteLine(
+                    "Recipient: {0}, Message: {1}, Date: {2}",
+                    message.RecipientScreenName,
+                    message.Text,
+                    message.CreatedAt);
         }
     }
 }

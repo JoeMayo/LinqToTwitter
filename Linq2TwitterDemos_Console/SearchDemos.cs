@@ -34,6 +34,15 @@ namespace Linq2TwitterDemos_Console
 
             } while (char.ToUpper(key) != 'Q');
         }
+
+        static void ShowMenu()
+        {
+            Console.WriteLine("\nSearch Demos - Please select:\n");
+
+            Console.WriteLine("\t 0. Search");
+            Console.WriteLine();
+            Console.WriteLine("\t Q. Return to Main menu");
+        }
   
         static async Task DoSearchAsync(TwitterContext twitterCtx)
         {
@@ -45,20 +54,12 @@ namespace Linq2TwitterDemos_Console
                  select search)
                 .SingleOrDefaultAsync();
 
-            searchResponse.Statuses.ForEach(tweet =>
-                Console.WriteLine(
-                    "User: {0}, Tweet: {1}", 
-                    tweet.User.ScreenNameResponse,
-                    tweet.Text));
-        }
-
-        static void ShowMenu()
-        {
-            Console.WriteLine("\nSearch Demos - Please select:\n");
-
-            Console.WriteLine("\t 0. Search");
-            Console.WriteLine();
-            Console.WriteLine("\t Q. Return to Main menu");
+            if (searchResponse != null && searchResponse.Statuses != null)
+                searchResponse.Statuses.ForEach(tweet =>
+                    Console.WriteLine(
+                        "User: {0}, Tweet: {1}", 
+                        tweet.User.ScreenNameResponse,
+                        tweet.Text));
         }
     }
 }

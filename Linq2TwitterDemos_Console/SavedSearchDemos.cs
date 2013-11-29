@@ -68,8 +68,9 @@ namespace Linq2TwitterDemos_Console
                      select search)
                     .ToListAsync();
 
-            savedSearches.ForEach(
-                search => Console.WriteLine("Search: " + search.Query));
+            if (savedSearches != null)
+                savedSearches.ForEach(
+                    search => Console.WriteLine("Search: " + search.Query));
         }
 
         static async Task ShowSavedSearchAsync(TwitterContext twitterCtx)
@@ -84,9 +85,10 @@ namespace Linq2TwitterDemos_Console
                  select search)
                 .SingleOrDefaultAsync();
 
-            Console.WriteLine(
-                "ID: {0}, Search: {1}", 
-                savedSearch.ID, savedSearch.Name);
+            if (savedSearch != null)
+                Console.WriteLine(
+                    "ID: {0}, Search: {1}", 
+                    savedSearch.ID, savedSearch.Name);
         }
 
         static async Task CreateSavedSearchAsync(TwitterContext twitterCtx)
@@ -94,9 +96,10 @@ namespace Linq2TwitterDemos_Console
             SavedSearch savedSearch = 
                 await twitterCtx.CreateSavedSearchAsync("linq");
 
-            Console.WriteLine(
-                "ID: {0}, Search: {1}", 
-                savedSearch.IDResponse, savedSearch.Query);
+            if (savedSearch != null)
+                Console.WriteLine(
+                    "ID: {0}, Search: {1}", 
+                    savedSearch.IDResponse, savedSearch.Query);
         }
 
         static async Task DestroySavedSearchAsync(TwitterContext twitterCtx)
@@ -106,9 +109,10 @@ namespace Linq2TwitterDemos_Console
             SavedSearch savedSearch = 
                 await twitterCtx.DestroySavedSearchAsync(savedSearchID);
 
-            Console.WriteLine(
-                "ID: {0}, Search: {1}", 
-                savedSearch.ID, savedSearch.Name);
+            if (savedSearch != null)
+                Console.WriteLine(
+                    "ID: {0}, Search: {1}", 
+                    savedSearch.ID, savedSearch.Name);
         }
     }
 }

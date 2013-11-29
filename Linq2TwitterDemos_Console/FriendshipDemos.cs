@@ -112,11 +112,16 @@ namespace Linq2TwitterDemos_Console
                  select friend)
                 .SingleOrDefaultAsync();
 
-            Console.WriteLine(
-                "\nJoeMayo follows LinqToTweeter: " +
-                friendship.SourceRelationship.FollowedBy +
-                "\nLinqToTweeter follows JoeMayo: " +
-                friendship.TargetRelationship.FollowedBy);
+            if (friendship != null && 
+                friendship.SourceRelationship != null && 
+                friendship.TargetRelationship != null)
+            {
+                Console.WriteLine(
+                        "\nJoeMayo follows LinqToTweeter: " +
+                        friendship.SourceRelationship.FollowedBy +
+                        "\nLinqToTweeter follows JoeMayo: " +
+                        friendship.TargetRelationship.FollowedBy); 
+            }
         }
 
         static async Task LookupUserIDsAsync(TwitterContext twitterCtx)
@@ -129,11 +134,12 @@ namespace Linq2TwitterDemos_Console
                  select look.Relationships)
                 .SingleOrDefaultAsync();
 
-            relationships.ForEach(rel => 
-                Console.WriteLine(
-                    "Relationship to " + rel.ScreenName + 
-                    ", is Following: " + rel.Following + 
-                    ", Followed By: " + rel.FollowedBy));
+            if (relationships != null)
+                relationships.ForEach(rel => 
+                    Console.WriteLine(
+                        "Relationship to " + rel.ScreenName + 
+                        ", is Following: " + rel.Following + 
+                        ", Followed By: " + rel.FollowedBy));
         }
 
         static async Task IncomingFriendshipsAsync(TwitterContext twitterCtx)
@@ -145,7 +151,12 @@ namespace Linq2TwitterDemos_Console
                  select req)
                 .SingleOrDefaultAsync();
 
-            request.IDInfo.IDs.ForEach(req => Console.WriteLine(req));
+            if (request != null && 
+                request.IDInfo != null && 
+                request.IDInfo.IDs != null)
+            {
+                request.IDInfo.IDs.ForEach(req => Console.WriteLine(req));
+            }
         }
 
         static async Task OutgoingFriendshipsAsync(TwitterContext twitterCtx)
@@ -157,7 +168,12 @@ namespace Linq2TwitterDemos_Console
                  select req)
                 .SingleOrDefaultAsync();
 
-            request.IDInfo.IDs.ForEach(req => Console.WriteLine(req));
+            if (request != null &&
+                request.IDInfo != null &&
+                request.IDInfo.IDs != null)
+            {
+                request.IDInfo.IDs.ForEach(req => Console.WriteLine(req));
+            }
         }
 
         static async Task NoRetweetIDsAsync(TwitterContext twitterCtx)
@@ -169,12 +185,17 @@ namespace Linq2TwitterDemos_Console
                  select friend)
                 .SingleOrDefaultAsync();
 
-            var ids =
-                (from id in friendship.IDInfo.IDs
-                 select id.ToString())
-                .ToArray();
+            if (friendship != null && 
+                friendship.IDInfo != null && 
+                friendship.IDInfo.IDs != null)
+            {
+                var ids =
+                    (from id in friendship.IDInfo.IDs
+                     select id.ToString())
+                    .ToArray();
 
-            Console.WriteLine("\nIDs: " + string.Join(",", ids));
+                Console.WriteLine("\nIDs: " + string.Join(",", ids)); 
+            }
         }
 
         static async Task FriendsListAsync(TwitterContext twitterCtx)
@@ -192,12 +213,17 @@ namespace Linq2TwitterDemos_Console
                      select friend)
                     .SingleOrDefaultAsync();
 
-                cursor = friendship.CursorMovement.Next;
+                if (friendship != null && 
+                    friendship.Users != null && 
+                    friendship.CursorMovement != null)
+                {
+                    cursor = friendship.CursorMovement.Next;
 
-                friendship.Users.ForEach(friend =>
-                    Console.WriteLine(
-                        "ID: {0} Name: {1}",
-                        friend.UserIDResponse, friend.ScreenNameResponse));
+                    friendship.Users.ForEach(friend =>
+                        Console.WriteLine(
+                            "ID: {0} Name: {1}",
+                            friend.UserIDResponse, friend.ScreenNameResponse)); 
+                }
 
             } while (cursor != 0);
         }
@@ -212,10 +238,11 @@ namespace Linq2TwitterDemos_Console
                  select friend)
                 .SingleOrDefaultAsync();
 
-            friendship.Users.ForEach(friend =>
-                Console.WriteLine(
-                    "ID: {0} Name: {1}",
-                    friend.UserIDResponse, friend.ScreenNameResponse));
+            if (friendship != null && friendship.Users != null)
+                friendship.Users.ForEach(friend =>
+                    Console.WriteLine(
+                        "ID: {0} Name: {1}",
+                        friend.UserIDResponse, friend.ScreenNameResponse));
         }
 
         static async Task ShowFollowerIDsAsync(TwitterContext twitterCtx)
@@ -228,8 +255,13 @@ namespace Linq2TwitterDemos_Console
                  select follower)
                 .SingleOrDefaultAsync();
 
-            followers.IDInfo.IDs.ForEach(id => 
-                Console.WriteLine("Follower ID: " + id));
+            if (followers != null && 
+                followers.IDInfo != null && 
+                followers.IDInfo.IDs != null)
+            {
+                followers.IDInfo.IDs.ForEach(id =>
+                    Console.WriteLine("Follower ID: " + id)); 
+            }
         }
 
         static async Task ShowFriendIDsAsync(TwitterContext twitterCtx)
@@ -242,27 +274,35 @@ namespace Linq2TwitterDemos_Console
                  select friend)
                 .SingleOrDefaultAsync();
 
-            friendList.IDInfo.IDs.ForEach(id => Console.WriteLine("Follower ID: " + id));
+            if (friendList != null &&
+                friendList.IDInfo != null &&
+                friendList.IDInfo.IDs != null)
+            {
+                friendList.IDInfo.IDs.ForEach(id =>
+                    Console.WriteLine("Follower ID: " + id));
+            }
         }
 
         static async Task CreateFriendshipAsync(TwitterContext twitterCtx)
         {
             var user = await twitterCtx.CreateFriendshipAsync("JoeMayo", true);
 
-            Console.WriteLine(
-                "User Name: {0}, Status: {1}",
-                user.Name,
-                user.Status.Text);
+            if (user != null && user.Status != null)
+                Console.WriteLine(
+                    "User Name: {0}, Status: {1}",
+                    user.Name,
+                    user.Status.Text);
         }
 
         static async Task DestroyFriendshipAsync(TwitterContext twitterCtx)
         {
             var user = await twitterCtx.DestroyFriendshipAsync("Linq2Tweeter");
 
-            Console.WriteLine(
-                "User Name: {0}, Status: {1}",
-                user.Name,
-                user.Status.Text);
+            if (user != null && user.Status != null)
+                Console.WriteLine(
+                    "User Name: {0}, Status: {1}",
+                    user.Name,
+                    user.Status.Text);
         }
 
         static async Task UpdateFreindshipSettingsAsync(TwitterContext twitterCtx)
@@ -271,12 +311,13 @@ namespace Linq2TwitterDemos_Console
                 await twitterCtx.UpdateFriendshipSettingsAsync(
                     "Linq2Tweeter", true, true);
 
-            Console.WriteLine(
-                "Settings for {0} are: Can Retweet is {1} " +
-                "and Can Send Device Notifications is {2}",
-                friend.SourceRelationship.ScreenName,
-                friend.SourceRelationship.RetweetsWanted,
-                friend.SourceRelationship.NotificationsEnabled);
+            if (friend != null && friend.SourceRelationship != null)
+                Console.WriteLine(
+                    "Settings for {0} are: Can Retweet is {1} " +
+                    "and Can Send Device Notifications is {2}",
+                    friend.SourceRelationship.ScreenName,
+                    friend.SourceRelationship.RetweetsWanted,
+                    friend.SourceRelationship.NotificationsEnabled);
         }
     }
 }

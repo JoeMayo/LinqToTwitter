@@ -100,9 +100,7 @@ namespace Linq2TwitterDemos_Console
                     Console.WriteLine(strm.Content + "\n");
 
                     if (count++ >= 5)
-                    {
                         strm.CloseStream();
-                    }
                 });
         }
   
@@ -117,8 +115,13 @@ namespace Linq2TwitterDemos_Console
                  select strm)
                 .StartAsync(async strm =>
                 {
-                    string message = string.IsNullOrEmpty(strm.Content) ? "Keep-Alive" : strm.Content;
-                    Console.WriteLine((count + 1).ToString() + ". " + DateTime.Now + ": " + message + "\n");
+                    string message = 
+                        string.IsNullOrEmpty(strm.Content) ? 
+                            "Keep-Alive" : strm.Content;
+                    Console.WriteLine(
+                        (count + 1).ToString() + 
+                        ". " + DateTime.Now + 
+                        ": " + message + "\n");
 
                     if (count++ == 5)
                         strm.CloseStream();
@@ -191,20 +194,23 @@ namespace Linq2TwitterDemos_Console
                  select strm)
                 .SingleOrDefaultAsync();
 
-            ControlStreamFollow follow = ctrlStrmFollowers.Follow;
-            ControlStreamUser followUser = follow.User;
-            List<ulong> friends = follow.Friends;
-            Cursors cursors = follow.Cursors;
+            if (ctrlStrmFollowers != null)
+            {
+                ControlStreamFollow follow = ctrlStrmFollowers.Follow;
+                ControlStreamUser followUser = follow.User;
+                List<ulong> friends = follow.Friends;
+                Cursors cursors = follow.Cursors;
 
-            Console.WriteLine("User ID: " + followUser.UserID);
-            Console.WriteLine("User Name: " + followUser.Name);
-            Console.WriteLine("Can DM: " + followUser.DM);
-            friends.ForEach(friend => Console.WriteLine(friend));
-            Console.WriteLine("Prev Cursor: " + cursors.Previous);
-            Console.WriteLine("Next Cursor: " + cursors.Next);
+                Console.WriteLine("User ID: " + followUser.UserID);
+                Console.WriteLine("User Name: " + followUser.Name);
+                Console.WriteLine("Can DM: " + followUser.DM);
+                friends.ForEach(friend => Console.WriteLine(friend));
+                Console.WriteLine("Prev Cursor: " + cursors.Previous);
+                Console.WriteLine("Next Cursor: " + cursors.Next);
 
-            Console.WriteLine("Info Details:\n");
-
+                Console.WriteLine("Info Details:\n");
+            } 
+            
             var ctrlStrmInfo =
                 (from strm in twitterCtx.ControlStream
                  where strm.Type == ControlStreamType.Info &&
@@ -212,30 +218,33 @@ namespace Linq2TwitterDemos_Console
                  select strm)
                 .SingleOrDefault();
 
-            ControlStreamInfo infoUser = ctrlStrmInfo.Info;
-            ControlStreamUser user = infoUser.Users.First();
-            Console.WriteLine("User ID: " + user.UserID);
-            Console.WriteLine("User Name: " + user.Name);
-            Console.WriteLine("Can DM: " + user.DM);
-            Console.WriteLine("Delimited: " + infoUser.Delimited);
-            Console.WriteLine("Include Followings Acitity: " + infoUser.IncludeFollowingsActivity);
-            Console.WriteLine("Include User Changes: " + infoUser.IncludeUserChanges);
-            Console.WriteLine("Replies: " + infoUser.Replies);
-            Console.WriteLine("With: " + infoUser.With);
+            if (ctrlStrmInfo != null)
+            {
+                ControlStreamInfo infoUser = ctrlStrmInfo.Info;
+                ControlStreamUser user = infoUser.Users.First();
+                Console.WriteLine("User ID: " + user.UserID);
+                Console.WriteLine("User Name: " + user.Name);
+                Console.WriteLine("Can DM: " + user.DM);
+                Console.WriteLine("Delimited: " + infoUser.Delimited);
+                Console.WriteLine("Include Followings Acitity: " + infoUser.IncludeFollowingsActivity);
+                Console.WriteLine("Include User Changes: " + infoUser.IncludeUserChanges);
+                Console.WriteLine("Replies: " + infoUser.Replies);
+                Console.WriteLine("With: " + infoUser.With);
 
-            Console.WriteLine("\nInitial Stream Users: ");
+                Console.WriteLine("\nInitial Stream Users: ");
 
-            await PrintUserInfoAsync(twitterCtx, streamID);
+                await PrintUserInfoAsync(twitterCtx, streamID);
 
-            ControlStream csAdd = await twitterCtx.AddSiteStreamUserAsync(new List<ulong> { 16761255 }, streamID);
-            Console.WriteLine("Command Response: " + csAdd.CommandResponse);
-            Console.WriteLine("\nAfter Adding a User: ");
-            await PrintUserInfoAsync(twitterCtx, streamID);
+                ControlStream csAdd = await twitterCtx.AddSiteStreamUserAsync(new List<ulong> { 16761255 }, streamID);
+                Console.WriteLine("Command Response: " + csAdd.CommandResponse);
+                Console.WriteLine("\nAfter Adding a User: ");
+                await PrintUserInfoAsync(twitterCtx, streamID);
 
-            ControlStream csRemove = await twitterCtx.RemoveSiteStreamUserAsync(new List<ulong> { 16761255 }, streamID);
-            Console.WriteLine("Command Response: " + csRemove.CommandResponse);
-            Console.WriteLine("\nAfter Removing a User: ");
-            await PrintUserInfoAsync(twitterCtx, streamID);
+                ControlStream csRemove = await twitterCtx.RemoveSiteStreamUserAsync(new List<ulong> { 16761255 }, streamID);
+                Console.WriteLine("Command Response: " + csRemove.CommandResponse);
+                Console.WriteLine("\nAfter Removing a User: ");
+                await PrintUserInfoAsync(twitterCtx, streamID);
+            }
         }
 
         static async Task PrintUserInfoAsync(TwitterContext twitterCtx, string streamID)
@@ -248,13 +257,18 @@ namespace Linq2TwitterDemos_Console
                  select strm)
                 .SingleOrDefaultAsync();
 
-            Console.WriteLine("\nInfo Details:\n");
+            if (ctrlStrm != null && 
+                ctrlStrm.Info != null && 
+                ctrlStrm.Info.Users != null)
+            {
+                Console.WriteLine("\nInfo Details:\n");
 
-            ControlStreamInfo info = ctrlStrm.Info;
-            foreach (var user in info.Users)
-                Console.WriteLine("User ID: {0}, Name: {1}", user.UserID, user.Name);
+                ControlStreamInfo info = ctrlStrm.Info;
+                foreach (var user in info.Users)
+                    Console.WriteLine("User ID: {0}, Name: {1}", user.UserID, user.Name);
 
-            Console.WriteLine();
+                Console.WriteLine();
+            } 
         }
     }
 }

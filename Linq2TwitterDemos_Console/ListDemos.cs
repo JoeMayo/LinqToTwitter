@@ -158,7 +158,8 @@ namespace Linq2TwitterDemos_Console
                      select list)
                     .ToListAsync();
 
-            lists.ForEach(list => Console.WriteLine("Slug: " + list.SlugResult));
+            if (lists != null)
+                lists.ForEach(list => Console.WriteLine("Slug: " + list.SlugResult));
         }
 
         static async Task GetListStatusesAsync(TwitterContext twitterCtx)
@@ -167,7 +168,8 @@ namespace Linq2TwitterDemos_Console
             string slug = "linq";
             int maxStatuses = 30;
             int lastStatusCount = 0;
-            ulong sinceID = 204251866668871681; // last tweet processed on previous query
+            // last tweet processed on previous query
+            ulong sinceID = 204251866668871681; 
             ulong maxID;
             int count = 10;
             var statusList = new List<Status>();
@@ -183,39 +185,47 @@ namespace Linq2TwitterDemos_Console
                  select list)
                 .SingleOrDefaultAsync();
 
-            List<Status> newStatuses = listResponse.Statuses;
-            maxID = newStatuses.Min(status => status.StatusID) - 1; // first tweet processed on current query
-            statusList.AddRange(newStatuses);
-
-            do
+            if (listResponse != null && listResponse.Statuses != null)
             {
-                // now add sinceID and maxID
-                listResponse =
-                    await
-                    (from list in twitterCtx.List
-                     where list.Type == ListType.Statuses &&
-                           list.OwnerScreenName == ownerScreenName &&
-                           list.Slug == slug &&
-                           list.Count == count &&
-                           list.SinceID == sinceID &&
-                           list.MaxID == maxID
-                     select list)
-                    .SingleOrDefaultAsync();
-
-                newStatuses = listResponse.Statuses;
-                maxID = newStatuses.Min(status => status.StatusID) - 1; // first tweet processed on current query
+                List<Status> newStatuses = listResponse.Statuses;
+                // first tweet processed on current query
+                maxID = newStatuses.Min(status => status.StatusID) - 1; 
                 statusList.AddRange(newStatuses);
 
-                lastStatusCount = newStatuses.Count;
-            }
-            while (lastStatusCount != 0 && statusList.Count < maxStatuses);
+                do
+                {
+                    // now add sinceID and maxID
+                    listResponse =
+                        await
+                        (from list in twitterCtx.List
+                         where list.Type == ListType.Statuses &&
+                               list.OwnerScreenName == ownerScreenName &&
+                               list.Slug == slug &&
+                               list.Count == count &&
+                               list.SinceID == sinceID &&
+                               list.MaxID == maxID
+                         select list)
+                        .SingleOrDefaultAsync();
 
-            for (int i = 0; i < statusList.Count; i++)
-            {
-                Status status = statusList[i];
+                    if (listResponse == null)
+                        break;
 
-                Console.WriteLine("{0, 4}. [{1}] User: {2}\nStatus: {3}",
-                    i + 1, status.StatusID, status.User.Name, status.Text);
+                    newStatuses = listResponse.Statuses;
+                    // first tweet processed on current query
+                    maxID = newStatuses.Min(status => status.StatusID) - 1; 
+                    statusList.AddRange(newStatuses);
+
+                    lastStatusCount = newStatuses.Count;
+                }
+                while (lastStatusCount != 0 && statusList.Count < maxStatuses);
+
+                for (int i = 0; i < statusList.Count; i++)
+                {
+                    Status status = statusList[i];
+
+                    Console.WriteLine("{0, 4}. [{1}] User: {2}\nStatus: {3}",
+                        i + 1, status.StatusID, status.User.Name, status.Text);
+                }
             }
         }
 
@@ -229,10 +239,11 @@ namespace Linq2TwitterDemos_Console
                  select list)
                 .ToListAsync();
 
-            lists.ForEach(list =>
-                Console.WriteLine(
-                    "List Name: {0}, Description: {1}",
-                    list.Name, list.Description));
+            if (lists != null)
+                lists.ForEach(list =>
+                    Console.WriteLine(
+                        "List Name: {0}, Description: {1}",
+                        list.Name, list.Description));
         }
 
         static async Task GetListSubscribersAsync(TwitterContext twitterCtx)
@@ -246,8 +257,9 @@ namespace Linq2TwitterDemos_Console
                  select list)
                 .SingleOrDefaultAsync();
 
-            subscriberList.Users.ForEach(user =>
-                Console.WriteLine("Subscriber: " + user.Name));
+            if (subscriberList != null && subscriberList.Users != null)
+                subscriberList.Users.ForEach(user =>
+                    Console.WriteLine("Subscriber: " + user.Name));
         }
 
         static async Task ShowIsListSubscriberAsync(TwitterContext twitterCtx)
@@ -264,11 +276,14 @@ namespace Linq2TwitterDemos_Console
                      select list)
                     .SingleOrDefaultAsync();
 
-                // list will have only one user matching ID in query
-                var user = subscribedList.Users.First();
+                if (subscribedList != null && subscribedList.Users != null)
+                {
+                    // list will have only one user matching ID in query
+                    var user = subscribedList.Users.First();
 
-                Console.WriteLine("User: {0} is subscribed to List: {1}",
-                    user.Name, subscribedList.ListID);
+                    Console.WriteLine("User: {0} is subscribed to List: {1}",
+                        user.Name, subscribedList.ListID); 
+                }
             }
             // whenever user is not subscribed to the specified list, Twitter
             // returns an HTTP 404, Not Found, response.  LINQ to Twitter 
@@ -305,11 +320,14 @@ namespace Linq2TwitterDemos_Console
                      select list)
                     .SingleOrDefaultAsync();
 
-                // list will have only one user matching ID in query
-                var user = subscribedList.Users.First();
+                if (subscribedList != null && subscribedList.Users != null)
+                {
+                    // list will have only one user matching ID in query
+                    var user = subscribedList.Users.First();
 
-                Console.WriteLine("User: {0} is a member of List: {1}",
-                    user.Name, subscribedList.ListID);
+                    Console.WriteLine("User: {0} is a member of List: {1}",
+                        user.Name, subscribedList.ListID); 
+                }
             }
             // whenever user is not a member of the specified list, Twitter
             // returns an HTTP 404, Not Found, response.  LINQ to Twitter 
@@ -344,8 +362,9 @@ namespace Linq2TwitterDemos_Console
                  select list)
                 .SingleOrDefaultAsync();
 
-            lists.Users.ForEach(user =>
-                Console.WriteLine("Member: " + user.Name));
+            if (lists != null && lists.Users != null)
+                lists.Users.ForEach(user =>
+                    Console.WriteLine("Member: " + user.Name));
         }
 
         static async Task ShowListDetailsAsync(TwitterContext twitterCtx)
@@ -354,13 +373,17 @@ namespace Linq2TwitterDemos_Console
                 await
                 (from list in twitterCtx.List
                  where list.Type == ListType.Show &&
-                       list.OwnerScreenName == "Linq2Tweeter" && // user who owns list
-                       list.Slug == "linq" // list name
+                       list.OwnerScreenName == "Linq2Tweeter" &&
+                       list.Slug == "linq"
                  select list)
                 .SingleOrDefaultAsync();
 
-            Console.WriteLine("List Name: {0}, Description: {1}, # Users: {2}",
-                requestedList.Name, requestedList.Description, requestedList.Users.Count());
+            if (requestedList != null)
+                Console.WriteLine(
+                    "List Name: {0}, Description: {1}, # Users: {2}",
+                    requestedList.Name, 
+                    requestedList.Description, 
+                    requestedList.Users.Count());
         }
 
         static async Task GetListSubscriptionsAsync(TwitterContext twitterCtx)
@@ -369,14 +392,15 @@ namespace Linq2TwitterDemos_Console
                 await
                 (from list in twitterCtx.List
                  where list.Type == ListType.Subscriptions &&
-                       list.ScreenName == "Linq2Tweeter" // user to get subscriptions for
+                       list.ScreenName == "Linq2Tweeter"
                  select list)
                 .ToListAsync();
 
-            lists.ForEach(list =>
-                Console.WriteLine(
-                    "List Name: {0}, Description: {1}",
-                    list.Name, list.Description));
+            if (lists != null)
+                lists.ForEach(list =>
+                    Console.WriteLine(
+                        "List Name: {0}, Description: {1}",
+                        list.Name, list.Description));
         }
 
         static async Task GetOwnershipsAsync(TwitterContext twitterCtx)
@@ -389,9 +413,13 @@ namespace Linq2TwitterDemos_Console
                  select list)
                 .ToListAsync();
 
-            lists.ForEach(list =>
-                Console.WriteLine("ID: {0}  Slug: {1} Description: {2}",
-                    list.ListIDResult, list.SlugResult, list.Description));
+            if (lists != null)
+                lists.ForEach(list =>
+                    Console.WriteLine(
+                        "ID: {0}  Slug: {1} Description: {2}",
+                        list.ListIDResult, 
+                        list.SlugResult, 
+                        list.Description));
         }
 
         static async Task DeleteMemberFromListAsync(TwitterContext twitterCtx)
@@ -402,8 +430,9 @@ namespace Linq2TwitterDemos_Console
                 await twitterCtx.DeleteMemberFromListAsync(
                     0, "Linq2Tweeter", 0, "testDemo", 0, ownerScreenName);
 
-            Console.WriteLine("List Name: {0}, Description: {1}",
-                list.Name, list.Description);
+            if (list != null)
+                Console.WriteLine("List Name: {0}, Description: {1}",
+                    list.Name, list.Description);
         }
 
         static async Task SubscribeToListAsync(TwitterContext twitterCtx)
@@ -414,8 +443,9 @@ namespace Linq2TwitterDemos_Console
                 await twitterCtx.SubscribeToListAsync(
                     0, "testDemo", 0, ownerScreenName);
 
-            Console.WriteLine("List Name: {0}, Description: {1}",
-                list.Name, list.Description);
+            if (list != null)
+                Console.WriteLine("List Name: {0}, Description: {1}",
+                    list.Name, list.Description);
         }
 
         static async Task UnsubscribeFromListAsync(TwitterContext twitterCtx)
@@ -426,8 +456,9 @@ namespace Linq2TwitterDemos_Console
                 await twitterCtx.UnsubscribeFromListAsync(
                     0, "testDemo", 0, ownerScreenName);
 
-            Console.WriteLine("List Name: {0}, Description: {1}",
-                list.Name, list.Description);
+            if (list != null)
+                Console.WriteLine("List Name: {0}, Description: {1}",
+                    list.Name, list.Description);
         }
 
         static async Task AddMemberRangeToListAsync(TwitterContext twitterCtx)
@@ -439,12 +470,12 @@ namespace Linq2TwitterDemos_Console
                 "Linq2Tweeter"
             };
 
-            List list = await twitterCtx.AddMemberRangeToListAsync(0, "testDemo", 0, ownerScreenName, screenNames);
+            List list = 
+                await twitterCtx.AddMemberRangeToListAsync(
+                    0, "testDemo", 0, ownerScreenName, screenNames);
 
-            foreach (var user in list.Users)
-            {
-                Console.WriteLine(user.Name);
-            }
+            if (list != null && list.Users != null)
+                list.Users.ForEach(user => Console.WriteLine(user.Name));
         }
 
         static async Task AddMemberToListAsync(TwitterContext twitterCtx)
@@ -455,18 +486,22 @@ namespace Linq2TwitterDemos_Console
                 await twitterCtx.AddMemberToListAsync(
                     "Linq2Tweeter", 0, "testDemo", 0, ownerScreenName);
 
-            Console.WriteLine("List Name: {0}, Description: {1}",
-                list.Name, list.Description);
+            if (list != null)
+                Console.WriteLine("List Name: {0}, Description: {1}",
+                    list.Name, list.Description);
         }
 
         static async Task DeleteListAsync(TwitterContext twitterCtx)
         {
             ulong listID = 0;
 
-            List list = await twitterCtx.DeleteListAsync(listID, "testDemo", 0, "Linq2Tweeter");
+            List list = 
+                await twitterCtx.DeleteListAsync(
+                    listID, "testDemo", 0, "Linq2Tweeter");
 
-            Console.WriteLine("List Name: {0}, Description: {1}",
-                list.Name, list.Description);
+            if (list != null)
+                Console.WriteLine("List Name: {0}, Description: {1}",
+                    list.Name, list.Description);
         }
 
         static async Task UpdateListAsync(TwitterContext twitterCtx)
@@ -474,18 +509,25 @@ namespace Linq2TwitterDemos_Console
             string ownerScreenName = "Linq2Tweeter";
             ulong listID = 0;
 
-            List list = await twitterCtx.UpdateListAsync(listID, "testDemo", "Test List", 0, ownerScreenName, "public", "This is a test2");
+            List list = 
+                await twitterCtx.UpdateListAsync(
+                    listID, "testDemo", "Test List", 0, 
+                    ownerScreenName, "public", "This is a test2");
 
-            Console.WriteLine("List Name: {0}, Description: {1}",
-                list.Name, list.Description);
+            if (list != null)
+                Console.WriteLine("List Name: {0}, Description: {1}",
+                    list.Name, list.Description);
         }
 
         static async Task CreateListAsync(TwitterContext twitterCtx)
         {
-            List list = await twitterCtx.CreateListAsync("testDemo", "public", "This is a test");
+            List list = 
+                await twitterCtx.CreateListAsync(
+                    "testDemo", "public", "This is a test");
 
-            Console.WriteLine("List Name: {0}, Description: {1}",
-                list.Name, list.Description);
+            if (list != null)
+                Console.WriteLine("List Name: {0}, Description: {1}",
+                    list.Name, list.Description);
         }
 
         static async Task DeleteMemberRangeFromListAsync(TwitterContext twitterCtx)
@@ -497,8 +539,9 @@ namespace Linq2TwitterDemos_Console
                 await twitterCtx.DeleteMemberRangeFromListAsync(
                     0, "testDemo", screenNames, 0, ownerScreenName);
 
-            Console.WriteLine("List Name: {0}, Description: {1}",
-                list.Name, list.Description);
+            if (list != null)
+                Console.WriteLine("List Name: {0}, Description: {1}",
+                    list.Name, list.Description);
         }
     }
 }

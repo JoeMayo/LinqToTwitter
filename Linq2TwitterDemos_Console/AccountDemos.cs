@@ -100,9 +100,15 @@ namespace Linq2TwitterDemos_Console
                          where acct.Type == AccountType.VerifyCredentials
                          select acct)
                         .SingleOrDefaultAsync();
-                User user = verifyResponse.User;
 
-                Console.WriteLine("Credentials are good for {0}.", user.ScreenNameResponse);
+                if (verifyResponse != null && verifyResponse.User != null)
+                {
+                    User user = verifyResponse.User;
+
+                    Console.WriteLine(
+                        "Credentials are good for {0}.",
+                        user.ScreenNameResponse); 
+                }
             }
             catch (TwitterQueryException tqe)
             {
@@ -119,13 +125,19 @@ namespace Linq2TwitterDemos_Console
                  select acct)
                 .SingleOrDefaultAsync();
 
-            var settings = settingsResponse.Settings;
+            if (settingsResponse != null && 
+                settingsResponse.Settings != null &&
+                settingsResponse.Settings.TrendLocation != null &&
+                settingsResponse.Settings.SleepTime != null)
+            {
+                var settings = settingsResponse.Settings;
 
-            Console.WriteLine(
-                "Trend Location: {0}\nGeo Enabled: {1}\nSleep Enabled: {2}",
-                settings.TrendLocation.Name,
-                settings.GeoEnabled,
-                settings.SleepTime.Enabled);
+                Console.WriteLine(
+                    "Trend Location: {0}\nGeo Enabled: {1}\nSleep Enabled: {2}",
+                    settings.TrendLocation.Name,
+                    settings.GeoEnabled,
+                    settings.SleepTime.Enabled); 
+            }
         }
 
         static async Task UpdateAccountColorsAsync(TwitterContext twitterCtx)
@@ -135,13 +147,16 @@ namespace Linq2TwitterDemos_Console
                 sidebarFill: "#e0ff92", sidebarBorder: "#87bc44", 
                 includeEntities: true, skipStatus: true);
 
-            Console.WriteLine("\nAccount Colors:\n");
+            if (user != null)
+            {
+                Console.WriteLine("\nAccount Colors:\n");
 
-            Console.WriteLine("Background:     " + user.ProfileBackgroundColor);
-            Console.WriteLine("Text:           " + user.ProfileTextColor);
-            Console.WriteLine("Link:           " + user.ProfileLinkColor);
-            Console.WriteLine("Sidebar Fill:   " + user.ProfileSidebarFillColor);
-            Console.WriteLine("Sidebar Border: " + user.ProfileSidebarBorderColor);
+                Console.WriteLine("Background:     " + user.ProfileBackgroundColor);
+                Console.WriteLine("Text:           " + user.ProfileTextColor);
+                Console.WriteLine("Link:           " + user.ProfileLinkColor);
+                Console.WriteLine("Sidebar Fill:   " + user.ProfileSidebarFillColor);
+                Console.WriteLine("Sidebar Border: " + user.ProfileSidebarBorderColor); 
+            }
         }
 
         static async Task UpdateAccountImageAsync(TwitterContext twitterCtx)
@@ -151,7 +166,8 @@ namespace Linq2TwitterDemos_Console
             var user = await twitterCtx.UpdateAccountImageAsync(
                 imageBytes, "200xColor_2.png", "png", false);
 
-            Console.WriteLine("User Image: " + user.ProfileImageUrl);
+            if (user != null)
+                Console.WriteLine("User Image: " + user.ProfileImageUrl); 
         }
 
         static async Task UpdateAccountBackgroundImageAsync(TwitterContext twitterCtx)
@@ -161,7 +177,8 @@ namespace Linq2TwitterDemos_Console
             var user = await twitterCtx.UpdateAccountBackgroundImageAsync(
                 imageBytes, "200xColor_2.png", "png", true, false, false);
 
-            Console.WriteLine("User Image: " + user.ProfileImageUrl);
+            if (user != null)
+                Console.WriteLine("User Image: " + user.ProfileImageUrl); 
         }
 
         static async Task UpdateAccountProfileAsync(TwitterContext twitterCtx)
@@ -174,41 +191,57 @@ namespace Linq2TwitterDemos_Console
                 true,
                 true);
 
-            Console.WriteLine(
-                "Name: {0}\nURL: {1}\nLocation: {2}\nDescription: {3}",
-                user.Name, user.Url, user.Location, user.Description);
+            if (user != null)
+                Console.WriteLine(
+                    "Name: {0}\nURL: {1}\nLocation: {2}\nDescription: {3}",
+                    user.Name, user.Url, user.Location, user.Description); 
         }
 
         static async Task UpdateAccountSettingsAsync(TwitterContext twitterCtx)
         {
-            Account acct = await twitterCtx.UpdateAccountSettingsAsync(null, true, 20, 6, null, null);
+            Account acct = 
+                await twitterCtx.UpdateAccountSettingsAsync(
+                    null, true, 20, 6, null, null);
 
-            SleepTime sleep = acct.Settings.SleepTime;
-            Console.WriteLine(
-                "Enabled: {0}, Start: {1}, End: {2}",
-                sleep.Enabled, sleep.StartHour, sleep.EndHour);
+            if (acct != null && 
+                acct.Settings != null && 
+                acct.Settings.SleepTime != null)
+            {
+                SleepTime sleep = acct.Settings.SleepTime;
+                Console.WriteLine(
+                    "Enabled: {0}, Start: {1}, End: {2}",
+                    sleep.Enabled, sleep.StartHour, sleep.EndHour); 
+            }
         }
 
         static async Task UpdateDeliveryDeviceAsync(TwitterContext twitterCtx)
         {
-            Account acct = await twitterCtx.UpdateDeliveryDeviceAsync(DeviceType.None, null);
+            Account acct = 
+                await twitterCtx.UpdateDeliveryDeviceAsync(
+                    DeviceType.None, null);
 
-            Console.WriteLine("Update for: ", acct.User.ScreenNameResponse);
+            if (acct != null && acct.User != null)
+                Console.WriteLine("Update for: ", acct.User.ScreenNameResponse); 
         }
         
         static async Task UpdateProfileBannerAsync(TwitterContext twitterCtx)
         {
             byte[] fileBytes = File.ReadAllBytes(@"..\..\images\WP_000003.jpg");
 
-            var user = await twitterCtx.UpdateProfileBannerAsync(fileBytes, "WP_000003.jpg", "jpg", 1252, 626, 0, 0);
+            var user = 
+                await twitterCtx.UpdateProfileBannerAsync(
+                    fileBytes, "WP_000003.jpg", "jpg", 1252, 626, 0, 0);
 
-            Console.WriteLine("User Image: " + user.ProfileBannerUrl);
+            if (user != null)
+                Console.WriteLine("User Image: " + user.ProfileBannerUrl); 
         }
 
         static async Task RemoveProfileBannerAsync(TwitterContext twitterCtx)
         {
             var user = await twitterCtx.RemoveProfileBannerAsync();
-            Console.WriteLine("Profile Banner: " + user.ProfileBannerUrl ?? "None");
+
+            if (user != null)
+                Console.WriteLine("Profile Banner: " + user.ProfileBannerUrl ?? "None"); 
         }
     }
 }
