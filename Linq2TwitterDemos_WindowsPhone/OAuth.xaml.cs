@@ -35,9 +35,9 @@ namespace Linq2TwitterDemos_WindowsPhone
             await pinAuth.BeginAuthorizeAsync();
         }
 
-        void AuthorizationButton_Click(object sender, RoutedEventArgs e)
+        async void AuthorizationButton_Click(object sender, RoutedEventArgs e)
         {
-            pinAuth.CompleteAuthorizeAsync(PinTextBox.Text);
+            await pinAuth.CompleteAuthorizeAsync(PinTextBox.Text);
             SharedState.Authorizer = pinAuth;
 
             // This is how you access credentials after authorization.

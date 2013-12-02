@@ -889,11 +889,11 @@ namespace LinqToTwitterPcl.Tests.ListTests
             Assert.IsNotNull(users);
             Assert.IsNotNull(users.SingleOrDefault());
             Assert.AreEqual("LINQ to Tweeter", users.First().Name);
-            Assert.AreEqual(44758373ul, list.ListIDResult);
+            Assert.AreEqual(44758373ul, list.ListIDResponse);
             Assert.AreEqual(0, list.SubscriberCount);
             Assert.AreEqual(new DateTime(2011, 5, 8, 2, 0, 33), list.CreatedAt);
             Assert.AreEqual(false, list.Following);
-            Assert.AreEqual("test", list.SlugResult);
+            Assert.AreEqual("test", list.SlugResponse);
         }
 
         [TestMethod]

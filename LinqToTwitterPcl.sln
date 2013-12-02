@@ -23,6 +23,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqToTwitter.AspNet", "Lin
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linq2TwitterDemos_MVC", "Linq2TwitterDemos_MVC\Linq2TwitterDemos_MVC.csproj", "{66D527FE-E2F4-43E3-8A7C-BAE342617668}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linq2TwitterDemos_WindowsForms", "Linq2TwitterDemos_WindowsForms\Linq2TwitterDemos_WindowsForms.csproj", "{0F6AD36A-BDE4-47A5-B50E-E2C7AB7EE43D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -243,6 +245,22 @@ Global
 		{66D527FE-E2F4-43E3-8A7C-BAE342617668}.Release|Win32.ActiveCfg = Release|Any CPU
 		{66D527FE-E2F4-43E3-8A7C-BAE342617668}.Release|x64.ActiveCfg = Release|Any CPU
 		{66D527FE-E2F4-43E3-8A7C-BAE342617668}.Release|x86.ActiveCfg = Release|Any CPU
+		{0F6AD36A-BDE4-47A5-B50E-E2C7AB7EE43D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F6AD36A-BDE4-47A5-B50E-E2C7AB7EE43D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F6AD36A-BDE4-47A5-B50E-E2C7AB7EE43D}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{0F6AD36A-BDE4-47A5-B50E-E2C7AB7EE43D}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{0F6AD36A-BDE4-47A5-B50E-E2C7AB7EE43D}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{0F6AD36A-BDE4-47A5-B50E-E2C7AB7EE43D}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{0F6AD36A-BDE4-47A5-B50E-E2C7AB7EE43D}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{0F6AD36A-BDE4-47A5-B50E-E2C7AB7EE43D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{0F6AD36A-BDE4-47A5-B50E-E2C7AB7EE43D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F6AD36A-BDE4-47A5-B50E-E2C7AB7EE43D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F6AD36A-BDE4-47A5-B50E-E2C7AB7EE43D}.Release|ARM.ActiveCfg = Release|Any CPU
+		{0F6AD36A-BDE4-47A5-B50E-E2C7AB7EE43D}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{0F6AD36A-BDE4-47A5-B50E-E2C7AB7EE43D}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{0F6AD36A-BDE4-47A5-B50E-E2C7AB7EE43D}.Release|Win32.ActiveCfg = Release|Any CPU
+		{0F6AD36A-BDE4-47A5-B50E-E2C7AB7EE43D}.Release|x64.ActiveCfg = Release|Any CPU
+		{0F6AD36A-BDE4-47A5-B50E-E2C7AB7EE43D}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

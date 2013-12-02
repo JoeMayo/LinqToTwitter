@@ -11,7 +11,7 @@ namespace LinqToTwitter
         public async Task AuthorizeAsync()
         {
             if (!CredentialStore.HasAllCredentials())
-                throw new InvalidOperationException("SingleUserAuthorizer needs preset credentials; don't call Authorize unless you've completly set the Credentials");
+                throw new InvalidOperationException("SingleUserAuthorizer needs preset credentials; don't call Authorize unless you've set all four credentials.");
         }
     }
 }

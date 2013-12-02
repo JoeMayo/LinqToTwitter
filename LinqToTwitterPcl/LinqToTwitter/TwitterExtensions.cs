@@ -15,24 +15,6 @@ namespace LinqToTwitter
         /// <param name="streaming">Query being extended</param>
         /// <param name="callback">Your code for handling Twitter content</param>
         /// <returns>Streaming instance to support further LINQ opertations</returns>
-        public static IQueryable<Streaming> StreamingCallback(this IQueryable<Streaming> streaming, Func<StreamContent, Task> callback)
-        {
-            (streaming.Provider as TwitterQueryProvider)
-                .Context
-                .TwitterExecutor
-                .StreamingCallbackAsync = callback;
-
-            return streaming;
-        }
-
-        /// <summary>
-        /// Callback is invoked by LINQ to Twitter streaming support,
-        /// allowing you to process each individual response from Twitter.
-        /// For best results, please review the Twitter API streaming guidelines.
-        /// </summary>
-        /// <param name="streaming">Query being extended</param>
-        /// <param name="callback">Your code for handling Twitter content</param>
-        /// <returns>Streaming instance to support further LINQ opertations</returns>
         public static async Task<List<Streaming>> StartAsync(this IQueryable<Streaming> streaming, Func<StreamContent, Task> callback)
         {
             var provider = streaming.Provider as TwitterQueryProvider;

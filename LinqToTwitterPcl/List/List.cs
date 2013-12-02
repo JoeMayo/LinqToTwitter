@@ -20,11 +20,11 @@ namespace LinqToTwitter
             Mode = listJson.GetValue<string>("mode");
             Uri = listJson.GetValue<string>("uri");
             Users = new List<User> { new User(listJson.GetValue<JsonData>("user")) };
-            ListIDResult = listJson.GetValue<ulong>("id");
+            ListIDResponse = listJson.GetValue<ulong>("id");
             SubscriberCount = listJson.GetValue<int>("subscriber_count");
             CreatedAt = listJson.GetValue<string>("created_at").GetDate(DateTime.MaxValue);
             Following = listJson.GetValue<bool>("following");
-            SlugResult = listJson.GetValue<string>("slug");
+            SlugResponse = listJson.GetValue<string>("slug");
         }
 
         /// <summary>
@@ -55,7 +55,7 @@ namespace LinqToTwitter
         /// <summary>
         /// List ID (Returned from Twitter)
         /// </summary>
-        public ulong ListIDResult { get; set; }
+        public ulong ListIDResponse { get; set; }
 
         /// <summary>
         /// Catchword for list (Query Filter)
@@ -65,7 +65,7 @@ namespace LinqToTwitter
         /// <summary>
         /// Catchword for list (Returned from Twitter)
         /// </summary>
-        public string SlugResult { get; set; }
+        public string SlugResponse { get; set; }
 
         /// <summary>
         /// ID of List Owner (Query Filter)

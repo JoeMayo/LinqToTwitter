@@ -159,7 +159,7 @@ namespace Linq2TwitterDemos_Console
                     .ToListAsync();
 
             if (lists != null)
-                lists.ForEach(list => Console.WriteLine("Slug: " + list.SlugResult));
+                lists.ForEach(list => Console.WriteLine("Slug: " + list.SlugResponse));
         }
 
         static async Task GetListStatusesAsync(TwitterContext twitterCtx)
@@ -417,8 +417,8 @@ namespace Linq2TwitterDemos_Console
                 lists.ForEach(list =>
                     Console.WriteLine(
                         "ID: {0}  Slug: {1} Description: {2}",
-                        list.ListIDResult, 
-                        list.SlugResult, 
+                        list.ListIDResponse, 
+                        list.SlugResponse, 
                         list.Description));
         }
 
