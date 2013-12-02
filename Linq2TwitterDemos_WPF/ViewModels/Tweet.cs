@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace Linq2TwitterDemos_WindowsPhone.ViewModels
+namespace Linq2TwitterDemos_WPF.ViewModels
 {
     public class Tweet
     {

@@ -1,15 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using LinqToTwitter;
 
-namespace Linq2TwitterDemos_WindowsForms.Status
+namespace Linq2TwitterDemos_WindowsForms.StatusDemos
 {
     public partial class HomeTimelineForm : Form
     {

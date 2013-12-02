@@ -59,7 +59,7 @@
             // 
             this.StatusHomeTimelineMenu.Name = "StatusHomeTimelineMenu";
             this.StatusHomeTimelineMenu.Size = new System.Drawing.Size(156, 22);
-            this.StatusHomeTimelineMenu.Tag = "Linq2TwitterDemos_WindowsForms.Status.HomeTimelineForm";
+            this.StatusHomeTimelineMenu.Tag = "Linq2TwitterDemos_WindowsForms.StatusDemos.HomeTimelineForm";
             this.StatusHomeTimelineMenu.Text = "Home Timeline";
             this.StatusHomeTimelineMenu.Click += new System.EventHandler(this.MenuItem_Click);
             // 

@@ -1,4 +1,4 @@
-﻿namespace Linq2TwitterDemos_WindowsForms.Status
+﻿namespace Linq2TwitterDemos_WindowsForms.StatusDemos
 {
     partial class HomeTimelineForm
     {
