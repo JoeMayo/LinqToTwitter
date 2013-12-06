@@ -105,7 +105,7 @@ namespace LinqToTwitter
         public IEnumerator<T> GetEnumerator()
         {
             var tsk = (((TwitterQueryProvider)Provider).ExecuteAsync<IEnumerable<T>>(Expression));
-            return tsk.Result.GetEnumerator();
+            return ((IEnumerable<T>)tsk.Result).GetEnumerator();
         }
 
         /// <summary>

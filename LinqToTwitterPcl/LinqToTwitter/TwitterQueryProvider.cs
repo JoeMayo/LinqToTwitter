@@ -110,8 +110,8 @@ namespace LinqToTwitter
 
             try
             {
-                var exeTask = (Task<dynamic>)genericMethodInfo.Invoke(Context, new object[] { expression, isEnumerable });
-                return exeTask.Result;
+                var exeTask = (Task<object>)genericMethodInfo.Invoke(Context, new object[] { expression, isEnumerable });
+                return (TResult)exeTask.Result;
             }
             catch (TargetInvocationException tex)
             {
@@ -122,7 +122,7 @@ namespace LinqToTwitter
             }
         }
 
-        public async Task<dynamic> ExecuteAsync<TResult>(Expression expression)
+        public async Task<object> ExecuteAsync<TResult>(Expression expression)
             where TResult : class
         {
             bool isEnumerable =
@@ -137,7 +137,7 @@ namespace LinqToTwitter
 
             try
             {
-                var result = await (Task<dynamic>)genericMethodInfo.Invoke(Context, new object[] { expression, isEnumerable });
+                var result = await (Task<object>)genericMethodInfo.Invoke(Context, new object[] { expression, isEnumerable });
                 return result;
             }
             catch (TargetInvocationException tex)

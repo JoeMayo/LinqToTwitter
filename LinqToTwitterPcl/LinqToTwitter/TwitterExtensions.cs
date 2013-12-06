@@ -30,7 +30,7 @@ namespace LinqToTwitter
         {
             var provider = query.Provider as TwitterQueryProvider;
 
-            IEnumerable<T> results = await provider.ExecuteAsync<IEnumerable<T>>(query.Expression);
+            IEnumerable<T> results = (IEnumerable<T>)await provider.ExecuteAsync<IEnumerable<T>>(query.Expression);
 
             return results.ToList();
         }
@@ -40,7 +40,7 @@ namespace LinqToTwitter
         {
             var provider = query.Provider as TwitterQueryProvider;
 
-            IEnumerable<T> results = await provider.ExecuteAsync<T>(query.Expression);
+            IEnumerable<T> results = (IEnumerable<T>)await provider.ExecuteAsync<T>(query.Expression);
 
             return results.FirstOrDefault();
         }
@@ -50,7 +50,7 @@ namespace LinqToTwitter
         {
             var provider = query.Provider as TwitterQueryProvider;
 
-            IEnumerable<T> results = await provider.ExecuteAsync<T>(query.Expression);
+            IEnumerable<T> results = (IEnumerable<T>)await provider.ExecuteAsync<T>(query.Expression);
 
             return results.First();
         }
@@ -60,7 +60,7 @@ namespace LinqToTwitter
         {
             var provider = query.Provider as TwitterQueryProvider;
 
-            IEnumerable<T> results = await provider.ExecuteAsync<T>(query.Expression);
+            IEnumerable<T> results = (IEnumerable<T>)await provider.ExecuteAsync<T>(query.Expression);
 
             return results.SingleOrDefault();
         }
@@ -70,7 +70,7 @@ namespace LinqToTwitter
         {
             var provider = query.Provider as TwitterQueryProvider;
 
-            IEnumerable<T> results = await provider.ExecuteAsync<T>(query.Expression);
+            IEnumerable<T> results = (IEnumerable<T>)await provider.ExecuteAsync<T>(query.Expression);
 
             return results.Single();
         }

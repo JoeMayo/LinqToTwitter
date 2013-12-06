@@ -425,7 +425,7 @@ namespace LinqToTwitter
         /// <param name="expression">ExpressionTree to parse</param>
         /// <param name="isEnumerable">Indicates whether expression is enumerable</param>
         /// <returns>list of objects with query results</returns>
-        public virtual async Task<dynamic> ExecuteAsync<T>(Expression expression, bool isEnumerable)
+        public virtual async Task<object> ExecuteAsync<T>(Expression expression, bool isEnumerable)
             where T: class
         {
             // request processor is specific to request type (i.e. Status, User, etc.)
@@ -467,7 +467,7 @@ namespace LinqToTwitter
             if (isEnumerable)
                 return queryableItems.Provider.CreateQuery(newExpressionTree);
 
-            return queryableItems.Provider.Execute<dynamic>(newExpressionTree);
+            return queryableItems.Provider.Execute<object>(newExpressionTree);
         }
 
         /// <summary>
