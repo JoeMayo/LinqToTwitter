@@ -5,8 +5,6 @@ VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqToTwitterPcl", "LinqToTwitterPcl\LinqToTwitterPcl.csproj", "{CAAFF164-A681-4183-BB83-A07B668F7FFC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqToTwitterDemoPcl", "LinqToTwitterDemoPcl\LinqToTwitterDemoPcl.csproj", "{96687B04-F911-47ED-9E85-7772ECDC4C3C}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqToTwitterPcl.Tests", "LinqToTwitterPcl.Tests\LinqToTwitterPcl.Tests.csproj", "{C909EBD0-9CA3-49FB-8B78-F4EE4426D4F6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linq2TwitterDemos_Console", "Linq2TwitterDemos_Console\Linq2TwitterDemos_Console.csproj", "{734E827E-3635-4840-A060-7F30966ABFDD}"
@@ -59,22 +57,6 @@ Global
 		{CAAFF164-A681-4183-BB83-A07B668F7FFC}.Release|Win32.ActiveCfg = Release|Any CPU
 		{CAAFF164-A681-4183-BB83-A07B668F7FFC}.Release|x64.ActiveCfg = Release|Any CPU
 		{CAAFF164-A681-4183-BB83-A07B668F7FFC}.Release|x86.ActiveCfg = Release|Any CPU
-		{96687B04-F911-47ED-9E85-7772ECDC4C3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{96687B04-F911-47ED-9E85-7772ECDC4C3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{96687B04-F911-47ED-9E85-7772ECDC4C3C}.Debug|ARM.ActiveCfg = Debug|Any CPU
-		{96687B04-F911-47ED-9E85-7772ECDC4C3C}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{96687B04-F911-47ED-9E85-7772ECDC4C3C}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{96687B04-F911-47ED-9E85-7772ECDC4C3C}.Debug|Win32.ActiveCfg = Debug|Any CPU
-		{96687B04-F911-47ED-9E85-7772ECDC4C3C}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{96687B04-F911-47ED-9E85-7772ECDC4C3C}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{96687B04-F911-47ED-9E85-7772ECDC4C3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{96687B04-F911-47ED-9E85-7772ECDC4C3C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{96687B04-F911-47ED-9E85-7772ECDC4C3C}.Release|ARM.ActiveCfg = Release|Any CPU
-		{96687B04-F911-47ED-9E85-7772ECDC4C3C}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{96687B04-F911-47ED-9E85-7772ECDC4C3C}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{96687B04-F911-47ED-9E85-7772ECDC4C3C}.Release|Win32.ActiveCfg = Release|Any CPU
-		{96687B04-F911-47ED-9E85-7772ECDC4C3C}.Release|x64.ActiveCfg = Release|Any CPU
-		{96687B04-F911-47ED-9E85-7772ECDC4C3C}.Release|x86.ActiveCfg = Release|Any CPU
 		{C909EBD0-9CA3-49FB-8B78-F4EE4426D4F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C909EBD0-9CA3-49FB-8B78-F4EE4426D4F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C909EBD0-9CA3-49FB-8B78-F4EE4426D4F6}.Debug|ARM.ActiveCfg = Debug|Any CPU

@@ -22,7 +22,7 @@ namespace LinqToTwitter
         public virtual string BaseUrl { get; set; }
 
         /// <summary>
-        /// Type of account query (VerifyCredentials or RateLimitStatus)
+        /// Type of account query (VerifyCredentials or Settings)
         /// </summary>
         internal AccountType Type { get; set; }
 

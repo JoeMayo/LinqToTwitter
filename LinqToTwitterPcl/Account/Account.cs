@@ -6,7 +6,7 @@
     public class Account
     {
         /// <summary>
-        /// Type of account query (VerifyCredentials or RateLimitStatus)
+        /// Type of account query (VerifyCredentials or Settings)
         /// </summary>
         public AccountType Type { get; set; }
 
@@ -24,11 +24,6 @@
         /// User returned by VerifyCredentials Queries
         /// </summary>
         public User User { get; set; }
-
-        /// <summary>
-        /// RateLimitStatus returned by RateLimitStatus queries
-        /// </summary>
-        public RateLimitStatus RateLimitStatus { get; set; }
 
         /// <summary>
         /// Current Totals

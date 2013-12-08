@@ -20,7 +20,7 @@ namespace LinqToTwitter
         /// <remarks>
         /// This is very useful for debugging
         /// </remarks>
-        string LastUrl { get; }
+        Uri LastUrl { get; }
 
         /// <summary>
         /// list of response headers from query
@@ -78,11 +78,6 @@ namespace LinqToTwitter
         /// <param name="req">Request URL and parameters.</param>
         /// <returns>Placeholder - real data flows from stream into callback you define.</returns>
         Task<string> QueryTwitterStreamAsync(Request req);
-
-        /// <summary>
-        /// Used to notify callers of changes in image upload progress
-        /// </summary>
-        event EventHandler<TwitterProgressEventArgs> UploadProgressChanged;
 
         /// <summary>
         /// Allows users to process content returned from stream

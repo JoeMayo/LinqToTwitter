@@ -15,15 +15,9 @@ namespace LinqToTwitter
     /// </summary>
     internal partial class TwitterExecute : ITwitterExecute, IDisposable
     {
-        /// <summary>
-        /// Version used in UserAgent
-        /// </summary>
-        const string LinqToTwitterVersion = "LINQ-To-Twitter/3.0";
-
-        /// <summary>
-        /// Default for ReadWriteTimeout
-        /// </summary>
-        public const int DefaultReadWriteTimeout = 300000;
+        internal const string DefaultUserAgent = "LINQ-To-Twitter/3.0";
+        internal const int DefaultReadWriteTimeout = 300000;
+        internal const int DefaultTimeout = 100000;
 
         /// <summary>
         /// Gets or sets the object that can send authorized requests to Twitter.
@@ -37,11 +31,6 @@ namespace LinqToTwitter
         public int ReadWriteTimeout { get; set; }
 
         /// <summary>
-        /// Default for Timeout
-        /// </summary>
-        public const int DefaultTimeout = 100000;
-
-        /// <summary>
         /// Timeout (milliseconds) to wait for a server response
         /// </summary>
         public int Timeout { get; set; }
@@ -52,7 +41,7 @@ namespace LinqToTwitter
         /// <remarks>
         /// This is very useful for debugging
         /// </remarks>
-        public string LastUrl { get; private set; }
+        public Uri LastUrl { get; private set; }
 
         /// <summary>
         /// list of response headers from query
@@ -73,7 +62,7 @@ namespace LinqToTwitter
                 Authorizer.UserAgent =
                     string.IsNullOrWhiteSpace(value) ?
                         Authorizer.UserAgent :
-                        value + ";" + Authorizer.UserAgent;
+                        value + ", " + Authorizer.UserAgent;
             }
         }
 
@@ -102,27 +91,6 @@ namespace LinqToTwitter
         readonly object asyncCallbackLock = new object();
 
         /// <summary>
-        /// Used to notify callers of changes in image upload progress
-        /// </summary>
-        public event EventHandler<TwitterProgressEventArgs> UploadProgressChanged;
-
-        /// <summary>
-        /// Call this to notify users of percentage of completion of operation.
-        /// </summary>
-        /// <param name="percent">Percent complete.</param>
-        void OnUploadProgressChanged(int percent)
-        {
-            if (UploadProgressChanged != null)
-            {
-                var progressEventArgs = new TwitterProgressEventArgs
-                {
-                    PercentComplete = percent
-                };
-                UploadProgressChanged(this, progressEventArgs);
-            }
-        }
-
-        /// <summary>
         /// supports testing
         /// </summary>
         public TwitterExecute(IAuthorizer authorizer)
@@ -133,7 +101,7 @@ namespace LinqToTwitter
             }
 
             Authorizer = authorizer;
-            Authorizer.UserAgent = Authorizer.UserAgent ?? LinqToTwitterVersion;
+            Authorizer.UserAgent = Authorizer.UserAgent ?? DefaultUserAgent;
         }
 
         /// <summary>
@@ -144,7 +112,7 @@ namespace LinqToTwitter
         /// <returns>XML Respose from Twitter</returns>
         public async Task<string> QueryTwitterAsync<T>(Request request, IRequestProcessor<T> reqProc)
         {
-            WriteLog(LastUrl, "QueryTwitterAsync");
+            WriteLog(request.FullUrl, "QueryTwitterAsync");
 
             var req = new HttpRequestMessage(HttpMethod.Get, request.FullUrl);
 
@@ -161,9 +129,7 @@ namespace LinqToTwitter
 
                 var msg = await client.SendAsync(req);
 
-                await TwitterErrorHandler.ThrowIfErrorAsync(msg);
-
-                return await msg.Content.ReadAsStringAsync();
+                return await HandleResponseAsync(msg);
             }
         }
   
@@ -188,6 +154,8 @@ namespace LinqToTwitter
         /// </returns>
         public async Task<string> QueryTwitterStreamAsync(Request request)
         {
+            WriteLog(request.FullUrl, "QueryTwitterAsync");
+
             var handler = new HttpClientHandler();
             if (handler.SupportsAutomaticDecompression)
                 handler.AutomaticDecompression = DecompressionMethods.GZip;
@@ -301,6 +269,8 @@ namespace LinqToTwitter
         /// <returns>JSON response From Twitter.</returns>
         public async Task<string> PostMediaAsync(string url, IDictionary<string, string> postData, byte[] data, string name, string fileName, string contentType)
         {
+            WriteLog(url, "QueryTwitterAsync");
+
             var multiPartContent = new MultipartFormDataContent();
             var byteArrayContent = new ByteArrayContent(data);
             byteArrayContent.Headers.Add("Content-Type", contentType);
@@ -325,9 +295,7 @@ namespace LinqToTwitter
 
                 HttpResponseMessage msg = await client.PostAsync(url, multiPartContent);
 
-                await TwitterErrorHandler.ThrowIfErrorAsync(msg);
-
-                return await msg.Content.ReadAsStringAsync();
+                return await HandleResponseAsync(msg);
             }
         }
 
@@ -340,7 +308,7 @@ namespace LinqToTwitter
         /// <returns>Json Response from Twitter - empty string if async</returns>
         public async Task<string> PostToTwitterAsync<T>(string url, IDictionary<string, string> postData)
         {
-            WriteLog(LastUrl, "PostToTwitterAsync");
+            WriteLog(url, "PostToTwitterAsync");
 
             var cleanPostData = new Dictionary<string, string>();
 
@@ -359,10 +327,28 @@ namespace LinqToTwitter
 
                 HttpResponseMessage msg = await client.PostAsync(url, content);
 
-                await TwitterErrorHandler.ThrowIfErrorAsync(msg);
-
-                return await msg.Content.ReadAsStringAsync();
+                return await HandleResponseAsync(msg);
             }
+        }
+  
+        async Task<string> HandleResponseAsync(HttpResponseMessage msg)
+        {
+            LastUrl = msg.RequestMessage.RequestUri;
+
+            ResponseHeaders =
+                (from header in msg.Headers
+                 select new
+                 {
+                     Key = header.Key,
+                     Value = string.Join(", ", header.Value)
+                 })
+                   .ToDictionary(
+                    pair => pair.Key,
+                    pair => pair.Value);
+
+            await TwitterErrorHandler.ThrowIfErrorAsync(msg);
+
+            return await msg.Content.ReadAsStringAsync();
         }
 
         void WriteLog(string content, string currentMethod)
@@ -394,12 +380,6 @@ namespace LinqToTwitter
         {
             if (disposing)
             {
-                var disposableClient = Authorizer as IDisposable;
-                if (disposableClient != null)
-                {
-                    disposableClient.Dispose();
-                }
-
                 StreamingCallbackAsync = null;
 
                 if (Log != null)

@@ -45,7 +45,6 @@
     <Compile Include="Account\AccountRequestProcessor.cs" />
     <Compile Include="Account\AccountType.cs" />
     <Compile Include="Account\DeviceType.cs" />
-    <Compile Include="Account\RateLimitStatus.cs" />
     <Compile Include="Account\Settings.cs" />
     <Compile Include="Account\SleepTime.cs" />
     <Compile Include="Account\Totals.cs" />

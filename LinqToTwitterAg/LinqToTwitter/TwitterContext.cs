@@ -24,19 +24,17 @@ namespace LinqToTwitter
     public class TwitterContext : IDisposable
     {
         //
-        // response header constants
+        // header constants
         //
 
-        public const string XRateLimitLimitKey = "X-Rate-Limit-Limit";
-        public const string XRateLimitRemainingKey = "X-Rate-Limit-Remaining";
-        public const string XRateLimitResetKey = "X-Rate-Limit-Reset";
+        public const string XRateLimitLimitKey = "x-rate-limit-limit";
+        public const string XRateLimitRemainingKey = "x-rate-limit-remaining";
+        public const string XRateLimitResetKey = "x-rate-limit-reset";
         public const string RetryAfterKey = "Retry-After";
-        public const string XFeatureRateLimitLimitKey = "X-FeatureRateLimit-Limit";
-        public const string XFeatureRateLimitRemainingKey = "X-FeatureRateLimit-Remaining";
-        public const string XFeatureRateLimitResetKey = "X-FeatureRateLimit-Reset";
+        public const string XMediaRateLimitLimitKey = "x-mediaratelimit-limit";
+        public const string XMediaRateLimitRemainingKey = "x-mediaratelimit-remaining";
+        public const string XMediaRateLimitResetKey = "x-mediaratelimit-reset";
         public const string DateKey = "Date";
-
-        // TODO: Obsolete constructors that were once warnings are now errors. Remove in the following version.
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TwitterContext"/> class.
@@ -646,62 +644,43 @@ namespace LinqToTwitter
             }
         }
 
+
         /// <summary>
-        /// Max number of requests per minute
-        /// returned by the most recent feature's query
+        /// Max number of requests per window for
+        /// TweetWithMediaAsync and ReplyWithMediaAsync.
         /// </summary>
-        /// <remarks>
-        /// Feature-specific rate limit that applies in conjunction with the
-        /// main rate limit. Calls to certain APIs will count against its 
-        /// feature-specific rate limit
-        /// Returns -1 if information isn't available,
-        /// i.e. you haven't performed a query yet
-        /// </remarks>
-        public int FeatureRateLimitCurrent
+        public int MediaRateLimitCurrent
         {
             get
             {
-                return GetResponseHeaderAsInt(XFeatureRateLimitLimitKey);
+                return GetResponseHeaderAsInt(XMediaRateLimitLimitKey);
             }
         }
 
         /// <summary>
         /// Number of requests available until reset
-        /// returned by the most recent feature's query
+        /// for TweetWithMediaAsync and ReplyWithMediaAsync.
         /// </summary>
-        /// <remarks>
-        /// Feature-specific rate limit that applies in conjunction with the
-        /// main rate limit. Calls to certain APIs will count against its 
-        /// feature-specific rate limit
-        /// Returns -1 if information isn't available,
-        /// i.e. you haven't performed a query yet
-        /// </remarks>
-        public int FeatureRateLimitRemaining
+        public int MediaRateLimitRemaining
         {
             get
             {
-                return GetResponseHeaderAsInt(XFeatureRateLimitRemainingKey);
+                return GetResponseHeaderAsInt(XMediaRateLimitRemainingKey);
             }
         }
 
         /// <summary>
         /// UTC time in ticks until rate limit resets
-        /// returned by the most recent feature's query
+        /// for TweetWithMediaAsync and ReplyWithMediaAsync.
         /// </summary>
-        /// <remarks>
-        /// Feature-specific rate limit that applies in conjunction with the
-        /// main rate limit. Calls to certain APIs will count against its 
-        /// feature-specific rate limit
-        /// Returns -1 if information isn't available,
-        /// i.e. you haven't performed a query yet
-        /// </remarks>
-        public int FeatureRateLimitReset
+        public int MediaRateLimitReset
         {
             get
             {
-                return GetResponseHeaderAsInt(XFeatureRateLimitResetKey);
+                return GetResponseHeaderAsInt(XMediaRateLimitResetKey);
             }
         }
+
 
         /// <summary>
         /// Gets the response header Date and converts to a nullable-DateTime
