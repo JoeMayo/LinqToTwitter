@@ -15,7 +15,8 @@
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <SilverlightVersion>$(TargetFrameworkVersion)</SilverlightVersion>
     <SilverlightApplication>true</SilverlightApplication>
-    <SupportedCultures></SupportedCultures>
+    <SupportedCultures>
+    </SupportedCultures>
     <XapOutputs>true</XapOutputs>
     <GenerateSilverlightManifest>true</GenerateSilverlightManifest>
     <XapFilename>LinqToTwitterSilverlightDemo.xap</XapFilename>
@@ -28,7 +29,8 @@
     <OutOfBrowserSettingsFile>Properties\OutOfBrowserSettings.xml</OutOfBrowserSettingsFile>
     <UsePlatformExtensions>false</UsePlatformExtensions>
     <ThrowErrorsInValidation>true</ThrowErrorsInValidation>
-    <LinkedServerProject></LinkedServerProject>
+    <LinkedServerProject>
+    </LinkedServerProject>
     <SccProjectName />
     <SccLocalPath />
     <SccAuxPath />
@@ -89,8 +91,8 @@
     <Compile Include="Views\About.xaml.cs">
       <DependentUpon>About.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\FriendsStatusQuery.xaml.cs">
-      <DependentUpon>FriendsStatusQuery.xaml</DependentUpon>
+    <Compile Include="Views\HomeTimelineQuery.xaml.cs">
+      <DependentUpon>HomeTimelineQuery.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Home.xaml.cs">
       <DependentUpon>Home.xaml</DependentUpon>
@@ -99,14 +101,8 @@
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Views\PublicStatusQuery.xaml.cs">
-      <DependentUpon>PublicStatusQuery.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\StatusUpdate.xaml.cs">
       <DependentUpon>StatusUpdate.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Trends.xaml.cs">
-      <DependentUpon>Trends.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -114,19 +110,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="Views\FriendsStatusQuery.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\PublicStatusQuery.xaml">
+    <Page Include="Views\HomeTimelineQuery.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\StatusUpdate.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Trends.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

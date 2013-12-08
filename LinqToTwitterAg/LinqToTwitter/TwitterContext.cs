@@ -117,37 +117,6 @@ namespace LinqToTwitter
 #endif
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TwitterContext"/> class.
-        /// </summary>
-        /// <param name="authorization">OAuth provider</param>
-        /// <param name="execute">The <see cref="ITwitterExecute"/> object to use.</param>
-        /// <param name="baseUrl">Base url of Twitter API.  May be null to use the default "https://api.twitter.com/1.1/" value.</param>
-        /// <param name="searchUrl">Base url of Twitter Search API.  May be null to use the default "https://api.twitter.com/1.1/search/" value.</param>
-        [Obsolete("No longer used.", true)]
-        public TwitterContext(ITwitterAuthorizer authorization, ITwitterExecute execute)
-        {
-//            if (authorization == null)
-//            {
-//                throw new ArgumentNullException("authorization");
-//            }
-
-//            if (execute == null)
-//            {
-//                throw new ArgumentNullException("execute");
-//            }
-
-//            TwitterExecutor = execute;
-//            TwitterExecutor.AuthorizedClient = authorization;
-//            BaseUrl = string.IsNullOrEmpty(baseUrl) ? "https://api.twitter.com/1.1/" : baseUrl;
-//            SearchUrl = string.IsNullOrEmpty(searchUrl) ? "https://api.twitter.com/1.1/" : searchUrl;
-
-//#if SILVERLIGHT
-//            WebRequest.RegisterPrefix("http://", WebRequestCreator.ClientHttp);
-//            WebRequest.RegisterPrefix("https://", WebRequestCreator.ClientHttp);
-//#endif
-        }
-
-        /// <summary>
         /// Gets the screen name of the user (only populated when a request for access token occurs)
         /// </summary>
         public string UserName

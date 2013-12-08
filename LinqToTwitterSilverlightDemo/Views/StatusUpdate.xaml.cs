@@ -9,8 +9,8 @@ namespace LinqToTwitterSilverlightDemo.Views
 {
     public partial class StatusUpdate : Page
     {
-        private TwitterContext m_twitterCtx = null;
-        private PinAuthorizer m_pinAuth = null;
+        private TwitterContext twitterCtx = null;
+        private PinAuthorizer pinAuth = null;
 
         public StatusUpdate()
         {
@@ -33,7 +33,7 @@ namespace LinqToTwitterSilverlightDemo.Views
 
         private void DoPinAuth()
         {
-            m_pinAuth = new PinAuthorizer
+            pinAuth = new PinAuthorizer
             {
                 Credentials = new InMemoryCredentials
                 {
@@ -45,7 +45,7 @@ namespace LinqToTwitterSilverlightDemo.Views
                     Dispatcher.BeginInvoke(() => WebBrowser.Navigate(new Uri(pageLink)))
             };
 
-            m_pinAuth.BeginAuthorize(resp =>
+            pinAuth.BeginAuthorize(resp =>
                 Dispatcher.BeginInvoke(() =>
                 {
                     switch (resp.Status)
@@ -55,14 +55,14 @@ namespace LinqToTwitterSilverlightDemo.Views
                         case TwitterErrorStatus.TwitterApiError:
                         case TwitterErrorStatus.RequestProcessingException:
                             MessageBox.Show(
-                                resp.Error.ToString(),
+                                resp.Exception.ToString(),
                                 resp.Message,
                                 MessageBoxButton.OK);
                             break;
                     }
                 }));
 
-            m_twitterCtx = new TwitterContext(m_pinAuth, "https://api.twitter.com/1/", "https://search.twitter.com/");
+            twitterCtx = new TwitterContext(pinAuth);
         }
 
         private void DoWebAuth()
@@ -95,7 +95,7 @@ namespace LinqToTwitterSilverlightDemo.Views
                         case TwitterErrorStatus.TwitterApiError:
                         case TwitterErrorStatus.RequestProcessingException:
                             MessageBox.Show(
-                                resp.Error.ToString(),
+                                resp.Exception.ToString(),
                                 resp.Message,
                                 MessageBoxButton.OK);
                             break;
@@ -114,7 +114,7 @@ namespace LinqToTwitterSilverlightDemo.Views
                             case TwitterErrorStatus.TwitterApiError:
                             case TwitterErrorStatus.RequestProcessingException:
                                 MessageBox.Show(
-                                    resp.Error.ToString(),
+                                    resp.Exception.ToString(),
                                     resp.Message,
                                     MessageBoxButton.OK);
                                 break;
@@ -122,12 +122,12 @@ namespace LinqToTwitterSilverlightDemo.Views
                     }));
             }
 
-            m_twitterCtx = new TwitterContext(auth);
+            twitterCtx = new TwitterContext(auth);
         }
 
         private void PinButton_Click(object sender, RoutedEventArgs e)
         {
-            m_pinAuth.CompleteAuthorize(
+            pinAuth.CompleteAuthorize(
                 PinTextBox.Text,
                 completeResp => Dispatcher.BeginInvoke(() =>
                 {
@@ -140,7 +140,7 @@ namespace LinqToTwitterSilverlightDemo.Views
                         case TwitterErrorStatus.TwitterApiError:
                         case TwitterErrorStatus.RequestProcessingException:
                             MessageBox.Show(
-                                completeResp.Error.ToString(),
+                                completeResp.Exception.ToString(),
                                 completeResp.Message,
                                 MessageBoxButton.OK);
                             break;
@@ -150,7 +150,7 @@ namespace LinqToTwitterSilverlightDemo.Views
 
         private void SendButton_Click(object sender, RoutedEventArgs e)
         {
-            m_twitterCtx.UpdateStatus(TweetTextBox.Text,
+            twitterCtx.UpdateStatus(TweetTextBox.Text,
                 updateResp => Dispatcher.BeginInvoke(() =>
                 {
                     switch (updateResp.Status)
@@ -168,7 +168,7 @@ namespace LinqToTwitterSilverlightDemo.Views
                         case TwitterErrorStatus.TwitterApiError:
                         case TwitterErrorStatus.RequestProcessingException:
                             MessageBox.Show(
-                                updateResp.Error.ToString(),
+                                updateResp.Exception.ToString(),
                                 updateResp.Message,
                                 MessageBoxButton.OK);
                             break;

@@ -323,7 +323,7 @@ namespace LinqToTwitter
             if (AsyncCallback == null)
                 throw new InvalidOperationException("Silverlight and Windows Phone applications require async queries.");
 #endif
-            //Log
+
             LastUrl = request.FullUrl;
             WriteLog(LastUrl, "QueryTwitter");
 
@@ -334,7 +334,7 @@ namespace LinqToTwitter
             try
             {
                 var req = AuthorizedClient.Get(request);
-                //var req = GetHttpRequest(request);
+
 #if !SILVERLIGHT
                 bool initialStateSignaled = AsyncCallback != null;
 
@@ -1141,8 +1141,6 @@ namespace LinqToTwitter
             if (AsyncCallback == null)
                 throw new InvalidOperationException("Silverlight and Windows Phone applications require async commands.");
 #endif
-            var encoding = Encoding.GetEncoding("iso-8859-1");
-
             var paramList = new List<string>();
 
             if (postData != null && postData.Count > 0)
@@ -1153,7 +1151,7 @@ namespace LinqToTwitter
                     {
                         string urlEncodedValue = BuildUrlHelper.UrlEncode(param.Value);
                         byte[] valueBytes = Encoding.UTF8.GetBytes(urlEncodedValue);
-                        string encodedParamVal = encoding.GetString(valueBytes, 0, valueBytes.Length);
+                        string encodedParamVal = Encoding.UTF8.GetString(valueBytes, 0, valueBytes.Length);
 
                         paramList.Add(param.Key + "=" + encodedParamVal);
                     }
@@ -1161,7 +1159,7 @@ namespace LinqToTwitter
             }
 
             string postDataString = string.Join("&", paramList.ToArray());
-            byte[] paramBytes = encoding.GetBytes(postDataString);
+            byte[] paramBytes = Encoding.UTF8.GetBytes(postDataString);
 
             string response = string.Empty;
             string httpStatus = string.Empty;
@@ -1252,7 +1250,7 @@ namespace LinqToTwitter
                                     {
                                         using (var res = req.EndGetResponse(ar) as HttpWebResponse)
                                         {
-                                            httpStatus = res.Headers["Status"];
+                                            httpStatus = res.StatusCode.ToString();
                                             response = GetTwitterResponse(res);
 
                                             if (AsyncCallback != null)
@@ -1295,13 +1293,13 @@ namespace LinqToTwitter
                                 }
                                 finally
                                 {
-#if !WINDOWS_PHONE && !NETFX_CORE
+#if !SILVERLIGHT && !NETFX_CORE
                                     resetEvent.Set();
 #endif
                                 }
                             }), null);
 
-#if !WINDOWS_PHONE && !NETFX_CORE
+#if !SILVERLIGHT && !NETFX_CORE
                     resetEvent.WaitOne();
 #endif
                     if (asyncException != null)

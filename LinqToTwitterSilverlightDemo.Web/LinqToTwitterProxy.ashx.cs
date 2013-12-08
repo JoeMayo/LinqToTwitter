@@ -193,9 +193,9 @@ namespace LinqToTwitterSilverlightDemo.Web
 
             proxyReq.ServicePoint.Expect100Continue = false;
 
-            proxyReq.UserAgent = "LINQ to Twitter v2.0";
+            proxyReq.UserAgent = "LINQ to Twitter v2.1";
 
-            proxyReq.Headers[HttpRequestHeader.AcceptEncoding] = "deflate,gzip";
+            proxyReq.Headers[HttpRequestHeader.AcceptEncoding] = "gzip";
 
             return proxyReq;
         }

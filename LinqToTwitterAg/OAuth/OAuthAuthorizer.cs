@@ -169,7 +169,7 @@ namespace LinqToTwitter
                 }
             }
 #endif
-#if SILVERLIGHT && !NETFX_CORE
+#if WINDOWS_PHONE && !NETFX_CORE
             request.Headers["user-agent"] = UserAgent;
             request.Headers["host"] = request.RequestUri.Host;
 #endif

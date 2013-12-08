@@ -25,11 +25,11 @@ namespace LinqToTwitterDemo
             //UserStatusByNameQueryDemo(twitterCtx);
             //MentionsStatusQueryDemo(twitterCtx);
             //MentionsWithSinceIDStatusQueryDemo(twitterCtx);
-            SingleStatusQueryDemo(twitterCtx);
+            //SingleStatusQueryDemo(twitterCtx);
             //UpdateStatusDemo(twitterCtx);
             //UpdateStatusWithCallbackDemo(twitterCtx);
             //UpdateStatusWithReplyDemo(twitterCtx);
-            //UpdateStatusWithLocationDemo(twitterCtx);
+            UpdateStatusWithLocationDemo(twitterCtx);
             //UpdateStatusWithPlaceDemo(twitterCtx);
             //DestroyStatusDemo(twitterCtx);
             //RetweetsOfMeStatusQueryDemo(twitterCtx);

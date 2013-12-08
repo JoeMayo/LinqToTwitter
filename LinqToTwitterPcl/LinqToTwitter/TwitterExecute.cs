@@ -268,10 +268,6 @@ namespace LinqToTwitter
                             buffer = new char[BufferSize];
                             output = new List<char>();
                         }
-
-                        //var content = await reader.ReadLineAsync();
-                        //var strmContent = new StreamContent(this, content);
-                        //await StreamingCallbackAsync(strmContent);
                     }
                 }
             }

@@ -8,12 +8,12 @@ using LinqToTwitter;
 
 namespace LinqToTwitterSilverlightDemo.Views
 {
-    public partial class FriendsStatusQuery : Page
+    public partial class HomeTimelineQuery : Page
     {
-        private TwitterContext m_twitterCtx = null;
-        private PinAuthorizer m_pinAuth = null;
+        private TwitterContext twitterCtx = null;
+        private PinAuthorizer pinAuth = null;
 
-        public FriendsStatusQuery()
+        public HomeTimelineQuery()
         {
             InitializeComponent();
         }
@@ -74,7 +74,7 @@ namespace LinqToTwitterSilverlightDemo.Views
                         case TwitterErrorStatus.TwitterApiError:
                         case TwitterErrorStatus.RequestProcessingException:
                             MessageBox.Show(
-                                resp.Error.ToString(),
+                                resp.Exception.ToString(),
                                 resp.Message,
                                 MessageBoxButton.OK);
                             break;
@@ -93,7 +93,7 @@ namespace LinqToTwitterSilverlightDemo.Views
                             case TwitterErrorStatus.TwitterApiError:
                             case TwitterErrorStatus.RequestProcessingException:
                                 MessageBox.Show(
-                                    resp.Error.ToString(),
+                                    resp.Exception.ToString(),
                                     resp.Message,
                                     MessageBoxButton.OK);
                                 break;
@@ -101,12 +101,12 @@ namespace LinqToTwitterSilverlightDemo.Views
                     }));
             }
 
-            m_twitterCtx = new TwitterContext(auth);
+            twitterCtx = new TwitterContext(auth);
         }
 
         private void DoPinAuth()
         {
-            m_pinAuth = new PinAuthorizer
+            pinAuth = new PinAuthorizer
             {
                 Credentials = new InMemoryCredentials
                 {
@@ -118,7 +118,7 @@ namespace LinqToTwitterSilverlightDemo.Views
                     Dispatcher.BeginInvoke(() => WebBrowser.Navigate(new Uri(pageLink)))
             };
 
-            m_pinAuth.BeginAuthorize(resp =>
+            pinAuth.BeginAuthorize(resp =>
                 Dispatcher.BeginInvoke(() =>
                 {
                     switch (resp.Status)
@@ -128,21 +128,21 @@ namespace LinqToTwitterSilverlightDemo.Views
                         case TwitterErrorStatus.TwitterApiError:
                         case TwitterErrorStatus.RequestProcessingException:
                             MessageBox.Show(
-                                resp.Error.ToString(),
+                                resp.Exception.ToString(),
                                 resp.Message,
                                 MessageBoxButton.OK);
                             break;
                     }
                 }));
 
-            m_twitterCtx = new TwitterContext(m_pinAuth, "https://api.twitter.com/1/", "https://search.twitter.com/");
+            twitterCtx = new TwitterContext(pinAuth);
         }
 
         private void PinButton_Click(object sender, RoutedEventArgs e)
         {
             string pin = PinTextBox.Text;
 
-            m_pinAuth.CompleteAuthorize(
+            pinAuth.CompleteAuthorize(
                 PinTextBox.Text,
                 completeResp => Dispatcher.BeginInvoke(() =>
                 {
@@ -154,7 +154,7 @@ namespace LinqToTwitterSilverlightDemo.Views
                         case TwitterErrorStatus.TwitterApiError:
                         case TwitterErrorStatus.RequestProcessingException:
                             MessageBox.Show(
-                                completeResp.Error.ToString(),
+                                completeResp.Exception.ToString(),
                                 completeResp.Message,
                                 MessageBoxButton.OK);
                             break;
@@ -164,25 +164,24 @@ namespace LinqToTwitterSilverlightDemo.Views
 
         private void FriendsButton_Click(object sender, RoutedEventArgs e)
         {
-            //var result =
-            //    (from tweet in m_twitterCtx.Status
-            //     where tweet.Type == StatusType.Friends
-            //     select tweet)
-            //    .AsyncCallback(tweets =>
-            //        Dispatcher.BeginInvoke(() =>
-            //        {
-            //            var projectedTweets =
-            //               (from tweet in tweets
-            //                select new MyTweet
-            //                {
-            //                    ScreenName = tweet.User.Identifier.ScreenName,
-            //                    Tweet = tweet.Text
-            //                })
-            //               .ToList();
+            (from tweet in twitterCtx.Status
+             where tweet.Type == StatusType.Home
+             select tweet)
+            .AsyncCallback(tweets =>
+                Dispatcher.BeginInvoke(() =>
+                {
+                    var projectedTweets =
+                        (from tweet in tweets
+                        select new MyTweet
+                        {
+                            ScreenName = tweet.User.Identifier.ScreenName,
+                            Tweet = tweet.Text
+                        })
+                        .ToList();
 
-            //            FriendsDataGrid.ItemsSource = projectedTweets;
-            //        }))
-            //    .SingleOrDefault();
+                    FriendsDataGrid.ItemsSource = projectedTweets;
+                }))
+            .SingleOrDefault();
         }
 
         private void DoXAuth()
@@ -212,14 +211,14 @@ namespace LinqToTwitterSilverlightDemo.Views
                         case TwitterErrorStatus.TwitterApiError:
                         case TwitterErrorStatus.RequestProcessingException:
                             MessageBox.Show(
-                                resp.Error.ToString(),
+                                resp.Exception.ToString(),
                                 resp.Message,
                                 MessageBoxButton.OK);
                             break;
                     }
                 }));
 
-            m_twitterCtx = new TwitterContext(auth);
+            twitterCtx = new TwitterContext(auth);
         }
     }
 }
