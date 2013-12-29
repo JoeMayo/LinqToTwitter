@@ -23,19 +23,11 @@ namespace LinqToTwitterDemo
             var srch =
                 (from search in twitterCtx.Search
                  where search.Type == SearchType.Search &&
-                       search.Query == null &&
-                       search.Count == 5
+                       search.Query == "#DTWIFI" &&
+                     //search.Query == @"`!@#$%^&*()_-+=.~,:;'?/|\[] éü\u00C7" &&
+                       search.Count == 25
                  select search)
                 .SingleOrDefault();
-
-            //var srch =
-            //    (from search in twitterCtx.Search
-            //     where search.Type == SearchType.Search &&
-            //           search.Query == "LINQ to Twitter" &&
-            //           //search.Query == @"`!@#$%^&*()_-+=.~,:;'?/|\[] éü\u00C7" &&
-            //           search.Count == 25
-            //     select search)
-            //    .SingleOrDefault();
 
             Console.WriteLine("\nQuery: {0}\n", srch.SearchMetaData.Query);
             srch.Statuses.ForEach(entry =>

@@ -84,6 +84,7 @@
     <Compile Include="GeoTests\GeoTests.cs" />
     <Compile Include="GeoTests\PlaceTests.cs" />
     <Compile Include="HelpTests\HelpRequestProcessorTests.cs" />
+    <Compile Include="LinqToTwitterTests\TwitterErrorHandlerTests.cs" />
     <Compile Include="ListTests\ListCommandsTests.cs" />
     <Compile Include="ListTests\ListRequestProcessorTests.cs" />
     <Compile Include="RawTests\RawCommandsTests.cs" />

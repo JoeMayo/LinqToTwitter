@@ -15,10 +15,10 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         public static void Run(TwitterContext twitterCtx)
         {
-            DirectMessageSentByQueryDemo(twitterCtx);
+            //DirectMessageSentByQueryDemo(twitterCtx);
             //DirectMessageSentToQueryDemo(twitterCtx);
             //DirectMessageShowDemo(twitterCtx);
-            //NewDirectMessageDemo(twitterCtx);
+            NewDirectMessageDemo(twitterCtx);
             //DestroyDirectMessageDemo(twitterCtx);
         }
 

@@ -27,14 +27,14 @@ namespace LinqToTwitter
             } 
         }
   
-        static async Task HandleGenericErrorAsync(HttpResponseMessage msg)
+        internal static async Task HandleGenericErrorAsync(HttpResponseMessage msg)
         {
             string responseStr = await msg.Content.ReadAsStringAsync();
 
             BuildAndThrowTwitterQueryException(responseStr, msg);
         }
   
-        static void BuildAndThrowTwitterQueryException(string responseStr, HttpResponseMessage msg)
+        internal static void BuildAndThrowTwitterQueryException(string responseStr, HttpResponseMessage msg)
         {
             TwitterErrorDetails error = ParseTwitterErrorMessage(responseStr);
 
@@ -46,7 +46,7 @@ namespace LinqToTwitter
             };
         }
   
-        async static Task HandleUnauthorizedAsync(HttpResponseMessage msg)
+        internal async static Task HandleUnauthorizedAsync(HttpResponseMessage msg)
         {
             string responseStr = await msg.Content.ReadAsStringAsync();
 
@@ -63,28 +63,39 @@ namespace LinqToTwitter
             };
         }
 
-        static TwitterErrorDetails ParseTwitterErrorMessage(string responseStr)
+        internal static TwitterErrorDetails ParseTwitterErrorMessage(string responseStr)
         {
             if (responseStr.StartsWith("{"))
             {
                 JsonData responseJson = JsonMapper.ToObject(responseStr);
 
                 var errors = responseJson.GetValue<JsonData>("errors");
-                if (errors != null && errors.Count > 0)
+
+                if (errors != null)
                 {
-                    var error = errors[0];
-                    return new TwitterErrorDetails
+                    if (errors.GetJsonType() == JsonType.String)
+                        return new TwitterErrorDetails
+                        {
+                            Message = responseJson.GetValue<string>("errors"),
+                            Code = -1
+                        };
+
+                    if (errors.Count > 0)
                     {
-                        Message = error.GetValue<string>("message"),
-                        Code = error.GetValue<int>("code")
-                    };
+                        var error = errors[0];
+                        return new TwitterErrorDetails
+                        {
+                            Message = error.GetValue<string>("message"),
+                            Code = error.GetValue<int>("code")
+                        };
+                    }
                 }
             }
 
             return new TwitterErrorDetails { Message = responseStr };
         }
 
-        class TwitterErrorDetails
+        internal class TwitterErrorDetails
         {
             public int Code { get; set; }
             public string Message { get; set; }
