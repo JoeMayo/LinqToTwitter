@@ -20,7 +20,10 @@ namespace Linq2TwitterDemos_WindowsPhone.StatusDemos
 
             var twitterCtx = new TwitterContext(auth);
 
-            Status tweet = await twitterCtx.TweetAsync(TweetTextBox.Text);
+            decimal latitude = 37.78215m;
+            decimal longitude = -122.40060m;
+
+            Status tweet = await twitterCtx.TweetAsync(TweetTextBox.Text, latitude, longitude);
 
             MessageBox.Show(
                 "User: " + tweet.User.ScreenNameResponse +

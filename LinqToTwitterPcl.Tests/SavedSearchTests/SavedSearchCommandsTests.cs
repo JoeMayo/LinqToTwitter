@@ -29,7 +29,7 @@ namespace LinqToTwitterPcl.Tests.SavedSearchTests
         }
 
         [TestMethod]
-        public async Task SavedSearchRequestProcessor_Handles_Actions()
+        public void SavedSearchRequestProcessor_Handles_Actions()
         {
             var searchReqProc = new SavedSearchRequestProcessor<SavedSearch>();
 

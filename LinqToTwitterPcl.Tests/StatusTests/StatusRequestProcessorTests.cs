@@ -501,8 +501,8 @@ namespace LinqToTwitterPcl.Tests.StatusTests
             Assert.AreEqual(34649740ul, user);
             var cursor = status.CursorMovement;
             Assert.IsNotNull(cursor);
-            Assert.AreEqual(123l, cursor.Next);
-            Assert.AreEqual(456l, cursor.Previous);
+            Assert.AreEqual(123L, cursor.Next);
+            Assert.AreEqual(456L, cursor.Previous);
         }
 
         [TestMethod]
@@ -588,7 +588,7 @@ namespace LinqToTwitterPcl.Tests.StatusTests
             Assert.AreEqual(1ul, status.SinceID);
             Assert.AreEqual(2ul, status.MaxID);
             Assert.AreEqual(3, status.Count);
-            Assert.AreEqual(123l, status.Cursor);
+            Assert.AreEqual(123L, status.Cursor);
             Assert.IsTrue(status.IncludeRetweets);
             Assert.IsTrue(status.ExcludeReplies);
             Assert.IsTrue(status.IncludeEntities);

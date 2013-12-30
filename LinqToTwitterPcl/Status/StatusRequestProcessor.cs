@@ -351,7 +351,6 @@ namespace LinqToTwitter
         /// <returns>base url + retweeted by user segment</returns>
         Request BuildRetweets(Dictionary<string, string> parameters)
         {
-            string urlSegment = null;
             if (!parameters.ContainsKey("ID"))
                 throw new ArgumentNullException("ID", "ID is required.");
 
@@ -373,7 +372,6 @@ namespace LinqToTwitter
             }
 
             return req;
-
         }
 
         /// <summary>

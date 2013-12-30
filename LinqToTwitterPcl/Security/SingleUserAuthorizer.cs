@@ -11,7 +11,11 @@ namespace LinqToTwitter
         public async Task AuthorizeAsync()
         {
             if (!CredentialStore.HasAllCredentials())
-                throw new InvalidOperationException("SingleUserAuthorizer needs preset credentials; don't call Authorize unless you've set all four credentials.");
+                throw new InvalidOperationException("SingleUserAuthorizer needs pre-set credentials; don't call Authorize unless you've set all four credentials.");
+
+            await Task.Delay(0);
+
+            return;
         }
     }
 }

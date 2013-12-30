@@ -1035,7 +1035,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
                 Type = ListType.Show,
                 UserID = 123ul,
                 ScreenName = "JoeMayo",
-                Cursor = 456l,
+                Cursor = 456L,
                 ListID = 789ul,
                 Slug = "MyList",
                 OwnerID = 123ul,
@@ -1061,7 +1061,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
             Assert.AreEqual(ListType.Show, list.Type);
             Assert.AreEqual(123ul, list.UserID);
             Assert.AreEqual("JoeMayo", list.ScreenName);
-            Assert.AreEqual(456l, list.Cursor);
+            Assert.AreEqual(456L, list.Cursor);
             Assert.AreEqual(789ul, list.ListID);
             Assert.AreEqual("MyList", list.Slug);
             Assert.AreEqual(123ul, list.OwnerID);

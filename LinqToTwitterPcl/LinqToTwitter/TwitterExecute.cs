@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using LinqToTwitter.Net;
+using System.Text;
 
 namespace LinqToTwitter
 {
@@ -166,17 +167,15 @@ namespace LinqToTwitter
             {
                 StreamingClient.Timeout = TimeSpan.FromMilliseconds(System.Threading.Timeout.Infinite);
 
-                var parameters =
-                    (from parm in request.RequestParameters
-                     select new KeyValuePair<string, string>(parm.Name, parm.Value))
-                    .ToList();
-                var formUrlEncodedContent = new FormUrlEncodedContent(parameters);
-
-                formUrlEncodedContent.Headers.ContentType =
-                    new MediaTypeHeaderValue("application/x-www-form-urlencoded");
-
                 var httpRequest = new HttpRequestMessage(HttpMethod.Post, request.Endpoint);
-                httpRequest.Content = formUrlEncodedContent;
+
+                var parameters =
+                    string.Join("&",
+                        (from parm in request.RequestParameters
+                         select parm.Name + "=" + Url.PercentEncode(parm.Value))
+                        .ToList());                            
+                var content = new StringContent(parameters, Encoding.UTF8, "application/x-www-form-urlencoded");
+                httpRequest.Content = content;
 
                 var parms = request.RequestParameters
                                   .ToDictionary(
@@ -312,13 +311,18 @@ namespace LinqToTwitter
 
             var cleanPostData = new Dictionary<string, string>();
 
+            var dataString = new StringBuilder();
+
             foreach (var pair in postData)
             {
                 if (pair.Value != null)
+                {
+                    dataString.AppendFormat("{0}={1}&", pair.Key, Url.PercentEncode(pair.Value));
                     cleanPostData.Add(pair.Key, pair.Value);
+                }
             }
 
-            var content = new FormUrlEncodedContent(cleanPostData);
+            var content = new StringContent(dataString.ToString().TrimEnd('&'), Encoding.UTF8, "application/x-www-form-urlencoded");
             var handler = new PostMessageHandler(this, cleanPostData, url);
             using (var client = new HttpClient(handler))
             {

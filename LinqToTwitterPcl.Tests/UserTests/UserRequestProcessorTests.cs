@@ -519,7 +519,7 @@ namespace LinqToTwitterPcl.Tests.UserTests
             Assert.AreEqual("JoeMayo,Linq2Tweeter", user.ScreenNameList);
             Assert.AreEqual(1, user.Page);
             Assert.AreEqual(10, user.Count);
-            Assert.AreEqual(456l, user.Cursor);
+            Assert.AreEqual(456L, user.Cursor);
             Assert.AreEqual("myslug", user.Slug);
             Assert.AreEqual("myquery", user.Query);
             Assert.AreEqual("en-US", user.Lang);

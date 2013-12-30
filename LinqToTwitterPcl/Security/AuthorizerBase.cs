@@ -5,6 +5,8 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using LinqToTwitter.Security;
+using LinqToTwitter.Net;
+using System.Text;
 
 namespace LinqToTwitter
 {
@@ -256,7 +258,14 @@ namespace LinqToTwitter
             req.Headers.Add("Authorization", GetAuthorizationString(HttpMethod.Post, oauthUrl, parameters));
             req.Headers.Add("User-Agent", UserAgent);
             req.Headers.ExpectContinue = false;
-            req.Content = new FormUrlEncodedContent(postData);
+
+            var paramString =
+                string.Join("&",
+                    (from parm in postData
+                     select parm.Key + "=" + Url.PercentEncode(parm.Value))
+                    .ToList());
+            var content = new StringContent(paramString, Encoding.UTF8, "application/x-www-form-urlencoded");
+            req.Content = content;
 
             var handler = new HttpClientHandler();
             if (handler.SupportsAutomaticDecompression)
