@@ -496,12 +496,12 @@ namespace LinqToTwitter
                                                 if (resp.Headers["content-encoding"] != null &&
                                                     resp.Headers["content-encoding"].Contains("gzip"))
                                                 {
-                                                    uncompressedLength = gzip.Read(uncompressedBuffer, 0, uncompressedBuffer.Length);
+                                                    uncompressedLength = gzip.Read(uncompressedBuffer, 0, readCount);
                                                 }
                                                 else
                                                 {
                                                     compressedBuffer.CopyTo(uncompressedBuffer, 0);
-                                                    uncompressedLength = compressedBuffer.Length;
+                                                    uncompressedLength = readCount;
                                                 }
 
                                                 output.AddRange(uncompressedBuffer.Take(uncompressedLength));

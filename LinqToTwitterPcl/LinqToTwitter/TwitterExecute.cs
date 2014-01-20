@@ -194,7 +194,7 @@ namespace LinqToTwitter
 
                 using (var reader = new StreamReader(stream))
                 {
-                    const int BufferSize = 1024;
+                    const int BufferSize = 8192;
                     var buffer = new char[BufferSize];
                     var output = new List<char>();
 

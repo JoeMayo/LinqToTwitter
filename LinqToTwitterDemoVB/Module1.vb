@@ -109,7 +109,7 @@ Module Module1
 		' Account Demos
 		'
 
-		'VerifyAccountCredentialsDemo(twitterCtx)
+        'VerifyAccountCredentialsDemo(twitterCtx)
 
 		'
 		' Trends Demos
@@ -167,6 +167,18 @@ Module Module1
     End Sub
 
     Private Sub VerifyAccountCredentialsDemo(ByVal twitterCtx As TwitterContext)
+        '
+        'Uncomment the following to test the exception handling for invalid credentials.
+        '
+        'Dim credentials As IOAuthCredentials = New InMemoryCredentials
+
+        'credentials.ConsumerKey = "abc"
+        'credentials.ConsumerSecret = "123"
+
+        'Dim auth As PinAuthorizer = New PinAuthorizer()
+        'auth.Credentials = credentials
+        'twitterCtx = New TwitterContext(auth)
+
         Dim accounts = _
             From acct In twitterCtx.Account _
             Where acct.Type = AccountType.VerifyCredentials
@@ -175,7 +187,7 @@ Module Module1
             For Each Account In accounts
                 Console.WriteLine("Credentials for account, {0}, are okay.", Account.User.Name)
             Next
-        Catch ex As Exception
+        Catch ex As TwitterQueryException
             Console.WriteLine("Twitter did not recognize the credentials. Response from Twitter: " & ex.Message)
         End Try
     End Sub
