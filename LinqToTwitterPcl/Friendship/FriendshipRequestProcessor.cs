@@ -286,6 +286,12 @@ namespace LinqToTwitter
                 ScreenName = parameters["ScreenName"];
                 urlParams.Add(new QueryParameter("screen_name", ScreenName));
             }
+                        
+            if (parameters.ContainsKey("Count"))
+            {
+                Count = int.Parse(parameters["Count"]);
+                urlParams.Add(new QueryParameter("count", parameters["Count"]));
+            }
 
             if (parameters.ContainsKey("Cursor"))
             {
@@ -332,6 +338,12 @@ namespace LinqToTwitter
             {
                 ScreenName = parameters["ScreenName"];
                 urlParams.Add(new QueryParameter("screen_name", ScreenName));
+            }
+            
+            if (parameters.ContainsKey("Count"))
+            {
+                Count = int.Parse(parameters["Count"]);
+                urlParams.Add(new QueryParameter("count", parameters["Count"]));
             }
 
             if (parameters.ContainsKey("Cursor"))
