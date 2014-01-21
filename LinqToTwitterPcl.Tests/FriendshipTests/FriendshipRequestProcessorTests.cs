@@ -167,6 +167,7 @@ namespace LinqToTwitterPcl.Tests.FriendshipTests
             const ulong TgtUsrID = 2;
             const string TgtScrNm = "MayMayo";
             const long Cursor = 123;
+            const int Count = 20;
             const string ScrNm = "JoeMayo,MayMayo";
             const string UsrID = "1,2";
             const bool SkipStatus = true;
@@ -178,6 +179,7 @@ namespace LinqToTwitterPcl.Tests.FriendshipTests
                 SourceScreenName = SrcScrNm,
                 TargetUserID = TgtUsrID,
                 TargetScreenName = TgtScrNm,
+                Count = Count,
                 Cursor = Cursor,
                 ScreenName = ScrNm,
                 UserID = UsrID,
@@ -196,6 +198,7 @@ namespace LinqToTwitterPcl.Tests.FriendshipTests
             Assert.AreEqual(SrcScrNm, friendship.SourceScreenName);
             Assert.AreEqual(TgtUsrID, friendship.TargetUserID);
             Assert.AreEqual(TgtScrNm, friendship.TargetScreenName);
+            Assert.AreEqual(Count, friendship.Count);
             Assert.AreEqual(Cursor, friendship.Cursor);
             Assert.AreEqual(ScrNm, friendship.ScreenName);
             Assert.AreEqual(UsrID, friendship.UserID);
@@ -469,13 +472,14 @@ namespace LinqToTwitterPcl.Tests.FriendshipTests
         [TestMethod]
         public void BuildUrl_Constructs_FriendsList_Url()
         {
-            const string ExpectedUrl = "https://api.twitter.com/1.1/friends/list.json?user_id=1&screen_name=abc&cursor=234&skip_status=true&include_user_entities=false";
+            const string ExpectedUrl = "https://api.twitter.com/1.1/friends/list.json?user_id=1&screen_name=abc&count=20&cursor=234&skip_status=true&include_user_entities=false";
             var friendReqProc = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
             {
                 { "Type", FriendshipType.FriendsList.ToString() },
                 { "UserID", "1" },
                 { "ScreenName", "abc" },
+                { "Count", "20" },
                 { "Cursor", "234" },
                 { "SkipStatus", true.ToString() },
                 { "IncludeUserEntities", false.ToString() }
@@ -505,13 +509,14 @@ namespace LinqToTwitterPcl.Tests.FriendshipTests
         [TestMethod]
         public void BuildUrl_Constructs_FollowersList_Url()
         {
-            const string ExpectedUrl = "https://api.twitter.com/1.1/followers/list.json?user_id=1&screen_name=abc&cursor=234&skip_status=true&include_user_entities=false";
+            const string ExpectedUrl = "https://api.twitter.com/1.1/followers/list.json?user_id=1&screen_name=abc&count=20&cursor=234&skip_status=true&include_user_entities=false";
             var friendReqProc = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
             {
                 { "Type", FriendshipType.FollowersList.ToString() },
                 { "UserID", "1" },
                 { "ScreenName", "abc" },
+                { "Count", "20" },
                 { "Cursor", "234" },
                 { "SkipStatus", true.ToString() },
                 { "IncludeUserEntities", false.ToString() }
