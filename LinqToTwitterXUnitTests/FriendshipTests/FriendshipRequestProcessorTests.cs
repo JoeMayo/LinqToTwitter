@@ -165,6 +165,7 @@ namespace LinqToTwitterXUnitTests.FriendshipTests
             const string SrcScrNm = "JoeMayo";
             const string TgtUsrID = "2";
             const string TgtScrNm = "MayMayo";
+            const int Count = 20;
             const string Cursor = "123";
             const string ScrNm = "JoeMayo,MayMayo";
             const string UsrID = "1,2";
@@ -177,6 +178,7 @@ namespace LinqToTwitterXUnitTests.FriendshipTests
                 SourceScreenName = SrcScrNm,
                 TargetUserID = TgtUsrID,
                 TargetScreenName = TgtScrNm,
+                Count = Count,
                 Cursor = Cursor,
                 ScreenName = ScrNm,
                 UserID = UsrID,
@@ -195,6 +197,7 @@ namespace LinqToTwitterXUnitTests.FriendshipTests
             Assert.Equal(SrcScrNm, friendship.SourceScreenName);
             Assert.Equal(TgtUsrID, friendship.TargetUserID);
             Assert.Equal(TgtScrNm, friendship.TargetScreenName);
+            Assert.Equal(Count, friendship.Count);
             Assert.Equal(Cursor, friendship.Cursor);
             Assert.Equal(ScrNm, friendship.ScreenName);
             Assert.Equal(UsrID, friendship.UserID);
@@ -225,6 +228,7 @@ namespace LinqToTwitterXUnitTests.FriendshipTests
                          friend.SourceScreenName == "Name" &&
                          friend.TargetUserID == "2" &&
                          friend.TargetScreenName == "Name" &&
+                         friend.Count == 20 &&
                          friend.Cursor == "-1" &&
                          friend.ScreenName == "twitter,joemayo" &&
                          friend.UserID == "123,456" &&
@@ -249,6 +253,9 @@ namespace LinqToTwitterXUnitTests.FriendshipTests
             Assert.True(
                 queryParams.Contains(
                     new KeyValuePair<string, string>("TargetScreenName", "Name")));
+            Assert.True(
+                queryParams.Contains(
+                    new KeyValuePair<string, string>("Count", "20")));
             Assert.True(
                 queryParams.Contains(
                     new KeyValuePair<string, string>("Cursor", "-1")));
@@ -472,13 +479,14 @@ namespace LinqToTwitterXUnitTests.FriendshipTests
         [Fact]
         public void BuildUrl_Constructs_FriendsList_Url()
         {
-            const string ExpectedUrl = "https://api.twitter.com/1.1/friends/list.json?user_id=1&screen_name=abc&cursor=def&skip_status=true&include_user_entities=false";
+            const string ExpectedUrl = "https://api.twitter.com/1.1/friends/list.json?user_id=1&screen_name=abc&count=20&cursor=def&skip_status=true&include_user_entities=false";
             var friendReqProc = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
             {
                 { "Type", FriendshipType.FriendsList.ToString() },
                 { "UserID", "1" },
                 { "ScreenName", "abc" },
+                { "Count", "20" },
                 { "Cursor", "def" },
                 { "SkipStatus", true.ToString() },
                 { "IncludeUserEntities", false.ToString() }
@@ -509,13 +517,14 @@ namespace LinqToTwitterXUnitTests.FriendshipTests
         [Fact]
         public void BuildUrl_Constructs_FollowersList_Url()
         {
-            const string ExpectedUrl = "https://api.twitter.com/1.1/followers/list.json?user_id=1&screen_name=abc&cursor=def&skip_status=true&include_user_entities=false";
+            const string ExpectedUrl = "https://api.twitter.com/1.1/followers/list.json?user_id=1&screen_name=abc&count=20&cursor=def&skip_status=true&include_user_entities=false";
             var friendReqProc = new FriendshipRequestProcessor<Friendship>() { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>
             {
                 { "Type", FriendshipType.FollowersList.ToString() },
                 { "UserID", "1" },
                 { "ScreenName", "abc" },
+                { "Count", "20" },
                 { "Cursor", "def" },
                 { "SkipStatus", true.ToString() },
                 { "IncludeUserEntities", false.ToString() }

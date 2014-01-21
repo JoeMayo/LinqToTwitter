@@ -57,6 +57,11 @@ namespace LinqToTwitter
         internal string UserID { get; set; }
 
         /// <summary>
+        /// Number of items to get for FriendshipList and FollowerList queries (input)
+        /// </summary>
+        internal int Count { get; set; }
+
+        /// <summary>
         /// Helps in paging results for queries such as incoming and outgoing
         /// </summary>
         internal string Cursor { get; set; }
@@ -92,6 +97,7 @@ namespace LinqToTwitter
                        "SourceScreenName",
                        "TargetUserID",
                        "TargetScreenName",
+                       "Count",
                        "Cursor",
                        "ScreenName",
                        "UserID",
@@ -285,6 +291,12 @@ namespace LinqToTwitter
                 urlParams.Add(new QueryParameter("screen_name", ScreenName));
             }
 
+            if (parameters.ContainsKey("Count"))
+            {
+                Count = int.Parse(parameters["Count"]);
+                urlParams.Add(new QueryParameter("count", parameters["Count"]));
+            }
+
             if (parameters.ContainsKey("Cursor"))
             {
                 Cursor = parameters["Cursor"];
@@ -332,6 +344,12 @@ namespace LinqToTwitter
             {
                 ScreenName = parameters["ScreenName"];
                 urlParams.Add(new QueryParameter("screen_name", ScreenName));
+            }
+
+            if (parameters.ContainsKey("Count"))
+            {
+                Count = int.Parse(parameters["Count"]);
+                urlParams.Add(new QueryParameter("count", parameters["Count"]));
             }
 
             if (parameters.ContainsKey("Cursor"))
@@ -395,6 +413,7 @@ namespace LinqToTwitter
             friendship.SourceScreenName = SourceScreenName;
             friendship.TargetUserID = TargetUserID;
             friendship.TargetScreenName = TargetScreenName;
+            friendship.Count = Count;
             friendship.Cursor = Cursor;
             friendship.ScreenName = ScreenName;
             friendship.UserID = UserID;

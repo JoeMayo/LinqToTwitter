@@ -48,6 +48,11 @@ namespace LinqToTwitter
         public string TargetScreenName { get; set; }
 
         /// <summary>
+        /// Number of items to get for FriendshipList and FollowerList queries (input)
+        /// </summary>
+        public int Count { get; set; }
+
+        /// <summary>
         /// Helps in paging results for queries such as incoming and outgoing
         /// </summary>
         public string Cursor { get; set; }
