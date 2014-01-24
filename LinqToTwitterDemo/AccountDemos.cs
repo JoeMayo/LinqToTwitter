@@ -31,6 +31,7 @@ namespace LinqToTwitterDemo
             //UpdateAccountSettingsDemo(twitterCtx);
             //UpdateProfileBanner(twitterCtx);
             //RemoveProfileBanner(twitterCtx);
+            //RemoveBackgroundImage(twitterCtx);
         }
 
         /// <summary>
@@ -108,6 +109,16 @@ namespace LinqToTwitterDemo
             var user = twitterCtx.UpdateProfileBanner(fileBytes, "WP_000003.jpg", "jpg", 1252, 626, 0, 0);
 
             Console.WriteLine("User Image: " + user.ProfileBannerUrl);
+        }
+
+        /// <summary>
+        /// Shows how to remove background image
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        static void RemoveBackgroundImage(TwitterContext twitterCtx)
+        {
+            var user = twitterCtx.RemoveBackgroundImage(true);
+            Console.WriteLine("Use background image: " + user.ProfileUseBackgroundImage);
         }
 
         /// <summary>
