@@ -16,6 +16,8 @@ namespace LinqToTwitter
 
         IWebProxy Proxy { get; set; }
 
+        bool SupportsCompression { get; set; }
+
         string GetAuthorizationString(HttpMethod method, string oauthUrl, IDictionary<string, string> parameters);
     }
 }

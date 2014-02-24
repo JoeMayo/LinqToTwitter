@@ -13,7 +13,7 @@ namespace LinqToTwitter
             return await BeginAuthorizationAsync(Callback);
         }
 
-        public new async Task<ActionResult> BeginAuthorizationAsync(Uri callback)
+        public async Task<ActionResult> BeginAuthorizationAsync(Uri callback)
         {
             if (GoToTwitterAuthorization == null)
                 GoToTwitterAuthorization = authUrl =>

@@ -10,7 +10,7 @@ namespace LinqToTwitter
         /// <summary>
         /// Url that Twitter redirects to after user authorizes your app
         /// </summary>
-        public Uri Callback { get; set; }
+        public new Uri Callback { get; set; }
 
         /// <summary>
         /// This is a hook where you can assign
@@ -37,7 +37,7 @@ namespace LinqToTwitter
         /// <summary>
         /// Perform authorization
         /// </summary>
-        public async Task AuthorizeAsync()
+        public Task AuthorizeAsync()
         {
             throw new InvalidOperationException(
                 "For ASP.NET apps, you should use BeginAuthorization and CompleteAuthorization instead. Please visit the LINQ to Twitter documentation and samples for examples on how to do this.");

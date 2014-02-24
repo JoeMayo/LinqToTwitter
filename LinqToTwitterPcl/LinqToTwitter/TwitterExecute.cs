@@ -8,6 +8,7 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using LinqToTwitter.Net;
 using System.Text;
+using System.IO.Compression;
 
 namespace LinqToTwitter
 {
@@ -158,8 +159,6 @@ namespace LinqToTwitter
             WriteLog(request.FullUrl, "QueryTwitterAsync");
 
             var handler = new HttpClientHandler();
-            if (handler.SupportsAutomaticDecompression)
-                handler.AutomaticDecompression = DecompressionMethods.GZip;
             if (Authorizer.Proxy != null && handler.SupportsProxy)
                 handler.Proxy = Authorizer.Proxy;
 
@@ -185,58 +184,70 @@ namespace LinqToTwitter
                 httpRequest.Headers.Add("User-Agent", UserAgent);
                 httpRequest.Headers.ExpectContinue = false;
 
-                var response = StreamingClient.SendAsync(
-                    httpRequest, HttpCompletionOption.ResponseHeadersRead).Result;
+                if (Authorizer.SupportsCompression)
+                    httpRequest.Headers.AcceptEncoding.TryParseAdd("gzip");
+
+                var response = await StreamingClient.SendAsync(
+                    httpRequest, HttpCompletionOption.ResponseHeadersRead);
 
                 await TwitterErrorHandler.ThrowIfErrorAsync(response);
 
-                var stream = response.Content.ReadAsStreamAsync().Result;
-
-                using (var reader = new StreamReader(stream))
-                {
-                    const int BufferSize = 8192;
-                    var buffer = new char[BufferSize];
-                    var output = new List<char>();
-
-                    while (!reader.EndOfStream && !IsStreamClosed)
+                using (var stream = await response.Content.ReadAsStreamAsync())
+                    if (Authorizer.SupportsCompression)
                     {
-                        int readCount = await reader.ReadAsync(buffer, 0, buffer.Length);
-
-                        // When Twitter breaks the connection, we need to exit the
-                        // entire loop and start over. Otherwise, the reads
-                        // keep returning blank lines that are incorrectly interpreted
-                        // as keep-alive messages in a tight loop.
-                        if (readCount == 0)
+                        using (var gzip = new GZipStream(stream, CompressionMode.Decompress))
                         {
-                            if (!IsStreamClosed)
+                            byte[] compressedBuffer = new byte[8192];
+
+                            while (stream.CanRead && !IsStreamClosed)
                             {
-                                IsStreamClosed = true;
-                                throw new WebException("Twitter closed the stream.", WebExceptionStatus.ConnectFailure);
+                                int readCount = await gzip.ReadAsync(compressedBuffer, 0, compressedBuffer.Length);
+
+                                // When Twitter breaks the connection, we need to exit the
+                                // entire loop and start over. Otherwise, the reads
+                                // keep returning blank lines that are incorrectly interpreted
+                                // as keep-alive messages in a tight loop.
+                                if (readCount == 0)
+                                {
+                                    if (!IsStreamClosed)
+                                    {
+                                        IsStreamClosed = true;
+                                        throw new WebException("Twitter closed the stream.", WebExceptionStatus.ConnectFailure);
+                                    }
+
+                                    break;
+                                }
+
+                                if (!compressedBuffer.Contains((byte)0x0D)) continue;
+
+                                string outputString = Encoding.UTF8.GetString(compressedBuffer, 0, readCount);
+
+                                string[] lines = outputString.Split(new[] { "\r\n" }, new StringSplitOptions());
+                                for (int i = 0; i < (lines.Length - 1); i++)
+                                {
+                                    var strmContent = new StreamContent(this, lines[i]);
+
+                                    await StreamingCallbackAsync(strmContent);
+                                }
+
+                                compressedBuffer = new byte[8192];
                             }
-
-                            break;
-                        }
-
-                        output.AddRange(buffer.Take(readCount));
-
-                        if (output.Contains('\r'))
-                        {
-                            char[] contentChars = output.Take(output.LastIndexOf('\r') + 2).ToArray();
-                            string outputString = new String(contentChars);
-                            output.RemoveRange(0, contentChars.Length);
-
-                            string[] lines = outputString.Split(new[] { "\r\n" }, new StringSplitOptions());
-                            for (int i = 0; i < (lines.Length - 1); i++)
-                            {
-                                var strmContent = new StreamContent(this, lines[i]);
-                                await StreamingCallbackAsync(strmContent);
-                            }
-
-                            buffer = new char[BufferSize];
-                            output = new List<char>();
                         }
                     }
-                }
+                    else
+                    {
+                        using (var reader = new StreamReader(stream))
+                        {
+                            while (stream.CanRead && !IsStreamClosed)
+                            {
+                                string line = await reader.ReadLineAsync();
+
+                                var strmContent = new StreamContent(this, line);
+
+                                await StreamingCallbackAsync(strmContent);
+                            }
+                        }
+                    }
             }
 
             IsStreamClosed = false;

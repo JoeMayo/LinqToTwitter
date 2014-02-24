@@ -9,8 +9,8 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyDescription("Open Source LINQ Provider for the Twitter Micro-Blogging Service (Portable Class Library)")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("LINQ to Twitter")]
-[assembly: AssemblyProduct("LinqToTwitterPcl")]
-[assembly: AssemblyCopyright("Copyright ©  2013")]
+[assembly: AssemblyProduct("LINQ to Twitter")]
+[assembly: AssemblyCopyright("Copyright © 2008-2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: NeutralResourcesLanguage("en")]
@@ -25,8 +25,8 @@ using System.Runtime.CompilerServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("3.0.1.*")]
-[assembly: AssemblyFileVersion("3.0.0.0")]
+[assembly: AssemblyVersion("3.0.2.*")]
+[assembly: AssemblyFileVersion("3.0.2")]
 
 [assembly: InternalsVisibleTo(
     "LinqToTwitterPcl.Tests, PublicKey=" +
