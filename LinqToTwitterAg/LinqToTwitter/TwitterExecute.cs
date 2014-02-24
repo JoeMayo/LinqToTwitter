@@ -546,6 +546,11 @@ namespace LinqToTwitter
                     resetEvent.WaitOne();
                     resetEvent.Reset();
                 }
+                catch (Exception ex)
+                {
+                    WriteLog(ex.ToString(), "ExecuteTwitterStream");
+                    DoAsyncCallback(ex);
+                }
                 finally
                 {
                     // user might want to try to reconnect with
