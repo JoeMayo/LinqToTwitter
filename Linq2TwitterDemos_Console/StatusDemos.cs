@@ -72,6 +72,11 @@ namespace Linq2TwitterDemos_Console
                         Console.WriteLine("\n\tGetting retweeters...\n");
                         await RetweetersAsync(twitterCtx);
                         break;
+                    case 'c':
+                    case 'C':
+                        Console.WriteLine("\n\tFollowing conversation...\n");
+                        await GetConversationAsync(twitterCtx);
+                        break;
                     case 'q':
                     case 'Q':
                         Console.WriteLine("\nReturning...\n");
@@ -100,6 +105,7 @@ namespace Linq2TwitterDemos_Console
             Console.WriteLine("\t 9. Tweet Media");
             Console.WriteLine("\t A. Get Oembed Tweet");
             Console.WriteLine("\t B. Get Retweeters");
+            Console.WriteLine("\t C. Follow Conversation");
 
             Console.WriteLine();
             Console.WriteLine("\t Q. Return to Main menu");
@@ -343,5 +349,19 @@ namespace Linq2TwitterDemos_Console
                 status.Users.ForEach(
                     userID => Console.WriteLine("User ID: " + userID));
         }
+
+        static async Task GetConversationAsync(TwitterContext twitterCtx)
+        {
+            var tweets =
+                await
+                (from tweet in twitterCtx.Status
+                 where tweet.Type == StatusType.Conversation &&
+                       tweet.ID == 420611683317342208ul
+                 select tweet)
+                .ToListAsync();
+
+            PrintTweetsResults(tweets);
+        }
+
     }
 }

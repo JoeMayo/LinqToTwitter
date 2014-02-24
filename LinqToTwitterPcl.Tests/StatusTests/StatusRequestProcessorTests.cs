@@ -123,6 +123,38 @@ namespace LinqToTwitterPcl.Tests.StatusTests
         }
 
         [TestMethod]
+        public void BuildUrl_Constructs_Conversations_Url()
+        {
+            const string ExpectedUrl = "https://api.twitter.com/1.1/conversation/show.json?id=123";
+            var statProc = new StatusRequestProcessor<Status> { BaseUrl = "https://api.twitter.com/1.1/" };
+            var parameters = new Dictionary<string, string>
+            {
+                { "Type", ((int)StatusType.Conversation).ToString() },
+                { "ID", "123" }
+            };
+
+            Request req = statProc.BuildUrl(parameters);
+
+            Assert.AreEqual(ExpectedUrl, req.FullUrl);
+        }
+
+        [TestMethod]
+        public void BuildUrl_Conversations_Throws_On_Missing_ID()
+        {
+            const string ExpectedParam = "ID";
+            var statProc = new StatusRequestProcessor<Status> { BaseUrl = "https://api.twitter.com/1.1/" };
+            var parameters = new Dictionary<string, string>
+            {
+                { "Type", ((int)StatusType.Conversation).ToString() },
+                //{ "ID", "123" }
+            };
+
+            var ex = L2TAssert.Throws<ArgumentNullException>(() => statProc.BuildUrl(parameters));
+
+            Assert.AreEqual(ExpectedParam, ex.ParamName);
+        }
+
+        [TestMethod]
         public void BuildUrl_Constructs_Mentions_Url()
         {
             const string ExpectedUrl = "https://api.twitter.com/1.1/statuses/mentions_timeline.json?since_id=123&max_id=145&count=50";

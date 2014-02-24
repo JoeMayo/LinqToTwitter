@@ -102,5 +102,14 @@ namespace LinqToTwitter
         ///     - OEmbedLanguage, Language code for rendered tweet
         /// </summary>
         Oembed,
+
+        /// <summary>
+        /// Shows a conversation associated with a tweet
+        /// 
+        /// Available Options:
+        /// 
+        ///     - ID, tweet ID
+        /// </summary>
+        Conversation
     }
 }

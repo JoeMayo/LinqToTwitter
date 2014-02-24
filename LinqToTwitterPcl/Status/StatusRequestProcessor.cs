@@ -193,6 +193,8 @@ namespace LinqToTwitter
 
             switch (Type)
             {
+                case StatusType.Conversation:
+                    return BuildConversationUrl(parameters);
                 case StatusType.Home:
                     return BuildHomeUrl(parameters);
                 case StatusType.Mentions:
@@ -212,6 +214,20 @@ namespace LinqToTwitter
                 default:
                     throw new InvalidOperationException("The default case of BuildUrl should never execute because a Type must be specified.");
             }
+        }
+
+        private Request BuildConversationUrl(Dictionary<string, string> parameters)
+        {
+            if (!parameters.ContainsKey("ID") || string.IsNullOrWhiteSpace(parameters["ID"]))
+                throw new ArgumentNullException("ID", "ID is required");
+
+            var req = new Request(BaseUrl + "conversation/show.json");
+            var urlParams = req.RequestParameters;
+
+            ID = ulong.Parse(parameters["ID"]);
+            urlParams.Add(new QueryParameter("id", parameters["ID"]));
+
+            return req;
         }
 
         /// <summary>
