@@ -224,6 +224,9 @@
     <None Include="Serialization\LitJson\README" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="System.IO.Compression">
+      <HintPath>..\packages\Microsoft.Bcl.Compression.3.9.73\lib\portable-net45+win8+wp8\System.IO.Compression.dll</HintPath>
+    </Reference>
     <Reference Include="System.Net.Http">
       <HintPath>..\packages\Microsoft.Net.Http.2.2.18\lib\portable-net40+sl4+win8+wp71\System.Net.Http.dll</HintPath>
     </Reference>

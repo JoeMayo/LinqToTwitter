@@ -59,6 +59,8 @@ namespace LinqToTwitter
 
         public IWebProxy Proxy { get; set; }
 
+        public bool SupportsCompression { get; set; }
+
         protected string ParseVerifierFromResponseUrl(string responseUrl)
         {
             string[] keyValPairs = new Uri(responseUrl).Query.TrimStart('?').Split('&');
@@ -98,6 +100,7 @@ namespace LinqToTwitter
             ForceLogin = forceLogin;
             AccessType = accessType;
             PreFillScreenName = prefillScreenName;
+            SupportsCompression = true;
 
             if (string.IsNullOrWhiteSpace(UserAgent))
                 UserAgent = TwitterContext.DefaultUserAgent;
