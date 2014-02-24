@@ -376,6 +376,45 @@ namespace LinqToTwitter
         }
 
         /// <summary>
+        /// Allows removal of background image by setting back to the default background.  Once the background image is removed
+        /// it can not be turned back on.
+        /// </summary>
+        /// <param name="skipStatus">Don't include status with response.</param>
+        /// <returns></returns>
+        public static User RemoveBackgroundImage(this TwitterContext ctx, bool skipStatus)
+        {
+            return RemoveBackgroundImage(ctx, skipStatus, null);
+        }
+
+        /// <summary>
+        /// Allows removal of background image by setting back to the default background.  Once the background image is removed
+        /// it can not be turned back on.
+        /// </summary>
+        /// <param name="ctx"></param>
+        /// <param name="skipStatus">Don't include status with response.</param>
+        /// <returns></returns>
+        public static User RemoveBackgroundImage(this TwitterContext ctx, bool skipStatus, Action<TwitterAsyncResponse<User>> callback)
+        {
+            var accountUrl = ctx.BaseUrl + "account/update_profile_background_image.json";
+            var reqProc = new UserRequestProcessor<User>();
+
+            ITwitterExecute exec = ctx.TwitterExecutor;
+            exec.AsyncCallback = callback;
+            var resultsJson =
+                exec.PostToTwitter(
+                    accountUrl,
+                    new Dictionary<string, string>
+                    {
+                        { "use", "false" },
+                        { "skip_status", skipStatus.ToString()}
+                    },
+                    response => reqProc.ProcessActionResult(response, UserAction.SingleUser));
+
+            User user = reqProc.ProcessActionResult(resultsJson, UserAction.SingleUser);
+            return user;
+        }
+
+        /// <summary>
         /// Update account profile info
         /// </summary>
         /// <param name="name">User Name</param>
