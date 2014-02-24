@@ -111,6 +111,16 @@ namespace LinqToTwitterDemo
         }
 
         /// <summary>
+        /// Shows how to remove background image
+        /// </summary>
+        /// <param name="twitterCtx">TwitterContext</param>
+        static void RemoveBackgroundImage(TwitterContext twitterCtx)
+        {
+            var user = twitterCtx.RemoveBackgroundImage(true);
+            Console.WriteLine("Use background image: " + user.ProfileUseBackgroundImage);
+        }
+
+        /// <summary>
         /// Shows how to remove the profile image in an account
         /// </summary>
         /// <param name="twitterCtx">TwitterContext</param>
