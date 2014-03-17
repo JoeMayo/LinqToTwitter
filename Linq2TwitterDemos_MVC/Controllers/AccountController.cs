@@ -9,6 +9,8 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.Owin.Security;
 using Linq2TwitterDemos_MVC.Models;
+using LinqToTwitter;
+using System.Configuration;
 
 namespace Linq2TwitterDemos_MVC.Controllers
 {
@@ -180,6 +182,51 @@ namespace Linq2TwitterDemos_MVC.Controllers
             return View(model);
         }
 
+        async Task StoreTwitterCredentials(ApplicationUser user)
+        {
+            var claimsIdentity = await AuthenticationManager.GetExternalIdentityAsync(DefaultAuthenticationTypes.ExternalCookie);
+            if (claimsIdentity == null) return;
+
+            IList<Claim> currentClaims = await UserManager.GetClaimsAsync(user.Id);
+            Claim accessToken = claimsIdentity.FindFirst(LinqToTwitterAuthenticationProvider.AccessToken);
+            Claim accessTokenSecret = claimsIdentity.FindFirst(LinqToTwitterAuthenticationProvider.AccessTokenSecret);
+
+            var claimKeys =
+                (from claim in currentClaims
+                 select claim.Type)
+                .ToList();
+
+            if (!claimKeys.Contains(accessToken.Type))
+                await UserManager.AddClaimAsync(user.Id, accessToken);
+
+            if (!claimKeys.Contains(accessTokenSecret.Type))
+                await UserManager.AddClaimAsync(user.Id, accessTokenSecret);
+
+            var auth = new AspNetAuthorizer
+            {
+                CredentialStore = new SessionStateCredentialStore
+                {
+                    ConsumerKey = ConfigurationManager.AppSettings["consumerKey"],
+                    ConsumerSecret = ConfigurationManager.AppSettings["consumerSecret"],
+                    OAuthToken = accessToken.Value,
+                    OAuthTokenSecret = accessTokenSecret.Value
+                }
+            };
+
+            using (var ctx = new TwitterContext(auth))
+            {
+                var twitterUser =
+                    await
+                    (from acct in ctx.Account
+                     where acct.Type == AccountType.VerifyCredentials
+                     select acct.User)
+                    .SingleOrDefaultAsync();
+
+                string name = twitterUser.Name;
+                // you can do something with Twitter User data here too
+            }
+        }
+
         //
         // POST: /Account/ExternalLogin
         [HttpPost]
@@ -196,6 +243,7 @@ namespace Linq2TwitterDemos_MVC.Controllers
         [AllowAnonymous]
         public async Task<ActionResult> ExternalLoginCallback(string returnUrl)
         {
+            Session.Clear();
             var loginInfo = await AuthenticationManager.GetExternalLoginInfoAsync();
             if (loginInfo == null)
             {
@@ -206,6 +254,7 @@ namespace Linq2TwitterDemos_MVC.Controllers
             var user = await UserManager.FindAsync(loginInfo.Login);
             if (user != null)
             {
+                await StoreTwitterCredentials(user);
                 await SignInAsync(user, isPersistent: false);
                 return RedirectToLocal(returnUrl);
             }
@@ -240,6 +289,8 @@ namespace Linq2TwitterDemos_MVC.Controllers
             var result = await UserManager.AddLoginAsync(User.Identity.GetUserId(), loginInfo.Login);
             if (result.Succeeded)
             {
+                var currentUser = await UserManager.FindByIdAsync(User.Identity.GetUserId());
+                await StoreTwitterCredentials(currentUser);
                 return RedirectToAction("Manage");
             }
             return RedirectToAction("Manage", new { Message = ManageMessageId.Error });
@@ -272,6 +323,7 @@ namespace Linq2TwitterDemos_MVC.Controllers
                     result = await UserManager.AddLoginAsync(user.Id, info.Login);
                     if (result.Succeeded)
                     {
+                        await StoreTwitterCredentials(user);
                         await SignInAsync(user, isPersistent: false);
                         return RedirectToLocal(returnUrl);
                     }

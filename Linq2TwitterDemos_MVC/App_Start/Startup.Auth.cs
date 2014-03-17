@@ -1,7 +1,10 @@
-﻿using Microsoft.AspNet.Identity;
+﻿using System.Configuration;
+using Microsoft.AspNet.Identity;
 using Microsoft.Owin;
 using Microsoft.Owin.Security.Cookies;
+using Microsoft.Owin.Security.Twitter;
 using Owin;
+using LinqToTwitter;
 
 namespace Linq2TwitterDemos_MVC
 {
@@ -24,9 +27,17 @@ namespace Linq2TwitterDemos_MVC
             //    clientId: "",
             //    clientSecret: "");
 
+            app.UseTwitterAuthentication(
+                new TwitterAuthenticationOptions
+                {
+                    ConsumerKey = ConfigurationManager.AppSettings["consumerKey"],
+                    ConsumerSecret = ConfigurationManager.AppSettings["consumerSecret"],
+                    Provider = new LinqToTwitterAuthenticationProvider()
+                });
+
             //app.UseTwitterAuthentication(
-            //   consumerKey: "",
-            //   consumerSecret: "");
+            //   consumerKey: ConfigurationManager.AppSettings["consumerKey"],
+            //   consumerSecret: ConfigurationManager.AppSettings["consumerSecret"]);
 
             //app.UseFacebookAuthentication(
             //   appId: "",

@@ -55,7 +55,7 @@ namespace LinqToTwitterDemo
                     if (DoThis("demo trend"))
                         TrendsDemos.Run(twitterCtx);
 
-                    //UserDemos.Run(twitterCtx);
+                    UserDemos.Run(twitterCtx);
                     //OAuthDemos.Run(twitterCtx);
                     //TwitterContextDemos.Run(twitterCtx);
                 }

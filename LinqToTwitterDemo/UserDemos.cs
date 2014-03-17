@@ -17,10 +17,10 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx">TwitterContext</param>
         public static void Run(TwitterContext twitterCtx)
         {
-            UserShowWithIDQueryDemo(twitterCtx);
+            //UserShowWithIDQueryDemo(twitterCtx);
             //UserShowWithScreenNameQueryDemo(twitterCtx);
             //UserShowForAuthenticatedUser(twitterCtx);
-            //UsersLookupDemo(twitterCtx);
+            UsersLookupDemo(twitterCtx);
             //UserSearchDemo(twitterCtx);
             //UserSuggestedCategoriesListQueryDemo(twitterCtx);
             //UserSuggestedCategoriesListWithLangQueryDemo(twitterCtx);
@@ -74,12 +74,27 @@ namespace LinqToTwitterDemo
         /// <param name="twitterCtx"></param>
         private static void UsersLookupDemo(TwitterContext twitterCtx)
         {
+            var followers =
+                (from user in twitterCtx.SocialGraph
+                 where user.Type == SocialGraphType.Followers &&
+                       user.ScreenName == "JoeMayo"
+                 select user)
+                .SingleOrDefault();
+
+            var userIDs = string.Join(",", followers.IDs.Take(100).ToList());
             var users =
                 (from user in twitterCtx.User
                  where user.Type == UserType.Lookup &&
-                       user.ScreenName == "JoeMayo,LinqToTweeter,NewStarCw46"
+                       user.UserID == userIDs
                  select user)
-                 .ToList();
+                .ToList();
+
+            //var users =
+            //    (from user in twitterCtx.User
+            //     where user.Type == UserType.Lookup &&
+            //           user.ScreenName == "JoeMayo,LinqToTweeter,NewStarCw46"
+            //     select user)
+            //     .ToList();
 
             users.ForEach(user => Console.WriteLine("Name: " + user.Identifier.ScreenName));
         }
