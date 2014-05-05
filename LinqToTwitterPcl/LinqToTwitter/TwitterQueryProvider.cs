@@ -137,7 +137,7 @@ namespace LinqToTwitter
 
             try
             {
-                var result = await (Task<object>)genericMethodInfo.Invoke(Context, new object[] { expression, isEnumerable });
+                var result = await ((Task<object>)genericMethodInfo.Invoke(Context, new object[] { expression, isEnumerable })).ConfigureAwait(false);
                 return result;
             }
             catch (TargetInvocationException tex)

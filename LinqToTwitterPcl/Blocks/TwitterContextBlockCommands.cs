@@ -16,7 +16,7 @@ namespace LinqToTwitter
         /// <returns>User that was unblocked</returns>
         public async Task<User> CreateBlockAsync(ulong userID, string screenName, bool skipStatus)
         {
-            return await CreateBlockAsync(userID, screenName, true, skipStatus);
+            return await CreateBlockAsync(userID, screenName, true, skipStatus).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -45,7 +45,8 @@ namespace LinqToTwitter
                         { "screen_name", screenName },
                         { "include_entities", includeEntities.ToString().ToLower() },
                         { "skip_status", skipStatus.ToString().ToLower() }
-                    });
+                    })
+                    .ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(resultsJson, UserAction.SingleUser);
         }
@@ -59,7 +60,7 @@ namespace LinqToTwitter
         /// <returns>User that was unblocked</returns>
         public async Task<User> DestroyBlockAsync(ulong userID, string screenName, bool skipStatus)
         {
-            return await DestroyBlockAsync(userID, screenName, true, skipStatus);
+            return await DestroyBlockAsync(userID, screenName, true, skipStatus).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -88,7 +89,8 @@ namespace LinqToTwitter
                         { "screen_name", screenName },
                         { "include_entities", includeEntities.ToString().ToLower() },
                         { "skip_status", skipStatus.ToString().ToLower() }
-                    });
+                    })
+                    .ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(resultsJson, UserAction.SingleUser);
         }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using Linq2TwitterDemos_WindowsPhone.ViewModels;
 using LinqToTwitter;
@@ -38,11 +37,19 @@ namespace Linq2TwitterDemos_WindowsPhone.StreamingDemos
                  select strm)
                 .StartAsync(async strm =>
                 {
+                    if (IsKeepAliveMessageFromTwitterApi(strm))
+                        return;
+
                     Show(strm.Content);
 
                     if (count++ == 5)
                         strm.CloseStream();
                 });
+        }
+  
+        private bool IsKeepAliveMessageFromTwitterApi(StreamContent strm)
+        {
+            return string.IsNullOrWhiteSpace(strm.Content);
         }
 
         void Show(string content)

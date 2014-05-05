@@ -160,7 +160,7 @@ namespace LinqToTwitter
 
             Parameters.Remove("oauth_callback");
 
-            string response = await HttpGetAsync(OAuthAccessTokenUrl, Parameters);
+            string response = await HttpGetAsync(OAuthAccessTokenUrl, Parameters).ConfigureAwait(false);
 
             if (string.IsNullOrWhiteSpace(response))
                 throw new ArgumentNullException("Empty response to access token response from Twitter.");
@@ -178,7 +178,7 @@ namespace LinqToTwitter
 
             Parameters.Remove("oauth_callback");
 
-            string response = await HttpPostAsync(OAuthAccessTokenUrl, Parameters);
+            string response = await HttpPostAsync(OAuthAccessTokenUrl, Parameters).ConfigureAwait(false);
 
             if (string.IsNullOrWhiteSpace(response))
                 throw new ArgumentNullException("Empty response to access token response from Twitter.");
@@ -242,11 +242,11 @@ namespace LinqToTwitter
             if (Proxy != null && handler.SupportsProxy)
                 handler.Proxy = Proxy;
 
-            var msg = await new HttpClient(handler).SendAsync(req);
+            var msg = await new HttpClient(handler).SendAsync(req).ConfigureAwait(false);
 
-            await TwitterErrorHandler.ThrowIfErrorAsync(msg);
+            await TwitterErrorHandler.ThrowIfErrorAsync(msg).ConfigureAwait(false);
 
-            return await msg.Content.ReadAsStringAsync();
+            return await msg.Content.ReadAsStringAsync().ConfigureAwait(false);
         }
 
         internal async Task<string> HttpPostAsync(string oauthUrl, IDictionary<string, string> parameters)
@@ -276,11 +276,11 @@ namespace LinqToTwitter
             if (Proxy != null && handler.SupportsProxy)
                 handler.Proxy = Proxy;
 
-            var msg = await new HttpClient(handler).SendAsync(req);
+            var msg = await new HttpClient(handler).SendAsync(req).ConfigureAwait(false);
 
-            await TwitterErrorHandler.ThrowIfErrorAsync(msg);
+            await TwitterErrorHandler.ThrowIfErrorAsync(msg).ConfigureAwait(false);
 
-            return await msg.Content.ReadAsStringAsync();
+            return await msg.Content.ReadAsStringAsync().ConfigureAwait(false);
         }
  
         public virtual string GetAuthorizationString(HttpMethod method, string oauthUrl, IDictionary<string, string> parameters)

@@ -14,7 +14,7 @@ namespace LinqToTwitter
         /// <returns>status of favorite</returns>
         public async Task<Status> CreateFavoriteAsync(ulong id)
         {
-            return await CreateFavoriteAsync(id, true);
+            return await CreateFavoriteAsync(id, true).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -39,7 +39,8 @@ namespace LinqToTwitter
                     {
                         {"id", id.ToString()},
                         {"include_entities", includeEntities.ToString()}
-                    });
+                    })
+                    .ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(resultsJson, FavoritesAction.SingleStatus);
         }
@@ -51,7 +52,7 @@ namespace LinqToTwitter
         /// <returns>status of favorite</returns>
         public async Task<Status> DestroyFavoriteAsync(ulong id)
         {
-            return await DestroyFavoriteAsync(id, true);
+            return await DestroyFavoriteAsync(id, true).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -76,10 +77,10 @@ namespace LinqToTwitter
                     {
                         {"id", id.ToString()},
                         {"include_entities", includeEntities.ToString()}
-                    });
+                    })
+                    .ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(resultsJson, FavoritesAction.SingleStatus);
         }
-
     }
 }

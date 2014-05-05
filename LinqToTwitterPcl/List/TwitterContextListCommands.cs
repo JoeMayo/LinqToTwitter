@@ -36,7 +36,8 @@ namespace LinqToTwitter
                         { "name", listName },
                         { "mode", mode },
                         { "description", description }
-                    });
+                    })
+                    .ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(resultsJson, ListAction.Create);
         }
@@ -75,7 +76,8 @@ namespace LinqToTwitter
                         { "mode", mode },
                         { "description", description },
                         { "name", name }
-                    });
+                    })
+                    .ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(resultsJson, ListAction.Update);
         }
@@ -109,7 +111,8 @@ namespace LinqToTwitter
                         { "slug", slug },
                         { "owner_id", ownerID.ToString() },
                         { "owner_screen_name", ownerScreenName }
-                    });
+                    })
+                    .ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(resultsJson, ListAction.Delete);
         }
@@ -125,7 +128,7 @@ namespace LinqToTwitter
         /// <returns>List info for list member added to</returns>
         public async Task<List> AddMemberToListAsync(ulong userID, ulong listID, string slug, ulong ownerID, string ownerScreenName)
         {
-            return await AddMemberToListAsync(userID, null, listID, slug, ownerID, ownerScreenName);
+            return await AddMemberToListAsync(userID, null, listID, slug, ownerID, ownerScreenName).ConfigureAwait(false);
         }
         
         /// <summary>
@@ -139,7 +142,7 @@ namespace LinqToTwitter
         /// <returns>List info for list member added to</returns>
         public async Task<List> AddMemberToListAsync(string screenName, ulong listID, string slug, ulong ownerID, string ownerScreenName)
         {
-            return await AddMemberToListAsync(0, screenName, listID, slug, ownerID, ownerScreenName);
+            return await AddMemberToListAsync(0, screenName, listID, slug, ownerID, ownerScreenName).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -183,7 +186,7 @@ namespace LinqToTwitter
             var reqProc = new ListRequestProcessor<List>();
 
             var resultsJson =
-                await TwitterExecutor.PostToTwitterAsync<List>(addMemberUrl, parameters);
+                await TwitterExecutor.PostToTwitterAsync<List>(addMemberUrl, parameters).ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(resultsJson, ListAction.AddMember);
         }
@@ -205,7 +208,7 @@ namespace LinqToTwitter
             if (screenNames != null && screenNames.Count > 100)
                 throw new ArgumentException("Max screenNames is 100 at a time.", "screenNames");
 
-            return await AddMemberRangeToListAsync(listID, slug, ownerID, ownerScreenName, userIDs: null, screenNames: screenNames);
+            return await AddMemberRangeToListAsync(listID, slug, ownerID, ownerScreenName, userIDs: null, screenNames: screenNames).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -225,7 +228,7 @@ namespace LinqToTwitter
             if (userIDs != null && userIDs.Count > 100)
                 throw new ArgumentException("Max user IDs is 100 at a time.", "userIDs");
 
-            return await AddMemberRangeToListAsync(listID, slug, ownerID, ownerScreenName, userIDs, screenNames: null);
+            return await AddMemberRangeToListAsync(listID, slug, ownerID, ownerScreenName, userIDs, screenNames: null).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -266,7 +269,7 @@ namespace LinqToTwitter
                 parameters.Add("owner_screen_name", ownerScreenName);
 
             var resultsJson =
-                await TwitterExecutor.PostToTwitterAsync<List>(addMemberRangeUrl, parameters);
+                await TwitterExecutor.PostToTwitterAsync<List>(addMemberRangeUrl, parameters).ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(resultsJson, ListAction.AddMember);
         }
@@ -312,7 +315,7 @@ namespace LinqToTwitter
                 parameters.Add("owner_screen_name", ownerScreenName);
 
             var resultsJson =
-                await TwitterExecutor.PostToTwitterAsync<List>(deleteUrl, parameters);
+                await TwitterExecutor.PostToTwitterAsync<List>(deleteUrl, parameters).ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(resultsJson, ListAction.DeleteMember);
         }
@@ -349,7 +352,7 @@ namespace LinqToTwitter
                 parameters.Add("owner_screen_name", ownerScreenName);
 
             var resultsJson =
-                await TwitterExecutor.PostToTwitterAsync<List>(subscribeUrl, parameters);
+                await TwitterExecutor.PostToTwitterAsync<List>(subscribeUrl, parameters).ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(resultsJson, ListAction.Subscribe);
         }
@@ -386,7 +389,7 @@ namespace LinqToTwitter
                 parameters.Add("owner_screen_name", ownerScreenName);
 
             var resultsJson =
-                await TwitterExecutor.PostToTwitterAsync<List>(unsubscribeUrl, parameters);
+                await TwitterExecutor.PostToTwitterAsync<List>(unsubscribeUrl, parameters).ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(resultsJson, ListAction.Unsubscribe);
         }
@@ -402,7 +405,7 @@ namespace LinqToTwitter
         /// <returns>List info for list subscription removed from</returns>
         public async Task<List> DeleteMemberRangeFromListAsync(ulong listID, string slug, List<ulong> userIDs, ulong ownerID, string ownerScreenName)
         {
-            return await DeleteMemberRangeFromListAsync(listID, slug, userIDs, null, ownerID, ownerScreenName);
+            return await DeleteMemberRangeFromListAsync(listID, slug, userIDs, null, ownerID, ownerScreenName).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -416,7 +419,7 @@ namespace LinqToTwitter
         /// <returns>List info for list subscription removed from</returns>
         public async Task<List> DeleteMemberRangeFromListAsync(ulong listID, string slug, List<string> screenNames, ulong ownerID, string ownerScreenName)
         {
-            return await DeleteMemberRangeFromListAsync(listID, slug, null, screenNames, ownerID, ownerScreenName);
+            return await DeleteMemberRangeFromListAsync(listID, slug, null, screenNames, ownerID, ownerScreenName).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -462,7 +465,7 @@ namespace LinqToTwitter
                 parameters.Add("owner_screen_name", ownerScreenName);
 
             var resultsJson =
-                await TwitterExecutor.PostToTwitterAsync<List>(destroyAllUrl, parameters);
+                await TwitterExecutor.PostToTwitterAsync<List>(destroyAllUrl, parameters).ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(resultsJson, ListAction.DestroyAll);
         }

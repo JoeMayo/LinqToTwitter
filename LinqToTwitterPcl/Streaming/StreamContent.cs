@@ -22,6 +22,11 @@ namespace LinqToTwitter
         public string Content { get; set; }
 
         /// <summary>
+        /// LINQ to Twitter entity
+        /// </summary>
+        public IStreamEntity Entity { get; set; }
+
+        /// <summary>
         /// Closes Twitter stream.
         /// </summary>
         public virtual void CloseStream()

@@ -27,7 +27,8 @@ namespace LinqToTwitter
                     new Dictionary<string, string>
                     {
                         { "query", query }
-                    });
+                    })
+                    .ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(resultsJson, SavedSearchAction.Create);
         }
@@ -50,7 +51,8 @@ namespace LinqToTwitter
             var resultsJson =
                 await TwitterExecutor.PostToTwitterAsync<SavedSearch>(
                     savedSearchUrl,
-                    new Dictionary<string, string>());
+                    new Dictionary<string, string>())
+                    .ConfigureAwait(false);
 
             SavedSearch result = reqProc.ProcessActionResult(resultsJson, SavedSearchAction.Destroy);
             result.ID = id;

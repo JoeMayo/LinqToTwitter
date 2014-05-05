@@ -36,7 +36,8 @@ namespace LinqToTwitter
             var resultsJson =
                 await TwitterExecutor.PostToTwitterAsync<User>(
                     destroyUrl,
-                    createParams);
+                    createParams)
+                    .ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(resultsJson, FriendshipAction.Create);
         }
@@ -70,7 +71,8 @@ namespace LinqToTwitter
             var resultsJson =
                 await TwitterExecutor.PostToTwitterAsync<User>(
                     destroyUrl,
-                    createParams);
+                    createParams)
+                    .ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(resultsJson, FriendshipAction.Create);
         }
@@ -95,7 +97,8 @@ namespace LinqToTwitter
                     new Dictionary<string, string>
                     {
                         { "user_id", userID.ToString() }
-                    });
+                    })
+                    .ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(resultsJson, FriendshipAction.Destroy);
         }
@@ -120,7 +123,8 @@ namespace LinqToTwitter
                     new Dictionary<string, string>
                     {
                         { "screen_name", screenName }
-                    });
+                    })
+                    .ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(resultsJson, FriendshipAction.Destroy);
         }
@@ -138,7 +142,7 @@ namespace LinqToTwitter
             if (string.IsNullOrWhiteSpace(screenName))
                 throw new ArgumentNullException("screenName", "screenName is a required parameter.");
 
-            return await UpdateFriendshipSettingsAsync(0, screenName, retweets, device);
+            return await UpdateFriendshipSettingsAsync(0, screenName, retweets, device).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -153,7 +157,7 @@ namespace LinqToTwitter
             if (userID == 0)
                 throw new ArgumentNullException("userID", "userID is a required parameter.");
 
-            return await UpdateFriendshipSettingsAsync(0, null, retweets, device);
+            return await UpdateFriendshipSettingsAsync(0, null, retweets, device).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -182,7 +186,8 @@ namespace LinqToTwitter
             var resultsJson =
                 await TwitterExecutor.PostToTwitterAsync<Friendship>(
                     updateUrl,
-                    parms);
+                    parms)
+                    .ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(resultsJson, FriendshipAction.Update);
         }

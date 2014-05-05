@@ -27,7 +27,7 @@ namespace LinqToTwitter
         public async Task AuthorizeAsync()
         {
             EncodeCredentials();
-            await GetBearerTokenAsync();
+            await GetBearerTokenAsync().ConfigureAwait(false);
         }
 
         public async Task InvalidateAsync()
@@ -48,11 +48,11 @@ namespace LinqToTwitter
 
             using (var client = new HttpClient(handler))
             {
-                var msg = await client.SendAsync(req);
+                var msg = await client.SendAsync(req).ConfigureAwait(false);
 
                 await TwitterErrorHandler.ThrowIfErrorAsync(msg);
 
-                string response = await msg.Content.ReadAsStringAsync();
+                string response = await msg.Content.ReadAsStringAsync().ConfigureAwait(false);
 
                 var responseJson = JsonMapper.ToObject(response);
                 BearerToken = responseJson.GetValue<string>("access_token"); 
@@ -75,11 +75,11 @@ namespace LinqToTwitter
 
             using (var client = new HttpClient(handler))
             {
-                var msg = await client.SendAsync(req);
+                var msg = await client.SendAsync(req).ConfigureAwait(false);
 
                 await TwitterErrorHandler.ThrowIfErrorAsync(msg);
 
-                string response = await msg.Content.ReadAsStringAsync();
+                string response = await msg.Content.ReadAsStringAsync().ConfigureAwait(false);
 
                 var responseJson = JsonMapper.ToObject(response);
                 BearerToken = responseJson.GetValue<string>("access_token"); 

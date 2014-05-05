@@ -23,14 +23,14 @@ namespace LinqToTwitter
                 .TwitterExecutor
                 .StreamingCallbackAsync = callback;
 
-            return await streaming.ToListAsync();
+            return await streaming.ToListAsync().ConfigureAwait(false);
         }
 
         public static async Task<List<T>> ToListAsync<T>(this IQueryable<T> query)
         {
             var provider = query.Provider as TwitterQueryProvider;
 
-            IEnumerable<T> results = (IEnumerable<T>)await provider.ExecuteAsync<IEnumerable<T>>(query.Expression);
+            IEnumerable<T> results = (IEnumerable<T>)await provider.ExecuteAsync<IEnumerable<T>>(query.Expression).ConfigureAwait(false);
 
             return results.ToList();
         }
@@ -40,7 +40,7 @@ namespace LinqToTwitter
         {
             var provider = query.Provider as TwitterQueryProvider;
 
-            IEnumerable<T> results = (IEnumerable<T>)await provider.ExecuteAsync<T>(query.Expression);
+            IEnumerable<T> results = (IEnumerable<T>)await provider.ExecuteAsync<T>(query.Expression).ConfigureAwait(false);
 
             return results.FirstOrDefault();
         }
@@ -50,7 +50,7 @@ namespace LinqToTwitter
         {
             var provider = query.Provider as TwitterQueryProvider;
 
-            IEnumerable<T> results = (IEnumerable<T>)await provider.ExecuteAsync<T>(query.Expression);
+            IEnumerable<T> results = (IEnumerable<T>)await provider.ExecuteAsync<T>(query.Expression).ConfigureAwait(false);
 
             return results.First();
         }
@@ -60,7 +60,7 @@ namespace LinqToTwitter
         {
             var provider = query.Provider as TwitterQueryProvider;
 
-            IEnumerable<T> results = (IEnumerable<T>)await provider.ExecuteAsync<T>(query.Expression);
+            IEnumerable<T> results = (IEnumerable<T>)await provider.ExecuteAsync<T>(query.Expression).ConfigureAwait(false);
 
             return results.SingleOrDefault();
         }
@@ -70,7 +70,7 @@ namespace LinqToTwitter
         {
             var provider = query.Provider as TwitterQueryProvider;
 
-            IEnumerable<T> results = (IEnumerable<T>)await provider.ExecuteAsync<T>(query.Expression);
+            IEnumerable<T> results = (IEnumerable<T>)await provider.ExecuteAsync<T>(query.Expression).ConfigureAwait(false);
 
             return results.Single();
         }

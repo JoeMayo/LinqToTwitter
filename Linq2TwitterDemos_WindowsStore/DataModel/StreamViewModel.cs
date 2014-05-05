@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using Windows.ApplicationModel.Core;
 
 namespace Linq2TwitterDemos_WindowsStore.DataModel
 {
@@ -27,9 +28,14 @@ namespace Linq2TwitterDemos_WindowsStore.DataModel
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        protected void Show(string content)
+        protected async void Show(string content)
         {
-            JsonContent.Add(new JsonContent { Content = content });
+            var dispatcher = CoreApplication.MainView.CoreWindow.Dispatcher;
+
+            await dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+            {
+                JsonContent.Add(new JsonContent { Content = content });
+            });            
         }
     }
 }

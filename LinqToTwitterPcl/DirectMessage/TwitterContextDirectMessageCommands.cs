@@ -32,7 +32,8 @@ namespace LinqToTwitter
                     {
                         {"screen_name", screenName},
                         {"text", text}
-                    });
+                    })
+                    .ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(resultsJson, DirectMessageType.Show);
         }
@@ -62,7 +63,8 @@ namespace LinqToTwitter
                     {
                         {"user_id", userID.ToString()},
                         {"text", text}
-                    });
+                    })
+                    .ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(resultsJson, DirectMessageType.Show);
         }
@@ -89,7 +91,8 @@ namespace LinqToTwitter
                     {
                         {"id", id.ToString()},
                         {"include_entities", includeEntites.ToString().ToLower()}
-                    });
+                    })
+                    .ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(resultsJson, DirectMessageType.Show);
         }

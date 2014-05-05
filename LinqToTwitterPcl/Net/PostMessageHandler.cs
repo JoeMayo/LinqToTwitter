@@ -37,7 +37,7 @@ namespace LinqToTwitter.Net
             //if (exe.ReadWriteTimeout != 0)
             //    ReadWriteTimeout = exe.ReadWriteTimeout;
 
-            return await base.SendAsync(request, cancellationToken);
+            return await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
         }
     }
 }

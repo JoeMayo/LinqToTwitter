@@ -97,6 +97,12 @@ namespace LinqToTwitter
         /// </summary>
         public string RawResult { get; set; }
 
+        /// <summary>
+        /// By default, LINQ to Twitter populates RawResult on TwitterContext and JsonContent on entities. 
+        /// Setting this to true turn this off so that RawResult and JsonContent are not populated.
+        /// </summary>
+        public bool ExcludeRawJson { get; set; }
+
         //
         // The routines in this region delegate to TwitterExecute
         // which contains the methods for communicating with Twitter.
@@ -406,14 +412,15 @@ namespace LinqToTwitter
              //process request through Twitter
             if (typeof(T) == typeof(Streaming))
             {
-                results = await TwitterExecutor.QueryTwitterStreamAsync(request);
+                results = await TwitterExecutor.QueryTwitterStreamAsync(request).ConfigureAwait(false);
             }
             else
             {
-                results = await TwitterExecutor.QueryTwitterAsync(request, reqProc);
+                results = await TwitterExecutor.QueryTwitterAsync(request, reqProc).ConfigureAwait(false);
             }
 
-            RawResult = results;
+            if (!ExcludeRawJson)
+                RawResult = results;
 
             // Transform results into objects
             var queryableList = reqProc.ProcessResults(results);

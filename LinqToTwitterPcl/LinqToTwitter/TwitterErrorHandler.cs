@@ -19,17 +19,17 @@ namespace LinqToTwitter
             switch (msg.StatusCode)
             {
                 case HttpStatusCode.Unauthorized:
-                    await HandleUnauthorizedAsync(msg);
+                    await HandleUnauthorizedAsync(msg).ConfigureAwait(false);
                     break;
                 default:
-                    await HandleGenericErrorAsync(msg);
+                    await HandleGenericErrorAsync(msg).ConfigureAwait(false);
                     break;
             } 
         }
   
         internal static async Task HandleGenericErrorAsync(HttpResponseMessage msg)
         {
-            string responseStr = await msg.Content.ReadAsStringAsync();
+            string responseStr = await msg.Content.ReadAsStringAsync().ConfigureAwait(false);
 
             BuildAndThrowTwitterQueryException(responseStr, msg);
         }

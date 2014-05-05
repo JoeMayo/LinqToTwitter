@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
 using LinqToTwitter.Net;
-using System.Text;
-using System.IO.Compression;
 
 namespace LinqToTwitter
 {
@@ -129,9 +128,9 @@ namespace LinqToTwitter
                 if (Timeout != 0)
                     client.Timeout = new TimeSpan(0, 0, 0, Timeout);
 
-                var msg = await client.SendAsync(req);
+                var msg = await client.SendAsync(req).ConfigureAwait(false);
 
-                return await HandleResponseAsync(msg);
+                return await HandleResponseAsync(msg).ConfigureAwait(false);
             }
         }
   
@@ -188,11 +187,11 @@ namespace LinqToTwitter
                     httpRequest.Headers.AcceptEncoding.TryParseAdd("gzip");
 
                 var response = await StreamingClient.SendAsync(
-                    httpRequest, HttpCompletionOption.ResponseHeadersRead);
+                    httpRequest, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
 
-                await TwitterErrorHandler.ThrowIfErrorAsync(response);
+                await TwitterErrorHandler.ThrowIfErrorAsync(response).ConfigureAwait(false);
 
-                using (var stream = await response.Content.ReadAsStreamAsync())
+                using (var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false))
                     if (Authorizer.SupportsCompression)
                     {
                         using (var gzip = new GZipStream(stream, CompressionMode.Decompress))
@@ -201,7 +200,7 @@ namespace LinqToTwitter
 
                             while (stream.CanRead && !IsStreamClosed)
                             {
-                                int readCount = await gzip.ReadAsync(compressedBuffer, 0, compressedBuffer.Length);
+                                int readCount = await gzip.ReadAsync(compressedBuffer, 0, compressedBuffer.Length).ConfigureAwait(false);
 
                                 // When Twitter breaks the connection, we need to exit the
                                 // entire loop and start over. Otherwise, the reads
@@ -227,7 +226,7 @@ namespace LinqToTwitter
                                 {
                                     var strmContent = new StreamContent(this, lines[i]);
 
-                                    await StreamingCallbackAsync(strmContent);
+                                    await StreamingCallbackAsync(strmContent).ConfigureAwait(false);
                                 }
 
                                 compressedBuffer = new byte[8192];
@@ -244,7 +243,7 @@ namespace LinqToTwitter
 
                                 var strmContent = new StreamContent(this, line);
 
-                                await StreamingCallbackAsync(strmContent);
+                                await StreamingCallbackAsync(strmContent).ConfigureAwait(false);
                             }
                         }
                     }
@@ -303,7 +302,7 @@ namespace LinqToTwitter
                 if (Timeout != 0)
                     client.Timeout = new TimeSpan(0, 0, 0, Timeout);
 
-                HttpResponseMessage msg = await client.PostAsync(url, multiPartContent);
+                HttpResponseMessage msg = await client.PostAsync(url, multiPartContent).ConfigureAwait(false);
 
                 return await HandleResponseAsync(msg);
             }
@@ -340,7 +339,7 @@ namespace LinqToTwitter
                 if (Timeout != 0)
                     client.Timeout = new TimeSpan(0, 0, 0, Timeout);
 
-                HttpResponseMessage msg = await client.PostAsync(url, content);
+                HttpResponseMessage msg = await client.PostAsync(url, content).ConfigureAwait(false);
 
                 return await HandleResponseAsync(msg);
             }
@@ -363,7 +362,7 @@ namespace LinqToTwitter
 
             await TwitterErrorHandler.ThrowIfErrorAsync(msg);
 
-            return await msg.Content.ReadAsStringAsync();
+            return await msg.Content.ReadAsStringAsync().ConfigureAwait(false);
         }
 
         void WriteLog(string content, string currentMethod)

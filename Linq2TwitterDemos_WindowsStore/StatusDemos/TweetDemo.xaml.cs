@@ -81,19 +81,7 @@ namespace Linq2TwitterDemos_WindowsStore.StatusDemos
 
         async void TweetButton_Click(object sender, RoutedEventArgs e)
         {
-            var auth = new WindowsStoreAuthorizer
-            {
-                CredentialStore = new InMemoryCredentialStore
-                {
-                    ConsumerKey = "QOjrymt0lne93nacBFj3yQ",
-                    ConsumerSecret = "rzqR5VHjd2ClG2iJpiyVIbmQK3EEIhdkOdi9PlT6tg"
-                },
-                Callback = "http://linqtotwitter.codeplex.com/"
-            };
-                
-            await auth.AuthorizeAsync();
-
-            var twitterCtx = new TwitterContext(auth);
+            var twitterCtx = new TwitterContext(SharedState.Authorizer);
 
             Status tweet = await twitterCtx.TweetAsync(TweetTextBox.Text);
 

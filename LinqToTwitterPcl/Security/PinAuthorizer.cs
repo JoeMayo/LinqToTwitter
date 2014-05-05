@@ -50,7 +50,7 @@ namespace LinqToTwitter
             if (GetPin == null)
                 throw new InvalidOperationException("You must provide an Func<string> delegate/lambda for GetPin.");
 
-            await GetRequestTokenAsync("oob");
+            await GetRequestTokenAsync("oob").ConfigureAwait(false);
 
             string authUrl = PrepareAuthorizeUrl(ForceLogin);
             GoToTwitterAuthorization(authUrl);
@@ -59,7 +59,7 @@ namespace LinqToTwitter
 
             var accessTokenParams = new Dictionary<string, string>();
             accessTokenParams.Add("oauth_verifier", verifier);
-            await GetAccessTokenAsync(accessTokenParams);
+            await GetAccessTokenAsync(accessTokenParams).ConfigureAwait(false);
         }
 
         public async Task BeginAuthorizeAsync()
@@ -77,7 +77,7 @@ namespace LinqToTwitter
             if (GoToTwitterAuthorization == null)
                 throw new InvalidOperationException("You must provide an Action<string> delegate/lambda for GoToTwitterAuthorization.");
 
-            await GetRequestTokenAsync("oob");
+            await GetRequestTokenAsync("oob").ConfigureAwait(false);
 
             string authUrl = PrepareAuthorizeUrl(ForceLogin);
             GoToTwitterAuthorization(authUrl);
@@ -88,7 +88,7 @@ namespace LinqToTwitter
         {
             var accessTokenParams = new Dictionary<string, string>();
             accessTokenParams.Add("oauth_verifier", pin);
-            await GetAccessTokenAsync(accessTokenParams);
+            await GetAccessTokenAsync(accessTokenParams).ConfigureAwait(false);
         }
     }
 }

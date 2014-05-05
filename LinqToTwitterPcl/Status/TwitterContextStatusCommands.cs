@@ -21,7 +21,7 @@ namespace LinqToTwitter
         /// <returns>Status containing new tweet</returns>
         public async Task<Status> TweetWithMediaAsync(string status, bool possiblySensitive, byte[] image)
         {
-            return await ReplyWithMediaAsync(NoReply, status, possiblySensitive, NoCoordinate, NoCoordinate, null, false, image);
+            return await ReplyWithMediaAsync(NoReply, status, possiblySensitive, NoCoordinate, NoCoordinate, null, false, image).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace LinqToTwitter
         /// <returns>Status containing new reply</returns>
         public async Task<Status> TweetWithMediaAsync(string status, bool possiblySensitive, decimal latitude, decimal longitude, string placeID, bool displayCoordinates, byte[] image)
         {
-            return await ReplyWithMediaAsync(NoReply, status, possiblySensitive, latitude, longitude, placeID, displayCoordinates, image);
+            return await ReplyWithMediaAsync(NoReply, status, possiblySensitive, latitude, longitude, placeID, displayCoordinates, image).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace LinqToTwitter
         /// <returns>Status containing new reply</returns>
         public async Task<Status> ReplyWithMediaAsync(ulong inReplyToStatusID, string status, bool possiblySensitive, byte[] image)
         {
-            return await ReplyWithMediaAsync(inReplyToStatusID, status, possiblySensitive, NoCoordinate, NoCoordinate, null, false, image);
+            return await ReplyWithMediaAsync(inReplyToStatusID, status, possiblySensitive, NoCoordinate, NoCoordinate, null, false, image).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -97,7 +97,8 @@ namespace LinqToTwitter
                     image, 
                     name,
                     randomUnusedFileName,
-                    imageType);
+                    imageType)
+                    .ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(resultString, StatusAction.SingleStatus);
         }
@@ -110,7 +111,7 @@ namespace LinqToTwitter
         /// <returns>Reply status.</returns>
         public async Task<Status> ReplyAsync(ulong tweetID, string status)
         {
-            return await ReplyAsync(tweetID, status, NoCoordinate, NoCoordinate, null, false, false);
+            return await ReplyAsync(tweetID, status, NoCoordinate, NoCoordinate, null, false, false).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -124,7 +125,7 @@ namespace LinqToTwitter
         /// <returns>Reply status.</returns>
         public async Task<Status> ReplyAsync(ulong tweetID, string status, decimal latitude, decimal longitude, bool displayCoordinates)
         {
-            return await ReplyAsync(tweetID, status, latitude, longitude, null, displayCoordinates, false);
+            return await ReplyAsync(tweetID, status, latitude, longitude, null, displayCoordinates, false).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -138,7 +139,7 @@ namespace LinqToTwitter
         /// <returns>Reply status.</returns>
         public async Task<Status> ReplyAsync(ulong tweetID, string status, decimal latitude, decimal longitude, string placeID, bool trimUser)
         {
-            return await ReplyAsync(tweetID, status, latitude, longitude, placeID, false, trimUser);
+            return await ReplyAsync(tweetID, status, latitude, longitude, placeID, false, trimUser).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -151,7 +152,7 @@ namespace LinqToTwitter
         /// <returns>Reply status.</returns>
         public async Task<Status> ReplyAsync(ulong tweetID, string status, string placeID, bool displayCoordinates, bool trimUser)
         {
-            return await ReplyAsync(tweetID, status, NoCoordinate, NoCoordinate, placeID, displayCoordinates, trimUser);
+            return await ReplyAsync(tweetID, status, NoCoordinate, NoCoordinate, placeID, displayCoordinates, trimUser).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -169,7 +170,7 @@ namespace LinqToTwitter
             if (tweetID == MissingID)
                 throw new ArgumentException("0 is *not* a valid tweetID. You must provide the ID of the tweet you're replying to.", "tweetID");
 
-            return await TweetOrReplyAsync(tweetID, status, latitude, longitude, placeID, displayCoordinates, trimUser);
+            return await TweetOrReplyAsync(tweetID, status, latitude, longitude, placeID, displayCoordinates, trimUser).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -179,7 +180,7 @@ namespace LinqToTwitter
         /// <returns>Tweeted status.</returns>
         public async Task<Status> TweetAsync(string status)
         {
-            return await TweetOrReplyAsync(NoReply, status, NoCoordinate, NoCoordinate, null, false, false);
+            return await TweetOrReplyAsync(NoReply, status, NoCoordinate, NoCoordinate, null, false, false).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -191,7 +192,7 @@ namespace LinqToTwitter
         /// <returns>Tweeted status.</returns>
         public async Task<Status> TweetAsync(string status, decimal latitude, decimal longitude)
         {
-            return await TweetOrReplyAsync(NoReply, status, latitude, longitude, null, false, false);
+            return await TweetOrReplyAsync(NoReply, status, latitude, longitude, null, false, false).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -204,7 +205,7 @@ namespace LinqToTwitter
         /// <returns>Tweeted status.</returns>
         public async Task<Status> TweetAsync(string status, decimal latitude, decimal longitude, bool displayCoordinates)
         {
-            return await TweetOrReplyAsync(NoReply, status, latitude, longitude, null, displayCoordinates, false);
+            return await TweetOrReplyAsync(NoReply, status, latitude, longitude, null, displayCoordinates, false).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -217,7 +218,7 @@ namespace LinqToTwitter
         /// <returns>Tweeted status.</returns>
         public async Task<Status> TweetAsync(string status, decimal latitude, decimal longitude, string placeID, bool trimUser)
         {
-            return await TweetOrReplyAsync(NoReply, status, latitude, longitude, placeID, false, trimUser);
+            return await TweetOrReplyAsync(NoReply, status, latitude, longitude, placeID, false, trimUser).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -231,7 +232,7 @@ namespace LinqToTwitter
         /// <returns>Tweeted status.</returns>
         public async Task<Status> TweetAsync(string status, decimal latitude, decimal longitude, string placeID, bool displayCoordinates, bool trimUser)
         {
-            return await TweetOrReplyAsync(NoReply, status, latitude, longitude, placeID, displayCoordinates, trimUser);
+            return await TweetOrReplyAsync(NoReply, status, latitude, longitude, placeID, displayCoordinates, trimUser).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -243,7 +244,7 @@ namespace LinqToTwitter
         /// <returns>Tweeted status.</returns>
         public async Task<Status> TweetAsync(string status, string placeID, bool displayCoordinates, bool trimUser)
         {
-            return await TweetOrReplyAsync(NoReply, status, NoCoordinate, NoCoordinate, placeID, displayCoordinates, trimUser);
+            return await TweetOrReplyAsync(NoReply, status, NoCoordinate, NoCoordinate, placeID, displayCoordinates, trimUser).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -275,7 +276,8 @@ namespace LinqToTwitter
                         {"place_id", placeID},
                         {"display_coordinates", displayCoordinates ? displayCoordinates.ToString().ToLower() : null},
                         {"trim_user", trimUser ? trimUser.ToString().ToLower() : null }
-                    });
+                    })
+                    .ConfigureAwait(false);
 
             return new StatusRequestProcessor<Status>()
                 .ProcessActionResult(resultsJson, StatusAction.SingleStatus);
@@ -294,7 +296,8 @@ namespace LinqToTwitter
             var destroyUrl = BaseUrl + "statuses/destroy/" + tweetID + ".json";
 
             string resultsJson = await TwitterExecutor
-                .PostToTwitterAsync<Status>(destroyUrl, new Dictionary<string, string>());
+                .PostToTwitterAsync<Status>(destroyUrl, new Dictionary<string, string>())
+                .ConfigureAwait(false);
 
             return new StatusRequestProcessor<Status>()
                 .ProcessActionResult(resultsJson, StatusAction.SingleStatus);
@@ -313,7 +316,8 @@ namespace LinqToTwitter
             var retweetUrl = BaseUrl + "statuses/retweet/" + tweetID + ".json";
 
             string resultsJson = await TwitterExecutor
-                .PostToTwitterAsync<Status>(retweetUrl, new Dictionary<string, string>());
+                .PostToTwitterAsync<Status>(retweetUrl, new Dictionary<string, string>())
+                .ConfigureAwait(false);
 
             return new StatusRequestProcessor<Status>()
                 .ProcessActionResult(resultsJson, StatusAction.SingleStatus);

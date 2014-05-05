@@ -24,7 +24,7 @@ namespace LinqToTwitter
         /// <returns>User info with new colors</returns>
         public async Task<User> UpdateAccountColorsAsync(string background, string text, string link, string sidebarFill, string sidebarBorder, bool skipStatus)
         {
-            return await UpdateAccountColorsAsync(background, text, link, sidebarFill, sidebarBorder, true, skipStatus);
+            return await UpdateAccountColorsAsync(background, text, link, sidebarFill, sidebarBorder, true, skipStatus).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -66,7 +66,8 @@ namespace LinqToTwitter
                         { "profile_sidebar_border_color", string.IsNullOrWhiteSpace(sidebarBorder) ? null : sidebarBorder.TrimStart('#') },
                         { "include_entities", includeEntities.ToString().ToLower() },
                         { "skip_status", skipStatus.ToString().ToLower() }
-                    });
+                    })
+                    .ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(resultsJson, UserAction.SingleUser);
         }
@@ -85,7 +86,7 @@ namespace LinqToTwitter
         /// <returns>User with new image info</returns>
         public async Task<User> UpdateAccountImageAsync(byte[] image, string fileName, string imageType, bool skipStatus)
         {
-            return await UpdateAccountImageAsync(image, fileName, imageType, true, skipStatus);
+            return await UpdateAccountImageAsync(image, fileName, imageType, true, skipStatus).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -120,7 +121,7 @@ namespace LinqToTwitter
             string name = "image";
             string imageMimeType = "image/" + imageType;
 
-            var resultsJson = await TwitterExecutor.PostMediaAsync(accountUrl, parameters, image, name, fileName, imageMimeType);
+            var resultsJson = await TwitterExecutor.PostMediaAsync(accountUrl, parameters, image, name, fileName, imageMimeType).ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(resultsJson, UserAction.SingleUser);
         }
@@ -137,7 +138,7 @@ namespace LinqToTwitter
         /// <returns>User with new image info</returns>
         public async Task<User> UpdateAccountBackgroundImageAsync(byte[] image, string fileName, string imageType, bool tile, bool use, bool skipStatus)
         {
-            return await UpdateAccountBackgroundImageAsync(image, fileName, imageType, tile, use, true, skipStatus);
+            return await UpdateAccountBackgroundImageAsync(image, fileName, imageType, tile, use, true, skipStatus).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -181,7 +182,7 @@ namespace LinqToTwitter
             string name = "image";
             string imageMimeType = "image/" + imageType;
 
-            var resultsJson = await TwitterExecutor.PostMediaAsync(accountUrl, parameters, image, name, fileName, imageMimeType);
+            var resultsJson = await TwitterExecutor.PostMediaAsync(accountUrl, parameters, image, name, fileName, imageMimeType).ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(resultsJson, UserAction.SingleUser);
         }
@@ -197,7 +198,7 @@ namespace LinqToTwitter
         /// <returns>User with new info</returns>
         public async Task<User> UpdateAccountProfileAsync(string name, string url, string location, string description, bool skipStatus)
         {
-            return await UpdateAccountProfileAsync(name, url, location, description, true, skipStatus);
+            return await UpdateAccountProfileAsync(name, url, location, description, true, skipStatus).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -245,7 +246,8 @@ namespace LinqToTwitter
                         { "description", description },
                         { "include_entities", includeEntities.ToString().ToLower() },
                         { "skip_status", skipStatus.ToString().ToLower() }
-                    });
+                    })
+                    .ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(resultsJson, UserAction.SingleUser);
         }
@@ -291,7 +293,8 @@ namespace LinqToTwitter
             var resultsJson =
                 await TwitterExecutor.PostToTwitterAsync<Account>(
                     accountUrl,
-                    parameters);
+                    parameters)
+                    .ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(resultsJson, AccountAction.Settings);
         }
@@ -319,7 +322,8 @@ namespace LinqToTwitter
             var resultsJson =
                 await TwitterExecutor.PostToTwitterAsync<Account>(
                     accountUrl,
-                    parameters);
+                    parameters)
+                    .ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(resultsJson, AccountAction.Settings);
         }
@@ -336,7 +340,7 @@ namespace LinqToTwitter
         /// </returns>
         public async Task<User> UpdateProfileBannerAsync(byte[] banner, string fileName, string imageType)
         {
-            return await UpdateProfileBannerAsync(banner, fileName, imageType, 1252, 626, 0, 0);
+            return await UpdateProfileBannerAsync(banner, fileName, imageType, 1252, 626, 0, 0).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -380,7 +384,7 @@ namespace LinqToTwitter
             string name = "image";
             string imageMimeType = "image/" + imageType;
 
-            var resultsJson = await TwitterExecutor.PostMediaAsync(accountUrl, parameters, banner, name, fileName, imageMimeType);
+            var resultsJson = await TwitterExecutor.PostMediaAsync(accountUrl, parameters, banner, name, fileName, imageMimeType).ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(resultsJson, UserAction.SingleUser);
         }
@@ -398,7 +402,8 @@ namespace LinqToTwitter
             var resultsJson =
                 await TwitterExecutor.PostToTwitterAsync<User>(
                     accountUrl,
-                    new Dictionary<string, string>());
+                    new Dictionary<string, string>())
+                    .ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(resultsJson, UserAction.SingleUser);
         }

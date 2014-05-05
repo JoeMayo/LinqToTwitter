@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -11,9 +10,9 @@ namespace LinqToTwitter.Net
 {
     class GetMessageHandler : HttpClientHandler
     {
-        TwitterExecute exe;
-        IDictionary<string, string> parameters;
-        string url;
+        readonly TwitterExecute exe;
+        readonly IDictionary<string, string> parameters;
+        readonly string url;
 
         public GetMessageHandler(TwitterExecute exe, IDictionary<string, string> parameters, string url)
         {
@@ -35,7 +34,7 @@ namespace LinqToTwitter.Net
             //if (exe.ReadWriteTimeout != 0)
             //    ReadWriteTimeout = exe.ReadWriteTimeout;
 
-            return await base.SendAsync(request, cancellationToken);
+            return await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
         }
     }
 }

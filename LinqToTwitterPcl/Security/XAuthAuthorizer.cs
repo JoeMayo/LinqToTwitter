@@ -16,7 +16,7 @@ namespace LinqToTwitter
                 {"x_auth_mode", "client_auth"}
             };
 
-            await PostAccessTokenAsync(postData);
+            await PostAccessTokenAsync(postData).ConfigureAwait(false);
         }
     }
 }

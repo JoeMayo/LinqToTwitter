@@ -29,7 +29,8 @@ namespace LinqToTwitter
                     new Dictionary<string, string>
                     {
                         {"user_id", userIDString}
-                    });
+                    })
+                    .ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(resultsJson, ControlStreamType.Info);
         }
@@ -56,7 +57,8 @@ namespace LinqToTwitter
                     new Dictionary<string, string>
                     {
                         {"user_id", userIDString}
-                    });
+                    })
+                    .ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(resultsJson, ControlStreamType.Info);
         }
