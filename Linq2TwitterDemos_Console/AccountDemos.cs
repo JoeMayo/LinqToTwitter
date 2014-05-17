@@ -232,11 +232,11 @@ namespace Linq2TwitterDemos_Console
         
         static async Task UpdateProfileBannerAsync(TwitterContext twitterCtx)
         {
-            byte[] fileBytes = File.ReadAllBytes(@"..\..\images\WP_000003.jpg");
+            byte[] fileBytes = File.ReadAllBytes(@"..\..\images\13903749474_86bd1290de_o.jpg");
 
             var user = 
                 await twitterCtx.UpdateProfileBannerAsync(
-                    fileBytes, "WP_000003.jpg", "jpg", 1252, 626, 0, 0);
+                    fileBytes, "13903749474_86bd1290de_o.jpg", "jpg", 1500, 500, 0, 0);
 
             if (user != null)
                 Console.WriteLine("User Image: " + user.ProfileBannerUrl); 

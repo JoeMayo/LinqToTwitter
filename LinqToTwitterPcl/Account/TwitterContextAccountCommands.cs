@@ -340,7 +340,7 @@ namespace LinqToTwitter
         /// </returns>
         public async Task<User> UpdateProfileBannerAsync(byte[] banner, string fileName, string imageType)
         {
-            return await UpdateProfileBannerAsync(banner, fileName, imageType, 1252, 626, 0, 0).ConfigureAwait(false);
+            return await UpdateProfileBannerAsync(banner, fileName, imageType, 1500, 500, 0, 0).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -376,12 +376,12 @@ namespace LinqToTwitter
                 { "height", height.ToString() },
                 { "offset_left", offsetLeft.ToString() },
                 { "offset_top", offsetTop.ToString() },
-                { "banner", "IMAGE_DATA" }
+                //{ "banner", "FILE_DATA" }
             };
 
             var reqProc = new UserRequestProcessor<User>();
 
-            string name = "image";
+            string name = "banner";
             string imageMimeType = "image/" + imageType;
 
             var resultsJson = await TwitterExecutor.PostMediaAsync(accountUrl, parameters, banner, name, fileName, imageMimeType).ConfigureAwait(false);
