@@ -28,7 +28,7 @@
 
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
-            <TextBox Height="144" HorizontalAlignment="Left" Margin="0,49,0,0" Name="TweetTextBox" Text="" VerticalAlignment="Top" Width="467" />
+            <TextBox Height="144" HorizontalAlignment="Left" Margin="0,49,0,0" Name="TweetTextBox" Text="" VerticalAlignment="Top" Width="467" InputScope="Text" />
             <Button Content="Tweet" Height="72" HorizontalAlignment="Left" Margin="143,215,0,0" Name="TweetButton" VerticalAlignment="Top" Width="160" Click="TweetButton_Click" />
         </Grid>
     </Grid>

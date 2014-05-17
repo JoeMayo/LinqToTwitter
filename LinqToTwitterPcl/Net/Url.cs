@@ -34,7 +34,16 @@ namespace LinqToTwitter.Net
                 else
                 {
                     string symbolString = symbol.ToString();
-                    var encoded = Uri.EscapeDataString(symbolString).ToUpper();
+                    string encoded = null;
+
+                    try
+                    {
+                        encoded = Uri.EscapeDataString(symbolString).ToUpper();
+                    }
+                    catch (Exception)
+                    {
+                        encoded = "";
+                    }
 
                     if (!string.IsNullOrWhiteSpace(encoded))
                     {

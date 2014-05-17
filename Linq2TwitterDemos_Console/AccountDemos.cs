@@ -174,8 +174,14 @@ namespace Linq2TwitterDemos_Console
         {
             byte[] imageBytes = File.ReadAllBytes(@"..\..\Images\200xColor_2.png");
 
-            var user = await twitterCtx.UpdateAccountBackgroundImageAsync(
-                imageBytes, "200xColor_2.png", "png", true, false, false);
+            var user = 
+                await twitterCtx.UpdateAccountBackgroundImageAsync(
+                    image: imageBytes, 
+                    fileName: "200xColor_2.png",
+                    imageType: "png", 
+                    tile: false, 
+                    use: true, 
+                    skipStatus: true);
 
             if (user != null)
                 Console.WriteLine("User Image: " + user.ProfileImageUrl); 
