@@ -107,7 +107,7 @@ namespace Linq2TwitterDemos_Console
                 await
                 (from friend in twitterCtx.Friendship
                  where friend.Type == FriendshipType.Show &&
-                       friend.SourceScreenName == "Linq2Tweeter" &&
+                       friend.SourceScreenName == "Linq2Twitr" &&
                        friend.TargetScreenName == "JoeMayo"
                  select friend)
                 .SingleOrDefaultAsync();
@@ -296,7 +296,7 @@ namespace Linq2TwitterDemos_Console
 
         static async Task DestroyFriendshipAsync(TwitterContext twitterCtx)
         {
-            var user = await twitterCtx.DestroyFriendshipAsync("Linq2Tweeter");
+            var user = await twitterCtx.DestroyFriendshipAsync("Linq2Twitr");
 
             if (user != null && user.Status != null)
                 Console.WriteLine(
@@ -309,7 +309,7 @@ namespace Linq2TwitterDemos_Console
         {
             Friendship friend = 
                 await twitterCtx.UpdateFriendshipSettingsAsync(
-                    "Linq2Tweeter", true, true);
+                    "Linq2Twitr", true, true);
 
             if (friend != null && friend.SourceRelationship != null)
                 Console.WriteLine(

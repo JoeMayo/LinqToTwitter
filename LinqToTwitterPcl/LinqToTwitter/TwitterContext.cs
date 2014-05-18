@@ -541,6 +541,9 @@ namespace LinqToTwitter
                 case "List":
                     req = new ListRequestProcessor<T>();
                     break;
+                case "Mute":
+                    req = new MuteRequestProcessor<T>();
+                    break;
                 case "Raw":
                     req = new RawRequestProcessor<T>();
                     break;

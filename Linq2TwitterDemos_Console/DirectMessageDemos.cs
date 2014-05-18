@@ -140,7 +140,7 @@ namespace Linq2TwitterDemos_Console
         static async Task NewDirectMessageAsync(TwitterContext twitterCtx)
         {
             var message = await twitterCtx.NewDirectMessageAsync(
-                "Linq2Tweeter", "Direct Message Test - " + DateTime.Now + "!'");
+                "Linq2Twitr", "Direct Message Test - " + DateTime.Now + "!'");
 
             if (message != null)
                 Console.WriteLine(

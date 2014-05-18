@@ -148,7 +148,7 @@ namespace Linq2TwitterDemos_Console
 
         static async Task GetListsForUserAsync(TwitterContext twitterCtx)
         {
-            string screenName = "Linq2Tweeter";
+            string screenName = "Linq2Twitr";
 
             var lists =
                 await
@@ -164,7 +164,7 @@ namespace Linq2TwitterDemos_Console
 
         static async Task GetListStatusesAsync(TwitterContext twitterCtx)
         {
-            string ownerScreenName = "Linq2Tweeter";
+            string ownerScreenName = "Linq2Twitr";
             string slug = "linq";
             int maxStatuses = 30;
             int lastStatusCount = 0;
@@ -253,7 +253,7 @@ namespace Linq2TwitterDemos_Console
                 (from list in twitterCtx.List
                  where list.Type == ListType.Subscribers &&
                        list.Slug == "linq" &&
-                       list.OwnerScreenName == "Linq2Tweeter"
+                       list.OwnerScreenName == "Linq2Twitr"
                  select list)
                 .SingleOrDefaultAsync();
 
@@ -272,7 +272,7 @@ namespace Linq2TwitterDemos_Console
                      where list.Type == ListType.IsSubscriber &&
                            list.ScreenName == "JoeMayo" &&
                            list.Slug == "linq" &&
-                           list.OwnerScreenName == "Linq2Tweeter"
+                           list.OwnerScreenName == "Linq2Twitr"
                      select list)
                     .SingleOrDefaultAsync();
 
@@ -315,7 +315,7 @@ namespace Linq2TwitterDemos_Console
                     (from list in twitterCtx.List
                      where list.Type == ListType.IsMember &&
                            list.ScreenName == "JoeMayo" &&
-                           list.OwnerScreenName == "Linq2Tweeter" &&
+                           list.OwnerScreenName == "Linq2Twitr" &&
                            list.Slug == "linq"
                      select list)
                     .SingleOrDefaultAsync();
@@ -356,7 +356,7 @@ namespace Linq2TwitterDemos_Console
                 await
                 (from list in twitterCtx.List
                  where list.Type == ListType.Members &&
-                       list.OwnerScreenName == "Linq2Tweeter" &&
+                       list.OwnerScreenName == "Linq2Twitr" &&
                        list.Slug == "linq" &&
                        list.SkipStatus == true
                  select list)
@@ -373,7 +373,7 @@ namespace Linq2TwitterDemos_Console
                 await
                 (from list in twitterCtx.List
                  where list.Type == ListType.Show &&
-                       list.OwnerScreenName == "Linq2Tweeter" &&
+                       list.OwnerScreenName == "Linq2Twitr" &&
                        list.Slug == "linq"
                  select list)
                 .SingleOrDefaultAsync();
@@ -392,7 +392,7 @@ namespace Linq2TwitterDemos_Console
                 await
                 (from list in twitterCtx.List
                  where list.Type == ListType.Subscriptions &&
-                       list.ScreenName == "Linq2Tweeter"
+                       list.ScreenName == "Linq2Twitr"
                  select list)
                 .ToListAsync();
 
@@ -409,7 +409,7 @@ namespace Linq2TwitterDemos_Console
                 await
                 (from list in twitterCtx.List
                  where list.Type == ListType.Ownerships &&
-                       list.ScreenName == "Linq2Tweeter"
+                       list.ScreenName == "Linq2Twitr"
                  select list)
                 .ToListAsync();
 
@@ -424,11 +424,11 @@ namespace Linq2TwitterDemos_Console
 
         static async Task DeleteMemberFromListAsync(TwitterContext twitterCtx)
         {
-            string ownerScreenName = "Linq2Tweeter";
+            string ownerScreenName = "Linq2Twitr";
 
             List list = 
                 await twitterCtx.DeleteMemberFromListAsync(
-                    0, "Linq2Tweeter", 0, "testDemo", 0, ownerScreenName);
+                    0, "Linq2Twitr", 0, "testDemo", 0, ownerScreenName);
 
             if (list != null)
                 Console.WriteLine("List Name: {0}, Description: {1}",
@@ -437,7 +437,7 @@ namespace Linq2TwitterDemos_Console
 
         static async Task SubscribeToListAsync(TwitterContext twitterCtx)
         {
-            string ownerScreenName = "Linq2Tweeter";
+            string ownerScreenName = "Linq2Twitr";
 
             List list = 
                 await twitterCtx.SubscribeToListAsync(
@@ -450,7 +450,7 @@ namespace Linq2TwitterDemos_Console
 
         static async Task UnsubscribeFromListAsync(TwitterContext twitterCtx)
         {
-            string ownerScreenName = "Linq2Tweeter";
+            string ownerScreenName = "Linq2Twitr";
 
             List list = 
                 await twitterCtx.UnsubscribeFromListAsync(
@@ -463,11 +463,11 @@ namespace Linq2TwitterDemos_Console
 
         static async Task AddMemberRangeToListAsync(TwitterContext twitterCtx)
         {
-            string ownerScreenName = "Linq2Tweeter";
+            string ownerScreenName = "Linq2Twitr";
             var screenNames = new List<string>
             {
                 "JoeMayo",
-                "Linq2Tweeter"
+                "Linq2Twitr"
             };
 
             List list = 
@@ -480,11 +480,11 @@ namespace Linq2TwitterDemos_Console
 
         static async Task AddMemberToListAsync(TwitterContext twitterCtx)
         {
-            string ownerScreenName = "Linq2Tweeter";
+            string ownerScreenName = "Linq2Twitr";
 
             List list = 
                 await twitterCtx.AddMemberToListAsync(
-                    "Linq2Tweeter", 0, "testDemo", 0, ownerScreenName);
+                    "Linq2Twitr", 0, "testDemo", 0, ownerScreenName);
 
             if (list != null)
                 Console.WriteLine("List Name: {0}, Description: {1}",
@@ -497,7 +497,7 @@ namespace Linq2TwitterDemos_Console
 
             List list = 
                 await twitterCtx.DeleteListAsync(
-                    listID, "testDemo", 0, "Linq2Tweeter");
+                    listID, "testDemo", 0, "Linq2Twitr");
 
             if (list != null)
                 Console.WriteLine("List Name: {0}, Description: {1}",
@@ -506,7 +506,7 @@ namespace Linq2TwitterDemos_Console
 
         static async Task UpdateListAsync(TwitterContext twitterCtx)
         {
-            string ownerScreenName = "Linq2Tweeter";
+            string ownerScreenName = "Linq2Twitr";
             ulong listID = 0;
 
             List list = 
@@ -532,7 +532,7 @@ namespace Linq2TwitterDemos_Console
 
         static async Task DeleteMemberRangeFromListAsync(TwitterContext twitterCtx)
         {
-            string ownerScreenName = "Linq2Tweeter";
+            string ownerScreenName = "Linq2Twitr";
             var screenNames = new List<string> { "JoeMayo", "mp2kmag" };
 
             List list = 

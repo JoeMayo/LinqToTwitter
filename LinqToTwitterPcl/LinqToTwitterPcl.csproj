@@ -117,6 +117,10 @@
     <Compile Include="Help\PhotoSize.cs" />
     <Compile Include="Help\RateLimits.cs" />
     <Compile Include="LinqToTwitter\ITwitterExecute.cs" />
+    <Compile Include="Mute\Mute.cs" />
+    <Compile Include="Mute\MuteRequestProcessor.cs" />
+    <Compile Include="Mute\MuteType.cs" />
+    <Compile Include="Mute\TwitterContextMuteCommands.cs" />
     <Compile Include="Net\GetMessageHandler.cs" />
     <Compile Include="LinqToTwitter\TwitterContext.cs" />
     <Compile Include="LinqToTwitter\TwitterContextEntities.cs" />
@@ -135,6 +139,7 @@
     <Compile Include="Raw\Raw.cs" />
     <Compile Include="Raw\TwitterContextRawCommands.cs" />
     <Compile Include="Raw\RawRequestProcessor.cs" />
+    <Compile Include="User\TwitterContextUserCommands.cs" />
     <Compile Include="SavedSearch\SavedSearch.cs" />
     <Compile Include="SavedSearch\SavedSearchAction.cs" />
     <Compile Include="SavedSearch\TwitterContextSavedSearchCommands.cs" />

@@ -390,6 +390,18 @@ namespace LinqToTwitter
         public string Lang { get; set; }
 
         /// <summary>
+        /// Indicate that a status lookup should return null objects for 
+        /// tweets that the authorizing user doesn't have access to. 
+        /// (e.g. tweet is from a protected account or doesn't exist)
+        /// </summary>
+        public bool Map { get; set; }
+
+        /// <summary>
+        /// Comma-separated list of tweet IDs passed to Lookup.
+        /// </summary>
+        public string TweetIDs { get; set; }
+
+        /// <summary>
         /// Twitter's evaluation of tweet quality
         /// </summary>
         public FilterLevel FilterLevel { get; set; }

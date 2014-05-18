@@ -53,6 +53,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MutesDemos.cs" />
     <Compile Include="UserDemos.cs" />
     <Compile Include="TrendDemos.cs" />
     <Compile Include="SavedSearchDemos.cs" />

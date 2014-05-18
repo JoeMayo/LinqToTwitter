@@ -97,8 +97,11 @@
     <Compile Include="LinqToTwitterTests\TwitterErrorHandlerTests.cs" />
     <Compile Include="ListTests\ListCommandsTests.cs" />
     <Compile Include="ListTests\ListRequestProcessorTests.cs" />
+    <Compile Include="MuteTests\MuteRequestProcessorTests.cs" />
+    <Compile Include="MuteTests\MuteCommandsTests.cs" />
     <Compile Include="RawTests\RawCommandsTests.cs" />
     <Compile Include="RawTests\RawRequestProcessorTests.cs" />
+    <Compile Include="UserTests\UserCommandsTests.cs" />
     <Compile Include="SavedSearchTests\SavedSearchCommandsTests.cs" />
     <Compile Include="SavedSearchTests\SavedSearchRequestProcessorTests.cs" />
     <Compile Include="SearchTests\SearchRequestProcessorTests.cs" />

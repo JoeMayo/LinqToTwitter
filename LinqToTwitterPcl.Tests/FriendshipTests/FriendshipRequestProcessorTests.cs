@@ -73,6 +73,7 @@ namespace LinqToTwitterPcl.Tests.FriendshipTests
             Assert.IsTrue((bool)srcRel.NotificationsEnabled);
             Assert.IsTrue(srcRel.Following);
             Assert.IsFalse(srcRel.CanDm);
+            Assert.IsTrue(srcRel.Muting);
         }
 
         void TestParsingIds(FriendshipType friendType)
@@ -630,7 +631,8 @@ namespace LinqToTwitterPcl.Tests.FriendshipTests
          ""notifications_enabled"":true,
          ""following"":true,
          ""id"":16761255,
-         ""can_dm"":false
+         ""can_dm"":false,
+         ""muting"": true
       }
    }
 }";

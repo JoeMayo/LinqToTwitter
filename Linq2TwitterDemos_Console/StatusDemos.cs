@@ -77,6 +77,11 @@ namespace Linq2TwitterDemos_Console
                         Console.WriteLine("\n\tFollowing conversation...\n");
                         await GetConversationAsync(twitterCtx);
                         break;
+                    case 'd':
+                    case 'D':
+                        Console.WriteLine("\n\tLooking up tweets...\n");
+                        await LookupTweetsAsyc(twitterCtx);
+                        break;
                     case 'q':
                     case 'Q':
                         Console.WriteLine("\nReturning...\n");
@@ -106,6 +111,7 @@ namespace Linq2TwitterDemos_Console
             Console.WriteLine("\t A. Get Oembed Tweet");
             Console.WriteLine("\t B. Get Retweeters");
             Console.WriteLine("\t C. Follow Conversation");
+            Console.WriteLine("\t D. Lookup Tweets");
 
             Console.WriteLine();
             Console.WriteLine("\t Q. Return to Main menu");
@@ -363,5 +369,17 @@ namespace Linq2TwitterDemos_Console
             PrintTweetsResults(tweets);
         }
 
+        static async Task LookupTweetsAsyc(TwitterContext twitterCtx)
+        {
+            var tweets =
+                await
+                (from tweet in twitterCtx.Status
+                 where tweet.Type == StatusType.Lookup &&
+                       tweet.TweetIDs == "460788892723978241,462758132448362496,460060836967768064"
+                 select tweet)
+                .ToListAsync();
+
+            PrintTweetsResults(tweets);
+        }
     }
 }

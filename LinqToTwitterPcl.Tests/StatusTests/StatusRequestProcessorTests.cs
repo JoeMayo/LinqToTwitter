@@ -45,7 +45,9 @@ namespace LinqToTwitterPcl.Tests.StatusTests
                 status.OEmbedLanguage == "en" &&
                 status.OEmbedMaxWidth == 300 &&
                 status.OEmbedOmitScript == true &&
-                status.OEmbedRelated == "JoeMayo";
+                status.OEmbedRelated == "JoeMayo" &&
+                status.TweetIDs == "1,2,3" &&
+                status.Map == true;
 
             var lambdaExpression = expression as LambdaExpression;
 
@@ -120,6 +122,12 @@ namespace LinqToTwitterPcl.Tests.StatusTests
             Assert.IsTrue(
               queryParams.Contains(
                   new KeyValuePair<string, string>("OEmbedRelated", "JoeMayo")));
+            Assert.IsTrue(
+              queryParams.Contains(
+                  new KeyValuePair<string, string>("TweetIDs", "1,2,3")));
+            Assert.IsTrue(
+              queryParams.Contains(
+                  new KeyValuePair<string, string>("Map", "True")));
         }
 
         [TestMethod]
@@ -416,6 +424,69 @@ namespace LinqToTwitterPcl.Tests.StatusTests
         }
 
         [TestMethod]
+        public void BuildUrl_Constructs_Lookup_Url()
+        {
+            const string ExpectedUrl = "https://api.twitter.com/1.1/statuses/lookup.json?id=1%2C2%2C3&include_entities=true&trim_user=true&map=true";
+            var reqProc = new StatusRequestProcessor<Status>
+            {
+                Type = StatusType.Lookup,
+                BaseUrl = "https://api.twitter.com/1.1/"
+            };
+            var parameters = new Dictionary<string, string>
+            {
+                { "Type", ((int)StatusType.Lookup).ToString() },
+                { "TweetIDs", "1,2,3" },
+                { "IncludeEntities", true.ToString() },
+                { "TrimUser", true.ToString() },
+                { "Map", true.ToString() }
+            };
+
+            Request req = reqProc.BuildUrl(parameters);
+
+            Assert.AreEqual(ExpectedUrl, req.FullUrl);
+        }
+
+        [TestMethod]
+        public void BuildUrl_Lookup_Removes_Spaces_In_TweetIDs()
+        {
+            const string ExpectedUrl = "https://api.twitter.com/1.1/statuses/lookup.json?id=1%2C2%2C3";
+            var reqProc = new StatusRequestProcessor<Status>
+            {
+                Type = StatusType.Lookup,
+                BaseUrl = "https://api.twitter.com/1.1/"
+            };
+            var parameters = new Dictionary<string, string>
+            {
+                { "Type", ((int)StatusType.Lookup).ToString() },
+                { "TweetIDs", "1, 2, 3" },
+            };
+
+            Request req = reqProc.BuildUrl(parameters);
+
+            Assert.AreEqual(ExpectedUrl, req.FullUrl);
+        }
+
+        [TestMethod]
+        public void BuildUrl_Lookup_Throws_On_Missing_TweetIDs()
+        {
+            const string ExpectedParameterName = "TweetIDs";
+            var reqProc = new StatusRequestProcessor<Status>
+            {
+                Type = StatusType.Lookup,
+                BaseUrl = "https://api.twitter.com/1.1/"
+            };
+            var parameters = new Dictionary<string, string>
+            {
+                { "Type", ((int)StatusType.Lookup).ToString() },
+                //{ "TweetIDs", "1, 2, 3" },
+            };
+
+            var ex = L2TAssert.Throws<ArgumentNullException>(() => reqProc.BuildUrl(parameters));
+
+            Assert.AreEqual<string>(ExpectedParameterName, ex.ParamName);
+        }
+
+        [TestMethod]
         public void StatusRequestProcessor_Works_With_Json_Format_Data()
         {
             var statProc = new StatusRequestProcessor<Status> { BaseUrl = "https://api.twitter.com/1.1/" };
@@ -605,6 +676,8 @@ namespace LinqToTwitterPcl.Tests.StatusTests
                 TrimUser = true,
                 IncludeContributorDetails = true,
                 IncludeMyRetweet = true,
+                TweetIDs = "1,2,3",
+                Map = true
             };
 
             var statuses = statProc.ProcessResults(SingleStatusResponse);
@@ -628,6 +701,8 @@ namespace LinqToTwitterPcl.Tests.StatusTests
             Assert.IsTrue(status.TrimUser);
             Assert.IsTrue(status.IncludeContributorDetails);
             Assert.IsTrue(status.IncludeMyRetweet);
+            Assert.AreEqual("1,2,3", status.TweetIDs);
+            Assert.IsTrue(status.Map);
         }
 
         [TestMethod]

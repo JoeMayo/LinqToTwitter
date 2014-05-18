@@ -110,6 +110,19 @@ namespace LinqToTwitter
         /// 
         ///     - ID, tweet ID
         /// </summary>
-        Conversation
+        Conversation,
+
+        /// <summary>
+        /// Returns tweets matching a list of ids
+        /// 
+        /// Available Options:
+        /// 
+        ///     - ID, comma-separated list of tweet ids
+        ///     - IncludeEntities, add entity metadata to tweets
+        ///     - TrimUser, omit the user object from tweets
+        ///     - Map, include null object for missing tweets
+        ///     
+        /// </summary>
+        Lookup
     }
 }

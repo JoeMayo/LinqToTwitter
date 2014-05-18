@@ -138,6 +138,18 @@ namespace LinqToTwitter
         internal string OEmbedLanguage { get; set; }
 
         /// <summary>
+        /// Comma-separated list of tweet IDs passed to Lookup.
+        /// </summary>
+        public string TweetIDs { get; set; }
+
+        /// <summary>
+        /// Indicate that a status lookup should return null objects for 
+        /// tweets that the authorizing user doesn't have access to. 
+        /// (e.g. tweet is from a protected account or doesn't exist)
+        /// </summary>
+        internal bool Map { get; set; }
+
+        /// <summary>
         /// extracts parameters from lambda
         /// </summary>
         /// <param name="lambdaExpression">lambda expression with where clause</param>
@@ -170,7 +182,9 @@ namespace LinqToTwitter
                        "OEmbedOmitScript",
                        "OEmbedAlign",
                        "OEmbedRelated",
-                       "OEmbedLanguage"
+                       "OEmbedLanguage",
+                       "TweetIDs",
+                       "Map"
                    });
 
             var parameters = paramFinder.Parameters;
@@ -197,6 +211,8 @@ namespace LinqToTwitter
                     return BuildConversationUrl(parameters);
                 case StatusType.Home:
                     return BuildHomeUrl(parameters);
+                case StatusType.Lookup:
+                    return BuildLookupUrl(parameters);
                 case StatusType.Mentions:
                     return BuildMentionsUrl(parameters);
                 case StatusType.Oembed:
@@ -214,20 +230,6 @@ namespace LinqToTwitter
                 default:
                     throw new InvalidOperationException("The default case of BuildUrl should never execute because a Type must be specified.");
             }
-        }
-
-        private Request BuildConversationUrl(Dictionary<string, string> parameters)
-        {
-            if (!parameters.ContainsKey("ID") || string.IsNullOrWhiteSpace(parameters["ID"]))
-                throw new ArgumentNullException("ID", "ID is required");
-
-            var req = new Request(BaseUrl + "conversation/show.json");
-            var urlParams = req.RequestParameters;
-
-            ID = ulong.Parse(parameters["ID"]);
-            urlParams.Add(new QueryParameter("id", parameters["ID"]));
-
-            return req;
         }
 
         /// <summary>
@@ -321,24 +323,19 @@ namespace LinqToTwitter
 
             return req;
         }
-  
-        /// <summary>
-        /// builds an url for showing status of user
-        /// </summary>
-        /// <param name="parameters">parameter list</param>
-        /// <returns>base url + show segment</returns>
-        Request BuildShowUrl(Dictionary<string, string> parameters)
-        {
-            return BuildUrlParameters(parameters, "statuses/show.json");
-        }
 
-        /// <summary>
-        /// construct an url for the user timeline
-        /// </summary>
-        /// <returns>base url + user timeline segment</returns>
-        Request BuildUserUrl(Dictionary<string, string> parameters)
+        Request BuildConversationUrl(Dictionary<string, string> parameters)
         {
-            return BuildUrlParameters(parameters, "statuses/user_timeline.json");
+            if (!parameters.ContainsKey("ID") || string.IsNullOrWhiteSpace(parameters["ID"]))
+                throw new ArgumentNullException("ID", "ID is required");
+
+            var req = new Request(BaseUrl + "conversation/show.json");
+            var urlParams = req.RequestParameters;
+
+            ID = ulong.Parse(parameters["ID"]);
+            urlParams.Add(new QueryParameter("id", parameters["ID"]));
+
+            return req;
         }
 
         /// <summary>
@@ -350,35 +347,21 @@ namespace LinqToTwitter
             return BuildUrlParameters(parameters, "statuses/home_timeline.json");
         }
 
-        /// <summary>
-        /// construct a base mentions url
-        /// </summary>
-        /// <param name="parameters">parameters to build url query with</param>
-        /// <returns>base url + mentions segment</returns>
-        Request BuildMentionsUrl(Dictionary<string, string> parameters)
+        Request BuildLookupUrl(Dictionary<string, string> parameters)
         {
-            return BuildUrlParameters(parameters, "statuses/mentions_timeline.json");
-        }
+            if (!parameters.ContainsKey("TweetIDs") || string.IsNullOrWhiteSpace(parameters["TweetIDs"]))
+                throw new ArgumentNullException("TweetIDs", "TweetIDs is required");
 
-        /// <summary>
-        /// construct a base retweeted by user url
-        /// </summary>
-        /// <param name="parameters">input parameters</param>
-        /// <returns>base url + retweeted by user segment</returns>
-        Request BuildRetweets(Dictionary<string, string> parameters)
-        {
-            if (!parameters.ContainsKey("ID"))
-                throw new ArgumentNullException("ID", "ID is required.");
-
-            ID = ulong.Parse(parameters["ID"]);
-
-            var req = new Request(BaseUrl + "statuses/retweets/" + ID + ".json");
+            var req = new Request(BaseUrl + "statuses/lookup.json");
             var urlParams = req.RequestParameters;
 
-            if (parameters.ContainsKey("Count"))
+            TweetIDs = parameters["TweetIDs"].Replace(" ", "");
+            urlParams.Add(new QueryParameter("id", TweetIDs));
+
+            if (parameters.ContainsKey("IncludeEntities"))
             {
-                Count = int.Parse(parameters["Count"]);
-                urlParams.Add(new QueryParameter("count", parameters["Count"]));
+                IncludeEntities = bool.Parse(parameters["IncludeEntities"]);
+                urlParams.Add(new QueryParameter("include_entities", parameters["IncludeEntities"].ToLower()));
             }
 
             if (parameters.ContainsKey("TrimUser"))
@@ -387,17 +370,23 @@ namespace LinqToTwitter
                 urlParams.Add(new QueryParameter("trim_user", parameters["TrimUser"].ToLower()));
             }
 
+            if (parameters.ContainsKey("Map"))
+            {
+                Map = bool.Parse(parameters["Map"]);
+                urlParams.Add(new QueryParameter("map", parameters["Map"].ToLower()));
+            }
+
             return req;
         }
 
         /// <summary>
         /// construct a base mentions url
         /// </summary>
-        /// <param name="parameters">input parameters</param>
-        /// <returns>base url + retweets of me segment</returns>
-        Request BuildRetweetsOfMeUrl(Dictionary<string, string> parameters)
+        /// <param name="parameters">parameters to build url query with</param>
+        /// <returns>base url + mentions segment</returns>
+        Request BuildMentionsUrl(Dictionary<string, string> parameters)
         {
-            return BuildUrlParameters(parameters, "statuses/retweets_of_me.json");
+            return BuildUrlParameters(parameters, "statuses/mentions_timeline.json");
         }
 
         /// <summary>
@@ -467,6 +456,46 @@ namespace LinqToTwitter
             return req;
         }
 
+        /// <summary>
+        /// construct a base retweeted by user url
+        /// </summary>
+        /// <param name="parameters">input parameters</param>
+        /// <returns>base url + retweeted by user segment</returns>
+        Request BuildRetweets(Dictionary<string, string> parameters)
+        {
+            if (!parameters.ContainsKey("ID"))
+                throw new ArgumentNullException("ID", "ID is required.");
+
+            ID = ulong.Parse(parameters["ID"]);
+
+            var req = new Request(BaseUrl + "statuses/retweets/" + ID + ".json");
+            var urlParams = req.RequestParameters;
+
+            if (parameters.ContainsKey("Count"))
+            {
+                Count = int.Parse(parameters["Count"]);
+                urlParams.Add(new QueryParameter("count", parameters["Count"]));
+            }
+
+            if (parameters.ContainsKey("TrimUser"))
+            {
+                TrimUser = bool.Parse(parameters["TrimUser"]);
+                urlParams.Add(new QueryParameter("trim_user", parameters["TrimUser"].ToLower()));
+            }
+
+            return req;
+        }
+
+        /// <summary>
+        /// construct a base mentions url
+        /// </summary>
+        /// <param name="parameters">input parameters</param>
+        /// <returns>base url + retweets of me segment</returns>
+        Request BuildRetweetsOfMeUrl(Dictionary<string, string> parameters)
+        {
+            return BuildUrlParameters(parameters, "statuses/retweets_of_me.json");
+        }
+
         Request BuildRetweetersUrl(Dictionary<string, string> parameters)
         {
             if (!parameters.ContainsKey("ID"))
@@ -490,6 +519,25 @@ namespace LinqToTwitter
         }
 
         /// <summary>
+        /// builds an url for showing status of user
+        /// </summary>
+        /// <param name="parameters">parameter list</param>
+        /// <returns>base url + show segment</returns>
+        Request BuildShowUrl(Dictionary<string, string> parameters)
+        {
+            return BuildUrlParameters(parameters, "statuses/show.json");
+        }
+
+        /// <summary>
+        /// construct an url for the user timeline
+        /// </summary>
+        /// <returns>base url + user timeline segment</returns>
+        Request BuildUserUrl(Dictionary<string, string> parameters)
+        {
+            return BuildUrlParameters(parameters, "statuses/user_timeline.json");
+        }
+
+        /// <summary>
         /// transforms Twitter response into List of Status
         /// </summary>
         /// <param name="responseJson">Twitter response</param>
@@ -507,6 +555,7 @@ namespace LinqToTwitter
                     statusList = new List<Status> { new Status(statusJson) };
                     break;
                 case StatusType.Home:
+                case StatusType.Lookup:
                 case StatusType.Mentions:
                 case StatusType.RetweetsOfMe:
                 case StatusType.Retweets:
@@ -568,6 +617,8 @@ namespace LinqToTwitter
                 status.OEmbedRelated = OEmbedRelated;
                 status.OEmbedUrl = OEmbedUrl;
                 status.OEmbedLanguage = OEmbedLanguage;
+                status.TweetIDs = TweetIDs;
+                status.Map = Map;
             }
 
             return statusList.OfType<T>().ToList();

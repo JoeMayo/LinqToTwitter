@@ -56,6 +56,10 @@ namespace Linq2TwitterDemos_Console
                         Console.WriteLine("\n\tGetting...\n");
                         await ShowUsersInCategoryAsync(twitterCtx);
                         break;
+                    case '9':
+                        Console.WriteLine("\n\tReport spammer...\n");
+                        await ReportSpammerAsync(twitterCtx);
+                        break;
                     case 'q':
                     case 'Q':
                         Console.WriteLine("\nReturning...\n");
@@ -81,6 +85,7 @@ namespace Linq2TwitterDemos_Console
             Console.WriteLine("\t 6. Get Suggested Users");
             Console.WriteLine("\t 7. Get Suggestion Categories");
             Console.WriteLine("\t 8. Get Suggested User Tweets");
+            Console.WriteLine("\t 9. Report Spammer");
             Console.WriteLine();
             Console.WriteLine("\t Q. Return to Main menu");
         }
@@ -91,7 +96,7 @@ namespace Linq2TwitterDemos_Console
                 await
                 (from user in twitterCtx.User
                  where user.Type == UserType.Lookup &&
-                       user.ScreenNameList == "JoeMayo,Linq2Tweeter"
+                       user.ScreenNameList == "JoeMayo,Linq2Twitr"
                  select user)
                 .ToListAsync();
 
@@ -245,6 +250,15 @@ namespace Linq2TwitterDemos_Console
                                 user.Status.Text);
                 }); 
             }
+        }
+
+        static async Task ReportSpammerAsync(TwitterContext twitterCtx)
+        {
+            const string SpammerScreenName = "justinbieber";
+
+            User spammer = await twitterCtx.ReportSpamAsync(SpammerScreenName);
+
+            Console.WriteLine("You just reported {0} as a spammer.", spammer.ScreenNameResponse);
         }
     }
 }

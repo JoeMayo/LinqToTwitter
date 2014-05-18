@@ -25,6 +25,7 @@ namespace LinqToTwitter
             Blocking = relJson.GetValue<bool>("blocking");
             NotificationsEnabled = relJson.GetValue<bool>("notifications_enabled");
             CanDm = relJson.GetValue<bool>("can_dm");
+            Muting = relJson.GetValue<bool>("muting", false);
 
             var connections = relJson.GetValue<JsonData>("connections");
             if (connections != null)
@@ -105,5 +106,10 @@ namespace LinqToTwitter
         /// Allowed to send direct messages
         /// </summary>
         public bool CanDm { get; set; }
+
+        /// <summary>
+        /// User is muted.
+        /// </summary>
+        public bool Muting { get; set; }
     }
 }

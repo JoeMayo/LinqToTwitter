@@ -94,6 +94,17 @@ namespace LinqToTwitter
         }
 
         /// <summary>
+        /// Enables access to muted users
+        /// </summary>
+        public TwitterQueryable<Mute> Mute
+        {
+            get
+            {
+                return new TwitterQueryable<Mute>(this);
+            }
+        }
+
+        /// <summary>
         /// enables access to Twitter List info
         /// </summary>
         public TwitterQueryable<List> List
