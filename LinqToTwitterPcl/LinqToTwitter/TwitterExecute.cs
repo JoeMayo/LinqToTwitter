@@ -217,7 +217,8 @@ namespace LinqToTwitter
                                     break;
                                 }
 
-                                if (!compressedBuffer.Contains((byte)0x0D)) continue;
+                                if (!compressedBuffer.Contains((byte)0x0D))
+                                    continue;
 
                                 string outputString = Encoding.UTF8.GetString(compressedBuffer, 0, readCount);
 
@@ -239,7 +240,7 @@ namespace LinqToTwitter
                         {
                             while (stream.CanRead && !IsStreamClosed)
                             {
-                                string line = await reader.ReadLineAsync();
+                                string line = await reader.ReadLineAsync().ConfigureAwait(false);
 
                                 var strmContent = new StreamContent(this, line);
 

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using Linq2TwitterDemos_WindowsPhone.ViewModels;
 using LinqToTwitter;

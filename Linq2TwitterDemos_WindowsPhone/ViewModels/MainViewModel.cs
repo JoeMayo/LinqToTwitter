@@ -29,7 +29,7 @@ namespace Linq2TwitterDemos_WindowsPhone.ViewModels
         /// </summary>
         public ObservableCollection<ItemViewModel> Streams { get; private set; }
 
-        private string _sampleProperty = "Sample Runtime Property Value";
+        private string sampleProperty = "Sample Runtime Property Value";
         /// <summary>
         /// Sample ViewModel property; this property is used in the view to display its value using a Binding
         /// </summary>
@@ -38,13 +38,13 @@ namespace Linq2TwitterDemos_WindowsPhone.ViewModels
         {
             get
             {
-                return _sampleProperty;
+                return sampleProperty;
             }
             set
             {
-                if (value != _sampleProperty)
+                if (value != sampleProperty)
                 {
-                    _sampleProperty = value;
+                    sampleProperty = value;
                     NotifyPropertyChanged("SampleProperty");
                 }
             }

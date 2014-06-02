@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace LinqToTwitter
 {
@@ -64,17 +65,10 @@ namespace LinqToTwitter
                 throw new ArgumentNullException("expression");
             }
 
-//#if NETFX_CORE
             if (!typeof(IQueryable<T>).GetTypeInfo().IsAssignableFrom(expression.Type.GetTypeInfo()))
             {
                 throw new ArgumentOutOfRangeException("expression");
             }
-//#else
-//            if (!typeof(IQueryable<T>).IsAssignableFrom(expression.Type))
-//            {
-//                throw new ArgumentOutOfRangeException("expression");
-//            }
-//#endif
 
             Provider = provider;
             Expression = expression;
@@ -104,7 +98,7 @@ namespace LinqToTwitter
         /// <returns>query results</returns>
         public IEnumerator<T> GetEnumerator()
         {
-            var tsk = (((TwitterQueryProvider)Provider).ExecuteAsync<IEnumerable<T>>(Expression));
+            var tsk = Task.Run(() => (((TwitterQueryProvider)Provider).ExecuteAsync<IEnumerable<T>>(Expression)));
             return ((IEnumerable<T>)tsk.Result).GetEnumerator();
         }
 

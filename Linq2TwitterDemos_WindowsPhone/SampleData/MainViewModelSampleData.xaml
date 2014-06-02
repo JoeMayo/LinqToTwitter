@@ -5,12 +5,12 @@
     SampleProperty="Sample Text Property Value">
 
     <vm:MainViewModel.Items>
-        <vm:ItemViewModel Operation="design one" PageUri="Maecenas praesent accumsan bibendum" LineThree="Maecenas praesent accumsan bibendum dictumst eleifend facilisi faucibus habitant inceptos interdum lobortis nascetur"/>
-        <vm:ItemViewModel Operation="design two" PageUri="Dictumst eleifend facilisi faucibus" LineThree="Pharetra placerat pulvinar sagittis senectus sociosqu suscipit torquent ultrices vehicula volutpat maecenas praesent"/>
-        <vm:ItemViewModel Operation="design three" PageUri="Habitant inceptos interdum lobortis" LineThree="Accumsan bibendum dictumst eleifend facilisi faucibus habitant inceptos interdum lobortis nascetur pharetra placerat"/>
-        <vm:ItemViewModel Operation="design four" PageUri="Nascetur pharetra placerat pulvinar" LineThree="Pulvinar sagittis senectus sociosqu suscipit torquent ultrices vehicula volutpat maecenas praesent accumsan bibendum"/>
-        <vm:ItemViewModel Operation="design five" PageUri="Sagittis senectus sociosqu suscipit" LineThree="Dictumst eleifend facilisi faucibus habitant inceptos interdum lobortis nascetur pharetra placerat pulvinar sagittis"/>
-        <vm:ItemViewModel Operation="design six" PageUri="Torquent ultrices vehicula volutpat" LineThree="Senectus sociosqu suscipit torquent ultrices vehicula volutpat maecenas praesent accumsan bibendum dictumst eleifend"/>
+        <vm:ItemViewModel Operation="design one" PageUri="Maecenas praesent accumsan bibendum"/>
+        <vm:ItemViewModel Operation="design two" PageUri="Dictumst eleifend facilisi faucibus"/>
+        <vm:ItemViewModel Operation="design three" PageUri="Habitant inceptos interdum lobortis"/>
+        <vm:ItemViewModel Operation="design four" PageUri="Nascetur pharetra placerat pulvinar"/>
+        <vm:ItemViewModel Operation="design five" PageUri="Sagittis senectus sociosqu suscipit"/>
+        <vm:ItemViewModel Operation="design six" PageUri="Torquent ultrices vehicula volutpat"/>
     </vm:MainViewModel.Items>
 
 </vm:MainViewModel>

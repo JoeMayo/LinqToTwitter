@@ -110,6 +110,8 @@ namespace LinqToTwitter
         {
             if (parameters.ContainsKey("Type"))
                 Type = RequestProcessorHelper.ParseQueryEnumType<SearchType>(parameters["Type"]);
+            else
+                throw new ArgumentException("Type is required", "Type");
 
             return BuildSearchUrlParameters(parameters, "search/tweets.json");
         }

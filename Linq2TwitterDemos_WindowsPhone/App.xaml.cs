@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Diagnostics;
-using System.Resources;
+using System.Linq;
 using System.Windows;
 using System.Windows.Markup;
 using System.Windows.Navigation;
-using Microsoft.Phone.Controls;
-using Microsoft.Phone.Shell;
 using Linq2TwitterDemos_WindowsPhone.Resources;
 using Linq2TwitterDemos_WindowsPhone.ViewModels;
+using Microsoft.Phone.Controls;
+using Microsoft.Phone.Shell;
 
 namespace Linq2TwitterDemos_WindowsPhone
 {

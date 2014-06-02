@@ -1,16 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Navigation;
 using Linq2TwitterDemos_WindowsPhone.ViewModels;
 using LinqToTwitter;
 using Microsoft.Phone.Controls;
-using Microsoft.Phone.Shell;
 
 namespace Linq2TwitterDemos_WindowsPhone.StreamingDemos
 {

@@ -110,7 +110,7 @@ namespace LinqToTwitter
 
             try
             {
-                var exeTask = (Task<object>)genericMethodInfo.Invoke(Context, new object[] { expression, isEnumerable });
+                var exeTask = Task.Run(() => (Task<object>)genericMethodInfo.Invoke(Context, new object[] { expression, isEnumerable }));
                 return (TResult)exeTask.Result;
             }
             catch (TargetInvocationException tex)

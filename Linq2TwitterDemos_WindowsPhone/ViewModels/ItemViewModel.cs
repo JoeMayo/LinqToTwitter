@@ -1,12 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.Net;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
 
 namespace Linq2TwitterDemos_WindowsPhone.ViewModels
 {
@@ -28,7 +21,7 @@ namespace Linq2TwitterDemos_WindowsPhone.ViewModels
                 if (value != operation)
                 {
                     operation = value;
-                    NotifyPropertyChanged("LineOne");
+                    NotifyPropertyChanged("Operation");
                 }
             }
         }
@@ -49,7 +42,7 @@ namespace Linq2TwitterDemos_WindowsPhone.ViewModels
                 if (value != pageUri)
                 {
                     pageUri = value;
-                    NotifyPropertyChanged("LineTwo");
+                    NotifyPropertyChanged("PageUri");
                 }
             }
         }

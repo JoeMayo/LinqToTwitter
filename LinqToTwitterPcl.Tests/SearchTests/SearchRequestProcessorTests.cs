@@ -94,13 +94,10 @@ namespace LinqToTwitterPcl.Tests.SearchTests
         {
             var searchReqProc = new SearchRequestProcessor<Search> { BaseUrl = "https://api.twitter.com/1.1/search/" };
 
-            //ArgumentException ex =
-            //    Assert.Throws<ArgumentException>(() =>
-            //    {
-            //        searchReqProc.BuildUrl(null);
-            //    });
-
-            //Assert.AreEqual("Type", ex.ParamName);
+            L2TAssert.Throws<NullReferenceException>(() =>
+            {
+                searchReqProc.BuildUrl(null);
+            });
         }
 
         [TestMethod]

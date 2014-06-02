@@ -21,63 +21,63 @@ namespace LinqToTwitter
 {
     public static class Utilities
     {
-        /// <summary>
-        /// Encapsulates GetResponse so tests don't invoke the request
-        /// </summary>
-        /// <param name="req">Request to Twitter</param>
-        /// <returns>Response to Twitter</returns>
-        public static HttpWebResponse AsyncGetResponse(HttpWebRequest req)
-        {
-            Exception asyncException = null;
+        ///// <summary>
+        ///// Encapsulates GetResponse so tests don't invoke the request
+        ///// </summary>
+        ///// <param name="req">Request to Twitter</param>
+        ///// <returns>Response to Twitter</returns>
+        //public static HttpWebResponse AsyncGetResponse(HttpWebRequest req)
+        //{
+        //    Exception asyncException = null;
 
-            var resetEvent = new ManualResetEvent(/*initialStateSignaled:*/ false);
-            HttpWebResponse res = null;
+        //    var resetEvent = new ManualResetEvent(/*initialStateSignaled:*/ false);
+        //    HttpWebResponse res = null;
 
-            req.BeginGetResponse(
-                new AsyncCallback(
-                    ar =>
-                    {
-                        try
-                        {
-                            res = req.EndGetResponse(ar) as HttpWebResponse;
-                        }
-                        catch (Exception ex)
-                        {
-                            asyncException = ex;
-                        }
-                        finally
-                        {
-                            resetEvent.Set();
-                        }
-                    }), null);
+        //    req.BeginGetResponse(
+        //        new AsyncCallback(
+        //            ar =>
+        //            {
+        //                try
+        //                {
+        //                    res = req.EndGetResponse(ar) as HttpWebResponse;
+        //                }
+        //                catch (Exception ex)
+        //                {
+        //                    asyncException = ex;
+        //                }
+        //                finally
+        //                {
+        //                    resetEvent.Set();
+        //                }
+        //            }), null);
 
-            resetEvent.WaitOne();
+        //    resetEvent.WaitOne();
 
-            if (asyncException != null)
-            {
-                throw asyncException;
-            }
+        //    if (asyncException != null)
+        //    {
+        //        throw asyncException;
+        //    }
 
-            return res;
-        }
+        //    return res;
+        //}
 
-        /// <summary>
-        /// Reads the web response stream into a string.
-        /// </summary>
-        /// <param name="resp">The response to read</param>
-        /// <returns>a string containing the entire web response body</returns>
-        public static string ReadReponse(this WebResponse resp)
-        {
-            if (resp == null)
-                return null;
+        ///// <summary>
+        ///// Reads the web response stream into a string.
+        ///// </summary>
+        ///// <param name="resp">The response to read</param>
+        ///// <returns>a string containing the entire web response body</returns>
+        //public static string ReadReponse(this WebResponse resp)
+        //{
+        //    if (resp == null)
+        //        return null;
 
-            using (var respStream = resp.GetResponseStream())
-            using (var respReader = new StreamReader(respStream))
-            {
-                var responseBody = respReader.ReadToEnd();
-                return responseBody;
-            }
-        }
+        //    using (var respStream = resp.GetResponseStream())
+        //    using (var respReader = new StreamReader(respStream))
+        //    {
+        //        var responseBody = respReader.ReadToEnd();
+        //        return responseBody;
+        //    }
+        //}
 
         /// <summary>
         /// Assembles a series of key=value pairs as a URI-escaped query-string.
