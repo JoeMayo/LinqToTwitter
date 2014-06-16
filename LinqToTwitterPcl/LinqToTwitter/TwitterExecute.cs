@@ -155,7 +155,7 @@ namespace LinqToTwitter
         /// </returns>
         public async Task<string> QueryTwitterStreamAsync(Request request)
         {
-            WriteLog(request.FullUrl, "QueryTwitterAsync");
+            WriteLog(request.FullUrl, "QueryTwitterStreamAsync");
 
             var handler = new HttpClientHandler();
             if (Authorizer.Proxy != null && handler.SupportsProxy)
@@ -191,68 +191,53 @@ namespace LinqToTwitter
 
                 await TwitterErrorHandler.ThrowIfErrorAsync(response).ConfigureAwait(false);
 
-                using (var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false))
-                    if (Authorizer.SupportsCompression)
+                Stream stream = await CreateStream(response);
+
+                const int CarriageReturn = 0x0D;
+                const int LineFeed = 0x0A;
+                var memStr = new MemoryStream();
+
+                while (stream.CanRead && !IsStreamClosed)
+                {
+                    int nextByte = stream.ReadByte();
+
+                    if (nextByte == -1) break;
+
+                    if (nextByte != CarriageReturn && nextByte != LineFeed)
+                        memStr.WriteByte((byte)nextByte);
+
+                    if (nextByte == LineFeed)
                     {
-                        using (var gzip = new GZipStream(stream, CompressionMode.Decompress))
-                        {
-                            byte[] compressedBuffer = new byte[8192];
+                        int byteCount = (int)memStr.Length;
+                        byte[] tweetBytes = new byte[byteCount];
 
-                            while (stream.CanRead && !IsStreamClosed)
-                            {
-                                int readCount = await gzip.ReadAsync(compressedBuffer, 0, compressedBuffer.Length).ConfigureAwait(false);
+                        memStr.Position = 0;
+                        await memStr.ReadAsync(tweetBytes, 0, byteCount).ConfigureAwait(false);
 
-                                // When Twitter breaks the connection, we need to exit the
-                                // entire loop and start over. Otherwise, the reads
-                                // keep returning blank lines that are incorrectly interpreted
-                                // as keep-alive messages in a tight loop.
-                                if (readCount == 0)
-                                {
-                                    if (!IsStreamClosed)
-                                    {
-                                        IsStreamClosed = true;
-                                        throw new WebException("Twitter closed the stream.", WebExceptionStatus.ConnectFailure);
-                                    }
+                        string tweet = Encoding.UTF8.GetString(tweetBytes, 0, byteCount);
+                        var strmContent = new StreamContent(this, tweet);
 
-                                    break;
-                                }
+                        await StreamingCallbackAsync(strmContent).ConfigureAwait(false);
 
-                                if (!compressedBuffer.Contains((byte)0x0D))
-                                    continue;
-
-                                string outputString = Encoding.UTF8.GetString(compressedBuffer, 0, readCount);
-
-                                string[] lines = outputString.Split(new[] { "\r\n" }, new StringSplitOptions());
-                                for (int i = 0; i < (lines.Length - 1); i++)
-                                {
-                                    var strmContent = new StreamContent(this, lines[i]);
-
-                                    await StreamingCallbackAsync(strmContent).ConfigureAwait(false);
-                                }
-
-                                compressedBuffer = new byte[8192];
-                            }
-                        }
+                        memStr.Dispose();
+                        memStr = new MemoryStream();
                     }
-                    else
-                    {
-                        using (var reader = new StreamReader(stream))
-                        {
-                            while (stream.CanRead && !IsStreamClosed)
-                            {
-                                string line = await reader.ReadLineAsync().ConfigureAwait(false);
-
-                                var strmContent = new StreamContent(this, line);
-
-                                await StreamingCallbackAsync(strmContent).ConfigureAwait(false);
-                            }
-                        }
-                    }
+                }
             }
 
             IsStreamClosed = false;
 
-            return "<streaming></streaming>";
+            return "{}";
+        }
+ 
+        async Task<Stream> CreateStream(HttpResponseMessage response)
+        {
+            var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
+
+            if (Authorizer.SupportsCompression)
+                return new GZipStream(stream, CompressionMode.Decompress);
+            else
+                return stream;
         }
 
         /// <summary>

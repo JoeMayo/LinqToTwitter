@@ -18,10 +18,13 @@ namespace Linq2TwitterDemos_WindowsStore.DataModel
                  select strm)
                 .StartAsync(async strm =>
                 {
-                    Show(strm.Content);
+                    if (strm.Content.Trim() != string.Empty)
+                    {
+                        Show(strm.Content);
 
-                    if (count++ >= 5)
-                        strm.CloseStream();
+                        if (count++ >= 5)
+                            strm.CloseStream();
+                    }
                 });
         }
     }

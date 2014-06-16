@@ -21,7 +21,7 @@ namespace Linq2TwitterDemos_WindowsStore.DataModel
                 {
                     Show(strm.Content);
 
-                    if (count++ >= 5)
+                    if (count++ >= 50)
                         strm.CloseStream();
                 });
         }

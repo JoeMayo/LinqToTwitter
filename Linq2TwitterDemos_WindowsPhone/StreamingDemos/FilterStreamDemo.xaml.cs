@@ -40,7 +40,7 @@ namespace Linq2TwitterDemos_WindowsPhone.StreamingDemos
                 {
                     Show(strm.Content);
 
-                    if (count++ >= 5)
+                    if (count++ >= 50)
                         strm.CloseStream();
                 });
         }
