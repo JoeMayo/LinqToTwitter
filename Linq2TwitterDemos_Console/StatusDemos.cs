@@ -55,30 +55,35 @@ namespace Linq2TwitterDemos_Console
                         await TweetAsync(twitterCtx);
                         break;
                     case '8':
+                        Console.WriteLine("\n\tReplying...\n");
+                        await ReplyAsync(twitterCtx);
+                        break;
+                    case '9':
                         Console.WriteLine("\n\tRetweeting...\n");
                         await RetweetAsync(twitterCtx);
                         break;
-                    case '9':
+                    case 'a':
+                    case 'A':
                         Console.WriteLine("\n\tTweeting image...\n");
                         await TweetWithMediaAsync(twitterCtx);
                         break;
-                    case 'a':
-                    case 'A':
+                    case 'b':
+                    case 'B':
                         Console.WriteLine("\n\tGetting oembed...\n");
                         await OEmbedStatusAsync(twitterCtx);
                         break;
-                    case 'b':
-                    case 'B':
+                    case 'c':
+                    case 'C':
                         Console.WriteLine("\n\tGetting retweeters...\n");
                         await RetweetersAsync(twitterCtx);
                         break;
-                    case 'c':
-                    case 'C':
+                    case 'd':
+                    case 'D':
                         Console.WriteLine("\n\tFollowing conversation...\n");
                         await GetConversationAsync(twitterCtx);
                         break;
-                    case 'd':
-                    case 'D':
+                    case 'e':
+                    case 'E':
                         Console.WriteLine("\n\tLooking up tweets...\n");
                         await LookupTweetsAsyc(twitterCtx);
                         break;
@@ -106,12 +111,13 @@ namespace Linq2TwitterDemos_Console
             Console.WriteLine("\t 5. Show Specific Tweet");
             Console.WriteLine("\t 6. Delete a Tweet");
             Console.WriteLine("\t 7. Update Status");
-            Console.WriteLine("\t 8. Retweet a Tweet");
-            Console.WriteLine("\t 9. Tweet Media");
-            Console.WriteLine("\t A. Get Oembed Tweet");
-            Console.WriteLine("\t B. Get Retweeters");
-            Console.WriteLine("\t C. Follow Conversation");
-            Console.WriteLine("\t D. Lookup Tweets");
+            Console.WriteLine("\t 8. Reply to a Tweet");
+            Console.WriteLine("\t 9. Retweet a Tweet");
+            Console.WriteLine("\t A. Tweet Media");
+            Console.WriteLine("\t B. Get Oembed Tweet");
+            Console.WriteLine("\t C. Get Retweeters");
+            Console.WriteLine("\t D. Follow Conversation");
+            Console.WriteLine("\t E. Lookup Tweets");
 
             Console.WriteLine();
             Console.WriteLine("\t Q. Return to Main menu");
@@ -277,6 +283,21 @@ namespace Linq2TwitterDemos_Console
             {
                 Console.WriteLine("Not a valid entry.");
             }
+        }
+
+        static async Task ReplyAsync(TwitterContext twitterCtx)
+        {
+            ulong tweetID = 401033367283453953;
+            string status = "@JoeMayo Testing ReplyAsync #Linq2Twitter £ ";
+
+                var tweet = await twitterCtx.ReplyAsync(tweetID, status);
+
+                if (tweet != null)
+                    Console.WriteLine(
+                        "Status returned: " +
+                        "(" + tweet.StatusID + ")" +
+                        tweet.User.Name + ", " +
+                        tweet.Text + "\n");
         }
 
         static async Task RetweetAsync(TwitterContext twitterCtx)
