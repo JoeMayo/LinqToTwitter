@@ -1,0 +1,55 @@
+﻿<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Version>0.0.0.0</Version>
+    <ProjFolder>c:\projects\</ProjFolder>
+    <L2TFolder>$(ProjFolder)LinqToTwitter\LinqToTwitterPcl\</L2TFolder>
+    <L2TAspFolder>$(ProjFolder)LinqToTwitter\LinqToTwitter.AspNet\</L2TAspFolder>
+    <L2TRTFolder>$(ProjFolder)LinqToTwitter\LinqToTwitter.WindowsStore\</L2TRTFolder>
+    <NuGetExeFolder>$(ProjFolder)NuGet\</NuGetExeFolder>
+    <NuGetBaseFolder>$(NuGetExeFolder)LinqToTwitterPcl\</NuGetBaseFolder>
+    <NuGetVersionFolder>$(NuGetBaseFolder)v$(Version)\</NuGetVersionFolder>
+    <NuGetLibFolder>$(NuGetVersionFolder)lib\</NuGetLibFolder>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OutDir>$(NuGetLibFolder)</OutDir>
+    <OutDir>$(NuGetLibFolder)net45</OutDir>
+    <OutDir>$(NuGetLibFolder)win8</OutDir>
+	<OutDir>$(NuGetLibFolder)portable-win8+net45+wp8</OutDir>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="$(L2TFolder)LinqToTwitterPcl.csproj" />
+    <ProjectReference Include="$(L2TAspFolder)LinqToTwitter.AspNet.csproj" />
+    <ProjectReference Include="$(L2TRTFolder)LinqToTwitter.WindowsStore.csproj" />
+ </ItemGroup>
+  <Target Name="Build">
+    <MakeDir Directories="$(OutDir)" Condition="!Exists('$(OutDir)')"  />
+
+    <MSBuild Projects="$(L2TFolder)LinqToTwitterPcl.csproj" Properties="Configuration=Release;TargetFrameworkVersion=v4.5" Targets="Rebuild" />
+	<Copy
+      SourceFiles="$(L2TFolder)bin\Release\LinqToTwitterPcl.dll"
+      DestinationFiles="$(NuGetLibFolder)portable-win8+net45+wp8\LinqToTwitterPcl.dll" />
+
+    <MSBuild Projects="$(L2TAspFolder)LinqToTwitter.AspNet.csproj" Properties="Configuration=Release;TargetFrameworkVersion=v4.5" Targets="Rebuild" />
+    <Copy
+      SourceFiles="$(L2TFolder)bin\Release\LinqToTwitterPcl.dll"
+      DestinationFiles="$(NuGetLibFolder)net45\LinqToTwitterPcl.dll" />
+    <Copy
+      SourceFiles="$(L2TAspFolder)bin\Release\LinqToTwitter.AspNet.dll"
+      DestinationFiles="$(NuGetLibFolder)net45\LinqToTwitter.AspNet.dll" />
+
+    <MSBuild Projects="$(L2TRTFolder)LinqToTwitter.WindowsStore.csproj" Properties="Configuration=Release;" Targets="Rebuild" />
+    <Copy
+      SourceFiles="$(L2TFolder)bin\Release\LinqToTwitterPcl.dll"
+      DestinationFiles="$(NuGetLibFolder)win8\LinqToTwitterPcl.dll" />
+	<Copy
+      SourceFiles="$(L2TRTFolder)bin\Release\LinqToTwitter.WindowsStore.dll"
+      DestinationFiles="$(NuGetLibFolder)win8\LinqToTwitter.WindowsStore.dll" />
+
+    <Copy
+      SourceFiles="$(NuGetBaseFolder)LinqToTwitter.nuspec"
+      DestinationFiles="$(NuGetVersionFolder)LinqToTwitter.nuspec" />
+    <XmlPoke XmlInputPath="$(NuGetVersionFolder)LinqToTwitter.nuspec" Namespaces="&lt;Namespace Prefix='x' Uri='http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd' /&gt;" Query="//x:package/x:metadata/x:version" Value="$(Version)" />
+    
+	<Exec Command="$(NuGetExeFolder)NuGet pack $(NuGetVersionFolder)LinqToTwitter.nuspec" />
+  </Target>
+</Project>
