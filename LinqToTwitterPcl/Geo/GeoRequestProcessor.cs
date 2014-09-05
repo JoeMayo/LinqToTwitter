@@ -165,9 +165,10 @@ namespace LinqToTwitter
         Request BuildSearchUrl(Dictionary<string, string> parameters)
         {
             if (!parameters.ContainsKey("IP") &&
+                !parameters.ContainsKey("Query") &&
                 !(parameters.ContainsKey("Latitude") &&
                   parameters.ContainsKey("Longitude")))
-                throw new ArgumentException("Either Latitude and Longitude or IP address is required.");
+                throw new ArgumentException("Either Latitude and Longitude, Query, or IP address is required.");
 
             var req = new Request(BaseUrl + "geo/search.json");
             var urlParams = req.RequestParameters;

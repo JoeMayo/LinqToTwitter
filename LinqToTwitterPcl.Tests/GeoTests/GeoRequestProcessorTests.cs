@@ -98,7 +98,7 @@ namespace LinqToTwitterPcl.Tests.GeoTests
         }
 
         [TestMethod]
-        public void BuildUrl_ReverseL_Without_LatLong_Throws()
+        public void BuildUrlReverseL_WithoutLatLongIPOrQuery_ExpectException()
         {
             const string ExpectedLatLongParamName = "LatLong";
             var geoReqProc = new GeoRequestProcessor<Geo>() { BaseUrl = "https://api.twitter.com/1.1/" };
@@ -158,6 +158,30 @@ namespace LinqToTwitterPcl.Tests.GeoTests
                  {"Longitude", (-122.40060).ToString()},
                  {"Query", "Twitter HQ" },
                  {"IP", "168.143.171.180"},
+                 {"Accuracy", "city" },
+                 {"Granularity", "10" },
+                 {"MaxResults", "10" },
+                 {"ContainedWithin", "123" },
+                 {"Attribute", "street_address=123" }
+             };
+
+            Request req = geoReqProc.BuildUrl(parameters);
+
+            Assert.AreEqual(ExpectedUrl, req.FullUrl);
+        }
+
+        [TestMethod]
+        public void BuildUrlForSearch_WithQueryButNotLatLongAndIP_ExpectSuccess()
+        {
+            const string ExpectedUrl = "https://api.twitter.com/1.1/geo/search.json?query=Twitter%20HQ&accuracy=city&granularity=10&max_results=10&contained_within=123&attribute%3Astreet_address=123";
+            var geoReqProc = new GeoRequestProcessor<Geo>() { BaseUrl = "https://api.twitter.com/1.1/" };
+            var parameters = new Dictionary<string, string>
+             {
+                 {"Type", ((int) GeoType.Search).ToString()},
+                 //{"Latitude", (37.78215).ToString()},
+                 //{"Longitude", (-122.40060).ToString()},
+                 {"Query", "Twitter HQ" },
+                 //{"IP", "168.143.171.180"},
                  {"Accuracy", "city" },
                  {"Granularity", "10" },
                  {"MaxResults", "10" },
