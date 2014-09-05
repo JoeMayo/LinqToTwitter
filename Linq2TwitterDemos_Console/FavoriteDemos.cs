@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using LinqToTwitter;
+using System.Collections.Generic;
 
 namespace Linq2TwitterDemos_Console
 {
@@ -56,22 +57,65 @@ namespace Linq2TwitterDemos_Console
 
         static async Task ShowFavoritesAsync(TwitterContext twitterCtx)
         {
+            const int PerQueryFavCount = 200;
+
+            // set from a value that you previously saved
+            ulong sinceID = 1; 
+
             var favsResponse =
                 await
                     (from fav in twitterCtx.Favorites
-                     where fav.Type == FavoritesType.Favorites
+                     where fav.Type == FavoritesType.Favorites &&
+                           fav.Count == PerQueryFavCount
                      select fav)
                     .ToListAsync();
 
-            if (favsResponse != null)
-                favsResponse.ForEach(fav => 
-                {
-                    if (fav != null && fav.User != null)
-                        Console.WriteLine(
-                            "Name: {0}, Tweet: {1}",
-                            fav.User.ScreenNameResponse, fav.Text);
-                });
+            if (favsResponse == null)
+            {
+                Console.WriteLine("No favorites returned from Twitter.");
+                return;
+            }
+
+            var favList = new List<Favorites>(favsResponse);
+
+            // first tweet processed on current query
+            ulong maxID = favList.Min(fav => fav.StatusID) - 1;
+
+            do
+            {
+                favsResponse =
+                    await
+                        (from fav in twitterCtx.Favorites
+                         where fav.Type == FavoritesType.Favorites &&
+                               fav.Count == PerQueryFavCount &&
+                               fav.SinceID == sinceID &&
+                               fav.MaxID == maxID
+                         select fav)
+                        .ToListAsync();
+
+                if (favsResponse == null || favsResponse.Count == 0) break;
+
+                // reset first tweet to avoid re-querying the
+                // same list you just received
+                maxID = favsResponse.Min(fav => fav.StatusID) - 1;
+                favList.AddRange(favsResponse);
+
+            } while (favsResponse.Count > 0);
+
+            favList.ForEach(fav => 
+            {
+                if (fav != null && fav.User != null)
+                    Console.WriteLine(
+                        "Name: {0}, Tweet: {1}",
+                        fav.User.ScreenNameResponse, fav.Text);
+            });
+
+            // save this in your db for this user so you can set
+            // sinceID accurately the next time you do a query
+            // and avoid querying the same tweets again.
+            ulong newSinceID = favList.Max(fav => fav.SinceID);
         }
+
         static async Task DestroyFavoriteAsync(TwitterContext twitterCtx)
         {
             var status = 
