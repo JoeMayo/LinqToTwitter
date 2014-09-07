@@ -86,7 +86,7 @@ Class Program
                 Case "c"c
                 Case "C"c
                     Console.WriteLine(vbNewLine + vbTab + "Running Stream Demos..." + vbNewLine)
-                    'Await StreamDemos.RunAsync(twitterCtx)
+                    Await StreamDemos.RunAsync(twitterCtx)
                 Case "d"c
                 Case "D"c
                     Console.WriteLine(vbNewLine + vbTab + "Running Trend Demos..." + vbNewLine)

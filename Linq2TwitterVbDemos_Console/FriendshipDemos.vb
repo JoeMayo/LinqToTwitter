@@ -80,7 +80,7 @@ Class FriendshipDemos
         Do
             Dim friendship = Await (From [friend] In twitterCtx.Friendship Where _
                                  [friend].Type = FriendshipType.FriendsList AndAlso _
-                                 [friend].ScreenName = "Mayoster" AndAlso _
+                                 [friend].ScreenName = "JoeMayo" AndAlso _
                                  [friend].Cursor = cursor _
                                  Select [friend]).SingleOrDefaultAsync()
 
