@@ -93,5 +93,20 @@ namespace LinqToTwitter
             else
                 return base.VisitBinary(be);
         }
+
+        protected override Expression VisitMethodCall(MethodCallExpression me)
+        {
+
+            foreach (var param in ParameterNames)
+            {
+                if (me.Method.Name == "CompareString" && (me.Arguments[0] as MemberExpression).Member.Name == param)
+                {
+                    parameters.Add(param, (me.Arguments[1] as ConstantExpression).Value.ToString());
+                    return me;
+                } 
+            }
+
+            return base.VisitMethodCall(me);
+        }
     }
 }

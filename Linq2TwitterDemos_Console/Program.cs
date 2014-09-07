@@ -185,7 +185,7 @@ namespace Linq2TwitterDemos_Console
                     auth = DoPinOAuth();
                     break;
                 case ConsoleKey.D2:
-                    auth = DoApplicationOnly();
+                    auth = DoApplicationOnlyAuth();
                     break;
                 case ConsoleKey.D3:
                     auth = DoSingleUserAuth();
@@ -224,7 +224,7 @@ namespace Linq2TwitterDemos_Console
             return auth;
         }
 
-        static IAuthorizer DoApplicationOnly()
+        static IAuthorizer DoApplicationOnlyAuth()
         {
             var auth = new ApplicationOnlyAuthorizer()
             {
