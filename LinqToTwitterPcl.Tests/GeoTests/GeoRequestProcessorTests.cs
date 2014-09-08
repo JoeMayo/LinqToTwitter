@@ -308,6 +308,20 @@ namespace LinqToTwitterPcl.Tests.GeoTests
         }
 
         [TestMethod]
+        public void ProcessResultsForID_WithNullGeometry_ExpectSucces()
+        {
+            const string ExpectedPlaceName = "San Francisco";
+            var geoReqProc = new GeoRequestProcessor<Geo> { Type = GeoType.ID };
+
+            List<Geo> geo = geoReqProc.ProcessResults(IDResponseWithNullGeometry);
+
+            Assert.IsNotNull(geo);
+            Assert.IsNotNull(geo.SingleOrDefault());
+            Assert.IsNotNull(geo.Single().Places);
+            Assert.AreEqual(ExpectedPlaceName, geo.Single().Places.First().Name);
+        }
+
+        [TestMethod]
         public void ProcessResults_Handles_Search_Response()
         {
             const int ExpectedPlacesCount = 4;
@@ -758,6 +772,61 @@ namespace LinqToTwitterPcl.Tests.GeoTests
          ""id"":""fbd6d2f5a4e4a15e""
       }
    ]
+}";
+
+        const string IDResponseWithNullGeometry = @"{
+	""id"": ""5a110d312052166f"",
+	""url"": ""https:\/\/api.twitter.com\/1.1\/geo\/id\/5a110d312052166f.json"",
+	""place_type"": ""city"",
+	""name"": ""San Francisco"",
+	""full_name"": ""San Francisco, CA"",
+	""country_code"": ""US"",
+	""country"": ""United States"",
+	""contained_within"": [{
+		""id"": ""fbd6d2f5a4e4a15e"",
+		""url"": ""https:\/\/api.twitter.com\/1.1\/geo\/id\/fbd6d2f5a4e4a15e.json"",
+		""place_type"": ""admin"",
+		""name"": ""California"",
+		""full_name"": ""California, US"",
+		""country_code"": ""US"",
+		""country"": ""United States"",
+		""bounding_box"": {
+			""type"": ""Polygon"",
+			""coordinates"": [[[-124.482003,
+			32.528832],
+			[-124.482003,
+			42.009519],
+			[-114.131212,
+			42.009519],
+			[-114.131212,
+			32.528832],
+			[-124.482003,
+			32.528832]]]
+		},
+		""attributes"": {
+			
+		}
+	}],
+	""geometry"": null,
+	""polylines"": [],
+	""bounding_box"": {
+		""type"": ""Polygon"",
+		""coordinates"": [[[-122.514926,
+		37.708075],
+		[-122.514926,
+		37.833238],
+		[-122.357031,
+		37.833238],
+		[-122.357031,
+		37.708075],
+		[-122.514926,
+		37.708075]]]
+	},
+	""attributes"": {
+		""162772:pop100"": ""776733"",
+		""162772:place_id"": ""0667000"",
+		""189390:id"": ""san-francisco-ca""
+	}
 }";
 
     }

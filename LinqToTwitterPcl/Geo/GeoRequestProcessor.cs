@@ -343,66 +343,35 @@ namespace LinqToTwitter
             switch (Type)
             {
                 case GeoType.ID:
-                    geo = HandleIDResponse(geoJson);
+                    geo = new Geo
+                    {
+                        Places = new List<Place> { new Place(geoJson) }
+                    };
                     break;
                 case GeoType.Reverse:
                 case GeoType.Search:
                 case GeoType.SimilarPlaces:
-                    geo = HandleMultiplePlaceResponse(geoJson);
+                    geo = new Geo(geoJson);
                     break;
                 default:
                     geo = new Geo();
                     break;
             }
+
+            geo.Type = Type;
+            geo.Accuracy = Accuracy;
+            geo.Granularity = Granularity;
+            geo.ID = ID;
+            geo.Latitude = Latitude;
+            geo.Longitude = Longitude;
+            geo.IP = IP;
+            geo.MaxResults = MaxResults;
+            geo.Query = Query;
+            geo.ContainedWithin = ContainedWithin;
+            geo.Attribute = Attribute;
+            geo.PlaceName = PlaceName;
                 
             return new List<Geo> { geo }.OfType<T>().ToList();
-        }
-  
-        Geo HandleIDResponse(JsonData placeJson)
-        {
-            var sb = new StringBuilder();
-            var writer = new JsonWriter(sb);
-
-            writer.WriteObjectStart();
-
-                writer.WritePropertyName("result");
-                    writer.WriteObjectStart();
-
-                        writer.WritePropertyName("places");
-                            writer.WriteArrayStart();
-
-                                writer.WriteJsonData(placeJson);
-
-                            writer.WriteArrayEnd();
-
-                    writer.WriteObjectEnd();
-
-            writer.WriteObjectEnd();
-
-            var geoJson = JsonMapper.ToObject(sb.ToString());
-
-            return HandleMultiplePlaceResponse(geoJson);
-        }
-  
-        Geo HandleMultiplePlaceResponse(JsonData geoJson)
-        {
-            var geo =
-                new Geo(geoJson)
-                {
-                    Type = Type,
-                    Accuracy = Accuracy,
-                    Granularity = Granularity,
-                    ID = ID,
-                    Latitude = Latitude,
-                    Longitude = Longitude,
-                    IP = IP,
-                    MaxResults = MaxResults,
-                    Query = Query,
-                    ContainedWithin = ContainedWithin,
-                    Attribute = Attribute,
-                    PlaceName = PlaceName
-                };
-            return geo;
         }
 
         public T ProcessActionResult(string responseJson, Enum theAction)

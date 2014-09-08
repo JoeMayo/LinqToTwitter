@@ -65,7 +65,7 @@ namespace Linq2TwitterDemos_Console
                 await
                     (from geo in twitterCtx.Geo
                      where geo.Type == GeoType.Search &&
-                           geo.IP == "168.143.171.180"
+                           geo.IP == "74.125.19.104"
                      select geo)
                     .SingleOrDefaultAsync();
 
