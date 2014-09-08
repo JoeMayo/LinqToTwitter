@@ -59,6 +59,7 @@ namespace LinqToTwitter
             Text = status.GetValue<string>("text");
             Annotation = new Annotation(status.GetValue<JsonData>("annotation"));
             Entities = new Entities(status.GetValue<JsonData>("entities"));
+            ExtendedEntities = new Entities(status.GetValue<JsonData>("extended_entities"));
             var currentUserRetweet = status.GetValue<JsonData>("current_user_retweet");
             if (currentUserRetweet != null)
             {
@@ -319,6 +320,11 @@ namespace LinqToTwitter
         /// Entities connected to the status
         /// </summary>
         public Entities Entities { get; set; }
+
+        /// <summary>
+        /// Additional entities connected to the status
+        /// </summary>
+        public Entities ExtendedEntities { get; set; }
 
         /// <summary>
         /// Removes all user info, except for ID

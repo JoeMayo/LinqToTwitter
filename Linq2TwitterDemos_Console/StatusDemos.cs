@@ -212,7 +212,7 @@ namespace Linq2TwitterDemos_Console
 
         static async Task SingleStatusQueryAsync(TwitterContext twitterCtx)
         {
-            ulong tweetID = 263843354817732608;
+            ulong tweetID = 449660889793581056;
 
             var friendTweets =
                 await

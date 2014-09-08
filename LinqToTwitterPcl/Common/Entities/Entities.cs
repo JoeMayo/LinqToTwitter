@@ -43,6 +43,7 @@ namespace LinqToTwitter
                            DisplayUrl = media.GetValue<string>("display_url"),
                            ExpandedUrl = media.GetValue<string>("expanded_url"),
                            ID = media.GetValue<ulong>("id"),
+                           Indices = new List<int> { (int)indices[0], (int)indices[1] },
                            MediaUrl = media.GetValue<string>("media_url"),
                            MediaUrlHttps = media.GetValue<string>("media_url_https"),
                            Sizes =
