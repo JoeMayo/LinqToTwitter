@@ -81,7 +81,7 @@ namespace LinqToTwitter
 
             var reqProc = new StatusRequestProcessor<Status>();
 
-            string resultString =
+            RawResult =
                 await TwitterExecutor.PostMediaAsync(
                     updateUrl,
                     new Dictionary<string, string>
@@ -100,7 +100,7 @@ namespace LinqToTwitter
                     imageType)
                     .ConfigureAwait(false);
 
-            return reqProc.ProcessActionResult(resultString, StatusAction.SingleStatus);
+            return reqProc.ProcessActionResult(RawResult, StatusAction.SingleStatus);
         }
 
         /// <summary>
@@ -264,7 +264,7 @@ namespace LinqToTwitter
 
             var updateUrl = BaseUrl + "statuses/update.json";
 
-            string resultsJson =
+            RawResult =
                 await TwitterExecutor.PostToTwitterAsync<Status>(
                     updateUrl,
                     new Dictionary<string, string>
@@ -280,7 +280,7 @@ namespace LinqToTwitter
                     .ConfigureAwait(false);
 
             return new StatusRequestProcessor<Status>()
-                .ProcessActionResult(resultsJson, StatusAction.SingleStatus);
+                .ProcessActionResult(RawResult, StatusAction.SingleStatus);
         }
 
         /// <summary>
@@ -295,12 +295,12 @@ namespace LinqToTwitter
 
             var destroyUrl = BaseUrl + "statuses/destroy/" + tweetID + ".json";
 
-            string resultsJson = await TwitterExecutor
+            RawResult = await TwitterExecutor
                 .PostToTwitterAsync<Status>(destroyUrl, new Dictionary<string, string>())
                 .ConfigureAwait(false);
 
             return new StatusRequestProcessor<Status>()
-                .ProcessActionResult(resultsJson, StatusAction.SingleStatus);
+                .ProcessActionResult(RawResult, StatusAction.SingleStatus);
         }
 
         /// <summary>
@@ -315,12 +315,12 @@ namespace LinqToTwitter
 
             var retweetUrl = BaseUrl + "statuses/retweet/" + tweetID + ".json";
 
-            string resultsJson = await TwitterExecutor
+            RawResult = await TwitterExecutor
                 .PostToTwitterAsync<Status>(retweetUrl, new Dictionary<string, string>())
                 .ConfigureAwait(false);
 
             return new StatusRequestProcessor<Status>()
-                .ProcessActionResult(resultsJson, StatusAction.SingleStatus);
+                .ProcessActionResult(RawResult, StatusAction.SingleStatus);
         }
     }
 }

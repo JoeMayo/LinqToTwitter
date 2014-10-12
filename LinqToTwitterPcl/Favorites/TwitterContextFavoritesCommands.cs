@@ -32,7 +32,7 @@ namespace LinqToTwitter
 
             var reqProc = new StatusRequestProcessor<Status>();
 
-            var resultsJson =
+            RawResult =
                 await TwitterExecutor.PostToTwitterAsync<Status>(
                     favoritesUrl,
                     new Dictionary<string, string>
@@ -42,7 +42,7 @@ namespace LinqToTwitter
                     })
                     .ConfigureAwait(false);
 
-            return reqProc.ProcessActionResult(resultsJson, FavoritesAction.SingleStatus);
+            return reqProc.ProcessActionResult(RawResult, FavoritesAction.SingleStatus);
         }
 
         /// <summary>
@@ -70,7 +70,7 @@ namespace LinqToTwitter
 
             var reqProc = new StatusRequestProcessor<Status>();
 
-            var resultsJson =
+            RawResult =
                 await TwitterExecutor.PostToTwitterAsync<Status>(
                     favoritesUrl,
                     new Dictionary<string, string>
@@ -80,7 +80,7 @@ namespace LinqToTwitter
                     })
                     .ConfigureAwait(false);
 
-            return reqProc.ProcessActionResult(resultsJson, FavoritesAction.SingleStatus);
+            return reqProc.ProcessActionResult(RawResult, FavoritesAction.SingleStatus);
         }
     }
 }

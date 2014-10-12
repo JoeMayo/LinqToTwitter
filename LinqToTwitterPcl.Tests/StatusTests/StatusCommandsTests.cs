@@ -61,6 +61,18 @@ namespace LinqToTwitterPcl.Tests.StatusTests
         }
 
         [TestMethod]
+        public async Task ReplyAsync_WithRawResult_Succeeds()
+        {
+            const string Status = "Hello";
+            const ulong InReplyToStatusID = 1;
+            var ctx = await InitializeTwitterContext();
+
+            await ctx.ReplyAsync(InReplyToStatusID, Status);
+
+            Assert.AreEqual(SingleStatusResponse, ctx.RawResult);
+        }
+
+        [TestMethod]
         public async Task TweetAsync_Throws_On_Null_Tweet()
         {
             var ctx = await InitializeTwitterContext();
@@ -69,6 +81,17 @@ namespace LinqToTwitterPcl.Tests.StatusTests
                 async () => await ctx.TweetAsync(null));
 
             Assert.AreEqual("status", ex.ParamName);
+        }
+
+        [TestMethod]
+        public async Task TweetAsync_WithRawResult_Succeeds()
+        {
+            const ulong Id = 184835136037191681ul;
+            var ctx = await InitializeTwitterContext();
+
+            await ctx.DeleteTweetAsync(Id);
+
+            Assert.AreEqual(SingleStatusResponse, ctx.RawResult);
         }
 
         [TestMethod]
@@ -84,7 +107,7 @@ namespace LinqToTwitterPcl.Tests.StatusTests
         }
 
         [TestMethod]
-        public async Task TweetAsync_Sets_ID()
+        public async Task DeleteTweetAsync_Sets_ID()
         {
             const ulong Id = 184835136037191681ul;
             const ulong ExpectedStatusID = 184835136037191681ul;
@@ -93,6 +116,17 @@ namespace LinqToTwitterPcl.Tests.StatusTests
             Status actual = await ctx.DeleteTweetAsync(Id);
 
             Assert.AreEqual(ExpectedStatusID, actual.StatusID);
+        }
+
+        [TestMethod]
+        public async Task DeleteTweetAsync_WithRawResults_Succeeds()
+        {
+            const ulong Id = 184835136037191681ul;
+            var ctx = await InitializeTwitterContext();
+
+            await ctx.DeleteTweetAsync(Id);
+
+            Assert.AreEqual(SingleStatusResponse, ctx.RawResult);
         }
 
         [TestMethod]

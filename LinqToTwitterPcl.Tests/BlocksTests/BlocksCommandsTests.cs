@@ -43,7 +43,7 @@ namespace LinqToTwitterPcl.Tests.BlocksTests
         }
 
         [TestMethod]
-        public async Task CreateBlock_Handles_Response()
+        public async Task CreateBlockAsync_Handles_Response()
         {
             const ulong Id = 1;
             const bool SkipStatus = true;
@@ -55,7 +55,19 @@ namespace LinqToTwitterPcl.Tests.BlocksTests
         }
 
         [TestMethod]
-        public async Task CreateBlock_Builds_Url()
+        public async Task CreateBlockAsync_WithRawResult_Succeeds()
+        {
+            const ulong Id = 1;
+            const bool SkipStatus = true;
+            var ctx = InitializeTwitterContext();
+
+            await ctx.CreateBlockAsync(Id, null, SkipStatus);
+
+            Assert.AreEqual(BlocksUserJson, ctx.RawResult);
+        }
+
+        [TestMethod]
+        public async Task CreateBlockAsync_Builds_Url()
         {
             const ulong Id = 1;
             const bool SkipStatus = true;
@@ -82,7 +94,7 @@ namespace LinqToTwitterPcl.Tests.BlocksTests
         }
 
         [TestMethod]
-        public async Task DestroyBlock_Handles_Response()
+        public async Task DestroyBlockAsync_Handles_Response()
         {
             const ulong Id = 1;
             const bool SkipStatus = true;
@@ -94,7 +106,19 @@ namespace LinqToTwitterPcl.Tests.BlocksTests
         }
 
         [TestMethod]
-        public async Task DestroyBlock_Builds_Url()
+        public async Task DestroyBlockAsync_WithRawResult_Succeeds()
+        {
+            const ulong Id = 1;
+            const bool SkipStatus = true;
+            var ctx = InitializeTwitterContext();
+
+            await ctx.DestroyBlockAsync(Id, null, SkipStatus);
+
+            Assert.AreEqual(BlocksUserJson, ctx.RawResult);
+        }
+
+        [TestMethod]
+        public async Task DestroyBlockAsync_Builds_Url()
         {
             const ulong Id = 1;
             const bool SkipStatus = true;

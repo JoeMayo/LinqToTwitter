@@ -44,7 +44,7 @@ namespace LinqToTwitterPcl.Tests.FriendshipTests
         }
 
         [TestMethod]
-        public async Task CreateFriendshipTest()
+        public async Task CreateFriendshipAsync_WithValidInput_Succeeds()
         {
             const string ScreenName = "JoeMayo";
             const bool Follow = false;
@@ -54,6 +54,18 @@ namespace LinqToTwitterPcl.Tests.FriendshipTests
             User actual = await ctx.CreateFriendshipAsync(ScreenName, Follow);
 
             Assert.AreEqual(expectedName, actual.Name);
+        }
+
+        [TestMethod]
+        public async Task CreateFriendshipAsync_RawResult_Succeeds()
+        {
+            const string ScreenName = "JoeMayo";
+            const bool Follow = false;
+            InitializeTwitterContext<User>(SingleUserResponse);
+
+            await ctx.CreateFriendshipAsync(ScreenName, Follow);
+
+            Assert.AreEqual(SingleUserResponse, ctx.RawResult);
         }
 
         [TestMethod]
@@ -70,7 +82,7 @@ namespace LinqToTwitterPcl.Tests.FriendshipTests
         }
 
         [TestMethod]
-        public async Task DestroyFriendshipTest()
+        public async Task DestroyFriendshipAsync_WithValidScreenName_Succeeds()
         {
             const string ScreenName = "JoeMayo";
             string expectedName = "Joe Mayo";
@@ -79,6 +91,17 @@ namespace LinqToTwitterPcl.Tests.FriendshipTests
             User actual = await ctx.DestroyFriendshipAsync(ScreenName);
 
             Assert.AreEqual(expectedName, actual.Name);
+        }
+
+        [TestMethod]
+        public async Task DestroyFriendshipAsync_WithRawResult_Succeeds()
+        {
+            const string ScreenName = "JoeMayo";
+            InitializeTwitterContext<User>(SingleUserResponse);
+
+            await ctx.DestroyFriendshipAsync(ScreenName);
+
+            Assert.AreEqual(SingleUserResponse, ctx.RawResult);
         }
 
         [TestMethod]
@@ -118,7 +141,7 @@ namespace LinqToTwitterPcl.Tests.FriendshipTests
         }
 
         [TestMethod]
-        public async Task UpdateFriendshipSettings_Calls_Execute()
+        public async Task UpdateFriendshipSettingsAsync_Calls_Execute()
         {
             InitializeTwitterContext<Friendship>(RelationshipResponse);
 
@@ -128,6 +151,16 @@ namespace LinqToTwitterPcl.Tests.FriendshipTests
                 "https://api.twitter.com/1.1/friendships/update.json",
                 It.IsAny<Dictionary<string, string>>()),
                 Times.Once());
+        }
+
+        [TestMethod]
+        public async Task UpdateFriendshipSettingsAsync_WithRawResult_Succeeds()
+        {
+            InitializeTwitterContext<Friendship>(RelationshipResponse);
+
+            await ctx.UpdateFriendshipSettingsAsync("Linq2Tweeter", true, true);
+
+            Assert.AreEqual(RelationshipResponse, ctx.RawResult);
         }
 
         [TestMethod]

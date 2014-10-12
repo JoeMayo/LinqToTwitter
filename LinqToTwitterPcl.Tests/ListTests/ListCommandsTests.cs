@@ -56,7 +56,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
         }
 
         [TestMethod]
-        public async Task CreateList_Invokes_Executor_Execute()
+        public async Task CreateListAsync_Invokes_Executor_Execute()
         {
             InitializeTwitterContext();
             var parameters = new Dictionary<string, string>
@@ -73,6 +73,16 @@ namespace LinqToTwitterPcl.Tests.ListTests
                     "https://api.twitter.com/1.1/lists/create.json",
                     parameters),
                 Times.Once());
+        }
+
+        [TestMethod]
+        public async Task CreateListAsync_WithRawResult_Succeeds()
+        {
+            InitializeTwitterContext();
+
+            await ctx.CreateListAsync("test", "public", "desc");
+
+            Assert.AreEqual(TestStatusQueryResponse, ctx.RawResult);
         }
 
         [TestMethod]
@@ -98,7 +108,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
         }
 
         [TestMethod]
-        public async Task UpdateList_Invokes_Executor_Execute()
+        public async Task UpdateListAsync_Invokes_Executor_Execute()
         {
             InitializeTwitterContext();
             var parameters = new Dictionary<string, string>
@@ -119,6 +129,16 @@ namespace LinqToTwitterPcl.Tests.ListTests
                     "https://api.twitter.com/1.1/lists/update.json",
                     parameters),
                 Times.Once());
+        }
+
+        [TestMethod]
+        public async Task UpdateListAsync_WithRawResult_Succeeds()
+        {
+            InitializeTwitterContext();
+
+            await ctx.UpdateListAsync(123, "test", "Test List", 456, "JoeMayo", "public", "desc");
+
+            Assert.AreEqual(TestStatusQueryResponse, ctx.RawResult);
         }
 
         [TestMethod]
@@ -144,7 +164,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
         }
 
         [TestMethod]
-        public async Task DeleteList_Works_With_Slug_And_OwnerID()
+        public async Task DeleteListAsync_Works_With_Slug_And_OwnerID()
         {
             InitializeTwitterContext();
 
@@ -152,7 +172,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
         }
 
         [TestMethod]
-        public async Task DeleteList_Works_With_ListID_Only()
+        public async Task DeleteListAsync_Works_With_ListID_Only()
         {
             InitializeTwitterContext();
 
@@ -160,7 +180,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
         }
 
         [TestMethod]
-        public async Task DeleteList_Invokes_Executor_Execute()
+        public async Task DeleteListAsync_Invokes_Executor_Execute()
         {
             InitializeTwitterContext();
             var parameters = new Dictionary<string, string>
@@ -178,6 +198,16 @@ namespace LinqToTwitterPcl.Tests.ListTests
                     "https://api.twitter.com/1.1/lists/destroy.json",
                     parameters),
                 Times.Once());
+        }
+
+        [TestMethod]
+        public async Task DeleteListAsync_WithRawResult_Succeeds()
+        {
+            InitializeTwitterContext();
+
+            await ctx.DeleteListAsync(123, "test", 456, "JoeMayo");
+
+            Assert.AreEqual(TestStatusQueryResponse, ctx.RawResult);
         }
 
         [TestMethod]
@@ -214,7 +244,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
         }
 
         [TestMethod]
-        public async Task AddMemberToList_Invokes_Executor_Execute()
+        public async Task AddMemberToListAsync_Invokes_Executor_Execute()
         {
             InitializeTwitterContext();
             var parameters = new Dictionary<string, string>
@@ -233,6 +263,16 @@ namespace LinqToTwitterPcl.Tests.ListTests
                     "https://api.twitter.com/1.1/lists/members/create.json",
                     parameters),
                 Times.Once());
+        }
+
+        [TestMethod]
+        public async Task AddMemberToListAsync_WithRawResult_Succeeds()
+        {
+            InitializeTwitterContext();
+
+            await ctx.AddMemberToListAsync("JoeMayo", 123, "test", 456, "JoeMayo");
+
+            Assert.AreEqual(TestStatusQueryResponse, ctx.RawResult);
         }
 
         [TestMethod]
@@ -292,7 +332,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
         }
 
         [TestMethod]
-        public async Task AddMemberRangeToList_For_ScreenNames_Invokes_Executor_Execute()
+        public async Task AddMemberRangeToListAsync_For_ScreenNames_Invokes_Executor_Execute()
         {
             InitializeTwitterContext();
             var parameters = new Dictionary<string, string>
@@ -312,6 +352,17 @@ namespace LinqToTwitterPcl.Tests.ListTests
                     "https://api.twitter.com/1.1/lists/members/create_all.json",
                     parameters),
                 Times.Once());
+        }
+
+        [TestMethod]
+        public async Task AddMemberRangeToListAsync_WithRawResult_Succeeds()
+        {
+            InitializeTwitterContext();
+            var screenNames = new List<string> { "JoeMayo", "Linq2Tweeter", "SomeOneElse" };
+
+            await ctx.AddMemberRangeToListAsync(123, "test", 456, "JoeMayo", screenNames);
+
+            Assert.AreEqual(TestStatusQueryResponse, ctx.RawResult);
         }
 
         [TestMethod]
@@ -349,7 +400,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
         }
 
         [TestMethod]
-        public async Task AddMemberRangeToList_For_UserIDs_Invokes_Executor_Execute()
+        public async Task AddMemberRangeToListAsync_For_UserIDs_Invokes_Executor_Execute()
         {
             InitializeTwitterContext();
             var parameters = new Dictionary<string, string>
@@ -405,7 +456,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
         }
 
         [TestMethod]
-        public async Task DeleteMemberFromList_Invokes_Executor_Execute()
+        public async Task DeleteMemberFromListAsync_Invokes_Executor_Execute()
         {
             InitializeTwitterContext();
             var parameters = new Dictionary<string, string>
@@ -425,6 +476,16 @@ namespace LinqToTwitterPcl.Tests.ListTests
                     "https://api.twitter.com/1.1/lists/members/destroy.json",
                     parameters),
                 Times.Once());
+        }
+
+        [TestMethod]
+        public async Task DeleteMemberFromListAsync_WithRawResult_Succeeds()
+        {
+            InitializeTwitterContext();
+
+            await ctx.DeleteMemberFromListAsync(789, "JoeMayo", 123, "test", 456, "JoeMayo");
+
+            Assert.AreEqual(TestStatusQueryResponse, ctx.RawResult);
         }
 
         [TestMethod]
@@ -450,7 +511,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
         }
 
         [TestMethod]
-        public async Task SubscribeToList_Invokes_Executor_Execute()
+        public async Task SubscribeToListAsync_Invokes_Executor_Execute()
         {
             InitializeTwitterContext();
             var parameters = new Dictionary<string, string>
@@ -468,6 +529,16 @@ namespace LinqToTwitterPcl.Tests.ListTests
                     "https://api.twitter.com/1.1/lists/subscribers/create.json",
                     parameters),
                 Times.Once());
+        }
+
+        [TestMethod]
+        public async Task SubscribeToListAsync_WithRawResult_Succeeds()
+        {
+            InitializeTwitterContext();
+
+            await ctx.SubscribeToListAsync(123, "test", 456, "JoeMayo");
+
+            Assert.AreEqual(TestStatusQueryResponse, ctx.RawResult);
         }
 
         [TestMethod]
@@ -493,7 +564,7 @@ namespace LinqToTwitterPcl.Tests.ListTests
         }
 
         [TestMethod]
-        public async Task UnsubscribeFromList_Invokes_Executor_Execute()
+        public async Task UnsubscribeFromListAsync_Invokes_Executor_Execute()
         {
             InitializeTwitterContext();
             var parameters = new Dictionary<string, string>
@@ -514,7 +585,17 @@ namespace LinqToTwitterPcl.Tests.ListTests
         }
 
         [TestMethod]
-        public async Task DestroyAllFromList_Invokes_Executor_Execute()
+        public async Task UnsubscribeFromListAsync_WithRawResult_Succeeds()
+        {
+            InitializeTwitterContext();
+
+            await ctx.UnsubscribeFromListAsync(123, "test", 456, "JoeMayo");
+
+            Assert.AreEqual(TestStatusQueryResponse, ctx.RawResult);
+        }
+
+        [TestMethod]
+        public async Task DestroyAllFromListAsync_Invokes_Executor_Execute()
         {
             InitializeTwitterContext();
             var userIDs = new List<ulong> { 456 };
@@ -534,6 +615,17 @@ namespace LinqToTwitterPcl.Tests.ListTests
                     "https://api.twitter.com/1.1/lists/members/destroy_all.json",
                     parameters),
                 Times.Once());
+        }
+
+        [TestMethod]
+        public async Task DestroyAllFromListAsync_WithRawResult_Succeeds()
+        {
+            InitializeTwitterContext();
+            var userIDs = new List<ulong> { 456 };
+
+            await ctx.DeleteMemberRangeFromListAsync(123, "test", userIDs, 789, "JoeMayo");
+
+            Assert.AreEqual(TestStatusQueryResponse, ctx.RawResult);
         }
 
         [TestMethod]
@@ -567,6 +659,17 @@ namespace LinqToTwitterPcl.Tests.ListTests
             var userIDs = new List<ulong> { 1, 2, 3 };
 
             await ctx.DeleteMemberRangeFromListAsync(1, "slug", userIDs, 0, null);
+        }
+
+        [TestMethod]
+        public async Task DeleteMemberRangeFromListAsync_WithRawResult_Succeeds()
+        {
+            InitializeTwitterContext();
+            var userIDs = new List<ulong> { 1, 2, 3 };
+
+            await ctx.DeleteMemberRangeFromListAsync(1, "slug", userIDs, 0, null);
+
+            Assert.AreEqual(TestStatusQueryResponse, ctx.RawResult);
         }
 
         const string TestStatusQueryResponse = @"{

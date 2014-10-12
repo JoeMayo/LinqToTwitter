@@ -21,7 +21,7 @@ namespace LinqToTwitter
 
             var reqProc = new SavedSearchRequestProcessor<SavedSearch>();
 
-            var resultsJson =
+            RawResult =
                 await TwitterExecutor.PostToTwitterAsync<SavedSearch>(
                     savedSearchUrl,
                     new Dictionary<string, string>
@@ -30,7 +30,7 @@ namespace LinqToTwitter
                     })
                     .ConfigureAwait(false);
 
-            return reqProc.ProcessActionResult(resultsJson, SavedSearchAction.Create);
+            return reqProc.ProcessActionResult(RawResult, SavedSearchAction.Create);
         }
 
         /// <summary>
@@ -48,13 +48,13 @@ namespace LinqToTwitter
 
             var reqProc = new SavedSearchRequestProcessor<SavedSearch>();
 
-            var resultsJson =
+            RawResult =
                 await TwitterExecutor.PostToTwitterAsync<SavedSearch>(
                     savedSearchUrl,
                     new Dictionary<string, string>())
                     .ConfigureAwait(false);
 
-            SavedSearch result = reqProc.ProcessActionResult(resultsJson, SavedSearchAction.Destroy);
+            SavedSearch result = reqProc.ProcessActionResult(RawResult, SavedSearchAction.Destroy);
             result.ID = id;
 
             return result;

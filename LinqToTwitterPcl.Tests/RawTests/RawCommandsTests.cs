@@ -26,7 +26,7 @@ namespace LinqToTwitterPcl.Tests.RawTests
             execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.Authorizer).Returns(authMock.Object);
             var tcsResponse = new TaskCompletionSource<string>();
-            tcsResponse.SetResult("{}");
+            tcsResponse.SetResult(EmptyRawResponse);
             execMock.Setup(
                 exec => exec.PostToTwitterAsync<Raw>(
                     It.IsAny<string>(),
@@ -44,7 +44,7 @@ namespace LinqToTwitterPcl.Tests.RawTests
         }
 
         [TestMethod]
-        public async Task ExecuteRawRequest_Invokes_Executor_Execute()
+        public async Task ExecuteRawAsync_Invokes_Executor_Execute()
         {
             InitializeTwitterContext();
             const string QueryString = "statuses/update.json";
@@ -60,6 +60,21 @@ namespace LinqToTwitterPcl.Tests.RawTests
                     "https://api.twitter.com/1.1/statuses/update.json",
                     parameters),
                 Times.Once());
+        }
+
+        [TestMethod]
+        public async Task ExecuteRawAsync_WithRawResultProperty_Succeeds()
+        {
+            InitializeTwitterContext();
+            const string QueryString = "statuses/update.json";
+            var parameters = new Dictionary<string, string>
+            {
+                { "status", "Testing" }
+            };
+
+            await ctx.ExecuteRawAsync(QueryString, parameters);
+
+            Assert.AreEqual(EmptyRawResponse, ctx.RawResult);
         }
 
         [TestMethod]
@@ -119,5 +134,7 @@ namespace LinqToTwitterPcl.Tests.RawTests
                     FullUrl,
                     parameters), Times.Once());
         }
+
+        const string EmptyRawResponse = "{}";
     }
 }

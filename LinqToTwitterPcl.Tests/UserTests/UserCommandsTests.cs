@@ -45,7 +45,7 @@ namespace LinqToTwitterPcl.Tests.AccountTests
         }
 
         [TestMethod]
-        public async Task ReprtSpamAsync_ScreenName_Invokes_Executor_Execute()
+        public async Task ReportSpamAsync_ScreenName_Invokes_Executor_Execute()
         {
             const string ScreenName = "twitterapi";
             var ctx = InitTwitterContextWithPostToTwitter<User>(SingleUserResponse);
@@ -61,7 +61,18 @@ namespace LinqToTwitterPcl.Tests.AccountTests
         }
 
         [TestMethod]
-        public async Task ReprtSpamAsync_UserID_Invokes_Executor_Execute()
+        public async Task ReportSpamAsync_WithRawResponse_Succeeds()
+        {
+            const string ScreenName = "twitterapi";
+            var ctx = InitTwitterContextWithPostToTwitter<User>(SingleUserResponse);
+
+            await ctx.ReportSpamAsync(ScreenName);
+
+            Assert.AreEqual(SingleUserResponse, ctx.RawResult);
+        }
+
+        [TestMethod]
+        public async Task ReportSpamAsync_UserID_Invokes_Executor_Execute()
         {
             const string ScreenName = "twitterapi";
             var ctx = InitTwitterContextWithPostToTwitter<User>(SingleUserResponse);
@@ -77,7 +88,7 @@ namespace LinqToTwitterPcl.Tests.AccountTests
         }
 
         [TestMethod]
-        public async Task ReprtSpamAsync_Throws_On_Null_ScreenName()
+        public async Task ReportSpamAsync_Throws_On_Null_ScreenName()
         {
             const string ExpectedParamName = "screenName";
             var ctx = InitTwitterContextWithPostToTwitter<User>(SingleUserResponse);
@@ -89,7 +100,7 @@ namespace LinqToTwitterPcl.Tests.AccountTests
         }
 
         [TestMethod]
-        public async Task ReprtSpamAsync_Throws_On_Zero_UserID()
+        public async Task ReportSpamAsync_Throws_On_Zero_UserID()
         {
             const string ExpectedParamName = "userID";
             var ctx = InitTwitterContextWithPostToTwitter<User>(SingleUserResponse);

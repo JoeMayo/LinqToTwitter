@@ -54,7 +54,7 @@ namespace LinqToTwitter
 
             var reqProc = new UserRequestProcessor<User>();
 
-            var resultsJson =
+            RawResult =
                 await TwitterExecutor.PostToTwitterAsync<User>(
                     accountUrl,
                     new Dictionary<string, string>
@@ -69,7 +69,7 @@ namespace LinqToTwitter
                     })
                     .ConfigureAwait(false);
 
-            return reqProc.ProcessActionResult(resultsJson, UserAction.SingleUser);
+            return reqProc.ProcessActionResult(RawResult, UserAction.SingleUser);
         }
 
         /// <summary>
@@ -121,9 +121,9 @@ namespace LinqToTwitter
             string name = "image";
             string imageMimeType = "image/" + imageType;
 
-            var resultsJson = await TwitterExecutor.PostMediaAsync(accountUrl, parameters, image, name, fileName, imageMimeType).ConfigureAwait(false);
+            RawResult = await TwitterExecutor.PostMediaAsync(accountUrl, parameters, image, name, fileName, imageMimeType).ConfigureAwait(false);
 
-            return reqProc.ProcessActionResult(resultsJson, UserAction.SingleUser);
+            return reqProc.ProcessActionResult(RawResult, UserAction.SingleUser);
         }
 
         /// <summary>
@@ -182,9 +182,9 @@ namespace LinqToTwitter
             string name = "image";
             string imageMimeType = "image/" + imageType;
 
-            var resultsJson = await TwitterExecutor.PostMediaAsync(accountUrl, parameters, image, name, fileName, imageMimeType).ConfigureAwait(false);
+            RawResult = await TwitterExecutor.PostMediaAsync(accountUrl, parameters, image, name, fileName, imageMimeType).ConfigureAwait(false);
 
-            return reqProc.ProcessActionResult(resultsJson, UserAction.SingleUser);
+            return reqProc.ProcessActionResult(RawResult, UserAction.SingleUser);
         }
 
         /// <summary>
@@ -235,7 +235,7 @@ namespace LinqToTwitter
 
             var reqProc = new UserRequestProcessor<User>();
 
-            var resultsJson =
+            RawResult =
                 await TwitterExecutor.PostToTwitterAsync<User>(
                     accountUrl,
                     new Dictionary<string, string>
@@ -249,7 +249,7 @@ namespace LinqToTwitter
                     })
                     .ConfigureAwait(false);
 
-            return reqProc.ProcessActionResult(resultsJson, UserAction.SingleUser);
+            return reqProc.ProcessActionResult(RawResult, UserAction.SingleUser);
         }
 
         /// <summary>
@@ -290,13 +290,13 @@ namespace LinqToTwitter
             if (endSleepTime != null)
                 parameters.Add("end_sleep_time", endSleepTime.ToString());
 
-            var resultsJson =
+            RawResult =
                 await TwitterExecutor.PostToTwitterAsync<Account>(
                     accountUrl,
                     parameters)
                     .ConfigureAwait(false);
 
-            return reqProc.ProcessActionResult(resultsJson, AccountAction.Settings);
+            return reqProc.ProcessActionResult(RawResult, AccountAction.Settings);
         }
 
         /// <summary>
@@ -319,13 +319,13 @@ namespace LinqToTwitter
             if (includeEntitites != null)
                 parameters.Add("include_entities", includeEntitites.ToString().ToLower());
 
-            var resultsJson =
+            RawResult =
                 await TwitterExecutor.PostToTwitterAsync<Account>(
                     accountUrl,
                     parameters)
                     .ConfigureAwait(false);
 
-            return reqProc.ProcessActionResult(resultsJson, AccountAction.Settings);
+            return reqProc.ProcessActionResult(RawResult, AccountAction.Settings);
         }
 
         /// <summary>
@@ -384,9 +384,9 @@ namespace LinqToTwitter
             string name = "banner";
             string imageMimeType = "image/" + imageType;
 
-            var resultsJson = await TwitterExecutor.PostMediaAsync(accountUrl, parameters, banner, name, fileName, imageMimeType).ConfigureAwait(false);
+            RawResult = await TwitterExecutor.PostMediaAsync(accountUrl, parameters, banner, name, fileName, imageMimeType).ConfigureAwait(false);
 
-            return reqProc.ProcessActionResult(resultsJson, UserAction.SingleUser);
+            return reqProc.ProcessActionResult(RawResult, UserAction.SingleUser);
         }
 
         /// <summary>
@@ -399,13 +399,13 @@ namespace LinqToTwitter
 
             var reqProc = new UserRequestProcessor<User>();
 
-            var resultsJson =
+            RawResult =
                 await TwitterExecutor.PostToTwitterAsync<User>(
                     accountUrl,
                     new Dictionary<string, string>())
                     .ConfigureAwait(false);
 
-            return reqProc.ProcessActionResult(resultsJson, UserAction.SingleUser);
+            return reqProc.ProcessActionResult(RawResult, UserAction.SingleUser);
         }
     }
 }

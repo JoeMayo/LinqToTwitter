@@ -33,13 +33,13 @@ namespace LinqToTwitter
 
             var reqProc = new FriendshipRequestProcessor<User>();
 
-            var resultsJson =
+            RawResult =
                 await TwitterExecutor.PostToTwitterAsync<User>(
                     destroyUrl,
                     createParams)
                     .ConfigureAwait(false);
 
-            return reqProc.ProcessActionResult(resultsJson, FriendshipAction.Create);
+            return reqProc.ProcessActionResult(RawResult, FriendshipAction.Create);
         }
 
         /// <summary>
@@ -68,13 +68,13 @@ namespace LinqToTwitter
 
             var reqProc = new FriendshipRequestProcessor<User>();
 
-            var resultsJson =
+            RawResult =
                 await TwitterExecutor.PostToTwitterAsync<User>(
                     destroyUrl,
                     createParams)
                     .ConfigureAwait(false);
 
-            return reqProc.ProcessActionResult(resultsJson, FriendshipAction.Create);
+            return reqProc.ProcessActionResult(RawResult, FriendshipAction.Create);
         }
 
         /// <summary>
@@ -91,7 +91,7 @@ namespace LinqToTwitter
 
             var reqProc = new FriendshipRequestProcessor<User>();
 
-            var resultsJson =
+            RawResult =
                 await TwitterExecutor.PostToTwitterAsync<User>(
                     destroyUrl,
                     new Dictionary<string, string>
@@ -100,7 +100,7 @@ namespace LinqToTwitter
                     })
                     .ConfigureAwait(false);
 
-            return reqProc.ProcessActionResult(resultsJson, FriendshipAction.Destroy);
+            return reqProc.ProcessActionResult(RawResult, FriendshipAction.Destroy);
         }
 
         /// <summary>
@@ -117,7 +117,7 @@ namespace LinqToTwitter
 
             var reqProc = new FriendshipRequestProcessor<User>();
 
-            var resultsJson =
+            RawResult =
                 await TwitterExecutor.PostToTwitterAsync<User>(
                     destroyUrl,
                     new Dictionary<string, string>
@@ -126,7 +126,7 @@ namespace LinqToTwitter
                     })
                     .ConfigureAwait(false);
 
-            return reqProc.ProcessActionResult(resultsJson, FriendshipAction.Destroy);
+            return reqProc.ProcessActionResult(RawResult, FriendshipAction.Destroy);
         }
 
         /// <summary>
@@ -183,13 +183,13 @@ namespace LinqToTwitter
 
             var reqProc = new FriendshipRequestProcessor<Friendship>();
 
-            var resultsJson =
+            RawResult =
                 await TwitterExecutor.PostToTwitterAsync<Friendship>(
                     updateUrl,
                     parms)
                     .ConfigureAwait(false);
 
-            return reqProc.ProcessActionResult(resultsJson, FriendshipAction.Update);
+            return reqProc.ProcessActionResult(RawResult, FriendshipAction.Update);
         }
     }
 }

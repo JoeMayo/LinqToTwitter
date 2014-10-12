@@ -48,13 +48,13 @@ namespace LinqToTwitter
         {
             string reportSpamUrl = BaseUrl + "users/report_spam.json";
 
-            string resultsJson =
+            RawResult =
                 await TwitterExecutor
                     .PostToTwitterAsync<User>(reportSpamUrl, reportParams)
                     .ConfigureAwait(false);
 
             return new UserRequestProcessor<User>()
-                .ProcessActionResult(resultsJson, StatusAction.SingleStatus);
+                .ProcessActionResult(RawResult, StatusAction.SingleStatus);
         }
     }
 }

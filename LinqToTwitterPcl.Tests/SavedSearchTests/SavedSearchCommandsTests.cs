@@ -48,7 +48,7 @@ namespace LinqToTwitterPcl.Tests.SavedSearchTests
         }
 
         [TestMethod]
-        public async Task CreateSavedSearch_Invokes_Executor_Execute()
+        public async Task CreateSavedSearchAsync_Invokes_Executor_Execute()
         {
             const string Query = "#LinqToTwitter";
             TwitterContext ctx = InitializeTwitterContextMock();
@@ -79,6 +79,24 @@ namespace LinqToTwitterPcl.Tests.SavedSearchTests
         }
 
         [TestMethod]
+        public async Task CreateSavedSearchAsync_WithRawResult_Succeeds()
+        {
+            TwitterContext ctx = InitializeTwitterContextMock();
+            var tcsResponse = new TaskCompletionSource<string>();
+            tcsResponse.SetResult(SavedSearchResponse);
+            execMock.SetupGet(exec => exec.Authorizer).Returns(authMock.Object);
+            execMock.Setup(exec =>
+                exec.PostToTwitterAsync<SavedSearch>(
+                    It.IsAny<string>(),
+                    It.IsAny<IDictionary<string, string>>()))
+                .Returns(tcsResponse.Task);
+
+            await ctx.CreateSavedSearchAsync("#LinqToTwitter");
+
+            Assert.AreEqual(SavedSearchResponse, ctx.RawResult);
+        }
+
+        [TestMethod]
         public async Task DestroySavedSearch_Throws_On_Invalid_ID()
         {
             TwitterContext ctx = InitializeTwitterContextMock();
@@ -90,7 +108,7 @@ namespace LinqToTwitterPcl.Tests.SavedSearchTests
         }
 
         [TestMethod]
-        public async Task DestroySavedSearch_Invokes_Executor_Execute()
+        public async Task DestroySavedSearchAsync_Invokes_Executor_Execute()
         {
             TwitterContext ctx = InitializeTwitterContextMock();
             var tcsResponse = new TaskCompletionSource<string>();
@@ -114,6 +132,24 @@ namespace LinqToTwitterPcl.Tests.SavedSearchTests
             Assert.IsNotNull(search);
             Assert.AreEqual("#LinqToTwitter", search.Name);
             Assert.AreEqual(123ul, search.ID);
+        }
+
+        [TestMethod]
+        public async Task DestroySavedSearchAsync_WithRawResult_Succeeds()
+        {
+            TwitterContext ctx = InitializeTwitterContextMock();
+            var tcsResponse = new TaskCompletionSource<string>();
+            tcsResponse.SetResult(SavedSearchResponse);
+            execMock.SetupGet(exec => exec.Authorizer).Returns(authMock.Object);
+            execMock.Setup(exec =>
+                exec.PostToTwitterAsync<SavedSearch>(
+                    It.IsAny<string>(),
+                    It.IsAny<IDictionary<string, string>>()))
+                .Returns(tcsResponse.Task);
+
+            await ctx.DestroySavedSearchAsync(123);
+
+            Assert.AreEqual(SavedSearchResponse, ctx.RawResult);
         }
 
         const string SavedSearchResponse = @"{

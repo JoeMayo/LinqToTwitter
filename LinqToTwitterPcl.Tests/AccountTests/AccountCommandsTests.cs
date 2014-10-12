@@ -50,7 +50,7 @@ namespace LinqToTwitterPcl.Tests.AccountTests
         }
 
         [TestMethod]
-        public async Task UpdateAccountProfile_Invokes_Executor_Execute()
+        public async Task UpdateAccountProfileAsync_Invokes_Executor_Execute()
         {
             const string ExpectedName = "Twitter API";
             const string Name = "Twitter API";
@@ -68,6 +68,21 @@ namespace LinqToTwitterPcl.Tests.AccountTests
                     It.IsAny<Dictionary<string, string>>()),
                 Times.Once());
             Assert.AreEqual(ExpectedName, actual.Name);
+        }
+
+        [TestMethod]
+        public async Task UpdateAccountProfileAsync_WithRawResult_Succeeds()
+        {
+            const string Name = "Twitter API";
+            const string Url = "http://www.csharp-station.com";
+            const string Location = "San Francisco, CA";
+            const string Description = "The Real Twitter API.";
+            const bool SkipStatus = true;
+            var ctx = InitTwitterContextWithPostToTwitter<User>(SingleUserResponse);
+
+            await ctx.UpdateAccountProfileAsync(Name, Url, Location, Description, true, SkipStatus);
+
+            Assert.AreEqual(SingleUserResponse, ctx.RawResult);
         }
 
         [TestMethod]
@@ -172,6 +187,17 @@ namespace LinqToTwitterPcl.Tests.AccountTests
         }
 
         [TestMethod]
+        public async Task UpdateAccountImageAsync_WithRawResult_Succeeds()
+        {
+            const bool SkipStatus = true;
+            var ctx = InitTwitterContextWithPostToTwitter<User>(SingleUserResponse);
+
+            await ctx.UpdateAccountImageAsync(new byte[] { 1 }, "myFile.jpg", "jpg", SkipStatus);
+
+            Assert.AreEqual(SingleUserResponse, ctx.RawResult);
+        }
+
+        [TestMethod]
         public async Task UpdateAccountImageAsync_Throws_On_Empty_Image()
         {
             const string ExpectedParamName = "image";
@@ -198,7 +224,7 @@ namespace LinqToTwitterPcl.Tests.AccountTests
         }
 
         [TestMethod]
-        public async Task UpdateAccountColors_Invokes_Executor_Execute()
+        public async Task UpdateAccountColorsAsync_Invokes_Executor_Execute()
         {
             const string Background = "9ae4e8";
             const string Text = "#000000";
@@ -217,6 +243,22 @@ namespace LinqToTwitterPcl.Tests.AccountTests
                     It.IsAny<Dictionary<string, string>>()),
                 Times.Once());
             Assert.AreEqual(expectedName, actual.Name);
+        }
+
+        [TestMethod]
+        public async Task UpdateAccountColorsAsync_WithRawResult_Succeeds()
+        {
+            const string Background = "9ae4e8";
+            const string Text = "#000000";
+            const string Link = "#0000ff";
+            const string SidebarFill = "#e0ff92";
+            const string SidebarBorder = "#87bc44";
+            const bool SkipStatus = true;
+            var ctx = InitTwitterContextWithPostToTwitter<User>(SingleUserResponse);
+
+            await ctx.UpdateAccountColorsAsync(Background, Text, Link, SidebarFill, SidebarBorder, true, SkipStatus);
+
+            Assert.AreEqual(SingleUserResponse, ctx.RawResult);
         }
 
         [TestMethod]
@@ -248,7 +290,7 @@ namespace LinqToTwitterPcl.Tests.AccountTests
         }
 
         [TestMethod]
-        public async Task UpdateAccountBackgroundImage_Invokes_Executor_PostTwitterFile()
+        public async Task UpdateAccountBackgroundImageAsync_Invokes_Executor_PostTwitterFile()
         {
             const bool Tile = false;
             const bool Use = false;
@@ -267,6 +309,20 @@ namespace LinqToTwitterPcl.Tests.AccountTests
                     It.IsAny<string>(),
                     It.IsAny<string>()),
                 Times.Once());
+        }
+
+        [TestMethod]
+        public async Task UpdateAccountBackgroundImageAsync_WithRawResult_Succeeds()
+        {
+            const bool Tile = false;
+            const bool Use = false;
+            const bool SkipStatus = true;
+            var ctx = InitTwitterContextWithPostToTwitter<User>(SingleUserResponse);
+
+            await ctx.UpdateAccountBackgroundImageAsync(
+                new byte[] { 1 }, "image.png", "png", Tile, Use, true, SkipStatus);
+
+            Assert.AreEqual(SingleUserResponse, ctx.RawResult);
         }
 
         [TestMethod]
@@ -302,7 +358,7 @@ namespace LinqToTwitterPcl.Tests.AccountTests
         }
 
         [TestMethod]
-        public async Task UpdateAccountSettings_Invokes_Executor_Execute()
+        public async Task UpdateAccountSettingsAsync_Invokes_Executor_Execute()
         {
             var ctx = InitTwitterContextWithPostToTwitter<Account>(SettingsResponse);
             var parameters = new Dictionary<string, string>
@@ -329,6 +385,16 @@ namespace LinqToTwitterPcl.Tests.AccountTests
         }
 
         [TestMethod]
+        public async Task UpdateAccountSettingsAsync_WithRawResult_Succeeds()
+        {
+            var ctx = InitTwitterContextWithPostToTwitter<Account>(SettingsResponse);
+
+            await ctx.UpdateAccountSettingsAsync(1, true, 20, 6, "MST", "en");
+
+            Assert.AreEqual(SettingsResponse, ctx.RawResult);
+        }
+
+        [TestMethod]
         public async Task UpdateAccountSettingsAsync_Throws_On_No_Input()
         {
             const string ExpectedParamName = "NoInput";
@@ -341,7 +407,7 @@ namespace LinqToTwitterPcl.Tests.AccountTests
         }
 
         [TestMethod]
-        public async Task UpdateDeliveryDevice_Invokes_Executor_Execute()
+        public async Task UpdateDeliveryDeviceAsync_Invokes_Executor_Execute()
         {
             var ctx = InitTwitterContextWithPostToTwitter<Account>(SettingsResponse);
             var parameters = new Dictionary<string, string>
@@ -363,7 +429,17 @@ namespace LinqToTwitterPcl.Tests.AccountTests
         }
 
         [TestMethod]
-        public async Task UpdateProfileBanner_Invokes_Executor_Execute()
+        public async Task UpdateDeliveryDeviceAsync_WithRawResult_Succeds()
+        {
+            var ctx = InitTwitterContextWithPostToTwitter<Account>(SettingsResponse);
+
+            await ctx.UpdateDeliveryDeviceAsync(DeviceType.Sms, true);
+
+            Assert.AreEqual(SettingsResponse, ctx.RawResult);
+        }
+
+        [TestMethod]
+        public async Task UpdateProfileBannerAsync_Invokes_Executor_Execute()
         {
             const string ExpectedProfileBannerUrl = "https://si0.twimg.com/profile_images/1438634086/avatar_normal.png";
             byte[] banner = new byte[]{ 1, 2, 3 };
@@ -385,6 +461,19 @@ namespace LinqToTwitterPcl.Tests.AccountTests
             Assert.IsNotNull(actual);
             Assert.IsNotNull(actual.ProfileBannerUrl);
             Assert.AreEqual(ExpectedProfileBannerUrl, actual.ProfileBannerUrl);
+        }
+
+        [TestMethod]
+        public async Task UpdateProfileBannerAsync_WithRawResult_Succeeds()
+        {
+            byte[] banner = new byte[] { 1, 2, 3 };
+            const string FileName = "MyImage.png";
+            const string FileType = "png";
+            var ctx = InitTwitterContextWithPostToTwitter<User>(SingleUserResponse);
+
+            await ctx.UpdateProfileBannerAsync(banner, FileName, FileType);
+
+            Assert.AreEqual(SingleUserResponse, ctx.RawResult);
         }
 
         [TestMethod]
@@ -478,7 +567,7 @@ namespace LinqToTwitterPcl.Tests.AccountTests
         }
 
         [TestMethod]
-        public async Task RemoveProfileBanner_Invokes_Executor_Execute()
+        public async Task RemoveProfileBannerAsync_Invokes_Executor_Execute()
         {
             var ctx = InitTwitterContextWithPostToTwitter<User>(SingleUserResponse);
 
@@ -490,6 +579,16 @@ namespace LinqToTwitterPcl.Tests.AccountTests
                     It.IsAny<Dictionary<string, string>>()),
                 Times.Once());
             Assert.IsNotNull(actual);
+        }
+
+        [TestMethod]
+        public async Task RemoveProfileBannerAsync_WithRawResult_Succeeds()
+        {
+            var ctx = InitTwitterContextWithPostToTwitter<User>(SingleUserResponse);
+
+            await ctx.RemoveProfileBannerAsync();
+
+            Assert.AreEqual(SingleUserResponse, ctx.RawResult);
         }
 
         const string SingleUserResponse = @"{

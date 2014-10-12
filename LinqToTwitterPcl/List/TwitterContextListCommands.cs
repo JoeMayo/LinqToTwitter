@@ -28,7 +28,7 @@ namespace LinqToTwitter
 
             var reqProc = new ListRequestProcessor<List>();
 
-            var resultsJson =
+            RawResult =
                 await TwitterExecutor.PostToTwitterAsync<List>(
                     createUrl,
                     new Dictionary<string, string>
@@ -39,7 +39,7 @@ namespace LinqToTwitter
                     })
                     .ConfigureAwait(false);
 
-            return reqProc.ProcessActionResult(resultsJson, ListAction.Create);
+            return reqProc.ProcessActionResult(RawResult, ListAction.Create);
         }
 
         /// <summary>
@@ -64,7 +64,7 @@ namespace LinqToTwitter
 
             var reqProc = new ListRequestProcessor<List>();
 
-            var resultsJson =
+            RawResult =
                 await TwitterExecutor.PostToTwitterAsync<List>(
                     updateListUrl,
                     new Dictionary<string, string>
@@ -79,7 +79,7 @@ namespace LinqToTwitter
                     })
                     .ConfigureAwait(false);
 
-            return reqProc.ProcessActionResult(resultsJson, ListAction.Update);
+            return reqProc.ProcessActionResult(RawResult, ListAction.Update);
         }
 
         /// <summary>
@@ -102,7 +102,7 @@ namespace LinqToTwitter
 
             var reqProc = new ListRequestProcessor<List>();
 
-            var resultsJson =
+            RawResult =
                 await TwitterExecutor.PostToTwitterAsync<List>(
                     deleteUrl,
                     new Dictionary<string, string>
@@ -114,7 +114,7 @@ namespace LinqToTwitter
                     })
                     .ConfigureAwait(false);
 
-            return reqProc.ProcessActionResult(resultsJson, ListAction.Delete);
+            return reqProc.ProcessActionResult(RawResult, ListAction.Delete);
         }
         
         /// <summary>
@@ -185,10 +185,10 @@ namespace LinqToTwitter
 
             var reqProc = new ListRequestProcessor<List>();
 
-            var resultsJson =
+            RawResult =
                 await TwitterExecutor.PostToTwitterAsync<List>(addMemberUrl, parameters).ConfigureAwait(false);
 
-            return reqProc.ProcessActionResult(resultsJson, ListAction.AddMember);
+            return reqProc.ProcessActionResult(RawResult, ListAction.AddMember);
         }
 
         /// <summary>
@@ -268,10 +268,10 @@ namespace LinqToTwitter
             if (!string.IsNullOrWhiteSpace(ownerScreenName))
                 parameters.Add("owner_screen_name", ownerScreenName);
 
-            var resultsJson =
+            RawResult =
                 await TwitterExecutor.PostToTwitterAsync<List>(addMemberRangeUrl, parameters).ConfigureAwait(false);
 
-            return reqProc.ProcessActionResult(resultsJson, ListAction.AddMember);
+            return reqProc.ProcessActionResult(RawResult, ListAction.AddMember);
         }
 
         /// <summary>
@@ -314,10 +314,10 @@ namespace LinqToTwitter
             if (!string.IsNullOrWhiteSpace(ownerScreenName))
                 parameters.Add("owner_screen_name", ownerScreenName);
 
-            var resultsJson =
+            RawResult =
                 await TwitterExecutor.PostToTwitterAsync<List>(deleteUrl, parameters).ConfigureAwait(false);
 
-            return reqProc.ProcessActionResult(resultsJson, ListAction.DeleteMember);
+            return reqProc.ProcessActionResult(RawResult, ListAction.DeleteMember);
         }
 
         /// <summary>
@@ -351,10 +351,10 @@ namespace LinqToTwitter
             if (!string.IsNullOrWhiteSpace(ownerScreenName))
                 parameters.Add("owner_screen_name", ownerScreenName);
 
-            var resultsJson =
+            RawResult =
                 await TwitterExecutor.PostToTwitterAsync<List>(subscribeUrl, parameters).ConfigureAwait(false);
 
-            return reqProc.ProcessActionResult(resultsJson, ListAction.Subscribe);
+            return reqProc.ProcessActionResult(RawResult, ListAction.Subscribe);
         }
 
         /// <summary>
@@ -388,10 +388,10 @@ namespace LinqToTwitter
             if (!string.IsNullOrWhiteSpace(ownerScreenName))
                 parameters.Add("owner_screen_name", ownerScreenName);
 
-            var resultsJson =
+            RawResult =
                 await TwitterExecutor.PostToTwitterAsync<List>(unsubscribeUrl, parameters).ConfigureAwait(false);
 
-            return reqProc.ProcessActionResult(resultsJson, ListAction.Unsubscribe);
+            return reqProc.ProcessActionResult(RawResult, ListAction.Unsubscribe);
         }
                 
         /// <summary>
@@ -464,10 +464,10 @@ namespace LinqToTwitter
             if (!string.IsNullOrWhiteSpace(ownerScreenName))
                 parameters.Add("owner_screen_name", ownerScreenName);
 
-            var resultsJson =
+            RawResult =
                 await TwitterExecutor.PostToTwitterAsync<List>(destroyAllUrl, parameters).ConfigureAwait(false);
 
-            return reqProc.ProcessActionResult(resultsJson, ListAction.DestroyAll);
+            return reqProc.ProcessActionResult(RawResult, ListAction.DestroyAll);
         }
     }
 }

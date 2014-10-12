@@ -434,6 +434,16 @@ namespace LinqToTwitterPcl.Tests.StatusTests
             Assert.IsTrue(tweet.Text.StartsWith("RT @scottgu: I just blogged about"));
         }
 
+        [TestMethod]
+        public async Task ReplyWithMediaAsync_WithRawResult_Succeeds()
+        {
+            await ctx.Object.ReplyWithMediaAsync(
+                inReplyToStatusID, status, possiblySensitive,
+                latitude, longitude, placeID, displayCoordinates, imageBytes);
+
+            Assert.AreEqual(SingleStatusResponse, ctx.Object.RawResult);
+        }
+
         const string SingleStatusResponse = @"{
       ""retweeted"":false,
       ""in_reply_to_screen_name"":null,

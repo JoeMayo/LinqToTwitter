@@ -80,6 +80,18 @@ namespace LinqToTwitterPcl.Tests.MuteTests
         }
 
         [TestMethod]
+        public async Task MuteAsync_WithRawResult_Succeeds()
+        {
+            const string ScreenName = "twitterapi";
+
+            var ctx = InitTwitterContextWithPostToTwitter<User>(SingleUserResponse);
+
+            await ctx.MuteAsync(ScreenName);
+
+            Assert.AreEqual(SingleUserResponse, ctx.RawResult);
+        }
+
+        [TestMethod]
         public async Task MuteAsync_ScreenName_Throws_On_Null_Input()
         {
             const string ExpectedParamName = "screenName";
@@ -136,6 +148,18 @@ namespace LinqToTwitterPcl.Tests.MuteTests
                     It.IsAny<Dictionary<string, string>>()),
                 Times.Once());
             Assert.AreEqual(ScreenName, actual.ScreenNameResponse);
+        }
+
+        [TestMethod]
+        public async Task UnMuteAsync_WithRawResult_Succeeds()
+        {
+            const string ScreenName = "twitterapi";
+
+            var ctx = InitTwitterContextWithPostToTwitter<User>(SingleUserResponse);
+
+            await ctx.UnMuteAsync(ScreenName);
+
+            Assert.AreEqual(SingleUserResponse, ctx.RawResult);
         }
 
         [TestMethod]

@@ -31,7 +31,7 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
         {
             authMock = new Mock<IAuthorizer>();
             var tcsResponse = new TaskCompletionSource<string>();
-            tcsResponse.SetResult(TestQueryResponse);
+            tcsResponse.SetResult(DirectMessageResponse);
             execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.Authorizer).Returns(authMock.Object);
             execMock.Setup(exec => exec.PostToTwitterAsync<DirectMessage>(
@@ -43,7 +43,7 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
         }
 
         [TestMethod]
-        public async Task NewDirectMessage_Returns_Created_DM()
+        public async Task NewDirectMessageAsync_Returns_Created_DM()
         {
             const string UserID = "1";
             const string Text = "Hi";
@@ -55,7 +55,19 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
         }
 
         [TestMethod]
-        public async Task NewDirectMessage_Constructs_Url()
+        public async Task NewDirectMessageAsync_WithRawResult_Succeeds()
+        {
+            const string UserID = "1";
+            const string Text = "Hi";
+            var ctx = InitializeTwitterContext();
+
+            await ctx.NewDirectMessageAsync(UserID, Text);
+
+            Assert.AreEqual(DirectMessageResponse, ctx.RawResult);
+        }
+
+        [TestMethod]
+        public async Task NewDirectMessageAsync_Constructs_Url()
         {
             const string UserID = "1";
             const string Text = "Hi";
@@ -109,7 +121,7 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
         }
 
         [TestMethod]
-        public async Task DestroyDirectMessage_Returns_Deleted_DM()
+        public async Task DestroyDirectMessageAsync_Returns_Deleted_DM()
         {
             const ulong Id = 1;
             var ctx = InitializeTwitterContext();
@@ -120,7 +132,18 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
         }
 
         [TestMethod]
-        public async Task DestroyDirectMessage_Constructs_Url()
+        public async Task DestroyDirectMessageAsync_WithRawResult_Succeeds()
+        {
+            const ulong Id = 1;
+            var ctx = InitializeTwitterContext();
+
+            await ctx.DestroyDirectMessageAsync(Id, true);
+
+            Assert.AreEqual(DirectMessageResponse, ctx.RawResult);
+        }
+
+        [TestMethod]
+        public async Task DestroyDirectMessageAsync_Constructs_Url()
         {
             const ulong Id = 1;
             var ctx = InitializeTwitterContext();
@@ -146,7 +169,7 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
             Assert.AreEqual("id", ex.ParamName);
         }
 
-        const string TestQueryResponse = @"
+        const string DirectMessageResponse = @"
    {
       ""recipient"":{
          ""id"":16761255,

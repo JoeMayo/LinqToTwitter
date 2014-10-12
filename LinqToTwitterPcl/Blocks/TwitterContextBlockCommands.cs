@@ -36,7 +36,7 @@ namespace LinqToTwitter
 
             var reqProc = new BlocksRequestProcessor<User>();
 
-            var resultsJson =
+            RawResult =
                 await TwitterExecutor.PostToTwitterAsync<User>(
                     blocksUrl,
                     new Dictionary<string, string>
@@ -48,7 +48,7 @@ namespace LinqToTwitter
                     })
                     .ConfigureAwait(false);
 
-            return reqProc.ProcessActionResult(resultsJson, UserAction.SingleUser);
+            return reqProc.ProcessActionResult(RawResult, UserAction.SingleUser);
         }
 
         /// <summary>
@@ -80,7 +80,7 @@ namespace LinqToTwitter
 
             var reqProc = new BlocksRequestProcessor<User>();
 
-            var resultsJson =
+            RawResult =
                 await TwitterExecutor.PostToTwitterAsync<User>(
                     blocksUrl,
                     new Dictionary<string, string>
@@ -92,7 +92,7 @@ namespace LinqToTwitter
                     })
                     .ConfigureAwait(false);
 
-            return reqProc.ProcessActionResult(resultsJson, UserAction.SingleUser);
+            return reqProc.ProcessActionResult(RawResult, UserAction.SingleUser);
         }
     }
 }

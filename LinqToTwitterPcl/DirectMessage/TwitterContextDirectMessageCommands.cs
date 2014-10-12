@@ -25,7 +25,7 @@ namespace LinqToTwitter
 
             var reqProc = new DirectMessageRequestProcessor<DirectMessage>();
 
-            var resultsJson =
+            RawResult =
                 await TwitterExecutor.PostToTwitterAsync<DirectMessage>(
                     newUrl,
                     new Dictionary<string, string>
@@ -35,7 +35,7 @@ namespace LinqToTwitter
                     })
                     .ConfigureAwait(false);
 
-            return reqProc.ProcessActionResult(resultsJson, DirectMessageType.Show);
+            return reqProc.ProcessActionResult(RawResult, DirectMessageType.Show);
         }
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace LinqToTwitter
 
             var reqProc = new DirectMessageRequestProcessor<DirectMessage>();
 
-            var resultsJson =
+            RawResult =
                 await TwitterExecutor.PostToTwitterAsync<DirectMessage>(
                     newUrl,
                     new Dictionary<string, string>
@@ -66,7 +66,7 @@ namespace LinqToTwitter
                     })
                     .ConfigureAwait(false);
 
-            return reqProc.ProcessActionResult(resultsJson, DirectMessageType.Show);
+            return reqProc.ProcessActionResult(RawResult, DirectMessageType.Show);
         }
 
         /// <summary>
@@ -84,7 +84,7 @@ namespace LinqToTwitter
 
             var reqProc = new DirectMessageRequestProcessor<DirectMessage>();
 
-            var resultsJson =
+            RawResult =
                 await TwitterExecutor.PostToTwitterAsync<DirectMessage>(
                     destroyUrl,
                     new Dictionary<string, string>
@@ -94,7 +94,7 @@ namespace LinqToTwitter
                     })
                     .ConfigureAwait(false);
 
-            return reqProc.ProcessActionResult(resultsJson, DirectMessageType.Show);
+            return reqProc.ProcessActionResult(RawResult, DirectMessageType.Show);
         }
     }
 }

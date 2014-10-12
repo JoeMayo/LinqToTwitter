@@ -17,7 +17,9 @@ namespace LinqToTwitter
         {
             string rawUrl = BaseUrl.TrimEnd('/') + "/" + queryString.TrimStart('/');
 
-            return await TwitterExecutor.PostToTwitterAsync<Raw>(rawUrl, parameters).ConfigureAwait(false);
+            RawResult = await TwitterExecutor.PostToTwitterAsync<Raw>(rawUrl, parameters).ConfigureAwait(false);
+
+            return RawResult;
         }
     }
 }

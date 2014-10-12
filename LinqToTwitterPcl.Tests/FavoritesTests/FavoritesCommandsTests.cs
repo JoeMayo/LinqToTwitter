@@ -42,7 +42,7 @@ namespace LinqToTwitterPcl.Tests.FavoritesTests
         }
 
         [TestMethod]
-        public async Task CreateFavoriteTest()
+        public async Task CreateFavoriteAsync_WithValidID_Succeeds()
         {
             const ulong Id = 1ul;
             const ulong ExpectedStatusID = 184835136037191681ul;
@@ -51,6 +51,17 @@ namespace LinqToTwitterPcl.Tests.FavoritesTests
             Status actual = await ctx.CreateFavoriteAsync(Id);
 
             Assert.AreEqual(ExpectedStatusID, actual.StatusID);
+        }
+
+        [TestMethod]
+        public async Task CreateFavoriteAsync_WithRawResult_Succeeds()
+        {
+            const ulong Id = 1ul;
+            var ctx = InitializeTwitterContext();
+
+            await ctx.CreateFavoriteAsync(Id);
+
+            Assert.AreEqual(SingleStatusResponse, ctx.RawResult);
         }
 
         [TestMethod]
@@ -65,7 +76,7 @@ namespace LinqToTwitterPcl.Tests.FavoritesTests
         }
 
         [TestMethod]
-        public async Task DestroyFavoriteTest()
+        public async Task DestroyFavoriteAsync_WithValidID_Succeeds()
         {
             const ulong Id = 1ul;
             const ulong ExpectedStatusID = 184835136037191681ul;
@@ -74,6 +85,18 @@ namespace LinqToTwitterPcl.Tests.FavoritesTests
             Status actual = await ctx.DestroyFavoriteAsync(Id, true);
 
             Assert.AreEqual(ExpectedStatusID, actual.StatusID);
+        }
+
+        [TestMethod]
+        public async Task DestroyFavoriteAsync_WithRawResult_Succeeds()
+        {
+            const ulong Id = 1ul;
+            const ulong ExpectedStatusID = 184835136037191681ul;
+            var ctx = InitializeTwitterContext();
+
+            await ctx.DestroyFavoriteAsync(Id, true);
+
+            Assert.AreEqual(SingleStatusResponse, ctx.RawResult);
         }
 
         [TestMethod]
