@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -165,26 +164,7 @@ namespace LinqToTwitter
             {
                 StreamingClient.Timeout = TimeSpan.FromMilliseconds(System.Threading.Timeout.Infinite);
 
-                var httpRequest = new HttpRequestMessage(HttpMethod.Post, request.Endpoint);
-
-                var parameters =
-                    string.Join("&",
-                        (from parm in request.RequestParameters
-                         select parm.Name + "=" + Url.PercentEncode(parm.Value))
-                        .ToList());                            
-                var content = new StringContent(parameters, Encoding.UTF8, "application/x-www-form-urlencoded");
-                httpRequest.Content = content;
-
-                var parms = request.RequestParameters
-                                  .ToDictionary(
-                                       key => key.Name,
-                                       val => val.Value);
-                SetAuthorizationHeader(HttpMethod.Post, request.FullUrl, parms, httpRequest);
-                httpRequest.Headers.Add("User-Agent", UserAgent);
-                httpRequest.Headers.ExpectContinue = false;
-
-                if (Authorizer.SupportsCompression)
-                    httpRequest.Headers.AcceptEncoding.TryParseAdd("gzip");
+                var httpRequest = ConfigureRequest(request);
 
                 var response = await StreamingClient.SendAsync(
                     httpRequest, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
@@ -228,6 +208,32 @@ namespace LinqToTwitter
             IsStreamClosed = false;
 
             return "{}";
+        }
+ 
+        HttpRequestMessage ConfigureRequest(Request request)
+        {
+            var httpRequest = new HttpRequestMessage(HttpMethod.Post, request.Endpoint);
+
+            var parameters =
+                string.Join("&",
+                    (from parm in request.RequestParameters
+                     select parm.Name + "=" + Url.PercentEncode(parm.Value))
+                    .ToList());                            
+            var content = new StringContent(parameters, Encoding.UTF8, "application/x-www-form-urlencoded");
+            httpRequest.Content = content;
+
+            var parms = request.RequestParameters
+                               .ToDictionary(
+                                    key => key.Name,
+                                    val => val.Value);
+            SetAuthorizationHeader(HttpMethod.Post, request.FullUrl, parms, httpRequest);
+            httpRequest.Headers.Add("User-Agent", UserAgent);
+            httpRequest.Headers.ExpectContinue = false;
+
+            if (Authorizer.SupportsCompression)
+                httpRequest.Headers.AcceptEncoding.TryParseAdd("gzip");
+
+            return httpRequest;
         }
  
         async Task<Stream> CreateStream(HttpResponseMessage response)
@@ -342,11 +348,11 @@ namespace LinqToTwitter
                      Key = header.Key,
                      Value = string.Join(", ", header.Value)
                  })
-                   .ToDictionary(
+                .ToDictionary(
                     pair => pair.Key,
                     pair => pair.Value);
 
-            await TwitterErrorHandler.ThrowIfErrorAsync(msg);
+            await TwitterErrorHandler.ThrowIfErrorAsync(msg).ConfigureAwait(false);
 
             return await msg.Content.ReadAsStringAsync().ConfigureAwait(false);
         }

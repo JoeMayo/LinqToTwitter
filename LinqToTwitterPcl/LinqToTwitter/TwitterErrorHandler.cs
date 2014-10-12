@@ -12,6 +12,8 @@ namespace LinqToTwitter
     {
         public static async Task ThrowIfErrorAsync(HttpResponseMessage msg)
         {
+            const int TooManyRequests = 429;
+
             // TODO: research proper handling of 304
 
             if ((int)msg.StatusCode < 400) return;
@@ -22,7 +24,15 @@ namespace LinqToTwitter
                     await HandleUnauthorizedAsync(msg).ConfigureAwait(false);
                     break;
                 default:
-                    await HandleGenericErrorAsync(msg).ConfigureAwait(false);
+                    switch ((int)msg.StatusCode)
+	                {
+                        case TooManyRequests:
+                            await HandleTooManyRequestsAsync(msg).ConfigureAwait(false);
+                            break;
+		                default:
+                            await HandleGenericErrorAsync(msg).ConfigureAwait(false);
+                            break;
+	                }
                     break;
             } 
         }
@@ -33,7 +43,24 @@ namespace LinqToTwitter
 
             BuildAndThrowTwitterQueryException(responseStr, msg);
         }
-  
+ 
+        internal static async Task HandleTooManyRequestsAsync(HttpResponseMessage msg)
+        {
+            string responseStr = await msg.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+            TwitterErrorDetails error = ParseTwitterErrorMessage(responseStr);
+
+            string message = error.Message + " - Please visit the LINQ to Twitter FAQ (at the HelpLink) for help on resolving this error.";
+
+            throw new TwitterQueryException(message)
+            {
+                HelpLink = "https://linqtotwitter.codeplex.com/wikipage?title=LINQ%20to%20Twitter%20FAQ",
+                ErrorCode = error.Code,
+                StatusCode = HttpStatusCode.SeeOther,
+                ReasonPhrase = msg.ReasonPhrase + " (HTTP 429 - Too Many Requests)"
+            };
+        }
+ 
         internal static void BuildAndThrowTwitterQueryException(string responseStr, HttpResponseMessage msg)
         {
             TwitterErrorDetails error = ParseTwitterErrorMessage(responseStr);
@@ -48,7 +75,7 @@ namespace LinqToTwitter
   
         internal async static Task HandleUnauthorizedAsync(HttpResponseMessage msg)
         {
-            string responseStr = await msg.Content.ReadAsStringAsync();
+            string responseStr = await msg.Content.ReadAsStringAsync().ConfigureAwait(false);
 
             TwitterErrorDetails error = ParseTwitterErrorMessage(responseStr);
 
