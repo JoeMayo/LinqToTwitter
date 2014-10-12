@@ -490,7 +490,8 @@ namespace LinqToTwitter
             JsonData idsJson = JsonMapper.ToObject(responseJson);
             var friendship = new Friendship
             {
-                IDInfo = new IDList(idsJson)
+                IDInfo = new IDList(idsJson),
+                CursorMovement = new Cursors(idsJson)
             };
             return friendship;
         }

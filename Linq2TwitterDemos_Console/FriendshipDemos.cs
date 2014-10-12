@@ -230,57 +230,111 @@ namespace Linq2TwitterDemos_Console
 
         static async Task FollowersListAsync(TwitterContext twitterCtx)
         {
-            var friendship =
-                await
-                (from friend in twitterCtx.Friendship
-                 where friend.Type == FriendshipType.FollowersList &&
-                       friend.ScreenName == "JoeMayo"
-                 select friend)
-                .SingleOrDefaultAsync();
+            Friendship friendship;
+            long cursor = -1;
+            do
+            {
+                try
+                {
+                    friendship =
+                        await
+                        (from friend in twitterCtx.Friendship
+                         where friend.Type == FriendshipType.FollowersList &&
+                               friend.ScreenName == "JoeMayo" &&
+                               friend.Cursor == cursor
+                         select friend)
+                        .SingleOrDefaultAsync();
+                }
+                catch (TwitterQueryException tqe)
+                {
+                    Console.WriteLine(tqe.ToString());
+                    break;
+                }
 
-            if (friendship != null && friendship.Users != null)
-                friendship.Users.ForEach(friend =>
-                    Console.WriteLine(
-                        "ID: {0} Name: {1}",
-                        friend.UserIDResponse, friend.ScreenNameResponse));
+                if (friendship != null && friendship.Users != null)
+                {
+                    cursor = friendship.CursorMovement.Next;
+
+                    friendship.Users.ForEach(friend =>
+                        Console.WriteLine(
+                            "ID: {0} Name: {1}",
+                            friend.UserIDResponse, friend.ScreenNameResponse));
+                }
+
+            } while (cursor != 0);
         }
 
         static async Task ShowFollowerIDsAsync(TwitterContext twitterCtx)
         {
-            var followers =
-                await
-                (from follower in twitterCtx.Friendship
-                 where follower.Type == FriendshipType.FollowerIDs &&
-                       follower.UserID == "15411837"
-                 select follower)
-                .SingleOrDefaultAsync();
-
-            if (followers != null && 
-                followers.IDInfo != null && 
-                followers.IDInfo.IDs != null)
+            Friendship followers;
+            long cursor = -1;
+            do
             {
-                followers.IDInfo.IDs.ForEach(id =>
-                    Console.WriteLine("Follower ID: " + id)); 
-            }
+                try
+                {
+                    followers =
+                        await
+                        (from follower in twitterCtx.Friendship
+                         where follower.Type == FriendshipType.FollowerIDs &&
+                               follower.UserID == "15411837" &&
+                               follower.Cursor == cursor &&
+                               follower.Count == 500
+                         select follower)
+                        .SingleOrDefaultAsync();
+                }
+                catch (TwitterQueryException tqe)
+                {
+                    Console.WriteLine(tqe.ToString());
+                    break;
+                }
+
+                if (followers != null && 
+                    followers.IDInfo != null && 
+                    followers.IDInfo.IDs != null)
+                {
+                    cursor = followers.CursorMovement.Next;
+
+                    followers.IDInfo.IDs.ForEach(id =>
+                        Console.WriteLine("Follower ID: " + id)); 
+                }
+
+            } while (cursor != 0);
         }
 
         static async Task ShowFriendIDsAsync(TwitterContext twitterCtx)
         {
-            var friendList =
-                await
-                (from friend in twitterCtx.Friendship
-                 where friend.Type == FriendshipType.FriendIDs &&
-                       friend.ScreenName == "JoeMayo"
-                 select friend)
-                .SingleOrDefaultAsync();
-
-            if (friendList != null &&
-                friendList.IDInfo != null &&
-                friendList.IDInfo.IDs != null)
+            Friendship friendList;
+            long cursor = -1;
+            do
             {
-                friendList.IDInfo.IDs.ForEach(id =>
-                    Console.WriteLine("Follower ID: " + id));
-            }
+                try
+                {
+                    friendList =
+                        await
+                        (from friend in twitterCtx.Friendship
+                         where friend.Type == FriendshipType.FriendIDs &&
+                               friend.ScreenName == "JoeMayo" &&
+                               friend.Cursor == cursor
+                         select friend)
+                        .SingleOrDefaultAsync();
+                }
+                catch (TwitterQueryException tqe)
+                {
+                    Console.WriteLine(tqe.ToString());
+                    break;
+                }
+
+                if (friendList != null &&
+                    friendList.IDInfo != null &&
+                    friendList.IDInfo.IDs != null)
+                {
+                    cursor = friendList.CursorMovement.Next;
+
+                    friendList.IDInfo.IDs.ForEach(id =>
+                        Console.WriteLine("Follower ID: " + id));
+                }
+
+            } while (cursor != 0);
         }
 
         static async Task CreateFriendshipAsync(TwitterContext twitterCtx)
