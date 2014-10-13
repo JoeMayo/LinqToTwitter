@@ -64,8 +64,8 @@ namespace Linq2TwitterDemos_Console
                         break;
                     case 'a':
                     case 'A':
-                        Console.WriteLine("\n\tTweeting image...\n");
-                        await TweetWithMediaAsync(twitterCtx);
+                        Console.WriteLine("\n\tTweeting images...\n");
+                        await UploadMultipleImagesAsync(twitterCtx);
                         break;
                     case 'b':
                     case 'B':
@@ -113,7 +113,7 @@ namespace Linq2TwitterDemos_Console
             Console.WriteLine("\t 7. Update Status");
             Console.WriteLine("\t 8. Reply to a Tweet");
             Console.WriteLine("\t 9. Retweet a Tweet");
-            Console.WriteLine("\t A. Tweet Media");
+            Console.WriteLine("\t A. Tweet Multiple Images");
             Console.WriteLine("\t B. Get Oembed Tweet");
             Console.WriteLine("\t C. Get Retweeters");
             Console.WriteLine("\t D. Follow Conversation");
@@ -318,29 +318,31 @@ namespace Linq2TwitterDemos_Console
             }
         }
 
-        static async Task TweetWithMediaAsync(TwitterContext twitterCtx)
+        static async Task UploadMultipleImagesAsync(TwitterContext twitterCtx)
         {
             string status = 
-                "Testing TweetWithMedia #Linq2Twitter £ " + 
+                "Testing multi-image tweet #Linq2Twitter £ " + 
                 DateTime.Now.ToString(CultureInfo.InvariantCulture);
-            const bool PossiblySensitive = false;
-            const decimal Latitude = TwitterContext.NoCoordinate; //37.78215m;
-            const decimal Longitude = TwitterContext.NoCoordinate; // -122.40060m;
-            const bool DisplayCoordinates = false;
-            const string PlaceID = null;
-            const string ReplaceThisWithYourImageLocation = 
-                @"..\..\images\200xColor_2.png";
 
-            byte[] imageBytes = 
-                File.ReadAllBytes(ReplaceThisWithYourImageLocation);
+            var imageUploadTasks = 
+                new List<Task<Media>> 
+                {
+                    twitterCtx.UploadMediaAsync(File.ReadAllBytes(@"..\..\images\200xColor_2.png")),
+                    twitterCtx.UploadMediaAsync(File.ReadAllBytes(@"..\..\images\WP_000003.jpg")),
+                    twitterCtx.UploadMediaAsync(File.ReadAllBytes(@"..\..\images\13903749474_86bd1290de_o.jpg")),
+                };
 
-            Status tweet = await twitterCtx.TweetWithMediaAsync(
-                status, PossiblySensitive, Latitude, Longitude,
-                PlaceID, DisplayCoordinates, imageBytes);
+            await Task.WhenAll(imageUploadTasks);
+
+            var mediaIds =
+                (from tsk in imageUploadTasks
+                 select tsk.Result.MediaID)
+                .ToList();
+
+            Status tweet = await twitterCtx.TweetAsync(status, mediaIds);
 
             if (tweet != null)
-                Console.WriteLine(
-                    "Media item sent - Tweet Text: " + tweet.Text);
+                Console.WriteLine("Tweet sent: " + tweet.Text);
         }
 
         static async Task OEmbedStatusAsync(TwitterContext twitterCtx)

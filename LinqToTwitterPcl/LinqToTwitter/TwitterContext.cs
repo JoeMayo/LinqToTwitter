@@ -61,12 +61,18 @@ namespace LinqToTwitter
             StreamingUrl = "https://stream.twitter.com/1.1/";
             UserStreamUrl = "https://userstream.twitter.com/1.1/";
             SiteStreamUrl = "https://sitestream.twitter.com/1.1/";
+            UploadUrl = "https://upload.twitter.com/1.1/";
         }
 
         /// <summary>
         /// base URL for accessing Twitter API
         /// </summary>
         public string BaseUrl { get; set; }
+
+        /// <summary>
+        /// base URL for uploading media
+        /// </summary>
+        public string UploadUrl { get; set; }
 
         /// <summary>
         /// base URL for accessing streaming APIs

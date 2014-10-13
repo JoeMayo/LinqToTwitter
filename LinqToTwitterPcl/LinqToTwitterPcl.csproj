@@ -70,8 +70,7 @@
     <Compile Include="Common\InvalidQueryException.cs" />
     <Compile Include="Common\IRequestProcessor.cs" />
     <Compile Include="Common\LinqExtensions.cs" />
-    <Compile Include="Common\Media.cs" />
-    <Compile Include="Common\MediaContentType.cs" />
+    <Compile Include="Status\Media.cs" />
     <Compile Include="Common\MethodCallExpressionTypeFinder.cs" />
     <Compile Include="Common\ParameterFinder.cs" />
     <Compile Include="Common\QueryParameter.cs" />
@@ -139,6 +138,8 @@
     <Compile Include="Raw\Raw.cs" />
     <Compile Include="Raw\TwitterContextRawCommands.cs" />
     <Compile Include="Raw\RawRequestProcessor.cs" />
+    <Compile Include="Status\MediaImage.cs" />
+    <Compile Include="Status\MediaType.cs" />
     <Compile Include="User\TwitterContextUserCommands.cs" />
     <Compile Include="SavedSearch\SavedSearch.cs" />
     <Compile Include="SavedSearch\SavedSearchAction.cs" />

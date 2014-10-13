@@ -108,7 +108,7 @@ namespace LinqToTwitter
         internal int OEmbedMaxWidth { get; set; }
 
         /// <summary>
-        /// Don't initially expand image
+        /// Don't initially expand media
         /// </summary>
         internal bool OEmbedHideMedia { get; set; }
 
@@ -628,7 +628,22 @@ namespace LinqToTwitter
         {
             JsonData statusJson = JsonMapper.ToObject(responseJson);
 
-            var status = new Status(statusJson);
+            Status status = null;
+
+            switch ((StatusAction)theAction)
+            {
+                case StatusAction.SingleStatus:
+                    status = new Status(statusJson);
+                    break;
+                case StatusAction.MediaUpload:
+                    status = new Status
+                    {
+                        Media = new Media(statusJson)
+                    };
+                    break;
+                default:
+                    break;
+            }
 
             return status.ItemCast(default(T));
         }

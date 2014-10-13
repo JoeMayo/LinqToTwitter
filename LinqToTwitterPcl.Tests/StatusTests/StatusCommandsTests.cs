@@ -29,12 +29,24 @@ namespace LinqToTwitterPcl.Tests.StatusTests
             var tcsResponse = new TaskCompletionSource<string>();
             tcsResponse.SetResult(SingleStatusResponse);
 
+            var tcsMedia = new TaskCompletionSource<string>();
+            tcsMedia.SetResult(MediaResponse);
+
             execMock.SetupGet(exec => exec.Authorizer).Returns(authMock.Object);
             execMock.Setup(exec =>
                 exec.PostToTwitterAsync<Status>(
                     It.IsAny<string>(),
                     It.IsAny<IDictionary<string, string>>()))
                 .Returns(tcsResponse.Task);
+            execMock.Setup(exec =>
+                exec.PostMediaAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<IDictionary<string, string>>(),
+                    It.IsAny<byte[]>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>()))
+                .Returns(tcsMedia.Task);
             var ctx = new TwitterContext(execMock.Object);
             return ctx;
         }
@@ -105,6 +117,32 @@ namespace LinqToTwitterPcl.Tests.StatusTests
 
             Assert.AreEqual(ExpectedStatusID, actual.StatusID);
         }
+
+        [TestMethod]
+        public async Task TweetAsync_WithMediaIds_ReturnsStatus()
+        {
+            const string Status = "Hello";
+            const ulong ExpectedStatusID = 184835136037191681ul;
+            var mediaIds = new List<ulong> { 1, 2, 3 };
+            var ctx = await InitializeTwitterContext();
+
+            Status actual = await ctx.TweetAsync(Status, mediaIds);
+
+            Assert.AreEqual(ExpectedStatusID, actual.StatusID);
+        }
+
+        [TestMethod]
+        public async Task UploadMediaAsync_WithBinaryImage_ReturnsMedia()
+        {
+            const ulong ExpectedMediaID = 521449660083609601ul;
+            var image = new byte[] { 1, 2, 3 };
+            var ctx = await InitializeTwitterContext();
+
+            Media actual = await ctx.UploadMediaAsync(image);
+
+            Assert.AreEqual(ExpectedMediaID, actual.MediaID);
+        }
+
 
         [TestMethod]
         public async Task DeleteTweetAsync_Sets_ID()
@@ -263,5 +301,16 @@ namespace LinqToTwitterPcl.Tests.StatusTests
       ""geo"":null,
       ""text"":""RT @scottgu: I just blogged about http:\/\/t.co\/YWHGwOq6 MVC, Web API, Razor and Open Source - Now with Contributions: http:\/\/t.co\/qpevLMZd""
    }";
+
+        const string MediaResponse = @"{
+	""media_id"": 521449660083609601,
+	""media_id_string"": ""521449660083609601"",
+	""size"": 6955,
+	""image"": {
+		""w"": 100,
+		""h"": 100,
+		""image_type"": ""image\/png""
+	}
+}";
     }
 }

@@ -19,6 +19,7 @@ namespace LinqToTwitter
         /// <param name="possiblySensitive">Set to true if media does not contain age appropriate content</param>
         /// <param name="image">Media to send</param>
         /// <returns>Status containing new tweet</returns>
+        [Obsolete("Twitter has deprecated this API and you should use UploadMediaAsync/TweetAsync instead.")]
         public async Task<Status> TweetWithMediaAsync(string status, bool possiblySensitive, byte[] image)
         {
             return await ReplyWithMediaAsync(NoReply, status, possiblySensitive, NoCoordinate, NoCoordinate, null, false, image).ConfigureAwait(false);
@@ -35,6 +36,7 @@ namespace LinqToTwitter
         /// <param name="displayCoordinates">Allow or prevent display of coordinates for this tweet</param>
         /// <param name="image">Media to send</param>
         /// <returns>Status containing new reply</returns>
+        [Obsolete("Twitter has deprecated this API and you should use UploadMediaAsync/TweetAsync instead.")]
         public async Task<Status> TweetWithMediaAsync(string status, bool possiblySensitive, decimal latitude, decimal longitude, string placeID, bool displayCoordinates, byte[] image)
         {
             return await ReplyWithMediaAsync(NoReply, status, possiblySensitive, latitude, longitude, placeID, displayCoordinates, image).ConfigureAwait(false);
@@ -48,6 +50,7 @@ namespace LinqToTwitter
         /// <param name="possiblySensitive">Set to true if media does not contain age appropriate content</param>
         /// <param name="image">Media to send</param>
         /// <returns>Status containing new reply</returns>
+        [Obsolete("Twitter has deprecated this API and you should use UploadMediaAsync/ReplyAsync instead.")]
         public async Task<Status> ReplyWithMediaAsync(ulong inReplyToStatusID, string status, bool possiblySensitive, byte[] image)
         {
             return await ReplyWithMediaAsync(inReplyToStatusID, status, possiblySensitive, NoCoordinate, NoCoordinate, null, false, image).ConfigureAwait(false);
@@ -56,7 +59,6 @@ namespace LinqToTwitter
         /// <summary>
         /// sends a status update with attached media
         /// </summary>
-        /// <param name="twitterCtx">Your instance of TwitterContext</param>
         /// <param name="inReplyToStatusID">id of status replying to - optional - pass null if not used</param>
         /// <param name="status">Status text</param>
         /// <param name="possiblySensitive">Set to true if media does not contain age appropriate content</param>
@@ -66,6 +68,7 @@ namespace LinqToTwitter
         /// <param name="displayCoordinates">Allow or prevent display of coordinates for this tweet</param>
         /// <param name="image">Media to send</param>
         /// <returns>Status containing new reply</returns>
+        [Obsolete("Twitter has deprecated this API and you should use UploadMediaAsync/ReplyAsync instead.")]
         public async Task<Status> ReplyWithMediaAsync(ulong inReplyToStatusID, string status, bool possiblySensitive, decimal latitude, decimal longitude, string placeID, bool displayCoordinates, byte[] image)
         {
             if (string.IsNullOrWhiteSpace(status))
@@ -104,8 +107,42 @@ namespace LinqToTwitter
         }
 
         /// <summary>
+        /// Uploads a media (e.g. media) to be attached to a subsequent tweet.
+        /// </summary>
+        /// <param name="media">Media to upload</param>
+        /// <returns>Status containing new reply</returns>
+        public async Task<Media> UploadMediaAsync(byte[] media)
+        {
+            if (media == null || media.Length == 0)
+                throw new ArgumentNullException("image", "You must provide a byte[] of image data.");
+
+            string updateUrl = UploadUrl + "media/upload.json";
+            string imageType = "application/octet-stream";
+            string name = "media";
+            string randomUnusedFileName = new Random().Next(100, 999).ToString();
+
+            var reqProc = new StatusRequestProcessor<Status>();
+
+            RawResult =
+                await TwitterExecutor.PostMediaAsync(
+                    updateUrl,
+                    new Dictionary<string, string>(),
+                    media,
+                    name,
+                    randomUnusedFileName,
+                    imageType)
+                    .ConfigureAwait(false);
+
+            Status status = reqProc.ProcessActionResult(RawResult, StatusAction.MediaUpload);
+            return status.Media;
+        }
+
+        /// <summary>
         /// Replies to a tweet.
         /// </summary>
+        /// <remarks>
+        /// You must include the recipient's screen name (as @ScreenName) for the reply to work.
+        /// </remarks>
         /// <param name="tweetID">ID (aka StatusID) of tweet to reply to.</param>
         /// <param name="status">Reply status text.</param>
         /// <returns>Reply status.</returns>
@@ -117,6 +154,9 @@ namespace LinqToTwitter
         /// <summary>
         /// Replies to a tweet with coordinates.
         /// </summary>
+        /// <remarks>
+        /// You must include the recipient's screen name (as @ScreenName) for the reply to work.
+        /// </remarks>
         /// <param name="tweetID">ID (aka StatusID) of tweet to reply to.</param>
         /// <param name="status">Reply status text.</param>
         /// <param name="latitude">Latitude coordinate of where tweet occurred.</param>
@@ -129,8 +169,11 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// Replies to a tweet with.
+        /// Replies to a tweet with coordinates, place, and option to not include the user entity.
         /// </summary>
+        /// <remarks>
+        /// You must include the recipient's screen name (as @ScreenName) for the reply to work.
+        /// </remarks>
         /// <param name="tweetID">ID (aka StatusID) of tweet to reply to.</param>
         /// <param name="status">Reply status text.</param>
         /// <param name="latitude">Latitude coordinate of where tweet occurred.</param>
@@ -143,8 +186,11 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// Replies to a tweet.
+        /// Replies to a tweet with place, option to display coordinates, and option to not include user entity.
         /// </summary>
+        /// <remarks>
+        /// You must include the recipient's screen name (as @ScreenName) for the reply to work.
+        /// </remarks>
         /// <param name="tweetID">ID (aka StatusID) of tweet to reply to.</param>
         /// <param name="status">Reply status text.</param>
         /// <param name="placeID">ID of place (found via Geo Reverse lookup query).</param>
@@ -156,8 +202,11 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// Replies to a tweet.
+        /// Replies to a tweet with all non-media options.
         /// </summary>
+        /// <remarks>
+        /// You must include the recipient's screen name (as @ScreenName) for the reply to work.
+        /// </remarks>
         /// <param name="tweetID">ID (aka StatusID) of tweet to reply to.</param>
         /// <param name="status">Reply status text.</param>
         /// <param name="latitude">Latitude coordinate of where tweet occurred.</param>
@@ -170,7 +219,46 @@ namespace LinqToTwitter
             if (tweetID == MissingID)
                 throw new ArgumentException("0 is *not* a valid tweetID. You must provide the ID of the tweet you're replying to.", "tweetID");
 
-            return await TweetOrReplyAsync(tweetID, status, latitude, longitude, placeID, displayCoordinates, trimUser).ConfigureAwait(false);
+            return await TweetOrReplyAsync(tweetID, status, latitude, longitude, placeID, displayCoordinates, trimUser, null).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Replies to a tweet with attached media.
+        /// </summary>
+        /// <remarks>
+        /// You must include the recipient's screen name (as @ScreenName) for the reply to work.
+        /// </remarks>
+        /// <param name="status">Status text.</param>
+        /// <param name="mediaIds">Collection of ids of media to include in tweet.</param>
+        /// <returns>Tweeted status.</returns>
+        public async Task<Status> ReplyAsync(ulong tweetID, string status, IEnumerable<ulong> mediaIds)
+        {
+            if (tweetID == MissingID)
+                throw new ArgumentException("0 is *not* a valid tweetID. You must provide the ID of the tweet you're replying to.", "tweetID");
+
+            return await TweetOrReplyAsync(NoReply, status, NoCoordinate, NoCoordinate, NoInputParam, false, false, mediaIds).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Replies to a tweet with all options.
+        /// </summary>
+        /// <remarks>
+        /// You must include the recipient's screen name (as @ScreenName) for the reply to work.
+        /// </remarks>
+        /// <param name="status">Status text.</param>
+        /// <param name="latitude">Latitude coordinate of where tweet occurred.</param>
+        /// <param name="longitude">Longitude coordinate of where tweet occurred.</param>
+        /// <param name="placeID">ID of place (found via Geo Reverse lookup query).</param>
+        /// <param name="displayCoordinates">Allow or prevent display of coordinates for this tweet.</param>
+        /// <param name="trimUser">Remove user entity from response</param>
+        /// <param name="mediaIds">Collection of ids of media to include in tweet.</param>
+        /// <returns>Tweeted status.</returns>
+        public async Task<Status> ReplyAsync(ulong tweetID, string status, decimal latitude, decimal longitude, string placeID, bool displayCoordinates, bool trimUser, IEnumerable<ulong> mediaIds)
+        {
+            if (tweetID == MissingID)
+                throw new ArgumentException("0 is *not* a valid tweetID. You must provide the ID of the tweet you're replying to.", "tweetID");
+
+            return await TweetOrReplyAsync(NoReply, status, latitude, longitude, placeID, displayCoordinates, trimUser, mediaIds).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -180,11 +268,11 @@ namespace LinqToTwitter
         /// <returns>Tweeted status.</returns>
         public async Task<Status> TweetAsync(string status)
         {
-            return await TweetOrReplyAsync(NoReply, status, NoCoordinate, NoCoordinate, null, false, false).ConfigureAwait(false);
+            return await TweetOrReplyAsync(NoReply, status, NoCoordinate, NoCoordinate, null, false, false, null).ConfigureAwait(false);
         }
 
         /// <summary>
-        /// Sends a status update.
+        /// Sends a status update with coordinates.
         /// </summary>
         /// <param name="status">Status text.</param>
         /// <param name="latitude">Latitude coordinate of where tweet occurred.</param>
@@ -192,11 +280,11 @@ namespace LinqToTwitter
         /// <returns>Tweeted status.</returns>
         public async Task<Status> TweetAsync(string status, decimal latitude, decimal longitude)
         {
-            return await TweetOrReplyAsync(NoReply, status, latitude, longitude, null, false, false).ConfigureAwait(false);
+            return await TweetOrReplyAsync(NoReply, status, latitude, longitude, null, false, false, null).ConfigureAwait(false);
         }
 
         /// <summary>
-        /// Sends a status update.
+        /// Sends a status update with coordinates and option to display.
         /// </summary>
         /// <param name="status">Status text.</param>
         /// <param name="latitude">Latitude coordinate of where tweet occurred.</param>
@@ -205,11 +293,11 @@ namespace LinqToTwitter
         /// <returns>Tweeted status.</returns>
         public async Task<Status> TweetAsync(string status, decimal latitude, decimal longitude, bool displayCoordinates)
         {
-            return await TweetOrReplyAsync(NoReply, status, latitude, longitude, null, displayCoordinates, false).ConfigureAwait(false);
+            return await TweetOrReplyAsync(NoReply, status, latitude, longitude, null, displayCoordinates, false, null).ConfigureAwait(false);
         }
 
         /// <summary>
-        /// Sends a status update.
+        /// Sends a status update with coordinates, placeID, and option to not include user entity.
         /// </summary>
         /// <param name="status">Status text.</param>
         /// <param name="latitude">Latitude coordinate of where tweet occurred.</param>
@@ -218,11 +306,11 @@ namespace LinqToTwitter
         /// <returns>Tweeted status.</returns>
         public async Task<Status> TweetAsync(string status, decimal latitude, decimal longitude, string placeID, bool trimUser)
         {
-            return await TweetOrReplyAsync(NoReply, status, latitude, longitude, placeID, false, trimUser).ConfigureAwait(false);
+            return await TweetOrReplyAsync(NoReply, status, latitude, longitude, placeID, false, trimUser, null).ConfigureAwait(false);
         }
 
         /// <summary>
-        /// Sends a status update.
+        /// Sends a status update with all location options and option to not include user entity.
         /// </summary>
         /// <param name="status">Status text.</param>
         /// <param name="latitude">Latitude coordinate of where tweet occurred.</param>
@@ -232,11 +320,11 @@ namespace LinqToTwitter
         /// <returns>Tweeted status.</returns>
         public async Task<Status> TweetAsync(string status, decimal latitude, decimal longitude, string placeID, bool displayCoordinates, bool trimUser)
         {
-            return await TweetOrReplyAsync(NoReply, status, latitude, longitude, placeID, displayCoordinates, trimUser).ConfigureAwait(false);
+            return await TweetOrReplyAsync(NoReply, status, latitude, longitude, placeID, displayCoordinates, trimUser, null).ConfigureAwait(false);
         }
 
         /// <summary>
-        /// Sends a status update.
+        /// Sends a status update with place, option to display coordinates, and option to not include user entity.
         /// </summary>
         /// <param name="status">Status text.</param>
         /// <param name="placeID">ID of place (found via Geo Reverse lookup query).</param>
@@ -244,7 +332,34 @@ namespace LinqToTwitter
         /// <returns>Tweeted status.</returns>
         public async Task<Status> TweetAsync(string status, string placeID, bool displayCoordinates, bool trimUser)
         {
-            return await TweetOrReplyAsync(NoReply, status, NoCoordinate, NoCoordinate, placeID, displayCoordinates, trimUser).ConfigureAwait(false);
+            return await TweetOrReplyAsync(NoReply, status, NoCoordinate, NoCoordinate, placeID, displayCoordinates, trimUser, null).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Sends a status update with attached media.
+        /// </summary>
+        /// <param name="status">Status text.</param>
+        /// <param name="mediaIds">Collection of ids of media to include in tweet.</param>
+        /// <returns>Tweeted status.</returns>
+        public async Task<Status> TweetAsync(string status, IEnumerable<ulong> mediaIds)
+        {
+            return await TweetOrReplyAsync(NoReply, status, NoCoordinate, NoCoordinate, NoInputParam, false, false, mediaIds).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Sends a status update with all options.
+        /// </summary>
+        /// <param name="status">Status text.</param>
+        /// <param name="latitude">Latitude coordinate of where tweet occurred.</param>
+        /// <param name="longitude">Longitude coordinate of where tweet occurred.</param>
+        /// <param name="placeID">ID of place (found via Geo Reverse lookup query).</param>
+        /// <param name="displayCoordinates">Allow or prevent display of coordinates for this tweet.</param>
+        /// <param name="trimUser">Remove user entity from response</param>
+        /// <param name="mediaIds">Collection of ids of media to include in tweet.</param>
+        /// <returns>Tweeted status.</returns>
+        public async Task<Status> TweetAsync(string status, decimal latitude, decimal longitude, string placeID, bool displayCoordinates, bool trimUser, IEnumerable<ulong> mediaIds)
+        {
+            return await TweetOrReplyAsync(NoReply, status, latitude, longitude, placeID, displayCoordinates, trimUser, mediaIds).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -256,8 +371,10 @@ namespace LinqToTwitter
         /// <param name="longitude">Longitude coordinate of where tweet occurred.</param>
         /// <param name="placeID">ID of place (found via Geo Reverse lookup query).</param>
         /// <param name="displayCoordinates">Allow or prevent display of coordinates for this tweet.</param>
+        /// <param name="trimUser">Remove user entity from response</param>
+        /// <param name="mediaIds">Collection of ids of media to include in tweet.</param>
         /// <returns>Tweeted status.</returns>
-        internal async Task<Status> TweetOrReplyAsync(ulong tweetID, string status, decimal latitude, decimal longitude, string placeID, bool displayCoordinates, bool trimUser)
+        internal async Task<Status> TweetOrReplyAsync(ulong tweetID, string status, decimal latitude, decimal longitude, string placeID, bool displayCoordinates, bool trimUser, IEnumerable<ulong> mediaIds)
         {
             if (string.IsNullOrWhiteSpace(status))
                 throw new ArgumentException("status is a required parameter.", "status");
@@ -275,7 +392,8 @@ namespace LinqToTwitter
                         {"long", longitude == NoCoordinate ? null : longitude.ToString(Culture.US)},
                         {"place_id", placeID},
                         {"display_coordinates", displayCoordinates ? displayCoordinates.ToString().ToLower() : null},
-                        {"trim_user", trimUser ? trimUser.ToString().ToLower() : null }
+                        {"trim_user", trimUser ? trimUser.ToString().ToLower() : null },
+                        {"media_ids", mediaIds == null || !mediaIds.Any() ? null : string.Join(",", mediaIds) }
                     })
                     .ConfigureAwait(false);
 

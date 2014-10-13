@@ -421,5 +421,10 @@ namespace LinqToTwitter
         /// Manage paging through a list (e.g. IDs from Users collection)
         /// </summary>
         public Cursors CursorMovement { get; set; }
+
+        /// <summary>
+        /// This helps process media uploads via StatusRequestProcessor.ProcessActionResult
+        /// </summary>
+        internal Media Media { get; set; }
     }
 }

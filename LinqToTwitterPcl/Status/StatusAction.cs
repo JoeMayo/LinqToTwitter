@@ -2,6 +2,8 @@ namespace LinqToTwitter
 {
     enum StatusAction
     {
-        SingleStatus
+        SingleStatus,
+
+        MediaUpload
     }
 }
