@@ -172,10 +172,9 @@ namespace LinqToTwitter
             };
 
             if (tile)
-            {
                 parameters.Add("tile", true.ToString().ToLower());
-                parameters.Add("use", use.ToString().ToLower());
-            }
+
+            parameters.Add("use", use.ToString().ToLower());
 
             var reqProc = new UserRequestProcessor<User>();
 
