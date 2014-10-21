@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace LinqToTwitter
@@ -13,7 +14,7 @@ namespace LinqToTwitter
         /// <param name="userIDs">List of user IDs to add to Site Stream</param>
         /// <param name="streamID">ID of Site Stream to add users to</param>
         /// <returns>Control Stream with CommandResponse property for Twitter's response message</returns>
-        public async Task<ControlStream> AddSiteStreamUserAsync(List<ulong> userIDs, string streamID)
+        public async Task<ControlStream> AddSiteStreamUserAsync(List<ulong> userIDs, string streamID, CancellationToken cancelToken = default(CancellationToken))
         {
             if (string.IsNullOrWhiteSpace(streamID)) throw new ArgumentNullException("streamID", "streamID is required.");
 
@@ -29,7 +30,8 @@ namespace LinqToTwitter
                     new Dictionary<string, string>
                     {
                         {"user_id", userIDString}
-                    })
+                    },
+                    cancelToken)
                     .ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(resultsJson, ControlStreamType.Info);
@@ -41,7 +43,7 @@ namespace LinqToTwitter
         /// <param name="userIDs">List of user IDs to remove from Site Stream</param>
         /// <param name="streamID">ID of Site Stream to remove users from</param>
         /// <returns>Control Stream with CommandResponse property for Twitter's response message</returns>
-        public async Task<ControlStream> RemoveSiteStreamUserAsync(List<ulong> userIDs, string streamID)
+        public async Task<ControlStream> RemoveSiteStreamUserAsync(List<ulong> userIDs, string streamID, CancellationToken cancelToken = default(CancellationToken))
         {
             if (string.IsNullOrWhiteSpace(streamID)) throw new ArgumentNullException("streamID", "streamID is required.");
 
@@ -57,7 +59,8 @@ namespace LinqToTwitter
                     new Dictionary<string, string>
                     {
                         {"user_id", userIDString}
-                    })
+                    },
+                    cancelToken)
                     .ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(resultsJson, ControlStreamType.Info);

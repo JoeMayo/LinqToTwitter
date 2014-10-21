@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace LinqToTwitter
@@ -41,7 +42,7 @@ namespace LinqToTwitter
         /// <param name="includeEntities">Set to false to not include entities. (default: true)</param>
         /// <param name="skipStatus">Don't include status with response.</param>
         /// <returns>User info with new colors</returns>
-        public async Task<User> UpdateAccountColorsAsync(string background, string text, string link, string sidebarFill, string sidebarBorder, bool includeEntities, bool skipStatus)
+        public async Task<User> UpdateAccountColorsAsync(string background, string text, string link, string sidebarFill, string sidebarBorder, bool includeEntities, bool skipStatus, CancellationToken cancelToken = default(CancellationToken))
         {
             var accountUrl = BaseUrl + "account/update_profile_colors.json";
 
@@ -66,7 +67,8 @@ namespace LinqToTwitter
                         { "profile_sidebar_border_color", string.IsNullOrWhiteSpace(sidebarBorder) ? null : sidebarBorder.TrimStart('#') },
                         { "include_entities", includeEntities.ToString().ToLower() },
                         { "skip_status", skipStatus.ToString().ToLower() }
-                    })
+                    },
+                    cancelToken)
                     .ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(RawResult, UserAction.SingleUser);
@@ -84,9 +86,9 @@ namespace LinqToTwitter
         /// <param name="imageType">type of image: must be one of jpg, gif, or png</param>
         /// <param name="skipStatus">Don't include status with response.</param>
         /// <returns>User with new image info</returns>
-        public async Task<User> UpdateAccountImageAsync(byte[] image, string fileName, string imageType, bool skipStatus)
+        public async Task<User> UpdateAccountImageAsync(byte[] image, string fileName, string imageType, bool skipStatus, CancellationToken cancelToken = default(CancellationToken))
         {
-            return await UpdateAccountImageAsync(image, fileName, imageType, true, skipStatus).ConfigureAwait(false);
+            return await UpdateAccountImageAsync(image, fileName, imageType, true, skipStatus, cancelToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -98,7 +100,7 @@ namespace LinqToTwitter
         /// <param name="includeEntities">Set to false to not include entities. (default: true)</param>
         /// <param name="skipStatus">Don't include status with response.</param>
         /// <returns>User with new image info</returns>
-        public async Task<User> UpdateAccountImageAsync(byte[] image, string fileName, string imageType, bool includeEntities, bool skipStatus)
+        public async Task<User> UpdateAccountImageAsync(byte[] image, string fileName, string imageType, bool includeEntities, bool skipStatus, CancellationToken cancelToken = default(CancellationToken))
         {
             var accountUrl = BaseUrl + "account/update_profile_image.json";
 
@@ -121,7 +123,7 @@ namespace LinqToTwitter
             string name = "image";
             string imageMimeType = "image/" + imageType;
 
-            RawResult = await TwitterExecutor.PostMediaAsync(accountUrl, parameters, image, name, fileName, imageMimeType).ConfigureAwait(false);
+            RawResult = await TwitterExecutor.PostMediaAsync(accountUrl, parameters, image, name, fileName, imageMimeType, cancelToken).ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(RawResult, UserAction.SingleUser);
         }
@@ -136,9 +138,9 @@ namespace LinqToTwitter
         /// <param name="use">Whether to use uploaded background image or not</param>
         /// <param name="skipStatus">Don't include status with response.</param>
         /// <returns>User with new image info</returns>
-        public async Task<User> UpdateAccountBackgroundImageAsync(byte[] image, string fileName, string imageType, bool tile, bool use, bool skipStatus)
+        public async Task<User> UpdateAccountBackgroundImageAsync(byte[] image, string fileName, string imageType, bool tile, bool use, bool skipStatus, CancellationToken cancelToken = default(CancellationToken))
         {
-            return await UpdateAccountBackgroundImageAsync(image, fileName, imageType, tile, use, true, skipStatus).ConfigureAwait(false);
+            return await UpdateAccountBackgroundImageAsync(image, fileName, imageType, tile, use, true, skipStatus, cancelToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -152,7 +154,7 @@ namespace LinqToTwitter
         /// <param name="includeEntities">Set to false to not include entities. (default: true)</param>
         /// <param name="skipStatus">Don't include status with response.</param>
         /// <returns>User with new image info</returns>
-        public async Task<User> UpdateAccountBackgroundImageAsync(byte[] image, string fileName, string imageType, bool tile, bool use, bool includeEntities, bool skipStatus)
+        public async Task<User> UpdateAccountBackgroundImageAsync(byte[] image, string fileName, string imageType, bool tile, bool use, bool includeEntities, bool skipStatus, CancellationToken cancelToken = default(CancellationToken))
         {
             var accountUrl = BaseUrl + "account/update_profile_background_image.json";
 
@@ -181,7 +183,7 @@ namespace LinqToTwitter
             string name = "image";
             string imageMimeType = "image/" + imageType;
 
-            RawResult = await TwitterExecutor.PostMediaAsync(accountUrl, parameters, image, name, fileName, imageMimeType).ConfigureAwait(false);
+            RawResult = await TwitterExecutor.PostMediaAsync(accountUrl, parameters, image, name, fileName, imageMimeType, cancelToken).ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(RawResult, UserAction.SingleUser);
         }
@@ -195,9 +197,9 @@ namespace LinqToTwitter
         /// <param name="description">Personal Description</param>
         /// <param name="skipStatus">Don't include status with response.</param>
         /// <returns>User with new info</returns>
-        public async Task<User> UpdateAccountProfileAsync(string name, string url, string location, string description, bool skipStatus)
+        public async Task<User> UpdateAccountProfileAsync(string name, string url, string location, string description, bool skipStatus, CancellationToken cancelToken = default(CancellationToken))
         {
-            return await UpdateAccountProfileAsync(name, url, location, description, true, skipStatus).ConfigureAwait(false);
+            return await UpdateAccountProfileAsync(name, url, location, description, true, skipStatus, cancelToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -210,7 +212,7 @@ namespace LinqToTwitter
         /// <param name="includeEntities">Set to false to not include entities. (default: true)</param>
         /// <param name="skipStatus">Don't include status with response.</param>
         /// <returns>User with new info</returns>
-        public async Task<User> UpdateAccountProfileAsync(string name, string url, string location, string description, bool includeEntities, bool skipStatus)
+        public async Task<User> UpdateAccountProfileAsync(string name, string url, string location, string description, bool includeEntities, bool skipStatus, CancellationToken cancelToken = default(CancellationToken))
         {
             var accountUrl = BaseUrl + "account/update_profile.json";
 
@@ -245,7 +247,8 @@ namespace LinqToTwitter
                         { "description", description },
                         { "include_entities", includeEntities.ToString().ToLower() },
                         { "skip_status", skipStatus.ToString().ToLower() }
-                    })
+                    },
+                    cancelToken)
                     .ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(RawResult, UserAction.SingleUser);
@@ -261,7 +264,7 @@ namespace LinqToTwitter
         /// <param name="timeZone">User's time zone.</param>
         /// <param name="lang">User's language.</param>
         /// <returns>Account information with Settings property populated.</returns>
-        public async Task<Account> UpdateAccountSettingsAsync(int? trendLocationWoeid, bool? sleepTimeEnabled, int? startSleepTime, int? endSleepTime, string timeZone, string lang)
+        public async Task<Account> UpdateAccountSettingsAsync(int? trendLocationWoeid, bool? sleepTimeEnabled, int? startSleepTime, int? endSleepTime, string timeZone, string lang, CancellationToken cancelToken = default(CancellationToken))
         {
             var accountUrl = BaseUrl + "account/settings.json";
 
@@ -292,7 +295,8 @@ namespace LinqToTwitter
             RawResult =
                 await TwitterExecutor.PostToTwitterAsync<Account>(
                     accountUrl,
-                    parameters)
+                    parameters,
+                    cancelToken)
                     .ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(RawResult, AccountAction.Settings);
@@ -304,7 +308,7 @@ namespace LinqToTwitter
         /// <param name="device">Which device to use.</param>
         /// <param name="includeEntitites">Set this to false to not add entitites to response. (default: true)</param>
         /// <returns></returns>
-        public async Task<Account> UpdateDeliveryDeviceAsync(DeviceType device, bool? includeEntitites)
+        public async Task<Account> UpdateDeliveryDeviceAsync(DeviceType device, bool? includeEntitites, CancellationToken cancelToken = default(CancellationToken))
         {
             var accountUrl = BaseUrl + "account/update_delivery_device.json";
 
@@ -321,7 +325,8 @@ namespace LinqToTwitter
             RawResult =
                 await TwitterExecutor.PostToTwitterAsync<Account>(
                     accountUrl,
-                    parameters)
+                    parameters,
+                    cancelToken)
                     .ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(RawResult, AccountAction.Settings);
@@ -337,9 +342,9 @@ namespace LinqToTwitter
         /// Account of authenticated user who's profile banner will be updated.
         /// Url of new banner will appear in ProfileBannerUrl property.
         /// </returns>
-        public async Task<User> UpdateProfileBannerAsync(byte[] banner, string fileName, string imageType)
+        public async Task<User> UpdateProfileBannerAsync(byte[] banner, string fileName, string imageType, CancellationToken cancelToken = default(CancellationToken))
         {
-            return await UpdateProfileBannerAsync(banner, fileName, imageType, 1500, 500, 0, 0).ConfigureAwait(false);
+            return await UpdateProfileBannerAsync(banner, fileName, imageType, 1500, 500, 0, 0, cancelToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -356,7 +361,7 @@ namespace LinqToTwitter
         /// Account of authenticated user who's profile banner will be updated.
         /// Url of new banner will appear in ProfileBannerUrl property.
         /// </returns>
-        public async Task<User> UpdateProfileBannerAsync(byte[] banner, string fileName, string imageType, int width, int height, int offsetLeft, int offsetTop)
+        public async Task<User> UpdateProfileBannerAsync(byte[] banner, string fileName, string imageType, int width, int height, int offsetLeft, int offsetTop, CancellationToken cancelToken = default(CancellationToken))
         {
             var accountUrl = BaseUrl + "account/update_profile_banner.json";
 
@@ -383,7 +388,7 @@ namespace LinqToTwitter
             string name = "banner";
             string imageMimeType = "image/" + imageType;
 
-            RawResult = await TwitterExecutor.PostMediaAsync(accountUrl, parameters, banner, name, fileName, imageMimeType).ConfigureAwait(false);
+            RawResult = await TwitterExecutor.PostMediaAsync(accountUrl, parameters, banner, name, fileName, imageMimeType, cancelToken).ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(RawResult, UserAction.SingleUser);
         }
@@ -392,7 +397,7 @@ namespace LinqToTwitter
         /// Removes banner from authenticated user's profile.
         /// </summary>
         /// <returns>Empty User instance.</returns>
-        public async Task<User> RemoveProfileBannerAsync()
+        public async Task<User> RemoveProfileBannerAsync(CancellationToken cancelToken = default(CancellationToken))
         {
             var accountUrl = BaseUrl + "account/remove_profile_banner.json";
 
@@ -401,7 +406,8 @@ namespace LinqToTwitter
             RawResult =
                 await TwitterExecutor.PostToTwitterAsync<User>(
                     accountUrl,
-                    new Dictionary<string, string>())
+                    new Dictionary<string, string>(),
+                    cancelToken)
                     .ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(RawResult, UserAction.SingleUser);

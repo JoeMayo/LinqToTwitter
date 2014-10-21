@@ -6,6 +6,7 @@ using LinqToTwitter;
 using LinqToTwitterPcl.Tests.Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using System.Threading;
 
 namespace LinqToTwitterPcl.Tests.MuteTests
 {
@@ -29,7 +30,8 @@ namespace LinqToTwitterPcl.Tests.MuteTests
             execMock.Setup(
                 exec => exec.PostToTwitterAsync<User>(
                     It.IsAny<string>(),
-                    It.IsAny<Dictionary<string, string>>()))
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<CancellationToken>()))
                     .Returns(tcsResponse.Task);
             execMock.Setup(
                 exec => exec.PostMediaAsync(
@@ -38,7 +40,8 @@ namespace LinqToTwitterPcl.Tests.MuteTests
                     It.IsAny<byte[]>(),
                     It.IsAny<string>(),
                     It.IsAny<string>(),
-                    It.IsAny<string>()))
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
                     .Returns(tcsResponse.Task);
             var ctx = new TwitterContext(execMock.Object);
             return ctx;
@@ -56,7 +59,8 @@ namespace LinqToTwitterPcl.Tests.MuteTests
             execMock.Verify(exec =>
                 exec.PostToTwitterAsync<User>(
                     "https://api.twitter.com/1.1/mutes/users/create.json",
-                    It.IsAny<Dictionary<string, string>>()),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<CancellationToken>()),
                 Times.Once());
             Assert.AreEqual(ScreenName, actual.ScreenNameResponse);
         }
@@ -74,7 +78,8 @@ namespace LinqToTwitterPcl.Tests.MuteTests
             execMock.Verify(exec =>
                 exec.PostToTwitterAsync<User>(
                     "https://api.twitter.com/1.1/mutes/users/create.json",
-                    It.IsAny<Dictionary<string, string>>()),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<CancellationToken>()),
                 Times.Once());
             Assert.AreEqual(ScreenName, actual.ScreenNameResponse);
         }
@@ -127,7 +132,8 @@ namespace LinqToTwitterPcl.Tests.MuteTests
             execMock.Verify(exec =>
                 exec.PostToTwitterAsync<User>(
                     "https://api.twitter.com/1.1/mutes/users/destroy.json",
-                    It.IsAny<Dictionary<string, string>>()),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<CancellationToken>()),
                 Times.Once());
             Assert.AreEqual(ScreenName, actual.ScreenNameResponse);
         }
@@ -145,7 +151,8 @@ namespace LinqToTwitterPcl.Tests.MuteTests
             execMock.Verify(exec =>
                 exec.PostToTwitterAsync<User>(
                     "https://api.twitter.com/1.1/mutes/users/destroy.json",
-                    It.IsAny<Dictionary<string, string>>()),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<CancellationToken>()),
                 Times.Once());
             Assert.AreEqual(ScreenName, actual.ScreenNameResponse);
         }

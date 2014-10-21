@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace LinqToTwitter
@@ -69,7 +70,7 @@ namespace LinqToTwitter
         /// <param name="image">Media to send</param>
         /// <returns>Status containing new reply</returns>
         [Obsolete("Twitter has deprecated this API and you should use UploadMediaAsync/ReplyAsync instead.")]
-        public async Task<Status> ReplyWithMediaAsync(ulong inReplyToStatusID, string status, bool possiblySensitive, decimal latitude, decimal longitude, string placeID, bool displayCoordinates, byte[] image)
+        public async Task<Status> ReplyWithMediaAsync(ulong inReplyToStatusID, string status, bool possiblySensitive, decimal latitude, decimal longitude, string placeID, bool displayCoordinates, byte[] image, CancellationToken cancelToken = default(CancellationToken))
         {
             if (string.IsNullOrWhiteSpace(status))
                 throw new ArgumentNullException("status", "status is a required parameter.");
@@ -100,7 +101,8 @@ namespace LinqToTwitter
                     image, 
                     name,
                     randomUnusedFileName,
-                    imageType)
+                    imageType,
+                    cancelToken)
                     .ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(RawResult, StatusAction.SingleStatus);
@@ -111,7 +113,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="media">Media to upload</param>
         /// <returns>Status containing new reply</returns>
-        public async Task<Media> UploadMediaAsync(byte[] media)
+        public async Task<Media> UploadMediaAsync(byte[] media, CancellationToken cancelToken = default(CancellationToken))
         {
             if (media == null || media.Length == 0)
                 throw new ArgumentNullException("image", "You must provide a byte[] of image data.");
@@ -130,7 +132,8 @@ namespace LinqToTwitter
                     media,
                     name,
                     randomUnusedFileName,
-                    imageType)
+                    imageType,
+                    cancelToken)
                     .ConfigureAwait(false);
 
             Status status = reqProc.ProcessActionResult(RawResult, StatusAction.MediaUpload);
@@ -374,7 +377,7 @@ namespace LinqToTwitter
         /// <param name="trimUser">Remove user entity from response</param>
         /// <param name="mediaIds">Collection of ids of media to include in tweet.</param>
         /// <returns>Tweeted status.</returns>
-        internal async Task<Status> TweetOrReplyAsync(ulong tweetID, string status, decimal latitude, decimal longitude, string placeID, bool displayCoordinates, bool trimUser, IEnumerable<ulong> mediaIds)
+        internal async Task<Status> TweetOrReplyAsync(ulong tweetID, string status, decimal latitude, decimal longitude, string placeID, bool displayCoordinates, bool trimUser, IEnumerable<ulong> mediaIds, CancellationToken cancelToken = default(CancellationToken))
         {
             if (string.IsNullOrWhiteSpace(status))
                 throw new ArgumentException("status is a required parameter.", "status");
@@ -394,7 +397,8 @@ namespace LinqToTwitter
                         {"display_coordinates", displayCoordinates ? displayCoordinates.ToString().ToLower() : null},
                         {"trim_user", trimUser ? trimUser.ToString().ToLower() : null },
                         {"media_ids", mediaIds == null || !mediaIds.Any() ? null : string.Join(",", mediaIds) }
-                    })
+                    },
+                    cancelToken)
                     .ConfigureAwait(false);
 
             return new StatusRequestProcessor<Status>()
@@ -406,7 +410,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="tweetID">ID of tweet to delete.</param>
         /// <returns>Deleted tweet.</returns>
-        public async Task<Status> DeleteTweetAsync(ulong tweetID)
+        public async Task<Status> DeleteTweetAsync(ulong tweetID, CancellationToken cancelToken = default(CancellationToken))
         {
             if (tweetID == MissingID)
                 throw new ArgumentException("0 is *not* a valid tweetID. You must provide the ID of the tweet you're deleting.", "tweetID");
@@ -414,7 +418,7 @@ namespace LinqToTwitter
             var destroyUrl = BaseUrl + "statuses/destroy/" + tweetID + ".json";
 
             RawResult = await TwitterExecutor
-                .PostToTwitterAsync<Status>(destroyUrl, new Dictionary<string, string>())
+                .PostToTwitterAsync<Status>(destroyUrl, new Dictionary<string, string>(), cancelToken)
                 .ConfigureAwait(false);
 
             return new StatusRequestProcessor<Status>()
@@ -426,7 +430,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="tweetID">ID of tweet being retweeted.</param>
         /// <returns>Retweeted tweet.</returns>
-        public async Task<Status> RetweetAsync(ulong tweetID)
+        public async Task<Status> RetweetAsync(ulong tweetID, CancellationToken cancelToken = default(CancellationToken))
         {
             if (tweetID == MissingID)
                 throw new ArgumentException("0 is *not* a valid tweetID. You must provide the ID of the tweet you're retweeting.", "tweetID");
@@ -434,7 +438,7 @@ namespace LinqToTwitter
             var retweetUrl = BaseUrl + "statuses/retweet/" + tweetID + ".json";
 
             RawResult = await TwitterExecutor
-                .PostToTwitterAsync<Status>(retweetUrl, new Dictionary<string, string>())
+                .PostToTwitterAsync<Status>(retweetUrl, new Dictionary<string, string>(), cancelToken)
                 .ConfigureAwait(false);
 
             return new StatusRequestProcessor<Status>()

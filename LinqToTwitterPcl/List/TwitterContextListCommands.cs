@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace LinqToTwitter
@@ -19,7 +20,7 @@ namespace LinqToTwitter
         /// <param name="mode">public or private</param>
         /// <param name="description">list description</param>
         /// <returns>List info for new list</returns>
-        public async Task<List> CreateListAsync(string listName, string mode, string description)
+        public async Task<List> CreateListAsync(string listName, string mode, string description, CancellationToken cancelToken = default(CancellationToken))
         {
             if (string.IsNullOrWhiteSpace(listName))
                 throw new ArgumentException("listName is required.", "listName");
@@ -36,7 +37,8 @@ namespace LinqToTwitter
                         { "name", listName },
                         { "mode", mode },
                         { "description", description }
-                    })
+                    },
+                    cancelToken)
                     .ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(RawResult, ListAction.Create);
@@ -52,7 +54,7 @@ namespace LinqToTwitter
         /// <param name="mode">public or private</param>
         /// <param name="description">list description</param>
         /// <returns>List info for modified list</returns>
-        public async Task<List> UpdateListAsync(ulong listID, string slug, string name, ulong ownerID, string ownerScreenName, string mode, string description)
+        public async Task<List> UpdateListAsync(ulong listID, string slug, string name, ulong ownerID, string ownerScreenName, string mode, string description, CancellationToken cancelToken = default(CancellationToken))
         {
             if (listID == 0 && string.IsNullOrWhiteSpace(slug))
                 throw new ArgumentException("Either listID or slug is required.", ListIDOrSlugParam);
@@ -76,7 +78,8 @@ namespace LinqToTwitter
                         { "mode", mode },
                         { "description", description },
                         { "name", name }
-                    })
+                    },
+                    cancelToken)
                     .ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(RawResult, ListAction.Update);
@@ -90,7 +93,7 @@ namespace LinqToTwitter
         /// <param name="ownerID">ID of user who owns the list.</param>
         /// <param name="ownerScreenName">Screen name of user who owns the list.</param>
         /// <returns>List info for deleted list</returns>
-        public async Task<List> DeleteListAsync(ulong listID, string slug, ulong ownerID, string ownerScreenName)
+        public async Task<List> DeleteListAsync(ulong listID, string slug, ulong ownerID, string ownerScreenName, CancellationToken cancelToken = default(CancellationToken))
         {
             if (listID == 0 && string.IsNullOrWhiteSpace(slug))
                 throw new ArgumentException("listID is required.", ListIDOrSlugParam);
@@ -111,7 +114,8 @@ namespace LinqToTwitter
                         { "slug", slug },
                         { "owner_id", ownerID.ToString() },
                         { "owner_screen_name", ownerScreenName }
-                    })
+                    },
+                    cancelToken)
                     .ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(RawResult, ListAction.Delete);
@@ -126,9 +130,9 @@ namespace LinqToTwitter
         /// <param name="ownerID">ID of user who owns the list.</param>
         /// <param name="ownerScreenName">Screen name of user who owns the list.</param>
         /// <returns>List info for list member added to</returns>
-        public async Task<List> AddMemberToListAsync(ulong userID, ulong listID, string slug, ulong ownerID, string ownerScreenName)
+        public async Task<List> AddMemberToListAsync(ulong userID, ulong listID, string slug, ulong ownerID, string ownerScreenName, CancellationToken cancelToken = default(CancellationToken))
         {
-            return await AddMemberToListAsync(userID, null, listID, slug, ownerID, ownerScreenName).ConfigureAwait(false);
+            return await AddMemberToListAsync(userID, null, listID, slug, ownerID, ownerScreenName, cancelToken).ConfigureAwait(false);
         }
         
         /// <summary>
@@ -140,9 +144,9 @@ namespace LinqToTwitter
         /// <param name="ownerID">ID of user who owns the list.</param>
         /// <param name="ownerScreenName">Screen name of user who owns the list.</param>
         /// <returns>List info for list member added to</returns>
-        public async Task<List> AddMemberToListAsync(string screenName, ulong listID, string slug, ulong ownerID, string ownerScreenName)
+        public async Task<List> AddMemberToListAsync(string screenName, ulong listID, string slug, ulong ownerID, string ownerScreenName, CancellationToken cancelToken = default(CancellationToken))
         {
-            return await AddMemberToListAsync(0, screenName, listID, slug, ownerID, ownerScreenName).ConfigureAwait(false);
+            return await AddMemberToListAsync(0, screenName, listID, slug, ownerID, ownerScreenName, cancelToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -155,7 +159,7 @@ namespace LinqToTwitter
         /// <param name="ownerID">ID of user who owns the list.</param>
         /// <param name="ownerScreenName">Screen name of user who owns the list.</param>
         /// <returns>List info for list member added to</returns>
-        async Task<List> AddMemberToListAsync(ulong userID, string screenName, ulong listID, string slug, ulong ownerID, string ownerScreenName)
+        async Task<List> AddMemberToListAsync(ulong userID, string screenName, ulong listID, string slug, ulong ownerID, string ownerScreenName, CancellationToken cancelToken = default(CancellationToken))
         {
             if (userID == 0 && string.IsNullOrWhiteSpace(screenName))
                 throw new ArgumentException("Either userID or screenName is required.", UserIDOrScreenNameParam);
@@ -186,7 +190,7 @@ namespace LinqToTwitter
             var reqProc = new ListRequestProcessor<List>();
 
             RawResult =
-                await TwitterExecutor.PostToTwitterAsync<List>(addMemberUrl, parameters).ConfigureAwait(false);
+                await TwitterExecutor.PostToTwitterAsync<List>(addMemberUrl, parameters, cancelToken).ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(RawResult, ListAction.AddMember);
         }
@@ -200,7 +204,7 @@ namespace LinqToTwitter
         /// <param name="ownerScreenName">Screen name of user who owns the list.</param>
         /// <param name="screenNames">List of user screen names to be list members. (max 100)</param>
         /// <returns>List info for list members added to.</returns>
-        public async Task<List> AddMemberRangeToListAsync(ulong listID, string slug, ulong ownerID, string ownerScreenName, List<string> screenNames)
+        public async Task<List> AddMemberRangeToListAsync(ulong listID, string slug, ulong ownerID, string ownerScreenName, List<string> screenNames, CancellationToken cancelToken = default(CancellationToken))
         {
             if (screenNames == null || screenNames.Count == 0)
                 throw new ArgumentException("screenNames is required. Check to see if the argument is null or the List<string> is empty.", "screenNames");
@@ -208,7 +212,7 @@ namespace LinqToTwitter
             if (screenNames != null && screenNames.Count > 100)
                 throw new ArgumentException("Max screenNames is 100 at a time.", "screenNames");
 
-            return await AddMemberRangeToListAsync(listID, slug, ownerID, ownerScreenName, userIDs: null, screenNames: screenNames).ConfigureAwait(false);
+            return await AddMemberRangeToListAsync(listID, slug, ownerID, ownerScreenName, userIDs: null, screenNames: screenNames, cancelToken: cancelToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -220,7 +224,7 @@ namespace LinqToTwitter
         /// <param name="ownerScreenName">Screen name of user who owns the list.</param>
         /// <param name="userIDs">List of user IDs to be list members. (max 100)</param>
         /// <returns>List info for list members added to.</returns>
-        public async Task<List> AddMemberRangeToListAsync(ulong listID, string slug, ulong ownerID, string ownerScreenName, List<ulong> userIDs)
+        public async Task<List> AddMemberRangeToListAsync(ulong listID, string slug, ulong ownerID, string ownerScreenName, List<ulong> userIDs, CancellationToken cancelToken = default(CancellationToken))
         {
             if (userIDs == null || userIDs.Count == 0)
                 throw new ArgumentException("userIDs is required. Check to see if the argument is null or the List<ulong> is empty.", "userIDs");
@@ -228,7 +232,7 @@ namespace LinqToTwitter
             if (userIDs != null && userIDs.Count > 100)
                 throw new ArgumentException("Max user IDs is 100 at a time.", "userIDs");
 
-            return await AddMemberRangeToListAsync(listID, slug, ownerID, ownerScreenName, userIDs, screenNames: null).ConfigureAwait(false);
+            return await AddMemberRangeToListAsync(listID, slug, ownerID, ownerScreenName, userIDs, screenNames: null, cancelToken: cancelToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -241,7 +245,7 @@ namespace LinqToTwitter
         /// <param name="userIDs">List of user IDs to be list members. (max 100)</param>
         /// <param name="screenNames">List of user screen names to be list members. (max 100)</param>
         /// <returns>List info for list members added to.</returns>
-        async Task<List> AddMemberRangeToListAsync(ulong listID, string slug, ulong ownerID, string ownerScreenName, IEnumerable<ulong> userIDs, List<string> screenNames)
+        async Task<List> AddMemberRangeToListAsync(ulong listID, string slug, ulong ownerID, string ownerScreenName, IEnumerable<ulong> userIDs, List<string> screenNames, CancellationToken cancelToken = default(CancellationToken))
         {
             if (listID == 0 && string.IsNullOrWhiteSpace(slug))
                 throw new ArgumentException("Either listID or slug is required.", ListIDOrSlugParam);
@@ -269,7 +273,7 @@ namespace LinqToTwitter
                 parameters.Add("owner_screen_name", ownerScreenName);
 
             RawResult =
-                await TwitterExecutor.PostToTwitterAsync<List>(addMemberRangeUrl, parameters).ConfigureAwait(false);
+                await TwitterExecutor.PostToTwitterAsync<List>(addMemberRangeUrl, parameters, cancelToken).ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(RawResult, ListAction.AddMember);
         }
@@ -284,7 +288,7 @@ namespace LinqToTwitter
         /// <param name="ownerID">ID of user who owns the list.</param>
         /// <param name="ownerScreenName">Screen name of user who owns the list.</param>
         /// <returns>List info for list member removed from</returns>
-        public async Task<List> DeleteMemberFromListAsync(ulong userID, string screenName, ulong listID, string slug, ulong ownerID, string ownerScreenName)
+        public async Task<List> DeleteMemberFromListAsync(ulong userID, string screenName, ulong listID, string slug, ulong ownerID, string ownerScreenName, CancellationToken cancelToken = default(CancellationToken))
         {
             if (userID == 0 && string.IsNullOrWhiteSpace(screenName))
                 throw new ArgumentException("Either userID or screenName is required.", UserIDOrScreenNameParam);
@@ -315,7 +319,7 @@ namespace LinqToTwitter
                 parameters.Add("owner_screen_name", ownerScreenName);
 
             RawResult =
-                await TwitterExecutor.PostToTwitterAsync<List>(deleteUrl, parameters).ConfigureAwait(false);
+                await TwitterExecutor.PostToTwitterAsync<List>(deleteUrl, parameters, cancelToken).ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(RawResult, ListAction.DeleteMember);
         }
@@ -328,7 +332,7 @@ namespace LinqToTwitter
         /// <param name="ownerID">ID of user who owns the list.</param>
         /// <param name="ownerScreenName">Screen name of user who owns the list.</param>
         /// <returns>List info for list subscribed to</returns>
-        public async Task<List> SubscribeToListAsync(ulong listID, string slug, ulong ownerID, string ownerScreenName)
+        public async Task<List> SubscribeToListAsync(ulong listID, string slug, ulong ownerID, string ownerScreenName, CancellationToken cancelToken = default(CancellationToken))
         {
             if (listID == 0 && string.IsNullOrWhiteSpace(slug))
                 throw new ArgumentException("Either listID or slug is required.", ListIDOrSlugParam);
@@ -352,7 +356,7 @@ namespace LinqToTwitter
                 parameters.Add("owner_screen_name", ownerScreenName);
 
             RawResult =
-                await TwitterExecutor.PostToTwitterAsync<List>(subscribeUrl, parameters).ConfigureAwait(false);
+                await TwitterExecutor.PostToTwitterAsync<List>(subscribeUrl, parameters, cancelToken).ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(RawResult, ListAction.Subscribe);
         }
@@ -365,7 +369,7 @@ namespace LinqToTwitter
         /// <param name="ownerID">ID of user who owns the list.</param>
         /// <param name="ownerScreenName">Screen name of user who owns the list.</param>
         /// <returns>List info for list subscription removed from</returns>
-        public async Task<List> UnsubscribeFromListAsync(ulong listID, string slug, ulong ownerID, string ownerScreenName)
+        public async Task<List> UnsubscribeFromListAsync(ulong listID, string slug, ulong ownerID, string ownerScreenName, CancellationToken cancelToken = default(CancellationToken))
         {
             if (listID == 0 && string.IsNullOrWhiteSpace(slug))
                 throw new ArgumentException("Either listID or slug is required.", ListIDOrSlugParam);
@@ -389,7 +393,7 @@ namespace LinqToTwitter
                 parameters.Add("owner_screen_name", ownerScreenName);
 
             RawResult =
-                await TwitterExecutor.PostToTwitterAsync<List>(unsubscribeUrl, parameters).ConfigureAwait(false);
+                await TwitterExecutor.PostToTwitterAsync<List>(unsubscribeUrl, parameters, cancelToken).ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(RawResult, ListAction.Unsubscribe);
         }
@@ -403,9 +407,9 @@ namespace LinqToTwitter
         /// <param name="ownerID">ID of users who owns the list.</param>
         /// <param name="ownerScreenName">Screen name of user who owns the list.</param>
         /// <returns>List info for list subscription removed from</returns>
-        public async Task<List> DeleteMemberRangeFromListAsync(ulong listID, string slug, List<ulong> userIDs, ulong ownerID, string ownerScreenName)
+        public async Task<List> DeleteMemberRangeFromListAsync(ulong listID, string slug, List<ulong> userIDs, ulong ownerID, string ownerScreenName, CancellationToken cancelToken = default(CancellationToken))
         {
-            return await DeleteMemberRangeFromListAsync(listID, slug, userIDs, null, ownerID, ownerScreenName).ConfigureAwait(false);
+            return await DeleteMemberRangeFromListAsync(listID, slug, userIDs, null, ownerID, ownerScreenName, cancelToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -417,9 +421,9 @@ namespace LinqToTwitter
         /// <param name="ownerID">ID of users who owns the list.</param>
         /// <param name="ownerScreenName">Screen name of user who owns the list.</param>
         /// <returns>List info for list subscription removed from</returns>
-        public async Task<List> DeleteMemberRangeFromListAsync(ulong listID, string slug, List<string> screenNames, ulong ownerID, string ownerScreenName)
+        public async Task<List> DeleteMemberRangeFromListAsync(ulong listID, string slug, List<string> screenNames, ulong ownerID, string ownerScreenName, CancellationToken cancelToken = default(CancellationToken))
         {
-            return await DeleteMemberRangeFromListAsync(listID, slug, null, screenNames, ownerID, ownerScreenName).ConfigureAwait(false);
+            return await DeleteMemberRangeFromListAsync(listID, slug, null, screenNames, ownerID, ownerScreenName, cancelToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -432,7 +436,7 @@ namespace LinqToTwitter
         /// <param name="ownerID">ID of users who owns the list.</param>
         /// <param name="ownerScreenName">Screen name of user who owns the list.</param>
         /// <returns>List info for list subscription removed from</returns>
-        async Task<List> DeleteMemberRangeFromListAsync(ulong listID, string slug, List<ulong> userIDs, List<string> screenNames, ulong ownerID, string ownerScreenName)
+        async Task<List> DeleteMemberRangeFromListAsync(ulong listID, string slug, List<ulong> userIDs, List<string> screenNames, ulong ownerID, string ownerScreenName, CancellationToken cancelToken = default(CancellationToken))
         {
             if (listID == 0 && string.IsNullOrWhiteSpace(slug))
                 throw new ArgumentException("Either listID or slug is required.", ListIDOrSlugParam);
@@ -465,7 +469,7 @@ namespace LinqToTwitter
                 parameters.Add("owner_screen_name", ownerScreenName);
 
             RawResult =
-                await TwitterExecutor.PostToTwitterAsync<List>(destroyAllUrl, parameters).ConfigureAwait(false);
+                await TwitterExecutor.PostToTwitterAsync<List>(destroyAllUrl, parameters, cancelToken).ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(RawResult, ListAction.DestroyAll);
         }

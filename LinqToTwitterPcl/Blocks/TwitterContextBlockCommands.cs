@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace LinqToTwitter
@@ -27,7 +28,7 @@ namespace LinqToTwitter
         /// <param name="includeEntities">Set to false to not include entities (default: true)</param>
         /// <param name="skipStatus">Don't include status</param>
         /// <returns>User that was unblocked</returns>
-        public async Task<User> CreateBlockAsync(ulong userID, string screenName, bool includeEntities, bool skipStatus)
+        public async Task<User> CreateBlockAsync(ulong userID, string screenName, bool includeEntities, bool skipStatus, CancellationToken cancelToken = default(CancellationToken))
         {
             if (userID <= 0 && string.IsNullOrWhiteSpace(screenName))
                 throw new ArgumentException("Either userID or screenName are required parameters.", "UserIDOrScreenName");
@@ -45,7 +46,8 @@ namespace LinqToTwitter
                         { "screen_name", screenName },
                         { "include_entities", includeEntities.ToString().ToLower() },
                         { "skip_status", skipStatus.ToString().ToLower() }
-                    })
+                    },
+                    cancelToken)
                     .ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(RawResult, UserAction.SingleUser);
@@ -58,9 +60,9 @@ namespace LinqToTwitter
         /// <param name="screenName">Screen name of user to block</param>
         /// <param name="skipStatus">Don't include status</param>
         /// <returns>User that was unblocked</returns>
-        public async Task<User> DestroyBlockAsync(ulong userID, string screenName, bool skipStatus)
+        public async Task<User> DestroyBlockAsync(ulong userID, string screenName, bool skipStatus, CancellationToken cancelToken = default(CancellationToken))
         {
-            return await DestroyBlockAsync(userID, screenName, true, skipStatus).ConfigureAwait(false);
+            return await DestroyBlockAsync(userID, screenName, true, skipStatus, cancelToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -71,7 +73,7 @@ namespace LinqToTwitter
         /// <param name="includeEntities">Set to false to not include entities (default: true)</param>
         /// <param name="skipStatus">Don't include status</param>
         /// <returns>User that was unblocked</returns>
-        public async Task<User> DestroyBlockAsync(ulong userID, string screenName, bool includeEntities, bool skipStatus)
+        public async Task<User> DestroyBlockAsync(ulong userID, string screenName, bool includeEntities, bool skipStatus, CancellationToken cancelToken = default(CancellationToken))
         {
             if (userID <= 0 && string.IsNullOrWhiteSpace(screenName))
                 throw new ArgumentException("Either userID or screenName are required parameters.", "UserIDOrScreenName");
@@ -89,7 +91,8 @@ namespace LinqToTwitter
                         { "screen_name", screenName },
                         { "include_entities", includeEntities.ToString().ToLower() },
                         { "skip_status", skipStatus.ToString().ToLower() }
-                    })
+                    },
+                    cancelToken)
                     .ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(RawResult, UserAction.SingleUser);

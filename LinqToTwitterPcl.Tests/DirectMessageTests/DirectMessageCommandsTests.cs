@@ -5,6 +5,7 @@ using LinqToTwitter;
 using LinqToTwitterPcl.Tests.Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using System.Threading;
 
 namespace LinqToTwitterPcl.Tests.DirectMessageTests
 {
@@ -36,7 +37,8 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
             execMock.SetupGet(exec => exec.Authorizer).Returns(authMock.Object);
             execMock.Setup(exec => exec.PostToTwitterAsync<DirectMessage>(
                 It.IsAny<string>(),
-                It.IsAny<Dictionary<string, string>>()))
+                It.IsAny<Dictionary<string, string>>(),
+                It.IsAny<CancellationToken>()))
                     .Returns(tcsResponse.Task);
             var ctx = new TwitterContext(execMock.Object);
             return ctx;
@@ -78,7 +80,8 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
             execMock.Verify(exec =>
                 exec.PostToTwitterAsync<DirectMessage>(
                     "https://api.twitter.com/1.1/direct_messages/new.json",
-                    It.IsAny<Dictionary<string, string>>()),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<CancellationToken>()),
                 Times.Once());
         }
 
@@ -154,7 +157,8 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
                 exec =>
                 exec.PostToTwitterAsync<DirectMessage>(
                     "https://api.twitter.com/1.1/direct_messages/destroy.json",
-                    It.IsAny<Dictionary<string, string>>()),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<CancellationToken>()),
                 Times.Once());
         }
 

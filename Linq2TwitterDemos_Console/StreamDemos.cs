@@ -71,81 +71,115 @@ namespace Linq2TwitterDemos_Console
         {
             Console.WriteLine("\nStreamed Content: \n");
             int count = 0;
+            var cancelTokenSrc = new CancellationTokenSource();
 
-            await
-                (from strm in twitterCtx.Streaming
-                 where strm.Type == StreamingType.Filter &&
-                       strm.Track == "twitter"
-                 select strm)
-                .StartAsync(async strm =>
-                {
-                    Console.WriteLine(strm.Content + "\n");
+            try
+            {
+                await
+                    (from strm in twitterCtx.Streaming
+                                            .WithCancellation(cancelTokenSrc.Token)
+                     where strm.Type == StreamingType.Filter &&
+                           strm.Track == "twitter"
+                     select strm)
+                    .StartAsync(async strm =>
+                    {
+                        Console.WriteLine(strm.Content + "\n");
 
-                    if (count++ >= 5)
-                        strm.CloseStream();
-                });
+                        if (count++ >= 5)
+                            cancelTokenSrc.Cancel();
+                    });
+            }
+            catch (OperationCanceledException)
+            {
+                Console.WriteLine("Stream cancelled.");
+            }
         }
   
         static async Task DoSampleStreamAsync(TwitterContext twitterCtx)
         {
             Console.WriteLine("\nStreamed Content: \n");
             int count = 0;
+            var cancelTokenSrc = new CancellationTokenSource();
 
-            await
-                (from strm in twitterCtx.Streaming
-                 where strm.Type == StreamingType.Sample
-                 select strm)
-                .StartAsync(async strm =>
-                {
-                    Console.WriteLine(strm.Content + "\n");
+            try
+            {
+                await
+                    (from strm in twitterCtx.Streaming.WithCancellation(cancelTokenSrc.Token)
+                     where strm.Type == StreamingType.Sample
+                     select strm)
+                    .StartAsync(async strm =>
+                    {
+                        Console.WriteLine(strm.Content + "\n");
 
-                    if (count++ >= 5)
-                        strm.CloseStream();
-                });
+                        if (count++ >= 5)
+                            cancelTokenSrc.Cancel();
+                    });
+            }
+            catch (OperationCanceledException)
+            {
+                Console.WriteLine("Stream cancelled.");
+            }
         }
   
         static async Task DoUserStreamAsync(TwitterContext twitterCtx)
         {
             Console.WriteLine("\nStreamed Content: \n");
             int count = 0;
+            var cancelTokenSrc = new CancellationTokenSource();
 
-            await
-                (from strm in twitterCtx.Streaming
-                 where strm.Type == StreamingType.User
-                 select strm)
-                .StartAsync(async strm =>
-                {
-                    string message = 
-                        string.IsNullOrEmpty(strm.Content) ? 
-                            "Keep-Alive" : strm.Content;
-                    Console.WriteLine(
-                        (count + 1).ToString() + 
-                        ". " + DateTime.Now + 
-                        ": " + message + "\n");
+            try
+            {
+                await
+                    (from strm in twitterCtx.Streaming
+                     where strm.Type == StreamingType.User
+                     select strm)
+                    .WithCancellation(cancelTokenSrc.Token)
+                    .StartAsync(async strm =>
+                    {
+                        string message = 
+                            string.IsNullOrEmpty(strm.Content) ? 
+                                "Keep-Alive" : strm.Content;
+                        Console.WriteLine(
+                            (count + 1).ToString() + 
+                            ". " + DateTime.Now + 
+                            ": " + message + "\n");
 
-                    if (count++ == 5)
-                        strm.CloseStream();
-                });
+                        if (count++ == 5)
+                            cancelTokenSrc.Cancel();
+                    });
+            }
+            catch (OperationCanceledException)
+            {
+                Console.WriteLine("Stream cancelled.");
+            }
         }
   
         static async Task DoSiteStreamAsync(TwitterContext twitterCtx)
         {
             Console.WriteLine("\nStreamed Content: \n");
             int count = 0;
+            var cancelTokenSrc = new CancellationTokenSource();
 
-            await
-                (from strm in twitterCtx.Streaming
-                 where strm.Type == StreamingType.Site &&
-                       strm.Follow == "15411837,16761255"
-                 select strm)
-                .StartAsync(async strm =>
-                {
-                    string message = string.IsNullOrEmpty(strm.Content) ? "Keep-Alive" : strm.Content;
-                    Console.WriteLine((count + 1).ToString() + ". " + DateTime.Now + ": " + message + "\n");
+            try
+            {
+                await
+                    (from strm in twitterCtx.Streaming.WithCancellation(cancelTokenSrc.Token)
+                     where strm.Type == StreamingType.Site &&
+                           strm.Follow == "15411837,16761255"
+                     select strm)
+                    .StartAsync(async strm =>
+                    {
+                        string message = string.IsNullOrEmpty(strm.Content) ? "Keep-Alive" : strm.Content;
+                        Console.WriteLine((count + 1).ToString() + ". " + DateTime.Now + ": " + message + "\n");
 
-                    if (count++ == 5)
-                        strm.CloseStream();
-                });
+                        if (count++ == 5)
+                            cancelTokenSrc.Cancel();
+                    });
+            }
+            catch (OperationCanceledException)
+            {
+                Console.WriteLine("Stream cancelled.");
+            }
         }
   
         static async Task DoControlStreamAsync(TwitterContext twitterCtx)
@@ -157,28 +191,37 @@ namespace Linq2TwitterDemos_Console
             {
                 Console.WriteLine("\nStreamed Content: \n");
                 int count = 0;
+                var cancelTokenSrc = new CancellationTokenSource();
 
-                await
-                    (from strm in twitterCtx.Streaming
-                     where strm.Type == StreamingType.Site &&
-                           strm.Follow == "15411837,16761255"
-                     select strm)
-                    .StartAsync(async strm =>
-                    {
-                        Console.WriteLine(strm.Content + "\n");
-
-                        var json = JsonMapper.ToObject(strm.Content);
-                        var jsonDict = json as IDictionary<string, JsonData>;
-
-                        if (jsonDict != null && jsonDict.ContainsKey("control"))
+                try
+                {
+                    await
+                        (from strm in twitterCtx.Streaming
+                         where strm.Type == StreamingType.Site &&
+                               strm.Follow == "15411837,16761255"
+                         select strm)
+                        .WithCancellation(cancelTokenSrc.Token)
+                        .StartAsync(async strm =>
                         {
-                            streamID = json["control"]["control_uri"].ToString().Replace("/1.1/site/c/", "");
-                            evt.Set();
-                        }
+                            Console.WriteLine(strm.Content + "\n");
 
-                        if (count++ == 5)
-                            strm.CloseStream();
-                    });
+                            var json = JsonMapper.ToObject(strm.Content);
+                            var jsonDict = json as IDictionary<string, JsonData>;
+
+                            if (jsonDict != null && jsonDict.ContainsKey("control"))
+                            {
+                                streamID = json["control"]["control_uri"].ToString().Replace("/1.1/site/c/", "");
+                                evt.Set();
+                            }
+
+                            if (count++ == 5)
+                                cancelTokenSrc.Cancel();
+                        });
+                }
+                catch (OperationCanceledException)
+                {
+                    Console.WriteLine("Stream cancelled.");
+                }
             });
 
             evt.Wait();
@@ -188,10 +231,10 @@ namespace Linq2TwitterDemos_Console
             var ctrlStrmFollowers =
                 await
                 (from strm in twitterCtx.ControlStream
-                 where strm.Type == ControlStreamType.Followers &&
-                       strm.UserID == 15411837 &&
-                       strm.StreamID == streamID
-                 select strm)
+                    where strm.Type == ControlStreamType.Followers &&
+                        strm.UserID == 15411837 &&
+                        strm.StreamID == streamID
+                    select strm)
                 .SingleOrDefaultAsync();
 
             if (ctrlStrmFollowers != null)
@@ -213,9 +256,9 @@ namespace Linq2TwitterDemos_Console
             
             var ctrlStrmInfo =
                 (from strm in twitterCtx.ControlStream
-                 where strm.Type == ControlStreamType.Info &&
-                       strm.StreamID == streamID
-                 select strm)
+                    where strm.Type == ControlStreamType.Info &&
+                        strm.StreamID == streamID
+                    select strm)
                 .SingleOrDefault();
 
             if (ctrlStrmInfo != null)

@@ -6,6 +6,7 @@ using LinqToTwitter;
 using LinqToTwitterPcl.Tests.Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using System.Threading;
 
 namespace LinqToTwitterPcl.Tests.FriendshipTests
 {
@@ -30,7 +31,8 @@ namespace LinqToTwitterPcl.Tests.FriendshipTests
             execMock.Setup(exec =>
                 exec.PostToTwitterAsync<TEntity>(
                     It.IsAny<string>(),
-                    It.IsAny<IDictionary<string, string>>()))
+                    It.IsAny<IDictionary<string, string>>(),
+                    It.IsAny<CancellationToken>()))
                 .Returns(tcsResponse.Task);
             ctx = new TwitterContext(execMock.Object);
         }
@@ -149,7 +151,8 @@ namespace LinqToTwitterPcl.Tests.FriendshipTests
 
             execMock.Verify(exec => exec.PostToTwitterAsync<Friendship>(
                 "https://api.twitter.com/1.1/friendships/update.json",
-                It.IsAny<Dictionary<string, string>>()),
+                It.IsAny<Dictionary<string, string>>(),
+                It.IsAny<CancellationToken>()),
                 Times.Once());
         }
 

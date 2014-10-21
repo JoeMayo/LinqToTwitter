@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using LinqToTwitter;
 using LinqToTwitterPcl.Tests.Common;
@@ -29,12 +30,14 @@ namespace LinqToTwitterPcl.Tests.AccountTests
             execMock.Setup(
                 exec => exec.PostToTwitterAsync<Account>(
                     It.IsAny<string>(),
-                    It.IsAny<Dictionary<string, string>>()))
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<CancellationToken>()))
                     .Returns(tcsResponse.Task);
             execMock.Setup(
                 exec => exec.PostToTwitterAsync<User>(
                     It.IsAny<string>(),
-                    It.IsAny<Dictionary<string, string>>()))
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<CancellationToken>()))
                     .Returns(tcsResponse.Task);
             execMock.Setup(
                 exec => exec.PostMediaAsync(
@@ -43,7 +46,8 @@ namespace LinqToTwitterPcl.Tests.AccountTests
                     It.IsAny<byte[]>(),
                     It.IsAny<string>(),
                     It.IsAny<string>(),
-                    It.IsAny<string>()))
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
                     .Returns(tcsResponse.Task);
             var ctx = new TwitterContext(execMock.Object);
             return ctx;
@@ -65,7 +69,8 @@ namespace LinqToTwitterPcl.Tests.AccountTests
             execMock.Verify(exec =>
                 exec.PostToTwitterAsync<User>(
                     "https://api.twitter.com/1.1/account/update_profile.json",
-                    It.IsAny<Dictionary<string, string>>()),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<CancellationToken>()),
                 Times.Once());
             Assert.AreEqual(ExpectedName, actual.Name);
         }
@@ -181,7 +186,8 @@ namespace LinqToTwitterPcl.Tests.AccountTests
                     It.IsAny<byte[]>(),
                     It.IsAny<string>(),
                     It.IsAny<string>(),
-                    It.IsAny<string>()),
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()),
                 Times.Once());
             Assert.AreEqual(ExpectedName, actual.Name);
         }
@@ -240,7 +246,8 @@ namespace LinqToTwitterPcl.Tests.AccountTests
             execMock.Verify(exec =>
                 exec.PostToTwitterAsync<User>(
                     "https://api.twitter.com/1.1/account/update_profile_colors.json",
-                    It.IsAny<Dictionary<string, string>>()),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<CancellationToken>()),
                 Times.Once());
             Assert.AreEqual(expectedName, actual.Name);
         }
@@ -307,7 +314,8 @@ namespace LinqToTwitterPcl.Tests.AccountTests
                     It.IsAny<byte[]>(),
                     It.IsAny<string>(),
                     It.IsAny<string>(),
-                    It.IsAny<string>()),
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()),
                 Times.Once());
         }
 
@@ -376,7 +384,8 @@ namespace LinqToTwitterPcl.Tests.AccountTests
             execMock.Verify(exec =>
                 exec.PostToTwitterAsync<Account>(
                     "https://api.twitter.com/1.1/account/settings.json",
-                    parameters),
+                    parameters,
+                    It.IsAny<CancellationToken>()),
                 Times.Once());
             Assert.IsNotNull(acct);
             Settings settings = acct.Settings;
@@ -421,7 +430,8 @@ namespace LinqToTwitterPcl.Tests.AccountTests
             execMock.Verify(exec =>
                 exec.PostToTwitterAsync<Account>(
                     "https://api.twitter.com/1.1/account/update_delivery_device.json",
-                    parameters),
+                    parameters,
+                    It.IsAny<CancellationToken>()),
                 Times.Once());
             Assert.IsNotNull(acct);
             Settings settings = acct.Settings;
@@ -456,7 +466,8 @@ namespace LinqToTwitterPcl.Tests.AccountTests
                     It.IsAny<byte[]>(),
                     It.IsAny<string>(),
                     It.IsAny<string>(),
-                    It.IsAny<string>()),
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()),
                 Times.Once());
             Assert.IsNotNull(actual);
             Assert.IsNotNull(actual.ProfileBannerUrl);
@@ -576,7 +587,8 @@ namespace LinqToTwitterPcl.Tests.AccountTests
             execMock.Verify(exec =>
                 exec.PostToTwitterAsync<User>(
                     "https://api.twitter.com/1.1/account/remove_profile_banner.json",
-                    It.IsAny<Dictionary<string, string>>()),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<CancellationToken>()),
                 Times.Once());
             Assert.IsNotNull(actual);
         }

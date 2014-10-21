@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace LinqToTwitter
@@ -73,6 +74,24 @@ namespace LinqToTwitter
             IEnumerable<T> results = (IEnumerable<T>)await provider.ExecuteAsync<T>(query.Expression).ConfigureAwait(false);
 
             return results.Single();
+        }
+
+        /// <summary>
+        /// Enables use of .NET Cancellation Framework for this query.
+        /// </summary>
+        /// <param name="streaming">Query being extended</param>
+        /// <param name="callback">Your code for handling Twitter content</param>
+        /// <returns>Streaming instance to support further LINQ opertations</returns>
+        public static IQueryable<T> WithCancellation<T>(this IQueryable<T> query, CancellationToken cancelToken)
+            where T : class
+        {
+            var provider = query.Provider as TwitterQueryProvider;
+            provider
+                .Context
+                .TwitterExecutor
+                .CancellationToken = cancelToken;
+
+            return query;
         }
     }
 }

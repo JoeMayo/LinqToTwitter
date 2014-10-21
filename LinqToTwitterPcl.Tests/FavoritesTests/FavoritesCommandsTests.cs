@@ -6,6 +6,7 @@ using LinqToTwitter;
 using LinqToTwitterPcl.Tests.Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using System.Threading;
 
 namespace LinqToTwitterPcl.Tests.FavoritesTests
 {
@@ -27,7 +28,8 @@ namespace LinqToTwitterPcl.Tests.FavoritesTests
             execMock.Setup(exec =>
                 exec.PostToTwitterAsync<Status>(
                     It.IsAny<string>(),
-                    It.IsAny<Dictionary<string, string>>()))
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<CancellationToken>()))
                 .Returns(tcsResponse.Task);
             var ctx = new TwitterContext(execMock.Object);
             return ctx;

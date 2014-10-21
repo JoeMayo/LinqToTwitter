@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace LinqToTwitter
@@ -13,11 +14,11 @@ namespace LinqToTwitter
         /// <param name="queryString">The segments that follow the base URL. i.e. "statuses/home_timeline.json" for a home timeline query</param>
         /// <param name="parameters">Querystring parameters that will be appended to the URL</param>
         /// <returns>Twitter JSON response.</returns>
-        public async Task<string> ExecuteRawAsync(string queryString, Dictionary<string, string> parameters)
+        public async Task<string> ExecuteRawAsync(string queryString, Dictionary<string, string> parameters, CancellationToken cancelToken = default(CancellationToken))
         {
             string rawUrl = BaseUrl.TrimEnd('/') + "/" + queryString.TrimStart('/');
 
-            RawResult = await TwitterExecutor.PostToTwitterAsync<Raw>(rawUrl, parameters).ConfigureAwait(false);
+            RawResult = await TwitterExecutor.PostToTwitterAsync<Raw>(rawUrl, parameters, cancelToken).ConfigureAwait(false);
 
             return RawResult;
         }

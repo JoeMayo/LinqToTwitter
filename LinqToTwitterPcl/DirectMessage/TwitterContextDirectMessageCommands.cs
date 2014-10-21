@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace LinqToTwitter
@@ -13,7 +14,7 @@ namespace LinqToTwitter
         /// <param name="screenName">ScreenName of user to send to.</param>
         /// <param name="text">Direct message contents.</param>
         /// <returns>Direct message element.</returns>
-        public async Task<DirectMessage> NewDirectMessageAsync(string screenName, string text)
+        public async Task<DirectMessage> NewDirectMessageAsync(string screenName, string text, CancellationToken cancelToken = default(CancellationToken))
         {
             if (string.IsNullOrWhiteSpace(screenName))
                 throw new ArgumentException("screenName is a required parameter.", "screenName");
@@ -32,7 +33,8 @@ namespace LinqToTwitter
                     {
                         {"screen_name", screenName},
                         {"text", text}
-                    })
+                    },
+                    cancelToken)
                     .ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(RawResult, DirectMessageType.Show);
@@ -44,7 +46,7 @@ namespace LinqToTwitter
         /// <param name="userID">User ID of user to send to.</param>
         /// <param name="text">Direct message contents.</param>
         /// <returns>Direct message element.</returns>
-        public async Task<DirectMessage> NewDirectMessageAsync(ulong userID, string text)
+        public async Task<DirectMessage> NewDirectMessageAsync(ulong userID, string text, CancellationToken cancelToken = default(CancellationToken))
         {
             if (userID == 0)
                 throw new ArgumentException("userID must be set.", "userID");
@@ -63,7 +65,8 @@ namespace LinqToTwitter
                     {
                         {"user_id", userID.ToString()},
                         {"text", text}
-                    })
+                    },
+                    cancelToken)
                     .ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(RawResult, DirectMessageType.Show);
@@ -75,7 +78,7 @@ namespace LinqToTwitter
         /// <param name="id">id of direct message</param>
         /// <param name="includeEntites">Set to false to prevent entities from being included (default: true).</param>
         /// <returns>direct message element</returns>
-        public async Task<DirectMessage> DestroyDirectMessageAsync(ulong id, bool includeEntites)
+        public async Task<DirectMessage> DestroyDirectMessageAsync(ulong id, bool includeEntites, CancellationToken cancelToken = default(CancellationToken))
         {
             if (id == 0)
                 throw new ArgumentNullException("id", "id is required.");
@@ -91,7 +94,8 @@ namespace LinqToTwitter
                     {
                         {"id", id.ToString()},
                         {"include_entities", includeEntites.ToString().ToLower()}
-                    })
+                    },
+                    cancelToken)
                     .ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(RawResult, DirectMessageType.Show);

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using LinqToTwitter;
 using LinqToTwitterPcl.Tests.Common;
@@ -29,7 +30,8 @@ namespace LinqToTwitterPcl.Tests.AccountTests
             execMock.Setup(
                 exec => exec.PostToTwitterAsync<User>(
                     It.IsAny<string>(),
-                    It.IsAny<Dictionary<string, string>>()))
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<CancellationToken>()))
                     .Returns(tcsResponse.Task);
             execMock.Setup(
                 exec => exec.PostMediaAsync(
@@ -38,7 +40,8 @@ namespace LinqToTwitterPcl.Tests.AccountTests
                     It.IsAny<byte[]>(),
                     It.IsAny<string>(),
                     It.IsAny<string>(),
-                    It.IsAny<string>()))
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
                     .Returns(tcsResponse.Task);
             var ctx = new TwitterContext(execMock.Object);
             return ctx;
@@ -55,7 +58,8 @@ namespace LinqToTwitterPcl.Tests.AccountTests
             execMock.Verify(exec =>
                 exec.PostToTwitterAsync<User>(
                     "https://api.twitter.com/1.1/users/report_spam.json",
-                    It.IsAny<IDictionary<string, string>>()),
+                    It.IsAny<IDictionary<string, string>>(),
+                    It.IsAny<CancellationToken>()),
                 Times.Once());
             Assert.AreEqual(ScreenName, actual.ScreenNameResponse);
         }
@@ -82,7 +86,8 @@ namespace LinqToTwitterPcl.Tests.AccountTests
             execMock.Verify(exec =>
                 exec.PostToTwitterAsync<User>(
                     "https://api.twitter.com/1.1/users/report_spam.json",
-                    It.IsAny<IDictionary<string, string>>()),
+                    It.IsAny<IDictionary<string, string>>(),
+                    It.IsAny<CancellationToken>()),
                 Times.Once());
             Assert.AreEqual(ScreenName, actual.ScreenNameResponse);
         }

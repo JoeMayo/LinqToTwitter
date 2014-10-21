@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace LinqToTwitter
@@ -50,7 +51,7 @@ namespace LinqToTwitter
         /// <param name="postData">parameters to post</param>
         /// <param name="getResult">callback for handling async Json response - null if synchronous</param>
         /// <returns>Json Response from Twitter - empty string if async</returns>
-        Task<string> PostToTwitterAsync<T>(string url, IDictionary<string, string> postData);
+        Task<string> PostToTwitterAsync<T>(string url, IDictionary<string, string> postData, CancellationToken cancelToken);
 
         /// <summary>
         /// performs HTTP POST media byte array upload to Twitter
@@ -62,7 +63,7 @@ namespace LinqToTwitter
         /// <param name="fileName">name to pass to Twitter for the file</param>
         /// <param name="contentType">Type of image: must be one of jpg, gif, or png</param>
         /// <returns>JSON results From Twitter</returns>
-        Task<string> PostMediaAsync(string url, IDictionary<string, string> postData, byte[] image, string name, string fileName, string contentType);
+        Task<string> PostMediaAsync(string url, IDictionary<string, string> postData, byte[] image, string name, string fileName, string contentType, CancellationToken cancelToken);
 
         /// <summary>
         /// makes HTTP call to Twitter API
@@ -88,6 +89,11 @@ namespace LinqToTwitter
         /// Set to true to close stream, false means stream is still open
         /// </summary>
         bool IsStreamClosed { get; }
+
+        /// <summary>
+        /// Allows callers to cancel operation (where applicable)
+        /// </summary>
+        CancellationToken CancellationToken { get; set; }
 
         /// <summary>
         /// Closes the stream

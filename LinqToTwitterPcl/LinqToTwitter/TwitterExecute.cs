@@ -5,6 +5,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using LinqToTwitter.Net;
 
@@ -88,6 +89,11 @@ namespace LinqToTwitter
         /// </summary>
         public bool IsStreamClosed { get; internal set; }
 
+        /// <summary>
+        /// Allows callers to cancel operation (where applicable)
+        /// </summary>
+        public CancellationToken CancellationToken { get; set; }
+
         readonly object asyncCallbackLock = new object();
 
         /// <summary>
@@ -127,7 +133,7 @@ namespace LinqToTwitter
                 if (Timeout != 0)
                     client.Timeout = new TimeSpan(0, 0, 0, Timeout);
 
-                var msg = await client.SendAsync(req).ConfigureAwait(false);
+                var msg = await client.SendAsync(req, CancellationToken).ConfigureAwait(false);
 
                 return await HandleResponseAsync(msg).ConfigureAwait(false);
             }
@@ -175,16 +181,26 @@ namespace LinqToTwitter
 
                 const int CarriageReturn = 0x0D;
                 const int LineFeed = 0x0A;
+
                 var memStr = new MemoryStream();
+                byte[] readByte;
 
                 while (stream.CanRead && !IsStreamClosed)
                 {
-                    int nextByte = stream.ReadByte();
+                    //int nextByte = stream.ReadByte();
+
+                    readByte = new byte[1];
+                    await stream.ReadAsync(readByte, 0, 1, CancellationToken);
+                    byte nextByte = readByte.SingleOrDefault();
+
+                    CancellationToken.ThrowIfCancellationRequested();
+
+                    if (IsStreamClosed) break;
 
                     if (nextByte == -1) break;
 
                     if (nextByte != CarriageReturn && nextByte != LineFeed)
-                        memStr.WriteByte((byte)nextByte);
+                        memStr.WriteByte(nextByte);
 
                     if (nextByte == LineFeed)
                     {
@@ -192,7 +208,7 @@ namespace LinqToTwitter
                         byte[] tweetBytes = new byte[byteCount];
 
                         memStr.Position = 0;
-                        await memStr.ReadAsync(tweetBytes, 0, byteCount).ConfigureAwait(false);
+                        await memStr.ReadAsync(tweetBytes, 0, byteCount, CancellationToken).ConfigureAwait(false);
 
                         string tweet = Encoding.UTF8.GetString(tweetBytes, 0, byteCount);
                         var strmContent = new StreamContent(this, tweet);
@@ -268,7 +284,7 @@ namespace LinqToTwitter
         /// <param name="contentType">Type of image: must be one of jpg, gif, or png.</param>
         /// <param name="reqProc">Request processor for handling results.</param>
         /// <returns>JSON response From Twitter.</returns>
-        public async Task<string> PostMediaAsync(string url, IDictionary<string, string> postData, byte[] data, string name, string fileName, string contentType)
+        public async Task<string> PostMediaAsync(string url, IDictionary<string, string> postData, byte[] data, string name, string fileName, string contentType, CancellationToken cancelToken)
         {
             WriteLog(url, "QueryTwitterAsync");
 
@@ -294,7 +310,7 @@ namespace LinqToTwitter
                 if (Timeout != 0)
                     client.Timeout = new TimeSpan(0, 0, 0, Timeout);
 
-                HttpResponseMessage msg = await client.PostAsync(url, multiPartContent).ConfigureAwait(false);
+                HttpResponseMessage msg = await client.PostAsync(url, multiPartContent, cancelToken).ConfigureAwait(false);
 
                 return await HandleResponseAsync(msg);
             }
@@ -307,7 +323,7 @@ namespace LinqToTwitter
         /// <param name="postData">parameters to post</param>
         /// <param name="getResult">callback for handling async Json response - null if synchronous</param>
         /// <returns>Json Response from Twitter - empty string if async</returns>
-        public async Task<string> PostToTwitterAsync<T>(string url, IDictionary<string, string> postData)
+        public async Task<string> PostToTwitterAsync<T>(string url, IDictionary<string, string> postData, CancellationToken cancelToken)
         {
             WriteLog(url, "PostToTwitterAsync");
 

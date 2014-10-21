@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace LinqToTwitter
@@ -13,7 +14,7 @@ namespace LinqToTwitter
         /// <param name="userID">ID of user to follow</param>
         /// <param name="follow">Receive notifications for the followed friend</param>
         /// <returns>followed friend user info</returns>
-        public async Task<User> CreateFriendshipAsync(ulong userID, bool follow)
+        public async Task<User> CreateFriendshipAsync(ulong userID, bool follow, CancellationToken cancelToken = default(CancellationToken))
         {
             if (userID == 0)
                 throw new ArgumentException("userID is a required parameter.", "userID");
@@ -36,7 +37,8 @@ namespace LinqToTwitter
             RawResult =
                 await TwitterExecutor.PostToTwitterAsync<User>(
                     destroyUrl,
-                    createParams)
+                    createParams,
+                    cancelToken)
                     .ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(RawResult, FriendshipAction.Create);
@@ -48,7 +50,7 @@ namespace LinqToTwitter
         /// <param name="screenName">Screen name of user to follow</param>
         /// <param name="follow">Receive notifications for the followed friend</param>
         /// <returns>followed friend user info</returns>
-        public async Task<User> CreateFriendshipAsync(string screenName, bool follow)
+        public async Task<User> CreateFriendshipAsync(string screenName, bool follow, CancellationToken cancelToken = default(CancellationToken))
         {
             if (string.IsNullOrWhiteSpace(screenName))
                 throw new ArgumentException("screenName is a required parameter.", "screenName");
@@ -71,7 +73,8 @@ namespace LinqToTwitter
             RawResult =
                 await TwitterExecutor.PostToTwitterAsync<User>(
                     destroyUrl,
-                    createParams)
+                    createParams,
+                    cancelToken)
                     .ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(RawResult, FriendshipAction.Create);
@@ -82,7 +85,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="userID">ID of user to unfollow</param>
         /// <returns>followed friend user info</returns>
-        public async Task<User> DestroyFriendshipAsync(ulong userID)
+        public async Task<User> DestroyFriendshipAsync(ulong userID, CancellationToken cancelToken = default(CancellationToken))
         {
             if (userID == 0)
                 throw new ArgumentException("userID is a required parameter.", "userID");
@@ -97,7 +100,8 @@ namespace LinqToTwitter
                     new Dictionary<string, string>
                     {
                         { "user_id", userID.ToString() }
-                    })
+                    },
+                    cancelToken)
                     .ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(RawResult, FriendshipAction.Destroy);
@@ -108,7 +112,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="screenName">Screen name of user to unfollow</param>
         /// <returns>followed friend user info</returns>
-        public async Task<User> DestroyFriendshipAsync(string screenName)
+        public async Task<User> DestroyFriendshipAsync(string screenName, CancellationToken cancelToken = default(CancellationToken))
         {
             if (string.IsNullOrWhiteSpace(screenName))
                 throw new ArgumentException("screenName is a required parameter.", "screenName");
@@ -123,7 +127,8 @@ namespace LinqToTwitter
                     new Dictionary<string, string>
                     {
                         { "screen_name", screenName }
-                    })
+                    },
+                    cancelToken)
                     .ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(RawResult, FriendshipAction.Destroy);
@@ -137,12 +142,12 @@ namespace LinqToTwitter
         /// <param name="retweets">Enable retweets</param>
         /// <param name="device">Receive notifications</param>
         /// <returns>updated friend user info</returns>
-        public async Task<Friendship> UpdateFriendshipSettingsAsync(string screenName, bool retweets, bool device)
+        public async Task<Friendship> UpdateFriendshipSettingsAsync(string screenName, bool retweets, bool device, CancellationToken cancelToken = default(CancellationToken))
         {
             if (string.IsNullOrWhiteSpace(screenName))
                 throw new ArgumentNullException("screenName", "screenName is a required parameter.");
 
-            return await UpdateFriendshipSettingsAsync(0, screenName, retweets, device).ConfigureAwait(false);
+            return await UpdateFriendshipSettingsAsync(0, screenName, retweets, device, cancelToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -152,12 +157,12 @@ namespace LinqToTwitter
         /// <param name="retweets">Enable retweets</param>
         /// <param name="device">Receive notifications</param>
         /// <returns>updated friend user info</returns>
-        public async Task<Friendship> UpdateFriendshipSettingsAsync(ulong userID, bool retweets, bool device)
+        public async Task<Friendship> UpdateFriendshipSettingsAsync(ulong userID, bool retweets, bool device, CancellationToken cancelToken = default(CancellationToken))
         {
             if (userID == 0)
                 throw new ArgumentNullException("userID", "userID is a required parameter.");
 
-            return await UpdateFriendshipSettingsAsync(0, null, retweets, device).ConfigureAwait(false);
+            return await UpdateFriendshipSettingsAsync(0, null, retweets, device, cancelToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -168,7 +173,7 @@ namespace LinqToTwitter
         /// <param name="retweets">Enable retweets</param>
         /// <param name="device">Receive notifications</param>
         /// <returns>updated friend user info</returns>
-        async Task<Friendship> UpdateFriendshipSettingsAsync(ulong userID, string screenName, bool retweets, bool device)
+        async Task<Friendship> UpdateFriendshipSettingsAsync(ulong userID, string screenName, bool retweets, bool device, CancellationToken cancelToken = default(CancellationToken))
         {
             var parms = new Dictionary<string, string>
             {
@@ -186,7 +191,8 @@ namespace LinqToTwitter
             RawResult =
                 await TwitterExecutor.PostToTwitterAsync<Friendship>(
                     updateUrl,
-                    parms)
+                    parms,
+                    cancelToken)
                     .ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(RawResult, FriendshipAction.Update);

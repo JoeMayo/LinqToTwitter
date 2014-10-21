@@ -49,7 +49,8 @@ namespace LinqToTwitterPcl.Tests.StatusTests
                     It.IsAny<byte[]>(),
                     It.IsAny<string>(),
                     It.IsAny<string>(),
-                    It.IsAny<string>()))
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
                     .Returns(tcsResponse.Task);
 
             ctx = new Mock<TwitterContext>(execMock.Object);
@@ -87,7 +88,8 @@ namespace LinqToTwitterPcl.Tests.StatusTests
                     It.IsAny<byte[]>(),
                     It.IsAny<string>(),
                     It.IsAny<string>(),
-                    It.IsAny<string>()),
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()),
                     Times.Once(),
                     "PostMedia was not called only one time.");
         }
@@ -107,7 +109,8 @@ namespace LinqToTwitterPcl.Tests.StatusTests
                     It.IsAny<byte[]>(),
                     It.IsAny<string>(),
                     It.IsAny<string>(),
-                    It.IsAny<string>()),
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()),
                     Times.Once(),
                     "TweetWithMedia didn't pass properly formatted URL.");
         }
@@ -127,7 +130,8 @@ namespace LinqToTwitterPcl.Tests.StatusTests
                     It.IsAny<byte[]>(),
                     It.IsAny<string>(),
                     It.IsAny<string>(),
-                    It.IsAny<string>()),
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()),
                 Times.Once(),
                 "TweetWithMedia didn't pass status properly.");
         }
@@ -147,7 +151,8 @@ namespace LinqToTwitterPcl.Tests.StatusTests
                     It.IsAny<byte[]>(),
                     It.IsAny<string>(),
                     It.IsAny<string>(),
-                    It.IsAny<string>()),
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()),
                 Times.Once(),
                 "TweetWithMedia didn't pass possiblySensitive parameter properly.");
         }
@@ -169,7 +174,8 @@ namespace LinqToTwitterPcl.Tests.StatusTests
                     It.IsAny<byte[]>(),
                     It.IsAny<string>(),
                     It.IsAny<string>(),
-                    It.IsAny<string>()),
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()),
                 Times.Once(),
                 "TweetWithMedia should not have passed possiblySensitive parameter.");
         }
@@ -189,7 +195,8 @@ namespace LinqToTwitterPcl.Tests.StatusTests
                     It.IsAny<byte[]>(),
                     It.IsAny<string>(),
                     It.IsAny<string>(),
-                    It.IsAny<string>()),
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()),
                 Times.Once(),
                 "TweetWithMedia didn't pass placeID parameter properly.");
         }
@@ -211,7 +218,8 @@ namespace LinqToTwitterPcl.Tests.StatusTests
                     It.IsAny<byte[]>(),
                     It.IsAny<string>(),
                     It.IsAny<string>(),
-                    It.IsAny<string>()),
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()),
                 Times.Once(),
                 "TweetWithMedia shouldn't pass placeID parameter.");
         }
@@ -233,7 +241,8 @@ namespace LinqToTwitterPcl.Tests.StatusTests
                     It.IsAny<byte[]>(),
                     It.IsAny<string>(),
                     It.IsAny<string>(),
-                    It.IsAny<string>()),
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()),
                 Times.Once(),
                 "TweetWithMedia shouldn't pass placeID parameter.");
         }
@@ -253,7 +262,8 @@ namespace LinqToTwitterPcl.Tests.StatusTests
                     It.IsAny<byte[]>(),
                     It.IsAny<string>(),
                     It.IsAny<string>(),
-                    It.IsAny<string>()),
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()),
                 Times.Once(),
                 "TweetWithMedia didn't pass displayCoordinates parameter properly.");
         }
@@ -275,7 +285,8 @@ namespace LinqToTwitterPcl.Tests.StatusTests
                     It.IsAny<byte[]>(),
                     It.IsAny<string>(),
                     It.IsAny<string>(),
-                    It.IsAny<string>()),
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()),
                 Times.Once(),
                 "TweetWithMedia shouldn't pass displayCoordinates parameter.");
         }
@@ -294,7 +305,8 @@ namespace LinqToTwitterPcl.Tests.StatusTests
                 It.IsAny<byte[]>(),
                 It.IsAny<string>(),
                 It.IsAny<string>(),
-                It.IsAny<string>()),
+                It.IsAny<string>(),
+                It.IsAny<CancellationToken>()),
                 Times.Once(),
                 "TweetWithMedia shouldn't pass inReplyToStatusID parameter.");
         }
@@ -314,7 +326,8 @@ namespace LinqToTwitterPcl.Tests.StatusTests
                     It.IsAny<byte[]>(),
                     It.IsAny<string>(),
                     It.IsAny<string>(),
-                    It.IsAny<string>()),
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()),
                 Times.Once(),
                 "TweetWithMedia didn't pass latitude parameter properly.");
         }
@@ -334,7 +347,8 @@ namespace LinqToTwitterPcl.Tests.StatusTests
                     It.IsAny<byte[]>(),
                     It.IsAny<string>(),
                     It.IsAny<string>(),
-                    It.IsAny<string>()),
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()),
                 Times.Once(),
                 "TweetWithMedia didn't pass longitude parameter properly.");
         }
@@ -356,7 +370,8 @@ namespace LinqToTwitterPcl.Tests.StatusTests
                 It.IsAny<byte[]>(),
                 It.IsAny<string>(),
                 It.IsAny<string>(),
-                It.IsAny<string>()),
+                It.IsAny<string>(),
+                It.IsAny<CancellationToken>()),
                 Times.Once(),
                 "Lat and long should be null.");
         }
@@ -383,7 +398,8 @@ namespace LinqToTwitterPcl.Tests.StatusTests
                     It.IsAny<byte[]>(),
                     It.IsAny<string>(),
                     It.IsAny<string>(),
-                    It.IsAny<string>()),
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()),
                     Times.Once(),
                     "Invariant culture not applied to Lat and/or long.");
         }
@@ -403,7 +419,8 @@ namespace LinqToTwitterPcl.Tests.StatusTests
                     It.Is<byte[]>(image => image.Length > 0),
                     It.IsAny<string>(),
                     It.IsAny<string>(),
-                    It.IsAny<string>()),
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()),
                 Times.Once(),
                 "TweetWithMedia didn't pass mediaItems properly.");
         }

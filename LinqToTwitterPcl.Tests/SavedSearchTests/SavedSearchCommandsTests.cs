@@ -6,6 +6,7 @@ using LinqToTwitter;
 using LinqToTwitterPcl.Tests.Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using System.Threading;
 
 namespace LinqToTwitterPcl.Tests.SavedSearchTests
 {
@@ -58,7 +59,8 @@ namespace LinqToTwitterPcl.Tests.SavedSearchTests
             execMock.Setup(exec =>
                 exec.PostToTwitterAsync<SavedSearch>(
                     It.IsAny<string>(),
-                    It.IsAny<IDictionary<string, string>>()))
+                    It.IsAny<IDictionary<string, string>>(),
+                    It.IsAny<CancellationToken>()))
                 .Returns(tcsResponse.Task);
             var parameters = new Dictionary<string, string>
             {
@@ -70,7 +72,8 @@ namespace LinqToTwitterPcl.Tests.SavedSearchTests
             execMock.Verify(exec =>
                 exec.PostToTwitterAsync<SavedSearch>(
                     "https://api.twitter.com/1.1/saved_searches/create.json",
-                    parameters),
+                    parameters,
+                    It.IsAny<CancellationToken>()),
                 Times.Once());
 
             Assert.IsNotNull(search);
@@ -88,7 +91,8 @@ namespace LinqToTwitterPcl.Tests.SavedSearchTests
             execMock.Setup(exec =>
                 exec.PostToTwitterAsync<SavedSearch>(
                     It.IsAny<string>(),
-                    It.IsAny<IDictionary<string, string>>()))
+                    It.IsAny<IDictionary<string, string>>(),
+                    It.IsAny<CancellationToken>()))
                 .Returns(tcsResponse.Task);
 
             await ctx.CreateSavedSearchAsync("#LinqToTwitter");
@@ -117,7 +121,8 @@ namespace LinqToTwitterPcl.Tests.SavedSearchTests
             execMock.Setup(exec =>
                 exec.PostToTwitterAsync<SavedSearch>(
                     It.IsAny<string>(),
-                    It.IsAny<IDictionary<string, string>>()))
+                    It.IsAny<IDictionary<string, string>>(),
+                    It.IsAny<CancellationToken>()))
                 .Returns(tcsResponse.Task);
             var parameters = new Dictionary<string, string>();
 
@@ -126,7 +131,8 @@ namespace LinqToTwitterPcl.Tests.SavedSearchTests
             execMock.Verify(exec =>
                 exec.PostToTwitterAsync<SavedSearch>(
                     "https://api.twitter.com/1.1/saved_searches/destroy/123.json",
-                    parameters),
+                    parameters,
+                    It.IsAny<CancellationToken>()),
                 Times.Once());
 
             Assert.IsNotNull(search);
@@ -144,7 +150,8 @@ namespace LinqToTwitterPcl.Tests.SavedSearchTests
             execMock.Setup(exec =>
                 exec.PostToTwitterAsync<SavedSearch>(
                     It.IsAny<string>(),
-                    It.IsAny<IDictionary<string, string>>()))
+                    It.IsAny<IDictionary<string, string>>(),
+                    It.IsAny<CancellationToken>()))
                 .Returns(tcsResponse.Task);
 
             await ctx.DestroySavedSearchAsync(123);

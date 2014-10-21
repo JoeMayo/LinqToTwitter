@@ -6,6 +6,7 @@ using LinqToTwitter;
 using LinqToTwitterPcl.Tests.Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using System.Threading;
 
 namespace LinqToTwitterPcl.Tests.StatusTests
 {
@@ -36,7 +37,8 @@ namespace LinqToTwitterPcl.Tests.StatusTests
             execMock.Setup(exec =>
                 exec.PostToTwitterAsync<Status>(
                     It.IsAny<string>(),
-                    It.IsAny<IDictionary<string, string>>()))
+                    It.IsAny<IDictionary<string, string>>(),
+                    It.IsAny<CancellationToken>()))
                 .Returns(tcsResponse.Task);
             execMock.Setup(exec =>
                 exec.PostMediaAsync(
@@ -45,7 +47,8 @@ namespace LinqToTwitterPcl.Tests.StatusTests
                     It.IsAny<byte[]>(),
                     It.IsAny<string>(),
                     It.IsAny<string>(),
-                    It.IsAny<string>()))
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
                 .Returns(tcsMedia.Task);
             var ctx = new TwitterContext(execMock.Object);
             return ctx;

@@ -5,6 +5,7 @@ using LinqToTwitter;
 using LinqToTwitterPcl.Tests.Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using System.Threading;
 
 namespace LinqToTwitterPcl.Tests.BlocksTests
 {
@@ -36,7 +37,8 @@ namespace LinqToTwitterPcl.Tests.BlocksTests
             execMock.SetupGet(exec => exec.Authorizer).Returns(authMock.Object);
             execMock.Setup(exec => exec.PostToTwitterAsync<User>(
                 It.IsAny<string>(),
-                It.IsAny<Dictionary<string, string>>()))
+                It.IsAny<Dictionary<string, string>>(),
+                It.IsAny<CancellationToken>()))
                 .Returns(tcsResponse.Task);
             var ctx = new TwitterContext(execMock.Object);
             return ctx;
@@ -78,7 +80,8 @@ namespace LinqToTwitterPcl.Tests.BlocksTests
             execMock.Verify(exec =>
                 exec.PostToTwitterAsync<User>(
                     "https://api.twitter.com/1.1/blocks/create.json",
-                    It.IsAny<Dictionary<string, string>>()),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<CancellationToken>()),
                 Times.Once());
         }
 
@@ -129,7 +132,8 @@ namespace LinqToTwitterPcl.Tests.BlocksTests
             execMock.Verify(exec =>
                 exec.PostToTwitterAsync<User>(
                     "https://api.twitter.com/1.1/blocks/destroy.json",
-                    It.IsAny<Dictionary<string, string>>()),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<CancellationToken>()),
                 Times.Once());
         }
 
