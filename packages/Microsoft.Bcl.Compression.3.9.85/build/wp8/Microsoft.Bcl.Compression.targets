@@ -1,0 +1,48 @@
+<!--
+***********************************************************************************************
+Microsoft.Bcl.Compression.targets
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+          created a backup copy.  Incorrect changes to this file will make it
+          impossible to load or build your projects from the command-line or the IDE.
+
+Copyright (C) Microsoft Corporation. All rights reserved.
+***********************************************************************************************
+-->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <BclCompressionImported>true</BclCompressionImported>
+        <AppTargetFxGreaterThanWP80 Condition= "'$(TargetFrameworkIdentifier)' == 'WindowsPhone' AND '$(SilverlightApplication)' == 'true' AND
+												 ($([System.Version]::Parse('$(TargetFrameworkVersion.TrimStart(`v`))').CompareTo( $([System.Version]::Parse('8.0')) )) &gt;= 0)">true</AppTargetFxGreaterThanWP80>
+    </PropertyGroup>
+    <Target Name="PlatformCheck" BeforeTargets="BuildOnlySettings" Condition=" ('$(AppTargetFxGreaterThanWP80)' == 'true')  AND ('$(DesignTimeBuild)' != 'true') ">
+        <Error Condition=" ('$(Platform)' != 'x86') AND ('$(Platform)' != 'ARM') " Text="$(MSBuildThisFileName) does not support the currently selected platform of '$(Platform)'. The supported platforms are 'x86' and 'ARM'." />
+    </Target>
+    <Target Name="InjectReference" BeforeTargets="ResolveAssemblyReferences" Condition=" ('$(AppTargetFxGreaterThanWP80)' == 'true')  AND ('$(DesignTimeBuild)' != 'true') ">
+        <PropertyGroup>
+            <BclCompressionLibPath>$([MSBuild]::GetDirectoryNameOfFileAbove('$(MSBuildThisFileDirectory)', 'lib\native\x86\ClrCompression.dll'))\lib</BclCompressionLibPath>
+        </PropertyGroup>
+        <ItemGroup Condition=" '$(Platform)' == 'x86' ">
+            <Reference Include="$(BclCompressionLibPath)\native\x86\ClrCompression.winmd">
+                <Implementation>ClrCompression.dll</Implementation>
+                <Name>ClrCompression</Name>
+                <Private>true</Private>
+            </Reference>
+            <Content Include="$(BclCompressionLibPath)\native\x86\ClrCompression.dll">
+                <Link>ClrCompression.dll</Link>
+                <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            </Content>
+        </ItemGroup>
+        <ItemGroup Condition=" '$(Platform)' == 'ARM' ">
+            <Reference Include="$(BclCompressionLibPath)\native\ARM\ClrCompression.winmd">
+                <Implementation>ClrCompression.dll</Implementation>
+                <Name>ClrCompression</Name>
+                <Private>true</Private>
+            </Reference>
+            <Content Include="$(BclCompressionLibPath)\native\ARM\ClrCompression.dll">
+                <Link>ClrCompression.dll</Link>
+                <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            </Content>
+        </ItemGroup>
+    </Target>
+</Project>
