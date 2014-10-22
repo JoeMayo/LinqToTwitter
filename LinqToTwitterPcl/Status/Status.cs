@@ -17,7 +17,7 @@ namespace LinqToTwitter
     /// <summary>
     /// returned information from Twitter Status queries
     /// </summary>
-    public class Status : IStreamEntity
+    public class Status
     {
         public Status() {}
         public Status(JsonData status)
@@ -99,18 +99,6 @@ namespace LinqToTwitter
                 FilterLevel = FilterLevel.None;
             }
         }
-
-        /// <summary>
-        /// Raw Json from Twitter response
-        /// </summary>
-        public string JsonContent { get; set; }
-
-        /// <summary>
-        /// Type of Stream Message
-        /// </summary>
-        public StreamEntityType EntityType { get; set; }
-
-        public object Entity { get; set; }
 
         /// <summary>
         /// Supports XML serialization

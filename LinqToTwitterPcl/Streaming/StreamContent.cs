@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LitJson;
+using System;
 
 namespace LinqToTwitter
 {
@@ -13,6 +14,22 @@ namespace LinqToTwitter
         {
             this.exec = exec;
             Content = content;
+            ParseJson(content);
+        }
+
+        void ParseJson(string json)
+        {
+            JsonData jsonObj = JsonMapper.ToObject(json);
+
+            if (jsonObj.InstObject.ContainsKey("created_at") != null)
+            {
+                EntityType = StreamEntityType.Status;
+                Entity = new Status(jsonObj);
+            }
+            else
+            {
+                EntityType = StreamEntityType.Unknown;
+            }
         }
 
         /// <summary>
@@ -22,9 +39,14 @@ namespace LinqToTwitter
         public string Content { get; set; }
 
         /// <summary>
+        /// Type of Stream Message
+        /// </summary>
+        public StreamEntityType EntityType { get; private set; }
+
+        /// <summary>
         /// LINQ to Twitter entity
         /// </summary>
-        public IStreamEntity Entity { get; set; }
+        public object Entity { get; private set; }
 
         /// <summary>
         /// Closes Twitter stream.

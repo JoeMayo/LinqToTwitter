@@ -189,7 +189,6 @@
     <Compile Include="Status\EmbeddedStatus.cs" />
     <Compile Include="Status\EmbeddedStatusAlignment.cs" />
     <Compile Include="Status\FilterLevel.cs" />
-    <Compile Include="Streaming\IStreamEntity.cs" />
     <Compile Include="Status\Retweet.cs" />
     <Compile Include="Status\Status.cs" />
     <Compile Include="Status\StatusAction.cs" />

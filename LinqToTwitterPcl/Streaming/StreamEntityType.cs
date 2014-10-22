@@ -5,6 +5,8 @@ namespace LinqToTwitter
 {
     public enum StreamEntityType
     {
+        Unknown,
+
         Status
     }
 }

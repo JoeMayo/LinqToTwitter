@@ -187,10 +187,8 @@ namespace LinqToTwitter
 
                 while (stream.CanRead && !IsStreamClosed)
                 {
-                    //int nextByte = stream.ReadByte();
-
                     readByte = new byte[1];
-                    await stream.ReadAsync(readByte, 0, 1, CancellationToken);
+                    await stream.ReadAsync(readByte, 0, 1, CancellationToken).ConfigureAwait(false);
                     byte nextByte = readByte.SingleOrDefault();
 
                     CancellationToken.ThrowIfCancellationRequested();

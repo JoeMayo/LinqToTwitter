@@ -83,7 +83,17 @@ namespace Linq2TwitterDemos_Console
                      select strm)
                     .StartAsync(async strm =>
                     {
-                        Console.WriteLine(strm.Content + "\n");
+                        switch (strm.EntityType)
+                        {
+                            case StreamEntityType.Status:
+                                var status = strm.Entity as Status;
+                                Console.WriteLine("{0}: {1}", status.User.ScreenNameResponse, status.Text);
+                                break;
+                            case StreamEntityType.Unknown:
+                            default:
+                                Console.WriteLine(strm.Content + "\n");
+                                break;
+                        }
 
                         if (count++ >= 5)
                             cancelTokenSrc.Cancel();
