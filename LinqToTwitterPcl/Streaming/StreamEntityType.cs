@@ -7,6 +7,32 @@ namespace LinqToTwitter
     {
         Unknown,
 
-        Status
+        Control,
+
+        Delete,
+
+        DirectMessage,
+
+        Disconnect,
+
+        Event,
+
+        ForUser,
+
+        FriendsList,
+
+        GeoScrub,
+
+        Limit,
+        
+        Stall,
+
+        Status,
+
+        StatusWithheld,
+
+        TooManyFollows,
+
+        UserWithheld
     }
 }
