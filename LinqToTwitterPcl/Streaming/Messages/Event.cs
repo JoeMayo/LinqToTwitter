@@ -10,10 +10,10 @@ namespace LinqToTwitter
         public Event() { }
         public Event(JsonData evt)
         {
-            Target = evt.GetValue<string>("target");
-            Source = evt.GetValue<string>("source");
+            Target = evt.GetValue<JsonData>("target").ToString();
+            Source = evt.GetValue<JsonData>("source").ToString();
             EventName = evt.GetValue<string>("event");
-            TargetObject = evt.GetValue<string>("target_object");
+            TargetObject = evt.GetValue<JsonData>("target_object").ToString();
             CreatedAt = evt.GetValue<string>("created_at").GetDate(DateTime.MaxValue);
         }
 

@@ -28,79 +28,88 @@ namespace LinqToTwitter
             }
             var inst = jsonObj.InstObject;
 
-            if (inst.ContainsKey("control"))
+            try
             {
-                EntityType = StreamEntityType.Control;
-                Entity = new Control(jsonObj);
+                if (inst.ContainsKey("control"))
+                {
+                    EntityType = StreamEntityType.Control;
+                    Entity = new Control(jsonObj);
+                }
+                else if (inst.ContainsKey("delete"))
+                {
+                    EntityType = StreamEntityType.Delete;
+                    Entity = new Delete(jsonObj);
+                }
+                else if (inst.ContainsKey("sender"))
+                {
+                    EntityType = StreamEntityType.DirectMessage;
+                    Entity = new DirectMessage(jsonObj);
+                }
+                else if (inst.ContainsKey("disconnect"))
+                {
+                    EntityType = StreamEntityType.Disconnect;
+                    Entity = new Disconnect(jsonObj);
+                }
+                else if (inst.ContainsKey("event"))
+                {
+                    EntityType = StreamEntityType.Event;
+                    Entity = new Event(jsonObj);
+                }
+                else if (inst.ContainsKey("for_user"))
+                {
+                    EntityType = StreamEntityType.ForUser;
+                    Entity = new ForUser(jsonObj);
+                }
+                else if (inst.ContainsKey("friends") && inst.Count == 1)
+                {
+                    EntityType = StreamEntityType.FriendsList;
+                    Entity = new FriendsList(jsonObj);
+                }
+                else if (inst.ContainsKey("geo_scrub"))
+                {
+                    EntityType = StreamEntityType.GeoScrub;
+                    Entity = new GeoScrub(jsonObj);
+                }
+                else if (inst.ContainsKey("limit"))
+                {
+                    EntityType = StreamEntityType.Limit;
+                    Entity = new Limit(jsonObj);
+                }
+                else if (inst.ContainsKey("warning") && inst.ContainsKey("percent_full"))
+                {
+                    EntityType = StreamEntityType.Stall;
+                    Entity = new Stall(jsonObj);
+                }
+                else if (inst.ContainsKey("status_withheld"))
+                {
+                    EntityType = StreamEntityType.StatusWithheld;
+                    Entity = new StatusWithheld(jsonObj);
+                }
+                else if (inst.ContainsKey("warning") && inst.ContainsKey("user_id"))
+                {
+                    EntityType = StreamEntityType.TooManyFollows;
+                    Entity = new TooManyFollows(jsonObj);
+                }
+                else if (inst.ContainsKey("retweeted"))
+                {
+                    EntityType = StreamEntityType.Status;
+                    Entity = new Status(jsonObj);
+                }
+                else if (inst.ContainsKey("user_withheld"))
+                {
+                    EntityType = StreamEntityType.UserWithheld;
+                    Entity = new UserWithheld(jsonObj);
+                }
+                else
+                {
+                    EntityType = StreamEntityType.Unknown;
+                }
             }
-            else if (inst.ContainsKey("delete"))
+            catch (Exception ex)
             {
-                EntityType = StreamEntityType.Delete;
-                Entity = new Delete(jsonObj);
-            }
-            else if (inst.ContainsKey("sender"))
-            {
-                EntityType = StreamEntityType.DirectMessage;
-                Entity = new DirectMessage(jsonObj);
-            }
-            else if (inst.ContainsKey("disconnect"))
-            {
-                EntityType = StreamEntityType.Disconnect;
-                Entity = new Disconnect(jsonObj);
-            }
-            else if (inst.ContainsKey("event"))
-            {
-                EntityType = StreamEntityType.Event;
-                Entity = new Event(jsonObj);
-            }
-            else if (inst.ContainsKey("for_user"))
-            {
-                EntityType = StreamEntityType.ForUser;
-                Entity = new ForUser(jsonObj);
-            }
-            else if (inst.ContainsKey("friends") && inst.Count == 1)
-            {
-                EntityType = StreamEntityType.FriendsList;
-                Entity = new FriendsList(jsonObj);
-            }
-            else if (inst.ContainsKey("geo_scrub"))
-            {
-                EntityType = StreamEntityType.GeoScrub;
-                Entity = new GeoScrub(jsonObj);
-            }
-            else if (inst.ContainsKey("limit"))
-            {
-                EntityType = StreamEntityType.Limit;
-                Entity = new Limit(jsonObj);
-            }
-            else if (inst.ContainsKey("warning") && inst.ContainsKey("percent_full"))
-            {
-                EntityType = StreamEntityType.Stall;
-                Entity = new Stall(jsonObj);
-            }
-            else if (inst.ContainsKey("status_withheld"))
-            {
-                EntityType = StreamEntityType.StatusWithheld;
-                Entity = new StatusWithheld(jsonObj);
-            }
-            else if (inst.ContainsKey("warning") && inst.ContainsKey("user_id"))
-            {
-                EntityType = StreamEntityType.TooManyFollows;
-                Entity = new TooManyFollows(jsonObj);
-            }
-            else if (inst.ContainsKey("retweeted"))
-            {
-                EntityType = StreamEntityType.Status;
-                Entity = new Status(jsonObj);
-            }
-            else if (inst.ContainsKey("user_withheld"))
-            {
-                EntityType = StreamEntityType.UserWithheld;
-                Entity = new UserWithheld(jsonObj);
-            }
-            else
-            {
-                EntityType = StreamEntityType.Unknown;
+                string parseError = string.Format("Error parsing twitter message. Please create a new issue on the LINQ to Twitter site at https://linqtotwitter.codeplex.com/ with this info. \n\nMessage Type: {0}, Message Text:\n {1} \n", EntityType, json);
+                TwitterExecute.Log.WriteLine(parseError);
+                throw new TwitterQueryException(parseError, ex);
             }
         }
 
