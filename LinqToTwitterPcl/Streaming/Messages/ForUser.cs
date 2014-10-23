@@ -12,10 +12,11 @@ namespace LinqToTwitter
         public ForUser(JsonData user)
         {
             UserID = user.GetValue<ulong>("for_user");
-            var withheldCountries = user.GetValue<JsonData>("message");
+            var message = user.GetValue<JsonData>("message");
+            var friends = message.GetValue<JsonData>("friends");
             Friends =
-                withheldCountries == null ? new List<ulong>() :
-                (from JsonData friend in user.GetValue<JsonData>("friends")
+                friends == null ? new List<ulong>() :
+                (from JsonData friend in friends
                  select (ulong)friend)
                 .ToList();
         }

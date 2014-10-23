@@ -7,6 +7,8 @@ namespace LinqToTwitter
     {
         Unknown,
 
+        ParseError,
+
         Control,
 
         Delete,

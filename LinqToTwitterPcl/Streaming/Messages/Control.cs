@@ -11,7 +11,7 @@ namespace LinqToTwitter
         public Control(JsonData control)
         {
             var ctrl = control.GetValue<JsonData>("control");
-            URL = control.GetValue<string>("control_uri");
+            URL = ctrl.GetValue<string>("control_uri");
         }
 
         public string URL { get; set; }

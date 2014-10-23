@@ -1,6 +1,7 @@
 ﻿using LitJson;
 using System;
 using System.Collections.Generic;
+using LinqToTwitter.Common;
 
 namespace LinqToTwitter
 {
@@ -40,10 +41,11 @@ namespace LinqToTwitter
                     EntityType = StreamEntityType.Delete;
                     Entity = new Delete(jsonObj);
                 }
-                else if (inst.ContainsKey("sender"))
+                else if (inst.ContainsKey("direct_message"))
                 {
                     EntityType = StreamEntityType.DirectMessage;
-                    Entity = new DirectMessage(jsonObj);
+                    var dmObj = jsonObj.GetValue<JsonData>("direct_message");
+                    Entity = new DirectMessage(dmObj);
                 }
                 else if (inst.ContainsKey("disconnect"))
                 {
@@ -108,8 +110,12 @@ namespace LinqToTwitter
             catch (Exception ex)
             {
                 string parseError = string.Format("Error parsing twitter message. Please create a new issue on the LINQ to Twitter site at https://linqtotwitter.codeplex.com/ with this info. \n\nMessage Type: {0}, Message Text:\n {1} \n", EntityType, json);
-                TwitterExecute.Log.WriteLine(parseError);
-                throw new TwitterQueryException(parseError, ex);
+                
+                EntityType = StreamEntityType.ParseError;
+                Entity = parseError;
+
+                if (TwitterExecute.Log != null)
+                    TwitterExecute.Log.WriteLine(parseError);
             }
         }
 

@@ -141,7 +141,7 @@ namespace Linq2TwitterDemos_Console
                         else
                             HandleStreamResponse(strm);
 
-                        if (count++ == 5)
+                        if (count++ == 25)
                             cancelTokenSrc.Cancel();
                     });
             }
@@ -171,7 +171,7 @@ namespace Linq2TwitterDemos_Console
                         else
                             HandleStreamResponse(strm);
 
-                        if (count++ == 5)
+                        if (count++ == 25)
                             cancelTokenSrc.Cancel();
                     });
             }
@@ -214,7 +214,7 @@ namespace Linq2TwitterDemos_Console
                                 evt.Set();
                             }
 
-                            if (count++ == 5)
+                            if (count++ == 25)
                                 cancelTokenSrc.Cancel();
                         });
                 }
@@ -319,6 +319,8 @@ namespace Linq2TwitterDemos_Console
             switch (strm.EntityType)
             {
                 case StreamEntityType.Control:
+                    var control = strm.Entity as Control;
+                    Console.WriteLine("Control URI: {0}", control.URL);
                     break;
                 case StreamEntityType.Delete:
                     var delete = strm.Entity as Delete;
@@ -371,6 +373,10 @@ namespace Linq2TwitterDemos_Console
                 case StreamEntityType.UserWithheld:
                     var userWithheld = strm.Entity as UserWithheld;
                     Console.WriteLine("User Withheld - User ID: {0}, # Countries: {1}", userWithheld.UserID, userWithheld.WithheldInCountries.Count);
+                    break;
+                case StreamEntityType.ParseError:
+                    var unparsedJson = strm.Entity as string;
+                    Console.WriteLine("Parse Error - {0}", unparsedJson);
                     break;
                 case StreamEntityType.Unknown:
                 default:
