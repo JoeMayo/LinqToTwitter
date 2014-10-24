@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -25,6 +26,27 @@ namespace LinqToTwitter
                 .StreamingCallbackAsync = callback;
 
             return await streaming.ToListAsync().ConfigureAwait(false);
+        }
+
+        public static async Task<IObservable<StreamContent>> ToObservableAsync(this IQueryable<Streaming> streaming)
+        {
+            return Observable.Create<StreamContent>(
+                async observer =>
+                {
+                    await streaming.StartAsync(async content =>
+                    {
+                        try
+                        {
+                            observer.OnNext(content);
+                        }
+                        catch (Exception ex)
+                        {
+                            observer.OnError(ex);
+                        }
+                    });
+
+                    observer.OnCompleted();
+                });
         }
 
         public static async Task<List<T>> ToListAsync<T>(this IQueryable<T> query)
