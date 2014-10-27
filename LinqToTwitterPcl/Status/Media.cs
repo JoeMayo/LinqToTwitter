@@ -1,9 +1,11 @@
 ﻿using LitJson;
 using System;
 using LinqToTwitter.Common;
+using System.Xml.Serialization;
 
 namespace LinqToTwitter
 {
+    [XmlType(Namespace = "LinqToTwitter")]
     public class Media
     {
         public Media() { }

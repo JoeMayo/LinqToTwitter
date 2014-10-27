@@ -17,6 +17,7 @@ namespace LinqToTwitter
     /// <summary>
     /// returned information from Twitter Status queries
     /// </summary>
+    [XmlType(Namespace = "LinqToTwitter")]
     public class Status
     {
         public Status() {}

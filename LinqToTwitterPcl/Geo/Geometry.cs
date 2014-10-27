@@ -3,12 +3,14 @@ using System.Linq;
 
 using LinqToTwitter.Common;
 using LitJson;
+using System.Xml.Serialization;
 
 namespace LinqToTwitter
 {
     /// <summary>
     /// Geographical area
     /// </summary>
+    [XmlType(Namespace = "LinqToTwitter")]
     public class Geometry
     {
         public Geometry() {}

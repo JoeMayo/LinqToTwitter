@@ -1,5 +1,8 @@
-﻿namespace LinqToTwitter
+﻿using System.Xml.Serialization;
+
+namespace LinqToTwitter
 {
+    [XmlType(Namespace = "LinqToTwitter")]
     public class PhotoSize
     {
         /// <summary>

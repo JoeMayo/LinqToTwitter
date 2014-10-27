@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Xml.Serialization;
 
 namespace LinqToTwitter
 {
@@ -6,6 +7,7 @@ namespace LinqToTwitter
     /// Retweet Information
     /// </summary>
     [Obsolete("Deprecated: Use RetweetedStatus on Status instead.")]
+    [XmlType(Namespace = "LinqToTwitter")]
     public class Retweet
     {
         /// <summary>

@@ -7,6 +7,7 @@ namespace LinqToTwitter
     /// <summary>
     /// Twitter favorites info
     /// </summary>
+    [XmlType(Namespace = "LinqToTwitter")]
     public class Favorites : Status
     {
         public Favorites() { }

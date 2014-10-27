@@ -1,12 +1,14 @@
 ﻿using LinqToTwitter.Common;
 
 using LitJson;
+using System.Xml.Serialization;
 
 namespace LinqToTwitter
 {
     /// <summary>
     /// Time zone informtion
     /// </summary>
+    [XmlType(Namespace = "LinqToTwitter")]
     public class TZInfo
     {
         public TZInfo() {}

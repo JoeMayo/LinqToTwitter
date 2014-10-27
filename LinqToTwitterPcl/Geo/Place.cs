@@ -12,6 +12,7 @@ namespace LinqToTwitter
     /// <summary>
     /// A general description of a geographical location in Twitter
     /// </summary>
+    [XmlType(Namespace="LinqToTwitter")]
     public class Place
     {
         public Place() {}

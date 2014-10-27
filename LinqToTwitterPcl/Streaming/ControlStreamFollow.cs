@@ -3,12 +3,14 @@ using LinqToTwitter.Common;
 using LitJson;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml.Serialization;
 
 namespace LinqToTwitter
 {
     /// <summary>
     /// Response from ControlStreams Followers query
     /// </summary>
+    [XmlType(Namespace = "LinqToTwitter")]
     public class ControlStreamFollow
     {
         public ControlStreamFollow(JsonData csJson)

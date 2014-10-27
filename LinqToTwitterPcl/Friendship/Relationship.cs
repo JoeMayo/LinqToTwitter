@@ -3,12 +3,14 @@ using System.Linq;
 using System.Collections.Generic;
 using LinqToTwitter.Common;
 using LitJson;
+using System.Xml.Serialization;
 
 namespace LinqToTwitter
 {
     /// <summary>
     /// Friendship details for either a Source or Target
     /// </summary>
+    [XmlType(Namespace = "LinqToTwitter")]
     public class Relationship
     {
         public Relationship() { }

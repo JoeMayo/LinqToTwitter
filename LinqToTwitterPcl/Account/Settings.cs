@@ -1,8 +1,10 @@
-﻿namespace LinqToTwitter
+﻿using System.Xml.Serialization;
+namespace LinqToTwitter
 {
     /// <summary>
     /// Account Settings
     /// </summary>
+    [XmlType(Namespace = "LinqToTwitter")]
     public class Settings
     {
         /// <summary>

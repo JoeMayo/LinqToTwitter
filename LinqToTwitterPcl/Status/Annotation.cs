@@ -5,6 +5,7 @@ using LitJson;
 
 namespace LinqToTwitter
 {
+    [XmlType(Namespace = "LinqToTwitter")]
     public class Annotation
     {
         public Annotation() { }

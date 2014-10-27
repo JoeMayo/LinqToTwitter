@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Xml.Serialization;
 
 namespace LinqToTwitter
 {
     /// <summary>
     /// for performing Twitter searches
     /// </summary>
+    [XmlType(Namespace = "LinqToTwitter")]
     public class Search
     {
         //

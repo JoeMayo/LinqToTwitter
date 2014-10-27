@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using LinqToTwitter.Common;
 using LitJson;
+using System.Xml.Serialization;
 
 namespace LinqToTwitter
 {
     /// <summary>
     /// parameters for freindship actions
     /// </summary>
+    [XmlType(Namespace = "LinqToTwitter")]
     public class Friendship
     {
         public const ulong UserIDNotIncluded = 0;

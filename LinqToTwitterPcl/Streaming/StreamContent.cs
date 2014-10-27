@@ -2,12 +2,14 @@
 using System;
 using System.Collections.Generic;
 using LinqToTwitter.Common;
+using System.Xml.Serialization;
 
 namespace LinqToTwitter
 {
     /// <summary>
     /// Response from Twitter stream
     /// </summary>
+    [XmlType(Namespace = "LinqToTwitter")]
     public class StreamContent : IStreamContent
     {
         private readonly ITwitterExecute exec;

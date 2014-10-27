@@ -1,6 +1,7 @@
 ﻿using LinqToTwitter.Common;
 
 using LitJson;
+using System.Xml.Serialization;
 
 namespace LinqToTwitter
 {
@@ -8,6 +9,7 @@ namespace LinqToTwitter
     /// Times to stop and start sending notifications
     ///     - Times are null when Enabled is false
     /// </summary>
+    [XmlType(Namespace = "LinqToTwitter")]
     public class SleepTime
     {
         public SleepTime() {}

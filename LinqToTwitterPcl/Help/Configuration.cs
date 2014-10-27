@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Xml.Serialization;
 
 namespace LinqToTwitter
 {
+    [XmlType(Namespace = "LinqToTwitter")]
     public class Configuration
     {
         /// <summary>

@@ -1,11 +1,13 @@
 ﻿using System.Linq;
 using LitJson;
+using System.Xml.Serialization;
 
 namespace LinqToTwitter
 {
     /// <summary>
     /// Geographical coordinates
     /// </summary>
+    [XmlType(Namespace = "LinqToTwitter")]
     public class Coordinate
     {
         public const int LongitudePos = 0;

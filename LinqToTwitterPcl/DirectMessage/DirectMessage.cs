@@ -3,12 +3,14 @@
 using LinqToTwitter.Common;
 
 using LitJson;
+using System.Xml.Serialization;
 
 namespace LinqToTwitter
 {
     /// <summary>
     /// Direct message elements contain a set of values that describe a message.
     /// </summary>
+    [XmlType(Namespace = "LinqToTwitter")]
     public class DirectMessage
     {
         public DirectMessage() { }

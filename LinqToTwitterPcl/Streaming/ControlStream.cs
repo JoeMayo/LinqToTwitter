@@ -1,9 +1,11 @@
 ﻿
+using System.Xml.Serialization;
 namespace LinqToTwitter
 {
     /// <summary>
     /// Info for queries and responses from control streams
     /// </summary>
+    [XmlType(Namespace = "LinqToTwitter")]
     public class ControlStream
     {
         /// <summary>

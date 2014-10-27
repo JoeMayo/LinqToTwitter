@@ -1,12 +1,14 @@
 ﻿using System;
 using LinqToTwitter.Common;
 using LitJson;
+using System.Xml.Serialization;
 
 namespace LinqToTwitter
 {
     /// <summary>
     /// info for query and retrieval of saved searches
     /// </summary>
+    [XmlType(Namespace = "LinqToTwitter")]
     public class SavedSearch
     {
         public SavedSearch() { }

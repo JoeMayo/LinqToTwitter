@@ -2,9 +2,11 @@
 using LinqToTwitter.Common;
 
 using LitJson;
+using System.Xml.Serialization;
 
 namespace LinqToTwitter
 {
+    [XmlType(Namespace = "LinqToTwitter")]
     public class Location
     {
         public Location() {}

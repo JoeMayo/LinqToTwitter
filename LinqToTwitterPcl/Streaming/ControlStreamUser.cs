@@ -1,11 +1,13 @@
 ﻿using LitJson;
 using LinqToTwitter.Common;
+using System.Xml.Serialization;
 
 namespace LinqToTwitter
 {
     /// <summary>
     /// User returned by Control Stream query
     /// </summary>
+    [XmlType(Namespace = "LinqToTwitter")]
     public class ControlStreamUser
     {
         public ControlStreamUser(JsonData userJson)

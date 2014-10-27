@@ -2,12 +2,14 @@
 using System.Linq;
 using LinqToTwitter.Common;
 using LitJson;
+using System.Xml.Serialization;
 
 namespace LinqToTwitter
 {
     /// <summary>
     /// For working with lists of IDs
     /// </summary>
+    [XmlType(Namespace = "LinqToTwitter")]
     public class IDList
     {
         public IDList() { }

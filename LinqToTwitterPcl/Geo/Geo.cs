@@ -2,12 +2,14 @@
 using System.Linq;
 using LinqToTwitter.Common;
 using LitJson;
+using System.Xml.Serialization;
 
 namespace LinqToTwitter
 {
     /// <summary>
     /// Geo info for querying and reading results
     /// </summary>
+    [XmlType(Namespace = "LinqToTwitter")]
     public class Geo
     {
         public Geo() { }

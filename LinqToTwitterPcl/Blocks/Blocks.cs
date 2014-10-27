@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Xml.Serialization;
 
 namespace LinqToTwitter
 {
     /// <summary>
     /// helps retrieve information about blocks
     /// </summary>
+    [XmlType(Namespace = "LinqToTwitter")]
     public class Blocks
     {
         //

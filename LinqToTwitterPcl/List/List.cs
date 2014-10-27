@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using LinqToTwitter.Common;
 using LitJson;
+using System.Xml.Serialization;
 
 namespace LinqToTwitter
 {
     /// <summary>
     /// Information for a single Twitter List
     /// </summary>
+    [XmlType(Namespace = "LinqToTwitter")]
     public class List
     {
         public List() { }

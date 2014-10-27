@@ -1,8 +1,11 @@
-﻿namespace LinqToTwitter
+﻿using System.Xml.Serialization;
+
+namespace LinqToTwitter
 {
     /// <summary>
     /// Allows working at a low level with Twitter API
     /// </summary>
+    [XmlType(Namespace = "LinqToTwitter")]
     public class Raw
     {
         /// <summary>

@@ -2,12 +2,14 @@
 using LitJson;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml.Serialization;
 
 namespace LinqToTwitter
 {
     /// <summary>
     /// Response from ControlStreams Info query
     /// </summary>
+    [XmlType(Namespace = "LinqToTwitter")]
     public class ControlStreamInfo
     {
         public ControlStreamInfo(JsonData infoJson)

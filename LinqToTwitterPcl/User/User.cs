@@ -17,6 +17,7 @@ namespace LinqToTwitter
     /// <summary>
     /// information for a twitter user
     /// </summary>
+    [XmlType(Namespace = "LinqToTwitter")]
     public class User
     {
         public User() {}

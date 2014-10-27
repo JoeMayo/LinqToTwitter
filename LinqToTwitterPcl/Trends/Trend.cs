@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Xml.Serialization;
 
 namespace LinqToTwitter
 {
     /// <summary>
     /// helps to work with trends
     /// </summary>
+    [XmlType(Namespace = "LinqToTwitter")]
     public class Trend
     {
         /// <summary>

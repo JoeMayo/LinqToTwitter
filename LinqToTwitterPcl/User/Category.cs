@@ -2,12 +2,14 @@
 using System.Linq;
 using LinqToTwitter.Common;
 using LitJson;
+using System.Xml.Serialization;
 
 namespace LinqToTwitter
 {
     /// <summary>
     /// A single category for Twitter suggested categories
     /// </summary>
+    [XmlType(Namespace = "LinqToTwitter")]
     public class Category
     {
         public Category() { }

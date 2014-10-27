@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Globalization;
+using System.Xml.Serialization;
 
 namespace LinqToTwitter
 {
+    [XmlType(Namespace = "LinqToTwitter")]
     public class Culture
     {
         static CultureInfo usCulture;
