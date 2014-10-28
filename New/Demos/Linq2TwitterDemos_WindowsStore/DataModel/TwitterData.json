@@ -1,0 +1,63 @@
+{"Groups":[
+  {
+    "UniqueId": "Statuses",
+    "Title": "Statuses",
+    "Subtitle": "Tweets and Timelines",
+    "ImagePath": "Assets/DarkGray.png",
+    "Description" : "All commands and queries related to statuses",
+    "Items":
+    [
+      {
+        "UniqueId": "Linq2TwitterDemos_WindowsStore.StatusDemos.TweetDemo,Linq2TwitterDemos_WindowsStore",
+        "Title": "Tweet Demo",
+        "Subtitle": "Send a tweet",
+        "ImagePath": "Assets/LightGray.png",
+        "Description" : "Updates the user's status.",
+        "Content" : "This will update the user's status and return the new status. You'll see the new status appear in a message box."
+      },
+      {
+        "UniqueId": "Linq2TwitterDemos_WindowsStore.StatusDemos.HomeTimelineDemo,Linq2TwitterDemos_WindowsStore",
+        "Title": "Home Timeline Demo",
+        "Subtitle": "Show home timeline",
+        "ImagePath": "Assets/DarkGray.png",
+        "Description" : "Shows list with home timeline.",
+        "Content" : "This page lets you click a button to refresh the page. At that time, the page will perform a query that obtains the home timeline of the authorizing user."
+      }
+    ]
+  },
+  {
+    "UniqueId": "Streams",
+    "Title": "Streams",
+    "Subtitle": "Receive data from streams.",
+    "ImagePath": "Assets/LightGray.png",
+    "Description" : "Streams allow you to view real-time data from Twitter and is more efficient than performing REST API queries.",
+    "Items":
+    [
+      {
+        "UniqueId": "Linq2TwitterDemos_WindowsStore.StreamDemos.FilterStreamDemo,Linq2TwitterDemos_WindowsStore",
+        "Title": "Filter Stream Demo",
+        "Subtitle": "Show filtered tweets",
+        "ImagePath": "Assets/DarkGray.png",
+        "Description" : "Streams data matching specified criteria.",
+        "Content" : "The filter stream allows you to specify a query string to return tweets for. You can also filter a stream by users or location."
+      },
+      {
+        "UniqueId": "Linq2TwitterDemos_WindowsStore.StreamDemos.SampleStreamDemo,Linq2TwitterDemos_WindowsStore",
+        "Title": "Sample Stream Demo",
+        "Subtitle": "Show random tweets",
+        "ImagePath": "Assets/DarkGray.png",
+        "Description" : "Streams a random sample of Twitter data.",
+        "Content" : "The Sample stream provides approximately 1% of the Twitter stream and is a random sample from the Twitter API."
+      },
+      {
+        "UniqueId": "Linq2TwitterDemos_WindowsStore.StreamDemos.UserStreamDemo,Linq2TwitterDemos_WindowsStore",
+        "Title": "User Stream Demo",
+        "Subtitle": "Show tweets for a user",
+        "ImagePath": "Assets/DarkGray.png",
+        "Description" : "Streams data for a user.",
+        "Content" : "The user stream lets you stream activity data for a user's account."
+      }
+    ]
+  }
+]
+}

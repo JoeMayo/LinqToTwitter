@@ -1,0 +1,144 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{6487F451-98B1-4911-B910-6D4AF27D7442}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>LinqToTwitterXUnitTests</RootNamespace>
+    <AssemblyName>LinqToTwitterXUnitTests</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName />
+    <SccLocalPath />
+    <SccAuxPath />
+    <SccProvider />
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>LinqToTwitter.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Moq">
+      <HintPath>..\packages\Moq.4.0.10827\lib\NET40\Moq.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Web.Mvc, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="xunit, Version=1.9.0.1566, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\xunit.1.9.0.1566\lib\xunit.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AccountTests\AccountExtensionsTests.cs" />
+    <Compile Include="AccountTests\AccountRequestProcessorTests.cs" />
+    <Compile Include="BlocksTests\BlocksExtensionsTests.cs" />
+    <Compile Include="BlocksTests\BlocksRequestProcessorTests.cs" />
+    <Compile Include="Common\DebuggerWriter.cs" />
+    <Compile Include="Common\OAuthTwitterMock.cs" />
+    <Compile Include="Common\TestCulture.cs" />
+    <Compile Include="DirectMessageTests\DirectMessageExtensionsTests.cs" />
+    <Compile Include="DirectMessageTests\DirectMessageRequestProcessorTests.cs" />
+    <Compile Include="DirectMessageTests\DirectMessageTests.cs" />
+    <Compile Include="FavoritesTests\FavoritesExtensionsTests.cs" />
+    <Compile Include="FavoritesTests\FavoritesRequestProcessorTests.cs" />
+    <Compile Include="FavoritesTests\FavoritesCtorTests.cs" />
+    <Compile Include="FriendshipTests\FriendshipExtensionsTests.cs" />
+    <Compile Include="FriendshipTests\FriendshipRequestProcessorTests.cs" />
+    <Compile Include="GeoTests\CoordinateTests.cs" />
+    <Compile Include="GeoTests\GeometryTests.cs" />
+    <Compile Include="GeoTests\GeoRequestProcessorTests.cs" />
+    <Compile Include="GeoTests\GeoTests.cs" />
+    <Compile Include="GeoTests\PlaceTests.cs" />
+    <Compile Include="HelpTests\HelpRequestProcessorTests.cs" />
+    <Compile Include="LinqToTwitterTests\TwitterContextCreateRequestProcessorTests.cs" />
+    <Compile Include="Common\TwitterExtensionsTests.cs" />
+    <Compile Include="LinqToTwitterTests\TwitterContextTests.cs" />
+    <Compile Include="LinqToTwitterTests\TwitterExecuteErrorHandlingTests.cs" />
+    <Compile Include="ListTests\ListExtensionsTests.cs" />
+    <Compile Include="ListTests\ListRequestProcessorTests.cs" />
+    <Compile Include="OAuthTests\ApplicationOnlyAuthorizerTests.cs" />
+    <Compile Include="OAuthTests\MvcAuthorizerTests.cs" />
+    <Compile Include="OAuthTests\OAuthAuthorizerTests.cs" />
+    <Compile Include="OAuthTests\OAuthBaseTests.cs" />
+    <Compile Include="OAuthTests\OAuthTwitterTests.cs" />
+    <Compile Include="OAuthTests\PinAuthorizerTests.cs" />
+    <Compile Include="OAuthTests\SignInAuthorizerTests.cs" />
+    <Compile Include="OAuthTests\WebAuthorizerTests.cs" />
+    <Compile Include="RawTests\RawExtensionsTests.cs" />
+    <Compile Include="RawTests\RawRequestProcessorTests.cs" />
+    <Compile Include="RelatedResultsTests\RelatedResultsRequestProcessorTests.cs" />
+    <Compile Include="SavedSearchTests\SavedSearchExtensionsTests.cs" />
+    <Compile Include="SavedSearchTests\SavedSearchRequestProcessorTests.cs" />
+    <Compile Include="SearchTests\SearchRequestProcessorTests.cs" />
+    <Compile Include="SerializationTests\TypeConversionExtensionsTests.cs" />
+    <Compile Include="SerializationTests\XmlSerializerTests.cs" />
+    <Compile Include="SocialGraphTests\SocialGraphRequestProcessorTests.cs" />
+    <Compile Include="StatusTests\StatusExtensionsTests.cs" />
+    <Compile Include="StatusTests\StatusExtensionsTweetWithMediaNoLocationTests.cs" />
+    <Compile Include="StatusTests\StatusExtensionsTweetsWithMediaAndLocationTests.cs" />
+    <Compile Include="StatusTests\StatusExtensionsReplyWithMediaNoLocationTests.cs" />
+    <Compile Include="StatusTests\StatusExtensionsReplyWithMediaAndLocationTests.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="LinqToTwitterTests\TwitterContextUrlTests.cs" />
+    <Compile Include="StatusTests\StatusRequestProcessorTests.cs" />
+    <Compile Include="StreamTests\ControlStreamExtensionsTest.cs" />
+    <Compile Include="StreamTests\ControlStreamTest.cs" />
+    <Compile Include="StreamTests\StreamingRequestProcessorTests.cs" />
+    <Compile Include="StreamTests\UserStreamRequestProcessorTest.cs" />
+    <Compile Include="TrendTests\TrendRequestProcessorTests.cs" />
+    <Compile Include="UserTests\UserRequestProcessorTests.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Libraries\LinqToTwitter\LinqToTwitter.csproj">
+      <Project>{A214B9F0-6B8C-4E91-BE99-27F55CC860C1}</Project>
+      <Name>LinqToTwitter</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="LinqToTwitter.snk" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

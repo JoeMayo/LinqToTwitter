@@ -1,0 +1,15 @@
+﻿<Window x:Class="Linq2TwitterDemos_WPF.OAuth"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="OAuth" Height="350" Width="525" Loaded="Window_Loaded">
+    <Grid>
+        <DockPanel HorizontalAlignment="Stretch" LastChildFill="False" VerticalAlignment="Stretch" Grid.ColumnSpan="2">
+            <WebBrowser x:Name="OAuthWebBrowser" DockPanel.Dock="Top" Height="275"/>
+            <StackPanel VerticalAlignment="Center" DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Center">
+                <Label Content="PIN:" Margin="5" VerticalAlignment="Center"/>
+                <TextBox x:Name="PinTextBox" TextWrapping="Wrap" Width="120" Margin="5" VerticalAlignment="Center"/>
+                <Button x:Name="SubmitPinButton" Content="Submit Pin" Width="75" Margin="5" VerticalAlignment="Center" Click="SubmitPinButton_Click"/>
+            </StackPanel>
+        </DockPanel>
+    </Grid>
+</Window>
