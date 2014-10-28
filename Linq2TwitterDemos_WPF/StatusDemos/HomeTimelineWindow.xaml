@@ -1,8 +1,0 @@
-﻿<Window x:Class="Linq2TwitterDemos_WPF.StatusDemos.HomeTimelineWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="HomeTimelineWindow" Height="350" Width="525" Loaded="Window_Loaded">
-    <Grid>
-        <DataGrid HorizontalAlignment="Stretch" Margin="5" VerticalAlignment="Stretch" ItemsSource="{Binding Tweets}"/>
-    </Grid>
-</Window>
