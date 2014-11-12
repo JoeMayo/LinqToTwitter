@@ -1,8 +1,7 @@
-﻿using LitJson;
-using System;
-using System.Collections.Generic;
-using LinqToTwitter.Common;
+﻿using System;
 using System.Xml.Serialization;
+using LinqToTwitter.Common;
+using LitJson;
 
 namespace LinqToTwitter
 {
@@ -10,7 +9,7 @@ namespace LinqToTwitter
     /// Response from Twitter stream
     /// </summary>
     [XmlType(Namespace = "LinqToTwitter")]
-    public class StreamContent : IStreamContent
+    public class StreamContent : IStreamContent, IDisposable
     {
         private readonly ITwitterExecute exec;
 
@@ -143,6 +142,11 @@ namespace LinqToTwitter
         public virtual void CloseStream()
         {
             exec.CloseStream();
+        }
+
+        public void Dispose()
+        {
+            CloseStream();
         }
     }
 }
