@@ -58,6 +58,7 @@ namespace LinqToTwitter
                 UserAgent = DefaultUserAgent;
 
             BaseUrl = "https://api.twitter.com/1.1/";
+            VineUrl = "https://vine.co/";
             StreamingUrl = "https://stream.twitter.com/1.1/";
             UserStreamUrl = "https://userstream.twitter.com/1.1/";
             SiteStreamUrl = "https://sitestream.twitter.com/1.1/";
@@ -68,6 +69,11 @@ namespace LinqToTwitter
         /// base URL for accessing Twitter API
         /// </summary>
         public string BaseUrl { get; set; }
+
+        /// <summary>
+        /// base URL for Vine queris
+        /// </summary>
+        public string VineUrl { get; set; }
 
         /// <summary>
         /// base URL for uploading media
@@ -576,6 +582,12 @@ namespace LinqToTwitter
                     break;
                 case "User":
                     req = new UserRequestProcessor<T>();
+                    break;
+                case "Vine":
+                    req = new VineRequestProcessor<T>
+                    {
+                        VineUrl = VineUrl
+                    };
                     break;
                 default:
                     throw new ArgumentException("Type, " + requestType + " isn't a supported LINQ to Twitter entity.", "requestType");

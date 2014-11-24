@@ -191,5 +191,16 @@ namespace LinqToTwitter
                 return new TwitterQueryable<User>(this);
             }
         }
+
+        /// <summary>
+        /// enables access to Twitter Vine messages, such as Oembed
+        /// </summary>
+        public TwitterQueryable<Vine> Vine
+        {
+            get
+            {
+                return new TwitterQueryable<Vine>(this);
+            }
+        }
     }
 }

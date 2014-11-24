@@ -96,6 +96,7 @@
     <Compile Include="StatusTests\StatusRequestProcessorTests.cs" />
     <Compile Include="TrendsTests\TrendRequestProcessorTests.cs" />
     <Compile Include="UserTests\UserRequestProcessorTests.cs" />
+    <Compile Include="Vine\VineRequestProcessorTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

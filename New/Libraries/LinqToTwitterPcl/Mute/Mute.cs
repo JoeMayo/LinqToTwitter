@@ -14,7 +14,7 @@ namespace LinqToTwitter
         public MuteType Type { get; set; }
 
         /// <summary>
-        /// Cursor to page through query results
+        /// Allows you to page through query results
         /// </summary>
         public long Cursor { get; set; }
 

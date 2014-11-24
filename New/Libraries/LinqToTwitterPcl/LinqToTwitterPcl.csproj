@@ -71,6 +71,9 @@
     <Compile Include="Common\InvalidQueryException.cs" />
     <Compile Include="Common\IRequestProcessor.cs" />
     <Compile Include="Common\LinqExtensions.cs" />
+    <Compile Include="Vine\Vine.cs" />
+    <Compile Include="Vine\VineRequestProcessor.cs" />
+    <Compile Include="Vine\VineType.cs" />
     <Compile Include="Status\Media.cs" />
     <Compile Include="Common\MethodCallExpressionTypeFinder.cs" />
     <Compile Include="Common\ParameterFinder.cs" />
