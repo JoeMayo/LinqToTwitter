@@ -54,7 +54,7 @@ namespace Linq2TwitterDemos_Console
                  select vine)
                 .SingleOrDefaultAsync();
 
-            Console.WriteLine("\nOembedHTML:\n\n" + vineResponse.Html);
+            Console.WriteLine("\nOembed HTML:\n\n" + vineResponse.Html);
         }
     }
 }
