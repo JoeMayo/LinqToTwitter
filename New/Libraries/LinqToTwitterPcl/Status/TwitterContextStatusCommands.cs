@@ -68,6 +68,7 @@ namespace LinqToTwitter
         /// <param name="placeID">ID of place (found via Geo Reverse lookup query)</param>
         /// <param name="displayCoordinates">Allow or prevent display of coordinates for this tweet</param>
         /// <param name="image">Media to send</param>
+        /// <param name="cancelToken">Allows you to cancel async operation</param>
         /// <returns>Status containing new reply</returns>
         [Obsolete("Twitter has deprecated this API and you should use UploadMediaAsync/ReplyAsync instead.")]
         public async Task<Status> ReplyWithMediaAsync(ulong inReplyToStatusID, string status, bool possiblySensitive, decimal latitude, decimal longitude, string placeID, bool displayCoordinates, byte[] image, CancellationToken cancelToken = default(CancellationToken))
@@ -112,6 +113,7 @@ namespace LinqToTwitter
         /// Uploads a media (e.g. media) to be attached to a subsequent tweet.
         /// </summary>
         /// <param name="media">Media to upload</param>
+        /// <param name="cancelToken">Allows you to cancel async operation</param>
         /// <returns>Status containing new reply</returns>
         public async Task<Media> UploadMediaAsync(byte[] media, CancellationToken cancelToken = default(CancellationToken))
         {
@@ -379,7 +381,7 @@ namespace LinqToTwitter
         /// <returns>Tweeted status.</returns>
         internal async Task<Status> TweetOrReplyAsync(ulong tweetID, string status, decimal latitude, decimal longitude, string placeID, bool displayCoordinates, bool trimUser, IEnumerable<ulong> mediaIds, CancellationToken cancelToken = default(CancellationToken))
         {
-            if (string.IsNullOrWhiteSpace(status))
+            if (string.IsNullOrWhiteSpace(status) && (mediaIds == null || !mediaIds.Any()))
                 throw new ArgumentException("status is a required parameter.", "status");
 
             var updateUrl = BaseUrl + "statuses/update.json";

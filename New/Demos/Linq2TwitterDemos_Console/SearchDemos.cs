@@ -46,19 +46,23 @@ namespace Linq2TwitterDemos_Console
   
         static async Task DoSearchAsync(TwitterContext twitterCtx)
         {
+            string searchTerm = "\"LINQ to Twitter\" OR Linq2Twitter OR LinqToTwitter";
+            //string searchTerm = "#ömer -RT -instagram news source%3Afoursquare";
+
             var searchResponse =
                 await
                 (from search in twitterCtx.Search
                  where search.Type == SearchType.Search &&
-                       search.Query == "\"LINQ to Twitter\""
+                       search.Query == searchTerm
                  select search)
                 .SingleOrDefaultAsync();
 
             if (searchResponse != null && searchResponse.Statuses != null)
                 searchResponse.Statuses.ForEach(tweet =>
                     Console.WriteLine(
-                        "User: {0}, Tweet: {1}", 
+                        "\n  User: {0} ({1})\n  Tweet: {2}", 
                         tweet.User.ScreenNameResponse,
+                        tweet.User.UserIDResponse,
                         tweet.Text));
         }
     }

@@ -16,7 +16,7 @@ namespace LinqToTwitter
     /// </summary>
     internal partial class TwitterExecute : ITwitterExecute, IDisposable
     {
-        internal const string DefaultUserAgent = "LINQ-To-Twitter/3.0";
+        internal const string DefaultUserAgent = "LINQ-To-Twitter/3.1";
         internal const int DefaultReadWriteTimeout = 300000;
         internal const int DefaultTimeout = 100000;
 
@@ -120,7 +120,7 @@ namespace LinqToTwitter
         {
             WriteLog(request.FullUrl, "QueryTwitterAsync");
 
-            var req = new HttpRequestMessage(HttpMethod.Get, request.FullUrl);
+            var req = new HttpRequestMessage(HttpMethod.Get, new Uri(request.FullUrl));
 
             var parms = request.RequestParameters
                                .ToDictionary(
