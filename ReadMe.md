@@ -1,12 +1,11 @@
-[image:linq2twitter_v3_300x90.png]
+![LINQ to Twitter](https://github.com/JoeMayo/LinqToTwitter/raw/master/linq2twitter_v3_300x90.png)
 
-LINQ to Twitter is an open source 3rd party LINQ Provider for the [url:Twitter|http://twitter.com/] micro-blogging service.  It uses standard LINQ syntax for queries and includes method calls for changes via the [url:Twitter API|http://dev.twitter.com/].
+LINQ to Twitter is an open source 3rd party LINQ Provider for the [Twitter](https://twitter.com/) micro-blogging service.  It uses standard LINQ syntax for queries and includes method calls for changes via the [Twitter API](https://dev.twitter.com/).
 
-*Example*
+## Example
 
 The following query returns search results where people are tweeting about LINQ to Twitter:
-
-{code:c#}
+```C#
             var twitterCtx = new TwitterContext(...);
 
             var searchResponse =
@@ -23,11 +22,10 @@ The following query returns search results where people are tweeting about LINQ 
                         "User: {0}, Tweet: {1}", 
                         tweet.User.ScreenNameResponse,
                         tweet.Text));
-{code:c#}
-
+```
 From a coding experience perspective, the _TwitterContext_ type is analogous to _DataContext_ (LINQ to SQL) or _ObjectContext_ (LINQ to Entities).  You use the _TwitterContext_ instance, _twitterCtx_, to access _IQueryable<T>_ tweet categories.  In the example above, the _Search_ will give you the ability to search Twitter for tweets meeting some criteria.
 
-*Note:* _The ellipses in the TwitterContext parameters indicates that you need to provide an authorizer with credentials, which is required. You can visit [Securing Your Applications] for documentation on authorizers and visit the Download page for working examples._
+*Note:* _The ellipses in the TwitterContext parameters indicates that you need to provide an authorizer with credentials, which is required. You can visit [Securing Your Applications](https://linqtotwitter.codeplex.com/wikipage?title=Securing%20Your%20Applications&referringTitle=Documentation) for documentation on authorizers and visit the Download page for working examples._
 
 Each query category has a _Type_ property for the type of tweets you want to get back.  For example, _Status_ tweets can be made for _Home_, _Mentions_, or _User_ timelines. Each query category also has an _XxxType_ enum to help you figure out what is available. The example above uses _SearchType.Search_ to perform searches.  Another example would be _Status_ queries which might have _StatusType.Home_ as its _Type_.  In the case of _Search_ queries, _Search_ is the only option, but the _Type_ idiom is consistent accross all query categories.
 
@@ -37,25 +35,17 @@ The latest version of LINQ to Twitter supports async. You can see this where the
 
 For more details on how LINQ to Twitter works, you can either click on the _Documentation_ menu (above) or visit [Making API Calls] for API specific examples.  The downloadable source code also contains copious examples in the projects with the _Linq2Twitter__ prefix.
 
-For the latest news, follow [url:@JoeMayo|https://twitter.com/JoeMayo] on Twitter.
-----
-!! NuGet
-In addition to being able to download from this site, you can also automatically install LINQ to Twitter into your Visual Studio projects via [url:NuGet|http://bit.ly/mpkwA6]; 
+## NuGet
+In addition to being able to download from this site, you can also automatically install LINQ to Twitter into your Visual Studio projects via [NuGet](http://bit.ly/mpkwA6); 
 
-For help in getting started with NuGet: [url:A Gentle Introduction to NuGet|http://bit.ly/iuPkRf].
+For help in getting started with NuGet: [A Gentle Introduction to NuGet](http://bit.ly/iuPkRf).
 
-!! Who is Using LINQ to Twitter?
+## Who is Using LINQ to Twitter?
 
-[Services, Sites, and Software that Use LINQ to Twitter]
+[Services, Sites, and Software that Use LINQ to Twitter](https://linqtotwitter.codeplex.com/wikipage?title=Services%2c%20Sites%2c%20and%20Software%20that%20Use%20LINQ%20to%20Twitter&referringTitle=Home)
 
-!! Available Feature Set
+## Available Feature Set
 
-See [Making API Calls].
+See [Making API Calls](https://linqtotwitter.codeplex.com/wikipage?title=Making%20API%20Calls&referringTitle=Documentation).
 
-!! Supporting LINQ to Twitter
-
-Many people ask if I accept donations. I don't, but if you would like to support LINQ to Twitter you could:
-
-#  Follow [url:@JoeMayo|https://twitter.com/JoeMayo] on Twitter.
-#  Click on the Downloads tab, click Review this Release, and give a rating.
-
+## For the latest news, follow [@JoeMayo](https://twitter.com/JoeMayo) on Twitter.
