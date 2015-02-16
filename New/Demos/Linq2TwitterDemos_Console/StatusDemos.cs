@@ -270,7 +270,7 @@ namespace Linq2TwitterDemos_Console
                 Console.WriteLine("\nPress any key to post tweet...\n");
                 Console.ReadKey(true);
 
-                var tweet = await twitterCtx.TweetAsync(status);
+                Status tweet = await twitterCtx.TweetAsync(status);
 
                 if (tweet != null)
                     Console.WriteLine(
@@ -290,7 +290,7 @@ namespace Linq2TwitterDemos_Console
             ulong tweetID = 401033367283453953;
             string status = "@JoeMayo Testing ReplyAsync #Linq2Twitter £ ";
 
-                var tweet = await twitterCtx.ReplyAsync(tweetID, status);
+                Status tweet = await twitterCtx.ReplyAsync(tweetID, status);
 
                 if (tweet != null)
                     Console.WriteLine(
@@ -304,7 +304,7 @@ namespace Linq2TwitterDemos_Console
         {
             ulong tweetID = 401033367283453953;
 
-            var retweet = await twitterCtx.RetweetAsync(tweetID);
+            Status retweet = await twitterCtx.RetweetAsync(tweetID);
 
             if (retweet != null && 
                 retweet.RetweetedStatus != null && 
@@ -366,7 +366,7 @@ namespace Linq2TwitterDemos_Console
         {
             ulong tweetID = 210591841312190464;
 
-            var status =
+            Status status =
                 await
                 (from tweet in twitterCtx.Status
                  where tweet.Type == StatusType.Retweeters &&
