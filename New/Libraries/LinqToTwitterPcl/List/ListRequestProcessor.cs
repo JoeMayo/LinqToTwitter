@@ -567,6 +567,12 @@ namespace LinqToTwitter
                 }
             }
 
+			if (parameters.ContainsKey("Count"))
+			{
+				Count = int.Parse(parameters["Count"]);
+				urlParams.Add(new QueryParameter("count", parameters["Count"]));
+			}
+
             return req;
         }
 
