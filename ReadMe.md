@@ -40,12 +40,8 @@ In addition to being able to download from this site, you can also automatically
 
 For help in getting started with NuGet: [A Gentle Introduction to NuGet](http://bit.ly/iuPkRf).
 
-## Who is Using LINQ to Twitter?
-
-[Services, Sites, and Software that Use LINQ to Twitter](https://linqtotwitter.codeplex.com/wikipage?title=Services%2c%20Sites%2c%20and%20Software%20that%20Use%20LINQ%20to%20Twitter&referringTitle=Home)
-
 ## Available Feature Set
 
-See [Making API Calls](https://linqtotwitter.codeplex.com/wikipage?title=Making%20API%20Calls&referringTitle=Documentation).
+See [Making API Calls](https://github.com/JoeMayo/LinqToTwitter/wiki/Making-API-Calls).
 
 ## For the latest news, follow [@JoeMayo](https://twitter.com/JoeMayo) on Twitter.
