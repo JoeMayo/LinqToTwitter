@@ -12,8 +12,12 @@ namespace LinqToTwitter
     [XmlType(Namespace = "LinqToTwitter")]
     public class List
     {
-        public List() { }
-        public List(JsonData listJson)
+        public List() 
+        {
+            Statuses = new List<Status>();
+        }
+
+        public List(JsonData listJson) : this()
         {
             Name = listJson.GetValue<string>("name");
             FullName = listJson.GetValue<string>("full_name");

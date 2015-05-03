@@ -29,6 +29,10 @@ namespace LinqToTwitter
                         select new Place(place))
                     .ToList(); 
             }
+            else
+            {
+                Places = new List<Place>();
+            }
         }
 
         /// <summary>

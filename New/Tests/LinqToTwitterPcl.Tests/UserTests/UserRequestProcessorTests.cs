@@ -547,6 +547,10 @@ namespace LinqToTwitterPcl.Tests.UserTests
         void VerifySingleUserResponse(User user)
         {
             Assert.IsNotNull(user);
+            Assert.IsNotNull(user.BannerSizes);
+            Assert.IsFalse(user.BannerSizes.Any());
+            Assert.IsNotNull(user.Categories);
+            Assert.IsFalse(user.Categories.Any());
             Assert.AreEqual("6253282", user.UserIDResponse);
             Assert.AreEqual("twitterapi", user.ScreenNameResponse);
             Assert.AreEqual("San Francisco, CA", user.Location);
@@ -593,8 +597,7 @@ namespace LinqToTwitterPcl.Tests.UserTests
             Assert.IsFalse(user.FollowRequestSent);
             Assert.IsFalse(user.Notifications);
         }
-
-
+        
         [TestMethod]
         public void ProcessActionResult_Parses_SingleUser_Response()
         {

@@ -946,6 +946,9 @@ namespace LinqToTwitterPcl.Tests.ListTests
             Assert.IsNotNull(lists);
             Assert.IsNotNull(lists.SingleOrDefault());
             var list = lists.Single();
+            var statuses = list.Statuses;
+            Assert.IsNotNull(statuses);
+            Assert.IsFalse(statuses.Any());
             var users = list.Users;
             Assert.IsNotNull(users);
             Assert.AreEqual(3, users.Count);

@@ -179,6 +179,7 @@ namespace LinqToTwitter
                         (from JsonData id in ids
                          select (ulong)id)
                         .ToList(),
+                    Users = new List<User>(),
                     CursorMovement = new Cursors(idsJson)
                 }
             };
@@ -192,6 +193,7 @@ namespace LinqToTwitter
             {
                 new Mute
                 {
+                    IDList = new List<ulong>(),
                     Users =
                         (from JsonData user in users
                          select new User(user))

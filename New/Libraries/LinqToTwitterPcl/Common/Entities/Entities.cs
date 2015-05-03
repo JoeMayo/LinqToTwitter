@@ -13,7 +13,16 @@ namespace LinqToTwitter
         public Entities() { }
         public Entities(JsonData entityJson)
         {
-            if (entityJson == null) return;
+            if (entityJson == null)
+            {
+                HashTagEntities = new List<HashTagEntity>();
+                MediaEntities = new List<MediaEntity>();
+                UrlEntities = new List<UrlEntity>();
+                UserMentionEntities = new List<UserMentionEntity>();
+                SymbolEntities = new List<SymbolEntity>();
+
+                return;
+            }
 
             var hashTagEntities = entityJson.GetValue<JsonData>("hashtags");
             var mediaEntities = entityJson.GetValue<JsonData>("media");
