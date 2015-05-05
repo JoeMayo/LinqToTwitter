@@ -537,7 +537,7 @@ namespace LinqToTwitterPcl.Tests.StatusTests
             Assert.IsNotNull(status.Annotation);
             Assert.IsFalse(status.Annotation.Attributes.Any());
             Assert.IsNotNull(status.Entities);
-            Assert.IsNull(status.Entities.HashTagEntities);
+            Assert.IsNotNull(status.Entities.HashTagEntities);
         }
 
         [TestMethod]
@@ -551,13 +551,12 @@ namespace LinqToTwitterPcl.Tests.StatusTests
             Assert.AreEqual(1, statuses.Count);
             var status = statuses.Single();
             Assert.IsNotNull(status);
-            Assert.IsFalse(status.Retweeted);
-            Assert.IsNull(status.InReplyToScreenName);
-            Assert.IsFalse(status.PossiblySensitive);
-            var retweetedStatus = status.RetweetedStatus;
-            Assert.IsNotNull(retweetedStatus);
-            Assert.IsNotNull(retweetedStatus.Text);
-            Assert.IsTrue(retweetedStatus.Text.StartsWith("I just blogged about"));
+            Assert.IsNotNull(status.Annotation);
+            Assert.IsNotNull(status.Annotation.Attributes);
+            Assert.IsFalse(status.Annotation.Attributes.Any());
+            Assert.IsNotNull(status.Annotation.Elements);
+            Assert.IsFalse(status.Annotation.Elements.Any());
+            Assert.AreEqual(new DateTime(2012, 3, 28, 2, 51, 45), status.CreatedAt);
             var contributors = status.Contributors;
             Assert.IsNotNull(contributors);
             Assert.IsFalse(contributors.Any());
@@ -565,25 +564,33 @@ namespace LinqToTwitterPcl.Tests.StatusTests
             Assert.IsNotNull(coords);
             Assert.AreEqual(-122.40060, coords.Longitude);
             Assert.AreEqual(37.78215, coords.Latitude);
+            Assert.IsNotNull(status.Entities);
+            Assert.IsNotNull(status.Entities.HashTagEntities);
+            Assert.IsFalse(status.Entities.HashTagEntities.Any());
+            Assert.IsFalse(status.Favorited);
+            Assert.IsNull(status.InReplyToScreenName);
+            Assert.AreEqual(0ul, status.InReplyToStatusID);
+            Assert.AreEqual(0ul, status.InReplyToUserID);
             Assert.IsNotNull(status.Place);
             Assert.IsNull(status.Place.Name);
+            Assert.IsFalse(status.PossiblySensitive);
+            Assert.AreEqual(393, status.RetweetCount);
+            Assert.IsFalse(status.Retweeted);
+            var retweetedStatus = status.RetweetedStatus;
+            Assert.IsNotNull(retweetedStatus);
+            Assert.IsNotNull(retweetedStatus.Text);
+            Assert.IsTrue(retweetedStatus.Text.StartsWith("I just blogged about"));
+            Assert.AreEqual("web", status.Source);
+            Assert.IsTrue(status.Text.StartsWith("RT @scottgu: I just blogged about"));
+            Assert.AreEqual(184835136037191681ul, status.StatusID);
+            Assert.IsNotNull(status.Text);
+            Assert.IsFalse(status.Truncated);
             Assert.IsNotNull(status.User);
             Assert.AreEqual("Joe Mayo", status.User.Name);
-            Assert.AreEqual(393, status.RetweetCount);
-            Assert.AreEqual(184835136037191681ul, status.StatusID);
-            Assert.AreEqual(0ul, status.InReplyToUserID);
-            Assert.IsFalse(status.Favorited);
-            Assert.AreEqual(0ul, status.InReplyToStatusID);
-            Assert.AreEqual("web", status.Source);
-            Assert.AreEqual(new DateTime(2012, 3, 28, 2, 51, 45), status.CreatedAt);
-            Assert.AreEqual(0ul, status.InReplyToUserID);
-            Assert.IsFalse(status.Truncated);
-            Assert.IsNotNull(status.Text);
-            Assert.IsTrue(status.Text.StartsWith("RT @scottgu: I just blogged about"));
-            Assert.IsNotNull(status.Annotation);
-            Assert.IsFalse(status.Annotation.Attributes.Any());
-            Assert.IsNotNull(status.Entities);
-            Assert.IsNull(status.Entities.HashTagEntities);
+            Assert.IsNotNull(status.Users);
+            Assert.IsFalse(status.Users.Any());
+            Assert.IsNotNull(status.WithheldInCountries);
+            Assert.IsFalse(status.WithheldInCountries.Any());
         }
 
         [TestMethod]

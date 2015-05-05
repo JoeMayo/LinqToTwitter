@@ -25,6 +25,8 @@ namespace LinqToTwitter
         {
             if (user == null) return;
 
+            BannerSizes = new List<BannerSize>();
+            Categories = new List<Category>();
             UserIDResponse = user.GetValue<ulong>("id").ToString(CultureInfo.InvariantCulture);
             ScreenNameResponse = user.GetValue<string>("screen_name");
             Name = user.GetValue<string>("name");

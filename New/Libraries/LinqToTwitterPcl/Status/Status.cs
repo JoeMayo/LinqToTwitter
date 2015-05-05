@@ -47,7 +47,6 @@ namespace LinqToTwitter
                 Coordinates = new Coordinate();
             }
             Place = new Place(status.GetValue<JsonData>("place"));
-            User = new User(status.GetValue<JsonData>("user"));
             RetweetCount = status.GetValue<int>("retweet_count");
             StatusID = status.GetValue<ulong>("id");
             FavoriteCount = status.GetValue<int?>("favorite_count");
@@ -99,6 +98,8 @@ namespace LinqToTwitter
             {
                 FilterLevel = FilterLevel.None;
             }
+            User = new User(status.GetValue<JsonData>("user"));
+            Users = new List<ulong>();
         }
 
         /// <summary>

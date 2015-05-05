@@ -165,7 +165,6 @@
     <Compile Include="Search\Attitude.cs" />
     <Compile Include="Search\ResultType.cs" />
     <Compile Include="Search\Search.cs" />
-    <Compile Include="Search\SearchEntry.cs" />
     <Compile Include="Search\SearchMetaData.cs" />
     <Compile Include="Search\SearchRequestProcessor.cs" />
     <Compile Include="Search\SearchType.cs" />

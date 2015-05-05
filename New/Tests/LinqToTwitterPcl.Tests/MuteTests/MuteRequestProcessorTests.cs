@@ -97,6 +97,9 @@ namespace LinqToTwitterPcl.Tests.MuteTests
             Assert.IsTrue(idList.Any());
             var id = idList.First();
             Assert.AreEqual(5676142ul, id);
+            var users = mute.Users;
+            Assert.IsNotNull(users);
+            Assert.IsFalse(users.Any());
             var cursor = mute.CursorMovement;
             Assert.IsNotNull(cursor);
             Assert.AreEqual(2, cursor.Previous);
@@ -120,6 +123,9 @@ namespace LinqToTwitterPcl.Tests.MuteTests
             var user = users.First();
             Assert.IsNotNull(user);
             Assert.AreEqual("93604443", user.UserIDResponse);
+            var ids = mute.IDList;
+            Assert.IsNotNull(ids);
+            Assert.IsFalse(ids.Any());
             var cursor = mute.CursorMovement;
             Assert.IsNotNull(cursor);
             Assert.AreEqual(2, cursor.Previous);

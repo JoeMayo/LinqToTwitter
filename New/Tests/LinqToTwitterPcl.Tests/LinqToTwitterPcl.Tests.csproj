@@ -59,6 +59,7 @@
     <Compile Include="Common\OAuthTwitterMock.cs" />
     <Compile Include="Common\TestCulture.cs" />
     <Compile Include="Common\TwitterExtensionsTests.cs" />
+    <Compile Include="Common\EntitiesTests.cs" />
     <Compile Include="DirectMessageTests\DirectMessageCommandsTests.cs" />
     <Compile Include="DirectMessageTests\DirectMessageRequestProcessorTests.cs" />
     <Compile Include="DirectMessageTests\DirectMessageTests.cs" />

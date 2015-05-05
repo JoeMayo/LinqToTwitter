@@ -14,6 +14,7 @@ namespace LinqToTwitter
             if (annotationJson == null)
             {
                 Attributes = new Dictionary<string, string>();
+                Elements = new Dictionary<string, string>();
                 return;
             }
 
