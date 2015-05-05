@@ -129,6 +129,8 @@ namespace LinqToTwitter
         {
             if (expression.NodeType == ExpressionType.Constant)
                 return ((ConstantExpression)expression).Value.ToString();
+            else if (expression.NodeType == ExpressionType.Convert || expression.NodeType == ExpressionType.ConvertChecked)
+                return ((int)((expression as UnaryExpression).Operand as ConstantExpression).Value).ToString();
             else
                 throw new InvalidQueryException(
                     String.Format("The expression type {0} is not supported to obtain a value.", expression.NodeType));
