@@ -25,7 +25,7 @@ The following query returns search results where people are tweeting about LINQ 
 ```
 From a coding experience perspective, the _TwitterContext_ type is analogous to _DataContext_ (LINQ to SQL) or _ObjectContext_ (LINQ to Entities).  You use the _TwitterContext_ instance, _twitterCtx_, to access _IQueryable<T>_ tweet categories.  In the example above, the _Search_ will give you the ability to search Twitter for tweets meeting some criteria.
 
-*Note:* _The ellipses in the TwitterContext parameters indicates that you need to provide an authorizer with credentials, which is required. You can visit [Securing Your Applications](https://linqtotwitter.codeplex.com/wikipage?title=Securing%20Your%20Applications&referringTitle=Documentation) for documentation on authorizers and visit the Download page for working examples._
+*Note:* _The ellipses in the TwitterContext parameters indicates that you need to provide an authorizer with credentials, which is required. You can visit [Securing Your Applications](https://github.com/JoeMayo/LinqToTwitter/wiki/Securing-Your-Applications) for documentation on authorizers and visit the Download page for working examples._
 
 Each query category has a _Type_ property for the type of tweets you want to get back.  For example, _Status_ tweets can be made for _Home_, _Mentions_, or _User_ timelines. Each query category also has an _XxxType_ enum to help you figure out what is available. The example above uses _SearchType.Search_ to perform searches.  Another example would be _Status_ queries which might have _StatusType.Home_ as its _Type_.  In the case of _Search_ queries, _Search_ is the only option, but the _Type_ idiom is consistent accross all query categories.
 
