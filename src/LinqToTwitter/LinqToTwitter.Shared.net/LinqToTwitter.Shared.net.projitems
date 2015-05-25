@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>37396599-8a5a-4ac5-b583-c49ec4e40781</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>LinqToTwitter.Shared.net</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Common\TwitterQueryException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Net\GetMessageHandler.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Net\PostMessageHandler.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Net\TwitterErrorHandler.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Net\TwitterExecute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Net\Url.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Security\ApplicationOnlyAuthorizer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Security\AuthorizerBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Security\IAuthorizer.cs" />
+  </ItemGroup>
+</Project>
