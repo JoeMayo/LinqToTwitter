@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -152,8 +151,6 @@ namespace LinqToTwitter
 
             string authorizationString = Authorizer.GetAuthorizationString(method.ToString(), url, authStringParms);
 
-            //req.Headers.Add("Authorization", authorizationString);
-
             int endOfScheme = authorizationString.IndexOf(' ');
             string scheme = authorizationString.Substring(0, endOfScheme).Trim();
             string authStringMinusScheme = authorizationString.Substring(endOfScheme + 1);
@@ -170,29 +167,33 @@ namespace LinqToTwitter
         /// </returns>
         public async Task<string> QueryTwitterStreamAsync(Request request)
         {
+            const int CarriageReturn = 0x0D;
+            const int LineFeed = 0x0A;
+            const int EndOfStream = 0xFF;
+
             WriteLog(request.FullUrl, "QueryTwitterStreamAsync");
 
-            var handler = new HttpBaseProtocolFilter();
-
+            IDictionary<string, string> reqParams =
+                request.RequestParameters.ToDictionary(key => key.Name, val => val.Value);
+            var baseFilter = new HttpBaseProtocolFilter();
+            baseFilter.AutomaticDecompression = true;
+            var streamFilter = new GetMessageFilter(this, reqParams, request.FullUrl, baseFilter);
             // TODO: implement proxy support
             //if (Authorizer.Proxy != null && handler.SupportsProxy)
             //    handler.Proxy = Authorizer.Proxy;
 
-            using (StreamingClient = new HttpClient(handler))
+            using (StreamingClient = new HttpClient(baseFilter))
             {
                 //StreamingClient.Timeout = TimeSpan.FromMilliseconds(System.Threading.Timeout.Infinite);
 
-                var httpRequest = ConfigureRequest(request);
-
+                var httpRequest = new HttpRequestMessage(HttpMethod.Get, new Uri(request.FullUrl));
                 var response = await StreamingClient.SendRequestAsync(
                     httpRequest, HttpCompletionOption.ResponseHeadersRead);
 
                 await TwitterErrorHandler.ThrowIfErrorAsync(response).ConfigureAwait(false);
 
-                Stream stream = await CreateStream(response);
-
-                const int CarriageReturn = 0x0D;
-                const int LineFeed = 0x0A;
+                var inputStream = await response.Content.ReadAsInputStreamAsync();
+                Stream stream = inputStream.AsStreamForRead();
 
                 var memStr = new MemoryStream();
                 byte[] readByte;
@@ -208,7 +209,7 @@ namespace LinqToTwitter
                     if (IsStreamClosed) break;
 
                     // TODO: review end-of-stream protocol
-                    if (nextByte == 0xff) break;
+                    if (nextByte == EndOfStream) break;
 
                     if (nextByte != CarriageReturn && nextByte != LineFeed)
                         memStr.WriteByte(nextByte);
@@ -236,44 +237,6 @@ namespace LinqToTwitter
 
             return "{}";
         }
- 
-        HttpRequestMessage ConfigureRequest(Request request)
-        {
-            var httpRequest = new HttpRequestMessage(HttpMethod.Post, new Uri(request.Endpoint));
-
-            var parameters =
-                string.Join("&",
-                    (from parm in request.RequestParameters
-                     select parm.Name + "=" + Url.PercentEncode(parm.Value))
-                    .ToList());                            
-            var content = new HttpStringContent(parameters, Windows.Storage.Streams.UnicodeEncoding.Utf8, "application/x-www-form-urlencoded");
-            httpRequest.Content = content;
-
-            var parms = request.RequestParameters
-                               .ToDictionary(
-                                    key => key.Name,
-                                    val => val.Value);
-            SetAuthorizationHeader(HttpMethod.Post, request.FullUrl, parms, httpRequest);
-            httpRequest.Headers.Add("User-Agent", UserAgent);
-            httpRequest.Headers.Add("Expect", "100-continue");
-
-            if (Authorizer.SupportsCompression)
-                httpRequest.Headers.AcceptEncoding.TryParseAdd("gzip");
-
-            return httpRequest;
-        }
- 
-        async Task<Stream> CreateStream(HttpResponseMessage response)
-        {
-            // TODO: implement streaming support
-            throw new NotImplementedException("Stream support currently not awailable in Windows 10");
-            //var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
-
-            //if (Authorizer.SupportsCompression)
-            //    return new GZipStream(stream, CompressionMode.Decompress);
-            //else
-            //    return stream;
-        }
 
         /// <summary>
         /// Closes the stream
@@ -300,7 +263,7 @@ namespace LinqToTwitter
         /// <returns>JSON response From Twitter.</returns>
         public async Task<string> PostMediaAsync(string url, IDictionary<string, string> postData, byte[] data, string name, string fileName, string contentType, CancellationToken cancelToken)
         {
-            WriteLog(url, "QueryTwitterAsync");
+            WriteLog(url, "PostMediaAsync");
 
             var multiPartContent = new HttpMultipartFormDataContent();
             var byteArrayContent = new HttpBufferContent(data.AsBuffer());

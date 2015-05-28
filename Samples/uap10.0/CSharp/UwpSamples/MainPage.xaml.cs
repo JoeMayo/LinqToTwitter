@@ -36,5 +36,10 @@ namespace UwpSamples
         {
             Frame.Navigate(typeof(TweetPage));
         }
+
+        private void streamButton_Click(object sender, RoutedEventArgs e)
+        {
+            Frame.Navigate(typeof(SampleStreamPage));
+        }
     }
 }

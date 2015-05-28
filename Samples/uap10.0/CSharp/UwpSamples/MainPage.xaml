@@ -9,8 +9,9 @@
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Margin="20">
         <StackPanel>
-            <Button x:Name="searchButton" Content="Search" Margin="10,10,0,0" Click="searchButton_Click"/>
-            <Button x:Name="tweetButton" Content="Tweet" Margin="10,10,0,0" Click="tweetButton_Click"/>
+            <Button x:Name="searchButton" Content="Search" Margin="10,10,10,0" HorizontalAlignment="Stretch" Click="searchButton_Click"/>
+            <Button x:Name="tweetButton" Content="Tweet" Margin="10,10,10,0" HorizontalAlignment="Stretch" Click="tweetButton_Click"/>
+            <Button x:Name="streamButton" Content="Stream" Margin="10,10,10,0" HorizontalAlignment="Stretch" Click="streamButton_Click"/>
         </StackPanel>
     </Grid>
 </Page>
