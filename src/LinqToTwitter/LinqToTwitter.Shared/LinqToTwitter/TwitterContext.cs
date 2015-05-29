@@ -32,7 +32,7 @@ namespace LinqToTwitter
         internal const string XMediaRateLimitRemainingKey = "x-mediaratelimit-remaining";
         internal const string XMediaRateLimitResetKey = "x-mediaratelimit-reset";
         internal const string DateKey = "Date";
-        internal const string DefaultUserAgent = "LINQ-To-Twitter/3.0";
+        internal const string DefaultUserAgent = "LINQ-To-Twitter/4.0";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TwitterContext"/> class.

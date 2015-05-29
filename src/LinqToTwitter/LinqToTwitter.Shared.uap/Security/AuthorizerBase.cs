@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using LinqToTwitter.Security;
 using LinqToTwitter.Net;
-using System.Text;
 using Windows.Web.Http;
 using Windows.Web.Http.Filters;
 
@@ -57,7 +56,6 @@ namespace LinqToTwitter
         /// </summary>
         public string Callback { get; set; }
 
-        // TODO: research proxy support
         //public IWebProxy Proxy { get; set; }
 
         public bool SupportsCompression { get; set; }

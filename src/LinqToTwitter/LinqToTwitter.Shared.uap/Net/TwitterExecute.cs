@@ -14,7 +14,7 @@ using Windows.Web.Http.Headers;
 namespace LinqToTwitter
 {
     /// <summary>
-    /// Logic that performs actual communication with Twitter
+    /// Logic that performs HTTP communication with Twitter
     /// </summary>
     internal partial class TwitterExecute : ITwitterExecute, IDisposable
     {
@@ -104,9 +104,7 @@ namespace LinqToTwitter
         public TwitterExecute(IAuthorizer authorizer)
         {
             if (authorizer == null)
-            {
                 throw new ArgumentNullException("authorizedClient");
-            }
 
             Authorizer = authorizer;
             Authorizer.UserAgent = Authorizer.UserAgent ?? DefaultUserAgent;
@@ -117,7 +115,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="request">Request with url endpoint and all query parameters</param>
         /// <param name="reqProc">Request Processor for Async Results</param>
-        /// <returns>XML Respose from Twitter</returns>
+        /// <returns>Respose from Twitter</returns>
         public async Task<string> QueryTwitterAsync<T>(Request request, IRequestProcessor<T> reqProc)
         {
             WriteLog(request.FullUrl, "QueryTwitterAsync");
@@ -142,7 +140,14 @@ namespace LinqToTwitter
                 return await HandleResponseAsync(msg).ConfigureAwait(false);
             }
         }
-  
+
+        /// <summary>
+        /// This sets the OAuth header, which Twitter required on every request.
+        /// </summary>
+        /// <param name="method">HTTP Method.</param>
+        /// <param name="url">Query url.</param>
+        /// <param name="parms">Query parameters.</param>
+        /// <param name="req">HttpRequestMessage for making the HTTP call.</param>
         internal void SetAuthorizationHeader(HttpMethod method, string url, IDictionary<string, string> parms, HttpRequestMessage req)
         {
             var authStringParms = parms.ToDictionary(parm => parm.Key, elm => elm.Value);
@@ -178,11 +183,10 @@ namespace LinqToTwitter
             var baseFilter = new HttpBaseProtocolFilter();
             baseFilter.AutomaticDecompression = true;
             var streamFilter = new GetMessageFilter(this, reqParams, request.FullUrl, baseFilter);
-            // TODO: implement proxy support
             //if (Authorizer.Proxy != null && handler.SupportsProxy)
             //    handler.Proxy = Authorizer.Proxy;
 
-            using (StreamingClient = new HttpClient(baseFilter))
+            using (StreamingClient = new HttpClient(streamFilter))
             {
                 //StreamingClient.Timeout = TimeSpan.FromMilliseconds(System.Threading.Timeout.Infinite);
 
@@ -245,7 +249,6 @@ namespace LinqToTwitter
         {
             IsStreamClosed = true;
 
-            // TODO: research proper stream cancellation
             if (StreamingClient != null)
                 StreamingClient.Dispose();
         }
@@ -299,12 +302,12 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// performs HTTP POST to Twitter
+        /// Performs HTTP POST to Twitter.
         /// </summary>
-        /// <param name="url">URL of request</param>
-        /// <param name="postData">parameters to post</param>
-        /// <param name="getResult">callback for handling async Json response - null if synchronous</param>
-        /// <returns>Json Response from Twitter - empty string if async</returns>
+        /// <param name="url">URL of request.</param>
+        /// <param name="postData">Parameters to post.</param>
+        /// <param name="getResult">Callback for handling async Json response - null if synchronous.</param>
+        /// <returns>Json Response from Twitter - empty string if async.</returns>
         public async Task<string> PostToTwitterAsync<T>(string url, IDictionary<string, string> postData, CancellationToken cancelToken)
         {
             WriteLog(url, "PostToTwitterAsync");
