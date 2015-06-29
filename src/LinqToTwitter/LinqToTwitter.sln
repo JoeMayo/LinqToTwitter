@@ -17,13 +17,20 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleSamples", "..\..\Sam
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UwpSamples", "..\..\Samples\uap10.0\CSharp\UwpSamples\UwpSamples.csproj", "{3E22BBF7-592B-4339-AAAA-FB40C5D6AF7D}"
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "LinqToTwitter.Shared.xamarin", "LinqToTwitter.Shared.xamarin\LinqToTwitter.Shared.xamarin.shproj", "{4AA86B5F-FBBB-473C-A9F2-FCA5DD7C6C71}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqToTwitter.xamarin", "LinqToTwitter.xamarin\LinqToTwitter.xamarin.csproj", "{67F9D3A8-F71E-4428-913F-C37AE82CDB24}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		LinqToTwitter.Shared\LinqToTwitter.Shared.projitems*{7b25a4f0-18ea-4819-b67c-efea0e14f919}*SharedItemsImports = 13
-		LinqToTwitter.Shared.net\LinqToTwitter.Shared.net.projitems*{6cbf35e2-b50d-46ce-b63c-49c844b5faed}*SharedItemsImports = 4
 		LinqToTwitter.Shared\LinqToTwitter.Shared.projitems*{6cbf35e2-b50d-46ce-b63c-49c844b5faed}*SharedItemsImports = 4
-		LinqToTwitter.Shared.uap\LinqToTwitter.Shared.uap.projitems*{3abcbf8e-dd1d-4cc7-9c32-2de7ef54a069}*SharedItemsImports = 4
+		LinqToTwitter.Shared.net\LinqToTwitter.Shared.net.projitems*{6cbf35e2-b50d-46ce-b63c-49c844b5faed}*SharedItemsImports = 4
 		LinqToTwitter.Shared\LinqToTwitter.Shared.projitems*{3abcbf8e-dd1d-4cc7-9c32-2de7ef54a069}*SharedItemsImports = 4
+		LinqToTwitter.Shared.uap\LinqToTwitter.Shared.uap.projitems*{3abcbf8e-dd1d-4cc7-9c32-2de7ef54a069}*SharedItemsImports = 4
+		LinqToTwitter.Shared.xamarin\LinqToTwitter.Shared.xamarin.projitems*{4aa86b5f-fbbb-473c-a9f2-fca5dd7c6c71}*SharedItemsImports = 13
+		LinqToTwitter.Shared\LinqToTwitter.Shared.projitems*{67f9d3a8-f71e-4428-913f-c37ae82cdb24}*SharedItemsImports = 4
+		LinqToTwitter.Shared.xamarin\LinqToTwitter.Shared.xamarin.projitems*{67f9d3a8-f71e-4428-913f-c37ae82cdb24}*SharedItemsImports = 4
 		LinqToTwitter.Shared.uap\LinqToTwitter.Shared.uap.projitems*{0936a109-c6b5-4527-89a9-966e8e6c9e26}*SharedItemsImports = 13
 		LinqToTwitter.Shared.net\LinqToTwitter.Shared.net.projitems*{37396599-8a5a-4ac5-b583-c49ec4e40781}*SharedItemsImports = 13
 	EndGlobalSection
@@ -106,6 +113,22 @@ Global
 		{3E22BBF7-592B-4339-AAAA-FB40C5D6AF7D}.Release|x86.ActiveCfg = Release|x86
 		{3E22BBF7-592B-4339-AAAA-FB40C5D6AF7D}.Release|x86.Build.0 = Release|x86
 		{3E22BBF7-592B-4339-AAAA-FB40C5D6AF7D}.Release|x86.Deploy.0 = Release|x86
+		{67F9D3A8-F71E-4428-913F-C37AE82CDB24}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{67F9D3A8-F71E-4428-913F-C37AE82CDB24}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{67F9D3A8-F71E-4428-913F-C37AE82CDB24}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{67F9D3A8-F71E-4428-913F-C37AE82CDB24}.Debug|ARM.Build.0 = Debug|Any CPU
+		{67F9D3A8-F71E-4428-913F-C37AE82CDB24}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{67F9D3A8-F71E-4428-913F-C37AE82CDB24}.Debug|x64.Build.0 = Debug|Any CPU
+		{67F9D3A8-F71E-4428-913F-C37AE82CDB24}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{67F9D3A8-F71E-4428-913F-C37AE82CDB24}.Debug|x86.Build.0 = Debug|Any CPU
+		{67F9D3A8-F71E-4428-913F-C37AE82CDB24}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{67F9D3A8-F71E-4428-913F-C37AE82CDB24}.Release|Any CPU.Build.0 = Release|Any CPU
+		{67F9D3A8-F71E-4428-913F-C37AE82CDB24}.Release|ARM.ActiveCfg = Release|Any CPU
+		{67F9D3A8-F71E-4428-913F-C37AE82CDB24}.Release|ARM.Build.0 = Release|Any CPU
+		{67F9D3A8-F71E-4428-913F-C37AE82CDB24}.Release|x64.ActiveCfg = Release|Any CPU
+		{67F9D3A8-F71E-4428-913F-C37AE82CDB24}.Release|x64.Build.0 = Release|Any CPU
+		{67F9D3A8-F71E-4428-913F-C37AE82CDB24}.Release|x86.ActiveCfg = Release|Any CPU
+		{67F9D3A8-F71E-4428-913F-C37AE82CDB24}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
