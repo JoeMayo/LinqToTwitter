@@ -163,8 +163,8 @@ namespace LinqToTwitter
             WriteLog(request.FullUrl, "QueryTwitterStreamAsync");
 
             var handler = new HttpClientHandler();
-            if (Authorizer.Proxy != null && handler.SupportsProxy)
-                handler.Proxy = Authorizer.Proxy;
+            //if (Authorizer.Proxy != null && handler.SupportsProxy)
+            //    handler.Proxy = Authorizer.Proxy;
 
             using (StreamingClient = new HttpClient(handler))
             {
@@ -244,8 +244,8 @@ namespace LinqToTwitter
             httpRequest.Headers.Add("User-Agent", UserAgent);
             httpRequest.Headers.ExpectContinue = false;
 
-            if (Authorizer.SupportsCompression)
-                httpRequest.Headers.AcceptEncoding.TryParseAdd("gzip");
+            //if (Authorizer.SupportsCompression)
+            //    httpRequest.Headers.AcceptEncoding.TryParseAdd("gzip");
 
             return httpRequest;
         }
@@ -254,9 +254,9 @@ namespace LinqToTwitter
         {
             var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
 
-            if (Authorizer.SupportsCompression)
-                return new GZipStream(stream, CompressionMode.Decompress);
-            else
+            //if (Authorizer.SupportsCompression)
+            //    return new GZipStream(stream, CompressionMode.Decompress);
+            //else
                 return stream;
         }
 

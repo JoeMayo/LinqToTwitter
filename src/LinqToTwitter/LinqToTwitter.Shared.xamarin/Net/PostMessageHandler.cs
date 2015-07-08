@@ -30,10 +30,10 @@ namespace LinqToTwitter.Net
             request.Headers.ExpectContinue = false;
             request.Headers.CacheControl = new CacheControlHeaderValue { NoCache = true };
 
-            if (SupportsAutomaticDecompression)
-                AutomaticDecompression = DecompressionMethods.GZip;
-            if (exe.Authorizer.Proxy != null && SupportsProxy)
-                Proxy = exe.Authorizer.Proxy;
+            //if (SupportsAutomaticDecompression)
+            //    AutomaticDecompression = DecompressionMethods.GZip;
+            //if (exe.Authorizer.Proxy != null && SupportsProxy)
+            //    Proxy = exe.Authorizer.Proxy;
 
             //if (exe.ReadWriteTimeout != 0)
             //    ReadWriteTimeout = exe.ReadWriteTimeout;

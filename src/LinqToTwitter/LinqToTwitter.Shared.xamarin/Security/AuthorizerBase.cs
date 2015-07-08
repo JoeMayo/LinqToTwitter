@@ -237,10 +237,10 @@ namespace LinqToTwitter
             req.Headers.ExpectContinue = false;
 
             var handler = new HttpClientHandler();
-            if (handler.SupportsAutomaticDecompression)
-                handler.AutomaticDecompression = DecompressionMethods.GZip;
-            if (Proxy != null && handler.SupportsProxy)
-                handler.Proxy = Proxy;
+            //if (handler.SupportsAutomaticDecompression)
+            //    handler.AutomaticDecompression = DecompressionMethods.GZip;
+            //if (Proxy != null && handler.SupportsProxy)
+            //    handler.Proxy = Proxy;
 
             var msg = await new HttpClient(handler).SendAsync(req).ConfigureAwait(false);
 
@@ -271,10 +271,10 @@ namespace LinqToTwitter
             req.Content = content;
 
             var handler = new HttpClientHandler();
-            if (handler.SupportsAutomaticDecompression)
-                handler.AutomaticDecompression = DecompressionMethods.GZip;
-            if (Proxy != null && handler.SupportsProxy)
-                handler.Proxy = Proxy;
+            //if (handler.SupportsAutomaticDecompression)
+            //    handler.AutomaticDecompression = DecompressionMethods.GZip;
+            //if (Proxy != null && handler.SupportsProxy)
+            //    handler.Proxy = Proxy;
 
             var msg = await new HttpClient(handler).SendAsync(req).ConfigureAwait(false);
 
