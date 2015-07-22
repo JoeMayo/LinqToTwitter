@@ -40,6 +40,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Common\IDList.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\InvalidQueryException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\IRequestProcessor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\L2TKeys.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\LinqExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\MethodCallExpressionTypeFinder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\ParameterFinder.cs" />

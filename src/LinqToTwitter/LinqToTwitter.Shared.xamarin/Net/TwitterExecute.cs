@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using LinqToTwitter.Common;
 using LinqToTwitter.Net;
 
 namespace LinqToTwitter
@@ -16,7 +17,6 @@ namespace LinqToTwitter
     /// </summary>
     internal partial class TwitterExecute : ITwitterExecute, IDisposable
     {
-        internal const string DefaultUserAgent = "LINQ-To-Twitter/4.0";
         internal const int DefaultReadWriteTimeout = 300000;
         internal const int DefaultTimeout = 100000;
 
@@ -97,17 +97,15 @@ namespace LinqToTwitter
         readonly object asyncCallbackLock = new object();
 
         /// <summary>
-        /// supports testing
+        /// Supports unit testing
         /// </summary>
         public TwitterExecute(IAuthorizer authorizer)
         {
             if (authorizer == null)
-            {
                 throw new ArgumentNullException("authorizedClient");
-            }
 
             Authorizer = authorizer;
-            Authorizer.UserAgent = Authorizer.UserAgent ?? DefaultUserAgent;
+            Authorizer.UserAgent = Authorizer.UserAgent ?? L2TKeys.DefaultUserAgent;
         }
 
         /// <summary>
@@ -244,20 +242,12 @@ namespace LinqToTwitter
             httpRequest.Headers.Add("User-Agent", UserAgent);
             httpRequest.Headers.ExpectContinue = false;
 
-            //if (Authorizer.SupportsCompression)
-            //    httpRequest.Headers.AcceptEncoding.TryParseAdd("gzip");
-
             return httpRequest;
         }
  
         async Task<Stream> CreateStream(HttpResponseMessage response)
         {
-            var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
-
-            //if (Authorizer.SupportsCompression)
-            //    return new GZipStream(stream, CompressionMode.Decompress);
-            //else
-                return stream;
+            return await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
         }
 
         /// <summary>

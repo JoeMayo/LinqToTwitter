@@ -32,7 +32,6 @@ namespace LinqToTwitter
         internal const string XMediaRateLimitRemainingKey = "x-mediaratelimit-remaining";
         internal const string XMediaRateLimitResetKey = "x-mediaratelimit-reset";
         internal const string DateKey = "Date";
-        internal const string DefaultUserAgent = "LINQ-To-Twitter/4.0";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TwitterContext"/> class.
@@ -55,7 +54,7 @@ namespace LinqToTwitter
             TwitterExecutor = execute;
 
             if (string.IsNullOrWhiteSpace(UserAgent))
-                UserAgent = DefaultUserAgent;
+                UserAgent = L2TKeys.DefaultUserAgent;
 
             BaseUrl = "https://api.twitter.com/1.1/";
             VineUrl = "https://vine.co/";

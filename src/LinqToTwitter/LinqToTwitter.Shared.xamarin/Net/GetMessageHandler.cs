@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
+﻿using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -27,8 +24,6 @@ namespace LinqToTwitter.Net
             exe.SetAuthorizationHeader(HttpMethod.Get.ToString(), url, parameters, request);
             request.Headers.Add("User-Agent", exe.UserAgent);
             request.Headers.ExpectContinue = false;
-            //if (SupportsAutomaticDecompression)
-            //    AutomaticDecompression = DecompressionMethods.GZip;
             //if (exe.Authorizer.Proxy != null && SupportsProxy)
             //    Proxy = exe.Authorizer.Proxy;
 

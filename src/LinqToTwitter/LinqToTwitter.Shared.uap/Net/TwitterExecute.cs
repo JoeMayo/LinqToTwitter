@@ -10,6 +10,7 @@ using LinqToTwitter.Net;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Web.Http.Filters;
 using Windows.Web.Http.Headers;
+using LinqToTwitter.Common;
 
 namespace LinqToTwitter
 {
@@ -18,7 +19,6 @@ namespace LinqToTwitter
     /// </summary>
     internal partial class TwitterExecute : ITwitterExecute, IDisposable
     {
-        internal const string DefaultUserAgent = "LINQ-To-Twitter/4.0";
         internal const int DefaultReadWriteTimeout = 300000;
         internal const int DefaultTimeout = 100000;
 
@@ -107,7 +107,7 @@ namespace LinqToTwitter
                 throw new ArgumentNullException("authorizedClient");
 
             Authorizer = authorizer;
-            Authorizer.UserAgent = Authorizer.UserAgent ?? DefaultUserAgent;
+            Authorizer.UserAgent = Authorizer.UserAgent ?? L2TKeys.DefaultUserAgent;
         }
 
         /// <summary>

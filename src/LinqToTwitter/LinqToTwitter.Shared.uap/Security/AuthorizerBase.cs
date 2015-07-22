@@ -6,6 +6,7 @@ using LinqToTwitter.Security;
 using LinqToTwitter.Net;
 using Windows.Web.Http;
 using Windows.Web.Http.Filters;
+using LinqToTwitter.Common;
 
 namespace LinqToTwitter
 {
@@ -102,7 +103,7 @@ namespace LinqToTwitter
             SupportsCompression = true;
 
             if (string.IsNullOrWhiteSpace(UserAgent))
-                UserAgent = TwitterContext.DefaultUserAgent;
+                UserAgent = L2TKeys.DefaultUserAgent;
 
             OAuthRequestTokenUrl = "https://api.twitter.com/oauth/request_token";
             OAuthAuthorizeUrl = "https://api.twitter.com/oauth/authorize";

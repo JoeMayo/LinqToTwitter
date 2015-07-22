@@ -52,7 +52,7 @@ namespace LinqToTwitter.Net
 
             throw new TwitterQueryException(message)
             {
-                HelpLink = "https://linqtotwitter.codeplex.com/wikipage?title=LINQ%20to%20Twitter%20FAQ",
+                HelpLink = L2TKeys.FaqHelpUrl,
                 ErrorCode = error.Code,
                 StatusCode = HttpStatusCode.SeeOther,
                 ReasonPhrase = msg.ReasonPhrase + " (HTTP 429 - Too Many Requests)"
@@ -81,7 +81,7 @@ namespace LinqToTwitter.Net
 
             throw new TwitterQueryException(message)
             {
-                HelpLink = "https://linqtotwitter.codeplex.com/wikipage?title=LINQ%20to%20Twitter%20FAQ",
+                HelpLink = L2TKeys.FaqHelpUrl,
                 ErrorCode = error.Code,
                 StatusCode = HttpStatusCode.Unauthorized,
                 ReasonPhrase = msg.ReasonPhrase
