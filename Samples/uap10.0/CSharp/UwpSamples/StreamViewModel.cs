@@ -34,7 +34,7 @@ namespace UwpSamples
 
             await dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
             {
-                JsonContent.Add(new JsonContent { Content = content });
+                JsonContent.Insert(0, new JsonContent { Content = content });
             });            
         }
     }

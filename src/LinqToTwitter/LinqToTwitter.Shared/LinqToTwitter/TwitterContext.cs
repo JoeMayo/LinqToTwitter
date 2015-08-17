@@ -196,7 +196,7 @@ namespace LinqToTwitter
             set { TwitterExecutor.Authorizer = value; }
         }
 
-#if !WINDOWS_UAP
+#if !WINDOWS_UWP
         // TODO: research proxy implementations
         /// <summary>
         /// Allows setting the IWebProxy for all HTTP requests.

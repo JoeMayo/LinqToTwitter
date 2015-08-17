@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using LinqToTwitter;
 using LitJson;
+using System.IO;
 
 namespace Linq2TwitterDemos_Console
 {
@@ -88,11 +89,21 @@ namespace Linq2TwitterDemos_Console
                      select strm)
                     .StartAsync(async strm =>
                     {
-                        HandleStreamResponse(strm);
+                        await HandleStreamResponse(strm);
 
                         if (count++ >= 5)
                             cancelTokenSrc.Cancel();
                     });
+            }
+            catch (IOException ex)
+            {
+                // Twitter might have closed the stream,
+                // which they do sometimes. You should
+                // restart the stream, but be sure to
+                // read Twitter documentation on stream
+                // back-off strategies to prevent your
+                // app from being blocked.
+                Console.WriteLine(ex.ToString());
             }
             catch (OperationCanceledException)
             {
@@ -114,11 +125,21 @@ namespace Linq2TwitterDemos_Console
                      select strm)
                     .StartAsync(async strm =>
                     {
-                        HandleStreamResponse(strm);
+                        await HandleStreamResponse(strm);
 
                         if (count++ >= 5)
                             cancelTokenSrc.Cancel();
                     });
+            }
+            catch (IOException ex)
+            {
+                // Twitter might have closed the stream,
+                // which they do sometimes. You should
+                // restart the stream, but be sure to
+                // read Twitter documentation on stream
+                // back-off strategies to prevent your
+                // app from being blocked.
+                Console.WriteLine(ex.ToString());
             }
             catch (OperationCanceledException)
             {
@@ -144,11 +165,21 @@ namespace Linq2TwitterDemos_Console
                         if (string.IsNullOrEmpty(strm.Content))
                             Console.WriteLine("Keep-Alive");
                         else
-                            HandleStreamResponse(strm);
+                            await HandleStreamResponse(strm);
 
                         if (count++ == 25)
                             cancelTokenSrc.Cancel();
                     });
+            }
+            catch (IOException ex)
+            {
+                // Twitter might have closed the stream,
+                // which they do sometimes. You should
+                // restart the stream, but be sure to
+                // read Twitter documentation on stream
+                // back-off strategies to prevent your
+                // app from being blocked.
+                Console.WriteLine(ex.ToString());
             }
             catch (OperationCanceledException)
             {
@@ -174,11 +205,21 @@ namespace Linq2TwitterDemos_Console
                         if (string.IsNullOrEmpty(strm.Content))
                             Console.WriteLine("Keep-Alive");
                         else
-                            HandleStreamResponse(strm);
+                            await HandleStreamResponse(strm);
 
                         if (count++ == 25)
                             cancelTokenSrc.Cancel();
                     });
+            }
+            catch (IOException ex)
+            {
+                // Twitter might have closed the stream,
+                // which they do sometimes. You should
+                // restart the stream, but be sure to
+                // read Twitter documentation on stream
+                // back-off strategies to prevent your
+                // app from being blocked.
+                Console.WriteLine(ex.ToString());
             }
             catch (OperationCanceledException)
             {
@@ -191,7 +232,7 @@ namespace Linq2TwitterDemos_Console
             var evt = new ManualResetEventSlim(false);
             string streamID = string.Empty;
 
-            Task.Run(async () =>
+            await Task.Run(async () =>
             {
                 Console.WriteLine("\nStreamed Content: \n");
                 int count = 0;
@@ -210,7 +251,7 @@ namespace Linq2TwitterDemos_Console
                             if (string.IsNullOrEmpty(strm.Content))
                                 Console.WriteLine("Keep-Alive");
                             else
-                                HandleStreamResponse(strm);
+                                await HandleStreamResponse(strm);
 
                             if (strm.EntityType == StreamEntityType.Control)
                             {
@@ -222,6 +263,16 @@ namespace Linq2TwitterDemos_Console
                             if (count++ == 25)
                                 cancelTokenSrc.Cancel();
                         });
+                }
+                catch (IOException ex)
+                {
+                    // Twitter might have closed the stream,
+                    // which they do sometimes. You should
+                    // restart the stream, but be sure to
+                    // read Twitter documentation on stream
+                    // back-off strategies to prevent your
+                    // app from being blocked.
+                    Console.WriteLine(ex.ToString());
                 }
                 catch (OperationCanceledException)
                 {
@@ -353,7 +404,7 @@ namespace Linq2TwitterDemos_Console
             } 
         }
 
-        static void HandleStreamResponse(StreamContent strm)
+        static async Task<int> HandleStreamResponse(StreamContent strm)
         {
             switch (strm.EntityType)
             {
@@ -422,6 +473,8 @@ namespace Linq2TwitterDemos_Console
                     Console.WriteLine("Unknown - " + strm.Content + "\n");
                     break;
             }
+
+            return await Task.FromResult(0);
         }
     }
 }

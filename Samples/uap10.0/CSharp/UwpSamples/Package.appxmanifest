@@ -7,11 +7,11 @@
   IgnorableNamespaces="uap mp">
 
   <Identity
-    Name="1e1da3b1-b382-4195-9022-e7ff2e48dbb3"
+    Name="84a7394d-ee4e-415a-a92d-047a4779000b"
     Publisher="CN=jmayo"
     Version="1.0.0.0" />
 
-  <mp:PhoneIdentity PhoneProductId="1e1da3b1-b382-4195-9022-e7ff2e48dbb3" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
+  <mp:PhoneIdentity PhoneProductId="84a7394d-ee4e-415a-a92d-047a4779000b" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
     <DisplayName>UwpSamples</DisplayName>
@@ -20,7 +20,7 @@
   </Properties>
 
   <Dependencies>
-    <TargetDeviceFamily Name="Windows.Universal" MinVersion="10.0.10069.0" MaxVersionTested="10.0.10069.0" />
+    <TargetDeviceFamily Name="Windows.Universal" MinVersion="10.0.0.0" MaxVersionTested="10.0.0.0" />
   </Dependencies>
 
   <Resources>
@@ -33,10 +33,11 @@
       EntryPoint="UwpSamples.App">
       <uap:VisualElements
         DisplayName="UwpSamples"
-        Square150x150Logo="Assets\Logo.png"
-        Square44x44Logo="Assets\SmallLogo.png"
+        Square150x150Logo="Assets\Square150x150Logo.png"
+        Square44x44Logo="Assets\Square44x44Logo.png"
         Description="UwpSamples"
-        BackgroundColor="#464646">
+        BackgroundColor="transparent">
+        <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png"/>
         <uap:SplashScreen Image="Assets\SplashScreen.png" />
       </uap:VisualElements>
     </Application>
