@@ -8,6 +8,8 @@ namespace LinqToTwitter
 {
     public class MvcAuthorizer : AspNetAuthorizer
     {
+        private string _authUrl;
+
         public async  Task<ActionResult> BeginAuthorizationAsync()
         {
             return await BeginAuthorizationAsync(Callback);
@@ -16,14 +18,13 @@ namespace LinqToTwitter
         public async Task<ActionResult> BeginAuthorizationAsync(Uri callback)
         {
             if (GoToTwitterAuthorization == null)
-                GoToTwitterAuthorization = authUrl =>
-                        HttpContext.Current.Response.Redirect(authUrl, false); 
+                GoToTwitterAuthorization = authUrl => { _authUrl = authUrl; };
 
             Callback = callback;
 
             await base.BeginAuthorizeAsync(callback);
 
-            return new EmptyResult();
+            return new RedirectResult(_authUrl);
         }
     }
 }
