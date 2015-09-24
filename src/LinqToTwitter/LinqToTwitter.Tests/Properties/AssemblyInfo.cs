@@ -1,16 +1,15 @@
 ﻿using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("LinqToTwitter.net")]
+[assembly: AssemblyTitle("LinqToTwitterPcl.Tests")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("LinqToTwitter.net")]
-[assembly: AssemblyCopyright("Copyright ©  2015")]
+[assembly: AssemblyProduct("LinqToTwitterPcl.Tests")]
+[assembly: AssemblyCopyright("Copyright ©  2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +19,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("6cbf35e2-b50d-46ce-b63c-49c844b5faed")]
+[assembly: Guid("d1517f7c-d2db-4eab-997f-c05f895eee4f")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -34,11 +33,3 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
-
-[assembly: InternalsVisibleTo(
-    "LinqToTwitter.Tests, PublicKey=" +
-    "002400000480000094000000060200000024000052534131000400000100010079457c3d341758" +
-    "22b3b56803d473d9491f0d2e000550adfd7064db02fd65b91e2a5018c32cc754b1cea1f1219ad2" +
-    "e76dda7b2a5dc7e3748159852251b72331f40e51934cb153108c3f39dd3b053f321fc12cf4d10f" +
-    "8f7b45aa9f96c81c63047ea53c9c5c4b5c2d251fdce0821b37d24bf51a2fa6d543668af24c1dc5" +
-    "69081096")]

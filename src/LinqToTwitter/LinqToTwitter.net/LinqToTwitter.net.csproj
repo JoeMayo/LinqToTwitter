@@ -29,6 +29,12 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>LinqToTwitter.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -41,6 +47,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="LinqToTwitter.snk" />
   </ItemGroup>
   <Import Project="..\LinqToTwitter.Shared\LinqToTwitter.Shared.projitems" Label="Shared" />
   <Import Project="..\LinqToTwitter.Shared.net\LinqToTwitter.Shared.net.projitems" Label="Shared" />

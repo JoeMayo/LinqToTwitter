@@ -134,9 +134,8 @@ namespace LinqToTwitterPcl.Tests.StatusTests
             var ctx = new Mock<TwitterContext>(execMock.Object);
             ctx.Setup(mock => mock.TweetAsync(null))
                 .ThrowsAsync(new ArgumentException());
-
-            //Assert.AreEqual("status", ex.ParamName);
         }
+
         [TestMethod]
         public async Task TweetAsync_WithRawResult_Succeeds()
         {

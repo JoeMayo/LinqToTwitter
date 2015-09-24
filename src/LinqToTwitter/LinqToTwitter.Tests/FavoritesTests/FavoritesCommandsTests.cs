@@ -8,217 +8,109 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System.Threading;
 
-namespace LinqToTwitterPcl.Tests.StatusTests
+namespace LinqToTwitterPcl.Tests.FavoritesTests
 {
     [TestClass]
-    public class StatusCommandsTests
+    public class FavoritesCommandsTests
     {
-        public StatusCommandsTests()
+        public FavoritesCommandsTests()
         {
             TestCulture.SetCulture();
         }
 
-        async Task<TwitterContext> InitializeTwitterContext()
+        TwitterContext InitializeTwitterContext()
         {
-            await Task.Delay(1);
             var authMock = new Mock<IAuthorizer>();
-            var execMock = new Mock<ITwitterExecute>();
-
-            var tcsAuth = new TaskCompletionSource<IAuthorizer>();
-            tcsAuth.SetResult(authMock.Object);
-
             var tcsResponse = new TaskCompletionSource<string>();
             tcsResponse.SetResult(SingleStatusResponse);
-
-            var tcsMedia = new TaskCompletionSource<string>();
-            tcsMedia.SetResult(MediaResponse);
-
+            var execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.Authorizer).Returns(authMock.Object);
             execMock.Setup(exec =>
                 exec.PostToTwitterAsync<Status>(
                     It.IsAny<string>(),
-                    It.IsAny<IDictionary<string, string>>(),
+                    It.IsAny<Dictionary<string, string>>(),
                     It.IsAny<CancellationToken>()))
                 .Returns(tcsResponse.Task);
-            execMock.Setup(exec =>
-                exec.PostMediaAsync(
-                    It.IsAny<string>(),
-                    It.IsAny<IDictionary<string, string>>(),
-                    It.IsAny<byte[]>(),
-                    It.IsAny<string>(),
-                    It.IsAny<string>(),
-                    It.IsAny<string>(),
-                    It.IsAny<CancellationToken>()))
-                .Returns(tcsMedia.Task);
             var ctx = new TwitterContext(execMock.Object);
             return ctx;
         }
 
         [TestMethod]
-        public void StatusRequestProcessor_Handles_Actions()
+        public void CreateFavoritesRequestProcessor_Works_With_Actions()
         {
-            var statusReqProc = new StatusRequestProcessor<Status>();
+            var favReqProc = new FavoritesRequestProcessor<Favorites>();
 
-            Assert.IsInstanceOfType(statusReqProc, typeof(IRequestProcessorWithAction<Status>));
+            Assert.IsInstanceOfType(favReqProc, typeof(IRequestProcessorWithAction<Favorites>));
         }
 
         [TestMethod]
-        public async Task ReplyAsync_Sets_StatusID()
+        public async Task CreateFavoriteAsync_WithValidID_Succeeds()
         {
-            const string Status = "Hello";
-            const ulong InReplyToStatusID = 1;
+            const ulong Id = 1ul;
             const ulong ExpectedStatusID = 184835136037191681ul;
-            var ctx = await InitializeTwitterContext();
+            var ctx = InitializeTwitterContext();
 
-            Status responseTweet = await ctx.ReplyAsync(InReplyToStatusID, Status);
+            Status actual = await ctx.CreateFavoriteAsync(Id);
 
-            Assert.AreEqual(ExpectedStatusID, responseTweet.StatusID);
+            Assert.AreEqual(ExpectedStatusID, actual.StatusID);
         }
 
         [TestMethod]
-        public async Task ReplyAsync_WithRawResult_Succeeds()
+        public async Task CreateFavoriteAsync_WithRawResult_Succeeds()
         {
-            const string Status = "Hello";
-            const ulong InReplyToStatusID = 1;
-            var ctx = await InitializeTwitterContext();
+            const ulong Id = 1ul;
+            var ctx = InitializeTwitterContext();
 
-            await ctx.ReplyAsync(InReplyToStatusID, Status);
+            await ctx.CreateFavoriteAsync(Id);
 
             Assert.AreEqual(SingleStatusResponse, ctx.RawResult);
         }
 
         [TestMethod]
-        public async Task TweetAsync_Throws_On_Null_Tweet()
+        public async Task CreateFavoriteAsync_Throws_On_Zero_ID()
         {
-            var ctx = await InitializeTwitterContext();
+            var ctx = InitializeTwitterContext();
 
             var ex = await L2TAssert.Throws<ArgumentException>(
-                async () => await ctx.TweetAsync(null));
+                async () => await ctx.CreateFavoriteAsync(0));
 
-            Assert.AreEqual("status", ex.ParamName);
+            Assert.AreEqual("id", ex.ParamName);
         }
 
         [TestMethod]
-        public async Task TweetAsync_Throws_On_Bad_Tweet()
+        public async Task DestroyFavoriteAsync_WithValidID_Succeeds()
         {
-            var authMock = new Mock<IAuthorizer>();
-            var execMock = new Mock<ITwitterExecute>();
+            const ulong Id = 1ul;
+            const ulong ExpectedStatusID = 184835136037191681ul;
+            var ctx = InitializeTwitterContext();
 
-            var tcsAuth = new TaskCompletionSource<IAuthorizer>();
-            tcsAuth.SetResult(authMock.Object);
+            Status actual = await ctx.DestroyFavoriteAsync(Id, true);
 
-            var tcsResponse = new TaskCompletionSource<string>();
-            tcsResponse.SetResult(SingleStatusResponse);
-
-            var tcsMedia = new TaskCompletionSource<string>();
-            tcsMedia.SetResult(MediaResponse);
-
-            execMock.SetupGet(exec => exec.Authorizer).Returns(authMock.Object);
-            execMock.Setup(exec =>
-                exec.PostToTwitterAsync<Status>(
-                    It.IsAny<string>(),
-                    It.IsAny<IDictionary<string, string>>(),
-                    It.IsAny<CancellationToken>()))
-                .Returns(tcsResponse.Task);
-            execMock.Setup(exec =>
-                exec.PostMediaAsync(
-                    It.IsAny<string>(),
-                    It.IsAny<IDictionary<string, string>>(),
-                    It.IsAny<byte[]>(),
-                    It.IsAny<string>(),
-                    It.IsAny<string>(),
-                    It.IsAny<string>(),
-                    It.IsAny<CancellationToken>()))
-                .Returns(tcsMedia.Task);
-
-            var ctx = new Mock<TwitterContext>(execMock.Object);
-            ctx.Setup(mock => mock.TweetAsync(null))
-                .ThrowsAsync(new ArgumentException());
-
-            //Assert.AreEqual("status", ex.ParamName);
+            Assert.AreEqual(ExpectedStatusID, actual.StatusID);
         }
-        [TestMethod]
-        public async Task TweetAsync_WithRawResult_Succeeds()
-        {
-            const ulong Id = 184835136037191681ul;
-            var ctx = await InitializeTwitterContext();
 
-            await ctx.DeleteTweetAsync(Id);
+        [TestMethod]
+        public async Task DestroyFavoriteAsync_WithRawResult_Succeeds()
+        {
+            const ulong Id = 1ul;
+            const ulong ExpectedStatusID = 184835136037191681ul;
+            var ctx = InitializeTwitterContext();
+
+            await ctx.DestroyFavoriteAsync(Id, true);
 
             Assert.AreEqual(SingleStatusResponse, ctx.RawResult);
         }
 
         [TestMethod]
-        public async Task TweetAsync_Sets_StatusID()
-        {
-            const string Status = "Hello";
-            const ulong ExpectedStatusID = 184835136037191681ul;
-            var ctx = await InitializeTwitterContext();
-
-            Status actual = await ctx.TweetAsync(Status);
-
-            Assert.AreEqual(ExpectedStatusID, actual.StatusID);
-        }
-
-        [TestMethod]
-        public async Task TweetAsync_WithMediaIds_ReturnsStatus()
-        {
-            const string Status = "Hello";
-            const ulong ExpectedStatusID = 184835136037191681ul;
-            var mediaIds = new List<ulong> { 1, 2, 3 };
-            var ctx = await InitializeTwitterContext();
-
-            Status actual = await ctx.TweetAsync(Status, mediaIds);
-
-            Assert.AreEqual(ExpectedStatusID, actual.StatusID);
-        }
-
-        [TestMethod]
-        public async Task UploadMediaAsync_WithBinaryImage_ReturnsMedia()
-        {
-            const ulong ExpectedMediaID = 521449660083609601ul;
-            var image = new byte[] { 1, 2, 3 };
-            var ctx = await InitializeTwitterContext();
-
-            Media actual = await ctx.UploadMediaAsync(image);
-
-            Assert.AreEqual(ExpectedMediaID, actual.MediaID);
-        }
-
-
-        [TestMethod]
-        public async Task DeleteTweetAsync_Sets_ID()
-        {
-            const ulong Id = 184835136037191681ul;
-            const ulong ExpectedStatusID = 184835136037191681ul;
-            var ctx = await InitializeTwitterContext();
-
-            Status actual = await ctx.DeleteTweetAsync(Id);
-
-            Assert.AreEqual(ExpectedStatusID, actual.StatusID);
-        }
-
-        [TestMethod]
-        public async Task DeleteTweetAsync_WithRawResults_Succeeds()
-        {
-            const ulong Id = 184835136037191681ul;
-            var ctx = await InitializeTwitterContext();
-
-            await ctx.DeleteTweetAsync(Id);
-
-            Assert.AreEqual(SingleStatusResponse, ctx.RawResult);
-        }
-
-        [TestMethod]
-        public async Task DeleteTweetAsync_Throws_On_Zero_ID()
+        public async Task DestroyFavoriteAsync_Throws_On_Zero_ID()
         {
             const ulong ID = 0;
-            var ctx = await InitializeTwitterContext();
+            var ctx = InitializeTwitterContext();
 
             var ex = await L2TAssert.Throws<ArgumentException>(
-                async () => await ctx.DeleteTweetAsync(ID));
+                async () => await ctx.DestroyFavoriteAsync(ID, true));
 
-            Assert.AreEqual("tweetID", ex.ParamName);
+            Assert.AreEqual("id", ex.ParamName);
         }
 
         const string SingleStatusResponse = @"{
@@ -343,16 +235,5 @@ namespace LinqToTwitterPcl.Tests.StatusTests
       ""geo"":null,
       ""text"":""RT @scottgu: I just blogged about http:\/\/t.co\/YWHGwOq6 MVC, Web API, Razor and Open Source - Now with Contributions: http:\/\/t.co\/qpevLMZd""
    }";
-
-        const string MediaResponse = @"{
-	""media_id"": 521449660083609601,
-	""media_id_string"": ""521449660083609601"",
-	""size"": 6955,
-	""image"": {
-		""w"": 100,
-		""h"": 100,
-		""image_type"": ""image\/png""
-	}
-}";
     }
 }

@@ -21,6 +21,7 @@
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
     <NuGetPackageImportStamp>1b7e92a8</NuGetPackageImportStamp>
+    <UseGlobalApplicationHostFile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -51,12 +52,6 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\EntityFramework.6.1.2\lib\net45\EntityFramework.SqlServer.dll</HintPath>
-    </Reference>
-    <Reference Include="LinqToTwitter.AspNet">
-      <HintPath>..\packages\LinqToTwitter.3.1.1\lib\net45\LinqToTwitter.AspNet.dll</HintPath>
-    </Reference>
-    <Reference Include="LinqToTwitterPcl">
-      <HintPath>..\packages\LinqToTwitter.3.1.1\lib\net45\LinqToTwitterPcl.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.AspNet.Identity.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -285,6 +280,16 @@
   <ItemGroup>
     <Content Include="packages.config" />
     <None Include="Project_Readme.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Libraries\LinqToTwitter.AspNet\LinqToTwitter.AspNet.csproj">
+      <Project>{946a0061-58f9-467d-9907-3046cefb4524}</Project>
+      <Name>LinqToTwitter.AspNet</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Libraries\LinqToTwitterPcl\LinqToTwitterPcl.csproj">
+      <Project>{caaff164-a681-4183-bb83-a07b668f7ffc}</Project>
+      <Name>LinqToTwitterPcl</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

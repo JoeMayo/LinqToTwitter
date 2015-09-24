@@ -130,8 +130,8 @@ namespace Linq2TwitterDemos_Console
                 {
                     if (tweet != null && tweet.User != null)
                         Console.WriteLine(
-                            "Name: {0}, Tweet: {1}",
-                            tweet.User.ScreenNameResponse, tweet.Text);
+                            "ID: [{0}] Name: {1}\n\tTweet: {2}",
+                            tweet.StatusID, tweet.User.ScreenNameResponse, tweet.Text);
                 });
         }
   
