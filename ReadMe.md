@@ -46,4 +46,4 @@ For help in getting started with NuGet: [A Gentle Introduction to NuGet](http://
 
 See [Making API Calls](https://github.com/JoeMayo/LinqToTwitter/wiki/Making-API-Calls).
 
-### For the latest news, follow [@JoeMayo](https://twitter.com/JoeMayo) on Twitter.
+#### For the latest news, follow [@JoeMayo](https://twitter.com/JoeMayo) on Twitter.
