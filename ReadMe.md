@@ -4,6 +4,8 @@ LINQ to Twitter is an open source 3rd party LINQ Provider for the [Twitter](http
 
 ## Example
 
+[![Join the chat at https://gitter.im/JoeMayo/LinqToTwitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/JoeMayo/LinqToTwitter?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 The following query returns search results where people are tweeting about LINQ to Twitter:
 ```C#
             var twitterCtx = new TwitterContext(...);
