@@ -30,6 +30,8 @@ namespace LinqToTwitter
             InReplyToScreenName = status.GetValue<string>("in_reply_to_screen_name");
             PossiblySensitive = status.GetValue<bool>("possibly_sensitive");
             RetweetedStatus = new Status(status.GetValue<JsonData>("retweeted_status"));
+            QuotedStatusID = status.GetValue<ulong>("quoted_status_id");
+            QuotedStatus = new Status(status.GetValue<JsonData>("quoted_status"));
             var contributors = status.GetValue<JsonData>("contributors");
             Contributors =
                 contributors == null ?
@@ -352,6 +354,15 @@ namespace LinqToTwitter
         /// by authenticating user.
         /// </summary>
         public ulong CurrentUserRetweet { get; set; }
+
+        /// ID of the quoted status
+        /// </summary>
+        public ulong QuotedStatusID { get; set; }
+
+        /// <summary>
+        /// Complete Status object representing the quoted status
+        /// </summary>
+        public Status QuotedStatus { get; set; }
 
         /// <summary>
         /// Set of key/value pairs to support promoted tweets
