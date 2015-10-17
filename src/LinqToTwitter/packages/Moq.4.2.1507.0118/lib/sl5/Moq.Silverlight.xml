@@ -170,7 +170,7 @@
 				// that expectation was not marked as verifiable.
 				this.VerifyAll();
 			</code>
-		</example><exception cref="T:Moq.MockException">At least one expectation was not met.</exception>        
+		</example><exception cref="T:Moq.MockException">At least one expectation was not met.</exception>		
         </member>
         <member name="M:Moq.Mock.GetInterceptor(System.Linq.Expressions.Expression,Moq.Mock)">
             <summary>
