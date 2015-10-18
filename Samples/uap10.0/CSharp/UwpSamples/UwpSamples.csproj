@@ -155,9 +155,9 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\src\LinqToTwitter\LinqToTwitter.uap\LinqToTwitter.uap.csproj">
-      <Project>{d3eeb062-3ba3-44d7-9f35-c798d3667e6e}</Project>
-      <Name>LinqToTwitter.uap</Name>
+    <ProjectReference Include="..\..\..\..\src\LinqToTwitter\LinqToTwitter.uap10\LinqToTwitter.uap10.csproj">
+      <Project>{0cdbcfca-4404-4f6e-976f-1165f1072604}</Project>
+      <Name>LinqToTwitter.uap10</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">

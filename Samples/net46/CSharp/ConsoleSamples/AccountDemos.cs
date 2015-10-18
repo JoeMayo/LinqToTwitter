@@ -174,17 +174,33 @@ namespace Linq2TwitterDemos_Console
         {
             byte[] imageBytes = File.ReadAllBytes(@"..\..\Images\200xColor_2.png");
 
-            var user = 
+            // one way is to pass the byte[]
+            var user1 =
                 await twitterCtx.UpdateAccountBackgroundImageAsync(
-                    image: imageBytes, 
-                    fileName: "200xColor_2.png",
-                    imageType: "png", 
-                    tile: false, 
-                    use: true, 
+                    image: imageBytes,
+                    fileName: "LinqToTwitterLogo1.jpg",
+                    imageType: "png",
+                    tile: false,
+                    includeEntities: false,
                     skipStatus: true);
 
-            if (user != null)
-                Console.WriteLine("User Image: " + user.ProfileImageUrl); 
+            // another way is to upload the media and pass a media ID
+            Media media = await twitterCtx.UploadMediaAsync(imageBytes);
+
+            var user2 =
+                await twitterCtx.UpdateAccountBackgroundImageAsync(
+                    media.MediaID,
+                    fileName: "LinqToTwitterLogo2.png",
+                    imageType: "png",
+                    tile: false,
+                    includeEntities: false,
+                    skipStatus: true);
+
+            if (user1 != null)
+                Console.WriteLine("User1 Image: " + user1.ProfileImageUrl);
+
+            if (user2 != null)
+                Console.WriteLine("User2 Image: " + user2.ProfileImageUrl);
         }
 
         static async Task UpdateAccountProfileAsync(TwitterContext twitterCtx)

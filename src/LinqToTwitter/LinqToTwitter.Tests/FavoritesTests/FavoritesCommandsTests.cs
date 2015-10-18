@@ -93,7 +93,6 @@ namespace LinqToTwitterPcl.Tests.FavoritesTests
         public async Task DestroyFavoriteAsync_WithRawResult_Succeeds()
         {
             const ulong Id = 1ul;
-            const ulong ExpectedStatusID = 184835136037191681ul;
             var ctx = InitializeTwitterContext();
 
             await ctx.DestroyFavoriteAsync(Id, true);

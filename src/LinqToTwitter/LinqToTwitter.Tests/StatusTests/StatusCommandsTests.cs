@@ -99,7 +99,7 @@ namespace LinqToTwitterPcl.Tests.StatusTests
         }
 
         [TestMethod]
-        public async Task TweetAsync_Throws_On_Bad_Tweet()
+        public void TweetAsync_Throws_On_Bad_Tweet()
         {
             var authMock = new Mock<IAuthorizer>();
             var execMock = new Mock<ITwitterExecute>();

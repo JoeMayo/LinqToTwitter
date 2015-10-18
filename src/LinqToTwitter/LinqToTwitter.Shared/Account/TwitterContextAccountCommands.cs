@@ -9,6 +9,8 @@ namespace LinqToTwitter
     public partial class TwitterContext
     {
         const string NoInputParam = "NoInput";
+        const ulong NoMediaID = 0;
+        const byte[] NoImage = null;
 
         /// <summary>
         /// Update Twitter colors
@@ -135,37 +137,56 @@ namespace LinqToTwitter
         /// <param name="fileName">name to pass to Twitter for the file</param>
         /// <param name="imageType">type of image: must be one of jpg, gif, or png</param>
         /// <param name="tile">Tile image across background.</param>
-        /// <param name="use">Whether to use uploaded background image or not</param>
         /// <param name="skipStatus">Don't include status with response.</param>
         /// <returns>User with new image info</returns>
-        public async Task<User> UpdateAccountBackgroundImageAsync(byte[] image, string fileName, string imageType, bool tile, bool use, bool skipStatus, CancellationToken cancelToken = default(CancellationToken))
+        public async Task<User> UpdateAccountBackgroundImageAsync(byte[] image, string fileName, string imageType, bool tile, bool includeEntities, bool skipStatus, CancellationToken cancelToken = default(CancellationToken))
         {
-            return await UpdateAccountBackgroundImageAsync(image, fileName, imageType, tile, use, true, skipStatus, cancelToken).ConfigureAwait(false);
+            return await UpdateAccountBackgroundImageAsync(image, NoMediaID, fileName, imageType, tile, includeEntities, skipStatus, cancelToken).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// sends an image file to Twitter to replace background image
+        /// </summary>
+        /// <param name="mediaID">ID of media to use (posted via UploadMediaAsync)</param>
+        /// <param name="fileName">name to pass to Twitter for the file</param>
+        /// <param name="imageType">type of image: must be one of jpg, gif, or png</param>
+        /// <param name="tile">Tile image across background.</param>
+        /// <param name="skipStatus">Don't include status with response.</param>
+        /// <returns>User with new image info</returns>
+        public async Task<User> UpdateAccountBackgroundImageAsync(ulong mediaID, string fileName, string imageType, bool tile, bool includeEntities, bool skipStatus, CancellationToken cancelToken = default(CancellationToken))
+        {
+            return await UpdateAccountBackgroundImageAsync(NoImage, mediaID, fileName, imageType, tile, includeEntities, skipStatus, cancelToken).ConfigureAwait(false);
         }
 
         /// <summary>
         /// Sends an image file to Twitter to replace background image.
         /// </summary>
         /// <param name="image">full path to file, including file name</param>
+        /// <param name="mediaID">ID of media to use (posted via UploadMediaAsync)</param>
         /// <param name="fileName">name to pass to Twitter for the file</param>
         /// <param name="imageType">type of image: must be one of jpg, gif, or png</param>
         /// <param name="tile">Tile image across background.</param>
-        /// <param name="use">Whether to use uploaded background image or not</param>
         /// <param name="includeEntities">Set to false to not include entities. (default: true)</param>
         /// <param name="skipStatus">Don't include status with response.</param>
         /// <returns>User with new image info</returns>
-        public async Task<User> UpdateAccountBackgroundImageAsync(byte[] image, string fileName, string imageType, bool tile, bool use, bool includeEntities, bool skipStatus, CancellationToken cancelToken = default(CancellationToken))
+        public async Task<User> UpdateAccountBackgroundImageAsync(byte[] image, ulong mediaID, string fileName, string imageType, bool tile, bool includeEntities, bool skipStatus, CancellationToken cancelToken = default(CancellationToken))
         {
             var accountUrl = BaseUrl + "account/update_profile_background_image.json";
 
-            if (image == null || image.Length == 0)
-                throw new ArgumentException("image is required.", "image");
+            if (mediaID == NoMediaID && image == NoImage)
+                throw new ArgumentException("Either image or mediaID must be provided, but you haven't specified one.", nameof(image) + "Or" + nameof(mediaID));
+
+            if (mediaID == NoMediaID && image.Length == 0)
+                throw new ArgumentException("Invalid image", nameof(image));
+
+            if (image != NoImage && mediaID != NoMediaID)
+                throw new ArgumentException("Either image or mediaID must be provided, but not both", nameof(image) + "Or" + nameof(mediaID));
 
             if (string.IsNullOrWhiteSpace(fileName))
-                throw new ArgumentException("fileName is required.", "fileName");
+                throw new ArgumentException("fileName is required.", nameof(fileName));
 
             if (string.IsNullOrWhiteSpace(imageType))
-                throw new ArgumentException("imageType is required.", "imageType");
+                throw new ArgumentException("imageType is required.", nameof(imageType));
 
             var parameters = new Dictionary<string, string>
             {
@@ -176,14 +197,18 @@ namespace LinqToTwitter
             if (tile)
                 parameters.Add("tile", true.ToString().ToLower());
 
-            parameters.Add("use", use.ToString().ToLower());
+            if (mediaID != NoMediaID)
+                parameters.Add("media_id", mediaID.ToString());
 
             var reqProc = new UserRequestProcessor<User>();
 
             string name = "image";
             string imageMimeType = "image/" + imageType;
 
-            RawResult = await TwitterExecutor.PostMediaAsync(accountUrl, parameters, image, name, fileName, imageMimeType, cancelToken).ConfigureAwait(false);
+            if (image != NoImage)
+                RawResult = await TwitterExecutor.PostMediaAsync(accountUrl, parameters, image, name, fileName, imageMimeType, cancelToken).ConfigureAwait(false);
+            else
+                RawResult = await TwitterExecutor.PostToTwitterAsync<User>(accountUrl, parameters, cancelToken).ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(RawResult, UserAction.SingleUser);
         }

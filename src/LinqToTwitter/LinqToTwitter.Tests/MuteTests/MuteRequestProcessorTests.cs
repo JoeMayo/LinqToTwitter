@@ -24,7 +24,7 @@ namespace LinqToTwitterPcl.Tests.MuteTests
             Expression<Func<Mute, bool>> expression =
                 mute =>
                     mute.Type == MuteType.List &&
-                    mute.Cursor == 123l &&
+                    mute.Cursor == 123L &&
                     mute.SkipStatus == true &&
                     mute.IncludeEntities == true;
             var lambdaExpression = expression as LambdaExpression;

@@ -300,12 +300,12 @@ namespace LinqToTwitterPcl.Tests.AccountTests
         public async Task UpdateAccountBackgroundImageAsync_Invokes_Executor_PostTwitterFile()
         {
             const bool Tile = false;
-            const bool Use = false;
+            const bool IncludeEntities = false;
             const bool SkipStatus = true;
             var ctx = InitTwitterContextWithPostToTwitter<User>(SingleUserResponse);
 
             await ctx.UpdateAccountBackgroundImageAsync(
-                new byte[] {1}, "image.png", "png", Tile, Use, true, SkipStatus);
+                new byte[] { 1 }, "image.png", "png", Tile, IncludeEntities, SkipStatus);
 
             execMock.Verify(exec =>
                 exec.PostMediaAsync(
@@ -323,12 +323,12 @@ namespace LinqToTwitterPcl.Tests.AccountTests
         public async Task UpdateAccountBackgroundImageAsync_WithRawResult_Succeeds()
         {
             const bool Tile = false;
-            const bool Use = false;
+            const bool IncludeEntities = false;
             const bool SkipStatus = true;
             var ctx = InitTwitterContextWithPostToTwitter<User>(SingleUserResponse);
 
             await ctx.UpdateAccountBackgroundImageAsync(
-                new byte[] { 1 }, "image.png", "png", Tile, Use, true, SkipStatus);
+                new byte[] { 1 }, "image.png", "png", Tile, IncludeEntities, SkipStatus);
 
             Assert.AreEqual(SingleUserResponse, ctx.RawResult);
         }
@@ -338,13 +338,13 @@ namespace LinqToTwitterPcl.Tests.AccountTests
         {
             const string ExpectedParamName = "image";
             const bool Tile = false;
-            const bool Use = false;
+            const bool IncludeEntities = false;
             const bool SkipStatus = true;
             var ctx = InitTwitterContextWithPostToTwitter<User>(SingleUserResponse);
 
             var ex = await L2TAssert.Throws<ArgumentException>(
                 async () => await ctx.UpdateAccountBackgroundImageAsync(
-                    new byte[] {  }, "image.png", "png", Tile, Use, true, SkipStatus));
+                    new byte[] { }, "image.png", "png", Tile, IncludeEntities, SkipStatus));
 
             Assert.AreEqual(ExpectedParamName, ex.ParamName);
         }
@@ -352,15 +352,15 @@ namespace LinqToTwitterPcl.Tests.AccountTests
         [TestMethod]
         public async Task UpdateAccountBackgroundImageAsync_Throws_On_Null_Image()
         {
-            const string ExpectedParamName = "image";
+            const string ExpectedParamName = "imageOrmediaID";
             const bool Tile = false;
-            const bool Use = false;
+            const bool IncludeEntities = false;
             const bool SkipStatus = true;
             var ctx = InitTwitterContextWithPostToTwitter<User>(SingleUserResponse);
 
             var ex = await L2TAssert.Throws<ArgumentException>(
                 async () => await ctx.UpdateAccountBackgroundImageAsync(
-                    null, "image.png", "png", Tile, Use, true, SkipStatus));
+                    null, "image.png", "png", Tile, IncludeEntities, SkipStatus));
 
             Assert.AreEqual(ExpectedParamName, ex.ParamName);
         }
