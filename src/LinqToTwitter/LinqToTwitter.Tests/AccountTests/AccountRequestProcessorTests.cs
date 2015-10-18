@@ -37,17 +37,39 @@ namespace LinqToTwitterPcl.Tests.AccountTests
             Account acct = acctReqProc.HandleSettingsResponse(TestSettingsResponse);
 
             Assert.IsNotNull(acct);
-            Assert.AreEqual(23424977, acct.Settings.TrendLocation.WoeID);
-            Assert.AreEqual("United States", acct.Settings.TrendLocation.Name);
-            Assert.AreEqual(12, acct.Settings.TrendLocation.PlaceTypeNameCode);
-            Assert.AreEqual("Country", acct.Settings.TrendLocation.PlaceTypeName);
-            Assert.AreEqual("US", acct.Settings.TrendLocation.CountryCode);
-            Assert.AreEqual("United States", acct.Settings.TrendLocation.Country);
-            Assert.AreEqual("http://where.yahooapis.com/v1/place/23424977", acct.Settings.TrendLocation.Url);
-            Assert.AreEqual(true, acct.Settings.GeoEnabled);
-            Assert.AreEqual(false, acct.Settings.SleepTime.Enabled);
-            Assert.AreEqual(0, acct.Settings.SleepTime.StartHour);
-            Assert.AreEqual(0, acct.Settings.SleepTime.EndHour);
+            Assert.IsNotNull(acct.Settings);
+            var settings = acct.Settings;
+            Assert.IsNotNull(settings.TimeZone);
+            var timeZone = settings.TimeZone;
+            Assert.AreEqual("Mountain Time (US & Canada)", timeZone.Name);
+            Assert.AreEqual(-21600, timeZone.UtcOffset);
+            Assert.AreEqual("America/Denver", timeZone.TzInfoName);
+            Assert.AreEqual("Mayoster", settings.ScreenName);
+            Assert.AreEqual(true, settings.AlwaysUseHttps);
+            Assert.AreEqual(true, settings.UseCookiePersonalization);
+            Assert.IsNotNull(settings.SleepTime);
+            var sleepTime = settings.SleepTime;
+            Assert.AreEqual(true, sleepTime.Enabled);
+            Assert.AreEqual(20, sleepTime.StartHour);
+            Assert.AreEqual(0, sleepTime.EndHour);
+            Assert.AreEqual(true, settings.GeoEnabled);
+            Assert.AreEqual("en", settings.Language);
+            Assert.AreEqual(true, settings.DiscoverableByEmail);
+            Assert.AreEqual(true, settings.DiscoverableByMobilePhone);
+            Assert.AreEqual(true, settings.DisplaySensitiveMedia);
+            Assert.AreEqual("all", settings.AllowContributorRequest);
+            Assert.AreEqual("following", settings.AllowDmsFrom);
+            Assert.AreEqual("following", settings.AllowDmGroupsFrom);
+            Assert.IsNotNull(settings.TrendLocation);
+            var trendLocation = settings.TrendLocation;
+            Assert.AreEqual("Las Vegas", trendLocation.Name);
+            Assert.AreEqual("US", trendLocation.CountryCode);
+            Assert.AreEqual("http://where.yahooapis.com/v1/place/2436704", trendLocation.Url);
+            Assert.AreEqual(2436704, trendLocation.WoeID);
+            Assert.AreEqual("Town", trendLocation.PlaceTypeName);
+            Assert.AreEqual(7, trendLocation.PlaceTypeNameCode);
+            Assert.AreEqual("23424977", trendLocation.ParentID);
+            Assert.AreEqual("United States", trendLocation.Country);
         }
 
         [TestMethod]
@@ -221,37 +243,40 @@ namespace LinqToTwitterPcl.Tests.AccountTests
 }";
 
         const string TestSettingsResponse = @"{
-   ""protected"":false,
-   ""trend_location"":[
-      {
-         ""name"":""United States"",
-         ""countryCode"":""US"",
-         ""placeType"":{
-            ""name"":""Country"",
-            ""code"":12
-         },
-         ""parentid"":1,
-         ""country"":""United States"",
-         ""url"":""http:\/\/where.yahooapis.com\/v1\/place\/23424977"",
-         ""woeid"":23424977
-      }
-   ],
-   ""language"":""en"",
-   ""sleep_time"":{
-      ""start_time"":null,
-      ""end_time"":null,
-      ""enabled"":false
-   },
-   ""show_all_inline_media"":false,
-   ""discoverable_by_email"":true,
-   ""time_zone"":{
-      ""tzinfo_name"":""America\/Denver"",
-      ""name"":""Mountain Time (US & Canada)"",
-      ""utc_offset"":-25200
-   },
-   ""geo_enabled"":true,
-   ""screen_name"":""JoeMayo"",
-   ""always_use_https"":true
+	""time_zone"": {
+		""name"": ""Mountain Time (US & Canada)"",
+		""utc_offset"": -21600,
+		""tzinfo_name"": ""America\/Denver""
+	},
+	""protected"": true,
+	""screen_name"": ""Mayoster"",
+	""always_use_https"": true,
+	""use_cookie_personalization"": true,
+	""sleep_time"": {
+		""enabled"": true,
+		""end_time"": 0,
+		""start_time"": 20
+	},
+	""geo_enabled"": true,
+	""language"": ""en"",
+	""discoverable_by_email"": true,
+	""discoverable_by_mobile_phone"": true,
+	""display_sensitive_media"": true,
+	""allow_contributor_request"": ""all"",
+	""allow_dms_from"": ""following"",
+	""allow_dm_groups_from"": ""following"",
+	""trend_location"": [{
+		""name"": ""Las Vegas"",
+		""countryCode"": ""US"",
+		""url"": ""http:\/\/where.yahooapis.com\/v1\/place\/2436704"",
+		""woeid"": 2436704,
+		""placeType"": {
+			""name"": ""Town"",
+			""code"": 7
+		},
+		""parentid"": 23424977,
+		""country"": ""United States""
+	}]
 }";
     }
 }

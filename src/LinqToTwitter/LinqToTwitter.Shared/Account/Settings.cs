@@ -41,5 +41,40 @@ namespace LinqToTwitter
         /// The user's timezone selection on Twitter
         /// </summary>
         public TZInfo TimeZone { get; set; }
+
+        /// <summary>
+        /// Account screen name
+        /// </summary>
+        public string ScreenName { get; set; }
+
+        /// <summary>
+        /// Use cookie personalization
+        /// </summary>
+        public bool UseCookiePersonalization { get; set; }
+
+        /// <summary>
+        /// Can other users find you on Twitter via your mobile phone
+        /// </summary>
+        public bool DiscoverableByMobilePhone { get; set; }
+
+        /// <summary>
+        /// User can see media marked as sensitive
+        /// </summary>
+        public bool DisplaySensitiveMedia { get; set; }
+
+        /// <summary>
+        /// Allow contributor requests
+        /// </summary>
+        public string AllowContributorRequest { get; set; }
+
+        /// <summary>
+        /// Who is allowed to send DMs
+        /// </summary>
+        public string AllowDmsFrom { get; set; }
+
+        /// <summary>
+        /// Who is allowed to send grouped DMs
+        /// </summary>
+        public string AllowDmGroupsFrom { get; set; }
     }
 }

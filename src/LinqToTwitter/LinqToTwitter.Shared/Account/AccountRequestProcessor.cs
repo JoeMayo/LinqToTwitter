@@ -176,7 +176,14 @@ namespace LinqToTwitter
                     Language = settings.GetValue<string>("language"),
                     AlwaysUseHttps = settings.GetValue<bool>("always_use_https"),
                     DiscoverableByEmail = settings.GetValue<bool>("discoverable_by_email"),
-                    TimeZone = new TZInfo(timeZone)
+                    DiscoverableByMobilePhone = settings.GetValue<bool>("discoverable_by_mobile_phone"),
+                    TimeZone = new TZInfo(timeZone),
+                    ScreenName = settings.GetValue<string>("screen_name"),
+                    UseCookiePersonalization = settings.GetValue<bool>("use_cookie_personalization"),
+                    DisplaySensitiveMedia = settings.GetValue<bool>("display_sensitive_media"),
+                    AllowContributorRequest = settings.GetValue<string>("allow_contributor_request"),
+                    AllowDmsFrom = settings.GetValue<string>("allow_dms_from"),
+                    AllowDmGroupsFrom = settings.GetValue<string>("allow_dm_groups_from")
                 }
             };
 
