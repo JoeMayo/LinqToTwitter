@@ -87,6 +87,11 @@ namespace Linq2TwitterDemos_Console
                         Console.WriteLine("\n\tLooking up tweets...\n");
                         await LookupTweetsAsyc(twitterCtx);
                         break;
+                    case 'f':
+                    case 'F':
+                        Console.WriteLine("\n\tUploading a video...\n");
+                        await UploadVideoAsync(twitterCtx);
+                        break;
                     case 'q':
                     case 'Q':
                         Console.WriteLine("\nReturning...\n");
@@ -118,6 +123,7 @@ namespace Linq2TwitterDemos_Console
             Console.WriteLine("\t C. Get Retweeters");
             Console.WriteLine("\t D. Follow Conversation");
             Console.WriteLine("\t E. Lookup Tweets");
+            Console.WriteLine("\t F. Upload a Video");
 
             Console.WriteLine();
             Console.WriteLine("\t Q. Return to Main menu");
@@ -320,6 +326,7 @@ namespace Linq2TwitterDemos_Console
 
         static async Task UploadMultipleImagesAsync(TwitterContext twitterCtx)
         {
+            var additionalOwners = new List<ulong> { 3265644348, 15411837 };
             string status = 
                 "Testing multi-image tweet #Linq2Twitter £ " + 
                 DateTime.Now.ToString(CultureInfo.InvariantCulture);
@@ -327,9 +334,9 @@ namespace Linq2TwitterDemos_Console
             var imageUploadTasks = 
                 new List<Task<Media>> 
                 {
-                    twitterCtx.UploadMediaAsync(File.ReadAllBytes(@"..\..\images\200xColor_2.png")),
-                    twitterCtx.UploadMediaAsync(File.ReadAllBytes(@"..\..\images\WP_000003.jpg")),
-                    twitterCtx.UploadMediaAsync(File.ReadAllBytes(@"..\..\images\13903749474_86bd1290de_o.jpg")),
+                    twitterCtx.UploadMediaAsync(File.ReadAllBytes(@"..\..\images\200xColor_2.png"), "image/png", additionalOwners),
+                    twitterCtx.UploadMediaAsync(File.ReadAllBytes(@"..\..\images\WP_000003.jpg"), "image/jpg"),
+                    twitterCtx.UploadMediaAsync(File.ReadAllBytes(@"..\..\images\13903749474_86bd1290de_o.jpg"), "image/jpg"),
                 };
 
             await Task.WhenAll(imageUploadTasks);
@@ -340,6 +347,21 @@ namespace Linq2TwitterDemos_Console
                 .ToList();
 
             Status tweet = await twitterCtx.TweetAsync(status, mediaIds);
+
+            if (tweet != null)
+                Console.WriteLine("Tweet sent: " + tweet.Text);
+        }
+
+        static async Task UploadVideoAsync(TwitterContext twitterCtx)
+        {
+            var additionalOwners = new List<ulong> { 3265644348, 15411837 };
+            string status =
+                "Testing video upload tweet #Linq2Twitter £ " +
+                DateTime.Now.ToString(CultureInfo.InvariantCulture);
+
+            var media = await twitterCtx.UploadMediaAsync(File.ReadAllBytes(@"..\..\images\SampleVideo.mp4"), "video/mp4");
+
+            Status tweet = await twitterCtx.TweetAsync(status, new ulong[] { media.MediaID });
 
             if (tweet != null)
                 Console.WriteLine("Tweet sent: " + tweet.Text);

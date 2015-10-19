@@ -176,10 +176,12 @@ namespace LinqToTwitterPcl.Tests.StatusTests
         public async Task UploadMediaAsync_WithBinaryImage_ReturnsMedia()
         {
             const ulong ExpectedMediaID = 521449660083609601ul;
+            string mediaType = "image/jpg";
             var image = new byte[] { 1, 2, 3 };
+            var additionalOwners = new List<ulong> { 1, 2 };
             var ctx = await InitializeTwitterContext();
 
-            Media actual = await ctx.UploadMediaAsync(image);
+            Media actual = await ctx.UploadMediaAsync(image, mediaType, additionalOwners);
 
             Assert.AreEqual(ExpectedMediaID, actual.MediaID);
         }

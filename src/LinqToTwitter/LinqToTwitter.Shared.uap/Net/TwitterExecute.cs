@@ -11,6 +11,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Web.Http.Filters;
 using Windows.Web.Http.Headers;
 using LinqToTwitter.Common;
+using LitJson;
 
 namespace LinqToTwitter
 {
@@ -268,20 +269,25 @@ namespace LinqToTwitter
         {
             WriteLog(url, "PostMediaAsync");
 
-            var multiPartContent = new HttpMultipartFormDataContent();
-            var byteArrayContent = new HttpBufferContent(data.AsBuffer());
-            byteArrayContent.Headers.Add("Content-Type", contentType);
-            multiPartContent.Add(byteArrayContent, name, fileName);
+            ulong mediaID = await InitAsync(url, data, postData, name, fileName, contentType, cancelToken);
 
-            var cleanPostData = new Dictionary<string, string>();
+            await AppendChunksAsync(url, mediaID, data, name, fileName, contentType, cancelToken);
+
+            return await FinalizeAsync(url, mediaID, cancelToken);
+        }
+
+        async Task<ulong> InitAsync(string url, byte[] data, IDictionary<string, string> postData, string name, string fileName, string contentType, CancellationToken cancelToken)
+        {
+            var multiPartContent = new HttpMultipartFormDataContent();
+
+            multiPartContent.Add(new HttpStringContent("INIT"), "command");
+            multiPartContent.Add(new HttpStringContent(contentType), "media_type");
+            multiPartContent.Add(new HttpStringContent(data.Length.ToString()), "total_bytes");
 
             foreach (var pair in postData)
             {
                 if (pair.Value != null)
-                {
-                    cleanPostData.Add(pair.Key, pair.Value);
                     multiPartContent.Add(new HttpStringContent(pair.Value), pair.Key);
-                }
             }
 
             var baseFilter = new HttpBaseProtocolFilter()
@@ -292,6 +298,77 @@ namespace LinqToTwitter
             var filter = new PostMessageFilter(this, new Dictionary<string, string>(), url, baseFilter);
             using (var client = new HttpClient(filter))
             {
+                // TODO: timeouts and cancellation
+                //if (Timeout != 0)
+                //    client.Timeout = new TimeSpan(0, 0, 0, Timeout);
+
+                HttpResponseMessage msg = await client.PostAsync(new Uri(url), multiPartContent);
+
+                string response = await HandleResponseAsync(msg);
+
+                var media = JsonMapper.ToObject(response);
+                var mediaID = media.GetValue<ulong>("media_id");
+                return mediaID;
+            }
+        }
+
+        async Task AppendChunksAsync(string url, ulong mediaID, byte[] data, string name, string fileName, string contentType, CancellationToken cancelToken)
+        {
+            const int ChunkSize = 5000000;
+
+            for (
+                int segmentIndex = 0, skip = 0;
+                skip < data.Length;
+                segmentIndex++, skip = segmentIndex * ChunkSize)
+            {
+                int take = Math.Min(data.Length - skip, ChunkSize);
+                byte[] chunk = data.Skip(skip).Take(ChunkSize).ToArray();
+
+                var multiPartContent = new HttpMultipartFormDataContent();
+
+                var byteArrayContent = new HttpBufferContent(chunk.AsBuffer());
+                byteArrayContent.Headers.Add("Content-Type", contentType);
+                multiPartContent.Add(byteArrayContent, name, fileName);
+
+                multiPartContent.Add(new HttpStringContent("APPEND"), "command");
+                multiPartContent.Add(new HttpStringContent(mediaID.ToString()), "media_id");
+                multiPartContent.Add(new HttpStringContent(segmentIndex.ToString()), "segment_index");
+
+                var baseFilter = new HttpBaseProtocolFilter()
+                {
+                    AutomaticDecompression = true
+                };
+
+                var filter = new PostMessageFilter(this, new Dictionary<string, string>(), url, baseFilter);
+                using (var client = new HttpClient(filter))
+                {
+                    // TODO: timeouts and cancellation
+                    //if (Timeout != 0)
+                    //    client.Timeout = new TimeSpan(0, 0, 0, Timeout);
+
+                    HttpResponseMessage msg = await client.PostAsync(new Uri(url), multiPartContent);
+
+                    await HandleResponseAsync(msg);
+                }
+            }
+        }
+
+        async Task<string> FinalizeAsync(string url, ulong mediaID, CancellationToken cancelToken)
+        {
+            var multiPartContent = new HttpMultipartFormDataContent();
+
+            multiPartContent.Add(new HttpStringContent("FINALIZE"), "command");
+            multiPartContent.Add(new HttpStringContent(mediaID.ToString()), "media_id");
+
+            var baseFilter = new HttpBaseProtocolFilter()
+            {
+                AutomaticDecompression = true
+            };
+
+            var filter = new PostMessageFilter(this, new Dictionary<string, string>(), url, baseFilter);
+            using (var client = new HttpClient(filter))
+            {
+                // TODO: timeouts and cancellation
                 //if (Timeout != 0)
                 //    client.Timeout = new TimeSpan(0, 0, 0, Timeout);
 

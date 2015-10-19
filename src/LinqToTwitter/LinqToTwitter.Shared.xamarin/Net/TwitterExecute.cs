@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using LinqToTwitter.Common;
 using LinqToTwitter.Net;
+using LitJson;
 
 namespace LinqToTwitter
 {
@@ -274,23 +275,86 @@ namespace LinqToTwitter
         /// <returns>JSON response From Twitter.</returns>
         public async Task<string> PostMediaAsync(string url, IDictionary<string, string> postData, byte[] data, string name, string fileName, string contentType, CancellationToken cancelToken)
         {
-            WriteLog(url, "QueryTwitterAsync");
+            WriteLog(url, "PostMediaAsync");
 
+            ulong mediaID = await InitAsync(url, data, postData, name, fileName, contentType, cancelToken);
+
+            await AppendChunksAsync(url, mediaID, data, name, fileName, contentType, cancelToken);
+
+            return await FinalizeAsync(url, mediaID, cancelToken);
+        }
+
+        async Task<ulong> InitAsync(string url, byte[] data, IDictionary<string, string> postData, string name, string fileName, string contentType, CancellationToken cancelToken)
+        {
             var multiPartContent = new MultipartFormDataContent();
-            var byteArrayContent = new ByteArrayContent(data);
-            byteArrayContent.Headers.Add("Content-Type", contentType);
-            multiPartContent.Add(byteArrayContent, name, fileName);
 
-            var cleanPostData = new Dictionary<string, string>();
+            multiPartContent.Add(new StringContent("INIT"), "command");
+            multiPartContent.Add(new StringContent(contentType), "media_type");
+            multiPartContent.Add(new StringContent(data.Length.ToString()), "total_bytes");
 
             foreach (var pair in postData)
             {
                 if (pair.Value != null)
-                {
-                    cleanPostData.Add(pair.Key, pair.Value);
                     multiPartContent.Add(new StringContent(pair.Value), pair.Key);
+            }
+
+            var handler = new PostMessageHandler(this, new Dictionary<string, string>(), url);
+            using (var client = new HttpClient(handler))
+            {
+                if (Timeout != 0)
+                    client.Timeout = new TimeSpan(0, 0, 0, Timeout);
+
+                HttpResponseMessage msg = await client.PostAsync(url, multiPartContent, cancelToken).ConfigureAwait(false);
+
+                string response = await HandleResponseAsync(msg);
+
+                var media = JsonMapper.ToObject(response);
+                var mediaID = media.GetValue<ulong>("media_id");
+                return mediaID;
+            }
+        }
+
+        async Task AppendChunksAsync(string url, ulong mediaID, byte[] data, string name, string fileName, string contentType, CancellationToken cancelToken)
+        {
+            const int ChunkSize = 5000000;
+
+            for (
+                int segmentIndex = 0, skip = 0;
+                skip < data.Length;
+                segmentIndex++, skip = segmentIndex * ChunkSize)
+            {
+                int take = Math.Min(data.Length - skip, ChunkSize);
+                byte[] chunk = data.Skip(skip).Take(ChunkSize).ToArray();
+
+                var multiPartContent = new MultipartFormDataContent();
+
+                var byteArrayContent = new ByteArrayContent(chunk);
+                byteArrayContent.Headers.Add("Content-Type", contentType);
+                multiPartContent.Add(byteArrayContent, name, fileName);
+
+                multiPartContent.Add(new StringContent("APPEND"), "command");
+                multiPartContent.Add(new StringContent(mediaID.ToString()), "media_id");
+                multiPartContent.Add(new StringContent(segmentIndex.ToString()), "segment_index");
+
+                var handler = new PostMessageHandler(this, new Dictionary<string, string>(), url);
+                using (var client = new HttpClient(handler))
+                {
+                    if (Timeout != 0)
+                        client.Timeout = new TimeSpan(0, 0, 0, Timeout);
+
+                    HttpResponseMessage msg = await client.PostAsync(url, multiPartContent, cancelToken).ConfigureAwait(false);
+
+                    await HandleResponseAsync(msg);
                 }
             }
+        }
+
+        async Task<string> FinalizeAsync(string url, ulong mediaID, CancellationToken cancelToken)
+        {
+            var multiPartContent = new MultipartFormDataContent();
+
+            multiPartContent.Add(new StringContent("FINALIZE"), "command");
+            multiPartContent.Add(new StringContent(mediaID.ToString()), "media_id");
 
             var handler = new PostMessageHandler(this, new Dictionary<string, string>(), url);
             using (var client = new HttpClient(handler))

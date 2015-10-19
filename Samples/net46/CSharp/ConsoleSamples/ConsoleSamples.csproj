@@ -69,6 +69,7 @@
     <Content Include="Images\13903749474_86bd1290de_o.jpg" />
     <Content Include="Images\200xColor_2.png" />
     <Content Include="Images\WP_000003.jpg" />
+    <Content Include="Images\SampleVideo.mp4" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\src\LinqToTwitter\LinqToTwitter.net\LinqToTwitter.net.csproj">
