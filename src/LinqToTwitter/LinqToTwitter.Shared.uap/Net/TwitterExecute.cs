@@ -133,11 +133,7 @@ namespace LinqToTwitter
 
             using (var client = new HttpClient(handler))
             {
-                //if (Timeout != 0)
-                //    client.Timeout = new TimeSpan(0, 0, 0, Timeout);
-
                 var msg = await client.SendRequestAsync(req);
-
                 return await HandleResponseAsync(msg).ConfigureAwait(false);
             }
         }
@@ -181,13 +177,15 @@ namespace LinqToTwitter
 
             IDictionary<string, string> reqParams =
                 request.RequestParameters.ToDictionary(key => key.Name, val => val.Value);
+
             var baseFilter = new HttpBaseProtocolFilter
             {
-                AutomaticDecompression = true
+                AutomaticDecompression = Authorizer.SupportsCompression,
+                ProxyCredential = Authorizer.ProxyCredential,
+                UseProxy = Authorizer.UseProxy
             };
+
             var streamFilter = new GetMessageFilter(this, reqParams, request.FullUrl, baseFilter, CancellationToken);
-            //if (Authorizer.Proxy != null && handler.SupportsProxy)
-            //    handler.Proxy = Authorizer.Proxy;
 
             using (StreamingClient = new HttpClient(streamFilter))
             {
@@ -290,9 +288,11 @@ namespace LinqToTwitter
                     multiPartContent.Add(new HttpStringContent(pair.Value), pair.Key);
             }
 
-            var baseFilter = new HttpBaseProtocolFilter()
+            var baseFilter = new HttpBaseProtocolFilter
             {
-                AutomaticDecompression = true
+                AutomaticDecompression = Authorizer.SupportsCompression,
+                ProxyCredential = Authorizer.ProxyCredential,
+                UseProxy = Authorizer.UseProxy
             };
 
             var filter = new PostMessageFilter(this, new Dictionary<string, string>(), url, baseFilter, CancellationToken);
@@ -330,9 +330,11 @@ namespace LinqToTwitter
                 multiPartContent.Add(new HttpStringContent(mediaID.ToString()), "media_id");
                 multiPartContent.Add(new HttpStringContent(segmentIndex.ToString()), "segment_index");
 
-                var baseFilter = new HttpBaseProtocolFilter()
+                var baseFilter = new HttpBaseProtocolFilter
                 {
-                    AutomaticDecompression = true
+                    AutomaticDecompression = Authorizer.SupportsCompression,
+                    ProxyCredential = Authorizer.ProxyCredential,
+                    UseProxy = Authorizer.UseProxy
                 };
 
                 var filter = new PostMessageFilter(this, new Dictionary<string, string>(), url, baseFilter, CancellationToken);
@@ -352,9 +354,11 @@ namespace LinqToTwitter
             multiPartContent.Add(new HttpStringContent("FINALIZE"), "command");
             multiPartContent.Add(new HttpStringContent(mediaID.ToString()), "media_id");
 
-            var baseFilter = new HttpBaseProtocolFilter()
+            var baseFilter = new HttpBaseProtocolFilter
             {
-                AutomaticDecompression = true
+                AutomaticDecompression = Authorizer.SupportsCompression,
+                ProxyCredential = Authorizer.ProxyCredential,
+                UseProxy = Authorizer.UseProxy
             };
 
             var filter = new PostMessageFilter(this, new Dictionary<string, string>(), url, baseFilter, CancellationToken);
@@ -391,9 +395,12 @@ namespace LinqToTwitter
             }
 
             var content = new HttpStringContent(dataString.ToString().TrimEnd('&'), Windows.Storage.Streams.UnicodeEncoding.Utf8, "application/x-www-form-urlencoded");
+
             var baseFilter = new HttpBaseProtocolFilter
             {
-                AutomaticDecompression = true
+                AutomaticDecompression = Authorizer.SupportsCompression,
+                ProxyCredential = Authorizer.ProxyCredential,
+                UseProxy = Authorizer.UseProxy
             };
 
             var filter = new PostMessageFilter(this, cleanPostData, url, baseFilter, CancellationToken);

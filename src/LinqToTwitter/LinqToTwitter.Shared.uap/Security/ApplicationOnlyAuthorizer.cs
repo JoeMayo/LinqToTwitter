@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LinqToTwitter.Common;
@@ -42,14 +41,10 @@ namespace LinqToTwitter
 
             var baseFilter = new HttpBaseProtocolFilter
             {
-                AutomaticDecompression = true
+                AutomaticDecompression = SupportsCompression,
+                ProxyCredential = ProxyCredential,
+                UseProxy = UseProxy
             };
-
-            //var handler = new HttpClientHandler();
-            //if (handler.SupportsAutomaticDecompression)
-            //    handler.AutomaticDecompression = DecompressionMethods.GZip;
-            //if (Proxy != null && handler.SupportsProxy)
-            //    handler.Proxy = Proxy;
 
             using (var client = new HttpClient(baseFilter))
             {
@@ -74,14 +69,10 @@ namespace LinqToTwitter
 
             var baseFilter = new HttpBaseProtocolFilter
             {
-                AutomaticDecompression = true
+                AutomaticDecompression = SupportsCompression,
+                ProxyCredential = ProxyCredential,
+                UseProxy = UseProxy
             };
-
-            //var handler = new HttpClientHandler();
-            //if (handler.SupportsAutomaticDecompression)
-            //    handler.AutomaticDecompression = DecompressionMethods.GZip;
-            //if (Proxy != null && handler.SupportsProxy)
-            //    handler.Proxy = Proxy;
 
             using (var client = new HttpClient(baseFilter))
             {

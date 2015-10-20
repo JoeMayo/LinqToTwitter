@@ -7,6 +7,7 @@ using LinqToTwitter.Net;
 using Windows.Web.Http;
 using Windows.Web.Http.Filters;
 using LinqToTwitter.Common;
+using Windows.Security.Credentials;
 
 namespace LinqToTwitter
 {
@@ -57,9 +58,11 @@ namespace LinqToTwitter
         /// </summary>
         public string Callback { get; set; }
 
-        //public IWebProxy Proxy { get; set; }
-
         public bool SupportsCompression { get; set; }
+
+        public PasswordCredential ProxyCredential { get; set; }
+
+        public bool UseProxy { get; set; }
 
         protected string ParseVerifierFromResponseUrl(string responseUrl)
         {
@@ -236,14 +239,14 @@ namespace LinqToTwitter
             req.Headers.Add("User-Agent", UserAgent);
             req.Headers.Add("Expect", "100-continue");
 
-            var handler = new HttpBaseProtocolFilter();
-            handler.AutomaticDecompression = true;
-            //if (handler.SupportsAutomaticDecompression)
-            //    handler.AutomaticDecompression = DecompressionMethods.GZip;
-            //if (Proxy != null && handler.SupportsProxy)
-            //    handler.Proxy = Proxy;
+            var baseFilter = new HttpBaseProtocolFilter
+            {
+                AutomaticDecompression = SupportsCompression,
+                ProxyCredential = ProxyCredential,
+                UseProxy = UseProxy
+            };
 
-            var msg = await new HttpClient(handler).SendRequestAsync(req);
+            var msg = await new HttpClient(baseFilter).SendRequestAsync(req);
 
             await TwitterErrorHandler.ThrowIfErrorAsync(msg).ConfigureAwait(false);
 
@@ -271,13 +274,12 @@ namespace LinqToTwitter
             var content = new HttpStringContent(paramString, Windows.Storage.Streams.UnicodeEncoding.Utf8, "application/x-www-form-urlencoded");
             req.Content = content;
 
-            var baseFilter = new HttpBaseProtocolFilter();
-            baseFilter.AutomaticDecompression = true;
-            //var handler = new HttpClientHandler();
-            //if (handler.SupportsAutomaticDecompression)
-            //    handler.AutomaticDecompression = DecompressionMethods.GZip;
-            //if (Proxy != null && handler.SupportsProxy)
-            //    handler.Proxy = Proxy;
+            var baseFilter = new HttpBaseProtocolFilter
+            {
+                AutomaticDecompression = SupportsCompression,
+                ProxyCredential = ProxyCredential,
+                UseProxy = UseProxy
+            };
 
             var msg = await new HttpClient(baseFilter).SendRequestAsync(req);
 
