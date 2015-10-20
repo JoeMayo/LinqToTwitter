@@ -129,7 +129,7 @@ namespace LinqToTwitter
                                     val => val.Value);
             var baseFilter = new HttpBaseProtocolFilter();
 
-            var handler = new GetMessageFilter(this, parms, request.FullUrl, baseFilter);
+            var handler = new GetMessageFilter(this, parms, request.FullUrl, baseFilter, CancellationToken);
 
             using (var client = new HttpClient(handler))
             {
@@ -181,16 +181,16 @@ namespace LinqToTwitter
 
             IDictionary<string, string> reqParams =
                 request.RequestParameters.ToDictionary(key => key.Name, val => val.Value);
-            var baseFilter = new HttpBaseProtocolFilter();
-            baseFilter.AutomaticDecompression = true;
-            var streamFilter = new GetMessageFilter(this, reqParams, request.FullUrl, baseFilter);
+            var baseFilter = new HttpBaseProtocolFilter
+            {
+                AutomaticDecompression = true
+            };
+            var streamFilter = new GetMessageFilter(this, reqParams, request.FullUrl, baseFilter, CancellationToken);
             //if (Authorizer.Proxy != null && handler.SupportsProxy)
             //    handler.Proxy = Authorizer.Proxy;
 
             using (StreamingClient = new HttpClient(streamFilter))
             {
-                //StreamingClient.Timeout = TimeSpan.FromMilliseconds(System.Threading.Timeout.Infinite);
-
                 var httpRequest = new HttpRequestMessage(HttpMethod.Get, new Uri(request.FullUrl));
                 var response = await StreamingClient.SendRequestAsync(
                     httpRequest, HttpCompletionOption.ResponseHeadersRead);
@@ -295,13 +295,9 @@ namespace LinqToTwitter
                 AutomaticDecompression = true
             };
 
-            var filter = new PostMessageFilter(this, new Dictionary<string, string>(), url, baseFilter);
+            var filter = new PostMessageFilter(this, new Dictionary<string, string>(), url, baseFilter, CancellationToken);
             using (var client = new HttpClient(filter))
             {
-                // TODO: timeouts and cancellation
-                //if (Timeout != 0)
-                //    client.Timeout = new TimeSpan(0, 0, 0, Timeout);
-
                 HttpResponseMessage msg = await client.PostAsync(new Uri(url), multiPartContent);
 
                 string response = await HandleResponseAsync(msg);
@@ -339,13 +335,9 @@ namespace LinqToTwitter
                     AutomaticDecompression = true
                 };
 
-                var filter = new PostMessageFilter(this, new Dictionary<string, string>(), url, baseFilter);
+                var filter = new PostMessageFilter(this, new Dictionary<string, string>(), url, baseFilter, CancellationToken);
                 using (var client = new HttpClient(filter))
                 {
-                    // TODO: timeouts and cancellation
-                    //if (Timeout != 0)
-                    //    client.Timeout = new TimeSpan(0, 0, 0, Timeout);
-
                     HttpResponseMessage msg = await client.PostAsync(new Uri(url), multiPartContent);
 
                     await HandleResponseAsync(msg);
@@ -365,13 +357,9 @@ namespace LinqToTwitter
                 AutomaticDecompression = true
             };
 
-            var filter = new PostMessageFilter(this, new Dictionary<string, string>(), url, baseFilter);
+            var filter = new PostMessageFilter(this, new Dictionary<string, string>(), url, baseFilter, CancellationToken);
             using (var client = new HttpClient(filter))
             {
-                // TODO: timeouts and cancellation
-                //if (Timeout != 0)
-                //    client.Timeout = new TimeSpan(0, 0, 0, Timeout);
-
                 HttpResponseMessage msg = await client.PostAsync(new Uri(url), multiPartContent);
 
                 return await HandleResponseAsync(msg);
@@ -408,12 +396,9 @@ namespace LinqToTwitter
                 AutomaticDecompression = true
             };
 
-            var filter = new PostMessageFilter(this, cleanPostData, url, baseFilter);
+            var filter = new PostMessageFilter(this, cleanPostData, url, baseFilter, CancellationToken);
             using (var client = new HttpClient(filter))
             {
-                //if (Timeout != 0)
-                //    client.Timeout = new TimeSpan(0, 0, 0, Timeout);
-
                 HttpResponseMessage msg = await client.PostAsync(new Uri(url), content);
 
                 return await HandleResponseAsync(msg);
