@@ -27,9 +27,6 @@ namespace LinqToTwitter.Net
             request.Headers.ExpectContinue = false;
             request.Headers.CacheControl = new CacheControlHeaderValue { NoCache = true };
 
-            if (exe.Authorizer.Proxy != null && SupportsProxy)
-                Proxy = exe.Authorizer.Proxy;
-
             return await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
         }
     }

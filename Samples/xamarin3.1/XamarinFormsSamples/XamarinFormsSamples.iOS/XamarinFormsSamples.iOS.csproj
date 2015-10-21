@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">iPhoneSimulator</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{D5933F2F-D23F-47EB-83EE-F626E212B6D7}</ProjectGuid>
+    <ProjectGuid>{55C47193-4FB9-48E6-8DB3-1A9C5E492259}</ProjectGuid>
     <ProjectTypeGuids>{FEACFBD2-3405-455C-9665-78FE426C6842};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <OutputType>Exe</OutputType>
     <RootNamespace>XamarinFormsSamples.iOS</RootNamespace>
@@ -98,10 +98,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\src\LinqToTwitter\LinqToTwitter.xamarin\LinqToTwitter.xamarin.csproj">
-      <Project>{67f9d3a8-f71e-4428-913f-c37ae82cdb24}</Project>
-      <Name>LinqToTwitter.xamarin</Name>
-    </ProjectReference>
     <ProjectReference Include="..\XamarinFormsSamples\XamarinFormsSamples.csproj">
       <Name>XamarinFormsSamples</Name>
     </ProjectReference>

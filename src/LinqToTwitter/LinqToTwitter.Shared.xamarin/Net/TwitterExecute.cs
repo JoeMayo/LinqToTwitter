@@ -162,8 +162,6 @@ namespace LinqToTwitter
             WriteLog(request.FullUrl, "QueryTwitterStreamAsync");
 
             var handler = new HttpClientHandler();
-            if (Authorizer.Proxy != null && handler.SupportsProxy)
-                handler.Proxy = Authorizer.Proxy;
 
             using (StreamingClient = new HttpClient(handler))
             {

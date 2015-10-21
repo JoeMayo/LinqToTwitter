@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -41,10 +39,6 @@ namespace LinqToTwitter
             req.Content = new StringContent("access_token=" + BearerToken, Encoding.UTF8, "application/x-www-form-urlencoded");
 
             var handler = new HttpClientHandler();
-            if (handler.SupportsAutomaticDecompression)
-                handler.AutomaticDecompression = DecompressionMethods.GZip;
-            if (Proxy != null && handler.SupportsProxy)
-                handler.Proxy = Proxy;
 
             using (var client = new HttpClient(handler))
             {
@@ -68,10 +62,6 @@ namespace LinqToTwitter
             req.Content = new StringContent("grant_type=client_credentials", Encoding.UTF8, "application/x-www-form-urlencoded");
 
             var handler = new HttpClientHandler();
-            if (handler.SupportsAutomaticDecompression)
-                handler.AutomaticDecompression = DecompressionMethods.GZip;
-            if (Proxy != null && handler.SupportsProxy)
-                handler.Proxy = Proxy;
 
             using (var client = new HttpClient(handler))
             {

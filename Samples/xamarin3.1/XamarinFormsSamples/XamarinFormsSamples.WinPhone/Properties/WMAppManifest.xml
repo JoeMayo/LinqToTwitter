@@ -2,7 +2,7 @@
 
 <Deployment xmlns="http://schemas.microsoft.com/windowsphone/2012/deployment" AppPlatformVersion="8.0">
   <DefaultLanguage xmlns="" code="en-US"/>
-  <App xmlns="" ProductID="{bd991044-0782-4b1b-b2b7-31e699e28bdc}" Title="XamarinFormsSamples.WinPhone" RuntimeType="Silverlight" Version="1.0.0.0" Genre="apps.normal"  Author="XamarinFormsSamples.WinPhone author" Description="Sample description" Publisher="XamarinFormsSamples.WinPhone" PublisherID="{e1f7a947-b6d1-4efd-9430-dcfc282a428b}">
+  <App xmlns="" ProductID="{a34cc38e-25b2-4d10-a5f1-1ada1a9519ac}" Title="XamarinFormsSamples.WinPhone" RuntimeType="Silverlight" Version="1.0.0.0" Genre="apps.normal"  Author="XamarinFormsSamples.WinPhone author" Description="Sample description" Publisher="XamarinFormsSamples.WinPhone" PublisherID="{52508259-d041-47d8-9c6a-6c7b8e748226}">
     <IconPath IsRelative="true" IsResource="false">Assets\ApplicationIcon.png</IconPath>
     <Capabilities>
       <Capability Name="ID_CAP_NETWORKING"/>

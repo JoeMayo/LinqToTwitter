@@ -1,4 +1,8 @@
-﻿
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
 using Xamarin.Forms;
 using XamarinFormsSamples.Views;
 
@@ -8,6 +12,7 @@ namespace XamarinFormsSamples
     {
         public App()
         {
+            // The root page of your application
             MainPage = new TweetView();
         }
 
