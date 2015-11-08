@@ -45,7 +45,7 @@ namespace Linq2TwitterDemos_Console
                         break;
                     case '5':
                         Console.WriteLine("\n\tReading Rx Stream...\n");
-                        //await DoRxObservableStreamAsync(twitterCtx);
+                        await DoRxObservableStreamAsync(twitterCtx);
                         break;
                     case 'q':
                     case 'Q':
@@ -346,39 +346,39 @@ namespace Linq2TwitterDemos_Console
             }
         }
 
-        //static async Task DoRxObservableStreamAsync(TwitterContext twitterCtx)
-        //{
-        //    Console.WriteLine("\nStreamed Content: \n");
-        //    int count = 0;
-        //    var cancelTokenSrc = new CancellationTokenSource();
+        static async Task DoRxObservableStreamAsync(TwitterContext twitterCtx)
+        {
+            Console.WriteLine("\nStreamed Content: \n");
+            int count = 0;
+            var cancelTokenSrc = new CancellationTokenSource();
 
-        //    try
-        //    {
-        //        var observable =
-        //            await
-        //                (from strm in twitterCtx.Streaming
-        //                                        .WithCancellation(cancelTokenSrc.Token)
-        //                 where strm.Type == StreamingType.Filter &&
-        //                       strm.Track == "twitter"
-        //                 select strm)
-        //                .ToObservableAsync();
+            try
+            {
+                var observable =
+                    await
+                        (from strm in twitterCtx.Streaming
+                                                .WithCancellation(cancelTokenSrc.Token)
+                         where strm.Type == StreamingType.Filter &&
+                               strm.Track == "twitter"
+                         select strm)
+                        .ToObservableAsync();
 
-        //        observable.Subscribe(
-        //            strm =>
-        //            {
-        //                HandleStreamResponse(strm);
+                observable.Subscribe(
+                    async strm =>
+                    {
+                        await HandleStreamResponse(strm);
 
-        //                if (count++ >= 5)
-        //                    cancelTokenSrc.Cancel();
-        //            },
-        //            ex => Console.WriteLine(ex.ToString()),
-        //            () => Console.WriteLine("Completed"));
-        //    }
-        //    catch (OperationCanceledException)
-        //    {
-        //        Console.WriteLine("Stream cancelled.");
-        //    }
-        //}
+                        if (count++ >= 5)
+                            cancelTokenSrc.Cancel();
+                    },
+                    ex => Console.WriteLine(ex.ToString()),
+                    () => Console.WriteLine("Completed"));
+            }
+            catch (OperationCanceledException)
+            {
+                Console.WriteLine("Stream cancelled.");
+            }
+        }
 
         static async Task PrintUserInfoAsync(TwitterContext twitterCtx, string streamID)
         {

@@ -1,20 +1,70 @@
-<?xml version="1.0"?>
-<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
-  <metadata>
-    <id>LinqToTwitter</id>
-    <version>0.0.0</version>
-    <authors>Joe Mayo</authors>
-    <owners>Joe Mayo</owners>
-    <licenseUrl>http://linqtotwitter.codeplex.com/license</licenseUrl>
-    <projectUrl>http://linqtotwitter.codeplex.com/</projectUrl>
-    <iconUrl>http://download.codeplex.com/Project/Download/FileDownload.aspx?ProjectName=linqtotwitter&amp;DownloadId=68381&amp;Build=17672</iconUrl>
-    <requireLicenseAcceptance>false</requireLicenseAcceptance>
-	<summary>LINQ to Twitter is a 3rd party LINQ Provider for the Twitter micro-blogging service.</summary>
-    <description>Supporting Twitter API v1.1, async, and PCL! LINQ to Twitter uses standard LINQ syntax for queries and operators working with the Twitter API. You can write Twitter applications for the following platforms: .NET 4.5, Windows Phone 8.x, Window 8.x, Windows Azure, Xamarin.iOS, and Xamarin.Android.</description>
-    <tags>twitter twitterapi tweet linq social api linqtotwitter linq2twitter micro-blog linq 2 twitter linq to twitter</tags>
-	<dependencies>
-	  <dependency id="Microsoft.Net.Http" version="2.2.22" />
-	  <dependency id="Microsoft.Bcl.Compression" version="3.9.83" />
-	</dependencies>
-  </metadata>
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+    <metadata>
+        <id>linqtotwitter</id>
+        <version>4.0.0-beta2</version>
+        <title>LINQ to Twitter</title>
+        <authors>Joe Mayo</authors>
+        <owners>Joe Mayo</owners>
+        <licenseUrl>https://github.com/JoeMayo/LinqToTwitter/blob/master/License.txt</licenseUrl>
+        <projectUrl>https://github.com/JoeMayo/LinqToTwitter</projectUrl>
+        <iconUrl>http://download.codeplex.com/Project/Download/FileDownload.aspx?ProjectName=linqtotwitter&amp;DownloadId=68381&amp;Build=17672</iconUrl>
+        <requireLicenseAcceptance>true</requireLicenseAcceptance>
+        <description>Supporting Twitter API v1.1, LINQ to Twitter uses standard LINQ syntax and supports .NET, Windows 10, and Xamarin platforms.</description>
+        <summary>LINQ to Twitter is a 3rd party LINQ Provider for the Twitter API.</summary>
+        <releaseNotes>Ongoing updates on the road to v4.0. This release implements Video uploads, quoted tweets, and RX support.</releaseNotes>
+        <tags>twitter twitterapi tweet linq social linqtotwitter linq2twitter</tags>
+        <dependencies>
+            <group targetFramework="net45">
+                <dependency id="Rx-Core" version="2.2.5" />
+                <dependency id="Rx-Interfaces" version="2.2.5" />
+                <dependency id="Rx-Linq" version="2.2.5" />
+                <dependency id="Rx-Main" version="2.2.5" />
+                <dependency id="Rx-PlatformServices" version="2.2.5" />
+            </group>
+            <group targetFramework="uap10.0">
+                <dependency id="Rx-Core" version="2.2.5" />
+                <dependency id="Rx-Interfaces" version="2.2.5" />
+                <dependency id="Rx-Linq" version="2.2.5" />
+                <dependency id="Rx-Main" version="2.2.5" />
+                <dependency id="Rx-PlatformServices" version="2.2.5" />
+            </group>
+            <group targetFramework="xamarin.ios">
+                <dependency id="Microsoft.Bcl" version="1.1.10" />
+                <dependency id="Microsoft.Bcl.Build" version="1.0.21" />
+                <dependency id="Microsoft.Bcl.Compression" version="3.9.85" />
+                <dependency id="Microsoft.Net.Http" version="2.2.29" />
+				<dependency id="modernhttpclient" version="2.4.2" />
+                <dependency id="Rx-Core" version="2.2.5" />
+                <dependency id="Rx-Interfaces" version="2.2.5" />
+                <dependency id="Rx-Linq" version="2.2.5" />
+                <dependency id="Rx-Main" version="2.2.5" />
+                <dependency id="Rx-PlatformServices" version="2.2.5" />
+            </group>
+            <group targetFramework="monotouch">
+                <dependency id="Microsoft.Bcl" version="1.1.10" />
+                <dependency id="Microsoft.Bcl.Build" version="1.0.21" />
+                <dependency id="Microsoft.Bcl.Compression" version="3.9.85" />
+                <dependency id="Microsoft.Net.Http" version="2.2.29" />
+				<dependency id="modernhttpclient" version="2.4.2" />
+                <dependency id="Rx-Core" version="2.2.5" />
+                <dependency id="Rx-Interfaces" version="2.2.5" />
+                <dependency id="Rx-Linq" version="2.2.5" />
+                <dependency id="Rx-Main" version="2.2.5" />
+                <dependency id="Rx-PlatformServices" version="2.2.5" />
+            </group>
+            <group targetFramework="monoandroid">
+                <dependency id="Microsoft.Bcl" version="1.1.10" />
+                <dependency id="Microsoft.Bcl.Build" version="1.0.21" />
+                <dependency id="Microsoft.Bcl.Compression" version="3.9.85" />
+                <dependency id="Microsoft.Net.Http" version="2.2.29" />
+				<dependency id="modernhttpclient" version="2.4.2" />
+                <dependency id="Rx-Core" version="2.2.5" />
+                <dependency id="Rx-Interfaces" version="2.2.5" />
+                <dependency id="Rx-Linq" version="2.2.5" />
+                <dependency id="Rx-Main" version="2.2.5" />
+                <dependency id="Rx-PlatformServices" version="2.2.5" />
+            </group>
+        </dependencies>
+    </metadata>
 </package>

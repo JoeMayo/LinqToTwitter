@@ -1,11 +1,7 @@
 Release Notes:
 
-	- Requires HttpClient: 
-		https://www.nuget.org/packages/Microsoft.Net.Http
-		
-	- Samples included in downloadable source code named Linq2TwitterDemos_<technology>.
-	- How to use with Google Glass: 
-		http://geekswithblogs.net/WinAZ/archive/2014/01/10/watch-linq-to-twitter-on-glass.aspx
+	- Demo included in downloadable source code in the /Samples folder.
+	
 	- How to use with Xamarin.Android: 
 		http://geekswithblogs.net/WinAZ/archive/2013/11/14/linq-to-twitter-runs-xamarin.android.aspx
 	- How to use with Xamarin.iOS: 
@@ -13,24 +9,72 @@ Release Notes:
 
 Assemblies:
 
-Primary DLL
+.NET >= 4.5
 
-	LinqToTwitterPcl.dll
+	LinqToTwitter.net.dll
 
-ASP.NET Authorizers
+Windows 10
 
-	LinqToTwitter.AspNet.dll
+	LinqToTwitter.uap10.dll
 
-Windows Store Authorizers
+Xamarin:
 
-	LinqToTwitter.WindowsStore.dll
+	LinqToTwitter.xamarin.dll
 
-Required Dependencies (HttpClient PCL)
+Required Dependencies 
 
-	System.Net.Http.dll
-	System.Net.Http.Extensions.dll
-	System.Net.Http.Primitives.dll
-	Microsoft.Bcl.Compression.dll
+        <dependencies>
+            <group targetFramework=".NETFramework4.5">
+                <dependency id="Rx-Core" version="2.2.5" />
+                <dependency id="Rx-Interfaces" version="2.2.5" />
+                <dependency id="Rx-Linq" version="2.2.5" />
+                <dependency id="Rx-Main" version="2.2.5" />
+                <dependency id="Rx-PlatformServices" version="2.2.5" />
+            </group>
+            <group targetFramework="uap10.0">
+                <dependency id="Rx-Core" version="2.2.5" />
+                <dependency id="Rx-Interfaces" version="2.2.5" />
+                <dependency id="Rx-Linq" version="2.2.5" />
+                <dependency id="Rx-Main" version="2.2.5" />
+                <dependency id="Rx-PlatformServices" version="2.2.5" />
+            </group>
+            <group targetFramework="xamarin.ios">
+                <dependency id="Microsoft.Bcl" version="1.1.10" />
+                <dependency id="Microsoft.Bcl.Build" version="1.0.21" />
+                <dependency id="Microsoft.Bcl.Compression" version="3.9.85" />
+                <dependency id="Microsoft.Net.Http" version="2.2.29" />
+				<dependency id="modernhttpclient" version="2.4.2" />
+                <dependency id="Rx-Core" version="2.2.5" />
+                <dependency id="Rx-Interfaces" version="2.2.5" />
+                <dependency id="Rx-Linq" version="2.2.5" />
+                <dependency id="Rx-Main" version="2.2.5" />
+                <dependency id="Rx-PlatformServices" version="2.2.5" />
+            </group>
+            <group targetFramework="monotouch">
+                <dependency id="Microsoft.Bcl" version="1.1.10" />
+                <dependency id="Microsoft.Bcl.Build" version="1.0.21" />
+                <dependency id="Microsoft.Bcl.Compression" version="3.9.85" />
+                <dependency id="Microsoft.Net.Http" version="2.2.29" />
+				<dependency id="modernhttpclient" version="2.4.2" />
+                <dependency id="Rx-Core" version="2.2.5" />
+                <dependency id="Rx-Interfaces" version="2.2.5" />
+                <dependency id="Rx-Linq" version="2.2.5" />
+                <dependency id="Rx-Main" version="2.2.5" />
+                <dependency id="Rx-PlatformServices" version="2.2.5" />
+            </group>
+            <group targetFramework="monoandroid">
+                <dependency id="Microsoft.Bcl" version="1.1.10" />
+                <dependency id="Microsoft.Bcl.Build" version="1.0.21" />
+                <dependency id="Microsoft.Bcl.Compression" version="3.9.85" />
+                <dependency id="Microsoft.Net.Http" version="2.2.29" />
+				<dependency id="modernhttpclient" version="2.4.2" />
+                <dependency id="Rx-Core" version="2.2.5" />
+                <dependency id="Rx-Interfaces" version="2.2.5" />
+                <dependency id="Rx-Linq" version="2.2.5" />
+                <dependency id="Rx-Main" version="2.2.5" />
+                <dependency id="Rx-PlatformServices" version="2.2.5" />
+            </group>
+        </dependencies>
 
-Follow @JoeMayo on Twitter for the latest news.
+Follow @JoeMayo and @linq2Twitr on Twitter for the latest news.
 
