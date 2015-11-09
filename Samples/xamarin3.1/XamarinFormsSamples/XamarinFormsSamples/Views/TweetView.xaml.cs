@@ -12,7 +12,7 @@ namespace XamarinFormsSamples.Views
 {
     public partial class TweetView : ContentPage
     {
-        TweetViewModel tweetVM = new TweetViewModel();
+        TweetingViewModel tweetVM = new TweetingViewModel();
 
         public TweetView()
         {
