@@ -29,8 +29,8 @@ namespace XamarinFormsSamples.Models
             {
                 CredentialStore = new InMemoryCredentialStore
                 {
-                    ConsumerKey = "hDnnFfU8eQ7PQ06TxQdNA",
-                    ConsumerSecret = "ML1fIlZUuEsMr5BU9Q3zNI3RF6NHWhUCOrFlMr4dLM",
+                    ConsumerKey = "",
+                    ConsumerSecret = "",
                 },
             };
             await auth.AuthorizeAsync();
