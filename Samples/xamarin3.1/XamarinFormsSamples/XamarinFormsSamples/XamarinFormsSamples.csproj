@@ -37,7 +37,6 @@
   <ItemGroup>
     <Compile Include="App.cs" />
     <Compile Include="Models\Tweet.cs" />
-    <Compile Include="Models\TweetViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Views\TweetView.xaml.cs">
       <DependentUpon>TweetView.xaml</DependentUpon>
