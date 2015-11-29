@@ -17,6 +17,7 @@ namespace LinqToTwitter
         where T : class
     {
         const string ScreenNameOrUserID = "ScreenNameOrUserID";
+        const string ScreenNameListOrUserIdList = "ScreenNameListOrUserIdList";
 
         /// <summary>
         /// base url for request
@@ -290,7 +291,7 @@ namespace LinqToTwitter
         {
             if (!(parameters.ContainsKey("ScreenNameList") || parameters.ContainsKey("UserIdList")) ||
                 (parameters.ContainsKey("ScreenNameList") && parameters.ContainsKey("UserIdList")))
-                throw new ArgumentException("Query must contain one of either ScreenName or UserID parameters, but not both.", ScreenNameOrUserID);
+                throw new ArgumentException("Query must contain one of either ScreenNameList or UserIdList parameters, but not both.", ScreenNameListOrUserIdList);
 
             var req = new Request(BaseUrl + "users/lookup.json");
             var urlParams = req.RequestParameters;
