@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Core;
+using Windows.UI.Core;
 
 namespace UwpSamples
 {
@@ -30,9 +31,9 @@ namespace UwpSamples
 
         protected async Task ShowAsync(string content)
         {
-            var dispatcher = CoreApplication.MainView.CoreWindow.Dispatcher;
+            CoreDispatcher dispatcher = CoreApplication.MainView.CoreWindow.Dispatcher;
 
-            await dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+            await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
                 JsonContent.Insert(0, new JsonContent { Content = content });
             });            

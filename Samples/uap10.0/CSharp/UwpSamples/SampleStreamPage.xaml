@@ -8,11 +8,15 @@
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <Button Content="Start Stream" Height="72" 
-                HorizontalAlignment="Stretch"  Margin="5" 
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Button Content="Start Stream" Margin="5" Grid.Row="0"
+                HorizontalAlignment="Stretch" 
                 Name="StartStreamButton" VerticalAlignment="Top"
                 Command="{Binding StartCommand}"/>
-        <ListView Height="465" HorizontalAlignment="Stretch" Margin="5" 
+        <ListView HorizontalAlignment="Stretch" Margin="5" Grid.Row="1"
                  Name="StreamListBox" VerticalAlignment="Stretch"
                  ItemsSource="{Binding JsonContent}">
             <ListView.ItemTemplate>

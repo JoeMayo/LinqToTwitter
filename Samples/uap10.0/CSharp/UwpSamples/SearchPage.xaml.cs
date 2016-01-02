@@ -3,6 +3,7 @@ using System.Linq;
 using LinqToTwitter;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using System.Collections.Generic;
 
 namespace UwpSamples
 {
@@ -34,7 +35,7 @@ namespace UwpSamples
 
             string searchString = searchText.Text;
 
-            var searchResponse =
+            Search searchResponse =
                 await
                 (from search in ctx.Search
                  where search.Type == SearchType.Search &&
@@ -42,7 +43,7 @@ namespace UwpSamples
                  select search)
                 .SingleOrDefaultAsync();
 
-            var tweets =
+            List<TweetViewModel> tweets =
                 (from tweet in searchResponse.Statuses
                  select new TweetViewModel
                  {

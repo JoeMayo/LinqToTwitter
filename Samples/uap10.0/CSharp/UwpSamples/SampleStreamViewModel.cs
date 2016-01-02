@@ -1,9 +1,7 @@
-﻿using System.Linq;
+﻿using System.IO;
+using System.Linq;
 using LinqToTwitter;
-using System;
-using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
-using System.IO;
 
 namespace UwpSamples
 {
