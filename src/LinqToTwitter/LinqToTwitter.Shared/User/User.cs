@@ -67,6 +67,7 @@ namespace LinqToTwitter
             FollowRequestSent = user.GetValue<bool>("follow_request_sent");
             Status = new Status(user.GetValue<JsonData>("status"));
             CursorMovement = new Cursors(user);
+            Email = user.GetValue<string>("email");
         }
 
         /// <summary>
@@ -372,5 +373,11 @@ namespace LinqToTwitter
         /// Available sizes to use in account banners.
         /// </summary>
         public List<BannerSize> BannerSizes { get; set; }
+
+        /// <summary>
+        /// User's email-address (null if not filled in on app is
+        /// lacking whitelisting)
+        /// </summary>
+        public string Email { get; set; }
     }
 }
