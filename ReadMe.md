@@ -1,6 +1,6 @@
 ![LINQ to Twitter](https://github.com/JoeMayo/LinqToTwitter/raw/master/linq2twitter_v3_300x90.png)
 
-LINQ to Twitter is an open source 3rd party LINQ Provider for the [Twitter](https://twitter.com/) micro-blogging service.  It uses standard LINQ syntax for queries and includes method calls for changes via the [Twitter API](https://dev.twitter.com/).
+LINQ to Twitter is an open source 3rd party LINQ Provider (Twitter Library) for the [Twitter](https://twitter.com/) micro-blogging service.  It uses standard LINQ syntax for queries and includes method calls for changes via the [Twitter API](https://dev.twitter.com/).
 
 ## Example
 
@@ -37,8 +37,6 @@ For more details on how LINQ to Twitter works, you can either click on the _Docu
 
 ## NuGet
 In addition to being able to download from this site, you can also automatically install LINQ to Twitter into your Visual Studio projects via [NuGet](http://bit.ly/mpkwA6); 
-
-For help in getting started with NuGet: [A Gentle Introduction to NuGet](http://bit.ly/iuPkRf).
 
 ## Available Feature Set
 

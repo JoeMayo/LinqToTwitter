@@ -37,6 +37,12 @@ namespace LinqToTwitter
         internal bool IncludeEntities { get; set; }
 
         /// <summary>
+        /// Includes the user's email address in response (requires whitelisting,
+        /// see https://dev.twitter.com/rest/reference/get/account/verify_credentials)
+        /// </summary>
+        internal bool IncludeEmail { get; set; }
+
+        /// <summary>
         /// extracts parameters from lambda
         /// </summary>
         /// <param name="lambdaExpression">lambda expression with where clause</param>
@@ -49,7 +55,8 @@ namespace LinqToTwitter
                    new List<string> { 
                        "Type",
                        "SkipStatus",
-                       "IncludeEntities"
+                       "IncludeEntities",
+                       "IncludeEmail"
                    })
                    .Parameters;
         }
@@ -96,6 +103,12 @@ namespace LinqToTwitter
                 urlParams.Add(new QueryParameter("include_entities", parameters["IncludeEntities"].ToLower()));
             }
 
+            if (parameters.ContainsKey("IncludeEmail"))
+            {
+                IncludeEmail = bool.Parse(parameters["IncludeEmail"]);
+                urlParams.Add(new QueryParameter("include_email", parameters["IncludeEmail"].ToLower()));
+            }
+
             return req;
         }
 
@@ -127,6 +140,7 @@ namespace LinqToTwitter
                 acct.Type = Type;
                 acct.SkipStatus = SkipStatus;
                 acct.IncludeEntities = IncludeEntities;
+                acct.IncludeEmail = IncludeEmail;
             }
 
             return new List<Account> { acct }.OfType<T>().ToList();

@@ -23,6 +23,12 @@ namespace LinqToTwitter
         public bool IncludeEntities { get; set; }
 
         /// <summary>
+        /// Includes the user's email address in response (requires whitelisting,
+        /// see https://dev.twitter.com/rest/reference/get/account/verify_credentials)
+        /// </summary>
+        public bool IncludeEmail { get; set; }
+
+        /// <summary>
         /// User returned by VerifyCredentials Queries
         /// </summary>
         public User User { get; set; }

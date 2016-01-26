@@ -90,7 +90,8 @@ namespace LinqToTwitterPcl.Tests.AccountTests
                 acct => 
                     acct.Type == AccountType.Settings &&
                     acct.SkipStatus == true &&
-                    acct.IncludeEntities == true;
+                    acct.IncludeEntities == true &&
+                    acct.IncludeEmail == true;
             var lambdaExpression = expression as LambdaExpression;
 
             var queryParams = target.GetParameters(lambdaExpression);
@@ -104,19 +105,23 @@ namespace LinqToTwitterPcl.Tests.AccountTests
             Assert.IsTrue(
                 queryParams.Contains(
                     new KeyValuePair<string, string>("IncludeEntities", "True")));
+            Assert.IsTrue(
+                queryParams.Contains(
+                    new KeyValuePair<string, string>("IncludeEmail", "True")));
         }
 
         [TestMethod]
         public void BuildUrl_Constructs_VerifyCredentials_Url()
         {
-            const string ExpectedUrl = "https://api.twitter.com/1.1/account/verify_credentials.json?skip_status=true&include_entities=false";
+            const string ExpectedUrl = "https://api.twitter.com/1.1/account/verify_credentials.json?skip_status=true&include_entities=false&include_email=true";
             var acctReqProc = new AccountRequestProcessor<Account> { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters =
                 new Dictionary<string, string>
                 {
                         { "Type", ((int)AccountType.VerifyCredentials).ToString(CultureInfo.InvariantCulture) },
                         { "SkipStatus", true.ToString() },
-                        { "IncludeEntities", false.ToString() }
+                        { "IncludeEntities", false.ToString() },
+                        { "IncludeEmail", true.ToString() }
                 };
 
             Request req = acctReqProc.BuildUrl(parameters);
