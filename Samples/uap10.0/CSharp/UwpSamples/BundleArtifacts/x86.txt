@@ -1,0 +1,2 @@
+MainPackage=C:\Projects\LinqToTwitter\Samples\uap10.0\CSharp\UwpSamples\bin\x86\Debug\UwpSamples_1.0.13.0_x86_Debug.appx
+SymbolPackage=C:\Projects\LinqToTwitter\Samples\uap10.0\CSharp\UwpSamples\AppPackages\UwpSamples_1.0.13.0_Debug_Test\UwpSamples_1.0.13.0_x86_Debug.appxsym
