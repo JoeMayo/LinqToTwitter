@@ -16,10 +16,17 @@ namespace LinqToTwitter
         public Coordinate() { }
         internal Coordinate(JsonData coord)
         {
-            if (coord == null) return;
-            var jsonLatitude = coord[LatitudePos];
+            if (coord == null)
+            {
+                IsLocationAvailable = false;
+                return;
+            }
+
+            IsLocationAvailable = true;
+
+            JsonData jsonLatitude = coord[LatitudePos];
             Latitude = jsonLatitude.IsDouble ? (double)jsonLatitude : (int)jsonLatitude;
-            var jsonLongitude = coord[LongitudePos];
+            JsonData jsonLongitude = coord[LongitudePos];
             Longitude = jsonLongitude.IsDouble ? (double)jsonLongitude : (int)jsonLongitude;
         }
 
@@ -37,5 +44,7 @@ namespace LinqToTwitter
         /// Longitude
         /// </summary>
         public double Longitude { get; set; }
+
+        public bool IsLocationAvailable { get; set; }
     }
 }
