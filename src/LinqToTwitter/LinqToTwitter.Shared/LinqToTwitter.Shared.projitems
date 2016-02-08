@@ -26,6 +26,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Common\BannerSize.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\Culture.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\Cursors.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\Entities\Variant.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\Entities\Entities.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\Entities\EntityBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\Entities\HashTagEntity.cs" />
@@ -33,6 +34,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Common\Entities\SymbolEntity.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\Entities\UrlEntity.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\Entities\UserMentionEntity.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\Entities\AspectRatio.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\Entities\VideoInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\Evaluator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\ExpressionTreeHelpers.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\ExpressionTreeModifier.cs" />

@@ -143,7 +143,7 @@ namespace Linq2TwitterDemos_Console
   
         static async Task ShowMentionsTimelineAsync(TwitterContext twitterCtx)
         {
-            var tweets =
+            List<Status> tweets =
                 await
                 (from tweet in twitterCtx.Status
                  where tweet.Type == StatusType.Mentions &&
@@ -156,7 +156,7 @@ namespace Linq2TwitterDemos_Console
 
         static async Task RunUserTimelineQueryAsync(TwitterContext twitterCtx)
         {
-            var tweets =
+            List<Status> tweets =
                 await
                 (from tweet in twitterCtx.Status
                  where tweet.Type == StatusType.User &&
@@ -169,7 +169,7 @@ namespace Linq2TwitterDemos_Console
 
         static async Task RunHomeTimelineQueryAsync(TwitterContext twitterCtx)
         {
-            var tweets =
+            List<Status> tweets =
                 await
                 (from tweet in twitterCtx.Status
                  where tweet.Type == StatusType.Home
@@ -181,7 +181,7 @@ namespace Linq2TwitterDemos_Console
 
         static async Task RetweetsOfMeStatusQueryAsync(TwitterContext twitterCtx)
         {
-            var myRetweets =
+            List<Status> myRetweets =
                 await
                 (from retweet in twitterCtx.Status
                  where retweet.Type == StatusType.RetweetsOfMe &&
@@ -196,7 +196,7 @@ namespace Linq2TwitterDemos_Console
         {
             ulong tweetID = 196991337554378752;
 
-            var publicTweets =
+            List<Status> retweets =
                 await
                 (from tweet in twitterCtx.Status
                  where tweet.Type == StatusType.Retweets &&
@@ -204,8 +204,8 @@ namespace Linq2TwitterDemos_Console
                  select tweet)
                 .ToListAsync();
 
-            if (publicTweets != null)
-                publicTweets.ForEach(tweet =>
+            if (retweets != null)
+                retweets.ForEach(tweet =>
                 {
                     if (tweet != null && tweet.User != null)
                         Console.WriteLine(
@@ -220,7 +220,7 @@ namespace Linq2TwitterDemos_Console
         {
             ulong tweetID = 449660889793581056;
 
-            var friendTweets =
+            List<Status> status =
                 await
                 (from tweet in twitterCtx.Status
                  where tweet.Type == StatusType.Show &&
@@ -228,10 +228,10 @@ namespace Linq2TwitterDemos_Console
                  select tweet)
                 .ToListAsync();
 
-            if (friendTweets != null)
+            if (status != null)
             {
                 Console.WriteLine("\nTweets: \n");
-                friendTweets.ForEach(tweet =>
+                status.ForEach(tweet =>
                 {
                     if (tweet != null && tweet.User != null)
                         Console.WriteLine(
@@ -341,7 +341,7 @@ namespace Linq2TwitterDemos_Console
 
             await Task.WhenAll(imageUploadTasks);
 
-            var mediaIds =
+            List<ulong> mediaIds =
                 (from tsk in imageUploadTasks
                  select tsk.Result.MediaID)
                 .ToList();
@@ -359,7 +359,7 @@ namespace Linq2TwitterDemos_Console
                 "Testing video upload tweet #Linq2Twitter £ " +
                 DateTime.Now.ToString(CultureInfo.InvariantCulture);
 
-            var media = await twitterCtx.UploadMediaAsync(File.ReadAllBytes(@"..\..\images\SampleVideo.mp4"), "video/mp4");
+            Media media = await twitterCtx.UploadMediaAsync(File.ReadAllBytes(@"..\..\images\SampleVideo.mp4"), "video/mp4");
 
             Status tweet = await twitterCtx.TweetAsync(status, new ulong[] { media.MediaID });
 
@@ -371,7 +371,7 @@ namespace Linq2TwitterDemos_Console
         {
             ulong tweetID = 305050067973312514;
 
-            var embeddedStatus =
+            EmbeddedStatus embeddedStatus =
                 await
                 (from tweet in twitterCtx.Status
                  where tweet.Type == StatusType.Oembed &&
@@ -403,7 +403,7 @@ namespace Linq2TwitterDemos_Console
 
         static async Task GetConversationAsync(TwitterContext twitterCtx)
         {
-            var tweets =
+            List<Status> tweets =
                 await
                 (from tweet in twitterCtx.Status
                  where tweet.Type == StatusType.Conversation &&
@@ -416,7 +416,7 @@ namespace Linq2TwitterDemos_Console
 
         static async Task LookupTweetsAsyc(TwitterContext twitterCtx)
         {
-            var tweets =
+            List<Status> tweets =
                 await
                 (from tweet in twitterCtx.Status
                  where tweet.Type == StatusType.Lookup &&

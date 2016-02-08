@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using LinqToTwitter;
 using LinqToTwitterPcl.Tests.Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using LinqToTwitter.Common;
 
 namespace LinqToTwitterPcl.Tests.UserTests
 {
@@ -45,7 +46,7 @@ namespace LinqToTwitterPcl.Tests.UserTests
                 //{ "ScreenName", "JoeMayo" }
             };
 
-            var ex = L2TAssert.Throws<ArgumentException>(() => reqProc.BuildUrl(parameters));
+            ArgumentException ex = L2TAssert.Throws<ArgumentException>(() => reqProc.BuildUrl(parameters));
 
             Assert.AreEqual(ExpectedParamName, ex.ParamName);
         }
@@ -62,7 +63,7 @@ namespace LinqToTwitterPcl.Tests.UserTests
                 //{ "ScreenName", "JoeMayo" }
             };
 
-            var ex = L2TAssert.Throws<ArgumentNullException>(() => reqProc.BuildUrl(parameters));
+            ArgumentNullException ex = L2TAssert.Throws<ArgumentNullException>(() => reqProc.BuildUrl(parameters));
 
             Assert.AreEqual(ExpectedParamName, ex.ParamName);
         }
@@ -79,7 +80,7 @@ namespace LinqToTwitterPcl.Tests.UserTests
                 //{ "ScreenName", "JoeMayo" }
             };
 
-            var ex = L2TAssert.Throws<ArgumentNullException>(() => reqProc.BuildUrl(parameters));
+            ArgumentNullException ex = L2TAssert.Throws<ArgumentNullException>(() => reqProc.BuildUrl(parameters));
 
             Assert.AreEqual(ExpectedParamName, ex.ParamName);
         }
@@ -96,7 +97,7 @@ namespace LinqToTwitterPcl.Tests.UserTests
                 { "ScreenName", null }
             };
 
-            var ex = L2TAssert.Throws<ArgumentNullException>(() => reqProc.BuildUrl(parameters));
+            ArgumentNullException ex = L2TAssert.Throws<ArgumentNullException>(() => reqProc.BuildUrl(parameters));
 
             Assert.AreEqual(ExpectedParamName, ex.ParamName);
         }
@@ -113,7 +114,7 @@ namespace LinqToTwitterPcl.Tests.UserTests
                 { "ScreenName", "" }
             };
 
-            var ex = L2TAssert.Throws<ArgumentNullException>(() => reqProc.BuildUrl(parameters));
+            ArgumentNullException ex = L2TAssert.Throws<ArgumentNullException>(() => reqProc.BuildUrl(parameters));
 
             Assert.AreEqual(ExpectedParamName, ex.ParamName);
         }
@@ -146,7 +147,7 @@ namespace LinqToTwitterPcl.Tests.UserTests
                 { "UserID", null }
             };
 
-            var ex = L2TAssert.Throws<ArgumentNullException>(() => reqProc.BuildUrl(parameters));
+            ArgumentNullException ex = L2TAssert.Throws<ArgumentNullException>(() => reqProc.BuildUrl(parameters));
 
             Assert.AreEqual("UserID", ex.ParamName);
         }
@@ -161,7 +162,7 @@ namespace LinqToTwitterPcl.Tests.UserTests
                 { "ScreenName", null }
             };
 
-            var ex = L2TAssert.Throws<ArgumentNullException>(() => reqProc.BuildUrl(parameters));
+            ArgumentNullException ex = L2TAssert.Throws<ArgumentNullException>(() => reqProc.BuildUrl(parameters));
 
             Assert.AreEqual("ScreenName", ex.ParamName);
         }
@@ -186,14 +187,14 @@ namespace LinqToTwitterPcl.Tests.UserTests
         public void BuildUrl_Categores_Throws_On_Missing_Slug()
         {
             var reqProc = new UserRequestProcessor<User>();
-            Dictionary<string, string> parameters =
+            var parameters =
                 new Dictionary<string, string>
                     {
                         { "Type", ((int)UserType.CategoryStatus).ToString() },
                         //{ "Slug", "Technology" }
                     };
 
-            var ex = L2TAssert.Throws<ArgumentNullException>(() => reqProc.BuildUrl(parameters));
+            ArgumentNullException ex = L2TAssert.Throws<ArgumentNullException>(() => reqProc.BuildUrl(parameters));
 
             Assert.AreEqual("Slug", ex.ParamName);
         }
@@ -240,7 +241,7 @@ namespace LinqToTwitterPcl.Tests.UserTests
                 { "Type", ((int)UserType.Category).ToString() },
             };
 
-            var ex = L2TAssert.Throws<ArgumentException>(() => reqProc.BuildUrl(parameters));
+            ArgumentException ex = L2TAssert.Throws<ArgumentException>(() => reqProc.BuildUrl(parameters));
 
             Assert.AreEqual("Slug", ex.ParamName);
         }
@@ -286,9 +287,9 @@ namespace LinqToTwitterPcl.Tests.UserTests
                 { "Type", ((int)UserType.Lookup).ToString() },
             };
 
-            var ex = L2TAssert.Throws<ArgumentException>(() => reqProc.BuildUrl(parameters));
+            ArgumentException ex = L2TAssert.Throws<ArgumentException>(() => reqProc.BuildUrl(parameters));
 
-            Assert.AreEqual("ScreenNameOrUserID", ex.ParamName);
+            Assert.AreEqual("ScreenNameListOrUserIdList", ex.ParamName);
         }
 
         [TestMethod]
@@ -302,9 +303,9 @@ namespace LinqToTwitterPcl.Tests.UserTests
                 { "UserID", "1,2" }
             };
 
-            var ex = L2TAssert.Throws<ArgumentException>(() => reqProc.BuildUrl(parameters));
+            ArgumentException ex = L2TAssert.Throws<ArgumentException>(() => reqProc.BuildUrl(parameters));
 
-            Assert.AreEqual("ScreenNameOrUserID", ex.ParamName);
+            Assert.AreEqual("ScreenNameListOrUserIdList", ex.ParamName);
         }
 
         [TestMethod]
@@ -335,7 +336,7 @@ namespace LinqToTwitterPcl.Tests.UserTests
                 { "Type", ((int)UserType.Search).ToString() },
             };
 
-            var ex = L2TAssert.Throws<ArgumentException>(() => reqProc.BuildUrl(parameters));
+            ArgumentException ex = L2TAssert.Throws<ArgumentException>(() => reqProc.BuildUrl(parameters));
 
             Assert.AreEqual("Query", ex.ParamName);
         }
@@ -384,7 +385,7 @@ namespace LinqToTwitterPcl.Tests.UserTests
             var reqProc = new UserRequestProcessor<User> { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string> { };
 
-            var ex = L2TAssert.Throws<ArgumentException>(() => reqProc.BuildUrl(parameters));
+            ArgumentException ex = L2TAssert.Throws<ArgumentException>(() => reqProc.BuildUrl(parameters));
 
             Assert.AreEqual<string>("Type", ex.ParamName);
         }
@@ -394,7 +395,7 @@ namespace LinqToTwitterPcl.Tests.UserTests
         {
             var reqProc = new UserRequestProcessor<User> { BaseUrl = "https://api.twitter.com/1.1/" };
 
-            var ex = L2TAssert.Throws<ArgumentException>(() => reqProc.BuildUrl(null));
+            ArgumentException ex = L2TAssert.Throws<ArgumentException>(() => reqProc.BuildUrl(null));
 
             Assert.AreEqual<string>("Type", ex.ParamName);
         }
@@ -440,7 +441,7 @@ namespace LinqToTwitterPcl.Tests.UserTests
 
             var lambdaExpression = expression as LambdaExpression;
 
-            var queryParams = reqProc.GetParameters(lambdaExpression);
+            Dictionary<string, string> queryParams = reqProc.GetParameters(lambdaExpression);
 
             Assert.IsTrue(
                 queryParams.Contains(
@@ -512,7 +513,7 @@ namespace LinqToTwitterPcl.Tests.UserTests
 
             Assert.IsNotNull(users);
             Assert.AreEqual(1, users.Count);
-            var user = users.First();
+            User user = users.First();
             Assert.AreEqual(123ul, user.UserID);
             Assert.AreEqual("1,2", user.UserIdList);
             Assert.AreEqual("JoeMayo", user.ScreenName);
@@ -569,13 +570,13 @@ namespace LinqToTwitterPcl.Tests.UserTests
             Assert.IsTrue(user.Verified);
             Assert.AreEqual(3278, user.StatusesCount);
             Assert.AreEqual("en", user.LangResponse);
-            var status = user.Status;
+            Status status = user.Status;
             Assert.IsNotNull(status);
             Assert.AreEqual("web", status.Source);
-            var contributors = status.Contributors;
+            List<Contributor> contributors = status.Contributors;
             Assert.IsNotNull(contributors);
             Assert.IsTrue(contributors.Any());
-            var contributor = contributors.First();
+            Contributor contributor = contributors.First();
             Assert.IsNotNull(contributor);
             Assert.IsTrue(user.ContributorsEnabled);
             Assert.IsFalse(user.IsTranslator);
@@ -617,7 +618,7 @@ namespace LinqToTwitterPcl.Tests.UserTests
 
             Assert.IsNotNull(users);
             Assert.AreEqual(1, users.Count);
-            var user = users.First();
+            User user = users.First();
             VerifySingleUserResponse(user);
         }
   
@@ -630,12 +631,12 @@ namespace LinqToTwitterPcl.Tests.UserTests
 
             Assert.IsNotNull(userList);
             Assert.AreEqual(1, userList.Count);
-            var user = userList.Single();
+            User user = userList.Single();
             Assert.IsNotNull(user);
-            var categories = user.Categories;
+            List<Category> categories = user.Categories;
             Assert.IsNotNull(categories);
             Assert.IsTrue(categories.Any());
-            var category = categories.First();
+            Category category = categories.First();
             Assert.IsNotNull(category);
             Assert.AreEqual(106, category.Size);
             Assert.AreEqual("Music", category.Name);
@@ -651,20 +652,20 @@ namespace LinqToTwitterPcl.Tests.UserTests
 
             Assert.IsNotNull(userList);
             Assert.AreEqual(1, userList.Count);
-            var user = userList.Single();
+            User user = userList.Single();
             Assert.IsNotNull(user);
-            var categories = user.Categories;
+            List<Category> categories = user.Categories;
             Assert.IsNotNull(categories);
             Assert.IsTrue(categories.Any());
-            var category = categories.First();
+            Category category = categories.First();
             Assert.IsNotNull(category);
             Assert.AreEqual(64, category.Size);
             Assert.AreEqual("Funny", category.Name);
             Assert.AreEqual("funny", category.Slug);
-            var users = category.Users;
+            List<User> users = category.Users;
             Assert.IsNotNull(users);
             Assert.IsTrue(users.Any());
-            var catUser = users.First();
+            User catUser = users.First();
             Assert.IsNotNull(catUser);
             Assert.AreEqual("OMG TestMethods", catUser.Name);
         }
@@ -677,7 +678,7 @@ namespace LinqToTwitterPcl.Tests.UserTests
 
             Assert.IsNotNull(userList);
             Assert.IsTrue(userList.Any());
-            var user = userList.First();
+            User user = userList.First();
             Assert.IsNotNull(user);
             Assert.AreEqual("bbccff", user.ProfileSidebarBorderColor);
         }
@@ -722,12 +723,12 @@ namespace LinqToTwitterPcl.Tests.UserTests
             Assert.IsNotNull(userList);
             Assert.IsTrue(userList.Any());
             Assert.AreEqual(1, userList.Count);
-            var user = userList.Single();
+            User user = userList.Single();
             Assert.IsNotNull(user);
-            var bannerSizes = user.BannerSizes;
+            List<BannerSize> bannerSizes = user.BannerSizes;
             Assert.IsNotNull(bannerSizes);
             Assert.AreEqual(6, bannerSizes.Count);
-            var firstSize = bannerSizes.First();
+            BannerSize firstSize = bannerSizes.First();
             Assert.IsNotNull(firstSize);
             Assert.AreEqual("ipad_retina", firstSize.Label);
             Assert.AreEqual(1252, firstSize.Width);

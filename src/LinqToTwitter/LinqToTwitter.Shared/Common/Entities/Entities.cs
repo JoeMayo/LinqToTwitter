@@ -24,11 +24,11 @@ namespace LinqToTwitter
                 return;
             }
 
-            var hashTagEntities = entityJson.GetValue<JsonData>("hashtags");
-            var mediaEntities = entityJson.GetValue<JsonData>("media");
-            var urlEntities = entityJson.GetValue<JsonData>("urls");
-            var userEntities = entityJson.GetValue<JsonData>("user_mentions");
-            var symbolEntities = entityJson.GetValue<JsonData>("symbols");
+            JsonData hashTagEntities = entityJson.GetValue<JsonData>("hashtags");
+            JsonData mediaEntities = entityJson.GetValue<JsonData>("media");
+            JsonData urlEntities = entityJson.GetValue<JsonData>("urls");
+            JsonData userEntities = entityJson.GetValue<JsonData>("user_mentions");
+            JsonData symbolEntities = entityJson.GetValue<JsonData>("symbols");
             HashTagEntities =
                 hashTagEntities == null
                     ? new List<HashTagEntity>()
@@ -69,7 +69,8 @@ namespace LinqToTwitter
                            Type = media.GetValue<string>("type"),
                            Url = media.GetValue<string>("url"),
                            Start = indices.Count > 0 ? (int)indices[0] : 0,
-                           End = indices.Count > 1 ? (int)indices[1] : 0
+                           End = indices.Count > 1 ? (int)indices[1] : 0,
+                           VideoInfo = new VideoInfo(media.GetValue<JsonData>("video_info")),
                        })
                        .ToList();
             UrlEntities =

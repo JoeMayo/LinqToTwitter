@@ -34,7 +34,7 @@ namespace LinqToTwitterPcl.Tests.SearchTests
                     search.IncludeEntities == true;
             var lambdaExpression = expression as LambdaExpression;
 
-            var queryParams = target.GetParameters(lambdaExpression);
+            Dictionary<string, string> queryParams = target.GetParameters(lambdaExpression);
 
             Assert.IsTrue(
                 queryParams.Contains(
@@ -360,9 +360,9 @@ namespace LinqToTwitterPcl.Tests.SearchTests
 
             Assert.IsNotNull(searches);
             Assert.IsNotNull(searches.SingleOrDefault());
-            var search = searches.Single();
+            Search search = searches.Single();
             Assert.IsNotNull(search);
-            var results = search.Statuses;
+            List<Status> results = search.Statuses;
             Assert.IsNotNull(results);
             Assert.IsFalse(results.Any());
         }

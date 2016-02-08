@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 
 namespace LinqToTwitter
 {
@@ -35,5 +33,7 @@ namespace LinqToTwitter
         /// Character positions of extracted media
         /// </summary>
         public List<int> Indices { get; set; }
+
+        public VideoInfo VideoInfo { get; set; }
     }
 }

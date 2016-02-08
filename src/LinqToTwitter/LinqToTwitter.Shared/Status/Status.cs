@@ -32,14 +32,14 @@ namespace LinqToTwitter
             RetweetedStatus = new Status(status.GetValue<JsonData>("retweeted_status"));
             QuotedStatusID = status.GetValue<ulong>("quoted_status_id");
             QuotedStatus = new Status(status.GetValue<JsonData>("quoted_status"));
-            var contributors = status.GetValue<JsonData>("contributors");
+            JsonData contributors = status.GetValue<JsonData>("contributors");
             Contributors =
                 contributors == null ?
                     new List<Contributor>() :
                     (from JsonData contributor in contributors
                      select new Contributor(contributor))
                     .ToList();
-            var coords = status.GetValue<JsonData>("coordinates");
+            JsonData coords = status.GetValue<JsonData>("coordinates");
             if (coords != null)
             {
                 Coordinates = new Coordinate(coords.GetValue<JsonData>("coordinates"));
@@ -62,12 +62,12 @@ namespace LinqToTwitter
             Annotation = new Annotation(status.GetValue<JsonData>("annotation"));
             Entities = new Entities(status.GetValue<JsonData>("entities"));
             ExtendedEntities = new Entities(status.GetValue<JsonData>("extended_entities"));
-            var currentUserRetweet = status.GetValue<JsonData>("current_user_retweet");
+            JsonData currentUserRetweet = status.GetValue<JsonData>("current_user_retweet");
             if (currentUserRetweet != null)
             {
                 CurrentUserRetweet = currentUserRetweet.GetValue<ulong>("id");
             }
-            var scopes = status.GetValue<JsonData>("scopes");
+            JsonData scopes = status.GetValue<JsonData>("scopes");
             Scopes =
                 scopes == null ? new Dictionary<string, string>() :
                 (from key in (scopes as IDictionary<string, JsonData>).Keys as List<string>
@@ -80,7 +80,7 @@ namespace LinqToTwitter
                     key => key.Key,
                     val => val.Value);
             WithheldCopyright = status.GetValue<bool>("withheld_copyright");
-            var withheldCountries = status.GetValue<JsonData>("withheld_in_countries");
+            JsonData withheldCountries = status.GetValue<JsonData>("withheld_in_countries");
             WithheldInCountries =
                 withheldCountries == null ? new List<string>() :
                 (from JsonData country in status.GetValue<JsonData>("withheld_in_countries")
