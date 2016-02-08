@@ -63,6 +63,11 @@ namespace LinqToTwitter
         internal bool SkipStatus { get; set; }
 
         /// <summary>
+        /// Returns text beyond 140 characters, if present
+        /// </summary>
+        public bool FullText { get; set; }
+
+        /// <summary>
         /// extracts parameters from lambda
         /// </summary>
         /// <param name="lambdaExpression">lambda expression with where clause</param>
@@ -80,10 +85,11 @@ namespace LinqToTwitter
                        "Count",
                        "ID",
                        "IncludeEntities",
-                       "SkipStatus"
+                       "SkipStatus",
+                       "FullText"
                    });
 
-            var parameters = paramFinder.Parameters;
+            Dictionary<string, string> parameters = paramFinder.Parameters;
 
             return parameters;
         }
@@ -121,7 +127,7 @@ namespace LinqToTwitter
                 throw new ArgumentNullException(IdParam, "ID is required.");
 
             var req = new Request(BaseUrl + "direct_messages/show.json");
-            var urlParams = req.RequestParameters;
+            IList<QueryParameter> urlParams = req.RequestParameters;
 
             ID = ulong.Parse(parameters[IdParam]);
             urlParams.Add(new QueryParameter("id", ID.ToString()));
@@ -130,6 +136,12 @@ namespace LinqToTwitter
             {
                 IncludeEntities = bool.Parse(parameters["IncludeEntities"]);
                 urlParams.Add(new QueryParameter("include_entities", parameters["IncludeEntities"].ToLower()));
+            }
+
+            if (parameters.ContainsKey("FullText"))
+            {
+                FullText = bool.Parse(parameters["FullText"]);
+                urlParams.Add(new QueryParameter("full_text", parameters["FullText"].ToLower()));
             }
 
             return req;
@@ -164,7 +176,7 @@ namespace LinqToTwitter
         Request BuildSentUrlParameters(Dictionary<string, string> parameters, string url)
         {
             var req = new Request(BaseUrl + url);
-            var urlParams = req.RequestParameters;
+            IList<QueryParameter> urlParams = req.RequestParameters;
 
             if (parameters == null)
                 return req;
@@ -205,6 +217,12 @@ namespace LinqToTwitter
                 urlParams.Add(new QueryParameter("skip_status", SkipStatus.ToString().ToLower()));
             }
 
+            if (parameters.ContainsKey("FullText"))
+            {
+                FullText = bool.Parse(parameters["FullText"]);
+                urlParams.Add(new QueryParameter("full_text", parameters["FullText"].ToLower()));
+            }
+
             return req;
         }
 
@@ -217,7 +235,7 @@ namespace LinqToTwitter
         {
             if (string.IsNullOrWhiteSpace(responseJson)) return new List<T>();
 
-            var dmJson = JsonMapper.ToObject(responseJson);
+            JsonData dmJson = JsonMapper.ToObject(responseJson);
 
             IEnumerable<DirectMessage> dmList;
 
@@ -240,7 +258,7 @@ namespace LinqToTwitter
   
         IEnumerable<DirectMessage> HandleMultipleDirectMessages(JsonData dmJson)
         {
-            var dmList =
+            IEnumerable<DirectMessage> dmList =
                 from JsonData dm in dmJson
                 select new DirectMessage(dm)
                 {
@@ -251,7 +269,8 @@ namespace LinqToTwitter
                     Count = Count,
                     ID = ID,
                     IncludeEntities = IncludeEntities,
-                    SkipStatus = SkipStatus
+                    SkipStatus = SkipStatus,
+                    FullText = FullText
                 };
 
             return dmList;
@@ -270,7 +289,8 @@ namespace LinqToTwitter
                     Count = Count,
                     ID = ID,
                     IncludeEntities = IncludeEntities,
-                    SkipStatus = SkipStatus
+                    SkipStatus = SkipStatus,
+                    FullText = FullText
                 }
             };
         }

@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using LinqToTwitter;
+using System.Collections.Generic;
 
 namespace Linq2TwitterDemos_Console
 {
@@ -39,6 +40,10 @@ namespace Linq2TwitterDemos_Console
                         Console.WriteLine("\n\tShowing DM...\n");
                         await DestroyDirectMessageAsync(twitterCtx);
                         break;
+                    case '5':
+                        Console.WriteLine("\n\tSending Long DM...\n");
+                        await NewLongDirectMessageAsync(twitterCtx);
+                        break;
                     case 'q':
                     case 'Q':
                         Console.WriteLine("\nReturning...\n");
@@ -60,13 +65,14 @@ namespace Linq2TwitterDemos_Console
             Console.WriteLine("\t 2. Show DM");
             Console.WriteLine("\t 3. Send DM");
             Console.WriteLine("\t 4. Delete DM");
+            Console.WriteLine("\t 5. Send and Receive Long DM");
             Console.WriteLine();
             Console.WriteLine("\t Q. Return to Main menu");
         }
 
         static async Task ShowSentDMsAsync(TwitterContext twitterCtx)
         {
-            var dmResponse =
+            List<DirectMessage> dmResponse =
                 await
                     (from dm in twitterCtx.DirectMessage
                      where dm.Type == DirectMessageType.SentBy
@@ -85,7 +91,7 @@ namespace Linq2TwitterDemos_Console
 
         static async Task ShowReceivedDMsAsync(TwitterContext twitterCtx)
         {
-            var dmResponse =
+            List<DirectMessage> dmResponse =
                 await
                     (from dm in twitterCtx.DirectMessage
                      where dm.Type == DirectMessageType.SentTo
@@ -104,7 +110,7 @@ namespace Linq2TwitterDemos_Console
 
         static async Task ShowSpecificDMAsync(TwitterContext twitterCtx)
         {
-            var dmResponse =
+            DirectMessage dmResponse =
                 await
                     (from dm in twitterCtx.DirectMessage
                      where dm.Type == DirectMessageType.Show &&
@@ -126,7 +132,7 @@ namespace Linq2TwitterDemos_Console
 
         static async Task DestroyDirectMessageAsync(TwitterContext twitterCtx)
         {
-            var message = 
+            DirectMessage message = 
                 await twitterCtx.DestroyDirectMessageAsync(
                     243563161037455360ul, true);
 
@@ -139,7 +145,7 @@ namespace Linq2TwitterDemos_Console
 
         static async Task NewDirectMessageAsync(TwitterContext twitterCtx)
         {
-            var message = await twitterCtx.NewDirectMessageAsync(
+            DirectMessage message = await twitterCtx.NewDirectMessageAsync(
                 "Linq2Twitr", "Direct Message Test - " + DateTime.Now + "!'");
 
             if (message != null)
@@ -148,6 +154,34 @@ namespace Linq2TwitterDemos_Console
                     message.RecipientScreenName,
                     message.Text,
                     message.CreatedAt);
+        }
+
+        static async Task NewLongDirectMessageAsync(TwitterContext twitterCtx)
+        {
+            string messageOver140Characters = 
+                string.Join("-", Enumerable.Repeat("XXXX", 35)) + " - " + DateTime.Now;
+            DirectMessage message = 
+                await twitterCtx.NewDirectMessageAsync("Linq2Twitr", messageOver140Characters);
+
+            DirectMessage dmResponse =
+                await
+                    (from dm in twitterCtx.DirectMessage
+                     where dm.Type == DirectMessageType.Show &&
+                           dm.ID == message.IDResponse &&
+                           dm.FullText == true // required for full text, otherwise text truncates to 140
+                     select dm)
+                    .SingleOrDefaultAsync();
+
+            if (dmResponse != null &&
+                dmResponse.Recipient != null &&
+                dmResponse.Sender != null)
+            {
+                Console.WriteLine(
+                    "From: {0}\nTo:  {1}\nMessage: {2}",
+                    dmResponse.Sender.Name,
+                    dmResponse.Recipient.Name,
+                    dmResponse.Text);
+            }
         }
     }
 }

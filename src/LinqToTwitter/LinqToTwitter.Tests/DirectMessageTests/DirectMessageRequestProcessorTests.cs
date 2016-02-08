@@ -21,7 +21,7 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
         public void BuildUrl_Constructs_SentTo_Url()
         {
             var dmReqProc = new DirectMessageRequestProcessor<DirectMessage> { BaseUrl = "https://api.twitter.com/1/" };
-            const string Expected = "https://api.twitter.com/1/direct_messages.json?since_id=1234567&max_id=357&page=1&count=2&include_entities=true&skip_status=true";
+            const string Expected = "https://api.twitter.com/1/direct_messages.json?since_id=1234567&max_id=357&page=1&count=2&include_entities=true&skip_status=true&full_text=true";
             var parameters =
                 new Dictionary<string, string>
                 {
@@ -31,7 +31,8 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
                         { "Page", "1" },
                         { "Count", "2" },
                         { "IncludeEntities", true.ToString() },
-                        { "SkipStatus", true.ToString() }
+                        { "SkipStatus", true.ToString() },
+                        { "FullText", true.ToString() }
                 };
 
             Request req = dmReqProc.BuildUrl(parameters);
@@ -43,7 +44,7 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
         public void BuildUrl_Constructs_SentBy_Url()
         {
             var dmReqProc = new DirectMessageRequestProcessor<DirectMessage> { BaseUrl = "https://api.twitter.com/1/" };
-            const string Expected = "https://api.twitter.com/1/direct_messages/sent.json?since_id=1234567&max_id=357&page=1&count=2&include_entities=true";
+            const string Expected = "https://api.twitter.com/1/direct_messages/sent.json?since_id=1234567&max_id=357&page=1&count=2&include_entities=true&full_text=true";
             var parameters =
                 new Dictionary<string, string>
                 {
@@ -52,7 +53,8 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
                         { "MaxID", "357" },
                         { "Page", "1" },
                         { "Count", "2" },
-                        { "IncludeEntities", true.ToString() }
+                        { "IncludeEntities", true.ToString() },
+                        { "FullText", true.ToString() }
                 };
 
             Request req = dmReqProc.BuildUrl(parameters);
@@ -64,12 +66,13 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
         public void BuildUrl_Constructs_Show_Url()
         {
             var dmReqProc = new DirectMessageRequestProcessor<DirectMessage> { BaseUrl = "https://api.twitter.com/1/" };
-            const string Expected = "https://api.twitter.com/1/direct_messages/show.json?id=478805447";
+            const string Expected = "https://api.twitter.com/1/direct_messages/show.json?id=478805447&full_text=true";
             var parameters =
                 new Dictionary<string, string>
                 {
                         { "Type", ((int)DirectMessageType.Show).ToString(CultureInfo.InvariantCulture) },
                         { "ID", "478805447" },
+                        { "FullText", true.ToString() }
                 };
 
             Request req = dmReqProc.BuildUrl(parameters);
@@ -88,7 +91,7 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
                         //{ "ID", "478805447" },
                 };
 
-            var ex = L2TAssert.Throws<ArgumentNullException>(() => dmReqProc.BuildUrl(parameters));
+            ArgumentNullException ex = L2TAssert.Throws<ArgumentNullException>(() => dmReqProc.BuildUrl(parameters));
 
             Assert.AreEqual("ID", ex.ParamName);
         }
@@ -98,7 +101,7 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
         {
             var dmReqProc = new DirectMessageRequestProcessor<DirectMessage> { BaseUrl = "https://api.twitter.com/1/" };
 
-            var actual = dmReqProc.ProcessResults(TestQueryResponse);
+            List<DirectMessage> actual = dmReqProc.ProcessResults(TestQueryResponse);
 
             var actualQuery = actual as IList<DirectMessage>;
             Assert.IsNotNull(actualQuery);
@@ -110,7 +113,7 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
         {
             var dmReqProc = new DirectMessageRequestProcessor<DirectMessage> { BaseUrl = "https://api.twitter.com/1/" };
 
-            var dms = dmReqProc.ProcessResults(string.Empty);
+            List<DirectMessage> dms = dmReqProc.ProcessResults(string.Empty);
 
             Assert.IsFalse(dms.Any());
         }
@@ -124,7 +127,7 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
                 Type = DirectMessageType.Show
             };
 
-            var dms = dmReqProc.ProcessResults(TestQuerySingleResponse);
+            List<DirectMessage> dms = dmReqProc.ProcessResults(TestQuerySingleResponse);
 
             Assert.IsNotNull(dms.SingleOrDefault());
         }
@@ -138,6 +141,7 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
             const int Count = 4;
             const ulong ID = 5;
             const bool SkipStatus = true;
+            const bool FullText = true;
 
             var dmReqProc = new DirectMessageRequestProcessor<DirectMessage>
             {
@@ -148,12 +152,13 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
                 Page = Page,
                 Count = Count,
                 ID = ID,
-                SkipStatus = SkipStatus
+                SkipStatus = SkipStatus,
+                FullText = FullText
             };
 
-            var dms = dmReqProc.ProcessResults(TestQuerySingleResponse);
+            List<DirectMessage> dms = dmReqProc.ProcessResults(TestQuerySingleResponse);
 
-            var dm = dms.First();
+            DirectMessage dm = dms.First();
 
             Assert.AreEqual(SinceID, dm.SinceID);
             Assert.AreEqual(MaxID, dm.MaxID);
@@ -161,6 +166,7 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
             Assert.AreEqual(Count, dm.Count);
             Assert.AreEqual(ID, dm.ID);
             Assert.AreEqual(SkipStatus, dm.SkipStatus);
+            Assert.AreEqual(FullText, dm.FullText);
         }
 
         [TestMethod]
@@ -185,9 +191,9 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
                 SkipStatus = SkipStatus
             };
 
-            var dms = dmReqProc.ProcessResults(TestQueryResponse);
+            List<DirectMessage> dms = dmReqProc.ProcessResults(TestQueryResponse);
 
-            var dm = dms.First();
+            DirectMessage dm = dms.First();
 
             Assert.AreEqual(SinceID, dm.SinceID);
             Assert.AreEqual(MaxID, dm.MaxID);
@@ -210,10 +216,11 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
                     dm.SinceID == 123 &&
                     dm.ID == 456 &&
                     dm.IncludeEntities == true &&
-                    dm.SkipStatus == true;
+                    dm.SkipStatus == true &&
+                    dm.FullText == true;
             var lambdaExpression = expression as LambdaExpression;
 
-            var queryParams = dmReqProc.GetParameters(lambdaExpression);
+            Dictionary<string, string> queryParams = dmReqProc.GetParameters(lambdaExpression);
 
             Assert.IsTrue(
                 queryParams.Contains(
@@ -239,6 +246,9 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
             Assert.IsTrue(
                 queryParams.Contains(
                     new KeyValuePair<string, string>("SkipStatus", "True")));
+            Assert.IsTrue(
+                queryParams.Contains(
+                    new KeyValuePair<string, string>("FullText", "True")));
         }
 
         [TestMethod]
@@ -247,7 +257,7 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
             var dmReqProc = new DirectMessageRequestProcessor<DirectMessage> { BaseUrl = "https://api.twitter.com/1/" };
             var parameters = new Dictionary<string, string>();
 
-            var ex = L2TAssert.Throws<ArgumentException>(() => dmReqProc.BuildUrl(parameters));
+            ArgumentException ex = L2TAssert.Throws<ArgumentException>(() => dmReqProc.BuildUrl(parameters));
 
             Assert.AreEqual("Type", ex.ParamName);
         }
@@ -257,7 +267,7 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
         {
             var dmReqProc = new DirectMessageRequestProcessor<DirectMessage> { BaseUrl = "https://api.twitter.com/1/" };
 
-            var ex = L2TAssert.Throws<ArgumentException>(() => dmReqProc.BuildUrl(null));
+            ArgumentException ex = L2TAssert.Throws<ArgumentException>(() => dmReqProc.BuildUrl(null));
 
             Assert.AreEqual("Type", ex.ParamName);
         }
@@ -454,7 +464,7 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
    ""id"":193540539663126529,
    ""sender_screen_name"":""JoeMayo"",
    ""sender_id"":15411837,
-   ""text"":""Direct Message Test - 4\/20\/2012 9:25:06 PM""
+   ""text"":""XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX - 2\/7\/2016 12:49:22 AM""
 }";
 
     }

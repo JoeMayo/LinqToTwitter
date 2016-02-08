@@ -85,6 +85,11 @@ namespace LinqToTwitter
         public bool SkipStatus { get; set; }
 
         /// <summary>
+        /// Returns text beyond 140 characters, if present
+        /// </summary>
+        public bool FullText { get; set; }
+
+        /// <summary>
         /// DM Text
         /// </summary>
         public string Text { get; set; }
