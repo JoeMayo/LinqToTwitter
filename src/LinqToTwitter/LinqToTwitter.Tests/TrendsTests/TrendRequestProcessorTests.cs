@@ -30,7 +30,7 @@ namespace LinqToTwitterPcl.Tests.TrendTests
                     trend.Exclude == true;
             var lambdaExpression = expression as LambdaExpression;
 
-            var queryParams = trendReqProc.GetParameters(lambdaExpression);
+            Dictionary<string, string> queryParams = trendReqProc.GetParameters(lambdaExpression);
 
             Assert.IsTrue(
                 queryParams.Contains(
@@ -62,11 +62,11 @@ namespace LinqToTwitterPcl.Tests.TrendTests
                 WoeID = 1
             };
 
-            var trends = trendProc.ProcessResults(TestTrendQueryResponse);
+            List<Trend> trends = trendProc.ProcessResults(TestTrendQueryResponse);
 
             Assert.IsNotNull(trends);
             Assert.IsTrue(trends.Any());
-            var trend = trends.First();
+            Trend trend = trends.First();
             Assert.IsNotNull(trend);
             Assert.IsTrue(trend.Exclude);
             Assert.AreEqual(1.1, trend.Latitude);
@@ -151,7 +151,7 @@ namespace LinqToTwitterPcl.Tests.TrendTests
                     { "Type", ((int)TrendType.Place).ToString(CultureInfo.InvariantCulture) },
                 };
 
-            var ex = L2TAssert.Throws<ArgumentException>(() => trendReqProc.BuildUrl(parameters));
+            ArgumentException ex = L2TAssert.Throws<ArgumentException>(() => trendReqProc.BuildUrl(parameters));
 
             Assert.AreEqual("WoeID", ex.ParamName);
         }
@@ -162,7 +162,7 @@ namespace LinqToTwitterPcl.Tests.TrendTests
             var trendReqProc = new TrendRequestProcessor<Trend> { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters = new Dictionary<string, string>();
 
-            var ex = L2TAssert.Throws<ArgumentException>(() => trendReqProc.BuildUrl(parameters));
+            ArgumentException ex = L2TAssert.Throws<ArgumentException>(() => trendReqProc.BuildUrl(parameters));
 
             Assert.AreEqual("Type", ex.ParamName);
         }
@@ -172,7 +172,7 @@ namespace LinqToTwitterPcl.Tests.TrendTests
         {
             var trendReqProc = new TrendRequestProcessor<Trend> { BaseUrl = "https://api.twitter.com/1.1/" };
 
-            var ex = L2TAssert.Throws<ArgumentException>(() => trendReqProc.BuildUrl(null));
+            ArgumentException ex = L2TAssert.Throws<ArgumentException>(() => trendReqProc.BuildUrl(null));
 
             Assert.AreEqual("Type", ex.ParamName);
         }
@@ -185,9 +185,9 @@ namespace LinqToTwitterPcl.Tests.TrendTests
             List<Trend> trendList = trendReqProc.ProcessResults(TestAvailableOrClosestQueryResponse);
 
             Assert.IsNotNull(trendList);
-            var trends = trendList.SingleOrDefault();
+            Trend trends = trendList.SingleOrDefault();
             Assert.IsNotNull(trends);
-            var locations = trends.Locations;
+            List<Location> locations = trends.Locations;
             Assert.IsNotNull(locations);
             Assert.AreEqual(2, locations.Count);
             Location location = locations[0];
@@ -209,9 +209,9 @@ namespace LinqToTwitterPcl.Tests.TrendTests
             List<Trend> trendList = trendReqProc.ProcessResults(TestAvailableOrClosestQueryResponse);
 
             Assert.IsNotNull(trendList);
-            var trends = trendList.SingleOrDefault();
+            Trend trends = trendList.SingleOrDefault();
             Assert.IsNotNull(trends);
-            var locations = trends.Locations;
+            List<Location> locations = trends.Locations;
             Assert.IsNotNull(locations);
             Assert.AreEqual(2, locations.Count);
             Location location = locations[1];
@@ -234,14 +234,15 @@ namespace LinqToTwitterPcl.Tests.TrendTests
             List<Trend> trendList = trendProc.ProcessResults(TestTrendQueryResponse);
 
             Assert.IsNotNull(trendList);
-            var trends = trendList.FirstOrDefault();
+            Trend trends = trendList.FirstOrDefault();
             Assert.IsNotNull(trends);
-            var locations = trends.Locations;
+            List<Location> locations = trends.Locations;
             Assert.IsNotNull(locations);
             Assert.AreEqual(1, locations.Count);
             Location location = locations[0];
             Assert.AreEqual("Worldwide", location.Name);
             Assert.AreEqual(1, location.WoeID);
+            Assert.AreEqual(3700, trends.TweetVolume);
             Assert.AreEqual("%22Julianna%20Margulies%22", trends.Query);
             Assert.AreEqual("Julianna Margulies", trends.Name);
             Assert.IsNull(trends.PromotedContent);
@@ -256,7 +257,7 @@ namespace LinqToTwitterPcl.Tests.TrendTests
         {
             var trendProc = new TrendRequestProcessor<Trend>();
 
-            var trends = trendProc.ProcessResults(string.Empty);
+            List<Trend> trends = trendProc.ProcessResults(string.Empty);
 
             Assert.AreEqual(0, trends.Count);
         }
@@ -272,6 +273,7 @@ namespace LinqToTwitterPcl.Tests.TrendTests
       ],
       ""trends"":[
          {
+            ""tweet_volume"": 3700,
             ""query"":""%22Julianna%20Margulies%22"",
             ""name"":""Julianna Margulies"",
             ""promoted_content"":null,
@@ -279,6 +281,7 @@ namespace LinqToTwitterPcl.Tests.TrendTests
             ""events"":null
          },
          {
+            ""tweet_volume"": 4200,
             ""query"":""%23ThingsThatGetMeUpset"",
             ""name"":""#ThingsThatGetMeUpset"",
             ""promoted_content"":null,
@@ -286,6 +289,7 @@ namespace LinqToTwitterPcl.Tests.TrendTests
             ""events"":null
          },
          {
+            ""tweet_volume"": 3200,
             ""query"":""%23ReasonsWeCantBeTogether"",
             ""name"":""#ReasonsWeCantBeTogether"",
             ""promoted_content"":null,
@@ -293,6 +297,7 @@ namespace LinqToTwitterPcl.Tests.TrendTests
             ""events"":null
          },
          {
+            ""tweet_volume"": 1200,
             ""query"":""%22Peter%20Dinklage%22"",
             ""name"":""Peter Dinklage"",
             ""promoted_content"":null,
@@ -300,6 +305,7 @@ namespace LinqToTwitterPcl.Tests.TrendTests
             ""events"":null
          },
          {
+            ""tweet_volume"": 500,
             ""query"":""%22Connie%20Britton%22"",
             ""name"":""Connie Britton"",
             ""promoted_content"":null,
@@ -307,6 +313,7 @@ namespace LinqToTwitterPcl.Tests.TrendTests
             ""events"":null
          },
          {
+            ""tweet_volume"": 3100,
             ""query"":""%23100BestGogoSongs"",
             ""name"":""#100BestGogoSongs"",
             ""promoted_content"":null,
@@ -314,6 +321,7 @@ namespace LinqToTwitterPcl.Tests.TrendTests
             ""events"":null
          },
          {
+            ""tweet_volume"": 3200,
             ""query"":""%22Kyle%20Chandler%22"",
             ""name"":""Kyle Chandler"",
             ""promoted_content"":null,
@@ -321,6 +329,7 @@ namespace LinqToTwitterPcl.Tests.TrendTests
             ""events"":null
          },
          {
+            ""tweet_volume"": 7700,
             ""query"":""%22Tony%20Gonzalez%22"",
             ""name"":""Tony Gonzalez"",
             ""promoted_content"":null,
@@ -328,6 +337,7 @@ namespace LinqToTwitterPcl.Tests.TrendTests
             ""events"":null
          },
          {
+            ""tweet_volume"": 3700,
             ""query"":""%22Drew%20Barrymore%22"",
             ""name"":""Drew Barrymore"",
             ""promoted_content"":null,
@@ -335,6 +345,7 @@ namespace LinqToTwitterPcl.Tests.TrendTests
             ""events"":null
          },
          {
+            ""tweet_volume"": 2200,
             ""query"":""%22Elisabeth%20Moss%22"",
             ""name"":""Elisabeth Moss"",
             ""promoted_content"":null,

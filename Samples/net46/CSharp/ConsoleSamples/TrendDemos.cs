@@ -56,7 +56,7 @@ namespace Linq2TwitterDemos_Console
 
         static async Task GetTrendsForPlaceAsync(TwitterContext twitterCtx)
         {
-            var trends =
+            System.Collections.Generic.List<Trend> trends =
                 await
                 (from trend in twitterCtx.Trends
                  where trend.Type == TrendType.Place &&
@@ -74,14 +74,14 @@ namespace Linq2TwitterDemos_Console
 
                 trends.ForEach(trnd =>
                     Console.WriteLine(
-                        "Name: {0}, Date: {1}, Query: {2}\nSearchUrl: {3}",
-                        trnd.Name, trnd.CreatedAt, trnd.Query, trnd.SearchUrl)); 
+                        "Tweet Volume: {0}, Name: {1}, Date: {2}, Query: {3}\nSearchUrl: {4}",
+                        trnd.TweetVolume, trnd.Name, trnd.CreatedAt, trnd.Query, trnd.SearchUrl)); 
             }
         }
 
         static async Task GetAvailableTrendLocationsAsync(TwitterContext twitterCtx)
         {
-            var trendsResponse =
+            Trend trendsResponse =
                 await
                 (from trend in twitterCtx.Trends
                  where trend.Type == TrendType.Available
@@ -95,7 +95,7 @@ namespace Linq2TwitterDemos_Console
 
         static async Task GetClosestTrendsAsync(TwitterContext twitterCtx)
         {
-            var trend =
+            Trend trend =
                 await
                 (from trnd in twitterCtx.Trends
                  where trnd.Type == TrendType.Closest &&

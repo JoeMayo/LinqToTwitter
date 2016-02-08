@@ -104,7 +104,7 @@ namespace LinqToTwitter
                 throw new ArgumentException("WoeID is a required parameter.", WoeIDParam);
 
             var req = new Request(BaseUrl + "trends/place.json");
-            var urlParams = req.RequestParameters;
+            IList<QueryParameter> urlParams = req.RequestParameters;
 
             WoeID = int.Parse(parameters[WoeIDParam]);
             urlParams.Add(new QueryParameter("id", parameters[WoeIDParam]));
@@ -133,7 +133,7 @@ namespace LinqToTwitter
                 throw new ArgumentException("If you pass either Latitude or Longitude then you must pass both. Otherwise, don't pass either.", "Latitude/Longitude");
 
             var req = new Request(BaseUrl + "trends/closest.json");
-            var urlParams = req.RequestParameters;
+            IList<QueryParameter> urlParams = req.RequestParameters;
 
             if (parameters.ContainsKey("Latitude"))
             {
@@ -195,9 +195,9 @@ namespace LinqToTwitter
 
         IEnumerable<Trend> HandlePlaceResponse(string responseJson)
         {
-            var responses = JsonMapper.ToObject(responseJson);
+            JsonData responses = JsonMapper.ToObject(responseJson);
 
-            var flat =
+            IEnumerable<IEnumerable<Trend>> flat =
                 from JsonData response in responses
                 let asOf = response.GetValue<string>("as_of").GetDate(DateTime.UtcNow)
                 let createdAt = response.GetValue<string>("created_at").GetDate(DateTime.UtcNow)
@@ -220,7 +220,8 @@ namespace LinqToTwitter
                           SearchUrl = trend.GetValue<string>("url"),
                           Events = trend.GetValue<string>("events"),
                           PromotedContent = trend.GetValue<string>("promoted_content"),
-                          Locations = locations
+                          Locations = locations,
+                          TweetVolume = trend.GetValue<int>("tweet_volume")
                       })
                 select trends;
 
@@ -229,8 +230,8 @@ namespace LinqToTwitter
 
         IEnumerable<Trend> HandleAvailableOrClosestResponse(string responseJson)
         {
-            var trends = JsonMapper.ToObject(responseJson);
-            var locations =
+            JsonData trends = JsonMapper.ToObject(responseJson);
+            List<Location> locations =
                 (from JsonData loc in trends
                  select new Location(loc))
                 .ToList();

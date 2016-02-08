@@ -74,5 +74,10 @@ namespace LinqToTwitter
         /// Return value for Avalable query listing locations of trending topics
         /// </summary>
         public List<Location> Locations { get; set; }
+
+        /// <summary>
+        /// Number of tweets in a trend
+        /// </summary>
+        public int TweetVolume { get; set; }
     }
 }
