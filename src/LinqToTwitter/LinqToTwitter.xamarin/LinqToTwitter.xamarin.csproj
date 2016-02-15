@@ -76,6 +76,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="LinqToTwitter.snk" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="..\LinqToTwitter.Shared\LinqToTwitter.Shared.projitems" Label="Shared" />

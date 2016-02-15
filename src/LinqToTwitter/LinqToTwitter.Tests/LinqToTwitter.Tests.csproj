@@ -122,7 +122,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LinqToTwitter.net\LinqToTwitter.net.csproj">
-      <Project>{6cbf35e2-b50d-46ce-b63c-49c844b5faed}</Project>
+      <Project>{554f8a8a-9cc0-40c9-b7ca-f3c3cf5190b2}</Project>
       <Name>LinqToTwitter.net</Name>
     </ProjectReference>
   </ItemGroup>
