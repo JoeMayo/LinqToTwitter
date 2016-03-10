@@ -7,6 +7,8 @@ namespace LinqToTwitter
 {
     public class UniversalAuthorizer : AuthorizerBase, IAuthorizer
     {
+        const string CallbackPlaceholderRequiredByTwitterOauth = "http://localhost.com";
+
         public async Task AuthorizeAsync()
         {
             if (CredentialStore == null)
@@ -19,7 +21,9 @@ namespace LinqToTwitter
             if (string.IsNullOrWhiteSpace(CredentialStore.ConsumerKey) || string.IsNullOrWhiteSpace(CredentialStore.ConsumerSecret))
                 throw new ArgumentException("You must populate CredentialStore with ConsumerKey and ConsumerSecret tokens before calling AuthorizeAsync.", "CredentialStore");
 
-            await GetRequestTokenAsync(Callback);
+            string authCallback = 
+                string.IsNullOrWhiteSpace(Callback) ? CallbackPlaceholderRequiredByTwitterOauth : Callback;
+            await GetRequestTokenAsync(authCallback);
 
             string authUrl = PrepareAuthorizeUrl(ForceLogin);
 
@@ -27,7 +31,7 @@ namespace LinqToTwitter
                 await WebAuthenticationBroker.AuthenticateAsync(
                     WebAuthenticationOptions.None,
                     new Uri(authUrl),
-                    new Uri(Callback));
+                    new Uri(authCallback));
 
             if (webAuthenticationResult.ResponseStatus == WebAuthenticationStatus.Success)
             {

@@ -26,8 +26,7 @@ namespace UwpSamples
                 {
                     ConsumerKey = "",
                     ConsumerSecret = ""
-                },
-                Callback = "http://github.com/JoeMayo/LinqToTwitter"
+                }
             };
 
             await authorizer.AuthorizeAsync();

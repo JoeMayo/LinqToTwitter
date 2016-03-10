@@ -354,7 +354,6 @@ namespace Linq2TwitterDemos_Console
 
         static async Task UploadVideoAsync(TwitterContext twitterCtx)
         {
-            var additionalOwners = new List<ulong> { 3265644348, 15411837 };
             string status =
                 "Testing video upload tweet #Linq2Twitter £ " +
                 DateTime.Now.ToString(CultureInfo.InvariantCulture);
