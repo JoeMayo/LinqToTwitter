@@ -60,7 +60,8 @@ namespace Linq2TwitterDemos_Console
                 await
                 (from search in twitterCtx.Search
                  where search.Type == SearchType.Search &&
-                       search.Query == searchTerm
+                       search.Query == searchTerm &&
+                       search.IncludeEntities == true
                  select search)
                 .SingleOrDefaultAsync();
 

@@ -415,11 +415,13 @@ namespace Linq2TwitterDemos_Console
 
         static async Task LookupTweetsAsyc(TwitterContext twitterCtx)
         {
+            string tweetIds = "460788892723978241,462758132448362496,460060836967768064";
+
             List<Status> tweets =
                 await
                 (from tweet in twitterCtx.Status
                  where tweet.Type == StatusType.Lookup &&
-                       tweet.TweetIDs == "460788892723978241,462758132448362496,460060836967768064"
+                       tweet.TweetIDs == tweetIds
                  select tweet)
                 .ToListAsync();
 
