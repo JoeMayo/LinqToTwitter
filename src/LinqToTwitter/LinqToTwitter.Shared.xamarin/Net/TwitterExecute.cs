@@ -270,24 +270,31 @@ namespace LinqToTwitter
         /// <param name="fileName">Image file name.</param>
         /// <param name="contentType">Type of image: must be one of jpg, gif, or png.</param>
         /// <param name="reqProc">Request processor for handling results.</param>
+        /// <param name="mediaCategory">
+        /// Media category - possible values are tweet_image, tweet_gif, tweet_video, and amplify_video. 
+        /// See this post on the Twitter forums: https://twittercommunity.com/t/media-category-values/64781/6
+        /// </param>
+        /// <param name="cancelToken">Cancellation token</param>
         /// <returns>JSON response From Twitter.</returns>
-        public async Task<string> PostMediaAsync(string url, IDictionary<string, string> postData, byte[] data, string name, string fileName, string contentType, CancellationToken cancelToken)
+        public async Task<string> PostMediaAsync(string url, IDictionary<string, string> postData, byte[] data, string name, string fileName, string contentType, string mediaCategory, CancellationToken cancelToken)
         {
             WriteLog(url, "PostMediaAsync");
 
-            ulong mediaID = await InitAsync(url, data, postData, name, fileName, contentType, cancelToken);
+            ulong mediaID = await InitAsync(url, data, postData, name, fileName, contentType, mediaCategory, cancelToken);
 
             await AppendChunksAsync(url, mediaID, data, name, fileName, contentType, cancelToken);
 
             return await FinalizeAsync(url, mediaID, cancelToken);
         }
 
-        async Task<ulong> InitAsync(string url, byte[] data, IDictionary<string, string> postData, string name, string fileName, string contentType, CancellationToken cancelToken)
+        async Task<ulong> InitAsync(string url, byte[] data, IDictionary<string, string> postData, string name, string fileName, string contentType, string mediaCategory, CancellationToken cancelToken)
         {
             var multiPartContent = new MultipartFormDataContent();
 
             multiPartContent.Add(new StringContent("INIT"), "command");
             multiPartContent.Add(new StringContent(contentType), "media_type");
+            if (!string.IsNullOrWhiteSpace(mediaCategory))
+                multiPartContent.Add(new StringContent(mediaCategory), "media_category");
             multiPartContent.Add(new StringContent(data.Length.ToString()), "total_bytes");
 
             foreach (var pair in postData)

@@ -47,6 +47,7 @@ namespace LinqToTwitterPcl.Tests.AccountTests
                     It.IsAny<string>(),
                     It.IsAny<string>(),
                     It.IsAny<string>(),
+                    It.IsAny<string>(),
                     It.IsAny<CancellationToken>()))
                     .Returns(tcsResponse.Task);
             var ctx = new TwitterContext(execMock.Object);
@@ -58,7 +59,7 @@ namespace LinqToTwitterPcl.Tests.AccountTests
         {
             const string ExpectedName = "Twitter API";
             const string Name = "Twitter API";
-            const string Url = "http://www.csharp-station.com";
+            const string Url = "http://www.mayosoftware.com";
             const string Location = "San Francisco, CA";
             const string Description = "The Real Twitter API.";
             const bool SkipStatus = true;
@@ -187,6 +188,7 @@ namespace LinqToTwitterPcl.Tests.AccountTests
                     It.IsAny<string>(),
                     It.IsAny<string>(),
                     It.IsAny<string>(),
+                    It.IsAny<string>(),
                     It.IsAny<CancellationToken>()),
                 Times.Once());
             Assert.AreEqual(ExpectedName, actual.Name);
@@ -312,6 +314,7 @@ namespace LinqToTwitterPcl.Tests.AccountTests
                     "https://api.twitter.com/1.1/account/update_profile_background_image.json",
                     It.IsAny<Dictionary<string, string>>(),
                     It.IsAny<byte[]>(),
+                    It.IsAny<string>(),
                     It.IsAny<string>(),
                     It.IsAny<string>(),
                     It.IsAny<string>(),
@@ -464,6 +467,7 @@ namespace LinqToTwitterPcl.Tests.AccountTests
                     "https://api.twitter.com/1.1/account/update_profile_banner.json",
                     It.IsAny<Dictionary<string, string>>(),
                     It.IsAny<byte[]>(),
+                    It.IsAny<string>(),
                     It.IsAny<string>(),
                     It.IsAny<string>(),
                     It.IsAny<string>(),

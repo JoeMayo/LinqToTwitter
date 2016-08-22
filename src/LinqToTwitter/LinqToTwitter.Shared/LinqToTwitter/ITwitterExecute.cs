@@ -62,8 +62,13 @@ namespace LinqToTwitter
         /// <param name="name">Name of parameter to pass to Twitter.</param>
         /// <param name="fileName">name to pass to Twitter for the file</param>
         /// <param name="contentType">Type of image: must be one of jpg, gif, or png</param>
+        /// <param name="mediaCategory">
+        /// Media category - possible values are tweet_image, tweet_gif, tweet_video, and amplify_video. 
+        /// See this post on the Twitter forums: https://twittercommunity.com/t/media-category-values/64781/6
+        /// </param>
+        /// <param name="cancelToken">Cancellation token</param>
         /// <returns>JSON results From Twitter</returns>
-        Task<string> PostMediaAsync(string url, IDictionary<string, string> postData, byte[] image, string name, string fileName, string contentType, CancellationToken cancelToken);
+        Task<string> PostMediaAsync(string url, IDictionary<string, string> postData, byte[] image, string name, string fileName, string contentType, string mediaCategory, CancellationToken cancelToken);
 
         /// <summary>
         /// makes HTTP call to Twitter API

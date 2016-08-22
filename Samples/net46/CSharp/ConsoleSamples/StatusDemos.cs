@@ -330,13 +330,14 @@ namespace Linq2TwitterDemos_Console
             string status = 
                 "Testing multi-image tweet #Linq2Twitter £ " + 
                 DateTime.Now.ToString(CultureInfo.InvariantCulture);
+            string mediaCategory = "tweet_image";
 
             var imageUploadTasks = 
                 new List<Task<Media>> 
                 {
-                    twitterCtx.UploadMediaAsync(File.ReadAllBytes(@"..\..\images\200xColor_2.png"), "image/png", additionalOwners),
-                    twitterCtx.UploadMediaAsync(File.ReadAllBytes(@"..\..\images\WP_000003.jpg"), "image/jpg"),
-                    twitterCtx.UploadMediaAsync(File.ReadAllBytes(@"..\..\images\13903749474_86bd1290de_o.jpg"), "image/jpg"),
+                    twitterCtx.UploadMediaAsync(File.ReadAllBytes(@"..\..\images\200xColor_2.png"), "image/png", additionalOwners, mediaCategory),
+                    twitterCtx.UploadMediaAsync(File.ReadAllBytes(@"..\..\images\WP_000003.jpg"), "image/jpg", mediaCategory),
+                    twitterCtx.UploadMediaAsync(File.ReadAllBytes(@"..\..\images\13903749474_86bd1290de_o.jpg"), "image/jpg", mediaCategory),
                 };
 
             await Task.WhenAll(imageUploadTasks);
@@ -358,7 +359,8 @@ namespace Linq2TwitterDemos_Console
                 "Testing video upload tweet #Linq2Twitter £ " +
                 DateTime.Now.ToString(CultureInfo.InvariantCulture);
 
-            Media media = await twitterCtx.UploadMediaAsync(File.ReadAllBytes(@"..\..\images\SampleVideo.mp4"), "video/mp4");
+            Media media = await twitterCtx.UploadMediaAsync(File.ReadAllBytes(@"..\..\images\SampleVideo.mp4"), "video/mp4", "tweet_video");
+            //Media media = await twitterCtx.UploadMediaAsync(File.ReadAllBytes(@"..\..\images\UnitConverterScreencast.mp4"), "video/mp4", "tweet_video");
 
             Status tweet = await twitterCtx.TweetAsync(status, new ulong[] { media.MediaID });
 

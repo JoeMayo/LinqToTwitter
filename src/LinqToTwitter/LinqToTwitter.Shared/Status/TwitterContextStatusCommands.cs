@@ -17,11 +17,15 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="media">Media to upload</param>
         /// <param name="mediaType">Type of media. e.g. image/jpg, image/png, or video/mp4.</param>
+        /// <param name="mediaCategory">
+        /// Media category - possible values are tweet_image, tweet_gif, tweet_video, and amplify_video. 
+        /// See this post on the Twitter forums: https://twittercommunity.com/t/media-category-values/64781/6
+        /// </param>
         /// <param name="cancelToken">Allows you to cancel async operation</param>
         /// <returns>Status containing new reply</returns>
-        public virtual async Task<Media> UploadMediaAsync(byte[] media, string mediaType, CancellationToken cancelToken = default(CancellationToken))
+        public virtual async Task<Media> UploadMediaAsync(byte[] media, string mediaType, string mediaCategory, CancellationToken cancelToken = default(CancellationToken))
         {
-            return await UploadMediaAsync(media, mediaType, null, cancelToken);
+            return await UploadMediaAsync(media, mediaType, null, mediaCategory, cancelToken);
         }
 
         /// <summary>
@@ -30,9 +34,13 @@ namespace LinqToTwitter
         /// <param name="media">Media to upload</param>
         /// <param name="mediaType">Type of media. e.g. image/jpg, image/png, or video/mp4.</param>
         /// <param name="additionalOwners">User IDs of accounts that can used the returned media IDs</param>
+        /// <param name="mediaCategory">
+        /// Media category - possible values are tweet_image, tweet_gif, tweet_video, and amplify_video. 
+        /// See this post on the Twitter forums: https://twittercommunity.com/t/media-category-values/64781/6
+        /// </param>
         /// <param name="cancelToken">Allows you to cancel async operation</param>
         /// <returns>Status containing new reply</returns>
-        public virtual async Task<Media> UploadMediaAsync(byte[] media, string mediaType, IEnumerable<ulong> additionalOwners, CancellationToken cancelToken = default(CancellationToken))
+        public virtual async Task<Media> UploadMediaAsync(byte[] media, string mediaType, IEnumerable<ulong> additionalOwners, string mediaCategory, CancellationToken cancelToken = default(CancellationToken))
         {
             if (media == null || media.Length == 0)
                 throw new ArgumentNullException("image", "You must provide a byte[] of image data.");
@@ -56,6 +64,7 @@ namespace LinqToTwitter
                     name,
                     randomUnusedFileName,
                     mediaType,
+                    mediaCategory,
                     cancelToken)
                    .ConfigureAwait(false);
 

@@ -119,7 +119,7 @@ namespace LinqToTwitter
         /// <returns>XML Respose from Twitter</returns>
         public async Task<string> QueryTwitterAsync<T>(Request request, IRequestProcessor<T> reqProc)
         {
-            WriteLog(request.FullUrl, "QueryTwitterAsync");
+            WriteLog(request.FullUrl, nameof(QueryTwitterAsync));
 
             var req = new HttpRequestMessage(HttpMethod.Get, new Uri(request.FullUrl));
 
@@ -161,7 +161,7 @@ namespace LinqToTwitter
         /// </returns>
         public async Task<string> QueryTwitterStreamAsync(Request request)
         {
-            WriteLog(request.FullUrl, "QueryTwitterStreamAsync");
+            WriteLog(request.FullUrl, nameof(QueryTwitterStreamAsync));
 
             var handler = new HttpClientHandler();
             if (Authorizer.Proxy != null && handler.SupportsProxy)
@@ -283,23 +283,25 @@ namespace LinqToTwitter
         /// <param name="contentType">Type of image: must be one of jpg, gif, or png.</param>
         /// <param name="reqProc">Request processor for handling results.</param>
         /// <returns>JSON response From Twitter.</returns>
-        public async Task<string> PostMediaAsync(string url, IDictionary<string, string> postData, byte[] data, string name, string fileName, string contentType, CancellationToken cancelToken)
+        public async Task<string> PostMediaAsync(string url, IDictionary<string, string> postData, byte[] data, string name, string fileName, string contentType, string mediaCategory, CancellationToken cancelToken)
         {
-            WriteLog(url, "PostMediaAsync");
+            WriteLog(url, nameof(PostMediaAsync));
 
-            ulong mediaID = await InitAsync(url, data, postData, name, fileName, contentType, cancelToken);
+            ulong mediaID = await InitAsync(url, data, postData, name, fileName, contentType, mediaCategory, cancelToken);
 
             await AppendChunksAsync(url, mediaID, data, name, fileName, contentType, cancelToken);
 
             return await FinalizeAsync(url, mediaID, cancelToken);
         }
 
-        async Task<ulong> InitAsync(string url, byte[] data, IDictionary<string, string> postData, string name, string fileName, string contentType, CancellationToken cancelToken)
+        async Task<ulong> InitAsync(string url, byte[] data, IDictionary<string, string> postData, string name, string fileName, string contentType, string mediaCategory, CancellationToken cancelToken)
         {
             var multiPartContent = new MultipartFormDataContent();
 
             multiPartContent.Add(new StringContent("INIT"), "command");
             multiPartContent.Add(new StringContent(contentType), "media_type");
+            if (!string.IsNullOrWhiteSpace(mediaCategory))
+                multiPartContent.Add(new StringContent(mediaCategory), "media_category");
             multiPartContent.Add(new StringContent(data.Length.ToString()), "total_bytes");
 
             foreach (var pair in postData)
@@ -387,7 +389,7 @@ namespace LinqToTwitter
         /// <returns>Json Response from Twitter - empty string if async</returns>
         public async Task<string> PostToTwitterAsync<T>(string url, IDictionary<string, string> postData, CancellationToken cancelToken)
         {
-            WriteLog(url, "PostToTwitterAsync");
+            WriteLog(url, nameof(PostToTwitterAsync));
 
             var cleanPostData = new Dictionary<string, string>();
 

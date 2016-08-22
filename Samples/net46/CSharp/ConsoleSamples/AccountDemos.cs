@@ -174,6 +174,7 @@ namespace Linq2TwitterDemos_Console
         {
             byte[] imageBytes = File.ReadAllBytes(@"..\..\Images\200xColor_2.png");
             string mediaType = "image/png";
+            string mediaCategory = "tweet_image";
             //// one way is to pass the byte[]
             //var user1 =
             //    await twitterCtx.UpdateAccountBackgroundImageAsync(
@@ -185,7 +186,7 @@ namespace Linq2TwitterDemos_Console
             //        skipStatus: true);
 
             // another way is to upload the media and pass a media ID
-            Media media = await twitterCtx.UploadMediaAsync(imageBytes, mediaType);
+            Media media = await twitterCtx.UploadMediaAsync(imageBytes, mediaType, mediaCategory);
 
             var user2 =
                 await twitterCtx.UpdateAccountBackgroundImageAsync(
@@ -207,7 +208,7 @@ namespace Linq2TwitterDemos_Console
         {
             var user = await twitterCtx.UpdateAccountProfileAsync(
                 "Joe Mayo",
-                "http://linqtotwitter.codeplex.com",
+                "https://github.com/JoeMayo/LinqToTwitter",
                 "Las Vegas, NV",
                 "Testing the Account Profile Update with LINQ to Twitter.",
                 true,

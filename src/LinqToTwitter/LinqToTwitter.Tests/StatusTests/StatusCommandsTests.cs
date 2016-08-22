@@ -48,6 +48,7 @@ namespace LinqToTwitterPcl.Tests.StatusTests
                     It.IsAny<string>(),
                     It.IsAny<string>(),
                     It.IsAny<string>(),
+                    It.IsAny<string>(),
                     It.IsAny<CancellationToken>()))
                 .Returns(tcsMedia.Task);
             var ctx = new TwitterContext(execMock.Object);
@@ -128,6 +129,7 @@ namespace LinqToTwitterPcl.Tests.StatusTests
                     It.IsAny<string>(),
                     It.IsAny<string>(),
                     It.IsAny<string>(),
+                    It.IsAny<string>(),
                     It.IsAny<CancellationToken>()))
                 .Returns(tcsMedia.Task);
 
@@ -179,9 +181,10 @@ namespace LinqToTwitterPcl.Tests.StatusTests
             string mediaType = "image/jpg";
             var image = new byte[] { 1, 2, 3 };
             var additionalOwners = new List<ulong> { 1, 2 };
+            string mediaCategory = "tweet_image";
             var ctx = await InitializeTwitterContext();
 
-            Media actual = await ctx.UploadMediaAsync(image, mediaType, additionalOwners);
+            Media actual = await ctx.UploadMediaAsync(image, mediaType, additionalOwners, mediaCategory);
 
             Assert.AreEqual(ExpectedMediaID, actual.MediaID);
         }

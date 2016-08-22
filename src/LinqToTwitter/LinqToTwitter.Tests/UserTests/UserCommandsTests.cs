@@ -41,6 +41,7 @@ namespace LinqToTwitterPcl.Tests.AccountTests
                     It.IsAny<string>(),
                     It.IsAny<string>(),
                     It.IsAny<string>(),
+                    It.IsAny<string>(),
                     It.IsAny<CancellationToken>()))
                     .Returns(tcsResponse.Task);
             var ctx = new TwitterContext(execMock.Object);
