@@ -321,7 +321,7 @@ namespace LinqToTwitter
 
         async Task AppendChunksAsync(string url, ulong mediaID, byte[] data, string name, string fileName, string contentType, CancellationToken cancelToken)
         {
-            const int ChunkSize = 5000000;
+            const int ChunkSize = 500000;
 
             for (
                 int segmentIndex = 0, skip = 0;

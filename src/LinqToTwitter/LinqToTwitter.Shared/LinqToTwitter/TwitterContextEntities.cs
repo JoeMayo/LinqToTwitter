@@ -94,6 +94,17 @@ namespace LinqToTwitter
         }
 
         /// <summary>
+        /// Enables access to media commands, like STATUS
+        /// </summary>
+        public TwitterQueryable<Media> Media
+        {
+            get
+            {
+                return new TwitterQueryable<Media>(this);
+            }
+        }
+
+        /// <summary>
         /// Enables access to muted users
         /// </summary>
         public TwitterQueryable<Mute> Mute

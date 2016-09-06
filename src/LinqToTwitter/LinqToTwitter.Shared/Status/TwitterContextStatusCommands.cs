@@ -13,66 +13,6 @@ namespace LinqToTwitter
         public const decimal NoCoordinate = Decimal.MaxValue;
 
         /// <summary>
-        /// Uploads a media (e.g. media) to be attached to a subsequent tweet.
-        /// </summary>
-        /// <param name="media">Media to upload</param>
-        /// <param name="mediaType">Type of media. e.g. image/jpg, image/png, or video/mp4.</param>
-        /// <param name="mediaCategory">
-        /// Media category - possible values are tweet_image, tweet_gif, tweet_video, and amplify_video. 
-        /// See this post on the Twitter forums: https://twittercommunity.com/t/media-category-values/64781/6
-        /// </param>
-        /// <param name="cancelToken">Allows you to cancel async operation</param>
-        /// <returns>Status containing new reply</returns>
-        public virtual async Task<Media> UploadMediaAsync(byte[] media, string mediaType, string mediaCategory, CancellationToken cancelToken = default(CancellationToken))
-        {
-            return await UploadMediaAsync(media, mediaType, null, mediaCategory, cancelToken);
-        }
-
-        /// <summary>
-        /// Uploads a media (e.g. media) to be attached to a subsequent tweet.
-        /// </summary>
-        /// <param name="media">Media to upload</param>
-        /// <param name="mediaType">Type of media. e.g. image/jpg, image/png, or video/mp4.</param>
-        /// <param name="additionalOwners">User IDs of accounts that can used the returned media IDs</param>
-        /// <param name="mediaCategory">
-        /// Media category - possible values are tweet_image, tweet_gif, tweet_video, and amplify_video. 
-        /// See this post on the Twitter forums: https://twittercommunity.com/t/media-category-values/64781/6
-        /// </param>
-        /// <param name="cancelToken">Allows you to cancel async operation</param>
-        /// <returns>Status containing new reply</returns>
-        public virtual async Task<Media> UploadMediaAsync(byte[] media, string mediaType, IEnumerable<ulong> additionalOwners, string mediaCategory, CancellationToken cancelToken = default(CancellationToken))
-        {
-            if (media == null || media.Length == 0)
-                throw new ArgumentNullException("image", "You must provide a byte[] of image data.");
-
-            string updateUrl = UploadUrl + "media/upload.json";
-            string name = "media";
-            string randomUnusedFileName = new Random().Next(100, 999).ToString();
-
-            var parameters = new Dictionary<string, string>();
-
-            if (additionalOwners != null && additionalOwners.Any())
-                parameters.Add("additional_owners", string.Join(",", additionalOwners));
-
-            var reqProc = new StatusRequestProcessor<Status>();
-
-            RawResult =
-                await TwitterExecutor.PostMediaAsync(
-                    updateUrl,
-                    new Dictionary<string, string>(),
-                    media,
-                    name,
-                    randomUnusedFileName,
-                    mediaType,
-                    mediaCategory,
-                    cancelToken)
-                   .ConfigureAwait(false);
-
-            Status status = reqProc.ProcessActionResult(RawResult, StatusAction.MediaUpload);
-            return status.Media;
-        }
-
-        /// <summary>
         /// Replies to a tweet.
         /// </summary>
         /// <remarks>
@@ -325,7 +265,7 @@ namespace LinqToTwitter
                         {"in_reply_to_status_id", tweetID == NoReply ? null : tweetID.ToString()},
                         {"lat", latitude == NoCoordinate ? null : latitude.ToString(Culture.US)},
                         {"long", longitude == NoCoordinate ? null : longitude.ToString(Culture.US)},
-                        {"place_id", placeID},
+                        {"place_id", placeID == NoInputParam ? null : placeID },
                         {"display_coordinates", displayCoordinates ? displayCoordinates.ToString().ToLower() : null},
                         {"trim_user", trimUser ? trimUser.ToString().ToLower() : null },
                         {"media_ids", mediaIds == null || !mediaIds.Any() ? null : string.Join(",", mediaIds) }

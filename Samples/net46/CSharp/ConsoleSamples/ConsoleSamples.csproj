@@ -74,6 +74,7 @@
     <Compile Include="RawDemos.cs" />
     <Compile Include="SavedSearchDemos.cs" />
     <Compile Include="SearchDemos.cs" />
+    <Compile Include="MediaDemos.cs" />
     <Compile Include="StatusDemos.cs" />
     <Compile Include="StreamDemos.cs" />
     <Compile Include="TrendDemos.cs" />
@@ -81,15 +82,18 @@
     <Compile Include="VineDemos.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Images\13903749474_86bd1290de_o.jpg" />
     <Content Include="Images\200xColor_2.png" />
-    <Content Include="Images\UnitConverterScreencast.mp4" />
+    <Content Include="Images\LinqToTwitterLargeTest.mp4" />
+    <Content Include="Images\LinqToTwitterErrorTest.mp4" />
     <Content Include="Images\WP_000003.jpg" />
-    <Content Include="Images\SampleVideo.mp4" />
+    <Content Include="Images\LinqToTwitterNormalTest.mp4" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\src\LinqToTwitter\LinqToTwitter.net\LinqToTwitter.net.csproj">

@@ -197,7 +197,6 @@ namespace LinqToTwitter
         }
 
 #if !WINDOWS_UWP
-        // TODO: research proxy implementations
         /// <summary>
         /// Allows setting the IWebProxy for all HTTP requests.
         /// </summary>
@@ -231,13 +230,13 @@ namespace LinqToTwitter
         /// <returns>int value from response</returns>
         private int GetResponseHeaderAsInt(string responseHeader)
         {
-            var headerVal = -1;
-            var headers = ResponseHeaders;
+            int headerVal = -1;
+            IDictionary<string, string> headers = ResponseHeaders;
 
             if (headers != null &&
                 headers.ContainsKey(responseHeader))
             {
-                var headerValAsString = headers[responseHeader];
+                string headerValAsString = headers[responseHeader];
 
                 int.TryParse(headerValAsString, out headerVal);
             }
@@ -254,12 +253,12 @@ namespace LinqToTwitter
         private DateTime? GetResponseHeaderAsDateTime(string responseHeader)
         {
             DateTime? headerVal = null;
-            var headers = ResponseHeaders;
+            IDictionary<string, string> headers = ResponseHeaders;
 
             if (headers != null &&
                 headers.ContainsKey(responseHeader))
             {
-                var headerValAsString = headers[responseHeader];
+                string headerValAsString = headers[responseHeader];
                 DateTime value;
 
                 if (DateTime.TryParse(headerValAsString,
@@ -413,13 +412,13 @@ namespace LinqToTwitter
             where T: class
         {
             // request processor is specific to request type (i.e. Status, User, etc.)
-            var reqProc = CreateRequestProcessor<T>(expression);
+            IRequestProcessor<T> reqProc = CreateRequestProcessor<T>(expression);
 
             // get input parameters that go on the REST query URL
-            var parameters = GetRequestParameters(expression, reqProc);
+            Dictionary<string, string> parameters = GetRequestParameters(expression, reqProc);
 
             // construct REST endpoint, based on input parameters
-            var request = reqProc.BuildUrl(parameters);
+            Request request = reqProc.BuildUrl(parameters);
 
             string results;
 
@@ -437,10 +436,10 @@ namespace LinqToTwitter
                 RawResult = results;
 
             // Transform results into objects
-            var queryableList = reqProc.ProcessResults(results);
+            List<T> queryableList = reqProc.ProcessResults(results);
 
             // Copy the IEnumerable entities to an IQueryable.
-            var queryableItems = queryableList.AsQueryable();
+            IQueryable<T> queryableItems = queryableList.AsQueryable();
 
             // Copy the expression tree that was passed in, changing only the first
             // argument of the innermost MethodCallExpression.
@@ -461,12 +460,12 @@ namespace LinqToTwitter
         /// <param name="expression">Input query expression tree</param>
         /// <param name="reqProc">Processor specific to this request type</param>
         /// <returns>Name/value pairs of query parameters</returns>
-        private static Dictionary<string, string> GetRequestParameters<T>(Expression expression, IRequestProcessor<T> reqProc)
+        static Dictionary<string, string> GetRequestParameters<T>(Expression expression, IRequestProcessor<T> reqProc)
         {
             var parameters = new Dictionary<string, string>();
 
             // GHK FIX: Handle all wheres
-            var whereExpressions = new WhereClauseFinder().GetAllWheres(expression);
+            MethodCallExpression[] whereExpressions = new WhereClauseFinder().GetAllWheres(expression);
             foreach (var whereExpression in whereExpressions)
             {
                 var lambdaExpression = (LambdaExpression)((UnaryExpression)(whereExpression.Arguments[1])).Operand;
@@ -474,7 +473,7 @@ namespace LinqToTwitter
                 // translate variable references in expression into constants
                 lambdaExpression = (LambdaExpression)Evaluator.PartialEval(lambdaExpression);
 
-                var newParameters = reqProc.GetParameters(lambdaExpression);
+                Dictionary<string, string> newParameters = reqProc.GetParameters(lambdaExpression);
                 foreach (var newParameter in newParameters)
                 {
                     if (!parameters.ContainsKey(newParameter.Key))
@@ -520,57 +519,63 @@ namespace LinqToTwitter
         protected internal IRequestProcessor<T> CreateRequestProcessor<T>(string requestType)
             where T : class
         {
-            var baseUrl = BaseUrl;
+            string baseUrl = BaseUrl;
             IRequestProcessor<T> req;
 
             switch (requestType)
             {
-                case "Account":
+                case nameof(Account):
                     req = new AccountRequestProcessor<T>();
                     break;
-                case "Blocks":
+                case nameof(Blocks):
                     req = new BlocksRequestProcessor<T>();
                     break;
-                case "ControlStream":
+                case nameof(ControlStream):
                     req = new ControlStreamRequestProcessor<T>
                         {
                             SiteStreamUrl = SiteStreamUrl
                         };
                     break;
-                case "DirectMessage":
+                case nameof(DirectMessage):
                     req = new DirectMessageRequestProcessor<T>();
                     break;
-                case "Favorites":
+                case nameof(Favorites):
                     req = new FavoritesRequestProcessor<T>();
                     break;
-                case "Friendship":
+                case nameof(Friendship):
                     req = new FriendshipRequestProcessor<T>();
                     break;
-                case "Geo":
+                case nameof(Geo):
                     req = new GeoRequestProcessor<T>();
                     break;
-                case "Help":
+                case nameof(Help):
                     req = new HelpRequestProcessor<T>();
                     break;
-                case "List":
+                case nameof(List):
                     req = new ListRequestProcessor<T>();
                     break;
-                case "Mute":
+                case nameof(Media):
+                    req = new MediaRequestProcessor<T>
+                    {
+                        UploadUrl = UploadUrl
+                    };
+                    break;
+                case nameof(Mute):
                     req = new MuteRequestProcessor<T>();
                     break;
-                case "Raw":
+                case nameof(Raw):
                     req = new RawRequestProcessor<T>();
                     break;
-                case "SavedSearch":
+                case nameof(SavedSearch):
                     req = new SavedSearchRequestProcessor<T>();
                     break;
-                case "Search":
+                case nameof(Search):
                     req = new SearchRequestProcessor<T>();
                     break;
-                case "Status":
+                case nameof(Status):
                     req = new StatusRequestProcessor<T>();
                     break;
-                case "Streaming":
+                case nameof(Streaming):
                     baseUrl = StreamingUrl;
                     req = new StreamingRequestProcessor<T>
                     {
@@ -579,20 +584,20 @@ namespace LinqToTwitter
                         TwitterExecutor = TwitterExecutor
                     };
                     break;
-                case "Trend":
+                case nameof(Trend):
                     req = new TrendRequestProcessor<T>();
                     break;
-                case "User":
+                case nameof(User):
                     req = new UserRequestProcessor<T>();
                     break;
-                case "Vine":
+                case nameof(Vine):
                     req = new VineRequestProcessor<T>
                     {
                         VineUrl = VineUrl
                     };
                     break;
                 default:
-                    throw new ArgumentException("Type, " + requestType + " isn't a supported LINQ to Twitter entity.", "requestType");
+                    throw new ArgumentException($"Type, {requestType} isn't a supported LINQ to Twitter entity.", nameof(requestType));
             }
 
             if (baseUrl != null)

@@ -98,6 +98,13 @@
     <Compile Include="$(MSBuildThisFileDirectory)List\ListRequestProcessor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)List\ListType.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)List\TwitterContextListCommands.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Media\Media.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Media\MediaError.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Media\MediaImage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Media\MediaRequestProcessor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Media\MediaProcessingInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Media\MediaType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Media\TwitterContextMediaCommands.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Mute\Mute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Mute\MuteRequestProcessor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Mute\MuteType.cs" />
@@ -148,9 +155,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Status\EmbeddedStatus.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Status\EmbeddedStatusAlignment.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Status\FilterLevel.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Status\Media.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Status\MediaImage.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Status\MediaType.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Status\Retweet.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Status\Status.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Status\StatusAction.cs" />

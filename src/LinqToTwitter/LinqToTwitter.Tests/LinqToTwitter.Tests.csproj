@@ -77,6 +77,8 @@
     <Compile Include="LinqToTwitterTests\TwitterErrorHandlerTests.cs" />
     <Compile Include="ListTests\ListCommandsTests.cs" />
     <Compile Include="ListTests\ListRequestProcessorTests.cs" />
+    <Compile Include="MediaTests\MediaCommandsTests.cs" />
+    <Compile Include="MediaTests\MediaRequestProcessorTests.cs" />
     <Compile Include="MuteTests\MuteCommandsTests.cs" />
     <Compile Include="MuteTests\MuteRequestProcessorTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

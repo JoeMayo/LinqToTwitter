@@ -263,7 +263,7 @@ namespace LinqToTwitter
         /// <param name="contentType">Type of image: must be one of jpg, gif, or png.</param>
         /// <param name="reqProc">Request processor for handling results.</param>
         /// <param name="mediaCategory">
-        /// Media category - possible values are tweet_image, tweet_gif, tweet_video, and amplify_video. 
+        /// Media category - possible values are tweet_image, tweet_gif, and tweet_video. 
         /// See this post on the Twitter forums: https://twittercommunity.com/t/media-category-values/64781/6
         /// </param>
         /// <param name="cancelToken">Cancellation token</param>
@@ -317,7 +317,7 @@ namespace LinqToTwitter
 
         async Task AppendChunksAsync(string url, ulong mediaID, byte[] data, string name, string fileName, string contentType, CancellationToken cancelToken)
         {
-            const int ChunkSize = 5000000;
+            const int ChunkSize = 500000;
 
             for (
                 int segmentIndex = 0, skip = 0;

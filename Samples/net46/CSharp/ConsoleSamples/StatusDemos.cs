@@ -359,8 +359,8 @@ namespace Linq2TwitterDemos_Console
                 "Testing video upload tweet #Linq2Twitter £ " +
                 DateTime.Now.ToString(CultureInfo.InvariantCulture);
 
-            Media media = await twitterCtx.UploadMediaAsync(File.ReadAllBytes(@"..\..\images\SampleVideo.mp4"), "video/mp4", "tweet_video");
-            //Media media = await twitterCtx.UploadMediaAsync(File.ReadAllBytes(@"..\..\images\UnitConverterScreencast.mp4"), "video/mp4", "tweet_video");
+            //Media media = await twitterCtx.UploadMediaAsync(File.ReadAllBytes(@"..\..\images\SampleVideo.mp4"), "video/mp4", "amplify_video");
+            Media media = await twitterCtx.UploadMediaAsync(File.ReadAllBytes(@"..\..\images\LinqToTwitterDocs.mp4"), "video/mp4", "tweet_video");
 
             Status tweet = await twitterCtx.TweetAsync(status, new ulong[] { media.MediaID });
 
