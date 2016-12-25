@@ -23,7 +23,11 @@ namespace LinqToTwitterPcl.Tests.Common
         /// Initializes a new instance of the <see cref="DebuggerWriter"/> class.
         /// </summary>
         public DebuggerWriter()
+#if NETCORE
+            : this(0, string.Empty)
+#else
             : this(0, Debugger.DefaultCategory)
+#endif
         {
         }
 
@@ -63,7 +67,9 @@ namespace LinqToTwitterPcl.Tests.Common
             {
                 throw new ObjectDisposedException(null);
             }
+#if !NETCORE
             Debugger.Log(level, category, value.ToString());
+#endif
         }
 
         public override void Write(string value)
@@ -74,7 +80,9 @@ namespace LinqToTwitterPcl.Tests.Common
             }
             if (value != null)
             {
+#if !NETCORE
                 Debugger.Log(level, category, value);
+#endif
             }
         }
 
@@ -88,7 +96,9 @@ namespace LinqToTwitterPcl.Tests.Common
             {
                 base.Write(buffer, index, count); // delegate throw exception to base class
             }
+#if !NETCORE
             Debugger.Log(level, category, new string(buffer, index, count));
+#endif
         }
 
         public override Encoding Encoding
