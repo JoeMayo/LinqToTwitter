@@ -1,2 +1,2 @@
-MainPackage=C:\Projects\LinqToTwitter\Samples\uap10.0\CSharp\UwpSamples\bin\ARM\Debug\UwpSamples_1.0.13.0_ARM_Debug.appx
-SymbolPackage=C:\Projects\LinqToTwitter\Samples\uap10.0\CSharp\UwpSamples\AppPackages\UwpSamples_1.0.13.0_Debug_Test\UwpSamples_1.0.13.0_ARM_Debug.appxsym
+MainPackage=C:\Projects\LinqToTwitter\Samples\uap10.0\CSharp\UwpSamples\bin\x86\Debug\arm\UwpSamples\UwpSamples_1.0.13.0_arm_Debug.appx
+SymbolPackage=C:\Projects\LinqToTwitter\Samples\uap10.0\CSharp\UwpSamples\AppPackages\UwpSamples_1.0.13.0_Debug_Test\UwpSamples_1.0.13.0_arm_Debug.appxsym
