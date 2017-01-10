@@ -145,7 +145,7 @@ namespace LinqToTwitterPcl.Tests.SearchTests
                 {
                     { "Type", SearchType.Search.ToString() },
                     { "Query", "LINQ to Twitter"},
-                    { "IncludeEntities", true.ToString(CultureInfo.InvariantCulture) }
+                    { "IncludeEntities", true.ToString() }
                 };
 
             Request req = searchProc.BuildUrl(parameters);

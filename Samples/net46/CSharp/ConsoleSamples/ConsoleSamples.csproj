@@ -97,9 +97,9 @@
     <Content Include="Images\LinqToTwitterNormalTest.mp4" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\src\LinqToTwitter\LinqToTwitter.net\LinqToTwitter.net.csproj">
-      <Project>{554f8a8a-9cc0-40c9-b7ca-f3c3cf5190b2}</Project>
-      <Name>LinqToTwitter.net</Name>
+    <ProjectReference Include="..\..\..\..\src\LinqToTwitter\LinqToTwitter.Core\LinqToTwitter.Core.csproj">
+      <Project>{31360b4d-3e3e-4332-bd3d-d3c38fa42419}</Project>
+      <Name>LinqToTwitter.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

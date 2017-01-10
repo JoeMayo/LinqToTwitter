@@ -10,6 +10,7 @@
 _Resharper.*
 .JustCode/
 project.lock.json
+*.nuget.props
 
 # Ignore NuGet Packages
 *.nupkg
