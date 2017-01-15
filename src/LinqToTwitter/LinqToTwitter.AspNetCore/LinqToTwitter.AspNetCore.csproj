@@ -12,8 +12,6 @@
     <PackageReference Include="NETStandard.Library" Version="1.6.1" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="LinqToTwitter.Core">
-      <HintPath>..\LinqToTwitter.Core\bin\Debug\netstandard1.1\LinqToTwitter.Core.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\LinqToTwitter.Core\LinqToTwitter.Core.csproj" />
   </ItemGroup>
 </Project>

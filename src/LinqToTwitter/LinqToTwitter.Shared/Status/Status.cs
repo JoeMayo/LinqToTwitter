@@ -249,7 +249,7 @@ namespace LinqToTwitter
         public string Source { get; set; }
 
         /// <summary>
-        /// has the tweet been truncated
+        /// Has the tweet been truncated? True means that this is compatibiltiy mode tweet.
         /// </summary>
         public bool Truncated { get; set; }
 

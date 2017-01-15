@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using LinqToTwitter;
 using LinqToTwitterPcl.Tests.Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System.Threading;
 
 namespace LinqToTwitterPcl.Tests.StatusTests
 {
@@ -18,7 +17,7 @@ namespace LinqToTwitterPcl.Tests.StatusTests
             TestCulture.SetCulture();
         }
 
-        async Task<TwitterContext> InitializeTwitterContext()
+        async Task<TwitterContext> InitializeTwitterContextAsync()
         {
             await Task.Delay(1);
             var authMock = new Mock<IAuthorizer>();
@@ -50,12 +49,12 @@ namespace LinqToTwitterPcl.Tests.StatusTests
         }
 
         [TestMethod]
-        public async Task ReplyAsync_Sets_StatusID()
+        public async Task ReplyAsync_Sets_StatusIDAsync()
         {
             const string Status = "Hello";
             const ulong InReplyToStatusID = 1;
             const ulong ExpectedStatusID = 184835136037191681ul;
-            var ctx = await InitializeTwitterContext();
+            var ctx = await InitializeTwitterContextAsync();
 
             Status responseTweet = await ctx.ReplyAsync(InReplyToStatusID, Status);
 
@@ -63,11 +62,11 @@ namespace LinqToTwitterPcl.Tests.StatusTests
         }
 
         [TestMethod]
-        public async Task ReplyAsync_WithRawResult_Succeeds()
+        public async Task ReplyAsync_WithRawResult_SucceedsAsync()
         {
             const string Status = "Hello";
             const ulong InReplyToStatusID = 1;
-            var ctx = await InitializeTwitterContext();
+            var ctx = await InitializeTwitterContextAsync();
 
             await ctx.ReplyAsync(InReplyToStatusID, Status);
 
@@ -75,9 +74,24 @@ namespace LinqToTwitterPcl.Tests.StatusTests
         }
 
         [TestMethod]
-        public async Task TweetAsync_Throws_On_Null_Tweet()
+        public async Task ReplyAsync_Sets_AutoPopulateReplyMetadataAndExcludeReplyUserIdsAsync()
         {
-            var ctx = await InitializeTwitterContext();
+            const string Status = "Hello";
+            const ulong ExpectedStatusID = 184835136037191681ul;
+            const ulong InReplyToStatusID = 1;
+            var excludedIDs = new List<ulong> { 2ul, 3ul, 4ul };
+            const string AttachmentUrl = "http://t.co/abc123";
+            var ctx = await InitializeTwitterContextAsync();
+
+            Status actual = await ctx.ReplyAsync(InReplyToStatusID, Status, autoPopulateReplyMetadata: true, excludeReplyUserIds: excludedIDs, attachmentUrl: AttachmentUrl);
+
+            Assert.AreEqual(ExpectedStatusID, actual.StatusID);
+        }
+
+        [TestMethod]
+        public async Task TweetAsync_Throws_On_Null_TweetAsync()
+        {
+            var ctx = await InitializeTwitterContextAsync();
 
             var ex = await L2TAssert.Throws<ArgumentException>(
                 async () => await ctx.TweetAsync(null));
@@ -111,22 +125,11 @@ namespace LinqToTwitterPcl.Tests.StatusTests
         }
 
         [TestMethod]
-        public async Task TweetAsync_WithRawResult_Succeeds()
-        {
-            const ulong Id = 184835136037191681ul;
-            var ctx = await InitializeTwitterContext();
-
-            await ctx.DeleteTweetAsync(Id);
-
-            Assert.AreEqual(SingleStatusResponse, ctx.RawResult);
-        }
-
-        [TestMethod]
-        public async Task TweetAsync_Sets_StatusID()
+        public async Task TweetAsync_Sets_StatusIDAsync()
         {
             const string Status = "Hello";
             const ulong ExpectedStatusID = 184835136037191681ul;
-            var ctx = await InitializeTwitterContext();
+            var ctx = await InitializeTwitterContextAsync();
 
             Status actual = await ctx.TweetAsync(Status);
 
@@ -134,12 +137,25 @@ namespace LinqToTwitterPcl.Tests.StatusTests
         }
 
         [TestMethod]
-        public async Task TweetAsync_WithMediaIds_ReturnsStatus()
+        public async Task TweetAsync_Sets_StatusIDAndAttachmentUrlAsync()
+        {
+            const string Status = "Hello";
+            const ulong ExpectedStatusID = 184835136037191681ul;
+            const string AttachmentUrl = "http://t.co/abc123";
+            var ctx = await InitializeTwitterContextAsync();
+
+            Status actual = await ctx.TweetAsync(Status, AttachmentUrl);
+
+            Assert.AreEqual(ExpectedStatusID, actual.StatusID);
+        }
+
+        [TestMethod]
+        public async Task TweetAsync_WithMediaIds_ReturnsStatusAsync()
         {
             const string Status = "Hello";
             const ulong ExpectedStatusID = 184835136037191681ul;
             var mediaIds = new List<ulong> { 1, 2, 3 };
-            var ctx = await InitializeTwitterContext();
+            var ctx = await InitializeTwitterContextAsync();
 
             Status actual = await ctx.TweetAsync(Status, mediaIds);
 
@@ -147,22 +163,10 @@ namespace LinqToTwitterPcl.Tests.StatusTests
         }
 
         [TestMethod]
-        public async Task DeleteTweetAsync_Sets_ID()
+        public async Task DeleteTweetAsync_WithRawResult_SucceedsAsync()
         {
             const ulong Id = 184835136037191681ul;
-            const ulong ExpectedStatusID = 184835136037191681ul;
-            var ctx = await InitializeTwitterContext();
-
-            Status actual = await ctx.DeleteTweetAsync(Id);
-
-            Assert.AreEqual(ExpectedStatusID, actual.StatusID);
-        }
-
-        [TestMethod]
-        public async Task DeleteTweetAsync_WithRawResults_Succeeds()
-        {
-            const ulong Id = 184835136037191681ul;
-            var ctx = await InitializeTwitterContext();
+            var ctx = await InitializeTwitterContextAsync();
 
             await ctx.DeleteTweetAsync(Id);
 
@@ -170,10 +174,33 @@ namespace LinqToTwitterPcl.Tests.StatusTests
         }
 
         [TestMethod]
-        public async Task DeleteTweetAsync_Throws_On_Zero_ID()
+        public async Task DeleteTweetAsync_Sets_IDAsync()
+        {
+            const ulong Id = 184835136037191681ul;
+            const ulong ExpectedStatusID = 184835136037191681ul;
+            var ctx = await InitializeTwitterContextAsync();
+
+            Status actual = await ctx.DeleteTweetAsync(Id);
+
+            Assert.AreEqual(ExpectedStatusID, actual.StatusID);
+        }
+
+        [TestMethod]
+        public async Task DeleteTweetAsync_WithRawResults_SucceedsAsync()
+        {
+            const ulong Id = 184835136037191681ul;
+            var ctx = await InitializeTwitterContextAsync();
+
+            await ctx.DeleteTweetAsync(Id);
+
+            Assert.AreEqual(SingleStatusResponse, ctx.RawResult);
+        }
+
+        [TestMethod]
+        public async Task DeleteTweetAsync_Throws_On_Zero_IDAsync()
         {
             const ulong ID = 0;
-            var ctx = await InitializeTwitterContext();
+            var ctx = await InitializeTwitterContextAsync();
 
             var ex = await L2TAssert.Throws<ArgumentException>(
                 async () => await ctx.DeleteTweetAsync(ID));
