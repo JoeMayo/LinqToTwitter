@@ -1,8 +1,5 @@
 ﻿using LinqToTwitter.Common;
 using LitJson;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace LinqToTwitter
 {
