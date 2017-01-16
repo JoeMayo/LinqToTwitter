@@ -172,7 +172,9 @@ namespace Linq2TwitterDemos_Console
             List<Status> tweets =
                 await
                 (from tweet in twitterCtx.Status
-                 where tweet.Type == StatusType.Home
+                 where tweet.Type == StatusType.Home &&
+                       tweet.TweetMode == TweetMode.Extended &&
+                       tweet.Count == 150
                  select tweet)
                 .ToListAsync();
 
@@ -194,7 +196,7 @@ namespace Linq2TwitterDemos_Console
 
         static async Task RetweetsQueryAsync(TwitterContext twitterCtx)
         {
-            ulong tweetID = 196991337554378752;
+            ulong tweetID = 806571633754284032;
 
             List<Status> retweets =
                 await
@@ -218,7 +220,7 @@ namespace Linq2TwitterDemos_Console
 
         static async Task SingleStatusQueryAsync(TwitterContext twitterCtx)
         {
-            ulong tweetID = 449660889793581056;
+            ulong tweetID = 806571633754284032;
 
             List<Status> status =
                 await
@@ -293,17 +295,18 @@ namespace Linq2TwitterDemos_Console
 
         static async Task ReplyAsync(TwitterContext twitterCtx)
         {
-            ulong tweetID = 401033367283453953;
-            string status = "@JoeMayo Testing ReplyAsync #Linq2Twitter £ ";
+            ulong tweetID = 806571633754284032;
+            string status = $"@JoeMayo @linq2twitr 2016: The Year When Chatbots Were Hot  #Linq2Twitter £ {DateTime.Now.ToLongDateString()}";
+            string attachmentUrl = "https://twitter.com/ChatBotsLife/status/815351062295093248";
 
-                Status tweet = await twitterCtx.ReplyAsync(tweetID, status);
+            Status tweet = await twitterCtx.ReplyAsync(tweetID, status, autoPopulateReplyMetadata: true, attachmentUrl: attachmentUrl);
 
-                if (tweet != null)
-                    Console.WriteLine(
-                        "Status returned: " +
-                        "(" + tweet.StatusID + ")" +
-                        tweet.User.Name + ", " +
-                        tweet.Text + "\n");
+            if (tweet != null)
+                Console.WriteLine(
+                    "Status returned: " +
+                    "(" + tweet.StatusID + ")" +
+                    tweet.User.Name + ", " +
+                    tweet.Text + "\n");
         }
 
         static async Task RetweetAsync(TwitterContext twitterCtx)

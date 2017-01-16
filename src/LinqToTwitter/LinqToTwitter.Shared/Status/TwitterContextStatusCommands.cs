@@ -308,7 +308,7 @@ namespace LinqToTwitter
                         {"media_ids", mediaIds == null || !mediaIds.Any() ? null : string.Join(",", mediaIds) },
                         {"auto_populate_reply_metadata", autoPopulateReplyMetadata ? autoPopulateReplyMetadata.ToString().ToLower() : null },
                         {"exclude_reply_user_ids", excludeReplyUserIds == null || !excludeReplyUserIds.Any() ? null : string.Join(",", excludeReplyUserIds) },
-                        {"attachement_url", attachmentUrl }
+                        {"attachment_url", attachmentUrl }
                     },
                     cancelToken)
                     .ConfigureAwait(false);

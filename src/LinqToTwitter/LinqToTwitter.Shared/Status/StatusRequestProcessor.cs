@@ -98,6 +98,13 @@ namespace LinqToTwitter
         internal bool IncludeMyRetweet { get; set; }
 
         /// <summary>
+        /// Indicate that a status lookup should return null objects for 
+        /// tweets that the authorizing user doesn't have access to. 
+        /// (e.g. tweet is from a protected account or doesn't exist)
+        /// </summary>
+        internal bool Map { get; set; }
+
+        /// <summary>
         /// Url of tweet to embed
         /// </summary>
         internal string OEmbedUrl { get; set; }
@@ -143,11 +150,10 @@ namespace LinqToTwitter
         public string TweetIDs { get; set; }
 
         /// <summary>
-        /// Indicate that a status lookup should return null objects for 
-        /// tweets that the authorizing user doesn't have access to. 
-        /// (e.g. tweet is from a protected account or doesn't exist)
+        /// Tweets can be compatibility or extended mode. Extended is the 
+        /// new mode that allows you to put more characters in a tweet.
         /// </summary>
-        internal bool Map { get; set; }
+        public TweetMode TweetMode { get; set; }
 
         /// <summary>
         /// extracts parameters from lambda
@@ -175,6 +181,7 @@ namespace LinqToTwitter
                        "TrimUser",
                        "IncludeContributorDetails",
                        "IncludeMyRetweet",
+                       "Map",
                        "OEmbedUrl",
                        "OEmbedMaxWidth",
                        "OEmbedHideMedia",
@@ -184,7 +191,7 @@ namespace LinqToTwitter
                        "OEmbedRelated",
                        "OEmbedLanguage",
                        "TweetIDs",
-                       "Map"
+                       nameof(TweetMode)
                    });
 
             var parameters = paramFinder.Parameters;
@@ -321,6 +328,12 @@ namespace LinqToTwitter
                 urlParams.Add(new QueryParameter("contributor_details", parameters["IncludeContributorDetails"].ToLower()));
             }
 
+            if (parameters.ContainsKey(nameof(TweetMode)))
+            {
+                TweetMode = (TweetMode) int.Parse(parameters[nameof(TweetMode)]);
+                urlParams.Add(new QueryParameter("tweet_mode", TweetMode.ToString().ToLower()));
+            }
+
             return req;
         }
 
@@ -334,6 +347,12 @@ namespace LinqToTwitter
 
             ID = ulong.Parse(parameters["ID"]);
             urlParams.Add(new QueryParameter("id", parameters["ID"]));
+
+            if (parameters.ContainsKey(nameof(TweetMode)))
+            {
+                TweetMode = (TweetMode)int.Parse(parameters[nameof(TweetMode)]);
+                urlParams.Add(new QueryParameter("tweet_mode", TweetMode.ToString().ToLower()));
+            }
 
             return req;
         }
@@ -364,16 +383,22 @@ namespace LinqToTwitter
                 urlParams.Add(new QueryParameter("include_entities", parameters["IncludeEntities"].ToLower()));
             }
 
+            if (parameters.ContainsKey("Map"))
+            {
+                Map = bool.Parse(parameters["Map"]);
+                urlParams.Add(new QueryParameter("map", parameters["Map"].ToLower()));
+            }
+
             if (parameters.ContainsKey("TrimUser"))
             {
                 TrimUser = bool.Parse(parameters["TrimUser"]);
                 urlParams.Add(new QueryParameter("trim_user", parameters["TrimUser"].ToLower()));
             }
 
-            if (parameters.ContainsKey("Map"))
+            if (parameters.ContainsKey(nameof(TweetMode)))
             {
-                Map = bool.Parse(parameters["Map"]);
-                urlParams.Add(new QueryParameter("map", parameters["Map"].ToLower()));
+                TweetMode = (TweetMode) int.Parse(parameters[nameof(TweetMode)]);
+                urlParams.Add(new QueryParameter("tweet_mode", TweetMode.ToString().ToLower()));
             }
 
             return req;
@@ -453,6 +478,12 @@ namespace LinqToTwitter
                 urlParams.Add(new QueryParameter("lang", parameters["OEmbedLanguage"].ToLower()));
             }
 
+            if (parameters.ContainsKey(nameof(TweetMode)))
+            {
+                TweetMode = (TweetMode) int.Parse(parameters[nameof(TweetMode)]);
+                urlParams.Add(new QueryParameter("tweet_mode", TweetMode.ToString().ToLower()));
+            }
+
             return req;
         }
 
@@ -513,6 +544,12 @@ namespace LinqToTwitter
                 Cursor = long.Parse(parameters["Cursor"]);
 
                 urlParams.Add(new QueryParameter("cursor", parameters["Cursor"]));
+            }
+
+            if (parameters.ContainsKey(nameof(TweetMode)))
+            {
+                TweetMode = (TweetMode) int.Parse(parameters[nameof(TweetMode)]);
+                urlParams.Add(new QueryParameter("tweet_mode", TweetMode.ToString().ToLower()));
             }
 
             return req;
@@ -619,6 +656,7 @@ namespace LinqToTwitter
                 status.OEmbedLanguage = OEmbedLanguage;
                 status.TweetIDs = TweetIDs;
                 status.Map = Map;
+                status.TweetMode = TweetMode;
             }
 
             return statusList.OfType<T>().ToList();
