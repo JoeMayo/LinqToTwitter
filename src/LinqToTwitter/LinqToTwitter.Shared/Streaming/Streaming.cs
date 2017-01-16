@@ -59,6 +59,11 @@ namespace LinqToTwitter
         public string With { get; set; }
 
         /// <summary>
+        /// Supports compatibility or extended mode tweets.
+        /// </summary>
+        public TweetMode TweetMode { get; set; }
+
+        /// <summary>
         /// Executor managing stream
         /// </summary>
         internal ITwitterExecute TwitterExecutor { get; set; }

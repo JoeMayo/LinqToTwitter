@@ -252,7 +252,8 @@ namespace LinqToTwitter
                      select new Status(result))
                     .ToList(),
                 SearchMetaData = 
-                    new SearchMetaData(search.GetValue<JsonData>("search_metadata"))
+                    new SearchMetaData(search.GetValue<JsonData>("search_metadata")),
+                TweetMode = TweetMode
             };
 
             return searchResult;

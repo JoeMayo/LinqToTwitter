@@ -61,7 +61,8 @@ namespace Linq2TwitterDemos_Console
                 (from search in twitterCtx.Search
                  where search.Type == SearchType.Search &&
                        search.Query == searchTerm &&
-                       search.IncludeEntities == true
+                       search.IncludeEntities == true &&
+                       search.TweetMode == TweetMode.Extended
                  select search)
                 .SingleOrDefaultAsync();
 
@@ -71,7 +72,7 @@ namespace Linq2TwitterDemos_Console
                         "\n  User: {0} ({1})\n  Tweet: {2}", 
                         tweet.User.ScreenNameResponse,
                         tweet.User.UserIDResponse,
-                        tweet.Text));
+                        tweet.Text ?? tweet.FullText));
             else
                 Console.WriteLine("No entries found.");
         }
@@ -97,7 +98,8 @@ namespace Linq2TwitterDemos_Console
                  where search.Type == SearchType.Search &&
                        search.Query == searchTerm &&
                        search.Count == MaxSearchEntriesToReturn &&
-                       search.SinceID == sinceID
+                       search.SinceID == sinceID &&
+                       search.TweetMode == TweetMode.Extended
                  select search.Statuses)
                 .SingleOrDefaultAsync();
 
@@ -120,7 +122,8 @@ namespace Linq2TwitterDemos_Console
                                search.Query == searchTerm &&
                                search.Count == MaxSearchEntriesToReturn &&
                                search.MaxID == maxID &&
-                               search.SinceID == sinceID
+                               search.SinceID == sinceID &&
+                               search.TweetMode == TweetMode.Extended
                          select search.Statuses)
                         .SingleOrDefaultAsync();
 
@@ -132,7 +135,7 @@ namespace Linq2TwitterDemos_Console
                         "\n  User: {0} ({1})\n  Tweet: {2}",
                         tweet.User.ScreenNameResponse,
                         tweet.User.UserIDResponse,
-                        tweet.Text)); 
+                        tweet.Text ?? tweet.FullText)); 
             }
             else
             {

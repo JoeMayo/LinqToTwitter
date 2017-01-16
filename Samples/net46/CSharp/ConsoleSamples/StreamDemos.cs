@@ -85,7 +85,8 @@ namespace Linq2TwitterDemos_Console
                     (from strm in twitterCtx.Streaming
                                             .WithCancellation(cancelTokenSrc.Token)
                      where strm.Type == StreamingType.Filter &&
-                           strm.Track == "twitter"
+                           strm.Track == "twitter" &&
+                           strm.TweetMode == TweetMode.Extended
                      select strm)
                     .StartAsync(async strm =>
                     {
@@ -121,7 +122,8 @@ namespace Linq2TwitterDemos_Console
             {
                 await
                     (from strm in twitterCtx.Streaming.WithCancellation(cancelTokenSrc.Token)
-                     where strm.Type == StreamingType.Sample
+                     where strm.Type == StreamingType.Sample &&
+                           strm.TweetMode == TweetMode.Extended
                      select strm)
                     .StartAsync(async strm =>
                     {
@@ -157,7 +159,8 @@ namespace Linq2TwitterDemos_Console
             {
                 await
                     (from strm in twitterCtx.Streaming
-                     where strm.Type == StreamingType.User
+                     where strm.Type == StreamingType.User &&
+                           strm.TweetMode == TweetMode.Extended
                      select strm)
                     .WithCancellation(cancelTokenSrc.Token)
                     .StartAsync(async strm =>
@@ -198,7 +201,8 @@ namespace Linq2TwitterDemos_Console
                 await
                     (from strm in twitterCtx.Streaming.WithCancellation(cancelTokenSrc.Token)
                      where strm.Type == StreamingType.Site &&
-                           strm.Follow == "15411837,16761255"
+                           strm.Follow == "15411837,16761255" &&
+                           strm.TweetMode == TweetMode.Extended
                      select strm)
                     .StartAsync(async strm =>
                     {
@@ -243,7 +247,8 @@ namespace Linq2TwitterDemos_Console
                     await
                         (from strm in twitterCtx.Streaming
                          where strm.Type == StreamingType.Site &&
-                               strm.Follow == "15411837,16761255"
+                               strm.Follow == "15411837,16761255" &&
+                               strm.TweetMode == TweetMode.Extended
                          select strm)
                         .WithCancellation(cancelTokenSrc.Token)
                         .StartAsync(async strm =>
@@ -359,7 +364,8 @@ namespace Linq2TwitterDemos_Console
                         (from strm in twitterCtx.Streaming
                                                 .WithCancellation(cancelTokenSrc.Token)
                          where strm.Type == StreamingType.Filter &&
-                               strm.Track == "twitter"
+                               strm.Track == "twitter" &&
+                               strm.TweetMode == TweetMode.Extended
                          select strm)
                         .ToObservableAsync();
 
@@ -450,7 +456,7 @@ namespace Linq2TwitterDemos_Console
                     break;
                 case StreamEntityType.Status:
                     var status = strm.Entity as Status;
-                    Console.WriteLine("Status - @{0}: {1}", status.User.ScreenNameResponse, status.Text);
+                    Console.WriteLine("Status - @{0}: {1}", status.User.ScreenNameResponse, status.Text ?? status.FullText);
                     break;
                 case StreamEntityType.StatusWithheld:
                     var statusWithheld = strm.Entity as StatusWithheld;
