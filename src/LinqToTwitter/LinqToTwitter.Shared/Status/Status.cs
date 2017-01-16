@@ -54,7 +54,8 @@ namespace LinqToTwitter
             InReplyToUserID = status.GetValue<ulong>("in_reply_to_user_id");
             Truncated = status.GetValue<bool>("truncated");
             JsonData displayTextIndices = status.GetValue<JsonData>("display_text_range");
-            DisplayTextRange = new List<int> { (int) displayTextIndices[0], (int) displayTextIndices[1] };
+            if (displayTextIndices != null)
+                DisplayTextRange = new List<int> { (int) displayTextIndices[0], (int) displayTextIndices[1] };
             TweetMode tweetMode;
             Enum.TryParse(value: status.GetValue<string>("tweet_mode"), ignoreCase: true, result: out tweetMode);
             TweetMode = tweetMode;

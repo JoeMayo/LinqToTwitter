@@ -143,7 +143,7 @@ namespace LinqToTwitterPcl.Tests.StatusTests
             {
                 { "Type", ((int)StatusType.Conversation).ToString() },
                 { "ID", "123" },
-                { "TweetMode", ((int)TweetMode.Extended).ToString() }
+                { nameof(Status.TweetMode), ((int)TweetMode.Extended).ToString() }
             };
 
             Request req = statProc.BuildUrl(parameters);
@@ -178,7 +178,7 @@ namespace LinqToTwitterPcl.Tests.StatusTests
                 { "SinceID", "123" },
                 { "MaxID", "145" },
                 { "Count", "50" },
-                { "TweetMode", ((int)TweetMode.Extended).ToString() }
+                { nameof(Status.TweetMode), ((int)TweetMode.Extended).ToString() }
             };
 
             Request req = statProc.BuildUrl(parameters);
@@ -202,7 +202,7 @@ namespace LinqToTwitterPcl.Tests.StatusTests
                 { "TrimUser", true.ToString() },
                 { "IncludeMyRetweet", true.ToString() },
                 { "IncludeEntities", true.ToString() },
-                { "TweetMode", ((int)TweetMode.Extended).ToString() }
+                { nameof(Status.TweetMode), ((int)TweetMode.Extended).ToString() }
             };
 
             Request req = reqProc.BuildUrl(parameters);
@@ -225,7 +225,7 @@ namespace LinqToTwitterPcl.Tests.StatusTests
                 { "ID", "15411837" },
                 { "UserID", "15411837" },
                 { "ScreenName", "JoeMayo" },
-                { "TweetMode", ((int)TweetMode.Extended).ToString() }
+                { nameof(Status.TweetMode), ((int)TweetMode.Extended).ToString() }
             };
 
             Request req = reqProc.BuildUrl(parameters);
@@ -246,7 +246,7 @@ namespace LinqToTwitterPcl.Tests.StatusTests
             {
                 { "Type", ((int)StatusType.Home).ToString() },
                 { "Count", "5" },
-                { "TweetMode", ((int)TweetMode.Extended).ToString() }
+                { nameof(Status.TweetMode), ((int)TweetMode.Extended).ToString() }
             };
 
             Request req = reqProc.BuildUrl(parameters);
@@ -317,7 +317,7 @@ namespace LinqToTwitterPcl.Tests.StatusTests
                 { "OEmbedAlign", ((int)EmbeddedStatusAlignment.Left).ToString() },
                 { "OEmbedRelated", "JoeMayo, TwitterAPI" },
                 { "OEmbedLanguage", "en" },
-                { "TweetMode", ((int)TweetMode.Extended).ToString() }
+                { nameof(Status.TweetMode), ((int)TweetMode.Extended).ToString() }
             };
 
             Request req = reqProc.BuildUrl(parameters);
@@ -343,7 +343,7 @@ namespace LinqToTwitterPcl.Tests.StatusTests
                 { "TrimUser", true.ToString() },
                 { "IncludeEntities", true.ToString() },
                 { "IncludeUserEntities", true.ToString() },
-                { "TweetMode", ((int)TweetMode.Extended).ToString() }
+                { nameof(Status.TweetMode), ((int)TweetMode.Extended).ToString() }
             };
 
             Request req = reqProc.BuildUrl(parameters);
@@ -385,7 +385,7 @@ namespace LinqToTwitterPcl.Tests.StatusTests
                 { "Type", ((int)StatusType.Retweeters).ToString() },
                 { "ID", "5" },
                 { "Cursor", "7" },
-                { "TweetMode", ((int)TweetMode.Extended).ToString() }
+                { nameof(Status.TweetMode), ((int)TweetMode.Extended).ToString() }
             };
 
             Request req = reqProc.BuildUrl(parameters);
@@ -451,7 +451,7 @@ namespace LinqToTwitterPcl.Tests.StatusTests
                 { "IncludeEntities", true.ToString() },
                 { "TrimUser", true.ToString() },
                 { "Map", true.ToString() },
-                { "TweetMode", ((int)TweetMode.Extended).ToString() }
+                { nameof(Status.TweetMode), ((int)TweetMode.Extended).ToString() }
             };
 
             Request req = reqProc.BuildUrl(parameters);

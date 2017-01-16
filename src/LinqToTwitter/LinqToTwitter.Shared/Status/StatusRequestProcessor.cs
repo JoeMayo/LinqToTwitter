@@ -147,13 +147,13 @@ namespace LinqToTwitter
         /// <summary>
         /// Comma-separated list of tweet IDs passed to Lookup.
         /// </summary>
-        public string TweetIDs { get; set; }
+        internal string TweetIDs { get; set; }
 
         /// <summary>
         /// Tweets can be compatibility or extended mode. Extended is the 
         /// new mode that allows you to put more characters in a tweet.
         /// </summary>
-        public TweetMode TweetMode { get; set; }
+        internal TweetMode TweetMode { get; set; }
 
         /// <summary>
         /// extracts parameters from lambda

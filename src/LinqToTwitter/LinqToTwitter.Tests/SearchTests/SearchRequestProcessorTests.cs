@@ -31,7 +31,8 @@ namespace LinqToTwitterPcl.Tests.SearchTests
                     search.SinceID == 123 &&
                     search.MaxID == 200 &&
                     search.ResultType == ResultType.Popular &&
-                    search.IncludeEntities == true;
+                    search.IncludeEntities == true &&
+                    search.TweetMode == TweetMode.Extended;
             var lambdaExpression = expression as LambdaExpression;
 
             Dictionary<string, string> queryParams = target.GetParameters(lambdaExpression);
@@ -63,12 +64,15 @@ namespace LinqToTwitterPcl.Tests.SearchTests
             Assert.IsTrue(
               queryParams.Contains(
                   new KeyValuePair<string, string>("IncludeEntities", "True")));
+            Assert.IsTrue(
+                queryParams.Contains(
+                    new KeyValuePair<string, string>(nameof(Search.TweetMode), ((int) TweetMode.Extended).ToString(CultureInfo.InvariantCulture))));
         }
 
         [TestMethod]
         public void BuildUrl_Includes_Parameters()
         {
-            const string ExpectedUrl = "https://api.twitter.com/1.1/search/tweets.json?q=LINQ%20to%20Twitter&geocode=40.757929%2C-73.985506%2C25km&lang=en&count=10&until=2011-07-04&since_id=1&result_type=popular&include_entities=false";
+            const string ExpectedUrl = "https://api.twitter.com/1.1/search/tweets.json?q=LINQ%20to%20Twitter&geocode=40.757929%2C-73.985506%2C25km&lang=en&count=10&until=2011-07-04&since_id=1&result_type=popular&include_entities=false&tweet_mode=extended";
             var searchReqProc = new SearchRequestProcessor<Search> { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters =
                 new Dictionary<string, string>
@@ -81,7 +85,8 @@ namespace LinqToTwitterPcl.Tests.SearchTests
                     { "SinceID", "1" },
                     { "Until", new DateTime(2011, 7, 4).ToString() },
                     { "ResultType", ResultType.Popular.ToString() },
-                    { "IncludeEntities", false.ToString() }
+                    { "IncludeEntities", false.ToString() },
+                    { nameof(Search.TweetMode), ((int)TweetMode.Extended).ToString() }
                };
 
             Request req = searchReqProc.BuildUrl(parameters);

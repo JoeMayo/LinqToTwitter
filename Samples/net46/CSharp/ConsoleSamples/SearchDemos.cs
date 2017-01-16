@@ -53,7 +53,7 @@ namespace Linq2TwitterDemos_Console
   
         static async Task DoSearchAsync(TwitterContext twitterCtx)
         {
-            string searchTerm = "\"LINQ to Twitter\" OR Linq2Twitter OR LinqToTwitter";
+            string searchTerm = "\"LINQ to Twitter\" OR Linq2Twitter OR LinqToTwitter OR JoeMayo";
             //string searchTerm = "#ömer -RT -instagram news source%3Afoursquare";
 
             Search searchResponse =
@@ -65,18 +65,21 @@ namespace Linq2TwitterDemos_Console
                  select search)
                 .SingleOrDefaultAsync();
 
-            if (searchResponse != null && searchResponse.Statuses != null)
+            if (searchResponse?.Statuses != null)
                 searchResponse.Statuses.ForEach(tweet =>
                     Console.WriteLine(
                         "\n  User: {0} ({1})\n  Tweet: {2}", 
                         tweet.User.ScreenNameResponse,
                         tweet.User.UserIDResponse,
                         tweet.Text));
+            else
+                Console.WriteLine("No entries found.");
         }
 
         static async Task DoPagedSearchAsync(TwitterContext twitterCtx)
         {
-            const int MaxSearchEntriesToReturn = 100;
+            const int MaxSearchEntriesToReturn = 10;
+            const int MaxTotalResults = 100;
 
             string searchTerm = "twitter";
 
@@ -98,36 +101,43 @@ namespace Linq2TwitterDemos_Console
                  select search.Statuses)
                 .SingleOrDefaultAsync();
 
-            combinedSearchResults.AddRange(searchResponse);
-            ulong previousMaxID = ulong.MaxValue;
-            do
+            if (searchResponse != null)
             {
-                // one less than the newest id you've just queried
-                maxID = searchResponse.Min(status => status.StatusID) - 1;
-
-                Debug.Assert(maxID < previousMaxID);
-                previousMaxID = maxID;
-
-                searchResponse =
-                    await
-                    (from search in twitterCtx.Search
-                     where search.Type == SearchType.Search &&
-                           search.Query == searchTerm &&
-                           search.Count == MaxSearchEntriesToReturn &&
-                           search.MaxID == maxID &&
-                           search.SinceID == sinceID
-                     select search.Statuses)
-                    .SingleOrDefaultAsync();
-
                 combinedSearchResults.AddRange(searchResponse);
-            } while (searchResponse.Any());
+                ulong previousMaxID = ulong.MaxValue;
+                do
+                {
+                    // one less than the newest id you've just queried
+                    maxID = searchResponse.Min(status => status.StatusID) - 1;
 
-            combinedSearchResults.ForEach(tweet =>
-                Console.WriteLine(
-                    "\n  User: {0} ({1})\n  Tweet: {2}",
-                    tweet.User.ScreenNameResponse,
-                    tweet.User.UserIDResponse,
-                    tweet.Text));
+                    Debug.Assert(maxID < previousMaxID);
+                    previousMaxID = maxID;
+
+                    searchResponse =
+                        await
+                        (from search in twitterCtx.Search
+                         where search.Type == SearchType.Search &&
+                               search.Query == searchTerm &&
+                               search.Count == MaxSearchEntriesToReturn &&
+                               search.MaxID == maxID &&
+                               search.SinceID == sinceID
+                         select search.Statuses)
+                        .SingleOrDefaultAsync();
+
+                    combinedSearchResults.AddRange(searchResponse);
+                } while (searchResponse.Any() && combinedSearchResults.Count < MaxTotalResults);
+
+                combinedSearchResults.ForEach(tweet =>
+                    Console.WriteLine(
+                        "\n  User: {0} ({1})\n  Tweet: {2}",
+                        tweet.User.ScreenNameResponse,
+                        tweet.User.UserIDResponse,
+                        tweet.Text)); 
+            }
+            else
+            {
+                Console.WriteLine("No entries found.");
+            }
         }
     }
 }
