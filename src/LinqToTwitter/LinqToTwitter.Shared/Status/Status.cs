@@ -30,6 +30,7 @@ namespace LinqToTwitter
             InReplyToScreenName = status.GetValue<string>("in_reply_to_screen_name");
             PossiblySensitive = status.GetValue<bool>("possibly_sensitive");
             RetweetedStatus = new Status(status.GetValue<JsonData>("retweeted_status"));
+            IsQuotedStatus = status.GetValue<bool>("is_quote_status");
             QuotedStatusID = status.GetValue<ulong>("quoted_status_id");
             QuotedStatus = new Status(status.GetValue<JsonData>("quoted_status"));
             JsonData contributors = status.GetValue<JsonData>("contributors");
@@ -40,33 +41,33 @@ namespace LinqToTwitter
                      select new Contributor(contributor))
                     .ToList();
             JsonData coords = status.GetValue<JsonData>("coordinates");
-            if (coords != null)
-            {
-                Coordinates = new Coordinate(coords.GetValue<JsonData>("coordinates"));
-            }
-            else
-            {
-                Coordinates = new Coordinate();
-            }
+            Coordinates = coords != null ?
+                new Coordinate(coords.GetValue<JsonData>("coordinates")) :
+                new Coordinate();
             Place = new Place(status.GetValue<JsonData>("place"));
             RetweetCount = status.GetValue<int>("retweet_count");
             StatusID = status.GetValue<ulong>("id");
             FavoriteCount = status.GetValue<int?>("favorite_count");
             Favorited = status.GetValue<bool>("favorited");
             InReplyToStatusID = status.GetValue<ulong>("in_reply_to_status_id");
-            Source = status.GetValue<string>("source");
             CreatedAt = status.GetValue<string>("created_at").GetDate(DateTime.MaxValue);
             InReplyToUserID = status.GetValue<ulong>("in_reply_to_user_id");
             Truncated = status.GetValue<bool>("truncated");
+            JsonData displayTextIndices = status.GetValue<JsonData>("display_text_range");
+            if (displayTextIndices != null)
+                DisplayTextRange = new List<int> { (int) displayTextIndices[0], (int) displayTextIndices[1] };
+            TweetMode tweetMode;
+            Enum.TryParse(value: status.GetValue<string>("tweet_mode"), ignoreCase: true, result: out tweetMode);
+            TweetMode = tweetMode;
             Text = status.GetValue<string>("text");
+            FullText = status.GetValue<string>("full_text");
+            ExtendedTweet = new Status(status.GetValue<JsonData>("extended_tweet"));
             Annotation = new Annotation(status.GetValue<JsonData>("annotation"));
             Entities = new Entities(status.GetValue<JsonData>("entities"));
             ExtendedEntities = new Entities(status.GetValue<JsonData>("extended_entities"));
             JsonData currentUserRetweet = status.GetValue<JsonData>("current_user_retweet");
             if (currentUserRetweet != null)
-            {
                 CurrentUserRetweet = currentUserRetweet.GetValue<ulong>("id");
-            }
             JsonData scopes = status.GetValue<JsonData>("scopes");
             Scopes =
                 scopes == null ? new Dictionary<string, string>() :
@@ -89,17 +90,9 @@ namespace LinqToTwitter
             WithheldScope = status.GetValue<string>("withheld_scope");
             MetaData = new StatusMetaData(status.GetValue<JsonData>("metadata"));
             Lang = status.GetValue<string>("lang");
-            string filterLvl = status.GetValue<string>("filter_level");
-            try
-            {
-                FilterLevel =
-                    filterLvl == null ? FilterLevel.None :
-                    (FilterLevel)Enum.Parse(typeof(FilterLevel), filterLvl, ignoreCase: true);
-            }
-            catch (ArgumentException)
-            {
-                FilterLevel = FilterLevel.None;
-            }
+            FilterLevel filterLevel;
+            Enum.TryParse(value: status.GetValue<string>("filter_level"), ignoreCase: true, result: out filterLevel);
+            FilterLevel = filterLevel;
             User = new User(status.GetValue<JsonData>("user"));
             Users = new List<ulong>();
         }
@@ -244,14 +237,36 @@ namespace LinqToTwitter
         public string Text { get; set; }
 
         /// <summary>
+        /// When a tweet is an extended tweet in extended mode, 
+        /// Text will be null and FullText will contain the tweet text.
+        /// </summary>
+        public string FullText { get; set; }
+
+        /// <summary>
+        /// Extended tweet with entities in extended mode.
+        /// </summary>
+        public Status ExtendedTweet { get; set; }
+
+        /// <summary>
         /// where did the tweet come from
         /// </summary>
         public string Source { get; set; }
 
         /// <summary>
-        /// has the tweet been truncated
+        /// Has the tweet been truncated? True means that this is compatibiltiy mode tweet.
         /// </summary>
         public bool Truncated { get; set; }
+
+        /// <summary>
+        /// Inclusive start and exclusive end of displayable tweet content.
+        /// </summary>
+        public List<int> DisplayTextRange { get; set; }
+
+        /// <summary>
+        /// Tweets can be compatibility or extended mode. Extended is the 
+        /// new mode that allows you to put more characters in a tweet.
+        /// </summary>
+        public TweetMode TweetMode { get; set; }
 
         /// <summary>
         /// id of tweet being replied to, if it is a reply
@@ -354,6 +369,11 @@ namespace LinqToTwitter
         /// by authenticating user.
         /// </summary>
         public ulong CurrentUserRetweet { get; set; }
+
+        /// <summary>
+        /// Is this status quoting another tweet
+        /// </summary>
+        public bool IsQuotedStatus { get; set; }
 
         /// ID of the quoted status
         /// </summary>

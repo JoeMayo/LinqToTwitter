@@ -50,6 +50,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Common\QueryParameter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\Request.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\RequestProcessorHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\TweetMode.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\TwitterAsyncResponse.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\TwitterErrorStatus.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\TwitterHashResponse.cs" />

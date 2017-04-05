@@ -22,27 +22,27 @@ namespace LinqToTwitter
         /// type of search, included for compatibility
         /// with other APIs
         /// </summary>
-        private SearchType Type { get; set; }
+        internal SearchType Type { get; set; }
 
         /// <summary>
         /// search query
         /// </summary>
-        private string Query { get; set; }
+        internal string Query { get; set; }
 
         /// <summary>
         /// location, specified as "latitude,longitude,radius"
         /// </summary>
-        private string GeoCode { get; set; }
+        internal string GeoCode { get; set; }
 
         /// <summary>
         /// filters query to tweets in specified language (ISO 639-1)
         /// </summary>
-        private string SearchLanguage { get; set; }
+        internal string SearchLanguage { get; set; }
 
         /// <summary>
         /// language of the search query (currently only supports ja)
         /// </summary>
-        private string Locale { get; set; }
+        internal string Locale { get; set; }
 
         /// <summary>
         /// Metadata for type of result (mixed, recent, or popular)
@@ -52,27 +52,32 @@ namespace LinqToTwitter
         /// <summary>
         /// number of results for each page
         /// </summary>
-        private int Count { get; set; }
+        internal int Count { get; set; }
 
         /// <summary>
         /// Return tweets before this date
         /// </summary>
-        private DateTime Until { get; set; }
+        internal DateTime Until { get; set; }
 
         /// <summary>
         /// last status ID
         /// </summary>
-        private ulong SinceID { get; set; }
+        internal ulong SinceID { get; set; }
 
         /// <summary>
         /// Include entities in results (default: false)
         /// </summary>
-        public bool IncludeEntities { get; set; }
+        internal bool IncludeEntities { get; set; }
 
         /// <summary>
         /// for getting tweets with ID that is less than or equal to this value
         /// </summary>
-        private ulong MaxID { get; set; }
+        internal ulong MaxID { get; set; }
+
+        /// <summary>
+        /// Supports compatibility or extended mode tweets.
+        /// </summary>
+        internal TweetMode TweetMode { get; set; }
 
         /// <summary>
         /// extracts parameters from lambda
@@ -95,7 +100,8 @@ namespace LinqToTwitter
                        "Until",
                        "SinceID",
                        "MaxID",
-                       "IncludeEntities"
+                       "IncludeEntities",
+                       nameof(TweetMode)
                    });
 
             return paramFinder.Parameters;
@@ -192,6 +198,12 @@ namespace LinqToTwitter
                 urlParams.Add(new QueryParameter("include_entities", parameters["IncludeEntities"].ToLower()));
             }
 
+            if (parameters.ContainsKey(nameof(TweetMode)))
+            {
+                TweetMode = (TweetMode) int.Parse(parameters[nameof(TweetMode)]);
+                urlParams.Add(new QueryParameter("tweet_mode", TweetMode.ToString().ToLower()));
+            }
+
             return req;
         }
 
@@ -240,7 +252,8 @@ namespace LinqToTwitter
                      select new Status(result))
                     .ToList(),
                 SearchMetaData = 
-                    new SearchMetaData(search.GetValue<JsonData>("search_metadata"))
+                    new SearchMetaData(search.GetValue<JsonData>("search_metadata")),
+                TweetMode = TweetMode
             };
 
             return searchResult;

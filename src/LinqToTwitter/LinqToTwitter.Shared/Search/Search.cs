@@ -70,6 +70,11 @@ namespace LinqToTwitter
         /// </summary>
         public bool IncludeEntities { get; set; }
 
+        /// <summary>
+        /// Supports compatibility or extended mode tweets.
+        /// </summary>
+        public TweetMode TweetMode { get; set; }
+
         //
         // Output results
         //

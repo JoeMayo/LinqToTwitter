@@ -24,12 +24,4 @@
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="1.0.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink.Loader" Version="14.0.0" />
   </ItemGroup>
-  <ItemGroup>
-    <Reference Include="LinqToTwitter.AspNetCore">
-      <HintPath>..\..\..\..\..\src\LinqToTwitter\LinqToTwitter.AspNetCore\bin\Debug\netstandard1.6\LinqToTwitter.AspNetCore.dll</HintPath>
-    </Reference>
-    <Reference Include="LinqToTwitter.Core">
-      <HintPath>..\..\..\..\..\src\LinqToTwitter\LinqToTwitter.Core\bin\Debug\netstandard1.1\LinqToTwitter.Core.dll</HintPath>
-    </Reference>
-  </ItemGroup>
 </Project>
