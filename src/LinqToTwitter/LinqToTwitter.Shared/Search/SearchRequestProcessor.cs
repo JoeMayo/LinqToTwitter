@@ -60,6 +60,11 @@ namespace LinqToTwitter
         internal DateTime Until { get; set; }
 
         /// <summary>
+        /// Return tweets after this date
+        /// </summary>
+        internal DateTime Since { get; set; }
+
+        /// <summary>
         /// last status ID
         /// </summary>
         internal ulong SinceID { get; set; }
@@ -98,6 +103,7 @@ namespace LinqToTwitter
                        "ResultType",
                        "Count",
                        "Until",
+                       "Since",
                        "SinceID",
                        "MaxID",
                        "IncludeEntities",
@@ -174,6 +180,12 @@ namespace LinqToTwitter
                 urlParams.Add(new QueryParameter("until",  Until.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)));
             }
 
+            if (parameters.ContainsKey("Since"))
+            {
+                Since = DateTime.Parse(parameters["Since"]).Date;
+                urlParams.Add(new QueryParameter("since", Since.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)));
+            }
+
             if (parameters.ContainsKey("SinceID"))
             {
                 SinceID = ulong.Parse(parameters["SinceID"]);
@@ -245,6 +257,7 @@ namespace LinqToTwitter
                 SearchLanguage = SearchLanguage,
                 Locale = Locale,
                 Until = Until.Date,
+                Since = Since.Date,
                 ResultType = ResultType,
                 IncludeEntities = IncludeEntities,
                 Statuses =

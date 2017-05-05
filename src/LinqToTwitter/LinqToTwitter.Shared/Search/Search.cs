@@ -46,6 +46,11 @@ namespace LinqToTwitter
         public DateTime Until { get; set; }
 
         /// <summary>
+        /// Return tweets after this date
+        /// </summary>
+        public DateTime Since { get; set; }
+
+        /// <summary>
         /// last status ID
         /// </summary>
         public ulong SinceID { get; set; }
