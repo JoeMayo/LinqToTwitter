@@ -72,7 +72,7 @@ namespace LinqToTwitterPcl.Tests.SearchTests
         [TestMethod]
         public void BuildUrl_Includes_Parameters()
         {
-            const string ExpectedUrl = "https://api.twitter.com/1.1/search/tweets.json?q=LINQ%20to%20Twitter&geocode=40.757929%2C-73.985506%2C25km&lang=en&count=10&until=2011-07-04&since_id=1&result_type=popular&include_entities=false&tweet_mode=extended";
+            const string ExpectedUrl = "https://api.twitter.com/1.1/search/tweets.json?q=LINQ%20to%20Twitter&geocode=40.757929%2C-73.985506%2C25km&lang=en&count=10&until=2011-07-04&since=2010-05-04&since_id=1&result_type=popular&include_entities=false&tweet_mode=extended";
             var searchReqProc = new SearchRequestProcessor<Search> { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters =
                 new Dictionary<string, string>
@@ -84,6 +84,7 @@ namespace LinqToTwitterPcl.Tests.SearchTests
                     { "Query", "LINQ to Twitter" },
                     { "SinceID", "1" },
                     { "Until", new DateTime(2011, 7, 4).ToString() },
+                    { "Since", new DateTime(2010, 5, 4).ToString() },
                     { "ResultType", ResultType.Popular.ToString() },
                     { "IncludeEntities", false.ToString() },
                     { nameof(Search.TweetMode), ((int)TweetMode.Extended).ToString() }
