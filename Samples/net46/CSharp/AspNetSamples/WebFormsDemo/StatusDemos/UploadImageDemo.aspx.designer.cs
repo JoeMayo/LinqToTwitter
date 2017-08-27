@@ -7,36 +7,45 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace WebFormsDemos.StatusDemos {
+namespace WebFormsDemo.StatusDemos {
     
     
-    public partial class StatusDemos {
+    public partial class UploadImageDemo {
         
         /// <summary>
-        /// TweetDemoHyperLink control.
+        /// RefreshButton control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.HyperLink TweetDemoHyperLink;
+        protected global::System.Web.UI.WebControls.Button RefreshButton;
         
         /// <summary>
-        /// HomeTimelineDemoHyperLink control.
+        /// UserImage control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.HyperLink HomeTimelineDemoHyperLink;
+        protected global::System.Web.UI.WebControls.Image UserImage;
         
         /// <summary>
-        /// UploadImageDemoHyperLink control.
+        /// NameLabel control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.HyperLink UploadImageDemoHyperLink;
+        protected global::System.Web.UI.WebControls.Label NameLabel;
+        
+        /// <summary>
+        /// TweetLabel control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label TweetLabel;
     }
 }

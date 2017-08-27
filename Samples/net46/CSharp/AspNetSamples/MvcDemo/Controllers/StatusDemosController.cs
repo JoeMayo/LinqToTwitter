@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Web.Mvc;
 using MvcDemo.Models;
 using LinqToTwitter;
+using System.Collections.Generic;
 
 namespace MvcDemo.Controllers
 {
@@ -69,6 +70,44 @@ namespace MvcDemo.Controllers
                 .ToListAsync();
 
             return View(tweets);
+        }
+
+        [ActionName("UploadImage")]
+        public async Task<ActionResult> UploadImageAsync()
+        {
+            var auth = new MvcAuthorizer
+            {
+                CredentialStore = new SessionStateCredentialStore()
+            };
+
+            var twitterCtx = new TwitterContext(auth);
+
+            string status = $"Testing multi-image tweet #Linq2Twitter £ {DateTime.Now}";
+            string mediaCategory = "tweet_image";
+
+            string path = Server.MapPath("..\\Content\\200xColor_2.png");
+            var imageUploadTasks =
+                new List<Task<Media>>
+                {
+                    twitterCtx.UploadMediaAsync(System.IO.File.ReadAllBytes(path), "image/jpg", mediaCategory),
+                };
+
+            await Task.WhenAll(imageUploadTasks);
+
+            List<ulong> mediaIds =
+                (from tsk in imageUploadTasks
+                 select tsk.Result.MediaID)
+                .ToList();
+
+            Status tweet = await twitterCtx.TweetAsync(status, mediaIds);
+
+            return View(
+                new TweetViewModel
+                {
+                    ImageUrl = tweet.User.ProfileImageUrl,
+                    ScreenName = tweet.User.ScreenNameResponse,
+                    Text = tweet.Text
+                });
         }
     }
 }

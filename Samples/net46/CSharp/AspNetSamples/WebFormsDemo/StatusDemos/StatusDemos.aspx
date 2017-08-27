@@ -8,4 +8,7 @@
     <p>
         <asp:HyperLink ID="HomeTimelineDemoHyperLink" runat="server" NavigateUrl="~/StatusDemos/HomeTimelineDemo.aspx">Home Timeline Demo</asp:HyperLink>
     </p>
+    <p>
+        <asp:HyperLink ID="UploadImageDemoHyperLink" runat="server" NavigateUrl="~/StatusDemos/UploadImageDemo.aspx">Upload Image Demo</asp:HyperLink>
+    </p>
 </asp:Content>
