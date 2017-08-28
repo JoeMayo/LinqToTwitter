@@ -296,8 +296,8 @@ namespace Linq2TwitterDemos_Console
         static async Task ReplyAsync(TwitterContext twitterCtx)
         {
             ulong tweetID = 806571633754284032;
-            string status = $"@JoeMayo @linq2twitr 2016: The Year When Chatbots Were Hot  #Linq2Twitter £ {DateTime.Now.ToLongDateString()}";
-            string attachmentUrl = "https://twitter.com/ChatBotsLife/status/815351062295093248";
+            string status = $"@JoeMayo @linq2twitr 2016: The Year When Chatbots Were Hot  #Linq2Twitter £ {DateTime.Now}";
+            string attachmentUrl = "https://twitter.com/ChatBotsLife/status/806571633754284032";
 
             Status tweet = await twitterCtx.ReplyAsync(tweetID, status, autoPopulateReplyMetadata: true, attachmentUrl: attachmentUrl);
 
