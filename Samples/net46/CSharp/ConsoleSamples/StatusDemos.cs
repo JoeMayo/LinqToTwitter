@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using LinqToTwitter;
+using System.Diagnostics;
 
 namespace Linq2TwitterDemos_Console
 {
@@ -126,7 +127,7 @@ namespace Linq2TwitterDemos_Console
             Console.WriteLine("\t F. Upload a Video");
 
             Console.WriteLine();
-            Console.WriteLine("\t Q. Return to Main menu");
+            Console.Write("\t Q. Return to Main menu");
         }
 
         static void PrintTweetsResults(List<Status> tweets)
@@ -137,7 +138,8 @@ namespace Linq2TwitterDemos_Console
                     if (tweet != null && tweet.User != null)
                         Console.WriteLine(
                             "ID: [{0}] Name: {1}\n\tTweet: {2}",
-                            tweet.StatusID, tweet.User.ScreenNameResponse, tweet.Text);
+                            tweet.StatusID, tweet.User.ScreenNameResponse, 
+                            string.IsNullOrWhiteSpace(tweet.Text) ? tweet.FullText : tweet.Text);
                 });
         }
   
@@ -156,15 +158,70 @@ namespace Linq2TwitterDemos_Console
 
         static async Task RunUserTimelineQueryAsync(TwitterContext twitterCtx)
         {
+            //List<Status> tweets =
+            //    await
+            //    (from tweet in twitterCtx.Status
+            //     where tweet.Type == StatusType.User &&
+            //           tweet.ScreenName == "JoeMayo"
+            //     select tweet)
+            //    .ToListAsync();
+
+            const int MaxTweetsToReturn = 200;
+            const int MaxTotalResults = 100;
+
+            // oldest id you already have for this search term
+            ulong sinceID = 1;
+
+            // used after the first query to track current session
+            ulong maxID;
+
+            var combinedSearchResults = new List<Status>();
+
             List<Status> tweets =
                 await
                 (from tweet in twitterCtx.Status
                  where tweet.Type == StatusType.User &&
-                       tweet.ScreenName == "JoeMayo"
+                       tweet.ScreenName == "JoeMayo" &&
+                       tweet.Count == MaxTweetsToReturn &&
+                       tweet.SinceID == sinceID &&
+                       tweet.TweetMode == TweetMode.Extended
                  select tweet)
                 .ToListAsync();
 
-            PrintTweetsResults(tweets);
+            if (tweets != null)
+            {
+                combinedSearchResults.AddRange(tweets);
+                ulong previousMaxID = ulong.MaxValue;
+                do
+                {
+                    // one less than the newest id you've just queried
+                    maxID = tweets.Min(status => status.StatusID) - 1;
+
+                    Debug.Assert(maxID < previousMaxID);
+                    previousMaxID = maxID;
+
+                    tweets =
+                        await
+                        (from tweet in twitterCtx.Status
+                         where tweet.Type == StatusType.User &&
+                               tweet.ScreenName == "JoeMayo" &&
+                               tweet.Count == MaxTweetsToReturn &&
+                               tweet.MaxID == maxID &&
+                               tweet.SinceID == sinceID &&
+                               tweet.TweetMode == TweetMode.Extended
+                         select tweet)
+                        .ToListAsync();
+
+                    combinedSearchResults.AddRange(tweets);
+
+                } while (tweets.Any() && combinedSearchResults.Count < MaxTotalResults);
+
+                PrintTweetsResults(tweets);
+            }
+            else
+            {
+                Console.WriteLine("No entries found.");
+            }
         }
 
         static async Task RunHomeTimelineQueryAsync(TwitterContext twitterCtx)

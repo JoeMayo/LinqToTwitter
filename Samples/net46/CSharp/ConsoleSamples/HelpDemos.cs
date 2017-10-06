@@ -61,7 +61,7 @@ namespace Linq2TwitterDemos_Console
             Console.WriteLine("\t 3. Get Privacy Policy");
             Console.WriteLine("\t 4. Get Terms of Service");
             Console.WriteLine();
-            Console.WriteLine("\t Q. Return to Main menu");
+            Console.Write("\t Q. Return to Main menu");
         }
 
         static async Task GettingRateLimitsAsync(TwitterContext twitterCtx)

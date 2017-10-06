@@ -52,7 +52,7 @@ namespace Linq2TwitterDemos_Console
             Console.WriteLine("\t 1. Favorite a tweet");
             Console.WriteLine("\t 2. Unfavorite a tweet");
             Console.WriteLine();
-            Console.WriteLine("\t Q. Return to Main menu");
+            Console.Write("\t Q. Return to Main menu");
         }
 
         static async Task ShowFavoritesAsync(TwitterContext twitterCtx)

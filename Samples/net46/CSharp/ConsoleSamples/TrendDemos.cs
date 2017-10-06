@@ -51,7 +51,7 @@ namespace Linq2TwitterDemos_Console
             Console.WriteLine("\t 1. Get Available Trend Locations");
             Console.WriteLine("\t 2. Get Trends Closest to a Location");
             Console.WriteLine();
-            Console.WriteLine("\t Q. Return to Main menu");
+            Console.Write("\t Q. Return to Main menu");
         }
 
         static async Task GetTrendsForPlaceAsync(TwitterContext twitterCtx)

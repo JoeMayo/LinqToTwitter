@@ -98,7 +98,7 @@ namespace Linq2TwitterDemos_Console
             Console.WriteLine("\t A. Delete Friendship");
             Console.WriteLine("\t B. Update Friendship Settings");
             Console.WriteLine();
-            Console.WriteLine("\t Q. Return to Main menu");
+            Console.Write("\t Q. Return to Main menu");
         }
 
         static async Task ShowFriendsAsync(TwitterContext twitterCtx)
@@ -209,7 +209,8 @@ namespace Linq2TwitterDemos_Console
                     (from friend in twitterCtx.Friendship
                      where friend.Type == FriendshipType.FriendsList &&
                            friend.ScreenName == "JoeMayo" &&
-                           friend.Cursor == cursor
+                           friend.Cursor == cursor &&
+                           friend.Count == 200
                      select friend)
                     .SingleOrDefaultAsync();
 

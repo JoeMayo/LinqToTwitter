@@ -56,7 +56,7 @@ namespace Linq2TwitterDemos_Console
             Console.WriteLine("\t 2. Lookup Reverse Geocode");
             Console.WriteLine("\t 3. Find Similar Places");
             Console.WriteLine();
-            Console.WriteLine("\t Q. Return to Main menu");
+            Console.Write("\t Q. Return to Main menu");
         }
 
         static async Task SearchByIPAsync(TwitterContext twitterCtx)

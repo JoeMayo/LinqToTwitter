@@ -87,7 +87,7 @@ namespace Linq2TwitterDemos_Console
             Console.WriteLine("\t 8. Update Profile Banner");
             Console.WriteLine("\t 9. Remove Profile Banner");
             Console.WriteLine();
-            Console.WriteLine("\t Q. Return to Main menu");
+            Console.Write("\t Q. Return to Main menu");
         }
 
         static async Task VerifyCredentialsAsync(TwitterContext twitterCtx)
@@ -207,12 +207,12 @@ namespace Linq2TwitterDemos_Console
         static async Task UpdateAccountProfileAsync(TwitterContext twitterCtx)
         {
             var user = await twitterCtx.UpdateAccountProfileAsync(
-                "Joe Mayo",
-                "https://github.com/JoeMayo/LinqToTwitter",
-                "Las Vegas, NV",
-                "Testing the Account Profile Update with LINQ to Twitter.",
-                true,
-                true);
+                name: "Joe Mayo",
+                url: "https://github.com/JoeMayo/LinqToTwitter",
+                location: "Las Vegas, NV",
+                description: "Testing the Account Profile Update with LINQ to Twitter.",
+                includeEntities: true,
+                skipStatus: true);
 
             if (user != null)
                 Console.WriteLine(

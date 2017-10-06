@@ -87,7 +87,7 @@ namespace Linq2TwitterDemos_Console
             Console.WriteLine("\t 8. Get Suggested User Tweets");
             Console.WriteLine("\t 9. Report Spammer");
             Console.WriteLine();
-            Console.WriteLine("\t Q. Return to Main menu");
+            Console.Write("\t Q. Return to Main menu");
         }
 
         static async Task LookupUsersAsync(TwitterContext twitterCtx)

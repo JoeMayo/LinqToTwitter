@@ -41,7 +41,7 @@ namespace Linq2TwitterDemos_Console
 
             Console.WriteLine("\t 0. Get Embedded HTML");
             Console.WriteLine();
-            Console.WriteLine("\t Q. Return to Main menu");
+            Console.Write("\t Q. Return to Main menu");
         }
 
         static async Task GetEmbeddedHtml(TwitterContext twitterCtx)

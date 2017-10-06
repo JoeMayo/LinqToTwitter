@@ -45,7 +45,7 @@ namespace Linq2TwitterDemos_Console
             Console.WriteLine("\t 0. Upload a Video");
 
             Console.WriteLine();
-            Console.WriteLine("\t Q. Return to Main menu");
+            Console.Write("\t Q. Return to Main menu");
         }
 
         static void PrintTweetsResults(List<Status> tweets)

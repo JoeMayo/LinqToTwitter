@@ -56,7 +56,7 @@ namespace Linq2TwitterDemos_Console
             Console.WriteLine("\t 2. Block a User");
             Console.WriteLine("\t 3. Unblock a User");
             Console.WriteLine();
-            Console.WriteLine("\t Q. Return to Main menu");
+            Console.Write("\t Q. Return to Main menu");
         }
 
         static async Task ListBlockedUsersAsync(TwitterContext twitterCtx)

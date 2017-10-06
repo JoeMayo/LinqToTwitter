@@ -171,7 +171,7 @@ namespace Linq2TwitterDemos_Console
             Console.WriteLine("\t G. User Demos");
             Console.WriteLine("\t H. Vine Demos");
             Console.WriteLine();
-            Console.WriteLine("\t Q. End Program");
+            Console.Write("\t Q. End Program");
         }
 
 

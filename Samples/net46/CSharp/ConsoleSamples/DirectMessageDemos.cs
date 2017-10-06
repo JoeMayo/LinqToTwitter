@@ -67,7 +67,7 @@ namespace Linq2TwitterDemos_Console
             Console.WriteLine("\t 4. Delete DM");
             Console.WriteLine("\t 5. Send and Receive Long DM");
             Console.WriteLine();
-            Console.WriteLine("\t Q. Return to Main menu");
+            Console.Write("\t Q. Return to Main menu");
         }
 
         static async Task ShowSentDMsAsync(TwitterContext twitterCtx)

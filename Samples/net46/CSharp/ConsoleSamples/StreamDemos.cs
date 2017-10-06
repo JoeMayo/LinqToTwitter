@@ -70,7 +70,7 @@ namespace Linq2TwitterDemos_Console
             Console.WriteLine("\t 4. Control Stream");
             Console.WriteLine("\t 5. Reactive Stream");
             Console.WriteLine();
-            Console.WriteLine("\t Q. Return to Main menu");
+            Console.Write("\t Q. Return to Main menu");
         }
 
         static async Task DoFilterStreamAsync(TwitterContext twitterCtx)
