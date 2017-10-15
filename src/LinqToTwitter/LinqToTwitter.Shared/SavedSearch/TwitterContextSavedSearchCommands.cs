@@ -23,7 +23,7 @@ namespace LinqToTwitter
             var reqProc = new SavedSearchRequestProcessor<SavedSearch>();
 
             RawResult =
-                await TwitterExecutor.PostToTwitterAsync<SavedSearch>(
+                await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<SavedSearch>(
                     savedSearchUrl,
                     new Dictionary<string, string>
                     {
@@ -51,7 +51,7 @@ namespace LinqToTwitter
             var reqProc = new SavedSearchRequestProcessor<SavedSearch>();
 
             RawResult =
-                await TwitterExecutor.PostToTwitterAsync<SavedSearch>(
+                await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<SavedSearch>(
                     savedSearchUrl,
                     new Dictionary<string, string>(),
                     cancelToken)

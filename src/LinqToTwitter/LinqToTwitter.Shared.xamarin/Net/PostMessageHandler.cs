@@ -3,11 +3,10 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
-using ModernHttpClient;
 
 namespace LinqToTwitter.Net
 {
-    class PostMessageHandler : NativeMessageHandler
+    class PostMessageHandler : HttpClientHandler
     {
         readonly TwitterExecute exe;
         readonly IDictionary<string, string> postData;

@@ -31,7 +31,7 @@ namespace LinqToTwitterPcl.Tests.StatusTests
 
             execMock.SetupGet(exec => exec.Authorizer).Returns(authMock.Object);
             execMock.Setup(exec =>
-                exec.PostToTwitterAsync<Status>(
+                exec.PostFormUrlEncodedToTwitterAsync<Status>(
                     It.IsAny<string>(),
                     It.IsAny<IDictionary<string, string>>(),
                     It.IsAny<CancellationToken>()))
@@ -113,7 +113,7 @@ namespace LinqToTwitterPcl.Tests.StatusTests
 
             execMock.SetupGet(exec => exec.Authorizer).Returns(authMock.Object);
             execMock.Setup(exec =>
-                exec.PostToTwitterAsync<Status>(
+                exec.PostFormUrlEncodedToTwitterAsync<Status>(
                     It.IsAny<string>(),
                     It.IsAny<IDictionary<string, string>>(),
                     It.IsAny<CancellationToken>()))

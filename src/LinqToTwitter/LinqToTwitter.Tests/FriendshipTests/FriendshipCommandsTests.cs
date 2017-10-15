@@ -29,7 +29,7 @@ namespace LinqToTwitterPcl.Tests.FriendshipTests
             execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.Authorizer).Returns(authMock.Object);
             execMock.Setup(exec =>
-                exec.PostToTwitterAsync<TEntity>(
+                exec.PostFormUrlEncodedToTwitterAsync<TEntity>(
                     It.IsAny<string>(),
                     It.IsAny<IDictionary<string, string>>(),
                     It.IsAny<CancellationToken>()))
@@ -149,7 +149,7 @@ namespace LinqToTwitterPcl.Tests.FriendshipTests
 
             await ctx.UpdateFriendshipSettingsAsync("Linq2Tweeter", true, true);
 
-            execMock.Verify(exec => exec.PostToTwitterAsync<Friendship>(
+            execMock.Verify(exec => exec.PostFormUrlEncodedToTwitterAsync<Friendship>(
                 "https://api.twitter.com/1.1/friendships/update.json",
                 It.IsAny<Dictionary<string, string>>(),
                 It.IsAny<CancellationToken>()),

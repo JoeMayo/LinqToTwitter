@@ -51,7 +51,7 @@ namespace LinqToTwitter
 
             RawResult =
                 await TwitterExecutor
-                    .PostToTwitterAsync<User>(reportSpamUrl, reportParams, cancelToken)
+                    .PostFormUrlEncodedToTwitterAsync<User>(reportSpamUrl, reportParams, cancelToken)
                     .ConfigureAwait(false);
 
             return new UserRequestProcessor<User>()

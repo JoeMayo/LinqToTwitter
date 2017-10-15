@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using LinqToTwitter.Common;
 using LitJson;
+using Newtonsoft.Json;
 
 namespace LinqToTwitter
 {
@@ -36,7 +37,7 @@ namespace LinqToTwitter
                        let indices = hash.GetValue<JsonData>("indices")
                        select new HashTagEntity
                        {
-                           Tag = hash.GetValue<string>("text"),
+                           Text = hash.GetValue<string>("text"),
                            Start = indices.Count > 0 ? (int)indices[0] : 0,
                            End = indices.Count > 1 ? (int)indices[1] : 0
                        })
@@ -118,16 +119,19 @@ namespace LinqToTwitter
         /// <summary>
         /// Mentions of the user in the tweet
         /// </summary>
+        [JsonProperty("user_mentions")]
         public List<UserMentionEntity> UserMentionEntities { get; set; }
 
         /// <summary>
         /// Url entities in the tweet
         /// </summary>
+        [JsonProperty("urls")]
         public List<UrlEntity> UrlEntities { get; set; }
 
         /// <summary>
         /// Hash tag entities in the tweet
         /// </summary>
+        [JsonProperty("hashtags")]
         public List<HashTagEntity> HashTagEntities { get; set; }
 
         /// <summary>
@@ -138,6 +142,7 @@ namespace LinqToTwitter
         /// <summary>
         /// Symbol entities in the tweet
         /// </summary>
+        [JsonProperty("symbols")]
         public List<SymbolEntity> SymbolEntities { get; set; }
     }
 }

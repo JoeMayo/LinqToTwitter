@@ -39,13 +39,24 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// enables access to Twitter User messages, such as Friends and Followers
+        /// enables access to Twitter Direct Messages
         /// </summary>
         public TwitterQueryable<DirectMessage> DirectMessage
         {
             get
             {
                 return new TwitterQueryable<DirectMessage>(this);
+            }
+        }
+
+        /// <summary>
+        /// enables access to Direct Message Events, supporting Twitter chatbots
+        /// </summary>
+        public TwitterQueryable<DirectMessageEvents> DirectMessageEvents
+        {
+            get
+            {
+                return new TwitterQueryable<DirectMessageEvents>(this);
             }
         }
 

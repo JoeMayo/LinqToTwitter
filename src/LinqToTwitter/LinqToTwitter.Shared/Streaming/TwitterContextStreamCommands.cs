@@ -25,7 +25,7 @@ namespace LinqToTwitter
             var reqProc = new ControlStreamRequestProcessor<ControlStream>();
 
             var resultsJson =
-                await TwitterExecutor.PostToTwitterAsync<ControlStream>(
+                await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<ControlStream>(
                     newUrl,
                     new Dictionary<string, string>
                     {
@@ -54,7 +54,7 @@ namespace LinqToTwitter
             var reqProc = new ControlStreamRequestProcessor<ControlStream>();
 
             var resultsJson =
-                await TwitterExecutor.PostToTwitterAsync<ControlStream>(
+                await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<ControlStream>(
                     newUrl,
                     new Dictionary<string, string>
                     {

@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Configuration;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
 using LinqToTwitter;
 
@@ -69,70 +67,75 @@ namespace Linq2TwitterDemos_Console
                         await DirectMessageDemos.RunAsync(twitterCtx);
                         break;
                     case '3':
+                        Console.WriteLine("\n\tRunning Direct Message Events Demos...\n");
+                        await DirectMessageEventsDemos.RunAsync(twitterCtx);
+                        break;
+                    case '4':
                         Console.WriteLine("\n\tRunning Favorite Demos...\n");
                         await FavoriteDemos.RunAsync(twitterCtx);
                         break;
-                    case '4':
+                    case '5':
                         Console.WriteLine("\n\tRunning Friendship Demos...\n");
                         await FriendshipDemos.RunAsync(twitterCtx);
                         break;
-                    case '5':
+                    case '6':
                         Console.WriteLine("\n\tRunning Geo Demos...\n");
                         await GeoDemos.RunAsync(twitterCtx);
                         break;
-                    case '6':
+                    case '7':
                         Console.WriteLine("\n\tRunning Help Demos...\n");
                         await HelpDemos.RunAsync(twitterCtx);
                         break;
-                    case '7':
+                    case '8':
                         Console.WriteLine("\n\tRunning List Demos...\n");
                         await ListDemos.RunAsync(twitterCtx);
                         break;
-                    case '8':
+                    case '9':
                         Console.WriteLine("\n\tRunning Media Demos...\n");
                         await MediaDemos.RunAsync(twitterCtx);
                         break;
-                    case '9':
+                    case 'a':
+                    case 'A':
                         Console.WriteLine("\n\tRunning Mutes Demos...\n");
                         await MuteDemos.RunAsync(twitterCtx);
                         break;
-                    case 'a':
-                    case 'A':
+                    case 'b':
+                    case 'B':
                         Console.WriteLine("\n\tRunning Raw Demos...\n");
                         await RawDemos.RunAsync(twitterCtx);
                         break;
-                    case 'b':
-                    case 'B':
+                    case 'c':
+                    case 'C':
                         Console.WriteLine("\n\tRunning Saved Search Demos...\n");
                         await SavedSearchDemos.RunAsync(twitterCtx);
                         break;
-                    case 'c':
-                    case 'C':
+                    case 'd':
+                    case 'D':
                         Console.WriteLine("\n\tRunning Search Demos...\n");
                         await SearchDemos.RunAsync(twitterCtx);
                         break;
-                    case 'd':
-                    case 'D':
+                    case 'e':
+                    case 'E':
                         Console.WriteLine("\n\tRunning Status Demos...\n");
                         await StatusDemos.RunAsync(twitterCtx);
                         break;
-                    case 'e':
-                    case 'E':
+                    case 'f':
+                    case 'F':
                         Console.WriteLine("\n\tRunning Stream Demos...\n");
                         await StreamDemos.RunAsync(twitterCtx);
                         break;
-                    case 'f':
-                    case 'F':
+                    case 'g':
+                    case 'G':
                         Console.WriteLine("\n\tRunning Trend Demos...\n");
                         await TrendDemos.RunAsync(twitterCtx);
                         break;
-                    case 'g':
-                    case 'G':
+                    case 'h':
+                    case 'H':
                         Console.WriteLine("\n\tRunning User Demos...\n");
                         await UserDemos.RunAsync(twitterCtx);
                         break;
-                    case 'h':
-                    case 'H':
+                    case 'i':
+                    case 'I':
                         Console.WriteLine("\n\tRunning Vine Demos...\n");
                         await VineDemos.RunAsync(twitterCtx);
                         break;
@@ -155,21 +158,22 @@ namespace Linq2TwitterDemos_Console
             Console.WriteLine("\t 0. Account Demos");
             Console.WriteLine("\t 1. Block Demos");
             Console.WriteLine("\t 2. Direct Message Demos");
-            Console.WriteLine("\t 3. Favorite Demos");
-            Console.WriteLine("\t 4. Friendship Demos");
-            Console.WriteLine("\t 5. Geo Demos");
-            Console.WriteLine("\t 6. Help Demos");
-            Console.WriteLine("\t 7. List Demos");
-            Console.WriteLine("\t 8. Media Demos");
-            Console.WriteLine("\t 9. Mutes Demos");
-            Console.WriteLine("\t A. Raw Demos");
-            Console.WriteLine("\t B. Saved Search Demos");
-            Console.WriteLine("\t C. Search Demos");
-            Console.WriteLine("\t D. Status Demos");
-            Console.WriteLine("\t E. Stream Demos");
-            Console.WriteLine("\t F. Trend Demos");
-            Console.WriteLine("\t G. User Demos");
-            Console.WriteLine("\t H. Vine Demos");
+            Console.WriteLine("\t 3. Direct Message Event Demos");
+            Console.WriteLine("\t 4. Favorite Demos");
+            Console.WriteLine("\t 5. Friendship Demos");
+            Console.WriteLine("\t 6. Geo Demos");
+            Console.WriteLine("\t 7. Help Demos");
+            Console.WriteLine("\t 8. List Demos");
+            Console.WriteLine("\t 9. Media Demos");
+            Console.WriteLine("\t A. Mutes Demos");
+            Console.WriteLine("\t B. Raw Demos");
+            Console.WriteLine("\t C. Saved Search Demos");
+            Console.WriteLine("\t D. Search Demos");
+            Console.WriteLine("\t E. Status Demos");
+            Console.WriteLine("\t F. Stream Demos");
+            Console.WriteLine("\t G. Trend Demos");
+            Console.WriteLine("\t H. User Demos");
+            Console.WriteLine("\t I. Vine Demos");
             Console.WriteLine();
             Console.Write("\t Q. End Program");
         }

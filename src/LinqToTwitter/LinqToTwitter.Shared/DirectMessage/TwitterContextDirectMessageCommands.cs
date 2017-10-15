@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -27,7 +26,7 @@ namespace LinqToTwitter
             var reqProc = new DirectMessageRequestProcessor<DirectMessage>();
 
             RawResult =
-                await TwitterExecutor.PostToTwitterAsync<DirectMessage>(
+                await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<DirectMessage>(
                     newUrl,
                     new Dictionary<string, string>
                     {
@@ -59,7 +58,7 @@ namespace LinqToTwitter
             var reqProc = new DirectMessageRequestProcessor<DirectMessage>();
 
             RawResult =
-                await TwitterExecutor.PostToTwitterAsync<DirectMessage>(
+                await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<DirectMessage>(
                     newUrl,
                     new Dictionary<string, string>
                     {
@@ -88,7 +87,7 @@ namespace LinqToTwitter
             var reqProc = new DirectMessageRequestProcessor<DirectMessage>();
 
             RawResult =
-                await TwitterExecutor.PostToTwitterAsync<DirectMessage>(
+                await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<DirectMessage>(
                     destroyUrl,
                     new Dictionary<string, string>
                     {

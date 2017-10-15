@@ -45,13 +45,22 @@ namespace LinqToTwitter
         int Timeout { get; set; }
 
         /// <summary>
+        /// Performs HTTP POST, with JSON payload, to Twitter.
+        /// </summary>
+        /// <param name="url">URL of request.</param>
+        /// <param name="postObj">Serializable payload object.</param>
+        /// <param name="getResult">Callback for handling async Json response - null if synchronous.</param>
+        /// <returns>JSON Response from Twitter - empty string if async.</returns>
+        Task<string> PostJsonToTwitterAsync<T>(string url, T postObj, CancellationToken cancelToken);
+
+        /// <summary>
         /// performs HTTP POST to Twitter
         /// </summary>
         /// <param name="url">URL of request</param>
         /// <param name="postData">parameters to post</param>
         /// <param name="getResult">callback for handling async Json response - null if synchronous</param>
         /// <returns>Json Response from Twitter - empty string if async</returns>
-        Task<string> PostToTwitterAsync<T>(string url, IDictionary<string, string> postData, CancellationToken cancelToken);
+        Task<string> PostFormUrlEncodedToTwitterAsync<T>(string url, IDictionary<string, string> postData, CancellationToken cancelToken);
 
         /// <summary>
         /// performs HTTP POST media byte array upload to Twitter

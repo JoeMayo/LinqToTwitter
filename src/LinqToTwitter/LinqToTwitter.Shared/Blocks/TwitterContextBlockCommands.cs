@@ -38,7 +38,7 @@ namespace LinqToTwitter
             var reqProc = new BlocksRequestProcessor<User>();
 
             RawResult =
-                await TwitterExecutor.PostToTwitterAsync<User>(
+                await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<User>(
                     blocksUrl,
                     new Dictionary<string, string>
                     {
@@ -83,7 +83,7 @@ namespace LinqToTwitter
             var reqProc = new BlocksRequestProcessor<User>();
 
             RawResult =
-                await TwitterExecutor.PostToTwitterAsync<User>(
+                await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<User>(
                     blocksUrl,
                     new Dictionary<string, string>
                     {

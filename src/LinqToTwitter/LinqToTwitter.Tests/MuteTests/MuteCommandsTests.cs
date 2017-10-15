@@ -28,7 +28,7 @@ namespace LinqToTwitterPcl.Tests.MuteTests
             execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.Authorizer).Returns(authMock.Object);
             execMock.Setup(
-                exec => exec.PostToTwitterAsync<User>(
+                exec => exec.PostFormUrlEncodedToTwitterAsync<User>(
                     It.IsAny<string>(),
                     It.IsAny<Dictionary<string, string>>(),
                     It.IsAny<CancellationToken>()))
@@ -58,7 +58,7 @@ namespace LinqToTwitterPcl.Tests.MuteTests
             User actual = await ctx.MuteAsync(ScreenName);
 
             execMock.Verify(exec =>
-                exec.PostToTwitterAsync<User>(
+                exec.PostFormUrlEncodedToTwitterAsync<User>(
                     "https://api.twitter.com/1.1/mutes/users/create.json",
                     It.IsAny<Dictionary<string, string>>(),
                     It.IsAny<CancellationToken>()),
@@ -77,7 +77,7 @@ namespace LinqToTwitterPcl.Tests.MuteTests
             User actual = await ctx.MuteAsync(UserID);
 
             execMock.Verify(exec =>
-                exec.PostToTwitterAsync<User>(
+                exec.PostFormUrlEncodedToTwitterAsync<User>(
                     "https://api.twitter.com/1.1/mutes/users/create.json",
                     It.IsAny<Dictionary<string, string>>(),
                     It.IsAny<CancellationToken>()),
@@ -131,7 +131,7 @@ namespace LinqToTwitterPcl.Tests.MuteTests
             User actual = await ctx.UnMuteAsync(ScreenName);
 
             execMock.Verify(exec =>
-                exec.PostToTwitterAsync<User>(
+                exec.PostFormUrlEncodedToTwitterAsync<User>(
                     "https://api.twitter.com/1.1/mutes/users/destroy.json",
                     It.IsAny<Dictionary<string, string>>(),
                     It.IsAny<CancellationToken>()),
@@ -150,7 +150,7 @@ namespace LinqToTwitterPcl.Tests.MuteTests
             User actual = await ctx.UnMuteAsync(UserID);
 
             execMock.Verify(exec =>
-                exec.PostToTwitterAsync<User>(
+                exec.PostFormUrlEncodedToTwitterAsync<User>(
                     "https://api.twitter.com/1.1/mutes/users/destroy.json",
                     It.IsAny<Dictionary<string, string>>(),
                     It.IsAny<CancellationToken>()),

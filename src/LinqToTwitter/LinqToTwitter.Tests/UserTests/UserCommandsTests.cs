@@ -28,7 +28,7 @@ namespace LinqToTwitterPcl.Tests.AccountTests
             execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.Authorizer).Returns(authMock.Object);
             execMock.Setup(
-                exec => exec.PostToTwitterAsync<User>(
+                exec => exec.PostFormUrlEncodedToTwitterAsync<User>(
                     It.IsAny<string>(),
                     It.IsAny<Dictionary<string, string>>(),
                     It.IsAny<CancellationToken>()))
@@ -57,7 +57,7 @@ namespace LinqToTwitterPcl.Tests.AccountTests
             User actual = await ctx.ReportSpamAsync(ScreenName);
 
             execMock.Verify(exec =>
-                exec.PostToTwitterAsync<User>(
+                exec.PostFormUrlEncodedToTwitterAsync<User>(
                     "https://api.twitter.com/1.1/users/report_spam.json",
                     It.IsAny<IDictionary<string, string>>(),
                     It.IsAny<CancellationToken>()),
@@ -85,7 +85,7 @@ namespace LinqToTwitterPcl.Tests.AccountTests
             User actual = await ctx.ReportSpamAsync(1);
 
             execMock.Verify(exec =>
-                exec.PostToTwitterAsync<User>(
+                exec.PostFormUrlEncodedToTwitterAsync<User>(
                     "https://api.twitter.com/1.1/users/report_spam.json",
                     It.IsAny<IDictionary<string, string>>(),
                     It.IsAny<CancellationToken>()),

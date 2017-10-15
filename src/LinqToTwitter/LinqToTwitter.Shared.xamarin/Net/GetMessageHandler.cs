@@ -2,11 +2,10 @@
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using ModernHttpClient;
 
 namespace LinqToTwitter.Net
 {
-    class GetMessageHandler : NativeMessageHandler
+    class GetMessageHandler : HttpClientHandler
     {
         readonly TwitterExecute exe;
         readonly IDictionary<string, string> parameters;

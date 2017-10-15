@@ -59,6 +59,12 @@ namespace LinqToTwitter.Common
             return EpochBase + TimeSpan.FromSeconds(epochSeconds);
         }
 
+        public static DateTime GetEpochDateFromTimestamp(this string timestamp)
+        {
+            ulong.TryParse(timestamp, out ulong epochMilliseconds);
+            return EpochBase + +TimeSpan.FromMilliseconds(epochMilliseconds);
+        }
+
         public static T GetValue<T>(this IDictionary<string, object> dictionary, string key)
         {
             object value;

@@ -34,7 +34,7 @@ namespace LinqToTwitter
             var reqProc = new StatusRequestProcessor<Status>();
 
             RawResult =
-                await TwitterExecutor.PostToTwitterAsync<Status>(
+                await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<Status>(
                     favoritesUrl,
                     new Dictionary<string, string>
                     {
@@ -73,7 +73,7 @@ namespace LinqToTwitter
             var reqProc = new StatusRequestProcessor<Status>();
 
             RawResult =
-                await TwitterExecutor.PostToTwitterAsync<Status>(
+                await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<Status>(
                     favoritesUrl,
                     new Dictionary<string, string>
                     {

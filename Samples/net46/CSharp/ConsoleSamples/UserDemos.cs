@@ -254,7 +254,7 @@ namespace Linq2TwitterDemos_Console
 
         static async Task ReportSpammerAsync(TwitterContext twitterCtx)
         {
-            const string SpammerScreenName = "justinbieber";
+            const string SpammerScreenName = "realDonaldTrump";
 
             User spammer = await twitterCtx.ReportSpamAsync(SpammerScreenName);
 

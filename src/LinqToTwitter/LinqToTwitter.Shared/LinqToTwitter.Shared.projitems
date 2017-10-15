@@ -59,6 +59,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)Common\TypeSystem.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\Utilities.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\WhereClauseFinder.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectMessageEvents\DirectMessageEvents.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectMessageEvents\DirectMessageEventsRequestProcessor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectMessageEvents\DirectMessageEventsType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DirectMessageEvents\TwitterContextDirectMessageEventsCommands.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DirectMessage\DirectMessage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DirectMessage\DirectMessageRequestProcessor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DirectMessage\DirectMessageType.cs" />

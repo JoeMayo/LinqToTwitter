@@ -35,7 +35,7 @@ namespace LinqToTwitter
             var reqProc = new FriendshipRequestProcessor<User>();
 
             RawResult =
-                await TwitterExecutor.PostToTwitterAsync<User>(
+                await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<User>(
                     destroyUrl,
                     createParams,
                     cancelToken)
@@ -71,7 +71,7 @@ namespace LinqToTwitter
             var reqProc = new FriendshipRequestProcessor<User>();
 
             RawResult =
-                await TwitterExecutor.PostToTwitterAsync<User>(
+                await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<User>(
                     destroyUrl,
                     createParams,
                     cancelToken)
@@ -95,7 +95,7 @@ namespace LinqToTwitter
             var reqProc = new FriendshipRequestProcessor<User>();
 
             RawResult =
-                await TwitterExecutor.PostToTwitterAsync<User>(
+                await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<User>(
                     destroyUrl,
                     new Dictionary<string, string>
                     {
@@ -122,7 +122,7 @@ namespace LinqToTwitter
             var reqProc = new FriendshipRequestProcessor<User>();
 
             RawResult =
-                await TwitterExecutor.PostToTwitterAsync<User>(
+                await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<User>(
                     destroyUrl,
                     new Dictionary<string, string>
                     {
@@ -189,7 +189,7 @@ namespace LinqToTwitter
             var reqProc = new FriendshipRequestProcessor<Friendship>();
 
             RawResult =
-                await TwitterExecutor.PostToTwitterAsync<Friendship>(
+                await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<Friendship>(
                     updateUrl,
                     parms,
                     cancelToken)

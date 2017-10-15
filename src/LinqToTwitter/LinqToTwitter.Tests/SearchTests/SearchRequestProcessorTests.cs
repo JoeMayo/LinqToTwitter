@@ -220,7 +220,7 @@ namespace LinqToTwitterPcl.Tests.SearchTests
             Assert.IsNotNull(hashes);
             Assert.AreEqual(3, hashes.Count);
             HashTagEntity firstHash = hashes.First();
-            Assert.AreEqual("twitterapi", firstHash.Tag);
+            Assert.AreEqual("twitterapi", firstHash.Text);
             Assert.AreEqual(89, firstHash.Start);
             Assert.AreEqual(100, firstHash.End);
         }

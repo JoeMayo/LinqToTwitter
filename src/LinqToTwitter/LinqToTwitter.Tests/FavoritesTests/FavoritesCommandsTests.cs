@@ -26,7 +26,7 @@ namespace LinqToTwitterPcl.Tests.FavoritesTests
             var execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.Authorizer).Returns(authMock.Object);
             execMock.Setup(exec =>
-                exec.PostToTwitterAsync<Status>(
+                exec.PostFormUrlEncodedToTwitterAsync<Status>(
                     It.IsAny<string>(),
                     It.IsAny<Dictionary<string, string>>(),
                     It.IsAny<CancellationToken>()))
