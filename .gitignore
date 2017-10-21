@@ -11,8 +11,8 @@ _Resharper.*
 .JustCode/
 project.lock.json
 *.nuget.props
-storage.ide*
-db.lock
+# Visual Studio 2015 cache/options directory
+.vs/
 
 # Ignore NuGet Packages
 *.nupkg
