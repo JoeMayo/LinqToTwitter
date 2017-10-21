@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using LinqToTwitter.Common;
 using LinqToTwitter.Net;
 using LitJson;
+using Newtonsoft.Json;
 
 namespace LinqToTwitter
 {
@@ -386,15 +387,52 @@ namespace LinqToTwitter
         }
 
         /// <summary>
+        /// Performs HTTP POST, with JSON payload, to Twitter.
+        /// </summary>
+        /// <param name="method">Delete, Post, or Put</param>
+        /// <param name="url">URL of request.</param>
+        /// <param name="postObj">Serializable payload object.</param>
+        /// <param name="getResult">Callback for handling async Json response - null if synchronous.</param>
+        /// <returns>JSON Response from Twitter - empty string if async.</returns>
+        public async Task<string> SendJsonToTwitterAsync<T>(HttpMethod method, string url, T postObj, CancellationToken cancelToken)
+        {
+            WriteLog(url, nameof(PostFormUrlEncodedToTwitterAsync));
+
+            var postJson = JsonConvert.SerializeObject(postObj);
+            var content = new StringContent(postJson, Encoding.UTF8, "application/json");
+
+            var cleanPostData = new Dictionary<string, string>();
+            var handler = new PostMessageHandler(this, cleanPostData, url);
+
+            using (var client = new HttpClient(handler))
+            {
+                if (Timeout != 0)
+                    client.Timeout = new TimeSpan(0, 0, 0, Timeout);
+
+                HttpResponseMessage msg;
+
+                if (method == HttpMethod.Post)
+                    msg = await client.PostAsync(url, content).ConfigureAwait(false);
+                else if (method == HttpMethod.Delete)
+                    msg = await client.DeleteAsync(url).ConfigureAwait(false);
+                else
+                    msg = await client.PutAsync(url, content).ConfigureAwait(false);
+
+                return await HandleResponseAsync(msg);
+            }
+        }
+
+        /// <summary>
         /// performs HTTP POST to Twitter
         /// </summary>
+        /// <param name="method">Delete, Post, or Put</param>
         /// <param name="url">URL of request</param>
         /// <param name="postData">parameters to post</param>
         /// <param name="getResult">callback for handling async Json response - null if synchronous</param>
         /// <returns>Json Response from Twitter - empty string if async</returns>
-        public async Task<string> PostToTwitterAsync<T>(string url, IDictionary<string, string> postData, CancellationToken cancelToken)
+        public async Task<string> PostFormUrlEncodedToTwitterAsync<T>(HttpMethod method, string url, IDictionary<string, string> postData, CancellationToken cancelToken)
         {
-            WriteLog(url, nameof(PostToTwitterAsync));
+            WriteLog(url, nameof(PostFormUrlEncodedToTwitterAsync));
 
             var cleanPostData = new Dictionary<string, string>();
 
@@ -416,7 +454,11 @@ namespace LinqToTwitter
                 if (Timeout != 0)
                     client.Timeout = new TimeSpan(0, 0, 0, Timeout);
 
-                HttpResponseMessage msg = await client.PostAsync(url, content).ConfigureAwait(false);
+                HttpResponseMessage msg;
+                if (method == HttpMethod.Delete)
+                    msg = await client.DeleteAsync(url).ConfigureAwait(false);
+                else
+                    msg = await client.PostAsync(url, content).ConfigureAwait(false);
 
                 return await HandleResponseAsync(msg);
             }

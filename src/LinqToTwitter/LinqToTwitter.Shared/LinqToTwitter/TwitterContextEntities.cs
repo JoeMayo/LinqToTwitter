@@ -17,6 +17,17 @@ namespace LinqToTwitter
         }
 
         /// <summary>
+        /// Enables access to Twitter account activity information, such as listing webhooks and showing subscriptions.
+        /// </summary>
+        public TwitterQueryable<AccountActivity> AccountActivity
+        {
+            get
+            {
+                return new TwitterQueryable<AccountActivity>(this);
+            }
+        }
+
+        /// <summary>
         /// enables access to Twitter blocking information, such as Exists, Blocks, and IDs
         /// </summary>
         public TwitterQueryable<Blocks> Blocks
@@ -39,13 +50,24 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// enables access to Twitter User messages, such as Friends and Followers
+        /// enables access to Twitter Direct Messages
         /// </summary>
         public TwitterQueryable<DirectMessage> DirectMessage
         {
             get
             {
                 return new TwitterQueryable<DirectMessage>(this);
+            }
+        }
+
+        /// <summary>
+        /// enables access to Direct Message Events, supporting Twitter chatbots
+        /// </summary>
+        public TwitterQueryable<DirectMessageEvents> DirectMessageEvents
+        {
+            get
+            {
+                return new TwitterQueryable<DirectMessageEvents>(this);
             }
         }
 

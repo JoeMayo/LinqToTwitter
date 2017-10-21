@@ -527,6 +527,9 @@ namespace LinqToTwitter
                 case nameof(Account):
                     req = new AccountRequestProcessor<T>();
                     break;
+                case nameof(AccountActivity):
+                    req = new AccountActivityRequestProcessor<T>();
+                    break;
                 case nameof(Blocks):
                     req = new BlocksRequestProcessor<T>();
                     break;
@@ -538,6 +541,9 @@ namespace LinqToTwitter
                     break;
                 case nameof(DirectMessage):
                     req = new DirectMessageRequestProcessor<T>();
+                    break;
+                case nameof(DirectMessageEvents):
+                    req = new DirectMessageEventsRequestProcessor<T>();
                     break;
                 case nameof(Favorites):
                     req = new FavoritesRequestProcessor<T>();

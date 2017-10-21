@@ -6,6 +6,7 @@ using LinqToTwitterPcl.Tests.Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System.Threading;
+using System.Net.Http;
 
 namespace LinqToTwitterPcl.Tests.BlocksTests
 {
@@ -35,7 +36,8 @@ namespace LinqToTwitterPcl.Tests.BlocksTests
             tcsResponse.SetResult(BlocksUserJson);
             execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.Authorizer).Returns(authMock.Object);
-            execMock.Setup(exec => exec.PostToTwitterAsync<User>(
+            execMock.Setup(exec => exec.PostFormUrlEncodedToTwitterAsync<User>(
+                It.IsAny<HttpMethod>(),
                 It.IsAny<string>(),
                 It.IsAny<Dictionary<string, string>>(),
                 It.IsAny<CancellationToken>()))
@@ -78,7 +80,8 @@ namespace LinqToTwitterPcl.Tests.BlocksTests
             await ctx.CreateBlockAsync(Id, null, SkipStatus);
 
             execMock.Verify(exec =>
-                exec.PostToTwitterAsync<User>(
+                exec.PostFormUrlEncodedToTwitterAsync<User>(
+                    It.IsAny<HttpMethod>(),
                     "https://api.twitter.com/1.1/blocks/create.json",
                     It.IsAny<Dictionary<string, string>>(),
                     It.IsAny<CancellationToken>()),
@@ -130,7 +133,8 @@ namespace LinqToTwitterPcl.Tests.BlocksTests
             await ctx.DestroyBlockAsync(Id, null, SkipStatus);
 
             execMock.Verify(exec =>
-                exec.PostToTwitterAsync<User>(
+                exec.PostFormUrlEncodedToTwitterAsync<User>(
+                    It.IsAny<HttpMethod>(),
                     "https://api.twitter.com/1.1/blocks/destroy.json",
                     It.IsAny<Dictionary<string, string>>(),
                     It.IsAny<CancellationToken>()),

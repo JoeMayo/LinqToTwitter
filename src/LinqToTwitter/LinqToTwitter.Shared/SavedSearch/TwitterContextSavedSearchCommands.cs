@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -23,7 +24,8 @@ namespace LinqToTwitter
             var reqProc = new SavedSearchRequestProcessor<SavedSearch>();
 
             RawResult =
-                await TwitterExecutor.PostToTwitterAsync<SavedSearch>(
+                await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<SavedSearch>(
+                    HttpMethod.Post,
                     savedSearchUrl,
                     new Dictionary<string, string>
                     {
@@ -51,7 +53,8 @@ namespace LinqToTwitter
             var reqProc = new SavedSearchRequestProcessor<SavedSearch>();
 
             RawResult =
-                await TwitterExecutor.PostToTwitterAsync<SavedSearch>(
+                await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<SavedSearch>(
+                    HttpMethod.Post,
                     savedSearchUrl,
                     new Dictionary<string, string>(),
                     cancelToken)

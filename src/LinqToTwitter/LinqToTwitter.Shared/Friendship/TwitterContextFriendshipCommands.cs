@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -35,7 +36,8 @@ namespace LinqToTwitter
             var reqProc = new FriendshipRequestProcessor<User>();
 
             RawResult =
-                await TwitterExecutor.PostToTwitterAsync<User>(
+                await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<User>(
+                    HttpMethod.Post,
                     destroyUrl,
                     createParams,
                     cancelToken)
@@ -71,7 +73,8 @@ namespace LinqToTwitter
             var reqProc = new FriendshipRequestProcessor<User>();
 
             RawResult =
-                await TwitterExecutor.PostToTwitterAsync<User>(
+                await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<User>(
+                    HttpMethod.Post,
                     destroyUrl,
                     createParams,
                     cancelToken)
@@ -95,7 +98,8 @@ namespace LinqToTwitter
             var reqProc = new FriendshipRequestProcessor<User>();
 
             RawResult =
-                await TwitterExecutor.PostToTwitterAsync<User>(
+                await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<User>(
+                    HttpMethod.Post,
                     destroyUrl,
                     new Dictionary<string, string>
                     {
@@ -122,7 +126,8 @@ namespace LinqToTwitter
             var reqProc = new FriendshipRequestProcessor<User>();
 
             RawResult =
-                await TwitterExecutor.PostToTwitterAsync<User>(
+                await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<User>(
+                    HttpMethod.Post,
                     destroyUrl,
                     new Dictionary<string, string>
                     {
@@ -189,7 +194,8 @@ namespace LinqToTwitter
             var reqProc = new FriendshipRequestProcessor<Friendship>();
 
             RawResult =
-                await TwitterExecutor.PostToTwitterAsync<Friendship>(
+                await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<Friendship>(
+                    HttpMethod.Post,
                     updateUrl,
                     parms,
                     cancelToken)

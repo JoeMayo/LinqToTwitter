@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using System;
 
 namespace LinqToTwitter
@@ -11,6 +12,13 @@ namespace LinqToTwitter
         /// <summary>
         /// Symbol
         /// </summary>
+        [JsonProperty("text")]
         public string Text { get; set; }
+
+        /// <summary>
+        /// Locations for begin/end index of where symbol occurs.
+        /// </summary>
+        [JsonProperty("indices")]
+        public int[] Indices { get; set; }
     }
 }

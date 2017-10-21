@@ -1,3 +1,5 @@
+using Newtonsoft.Json;
+
 namespace LinqToTwitter
 {
     /// <summary>
@@ -9,6 +11,13 @@ namespace LinqToTwitter
         /// <summary>
         /// Tag name without the # sign
         /// </summary>
-        public string Tag { get; set; }
+        [JsonProperty("text")]
+        public string Text { get; set; }
+
+        /// <summary>
+        /// Locations for begin/end index of where hashtag occurs.
+        /// </summary>
+        [JsonProperty("indices")]
+        public int[] Indices { get; set; }
     }
 }

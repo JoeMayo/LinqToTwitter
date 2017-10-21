@@ -7,6 +7,7 @@ using LinqToTwitter;
 using LinqToTwitterPcl.Tests.Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using System.Net.Http;
 
 namespace LinqToTwitterPcl.Tests.AccountTests
 {
@@ -28,7 +29,8 @@ namespace LinqToTwitterPcl.Tests.AccountTests
             execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.Authorizer).Returns(authMock.Object);
             execMock.Setup(
-                exec => exec.PostToTwitterAsync<User>(
+                exec => exec.PostFormUrlEncodedToTwitterAsync<User>(
+                    It.IsAny<HttpMethod>(),
                     It.IsAny<string>(),
                     It.IsAny<Dictionary<string, string>>(),
                     It.IsAny<CancellationToken>()))
@@ -57,7 +59,8 @@ namespace LinqToTwitterPcl.Tests.AccountTests
             User actual = await ctx.ReportSpamAsync(ScreenName);
 
             execMock.Verify(exec =>
-                exec.PostToTwitterAsync<User>(
+                exec.PostFormUrlEncodedToTwitterAsync<User>(
+                    HttpMethod.Post,
                     "https://api.twitter.com/1.1/users/report_spam.json",
                     It.IsAny<IDictionary<string, string>>(),
                     It.IsAny<CancellationToken>()),
@@ -85,7 +88,8 @@ namespace LinqToTwitterPcl.Tests.AccountTests
             User actual = await ctx.ReportSpamAsync(1);
 
             execMock.Verify(exec =>
-                exec.PostToTwitterAsync<User>(
+                exec.PostFormUrlEncodedToTwitterAsync<User>(
+                    HttpMethod.Post,
                     "https://api.twitter.com/1.1/users/report_spam.json",
                     It.IsAny<IDictionary<string, string>>(),
                     It.IsAny<CancellationToken>()),

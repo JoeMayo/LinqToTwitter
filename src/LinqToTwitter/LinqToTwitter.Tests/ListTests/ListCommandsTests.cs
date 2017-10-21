@@ -8,6 +8,7 @@ using LinqToTwitterPcl.Tests.Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System.Threading;
+using System.Net.Http;
 
 namespace LinqToTwitterPcl.Tests.ListTests
 {
@@ -30,7 +31,8 @@ namespace LinqToTwitterPcl.Tests.ListTests
             execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.Authorizer).Returns(authMock.Object);
             execMock.Setup(exec => 
-                exec.PostToTwitterAsync<List>(
+                exec.PostFormUrlEncodedToTwitterAsync<List>(
+                    It.IsAny<HttpMethod>(),
                     It.IsAny<string>(),
                     It.IsAny<Dictionary<string, string>>(),
                     It.IsAny<CancellationToken>()))
@@ -71,7 +73,8 @@ namespace LinqToTwitterPcl.Tests.ListTests
             await ctx.CreateListAsync("test", "public", "desc");
 
             execMock.Verify(exec =>
-                exec.PostToTwitterAsync<List>(
+                exec.PostFormUrlEncodedToTwitterAsync<List>(
+                    HttpMethod.Post,
                     "https://api.twitter.com/1.1/lists/create.json",
                     parameters,
                     It.IsAny<CancellationToken>()),
@@ -128,7 +131,8 @@ namespace LinqToTwitterPcl.Tests.ListTests
             await ctx.UpdateListAsync(123, "test", "Test List", 456, "JoeMayo", "public", "desc");
 
             execMock.Verify(exec =>
-                exec.PostToTwitterAsync<List>(
+                exec.PostFormUrlEncodedToTwitterAsync<List>(
+                    HttpMethod.Post,
                     "https://api.twitter.com/1.1/lists/update.json",
                     parameters,
                     It.IsAny<CancellationToken>()),
@@ -198,7 +202,8 @@ namespace LinqToTwitterPcl.Tests.ListTests
             await ctx.DeleteListAsync(123, "test", 456, "JoeMayo");
 
             execMock.Verify(exec =>
-                exec.PostToTwitterAsync<List>(
+                exec.PostFormUrlEncodedToTwitterAsync<List>(
+                    HttpMethod.Post,
                     "https://api.twitter.com/1.1/lists/destroy.json",
                     parameters,
                     It.IsAny<CancellationToken>()),
@@ -264,7 +269,8 @@ namespace LinqToTwitterPcl.Tests.ListTests
             await ctx.AddMemberToListAsync("JoeMayo", 123, "test", 456, "JoeMayo");
 
             execMock.Verify(exec =>
-                exec.PostToTwitterAsync<List>(
+                exec.PostFormUrlEncodedToTwitterAsync<List>(
+                    HttpMethod.Post,
                     "https://api.twitter.com/1.1/lists/members/create.json",
                     parameters,
                     It.IsAny<CancellationToken>()),
@@ -354,7 +360,8 @@ namespace LinqToTwitterPcl.Tests.ListTests
             await ctx.AddMemberRangeToListAsync(123, "test", 456, "JoeMayo", screenNames);
 
             execMock.Verify(exec =>
-                exec.PostToTwitterAsync<List>(
+                exec.PostFormUrlEncodedToTwitterAsync<List>(
+                    HttpMethod.Post,
                     "https://api.twitter.com/1.1/lists/members/create_all.json",
                     parameters,
                     It.IsAny<CancellationToken>()),
@@ -423,7 +430,8 @@ namespace LinqToTwitterPcl.Tests.ListTests
             await ctx.AddMemberRangeToListAsync(123, "test", 456, "JoeMayo", userIDs);
 
             execMock.Verify(exec =>
-                exec.PostToTwitterAsync<List>(
+                exec.PostFormUrlEncodedToTwitterAsync<List>(
+                    HttpMethod.Post,
                     "https://api.twitter.com/1.1/lists/members/create_all.json",
                     parameters,
                     It.IsAny<CancellationToken>()),
@@ -480,7 +488,8 @@ namespace LinqToTwitterPcl.Tests.ListTests
             await ctx.DeleteMemberFromListAsync(789, "JoeMayo", 123, "test", 456, "JoeMayo");
 
             execMock.Verify(exec =>
-                exec.PostToTwitterAsync<List>(
+                exec.PostFormUrlEncodedToTwitterAsync<List>(
+                    HttpMethod.Post,
                     "https://api.twitter.com/1.1/lists/members/destroy.json",
                     parameters,
                     It.IsAny<CancellationToken>()),
@@ -534,7 +543,8 @@ namespace LinqToTwitterPcl.Tests.ListTests
             await ctx.SubscribeToListAsync(123, "test", 456, "JoeMayo");
 
             execMock.Verify(exec =>
-                exec.PostToTwitterAsync<List>(
+                exec.PostFormUrlEncodedToTwitterAsync<List>(
+                    HttpMethod.Post,
                     "https://api.twitter.com/1.1/lists/subscribers/create.json",
                     parameters,
                     It.IsAny<CancellationToken>()),
@@ -588,7 +598,8 @@ namespace LinqToTwitterPcl.Tests.ListTests
             await ctx.UnsubscribeFromListAsync(123, "test", 456, "JoeMayo");
 
             execMock.Verify(exec =>
-                exec.PostToTwitterAsync<List>(
+                exec.PostFormUrlEncodedToTwitterAsync<List>(
+                    HttpMethod.Post,
                     "https://api.twitter.com/1.1/lists/subscribers/destroy.json",
                     parameters,
                     It.IsAny<CancellationToken>()),
@@ -622,7 +633,8 @@ namespace LinqToTwitterPcl.Tests.ListTests
             await ctx.DeleteMemberRangeFromListAsync(123, "test", userIDs, 789, "JoeMayo");
 
             execMock.Verify(exec =>
-                exec.PostToTwitterAsync<List>(
+                exec.PostFormUrlEncodedToTwitterAsync<List>(
+                    HttpMethod.Post,
                     "https://api.twitter.com/1.1/lists/members/destroy_all.json",
                     parameters,
                     It.IsAny<CancellationToken>()),

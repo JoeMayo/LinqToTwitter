@@ -7,6 +7,7 @@ using LinqToTwitterPcl.Tests.Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System.Threading;
+using System.Net.Http;
 
 namespace LinqToTwitterPcl.Tests.RawTests
 {
@@ -29,7 +30,8 @@ namespace LinqToTwitterPcl.Tests.RawTests
             var tcsResponse = new TaskCompletionSource<string>();
             tcsResponse.SetResult(EmptyRawResponse);
             execMock.Setup(
-                exec => exec.PostToTwitterAsync<Raw>(
+                exec => exec.PostFormUrlEncodedToTwitterAsync<Raw>(
+                    It.IsAny<HttpMethod>(),
                     It.IsAny<string>(),
                     It.IsAny<Dictionary<string, string>>(),
                     It.IsAny<CancellationToken>()))
@@ -58,7 +60,8 @@ namespace LinqToTwitterPcl.Tests.RawTests
             await ctx.ExecuteRawAsync(QueryString, parameters);
 
             execMock.Verify(exec =>
-                exec.PostToTwitterAsync<Raw>(
+                exec.PostFormUrlEncodedToTwitterAsync<Raw>(
+                    HttpMethod.Post,
                     "https://api.twitter.com/1.1/statuses/update.json",
                     parameters,
                     It.IsAny<CancellationToken>()),
@@ -93,7 +96,7 @@ namespace LinqToTwitterPcl.Tests.RawTests
             const string FullUrl = "https://api.twitter.com/1.1/statuses/update.json";
             var tcsResponse = new TaskCompletionSource<string>();
             tcsResponse.SetResult(ExpectedResult);
-            execMock.Setup(exec => exec.PostToTwitterAsync<Raw>(FullUrl, parameters, It.IsAny<CancellationToken>())).Returns(tcsResponse.Task);
+            execMock.Setup(exec => exec.PostFormUrlEncodedToTwitterAsync<Raw>(HttpMethod.Post, FullUrl, parameters, It.IsAny<CancellationToken>())).Returns(tcsResponse.Task);
 
             string actualResult = await ctx.ExecuteRawAsync(QueryString, parameters);
 
@@ -114,7 +117,8 @@ namespace LinqToTwitterPcl.Tests.RawTests
             await ctx.ExecuteRawAsync(QueryStringWithBeginningSlash, parameters);
 
             execMock.Verify(exec =>
-                exec.PostToTwitterAsync<Raw>(
+                exec.PostFormUrlEncodedToTwitterAsync<Raw>(
+                    HttpMethod.Post,
                     FullUrl,
                     parameters,
                     It.IsAny<CancellationToken>()), Times.Once());
@@ -134,7 +138,8 @@ namespace LinqToTwitterPcl.Tests.RawTests
             await ctx.ExecuteRawAsync(QueryStringWithoutBeginningSlash, parameters);
 
             execMock.Verify(exec =>
-                exec.PostToTwitterAsync<Raw>(
+                exec.PostFormUrlEncodedToTwitterAsync<Raw>(
+                    HttpMethod.Post,
                     FullUrl,
                     parameters,
                     It.IsAny<CancellationToken>()), Times.Once());

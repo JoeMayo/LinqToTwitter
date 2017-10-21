@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -51,7 +52,7 @@ namespace LinqToTwitter
 
             RawResult =
                 await TwitterExecutor
-                    .PostToTwitterAsync<User>(reportSpamUrl, reportParams, cancelToken)
+                    .PostFormUrlEncodedToTwitterAsync<User>(HttpMethod.Post, reportSpamUrl, reportParams, cancelToken)
                     .ConfigureAwait(false);
 
             return new UserRequestProcessor<User>()

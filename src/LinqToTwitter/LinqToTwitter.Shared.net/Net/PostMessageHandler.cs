@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -24,7 +22,7 @@ namespace LinqToTwitter.Net
 
         protected async override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            exe.SetAuthorizationHeader(HttpMethod.Post.ToString(), url, postData, request);
+            exe.SetAuthorizationHeader(request.Method.ToString(), url, postData, request);
             request.Headers.Add("User-Agent", exe.UserAgent);
             request.Headers.ExpectContinue = false;
             request.Headers.CacheControl = new CacheControlHeaderValue { NoCache = true };

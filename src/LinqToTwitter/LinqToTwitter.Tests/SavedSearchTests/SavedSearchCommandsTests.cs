@@ -7,6 +7,7 @@ using LinqToTwitterPcl.Tests.Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System.Threading;
+using System.Net.Http;
 
 namespace LinqToTwitterPcl.Tests.SavedSearchTests
 {
@@ -57,7 +58,8 @@ namespace LinqToTwitterPcl.Tests.SavedSearchTests
             tcsResponse.SetResult(SavedSearchResponse);
             execMock.SetupGet(exec => exec.Authorizer).Returns(authMock.Object);
             execMock.Setup(exec =>
-                exec.PostToTwitterAsync<SavedSearch>(
+                exec.PostFormUrlEncodedToTwitterAsync<SavedSearch>(
+                    HttpMethod.Post,
                     It.IsAny<string>(),
                     It.IsAny<IDictionary<string, string>>(),
                     It.IsAny<CancellationToken>()))
@@ -70,7 +72,8 @@ namespace LinqToTwitterPcl.Tests.SavedSearchTests
             SavedSearch search = await ctx.CreateSavedSearchAsync("#LinqToTwitter");
 
             execMock.Verify(exec =>
-                exec.PostToTwitterAsync<SavedSearch>(
+                exec.PostFormUrlEncodedToTwitterAsync<SavedSearch>(
+                    HttpMethod.Post,
                     "https://api.twitter.com/1.1/saved_searches/create.json",
                     parameters,
                     It.IsAny<CancellationToken>()),
@@ -89,7 +92,8 @@ namespace LinqToTwitterPcl.Tests.SavedSearchTests
             tcsResponse.SetResult(SavedSearchResponse);
             execMock.SetupGet(exec => exec.Authorizer).Returns(authMock.Object);
             execMock.Setup(exec =>
-                exec.PostToTwitterAsync<SavedSearch>(
+                exec.PostFormUrlEncodedToTwitterAsync<SavedSearch>(
+                    HttpMethod.Post,
                     It.IsAny<string>(),
                     It.IsAny<IDictionary<string, string>>(),
                     It.IsAny<CancellationToken>()))
@@ -119,7 +123,8 @@ namespace LinqToTwitterPcl.Tests.SavedSearchTests
             tcsResponse.SetResult(SavedSearchResponse);
             execMock.SetupGet(exec => exec.Authorizer).Returns(authMock.Object);
             execMock.Setup(exec =>
-                exec.PostToTwitterAsync<SavedSearch>(
+                exec.PostFormUrlEncodedToTwitterAsync<SavedSearch>(
+                    HttpMethod.Post,
                     It.IsAny<string>(),
                     It.IsAny<IDictionary<string, string>>(),
                     It.IsAny<CancellationToken>()))
@@ -129,7 +134,8 @@ namespace LinqToTwitterPcl.Tests.SavedSearchTests
             SavedSearch search = await ctx.DestroySavedSearchAsync(123);
 
             execMock.Verify(exec =>
-                exec.PostToTwitterAsync<SavedSearch>(
+                exec.PostFormUrlEncodedToTwitterAsync<SavedSearch>(
+                    HttpMethod.Post,
                     "https://api.twitter.com/1.1/saved_searches/destroy/123.json",
                     parameters,
                     It.IsAny<CancellationToken>()),
@@ -148,7 +154,8 @@ namespace LinqToTwitterPcl.Tests.SavedSearchTests
             tcsResponse.SetResult(SavedSearchResponse);
             execMock.SetupGet(exec => exec.Authorizer).Returns(authMock.Object);
             execMock.Setup(exec =>
-                exec.PostToTwitterAsync<SavedSearch>(
+                exec.PostFormUrlEncodedToTwitterAsync<SavedSearch>(
+                    It.IsAny<HttpMethod>(),
                     It.IsAny<string>(),
                     It.IsAny<IDictionary<string, string>>(),
                     It.IsAny<CancellationToken>()))
