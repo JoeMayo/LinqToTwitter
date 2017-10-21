@@ -28,7 +28,7 @@ namespace LinqToTwitter
 
             RawResult =
                 await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<DirectMessage>(
-                    HttpMethod.Post,
+                    HttpMethod.Post.ToString(),
                     newUrl,
                     new Dictionary<string, string>
                     {
@@ -61,7 +61,7 @@ namespace LinqToTwitter
 
             RawResult =
                 await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<DirectMessage>(
-                    HttpMethod.Post,
+                    HttpMethod.Post.ToString(),
                     newUrl,
                     new Dictionary<string, string>
                     {
@@ -91,7 +91,7 @@ namespace LinqToTwitter
 
             RawResult =
                 await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<DirectMessage>(
-                    HttpMethod.Post,
+                    HttpMethod.Post.ToString(),
                     destroyUrl,
                     new Dictionary<string, string>
                     {

@@ -30,14 +30,14 @@ namespace LinqToTwitterPcl.Tests.AccountTests
             execMock.SetupGet(exec => exec.Authorizer).Returns(authMock.Object);
             execMock.Setup(
                 exec => exec.PostFormUrlEncodedToTwitterAsync<Account>(
-                    It.IsAny<HttpMethod>(),
+                    It.IsAny<string>(),
                     It.IsAny<string>(),
                     It.IsAny<Dictionary<string, string>>(),
                     It.IsAny<CancellationToken>()))
                     .Returns(tcsResponse.Task);
             execMock.Setup(
                 exec => exec.PostFormUrlEncodedToTwitterAsync<User>(
-                    It.IsAny<HttpMethod>(),
+                    It.IsAny<string>(),
                     It.IsAny<string>(),
                     It.IsAny<Dictionary<string, string>>(),
                     It.IsAny<CancellationToken>()))
@@ -72,7 +72,7 @@ namespace LinqToTwitterPcl.Tests.AccountTests
 
             execMock.Verify(exec =>
                 exec.PostFormUrlEncodedToTwitterAsync<User>(
-                    HttpMethod.Post,
+                    HttpMethod.Post.ToString(),
                     "https://api.twitter.com/1.1/account/update_profile.json",
                     It.IsAny<Dictionary<string, string>>(),
                     It.IsAny<CancellationToken>()),
@@ -251,7 +251,7 @@ namespace LinqToTwitterPcl.Tests.AccountTests
 
             execMock.Verify(exec =>
                 exec.PostFormUrlEncodedToTwitterAsync<User>(
-                    HttpMethod.Post,
+                    HttpMethod.Post.ToString(),
                     "https://api.twitter.com/1.1/account/update_profile_colors.json",
                     It.IsAny<Dictionary<string, string>>(),
                     It.IsAny<CancellationToken>()),
@@ -391,7 +391,7 @@ namespace LinqToTwitterPcl.Tests.AccountTests
 
             execMock.Verify(exec =>
                 exec.PostFormUrlEncodedToTwitterAsync<Account>(
-                    HttpMethod.Post,
+                    HttpMethod.Post.ToString(),
                     "https://api.twitter.com/1.1/account/settings.json",
                     parameters,
                     It.IsAny<CancellationToken>()),
@@ -438,7 +438,7 @@ namespace LinqToTwitterPcl.Tests.AccountTests
 
             execMock.Verify(exec =>
                 exec.PostFormUrlEncodedToTwitterAsync<Account>(
-                    HttpMethod.Post,
+                    HttpMethod.Post.ToString(),
                     "https://api.twitter.com/1.1/account/update_delivery_device.json",
                     parameters,
                     It.IsAny<CancellationToken>()),
@@ -597,7 +597,7 @@ namespace LinqToTwitterPcl.Tests.AccountTests
 
             execMock.Verify(exec =>
                 exec.PostFormUrlEncodedToTwitterAsync<User>(
-                    HttpMethod.Post,
+                    HttpMethod.Post.ToString(),
                     "https://api.twitter.com/1.1/account/remove_profile_banner.json",
                     It.IsAny<Dictionary<string, string>>(),
                     It.IsAny<CancellationToken>()),

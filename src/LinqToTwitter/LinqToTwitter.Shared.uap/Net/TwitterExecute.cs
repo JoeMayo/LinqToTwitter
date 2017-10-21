@@ -12,6 +12,7 @@ using Windows.Web.Http.Filters;
 using Windows.Web.Http.Headers;
 using LinqToTwitter.Common;
 using LitJson;
+using Newtonsoft.Json;
 
 namespace LinqToTwitter
 {
@@ -377,16 +378,100 @@ namespace LinqToTwitter
             }
         }
 
+        ///// <summary>
+        ///// Performs HTTP POST to Twitter.
+        ///// </summary>
+        ///// <param name="url">URL of request.</param>
+        ///// <param name="postData">Parameters to post.</param>
+        ///// <param name="getResult">Callback for handling async Json response - null if synchronous.</param>
+        ///// <returns>Json Response from Twitter - empty string if async.</returns>
+        //public async Task<string> PostToTwitterAsync<T>(string url, IDictionary<string, string> postData, CancellationToken cancelToken)
+        //{
+        //    WriteLog(url, "PostToTwitterAsync");
+
+        //    var cleanPostData = new Dictionary<string, string>();
+
+        //    var dataString = new StringBuilder();
+
+        //    foreach (var pair in postData)
+        //    {
+        //        if (pair.Value != null)
+        //        {
+        //            dataString.AppendFormat("{0}={1}&", pair.Key, Url.PercentEncode(pair.Value));
+        //            cleanPostData.Add(pair.Key, pair.Value);
+        //        }
+        //    }
+
+        //    var content = new HttpStringContent(dataString.ToString().TrimEnd('&'), Windows.Storage.Streams.UnicodeEncoding.Utf8, "application/x-www-form-urlencoded");
+
+        //    var baseFilter = new HttpBaseProtocolFilter
+        //    {
+        //        AutomaticDecompression = Authorizer.SupportsCompression,
+        //        ProxyCredential = Authorizer.ProxyCredential,
+        //        UseProxy = Authorizer.UseProxy
+        //    };
+
+        //    var filter = new PostMessageFilter(this, cleanPostData, url, baseFilter, CancellationToken);
+        //    using (var client = new HttpClient(filter))
+        //    {
+        //        HttpResponseMessage msg = await client.PostAsync(new Uri(url), content);
+
+        //        return await HandleResponseAsync(msg);
+        //    }
+        //}
+
+
         /// <summary>
-        /// Performs HTTP POST to Twitter.
+        /// Performs HTTP POST, with JSON payload, to Twitter.
         /// </summary>
+        /// <param name="method">Delete, Post, or Put</param>
         /// <param name="url">URL of request.</param>
-        /// <param name="postData">Parameters to post.</param>
+        /// <param name="postObj">Serializable payload object.</param>
         /// <param name="getResult">Callback for handling async Json response - null if synchronous.</param>
-        /// <returns>Json Response from Twitter - empty string if async.</returns>
-        public async Task<string> PostToTwitterAsync<T>(string url, IDictionary<string, string> postData, CancellationToken cancelToken)
+        /// <returns>JSON Response from Twitter - empty string if async.</returns>
+        public async Task<string> SendJsonToTwitterAsync<T>(string method, string url, T postObj, CancellationToken cancelToken)
         {
-            WriteLog(url, "PostToTwitterAsync");
+            WriteLog(url, nameof(PostFormUrlEncodedToTwitterAsync));
+
+            var postJson = JsonConvert.SerializeObject(postObj);
+            var content = new HttpStringContent(postJson, Windows.Storage.Streams.UnicodeEncoding.Utf8, "application/json");
+
+            var cleanPostData = new Dictionary<string, string>();
+            var baseFilter = new HttpBaseProtocolFilter
+            {
+                AutomaticDecompression = Authorizer.SupportsCompression,
+                ProxyCredential = Authorizer.ProxyCredential,
+                UseProxy = Authorizer.UseProxy
+            };
+
+            var filter = new PostMessageFilter(this, cleanPostData, url, baseFilter, CancellationToken);
+
+            using (var client = new HttpClient(filter))
+            {
+                HttpResponseMessage msg;
+
+                if (method == HttpMethod.Post.ToString())
+                    msg = await client.PostAsync(new Uri(url), content);
+                else if (method == HttpMethod.Delete.ToString())
+                    msg = await client.DeleteAsync(new Uri(url));
+                else
+                    msg = await client.PutAsync(new Uri(url), content);
+
+                return await HandleResponseAsync(msg);
+            }
+        }
+
+        /// <summary>
+        /// performs HTTP POST to Twitter
+        /// </summary>
+        /// <param name="method">Delete, Post, or Put</param>
+        /// <param name="url">URL of request</param>
+        /// <param name="postData">parameters to post</param>
+        /// <param name="getResult">callback for handling async Json response - null if synchronous</param>
+        /// <returns>Json Response from Twitter - empty string if async</returns>
+        public async Task<string> PostFormUrlEncodedToTwitterAsync<T>(string method, string url, IDictionary<string, string> postData, CancellationToken cancelToken)
+        {
+            WriteLog(url, nameof(PostFormUrlEncodedToTwitterAsync));
 
             var cleanPostData = new Dictionary<string, string>();
 
@@ -413,12 +498,16 @@ namespace LinqToTwitter
             var filter = new PostMessageFilter(this, cleanPostData, url, baseFilter, CancellationToken);
             using (var client = new HttpClient(filter))
             {
-                HttpResponseMessage msg = await client.PostAsync(new Uri(url), content);
+                HttpResponseMessage msg;
+                if (method == HttpMethod.Delete.ToString())
+                    msg = await client.DeleteAsync(new Uri(url));
+                else
+                    msg = await client.PostAsync(new Uri(url), content);
 
                 return await HandleResponseAsync(msg);
             }
         }
-  
+
         async Task<string> HandleResponseAsync(HttpResponseMessage msg)
         {
             LastUrl = msg.RequestMessage.RequestUri;

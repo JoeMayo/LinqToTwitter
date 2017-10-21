@@ -37,13 +37,13 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
             execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.Authorizer).Returns(authMock.Object);
             execMock.Setup(exec => exec.SendJsonToTwitterAsync(
-                It.IsAny<HttpMethod>(),
+                It.IsAny<string>(),
                 It.IsAny<string>(),
                 It.IsAny<AccountActivity>(),
                 It.IsAny<CancellationToken>()))
                     .Returns(tcsResponse.Task);
             execMock.Setup(exec => exec.PostFormUrlEncodedToTwitterAsync<AccountActivity>(
-                It.IsAny<HttpMethod>(),
+                It.IsAny<string>(),
                 It.IsAny<string>(),
                 It.IsAny<Dictionary<string, string>>(),
                 It.IsAny<CancellationToken>()))
@@ -99,7 +99,7 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
 
             execMock.Verify(exec =>
                 exec.SendJsonToTwitterAsync(
-                    HttpMethod.Post,
+                    HttpMethod.Post.ToString(),
                     "https://api.twitter.com/1.1/account_activity/webhooks/1/subscriptions.json",
                     It.IsAny<AccountActivityValue>(),
                     It.IsAny<CancellationToken>()),
@@ -173,7 +173,7 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
 
             execMock.Verify(exec =>
                 exec.PostFormUrlEncodedToTwitterAsync<AccountActivity>(
-                    HttpMethod.Post,
+                    HttpMethod.Post.ToString(),
                     "https://api.twitter.com/1.1/account_activity/webhooks.json?url=https://www.example.com/api/accountactivity",
                     It.IsAny<Dictionary<string, string>>(),
                     It.IsAny<CancellationToken>()),
@@ -248,7 +248,7 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
 
             execMock.Verify(exec =>
                 exec.SendJsonToTwitterAsync(
-                    HttpMethod.Put,
+                    HttpMethod.Put.ToString(),
                     "https://api.twitter.com/1.1/account_activity/webhooks/1.json",
                     It.IsAny<AccountActivityValue>(),
                     It.IsAny<CancellationToken>()),
@@ -311,7 +311,7 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
 
             execMock.Verify(exec =>
                 exec.SendJsonToTwitterAsync(
-                    HttpMethod.Delete,
+                    HttpMethod.Delete.ToString(),
                     "https://api.twitter.com/1.1/account_activity/webhooks/1/subscriptions.json",
                     It.IsAny<AccountActivityValue>(),
                     It.IsAny<CancellationToken>()),
@@ -351,7 +351,7 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
 
             execMock.Verify(exec =>
                 exec.SendJsonToTwitterAsync(
-                    HttpMethod.Delete,
+                    HttpMethod.Delete.ToString(),
                     "https://api.twitter.com/1.1/account_activity/webhooks/1.json",
                     It.IsAny<AccountActivity>(),
                     It.IsAny<CancellationToken>()),

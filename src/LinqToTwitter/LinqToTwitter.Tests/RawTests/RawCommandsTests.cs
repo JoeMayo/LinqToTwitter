@@ -31,7 +31,7 @@ namespace LinqToTwitterPcl.Tests.RawTests
             tcsResponse.SetResult(EmptyRawResponse);
             execMock.Setup(
                 exec => exec.PostFormUrlEncodedToTwitterAsync<Raw>(
-                    It.IsAny<HttpMethod>(),
+                    It.IsAny<string>(),
                     It.IsAny<string>(),
                     It.IsAny<Dictionary<string, string>>(),
                     It.IsAny<CancellationToken>()))
@@ -61,7 +61,7 @@ namespace LinqToTwitterPcl.Tests.RawTests
 
             execMock.Verify(exec =>
                 exec.PostFormUrlEncodedToTwitterAsync<Raw>(
-                    HttpMethod.Post,
+                    HttpMethod.Post.ToString(),
                     "https://api.twitter.com/1.1/statuses/update.json",
                     parameters,
                     It.IsAny<CancellationToken>()),
@@ -96,7 +96,7 @@ namespace LinqToTwitterPcl.Tests.RawTests
             const string FullUrl = "https://api.twitter.com/1.1/statuses/update.json";
             var tcsResponse = new TaskCompletionSource<string>();
             tcsResponse.SetResult(ExpectedResult);
-            execMock.Setup(exec => exec.PostFormUrlEncodedToTwitterAsync<Raw>(HttpMethod.Post, FullUrl, parameters, It.IsAny<CancellationToken>())).Returns(tcsResponse.Task);
+            execMock.Setup(exec => exec.PostFormUrlEncodedToTwitterAsync<Raw>(HttpMethod.Post.ToString(), FullUrl, parameters, It.IsAny<CancellationToken>())).Returns(tcsResponse.Task);
 
             string actualResult = await ctx.ExecuteRawAsync(QueryString, parameters);
 
@@ -118,7 +118,7 @@ namespace LinqToTwitterPcl.Tests.RawTests
 
             execMock.Verify(exec =>
                 exec.PostFormUrlEncodedToTwitterAsync<Raw>(
-                    HttpMethod.Post,
+                    HttpMethod.Post.ToString(),
                     FullUrl,
                     parameters,
                     It.IsAny<CancellationToken>()), Times.Once());
@@ -139,7 +139,7 @@ namespace LinqToTwitterPcl.Tests.RawTests
 
             execMock.Verify(exec =>
                 exec.PostFormUrlEncodedToTwitterAsync<Raw>(
-                    HttpMethod.Post,
+                    HttpMethod.Post.ToString(),
                     FullUrl,
                     parameters,
                     It.IsAny<CancellationToken>()), Times.Once());

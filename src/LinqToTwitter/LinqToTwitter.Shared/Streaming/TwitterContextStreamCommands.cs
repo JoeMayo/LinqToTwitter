@@ -27,7 +27,7 @@ namespace LinqToTwitter
 
             var resultsJson =
                 await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<ControlStream>(
-                    HttpMethod.Post,
+                    HttpMethod.Post.ToString(),
                     newUrl,
                     new Dictionary<string, string>
                     {
@@ -57,7 +57,7 @@ namespace LinqToTwitter
 
             var resultsJson =
                 await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<ControlStream>(
-                    HttpMethod.Post,
+                    HttpMethod.Post.ToString(),
                     newUrl,
                     new Dictionary<string, string>
                     {

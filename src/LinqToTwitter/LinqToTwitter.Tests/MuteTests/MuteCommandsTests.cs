@@ -30,7 +30,7 @@ namespace LinqToTwitterPcl.Tests.MuteTests
             execMock.SetupGet(exec => exec.Authorizer).Returns(authMock.Object);
             execMock.Setup(
                 exec => exec.PostFormUrlEncodedToTwitterAsync<User>(
-                    It.IsAny<HttpMethod>(),
+                    It.IsAny<string>(),
                     It.IsAny<string>(),
                     It.IsAny<Dictionary<string, string>>(),
                     It.IsAny<CancellationToken>()))
@@ -61,7 +61,7 @@ namespace LinqToTwitterPcl.Tests.MuteTests
 
             execMock.Verify(exec =>
                 exec.PostFormUrlEncodedToTwitterAsync<User>(
-                    HttpMethod.Post,
+                    HttpMethod.Post.ToString(),
                     "https://api.twitter.com/1.1/mutes/users/create.json",
                     It.IsAny<Dictionary<string, string>>(),
                     It.IsAny<CancellationToken>()),
@@ -81,7 +81,7 @@ namespace LinqToTwitterPcl.Tests.MuteTests
 
             execMock.Verify(exec =>
                 exec.PostFormUrlEncodedToTwitterAsync<User>(
-                    HttpMethod.Post,
+                    HttpMethod.Post.ToString(),
                     "https://api.twitter.com/1.1/mutes/users/create.json",
                     It.IsAny<Dictionary<string, string>>(),
                     It.IsAny<CancellationToken>()),
@@ -136,7 +136,7 @@ namespace LinqToTwitterPcl.Tests.MuteTests
 
             execMock.Verify(exec =>
                 exec.PostFormUrlEncodedToTwitterAsync<User>(
-                    HttpMethod.Post,
+                    HttpMethod.Post.ToString(),
                     "https://api.twitter.com/1.1/mutes/users/destroy.json",
                     It.IsAny<Dictionary<string, string>>(),
                     It.IsAny<CancellationToken>()),
@@ -156,7 +156,7 @@ namespace LinqToTwitterPcl.Tests.MuteTests
 
             execMock.Verify(exec =>
                 exec.PostFormUrlEncodedToTwitterAsync<User>(
-                    HttpMethod.Post,
+                    HttpMethod.Post.ToString(),
                     "https://api.twitter.com/1.1/mutes/users/destroy.json",
                     It.IsAny<Dictionary<string, string>>(),
                     It.IsAny<CancellationToken>()),

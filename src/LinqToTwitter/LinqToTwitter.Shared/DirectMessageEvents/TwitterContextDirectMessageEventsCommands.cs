@@ -43,7 +43,7 @@ namespace LinqToTwitter
 
             RawResult =
                 await TwitterExecutor.SendJsonToTwitterAsync(
-                    HttpMethod.Post,
+                    HttpMethod.Post.ToString(),
                     newUrl,
                     dmEventParams,
                     cancelToken)

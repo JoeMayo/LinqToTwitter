@@ -60,7 +60,7 @@ namespace LinqToTwitter
 
             RawResult =
                 await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<User>(
-                    HttpMethod.Post,
+                    HttpMethod.Post.ToString(),
                     accountUrl,
                     new Dictionary<string, string>
                     {
@@ -212,7 +212,7 @@ namespace LinqToTwitter
             if (image != NoImage)
                 RawResult = await TwitterExecutor.PostMediaAsync(accountUrl, parameters, image, name, fileName, imageMimeType, mediaCategory, cancelToken).ConfigureAwait(false);
             else
-                RawResult = await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<User>(HttpMethod.Post, accountUrl, parameters, cancelToken).ConfigureAwait(false);
+                RawResult = await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<User>(HttpMethod.Post.ToString(), accountUrl, parameters, cancelToken).ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(RawResult, UserAction.SingleUser);
         }
@@ -267,7 +267,7 @@ namespace LinqToTwitter
 
             RawResult =
                 await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<User>(
-                    HttpMethod.Post,
+                    HttpMethod.Post.ToString(),
                     accountUrl,
                     new Dictionary<string, string>
                     {
@@ -324,7 +324,7 @@ namespace LinqToTwitter
 
             RawResult =
                 await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<Account>(
-                    HttpMethod.Post,
+                    HttpMethod.Post.ToString(),
                     accountUrl,
                     parameters,
                     cancelToken)
@@ -355,7 +355,7 @@ namespace LinqToTwitter
 
             RawResult =
                 await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<Account>(
-                    HttpMethod.Post,
+                    HttpMethod.Post.ToString(),
                     accountUrl,
                     parameters,
                     cancelToken)
@@ -438,7 +438,7 @@ namespace LinqToTwitter
 
             RawResult =
                 await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<User>(
-                    HttpMethod.Post,
+                    HttpMethod.Post.ToString(),
                     accountUrl,
                     new Dictionary<string, string>(),
                     cancelToken)

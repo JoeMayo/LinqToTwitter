@@ -36,7 +36,7 @@ namespace LinqToTwitter
 
             RawResult =
                 await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<Status>(
-                    HttpMethod.Post,
+                    HttpMethod.Post.ToString(),
                     favoritesUrl,
                     new Dictionary<string, string>
                     {
@@ -76,7 +76,7 @@ namespace LinqToTwitter
 
             RawResult =
                 await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<Status>(
-                    HttpMethod.Post,
+                    HttpMethod.Post.ToString(),
                     favoritesUrl,
                     new Dictionary<string, string>
                     {

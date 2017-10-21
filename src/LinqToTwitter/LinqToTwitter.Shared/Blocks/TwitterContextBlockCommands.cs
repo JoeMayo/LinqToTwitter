@@ -40,7 +40,7 @@ namespace LinqToTwitter
 
             RawResult =
                 await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<User>(
-                    HttpMethod.Post,
+                    HttpMethod.Post.ToString(),
                     blocksUrl,
                     new Dictionary<string, string>
                     {
@@ -86,7 +86,7 @@ namespace LinqToTwitter
 
             RawResult =
                 await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<User>(
-                    HttpMethod.Post,
+                    HttpMethod.Post.ToString(),
                     blocksUrl,
                     new Dictionary<string, string>
                     {

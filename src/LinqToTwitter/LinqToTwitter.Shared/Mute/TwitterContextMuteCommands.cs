@@ -47,7 +47,7 @@ namespace LinqToTwitter
 
             RawResult =
                 await TwitterExecutor
-                    .PostFormUrlEncodedToTwitterAsync<User>(HttpMethod.Post, muteUrl, muteParams, cancelToken)
+                    .PostFormUrlEncodedToTwitterAsync<User>(HttpMethod.Post.ToString(), muteUrl, muteParams, cancelToken)
                     .ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(RawResult, UserAction.SingleUser);
@@ -91,7 +91,7 @@ namespace LinqToTwitter
 
             RawResult =
                 await TwitterExecutor
-                    .PostFormUrlEncodedToTwitterAsync<User>(HttpMethod.Post, muteUrl, muteParams, cancelToken)
+                    .PostFormUrlEncodedToTwitterAsync<User>(HttpMethod.Post.ToString(), muteUrl, muteParams, cancelToken)
                     .ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(RawResult, UserAction.SingleUser);

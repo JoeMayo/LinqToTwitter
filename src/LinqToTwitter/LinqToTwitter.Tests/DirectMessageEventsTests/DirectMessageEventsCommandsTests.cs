@@ -37,7 +37,7 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
             execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.Authorizer).Returns(authMock.Object);
             execMock.Setup(exec => exec.SendJsonToTwitterAsync(
-                It.IsAny<HttpMethod>(),
+                It.IsAny<string>(),
                 It.IsAny<string>(),
                 It.IsAny<DirectMessageEventsValue>(),
                 It.IsAny<CancellationToken>()))
@@ -198,7 +198,7 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
 
             execMock.Verify(exec =>
                 exec.SendJsonToTwitterAsync(
-                    It.IsAny<HttpMethod>(),
+                    It.IsAny<string>(),
                     "https://api.twitter.com/1.1/direct_messages/events/new.json",
                     It.IsAny<DirectMessageEventsValue>(),
                     It.IsAny<CancellationToken>()),

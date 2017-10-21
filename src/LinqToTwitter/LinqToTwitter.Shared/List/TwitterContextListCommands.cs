@@ -32,7 +32,7 @@ namespace LinqToTwitter
 
             RawResult =
                 await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<List>(
-                    HttpMethod.Post,
+                    HttpMethod.Post.ToString(),
                     createUrl,
                     new Dictionary<string, string>
                     {
@@ -70,7 +70,7 @@ namespace LinqToTwitter
 
             RawResult =
                 await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<List>(
-                    HttpMethod.Post,
+                    HttpMethod.Post.ToString(),
                     updateListUrl,
                     new Dictionary<string, string>
                     {
@@ -110,7 +110,7 @@ namespace LinqToTwitter
 
             RawResult =
                 await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<List>(
-                    HttpMethod.Post,
+                    HttpMethod.Post.ToString(),
                     deleteUrl,
                     new Dictionary<string, string>
                     {
@@ -194,7 +194,7 @@ namespace LinqToTwitter
             var reqProc = new ListRequestProcessor<List>();
 
             RawResult =
-                await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<List>(HttpMethod.Post, addMemberUrl, parameters, cancelToken).ConfigureAwait(false);
+                await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<List>(HttpMethod.Post.ToString(), addMemberUrl, parameters, cancelToken).ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(RawResult, ListAction.AddMember);
         }
@@ -277,7 +277,7 @@ namespace LinqToTwitter
                 parameters.Add("owner_screen_name", ownerScreenName);
 
             RawResult =
-                await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<List>(HttpMethod.Post, addMemberRangeUrl, parameters, cancelToken).ConfigureAwait(false);
+                await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<List>(HttpMethod.Post.ToString(), addMemberRangeUrl, parameters, cancelToken).ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(RawResult, ListAction.AddMember);
         }
@@ -323,7 +323,7 @@ namespace LinqToTwitter
                 parameters.Add("owner_screen_name", ownerScreenName);
 
             RawResult =
-                await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<List>(HttpMethod.Post, deleteUrl, parameters, cancelToken).ConfigureAwait(false);
+                await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<List>(HttpMethod.Post.ToString(), deleteUrl, parameters, cancelToken).ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(RawResult, ListAction.DeleteMember);
         }
@@ -360,7 +360,7 @@ namespace LinqToTwitter
                 parameters.Add("owner_screen_name", ownerScreenName);
 
             RawResult =
-                await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<List>(HttpMethod.Post, subscribeUrl, parameters, cancelToken).ConfigureAwait(false);
+                await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<List>(HttpMethod.Post.ToString(), subscribeUrl, parameters, cancelToken).ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(RawResult, ListAction.Subscribe);
         }
@@ -397,7 +397,7 @@ namespace LinqToTwitter
                 parameters.Add("owner_screen_name", ownerScreenName);
 
             RawResult =
-                await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<List>(HttpMethod.Post, unsubscribeUrl, parameters, cancelToken).ConfigureAwait(false);
+                await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<List>(HttpMethod.Post.ToString(), unsubscribeUrl, parameters, cancelToken).ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(RawResult, ListAction.Unsubscribe);
         }
@@ -473,7 +473,7 @@ namespace LinqToTwitter
                 parameters.Add("owner_screen_name", ownerScreenName);
 
             RawResult =
-                await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<List>(HttpMethod.Post, destroyAllUrl, parameters, cancelToken).ConfigureAwait(false);
+                await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<List>(HttpMethod.Post.ToString(), destroyAllUrl, parameters, cancelToken).ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(RawResult, ListAction.DestroyAll);
         }
