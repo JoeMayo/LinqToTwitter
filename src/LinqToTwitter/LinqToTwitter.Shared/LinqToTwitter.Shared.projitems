@@ -9,6 +9,10 @@
     <Import_RootNamespace>LinqToTwitter.Shared</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)AccountActivity\AccountActivity.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AccountActivity\AccountActivityRequestProcessor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AccountActivity\AccountActivityType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AccountActivity\TwitterContextAccountActivityCommands.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Account\Account.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Account\AccountAction.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Account\AccountRequestProcessor.cs" />

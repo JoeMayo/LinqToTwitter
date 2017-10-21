@@ -51,6 +51,8 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="AccountActivityTests\AccountActivityCommandsTests.cs" />
+    <Compile Include="AccountActivityTests\AccountActivityRequestProcessorTests.cs" />
     <Compile Include="AccountTests\AccountCommandsTests.cs" />
     <Compile Include="AccountTests\AccountRequestProcessorTests.cs" />
     <Compile Include="BlocksTests\BlocksCommandsTests.cs" />

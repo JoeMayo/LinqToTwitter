@@ -6,6 +6,7 @@ using LinqToTwitter;
 using LinqToTwitterPcl.Tests.Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using System.Net.Http;
 
 namespace LinqToTwitterPcl.Tests.StatusTests
 {
@@ -32,6 +33,7 @@ namespace LinqToTwitterPcl.Tests.StatusTests
             execMock.SetupGet(exec => exec.Authorizer).Returns(authMock.Object);
             execMock.Setup(exec =>
                 exec.PostFormUrlEncodedToTwitterAsync<Status>(
+                    It.IsAny<HttpMethod>(),
                     It.IsAny<string>(),
                     It.IsAny<IDictionary<string, string>>(),
                     It.IsAny<CancellationToken>()))
@@ -114,6 +116,7 @@ namespace LinqToTwitterPcl.Tests.StatusTests
             execMock.SetupGet(exec => exec.Authorizer).Returns(authMock.Object);
             execMock.Setup(exec =>
                 exec.PostFormUrlEncodedToTwitterAsync<Status>(
+                    It.IsAny<HttpMethod>(),
                     It.IsAny<string>(),
                     It.IsAny<IDictionary<string, string>>(),
                     It.IsAny<CancellationToken>()))

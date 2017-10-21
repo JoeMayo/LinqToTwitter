@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -18,7 +19,7 @@ namespace LinqToTwitter
         {
             string rawUrl = BaseUrl.TrimEnd('/') + "/" + queryString.TrimStart('/');
 
-            RawResult = await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<Raw>(rawUrl, parameters, cancelToken).ConfigureAwait(false);
+            RawResult = await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<Raw>(HttpMethod.Post, rawUrl, parameters, cancelToken).ConfigureAwait(false);
 
             return RawResult;
         }

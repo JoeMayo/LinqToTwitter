@@ -17,6 +17,17 @@ namespace LinqToTwitter
         }
 
         /// <summary>
+        /// Enables access to Twitter account activity information, such as listing webhooks and showing subscriptions.
+        /// </summary>
+        public TwitterQueryable<AccountActivity> AccountActivity
+        {
+            get
+            {
+                return new TwitterQueryable<AccountActivity>(this);
+            }
+        }
+
+        /// <summary>
         /// enables access to Twitter blocking information, such as Exists, Blocks, and IDs
         /// </summary>
         public TwitterQueryable<Blocks> Blocks

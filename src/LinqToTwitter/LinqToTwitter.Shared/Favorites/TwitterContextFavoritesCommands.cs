@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -35,6 +36,7 @@ namespace LinqToTwitter
 
             RawResult =
                 await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<Status>(
+                    HttpMethod.Post,
                     favoritesUrl,
                     new Dictionary<string, string>
                     {
@@ -74,6 +76,7 @@ namespace LinqToTwitter
 
             RawResult =
                 await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<Status>(
+                    HttpMethod.Post,
                     favoritesUrl,
                     new Dictionary<string, string>
                     {

@@ -90,7 +90,7 @@ namespace LinqToTwitter
         public string ID { get; set; }
 
         /// <summary>
-        /// Milliseconds since 1/1/1970 00:00:00
+        /// Milliseconds since 1/1/1970 00:00:00 when event was created
         /// </summary>
         [JsonProperty("created_timestamp")]
         public string CreatedTimestamp { get; set; }

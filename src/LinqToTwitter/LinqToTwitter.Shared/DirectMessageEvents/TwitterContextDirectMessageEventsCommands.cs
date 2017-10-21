@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -41,7 +42,8 @@ namespace LinqToTwitter
             };
 
             RawResult =
-                await TwitterExecutor.PostJsonToTwitterAsync(
+                await TwitterExecutor.SendJsonToTwitterAsync(
+                    HttpMethod.Post,
                     newUrl,
                     dmEventParams,
                     cancelToken)

@@ -6,6 +6,7 @@ using LinqToTwitterPcl.Tests.Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System.Threading;
+using System.Net.Http;
 
 namespace LinqToTwitterPcl.Tests.DirectMessageTests
 {
@@ -35,7 +36,8 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
             tcsResponse.SetResult(DirectMessageEventsResponse);
             execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.Authorizer).Returns(authMock.Object);
-            execMock.Setup(exec => exec.PostJsonToTwitterAsync(
+            execMock.Setup(exec => exec.SendJsonToTwitterAsync(
+                It.IsAny<HttpMethod>(),
                 It.IsAny<string>(),
                 It.IsAny<DirectMessageEventsValue>(),
                 It.IsAny<CancellationToken>()))
@@ -195,7 +197,8 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
             await ctx.NewDirectMessageEventAsync(RecipientID, Text);
 
             execMock.Verify(exec =>
-                exec.PostJsonToTwitterAsync(
+                exec.SendJsonToTwitterAsync(
+                    It.IsAny<HttpMethod>(),
                     "https://api.twitter.com/1.1/direct_messages/events/new.json",
                     It.IsAny<DirectMessageEventsValue>(),
                     It.IsAny<CancellationToken>()),

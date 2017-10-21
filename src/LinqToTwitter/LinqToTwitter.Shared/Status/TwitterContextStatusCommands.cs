@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -295,6 +296,7 @@ namespace LinqToTwitter
 
             RawResult =
                 await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<Status>(
+                    HttpMethod.Post,
                     updateUrl,
                     new Dictionary<string, string>
                     {
@@ -330,7 +332,7 @@ namespace LinqToTwitter
             var destroyUrl = BaseUrl + "statuses/destroy/" + tweetID + ".json";
 
             RawResult = await TwitterExecutor
-                .PostFormUrlEncodedToTwitterAsync<Status>(destroyUrl, new Dictionary<string, string>(), cancelToken)
+                .PostFormUrlEncodedToTwitterAsync<Status>(HttpMethod.Post, destroyUrl, new Dictionary<string, string>(), cancelToken)
                 .ConfigureAwait(false);
 
             return new StatusRequestProcessor<Status>()
@@ -350,7 +352,7 @@ namespace LinqToTwitter
             var retweetUrl = BaseUrl + "statuses/retweet/" + tweetID + ".json";
 
             RawResult = await TwitterExecutor
-                .PostFormUrlEncodedToTwitterAsync<Status>(retweetUrl, new Dictionary<string, string>(), cancelToken)
+                .PostFormUrlEncodedToTwitterAsync<Status>(HttpMethod.Post, retweetUrl, new Dictionary<string, string>(), cancelToken)
                 .ConfigureAwait(false);
 
             return new StatusRequestProcessor<Status>()
