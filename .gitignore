@@ -11,7 +11,8 @@ _Resharper.*
 .JustCode/
 project.lock.json
 *.nuget.props
-storage.ide
+storage.ide*
+db.lock
 
 # Ignore NuGet Packages
 *.nupkg
