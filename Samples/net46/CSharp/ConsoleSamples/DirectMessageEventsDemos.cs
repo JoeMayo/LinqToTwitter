@@ -132,7 +132,7 @@ namespace Linq2TwitterDemos_Console
 
         static async Task NewDirectMessageAsync(TwitterContext twitterCtx)
         {
-            const ulong Linq2TwitrID = 16761255;
+            const ulong Linq2TwitrID = 15411837;// 16761255;
 
             DirectMessageEvents message = 
                 await twitterCtx.NewDirectMessageEventAsync(

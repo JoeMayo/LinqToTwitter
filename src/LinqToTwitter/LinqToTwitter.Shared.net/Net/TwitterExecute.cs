@@ -396,9 +396,9 @@ namespace LinqToTwitter
         /// <returns>JSON Response from Twitter - empty string if async.</returns>
         public async Task<string> SendJsonToTwitterAsync<T>(string method, string url, T postObj, CancellationToken cancelToken)
         {
-            WriteLog(url, nameof(PostFormUrlEncodedToTwitterAsync));
+            WriteLog(url, nameof(SendJsonToTwitterAsync));
 
-            var postJson = JsonConvert.SerializeObject(postObj);
+            var postJson = postObj == null ? "" : JsonConvert.SerializeObject(postObj);
             var content = new StringContent(postJson, Encoding.UTF8, "application/json");
 
             var cleanPostData = new Dictionary<string, string>();

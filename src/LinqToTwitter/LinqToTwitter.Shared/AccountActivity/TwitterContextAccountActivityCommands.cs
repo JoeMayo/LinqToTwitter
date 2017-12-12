@@ -51,7 +51,7 @@ namespace LinqToTwitter
             if (string.IsNullOrWhiteSpace(url))
                 throw new ArgumentException($"{nameof(url)} must be set.", nameof(url));
 
-            var newUrl = BaseUrl +  $"account_activity/webhooks.json?url=" + Uri.EscapeUriString(url);
+            var newUrl = BaseUrl + $"account_activity/webhooks.json";
 
             RawResult =
                 await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<AccountActivity>(
