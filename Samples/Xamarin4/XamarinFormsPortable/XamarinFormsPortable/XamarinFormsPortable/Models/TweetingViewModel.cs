@@ -40,7 +40,7 @@ namespace XamarinFormsPortable.Models
             Search searchResponse = await
                 (from search in ctx.Search
                  where search.Type == SearchType.Search &&
-                       search.Query == "\"LINQ to Twitter\""
+                       search.Query == "\"Twitter\""
                  select search)
                 .SingleAsync();
 
