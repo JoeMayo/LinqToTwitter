@@ -44,7 +44,15 @@ namespace LinqToTwitter
 
         public virtual async Task StoreAsync() { }
 
-        public virtual async Task ClearAsync() { }
+        public virtual async Task ClearAsync()
+        {
+            ConsumerKey = null;
+            ConsumerSecret = null;
+            OAuthToken = null;
+            OAuthTokenSecret = null;
+            ScreenName = null;
+            UserID = 0ul;
+        }
 
 #pragma warning restore 1998
     }

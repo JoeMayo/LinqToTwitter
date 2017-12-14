@@ -66,7 +66,18 @@ namespace LinqToTwitter
                     "The authorization process requires a minimum of ConsumerKey and ConsumerSecret tokens. " +
                     "You must assign the CredentialStore property (with tokens) before calling AuthorizeAsync().");
 
-            if (CredentialStore.HasAllCredentials()) return;
+            if (CredentialStore.HasAllCredentials())
+                throw new InvalidOperationException(
+                    "Your LINQ to Twitter Authorizer already has all credentials assigned to it. In this " +
+                    "case, You don't need to re-authorize because having the OAuthToken/AccessToken and " +
+                    "OAuthTokenSecret/AccessTokenSecret means that you already have the user's credentials " +
+                    "and re-authorization isn't required. If for some reason, these credentials are not " +
+                    "working (e.g. the user might have removed your app from their Twitter app list). Set the " +
+                    "OAuthToken/AccessToken and OAuthTokenSecret/AccessTokenSecret in the authorizer's credential " +
+                    "store to 'null' and then re-authorize. Tip: Call Authorizer.CredentialStore.HasAllCredentials() " +
+                    "to see if all of the credentials are already populated. Additionally, if you meant to authorize " +
+                    "for a different user, you can call Authorizer.CredentialStore.ClearAsync() to remove the " +
+                    "previous user's credentials. (just make sure you've re-loaded your consumerKey and consumerSecret).");
 
             if (string.IsNullOrWhiteSpace(CredentialStore.ConsumerKey) || string.IsNullOrWhiteSpace(CredentialStore.ConsumerSecret))
                 throw new ArgumentException("You must populate CredentialStore with ConsumerKey and ConsumerSecret tokens before calling AuthorizeAsync.", "CredentialStore");

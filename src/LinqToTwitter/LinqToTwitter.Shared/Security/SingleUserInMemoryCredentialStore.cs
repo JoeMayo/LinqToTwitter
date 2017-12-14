@@ -1,4 +1,6 @@
-﻿namespace LinqToTwitter
+﻿using System.Threading.Tasks;
+
+namespace LinqToTwitter
 {
     /// <summary>
     /// Maps the twitter-provided credentials to the in memory credentials 
@@ -33,6 +35,14 @@
             {
                 AccessTokenSecret = value;
             }
+        }
+
+        public override Task ClearAsync()
+        {
+            AccessToken = null;
+            AccessTokenSecret = null;
+
+            return base.ClearAsync();
         }
     }
 }

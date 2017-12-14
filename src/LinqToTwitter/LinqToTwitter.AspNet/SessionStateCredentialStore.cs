@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.SessionState;
 
@@ -89,6 +90,18 @@ namespace LinqToTwitter
             {
                 session["UserIdToken"] = value;
             }
+        }
+
+        public override Task ClearAsync()
+        {
+            ConsumerKey = null;
+            ConsumerSecret = null;
+            OAuthToken = null;
+            OAuthTokenSecret = null;
+            ScreenName = null;
+            UserID = 0ul;
+
+            return base.ClearAsync();
         }
     }
 }

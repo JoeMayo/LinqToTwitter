@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using System.Threading.Tasks;
 
 namespace LinqToTwitter
 {
@@ -83,6 +84,18 @@ namespace LinqToTwitter
             {
                 session.SetString("UserIdToken", value.ToString());
             }
+        }
+
+        public override Task ClearAsync()
+        {
+            ConsumerKey = null;
+            ConsumerSecret = null;
+            OAuthToken = null;
+            OAuthTokenSecret = null;
+            ScreenName = null;
+            UserID = 0ul;
+
+            return base.ClearAsync();
         }
     }
 }
