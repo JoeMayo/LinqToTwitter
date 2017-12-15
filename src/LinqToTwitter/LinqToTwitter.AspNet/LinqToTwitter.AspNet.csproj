@@ -62,6 +62,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AccountActivityExtensions.cs" />
     <Compile Include="AspNetAuthorizer.cs" />
     <Compile Include="LinqToTwitterAuthenticationProvider.cs" />
     <Compile Include="MvcSignInAuthorizer.cs" />

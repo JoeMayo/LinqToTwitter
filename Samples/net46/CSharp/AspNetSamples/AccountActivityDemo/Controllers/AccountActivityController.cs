@@ -2,11 +2,8 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Security.Cryptography;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Http;
@@ -27,7 +24,7 @@ namespace AccountActivityDemo.Controllers
         {
             return new
             {
-                response_token = BuildCrcResponse(crc_token)
+                response_token = new AccountActivity().BuildCrcResponse(crc_token, consumerSecret)
             };
         }
 
@@ -40,7 +37,7 @@ namespace AccountActivityDemo.Controllers
                 Monitor.Enter(dmReadLock);
                 string response = await request.Content.ReadAsStringAsync();
 
-                if (!IsValidPostSignature(request, response))
+                if (!new AccountActivity().IsValidPostSignature(request, response, consumerSecret))
                     return request.CreateResponse(HttpStatusCode.Unauthorized);
 
                 JObject content = JObject.Parse(response);
@@ -92,61 +89,6 @@ namespace AccountActivityDemo.Controllers
             bool isDuplicate = previousMessageIDs.IndexOf(msgID) > -1;
             previousMessageIDs.Add(msgID);
             return isDuplicate;
-        }
-
-        string BuildCrcResponse(string crc_token)
-        {
-            byte[] keyBytes = Encoding.UTF8.GetBytes(consumerSecret);
-            byte[] crcBytes = Encoding.UTF8.GetBytes(crc_token);
-
-            var hmac = new HMACSHA256(keyBytes);
-            var hash = hmac.ComputeHash(crcBytes);
-            var base64Hmac = Convert.ToBase64String(hash);
-
-            return "sha256=" + base64Hmac;
-        }
-
-        bool IsValidPostSignature(HttpRequestMessage request, string message)
-        {
-            string webhooksSignature =
-                request?.Headers
-                    ?.GetValues("x-twitter-webhooks-signature")
-                    ?.First()
-                    ?.Replace("sha256=", "");
-
-            if (webhooksSignature == null)
-                return false;
-
-            byte[] webhookSignatureByes = Convert.FromBase64String(webhooksSignature);
-
-            byte[] keyBytes = Encoding.UTF8.GetBytes(consumerSecret);
-            byte[] contentBytes = Encoding.UTF8.GetBytes(message);
-
-            var hmac = new HMACSHA256(keyBytes);
-            var contentHash = hmac.ComputeHash(contentBytes);
-
-            if (!SecureCompareEqual(webhookSignatureByes, contentHash))
-                return false;
-
-            return true;
-        }
-
-        /// <summary>
-        /// Avoid timing attack - see https://en.wikipedia.org/wiki/Timing_attack for more details.
-        /// </summary>
-        /// <param name="arrayA">First byte[].</param>
-        /// <param name="arrayB">Second byte[].</param>
-        /// <returns>True if both arrays are equal.</returns>
-        bool SecureCompareEqual(byte[] arrayA, byte[] arrayB)
-        {
-            if (arrayA.Length != arrayB.Length)
-                return false;
-
-            int result = 0;
-            for (int i = 0; i < arrayA.Length; i++)
-                result |= (arrayA[i] ^ arrayB[i]);
-
-            return result == 0;
         }
     }
 }

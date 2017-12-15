@@ -283,7 +283,8 @@ namespace Linq2TwitterDemos_Console
                 await
                 (from tweet in twitterCtx.Status
                  where tweet.Type == StatusType.Show &&
-                       tweet.ID == tweetID
+                       tweet.ID == tweetID &&
+                       tweet.TweetMode == TweetMode.Extended
                  select tweet)
                 .ToListAsync();
 
