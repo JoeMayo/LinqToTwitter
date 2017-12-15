@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace LinqToTwitter
+﻿namespace LinqToTwitter
 {
     /// <summary>
     /// Implements the "Sign-in With Twitter" feature

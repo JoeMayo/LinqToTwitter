@@ -10,4 +10,5 @@
   <ItemGroup>
     <ProjectReference Include="..\LinqToTwitter.Core\LinqToTwitter.Core.csproj" />
   </ItemGroup>
+  <Import Project="..\LinqToTwitter.Shared.aspnet\LinqToTwitter.Shared.aspnet.projitems" Label="Shared" />
 </Project>

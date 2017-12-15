@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>4cdadc23-01e2-41eb-bbda-3c76e2582b50</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>LinqToTwitter.Shared.aspnet</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)AccountActivityExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AspNetAuthorizer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AspNetSignInAuthorizer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MvcSignInAuthorizer.cs" />
+  </ItemGroup>
+</Project>

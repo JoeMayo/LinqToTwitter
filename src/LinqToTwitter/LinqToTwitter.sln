@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.10
+VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "LinqToTwitter.Shared", "LinqToTwitter.Shared\LinqToTwitter.Shared.shproj", "{7B25A4F0-18EA-4819-B67C-EFEA0E14F919}"
 EndProject
@@ -29,6 +29,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleSamples", "..\..\Sam
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LinqToTwitter.AspNetCore", "LinqToTwitter.AspNetCore\LinqToTwitter.AspNetCore.csproj", "{150E4F45-9F92-4B49-ACA4-D8EBFCF39714}"
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "LinqToTwitter.Shared.aspnet", "LinqToTwitter.Shared.aspnet\LinqToTwitter.Shared.aspnet.shproj", "{4CDADC23-01E2-41EB-BBDA-3C76E2582B50}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		LinqToTwitter.Shared.uap\LinqToTwitter.Shared.uap.projitems*{0936a109-c6b5-4527-89a9-966e8e6c9e26}*SharedItemsImports = 13
@@ -36,11 +38,13 @@ Global
 		LinqToTwitter.Shared\LinqToTwitter.Shared.projitems*{0cdbcfca-4404-4f6e-976f-1165f1072604}*SharedItemsImports = 4
 		LinqToTwitter.Shared.net\LinqToTwitter.Shared.net.projitems*{37396599-8a5a-4ac5-b583-c49ec4e40781}*SharedItemsImports = 13
 		LinqToTwitter.Shared.xamarin\LinqToTwitter.Shared.xamarin.projitems*{4aa86b5f-fbbb-473c-a9f2-fca5dd7c6c71}*SharedItemsImports = 13
+		LinqToTwitter.Shared.aspnet\LinqToTwitter.Shared.aspnet.projitems*{4cdadc23-01e2-41eb-bbda-3c76e2582b50}*SharedItemsImports = 13
 		LinqToTwitter.Shared.net\LinqToTwitter.Shared.net.projitems*{554f8a8a-9cc0-40c9-b7ca-f3c3cf5190b2}*SharedItemsImports = 4
 		LinqToTwitter.Shared\LinqToTwitter.Shared.projitems*{554f8a8a-9cc0-40c9-b7ca-f3c3cf5190b2}*SharedItemsImports = 4
 		LinqToTwitter.Shared.xamarin\LinqToTwitter.Shared.xamarin.projitems*{67f9d3a8-f71e-4428-913f-c37ae82cdb24}*SharedItemsImports = 4
 		LinqToTwitter.Shared\LinqToTwitter.Shared.projitems*{67f9d3a8-f71e-4428-913f-c37ae82cdb24}*SharedItemsImports = 4
 		LinqToTwitter.Shared\LinqToTwitter.Shared.projitems*{7b25a4f0-18ea-4819-b67c-efea0e14f919}*SharedItemsImports = 13
+		LinqToTwitter.Shared.aspnet\LinqToTwitter.Shared.aspnet.projitems*{946a0061-58f9-467d-9907-3046cefb4524}*SharedItemsImports = 4
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Ad-Hoc|Any CPU = Ad-Hoc|Any CPU
