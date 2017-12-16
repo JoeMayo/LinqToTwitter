@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace MvcDemo.Models
+namespace CoreDemo.Models
 {
     public class SendTweetViewModel
     {

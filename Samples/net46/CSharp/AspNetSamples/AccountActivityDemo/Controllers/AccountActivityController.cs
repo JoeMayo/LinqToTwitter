@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
@@ -12,19 +13,13 @@ namespace AccountActivityDemo.Controllers
 {
     public class AccountActivityController : ApiController
     {
-        string consumerKey = "";
-        string consumerSecret = "";
-        string accessToken = "";
-        string accessTokenSecret = "";
-        string apiKey = "";
-
         ulong chatbotID = 15411837;
 
         public object Get(string crc_token)
         {
             return new
             {
-                response_token = new AccountActivity().BuildCrcResponse(crc_token, consumerSecret)
+                response_token = new AccountActivity().BuildCrcResponse(crc_token, ConfigurationManager.AppSettings["consumerSecret"])
             };
         }
 
@@ -37,7 +32,7 @@ namespace AccountActivityDemo.Controllers
                 Monitor.Enter(dmReadLock);
                 string response = await request.Content.ReadAsStringAsync();
 
-                if (!new AccountActivity().IsValidPostSignature(request, response, consumerSecret))
+                if (!new AccountActivity().IsValidPostSignature(request, response, ConfigurationManager.AppSettings["consumerSecret"]))
                     return request.CreateResponse(HttpStatusCode.Unauthorized);
 
                 JObject content = JObject.Parse(response);
@@ -54,10 +49,10 @@ namespace AccountActivityDemo.Controllers
                 {
                     CredentialStore = new InMemoryCredentialStore
                     {
-                        ConsumerKey = consumerKey,
-                        ConsumerSecret = consumerSecret,
-                        OAuthToken = accessToken,
-                        OAuthTokenSecret = accessTokenSecret
+                        ConsumerKey = ConfigurationManager.AppSettings["consumerKey"],
+                        ConsumerSecret = ConfigurationManager.AppSettings["consumerSecret"],
+                        OAuthToken = ConfigurationManager.AppSettings["accessToken"],
+                        OAuthTokenSecret = ConfigurationManager.AppSettings["accessTokenSecret"]
                     }
                 };
                 var twitterCtx = new TwitterContext(authorizer);
