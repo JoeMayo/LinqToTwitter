@@ -45,7 +45,7 @@ namespace LinqToTwitter.Security
                 string.Join("&",
                     (from parm in parameters
                      orderby parm.Key
-                     select parm.Key + "=" + Url.PercentEncode(parameters[parm.Key]))
+                     select parm.Key + "=" + Uri.EscapeUriString(parameters[parm.Key]))
                     .ToArray());
         }
 

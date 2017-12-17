@@ -61,7 +61,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Common\TwitterProgressEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\TypeConversionExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\TypeSystem.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Common\Utilities.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\WhereClauseFinder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DirectMessageEvents\DirectMessageEvents.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DirectMessageEvents\DirectMessageEventsRequestProcessor.cs" />

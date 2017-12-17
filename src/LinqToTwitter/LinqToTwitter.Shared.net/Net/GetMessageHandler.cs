@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
@@ -30,9 +28,6 @@ namespace LinqToTwitter.Net
                 AutomaticDecompression = DecompressionMethods.GZip;
             if (exe.Authorizer.Proxy != null && SupportsProxy)
                 Proxy = exe.Authorizer.Proxy;
-
-            //if (exe.ReadWriteTimeout != 0)
-            //    ReadWriteTimeout = exe.ReadWriteTimeout;
 
             return await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
         }

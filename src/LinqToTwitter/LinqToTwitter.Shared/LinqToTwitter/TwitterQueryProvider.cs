@@ -79,15 +79,9 @@ namespace LinqToTwitter
         {
             Type elementType = TypeSystem.GetElementType(expression.Type);
 
-//#if NETFX_CORE
             return GetType().GetTypeInfo()
                 .DeclaredMethods.Where(meth => meth.IsGenericMethod && meth.Name == "Execute").First()
                 .Invoke(this, new object[] { expression });
-//#else
-//            return GetType()
-//                .GetMethod("Execute", new[] { elementType })
-//                .Invoke(this, new object[] { expression });
-//#endif
         }
 
         /// <summary>

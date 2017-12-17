@@ -53,8 +53,7 @@ namespace Linq2TwitterDemos_Console
   
         static async Task DoSearchAsync(TwitterContext twitterCtx)
         {
-            string searchTerm = "\"LINQ to Twitter\" OR Linq2Twitter OR LinqToTwitter OR JoeMayo :)";
-            //string searchTerm = "#ömer -RT -instagram news source%3Afoursquare";
+            string searchTerm = "\"LINQ to Twitter\" OR Linq2Twitter OR LinqToTwitter OR JoeMayo";
 
             Search searchResponse =
                 await

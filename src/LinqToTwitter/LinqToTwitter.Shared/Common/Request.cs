@@ -1,4 +1,7 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace LinqToTwitter
 {
@@ -7,12 +10,10 @@ namespace LinqToTwitter
         public string Endpoint { get; set; }
         public IList<QueryParameter> RequestParameters { get; internal set; }
 
-        public string QueryString
+        public Request(string endpoint)
         {
-            get
-            {
-                return Utilities.BuildQueryString(RequestParameters);
-            }
+            this.Endpoint = endpoint;
+            this.RequestParameters = new List<QueryParameter>();
         }
 
         public string FullUrl
@@ -27,10 +28,27 @@ namespace LinqToTwitter
             }
         }
 
-        public Request(string endpoint)
+        public string QueryString
         {
-            this.Endpoint = endpoint;
-            this.RequestParameters = new List<QueryParameter>();
+            get
+            {
+                if (RequestParameters == null)
+                    throw new ArgumentNullException("parameters");
+
+                StringBuilder builder = new StringBuilder();
+                foreach (var pair in RequestParameters.Where(p => !string.IsNullOrWhiteSpace(p.Value)))
+                {
+                    builder.Append(Uri.EscapeUriString(pair.Name));
+                    builder.Append('=');
+                    builder.Append(Uri.EscapeUriString(pair.Value));
+                    builder.Append('&');
+                }
+
+                if (builder.Length > 1)
+                    builder.Length--;   // truncate trailing &
+
+                return builder.ToString();
+            }
         }
     }
 }
