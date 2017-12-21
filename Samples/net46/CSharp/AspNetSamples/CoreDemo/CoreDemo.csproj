@@ -5,22 +5,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNet.Providers.Core" Version="2.0.0" />
+    <PackageReference Include="linqtotwitter" Version="4.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.3" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.1" />
   </ItemGroup>
 
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.1" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="LinqToTwitter.AspNetCore">
-      <HintPath>..\..\..\..\..\src\LinqToTwitter\LinqToTwitter.AspNetCore\bin\Debug\netstandard1.6\LinqToTwitter.AspNetCore.dll</HintPath>
-    </Reference>
-    <Reference Include="LinqToTwitter.Core">
-      <HintPath>..\..\..\..\..\src\LinqToTwitter\LinqToTwitter.AspNetCore\bin\Debug\netstandard1.6\LinqToTwitter.Core.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
 </Project>

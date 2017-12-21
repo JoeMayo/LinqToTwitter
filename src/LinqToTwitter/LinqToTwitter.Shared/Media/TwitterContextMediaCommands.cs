@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -66,6 +67,32 @@ namespace LinqToTwitter
 
             Status status = reqProc.ProcessActionResult(RawResult, StatusAction.MediaUpload);
             return status.Media;
+        }
+
+        /// <summary>
+        /// Adds alt text to media to support accessibility. Upload the media and call this to attach alt text.
+        /// </summary>
+        /// <param name="mediaID">ID of media.</param>
+        /// <param name="altText">Media description.</param>
+        /// <param name="cancelToken">Allows you to cancel async operation</param>
+        /// <returns>Status containing new reply</returns>
+        public virtual async Task CreateMediaMetadataAsync(ulong mediaID, string altText, CancellationToken cancelToken = default(CancellationToken))
+        {
+            if (mediaID == 0)
+                throw new ArgumentNullException(nameof(mediaID), $"Invalid {nameof(mediaID)} parameter: {mediaID}");
+
+            if (string.IsNullOrWhiteSpace(altText))
+                throw new ArgumentNullException(nameof(altText), $"The {nameof(altText)} parameter is empty or null and must have a value.");
+
+            string updateUrl = UploadUrl + "media/metadata/create.json";
+
+            RawResult =
+                await TwitterExecutor.SendJsonToTwitterAsync(
+                    HttpMethod.Post.ToString(),
+                    updateUrl,
+                    new MediaMetadata { MediaID = mediaID, AltText = new AltText { Text = altText } },
+                    cancelToken)
+                   .ConfigureAwait(false);
         }
     }
 }

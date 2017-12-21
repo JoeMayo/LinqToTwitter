@@ -426,7 +426,7 @@ namespace LinqToTwitter
             {
                 if (pair.Value != null)
                 {
-                    dataString.AppendFormat("{0}={1}&", pair.Key, Url.PercentEncode(pair.Value));
+                    dataString.AppendFormat("{0}={1}&", pair.Key, Uri.EscapeUriString(pair.Value));
                     cleanPostData.Add(pair.Key, pair.Value);
                 }
             }

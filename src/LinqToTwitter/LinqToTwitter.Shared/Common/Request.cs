@@ -1,3 +1,4 @@
+using LinqToTwitter.Net;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,9 +39,9 @@ namespace LinqToTwitter
                 StringBuilder builder = new StringBuilder();
                 foreach (var pair in RequestParameters.Where(p => !string.IsNullOrWhiteSpace(p.Value)))
                 {
-                    builder.Append(Uri.EscapeUriString(pair.Name));
+                    builder.Append(Url.PercentEncode(pair.Name));
                     builder.Append('=');
-                    builder.Append(Uri.EscapeUriString(pair.Value));
+                    builder.Append(Url.PercentEncode(pair.Value));
                     builder.Append('&');
                 }
 

@@ -109,6 +109,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Media\Media.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Media\MediaError.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Media\MediaImage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Media\MediaMetadata.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Media\MediaRequestProcessor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Media\MediaProcessingInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Media\MediaType.cs" />

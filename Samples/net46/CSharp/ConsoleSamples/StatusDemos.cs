@@ -284,7 +284,8 @@ namespace Linq2TwitterDemos_Console
                 (from tweet in twitterCtx.Status
                  where tweet.Type == StatusType.Show &&
                        tweet.ID == tweetID &&
-                       tweet.TweetMode == TweetMode.Extended
+                       tweet.TweetMode == TweetMode.Extended &&
+                       tweet.IncludeAltText == true
                  select tweet)
                 .ToListAsync();
 
@@ -408,6 +409,8 @@ namespace Linq2TwitterDemos_Console
                  select tsk.Result.MediaID)
                 .ToList();
 
+            mediaIds.ForEach(async id => await twitterCtx.CreateMediaMetadataAsync(id, $"Test Alt Text for Media ID: {id}"));
+
             Status tweet = await twitterCtx.TweetAsync(status, mediaIds);
 
             if (tweet != null)
@@ -420,8 +423,9 @@ namespace Linq2TwitterDemos_Console
                 "Testing video upload tweet #Linq2Twitter £ " +
                 DateTime.Now.ToString(CultureInfo.InvariantCulture);
 
-            //Media media = await twitterCtx.UploadMediaAsync(File.ReadAllBytes(@"..\..\images\SampleVideo.mp4"), "video/mp4", "amplify_video");
-            Media media = await twitterCtx.UploadMediaAsync(File.ReadAllBytes(@"..\..\images\LinqToTwitterDocs.mp4"), "video/mp4", "tweet_video");
+            Media media = await twitterCtx.UploadMediaAsync(
+                File.ReadAllBytes(@"..\..\images\LinqToTwitterDocs.mp4"), 
+                "video/mp4", "tweet_video");
 
             Status tweet = await twitterCtx.TweetAsync(status, new ulong[] { media.MediaID });
 

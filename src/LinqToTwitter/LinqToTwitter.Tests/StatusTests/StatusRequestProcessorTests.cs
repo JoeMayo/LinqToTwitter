@@ -38,6 +38,7 @@ namespace LinqToTwitterPcl.Tests.StatusTests
                 status.TrimUser == true &&
                 status.IncludeContributorDetails == true &&
                 status.IncludeMyRetweet == true &&
+                status.IncludeAltText == true &&
                 status.OEmbedUrl == "http://myurl.com" &&
                 status.OEmbedAlign == EmbeddedStatusAlignment.Center &&
                 status.OEmbedHideMedia == true &&
@@ -99,6 +100,9 @@ namespace LinqToTwitterPcl.Tests.StatusTests
             Assert.IsTrue(
               queryParams.Contains(
                   new KeyValuePair<string, string>("IncludeMyRetweet", "True")));
+            Assert.IsTrue(
+              queryParams.Contains(
+                  new KeyValuePair<string, string>(nameof(Status.IncludeAltText), "True")));
             Assert.IsTrue(
               queryParams.Contains(
                   new KeyValuePair<string, string>("OEmbedUrl", "http://myurl.com")));
@@ -189,7 +193,7 @@ namespace LinqToTwitterPcl.Tests.StatusTests
         [TestMethod]
         public void BuildUrl_Constructs_Show_Url()
         {
-            const string ExpectedUrl = "https://api.twitter.com/1.1/statuses/show.json?id=945932078&include_my_retweet=true&include_entities=true&trim_user=true&tweet_mode=extended";
+            const string ExpectedUrl = "https://api.twitter.com/1.1/statuses/show.json?id=945932078&include_my_retweet=true&include_entities=true&trim_user=true&tweet_mode=extended&include_ext_alt_text=true";
             var reqProc = new StatusRequestProcessor<Status>
             {
                 Type = StatusType.Show,
@@ -202,6 +206,7 @@ namespace LinqToTwitterPcl.Tests.StatusTests
                 { "TrimUser", true.ToString() },
                 { "IncludeMyRetweet", true.ToString() },
                 { "IncludeEntities", true.ToString() },
+                { nameof(Status.IncludeAltText), true.ToString() },
                 { nameof(Status.TweetMode), ((int)TweetMode.Extended).ToString() }
             };
 
@@ -808,6 +813,7 @@ namespace LinqToTwitterPcl.Tests.StatusTests
                 TrimUser = true,
                 IncludeContributorDetails = true,
                 IncludeMyRetweet = true,
+                IncludeAltText = true,
                 TweetIDs = "1,2,3",
                 Map = true,
                 TweetMode = TweetMode.Extended
@@ -834,6 +840,7 @@ namespace LinqToTwitterPcl.Tests.StatusTests
             Assert.IsTrue(status.TrimUser);
             Assert.IsTrue(status.IncludeContributorDetails);
             Assert.IsTrue(status.IncludeMyRetweet);
+            Assert.IsTrue(status.IncludeAltText);
             Assert.AreEqual("1,2,3", status.TweetIDs);
             Assert.IsTrue(status.Map);
             Assert.AreEqual(status.TweetMode, TweetMode.Extended);

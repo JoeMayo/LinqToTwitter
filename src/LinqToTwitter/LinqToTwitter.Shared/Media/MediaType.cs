@@ -5,6 +5,7 @@ namespace LinqToTwitter
 {
     public enum MediaType
     {
+        Metadata,
         Status
     }
 }

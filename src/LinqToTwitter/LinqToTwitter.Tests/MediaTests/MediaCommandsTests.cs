@@ -13,6 +13,9 @@ namespace LinqToTwitterPcl.Tests.StatusTests
     [TestClass]
     public class MediaCommandsTests
     {
+        Mock<IAuthorizer> authMock;
+        Mock<ITwitterExecute> execMock;
+
         public MediaCommandsTests()
         {
             TestCulture.SetCulture();
@@ -21,8 +24,8 @@ namespace LinqToTwitterPcl.Tests.StatusTests
         async Task<TwitterContext> InitializeTwitterContext()
         {
             await Task.Delay(1);
-            var authMock = new Mock<IAuthorizer>();
-            var execMock = new Mock<ITwitterExecute>();
+            authMock = new Mock<IAuthorizer>();
+            execMock = new Mock<ITwitterExecute>();
 
             var tcsAuth = new TaskCompletionSource<IAuthorizer>();
             tcsAuth.SetResult(authMock.Object);
@@ -42,6 +45,13 @@ namespace LinqToTwitterPcl.Tests.StatusTests
                     It.IsAny<string>(),
                     It.IsAny<CancellationToken>()))
                 .Returns(tcsMedia.Task);
+            execMock.Setup(exec =>
+                exec.SendJsonToTwitterAsync(
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<MediaMetadata>(),
+                It.IsAny<CancellationToken>()))
+                .Returns(tcsMedia.Task);
             var ctx = new TwitterContext(execMock.Object);
             return ctx;
         }
@@ -59,6 +69,61 @@ namespace LinqToTwitterPcl.Tests.StatusTests
             Media actual = await ctx.UploadMediaAsync(image, mediaType, additionalOwners, mediaCategory);
 
             Assert.AreEqual(ExpectedMediaID, actual.MediaID);
+        }
+
+        [TestMethod]
+        public async Task CreateMediaMetadataAsync_WithValidParameters_Succeeds()
+        {
+            ulong mediaID = 521449660083609601ul;
+            string altText = "Sample media description";
+
+            TwitterContext ctx = await InitializeTwitterContext();
+
+            await ctx.CreateMediaMetadataAsync(mediaID, altText);
+
+            execMock.Verify(exec =>
+                exec.SendJsonToTwitterAsync(
+                    It.IsAny<string>(),
+                    "https://upload.twitter.com/1.1/media/metadata/create.json",
+                    It.IsAny<MediaMetadata>(),
+                    It.IsAny<CancellationToken>()),
+                Times.Once());
+        }
+
+        [TestMethod]
+        public async Task CreateMediaMetadataAsync_WithZeroMediaID_Throws()
+        {
+            ulong mediaID = 0;
+            string altText = "Sample media description";
+
+            TwitterContext ctx = await InitializeTwitterContext();
+
+            await L2TAssert.Throws<ArgumentNullException>(
+                async () => await ctx.CreateMediaMetadataAsync(mediaID, altText));
+        }
+
+        [TestMethod]
+        public async Task CreateMediaMetadataAsync_WithEmptyAltText_Throws()
+        {
+            ulong mediaID = 521449660083609601ul;
+            string altText = "";
+
+            TwitterContext ctx = await InitializeTwitterContext();
+
+            await L2TAssert.Throws<ArgumentNullException>(
+                async () => await ctx.CreateMediaMetadataAsync(mediaID, altText));
+        }
+
+        [TestMethod]
+        public async Task CreateMediaMetadataAsync_WithNullAltText_Throws()
+        {
+            ulong mediaID = 521449660083609601ul;
+            string altText = null;
+
+            TwitterContext ctx = await InitializeTwitterContext();
+
+            await L2TAssert.Throws<ArgumentNullException>(
+                async () => await ctx.CreateMediaMetadataAsync(mediaID, altText));
         }
 
         const string MediaResponse = @"{

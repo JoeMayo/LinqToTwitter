@@ -98,6 +98,11 @@ namespace LinqToTwitter
         internal bool IncludeMyRetweet { get; set; }
 
         /// <summary>
+        /// Includes Alt Text, if available
+        /// </summary>
+        internal bool IncludeAltText { get; set; }
+
+        /// <summary>
         /// Indicate that a status lookup should return null objects for 
         /// tweets that the authorizing user doesn't have access to. 
         /// (e.g. tweet is from a protected account or doesn't exist)
@@ -181,6 +186,7 @@ namespace LinqToTwitter
                        "TrimUser",
                        "IncludeContributorDetails",
                        "IncludeMyRetweet",
+                       nameof(IncludeAltText),
                        "Map",
                        "OEmbedUrl",
                        "OEmbedMaxWidth",
@@ -332,6 +338,12 @@ namespace LinqToTwitter
             {
                 TweetMode = (TweetMode) int.Parse(parameters[nameof(TweetMode)]);
                 urlParams.Add(new QueryParameter("tweet_mode", TweetMode.ToString().ToLower()));
+            }
+
+            if (parameters.ContainsKey(nameof(IncludeAltText)))
+            {
+                IncludeAltText = bool.Parse(parameters[nameof(IncludeAltText)]);
+                urlParams.Add(new QueryParameter("include_ext_alt_text", parameters[nameof(IncludeAltText)].ToLower()));
             }
 
             return req;
@@ -646,6 +658,7 @@ namespace LinqToTwitter
                 status.TrimUser = TrimUser;
                 status.IncludeContributorDetails = IncludeContributorDetails;
                 status.IncludeMyRetweet = IncludeMyRetweet;
+                status.IncludeAltText = IncludeAltText;
                 status.OEmbedAlign = OEmbedAlign;
                 status.OEmbedHideMedia = OEmbedHideMedia;
                 status.OEmbedHideThread = OEmbedHideThread;

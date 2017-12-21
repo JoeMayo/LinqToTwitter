@@ -182,6 +182,11 @@ namespace LinqToTwitter
         public bool IncludeMyRetweet { get; set; }
 
         /// <summary>
+        /// Includes Alt Text, if available
+        /// </summary>
+        public bool IncludeAltText { get; set; }
+
+        /// <summary>
         /// Url of tweet to embed
         /// </summary>
         public string OEmbedUrl { get; set; }

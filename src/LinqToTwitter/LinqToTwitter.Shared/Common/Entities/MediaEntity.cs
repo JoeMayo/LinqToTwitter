@@ -15,6 +15,11 @@ namespace LinqToTwitter
         public string MediaUrl { get; set; }
 
         /// <summary>
+        /// Populated with media alt text, if available.
+        /// </summary>
+        public string AltText { get; set; }
+
+        /// <summary>
         /// SSL version of media URL
         /// </summary>
         public string MediaUrlHttps { get; set; }
@@ -32,7 +37,7 @@ namespace LinqToTwitter
         /// <summary>
         /// Character positions of extracted media
         /// </summary>
-        public List<int> Indices { get; set; }
+        public new List<int> Indices { get; set; }
 
         public VideoInfo VideoInfo { get; set; }
     }

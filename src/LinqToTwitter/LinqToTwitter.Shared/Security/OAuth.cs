@@ -45,7 +45,7 @@ namespace LinqToTwitter.Security
                 string.Join("&",
                     (from parm in parameters
                      orderby parm.Key
-                     select parm.Key + "=" + Uri.EscapeUriString(parameters[parm.Key]))
+                     select parm.Key + "=" + Url.PercentEncode(parameters[parm.Key]))
                     .ToArray());
         }
 
@@ -58,8 +58,8 @@ namespace LinqToTwitter.Security
             return string.Join("&", new string[]
             {
                 method.ToUpper(),
-                Url.PercentEncode(urlWithoutParams),
-                Url.PercentEncode(encodedStringParameters)
+                Url.PercentEncode(urlWithoutParams, false),
+                Url.PercentEncode(encodedStringParameters, false)
             });
         }
 
@@ -67,8 +67,8 @@ namespace LinqToTwitter.Security
         {
             return string.Format(
                 CultureInfo.InvariantCulture, "{0}&{1}", 
-                Url.PercentEncode(consumerSecret),
-                Url.PercentEncode(oAuthTokenSecret));
+                Url.PercentEncode(consumerSecret, false),
+                Url.PercentEncode(oAuthTokenSecret, false));
         }
 
         internal string CalculateSignature(string signingKey, string signatureBaseString)
