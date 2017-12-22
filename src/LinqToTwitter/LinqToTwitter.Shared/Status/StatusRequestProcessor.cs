@@ -413,6 +413,12 @@ namespace LinqToTwitter
                 urlParams.Add(new QueryParameter("tweet_mode", TweetMode.ToString().ToLower()));
             }
 
+            if (parameters.ContainsKey(nameof(IncludeAltText)))
+            {
+                IncludeAltText = bool.Parse(parameters[nameof(IncludeAltText)]);
+                urlParams.Add(new QueryParameter("include_ext_alt_text", parameters[nameof(IncludeAltText)].ToLower()));
+            }
+
             return req;
         }
 

@@ -138,6 +138,7 @@ namespace LinqToTwitterPcl.Tests.StatusTests
                   new KeyValuePair<string, string>("TweetMode", ((int) TweetMode.Extended).ToString())));
         }
 
+        // TODO: I believe this was deprecated a long time ago.
         [TestMethod]
         public void BuildUrl_Constructs_Conversations_Url()
         {
@@ -201,11 +202,11 @@ namespace LinqToTwitterPcl.Tests.StatusTests
             };
             var parameters = new Dictionary<string, string>
             {
-                { "Type", ((int)StatusType.Show).ToString() },
-                { "ID", "945932078" },
-                { "TrimUser", true.ToString() },
-                { "IncludeMyRetweet", true.ToString() },
-                { "IncludeEntities", true.ToString() },
+                { nameof(Status.Type), ((int)StatusType.Show).ToString() },
+                { nameof(Status.ID), "945932078" },
+                { nameof(Status.TrimUser), true.ToString() },
+                { nameof(Status.IncludeMyRetweet), true.ToString() },
+                { nameof(Status.IncludeEntities), true.ToString() },
                 { nameof(Status.IncludeAltText), true.ToString() },
                 { nameof(Status.TweetMode), ((int)TweetMode.Extended).ToString() }
             };
@@ -443,7 +444,7 @@ namespace LinqToTwitterPcl.Tests.StatusTests
         [TestMethod]
         public void BuildUrl_Constructs_Lookup_Url()
         {
-            const string ExpectedUrl = "https://api.twitter.com/1.1/statuses/lookup.json?id=1%2C2%2C3&include_entities=true&map=true&trim_user=true&tweet_mode=extended";
+            const string ExpectedUrl = "https://api.twitter.com/1.1/statuses/lookup.json?id=1%2C2%2C3&include_entities=true&map=true&trim_user=true&tweet_mode=extended&include_ext_alt_text=true";
             var reqProc = new StatusRequestProcessor<Status>
             {
                 Type = StatusType.Lookup,
@@ -451,11 +452,12 @@ namespace LinqToTwitterPcl.Tests.StatusTests
             };
             var parameters = new Dictionary<string, string>
             {
-                { "Type", ((int)StatusType.Lookup).ToString() },
-                { "TweetIDs", "1,2,3" },
-                { "IncludeEntities", true.ToString() },
-                { "TrimUser", true.ToString() },
-                { "Map", true.ToString() },
+                { nameof(Status.Type), ((int)StatusType.Lookup).ToString() },
+                { nameof(Status.TweetIDs), "1,2,3" },
+                { nameof(Status.IncludeEntities), true.ToString() },
+                { nameof(Status.TrimUser), true.ToString() },
+                { nameof(Status.Map), true.ToString() },
+                { nameof(Status.IncludeAltText), true.ToString() },
                 { nameof(Status.TweetMode), ((int)TweetMode.Extended).ToString() }
             };
 

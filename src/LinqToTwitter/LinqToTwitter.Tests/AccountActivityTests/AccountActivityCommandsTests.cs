@@ -174,7 +174,7 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
             execMock.Verify(exec =>
                 exec.PostFormUrlEncodedToTwitterAsync<AccountActivity>(
                     HttpMethod.Post.ToString(),
-                    "https://api.twitter.com/1.1/account_activity/webhooks.json?url=https://www.example.com/api/accountactivity",
+                    "https://api.twitter.com/1.1/account_activity/webhooks.json",
                     It.IsAny<Dictionary<string, string>>(),
                     It.IsAny<CancellationToken>()),
                 Times.Once());
