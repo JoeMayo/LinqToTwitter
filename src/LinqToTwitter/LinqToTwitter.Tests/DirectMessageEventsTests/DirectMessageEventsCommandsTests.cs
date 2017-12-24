@@ -42,6 +42,12 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
                 It.IsAny<DirectMessageEventsValue>(),
                 It.IsAny<CancellationToken>()))
                     .Returns(tcsResponse.Task);
+            execMock.Setup(exec => exec.PostFormUrlEncodedToTwitterAsync<DirectMessageEvents>(
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<Dictionary<string, string>>(),
+                It.IsAny<CancellationToken>()))
+                    .Returns(tcsResponse.Task);
             var ctx = new TwitterContext(execMock.Object);
             return ctx;
         }
@@ -242,6 +248,47 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
                 async () => await ctx.NewDirectMessageEventAsync(RecipientID, Text));
 
             Assert.AreEqual("text", ex.ParamName);
+        }
+
+
+        [TestMethod]
+        public async Task DeleteDirectMessageEventsAsync_WithValidParameters_HasAnEmptyRawResult()
+        {
+            const ulong DirectMessageID = 1;
+            var ctx = InitializeTwitterContext();
+
+            await ctx.DeleteDirectMessageEventAsync(DirectMessageID);
+
+            Assert.AreEqual(DirectMessageEventsResponse, ctx.RawResult);
+        }
+
+        [TestMethod]
+        public async Task DeleteDirectMessageEventsAsync_WithValidParameters_ConstructsUrl()
+        {
+            const ulong DirectMessageID = 1;
+            var ctx = InitializeTwitterContext();
+
+            await ctx.DeleteDirectMessageEventAsync(DirectMessageID);
+
+            execMock.Verify(exec =>
+                exec.PostFormUrlEncodedToTwitterAsync<DirectMessageEvents>(
+                    HttpMethod.Delete.ToString(),
+                    "https://api.twitter.com/1.1/direct_messages/events/destroy.json?id=1",
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<CancellationToken>()),
+                Times.Once());
+        }
+
+        [TestMethod]
+        public async Task DeleteDirectMessageEventsAsync_WithZeroDirectMessageID_Throws()
+        {
+            const int DirectMessageID = 0;
+            var ctx = InitializeTwitterContext();
+
+            var ex = await L2TAssert.Throws<ArgumentException>(
+                async () => await ctx.DeleteDirectMessageEventAsync(DirectMessageID));
+
+            Assert.AreEqual("directMessageID", ex.ParamName);
         }
 
         const string DirectMessageEventsResponse = @"{

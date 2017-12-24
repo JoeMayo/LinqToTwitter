@@ -32,6 +32,10 @@ namespace Linq2TwitterDemos_Console
                         Console.WriteLine("\n\tSending DM...\n");
                         await NewDirectMessageAsync(twitterCtx);
                         break;
+                    case '3':
+                        Console.WriteLine("\n\tDeleting DM...\n");
+                        await DeleteDirectMessageAsync(twitterCtx);
+                        break;
                     case 'q':
                     case 'Q':
                         Console.WriteLine("\nReturning...\n");
@@ -51,6 +55,7 @@ namespace Linq2TwitterDemos_Console
             Console.WriteLine("\t 0. Show Direct Messages");
             Console.WriteLine("\t 1. List Direct Messages");
             Console.WriteLine("\t 2. Send Direct Message");
+            Console.WriteLine("\t 3. Delete Direct Message");
             Console.WriteLine();
             Console.Write("\t Q. Return to Main menu");
         }
@@ -123,10 +128,10 @@ namespace Linq2TwitterDemos_Console
 
                 if (evt != null && msgCreate != null)
                     Console.WriteLine(
-                        "From ID: {0}\nTo ID:  {1}\nMessage Text: {2}",
-                        msgCreate.SenderID ?? "None",
-                        msgCreate.Target?.RecipientID ?? "None",
-                        msgCreate.MessageData?.Text ?? "None");
+                        $"DM ID: {evt.ID}\n" +
+                        $"From ID: {msgCreate.SenderID ?? "None"}\n" +
+                        $"To ID:  {msgCreate.Target?.RecipientID ?? "None"}\n" +
+                        $"Message Text: {msgCreate.MessageData?.Text ?? "None"}");
             });
         }
 
@@ -147,6 +152,24 @@ namespace Linq2TwitterDemos_Console
                     dmEvent.MessageCreate.Target.RecipientID,
                     dmEvent.MessageCreate.MessageData.Text,
                     dmEvent.CreatedTimestamp);
+        }
+
+        static async Task DeleteDirectMessageAsync(TwitterContext twitterCtx)
+        {
+            Console.Write("Which DM would you like to delete? (please enter DM ID): ");
+            string dmInput = Console.ReadLine();
+
+            ulong.TryParse(dmInput, out ulong dmID);
+
+            try
+            {
+                await twitterCtx.DeleteDirectMessageEventAsync(dmID);
+                Console.WriteLine("\nDM Deleted");
+            }
+            catch (TwitterQueryException tqEx)
+            {
+                Console.WriteLine($"\nProblem deleting DM: ({tqEx.ErrorCode}) - {tqEx.ReasonPhrase}");
+            }
         }
     }
 }

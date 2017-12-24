@@ -196,7 +196,7 @@ namespace LinqToTwitter
         {
             var dm = new DirectMessageEvents
             {
-                Value = JsonConvert.DeserializeObject<DirectMessageEventsValue>(responseJson)
+                Value = JsonConvert.DeserializeObject<DirectMessageEventsValue>(responseJson ?? "")
             };
 
             return dm.ItemCast(default(T));
