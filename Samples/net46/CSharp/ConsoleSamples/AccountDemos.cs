@@ -29,30 +29,26 @@ namespace Linq2TwitterDemos_Console
                         await AccountSettingsAsync(twitterCtx);
                         break;
                     case '2':
-                        Console.WriteLine("\n\tUpdating colors...\n");
-                        await UpdateAccountColorsAsync(twitterCtx);
-                        break;
-                    case '3':
                         Console.WriteLine("\n\tUpdating image...\n");
                         await UpdateAccountImageAsync(twitterCtx);
                         break;
-                    case '4':
+                    case '3':
                         Console.WriteLine("\n\tUpdating image...\n");
                         await UpdateAccountBackgroundImageAsync(twitterCtx);
                         break;
-                    case '5':
+                    case '4':
                         Console.WriteLine("\n\tUpdating account...\n");
                         await UpdateAccountProfileAsync(twitterCtx);
                         break;
-                    case '6':
+                    case '5':
                         Console.WriteLine("\n\tUpdating account...\n");
                         await UpdateAccountSettingsAsync(twitterCtx);
                         break;
-                    case '7':
+                    case '6':
                         Console.WriteLine("\n\tUpdating banner...\n");
                         await UpdateProfileBannerAsync(twitterCtx);
                         break;
-                    case '8':
+                    case '7':
                         Console.WriteLine("\n\tRemoving banner...\n");
                         await RemoveProfileBannerAsync(twitterCtx);
                         break;
@@ -74,13 +70,12 @@ namespace Linq2TwitterDemos_Console
 
             Console.WriteLine("\t 0. Verify Credentials");
             Console.WriteLine("\t 1. Get Account Settings");
-            Console.WriteLine("\t 2. Update Account Colors");
-            Console.WriteLine("\t 3. Update Account Image");
-            Console.WriteLine("\t 4. Update Account Background Image");
-            Console.WriteLine("\t 5. Update Account Profile");
-            Console.WriteLine("\t 6. Update Account Settings");
-            Console.WriteLine("\t 7. Update Profile Banner");
-            Console.WriteLine("\t 8. Remove Profile Banner");
+            Console.WriteLine("\t 2. Update Account Image");
+            Console.WriteLine("\t 3. Update Account Background Image");
+            Console.WriteLine("\t 4. Update Account Profile");
+            Console.WriteLine("\t 5. Update Account Settings");
+            Console.WriteLine("\t 6. Update Profile Banner");
+            Console.WriteLine("\t 7. Remove Profile Banner");
             Console.WriteLine();
             Console.Write("\t Q. Return to Main menu");
         }
@@ -132,25 +127,6 @@ namespace Linq2TwitterDemos_Console
                     settings.TrendLocation.Name,
                     settings.GeoEnabled,
                     settings.SleepTime.Enabled); 
-            }
-        }
-
-        static async Task UpdateAccountColorsAsync(TwitterContext twitterCtx)
-        {
-            var user = await twitterCtx.UpdateAccountColorsAsync(
-                background: null, text: "#000000", link: "#0000ff", 
-                sidebarFill: "#e0ff92", sidebarBorder: "#87bc44", 
-                includeEntities: true, skipStatus: true);
-
-            if (user != null)
-            {
-                Console.WriteLine("\nAccount Colors:\n");
-
-                Console.WriteLine("Background:     " + user.ProfileBackgroundColor);
-                Console.WriteLine("Text:           " + user.ProfileTextColor);
-                Console.WriteLine("Link:           " + user.ProfileLinkColor);
-                Console.WriteLine("Sidebar Fill:   " + user.ProfileSidebarFillColor);
-                Console.WriteLine("Sidebar Border: " + user.ProfileSidebarBorderColor); 
             }
         }
 

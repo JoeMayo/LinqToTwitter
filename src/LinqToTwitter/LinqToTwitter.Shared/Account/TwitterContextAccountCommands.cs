@@ -26,6 +26,7 @@ namespace LinqToTwitter
         /// <param name="sidebarBorder">sidebar border color</param>
         /// <param name="skipStatus">Don't include status with response.</param>
         /// <returns>User info with new colors</returns>
+        [Obsolete("This twitter endpoint doesn't exist anymore", error: true)] // TODO: remove after a few versions.
         public async Task<User> UpdateAccountColorsAsync(string background, string text, string link, string sidebarFill, string sidebarBorder, bool skipStatus)
         {
             return await UpdateAccountColorsAsync(background, text, link, sidebarFill, sidebarBorder, true, skipStatus).ConfigureAwait(false);
@@ -45,6 +46,7 @@ namespace LinqToTwitter
         /// <param name="includeEntities">Set to false to not include entities. (default: true)</param>
         /// <param name="skipStatus">Don't include status with response.</param>
         /// <returns>User info with new colors</returns>
+        [Obsolete("This twitter endpoint doesn't exist anymore", error: true)] // TODO: remove after a few versions.
         public async Task<User> UpdateAccountColorsAsync(string background, string text, string link, string sidebarFill, string sidebarBorder, bool includeEntities, bool skipStatus, CancellationToken cancelToken = default(CancellationToken))
         {
             var accountUrl = BaseUrl + "account/update_profile_colors.json";
