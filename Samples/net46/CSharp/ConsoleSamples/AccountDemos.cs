@@ -49,14 +49,10 @@ namespace Linq2TwitterDemos_Console
                         await UpdateAccountSettingsAsync(twitterCtx);
                         break;
                     case '7':
-                        Console.WriteLine("\n\tUpdating device...\n");
-                        await UpdateDeliveryDeviceAsync(twitterCtx);
-                        break;
-                    case '8':
                         Console.WriteLine("\n\tUpdating banner...\n");
                         await UpdateProfileBannerAsync(twitterCtx);
                         break;
-                    case '9':
+                    case '8':
                         Console.WriteLine("\n\tRemoving banner...\n");
                         await RemoveProfileBannerAsync(twitterCtx);
                         break;
@@ -83,9 +79,8 @@ namespace Linq2TwitterDemos_Console
             Console.WriteLine("\t 4. Update Account Background Image");
             Console.WriteLine("\t 5. Update Account Profile");
             Console.WriteLine("\t 6. Update Account Settings");
-            Console.WriteLine("\t 7. Update Delivery Device");
-            Console.WriteLine("\t 8. Update Profile Banner");
-            Console.WriteLine("\t 9. Remove Profile Banner");
+            Console.WriteLine("\t 7. Update Profile Banner");
+            Console.WriteLine("\t 8. Remove Profile Banner");
             Console.WriteLine();
             Console.Write("\t Q. Return to Main menu");
         }
@@ -235,16 +230,6 @@ namespace Linq2TwitterDemos_Console
                     "Enabled: {0}, Start: {1}, End: {2}",
                     sleep.Enabled, sleep.StartHour, sleep.EndHour); 
             }
-        }
-
-        static async Task UpdateDeliveryDeviceAsync(TwitterContext twitterCtx)
-        {
-            Account acct = 
-                await twitterCtx.UpdateDeliveryDeviceAsync(
-                    DeviceType.None, null);
-
-            if (acct != null && acct.User != null)
-                Console.WriteLine("Update for: ", acct.User.ScreenNameResponse); 
         }
         
         static async Task UpdateProfileBannerAsync(TwitterContext twitterCtx)

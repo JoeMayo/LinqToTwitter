@@ -424,39 +424,6 @@ namespace LinqToTwitterPcl.Tests.AccountTests
             Assert.AreEqual(ExpectedParamName, ex.ParamName);
         }
 
-        [TestMethod]
-        public async Task UpdateDeliveryDeviceAsync_Invokes_Executor_Execute()
-        {
-            var ctx = InitTwitterContextWithPostToTwitter<Account>(SettingsResponse);
-            var parameters = new Dictionary<string, string>
-            {
-                { "device", DeviceType.Sms.ToString().ToLower() },
-                { "include_entities", true.ToString().ToLower() }
-            };
-
-            Account acct = await ctx.UpdateDeliveryDeviceAsync(DeviceType.Sms, true);
-
-            execMock.Verify(exec =>
-                exec.PostFormUrlEncodedToTwitterAsync<Account>(
-                    HttpMethod.Post.ToString(),
-                    "https://api.twitter.com/1.1/account/update_delivery_device.json",
-                    parameters,
-                    It.IsAny<CancellationToken>()),
-                Times.Once());
-            Assert.IsNotNull(acct);
-            Settings settings = acct.Settings;
-            Assert.IsNotNull(settings);
-        }
-
-        [TestMethod]
-        public async Task UpdateDeliveryDeviceAsync_WithRawResult_Succeds()
-        {
-            var ctx = InitTwitterContextWithPostToTwitter<Account>(SettingsResponse);
-
-            await ctx.UpdateDeliveryDeviceAsync(DeviceType.Sms, true);
-
-            Assert.AreEqual(SettingsResponse, ctx.RawResult);
-        }
 
         [TestMethod]
         public async Task UpdateProfileBannerAsync_Invokes_Executor_Execute()

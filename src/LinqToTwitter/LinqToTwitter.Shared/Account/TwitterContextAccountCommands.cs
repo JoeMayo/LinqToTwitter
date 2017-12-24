@@ -339,6 +339,7 @@ namespace LinqToTwitter
         /// <param name="device">Which device to use.</param>
         /// <param name="includeEntitites">Set this to false to not add entitites to response. (default: true)</param>
         /// <returns></returns>
+        [Obsolete("This twitter endpoint doesn't exist anymore", error: true)] // TODO: remove after a few versions.
         public async Task<Account> UpdateDeliveryDeviceAsync(DeviceType device, bool? includeEntitites, CancellationToken cancelToken = default(CancellationToken))
         {
             var accountUrl = BaseUrl + "account/update_delivery_device.json";
