@@ -9,9 +9,10 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>LinqToTwitter</RootNamespace>
     <AssemblyName>LinqToTwitter.AspNet</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>cc003c1d</NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -72,9 +73,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\LinqToTwitter.net\LinqToTwitter.net.csproj">
-      <Project>{554f8a8a-9cc0-40c9-b7ca-f3c3cf5190b2}</Project>
-      <Name>LinqToTwitter.net</Name>
+    <ProjectReference Include="..\LinqToTwitter.netstandard\LinqToTwitter.netstandard.csproj">
+      <Project>{50a782c7-cf5d-456b-8d9c-2f124b594b45}</Project>
+      <Name>LinqToTwitter.netstandard</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="..\LinqToTwitter.Shared.aspnet\LinqToTwitter.Shared.aspnet.projitems" Label="Shared" />

@@ -1,8 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
   <PropertyGroup>
-    <TargetFramework>netstandard1.6</TargetFramework>
-    <AssemblyVersion>4.2.1.0</AssemblyVersion>
-    <FileVersion>4.2.1.0</FileVersion>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyVersion>5.0.0.0</AssemblyVersion>
+    <FileVersion>5.0.0.0</FileVersion>
+    <Version>5.0.0</Version>
+    <Authors>Joe Mayo</Authors>
+    <Company>LINQ to Twitter</Company>
+    <Description>A LINQ Provider for the Twitter API</Description>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="1.1.0" />
@@ -10,7 +14,7 @@
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\LinqToTwitter.Core\LinqToTwitter.Core.csproj" />
+    <ProjectReference Include="..\LinqToTwitter.netstandard\LinqToTwitter.netstandard.csproj" />
   </ItemGroup>
   <Import Project="..\LinqToTwitter.Shared.aspnet\LinqToTwitter.Shared.aspnet.projitems" Label="Shared" />
 </Project>

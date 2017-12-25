@@ -1491,90 +1491,6 @@
           }
         }
       },
-      "System.Reactive/3.1.1": {
-        "type": "package",
-        "dependencies": {
-          "System.Reactive.PlatformServices": "3.1.1",
-          "System.Reactive.Windows.Threading": "3.1.1",
-          "System.Reactive.WindowsRuntime": "3.1.1"
-        }
-      },
-      "System.Reactive.Core/3.1.1": {
-        "type": "package",
-        "dependencies": {
-          "System.ComponentModel": "4.0.1",
-          "System.Diagnostics.Contracts": "4.0.1",
-          "System.Dynamic.Runtime": "4.0.11",
-          "System.Reactive.Interfaces": "3.1.1"
-        },
-        "compile": {
-          "lib/uap10.0/System.Reactive.Core.dll": {}
-        },
-        "runtime": {
-          "lib/uap10.0/System.Reactive.Core.dll": {}
-        }
-      },
-      "System.Reactive.Interfaces/3.1.1": {
-        "type": "package",
-        "dependencies": {
-          "NETStandard.Library": "1.6.0"
-        },
-        "compile": {
-          "lib/netstandard1.0/System.Reactive.Interfaces.dll": {}
-        },
-        "runtime": {
-          "lib/netstandard1.0/System.Reactive.Interfaces.dll": {}
-        }
-      },
-      "System.Reactive.Linq/3.1.1": {
-        "type": "package",
-        "dependencies": {
-          "System.Reactive.Core": "3.1.1",
-          "System.Runtime.InteropServices.WindowsRuntime": "4.0.1"
-        },
-        "compile": {
-          "lib/netstandard1.3/System.Reactive.Linq.dll": {}
-        },
-        "runtime": {
-          "lib/netstandard1.3/System.Reactive.Linq.dll": {}
-        }
-      },
-      "System.Reactive.PlatformServices/3.1.1": {
-        "type": "package",
-        "dependencies": {
-          "System.Reactive.Linq": "3.1.1"
-        },
-        "compile": {
-          "lib/uap10.0/System.Reactive.PlatformServices.dll": {}
-        },
-        "runtime": {
-          "lib/uap10.0/System.Reactive.PlatformServices.dll": {}
-        }
-      },
-      "System.Reactive.Windows.Threading/3.1.1": {
-        "type": "package",
-        "dependencies": {
-          "System.Reactive.Core": "3.1.1"
-        },
-        "compile": {
-          "lib/uap10.0/System.Reactive.Windows.Threading.dll": {}
-        },
-        "runtime": {
-          "lib/uap10.0/System.Reactive.Windows.Threading.dll": {}
-        }
-      },
-      "System.Reactive.WindowsRuntime/3.1.1": {
-        "type": "package",
-        "dependencies": {
-          "System.Reactive.Linq": "3.1.1"
-        },
-        "compile": {
-          "lib/uap10.0/System.Reactive.WindowsRuntime.dll": {}
-        },
-        "runtime": {
-          "lib/uap10.0/System.Reactive.WindowsRuntime.dll": {}
-        }
-      },
       "System.Reflection/4.3.0": {
         "type": "package",
         "dependencies": {
@@ -2537,14 +2453,9 @@
           }
         }
       },
-      "LinqToTwitter.uap10/1.0.0": {
+      "LinqToTwitter.netstandard/1.0.0": {
         "type": "project",
-        "framework": "UAP,Version=v10.0.10240",
-        "dependencies": {
-          "Microsoft.NETCore.UniversalWindowsPlatform": "6.0.5",
-          "Newtonsoft.Json": "10.0.3",
-          "System.Reactive": "3.1.1"
-        }
+        "framework": "Unsupported,Version=v0.0"
       }
     },
     "UAP,Version=v10.0.10586/win10-arm": {
@@ -4170,90 +4081,6 @@
           "ref/netstandard/_._": {}
         }
       },
-      "System.Reactive/3.1.1": {
-        "type": "package",
-        "dependencies": {
-          "System.Reactive.PlatformServices": "3.1.1",
-          "System.Reactive.Windows.Threading": "3.1.1",
-          "System.Reactive.WindowsRuntime": "3.1.1"
-        }
-      },
-      "System.Reactive.Core/3.1.1": {
-        "type": "package",
-        "dependencies": {
-          "System.ComponentModel": "4.0.1",
-          "System.Diagnostics.Contracts": "4.0.1",
-          "System.Dynamic.Runtime": "4.0.11",
-          "System.Reactive.Interfaces": "3.1.1"
-        },
-        "compile": {
-          "lib/uap10.0/System.Reactive.Core.dll": {}
-        },
-        "runtime": {
-          "lib/uap10.0/System.Reactive.Core.dll": {}
-        }
-      },
-      "System.Reactive.Interfaces/3.1.1": {
-        "type": "package",
-        "dependencies": {
-          "NETStandard.Library": "1.6.0"
-        },
-        "compile": {
-          "lib/netstandard1.0/System.Reactive.Interfaces.dll": {}
-        },
-        "runtime": {
-          "lib/netstandard1.0/System.Reactive.Interfaces.dll": {}
-        }
-      },
-      "System.Reactive.Linq/3.1.1": {
-        "type": "package",
-        "dependencies": {
-          "System.Reactive.Core": "3.1.1",
-          "System.Runtime.InteropServices.WindowsRuntime": "4.0.1"
-        },
-        "compile": {
-          "lib/netstandard1.3/System.Reactive.Linq.dll": {}
-        },
-        "runtime": {
-          "lib/netstandard1.3/System.Reactive.Linq.dll": {}
-        }
-      },
-      "System.Reactive.PlatformServices/3.1.1": {
-        "type": "package",
-        "dependencies": {
-          "System.Reactive.Linq": "3.1.1"
-        },
-        "compile": {
-          "lib/uap10.0/System.Reactive.PlatformServices.dll": {}
-        },
-        "runtime": {
-          "lib/uap10.0/System.Reactive.PlatformServices.dll": {}
-        }
-      },
-      "System.Reactive.Windows.Threading/3.1.1": {
-        "type": "package",
-        "dependencies": {
-          "System.Reactive.Core": "3.1.1"
-        },
-        "compile": {
-          "lib/uap10.0/System.Reactive.Windows.Threading.dll": {}
-        },
-        "runtime": {
-          "lib/uap10.0/System.Reactive.Windows.Threading.dll": {}
-        }
-      },
-      "System.Reactive.WindowsRuntime/3.1.1": {
-        "type": "package",
-        "dependencies": {
-          "System.Reactive.Linq": "3.1.1"
-        },
-        "compile": {
-          "lib/uap10.0/System.Reactive.WindowsRuntime.dll": {}
-        },
-        "runtime": {
-          "lib/uap10.0/System.Reactive.WindowsRuntime.dll": {}
-        }
-      },
       "System.Reflection/4.3.0": {
         "type": "package",
         "dependencies": {
@@ -5120,14 +4947,9 @@
           "lib/netcore50/System.Xml.XmlSerializer.dll": {}
         }
       },
-      "LinqToTwitter.uap10/1.0.0": {
+      "LinqToTwitter.netstandard/1.0.0": {
         "type": "project",
-        "framework": "UAP,Version=v10.0.10240",
-        "dependencies": {
-          "Microsoft.NETCore.UniversalWindowsPlatform": "6.0.5",
-          "Newtonsoft.Json": "10.0.3",
-          "System.Reactive": "3.1.1"
-        }
+        "framework": "Unsupported,Version=v0.0"
       }
     },
     "UAP,Version=v10.0.10586/win10-arm-aot": {
@@ -6789,90 +6611,6 @@
           "ref/netstandard/_._": {}
         }
       },
-      "System.Reactive/3.1.1": {
-        "type": "package",
-        "dependencies": {
-          "System.Reactive.PlatformServices": "3.1.1",
-          "System.Reactive.Windows.Threading": "3.1.1",
-          "System.Reactive.WindowsRuntime": "3.1.1"
-        }
-      },
-      "System.Reactive.Core/3.1.1": {
-        "type": "package",
-        "dependencies": {
-          "System.ComponentModel": "4.0.1",
-          "System.Diagnostics.Contracts": "4.0.1",
-          "System.Dynamic.Runtime": "4.0.11",
-          "System.Reactive.Interfaces": "3.1.1"
-        },
-        "compile": {
-          "lib/uap10.0/System.Reactive.Core.dll": {}
-        },
-        "runtime": {
-          "lib/uap10.0/System.Reactive.Core.dll": {}
-        }
-      },
-      "System.Reactive.Interfaces/3.1.1": {
-        "type": "package",
-        "dependencies": {
-          "NETStandard.Library": "1.6.0"
-        },
-        "compile": {
-          "lib/netstandard1.0/System.Reactive.Interfaces.dll": {}
-        },
-        "runtime": {
-          "lib/netstandard1.0/System.Reactive.Interfaces.dll": {}
-        }
-      },
-      "System.Reactive.Linq/3.1.1": {
-        "type": "package",
-        "dependencies": {
-          "System.Reactive.Core": "3.1.1",
-          "System.Runtime.InteropServices.WindowsRuntime": "4.0.1"
-        },
-        "compile": {
-          "lib/netstandard1.3/System.Reactive.Linq.dll": {}
-        },
-        "runtime": {
-          "lib/netstandard1.3/System.Reactive.Linq.dll": {}
-        }
-      },
-      "System.Reactive.PlatformServices/3.1.1": {
-        "type": "package",
-        "dependencies": {
-          "System.Reactive.Linq": "3.1.1"
-        },
-        "compile": {
-          "lib/uap10.0/System.Reactive.PlatformServices.dll": {}
-        },
-        "runtime": {
-          "lib/uap10.0/System.Reactive.PlatformServices.dll": {}
-        }
-      },
-      "System.Reactive.Windows.Threading/3.1.1": {
-        "type": "package",
-        "dependencies": {
-          "System.Reactive.Core": "3.1.1"
-        },
-        "compile": {
-          "lib/uap10.0/System.Reactive.Windows.Threading.dll": {}
-        },
-        "runtime": {
-          "lib/uap10.0/System.Reactive.Windows.Threading.dll": {}
-        }
-      },
-      "System.Reactive.WindowsRuntime/3.1.1": {
-        "type": "package",
-        "dependencies": {
-          "System.Reactive.Linq": "3.1.1"
-        },
-        "compile": {
-          "lib/uap10.0/System.Reactive.WindowsRuntime.dll": {}
-        },
-        "runtime": {
-          "lib/uap10.0/System.Reactive.WindowsRuntime.dll": {}
-        }
-      },
       "System.Reflection/4.3.0": {
         "type": "package",
         "dependencies": {
@@ -7739,14 +7477,9 @@
           "runtimes/aot/lib/netcore50/System.Xml.XmlSerializer.dll": {}
         }
       },
-      "LinqToTwitter.uap10/1.0.0": {
+      "LinqToTwitter.netstandard/1.0.0": {
         "type": "project",
-        "framework": "UAP,Version=v10.0.10240",
-        "dependencies": {
-          "Microsoft.NETCore.UniversalWindowsPlatform": "6.0.5",
-          "Newtonsoft.Json": "10.0.3",
-          "System.Reactive": "3.1.1"
-        }
+        "framework": "Unsupported,Version=v0.0"
       }
     },
     "UAP,Version=v10.0.10586/win10-x64": {
@@ -9381,90 +9114,6 @@
           "ref/netstandard/_._": {}
         }
       },
-      "System.Reactive/3.1.1": {
-        "type": "package",
-        "dependencies": {
-          "System.Reactive.PlatformServices": "3.1.1",
-          "System.Reactive.Windows.Threading": "3.1.1",
-          "System.Reactive.WindowsRuntime": "3.1.1"
-        }
-      },
-      "System.Reactive.Core/3.1.1": {
-        "type": "package",
-        "dependencies": {
-          "System.ComponentModel": "4.0.1",
-          "System.Diagnostics.Contracts": "4.0.1",
-          "System.Dynamic.Runtime": "4.0.11",
-          "System.Reactive.Interfaces": "3.1.1"
-        },
-        "compile": {
-          "lib/uap10.0/System.Reactive.Core.dll": {}
-        },
-        "runtime": {
-          "lib/uap10.0/System.Reactive.Core.dll": {}
-        }
-      },
-      "System.Reactive.Interfaces/3.1.1": {
-        "type": "package",
-        "dependencies": {
-          "NETStandard.Library": "1.6.0"
-        },
-        "compile": {
-          "lib/netstandard1.0/System.Reactive.Interfaces.dll": {}
-        },
-        "runtime": {
-          "lib/netstandard1.0/System.Reactive.Interfaces.dll": {}
-        }
-      },
-      "System.Reactive.Linq/3.1.1": {
-        "type": "package",
-        "dependencies": {
-          "System.Reactive.Core": "3.1.1",
-          "System.Runtime.InteropServices.WindowsRuntime": "4.0.1"
-        },
-        "compile": {
-          "lib/netstandard1.3/System.Reactive.Linq.dll": {}
-        },
-        "runtime": {
-          "lib/netstandard1.3/System.Reactive.Linq.dll": {}
-        }
-      },
-      "System.Reactive.PlatformServices/3.1.1": {
-        "type": "package",
-        "dependencies": {
-          "System.Reactive.Linq": "3.1.1"
-        },
-        "compile": {
-          "lib/uap10.0/System.Reactive.PlatformServices.dll": {}
-        },
-        "runtime": {
-          "lib/uap10.0/System.Reactive.PlatformServices.dll": {}
-        }
-      },
-      "System.Reactive.Windows.Threading/3.1.1": {
-        "type": "package",
-        "dependencies": {
-          "System.Reactive.Core": "3.1.1"
-        },
-        "compile": {
-          "lib/uap10.0/System.Reactive.Windows.Threading.dll": {}
-        },
-        "runtime": {
-          "lib/uap10.0/System.Reactive.Windows.Threading.dll": {}
-        }
-      },
-      "System.Reactive.WindowsRuntime/3.1.1": {
-        "type": "package",
-        "dependencies": {
-          "System.Reactive.Linq": "3.1.1"
-        },
-        "compile": {
-          "lib/uap10.0/System.Reactive.WindowsRuntime.dll": {}
-        },
-        "runtime": {
-          "lib/uap10.0/System.Reactive.WindowsRuntime.dll": {}
-        }
-      },
       "System.Reflection/4.3.0": {
         "type": "package",
         "dependencies": {
@@ -10331,14 +9980,9 @@
           "lib/netcore50/System.Xml.XmlSerializer.dll": {}
         }
       },
-      "LinqToTwitter.uap10/1.0.0": {
+      "LinqToTwitter.netstandard/1.0.0": {
         "type": "project",
-        "framework": "UAP,Version=v10.0.10240",
-        "dependencies": {
-          "Microsoft.NETCore.UniversalWindowsPlatform": "6.0.5",
-          "Newtonsoft.Json": "10.0.3",
-          "System.Reactive": "3.1.1"
-        }
+        "framework": "Unsupported,Version=v0.0"
       }
     },
     "UAP,Version=v10.0.10586/win10-x64-aot": {
@@ -12009,90 +11653,6 @@
           "ref/netstandard/_._": {}
         }
       },
-      "System.Reactive/3.1.1": {
-        "type": "package",
-        "dependencies": {
-          "System.Reactive.PlatformServices": "3.1.1",
-          "System.Reactive.Windows.Threading": "3.1.1",
-          "System.Reactive.WindowsRuntime": "3.1.1"
-        }
-      },
-      "System.Reactive.Core/3.1.1": {
-        "type": "package",
-        "dependencies": {
-          "System.ComponentModel": "4.0.1",
-          "System.Diagnostics.Contracts": "4.0.1",
-          "System.Dynamic.Runtime": "4.0.11",
-          "System.Reactive.Interfaces": "3.1.1"
-        },
-        "compile": {
-          "lib/uap10.0/System.Reactive.Core.dll": {}
-        },
-        "runtime": {
-          "lib/uap10.0/System.Reactive.Core.dll": {}
-        }
-      },
-      "System.Reactive.Interfaces/3.1.1": {
-        "type": "package",
-        "dependencies": {
-          "NETStandard.Library": "1.6.0"
-        },
-        "compile": {
-          "lib/netstandard1.0/System.Reactive.Interfaces.dll": {}
-        },
-        "runtime": {
-          "lib/netstandard1.0/System.Reactive.Interfaces.dll": {}
-        }
-      },
-      "System.Reactive.Linq/3.1.1": {
-        "type": "package",
-        "dependencies": {
-          "System.Reactive.Core": "3.1.1",
-          "System.Runtime.InteropServices.WindowsRuntime": "4.0.1"
-        },
-        "compile": {
-          "lib/netstandard1.3/System.Reactive.Linq.dll": {}
-        },
-        "runtime": {
-          "lib/netstandard1.3/System.Reactive.Linq.dll": {}
-        }
-      },
-      "System.Reactive.PlatformServices/3.1.1": {
-        "type": "package",
-        "dependencies": {
-          "System.Reactive.Linq": "3.1.1"
-        },
-        "compile": {
-          "lib/uap10.0/System.Reactive.PlatformServices.dll": {}
-        },
-        "runtime": {
-          "lib/uap10.0/System.Reactive.PlatformServices.dll": {}
-        }
-      },
-      "System.Reactive.Windows.Threading/3.1.1": {
-        "type": "package",
-        "dependencies": {
-          "System.Reactive.Core": "3.1.1"
-        },
-        "compile": {
-          "lib/uap10.0/System.Reactive.Windows.Threading.dll": {}
-        },
-        "runtime": {
-          "lib/uap10.0/System.Reactive.Windows.Threading.dll": {}
-        }
-      },
-      "System.Reactive.WindowsRuntime/3.1.1": {
-        "type": "package",
-        "dependencies": {
-          "System.Reactive.Linq": "3.1.1"
-        },
-        "compile": {
-          "lib/uap10.0/System.Reactive.WindowsRuntime.dll": {}
-        },
-        "runtime": {
-          "lib/uap10.0/System.Reactive.WindowsRuntime.dll": {}
-        }
-      },
       "System.Reflection/4.3.0": {
         "type": "package",
         "dependencies": {
@@ -12959,14 +12519,9 @@
           "runtimes/aot/lib/netcore50/System.Xml.XmlSerializer.dll": {}
         }
       },
-      "LinqToTwitter.uap10/1.0.0": {
+      "LinqToTwitter.netstandard/1.0.0": {
         "type": "project",
-        "framework": "UAP,Version=v10.0.10240",
-        "dependencies": {
-          "Microsoft.NETCore.UniversalWindowsPlatform": "6.0.5",
-          "Newtonsoft.Json": "10.0.3",
-          "System.Reactive": "3.1.1"
-        }
+        "framework": "Unsupported,Version=v0.0"
       }
     },
     "UAP,Version=v10.0.10586/win10-x86": {
@@ -14601,90 +14156,6 @@
           "ref/netstandard/_._": {}
         }
       },
-      "System.Reactive/3.1.1": {
-        "type": "package",
-        "dependencies": {
-          "System.Reactive.PlatformServices": "3.1.1",
-          "System.Reactive.Windows.Threading": "3.1.1",
-          "System.Reactive.WindowsRuntime": "3.1.1"
-        }
-      },
-      "System.Reactive.Core/3.1.1": {
-        "type": "package",
-        "dependencies": {
-          "System.ComponentModel": "4.0.1",
-          "System.Diagnostics.Contracts": "4.0.1",
-          "System.Dynamic.Runtime": "4.0.11",
-          "System.Reactive.Interfaces": "3.1.1"
-        },
-        "compile": {
-          "lib/uap10.0/System.Reactive.Core.dll": {}
-        },
-        "runtime": {
-          "lib/uap10.0/System.Reactive.Core.dll": {}
-        }
-      },
-      "System.Reactive.Interfaces/3.1.1": {
-        "type": "package",
-        "dependencies": {
-          "NETStandard.Library": "1.6.0"
-        },
-        "compile": {
-          "lib/netstandard1.0/System.Reactive.Interfaces.dll": {}
-        },
-        "runtime": {
-          "lib/netstandard1.0/System.Reactive.Interfaces.dll": {}
-        }
-      },
-      "System.Reactive.Linq/3.1.1": {
-        "type": "package",
-        "dependencies": {
-          "System.Reactive.Core": "3.1.1",
-          "System.Runtime.InteropServices.WindowsRuntime": "4.0.1"
-        },
-        "compile": {
-          "lib/netstandard1.3/System.Reactive.Linq.dll": {}
-        },
-        "runtime": {
-          "lib/netstandard1.3/System.Reactive.Linq.dll": {}
-        }
-      },
-      "System.Reactive.PlatformServices/3.1.1": {
-        "type": "package",
-        "dependencies": {
-          "System.Reactive.Linq": "3.1.1"
-        },
-        "compile": {
-          "lib/uap10.0/System.Reactive.PlatformServices.dll": {}
-        },
-        "runtime": {
-          "lib/uap10.0/System.Reactive.PlatformServices.dll": {}
-        }
-      },
-      "System.Reactive.Windows.Threading/3.1.1": {
-        "type": "package",
-        "dependencies": {
-          "System.Reactive.Core": "3.1.1"
-        },
-        "compile": {
-          "lib/uap10.0/System.Reactive.Windows.Threading.dll": {}
-        },
-        "runtime": {
-          "lib/uap10.0/System.Reactive.Windows.Threading.dll": {}
-        }
-      },
-      "System.Reactive.WindowsRuntime/3.1.1": {
-        "type": "package",
-        "dependencies": {
-          "System.Reactive.Linq": "3.1.1"
-        },
-        "compile": {
-          "lib/uap10.0/System.Reactive.WindowsRuntime.dll": {}
-        },
-        "runtime": {
-          "lib/uap10.0/System.Reactive.WindowsRuntime.dll": {}
-        }
-      },
       "System.Reflection/4.3.0": {
         "type": "package",
         "dependencies": {
@@ -15551,14 +15022,9 @@
           "lib/netcore50/System.Xml.XmlSerializer.dll": {}
         }
       },
-      "LinqToTwitter.uap10/1.0.0": {
+      "LinqToTwitter.netstandard/1.0.0": {
         "type": "project",
-        "framework": "UAP,Version=v10.0.10240",
-        "dependencies": {
-          "Microsoft.NETCore.UniversalWindowsPlatform": "6.0.5",
-          "Newtonsoft.Json": "10.0.3",
-          "System.Reactive": "3.1.1"
-        }
+        "framework": "Unsupported,Version=v0.0"
       }
     },
     "UAP,Version=v10.0.10586/win10-x86-aot": {
@@ -17229,90 +16695,6 @@
           "ref/netstandard/_._": {}
         }
       },
-      "System.Reactive/3.1.1": {
-        "type": "package",
-        "dependencies": {
-          "System.Reactive.PlatformServices": "3.1.1",
-          "System.Reactive.Windows.Threading": "3.1.1",
-          "System.Reactive.WindowsRuntime": "3.1.1"
-        }
-      },
-      "System.Reactive.Core/3.1.1": {
-        "type": "package",
-        "dependencies": {
-          "System.ComponentModel": "4.0.1",
-          "System.Diagnostics.Contracts": "4.0.1",
-          "System.Dynamic.Runtime": "4.0.11",
-          "System.Reactive.Interfaces": "3.1.1"
-        },
-        "compile": {
-          "lib/uap10.0/System.Reactive.Core.dll": {}
-        },
-        "runtime": {
-          "lib/uap10.0/System.Reactive.Core.dll": {}
-        }
-      },
-      "System.Reactive.Interfaces/3.1.1": {
-        "type": "package",
-        "dependencies": {
-          "NETStandard.Library": "1.6.0"
-        },
-        "compile": {
-          "lib/netstandard1.0/System.Reactive.Interfaces.dll": {}
-        },
-        "runtime": {
-          "lib/netstandard1.0/System.Reactive.Interfaces.dll": {}
-        }
-      },
-      "System.Reactive.Linq/3.1.1": {
-        "type": "package",
-        "dependencies": {
-          "System.Reactive.Core": "3.1.1",
-          "System.Runtime.InteropServices.WindowsRuntime": "4.0.1"
-        },
-        "compile": {
-          "lib/netstandard1.3/System.Reactive.Linq.dll": {}
-        },
-        "runtime": {
-          "lib/netstandard1.3/System.Reactive.Linq.dll": {}
-        }
-      },
-      "System.Reactive.PlatformServices/3.1.1": {
-        "type": "package",
-        "dependencies": {
-          "System.Reactive.Linq": "3.1.1"
-        },
-        "compile": {
-          "lib/uap10.0/System.Reactive.PlatformServices.dll": {}
-        },
-        "runtime": {
-          "lib/uap10.0/System.Reactive.PlatformServices.dll": {}
-        }
-      },
-      "System.Reactive.Windows.Threading/3.1.1": {
-        "type": "package",
-        "dependencies": {
-          "System.Reactive.Core": "3.1.1"
-        },
-        "compile": {
-          "lib/uap10.0/System.Reactive.Windows.Threading.dll": {}
-        },
-        "runtime": {
-          "lib/uap10.0/System.Reactive.Windows.Threading.dll": {}
-        }
-      },
-      "System.Reactive.WindowsRuntime/3.1.1": {
-        "type": "package",
-        "dependencies": {
-          "System.Reactive.Linq": "3.1.1"
-        },
-        "compile": {
-          "lib/uap10.0/System.Reactive.WindowsRuntime.dll": {}
-        },
-        "runtime": {
-          "lib/uap10.0/System.Reactive.WindowsRuntime.dll": {}
-        }
-      },
       "System.Reflection/4.3.0": {
         "type": "package",
         "dependencies": {
@@ -18179,14 +17561,9 @@
           "runtimes/aot/lib/netcore50/System.Xml.XmlSerializer.dll": {}
         }
       },
-      "LinqToTwitter.uap10/1.0.0": {
+      "LinqToTwitter.netstandard/1.0.0": {
         "type": "project",
-        "framework": "UAP,Version=v10.0.10240",
-        "dependencies": {
-          "Microsoft.NETCore.UniversalWindowsPlatform": "6.0.5",
-          "Newtonsoft.Json": "10.0.3",
-          "System.Reactive": "3.1.1"
-        }
+        "framework": "Unsupported,Version=v0.0"
       }
     }
   },
@@ -25577,131 +24954,6 @@
         "system.private.uri.nuspec"
       ]
     },
-    "System.Reactive/3.1.1": {
-      "sha512": "elkQdVQoBVX39BHrYHMc3Rnbb7a9qBJIwNCvhq1psPMOEPo62/VHB0lJu671x3fOrGL4V/85n6p2Az1tw7Kvmg==",
-      "type": "package",
-      "path": "system.reactive/3.1.1",
-      "files": [
-        "system.reactive.3.1.1.nupkg.sha512",
-        "system.reactive.nuspec"
-      ]
-    },
-    "System.Reactive.Core/3.1.1": {
-      "sha512": "CKWC+UP1aM75taNX+sTBn2P97uHIUjKxq+z45iy7P91QGFqNFleR2tsqIC76HMVvYl7o8oWyMiycdsc9rC1Z/g==",
-      "type": "package",
-      "path": "system.reactive.core/3.1.1",
-      "files": [
-        "lib/net45/System.Reactive.Core.dll",
-        "lib/net45/System.Reactive.Core.xml",
-        "lib/net46/System.Reactive.Core.dll",
-        "lib/net46/System.Reactive.Core.xml",
-        "lib/netcore451/System.Reactive.Core.dll",
-        "lib/netcore451/System.Reactive.Core.xml",
-        "lib/netcoreapp1.0/System.Reactive.Core.dll",
-        "lib/netcoreapp1.0/System.Reactive.Core.xml",
-        "lib/netstandard1.0/System.Reactive.Core.dll",
-        "lib/netstandard1.0/System.Reactive.Core.xml",
-        "lib/netstandard1.1/System.Reactive.Core.dll",
-        "lib/netstandard1.1/System.Reactive.Core.xml",
-        "lib/netstandard1.3/System.Reactive.Core.dll",
-        "lib/netstandard1.3/System.Reactive.Core.xml",
-        "lib/uap10.0/System.Reactive.Core.dll",
-        "lib/uap10.0/System.Reactive.Core.xml",
-        "lib/wpa81/System.Reactive.Core.dll",
-        "lib/wpa81/System.Reactive.Core.xml",
-        "system.reactive.core.3.1.1.nupkg.sha512",
-        "system.reactive.core.nuspec"
-      ]
-    },
-    "System.Reactive.Interfaces/3.1.1": {
-      "sha512": "aNVY3QoRznGFeQ+w+bMqhD8ElNWoyYq+7XTQIoxKKjBOyTOjUqIMEf1wvSdtwC4y92zg2W9q38b4Sr6cYNHVLg==",
-      "type": "package",
-      "path": "system.reactive.interfaces/3.1.1",
-      "files": [
-        "lib/net45/System.Reactive.Interfaces.dll",
-        "lib/net45/System.Reactive.Interfaces.xml",
-        "lib/netstandard1.0/System.Reactive.Interfaces.dll",
-        "lib/netstandard1.0/System.Reactive.Interfaces.xml",
-        "system.reactive.interfaces.3.1.1.nupkg.sha512",
-        "system.reactive.interfaces.nuspec"
-      ]
-    },
-    "System.Reactive.Linq/3.1.1": {
-      "sha512": "HwsZsoYRg51cLGBOEa0uoZ5+d4CMcHEg/KrbqePhLxoz/SLA+ULISphBtn3woABPATOQ6j5YgGZWh4jxnJ3KYQ==",
-      "type": "package",
-      "path": "system.reactive.linq/3.1.1",
-      "files": [
-        "lib/net45/System.Reactive.Linq.dll",
-        "lib/net45/System.Reactive.Linq.xml",
-        "lib/net46/System.Reactive.Linq.dll",
-        "lib/net46/System.Reactive.Linq.xml",
-        "lib/netstandard1.0/System.Reactive.Linq.dll",
-        "lib/netstandard1.0/System.Reactive.Linq.xml",
-        "lib/netstandard1.1/System.Reactive.Linq.dll",
-        "lib/netstandard1.1/System.Reactive.Linq.xml",
-        "lib/netstandard1.3/System.Reactive.Linq.dll",
-        "lib/netstandard1.3/System.Reactive.Linq.xml",
-        "system.reactive.linq.3.1.1.nupkg.sha512",
-        "system.reactive.linq.nuspec"
-      ]
-    },
-    "System.Reactive.PlatformServices/3.1.1": {
-      "sha512": "jCJ3iGDLb4duOxZ/Uo3O7PssWE48uRp0fw92AlIwrMNaZRUmZNkZyqbl0nUT+joFARBYun8XiVIDQreMJKBedA==",
-      "type": "package",
-      "path": "system.reactive.platformservices/3.1.1",
-      "files": [
-        "lib/net45/System.Reactive.PlatformServices.dll",
-        "lib/net45/System.Reactive.PlatformServices.xml",
-        "lib/net46/System.Reactive.PlatformServices.dll",
-        "lib/net46/System.Reactive.PlatformServices.xml",
-        "lib/netcore451/System.Reactive.PlatformServices.dll",
-        "lib/netcore451/System.Reactive.PlatformServices.xml",
-        "lib/netcoreapp1.0/System.Reactive.PlatformServices.dll",
-        "lib/netcoreapp1.0/System.Reactive.PlatformServices.xml",
-        "lib/netstandard1.0/System.Reactive.PlatformServices.dll",
-        "lib/netstandard1.0/System.Reactive.PlatformServices.xml",
-        "lib/netstandard1.3/System.Reactive.PlatformServices.dll",
-        "lib/netstandard1.3/System.Reactive.PlatformServices.xml",
-        "lib/uap10.0/System.Reactive.PlatformServices.dll",
-        "lib/uap10.0/System.Reactive.PlatformServices.xml",
-        "lib/wpa81/System.Reactive.PlatformServices.dll",
-        "lib/wpa81/System.Reactive.PlatformServices.xml",
-        "system.reactive.platformservices.3.1.1.nupkg.sha512",
-        "system.reactive.platformservices.nuspec"
-      ]
-    },
-    "System.Reactive.Windows.Threading/3.1.1": {
-      "sha512": "y1TtaYaFKJBH0L3wbLVCV2Le5cNIyVczwZAULboPyFdKTIiRb7OGAZYigly8SjNC3NHwzrTHcF8WlkL0WjGUmA==",
-      "type": "package",
-      "path": "system.reactive.windows.threading/3.1.1",
-      "files": [
-        "lib/net45/System.Reactive.Windows.Threading.dll",
-        "lib/net45/System.Reactive.Windows.Threading.xml",
-        "lib/netcore451/System.Reactive.Windows.Threading.dll",
-        "lib/netcore451/System.Reactive.Windows.Threading.xml",
-        "lib/uap10.0/System.Reactive.Windows.Threading.dll",
-        "lib/uap10.0/System.Reactive.Windows.Threading.xml",
-        "lib/wpa81/System.Reactive.Windows.Threading.dll",
-        "lib/wpa81/System.Reactive.Windows.Threading.xml",
-        "system.reactive.windows.threading.3.1.1.nupkg.sha512",
-        "system.reactive.windows.threading.nuspec"
-      ]
-    },
-    "System.Reactive.WindowsRuntime/3.1.1": {
-      "sha512": "H0+29pPFCgbQ7hGKjJlzC07A2Wla2Yz5NNTRu4RkPrffkLW7NFa9mzhJ8jrmc8Tl3lAAUlFPZ+TIYv6QlqCWDg==",
-      "type": "package",
-      "path": "system.reactive.windowsruntime/3.1.1",
-      "files": [
-        "lib/netcore451/System.Reactive.WindowsRuntime.dll",
-        "lib/netcore451/System.Reactive.WindowsRuntime.xml",
-        "lib/uap10.0/System.Reactive.WindowsRuntime.dll",
-        "lib/uap10.0/System.Reactive.WindowsRuntime.xml",
-        "lib/wpa81/System.Reactive.WindowsRuntime.dll",
-        "lib/wpa81/System.Reactive.WindowsRuntime.xml",
-        "system.reactive.windowsruntime.3.1.1.nupkg.sha512",
-        "system.reactive.windowsruntime.nuspec"
-      ]
-    },
     "System.Reflection/4.3.0": {
       "sha512": "KMiAFoW7MfJGa9nDFNcfu+FpEdiHpWgTcS2HdMpDvt9saK3y/G4GwprPyzqjFH9NTaGPQeWNHU+iDlDILj96aQ==",
       "type": "package",
@@ -28366,10 +27618,10 @@
         "system.xml.xmlserializer.nuspec"
       ]
     },
-    "LinqToTwitter.uap10/1.0.0": {
+    "LinqToTwitter.netstandard/1.0.0": {
       "type": "project",
-      "path": "../../../../src/LinqToTwitter/LinqToTwitter.uap10/project.json",
-      "msbuildProject": "../../../../src/LinqToTwitter/LinqToTwitter.uap10/LinqToTwitter.uap10.csproj"
+      "path": "../../../../src/LinqToTwitter/LinqToTwitter.netstandard/LinqToTwitter.netstandard.csproj",
+      "msbuildProject": "../../../../src/LinqToTwitter/LinqToTwitter.netstandard/LinqToTwitter.netstandard.csproj"
     }
   },
   "projectFileDependencyGroups": {
@@ -28409,8 +27661,8 @@
       "frameworks": {
         "uap10.0.10586": {
           "projectReferences": {
-            "C:\\Projects\\LinqToTwitter\\src\\LinqToTwitter\\LinqToTwitter.uap10\\LinqToTwitter.uap10.csproj": {
-              "projectPath": "C:\\Projects\\LinqToTwitter\\src\\LinqToTwitter\\LinqToTwitter.uap10\\LinqToTwitter.uap10.csproj"
+            "C:\\Projects\\LinqToTwitter\\src\\LinqToTwitter\\LinqToTwitter.netstandard\\LinqToTwitter.netstandard.csproj": {
+              "projectPath": "C:\\Projects\\LinqToTwitter\\src\\LinqToTwitter\\LinqToTwitter.netstandard\\LinqToTwitter.netstandard.csproj"
             }
           }
         }
@@ -28443,5 +27695,70 @@
         "#import": []
       }
     }
-  }
+  },
+  "logs": [
+    {
+      "code": "NU1201",
+      "level": "Error",
+      "message": "Project LinqToTwitter.netstandard is not compatible with uap10.0.10586 (UAP,Version=v10.0.10586). Project LinqToTwitter.netstandard supports: netstandard2.0 (.NETStandard,Version=v2.0)",
+      "libraryId": "LinqToTwitter.netstandard",
+      "targetGraphs": [
+        "UAP,Version=v10.0.10586"
+      ]
+    },
+    {
+      "code": "NU1201",
+      "level": "Error",
+      "message": "Project LinqToTwitter.netstandard is not compatible with uap10.0.10586 (UAP,Version=v10.0.10586) / win10-arm. Project LinqToTwitter.netstandard supports: netstandard2.0 (.NETStandard,Version=v2.0)",
+      "libraryId": "LinqToTwitter.netstandard",
+      "targetGraphs": [
+        "UAP,Version=v10.0.10586/win10-arm"
+      ]
+    },
+    {
+      "code": "NU1201",
+      "level": "Error",
+      "message": "Project LinqToTwitter.netstandard is not compatible with uap10.0.10586 (UAP,Version=v10.0.10586) / win10-arm-aot. Project LinqToTwitter.netstandard supports: netstandard2.0 (.NETStandard,Version=v2.0)",
+      "libraryId": "LinqToTwitter.netstandard",
+      "targetGraphs": [
+        "UAP,Version=v10.0.10586/win10-arm-aot"
+      ]
+    },
+    {
+      "code": "NU1201",
+      "level": "Error",
+      "message": "Project LinqToTwitter.netstandard is not compatible with uap10.0.10586 (UAP,Version=v10.0.10586) / win10-x64. Project LinqToTwitter.netstandard supports: netstandard2.0 (.NETStandard,Version=v2.0)",
+      "libraryId": "LinqToTwitter.netstandard",
+      "targetGraphs": [
+        "UAP,Version=v10.0.10586/win10-x64"
+      ]
+    },
+    {
+      "code": "NU1201",
+      "level": "Error",
+      "message": "Project LinqToTwitter.netstandard is not compatible with uap10.0.10586 (UAP,Version=v10.0.10586) / win10-x64-aot. Project LinqToTwitter.netstandard supports: netstandard2.0 (.NETStandard,Version=v2.0)",
+      "libraryId": "LinqToTwitter.netstandard",
+      "targetGraphs": [
+        "UAP,Version=v10.0.10586/win10-x64-aot"
+      ]
+    },
+    {
+      "code": "NU1201",
+      "level": "Error",
+      "message": "Project LinqToTwitter.netstandard is not compatible with uap10.0.10586 (UAP,Version=v10.0.10586) / win10-x86. Project LinqToTwitter.netstandard supports: netstandard2.0 (.NETStandard,Version=v2.0)",
+      "libraryId": "LinqToTwitter.netstandard",
+      "targetGraphs": [
+        "UAP,Version=v10.0.10586/win10-x86"
+      ]
+    },
+    {
+      "code": "NU1201",
+      "level": "Error",
+      "message": "Project LinqToTwitter.netstandard is not compatible with uap10.0.10586 (UAP,Version=v10.0.10586) / win10-x86-aot. Project LinqToTwitter.netstandard supports: netstandard2.0 (.NETStandard,Version=v2.0)",
+      "libraryId": "LinqToTwitter.netstandard",
+      "targetGraphs": [
+        "UAP,Version=v10.0.10586/win10-x86-aot"
+      ]
+    }
+  ]
 }

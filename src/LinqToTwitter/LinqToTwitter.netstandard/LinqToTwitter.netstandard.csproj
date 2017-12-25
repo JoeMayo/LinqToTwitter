@@ -2,6 +2,11 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <Description>A LINQ Provider for the Twitter API</Description>
+    <Authors>Joe Mayo</Authors>
+    <Company>LINQ to Twitter</Company>
+    <AssemblyVersion>5.0.0.0</AssemblyVersion>
+    <FileVersion>5.0.0.0</FileVersion>
   </PropertyGroup>
 
   <Import Project="..\LinqToTwitter.Shared\LinqToTwitter.Shared.projitems" Label="Shared" />
