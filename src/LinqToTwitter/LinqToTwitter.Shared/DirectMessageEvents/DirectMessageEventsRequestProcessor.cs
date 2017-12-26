@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
-
-using LitJson;
 using Newtonsoft.Json;
 
 namespace LinqToTwitter

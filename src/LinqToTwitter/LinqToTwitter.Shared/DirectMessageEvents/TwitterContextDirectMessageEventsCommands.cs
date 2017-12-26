@@ -28,13 +28,13 @@ namespace LinqToTwitter
             {
                 DMEvent = new DMEvent
                 {
-                    MessageCreate = new MessageCreate
+                    MessageCreate = new DirectMessageCreate
                     {
-                        MessageData = new MessageData
+                        MessageData = new DirectMessageData
                         {
                             Text = text
                         },
-                        Target = new Target
+                        Target = new DirectMessageTarget
                         {
                             RecipientID = recipientID.ToString()
                         }

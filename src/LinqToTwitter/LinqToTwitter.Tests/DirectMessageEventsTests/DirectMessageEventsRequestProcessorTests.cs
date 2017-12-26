@@ -103,14 +103,14 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
             Assert.AreEqual("917929712638246916", evt.ID);
             Assert.AreEqual("1507686472459", evt.CreatedTimestamp);
             Assert.AreEqual(new DateTime(2017, 10, 11, 01, 47, 52, 459), evt.CreatedAt);
-            MessageCreate mc = evt.MessageCreate;
+            DirectMessageCreate mc = evt.MessageCreate;
             Assert.IsNotNull(mc);
             Assert.AreEqual("15411837", mc.SenderID);
             Assert.AreEqual("472356", mc.SourceAppID);
-            Target tgt = mc.Target;
+            DirectMessageTarget tgt = mc.Target;
             Assert.IsNotNull(tgt);
             Assert.AreEqual("16761255", tgt.RecipientID);
-            MessageData md = mc.MessageData;
+            DirectMessageData md = mc.MessageData;
             Assert.IsNotNull(md);
             Assert.AreEqual(
                 "DM from @JoeMayo to @Linq2Twitr of $MSFT &amp; $TSLA with #TwitterAPI #chatbot at https://t.co/ikGq2AnAir and https://t.co/nLvwwjz40q on 10/10/2017 6:47:46 PM!'",

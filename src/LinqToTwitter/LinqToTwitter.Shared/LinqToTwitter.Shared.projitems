@@ -210,6 +210,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)Vine\Vine.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Vine\VineRequestProcessor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Vine\VineType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)WelcomeMessages\WelcomeMessage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)WelcomeMessages\WelcomeMessageRequestProcessor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)WelcomeMessages\WelcomeMessageType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)WelcomeMessages\TwitterContextWelcomeMessageCommands.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)Serialization\LitJson\AUTHORS" />

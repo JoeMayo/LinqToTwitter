@@ -99,7 +99,7 @@ namespace LinqToTwitter
         /// Twitter container for message and metadata
         /// </summary>
         [JsonProperty("message_create")]
-        public MessageCreate MessageCreate { get; set; }
+        public DirectMessageCreate MessageCreate { get; set; }
 
         /// <summary>
         /// Helper property for C# DateTime matching CreatedTimestamp (so you don't have to convert it yourself)
@@ -117,13 +117,13 @@ namespace LinqToTwitter
         }
     }
 
-    public class MessageCreate
+    public class DirectMessageCreate
     {
         /// <summary>
         /// Who the DM is sent to
         /// </summary>
         [JsonProperty("target")]
-        public Target Target { get; set; }
+        public DirectMessageTarget Target { get; set; }
 
         /// <summary>
         /// ID of person who sent the DM.
@@ -142,10 +142,10 @@ namespace LinqToTwitter
         /// DM Contents
         /// </summary>
         [JsonProperty("message_data")]
-        public MessageData MessageData { get; set; }
+        public DirectMessageData MessageData { get; set; }
     }
 
-    public class Target
+    public class DirectMessageTarget
     {
         /// <summary>
         /// ID of person DM is sent to
@@ -154,7 +154,7 @@ namespace LinqToTwitter
         public string RecipientID { get; set; }
     }
 
-    public class MessageData
+    public class DirectMessageData
     {
         /// <summary>
         /// DM contents

@@ -70,7 +70,7 @@ namespace Linq2TwitterDemos_Console
                      select dm)
                     .SingleOrDefaultAsync();
 
-            MessageCreate msgCreate = dmResponse?.Value?.DMEvent?.MessageCreate;
+            DirectMessageCreate msgCreate = dmResponse?.Value?.DMEvent?.MessageCreate;
 
             if (dmResponse != null && msgCreate != null)
                 Console.WriteLine(
@@ -124,7 +124,7 @@ namespace Linq2TwitterDemos_Console
 
             allDmEvents.ForEach(evt =>
             {
-                MessageCreate msgCreate = evt.MessageCreate;
+                DirectMessageCreate msgCreate = evt.MessageCreate;
 
                 if (evt != null && msgCreate != null)
                     Console.WriteLine(

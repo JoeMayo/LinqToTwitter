@@ -101,6 +101,7 @@
     <Compile Include="UserTests\UserCommandsTests.cs" />
     <Compile Include="UserTests\UserRequestProcessorTests.cs" />
     <Compile Include="Vine\VineRequestProcessorTests.cs" />
+    <Compile Include="WelcomeMessageTests\WelcomeMessageCommandsTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
