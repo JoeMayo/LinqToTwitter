@@ -39,6 +39,7 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
             execMock.Setup(exec => exec.SendJsonToTwitterAsync(
                 It.IsAny<string>(),
                 It.IsAny<string>(),
+                It.IsAny<IDictionary<string, string>>(),
                 It.IsAny<DirectMessageEventsValue>(),
                 It.IsAny<CancellationToken>()))
                     .Returns(tcsResponse.Task);
@@ -206,6 +207,7 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
                 exec.SendJsonToTwitterAsync(
                     It.IsAny<string>(),
                     "https://api.twitter.com/1.1/direct_messages/events/new.json",
+                    It.IsAny<IDictionary<string, string>>(),
                     It.IsAny<DirectMessageEventsValue>(),
                     It.IsAny<CancellationToken>()),
                 Times.Once());

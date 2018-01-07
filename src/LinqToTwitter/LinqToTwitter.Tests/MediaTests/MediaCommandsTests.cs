@@ -49,6 +49,7 @@ namespace LinqToTwitterPcl.Tests.StatusTests
                 exec.SendJsonToTwitterAsync(
                 It.IsAny<string>(),
                 It.IsAny<string>(),
+                It.IsAny<IDictionary<string, string>>(),
                 It.IsAny<MediaMetadata>(),
                 It.IsAny<CancellationToken>()))
                 .Returns(tcsMedia.Task);
@@ -85,6 +86,7 @@ namespace LinqToTwitterPcl.Tests.StatusTests
                 exec.SendJsonToTwitterAsync(
                     It.IsAny<string>(),
                     "https://upload.twitter.com/1.1/media/metadata/create.json",
+                    It.IsAny<IDictionary<string, string>>(),
                     It.IsAny<MediaMetadata>(),
                     It.IsAny<CancellationToken>()),
                 Times.Once());

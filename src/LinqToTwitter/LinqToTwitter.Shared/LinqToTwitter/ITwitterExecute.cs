@@ -50,10 +50,11 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="method">Delete, Post, or Put</param>
         /// <param name="url">URL of request.</param>
+        /// <param name="postData">URL parameters to post.</param>
         /// <param name="postObj">Serializable payload object.</param>
         /// <param name="getResult">Callback for handling async Json response - null if synchronous.</param>
         /// <returns>JSON Response from Twitter - empty string if async.</returns>
-        Task<string> SendJsonToTwitterAsync<T>(string method, string url, T postObj, CancellationToken cancelToken);
+        Task<string> SendJsonToTwitterAsync<T>(string method, string url, IDictionary<string, string> postData, T postObj, CancellationToken cancelToken);
 
         /// <summary>
         /// performs HTTP POST to Twitter

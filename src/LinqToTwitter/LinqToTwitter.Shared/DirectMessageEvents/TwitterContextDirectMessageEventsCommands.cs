@@ -47,9 +47,10 @@ namespace LinqToTwitter
                 await TwitterExecutor.SendJsonToTwitterAsync(
                     HttpMethod.Post.ToString(),
                     newUrl,
+                    new Dictionary<string, string>(),
                     dmEventParams,
                     cancelToken)
-                    .ConfigureAwait(false);
+                   .ConfigureAwait(false);
 
             var reqProc = new DirectMessageEventsRequestProcessor<DirectMessageEvents>();
             DirectMessageEvents dmEvents = reqProc.ProcessActionResult(RawResult, DirectMessageEventsType.Show);

@@ -36,7 +36,7 @@ namespace LinqToTwitter
             var paramFinder =
                new ParameterFinder<WelcomeMessage>(
                    lambdaExpression.Body,
-                   new List<string> { 
+                   new List<string> {
                        nameof(Type),
                    });
 
@@ -99,8 +99,8 @@ namespace LinqToTwitter
         {
             WelcomeMessageValue welcomeMsg = JsonConvert.DeserializeObject<WelcomeMessageValue>(msgJson);
 
-            return new List<WelcomeMessage> 
-            { 
+            return new List<WelcomeMessage>
+            {
                 new WelcomeMessage
                 {
                     Type = Type,

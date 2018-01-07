@@ -39,6 +39,7 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
             execMock.Setup(exec => exec.SendJsonToTwitterAsync(
                 It.IsAny<string>(),
                 It.IsAny<string>(),
+                It.IsAny<IDictionary<string, string>>(),
                 It.IsAny<AccountActivity>(),
                 It.IsAny<CancellationToken>()))
                     .Returns(tcsResponse.Task);
@@ -101,6 +102,7 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
                 exec.SendJsonToTwitterAsync(
                     HttpMethod.Post.ToString(),
                     "https://api.twitter.com/1.1/account_activity/webhooks/1/subscriptions.json",
+                    It.IsAny<IDictionary<string, string>>(),
                     It.IsAny<AccountActivityValue>(),
                     It.IsAny<CancellationToken>()),
                 Times.Once());
@@ -250,6 +252,7 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
                 exec.SendJsonToTwitterAsync(
                     HttpMethod.Put.ToString(),
                     "https://api.twitter.com/1.1/account_activity/webhooks/1.json",
+                    It.IsAny<IDictionary<string, string>>(),
                     It.IsAny<AccountActivityValue>(),
                     It.IsAny<CancellationToken>()),
                 Times.Once());
@@ -313,6 +316,7 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
                 exec.SendJsonToTwitterAsync(
                     HttpMethod.Delete.ToString(),
                     "https://api.twitter.com/1.1/account_activity/webhooks/1/subscriptions.json",
+                    It.IsAny<IDictionary<string, string>>(),
                     It.IsAny<AccountActivityValue>(),
                     It.IsAny<CancellationToken>()),
                 Times.Once());
@@ -353,6 +357,7 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
                 exec.SendJsonToTwitterAsync(
                     HttpMethod.Delete.ToString(),
                     "https://api.twitter.com/1.1/account_activity/webhooks/1.json",
+                    It.IsAny<IDictionary<string, string>>(),
                     It.IsAny<AccountActivity>(),
                     It.IsAny<CancellationToken>()),
                 Times.Once());

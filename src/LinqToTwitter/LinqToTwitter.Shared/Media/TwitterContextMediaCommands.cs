@@ -90,6 +90,7 @@ namespace LinqToTwitter
                 await TwitterExecutor.SendJsonToTwitterAsync(
                     HttpMethod.Post.ToString(),
                     updateUrl,
+                    new Dictionary<string, string>(),
                     new MediaMetadata { MediaID = mediaID, AltText = new AltText { Text = altText } },
                     cancelToken)
                    .ConfigureAwait(false);

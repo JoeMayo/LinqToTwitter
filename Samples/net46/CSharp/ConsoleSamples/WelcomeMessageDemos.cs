@@ -24,6 +24,14 @@ namespace Linq2TwitterDemos_Console
                         Console.WriteLine("\n\tCreating Welcome Message...\n");
                         await CreateNewWelcomeMessageAsync(twitterCtx);
                         break;
+                    case '1':
+                        Console.WriteLine("\n\tUpdating Welcome Message...\n");
+                        await UpdateWelcomeMessageAsync(twitterCtx);
+                        break;
+                    case '2':
+                        Console.WriteLine("\n\tCreating Welcome Message Rule...\n");
+                        await CreateNewWelcomeMessageRuleAsync(twitterCtx);
+                        break;
                     case 'q':
                     case 'Q':
                         Console.WriteLine("\nReturning...\n");
@@ -41,6 +49,8 @@ namespace Linq2TwitterDemos_Console
             Console.WriteLine("\nDirect Message Demos - Please select:\n");
 
             Console.WriteLine("\t 0. Create a New Welcome Message");
+            Console.WriteLine("\t 1. Update a Welcome Message");
+            Console.WriteLine("\t 2. Create a New Welcome Message Rule");
             Console.WriteLine();
             Console.Write("\t Q. Return to Main menu");
         }
@@ -52,13 +62,53 @@ namespace Linq2TwitterDemos_Console
                     "New Welcome Message",
                     "Welcome!");
 
-            //DMEvent dmEvent = message?.Value?.DMEvent;
-            //if (dmEvent != null)
-            //    Console.WriteLine(
-            //        "Recipient: {0}, Message: {1}, Date: {2}",
-            //        dmEvent.MessageCreate.Target.RecipientID,
-            //        dmEvent.MessageCreate.MessageData.Text,
-            //        dmEvent.CreatedTimestamp);
+            WelcomeMsg msg = message?.Value?.WelcomeMessage;
+            if (msg != null)
+            {
+                Console.WriteLine(
+                    $"Message ID: '{msg.Id}' \n" +
+                    $"Message Name: '{msg.Name} \n" +
+                    $"Message Text: '{msg.MessageData.Text}\n");
+            }
+        }
+
+        static async Task UpdateWelcomeMessageAsync(TwitterContext twitterCtx)
+        {
+            Console.Write("Please type welcome message ID: ");
+            string respone = Console.ReadLine();
+            ulong.TryParse(respone, out ulong wecomeMessageID);
+
+            WelcomeMessage message =
+                await twitterCtx.UpdateWelcomeMessageAsync(
+                    wecomeMessageID,
+                    "New Name",
+                    "Welcome to LINQ to Twitter!");
+
+            WelcomeMsg msg = message?.Value?.WelcomeMessage;
+            if (msg != null)
+            {
+                Console.WriteLine(
+                    $"Message ID: '{msg.Id}' \n" +
+                    $"Message Name: '{msg.Name} \n" +
+                    $"Message Text: '{msg.MessageData.Text}\n");
+            }
+        }
+
+        static async Task CreateNewWelcomeMessageRuleAsync(TwitterContext twitterCtx)
+        {
+            Console.Write("Please type welcome message ID to set as default: ");
+            string respone = Console.ReadLine();
+            ulong.TryParse(respone, out ulong wecomeMessageID);
+
+            WelcomeMessage welcomeMsg =
+                await twitterCtx.NewWelcomeMessageRuleAsync(wecomeMessageID);
+
+            WelcomeMessageRule rule = welcomeMsg?.Value?.WelcomeMessageRule;
+            if (rule != null)
+                Console.WriteLine(
+                    $"Rule ID '{rule.ID}' " +
+                    $"for welcome message ID: '{rule.WelcomeMessageID}' " +
+                    $"set as default on {rule.CreatedAt}");
         }
     }
 }

@@ -29,9 +29,10 @@ namespace LinqToTwitter
                 await TwitterExecutor.SendJsonToTwitterAsync(
                     HttpMethod.Post.ToString(),
                     newUrl,
+                    new Dictionary<string, string>(),
                     accActValue,
                     cancelToken)
-                    .ConfigureAwait(false);
+                   .ConfigureAwait(false);
 
             var reqProc = new AccountActivityRequestProcessor<AccountActivity>();
             AccountActivity accAct = reqProc.ProcessActionResult(RawResult, AccountActivityType.Subscriptions);
@@ -90,9 +91,10 @@ namespace LinqToTwitter
                 await TwitterExecutor.SendJsonToTwitterAsync(
                     HttpMethod.Put.ToString(),
                     newUrl,
+                    new Dictionary<string, string>(),
                     accActValue,
                     cancelToken)
-                    .ConfigureAwait(false);
+                   .ConfigureAwait(false);
 
             var reqProc = new AccountActivityRequestProcessor<AccountActivity>();
             AccountActivity accAct = reqProc.ProcessActionResult(RawResult, AccountActivityType.Webhooks);
@@ -120,9 +122,10 @@ namespace LinqToTwitter
                 await TwitterExecutor.SendJsonToTwitterAsync(
                     HttpMethod.Delete.ToString(),
                     newUrl,
+                    new Dictionary<string, string>(),
                     accActValue,
                     cancelToken)
-                    .ConfigureAwait(false);
+                   .ConfigureAwait(false);
 
             var reqProc = new AccountActivityRequestProcessor<AccountActivity>();
             AccountActivity accAct = reqProc.ProcessActionResult(RawResult, AccountActivityType.Subscriptions);
@@ -153,9 +156,10 @@ namespace LinqToTwitter
                 await TwitterExecutor.SendJsonToTwitterAsync(
                     HttpMethod.Delete.ToString(),
                     newUrl,
+                    new Dictionary<string, string>(),
                     accActValue,
                     cancelToken)
-                    .ConfigureAwait(false);
+                   .ConfigureAwait(false);
 
             var reqProc = new AccountActivityRequestProcessor<AccountActivity>();
             AccountActivity accAct = reqProc.ProcessActionResult(RawResult, AccountActivityType.Webhooks);

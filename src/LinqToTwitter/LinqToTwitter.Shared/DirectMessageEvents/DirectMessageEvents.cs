@@ -101,15 +101,16 @@ namespace LinqToTwitter
         [JsonProperty("message_create")]
         public DirectMessageCreate MessageCreate { get; set; }
 
+        DateTime createdAt;
         /// <summary>
         /// Helper property for C# DateTime matching CreatedTimestamp (so you don't have to convert it yourself)
         /// </summary>
-        DateTime createdAt;
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
         public DateTime CreatedAt
         {
             get
             {
-                if (createdAt == default(DateTime))
+                if (createdAt != default(DateTime))
                     createdAt = CreatedTimestamp.GetEpochDateFromTimestamp();
 
                 return createdAt;

@@ -30,6 +30,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Common\BannerSize.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\Culture.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\Cursors.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\DefaultJsonSerializer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\Entities\Variant.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\Entities\Entities.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\Entities\EntityBase.cs" />

@@ -13,6 +13,7 @@ using Windows.Web.Http.Headers;
 using LinqToTwitter.Common;
 using LitJson;
 using Newtonsoft.Json;
+using LinqToTwitter.Shared.Common;
 
 namespace LinqToTwitter
 {
@@ -426,17 +427,22 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="method">Delete, Post, or Put</param>
         /// <param name="url">URL of request.</param>
+        /// <param name="postData">URL parameters to post.</param>
         /// <param name="postObj">Serializable payload object.</param>
         /// <param name="getResult">Callback for handling async Json response - null if synchronous.</param>
         /// <returns>JSON Response from Twitter - empty string if async.</returns>
-        public async Task<string> SendJsonToTwitterAsync<T>(string method, string url, T postObj, CancellationToken cancelToken)
+        public async Task<string> SendJsonToTwitterAsync<T>(string method, string url, IDictionary<string, string> postData, T postObj, CancellationToken cancelToken)
         {
             WriteLog(url, nameof(PostFormUrlEncodedToTwitterAsync));
 
-            var postJson = JsonConvert.SerializeObject(postObj);
+            var postJson = JsonConvert.SerializeObject(postObj, new DefaultJsonSerializer());
             var content = new HttpStringContent(postJson, Windows.Storage.Streams.UnicodeEncoding.Utf8, "application/json");
 
             var cleanPostData = new Dictionary<string, string>();
+            foreach (var pair in postData)
+                if (pair.Value != null)
+                    cleanPostData.Add(pair.Key, pair.Value);
+
             var baseFilter = new HttpBaseProtocolFilter
             {
                 AutomaticDecompression = Authorizer.SupportsCompression,

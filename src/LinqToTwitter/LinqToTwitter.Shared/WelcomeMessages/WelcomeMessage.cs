@@ -3,7 +3,6 @@ using Newtonsoft.Json;
 using System;
 using LinqToTwitter.Common;
 using Newtonsoft.Json.Linq;
-using System.Collections.Generic;
 
 namespace LinqToTwitter
 {
@@ -29,6 +28,11 @@ namespace LinqToTwitter
         public WelcomeMessageType Type { get; set; }
 
         /// <summary>
+        /// Input (New Welcome Message Rule): ID of the message to set as default.
+        /// </summary>
+        public ulong WelcomeMessageID { get; internal set; }
+
+        /// <summary>
         /// Output: Response from Twitter
         /// </summary>
         public WelcomeMessageValue Value { get; set; }
@@ -40,6 +44,12 @@ namespace LinqToTwitter
         public JObject Apps { get; set; }
         [JsonProperty("welcome_message")]
         public WelcomeMsg WelcomeMessage { get; set; }
+
+        /// <summary>
+        /// Output: Response from Twitter
+        /// </summary>
+        [JsonProperty("welcome_message_rule")]
+        public WelcomeMessageRule WelcomeMessageRule { get; set; }
     }
 
     public class WelcomeMsg
@@ -55,16 +65,16 @@ namespace LinqToTwitter
         [JsonProperty("message_data")]
         public WelcomeMessageData MessageData { get; set; }
 
-
+        DateTime createdAt;
         /// <summary>
         /// Helper property for C# DateTime matching CreatedTimestamp (so you don't have to convert it yourself)
         /// </summary>
-        DateTime createdAt;
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
         public DateTime CreatedAt
         {
             get
             {
-                if (createdAt == default(DateTime))
+                if (createdAt != default(DateTime))
                     createdAt = CreatedTimestamp.GetEpochDateFromTimestamp();
 
                 return createdAt;
@@ -94,5 +104,32 @@ namespace LinqToTwitter
     {
         [JsonProperty("id")]
         public string Id { get; set; }
+    }
+
+    public class WelcomeMessageRule
+    {
+        [JsonProperty("id")]
+        public string ID { get; set; }
+        [JsonProperty("created_timestamp")]
+        public string CreatedTimestamp { get; set; }
+        [JsonProperty("welcome_message_id")]
+        public string WelcomeMessageID { get; set; }
+
+        /// <summary>
+        /// Helper property for C# DateTime matching CreatedTimestamp (so you don't have to convert it yourself)
+        /// </summary>
+        DateTime createdAt;
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public DateTime CreatedAt
+        {
+            get
+            {
+                if (createdAt != default(DateTime))
+                    createdAt = CreatedTimestamp.GetEpochDateFromTimestamp();
+
+                return createdAt;
+            }
+        }
+
     }
 }
