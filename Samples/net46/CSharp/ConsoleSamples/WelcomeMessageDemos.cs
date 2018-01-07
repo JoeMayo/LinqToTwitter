@@ -29,8 +29,16 @@ namespace Linq2TwitterDemos_Console
                         await UpdateWelcomeMessageAsync(twitterCtx);
                         break;
                     case '2':
+                        Console.WriteLine("\n\tDeleting Welcome Message...\n");
+                        await DeleteWelcomeMessageAsync(twitterCtx);
+                        break;
+                    case '3':
                         Console.WriteLine("\n\tCreating Welcome Message Rule...\n");
                         await CreateNewWelcomeMessageRuleAsync(twitterCtx);
+                        break;
+                    case '4':
+                        Console.WriteLine("\n\tDeleting Welcome Message Rule...\n");
+                        await DeleteWelcomeMessageRuleAsync(twitterCtx);
                         break;
                     case 'q':
                     case 'Q':
@@ -50,7 +58,9 @@ namespace Linq2TwitterDemos_Console
 
             Console.WriteLine("\t 0. Create a New Welcome Message");
             Console.WriteLine("\t 1. Update a Welcome Message");
-            Console.WriteLine("\t 2. Create a New Welcome Message Rule");
+            Console.WriteLine("\t 2. Delete a Welcome Message");
+            Console.WriteLine("\t 3. Create a New Welcome Message Rule");
+            Console.WriteLine("\t 4. Delete a Welcome Message Rule");
             Console.WriteLine();
             Console.Write("\t Q. Return to Main menu");
         }
@@ -94,6 +104,17 @@ namespace Linq2TwitterDemos_Console
             }
         }
 
+        static async Task DeleteWelcomeMessageAsync(TwitterContext twitterCtx)
+        {
+            Console.Write("Please type welcome message ID: ");
+            string respone = Console.ReadLine();
+            ulong.TryParse(respone, out ulong wecomeMessageID);
+
+            await twitterCtx.DeleteWelcomeMessageAsync(wecomeMessageID);
+
+            Console.WriteLine("Message deleted.");
+        }
+
         static async Task CreateNewWelcomeMessageRuleAsync(TwitterContext twitterCtx)
         {
             Console.Write("Please type welcome message ID to set as default: ");
@@ -109,6 +130,17 @@ namespace Linq2TwitterDemos_Console
                     $"Rule ID '{rule.ID}' " +
                     $"for welcome message ID: '{rule.WelcomeMessageID}' " +
                     $"set as default on {rule.CreatedAt}");
+        }
+
+        static async Task DeleteWelcomeMessageRuleAsync(TwitterContext twitterCtx)
+        {
+            Console.Write("Please type welcome message rule ID: ");
+            string respone = Console.ReadLine();
+            ulong.TryParse(respone, out ulong wecomeMessageRuleID);
+
+            await twitterCtx.DeleteWelcomeMessageRuleAsync(wecomeMessageRuleID);
+
+            Console.WriteLine("Message rule deleted.");
         }
     }
 }

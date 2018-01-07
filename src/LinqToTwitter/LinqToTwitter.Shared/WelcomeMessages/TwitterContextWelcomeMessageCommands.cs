@@ -102,6 +102,37 @@ namespace LinqToTwitter
         }
 
         /// <summary>
+        /// Deletes an existing welcome message.
+        /// <param name="welcomeMessageID">ID of the welcome message.</param>
+        /// <param name="cancelToken">Async cancellation token.</param>
+        public async Task DeleteWelcomeMessageAsync(ulong welcomeMessageID, CancellationToken cancelToken = default(CancellationToken))
+        {
+            if (welcomeMessageID == 0)
+                throw new ArgumentException($"{nameof(welcomeMessageID)} is a required parameter, but it's value is 0, which is invalid.", nameof(welcomeMessageID));
+
+            var newUrl = BaseUrl + "direct_messages/welcome_messages/destroy.json?id=" + welcomeMessageID;
+
+            var postData = new Dictionary<string, string>
+            {
+                ["id"] = welcomeMessageID.ToString()
+            };
+
+            RawResult =
+                await TwitterExecutor.SendJsonToTwitterAsync(
+                    HttpMethod.Delete.ToString(),
+                    newUrl,
+                    postData,
+                    "",
+                    cancelToken)
+                   .ConfigureAwait(false) ?? string.Empty;
+
+            var reqProc = new WelcomeMessageRequestProcessor<WelcomeMessage>();
+            WelcomeMessage msg = reqProc.ProcessActionResult(RawResult, WelcomeMessageType.Show);
+
+            msg.WelcomeMessageID = welcomeMessageID;
+        }
+
+        /// <summary>
         /// Marks a welcome message as the default.
         /// </summary>
         /// <param name="welcomeMessageID">ID of the welcome message.</param>
@@ -137,6 +168,37 @@ namespace LinqToTwitter
             msg.WelcomeMessageID = welcomeMessageID;
 
             return msg;
+        }
+
+        /// <summary>
+        /// Deletes an existing welcome message rule.
+        /// <param name="welcomeMessageRuleID">ID of the welcome message rule.</param>
+        /// <param name="cancelToken">Async cancellation token.</param>
+        public async Task DeleteWelcomeMessageRuleAsync(ulong welcomeMessageRuleID, CancellationToken cancelToken = default(CancellationToken))
+        {
+            if (welcomeMessageRuleID == 0)
+                throw new ArgumentException($"{nameof(welcomeMessageRuleID)} is a required parameter, but it's value is 0, which is invalid.", nameof(welcomeMessageRuleID));
+
+            var newUrl = BaseUrl + "direct_messages/welcome_messages/rules/destroy.json?id=" + welcomeMessageRuleID;
+
+            var postData = new Dictionary<string, string>
+            {
+                ["id"] = welcomeMessageRuleID.ToString()
+            };
+
+            RawResult =
+                await TwitterExecutor.SendJsonToTwitterAsync(
+                    HttpMethod.Delete.ToString(),
+                    newUrl,
+                    postData,
+                    "",
+                    cancelToken)
+                   .ConfigureAwait(false) ?? string.Empty;
+
+            var reqProc = new WelcomeMessageRequestProcessor<WelcomeMessage>();
+            WelcomeMessage msg = reqProc.ProcessActionResult(RawResult, WelcomeMessageType.Show);
+
+            msg.WelcomeMessageID = welcomeMessageRuleID;
         }
     }
 }

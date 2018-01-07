@@ -30,7 +30,7 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
             Assert.IsInstanceOfType(wmReqProc, typeof(IRequestProcessorWithAction<WelcomeMessage>));
         }
 
-        TwitterContext InitializeTwitterContext(string responseJson)
+        TwitterContext InitializeTwitterContext<TMessageType>(string responseJson)
         {
             authMock = new Mock<IAuthorizer>();
             var tcsResponse = new TaskCompletionSource<string>();
@@ -41,7 +41,7 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
                 It.IsAny<string>(),
                 It.IsAny<string>(),
                 It.IsAny<IDictionary<string, string>>(),
-                It.IsAny<WelcomeMessageValue>(),
+                It.IsAny<TMessageType>(),
                 It.IsAny<CancellationToken>()))
                     .Returns(tcsResponse.Task);
             execMock.Setup(exec => exec.PostFormUrlEncodedToTwitterAsync<WelcomeMessage>(
@@ -50,8 +50,7 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
                 It.IsAny<Dictionary<string, string>>(),
                 It.IsAny<CancellationToken>()))
                     .Returns(tcsResponse.Task);
-            var ctx = new TwitterContext(execMock.Object);
-            return ctx;
+            return new TwitterContext(execMock.Object);
         }
 
         [TestMethod]
@@ -59,7 +58,7 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
         {
             const string Name = "Test Welcome Message";
             const string Text = null;
-            var ctx = InitializeTwitterContext(WelcomeMessageResponse);
+            var ctx = InitializeTwitterContext<WelcomeMessageValue>(WelcomeMessageResponse);
 
             var ex = await L2TAssert.Throws<ArgumentException>(
                 async () => await ctx.NewWelcomeMessageAsync(Name, Text));
@@ -72,7 +71,7 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
         {
             const string Name = "Test Welcome Message";
             const string Text = "";
-            var ctx = InitializeTwitterContext(WelcomeMessageResponse);
+            var ctx = InitializeTwitterContext<WelcomeMessageValue>(WelcomeMessageResponse);
 
             var ex = await L2TAssert.Throws<ArgumentException>(
                 async () => await ctx.NewWelcomeMessageAsync(Name, Text));
@@ -85,7 +84,7 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
         {
             const string Name = "Test Welcome Message";
             const string Text = "Welcome!";
-            var ctx = InitializeTwitterContext(WelcomeMessageResponse);
+            var ctx = InitializeTwitterContext<WelcomeMessageValue>(WelcomeMessageResponse);
 
             WelcomeMessage welcomeMsg = await ctx.NewWelcomeMessageAsync(Name, Text);
 
@@ -104,7 +103,7 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
         {
             const string Name = "Test Welcome Message";
             const string Text = "Welcome!";
-            var ctx = InitializeTwitterContext(WelcomeMessageResponse);
+            var ctx = InitializeTwitterContext<WelcomeMessageValue>(WelcomeMessageResponse);
 
             WelcomeMessage welcomeMsg = await ctx.NewWelcomeMessageAsync(Name, Text);
 
@@ -118,7 +117,7 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
         {
             const string Name = "Test Welcome Message";
             const string Text = "Welcome!";
-            var ctx = InitializeTwitterContext(WelcomeMessageResponse);
+            var ctx = InitializeTwitterContext<WelcomeMessageValue>(WelcomeMessageResponse);
 
             WelcomeMessage welcomeMsg = await ctx.NewWelcomeMessageAsync(Name, Text);
 
@@ -151,7 +150,7 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
         {
             const string Name = "Test Welcome Message";
             const string Text = "Welcome!";
-            var ctx = InitializeTwitterContext(WelcomeMessageResponse);
+            var ctx = InitializeTwitterContext<WelcomeMessageValue>(WelcomeMessageResponse);
 
             WelcomeMessage welcomeMsg = await ctx.NewWelcomeMessageAsync(Name, Text);
 
@@ -164,7 +163,7 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
             const ulong WelcomeMessageID = 0;
             const string Name = "New Name";
             const string Text = null;
-            var ctx = InitializeTwitterContext(WelcomeMessageResponse);
+            var ctx = InitializeTwitterContext<WelcomeMsg>(WelcomeMessageResponse);
 
             var ex = await L2TAssert.Throws<ArgumentException>(
                 async () => await ctx.UpdateWelcomeMessageAsync(WelcomeMessageID, Name, Text));
@@ -178,7 +177,7 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
             const ulong WelcomeMessageID = 1;
             const string Name = "New Name";
             const string Text = null;
-            var ctx = InitializeTwitterContext(WelcomeMessageResponse);
+            var ctx = InitializeTwitterContext<WelcomeMsg>(WelcomeMessageResponse);
 
             var ex = await L2TAssert.Throws<ArgumentException>(
                 async () => await ctx.UpdateWelcomeMessageAsync(WelcomeMessageID, Name, Text));
@@ -192,7 +191,7 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
             const ulong WelcomeMessageID = 1;
             const string Name = "New Name";
             const string Text = "";
-            var ctx = InitializeTwitterContext(WelcomeMessageResponse);
+            var ctx = InitializeTwitterContext<WelcomeMsg>(WelcomeMessageResponse);
 
             var ex = await L2TAssert.Throws<ArgumentException>(
                 async () => await ctx.UpdateWelcomeMessageAsync(WelcomeMessageID, Name, Text));
@@ -206,7 +205,7 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
             const ulong WelcomeMessageID = 1;
             const string Name = "New Name";
             const string Text = "Welcome!";
-            var ctx = InitializeTwitterContext(WelcomeMessageResponse);
+            var ctx = InitializeTwitterContext<WelcomeMsg>(WelcomeMessageResponse);
 
             WelcomeMessage welcomeMsg = await ctx.UpdateWelcomeMessageAsync(WelcomeMessageID, Name, Text);
 
@@ -215,7 +214,7 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
                     It.IsAny<string>(),
                     "https://api.twitter.com/1.1/direct_messages/welcome_messages/update.json?id=1",
                     It.IsAny<IDictionary<string, string>>(),
-                    It.IsAny<WelcomeMessageValue>(),
+                    It.IsAny<WelcomeMsg>(),
                     It.IsAny<CancellationToken>()),
                 Times.Once());
         }
@@ -226,7 +225,7 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
             const ulong WelcomeMessageID = 1;
             const string Name = "New Name";
             const string Text = "Welcome!";
-            var ctx = InitializeTwitterContext(WelcomeMessageResponse);
+            var ctx = InitializeTwitterContext<WelcomeMsg>(WelcomeMessageResponse);
 
             WelcomeMessage welcomeMsg = await ctx.UpdateWelcomeMessageAsync(WelcomeMessageID, Name, Text);
 
@@ -241,7 +240,7 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
             const ulong WelcomeMessageID = 1;
             const string Name = "New Name";
             const string Text = "Welcome!";
-            var ctx = InitializeTwitterContext(WelcomeMessageResponse);
+            var ctx = InitializeTwitterContext<WelcomeMsg>(WelcomeMessageResponse);
 
             WelcomeMessage welcomeMsg = await ctx.UpdateWelcomeMessageAsync(WelcomeMessageID, Name, Text);
 
@@ -275,7 +274,7 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
             const ulong WelcomeMessageID = 1;
             const string Name = "New Name";
             const string Text = "Welcome!";
-            var ctx = InitializeTwitterContext(WelcomeMessageResponse);
+            var ctx = InitializeTwitterContext<WelcomeMsg>(WelcomeMessageResponse);
 
             WelcomeMessage welcomeMsg = await ctx.UpdateWelcomeMessageAsync(WelcomeMessageID, Name, Text);
 
@@ -283,10 +282,51 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
         }
 
         [TestMethod]
+        public async Task DeleteWelcomeMessageAsync_WithMissingMessageID_Throws()
+        {
+            const ulong WelcomeMessageID = 0;
+            var ctx = InitializeTwitterContext<WelcomeMessage>(string.Empty);
+
+            var ex = await L2TAssert.Throws<ArgumentException>(
+                async () => await ctx.DeleteWelcomeMessageAsync(WelcomeMessageID));
+
+            Assert.AreEqual("welcomeMessageID", ex.ParamName);
+        }
+
+        [TestMethod]
+        public async Task DeleteWelcomeMessageAsync_WithValidParameters_ConstructsUrl()
+        {
+            const ulong WelcomeMessageID = 1;
+            var ctx = InitializeTwitterContext<WelcomeMessage>(string.Empty);
+
+            await ctx.DeleteWelcomeMessageAsync(WelcomeMessageID);
+
+            execMock.Verify(exec =>
+                exec.SendJsonToTwitterAsync(
+                    It.IsAny<string>(),
+                    "https://api.twitter.com/1.1/direct_messages/welcome_messages/destroy.json?id=1",
+                    It.IsAny<IDictionary<string, string>>(),
+                    string.Empty,
+                    It.IsAny<CancellationToken>()),
+                Times.Once());
+        }
+
+        [TestMethod]
+        public async Task DeleteWelcomeMessageAsync_WithValidParameters_HasEmptyRawResult()
+        {
+            const ulong WelcomeMessageID = 1;
+            var ctx = InitializeTwitterContext<WelcomeMessage>(string.Empty);
+
+            await ctx.DeleteWelcomeMessageAsync(WelcomeMessageID);
+
+            Assert.AreEqual(string.Empty, ctx.RawResult);
+        }
+
+        [TestMethod]
         public async Task NewWelcomeMessageRuleAsync_WithMissingMessageID_Throws()
         {
             const ulong welcomeMessageID = 0;
-            var ctx = InitializeTwitterContext(WelcomeMessageRuleResponse);
+            var ctx = InitializeTwitterContext<WelcomeMessageValue>(WelcomeMessageRuleResponse);
 
             var ex = await L2TAssert.Throws<ArgumentException>(
                 async () => await ctx.NewWelcomeMessageRuleAsync(welcomeMessageID));
@@ -298,7 +338,7 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
         public async Task NewWelcomeMessageRuleAsync_WithValidParameters_ConstructsUrl()
         {
             const ulong welcomeMessageID = 1;
-            var ctx = InitializeTwitterContext(WelcomeMessageRuleResponse);
+            var ctx = InitializeTwitterContext<WelcomeMessageValue>(WelcomeMessageRuleResponse);
 
             await ctx.NewWelcomeMessageRuleAsync(welcomeMessageID);
 
@@ -316,7 +356,7 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
         public async Task NewWelcomeMessageRuleAsync_WithParameters_PopulatesInputParametersInResponse()
         {
             const ulong welcomeMessageID = 1;
-            var ctx = InitializeTwitterContext(WelcomeMessageRuleResponse);
+            var ctx = InitializeTwitterContext<WelcomeMessageValue>(WelcomeMessageRuleResponse);
 
             WelcomeMessage welcomeMsg = await ctx.NewWelcomeMessageRuleAsync(welcomeMessageID);
 
@@ -328,11 +368,52 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
         public async Task NewWelcomeMessageRuleAsync_WithValidParameters_PopulatesRawResult()
         {
             const ulong welcomeMessageID = 1;
-            var ctx = InitializeTwitterContext(WelcomeMessageRuleResponse);
+            var ctx = InitializeTwitterContext<WelcomeMessageValue>(WelcomeMessageRuleResponse);
 
             WelcomeMessage welcomeMsg = await ctx.NewWelcomeMessageRuleAsync(welcomeMessageID);
 
             Assert.AreEqual(WelcomeMessageRuleResponse, ctx.RawResult);
+        }
+
+        [TestMethod]
+        public async Task DeleteWelcomeMessageRuleAsync_WithMissingMessageID_Throws()
+        {
+            const ulong WelcomeMessageRuleID = 0;
+            var ctx = InitializeTwitterContext<WelcomeMessage>(string.Empty);
+
+            var ex = await L2TAssert.Throws<ArgumentException>(
+                async () => await ctx.DeleteWelcomeMessageRuleAsync(WelcomeMessageRuleID));
+
+            Assert.AreEqual("welcomeMessageRuleID", ex.ParamName);
+        }
+
+        [TestMethod]
+        public async Task DeleteWelcomeMessageRuleAsync_WithValidParameters_ConstructsUrl()
+        {
+            const ulong WelcomeMessageRuleID = 1;
+            var ctx = InitializeTwitterContext<WelcomeMessage>(string.Empty);
+
+            await ctx.DeleteWelcomeMessageRuleAsync(WelcomeMessageRuleID);
+
+            execMock.Verify(exec =>
+                exec.SendJsonToTwitterAsync(
+                    It.IsAny<string>(),
+                    "https://api.twitter.com/1.1/direct_messages/welcome_messages/rules/destroy.json?id=1",
+                    It.IsAny<IDictionary<string, string>>(),
+                    string.Empty,
+                    It.IsAny<CancellationToken>()),
+                Times.Once());
+        }
+
+        [TestMethod]
+        public async Task DeleteWelcomeMessageRuleAsync_WithValidParameters_HasEmptyRawResult()
+        {
+            const ulong WelcomeMessageRuleID = 1;
+            var ctx = InitializeTwitterContext<WelcomeMessage>(string.Empty);
+
+            await ctx.DeleteWelcomeMessageRuleAsync(WelcomeMessageRuleID);
+
+            Assert.AreEqual(string.Empty, ctx.RawResult);
         }
 
         #region Response Strings

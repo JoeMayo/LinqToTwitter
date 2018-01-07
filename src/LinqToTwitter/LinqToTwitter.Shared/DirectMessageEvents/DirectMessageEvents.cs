@@ -105,12 +105,12 @@ namespace LinqToTwitter
         /// <summary>
         /// Helper property for C# DateTime matching CreatedTimestamp (so you don't have to convert it yourself)
         /// </summary>
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonIgnore]
         public DateTime CreatedAt
         {
             get
             {
-                if (createdAt != default(DateTime))
+                if (createdAt == default(DateTime))
                     createdAt = CreatedTimestamp.GetEpochDateFromTimestamp();
 
                 return createdAt;
