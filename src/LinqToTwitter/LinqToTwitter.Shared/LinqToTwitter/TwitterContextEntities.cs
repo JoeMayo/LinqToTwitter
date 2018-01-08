@@ -235,5 +235,16 @@ namespace LinqToTwitter
                 return new TwitterQueryable<Vine>(this);
             }
         }
+
+        /// <summary>
+        /// enables access to Twitter Welcome messages
+        /// </summary>
+        public TwitterQueryable<WelcomeMessage> WelcomeMessage
+        {
+            get
+            {
+                return new TwitterQueryable<LinqToTwitter.WelcomeMessage>(this);
+            }
+        }
     }
 }

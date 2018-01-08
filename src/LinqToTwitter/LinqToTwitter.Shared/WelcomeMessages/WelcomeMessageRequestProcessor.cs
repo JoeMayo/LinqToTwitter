@@ -22,6 +22,21 @@ namespace LinqToTwitter
         public virtual string BaseUrl { get; set; }
 
         /// <summary>
+        /// Number of items to return
+        /// </summary>
+        internal int Count { get; set; }
+
+        /// <summary>
+        /// Helps page through results greater than Count items
+        /// </summary>
+        internal string Cursor { get; set; }
+
+        /// <summary>
+        /// ID of item to show
+        /// </summary>
+        internal ulong ID { get; set; }
+
+        /// <summary>
         /// Type of Welcome Message
         /// </summary>
         internal WelcomeMessageType Type { get; set; }
@@ -37,7 +52,10 @@ namespace LinqToTwitter
                new ParameterFinder<WelcomeMessage>(
                    lambdaExpression.Body,
                    new List<string> {
-                       nameof(Type),
+                       nameof(Count),
+                       nameof(Cursor),
+                       nameof(ID),
+                       nameof(Type)
                    });
 
             Dictionary<string, string> parameters = paramFinder.Parameters;
@@ -59,14 +77,102 @@ namespace LinqToTwitter
 
             switch (Type)
             {
-                //case WelcomeMessageType.List:
-                //    return BuildListUrl(parameters);
-                //case WelcomeMessageType.Show:
-                //    return BuildShowUrl(parameters);
+                case WelcomeMessageType.ListMessages:
+                    return BuildListMessagesUrl(parameters);
+                case WelcomeMessageType.ListRules:
+                    return BuildListRulesUrl(parameters);
+                case WelcomeMessageType.ShowMessage:
+                    return BuildShowMessagesUrl(parameters);
+                case WelcomeMessageType.ShowRule:
+                    return BuildShowRuleUrl(parameters);
                 default:
                     throw new InvalidOperationException(
                         $"Didn't recognize '{Type}' for {nameof(Type)} parameter in WelcomeMessageRequestProcessor.BuildUrl.");
             }
+        }
+
+        /// <summary>
+        /// builds an url for getting a list of direct messages
+        /// </summary>
+        /// <param name="parameters">parameters to add</param>
+        /// <returns>new url with parameters</returns>
+        Request BuildListMessagesUrl(Dictionary<string, string> parameters)
+        {
+            var req = new Request(BaseUrl + "direct_messages/welcome_messages/list.json");
+            IList<QueryParameter> urlParams = req.RequestParameters;
+
+            if (parameters == null)
+                return req;
+
+            if (parameters.ContainsKey(nameof(Count)))
+            {
+                Count = int.Parse(parameters[nameof(Count)]);
+                urlParams.Add(new QueryParameter("count", Count.ToString(CultureInfo.InvariantCulture)));
+            }
+
+            if (parameters.ContainsKey(nameof(Cursor)))
+            {
+                Cursor = parameters[nameof(Cursor)];
+                urlParams.Add(new QueryParameter("cursor", parameters[nameof(Cursor)]));
+            }
+
+            return req;
+        }
+
+        /// <summary>
+        /// builds an url for getting a list of direct messages
+        /// </summary>
+        /// <param name="parameters">parameters to add</param>
+        /// <returns>new url with parameters</returns>
+        Request BuildListRulesUrl(Dictionary<string, string> parameters)
+        {
+            var req = new Request(BaseUrl + "direct_messages/welcome_messages/rules/list.json");
+            IList<QueryParameter> urlParams = req.RequestParameters;
+
+            if (parameters == null)
+                return req;
+
+            if (parameters.ContainsKey(nameof(Count)))
+            {
+                Count = int.Parse(parameters[nameof(Count)]);
+                urlParams.Add(new QueryParameter("count", Count.ToString(CultureInfo.InvariantCulture)));
+            }
+
+            if (parameters.ContainsKey(nameof(Cursor)))
+            {
+                Cursor = parameters[nameof(Cursor)];
+                urlParams.Add(new QueryParameter("cursor", parameters[nameof(Cursor)]));
+            }
+
+            return req;
+        }
+
+        Request BuildShowMessagesUrl(Dictionary<string, string> parameters)
+        {
+            if (parameters == null || !parameters.ContainsKey(nameof(ID)))
+                throw new ArgumentNullException(nameof(ID), $"{nameof(ID)} is required.");
+
+            var req = new Request(BaseUrl + "direct_messages/welcome_messages/show.json");
+            IList<QueryParameter> urlParams = req.RequestParameters;
+
+            ID = ulong.Parse(parameters[nameof(ID)]);
+            urlParams.Add(new QueryParameter("id", ID.ToString()));
+
+            return req;
+        }
+
+        Request BuildShowRuleUrl(Dictionary<string, string> parameters)
+        {
+            if (parameters == null || !parameters.ContainsKey(nameof(ID)))
+                throw new ArgumentNullException(nameof(ID), $"{nameof(ID)} is required.");
+
+            var req = new Request(BaseUrl + "direct_messages/welcome_messages/rules/show.json");
+            IList<QueryParameter> urlParams = req.RequestParameters;
+
+            ID = ulong.Parse(parameters[nameof(ID)]);
+            urlParams.Add(new QueryParameter("id", ID.ToString()));
+
+            return req;
         }
 
         /// <summary>
@@ -83,8 +189,10 @@ namespace LinqToTwitter
 
             switch (Type)
             {
-                case WelcomeMessageType.List:
-                case WelcomeMessageType.Show:
+                case WelcomeMessageType.ListMessages:
+                case WelcomeMessageType.ListRules:
+                case WelcomeMessageType.ShowMessage:
+                case WelcomeMessageType.ShowRule:
                     msgList = HandleWelcomeMessage(responseJson);
                     break;
                 default:
@@ -104,6 +212,9 @@ namespace LinqToTwitter
                 new WelcomeMessage
                 {
                     Type = Type,
+                    Count = Count,
+                    Cursor = Cursor,
+                    ID = ID,
                     Value = welcomeMsg
                 }
             };

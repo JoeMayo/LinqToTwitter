@@ -44,10 +44,10 @@ namespace LinqToTwitter
                    .ConfigureAwait(false);
 
             var reqProc = new WelcomeMessageRequestProcessor<WelcomeMessage>();
-            WelcomeMessage msg = reqProc.ProcessActionResult(RawResult, WelcomeMessageType.Show);
+            WelcomeMessage msg = reqProc.ProcessActionResult(RawResult, WelcomeMessageType.ShowMessage);
 
-            msg.Name = name;
-            msg.Text = text;
+            //msg.Name = name;
+            //msg.Text = text;
 
             return msg;
         }
@@ -93,10 +93,10 @@ namespace LinqToTwitter
                    .ConfigureAwait(false);
 
             var reqProc = new WelcomeMessageRequestProcessor<WelcomeMessage>();
-            WelcomeMessage msg = reqProc.ProcessActionResult(RawResult, WelcomeMessageType.Show);
+            WelcomeMessage msg = reqProc.ProcessActionResult(RawResult, WelcomeMessageType.ShowMessage);
 
-            msg.WelcomeMessageID = welcomeMessageID;
-            msg.Text = text;
+            //msg.ID = welcomeMessageID;
+            //msg.Text = text;
 
             return msg;
         }
@@ -127,9 +127,9 @@ namespace LinqToTwitter
                    .ConfigureAwait(false) ?? string.Empty;
 
             var reqProc = new WelcomeMessageRequestProcessor<WelcomeMessage>();
-            WelcomeMessage msg = reqProc.ProcessActionResult(RawResult, WelcomeMessageType.Show);
+            WelcomeMessage msg = reqProc.ProcessActionResult(RawResult, WelcomeMessageType.ShowMessage);
 
-            msg.WelcomeMessageID = welcomeMessageID;
+            msg.ID = welcomeMessageID;
         }
 
         /// <summary>
@@ -163,9 +163,9 @@ namespace LinqToTwitter
                    .ConfigureAwait(false);
 
             var reqProc = new WelcomeMessageRequestProcessor<WelcomeMessage>();
-            WelcomeMessage msg = reqProc.ProcessActionResult(RawResult, WelcomeMessageType.Show);
+            WelcomeMessage msg = reqProc.ProcessActionResult(RawResult, WelcomeMessageType.ShowMessage);
 
-            msg.WelcomeMessageID = welcomeMessageID;
+            msg.ID = welcomeMessageID;
 
             return msg;
         }
@@ -196,9 +196,9 @@ namespace LinqToTwitter
                    .ConfigureAwait(false) ?? string.Empty;
 
             var reqProc = new WelcomeMessageRequestProcessor<WelcomeMessage>();
-            WelcomeMessage msg = reqProc.ProcessActionResult(RawResult, WelcomeMessageType.Show);
+            WelcomeMessage msg = reqProc.ProcessActionResult(RawResult, WelcomeMessageType.ShowMessage);
 
-            msg.WelcomeMessageID = welcomeMessageRuleID;
+            msg.ID = welcomeMessageRuleID;
         }
     }
 }

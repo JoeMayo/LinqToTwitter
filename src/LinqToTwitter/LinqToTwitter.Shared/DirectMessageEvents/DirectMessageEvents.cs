@@ -71,6 +71,9 @@ namespace LinqToTwitter
         [JsonProperty("apps")]
         public JObject Apps { get; set; }
 
+        /// <summary>
+        /// ID for the next page or null if there isn't a next page
+        /// </summary>
         [JsonProperty("next_cursor")]
         public string NextCursor { get; set; }
     }

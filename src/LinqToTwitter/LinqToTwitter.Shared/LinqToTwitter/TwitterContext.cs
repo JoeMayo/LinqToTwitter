@@ -602,6 +602,9 @@ namespace LinqToTwitter
                         VineUrl = VineUrl
                     };
                     break;
+                case nameof(WelcomeMessage):
+                    req = new WelcomeMessageRequestProcessor<T>();
+                    break;
                 default:
                     throw new ArgumentException($"Type, {requestType} isn't a supported LINQ to Twitter entity.", nameof(requestType));
             }

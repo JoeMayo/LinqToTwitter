@@ -154,24 +154,6 @@ namespace LinqToTwitter
 
             return dmList.OfType<T>().ToList();
         }
-  
-        //IEnumerable<DirectMessageEvents> HandleMultipleDirectMessages(string dmJson)
-        //{
-        //    DirectMessageEventsValue dmEvents = JsonConvert.DeserializeObject<DirectMessageEventsValue>(dmJson);
-
-        //    IEnumerable<DirectMessageEvents> dmList =
-        //        from dm in dmEvents
-        //        select new DirectMessageEvents()
-        //        {
-        //            Type = Type,
-        //            Count = Count,
-        //            Cursor = Cursor,
-        //            ID = ID,
-        //            Value = dm
-        //        };
-
-        //    return dmList;
-        //}
 
         IEnumerable<DirectMessageEvents> HandleDirectMessage(string dmJson)
         {

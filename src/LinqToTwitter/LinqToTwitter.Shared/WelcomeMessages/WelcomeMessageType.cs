@@ -1,18 +1,28 @@
 ﻿namespace LinqToTwitter
 {
     /// <summary>
-    /// type of welcome message query
+    /// Type of welcome message query
     /// </summary>
     public enum WelcomeMessageType
     {
         /// <summary>
-        /// all welcome messages
+        /// All welcome messages
         /// </summary>
-        List,
+        ListMessages,
 
         /// <summary>
-        /// get a single welcome message
+        /// All welcome message rules
         /// </summary>
-        Show
+        ListRules,
+
+        /// <summary>
+        /// A single welcome message
+        /// </summary>
+        ShowMessage,
+
+        /// <summary>
+        /// A single welcome message rule
+        /// </summary>
+        ShowRule
     }
 }
