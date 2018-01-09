@@ -13,9 +13,104 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="recipientID">ID of user to send to.</param>
         /// <param name="text">Direct message contents.</param>
+        /// <param name="mediaId">ID of an uploaded media.</param>
+        /// <param name="cancelToken">Async cancellation token.</param>
+        /// <returns>Direct message events data.</returns>
+        public async Task<DirectMessageEvents> NewDirectMessageEventAsync(ulong recipientID, string text, ulong mediaId, CancellationToken cancelToken = default(CancellationToken))
+        {
+            var attachment = new Attachment
+            {
+                Type = "media",
+                Media = new DirectMessageMedia
+                {
+                    Id = mediaId
+                }
+            };
+
+            return await NewDirectMessageEventAsync(recipientID, text, attachment);
+        }
+
+        /// <summary>
+        /// Sends a new direct message to specified user.
+        /// </summary>
+        /// <param name="recipientID">ID of user to send to.</param>
+        /// <param name="text">Direct message contents.</param>
+        /// <param name="latitude">Latitude coordinate.</param>
+        /// <param name="longitude">Longitude coordinate.</param>
+        /// <param name="cancelToken">Async cancellation token.</param>
+        /// <returns>Direct message events data.</returns>
+        public async Task<DirectMessageEvents> NewDirectMessageEventAsync(ulong recipientID, string text, double latitude, double longitude, CancellationToken cancelToken = default(CancellationToken))
+        {
+            var attachment = new Attachment
+            {
+                Type = "location",
+                Location = new DirectMessageEventLocation
+                {
+                    Type = "shared_coordinate",
+                    SharedCoordinate = new SharedCoordinate
+                    {
+                        Coordinates = new DirectMessageEventCoordinates
+                        {
+                            Type = "Point",
+                            Coordinates = new double[] { latitude, longitude }
+                        }
+                    }
+                }
+            };
+
+            return await NewDirectMessageEventAsync(recipientID, text, attachment);
+        }
+
+        /// <summary>
+        /// Sends a new direct message to specified user.
+        /// </summary>
+        /// <param name="recipientID">ID of user to send to.</param>
+        /// <param name="text">Direct message contents.</param>
+        /// <param name="placeID">ID of place (Tip: Use the Geo API if you don't already have a place ID)</param>
+        /// <param name="cancelToken">Async cancellation token.</param>
+        /// <returns>Direct message events data.</returns>
+        public async Task<DirectMessageEvents> NewDirectMessageEventAsync(ulong recipientID, string text, string placeID, CancellationToken cancelToken = default(CancellationToken))
+        {
+            var attachment = new Attachment
+            {
+                Type = "location",
+                Location = new DirectMessageEventLocation
+                {
+                    Type = "shared_place",
+                    SharedPlace = new SharedPlace
+                    {
+                        Place = new DirectMessageEventPlace
+                        {
+                            Id = placeID
+                        }
+                    }
+                }
+            };
+
+            return await NewDirectMessageEventAsync(recipientID, text, attachment);
+        }
+
+        /// <summary>
+        /// Sends a new direct message to specified user.
+        /// </summary>
+        /// <param name="recipientID">ID of user to send to.</param>
+        /// <param name="text">Direct message contents.</param>
         /// <param name="cancelToken">Async cancellation token.</param>
         /// <returns>Direct message events data.</returns>
         public async Task<DirectMessageEvents> NewDirectMessageEventAsync(ulong recipientID, string text, CancellationToken cancelToken = default(CancellationToken))
+        {
+            return await NewDirectMessageEventAsync(recipientID, text, attachment: null);
+        }
+
+        /// <summary>
+        /// Sends a new direct message to specified user.
+        /// </summary>
+        /// <param name="recipientID">ID of user to send to.</param>
+        /// <param name="text">Direct message contents.</param>
+        /// <param name="attachment">Optional attachment from overloads that support it.</param>
+        /// <param name="cancelToken">Async cancellation token.</param>
+        /// <returns>Direct message events data.</returns>
+        private async Task<DirectMessageEvents> NewDirectMessageEventAsync(ulong recipientID, string text, Attachment attachment = null, CancellationToken cancelToken = default(CancellationToken))
         {
             if (recipientID == default(ulong))
                 throw new ArgumentException($"{nameof(recipientID)} must be set.", nameof(recipientID));
@@ -32,7 +127,8 @@ namespace LinqToTwitter
                     {
                         MessageData = new DirectMessageData
                         {
-                            Text = text
+                            Text = text,
+                            Attachment = attachment
                         },
                         Target = new DirectMessageTarget
                         {
@@ -54,9 +150,6 @@ namespace LinqToTwitter
 
             var reqProc = new DirectMessageEventsRequestProcessor<DirectMessageEvents>();
             DirectMessageEvents dmEvents = reqProc.ProcessActionResult(RawResult, DirectMessageEventsType.Show);
-
-            dmEvents.RecipientID = recipientID;
-            dmEvents.Text = text;
 
             return dmEvents;
         }

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using LinqToTwitter;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Linq2TwitterDemos_Console
 {
@@ -36,6 +37,18 @@ namespace Linq2TwitterDemos_Console
                         Console.WriteLine("\n\tDeleting DM...\n");
                         await DeleteDirectMessageAsync(twitterCtx);
                         break;
+                    case '4':
+                        Console.WriteLine("\n\tSending DM with media...\n");
+                        await NewDirectMessageWithMediaAsync(twitterCtx);
+                        break;
+                    case '5':
+                        Console.WriteLine("\n\tSending DM with media...\n");
+                        await NewDirectMessageWithCoordinatesAsync(twitterCtx);
+                        break;
+                    case '6':
+                        Console.WriteLine("\n\tSending DM with media...\n");
+                        await NewDirectMessageWithPlaceAsync(twitterCtx);
+                        break;
                     case 'q':
                     case 'Q':
                         Console.WriteLine("\nReturning...\n");
@@ -56,6 +69,9 @@ namespace Linq2TwitterDemos_Console
             Console.WriteLine("\t 1. List Direct Messages");
             Console.WriteLine("\t 2. Send Direct Message");
             Console.WriteLine("\t 3. Delete Direct Message");
+            Console.WriteLine("\t 4. Send Direct Message with Media");
+            Console.WriteLine("\t 5. Send Direct Message with Coordinates");
+            Console.WriteLine("\t 6. Send Direct Message with Place");
             Console.WriteLine();
             Console.Write("\t Q. Return to Main menu");
         }
@@ -82,7 +98,7 @@ namespace Linq2TwitterDemos_Console
 
         static async Task ListDirectMessagesAsync(TwitterContext twitterCtx)
         {
-            int count = 10; // intentionally set to a low number to demo paging
+            int count = 50; // set to a low number to demo paging
             string cursor = "";
             List<DMEvent> allDmEvents = new List<DMEvent>();
 
@@ -171,5 +187,73 @@ namespace Linq2TwitterDemos_Console
                 Console.WriteLine($"\nProblem deleting DM: ({tqEx.ErrorCode}) - {tqEx.ReasonPhrase}");
             }
         }
-    }
+        static async Task NewDirectMessageWithMediaAsync(TwitterContext twitterCtx)
+        {
+            const ulong Linq2TwitrID = 15411837;// 16761255;
+            string mediaCategory = "dm_image";
+
+            Media media = await twitterCtx.UploadMediaAsync(
+                File.ReadAllBytes(@"..\..\images\200xColor_2.png"), 
+                mediaType: "image/png", 
+                additionalOwners: null, 
+                mediaCategory: mediaCategory,
+                shared: true);
+
+            DirectMessageEvents message =
+                await twitterCtx.NewDirectMessageEventAsync(
+                    Linq2TwitrID,
+                    "DM from @JoeMayo to @Linq2Twitr of $MSFT & $TSLA with #TwitterAPI #chatbot " +
+                    "at http://bit.ly/2xSJWJk and http://amzn.to/2gD09X6 on " + DateTime.Now + "!'",
+                    media.MediaID);
+
+            DMEvent dmEvent = message?.Value?.DMEvent;
+            if (dmEvent != null)
+                Console.WriteLine(
+                    "Recipient: {0}, Message: {1}, Date: {2}",
+                    dmEvent.MessageCreate.Target.RecipientID,
+                    dmEvent.MessageCreate.MessageData.Text,
+                    dmEvent.CreatedTimestamp);
+        }
+
+        static async Task NewDirectMessageWithCoordinatesAsync(TwitterContext twitterCtx)
+        {
+            const ulong Linq2TwitrID = 15411837;// 16761255;
+
+            DirectMessageEvents message =
+                await twitterCtx.NewDirectMessageEventAsync(
+                    Linq2TwitrID,
+                    "DM from @JoeMayo to @Linq2Twitr of $MSFT & $TSLA with #TwitterAPI #chatbot " +
+                    "at http://bit.ly/2xSJWJk and http://amzn.to/2gD09X6 on " + DateTime.Now + "!'",
+                    latitude: -122.443893,
+                    longitude: 37.771718);
+
+            DMEvent dmEvent = message?.Value?.DMEvent;
+            if (dmEvent != null)
+                Console.WriteLine(
+                    "Recipient: {0}, Message: {1}, Date: {2}",
+                    dmEvent.MessageCreate.Target.RecipientID,
+                    dmEvent.MessageCreate.MessageData.Text,
+                    dmEvent.CreatedTimestamp);
+        }
+
+        static async Task NewDirectMessageWithPlaceAsync(TwitterContext twitterCtx)
+        {
+            const ulong Linq2TwitrID = 15411837;// 16761255;
+
+            DirectMessageEvents message =
+                await twitterCtx.NewDirectMessageEventAsync(
+                    Linq2TwitrID,
+                    "DM from @JoeMayo to @Linq2Twitr of $MSFT & $TSLA with #TwitterAPI #chatbot " +
+                    "at http://bit.ly/2xSJWJk and http://amzn.to/2gD09X6 on " + DateTime.Now + "!'",
+                    placeID: "5a110d312052166f");
+
+            DMEvent dmEvent = message?.Value?.DMEvent;
+            if (dmEvent != null)
+                Console.WriteLine(
+                    "Recipient: {0}, Message: {1}, Date: {2}",
+                    dmEvent.MessageCreate.Target.RecipientID,
+                    dmEvent.MessageCreate.MessageData.Text,
+                    dmEvent.CreatedTimestamp);
+        }
+}
 }

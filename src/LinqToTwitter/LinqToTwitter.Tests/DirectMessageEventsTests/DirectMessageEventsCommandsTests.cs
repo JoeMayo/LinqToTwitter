@@ -54,20 +54,6 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
         }
 
         [TestMethod]
-        public async Task NewDirectMessageEventsAsync_WithParameters_PopulatesInputParametersInResponse()
-        {
-            const ulong RecipientID = 1;
-            const string Text = "Hi";
-            var ctx = InitializeTwitterContext();
-
-            DirectMessageEvents dmEvt = await ctx.NewDirectMessageEventAsync(RecipientID, Text);
-
-            Assert.IsNotNull(dmEvt);
-            Assert.AreEqual(RecipientID, dmEvt.RecipientID);
-            Assert.AreEqual(Text, dmEvt.Text);
-        }
-
-        [TestMethod]
         public async Task NewDirectMessageEventsAsync_WithRecipientID_ReturnsCreatedDM()
         {
             const ulong RecipientID = 1;

@@ -43,6 +43,7 @@ namespace LinqToTwitterPcl.Tests.StatusTests
                     It.IsAny<string>(),
                     It.IsAny<string>(),
                     It.IsAny<string>(),
+                    It.IsAny<bool>(),
                     It.IsAny<CancellationToken>()))
                 .Returns(tcsMedia.Task);
             execMock.Setup(exec =>

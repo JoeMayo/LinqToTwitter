@@ -28,15 +28,15 @@ namespace LinqToTwitter
         /// </summary>
         public ulong ID { get; set; }
 
-        /// <summary>
-        /// Input (New DM): ID of the user the DM is sent to
-        /// </summary>
-        public ulong RecipientID { get; set; }
+        ///// <summary>
+        ///// Input (New DM): ID of the user the DM is sent to
+        ///// </summary>
+        //public ulong RecipientID { get; set; }
 
-        /// <summary>
-        /// Input (New DM): DM contents
-        /// </summary>
-        public string Text { get; set; }
+        ///// <summary>
+        ///// Input (New DM): DM contents
+        ///// </summary>
+        //public string Text { get; set; }
 
         /// <summary>
         /// Input (All Queries): Type of Direct Message Events
@@ -166,10 +166,105 @@ namespace LinqToTwitter
         [JsonProperty("text")]
         public string Text { get; set; }
 
+        [JsonProperty("attachment")]
+        public Attachment Attachment { get; set; }
+
         /// <summary>
         /// Extracted entities and indices in Text where they occur
         /// </summary>
         [JsonProperty("entities")]
         public Entities Entities { get; set; }
+    }
+
+    public class Attachment
+    {
+        [JsonProperty("type")]
+        public string Type { get; set; }
+        [JsonProperty("location")]
+        public DirectMessageEventLocation Location { get; set; }
+        [JsonProperty("media")]
+        public DirectMessageMedia Media { get; set; }
+    }
+
+    public class DirectMessageEventLocation
+    {
+        [JsonProperty("type")]
+        public string Type { get; set; }
+        [JsonProperty("shared_coordinate")]
+        public SharedCoordinate SharedCoordinate { get; set; }
+        [JsonProperty("shared_place")]
+        public SharedPlace SharedPlace { get; set; }
+    }
+
+    public class SharedCoordinate
+    {
+        [JsonProperty("coordinates")]
+        public DirectMessageEventCoordinates Coordinates { get; set; }
+    }
+
+    public class DirectMessageEventCoordinates
+    {
+        [JsonProperty("type")]
+        public string Type { get; set; }
+        [JsonProperty("coordinates")]
+        public double[] Coordinates { get; set; }
+    }
+
+    public class SharedPlace
+    {
+        [JsonProperty("place")]
+        public DirectMessageEventPlace Place { get; set; }
+    }
+
+    public class DirectMessageEventPlace
+    {
+        [JsonProperty("id")]
+        public string Id { get; set; }
+    }
+
+    public class DirectMessageMedia
+    {
+        [JsonProperty("id")]
+        public ulong Id { get; set; }
+        [JsonProperty("id_str")]
+        public string IdStr { get; set; }
+        [JsonProperty("indices")]
+        public int[] Indices { get; set; }
+        [JsonProperty("media_url")]
+        public string MediaUrl { get; set; }
+        [JsonProperty("media_url_https")]
+        public string MediaUrlHttps { get; set; }
+        [JsonProperty("url")]
+        public string Url { get; set; }
+        [JsonProperty("display_url")]
+        public string DisplayUrl { get; set; }
+        [JsonProperty("expanded_url")]
+        public string ExpandedUrl { get; set; }
+        [JsonProperty("type")]
+        public string Type { get; set; }
+        [JsonProperty("sizes")]
+        public Sizes Sizes { get; set; }
+    }
+
+    public class Sizes
+    {
+        [JsonProperty("small")]
+        public MediaSize Small { get; set; }
+        [JsonProperty("medium")]
+        public MediaSize Medium { get; set; }
+        [JsonProperty("large")]
+        public MediaSize Large { get; set; }
+        [JsonProperty("thumb")]
+        public MediaSize Thumb { get; set; }
+    }
+
+    public class MediaSize
+    {
+        [JsonProperty("w")]
+        public int Width { get; set; }
+        [JsonProperty("h")]
+        public int Height { get; set; }
+        [JsonProperty("resize")]
+        public string Resize { get; set; }
     }
 }

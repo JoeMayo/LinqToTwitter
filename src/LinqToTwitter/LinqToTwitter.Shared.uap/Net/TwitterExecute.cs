@@ -268,20 +268,21 @@ namespace LinqToTwitter
         /// Media category - possible values are tweet_image, tweet_gif, and tweet_video. 
         /// See this post on the Twitter forums: https://twittercommunity.com/t/media-category-values/64781/6
         /// </param>
+        /// <param name="shared">True if can be used in multiple DM Events.</param>
         /// <param name="cancelToken">Cancellation token</param>
         /// <returns>JSON response From Twitter.</returns>
-        public async Task<string> PostMediaAsync(string url, IDictionary<string, string> postData, byte[] data, string name, string fileName, string contentType, string mediaCategory, CancellationToken cancelToken)
+        public async Task<string> PostMediaAsync(string url, IDictionary<string, string> postData, byte[] data, string name, string fileName, string contentType, string mediaCategory, bool shared, CancellationToken cancelToken)
         {
             WriteLog(url, "PostMediaAsync");
 
-            ulong mediaID = await InitAsync(url, data, postData, name, fileName, contentType, mediaCategory, cancelToken);
+            ulong mediaID = await InitAsync(url, data, postData, name, fileName, contentType, mediaCategory, shared, cancelToken);
 
             await AppendChunksAsync(url, mediaID, data, name, fileName, contentType, cancelToken);
 
             return await FinalizeAsync(url, mediaID, cancelToken);
         }
 
-        async Task<ulong> InitAsync(string url, byte[] data, IDictionary<string, string> postData, string name, string fileName, string contentType, string mediaCategory, CancellationToken cancelToken)
+        async Task<ulong> InitAsync(string url, byte[] data, IDictionary<string, string> postData, string name, string fileName, string contentType, string mediaCategory, bool shared, CancellationToken cancelToken)
         {
             var multiPartContent = new HttpMultipartFormDataContent();
 
@@ -289,6 +290,8 @@ namespace LinqToTwitter
             multiPartContent.Add(new HttpStringContent(contentType), "media_type");
             if (!string.IsNullOrWhiteSpace(mediaCategory))
                 multiPartContent.Add(new HttpStringContent(mediaCategory), "media_category");
+            if (shared)
+                multiPartContent.Add(new HttpStringContent("true"), "shared");
             multiPartContent.Add(new HttpStringContent(data.Length.ToString()), "total_bytes");
 
             foreach (var pair in postData)

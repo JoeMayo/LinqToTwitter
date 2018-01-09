@@ -130,7 +130,7 @@ namespace LinqToTwitter
             string imageMimeType = "image/" + imageType;
             string mediaCategory = "tweet_image";
 
-            RawResult = await TwitterExecutor.PostMediaAsync(accountUrl, parameters, image, name, fileName, imageMimeType, mediaCategory, cancelToken).ConfigureAwait(false);
+            RawResult = await TwitterExecutor.PostMediaAsync(accountUrl, parameters, image, name, fileName, imageMimeType, mediaCategory, shared: false, cancelToken: cancelToken).ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(RawResult, UserAction.SingleUser);
         }
@@ -212,7 +212,7 @@ namespace LinqToTwitter
             string mediaCategory = "tweet_image";
 
             if (image != NoImage)
-                RawResult = await TwitterExecutor.PostMediaAsync(accountUrl, parameters, image, name, fileName, imageMimeType, mediaCategory, cancelToken).ConfigureAwait(false);
+                RawResult = await TwitterExecutor.PostMediaAsync(accountUrl, parameters, image, name, fileName, imageMimeType, mediaCategory, shared: false, cancelToken: cancelToken).ConfigureAwait(false);
             else
                 RawResult = await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<User>(HttpMethod.Post.ToString(), accountUrl, parameters, cancelToken).ConfigureAwait(false);
 
@@ -424,7 +424,7 @@ namespace LinqToTwitter
             string imageMimeType = "image/" + imageType;
             string mediaCategory = "tweet_image";
 
-            RawResult = await TwitterExecutor.PostMediaAsync(accountUrl, parameters, banner, name, fileName, imageMimeType, mediaCategory, cancelToken).ConfigureAwait(false);
+            RawResult = await TwitterExecutor.PostMediaAsync(accountUrl, parameters, banner, name, fileName, imageMimeType, mediaCategory, shared: false, cancelToken: cancelToken).ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(RawResult, UserAction.SingleUser);
         }

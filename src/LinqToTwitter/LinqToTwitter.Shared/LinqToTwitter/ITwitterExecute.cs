@@ -79,9 +79,10 @@ namespace LinqToTwitter
         /// Media category - possible values are tweet_image, tweet_gif, tweet_video, and amplify_video. 
         /// See this post on the Twitter forums: https://twittercommunity.com/t/media-category-values/64781/6
         /// </param>
+        /// <param name="shared">True if can be used in multiple DM Events.</param>
         /// <param name="cancelToken">Cancellation token</param>
         /// <returns>JSON results From Twitter</returns>
-        Task<string> PostMediaAsync(string url, IDictionary<string, string> postData, byte[] image, string name, string fileName, string contentType, string mediaCategory, CancellationToken cancelToken);
+        Task<string> PostMediaAsync(string url, IDictionary<string, string> postData, byte[] image, string name, string fileName, string contentType, string mediaCategory, bool shared, CancellationToken cancelToken);
 
         /// <summary>
         /// makes HTTP call to Twitter API
