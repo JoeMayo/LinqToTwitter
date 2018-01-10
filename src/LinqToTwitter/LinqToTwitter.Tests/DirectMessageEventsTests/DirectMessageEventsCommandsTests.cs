@@ -279,6 +279,134 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
             Assert.AreEqual("directMessageID", ex.ParamName);
         }
 
+        [TestMethod]
+        public async Task RequestQuickReplyLocationAsync_WithValidParameters_PopulatesRawResult()
+        {
+            const ulong RecipientID = 1;
+            const string Text = "What is your location?";
+            const string ExternalID = "abc123";
+            var ctx = InitializeTwitterContext();
+
+            await ctx.RequestQuickReplyLocationAsync(RecipientID, Text, ExternalID);
+
+            Assert.AreEqual(DirectMessageEventsResponse, ctx.RawResult);
+        }
+
+        [TestMethod]
+        public async Task RequestQuickReplyLocationAsync_WithValidParameters_ConstructsUrl()
+        {
+            const ulong RecipientID = 1;
+            const string Text = "What is your location?";
+            const string ExternalID = "abc123";
+            var ctx = InitializeTwitterContext();
+
+            await ctx.RequestQuickReplyLocationAsync(RecipientID, Text, ExternalID);
+
+            execMock.Verify(exec =>
+                exec.SendJsonToTwitterAsync(
+                    It.IsAny<string>(),
+                    "https://api.twitter.com/1.1/direct_messages/events/new.json",
+                    It.IsAny<IDictionary<string, string>>(),
+                    It.IsAny<DirectMessageEventsValue>(),
+                    It.IsAny<CancellationToken>()),
+                Times.Once());
+        }
+
+        [TestMethod]
+        public async Task RequestQuickReplyOptionsAsync_WithValidParameters_PopulatesRawResult()
+        {
+            const ulong RecipientID = 1;
+            const string Text = "What is your choice?";
+            List<QuickReplyOption> options = BuildOptions();
+            var ctx = InitializeTwitterContext();
+
+            await ctx.RequestQuickReplyOptionsAsync(RecipientID, Text, options);
+
+            Assert.AreEqual(DirectMessageEventsResponse, ctx.RawResult);
+        }
+
+        [TestMethod]
+        public async Task RequestQuickReplyOptionsAsync_WithValidParameters_ConstructsUrl()
+        {
+            const ulong RecipientID = 1;
+            const string Text = "What is your choice?";
+            List<QuickReplyOption> options = BuildOptions();
+            var ctx = InitializeTwitterContext();
+
+            await ctx.RequestQuickReplyOptionsAsync(RecipientID, Text, options);
+
+            execMock.Verify(exec =>
+                exec.SendJsonToTwitterAsync(
+                    It.IsAny<string>(),
+                    "https://api.twitter.com/1.1/direct_messages/events/new.json",
+                    It.IsAny<IDictionary<string, string>>(),
+                    It.IsAny<DirectMessageEventsValue>(),
+                    It.IsAny<CancellationToken>()),
+                Times.Once());
+        }
+
+        static List<QuickReplyOption> BuildOptions()
+        {
+            return new List<QuickReplyOption>
+            {
+                new QuickReplyOption
+                {
+                    Label = "Option 1",
+                    Description = "Description for the first option.",
+                    Metadata = "abc001"
+                },
+                new QuickReplyOption
+                {
+                    Label = "Option 2",
+                    Description = "Description for the second option.",
+                    Metadata = "abc002"
+                },
+                new QuickReplyOption
+                {
+                    Label = "Option 3",
+                    Description = "Description for the third option.",
+                    Metadata = "abc003"
+                },
+            };
+        }
+
+        [TestMethod]
+        public async Task RequestQuickReplyTextinputAsync_WithValidParameters_PopulatesRawResult()
+        {
+            const ulong RecipientID = 1;
+            const string Text = "What would you like?";
+            string keyboard = "default";
+            string label = "Preference";
+            string metadata = "abc123";
+            var ctx = InitializeTwitterContext();
+
+            await ctx.RequestQuickReplyTextInputAsync(RecipientID, Text, keyboard, label, metadata);
+
+            Assert.AreEqual(DirectMessageEventsResponse, ctx.RawResult);
+        }
+
+        [TestMethod]
+        public async Task RequestQuickReplyTextInputAsync_WithValidParameters_ConstructsUrl()
+        {
+            const ulong RecipientID = 1;
+            const string Text = "What would you like?";
+            string keyboard = "default";
+            string label = "Preference";
+            string metadata = "abc123";
+            var ctx = InitializeTwitterContext();
+
+            await ctx.RequestQuickReplyTextInputAsync(RecipientID, Text, keyboard, label, metadata);
+
+            execMock.Verify(exec =>
+                exec.SendJsonToTwitterAsync(
+                    It.IsAny<string>(),
+                    "https://api.twitter.com/1.1/direct_messages/events/new.json",
+                    It.IsAny<IDictionary<string, string>>(),
+                    It.IsAny<DirectMessageEventsValue>(),
+                    It.IsAny<CancellationToken>()),
+                Times.Once());
+        }
+
         const string DirectMessageEventsResponse = @"{
 	""event"": {
 		""type"": ""message_create"",

@@ -174,6 +174,9 @@ namespace LinqToTwitter
         /// </summary>
         [JsonProperty("entities")]
         public Entities Entities { get; set; }
+
+        [JsonProperty("quick_reply")]
+        public QuickReply QuickReply { get; set; }
     }
 
     public class Attachment
@@ -266,5 +269,43 @@ namespace LinqToTwitter
         public int Height { get; set; }
         [JsonProperty("resize")]
         public string Resize { get; set; }
+    }
+
+    public class QuickReply
+    {
+        [JsonProperty("type")]
+        public string Type { get; set; }
+        [JsonProperty("location")]
+        public QuickReplyLocation Location { get; set; }
+        [JsonProperty("options")]
+        public IEnumerable<QuickReplyOption> Options { get; set; }
+        [JsonProperty("text_input")]
+        public TextInput TextInput { get; set; }
+    }
+
+    public class QuickReplyLocation
+    {
+        [JsonProperty("metadata")]
+        public string Metadata { get; set; }
+    }
+
+    public class QuickReplyOption
+    {
+        [JsonProperty("label")]
+        public string Label { get; set; }
+        [JsonProperty("description")]
+        public string Description { get; set; }
+        [JsonProperty("metadata")]
+        public string Metadata { get; set; }
+    }
+
+    public class TextInput
+    {
+        [JsonProperty("keyboard")]
+        public string Keyboard { get; set; }
+        [JsonProperty("label")]
+        public string Label { get; set; }
+        [JsonProperty("metadata")]
+        public string Metadata { get; set; }
     }
 }
