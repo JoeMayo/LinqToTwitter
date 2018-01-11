@@ -61,6 +61,11 @@ namespace Linq2TwitterDemos_Console
                         Console.WriteLine("\n\tSending Quick Reply Location...\n");
                         await RequestQuickReplyTextInputAsync(twitterCtx);
                         break;
+                    case 'a':
+                    case 'A':
+                        Console.WriteLine("\n\tSending Button Choice...\n");
+                        await RequestButtonChoiceAsync(twitterCtx);
+                        break;
                     case 'q':
                     case 'Q':
                         Console.WriteLine("\nReturning...\n");
@@ -87,6 +92,7 @@ namespace Linq2TwitterDemos_Console
             Console.WriteLine("\t 7. Send Quick Reply for Location");
             Console.WriteLine("\t 8. Send Quick Reply with Options");
             Console.WriteLine("\t 9. Send Quick Reply for Text Input");
+            Console.WriteLine("\t A. Send Button Choice");
             Console.WriteLine();
             Console.Write("\t Q. Return to Main menu");
         }
@@ -340,6 +346,47 @@ namespace Linq2TwitterDemos_Console
                     keyboard: "default",
                     label: "Preference",
                     metadata: "abc123");
+
+            DMEvent dmEvent = message?.Value?.DMEvent;
+            if (dmEvent != null)
+                Console.WriteLine(
+                    "Recipient: {0}, Message: {1}, Date: {2}",
+                    dmEvent.MessageCreate.Target.RecipientID,
+                    dmEvent.MessageCreate.MessageData.Text,
+                    dmEvent.CreatedTimestamp);
+        }
+
+        static async Task RequestButtonChoiceAsync(TwitterContext twitterCtx)
+        {
+            const ulong Linq2TwitrID = 15411837;// 16761255;
+
+            var buttons = new List<CallToAction>
+            {
+                new CallToAction
+                {
+                    Label = "Visit LINQ to Twitter Website",
+                    Url = "https://github.com/JoeMayo/LinqToTwitter",
+                    Type = "web_url"
+                },
+                new CallToAction
+                {
+                    Label = "Visit @JoeMayo on Twitter",
+                    Url = "https://twitter.com/JoeMayo",
+                    Type = "web_url"
+                },
+                new CallToAction
+                {
+                    Label = "Visit @Linq2Twitr on Twitter",
+                    Url = "https://twitter.com/Linq2Twitr",
+                    Type = "web_url"
+                }
+            };
+
+            DirectMessageEvents message =
+                await twitterCtx.RequestButtonChoiceAsync(
+                    Linq2TwitrID,
+                    "Where would you like to go?",
+                    buttons);
 
             DMEvent dmEvent = message?.Value?.DMEvent;
             if (dmEvent != null)

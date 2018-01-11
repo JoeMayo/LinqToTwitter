@@ -177,6 +177,9 @@ namespace LinqToTwitter
 
         [JsonProperty("quick_reply")]
         public QuickReply QuickReply { get; set; }
+
+        [JsonProperty("ctas")]
+        public IEnumerable<CallToAction> CallToActions { get; set; }
     }
 
     public class Attachment
@@ -307,5 +310,17 @@ namespace LinqToTwitter
         public string Label { get; set; }
         [JsonProperty("metadata")]
         public string Metadata { get; set; }
+    }
+
+    public class CallToAction
+    {
+        [JsonProperty("type")]
+        public string Type { get; set; }
+        [JsonProperty("label")]
+        public string Label { get; set; }
+        [JsonProperty("tco_url")]
+        public string TcoUrl { get; set; }
+        [JsonProperty("url")]
+        public string Url { get; set; }
     }
 }

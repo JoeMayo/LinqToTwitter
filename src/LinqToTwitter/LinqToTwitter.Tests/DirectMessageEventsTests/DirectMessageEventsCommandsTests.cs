@@ -407,6 +407,64 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
                 Times.Once());
         }
 
+        [TestMethod]
+        public async Task RequestButtonChoiceAsync_WithValidParameters_PopulatesRawResult()
+        {
+            const ulong RecipientID = 1;
+            const string Text = "Where would you like to go?";
+            List<CallToAction> ctas = BuildCallToActions();
+            var ctx = InitializeTwitterContext();
+
+            await ctx.RequestButtonChoiceAsync(RecipientID, Text, ctas);
+
+            Assert.AreEqual(DirectMessageEventsResponse, ctx.RawResult);
+        }
+
+        [TestMethod]
+        public async Task RequestButtonChoiceAsync_WithValidParameters_ConstructsUrl()
+        {
+            const ulong RecipientID = 1;
+            const string Text = "Where would you like to go?";
+            List<CallToAction> ctas = BuildCallToActions();
+            var ctx = InitializeTwitterContext();
+
+            await ctx.RequestButtonChoiceAsync(RecipientID, Text, ctas);
+
+            execMock.Verify(exec =>
+                exec.SendJsonToTwitterAsync(
+                    It.IsAny<string>(),
+                    "https://api.twitter.com/1.1/direct_messages/events/new.json",
+                    It.IsAny<IDictionary<string, string>>(),
+                    It.IsAny<DirectMessageEventsValue>(),
+                    It.IsAny<CancellationToken>()),
+                Times.Once());
+        }
+
+        static List<CallToAction> BuildCallToActions()
+        {
+            return new List<CallToAction>
+            {
+                new CallToAction
+                {
+                    Label = "Visit LINQ to Twitter Website",
+                    Url = "https://github.com/JoeMayo/LinqToTwitter",
+                    Type = "web_url"
+                },
+                new CallToAction
+                {
+                    Label = "Visit @JoeMayo on Twitter",
+                    Url = "https://twitter.com/JoeMayo",
+                    Type = "web_url"
+                },
+                new CallToAction
+                {
+                    Label = "Visit @Linq2Twitr on Twitter",
+                    Url = "https://twitter.com/Linq2Twitr",
+                    Type = "web_url"
+                }
+            };
+        }
+
         const string DirectMessageEventsResponse = @"{
 	""event"": {
 		""type"": ""message_create"",

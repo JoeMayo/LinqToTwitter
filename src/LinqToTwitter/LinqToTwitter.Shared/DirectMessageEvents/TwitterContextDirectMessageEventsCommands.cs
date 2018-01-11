@@ -174,11 +174,25 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="recipientID">ID of user to send to.</param>
         /// <param name="text">Direct message contents.</param>
-        /// <param name="attachment">Optional attachment from overloads that support it.</param>
-        /// <param name="quickReply">Quick reply from overloads that support it.</param>
+        /// <param name="callToActions">List of Call to Action, which creates buttons in the message.</param>
         /// <param name="cancelToken">Async cancellation token.</param>
         /// <returns>Direct message events data.</returns>
-        private async Task<DirectMessageEvents> NewDirectMessageEventAsync(ulong recipientID, string text, Attachment attachment = null, QuickReply quickReply = null, CancellationToken cancelToken = default(CancellationToken))
+        public async Task<DirectMessageEvents> RequestButtonChoiceAsync(ulong recipientID, string text, IEnumerable<CallToAction> callToActions, CancellationToken cancelToken = default(CancellationToken))
+        {
+            return await NewDirectMessageEventAsync(recipientID, text, attachment: null, quickReply: null, callToActions: callToActions);
+        }
+
+        /// <summary>
+        /// Sends a new direct message to specified user.
+        /// </summary>
+        /// <param name="recipientID">ID of user to send to.</param>
+        /// <param name="text">Direct message contents.</param>
+        /// <param name="attachment">Optional attachment from overloads that support it.</param>
+        /// <param name="quickReply">Quick reply from overloads that support it.</param>
+        /// <param name="callToActions">List of Call to Action, which creates buttons in the message.</param>
+        /// <param name="cancelToken">Async cancellation token.</param>
+        /// <returns>Direct message events data.</returns>
+        private async Task<DirectMessageEvents> NewDirectMessageEventAsync(ulong recipientID, string text, Attachment attachment = null, QuickReply quickReply = null, IEnumerable<CallToAction> callToActions = null, CancellationToken cancelToken = default(CancellationToken))
         {
             if (recipientID == default(ulong))
                 throw new ArgumentException($"{nameof(recipientID)} must be set.", nameof(recipientID));
@@ -197,7 +211,8 @@ namespace LinqToTwitter
                         {
                             Text = text,
                             Attachment = attachment,
-                            QuickReply = quickReply
+                            QuickReply = quickReply,
+                            CallToActions = callToActions
                         },
                         Target = new DirectMessageTarget
                         {
