@@ -98,6 +98,9 @@ namespace LinqToTwitter
         [JsonProperty("created_timestamp")]
         public string CreatedTimestamp { get; set; }
 
+        [JsonProperty("initiated_via")]
+        public InitiatedVia InitiatedVia { get; set; }
+
         /// <summary>
         /// Twitter container for message and metadata
         /// </summary>
@@ -119,6 +122,14 @@ namespace LinqToTwitter
                 return createdAt;
             }
         }
+    }
+
+    public class InitiatedVia
+    {
+        [JsonProperty("tweet_id")]
+        public string TweetId { get; set; }
+        [JsonProperty("welcome_message_id")]
+        public string WelcomeMessageId { get; set; }
     }
 
     public class DirectMessageCreate
