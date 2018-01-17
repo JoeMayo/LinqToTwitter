@@ -98,6 +98,9 @@ namespace LinqToTwitter
         [JsonProperty("created_timestamp")]
         public string CreatedTimestamp { get; set; }
 
+        /// <summary>
+        /// Twitter entity before this DM
+        /// </summary>
         [JsonProperty("initiated_via")]
         public InitiatedVia InitiatedVia { get; set; }
 

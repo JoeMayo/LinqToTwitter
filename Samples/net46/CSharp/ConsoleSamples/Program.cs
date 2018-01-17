@@ -7,12 +7,11 @@ namespace Linq2TwitterDemos_Console
 {
     class Program
     {
-        static void Main()
+        static async Task Main()
         {
             try
             {
-                Task demoTask = DoDemosAsync();
-                demoTask.Wait();
+                await DoDemosAsync();
             }
             catch (Exception ex)
             {
