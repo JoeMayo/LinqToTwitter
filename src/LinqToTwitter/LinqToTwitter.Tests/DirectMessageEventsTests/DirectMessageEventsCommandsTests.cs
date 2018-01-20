@@ -238,7 +238,6 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
             Assert.AreEqual("text", ex.ParamName);
         }
 
-
         [TestMethod]
         public async Task DeleteDirectMessageEventsAsync_WithValidParameters_HasAnEmptyRawResult()
         {
@@ -465,6 +464,104 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
             };
         }
 
+        [TestMethod]
+        public async Task MarkReadAsync_WithValidParameters_HasAnEmptyRawResult()
+        {
+            const ulong LastReadEventID = 1;
+            const ulong RecipientID = 2;
+            var ctx = InitializeTwitterContext();
+
+            await ctx.MarkReadAsync(LastReadEventID, RecipientID);
+
+            Assert.AreEqual(DirectMessageEventsResponse, ctx.RawResult);
+        }
+
+        [TestMethod]
+        public async Task MarkReadAsync_WithValidParameters_ConstructsUrl()
+        {
+            const ulong LastReadEventID = 1;
+            const ulong RecipientID = 2;
+            var ctx = InitializeTwitterContext();
+
+            await ctx.MarkReadAsync(LastReadEventID, RecipientID);
+
+            execMock.Verify(exec =>
+                exec.PostFormUrlEncodedToTwitterAsync<DirectMessageEvents>(
+                    HttpMethod.Post.ToString(),
+                    "https://api.twitter.com/1.1/direct_messages/mark_read.json",
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<CancellationToken>()),
+                Times.Once());
+        }
+
+        [TestMethod]
+        public async Task MarkReadAsync_WithZeroLastReadEventID_Throws()
+        {
+            const ulong LastReadEventID = 0;
+            const ulong RecipientID = 2;
+            var ctx = InitializeTwitterContext();
+
+            var ex = await L2TAssert.Throws<ArgumentException>(
+                async () => await ctx.MarkReadAsync(LastReadEventID, RecipientID));
+
+            Assert.AreEqual("lastReadEventID", ex.ParamName);
+        }
+
+        [TestMethod]
+        public async Task MarkReadAsync_WithZeroRecipientID_Throws()
+        {
+            const ulong LastReadEventID = 1;
+            const ulong RecipientID = 0;
+            var ctx = InitializeTwitterContext();
+
+            var ex = await L2TAssert.Throws<ArgumentException>(
+                async () => await ctx.MarkReadAsync(LastReadEventID, RecipientID));
+
+            Assert.AreEqual("recipientID", ex.ParamName);
+        }
+
+        [TestMethod]
+        public async Task IndicateTypingAsync_WithValidParameters_HasAnEmptyRawResult()
+        {
+            const ulong RecipientID = 2;
+            var ctx = InitializeTwitterContext();
+
+            await ctx.IndicateTypingAsync(RecipientID);
+
+            Assert.AreEqual(DirectMessageEventsResponse, ctx.RawResult);
+        }
+
+        [TestMethod]
+        public async Task IndicateTypingAsync_WithValidParameters_ConstructsUrl()
+        {
+            const ulong RecipientID = 2;
+            var ctx = InitializeTwitterContext();
+
+            await ctx.IndicateTypingAsync(RecipientID);
+
+            execMock.Verify(exec =>
+                exec.PostFormUrlEncodedToTwitterAsync<DirectMessageEvents>(
+                    HttpMethod.Post.ToString(),
+                    "https://api.twitter.com/1.1/direct_messages/indicate_typing.json",
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<CancellationToken>()),
+                Times.Once());
+        }
+
+        [TestMethod]
+        public async Task IndicateTypingAsync_WithZeroRecipientID_Throws()
+        {
+            const ulong RecipientID = 0;
+            var ctx = InitializeTwitterContext();
+
+            var ex = await L2TAssert.Throws<ArgumentException>(
+                async () => await ctx.IndicateTypingAsync(RecipientID));
+
+            Assert.AreEqual("recipientID", ex.ParamName);
+        }
+
+        #region Response Messages
+
         const string DirectMessageEventsResponse = @"{
 	""event"": {
 		""type"": ""message_create"",
@@ -535,5 +632,7 @@ namespace LinqToTwitterPcl.Tests.DirectMessageTests
 		}
 	}
 }";
+
+        #endregion
     }
 }

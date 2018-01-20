@@ -66,6 +66,16 @@ namespace Linq2TwitterDemos_Console
                         Console.WriteLine("\n\tSending Button Choice...\n");
                         await RequestButtonChoiceAsync(twitterCtx);
                         break;
+                    case 'b':
+                    case 'B':
+                        Console.WriteLine("\n\tSending Typing Indicator...\n");
+                        await SendTypingIndicatorAsync(twitterCtx);
+                        break;
+                    case 'c':
+                    case 'C':
+                        Console.WriteLine("\n\tSending Message Read...\n");
+                        await SendMessageReadAsync(twitterCtx);
+                        break;
                     case 'q':
                     case 'Q':
                         Console.WriteLine("\nReturning...\n");
@@ -93,6 +103,8 @@ namespace Linq2TwitterDemos_Console
             Console.WriteLine("\t 8. Send Quick Reply with Options");
             Console.WriteLine("\t 9. Send Quick Reply for Text Input");
             Console.WriteLine("\t A. Send Button Choice");
+            Console.WriteLine("\t B. Send Typing Indicator");
+            Console.WriteLine("\t C. Send Message Read");
             Console.WriteLine();
             Console.Write("\t Q. Return to Main menu");
         }
@@ -208,6 +220,7 @@ namespace Linq2TwitterDemos_Console
                 Console.WriteLine($"\nProblem deleting DM: ({tqEx.ErrorCode}) - {tqEx.ReasonPhrase}");
             }
         }
+
         static async Task NewDirectMessageWithMediaAsync(TwitterContext twitterCtx)
         {
             const ulong Linq2TwitrID = 15411837;// 16761255;
@@ -395,6 +408,32 @@ namespace Linq2TwitterDemos_Console
                     dmEvent.MessageCreate.Target.RecipientID,
                     dmEvent.MessageCreate.MessageData.Text,
                     dmEvent.CreatedTimestamp);
+        }
+
+        static async Task SendTypingIndicatorAsync(TwitterContext twitterCtx)
+        {
+            ulong recipientID = 15411837;
+
+            await twitterCtx.IndicateTypingAsync(recipientID);
+        }
+
+        static async Task SendMessageReadAsync(TwitterContext twitterCtx)
+        {
+            ulong recipientID = 15411837;
+            Console.Write("Which DM would you mark read? (please enter DM ID): ");
+            string dmInput = Console.ReadLine();
+
+            ulong.TryParse(dmInput, out ulong dmID);
+
+            try
+            {
+                await twitterCtx.MarkReadAsync(dmID, recipientID);
+                Console.WriteLine("\nDM Marked as read.");
+            }
+            catch (TwitterQueryException tqEx)
+            {
+                Console.WriteLine($"\nProblem Marking DM as read: ({tqEx.ErrorCode}) - {tqEx.ReasonPhrase}");
+            }
         }
     }
 }

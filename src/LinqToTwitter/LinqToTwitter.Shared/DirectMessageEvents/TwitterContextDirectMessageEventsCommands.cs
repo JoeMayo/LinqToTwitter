@@ -9,7 +9,7 @@ namespace LinqToTwitter
     public partial class TwitterContext
     {
         /// <summary>
-        /// Sends a new direct message to specified user.
+        /// Sends a new direct message that attaches media.
         /// </summary>
         /// <param name="recipientID">ID of user to send to.</param>
         /// <param name="text">Direct message contents.</param>
@@ -31,7 +31,7 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// Sends a new direct message to specified user.
+        /// Sends a new direct message with lat/long location.
         /// </summary>
         /// <param name="recipientID">ID of user to send to.</param>
         /// <param name="text">Direct message contents.</param>
@@ -62,7 +62,7 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// Sends a new direct message to specified user.
+        /// Sends a new direct message with place ID location.
         /// </summary>
         /// <param name="recipientID">ID of user to send to.</param>
         /// <param name="text">Direct message contents.</param>
@@ -91,7 +91,7 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// Sends a new direct message to specified user.
+        /// Sends a new direct message to specified user with just text.
         /// </summary>
         /// <param name="recipientID">ID of user to send to.</param>
         /// <param name="text">Direct message contents.</param>
@@ -103,7 +103,7 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// Sends a new direct message to specified user.
+        /// Sends a new direct message quick reply.
         /// </summary>
         /// <param name="recipientID">ID of user to send to.</param>
         /// <param name="text">Direct message contents.</param>
@@ -125,7 +125,7 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// Sends a new direct message to specified user.
+        /// Sends a new direct message with options.
         /// </summary>
         /// <param name="recipientID">ID of user to send to.</param>
         /// <param name="text">Direct message contents.</param>
@@ -144,7 +144,7 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// Sends a new direct message to specified user.
+        /// Sends a new direct message for text input.
         /// </summary>
         /// <param name="recipientID">ID of user to send to.</param>
         /// <param name="text">Direct message contents.</param>
@@ -170,7 +170,7 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// Sends a new direct message to specified user.
+        /// Sends a new direct message with buttons.
         /// </summary>
         /// <param name="recipientID">ID of user to send to.</param>
         /// <param name="text">Direct message contents.</param>
@@ -192,7 +192,7 @@ namespace LinqToTwitter
         /// <param name="callToActions">List of Call to Action, which creates buttons in the message.</param>
         /// <param name="cancelToken">Async cancellation token.</param>
         /// <returns>Direct message events data.</returns>
-        private async Task<DirectMessageEvents> NewDirectMessageEventAsync(ulong recipientID, string text, Attachment attachment = null, QuickReply quickReply = null, IEnumerable<CallToAction> callToActions = null, CancellationToken cancelToken = default(CancellationToken))
+        async Task<DirectMessageEvents> NewDirectMessageEventAsync(ulong recipientID, string text, Attachment attachment = null, QuickReply quickReply = null, IEnumerable<CallToAction> callToActions = null, CancellationToken cancelToken = default(CancellationToken))
         {
             if (recipientID == default(ulong))
                 throw new ArgumentException($"{nameof(recipientID)} must be set.", nameof(recipientID));
@@ -257,6 +257,58 @@ namespace LinqToTwitter
                     new Dictionary<string, string>
                     {
                         ["id"] = directMessageID.ToString()
+                    },
+                    cancelToken)
+                   .ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Marks direct messages as having been read.
+        /// </summary>
+        /// <param name="lastReadEventID">ID of last direct message read.</param>
+        /// <param name="recipientID">ID of user to send typing indicator to.</param>
+        /// <param name="cancelToken">Async cancellation token.</param>
+        public async Task MarkReadAsync(ulong lastReadEventID, ulong recipientID, CancellationToken cancelToken = default(CancellationToken))
+        {
+            if (lastReadEventID == default(ulong))
+                throw new ArgumentException($"{nameof(lastReadEventID)} must be set.", nameof(lastReadEventID));
+            if (recipientID == default(ulong))
+                throw new ArgumentException($"{nameof(recipientID)} must be set.", nameof(recipientID));
+
+            var newUrl = BaseUrl + "direct_messages/mark_read.json";
+
+            RawResult =
+                await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<DirectMessageEvents>(
+                    HttpMethod.Post.ToString(),
+                    newUrl,
+                    new Dictionary<string, string>
+                    {
+                        ["last_read_event_id"] = lastReadEventID.ToString(),
+                        ["recipient_id"] = recipientID.ToString()
+                    },
+                    cancelToken)
+                   .ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Sends a typing indicator to a user.
+        /// </summary>
+        /// <param name="recipientID">ID of user to send typing indicator to.</param>
+        /// <param name="cancelToken">Async cancellation token.</param>
+        public async Task IndicateTypingAsync(ulong recipientID, CancellationToken cancelToken = default(CancellationToken))
+        {
+            if (recipientID == default(ulong))
+                throw new ArgumentException($"{nameof(recipientID)} must be set.", nameof(recipientID));
+
+            var newUrl = BaseUrl + "direct_messages/indicate_typing.json";
+
+            RawResult =
+                await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<DirectMessageEvents>(
+                    HttpMethod.Post.ToString(),
+                    newUrl,
+                    new Dictionary<string, string>
+                    {
+                        ["recipient_id"] = recipientID.ToString()
                     },
                     cancelToken)
                    .ConfigureAwait(false);
