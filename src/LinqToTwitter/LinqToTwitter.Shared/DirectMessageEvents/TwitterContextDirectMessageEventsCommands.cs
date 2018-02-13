@@ -103,28 +103,6 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// Sends a new direct message quick reply.
-        /// </summary>
-        /// <param name="recipientID">ID of user to send to.</param>
-        /// <param name="text">Direct message contents.</param>
-        /// <param name="externalId">Unique ID for you to correlate request with response</param>
-        /// <param name="cancelToken">Async cancellation token.</param>
-        /// <returns>Direct message events data.</returns>
-        public async Task<DirectMessageEvents> RequestQuickReplyLocationAsync(ulong recipientID, string text, string externalId, CancellationToken cancelToken = default(CancellationToken))
-        {
-            var quickReply = new QuickReply
-            {
-                Type = "location",
-                Location = new QuickReplyLocation
-                {
-                    Metadata = externalId
-                }
-            };
-
-            return await NewDirectMessageEventAsync(recipientID, text, attachment: null, quickReply: quickReply);
-        }
-
-        /// <summary>
         /// Sends a new direct message with options.
         /// </summary>
         /// <param name="recipientID">ID of user to send to.</param>
@@ -138,32 +116,6 @@ namespace LinqToTwitter
             {
                 Type = "options",
                 Options = options
-            };
-
-            return await NewDirectMessageEventAsync(recipientID, text, attachment: null, quickReply: quickReply);
-        }
-
-        /// <summary>
-        /// Sends a new direct message for text input.
-        /// </summary>
-        /// <param name="recipientID">ID of user to send to.</param>
-        /// <param name="text">Direct message contents.</param>
-        /// <param name="keyboard">User keyboard - "default" for normal text or "number" for numeric.</param>
-        /// <param name="label">Input label.</param>
-        /// <param name="metadata">Unique ID for you to correlate request with response</param>
-        /// <param name="cancelToken">Async cancellation token.</param>
-        /// <returns>Direct message events data.</returns>
-        public async Task<DirectMessageEvents> RequestQuickReplyTextInputAsync(ulong recipientID, string text, string keyboard, string label, string metadata, CancellationToken cancelToken = default(CancellationToken))
-        {
-            var quickReply = new QuickReply
-            {
-                Type = "text_input",
-                TextInput = new TextInput
-                {
-                    Keyboard = keyboard ?? "default",
-                    Label = label,
-                    Metadata = metadata
-                }
             };
 
             return await NewDirectMessageEventAsync(recipientID, text, attachment: null, quickReply: quickReply);

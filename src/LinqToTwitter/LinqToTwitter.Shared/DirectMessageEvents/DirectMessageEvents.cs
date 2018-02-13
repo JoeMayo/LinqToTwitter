@@ -292,18 +292,9 @@ namespace LinqToTwitter
     {
         [JsonProperty("type")]
         public string Type { get; set; }
-        [JsonProperty("location")]
-        public QuickReplyLocation Location { get; set; }
         [JsonProperty("options")]
         public IEnumerable<QuickReplyOption> Options { get; set; }
-        [JsonProperty("text_input")]
-        public TextInput TextInput { get; set; }
-    }
 
-    public class QuickReplyLocation
-    {
-        [JsonProperty("metadata")]
-        public string Metadata { get; set; }
     }
 
     public class QuickReplyOption
@@ -312,16 +303,6 @@ namespace LinqToTwitter
         public string Label { get; set; }
         [JsonProperty("description")]
         public string Description { get; set; }
-        [JsonProperty("metadata")]
-        public string Metadata { get; set; }
-    }
-
-    public class TextInput
-    {
-        [JsonProperty("keyboard")]
-        public string Keyboard { get; set; }
-        [JsonProperty("label")]
-        public string Label { get; set; }
         [JsonProperty("metadata")]
         public string Metadata { get; set; }
     }

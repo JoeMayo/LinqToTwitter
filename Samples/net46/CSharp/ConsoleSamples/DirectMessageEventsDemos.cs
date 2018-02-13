@@ -51,28 +51,18 @@ namespace Linq2TwitterDemos_Console
                         break;
                     case '7':
                         Console.WriteLine("\n\tSending Quick Reply Location...\n");
-                        await RequestQuickReplyLocationAsync(twitterCtx);
-                        break;
-                    case '8':
-                        Console.WriteLine("\n\tSending Quick Reply Location...\n");
                         await RequestQuickReplyOptionsAsync(twitterCtx);
                         break;
-                    case '9':
-                        Console.WriteLine("\n\tSending Quick Reply Location...\n");
-                        await RequestQuickReplyTextInputAsync(twitterCtx);
-                        break;
-                    case 'a':
-                    case 'A':
+                    case '8':
                         Console.WriteLine("\n\tSending Button Choice...\n");
                         await RequestButtonChoiceAsync(twitterCtx);
                         break;
-                    case 'b':
-                    case 'B':
+                    case '9':
                         Console.WriteLine("\n\tSending Typing Indicator...\n");
                         await SendTypingIndicatorAsync(twitterCtx);
                         break;
-                    case 'c':
-                    case 'C':
+                    case 'a':
+                    case 'A':
                         Console.WriteLine("\n\tSending Message Read...\n");
                         await SendMessageReadAsync(twitterCtx);
                         break;
@@ -99,12 +89,10 @@ namespace Linq2TwitterDemos_Console
             Console.WriteLine("\t 4. Send Direct Message with Media");
             Console.WriteLine("\t 5. Send Direct Message with Coordinates");
             Console.WriteLine("\t 6. Send Direct Message with Place");
-            Console.WriteLine("\t 7. Send Quick Reply for Location");
-            Console.WriteLine("\t 8. Send Quick Reply with Options");
-            Console.WriteLine("\t 9. Send Quick Reply for Text Input");
-            Console.WriteLine("\t A. Send Button Choice");
-            Console.WriteLine("\t B. Send Typing Indicator");
-            Console.WriteLine("\t C. Send Message Read");
+            Console.WriteLine("\t 7. Send Quick Reply with Options");
+            Console.WriteLine("\t 8. Send Button Choice");
+            Console.WriteLine("\t 9. Send Typing Indicator");
+            Console.WriteLine("\t A. Send Message Read");
             Console.WriteLine();
             Console.Write("\t Q. Return to Main menu");
         }
@@ -290,25 +278,6 @@ namespace Linq2TwitterDemos_Console
                     dmEvent.CreatedTimestamp);
         }
 
-        static async Task RequestQuickReplyLocationAsync(TwitterContext twitterCtx)
-        {
-            const ulong Linq2TwitrID = 15411837;// 16761255;
-
-            DirectMessageEvents message =
-                await twitterCtx.RequestQuickReplyLocationAsync(
-                    Linq2TwitrID,
-                    "What is your location?",
-                    externalId: "abc123");
-
-            DMEvent dmEvent = message?.Value?.DMEvent;
-            if (dmEvent != null)
-                Console.WriteLine(
-                    "Recipient: {0}, Message: {1}, Date: {2}",
-                    dmEvent.MessageCreate.Target.RecipientID,
-                    dmEvent.MessageCreate.MessageData.Text,
-                    dmEvent.CreatedTimestamp);
-        }
-
         static async Task RequestQuickReplyOptionsAsync(TwitterContext twitterCtx)
         {
             const ulong Linq2TwitrID = 15411837;// 16761255;
@@ -338,27 +307,6 @@ namespace Linq2TwitterDemos_Console
                     Linq2TwitrID,
                     "What is your choice?",
                     options);
-
-            DMEvent dmEvent = message?.Value?.DMEvent;
-            if (dmEvent != null)
-                Console.WriteLine(
-                    "Recipient: {0}, Message: {1}, Date: {2}",
-                    dmEvent.MessageCreate.Target.RecipientID,
-                    dmEvent.MessageCreate.MessageData.Text,
-                    dmEvent.CreatedTimestamp);
-        }
-
-        static async Task RequestQuickReplyTextInputAsync(TwitterContext twitterCtx)
-        {
-            const ulong Linq2TwitrID = 15411837;// 16761255;
-
-            DirectMessageEvents message =
-                await twitterCtx.RequestQuickReplyTextInputAsync(
-                    Linq2TwitrID,
-                    "What would you like?",
-                    keyboard: "default",
-                    label: "Preference",
-                    metadata: "abc123");
 
             DMEvent dmEvent = message?.Value?.DMEvent;
             if (dmEvent != null)
