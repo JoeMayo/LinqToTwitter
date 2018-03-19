@@ -104,12 +104,7 @@ namespace LinqToTwitter
         /// </summary>
         public TwitterExecute(IAuthorizer authorizer)
         {
-            if (authorizer == null)
-            {
-                throw new ArgumentNullException("authorizedClient");
-            }
-
-            Authorizer = authorizer;
+            Authorizer = authorizer ?? throw new ArgumentNullException("authorizedClient");
             Authorizer.UserAgent = Authorizer.UserAgent ?? L2TKeys.DefaultUserAgent;
         }
 
@@ -304,10 +299,11 @@ namespace LinqToTwitter
 
         async Task<ulong> InitAsync(string url, byte[] data, IDictionary<string, string> postData, string name, string fileName, string contentType, string mediaCategory, bool shared, CancellationToken cancelToken)
         {
-            var multiPartContent = new MultipartFormDataContent();
-
-            multiPartContent.Add(new StringContent("INIT"), "command");
-            multiPartContent.Add(new StringContent(contentType), "media_type");
+            var multiPartContent = new MultipartFormDataContent
+            {
+                { new StringContent("INIT"), "command" },
+                { new StringContent(contentType), "media_type" }
+            };
             if (!string.IsNullOrWhiteSpace(mediaCategory))
                 multiPartContent.Add(new StringContent(mediaCategory), "media_category");
             if (shared)
@@ -373,10 +369,11 @@ namespace LinqToTwitter
 
         async Task<string> FinalizeAsync(string url, ulong mediaID, CancellationToken cancelToken)
         {
-            var multiPartContent = new MultipartFormDataContent();
-
-            multiPartContent.Add(new StringContent("FINALIZE"), "command");
-            multiPartContent.Add(new StringContent(mediaID.ToString()), "media_id");
+            var multiPartContent = new MultipartFormDataContent
+            {
+                { new StringContent("FINALIZE"), "command" },
+                { new StringContent(mediaID.ToString()), "media_id" }
+            };
 
             var handler = new PostMessageHandler(this, new Dictionary<string, string>(), url);
             using (var client = new HttpClient(handler))
@@ -480,7 +477,7 @@ namespace LinqToTwitter
                 (from header in msg.Headers
                  select new
                  {
-                     Key = header.Key,
+                     header.Key,
                      Value = string.Join(", ", header.Value)
                  })
                 .ToDictionary(

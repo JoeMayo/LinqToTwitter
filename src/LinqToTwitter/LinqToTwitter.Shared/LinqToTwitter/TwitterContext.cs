@@ -48,10 +48,7 @@ namespace LinqToTwitter
         /// <param name="execute">The <see cref="ITwitterExecute"/> object to use.</param>
         public TwitterContext(ITwitterExecute execute)
         {
-            if (execute == null)
-                throw new ArgumentNullException("execute", "TwitterExecutor is required.");
-
-            TwitterExecutor = execute;
+            TwitterExecutor = execute ?? throw new ArgumentNullException("execute", "TwitterExecutor is required.");
 
             if (string.IsNullOrWhiteSpace(UserAgent))
                 UserAgent = L2TKeys.DefaultUserAgent;
@@ -259,12 +256,11 @@ namespace LinqToTwitter
                 headers.ContainsKey(responseHeader))
             {
                 string headerValAsString = headers[responseHeader];
-                DateTime value;
 
                 if (DateTime.TryParse(headerValAsString,
                                         CultureInfo.InvariantCulture,
                                         DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal,
-                                        out value))
+                                        out DateTime value))
                     headerVal = value;
             }
 
@@ -632,8 +628,7 @@ namespace LinqToTwitter
         {
             if (disposing)
             {
-                var disposableExecutor = TwitterExecutor as IDisposable;
-                if (disposableExecutor != null)
+                if (TwitterExecutor is IDisposable disposableExecutor)
                 {
                     disposableExecutor.Dispose();
                 }
