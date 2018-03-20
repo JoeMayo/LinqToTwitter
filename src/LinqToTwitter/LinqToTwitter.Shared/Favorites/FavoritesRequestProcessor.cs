@@ -53,6 +53,12 @@ namespace LinqToTwitter
         internal bool IncludeEntities { get; set; }
 
         /// <summary>
+        /// Tweets can be compatibility or extended mode. Extended is the 
+        /// new mode that allows you to put more characters in a tweet.
+        /// </summary>
+        internal TweetMode TweetMode { get; set; }
+
+        /// <summary>
         /// extracts parameters from lambda
         /// </summary>
         /// <param name="lambdaExpression">lambda expression with where clause</param>
@@ -63,13 +69,14 @@ namespace LinqToTwitter
                new ParameterFinder<Favorites>(
                    lambdaExpression.Body,
                    new List<string> { 
-                       "Type",
-                       "UserID",
-                       "ScreenName",
-                       "Count",
-                       "SinceID",
-                       "MaxID",
-                       "IncludeEntities"
+                       nameof(Type),
+                       nameof(UserID),
+                       nameof(ScreenName),
+                       nameof(Count),
+                       nameof(SinceID),
+                       nameof(MaxID),
+                       nameof(IncludeEntities),
+                       nameof(TweetMode)
                    })
                    .Parameters;
         }
@@ -142,6 +149,12 @@ namespace LinqToTwitter
                 urlParams.Add(new QueryParameter("include_entities", parameters["IncludeEntities"].ToLower()));
             }
 
+            if (parameters.ContainsKey(nameof(TweetMode)))
+            {
+                TweetMode = (TweetMode)int.Parse(parameters[nameof(TweetMode)]);
+                urlParams.Add(new QueryParameter("tweet_mode", TweetMode.ToString().ToLower()));
+            }
+
             return req;
         }
 
@@ -167,7 +180,8 @@ namespace LinqToTwitter
                     Count = Count,
                     SinceID = SinceID,
                     MaxID = MaxID,
-                    IncludeEntities = IncludeEntities
+                    IncludeEntities = IncludeEntities,
+                    TweetMode = TweetMode
                 };
 
             return statusList.OfType<T>().ToList();

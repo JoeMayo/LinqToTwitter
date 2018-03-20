@@ -60,6 +60,13 @@ namespace LinqToTwitter
         [XmlIgnore]
         public new bool IncludeEntities { get; set; }
 
+        /// <summary>
+        /// Tweets can be compatibility or extended mode. Extended is the 
+        /// new mode that allows you to put more characters in a tweet.
+        /// </summary>
+        [XmlIgnore]
+        public new TweetMode TweetMode { get; set; }
+
         //
         // The following types support XML serialization
         //

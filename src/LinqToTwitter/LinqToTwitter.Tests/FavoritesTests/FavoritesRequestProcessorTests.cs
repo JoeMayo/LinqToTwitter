@@ -49,50 +49,54 @@ namespace LinqToTwitterPcl.Tests.FavoritesTests
                     fav.Count == 100 &&
                     fav.SinceID == 456 &&
                     fav.MaxID == 789 &&
-                    fav.IncludeEntities == true;
+                    fav.IncludeEntities == true &&
+                    fav.TweetMode == TweetMode.Extended;
             var lambdaExpression = expression as LambdaExpression;
 
             var queryParams = favReqProc.GetParameters(lambdaExpression);
 
             Assert.IsTrue(
                 queryParams.Contains(
-                    new KeyValuePair<string, string>("Type", ((int)FavoritesType.Favorites).ToString(CultureInfo.InvariantCulture))));
+                    new KeyValuePair<string, string>(nameof(Favorites.Type), ((int)FavoritesType.Favorites).ToString(CultureInfo.InvariantCulture))));
             Assert.IsTrue(
                 queryParams.Contains(
-                    new KeyValuePair<string, string>("UserID", "123")));
+                    new KeyValuePair<string, string>(nameof(Favorites.UserID), "123")));
             Assert.IsTrue(
                 queryParams.Contains(
-                    new KeyValuePair<string, string>("ScreenName", "JoeMayo")));
+                    new KeyValuePair<string, string>(nameof(Favorites.ScreenName), "JoeMayo")));
             Assert.IsTrue(
                 queryParams.Contains(
-                    new KeyValuePair<string, string>("Count", "100")));
+                    new KeyValuePair<string, string>(nameof(Favorites.Count), "100")));
             Assert.IsTrue(
                 queryParams.Contains(
-                    new KeyValuePair<string, string>("SinceID", "456")));
+                    new KeyValuePair<string, string>(nameof(Favorites.SinceID), "456")));
             Assert.IsTrue(
                 queryParams.Contains(
-                    new KeyValuePair<string, string>("MaxID", "789")));
+                    new KeyValuePair<string, string>(nameof(Favorites.MaxID), "789")));
             Assert.IsTrue(
                 queryParams.Contains(
-                    new KeyValuePair<string, string>("IncludeEntities", "True")));
+                    new KeyValuePair<string, string>(nameof(Favorites.IncludeEntities), "True")));
+            Assert.IsTrue(
+                queryParams.Contains(
+                    new KeyValuePair<string, string>(nameof(Favorites.TweetMode), ((int)TweetMode.Extended).ToString(CultureInfo.InvariantCulture))));
         }
 
         [TestMethod]
         public void BuildUrl_Constructs_Favorites_Url()
         {
-            const string ExpectedUrl = "https://api.twitter.com/1.1/favorites/list.json?user_id=123&screen_name=JoeMayo&count=100&since_id=456&max_id=789&include_entities=true";
+            const string ExpectedUrl = "https://api.twitter.com/1.1/favorites/list.json?user_id=123&screen_name=JoeMayo&count=100&since_id=456&max_id=789&include_entities=true&tweet_mode=extended";
             var favReqProc = new FavoritesRequestProcessor<Favorites> { BaseUrl = "https://api.twitter.com/1.1/" };
             var parameters =
                 new Dictionary<string, string>
                 {
-                    { "Type", FavoritesType.Favorites.ToString() },
-                    { "UserID", "123" },
-                    { "ScreenName", "JoeMayo" },
-                    { "Count", "100" },
-                    { "SinceID", "456" },
-                    { "MaxID", "789" },
-                    { "IncludeEntities", true.ToString() }
-
+                    { nameof(Favorites.Type), FavoritesType.Favorites.ToString() },
+                    { nameof(Favorites.UserID), "123" },
+                    { nameof(Favorites.ScreenName), "JoeMayo" },
+                    { nameof(Favorites.Count), "100" },
+                    { nameof(Favorites.SinceID), "456" },
+                    { nameof(Favorites.MaxID), "789" },
+                    { nameof(Favorites.IncludeEntities), true.ToString() },
+                    { nameof(Favorites.TweetMode), ((int)TweetMode.Extended).ToString() }
                 };
 
             Request req = favReqProc.BuildUrl(parameters);

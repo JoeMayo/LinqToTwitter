@@ -66,7 +66,8 @@ namespace Linq2TwitterDemos_Console
                 await
                     (from fav in twitterCtx.Favorites
                      where fav.Type == FavoritesType.Favorites &&
-                           fav.Count == PerQueryFavCount
+                           fav.Count == PerQueryFavCount &&
+                           fav.TweetMode == TweetMode.Extended
                      select fav)
                     .ToListAsync();
 
