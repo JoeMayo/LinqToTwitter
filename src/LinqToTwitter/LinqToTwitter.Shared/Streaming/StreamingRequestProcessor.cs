@@ -62,11 +62,6 @@ namespace LinqToTwitter
         internal string Track { get; set; }
 
         /// <summary>
-        /// Supports compatibility or extended mode tweets.
-        /// </summary>
-        internal TweetMode TweetMode { get; set; }
-
-        /// <summary>
         /// Type of entities to return, i.e. "followings" or "user".
         /// </summary>
         internal string With { get; set; }
@@ -91,8 +86,7 @@ namespace LinqToTwitter
                        "Locations",
                        "StallWarnings",
                        "Track",
-                       "With",
-                       nameof(TweetMode)
+                       "With"
                    }).Parameters;
 
             if (parameters.ContainsKey("AllReplies")) 
@@ -209,12 +203,6 @@ namespace LinqToTwitter
                 urlParams.Add(new QueryParameter("language", parameters["Language"].Replace(" ", "")));
             }
 
-            if (parameters.ContainsKey(nameof(TweetMode)))
-            {
-                TweetMode = (TweetMode) int.Parse(parameters[nameof(TweetMode)]);
-                urlParams.Add(new QueryParameter("tweet_mode", TweetMode.ToString().ToLower()));
-            }
-
             return req;
         }
 
@@ -248,12 +236,6 @@ namespace LinqToTwitter
                 urlParams.Add(new QueryParameter("stall_warnings", parameters["StallWarnings"].ToLower()));
             }
 
-            if (parameters.ContainsKey(nameof(TweetMode)))
-            {
-                TweetMode = (TweetMode) int.Parse(parameters[nameof(TweetMode)]);
-                urlParams.Add(new QueryParameter("tweet_mode", TweetMode.ToString().ToLower()));
-            }
-
             return req;
         }
 
@@ -283,12 +265,6 @@ namespace LinqToTwitter
             if (parameters.ContainsKey("StallWarnings"))
             {
                 urlParams.Add(new QueryParameter("stall_warnings", parameters["StallWarnings"].ToLower()));
-            }
-
-            if (parameters.ContainsKey(nameof(TweetMode)))
-            {
-                TweetMode = (TweetMode) int.Parse(parameters[nameof(TweetMode)]);
-                urlParams.Add(new QueryParameter("tweet_mode", TweetMode.ToString().ToLower()));
             }
 
             return req;
@@ -354,12 +330,6 @@ namespace LinqToTwitter
                 urlParams.Add(new QueryParameter("stall_warnings", parameters["StallWarnings"].ToLower()));
             }
 
-            if (parameters.ContainsKey(nameof(TweetMode)))
-            {
-                TweetMode = (TweetMode) int.Parse(parameters[nameof(TweetMode)]);
-                urlParams.Add(new QueryParameter("tweet_mode", TweetMode.ToString().ToLower()));
-            }
-
             return req;
         }
 
@@ -419,12 +389,6 @@ namespace LinqToTwitter
                 urlParams.Add(new QueryParameter("locations", Locations));
             }
 
-            if (parameters.ContainsKey(nameof(TweetMode)))
-            {
-                TweetMode = (TweetMode) int.Parse(parameters[nameof(TweetMode)]);
-                urlParams.Add(new QueryParameter("tweet_mode", TweetMode.ToString().ToLower()));
-            }
-
             return req;
         }
 
@@ -447,8 +411,7 @@ namespace LinqToTwitter
                     Locations = Locations,
                     Track = Track,
                     TwitterExecutor = TwitterExecutor,
-                    With = With,
-                    TweetMode = TweetMode
+                    With = With
                 }
             };
 

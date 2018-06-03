@@ -70,8 +70,7 @@ namespace Linq2TwitterDemos_Console
                     (from strm in twitterCtx.Streaming
                                             .WithCancellation(cancelTokenSrc.Token)
                      where strm.Type == StreamingType.Filter &&
-                           strm.Track == "twitter" &&
-                           strm.TweetMode == TweetMode.Extended
+                           strm.Track == "twitter"
                      select strm)
                     .StartAsync(async strm =>
                     {
@@ -107,8 +106,7 @@ namespace Linq2TwitterDemos_Console
             {
                 await
                     (from strm in twitterCtx.Streaming.WithCancellation(cancelTokenSrc.Token)
-                     where strm.Type == StreamingType.Sample &&
-                           strm.TweetMode == TweetMode.Extended
+                     where strm.Type == StreamingType.Sample
                      select strm)
                     .StartAsync(async strm =>
                     {
@@ -147,8 +145,7 @@ namespace Linq2TwitterDemos_Console
                         (from strm in twitterCtx.Streaming
                                                 .WithCancellation(cancelTokenSrc.Token)
                          where strm.Type == StreamingType.Filter &&
-                               strm.Track == "twitter" &&
-                               strm.TweetMode == TweetMode.Extended
+                               strm.Track == "twitter"
                          select strm)
                         .ToObservableAsync();
 
@@ -239,7 +236,17 @@ namespace Linq2TwitterDemos_Console
                     break;
                 case StreamEntityType.Status:
                     var status = strm.Entity as Status;
-                    Console.WriteLine("Status - @{0}: {1}", status.User.ScreenNameResponse, status.Text ?? status.FullText);
+
+                    string text = null;
+
+                    if (status.ExtendedTweet?.FullText != null)
+                        text = status.ExtendedTweet?.FullText;
+                    else if (status.RetweetedStatus?.ExtendedTweet?.FullText != null)
+                        text = status.RetweetedStatus?.ExtendedTweet?.FullText;
+                    else
+                        text = status.Text;
+
+                    Console.WriteLine("Status - @{0}: {1}", status.User.ScreenNameResponse, text);
                     break;
                 case StreamEntityType.StatusWithheld:
                     var statusWithheld = strm.Entity as StatusWithheld;

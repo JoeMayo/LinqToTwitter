@@ -1,4 +1,5 @@
-﻿using System.Xml.Serialization;
+﻿using System;
+using System.Xml.Serialization;
 namespace LinqToTwitter
 {
     /// <summary>
@@ -61,6 +62,7 @@ namespace LinqToTwitter
         /// <summary>
         /// Supports compatibility or extended mode tweets.
         /// </summary>
+        [Obsolete("This isn't required on streams. Instead, check Retweeted.ExtendedTweet.FullText for retweets, ExtendedTweet.FullText for regular tweets, and fallback to FullText if the other checks are null.")]
         public TweetMode TweetMode { get; set; }
 
         /// <summary>
