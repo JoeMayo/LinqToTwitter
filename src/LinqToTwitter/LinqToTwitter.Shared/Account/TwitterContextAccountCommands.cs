@@ -253,8 +253,8 @@ namespace LinqToTwitter
                 string.IsNullOrWhiteSpace(description))
                 throw new ArgumentException("At least one of the text fields (name, email, url, location, or description) must be provided as arguments, but none are specified.", NoInputParam);
 
-            if (!string.IsNullOrWhiteSpace(name) && name.Length > 20)
-                throw new ArgumentException("name must be no longer than 20 characters", "name");
+            if (!string.IsNullOrWhiteSpace(name) && name.Length > 50)
+                throw new ArgumentException("name must be no longer than 50 characters", "name");
 
             if (!string.IsNullOrWhiteSpace(url) && url.Length > 100)
                 throw new ArgumentException("url must be no longer than 100 characters", "url");
