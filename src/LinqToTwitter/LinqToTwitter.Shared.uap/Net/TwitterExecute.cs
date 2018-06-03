@@ -264,6 +264,51 @@ namespace LinqToTwitter
         /// <param name="fileName">Image file name.</param>
         /// <param name="contentType">Type of image: must be one of jpg, gif, or png.</param>
         /// <param name="reqProc">Request processor for handling results.</param>
+        /// <returns>JSON response From Twitter.</returns>
+        public async Task<string> PostImageAsync(string url, IDictionary<string, string> postData, byte[] data, string name, string fileName, string contentType, CancellationToken cancelToken)
+        {
+            WriteLog(url, nameof(PostImageAsync));
+
+            var multiPartContent = new HttpMultipartFormDataContent();
+            var byteArrayContent = new HttpBufferContent(data.AsBuffer());
+            byteArrayContent.Headers.Add("Content-Type", contentType);
+            multiPartContent.Add(byteArrayContent, name, fileName);
+
+            var cleanPostData = new Dictionary<string, string>();
+
+            foreach (var pair in postData)
+            {
+                if (pair.Value != null)
+                {
+                    cleanPostData.Add(pair.Key, pair.Value);
+                    multiPartContent.Add(new HttpStringContent(pair.Value), pair.Key);
+                }
+            }
+
+            var baseFilter = new HttpBaseProtocolFilter
+            {
+                AutomaticDecompression = Authorizer.SupportsCompression,
+                ProxyCredential = Authorizer.ProxyCredential,
+                UseProxy = Authorizer.UseProxy
+            };
+            var handler = new PostMessageFilter(this, new Dictionary<string, string>(), url, baseFilter, cancelToken);
+            var client = new HttpClient(handler);
+
+            HttpResponseMessage msg = await client.PostAsync(new Uri(url), multiPartContent);
+
+            return await HandleResponseAsync(msg);
+        }
+
+        /// <summary>
+        /// Performs HTTP POST media byte array upload to Twitter.
+        /// </summary>
+        /// <param name="url">Url to upload to.</param>
+        /// <param name="postData">Request parameters.</param>
+        /// <param name="data">Image to upload.</param>
+        /// <param name="name">Image parameter name.</param>
+        /// <param name="fileName">Image file name.</param>
+        /// <param name="contentType">Type of image: must be one of jpg, gif, or png.</param>
+        /// <param name="reqProc">Request processor for handling results.</param>
         /// <param name="mediaCategory">
         /// Media category - possible values are tweet_image, tweet_gif, and tweet_video. 
         /// See this post on the Twitter forums: https://twittercommunity.com/t/media-category-values/64781/6
@@ -381,49 +426,6 @@ namespace LinqToTwitter
                 return await HandleResponseAsync(msg);
             }
         }
-
-        ///// <summary>
-        ///// Performs HTTP POST to Twitter.
-        ///// </summary>
-        ///// <param name="url">URL of request.</param>
-        ///// <param name="postData">Parameters to post.</param>
-        ///// <param name="getResult">Callback for handling async Json response - null if synchronous.</param>
-        ///// <returns>Json Response from Twitter - empty string if async.</returns>
-        //public async Task<string> PostToTwitterAsync<T>(string url, IDictionary<string, string> postData, CancellationToken cancelToken)
-        //{
-        //    WriteLog(url, "PostToTwitterAsync");
-
-        //    var cleanPostData = new Dictionary<string, string>();
-
-        //    var dataString = new StringBuilder();
-
-        //    foreach (var pair in postData)
-        //    {
-        //        if (pair.Value != null)
-        //        {
-        //            dataString.AppendFormat("{0}={1}&", pair.Key, Url.PercentEncode(pair.Value));
-        //            cleanPostData.Add(pair.Key, pair.Value);
-        //        }
-        //    }
-
-        //    var content = new HttpStringContent(dataString.ToString().TrimEnd('&'), Windows.Storage.Streams.UnicodeEncoding.Utf8, "application/x-www-form-urlencoded");
-
-        //    var baseFilter = new HttpBaseProtocolFilter
-        //    {
-        //        AutomaticDecompression = Authorizer.SupportsCompression,
-        //        ProxyCredential = Authorizer.ProxyCredential,
-        //        UseProxy = Authorizer.UseProxy
-        //    };
-
-        //    var filter = new PostMessageFilter(this, cleanPostData, url, baseFilter, CancellationToken);
-        //    using (var client = new HttpClient(filter))
-        //    {
-        //        HttpResponseMessage msg = await client.PostAsync(new Uri(url), content);
-
-        //        return await HandleResponseAsync(msg);
-        //    }
-        //}
-
 
         /// <summary>
         /// Performs HTTP POST, with JSON payload, to Twitter.

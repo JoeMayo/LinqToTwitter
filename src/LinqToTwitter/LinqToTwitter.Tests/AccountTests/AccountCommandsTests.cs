@@ -43,6 +43,16 @@ namespace LinqToTwitterPcl.Tests.AccountTests
                     It.IsAny<CancellationToken>()))
                     .Returns(tcsResponse.Task);
             execMock.Setup(
+                exec => exec.PostImageAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<Dictionary<string, string>>(),
+                    It.IsAny<byte[]>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                    .Returns(tcsResponse.Task);
+            execMock.Setup(
                 exec => exec.PostMediaAsync(
                     It.IsAny<string>(),
                     It.IsAny<Dictionary<string, string>>(),
@@ -112,7 +122,7 @@ namespace LinqToTwitterPcl.Tests.AccountTests
         public async Task UpdateAccountProfileAsync_Throws_On_Name_Over_20_Chars()
         {
             const string ExpectedParamName = "name";
-            string name = new string(Enumerable.Repeat('x', 21).ToArray());
+            string name = new string(Enumerable.Repeat('x', 51).ToArray());
             const string Url = "http://www.csharp-station.com";
             const string Location = "San Francisco, CA";
             const string Description = "The Real Twitter API.";
@@ -186,15 +196,13 @@ namespace LinqToTwitterPcl.Tests.AccountTests
             User actual = await ctx.UpdateAccountImageAsync(new byte[] { 1 }, "myFile.jpg", "jpg", SkipStatus);
 
             execMock.Verify(exec =>
-                exec.PostMediaAsync(
+                exec.PostImageAsync(
                     "https://api.twitter.com/1.1/account/update_profile_image.json",
                     It.IsAny<Dictionary<string, string>>(),
                     It.IsAny<byte[]>(),
                     It.IsAny<string>(),
                     It.IsAny<string>(),
                     It.IsAny<string>(),
-                    It.IsAny<string>(),
-                    It.IsAny<bool>(),
                     It.IsAny<CancellationToken>()),
                 Times.Once());
             Assert.AreEqual(ExpectedName, actual.Name);

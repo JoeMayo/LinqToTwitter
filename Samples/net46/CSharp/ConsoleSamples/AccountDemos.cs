@@ -141,6 +141,7 @@ namespace Linq2TwitterDemos_Console
                 Console.WriteLine("User Image: " + user.ProfileImageUrl); 
         }
 
+        [Obsolete("The Twitter API has deprecated this endpoint. Please see UpdateProfileBannerAsync.")]
         static async Task UpdateAccountBackgroundImageAsync(TwitterContext twitterCtx)
         {
             byte[] imageBytes = File.ReadAllBytes(@"..\..\Images\200xColor_2.png");

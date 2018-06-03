@@ -128,9 +128,8 @@ namespace LinqToTwitter
 
             string name = "image";
             string imageMimeType = "image/" + imageType;
-            string mediaCategory = "tweet_image";
 
-            RawResult = await TwitterExecutor.PostMediaAsync(accountUrl, parameters, image, name, fileName, imageMimeType, mediaCategory, shared: false, cancelToken: cancelToken).ConfigureAwait(false);
+            RawResult = await TwitterExecutor.PostImageAsync(accountUrl, parameters, image, name, fileName, imageMimeType, cancelToken: cancelToken).ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(RawResult, UserAction.SingleUser);
         }

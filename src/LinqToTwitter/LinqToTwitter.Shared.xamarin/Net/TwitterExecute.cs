@@ -272,6 +272,49 @@ namespace LinqToTwitter
         /// <param name="fileName">Image file name.</param>
         /// <param name="contentType">Type of image: must be one of jpg, gif, or png.</param>
         /// <param name="reqProc">Request processor for handling results.</param>
+        /// <returns>JSON response From Twitter.</returns>
+        public async Task<string> PostImageAsync(string url, IDictionary<string, string> postData, byte[] data, string name, string fileName, string contentType, CancellationToken cancelToken)
+        {
+            WriteLog(url, nameof(PostImageAsync));
+
+            var multiPartContent = new MultipartFormDataContent();
+            var byteArrayContent = new ByteArrayContent(data);
+            byteArrayContent.Headers.Add("Content-Type", contentType);
+            multiPartContent.Add(byteArrayContent, name, fileName);
+
+            var cleanPostData = new Dictionary<string, string>();
+
+            foreach (var pair in postData)
+            {
+                if (pair.Value != null)
+                {
+                    cleanPostData.Add(pair.Key, pair.Value);
+                    multiPartContent.Add(new StringContent(pair.Value), pair.Key);
+                }
+            }
+
+            var handler = new PostMessageHandler(this, new Dictionary<string, string>(), url);
+            using (var client = new HttpClient(handler))
+            {
+                if (Timeout != 0)
+                    client.Timeout = new TimeSpan(0, 0, 0, Timeout);
+
+                HttpResponseMessage msg = await client.PostAsync(url, multiPartContent, cancelToken).ConfigureAwait(false);
+
+                return await HandleResponseAsync(msg);
+            }
+        }
+
+        /// <summary>
+        /// Performs HTTP POST media byte array upload to Twitter.
+        /// </summary>
+        /// <param name="url">Url to upload to.</param>
+        /// <param name="postData">Request parameters.</param>
+        /// <param name="data">Image to upload.</param>
+        /// <param name="name">Image parameter name.</param>
+        /// <param name="fileName">Image file name.</param>
+        /// <param name="contentType">Type of image: must be one of jpg, gif, or png.</param>
+        /// <param name="reqProc">Request processor for handling results.</param>
         /// <param name="mediaCategory">
         /// Media category - possible values are tweet_image, tweet_gif, tweet_video, and amplify_video. 
         /// See this post on the Twitter forums: https://twittercommunity.com/t/media-category-values/64781/6
