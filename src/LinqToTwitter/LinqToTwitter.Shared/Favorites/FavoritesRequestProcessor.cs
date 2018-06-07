@@ -97,7 +97,7 @@ namespace LinqToTwitter
             if (!parameters.ContainsKey("Type"))
                 throw new ArgumentException("You must set Type.", TypeParam);
 
-            Type = RequestProcessorHelper.ParseQueryEnumType<FavoritesType>(parameters["Type"]);
+            Type = RequestProcessorHelper.ParseEnum<FavoritesType>(parameters["Type"]);
 
             return BuildFavoritesUrlParameters(parameters);
         }
@@ -151,7 +151,7 @@ namespace LinqToTwitter
 
             if (parameters.ContainsKey(nameof(TweetMode)))
             {
-                TweetMode = (TweetMode)int.Parse(parameters[nameof(TweetMode)]);
+                TweetMode = RequestProcessorHelper.ParseEnum<TweetMode>(parameters[nameof(TweetMode)]);
                 urlParams.Add(new QueryParameter("tweet_mode", TweetMode.ToString().ToLower()));
             }
 

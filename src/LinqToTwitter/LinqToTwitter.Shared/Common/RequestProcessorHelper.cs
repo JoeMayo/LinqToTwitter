@@ -9,35 +9,25 @@ namespace LinqToTwitter
     internal class RequestProcessorHelper
     {
         /// <summary>
-        /// All queries have an enum type that specifies the query sub-type;
-        /// This method determines if the type parameter parsed is a string
-        /// or int and performs the conversion to the enum type.
+        /// Some query parameters represent enum types. Different languages
+        /// handle such values in different ways when translating query expressions.
+        /// This method performs the conversion to the enum type regardless of whether
+        /// the parameter string represents an int value or a textual enum case name.
         /// </summary>
         /// <remarks>
-        /// Delphi enums come to the IRequestProcessor as pneumonic strings,
+        /// Delphi and F# enums come to the IRequestProcessor as pneumonic strings,
         /// but C# enums arrive as the underlying int type of the enum;
         /// therefore, we must determine what we're working with to succeed.
         /// </remarks>
         /// <typeparam name="T">Enum type to convert to</typeparam>
-        /// <param name="queryType">
-        /// Either a string enum member name (from Delphi Prism)
+        /// <param name="enumValue">
+        /// Either a string enum member name (from Delphi Prism or F#)
         /// or an underlying int value (from C#/VB)
         /// </param>
-        /// <returns>Requested enum type</returns>
-        internal static T ParseQueryEnumType<T>(string queryType)
+        /// <returns>Parameter value translated to the requested enum type</returns>
+        internal static T ParseEnum<T>(string enumValue)
         {
-            T statusType;
-
-            if (queryType.GetType() == typeof(string))
-            {
-                statusType = (T)Enum.Parse(typeof(T), queryType, /*ignoreCase:*/ true);
-            }
-            else
-            {
-                statusType = (T)Enum.ToObject(typeof(T), int.Parse(queryType));
-            }
-
-            return statusType;
+            return (T)Enum.Parse(typeof(T), enumValue, /*ignoreCase:*/ true);
         }
 
         /// <summary>

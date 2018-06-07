@@ -157,6 +157,23 @@ namespace LinqToTwitterPcl.Tests.StatusTests
         }
 
         [TestMethod]
+        public void BuildUrl_Handles_String_TweetMode_Conversations()
+        {
+            const string ExpectedUrl = "https://api.twitter.com/1.1/conversation/show.json?id=123&tweet_mode=extended";
+            var statProc = new StatusRequestProcessor<Status> { BaseUrl = "https://api.twitter.com/1.1/" };
+            var parameters = new Dictionary<string, string>
+            {
+                { "Type", ((int)StatusType.Conversation).ToString() },
+                { "ID", "123" },
+                { nameof(Status.TweetMode), TweetMode.Extended.ToString().ToLower() }  // "extended" string, not "1"
+            };
+
+            Request req = statProc.BuildUrl(parameters);
+
+            Assert.AreEqual(ExpectedUrl, req.FullUrl);
+        }
+
+        [TestMethod]
         public void BuildUrl_Conversations_Throws_On_Missing_ID()
         {
             const string ExpectedParam = "ID";
@@ -400,6 +417,49 @@ namespace LinqToTwitterPcl.Tests.StatusTests
         }
 
         [TestMethod]
+        public void BuildUrl_Handles_String_TweetMode_Retweeters()
+        {
+            const string ExpectedUrl = "https://api.twitter.com/1.1/statuses/retweeters/ids.json?id=5&cursor=7&tweet_mode=extended";
+            var reqProc = new StatusRequestProcessor<Status>
+            {
+                Type = StatusType.User,
+                BaseUrl = "https://api.twitter.com/1.1/"
+            };
+            var parameters = new Dictionary<string, string>
+            {
+                { "Type", ((int)StatusType.Retweeters).ToString() },
+                { "ID", "5" },
+                { "Cursor", "7" },
+                { nameof(Status.TweetMode), TweetMode.Extended.ToString().ToLower() } // "extended" string, not "1"
+            };
+
+            Request req = reqProc.BuildUrl(parameters);
+
+            Assert.AreEqual(ExpectedUrl, req.FullUrl);
+        }
+
+        [TestMethod]
+        public void BuildUrl_Handles_String_TweetMode()
+        {
+            const string ExpectedUrl = "https://api.twitter.com/1.1/statuses/home_timeline.json?count=5&tweet_mode=extended";
+            var reqProc = new StatusRequestProcessor<Status>
+            {
+                Type = StatusType.User,
+                BaseUrl = "https://api.twitter.com/1.1/"
+            };
+            var parameters = new Dictionary<string, string>
+            {
+                { "Type", ((int)StatusType.Home).ToString() },
+                { "Count", "5" },
+                { nameof(Status.TweetMode), TweetMode.Extended.ToString().ToLower() } // "extended" string, not "1"
+            };
+
+            Request req = reqProc.BuildUrl(parameters);
+
+            Assert.AreEqual(ExpectedUrl, req.FullUrl);
+        }
+
+        [TestMethod]
         public void BuildUrl_RetweetedBy_Throws_On_Missing_ID()
         {
             const string ExpectedParam = "ID";
@@ -459,6 +519,31 @@ namespace LinqToTwitterPcl.Tests.StatusTests
                 { nameof(Status.Map), true.ToString() },
                 { nameof(Status.IncludeAltText), true.ToString() },
                 { nameof(Status.TweetMode), ((int)TweetMode.Extended).ToString() }
+            };
+
+            Request req = reqProc.BuildUrl(parameters);
+
+            Assert.AreEqual(ExpectedUrl, req.FullUrl);
+        }
+
+        [TestMethod]
+        public void BuildUrl_Handles_String_TweetMode_Lookup()
+        {
+            const string ExpectedUrl = "https://api.twitter.com/1.1/statuses/lookup.json?id=1%2C2%2C3&include_entities=true&map=true&trim_user=true&tweet_mode=extended&include_ext_alt_text=true";
+            var reqProc = new StatusRequestProcessor<Status>
+            {
+                Type = StatusType.Lookup,
+                BaseUrl = "https://api.twitter.com/1.1/"
+            };
+            var parameters = new Dictionary<string, string>
+            {
+                { nameof(Status.Type), ((int)StatusType.Lookup).ToString() },
+                { nameof(Status.TweetIDs), "1,2,3" },
+                { nameof(Status.IncludeEntities), true.ToString() },
+                { nameof(Status.TrimUser), true.ToString() },
+                { nameof(Status.Map), true.ToString() },
+                { nameof(Status.IncludeAltText), true.ToString() },
+                { nameof(Status.TweetMode), TweetMode.Extended.ToString().ToLower() } // "extended" string, not "1"
             };
 
             Request req = reqProc.BuildUrl(parameters);

@@ -115,7 +115,7 @@ namespace LinqToTwitter
         public Request BuildUrl(Dictionary<string, string> parameters)
         {
             if (parameters.ContainsKey("Type"))
-                Type = RequestProcessorHelper.ParseQueryEnumType<SearchType>(parameters["Type"]);
+                Type = RequestProcessorHelper.ParseEnum<SearchType>(parameters["Type"]);
             else
                 throw new ArgumentException("Type is required", "Type");
 
@@ -188,7 +188,7 @@ namespace LinqToTwitter
 
             if (parameters.ContainsKey("ResultType"))
             {
-                ResultType = RequestProcessorHelper.ParseQueryEnumType<ResultType>(parameters["ResultType"]);
+                ResultType = RequestProcessorHelper.ParseEnum<ResultType>(parameters["ResultType"]);
                 urlParams.Add(new QueryParameter("result_type" , ResultType.ToString().ToLower()));
             }
 
@@ -200,7 +200,7 @@ namespace LinqToTwitter
 
             if (parameters.ContainsKey(nameof(TweetMode)))
             {
-                TweetMode = (TweetMode) int.Parse(parameters[nameof(TweetMode)]);
+                TweetMode = RequestProcessorHelper.ParseEnum<TweetMode>(parameters[nameof(TweetMode)]);
                 urlParams.Add(new QueryParameter("tweet_mode", TweetMode.ToString().ToLower()));
             }
 
