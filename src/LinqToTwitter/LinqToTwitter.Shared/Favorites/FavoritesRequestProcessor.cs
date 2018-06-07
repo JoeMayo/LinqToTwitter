@@ -97,7 +97,7 @@ namespace LinqToTwitter
             if (!parameters.ContainsKey("Type"))
                 throw new ArgumentException("You must set Type.", TypeParam);
 
-            Type = RequestProcessorHelper.ParseQueryEnumType<FavoritesType>(parameters["Type"]);
+            Type = RequestProcessorHelper.ParseEnum<FavoritesType>(parameters["Type"]);
 
             return BuildFavoritesUrlParameters(parameters);
         }

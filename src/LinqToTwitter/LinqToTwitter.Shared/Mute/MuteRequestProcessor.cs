@@ -78,7 +78,7 @@ namespace LinqToTwitter
             if (parameters == null || !parameters.ContainsKey("Type"))
                 throw new ArgumentException("You must set Type.", TypeParam);
 
-            Type = RequestProcessorHelper.ParseQueryEnumType<MuteType>(parameters["Type"]);
+            Type = RequestProcessorHelper.ParseEnum<MuteType>(parameters["Type"]);
 
             switch (Type)
             {

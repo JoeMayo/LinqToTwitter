@@ -126,7 +126,7 @@ namespace LinqToTwitter
             if (parameters == null || !parameters.ContainsKey("Type"))
                 throw new ArgumentException("You must set Type.", TypeParam);
 
-            Type = RequestProcessorHelper.ParseQueryEnumType<GeoType>(parameters["Type"]);
+            Type = RequestProcessorHelper.ParseEnum<GeoType>(parameters["Type"]);
 
             switch (Type)
             {
