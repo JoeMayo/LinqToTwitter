@@ -105,6 +105,29 @@ namespace LinqToTwitterPcl.Tests.FavoritesTests
         }
 
         [TestMethod]
+        public void BuildUrl_Handles_String_TweetMode()
+        {
+            const string ExpectedUrl = "https://api.twitter.com/1.1/favorites/list.json?user_id=123&screen_name=JoeMayo&count=100&since_id=456&max_id=789&include_entities=true&tweet_mode=extended";
+            var favReqProc = new FavoritesRequestProcessor<Favorites> { BaseUrl = "https://api.twitter.com/1.1/" };
+            var parameters =
+                new Dictionary<string, string>
+                {
+                    { nameof(Favorites.Type), FavoritesType.Favorites.ToString() },
+                    { nameof(Favorites.UserID), "123" },
+                    { nameof(Favorites.ScreenName), "JoeMayo" },
+                    { nameof(Favorites.Count), "100" },
+                    { nameof(Favorites.SinceID), "456" },
+                    { nameof(Favorites.MaxID), "789" },
+                    { nameof(Favorites.IncludeEntities), true.ToString() },
+                    { nameof(Favorites.TweetMode), TweetMode.Extended.ToString().ToLower() } // "extended" string, not "1"
+                };
+
+            Request req = favReqProc.BuildUrl(parameters);
+
+            Assert.AreEqual(ExpectedUrl, req.FullUrl);
+        }
+
+        [TestMethod]
         public void BuildUrl_Throws_On_Missing_Type_Param()
         {
             var favReqProc = new FavoritesRequestProcessor<Favorites> { BaseUrl = "https://api.twitter.com/1.1/" };
