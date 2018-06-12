@@ -231,19 +231,27 @@ namespace Linq2TwitterDemos_Console
 
         static async Task GetListMembershipsAsync(TwitterContext twitterCtx)
         {
-            var lists =
+            long cursor = -1;
+            do
+            {
+                var lists =
                 await
                 (from list in twitterCtx.List
                  where list.Type == ListType.Memberships &&
-                       list.ScreenName == "JoeMayo" // user to get memberships for
+                       list.ScreenName == "JoeMayo" && // user to get memberships for
+                       list.Cursor == cursor
                  select list)
                 .ToListAsync();
 
-            if (lists != null)
-                lists.ForEach(list =>
-                    Console.WriteLine(
-                        "List Name: {0}, Description: {1}",
-                        list.Name, list.Description));
+                if (lists != null)
+                    lists.ForEach(list =>
+                        Console.WriteLine(
+                            "List Name: {0}, Description: {1}",
+                            list.Name, list.Description));
+
+                cursor = lists?.FirstOrDefault()?.CursorMovement?.Next ?? 0;
+
+            } while (cursor != 0);
         }
 
         static async Task GetListSubscribersAsync(TwitterContext twitterCtx)
