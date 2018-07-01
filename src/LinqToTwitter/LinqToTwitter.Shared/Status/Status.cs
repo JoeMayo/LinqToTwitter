@@ -25,11 +25,12 @@ namespace LinqToTwitter
         {
             if (status == null) return;
 
-            Retweeted = status.GetValue<bool>("retweeted");
+            JsonData retweetedStatus = status.GetValue<JsonData>("retweeted_status");
+            RetweetedStatus = new Status(retweetedStatus);
+            Retweeted = retweetedStatus != null;
             Source = status.GetValue<string>("source");
             InReplyToScreenName = status.GetValue<string>("in_reply_to_screen_name");
             PossiblySensitive = status.GetValue<bool>("possibly_sensitive");
-            RetweetedStatus = new Status(status.GetValue<JsonData>("retweeted_status"));
             IsQuotedStatus = status.GetValue<bool>("is_quote_status");
             QuotedStatusID = status.GetValue<ulong>("quoted_status_id");
             QuotedStatus = new Status(status.GetValue<JsonData>("quoted_status"));

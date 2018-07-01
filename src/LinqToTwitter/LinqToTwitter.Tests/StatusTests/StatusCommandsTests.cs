@@ -6,7 +6,6 @@ using LinqToTwitter;
 using LinqToTwitterPcl.Tests.Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System.Net.Http;
 
 namespace LinqToTwitterPcl.Tests.StatusTests
 {
