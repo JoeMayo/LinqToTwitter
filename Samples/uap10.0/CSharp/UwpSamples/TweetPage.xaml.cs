@@ -15,7 +15,7 @@ namespace UwpSamples
         {
             this.InitializeComponent();
 
-            tweetText.Text = "Testing from a Universal Windows App: " + DateTime.Now;
+            tweetText.Text = "Testing from a Universal Windows App: " + DateTime.Now + " #woot to @Linq2Twitr";
         }
 
         private async void TweetButton_Click(object sender, RoutedEventArgs e)

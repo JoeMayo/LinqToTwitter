@@ -7,7 +7,7 @@ namespace LinqToTwitter
 {
     public class UniversalAuthorizer : AuthorizerBase, IAuthorizer
     {
-        const string CallbackPlaceholderRequiredByTwitterOauth = "http://localhost.com";
+        const string CallbackPlaceholderRequiredByTwitterOauth = "http://127.0.0.1";
 
         public async Task AuthorizeAsync()
         {
