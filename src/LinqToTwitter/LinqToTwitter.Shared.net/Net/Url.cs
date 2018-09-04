@@ -20,7 +20,8 @@ namespace LinqToTwitter.Net
             if (string.IsNullOrWhiteSpace(value))
                 return string.Empty;
 
-            var escapedValue = isParam ? Uri.EscapeUriString(value) : Uri.EscapeDataString(value);
+            var escapedValue = EncodeDataString(value);
+
             var reservedChars = isParam ? IsParamReservedChars : NoParamReservedChars;
 
             // Windows Phone doesn't escape all the ReservedChars properly, so we have to do it manually.
@@ -37,6 +38,33 @@ namespace LinqToTwitter.Net
             }
 
             return result.ToString();
+        }
+
+        /// <summary>
+        /// URL-encode a string of any length.
+        /// </summary>
+        private static string EncodeDataString(string data)
+        {
+            // the max length in .NET 4.5+ is 65520
+            const int maxLength = 65519;
+
+            if (data.Length <= maxLength)
+            {
+                return Uri.EscapeDataString(data);
+            }
+
+            var totalChunks = data.Length / maxLength;
+
+            var builder = new StringBuilder();
+            for (var i = 0; i <= totalChunks; i++)
+            {
+	            var chunk = i < totalChunks ? data.Substring(maxLength * i, maxLength) : data.Substring(maxLength * i);
+
+                // Uri.EscapeDataString is sufficient for percent-encoding. no need for Uri.EscapeUriString.
+                // https://stackoverflow.com/questions/4396598/whats-the-difference-between-escapeuristring-and-escapedatastring/#34189188
+                builder.Append(Uri.EscapeDataString(chunk));
+            }
+            return builder.ToString();
         }
     }
 }

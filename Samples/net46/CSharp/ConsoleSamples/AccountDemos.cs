@@ -213,9 +213,7 @@ namespace Linq2TwitterDemos_Console
         {
             byte[] fileBytes = File.ReadAllBytes(@"..\..\images\13903749474_86bd1290de_o.jpg");
 
-            var user = 
-                await twitterCtx.UpdateProfileBannerAsync(
-                    fileBytes, "13903749474_86bd1290de_o.jpg", "jpg", 1500, 500, 0, 0);
+            var user = await twitterCtx.UpdateProfileBannerAsync(fileBytes, 1500, 500, 0, 0);
 
             if (user != null)
                 Console.WriteLine("User Image: " + user.ProfileBannerUrl); 

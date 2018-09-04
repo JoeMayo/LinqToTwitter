@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -370,23 +369,19 @@ namespace LinqToTwitter
         /// Sends an image to Twitter to be placed as the user's profile banner.
         /// </summary>
         /// <param name="banner">byte[] containing image data.</param>
-        /// <param name="fileName">Name of file.</param>
-        /// <param name="imageType">Type of file (e.g. png or jpg)</param>
         /// <returns>
         /// Account of authenticated user who's profile banner will be updated.
         /// Url of new banner will appear in ProfileBannerUrl property.
         /// </returns>
-        public async Task<User> UpdateProfileBannerAsync(byte[] banner, string fileName, string imageType, CancellationToken cancelToken = default(CancellationToken))
+        public async Task<User> UpdateProfileBannerAsync(byte[] banner, CancellationToken cancelToken = default(CancellationToken))
         {
-            return await UpdateProfileBannerAsync(banner, fileName, imageType, 1500, 500, 0, 0, cancelToken).ConfigureAwait(false);
+            return await UpdateProfileBannerAsync(banner, 1500, 500, 0, 0, cancelToken).ConfigureAwait(false);
         }
 
         /// <summary>
         /// Sends an image to Twitter to be placed as the user's profile banner.
         /// </summary>
         /// <param name="banner">byte[] containing image data.</param>
-        /// <param name="fileName">Name of file.</param>
-        /// <param name="imageType">Type of file (e.g. png or jpg)</param>
         /// <param name="width">Pixel width to clip image.</param>
         /// <param name="height">Pixel height to clip image.</param>
         /// <param name="offsetLeft">Pixels to offset start of image from the left.</param>
@@ -395,18 +390,12 @@ namespace LinqToTwitter
         /// Account of authenticated user who's profile banner will be updated.
         /// Url of new banner will appear in ProfileBannerUrl property.
         /// </returns>
-        public async Task<User> UpdateProfileBannerAsync(byte[] banner, string fileName, string imageType, int width, int height, int offsetLeft, int offsetTop, CancellationToken cancelToken = default(CancellationToken))
+        public async Task<User> UpdateProfileBannerAsync(byte[] banner, int width, int height, int offsetLeft, int offsetTop, CancellationToken cancelToken = default(CancellationToken))
         {
             var accountUrl = BaseUrl + "account/update_profile_banner.json";
 
             if (banner == null || banner.Length == 0)
                 throw new ArgumentException("banner is required.", "banner");
-
-            if (string.IsNullOrWhiteSpace(fileName))
-                throw new ArgumentException("fileName is required.", "fileName");
-
-            if (string.IsNullOrWhiteSpace(imageType))
-                throw new ArgumentException("imageType is required.", "imageType");
 
             var parameters = new Dictionary<string, string>
             {
@@ -414,16 +403,12 @@ namespace LinqToTwitter
                 { "height", height.ToString() },
                 { "offset_left", offsetLeft.ToString() },
                 { "offset_top", offsetTop.ToString() },
-                //{ "banner", "FILE_DATA" }
+                { "banner", Convert.ToBase64String(banner) }
             };
 
             var reqProc = new UserRequestProcessor<User>();
 
-            string name = "banner";
-            string imageMimeType = "image/" + imageType;
-            string mediaCategory = "tweet_image";
-
-            RawResult = await TwitterExecutor.PostMediaAsync(accountUrl, parameters, banner, name, fileName, imageMimeType, mediaCategory, shared: false, cancelToken: cancelToken).ConfigureAwait(false);
+            RawResult = await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<User>(HttpMethod.Post.ToString(), accountUrl, parameters, cancelToken).ConfigureAwait(false);
 
             return reqProc.ProcessActionResult(RawResult, UserAction.SingleUser);
         }
