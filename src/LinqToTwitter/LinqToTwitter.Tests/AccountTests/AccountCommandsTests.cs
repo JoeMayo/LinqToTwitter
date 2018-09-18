@@ -367,30 +367,23 @@ namespace LinqToTwitterPcl.Tests.AccountTests
             Assert.AreEqual(ExpectedParamName, ex.ParamName);
         }
 
-
         [TestMethod]
         public async Task UpdateProfileBannerAsync_Invokes_Executor_Execute()
         {
             const string ExpectedProfileBannerUrl = "https://si0.twimg.com/profile_images/1438634086/avatar_normal.png";
             byte[] banner = new byte[]{ 1, 2, 3 };
-            const string FileName = "MyImage.png";
-            const string FileType = "png";
             var ctx = InitTwitterContextWithPostToTwitter<User>(SingleUserResponse);
 
-            User actual = await ctx.UpdateProfileBannerAsync(banner, FileName, FileType);
+            User actual = await ctx.UpdateProfileBannerAsync(banner);
 
             execMock.Verify(exec =>
-                exec.PostMediaAsync(
+                exec.PostFormUrlEncodedToTwitterAsync<User>(
+                    HttpMethod.Post.ToString(),
                     "https://api.twitter.com/1.1/account/update_profile_banner.json",
-                    It.IsAny<Dictionary<string, string>>(),
-                    It.IsAny<byte[]>(),
-                    It.IsAny<string>(),
-                    It.IsAny<string>(),
-                    It.IsAny<string>(),
-                    It.IsAny<string>(),
-                    It.IsAny<bool>(),
+                    It.IsAny<IDictionary<string, string>>(),
                     It.IsAny<CancellationToken>()),
                 Times.Once());
+
             Assert.IsNotNull(actual);
             Assert.IsNotNull(actual.ProfileBannerUrl);
             Assert.AreEqual(ExpectedProfileBannerUrl, actual.ProfileBannerUrl);
@@ -400,11 +393,9 @@ namespace LinqToTwitterPcl.Tests.AccountTests
         public async Task UpdateProfileBannerAsync_WithRawResult_Succeeds()
         {
             byte[] banner = new byte[] { 1, 2, 3 };
-            const string FileName = "MyImage.png";
-            const string FileType = "png";
             var ctx = InitTwitterContextWithPostToTwitter<User>(SingleUserResponse);
 
-            await ctx.UpdateProfileBannerAsync(banner, FileName, FileType);
+            await ctx.UpdateProfileBannerAsync(banner);
 
             Assert.AreEqual(SingleUserResponse, ctx.RawResult);
         }
@@ -414,12 +405,10 @@ namespace LinqToTwitterPcl.Tests.AccountTests
         {
             const string ExpectedParamName = "banner";
             byte[] banner = null;
-            const string FileName = "MyImage.png";
-            const string FileType = "png";
             var ctx = InitTwitterContextWithPostToTwitter<User>(SingleUserResponse);
 
             var ex = await L2TAssert.Throws<ArgumentException>(
-                async () => await ctx.UpdateProfileBannerAsync(banner, FileName, FileType));
+                async () => await ctx.UpdateProfileBannerAsync(banner));
 
             Assert.AreEqual(ExpectedParamName, ex.ParamName);
         }
@@ -429,72 +418,10 @@ namespace LinqToTwitterPcl.Tests.AccountTests
         {
             const string ExpectedParamName = "banner";
             byte[] banner = new byte[0];
-            const string FileName = "MyImage.png";
-            const string FileType = "png";
             var ctx = InitTwitterContextWithPostToTwitter<User>(SingleUserResponse);
 
             var ex = await L2TAssert.Throws<ArgumentException>(
-                async () => await ctx.UpdateProfileBannerAsync(banner, FileName, FileType));
-
-            Assert.AreEqual(ExpectedParamName, ex.ParamName);
-        }
-
-        [TestMethod]
-        public async Task UpdateProfileBannerAsync_Throws_On_Null_FileName()
-        {
-            const string ExpectedParamName = "fileName";
-            byte[] banner = new byte[] { 1, 2, 3 };
-            const string FileName = null;
-            const string FileType = "png";
-            var ctx = InitTwitterContextWithPostToTwitter<User>(SingleUserResponse);
-
-            var ex = await L2TAssert.Throws<ArgumentException>(
-                async () => await ctx.UpdateProfileBannerAsync(banner, FileName, FileType));
-
-            Assert.AreEqual(ExpectedParamName, ex.ParamName);
-        }
-
-        [TestMethod]
-        public async Task UpdateProfileBannerAsync_Throws_On_Empty_FileName()
-        {
-            const string ExpectedParamName = "fileName";
-            byte[] banner = new byte[] { 1, 2, 3 };
-            const string FileName = "";
-            const string FileType = "png";
-            var ctx = InitTwitterContextWithPostToTwitter<User>(SingleUserResponse);
-
-            var ex = await L2TAssert.Throws<ArgumentException>(
-                async () => await ctx.UpdateProfileBannerAsync(banner, FileName, FileType));
-
-            Assert.AreEqual(ExpectedParamName, ex.ParamName);
-        }
-
-        [TestMethod]
-        public async Task UpdateProfileBannerAsync_Throws_On_Null_FileType()
-        {
-            const string ExpectedParamName = "imageType";
-            byte[] banner = new byte[] { 1, 2, 3 };
-            const string FileName = "MyFile.png";
-            const string FileType = null;
-            var ctx = InitTwitterContextWithPostToTwitter<User>(SingleUserResponse);
-
-            var ex = await L2TAssert.Throws<ArgumentException>(
-                async () => await ctx.UpdateProfileBannerAsync(banner, FileName, FileType));
-
-            Assert.AreEqual(ExpectedParamName, ex.ParamName);
-        }
-
-        [TestMethod]
-        public async Task UpdateProfileBannerAsync_Throws_On_Empty_FileType()
-        {
-            const string ExpectedParamName = "imageType";
-            byte[] banner = new byte[] { 1, 2, 3 };
-            const string FileName = "MyFile.png";
-            const string FileType = "";
-            var ctx = InitTwitterContextWithPostToTwitter<User>(SingleUserResponse);
-
-            var ex = await L2TAssert.Throws<ArgumentException>(
-                async () => await ctx.UpdateProfileBannerAsync(banner, FileName, FileType));
+                async () => await ctx.UpdateProfileBannerAsync(banner));
 
             Assert.AreEqual(ExpectedParamName, ex.ParamName);
         }
