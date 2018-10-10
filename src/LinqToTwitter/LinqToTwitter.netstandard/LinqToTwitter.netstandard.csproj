@@ -14,6 +14,7 @@
   <Import Project="..\LinqToTwitter.Shared.net\LinqToTwitter.Shared.net.projitems" Label="Shared" />
 
   <ItemGroup>
+    <PackageReference Include="ConfigureAwaitChecker.Analyzer" Version="2.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="System.Reactive.Core" Version="4.0.0" />
     <PackageReference Include="System.Reactive.Interfaces" Version="4.0.0" />

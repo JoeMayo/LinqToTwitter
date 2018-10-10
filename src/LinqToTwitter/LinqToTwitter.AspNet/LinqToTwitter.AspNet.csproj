@@ -90,6 +90,10 @@
       <Name>LinqToTwitter.netstandard</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="..\packages\ConfigureAwaitChecker.Analyzer.2.0.0\analyzers\dotnet\cs\ConfigureAwaitChecker.Analyzer.dll" />
+    <Analyzer Include="..\packages\ConfigureAwaitChecker.Analyzer.2.0.0\analyzers\dotnet\cs\ConfigureAwaitChecker.Lib.dll" />
+  </ItemGroup>
   <Import Project="..\LinqToTwitter.Shared.aspnet\LinqToTwitter.Shared.aspnet.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />
