@@ -175,7 +175,7 @@ namespace LinqToTwitter
 
                 await TwitterErrorHandler.ThrowIfErrorAsync(response).ConfigureAwait(false);
 
-                Stream stream = await CreateStream(response);
+                Stream stream = await CreateStream(response).ConfigureAwait(false);
 
                 const int CarriageReturn = 0x0D;
                 const int LineFeed = 0x0A;
@@ -308,7 +308,7 @@ namespace LinqToTwitter
 
                 HttpResponseMessage msg = await client.PostAsync(url, multiPartContent, cancelToken).ConfigureAwait(false);
 
-                return await HandleResponseAsync(msg);
+                return await HandleResponseAsync(msg).ConfigureAwait(false);
             }
         }
 
@@ -333,11 +333,11 @@ namespace LinqToTwitter
         {
             WriteLog(url, nameof(PostMediaAsync));
 
-            ulong mediaID = await InitAsync(url, data, postData, name, fileName, contentType, mediaCategory, shared, cancelToken);
+            ulong mediaID = await InitAsync(url, data, postData, name, fileName, contentType, mediaCategory, shared, cancelToken).ConfigureAwait(false);
 
-            await AppendChunksAsync(url, mediaID, data, name, fileName, contentType, cancelToken);
+            await AppendChunksAsync(url, mediaID, data, name, fileName, contentType, cancelToken).ConfigureAwait(false);
 
-            return await FinalizeAsync(url, mediaID, cancelToken);
+            return await FinalizeAsync(url, mediaID, cancelToken).ConfigureAwait(false);
         }
 
         async Task<ulong> InitAsync(string url, byte[] data, IDictionary<string, string> postData, string name, string fileName, string contentType, string mediaCategory, bool shared, CancellationToken cancelToken)
@@ -367,7 +367,7 @@ namespace LinqToTwitter
 
                 HttpResponseMessage msg = await client.PostAsync(url, multiPartContent, cancelToken).ConfigureAwait(false);
 
-                string response = await HandleResponseAsync(msg);
+                string response = await HandleResponseAsync(msg).ConfigureAwait(false);
 
                 var media = JsonMapper.ToObject(response);
                 var mediaID = media.GetValue<ulong>("media_id");
@@ -405,7 +405,7 @@ namespace LinqToTwitter
 
                     HttpResponseMessage msg = await client.PostAsync(url, multiPartContent, cancelToken).ConfigureAwait(false);
 
-                    await HandleResponseAsync(msg);
+                    await HandleResponseAsync(msg).ConfigureAwait(false);
                 } 
             }
         }
@@ -426,7 +426,7 @@ namespace LinqToTwitter
 
                 HttpResponseMessage msg = await client.PostAsync(url, multiPartContent, cancelToken).ConfigureAwait(false);
 
-                return await HandleResponseAsync(msg);
+                return await HandleResponseAsync(msg).ConfigureAwait(false);
             }
         }
 
@@ -466,7 +466,7 @@ namespace LinqToTwitter
                 else
                     msg = await client.PutAsync(url, content).ConfigureAwait(false);
 
-                return await HandleResponseAsync(msg);
+                return await HandleResponseAsync(msg).ConfigureAwait(false);
             }
         }
 
@@ -508,7 +508,7 @@ namespace LinqToTwitter
                 else
                     msg = await client.PostAsync(url, content).ConfigureAwait(false);
 
-                return await HandleResponseAsync(msg);
+                return await HandleResponseAsync(msg).ConfigureAwait(false);
             }
         }
   

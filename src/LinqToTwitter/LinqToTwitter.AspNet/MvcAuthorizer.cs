@@ -10,7 +10,7 @@ namespace LinqToTwitter
 
         public async  Task<ActionResult> BeginAuthorizationAsync()
         {
-            return await BeginAuthorizationAsync(Callback);
+            return await BeginAuthorizationAsync(Callback).ConfigureAwait(false);
         }
 
         public async Task<ActionResult> BeginAuthorizationAsync(Uri callback)
@@ -20,7 +20,7 @@ namespace LinqToTwitter
 
             Callback = callback;
 
-            await base.BeginAuthorizeAsync(callback);
+            await base.BeginAuthorizeAsync(callback).ConfigureAwait(false);
 
             return new RedirectResult(_authUrl);
         }

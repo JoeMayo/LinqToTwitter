@@ -51,7 +51,7 @@ namespace LinqToTwitter
         /// <param name="callback">This is where you want Twitter to redirect to after authorization</param>
         public async Task BeginAuthorizeAsync()
         {
-            await BeginAuthorizeAsync(Callback);
+            await BeginAuthorizeAsync(Callback).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -85,7 +85,7 @@ namespace LinqToTwitter
             if (GoToTwitterAuthorization == null)
                 throw new InvalidOperationException("You must provide an Action<string> delegate/lambda for GoToTwitterAuthorization.");
 
-            await GetRequestTokenAsync(callback.ToString());
+            await GetRequestTokenAsync(callback.ToString()).ConfigureAwait(false);
 
             string authUrl = PrepareAuthorizeUrl(ForceLogin);
             GoToTwitterAuthorization(authUrl);
@@ -119,7 +119,7 @@ namespace LinqToTwitter
             {
                 { "oauth_verifier", pin }
             };
-            await GetAccessTokenAsync(accessTokenParams);
+            await GetAccessTokenAsync(accessTokenParams).ConfigureAwait(false);
         }
     }
 }

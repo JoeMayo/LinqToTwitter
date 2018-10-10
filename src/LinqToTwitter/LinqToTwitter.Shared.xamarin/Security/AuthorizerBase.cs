@@ -122,7 +122,7 @@ namespace LinqToTwitter
             if (AccessType != AuthAccessType.NoChange)
                 Parameters.Add("x_auth_access_type", AccessType.ToString().ToLower());
 
-            string response = await HttpGetAsync(OAuthRequestTokenUrl, Parameters);
+            string response = await HttpGetAsync(OAuthRequestTokenUrl, Parameters).ConfigureAwait(false);
 
             if (string.IsNullOrWhiteSpace(response))
                 throw new ArgumentNullException("Empty response to request token response from Twitter.");
