@@ -44,12 +44,12 @@ namespace LinqToTwitter
                         {
                             observer.OnError(ex);
                         }
-                    });
+                    }).ConfigureAwait(false);
 
                     observer.OnCompleted();
                 });
 
-            return await Task.FromResult(observableContent);
+            return await Task.FromResult(observableContent).ConfigureAwait(false);
         }
 
         public static async Task<List<T>> ToListAsync<T>(this IQueryable<T> query)

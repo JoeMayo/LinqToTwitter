@@ -50,7 +50,7 @@ namespace LinqToTwitter
             {
                 var msg = await client.SendAsync(req).ConfigureAwait(false);
 
-                await TwitterErrorHandler.ThrowIfErrorAsync(msg);
+                await TwitterErrorHandler.ThrowIfErrorAsync(msg).ConfigureAwait(false);
 
                 string response = await msg.Content.ReadAsStringAsync().ConfigureAwait(false);
 
@@ -77,7 +77,7 @@ namespace LinqToTwitter
             {
                 var msg = await client.SendAsync(req).ConfigureAwait(false);
 
-                await TwitterErrorHandler.ThrowIfErrorAsync(msg);
+                await TwitterErrorHandler.ThrowIfErrorAsync(msg).ConfigureAwait(false);
 
                 string response = await msg.Content.ReadAsStringAsync().ConfigureAwait(false);
 

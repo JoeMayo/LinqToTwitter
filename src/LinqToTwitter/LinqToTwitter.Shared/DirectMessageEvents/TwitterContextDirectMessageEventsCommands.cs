@@ -27,7 +27,7 @@ namespace LinqToTwitter
                 }
             };
 
-            return await NewDirectMessageEventAsync(recipientID, text, attachment);
+            return await NewDirectMessageEventAsync(recipientID, text, attachment).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -58,7 +58,7 @@ namespace LinqToTwitter
                 }
             };
 
-            return await NewDirectMessageEventAsync(recipientID, text, attachment);
+            return await NewDirectMessageEventAsync(recipientID, text, attachment).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -87,7 +87,7 @@ namespace LinqToTwitter
                 }
             };
 
-            return await NewDirectMessageEventAsync(recipientID, text, attachment);
+            return await NewDirectMessageEventAsync(recipientID, text, attachment).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -99,7 +99,7 @@ namespace LinqToTwitter
         /// <returns>Direct message events data.</returns>
         public async Task<DirectMessageEvents> NewDirectMessageEventAsync(ulong recipientID, string text, CancellationToken cancelToken = default(CancellationToken))
         {
-            return await NewDirectMessageEventAsync(recipientID, text, attachment: null);
+            return await NewDirectMessageEventAsync(recipientID, text, attachment: null).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -118,7 +118,7 @@ namespace LinqToTwitter
                 Options = options
             };
 
-            return await NewDirectMessageEventAsync(recipientID, text, attachment: null, quickReply: quickReply);
+            return await NewDirectMessageEventAsync(recipientID, text, attachment: null, quickReply: quickReply).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -131,7 +131,7 @@ namespace LinqToTwitter
         /// <returns>Direct message events data.</returns>
         public async Task<DirectMessageEvents> RequestButtonChoiceAsync(ulong recipientID, string text, IEnumerable<CallToAction> callToActions, CancellationToken cancelToken = default(CancellationToken))
         {
-            return await NewDirectMessageEventAsync(recipientID, text, attachment: null, quickReply: null, callToActions: callToActions);
+            return await NewDirectMessageEventAsync(recipientID, text, attachment: null, quickReply: null, callToActions: callToActions).ConfigureAwait(false);
         }
 
         /// <summary>

@@ -78,6 +78,10 @@
     <None Include="LinqToTwitter.snk" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="..\packages\ConfigureAwaitChecker.Analyzer.2.0.0\analyzers\dotnet\cs\ConfigureAwaitChecker.Analyzer.dll" />
+    <Analyzer Include="..\packages\ConfigureAwaitChecker.Analyzer.2.0.0\analyzers\dotnet\cs\ConfigureAwaitChecker.Lib.dll" />
+  </ItemGroup>
   <Import Project="..\LinqToTwitter.Shared\LinqToTwitter.Shared.projitems" Label="Shared" />
   <Import Project="..\LinqToTwitter.Shared.xamarin\LinqToTwitter.Shared.xamarin.projitems" Label="Shared" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />

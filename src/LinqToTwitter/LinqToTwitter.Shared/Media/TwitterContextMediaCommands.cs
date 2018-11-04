@@ -23,7 +23,7 @@ namespace LinqToTwitter
         /// <returns>Status containing new reply</returns>
         public virtual async Task<Media> UploadMediaAsync(byte[] media, string mediaType, string mediaCategory, bool shared = false, CancellationToken cancelToken = default(CancellationToken))
         {
-            return await UploadMediaAsync(media, mediaType, null, mediaCategory, shared, cancelToken);
+            return await UploadMediaAsync(media, mediaType, null, mediaCategory, shared, cancelToken).ConfigureAwait(false);
         }
 
         /// <summary>
