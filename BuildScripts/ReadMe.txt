@@ -9,72 +9,27 @@ Release Notes:
 
 Assemblies:
 
-.NET >= 4.5
+.NET >= 4.6.1
 
-	LinqToTwitter.net.dll
+	LinqToTwitter.netstandard.dll
 
 Windows 10
 
-	LinqToTwitter.uap10.dll
+	LinqToTwitter.netstandard.dll
 
 Xamarin:
 
-	LinqToTwitter.xamarin.dll
+	LinqToTwitter.netstandard.dll
 
 Required Dependencies 
 
-        <dependencies>
-            <group targetFramework=".NETFramework4.5">
-                <dependency id="Rx-Core" version="2.2.5" />
-                <dependency id="Rx-Interfaces" version="2.2.5" />
-                <dependency id="Rx-Linq" version="2.2.5" />
-                <dependency id="Rx-Main" version="2.2.5" />
-                <dependency id="Rx-PlatformServices" version="2.2.5" />
-            </group>
-            <group targetFramework="uap10.0">
-                <dependency id="Rx-Core" version="2.2.5" />
-                <dependency id="Rx-Interfaces" version="2.2.5" />
-                <dependency id="Rx-Linq" version="2.2.5" />
-                <dependency id="Rx-Main" version="2.2.5" />
-                <dependency id="Rx-PlatformServices" version="2.2.5" />
-            </group>
-            <group targetFramework="xamarin.ios">
-                <dependency id="Microsoft.Bcl" version="1.1.10" />
-                <dependency id="Microsoft.Bcl.Build" version="1.0.21" />
-                <dependency id="Microsoft.Bcl.Compression" version="3.9.85" />
-                <dependency id="Microsoft.Net.Http" version="2.2.29" />
-				<dependency id="modernhttpclient" version="2.4.2" />
-                <dependency id="Rx-Core" version="2.2.5" />
-                <dependency id="Rx-Interfaces" version="2.2.5" />
-                <dependency id="Rx-Linq" version="2.2.5" />
-                <dependency id="Rx-Main" version="2.2.5" />
-                <dependency id="Rx-PlatformServices" version="2.2.5" />
-            </group>
-            <group targetFramework="monotouch">
-                <dependency id="Microsoft.Bcl" version="1.1.10" />
-                <dependency id="Microsoft.Bcl.Build" version="1.0.21" />
-                <dependency id="Microsoft.Bcl.Compression" version="3.9.85" />
-                <dependency id="Microsoft.Net.Http" version="2.2.29" />
-				<dependency id="modernhttpclient" version="2.4.2" />
-                <dependency id="Rx-Core" version="2.2.5" />
-                <dependency id="Rx-Interfaces" version="2.2.5" />
-                <dependency id="Rx-Linq" version="2.2.5" />
-                <dependency id="Rx-Main" version="2.2.5" />
-                <dependency id="Rx-PlatformServices" version="2.2.5" />
-            </group>
-            <group targetFramework="monoandroid">
-                <dependency id="Microsoft.Bcl" version="1.1.10" />
-                <dependency id="Microsoft.Bcl.Build" version="1.0.21" />
-                <dependency id="Microsoft.Bcl.Compression" version="3.9.85" />
-                <dependency id="Microsoft.Net.Http" version="2.2.29" />
-				<dependency id="modernhttpclient" version="2.4.2" />
-                <dependency id="Rx-Core" version="2.2.5" />
-                <dependency id="Rx-Interfaces" version="2.2.5" />
-                <dependency id="Rx-Linq" version="2.2.5" />
-                <dependency id="Rx-Main" version="2.2.5" />
-                <dependency id="Rx-PlatformServices" version="2.2.5" />
-            </group>
-        </dependencies>
-
+    <dependencies>
+      <dependency id="Newtonsoft.Json" version="10.0.3" />
+      <dependency id="System.Reactive.Core" version="3.1.1" />
+      <dependency id="System.Reactive.Interfaces" version="3.1.1" />
+      <dependency id="System.Reactive.Linq" version="3.1.1" />
+      <dependency id="System.Reactive.PlatformServices" version="3.1.1" />
+    </dependencies>
+	
 Follow @JoeMayo and @linq2Twitr on Twitter for the latest news.
 

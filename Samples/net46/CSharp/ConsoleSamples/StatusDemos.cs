@@ -337,7 +337,17 @@ namespace Linq2TwitterDemos_Console
                 Console.WriteLine("\nPress any key to post tweet...\n");
                 Console.ReadKey(true);
 
-                Status tweet = await twitterCtx.TweetAsync(status);
+                Status tweet = null;
+                try
+                {
+                    twitterCtx.TweetAsync(status).Wait();
+
+                }
+                catch (Exception)
+                {
+
+                    throw;
+                }                //Status tweet = await twitterCtx.TweetAsync(status);
 
                 if (tweet != null)
                     Console.WriteLine(
