@@ -33,22 +33,18 @@ namespace Linq2TwitterDemos_Console
                         await UpdateAccountImageAsync(twitterCtx);
                         break;
                     case '3':
-                        Console.WriteLine("\n\tUpdating image...\n");
-                        await UpdateAccountBackgroundImageAsync(twitterCtx);
-                        break;
-                    case '4':
                         Console.WriteLine("\n\tUpdating account...\n");
                         await UpdateAccountProfileAsync(twitterCtx);
                         break;
-                    case '5':
+                    case '4':
                         Console.WriteLine("\n\tUpdating account...\n");
                         await UpdateAccountSettingsAsync(twitterCtx);
                         break;
-                    case '6':
+                    case '5':
                         Console.WriteLine("\n\tUpdating banner...\n");
                         await UpdateProfileBannerAsync(twitterCtx);
                         break;
-                    case '7':
+                    case '6':
                         Console.WriteLine("\n\tRemoving banner...\n");
                         await RemoveProfileBannerAsync(twitterCtx);
                         break;
@@ -71,11 +67,10 @@ namespace Linq2TwitterDemos_Console
             Console.WriteLine("\t 0. Verify Credentials");
             Console.WriteLine("\t 1. Get Account Settings");
             Console.WriteLine("\t 2. Update Account Image");
-            Console.WriteLine("\t 3. Update Account Background Image");
-            Console.WriteLine("\t 4. Update Account Profile");
-            Console.WriteLine("\t 5. Update Account Settings");
-            Console.WriteLine("\t 6. Update Profile Banner");
-            Console.WriteLine("\t 7. Remove Profile Banner");
+            Console.WriteLine("\t 3. Update Account Profile");
+            Console.WriteLine("\t 4. Update Account Settings");
+            Console.WriteLine("\t 5. Update Profile Banner");
+            Console.WriteLine("\t 6. Remove Profile Banner");
             Console.WriteLine();
             Console.Write("\t Q. Return to Main menu");
         }
@@ -139,41 +134,6 @@ namespace Linq2TwitterDemos_Console
 
             if (user != null)
                 Console.WriteLine("User Image: " + user.ProfileImageUrl); 
-        }
-
-        [Obsolete("The Twitter API has deprecated this endpoint. Please see UpdateProfileBannerAsync.")]
-        static async Task UpdateAccountBackgroundImageAsync(TwitterContext twitterCtx)
-        {
-            byte[] imageBytes = File.ReadAllBytes(@"..\..\Images\200xColor_2.png");
-            string mediaType = "image/png";
-            string mediaCategory = "tweet_image";
-            //// one way is to pass the byte[]
-            //var user1 =
-            //    await twitterCtx.UpdateAccountBackgroundImageAsync(
-            //        image: imageBytes,
-            //        fileName: "LinqToTwitterLogo1.jpg",
-            //        imageType: "png",
-            //        tile: false,
-            //        includeEntities: false,
-            //        skipStatus: true);
-
-            // another way is to upload the media and pass a media ID
-            Media media = await twitterCtx.UploadMediaAsync(imageBytes, mediaType, mediaCategory);
-
-            var user2 =
-                await twitterCtx.UpdateAccountBackgroundImageAsync(
-                    media.MediaID,
-                    fileName: "LinqToTwitterLogo2.png",
-                    imageType: "png",
-                    tile: false,
-                    includeEntities: false,
-                    skipStatus: true);
-
-            //if (user1 != null)
-            //    Console.WriteLine("User1 Image: " + user1.ProfileImageUrl);
-
-            if (user2 != null)
-                Console.WriteLine("User2 Image: " + user2.ProfileImageUrl);
         }
 
         static async Task UpdateAccountProfileAsync(TwitterContext twitterCtx)
