@@ -434,7 +434,7 @@ namespace Linq2TwitterDemos_Console
                 DateTime.Now.ToString(CultureInfo.InvariantCulture);
 
             Media media = await twitterCtx.UploadMediaAsync(
-                File.ReadAllBytes(@"..\..\images\LinqToTwitterDocs.mp4"), 
+                File.ReadAllBytes(@"..\..\..\images\TwitterTest.mp4"), 
                 "video/mp4", "tweet_video");
 
             Status tweet = await twitterCtx.TweetAsync(status, new ulong[] { media.MediaID });
