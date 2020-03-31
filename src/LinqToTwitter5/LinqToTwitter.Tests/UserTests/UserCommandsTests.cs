@@ -99,6 +99,25 @@ namespace LinqToTwitterPcl.Tests.AccountTests
         }
 
         [TestMethod]
+        public async Task ReportSpamAsync_WithBlockUer_InvokesExecutorExecute()
+        {
+            const string PerformBlock = "perform_block";
+            const string ScreenName = "twitterapi";
+            var ctx = InitTwitterContextWithPostToTwitter<User>(SingleUserResponse);
+
+            User actual = await ctx.ReportSpamAsync(1, performBlock: true);
+
+            execMock.Verify(exec =>
+                exec.PostFormUrlEncodedToTwitterAsync<User>(
+                    HttpMethod.Post.ToString(),
+                    "https://api.twitter.com/1.1/users/report_spam.json",
+                    It.Is<Dictionary<string, string>>(parms => parms.ContainsKey(PerformBlock) && parms[PerformBlock] == bool.TrueString.ToLower()),
+                    It.IsAny<CancellationToken>()),
+                Times.Once());
+            Assert.AreEqual(ScreenName, actual.ScreenNameResponse);
+        }
+
+        [TestMethod]
         public async Task ReportSpamAsync_Throws_On_Null_ScreenName()
         {
             const string ExpectedParamName = "screenName";

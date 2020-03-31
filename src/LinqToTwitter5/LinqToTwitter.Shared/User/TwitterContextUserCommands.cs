@@ -14,14 +14,15 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="userID">User id of alleged spammer.</param>
         /// <returns>Alleged spammer user info.</returns>
-        public async Task<User> ReportSpamAsync(ulong userID, CancellationToken cancelToken = default(CancellationToken))
+        public async Task<User> ReportSpamAsync(ulong userID, bool performBlock = false, CancellationToken cancelToken = default(CancellationToken))
         {
             if (userID == 0)
                 throw new ArgumentException("Twitter doesn't have a user with ID == 0", "userID");
 
             var reportParams = new Dictionary<string, string>
             {
-                { "user_id", userID.ToString() }
+                { "user_id", userID.ToString() },
+                { "perform_block", performBlock ? bool.TrueString.ToLower() : null }
             };
 
             return await ReportSpamAsync(reportParams, cancelToken).ConfigureAwait(false);
@@ -33,14 +34,15 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="screenName">Screen name of alleged spammer.</param>
         /// <returns>Alleged spammer user info.</returns>
-        public async Task<User> ReportSpamAsync(string screenName, CancellationToken cancelToken = default(CancellationToken))
+        public async Task<User> ReportSpamAsync(string screenName, bool performBlock = false, CancellationToken cancelToken = default(CancellationToken))
         {
             if (string.IsNullOrWhiteSpace(screenName))
                 throw new ArgumentException("Please supply a valid screen name", "screenName");
 
             var reportParams = new Dictionary<string, string>
             {
-                { "screen_name", screenName }
+                { "screen_name", screenName },
+                { "perform_block", performBlock ? bool.TrueString.ToLower() : null }
             };
 
             return await ReportSpamAsync(reportParams, cancelToken).ConfigureAwait(false);
