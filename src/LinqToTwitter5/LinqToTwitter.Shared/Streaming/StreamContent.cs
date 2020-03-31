@@ -42,12 +42,6 @@ namespace LinqToTwitter
                     EntityType = StreamEntityType.Delete;
                     Entity = new Delete(jsonObj);
                 }
-                else if (inst.ContainsKey("direct_message"))
-                {
-                    EntityType = StreamEntityType.DirectMessage;
-                    var dmObj = jsonObj.GetValue<JsonData>("direct_message");
-                    Entity = new DirectMessage(dmObj);
-                }
                 else if (inst.ContainsKey("disconnect"))
                 {
                     EntityType = StreamEntityType.Disconnect;

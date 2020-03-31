@@ -67,10 +67,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)DirectMessageEvents\DirectMessageEventsRequestProcessor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DirectMessageEvents\DirectMessageEventsType.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DirectMessageEvents\TwitterContextDirectMessageEventsCommands.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)DirectMessage\DirectMessage.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)DirectMessage\DirectMessageRequestProcessor.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)DirectMessage\DirectMessageType.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)DirectMessage\TwitterContextDirectMessageCommands.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Favorites\Favorites.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Favorites\FavoritesAction.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Favorites\FavoritesRequestProcessor.cs" />

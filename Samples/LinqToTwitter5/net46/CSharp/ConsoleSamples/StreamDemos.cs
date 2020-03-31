@@ -202,10 +202,6 @@ namespace Linq2TwitterDemos_Console
                     var delete = strm.Entity as Delete;
                     Console.WriteLine("Delete - User ID: {0}, Status ID: {1}", delete.UserID, delete.StatusID);
                     break;
-                case StreamEntityType.DirectMessage:
-                    var dm = strm.Entity as DirectMessage;
-                    Console.WriteLine("Direct Message - Sender: {0}, Text: {1}", dm.Sender, dm.Text);
-                    break;
                 case StreamEntityType.Disconnect:
                     var disconnect = strm.Entity as Disconnect;
                     Console.WriteLine("Disconnect - {0}", disconnect.Reason);

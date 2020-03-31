@@ -498,7 +498,9 @@ namespace Linq2TwitterDemos_Console
                 await
                 (from tweet in twitterCtx.Status
                  where tweet.Type == StatusType.Lookup &&
-                       tweet.TweetIDs == tweetIds
+                       tweet.TweetIDs == tweetIds &&
+                       tweet.TweetMode == TweetMode.Extended &&
+                       tweet.IncludeEntities == true
                  select tweet)
                 .ToListAsync();
 

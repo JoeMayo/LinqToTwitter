@@ -535,9 +535,6 @@ namespace LinqToTwitter
                             SiteStreamUrl = SiteStreamUrl
                         };
                     break;
-                case nameof(DirectMessage):
-                    req = new DirectMessageRequestProcessor<T>();
-                    break;
                 case nameof(DirectMessageEvents):
                     req = new DirectMessageEventsRequestProcessor<T>();
                     break;

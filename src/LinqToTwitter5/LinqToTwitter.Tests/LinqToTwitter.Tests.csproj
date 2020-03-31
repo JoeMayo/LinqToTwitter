@@ -65,9 +65,6 @@
     <Compile Include="Common\TwitterExtensionsTests.cs" />
     <Compile Include="DirectMessageEventsTests\DirectMessageEventsCommandsTests.cs" />
     <Compile Include="DirectMessageEventsTests\DirectMessageEventsRequestProcessorTests.cs" />
-    <Compile Include="DirectMessageTests\DirectMessageCommandsTests.cs" />
-    <Compile Include="DirectMessageTests\DirectMessageRequestProcessorTests.cs" />
-    <Compile Include="DirectMessageTests\DirectMessageTests.cs" />
     <Compile Include="FavoritesTests\FavoritesCommandsTests.cs" />
     <Compile Include="FavoritesTests\FavoritesCtorTests.cs" />
     <Compile Include="FavoritesTests\FavoritesRequestProcessorTests.cs" />
