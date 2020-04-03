@@ -58,7 +58,7 @@ namespace LinqToTwitter
             RawResult =
                 await TwitterExecutor.PostMediaAsync(
                     updateUrl,
-                    new Dictionary<string, string>(),
+                    parameters,
                     media,
                     name,
                     randomUnusedFileName,
