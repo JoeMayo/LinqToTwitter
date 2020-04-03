@@ -597,8 +597,12 @@ namespace LinqToTwitterPcl.Tests.UserTests
             Assert.IsFalse(user.Following);
             Assert.IsFalse(user.FollowRequestSent);
             Assert.IsFalse(user.Notifications);
+            Assert.IsNotNull(user.Entities?.Description?.UrlEntities);
+            Assert.IsTrue(user.Entities.Description.UrlEntities.Any());
+            Assert.IsNotNull(user.Entities?.Url?.UrlEntities);
+            Assert.IsTrue(user.Entities.Url.UrlEntities.Any());
         }
-        
+
         [TestMethod]
         public void ProcessActionResult_Parses_SingleUser_Response()
         {

@@ -199,6 +199,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Trends\TrendType.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)User\Category.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)User\ProfileImageSize.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)User\UserEntities.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)User\TwitterContextUserCommands.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)User\User.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)User\UserAction.cs" />

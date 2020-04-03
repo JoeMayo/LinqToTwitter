@@ -35,6 +35,7 @@ namespace LinqToTwitter
             ProfileImageUrl = user.GetValue<string>("profile_image_url");
             ProfileImageUrlHttps = user.GetValue<string>("profile_image_url_https");
             Url = user.GetValue<string>("url");
+            Entities = new UserEntities(user.GetValue<JsonData>("entities"));
             Protected = user.GetValue<bool>("protected");
             ProfileUseBackgroundImage = user.GetValue<bool>("profile_use_background_image");
             IsTranslator = user.GetValue<bool>("is_translator");
@@ -201,6 +202,11 @@ namespace LinqToTwitter
         /// user's URL
         /// </summary>
         public string Url { get; set; }
+
+        /// <summary>
+        /// Entities connected to the <see cref="User"/>
+        /// </summary>
+        public UserEntities Entities { get; set; }
 
         /// <summary>
         /// user's profile has not been configured (is just defaults)
