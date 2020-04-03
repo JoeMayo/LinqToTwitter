@@ -107,11 +107,12 @@ namespace Linq2TwitterDemos_Console
 
         static async Task ShowUserDetailsAsync(TwitterContext twitterCtx)
         {
+            string screenName = "JoeMayo";
             var user =
                 await
                 (from tweet in twitterCtx.User
                  where tweet.Type == UserType.Show &&
-                       tweet.ScreenName == "JoeMayo"
+                       tweet.ScreenName == screenName
                  select tweet)
                 .SingleOrDefaultAsync();
 

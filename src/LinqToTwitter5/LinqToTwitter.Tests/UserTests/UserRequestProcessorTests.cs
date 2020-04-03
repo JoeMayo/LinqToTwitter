@@ -758,6 +758,34 @@ namespace LinqToTwitterPcl.Tests.UserTests
    ""location"":""San Francisco, CA"",
    ""description"":""The Real Twitter API. I tweet about API changes, service issues and happily answer questions about Twitter and our API. Don't get an answer? It's on my website."",
    ""url"":""http:\/\/dev.twitter.com"",
+	""entities"": {
+		""url"": {
+			""urls"": [
+				{
+					""url"": ""https://t.co/7AhNKZC73J"",
+					""expanded_url"": ""https://github.com/JoeMayo/LinqToTwitter"",
+					""display_url"": ""github.com/JoeMayo/LinqTo…"",
+					""indices"": [
+						0,
+						23
+					]
+                }
+			]
+		},
+		""description"": {
+			""urls"": [
+				{
+					""url"": ""https://t.co/7AhNKZC73J"",
+					""expanded_url"": ""https://github.com/JoeMayo/LinqToTwitter"",
+					""display_url"": ""github.com/JoeMayo/LinqTo…"",
+					""indices"": [
+						57,
+						80
+					]
+				}
+			]
+		}
+	},
    ""protected"":false,
    ""followers_count"":1009508,
    ""friends_count"":31,
