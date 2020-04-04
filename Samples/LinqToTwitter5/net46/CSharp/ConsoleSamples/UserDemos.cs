@@ -154,8 +154,7 @@ namespace Linq2TwitterDemos_Console
                     await
                     (from user in twitterCtx.User
                      where user.Type == UserType.Contributees &&
-                           user.ScreenName == "biz" &&
-                           user.TweetMode == TweetMode.Extended
+                           user.ScreenName == "biz"
                      select user)
                     .ToListAsync();
 
@@ -177,8 +176,7 @@ namespace Linq2TwitterDemos_Console
                     await
                     (from user in twitterCtx.User
                      where user.Type == UserType.Contributors &&
-                           user.ScreenName == "twitter" &&
-                           user.TweetMode == TweetMode.Extended
+                           user.ScreenName == "twitter"
                      select user)
                     .ToListAsync();
 
@@ -198,8 +196,7 @@ namespace Linq2TwitterDemos_Console
                 await
                 (from usr in twitterCtx.User
                  where usr.Type == UserType.BannerSizes &&
-                       usr.ScreenName == "JoeMayo" &&
-                       usr.TweetMode == TweetMode.Extended
+                       usr.ScreenName == "JoeMayo"
                  select usr)
                 .SingleOrDefaultAsync();
 
@@ -216,8 +213,7 @@ namespace Linq2TwitterDemos_Console
                 await
                 (from user in twitterCtx.User
                  where user.Type == UserType.Category &&
-                       user.Slug == "Funny" &&
-                       user.TweetMode == TweetMode.Extended
+                       user.Slug == "Funny"
                  select user)
                 .SingleOrDefaultAsync();
 
