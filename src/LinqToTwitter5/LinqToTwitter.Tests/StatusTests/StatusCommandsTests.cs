@@ -84,7 +84,7 @@ namespace LinqToTwitterPcl.Tests.StatusTests
             const string AttachmentUrl = "http://t.co/abc123";
             var ctx = await InitializeTwitterContextAsync();
 
-            Status actual = await ctx.ReplyAsync(InReplyToStatusID, Status, autoPopulateReplyMetadata: true, excludeReplyUserIds: excludedIDs, attachmentUrl: AttachmentUrl);
+            Status actual = await ctx.ReplyAsync(InReplyToStatusID, Status, autoPopulateReplyMetadata: true, excludeReplyUserIds: excludedIDs, attachmentUrl: AttachmentUrl, TweetMode.Compat);
 
             Assert.AreEqual(ExpectedStatusID, actual.StatusID);
         }
@@ -122,7 +122,7 @@ namespace LinqToTwitterPcl.Tests.StatusTests
                 .Returns(tcsResponse.Task);
 
             var ctx = new Mock<TwitterContext>(execMock.Object);
-            ctx.Setup(mock => mock.TweetAsync(null))
+            ctx.Setup(mock => mock.TweetAsync(null, TweetMode.Extended))
                 .ThrowsAsync(new ArgumentException());
         }
 

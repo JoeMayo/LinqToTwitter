@@ -145,11 +145,13 @@ namespace Linq2TwitterDemos_Console
   
         static async Task ShowMentionsTimelineAsync(TwitterContext twitterCtx)
         {
+            string screenName = "JoeMayo";
+
             List<Status> tweets =
                 await
                 (from tweet in twitterCtx.Status
                  where tweet.Type == StatusType.Mentions &&
-                       tweet.ScreenName == "JoeMayo"
+                       tweet.ScreenName == screenName
                  select tweet)
                 .ToListAsync();
 
@@ -337,17 +339,7 @@ namespace Linq2TwitterDemos_Console
                 Console.WriteLine("\nPress any key to post tweet...\n");
                 Console.ReadKey(true);
 
-                Status tweet = null;
-                try
-                {
-                    twitterCtx.TweetAsync(status).Wait();
-
-                }
-                catch (Exception)
-                {
-
-                    throw;
-                }                //Status tweet = await twitterCtx.TweetAsync(status);
+                Status tweet = await twitterCtx.TweetAsync(status, tweetMode: TweetMode.Extended);
 
                 if (tweet != null)
                     Console.WriteLine(
