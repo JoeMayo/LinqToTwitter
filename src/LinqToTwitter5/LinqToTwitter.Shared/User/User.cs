@@ -157,6 +157,11 @@ namespace LinqToTwitter
         public ProfileImageSize ImageSize { get; set; }
 
         /// <summary>
+        /// Set to TweetMode.Extended to receive 280 characters in Status.FullText property
+        /// </summary>
+        public TweetMode TweetMode { get; set; }
+
+        /// <summary>
         /// Contains Next and Previous cursors
         /// </summary>
         /// <remarks>

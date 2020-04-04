@@ -279,6 +279,23 @@ namespace LinqToTwitterPcl.Tests.UserTests
         }
 
         [TestMethod]
+        public void BuildUrl_Lookup_Constructs_Url_With_TweetMode_Param()
+        {
+            const string ExpectedUrl = "https://api.twitter.com/1.1/users/lookup.json?user_id=1%2C2&tweet_mode=extended";
+            var reqProc = new UserRequestProcessor<User> { BaseUrl = "https://api.twitter.com/1.1/" };
+            var parameters = new Dictionary<string, string>
+            {
+                { "Type", ((int)UserType.Lookup).ToString() },
+                { "UserIdList", "1,2" },
+                { "TweetMode", ((int)TweetMode.Extended).ToString() }
+            };
+
+            Request req = reqProc.BuildUrl(parameters);
+
+            Assert.AreEqual(ExpectedUrl, req.FullUrl);
+        }
+
+        [TestMethod]
         public void BuildUrl_Lookup_Throws_On_Missing_ScreenName()
         {
             var reqProc = new UserRequestProcessor<User> { BaseUrl = "https://api.twitter.com/1.1/" };
@@ -437,7 +454,8 @@ namespace LinqToTwitterPcl.Tests.UserTests
                 user.Lang == "it" &&
                 user.IncludeEntities == true &&
                 user.SkipStatus == true &&
-                user.ImageSize == ProfileImageSize.Mini;
+                user.ImageSize == ProfileImageSize.Mini &&
+                user.TweetMode == TweetMode.Extended;
 
             var lambdaExpression = expression as LambdaExpression;
 
@@ -445,46 +463,49 @@ namespace LinqToTwitterPcl.Tests.UserTests
 
             Assert.IsTrue(
                 queryParams.Contains(
-                    new KeyValuePair<string, string>("Type", ((int)UserType.Show).ToString())));
+                    new KeyValuePair<string, string>(nameof(User.Type), ((int)UserType.Show).ToString())));
             Assert.IsTrue(
               queryParams.Contains(
-                  new KeyValuePair<string, string>("UserID", "10")));
+                  new KeyValuePair<string, string>(nameof(User.UserID), "10")));
             Assert.IsTrue(
               queryParams.Contains(
-                  new KeyValuePair<string, string>("UserIdList", "1,2")));
+                  new KeyValuePair<string, string>(nameof(User.UserIdList), "1,2")));
             Assert.IsTrue(
                queryParams.Contains(
-                   new KeyValuePair<string, string>("ScreenName", "JoeMayo")));
+                   new KeyValuePair<string, string>(nameof(User.ScreenName), "JoeMayo")));
             Assert.IsTrue(
                queryParams.Contains(
-                   new KeyValuePair<string, string>("ScreenNameList", "JoeMayo,Linq2Tweeter")));
+                   new KeyValuePair<string, string>(nameof(User.ScreenNameList), "JoeMayo,Linq2Tweeter")));
             Assert.IsTrue(
               queryParams.Contains(
-                  new KeyValuePair<string, string>("Cursor", "10819235")));
+                  new KeyValuePair<string, string>(nameof(User.Cursor), "10819235")));
             Assert.IsTrue(
                queryParams.Contains(
-                   new KeyValuePair<string, string>("Slug", "twitter")));
+                   new KeyValuePair<string, string>(nameof(User.Slug), "twitter")));
             Assert.IsTrue(
               queryParams.Contains(
-                  new KeyValuePair<string, string>("Query", "Joe Mayo")));
+                  new KeyValuePair<string, string>(nameof(User.Query), "Joe Mayo")));
             Assert.IsTrue(
               queryParams.Contains(
-                  new KeyValuePair<string, string>("Page", "2")));
+                  new KeyValuePair<string, string>(nameof(User.Page), "2")));
             Assert.IsTrue(
               queryParams.Contains(
-                  new KeyValuePair<string, string>("Count", "10")));
+                  new KeyValuePair<string, string>(nameof(User.Count), "10")));
             Assert.IsTrue(
               queryParams.Contains(
-                  new KeyValuePair<string, string>("Lang", "it")));
+                  new KeyValuePair<string, string>(nameof(User.Lang), "it")));
             Assert.IsTrue(
               queryParams.Contains(
-                  new KeyValuePair<string, string>("IncludeEntities", "True")));
+                  new KeyValuePair<string, string>(nameof(User.IncludeEntities), "True")));
             Assert.IsTrue(
               queryParams.Contains(
-                  new KeyValuePair<string, string>("SkipStatus", "True")));
+                  new KeyValuePair<string, string>(nameof(User.SkipStatus), "True")));
             Assert.IsTrue(
                 queryParams.Contains(
-                    new KeyValuePair<string, string>("ImageSize", ((int)ProfileImageSize.Mini).ToString())));
+                    new KeyValuePair<string, string>(nameof(User.ImageSize), ((int)ProfileImageSize.Mini).ToString())));
+            Assert.IsTrue(
+                queryParams.Contains(
+                    new KeyValuePair<string, string>(nameof(User.TweetMode), ((int)TweetMode.Extended).ToString())));
         }
 
         [TestMethod]
@@ -506,7 +527,8 @@ namespace LinqToTwitterPcl.Tests.UserTests
                 Lang = "en-US",
                 SkipStatus = true,
                 ImageSize = ProfileImageSize.Bigger,
-                IncludeEntities = true
+                IncludeEntities = true,
+                TweetMode = TweetMode.Extended
             };
 
             List<User> users = reqProc.ProcessResults(SingleUserResponse);
@@ -527,6 +549,7 @@ namespace LinqToTwitterPcl.Tests.UserTests
             Assert.IsTrue(user.SkipStatus);
             Assert.AreEqual(ProfileImageSize.Bigger, user.ImageSize);
             Assert.IsTrue(user.IncludeEntities);
+            Assert.AreEqual(TweetMode.Extended, user.TweetMode);
         }
 
         [TestMethod]

@@ -96,7 +96,8 @@ namespace Linq2TwitterDemos_Console
                 await
                 (from user in twitterCtx.User
                  where user.Type == UserType.Lookup &&
-                       user.ScreenNameList == "JoeMayo,Linq2Twitr"
+                       user.ScreenNameList == "JoeMayo,Linq2Twitr" &&
+                       user.TweetMode == TweetMode.Extended
                  select user)
                 .ToListAsync();
 
@@ -110,10 +111,11 @@ namespace Linq2TwitterDemos_Console
             string screenName = "JoeMayo";
             var user =
                 await
-                (from tweet in twitterCtx.User
-                 where tweet.Type == UserType.Show &&
-                       tweet.ScreenName == screenName
-                 select tweet)
+                (from usr in twitterCtx.User
+                 where usr.Type == UserType.Show &&
+                       usr.ScreenName == screenName &&
+                       usr.TweetMode == TweetMode.Extended
+                 select usr)
                 .SingleOrDefaultAsync();
 
             if (user != null)
@@ -134,7 +136,8 @@ namespace Linq2TwitterDemos_Console
                 await
                 (from user in twitterCtx.User
                  where user.Type == UserType.Search &&
-                       user.Query == "JoeMayo"
+                       user.Query == "JoeMayo" &&
+                       user.TweetMode == TweetMode.Extended
                  select user)
                 .ToListAsync();
 
@@ -145,32 +148,48 @@ namespace Linq2TwitterDemos_Console
 
         static async Task GetContributeesAsync(TwitterContext twitterCtx)
         {
-            var users =
-                await
-                (from user in twitterCtx.User
-                 where user.Type == UserType.Contributees &&
-                       user.ScreenName == "biz"
-                 select user)
-                .ToListAsync();
+            try
+            {
+                var users =
+                    await
+                    (from user in twitterCtx.User
+                     where user.Type == UserType.Contributees &&
+                           user.ScreenName == "biz" &&
+                           user.TweetMode == TweetMode.Extended
+                     select user)
+                    .ToListAsync();
 
-            if (users != null)
-                users.ForEach(user => 
-                    Console.WriteLine("User: " + user.ScreenNameResponse));
+                if (users != null)
+                    users.ForEach(user => 
+                        Console.WriteLine("User: " + user.ScreenNameResponse));
+            }
+            catch (TwitterQueryException tqEx) when (tqEx.ErrorCode == 220)
+            {
+                Console.WriteLine("Unable to query - Reason: " + tqEx.ReasonPhrase);
+            }
         }
 
         static async Task GetContributorsAsync(TwitterContext twitterCtx)
         {
-            var users =
-                await
-                (from user in twitterCtx.User
-                 where user.Type == UserType.Contributors &&
-                       user.ScreenName == "twitter"
-                 select user)
-                .ToListAsync();
+            try
+            {
+                var users =
+                    await
+                    (from user in twitterCtx.User
+                     where user.Type == UserType.Contributors &&
+                           user.ScreenName == "twitter" &&
+                           user.TweetMode == TweetMode.Extended
+                     select user)
+                    .ToListAsync();
 
-            if (users != null)
-                users.ForEach(user => 
-                    Console.WriteLine("User: " + user.ScreenNameResponse));
+                if (users != null)
+                    users.ForEach(user => 
+                        Console.WriteLine("User: " + user.ScreenNameResponse));
+            }
+            catch (TwitterQueryException tqEx) when (tqEx.ErrorCode == 220)
+            {
+                Console.WriteLine("Unable to query - Reason: " + tqEx.ReasonPhrase);
+            }
         }
 
         static async Task GetBannerSizesAsync(TwitterContext twitterCtx)
@@ -179,7 +198,8 @@ namespace Linq2TwitterDemos_Console
                 await
                 (from usr in twitterCtx.User
                  where usr.Type == UserType.BannerSizes &&
-                       usr.ScreenName == "JoeMayo"
+                       usr.ScreenName == "JoeMayo" &&
+                       usr.TweetMode == TweetMode.Extended
                  select usr)
                 .SingleOrDefaultAsync();
 
@@ -194,10 +214,11 @@ namespace Linq2TwitterDemos_Console
         {
             var userResponse =
                 await
-                (from tweet in twitterCtx.User
-                 where tweet.Type == UserType.Category &&
-                       tweet.Slug == "Funny"
-                 select tweet)
+                (from user in twitterCtx.User
+                 where user.Type == UserType.Category &&
+                       user.Slug == "Funny" &&
+                       user.TweetMode == TweetMode.Extended
+                 select user)
                 .SingleOrDefaultAsync();
 
             if (userResponse != null && 

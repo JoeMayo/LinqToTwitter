@@ -102,6 +102,11 @@ namespace LinqToTwitter
         internal ProfileImageSize ImageSize { get; set; }
 
         /// <summary>
+        /// Set to TweetMode.Extended to receive 280 characters in Status.FullText property
+        /// </summary>
+        internal TweetMode TweetMode { get; set; }
+
+        /// <summary>
         /// extracts parameters from lambda
         /// </summary>
         /// <param name="lambdaExpression">lambda expression with where clause</param>
@@ -111,21 +116,22 @@ namespace LinqToTwitter
             var paramFinder =
                new ParameterFinder<User>(
                    lambdaExpression.Body,
-                   new List<string> { 
-                       "Type",
-                       "UserID",
-                       "UserIdList",
-                       "ScreenName",
-                       "ScreenNameList",
-                       "Page",
-                       "Count",
-                       "Cursor",
-                       "Slug",
-                       "Query",
-                       "Lang",
-                       "IncludeEntities",
-                       "SkipStatus",
-                       "ImageSize"
+                   new List<string> {
+                       nameof(Type),
+                       nameof(UserID),
+                       nameof(UserIdList),
+                       nameof(ScreenName),
+                       nameof(ScreenNameList),
+                       nameof(Page),
+                       nameof(Count),
+                       nameof(Cursor),
+                       nameof(Slug),
+                       nameof(Query),
+                       nameof(Lang),
+                       nameof(IncludeEntities),
+                       nameof(SkipStatus),
+                       nameof(ImageSize),
+                       nameof(TweetMode)
                    });
 
             return paramFinder.Parameters;
@@ -202,6 +208,12 @@ namespace LinqToTwitter
                 urlParams.Add(new QueryParameter("skip_status", parameters["SkipStatus"].ToLower()));
             }
 
+            if (parameters.ContainsKey(nameof(TweetMode)))
+            {
+                TweetMode = RequestProcessorHelper.ParseEnum<TweetMode>(parameters[nameof(TweetMode)]);
+                urlParams.Add(new QueryParameter("tweet_mode", TweetMode.ToString().ToLower()));
+            }
+
             return req;
         }
  
@@ -236,6 +248,12 @@ namespace LinqToTwitter
             {
                 SkipStatus = bool.Parse(parameters["SkipStatus"]);
                 urlParams.Add(new QueryParameter("skip_status", parameters["SkipStatus"].ToLower()));
+            }
+
+            if (parameters.ContainsKey(nameof(TweetMode)))
+            {
+                TweetMode = RequestProcessorHelper.ParseEnum<TweetMode>(parameters[nameof(TweetMode)]);
+                urlParams.Add(new QueryParameter("tweet_mode", TweetMode.ToString().ToLower()));
             }
 
             return req;
@@ -279,6 +297,12 @@ namespace LinqToTwitter
                 urlParams.Add(new QueryParameter("include_entities", parameters["IncludeEntities"].ToLower()));
             }
 
+            if (parameters.ContainsKey(nameof(TweetMode)))
+            {
+                TweetMode = RequestProcessorHelper.ParseEnum<TweetMode>(parameters[nameof(TweetMode)]);
+                urlParams.Add(new QueryParameter("tweet_mode", TweetMode.ToString().ToLower()));
+            }
+
             return req;
         }
 
@@ -312,6 +336,12 @@ namespace LinqToTwitter
             {
                 IncludeEntities = bool.Parse(parameters["IncludeEntities"]);
                 urlParams.Add(new QueryParameter("include_entities", parameters["IncludeEntities"].ToLower()));
+            }
+
+            if (parameters.ContainsKey(nameof(TweetMode)))
+            {
+                TweetMode = RequestProcessorHelper.ParseEnum<TweetMode>(parameters[nameof(TweetMode)]);
+                urlParams.Add(new QueryParameter("tweet_mode", TweetMode.ToString().ToLower()));
             }
 
             return req;
@@ -420,6 +450,12 @@ namespace LinqToTwitter
                 urlParams.Add(new QueryParameter("include_entities", parameters["IncludeEntities"].ToLower()));
             }
 
+            if (parameters.ContainsKey(nameof(TweetMode)))
+            {
+                TweetMode = RequestProcessorHelper.ParseEnum<TweetMode>(parameters[nameof(TweetMode)]);
+                urlParams.Add(new QueryParameter("tweet_mode", TweetMode.ToString().ToLower()));
+            }
+
             return req;
         }
 
@@ -454,6 +490,12 @@ namespace LinqToTwitter
             {
                 ScreenName = parameters["ScreenName"];
                 urlParams.Add(new QueryParameter("screen_name", parameters["ScreenName"]));
+            }
+
+            if (parameters.ContainsKey(nameof(TweetMode)))
+            {
+                TweetMode = RequestProcessorHelper.ParseEnum<TweetMode>(parameters[nameof(TweetMode)]);
+                urlParams.Add(new QueryParameter("tweet_mode", TweetMode.ToString().ToLower()));
             }
 
             return req;
@@ -514,6 +556,7 @@ namespace LinqToTwitter
                 user.IncludeEntities = IncludeEntities;
                 user.SkipStatus = SkipStatus;
                 user.ImageSize = ImageSize;
+                user.TweetMode = TweetMode;
             }
 
             return userList.OfType<T>().ToList();
