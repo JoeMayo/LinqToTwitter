@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace LinqToTwitter
@@ -48,7 +49,6 @@ namespace LinqToTwitter
         /// 1. Obtains a request token and then
         /// 2. Redirects to the Twitter authorization page
         /// </summary>
-        /// <param name="callback">This is where you want Twitter to redirect to after authorization</param>
         public async Task BeginAuthorizeAsync()
         {
             await BeginAuthorizeAsync(Callback).ConfigureAwait(false);
@@ -59,7 +59,8 @@ namespace LinqToTwitter
         /// 1. Obtains a request token and then
         /// 2. Redirects to the Twitter authorization page
         /// </summary>
-        public virtual async Task BeginAuthorizeAsync(Uri callback)
+        /// <param name="callback">This is where you want Twitter to redirect to after authorization</param>
+        public virtual async Task BeginAuthorizeAsync(Uri callback, Dictionary<string, string> parameters = null)
         {
             if (CredentialStore == null)
                 throw new NullReferenceException(
@@ -85,7 +86,24 @@ namespace LinqToTwitter
             if (GoToTwitterAuthorization == null)
                 throw new InvalidOperationException("You must provide an Action<string> delegate/lambda for GoToTwitterAuthorization.");
 
-            await GetRequestTokenAsync(callback.ToString()).ConfigureAwait(false);
+            string callbackString = callback.ToString();
+
+            if (parameters != null)
+            {
+                var paramsList = new List<string>();
+                foreach (var parm in parameters)
+                {
+                    Parameters.Add(parm);
+                    paramsList.Add($"{parm.Key}={parm.Value}");
+                }
+
+                string queryString = "?" +  string.Join("&", paramsList);
+
+                OAuthRequestTokenUrl += queryString;
+                callbackString += queryString;
+            }
+
+            await GetRequestTokenAsync(callbackString).ConfigureAwait(false);
 
             string authUrl = PrepareAuthorizeUrl(ForceLogin);
             GoToTwitterAuthorization(authUrl);

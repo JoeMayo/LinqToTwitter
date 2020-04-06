@@ -43,9 +43,14 @@ Global
 		LinqToTwitter.Shared.uap\LinqToTwitter.Shared.uap.projitems*{0936a109-c6b5-4527-89a9-966e8e6c9e26}*SharedItemsImports = 13
 		LinqToTwitter.Shared.uap\LinqToTwitter.Shared.uap.projitems*{0cdbcfca-4404-4f6e-976f-1165f1072604}*SharedItemsImports = 4
 		LinqToTwitter.Shared\LinqToTwitter.Shared.projitems*{0cdbcfca-4404-4f6e-976f-1165f1072604}*SharedItemsImports = 4
+		LinqToTwitter.Shared.aspnet\LinqToTwitter.Shared.aspnet.projitems*{150e4f45-9f92-4b49-aca4-d8ebfcf39714}*SharedItemsImports = 5
+		LinqToTwitter.Shared.net\LinqToTwitter.Shared.net.projitems*{31360b4d-3e3e-4332-bd3d-d3c38fa42419}*SharedItemsImports = 5
+		LinqToTwitter.Shared\LinqToTwitter.Shared.projitems*{31360b4d-3e3e-4332-bd3d-d3c38fa42419}*SharedItemsImports = 5
 		LinqToTwitter.Shared.net\LinqToTwitter.Shared.net.projitems*{37396599-8a5a-4ac5-b583-c49ec4e40781}*SharedItemsImports = 13
 		LinqToTwitter.Shared.xamarin\LinqToTwitter.Shared.xamarin.projitems*{4aa86b5f-fbbb-473c-a9f2-fca5dd7c6c71}*SharedItemsImports = 13
 		LinqToTwitter.Shared.aspnet\LinqToTwitter.Shared.aspnet.projitems*{4cdadc23-01e2-41eb-bbda-3c76e2582b50}*SharedItemsImports = 13
+		LinqToTwitter.Shared.net\LinqToTwitter.Shared.net.projitems*{50a782c7-cf5d-456b-8d9c-2f124b594b45}*SharedItemsImports = 5
+		LinqToTwitter.Shared\LinqToTwitter.Shared.projitems*{50a782c7-cf5d-456b-8d9c-2f124b594b45}*SharedItemsImports = 5
 		LinqToTwitter.Shared.net\LinqToTwitter.Shared.net.projitems*{554f8a8a-9cc0-40c9-b7ca-f3c3cf5190b2}*SharedItemsImports = 4
 		LinqToTwitter.Shared\LinqToTwitter.Shared.projitems*{554f8a8a-9cc0-40c9-b7ca-f3c3cf5190b2}*SharedItemsImports = 4
 		LinqToTwitter.Shared.xamarin\LinqToTwitter.Shared.xamarin.projitems*{67f9d3a8-f71e-4428-913f-c37ae82cdb24}*SharedItemsImports = 4

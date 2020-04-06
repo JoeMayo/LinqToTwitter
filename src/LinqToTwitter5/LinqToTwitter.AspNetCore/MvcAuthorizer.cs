@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace LinqToTwitter
@@ -13,14 +14,14 @@ namespace LinqToTwitter
             return await BeginAuthorizationAsync(Callback).ConfigureAwait(false);
         }
 
-        public async Task<ActionResult> BeginAuthorizationAsync(Uri callback)
+        public async Task<ActionResult> BeginAuthorizationAsync(Uri callback, Dictionary<string, string> parameters = null)
         {
             if (GoToTwitterAuthorization == null)
                 GoToTwitterAuthorization = authUrl => { _authUrl = authUrl; };
 
             Callback = callback;
 
-            await base.BeginAuthorizeAsync(callback).ConfigureAwait(false);
+            await base.BeginAuthorizeAsync(callback, parameters).ConfigureAwait(false);
 
             return new RedirectResult(_authUrl);
         }

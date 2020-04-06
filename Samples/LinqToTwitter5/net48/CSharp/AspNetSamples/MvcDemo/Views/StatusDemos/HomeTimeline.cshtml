@@ -1,0 +1,38 @@
+﻿@model IEnumerable<MvcDemo.Models.TweetViewModel>
+
+@{
+    ViewBag.Title = "Home Timeline";
+}
+
+<h2>Home Timeline Demo</h2>
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.ImageUrl)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ScreenName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Text)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                <img src="@item.ImageUrl" alt="@item.ScreenName" />
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ScreenName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Text)
+            </td>
+        </tr>
+    }
+
+</table>
