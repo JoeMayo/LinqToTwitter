@@ -5,16 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="linqtotwitter" Version="5.0.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.2" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="LinqToTwitter.AspNetCore">
-      <HintPath>..\..\..\..\..\..\src\LinqToTwitter5\LinqToTwitter.AspNetCore\bin\Debug\netstandard2.0\LinqToTwitter.AspNetCore.dll</HintPath>
-    </Reference>
-    <Reference Include="LinqToTwitter.netstandard">
-      <HintPath>..\..\..\..\..\..\src\LinqToTwitter5\LinqToTwitter.AspNetCore\bin\Debug\netstandard2.0\LinqToTwitter.netstandard.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
 </Project>
