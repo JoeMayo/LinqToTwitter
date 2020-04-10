@@ -2,15 +2,24 @@
   <PropertyGroup>
     <Version>0.0.0.0</Version>
     <ProjFolder>c:\Projects\</ProjFolder>
-    <L2TSourceFolder>$(ProjFolder)LinqToTwitter\src\LinqToTwitter\</L2TSourceFolder>
-    <L2TNuGetSpec>$(ProjFolder)LinqToTwitter\BuildScripts\LinqToTwitter.nuspec</L2TNuGetSpec>
-    <L2TAspNetFolder>$(L2TSourceFolder)LinqToTwitter.AspNet\</L2TAspNetFolder>
+    <L2TSourceFolder>$(ProjFolder)LinqToTwitter\src\LinqToTwitter5\</L2TSourceFolder>
+    <L2TBuildScriptsFolder>$(ProjFolder)LinqToTwitter\BuildScripts\</L2TBuildScriptsFolder>
+     <L2TAspNetFolder>$(L2TSourceFolder)LinqToTwitter.AspNet\</L2TAspNetFolder>
     <L2TAspNetRelease>$(L2TAspNetFolder)bin\Release\LinqToTwitter.AspNet.dll</L2TAspNetRelease>
+    <L2TAspNetStdFolder>$(L2TSourceFolder)LinqToTwitter.AspNetStd\</L2TAspNetStdFolder>
+    <L2TAspNetStdRelease>$(L2TAspNetStdFolder)bin\Release\netstandard2.0\LinqToTwitter.AspNetStd.dll</L2TAspNetStdRelease>
+    <L2TAspNetCoreFolder>$(L2TSourceFolder)LinqToTwitter.AspNetCore\</L2TAspNetCoreFolder>
+    <L2TAspNetCoreRelease>$(L2TAspNetCoreFolder)bin\Release\netcoreapp3.1\LinqToTwitter.AspNetCore.dll</L2TAspNetCoreRelease>
+    <L2TDotNetFolder>$(L2TSourceFolder)LinqToTwitter.net\</L2TDotNetFolder>
+    <L2TDotNetRelease>$(L2TDotNetFolder)bin\Release\LinqToTwitter.net.dll</L2TDotNetRelease>
+    <L2TDotCoreFolder>$(L2TSourceFolder)LinqToTwitter.Core\</L2TDotCoreFolder>
+    <L2TDotCoreRelease>$(L2TDotCoreFolder)bin\Release\netcoreapp3.1\LinqToTwitter.Core.dll</L2TDotCoreRelease>
     <L2TNetStdFolder>$(L2TSourceFolder)LinqToTwitter.netstandard\</L2TNetStdFolder>
     <L2TNetStdRelease>$(L2TNetStdFolder)bin\Release\netstandard2.0\LinqToTwitter.netstandard.dll</L2TNetStdRelease>
     <L2TWin10Folder>$(L2TSourceFolder)LinqToTwitter.uap10\</L2TWin10Folder>
     <L2TWin10Release>$(L2TWin10Folder)bin\Release\LinqToTwitter.uap10.dll</L2TWin10Release>
-    <L2XamarinFolder>$(L2TSourceFolder)LinqToTwitter.xamarin\</L2XamarinFolder>
+    <L2TXamarinFolder>$(L2TSourceFolder)LinqToTwitter.xamarin\</L2TXamarinFolder>
+    <L2TXamarinRelease>$(L2TXamarinFolder)bin\Release\LinqToTwitter.xamarin.dll</L2TXamarinRelease>
     <NuGetExeFolder>$(ProjFolder)NuGet\</NuGetExeFolder>
     <NuGetBaseFolder>$(NuGetExeFolder)LinqToTwitter-v5\</NuGetBaseFolder>
     <NuGetVersionFolder>$(NuGetBaseFolder)v$(Version)\</NuGetVersionFolder>
@@ -18,11 +27,12 @@
   </PropertyGroup>
   <PropertyGroup>
     <OutDir>$(NuGetLibFolder)</OutDir>
-    <OutDir>$(NuGetLibFolder)net461</OutDir>
+    <OutDir>$(NuGetLibFolder)net48</OutDir>
     <OutDir>$(NuGetLibFolder)uap10.0</OutDir>
 	  <OutDir>$(NuGetLibFolder)monoandroid</OutDir>
-	  <OutDir>$(NuGetLibFolder)monotouch</OutDir>
-	  <OutDir>$(NuGetLibFolder)netcoreapp2.0</OutDir>
+	  <OutDir>$(NuGetLibFolder)xamarin.ios</OutDir>
+	  <OutDir>$(NuGetLibFolder)xamarin.mac</OutDir>
+	  <OutDir>$(NuGetLibFolder)netcoreapp3.1</OutDir>
     <OutDir>$(NuGetLibFolder)netstandard2.0</OutDir>
   </PropertyGroup>
   <ItemGroup>
@@ -34,27 +44,35 @@
   <Target Name="Build">
     <MakeDir Directories="$(OutDir)" Condition="!Exists('$(OutDir)')"  />
 
+    <MSBuild Projects="$(L2TDotNetFolder)LinqToTwitter.net.csproj" Properties="Configuration=Release" Targets="Rebuild" />
+    <MSBuild Projects="$(L2TDotCoreFolder)LinqToTwitter.Core.csproj" Properties="Configuration=Release" Targets="Rebuild" />
     <MSBuild Projects="$(L2TNetStdFolder)LinqToTwitter.netstandard.csproj" Properties="Configuration=Release" Targets="Rebuild" />
     <MSBuild Projects="$(L2TAspNetFolder)LinqToTwitter.AspNet.csproj" Properties="Configuration=Release" Targets="Rebuild" />
+    <MSBuild Projects="$(L2TAspNetStdFolder)LinqToTwitter.AspNetStd.csproj" Properties="Configuration=Release" Targets="Rebuild" />
+    <MSBuild Projects="$(L2TAspNetCoreFolder)LinqToTwitter.AspNetCore.csproj" Properties="Configuration=Release" Targets="Rebuild" />
     <MSBuild Projects="$(L2TWin10Folder)LinqToTwitter.uap10.csproj" Properties="Configuration=Release" Targets="Rebuild" />
+    <MSBuild Projects="$(L2TXamarinFolder)LinqToTwitter.xamarin.csproj" Properties="Configuration=Release" Targets="Rebuild" />
     
     <Copy
       SourceFiles="$(L2TNetStdRelease)"
       DestinationFiles="$(NuGetLibFolder)netstandard2.0\LinqToTwitter.netstandard.dll" />
+    <Copy
+      SourceFiles="$(L2TAspNetStdRelease)"
+      DestinationFiles="$(NuGetLibFolder)netstandard2.0\LinqToTwitter.AspNetStd.dll" />
 
     <Copy
-      SourceFiles="$(L2TNetStdRelease)"
-      DestinationFiles="$(NuGetLibFolder)netcoreapp2.0\LinqToTwitter.netstandard.dll" />
+      SourceFiles="$(L2TDotCoreRelease)"
+      DestinationFiles="$(NuGetLibFolder)netcoreapp3.1\LinqToTwitter.Core.dll" />
     <Copy
-      SourceFiles="$(L2TAspNetRelease)"
-      DestinationFiles="$(NuGetLibFolder)netcoreapp2.0\LinqToTwitter.AspNet.dll" />
+      SourceFiles="$(L2TAspNetCoreRelease)"
+      DestinationFiles="$(NuGetLibFolder)netcoreapp3.1\LinqToTwitter.AspNetCore.dll" />
 
     <Copy
-      SourceFiles="$(L2TNetStdRelease)"
-      DestinationFiles="$(NuGetLibFolder)net461\LinqToTwitter.netstandard.dll" />
+      SourceFiles="$(L2TDotNetRelease)"
+      DestinationFiles="$(NuGetLibFolder)net48\LinqToTwitter.net.dll" />
     <Copy
       SourceFiles="$(L2TAspNetRelease)"
-      DestinationFiles="$(NuGetLibFolder)net461\LinqToTwitter.AspNet.dll" />
+      DestinationFiles="$(NuGetLibFolder)net48\LinqToTwitter.AspNet.dll" />	
 
     <Copy
       SourceFiles="$(L2TNetStdRelease)"
@@ -65,16 +83,25 @@
 
     <Copy
       SourceFiles="$(L2TNetStdRelease)"
-      DestinationFiles="$(NuGetLibFolder)monotouch\LinqToTwitter.netstandard.dll" />
+      DestinationFiles="$(NuGetLibFolder)xamarin.ios\LinqToTwitter.netstandard.dll" />
+    <Copy
+      SourceFiles="$(L2TNetStdRelease)"
+      DestinationFiles="$(NuGetLibFolder)xamarin.mac\LinqToTwitter.netstandard.dll" />
     <Copy
       SourceFiles="$(L2TNetStdRelease)"
       DestinationFiles="$(NuGetLibFolder)monoandroid\LinqToTwitter.netstandard.dll" />
 
     <Copy
-      SourceFiles="$(L2TNuGetSpec)"
+      SourceFiles="$(L2TBuildScriptsFolder)200xColor_2.png"
+      DestinationFiles="$(NuGetVersionFolder)200xColor_2.png" />
+    <Copy
+      SourceFiles="$(L2TBuildScriptsFolder)ReadMe.txt"
+      DestinationFiles="$(NuGetVersionFolder)ReadMe.txt" />
+    <Copy
+      SourceFiles="$(L2TBuildScriptsFolder)LinqToTwitter.nuspec"
       DestinationFiles="$(NuGetVersionFolder)LinqToTwitter.nuspec" />
-    <XmlPoke XmlInputPath="$(NuGetVersionFolder)LinqToTwitter.nuspec" Namespaces="&lt;Namespace Prefix='x' Uri='http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd' /&gt;" Query="//x:package/x:metadata/x:version" Value="$(Version)" />
+    <XmlPoke XmlInputPath="$(NuGetVersionFolder)LinqToTwitter.nuspec" Namespaces="&lt;Namespace Prefix='x' Uri='http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd' /&gt;" Query="//x:package/x:metadata/x:version" Value="$(Version)" />
     
-	<Exec Command="$(NuGetExeFolder)NuGet pack $(NuGetVersionFolder)LinqToTwitter.nuspec" />
+	  <Exec Command="$(NuGetExeFolder)NuGet pack $(NuGetVersionFolder)LinqToTwitter.nuspec -OutputDirectory $(NuGetBaseFolder)" />
   </Target>
 </Project>

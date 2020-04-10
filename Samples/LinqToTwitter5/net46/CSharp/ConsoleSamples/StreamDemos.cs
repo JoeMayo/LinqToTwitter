@@ -166,30 +166,6 @@ namespace Linq2TwitterDemos_Console
             }
         }
 
-        static async Task PrintUserInfoAsync(TwitterContext twitterCtx, string streamID)
-        {
-            var ctrlStrm =
-                await
-                (from strm in twitterCtx.ControlStream
-                 where strm.Type == ControlStreamType.Info &&
-                       strm.StreamID == streamID
-                 select strm)
-                .SingleOrDefaultAsync();
-
-            if (ctrlStrm != null && 
-                ctrlStrm.Info != null && 
-                ctrlStrm.Info.Users != null)
-            {
-                Console.WriteLine("\nInfo Details:\n");
-
-                ControlStreamInfo info = ctrlStrm.Info;
-                foreach (var user in info.Users)
-                    Console.WriteLine("User ID: {0}, Name: {1}", user.UserID, user.Name);
-
-                Console.WriteLine();
-            } 
-        }
-
         static async Task<int> HandleStreamResponse(StreamContent strm)
         {
             switch (strm.EntityType)
@@ -233,8 +209,7 @@ namespace Linq2TwitterDemos_Console
                 case StreamEntityType.Status:
                     var status = strm.Entity as Status;
 
-                    string text = null;
-
+                    string text;
                     if (status.ExtendedTweet?.FullText != null)
                         text = status.ExtendedTweet?.FullText;
                     else if (status.RetweetedStatus?.ExtendedTweet?.FullText != null)

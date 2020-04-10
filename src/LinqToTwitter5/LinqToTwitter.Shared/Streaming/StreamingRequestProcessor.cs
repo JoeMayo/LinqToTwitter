@@ -9,10 +9,6 @@ namespace LinqToTwitter
     {
         public string BaseUrl { get; set; }
 
-        public string UserStreamUrl { get; set; }
-
-        public string SiteStreamUrl { get; set; }
-
         public ITwitterExecute TwitterExecutor { get; set; }
 
         /// <summary>
@@ -140,10 +136,6 @@ namespace LinqToTwitter
                     return BuildFirehoseUrl(parameters);
                 case StreamingType.Sample:
                     return BuildSampleUrl(parameters);
-                case StreamingType.Site:
-                    return BuildSiteUrl(parameters);
-                case StreamingType.User:
-                    return BuildUserUrl(parameters);
                 default:
                     break;
             }
@@ -265,128 +257,6 @@ namespace LinqToTwitter
             if (parameters.ContainsKey("StallWarnings"))
             {
                 urlParams.Add(new QueryParameter("stall_warnings", parameters["StallWarnings"].ToLower()));
-            }
-
-            return req;
-        }
-        
-        /// <summary>
-        /// Builds an url for getting info for multiple users from stream.
-        /// </summary>
-        /// <param name="parameters">parameter list</param>
-        /// <returns>base url + show segment</returns>
-        Request BuildSiteUrl(Dictionary<string, string> parameters)
-        {
-            if (!parameters.ContainsKey("Follow"))
-            {
-                throw new ArgumentNullException("Follow", "Follow is required.");
-            }
-
-            var req = new Request(SiteStreamUrl + "site.json");
-            var urlParams = req.RequestParameters;
-
-            if (parameters.ContainsKey("Delimited"))
-            {
-                Delimited = parameters["Delimited"];
-                urlParams.Add(new QueryParameter("delimited", Delimited.ToLower()));
-            }
-
-            if (parameters.ContainsKey("Language"))
-            {
-                Language = parameters["Language"].Replace(" ", "");
-                urlParams.Add(new QueryParameter("language", Language));
-            }
-
-            if (parameters.ContainsKey("Follow"))
-            {
-                Follow = parameters["Follow"].Replace(" ", "");
-                urlParams.Add(new QueryParameter("follow", Follow.ToLower()));
-            }
-
-            if (parameters.ContainsKey("Track"))
-            {
-                throw new ArgumentException("Track is not supported for Site Streams.", "Track");
-            }
-
-            if (parameters.ContainsKey("With"))
-            {
-                With = parameters["With"];
-                urlParams.Add(new QueryParameter("with", With.ToLower()));
-            }
-
-            if (parameters.ContainsKey("AllReplies"))
-            {
-                AllReplies = bool.Parse(parameters["AllReplies"]);
-
-                if (AllReplies)
-                {
-                    urlParams.Add(new QueryParameter("replies", "all"));
-                }
-            }
-
-            if (parameters.ContainsKey("StallWarnings"))
-            {
-                StallWarnings = bool.Parse(parameters["StallWarnings"]);
-                urlParams.Add(new QueryParameter("stall_warnings", parameters["StallWarnings"].ToLower()));
-            }
-
-            return req;
-        }
-
-        /// <summary>
-        /// Builds an url for getting user info from stream.
-        /// </summary>
-        /// <param name="parameters">parameter list</param>
-        /// <returns>base url + show segment</returns>
-        Request BuildUserUrl(Dictionary<string, string> parameters)
-        {
-            var req = new Request(UserStreamUrl + "user.json");
-            var urlParams = req.RequestParameters;
-
-            if (parameters.ContainsKey("Delimited"))
-            {
-                Delimited = parameters["Delimited"];
-                urlParams.Add(new QueryParameter("delimited", Delimited.ToLower()));
-            }
-
-            if (parameters.ContainsKey("Language"))
-            {
-                Language = parameters["Language"].Replace(" ", "");
-                urlParams.Add(new QueryParameter("language", Language));
-            }
-
-            if (parameters.ContainsKey("Track"))
-            {
-                Track = parameters["Track"];
-                urlParams.Add(new QueryParameter("track", Track));
-            }
-
-            if (parameters.ContainsKey("With"))
-            {
-                With = parameters["With"];
-                urlParams.Add(new QueryParameter("with", With.ToLower()));
-            }
-
-            if (parameters.ContainsKey("AllReplies"))
-            {
-                AllReplies = bool.Parse(parameters["AllReplies"]);
-
-                if (AllReplies)
-                {
-                    urlParams.Add(new QueryParameter("replies", "all"));
-                }
-            }
-
-            if (parameters.ContainsKey("StallWarnings"))
-            {
-                StallWarnings = bool.Parse(parameters["StallWarnings"]);
-                urlParams.Add(new QueryParameter("stall_warnings", parameters["StallWarnings"].ToLower()));
-            }
-
-            if (parameters.ContainsKey("Locations"))
-            {
-                Locations = parameters["Locations"];
-                urlParams.Add(new QueryParameter("locations", Locations));
             }
 
             return req;

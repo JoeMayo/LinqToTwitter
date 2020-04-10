@@ -333,14 +333,14 @@ namespace LinqToTwitter
         {
             WriteLog(url, nameof(PostMediaAsync));
 
-            ulong mediaID = await InitAsync(url, data, postData, name, fileName, contentType, mediaCategory, shared, cancelToken).ConfigureAwait(false);
+            ulong mediaID = await InitAsync(url, data, postData, contentType, mediaCategory, shared, cancelToken).ConfigureAwait(false);
 
             await AppendChunksAsync(url, mediaID, data, name, fileName, contentType, cancelToken).ConfigureAwait(false);
 
             return await FinalizeAsync(url, mediaID, cancelToken).ConfigureAwait(false);
         }
 
-        async Task<ulong> InitAsync(string url, byte[] data, IDictionary<string, string> postData, string name, string fileName, string contentType, string mediaCategory, bool shared, CancellationToken cancelToken)
+        async Task<ulong> InitAsync(string url, byte[] data, IDictionary<string, string> postData, string contentType, string mediaCategory, bool shared, CancellationToken cancelToken)
         {
             var multiPartContent = new MultipartFormDataContent
             {
@@ -384,7 +384,6 @@ namespace LinqToTwitter
                 skip < data.Length; 
                 segmentIndex++, skip = segmentIndex * ChunkSize)
             {
-                int take = Math.Min(data.Length - skip, ChunkSize);
                 byte[] chunk = data.Skip(skip).Take(ChunkSize).ToArray();
 
                 var multiPartContent = new MultipartFormDataContent();

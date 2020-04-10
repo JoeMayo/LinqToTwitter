@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Xml.Serialization;
-using LinqToTwitter.Common;
 using LitJson;
 
 namespace LinqToTwitter

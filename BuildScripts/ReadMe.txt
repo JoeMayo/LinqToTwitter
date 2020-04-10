@@ -1,35 +1,33 @@
-Release Notes:
+# Welcome to LINQ to Twitter!
 
-	- Demo included in downloadable source code in the /Samples folder.
+## Release Notes:
+
+* Full documentation in the GitHub Wiki:
+    - https://github.com/JoeMayo/LinqToTwitter/wiki 
+
+* Demos included in downloadable source code in the /Samples folder. 
+	- ConsoleSamples covers all APIs and there are other technology specific demos too.
 	
-	- How to use with Xamarin.Android: 
-		http://geekswithblogs.net/WinAZ/archive/2013/11/14/linq-to-twitter-runs-xamarin.android.aspx
-	- How to use with Xamarin.iOS: 
-		http://geekswithblogs.net/WinAZ/archive/2013/12/06/linq-to-twitter-runs-on-xamarin.ios.aspx
-
-Assemblies:
-
-.NET >= 4.6.1
-
-	LinqToTwitter.netstandard.dll
-
-Windows 10
-
-	LinqToTwitter.netstandard.dll
-
-Xamarin:
-
-	LinqToTwitter.netstandard.dll
-
-Required Dependencies 
-
-    <dependencies>
-      <dependency id="Newtonsoft.Json" version="10.0.3" />
-      <dependency id="System.Reactive.Core" version="3.1.1" />
-      <dependency id="System.Reactive.Interfaces" version="3.1.1" />
-      <dependency id="System.Reactive.Linq" version="3.1.1" />
-      <dependency id="System.Reactive.PlatformServices" version="3.1.1" />
-    </dependencies>
+* How to use with Xamarin.Android: 
+	- http://geekswithblogs.net/WinAZ/archive/2013/11/14/linq-to-twitter-runs-xamarin.android.aspx
 	
-Follow @JoeMayo and @linq2Twitr on Twitter for the latest news.
+* How to use with Xamarin.iOS: 
+    - http://geekswithblogs.net/WinAZ/archive/2013/12/06/linq-to-twitter-runs-on-xamarin.ios.aspx
 
+* You can find help on Stack Overflow:
+	- https://stackoverflow.com/questions/tagged/linq-to-twitter
+
+* Please visit the GitHub issues page if you've found a bug or would like to contribute:
+    - https://github.com/JoeMayo/LinqToTwitter/issues 
+
+## Supported Platforms:
+
+	"net48",
+    "uap10.0",
+	"xamarin.ios",
+	"xamarin.mac",
+    "monoandroid",
+    "netcoreapp3.1",
+    "netstandard2.0"
+
+### Follow @JoeMayo and @linq2Twitr on Twitter for the latest news.

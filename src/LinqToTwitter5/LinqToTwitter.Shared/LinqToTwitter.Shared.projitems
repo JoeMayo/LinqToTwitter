@@ -168,12 +168,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Status\StatusRequestProcessor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Status\StatusType.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Status\TwitterContextStatusCommands.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Streaming\ControlStream.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Streaming\ControlStreamFollow.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Streaming\ControlStreamInfo.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Streaming\ControlStreamRequestProcessor.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Streaming\ControlStreamType.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Streaming\ControlStreamUser.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Streaming\IStreamContent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Streaming\Messages\Control.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Streaming\Messages\Delete.cs" />
@@ -192,7 +186,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Streaming\Streaming.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Streaming\StreamingRequestProcessor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Streaming\StreamingType.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Streaming\TwitterContextStreamCommands.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Trends\Location.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Trends\Trend.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Trends\TrendRequestProcessor.cs" />
@@ -205,9 +198,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)User\UserAction.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)User\UserRequestProcessor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)User\UserType.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Vine\Vine.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Vine\VineRequestProcessor.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Vine\VineType.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WelcomeMessages\WelcomeMessage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WelcomeMessages\WelcomeMessageRequestProcessor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WelcomeMessages\WelcomeMessageType.cs" />

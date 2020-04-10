@@ -2,24 +2,78 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
   <metadata>
     <id>linqtotwitter</id>
-    <version>5.0.0</version>
+    <version>0</version>
     <title>LINQ to Twitter</title>
     <authors>Joe Mayo</authors>
     <owners>Joe Mayo</owners>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
-    <licenseUrl>https://github.com/JoeMayo/LinqToTwitter/blob/master/License.txt</licenseUrl>
+    <license type="expression">Apache-2.0</license>
     <projectUrl>https://github.com/JoeMayo/LinqToTwitter</projectUrl>
-    <iconUrl>http://pbs.twimg.com/profile_images/378800000625948439/57f4351535721aeedc632745ceaacfea_normal.png</iconUrl>
+    <icon>200xColor_2.png</icon>
     <description>Supporting Twitter API v1.1, LINQ to Twitter uses standard LINQ syntax and supports .NET, .NET Core, .NET Standard 2.0, Windows 10, and Xamarin platforms.</description>
-    <summary>LINQ to Twitter is a 3rd party LINQ Provider (Twitter Library) for the Twitter API.</summary>
-    <releaseNotes>Bug fixes.</releaseNotes>
+    <summary>LINQ to Twitter is a 3rd party LINQ Provider (Twitter Library) that lets you tweet and query with the Twitter API.</summary>
+    <releaseNotes>
+      * Removed deprecated methods
+        - `UpdateAccountBackgroundImageAsync`
+        - All DirectMessage APIs (replaced by DirectMessageEvents API)
+      * Added `performBlock` parameter to ReportSpamAsync
+      * Added `AdditionalOwners` parameter to `UploadMediaAsync`
+      * Added URL and Description entities to User entity
+      * Added `TweetMode` parameter to `TweetAsync` and `ReplyAsync`
+      * Added `parameters` parameter to `AspNetAuthorizer`
+      * Added `ExecuteRawAsync` overload that accepts an `HttpMethod` parameter
+    </releaseNotes>
     <tags>twitter twitterapi twitterdev tweet linq social linqtotwitter linq2twitter</tags>
     <dependencies>
-      <dependency id="Newtonsoft.Json" version="10.0.3" />
-      <dependency id="System.Reactive.Core" version="3.1.1" />
-      <dependency id="System.Reactive.Interfaces" version="3.1.1" />
-      <dependency id="System.Reactive.Linq" version="3.1.1" />
-      <dependency id="System.Reactive.PlatformServices" version="3.1.1" />
+      <group targetFramework="net48">
+        <dependency id="Newtonsoft.Json" version="12.0.3" />
+        <dependency id="System.Reactive.Core" version="4.4.1" />
+        <dependency id="System.Reactive.Interfaces" version="4.4.1" />
+        <dependency id="System.Reactive.Linq" version="4.4.1" />
+        <dependency id="System.Reactive.PlatformServices" version="4.4.1" />
+      </group>
+      <group targetFramework="uap10.0">
+        <dependency id="Newtonsoft.Json" version="12.0.3" />
+        <dependency id="System.Reactive.Core" version="4.4.1" />
+        <dependency id="System.Reactive.Interfaces" version="4.4.1" />
+        <dependency id="System.Reactive.Linq" version="4.4.1" />
+        <dependency id="System.Reactive.PlatformServices" version="4.4.1" />
+      </group>
+      <group targetFramework="xamarin.ios">
+        <dependency id="Newtonsoft.Json" version="12.0.3" />
+        <dependency id="System.Reactive.Core" version="4.4.1" />
+        <dependency id="System.Reactive.Interfaces" version="4.4.1" />
+        <dependency id="System.Reactive.Linq" version="4.4.1" />
+        <dependency id="System.Reactive.PlatformServices" version="4.4.1" />
+      </group>
+      <group targetFramework="xamarin.mac">
+        <dependency id="Newtonsoft.Json" version="12.0.3" />
+        <dependency id="System.Reactive.Core" version="4.4.1" />
+        <dependency id="System.Reactive.Interfaces" version="4.4.1" />
+        <dependency id="System.Reactive.Linq" version="4.4.1" />
+        <dependency id="System.Reactive.PlatformServices" version="4.4.1" />
+      </group>
+      <group targetFramework="monoandroid">
+        <dependency id="Newtonsoft.Json" version="12.0.3" />
+        <dependency id="System.Reactive.Core" version="4.4.1" />
+        <dependency id="System.Reactive.Interfaces" version="4.4.1" />
+        <dependency id="System.Reactive.Linq" version="4.4.1" />
+        <dependency id="System.Reactive.PlatformServices" version="4.4.1" />
+      </group>
+      <group targetFramework="netcoreapp3.1">
+        <dependency id="Newtonsoft.Json" version="12.0.3" />
+        <dependency id="System.Reactive.Core" version="4.4.1" />
+        <dependency id="System.Reactive.Interfaces" version="4.4.1" />
+        <dependency id="System.Reactive.Linq" version="4.4.1" />
+        <dependency id="System.Reactive.PlatformServices" version="4.4.1" />
+     </group>
+      <group targetFramework="netstandard2.0">
+        <dependency id="Newtonsoft.Json" version="12.0.3" />
+        <dependency id="System.Reactive.Core" version="4.4.1" />
+        <dependency id="System.Reactive.Interfaces" version="4.4.1" />
+        <dependency id="System.Reactive.Linq" version="4.4.1" />
+        <dependency id="System.Reactive.PlatformServices" version="4.4.1" />
+      </group>
     </dependencies>
   </metadata>
 </package>

@@ -104,10 +104,8 @@ namespace LinqToTwitter
         /// </summary>
         public TwitterExecute(IAuthorizer authorizer)
         {
-            if (authorizer == null)
-                throw new ArgumentNullException("authorizedClient");
+            Authorizer = authorizer ?? throw new ArgumentNullException("authorizedClient");
 
-            Authorizer = authorizer;
             Authorizer.UserAgent = Authorizer.UserAgent ?? L2TKeys.DefaultUserAgent;
         }
 
@@ -326,19 +324,20 @@ namespace LinqToTwitter
         {
             WriteLog(url, "PostMediaAsync");
 
-            ulong mediaID = await InitAsync(url, data, postData, name, fileName, contentType, mediaCategory, shared, cancelToken).ConfigureAwait(false);
+            ulong mediaID = await InitAsync(url, data, postData, contentType, mediaCategory, shared, cancelToken).ConfigureAwait(false);
 
             await AppendChunksAsync(url, mediaID, data, name, fileName, contentType, cancelToken).ConfigureAwait(false);
 
             return await FinalizeAsync(url, mediaID, cancelToken).ConfigureAwait(false);
         }
 
-        async Task<ulong> InitAsync(string url, byte[] data, IDictionary<string, string> postData, string name, string fileName, string contentType, string mediaCategory, bool shared, CancellationToken cancelToken)
+        async Task<ulong> InitAsync(string url, byte[] data, IDictionary<string, string> postData, string contentType, string mediaCategory, bool shared, CancellationToken cancelToken)
         {
-            var multiPartContent = new MultipartFormDataContent();
-
-            multiPartContent.Add(new StringContent("INIT"), "command");
-            multiPartContent.Add(new StringContent(contentType), "media_type");
+            var multiPartContent = new MultipartFormDataContent
+            {
+                { new StringContent("INIT"), "command" },
+                { new StringContent(contentType), "media_type" }
+            };
             if (!string.IsNullOrWhiteSpace(mediaCategory))
                 multiPartContent.Add(new StringContent(mediaCategory), "media_category");
             if (shared)
@@ -376,7 +375,6 @@ namespace LinqToTwitter
                 skip < data.Length;
                 segmentIndex++, skip = segmentIndex * ChunkSize)
             {
-                int take = Math.Min(data.Length - skip, ChunkSize);
                 byte[] chunk = data.Skip(skip).Take(ChunkSize).ToArray();
 
                 var multiPartContent = new MultipartFormDataContent();
@@ -404,10 +402,11 @@ namespace LinqToTwitter
 
         async Task<string> FinalizeAsync(string url, ulong mediaID, CancellationToken cancelToken)
         {
-            var multiPartContent = new MultipartFormDataContent();
-
-            multiPartContent.Add(new StringContent("FINALIZE"), "command");
-            multiPartContent.Add(new StringContent(mediaID.ToString()), "media_id");
+            var multiPartContent = new MultipartFormDataContent
+            {
+                { new StringContent("FINALIZE"), "command" },
+                { new StringContent(mediaID.ToString()), "media_id" }
+            };
 
             var handler = new PostMessageHandler(this, new Dictionary<string, string>(), url);
             using (var client = new HttpClient(handler))
@@ -467,7 +466,7 @@ namespace LinqToTwitter
         /// <returns>Json Response from Twitter - empty string if async</returns>
         public async Task<string> PostFormUrlEncodedToTwitterAsync<T>(string method, string url, IDictionary<string, string> postData, CancellationToken cancelToken)
         {
-            WriteLog(url, "PostToTwitterAsync");
+            WriteLog(url, nameof(PostFormUrlEncodedToTwitterAsync));
 
             var cleanPostData = new Dictionary<string, string>();
 
@@ -484,19 +483,21 @@ namespace LinqToTwitter
 
             var content = new StringContent(dataString.ToString().TrimEnd('&'), Encoding.UTF8, "application/x-www-form-urlencoded");
             var handler = new PostMessageHandler(this, cleanPostData, url);
-            using (var client = new HttpClient(handler))
-            {
-                if (Timeout != 0)
-                    client.Timeout = new TimeSpan(0, 0, 0, Timeout);
+            var client = new HttpClient(handler);
 
-                HttpResponseMessage msg;
-                if (method == HttpMethod.Delete.ToString())
-                    msg = await client.DeleteAsync(url).ConfigureAwait(false);
-                else
-                    msg = await client.PostAsync(url, content).ConfigureAwait(false);
+            if (Timeout != 0)
+                client.Timeout = new TimeSpan(0, 0, 0, Timeout);
 
-                return await HandleResponseAsync(msg).ConfigureAwait(false);
-            }
+            HttpResponseMessage msg;
+
+            if (method == HttpMethod.Delete.ToString())
+                msg = await client.DeleteAsync(url).ConfigureAwait(false);
+            else if (method == HttpMethod.Put.ToString())
+                msg = await client.PutAsync(url, content).ConfigureAwait(false);
+            else
+                msg = await client.PostAsync(url, content).ConfigureAwait(false);
+
+            return await HandleResponseAsync(msg).ConfigureAwait(false);
         }
   
         async Task<string> HandleResponseAsync(HttpResponseMessage msg)
@@ -507,12 +508,12 @@ namespace LinqToTwitter
                 (from header in msg.Headers
                  select new
                  {
-                     Key = header.Key,
-                     Value = string.Join(", ", header.Value)
+                     HeaderKey = header.Key,
+                     HeaderValue = string.Join(", ", header.Value)
                  })
                 .ToDictionary(
-                    pair => pair.Key,
-                    pair => pair.Value);
+                    pair => pair.HeaderKey,
+                    pair => pair.HeaderValue);
 
             await TwitterErrorHandler.ThrowIfErrorAsync(msg).ConfigureAwait(false);
 

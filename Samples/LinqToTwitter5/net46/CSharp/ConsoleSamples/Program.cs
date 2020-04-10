@@ -135,11 +135,6 @@ namespace Linq2TwitterDemos_Console
                         break;
                     case 'i':
                     case 'I':
-                        Console.WriteLine("\n\tRunning Vine Demos...\n");
-                        await VineDemos.RunAsync(twitterCtx);
-                        break;
-                    case 'j':
-                    case 'J':
                         Console.WriteLine("\n\tRunning Welcome Message Demos...\n");
                         await WelcomeMessageDemos.RunAsync(twitterCtx);
                         break;
@@ -197,27 +192,14 @@ namespace Linq2TwitterDemos_Console
             ConsoleKeyInfo input = Console.ReadKey();
             Console.WriteLine("");
 
-            IAuthorizer auth = null;
-
-            switch (input.Key)
+            IAuthorizer auth = input.Key switch
             {
-
-                case ConsoleKey.D1:
-                    auth = DoPinOAuth();
-                    break;
-                case ConsoleKey.D2:
-                    auth = DoApplicationOnlyAuth();
-                    break;
-                case ConsoleKey.D3:
-                    auth = DoSingleUserAuth();
-                    break;
-                case ConsoleKey.D4:
-                    auth = DoXAuth();
-                    break;
-                default:
-                    auth = DoPinOAuth();
-                    break;
-            }
+                ConsoleKey.D1 => DoPinOAuth(),
+                ConsoleKey.D2 => DoApplicationOnlyAuth(),
+                ConsoleKey.D3 => DoSingleUserAuth(),
+                ConsoleKey.D4 => DoXAuth(),
+                _ => DoPinOAuth(),
+            };
 
             return auth;
         }

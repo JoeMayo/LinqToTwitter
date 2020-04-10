@@ -38,7 +38,7 @@ namespace LinqToTwitter
                         try
                         {
                             observer.OnNext(content);
-                            await Task.FromResult(content);
+                            await Task.FromResult(content).ConfigureAwait(false);
                         }
                         catch (Exception ex)
                         {

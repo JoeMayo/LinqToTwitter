@@ -54,10 +54,7 @@ namespace LinqToTwitter
                 UserAgent = L2TKeys.DefaultUserAgent;
 
             BaseUrl = "https://api.twitter.com/1.1/";
-            VineUrl = "https://vine.co/";
             StreamingUrl = "https://stream.twitter.com/1.1/";
-            UserStreamUrl = "https://userstream.twitter.com/1.1/";
-            SiteStreamUrl = "https://sitestream.twitter.com/1.1/";
             UploadUrl = "https://upload.twitter.com/1.1/";
         }
 
@@ -65,11 +62,6 @@ namespace LinqToTwitter
         /// base URL for accessing Twitter API
         /// </summary>
         public string BaseUrl { get; set; }
-
-        /// <summary>
-        /// base URL for Vine queris
-        /// </summary>
-        public string VineUrl { get; set; }
 
         /// <summary>
         /// base URL for uploading media
@@ -80,16 +72,6 @@ namespace LinqToTwitter
         /// base URL for accessing streaming APIs
         /// </summary>
         public string StreamingUrl { get; set; }
-
-        /// <summary>
-        /// base URL for accessing user stream APIs
-        /// </summary>
-        public string UserStreamUrl { get; set; }
-
-        /// <summary>
-        /// base URL for accessing site stream APIs
-        /// </summary>
-        public string SiteStreamUrl { get; set; }
 
         /// <summary>
         /// Assign the Log to the context
@@ -529,12 +511,6 @@ namespace LinqToTwitter
                 case nameof(Blocks):
                     req = new BlocksRequestProcessor<T>();
                     break;
-                case nameof(ControlStream):
-                    req = new ControlStreamRequestProcessor<T>
-                        {
-                            SiteStreamUrl = SiteStreamUrl
-                        };
-                    break;
                 case nameof(DirectMessageEvents):
                     req = new DirectMessageEventsRequestProcessor<T>();
                     break;
@@ -578,8 +554,6 @@ namespace LinqToTwitter
                     baseUrl = StreamingUrl;
                     req = new StreamingRequestProcessor<T>
                     {
-                        UserStreamUrl = UserStreamUrl,
-                        SiteStreamUrl = SiteStreamUrl,
                         TwitterExecutor = TwitterExecutor
                     };
                     break;
@@ -588,12 +562,6 @@ namespace LinqToTwitter
                     break;
                 case nameof(User):
                     req = new UserRequestProcessor<T>();
-                    break;
-                case nameof(Vine):
-                    req = new VineRequestProcessor<T>
-                    {
-                        VineUrl = VineUrl
-                    };
                     break;
                 case nameof(WelcomeMessage):
                     req = new WelcomeMessageRequestProcessor<T>();

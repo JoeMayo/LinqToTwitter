@@ -39,17 +39,6 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// enables access to Twitter Control Streams, which manage and query Site Streams
-        /// </summary>
-        public TwitterQueryable<ControlStream> ControlStream
-        {
-            get
-            {
-                return new TwitterQueryable<ControlStream>(this);
-            }
-        }
-
-        /// <summary>
         /// enables access to Direct Message Events, supporting Twitter chatbots
         /// </summary>
         public TwitterQueryable<DirectMessageEvents> DirectMessageEvents
@@ -211,17 +200,6 @@ namespace LinqToTwitter
             get
             {
                 return new TwitterQueryable<User>(this);
-            }
-        }
-
-        /// <summary>
-        /// enables access to Twitter Vine messages, such as Oembed
-        /// </summary>
-        public TwitterQueryable<Vine> Vine
-        {
-            get
-            {
-                return new TwitterQueryable<Vine>(this);
             }
         }
 

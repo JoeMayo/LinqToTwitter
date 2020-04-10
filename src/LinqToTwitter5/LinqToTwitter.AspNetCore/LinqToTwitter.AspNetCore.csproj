@@ -1,21 +1,23 @@
-﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <AssemblyVersion>5.0.0.0</AssemblyVersion>
-    <FileVersion>5.0.0.0</FileVersion>
-    <Version>5.0.0</Version>
-    <Authors>Joe Mayo</Authors>
-    <Company>LINQ to Twitter</Company>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <Description>A LINQ Provider for the Twitter API</Description>
+    <Version>5.1.0</Version>
+    <Authors>@JoeMayo</Authors>
+    <Product>LinqToTwitter.AspNetCore</Product>
+    <Company>LINQ to Twitter</Company>
+    <Copyright>Copyright ©  2020</Copyright>
   </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="ConfigureAwaitChecker.Analyzer" Version="2.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.1.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Session" Version="2.1.1" />
-    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\LinqToTwitter.netstandard\LinqToTwitter.netstandard.csproj" />
-  </ItemGroup>
+
   <Import Project="..\LinqToTwitter.Shared.aspnet\LinqToTwitter.Shared.aspnet.projitems" Label="Shared" />
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LinqToTwitter.Core\LinqToTwitter.Core.csproj" />
+  </ItemGroup>
+
 </Project>

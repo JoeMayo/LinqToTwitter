@@ -9,7 +9,7 @@
         // HTTP Headers
         //
 
-        public const string DefaultUserAgent = "LINQ-To-Twitter/4.0";
+        public const string DefaultUserAgent = "LINQ-To-Twitter/5.1";
 
         //
         // Error handling
