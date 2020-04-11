@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using LinqToTwitter;
 
@@ -82,7 +83,7 @@ namespace Linq2TwitterDemos_Console
 
             string result = 
                 await twitterCtx.ExecuteRawAsync(
-                    queryString, parameters);
+                    queryString, parameters, HttpMethod.Post);
 
             if (result != null)
                 Console.WriteLine(
