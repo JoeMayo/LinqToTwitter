@@ -25,6 +25,11 @@ namespace MvcDemo.Controllers
                 }
             };
 
+            // Available in v5.1.0 - you can pass parameters that you can read in Complete(), via Request.QueryString, when Twitter returns
+            //var parameters = new Dictionary<string, string> { { "my_custom_param", "val" } };
+            //string twitterCallbackUrl = Request.GetDisplayUrl().Replace("Begin", "Complete");
+            //return await auth.BeginAuthorizationAsync(new Uri(twitterCallbackUrl), parameters);
+
             string twitterCallbackUrl = Request.Url.ToString().Replace("Begin", "Complete");
             return await auth.BeginAuthorizationAsync(new Uri(twitterCallbackUrl));
         }

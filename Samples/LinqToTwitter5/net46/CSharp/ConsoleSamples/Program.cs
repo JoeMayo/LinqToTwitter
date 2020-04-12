@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Net;
 using System.Threading.Tasks;
 using LinqToTwitter;
 
@@ -9,6 +10,8 @@ namespace Linq2TwitterDemos_Console
     {
         static async Task Main()
         {
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+
             try
             {
                 await DoDemosAsync();

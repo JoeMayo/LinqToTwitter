@@ -274,7 +274,7 @@ namespace Linq2TwitterDemos_Console
         {
             const string SpammerScreenName = "realDonaldTrump";
 
-            User spammer = await twitterCtx.ReportSpamAsync(SpammerScreenName);
+            User spammer = await twitterCtx.ReportSpamAsync(SpammerScreenName, performBlock: true);
 
             Console.WriteLine("You just reported {0} as a spammer.", spammer.ScreenNameResponse);
         }

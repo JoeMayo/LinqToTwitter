@@ -71,9 +71,13 @@ namespace Linq2TwitterDemos_Console
                 "Testing video upload tweet #Linq2Twitter £ " +
                 DateTime.Now.ToString(CultureInfo.InvariantCulture);
 
-            //Media media = await twitterCtx.UploadMediaAsync(File.ReadAllBytes(@"..\..\images\LinqToTwitterNormalTest.mp4"), "video/mp4", "tweet_video");
-            Media media = await twitterCtx.UploadMediaAsync(File.ReadAllBytes(@"..\..\images\LinqToTwitterMediumTest.mp4"), "video/mp4", "tweet_video");
-            //Media media = await twitterCtx.UploadMediaAsync(File.ReadAllBytes(@"..\..\images\LinqToTwitterErrorTest.mp4"), "video/mp4", "tweet_video");
+            byte[] imageBytes = File.ReadAllBytes(@"..\..\..\images\TwitterTest.mp4");
+            const ulong JoeMayoUserID = 15411837;
+            var additionalOwners = new ulong[] { JoeMayoUserID };
+            string mediaType = "video/mp4";
+            string mediaCategory = "tweet_video";
+
+            Media media = await twitterCtx.UploadMediaAsync(imageBytes, mediaType, additionalOwners, mediaCategory);
 
             Media mediaStatusResponse = null;
             do
@@ -116,9 +120,13 @@ namespace Linq2TwitterDemos_Console
                 "Testing video upload tweet #Linq2Twitter £ " +
                 DateTime.Now.ToString(CultureInfo.InvariantCulture);
 
-            //Media media = await twitterCtx.UploadMediaAsync(File.ReadAllBytes(@"..\..\images\LinqToTwitterNormalTest.mp4"), "video/mp4", "tweet_video");
-            Media media = await twitterCtx.UploadMediaAsync(File.ReadAllBytes(@"..\..\images\LinqToTwitterMediumTest.mp4"), "video/mp4", "tweet_video");
-            //Media media = await twitterCtx.UploadMediaAsync(File.ReadAllBytes(@"..\..\images\LinqToTwitterErrorTest.mp4"), "video/mp4", "tweet_video");
+            byte[] imageBytes = File.ReadAllBytes(@"..\..\..\images\TwitterTest.mp4");
+            const ulong JoeMayoUserID = 15411837;
+            var additionalOwners = new ulong[] { JoeMayoUserID };
+            string mediaType = "video/mp4";
+            string mediaCategory = "tweet_video";
+
+            Media media = await twitterCtx.UploadMediaAsync(imageBytes, mediaType, additionalOwners, mediaCategory);
 
             Media mediaStatusResponse = null;
             do
