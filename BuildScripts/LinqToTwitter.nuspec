@@ -13,15 +13,7 @@
     <description>Supporting Twitter API v1.1, LINQ to Twitter uses standard LINQ syntax and supports .NET, .NET Core, .NET Standard 2.0, Windows 10, and Xamarin platforms.</description>
     <summary>LINQ to Twitter is a 3rd party LINQ Provider (Twitter Library) that lets you tweet and query with the Twitter API.</summary>
     <releaseNotes>
-      * Removed deprecated methods
-        - `UpdateAccountBackgroundImageAsync`
-        - All DirectMessage APIs (replaced by DirectMessageEvents API)
-      * Added `performBlock` parameter to ReportSpamAsync
-      * Added `AdditionalOwners` parameter to `UploadMediaAsync`
-      * Added URL and Description entities to User entity
-      * Added `TweetMode` parameter to `TweetAsync` and `ReplyAsync`
-      * Added `parameters` parameter to `AspNetAuthorizer`
-      * Added `ExecuteRawAsync` overload that accepts an `HttpMethod` parameter
+      * Fixed reference error in LinqToTwitter.AspNet, which should be .NET Framework
     </releaseNotes>
     <tags>twitter twitterapi twitterdev tweet linq social linqtotwitter linq2twitter</tags>
     <dependencies>

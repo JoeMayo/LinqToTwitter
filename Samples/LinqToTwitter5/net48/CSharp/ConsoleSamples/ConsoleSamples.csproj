@@ -3,10 +3,11 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <Version>5.1.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\src\LinqToTwitter5\LinqToTwitter.netstandard\LinqToTwitter.netstandard.csproj" />
+    <ProjectReference Include="..\..\..\..\..\src\LinqToTwitter5\LinqToTwitter.Core\LinqToTwitter.Core.csproj" />
   </ItemGroup>
 
 </Project>
