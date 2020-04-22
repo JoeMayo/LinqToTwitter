@@ -1,4 +1,5 @@
 Imports System.Net
+Imports System.Net.Sockets
 Imports LinqToTwitter
 
 Module Program
@@ -67,6 +68,10 @@ Module Program
         If Response IsNot Nothing AndAlso Response.Statuses IsNot Nothing Then
             For Each str As Status In tweets
                 Console.WriteLine(str.StatusID.ToString() + " " + str.FullText)
+
+                If str.ExtendedEntities.MediaEntities.Count > 0 Then
+                    Console.WriteLine(" - Media URL: " + str.ExtendedEntities.MediaEntities(0).MediaUrl)
+                End If
             Next
         End If
     End Function
