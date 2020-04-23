@@ -65,31 +65,36 @@ namespace Linq2TwitterDemos_Console
                         break;
                     case 'a':
                     case 'A':
-                        Console.WriteLine("\n\tTweeting images...\n");
-                        await UploadMultipleImagesAsync(twitterCtx);
+                        Console.WriteLine("\n\tTweeting one image...\n");
+                        await UploadSingleImageAsync(twitterCtx);
                         break;
                     case 'b':
                     case 'B':
-                        Console.WriteLine("\n\tGetting oembed...\n");
-                        await OEmbedStatusAsync(twitterCtx);
+                        Console.WriteLine("\n\tTweeting multiple images...\n");
+                        await UploadMultipleImagesAsync(twitterCtx);
                         break;
                     case 'c':
                     case 'C':
-                        Console.WriteLine("\n\tGetting retweeters...\n");
-                        await RetweetersAsync(twitterCtx);
+                        Console.WriteLine("\n\tGetting oembed...\n");
+                        await OEmbedStatusAsync(twitterCtx);
                         break;
                     case 'd':
                     case 'D':
-                        Console.WriteLine("\n\tFollowing conversation...\n");
-                        await GetConversationAsync(twitterCtx);
+                        Console.WriteLine("\n\tGetting retweeters...\n");
+                        await RetweetersAsync(twitterCtx);
                         break;
                     case 'e':
                     case 'E':
-                        Console.WriteLine("\n\tLooking up tweets...\n");
-                        await LookupTweetsAsyc(twitterCtx);
+                        Console.WriteLine("\n\tFollowing conversation...\n");
+                        await GetConversationAsync(twitterCtx);
                         break;
                     case 'f':
                     case 'F':
+                        Console.WriteLine("\n\tLooking up tweets...\n");
+                        await LookupTweetsAsyc(twitterCtx);
+                        break;
+                    case 'g':
+                    case 'G':
                         Console.WriteLine("\n\tUploading a video...\n");
                         await UploadVideoAsync(twitterCtx);
                         break;
@@ -119,12 +124,13 @@ namespace Linq2TwitterDemos_Console
             Console.WriteLine("\t 7. Update Status");
             Console.WriteLine("\t 8. Reply to a Tweet");
             Console.WriteLine("\t 9. Retweet a Tweet");
-            Console.WriteLine("\t A. Tweet Multiple Images");
-            Console.WriteLine("\t B. Get Oembed Tweet");
-            Console.WriteLine("\t C. Get Retweeters");
-            Console.WriteLine("\t D. Follow Conversation");
-            Console.WriteLine("\t E. Lookup Tweets");
-            Console.WriteLine("\t F. Upload a Video");
+            Console.WriteLine("\t A. Tweet Single Image");
+            Console.WriteLine("\t B. Tweet Multiple Images");
+            Console.WriteLine("\t C. Get Oembed Tweet");
+            Console.WriteLine("\t D. Get Retweeters");
+            Console.WriteLine("\t E. Follow Conversation");
+            Console.WriteLine("\t F. Lookup Tweets");
+            Console.WriteLine("\t G. Upload a Video");
 
             Console.WriteLine();
             Console.Write("\t Q. Return to Main menu");
@@ -388,6 +394,26 @@ namespace Linq2TwitterDemos_Console
             }
         }
 
+        static async Task UploadSingleImageAsync(TwitterContext twitterCtx)
+        {
+            var additionalOwners = new List<ulong> { 3265644348, 15411837 };
+            string status =
+                "Testing single-image tweet #Linq2Twitter £ " +
+                DateTime.Now.ToString(CultureInfo.InvariantCulture);
+            string mediaCategory = "tweet_image";
+
+            Media media = await twitterCtx.UploadMediaAsync(
+                File.ReadAllBytes(@"..\..\..\images\200xColor_2.png"), 
+                "image/png", 
+                additionalOwners, 
+                mediaCategory);
+
+            Status tweet = await twitterCtx.TweetAsync(status, new ulong[] { media.MediaID }, TweetMode.Extended);
+
+            if (tweet != null)
+                Console.WriteLine("Tweet sent: " + tweet.Text);
+        }
+
         static async Task UploadMultipleImagesAsync(TwitterContext twitterCtx)
         {
             var additionalOwners = new List<ulong> { 3265644348, 15411837 };
@@ -399,9 +425,9 @@ namespace Linq2TwitterDemos_Console
             var imageUploadTasks = 
                 new List<Task<Media>> 
                 {
-                    twitterCtx.UploadMediaAsync(File.ReadAllBytes(@"..\..\images\200xColor_2.png"), "image/png", additionalOwners, mediaCategory),
-                    twitterCtx.UploadMediaAsync(File.ReadAllBytes(@"..\..\images\WP_000003.jpg"), "image/jpg", mediaCategory),
-                    twitterCtx.UploadMediaAsync(File.ReadAllBytes(@"..\..\images\13903749474_86bd1290de_o.jpg"), "image/jpg", mediaCategory),
+                    twitterCtx.UploadMediaAsync(File.ReadAllBytes(@"..\..\..\images\200xColor_2.png"), "image/png", additionalOwners, mediaCategory),
+                    twitterCtx.UploadMediaAsync(File.ReadAllBytes(@"..\..\..\images\WP_000003.jpg"), "image/jpg", mediaCategory),
+                    twitterCtx.UploadMediaAsync(File.ReadAllBytes(@"..\..\..\images\13903749474_86bd1290de_o.jpg"), "image/jpg", mediaCategory),
                 };
 
             await Task.WhenAll(imageUploadTasks);
