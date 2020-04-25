@@ -378,7 +378,7 @@ namespace Linq2TwitterDemos_Console
 
         static async Task RetweetAsync(TwitterContext twitterCtx)
         {
-            ulong tweetID = 401033367283453953;
+            ulong tweetID = 1250088275861049345;
 
             Status retweet = await twitterCtx.RetweetAsync(tweetID);
 

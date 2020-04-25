@@ -377,12 +377,12 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="tweetID">ID of tweet being retweeted.</param>
         /// <returns>Retweeted tweet.</returns>
-        public virtual async Task<Status> RetweetAsync(ulong tweetID, TweetMode tweetMode = TweetMode.Compat, CancellationToken cancelToken = default(CancellationToken))
+        public virtual async Task<Status> RetweetAsync(ulong tweetID, CancellationToken cancelToken = default(CancellationToken))
         {
             if (tweetID == MissingID)
                 throw new ArgumentException("0 is *not* a valid tweetID. You must provide the ID of the tweet you're retweeting.", "tweetID");
 
-            var retweetUrl = BaseUrl + "statuses/retweet/" + tweetID + ".json?tweet_mode=" + tweetMode.ToString().ToLower();
+            var retweetUrl = BaseUrl + "statuses/retweet/" + tweetID + ".json";
 
             RawResult = await TwitterExecutor
                 .PostFormUrlEncodedToTwitterAsync<Status>(HttpMethod.Post.ToString(), retweetUrl, new Dictionary<string, string>(), cancelToken)
