@@ -24,7 +24,7 @@ namespace LinqToTwitter
         /// <summary>
         /// Url entities in the description
         /// </summary>
-        [JsonProperty("url")]
+        [JsonProperty("description")]
         public Entities Description { get; set; }
     }
 }
