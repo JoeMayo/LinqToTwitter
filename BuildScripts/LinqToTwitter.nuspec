@@ -13,7 +13,9 @@
     <description>Supporting Twitter API v1.1, LINQ to Twitter uses standard LINQ syntax and supports .NET, .NET Core, .NET Standard 2.0, Windows 10, and Xamarin platforms.</description>
     <summary>LINQ to Twitter is a 3rd party LINQ Provider (Twitter Library) that lets you tweet and query with the Twitter API.</summary>
     <releaseNotes>
-      * Fixed reference error in LinqToTwitter.AspNet, which should be .NET Framework
+      * Bug Fixes
+      - Fixed RetweetAsync
+      - Fixed UserEntities deserialization
     </releaseNotes>
     <tags>twitter twitterapi twitterdev tweet linq social linqtotwitter linq2twitter</tags>
     <dependencies>
