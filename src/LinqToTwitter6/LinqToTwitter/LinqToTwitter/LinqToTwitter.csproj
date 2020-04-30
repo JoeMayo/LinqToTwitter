@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <Description>A LINQ Provider for the Twitter API</Description>
+    <Version>6.0.0</Version>
+    <Authors>@JoeMayo</Authors>
+    <Company></Company>
+    <PackageId>linqtotwitter</PackageId>
+    <Product>LINQ to Twitter</Product>
+  </PropertyGroup>
+
+</Project>
