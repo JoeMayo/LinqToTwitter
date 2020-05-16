@@ -1,11 +1,12 @@
 ﻿using System;
+#nullable disable
 using System.Linq.Expressions;
 
 namespace LinqToTwitter.Provider
 {
     internal class MethodCallExpressionTypeFinder : ExpressionVisitor
     {
-        private Type genericType;
+        Type genericType;
 
         /// <summary>
         /// Gets the underlying type of the whole method call expression

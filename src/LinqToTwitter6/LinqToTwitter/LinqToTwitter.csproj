@@ -1,19 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
-    <Description>A LINQ Provider for the Twitter API</Description>
-    <Version>6.0.0</Version>
-    <Authors>@JoeMayo</Authors>
-    <Company></Company>
-    <PackageId>linqtotwitter</PackageId>
-    <Product>LINQ to Twitter</Product>
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>LinqToTwitter.snk</AssemblyOriginatorKeyFile>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net5.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<Description>A LINQ Provider for the Twitter API</Description>
+		<Version>6.0.0</Version>
+		<Authors>@JoeMayo</Authors>
+		<Company></Company>
+		<PackageId>linqtotwitter</PackageId>
+		<Product>LINQ to Twitter</Product>
+		<SignAssembly>true</SignAssembly>
+		<AssemblyOriginatorKeyFile>LinqToTwitter.snk</AssemblyOriginatorKeyFile>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="System.Text.Json" Version="4.7.1" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="System.Text.Json" Version="4.7.1" />
+	</ItemGroup>
 
 </Project>

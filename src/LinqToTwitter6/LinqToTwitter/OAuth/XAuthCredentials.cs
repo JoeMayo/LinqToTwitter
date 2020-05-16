@@ -1,4 +1,5 @@
-﻿
+﻿#nullable disable
+
 namespace LinqToTwitter.OAuth
 {
     /// <summary>

@@ -1,4 +1,5 @@
-﻿/***********************************************************
+﻿#nullable disable
+/***********************************************************
  * Credits:
  * 
  * MSDN Documentation -
@@ -68,9 +69,9 @@ namespace LinqToTwitter.Provider
                     (exp as UnaryExpression).Operand :
                     exp;
 
-            return ((tempExp is MemberExpression) &&
-                (((MemberExpression)tempExp).Member.DeclaringType == declaringType) &&
-                (((MemberExpression)tempExp).Member.Name == memberName));
+            return ((tempExp is MemberExpression expression) &&
+                (expression.Member.DeclaringType == declaringType) &&
+                (expression.Member.Name == memberName));
         }
 
         /// <summary>

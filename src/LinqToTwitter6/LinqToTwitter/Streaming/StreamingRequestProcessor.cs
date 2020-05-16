@@ -1,4 +1,5 @@
-﻿using LinqToTwitter.Provider;
+﻿#nullable disable
+using LinqToTwitter.Provider;
 using System;
 using System.Collections.Generic;
 using System.Linq;

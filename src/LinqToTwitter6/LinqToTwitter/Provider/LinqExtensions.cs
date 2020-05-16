@@ -15,13 +15,10 @@ namespace LinqToTwitter.Provider
             yield return oneOff;
         }
 
-        public static TTo ItemCast<TFrom, TTo>(this TFrom item, TTo defaultValue)
+        public static TTo? ItemCast<TFrom, TTo>(this TFrom item, TTo defaultValue)
             where TTo: class
         {
-            if (item is TTo)
-                return item as TTo;
-            else
-                return defaultValue;
+            return item is TTo ? item as TTo : defaultValue;
         }
     }
 }

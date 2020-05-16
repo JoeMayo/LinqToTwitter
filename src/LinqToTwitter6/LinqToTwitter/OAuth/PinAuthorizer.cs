@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable disable
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -57,8 +58,10 @@ namespace LinqToTwitter.OAuth
 
             string verifier = GetPin();
 
-            var accessTokenParams = new Dictionary<string, string>();
-            accessTokenParams.Add("oauth_verifier", verifier);
+            var accessTokenParams = new Dictionary<string, string>
+            {
+                { "oauth_verifier", verifier }
+            };
             await GetAccessTokenAsync(accessTokenParams).ConfigureAwait(false);
         }
 
@@ -86,8 +89,10 @@ namespace LinqToTwitter.OAuth
 
         public async Task CompleteAuthorizeAsync(string pin)
         {
-            var accessTokenParams = new Dictionary<string, string>();
-            accessTokenParams.Add("oauth_verifier", pin);
+            var accessTokenParams = new Dictionary<string, string>
+            {
+                { "oauth_verifier", pin }
+            };
             await GetAccessTokenAsync(accessTokenParams).ConfigureAwait(false);
         }
     }

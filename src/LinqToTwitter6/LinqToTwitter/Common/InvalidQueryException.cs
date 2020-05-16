@@ -28,7 +28,7 @@ namespace LinqToTwitter.Common
         /// constructors for a more meaninful exception.
         /// </summary>
         public InvalidQueryException()
-            : this("Invalid query: reason not specified.", null) { }
+            : this("Invalid query: reason not specified.") { }
 
         /// <summary>
         /// init exception with custom message

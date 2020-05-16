@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable disable
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
@@ -161,9 +162,10 @@ namespace LinqToTwitter.Provider
             if (Authorizer.Proxy != null && handler.SupportsProxy)
                 handler.Proxy = Authorizer.Proxy;
 
-            StreamingClient = new HttpClient(handler);
-
-            StreamingClient.Timeout = TimeSpan.FromMilliseconds(System.Threading.Timeout.Infinite);
+            StreamingClient = new HttpClient(handler)
+            {
+                Timeout = TimeSpan.FromMilliseconds(System.Threading.Timeout.Infinite)
+            };
 
             var httpRequest = ConfigureRequest(request);
 

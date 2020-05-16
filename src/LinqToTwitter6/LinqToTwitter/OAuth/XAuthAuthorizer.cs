@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿#nullable disable
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace LinqToTwitter.OAuth

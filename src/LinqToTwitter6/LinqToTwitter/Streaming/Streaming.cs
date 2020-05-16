@@ -30,27 +30,27 @@ namespace LinqToTwitter.Streaming
         /// <summary>
         /// Tweets are delimeted in the stream
         /// </summary>
-        public string Delimited { get; set; }
+        public string? Delimited { get; set; }
 
         /// <summary>
         /// Limit results to a comma-separated set of users
         /// </summary>
-        public string Follow { get; set; }
+        public string? Follow { get; set; }
 
         /// <summary>
         /// Comma-separated list of languages to filter results on
         /// </summary>
-        public string Language { get; set; }
+        public string? Language { get; set; }
 
         /// <summary>
         /// Get tweets in the comma-separated list of lat/lon's
         /// </summary>
-        public string Locations { get; set; }
+        public string? Locations { get; set; }
 
         /// <summary>
         /// Comma-separated list of keywords to get tweets for
         /// </summary>
-        public string Track { get; set; }
+        public string? Track { get; set; }
 
         /// <summary>
         /// Tell Twitter to send stall warnings
@@ -60,7 +60,7 @@ namespace LinqToTwitter.Streaming
         /// <summary>
         /// Type of entities to return, i.e. Follow, User, etc.
         /// </summary>
-        public string With { get; set; }
+        public string? With { get; set; }
 
         /// <summary>
         /// Supports compatibility or extended mode tweets.
@@ -71,14 +71,14 @@ namespace LinqToTwitter.Streaming
         /// <summary>
         /// Executor managing stream
         /// </summary>
-        internal ITwitterExecute TwitterExecutor { get; set; }
+        internal ITwitterExecute? TwitterExecutor { get; set; }
 
         /// <summary>
         /// Closes stream
         /// </summary>
         public void CloseStream()
         {
-            TwitterExecutor.CloseStream();
+            TwitterExecutor?.CloseStream();
         }
     }
 }

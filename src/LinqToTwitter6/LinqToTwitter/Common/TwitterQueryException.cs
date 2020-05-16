@@ -14,14 +14,14 @@ namespace LinqToTwitter.Common
         /// constructors for a more meaninful exception.
         /// </summary>
         public TwitterQueryException()
-            : this("Twitter returned an error from your query.", null) { }
+            : this("Twitter returned an error from your query.") { }
 
         /// <summary>
         /// init exception with custom message
         /// </summary>
         /// <param name="message">message to display</param>
         public TwitterQueryException(string message)
-            : base (message, null) { }
+            : base (message) { }
 
         /// <summary>
         /// init exception with custom message and chain to originating exception
@@ -44,6 +44,6 @@ namespace LinqToTwitter.Common
         /// <summary>
         /// Http status reason from Twitter response
         /// </summary>
-        public string ReasonPhrase { get; set; }
+        public string? ReasonPhrase { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Xml.Serialization;
+﻿#nullable disable
+using System.Xml.Serialization;
 
 namespace LinqToTwitter.Common
 {

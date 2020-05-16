@@ -1,4 +1,5 @@
-﻿using LinqToTwitter.Common;
+﻿#nullable disable
+using LinqToTwitter.Common;
 using LinqToTwitter.Net;
 using System;
 using System.Collections.Generic;
@@ -223,8 +224,7 @@ namespace LinqToTwitter.OAuth
 
             if (responseParams["user_id"] != null)
             {
-                ulong userID = 0;
-                ulong.TryParse(responseParams["user_id"], out userID);
+                ulong.TryParse(responseParams["user_id"], out ulong userID);
                 CredentialStore.UserID = userID;
             }
         }

@@ -1,3 +1,4 @@
+#nullable disable
 using System;
 using System.Collections.Generic;
 
@@ -30,8 +31,8 @@ namespace LinqToTwitter.Provider
 
         public int CompareTo(object obj)
         {
-            if (ReferenceEquals(obj, null))
-                return ReferenceEquals(this, null) ? 0 : 1;
+            if (obj is null)
+                return this is null ? 0 : 1;
 
             var other = obj as QueryParameter;
             return CompareTo(other);

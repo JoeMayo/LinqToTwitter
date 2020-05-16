@@ -1,8 +1,4 @@
-﻿/***********************************************************
- * Credits:
- * 
- * Created By: Joe Mayo, 8/26/08
- ***********************************************************/
+﻿#nullable disable
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -508,8 +504,8 @@ namespace LinqToTwitter
         protected internal IRequestProcessor<T> CreateRequestProcessor<T>(string requestType)
             where T : class
         {
-            string baseUrl = BaseUrl;
-            IRequestProcessor<T> req;
+            //string baseUrl = BaseUrl;
+            //IRequestProcessor<T> req;
 
             switch (requestType)
             {
@@ -581,10 +577,10 @@ namespace LinqToTwitter
                     throw new ArgumentException($"Type, {requestType} isn't a supported LINQ to Twitter entity.", nameof(requestType));
             }
 
-            if (baseUrl != null)
-                req.BaseUrl = baseUrl;
+            //if (baseUrl != null)
+            //    req.BaseUrl = baseUrl;
 
-            return req;
+            //return req;
         }
 
         /// <summary>

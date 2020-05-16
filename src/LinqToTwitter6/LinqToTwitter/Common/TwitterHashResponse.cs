@@ -1,4 +1,5 @@
-﻿namespace LinqToTwitter.Common
+﻿#nullable disable
+namespace LinqToTwitter.Common
 {
     /// <summary>
     /// Response for HTTP errors and end response

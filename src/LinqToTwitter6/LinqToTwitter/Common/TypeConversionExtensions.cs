@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable disable
+using System;
 using System.Globalization;
 using System.Collections.Generic;
 using System.Text.Json;
@@ -10,20 +11,16 @@ namespace LinqToTwitter.Common
 
         public static ulong GetULong(this string val, ulong defaultValue /* = 0*/)
         {
-            ulong result;
-
-            return String.IsNullOrWhiteSpace(val) ||
-                !ulong.TryParse(val, out result)
+            return string.IsNullOrWhiteSpace(val) ||
+                !ulong.TryParse(val, out ulong result)
                     ? defaultValue
                     : result;
         }
 
         public static double GetDouble(this string val, double defaultValue /* = 0*/)
         {
-            double result;
-
             return String.IsNullOrWhiteSpace(val) ||
-                !double.TryParse(val, out result)
+                !double.TryParse(val, out double result)
                     ? defaultValue
                     : result;
         }
@@ -35,13 +32,11 @@ namespace LinqToTwitter.Common
 
         public static DateTime GetDate(this string date, DateTime defaultValue)
         {
-            DateTime result;
-
             return String.IsNullOrWhiteSpace(date) ||
                 !DateTime.TryParseExact(date,
                         dateFormats,
                         CultureInfo.InvariantCulture,
-                        DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal, out result)
+                        DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal, out DateTime result)
                     ? defaultValue
                     : result;
         }
@@ -66,21 +61,18 @@ namespace LinqToTwitter.Common
 
         public static T GetValue<T>(this IDictionary<string, object> dictionary, string key)
         {
-            object value;
-
-            if (dictionary.TryGetValue(key, out value))
+            if (dictionary.TryGetValue(key, out object value))
                 return (T)value;
 
-            return default(T);
+            return default;
         }
 
         public static T GetValue<T>(this IDictionary<string, object> dictionary, string key, T defaultValue)
         {
-            object value;
 
-            if (dictionary.TryGetValue(key, out value))
+            if (dictionary.TryGetValue(key, out object value))
                 return (T)value;
-            
+
             return defaultValue;
         }
 

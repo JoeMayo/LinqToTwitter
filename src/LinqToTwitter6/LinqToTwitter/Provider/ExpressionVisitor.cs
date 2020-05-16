@@ -1,4 +1,5 @@
-﻿/***********************************************************
+﻿#nullable disable
+/***********************************************************
  * Credits:
  * 
  * Matt Warren's Blog -
@@ -87,17 +88,13 @@ namespace LinqToTwitter.Provider
 
         protected virtual MemberBinding VisitBinding(MemberBinding binding)
         {
-            switch (binding.BindingType)
+            return binding.BindingType switch
             {
-                case MemberBindingType.Assignment:
-                    return this.VisitMemberAssignment((MemberAssignment)binding);
-                case MemberBindingType.MemberBinding:
-                    return this.VisitMemberMemberBinding((MemberMemberBinding)binding);
-                case MemberBindingType.ListBinding:
-                    return this.VisitMemberListBinding((MemberListBinding)binding);
-                default:
-                    throw new Exception(string.Format("Unhandled binding type '{0}'", binding.BindingType));
-            }
+                MemberBindingType.Assignment => this.VisitMemberAssignment((MemberAssignment)binding),
+                MemberBindingType.MemberBinding => this.VisitMemberMemberBinding((MemberMemberBinding)binding),
+                MemberBindingType.ListBinding => this.VisitMemberListBinding((MemberListBinding)binding),
+                _ => throw new Exception(string.Format("Unhandled binding type '{0}'", binding.BindingType)),
+            };
         }
 
         protected virtual ElementInit VisitElementInitializer(ElementInit initializer)
