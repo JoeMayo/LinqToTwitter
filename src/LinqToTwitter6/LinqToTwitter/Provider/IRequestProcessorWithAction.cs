@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace LinqToTwitter.Provider
 {
@@ -7,6 +8,7 @@ namespace LinqToTwitter.Provider
     public interface IRequestProcessorWithAction<T>
         : IRequestProcessorWantsJson
     {
+        [return: MaybeNull]
         T ProcessActionResult(string twitterResponse, Enum theAction);
     }
 }

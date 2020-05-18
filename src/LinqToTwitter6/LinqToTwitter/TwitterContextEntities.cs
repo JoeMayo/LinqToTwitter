@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using LinqToTwitter.Provider;
 
 namespace LinqToTwitter
 {
@@ -126,16 +125,16 @@ namespace LinqToTwitter
         //    }
         //}
 
-        ///// <summary>
-        ///// enables access to Raw Query Extensibility
-        ///// </summary>
-        //public TwitterQueryable<Raw> RawQuery
-        //{
-        //    get
-        //    {
-        //        return new TwitterQueryable<Raw>(this);
-        //    }
-        //}
+        /// <summary>
+        /// enables access to Raw Query Extensibility
+        /// </summary>
+        public TwitterQueryable<Raw> RawQuery
+        {
+            get
+            {
+                return new TwitterQueryable<Raw>(this);
+            }
+        }
 
         ///// <summary>
         ///// enables access to Twitter Saved Searches

@@ -263,11 +263,7 @@ namespace LinqToTwitter
         {
             get
             {
-                if (TwitterExecutor != null)
-                {
-                    return TwitterExecutor.ResponseHeaders;
-                }
-                return null;
+                return TwitterExecutor?.ResponseHeaders;
             }
         }
 
@@ -409,13 +405,9 @@ namespace LinqToTwitter
 
              //process request through Twitter
             if (typeof(T) == typeof(Streaming.Streaming))
-            {
                 results = await TwitterExecutor.QueryTwitterStreamAsync(request).ConfigureAwait(false);
-            }
             else
-            {
                 results = await TwitterExecutor.QueryTwitterAsync(request, reqProc).ConfigureAwait(false);
-            }
 
             if (!ExcludeRawJson)
                 RawResult = results;
@@ -462,9 +454,7 @@ namespace LinqToTwitter
                 foreach (var newParameter in newParameters)
                 {
                     if (!parameters.ContainsKey(newParameter.Key))
-                    {
                         parameters.Add(newParameter.Key, newParameter.Value);
-                    }
                 }
             }
 
@@ -476,9 +466,7 @@ namespace LinqToTwitter
         {
             string requestType = typeof(T).Name;
 
-            IRequestProcessor<T> req = CreateRequestProcessor<T>(requestType);
-
-            return req;
+            return CreateRequestProcessor<T>(requestType);
         }
 
         /// <summary>
@@ -490,22 +478,20 @@ namespace LinqToTwitter
             where T: class
         {
             if (expression == null)
-            {
-                const string NullExpressionMessage = "Expression passed to CreateRequestProcessor must not be null.";
-                throw new ArgumentNullException("Expression", NullExpressionMessage);
-            }
+                throw new ArgumentNullException(
+                    nameof(expression),
+                    "Expression passed to CreateRequestProcessor must not be null.");
 
             string requestType = new MethodCallExpressionTypeFinder().GetGenericType(expression).Name;
 
-            IRequestProcessor<T> req = CreateRequestProcessor<T>(requestType);
-            return req;
+            return CreateRequestProcessor<T>(requestType);
         }
 
         protected internal IRequestProcessor<T> CreateRequestProcessor<T>(string requestType)
             where T : class
         {
-            //string baseUrl = BaseUrl;
-            //IRequestProcessor<T> req;
+            string baseUrl = BaseUrl;
+            IRequestProcessor<T> req;
 
             switch (requestType)
             {
@@ -545,9 +531,9 @@ namespace LinqToTwitter
                 //case nameof(Mute):
                 //    req = new MuteRequestProcessor<T>();
                 //    break;
-                //case nameof(Raw):
-                //    req = new RawRequestProcessor<T>();
-                //    break;
+                case nameof(Raw):
+                    req = new RawRequestProcessor<T>();
+                    break;
                 //case nameof(SavedSearch):
                 //    req = new SavedSearchRequestProcessor<T>();
                 //    break;
@@ -577,10 +563,10 @@ namespace LinqToTwitter
                     throw new ArgumentException($"Type, {requestType} isn't a supported LINQ to Twitter entity.", nameof(requestType));
             }
 
-            //if (baseUrl != null)
-            //    req.BaseUrl = baseUrl;
+            if (baseUrl != null)
+                req.BaseUrl = baseUrl;
 
-            //return req;
+            return req;
         }
 
         /// <summary>

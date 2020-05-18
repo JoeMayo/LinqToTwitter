@@ -15,7 +15,7 @@ namespace LinqToTwitter.Common.Entities
         public Entities(JsonElement entityJson)
         {
 
-            if (entityJson.ValueKind == JsonValueKind.Null)
+            if (entityJson.ValueKind == JsonValueKind.Undefined || entityJson.ValueKind == JsonValueKind.Null)
             {
                 HashTagEntities = new List<HashTagEntity>();
                 MediaEntities = new List<MediaEntity>();

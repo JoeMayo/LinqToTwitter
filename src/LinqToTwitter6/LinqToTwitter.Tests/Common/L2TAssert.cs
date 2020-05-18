@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace LinqToTwitterPcl.Tests.Common
+namespace LinqToTwitter.Tests.Common
 {
     class L2TAssert
     {

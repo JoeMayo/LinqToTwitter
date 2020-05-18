@@ -3,7 +3,7 @@ using System.Text.Json;
 using LinqToTwitter.Common.Entities;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace LinqToTwitterPcl.Tests.Common
+namespace LinqToTwitter.Tests.Common
 {
     [TestClass]
     public class EntitiesTests
@@ -11,7 +11,7 @@ namespace LinqToTwitterPcl.Tests.Common
         [TestMethod]
         public void InstantiateEntities_WithNull_SuccessfullyCreatesEmptyCollectionProperties()
         {
-            var emptyEntities = new Entities(JsonDocument.Parse("").RootElement);
+            var emptyEntities = new Entities(new JsonElement());
 
             Assert.IsNotNull(emptyEntities);
             Assert.IsNotNull(emptyEntities.HashTagEntities);

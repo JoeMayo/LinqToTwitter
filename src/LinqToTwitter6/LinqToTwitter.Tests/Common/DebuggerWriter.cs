@@ -4,7 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Text;
 
-namespace LinqToTwitterPcl.Tests.Common
+namespace LinqToTwitter.Tests.Common
 {
     /// <summary>
     /// Implements a <see cref="TextWriter"/> for writing information to the debugger log.

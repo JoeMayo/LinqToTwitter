@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace LinqToTwitter.Provider
 {
@@ -15,10 +16,11 @@ namespace LinqToTwitter.Provider
             yield return oneOff;
         }
 
-        public static TTo? ItemCast<TFrom, TTo>(this TFrom item, TTo defaultValue)
+        [return: MaybeNull]
+        public static TTo ItemCast<TFrom, TTo>(this TFrom item, TTo? defaultValue)
             where TTo: class
         {
-            return item is TTo ? item as TTo : defaultValue;
+            return item as TTo ?? defaultValue;
         }
     }
 }

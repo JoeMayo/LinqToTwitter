@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace LinqToTwitterPcl.Tests.Common
+namespace LinqToTwitter.Tests.Common
 {
     public class TwitterExtensionsTests
     {
