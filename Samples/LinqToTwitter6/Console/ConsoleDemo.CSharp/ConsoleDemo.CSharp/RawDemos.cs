@@ -22,10 +22,14 @@ namespace Linq2TwitterDemos_Console
                 switch (key)
                 {
                     case '0':
-                        Console.WriteLine("\n\tSearching...\n");
-                        await PerformSearchRawAsync(twitterCtx);
+                        Console.WriteLine("\n\tSearching Recent Tweets...\n");
+                        await PerformRecentSearchRawAsync(twitterCtx);
                         break;
                     case '1':
+                        Console.WriteLine("\n\tSearching Standard Tweets...\n");
+                        await PerformStandardSearchRawAsync(twitterCtx);
+                        break;
+                    case '2':
                         Console.WriteLine("\n\tTweeting...");
                         await TweetRawAsync(twitterCtx);
                         break;
@@ -45,13 +49,37 @@ namespace Linq2TwitterDemos_Console
         {
             Console.WriteLine("\nRaw Demos - Please select:\n");
 
-            Console.WriteLine("\t 0. Perform Search (Query)");
-            Console.WriteLine("\t 1. Update Status (Command)");
+            Console.WriteLine("\t 0. Perform Recent Search (Query)");
+            Console.WriteLine("\t 1. Perform Standard Search (Query)");
+            Console.WriteLine("\t 2. Update Status (Command)");
             Console.WriteLine();
             Console.Write("\t Q. Return to Main menu");
         }
 
-        static async Task PerformSearchRawAsync(TwitterContext twitterCtx)
+        static async Task PerformRecentSearchRawAsync(TwitterContext twitterCtx)
+        {
+            string unencodedStatus = "LINQ to Twitter";
+            string encodedStatus = Uri.EscapeDataString(unencodedStatus);
+            string queryString = "tweets/search?q=" + encodedStatus;
+
+            string previousBaseUrl = twitterCtx.BaseUrl;
+            twitterCtx.BaseUrl = "https://api.twitter.com/labs/2/";
+
+            var rawResult =
+                await
+                (from raw in twitterCtx.RawQuery
+                 where raw.QueryString == queryString
+                 select raw)
+                .SingleOrDefaultAsync();
+
+            if (rawResult != null)
+                Console.WriteLine(
+                    "Response from Twitter: \n\n" + rawResult.Response);
+
+            twitterCtx.BaseUrl = previousBaseUrl;
+        }
+
+        static async Task PerformStandardSearchRawAsync(TwitterContext twitterCtx)
         {
             string unencodedStatus = "LINQ to Twitter";
             string encodedStatus = Uri.EscapeDataString(unencodedStatus);

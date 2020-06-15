@@ -79,8 +79,8 @@ namespace Linq2TwitterDemos_Console
 
         static async Task DoPagedSearchAsync(TwitterContext twitterCtx)
         {
-            const int MaxSearchEntriesToReturn = 10;
-            const int MaxTotalResults = 100;
+            const int MaxSearchEntriesToReturn = 100;
+            const int SearchRateLimit = 180;
 
             string searchTerm = "twitter";
 
@@ -128,7 +128,7 @@ namespace Linq2TwitterDemos_Console
                         .SingleOrDefaultAsync();
 
                     combinedSearchResults.AddRange(searchResponse);
-                } while (searchResponse.Any() && combinedSearchResults.Count < MaxTotalResults);
+                } while (searchResponse.Any() && combinedSearchResults.Count < SearchRateLimit);
 
                 combinedSearchResults.ForEach(tweet =>
                     Console.WriteLine(

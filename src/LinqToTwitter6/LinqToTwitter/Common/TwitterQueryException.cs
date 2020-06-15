@@ -32,9 +32,9 @@ namespace LinqToTwitter.Common
             : base(message, inner) { }
 
         /// <summary>
-        /// Error code assigned by Twitter
+        /// Type of error - assigned by Twitter
         /// </summary>
-        public int ErrorCode { get; set; }
+        public string? Type { get; set; }
 
         /// <summary>
         /// Http status code from Twitter response

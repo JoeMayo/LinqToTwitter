@@ -1,4 +1,5 @@
 ﻿#nullable disable
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -14,8 +15,6 @@ namespace LinqToTwitter.Net
         {
             const int TooManyRequests = 429;
 
-            // TODO: research proper handling of 304
-
             if ((int)msg.StatusCode < 400) return;
 
             switch (msg.StatusCode)
@@ -25,66 +24,66 @@ namespace LinqToTwitter.Net
                     break;
                 default:
                     switch ((int)msg.StatusCode)
-	                {
+                    {
                         case TooManyRequests:
                             await HandleTooManyRequestsAsync(msg).ConfigureAwait(false);
                             break;
-		                default:
+                        default:
                             await HandleGenericErrorAsync(msg).ConfigureAwait(false);
                             break;
-	                }
+                    }
                     break;
-            } 
+            }
         }
-  
+
         internal static async Task HandleGenericErrorAsync(HttpResponseMessage msg)
         {
             string responseStr = await msg.Content.ReadAsStringAsync().ConfigureAwait(false);
 
             BuildAndThrowTwitterQueryException(responseStr, msg);
         }
- 
+
         internal static async Task HandleTooManyRequestsAsync(HttpResponseMessage msg)
         {
             string responseStr = await msg.Content.ReadAsStringAsync().ConfigureAwait(false);
 
             TwitterErrorDetails error = ParseTwitterErrorMessage(responseStr);
 
-            string message = error.Message + " - Please visit the LINQ to Twitter FAQ (at the HelpLink) for help on resolving this error.";
+            string message = error.Detail + " - Please visit the LINQ to Twitter FAQ (at the HelpLink) for help on resolving this error.";
 
             throw new TwitterQueryException(message)
             {
                 HelpLink = L2TKeys.FaqHelpUrl,
-                ErrorCode = error.Code,
+                Type = error.Type,
                 StatusCode = HttpStatusCode.SeeOther,
                 ReasonPhrase = msg.ReasonPhrase + " (HTTP 429 - Too Many Requests)"
             };
         }
- 
+
         internal static void BuildAndThrowTwitterQueryException(string responseStr, HttpResponseMessage msg)
         {
             TwitterErrorDetails error = ParseTwitterErrorMessage(responseStr);
 
-            throw new TwitterQueryException(error.Message)
+            throw new TwitterQueryException(error.Title)
             {
-                ErrorCode = error.Code,
+                Type = error.Type,
                 StatusCode = msg.StatusCode,
                 ReasonPhrase = msg.ReasonPhrase
             };
         }
-  
+
         internal async static Task HandleUnauthorizedAsync(HttpResponseMessage msg)
         {
             string responseStr = await msg.Content.ReadAsStringAsync().ConfigureAwait(false);
 
             TwitterErrorDetails error = ParseTwitterErrorMessage(responseStr);
 
-            string message = error.Message + " - Please visit the LINQ to Twitter FAQ (at the HelpLink) for help on resolving this error.";
+            string message = error.Detail + " - Please visit the LINQ to Twitter FAQ (at the HelpLink) for help on resolving this error.";
 
             throw new TwitterQueryException(message)
             {
                 HelpLink = L2TKeys.FaqHelpUrl,
-                ErrorCode = error.Code,
+                Type = error.Type,
                 StatusCode = HttpStatusCode.Unauthorized,
                 ReasonPhrase = msg.ReasonPhrase
             };
@@ -99,21 +98,67 @@ namespace LinqToTwitter.Net
 
                 if (root.TryGetProperty("errors", out JsonElement errors))
                 {
-                    var error = errors.EnumerateArray().FirstOrDefault();
+                    JsonElement errorElement = errors.EnumerateArray().FirstOrDefault();
+
                     return new TwitterErrorDetails
                     {
-                        Message = error.GetProperty("message").GetString(),
-                        Code = error.GetProperty("code").GetInt32()
+                        Title = errorElement.GetProperty("title").GetString(),
+                        Detail = errorElement.GetProperty("detail").GetString(),
+                        Type = errorElement.GetProperty("type").GetString(),
+                        Errors =
+                            (from error in errorElement.GetProperty("errors").EnumerateArray()
+                             select new Error
+                             {
+                                 Message = error.GetProperty("message").ToString(),
+                                 Parameters =
+                                    (from pram in error.GetProperty("parameters").EnumerateObject()
+                                     from key in pram.EnumerateObject()
+                                     select pram)
+                                    .ToDictionary(
+                                        key => key)
+                             })
+                            .ToArray()
                     };
                 }
             }
 
-            return new TwitterErrorDetails { Message = responseStr };
+            return new TwitterErrorDetails { Detail = responseStr };
         }
 
-        internal class TwitterErrorDetails
+// TwitterErrorDetails
+//{
+//	"errors": [
+//		{
+//			"parameters": {
+//				"query": []
+//          },
+//			"message": "Request parameter `query` can not be empty"
+//		},
+//		{
+//			"parameters": {
+//				"q": [
+//					"LINQ%20to%20Twitter"
+//				]
+//			},
+//			"message": "[q] is not one of [query,start_time,end_time,since_id,until_id,max_results,next_token,expansions,tweet.fields,media.fields,poll.fields,place.fields,user.fields]"
+//		}
+//	],
+//	"title": "Invalid Request",
+//	"detail": "One or more parameters to your request was invalid.",
+//	"type": "https://api.twitter.com/labs/2/problems/invalid-request"
+//}
+
+        public class TwitterErrorDetails
         {
-            public int Code { get; set; }
+            public Error[] Errors { get; set; }
+            public string Title { get; set; }
+            public string Detail { get; set; }
+            public string Type { get; set; }
+        }
+
+        public class Error
+        {
+            public Dictionary<string, string[]> Parameters { get; set; }
             public string Message { get; set; }
         }
     }
