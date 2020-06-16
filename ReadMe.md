@@ -1,4 +1,4 @@
-![LINQ to Twitter](https://github.com/JoeMayo/LinqToTwitter/raw/master/linq2twitter_v3_300x90.png)
+![LINQ to Twitter](https://github.com/JoeMayo/LinqToTwitter/raw/main/linq2twitter_v3_300x90.png)
 
 LINQ to Twitter is an open source 3rd party LINQ Provider (Twitter Library) for the [Twitter](https://twitter.com/) micro-blogging service.  It uses standard LINQ syntax for queries and includes method calls for changes via the [Twitter API](https://dev.twitter.com/).
 
