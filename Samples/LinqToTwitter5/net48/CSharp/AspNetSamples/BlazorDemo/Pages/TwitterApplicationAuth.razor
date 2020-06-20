@@ -1,0 +1,75 @@
+﻿@using System.Net.Http
+@using Microsoft.AspNetCore.Mvc
+@using BlazorDemo.Classes
+@using LinqToTwitter
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@inject BlazorDemo.Services.BlazorAuthorizer BlazorAuthorizer
+@inject InMemoryCredentialStore InMemoryCredentialStore
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+
+@if (!Authenticated)
+{
+    <button class="btn btn-primary" @onclick="CallAuth">Call Auth</button>
+}
+else
+{
+    <p>Twitter ScreenName = @BlazorAuthorizer.CredentialStore.ScreenName</p>
+    <p>Twitter UserID = @BlazorAuthorizer.CredentialStore.UserID</p>
+}
+
+@code {
+    bool Authenticated = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            string oauth_token = "";
+            NavigationManager.TryGetQueryString<string>("oauth_token", out oauth_token);
+
+            string oauth_verifier = "";
+            NavigationManager.TryGetQueryString<string>("oauth_verifier", out oauth_verifier);
+
+            if (oauth_token != null)
+            {
+                var CredentialStore = await sessionStorage.GetItemAsync<InMemoryCredentialStore>("CredentialStore");
+
+                BlazorAuthorizer.CredentialStore = CredentialStore;
+
+                var request = HttpContextAccessor.HttpContext.Request;
+                var host = request.Host.ToUriComponent();
+                var pathBase = request.PathBase.ToUriComponent();
+                var responseUrl = $@"{request.Scheme}://{host}{pathBase}?oauth_token={oauth_token}&oauth_verifier={oauth_verifier}";
+
+                await BlazorAuthorizer.CompleteAuthorizeAsync(new Uri(responseUrl));
+
+                // Save the updated CredentialStore
+                await sessionStorage.SetItemAsync("CredentialStore", BlazorAuthorizer.CredentialStore);
+
+                Authenticated = true;
+                StateHasChanged();
+            }
+        }
+    }
+
+    async Task CallAuth()
+    {
+        BlazorAuthorizer.CredentialStore = InMemoryCredentialStore;
+        BlazorAuthorizer.CredentialStore.ConsumerKey = Environment.GetEnvironmentVariable("TwitterConsumerKey");
+        BlazorAuthorizer.CredentialStore.ConsumerSecret = Environment.GetEnvironmentVariable("TwitterConsumerSecret");
+
+        var request = HttpContextAccessor.HttpContext.Request;
+        var host = request.Host.ToUriComponent();
+        var pathBase = request.PathBase.ToUriComponent();
+        var twitterCallbackUrl = $@"{request.Scheme}://{host}{pathBase}/";
+
+        RedirectResult result = (RedirectResult)await BlazorAuthorizer.BeginAuthorizationAsync(new Uri(twitterCallbackUrl));
+
+        // Save Session 
+        await sessionStorage.SetItemAsync("CredentialStore", BlazorAuthorizer.CredentialStore);
+
+        NavigationManager.NavigateTo(result.Url, false);
+    }
+}

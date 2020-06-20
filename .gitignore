@@ -259,3 +259,4 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
+/Samples/LinqToTwitter5/net48/CSharp/AspNetSamples/MvcDemo
