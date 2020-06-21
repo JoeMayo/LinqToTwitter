@@ -24,6 +24,17 @@ namespace BlazorDemo.Services
             _httpContextAccessor = HttpContextAccessor;
         }
 
+        // StateChanged is an event handler other pages
+        // can subscribe to 
+        public event EventHandler StateChanged;
+        public void StateHasChanged()
+        {
+            // This will update any subscribers
+            // that the state has changed
+            // so they can update themselves
+            StateChanged?.Invoke(this, EventArgs.Empty);
+        }
+
         public string GetPathBase()
         {
             var request = _httpContextAccessor.HttpContext.Request;
@@ -40,7 +51,7 @@ namespace BlazorDemo.Services
 
             // to pass parameters that you can read in Complete(), via Request.QueryString, when Twitter returns
             // var parameters = new Dictionary<string, string> { { "my_custom_param", "val" } };
-            // return await auth.BeginAuthorizationAsync(new Uri(GetPathBase()), parameters);
+            // return await BeginAuthorizationAsync(new Uri(GetPathBase()), parameters);
 
             return (RedirectResult)await BeginAuthorizationAsync(new Uri(GetPathBase()));
         }
