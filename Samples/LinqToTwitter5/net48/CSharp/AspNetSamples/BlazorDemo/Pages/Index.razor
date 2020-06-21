@@ -1,5 +1,7 @@
 ﻿@page "/"
 @implements IDisposable
+@using LinqToTwitter
+@using BlazorDemo.Models
 @inject BlazorDemo.Services.BlazorAuthorizer BlazorAuthorizer
 
 <TwitterApplicationAuth />
@@ -7,9 +9,40 @@
 @if (BlazorAuthorizer.CredentialStore != null)
 {
     <p>Twitter ScreenName = @BlazorAuthorizer.CredentialStore.ScreenName</p>
+
+    <button class="btn btn-primary" @onclick="GetTweets">Get Tweets</button>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ImageUrl</th>
+                <th>ScreenName</th>
+                <th>Text</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var tweet in tweets)
+            {
+                <tr>
+                    <td>@tweet.ImageUrl</td>
+                    <td>@tweet.ScreenName</td>
+                    <td>@tweet.Text</td>
+                    <td>
+                        @*<button class="btn btn-primary"
+                                @onclick="(() => EditForecast(forecast))">
+                            Edit
+                        </button>*@
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
 }
 
 @code {
+    public List<TweetViewModel> tweets = new List<TweetViewModel>();
 
     // This method is called when the control is initialized
     protected override void OnInitialized()
@@ -32,5 +65,21 @@
         // When this control is disposed of
         // unsubscribe from the StateChanged EventHandler
         BlazorAuthorizer.StateChanged -= OnBlazorAuthorizerStateChanged;
+    }
+
+    async Task GetTweets()
+    {
+        var ctx = new TwitterContext(BlazorAuthorizer);
+
+        tweets = await (from tweet in ctx.Status
+             where tweet.Type == StatusType.Home &&
+                   tweet.TweetMode == TweetMode.Extended
+             select new TweetViewModel
+             {
+                 ImageUrl = tweet.User.ProfileImageUrl,
+                 ScreenName = tweet.User.ScreenNameResponse,
+                 Text = tweet.FullText
+             })
+            .ToListAsync();
     }
 }
