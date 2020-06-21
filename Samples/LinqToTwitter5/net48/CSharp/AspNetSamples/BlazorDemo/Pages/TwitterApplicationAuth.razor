@@ -6,7 +6,6 @@
 @inject NavigationManager NavigationManager
 @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 @inject BlazorDemo.Services.BlazorAuthorizer BlazorAuthorizer
-@inject InMemoryCredentialStore InMemoryCredentialStore
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 
 @if (!Authenticated)
@@ -56,7 +55,7 @@ else
 
     async Task CallAuth()
     {
-        BlazorAuthorizer.CredentialStore = InMemoryCredentialStore;
+        BlazorAuthorizer.CredentialStore = new InMemoryCredentialStore();
         BlazorAuthorizer.CredentialStore.ConsumerKey = Environment.GetEnvironmentVariable("TwitterConsumerKey");
         BlazorAuthorizer.CredentialStore.ConsumerSecret = Environment.GetEnvironmentVariable("TwitterConsumerSecret");
 
