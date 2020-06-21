@@ -10,7 +10,7 @@
 
 @if (!Authenticated)
 {
-    <button class="btn btn-primary" @onclick="CallAuth">Call Auth</button>
+    <button class="btn btn-primary" @onclick="CallAuth">Begin the Authorization Process</button>
 }
 else
 {
@@ -33,16 +33,32 @@ else
 
             if (oauth_token != null)
             {
+                // Get the CredentialStore that was stored when the CallAuth() method was called
                 var CredentialStore = await sessionStorage.GetItemAsync<InMemoryCredentialStore>("CredentialStore");
 
+                // Set it because the contents were lost when the user was directed
+                // to Twitter to authorize this application
                 BlazorAuthorizer.CredentialStore = CredentialStore;
 
-                var request = HttpContextAccessor.HttpContext.Request;
-                var host = request.Host.ToUriComponent();
-                var pathBase = request.PathBase.ToUriComponent();
-                var responseUrl = $@"{request.Scheme}://{host}{pathBase}?oauth_token={oauth_token}&oauth_verifier={oauth_verifier}";
+                var responseUrl = $@"{BlazorAuthorizer.GetPathBase()}?oauth_token={oauth_token}&oauth_verifier={oauth_verifier}";
 
                 await BlazorAuthorizer.CompleteAuthorizeAsync(new Uri(responseUrl));
+
+                // This is how you access credentials after authorization.
+                // The oauthToken and oauthTokenSecret do not expire.
+                // You can use the userID to associate the credentials with the user.
+                // You can save credentials any way you want - database, 
+                //   isolated storage, etc. - it's up to you.
+                // You can retrieve and load all 4 credentials on subsequent 
+                //   queries to avoid the need to re-authorize.
+                // When you've loaded all 4 credentials, LINQ to Twitter will let 
+                //   you make queries without re-authorizing.
+                //
+                //var credentials = BlazorAuthorizer.CredentialStore;
+                //string oauthToken = credentials.OAuthToken;
+                //string oauthTokenSecret = credentials.OAuthTokenSecret;
+                //string screenName = credentials.ScreenName;
+                //ulong userID = credentials.UserID;
 
                 // Save the updated CredentialStore
                 await sessionStorage.SetItemAsync("CredentialStore", BlazorAuthorizer.CredentialStore);
@@ -55,20 +71,13 @@ else
 
     async Task CallAuth()
     {
-        BlazorAuthorizer.CredentialStore = new InMemoryCredentialStore();
-        BlazorAuthorizer.CredentialStore.ConsumerKey = Environment.GetEnvironmentVariable("TwitterConsumerKey");
-        BlazorAuthorizer.CredentialStore.ConsumerSecret = Environment.GetEnvironmentVariable("TwitterConsumerSecret");
-
-        var request = HttpContextAccessor.HttpContext.Request;
-        var host = request.Host.ToUriComponent();
-        var pathBase = request.PathBase.ToUriComponent();
-        var twitterCallbackUrl = $@"{request.Scheme}://{host}{pathBase}/";
-
-        RedirectResult result = (RedirectResult)await BlazorAuthorizer.BeginAuthorizationAsync(new Uri(twitterCallbackUrl));
+        RedirectResult result = (RedirectResult)await BlazorAuthorizer.Begin();
 
         // Save Session 
+        // CredentialStore was populated by calling BlazorAuthorizer.Begin() 
         await sessionStorage.SetItemAsync("CredentialStore", BlazorAuthorizer.CredentialStore);
 
+        // Navigate to Twitter to authorize thsi application
         NavigationManager.NavigateTo(result.Url, false);
     }
 }
