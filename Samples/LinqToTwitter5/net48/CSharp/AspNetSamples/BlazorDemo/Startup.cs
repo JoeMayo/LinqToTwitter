@@ -33,7 +33,7 @@ namespace BlazorDemo
             services.AddScoped<HttpClient>();
 
             // Add BlazorAuthorizer as a service
-            services.AddHttpClient<BlazorAuthorizer>();
+            services.AddScoped<BlazorAuthorizer>();
 
             // Add BlazoredSessionStorage
             services.AddBlazoredSessionStorage(config => 

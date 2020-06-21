@@ -13,12 +13,6 @@
     <button class="btn btn-primary" @onclick="CallAuth">Begin the Authorization Process</button>
 }
 
-@if (Authenticated == "true")
-{
-    <p>Twitter ScreenName = @BlazorAuthorizer.CredentialStore.ScreenName</p>
-    <p>Twitter UserID = @BlazorAuthorizer.CredentialStore.UserID</p>
-}
-
 @code {
     string Authenticated = "none";
 
@@ -80,7 +74,6 @@
                 // await sessionStorage.SetItemAsync("CredentialStore", BlazorAuthorizer.CredentialStore);
 
                 Authenticated = "true";
-                StateHasChanged();
 
                 // Navigate to the main page so that the auth code in the url will go away
                 NavigationManager.NavigateTo("/");

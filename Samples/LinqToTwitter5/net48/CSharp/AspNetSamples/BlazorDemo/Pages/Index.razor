@@ -1,8 +1,36 @@
 ﻿@page "/"
+@implements IDisposable
+@inject BlazorDemo.Services.BlazorAuthorizer BlazorAuthorizer
 
-<TwitterApplicationAuth/>
+<TwitterApplicationAuth />
+
+@if (BlazorAuthorizer.CredentialStore != null)
+{
+    <p>Twitter ScreenName = @BlazorAuthorizer.CredentialStore.ScreenName</p>
+}
 
 @code {
 
+    // This method is called when the control is initialized
+    protected override void OnInitialized()
+    {
+        // Subscribe to the StateChanged EventHandler
+        BlazorAuthorizer.StateChanged += OnBlazorAuthorizerStateChanged;
+    }
 
+    // This method is fired when the BlazorAuthorizer object
+    // invokes its StateHasChanged() method
+    // This will cause this control to invoke its own
+    // StateHasChanged() method
+    void OnBlazorAuthorizerStateChanged(object sender, EventArgs e)
+    {
+        StateHasChanged();
+    }
+
+    void IDisposable.Dispose()
+    {
+        // When this control is disposed of
+        // unsubscribe from the StateChanged EventHandler
+        BlazorAuthorizer.StateChanged -= OnBlazorAuthorizerStateChanged;
+    }
 }
