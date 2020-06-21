@@ -8,37 +8,17 @@
 
 @if (BlazorAuthorizer.CredentialStore != null)
 {
-    <p>Twitter ScreenName = @BlazorAuthorizer.CredentialStore.ScreenName</p>
+    <h4>Tweets for @BlazorAuthorizer.CredentialStore.ScreenName</h4>
 
     <button class="btn btn-primary" @onclick="GetTweets">Get Tweets</button>
-
-    <table class="table">
-        <thead>
-            <tr>
-                <th>ImageUrl</th>
-                <th>ScreenName</th>
-                <th>Text</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var tweet in tweets)
-            {
-                <tr>
-                    <td>@tweet.ImageUrl</td>
-                    <td>@tweet.ScreenName</td>
-                    <td>@tweet.Text</td>
-                    <td>
-                        @*<button class="btn btn-primary"
-                                @onclick="(() => EditForecast(forecast))">
-                            Edit
-                        </button>*@
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-
+    <br /><br />
+    @foreach (var tweet in tweets)
+    {
+        <dl>
+            <dt><img src="@tweet.ImageUrl" />@@<b>@tweet.ScreenName</b></dt>
+            <dd>@tweet.Text</dd>
+        </dl>
+    }
 }
 
 @code {
@@ -72,14 +52,14 @@
         var ctx = new TwitterContext(BlazorAuthorizer);
 
         tweets = await (from tweet in ctx.Status
-             where tweet.Type == StatusType.Home &&
-                   tweet.TweetMode == TweetMode.Extended
-             select new TweetViewModel
-             {
-                 ImageUrl = tweet.User.ProfileImageUrl,
-                 ScreenName = tweet.User.ScreenNameResponse,
-                 Text = tweet.FullText
-             })
+                        where tweet.Type == StatusType.Home &&
+                              tweet.TweetMode == TweetMode.Extended
+                        select new TweetViewModel
+                        {
+                            ImageUrl = tweet.User.ProfileImageUrl,
+                            ScreenName = tweet.User.ScreenNameResponse,
+                            Text = tweet.FullText
+                        })
             .ToListAsync();
     }
 }
