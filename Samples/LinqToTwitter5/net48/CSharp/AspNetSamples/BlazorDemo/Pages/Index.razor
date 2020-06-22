@@ -2,6 +2,7 @@
 @implements IDisposable
 @using LinqToTwitter
 @using BlazorDemo.Models
+@using System.Text.RegularExpressions
 @inject BlazorDemo.Services.BlazorAuthorizer BlazorAuthorizer
 
 <TwitterApplicationAuth />
@@ -11,20 +12,52 @@
     <h4>Tweets for @BlazorAuthorizer.CredentialStore.ScreenName</h4>
 
     <button class="btn btn-primary" @onclick="GetTweets">Get Tweets</button>
-    <br /><br />
+    <button class="btn btn-primary" @onclick="OpenPopup">Send Tweet</button>
+    <br />
+    <br />
     @foreach (var tweet in tweets)
     {
         <dl>
-            <dt><img src="@tweet.ImageUrl" />@@<b>@tweet.ScreenName</b></dt>
-            <dd>@tweet.Text</dd>
+            <dt><img src="@tweet.ImageUrl" /> @@<a href=@("https://twitter.com/"+@tweet.ScreenName) target="_blank">@tweet.ScreenName</a></dt>
+            <dd>@((MarkupString)tweet.Text)</dd>
         </dl>
+    }
+
+    @if (ShowPopup)
+    {
+        <div class="modal" tabindex="-1" style="display:block" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Send Tweet</h3>
+                        <!-- Button to close the popup -->
+                        <button type="button" class="close"
+                                @onclick="ClosePopup">
+                            <span aria-hidden="true">X</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <input class="form-control" type="text"
+                               placeholder="Compose a Tweet..."
+                               @bind="NewTweet" />
+                        <br /><br />
+                        <button class="btn btn-primary"
+                                @onclick="SendTweet">
+                            Save
+                        </button>
+                        <br />
+                    </div>
+                </div>
+            </div>
+        </div>
     }
 }
 
 @code {
     public List<TweetViewModel> tweets = new List<TweetViewModel>();
+    bool ShowPopup = false;
+    string NewTweet = "";
 
-    // This method is called when the control is initialized
     protected override void OnInitialized()
     {
         // Subscribe to the StateChanged EventHandler
@@ -47,6 +80,19 @@
         BlazorAuthorizer.StateChanged -= OnBlazorAuthorizerStateChanged;
     }
 
+    void OpenPopup()
+    {
+        NewTweet = "";
+        // Open the Popup
+        ShowPopup = true;
+    }
+
+    void ClosePopup()
+    {
+        // Close the Popup
+        ShowPopup = false;
+    }
+
     async Task GetTweets()
     {
         var ctx = new TwitterContext(BlazorAuthorizer);
@@ -58,8 +104,43 @@
                         {
                             ImageUrl = tweet.User.ProfileImageUrl,
                             ScreenName = tweet.User.ScreenNameResponse,
-                            Text = tweet.FullText
-                        })
-            .ToListAsync();
+                            Text = CreateActiveLinks(tweet.FullText)
+                        }).ToListAsync();
+    }
+
+    async Task SendTweet()
+    {
+        var ctx = new TwitterContext(BlazorAuthorizer);
+
+        Status responseTweet = await ctx.TweetAsync(NewTweet);
+
+        await GetTweets();
+
+        ClosePopup();
+    }
+
+    // Utility
+
+    /// <summary>
+    /// From: https://www.mikesdotnetting.com/article/140/converting-urls-into-links-with-regex
+    /// Finds web and email addresses in a string and surrounds then with the appropriate HTML anchor tags 
+    /// </summary>
+    /// <param name="s"></param>
+    /// <returns>String</returns>
+    public string CreateActiveLinks(string s)
+    {
+        //Finds URLs with no protocol
+        var urlregex = new Regex(@"\b\({0,1}(?<url>(www|ftp)\.[^ ,""\s<)]*)\b",
+          RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        //Finds URLs with a protocol
+        var httpurlregex = new Regex(@"\b\({0,1}(?<url>[^>](http://www\.|http://|https://|ftp://)[^,""\s<)]*)\b",
+          RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        //Finds email addresses
+        var emailregex = new Regex(@"\b(?<mail>[a-zA-Z_0-9.-]+\@[a-zA-Z_0-9.-]+\.\w+)\b",
+          RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        s = urlregex.Replace(s, " <a href=\"http://${url}\" target=\"_blank\">${url}</a>");
+        s = httpurlregex.Replace(s, " <a href=\"${url}\" target=\"_blank\">${url}</a>");
+        s = emailregex.Replace(s, "<a href=\"mailto:${mail}\">${mail}</a>");
+        return s;
     }
 }
