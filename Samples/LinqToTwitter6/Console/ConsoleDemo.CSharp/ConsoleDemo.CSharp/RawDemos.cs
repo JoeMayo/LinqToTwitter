@@ -58,9 +58,9 @@ namespace Linq2TwitterDemos_Console
 
         static async Task PerformRecentSearchRawAsync(TwitterContext twitterCtx)
         {
-            string unencodedStatus = "LINQ to Twitter";
+            string unencodedStatus = "JoeMayo";
             string encodedStatus = Uri.EscapeDataString(unencodedStatus);
-            string queryString = "tweets/search?q=" + encodedStatus;
+            string queryString = "tweets/search?query=" + encodedStatus;
 
             string previousBaseUrl = twitterCtx.BaseUrl;
             twitterCtx.BaseUrl = "https://api.twitter.com/labs/2/";

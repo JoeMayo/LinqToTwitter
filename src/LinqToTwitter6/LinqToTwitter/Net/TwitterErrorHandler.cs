@@ -9,7 +9,7 @@ using LinqToTwitter.Common;
 
 namespace LinqToTwitter.Net
 {
-    class TwitterErrorHandler
+    partial class TwitterErrorHandler
     {
         public static async Task ThrowIfErrorAsync(HttpResponseMessage msg)
         {
@@ -54,9 +54,12 @@ namespace LinqToTwitter.Net
             throw new TwitterQueryException(message)
             {
                 HelpLink = L2TKeys.FaqHelpUrl,
-                Type = error.Type,
                 StatusCode = HttpStatusCode.SeeOther,
-                ReasonPhrase = msg.ReasonPhrase + " (HTTP 429 - Too Many Requests)"
+                ReasonPhrase = msg.ReasonPhrase + " (HTTP 429 - Too Many Requests)",
+                Title = error.Title,
+                Details = error.Detail,
+                Type = error.Type,
+                Errors = error.Errors
             };
         }
 
@@ -66,9 +69,12 @@ namespace LinqToTwitter.Net
 
             throw new TwitterQueryException(error.Title)
             {
-                Type = error.Type,
                 StatusCode = msg.StatusCode,
-                ReasonPhrase = msg.ReasonPhrase
+                ReasonPhrase = msg.ReasonPhrase,
+                Title = error.Title,
+                Details = error.Detail,
+                Type = error.Type,
+                Errors = error.Errors
             };
         }
 
@@ -83,9 +89,12 @@ namespace LinqToTwitter.Net
             throw new TwitterQueryException(message)
             {
                 HelpLink = L2TKeys.FaqHelpUrl,
-                Type = error.Type,
                 StatusCode = HttpStatusCode.Unauthorized,
-                ReasonPhrase = msg.ReasonPhrase
+                ReasonPhrase = msg.ReasonPhrase,
+                Title = error.Title,
+                Details = error.Detail,
+                Type = error.Type,
+                Errors = error.Errors
             };
         }
 
@@ -96,26 +105,28 @@ namespace LinqToTwitter.Net
                 var responseJson = JsonDocument.Parse(responseStr);
                 var root = responseJson.RootElement;
 
-                if (root.TryGetProperty("errors", out JsonElement errors))
+                if (IsErrorFormatRecognized(root))
                 {
-                    JsonElement errorElement = errors.EnumerateArray().FirstOrDefault();
-
                     return new TwitterErrorDetails
                     {
-                        Title = errorElement.GetProperty("title").GetString(),
-                        Detail = errorElement.GetProperty("detail").GetString(),
-                        Type = errorElement.GetProperty("type").GetString(),
+                        Title = root.GetProperty("title").GetString(),
+                        Detail = root.GetProperty("detail").GetString(),
+                        Type = root.GetProperty("type").GetString(),
                         Errors =
-                            (from error in errorElement.GetProperty("errors").EnumerateArray()
+                            (from error in root.GetProperty("errors").EnumerateArray()
                              select new Error
                              {
                                  Message = error.GetProperty("message").ToString(),
                                  Parameters =
-                                    (from pram in error.GetProperty("parameters").EnumerateObject()
-                                     from key in pram.EnumerateObject()
-                                     select pram)
+                                    (from parm in error.GetProperty("parameters").EnumerateObject()
+                                     let vals =
+                                     (from val in parm.Value.EnumerateArray()
+                                      select val.GetString())
+                                     .ToArray()
+                                     select new { parm.Name, vals })
                                     .ToDictionary(
-                                        key => key)
+                                        key => key.Name,
+                                        val => val.vals)
                              })
                             .ToArray()
                     };
@@ -125,41 +136,9 @@ namespace LinqToTwitter.Net
             return new TwitterErrorDetails { Detail = responseStr };
         }
 
-// TwitterErrorDetails
-//{
-//	"errors": [
-//		{
-//			"parameters": {
-//				"query": []
-//          },
-//			"message": "Request parameter `query` can not be empty"
-//		},
-//		{
-//			"parameters": {
-//				"q": [
-//					"LINQ%20to%20Twitter"
-//				]
-//			},
-//			"message": "[q] is not one of [query,start_time,end_time,since_id,until_id,max_results,next_token,expansions,tweet.fields,media.fields,poll.fields,place.fields,user.fields]"
-//		}
-//	],
-//	"title": "Invalid Request",
-//	"detail": "One or more parameters to your request was invalid.",
-//	"type": "https://api.twitter.com/labs/2/problems/invalid-request"
-//}
-
-        public class TwitterErrorDetails
+        static bool IsErrorFormatRecognized(JsonElement root)
         {
-            public Error[] Errors { get; set; }
-            public string Title { get; set; }
-            public string Detail { get; set; }
-            public string Type { get; set; }
-        }
-
-        public class Error
-        {
-            public Dictionary<string, string[]> Parameters { get; set; }
-            public string Message { get; set; }
+            return root.TryGetProperty("errors", out JsonElement errors);
         }
     }
 }

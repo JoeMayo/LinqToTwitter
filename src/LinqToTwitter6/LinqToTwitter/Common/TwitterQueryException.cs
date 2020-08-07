@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LinqToTwitter.Net;
+using System;
 using System.Net;
 
 namespace LinqToTwitter.Common
@@ -6,6 +7,9 @@ namespace LinqToTwitter.Common
     /// <summary>
     /// Use for errors returned from HTTP GET and POST to Twitter
     /// </summary>
+    /// <remarks>
+    /// The properties commented as "assigned by Twitter" are error details from the Twitter API itself.
+    /// </remarks>
     public class TwitterQueryException : InvalidQueryException
     {
         /// <summary>
@@ -32,9 +36,24 @@ namespace LinqToTwitter.Common
             : base(message, inner) { }
 
         /// <summary>
+        /// Error title - assigned by Twitter
+        /// </summary>
+        public string Title { get; set; }
+
+        /// <summary>
+        /// Error details - assigned by Twitter
+        /// </summary>
+        public string? Details { get; set; }
+
+        /// <summary>
         /// Type of error - assigned by Twitter
         /// </summary>
         public string? Type { get; set; }
+
+        /// <summary>
+        /// Specific errors - assigned by Twitter
+        /// </summary>
+        public Error[] Errors { get; set; }
 
         /// <summary>
         /// Http status code from Twitter response
