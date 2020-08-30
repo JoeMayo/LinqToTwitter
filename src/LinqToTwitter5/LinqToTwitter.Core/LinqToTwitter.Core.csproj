@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <Version>5.1.2</Version>
+    <Version>5.1.3</Version>
     <Authors>@JoeMayo</Authors>
     <Company>LINQ to Twitter</Company>
     <Product>LinqToTwitter.Core</Product>

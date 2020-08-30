@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <Description>A LINQ Provider for the Twitter API</Description>
-    <Version>5.1.2</Version>
+    <Version>5.1.3</Version>
     <Authors>@JoeMayo</Authors>
     <Product>LinqToTwitter.AspNetCore</Product>
     <Company>LINQ to Twitter</Company>
