@@ -3,11 +3,11 @@
     public class MediaMetadata
     {
         public ulong MediaID { get; set; }
-        public AltText AltText { get; set; }
+        public AltText? AltText { get; set; }
     }
 
     public class AltText
     {
-        public string Text { get; set; }
+        public string? Text { get; set; }
     }
 }

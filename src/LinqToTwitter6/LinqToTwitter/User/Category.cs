@@ -15,11 +15,11 @@ namespace LinqToTwitter
         public Category() { }
         public Category(JsonElement catJson)
         {
-            Size = catJson.GetProperty("size").GetInt32();
-            Name = catJson.GetProperty("name").GetString();
-            Slug = catJson.GetProperty("slug").GetString();
+            Size = catJson.GetInt("size");
+            Name = catJson.GetString("name");
+            Slug = catJson.GetString("slug");
 
-            var users = catJson.GetProperty("users");
+            catJson.TryGetProperty("users", out JsonElement users);
             if (!users.IsNull())
                 Users =
                     (from user in users.EnumerateArray()
@@ -30,12 +30,12 @@ namespace LinqToTwitter
         /// <summary>
         /// Category name
         /// </summary>
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         /// <summary>
         /// Category description
         /// </summary>
-        public string Slug { get; set; }
+        public string? Slug { get; set; }
 
         /// <summary>
         /// Number of users in category
@@ -45,11 +45,11 @@ namespace LinqToTwitter
         /// <summary>
         /// ?
         /// </summary>
-        public List<Category> Categories { get; set; }
+        public List<Category>? Categories { get; set; }
 
         /// <summary>
         /// Users in category
         /// </summary>
-        public List<User> Users { get; set; }
+        public List<User>? Users { get; set; }
     }
 }

@@ -17,23 +17,25 @@ namespace LinqToTwitter
         {
             if (place.IsNull()) return;
 
-            ID = place.GetProperty("id").GetString();
-            Name = place.GetProperty("name").GetString();
-            Country = place.GetProperty("country").GetString();
-            CountryCode = place.GetProperty("country_code").GetString();
-            FullName = place.GetProperty("full_name").GetString();
-            PlaceType = place.GetProperty("place_type").GetString();
-            Url = place.GetProperty("url").GetString();
-            BoundingBox = new Geometry(place.GetProperty("bounding_box"));
-            Geometry = new Geometry(place.GetProperty("geometry"));
+            ID = place.GetString("id");
+            Name = place.GetString("name");
+            Country = place.GetString("country");
+            CountryCode = place.GetString("country_code");
+            FullName = place.GetString("full_name");
+            PlaceType = place.GetString("place_type");
+            Url = place.GetString("url");
+            place.TryGetProperty("bounding_box", out JsonElement boundingBoxValue);
+            BoundingBox = new Geometry(boundingBoxValue);
+            place.TryGetProperty("geometry", out JsonElement geometryValue);
+            Geometry = new Geometry(geometryValue);
 
-            var containedWithin = place.GetProperty("contained_within");
+            place.TryGetProperty("contained_within", out JsonElement containedWithin);
             ContainedWithin = 
                 !containedWithin.IsNull() && containedWithin.GetArrayLength() > 0 ? 
                     new Place(containedWithin[0]) :
                     null;
 
-            var polyLines = place.GetProperty("polylines");
+            place.TryGetProperty("polylines", out JsonElement polyLines);
             PolyLines = 
                 polyLines.IsNull() ? 
                     new List<string>() 
@@ -42,82 +44,74 @@ namespace LinqToTwitter
                      select line.GetString())
                     .ToList();
 
-            // TODO: re-write as JsonElement
-            //var attrDict = place.GetProperty("attributes") as IDictionary<string, JsonElement>;
-            //Attributes =
-            //    attrDict == null ?
-            //        new Dictionary<string, string>() 
-            //            :
-            //        (from string key in attrDict.Keys
-            //         select new 
-            //         { 
-            //             Key = key, 
-            //             Val = attrDict[key].ToString()
-            //         })
-            //        .ToDictionary(
-            //            attr => attr.Key,
-            //            attr => attr.Val);
+            place.TryGetProperty("attributes", out JsonElement attributes);
+            Attributes =
+                attributes
+                    .EnumerateObject()
+                    .ToDictionary(
+                        attr => attr.Name,
+                        attr => attr.Value.GetString() ?? string.Empty);
         }
 
         /// <summary>
         /// Name of place
         /// </summary>
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         /// <summary>
         /// Country code abbreviation
         /// </summary>
-        public string CountryCode { get; set; }
+        public string? CountryCode { get; set; }
 
         /// <summary>
         /// Place ID
         /// </summary>
-        public string ID { get; set; }
+        public string? ID { get; set; }
 
         /// <summary>
         /// Name of country
         /// </summary>
-        public string Country { get; set; }
+        public string? Country { get; set; }
 
         /// <summary>
         /// Type of place (i.e. neighborhood, city, country, etc.)
         /// </summary>
-        public string PlaceType { get; set; }
+        public string? PlaceType { get; set; }
 
         /// <summary>
         /// Url to get more details on place
         /// </summary>
-        public string Url { get; set; }
+        public string? Url { get; set; }
 
         /// <summary>
         /// Full name of place
         /// </summary>
-        public string FullName { get; set; }
+        public string? FullName { get; set; }
 
         /// <summary>
         /// Place related metadata
         /// </summary>
         [XmlIgnore]
-        public Dictionary<string, string> Attributes { get; set; }
+        public Dictionary<string, string>? Attributes { get; set; }
 
         /// <summary>
         /// Geographical outline of place
         /// </summary>
-        public Geometry BoundingBox { get; set; }
+        public Geometry? BoundingBox { get; set; }
 
         /// <summary>
         /// ?
         /// </summary>
-        public Geometry Geometry { get; set; }
+        public Geometry? Geometry { get; set; }
 
         /// <summary>
         /// ?
         /// </summary>
-        public List<string> PolyLines { get; set; }
+        public List<string>? PolyLines { get; set; }
 
         /// <summary>
         /// Containing place (i.e. a neighborhood is contained within a city)
         /// </summary>
-        public Place ContainedWithin { get; set; }
+        public Place? ContainedWithin { get; set; }
     }
 }

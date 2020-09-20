@@ -17,8 +17,8 @@ namespace LinqToTwitter.Common
         public Cursors() {}
         internal Cursors(JsonElement cursors)
         {
-            Next = cursors.GetProperty("next_cursor").GetInt64();
-            Previous = cursors.GetProperty("previous_cursor").GetInt64();
+            Next = cursors.GetLong("next_cursor");
+            Previous = cursors.GetLong("previous_cursor");
         }
 
         /// <summary>

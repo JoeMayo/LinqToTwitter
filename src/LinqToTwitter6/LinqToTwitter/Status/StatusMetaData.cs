@@ -1,5 +1,6 @@
 ﻿using System.Xml.Serialization;
 using System.Text.Json;
+using LinqToTwitter.Common;
 
 namespace LinqToTwitter
 {
@@ -9,12 +10,15 @@ namespace LinqToTwitter
         public StatusMetaData() { }
         public StatusMetaData(JsonElement mdJson)
         {
-            ResultType = mdJson.GetProperty("result_type").GetString();
-            IsoLanguageCode = mdJson.GetProperty("iso_language_code").GetString();
+            if (mdJson.IsNull())
+                return;
+
+            ResultType = mdJson.GetString("result_type");
+            IsoLanguageCode = mdJson.GetString("iso_language_code");
         }
 
-        public string ResultType { get; set; }
+        public string? ResultType { get; set; }
 
-        public string IsoLanguageCode { get; set; }
+        public string? IsoLanguageCode { get; set; }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Xml.Serialization;
 using System.Text.Json;
 using LinqToTwitter.Common;
+using System.Linq;
 
 namespace LinqToTwitter
 {
@@ -24,17 +25,16 @@ namespace LinqToTwitter
 
             IsLocationAvailable = true;
 
-            // TODO: make sure we pull these out correctly and test
-            //JsonElement jsonLatitude = coord[LatitudePos];
-            //Latitude = jsonLatitude.IsDouble ? (double)jsonLatitude : (int)jsonLatitude;
-            //JsonElement jsonLongitude = coord[LongitudePos];
-            //Longitude = jsonLongitude.IsDouble ? (double)jsonLongitude : (int)jsonLongitude;
+            JsonElement[] coords = coord.EnumerateArray().ToArray();
+
+            Latitude = coords[LatitudePos].GetDouble();
+            Longitude = coords[LongitudePos].GetDouble();
         }
 
         /// <summary>
         /// Type of Coordinate
         /// </summary>
-        public string Type { get; set; }
+        public string? Type { get; set; }
 
         /// <summary>
         /// Latitude

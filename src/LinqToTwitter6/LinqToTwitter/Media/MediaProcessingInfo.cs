@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using LinqToTwitter.Common;
+using System.Text.Json;
 
 namespace LinqToTwitter
 {
@@ -11,16 +12,17 @@ namespace LinqToTwitter
         public MediaProcessingInfo() { }
         public MediaProcessingInfo(JsonElement info)
         {
-            State = info.GetProperty("state").GetString();
-            CheckAfterSeconds = info.GetProperty("check_after_secs").GetInt32();
-            ProgressPercent = info.GetProperty("progress_percent").GetInt32();
-            Error = new MediaError(info.GetProperty("error"));
+            State = info.GetString("state");
+            CheckAfterSeconds = info.GetInt("check_after_secs");
+            ProgressPercent = info.GetInt("progress_percent");
+            info.TryGetProperty("error", out JsonElement errorValue);
+            Error = new MediaError(errorValue);
         }
 
         /// <summary>
         /// Current status of media upload.
         /// </summary>
-        public string State { get; set; }
+        public string? State { get; set; }
 
         /// <summary>
         /// Recommended number of seconds to delay between status checks.
@@ -35,6 +37,6 @@ namespace LinqToTwitter
         /// <summary>
         /// If the request failed with won't be null.
         /// </summary>
-        public MediaError Error { get; set; }
+        public MediaError? Error { get; set; }
     }
 }

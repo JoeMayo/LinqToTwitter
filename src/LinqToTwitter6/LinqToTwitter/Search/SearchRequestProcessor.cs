@@ -16,7 +16,7 @@ namespace LinqToTwitter
         /// <summary>
         /// base url for request
         /// </summary>
-        public string BaseUrl { get; set; }
+        public string? BaseUrl { get; set; }
 
         /// <summary>
         /// type of search, included for compatibility
@@ -27,22 +27,22 @@ namespace LinqToTwitter
         /// <summary>
         /// search query
         /// </summary>
-        internal string Query { get; set; }
+        internal string? Query { get; set; }
 
         /// <summary>
         /// location, specified as "latitude,longitude,radius"
         /// </summary>
-        internal string GeoCode { get; set; }
+        internal string? GeoCode { get; set; }
 
         /// <summary>
         /// filters query to tweets in specified language (ISO 639-1)
         /// </summary>
-        internal string SearchLanguage { get; set; }
+        internal string? SearchLanguage { get; set; }
 
         /// <summary>
         /// language of the search query (currently only supports ja)
         /// </summary>
-        internal string Locale { get; set; }
+        internal string? Locale { get; set; }
 
         /// <summary>
         /// Metadata for type of result (mixed, recent, or popular)
@@ -89,18 +89,18 @@ namespace LinqToTwitter
             var paramFinder =
                new ParameterFinder<Search>(
                    lambdaExpression.Body,
-                   new List<string> { 
-                       "Type",
-                       "Query",
-                       "GeoCode",
-                       "SearchLanguage",
-                       "Locale",
-                       "ResultType",
-                       "Count",
-                       "Until",
-                       "SinceID",
-                       "MaxID",
-                       "IncludeEntities",
+                   new List<string> {
+                       nameof(Type),
+                       nameof(Query),
+                       nameof(GeoCode),
+                       nameof(SearchLanguage),
+                       nameof(Locale),
+                       nameof(ResultType),
+                       nameof(Count),
+                       nameof(Until),
+                       nameof(SinceID),
+                       nameof(MaxID),
+                       nameof(IncludeEntities),
                        nameof(TweetMode)
                    });
 

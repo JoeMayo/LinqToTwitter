@@ -1,15 +1,37 @@
-﻿#nullable disable
-using System;
+﻿using System;
 using System.Globalization;
-using System.Collections.Generic;
 using System.Text.Json;
 
 namespace LinqToTwitter.Common
 {
     public static class TypeConversionExtensions
     {
+        public static bool IsNull(this JsonElement json)
+        {
+            return json.ValueKind == JsonValueKind.Undefined || json.ValueKind == JsonValueKind.Null;
+        }
 
-        public static ulong GetULong(this string val, ulong defaultValue /* = 0*/)
+        public static string? GetString(this JsonElement json, string propertyName, string? defaultValue = default)
+        {
+            if (!json.IsNull() && 
+                json.TryGetProperty(propertyName, out JsonElement element))
+                return element.GetString() ?? defaultValue;
+
+            return defaultValue;
+        }
+
+        public static int GetInt(this JsonElement json, string propertyName, int defaultValue = default)
+        {
+            if (!json.IsNull() && 
+                json.TryGetProperty(propertyName, out JsonElement element) &&
+                !element.IsNull() &&
+                element.TryGetInt32(out int value))
+                return value;
+
+            return defaultValue;
+        }
+
+        public static ulong GetULong(this string val, ulong defaultValue = default)
         {
             return string.IsNullOrWhiteSpace(val) ||
                 !ulong.TryParse(val, out ulong result)
@@ -17,23 +39,93 @@ namespace LinqToTwitter.Common
                     : result;
         }
 
-        public static double GetDouble(this string val, double defaultValue /* = 0*/)
+        public static ulong GetUlong(this JsonElement json, string propertyName, ulong defaultValue = default)
         {
-            return String.IsNullOrWhiteSpace(val) ||
+            if (!json.IsNull() && 
+                json.TryGetProperty(propertyName, out JsonElement element) &&
+                !element.IsNull() &&
+                element.TryGetUInt64(out ulong value))
+                return value;
+
+            return defaultValue;
+        }
+
+        public static long GetLong(this JsonElement json, string propertyName, long defaultValue = default)
+        {
+            if (!json.IsNull() &&
+                json.TryGetProperty(propertyName, out JsonElement element) &&
+                !element.IsNull() &&
+                element.TryGetInt64(out long value))
+                return value;
+
+            return defaultValue;
+        }
+
+        public static bool GetBool(this JsonElement json, string propertyName, bool defaultValue = default)
+        {
+            if (!json.IsNull() && json.TryGetProperty(propertyName, out JsonElement element))
+                return element.GetBoolean();
+
+            return defaultValue;
+        }
+
+        public static double GetDouble(this string val, double defaultValue = default)
+        {
+            return string.IsNullOrWhiteSpace(val) ||
                 !double.TryParse(val, out double result)
                     ? defaultValue
                     : result;
         }
 
-        private static readonly string[] dateFormats = { "ddd MMM dd HH:mm:ss %zzzz yyyy",
-                                                         "yyyy-MM-dd\\THH:mm:ss\\Z",
-                                                         "yyyy-MM-dd HH:mm:ss",
-                                                         "yyyy-MM-dd HH:mm"};
+        public static double GetDouble(this JsonElement json, string propertyName, double defaultValue = default)
+        {
+            if (!json.IsNull() && 
+                json.TryGetProperty(propertyName, out JsonElement element) &&
+                !element.IsNull() &&
+                element.TryGetDouble(out double value))
+                return value;
+
+            return defaultValue;
+        }
+
+        public static decimal GetDecimal(this JsonElement json, string propertyName, decimal defaultValue = default)
+        {
+            if (!json.IsNull() &&
+                json.TryGetProperty(propertyName, out JsonElement element) &&
+                !element.IsNull() &&
+                element.TryGetDecimal(out decimal value))
+                return value;
+
+            return defaultValue;
+        }
+
+        static readonly string[] dateFormats =
+        {
+            "ddd MMM dd HH:mm:ss %zzzz yyyy",
+            "yyyy-MM-dd\\THH:mm:ss\\Z",
+            "yyyy-MM-dd HH:mm:ss",
+            "yyyy-MM-dd HH:mm"
+        };
 
         public static DateTime GetDate(this string date, DateTime defaultValue)
         {
-            return String.IsNullOrWhiteSpace(date) ||
+            return string.IsNullOrWhiteSpace(date) ||
                 !DateTime.TryParseExact(date,
+                        dateFormats,
+                        CultureInfo.InvariantCulture,
+                        DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal, out DateTime result)
+                    ? defaultValue
+                    : result;
+        }
+
+        public static DateTime GetDate(this JsonElement json, string propertyName, DateTime defaultValue = default)
+        {
+            string? date = json.GetString(propertyName);
+
+            return
+                string.IsNullOrWhiteSpace(date) ||
+                !DateTime.TryParseExact(
+                        date,
                         dateFormats,
                         CultureInfo.InvariantCulture,
                         DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal, out DateTime result)
@@ -43,13 +135,13 @@ namespace LinqToTwitter.Common
 
         public static readonly DateTime EpochBase = new DateTime(1970, 1, 1, 0, 0, 0, 0);
 
-        public static DateTime GetEpochDate(this string date, DateTime defaultValue)
+        public static DateTime GetEpochDate(this string ticks, DateTime defaultValue)
         {
-            var epochSeconds = date.GetULong(ulong.MaxValue);
+            var epochSeconds = ticks.GetULong(ulong.MaxValue);
 
             if (epochSeconds == ulong.MaxValue)
                 return defaultValue;
-            
+
             return EpochBase + TimeSpan.FromSeconds(epochSeconds);
         }
 
@@ -57,78 +149,6 @@ namespace LinqToTwitter.Common
         {
             ulong.TryParse(timestamp, out ulong epochMilliseconds);
             return EpochBase + +TimeSpan.FromMilliseconds(epochMilliseconds);
-        }
-
-        public static T GetValue<T>(this IDictionary<string, object> dictionary, string key)
-        {
-            if (dictionary.TryGetValue(key, out object value))
-                return (T)value;
-
-            return default;
-        }
-
-        public static T GetValue<T>(this IDictionary<string, object> dictionary, string key, T defaultValue)
-        {
-
-            if (dictionary.TryGetValue(key, out object value))
-                return (T)value;
-
-            return defaultValue;
-        }
-
-        public static T GetValue<T>(this JsonDocument data, string key)
-        {
-            return GetValue(data, key, default(T));
-        }
-
-        public static T GetValue<T>(this JsonDocument data, string key, T defaultValue)
-        {
-            throw new NotImplementedException();
-            //object value = defaultValue;
-            //if (data != null && data.InstObject != null && 
-            //    data.InstObject.ContainsKey(key) && data.InstObject[key] != null)
-            //{
-            //    var dataItem = data.InstObject[key] as IJsonWrapper;
-
-            //    string type = typeof (T).Name;
-            //    switch (type)
-            //    {
-            //        case "String":
-            //            value = dataItem.GetString();
-            //            break;
-            //        case "Int32":
-            //            value = dataItem.GetInt();
-            //            break;
-            //        case "Int64":
-            //            value = dataItem.GetLong();
-            //            break;
-            //        case "Double":
-            //            value = dataItem.GetDouble();
-            //            break;
-            //        case "Boolean":
-            //            value = dataItem.GetBoolean();
-            //            break;
-            //        case "Decimal":
-            //            value = dataItem.GetDecimal();
-            //            break;
-            //        case "UInt64":
-            //            value = dataItem.GetUlong();
-            //            break;
-            //        case "JsonData":
-            //            value = data.InstObject[key];
-            //            break;
-            //        case "Nullable`1":
-            //            if (typeof(T) == typeof(int?) && dataItem.IsInt) { value = dataItem.GetInt(); break; }
-            //            if (typeof(T) == typeof(long?) && dataItem.IsLong) { value = dataItem.GetLong(); break; }
-            //            if (typeof(T) == typeof(double?) && dataItem.IsDouble) { value = dataItem.GetDouble(); break; }
-            //            if (typeof(T) == typeof(bool?) && dataItem.IsBoolean) { value = dataItem.GetBoolean(); break; }
-            //            if (typeof(T) == typeof(decimal?) && dataItem.IsDecimal) { value = dataItem.GetDecimal(); break; }
-            //            if (typeof(T) == typeof(ulong?) && dataItem.IsULong) { value = dataItem.GetUlong(); break; }
-            //            break;
-            //    }
-            //}
-
-            //return (T)value;
         }
     }
 }

@@ -19,26 +19,20 @@ namespace LinqToTwitter
                 return;
             }
 
-            // TODO: re-write as JsonElement
-            //var attrDictionary = annotationJson as IDictionary<string, JsonData>;
-            //Attributes =
-            //    (from string key in attrDictionary.Keys
-            //     select new
-            //     {
-            //         Key = key,
-            //         Value = attrDictionary[key]
-            //     })
-            //    .ToDictionary(
-            //        atr => atr.Key.ToString(),
-            //        atr => atr.Value.ToString());
+            Attributes =
+                annotationJson
+                    .EnumerateObject()
+                    .ToDictionary(
+                        atr => atr.Name,
+                        atr => atr.Value.GetString() ?? string.Empty);
         }
 
-        public string Type { get; set; }
+        public string? Type { get; set; }
 
         [XmlIgnore]
-        public Dictionary<string, string> Attributes { get; set; }
+        public Dictionary<string, string>? Attributes { get; set; }
 
         [XmlIgnore]
-        public Dictionary<string, string> Elements { get; set; }
+        public Dictionary<string, string>? Elements { get; set; }
     }
 }

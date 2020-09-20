@@ -18,9 +18,9 @@ namespace LinqToTwitter
         {
             if (geometry.IsNull()) return;
 
-            Type = geometry.GetProperty("type").GetString();
+            Type = geometry.GetString("type");
 
-            var coordinates = geometry.GetProperty("coordinates");
+            geometry.TryGetProperty("coordinates", out JsonElement coordinates);
             Coordinates =
                 (from outer in coordinates.EnumerateArray()
                  from coord in outer.EnumerateArray()
@@ -31,11 +31,11 @@ namespace LinqToTwitter
         /// <summary>
         /// Type of bouding box
         /// </summary>
-        public string Type { get; set; }
+        public string? Type { get; set; }
 
         /// <summary>
         /// Coordinates for bounding box
         /// </summary>
-        public List<Coordinate> Coordinates { get; set; }
+        public List<Coordinate>? Coordinates { get; set; }
     }
 }

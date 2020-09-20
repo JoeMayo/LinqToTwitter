@@ -26,48 +26,50 @@ namespace LinqToTwitter
 
             BannerSizes = new List<BannerSize>();
             Categories = new List<Category>();
-            UserIDResponse = user.GetProperty("id").GetUInt64().ToString(CultureInfo.InvariantCulture);
-            ScreenNameResponse = user.GetProperty("screen_name").GetString();
-            Name = user.GetProperty("name").GetString();
-            Location = user.GetProperty("location").GetString();
-            Description = user.GetProperty("description").GetString();
-            ProfileImageUrl = user.GetProperty("profile_image_url").GetString();
-            ProfileImageUrlHttps = user.GetProperty("profile_image_url_https").GetString();
-            Url = user.GetProperty("url").GetString();
-            Entities = new UserEntities(user.GetProperty("entities"));
-            Protected = user.GetProperty("protected").GetBoolean();
-            ProfileUseBackgroundImage = user.GetProperty("profile_use_background_image").GetBoolean();
-            IsTranslator = user.GetProperty("is_translator").GetBoolean();
-            FollowersCount = user.GetProperty("followers_count").GetInt32();
-            DefaultProfile = user.GetProperty("default_profile").GetBoolean();
-            ProfileBackgroundColor = user.GetProperty("profile_background_color").GetString();
-            LangResponse = user.GetProperty("lang").GetString();
-            ProfileTextColor = user.GetProperty("profile_text_color").GetString();
-            ProfileLinkColor = user.GetProperty("profile_link_color").GetString();
-            ProfileSidebarFillColor = user.GetProperty("profile_sidebar_fill_color").GetString();
-            ProfileSidebarBorderColor = user.GetProperty("profile_sidebar_border_color").GetString();
-            FriendsCount = user.GetProperty("friends_count").GetInt32();
-            DefaultProfileImage = user.GetProperty("default_profile_image").GetBoolean();
-            CreatedAt = user.GetProperty("created_at").GetString().GetDate(DateTime.MinValue);
-            FavoritesCount = user.GetProperty("favourites_count").GetInt32();
-            UtcOffset = user.GetProperty("utc_offset").GetInt32();
-            TimeZone = user.GetProperty("time_zone").GetString();
-            ProfileBackgroundImageUrl = user.GetProperty("profile_background_image_url").GetString();
-            ProfileBackgroundImageUrlHttps = user.GetProperty("profile_background_image_url_https").GetString();
-            ProfileBackgroundTile = user.GetProperty("profile_background_tile").GetBoolean();
-            ProfileBannerUrl = user.GetProperty("profile_banner_url").GetString();
-            StatusesCount = user.GetProperty("statuses_count").GetInt32();
-            Notifications = user.GetProperty("notifications").GetBoolean();
-            GeoEnabled = user.GetProperty("geo_enabled").GetBoolean();
-            Verified = user.GetProperty("verified").GetBoolean();
-            ContributorsEnabled = user.GetProperty("contributors_enabled").GetBoolean();
-            Following = user.GetProperty("following").GetBoolean();
-            ShowAllInlineMedia = user.GetProperty("show_all_inline_media").GetBoolean();
-            ListedCount = user.GetProperty("listed_count").GetInt32();
-            FollowRequestSent = user.GetProperty("follow_request_sent").GetBoolean();
-            Status = new Status(user.GetProperty("status"));
+            UserIDResponse = user.GetUlong("id").ToString(CultureInfo.InvariantCulture);
+            ScreenNameResponse = user.GetString("screen_name");
+            Name = user.GetString("name");
+            Location = user.GetString("location");
+            Description = user.GetString("description");
+            ProfileImageUrl = user.GetString("profile_image_url");
+            ProfileImageUrlHttps = user.GetString("profile_image_url_https");
+            Url = user.GetString("url");
+            user.TryGetProperty("entities", out JsonElement entitiesValue);
+            Entities = new UserEntities(entitiesValue);
+            Protected = user.GetBool("protected");
+            ProfileUseBackgroundImage = user.GetBool("profile_use_background_image");
+            IsTranslator = user.GetBool("is_translator");
+            FollowersCount = user.GetInt("followers_count");
+            DefaultProfile = user.GetBool("default_profile");
+            ProfileBackgroundColor = user.GetString("profile_background_color");
+            LangResponse = user.GetString("lang");
+            ProfileTextColor = user.GetString("profile_text_color");
+            ProfileLinkColor = user.GetString("profile_link_color");
+            ProfileSidebarFillColor = user.GetString("profile_sidebar_fill_color");
+            ProfileSidebarBorderColor = user.GetString("profile_sidebar_border_color");
+            FriendsCount = user.GetInt("friends_count");
+            DefaultProfileImage = user.GetBool("default_profile_image");
+            CreatedAt = (user.GetString("created_at") ?? string.Empty).GetDate(DateTime.MinValue);
+            FavoritesCount = user.GetInt("favourites_count");
+            UtcOffset = user.GetInt("utc_offset");
+            TimeZone = user.GetString("time_zone");
+            ProfileBackgroundImageUrl = user.GetString("profile_background_image_url");
+            ProfileBackgroundImageUrlHttps = user.GetString("profile_background_image_url_https");
+            ProfileBackgroundTile = user.GetBool("profile_background_tile");
+            ProfileBannerUrl = user.GetString("profile_banner_url");
+            StatusesCount = user.GetInt("statuses_count");
+            Notifications = user.GetBool("notifications");
+            GeoEnabled = user.GetBool("geo_enabled");
+            Verified = user.GetBool("verified");
+            ContributorsEnabled = user.GetBool("contributors_enabled");
+            Following = user.GetBool("following");
+            ShowAllInlineMedia = user.GetBool("show_all_inline_media");
+            ListedCount = user.GetInt("listed_count");
+            FollowRequestSent = user.GetBool("follow_request_sent");
+            user.TryGetProperty("status", out JsonElement statusElement);
+            Status = new Status(statusElement);
             CursorMovement = new Cursors(user);
-            Email = user.GetProperty("email").GetString();
+            Email = user.GetString("email");
         }
 
         /// <summary>
@@ -83,17 +85,17 @@ namespace LinqToTwitter
         /// <summary>
         /// Comma-separated list of user IDs (e.g. for Lookup query)
         /// </summary>
-        public string UserIdList { get; set; }
+        public string? UserIdList { get; set; }
 
         /// <summary>
         /// Query screen name
         /// </summary>
-        public string ScreenName { get; set; }
+        public string? ScreenName { get; set; }
 
         /// <summary>
         /// Comma-separated list of screen names (e.g. for Lookup queries)
         /// </summary>
-        public string ScreenNameList { get; set; }
+        public string? ScreenNameList { get; set; }
 
         /// <summary>
         /// Page to return
@@ -123,12 +125,12 @@ namespace LinqToTwitter
         /// <summary>
         /// Used to identify suggested users category
         /// </summary>
-        public string Slug { get; set; }
+        public string? Slug { get; set; }
 
         /// <summary>
         /// Query for User Search
         /// </summary>
-        public string Query { get; set; }
+        public string? Query { get; set; }
 
         /// <summary>
         /// Add entities to results (default: true)
@@ -143,12 +145,12 @@ namespace LinqToTwitter
         /// <summary>
         /// Query User ID
         /// </summary>
-        public string UserIDResponse { get; set; }
+        public string? UserIDResponse { get; set; }
 
         /// <summary>
         /// Query screen name
         /// </summary>
-        public string ScreenNameResponse { get; set; }
+        public string? ScreenNameResponse { get; set; }
 
         /// <summary>
         /// Size for UserProfileImage query
@@ -170,32 +172,32 @@ namespace LinqToTwitter
         /// either the next or previous page.
         /// </remarks>
         [XmlIgnore]
-        public Cursors CursorMovement { get; internal set; }
+        public Cursors? CursorMovement { get; internal set; }
 
         /// <summary>
         /// name of user
         /// </summary>
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         /// <summary>
         /// location of user
         /// </summary>
-        public string Location { get; set; }
+        public string? Location { get; set; }
 
         /// <summary>
         /// user's description
         /// </summary>
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         /// <summary>
         /// user's image
         /// </summary>
-        public string ProfileImageUrl { get; set; }
+        public string? ProfileImageUrl { get; set; }
 
         /// <summary>
         /// user's image for use on HTTPS secured pages
         /// </summary>
-        public string ProfileImageUrlHttps { get; set; }
+        public string? ProfileImageUrlHttps { get; set; }
 
         /// <summary>
         /// user's image is a defaulted placeholder
@@ -205,12 +207,12 @@ namespace LinqToTwitter
         /// <summary>
         /// user's URL
         /// </summary>
-        public string Url { get; set; }
+        public string? Url { get; set; }
 
         /// <summary>
         /// Entities connected to the <see cref="User"/>
         /// </summary>
-        public UserEntities Entities { get; set; }
+        public UserEntities? Entities { get; set; }
 
         /// <summary>
         /// user's profile has not been configured (is just defaults)
@@ -230,27 +232,27 @@ namespace LinqToTwitter
         /// <summary>
         /// color of profile background
         /// </summary>
-        public string ProfileBackgroundColor { get; set; }
+        public string? ProfileBackgroundColor { get; set; }
 
         /// <summary>
         /// color of profile text
         /// </summary>
-        public string ProfileTextColor { get; set; }
+        public string? ProfileTextColor { get; set; }
 
         /// <summary>
         /// color of profile links
         /// </summary>
-        public string ProfileLinkColor { get; set; }
+        public string? ProfileLinkColor { get; set; }
 
         /// <summary>
         /// color of profile sidebar
         /// </summary>
-        public string ProfileSidebarFillColor { get; set; }
+        public string? ProfileSidebarFillColor { get; set; }
 
         /// <summary>
         /// color of profile sidebar border
         /// </summary>
-        public string ProfileSidebarBorderColor { get; set; }
+        public string? ProfileSidebarBorderColor { get; set; }
 
         /// <summary>
         /// number of friends
@@ -275,17 +277,17 @@ namespace LinqToTwitter
         /// <summary>
         /// Time Zone
         /// </summary>
-        public string TimeZone { get; set; }
+        public string? TimeZone { get; set; }
 
         /// <summary>
         /// URL of profile background image
         /// </summary>
-        public string ProfileBackgroundImageUrl { get; set; }
+        public string? ProfileBackgroundImageUrl { get; set; }
 
         /// <summary>
         /// URL of profile background image for use on HTTPS secured pages
         /// </summary>
-        public string ProfileBackgroundImageUrlHttps { get; set; }
+        public string? ProfileBackgroundImageUrlHttps { get; set; }
 
         /// <summary>
         /// Title of profile background
@@ -335,24 +337,24 @@ namespace LinqToTwitter
         /// <summary>
         /// current user status (valid only in user queries)
         /// </summary>
-        public Status Status { get; set; }
+        public Status? Status { get; set; }
 
         /// <summary>
         /// User categories for Twitter Suggested Users
         /// </summary>
-        public List<Category> Categories { get; set; }
+        public List<Category>? Categories { get; set; }
 
         /// <summary>
         /// Input param for Category queries
         /// </summary>
-        public string Lang { get; set; }
+        public string? Lang { get; set; }
 
         /// <summary>
         /// Return results for specified language
         ///  Note: Twitter only supports a limited number of languages,
         ///  which include en, fr, de, es, it when this feature was added.
         /// </summary>
-        public string LangResponse { get; set; }
+        public string? LangResponse { get; set; }
 
         /// <summary>
         /// Indicates if user has inline media enabled
@@ -372,22 +374,22 @@ namespace LinqToTwitter
         /// <summary>
         /// Response from ProfileImage query
         /// </summary>
-        public string ProfileImage { get; set; }
+        public string? ProfileImage { get; set; }
 
         /// <summary>
         /// Url of Profile Banner image.
         /// </summary>
-        public string ProfileBannerUrl { get; set; }
+        public string? ProfileBannerUrl { get; set; }
 
         /// <summary>
         /// Available sizes to use in account banners.
         /// </summary>
-        public List<BannerSize> BannerSizes { get; set; }
+        public List<BannerSize>? BannerSizes { get; set; }
 
         /// <summary>
         /// User's email-address (null if not filled in on app is
         /// lacking whitelisting)
         /// </summary>
-        public string Email { get; set; }
+        public string? Email { get; set; }
     }
 }

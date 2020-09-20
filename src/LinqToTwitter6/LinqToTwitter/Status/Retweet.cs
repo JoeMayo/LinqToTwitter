@@ -13,7 +13,7 @@ namespace LinqToTwitter
         /// <summary>
         /// Retweet ID
         /// </summary>
-        public string ID { get; set; }
+        public string? ID { get; set; }
 
         /// <summary>
         /// Date/Time Retweeted
@@ -23,17 +23,17 @@ namespace LinqToTwitter
         /// <summary>
         /// User of Original Tweet
         /// </summary>
-        public User RetweetedUser { get; set; }
+        public User? RetweetedUser { get; set; }
 
         /// <summary>
         /// Retweet Text
         /// </summary>
-        public string Text { get; set; }
+        public string? Text { get; set; }
 
         /// <summary>
         /// Which application sent retweet
         /// </summary>
-        public string Source { get; set; }
+        public string? Source { get; set; }
 
         /// <summary>
         /// Is text truncated
@@ -43,12 +43,12 @@ namespace LinqToTwitter
         /// <summary>
         /// Status ID retweeted
         /// </summary>
-        public string InReplyToStatusID { get; set; }
+        public string? InReplyToStatusID { get; set; }
 
         /// <summary>
         /// ID of User retweeted
         /// </summary>
-        public string InReplyToUserID { get; set; }
+        public string? InReplyToUserID { get; set; }
 
         /// <summary>
         /// Is Favorited
@@ -58,7 +58,7 @@ namespace LinqToTwitter
         /// <summary>
         /// Screen name of retweeted user
         /// </summary>
-        public string InReplyToScreenName { get; set; }
+        public string? InReplyToScreenName { get; set; }
 
         /// <summary>
         /// Number of retweets
@@ -68,6 +68,6 @@ namespace LinqToTwitter
         /// <summary>
         /// Has retweet been retweeted
         /// </summary>
-        public object Retweeted { get; set; }
+        public object? Retweeted { get; set; }
     }
 }

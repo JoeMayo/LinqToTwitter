@@ -17,16 +17,20 @@ namespace LinqToTwitter
         {
             if (geo.IsNull()) return;
 
-            JsonElement result = geo.GetProperty("result");
-            JsonElement places = result.GetProperty("places");
+            geo.TryGetProperty("result", out JsonElement result);
 
-            Token = result.GetProperty("token").GetString();
+            if (result.IsNull()) return;
+
+            result.TryGetProperty("places", out JsonElement places);
+
+            result.TryGetProperty("token", out JsonElement tokenValue);
+            Token = tokenValue.GetString();
 
             if (!places.IsNull())
             {
                 Places =
                     (from place in places.EnumerateArray()
-                        select new Place(place))
+                     select new Place(place))
                     .ToList(); 
             }
             else
@@ -54,7 +58,7 @@ namespace LinqToTwitter
         /// <summary>
         /// IP address to find nearby places
         /// </summary>
-        public string IP { get; set; }
+        public string? IP { get; set; }
 
         /// <summary>
         /// How accurate the results should be.
@@ -62,12 +66,12 @@ namespace LinqToTwitter
         ///     - Default is 0m
         ///     - Feet is ft (as in 10ft)
         /// </summary>
-        public string Accuracy { get; set; }
+        public string? Accuracy { get; set; }
 
         /// <summary>
         /// Size of place (i.e. neighborhood is default or city)
         /// </summary>
-        public string Granularity { get; set; }
+        public string? Granularity { get; set; }
 
         /// <summary>
         /// Number of places to return
@@ -77,36 +81,36 @@ namespace LinqToTwitter
         /// <summary>
         /// Any text you want to add to help find a place
         /// </summary>
-        public string Query { get; set; }
+        public string? Query { get; set; }
 
         /// <summary>
         /// Place ID to restrict search to
         /// </summary>
-        public string ContainedWithin { get; set; }
+        public string? ContainedWithin { get; set; }
 
         /// <summary>
         /// Name/value pair separated by "=" (i.e. "street_address=123 4th Street")
         /// </summary>
-        public string Attribute { get; set; }
+        public string? Attribute { get; set; }
 
         /// <summary>
         /// Name of place in similar places query
         /// </summary>
-        public string PlaceName { get; set; }
+        public string? PlaceName { get; set; }
 
         /// <summary>
         /// Place token returned from a Similar Places query and used in CreatePlaceAsync
         /// </summary>
-        public string Token { get; set; }
+        public string? Token { get; set; }
 
         /// <summary>
         /// Results showing places matching query
         /// </summary>
-        public List<Place> Places { get; set; }
+        public List<Place>? Places { get; set; }
 
         /// <summary>
         /// Place ID
         /// </summary>
-        public string ID { get; set; }
+        public string? ID { get; set; }
     }
 }

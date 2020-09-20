@@ -20,7 +20,7 @@ namespace LinqToTwitter
         /// <summary>
         /// base url for request
         /// </summary>
-        public virtual string BaseUrl { get; set; }
+        public virtual string? BaseUrl { get; set; }
 
         /// <summary>
         /// type of status request, i.e. Show or User
@@ -40,7 +40,7 @@ namespace LinqToTwitter
         /// <summary>
         /// Screen Name to disambiguate when ID is same as UserD
         /// </summary>
-        public string ScreenName { get; set; }
+        public string? ScreenName { get; set; }
 
         /// <summary>
         /// filter results to after this status id
@@ -113,7 +113,7 @@ namespace LinqToTwitter
         /// <summary>
         /// Url of tweet to embed
         /// </summary>
-        public string OEmbedUrl { get; set; }
+        public string? OEmbedUrl { get; set; }
 
         /// <summary>
         /// Max number of pixels for width
@@ -143,17 +143,17 @@ namespace LinqToTwitter
         /// <summary>
         /// Suggested accounts for the viewer to follow
         /// </summary>
-        public string OEmbedRelated { get; set; }
+        public string? OEmbedRelated { get; set; }
 
         /// <summary>
         /// Language code for rendered tweet
         /// </summary>
-        public string OEmbedLanguage { get; set; }
+        public string? OEmbedLanguage { get; set; }
 
         /// <summary>
         /// Comma-separated list of tweet IDs passed to Lookup.
         /// </summary>
-        public string TweetIDs { get; set; }
+        public string? TweetIDs { get; set; }
 
         /// <summary>
         /// Tweets can be compatibility or extended mode. Extended is the 
@@ -682,26 +682,21 @@ namespace LinqToTwitter
             return statusList.OfType<T>().ToList();
         }
 
-        public T ProcessActionResult(string responseJson, Enum theAction)
+        public T? ProcessActionResult(string responseJson, Enum theAction)
         {
             JsonElement statusJson = JsonDocument.Parse(responseJson).RootElement;
 
-            Status status = null;
-
-            switch ((StatusAction)theAction)
+            Status status = ((StatusAction)theAction) switch
             {
-                case StatusAction.SingleStatus:
-                    status = new Status(statusJson);
-                    break;
-                case StatusAction.MediaUpload:
+                StatusAction.SingleStatus =>
+                    new Status(statusJson),
+                StatusAction.MediaUpload =>
                     status = new Status
                     {
                         Media = new Media(statusJson)
-                    };
-                    break;
-                default:
-                    break;
-            }
+                    },
+                _ => new Status()
+            };
 
             return status.ItemCast(default(T));
         }

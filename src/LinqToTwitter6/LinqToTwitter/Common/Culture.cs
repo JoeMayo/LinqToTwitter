@@ -6,7 +6,7 @@ namespace LinqToTwitter
     [XmlType(Namespace = "LinqToTwitter")]
     public class Culture
     {
-        static CultureInfo usCulture;
+        static CultureInfo? usCulture;
 
         public static CultureInfo US
         {

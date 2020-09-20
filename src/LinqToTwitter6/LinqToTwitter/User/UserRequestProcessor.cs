@@ -633,7 +633,7 @@ namespace LinqToTwitter
             return userList;
         }
 
-        public T ProcessActionResult(string responseJson, Enum theAction)
+        public T? ProcessActionResult(string responseJson, Enum theAction)
         {
             JsonElement userJson = JsonDocument.Parse(responseJson).RootElement;
 

@@ -1,5 +1,6 @@
 ﻿using System.Xml.Serialization;
 using System.Text.Json;
+using LinqToTwitter.Common;
 
 namespace LinqToTwitter
 {
@@ -8,15 +9,17 @@ namespace LinqToTwitter
     {
         public MediaImage(JsonElement image)
         {
-            Width = image.GetProperty("w").GetInt32();
-            Height = image.GetProperty("h").GetInt32();
-            ImageType = image.GetProperty("image_type").GetString();
+            if (image.IsNull()) return;
+
+            Width = image.GetInt("w");
+            Height = image.GetInt("h");
+            ImageType = image.GetString("image_type");
         }
 
         public int Width { get; set; }
 
         public int Height { get; set; }
 
-        public string ImageType { get; set; }
+        public string? ImageType { get; set; }
     }
 }

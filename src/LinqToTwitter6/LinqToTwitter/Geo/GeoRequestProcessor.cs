@@ -23,7 +23,7 @@ namespace LinqToTwitter
         /// <summary>
         /// base url for request
         /// </summary>
-        public string BaseUrl { get; set; }
+        public string? BaseUrl { get; set; }
 
         /// <summary>
         /// type of Geo operation (Reverse or ID)
@@ -43,7 +43,7 @@ namespace LinqToTwitter
         /// <summary>
         /// IP address to find nearby places
         /// </summary>
-        internal string IP { get; set; }
+        internal string? IP { get; set; }
 
         /// <summary>
         /// How accurate the results should be.
@@ -51,12 +51,12 @@ namespace LinqToTwitter
         ///     - Default is 0m
         ///     - Feet is ft (as in 10ft)
         /// </summary>
-        internal string Accuracy { get; set; }
+        internal string? Accuracy { get; set; }
 
         /// <summary>
         /// Size of place (i.e. neighborhood is default or city)
         /// </summary>
-        internal string Granularity { get; set; }
+        internal string? Granularity { get; set; }
 
         /// <summary>
         /// Number of places to return
@@ -66,27 +66,27 @@ namespace LinqToTwitter
         /// <summary>
         /// Place ID
         /// </summary>
-        internal string ID { get; set; }
+        internal string? ID { get; set; }
 
         /// <summary>
         /// Any text you want to add to help find a place
         /// </summary>
-        internal string Query { get; set; }
+        internal string? Query { get; set; }
 
         /// <summary>
         /// Place ID to restrict search to
         /// </summary>
-        internal string ContainedWithin { get; set; }
+        internal string? ContainedWithin { get; set; }
 
         /// <summary>
         /// Name/value pair separated by "=" (i.e. "street_address=123 4th Street")
         /// </summary>
-        internal string Attribute { get; set; }
+        internal string? Attribute { get; set; }
 
         /// <summary>
         /// Name of place in similar places query
         /// </summary>
-        internal string PlaceName { get; set; }
+        internal string? PlaceName { get; set; }
 
         /// <summary>
         /// extracts parameters from lambda
@@ -98,18 +98,18 @@ namespace LinqToTwitter
             return new ParameterFinder<Geo>(
                lambdaExpression.Body,
                new List<string> { 
-                   "Type",
-                   "Latitude",
-                   "Longitude",
-                   "IP",
-                   "Accuracy",
-                   "Granularity",
-                   "MaxResults",
-                   "ID",
-                   "Query",
-                   "ContainedWithin",
-                   "Attribute",
-                   "PlaceName"
+                   nameof(Type),
+                   nameof(Latitude),
+                   nameof(Longitude),
+                   nameof(IP),
+                   nameof(Accuracy),
+                   nameof(Granularity),
+                   nameof(MaxResults),
+                   nameof(ID),
+                   nameof(Query),
+                   nameof(ContainedWithin),
+                   nameof(Attribute),
+                   nameof(PlaceName)
                })
                .Parameters;
         }
@@ -373,7 +373,7 @@ namespace LinqToTwitter
             return new List<Geo> { geo }.OfType<T>().ToList();
         }
 
-        public T ProcessActionResult(string responseJson, Enum theAction)
+        public T? ProcessActionResult(string responseJson, Enum theAction)
         {
             JsonElement geoJson = JsonDocument.Parse(responseJson).RootElement;
 

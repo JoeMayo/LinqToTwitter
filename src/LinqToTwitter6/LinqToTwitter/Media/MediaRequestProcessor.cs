@@ -19,12 +19,12 @@ namespace LinqToTwitter
         /// <summary>
         /// base URL for uploading media
         /// </summary>
-        public string UploadUrl { get; set; }
+        public string? UploadUrl { get; set; }
 
         /// <summary>
         /// base url for request
         /// </summary>
-        public virtual string BaseUrl { get; set; }
+        public virtual string? BaseUrl { get; set; }
 
         /// <summary>
         /// type of media request, i.e. Status
@@ -34,7 +34,7 @@ namespace LinqToTwitter
         /// <summary>
         /// Media command sent to Twitter. e.g. STATUS for requesting media upload status.
         /// </summary>
-        public string Command { get; set; }
+        public string? Command { get; set; }
 
         /// <summary>
         /// ID of uploaded media to work with.
@@ -225,26 +225,22 @@ namespace LinqToTwitter
             return statusList.OfType<T>().ToList();
         }
 
-        public T ProcessActionResult(string responseJson, Enum theAction)
+        public T? ProcessActionResult(string responseJson, Enum theAction)
         {
             JsonElement statusJson = JsonDocument.Parse(responseJson).RootElement;
 
-            Status status = null;
-
-            switch ((StatusAction)theAction)
-            {
-                case StatusAction.SingleStatus:
-                    status = new Status(statusJson);
-                    break;
-                case StatusAction.MediaUpload:
-                    status = new Status
-                    {
-                        Media = new Media(statusJson)
-                    };
-                    break;
-                default:
-                    break;
-            }
+            Status status =
+                ((StatusAction)theAction) switch
+                {
+                    StatusAction.SingleStatus =>
+                        new Status(statusJson),
+                    StatusAction.MediaUpload =>
+                        new Status
+                        {
+                            Media = new Media(statusJson)
+                        },
+                    _ => new Status()
+                };
 
             return status.ItemCast(default(T));
         }

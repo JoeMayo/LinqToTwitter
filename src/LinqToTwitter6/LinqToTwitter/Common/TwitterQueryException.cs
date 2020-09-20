@@ -38,7 +38,7 @@ namespace LinqToTwitter.Common
         /// <summary>
         /// Error title - assigned by Twitter
         /// </summary>
-        public string Title { get; set; }
+        public string? Title { get; set; }
 
         /// <summary>
         /// Error details - assigned by Twitter
@@ -53,7 +53,7 @@ namespace LinqToTwitter.Common
         /// <summary>
         /// Specific errors - assigned by Twitter
         /// </summary>
-        public Error[] Errors { get; set; }
+        public Error[]? Errors { get; set; }
 
         /// <summary>
         /// Http status code from Twitter response

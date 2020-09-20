@@ -1,5 +1,6 @@
 ﻿using System.Xml.Serialization;
 using System.Text.Json;
+using LinqToTwitter.Common;
 
 namespace LinqToTwitter
 {
@@ -9,13 +10,13 @@ namespace LinqToTwitter
         public SearchMetaData() { }
         public SearchMetaData(JsonElement metaData)
         {
-            CompletedIn = metaData.GetProperty("completed_in").GetDecimal();
-            MaxID = metaData.GetProperty("max_id_str").GetUInt64();
-            NextResults = metaData.GetProperty("next_results").GetString();
-            Query = metaData.GetProperty("query").GetString();
-            RefreshUrl = metaData.GetProperty("refresh_url").GetString();
-            Count = metaData.GetProperty("count").GetInt32();
-            SinceID = metaData.GetProperty("since_id_str").GetUInt64();
+            CompletedIn = metaData.GetDecimal("completed_in");
+            NextResults = metaData.GetString("next_results");
+            Query = metaData.GetString("query");
+            RefreshUrl = metaData.GetString("refresh_url");
+            Count = metaData.GetInt("count");
+            MaxID = (metaData.GetString("max_id_str") ?? string.Empty).GetULong();
+            SinceID = (metaData.GetString("since_id_str") ?? string.Empty).GetULong();
         }
 
         /// <summary>
@@ -31,17 +32,17 @@ namespace LinqToTwitter
         /// <summary>
         /// Query string to get next page
         /// </summary>
-        public string NextResults { get; set; }
+        public string? NextResults { get; set; }
 
         /// <summary>
         /// Original Query
         /// </summary>
-        public string Query { get; set; }
+        public string? Query { get; set; }
 
         /// <summary>
         /// Query string to refresh this search
         /// </summary>
-        public string RefreshUrl { get; set; }
+        public string? RefreshUrl { get; set; }
 
         /// <summary>
         /// Number of results per page to return on next query

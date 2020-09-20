@@ -24,17 +24,17 @@ namespace LinqToTwitter
         /// <summary>
         /// search query
         /// </summary>
-        public string Query { get; set; }
+        public string? Query { get; set; }
 
         /// <summary>
         /// filters query to tweets in specified language (ISO 639-1)
         /// </summary>
-        public string SearchLanguage { get; set; }
+        public string? SearchLanguage { get; set; }
 
         /// <summary>
         /// language of the search query (currently only supports ja)
         /// </summary>
-        public string Locale { get; set; }
+        public string? Locale { get; set; }
 
         /// <summary>
         /// number of results for each page
@@ -59,7 +59,7 @@ namespace LinqToTwitter
         /// <summary>
         /// location, specified as "latitude,longitude,radius"
         /// </summary>
-        public string GeoCode { get; set; }
+        public string? GeoCode { get; set; }
 
         /// <summary>
         /// Metadata for type of result requested (mixed, recent, or popular)
@@ -83,11 +83,11 @@ namespace LinqToTwitter
         /// <summary>
         /// Tweet data returned from the search
         /// </summary>
-        public List<Status> Statuses { get; set; }
+        public List<Status>? Statuses { get; set; }
 
         /// <summary>
         /// Tweet metadata returned from search
         /// </summary>
-        public SearchMetaData SearchMetaData { get; set; }
+        public SearchMetaData? SearchMetaData { get; set; }
     }
 }

@@ -1,5 +1,4 @@
-﻿#nullable disable
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 
@@ -10,8 +9,12 @@ namespace LinqToTwitter.Common.Entities
         public VideoInfo() { }
         public VideoInfo(JsonElement videoInfo)
         {
-            AspectRatio = new AspectRatio(videoInfo.GetProperty("aspect_ratio"));
-            Duration = videoInfo.GetProperty("duration_millis").GetInt32();
+            if (videoInfo.IsNull())
+                return;
+
+            videoInfo.TryGetProperty("aspect_ratio", out JsonElement aspectRatio);
+            AspectRatio = new AspectRatio(aspectRatio);
+            Duration = videoInfo.GetInt("duration_millis");
 
             if (videoInfo.TryGetProperty("variants", out JsonElement variants))
                 Variants =
@@ -23,7 +26,7 @@ namespace LinqToTwitter.Common.Entities
         /// <summary>
         /// Width and Height
         /// </summary>
-        public AspectRatio AspectRatio { get; set; }
+        public AspectRatio? AspectRatio { get; set; }
 
         /// <summary>
         /// Duration in milliseconds
@@ -33,6 +36,6 @@ namespace LinqToTwitter.Common.Entities
         /// <summary>
         /// Available encodings/data streams
         /// </summary>
-        public List<Variant> Variants { get; set; }
+        public List<Variant>? Variants { get; set; }
     }
 }
