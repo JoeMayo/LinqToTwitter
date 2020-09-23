@@ -537,9 +537,9 @@ namespace LinqToTwitter
                 //case nameof(SavedSearch):
                 //    req = new SavedSearchRequestProcessor<T>();
                 //    break;
-                //case nameof(Search):
-                //    req = new SearchRequestProcessor<T>();
-                //    break;
+                case nameof(Search):
+                    req = new SearchRequestProcessor<T>();
+                    break;
                 //case nameof(Status):
                 //    req = new StatusRequestProcessor<T>();
                 //    break;

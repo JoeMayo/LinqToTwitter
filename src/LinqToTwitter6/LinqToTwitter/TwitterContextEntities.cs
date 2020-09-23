@@ -128,13 +128,7 @@ namespace LinqToTwitter
         /// <summary>
         /// enables access to Raw Query Extensibility
         /// </summary>
-        public TwitterQueryable<Raw> RawQuery
-        {
-            get
-            {
-                return new TwitterQueryable<Raw>(this);
-            }
-        }
+        public TwitterQueryable<Raw> RawQuery => new TwitterQueryable<Raw>(this);
 
         ///// <summary>
         ///// enables access to Twitter Saved Searches
@@ -147,16 +141,10 @@ namespace LinqToTwitter
         //    }
         //}
 
-        ///// <summary>
-        ///// enables access to Twitter Search to query tweets
-        ///// </summary>
-        //public TwitterQueryable<Search> Search
-        //{
-        //    get
-        //    {
-        //        return new TwitterQueryable<Search>(this);
-        //    }
-        //}
+        /// <summary>
+        /// enables access to Twitter Search to query tweets
+        /// </summary>
+        public TwitterQueryable<Search> Search => new TwitterQueryable<Search>(this);
 
         ///// <summary>
         ///// enables access to Twitter Status messages
