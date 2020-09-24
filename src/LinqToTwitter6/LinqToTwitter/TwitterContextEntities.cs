@@ -146,6 +146,11 @@ namespace LinqToTwitter
         /// </summary>
         public TwitterQueryable<Search> Search => new TwitterQueryable<Search>(this);
 
+        /// <summary>
+        /// enables access to Twitter Search v2 to query tweets
+        /// </summary>
+        public TwitterQueryable<Search> Search2 => new TwitterQueryable<Search>(this);
+
         ///// <summary>
         ///// enables access to Twitter Status messages
         ///// </summary>
