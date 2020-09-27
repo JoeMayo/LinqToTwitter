@@ -6,9 +6,13 @@
     public enum SearchType
     {
         /// <summary>
-        /// implemented mostly for consistency
-        /// with the rest of the API
+        /// Classic Search
         /// </summary>
-        Search
+        Search,
+
+        /// <summary>
+        /// Search for Recent Tweets
+        /// </summary>
+        RecentSearch
     }
 }

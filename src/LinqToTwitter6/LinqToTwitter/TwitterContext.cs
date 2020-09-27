@@ -61,14 +61,20 @@ namespace LinqToTwitter
                 UserAgent = L2TKeys.DefaultUserAgent;
 
             BaseUrl = "https://api.twitter.com/1.1/";
+            BaseUrl2 = "https://api.twitter.com/2/";
             StreamingUrl = "https://stream.twitter.com/1.1/";
             UploadUrl = "https://upload.twitter.com/1.1/";
         }
 
         /// <summary>
-        /// base URL for accessing Twitter API
+        /// base URL for accessing Twitter API v1.1
         /// </summary>
         public string BaseUrl { get; set; }
+
+        /// <summary>
+        /// base URL for accessing Twitter API v2
+        /// </summary>
+        public string BaseUrl2 { get; set; }
 
         /// <summary>
         /// base URL for uploading media
@@ -537,9 +543,15 @@ namespace LinqToTwitter
                 //case nameof(SavedSearch):
                 //    req = new SavedSearchRequestProcessor<T>();
                 //    break;
-                //case nameof(Search):
-                //    req = new SearchRequestProcessor<T>();
-                //    break;
+                case nameof(Search):
+                    req = new SearchRequestProcessor<T>();
+                    break;
+                case nameof(Search2):
+                    req = new Search2RequestProcessor<T>
+                    {
+                        BaseUrl = BaseUrl2
+                    };
+                    break;
                 //case nameof(Status):
                 //    req = new StatusRequestProcessor<T>();
                 //    break;

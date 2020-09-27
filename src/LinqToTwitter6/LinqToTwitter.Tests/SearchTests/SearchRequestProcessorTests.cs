@@ -10,7 +10,7 @@ using LinqToTwitter.Provider;
 using LinqToTwitter.Tests.Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace LinqToTwitterPcl.Tests.SearchTests
+namespace LinqToTwitter.Tests.SearchTests
 {
     [TestClass]
     public class SearchRequestProcessorTests

@@ -17,5 +17,9 @@
 
         public const string FaqHelpUrl = "https://github.com/JoeMayo/LinqToTwitter/wiki/LINQ-to-Twitter-FAQ";
 
+        //
+        // Format Specifiers
+        //
+        public const string ISO8601 = "yyyy-MM-ddTHH\\:mm\\:ssZ";
     }
 }

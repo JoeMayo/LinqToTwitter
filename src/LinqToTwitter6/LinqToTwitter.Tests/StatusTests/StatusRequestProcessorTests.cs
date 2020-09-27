@@ -10,7 +10,7 @@ using LinqToTwitter.Provider;
 using LinqToTwitter.Tests.Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace LinqToTwitterPcl.Tests.StatusTests
+namespace LinqToTwitter.Tests.StatusTests
 {
     [TestClass]
     public class StatusRequestProcessorTests

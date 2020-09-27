@@ -1,5 +1,4 @@
-﻿#nullable disable
-using System.Text.Json;
+﻿using System.Text.Json;
 
 namespace LinqToTwitter.Common.Entities
 {
@@ -8,15 +7,15 @@ namespace LinqToTwitter.Common.Entities
         public Variant() { }
         public Variant(JsonElement variant)
         {
-            BitRate = variant.GetProperty("bitrate").GetInt32();
-            ContentType = variant.GetProperty("content_type").GetString();
-            Url = variant.GetProperty("url").GetString();
+            BitRate = variant.GetInt("bitrate");
+            ContentType = variant.GetString("content_type");
+            Url = variant.GetString("url");
         }
 
         public int BitRate { get; set; }
 
-        public string ContentType { get; set; }
+        public string? ContentType { get; set; }
 
-        public string Url { get; set; }
+        public string? Url { get; set; }
     }
 }
