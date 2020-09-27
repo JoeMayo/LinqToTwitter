@@ -73,7 +73,7 @@ namespace LinqToTwitter
         /// <summary>
         /// Date/Time to start search
         /// </summary>
-        public DateTime? StartTime { get; set; }
+        public DateTime StartTime { get; set; }
 
         /// <summary>
         /// Comma-separated list of fields to return in the Tweet object
@@ -132,7 +132,7 @@ namespace LinqToTwitter
             else
                 throw new ArgumentException("Type is required", "Type");
 
-            return BuildSearchUrlParameters(parameters, "search/tweets.json");
+            return BuildSearchUrlParameters(parameters, "tweets/search/recent");
         }
 
         /// <summary>
@@ -146,76 +146,88 @@ namespace LinqToTwitter
             var req = new Request(BaseUrl + url);
             var urlParams = req.RequestParameters;
 
-            if (parameters.ContainsKey("Query") && !string.IsNullOrWhiteSpace(parameters["Query"]))
-            {
-                Query = parameters["Query"];
 
-                urlParams.Add(new QueryParameter("q", Query));
+            if (parameters.ContainsKey(nameof(Query)) && !string.IsNullOrWhiteSpace(parameters[nameof(Query)]))
+            {
+                Query = parameters[nameof(Query)];
+                urlParams.Add(new QueryParameter("query", Query));
             }
             else
             {
-                throw new ArgumentNullException("Query", "Query filter in where clause is required.");
+                throw new ArgumentNullException(nameof(Query), "Query filter in where clause is required.");
             }
 
-            //if (parameters.ContainsKey("GeoCode"))
-            //{
-            //    GeoCode = parameters["GeoCode"];
-            //    urlParams.Add(new QueryParameter("geocode" , GeoCode));
-            //}
+            if (parameters.ContainsKey(nameof(EndTime)))
+            {
+                EndTime = DateTime.Parse(parameters[nameof(EndTime)]);
+                urlParams.Add(new QueryParameter("end_time", EndTime.ToString(L2TKeys.ISO8601, CultureInfo.InvariantCulture)));
+            }
 
-            //if (parameters.ContainsKey("SearchLanguage"))
-            //{
-            //    SearchLanguage = parameters["SearchLanguage"];
-            //    urlParams.Add(new QueryParameter("lang", SearchLanguage));
-            //}
+            if (parameters.ContainsKey(nameof(Expansions)))
+            {
+                Expansions = parameters[nameof(Expansions)];
+                urlParams.Add(new QueryParameter("expansions", Expansions));
+            }
 
-            //if (parameters.ContainsKey("Locale"))
-            //{
-            //    Locale = parameters["Locale"];
-            //    urlParams.Add(new QueryParameter("locale", Locale));
-            //}
+            if (parameters.ContainsKey(nameof(MaxResults)))
+            {
+                MaxResults = int.Parse(parameters[nameof(MaxResults)]);
+                urlParams.Add(new QueryParameter("max_results", MaxResults.ToString(CultureInfo.InvariantCulture)));
+            }
 
-            //if (parameters.ContainsKey("Count"))
-            //{
-            //    Count = int.Parse(parameters["Count"]);
-            //    urlParams.Add(new QueryParameter("count", Count.ToString(CultureInfo.InvariantCulture)));
-            //}
+            if (parameters.ContainsKey(nameof(MediaFields)))
+            {
+                MediaFields = parameters[nameof(MediaFields)];
+                urlParams.Add(new QueryParameter("media.fields", MediaFields));
+            }
 
-            //if (parameters.ContainsKey("Until"))
-            //{
-            //    Until = DateTime.Parse(parameters["Until"]).Date;
-            //    urlParams.Add(new QueryParameter("until",  Until.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)));
-            //}
+            if (parameters.ContainsKey(nameof(NextToken)))
+            {
+                NextToken = parameters[nameof(NextToken)];
+                urlParams.Add(new QueryParameter("next_token", NextToken));
+            }
 
-            //if (parameters.ContainsKey("SinceID"))
-            //{
-            //    SinceID = ulong.Parse(parameters["SinceID"]);
-            //    urlParams.Add(new QueryParameter("since_id", SinceID.ToString(CultureInfo.InvariantCulture)));
-            //}
+            if (parameters.ContainsKey(nameof(PlaceFields)))
+            {
+                PlaceFields = parameters[nameof(PlaceFields)];
+                urlParams.Add(new QueryParameter("place.fields", PlaceFields));
+            }
 
-            //if (parameters.ContainsKey("MaxID"))
-            //{
-            //    MaxID = ulong.Parse(parameters["MaxID"]);
-            //    urlParams.Add(new QueryParameter("max_id", MaxID.ToString(CultureInfo.InvariantCulture)));
-            //}
+            if (parameters.ContainsKey(nameof(PollFields)))
+            {
+                PollFields = parameters[nameof(PollFields)];
+                urlParams.Add(new QueryParameter("poll.fields", PollFields));
+            }
 
-            //if (parameters.ContainsKey("ResultType"))
-            //{
-            //    ResultType = RequestProcessorHelper.ParseEnum<ResultType>(parameters["ResultType"]);
-            //    urlParams.Add(new QueryParameter("result_type" , ResultType.ToString().ToLower()));
-            //}
+            if (parameters.ContainsKey(nameof(SinceID)))
+            {
+                SinceID = parameters[nameof(SinceID)];
+                urlParams.Add(new QueryParameter("since_id", SinceID));
+            }
 
-            //if (parameters.ContainsKey("IncludeEntities"))
-            //{
-            //    IncludeEntities = bool.Parse(parameters["IncludeEntities"]);
-            //    urlParams.Add(new QueryParameter("include_entities", parameters["IncludeEntities"].ToLower()));
-            //}
+            if (parameters.ContainsKey(nameof(StartTime)))
+            {
+                StartTime = DateTime.Parse(parameters[nameof(StartTime)]);
+                urlParams.Add(new QueryParameter("start_time", StartTime.ToString(L2TKeys.ISO8601, CultureInfo.InvariantCulture)));
+            }
 
-            //if (parameters.ContainsKey(nameof(TweetMode)))
-            //{
-            //    TweetMode = RequestProcessorHelper.ParseEnum<TweetMode>(parameters[nameof(TweetMode)]);
-            //    urlParams.Add(new QueryParameter("tweet_mode", TweetMode.ToString().ToLower()));
-            //}
+            if (parameters.ContainsKey(nameof(TweetFields)))
+            {
+                TweetFields = parameters[nameof(TweetFields)];
+                urlParams.Add(new QueryParameter("tweet.fields", TweetFields));
+            }
+
+            if (parameters.ContainsKey(nameof(UntilID)))
+            {
+                UntilID = parameters[nameof(UntilID)];
+                urlParams.Add(new QueryParameter("until_id", UntilID));
+            }
+
+            if (parameters.ContainsKey(nameof(UserFields)))
+            {
+                UserFields = parameters[nameof(UserFields)];
+                urlParams.Add(new QueryParameter("user.fields", UserFields));
+            }
 
             return req;
         }

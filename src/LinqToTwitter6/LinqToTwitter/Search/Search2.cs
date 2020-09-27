@@ -91,7 +91,7 @@ namespace LinqToTwitter
         /// <summary>
         /// Tweet data returned from the search
         /// </summary>
-        public List<Status>? Statuses { get; set; }
+        public List<Status>? Tweets { get; set; }
 
         /// <summary>
         /// Tweet metadata returned from search

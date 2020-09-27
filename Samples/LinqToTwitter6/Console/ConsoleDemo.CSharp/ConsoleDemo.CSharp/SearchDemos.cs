@@ -145,17 +145,15 @@ namespace Linq2TwitterDemos_Console
             }
 
 
-            //static async Task DoSearchAsync(TwitterContext twitterCtx)
+            //static async Task DoRecentSearchAsync(TwitterContext twitterCtx)
             //{
             //    string searchTerm = "\"LINQ to Twitter\" OR Linq2Twitter OR LinqToTwitter OR JoeMayo";
 
-            //    Search? searchResponse =
+            //    Search2? searchResponse =
             //        await
-            //        (from search in twitterCtx.Search
+            //        (from search in twitterCtx.Search2
             //         where search.Type == SearchType.RecentSearch &&
-            //               search.Query == searchTerm &&
-            //               search.IncludeEntities == true &&
-            //               search.TweetMode == TweetMode.Extended
+            //               search.Query == searchTerm
             //         select search)
             //        .SingleOrDefaultAsync();
 
