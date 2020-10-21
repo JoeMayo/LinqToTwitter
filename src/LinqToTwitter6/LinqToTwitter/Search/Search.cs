@@ -88,6 +88,6 @@ namespace LinqToTwitter
         /// <summary>
         /// Tweet metadata returned from search
         /// </summary>
-        public SearchMetaData? SearchMetaData { get; set; }
+        public SearchMetaData? Meta { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Text.Json.Serialization;
 using System.Xml.Serialization;
 
 namespace LinqToTwitter
@@ -7,7 +8,7 @@ namespace LinqToTwitter
     /// for performing Twitter searches
     /// </summary>
     [XmlType(Namespace = "LinqToTwitter")]
-    public class Search2
+    public record Search2
     {
         //
         // Input parameters
@@ -91,11 +92,13 @@ namespace LinqToTwitter
         /// <summary>
         /// Tweet data returned from the search
         /// </summary>
-        public List<Status>? Tweets { get; set; }
+        [JsonPropertyName("data")]
+        public List<Tweet>? Tweets { get; set; }
 
         /// <summary>
         /// Tweet metadata returned from search
         /// </summary>
-        public SearchMetaData? SearchMetaData { get; set; }
+        [JsonPropertyName("meta")]
+        public Search2Meta? Meta { get; set; }
     }
 }

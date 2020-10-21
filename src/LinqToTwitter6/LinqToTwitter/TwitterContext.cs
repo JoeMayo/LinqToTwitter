@@ -575,7 +575,7 @@ namespace LinqToTwitter
                     throw new ArgumentException($"Type, {requestType} isn't a supported LINQ to Twitter entity.", nameof(requestType));
             }
 
-            if (baseUrl != null)
+            if (req.BaseUrl == null)
                 req.BaseUrl = baseUrl;
 
             return req;

@@ -23,7 +23,7 @@ namespace LinqToTwitter
         /// type of search, included for compatibility
         /// with other APIs
         /// </summary>
-        internal SearchType Type { get; set; }
+        public SearchType Type { get; set; }
 
         /// <summary>
         /// Date/Time to search to
@@ -239,49 +239,43 @@ namespace LinqToTwitter
         /// <returns>List of Search</returns>
         public virtual List<T> ProcessResults(string responseJson)
         {
-            IEnumerable<Search> search;
+            IEnumerable<Search2> search;
 
             if (string.IsNullOrWhiteSpace(responseJson))
             {
-                search = new List<Search> { new Search() };
+                search = new List<Search2> { new Search2() };
             }
             else
             {
-                var searchResult = JsonSerialize(responseJson);
-
-                search = new List<Search> { searchResult };
+                var searchResult = JsonDeserialize(responseJson);
+                search = new List<Search2> { searchResult };
             }
 
             return search.OfType<T>().ToList();
         }
 
-        Search JsonSerialize(string responseJson)
+        Search2 JsonDeserialize(string responseJson)
         {
-            JsonElement search = JsonDocument.Parse(responseJson).RootElement;
+            Search2 search = JsonSerializer.Deserialize<Search2>(responseJson);
 
-            var searchResult = new Search
+
+            return search with
             {
                 Type = Type,
-                //GeoCode = GeoCode,
-                //Count = Count,
-                //Query = Query,
-                //MaxID = MaxID,
-                //SinceID = SinceID,
-                //SearchLanguage = SearchLanguage,
-                //Locale = Locale,
-                //Until = Until.Date,
-                //ResultType = ResultType,
-                //IncludeEntities = IncludeEntities,
-                //Statuses =
-                //    (from result in search.GetProperty("statuses").EnumerateArray()
-                //     select new Status(result))
-                //    .ToList(),
-                //SearchMetaData = 
-                //    new SearchMetaData(search.GetProperty("search_metadata")),
-                //TweetMode = TweetMode
+                //EndTime = EndTime,
+                Expansions = Expansions,
+                MaxResults = MaxResults,
+                MediaFields = MediaFields,
+                NextToken = NextToken,
+                PlaceFields = PlaceFields,
+                PollFields = PollFields,
+                Query = Query,
+                SinceID = SinceID,
+                //StartTime = StartTime,
+                TweetFields = TweetFields,
+                UntilID = UntilID,
+                UserFields = UserFields
             };
-
-            return searchResult;
         }
     }
 }

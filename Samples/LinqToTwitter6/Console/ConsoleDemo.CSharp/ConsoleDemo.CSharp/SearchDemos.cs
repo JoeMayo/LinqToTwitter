@@ -30,6 +30,10 @@ namespace Linq2TwitterDemos_Console
                         Console.WriteLine("\n\tSearching...\n");
                         await DoPagedSearchAsync(twitterCtx);
                         break;
+                    case '2':
+                        Console.WriteLine("\n\tSearching...\n");
+                        await DoRecentSearchAsync(twitterCtx);
+                        break;
                     case 'q':
                     case 'Q':
                         Console.WriteLine("\nReturning...\n");
@@ -144,29 +148,27 @@ namespace Linq2TwitterDemos_Console
                 Console.WriteLine("No entries found.");
             }
 
+        }
 
-            //static async Task DoRecentSearchAsync(TwitterContext twitterCtx)
-            //{
-            //    string searchTerm = "\"LINQ to Twitter\" OR Linq2Twitter OR LinqToTwitter OR JoeMayo";
+        static async Task DoRecentSearchAsync(TwitterContext twitterCtx)
+        {
+            string searchTerm = "\"LINQ to Twitter\" OR Linq2Twitter OR LinqToTwitter OR JoeMayo";
 
-            //    Search2? searchResponse =
-            //        await
-            //        (from search in twitterCtx.Search2
-            //         where search.Type == SearchType.RecentSearch &&
-            //               search.Query == searchTerm
-            //         select search)
-            //        .SingleOrDefaultAsync();
+            Search2? searchResponse =
+                await
+                (from search in twitterCtx.Search2
+                 where search.Type == SearchType.RecentSearch &&
+                       search.Query == searchTerm
+                 select search)
+                .SingleOrDefaultAsync();
 
-            //    if (searchResponse?.Statuses != null)
-            //        searchResponse.Statuses.ForEach(tweet =>
-            //            Console.WriteLine(
-            //                "\n  User: {0} ({1})\n  Tweet: {2}",
-            //                tweet.User?.ScreenNameResponse,
-            //                tweet.User?.UserIDResponse,
-            //                tweet.Text ?? tweet.FullText));
-            //    else
-            //        Console.WriteLine("No entries found.");
-            //}
+            if (searchResponse?.Tweets != null)
+                searchResponse.Tweets.ForEach(tweet =>
+                    Console.WriteLine(
+                        $"\nUser: {tweet.ID}" +
+                        $"\nTweet: {tweet.Text}"));
+            else
+                Console.WriteLine("No entries found.");
         }
     }
 }

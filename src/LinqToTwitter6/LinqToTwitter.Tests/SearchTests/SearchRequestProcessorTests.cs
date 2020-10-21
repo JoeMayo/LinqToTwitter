@@ -327,7 +327,7 @@ namespace LinqToTwitter.Tests.SearchTests
             Assert.IsNotNull(results.SingleOrDefault());
             Search search = results.Single();
             Assert.IsNotNull(search);
-            SearchMetaData metaData = search.SearchMetaData;
+            SearchMetaData metaData = search.Meta;
             Assert.IsNotNull(metaData);
             Assert.AreEqual(0.046m, metaData.CompletedIn);
             Assert.AreEqual(281604225014824960ul, metaData.MaxID);

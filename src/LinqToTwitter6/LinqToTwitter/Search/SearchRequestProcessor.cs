@@ -251,7 +251,7 @@ namespace LinqToTwitter
                     (from result in search.GetProperty("statuses").EnumerateArray()
                      select new Status(result))
                     .ToList(),
-                SearchMetaData = 
+                Meta = 
                     new SearchMetaData(search.GetProperty("search_metadata")),
                 TweetMode = TweetMode
             };

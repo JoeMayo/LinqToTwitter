@@ -94,7 +94,7 @@ namespace LinqToTwitter.Tests.SearchTests
         public void BuildUrl_Includes_Parameters()
         {
             const string ExpectedUrl =
-                "https://api.twitter.com/2/tweets/search/recent?" +
+                BaseUrl2 + "tweets/search/recent?" +
                 "query=LINQ%20to%20Twitter&" +
                 "end_time=2021-01-01T12%3A59%3A59Z&" +
                 "expansions=attachments.poll_ids%2Cauthor_id&" +
@@ -164,7 +164,7 @@ namespace LinqToTwitter.Tests.SearchTests
         [TestMethod]
         public void BuildUrl_Requires_Query()
         {
-            var searchReqProc = new Search2RequestProcessor<Search> { BaseUrl = "https://api.twitter.com/1.1/search/" };
+            var searchReqProc = new Search2RequestProcessor<Search> { BaseUrl = BaseUrl2 };
             var parameters =
                 new Dictionary<string, string>
                 {
@@ -178,5 +178,146 @@ namespace LinqToTwitter.Tests.SearchTests
 
             Assert.AreEqual(nameof(Search2.Query), ex.ParamName);
         }
+
+        [TestMethod]
+        public void ProcessResults_Populates_Meta()
+        {
+            var searchProc = new Search2RequestProcessor<Search2> { BaseUrl = BaseUrl2 };
+
+            List<Search2> results = searchProc.ProcessResults(SearchDefaultJson);
+
+            Assert.IsNotNull(results);
+            Search2 search = results.SingleOrDefault();
+            Assert.IsNotNull(search);
+            Search2Meta meta = search.Meta;
+            Assert.IsNotNull(meta);
+            Assert.AreEqual("1317802724407316480", meta.NewestID);
+            Assert.AreEqual("1316030424850800640", meta.OldestID);
+            Assert.AreEqual(4, meta.Count);
+        }
+
+        [TestMethod]
+        public void ProcessResults_Populates_DefaultTweets()
+        {
+            var searchProc = new Search2RequestProcessor<Search2> { BaseUrl = BaseUrl2 };
+
+            List<Search2> results = searchProc.ProcessResults(SearchDefaultJson);
+
+            Assert.IsNotNull(results);
+            Search2 search = results.SingleOrDefault();
+            Assert.IsNotNull(search);
+            List<Tweet> tweets = search.Tweets;
+            Assert.IsNotNull(tweets);
+            Assert.AreEqual(4, tweets.Count);
+            Tweet firstTweet = tweets.FirstOrDefault();
+            Assert.IsNotNull(firstTweet);
+            Assert.AreEqual("1317802724407316480", firstTweet.ID);
+            Assert.AreEqual("Test Data 1", firstTweet.Text);
+        }
+
+        [TestMethod]
+        public void ProcessResults_Handles_Response_With_No_Results()
+        {
+            var searchProc = new Search2RequestProcessor<Search2> { BaseUrl = "https://api.twitter.com/1.1/search/" };
+
+            List<Search2> searches = searchProc.ProcessResults(EmptyResponse);
+
+            Assert.IsNotNull(searches);
+            Search2 search = searches.SingleOrDefault();
+            Assert.IsNotNull(search);
+            List<Tweet> results = search.Tweets;
+            Assert.IsNull(results);
+
+            Search2Meta meta = search.Meta;
+            Assert.IsNotNull(meta);
+            Assert.IsNull(meta.NewestID);
+            Assert.IsNull(meta.OldestID);
+            Assert.AreEqual(0, meta.Count);
+        }
+
+
+        [TestMethod]
+        public void ProcessResults_Populates_Input_Parameters()
+        {
+            var searchProc = new Search2RequestProcessor<Search2>()
+            {
+                BaseUrl = BaseUrl2,
+                Type = SearchType.RecentSearch,
+                EndTime = new DateTime(2020, 12, 31),
+                Expansions = "123",
+                MaxResults = 100,
+                MediaFields = "456",
+                NextToken = "789",
+                PlaceFields = "012",
+                PollFields = "345",
+                Query = "JoeMayo",
+                SinceID = "1",
+                StartTime = new DateTime(2020, 1, 1),
+                TweetFields = "678",
+                UntilID = "901",
+                UserFields = "234"
+            };
+
+            var searchResult = searchProc.ProcessResults(SearchDefaultJson);
+
+            Assert.IsNotNull(searchResult);
+            Assert.AreEqual(1, searchResult.Count);
+            var search = searchResult.Single();
+            Assert.IsNotNull(search);
+            Assert.AreEqual(SearchType.RecentSearch, search.Type);
+            //Assert.AreEqual(new DateTime(2020, 12, 31), search.EndTime); // TODO: Finish Test
+            Assert.AreEqual("123", search.Expansions);
+            Assert.AreEqual(100, search.MaxResults);
+            Assert.AreEqual("456", search.MediaFields);
+            Assert.AreEqual("789", search.NextToken);
+            Assert.AreEqual("012", search.PlaceFields);
+            Assert.AreEqual("345", search.PollFields);
+            Assert.AreEqual("JoeMayo", search.Query);
+            Assert.AreEqual("1", search.SinceID);
+            //Assert.AreEqual(new DateTime(2020, 1, 1), search.StartTime); // TODO: Finish Test
+            Assert.AreEqual("678", search.TweetFields);
+            Assert.AreEqual("901", search.UntilID);
+            Assert.AreEqual("234", search.UserFields);
+        }
+
+        #region EmptyResponse
+
+        const string EmptyResponse = @"{""meta"":{""result_count"":0}}";
+
+        #endregion
+
+        #region SearchJson
+
+        const string SearchDefaultJson = @"{
+	""data"": [
+		{
+			""id"": ""1317802724407316480"",
+			""text"": ""Test Data 1""
+
+        },
+		{
+			""id"": ""1317307540561121280"",
+			""text"": ""Test Data 2""
+		},
+		{
+    ""id"": ""1317077936948785152"",
+			""text"": ""Test Data 3""
+
+        },
+		{
+    ""id"": ""1316030424850800640"",
+			""text"": ""Test Data 4""
+
+        }
+	],
+	""meta"": {
+        ""newest_id"": ""1317802724407316480"",
+		""oldest_id"": ""1316030424850800640"",
+		""result_count"": 4
+
+    }
+}";
+
+        #endregion
     }
 }
