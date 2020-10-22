@@ -262,7 +262,7 @@ namespace LinqToTwitter
             return search with
             {
                 Type = Type,
-                //EndTime = EndTime,
+                EndTime = EndTime,
                 Expansions = Expansions,
                 MaxResults = MaxResults,
                 MediaFields = MediaFields,
@@ -271,7 +271,7 @@ namespace LinqToTwitter
                 PollFields = PollFields,
                 Query = Query,
                 SinceID = SinceID,
-                //StartTime = StartTime,
+                StartTime = StartTime,
                 TweetFields = TweetFields,
                 UntilID = UntilID,
                 UserFields = UserFields

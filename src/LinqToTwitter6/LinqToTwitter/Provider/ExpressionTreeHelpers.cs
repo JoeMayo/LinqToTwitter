@@ -15,6 +15,7 @@
 using LinqToTwitter.Common;
 using System;
 using System.Linq.Expressions;
+using System.Reflection;
 
 namespace LinqToTwitter.Provider
 {
@@ -126,12 +127,26 @@ namespace LinqToTwitter.Provider
         internal static string GetValueFromExpression(Expression expression)
         {
             if (expression.NodeType == ExpressionType.Constant)
+            {
                 return ((ConstantExpression)expression).Value.ToString();
+            }
             else if (expression.NodeType == ExpressionType.Convert || expression.NodeType == ExpressionType.ConvertChecked)
+            {
                 return ((int)((expression as UnaryExpression).Operand as ConstantExpression).Value).ToString();
+            }
+            else if (expression.NodeType == ExpressionType.MemberAccess)
+            {
+                MemberExpression memberExpression = (MemberExpression)expression;
+                FieldInfo fieldInfo = memberExpression?.Member as FieldInfo;
+                ConstantExpression constantExpression = memberExpression?.Expression as ConstantExpression;
+                string value = fieldInfo?.GetValue(constantExpression.Value)?.ToString();
+                return value;
+            }
             else
+            {
                 throw new InvalidQueryException(
-                    string.Format("The expression type {0} is not supported to obtain a value.", expression.NodeType));
+            string.Format("The expression type {0} is not supported to obtain a value.", expression.NodeType));
+            }
         }
     }
 }

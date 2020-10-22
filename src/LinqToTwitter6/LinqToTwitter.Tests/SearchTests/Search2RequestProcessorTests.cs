@@ -25,10 +25,12 @@ namespace LinqToTwitter.Tests.SearchTests
         {
             var target = new Search2RequestProcessor<Search>();
 
+            var endTime = new DateTime(2020, 8, 30);
+            var startTime = new DateTime(2020, 8, 1);
             Expression<Func<Search2, bool>> expression =
                 search =>
                     search.Type == SearchType.RecentSearch &&
-                    search.EndTime == "2020-08-30T12:59:59Z" &&
+                    search.EndTime == endTime &&
                     search.Expansions == "attachments.poll_ids,author_id" &&
                     search.MaxResults == 10 &&
                     search.MediaFields == "height,width" &&
@@ -37,7 +39,7 @@ namespace LinqToTwitter.Tests.SearchTests
                     search.PollFields == "duration_minutes,end_datetime" &&
                     search.Query == "LINQ to Twitter" &&
                     search.SinceID == "123" &&
-                    search.StartTime == "2020-08-30T12:59:59Z" &&
+                    search.StartTime == startTime &&
                     search.TweetFields == "author_id,created_at" &&
                     search.UntilID == "525" &&
                     search.UserFields == "created_at,verified";
@@ -51,7 +53,7 @@ namespace LinqToTwitter.Tests.SearchTests
                     new KeyValuePair<string, string>(nameof(Search2.Type), ((int)SearchType.RecentSearch).ToString(CultureInfo.InvariantCulture))));
             Assert.IsTrue(
                 queryParams.Contains(
-                    new KeyValuePair<string, string>(nameof(Search2.EndTime), "2020-08-30T12:59:59Z")));
+                    new KeyValuePair<string, string>(nameof(Search2.EndTime), "08/30/2020 00:00:00")));
             Assert.IsTrue(
                 queryParams.Contains(
                     new KeyValuePair<string, string>(nameof(Search2.Expansions), "attachments.poll_ids,author_id")));
@@ -78,7 +80,7 @@ namespace LinqToTwitter.Tests.SearchTests
                     new KeyValuePair<string, string>(nameof(Search2.SinceID), "123")));
             Assert.IsTrue(
                 queryParams.Contains(
-                    new KeyValuePair<string, string>(nameof(Search2.StartTime), "2020-08-30T12:59:59Z")));
+                    new KeyValuePair<string, string>(nameof(Search2.StartTime), "08/01/2020 00:00:00")));
             Assert.IsTrue(
                 queryParams.Contains(
                     new KeyValuePair<string, string>(nameof(Search2.TweetFields), "author_id,created_at")));
@@ -235,7 +237,6 @@ namespace LinqToTwitter.Tests.SearchTests
             Assert.AreEqual(0, meta.Count);
         }
 
-
         [TestMethod]
         public void ProcessResults_Populates_Input_Parameters()
         {
@@ -265,7 +266,7 @@ namespace LinqToTwitter.Tests.SearchTests
             var search = searchResult.Single();
             Assert.IsNotNull(search);
             Assert.AreEqual(SearchType.RecentSearch, search.Type);
-            //Assert.AreEqual(new DateTime(2020, 12, 31), search.EndTime); // TODO: Finish Test
+            Assert.AreEqual(new DateTime(2020, 12, 31), search.EndTime);
             Assert.AreEqual("123", search.Expansions);
             Assert.AreEqual(100, search.MaxResults);
             Assert.AreEqual("456", search.MediaFields);
@@ -274,7 +275,7 @@ namespace LinqToTwitter.Tests.SearchTests
             Assert.AreEqual("345", search.PollFields);
             Assert.AreEqual("JoeMayo", search.Query);
             Assert.AreEqual("1", search.SinceID);
-            //Assert.AreEqual(new DateTime(2020, 1, 1), search.StartTime); // TODO: Finish Test
+            Assert.AreEqual(new DateTime(2020, 1, 1), search.StartTime);
             Assert.AreEqual("678", search.TweetFields);
             Assert.AreEqual("901", search.UntilID);
             Assert.AreEqual("234", search.UserFields);

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using System.Xml.Serialization;
 
@@ -23,7 +24,7 @@ namespace LinqToTwitter
         /// <summary>
         /// Date/Time to search to
         /// </summary>
-        public string? EndTime { get; set; }
+        public DateTime EndTime { get; set; }
 
         /// <summary>
         /// Comma-separated list of expansion fields
@@ -68,7 +69,7 @@ namespace LinqToTwitter
         /// <summary>
         /// Date/Time to start search
         /// </summary>
-        public string? StartTime { get; set; }
+        public DateTime StartTime { get; set; }
 
         /// <summary>
         /// Comma-separated list of fields to return in the Tweet object
