@@ -546,8 +546,8 @@ namespace LinqToTwitter
                 case nameof(Search):
                     req = new SearchRequestProcessor<T>();
                     break;
-                case nameof(Search2):
-                    req = new Search2RequestProcessor<T>
+                case nameof(TwitterSearch):
+                    req = new TwitterSearchRequestProcessor<T>
                     {
                         BaseUrl = BaseUrl2
                     };

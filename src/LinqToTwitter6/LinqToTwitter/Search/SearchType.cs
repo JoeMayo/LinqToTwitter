@@ -6,12 +6,12 @@
     public enum SearchType
     {
         /// <summary>
-        /// Classic Search
+        /// Classic Search on <see cref="Search"/>
         /// </summary>
         Search,
 
         /// <summary>
-        /// Search for Recent Tweets
+        /// Search for Recent Tweets on <see cref="TwitterSearch"/>
         /// </summary>
         RecentSearch
     }

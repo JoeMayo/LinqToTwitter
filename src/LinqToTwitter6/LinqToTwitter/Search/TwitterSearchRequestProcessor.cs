@@ -12,7 +12,7 @@ namespace LinqToTwitter
     /// <summary>
     /// processes search queries
     /// </summary>
-    public class Search2RequestProcessor<T> : IRequestProcessor<T>, IRequestProcessorWantsJson
+    public class TwitterSearchRequestProcessor<T> : IRequestProcessor<T>, IRequestProcessorWantsJson
     {
         /// <summary>
         /// base url for request
@@ -98,7 +98,7 @@ namespace LinqToTwitter
         public Dictionary<string, string> GetParameters(LambdaExpression lambdaExpression)
         {
             var paramFinder =
-               new ParameterFinder<Search2>(
+               new ParameterFinder<TwitterSearch>(
                    lambdaExpression.Body,
                    new List<string> {
                        nameof(Type),
@@ -166,7 +166,7 @@ namespace LinqToTwitter
             if (parameters.ContainsKey(nameof(Expansions)))
             {
                 Expansions = parameters[nameof(Expansions)];
-                urlParams.Add(new QueryParameter("expansions", Expansions));
+                urlParams.Add(new QueryParameter("expansions", Expansions?.Replace(" ", "")));
             }
 
             if (parameters.ContainsKey(nameof(MaxResults)))
@@ -178,7 +178,7 @@ namespace LinqToTwitter
             if (parameters.ContainsKey(nameof(MediaFields)))
             {
                 MediaFields = parameters[nameof(MediaFields)];
-                urlParams.Add(new QueryParameter("media.fields", MediaFields));
+                urlParams.Add(new QueryParameter("media.fields", MediaFields?.Replace(" ", "")));
             }
 
             if (parameters.ContainsKey(nameof(NextToken)))
@@ -190,13 +190,13 @@ namespace LinqToTwitter
             if (parameters.ContainsKey(nameof(PlaceFields)))
             {
                 PlaceFields = parameters[nameof(PlaceFields)];
-                urlParams.Add(new QueryParameter("place.fields", PlaceFields));
+                urlParams.Add(new QueryParameter("place.fields", PlaceFields?.Replace(" ", "")));
             }
 
             if (parameters.ContainsKey(nameof(PollFields)))
             {
                 PollFields = parameters[nameof(PollFields)];
-                urlParams.Add(new QueryParameter("poll.fields", PollFields));
+                urlParams.Add(new QueryParameter("poll.fields", PollFields?.Replace(" ", "")));
             }
 
             if (parameters.ContainsKey(nameof(SinceID)))
@@ -214,7 +214,7 @@ namespace LinqToTwitter
             if (parameters.ContainsKey(nameof(TweetFields)))
             {
                 TweetFields = parameters[nameof(TweetFields)];
-                urlParams.Add(new QueryParameter("tweet.fields", TweetFields));
+                urlParams.Add(new QueryParameter("tweet.fields", TweetFields?.Replace(" ", "")));
             }
 
             if (parameters.ContainsKey(nameof(UntilID)))
@@ -226,7 +226,7 @@ namespace LinqToTwitter
             if (parameters.ContainsKey(nameof(UserFields)))
             {
                 UserFields = parameters[nameof(UserFields)];
-                urlParams.Add(new QueryParameter("user.fields", UserFields));
+                urlParams.Add(new QueryParameter("user.fields", UserFields?.Replace(" ", "")));
             }
 
             return req;
@@ -239,24 +239,24 @@ namespace LinqToTwitter
         /// <returns>List of Search</returns>
         public virtual List<T> ProcessResults(string responseJson)
         {
-            IEnumerable<Search2> search;
+            IEnumerable<TwitterSearch> search;
 
             if (string.IsNullOrWhiteSpace(responseJson))
             {
-                search = new List<Search2> { new Search2() };
+                search = new List<TwitterSearch> { new TwitterSearch() };
             }
             else
             {
                 var searchResult = JsonDeserialize(responseJson);
-                search = new List<Search2> { searchResult };
+                search = new List<TwitterSearch> { searchResult };
             }
 
             return search.OfType<T>().ToList();
         }
 
-        Search2 JsonDeserialize(string responseJson)
+        TwitterSearch JsonDeserialize(string responseJson)
         {
-            Search2 search = JsonSerializer.Deserialize<Search2>(responseJson);
+            TwitterSearch search = JsonSerializer.Deserialize<TwitterSearch>(responseJson);
 
 
             return search with

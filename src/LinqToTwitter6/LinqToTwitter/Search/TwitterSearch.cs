@@ -9,7 +9,7 @@ namespace LinqToTwitter
     /// for performing Twitter searches
     /// </summary>
     [XmlType(Namespace = "LinqToTwitter")]
-    public record Search2
+    public record TwitterSearch
     {
         //
         // Input parameters
@@ -100,6 +100,6 @@ namespace LinqToTwitter
         /// Tweet metadata returned from search
         /// </summary>
         [JsonPropertyName("meta")]
-        public Search2Meta? Meta { get; set; }
+        public TwitterSearchMeta? Meta { get; set; }
     }
 }

@@ -154,11 +154,23 @@ namespace Linq2TwitterDemos_Console
         {
             string searchTerm = "\"LINQ to Twitter\" OR Linq2Twitter OR LinqToTwitter OR JoeMayo";
 
-            Search2? searchResponse =
+            // default is id and text and this also brings in created_at and geo
+            string tweetFields =
+                string.Join(",",
+                    new string[]
+                    {
+                        TweetField.CreatedAt,
+                        TweetField.ID,
+                        TweetField.Text,
+                        TweetField.Geo
+                    });
+
+            TwitterSearch? searchResponse =
                 await
-                (from search in twitterCtx.Search2
+                (from search in twitterCtx.TwitterSearch
                  where search.Type == SearchType.RecentSearch &&
-                       search.Query == searchTerm
+                       search.Query == searchTerm &&
+                       search.TweetFields == tweetFields
                  select search)
                 .SingleOrDefaultAsync();
 
