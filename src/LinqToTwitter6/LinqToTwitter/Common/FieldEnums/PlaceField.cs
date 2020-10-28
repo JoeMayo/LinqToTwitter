@@ -1,7 +1,7 @@
 ﻿namespace LinqToTwitter.Common
 {
     /// <summary>
-    /// Fields that can be expanded on <see cref="TweetPlace"/>
+    /// Fields that can be expanded on <see cref="TwitterPlace"/>
     /// </summary>
     public class PlaceField
     {

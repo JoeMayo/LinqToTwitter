@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json.Serialization;
 using System.Xml.Serialization;
 
@@ -95,6 +96,23 @@ namespace LinqToTwitter
         /// </summary>
         [JsonPropertyName("data")]
         public List<Tweet>? Tweets { get; set; }
+
+        /// <summary>
+        /// If any errors occur, they'll show up here
+        /// </summary>
+        [JsonPropertyName("errors")]
+        public List<TwitterSearchError>? Errors { get; set; }
+
+        /// <summary>
+        /// Were there errors?
+        /// </summary>
+        public bool HasErrors { get => Errors?.Any() ?? false; }
+
+        /// <summary>
+        /// Populated when query includes expansion fields
+        /// </summary>
+        [JsonPropertyName("includes")]
+        public TwitterSearchInclude? Includes { get; set; }
 
         /// <summary>
         /// Tweet metadata returned from search

@@ -356,6 +356,30 @@ namespace LinqToTwitter.Tests.SearchTests
             Assert.AreEqual("234", search.UserFields);
         }
 
+
+        [TestMethod]
+        public void ProcessResults_WithErrors_PopulatesErrorList()
+        {
+            var searchProc = new TwitterSearchRequestProcessor<TwitterSearch> { BaseUrl = "https://api.twitter.com/1.1/search/" };
+
+            List<TwitterSearch> searches = searchProc.ProcessResults(SearchErrorJson);
+
+            Assert.IsNotNull(searches);
+            TwitterSearch search = searches.SingleOrDefault();
+            Assert.IsNotNull(search);
+            List<TwitterSearchError> errors = search.Errors;
+            Assert.IsNotNull(errors);
+            Assert.AreEqual(2, errors.Count);
+            TwitterSearchError error = errors.FirstOrDefault();
+            Assert.IsNotNull(error);
+            Assert.AreEqual("tweet", error.ResourceType);
+            Assert.AreEqual("non_public_metrics.impression_count", error.Field);
+            Assert.AreEqual("Field Authorization Error", error.Title);
+            Assert.AreEqual("data", error.Section);
+            Assert.AreEqual("Sorry, you are not authorized to access non_public_metrics.impression_count on a Tweet.", error.Detail);
+            Assert.AreEqual("https://api.twitter.com/2/problems/not-authorized-for-field", error.Type);
+        }
+
         #region EmptyResponse
 
         const string EmptyResponse = @"{""meta"":{""result_count"":0}}";
@@ -392,6 +416,34 @@ namespace LinqToTwitter.Tests.SearchTests
 		""result_count"": 4
 
     }
+}";
+
+        #endregion
+
+        #region SearchError
+
+        const string SearchErrorJson = @"{
+	""errors"": [
+		{
+			""resource_type"": ""tweet"",
+			""field"": ""non_public_metrics.impression_count"",
+			""title"": ""Field Authorization Error"",
+			""section"": ""data"",
+			""detail"": ""Sorry, you are not authorized to access non_public_metrics.impression_count on a Tweet."",
+			""type"": ""https://api.twitter.com/2/problems/not-authorized-for-field""
+		},
+		{
+			""resource_type"": ""tweet"",
+			""field"": ""non_public_metrics.url_link_clicks"",
+			""title"": ""Field Authorization Error"",
+			""section"": ""data"",
+			""detail"": ""Sorry, you are not authorized to access non_public_metrics.url_link_clicks on a Tweet."",
+			""type"": ""https://api.twitter.com/2/problems/not-authorized-for-field""
+		}
+	],
+	""meta"": {
+		""result_count"": 0
+	}
 }";
 
         #endregion

@@ -15,6 +15,14 @@
             "referenced_tweets,source,text,withheld";
 
         /// <summary>
+        /// All expandable fields, except those requiring permissions
+        /// </summary>
+        public const string AllFieldsExceptPermissioned =
+            "attachments,author_id,context_annotations,conversation_id," +
+            "created_at,entities,geo,id,in_reply_to_user_id,lang,public_metrics," +
+            "possibly_sensitive,referenced_tweets,source,text,withheld";
+
+        /// <summary>
         /// attachments
         /// </summary>
         public const string Attachments = "attachments";

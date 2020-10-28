@@ -256,26 +256,44 @@ namespace LinqToTwitter
 
         TwitterSearch JsonDeserialize(string responseJson)
         {
-            TwitterSearch search = JsonSerializer.Deserialize<TwitterSearch>(responseJson);
+            TwitterSearch? search = JsonSerializer.Deserialize<TwitterSearch>(responseJson);
 
-
-            return search with
-            {
-                Type = Type,
-                EndTime = EndTime,
-                Expansions = Expansions,
-                MaxResults = MaxResults,
-                MediaFields = MediaFields,
-                NextToken = NextToken,
-                PlaceFields = PlaceFields,
-                PollFields = PollFields,
-                Query = Query,
-                SinceID = SinceID,
-                StartTime = StartTime,
-                TweetFields = TweetFields,
-                UntilID = UntilID,
-                UserFields = UserFields
-            };
+            if (search == null)
+                return new TwitterSearch
+                {
+                    Type = Type,
+                    EndTime = EndTime,
+                    Expansions = Expansions,
+                    MaxResults = MaxResults,
+                    MediaFields = MediaFields,
+                    NextToken = NextToken,
+                    PlaceFields = PlaceFields,
+                    PollFields = PollFields,
+                    Query = Query,
+                    SinceID = SinceID,
+                    StartTime = StartTime,
+                    TweetFields = TweetFields,
+                    UntilID = UntilID,
+                    UserFields = UserFields
+                };
+            else
+                return search with
+                {
+                    Type = Type,
+                    EndTime = EndTime,
+                    Expansions = Expansions,
+                    MaxResults = MaxResults,
+                    MediaFields = MediaFields,
+                    NextToken = NextToken,
+                    PlaceFields = PlaceFields,
+                    PollFields = PollFields,
+                    Query = Query,
+                    SinceID = SinceID,
+                    StartTime = StartTime,
+                    TweetFields = TweetFields,
+                    UntilID = UntilID,
+                    UserFields = UserFields
+                };
         }
     }
 }

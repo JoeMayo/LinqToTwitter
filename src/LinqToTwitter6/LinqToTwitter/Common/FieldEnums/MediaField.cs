@@ -14,6 +14,13 @@
             "organic_metrics,promoted_metrics";
 
         /// <summary>
+        /// All expandable fields, except those requiring permissions
+        /// </summary>
+        public const string AllFieldsExceptPermissioned =
+            "duration_ms,height,media_key,preview_image_url," +
+            "type,url,width,public_metrics";
+
+        /// <summary>
         /// duration_ms
         /// </summary>
         public const string Duration = "duration_ms";

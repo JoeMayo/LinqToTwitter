@@ -1,0 +1,28 @@
+﻿using System.Text.Json.Serialization;
+
+namespace LinqToTwitter
+{
+    /// <summary>
+    /// Represents a mention entity
+    /// </summary>
+    public record TweetEntityMention
+    {
+        /// <summary>
+        /// Start of hashtag
+        /// </summary>
+        [JsonPropertyName("start")]
+        public int Start { get; set; }
+
+        /// <summary>
+        /// End of hashtag
+        /// </summary>
+        [JsonPropertyName("end")]
+        public int End { get; set; }
+
+        /// <summary>
+        /// Hashtag text
+        /// </summary>
+        [JsonPropertyName("username")]
+        public string? Username { get; set; }
+    }
+}

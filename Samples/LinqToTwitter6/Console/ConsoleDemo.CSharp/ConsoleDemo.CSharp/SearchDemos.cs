@@ -170,7 +170,12 @@ namespace Linq2TwitterDemos_Console
                 (from search in twitterCtx.TwitterSearch
                  where search.Type == SearchType.RecentSearch &&
                        search.Query == searchTerm &&
-                       search.TweetFields == tweetFields
+                       search.TweetFields == TweetField.AllFieldsExceptPermissioned &&
+                       search.Expansions == ExpansionField.AllTweetFields &&
+                       search.MediaFields == MediaField.AllFieldsExceptPermissioned &&
+                       search.PlaceFields == PlaceField.AllFields &&
+                       search.PollFields == PollField.AllFields &&
+                       search.UserFields == UserField.AllFields
                  select search)
                 .SingleOrDefaultAsync();
 

@@ -60,10 +60,10 @@ namespace Linq2TwitterDemos_Console
         {
             string unencodedStatus = "JoeMayo";
             string encodedStatus = Uri.EscapeDataString(unencodedStatus);
-            string queryString = "tweets/search?query=" + encodedStatus;
+            string queryString = "tweets/search/recent?query=" + encodedStatus;
 
             string previousBaseUrl = twitterCtx.BaseUrl;
-            twitterCtx.BaseUrl = "https://api.twitter.com/labs/2/";
+            twitterCtx.BaseUrl = "https://api.twitter.com/2/";
 
             var rawResult =
                 await
