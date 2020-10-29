@@ -12,7 +12,7 @@ namespace LinqToTwitter
     /// <summary>
     /// processes search queries
     /// </summary>
-    public class TwitterSearchRequestProcessor<T> : IRequestProcessor<T>, IRequestProcessorWantsJson
+    public class TweetRequestProcessor<T> : IRequestProcessor<T>, IRequestProcessorWantsJson
     {
         /// <summary>
         /// base url for request
@@ -23,12 +23,12 @@ namespace LinqToTwitter
         /// type of search, included for compatibility
         /// with other APIs
         /// </summary>
-        public SearchType Type { get; set; }
+        public TweetType Type { get; set; }
 
         /// <summary>
-        /// Date/Time to search to
+        /// Required - Up to 100 comma-separated IDs to search for
         /// </summary>
-        public DateTime EndTime { get; set; }
+        public string? Ids { get; set; }
 
         /// <summary>
         /// Comma-separated list of expansion fields
@@ -36,19 +36,9 @@ namespace LinqToTwitter
         public string? Expansions { get; set; }
 
         /// <summary>
-        /// Maximum number of tweets to return
-        /// </summary>
-        public int MaxResults { get; set; }
-
-        /// <summary>
         /// Comma-separated list of fields to return in the media object
         /// </summary>
         public string? MediaFields { get; set; }
-
-        /// <summary>
-        /// Provide this, when paging, to get the next page of results
-        /// </summary>
-        public string? NextToken { get; set; }
 
         /// <summary>
         /// Comma-separated list of fields to return in the place object
@@ -61,29 +51,9 @@ namespace LinqToTwitter
         public string? PollFields { get; set; }
 
         /// <summary>
-        /// search query
-        /// </summary>
-        public string? Query { get; set; }
-
-        /// <summary>
-        /// Return tweets whose IDs are greater than this
-        /// </summary>
-        public string? SinceID { get; set; }
-
-        /// <summary>
-        /// Date/Time to start search
-        /// </summary>
-        public DateTime StartTime { get; set; }
-
-        /// <summary>
         /// Comma-separated list of fields to return in the Tweet object
         /// </summary>
         public string? TweetFields { get; set; }
-
-        /// <summary>
-        /// Return tweets whose ids are less than this
-        /// </summary>
-        public string? UntilID { get; set; }
 
         /// <summary>
         /// Comma-separated list of fields to return in the User object
@@ -98,22 +68,16 @@ namespace LinqToTwitter
         public Dictionary<string, string> GetParameters(LambdaExpression lambdaExpression)
         {
             var paramFinder =
-               new ParameterFinder<TwitterSearch>(
+               new ParameterFinder<Tweet>(
                    lambdaExpression.Body,
                    new List<string> {
                        nameof(Type),
-                       nameof(EndTime),
+                       nameof(Ids),
                        nameof(Expansions),
-                       nameof(MaxResults),
                        nameof(MediaFields),
-                       nameof(NextToken),
                        nameof(PlaceFields),
                        nameof(PollFields),
-                       nameof(Query),
-                       nameof(SinceID),
-                       nameof(StartTime),
                        nameof(TweetFields),
-                       nameof(UntilID),
                        nameof(UserFields)
                    }) ;
 
@@ -128,11 +92,11 @@ namespace LinqToTwitter
         public Request BuildUrl(Dictionary<string, string> parameters)
         {
             if (parameters.ContainsKey(nameof(Type)))
-                Type = RequestProcessorHelper.ParseEnum<SearchType>(parameters["Type"]);
+                Type = RequestProcessorHelper.ParseEnum<TweetType>(parameters["Type"]);
             else
                 throw new ArgumentException($"{nameof(Type)} is required", nameof(Type));
 
-            return BuildSearchUrlParameters(parameters, "tweets/search/recent");
+            return BuildSearchUrlParameters(parameters, "tweets");
         }
 
         /// <summary>
@@ -146,21 +110,14 @@ namespace LinqToTwitter
             var req = new Request(BaseUrl + url);
             var urlParams = req.RequestParameters;
 
-
-            if (parameters.ContainsKey(nameof(Query)) && !string.IsNullOrWhiteSpace(parameters[nameof(Query)]))
+            if (parameters.ContainsKey(nameof(Ids)))
             {
-                Query = parameters[nameof(Query)];
-                urlParams.Add(new QueryParameter("query", Query));
+                Ids = parameters[nameof(Ids)];
+                urlParams.Add(new QueryParameter("ids", Ids?.Replace(" ", "")));
             }
             else
             {
-                throw new ArgumentNullException(nameof(Query), "Query filter in where clause is required.");
-            }
-
-            if (parameters.ContainsKey(nameof(EndTime)))
-            {
-                EndTime = DateTime.Parse(parameters[nameof(EndTime)]);
-                urlParams.Add(new QueryParameter("end_time", EndTime.ToString(L2TKeys.ISO8601, CultureInfo.InvariantCulture)));
+                throw new ArgumentException($"{nameof(Ids)} is required", nameof(Ids));
             }
 
             if (parameters.ContainsKey(nameof(Expansions)))
@@ -169,22 +126,10 @@ namespace LinqToTwitter
                 urlParams.Add(new QueryParameter("expansions", Expansions?.Replace(" ", "")));
             }
 
-            if (parameters.ContainsKey(nameof(MaxResults)))
-            {
-                MaxResults = int.Parse(parameters[nameof(MaxResults)]);
-                urlParams.Add(new QueryParameter("max_results", MaxResults.ToString(CultureInfo.InvariantCulture)));
-            }
-
             if (parameters.ContainsKey(nameof(MediaFields)))
             {
                 MediaFields = parameters[nameof(MediaFields)];
                 urlParams.Add(new QueryParameter("media.fields", MediaFields?.Replace(" ", "")));
-            }
-
-            if (parameters.ContainsKey(nameof(NextToken)))
-            {
-                NextToken = parameters[nameof(NextToken)];
-                urlParams.Add(new QueryParameter("next_token", NextToken));
             }
 
             if (parameters.ContainsKey(nameof(PlaceFields)))
@@ -199,28 +144,10 @@ namespace LinqToTwitter
                 urlParams.Add(new QueryParameter("poll.fields", PollFields?.Replace(" ", "")));
             }
 
-            if (parameters.ContainsKey(nameof(SinceID)))
-            {
-                SinceID = parameters[nameof(SinceID)];
-                urlParams.Add(new QueryParameter("since_id", SinceID));
-            }
-
-            if (parameters.ContainsKey(nameof(StartTime)))
-            {
-                StartTime = DateTime.Parse(parameters[nameof(StartTime)]);
-                urlParams.Add(new QueryParameter("start_time", StartTime.ToString(L2TKeys.ISO8601, CultureInfo.InvariantCulture)));
-            }
-
             if (parameters.ContainsKey(nameof(TweetFields)))
             {
                 TweetFields = parameters[nameof(TweetFields)];
                 urlParams.Add(new QueryParameter("tweet.fields", TweetFields?.Replace(" ", "")));
-            }
-
-            if (parameters.ContainsKey(nameof(UntilID)))
-            {
-                UntilID = parameters[nameof(UntilID)];
-                urlParams.Add(new QueryParameter("until_id", UntilID));
             }
 
             if (parameters.ContainsKey(nameof(UserFields)))
@@ -239,59 +166,47 @@ namespace LinqToTwitter
         /// <returns>List of Search</returns>
         public virtual List<T> ProcessResults(string responseJson)
         {
-            IEnumerable<TwitterSearch> search;
+            IEnumerable<Tweet> search;
 
             if (string.IsNullOrWhiteSpace(responseJson))
             {
-                search = new List<TwitterSearch> { new TwitterSearch() };
+                search = new List<Tweet> { new Tweet() };
             }
             else
             {
                 var searchResult = JsonDeserialize(responseJson);
-                search = new List<TwitterSearch> { searchResult };
+                search = new List<Tweet> { searchResult };
             }
 
             return search.OfType<T>().ToList();
         }
 
-        TwitterSearch JsonDeserialize(string responseJson)
+        Tweet JsonDeserialize(string responseJson)
         {
-            TwitterSearch? search = JsonSerializer.Deserialize<TwitterSearch>(responseJson);
+            Tweet? tweet = JsonSerializer.Deserialize<Tweet>(responseJson);
 
-            if (search == null)
-                return new TwitterSearch
+            if (tweet == null)
+                return new Tweet
                 {
                     Type = Type,
-                    EndTime = EndTime,
+                    Ids = Ids,
                     Expansions = Expansions,
-                    MaxResults = MaxResults,
                     MediaFields = MediaFields,
-                    NextToken = NextToken,
                     PlaceFields = PlaceFields,
                     PollFields = PollFields,
-                    Query = Query,
-                    SinceID = SinceID,
-                    StartTime = StartTime,
                     TweetFields = TweetFields,
-                    UntilID = UntilID,
                     UserFields = UserFields
                 };
             else
-                return search with
+                return tweet with
                 {
                     Type = Type,
-                    EndTime = EndTime,
+                    Ids = Ids,
                     Expansions = Expansions,
-                    MaxResults = MaxResults,
                     MediaFields = MediaFields,
-                    NextToken = NextToken,
                     PlaceFields = PlaceFields,
                     PollFields = PollFields,
-                    Query = Query,
-                    SinceID = SinceID,
-                    StartTime = StartTime,
                     TweetFields = TweetFields,
-                    UntilID = UntilID,
                     UserFields = UserFields
                 };
         }
