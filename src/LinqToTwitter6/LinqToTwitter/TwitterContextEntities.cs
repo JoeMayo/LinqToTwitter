@@ -184,6 +184,11 @@ namespace LinqToTwitter
         //    }
         //}
 
+        /// <summary>
+        /// enables access to Twitter Tweets lookup
+        /// </summary>
+        public TwitterQueryable<TweetQuery> Tweets => new TwitterQueryable<TweetQuery>(this);
+
         ///// <summary>
         ///// enables access to Twitter User messages, such as Friends and Followers
         ///// </summary>

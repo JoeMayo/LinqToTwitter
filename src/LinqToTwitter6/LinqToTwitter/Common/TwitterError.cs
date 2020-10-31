@@ -1,11 +1,14 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace LinqToTwitter
+namespace LinqToTwitter.Common
 {
     /// <summary>
-    /// Errors returned from a Twitter Search
+    /// Errors returned from a Twitter Queries.
     /// </summary>
-    public record TwitterSearchError
+    /// <remarks>
+    /// Meaning of each property depends on type of query. Some will be null.
+    /// </remarks>
+    public record TwitterError
     {
         [JsonPropertyName("resource_type")]
         public string? ResourceType { get; set; }
@@ -24,6 +27,12 @@ namespace LinqToTwitter
 
         [JsonPropertyName("type")]
         public string? Type { get; set; }
+
+        [JsonPropertyName("parameter")]
+        public string? Parameter { get; set; }
+
+        [JsonPropertyName("value")]
+        public string? Value { get; set; }
     }
 }
 

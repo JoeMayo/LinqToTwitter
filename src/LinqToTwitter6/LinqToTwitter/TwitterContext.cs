@@ -565,6 +565,12 @@ namespace LinqToTwitter
                 //case nameof(Trend):
                 //    req = new TrendRequestProcessor<T>();
                 //    break;
+                case nameof(TweetQuery):
+                    req = new TweetRequestProcessor<T>
+                    {
+                        BaseUrl = BaseUrl2
+                    };
+                    break;
                 //case nameof(User):
                 //    req = new UserRequestProcessor<T>();
                 //    break;

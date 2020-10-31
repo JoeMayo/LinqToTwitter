@@ -68,7 +68,7 @@ namespace LinqToTwitter
         public Dictionary<string, string> GetParameters(LambdaExpression lambdaExpression)
         {
             var paramFinder =
-               new ParameterFinder<Tweet>(
+               new ParameterFinder<TweetQuery>(
                    lambdaExpression.Body,
                    new List<string> {
                        nameof(Type),
@@ -166,27 +166,27 @@ namespace LinqToTwitter
         /// <returns>List of Search</returns>
         public virtual List<T> ProcessResults(string responseJson)
         {
-            IEnumerable<Tweet> search;
+            IEnumerable<TweetQuery> tweet;
 
             if (string.IsNullOrWhiteSpace(responseJson))
             {
-                search = new List<Tweet> { new Tweet() };
+                tweet = new List<TweetQuery> { new TweetQuery() };
             }
             else
             {
                 var searchResult = JsonDeserialize(responseJson);
-                search = new List<Tweet> { searchResult };
+                tweet = new List<TweetQuery> { searchResult };
             }
 
-            return search.OfType<T>().ToList();
+            return tweet.OfType<T>().ToList();
         }
 
-        Tweet JsonDeserialize(string responseJson)
+        TweetQuery JsonDeserialize(string responseJson)
         {
-            Tweet? tweet = JsonSerializer.Deserialize<Tweet>(responseJson);
+            TweetQuery? tweet = JsonSerializer.Deserialize<TweetQuery>(responseJson);
 
             if (tweet == null)
-                return new Tweet
+                return new TweetQuery
                 {
                     Type = Type,
                     Ids = Ids,

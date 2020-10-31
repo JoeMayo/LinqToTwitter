@@ -367,10 +367,10 @@ namespace LinqToTwitter.Tests.SearchTests
             Assert.IsNotNull(searches);
             TwitterSearch search = searches.SingleOrDefault();
             Assert.IsNotNull(search);
-            List<TwitterSearchError> errors = search.Errors;
+            List<TwitterError> errors = search.Errors;
             Assert.IsNotNull(errors);
             Assert.AreEqual(2, errors.Count);
-            TwitterSearchError error = errors.FirstOrDefault();
+            TwitterError error = errors.FirstOrDefault();
             Assert.IsNotNull(error);
             Assert.AreEqual("tweet", error.ResourceType);
             Assert.AreEqual("non_public_metrics.impression_count", error.Field);

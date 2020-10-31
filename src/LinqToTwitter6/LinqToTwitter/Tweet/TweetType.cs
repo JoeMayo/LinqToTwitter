@@ -2,6 +2,6 @@
 {
     public enum TweetType
     {
-        Tweets
+        Lookup
     }
 }

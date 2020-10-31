@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace LinqToTwitter
+namespace LinqToTwitter.Common
 {
-    public record TwitterSearchInclude
+    public record TwitterInclude
     {
         [JsonPropertyName("users")]
         public List<TwitterUser>? Users { get; set; }

@@ -1,32 +1,26 @@
 ﻿using LinqToTwitter.Common;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Serialization;
-using System.Xml.Serialization;
 
 namespace LinqToTwitter
 {
-    /// <summary>
-    /// for performing Twitter searches
-    /// </summary>
-    [XmlType(Namespace = "LinqToTwitter")]
-    public record TwitterSearch
+    public record TweetQuery
     {
         //
-        // Input parameters
+        // Query input fields
         //
 
         /// <summary>
         /// type of search, included for compatibility
         /// with other APIs
         /// </summary>
-        public SearchType Type { get; set; }
+        public TweetType Type { get; set; }
 
         /// <summary>
-        /// Date/Time to search to
+        /// Required - Up to 100 comma-separated IDs to search for
         /// </summary>
-        public DateTime EndTime { get; set; }
+        public string? Ids { get; set; }
 
         /// <summary>
         /// Comma-separated list of expansion fields
@@ -34,19 +28,9 @@ namespace LinqToTwitter
         public string? Expansions { get; set; }
 
         /// <summary>
-        /// Maximum number of tweets to return
-        /// </summary>
-        public int MaxResults { get; set; }
-
-        /// <summary>
         /// Comma-separated list of fields to return in the media object
         /// </summary>
         public string? MediaFields { get; set; }
-
-        /// <summary>
-        /// Provide this, when paging, to get the next page of results
-        /// </summary>
-        public string? NextToken { get; set; }
 
         /// <summary>
         /// Comma-separated list of fields to return in the place object
@@ -59,29 +43,9 @@ namespace LinqToTwitter
         public string? PollFields { get; set; }
 
         /// <summary>
-        /// search query
-        /// </summary>
-        public string? Query { get; set; }
-
-        /// <summary>
-        /// Return tweets whose IDs are greater than this
-        /// </summary>
-        public string? SinceID { get; set; }
-
-        /// <summary>
-        /// Date/Time to start search
-        /// </summary>
-        public DateTime StartTime { get; set; }
-
-        /// <summary>
         /// Comma-separated list of fields to return in the Tweet object
         /// </summary>
         public string? TweetFields { get; set; }
-
-        /// <summary>
-        /// Return tweets whose ids are less than this
-        /// </summary>
-        public string? UntilID { get; set; }
 
         /// <summary>
         /// Comma-separated list of fields to return in the User object
