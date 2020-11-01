@@ -1,5 +1,6 @@
 ﻿using LinqToTwitter.Net;
 using System;
+using System.Collections.Generic;
 using System.Net;
 
 namespace LinqToTwitter.Common
@@ -53,7 +54,7 @@ namespace LinqToTwitter.Common
         /// <summary>
         /// Specific errors - assigned by Twitter
         /// </summary>
-        public Error[]? Errors { get; set; }
+        public List<Error>? Errors { get; set; }
 
         /// <summary>
         /// Http status code from Twitter response

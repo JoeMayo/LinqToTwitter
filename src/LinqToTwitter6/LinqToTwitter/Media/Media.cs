@@ -16,7 +16,7 @@ namespace LinqToTwitter
 
             media.TryGetProperty("image", out JsonElement imageValue);
             Image = new MediaImage(imageValue);
-            MediaID = media.GetUlong("media_id_string");
+            MediaID = (media.GetString("media_id_string") ?? "0").GetULong();
             Size = media.GetInt("size");
             media.TryGetProperty("video", out JsonElement video);
             VideoType = video.GetString("video_type");

@@ -221,12 +221,8 @@ namespace LinqToTwitter
 
             switch (Type)
             {
-                case StatusType.Conversation:
-                    return BuildConversationUrl(parameters);
                 case StatusType.Home:
                     return BuildHomeUrl(parameters);
-                case StatusType.Lookup:
-                    return BuildLookupUrl(parameters);
                 case StatusType.Mentions:
                     return BuildMentionsUrl(parameters);
                 case StatusType.Oembed:
@@ -235,8 +231,6 @@ namespace LinqToTwitter
                     return BuildRetweetsOfMeUrl(parameters);
                 case StatusType.Retweets:
                     return BuildRetweets(parameters);
-                case StatusType.Show:
-                    return BuildShowUrl(parameters);
                 case StatusType.User:
                     return BuildUserUrl(parameters);
                 case StatusType.Retweeters:
@@ -350,26 +344,6 @@ namespace LinqToTwitter
             return req;
         }
 
-        Request BuildConversationUrl(Dictionary<string, string> parameters)
-        {
-            if (!parameters.ContainsKey("ID") || string.IsNullOrWhiteSpace(parameters["ID"]))
-                throw new ArgumentNullException("ID", "ID is required");
-
-            var req = new Request(BaseUrl + "conversation/show.json");
-            var urlParams = req.RequestParameters;
-
-            ID = ulong.Parse(parameters["ID"]);
-            urlParams.Add(new QueryParameter("id", parameters["ID"]));
-
-            if (parameters.ContainsKey(nameof(TweetMode)))
-            {
-                TweetMode = RequestProcessorHelper.ParseEnum<TweetMode>(parameters[nameof(TweetMode)]);
-                urlParams.Add(new QueryParameter("tweet_mode", TweetMode.ToString().ToLower()));
-            }
-
-            return req;
-        }
-
         /// <summary>
         /// construct a base home url
         /// </summary>
@@ -377,50 +351,6 @@ namespace LinqToTwitter
         Request BuildHomeUrl(Dictionary<string, string> parameters)
         {
             return BuildUrlParameters(parameters, "statuses/home_timeline.json");
-        }
-
-        Request BuildLookupUrl(Dictionary<string, string> parameters)
-        {
-            if (!parameters.ContainsKey("TweetIDs") || string.IsNullOrWhiteSpace(parameters["TweetIDs"]))
-                throw new ArgumentNullException("TweetIDs", "TweetIDs is required");
-
-            var req = new Request(BaseUrl + "statuses/lookup.json");
-            var urlParams = req.RequestParameters;
-
-            TweetIDs = parameters["TweetIDs"].Replace(" ", "");
-            urlParams.Add(new QueryParameter("id", TweetIDs));
-
-            if (parameters.ContainsKey("IncludeEntities"))
-            {
-                IncludeEntities = bool.Parse(parameters["IncludeEntities"]);
-                urlParams.Add(new QueryParameter("include_entities", parameters["IncludeEntities"].ToLower()));
-            }
-
-            if (parameters.ContainsKey("Map"))
-            {
-                Map = bool.Parse(parameters["Map"]);
-                urlParams.Add(new QueryParameter("map", parameters["Map"].ToLower()));
-            }
-
-            if (parameters.ContainsKey("TrimUser"))
-            {
-                TrimUser = bool.Parse(parameters["TrimUser"]);
-                urlParams.Add(new QueryParameter("trim_user", parameters["TrimUser"].ToLower()));
-            }
-
-            if (parameters.ContainsKey(nameof(TweetMode)))
-            {
-                TweetMode = RequestProcessorHelper.ParseEnum<TweetMode>(parameters[nameof(TweetMode)]);
-                urlParams.Add(new QueryParameter("tweet_mode", TweetMode.ToString().ToLower()));
-            }
-
-            if (parameters.ContainsKey(nameof(IncludeAltText)))
-            {
-                IncludeAltText = bool.Parse(parameters[nameof(IncludeAltText)]);
-                urlParams.Add(new QueryParameter("include_ext_alt_text", parameters[nameof(IncludeAltText)].ToLower()));
-            }
-
-            return req;
         }
 
         /// <summary>
@@ -575,16 +505,6 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// builds an url for showing status of user
-        /// </summary>
-        /// <param name="parameters">parameter list</param>
-        /// <returns>base url + show segment</returns>
-        Request BuildShowUrl(Dictionary<string, string> parameters)
-        {
-            return BuildUrlParameters(parameters, "statuses/show.json");
-        }
-
-        /// <summary>
         /// construct an url for the user timeline
         /// </summary>
         /// <returns>base url + user timeline segment</returns>
@@ -607,11 +527,7 @@ namespace LinqToTwitter
             List<Status> statusList;
             switch (Type)
             {
-                case StatusType.Show:
-                    statusList = new List<Status> { new Status(statusJson) };
-                    break;
                 case StatusType.Home:
-                case StatusType.Lookup:
                 case StatusType.Mentions:
                 case StatusType.RetweetsOfMe:
                 case StatusType.Retweets:

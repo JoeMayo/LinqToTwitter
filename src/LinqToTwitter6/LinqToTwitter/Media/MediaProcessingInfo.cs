@@ -12,6 +12,8 @@ namespace LinqToTwitter
         public MediaProcessingInfo() { }
         public MediaProcessingInfo(JsonElement info)
         {
+            if (info.IsNull()) return;
+
             State = info.GetString("state");
             CheckAfterSeconds = info.GetInt("check_after_secs");
             ProgressPercent = info.GetInt("progress_percent");

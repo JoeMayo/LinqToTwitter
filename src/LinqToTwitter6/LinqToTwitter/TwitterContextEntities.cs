@@ -92,16 +92,16 @@ namespace LinqToTwitter
         //    }
         //}
 
-        ///// <summary>
-        ///// Enables access to media commands, like STATUS
-        ///// </summary>
-        //public TwitterQueryable<Media> Media
-        //{
-        //    get
-        //    {
-        //        return new TwitterQueryable<Media>(this);
-        //    }
-        //}
+        /// <summary>
+        /// Enables access to media commands, like STATUS
+        /// </summary>
+        public TwitterQueryable<Media> Media
+        {
+            get
+            {
+                return new TwitterQueryable<Media>(this);
+            }
+        }
 
         ///// <summary>
         ///// Enables access to muted users
@@ -151,16 +151,16 @@ namespace LinqToTwitter
         /// </summary>
         public TwitterQueryable<TwitterSearch> TwitterSearch => new TwitterQueryable<TwitterSearch>(this);
 
-        ///// <summary>
-        ///// enables access to Twitter Status messages
-        ///// </summary>
-        //public TwitterQueryable<Status> Status
-        //{
-        //    get
-        //    {
-        //        return new TwitterQueryable<Status>(this);
-        //    }
-        //}
+        /// <summary>
+        /// enables access to Twitter Status messages
+        /// </summary>
+        public TwitterQueryable<Status> Status
+        {
+            get
+            {
+                return new TwitterQueryable<Status>(this);
+            }
+        }
 
         ///// <summary>
         ///// enables access to Twitter Status messages, such as Friends and Public

@@ -1,4 +1,5 @@
 ﻿#nullable disable
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -9,8 +10,11 @@ using LinqToTwitter.Common;
 
 namespace LinqToTwitter.Net
 {
-    partial class TwitterErrorHandler
+    public class TwitterErrorHandler
     {
+        const int TwitterApiV1 = 1;
+        const int TwitterApiV2 = 2;
+
         public static async Task ThrowIfErrorAsync(HttpResponseMessage msg)
         {
             const int TooManyRequests = 429;
@@ -98,47 +102,93 @@ namespace LinqToTwitter.Net
             };
         }
 
-        internal static TwitterErrorDetails ParseTwitterErrorMessage(string responseStr)
+        public static TwitterErrorDetails ParseTwitterErrorMessage(string responseStr)
         {
-            if (responseStr.StartsWith("{"))
+            try
             {
                 var responseJson = JsonDocument.Parse(responseStr);
                 var root = responseJson.RootElement;
 
-                if (IsErrorFormatRecognized(root))
+                int apiVersion = GetTwitterApiVersion(root);
+
+                if (apiVersion == TwitterApiV2) // version 2
                 {
                     return new TwitterErrorDetails
                     {
-                        Title = root.GetProperty("title").GetString(),
-                        Detail = root.GetProperty("detail").GetString(),
-                        Type = root.GetProperty("type").GetString(),
+                        Title = root.GetString("title"),
+                        Detail = root.GetString("detail"),
+                        Type = root.GetString("type"),
                         Errors =
                             (from error in root.GetProperty("errors").EnumerateArray()
                              select new Error
                              {
-                                 Message = error.GetProperty("message").ToString(),
+                                 Message = error.GetString("message"),
                                  Parameters =
-                                    (from parm in error.GetProperty("parameters").EnumerateObject()
+                             (from parm in error.GetProperty("parameters").EnumerateObject()
                                      let vals =
-                                     (from val in parm.Value.EnumerateArray()
-                                      select val.GetString())
-                                     .ToArray()
+                                 (from val in parm.Value.EnumerateArray()
+                                         select val.GetString())
+                                 .ToArray()
                                      select new { parm.Name, vals })
-                                    .ToDictionary(
-                                        key => key.Name,
-                                        val => val.vals)
+                             .ToDictionary(
+                                 key => key.Name,
+                                 val => val.vals)
                              })
-                            .ToArray()
+                            .ToList()
                     };
                 }
+                else // version 1
+                {
+                    if (root.TryGetProperty("request", out JsonElement discard))
+                    {
+                        return new TwitterErrorDetails
+                        {
+                            Errors = new List<Error>
+                            {
+                                new Error
+                                {
+                                    Request = root.GetString("request"),
+                                    Message = root.GetString("error")
+                                }
+                            }
+                        };
+                    }
+                    else
+                    {
+                        return new TwitterErrorDetails
+                        {
+                            Errors =
+                                (from error in root.GetProperty("errors").EnumerateArray()
+                                 select new Error
+                                 {
+                                     Message = error.GetString("message"),
+                                     Code = error.GetInt("code")
+                                 })
+                                .ToList()
+                        };
+                    }
+
+                }
+            }
+            catch (Exception)
+            {
+                return new TwitterErrorDetails 
+                { 
+                    Title = 
+                        "Unhandled Error - LINQ to Twitter wasn't able to parse Twitter error message. " +
+                        "Please copy this message, with the Detail property contents and the query you " +
+                        "were using (how to reproduce) to Joe Mayo at https://github.com/JoeMayo/LinqToTwitter/issues.",
+                    Detail = responseStr 
+                };
             }
 
-            return new TwitterErrorDetails { Detail = responseStr };
         }
 
-        static bool IsErrorFormatRecognized(JsonElement root)
+        static int GetTwitterApiVersion(JsonElement root)
         {
-            return root.TryGetProperty("errors", out JsonElement errors);
+            bool hasTitle = root.TryGetProperty("title", out JsonElement errors);
+
+            return hasTitle ? TwitterApiV2 : TwitterApiV1;
         }
     }
 }

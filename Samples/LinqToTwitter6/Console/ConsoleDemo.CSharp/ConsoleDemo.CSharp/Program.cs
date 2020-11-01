@@ -93,10 +93,10 @@ namespace Linq2TwitterDemos_Console
                     //    Console.WriteLine("\n\tRunning List Demos...\n");
                     //    await ListDemos.RunAsync(twitterCtx);
                     //    break;
-                    //case '9':
-                    //    Console.WriteLine("\n\tRunning Media Demos...\n");
-                    //    await MediaDemos.RunAsync(twitterCtx);
-                    //    break;
+                    case '9':
+                        Console.WriteLine("\n\tRunning Media Demos...\n");
+                        await MediaDemos.RunAsync(twitterCtx);
+                        break;
                     //case 'a':
                     //case 'A':
                     //    Console.WriteLine("\n\tRunning Mutes Demos...\n");
@@ -117,11 +117,11 @@ namespace Linq2TwitterDemos_Console
                         Console.WriteLine("\n\tRunning Search Demos...\n");
                         await SearchDemos.RunAsync(twitterCtx);
                         break;
-                    //case 'e':
-                    //case 'E':
-                    //    Console.WriteLine("\n\tRunning Status Demos...\n");
-                    //    await StatusDemos.RunAsync(twitterCtx);
-                    //    break;
+                    case 'e':
+                    case 'E':
+                        Console.WriteLine("\n\tRunning Status Demos...\n");
+                        await StatusDemos.RunAsync(twitterCtx);
+                        break;
                     //case 'f':
                     //case 'F':
                     //    Console.WriteLine("\n\tRunning Stream Demos...\n");
@@ -172,12 +172,12 @@ namespace Linq2TwitterDemos_Console
             //Console.WriteLine("\t 6. Geo Demos");
             //Console.WriteLine("\t 7. Help Demos");
             //Console.WriteLine("\t 8. List Demos");
-            //Console.WriteLine("\t 9. Media Demos");
+            Console.WriteLine("\t 9. Media Demos");
             //Console.WriteLine("\t A. Mutes Demos");
             Console.WriteLine("\t B. Raw Demos");
             //Console.WriteLine("\t C. Saved Search Demos");
             Console.WriteLine("\t D. Search Demos");
-            //Console.WriteLine("\t E. Status Demos");
+            Console.WriteLine("\t E. Status Demos");
             //Console.WriteLine("\t F. Stream Demos");
             //Console.WriteLine("\t G. Trend Demos");
             //Console.WriteLine("\t H. User Demos");

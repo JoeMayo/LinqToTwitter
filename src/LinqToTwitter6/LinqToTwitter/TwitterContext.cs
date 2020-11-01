@@ -528,12 +528,12 @@ namespace LinqToTwitter
                 //case nameof(List):
                 //    req = new ListRequestProcessor<T>();
                 //    break;
-                //case nameof(Media):
-                //    req = new MediaRequestProcessor<T>
-                //    {
-                //        UploadUrl = UploadUrl
-                //    };
-                //    break;
+                case nameof(Media):
+                    req = new MediaRequestProcessor<T>
+                    {
+                        UploadUrl = UploadUrl
+                    };
+                    break;
                 //case nameof(Mute):
                 //    req = new MuteRequestProcessor<T>();
                 //    break;
@@ -552,9 +552,9 @@ namespace LinqToTwitter
                         BaseUrl = BaseUrl2
                     };
                     break;
-                //case nameof(Status):
-                //    req = new StatusRequestProcessor<T>();
-                //    break;
+                case nameof(Status):
+                    req = new StatusRequestProcessor<T>();
+                    break;
                 //case nameof(Streaming):
                 //    baseUrl = StreamingUrl;
                 //    req = new StreamingRequestProcessor<T>

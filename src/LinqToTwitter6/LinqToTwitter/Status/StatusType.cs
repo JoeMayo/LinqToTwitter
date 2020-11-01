@@ -22,15 +22,6 @@ namespace LinqToTwitter
         User,
 
         /// <summary>
-        /// a specific tweet
-        /// 
-        /// Available Options:
-        /// 
-        ///     - ID, tweet to retrieve
-        /// </summary>
-        Show,
-
-        /// <summary>
         /// lists the 20 most recent tweets about the logged-in user
         /// 
         /// Available Options:
@@ -102,27 +93,5 @@ namespace LinqToTwitter
         ///     - OEmbedLanguage, Language code for rendered tweet
         /// </summary>
         Oembed,
-
-        /// <summary>
-        /// Shows a conversation associated with a tweet
-        /// 
-        /// Available Options:
-        /// 
-        ///     - ID, tweet ID
-        /// </summary>
-        Conversation,
-
-        /// <summary>
-        /// Returns tweets matching a list of ids
-        /// 
-        /// Available Options:
-        /// 
-        ///     - ID, comma-separated list of tweet ids
-        ///     - IncludeEntities, add entity metadata to tweets
-        ///     - TrimUser, omit the user object from tweets
-        ///     - Map, include null object for missing tweets
-        ///     
-        /// </summary>
-        Lookup
     }
 }

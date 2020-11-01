@@ -29,7 +29,7 @@ namespace LinqToTwitter
         /// <summary>
         /// type of media request, i.e. Status
         /// </summary>
-        internal MediaType Type { get; set; }
+        public MediaType Type { get; set; }
 
         /// <summary>
         /// Media command sent to Twitter. e.g. STATUS for requesting media upload status.
@@ -39,7 +39,7 @@ namespace LinqToTwitter
         /// <summary>
         /// ID of uploaded media to work with.
         /// </summary>
-        internal ulong MediaID { get; set; }
+        public ulong MediaID { get; set; }
 
         /// <summary>
         /// extracts parameters from lambda
