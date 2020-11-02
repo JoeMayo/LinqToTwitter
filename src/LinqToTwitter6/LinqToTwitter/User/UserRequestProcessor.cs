@@ -28,23 +28,23 @@ namespace LinqToTwitter
         /// <summary>
         /// type of user request (i.e. Friends, Followers, or Show)
         /// </summary>
-        internal UserType Type { get; set; }
+        public UserType Type { get; set; }
 
         /// <summary>
         /// User ID
         /// </summary>
-        internal ulong UserID { get; set; }
+        public ulong UserID { get; set; }
 
         /// <summary>
         /// Comma-separated list of user IDs (e.g. for Lookup query)
         /// </summary>
-        internal string UserIdList { get; set; }
+        public string UserIdList { get; set; }
 
         /// <summary>
         /// user's screen name
         /// On Input - disambiguates when ID is User ID
         /// </summary>
-        internal string ScreenName { get; set; }
+        public string ScreenName { get; set; }
 
         /// <summary>
         /// Comma-separated list of screen names (e.g. for Lookup query)
@@ -54,12 +54,12 @@ namespace LinqToTwitter
         /// <summary>
         /// page number of results to retrieve
         /// </summary>
-        internal int Page { get; set; }
+        public int Page { get; set; }
 
         /// <summary>
         /// Number of users to return for each page
         /// </summary>
-        internal int Count { get; set; }
+        public int Count { get; set; }
 
         /// <summary>
         /// Indicator for which page to get next
@@ -70,42 +70,42 @@ namespace LinqToTwitter
         /// are Previous and Next, which you can find in the
         /// CursorResponse property when your response comes back.
         /// </remarks>
-        internal long Cursor { get; set; }
+        public long Cursor { get; set; }
 
         /// <summary>
         /// Used to identify suggested users category
         /// </summary>
-        internal string Slug { get; set; }
+        public string Slug { get; set; }
 
         /// <summary>
         /// Query for User Search
         /// </summary>
-        internal string Query { get; set; }
+        public string Query { get; set; }
 
         /// <summary>
         /// Supports various languages
         /// </summary>
-        internal string Lang { get; set; }
+        public string Lang { get; set; }
 
         /// <summary>
         /// Add entities to results
         /// </summary>
-        internal bool IncludeEntities { get; set; }
+        public bool IncludeEntities { get; set; }
 
         /// <summary>
         /// Remove status from results
         /// </summary>
-        internal bool SkipStatus { get; set; }
+        public bool SkipStatus { get; set; }
 
         /// <summary>
         /// Size for UserProfileImage query
         /// </summary>
-        internal ProfileImageSize ImageSize { get; set; }
+        public ProfileImageSize ImageSize { get; set; }
 
         /// <summary>
         /// Set to TweetMode.Extended to receive 280 characters in Status.FullText property
         /// </summary>
-        internal TweetMode TweetMode { get; set; }
+        public TweetMode TweetMode { get; set; }
 
         /// <summary>
         /// extracts parameters from lambda
@@ -153,16 +153,6 @@ namespace LinqToTwitter
 
             switch (Type)
             {
-                case UserType.Show:
-                    return BuildShowUrl(parameters);
-                case UserType.Categories:
-                    return BuildCategoriesUrl(parameters);
-                case UserType.Category:
-                    return BuildUsersInCategoryUrl(parameters);
-                case UserType.CategoryStatus:
-                    return BuildCategoryStatusUrl(parameters);
-                case UserType.Lookup:
-                    return BuildLookupUrl(parameters);
                 case UserType.Search:
                     return BuildSearchUrl(parameters);
                 case UserType.Contributees:
@@ -349,65 +339,6 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// Builds url for getting users that belong to a suggestion category
-        /// </summary>
-        /// <param name="parameters">Contains Slug. Required.</param>
-        /// <returns>Url for query + slug</returns>
-        Request BuildUsersInCategoryUrl(Dictionary<string, string> parameters)
-        {
-            if (!parameters.ContainsKey("Slug"))
-                throw new ArgumentException("Slug parameter is required.", "Slug");
-
-            Slug = parameters["Slug"];
-
-            var req = new Request(BaseUrl + "users/suggestions/" + Slug + ".json");
-            var urlParams = req.RequestParameters;
-
-            if (parameters.ContainsKey("Lang"))
-            {
-                Lang = parameters["Lang"];
-                urlParams.Add(new QueryParameter("lang", parameters["Lang"]));
-            }
-
-            return req;
-        }
-
-        /// <summary>
-        /// Builds a url to get suggested user categories
-        /// </summary>
-        /// <param name="parameters">Not used</param>
-        /// <returns>Url for suggested user categories</returns>
-        Request BuildCategoriesUrl(Dictionary<string, string> parameters)
-        {
-            var req = new Request(BaseUrl + "users/suggestions.json");
-            var urlParams = req.RequestParameters;
-
-            if (parameters.ContainsKey("Lang"))
-            {
-                Lang = parameters["Lang"];
-                urlParams.Add(new QueryParameter("lang", parameters["Lang"]));
-            }
-
-            return req;
-        }
-
-        /// <summary>
-        /// Builds a url to get tweets of users in a suggested category
-        /// </summary>
-        /// <param name="parameters">Reads Slug param</param>
-        /// <returns>Url for category statuses</returns>
-        Request BuildCategoryStatusUrl(Dictionary<string, string> parameters)
-        {
-            if (!parameters.ContainsKey("Slug"))
-                throw new ArgumentNullException("Slug", "You must set the Slug property, which is the suggested category.");
-
-            Slug = parameters["Slug"];
-            var req = new Request(BaseUrl + "users/suggestions/" + Slug.ToLower() + "/members.json");
-
-            return req;
-        }
-
-        /// <summary>
         /// builds a url to show user info
         /// </summary>
         /// <param name="parameters">url parameters</param>
@@ -511,25 +442,14 @@ namespace LinqToTwitter
         {
             if (string.IsNullOrWhiteSpace(responseJson)) return new List<T>();
 
-            List<User> userList = null;
+            List<User>? userList = null;
 
             JsonElement userJson = JsonDocument.Parse(responseJson).RootElement;
 
             switch (Type)
             {
-                case UserType.Show:
-                    userList = HandleSingleUserResponse(userJson);
-                    break;
-                case UserType.Categories:
-                    userList = HandleMultipleCategoriesResponse(userJson);
-                    break;
-                case UserType.Category:
-                    userList = HandleSingleCategoryResponse(userJson);
-                    break;
                 case UserType.Contributees:
                 case UserType.Contributors:
-                case UserType.CategoryStatus:
-                case UserType.Lookup:
                 case UserType.Search:
                     userList = HandleMultipleUserResponse(userJson);
                     break;
@@ -569,35 +489,6 @@ namespace LinqToTwitter
             return userList;
         }
   
-        List<User> HandleMultipleCategoriesResponse(JsonElement userJson)
-        {
-            List<User> userList = new List<User>
-            {
-                new User
-                {
-                    Categories =
-                        (from cat in userJson.EnumerateArray()
-                         select new Category(cat))
-                        .ToList()
-                }
-            };
-
-            return userList;
-        }
-  
-        List<User> HandleSingleCategoryResponse(JsonElement userJson)
-        {
-            List<User> userList = new List<User>
-            {
-                new User
-                {
-                    Categories = new List<Category> { new Category(userJson) }
-                }
-            };
-
-            return userList;
-        }
-  
         List<User> HandleMultipleUserResponse(JsonElement userJson)
         {
             List<User> userList =
@@ -615,18 +506,18 @@ namespace LinqToTwitter
             {
                 new User
                 {
-                    // TODO: convert to JsonElement
-                    //BannerSizes =     
-                    //    (from key in (sizes as IDictionary<string, JsonData>).Keys as List<string>
-                    //     let sizesKey = sizes.GetValue<JsonData>(key)
-                    //     select new BannerSize
-                    //     {
-                    //         Label = key,
-                    //         Width = sizesKey.GetValue<int>("w"),
-                    //         Height = sizesKey.GetValue<int>("h"),
-                    //         Url = sizesKey.GetValue<string>("url")
-                    //     })
-                    //    .ToList()
+                    BannerSizes =
+                        (from key in sizes.EnumerateObject()
+                         let name = key.Name
+                         let value = key.Value
+                         select new BannerSize
+                         {
+                             Label = name,
+                             Width = value.GetInt("w"),
+                             Height = value.GetInt("h"),
+                             Url = value.GetString("url")
+                         })
+                        .ToList()
                 }
             };
 

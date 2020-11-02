@@ -8,10 +8,19 @@ namespace LinqToTwitter
     public class Contributor
     {
         public Contributor() { }
-        public Contributor(JsonElement contributorJson)
+        public Contributor(JsonElement contributor)
         {
-            ID = contributorJson.GetString("id_str");
-            ScreenName = contributorJson.GetString("screen_name");
+            if (contributor.IsNull()) return;
+
+            if (contributor.ValueKind == JsonValueKind.Number)
+            {
+                ID = contributor.GetInt64().ToString();
+            }
+            else
+            {
+                ID = contributor.GetLong("id_str").ToString();
+                ScreenName = contributor.GetString("screen_name"); 
+            }
         }
 
         public string? ID { get; set; }

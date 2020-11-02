@@ -8,6 +8,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LinqToTwitter.Tests", "LinqToTwitter.Tests\LinqToTwitter.Tests.csproj", "{A71CDC94-BF90-4BD1-9CAE-6622EF30D883}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleDemo.CSharp", "..\..\Samples\LinqToTwitter6\Console\ConsoleDemo.CSharp\ConsoleDemo.CSharp\ConsoleDemo.CSharp.csproj", "{627303B8-0122-4E9D-B2D9-047B04339CE1}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C82B4276-D12F-4FA6-9E4F-B0FD70329A54} = {C82B4276-D12F-4FA6-9E4F-B0FD70329A54}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

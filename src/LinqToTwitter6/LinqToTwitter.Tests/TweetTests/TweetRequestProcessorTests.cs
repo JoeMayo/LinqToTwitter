@@ -321,7 +321,7 @@ namespace LinqToTwitter.Tests.TweetTests
         [TestMethod]
         public void ProcessResults_Populates_Input_Parameters()
         {
-            var searchProc = new TweetRequestProcessor<TweetQuery>()
+            var tweetProc = new TweetRequestProcessor<TweetQuery>()
             {
                 BaseUrl = BaseUrl2,
                 Type = TweetType.Lookup,
@@ -334,7 +334,7 @@ namespace LinqToTwitter.Tests.TweetTests
                 UserFields = "234"
             };
 
-            var results = searchProc.ProcessResults(SingleTweet);
+            var results = tweetProc.ProcessResults(SingleTweet);
 
             Assert.IsNotNull(results);
             Assert.AreEqual(1, results.Count);
@@ -372,8 +372,6 @@ namespace LinqToTwitter.Tests.TweetTests
             Assert.AreEqual("1", error.Value);
             Assert.AreEqual("https://api.twitter.com/2/problems/resource-not-found", error.Type);
         }
-
-        #region Single Tweet
 
         const string SingleTweet = @"{
 	""data"": [
@@ -615,10 +613,6 @@ namespace LinqToTwitter.Tests.TweetTests
 	}
 }";
 
-		#endregion
-
-		#region Error Tweet
-
 		const string ErrorTweet = @"{
 	""errors"": [
 		{
@@ -631,7 +625,5 @@ namespace LinqToTwitter.Tests.TweetTests
 		}
 	]
 }";
-
-        #endregion
     }
 }

@@ -6,34 +6,9 @@
     public enum UserType
     {
         /// <summary>
-        /// extended information on a user
+        /// List of sizes for account banners
         /// </summary>
-        Show,
-
-        /// <summary>
-        /// Available Twitter suggestion categories
-        /// </summary>
-        Categories,
-
-        /// <summary>
-        /// Users under a specified category
-        /// </summary>
-        Category,
-
-        /// <summary>
-        /// Get most recent tweet of each user in category
-        /// </summary>
-        CategoryStatus,
-
-        /// <summary>
-        /// Get user details for a set of users
-        /// </summary>
-        Lookup,
-
-        /// <summary>
-        /// Perform a user search
-        /// </summary>
-        Search,
+        BannerSizes,
 
         /// <summary>
         /// Users that specified user can contribute to
@@ -46,8 +21,18 @@
         Contributors,
 
         /// <summary>
-        /// List of sizes for account banners
+        /// Search users by ids
         /// </summary>
-        BannerSizes
+        IdLookup,
+
+        /// <summary>
+        /// Perform a user search
+        /// </summary>
+        Search,
+
+        /// <summary>
+        /// Search users by username
+        /// </summary>
+        UsernameLookup,
     }
 }

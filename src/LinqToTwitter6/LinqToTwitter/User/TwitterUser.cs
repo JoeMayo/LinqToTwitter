@@ -77,7 +77,7 @@ namespace LinqToTwitter
         /// <summary>
         /// Is user account private (access by user's approval only)
         /// </summary>
-        [JsonPropertyName("_protected")]
+        [JsonPropertyName("protected")]
         public bool Protected { get; set; }
 
         /// <summary>

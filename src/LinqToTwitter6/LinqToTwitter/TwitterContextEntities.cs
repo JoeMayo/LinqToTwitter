@@ -93,7 +93,7 @@ namespace LinqToTwitter
         //}
 
         /// <summary>
-        /// Enables access to media commands, like STATUS
+        /// Enables access to media commands, like STATUS (Twitter API v1)
         /// </summary>
         public TwitterQueryable<Media> Media
         {
@@ -126,7 +126,7 @@ namespace LinqToTwitter
         //}
 
         /// <summary>
-        /// enables access to Raw Query Extensibility
+        /// enables access to Raw Query Extensibility (All Twitter API versions)
         /// </summary>
         public TwitterQueryable<Raw> RawQuery => new TwitterQueryable<Raw>(this);
 
@@ -142,17 +142,17 @@ namespace LinqToTwitter
         //}
 
         /// <summary>
-        /// enables access to Twitter Search to query tweets
+        /// enables access to Twitter Search to query tweets (Twitter API v1)
         /// </summary>
         public TwitterQueryable<Search> Search => new TwitterQueryable<Search>(this);
 
         /// <summary>
-        /// enables access to Twitter Search v2 to query tweets
+        /// enables access to Twitter Search v2 to query tweets (Twitter API v2)
         /// </summary>
         public TwitterQueryable<TwitterSearch> TwitterSearch => new TwitterQueryable<TwitterSearch>(this);
 
         /// <summary>
-        /// enables access to Twitter Status messages
+        /// enables access to Twitter Status messages (Twitter API v1)
         /// </summary>
         public TwitterQueryable<Status> Status
         {
@@ -185,20 +185,25 @@ namespace LinqToTwitter
         //}
 
         /// <summary>
-        /// enables access to Twitter Tweets lookup
+        /// enables access to Twitter Tweets lookup (Twitter API v2)
         /// </summary>
         public TwitterQueryable<TweetQuery> Tweets => new TwitterQueryable<TweetQuery>(this);
 
-        ///// <summary>
-        ///// enables access to Twitter User messages, such as Friends and Followers
-        ///// </summary>
-        //public TwitterQueryable<User> User
-        //{
-        //    get
-        //    {
-        //        return new TwitterQueryable<User>(this);
-        //    }
-        //}
+        /// <summary>
+        /// enables access to Twitter User lookup (Twitter API v2)
+        /// </summary>
+        public TwitterQueryable<TwitterUserQuery> TwitterUser => new TwitterQueryable<TwitterUserQuery>(this);
+
+        /// <summary>
+        /// enables access to Twitter User messages, such as Friends and Followers (Twitter API v1)
+        /// </summary>
+        public TwitterQueryable<User> User
+        {
+            get
+            {
+                return new TwitterQueryable<User>(this);
+            }
+        }
 
         ///// <summary>
         ///// enables access to Twitter Welcome messages

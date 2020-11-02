@@ -1,5 +1,4 @@
-﻿using LinqToTwitter.Common;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace LinqToTwitter

@@ -1,6 +1,6 @@
 namespace LinqToTwitter
 {
-    enum UserAction
+    public enum UserAction
     {
         SingleUser
     }

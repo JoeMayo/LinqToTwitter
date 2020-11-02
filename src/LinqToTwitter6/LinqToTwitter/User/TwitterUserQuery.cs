@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 
 namespace LinqToTwitter
 {
-    public record TweetQuery
+    public record TwitterUserQuery
     {
         //
         // Query input fields
@@ -15,32 +15,22 @@ namespace LinqToTwitter
         /// type of search, included for compatibility
         /// with other APIs
         /// </summary>
-        public TweetType Type { get; set; }
+        public UserType Type { get; set; }
 
         /// <summary>
-        /// Required - Up to 100 comma-separated IDs to search for
+        /// Required for id queries - Up to 100 comma-separated IDs to search for
         /// </summary>
         public string? Ids { get; set; }
+
+        /// <summary>
+        /// Required for username queries - Up to 100 comma-separated usernames to search for
+        /// </summary>
+        public string? Usernames { get; set; }
 
         /// <summary>
         /// Comma-separated list of expansion fields
         /// </summary>
         public string? Expansions { get; set; }
-
-        /// <summary>
-        /// Comma-separated list of fields to return in the media object
-        /// </summary>
-        public string? MediaFields { get; set; }
-
-        /// <summary>
-        /// Comma-separated list of fields to return in the place object
-        /// </summary>
-        public string? PlaceFields { get; set; }
-
-        /// <summary>
-        /// Comma-separated list of fields to return in the poll object
-        /// </summary>
-        public string? PollFields { get; set; }
 
         /// <summary>
         /// Comma-separated list of fields to return in the Tweet object
@@ -60,7 +50,7 @@ namespace LinqToTwitter
         /// Tweet data returned from the search
         /// </summary>
         [JsonPropertyName("data")]
-        public List<Tweet>? Tweets { get; set; }
+        public List<TwitterUser>? Users { get; set; }
 
         /// <summary>
         /// If any errors occur, they'll show up here

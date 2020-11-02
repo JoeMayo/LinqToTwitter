@@ -571,9 +571,15 @@ namespace LinqToTwitter
                         BaseUrl = BaseUrl2
                     };
                     break;
-                //case nameof(User):
-                //    req = new UserRequestProcessor<T>();
-                //    break;
+                case nameof(TwitterUserQuery):
+                    req = new TwitterUserRequestProcessor<T>
+                    {
+                        BaseUrl = BaseUrl2
+                    };
+                    break;
+                case nameof(User):
+                    req = new UserRequestProcessor<T>();
+                    break;
                 //case nameof(WelcomeMessage):
                 //    req = new WelcomeMessageRequestProcessor<T>();
                 //    break;
