@@ -5,8 +5,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using L2TStream = LinqToTwitter.Streaming;
-
 namespace LinqToTwitter
 {
     public static class TwitterExtensions
@@ -19,7 +17,7 @@ namespace LinqToTwitter
         /// <param name="streaming">Query being extended</param>
         /// <param name="callback">Your code for handling Twitter content</param>
         /// <returns>Streaming instance to support further LINQ opertations</returns>
-        public static async Task<List<L2TStream.Streaming>> StartAsync(this IQueryable<L2TStream.Streaming> streaming, Func<L2TStream.StreamContent, Task> callback)
+        public static async Task<List<Streaming>> StartAsync(this IQueryable<Streaming> streaming, Func<StreamContent, Task> callback)
         {
             var provider = streaming.Provider as TwitterQueryProvider;
             provider!
@@ -29,30 +27,6 @@ namespace LinqToTwitter
 
             return await streaming.ToListAsync().ConfigureAwait(false);
         }
-
-        //public static async Task<IObservable<StreamContent>> ToObservableAsync(this IQueryable<Streaming> streaming)
-        //{
-        //    IObservable<StreamContent> observableContent = Observable.Create<StreamContent>(
-        //        async observer =>
-        //        {
-        //            await streaming.StartAsync(async content =>
-        //            {
-        //                try
-        //                {
-        //                    observer.OnNext(content);
-        //                    await Task.FromResult(content).ConfigureAwait(false);
-        //                }
-        //                catch (Exception ex)
-        //                {
-        //                    observer.OnError(ex);
-        //                }
-        //            }).ConfigureAwait(false);
-
-        //            observer.OnCompleted();
-        //        });
-
-        //    return await Task.FromResult(observableContent).ConfigureAwait(false);
-        //}
 
         public static async Task<List<T>> ToListAsync<T>(this IQueryable<T> query)
         {

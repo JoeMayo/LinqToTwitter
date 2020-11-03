@@ -1,4 +1,4 @@
-namespace LinqToTwitter.Streaming
+namespace LinqToTwitter
 {
     public interface IStreamContent
     {

@@ -1,11 +1,10 @@
-﻿#nullable disable
-using LinqToTwitter.Provider;
+﻿using LinqToTwitter.Provider;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 
-namespace LinqToTwitter.Streaming
+namespace LinqToTwitter
 {
     public class StreamingRequestProcessor<T> : IRequestProcessor<T>
     {
@@ -19,50 +18,34 @@ namespace LinqToTwitter.Streaming
         public StreamingType Type { get; set; }
 
         /// <summary>
-        /// Normally, only replies between two users that follow each other show.
-        /// Setting this to true will show replies, regardless of follow status.
+        /// Comma-separated list of expansion fields
         /// </summary>
-        internal bool AllReplies { get; set; }
+        public string? Expansions { get; set; }
 
         /// <summary>
-        /// Number of tweets to go back to when reconnecting
+        /// Comma-separated list of fields to return in the media object
         /// </summary>
-        internal int Count { get; set; }
+        public string? MediaFields { get; set; }
 
         /// <summary>
-        /// Tweets are delimeted in the stream
+        /// Comma-separated list of fields to return in the place object
         /// </summary>
-        internal string Delimited { get; set; }
+        public string? PlaceFields { get; set; }
 
         /// <summary>
-        /// Limit results to a comma-separated set of users
+        /// Comma-separated list of fields to return in the poll object
         /// </summary>
-        internal string Follow { get; set; }
+        public string? PollFields { get; set; }
 
         /// <summary>
-        /// Comma-separated list of languages to filter results on
+        /// Comma-separated list of fields to return in the Tweet object
         /// </summary>
-        internal string Language { get; set; }
+        public string? TweetFields { get; set; }
 
         /// <summary>
-        /// Get tweets in the comma-separated list of lat/lon's
+        /// Comma-separated list of fields to return in the User object
         /// </summary>
-        internal string Locations { get; set; }
-
-        /// <summary>
-        /// Tell Twitter to send stall warnings
-        /// </summary>
-        internal bool StallWarnings { get; set; }
-
-        /// <summary>
-        /// Comma-separated list of keywords to get tweets for
-        /// </summary>
-        internal string Track { get; set; }
-
-        /// <summary>
-        /// Type of entities to return, i.e. "followings" or "user".
-        /// </summary>
-        internal string With { get; set; }
+        public string? UserFields { get; set; }
 
         /// <summary>
         /// extracts parameters from lambda
@@ -74,191 +57,81 @@ namespace LinqToTwitter.Streaming
             var parameters =
                new ParameterFinder<Streaming>(
                    lambdaExpression.Body,
-                   new List<string> { 
-                       "Type",
-                       "AllReplies",
-                       "Count",
-                       "Delimited",
-                       "Follow",
-                       "Language",
-                       "Locations",
-                       "StallWarnings",
-                       "Track",
-                       "With"
+                   new List<string> {
+                       nameof(Type),
+                       nameof(Expansions),
+                       nameof(MediaFields),
+                       nameof(PlaceFields),
+                       nameof(PollFields),
+                       nameof(TweetFields),
+                       nameof(UserFields)
                    }).Parameters;
-
-            if (parameters.ContainsKey("AllReplies")) 
-                AllReplies = bool.Parse(parameters["AllReplies"]);
-
-            if (parameters.ContainsKey("Count"))
-                Count = int.Parse(parameters["Count"]);
-
-            if (parameters.ContainsKey("Delimited"))
-                Delimited = parameters["Delimited"];
-
-            if (parameters.ContainsKey("Follow"))
-                Follow = parameters["Follow"];
-
-            if (parameters.ContainsKey("Language"))
-                Language = parameters["Language"];
-
-            if (parameters.ContainsKey("Locations"))
-                Locations = parameters["Locations"];
-
-            if (parameters.ContainsKey("StallWarnings"))
-                StallWarnings = bool.Parse(parameters["StallWarnings"]);
-
-            if (parameters.ContainsKey("Track"))
-                Track = parameters["Track"];
-
-            if (parameters.ContainsKey("With"))
-                With = parameters["With"];
 
             return parameters;
         }
 
         /// <summary>
-        /// Builds url based on input parameters.
+        /// builds url based on input parameters
         /// </summary>
         /// <param name="parameters">criteria for url segments and parameters</param>
         /// <returns>URL conforming to Twitter API</returns>
         public Request BuildUrl(Dictionary<string, string> parameters)
         {
-            const string TypeParam = "Type";
-            if (parameters == null || !parameters.ContainsKey("Type"))
-                throw new ArgumentException("You must set Type.", TypeParam);
- 
-            Type = RequestProcessorHelper.ParseEnum<StreamingType>(parameters["Type"]);
+            if (parameters.ContainsKey(nameof(Type)))
+                Type = RequestProcessorHelper.ParseEnum<StreamingType>(parameters["Type"]);
+            else
+                throw new ArgumentException($"{nameof(Type)} is required", nameof(Type));
 
-            switch (Type)
-            {
-                case StreamingType.Filter:
-                    return BuildFilterUrl(parameters);
-                case StreamingType.Firehose:
-                    return BuildFirehoseUrl(parameters);
-                case StreamingType.Sample:
-                    return BuildSampleUrl(parameters);
-                default:
-                    break;
-            }
+            string segment = Type == StreamingType.Filter ? "tweets/search/stream" : "tweets/sample/stream";
 
-            return null;
+            return BuildUrlParameters(parameters, segment);
         }
 
         /// <summary>
-        /// Builds an url for filtering stream.
+        /// appends parameters for Tweet request
         /// </summary>
-        /// <param name="parameters">parameter list</param>
-        /// <returns>base url + show segment</returns>
-        Request BuildFilterUrl(Dictionary<string, string> parameters)
+        /// <param name="parameters">list of parameters from expression tree</param>
+        /// <param name="url">base url</param>
+        /// <returns>base url + parameters</returns>
+        private Request BuildUrlParameters(Dictionary<string, string> parameters, string url)
         {
-            if (!parameters.ContainsKey("Follow") &&
-                !parameters.ContainsKey("Locations") &&
-                !parameters.ContainsKey("Track"))
-            {
-                throw new ArgumentException("You must specify at least one of the parameters Follow, Locations, or Track.", "FollowOrLocationsOrTrack");
-            }
-
-            var req = new Request(BaseUrl + "statuses/filter.json");
+            var req = new Request(BaseUrl + url);
             var urlParams = req.RequestParameters;
 
-            if (parameters.ContainsKey("Count"))
+            if (parameters.ContainsKey(nameof(Expansions)))
             {
-                urlParams.Add(new QueryParameter("count", parameters["Count"]));
+                Expansions = parameters[nameof(Expansions)];
+                urlParams.Add(new QueryParameter("expansions", Expansions?.Replace(" ", "")));
             }
 
-            if (parameters.ContainsKey("Delimited"))
+            if (parameters.ContainsKey(nameof(MediaFields)))
             {
-                urlParams.Add(new QueryParameter("delimited", parameters["Delimited"]));
+                MediaFields = parameters[nameof(MediaFields)];
+                urlParams.Add(new QueryParameter("media.fields", MediaFields?.Replace(" ", "")));
             }
 
-            if (parameters.ContainsKey("Follow"))
+            if (parameters.ContainsKey(nameof(PlaceFields)))
             {
-                urlParams.Add(new QueryParameter("follow", parameters["Follow"]));
+                PlaceFields = parameters[nameof(PlaceFields)];
+                urlParams.Add(new QueryParameter("place.fields", PlaceFields?.Replace(" ", "")));
             }
 
-            if (parameters.ContainsKey("Locations"))
+            if (parameters.ContainsKey(nameof(PollFields)))
             {
-                urlParams.Add(new QueryParameter("locations", parameters["Locations"]));
+                PollFields = parameters[nameof(PollFields)];
+                urlParams.Add(new QueryParameter("poll.fields", PollFields?.Replace(" ", "")));
             }
 
-            if (parameters.ContainsKey("Track"))
+            if (parameters.ContainsKey(nameof(TweetFields)))
             {
-                urlParams.Add(new QueryParameter("track", parameters["Track"]));
+                TweetFields = parameters[nameof(TweetFields)];
+                urlParams.Add(new QueryParameter("tweet.fields", TweetFields?.Replace(" ", "")));
             }
 
-            if (parameters.ContainsKey("StallWarnings"))
+            if (parameters.ContainsKey(nameof(UserFields)))
             {
-                urlParams.Add(new QueryParameter("stall_warnings", parameters["StallWarnings"].ToLower()));
-            }
-
-            if (parameters.ContainsKey("Language"))
-            {
-                urlParams.Add(new QueryParameter("language", parameters["Language"].Replace(" ", "")));
-            }
-
-            return req;
-        }
-
-        /// <summary>
-        /// Builds an url for getting all results from the Twitter stream.
-        /// </summary>
-        /// <param name="parameters">parameter list</param>
-        /// <returns>base url + show segment</returns>
-        Request BuildFirehoseUrl(Dictionary<string, string> parameters)
-        {
-            var req = new Request(BaseUrl + "statuses/firehose.json");
-            var urlParams = req.RequestParameters;
-
-            if (parameters.ContainsKey("Count"))
-            {
-                urlParams.Add(new QueryParameter("count", parameters["Count"]));
-            }
-
-            if (parameters.ContainsKey("Delimited"))
-            {
-                urlParams.Add(new QueryParameter("delimited", parameters["Delimited"]));
-            }
-
-            if (parameters.ContainsKey("Language"))
-            {
-                urlParams.Add(new QueryParameter("language", parameters["Language"].Replace(" ", "")));
-            }
-
-            if (parameters.ContainsKey("StallWarnings"))
-            {
-                urlParams.Add(new QueryParameter("stall_warnings", parameters["StallWarnings"].ToLower()));
-            }
-
-            return req;
-        }
-
-        /// <summary>
-        /// Builds an url for getting random sample tweets from the stream.
-        /// </summary>
-        /// <param name="parameters">parameter list</param>
-        /// <returns>base url + show segment</returns>
-        Request BuildSampleUrl(Dictionary<string, string> parameters)
-        {
-            if (parameters.ContainsKey("Count"))
-                throw new ArgumentException("Count is forbidden in Sample streams.", "Count");
-
-            var req = new Request(BaseUrl + "statuses/sample.json");
-            var urlParams = req.RequestParameters;
-
-            if (parameters.ContainsKey("Delimited"))
-            {
-                urlParams.Add(new QueryParameter("delimited", parameters["Delimited"]));
-            }
-
-            if (parameters.ContainsKey("Language"))
-            {
-                urlParams.Add(new QueryParameter("language", parameters["Language"].Replace(" ", "")));
-            }
-
-            if (parameters.ContainsKey("StallWarnings"))
-            {
-                urlParams.Add(new QueryParameter("stall_warnings", parameters["StallWarnings"].ToLower()));
+                UserFields = parameters[nameof(UserFields)];
+                urlParams.Add(new QueryParameter("user.fields", UserFields?.Replace(" ", "")));
             }
 
             return req;
@@ -275,15 +148,13 @@ namespace LinqToTwitter.Streaming
             {
                 new Streaming
                 {
-                    AllReplies = AllReplies,
                     Type = Type,
-                    Count = Count,
-                    Delimited = Delimited,
-                    Follow = Follow,
-                    Locations = Locations,
-                    Track = Track,
-                    TwitterExecutor = TwitterExecutor,
-                    With = With
+                    Expansions = Expansions,
+                    MediaFields = MediaFields,
+                    PlaceFields = PlaceFields,
+                    PollFields = PollFields,
+                    TweetFields = TweetFields,
+                    UserFields = UserFields
                 }
             };
 

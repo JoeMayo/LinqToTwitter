@@ -1,15 +1,13 @@
-﻿using LinqToTwitter.Common;
-using LinqToTwitter.Provider;
-using System;
+﻿using LinqToTwitter.Provider;
 using System.Xml.Serialization;
 
-namespace LinqToTwitter.Streaming
+namespace LinqToTwitter
 {
     /// <summary>
     /// Reference to stream, details, and controls
     /// </summary>
     [XmlType(Namespace = "LinqToTwitter")]
-    public class Streaming
+    public record Streaming
     {
         /// <summary>
         /// Stream method
@@ -17,56 +15,34 @@ namespace LinqToTwitter.Streaming
         public StreamingType Type { get; set; }
 
         /// <summary>
-        /// Normally, only replies between two users that follow each other show.
-        /// Setting this to true will show replies, regardless of follow status.
+        /// Comma-separated list of expansion fields
         /// </summary>
-        public bool AllReplies { get; set; }
+        public string? Expansions { get; set; }
 
         /// <summary>
-        /// Number of tweets to go back to when reconnecting
+        /// Comma-separated list of fields to return in the media object
         /// </summary>
-        public int Count { get; set; }
+        public string? MediaFields { get; set; }
 
         /// <summary>
-        /// Tweets are delimeted in the stream
+        /// Comma-separated list of fields to return in the place object
         /// </summary>
-        public string? Delimited { get; set; }
+        public string? PlaceFields { get; set; }
 
         /// <summary>
-        /// Limit results to a comma-separated set of users
+        /// Comma-separated list of fields to return in the poll object
         /// </summary>
-        public string? Follow { get; set; }
+        public string? PollFields { get; set; }
 
         /// <summary>
-        /// Comma-separated list of languages to filter results on
+        /// Comma-separated list of fields to return in the Tweet object
         /// </summary>
-        public string? Language { get; set; }
+        public string? TweetFields { get; set; }
 
         /// <summary>
-        /// Get tweets in the comma-separated list of lat/lon's
+        /// Comma-separated list of fields to return in the User object
         /// </summary>
-        public string? Locations { get; set; }
-
-        /// <summary>
-        /// Comma-separated list of keywords to get tweets for
-        /// </summary>
-        public string? Track { get; set; }
-
-        /// <summary>
-        /// Tell Twitter to send stall warnings
-        /// </summary>
-        public bool StallWarnings { get; set; }
-
-        /// <summary>
-        /// Type of entities to return, i.e. Follow, User, etc.
-        /// </summary>
-        public string? With { get; set; }
-
-        /// <summary>
-        /// Supports compatibility or extended mode tweets.
-        /// </summary>
-        [Obsolete("This isn't required on streams. Instead, check Retweeted.ExtendedTweet.FullText for retweets, ExtendedTweet.FullText for regular tweets, and fallback to FullText if the other checks are null.")]
-        public TweetMode TweetMode { get; set; }
+        public string? UserFields { get; set; }
 
         /// <summary>
         /// Executor managing stream

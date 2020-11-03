@@ -122,11 +122,11 @@ namespace Linq2TwitterDemos_Console
                         Console.WriteLine("\n\tRunning Status Demos...\n");
                         await StatusDemos.RunAsync(twitterCtx);
                         break;
-                    //case 'f':
-                    //case 'F':
-                    //    Console.WriteLine("\n\tRunning Stream Demos...\n");
-                    //    await StreamDemos.RunAsync(twitterCtx);
-                    //    break;
+                    case 'f':
+                    case 'F':
+                        Console.WriteLine("\n\tRunning Stream Demos...\n");
+                        await StreamDemos.RunAsync(twitterCtx);
+                        break;
                     //case 'g':
                     //case 'G':
                     //    Console.WriteLine("\n\tRunning Trend Demos...\n");
@@ -178,7 +178,7 @@ namespace Linq2TwitterDemos_Console
             //Console.WriteLine("\t C. Saved Search Demos");
             Console.WriteLine("\t D. Search Demos");
             Console.WriteLine("\t E. Status Demos");
-            //Console.WriteLine("\t F. Stream Demos");
+            Console.WriteLine("\t F. Stream Demos");
             //Console.WriteLine("\t G. Trend Demos");
             Console.WriteLine("\t H. User Demos");
             //Console.WriteLine("\t I. Welcome Message Demos");

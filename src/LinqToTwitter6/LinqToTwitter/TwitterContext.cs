@@ -410,7 +410,7 @@ namespace LinqToTwitter
             string results;
 
              //process request through Twitter
-            if (typeof(T) == typeof(Streaming.Streaming))
+            if (typeof(T) == typeof(Streaming))
                 results = await TwitterExecutor.QueryTwitterStreamAsync(request).ConfigureAwait(false);
             else
                 results = await TwitterExecutor.QueryTwitterAsync(request, reqProc).ConfigureAwait(false);
@@ -555,13 +555,14 @@ namespace LinqToTwitter
                 case nameof(Status):
                     req = new StatusRequestProcessor<T>();
                     break;
-                //case nameof(Streaming):
-                //    baseUrl = StreamingUrl;
-                //    req = new StreamingRequestProcessor<T>
-                //    {
-                //        TwitterExecutor = TwitterExecutor
-                //    };
-                //    break;
+                case nameof(Streaming):
+                    baseUrl = StreamingUrl;
+                    req = new StreamingRequestProcessor<T>
+                    {
+                        BaseUrl = BaseUrl2,
+                        TwitterExecutor = TwitterExecutor
+                    };
+                    break;
                 //case nameof(Trend):
                 //    req = new TrendRequestProcessor<T>();
                 //    break;

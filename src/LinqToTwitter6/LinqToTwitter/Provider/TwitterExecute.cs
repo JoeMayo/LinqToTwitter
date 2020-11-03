@@ -80,7 +80,7 @@ namespace LinqToTwitter.Provider
         /// <summary>
         /// Allows users to process content returned from stream
         /// </summary>
-        public Func<Streaming.StreamContent, Task> StreamingCallbackAsync { get; set; }
+        public Func<StreamContent, Task> StreamingCallbackAsync { get; set; }
 
         /// <summary>
         /// HttpClient instance being used in a streaming operation
@@ -124,7 +124,7 @@ namespace LinqToTwitter.Provider
                                .ToDictionary(
                                     key => key.Name,
                                     val => val.Value);
-            var handler = new GetMessageHandler(this, parms, request.FullUrl);
+            var handler = new GetMessageHandler(this, parms, request.FullUrl, Authorizer.SupportsCompression);
             var client = new HttpClient(handler);
 
             if (Timeout != 0)
@@ -158,19 +158,23 @@ namespace LinqToTwitter.Provider
         {
             WriteLog(request.FullUrl, nameof(QueryTwitterStreamAsync));
 
-            var handler = new HttpClientHandler();
-            if (Authorizer.Proxy != null && handler.SupportsProxy)
-                handler.Proxy = Authorizer.Proxy;
+
+            var req = new HttpRequestMessage(HttpMethod.Get, new Uri(request.FullUrl));
+
+            var parms = request.RequestParameters
+                               .ToDictionary(
+                                    key => key.Name,
+                                    val => val.Value);
+            Authorizer.SupportsCompression = false;
+            var handler = new GetMessageHandler(this, parms, request.FullUrl, Authorizer.SupportsCompression);
 
             StreamingClient = new HttpClient(handler)
             {
                 Timeout = TimeSpan.FromMilliseconds(System.Threading.Timeout.Infinite)
             };
 
-            var httpRequest = ConfigureRequest(request);
-
             var response = await StreamingClient.SendAsync(
-                httpRequest, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
+                req, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
 
             await TwitterErrorHandler.ThrowIfErrorAsync(response).ConfigureAwait(false);
 
@@ -206,7 +210,7 @@ namespace LinqToTwitter.Provider
                     await memStr.ReadAsync(tweetBytes, 0, byteCount, CancellationToken).ConfigureAwait(false);
 
                     string tweet = Encoding.UTF8.GetString(tweetBytes, 0, byteCount);
-                    var strmContent = new Streaming.StreamContent(this, tweet);
+                    var strmContent = new StreamContent(this, tweet);
 
                     await StreamingCallbackAsync(strmContent).ConfigureAwait(false);
 

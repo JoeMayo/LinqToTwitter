@@ -1,5 +1,4 @@
 ﻿using LinqToTwitter.OAuth;
-using LinqToTwitter.Streaming;
 using System;
 using System.Collections.Generic;
 using System.Threading;

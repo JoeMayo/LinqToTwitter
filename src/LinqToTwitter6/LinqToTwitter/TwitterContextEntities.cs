@@ -162,16 +162,16 @@ namespace LinqToTwitter
             }
         }
 
-        ///// <summary>
-        ///// enables access to Twitter Status messages, such as Friends and Public
-        ///// </summary>
-        //public TwitterQueryable<Streaming> Streaming
-        //{
-        //    get
-        //    {
-        //        return new TwitterQueryable<Streaming>(this);
-        //    }
-        //}
+        /// <summary>
+        /// enables access to Twitter streams
+        /// </summary>
+        public TwitterQueryable<Streaming> Streaming
+        {
+            get
+            {
+                return new TwitterQueryable<Streaming>(this);
+            }
+        }
 
         ///// <summary>
         ///// enables access to Twitter Trends, such as Trend, Current, Daily, and Weekly
