@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Text.Json;
 
 namespace LinqToTwitter
 {
@@ -48,6 +49,11 @@ namespace LinqToTwitter
         public string? UserFields { get; set; }
 
         /// <summary>
+        /// Comma-separated list of rule ids, for filter rules queries
+        /// </summary>
+        public string? Ids { get; set; }
+
+        /// <summary>
         /// extracts parameters from lambda
         /// </summary>
         /// <param name="lambdaExpression">lambda expression with where clause</param>
@@ -64,7 +70,8 @@ namespace LinqToTwitter
                        nameof(PlaceFields),
                        nameof(PollFields),
                        nameof(TweetFields),
-                       nameof(UserFields)
+                       nameof(UserFields),
+                       nameof(Ids)
                    }).Parameters;
 
             return parameters;
@@ -84,7 +91,20 @@ namespace LinqToTwitter
 
             string segment = Type == StreamingType.Filter ? "tweets/search/stream" : "tweets/sample/stream";
 
-            return BuildUrlParameters(parameters, segment);
+            bool isStreaming = true;
+
+            if (Type == StreamingType.Rules)
+            {
+                segment = "tweets/search/stream/rules";
+                isStreaming = false;
+            }
+
+            var req = new Request(BaseUrl + segment) { IsStreaming = isStreaming };
+            var urlParams = req.RequestParameters;
+
+            BuildUrlParameters(parameters, urlParams);
+
+            return req;
         }
 
         /// <summary>
@@ -93,11 +113,8 @@ namespace LinqToTwitter
         /// <param name="parameters">list of parameters from expression tree</param>
         /// <param name="url">base url</param>
         /// <returns>base url + parameters</returns>
-        private Request BuildUrlParameters(Dictionary<string, string> parameters, string url)
+        void BuildUrlParameters(Dictionary<string, string> parameters, IList<QueryParameter> urlParams)
         {
-            var req = new Request(BaseUrl + url);
-            var urlParams = req.RequestParameters;
-
             if (parameters.ContainsKey(nameof(Expansions)))
             {
                 Expansions = parameters[nameof(Expansions)];
@@ -134,7 +151,11 @@ namespace LinqToTwitter
                 urlParams.Add(new QueryParameter("user.fields", UserFields?.Replace(" ", "")));
             }
 
-            return req;
+            if (parameters.ContainsKey(nameof(Ids)))
+            {
+                Ids = parameters[nameof(Ids)];
+                urlParams.Add(new QueryParameter("ids", Ids?.Replace(" ", "")));
+            }
         }
 
         /// <summary>
@@ -142,11 +163,29 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="notUsed">Not used</param>
         /// <returns>List with a single Streaming</returns>
-        public List<T> ProcessResults(string notUsed)
+        public List<T> ProcessResults(string responseJson)
         {
-            var streamingList = new List<Streaming>
+            IEnumerable<Streaming> streamingList;
+
+            if (string.IsNullOrWhiteSpace(responseJson))
             {
-                new Streaming
+                streamingList = new List<Streaming> { new Streaming() };
+            }
+            else
+            {
+                var tweetResult = JsonDeserialize(responseJson);
+                streamingList = new List<Streaming> { tweetResult };
+            }
+
+            return streamingList.OfType<T>().ToList();
+        }
+
+        Streaming JsonDeserialize(string responseJson)
+        {
+            Streaming? streaming = JsonSerializer.Deserialize<Streaming>(responseJson);
+
+            if (streaming == null)
+                return new Streaming
                 {
                     Type = Type,
                     Expansions = Expansions,
@@ -155,10 +194,19 @@ namespace LinqToTwitter
                     PollFields = PollFields,
                     TweetFields = TweetFields,
                     UserFields = UserFields
-                }
-            };
-
-            return streamingList.OfType<T>().ToList();
+                };
+            else
+                return streaming with
+                {
+                    Type = Type,
+                    Expansions = Expansions,
+                    MediaFields = MediaFields,
+                    PlaceFields = PlaceFields,
+                    PollFields = PollFields,
+                    TweetFields = TweetFields,
+                    UserFields = UserFields
+                };
         }
+
     }
 }

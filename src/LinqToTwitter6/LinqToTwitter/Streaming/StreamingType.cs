@@ -8,6 +8,11 @@
         Filter,
 
         /// <summary>
+        /// Get Filter stream search rules
+        /// </summary>
+        Rules,
+
+        /// <summary>
         /// Random (as defined by Twitter) tweets
         /// </summary>
         Sample,

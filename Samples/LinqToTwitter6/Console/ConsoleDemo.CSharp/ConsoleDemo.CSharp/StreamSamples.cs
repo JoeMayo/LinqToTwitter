@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using LinqToTwitter;
 using System.IO;
+using LinqToTwitter.Common;
 
 namespace Linq2TwitterDemos_Console
 {
@@ -29,6 +30,10 @@ namespace Linq2TwitterDemos_Console
                         Console.WriteLine("\n\tShowing Sample Stream...\n");
                         await DoSampleStreamAsync(twitterCtx);
                         break;
+                    case '2':
+                        Console.WriteLine("\n\tShowing Stream Rules...\n");
+                        await GetStreamRulesAsync(twitterCtx);
+                        break;
                     case 'q':
                     case 'Q':
                         Console.WriteLine("\nReturning...\n");
@@ -47,6 +52,7 @@ namespace Linq2TwitterDemos_Console
 
             Console.WriteLine("\t 0. Filter Stream");
             Console.WriteLine("\t 1. Sample Stream");
+            Console.WriteLine("\t 2. Stream Rules");
             Console.WriteLine();
             Console.Write("\t Q. Return to Main menu");
         }
@@ -138,6 +144,26 @@ namespace Linq2TwitterDemos_Console
             }
 
             return await Task.FromResult(0);
+        }
+
+        static async Task GetStreamRulesAsync(TwitterContext twitterCtx)
+        {
+            Streaming? streaming =
+                await
+                (from strm in twitterCtx.Streaming
+                 where strm.Type == StreamingType.Rules &&
+                       strm.Ids == "100,150"
+                 select strm)
+                .SingleOrDefaultAsync();
+
+            if (streaming?.Rules != null)
+                streaming.Rules.ForEach(rule =>
+                    Console.WriteLine(
+                        $"\nID:    {rule.ID}" +
+                        $"\nValue: {rule.Value}" +
+                        $"\nTag:   {rule.Tag}"));
+            else
+                Console.WriteLine("No entries found.");
         }
     }
 }

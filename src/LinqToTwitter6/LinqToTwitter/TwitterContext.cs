@@ -410,7 +410,7 @@ namespace LinqToTwitter
             string results;
 
              //process request through Twitter
-            if (typeof(T) == typeof(Streaming))
+            if (request.IsStreaming)
                 results = await TwitterExecutor.QueryTwitterStreamAsync(request).ConfigureAwait(false);
             else
                 results = await TwitterExecutor.QueryTwitterAsync(request, reqProc).ConfigureAwait(false);

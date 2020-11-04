@@ -9,6 +9,7 @@ namespace LinqToTwitter.Provider
     public class Request
     {
         public string Endpoint { get; set; }
+        public bool IsStreaming { get; set; }
         public IList<QueryParameter> RequestParameters { get; internal set; }
 
         public Request(string endpoint)

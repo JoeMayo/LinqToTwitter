@@ -1,4 +1,8 @@
-﻿using LinqToTwitter.Provider;
+﻿using LinqToTwitter.Common;
+using LinqToTwitter.Provider;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.Json.Serialization;
 using System.Xml.Serialization;
 
 namespace LinqToTwitter
@@ -43,6 +47,34 @@ namespace LinqToTwitter
         /// Comma-separated list of fields to return in the User object
         /// </summary>
         public string? UserFields { get; set; }
+
+        /// <summary>
+        /// Comma-separated list of rule ids, for filter rules queries
+        /// </summary>
+        public string? Ids { get; set; }
+
+        /// <summary>
+        /// Rule data returned from the query
+        /// </summary>
+        [JsonPropertyName("data")]
+        public List<StreamingRule>? Rules { get; set; }
+
+        /// <summary>
+        /// If any errors occur, they'll show up here
+        /// </summary>
+        [JsonPropertyName("errors")]
+        public List<TwitterError>? Errors { get; set; }
+
+        /// <summary>
+        /// Were there errors?
+        /// </summary>
+        public bool HasErrors { get => Errors?.Any() ?? false; }
+
+        /// <summary>
+        /// Tweet metadata returned from search
+        /// </summary>
+        [JsonPropertyName("meta")]
+        public StreamingMeta? Meta { get; set; }
 
         /// <summary>
         /// Executor managing stream
