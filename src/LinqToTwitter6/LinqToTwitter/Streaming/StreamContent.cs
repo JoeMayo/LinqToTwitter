@@ -20,14 +20,14 @@ namespace LinqToTwitter
             (Entity, EntityType) = ParseJson(content);
         }
 
-        (Tweet? entity, StreamEntityType entityType) ParseJson(string json)
+        (StreamTweet? entity, StreamEntityType entityType) ParseJson(string json)
         {
             if (string.IsNullOrWhiteSpace(json))
                 return (null, StreamEntityType.Unknown);
 
             try
             {
-                return (JsonSerializer.Deserialize<Tweet>(json), StreamEntityType.Tweet);
+                return (JsonSerializer.Deserialize<StreamTweet>(json), StreamEntityType.Tweet);
             }
             catch (Exception ex)
             {
@@ -59,7 +59,7 @@ namespace LinqToTwitter
         /// <summary>
         /// LINQ to Twitter entity
         /// </summary>
-        public Tweet? Entity { get; private set; }
+        public StreamTweet? Entity { get; private set; }
 
         /// <summary>
         /// If HasError is true, check the ErrorMessage for more info

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using LinqToTwitter;
 using System.IO;
 using LinqToTwitter.Common;
+using System.Collections.Generic;
 
 namespace Linq2TwitterDemos_Console
 {
@@ -31,8 +32,20 @@ namespace Linq2TwitterDemos_Console
                         await DoSampleStreamAsync(twitterCtx);
                         break;
                     case '2':
-                        Console.WriteLine("\n\tShowing Stream Rules...\n");
+                        Console.WriteLine("\n\tGetting Stream Rules...\n");
                         await GetStreamRulesAsync(twitterCtx);
+                        break;
+                    case '3':
+                        Console.WriteLine("\n\tValidating Stream Rules...\n");
+                        await ValidateRulesAsync(twitterCtx);
+                        break;
+                    case '4':
+                        Console.WriteLine("\n\tAdding Stream Rules...\n");
+                        await AddRulesAsync(twitterCtx);
+                        break;
+                    case '5':
+                        Console.WriteLine("\n\tDeleting Stream Rules...\n");
+                        await DeleteRulesAsync(twitterCtx);
                         break;
                     case 'q':
                     case 'Q':
@@ -53,6 +66,9 @@ namespace Linq2TwitterDemos_Console
             Console.WriteLine("\t 0. Filter Stream");
             Console.WriteLine("\t 1. Sample Stream");
             Console.WriteLine("\t 2. Stream Rules");
+            Console.WriteLine("\t 3. Validate Rules");
+            Console.WriteLine("\t 4. Add Rules");
+            Console.WriteLine("\t 5. Delete Rules");
             Console.WriteLine();
             Console.Write("\t Q. Return to Main menu");
         }
@@ -138,9 +154,9 @@ namespace Linq2TwitterDemos_Console
             }
             else
             {
-                Tweet? tweet = strm.Entity;
+                Tweet? tweet = strm?.Entity?.Tweet;
                 if (tweet != null)
-                    Console.WriteLine($"Tweet ID: {tweet.ID}, Tweet Text: {tweet.Text}");
+                    Console.WriteLine($"\nTweet ID: {tweet.ID}, Tweet Text: {tweet.Text}");
             }
 
             return await Task.FromResult(0);
@@ -151,10 +167,11 @@ namespace Linq2TwitterDemos_Console
             Streaming? streaming =
                 await
                 (from strm in twitterCtx.Streaming
-                 where strm.Type == StreamingType.Rules &&
-                       strm.Ids == "100,150"
+                 where strm.Type == StreamingType.Rules
                  select strm)
                 .SingleOrDefaultAsync();
+
+            Console.WriteLine("\nRules: \n");
 
             if (streaming?.Rules != null)
                 streaming.Rules.ForEach(rule =>
@@ -164,6 +181,97 @@ namespace Linq2TwitterDemos_Console
                         $"\nTag:   {rule.Tag}"));
             else
                 Console.WriteLine("No entries found.");
+        }
+
+        static async Task ValidateRulesAsync(TwitterContext twitterCtx)
+        {
+            var rules = new List<StreamingAddRule>
+            {
+                new StreamingAddRule { Tag = "memes with media", Value = "meme has:images" },
+                new StreamingAddRule { Tag = "cats with media", Value = "cat has:media" }
+            };
+
+            Streaming? result = await twitterCtx.AddStreamingFilterRulesAsync(rules, isValidateOnly: true);
+
+            if (result?.Meta?.Summary != null)
+            {
+                StreamingMeta meta = result.Meta;
+                Console.WriteLine($"\nSent: {meta.Sent}");
+
+                StreamingMetaSummary summary = meta.Summary;
+
+                Console.WriteLine($"Created:  {summary.Created}");
+                Console.WriteLine($"!Created: {summary.NotCreated}");
+            }
+
+            if (result?.Errors != null && result.HasErrors)
+                result.Errors.ForEach(error =>
+                    Console.WriteLine(
+                        $"\nTitle: {error.Title}" +
+                        $"\nValue: {error.Value}" +
+                        $"\nID:    {error.ID}" +
+                        $"\nType:  {error.Type}"));
+        }
+
+        static async Task AddRulesAsync(TwitterContext twitterCtx)
+        {
+            var rules = new List<StreamingAddRule>
+            {
+                new StreamingAddRule { Tag = "funny things", Value = "meme" },
+                new StreamingAddRule { Tag = "happy cats with media", Value = "cat has:media -grumpy" }
+            };
+
+            Streaming? result = await twitterCtx.AddStreamingFilterRulesAsync(rules);
+
+            StreamingMeta? meta = result?.Meta;
+
+            if (meta?.Summary != null)
+            {
+                Console.WriteLine($"\nSent: {meta.Sent}");
+
+                StreamingMetaSummary summary = meta.Summary;
+
+                Console.WriteLine($"Created:  {summary.Created}");
+                Console.WriteLine($"!Created: {summary.NotCreated}");
+            }
+
+            if (result?.Errors != null && result.HasErrors)
+                result.Errors.ForEach(error => 
+                    Console.WriteLine(
+                        $"\nTitle: {error.Title}" +
+                        $"\nValue: {error.Value}" +
+                        $"\nID:    {error.ID}" +
+                        $"\nType:  {error.Type}"));
+        }
+
+        static async Task DeleteRulesAsync(TwitterContext twitterCtx)
+        {
+            var ruleIds = new List<string>
+            {
+                "1165037377523306498",
+                "1165037377523306499"
+            };
+
+            Streaming? result = await twitterCtx.DeleteStreamingFilterRulesAsync(ruleIds);
+
+            if (result?.Meta?.Summary != null)
+            {
+                StreamingMeta meta = result.Meta;
+                Console.WriteLine($"\nSent: {meta.Sent}");
+
+                StreamingMetaSummary summary = meta.Summary;
+
+                Console.WriteLine($"Deleted:  {summary.Deleted}");
+                Console.WriteLine($"!Deleted: {summary.NotDeleted}");
+            }
+
+            if (result?.Errors != null && result.HasErrors)
+                result.Errors.ForEach(error =>
+                    Console.WriteLine(
+                        $"\nTitle: {error.Title}" +
+                        $"\nValue: {error.Value}" +
+                        $"\nID:    {error.ID}" +
+                        $"\nType:  {error.Type}"));
         }
     }
 }

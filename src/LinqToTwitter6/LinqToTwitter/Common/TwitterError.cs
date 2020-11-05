@@ -25,6 +25,9 @@ namespace LinqToTwitter.Common
         [JsonPropertyName("detail")]
         public string? Detail { get; set; }
 
+        [JsonPropertyName("id")]
+        public string ID { get; set; }
+
         [JsonPropertyName("type")]
         public string? Type { get; set; }
 
