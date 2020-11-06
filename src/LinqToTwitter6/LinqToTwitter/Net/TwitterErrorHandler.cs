@@ -113,6 +113,7 @@ namespace LinqToTwitter.Net
 
                 if (apiVersion == TwitterApiV2) // version 2
                 {
+                    
                     return new TwitterErrorDetails
                     {
                         Title = root.GetString("title"),
@@ -124,15 +125,15 @@ namespace LinqToTwitter.Net
                              {
                                  Message = error.GetString("message"),
                                  Parameters =
-                             (from parm in error.GetProperty("parameters").EnumerateObject()
-                                     let vals =
-                                 (from val in parm.Value.EnumerateArray()
-                                         select val.GetString())
-                                 .ToArray()
-                                     select new { parm.Name, vals })
-                             .ToDictionary(
-                                 key => key.Name,
-                                 val => val.vals)
+                                 (from parm in error.GetProperty("parameters").EnumerateObject()
+                                  let vals =
+                                    (from val in parm.Value.EnumerateArray()
+                                     select val.GetString())
+                                    .ToArray()
+                                  select new { parm.Name, vals })
+                                 .ToDictionary(
+                                     key => key.Name,
+                                     val => val.vals)
                              })
                             .ToList()
                     };
@@ -186,9 +187,10 @@ namespace LinqToTwitter.Net
 
         static int GetTwitterApiVersion(JsonElement root)
         {
-            bool hasTitle = root.TryGetProperty("title", out JsonElement errors);
+            bool hasTitle = root.TryGetProperty("title", out _);
+            bool hasErrors = root.TryGetProperty("errors", out _);
 
-            return hasTitle ? TwitterApiV2 : TwitterApiV1;
+            return hasTitle && hasErrors ? TwitterApiV2 : TwitterApiV1;
         }
     }
 }

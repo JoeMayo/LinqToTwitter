@@ -30,6 +30,14 @@ namespace Linq2TwitterDemos_Console
                         Console.WriteLine("\n\tLooking up multiple tweets...\n");
                         await DoMultiTweetLookupAsync(twitterCtx);
                         break;
+                    case '2':
+                        Console.WriteLine("\n\tHiding a tweet...\n");
+                        await HideTweetAsync(twitterCtx);
+                        break;
+                    case '3':
+                        Console.WriteLine("\n\tUn-Hiding a tweet...\n");
+                        await UnHideTweetAsync(twitterCtx);
+                        break;
                     case 'q':
                     case 'Q':
                         Console.WriteLine("\nReturning...\n");
@@ -48,6 +56,8 @@ namespace Linq2TwitterDemos_Console
 
             Console.WriteLine("\t 0. Single Tweet Lookup");
             Console.WriteLine("\t 1. Multi-Tweet Lookup");
+            Console.WriteLine("\t 2. Hide a Tweet");
+            Console.WriteLine("\t 3. Un-Hide a Tweet");
             Console.WriteLine();
             Console.Write("\t Q. Return to Main menu");
         }
@@ -126,6 +136,20 @@ namespace Linq2TwitterDemos_Console
                         $"\nTweet: {tweet.Text}"));
             else
                 Console.WriteLine("No entries found.");
+        }
+
+        static async Task HideTweetAsync(TwitterContext twitterCtx)
+        {
+            bool isHidden = await twitterCtx.HideTweetAsync("1322667606688423936");
+
+            Console.WriteLine($"Is Hidden: {isHidden}");
+        }
+
+        static async Task UnHideTweetAsync(TwitterContext twitterCtx)
+        {
+            bool isHidden = await twitterCtx.UnHideTweetAsync("1322667606688423936");
+
+            Console.WriteLine($"Is Hidden: {isHidden}");
         }
     }
 }
