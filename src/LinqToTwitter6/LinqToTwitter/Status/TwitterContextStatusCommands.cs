@@ -14,8 +14,6 @@ namespace LinqToTwitter
         public const ulong NoReply = 0ul;
         public const decimal NoCoordinate = Decimal.MaxValue;
 
-        const string NoInputParam = "NoInput";
-
         /// <summary>
         /// Replies to a tweet.
         /// </summary>

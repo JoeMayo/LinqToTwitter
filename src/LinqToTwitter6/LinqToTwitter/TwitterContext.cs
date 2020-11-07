@@ -501,48 +501,48 @@ namespace LinqToTwitter
 
             switch (requestType)
             {
-                //case nameof(Account):
-                //    req = new AccountRequestProcessor<T>();
-                //    break;
-                //case nameof(AccountActivity):
-                //    req = new AccountActivityRequestProcessor<T>();
-                //    break;
-                //case nameof(Blocks):
-                //    req = new BlocksRequestProcessor<T>();
-                //    break;
-                //case nameof(DirectMessageEvents):
-                //    req = new DirectMessageEventsRequestProcessor<T>();
-                //    break;
-                //case nameof(Favorites):
-                //    req = new FavoritesRequestProcessor<T>();
-                //    break;
-                //case nameof(Friendship):
-                //    req = new FriendshipRequestProcessor<T>();
-                //    break;
-                //case nameof(Geo):
-                //    req = new GeoRequestProcessor<T>();
-                //    break;
-                //case nameof(Help):
-                //    req = new HelpRequestProcessor<T>();
-                //    break;
-                //case nameof(List):
-                //    req = new ListRequestProcessor<T>();
-                //    break;
+                case nameof(Account):
+                    req = new AccountRequestProcessor<T>();
+                    break;
+                case nameof(AccountActivity):
+                    req = new AccountActivityRequestProcessor<T>();
+                    break;
+                case nameof(Blocks):
+                    req = new BlocksRequestProcessor<T>();
+                    break;
+                case nameof(DirectMessageEvents):
+                    req = new DirectMessageEventsRequestProcessor<T>();
+                    break;
+                case nameof(Favorites):
+                    req = new FavoritesRequestProcessor<T>();
+                    break;
+                case nameof(Friendship):
+                    req = new FriendshipRequestProcessor<T>();
+                    break;
+                case nameof(Geo):
+                    req = new GeoRequestProcessor<T>();
+                    break;
+                case nameof(Help):
+                    req = new HelpRequestProcessor<T>();
+                    break;
+                case nameof(List):
+                    req = new ListRequestProcessor<T>();
+                    break;
                 case nameof(Media):
                     req = new MediaRequestProcessor<T>
                     {
                         UploadUrl = UploadUrl
                     };
                     break;
-                //case nameof(Mute):
-                //    req = new MuteRequestProcessor<T>();
-                //    break;
+                case nameof(Mute):
+                    req = new MuteRequestProcessor<T>();
+                    break;
                 case nameof(Raw):
                     req = new RawRequestProcessor<T>();
                     break;
-                //case nameof(SavedSearch):
-                //    req = new SavedSearchRequestProcessor<T>();
-                //    break;
+                case nameof(SavedSearch):
+                    req = new SavedSearchRequestProcessor<T>();
+                    break;
                 case nameof(Search):
                     req = new SearchRequestProcessor<T>();
                     break;
@@ -563,9 +563,9 @@ namespace LinqToTwitter
                         TwitterExecutor = TwitterExecutor
                     };
                     break;
-                //case nameof(Trend):
-                //    req = new TrendRequestProcessor<T>();
-                //    break;
+                case nameof(Trend):
+                    req = new TrendRequestProcessor<T>();
+                    break;
                 case nameof(TweetQuery):
                     req = new TweetRequestProcessor<T>
                     {
@@ -581,9 +581,9 @@ namespace LinqToTwitter
                 case nameof(User):
                     req = new UserRequestProcessor<T>();
                     break;
-                //case nameof(WelcomeMessage):
-                //    req = new WelcomeMessageRequestProcessor<T>();
-                //    break;
+                case nameof(WelcomeMessage):
+                    req = new WelcomeMessageRequestProcessor<T>();
+                    break;
                 default:
                     throw new ArgumentException($"Type, {requestType} isn't a supported LINQ to Twitter entity.", nameof(requestType));
             }
