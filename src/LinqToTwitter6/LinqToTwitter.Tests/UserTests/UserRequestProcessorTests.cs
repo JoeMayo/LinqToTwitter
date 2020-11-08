@@ -227,7 +227,6 @@ namespace LinqToTwitterPcl.Tests.UserTests
                 user.Cursor == 10819235 &&
                 user.Slug == "twitter" &&
                 user.Query == "Joe Mayo" &&
-                user.Page == 2 &&
                 user.Count == 10 &&
                 user.Lang == "it" &&
                 user.IncludeEntities == true &&
@@ -263,9 +262,6 @@ namespace LinqToTwitterPcl.Tests.UserTests
             Assert.IsTrue(
               queryParams.Contains(
                   new KeyValuePair<string, string>(nameof(User.Query), "Joe Mayo")));
-            Assert.IsTrue(
-              queryParams.Contains(
-                  new KeyValuePair<string, string>(nameof(User.Page), "2")));
             Assert.IsTrue(
               queryParams.Contains(
                   new KeyValuePair<string, string>(nameof(User.Count), "10")));
@@ -318,7 +314,6 @@ namespace LinqToTwitterPcl.Tests.UserTests
             Assert.AreEqual("1,2", user.UserIdList);
             Assert.AreEqual("JoeMayo", user.ScreenName);
             Assert.AreEqual("JoeMayo,Linq2Tweeter", user.ScreenNameList);
-            Assert.AreEqual(1, user.Page);
             Assert.AreEqual(10, user.Count);
             Assert.AreEqual(456L, user.Cursor);
             Assert.AreEqual("myslug", user.Slug);

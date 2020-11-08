@@ -98,15 +98,6 @@ namespace LinqToTwitter
         public string? ScreenNameList { get; set; }
 
         /// <summary>
-        /// Page to return
-        /// </summary>
-        /// <remarks>
-        /// This was made obsolete for one API, but not Search. Therefore, we can't mark it as obsolete yet.
-        /// </remarks>
-        //[Obsolete("This property has been deprecated and will be ignored by Twitter. Please use Cursor/CursorMovement properties instead.")]
-        public int Page { get; set; }
-
-        /// <summary>
         /// Number of users to return for each page
         /// </summary>
         public int Count { get; set; }

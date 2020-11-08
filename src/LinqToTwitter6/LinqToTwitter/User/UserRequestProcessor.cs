@@ -468,7 +468,6 @@ namespace LinqToTwitter
                 user.UserIdList = UserIdList;
                 user.ScreenName = ScreenName;
                 user.ScreenNameList = ScreenNameList;
-                user.Page = Page;
                 user.Count = Count;
                 user.Cursor = Cursor;
                 user.Slug = Slug;

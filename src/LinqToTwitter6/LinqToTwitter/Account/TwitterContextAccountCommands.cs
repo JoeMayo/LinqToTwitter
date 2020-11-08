@@ -13,73 +13,6 @@ namespace LinqToTwitter
         const byte[] NoImage = null;
 
         /// <summary>
-        /// Update Twitter colors
-        /// </summary>
-        /// <remarks>
-        /// The # character prefix is optional.  At least one color argument must be provided.
-        /// </remarks>
-        /// <param name="background">background color</param>
-        /// <param name="text">text color</param>
-        /// <param name="link">link color</param>
-        /// <param name="sidebarFill">sidebar color</param>
-        /// <param name="sidebarBorder">sidebar border color</param>
-        /// <param name="skipStatus">Don't include status with response.</param>
-        /// <returns>User info with new colors</returns>
-        [Obsolete("This twitter endpoint doesn't exist anymore", error: true)] // TODO: remove after a few versions.
-        public async Task<User> UpdateAccountColorsAsync(string background, string text, string link, string sidebarFill, string sidebarBorder, bool skipStatus)
-        {
-            return await UpdateAccountColorsAsync(background, text, link, sidebarFill, sidebarBorder, true, skipStatus).ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// Update Twitter colors
-        /// </summary>
-        /// <remarks>
-        /// The # character prefix is optional.  At least one color argument must be provided.
-        /// </remarks>
-        /// <param name="background">background color</param>
-        /// <param name="text">text color</param>
-        /// <param name="link">link color</param>
-        /// <param name="sidebarFill">sidebar color</param>
-        /// <param name="sidebarBorder">sidebar border color</param>
-        /// <param name="includeEntities">Set to false to not include entities. (default: true)</param>
-        /// <param name="skipStatus">Don't include status with response.</param>
-        /// <returns>User info with new colors</returns>
-        [Obsolete("This twitter endpoint doesn't exist anymore", error: true)] // TODO: remove after a few versions.
-        public async Task<User> UpdateAccountColorsAsync(string background, string text, string link, string sidebarFill, string sidebarBorder, bool includeEntities, bool skipStatus, CancellationToken cancelToken = default(CancellationToken))
-        {
-            var accountUrl = BaseUrl + "account/update_profile_colors.json";
-
-            if (string.IsNullOrWhiteSpace(background) &&
-                string.IsNullOrWhiteSpace(text) &&
-                string.IsNullOrWhiteSpace(link) &&
-                string.IsNullOrWhiteSpace(sidebarFill) &&
-                string.IsNullOrWhiteSpace(sidebarBorder))
-                throw new ArgumentException("At least one of the colors (background, text, link, sidebarFill, or sidebarBorder) must be provided as arguments, but none are specified.", NoInputParam);
-
-            var reqProc = new UserRequestProcessor<User>();
-
-            RawResult =
-                await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<User>(
-                    HttpMethod.Post.ToString(),
-                    accountUrl,
-                    new Dictionary<string, string>
-                    {
-                        { "profile_background_color", string.IsNullOrWhiteSpace(background) ? null : background.TrimStart('#') },
-                        { "profile_text_color", string.IsNullOrWhiteSpace(text) ? null : text.TrimStart('#') },
-                        { "profile_link_color", string.IsNullOrWhiteSpace(link) ? null : link.TrimStart('#') },
-                        { "profile_sidebar_fill_color", string.IsNullOrWhiteSpace(sidebarFill) ? null : sidebarFill.TrimStart('#') },
-                        { "profile_sidebar_border_color", string.IsNullOrWhiteSpace(sidebarBorder) ? null : sidebarBorder.TrimStart('#') },
-                        { "include_entities", includeEntities.ToString().ToLower() },
-                        { "skip_status", skipStatus.ToString().ToLower() }
-                    },
-                    cancelToken)
-                    .ConfigureAwait(false);
-
-            return reqProc.ProcessActionResult(RawResult, UserAction.SingleUser);
-        }
-
-        /// <summary>
         /// sends an image file to Twitter to replace user image
         /// </summary>
         /// <remarks>
@@ -250,38 +183,6 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// Modify device information
-        /// </summary>
-        /// <param name="device">Which device to use.</param>
-        /// <param name="includeEntitites">Set this to false to not add entitites to response. (default: true)</param>
-        /// <returns></returns>
-        [Obsolete("This twitter endpoint doesn't exist anymore", error: true)] // TODO: remove after a few versions.
-        public async Task<Account> UpdateDeliveryDeviceAsync(DeviceType device, bool? includeEntitites, CancellationToken cancelToken = default(CancellationToken))
-        {
-            var accountUrl = BaseUrl + "account/update_delivery_device.json";
-
-            var reqProc = new AccountRequestProcessor<Account>();
-
-            var parameters = new Dictionary<string, string>
-                    {
-                        { "device", device.ToString().ToLower() }
-                    };
-
-            if (includeEntitites != null)
-                parameters.Add("include_entities", includeEntitites.ToString().ToLower());
-
-            RawResult =
-                await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<Account>(
-                    HttpMethod.Post.ToString(),
-                    accountUrl,
-                    parameters,
-                    cancelToken)
-                    .ConfigureAwait(false);
-
-            return reqProc.ProcessActionResult(RawResult, AccountAction.Settings);
-        }
-
-        /// <summary>
         /// Sends an image to Twitter to be placed as the user's profile banner.
         /// </summary>
         /// <param name="banner">byte[] containing image data.</param>
@@ -324,9 +225,15 @@ namespace LinqToTwitter
 
             var reqProc = new UserRequestProcessor<User>();
 
-            RawResult = await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<User>(HttpMethod.Post.ToString(), accountUrl, parameters, cancelToken).ConfigureAwait(false);
+            RawResult = 
+                await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<User>(
+                    HttpMethod.Post.ToString(), 
+                    accountUrl, 
+                    parameters, 
+                    cancelToken)
+                    .ConfigureAwait(false);
 
-            return reqProc.ProcessActionResult(RawResult, UserAction.SingleUser);
+            return new User();
         }
 
         /// <summary>
@@ -347,7 +254,7 @@ namespace LinqToTwitter
                     cancelToken)
                     .ConfigureAwait(false);
 
-            return reqProc.ProcessActionResult(RawResult, UserAction.SingleUser);
+            return new User();
         }
     }
 }

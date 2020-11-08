@@ -63,7 +63,9 @@ namespace LinqToTwitter.Common
 
         public static bool GetBool(this JsonElement json, string propertyName, bool defaultValue = default)
         {
-            if (!json.IsNull() && json.TryGetProperty(propertyName, out JsonElement element))
+            if (!json.IsNull() && 
+                json.TryGetProperty(propertyName, out JsonElement element) &&
+                !element.IsNull())
                 return element.GetBoolean();
 
             return defaultValue;

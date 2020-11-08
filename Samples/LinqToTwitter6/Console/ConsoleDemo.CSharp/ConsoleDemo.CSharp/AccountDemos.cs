@@ -128,7 +128,7 @@ namespace Linq2TwitterDemos_Console
 
         static async Task UpdateAccountImageAsync(TwitterContext twitterCtx)
         {
-            byte[] imageBytes = File.ReadAllBytes(@"..\..\Images\200xColor_2.png");
+            byte[] imageBytes = File.ReadAllBytes(@"..\..\..\Images\200xColor_2.png");
 
             var user = await twitterCtx.UpdateAccountImageAsync(
                 imageBytes, "200xColor_2.png", "png", false);
@@ -172,7 +172,7 @@ namespace Linq2TwitterDemos_Console
 
         static async Task UpdateProfileBannerAsync(TwitterContext twitterCtx)
         {
-            byte[] fileBytes = File.ReadAllBytes(@"..\..\images\13903749474_86bd1290de_o.jpg");
+            byte[] fileBytes = File.ReadAllBytes(@"..\..\..\images\13903749474_86bd1290de_o.jpg");
 
             var user = await twitterCtx.UpdateProfileBannerAsync(fileBytes, 1500, 500, 0, 0);
 

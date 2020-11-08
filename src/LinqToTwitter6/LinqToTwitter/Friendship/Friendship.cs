@@ -70,12 +70,6 @@ namespace LinqToTwitter
         public bool SkipStatus { get; set; }
 
         /// <summary>
-        /// Removes entities when set to false (true by default)
-        /// </summary>
-        [Obsolete("Please use IncludeUserEntities instead.")]
-        public bool IncludeEntities { get; set; }
-
-        /// <summary>
         /// Removes entities on users when set to false (true by default)
         /// </summary>
         public bool IncludeUserEntities { get; set; }

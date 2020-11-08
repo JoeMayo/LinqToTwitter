@@ -300,7 +300,6 @@ namespace LinqToTwitter.Tests.AccountTests
         [TestMethod]
         public async Task UpdateProfileBannerAsync_Invokes_Executor_Execute()
         {
-            const string ExpectedProfileBannerUrl = "https://si0.twimg.com/profile_images/1438634086/avatar_normal.png";
             byte[] banner = new byte[] { 1, 2, 3 };
             var ctx = InitTwitterContextWithPostToTwitter<User>(SingleUserResponse);
 
@@ -315,8 +314,7 @@ namespace LinqToTwitter.Tests.AccountTests
                 Times.Once());
 
             Assert.IsNotNull(actual);
-            Assert.IsNotNull(actual.ProfileBannerUrl);
-            Assert.AreEqual(ExpectedProfileBannerUrl, actual.ProfileBannerUrl);
+            Assert.IsNull(actual.Name); // Twitter no longer responds with the User account.
         }
 
         [TestMethod]
