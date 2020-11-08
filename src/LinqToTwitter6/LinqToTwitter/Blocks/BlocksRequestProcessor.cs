@@ -24,42 +24,42 @@ namespace LinqToTwitter
         /// <summary>
         /// type of blocks request to perform
         /// </summary>
-        internal BlockingType Type { get; set; }
+        public BlockingType Type { get; set; }
 
         /// <summary>
         /// disambiguates when user id is screen name
         /// </summary>
-        internal ulong UserID { get; set; }
+        public ulong UserID { get; set; }
 
         /// <summary>
         /// disambiguates when screen name is user id
         /// </summary>
-        internal string ScreenName { get; set; }
+        public string ScreenName { get; set; }
 
         /// <summary>
         /// page to retrieve
         /// </summary>
-        internal int Page { get; set; }
+        public int Page { get; set; }
 
         /// <summary>
         /// Number of items per page to return (input only)
         /// </summary>
-        internal int PerPage { get; set; }
+        public int PerPage { get; set; }
 
         /// <summary>
         /// Removes entities when set to false (true by default)
         /// </summary>
-        internal bool IncludeEntities { get; set; }
+        public bool IncludeEntities { get; set; }
 
         /// <summary>
         /// Don't include statuses in response (input only)
         /// </summary>
-        internal bool SkipStatus { get; set; }
+        public bool SkipStatus { get; set; }
 
         /// <summary>
         /// Identifier for previous or next page to query (input only)
         /// </summary>
-        internal string Cursor { get; set; }
+        public string Cursor { get; set; }
 
         /// <summary>
         /// extracts parameters from lambda

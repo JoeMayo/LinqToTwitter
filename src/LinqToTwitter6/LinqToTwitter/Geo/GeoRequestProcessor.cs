@@ -28,22 +28,22 @@ namespace LinqToTwitter
         /// <summary>
         /// type of Geo operation (Reverse or ID)
         /// </summary>
-        internal GeoType Type { get; set; }
+        public GeoType Type { get; set; }
 
         /// <summary>
         /// Latitude
         /// </summary>
-        internal double Latitude { get; set; }
+        public double Latitude { get; set; }
 
         /// <summary>
         /// Longitude
         /// </summary>
-        internal double Longitude { get; set; }
+        public double Longitude { get; set; }
 
         /// <summary>
         /// IP address to find nearby places
         /// </summary>
-        internal string? IP { get; set; }
+        public string? IP { get; set; }
 
         /// <summary>
         /// How accurate the results should be.
@@ -51,42 +51,42 @@ namespace LinqToTwitter
         ///     - Default is 0m
         ///     - Feet is ft (as in 10ft)
         /// </summary>
-        internal string? Accuracy { get; set; }
+        public string? Accuracy { get; set; }
 
         /// <summary>
         /// Size of place (i.e. neighborhood is default or city)
         /// </summary>
-        internal string? Granularity { get; set; }
+        public string? Granularity { get; set; }
 
         /// <summary>
         /// Number of places to return
         /// </summary>
-        internal int MaxResults { get; set; }
+        public int MaxResults { get; set; }
 
         /// <summary>
         /// Place ID
         /// </summary>
-        internal string? ID { get; set; }
+        public string? ID { get; set; }
 
         /// <summary>
         /// Any text you want to add to help find a place
         /// </summary>
-        internal string? Query { get; set; }
+        public string? Query { get; set; }
 
         /// <summary>
         /// Place ID to restrict search to
         /// </summary>
-        internal string? ContainedWithin { get; set; }
+        public string? ContainedWithin { get; set; }
 
         /// <summary>
         /// Name/value pair separated by "=" (i.e. "street_address=123 4th Street")
         /// </summary>
-        internal string? Attribute { get; set; }
+        public string? Attribute { get; set; }
 
         /// <summary>
         /// Name of place in similar places query
         /// </summary>
-        internal string? PlaceName { get; set; }
+        public string? PlaceName { get; set; }
 
         /// <summary>
         /// extracts parameters from lambda

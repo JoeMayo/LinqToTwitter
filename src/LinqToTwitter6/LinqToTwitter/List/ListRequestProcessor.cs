@@ -28,93 +28,93 @@ namespace LinqToTwitter
         /// <summary>
         /// type of list to query
         /// </summary>
-        internal ListType Type { get; set; }
+        public ListType Type { get; set; }
 
         /// <summary>
         /// Helps page results
         /// </summary>
-        internal long Cursor { get; set; }
+        public long Cursor { get; set; }
 
         /// <summary>
         /// User ID
         /// </summary>
-        internal ulong UserID { get; set; }
+        public ulong UserID { get; set; }
 
         /// <summary>
         /// List ID
         /// </summary>
-        internal ulong ListID { get; set; }
+        public ulong ListID { get; set; }
 
         /// <summary>
         /// Catchword for list
         /// </summary>
-        internal string Slug { get; set; }
+        public string Slug { get; set; }
 
         /// <summary>
         /// ID of List Owner
         /// </summary>
-        internal ulong OwnerID { get; set; }
+        public ulong OwnerID { get; set; }
 
         /// <summary>
         /// ScreenName of List Owner
         /// </summary>
-        internal string OwnerScreenName { get; set; }
+        public string OwnerScreenName { get; set; }
 
         /// <summary>
         /// Statuses since status ID
         /// </summary>
-        internal ulong SinceID { get; set; }
+        public ulong SinceID { get; set; }
 
         /// <summary>
         /// Max ID to retrieve for statuses
         /// </summary>
-        internal ulong MaxID { get; set; }
+        public ulong MaxID { get; set; }
 
         /// <summary>
         /// Number of statuses per page
         /// </summary>
-        internal int Count { get; set; }
+        public int Count { get; set; }
 
         /// <summary>
         /// Page number for statuses
         /// </summary>
-        internal int Page { get; set; }
+        public int Page { get; set; }
 
         /// <summary>
         /// ScreenName of user for query
         /// </summary>
-        internal string ScreenName { get; set; }
+        public string ScreenName { get; set; }
 
         /// <summary>
         /// Truncate all user info, except for ID
         /// </summary>
-        internal bool TrimUser { get; set; }
+        public bool TrimUser { get; set; }
 
         /// <summary>
         /// Add entities to tweets (default: true)
         /// </summary>
-        internal bool IncludeEntities { get; set; }
+        public bool IncludeEntities { get; set; }
 
         /// <summary>
         /// Add retweets, in addition to normal tweets
         /// </summary>
-        internal bool IncludeRetweets { get; set; }
+        public bool IncludeRetweets { get; set; }
 
         /// <summary>
         /// Only returns lists that belong to authenticated 
         /// user or user identified by ID or ScreenName
         /// </summary>
-        internal bool FilterToOwnedLists { get; set; }
+        public bool FilterToOwnedLists { get; set; }
 
         /// <summary>
         /// Don't include statuses in response
         /// </summary>
-        internal bool SkipStatus { get; set; }
+        public bool SkipStatus { get; set; }
 
         /// <summary>
         /// Causes Twitter to return the lists owned by the authenticated user first (Query Filter)
         /// </summary>
-        internal bool Reverse { get; set; }
+        public bool Reverse { get; set; }
 
         /// <summary>
         /// extracts parameters from lambda
@@ -878,7 +878,9 @@ namespace LinqToTwitter
                     break;
             }
 
-            var cursors = new Cursors(listJson);
+            Cursors cursors = null;
+            if (listJson.ValueKind == JsonValueKind.Object)
+                cursors = new Cursors(listJson);
 
             foreach (var list in lists)
             {
@@ -918,11 +920,8 @@ namespace LinqToTwitter
   
         List<List> HandleMultipleListsResponse(JsonElement listJson)
         {
-            JsonElement listsEnumerable =
-                listJson.GetProperty("lists");// ?? listJson; 
-
             var lists =
-                (from list in listsEnumerable.EnumerateArray()
+                (from list in listJson.EnumerateArray()
                  select new List(list))
                 .ToList();
 

@@ -11,14 +11,16 @@ namespace LinqToTwitter
         public Location() {}
         internal Location(JsonElement trendLocation)
         {
-            var placeType = trendLocation.GetProperty("placeType");
+            if (trendLocation.TryGetProperty("placeType", out JsonElement placeType))
+            {
+                PlaceTypeName = placeType.GetString("name");
+                PlaceTypeNameCode = placeType.GetInt("code");
+            }
 
             Country = trendLocation.GetString("country");
             Name = trendLocation.GetString("name");
             CountryCode = trendLocation.GetString("countryCode");
             ParentID = trendLocation.GetInt("parentid").ToString(CultureInfo.InvariantCulture);
-            PlaceTypeName = placeType.GetString("name");
-            PlaceTypeNameCode = placeType.GetInt("code");
             Url = trendLocation.GetString("url");
             WoeID = trendLocation.GetInt("woeid");
         }

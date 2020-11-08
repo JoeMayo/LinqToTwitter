@@ -25,7 +25,7 @@ namespace LinqToTwitter
         /// <summary>
         /// type of user request (i.e. Friends, Followers, or Show)
         /// </summary>
-        internal MuteType Type { get; set; }
+        public MuteType Type { get; set; }
 
         /// <summary>
         /// Indicator for which page to get next
@@ -36,17 +36,17 @@ namespace LinqToTwitter
         /// are Previous and Next, which you can find in the
         /// CursorResponse property when your response comes back.
         /// </remarks>
-        internal long Cursor { get; set; }
+        public long Cursor { get; set; }
 
         /// <summary>
         /// Add entities to results
         /// </summary>
-        internal bool IncludeEntities { get; set; }
+        public bool IncludeEntities { get; set; }
 
         /// <summary>
         /// Remove status from results
         /// </summary>
-        internal bool SkipStatus { get; set; }
+        public bool SkipStatus { get; set; }
 
         /// <summary>
         /// extracts parameters from lambda

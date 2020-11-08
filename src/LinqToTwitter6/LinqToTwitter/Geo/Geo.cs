@@ -23,8 +23,8 @@ namespace LinqToTwitter
 
             result.TryGetProperty("places", out JsonElement places);
 
-            result.TryGetProperty("token", out JsonElement tokenValue);
-            Token = tokenValue.GetString();
+            if (result.TryGetProperty("token", out JsonElement tokenValue))
+                Token = tokenValue.GetString();
 
             if (!places.IsNull())
             {

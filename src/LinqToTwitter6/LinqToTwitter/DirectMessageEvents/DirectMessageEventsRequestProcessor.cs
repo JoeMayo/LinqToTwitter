@@ -25,22 +25,22 @@ namespace LinqToTwitter
         /// <summary>
         /// Type of Direct Message Events
         /// </summary>
-        internal DirectMessageEventsType Type { get; set; }
+        public DirectMessageEventsType Type { get; set; }
 
         /// <summary>
         /// Number of items to return for a single page.
         /// </summary>
-        internal int Count { get; set; }
+        public int Count { get; set; }
 
         /// <summary>
         /// Supports paging through results on List queries
         /// </summary>
-        internal string Cursor { get; set; }
+        public string Cursor { get; set; }
 
         /// <summary>
         /// ID of DM
         /// </summary>
-        internal ulong ID { get; set; }
+        public ulong ID { get; set; }
 
         /// <summary>
         /// extracts parameters from lambda

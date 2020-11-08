@@ -24,12 +24,12 @@ namespace LinqToTwitter
         /// <summary>
         /// type of search to perform (Searches or Show)
         /// </summary>
-        internal SavedSearchType Type { get; set; }
+        public SavedSearchType Type { get; set; }
 
         /// <summary>
         /// search item ID
         /// </summary>
-        internal ulong ID { get; set; }
+        public ulong ID { get; set; }
 
         /// <summary>
         /// extracts parameters from lambda

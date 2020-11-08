@@ -28,8 +28,7 @@ namespace LinqToTwitter
             CanDm = relJson.GetBool("can_dm");
             Muting = relJson.GetBool("muting", false);
 
-            var connections = relJson.GetProperty("connections");
-            if (connections.IsNull())
+            if (relJson.TryGetProperty("connections", out JsonElement connections))
                 Connections =
                     (from connection in connections.EnumerateArray()
                      select connection.ToString())

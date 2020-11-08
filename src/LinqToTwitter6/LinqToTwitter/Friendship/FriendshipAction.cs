@@ -1,6 +1,6 @@
 namespace LinqToTwitter
 {
-    enum FriendshipAction
+    public enum FriendshipAction
     {
         Create,
         Destroy,

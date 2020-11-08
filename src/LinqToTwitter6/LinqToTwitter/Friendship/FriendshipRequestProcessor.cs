@@ -11,7 +11,7 @@ namespace LinqToTwitter
     /// <summary>
     /// processes Twitter Friendship queries
     /// </summary>
-    class FriendshipRequestProcessor<T> :
+    public class FriendshipRequestProcessor<T> :
         IRequestProcessor<T>,
         IRequestProcessorWantsJson,
         IRequestProcessorWithAction<T>
@@ -25,62 +25,62 @@ namespace LinqToTwitter
         /// <summary>
         /// type of friendship (defaults to Exists)
         /// </summary>
-        internal FriendshipType Type { get; set; }
+        public FriendshipType Type { get; set; }
 
         /// <summary>
         /// ID of source user
         /// </summary>
-        internal ulong SourceUserID { get; set; }
+        public ulong SourceUserID { get; set; }
 
         /// <summary>
         /// Screen name of source user
         /// </summary>
-        internal string SourceScreenName { get; set; }
+        public string SourceScreenName { get; set; }
 
         /// <summary>
         /// ID of target user
         /// </summary>
-        internal ulong TargetUserID { get; set; }
+        public ulong TargetUserID { get; set; }
 
         /// <summary>
         /// Screen name of target user
         /// </summary>
-        internal string TargetScreenName { get; set; }
+        public string TargetScreenName { get; set; }
 
         /// <summary>
         /// Comma-separated list of names for lookup
         /// </summary>
-        internal string ScreenName { get; set; }
+        public string ScreenName { get; set; }
 
         /// <summary>
         /// Comma-separated list of user IDs to lookup
         /// </summary>
-        internal string UserID { get; set; }
+        public string UserID { get; set; }
 
         /// <summary>
         /// Helps in paging results for queries such as incoming and outgoing
         /// </summary>
-        internal long Cursor { get; set; }
+        public long Cursor { get; set; }
 
         /// <summary>
         /// Removes status when set to true (false by default)
         /// </summary>
-        internal bool SkipStatus { get; set; }
+        public bool SkipStatus { get; set; }
 
         /// <summary>
         /// Removes entities when set to false (true by default)
         /// </summary>
-        internal bool IncludeEntities { get; set; }
+        public bool IncludeEntities { get; set; }
 
         /// <summary>
         /// Removes entities on users when set to false (true by default)
         /// </summary>
-        internal bool IncludeUserEntities { get; set; }
+        public bool IncludeUserEntities { get; set; }
 
         /// <summary>
         /// Number of ids to return for each request (max: 5000)
         /// </summary>
-        internal int Count { get; set; }
+        public int Count { get; set; }
 
         /// <summary>
         /// extracts parameters from lambda

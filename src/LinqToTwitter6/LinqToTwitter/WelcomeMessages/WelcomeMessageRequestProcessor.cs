@@ -25,22 +25,22 @@ namespace LinqToTwitter
         /// <summary>
         /// Number of items to return
         /// </summary>
-        internal int Count { get; set; }
+        public int Count { get; set; }
 
         /// <summary>
         /// Helps page through results greater than Count items
         /// </summary>
-        internal string Cursor { get; set; }
+        public string Cursor { get; set; }
 
         /// <summary>
         /// ID of item to show
         /// </summary>
-        internal ulong ID { get; set; }
+        public ulong ID { get; set; }
 
         /// <summary>
         /// Type of Welcome Message
         /// </summary>
-        internal WelcomeMessageType Type { get; set; }
+        public WelcomeMessageType Type { get; set; }
 
         /// <summary>
         /// extracts parameters from lambda
@@ -223,10 +223,15 @@ namespace LinqToTwitter
 
         public T ProcessActionResult(string responseJson, Enum theAction)
         {
-            var msg = new WelcomeMessage
-            {
-                Value = JsonSerializer.Deserialize<WelcomeMessageValue>(responseJson ?? "")
-            };
+            WelcomeMessage msg = null;
+
+            if (!string.IsNullOrWhiteSpace(responseJson))
+                msg = new WelcomeMessage
+                {
+                    Value = JsonSerializer.Deserialize<WelcomeMessageValue>(responseJson ?? "")
+                };
+            else
+                msg = new WelcomeMessage();
 
             return msg.ItemCast(default(T));
         }

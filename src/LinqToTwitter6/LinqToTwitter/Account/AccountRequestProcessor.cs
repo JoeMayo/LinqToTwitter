@@ -23,23 +23,23 @@ namespace LinqToTwitter
         /// <summary>
         /// Type of account query (VerifyCredentials or Settings)
         /// </summary>
-        internal AccountType Type { get; set; }
+        public AccountType Type { get; set; }
 
         /// <summary>
         /// Don't include status in response
         /// </summary>
-        internal bool SkipStatus { get; set; }
+        public bool SkipStatus { get; set; }
 
         /// <summary>
         /// Removes entities when set to false (true by default)
         /// </summary>
-        internal bool IncludeEntities { get; set; }
+        public bool IncludeEntities { get; set; }
 
         /// <summary>
         /// Includes the user's email address in response (requires whitelisting,
         /// see https://dev.twitter.com/rest/reference/get/account/verify_credentials)
         /// </summary>
-        internal bool IncludeEmail { get; set; }
+        public bool IncludeEmail { get; set; }
 
         /// <summary>
         /// extracts parameters from lambda
@@ -170,7 +170,7 @@ namespace LinqToTwitter
             return acct.ItemCast(default(T));
         }
 
-        internal Account HandleSettingsResponse(string responseJson)
+        public Account HandleSettingsResponse(string responseJson)
         {
             var settings = JsonDocument.Parse(responseJson).RootElement;
             var sleepTime = settings.GetProperty("sleep_time");
@@ -204,7 +204,7 @@ namespace LinqToTwitter
             return acct;
         }
 
-        private Account HandleVerifyCredentialsResponse(string responseJson)
+        Account HandleVerifyCredentialsResponse(string responseJson)
         {
             JsonElement user = JsonDocument.Parse(responseJson).RootElement;
 

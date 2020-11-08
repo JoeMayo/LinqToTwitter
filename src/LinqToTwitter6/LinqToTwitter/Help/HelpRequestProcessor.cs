@@ -126,36 +126,36 @@ namespace LinqToTwitter
 
         Help HandleHelpConfiguration(JsonElement helpJson)
         {
-            //var photoSizeDict = helpJson.GetValue<JsonData>("photo_sizes") as IDictionary<string, JsonData>;
-
-            //return new Help
-            //{
-            //    Type = HelpType.Configuration,
-            //    Configuration = new Configuration
-            //    {
-            //        CharactersReservedPerMedia = helpJson.GetValue<int>("characters_reserved_per_media"),
-            //        PhotoSizes =
-            //            (from string key in photoSizeDict.Keys
-            //             let photoSize = photoSizeDict[key]
-            //             select new PhotoSize
-            //             {
-            //                 Type = key,
-            //                 Height = photoSize.GetValue<int>("h"),
-            //                 Width = photoSize.GetValue<int>("w"),
-            //                 Resize = photoSize.GetValue<string>("resize")
-            //             })
-            //            .ToList(),
-            //        ShortUrlLength = helpJson.GetValue<int>("short_url_length"),
-            //        PhotoSizeLimit = helpJson.GetValue<int>("photo_size_limit"),
-            //        NonUserNamePaths =
-            //            (from JsonData path in helpJson.GetValue<JsonData>("non_username_paths")
-            //             select path.ToString())
-            //            .ToList(),
-            //        MaxMediaPerUpload = helpJson.GetValue<int>("max_media_per_upload"),
-            //        ShortUrlLengthHttps = helpJson.GetValue<int>("short_url_length_https")
-            //    }
-            //};
-            return null;
+            if (helpJson.TryGetProperty("photo_sizes", out JsonElement photoSizeDict))
+                return new Help
+                {
+                    Type = HelpType.Configuration,
+                    Configuration = new Configuration
+                    {
+                        CharactersReservedPerMedia = helpJson.GetInt("characters_reserved_per_media"),
+                        PhotoSizes =
+                            (from key in photoSizeDict.EnumerateObject()
+                             let photoSize = photoSizeDict.GetProperty(key.Name)
+                             select new PhotoSize
+                             {
+                                 Type = key.Name,
+                                 Height = photoSize.GetInt("h"),
+                                 Width = photoSize.GetInt("w"),
+                                 Resize = photoSize.GetString("resize")
+                             })
+                            .ToList(),
+                        ShortUrlLength = helpJson.GetInt("short_url_length"),
+                        PhotoSizeLimit = helpJson.GetInt("photo_size_limit"),
+                        NonUserNamePaths =
+                            (from path in helpJson.GetProperty("non_username_paths").EnumerateArray()
+                             select path.ToString())
+                            .ToList(),
+                        MaxMediaPerUpload = helpJson.GetInt("max_media_per_upload"),
+                        ShortUrlLengthHttps = helpJson.GetInt("short_url_length_https")
+                    }
+                };
+            else
+                return new Help();
         }
 
         Help HandleHelpLanguages(JsonElement helpJson)
@@ -177,37 +177,37 @@ namespace LinqToTwitter
 
         Help HandleHelpRateLimits(JsonElement helpJson)
         {
-            //var context = helpJson.GetProperty("rate_limit_context");
-            //var resources = helpJson.GetValue<JsonData>("resources") as IDictionary<string, JsonData>;
-
-            //return new Help
-            //{
-            //    Type = HelpType.RateLimits,
-            //    Resources = Resources,
-            //    RateLimitAccountContext = context.GetValue<string>("access_token"),
-            //    RateLimits = 
-            //        (from key in resources.Keys
-            //         let category = resources[key] as IDictionary<string, JsonData>
-            //         select new
-            //         {
-            //             Key = key,
-            //             Value =
-            //                (from cat in category.Keys
-            //                 let limit = category[cat]
-            //                 select new RateLimits
-            //                 {
-            //                     Resource = cat,
-            //                     Limit = limit.GetValue<int>("limit"),
-            //                     Remaining = limit.GetValue<int>("remaining"),
-            //                     Reset = limit.GetValue<ulong>("reset")
-            //                 })
-            //                .ToList()
-            //         })
-            //        .ToDictionary(
-            //            key => key.Key,
-            //            val => val.Value)
-            //};
-            return null;
+            if (helpJson.TryGetProperty("rate_limit_context", out JsonElement context) &&
+                helpJson.TryGetProperty("resources", out JsonElement resources))
+                return new Help
+                {
+                    Type = HelpType.RateLimits,
+                    Resources = Resources,
+                    RateLimitAccountContext = context.GetString("access_token"),
+                    RateLimits =
+                        (from key in resources.EnumerateObject()
+                         let category = resources.GetProperty(key.Name)
+                         select new
+                         {
+                             Key = key,
+                             Value =
+                                (from cat in category.EnumerateObject()
+                                 let limit = category.GetProperty(cat.Name)
+                                 select new RateLimits
+                                 {
+                                     Resource = cat.Name,
+                                     Limit = limit.GetInt("limit"),
+                                     Remaining = limit.GetInt("remaining"),
+                                     Reset = limit.GetUlong("reset")
+                                 })
+                                .ToList()
+                         })
+                        .ToDictionary(
+                            key => key.Key.Name,
+                            val => val.Value)
+                };
+            else
+                return new Help();
         }
     }
 }

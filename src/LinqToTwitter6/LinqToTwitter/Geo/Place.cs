@@ -13,7 +13,7 @@ namespace LinqToTwitter
     public class Place
     {
         public Place() {}
-        internal Place(JsonElement place)
+        public Place(JsonElement place)
         {
             if (place.IsNull()) return;
 

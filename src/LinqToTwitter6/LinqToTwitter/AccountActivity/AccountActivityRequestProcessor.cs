@@ -29,7 +29,7 @@ namespace LinqToTwitter
         /// <summary>
         /// ID for a webhook
         /// </summary>
-        internal ulong WebhookID { get; set; }
+        public ulong WebhookID { get; set; }
 
         /// <summary>
         /// extracts parameters from lambda

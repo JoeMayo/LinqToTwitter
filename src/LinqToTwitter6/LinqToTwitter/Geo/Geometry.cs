@@ -14,7 +14,7 @@ namespace LinqToTwitter
     public class Geometry
     {
         public Geometry() {}
-        internal Geometry(JsonElement geometry)
+        public Geometry(JsonElement geometry)
         {
             if (geometry.IsNull()) return;
 

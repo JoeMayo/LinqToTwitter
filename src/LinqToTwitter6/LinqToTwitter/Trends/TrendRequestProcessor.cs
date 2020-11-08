@@ -26,27 +26,27 @@ namespace LinqToTwitter
         /// <summary>
         /// type of trend to query (Trend (all), Current, Daily, or Weekly)
         /// </summary>
-        internal TrendType Type { get; set; }
+        public TrendType Type { get; set; }
 
         /// <summary>
         /// Latitude
         /// </summary>
-        internal double Latitude { get; set; }
+        public double Latitude { get; set; }
 
         /// <summary>
         /// Longitude
         /// </summary>
-        internal double Longitude { get; set; }
+        public double Longitude { get; set; }
 
         /// <summary>
         /// Yahoo Where On Earth ID
         /// </summary>
-        internal int WoeID { get; set; }
+        public int WoeID { get; set; }
 
         /// <summary>
         /// Set to true to omit hashtags from results
         /// </summary>
-        internal bool Exclude { get; set; }
+        public bool Exclude { get; set; }
 
         /// <summary>
         /// extracts parameters from lambda

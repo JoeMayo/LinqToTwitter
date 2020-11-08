@@ -15,7 +15,7 @@ namespace LinqToTwitter
         public const int LatitudePos = 1;
 
         public Coordinate() { }
-        internal Coordinate(JsonElement coord)
+        public Coordinate(JsonElement coord)
         {
             if (coord.IsNull())
             {
