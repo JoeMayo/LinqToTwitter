@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>ConsoleDemos.VisualBasic</RootNamespace>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="LinqToTwitter">
+      <HintPath>..\..\..\..\..\src\LinqToTwitter6\LinqToTwitter\bin\Debug\net5.0\LinqToTwitter.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>
