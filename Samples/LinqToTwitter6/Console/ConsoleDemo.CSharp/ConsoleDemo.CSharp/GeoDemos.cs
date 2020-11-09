@@ -31,10 +31,6 @@ namespace Linq2TwitterDemos_Console
                         Console.WriteLine("\n\tFinding reverse geocode...\n");
                         await LookupReverseGeocodeAsync(twitterCtx);
                         break;
-                    case '3':
-                        Console.WriteLine("\n\tFinding similar places...\n");
-                        await FindSimilarPlacesAsync(twitterCtx);
-                        break;
                     case 'q':
                     case 'Q':
                         Console.WriteLine("\nReturning...\n");
@@ -54,7 +50,6 @@ namespace Linq2TwitterDemos_Console
             Console.WriteLine("\t 0. Search by IP");
             Console.WriteLine("\t 1. Lookup Geo by ID");
             Console.WriteLine("\t 2. Lookup Reverse Geocode");
-            Console.WriteLine("\t 3. Find Similar Places");
             Console.WriteLine();
             Console.Write("\t Q. Return to Main menu");
         }
@@ -107,25 +102,6 @@ namespace Linq2TwitterDemos_Console
                  where g.Type == GeoType.Reverse &&
                        g.Latitude == 37.78215 &&
                        g.Longitude == -122.40060
-                 select g)
-                .SingleOrDefaultAsync();
-
-            if (geoResponse != null && geoResponse.Places != null)
-                geoResponse.Places.ForEach(place =>
-                    Console.WriteLine(
-                        "Name: {0}, Country: {1}, Type: {2}",
-                        place.Name, place.Country, place.PlaceType));
-        }
-
-        static async Task FindSimilarPlacesAsync(TwitterContext twitterCtx)
-        {
-            var geoResponse =
-                await
-                (from g in twitterCtx.Geo
-                 where g.Type == GeoType.SimilarPlaces &&
-                       g.Latitude == 37.78215 &&
-                       g.Longitude == -122.40060 &&
-                       g.PlaceName == "Twitter HQ"
                  select g)
                 .SingleOrDefaultAsync();
 

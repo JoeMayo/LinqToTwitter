@@ -135,8 +135,6 @@ namespace LinqToTwitter
                     return BuildReverseUrl(parameters);
                 case GeoType.Search:
                     return BuildSearchUrl(parameters);
-                case GeoType.SimilarPlaces:
-                    return BuildSimilarPlacesUrl(parameters);
                 default:
                     throw new InvalidOperationException("The default case of BuildUrl should never execute because a Type must be specified.");
             }
@@ -280,52 +278,6 @@ namespace LinqToTwitter
             return req;
         }
 
-        Request BuildSimilarPlacesUrl(Dictionary<string, string> parameters)
-        {
-            if (!parameters.ContainsKey("Latitude") || !parameters.ContainsKey("Longitude"))
-            {
-                const string LatLongParam = "LatLong";
-                throw new ArgumentException("Latitude and Longitude parameters are required.", LatLongParam);
-            }
-
-            if (!parameters.ContainsKey("PlaceName"))
-            {
-                const string LatLongParam = "PlaceName";
-                throw new ArgumentException("PlaceName is required.", LatLongParam);
-            }
-
-            var req = new Request(BaseUrl + "geo/similar_places.json");
-            var urlParams = req.RequestParameters;
-
-            if (parameters.ContainsKey("Latitude"))
-            {
-                Latitude = double.Parse(parameters["Latitude"]);
-                urlParams.Add(new QueryParameter("lat", Latitude.ToString(Culture.US)));
-            }
-
-            if (parameters.ContainsKey("Longitude"))
-            {
-                Longitude = double.Parse(parameters["Longitude"]);
-                urlParams.Add(new QueryParameter("long", Longitude.ToString(Culture.US)));
-            }
-
-            if (parameters.ContainsKey("PlaceName"))
-            {
-                PlaceName = parameters["PlaceName"];
-                urlParams.Add(new QueryParameter("name", PlaceName));
-            }
-
-            if (parameters.ContainsKey("ContainedWithin"))
-            {
-                ContainedWithin = parameters["ContainedWithin"];
-                urlParams.Add(new QueryParameter("contained_within", ContainedWithin));
-            }
-
-            HandleAttributeParams(parameters, urlParams);
-
-            return req;
-        }
-
         /// <summary>
         /// Transforms response into List of Geo.
         /// </summary>
@@ -349,9 +301,6 @@ namespace LinqToTwitter
                     break;
                 case GeoType.Reverse:
                 case GeoType.Search:
-                case GeoType.SimilarPlaces:
-                    geo = new Geo(geoJson);
-                    break;
                 default:
                     geo = new Geo();
                     break;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -31,7 +32,8 @@ namespace LinqToTwitter
                     {
                         Text = text
                     }
-                }
+                },
+                Apps = JsonDocument.Parse("null").RootElement
             };
 
             RawResult =
@@ -150,7 +152,8 @@ namespace LinqToTwitter
                 WelcomeMessageRule = new WelcomeMessageRule
                 {
                     WelcomeMessageID = welcomeMessageID.ToString()
-                }
+                },
+                Apps = JsonDocument.Parse("null").RootElement
             };
 
             RawResult =

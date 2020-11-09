@@ -203,6 +203,7 @@ namespace Linq2TwitterDemos_Console
         {
             Friendship friendship;
             long cursor = -1;
+            int count = 0;
             do
             {
                 friendship =
@@ -227,13 +228,16 @@ namespace Linq2TwitterDemos_Console
                             friend.UserIDResponse, friend.ScreenNameResponse)); 
                 }
 
-            } while (cursor != 0);
+                count++;
+
+            } while (cursor != 0 && count < 3);
         }
 
         static async Task FollowersListAsync(TwitterContext twitterCtx)
         {
             Friendship friendship;
             long cursor = -1;
+            int count = 0;
             do
             {
                 try
@@ -263,13 +267,16 @@ namespace Linq2TwitterDemos_Console
                             friend.UserIDResponse, friend.ScreenNameResponse));
                 }
 
-            } while (cursor != 0);
+                count++;
+
+            } while (cursor != 0 && count < 3);
         }
 
         static async Task ShowFollowerIDsAsync(TwitterContext twitterCtx)
         {
             Friendship followers;
             long cursor = -1;
+            int count = 0;
             do
             {
                 try
@@ -300,13 +307,16 @@ namespace Linq2TwitterDemos_Console
                         Console.WriteLine("Follower ID: " + id)); 
                 }
 
-            } while (cursor != 0);
+                count++;
+
+            } while (cursor != 0 && count < 3);
         }
 
         static async Task ShowFriendIDsAsync(TwitterContext twitterCtx)
         {
             Friendship friendList;
             long cursor = -1;
+            int count = 0;
             do
             {
                 try
@@ -336,7 +346,9 @@ namespace Linq2TwitterDemos_Console
                         Console.WriteLine("Follower ID: " + id));
                 }
 
-            } while (cursor != 0);
+                count++;
+
+            } while (cursor != 0 && count < 3);
         }
 
         static async Task CreateFriendshipAsync(TwitterContext twitterCtx)

@@ -216,7 +216,7 @@ namespace Linq2TwitterDemos_Console
             string mediaCategory = "dm_image";
 
             Media media = await twitterCtx.UploadMediaAsync(
-                File.ReadAllBytes(@"..\..\images\200xColor_2.png"), 
+                File.ReadAllBytes(@"..\..\..\images\200xColor_2.png"), 
                 mediaType: "image/png", 
                 additionalOwners: null, 
                 mediaCategory: mediaCategory,

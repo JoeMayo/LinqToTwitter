@@ -214,66 +214,6 @@ namespace LinqToTwitter.Tests.GeoTests
         }
 
         [TestMethod]
-        public void BuildUrl_Constructs_Similar_Places_Url()
-        {
-            const string ExpectedUrl = "https://api.twitter.com/1.1/geo/similar_places.json?lat=37.78215&long=-122.4006&name=placeName&contained_within=123&attribute%3Astreet_address=123";
-            var geoReqProc = new GeoRequestProcessor<Geo>() { BaseUrl = "https://api.twitter.com/1.1/" };
-            var parameters = new Dictionary<string, string>
-             {
-                 {"Type", ((int) GeoType.SimilarPlaces).ToString()},
-                 {"Latitude", (37.78215).ToString()},
-                 {"Longitude", (-122.40060).ToString()},
-                 {"PlaceName", "placeName" },
-                 {"ContainedWithin", "123" },
-                 {"Attribute", "street_address=123" }
-             };
-
-            Request req = geoReqProc.BuildUrl(parameters);
-
-            Assert.AreEqual(ExpectedUrl, req.FullUrl);
-        }
-
-        [TestMethod]
-        public void BuildUrl_For_Similar_Places_Requires_Lat_And_Long()
-        {
-            const string ExpectedParamName = "LatLong";
-            var geoReqProc = new GeoRequestProcessor<Geo>() { BaseUrl = "https://api.twitter.com/1.1/" };
-            var parameters = new Dictionary<string, string>
-             {
-                 {"Type", ((int) GeoType.SimilarPlaces).ToString()},
-                 //{"Latitude", "37.78215"},
-                 //{"Longitude", "-122.40060"},
-                 {"PlaceName", "placeName" },
-                 {"ContainedWithin", "123" },
-                 {"Attribute", "street_address=123" }
-             };
-
-            var ex = L2TAssert.Throws<ArgumentException>(() => geoReqProc.BuildUrl(parameters));
-
-            Assert.AreEqual(ExpectedParamName, ex.ParamName);
-        }
-
-        [TestMethod]
-        public void BuildUrl_For_Similar_Places_Requires_PlaceName()
-        {
-            const string ExpectedParamName = "PlaceName";
-            var geoReqProc = new GeoRequestProcessor<Geo>() { BaseUrl = "https://api.twitter.com/1.1/" };
-            var parameters = new Dictionary<string, string>
-             {
-                 {"Type", ((int) GeoType.SimilarPlaces).ToString()},
-                 {"Latitude", "37.78215"},
-                 {"Longitude", "-122.40060"},
-                 //{"PlaceName", "placeName" },
-                 {"ContainedWithin", "123" },
-                 {"Attribute", "street_address=123" }
-             };
-
-            var ex = L2TAssert.Throws<ArgumentException>(() => geoReqProc.BuildUrl(parameters));
-
-            Assert.AreEqual(ExpectedParamName, ex.ParamName);
-        }
-
-        [TestMethod]
         public void GeoRequestProcessor_Processes_Json_Format_Responses()
         {
             var geoReqProc = new GeoRequestProcessor<Geo>();
@@ -337,26 +277,6 @@ namespace LinqToTwitter.Tests.GeoTests
             Assert.IsNotNull(geo.Single().Places);
             Assert.AreEqual(ExpectedPlacesCount, geo.Single().Places.Count);
             Assert.AreEqual(ExpectedPlaceFullName, geo.Single().Places.First().FullName);
-        }
-
-        [TestMethod]
-        public void ProcessResults_Handles_Simlar_Places_Response()
-        {
-            const int ExpectedPlacesCount = 4;
-            const string ExpectedPlaceFullName = "SoMa, San Francisco";
-            const string ExpectedToken = "15f3c6f2b94ba19faee70d9d61aaebee";
-            var geoReqProc = new GeoRequestProcessor<Geo> { Type = GeoType.SimilarPlaces };
-
-            List<Geo> geoResponse = geoReqProc.ProcessResults(MultiPlaceResponse);
-
-            Assert.IsNotNull(geoResponse);
-            Assert.IsNotNull(geoResponse.SingleOrDefault());
-            var geo = geoResponse.Single();
-            Assert.AreEqual(ExpectedToken, geo.Token);
-            var places = geo.Places;
-            Assert.IsNotNull(places);
-            Assert.AreEqual(ExpectedPlacesCount, places.Count);
-            Assert.AreEqual(ExpectedPlaceFullName, places.First().FullName);
         }
 
         [TestMethod]

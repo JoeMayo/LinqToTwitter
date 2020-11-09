@@ -31,14 +31,6 @@ namespace Linq2TwitterDemos_Console
                         Console.WriteLine("\n\tGetting languages...\n");
                         await GetHelpLanguagesAsync(twitterCtx);
                         break;
-                    case '3':
-                        Console.WriteLine("\n\tGetting privacy...\n");
-                        await GetPrivacyAsync(twitterCtx);
-                        break;
-                    case '4':
-                        Console.WriteLine("\n\tGetting tos...\n");
-                        await GetTosAsync(twitterCtx);
-                        break;
                     case 'q':
                     case 'Q':
                         Console.WriteLine("\nReturning...\n");
@@ -58,8 +50,6 @@ namespace Linq2TwitterDemos_Console
             Console.WriteLine("\t 0. Get Rate Limits");
             Console.WriteLine("\t 1. Get Configuration");
             Console.WriteLine("\t 2. Get Languages");
-            Console.WriteLine("\t 3. Get Privacy Policy");
-            Console.WriteLine("\t 4. Get Terms of Service");
             Console.WriteLine();
             Console.Write("\t Q. Return to Main menu");
         }
@@ -137,32 +127,6 @@ namespace Linq2TwitterDemos_Console
             if (helpResult != null && helpResult.Languages != null)
                 helpResult.Languages.ForEach(lang => 
                     Console.WriteLine("{0}({1}): {2}", lang.Name, lang.Code, lang.Status));
-        }
-
-        static async Task GetPrivacyAsync(TwitterContext twitterCtx)
-        {
-            var helpResult =
-                await
-                (from test in twitterCtx.Help
-                 where test.Type == HelpType.Privacy
-                 select test)
-                .SingleOrDefaultAsync();
-
-            if (helpResult != null)
-                Console.WriteLine(helpResult.Policies);
-        }
-
-        static async Task GetTosAsync(TwitterContext twitterCtx)
-        {
-            var helpResult =
-                await
-                (from test in twitterCtx.Help
-                 where test.Type == HelpType.Tos
-                 select test)
-                .SingleOrDefaultAsync();
-
-            if (helpResult != null)
-                Console.WriteLine(helpResult.Policies);
         }
     }
 }

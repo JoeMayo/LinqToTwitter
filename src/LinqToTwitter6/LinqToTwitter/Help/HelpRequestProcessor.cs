@@ -53,12 +53,8 @@ namespace LinqToTwitter
                     return new Request(BaseUrl + "help/configuration.json");
                 case HelpType.Languages:
                     return new Request(BaseUrl + "help/languages.json");
-                case HelpType.Privacy:
-                    return new Request(BaseUrl + "help/privacy.json");
                 case HelpType.RateLimits:
                     return BuildRateLimitsUrl(parameters);
-                case HelpType.Tos:
-                    return new Request(BaseUrl + "help/tos.json");
                 default:
                     throw new InvalidOperationException("The default case of BuildUrl should never execute because a Type must be specified.");
             }
@@ -99,20 +95,6 @@ namespace LinqToTwitter
                     break;
                 case HelpType.RateLimits:
                     help = HandleHelpRateLimits(helpJson);
-                    break;
-                case HelpType.Privacy:
-                    help = new Help 
-                    { 
-                        Type = HelpType.Privacy,
-                        Policies = helpJson.GetString("privacy") 
-                    };
-                    break;
-                case HelpType.Tos:
-                    help = new Help 
-                    { 
-                        Type = HelpType.Tos,
-                        Policies = helpJson.GetString("tos") 
-                    };
                     break;
                 default:
                     help = new Help();

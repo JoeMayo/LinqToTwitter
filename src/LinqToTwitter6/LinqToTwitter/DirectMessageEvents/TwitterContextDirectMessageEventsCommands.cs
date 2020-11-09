@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -172,7 +173,8 @@ namespace LinqToTwitter
                         }
                     },
                     Type = "message_create"
-                }
+                },
+                Apps = JsonDocument.Parse("null").RootElement
             };
 
             RawResult =
