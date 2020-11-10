@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="LinqToTwitter">
+      <HintPath>..\..\..\..\..\src\LinqToTwitter6\LinqToTwitter.AspNet\bin\Debug\net5.0\LinqToTwitter.dll</HintPath>
+    </Reference>
+    <Reference Include="LinqToTwitter.AspNet">
+      <HintPath>..\..\..\..\..\src\LinqToTwitter6\LinqToTwitter.AspNet\bin\Debug\net5.0\LinqToTwitter.AspNet.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

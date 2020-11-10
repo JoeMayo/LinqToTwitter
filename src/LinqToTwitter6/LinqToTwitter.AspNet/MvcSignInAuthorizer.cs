@@ -1,4 +1,6 @@
-﻿namespace LinqToTwitter
+﻿using LinqToTwitter.OAuth;
+
+namespace LinqToTwitter
 {
     /// <summary>
     /// Implements the "Sign-in With Twitter" feature

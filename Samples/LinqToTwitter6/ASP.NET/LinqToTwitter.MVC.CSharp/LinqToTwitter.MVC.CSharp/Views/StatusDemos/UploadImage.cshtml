@@ -1,0 +1,42 @@
+﻿@model LinqToTwitter.MVC.CSharp.Models.TweetViewModel
+
+@{
+    ViewBag.Title = "Upload Image";
+}
+
+<h2>Upload Image</h2>
+
+<div>
+    <h4>Image Details</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.ImageUrl)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ImageUrl)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ScreenName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ScreenName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Text)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Text)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

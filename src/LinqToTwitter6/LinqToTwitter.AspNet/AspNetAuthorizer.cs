@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LinqToTwitter.OAuth;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -27,7 +28,7 @@ namespace LinqToTwitter
         public AspNetAuthorizer(bool forceLogin)
             : base(forceLogin, AuthAccessType.NoChange, null) { }
 
-        public AspNetAuthorizer(bool forceLogin, AuthAccessType accessType) 
+        public AspNetAuthorizer(bool forceLogin, AuthAccessType accessType)
             : base(forceLogin, accessType, null) { }
 
         public AspNetAuthorizer(bool forceLogin, AuthAccessType accessType, string preFillScreenName)
@@ -95,7 +96,7 @@ namespace LinqToTwitter
                     paramsList.Add($"{parm.Key}={parm.Value}");
                 }
 
-                string queryString = "?" +  string.Join("&", paramsList);
+                string queryString = "?" + string.Join("&", paramsList);
 
                 OAuthRequestTokenUrl += queryString;
                 callbackString += queryString;

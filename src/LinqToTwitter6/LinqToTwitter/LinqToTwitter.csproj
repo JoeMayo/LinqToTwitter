@@ -3,18 +3,42 @@
 	<PropertyGroup>
 		<TargetFramework>net5.0</TargetFramework>
 		<Nullable>enable</Nullable>
-		<Description>A LINQ Provider for the Twitter API</Description>
+		<Description>LINQ to Twitter is a 3rd party LINQ Provider that lets you tweet and query with the Twitter API.</Description>
 		<Version>6.0.0</Version>
-		<Authors>@JoeMayo</Authors>
-		<Company></Company>
+		<Authors>Joe Mayo</Authors>
+		<Company>Joe Mayo</Company>
 		<PackageId>linqtotwitter</PackageId>
 		<Product>LINQ to Twitter</Product>
 		<SignAssembly>true</SignAssembly>
 		<AssemblyOriginatorKeyFile>LinqToTwitter.snk</AssemblyOriginatorKeyFile>
+		<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+		<PackageProjectUrl>https://github.com/JoeMayo/LinqToTwitter</PackageProjectUrl>
+		<PackageIcon>200xColor_2.png</PackageIcon>
+		<RepositoryUrl>https://github.com/JoeMayo/LinqToTwitter</RepositoryUrl>
+		<PackageTags>twitter twitterapi twitterdev tweet linq social linqtotwitter linq2twitter</PackageTags>
+		<PackageReleaseNotes>- Supports .NET 5.0
+  -- Recommend LINQ to Twitter v5.0 for earlier .NET versions
+- Includes new Twitter API v2.0 and v1.1
+- Supports C# v8.0 Nullable References
+- Supports C# v9.0
+- Entities (e.g. Tweet, User, etc.) are now `record` types
+- Namespace changes:
+  -- Authorizers are in `LinqToTwitter.OAuth`
+  -- LINQ types are in `LinqToTwitter.Provider`
+- Internally uses System.Text.Json
+- HMAC/SHA1 hashes use .NET 5.0 `System.Security.Cryptography`</PackageReleaseNotes>
+		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="System.Text.Json" Version="4.7.1" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="..\..\..\BuildScripts\200xColor_2.png">
+	    <Pack>True</Pack>
+	    <PackagePath></PackagePath>
+	  </None>
 	</ItemGroup>
 
 </Project>

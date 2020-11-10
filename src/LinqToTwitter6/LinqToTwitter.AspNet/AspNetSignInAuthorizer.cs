@@ -1,11 +1,13 @@
-﻿namespace LinqToTwitter
+﻿using LinqToTwitter.OAuth;
+
+namespace LinqToTwitter
 {
     /// <summary>
     /// Implements the "Sign-in With Twitter" feature
     /// </summary>
-    public class MvcSignInAuthorizer : MvcAuthorizer, IAuthorizer
+    public class AspNetSignInAuthorizer : AspNetAuthorizer, IAuthorizer
     {
-        public MvcSignInAuthorizer()
+        public AspNetSignInAuthorizer()
         {
             OAuthAuthorizeUrl = "https://api.twitter.com/oauth/authenticate";
         }
