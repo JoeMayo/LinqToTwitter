@@ -68,7 +68,7 @@ namespace Linq2TwitterDemos_Console
                  select mute)
                 .SingleOrDefaultAsync();
 
-            muteResponse.IDList.ForEach(id => Console.WriteLine(id));
+            muteResponse?.IDList?.ForEach(id => Console.WriteLine(id));
         }
 
         static async Task LookupUsersAsync(TwitterContext twitterCtx)
@@ -80,25 +80,25 @@ namespace Linq2TwitterDemos_Console
                  select mute)
                 .SingleOrDefaultAsync();
 
-            muteResponse.Users.ForEach(user => Console.WriteLine(user.ScreenNameResponse));
+            muteResponse?.Users?.ForEach(user => Console.WriteLine(user.ScreenNameResponse));
         }
 
         static async Task MuteUserAsync(TwitterContext twitterCtx)
         {
             const string ScreenName = "justinbieber";
 
-            User mutedUser = await twitterCtx.MuteAsync(ScreenName);
+            User? mutedUser = await twitterCtx.MuteAsync(ScreenName);
 
-            Console.WriteLine("You muted {0}", mutedUser.ScreenNameResponse);
+            Console.WriteLine("You muted {0}", mutedUser?.ScreenNameResponse);
         }
 
         static async Task UnmuteUserAsync(TwitterContext twitterCtx)
         {
             const string ScreenName = "JoeMayo";
 
-            User unmutedUser = await twitterCtx.UnMuteAsync(ScreenName);
+            User? unmutedUser = await twitterCtx.UnMuteAsync(ScreenName);
 
-            Console.WriteLine("You un-muted {0}", unmutedUser.ScreenNameResponse);
+            Console.WriteLine("You un-muted {0}", unmutedUser?.ScreenNameResponse);
         }
     }
 }

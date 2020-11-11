@@ -28,17 +28,17 @@ namespace LinqToTwitter
         /// <summary>
         /// twitter search query on topic
         /// </summary>
-        public string Query { get; set; }
+        public string? Query { get; set; }
 
         /// <summary>
         /// Search URL returned from Local Trends
         /// </summary>
-        public string SearchUrl { get; set; }
+        public string? SearchUrl { get; set; }
 
         /// <summary>
         /// name of trend topic
         /// </summary>
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         /// <summary>
         /// Latitude
@@ -63,17 +63,17 @@ namespace LinqToTwitter
         /// <summary>
         /// No idea, perhaps the event associated with a trend
         /// </summary>
-        public string Events { get; set; }
+        public string? Events { get; set; }
 
         /// <summary>
         /// Flag indicating this is a promoted trend (as opposed to organic)
         /// </summary>
-        public string PromotedContent { get; set; }
+        public string? PromotedContent { get; set; }
 
         /// <summary>
         /// Return value for Avalable query listing locations of trending topics
         /// </summary>
-        public List<Location> Locations { get; set; }
+        public List<Location>? Locations { get; set; }
 
         /// <summary>
         /// Number of tweets in a trend

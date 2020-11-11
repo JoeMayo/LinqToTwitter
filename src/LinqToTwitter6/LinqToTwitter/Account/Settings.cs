@@ -10,7 +10,7 @@ namespace LinqToTwitter
         /// <summary>
         /// Location to display trends for
         /// </summary>
-        public Location TrendLocation { get; set; }
+        public Location? TrendLocation { get; set; }
 
         /// <summary>
         /// Is Geo Tracking On?
@@ -20,12 +20,12 @@ namespace LinqToTwitter
         /// <summary>
         /// Times to not notify (i.e. when you're sleeping)
         /// </summary>
-        public SleepTime SleepTime { get; set; }
+        public SleepTime? SleepTime { get; set; }
 
         /// <summary>
         /// The user's UI language selection on Twitter
         /// </summary>
-        public string Language { get; set; }
+        public string? Language { get; set; }
 
         /// <summary>
         /// Should they always use https protocol
@@ -40,12 +40,12 @@ namespace LinqToTwitter
         /// <summary>
         /// The user's timezone selection on Twitter
         /// </summary>
-        public TZInfo TimeZone { get; set; }
+        public TZInfo? TimeZone { get; set; }
 
         /// <summary>
         /// Account screen name
         /// </summary>
-        public string ScreenName { get; set; }
+        public string? ScreenName { get; set; }
 
         /// <summary>
         /// Use cookie personalization
@@ -65,16 +65,16 @@ namespace LinqToTwitter
         /// <summary>
         /// Allow contributor requests
         /// </summary>
-        public string AllowContributorRequest { get; set; }
+        public string? AllowContributorRequest { get; set; }
 
         /// <summary>
         /// Who is allowed to send DMs
         /// </summary>
-        public string AllowDmsFrom { get; set; }
+        public string? AllowDmsFrom { get; set; }
 
         /// <summary>
         /// Who is allowed to send grouped DMs
         /// </summary>
-        public string AllowDmGroupsFrom { get; set; }
+        public string? AllowDmGroupsFrom { get; set; }
     }
 }

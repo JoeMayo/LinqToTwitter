@@ -20,7 +20,7 @@ namespace LinqToTwitter
         /// <summary>
         /// base url for request
         /// </summary>
-        public virtual string BaseUrl { get; set; }
+        public virtual string? BaseUrl { get; set; }
 
         /// <summary>
         /// Number of items to return
@@ -30,7 +30,7 @@ namespace LinqToTwitter
         /// <summary>
         /// Helps page through results greater than Count items
         /// </summary>
-        public string Cursor { get; set; }
+        public string? Cursor { get; set; }
 
         /// <summary>
         /// ID of item to show
@@ -206,7 +206,7 @@ namespace LinqToTwitter
 
         IEnumerable<WelcomeMessage> HandleWelcomeMessage(string msgJson)
         {
-            WelcomeMessageValue welcomeMsg = JsonSerializer.Deserialize<WelcomeMessageValue>(msgJson);
+            WelcomeMessageValue? welcomeMsg = JsonSerializer.Deserialize<WelcomeMessageValue>(msgJson);
 
             return new List<WelcomeMessage>
             {
@@ -221,9 +221,9 @@ namespace LinqToTwitter
             };
         }
 
-        public T ProcessActionResult(string responseJson, Enum theAction)
+        public T? ProcessActionResult(string responseJson, Enum theAction)
         {
-            WelcomeMessage msg = null;
+            WelcomeMessage? msg = null;
 
             if (!string.IsNullOrWhiteSpace(responseJson))
                 msg = new WelcomeMessage

@@ -20,7 +20,7 @@ namespace LinqToTwitter
         /// <summary>
         /// base url for request
         /// </summary>
-        public virtual string BaseUrl { get; set; }
+        public virtual string? BaseUrl { get; set; }
 
         /// <summary>
         /// type of user request (i.e. Friends, Followers, or Show)
@@ -141,7 +141,7 @@ namespace LinqToTwitter
         {
             if (string.IsNullOrWhiteSpace(responseJson)) return new List<T>();
 
-            List<Mute> muteList = null;
+            List<Mute>? muteList = null;
 
             JsonElement mutesJson = JsonDocument.Parse(responseJson).RootElement;
 
@@ -212,7 +212,7 @@ namespace LinqToTwitter
             return userList;
         }
 
-        public T ProcessActionResult(string responseJson, Enum theAction)
+        public T? ProcessActionResult(string responseJson, Enum theAction)
         {
             JsonElement userJson = JsonDocument.Parse(responseJson).RootElement;
 

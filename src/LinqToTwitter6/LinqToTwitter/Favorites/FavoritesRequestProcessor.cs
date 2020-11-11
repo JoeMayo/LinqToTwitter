@@ -17,7 +17,7 @@ namespace LinqToTwitter
         IRequestProcessorWithAction<T>
         where T : class
     {
-        public virtual string BaseUrl { get; set; }
+        public virtual string? BaseUrl { get; set; }
 
         /// <summary>
         /// type of favorites to query
@@ -32,7 +32,7 @@ namespace LinqToTwitter
         /// <summary>
         /// Screen name of user to search (optional)
         /// </summary>
-        internal string ScreenName { get; set; }
+        internal string? ScreenName { get; set; }
 
         /// <summary>
         /// Number of items to return in a single request (optional)
@@ -189,7 +189,7 @@ namespace LinqToTwitter
             return statusList.OfType<T>().ToList();
         }
 
-        public T ProcessActionResult(string responseJson, Enum theAction)
+        public T? ProcessActionResult(string responseJson, Enum theAction)
         {
             JsonElement statusJson = JsonDocument.Parse(responseJson).RootElement;
 

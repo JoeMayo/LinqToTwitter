@@ -75,7 +75,7 @@ namespace LinqToTwitter
         /// <summary>
         /// type of user request (i.e. Friends, Followers, or Show)
         /// </summary>
-        public UserType Type { get; set; }
+        public UserType? Type { get; set; }
 
         /// <summary>
         /// Query User ID
@@ -146,12 +146,12 @@ namespace LinqToTwitter
         /// <summary>
         /// Size for UserProfileImage query
         /// </summary>
-        public ProfileImageSize ImageSize { get; set; }
+        public ProfileImageSize? ImageSize { get; set; }
 
         /// <summary>
         /// Set to TweetMode.Extended to receive 280 characters in Status.FullText property
         /// </summary>
-        public TweetMode TweetMode { get; set; }
+        public TweetMode? TweetMode { get; set; }
 
         /// <summary>
         /// Contains Next and Previous cursors

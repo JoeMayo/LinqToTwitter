@@ -16,8 +16,9 @@ namespace LinqToTwitter
         /// <exception cref="TwitterQueryException">
         /// Throws TwitterQueryException when an AddAccountActivitySubscriptionAsync fails.
         /// </exception>
-        public async Task<AccountActivity> AddAccountActivitySubscriptionAsync(ulong webhookID, CancellationToken cancelToken = default(CancellationToken))
+        public async Task<AccountActivity?> AddAccountActivitySubscriptionAsync(ulong webhookID, CancellationToken cancelToken = default(CancellationToken))
         {
+            _ = TwitterExecutor ?? throw new ArgumentNullException(nameof(TwitterExecutor), $"{nameof(TwitterExecutor)} should never be null.");
             if (webhookID == default(ulong))
                 throw new ArgumentException($"{nameof(webhookID)} must be set.", nameof(webhookID));
 
@@ -35,9 +36,10 @@ namespace LinqToTwitter
                    .ConfigureAwait(false);
 
             var reqProc = new AccountActivityRequestProcessor<AccountActivity>();
-            AccountActivity accAct = reqProc.ProcessActionResult(RawResult, AccountActivityType.Subscriptions);
+            AccountActivity? accAct = reqProc.ProcessActionResult(RawResult, AccountActivityType.Subscriptions);
 
-            accAct.WebhookID = webhookID;
+            if (accAct != null)
+                accAct.WebhookID = webhookID;
 
             return accAct;
         }
@@ -47,8 +49,9 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="url">Url of webhook.</param>
         /// <returns>Account Activity data.</returns>
-        public async Task<AccountActivity> AddAccountActivityWebhookAsync(string url, CancellationToken cancelToken = default(CancellationToken))
+        public async Task<AccountActivity?> AddAccountActivityWebhookAsync(string url, CancellationToken cancelToken = default(CancellationToken))
         {
+            _ = TwitterExecutor ?? throw new ArgumentNullException(nameof(TwitterExecutor), $"{nameof(TwitterExecutor)} should never be null.");
             if (string.IsNullOrWhiteSpace(url))
                 throw new ArgumentException($"{nameof(url)} must be set.", nameof(url));
 
@@ -58,7 +61,7 @@ namespace LinqToTwitter
                 await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<AccountActivity>(
                     HttpMethod.Post.ToString(),
                     newUrl,
-                    new Dictionary<string, string>
+                    new Dictionary<string, string?>
                     {
                         { "url", url }
                     },
@@ -66,9 +69,10 @@ namespace LinqToTwitter
                     .ConfigureAwait(false);
 
             var reqProc = new AccountActivityRequestProcessor<AccountActivity>();
-            AccountActivity accAct = reqProc.ProcessActionResult(RawResult, AccountActivityType.Webhooks);
+            AccountActivity? accAct = reqProc.ProcessActionResult(RawResult, AccountActivityType.Webhooks);
 
-            accAct.Url = url;
+            if (accAct != null)
+                accAct.Url = url;
 
             return accAct;
         }
@@ -78,8 +82,9 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="webhookID">ID of webhook to send CRC to.</param>
         /// <returns>Account Activity data.</returns>
-        public async Task<AccountActivity> SendAccountActivityCrcAsync(ulong webhookID, CancellationToken cancelToken = default(CancellationToken))
+        public async Task<AccountActivity?> SendAccountActivityCrcAsync(ulong webhookID, CancellationToken cancelToken = default(CancellationToken))
         {
+            _ = TwitterExecutor ?? throw new ArgumentNullException(nameof(TwitterExecutor), $"{nameof(TwitterExecutor)} should never be null.");
             if (webhookID == default(ulong))
                 throw new ArgumentException($"{nameof(webhookID)} must be set.", nameof(webhookID));
 
@@ -97,9 +102,10 @@ namespace LinqToTwitter
                    .ConfigureAwait(false);
 
             var reqProc = new AccountActivityRequestProcessor<AccountActivity>();
-            AccountActivity accAct = reqProc.ProcessActionResult(RawResult, AccountActivityType.Webhooks);
+            AccountActivity? accAct = reqProc.ProcessActionResult(RawResult, AccountActivityType.Webhooks);
 
-            accAct.WebhookID = webhookID;
+            if (accAct != null)
+                accAct.WebhookID = webhookID;
 
             return accAct;
         }
@@ -109,8 +115,9 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="webhookID">ID of webhook user is subscribing to.</param>
         /// <returns>Account Activity data.</returns>
-        public async Task<AccountActivity> DeleteAccountActivitySubscriptionAsync(ulong webhookID, CancellationToken cancelToken = default(CancellationToken))
+        public async Task<AccountActivity?> DeleteAccountActivitySubscriptionAsync(ulong webhookID, CancellationToken cancelToken = default(CancellationToken))
         {
+            _ = TwitterExecutor ?? throw new ArgumentNullException(nameof(TwitterExecutor), $"{nameof(TwitterExecutor)} should never be null.");
             if (webhookID == default(ulong))
                 throw new ArgumentException($"{nameof(webhookID)} must be set.", nameof(webhookID));
 
@@ -128,9 +135,10 @@ namespace LinqToTwitter
                    .ConfigureAwait(false);
 
             var reqProc = new AccountActivityRequestProcessor<AccountActivity>();
-            AccountActivity accAct = reqProc.ProcessActionResult(RawResult, AccountActivityType.Subscriptions);
+            AccountActivity? accAct = reqProc.ProcessActionResult(RawResult, AccountActivityType.Subscriptions);
 
-            accAct.WebhookID = webhookID;
+            if (accAct != null)
+                accAct.WebhookID = webhookID;
 
             return accAct;
         }
@@ -140,8 +148,9 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="webhookID">Url of webhook.</param>
         /// <returns>Account Activity data.</returns>
-        public async Task<AccountActivity> DeleteAccountActivityWebhookAsync(ulong webhookID, CancellationToken cancelToken = default(CancellationToken))
+        public async Task<AccountActivity?> DeleteAccountActivityWebhookAsync(ulong webhookID, CancellationToken cancelToken = default(CancellationToken))
         {
+            _ = TwitterExecutor ?? throw new ArgumentNullException(nameof(TwitterExecutor), $"{nameof(TwitterExecutor)} should never be null.");
             if (webhookID == default(ulong))
                 throw new ArgumentException($"{nameof(webhookID)} must be set.", nameof(webhookID));
 
@@ -162,9 +171,10 @@ namespace LinqToTwitter
                    .ConfigureAwait(false);
 
             var reqProc = new AccountActivityRequestProcessor<AccountActivity>();
-            AccountActivity accAct = reqProc.ProcessActionResult(RawResult, AccountActivityType.Webhooks);
+            AccountActivity? accAct = reqProc.ProcessActionResult(RawResult, AccountActivityType.Webhooks);
 
-            accAct.WebhookID = webhookID;
+            if (accAct != null)
+                accAct.WebhookID = webhookID;
 
             return accAct;
         }

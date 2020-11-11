@@ -31,16 +31,16 @@ namespace LinqToTwitter
         /// <summary>
         /// User returned by VerifyCredentials Queries
         /// </summary>
-        public User User { get; set; }
+        public User? User { get; set; }
 
         /// <summary>
         /// Current Totals
         /// </summary>
-        public Totals Totals { get; set; }
+        public Totals? Totals { get; set; }
 
         /// <summary>
         /// Account settings, such as trend location, geo enabled, and sleep time
         /// </summary>
-        public Settings Settings { get; set; }
+        public Settings? Settings { get; set; }
     }
 }

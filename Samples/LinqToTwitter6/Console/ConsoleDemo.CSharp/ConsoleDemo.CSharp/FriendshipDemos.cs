@@ -201,7 +201,7 @@ namespace Linq2TwitterDemos_Console
 
         static async Task FriendsListAsync(TwitterContext twitterCtx)
         {
-            Friendship friendship;
+            Friendship? friendship;
             long cursor = -1;
             int count = 0;
             do
@@ -235,7 +235,7 @@ namespace Linq2TwitterDemos_Console
 
         static async Task FollowersListAsync(TwitterContext twitterCtx)
         {
-            Friendship friendship;
+            Friendship? friendship;
             long cursor = -1;
             int count = 0;
             do
@@ -259,7 +259,7 @@ namespace Linq2TwitterDemos_Console
 
                 if (friendship != null && friendship.Users != null)
                 {
-                    cursor = friendship.CursorMovement.Next;
+                    cursor = friendship.CursorMovement?.Next ?? 0L;
 
                     friendship.Users.ForEach(friend =>
                         Console.WriteLine(
@@ -274,7 +274,7 @@ namespace Linq2TwitterDemos_Console
 
         static async Task ShowFollowerIDsAsync(TwitterContext twitterCtx)
         {
-            Friendship followers;
+            Friendship? followers;
             long cursor = -1;
             int count = 0;
             do
@@ -301,7 +301,7 @@ namespace Linq2TwitterDemos_Console
                     followers.IDInfo != null && 
                     followers.IDInfo.IDs != null)
                 {
-                    cursor = followers.CursorMovement.Next;
+                    cursor = followers.CursorMovement?.Next ?? 0L;
 
                     followers.IDInfo.IDs.ForEach(id =>
                         Console.WriteLine("Follower ID: " + id)); 
@@ -314,7 +314,7 @@ namespace Linq2TwitterDemos_Console
 
         static async Task ShowFriendIDsAsync(TwitterContext twitterCtx)
         {
-            Friendship friendList;
+            Friendship? friendList;
             long cursor = -1;
             int count = 0;
             do
@@ -340,7 +340,7 @@ namespace Linq2TwitterDemos_Console
                     friendList.IDInfo != null &&
                     friendList.IDInfo.IDs != null)
                 {
-                    cursor = friendList.CursorMovement.Next;
+                    cursor = friendList.CursorMovement?.Next ?? 0L;
 
                     friendList.IDInfo.IDs.ForEach(id =>
                         Console.WriteLine("Follower ID: " + id));
@@ -375,7 +375,7 @@ namespace Linq2TwitterDemos_Console
 
         static async Task UpdateFreindshipSettingsAsync(TwitterContext twitterCtx)
         {
-            Friendship friend = 
+            Friendship? friend = 
                 await twitterCtx.UpdateFriendshipSettingsAsync(
                     "Linq2Twitr", true, true);
 

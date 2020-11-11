@@ -21,7 +21,7 @@ namespace LinqToTwitter
         /// <summary>
         /// base url for request
         /// </summary>
-        public virtual string BaseUrl { get; set; }
+        public virtual string? BaseUrl { get; set; }
 
         /// <summary>
         /// type of trend to query (Trend (all), Current, Daily, or Weekly)
@@ -187,7 +187,7 @@ namespace LinqToTwitter
         /// <param name="responseJson">json with Twitter response</param>
         /// <param name="theAction">Type of action to process</param>
         /// <returns>Action response</returns>
-        public virtual T ProcessActionResult(string responseJson, Enum theAction)
+        public virtual T? ProcessActionResult(string responseJson, Enum theAction)
         {
             var trend = new Trend();
 

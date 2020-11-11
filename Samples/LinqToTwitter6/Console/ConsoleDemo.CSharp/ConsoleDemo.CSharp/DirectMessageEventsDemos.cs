@@ -100,7 +100,7 @@ namespace Linq2TwitterDemos_Console
 
         static async Task ShowDirectMessagesAsync(TwitterContext twitterCtx)
         {
-            DirectMessageEvents dmResponse =
+            DirectMessageEvents? dmResponse =
                 await
                     (from dm in twitterCtx.DirectMessageEvents
                      where dm.Type == DirectMessageEventsType.Show &&
@@ -108,14 +108,14 @@ namespace Linq2TwitterDemos_Console
                      select dm)
                     .SingleOrDefaultAsync();
 
-            DirectMessageCreate msgCreate = dmResponse?.Value?.DMEvent?.MessageCreate;
+            DirectMessageCreate? msgCreate = dmResponse?.Value?.DMEvent?.MessageCreate;
 
             if (dmResponse != null && msgCreate != null)
                 Console.WriteLine(
                     "From ID: {0}\nTo ID:  {1}\nMessage Text: {2}",
-                    msgCreate.SenderID ?? "None",
-                    msgCreate.Target.RecipientID ?? "None",
-                    msgCreate.MessageData.Text ?? "None");
+                    msgCreate?.SenderID ?? "None",
+                    msgCreate?.Target?.RecipientID ?? "None",
+                    msgCreate?.MessageData?.Text ?? "None");
         }
 
         static async Task ListDirectMessagesAsync(TwitterContext twitterCtx)
@@ -125,7 +125,7 @@ namespace Linq2TwitterDemos_Console
             List<DMEvent> allDmEvents = new List<DMEvent>();
 
             // you don't have a valid cursor until after the first query
-            DirectMessageEvents dmResponse =
+            DirectMessageEvents? dmResponse =
                 await
                     (from dm in twitterCtx.DirectMessageEvents
                      where dm.Type == DirectMessageEventsType.List &&
@@ -133,8 +133,8 @@ namespace Linq2TwitterDemos_Console
                      select dm)
                     .SingleOrDefaultAsync();
 
-            allDmEvents.AddRange(dmResponse.Value.DMEvents);
-            cursor = dmResponse.Value.NextCursor;
+            allDmEvents.AddRange(dmResponse?.Value?.DMEvents ?? new List<DMEvent>());
+            cursor = dmResponse?.Value?.NextCursor ?? "";
 
             while (!string.IsNullOrWhiteSpace(cursor))
             {
@@ -147,8 +147,8 @@ namespace Linq2TwitterDemos_Console
                          select dm)
                         .SingleOrDefaultAsync();
 
-                allDmEvents.AddRange(dmResponse.Value.DMEvents);
-                cursor = dmResponse.Value.NextCursor;
+                allDmEvents.AddRange(dmResponse?.Value?.DMEvents ?? new List<DMEvent>());
+                cursor = dmResponse?.Value?.NextCursor ?? "";
             }
 
             if (!allDmEvents.Any())
@@ -162,7 +162,7 @@ namespace Linq2TwitterDemos_Console
 
             allDmEvents.ForEach(evt =>
             {
-                DirectMessageCreate msgCreate = evt.MessageCreate;
+                DirectMessageCreate? msgCreate = evt.MessageCreate;
 
                 if (evt != null && msgCreate != null)
                     Console.WriteLine(
@@ -183,19 +183,19 @@ namespace Linq2TwitterDemos_Console
                     "DM from @JoeMayo to @Linq2Twitr of $MSFT & $TSLA with #TwitterAPI #chatbot " +
                     "at http://bit.ly/2xSJWJk and http://amzn.to/2gD09X6 on " + DateTime.Now + "!'");
 
-            DMEvent dmEvent = message?.Value?.DMEvent;
+            DMEvent? dmEvent = message?.Value?.DMEvent;
             if (dmEvent != null)
                 Console.WriteLine(
                     "Recipient: {0}, Message: {1}, Date: {2}",
-                    dmEvent.MessageCreate.Target.RecipientID,
-                    dmEvent.MessageCreate.MessageData.Text,
+                    dmEvent.MessageCreate?.Target?.RecipientID,
+                    dmEvent.MessageCreate?.MessageData?.Text,
                     dmEvent.CreatedTimestamp);
         }
 
         static async Task DeleteDirectMessageAsync(TwitterContext twitterCtx)
         {
             Console.Write("Which DM would you like to delete? (please enter DM ID): ");
-            string dmInput = Console.ReadLine();
+            string? dmInput = Console.ReadLine();
 
             ulong.TryParse(dmInput, out ulong dmID);
 
@@ -215,7 +215,7 @@ namespace Linq2TwitterDemos_Console
             const ulong Linq2TwitrID = 15411837;// 16761255;
             string mediaCategory = "dm_image";
 
-            Media media = await twitterCtx.UploadMediaAsync(
+            Media? media = await twitterCtx.UploadMediaAsync(
                 File.ReadAllBytes(@"..\..\..\images\200xColor_2.png"), 
                 mediaType: "image/png", 
                 additionalOwners: null, 
@@ -227,14 +227,14 @@ namespace Linq2TwitterDemos_Console
                     Linq2TwitrID,
                     "DM from @JoeMayo to @Linq2Twitr of $MSFT & $TSLA with #TwitterAPI #chatbot " +
                     "at http://bit.ly/2xSJWJk and http://amzn.to/2gD09X6 on " + DateTime.Now + "!'",
-                    media.MediaID);
+                    media?.MediaID ?? 0ul);
 
-            DMEvent dmEvent = message?.Value?.DMEvent;
+            DMEvent? dmEvent = message?.Value?.DMEvent;
             if (dmEvent != null)
                 Console.WriteLine(
                     "Recipient: {0}, Message: {1}, Date: {2}",
-                    dmEvent.MessageCreate.Target.RecipientID,
-                    dmEvent.MessageCreate.MessageData.Text,
+                    dmEvent.MessageCreate?.Target?.RecipientID,
+                    dmEvent.MessageCreate?.MessageData?.Text,
                     dmEvent.CreatedTimestamp);
         }
 
@@ -250,12 +250,12 @@ namespace Linq2TwitterDemos_Console
                     latitude: -122.443893,
                     longitude: 37.771718);
 
-            DMEvent dmEvent = message?.Value?.DMEvent;
+            DMEvent? dmEvent = message?.Value?.DMEvent;
             if (dmEvent != null)
                 Console.WriteLine(
                     "Recipient: {0}, Message: {1}, Date: {2}",
-                    dmEvent.MessageCreate.Target.RecipientID,
-                    dmEvent.MessageCreate.MessageData.Text,
+                    dmEvent.MessageCreate?.Target?.RecipientID,
+                    dmEvent.MessageCreate?.MessageData?.Text,
                     dmEvent.CreatedTimestamp);
         }
 
@@ -270,12 +270,12 @@ namespace Linq2TwitterDemos_Console
                     "at http://bit.ly/2xSJWJk and http://amzn.to/2gD09X6 on " + DateTime.Now + "!'",
                     placeID: "5a110d312052166f");
 
-            DMEvent dmEvent = message?.Value?.DMEvent;
+            DMEvent? dmEvent = message?.Value?.DMEvent;
             if (dmEvent != null)
                 Console.WriteLine(
                     "Recipient: {0}, Message: {1}, Date: {2}",
-                    dmEvent.MessageCreate.Target.RecipientID,
-                    dmEvent.MessageCreate.MessageData.Text,
+                    dmEvent.MessageCreate?.Target?.RecipientID,
+                    dmEvent.MessageCreate?.MessageData?.Text,
                     dmEvent.CreatedTimestamp);
         }
 
@@ -309,12 +309,12 @@ namespace Linq2TwitterDemos_Console
                     "What is your choice?",
                     options);
 
-            DMEvent dmEvent = message?.Value?.DMEvent;
+            DMEvent? dmEvent = message?.Value?.DMEvent;
             if (dmEvent != null)
                 Console.WriteLine(
                     "Recipient: {0}, Message: {1}, Date: {2}",
-                    dmEvent.MessageCreate.Target.RecipientID,
-                    dmEvent.MessageCreate.MessageData.Text,
+                    dmEvent.MessageCreate?.Target?.RecipientID,
+                    dmEvent.MessageCreate?.MessageData?.Text,
                     dmEvent.CreatedTimestamp);
         }
 
@@ -350,12 +350,12 @@ namespace Linq2TwitterDemos_Console
                     "Where would you like to go?",
                     buttons);
 
-            DMEvent dmEvent = message?.Value?.DMEvent;
+            DMEvent? dmEvent = message?.Value?.DMEvent;
             if (dmEvent != null)
                 Console.WriteLine(
                     "Recipient: {0}, Message: {1}, Date: {2}",
-                    dmEvent.MessageCreate.Target.RecipientID,
-                    dmEvent.MessageCreate.MessageData.Text,
+                    dmEvent.MessageCreate?.Target?.RecipientID,
+                    dmEvent.MessageCreate?.MessageData?.Text,
                     dmEvent.CreatedTimestamp);
         }
 
@@ -370,7 +370,7 @@ namespace Linq2TwitterDemos_Console
         {
             ulong recipientID = 15411837;
             Console.Write("Which DM would you mark read? (please enter DM ID): ");
-            string dmInput = Console.ReadLine();
+            string? dmInput = Console.ReadLine();
 
             ulong.TryParse(dmInput, out ulong dmID);
 

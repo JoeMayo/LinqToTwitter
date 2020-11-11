@@ -20,7 +20,7 @@ namespace LinqToTwitter
         /// <summary>
         /// base url for request
         /// </summary>
-        public virtual string BaseUrl { get; set; }
+        public virtual string? BaseUrl { get; set; }
 
         /// <summary>
         /// Type of Direct Message Events
@@ -35,7 +35,7 @@ namespace LinqToTwitter
         /// <summary>
         /// Supports paging through results on List queries
         /// </summary>
-        public string Cursor { get; set; }
+        public string? Cursor { get; set; }
 
         /// <summary>
         /// ID of DM

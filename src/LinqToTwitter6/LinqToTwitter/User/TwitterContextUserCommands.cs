@@ -14,7 +14,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="userID">User id of alleged spammer.</param>
         /// <returns>Alleged spammer user info.</returns>
-        public async Task<User> ReportSpamAsync(ulong userID, bool performBlock = false, CancellationToken cancelToken = default(CancellationToken))
+        public async Task<User?> ReportSpamAsync(ulong userID, bool performBlock = false, CancellationToken cancelToken = default(CancellationToken))
         {
             if (userID == 0)
                 throw new ArgumentException("Twitter doesn't have a user with ID == 0", "userID");
@@ -34,12 +34,12 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="screenName">Screen name of alleged spammer.</param>
         /// <returns>Alleged spammer user info.</returns>
-        public async Task<User> ReportSpamAsync(string screenName, bool performBlock = false, CancellationToken cancelToken = default(CancellationToken))
+        public async Task<User?> ReportSpamAsync(string screenName, bool performBlock = false, CancellationToken cancelToken = default(CancellationToken))
         {
             if (string.IsNullOrWhiteSpace(screenName))
                 throw new ArgumentException("Please supply a valid screen name", "screenName");
 
-            var reportParams = new Dictionary<string, string>
+            var reportParams = new Dictionary<string, string?>
             {
                 { "screen_name", screenName },
                 { "perform_block", performBlock ? bool.TrueString.ToLower() : null }
@@ -48,7 +48,7 @@ namespace LinqToTwitter
             return await ReportSpamAsync(reportParams, cancelToken).ConfigureAwait(false);
         }
 
-        internal async Task<User> ReportSpamAsync(IDictionary<string, string> reportParams, CancellationToken cancelToken = default(CancellationToken))
+        internal async Task<User?> ReportSpamAsync(IDictionary<string, string?> reportParams, CancellationToken cancelToken = default(CancellationToken))
         {
             string reportSpamUrl = BaseUrl + "users/report_spam.json";
 

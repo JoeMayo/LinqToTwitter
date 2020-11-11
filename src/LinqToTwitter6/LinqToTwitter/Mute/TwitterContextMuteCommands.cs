@@ -14,7 +14,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="screenName">Screen name of user to mute.</param>
         /// <returns>User entity for muted user.</returns>
-        public async Task<User> MuteAsync(string screenName, CancellationToken cancelToken = default(CancellationToken))
+        public async Task<User?> MuteAsync(string screenName, CancellationToken cancelToken = default(CancellationToken))
         {
             if (string.IsNullOrWhiteSpace(screenName))
                 throw new ArgumentNullException("screenName", "screenName is required");
@@ -29,7 +29,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="userID">ID of user to mute.</param>
         /// <returns>User entity for muted user.</returns>
-        public async Task<User> MuteAsync(ulong userID, CancellationToken cancelToken = default(CancellationToken))
+        public async Task<User?> MuteAsync(ulong userID, CancellationToken cancelToken = default(CancellationToken))
         {
             if (userID == 0)
                 throw new ArgumentException("userID can't be 0 - no user has this ID", "userID");
@@ -39,7 +39,7 @@ namespace LinqToTwitter
             return await MuteAsync(muteParams, cancelToken).ConfigureAwait(false);
         }
 
-        async Task<User> MuteAsync(IDictionary<string, string> muteParams, CancellationToken cancelToken = default(CancellationToken))
+        async Task<User?> MuteAsync(IDictionary<string, string> muteParams, CancellationToken cancelToken = default(CancellationToken))
         {
             var muteUrl = BaseUrl + "mutes/users/create.json";
 
@@ -58,7 +58,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="screenName">Screen name of user to mute.</param>
         /// <returns>User entity for muted user.</returns>
-        public async Task<User> UnMuteAsync(string screenName, CancellationToken cancelToken = default(CancellationToken))
+        public async Task<User?> UnMuteAsync(string screenName, CancellationToken cancelToken = default(CancellationToken))
         {
             if (string.IsNullOrWhiteSpace(screenName))
                 throw new ArgumentNullException("screenName", "screenName is required");
@@ -73,7 +73,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="userID">ID of user to mute.</param>
         /// <returns>User entity for muted user.</returns>
-        public async Task<User> UnMuteAsync(ulong userID, CancellationToken cancelToken = default(CancellationToken))
+        public async Task<User?> UnMuteAsync(ulong userID, CancellationToken cancelToken = default(CancellationToken))
         {
             if (userID == 0)
                 throw new ArgumentException("userID can't be 0 - no user has this ID", "userID");
@@ -83,7 +83,7 @@ namespace LinqToTwitter
             return await UnMuteAsync(muteParams, cancelToken).ConfigureAwait(false);
         }
 
-        async Task<User> UnMuteAsync(IDictionary<string, string> muteParams, CancellationToken cancelToken = default(CancellationToken))
+        async Task<User?> UnMuteAsync(IDictionary<string, string> muteParams, CancellationToken cancelToken = default(CancellationToken))
         {
             var muteUrl = BaseUrl + "mutes/users/destroy.json";
 

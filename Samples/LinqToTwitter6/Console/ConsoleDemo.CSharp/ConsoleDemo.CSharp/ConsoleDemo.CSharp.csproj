@@ -7,9 +7,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Reference Include="LinqToTwitter">
-			<HintPath>..\..\..\..\..\src\LinqToTwitter6\LinqToTwitter\bin\Debug\net5.0\LinqToTwitter.dll</HintPath>
-		</Reference>
+	  <PackageReference Include="linqtotwitter" Version="6.0.0" />
 	</ItemGroup>
 
 </Project>

@@ -155,9 +155,9 @@ namespace Linq2TwitterDemos_Console
 
         static async Task UpdateAccountSettingsAsync(TwitterContext twitterCtx)
         {
-            Account acct =
+            Account? acct =
                 await twitterCtx.UpdateAccountSettingsAsync(
-                    null, true, 20, 6, null, null);
+                    null, true, 20, 6, "", "");
 
             if (acct != null &&
                 acct.Settings != null &&

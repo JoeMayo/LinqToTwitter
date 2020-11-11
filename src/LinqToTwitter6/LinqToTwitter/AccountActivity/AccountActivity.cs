@@ -18,7 +18,7 @@ namespace LinqToTwitter
         /// <summary>
         /// Input: Url for adding a webhook
         /// </summary>
-        public string Url { get; set; }
+        public string? Url { get; set; }
 
         /// <summary>
         /// Input (All Queries): Type of Account Activity
@@ -28,12 +28,12 @@ namespace LinqToTwitter
         /// <summary>
         /// Output: Indicates whether a user is subscribed. Populated via a subscription command or query.
         /// </summary>
-        public SubscriptionValue SubscriptionValue { get; set; }
+        public SubscriptionValue? SubscriptionValue { get; set; }
 
         /// <summary>
         /// Output: Webhooks response from Twitter. Populated via a webhook command or query.
         /// </summary>
-        public WebhooksValue WebhooksValue { get; set; }
+        public WebhooksValue? WebhooksValue { get; set; }
     }
 
     public class SubscriptionValue
@@ -58,12 +58,12 @@ namespace LinqToTwitter
         public JsonElement Apps { get; set; }
 
         [JsonPropertyName("next_cursor")]
-        public string NextCursor { get; set; }
+        public string? NextCursor { get; set; }
     }
 
     public class WebhooksValue
     {
-        public Webhook[] Webhooks { get; set; }
+        public Webhook?[]? Webhooks { get; set; }
     }
 
     public class Webhook
@@ -72,13 +72,13 @@ namespace LinqToTwitter
         /// Webhook ID
         /// </summary>
         [JsonPropertyName("id")]
-        public string ID { get; set; }
+        public string? ID { get; set; }
 
         /// <summary>
         /// Webhook URL
         /// </summary>
         [JsonPropertyName("url")]
-        public string Url { get; set; }
+        public string? Url { get; set; }
 
         /// <summary>
         /// Did Webhook pass CRC
@@ -90,7 +90,7 @@ namespace LinqToTwitter
         /// UTC DateTime Webhook was created
         /// </summary>
         [JsonPropertyName("created_timestamp")]
-        public string CreatedTimestamp { get; set; }
+        public string? CreatedTimestamp { get; set; }
     }
 
 }

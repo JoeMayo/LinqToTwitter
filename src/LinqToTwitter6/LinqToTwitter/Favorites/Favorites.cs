@@ -34,7 +34,7 @@ namespace LinqToTwitter
         /// Screen name of user to search (optional)
         /// </summary>
         [XmlIgnore]
-        public new string ScreenName { get; set; }
+        public new string? ScreenName { get; set; }
 
         /// <summary>
         /// Number of items to return in a single request (optional)
@@ -65,7 +65,7 @@ namespace LinqToTwitter
         /// new mode that allows you to put more characters in a tweet.
         /// </summary>
         [XmlIgnore]
-        public new TweetMode TweetMode { get; set; }
+        public new TweetMode? TweetMode { get; set; }
 
         //
         // The following types support XML serialization
@@ -90,9 +90,9 @@ namespace LinqToTwitter
         }
 
         [XmlIgnore]
-        string screenName;
+        string? screenName;
         [XmlAttribute(AttributeName="ScreenName")]
-        public string ScreenNameXml
+        public string? ScreenNameXml
         {
             get { return screenName; }
             set { screenName = value; }

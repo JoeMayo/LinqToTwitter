@@ -89,7 +89,7 @@ namespace Linq2TwitterDemos_Console
         static async Task CreateBlockAsync(TwitterContext twitterCtx)
         {
             Console.Write("User Screen Name to Block: ");
-            string userName = Console.ReadLine();
+            string? userName = Console.ReadLine() ?? "";
 
             var user = await twitterCtx.CreateBlockAsync(0, userName, true);
 
@@ -100,7 +100,7 @@ namespace Linq2TwitterDemos_Console
         static async Task DestroyBlockAsync(TwitterContext twitterCtx)
         {
             Console.Write("User Screen Name to Unblock: ");
-            string userName = Console.ReadLine();
+            string? userName = Console.ReadLine() ?? "";
 
             var user = await twitterCtx.DestroyBlockAsync(0, userName, true);
 

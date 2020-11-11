@@ -29,7 +29,7 @@ namespace LinqToTwitter
         /// either the next or previous page.
         /// </remarks>
         [XmlIgnore]
-        public Cursors CursorMovement { get; internal set; }
+        public Cursors? CursorMovement { get; internal set; }
 
         /// <summary>
         /// Set to true for Twitter to return entity metadata with users last tweet.
@@ -44,11 +44,11 @@ namespace LinqToTwitter
         /// <summary>
         /// List of ids that are muted, populated by IDs query
         /// </summary>
-        public List<ulong> IDList { get; set; }
+        public List<ulong>? IDList { get; set; }
 
         /// <summary>
         /// List of User that are muted, populated by List query
         /// </summary>
-        public List<User> Users { get; set; }
+        public List<User>? Users { get; set; }
     }
 }

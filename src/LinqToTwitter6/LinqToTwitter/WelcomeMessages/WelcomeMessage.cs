@@ -32,7 +32,7 @@ namespace LinqToTwitter
         /// <summary>
         /// Helps page through results greater than Count items
         /// </summary>
-        public string Cursor { get; set; }
+        public string? Cursor { get; set; }
 
         /// <summary>
         /// Input (New Welcome Message Rule): ID of the message to set as default.
@@ -42,12 +42,12 @@ namespace LinqToTwitter
         /// <summary>
         /// Input (All Queries): Type of Welcome Message
         /// </summary>
-        public WelcomeMessageType Type { get; set; }
+        public WelcomeMessageType? Type { get; set; }
 
         /// <summary>
         /// Output: Response from Twitter
         /// </summary>
-        public WelcomeMessageValue Value { get; set; }
+        public WelcomeMessageValue? Value { get; set; }
     }
 
     public class WelcomeMessageValue
@@ -56,25 +56,25 @@ namespace LinqToTwitter
         /// Single Welcome Message
         /// </summary>
         [JsonPropertyName("welcome_message")]
-        public WelcomeMsg WelcomeMessage { get; set; }
+        public WelcomeMsg? WelcomeMessage { get; set; }
 
         /// <summary>
         /// Multiple Welcome Messages
         /// </summary>
         [JsonPropertyName("welcome_messages")]
-        public List<WelcomeMsg> WelcomeMessages { get; set; }
+        public List<WelcomeMsg>? WelcomeMessages { get; set; }
 
         /// <summary>
         /// A single message rule
         /// </summary>
         [JsonPropertyName("welcome_message_rule")]
-        public WelcomeMessageRule WelcomeMessageRule { get; set; }
+        public WelcomeMessageRule? WelcomeMessageRule { get; set; }
 
         /// <summary>
         /// Multiple message rules
         /// </summary>
         [JsonPropertyName("welcome_message_rules")]
-        public List<WelcomeMessageRule> WelcomeMessageRules { get; set; }
+        public List<WelcomeMessageRule>? WelcomeMessageRules { get; set; }
 
         /// <summary>
         /// Show and List queries populate this to show which app created the message.
@@ -88,25 +88,25 @@ namespace LinqToTwitter
         /// ID for the next page or null if there isn't a next page
         /// </summary>
         [JsonPropertyName("next_cursor")]
-        public string NextCursor { get; set; }
+        public string? NextCursor { get; set; }
     }
 
     public class WelcomeMsg
     {
         [JsonPropertyName("id")]
-        public string Id { get; set; }
+        public string? Id { get; set; }
         [JsonPropertyName("created_timestamp")]
-        public string CreatedTimestamp { get; set; }
+        public string? CreatedTimestamp { get; set; }
 
         /// <summary>
         /// ID of the application creating the Message
         /// </summary>
         [JsonPropertyName("source_app_id")]
-        public string SourceAppId { get; set; }
+        public string? SourceAppId { get; set; }
         [JsonPropertyName("name")]
-        public string Name { get; set; }
+        public string? Name { get; set; }
         [JsonPropertyName("message_data")]
-        public WelcomeMessageData MessageData { get; set; }
+        public WelcomeMessageData? MessageData { get; set; }
 
         DateTime createdAt;
         /// <summary>
@@ -128,35 +128,35 @@ namespace LinqToTwitter
     public class WelcomeMessageData
     {
         [JsonPropertyName("text")]
-        public string Text { get; set; }
+        public string? Text { get; set; }
         [JsonPropertyName("entities")]
-        public Entities Entities { get; set; }
+        public Entities? Entities { get; set; }
         [JsonPropertyName("attachment")]
-        public WelcomeMessageAttachment Attachment { get; set; }
+        public WelcomeMessageAttachment? Attachment { get; set; }
     }
 
     public class WelcomeMessageAttachment
     {
         [JsonPropertyName("type")]
-        public string Type { get; set; }
+        public string? Type { get; set; }
         [JsonPropertyName("media")]
-        public WelcomeMessageMedia Media { get; set; }
+        public WelcomeMessageMedia? Media { get; set; }
     }
 
     public class WelcomeMessageMedia
     {
         [JsonPropertyName("id")]
-        public string Id { get; set; }
+        public string? Id { get; set; }
     }
 
     public class WelcomeMessageRule
     {
         [JsonPropertyName("id")]
-        public string ID { get; set; }
+        public string? ID { get; set; }
         [JsonPropertyName("created_timestamp")]
-        public string CreatedTimestamp { get; set; }
+        public string? CreatedTimestamp { get; set; }
         [JsonPropertyName("welcome_message_id")]
-        public string WelcomeMessageID { get; set; }
+        public string? WelcomeMessageID { get; set; }
 
         /// <summary>
         /// Helper property for C# DateTime matching CreatedTimestamp (so you don't have to convert it yourself)

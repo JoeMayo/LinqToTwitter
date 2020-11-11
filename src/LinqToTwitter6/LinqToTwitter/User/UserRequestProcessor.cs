@@ -23,12 +23,12 @@ namespace LinqToTwitter
         /// <summary>
         /// base url for request
         /// </summary>
-        public virtual string BaseUrl { get; set; }
+        public virtual string? BaseUrl { get; set; }
 
         /// <summary>
         /// type of user request (i.e. Friends, Followers, or Show)
         /// </summary>
-        public UserType Type { get; set; }
+        public UserType? Type { get; set; }
 
         /// <summary>
         /// User ID
@@ -38,18 +38,18 @@ namespace LinqToTwitter
         /// <summary>
         /// Comma-separated list of user IDs (e.g. for Lookup query)
         /// </summary>
-        public string UserIdList { get; set; }
+        public string? UserIdList { get; set; }
 
         /// <summary>
         /// user's screen name
         /// On Input - disambiguates when ID is User ID
         /// </summary>
-        public string ScreenName { get; set; }
+        public string? ScreenName { get; set; }
 
         /// <summary>
         /// Comma-separated list of screen names (e.g. for Lookup query)
         /// </summary>
-        public string ScreenNameList { get; set; }
+        public string? ScreenNameList { get; set; }
 
         /// <summary>
         /// page number of results to retrieve
@@ -75,17 +75,17 @@ namespace LinqToTwitter
         /// <summary>
         /// Used to identify suggested users category
         /// </summary>
-        public string Slug { get; set; }
+        public string? Slug { get; set; }
 
         /// <summary>
         /// Query for User Search
         /// </summary>
-        public string Query { get; set; }
+        public string? Query { get; set; }
 
         /// <summary>
         /// Supports various languages
         /// </summary>
-        public string Lang { get; set; }
+        public string? Lang { get; set; }
 
         /// <summary>
         /// Add entities to results
@@ -100,12 +100,12 @@ namespace LinqToTwitter
         /// <summary>
         /// Size for UserProfileImage query
         /// </summary>
-        public ProfileImageSize ImageSize { get; set; }
+        public ProfileImageSize? ImageSize { get; set; }
 
         /// <summary>
         /// Set to TweetMode.Extended to receive 280 characters in Status.FullText property
         /// </summary>
-        public TweetMode TweetMode { get; set; }
+        public TweetMode? TweetMode { get; set; }
 
         /// <summary>
         /// extracts parameters from lambda

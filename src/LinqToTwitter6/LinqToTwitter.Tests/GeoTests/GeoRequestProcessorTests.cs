@@ -222,20 +222,6 @@ namespace LinqToTwitter.Tests.GeoTests
         }
 
         [TestMethod]
-        public void ProcessResults_Handles_ReverseGeoCode_Response()
-        {
-            const int ExpectedPlacesCount = 4;
-            var geoReqProc = new GeoRequestProcessor<Geo>();
-
-            List<Geo> geo = geoReqProc.ProcessResults(MultiPlaceResponse);
-
-            Assert.IsNotNull(geo);
-            Assert.IsNotNull(geo.SingleOrDefault());
-            Assert.IsNotNull(geo.Single().Places);
-            Assert.AreEqual(ExpectedPlacesCount, geo.Single().Places.Count);
-        }
-
-        [TestMethod]
         public void ProcessResults_Handles_ID_Response()
         {
             const string ExpectedPlaceName = "San Francisco";
@@ -264,22 +250,6 @@ namespace LinqToTwitter.Tests.GeoTests
         }
 
         [TestMethod]
-        public void ProcessResults_Handles_Search_Response()
-        {
-            const int ExpectedPlacesCount = 4;
-            const string ExpectedPlaceFullName = "SoMa, San Francisco";
-            var geoReqProc = new GeoRequestProcessor<Geo> { Type = GeoType.Search };
-
-            List<Geo> geo = geoReqProc.ProcessResults(MultiPlaceResponse);
-
-            Assert.IsNotNull(geo);
-            Assert.IsNotNull(geo.SingleOrDefault());
-            Assert.IsNotNull(geo.Single().Places);
-            Assert.AreEqual(ExpectedPlacesCount, geo.Single().Places.Count);
-            Assert.AreEqual(ExpectedPlaceFullName, geo.Single().Places.First().FullName);
-        }
-
-        [TestMethod]
         public void ProcessResults_Returns_Empty_Collection_When_Empty_Results()
         {
             var geoReqProc = new GeoRequestProcessor<Geo>() { BaseUrl = "https://api.twitter.com/1.1/" };
@@ -290,238 +260,238 @@ namespace LinqToTwitter.Tests.GeoTests
             Assert.IsFalse(geo.Any());
         }
 
-        const string MultiPlaceResponse = @"{
-   ""query"":{
-      ""type"":""reverse_geocode"",
-      ""params"":{
-         ""accuracy"":0,
-         ""granularity"":""neighborhood"",
-         ""coordinates"":{
-            ""type"":""Point"",
-            ""coordinates"":[
-               -122.4006,
-               37.78215
-            ]
-         }
-      },
-      ""url"":""http:\/\/api.twitter.com\/1\/geo\/reverse_geocode.json?long=-122.4006&accuracy=0&granularity=neighborhood&lat=37.78215""
-   },
-   ""result"":{
-      ""token"":""15f3c6f2b94ba19faee70d9d61aaebee"",
-      ""places"":[
-         {
-            ""contained_within"":[
-               {
-                  ""country"":""United States"",
-                  ""place_type"":""city"",
-                  ""name"":""San Francisco"",
-                  ""bounding_box"":{
-                     ""type"":""Polygon"",
-                     ""coordinates"":[
-                        [
-                           [
-                              -122.51368188,
-                              37.70813196
-                           ],
-                           [
-                              -122.35845384,
-                              37.70813196
-                           ],
-                           [
-                              -122.35845384,
-                              37.83245301
-                           ],
-                           [
-                              -122.51368188,
-                              37.83245301
-                           ]
-                        ]
-                     ]
-                  },
-                  ""attributes"":{
+//        const string MultiPlaceResponse = @"{
+//   ""query"":{
+//      ""type"":""reverse_geocode"",
+//      ""params"":{
+//         ""accuracy"":0,
+//         ""granularity"":""neighborhood"",
+//         ""coordinates"":{
+//            ""type"":""Point"",
+//            ""coordinates"":[
+//               -122.4006,
+//               37.78215
+//            ]
+//         }
+//      },
+//      ""url"":""http:\/\/api.twitter.com\/1\/geo\/reverse_geocode.json?long=-122.4006&accuracy=0&granularity=neighborhood&lat=37.78215""
+//   },
+//   ""result"":{
+//      ""token"":""15f3c6f2b94ba19faee70d9d61aaebee"",
+//      ""places"":[
+//         {
+//            ""contained_within"":[
+//               {
+//                  ""country"":""United States"",
+//                  ""place_type"":""city"",
+//                  ""name"":""San Francisco"",
+//                  ""bounding_box"":{
+//                     ""type"":""Polygon"",
+//                     ""coordinates"":[
+//                        [
+//                           [
+//                              -122.51368188,
+//                              37.70813196
+//                           ],
+//                           [
+//                              -122.35845384,
+//                              37.70813196
+//                           ],
+//                           [
+//                              -122.35845384,
+//                              37.83245301
+//                           ],
+//                           [
+//                              -122.51368188,
+//                              37.83245301
+//                           ]
+//                        ]
+//                     ]
+//                  },
+//                  ""attributes"":{
 
-                  },
-                  ""full_name"":""San Francisco, CA"",
-                  ""country_code"":""US"",
-                  ""url"":""http:\/\/api.twitter.com\/1\/geo\/id\/5a110d312052166f.json"",
-                  ""id"":""5a110d312052166f""
-               }
-            ],
-            ""place_type"":""neighborhood"",
-            ""country"":""United States"",
-            ""name"":""SoMa"",
-            ""full_name"":""SoMa, San Francisco"",
-            ""attributes"":{
+//                  },
+//                  ""full_name"":""San Francisco, CA"",
+//                  ""country_code"":""US"",
+//                  ""url"":""http:\/\/api.twitter.com\/1\/geo\/id\/5a110d312052166f.json"",
+//                  ""id"":""5a110d312052166f""
+//               }
+//            ],
+//            ""place_type"":""neighborhood"",
+//            ""country"":""United States"",
+//            ""name"":""SoMa"",
+//            ""full_name"":""SoMa, San Francisco"",
+//            ""attributes"":{
 
-            },
-            ""bounding_box"":{
-               ""type"":""Polygon"",
-               ""coordinates"":[
-                  [
-                     [
-                        -122.42284884,
-                        37.76893497
-                     ],
-                     [
-                        -122.3964,
-                        37.76893497
-                     ],
-                     [
-                        -122.3964,
-                        37.78752897
-                     ],
-                     [
-                        -122.42284884,
-                        37.78752897
-                     ]
-                  ]
-               ]
-            },
-            ""country_code"":""US"",
-            ""url"":""http:\/\/api.twitter.com\/1\/geo\/id\/2b6ff8c22edd9576.json"",
-            ""id"":""2b6ff8c22edd9576""
-         },
-         {
-            ""contained_within"":[
-               {
-                  ""country"":""United States"",
-                  ""place_type"":""admin"",
-                  ""name"":""California"",
-                  ""bounding_box"":{
-                     ""type"":""Polygon"",
-                     ""coordinates"":[
-                        [
-                           [
-                              -124.482003,
-                              32.528832
-                           ],
-                           [
-                              -114.131211,
-                              32.528832
-                           ],
-                           [
-                              -114.131211,
-                              42.009517
-                           ],
-                           [
-                              -124.482003,
-                              42.009517
-                           ]
-                        ]
-                     ]
-                  },
-                  ""attributes"":{
+//            },
+//            ""bounding_box"":{
+//               ""type"":""Polygon"",
+//               ""coordinates"":[
+//                  [
+//                     [
+//                        -122.42284884,
+//                        37.76893497
+//                     ],
+//                     [
+//                        -122.3964,
+//                        37.76893497
+//                     ],
+//                     [
+//                        -122.3964,
+//                        37.78752897
+//                     ],
+//                     [
+//                        -122.42284884,
+//                        37.78752897
+//                     ]
+//                  ]
+//               ]
+//            },
+//            ""country_code"":""US"",
+//            ""url"":""http:\/\/api.twitter.com\/1\/geo\/id\/2b6ff8c22edd9576.json"",
+//            ""id"":""2b6ff8c22edd9576""
+//         },
+//         {
+//            ""contained_within"":[
+//               {
+//                  ""country"":""United States"",
+//                  ""place_type"":""admin"",
+//                  ""name"":""California"",
+//                  ""bounding_box"":{
+//                     ""type"":""Polygon"",
+//                     ""coordinates"":[
+//                        [
+//                           [
+//                              -124.482003,
+//                              32.528832
+//                           ],
+//                           [
+//                              -114.131211,
+//                              32.528832
+//                           ],
+//                           [
+//                              -114.131211,
+//                              42.009517
+//                           ],
+//                           [
+//                              -124.482003,
+//                              42.009517
+//                           ]
+//                        ]
+//                     ]
+//                  },
+//                  ""attributes"":{
 
-                  },
-                  ""full_name"":""California, US"",
-                  ""country_code"":""US"",
-                  ""url"":""http:\/\/api.twitter.com\/1\/geo\/id\/fbd6d2f5a4e4a15e.json"",
-                  ""id"":""fbd6d2f5a4e4a15e""
-               }
-            ],
-            ""place_type"":""city"",
-            ""country"":""United States"",
-            ""name"":""San Francisco"",
-            ""full_name"":""San Francisco, CA"",
-            ""attributes"":{
+//                  },
+//                  ""full_name"":""California, US"",
+//                  ""country_code"":""US"",
+//                  ""url"":""http:\/\/api.twitter.com\/1\/geo\/id\/fbd6d2f5a4e4a15e.json"",
+//                  ""id"":""fbd6d2f5a4e4a15e""
+//               }
+//            ],
+//            ""place_type"":""city"",
+//            ""country"":""United States"",
+//            ""name"":""San Francisco"",
+//            ""full_name"":""San Francisco, CA"",
+//            ""attributes"":{
 
-            },
-            ""bounding_box"":{
-               ""type"":""Polygon"",
-               ""coordinates"":[
-                  [
-                     [
-                        -122.51368188,
-                        37.70813196
-                     ],
-                     [
-                        -122.35845384,
-                        37.70813196
-                     ],
-                     [
-                        -122.35845384,
-                        37.83245301
-                     ],
-                     [
-                        -122.51368188,
-                        37.83245301
-                     ]
-                  ]
-               ]
-            },
-            ""country_code"":""US"",
-            ""url"":""http:\/\/api.twitter.com\/1\/geo\/id\/5a110d312052166f.json"",
-            ""id"":""5a110d312052166f""
-         },
-         {
-            ""contained_within"":[
-               {
-                  ""country"":""United States"",
-                  ""place_type"":""country"",
-                  ""name"":""United States"",
-                  ""bounding_box"":null,
-                  ""attributes"":{
+//            },
+//            ""bounding_box"":{
+//               ""type"":""Polygon"",
+//               ""coordinates"":[
+//                  [
+//                     [
+//                        -122.51368188,
+//                        37.70813196
+//                     ],
+//                     [
+//                        -122.35845384,
+//                        37.70813196
+//                     ],
+//                     [
+//                        -122.35845384,
+//                        37.83245301
+//                     ],
+//                     [
+//                        -122.51368188,
+//                        37.83245301
+//                     ]
+//                  ]
+//               ]
+//            },
+//            ""country_code"":""US"",
+//            ""url"":""http:\/\/api.twitter.com\/1\/geo\/id\/5a110d312052166f.json"",
+//            ""id"":""5a110d312052166f""
+//         },
+//         {
+//            ""contained_within"":[
+//               {
+//                  ""country"":""United States"",
+//                  ""place_type"":""country"",
+//                  ""name"":""United States"",
+//                  ""bounding_box"":null,
+//                  ""attributes"":{
 
-                  },
-                  ""full_name"":""United States"",
-                  ""country_code"":""US"",
-                  ""url"":""http:\/\/api.twitter.com\/1\/geo\/id\/96683cc9126741d1.json"",
-                  ""id"":""96683cc9126741d1""
-               }
-            ],
-            ""place_type"":""admin"",
-            ""country"":""United States"",
-            ""name"":""California"",
-            ""full_name"":""California, US"",
-            ""attributes"":{
+//                  },
+//                  ""full_name"":""United States"",
+//                  ""country_code"":""US"",
+//                  ""url"":""http:\/\/api.twitter.com\/1\/geo\/id\/96683cc9126741d1.json"",
+//                  ""id"":""96683cc9126741d1""
+//               }
+//            ],
+//            ""place_type"":""admin"",
+//            ""country"":""United States"",
+//            ""name"":""California"",
+//            ""full_name"":""California, US"",
+//            ""attributes"":{
 
-            },
-            ""bounding_box"":{
-               ""type"":""Polygon"",
-               ""coordinates"":[
-                  [
-                     [
-                        -124.482003,
-                        32.528832
-                     ],
-                     [
-                        -114.131211,
-                        32.528832
-                     ],
-                     [
-                        -114.131211,
-                        42.009517
-                     ],
-                     [
-                        -124.482003,
-                        42.009517
-                     ]
-                  ]
-               ]
-            },
-            ""country_code"":""US"",
-            ""url"":""http:\/\/api.twitter.com\/1\/geo\/id\/fbd6d2f5a4e4a15e.json"",
-            ""id"":""fbd6d2f5a4e4a15e""
-         },
-         {
-            ""contained_within"":[
+//            },
+//            ""bounding_box"":{
+//               ""type"":""Polygon"",
+//               ""coordinates"":[
+//                  [
+//                     [
+//                        -124.482003,
+//                        32.528832
+//                     ],
+//                     [
+//                        -114.131211,
+//                        32.528832
+//                     ],
+//                     [
+//                        -114.131211,
+//                        42.009517
+//                     ],
+//                     [
+//                        -124.482003,
+//                        42.009517
+//                     ]
+//                  ]
+//               ]
+//            },
+//            ""country_code"":""US"",
+//            ""url"":""http:\/\/api.twitter.com\/1\/geo\/id\/fbd6d2f5a4e4a15e.json"",
+//            ""id"":""fbd6d2f5a4e4a15e""
+//         },
+//         {
+//            ""contained_within"":[
 
-            ],
-            ""place_type"":""country"",
-            ""country"":""United States"",
-            ""name"":""United States"",
-            ""full_name"":""United States"",
-            ""attributes"":{
+//            ],
+//            ""place_type"":""country"",
+//            ""country"":""United States"",
+//            ""name"":""United States"",
+//            ""full_name"":""United States"",
+//            ""attributes"":{
 
-            },
-            ""bounding_box"":null,
-            ""country_code"":""US"",
-            ""url"":""http:\/\/api.twitter.com\/1\/geo\/id\/96683cc9126741d1.json"",
-            ""id"":""96683cc9126741d1""
-         }
-      ]
-   }
-}";
+//            },
+//            ""bounding_box"":null,
+//            ""country_code"":""US"",
+//            ""url"":""http:\/\/api.twitter.com\/1\/geo\/id\/96683cc9126741d1.json"",
+//            ""id"":""96683cc9126741d1""
+//         }
+//      ]
+//   }
+//}";
 
         const string IDResponse = @"{
    ""country"":""United States"",

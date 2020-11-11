@@ -1,5 +1,4 @@
-﻿#nullable disable
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -69,27 +68,27 @@ namespace LinqToTwitter
         /// <summary>
         /// base URL for accessing Twitter API v1.1
         /// </summary>
-        public string BaseUrl { get; set; }
+        public string? BaseUrl { get; set; }
 
         /// <summary>
         /// base URL for accessing Twitter API v2
         /// </summary>
-        public string BaseUrl2 { get; set; }
+        public string? BaseUrl2 { get; set; }
 
         /// <summary>
         /// base URL for uploading media
         /// </summary>
-        public string UploadUrl { get; set; }
+        public string? UploadUrl { get; set; }
 
         /// <summary>
         /// base URL for accessing streaming APIs
         /// </summary>
-        public string StreamingUrl { get; set; }
+        public string? StreamingUrl { get; set; }
 
         /// <summary>
         /// Assign the Log to the context
         /// </summary>
-        public TextWriter Log
+        public TextWriter? Log
         {
             get { return TwitterExecute.Log; }
             set { TwitterExecute.Log = value; }
@@ -98,7 +97,7 @@ namespace LinqToTwitter
         /// <summary>
         /// This contains the JSON string from the Twitter response to the most recent query.
         /// </summary>
-        public string RawResult { get; set; }
+        public string? RawResult { get; set; }
 
         /// <summary>
         /// By default, LINQ to Twitter populates RawResult on TwitterContext and JsonContent on entities. 
@@ -116,7 +115,7 @@ namespace LinqToTwitter
         /// <summary>
         /// Gets and sets HTTP UserAgent header
         /// </summary>
-        public string UserAgent
+        public string? UserAgent
         {
             get
             {
@@ -143,17 +142,13 @@ namespace LinqToTwitter
             get
             {
                 if (TwitterExecutor != null)
-                {
                     return TwitterExecutor.ReadWriteTimeout;
-                }
                 return TwitterExecute.DefaultReadWriteTimeout;
             }
             set
             {
                 if (TwitterExecutor != null)
-                {
                     TwitterExecutor.ReadWriteTimeout = value;
-                }
             }
         }
 
@@ -165,37 +160,41 @@ namespace LinqToTwitter
             get
             {
                 if (TwitterExecutor != null)
-                {
                     return TwitterExecutor.Timeout;
-                }
                 return TwitterExecute.DefaultTimeout;
             }
             set
             {
                 if (TwitterExecutor != null)
-                {
                     TwitterExecutor.Timeout = value;
-                }
             }
         }
 
         /// <summary>
         /// Gets or sets the authorized client on the <see cref="ITwitterExecute"/> object.
         /// </summary>
-        public IAuthorizer Authorizer
+        public IAuthorizer? Authorizer
         {
-            get { return TwitterExecutor.Authorizer; }
-            set { TwitterExecutor.Authorizer = value; }
+            get { return TwitterExecutor?.Authorizer; }
+            set 
+            { 
+                if (TwitterExecutor != null)
+                    TwitterExecutor.Authorizer = value; 
+            }
         }
 
 #if !WINDOWS_UWP
         /// <summary>
         /// Allows setting the IWebProxy for all HTTP requests.
         /// </summary>
-        public IWebProxy Proxy
+        public IWebProxy? Proxy
         {
-            get { return Authorizer.Proxy; }
-            set { Authorizer.Proxy = value; }
+            get { return Authorizer?.Proxy; }
+            set 
+            { 
+                if (Authorizer != null) 
+                    Authorizer.Proxy = value; 
+            }
         }
 #endif
 
@@ -205,15 +204,15 @@ namespace LinqToTwitter
         /// <remarks>
         /// Supports debugging.
         /// </remarks>
-        public Uri LastUrl
+        public Uri? LastUrl
         {
-            get { return TwitterExecutor.LastUrl; }
+            get { return TwitterExecutor?.LastUrl; }
         }
         
         /// <summary>
         /// Methods for communicating with Twitter.
         /// </summary>
-        internal ITwitterExecute TwitterExecutor { get; set; }
+        internal ITwitterExecute? TwitterExecutor { get; set; }
 
         /// <summary>
         /// retrieves a specified response header, converting it to an int
@@ -223,7 +222,7 @@ namespace LinqToTwitter
         private int GetResponseHeaderAsInt(string responseHeader)
         {
             int headerVal = -1;
-            IDictionary<string, string> headers = ResponseHeaders;
+            IDictionary<string, string>? headers = ResponseHeaders;
 
             if (headers != null &&
                 headers.ContainsKey(responseHeader))
@@ -245,7 +244,7 @@ namespace LinqToTwitter
         private DateTime? GetResponseHeaderAsDateTime(string responseHeader)
         {
             DateTime? headerVal = null;
-            IDictionary<string, string> headers = ResponseHeaders;
+            IDictionary<string, string>? headers = ResponseHeaders;
 
             if (headers != null &&
                 headers.ContainsKey(responseHeader))
@@ -265,7 +264,7 @@ namespace LinqToTwitter
         /// <summary>
         /// Response headers from Twitter Queries
         /// </summary>
-        public IDictionary<string, string> ResponseHeaders
+        public IDictionary<string, string>? ResponseHeaders
         {
             get
             {
@@ -398,6 +397,8 @@ namespace LinqToTwitter
         public virtual async Task<object> ExecuteAsync<T>(Expression expression, bool isEnumerable)
             where T: class
         {
+            _ = TwitterExecutor ?? throw new ArgumentNullException(nameof(TwitterExecutor), $"{nameof(TwitterExecutor)} should never be null.");
+
             // request processor is specific to request type (i.e. Status, User, etc.)
             IRequestProcessor<T> reqProc = CreateRequestProcessor<T>(expression);
 
@@ -496,7 +497,7 @@ namespace LinqToTwitter
         protected internal IRequestProcessor<T> CreateRequestProcessor<T>(string requestType)
             where T : class
         {
-            string baseUrl = BaseUrl;
+            string? baseUrl = BaseUrl;
             IRequestProcessor<T> req;
 
             switch (requestType)

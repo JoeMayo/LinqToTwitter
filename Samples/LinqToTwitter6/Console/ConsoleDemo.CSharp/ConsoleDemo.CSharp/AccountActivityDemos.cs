@@ -81,15 +81,15 @@ namespace Linq2TwitterDemos_Console
             try
             {
                 Console.Write("What is the Webhook URL? ");
-                string url = Console.ReadLine();
+                string url = Console.ReadLine() ?? "";
 
-                AccountActivity accAct = await twitterCtx.AddAccountActivityWebhookAsync(url);
+                AccountActivity? accAct = await twitterCtx.AddAccountActivityWebhookAsync(url);
 
-                Webhook webhook = accAct.WebhooksValue.Webhooks.SingleOrDefault();
+                Webhook? webhook = accAct?.WebhooksValue?.Webhooks?.SingleOrDefault();
                 Console.WriteLine(
-                    $"Webhook for '{webhook.Url}' " +
-                    $"added with ID: {webhook.ID}, " +
-                    $"created at {webhook.CreatedTimestamp}");
+                    $"Webhook for '{webhook?.Url}' " +
+                    $"added with ID: {webhook?.ID}, " +
+                    $"created at {webhook?.CreatedTimestamp}");
             }
             catch (TwitterQueryException tqe)
             {
@@ -113,10 +113,10 @@ namespace Linq2TwitterDemos_Console
                 if (webhooksResponse.WebhooksValue.Webhooks.Any())
                     foreach (var webhook in webhooksResponse.WebhooksValue.Webhooks)
                         Console.WriteLine(
-                            $"ID: {webhook.ID}, " +
-                            $"Created: {webhook.CreatedTimestamp}, " +
-                            $"Valid: {webhook.Valid}, " +
-                            $"URL: {webhook.Url}");
+                            $"ID: {webhook?.ID}, " +
+                            $"Created: {webhook?.CreatedTimestamp}, " +
+                            $"Valid: {webhook?.Valid}, " +
+                            $"URL: {webhook?.Url}");
                 else
                     Console.WriteLine("No webhooks registered");
             }
@@ -128,7 +128,7 @@ namespace Linq2TwitterDemos_Console
 
             var acctActivity = await twitterCtx.DeleteAccountActivityWebhookAsync(webhookID);
 
-            Console.WriteLine($"Webhook, {acctActivity.WebhookID}, has been deleted.");
+            Console.WriteLine($"Webhook, {acctActivity?.WebhookID}, has been deleted.");
         }
 
         static async Task SendChallengeResponseCheckAsync(TwitterContext twitterCtx)
@@ -137,7 +137,7 @@ namespace Linq2TwitterDemos_Console
 
             try
             {
-                AccountActivity accAct = await twitterCtx.SendAccountActivityCrcAsync(webhookID);
+                AccountActivity? accAct = await twitterCtx.SendAccountActivityCrcAsync(webhookID);
 
                 Console.WriteLine("Challenge response check succeeded.");
             }
@@ -153,7 +153,7 @@ namespace Linq2TwitterDemos_Console
 
             try
             {
-                AccountActivity accAct = await twitterCtx.AddAccountActivitySubscriptionAsync(webhookID);
+                AccountActivity? accAct = await twitterCtx.AddAccountActivitySubscriptionAsync(webhookID);
 
                 Console.WriteLine("Subscription added.");
             }
@@ -195,7 +195,7 @@ namespace Linq2TwitterDemos_Console
 
             try
             {
-                AccountActivity accAct = await twitterCtx.DeleteAccountActivitySubscriptionAsync(webhookID);
+                AccountActivity? accAct = await twitterCtx.DeleteAccountActivitySubscriptionAsync(webhookID);
 
                 Console.WriteLine("Subscription deleted.");
             }
@@ -215,7 +215,7 @@ namespace Linq2TwitterDemos_Console
         static ulong GetWebhook()
         {
             Console.Write("Webhook ID? ");
-            string webhookIDString = Console.ReadLine();
+            string? webhookIDString = Console.ReadLine();
             ulong.TryParse(webhookIDString, out ulong webhookID);
             return webhookID;
         }

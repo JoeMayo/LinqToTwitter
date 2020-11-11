@@ -70,7 +70,7 @@ namespace Linq2TwitterDemos_Console
             {
                 Console.WriteLine(
                     "Location: {0}\n",
-                    trends.First().Locations.First().Name);
+                    trends.FirstOrDefault()?.Locations?.FirstOrDefault()?.Name);
 
                 trends.ForEach(trnd =>
                     Console.WriteLine(
@@ -81,7 +81,7 @@ namespace Linq2TwitterDemos_Console
 
         static async Task GetAvailableTrendLocationsAsync(TwitterContext twitterCtx)
         {
-            Trend trendsResponse =
+            Trend? trendsResponse =
                 await
                 (from trend in twitterCtx.Trends
                  where trend.Type == TrendType.Available
@@ -95,7 +95,7 @@ namespace Linq2TwitterDemos_Console
 
         static async Task GetClosestTrendsAsync(TwitterContext twitterCtx)
         {
-            Trend trend =
+            Trend? trend =
                 await
                 (from trnd in twitterCtx.Trends
                  where trnd.Type == TrendType.Closest &&

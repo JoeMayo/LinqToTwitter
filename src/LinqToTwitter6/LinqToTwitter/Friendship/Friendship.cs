@@ -37,7 +37,7 @@ namespace LinqToTwitter
         /// <summary>
         /// Screen name of source user (Show query)
         /// </summary>
-        public string SourceScreenName { get; set; }
+        public string? SourceScreenName { get; set; }
 
         /// <summary>
         /// ID of target user (Show query)
@@ -47,7 +47,7 @@ namespace LinqToTwitter
         /// <summary>
         /// Screen name of target user (Show query)
         /// </summary>
-        public string TargetScreenName { get; set; }
+        public string? TargetScreenName { get; set; }
 
         /// <summary>
         /// Helps in paging results for queries such as incoming and outgoing
@@ -57,12 +57,12 @@ namespace LinqToTwitter
         /// <summary>
         /// Comma-separated list of screen names for Lookup query
         /// </summary>
-        public string ScreenName { get; set; }
+        public string? ScreenName { get; set; }
 
         /// <summary>
         /// Comma-separated list of user IDs for Lookup query
         /// </summary>
-        public string UserID { get; set; }
+        public string? UserID { get; set; }
 
         /// <summary>
         /// Removes status when set to true (false by default)
@@ -82,36 +82,36 @@ namespace LinqToTwitter
         /// <summary>
         /// info on friend
         /// </summary>
-        public User Friend { get; set; }
+        public User? Friend { get; set; }
 
         /// <summary>
         /// Relationship details returned from Twitter for the source (Show query)
         /// </summary>
-        public Relationship SourceRelationship { get; set; }
+        public Relationship? SourceRelationship { get; set; }
 
         /// <summary>
         /// Relationship details returned from Twitter for the target (Show query)
         /// </summary>
-        public Relationship TargetRelationship { get; set; }
+        public Relationship? TargetRelationship { get; set; }
 
         /// <summary>
         /// List of ids returned by Incoming and Outgoing queries
         /// </summary>
-        public IDList IDInfo { get; set; }
+        public IDList? IDInfo { get; set; }
 
         /// <summary>
         /// List of relationships from Lookup query
         /// </summary>
-        public List<Relationship> Relationships { get; set; }
+        public List<Relationship>? Relationships { get; set; }
 
         /// <summary>
         /// Holds prev/next cursors
         /// </summary>
-        public Cursors CursorMovement { get; set; }
+        public Cursors? CursorMovement { get; set; }
 
         /// <summary>
         /// List of User that are friends or followers, depending on type of query
         /// </summary>
-        public List<User> Users { get; set; }
+        public List<User>? Users { get; set; }
     }
 }

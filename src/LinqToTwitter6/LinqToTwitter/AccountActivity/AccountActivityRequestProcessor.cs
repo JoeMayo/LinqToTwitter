@@ -19,7 +19,7 @@ namespace LinqToTwitter
         /// <summary>
         /// base url for request
         /// </summary>
-        public virtual string BaseUrl { get; set; }
+        public virtual string? BaseUrl { get; set; }
 
         /// <summary>
         /// Type of Account Activity
@@ -134,7 +134,7 @@ namespace LinqToTwitter
         }
         IEnumerable<AccountActivity> HandleWebhooks(string accActJson)
         {
-            Webhook[] webhooks = JsonSerializer.Deserialize<Webhook[]>(accActJson);
+            Webhook[]? webhooks = JsonSerializer.Deserialize<Webhook[]>(accActJson);
 
             return new List<AccountActivity> 
             { 
@@ -150,7 +150,7 @@ namespace LinqToTwitter
             };
         }
 
-        public T ProcessActionResult(string responseJson, Enum theAction)
+        public T? ProcessActionResult(string? responseJson, Enum theAction)
         {
             var accAct = new AccountActivity();
 
@@ -159,9 +159,9 @@ namespace LinqToTwitter
                     new WebhooksValue
                     {
                         Webhooks =
-                            new Webhook[]
+                            new Webhook?[]
                             {
-                                responseJson == null ?
+                                string.IsNullOrWhiteSpace(responseJson) ?
                                     new Webhook() :
                                     JsonSerializer.Deserialize<Webhook>(responseJson)
                             }

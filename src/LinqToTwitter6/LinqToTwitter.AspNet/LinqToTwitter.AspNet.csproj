@@ -2,6 +2,21 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
+    <Version>6.0.1</Version>
+    <Authors>Joe Mayo</Authors>
+    <Company>Joe Mayo</Company>
+    <Product>LINQ to Twitter for ASP.NET</Product>
+    <Description>LINQ to Twitter is a 3rd party LINQ Provider that lets you tweet and query with the Twitter API.
+
+This library has ASP.NET authorizers and SessionStateCredentialCache that you'll need for ASP.NET Core 5 applications.</Description>
+    <Copyright>LINQ to Twitter</Copyright>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/JoeMayo/LinqToTwitter</PackageProjectUrl>
+    <PackageIcon>200xColor_2.png</PackageIcon>
+    <RepositoryUrl>https://github.com/JoeMayo/LinqToTwitter</RepositoryUrl>
+    <RepositoryType></RepositoryType>
+    <PackageTags>twitter twitterapi twitterdev tweet linq social linqtotwitter linq2twitter</PackageTags>
+    <PackageReleaseNotes>In previous versions of LINQ to Twitter, this was included in the `linqtotwitter` package. In version 6, ASP.NET Core 5 support is a separate package with a dependency on `linqtotwitter` v6.0+.</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
@@ -11,6 +26,13 @@
 
   <ItemGroup>
     <ProjectReference Include="..\LinqToTwitter\LinqToTwitter.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\..\BuildScripts\200xColor_2.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>

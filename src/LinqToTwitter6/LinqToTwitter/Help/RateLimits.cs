@@ -9,7 +9,7 @@ namespace LinqToTwitter
         /// <summary>
         /// Url Segment representing resource that rate limits apply to
         /// </summary>
-        public string Resource { get; set; }
+        public string? Resource { get; set; }
 
         /// <summary>
         /// Number of requests left in this time period

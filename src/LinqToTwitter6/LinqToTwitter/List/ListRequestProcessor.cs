@@ -23,7 +23,7 @@ namespace LinqToTwitter
         /// <summary>
         /// base url for request
         /// </summary>
-        public virtual string BaseUrl { get; set; }
+        public virtual string? BaseUrl { get; set; }
 
         /// <summary>
         /// type of list to query
@@ -48,7 +48,7 @@ namespace LinqToTwitter
         /// <summary>
         /// Catchword for list
         /// </summary>
-        public string Slug { get; set; }
+        public string? Slug { get; set; }
 
         /// <summary>
         /// ID of List Owner
@@ -58,7 +58,7 @@ namespace LinqToTwitter
         /// <summary>
         /// ScreenName of List Owner
         /// </summary>
-        public string OwnerScreenName { get; set; }
+        public string? OwnerScreenName { get; set; }
 
         /// <summary>
         /// Statuses since status ID
@@ -83,7 +83,7 @@ namespace LinqToTwitter
         /// <summary>
         /// ScreenName of user for query
         /// </summary>
-        public string ScreenName { get; set; }
+        public string? ScreenName { get; set; }
 
         /// <summary>
         /// Truncate all user info, except for ID
@@ -878,7 +878,7 @@ namespace LinqToTwitter
                     break;
             }
 
-            Cursors cursors = null;
+            Cursors? cursors = null;
             if (listJson.ValueKind == JsonValueKind.Object)
                 cursors = new Cursors(listJson);
 
@@ -979,9 +979,9 @@ namespace LinqToTwitter
         /// <param name="responseJson">json with Twitter response</param>
         /// <param name="theAction">Used to specify side-effect methods</param>
         /// <returns>Action response</returns>
-        public virtual T ProcessActionResult(string responseJson, Enum theAction)
+        public virtual T? ProcessActionResult(string responseJson, Enum theAction)
         {
-            List list = null;
+            List? list = null;
 
             if (!string.IsNullOrWhiteSpace(responseJson))
             {

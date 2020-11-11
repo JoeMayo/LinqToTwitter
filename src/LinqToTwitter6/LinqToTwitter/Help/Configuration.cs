@@ -20,7 +20,7 @@ namespace LinqToTwitter
         /// <summary>
         /// Twitter slugs that are not usernames
         /// </summary>
-        public List<string> NonUserNamePaths { get; set; }
+        public List<string>? NonUserNamePaths { get; set; }
 
         /// <summary>
         /// Max photo size
@@ -40,6 +40,6 @@ namespace LinqToTwitter
         /// <summary>
         /// Sizing allowances/behaviors for each type of photo
         /// </summary>
-        public List<PhotoSize> PhotoSizes { get; set; }
+        public List<PhotoSize>? PhotoSizes { get; set; }
     }
 }

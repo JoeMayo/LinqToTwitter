@@ -252,7 +252,7 @@ namespace Linq2TwitterDemos_Console
             {
                 ulong tweetID = 280433519057068033;
 
-                Status status =
+                Status? status =
                     await twitterCtx.DeleteTweetAsync(tweetID);
 
                 if (status != null && status.User != null)
@@ -272,7 +272,7 @@ namespace Linq2TwitterDemos_Console
         static async Task TweetAsync(TwitterContext twitterCtx)
         {
             Console.Write("Enter your status update: ");
-            string? status = Console.ReadLine();
+            string? status = Console.ReadLine() ?? "";
 
             Console.WriteLine("\nStatus being sent: \n\n\"{0}\"", status);
             Console.Write("\nDo you want to update your status? (y or n): ");
@@ -282,12 +282,12 @@ namespace Linq2TwitterDemos_Console
             {
                 Console.WriteLine("\nThis status is *not* being sent.");
             }
-            else if (confirm.ToUpper() == "Y")
+            else if (confirm?.ToUpper() == "Y")
             {
                 Console.WriteLine("\nPress any key to post tweet...\n");
                 Console.ReadKey(true);
 
-                Status tweet = await twitterCtx.TweetAsync(status, tweetMode: TweetMode.Extended);
+                Status? tweet = await twitterCtx.TweetAsync(status, tweetMode: TweetMode.Extended);
 
                 if (tweet != null)
                     Console.WriteLine(
@@ -308,13 +308,13 @@ namespace Linq2TwitterDemos_Console
             string status = $"@JoeMayo @linq2twitr 2016: The Year When Chatbots Were Hot  #Linq2Twitter £ {DateTime.Now}";
             string attachmentUrl = "https://twitter.com/ChatBotsLife/status/806571633754284032";
 
-            Status tweet = await twitterCtx.ReplyAsync(tweetID, status, autoPopulateReplyMetadata: true, attachmentUrl: attachmentUrl);
+            Status? tweet = await twitterCtx.ReplyAsync(tweetID, status, autoPopulateReplyMetadata: true, attachmentUrl: attachmentUrl);
 
             if (tweet != null)
                 Console.WriteLine(
                     "Status returned: " +
                     "(" + tweet.StatusID + ")" +
-                    tweet.User.Name + ", " +
+                    tweet.User?.Name + ", " +
                     tweet.Text + "\n");
         }
 
@@ -322,7 +322,7 @@ namespace Linq2TwitterDemos_Console
         {
             ulong tweetID = 1250088275861049345;
 
-            Status retweet = await twitterCtx.RetweetAsync(tweetID);
+            Status? retweet = await twitterCtx.RetweetAsync(tweetID);
 
             if (retweet != null &&
                 retweet.RetweetedStatus != null &&

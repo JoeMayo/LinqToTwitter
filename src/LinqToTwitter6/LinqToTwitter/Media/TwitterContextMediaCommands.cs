@@ -39,7 +39,7 @@ namespace LinqToTwitter
         /// <param name="shared">True if can be used in multiple DM Events.</param>
         /// <param name="cancelToken">Allows you to cancel async operation</param>
         /// <returns>Status containing new reply</returns>
-        public virtual async Task<Media?> UploadMediaAsync(byte[] media, string? mediaType, IEnumerable<ulong> additionalOwners, string mediaCategory, bool shared = false, CancellationToken cancelToken = default(CancellationToken))
+        public virtual async Task<Media?> UploadMediaAsync(byte[] media, string? mediaType, IEnumerable<ulong>? additionalOwners, string mediaCategory, bool shared = false, CancellationToken cancelToken = default(CancellationToken))
         {
             if (media == null || media.Length == 0)
                 throw new ArgumentNullException("image", "You must provide a byte[] of image data.");

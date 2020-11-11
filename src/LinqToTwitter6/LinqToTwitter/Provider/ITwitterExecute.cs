@@ -14,7 +14,7 @@ namespace LinqToTwitter.Provider
         /// <summary>
         /// Gets or sets the object that can send authorized requests to Twitter.
         /// </summary>
-        IAuthorizer Authorizer { get; set; }
+        IAuthorizer? Authorizer { get; set; }
 
         /// <summary>
         /// Gets the most recent URL executed
@@ -22,17 +22,17 @@ namespace LinqToTwitter.Provider
         /// <remarks>
         /// This is very useful for debugging
         /// </remarks>
-        Uri LastUrl { get; }
+        Uri? LastUrl { get; }
 
         /// <summary>
         /// list of response headers from query
         /// </summary>
-        IDictionary<string, string> ResponseHeaders { get; set; }
+        IDictionary<string, string>? ResponseHeaders { get; set; }
 
         /// <summary>
         /// Gets and sets HTTP UserAgent header
         /// </summary>
-        string UserAgent { get; set; }
+        string? UserAgent { get; set; }
 
         /// <summary>
         /// Timeout (milliseconds) for writing to request 
@@ -64,7 +64,7 @@ namespace LinqToTwitter.Provider
         /// <param name="postData">parameters to post</param>
         /// <param name="getResult">callback for handling async Json response - null if synchronous</param>
         /// <returns>Json Response from Twitter - empty string if async</returns>
-        Task<string> PostFormUrlEncodedToTwitterAsync<T>(string method, string url, IDictionary<string, string> postData, CancellationToken cancelToken);
+        Task<string> PostFormUrlEncodedToTwitterAsync<T>(string method, string url, IDictionary<string, string?> postData, CancellationToken cancelToken);
 
         /// <summary>
         /// Performs HTTP POST media byte array upload to Twitter.
@@ -95,7 +95,7 @@ namespace LinqToTwitter.Provider
         /// <param name="shared">True if can be used in multiple DM Events.</param>
         /// <param name="cancelToken">Cancellation token</param>
         /// <returns>JSON results From Twitter</returns>
-        Task<string> PostMediaAsync(string url, IDictionary<string, string> postData, byte[] image, string name, string fileName, string contentType, string mediaCategory, bool shared, CancellationToken cancelToken);
+        Task<string> PostMediaAsync(string url, IDictionary<string, string> postData, byte[] image, string name, string fileName, string? contentType, string mediaCategory, bool shared, CancellationToken cancelToken);
 
         /// <summary>
         /// makes HTTP call to Twitter API

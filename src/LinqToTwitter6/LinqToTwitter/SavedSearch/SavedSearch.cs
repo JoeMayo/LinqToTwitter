@@ -39,12 +39,12 @@ namespace LinqToTwitter
         /// <summary>
         /// name of search
         /// </summary>
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         /// <summary>
         /// search query contents
         /// </summary>
-        public string Query { get; set; }
+        public string? Query { get; set; }
 
         /// <summary>
         /// position in search list

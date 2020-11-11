@@ -33,12 +33,12 @@ namespace LinqToTwitter
         /// <summary>
         /// Name of location
         /// </summary>
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         /// <summary>
         /// Type of location
         /// </summary>
-        public string PlaceTypeName { get; set; }
+        public string? PlaceTypeName { get; set; }
 
         /// <summary>
         /// Code for PlaceTypeName
@@ -48,22 +48,22 @@ namespace LinqToTwitter
         /// <summary>
         /// Country of Location
         /// </summary>
-        public string Country { get; set; }
+        public string? Country { get; set; }
 
         /// <summary>
         /// Country Code
         /// </summary>
-        public string CountryCode { get; set; }
+        public string? CountryCode { get; set; }
 
         /// <summary>
         /// Yahoo Location URL
         /// </summary>
-        public string Url { get; set; }
+        public string? Url { get; set; }
 
         /// <summary>
         /// Parent location relative to current location.
         /// Set to null if current location is World.
         /// </summary>
-        public string ParentID { get; set; }
+        public string? ParentID { get; set; }
     }
 }

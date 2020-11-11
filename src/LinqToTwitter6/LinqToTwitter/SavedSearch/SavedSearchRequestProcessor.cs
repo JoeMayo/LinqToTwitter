@@ -19,7 +19,7 @@ namespace LinqToTwitter
         /// <summary>
         /// base url for request
         /// </summary>
-        public string BaseUrl { get; set; }
+        public string? BaseUrl { get; set; }
 
         /// <summary>
         /// type of search to perform (Searches or Show)
@@ -111,7 +111,7 @@ namespace LinqToTwitter
 
             JsonElement searchJson = JsonDocument.Parse(responseJson).RootElement;
 
-            List<SavedSearch> savedSearchList = null;
+            List<SavedSearch> savedSearchList = new();
 
             switch (Type)
             {
@@ -137,7 +137,7 @@ namespace LinqToTwitter
             return savedSearchList.OfType<T>().ToList();
         }
 
-        public T ProcessActionResult(string responseJson, Enum theAction)
+        public T? ProcessActionResult(string responseJson, Enum theAction)
         {
             JsonElement searchJson = JsonDocument.Parse(responseJson).RootElement;
 

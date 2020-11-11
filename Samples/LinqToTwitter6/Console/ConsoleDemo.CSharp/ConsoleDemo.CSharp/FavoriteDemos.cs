@@ -126,7 +126,7 @@ namespace Linq2TwitterDemos_Console
 
             if (status != null)
                 Console.WriteLine(
-                    "User: {0}, Tweet: {1}", status.User.Name, status.Text);
+                    "User: {0}, Tweet: {1}", status.User?.Name, status.Text);
         }
 
         static async Task CreateFavoriteAsync(TwitterContext twitterCtx)
@@ -135,7 +135,7 @@ namespace Linq2TwitterDemos_Console
 
             if (status != null)
                 Console.WriteLine(
-                    "User: {0}, Tweet: {1}", status.User.Name, status.Text);
+                    "User: {0}, Tweet: {1}", status.User?.Name, status.Text);
         }
     }
 }

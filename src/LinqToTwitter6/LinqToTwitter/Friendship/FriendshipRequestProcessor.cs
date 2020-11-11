@@ -20,7 +20,7 @@ namespace LinqToTwitter
         /// <summary>
         /// base url for request
         /// </summary>
-        public virtual string BaseUrl { get; set; }
+        public virtual string? BaseUrl { get; set; }
 
         /// <summary>
         /// type of friendship (defaults to Exists)
@@ -35,7 +35,7 @@ namespace LinqToTwitter
         /// <summary>
         /// Screen name of source user
         /// </summary>
-        public string SourceScreenName { get; set; }
+        public string? SourceScreenName { get; set; }
 
         /// <summary>
         /// ID of target user
@@ -45,17 +45,17 @@ namespace LinqToTwitter
         /// <summary>
         /// Screen name of target user
         /// </summary>
-        public string TargetScreenName { get; set; }
+        public string? TargetScreenName { get; set; }
 
         /// <summary>
         /// Comma-separated list of names for lookup
         /// </summary>
-        public string ScreenName { get; set; }
+        public string? ScreenName { get; set; }
 
         /// <summary>
         /// Comma-separated list of user IDs to lookup
         /// </summary>
-        public string UserID { get; set; }
+        public string? UserID { get; set; }
 
         /// <summary>
         /// Helps in paging results for queries such as incoming and outgoing
@@ -532,7 +532,7 @@ namespace LinqToTwitter
             return friendship;
         }
 
-        public T ProcessActionResult(string responseJson, Enum theAction)
+        public T? ProcessActionResult(string responseJson, Enum theAction)
         {
             JsonElement friendJson = JsonDocument.Parse(responseJson).RootElement;
 

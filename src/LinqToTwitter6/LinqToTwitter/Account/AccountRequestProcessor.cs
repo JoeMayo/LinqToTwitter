@@ -18,7 +18,7 @@ namespace LinqToTwitter
         /// <summary>
         /// base url for request
         /// </summary>
-        public virtual string BaseUrl { get; set; }
+        public virtual string? BaseUrl { get; set; }
 
         /// <summary>
         /// Type of account query (VerifyCredentials or Settings)
@@ -118,7 +118,7 @@ namespace LinqToTwitter
         /// <returns>List of Account</returns>
         public virtual List<T> ProcessResults(string responseJson)
         {
-            Account acct = null;
+            Account? acct = null;
 
             if (!string.IsNullOrWhiteSpace(responseJson))
             {
@@ -151,9 +151,9 @@ namespace LinqToTwitter
         /// <param name="responseJson">json with Twitter response</param>
         /// <param name="theAction">Used to specify side-effect methods</param>
         /// <returns>Action response</returns>
-        public virtual T ProcessActionResult(string responseJson, Enum theAction)
+        public virtual T? ProcessActionResult(string responseJson, Enum theAction)
         {
-            Account acct = null;
+            Account? acct = null;
 
             if (!string.IsNullOrWhiteSpace(responseJson))
             {

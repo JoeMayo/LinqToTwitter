@@ -15,7 +15,7 @@ namespace LinqToTwitter
         /// <param name="userID">ID of user to follow</param>
         /// <param name="follow">Receive notifications for the followed friend</param>
         /// <returns>followed friend user info</returns>
-        public async Task<User> CreateFriendshipAsync(ulong userID, bool follow, CancellationToken cancelToken = default(CancellationToken))
+        public async Task<User?> CreateFriendshipAsync(ulong userID, bool follow, CancellationToken cancelToken = default(CancellationToken))
         {
             if (userID == 0)
                 throw new ArgumentException("userID is a required parameter.", "userID");
@@ -52,7 +52,7 @@ namespace LinqToTwitter
         /// <param name="screenName">Screen name of user to follow</param>
         /// <param name="follow">Receive notifications for the followed friend</param>
         /// <returns>followed friend user info</returns>
-        public async Task<User> CreateFriendshipAsync(string screenName, bool follow, CancellationToken cancelToken = default(CancellationToken))
+        public async Task<User?> CreateFriendshipAsync(string screenName, bool follow, CancellationToken cancelToken = default(CancellationToken))
         {
             if (string.IsNullOrWhiteSpace(screenName))
                 throw new ArgumentException("screenName is a required parameter.", "screenName");
@@ -88,7 +88,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="userID">ID of user to unfollow</param>
         /// <returns>followed friend user info</returns>
-        public async Task<User> DestroyFriendshipAsync(ulong userID, CancellationToken cancelToken = default(CancellationToken))
+        public async Task<User?> DestroyFriendshipAsync(ulong userID, CancellationToken cancelToken = default(CancellationToken))
         {
             if (userID == 0)
                 throw new ArgumentException("userID is a required parameter.", "userID");
@@ -116,7 +116,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="screenName">Screen name of user to unfollow</param>
         /// <returns>followed friend user info</returns>
-        public async Task<User> DestroyFriendshipAsync(string screenName, CancellationToken cancelToken = default(CancellationToken))
+        public async Task<User?> DestroyFriendshipAsync(string screenName, CancellationToken cancelToken = default(CancellationToken))
         {
             if (string.IsNullOrWhiteSpace(screenName))
                 throw new ArgumentException("screenName is a required parameter.", "screenName");
@@ -147,7 +147,7 @@ namespace LinqToTwitter
         /// <param name="retweets">Enable retweets</param>
         /// <param name="device">Receive notifications</param>
         /// <returns>updated friend user info</returns>
-        public async Task<Friendship> UpdateFriendshipSettingsAsync(string screenName, bool retweets, bool device, CancellationToken cancelToken = default(CancellationToken))
+        public async Task<Friendship?> UpdateFriendshipSettingsAsync(string screenName, bool retweets, bool device, CancellationToken cancelToken = default(CancellationToken))
         {
             if (string.IsNullOrWhiteSpace(screenName))
                 throw new ArgumentNullException("screenName", "screenName is a required parameter.");
@@ -162,7 +162,7 @@ namespace LinqToTwitter
         /// <param name="retweets">Enable retweets</param>
         /// <param name="device">Receive notifications</param>
         /// <returns>updated friend user info</returns>
-        public async Task<Friendship> UpdateFriendshipSettingsAsync(ulong userID, bool retweets, bool device, CancellationToken cancelToken = default(CancellationToken))
+        public async Task<Friendship?> UpdateFriendshipSettingsAsync(ulong userID, bool retweets, bool device, CancellationToken cancelToken = default(CancellationToken))
         {
             if (userID == 0)
                 throw new ArgumentNullException("userID", "userID is a required parameter.");
@@ -178,7 +178,7 @@ namespace LinqToTwitter
         /// <param name="retweets">Enable retweets</param>
         /// <param name="device">Receive notifications</param>
         /// <returns>updated friend user info</returns>
-        async Task<Friendship> UpdateFriendshipSettingsAsync(ulong userID, string screenName, bool retweets, bool device, CancellationToken cancelToken = default(CancellationToken))
+        async Task<Friendship?> UpdateFriendshipSettingsAsync(ulong userID, string? screenName, bool retweets, bool device, CancellationToken cancelToken = default(CancellationToken))
         {
             var parms = new Dictionary<string, string>
             {

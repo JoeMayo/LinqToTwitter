@@ -117,7 +117,7 @@ namespace Linq2TwitterDemos_Console
 
             if (mediaStatusResponse?.ProcessingInfo?.State == MediaProcessingInfo.Succeeded)
             {
-                Status tweet = await twitterCtx.TweetAsync(status, new ulong[] { media.MediaID });
+                Status? tweet = await twitterCtx.TweetAsync(status, new ulong[] { media.MediaID });
 
                 if (tweet != null)
                     Console.WriteLine($"Tweet sent: {tweet.Text}");
@@ -174,7 +174,7 @@ namespace Linq2TwitterDemos_Console
             {
                 await twitterCtx.CreateMediaMetadataAsync(mediaStatusResponse.MediaID, "LINQ to Twitter Alt Text Test");
 
-                Status tweet = await twitterCtx.TweetAsync(status, new ulong[] { media.MediaID });
+                Status? tweet = await twitterCtx.TweetAsync(status, new ulong[] { media.MediaID });
 
                 if (tweet != null)
                     Console.WriteLine($"Tweet sent: {tweet.Text}");
@@ -208,7 +208,7 @@ namespace Linq2TwitterDemos_Console
                 return;
             }
 
-            Status tweet = await twitterCtx.TweetAsync(status, new ulong[] { media.MediaID }, TweetMode.Extended);
+            Status? tweet = await twitterCtx.TweetAsync(status, new ulong[] { media.MediaID }, TweetMode.Extended);
 
             if (tweet != null)
                 Console.WriteLine("Tweet sent: " + tweet.FullText);
@@ -237,7 +237,7 @@ namespace Linq2TwitterDemos_Console
                  select tsk.Result.MediaID)
                 .ToList();
 
-            Status tweet = await twitterCtx.TweetAsync(status, mediaIds);
+            Status? tweet = await twitterCtx.TweetAsync(status, mediaIds);
 
             if (tweet != null)
                 Console.WriteLine($"Tweet sent: {tweet.Text}");

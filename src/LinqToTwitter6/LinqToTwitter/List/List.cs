@@ -17,26 +17,26 @@ namespace LinqToTwitter
             Statuses = new List<Status>();
         }
 
-        public List(JsonElement listJson) : this()
+        public List(JsonElement element) : this()
         {
-            Name = listJson.GetString("name");
-            FullName = listJson.GetString("full_name");
-            MemberCount = listJson.GetInt("member_count");
-            Description = listJson.GetString("description");
-            Mode = listJson.GetString("mode");
-            Uri = listJson.GetString("uri");
-            Users = new List<User> { new User(listJson.GetProperty("user")) };
-            ListIDResponse = listJson.GetUlong("id");
-            SubscriberCount = listJson.GetInt("subscriber_count");
-            CreatedAt = listJson.GetString("created_at").GetDate(DateTime.MaxValue);
-            Following = listJson.GetBool("following");
-            SlugResponse = listJson.GetString("slug");
+            Name = element.GetString("name");
+            FullName = element.GetString("full_name");
+            MemberCount = element.GetInt("member_count");
+            Description = element.GetString("description");
+            Mode = element.GetString("mode");
+            Uri = element.GetString("uri");
+            Users = new List<User> { new User(element.GetProperty("user")) };
+            ListIDResponse = element.GetUlong("id");
+            SubscriberCount = element.GetInt("subscriber_count");
+            CreatedAt = element.GetString("created_at").GetDate(DateTime.MaxValue);
+            Following = element.GetBool("following");
+            SlugResponse = element.GetString("slug");
         }
 
         /// <summary>
         /// Type of List query to perform (Query Filter)
         /// </summary>
-        public ListType Type { get; set; }
+        public ListType? Type { get; set; }
 
         /// <summary>
         /// Helps page results (Query Filter)
@@ -51,7 +51,7 @@ namespace LinqToTwitter
         /// <summary>
         /// ScreenName of user for query
         /// </summary>
-        public string ScreenName { get; set; }
+        public string? ScreenName { get; set; }
 
         /// <summary>
         /// List ID (Query Filter)
@@ -66,12 +66,12 @@ namespace LinqToTwitter
         /// <summary>
         /// Catchword for list (Query Filter)
         /// </summary>
-        public string Slug { get; set; }
+        public string? Slug { get; set; }
 
         /// <summary>
         /// Catchword for list (Returned from Twitter)
         /// </summary>
-        public string SlugResponse { get; set; }
+        public string? SlugResponse { get; set; }
 
         /// <summary>
         /// ID of List Owner (Query Filter)
@@ -81,7 +81,7 @@ namespace LinqToTwitter
         /// <summary>
         /// ScreenName of List Owner (Query Filter)
         /// </summary>
-        public string OwnerScreenName { get; set; }
+        public string? OwnerScreenName { get; set; }
 
         /// <summary>
         /// Max ID to retrieve for statuses (Query Filter)
@@ -131,17 +131,17 @@ namespace LinqToTwitter
         /// <summary>
         /// Short name of List (Returned from Twitter)
         /// </summary>
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         /// <summary>
         /// Fully qualified name of list (Returned from Twitter)
         /// </summary>
-        public string FullName { get; set; }
+        public string? FullName { get; set; }
 
         /// <summary>
         /// Description of List's purpose (Returned from Twitter)
         /// </summary>
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         /// <summary>
         /// Number of subscribers (Returned from Twitter)
@@ -166,27 +166,27 @@ namespace LinqToTwitter
         /// <summary>
         /// Uri of List (Returned from Twitter)
         /// </summary>
-        public string Uri { get; set; }
+        public string? Uri { get; set; }
 
         /// <summary>
         /// List mode (Returned from Twitter)
         /// </summary>
-        public string Mode { get; set; }
+        public string? Mode { get; set; }
 
         /// <summary>
         /// Users associated with List (Returned from Twitter)
         /// </summary>
-        public List<User> Users { get; set; }
+        public List<User>? Users { get; set; }
 
         /// <summary>
         /// Statuses for list (Returned from Twitter)
         /// </summary>
-        public List<Status> Statuses { get; set; }
+        public List<Status>? Statuses { get; set; }
 
         /// <summary>
         /// Cursors for current request (Returned from Twitter)
         /// </summary>
-        public Cursors CursorMovement { get; set; }
+        public Cursors? CursorMovement { get; set; }
 
         /// <summary>
         /// Only returns lists that belong to authenticated 

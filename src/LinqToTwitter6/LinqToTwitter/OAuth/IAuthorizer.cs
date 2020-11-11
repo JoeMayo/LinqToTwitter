@@ -8,14 +8,14 @@ namespace LinqToTwitter.OAuth
     {
         Task AuthorizeAsync();
 
-        string UserAgent { get; set; }
+        string? UserAgent { get; set; }
 
-        ICredentialStore CredentialStore { get; set; }
+        ICredentialStore? CredentialStore { get; set; }
 
-        IWebProxy Proxy { get; set; }
+        IWebProxy? Proxy { get; set; }
 
         bool SupportsCompression { get; set; }
 
-        string GetAuthorizationString(string method, string oauthUrl, IDictionary<string, string> parameters);
+        string? GetAuthorizationString(string method, string oauthUrl, IDictionary<string, string> parameters);
     }
 }

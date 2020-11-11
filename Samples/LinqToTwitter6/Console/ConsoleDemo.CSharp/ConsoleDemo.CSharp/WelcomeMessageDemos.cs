@@ -92,20 +92,20 @@ namespace Linq2TwitterDemos_Console
                     "New Welcome Message",
                     "Welcome!");
 
-            WelcomeMsg msg = message?.Value?.WelcomeMessage;
+            WelcomeMsg? msg = message?.Value?.WelcomeMessage;
             if (msg != null)
             {
                 Console.WriteLine(
                     $"Message ID: '{msg.Id}' \n" +
                     $"Message Name: '{msg.Name} \n" +
-                    $"Message Text: '{msg.MessageData.Text}\n");
+                    $"Message Text: '{msg.MessageData?.Text}\n");
             }
         }
 
         static async Task UpdateWelcomeMessageAsync(TwitterContext twitterCtx)
         {
             Console.Write("Please type welcome message ID: ");
-            string respone = Console.ReadLine();
+            string? respone = Console.ReadLine();
             ulong.TryParse(respone, out ulong wecomeMessageID);
 
             WelcomeMessage message =
@@ -114,23 +114,23 @@ namespace Linq2TwitterDemos_Console
                     "New Name",
                     "Welcome to LINQ to Twitter!");
 
-            WelcomeMsg msg = message?.Value?.WelcomeMessage;
+            WelcomeMsg? msg = message?.Value?.WelcomeMessage;
             if (msg != null)
             {
                 Console.WriteLine(
                     $"Message ID: '{msg.Id}' \n" +
                     $"Message Name: '{msg.Name} \n" +
-                    $"Message Text: '{msg.MessageData.Text}\n");
+                    $"Message Text: '{msg.MessageData?.Text}\n");
             }
         }
 
         static async Task ShowWelcomeMessageAsync(TwitterContext twitterCtx)
         {
             Console.Write("Please type welcome message ID: ");
-            string respone = Console.ReadLine();
+            string? respone = Console.ReadLine();
             ulong.TryParse(respone, out ulong wecomeMessageID);
 
-            WelcomeMessage message =
+            WelcomeMessage? message =
                 await
                 (from welcomeMsg in twitterCtx.WelcomeMessage
                  where welcomeMsg.Type == WelcomeMessageType.ShowMessage &&
@@ -138,24 +138,24 @@ namespace Linq2TwitterDemos_Console
                  select welcomeMsg)
                 .SingleOrDefaultAsync();
 
-            WelcomeMsg msg = message?.Value?.WelcomeMessage;
+            WelcomeMsg? msg = message?.Value?.WelcomeMessage;
             if (msg != null)
             {
                 Console.WriteLine(
                     $"Message ID: '{msg.Id}' \n" +
                     $"Message Name: '{msg.Name} \n" +
-                    $"Message Text: '{msg.MessageData.Text}\n");
+                    $"Message Text: '{msg.MessageData?.Text}\n");
             }
         }
 
         static async Task ListWelcomeMessagesAsync(TwitterContext twitterCtx)
         {
             int count = 10; // set to a low number to demo paging
-            string cursor = "";
+            string? cursor = null;
             List<WelcomeMsg> allWelcomeMessages = new List<WelcomeMsg>();
 
             // you don't have a valid cursor until after the first query
-            WelcomeMessage message =
+            WelcomeMessage? message =
                 await
                 (from welcomeMsg in twitterCtx.WelcomeMessage
                  where welcomeMsg.Type == WelcomeMessageType.ListMessages &&
@@ -163,22 +163,20 @@ namespace Linq2TwitterDemos_Console
                  select welcomeMsg)
                 .SingleOrDefaultAsync();
 
-            allWelcomeMessages.AddRange(message.Value.WelcomeMessages);
-            cursor = message.Value.NextCursor;
+            SetMessagesAndCursor(cursor, allWelcomeMessages, message);
 
             while (!string.IsNullOrWhiteSpace(cursor))
             {
                 message =
-                await
-                (from welcomeMsg in twitterCtx.WelcomeMessage
-                 where welcomeMsg.Type == WelcomeMessageType.ListMessages &&
-                       welcomeMsg.Count == count &&
-                       welcomeMsg.Cursor == cursor
-                 select welcomeMsg)
-                .SingleOrDefaultAsync();
+                    await
+                    (from welcomeMsg in twitterCtx.WelcomeMessage
+                     where welcomeMsg.Type == WelcomeMessageType.ListMessages &&
+                           welcomeMsg.Count == count &&
+                           welcomeMsg.Cursor == cursor
+                     select welcomeMsg)
+                    .SingleOrDefaultAsync();
 
-                allWelcomeMessages.AddRange(message.Value.WelcomeMessages);
-                cursor = message.Value.NextCursor;
+                SetMessagesAndCursor(cursor, allWelcomeMessages, message);
             }
 
             if (!allWelcomeMessages.Any())
@@ -197,15 +195,24 @@ namespace Linq2TwitterDemos_Console
                     Console.WriteLine(
                         $"Message ID: '{msg.Id}' \n" +
                         $"      Name: '{msg.Name} \n" +
-                        $"      Text: '{msg.MessageData.Text}\n");
+                        $"      Text: '{msg.MessageData?.Text}\n");
                 }
             });
+
+            static void SetMessagesAndCursor(string? cursor, List<WelcomeMsg> allWelcomeMessages, WelcomeMessage? message)
+            {
+                if (message?.Value?.WelcomeMessages != null)
+                {
+                    allWelcomeMessages.AddRange(message.Value.WelcomeMessages);
+                    cursor = message.Value?.NextCursor;
+                }
+            }
         }
 
         static async Task DeleteWelcomeMessageAsync(TwitterContext twitterCtx)
         {
             Console.Write("Please type welcome message ID: ");
-            string respone = Console.ReadLine();
+            string? respone = Console.ReadLine();
             ulong.TryParse(respone, out ulong wecomeMessageID);
 
             await twitterCtx.DeleteWelcomeMessageAsync(wecomeMessageID);
@@ -216,13 +223,13 @@ namespace Linq2TwitterDemos_Console
         static async Task CreateNewWelcomeMessageRuleAsync(TwitterContext twitterCtx)
         {
             Console.Write("Please type welcome message ID to set as default: ");
-            string respone = Console.ReadLine();
+            string? respone = Console.ReadLine();
             ulong.TryParse(respone, out ulong wecomeMessageID);
 
             WelcomeMessage welcomeMsg =
                 await twitterCtx.NewWelcomeMessageRuleAsync(wecomeMessageID);
 
-            WelcomeMessageRule rule = welcomeMsg?.Value?.WelcomeMessageRule;
+            WelcomeMessageRule? rule = welcomeMsg?.Value?.WelcomeMessageRule;
             if (rule != null)
                 Console.WriteLine(
                     $"Rule ID '{rule.ID}' " +
@@ -233,10 +240,10 @@ namespace Linq2TwitterDemos_Console
         static async Task ShowWelcomeMessageRuleAsync(TwitterContext twitterCtx)
         {
             Console.Write("Please type welcome message rule ID: ");
-            string respone = Console.ReadLine();
+            string? respone = Console.ReadLine();
             ulong.TryParse(respone, out ulong wecomeMessageID);
 
-            WelcomeMessage message =
+            WelcomeMessage? message =
                 await
                 (from welcomeMsg in twitterCtx.WelcomeMessage
                  where welcomeMsg.Type == WelcomeMessageType.ShowRule &&
@@ -244,7 +251,7 @@ namespace Linq2TwitterDemos_Console
                  select welcomeMsg)
                 .SingleOrDefaultAsync();
 
-            WelcomeMessageRule rule = message?.Value?.WelcomeMessageRule;
+            WelcomeMessageRule? rule = message?.Value?.WelcomeMessageRule;
             if (rule != null)
             {
                 Console.WriteLine(
@@ -261,7 +268,7 @@ namespace Linq2TwitterDemos_Console
             List<WelcomeMessageRule> allWelcomeMessageRules = new List<WelcomeMessageRule>();
 
             // you don't have a valid cursor until after the first query
-            WelcomeMessage message =
+            WelcomeMessage? message =
                 await
                 (from welcomeMsg in twitterCtx.WelcomeMessage
                  where welcomeMsg.Type == WelcomeMessageType.ListRules &&
@@ -269,9 +276,7 @@ namespace Linq2TwitterDemos_Console
                  select welcomeMsg)
                 .SingleOrDefaultAsync();
 
-            List<WelcomeMessageRule> rules = message?.Value?.WelcomeMessageRules ?? new List<WelcomeMessageRule>();
-            allWelcomeMessageRules.AddRange(rules);
-            cursor = message.Value.NextCursor;
+            cursor = SetMessageRules(allWelcomeMessageRules, message);
 
             while (!string.IsNullOrWhiteSpace(cursor))
             {
@@ -284,8 +289,7 @@ namespace Linq2TwitterDemos_Console
                      select welcomeMsg)
                     .SingleOrDefaultAsync();
 
-                allWelcomeMessageRules.AddRange(message.Value.WelcomeMessageRules);
-                cursor = message.Value.NextCursor;
+                cursor = SetMessageRules(allWelcomeMessageRules, message);
             }
 
             if (!allWelcomeMessageRules.Any())
@@ -307,12 +311,21 @@ namespace Linq2TwitterDemos_Console
                         $"set as default on {rule.CreatedAt}\n");
                 }
             });
+
+            static string SetMessageRules(List<WelcomeMessageRule> allWelcomeMessageRules, WelcomeMessage? message)
+            {
+                string cursor;
+                List<WelcomeMessageRule> rules = message?.Value?.WelcomeMessageRules ?? new List<WelcomeMessageRule>();
+                allWelcomeMessageRules.AddRange(rules);
+                cursor = message?.Value?.NextCursor ?? "";
+                return cursor;
+            }
         }
 
         static async Task DeleteWelcomeMessageRuleAsync(TwitterContext twitterCtx)
         {
             Console.Write("Please type welcome message rule ID: ");
-            string respone = Console.ReadLine();
+            string? respone = Console.ReadLine();
             ulong.TryParse(respone, out ulong wecomeMessageRuleID);
 
             await twitterCtx.DeleteWelcomeMessageRuleAsync(wecomeMessageRuleID);

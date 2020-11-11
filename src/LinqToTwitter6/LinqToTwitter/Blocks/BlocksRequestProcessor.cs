@@ -19,12 +19,12 @@ namespace LinqToTwitter
         /// <summary>
         /// base url for request
         /// </summary>
-        public virtual string BaseUrl { get; set; }
+        public virtual string? BaseUrl { get; set; }
 
         /// <summary>
         /// type of blocks request to perform
         /// </summary>
-        public BlockingType Type { get; set; }
+        public BlockingType? Type { get; set; }
 
         /// <summary>
         /// disambiguates when user id is screen name
@@ -34,7 +34,7 @@ namespace LinqToTwitter
         /// <summary>
         /// disambiguates when screen name is user id
         /// </summary>
-        public string ScreenName { get; set; }
+        public string? ScreenName { get; set; }
 
         /// <summary>
         /// page to retrieve
@@ -59,7 +59,7 @@ namespace LinqToTwitter
         /// <summary>
         /// Identifier for previous or next page to query (input only)
         /// </summary>
-        public string Cursor { get; set; }
+        public string? Cursor { get; set; }
 
         /// <summary>
         /// extracts parameters from lambda
@@ -233,7 +233,7 @@ namespace LinqToTwitter
                 .ToList();
         }
 
-        public T ProcessActionResult(string responseJson, Enum theAction)
+        public T? ProcessActionResult(string responseJson, Enum theAction)
         {
             JsonElement blocksJson = JsonDocument.Parse(responseJson).RootElement;
 

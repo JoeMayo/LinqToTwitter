@@ -10,9 +10,9 @@ namespace LinqToTwitter
 {
     public class StreamingRequestProcessor<T> : IRequestProcessor<T>, IRequestProcessorWithAction<Streaming>
     {
-        public string BaseUrl { get; set; }
+        public string? BaseUrl { get; set; }
 
-        public ITwitterExecute TwitterExecutor { get; set; }
+        public ITwitterExecute? TwitterExecutor { get; set; }
 
         /// <summary>
         /// Stream method

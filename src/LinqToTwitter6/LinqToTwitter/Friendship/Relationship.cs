@@ -52,12 +52,12 @@ namespace LinqToTwitter
         /// <summary>
         /// User's screen name
         /// </summary>
-        public string ScreenName { get; set; }
+        public string? ScreenName { get; set; }
 
         /// <summary>
         /// User's name
         /// </summary>
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         /// <summary>
         /// Is this user following the other
@@ -90,7 +90,7 @@ namespace LinqToTwitter
         /// Shows relationships between the logged in user and 
         /// the person identified by this relationship
         /// </summary>
-        public List<string> Connections { get; set; }
+        public List<string>? Connections { get; set; }
 
         /// <summary>
         /// Sees all replies

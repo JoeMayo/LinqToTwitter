@@ -58,11 +58,13 @@ namespace Linq2TwitterDemos_Console
 
         static async Task PerformRecentSearchRawAsync(TwitterContext twitterCtx)
         {
+            _ = twitterCtx ?? throw new ArgumentNullException(nameof(twitterCtx));
+
             string unencodedStatus = "JoeMayo";
             string encodedStatus = Uri.EscapeDataString(unencodedStatus);
             string queryString = "tweets/search/recent?query=" + encodedStatus;
 
-            string previousBaseUrl = twitterCtx.BaseUrl;
+            string? previousBaseUrl = twitterCtx.BaseUrl;
             twitterCtx.BaseUrl = "https://api.twitter.com/2/";
 
             var rawResult =

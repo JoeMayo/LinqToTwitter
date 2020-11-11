@@ -16,7 +16,7 @@ namespace LinqToTwitter
         /// <summary>
         /// base url for request
         /// </summary>
-        public string BaseUrl { get; set; }
+        public string? BaseUrl { get; set; }
 
         /// <summary>
         /// Type of Help request (Test, Configuration, or Languages)
@@ -26,7 +26,7 @@ namespace LinqToTwitter
         /// <summary>
         /// Comma-separated list of resources for rate limit status request (setting to null returns all)
         /// </summary>
-        internal string Resources { get; set; }
+        internal string? Resources { get; set; }
 
         public virtual Dictionary<string, string> GetParameters(LambdaExpression lambdaExpression)
         {

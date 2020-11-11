@@ -24,7 +24,7 @@ namespace LinqToTwitter
         /// <param name="imageType">type of image: must be one of jpg, gif, or png</param>
         /// <param name="skipStatus">Don't include status with response.</param>
         /// <returns>User with new image info</returns>
-        public async Task<User> UpdateAccountImageAsync(byte[] image, string fileName, string imageType, bool skipStatus, CancellationToken cancelToken = default(CancellationToken))
+        public async Task<User?> UpdateAccountImageAsync(byte[] image, string fileName, string imageType, bool skipStatus, CancellationToken cancelToken = default(CancellationToken))
         {
             return await UpdateAccountImageAsync(image, fileName, imageType, true, skipStatus, cancelToken).ConfigureAwait(false);
         }
@@ -38,7 +38,7 @@ namespace LinqToTwitter
         /// <param name="includeEntities">Set to false to not include entities. (default: true)</param>
         /// <param name="skipStatus">Don't include status with response.</param>
         /// <returns>User with new image info</returns>
-        public async Task<User> UpdateAccountImageAsync(byte[] image, string fileName, string imageType, bool includeEntities, bool skipStatus, CancellationToken cancelToken = default(CancellationToken))
+        public async Task<User?> UpdateAccountImageAsync(byte[] image, string fileName, string imageType, bool includeEntities, bool skipStatus, CancellationToken cancelToken = default(CancellationToken))
         {
             var accountUrl = BaseUrl + "account/update_profile_image.json";
 
@@ -75,7 +75,7 @@ namespace LinqToTwitter
         /// <param name="description">Personal Description</param>
         /// <param name="skipStatus">Don't include status with response.</param>
         /// <returns>User with new info</returns>
-        public async Task<User> UpdateAccountProfileAsync(string name, string url, string location, string description, bool skipStatus, CancellationToken cancelToken = default(CancellationToken))
+        public async Task<User?> UpdateAccountProfileAsync(string name, string url, string location, string description, bool skipStatus, CancellationToken cancelToken = default(CancellationToken))
         {
             return await UpdateAccountProfileAsync(name, url, location, description, true, skipStatus, cancelToken).ConfigureAwait(false);
         }
@@ -90,7 +90,7 @@ namespace LinqToTwitter
         /// <param name="includeEntities">Set to false to not include entities. (default: true)</param>
         /// <param name="skipStatus">Don't include status with response.</param>
         /// <returns>User with new info</returns>
-        public async Task<User> UpdateAccountProfileAsync(string name, string url, string location, string description, bool includeEntities, bool skipStatus, CancellationToken cancelToken = default(CancellationToken))
+        public async Task<User?> UpdateAccountProfileAsync(string name, string url, string location, string description, bool includeEntities, bool skipStatus, CancellationToken cancelToken = default(CancellationToken))
         {
             var accountUrl = BaseUrl + "account/update_profile.json";
 
@@ -143,7 +143,7 @@ namespace LinqToTwitter
         /// <param name="timeZone">User's time zone.</param>
         /// <param name="lang">User's language.</param>
         /// <returns>Account information with Settings property populated.</returns>
-        public async Task<Account> UpdateAccountSettingsAsync(int? trendLocationWoeid, bool? sleepTimeEnabled, int? startSleepTime, int? endSleepTime, string timeZone, string lang, CancellationToken cancelToken = default(CancellationToken))
+        public async Task<Account?> UpdateAccountSettingsAsync(int? trendLocationWoeid, bool? sleepTimeEnabled, int? startSleepTime, int? endSleepTime, string timeZone, string lang, CancellationToken cancelToken = default(CancellationToken))
         {
             var accountUrl = BaseUrl + "account/settings.json";
 
@@ -163,7 +163,7 @@ namespace LinqToTwitter
                     };
 
             if (trendLocationWoeid != null)
-                parameters.Add("trend_location_woeid", trendLocationWoeid.ToString());
+                parameters.Add("trend_location_woeid", trendLocationWoeid?.ToString());
             if (sleepTimeEnabled != null)
                 parameters.Add("sleep_time_enabled", sleepTimeEnabled.ToString().ToLower());
             if (startSleepTime != null)

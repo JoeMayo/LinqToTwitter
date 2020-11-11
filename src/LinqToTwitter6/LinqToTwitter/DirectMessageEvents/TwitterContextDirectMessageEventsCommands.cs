@@ -145,7 +145,7 @@ namespace LinqToTwitter
         /// <param name="callToActions">List of Call to Action, which creates buttons in the message.</param>
         /// <param name="cancelToken">Async cancellation token.</param>
         /// <returns>Direct message events data.</returns>
-        async Task<DirectMessageEvents> NewDirectMessageEventAsync(ulong recipientID, string text, Attachment attachment = null, QuickReply quickReply = null, IEnumerable<CallToAction> callToActions = null, CancellationToken cancelToken = default(CancellationToken))
+        async Task<DirectMessageEvents> NewDirectMessageEventAsync(ulong recipientID, string text, Attachment? attachment = null, QuickReply? quickReply = null, IEnumerable<CallToAction>? callToActions = null, CancellationToken cancelToken = default(CancellationToken))
         {
             if (recipientID == default(ulong))
                 throw new ArgumentException($"{nameof(recipientID)} must be set.", nameof(recipientID));
