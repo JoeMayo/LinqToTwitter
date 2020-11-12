@@ -27,7 +27,7 @@ namespace LinqToTwitter
                 }
             };
 
-            return await NewDirectMessageEventAsync(recipientID, text, attachment).ConfigureAwait(false);
+            return await NewDirectMessageEventAsync(recipientID, text, attachment, null, null).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -58,7 +58,7 @@ namespace LinqToTwitter
                 }
             };
 
-            return await NewDirectMessageEventAsync(recipientID, text, attachment).ConfigureAwait(false);
+            return await NewDirectMessageEventAsync(recipientID, text, attachment, null, null).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -87,7 +87,7 @@ namespace LinqToTwitter
                 }
             };
 
-            return await NewDirectMessageEventAsync(recipientID, text, attachment).ConfigureAwait(false);
+            return await NewDirectMessageEventAsync(recipientID, text, attachment, null, null).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -99,7 +99,7 @@ namespace LinqToTwitter
         /// <returns>Direct message events data.</returns>
         public async Task<DirectMessageEvents> NewDirectMessageEventAsync(ulong recipientID, string text, CancellationToken cancelToken = default(CancellationToken))
         {
-            return await NewDirectMessageEventAsync(recipientID, text, attachment: null).ConfigureAwait(false);
+            return await NewDirectMessageEventAsync(recipientID, text, attachment: null, null, null).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -118,7 +118,7 @@ namespace LinqToTwitter
                 Options = options
             };
 
-            return await NewDirectMessageEventAsync(recipientID, text, attachment: null, quickReply: quickReply).ConfigureAwait(false);
+            return await NewDirectMessageEventAsync(recipientID, text, attachment: null, quickReply: quickReply, null).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -144,7 +144,7 @@ namespace LinqToTwitter
         /// <param name="callToActions">List of Call to Action, which creates buttons in the message.</param>
         /// <param name="cancelToken">Async cancellation token.</param>
         /// <returns>Direct message events data.</returns>
-        public async Task<DirectMessageEvents> NewDirectMessageEventAsync(ulong recipientID, string text, Attachment attachment = null, QuickReply quickReply = null, IEnumerable<CallToAction> callToActions = null, CancellationToken cancelToken = default(CancellationToken))
+        public async Task<DirectMessageEvents> NewDirectMessageEventAsync(ulong recipientID, string text, Attachment attachment, QuickReply quickReply, IEnumerable<CallToAction> callToActions, CancellationToken cancelToken = default(CancellationToken))
         {
             if (recipientID == default(ulong))
                 throw new ArgumentException($"{nameof(recipientID)} must be set.", nameof(recipientID));
