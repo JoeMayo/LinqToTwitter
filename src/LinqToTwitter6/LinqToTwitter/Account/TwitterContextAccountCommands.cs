@@ -118,7 +118,7 @@ namespace LinqToTwitter
                 await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<User>(
                     HttpMethod.Post.ToString(),
                     accountUrl,
-                    new Dictionary<string, string>
+                    new Dictionary<string, string?>
                     {
                         { "name", name },
                         { "url", url },
@@ -156,7 +156,7 @@ namespace LinqToTwitter
                 throw new ArgumentException("At least one parameter must be provided as arguments, but none are specified.", NoInputParam);
 
             var reqProc = new AccountRequestProcessor<Account>();
-            var parameters = new Dictionary<string, string>
+            var parameters = new Dictionary<string, string?>
                     {
                         { "time_zone", timeZone },
                         { "lang", lang }
@@ -165,7 +165,7 @@ namespace LinqToTwitter
             if (trendLocationWoeid != null)
                 parameters.Add("trend_location_woeid", trendLocationWoeid?.ToString());
             if (sleepTimeEnabled != null)
-                parameters.Add("sleep_time_enabled", sleepTimeEnabled.ToString().ToLower());
+                parameters.Add("sleep_time_enabled", sleepTimeEnabled.ToString()?.ToLower());
             if (startSleepTime != null)
                 parameters.Add("start_sleep_time", startSleepTime.ToString());
             if (endSleepTime != null)
@@ -214,7 +214,7 @@ namespace LinqToTwitter
             if (banner == null || banner.Length == 0)
                 throw new ArgumentException("banner is required.", "banner");
 
-            var parameters = new Dictionary<string, string>
+            var parameters = new Dictionary<string, string?>
             {
                 { "width", width.ToString() },
                 { "height", height.ToString() },
@@ -250,7 +250,7 @@ namespace LinqToTwitter
                 await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<User>(
                     HttpMethod.Post.ToString(),
                     accountUrl,
-                    new Dictionary<string, string>(),
+                    new Dictionary<string, string?>(),
                     cancelToken)
                     .ConfigureAwait(false);
 

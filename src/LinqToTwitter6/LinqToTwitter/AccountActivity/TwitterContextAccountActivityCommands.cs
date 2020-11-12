@@ -18,7 +18,6 @@ namespace LinqToTwitter
         /// </exception>
         public async Task<AccountActivity?> AddAccountActivitySubscriptionAsync(ulong webhookID, CancellationToken cancelToken = default(CancellationToken))
         {
-            _ = TwitterExecutor ?? throw new ArgumentNullException(nameof(TwitterExecutor), $"{nameof(TwitterExecutor)} should never be null.");
             if (webhookID == default(ulong))
                 throw new ArgumentException($"{nameof(webhookID)} must be set.", nameof(webhookID));
 
@@ -51,7 +50,6 @@ namespace LinqToTwitter
         /// <returns>Account Activity data.</returns>
         public async Task<AccountActivity?> AddAccountActivityWebhookAsync(string url, CancellationToken cancelToken = default(CancellationToken))
         {
-            _ = TwitterExecutor ?? throw new ArgumentNullException(nameof(TwitterExecutor), $"{nameof(TwitterExecutor)} should never be null.");
             if (string.IsNullOrWhiteSpace(url))
                 throw new ArgumentException($"{nameof(url)} must be set.", nameof(url));
 
@@ -84,7 +82,6 @@ namespace LinqToTwitter
         /// <returns>Account Activity data.</returns>
         public async Task<AccountActivity?> SendAccountActivityCrcAsync(ulong webhookID, CancellationToken cancelToken = default(CancellationToken))
         {
-            _ = TwitterExecutor ?? throw new ArgumentNullException(nameof(TwitterExecutor), $"{nameof(TwitterExecutor)} should never be null.");
             if (webhookID == default(ulong))
                 throw new ArgumentException($"{nameof(webhookID)} must be set.", nameof(webhookID));
 
@@ -117,7 +114,6 @@ namespace LinqToTwitter
         /// <returns>Account Activity data.</returns>
         public async Task<AccountActivity?> DeleteAccountActivitySubscriptionAsync(ulong webhookID, CancellationToken cancelToken = default(CancellationToken))
         {
-            _ = TwitterExecutor ?? throw new ArgumentNullException(nameof(TwitterExecutor), $"{nameof(TwitterExecutor)} should never be null.");
             if (webhookID == default(ulong))
                 throw new ArgumentException($"{nameof(webhookID)} must be set.", nameof(webhookID));
 
@@ -150,7 +146,6 @@ namespace LinqToTwitter
         /// <returns>Account Activity data.</returns>
         public async Task<AccountActivity?> DeleteAccountActivityWebhookAsync(ulong webhookID, CancellationToken cancelToken = default(CancellationToken))
         {
-            _ = TwitterExecutor ?? throw new ArgumentNullException(nameof(TwitterExecutor), $"{nameof(TwitterExecutor)} should never be null.");
             if (webhookID == default(ulong))
                 throw new ArgumentException($"{nameof(webhookID)} must be set.", nameof(webhookID));
 

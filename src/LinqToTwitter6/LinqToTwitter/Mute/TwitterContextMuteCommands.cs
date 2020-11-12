@@ -19,7 +19,7 @@ namespace LinqToTwitter
             if (string.IsNullOrWhiteSpace(screenName))
                 throw new ArgumentNullException("screenName", "screenName is required");
 
-            var muteParams = new Dictionary<string, string> { { "screen_name", screenName } };
+            var muteParams = new Dictionary<string, string?> { { "screen_name", screenName } };
 
             return await MuteAsync(muteParams, cancelToken).ConfigureAwait(false);
         }
@@ -34,12 +34,12 @@ namespace LinqToTwitter
             if (userID == 0)
                 throw new ArgumentException("userID can't be 0 - no user has this ID", "userID");
 
-            var muteParams = new Dictionary<string, string> { { "user_id", userID.ToString() } };
+            var muteParams = new Dictionary<string, string?> { { "user_id", userID.ToString() } };
 
             return await MuteAsync(muteParams, cancelToken).ConfigureAwait(false);
         }
 
-        async Task<User?> MuteAsync(IDictionary<string, string> muteParams, CancellationToken cancelToken = default(CancellationToken))
+        async Task<User?> MuteAsync(IDictionary<string, string?> muteParams, CancellationToken cancelToken = default(CancellationToken))
         {
             var muteUrl = BaseUrl + "mutes/users/create.json";
 
@@ -63,7 +63,7 @@ namespace LinqToTwitter
             if (string.IsNullOrWhiteSpace(screenName))
                 throw new ArgumentNullException("screenName", "screenName is required");
 
-            var muteParams = new Dictionary<string, string> { { "screen_name", screenName } };
+            var muteParams = new Dictionary<string, string?> { { "screen_name", screenName } };
 
             return await UnMuteAsync(muteParams, cancelToken).ConfigureAwait(false);
         }
@@ -78,12 +78,12 @@ namespace LinqToTwitter
             if (userID == 0)
                 throw new ArgumentException("userID can't be 0 - no user has this ID", "userID");
 
-            var muteParams = new Dictionary<string, string> { { "user_id", userID.ToString() } };
+            var muteParams = new Dictionary<string, string?> { { "user_id", userID.ToString() } };
 
             return await UnMuteAsync(muteParams, cancelToken).ConfigureAwait(false);
         }
 
-        async Task<User?> UnMuteAsync(IDictionary<string, string> muteParams, CancellationToken cancelToken = default(CancellationToken))
+        async Task<User?> UnMuteAsync(IDictionary<string, string?> muteParams, CancellationToken cancelToken = default(CancellationToken))
         {
             var muteUrl = BaseUrl + "mutes/users/destroy.json";
 

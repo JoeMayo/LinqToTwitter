@@ -28,7 +28,7 @@ namespace LinqToTwitter
             Users = new List<User> { new User(element.GetProperty("user")) };
             ListIDResponse = element.GetUlong("id");
             SubscriberCount = element.GetInt("subscriber_count");
-            CreatedAt = element.GetString("created_at").GetDate(DateTime.MaxValue);
+            CreatedAt = element.GetString("created_at")?.GetDate(DateTime.MaxValue);
             Following = element.GetBool("following");
             SlugResponse = element.GetString("slug");
         }
@@ -151,7 +151,7 @@ namespace LinqToTwitter
         /// <summary>
         /// When the list was created
         /// </summary>
-        public DateTime CreatedAt { get; set; }
+        public DateTime? CreatedAt { get; set; }
 
         /// <summary>
         /// Is authenticated user following list

@@ -42,7 +42,7 @@ namespace LinqToTwitter
                 await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<User>(
                     HttpMethod.Post.ToString(),
                     blocksUrl,
-                    new Dictionary<string, string>
+                    new Dictionary<string, string?>
                     {
                         { "user_id", userID <= 0 ? null : userID.ToString() },
                         { "screen_name", screenName },
@@ -88,9 +88,9 @@ namespace LinqToTwitter
                 await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<User>(
                     HttpMethod.Post.ToString(),
                     blocksUrl,
-                    new Dictionary<string, string>
+                    new Dictionary<string, string?>
                     {
-                        { "user_id", userID <= 0 ? (string)null : userID.ToString() },
+                        { "user_id", userID <= 0 ? null : userID.ToString() },
                         { "screen_name", screenName },
                         { "include_entities", includeEntities.ToString().ToLower() },
                         { "skip_status", skipStatus.ToString().ToLower() }

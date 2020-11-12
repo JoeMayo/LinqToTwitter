@@ -108,17 +108,17 @@ namespace LinqToTwitter
         [JsonPropertyName("message_data")]
         public WelcomeMessageData? MessageData { get; set; }
 
-        DateTime createdAt;
+        DateTime? createdAt;
         /// <summary>
         /// Helper property for C# DateTime matching CreatedTimestamp (so you don't have to convert it yourself)
         /// </summary>
         [JsonIgnore]
-        public DateTime CreatedAt
+        public DateTime? CreatedAt
         {
             get
             {
                 if (createdAt == default(DateTime))
-                    createdAt = CreatedTimestamp.GetEpochDateFromTimestamp();
+                    createdAt = CreatedTimestamp?.GetEpochDateFromTimestamp();
 
                 return createdAt;
             }
@@ -161,14 +161,14 @@ namespace LinqToTwitter
         /// <summary>
         /// Helper property for C# DateTime matching CreatedTimestamp (so you don't have to convert it yourself)
         /// </summary>
-        DateTime createdAt;
+        DateTime? createdAt;
         [JsonIgnore]
-        public DateTime CreatedAt
+        public DateTime? CreatedAt
         {
             get
             {
                 if (createdAt == default(DateTime))
-                    createdAt = CreatedTimestamp.GetEpochDateFromTimestamp();
+                    createdAt = CreatedTimestamp?.GetEpochDateFromTimestamp();
 
                 return createdAt;
             }

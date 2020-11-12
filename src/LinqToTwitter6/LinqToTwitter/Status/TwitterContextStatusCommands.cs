@@ -331,7 +331,7 @@ namespace LinqToTwitter
                 await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<Status>(
                     HttpMethod.Post.ToString(),
                     updateUrl,
-                    new Dictionary<string, string>
+                    new Dictionary<string, string?>
                     {
                         {"status", status},
                         {"in_reply_to_status_id", tweetID == NoReply ? null : tweetID.ToString()},
@@ -366,7 +366,7 @@ namespace LinqToTwitter
             var destroyUrl = BaseUrl + "statuses/destroy/" + tweetID + ".json";
 
             RawResult = await TwitterExecutor
-                .PostFormUrlEncodedToTwitterAsync<Status>(HttpMethod.Post.ToString(), destroyUrl, new Dictionary<string, string>(), cancelToken)
+                .PostFormUrlEncodedToTwitterAsync<Status>(HttpMethod.Post.ToString(), destroyUrl, new Dictionary<string, string?>(), cancelToken)
                 .ConfigureAwait(false);
 
             return new StatusRequestProcessor<Status>()
@@ -386,7 +386,7 @@ namespace LinqToTwitter
             var retweetUrl = BaseUrl + "statuses/retweet/" + tweetID + ".json";
 
             RawResult = await TwitterExecutor
-                .PostFormUrlEncodedToTwitterAsync<Status>(HttpMethod.Post.ToString(), retweetUrl, new Dictionary<string, string>(), cancelToken)
+                .PostFormUrlEncodedToTwitterAsync<Status>(HttpMethod.Post.ToString(), retweetUrl, new Dictionary<string, string?>(), cancelToken)
                 .ConfigureAwait(false);
 
             return new StatusRequestProcessor<Status>()

@@ -17,7 +17,7 @@ namespace LinqToTwitter
         /// <param name="mediaId">ID of an uploaded media.</param>
         /// <param name="cancelToken">Async cancellation token.</param>
         /// <returns>Direct message events data.</returns>
-        public async Task<DirectMessageEvents> NewDirectMessageEventAsync(ulong recipientID, string text, ulong mediaId, CancellationToken cancelToken = default(CancellationToken))
+        public async Task<DirectMessageEvents?> NewDirectMessageEventAsync(ulong recipientID, string text, ulong mediaId, CancellationToken cancelToken = default(CancellationToken))
         {
             var attachment = new Attachment
             {
@@ -40,7 +40,7 @@ namespace LinqToTwitter
         /// <param name="longitude">Longitude coordinate.</param>
         /// <param name="cancelToken">Async cancellation token.</param>
         /// <returns>Direct message events data.</returns>
-        public async Task<DirectMessageEvents> NewDirectMessageEventAsync(ulong recipientID, string text, double latitude, double longitude, CancellationToken cancelToken = default(CancellationToken))
+        public async Task<DirectMessageEvents?> NewDirectMessageEventAsync(ulong recipientID, string text, double latitude, double longitude, CancellationToken cancelToken = default(CancellationToken))
         {
             var attachment = new Attachment
             {
@@ -70,7 +70,7 @@ namespace LinqToTwitter
         /// <param name="placeID">ID of place (Tip: Use the Geo API if you don't already have a place ID)</param>
         /// <param name="cancelToken">Async cancellation token.</param>
         /// <returns>Direct message events data.</returns>
-        public async Task<DirectMessageEvents> NewDirectMessageEventAsync(ulong recipientID, string text, string placeID, CancellationToken cancelToken = default(CancellationToken))
+        public async Task<DirectMessageEvents?> NewDirectMessageEventAsync(ulong recipientID, string text, string placeID, CancellationToken cancelToken = default(CancellationToken))
         {
             var attachment = new Attachment
             {
@@ -98,7 +98,7 @@ namespace LinqToTwitter
         /// <param name="text">Direct message contents.</param>
         /// <param name="cancelToken">Async cancellation token.</param>
         /// <returns>Direct message events data.</returns>
-        public async Task<DirectMessageEvents> NewDirectMessageEventAsync(ulong recipientID, string text, CancellationToken cancelToken = default(CancellationToken))
+        public async Task<DirectMessageEvents?> NewDirectMessageEventAsync(ulong recipientID, string text, CancellationToken cancelToken = default(CancellationToken))
         {
             return await NewDirectMessageEventAsync(recipientID, text, attachment: null).ConfigureAwait(false);
         }
@@ -111,7 +111,7 @@ namespace LinqToTwitter
         /// <param name="options">List of options for the user to choose from.</param>
         /// <param name="cancelToken">Async cancellation token.</param>
         /// <returns>Direct message events data.</returns>
-        public async Task<DirectMessageEvents> RequestQuickReplyOptionsAsync(ulong recipientID, string text, IEnumerable<QuickReplyOption> options, CancellationToken cancelToken = default(CancellationToken))
+        public async Task<DirectMessageEvents?> RequestQuickReplyOptionsAsync(ulong recipientID, string text, IEnumerable<QuickReplyOption> options, CancellationToken cancelToken = default(CancellationToken))
         {
             var quickReply = new QuickReply
             {
@@ -130,7 +130,7 @@ namespace LinqToTwitter
         /// <param name="callToActions">List of Call to Action, which creates buttons in the message.</param>
         /// <param name="cancelToken">Async cancellation token.</param>
         /// <returns>Direct message events data.</returns>
-        public async Task<DirectMessageEvents> RequestButtonChoiceAsync(ulong recipientID, string text, IEnumerable<CallToAction> callToActions, CancellationToken cancelToken = default(CancellationToken))
+        public async Task<DirectMessageEvents?> RequestButtonChoiceAsync(ulong recipientID, string text, IEnumerable<CallToAction> callToActions, CancellationToken cancelToken = default(CancellationToken))
         {
             return await NewDirectMessageEventAsync(recipientID, text, attachment: null, quickReply: null, callToActions: callToActions).ConfigureAwait(false);
         }
@@ -145,7 +145,7 @@ namespace LinqToTwitter
         /// <param name="callToActions">List of Call to Action, which creates buttons in the message.</param>
         /// <param name="cancelToken">Async cancellation token.</param>
         /// <returns>Direct message events data.</returns>
-        async Task<DirectMessageEvents> NewDirectMessageEventAsync(ulong recipientID, string text, Attachment? attachment = null, QuickReply? quickReply = null, IEnumerable<CallToAction>? callToActions = null, CancellationToken cancelToken = default(CancellationToken))
+        async Task<DirectMessageEvents?> NewDirectMessageEventAsync(ulong recipientID, string text, Attachment? attachment = null, QuickReply? quickReply = null, IEnumerable<CallToAction>? callToActions = null, CancellationToken cancelToken = default(CancellationToken))
         {
             if (recipientID == default(ulong))
                 throw new ArgumentException($"{nameof(recipientID)} must be set.", nameof(recipientID));
@@ -187,7 +187,7 @@ namespace LinqToTwitter
                    .ConfigureAwait(false);
 
             var reqProc = new DirectMessageEventsRequestProcessor<DirectMessageEvents>();
-            DirectMessageEvents dmEvents = reqProc.ProcessActionResult(RawResult, DirectMessageEventsType.Show);
+            DirectMessageEvents? dmEvents = reqProc.ProcessActionResult(RawResult, DirectMessageEventsType.Show);
 
             return dmEvents;
         }
@@ -208,7 +208,7 @@ namespace LinqToTwitter
                 await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<DirectMessageEvents>(
                     HttpMethod.Delete.ToString(),
                     newUrl,
-                    new Dictionary<string, string>
+                    new Dictionary<string, string?>
                     {
                         ["id"] = directMessageID.ToString()
                     },
@@ -235,7 +235,7 @@ namespace LinqToTwitter
                 await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<DirectMessageEvents>(
                     HttpMethod.Post.ToString(),
                     newUrl,
-                    new Dictionary<string, string>
+                    new Dictionary<string, string?>
                     {
                         ["last_read_event_id"] = lastReadEventID.ToString(),
                         ["recipient_id"] = recipientID.ToString()
@@ -260,7 +260,7 @@ namespace LinqToTwitter
                 await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<DirectMessageEvents>(
                     HttpMethod.Post.ToString(),
                     newUrl,
-                    new Dictionary<string, string>
+                    new Dictionary<string, string?>
                     {
                         ["recipient_id"] = recipientID.ToString()
                     },

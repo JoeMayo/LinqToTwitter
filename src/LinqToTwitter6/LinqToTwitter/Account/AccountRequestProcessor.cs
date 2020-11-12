@@ -118,7 +118,7 @@ namespace LinqToTwitter
         /// <returns>List of Account</returns>
         public virtual List<T> ProcessResults(string responseJson)
         {
-            Account? acct = null;
+            Account acct = new();
 
             if (!string.IsNullOrWhiteSpace(responseJson))
             {

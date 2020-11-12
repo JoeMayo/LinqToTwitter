@@ -38,7 +38,7 @@ namespace LinqToTwitter
                 await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<Status>(
                     HttpMethod.Post.ToString(),
                     favoritesUrl,
-                    new Dictionary<string, string>
+                    new Dictionary<string, string?>
                     {
                         {"id", id.ToString()},
                         {"include_entities", includeEntities.ToString()}
@@ -78,7 +78,7 @@ namespace LinqToTwitter
                 await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<Status>(
                     HttpMethod.Post.ToString(),
                     favoritesUrl,
-                    new Dictionary<string, string>
+                    new Dictionary<string, string?>
                     {
                         {"id", id.ToString()},
                         {"include_entities", includeEntities.ToString()}

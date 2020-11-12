@@ -22,7 +22,7 @@ namespace LinqToTwitter
 
             string destroyUrl = BaseUrl + "friendships/create.json";
 
-            var createParams = new Dictionary<string, string>
+            var createParams = new Dictionary<string, string?>
                 {
                     { "user_id", userID.ToString() }
                 };
@@ -59,7 +59,7 @@ namespace LinqToTwitter
 
             string destroyUrl = BaseUrl + "friendships/create.json";
 
-            var createParams = new Dictionary<string, string>
+            var createParams = new Dictionary<string, string?>
                 {
                     { "screen_name", screenName }
                 };
@@ -101,7 +101,7 @@ namespace LinqToTwitter
                 await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<User>(
                     HttpMethod.Post.ToString(),
                     destroyUrl,
-                    new Dictionary<string, string>
+                    new Dictionary<string, string?>
                     {
                         { "user_id", userID.ToString() }
                     },
@@ -129,7 +129,7 @@ namespace LinqToTwitter
                 await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<User>(
                     HttpMethod.Post.ToString(),
                     destroyUrl,
-                    new Dictionary<string, string>
+                    new Dictionary<string, string?>
                     {
                         { "screen_name", screenName }
                     },
@@ -180,7 +180,7 @@ namespace LinqToTwitter
         /// <returns>updated friend user info</returns>
         async Task<Friendship?> UpdateFriendshipSettingsAsync(ulong userID, string? screenName, bool retweets, bool device, CancellationToken cancelToken = default(CancellationToken))
         {
-            var parms = new Dictionary<string, string>
+            var parms = new Dictionary<string, string?>
             {
                 { "retweets", retweets.ToString().ToLower() },
                 { "device", device.ToString().ToLower() }

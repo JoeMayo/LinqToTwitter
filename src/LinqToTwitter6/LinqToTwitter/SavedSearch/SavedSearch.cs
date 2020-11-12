@@ -18,7 +18,7 @@ namespace LinqToTwitter
             Name = searchJson.GetString("name");
             Position = searchJson.GetInt("position");
             IDResponse = searchJson.GetUlong("id");
-            CreatedAt = searchJson.GetString("created_at").GetDate(DateTime.MaxValue);
+            CreatedAt = searchJson.GetString("created_at")?.GetDate(DateTime.MaxValue);
         }
 
         /// <summary>
@@ -54,6 +54,6 @@ namespace LinqToTwitter
         /// <summary>
         /// when search was created
         /// </summary>
-        public DateTime CreatedAt { get; set; }
+        public DateTime? CreatedAt { get; set; }
     }
 }

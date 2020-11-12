@@ -200,8 +200,8 @@ namespace LinqToTwitter
 
             IEnumerable<IEnumerable<Trend>> flat =
                 from response in responses.EnumerateArray()
-                let asOf = response.GetString("as_of").GetDate(DateTime.UtcNow)
-                let createdAt = response.GetString("created_at").GetDate(DateTime.UtcNow)
+                let asOf = response.GetString("as_of")?.GetDate(DateTime.UtcNow)
+                let createdAt = response.GetString("created_at")?.GetDate(DateTime.UtcNow)
                 let locations =
                      (from place in response.GetProperty("locations").EnumerateArray()
                       select new Location(place)).ToList()

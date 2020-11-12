@@ -19,7 +19,7 @@ namespace LinqToTwitter
             if (userID == 0)
                 throw new ArgumentException("Twitter doesn't have a user with ID == 0", "userID");
 
-            var reportParams = new Dictionary<string, string>
+            var reportParams = new Dictionary<string, string?>
             {
                 { "user_id", userID.ToString() },
                 { "perform_block", performBlock ? bool.TrueString.ToLower() : null }

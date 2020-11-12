@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,7 +13,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="query">Search query to add</param>
         /// <returns>SavedSearch object</returns>
-        public async Task<SavedSearch> CreateSavedSearchAsync(string query, CancellationToken cancelToken = default(CancellationToken))
+        public async Task<SavedSearch?> CreateSavedSearchAsync(string query, CancellationToken cancelToken = default(CancellationToken))
         {
             if (string.IsNullOrWhiteSpace(query))
                 throw new ArgumentException("query is required.", "query");
@@ -27,7 +26,7 @@ namespace LinqToTwitter
                 await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<SavedSearch>(
                     HttpMethod.Post.ToString(),
                     savedSearchUrl,
-                    new Dictionary<string, string>
+                    new Dictionary<string, string?>
                     {
                         { "query", query }
                     },
@@ -43,7 +42,7 @@ namespace LinqToTwitter
         /// <param name="id">ID of saved search</param>
         /// <param name="callback">Async Callback used in Silverlight queries</param>
         /// <returns>SavedSearch object</returns>
-        public async Task<SavedSearch> DestroySavedSearchAsync(ulong id, CancellationToken cancelToken = default(CancellationToken))
+        public async Task<SavedSearch?> DestroySavedSearchAsync(ulong id, CancellationToken cancelToken = default(CancellationToken))
         {
             if (id == 0)
                 throw new ArgumentException("Invalid Saved Search ID: " + id, "id");
@@ -56,12 +55,14 @@ namespace LinqToTwitter
                 await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<SavedSearch>(
                     HttpMethod.Post.ToString(),
                     savedSearchUrl,
-                    new Dictionary<string, string>(),
+                    new Dictionary<string, string?>(),
                     cancelToken)
                     .ConfigureAwait(false);
 
-            SavedSearch result = reqProc.ProcessActionResult(RawResult, SavedSearchAction.Destroy);
-            result.ID = id;
+            SavedSearch? result = reqProc.ProcessActionResult(RawResult, SavedSearchAction.Destroy);
+
+            if (result != null)
+                result.ID = id;
 
             return result;
         }

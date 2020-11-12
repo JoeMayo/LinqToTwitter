@@ -16,7 +16,7 @@ namespace LinqToTwitter
         /// <param name="text">Welcome message contents.</param>
         /// <param name="cancelToken">Async cancellation token.</param>
         /// <returns>Direct message events data.</returns>
-        public async Task<WelcomeMessage> NewWelcomeMessageAsync(string name, string text, CancellationToken cancelToken = default(CancellationToken))
+        public async Task<WelcomeMessage?> NewWelcomeMessageAsync(string name, string text, CancellationToken cancelToken = default(CancellationToken))
         {
             if (string.IsNullOrWhiteSpace(text))
                 throw new ArgumentException($"{nameof(text)} is a required parameter.", nameof(text));
@@ -46,7 +46,7 @@ namespace LinqToTwitter
                    .ConfigureAwait(false);
 
             var reqProc = new WelcomeMessageRequestProcessor<WelcomeMessage>();
-            WelcomeMessage msg = reqProc.ProcessActionResult(RawResult, WelcomeMessageType.ShowMessage);
+            WelcomeMessage? msg = reqProc.ProcessActionResult(RawResult, WelcomeMessageType.ShowMessage);
 
             //msg.Name = name;
             //msg.Text = text;
@@ -61,7 +61,7 @@ namespace LinqToTwitter
         /// <param name="text">Updated welcome message contents.</param>
         /// <param name="cancelToken">Async cancellation token.</param>
         /// <returns>Direct message events data.</returns>
-        public async Task<WelcomeMessage> UpdateWelcomeMessageAsync(ulong welcomeMessageID, string name, string text, CancellationToken cancelToken = default(CancellationToken))
+        public async Task<WelcomeMessage?> UpdateWelcomeMessageAsync(ulong welcomeMessageID, string name, string text, CancellationToken cancelToken = default(CancellationToken))
         {
             if (welcomeMessageID == 0)
                 throw new ArgumentException($"{nameof(welcomeMessageID)} is a required parameter, but it's value is 0, which is invalid.", nameof(welcomeMessageID));
@@ -95,7 +95,7 @@ namespace LinqToTwitter
                    .ConfigureAwait(false);
 
             var reqProc = new WelcomeMessageRequestProcessor<WelcomeMessage>();
-            WelcomeMessage msg = reqProc.ProcessActionResult(RawResult, WelcomeMessageType.ShowMessage);
+            WelcomeMessage? msg = reqProc.ProcessActionResult(RawResult, WelcomeMessageType.ShowMessage);
 
             //msg.ID = welcomeMessageID;
             //msg.Text = text;
@@ -129,9 +129,10 @@ namespace LinqToTwitter
                    .ConfigureAwait(false) ?? string.Empty;
 
             var reqProc = new WelcomeMessageRequestProcessor<WelcomeMessage>();
-            WelcomeMessage msg = reqProc.ProcessActionResult(RawResult, WelcomeMessageType.ShowMessage);
+            WelcomeMessage? msg = reqProc.ProcessActionResult(RawResult, WelcomeMessageType.ShowMessage);
 
-            msg.ID = welcomeMessageID;
+            if (msg != null)
+                msg.ID = welcomeMessageID;
         }
 
         /// <summary>
@@ -140,7 +141,7 @@ namespace LinqToTwitter
         /// <param name="welcomeMessageID">ID of the welcome message.</param>
         /// <param name="cancelToken">Async cancellation token.</param>
         /// <returns>Direct message events data.</returns>
-        public async Task<WelcomeMessage> NewWelcomeMessageRuleAsync(ulong welcomeMessageID, CancellationToken cancelToken = default(CancellationToken))
+        public async Task<WelcomeMessage?> NewWelcomeMessageRuleAsync(ulong welcomeMessageID, CancellationToken cancelToken = default(CancellationToken))
         {
             if (welcomeMessageID == 0)
                 throw new ArgumentException($"{nameof(welcomeMessageID)} is a required parameter, but it's value is 0, which is invalid.", nameof(welcomeMessageID));
@@ -166,9 +167,10 @@ namespace LinqToTwitter
                    .ConfigureAwait(false);
 
             var reqProc = new WelcomeMessageRequestProcessor<WelcomeMessage>();
-            WelcomeMessage msg = reqProc.ProcessActionResult(RawResult, WelcomeMessageType.ShowMessage);
+            WelcomeMessage? msg = reqProc.ProcessActionResult(RawResult, WelcomeMessageType.ShowMessage);
 
-            msg.ID = welcomeMessageID;
+            if (msg != null)
+                msg.ID = welcomeMessageID;
 
             return msg;
         }
@@ -199,9 +201,10 @@ namespace LinqToTwitter
                    .ConfigureAwait(false) ?? string.Empty;
 
             var reqProc = new WelcomeMessageRequestProcessor<WelcomeMessage>();
-            WelcomeMessage msg = reqProc.ProcessActionResult(RawResult, WelcomeMessageType.ShowMessage);
+            WelcomeMessage? msg = reqProc.ProcessActionResult(RawResult, WelcomeMessageType.ShowMessage);
 
-            msg.ID = welcomeMessageRuleID;
+            if (msg != null)
+                msg.ID = welcomeMessageRuleID;
         }
     }
 }

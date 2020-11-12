@@ -18,12 +18,12 @@ namespace LinqToTwitter
         /// <summary>
         /// When place trend was created
         /// </summary>
-        public DateTime CreatedAt { get; set; }
+        public DateTime? CreatedAt { get; set; }
 
         /// <summary>
         /// time of request
         /// </summary>
-        public DateTime AsOf { get; set; }
+        public DateTime? AsOf { get; set; }
 
         /// <summary>
         /// twitter search query on topic

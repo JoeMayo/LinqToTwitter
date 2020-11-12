@@ -158,7 +158,7 @@ namespace LinqToTwitter
 
         IEnumerable<DirectMessageEvents> HandleDirectMessage(string dmJson)
         {
-            DirectMessageEventsValue dmEvent = JsonSerializer.Deserialize<DirectMessageEventsValue>(dmJson);
+            DirectMessageEventsValue? dmEvent = JsonSerializer.Deserialize<DirectMessageEventsValue>(dmJson);
 
             return new List<DirectMessageEvents> 
             { 
@@ -173,7 +173,7 @@ namespace LinqToTwitter
             };
         }
 
-        public T ProcessActionResult(string responseJson, Enum theAction)
+        public T? ProcessActionResult(string responseJson, Enum theAction)
         {
             var dm = new DirectMessageEvents
             {

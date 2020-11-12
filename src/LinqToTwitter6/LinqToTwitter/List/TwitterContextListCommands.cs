@@ -34,7 +34,7 @@ namespace LinqToTwitter
                 await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<List>(
                     HttpMethod.Post.ToString(),
                     createUrl,
-                    new Dictionary<string, string>
+                    new Dictionary<string, string?>
                     {
                         { "name", listName },
                         { "mode", mode },
@@ -72,7 +72,7 @@ namespace LinqToTwitter
                 await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<List>(
                     HttpMethod.Post.ToString(),
                     updateListUrl,
-                    new Dictionary<string, string>
+                    new Dictionary<string, string?>
                     {
                         { "list_id", listID.ToString() },
                         { "slug", slug },
@@ -112,7 +112,7 @@ namespace LinqToTwitter
                 await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<List>(
                     HttpMethod.Post.ToString(),
                     deleteUrl,
-                    new Dictionary<string, string>
+                    new Dictionary<string, string?>
                     {
                         { "list_id", listID.ToString() },
                         { "slug", slug },
@@ -176,7 +176,7 @@ namespace LinqToTwitter
 
             var addMemberUrl = BaseUrl + "lists/members/create.json";
 
-            var parameters = new Dictionary<string, string>();
+            var parameters = new Dictionary<string, string?>();
 
             if (listID != 0)
                 parameters.Add("list_id", listID.ToString());
@@ -261,7 +261,7 @@ namespace LinqToTwitter
 
             var reqProc = new ListRequestProcessor<List>();
 
-            var parameters = new Dictionary<string, string>();
+            var parameters = new Dictionary<string, string?>();
 
             if (listID != 0)
                 parameters.Add("list_id", listID.ToString());
@@ -307,7 +307,7 @@ namespace LinqToTwitter
 
             var reqProc = new ListRequestProcessor<List>();
 
-            var parameters = new Dictionary<string, string>();
+            var parameters = new Dictionary<string, string?>();
 
             if (listID != 0)
                 parameters.Add("list_id", listID.ToString());
@@ -348,7 +348,7 @@ namespace LinqToTwitter
 
             var reqProc = new ListRequestProcessor<List>();
 
-            var parameters = new Dictionary<string, string>();
+            var parameters = new Dictionary<string, string?>();
 
             if (listID != 0)
                 parameters.Add("list_id", listID.ToString());
@@ -385,7 +385,7 @@ namespace LinqToTwitter
 
             var reqProc = new ListRequestProcessor<List>();
 
-            var parameters = new Dictionary<string, string>();
+            var parameters = new Dictionary<string, string?>();
 
             if (listID != 0)
                 parameters.Add("list_id", listID.ToString());
@@ -457,7 +457,7 @@ namespace LinqToTwitter
 
             var reqProc = new ListRequestProcessor<List>();
 
-            var parameters = new Dictionary<string, string>();
+            var parameters = new Dictionary<string, string?>();
 
             if (listID != 0)
                 parameters.Add("list_id", listID.ToString());

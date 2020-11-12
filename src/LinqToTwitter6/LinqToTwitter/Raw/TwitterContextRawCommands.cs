@@ -14,7 +14,7 @@ namespace LinqToTwitter
         /// <param name="queryString">The segments that follow the base URL. i.e. "statuses/home_timeline.json" for a home timeline query</param>
         /// <param name="parameters">Querystring parameters that will be appended to the URL</param>
         /// <returns>Twitter JSON response.</returns>
-        public async Task<string> ExecuteRawAsync(string queryString, Dictionary<string, string> parameters, CancellationToken cancelToken = default)
+        public async Task<string> ExecuteRawAsync(string queryString, Dictionary<string, string?> parameters, CancellationToken cancelToken = default)
         {
             return await ExecuteRawAsync(queryString, parameters, HttpMethod.Post, cancelToken);
         }
@@ -27,9 +27,9 @@ namespace LinqToTwitter
         /// <param name="parameters">Querystring parameters that will be appended to the URL</param>
         /// <param name="method"><see cref="HttpMethod"/> for sending the request.</param>
         /// <returns>Twitter JSON response.</returns>
-        public async Task<string> ExecuteRawAsync(string queryString, Dictionary<string, string> parameters, HttpMethod method, CancellationToken cancelToken = default)
+        public async Task<string> ExecuteRawAsync(string queryString, Dictionary<string, string?> parameters, HttpMethod method, CancellationToken cancelToken = default)
         {
-            string rawUrl = BaseUrl.TrimEnd('/') + "/" + queryString.TrimStart('/');
+            string rawUrl = BaseUrl?.TrimEnd('/') + "/" + queryString.TrimStart('/');
 
             RawResult = await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<Raw>(method.ToString(), rawUrl, parameters, cancelToken).ConfigureAwait(false);
 

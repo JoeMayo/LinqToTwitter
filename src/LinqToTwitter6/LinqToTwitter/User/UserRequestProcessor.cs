@@ -202,7 +202,7 @@ namespace LinqToTwitter
             if (parameters.ContainsKey(nameof(TweetMode)))
             {
                 TweetMode = RequestProcessorHelper.ParseEnum<TweetMode>(parameters[nameof(TweetMode)]);
-                urlParams.Add(new QueryParameter("tweet_mode", TweetMode.ToString().ToLower()));
+                urlParams.Add(new QueryParameter("tweet_mode", TweetMode.ToString()?.ToLower()));
             }
 
             return req;
@@ -244,7 +244,7 @@ namespace LinqToTwitter
             if (parameters.ContainsKey(nameof(TweetMode)))
             {
                 TweetMode = RequestProcessorHelper.ParseEnum<TweetMode>(parameters[nameof(TweetMode)]);
-                urlParams.Add(new QueryParameter("tweet_mode", TweetMode.ToString().ToLower()));
+                urlParams.Add(new QueryParameter("tweet_mode", TweetMode.ToString()?.ToLower()));
             }
 
             return req;
@@ -291,7 +291,7 @@ namespace LinqToTwitter
             if (parameters.ContainsKey(nameof(TweetMode)))
             {
                 TweetMode = RequestProcessorHelper.ParseEnum<TweetMode>(parameters[nameof(TweetMode)]);
-                urlParams.Add(new QueryParameter("tweet_mode", TweetMode.ToString().ToLower()));
+                urlParams.Add(new QueryParameter("tweet_mode", TweetMode.ToString()?.ToLower()));
             }
 
             return req;
@@ -332,7 +332,7 @@ namespace LinqToTwitter
             if (parameters.ContainsKey(nameof(TweetMode)))
             {
                 TweetMode = RequestProcessorHelper.ParseEnum<TweetMode>(parameters[nameof(TweetMode)]);
-                urlParams.Add(new QueryParameter("tweet_mode", TweetMode.ToString().ToLower()));
+                urlParams.Add(new QueryParameter("tweet_mode", TweetMode.ToString()?.ToLower()));
             }
 
             return req;
@@ -385,7 +385,7 @@ namespace LinqToTwitter
             if (parameters.ContainsKey(nameof(TweetMode)))
             {
                 TweetMode = RequestProcessorHelper.ParseEnum<TweetMode>(parameters[nameof(TweetMode)]);
-                urlParams.Add(new QueryParameter("tweet_mode", TweetMode.ToString().ToLower()));
+                urlParams.Add(new QueryParameter("tweet_mode", TweetMode.ToString()?.ToLower()));
             }
 
             return req;
@@ -427,7 +427,7 @@ namespace LinqToTwitter
             if (parameters.ContainsKey(nameof(TweetMode)))
             {
                 TweetMode = RequestProcessorHelper.ParseEnum<TweetMode>(parameters[nameof(TweetMode)]);
-                urlParams.Add(new QueryParameter("tweet_mode", TweetMode.ToString().ToLower()));
+                urlParams.Add(new QueryParameter("tweet_mode", TweetMode.ToString()?.ToLower()));
             }
 
             return req;

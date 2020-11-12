@@ -212,7 +212,7 @@ namespace LinqToTwitter
         /// <summary>
         /// Methods for communicating with Twitter.
         /// </summary>
-        internal ITwitterExecute? TwitterExecutor { get; set; }
+        internal ITwitterExecute TwitterExecutor { get; set; }
 
         /// <summary>
         /// retrieves a specified response header, converting it to an int
@@ -397,8 +397,6 @@ namespace LinqToTwitter
         public virtual async Task<object> ExecuteAsync<T>(Expression expression, bool isEnumerable)
             where T: class
         {
-            _ = TwitterExecutor ?? throw new ArgumentNullException(nameof(TwitterExecutor), $"{nameof(TwitterExecutor)} should never be null.");
-
             // request processor is specific to request type (i.e. Status, User, etc.)
             IRequestProcessor<T> reqProc = CreateRequestProcessor<T>(expression);
 
