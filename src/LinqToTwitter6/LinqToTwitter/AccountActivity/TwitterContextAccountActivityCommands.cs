@@ -16,9 +16,9 @@ namespace LinqToTwitter
         /// <exception cref="TwitterQueryException">
         /// Throws TwitterQueryException when an AddAccountActivitySubscriptionAsync fails.
         /// </exception>
-        public async Task<AccountActivity?> AddAccountActivitySubscriptionAsync(ulong webhookID, CancellationToken cancelToken = default(CancellationToken))
+        public async Task<AccountActivity?> AddAccountActivitySubscriptionAsync(ulong webhookID, CancellationToken cancelToken = default)
         {
-            if (webhookID == default(ulong))
+            if (webhookID == default)
                 throw new ArgumentException($"{nameof(webhookID)} must be set.", nameof(webhookID));
 
             var newUrl = BaseUrl + $"account_activity/webhooks/{webhookID}/subscriptions.json";
@@ -48,7 +48,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="url">Url of webhook.</param>
         /// <returns>Account Activity data.</returns>
-        public async Task<AccountActivity?> AddAccountActivityWebhookAsync(string url, CancellationToken cancelToken = default(CancellationToken))
+        public async Task<AccountActivity?> AddAccountActivityWebhookAsync(string url, CancellationToken cancelToken = default)
         {
             if (string.IsNullOrWhiteSpace(url))
                 throw new ArgumentException($"{nameof(url)} must be set.", nameof(url));
@@ -80,9 +80,9 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="webhookID">ID of webhook to send CRC to.</param>
         /// <returns>Account Activity data.</returns>
-        public async Task<AccountActivity?> SendAccountActivityCrcAsync(ulong webhookID, CancellationToken cancelToken = default(CancellationToken))
+        public async Task<AccountActivity?> SendAccountActivityCrcAsync(ulong webhookID, CancellationToken cancelToken = default)
         {
-            if (webhookID == default(ulong))
+            if (webhookID == default)
                 throw new ArgumentException($"{nameof(webhookID)} must be set.", nameof(webhookID));
 
             var newUrl = BaseUrl + $"account_activity/webhooks/{webhookID}.json";
@@ -112,9 +112,9 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="webhookID">ID of webhook user is subscribing to.</param>
         /// <returns>Account Activity data.</returns>
-        public async Task<AccountActivity?> DeleteAccountActivitySubscriptionAsync(ulong webhookID, CancellationToken cancelToken = default(CancellationToken))
+        public async Task<AccountActivity?> DeleteAccountActivitySubscriptionAsync(ulong webhookID, CancellationToken cancelToken = default)
         {
-            if (webhookID == default(ulong))
+            if (webhookID == default)
                 throw new ArgumentException($"{nameof(webhookID)} must be set.", nameof(webhookID));
 
             var newUrl = BaseUrl + $"account_activity/webhooks/{webhookID}/subscriptions.json";
@@ -144,9 +144,9 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="webhookID">Url of webhook.</param>
         /// <returns>Account Activity data.</returns>
-        public async Task<AccountActivity?> DeleteAccountActivityWebhookAsync(ulong webhookID, CancellationToken cancelToken = default(CancellationToken))
+        public async Task<AccountActivity?> DeleteAccountActivityWebhookAsync(ulong webhookID, CancellationToken cancelToken = default)
         {
-            if (webhookID == default(ulong))
+            if (webhookID == default)
                 throw new ArgumentException($"{nameof(webhookID)} must be set.", nameof(webhookID));
 
             var newUrl = BaseUrl + $"account_activity/webhooks/{webhookID}.json";

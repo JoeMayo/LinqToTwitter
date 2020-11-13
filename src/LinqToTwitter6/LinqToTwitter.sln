@@ -12,7 +12,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleDemo.CSharp", "..\..
 		{C82B4276-D12F-4FA6-9E4F-B0FD70329A54} = {C82B4276-D12F-4FA6-9E4F-B0FD70329A54}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqToTwitter.AspNet", "LinqToTwitter.AspNet\LinqToTwitter.AspNet.csproj", "{E7FE52CB-CED8-4E4C-BFBC-BF7AB638B9B6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LinqToTwitter.AspNet", "LinqToTwitter.AspNet\LinqToTwitter.AspNet.csproj", "{E7FE52CB-CED8-4E4C-BFBC-BF7AB638B9B6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6BD04CCA-E853-46FC-A501-06104E5429A5}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

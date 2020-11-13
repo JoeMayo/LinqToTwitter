@@ -76,16 +76,14 @@ namespace LinqToTwitter
 
             Type = RequestProcessorHelper.ParseEnum<DirectMessageEventsType>(parameters[nameof(Type)]);
 
-            switch (Type)
+            return Type switch
             {
-                case DirectMessageEventsType.List:
-                    return BuildListUrl(parameters);
-                case DirectMessageEventsType.Show:
-                    return BuildShowUrl(parameters);
-                default:
-                    throw new InvalidOperationException(
-                        $"Didn't recognize '{Type}' for {nameof(Type)} parameter in DirectMessageEventsRequestProcessor.BuildUrl.");
-            }
+                DirectMessageEventsType.List => BuildListUrl(parameters),
+                DirectMessageEventsType.Show => BuildShowUrl(parameters),
+                _ => throw new InvalidOperationException(
+                        $"Didn't recognize '{Type}' for {nameof(Type)} parameter in " +
+                        $"DirectMessageEventsRequestProcessor.BuildUrl."),
+            };
         }
 
         Request BuildShowUrl(Dictionary<string, string> parameters)
@@ -140,18 +138,11 @@ namespace LinqToTwitter
             if (string.IsNullOrWhiteSpace(responseJson))
                 return new List<T>();
 
-            IEnumerable<DirectMessageEvents> dmList;
-
-            switch (Type)
+            IEnumerable<DirectMessageEvents> dmList = Type switch
             {
-                case DirectMessageEventsType.List:
-                case DirectMessageEventsType.Show:
-                    dmList = HandleDirectMessage(responseJson);
-                    break;
-                default:
-                    dmList = new List<DirectMessageEvents>();
-                    break;
-            }
+                DirectMessageEventsType.List or DirectMessageEventsType.Show => HandleDirectMessage(responseJson),
+                _ => new List<DirectMessageEvents>(),
+            };
 
             return dmList.OfType<T>().ToList();
         }
