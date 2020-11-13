@@ -17,7 +17,7 @@ namespace LinqToTwitter
         /// <param name="mediaId">ID of an uploaded media.</param>
         /// <param name="cancelToken">Async cancellation token.</param>
         /// <returns>Direct message events data.</returns>
-        public async Task<DirectMessageEvents?> NewDirectMessageEventAsync(ulong recipientID, string text, ulong mediaId, CancellationToken cancelToken = default(CancellationToken))
+        public async Task<DirectMessageEvents?> NewDirectMessageEventAsync(ulong recipientID, string text, ulong mediaId, CancellationToken cancelToken = default)
         {
             var attachment = new Attachment
             {
@@ -28,7 +28,7 @@ namespace LinqToTwitter
                 }
             };
 
-            return await NewDirectMessageEventAsync(recipientID, text, attachment).ConfigureAwait(false);
+            return await NewDirectMessageEventAsync(recipientID, text, attachment, quickReply: null, callToActions: null, cancelToken: cancelToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -40,7 +40,7 @@ namespace LinqToTwitter
         /// <param name="longitude">Longitude coordinate.</param>
         /// <param name="cancelToken">Async cancellation token.</param>
         /// <returns>Direct message events data.</returns>
-        public async Task<DirectMessageEvents?> NewDirectMessageEventAsync(ulong recipientID, string text, double latitude, double longitude, CancellationToken cancelToken = default(CancellationToken))
+        public async Task<DirectMessageEvents?> NewDirectMessageEventAsync(ulong recipientID, string text, double latitude, double longitude, CancellationToken cancelToken = default)
         {
             var attachment = new Attachment
             {
@@ -59,7 +59,7 @@ namespace LinqToTwitter
                 }
             };
 
-            return await NewDirectMessageEventAsync(recipientID, text, attachment).ConfigureAwait(false);
+            return await NewDirectMessageEventAsync(recipientID, text, attachment, quickReply: null, callToActions: null, cancelToken: cancelToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -70,7 +70,7 @@ namespace LinqToTwitter
         /// <param name="placeID">ID of place (Tip: Use the Geo API if you don't already have a place ID)</param>
         /// <param name="cancelToken">Async cancellation token.</param>
         /// <returns>Direct message events data.</returns>
-        public async Task<DirectMessageEvents?> NewDirectMessageEventAsync(ulong recipientID, string text, string placeID, CancellationToken cancelToken = default(CancellationToken))
+        public async Task<DirectMessageEvents?> NewDirectMessageEventAsync(ulong recipientID, string text, string placeID, CancellationToken cancelToken = default)
         {
             var attachment = new Attachment
             {
@@ -88,7 +88,7 @@ namespace LinqToTwitter
                 }
             };
 
-            return await NewDirectMessageEventAsync(recipientID, text, attachment).ConfigureAwait(false);
+            return await NewDirectMessageEventAsync(recipientID, text, attachment, quickReply: null, callToActions: null, cancelToken: cancelToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -98,9 +98,9 @@ namespace LinqToTwitter
         /// <param name="text">Direct message contents.</param>
         /// <param name="cancelToken">Async cancellation token.</param>
         /// <returns>Direct message events data.</returns>
-        public async Task<DirectMessageEvents?> NewDirectMessageEventAsync(ulong recipientID, string text, CancellationToken cancelToken = default(CancellationToken))
+        public async Task<DirectMessageEvents?> NewDirectMessageEventAsync(ulong recipientID, string text, CancellationToken cancelToken = default)
         {
-            return await NewDirectMessageEventAsync(recipientID, text, attachment: null).ConfigureAwait(false);
+            return await NewDirectMessageEventAsync(recipientID, text, attachment: null, quickReply: null, callToActions: null, cancelToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -111,7 +111,7 @@ namespace LinqToTwitter
         /// <param name="options">List of options for the user to choose from.</param>
         /// <param name="cancelToken">Async cancellation token.</param>
         /// <returns>Direct message events data.</returns>
-        public async Task<DirectMessageEvents?> RequestQuickReplyOptionsAsync(ulong recipientID, string text, IEnumerable<QuickReplyOption> options, CancellationToken cancelToken = default(CancellationToken))
+        public async Task<DirectMessageEvents?> RequestQuickReplyOptionsAsync(ulong recipientID, string text, IEnumerable<QuickReplyOption> options, CancellationToken cancelToken = default)
         {
             var quickReply = new QuickReply
             {
@@ -119,7 +119,7 @@ namespace LinqToTwitter
                 Options = options
             };
 
-            return await NewDirectMessageEventAsync(recipientID, text, attachment: null, quickReply: quickReply).ConfigureAwait(false);
+            return await NewDirectMessageEventAsync(recipientID, text, attachment: null, quickReply: quickReply, callToActions: null, cancelToken: cancelToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -130,9 +130,9 @@ namespace LinqToTwitter
         /// <param name="callToActions">List of Call to Action, which creates buttons in the message.</param>
         /// <param name="cancelToken">Async cancellation token.</param>
         /// <returns>Direct message events data.</returns>
-        public async Task<DirectMessageEvents?> RequestButtonChoiceAsync(ulong recipientID, string text, IEnumerable<CallToAction> callToActions, CancellationToken cancelToken = default(CancellationToken))
+        public async Task<DirectMessageEvents?> RequestButtonChoiceAsync(ulong recipientID, string text, IEnumerable<CallToAction> callToActions, CancellationToken cancelToken = default)
         {
-            return await NewDirectMessageEventAsync(recipientID, text, attachment: null, quickReply: null, callToActions: callToActions).ConfigureAwait(false);
+            return await NewDirectMessageEventAsync(recipientID, text, attachment: null, quickReply: null, callToActions: callToActions, cancelToken: cancelToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -145,9 +145,9 @@ namespace LinqToTwitter
         /// <param name="callToActions">List of Call to Action, which creates buttons in the message.</param>
         /// <param name="cancelToken">Async cancellation token.</param>
         /// <returns>Direct message events data.</returns>
-        async Task<DirectMessageEvents?> NewDirectMessageEventAsync(ulong recipientID, string text, Attachment? attachment = null, QuickReply? quickReply = null, IEnumerable<CallToAction>? callToActions = null, CancellationToken cancelToken = default(CancellationToken))
+        public async Task<DirectMessageEvents?> NewDirectMessageEventAsync(ulong recipientID, string text, Attachment? attachment, QuickReply? quickReply, IEnumerable<CallToAction>? callToActions, CancellationToken cancelToken = default)
         {
-            if (recipientID == default(ulong))
+            if (recipientID == default)
                 throw new ArgumentException($"{nameof(recipientID)} must be set.", nameof(recipientID));
             if (string.IsNullOrWhiteSpace(text))
                 throw new ArgumentException($"{nameof(text)} is a required parameter.", nameof(text));
@@ -197,9 +197,9 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="directMessageID">ID of direct message to delete.</param>
         /// <param name="cancelToken">Async cancellation token.</param>
-        public async Task DeleteDirectMessageEventAsync(ulong directMessageID, CancellationToken cancelToken = default(CancellationToken))
+        public async Task DeleteDirectMessageEventAsync(ulong directMessageID, CancellationToken cancelToken = default)
         {
-            if (directMessageID == default(ulong))
+            if (directMessageID == default)
                 throw new ArgumentException($"{nameof(directMessageID)} must be set.", nameof(directMessageID));
 
             var newUrl = BaseUrl + "direct_messages/events/destroy.json?id=" + directMessageID;
@@ -222,11 +222,11 @@ namespace LinqToTwitter
         /// <param name="lastReadEventID">ID of last direct message read.</param>
         /// <param name="recipientID">ID of user to send typing indicator to.</param>
         /// <param name="cancelToken">Async cancellation token.</param>
-        public async Task MarkReadAsync(ulong lastReadEventID, ulong recipientID, CancellationToken cancelToken = default(CancellationToken))
+        public async Task MarkReadAsync(ulong lastReadEventID, ulong recipientID, CancellationToken cancelToken = default)
         {
-            if (lastReadEventID == default(ulong))
+            if (lastReadEventID == default)
                 throw new ArgumentException($"{nameof(lastReadEventID)} must be set.", nameof(lastReadEventID));
-            if (recipientID == default(ulong))
+            if (recipientID == default)
                 throw new ArgumentException($"{nameof(recipientID)} must be set.", nameof(recipientID));
 
             var newUrl = BaseUrl + "direct_messages/mark_read.json";
@@ -249,9 +249,9 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="recipientID">ID of user to send typing indicator to.</param>
         /// <param name="cancelToken">Async cancellation token.</param>
-        public async Task IndicateTypingAsync(ulong recipientID, CancellationToken cancelToken = default(CancellationToken))
+        public async Task IndicateTypingAsync(ulong recipientID, CancellationToken cancelToken = default)
         {
-            if (recipientID == default(ulong))
+            if (recipientID == default)
                 throw new ArgumentException($"{nameof(recipientID)} must be set.", nameof(recipientID));
 
             var newUrl = BaseUrl + "direct_messages/indicate_typing.json";
