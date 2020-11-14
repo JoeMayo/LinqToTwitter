@@ -5,7 +5,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using LinqToTwitter;
 
-namespace Linq2TwitterDemos_Console
+namespace ConsoleDemo.CSharp
 {
     class RawDemos
     {

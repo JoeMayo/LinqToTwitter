@@ -7,7 +7,7 @@ using System.IO;
 using LinqToTwitter.Common;
 using System.Collections.Generic;
 
-namespace Linq2TwitterDemos_Console
+namespace ConsoleDemo.CSharp
 {
     class StreamDemos
     {

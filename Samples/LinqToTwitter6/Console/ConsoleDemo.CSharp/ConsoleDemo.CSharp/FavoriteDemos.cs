@@ -5,7 +5,7 @@ using LinqToTwitter;
 using System.Collections.Generic;
 using LinqToTwitter.Common;
 
-namespace Linq2TwitterDemos_Console
+namespace ConsoleDemo.CSharp
 {
     class FavoriteDemos
     {

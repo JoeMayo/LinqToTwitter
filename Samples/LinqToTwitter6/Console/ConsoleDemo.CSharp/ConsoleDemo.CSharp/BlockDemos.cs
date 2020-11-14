@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using LinqToTwitter;
 
-namespace Linq2TwitterDemos_Console
+namespace ConsoleDemo.CSharp
 {
     class BlockDemos
     {

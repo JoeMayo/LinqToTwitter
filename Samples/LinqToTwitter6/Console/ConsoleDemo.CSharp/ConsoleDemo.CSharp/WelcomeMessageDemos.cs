@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using LinqToTwitter;
 using System.Collections.Generic;
 
-namespace Linq2TwitterDemos_Console
+namespace ConsoleDemo.CSharp
 {
     class WelcomeMessageDemos
     {

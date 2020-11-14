@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using LinqToTwitter;
 using LinqToTwitter.Common;
 
-namespace Linq2TwitterDemos_Console
+namespace ConsoleDemo.CSharp
 {
     class AccountActivityDemos
     {

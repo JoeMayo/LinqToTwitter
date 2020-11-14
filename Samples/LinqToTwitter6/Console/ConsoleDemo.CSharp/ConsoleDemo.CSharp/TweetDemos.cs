@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using LinqToTwitter.Common;
 
-namespace Linq2TwitterDemos_Console
+namespace ConsoleDemo.CSharp
 {
     public class TweetDemos
     {

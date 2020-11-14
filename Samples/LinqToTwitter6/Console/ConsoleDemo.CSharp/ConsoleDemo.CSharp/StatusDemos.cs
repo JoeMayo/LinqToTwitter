@@ -6,7 +6,7 @@ using LinqToTwitter;
 using System.Diagnostics;
 using LinqToTwitter.Common;
 
-namespace Linq2TwitterDemos_Console
+namespace ConsoleDemo.CSharp
 {
     class StatusDemos
     {
