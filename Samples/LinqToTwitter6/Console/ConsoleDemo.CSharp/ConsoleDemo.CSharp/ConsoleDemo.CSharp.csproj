@@ -7,7 +7,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="linqtotwitter" Version="6.0.0" />
+	  <ProjectReference Include="..\..\..\..\..\src\LinqToTwitter6\LinqToTwitter\LinqToTwitter.csproj" />
 	</ItemGroup>
 
 </Project>

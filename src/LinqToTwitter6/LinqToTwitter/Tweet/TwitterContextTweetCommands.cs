@@ -9,17 +9,39 @@ namespace LinqToTwitter
 {
     public partial class TwitterContext
     {
-        public async Task<bool> HideTweetAsync(string tweetID, CancellationToken cancelToken = default)
+        /// <summary>
+        /// Hides a reply to a tweet
+        /// </summary>
+        /// <param name="tweetID">ID of the replying tweet</param>
+        /// <param name="cancelToken">Optional cancellation token</param>
+        /// <exception cref="TwitterQueryException">Will receive 403 Forbidden if ID is for a tweet that is not a reply</exception>
+        /// <returns>Hidden status of reply - true if reply is hidden</returns>
+        public async Task<bool> HideReplyAsync(string tweetID, CancellationToken cancelToken = default)
         {
-            return await HideTweetAsync(tweetID, true, cancelToken);
+            return await HideReplyAsync(tweetID, true, cancelToken);
         }
 
-        public async Task<bool> UnHideTweetAsync(string tweetID, CancellationToken cancelToken = default)
+        /// <summary>
+        /// Hides a reply to a tweet
+        /// </summary>
+        /// <param name="tweetID">ID of the replying tweet</param>
+        /// <param name="cancelToken">Optional cancellation token</param>
+        /// <exception cref="TwitterQueryException">Will receive 403 Forbidden if ID is for a tweet that is not a reply</exception>
+        /// <returns>Hidden status of reply - false if reply is no longer hidden</returns>
+        public async Task<bool> UnHideReplyAsync(string tweetID, CancellationToken cancelToken = default)
         {
-            return await HideTweetAsync(tweetID, false, cancelToken);
+            return await HideReplyAsync(tweetID, false, cancelToken);
         }
 
-        async Task<bool> HideTweetAsync(string tweetID, bool shouldHide, CancellationToken cancelToken)
+        /// <summary>
+        /// Hides/unhides a reply to a tweet
+        /// </summary>
+        /// <param name="tweetID">ID of the replying tweet</param>
+        /// <param name="shouldHide">true to hide/false to unhide</param>
+        /// <param name="cancelToken">Optional cancellation token</param>
+        /// <exception cref="TwitterQueryException">Will receive 403 Forbidden if ID is for a tweet that is not a reply</exception>
+        /// <returns>Hidden status of reply - false if reply is no longer hidden</returns>
+        async Task<bool> HideReplyAsync(string tweetID, bool shouldHide, CancellationToken cancelToken)
         {
             _ = tweetID ?? throw new ArgumentNullException(nameof(tweetID), $"{nameof(tweetID)} is required.");
 
@@ -38,7 +60,6 @@ namespace LinqToTwitter
                    .ConfigureAwait(false);
 
             TweetHideResponse? result = JsonSerializer.Deserialize<TweetHideResponse>(RawResult);
-                
 
             return result?.Data?.Hidden ?? false;
         }

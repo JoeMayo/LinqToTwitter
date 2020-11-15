@@ -2,8 +2,6 @@
 using System.Linq;
 using System.Threading.Tasks;
 using LinqToTwitter;
-using System.Collections.Generic;
-using System.Diagnostics;
 using LinqToTwitter.Common;
 
 namespace ConsoleDemo.CSharp
@@ -31,12 +29,12 @@ namespace ConsoleDemo.CSharp
                         await DoMultiTweetLookupAsync(twitterCtx);
                         break;
                     case '2':
-                        Console.WriteLine("\n\tHiding a tweet...\n");
-                        await HideTweetAsync(twitterCtx);
+                        Console.WriteLine("\n\tHiding a reply...\n");
+                        await HideReplyAsync(twitterCtx);
                         break;
                     case '3':
-                        Console.WriteLine("\n\tUn-Hiding a tweet...\n");
-                        await UnHideTweetAsync(twitterCtx);
+                        Console.WriteLine("\n\tUn-Hiding a reply...\n");
+                        await UnHideReplyAsync(twitterCtx);
                         break;
                     case 'q':
                     case 'Q':
@@ -56,8 +54,8 @@ namespace ConsoleDemo.CSharp
 
             Console.WriteLine("\t 0. Single Tweet Lookup");
             Console.WriteLine("\t 1. Multi-Tweet Lookup");
-            Console.WriteLine("\t 2. Hide a Tweet");
-            Console.WriteLine("\t 3. Un-Hide a Tweet");
+            Console.WriteLine("\t 2. Hide a Reply");
+            Console.WriteLine("\t 3. Un-Hide a Reply");
             Console.WriteLine();
             Console.Write("\t Q. Return to Main menu");
         }
@@ -138,16 +136,20 @@ namespace ConsoleDemo.CSharp
                 Console.WriteLine("No entries found.");
         }
 
-        static async Task HideTweetAsync(TwitterContext twitterCtx)
+        static async Task HideReplyAsync(TwitterContext twitterCtx)
         {
-            bool isHidden = await twitterCtx.HideTweetAsync("1322667606688423936");
+            const string TweetID = "1327749647515881473";
+
+            bool isHidden = await twitterCtx.HideReplyAsync(TweetID);
 
             Console.WriteLine($"Is Hidden: {isHidden}");
         }
 
-        static async Task UnHideTweetAsync(TwitterContext twitterCtx)
+        static async Task UnHideReplyAsync(TwitterContext twitterCtx)
         {
-            bool isHidden = await twitterCtx.UnHideTweetAsync("1322667606688423936");
+            const string TweetID = "1327749647515881473";
+
+            bool isHidden = await twitterCtx.UnHideReplyAsync(TweetID);
 
             Console.WriteLine($"Is Hidden: {isHidden}");
         }
