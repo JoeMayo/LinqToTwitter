@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using LinqToTwitter.Common;
 using LinqToTwitter.OAuth;
 using LinqToTwitter.Provider;
 using LinqToTwitter.Tests.Common;

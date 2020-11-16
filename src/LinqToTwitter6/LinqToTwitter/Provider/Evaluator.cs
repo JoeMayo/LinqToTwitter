@@ -1,5 +1,4 @@
-﻿#nullable disable
-/***********************************************************
+﻿/***********************************************************
  * Credits:
  * 
  * MSDN Documentation -
@@ -33,7 +32,7 @@ namespace LinqToTwitter.Provider
         /// <param name="expression">The root of the expression tree.</param>
         /// <param name="fnCanBeEvaluated">A function that decides whether a given expression node can be part of the local function.</param>
         /// <returns>A new tree with sub-trees evaluated and replaced.</returns>
-        public static Expression PartialEval(Expression expression, Func<Expression, bool> fnCanBeEvaluated)
+        public static Expression? PartialEval(Expression expression, Func<Expression, bool> fnCanBeEvaluated)
         {
             return new SubtreeEvaluator(new Nominator(fnCanBeEvaluated).Nominate(expression)).Eval(expression);
         }
@@ -43,12 +42,12 @@ namespace LinqToTwitter.Provider
         /// </summary>
         /// <param name="expression">The root of the expression tree.</param>
         /// <returns>A new tree with sub-trees evaluated and replaced.</returns>
-        public static Expression PartialEval(Expression expression)
+        public static Expression? PartialEval(Expression expression)
         {
             return PartialEval(expression, Evaluator.CanBeEvaluatedLocally);
         }
 
-        private static bool CanBeEvaluatedLocally(Expression expression)
+        static bool CanBeEvaluatedLocally(Expression expression)
         {
             return expression.NodeType != ExpressionType.Parameter;
         }
@@ -65,25 +64,25 @@ namespace LinqToTwitter.Provider
                 this.candidates = candidates;
             }
 
-            internal Expression Eval(Expression exp)
+            internal Expression? Eval(Expression exp)
             {
-                return this.Visit(exp);
+                return Visit(exp);
             }
 
-            public override Expression Visit(Expression exp)
+            public override Expression? Visit(Expression exp)
             {
                 if (exp == null)
                 {
                     return null;
                 }
-                if (this.candidates.Contains(exp))
+                if (candidates.Contains(exp))
                 {
-                    return this.Evaluate(exp);
+                    return Evaluate(exp);
                 }
                 return base.Visit(exp);
             }
 
-            private Expression Evaluate(Expression e)
+            Expression Evaluate(Expression e)
             {
                 if (e.NodeType == ExpressionType.Constant)
                 {
@@ -102,7 +101,7 @@ namespace LinqToTwitter.Provider
         class Nominator : ExpressionVisitor
         {
             readonly Func<Expression, bool> fnCanBeEvaluated;
-            HashSet<Expression> candidates;
+            HashSet<Expression>? candidates;
             bool cannotBeEvaluated;
 
             internal Nominator(Func<Expression, bool> fnCanBeEvaluated)
@@ -112,30 +111,30 @@ namespace LinqToTwitter.Provider
 
             internal HashSet<Expression> Nominate(Expression expression)
             {
-                this.candidates = new HashSet<Expression>();
-                this.Visit(expression);
-                return this.candidates;
+                candidates = new HashSet<Expression>();
+                Visit(expression);
+                return candidates;
             }
 
-            public override Expression Visit(Expression expression)
+            public override Expression? Visit(Expression expression)
             {
                 if (expression != null)
                 {
-                    bool saveCannotBeEvaluated = this.cannotBeEvaluated;
-                    this.cannotBeEvaluated = false;
+                    bool saveCannotBeEvaluated = cannotBeEvaluated;
+                    cannotBeEvaluated = false;
                     base.Visit(expression);
-                    if (!this.cannotBeEvaluated)
+                    if (!cannotBeEvaluated)
                     {
-                        if (this.fnCanBeEvaluated(expression))
+                        if (fnCanBeEvaluated(expression))
                         {
-                            this.candidates.Add(expression);
+                            candidates?.Add(expression);
                         }
                         else
                         {
-                            this.cannotBeEvaluated = true;
+                            cannotBeEvaluated = true;
                         }
                     }
-                    this.cannotBeEvaluated |= saveCannotBeEvaluated;
+                    cannotBeEvaluated |= saveCannotBeEvaluated;
                 }
                 return expression;
             }

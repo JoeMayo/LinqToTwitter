@@ -1,4 +1,3 @@
-#nullable disable
 using System.Text.Json.Serialization;
 
 namespace LinqToTwitter.Common.Entities
@@ -13,12 +12,12 @@ namespace LinqToTwitter.Common.Entities
         /// Tag name without the # sign
         /// </summary>
         [JsonPropertyName("text")]
-        public string Text { get; set; }
+        public string? Text { get; set; }
 
         /// <summary>
         /// Locations for begin/end index of where hashtag occurs.
         /// </summary>
         [JsonPropertyName("indices")]
-        public int[] Indices { get; set; }
+        public int[]? Indices { get; set; }
     }
 }

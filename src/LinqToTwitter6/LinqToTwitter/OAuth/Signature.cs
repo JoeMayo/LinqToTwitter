@@ -10,7 +10,7 @@ namespace LinqToTwitter.OAuth
 {
     public class Signature : ISignature
     {  
-        public string GetAuthorizationString(string method, string url, IDictionary<string, string> parameters, string consumerSecret, string oAuthTokenSecret)
+        public string GetAuthorizationString(string method, string url, IDictionary<string, string?> parameters, string consumerSecret, string oAuthTokenSecret)
         {
             string encodedAndSortedString = BuildEncodedSortedString(parameters);
             string signatureBaseString = BuildSignatureBaseString(method, url, encodedAndSortedString);
@@ -21,7 +21,7 @@ namespace LinqToTwitter.OAuth
             return authorizationHeader;
         }
 
-        internal void AddMissingOAuthParameters(IDictionary<string, string> parameters)
+        internal void AddMissingOAuthParameters(IDictionary<string, string?> parameters)
         {
             const string OAuthVersion = "1.0";
             const string OAuthSignatureMethod = "HMAC-SHA1";
@@ -39,7 +39,7 @@ namespace LinqToTwitter.OAuth
                 parameters.Add("oauth_signature_method", OAuthSignatureMethod);     
         }
 
-        internal string BuildEncodedSortedString(IDictionary<string, string> parameters)
+        internal string BuildEncodedSortedString(IDictionary<string, string?> parameters)
         {
             AddMissingOAuthParameters(parameters);
 

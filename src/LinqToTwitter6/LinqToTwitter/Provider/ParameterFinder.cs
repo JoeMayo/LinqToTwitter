@@ -1,5 +1,4 @@
-﻿#nullable disable
-/***********************************************************
+﻿/***********************************************************
  * Credits:
  * 
  * MSDN Documentation -
@@ -27,12 +26,12 @@ namespace LinqToTwitter.Provider
         /// <summary>
         /// expression being searched
         /// </summary>
-        private readonly Expression expression;
+        readonly Expression? expression;
 
         /// <summary>
         /// parameters to search for
         /// </summary>
-        private Dictionary<string, string> parameters;
+        Dictionary<string, string?>? parameters;
 
         /// <summary>
         /// keep track of expression and parameter list
@@ -48,13 +47,13 @@ namespace LinqToTwitter.Provider
         /// <summary>
         /// name/value pairs of parameters and their values
         /// </summary>
-        public Dictionary<string, string> Parameters
+        public Dictionary<string, string?> Parameters
         {
             get
             {
                 if (parameters == null)
                 {
-                    parameters = new Dictionary<string, string>();
+                    parameters = new Dictionary<string, string?>();
                     Visit(expression);
                 }
                 return parameters;
@@ -84,7 +83,7 @@ namespace LinqToTwitter.Provider
                 {
                     if (ExpressionTreeHelpers.IsMemberEqualsValueExpression(be, typeof(T), param))
                     {
-                        parameters.Add(param, ExpressionTreeHelpers.GetValueFromEqualsExpression(be, typeof(T), param));
+                        parameters?.Add(param, ExpressionTreeHelpers.GetValueFromEqualsExpression(be, typeof(T), param));
                         return be;
                     }
                 }
@@ -100,9 +99,9 @@ namespace LinqToTwitter.Provider
 
             foreach (var param in ParameterNames)
             {
-                if (me.Method.Name == "CompareString" && (me.Arguments[0] as MemberExpression).Member.Name == param)
+                if (me?.Method.Name == "CompareString" && (me?.Arguments[0] as MemberExpression)?.Member.Name == param)
                 {
-                    parameters.Add(param, (me.Arguments[1] as ConstantExpression).Value.ToString());
+                    parameters?.Add(param, (me.Arguments[1] as ConstantExpression)?.Value?.ToString());
                     return me;
                 } 
             }

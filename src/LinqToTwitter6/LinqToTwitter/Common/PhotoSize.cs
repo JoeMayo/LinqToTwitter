@@ -1,5 +1,4 @@
-﻿#nullable disable
-using System.Xml.Serialization;
+﻿using System.Xml.Serialization;
 
 namespace LinqToTwitter.Common
 {
@@ -9,7 +8,7 @@ namespace LinqToTwitter.Common
         /// <summary>
         /// Type of photo (i.e. Large, Small, etc.)
         /// </summary>
-        public string Type { get; set; }
+        public string? Type { get; set; }
 
         /// <summary>
         /// Photo Width
@@ -24,6 +23,6 @@ namespace LinqToTwitter.Common
         /// <summary>
         /// Resize Behavior (i.e. crop, fit, ...)
         /// </summary>
-        public string Resize { get; set; }
+        public string? Resize { get; set; }
     }
 }

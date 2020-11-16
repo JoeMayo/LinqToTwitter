@@ -1,6 +1,4 @@
-﻿#nullable disable
-
-namespace LinqToTwitter.OAuth
+﻿namespace LinqToTwitter.OAuth
 {
     /// <summary>
     /// Used for XAuthAuthorization, which requires permission from Twitter before using
@@ -10,12 +8,12 @@ namespace LinqToTwitter.OAuth
         /// <summary>
         /// Twitter User Name
         /// </summary>
-        public string UserName { get; set; }
+        public string? UserName { get; set; }
 
         /// <summary>
         /// Twitter Password
         /// </summary>
-        public string Password { get; set; }
+        public string? Password { get; set; }
 
         public override string ToString()
         {

@@ -1,5 +1,4 @@
-﻿#nullable disable
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -71,14 +70,16 @@ namespace LinqToTwitter.Net
         {
             TwitterErrorDetails error = ParseTwitterErrorMessage(responseStr);
 
-            throw new TwitterQueryException(error.Title)
+            string title = error?.Title ?? string.Empty;
+
+            throw new TwitterQueryException(title)
             {
                 StatusCode = msg.StatusCode,
                 ReasonPhrase = msg.ReasonPhrase,
-                Title = error.Title,
-                Details = error.Detail,
-                Type = error.Type,
-                Errors = error.Errors
+                Title = title,
+                Details = error?.Detail ?? string.Empty,
+                Type = error?.Type ?? string.Empty,
+                Errors = error?.Errors ?? new List<Error>()
             };
         }
 

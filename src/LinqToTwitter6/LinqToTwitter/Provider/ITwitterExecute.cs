@@ -115,7 +115,7 @@ namespace LinqToTwitter.Provider
         /// <summary>
         /// Allows users to process content returned from stream
         /// </summary>
-        Func<StreamContent, Task> StreamingCallbackAsync { get; set; }
+        Func<StreamContent, Task>? StreamingCallbackAsync { get; set; }
 
         /// <summary>
         /// Set to true to close stream, false means stream is still open

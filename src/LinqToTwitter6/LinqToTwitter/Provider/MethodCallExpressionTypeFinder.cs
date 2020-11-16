@@ -1,19 +1,18 @@
 ﻿using System;
-#nullable disable
 using System.Linq.Expressions;
 
 namespace LinqToTwitter.Provider
 {
     internal class MethodCallExpressionTypeFinder : ExpressionVisitor
     {
-        Type genericType;
+        Type? genericType;
 
         /// <summary>
         /// Gets the underlying type of the whole method call expression
         /// </summary>
         /// <param name="exp">MethodCallExpression</param>
         /// <returns>Type</returns>
-        public Type GetGenericType(Expression exp)
+        public Type? GetGenericType(Expression exp)
         {
             Visit(exp);
             return genericType;

@@ -1,5 +1,4 @@
-﻿#nullable disable
-using LinqToTwitter.Common;
+﻿using LinqToTwitter.Common;
 using LinqToTwitter.Net;
 using System;
 using System.Collections.Generic;
@@ -21,7 +20,7 @@ namespace LinqToTwitter.OAuth
         /// <summary>
         /// URL for OAuth authorization
         /// </summary>
-        public string OAuthAuthorizeUrl { get; set; }
+        public string? OAuthAuthorizeUrl { get; set; }
 
         /// <summary>
         /// URL for OAuth Access Tokens
@@ -31,7 +30,7 @@ namespace LinqToTwitter.OAuth
         /// <summary>
         /// Get/Set Credentials
         /// </summary>
-        public ICredentialStore CredentialStore { get; set; }
+        public ICredentialStore? CredentialStore { get; set; }
 
         /// <summary>
         /// Force the user to enter their name/password when authorizing
@@ -46,27 +45,27 @@ namespace LinqToTwitter.OAuth
         /// <summary>
         /// Optional name to prefill when user visits the Twitter authorization screen
         /// </summary>
-        public string PreFillScreenName { get; set; }
+        public string? PreFillScreenName { get; set; }
 
         /// <summary>
         /// User-Agent header string sent to Twitter to represent your application. Defaults to LINQ to Twitter.
         /// </summary>
-        public string UserAgent { get; set; }
+        public string? UserAgent { get; set; }
 
         /// <summary>
         /// Url that Twitter redirects to after user authorizes your app.
         /// </summary>
-        public string Callback { get; set; }
+        public string? Callback { get; set; }
 
-        public IWebProxy Proxy { get; set; }
+        public IWebProxy? Proxy { get; set; }
 
         public bool SupportsCompression { get; set; }
 
-        protected string ParseVerifierFromResponseUrl(string responseUrl)
+        protected string? ParseVerifierFromResponseUrl(string responseUrl)
         {
             string[] keyValPairs = new Uri(responseUrl).Query.TrimStart('?').Split('&');
 
-            string verifier =
+            string? verifier =
                 (from keyValPair in keyValPairs
                  let pair = keyValPair.Split('=')
                  let key = pair[0]
@@ -78,16 +77,16 @@ namespace LinqToTwitter.OAuth
             return verifier;
         }
 
-        IDictionary<string, string> parameters;
-        public IDictionary<string, string> Parameters
+        IDictionary<string, string?>? parameters;
+        public IDictionary<string, string?> Parameters
         {
             get 
             {
                 if (parameters == null)
-                    parameters = new Dictionary<string, string>
+                    parameters = new Dictionary<string, string?>
                     {
-                        { "oauth_consumer_key", CredentialStore.ConsumerKey },
-                        { "oauth_token", CredentialStore.OAuthToken }
+                        { "oauth_consumer_key", CredentialStore?.ConsumerKey },
+                        { "oauth_token", CredentialStore?.OAuthToken }
                     };
 
                 return parameters; 
@@ -137,7 +136,7 @@ namespace LinqToTwitter.OAuth
 
         public string PrepareAuthorizeUrl(bool forceLogin)
         {
-            if (CredentialStore.OAuthToken == null)
+            if (CredentialStore?.OAuthToken == null)
                 throw new InvalidOperationException("OAuthToken not set. Call GetRequestTokenAsync first and verify that OAuthToken is set.");
 
             string forceLoginParamString = forceLogin ? "&force_login=true" : "";
@@ -169,7 +168,7 @@ namespace LinqToTwitter.OAuth
             UpdateCredentialsWithAccessTokenResponse(response);
         }
 
-        public async Task PostAccessTokenAsync(IDictionary<string, string> accessTokenParams)
+        public async Task PostAccessTokenAsync(IDictionary<string, string?> accessTokenParams)
         {
             if (!accessTokenParams.ContainsKey("x_auth_mode") && !accessTokenParams.ContainsKey("oauth_verifier"))
                 throw new ArgumentException("oauth_verifier is required, unless using xAuth.");
@@ -189,18 +188,22 @@ namespace LinqToTwitter.OAuth
 
         void UpdateCredentialsFromRequestTokenResponse(string response)
         {
-            CredentialStore.OAuthToken =
-                (from nameValPair in response.Split('&')
-                 let pair = nameValPair.Split('=')
-                 where pair[0] == "oauth_token"
-                 select pair[1])
-                .SingleOrDefault();
+            if (CredentialStore != null)
+                CredentialStore.OAuthToken =
+                    (from nameValPair in response.Split('&')
+                     let pair = nameValPair.Split('=')
+                     where pair[0] == "oauth_token"
+                     select pair[1])
+                    .SingleOrDefault();
 
-            Parameters.Add("oauth_token", CredentialStore.OAuthToken);
+            Parameters.Add("oauth_token", CredentialStore?.OAuthToken);
         }
 
         void UpdateCredentialsWithAccessTokenResponse(string response)
         {
+            if (CredentialStore == null)
+                return;
+
             var responseParams =
                 (from nameValPair in response.Split('&')
                  let pair = nameValPair.Split('=')
@@ -229,7 +232,7 @@ namespace LinqToTwitter.OAuth
             }
         }
 
-        internal async Task<string> HttpGetAsync(string oauthUrl, IDictionary<string, string> parameters)
+        internal async Task<string> HttpGetAsync(string oauthUrl, IDictionary<string, string?> parameters)
         {
             var req = new HttpRequestMessage(HttpMethod.Get, oauthUrl);
             req.Headers.Add("Authorization", GetAuthorizationString(HttpMethod.Get.ToString(), oauthUrl, parameters));
@@ -249,7 +252,7 @@ namespace LinqToTwitter.OAuth
             return await msg.Content.ReadAsStringAsync().ConfigureAwait(false);
         }
 
-        internal async Task<string> HttpPostAsync(string oauthUrl, IDictionary<string, string> parameters)
+        internal async Task<string> HttpPostAsync(string oauthUrl, IDictionary<string, string?> parameters)
         {
             var postData =
                 (from keyValPair in parameters
@@ -283,8 +286,11 @@ namespace LinqToTwitter.OAuth
             return await msg.Content.ReadAsStringAsync().ConfigureAwait(false);
         }
  
-        public virtual string GetAuthorizationString(string method, string oauthUrl, IDictionary<string, string> parameters)
+        public virtual string GetAuthorizationString(string method, string oauthUrl, IDictionary<string, string?> parameters)
         {
+            if (CredentialStore == null)
+                return string.Empty;
+
             string consumerSecret = CredentialStore.ConsumerSecret ?? "";
             string oAuthTokenSecret = CredentialStore.OAuthTokenSecret ?? "";
             string authorizationString =

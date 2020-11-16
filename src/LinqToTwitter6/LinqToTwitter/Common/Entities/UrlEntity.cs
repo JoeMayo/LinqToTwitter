@@ -1,4 +1,3 @@
-#nullable disable
 using System.Text.Json.Serialization;
 
 namespace LinqToTwitter.Common.Entities
@@ -13,24 +12,24 @@ namespace LinqToTwitter.Common.Entities
         /// Absolute Url in the tweet
         /// </summary>
         [JsonPropertyName("url")]
-        public string Url { get; set; }
+        public string? Url { get; set; }
 
         /// <summary>
         /// t.co shortened URL
         /// </summary>
         [JsonPropertyName("display_url")]
-        public string DisplayUrl { get; set; }
+        public string? DisplayUrl { get; set; }
 
         /// <summary>
         /// t.co expanded URL
         /// </summary>
         [JsonPropertyName("expanded_url")]
-        public string ExpandedUrl { get; set; }
+        public string? ExpandedUrl { get; set; }
 
         /// <summary>
         /// Locations for begin/end index of where URL occurs.
         /// </summary>
         [JsonPropertyName("indices")]
-        public int[] Indices { get; set; }
+        public int[]? Indices { get; set; }
     }
 }

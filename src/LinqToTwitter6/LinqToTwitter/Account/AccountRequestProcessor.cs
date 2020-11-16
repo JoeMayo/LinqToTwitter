@@ -118,7 +118,8 @@ namespace LinqToTwitter
         /// <returns>List of Account</returns>
         public virtual List<T> ProcessResults(string responseJson)
         {
-            Account acct = new();
+            var list = new List<Account>();
+            Account acct = null;
 
             if (!string.IsNullOrWhiteSpace(responseJson))
             {
@@ -142,7 +143,11 @@ namespace LinqToTwitter
                 acct.IncludeEmail = IncludeEmail;
             }
 
-            return new List<Account> { acct }.OfType<T>().ToList();
+
+            if (acct != null)
+                list.Add(acct);
+
+            return list.OfType<T>().ToList();
         }
 
         /// <summary>

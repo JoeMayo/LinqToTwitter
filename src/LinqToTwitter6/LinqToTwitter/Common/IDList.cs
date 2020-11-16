@@ -1,5 +1,4 @@
-﻿#nullable disable
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Serialization;
 using System.Text.Json;
@@ -28,11 +27,11 @@ namespace LinqToTwitter.Common
         /// <summary>
         /// Holds prev/next cursors
         /// </summary>
-        public Cursors CursorMovement { get; set; }
+        public Cursors? CursorMovement { get; set; }
 
         /// <summary>
         /// List of IDs returned
         /// </summary>
-        public List<ulong> IDs { get; set; }
+        public List<ulong>? IDs { get; set; }
     }
 }

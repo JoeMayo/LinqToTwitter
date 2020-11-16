@@ -1,5 +1,4 @@
-﻿#nullable disable
-/***********************************************************
+﻿/***********************************************************
  * Credits:
  * 
  * MSDN Documentation -
@@ -31,7 +30,7 @@ namespace LinqToTwitter.Provider
         /// <summary>
         /// refers to TwitterContext that calling code instantiated
         /// </summary>
-        public TwitterContext Context { get; set; }
+        public TwitterContext? Context { get; set; }
 
         /// <summary>
         /// Non-generic version, returns current query to 
@@ -72,7 +71,7 @@ namespace LinqToTwitter.Provider
         /// </summary>
         /// <param name="expression">Expression Tree</param>
         /// <returns>list of results from query</returns>
-        public object Execute(Expression expression)
+        public object? Execute(Expression expression)
         {
             Type elementType = TypeSystem.GetElementType(expression.Type);
 
@@ -96,8 +95,8 @@ namespace LinqToTwitter.Provider
             Type resultType = new MethodCallExpressionTypeFinder().GetGenericType(expression);
             var genericArguments = new[] { resultType };
 
-            var methodInfo = Context.GetType().GetTypeInfo().GetDeclaredMethod("ExecuteAsync");
-            MethodInfo genericMethodInfo = methodInfo.MakeGenericMethod(genericArguments);
+            var methodInfo = Context?.GetType().GetTypeInfo().GetDeclaredMethod("ExecuteAsync");
+            MethodInfo? genericMethodInfo = methodInfo?.MakeGenericMethod(genericArguments);
 
             try
             {

@@ -1,5 +1,4 @@
-﻿#nullable disable
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace LinqToTwitter.OAuth
 {
@@ -9,15 +8,15 @@ namespace LinqToTwitter.OAuth
     /// </summary>
     public class InMemoryCredentialStore : ICredentialStore
     {
-        public virtual string ConsumerKey { get; set; }
+        public virtual string? ConsumerKey { get; set; }
 
-        public virtual string ConsumerSecret { get; set; }
+        public virtual string? ConsumerSecret { get; set; }
 
-        public virtual string OAuthToken { get; set; }
+        public virtual string? OAuthToken { get; set; }
 
-        public virtual string OAuthTokenSecret { get; set; }
+        public virtual string? OAuthTokenSecret { get; set; }
 
-        public virtual string ScreenName { get; set; }
+        public virtual string? ScreenName { get; set; }
 
         public virtual ulong UserID { get; set; }
 

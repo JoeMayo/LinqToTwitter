@@ -1,5 +1,4 @@
-﻿#nullable disable
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace LinqToTwitter.OAuth
 {
@@ -12,10 +11,10 @@ namespace LinqToTwitter.OAuth
         // The properties provided by Twitter are named AccessToken and
         // AccessTokenSecret, we need to map them to what the 
         // IOAuthCredentials interface uses.
-        public virtual string AccessToken { get; set; }
-        public virtual string AccessTokenSecret { get; set; }
+        public virtual string? AccessToken { get; set; }
+        public virtual string? AccessTokenSecret { get; set; }
 
-        public override string OAuthToken
+        public override string? OAuthToken
         {
             get
             {
@@ -27,7 +26,7 @@ namespace LinqToTwitter.OAuth
             }
         }
 
-        public override string OAuthTokenSecret {
+        public override string? OAuthTokenSecret {
             get
             {
                 return AccessTokenSecret;

@@ -10,7 +10,7 @@ namespace LinqToTwitter.Net
         /// </summary>
         /// <param name="value">string to be encoded</param>
         /// <returns>Encoded string</returns>
-        public static string PercentEncode(string value, bool isParam = true)
+        public static string PercentEncode(string? value, bool isParam = true)
         {
             const string IsParamReservedChars = @"`!@#$^&*+=,:;'?/|\[] ";
             const string NoParamReservedChars = @"`!@#$^&*()+=,:;'?/|\[] ";

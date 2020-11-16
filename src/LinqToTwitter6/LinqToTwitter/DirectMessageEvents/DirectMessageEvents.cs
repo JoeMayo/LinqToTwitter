@@ -120,7 +120,7 @@ namespace LinqToTwitter
         {
             get
             {
-                if (createdAt == default(DateTime))
+                if (createdAt == null || createdAt == default(DateTime))
                     createdAt = CreatedTimestamp?.GetEpochDateFromTimestamp();
 
                 return createdAt;

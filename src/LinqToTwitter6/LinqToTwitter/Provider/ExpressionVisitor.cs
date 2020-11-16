@@ -1,5 +1,4 @@
-﻿#nullable disable
-/***********************************************************
+﻿/***********************************************************
  * Credits:
  * 
  * Matt Warren's Blog -
@@ -16,7 +15,7 @@ namespace LinqToTwitter.Provider
 {
     public abstract class ExpressionVisitor
     {
-        public virtual Expression Visit(Expression exp)
+        public virtual Expression? Visit(Expression? exp)
         {
             if (exp == null)
                 return exp;
@@ -109,7 +108,7 @@ namespace LinqToTwitter.Provider
 
         protected virtual Expression VisitUnary(UnaryExpression u)
         {
-            Expression operand = this.Visit(u.Operand);
+            Expression? operand = this.Visit(u.Operand);
 
             if (operand != u.Operand)
                 return Expression.MakeUnary(u.NodeType, operand, u.Type, u.Method);
@@ -119,9 +118,9 @@ namespace LinqToTwitter.Provider
 
         protected virtual Expression VisitBinary(BinaryExpression b)
         {
-            Expression left = this.Visit(b.Left);
-            Expression right = this.Visit(b.Right);
-            Expression conversion = this.Visit(b.Conversion);
+            Expression? left = this.Visit(b.Left);
+            Expression? right = this.Visit(b.Right);
+            Expression? conversion = this.Visit(b.Conversion);
 
             if (left != b.Left || right != b.Right || conversion != b.Conversion)
             {
@@ -136,7 +135,7 @@ namespace LinqToTwitter.Provider
 
         protected virtual Expression VisitTypeIs(TypeBinaryExpression b)
         {
-            Expression expr = this.Visit(b.Expression);
+            Expression? expr = this.Visit(b.Expression);
 
             if (expr != b.Expression)
                 return Expression.TypeIs(expr, b.TypeOperand);
@@ -151,9 +150,9 @@ namespace LinqToTwitter.Provider
 
         protected virtual Expression VisitConditional(ConditionalExpression c)
         {
-            Expression test = this.Visit(c.Test);
-            Expression ifTrue = this.Visit(c.IfTrue);
-            Expression ifFalse = this.Visit(c.IfFalse);
+            Expression? test = this.Visit(c.Test);
+            Expression? ifTrue = this.Visit(c.IfTrue);
+            Expression? ifFalse = this.Visit(c.IfFalse);
 
             if (test != c.Test || ifTrue != c.IfTrue || ifFalse != c.IfFalse)
                 return Expression.Condition(test, ifTrue, ifFalse);
@@ -168,7 +167,7 @@ namespace LinqToTwitter.Provider
 
         protected virtual Expression VisitMemberAccess(MemberExpression m)
         {
-            Expression exp = this.Visit(m.Expression);
+            Expression? exp = this.Visit(m.Expression);
 
             if (exp != m.Expression)
                 return Expression.MakeMemberAccess(exp, m.Member);
@@ -178,7 +177,7 @@ namespace LinqToTwitter.Provider
 
         protected virtual Expression VisitMethodCall(MethodCallExpression m)
         {
-            Expression obj = this.Visit(m.Object);
+            Expression? obj = this.Visit(m.Object);
             IEnumerable<Expression> args = this.VisitExpressionList(m.Arguments);
 
             if (obj != m.Object || args != m.Arguments)
@@ -193,7 +192,7 @@ namespace LinqToTwitter.Provider
 
             for (int i = 0, n = original.Count; i < n; i++)
             {
-                Expression p = this.Visit(original[i]);
+                Expression? p = this.Visit(original[i]);
 
                 if (list != null)
                 {
@@ -220,7 +219,7 @@ namespace LinqToTwitter.Provider
 
         protected virtual MemberAssignment VisitMemberAssignment(MemberAssignment assignment)
         {
-            Expression e = this.Visit(assignment.Expression);
+            Expression? e = this.Visit(assignment.Expression);
 
             if (e != assignment.Expression)
                 return Expression.Bind(assignment.Member, e);
@@ -250,7 +249,7 @@ namespace LinqToTwitter.Provider
 
         protected virtual IEnumerable<MemberBinding> VisitBindingList(ReadOnlyCollection<MemberBinding> original)
         {
-            List<MemberBinding> list = null;
+            List<MemberBinding>? list = null;
 
             for (int i = 0, n = original.Count; i < n; i++)
             {
@@ -281,7 +280,7 @@ namespace LinqToTwitter.Provider
 
         protected virtual IEnumerable<ElementInit> VisitElementInitializerList(ReadOnlyCollection<ElementInit> original)
         {
-            List<ElementInit> list = null;
+            List<ElementInit>? list = null;
 
             for (int i = 0, n = original.Count; i < n; i++)
             {
@@ -312,7 +311,7 @@ namespace LinqToTwitter.Provider
 
         protected virtual Expression VisitLambda(LambdaExpression lambda)
         {
-            Expression body = this.Visit(lambda.Body);
+            Expression? body = this.Visit(lambda.Body);
 
             if (body != lambda.Body)
                 return Expression.Lambda(lambda.Type, body, lambda.Parameters);
@@ -380,7 +379,7 @@ namespace LinqToTwitter.Provider
         protected virtual Expression VisitInvocation(InvocationExpression iv)
         {
             IEnumerable<Expression> args = this.VisitExpressionList(iv.Arguments);
-            Expression expr = this.Visit(iv.Expression);
+            Expression? expr = this.Visit(iv.Expression);
 
             if (args != iv.Arguments || expr != iv.Expression)
                 return Expression.Invoke(expr, args);

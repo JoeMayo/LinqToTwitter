@@ -1,5 +1,4 @@
-﻿#nullable disable
-/***********************************************************
+﻿/***********************************************************
  * Credits:
  * 
  * MSDN Documentation -
@@ -64,10 +63,10 @@ namespace LinqToTwitter.Provider
         {
             // adjust for enums or VB ConvertChecked
             // VB wraps Type in a ConvertChecked that we must extract
-            Expression tempExp =
+            Expression? tempExp =
                 exp.NodeType == ExpressionType.Convert ||
                 exp.NodeType == ExpressionType.ConvertChecked ?
-                    (exp as UnaryExpression).Operand :
+                    (exp as UnaryExpression)?.Operand :
                     exp;
 
             return ((tempExp is MemberExpression expression) &&
@@ -83,7 +82,7 @@ namespace LinqToTwitter.Provider
         /// <param name="memberDeclaringType">type of object</param>
         /// <param name="memberName">member to get value for</param>
         /// <returns>string representation of value</returns>
-        internal static string GetValueFromEqualsExpression(BinaryExpression be, Type memberDeclaringType, string memberName)
+        internal static string? GetValueFromEqualsExpression(BinaryExpression be, Type memberDeclaringType, string memberName)
         {
             if (be.NodeType != ExpressionType.Equal &&
                 be.NodeType != ExpressionType.NotEqual &&
@@ -98,13 +97,13 @@ namespace LinqToTwitter.Provider
                 be.Left.NodeType == ExpressionType.ConvertChecked)
             {
                 // adjust for enums & VB ConvertChecked
-                MemberExpression me =
+                MemberExpression? me =
                     be.Left.NodeType == ExpressionType.Convert ||
                     be.Left.NodeType == ExpressionType.ConvertChecked ?
-                        (be.Left as UnaryExpression).Operand as MemberExpression :
+                        (be.Left as UnaryExpression)?.Operand as MemberExpression :
                         be.Left as MemberExpression;
 
-                if (me.Member.DeclaringType == memberDeclaringType && me.Member.Name == memberName)
+                if (me?.Member.DeclaringType == memberDeclaringType && me.Member.Name == memberName)
                     return GetValueFromExpression(be.Right);
             }
             else if (be.Right.NodeType == ExpressionType.MemberAccess)
@@ -124,22 +123,26 @@ namespace LinqToTwitter.Provider
         /// </summary>
         /// <param name="expression">constant expression</param>
         /// <returns>constant value</returns>
-        internal static string GetValueFromExpression(Expression expression)
+        internal static string? GetValueFromExpression(Expression expression)
         {
             if (expression.NodeType == ExpressionType.Constant)
             {
-                return ((ConstantExpression)expression).Value.ToString();
+                return ((ConstantExpression)expression)?.Value?.ToString();
             }
             else if (expression.NodeType == ExpressionType.Convert || expression.NodeType == ExpressionType.ConvertChecked)
             {
-                return ((int)((expression as UnaryExpression).Operand as ConstantExpression).Value).ToString();
+                ConstantExpression? constExpr = (expression as UnaryExpression)?.Operand as ConstantExpression;
+                object? constExpValue = constExpr?.Value;
+                int constVal = constExpValue == null ? 0 : (int)constExpValue;
+
+                return constVal.ToString();
             }
             else if (expression.NodeType == ExpressionType.MemberAccess)
             {
                 MemberExpression memberExpression = (MemberExpression)expression;
-                FieldInfo fieldInfo = memberExpression?.Member as FieldInfo;
-                ConstantExpression constantExpression = memberExpression?.Expression as ConstantExpression;
-                string value = fieldInfo?.GetValue(constantExpression.Value)?.ToString();
+                FieldInfo? fieldInfo = memberExpression?.Member as FieldInfo;
+                ConstantExpression? constantExpression = memberExpression?.Expression as ConstantExpression;
+                string? value = fieldInfo?.GetValue(constantExpression?.Value)?.ToString();
                 return value;
             }
             else

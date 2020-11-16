@@ -1,5 +1,4 @@
-﻿#nullable disable
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
@@ -45,47 +44,48 @@ namespace LinqToTwitter.Provider
         /// <remarks>
         /// This is very useful for debugging
         /// </remarks>
-        public Uri LastUrl { get; private set; }
+        public Uri? LastUrl { get; private set; }
 
         /// <summary>
         /// list of response headers from query
         /// </summary>
-        public IDictionary<string, string> ResponseHeaders { get; set; }
+        public IDictionary<string, string>? ResponseHeaders { get; set; }
 
         /// <summary>
         /// Gets and sets HTTP UserAgent header
         /// </summary>
-        public string UserAgent
+        public string? UserAgent
         {
             get
             {
-                return Authorizer.UserAgent;
+                return Authorizer?.UserAgent;
             }
             set
             {
-                Authorizer.UserAgent =
-                    string.IsNullOrWhiteSpace(value) ?
-                        Authorizer.UserAgent :
-                        value + ", " + Authorizer.UserAgent;
+                if (Authorizer != null)
+                    Authorizer.UserAgent =
+                        string.IsNullOrWhiteSpace(value) ?
+                            Authorizer.UserAgent :
+                            value + ", " + Authorizer.UserAgent;
             }
         }
 
         /// <summary>
         /// Assign your TextWriter instance to receive LINQ to Twitter output
         /// </summary>
-        public static TextWriter Log { get; set; }
+        public static TextWriter? Log { get; set; }
 
         readonly object streamingCallbackLock = new object();
 
         /// <summary>
         /// Allows users to process content returned from stream
         /// </summary>
-        public Func<StreamContent, Task> StreamingCallbackAsync { get; set; }
+        public Func<StreamContent, Task>? StreamingCallbackAsync { get; set; }
 
         /// <summary>
         /// HttpClient instance being used in a streaming operation
         /// </summary>
-        internal HttpClient StreamingClient { get; set; }
+        internal HttpClient? StreamingClient { get; set; }
 
         /// <summary>
         /// Set to true to close stream, false means stream is still open
@@ -120,7 +120,7 @@ namespace LinqToTwitter.Provider
 
             var req = new HttpRequestMessage(HttpMethod.Get, new Uri(request.FullUrl));
 
-            var parms = request.RequestParameters
+            Dictionary<string, string> parms = request.RequestParameters
                                .ToDictionary(
                                     key => key.Name,
                                     val => val.Value);
@@ -138,10 +138,10 @@ namespace LinqToTwitter.Provider
         internal void SetAuthorizationHeader(string method, string url, IDictionary<string, string> parms, HttpRequestMessage req)
         {
             var authStringParms = parms.ToDictionary(parm => parm.Key, elm => elm.Value);
-            authStringParms.Add("oauth_consumer_key", Authorizer.CredentialStore.ConsumerKey);
-            authStringParms.Add("oauth_token", Authorizer.CredentialStore.OAuthToken);
+            authStringParms.Add("oauth_consumer_key", Authorizer.CredentialStore?.ConsumerKey ?? string.Empty);
+            authStringParms.Add("oauth_token", Authorizer.CredentialStore?.OAuthToken ?? string.Empty);
 
-            string authorizationString = Authorizer.GetAuthorizationString(method, url, authStringParms);
+            string? authorizationString = Authorizer.GetAuthorizationString(method, url, authStringParms);
 
             req.Headers.Add("Authorization", authorizationString);
         }
@@ -330,7 +330,7 @@ namespace LinqToTwitter.Provider
         /// <param name="shared">True if can be used in multiple DM Events.</param>
         /// <param name="cancelToken">Cancellation token</param>
         /// <returns>JSON response From Twitter.</returns>
-        public async Task<string> PostMediaAsync(string url, IDictionary<string, string> postData, byte[] data, string name, string fileName, string contentType, string mediaCategory, bool shared, CancellationToken cancelToken)
+        public async Task<string> PostMediaAsync(string url, IDictionary<string, string> postData, byte[] data, string name, string fileName, string? contentType, string mediaCategory, bool shared, CancellationToken cancelToken)
         {
             WriteLog(url, nameof(PostMediaAsync));
 
@@ -341,12 +341,12 @@ namespace LinqToTwitter.Provider
             return await FinalizeAsync(url, mediaID, cancelToken).ConfigureAwait(false);
         }
 
-        async Task<ulong> InitAsync(string url, byte[] data, IDictionary<string, string> postData, string contentType, string mediaCategory, bool shared, CancellationToken cancelToken)
+        async Task<ulong> InitAsync(string url, byte[] data, IDictionary<string, string> postData, string? contentType, string mediaCategory, bool shared, CancellationToken cancelToken)
         {
             var multiPartContent = new MultipartFormDataContent
             {
                 { new StringContent("INIT"), "command" },
-                { new StringContent(contentType), "media_type" }
+                { new StringContent(contentType ?? string.Empty), "media_type" }
             };
             if (!string.IsNullOrWhiteSpace(mediaCategory))
                 multiPartContent.Add(new StringContent(mediaCategory), "media_category");
@@ -375,7 +375,7 @@ namespace LinqToTwitter.Provider
             return mediaID;
         }
 
-        async Task AppendChunksAsync(string url, ulong mediaID, byte[] data, string name, string fileName, string contentType, CancellationToken cancelToken)
+        async Task AppendChunksAsync(string url, ulong mediaID, byte[] data, string name, string fileName, string? contentType, CancellationToken cancelToken)
         {
             const int ChunkSize = 5000000;
 
@@ -474,7 +474,7 @@ namespace LinqToTwitter.Provider
         /// <param name="postData">parameters to post</param>
         /// <param name="getResult">callback for handling async Json response - null if synchronous</param>
         /// <returns>Json Response from Twitter - empty string if async</returns>
-        public async Task<string> PostFormUrlEncodedToTwitterAsync<T>(string method, string url, IDictionary<string, string> postData, CancellationToken cancelToken)
+        public async Task<string> PostFormUrlEncodedToTwitterAsync<T>(string method, string url, IDictionary<string, string?> postData, CancellationToken cancelToken)
         {
             WriteLog(url, nameof(PostFormUrlEncodedToTwitterAsync));
 
@@ -509,7 +509,7 @@ namespace LinqToTwitter.Provider
   
         async Task<string> HandleResponseAsync(HttpResponseMessage msg)
         {
-            LastUrl = msg.RequestMessage.RequestUri;
+            LastUrl = msg.RequestMessage?.RequestUri;
 
             ResponseHeaders =
                 (from header in msg.Headers

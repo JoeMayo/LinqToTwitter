@@ -7,27 +7,27 @@ namespace LinqToTwitter.OAuth
         /// <summary>
         /// Key provided by Twitter for your application
         /// </summary>
-        string ConsumerKey { get; set; }
+        string? ConsumerKey { get; set; }
 
         /// <summary>
         /// Secret provided by Twitter for your application
         /// </summary>
-        string ConsumerSecret { get; set; }
+        string? ConsumerSecret { get; set; }
 
         /// <summary>
         /// Token provided by Twitter for making request
         /// </summary>
-        string OAuthToken { get; set; }
+        string? OAuthToken { get; set; }
 
         /// <summary>
         /// Unique access token for a user
         /// </summary>
-        string OAuthTokenSecret { get; set; }
+        string? OAuthTokenSecret { get; set; }
 
         /// <summary>
         /// Twitter screen name
         /// </summary>
-        string ScreenName { get; set; }
+        string? ScreenName { get; set; }
 
         /// <summary>
         /// Twitter user ID

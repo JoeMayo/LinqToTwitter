@@ -1,5 +1,4 @@
-﻿#nullable disable
-using LinqToTwitter.Net;
+﻿using LinqToTwitter.Net;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -12,8 +11,8 @@ namespace LinqToTwitter.OAuth
 {
     public class ApplicationOnlyAuthorizer : AuthorizerBase, IAuthorizer
     {
-        public string BasicToken { get; set; }
-        public string BearerToken { get; set; }
+        public string? BasicToken { get; set; }
+        public string? BearerToken { get; set; }
         public string OAuth2Token { get; set; }
         public string OAuth2InvalidateToken { get; set; }
 

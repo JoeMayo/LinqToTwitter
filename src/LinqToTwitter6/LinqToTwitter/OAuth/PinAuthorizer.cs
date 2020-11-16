@@ -1,7 +1,5 @@
-﻿#nullable disable
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace LinqToTwitter.OAuth
@@ -14,21 +12,21 @@ namespace LinqToTwitter.OAuth
         /// in getting the final access token from Twitter.  You should write code (a lambda)
         /// that allows the user to provide this pin that this code will return.
         /// </summary>
-        public Func<string> GetPin { get; set; }
+        public Func<string>? GetPin { get; set; }
 
         /// <summary>
         /// Action to redirect user to Twitter authorization page
         /// </summary>
-        public Action<string> GoToTwitterAuthorization { get; set; }
+        public Action<string>? GoToTwitterAuthorization { get; set; }
 
         public PinAuthorizer()
-            : base(false, AuthAccessType.NoChange, null) { }
+            : base(false, AuthAccessType.NoChange, string.Empty) { }
 
         public PinAuthorizer(bool forceLogin)
-            : base(forceLogin, AuthAccessType.NoChange, null) { }
+            : base(forceLogin, AuthAccessType.NoChange, string.Empty) { }
 
         public PinAuthorizer(bool forceLogin, AuthAccessType accessType) 
-            : base(forceLogin, accessType, null) { }
+            : base(forceLogin, accessType, string.Empty) { }
 
         public PinAuthorizer(bool forceLogin, AuthAccessType accessType, string preFillScreenName)
             : base(forceLogin, accessType, preFillScreenName) { }
