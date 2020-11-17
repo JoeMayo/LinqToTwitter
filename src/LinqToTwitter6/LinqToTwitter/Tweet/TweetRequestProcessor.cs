@@ -8,7 +8,7 @@ using LinqToTwitter.Provider;
 namespace LinqToTwitter
 {
     /// <summary>
-    /// processes search queries
+    /// Processes <see cref="Tweet"/> queries
     /// </summary>
     public class TweetRequestProcessor<T> : IRequestProcessor<T>, IRequestProcessorWantsJson
     {
@@ -18,15 +18,9 @@ namespace LinqToTwitter
         public string? BaseUrl { get; set; }
 
         /// <summary>
-        /// type of search, included for compatibility
-        /// with other APIs
+        /// type of tweet
         /// </summary>
         public TweetType Type { get; set; }
-
-        /// <summary>
-        /// Required - Up to 100 comma-separated IDs to search for
-        /// </summary>
-        public string? Ids { get; set; }
 
         /// <summary>
         /// Comma-separated list of expansion fields
@@ -34,27 +28,32 @@ namespace LinqToTwitter
         public string? Expansions { get; set; }
 
         /// <summary>
-        /// Comma-separated list of fields to return in the media object
+        /// Required - Up to 100 comma-separated IDs to search for
+        /// </summary>
+        public string? Ids { get; set; }
+
+        /// <summary>
+        /// Comma-separated list of fields to return in the media object - <see cref="MediaFields"/>
         /// </summary>
         public string? MediaFields { get; set; }
 
         /// <summary>
-        /// Comma-separated list of fields to return in the place object
+        /// Comma-separated list of fields to return in the place object - <see cref="PlaceFields"/>
         /// </summary>
         public string? PlaceFields { get; set; }
 
         /// <summary>
-        /// Comma-separated list of fields to return in the poll object
+        /// Comma-separated list of fields to return in the poll object - <see cref="PollFields"/>
         /// </summary>
         public string? PollFields { get; set; }
 
         /// <summary>
-        /// Comma-separated list of fields to return in the Tweet object
+        /// Comma-separated list of fields to return in the Tweet object - <see cref="TweetFields"/>
         /// </summary>
         public string? TweetFields { get; set; }
 
         /// <summary>
-        /// Comma-separated list of fields to return in the User object
+        /// Comma-separated list of fields to return in the User object - <see cref="UserFields"/>
         /// </summary>
         public string? UserFields { get; set; }
 
@@ -90,7 +89,7 @@ namespace LinqToTwitter
         public Request BuildUrl(Dictionary<string, string> parameters)
         {
             if (parameters.ContainsKey(nameof(Type)))
-                Type = RequestProcessorHelper.ParseEnum<TweetType>(parameters["Type"]);
+                Type = RequestProcessorHelper.ParseEnum<TweetType>(parameters[nameof(Type)]);
             else
                 throw new ArgumentException($"{nameof(Type)} is required", nameof(Type));
 
@@ -98,12 +97,12 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// appends parameters for Tweet request
+        /// appends parameters for <see cref="Tweet"/> request
         /// </summary>
         /// <param name="parameters">list of parameters from expression tree</param>
         /// <param name="url">base url</param>
         /// <returns>base url + parameters</returns>
-        private Request BuildUrlParameters(Dictionary<string, string> parameters, string url)
+        Request BuildUrlParameters(Dictionary<string, string> parameters, string url)
         {
             var req = new Request(BaseUrl + url);
             var urlParams = req.RequestParameters;
@@ -111,7 +110,7 @@ namespace LinqToTwitter
             if (parameters.ContainsKey(nameof(Ids)))
             {
                 Ids = parameters[nameof(Ids)];
-                urlParams.Add(new QueryParameter("ids", Ids?.Replace(" ", "")));
+                urlParams.Add(new QueryParameter("ids", Ids.Replace(" ", "")));
             }
             else
             {
@@ -121,37 +120,37 @@ namespace LinqToTwitter
             if (parameters.ContainsKey(nameof(Expansions)))
             {
                 Expansions = parameters[nameof(Expansions)];
-                urlParams.Add(new QueryParameter("expansions", Expansions?.Replace(" ", "")));
+                urlParams.Add(new QueryParameter("expansions", Expansions.Replace(" ", "")));
             }
 
             if (parameters.ContainsKey(nameof(MediaFields)))
             {
                 MediaFields = parameters[nameof(MediaFields)];
-                urlParams.Add(new QueryParameter("media.fields", MediaFields?.Replace(" ", "")));
+                urlParams.Add(new QueryParameter("media.fields", MediaFields.Replace(" ", "")));
             }
 
             if (parameters.ContainsKey(nameof(PlaceFields)))
             {
                 PlaceFields = parameters[nameof(PlaceFields)];
-                urlParams.Add(new QueryParameter("place.fields", PlaceFields?.Replace(" ", "")));
+                urlParams.Add(new QueryParameter("place.fields", PlaceFields.Replace(" ", "")));
             }
 
             if (parameters.ContainsKey(nameof(PollFields)))
             {
                 PollFields = parameters[nameof(PollFields)];
-                urlParams.Add(new QueryParameter("poll.fields", PollFields?.Replace(" ", "")));
+                urlParams.Add(new QueryParameter("poll.fields", PollFields.Replace(" ", "")));
             }
 
             if (parameters.ContainsKey(nameof(TweetFields)))
             {
                 TweetFields = parameters[nameof(TweetFields)];
-                urlParams.Add(new QueryParameter("tweet.fields", TweetFields?.Replace(" ", "")));
+                urlParams.Add(new QueryParameter("tweet.fields", TweetFields.Replace(" ", "")));
             }
 
             if (parameters.ContainsKey(nameof(UserFields)))
             {
                 UserFields = parameters[nameof(UserFields)];
-                urlParams.Add(new QueryParameter("user.fields", UserFields?.Replace(" ", "")));
+                urlParams.Add(new QueryParameter("user.fields", UserFields.Replace(" ", "")));
             }
 
             return req;
