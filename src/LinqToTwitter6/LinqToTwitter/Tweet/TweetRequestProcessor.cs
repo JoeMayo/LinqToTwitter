@@ -23,7 +23,7 @@ namespace LinqToTwitter
         public TweetType Type { get; set; }
 
         /// <summary>
-        /// Comma-separated list of expansion fields
+        /// Comma-separated list of expansion fields - <see cref="ExpansionField"/>
         /// </summary>
         public string? Expansions { get; set; }
 
@@ -33,27 +33,27 @@ namespace LinqToTwitter
         public string? Ids { get; set; }
 
         /// <summary>
-        /// Comma-separated list of fields to return in the media object - <see cref="MediaFields"/>
+        /// Comma-separated list of fields to return in the media object - <see cref="MediaField"/>
         /// </summary>
         public string? MediaFields { get; set; }
 
         /// <summary>
-        /// Comma-separated list of fields to return in the place object - <see cref="PlaceFields"/>
+        /// Comma-separated list of fields to return in the place object - <see cref="PlaceField"/>
         /// </summary>
         public string? PlaceFields { get; set; }
 
         /// <summary>
-        /// Comma-separated list of fields to return in the poll object - <see cref="PollFields"/>
+        /// Comma-separated list of fields to return in the poll object - <see cref="PollField"/>
         /// </summary>
         public string? PollFields { get; set; }
 
         /// <summary>
-        /// Comma-separated list of fields to return in the Tweet object - <see cref="TweetFields"/>
+        /// Comma-separated list of fields to return in the Tweet object - <see cref="TweetField"/>
         /// </summary>
         public string? TweetFields { get; set; }
 
         /// <summary>
-        /// Comma-separated list of fields to return in the User object - <see cref="UserFields"/>
+        /// Comma-separated list of fields to return in the User object - <see cref="UserField"/>
         /// </summary>
         public string? UserFields { get; set; }
 
