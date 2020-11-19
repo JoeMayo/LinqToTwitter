@@ -31,39 +31,36 @@ namespace LinqToTwitter.Provider
         /// <summary>
         /// parameters to search for
         /// </summary>
-        Dictionary<string, string?>? parameters;
+        readonly Dictionary<string, string> parameters;
+
+        /// <summary>
+        /// names of input parameters
+        /// </summary>
+        readonly List<string> parameterNames;
 
         /// <summary>
         /// keep track of expression and parameter list
         /// </summary>
-        /// <param name="exp">expression to search</param>
-        /// <param name="parameters">parameters to search for</param>
-        public ParameterFinder(Expression exp, List<string> parameters)
+        /// <param name="expression">expression to search</param>
+        /// <param name="parameterNames">parameters to search for</param>
+        public ParameterFinder(Expression expression, List<string> parameterNames)
         {
-            expression = exp;
-            ParameterNames = parameters;
+            this.parameters = new Dictionary<string, string>();
+            this.expression = expression;
+            this.parameterNames = parameterNames;
         }
 
         /// <summary>
         /// name/value pairs of parameters and their values
         /// </summary>
-        public Dictionary<string, string?> Parameters
+        public Dictionary<string, string> Parameters
         {
             get
             {
-                if (parameters == null)
-                {
-                    parameters = new Dictionary<string, string?>();
-                    Visit(expression);
-                }
+                Visit(expression);
                 return parameters;
             }
         }
-
-        /// <summary>
-        /// names of input parameters
-        /// </summary>
-        public List<string> ParameterNames { get; set; }
 
         /// <summary>
         /// extracts values from equality expressions that match parameter names
@@ -79,11 +76,11 @@ namespace LinqToTwitter.Provider
                 be.NodeType == ExpressionType.LessThanOrEqual ||
                 be.NodeType == ExpressionType.NotEqual)
             {
-                foreach (var param in ParameterNames)
+                foreach (var param in parameterNames)
                 {
                     if (ExpressionTreeHelpers.IsMemberEqualsValueExpression(be, typeof(T), param))
                     {
-                        parameters?.Add(param, ExpressionTreeHelpers.GetValueFromEqualsExpression(be, typeof(T), param));
+                        parameters.Add(param, ExpressionTreeHelpers.GetValueFromEqualsExpression(be, typeof(T), param));
                         return be;
                     }
                 }
@@ -97,11 +94,15 @@ namespace LinqToTwitter.Provider
         protected override Expression VisitMethodCall(MethodCallExpression me)
         {
 
-            foreach (var param in ParameterNames)
+            foreach (var param in parameterNames)
             {
                 if (me?.Method.Name == "CompareString" && (me?.Arguments[0] as MemberExpression)?.Member.Name == param)
                 {
-                    parameters?.Add(param, (me.Arguments[1] as ConstantExpression)?.Value?.ToString());
+                    string? constantValue = (me.Arguments[1] as ConstantExpression)?.Value?.ToString();
+                    
+                    if (constantValue != null)
+                        parameters.Add(param, constantValue);
+                    
                     return me;
                 } 
             }

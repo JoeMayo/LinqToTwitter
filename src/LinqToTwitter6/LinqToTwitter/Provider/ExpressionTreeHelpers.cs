@@ -48,7 +48,8 @@ namespace LinqToTwitter.Provider
                 IsSpecificMemberExpression(be.Right, declaringType, memberName))
                 throw new Exception("Cannot have 'member' == 'member' in an expression!");
 
-            return (IsSpecificMemberExpression(be.Left, declaringType, memberName) ||
+            return (
+                IsSpecificMemberExpression(be.Left, declaringType, memberName) ||
                 IsSpecificMemberExpression(be.Right, declaringType, memberName));
         }
 
@@ -82,7 +83,7 @@ namespace LinqToTwitter.Provider
         /// <param name="memberDeclaringType">type of object</param>
         /// <param name="memberName">member to get value for</param>
         /// <returns>string representation of value</returns>
-        internal static string? GetValueFromEqualsExpression(BinaryExpression be, Type memberDeclaringType, string memberName)
+        internal static string GetValueFromEqualsExpression(BinaryExpression be, Type memberDeclaringType, string memberName)
         {
             if (be.NodeType != ExpressionType.Equal &&
                 be.NodeType != ExpressionType.NotEqual &&
@@ -123,11 +124,16 @@ namespace LinqToTwitter.Provider
         /// </summary>
         /// <param name="expression">constant expression</param>
         /// <returns>constant value</returns>
-        internal static string? GetValueFromExpression(Expression expression)
+        internal static string GetValueFromExpression(Expression expression)
         {
             if (expression.NodeType == ExpressionType.Constant)
             {
-                return ((ConstantExpression)expression)?.Value?.ToString();
+                string? constantValue = ((ConstantExpression)expression)?.Value?.ToString();
+
+                if (constantValue == null)
+                    throw new InvalidQueryException($"null Constant value for expression : {expression?.ToString()}");
+
+                return constantValue;
             }
             else if (expression.NodeType == ExpressionType.Convert || expression.NodeType == ExpressionType.ConvertChecked)
             {
@@ -142,13 +148,17 @@ namespace LinqToTwitter.Provider
                 MemberExpression memberExpression = (MemberExpression)expression;
                 FieldInfo? fieldInfo = memberExpression?.Member as FieldInfo;
                 ConstantExpression? constantExpression = memberExpression?.Expression as ConstantExpression;
-                string? value = fieldInfo?.GetValue(constantExpression?.Value)?.ToString();
-                return value;
+                string? constantValue = fieldInfo?.GetValue(constantExpression?.Value)?.ToString();
+
+                if (constantValue == null)
+                    throw new InvalidQueryException($"null MemberAccess value for expression: {expression?.ToString()}");
+
+                return constantValue;
             }
             else
             {
                 throw new InvalidQueryException(
-            string.Format("The expression type {0} is not supported to obtain a value.", expression.NodeType));
+                    string.Format("The expression type {0} is not supported to obtain a value.", expression.NodeType));
             }
         }
     }

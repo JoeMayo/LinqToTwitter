@@ -14,7 +14,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="tweetID">ID of the replying tweet</param>
         /// <param name="cancelToken">Optional cancellation token</param>
-        /// <exception cref="TwitterQueryException">Will receive 403 Forbidden if ID is for a tweet that is not a reply</exception>
+        /// <exception cref="TwitterQueryException">Will receive 403 Forbidden if <see cref="tweetID"/> is for a tweet that is not a reply</exception>
         /// <returns>Hidden status of reply - true if reply is hidden</returns>
         public async Task<bool> HideReplyAsync(string tweetID, CancellationToken cancelToken = default)
         {
@@ -26,7 +26,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="tweetID">ID of the replying tweet</param>
         /// <param name="cancelToken">Optional cancellation token</param>
-        /// <exception cref="TwitterQueryException">Will receive 403 Forbidden if ID is for a tweet that is not a reply</exception>
+        /// <exception cref="TwitterQueryException">Will receive 403 Forbidden if <see cref="tweetID"/> is for a tweet that is not a reply</exception>
         /// <returns>Hidden status of reply - false if reply is no longer hidden</returns>
         public async Task<bool> UnHideReplyAsync(string tweetID, CancellationToken cancelToken = default)
         {
