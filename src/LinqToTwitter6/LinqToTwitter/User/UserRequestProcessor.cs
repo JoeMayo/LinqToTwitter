@@ -357,8 +357,8 @@ namespace LinqToTwitter
 
             List<User>? userList = Type switch
             {
-                UserType.Contributees or UserType.Contributors or UserType.Search => HandleMultipleUserResponse(userJson),
-                UserType.BannerSizes => HandleBannerSizesResponse(userJson),
+                UserType.Contributees or UserType.Contributors or UserType.Search => UserRequestProcessor<T>.HandleMultipleUserResponse(userJson),
+                UserType.BannerSizes => UserRequestProcessor<T>.HandleBannerSizesResponse(userJson),
                 _ => new List<User>(),
             };
 
@@ -382,14 +382,14 @@ namespace LinqToTwitter
 
             return userList.OfType<T>().ToList();
         }
-  
-        List<User> HandleSingleUserResponse(JsonElement userJson)
+
+        static List<User> HandleSingleUserResponse(JsonElement userJson)
         {
-            List<User> userList = new List<User> { new User(userJson) };
+            List<User> userList = new() { new User(userJson) };
             return userList;
         }
-  
-        List<User> HandleMultipleUserResponse(JsonElement userJson)
+
+        static List<User> HandleMultipleUserResponse(JsonElement userJson)
         {
             List<User> userList =
                 (from user in userJson.EnumerateArray()
@@ -399,7 +399,7 @@ namespace LinqToTwitter
             return userList;
         }
 
-        List<User> HandleBannerSizesResponse(JsonElement userJson)
+        static List<User> HandleBannerSizesResponse(JsonElement userJson)
         {
             var sizes = userJson.GetProperty("sizes");
             var userList = new List<User>
@@ -428,7 +428,7 @@ namespace LinqToTwitter
         {
             JsonElement userJson = JsonDocument.Parse(responseJson).RootElement;
 
-            List<User> user = HandleSingleUserResponse(userJson);
+            List<User> user = UserRequestProcessor<T>.HandleSingleUserResponse(userJson);
 
             return user.Single().ItemCast(default(T));
         }

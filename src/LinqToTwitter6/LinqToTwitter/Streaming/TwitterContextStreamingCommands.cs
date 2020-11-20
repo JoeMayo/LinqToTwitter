@@ -12,7 +12,7 @@ namespace LinqToTwitter
         /// Add rules to the filter stream
         /// </summary>
         /// <param name="rules">List of tag/value rules to add</param>
-        /// <param name="isValidateOnly">"true" says don't apply rule - just validate to see if it's formatted correctly</param>
+        /// <param name="isValidateOnly">"true" says don't apply rule - just validate to see if it's formatted correctly (dry run)</param>
         /// <param name="cancelToken">Allows you to cancel async operation</param>
         /// <returns></returns>
         public virtual async Task<Streaming?> AddStreamingFilterRulesAsync(List<StreamingAddRule> rules, bool isValidateOnly = false, CancellationToken cancelToken = default)
@@ -30,9 +30,10 @@ namespace LinqToTwitter
         /// Delete rules from the filter stream
         /// </summary>
         /// <param name="ruleIds">List of ids of rules to delete</param>
+        /// <param name="isValidateOnly">"true" says don't apply rule - just validate to see if it's formatted correctly (dry run)</param>
         /// <param name="cancelToken">Allows you to cancel async operation</param>
         /// <returns></returns>
-        public virtual async Task<Streaming?> DeleteStreamingFilterRulesAsync(List<string> ruleIds, CancellationToken cancelToken = default)
+        public virtual async Task<Streaming?> DeleteStreamingFilterRulesAsync(List<string> ruleIds, bool isValidateOnly = false, CancellationToken cancelToken = default)
         {
             _ = ruleIds ?? throw new ArgumentNullException(nameof(ruleIds), $"{nameof(ruleIds)} is required!");
 
@@ -43,7 +44,7 @@ namespace LinqToTwitter
                     Ids = ruleIds
                 }
             };
-            return await AddOrValidateStreamingFilterRulesAsync(deleteRules, false, cancelToken);
+            return await AddOrValidateStreamingFilterRulesAsync(deleteRules, isValidateOnly, cancelToken);
         }
 
         async Task<Streaming?> AddOrValidateStreamingFilterRulesAsync<T>(T rules, bool isValidateOnly, CancellationToken cancelToken)

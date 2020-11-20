@@ -8,10 +8,20 @@ using System.Text.Json;
 
 namespace LinqToTwitter
 {
+    /// <summary>
+    /// Handles streaming queries
+    /// </summary>
+    /// <typeparam name="T">Streaming type</typeparam>
     public class StreamingRequestProcessor<T> : IRequestProcessor<T>, IRequestProcessorWithAction<Streaming>
     {
+        /// <summary>
+        /// Twitter base url
+        /// </summary>
         public string? BaseUrl { get; set; }
 
+        /// <summary>
+        /// Manages communication logic for streaming
+        /// </summary>
         public ITwitterExecute? TwitterExecutor { get; set; }
 
         /// <summary>
@@ -20,32 +30,32 @@ namespace LinqToTwitter
         public StreamingType Type { get; set; }
 
         /// <summary>
-        /// Comma-separated list of expansion fields
+        /// Comma-separated list of expansion fields - <see cref="ExpansionField"/>
         /// </summary>
         public string? Expansions { get; set; }
 
         /// <summary>
-        /// Comma-separated list of fields to return in the media object
+        /// Comma-separated list of fields to return in the media object - <see cref="MediaField"/>
         /// </summary>
         public string? MediaFields { get; set; }
 
         /// <summary>
-        /// Comma-separated list of fields to return in the place object
+        /// Comma-separated list of fields to return in the place object - <see cref="PlaceField"/>
         /// </summary>
         public string? PlaceFields { get; set; }
 
         /// <summary>
-        /// Comma-separated list of fields to return in the poll object
+        /// Comma-separated list of fields to return in the poll object - <see cref="PollField"/>
         /// </summary>
         public string? PollFields { get; set; }
 
         /// <summary>
-        /// Comma-separated list of fields to return in the Tweet object
+        /// Comma-separated list of fields to return in the Tweet object - <see cref="TweetField"/>
         /// </summary>
         public string? TweetFields { get; set; }
 
         /// <summary>
-        /// Comma-separated list of fields to return in the User object
+        /// Comma-separated list of fields to return in the User object - <see cref="UserField"/>
         /// </summary>
         public string? UserFields { get; set; }
 
@@ -119,43 +129,43 @@ namespace LinqToTwitter
             if (parameters.ContainsKey(nameof(Expansions)))
             {
                 Expansions = parameters[nameof(Expansions)];
-                urlParams.Add(new QueryParameter("expansions", Expansions?.Replace(" ", "")));
+                urlParams.Add(new QueryParameter("expansions", Expansions.Replace(" ", "")));
             }
 
             if (parameters.ContainsKey(nameof(MediaFields)))
             {
                 MediaFields = parameters[nameof(MediaFields)];
-                urlParams.Add(new QueryParameter("media.fields", MediaFields?.Replace(" ", "")));
+                urlParams.Add(new QueryParameter("media.fields", MediaFields.Replace(" ", "")));
             }
 
             if (parameters.ContainsKey(nameof(PlaceFields)))
             {
                 PlaceFields = parameters[nameof(PlaceFields)];
-                urlParams.Add(new QueryParameter("place.fields", PlaceFields?.Replace(" ", "")));
+                urlParams.Add(new QueryParameter("place.fields", PlaceFields.Replace(" ", "")));
             }
 
             if (parameters.ContainsKey(nameof(PollFields)))
             {
                 PollFields = parameters[nameof(PollFields)];
-                urlParams.Add(new QueryParameter("poll.fields", PollFields?.Replace(" ", "")));
+                urlParams.Add(new QueryParameter("poll.fields", PollFields.Replace(" ", "")));
             }
 
             if (parameters.ContainsKey(nameof(TweetFields)))
             {
                 TweetFields = parameters[nameof(TweetFields)];
-                urlParams.Add(new QueryParameter("tweet.fields", TweetFields?.Replace(" ", "")));
+                urlParams.Add(new QueryParameter("tweet.fields", TweetFields.Replace(" ", "")));
             }
 
             if (parameters.ContainsKey(nameof(UserFields)))
             {
                 UserFields = parameters[nameof(UserFields)];
-                urlParams.Add(new QueryParameter("user.fields", UserFields?.Replace(" ", "")));
+                urlParams.Add(new QueryParameter("user.fields", UserFields.Replace(" ", "")));
             }
 
             if (parameters.ContainsKey(nameof(Ids)))
             {
                 Ids = parameters[nameof(Ids)];
-                urlParams.Add(new QueryParameter("ids", Ids?.Replace(" ", "")));
+                urlParams.Add(new QueryParameter("ids", Ids.Replace(" ", "")));
             }
         }
 
