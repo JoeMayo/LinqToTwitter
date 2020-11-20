@@ -18,7 +18,6 @@ namespace LinqToTwitter
         where T : class
     {
         const string ScreenNameOrUserID = "ScreenNameOrUserID";
-        const string ScreenNameListOrUserIdList = "ScreenNameListOrUserIdList";
 
         /// <summary>
         /// base url for request
@@ -146,24 +145,19 @@ namespace LinqToTwitter
         public virtual Request BuildUrl(Dictionary<string, string> parameters)
         {
             const string TypeParam = "Type";
-            if (parameters == null || !parameters.ContainsKey("Type"))
+            if (parameters == null || !parameters.ContainsKey(nameof(Type)))
                 throw new ArgumentException("You must set Type.", TypeParam);
 
             Type = RequestProcessorHelper.ParseEnum<UserType>(parameters["Type"]);
 
-            switch (Type)
+            return Type switch
             {
-                case UserType.Search:
-                    return BuildSearchUrl(parameters);
-                case UserType.Contributees:
-                    return BuildContributeesUrl(parameters);
-                case UserType.Contributors:
-                    return BuildContributorsUrl(parameters);
-                case UserType.BannerSizes:
-                    return BuildBannerSizesUrl(parameters);
-                default:
-                    throw new InvalidOperationException("The default case of BuildUrl should never execute because a Type must be specified.");
-            }
+                UserType.Search => BuildSearchUrl(parameters),
+                UserType.Contributees => BuildContributeesUrl(parameters),
+                UserType.Contributors => BuildContributorsUrl(parameters),
+                UserType.BannerSizes => BuildBannerSizesUrl(parameters),
+                _ => throw new InvalidOperationException("The default case of BuildUrl should never execute because a Type must be specified."),
+            };
         }
 
         Request BuildContributorsUrl(Dictionary<string, string> parameters)
@@ -202,7 +196,10 @@ namespace LinqToTwitter
             if (parameters.ContainsKey(nameof(TweetMode)))
             {
                 TweetMode = RequestProcessorHelper.ParseEnum<TweetMode>(parameters[nameof(TweetMode)]);
-                urlParams.Add(new QueryParameter("tweet_mode", TweetMode.ToString()?.ToLower()));
+
+                string? tweetModeValue = TweetMode?.ToString().ToLower();
+                if (tweetModeValue != null)
+                    urlParams.Add(new QueryParameter("tweet_mode", tweetModeValue));
             }
 
             return req;
@@ -244,7 +241,10 @@ namespace LinqToTwitter
             if (parameters.ContainsKey(nameof(TweetMode)))
             {
                 TweetMode = RequestProcessorHelper.ParseEnum<TweetMode>(parameters[nameof(TweetMode)]);
-                urlParams.Add(new QueryParameter("tweet_mode", TweetMode.ToString()?.ToLower()));
+
+                string? tweetModeValue = TweetMode?.ToString().ToLower();
+                if (tweetModeValue != null)
+                    urlParams.Add(new QueryParameter("tweet_mode", tweetModeValue));
             }
 
             return req;
@@ -291,101 +291,10 @@ namespace LinqToTwitter
             if (parameters.ContainsKey(nameof(TweetMode)))
             {
                 TweetMode = RequestProcessorHelper.ParseEnum<TweetMode>(parameters[nameof(TweetMode)]);
-                urlParams.Add(new QueryParameter("tweet_mode", TweetMode.ToString()?.ToLower()));
-            }
 
-            return req;
-        }
-
-        /// <summary>
-        /// Builds a url for performing lookups
-        /// </summary>
-        /// <param name="parameters">Either UserID or ScreenName</param>
-        /// <returns>URL for performing lookups</returns>
-        Request BuildLookupUrl(Dictionary<string, string> parameters)
-        {
-            if (!(parameters.ContainsKey("ScreenNameList") || parameters.ContainsKey("UserIdList")) ||
-                (parameters.ContainsKey("ScreenNameList") && parameters.ContainsKey("UserIdList")))
-                throw new ArgumentException("Query must contain one of either ScreenNameList or UserIdList parameters, but not both.", ScreenNameListOrUserIdList);
-
-            var req = new Request(BaseUrl + "users/lookup.json");
-            var urlParams = req.RequestParameters;
-
-            if (parameters.ContainsKey("ScreenNameList"))
-            {
-                ScreenNameList = parameters["ScreenNameList"];
-                urlParams.Add(new QueryParameter("screen_name", parameters["ScreenNameList"]));
-            }
-
-            if (parameters.ContainsKey("UserIdList"))
-            {
-                UserIdList = parameters["UserIdList"];
-                urlParams.Add(new QueryParameter("user_id", parameters["UserIdList"].Replace(" ", "")));
-            }
-
-            if (parameters.ContainsKey("IncludeEntities"))
-            {
-                IncludeEntities = bool.Parse(parameters["IncludeEntities"]);
-                urlParams.Add(new QueryParameter("include_entities", parameters["IncludeEntities"].ToLower()));
-            }
-
-            if (parameters.ContainsKey(nameof(TweetMode)))
-            {
-                TweetMode = RequestProcessorHelper.ParseEnum<TweetMode>(parameters[nameof(TweetMode)]);
-                urlParams.Add(new QueryParameter("tweet_mode", TweetMode.ToString()?.ToLower()));
-            }
-
-            return req;
-        }
-
-        /// <summary>
-        /// builds a url to show user info
-        /// </summary>
-        /// <param name="parameters">url parameters</param>
-        /// <returns>new url for request</returns>
-        Request BuildShowUrl(Dictionary<string, string> parameters)
-        {
-            if (!parameters.ContainsKey("UserID") &&
-                !parameters.ContainsKey("ScreenName"))
-            {
-                throw new ArgumentException("Parameters must include either UserID or ScreenName.", ScreenNameOrUserID);
-            }
-
-            if (parameters.ContainsKey("UserID") && string.IsNullOrWhiteSpace(parameters["UserID"]))
-            {
-                throw new ArgumentNullException("UserID", "If specified, UserID can't be null or an empty string.");
-            }
-
-            if (parameters.ContainsKey("ScreenName") && string.IsNullOrWhiteSpace(parameters["ScreenName"]))
-            {
-                throw new ArgumentNullException("ScreenName", "If specified, ScreenName can't be null or an empty string.");
-            }
-
-            var req = new Request(BaseUrl + "users/show.json");
-            var urlParams = req.RequestParameters;
-
-            if (parameters.ContainsKey("UserID"))
-            {
-                UserID = ulong.Parse(parameters["UserID"]);
-                urlParams.Add(new QueryParameter("user_id", parameters["UserID"]));
-            }
-
-            if (parameters.ContainsKey("ScreenName"))
-            {
-                ScreenName = parameters["ScreenName"];
-                urlParams.Add(new QueryParameter("screen_name", parameters["ScreenName"]));
-            }
-
-            if (parameters.ContainsKey("IncludeEntities"))
-            {
-                IncludeEntities = bool.Parse(parameters["IncludeEntities"]);
-                urlParams.Add(new QueryParameter("include_entities", parameters["IncludeEntities"].ToLower()));
-            }
-
-            if (parameters.ContainsKey(nameof(TweetMode)))
-            {
-                TweetMode = RequestProcessorHelper.ParseEnum<TweetMode>(parameters[nameof(TweetMode)]);
-                urlParams.Add(new QueryParameter("tweet_mode", TweetMode.ToString()?.ToLower()));
+                string? tweetModeValue = TweetMode?.ToString().ToLower();
+                if (tweetModeValue != null)
+                    urlParams.Add(new QueryParameter("tweet_mode", tweetModeValue));
             }
 
             return req;
@@ -427,7 +336,10 @@ namespace LinqToTwitter
             if (parameters.ContainsKey(nameof(TweetMode)))
             {
                 TweetMode = RequestProcessorHelper.ParseEnum<TweetMode>(parameters[nameof(TweetMode)]);
-                urlParams.Add(new QueryParameter("tweet_mode", TweetMode.ToString()?.ToLower()));
+
+                string? tweetModeValue = TweetMode?.ToString().ToLower();
+                if (tweetModeValue != null)
+                    urlParams.Add(new QueryParameter("tweet_mode", tweetModeValue));
             }
 
             return req;
@@ -441,27 +353,16 @@ namespace LinqToTwitter
         public virtual List<T> ProcessResults(string responseJson)
         {
             if (string.IsNullOrWhiteSpace(responseJson)) return new List<T>();
-
-            List<User>? userList = null;
-
             JsonElement userJson = JsonDocument.Parse(responseJson).RootElement;
 
-            switch (Type)
+            List<User>? userList = Type switch
             {
-                case UserType.Contributees:
-                case UserType.Contributors:
-                case UserType.Search:
-                    userList = HandleMultipleUserResponse(userJson);
-                    break;
-                case UserType.BannerSizes:
-                    userList = HandleBannerSizesResponse(userJson);
-                    break;
-                default:
-                    userList = new List<User>();
-                    break;
-            }
+                UserType.Contributees or UserType.Contributors or UserType.Search => HandleMultipleUserResponse(userJson),
+                UserType.BannerSizes => HandleBannerSizesResponse(userJson),
+                _ => new List<User>(),
+            };
 
-            foreach(var user in userList)
+            foreach (var user in userList)
             {
                 user.Type = Type;
                 user.UserID = UserID;

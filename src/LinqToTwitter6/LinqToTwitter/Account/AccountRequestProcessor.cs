@@ -73,15 +73,12 @@ namespace LinqToTwitter
 
             Type = RequestProcessorHelper.ParseEnum<AccountType>(parameters[TypeParam]);
 
-            switch (Type)
+            return Type switch
             {
-                case AccountType.VerifyCredentials:
-                    return BuildVerifyCredentialsUrl(parameters);
-                case AccountType.Settings:
-                    return new Request(BaseUrl + "account/settings.json");
-                default:
-                    throw new InvalidOperationException("The default case of BuildUrl should never execute because a Type must be specified.");
-            }
+                AccountType.VerifyCredentials => BuildVerifyCredentialsUrl(parameters),
+                AccountType.Settings => new Request(BaseUrl + "account/settings.json"),
+                _ => throw new InvalidOperationException("The default case of BuildUrl should never execute because a Type must be specified."),
+            };
         }
   
         Request BuildVerifyCredentialsUrl(Dictionary<string, string> parameters)
@@ -119,23 +116,16 @@ namespace LinqToTwitter
         public virtual List<T> ProcessResults(string responseJson)
         {
             var list = new List<Account>();
-            Account acct = null;
+            Account? acct = null;
 
             if (!string.IsNullOrWhiteSpace(responseJson))
             {
-                switch (Type)
+                acct = Type switch
                 {
-                    case AccountType.Settings:
-                        acct = HandleSettingsResponse(responseJson);
-                        break;
-
-                    case AccountType.VerifyCredentials:
-                        acct = HandleVerifyCredentialsResponse(responseJson);
-                        break;
-
-                    default:
-                        throw new InvalidOperationException("The default case of ProcessResults should never execute because a Type must be specified.");
-                }
+                    AccountType.Settings => HandleSettingsResponse(responseJson),
+                    AccountType.VerifyCredentials => HandleVerifyCredentialsResponse(responseJson),
+                    _ => throw new InvalidOperationException("The default case of ProcessResults should never execute because a Type must be specified."),
+                };
 
                 acct.Type = Type;
                 acct.SkipStatus = SkipStatus;
@@ -162,14 +152,11 @@ namespace LinqToTwitter
 
             if (!string.IsNullOrWhiteSpace(responseJson))
             {
-                switch ((AccountAction)theAction)
+                acct = ((AccountAction)theAction) switch
                 {
-                    case AccountAction.Settings:
-                        acct = HandleSettingsResponse(responseJson);
-                        break;
-                    default:
-                        throw new InvalidOperationException("The default case of ProcessActionResult should never execute because a Type must be specified.");
-                }
+                    AccountAction.Settings => HandleSettingsResponse(responseJson),
+                    _ => throw new InvalidOperationException("The default case of ProcessActionResult should never execute because a Type must be specified."),
+                };
             }
 
             return acct.ItemCast(default(T));
