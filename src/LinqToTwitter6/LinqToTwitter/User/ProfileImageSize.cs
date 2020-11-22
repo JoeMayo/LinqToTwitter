@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace LinqToTwitter
+﻿namespace LinqToTwitter
 {
     public enum ProfileImageSize
     {
