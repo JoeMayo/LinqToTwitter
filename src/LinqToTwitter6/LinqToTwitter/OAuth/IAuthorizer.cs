@@ -16,6 +16,6 @@ namespace LinqToTwitter.OAuth
 
         bool SupportsCompression { get; set; }
 
-        string? GetAuthorizationString(string method, string oauthUrl, IDictionary<string, string?> parameters);
+        string? GetAuthorizationString(string method, string oauthUrl, IDictionary<string, string> parameters);
     }
 }

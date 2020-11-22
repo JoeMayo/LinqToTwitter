@@ -84,6 +84,13 @@ namespace LinqToTwitter.OAuth
 
         internal void EncodeCredentials()
         {
+            if (CredentialStore == null)
+                throw new ArgumentException($"{nameof(CredentialStore)} is required", nameof(CredentialStore));
+            if (CredentialStore.ConsumerKey == null)
+                throw new ArgumentException($"{nameof(CredentialStore.ConsumerKey)} is required", nameof(CredentialStore.ConsumerKey));
+            if (CredentialStore.ConsumerSecret == null)
+                throw new ArgumentException($"{nameof(CredentialStore.ConsumerSecret)} is required", nameof(CredentialStore.ConsumerSecret));
+
             string encodedConsumerKey = Url.PercentEncode(CredentialStore.ConsumerKey);
             string encodedConsumerSecret = Url.PercentEncode(CredentialStore.ConsumerSecret);
 

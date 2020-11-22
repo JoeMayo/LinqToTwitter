@@ -26,7 +26,8 @@ namespace LinqToTwitter.OAuth
             }
         }
 
-        public override string? OAuthTokenSecret {
+        public override string? OAuthTokenSecret 
+        {
             get
             {
                 return AccessTokenSecret;

@@ -10,7 +10,7 @@ namespace LinqToTwitter.OAuth
 {
     public class Signature : ISignature
     {  
-        public string GetAuthorizationString(string method, string url, IDictionary<string, string?> parameters, string consumerSecret, string oAuthTokenSecret)
+        public string GetAuthorizationString(string method, string url, IDictionary<string, string> parameters, string consumerSecret, string oAuthTokenSecret)
         {
             string encodedAndSortedString = BuildEncodedSortedString(parameters);
             string signatureBaseString = BuildSignatureBaseString(method, url, encodedAndSortedString);
@@ -21,7 +21,7 @@ namespace LinqToTwitter.OAuth
             return authorizationHeader;
         }
 
-        internal void AddMissingOAuthParameters(IDictionary<string, string?> parameters)
+        internal static void AddMissingOAuthParameters(IDictionary<string, string> parameters)
         {
             const string OAuthVersion = "1.0";
             const string OAuthSignatureMethod = "HMAC-SHA1";
@@ -39,7 +39,7 @@ namespace LinqToTwitter.OAuth
                 parameters.Add("oauth_signature_method", OAuthSignatureMethod);     
         }
 
-        internal string BuildEncodedSortedString(IDictionary<string, string?> parameters)
+        internal static string BuildEncodedSortedString(IDictionary<string, string> parameters)
         {
             AddMissingOAuthParameters(parameters);
 
@@ -51,7 +51,7 @@ namespace LinqToTwitter.OAuth
                     .ToArray());
         }
 
-        internal string BuildSignatureBaseString(string method, string url, string encodedStringParameters)
+        internal static string BuildSignatureBaseString(string method, string url, string encodedStringParameters)
         {
             int paramsIndex = url.IndexOf('?');
 
@@ -65,7 +65,7 @@ namespace LinqToTwitter.OAuth
             });
         }
 
-        internal string BuildSigningKey(string consumerSecret, string oAuthTokenSecret)
+        internal static string BuildSigningKey(string consumerSecret, string oAuthTokenSecret)
         {
             return string.Format(
                 CultureInfo.InvariantCulture, "{0}&{1}",
@@ -73,7 +73,7 @@ namespace LinqToTwitter.OAuth
                 Url.PercentEncode(oAuthTokenSecret, false));
         }
 
-        internal string CalculateSignature(string signingKey, string signatureBaseString)
+        internal static string CalculateSignature(string signingKey, string signatureBaseString)
         {
             byte[] key = Encoding.UTF8.GetBytes(signingKey);
             byte[] msg = Encoding.UTF8.GetBytes(signatureBaseString);
@@ -83,7 +83,7 @@ namespace LinqToTwitter.OAuth
             return Convert.ToBase64String(hash);
         }
 
-        internal string BuildAuthorizationHeaderString(string encodedAndSortedString, string signature)
+        internal static string BuildAuthorizationHeaderString(string encodedAndSortedString, string signature)
         {
             string[] allParms = (encodedAndSortedString + "&oauth_signature=" + Url.PercentEncode(signature)).Split('&');
             string allParmsString =
@@ -98,14 +98,14 @@ namespace LinqToTwitter.OAuth
         }
 
         const long UnixEpocTicks = 621355968000000000L;
-        internal string GetTimestamp()
+        internal static string GetTimestamp()
         {
             long ticksSinceUnixEpoc = DateTime.UtcNow.Ticks - UnixEpocTicks;
             double secondsSinceUnixEpoc = new TimeSpan(ticksSinceUnixEpoc).TotalSeconds;
             return Math.Floor(secondsSinceUnixEpoc).ToString(CultureInfo.InvariantCulture);
         }
 
-        internal string GenerateNonce()
+        internal static string GenerateNonce()
         {
             return new Random().Next(1111111, 9999999).ToString(CultureInfo.InvariantCulture);
         }
