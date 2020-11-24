@@ -11,12 +11,12 @@ namespace LinqToTwitter
         /// What kind of reference. e.g. reply, quote, retweet etc.
         /// </summary>
         [JsonPropertyName("type")]
-        public string? Type { get; set; }
+        public string? Type { get; init; }
 
         /// <summary>
         /// ID of referenced tweet
         /// </summary>
         [JsonPropertyName("id")]
-        public string? ID { get; set; }
+        public string? ID { get; init; }
     }
 }

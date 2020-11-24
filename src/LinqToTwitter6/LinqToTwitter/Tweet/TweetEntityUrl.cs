@@ -12,60 +12,60 @@ namespace LinqToTwitter
         /// Starting position of URL
         /// </summary>
         [JsonPropertyName("start")]
-        public int Start { get; set; }
+        public int Start { get; init; }
 
         /// <summary>
         /// Ending position of URL
         /// </summary>
         [JsonPropertyName("end")]
-        public int End { get; set; }
+        public int End { get; init; }
 
         /// <summary>
         /// t.co URL
         /// </summary>
         [JsonPropertyName("url")]
-        public string? Url { get; set; }
+        public string? Url { get; init; }
 
         /// <summary>
         /// URL that user typed, may or may not be shortened URL
         /// </summary>
         [JsonPropertyName("expanded_url")]
-        public string? ExpandedUrl { get; set; }
+        public string? ExpandedUrl { get; init; }
 
         /// <summary>
         /// How URL appears in the tweet
         /// </summary>
         [JsonPropertyName("display_url")]
-        public string? DisplayUrl { get; set; }
+        public string? DisplayUrl { get; init; }
 
         /// <summary>
         /// Details on images attached to tweet
         /// </summary>
         [JsonPropertyName("images")]
-        public List<TweetEntityImage>? Images { get; set; }
+        public List<TweetEntityImage>? Images { get; init; }
 
         /// <summary>
         /// HTTP status from unwind
         /// </summary>
         [JsonPropertyName("status")]
-        public int? Status { get; set; }
+        public int? Status { get; init; }
 
         /// <summary>
         /// From Twitter Card title (in HTML header)
         /// </summary>
         [JsonPropertyName("title")]
-        public string? Title { get; set; }
+        public string? Title { get; init; }
 
         /// <summary>
         /// From Twitter Card description (in HTML header)
         /// </summary>
         [JsonPropertyName("description")]
-        public string? Description { get; set; }
+        public string? Description { get; init; }
 
         /// <summary>
         /// Final destination URL, after following intermediate shorteners (if any)
         /// </summary>
         [JsonPropertyName("unwound_url")]
-        public string? UnwoundUrl { get; set; }
+        public string? UnwoundUrl { get; init; }
     }
 }

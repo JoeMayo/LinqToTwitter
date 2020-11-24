@@ -2,9 +2,9 @@
 
 namespace LinqToTwitter
 {
-    public class TweetHidden
+    public record TweetHidden
     {
         [JsonPropertyName("hidden")]
-        public bool Hidden { get; set; }
+        public bool Hidden { get; init; }
     }
 }

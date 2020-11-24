@@ -11,18 +11,18 @@ namespace LinqToTwitter
         /// Start of hashtag
         /// </summary>
         [JsonPropertyName("start")]
-        public int Start { get; set; }
+        public int Start { get; init; }
 
         /// <summary>
         /// End of hashtag
         /// </summary>
         [JsonPropertyName("end")]
-        public int End { get; set; }
+        public int End { get; init; }
 
         /// <summary>
         /// Hashtag text
         /// </summary>
         [JsonPropertyName("username")]
-        public string? Username { get; set; }
+        public string? Username { get; init; }
     }
 }

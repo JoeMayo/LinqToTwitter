@@ -11,18 +11,18 @@ namespace LinqToTwitter
         /// Image URL
         /// </summary>
         [JsonPropertyName("url")]
-        public string? Url { get; set; }
+        public string? Url { get; init; }
 
         /// <summary>
         /// Image width
         /// </summary>
         [JsonPropertyName("width")]
-        public int Width { get; set; }
+        public int Width { get; init; }
 
         /// <summary>
         /// Image height
         /// </summary>
         [JsonPropertyName("height")]
-        public int Height { get; set; }
+        public int Height { get; init; }
     }
 }

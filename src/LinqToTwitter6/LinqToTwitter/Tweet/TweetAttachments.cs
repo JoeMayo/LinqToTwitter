@@ -12,12 +12,12 @@ namespace LinqToTwitter
         /// Poll IDs
         /// </summary>
         [JsonPropertyName("poll_ids")]
-        public List<string>? PollIds { get; set; }
+        public List<string>? PollIds { get; init; }
 
         /// <summary>
         /// Media Keys
         /// </summary>
         [JsonPropertyName("media_keys")]
-        public List<string>? MediaKeys { get; set; }
+        public List<string>? MediaKeys { get; init; }
     }
 }
