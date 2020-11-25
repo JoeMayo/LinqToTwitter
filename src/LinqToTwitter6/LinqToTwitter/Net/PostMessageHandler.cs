@@ -30,7 +30,7 @@ namespace LinqToTwitter.Net
 
             if (SupportsAutomaticDecompression)
                 AutomaticDecompression = DecompressionMethods.GZip;
-            if (exe.Authorizer.Proxy != null && SupportsProxy)
+            if (exe.Authorizer?.Proxy != null && SupportsProxy)
                 Proxy = exe.Authorizer.Proxy;
 
             //if (exe.ReadWriteTimeout != 0)

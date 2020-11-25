@@ -21,31 +21,34 @@ namespace LinqToTwitter
 {
     internal static class TypeSystem
     {
-        internal static Type GetElementType(Type seqType)
+        internal static Type? GetElementType(Type seqType)
         {
-            Type ienum = FindIEnumerable(seqType);
+            Type? ienum = FindIEnumerable(seqType);
             if (ienum == null) return seqType;
             return ienum.GenericTypeArguments[0];
         }
 
-        private static Type FindIEnumerable(Type seqType)
+        private static Type? FindIEnumerable(Type seqType)
         {
             TypeInfo seqTypeInfo = seqType.GetTypeInfo();
             if (seqType == null || seqType == typeof(string))
                 return null;
 
             if (seqTypeInfo.IsArray)
-                return typeof(IEnumerable<>).MakeGenericType(seqTypeInfo.GetElementType());
+            {
+                Type? elementType = seqTypeInfo.GetElementType();
+                if (elementType != null)
+                    return typeof(IEnumerable<>).MakeGenericType(elementType);
+            }
 
             if (seqTypeInfo.IsGenericType)
             {
                 foreach (Type arg in seqTypeInfo.GenericTypeArguments)
                 {
-                    Type ienum = typeof(IEnumerable<>).MakeGenericType(arg);
-                    if (ienum.GetTypeInfo().IsAssignableFrom(seqTypeInfo))
-                    {
+                    Type? ienum = typeof(IEnumerable<>).MakeGenericType(arg);
+
+                    if (ienum != null && ienum.GetTypeInfo().IsAssignableFrom(seqTypeInfo))
                         return ienum;
-                    }
                 }
             }
 
@@ -54,15 +57,13 @@ namespace LinqToTwitter
             {
                 foreach (Type iface in ifaces)
                 {
-                    Type ienum = FindIEnumerable(iface);
+                    Type? ienum = FindIEnumerable(iface);
                     if (ienum != null) return ienum;
                 }
             }
 
             if (seqTypeInfo.BaseType != null && seqTypeInfo.BaseType != typeof(object))
-            {
                 return FindIEnumerable(seqTypeInfo.BaseType);
-            }
 
             return null;
         }

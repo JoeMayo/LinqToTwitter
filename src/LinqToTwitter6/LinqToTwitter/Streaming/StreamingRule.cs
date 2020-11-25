@@ -11,19 +11,19 @@ namespace LinqToTwitter
         /// ID for rule
         /// </summary>
         [JsonPropertyName("id")]
-        public string? ID { get; set; }
+        public string? ID { get; init; }
 
         /// <summary>
         /// Rule text
         /// </summary>
         [JsonPropertyName("value")]
-        public string? Value { get; set; }
+        public string? Value { get; init; }
 
         /// <summary>
         /// Rule tag
         /// </summary>
         [JsonPropertyName("tag")]
-        public string? Tag { get; set; }
+        public string? Tag { get; init; }
     }
 
 }

@@ -29,7 +29,7 @@ namespace LinqToTwitter.Net
             request.Headers.ExpectContinue = false;
             if (SupportsAutomaticDecompression && authorizerSupportsCompression)
                 AutomaticDecompression = DecompressionMethods.GZip;
-            if (exe.Authorizer.Proxy != null && SupportsProxy)
+            if (exe.Authorizer?.Proxy != null && SupportsProxy)
                 Proxy = exe.Authorizer.Proxy;
 
             return await base.SendAsync(request, cancellationToken).ConfigureAwait(false);

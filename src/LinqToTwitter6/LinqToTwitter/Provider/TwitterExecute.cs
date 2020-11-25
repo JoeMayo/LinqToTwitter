@@ -25,7 +25,7 @@ namespace LinqToTwitter.Provider
         /// <summary>
         /// Gets or sets the object that can send authorized requests to Twitter.
         /// </summary>
-        public IAuthorizer Authorizer { get; set; }
+        public IAuthorizer? Authorizer { get; set; }
 
         /// <summary>
         /// Timeout (milliseconds) for writing to request 
@@ -75,7 +75,7 @@ namespace LinqToTwitter.Provider
         /// </summary>
         public static TextWriter? Log { get; set; }
 
-        readonly object streamingCallbackLock = new object();
+        readonly object streamingCallbackLock = new();
 
         /// <summary>
         /// Allows users to process content returned from stream
@@ -97,7 +97,7 @@ namespace LinqToTwitter.Provider
         /// </summary>
         public CancellationToken CancellationToken { get; set; }
 
-        readonly object asyncCallbackLock = new object();
+        readonly object asyncCallbackLock = new();
 
         /// <summary>
         /// supports testing
@@ -117,6 +117,8 @@ namespace LinqToTwitter.Provider
         public async Task<string> QueryTwitterAsync<T>(Request request, IRequestProcessor<T> reqProc)
         {
             WriteLog(request.FullUrl, nameof(QueryTwitterAsync));
+            _ = Authorizer ?? throw new ArgumentNullException(nameof(Authorizer), $"{nameof(Authorizer)} is required.");
+
 
             var req = new HttpRequestMessage(HttpMethod.Get, new Uri(request.FullUrl));
 
@@ -137,6 +139,8 @@ namespace LinqToTwitter.Provider
   
         internal void SetAuthorizationHeader(string method, string url, IDictionary<string, string> parms, HttpRequestMessage req)
         {
+            _ = Authorizer ?? throw new ArgumentNullException(nameof(Authorizer), $"{nameof(Authorizer)} is required.");
+
             var authStringParms = parms.ToDictionary(parm => parm.Key, elm => elm.Value);
             authStringParms.Add("oauth_consumer_key", Authorizer.CredentialStore?.ConsumerKey ?? string.Empty);
             authStringParms.Add("oauth_token", Authorizer.CredentialStore?.OAuthToken ?? string.Empty);
@@ -157,7 +161,7 @@ namespace LinqToTwitter.Provider
         public async Task<string> QueryTwitterStreamAsync(Request request)
         {
             WriteLog(request.FullUrl, nameof(QueryTwitterStreamAsync));
-
+            _ = Authorizer ?? throw new ArgumentNullException(nameof(Authorizer), $"{nameof(Authorizer)} is required.");
 
             var req = new HttpRequestMessage(HttpMethod.Get, new Uri(request.FullUrl));
 
@@ -189,7 +193,7 @@ namespace LinqToTwitter.Provider
             while (stream.CanRead && !IsStreamClosed)
             {
                 readByte = new byte[1];
-                await stream.ReadAsync(readByte, 0, 1, CancellationToken).ConfigureAwait(false);
+                await stream.ReadAsync(readByte.AsMemory(0, 1), CancellationToken).ConfigureAwait(false);
                 byte nextByte = readByte.SingleOrDefault();
 
                 CancellationToken.ThrowIfCancellationRequested();
@@ -207,12 +211,13 @@ namespace LinqToTwitter.Provider
                     byte[] tweetBytes = new byte[byteCount];
 
                     memStr.Position = 0;
-                    await memStr.ReadAsync(tweetBytes, 0, byteCount, CancellationToken).ConfigureAwait(false);
+                    await memStr.ReadAsync(tweetBytes.AsMemory(0, byteCount), CancellationToken).ConfigureAwait(false);
 
                     string tweet = Encoding.UTF8.GetString(tweetBytes, 0, byteCount);
                     var strmContent = new StreamContent(this, tweet);
 
-                    await StreamingCallbackAsync(strmContent).ConfigureAwait(false);
+                    if (StreamingCallbackAsync != null)
+                        await StreamingCallbackAsync(strmContent).ConfigureAwait(false);
 
                     memStr.Dispose();
                     memStr = new MemoryStream();
@@ -226,6 +231,8 @@ namespace LinqToTwitter.Provider
  
         HttpRequestMessage ConfigureRequest(Request request)
         {
+            _ = Authorizer ?? throw new ArgumentNullException(nameof(Authorizer), $"{nameof(Authorizer)} is required.");
+
             var httpRequest = new HttpRequestMessage(HttpMethod.Post, request.Endpoint);
 
             var parameters =
@@ -252,6 +259,8 @@ namespace LinqToTwitter.Provider
  
         async Task<Stream> CreateStream(HttpResponseMessage response)
         {
+            _ = Authorizer ?? throw new ArgumentNullException(nameof(Authorizer), $"{nameof(Authorizer)} is required.");
+
             var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
 
             if (Authorizer.SupportsCompression)
@@ -457,11 +466,11 @@ namespace LinqToTwitter.Provider
             HttpResponseMessage msg;
 
             if (method == HttpMethod.Post.ToString())
-                msg = await client.PostAsync(url, content).ConfigureAwait(false);
+                msg = await client.PostAsync(url, content, cancelToken).ConfigureAwait(false);
             else if (method == HttpMethod.Delete.ToString())
-                msg = await client.DeleteAsync(url).ConfigureAwait(false);
+                msg = await client.DeleteAsync(url, cancelToken).ConfigureAwait(false);
             else
-                msg = await client.PutAsync(url, content).ConfigureAwait(false);
+                msg = await client.PutAsync(url, content, cancelToken).ConfigureAwait(false);
 
             return await HandleResponseAsync(msg).ConfigureAwait(false);
         }
@@ -500,9 +509,9 @@ namespace LinqToTwitter.Provider
 
             HttpResponseMessage msg;
             if (method == HttpMethod.Delete.ToString())
-                msg = await client.DeleteAsync(url).ConfigureAwait(false);
+                msg = await client.DeleteAsync(url, cancelToken).ConfigureAwait(false);
             else
-                msg = await client.PostAsync(url, content).ConfigureAwait(false);
+                msg = await client.PostAsync(url, content, cancelToken).ConfigureAwait(false);
 
             return await HandleResponseAsync(msg).ConfigureAwait(false);
         }
@@ -527,7 +536,7 @@ namespace LinqToTwitter.Provider
             return await msg.Content.ReadAsStringAsync().ConfigureAwait(false);
         }
 
-        void WriteLog(string content, string currentMethod)
+        static void WriteLog(string content, string currentMethod)
         {
             if (Log != null)
             {

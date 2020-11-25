@@ -82,6 +82,7 @@ namespace LinqToTwitter
         public void Dispose()
         {
             CloseStream();
+            GC.SuppressFinalize(this);
         }
     }
 }
