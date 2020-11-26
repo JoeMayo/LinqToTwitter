@@ -1,37 +1,26 @@
-## Welcome to LINQ to Twitter
+Welcome to LINQ to Twitter documentation. Here, you'll find the technical information you'll need to use LINQ to Twitter in your own applications. We have a FAQ, general Twitter API concepts, a Twitter API technical reference, security information, and error handling.
 
-You can use the [editor on GitHub](https://github.com/JoeMayo/LinqToTwitter/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+Note: The current version of LINQ to Twitter is v6.0, which tracks .NET 5+ and the Twitter API v2. It also offers Twitter API v1.1 support. Please see [[LINQ to Twitter v5.x]] for Twitter API v1.1 technical endpoint documentation.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+## [[LINQ to Twitter FAQ]]
 
-### Markdown
+Frequently asked questions.
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+## [[Programming the Twitter API]]
 
-```markdown
-Syntax highlighted code block
+Some introductory information on programming Twitter.
 
-# Header 1
-## Header 2
-### Header 3
+## [[LINQ to Twitter v6.0]]
 
-- Bulleted
-- List
+This is the main API section, where the technical descriptions of objects, methods, and other features of LINQ to Twitter are covered.
 
-1. Numbered
-2. List
+## [[Securing Your Applications]]
+As a Web API, security is very important with LINQ to Twitter and this section explains parts of the API that are available to build secure applications using LINQ to Twitter. You'll learn about the various OAuth implementations you can use here.
 
-**Bold** and _Italic_ and `Code` text
+## [[Error Handling]]
 
-[Link](url) and ![Image](src)
-```
+You'll might encounter errors when working with the Twitter API. This section attempts to help you debug and figure out what the problem could be.
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+## To Stay Informed
 
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/JoeMayo/LinqToTwitter/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+For the latest information on LINQ to Twitter, you can watch this site or follow [@Linq2Twitr](https://twitter.com/Linq2Twitr) for the most frequent news or [@JoeMayo](https://twitter.com/JoeMayo) for highlights.
