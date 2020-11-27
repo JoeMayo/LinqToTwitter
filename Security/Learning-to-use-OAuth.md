@@ -22,7 +22,7 @@ Shows you how to use PIN Authorization.
 
 This will show how to use OAuth with classic Web Forms.
 
-#### [Implementing OAuth for ASP.NET MVC](OAuth/Implementing-OAuth-for-ASP.NET.md)
+#### [Implementing OAuth for ASP.NET MVC](OAuth/Implementing-OAuth-for-ASP.NET-MVC.md)
 
 This section explains how OAuth works with ASP.NET MVC.
 
@@ -30,7 +30,7 @@ This section explains how OAuth works with ASP.NET MVC.
 
 This section shows how to use OAuth with Silverlight.
 
-#### [Implementing OAuth for Windows 8](OAuth/Implementing-OAuth-for-Windows.md)
+#### [Implementing OAuth for Windows 8](OAuth/Implementing-OAuth-for-Windows-8.md)
 
 This section shows how to use OAuth with Windows 8.
 
