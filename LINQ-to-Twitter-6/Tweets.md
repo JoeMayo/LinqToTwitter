@@ -2,11 +2,11 @@
 
 Queries for anything you can do with a Tweet such as Lookup, Searches, and Streams.
 
-### [[Lookup]]
+### [Lookup](Tweets/Lookup.md)
 
 Get information on one or more tweets.
 
-### [[Recent Search]]
+### [Recent Search](Tweets/Recent-Search.md)
 
 Search for tweets that occurred within the last week.
 
@@ -18,6 +18,6 @@ Read a real-time stream of tweets, based on your search criteria. Coming soon...
 
 Read a real-time stream sampling around 1% of public tweets. Coming soon...
 
-### [[Hide Replies]]
+### [Hide Replies](Tweets/Hide-Replies.md)
 
 Hides/Unhides replies to a tweet.
