@@ -46,7 +46,7 @@ Lists allow you to categorize Twitter accounts.
 
 Posting images and video.
 
-### [Muting Users](LINQ-to-Twitter-5/Mutating-Users.md)
+### [Muting Users](LINQ-to-Twitter-5/Muting-Users.md)
 
 Lets a user turn off tweets from another account without unfollowing.
 
