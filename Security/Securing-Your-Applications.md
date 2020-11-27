@@ -6,6 +6,6 @@ As a Web API, security is very important with LINQ to Twitter and this section e
 
 Often overlooked, security is important and this section explains why.
 
-### [Learning to use OAuth](security/Learning-to-Use-OAuth.md)
+### [Learning to use OAuth](Learning-to-Use-OAuth.md)
 
 OAuth is the single-most difficult aspect of the Twitter API to get right. Even with a library, like LINQ to Twitter, that simplifies the task, it is still a complex feature. This section shows how to use OAuth with various technologies that LINQ to Twitter supports. It's important to select the proper authorization method because the nature of the supported technologies are different. Additionally you might have requirements that suggest one type of authorizer might be better than another.
