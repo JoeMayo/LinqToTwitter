@@ -54,7 +54,7 @@ namespace LinqToTwitter
         /// <param name="execute">The <see cref="ITwitterExecute"/> object to use.</param>
         public TwitterContext(ITwitterExecute execute)
         {
-            TwitterExecutor = execute ?? throw new ArgumentNullException("execute", "TwitterExecutor is required.");
+            TwitterExecutor = execute ?? throw new ArgumentNullException(nameof(execute), $"{nameof(TwitterExecutor)} is required.");
 
             if (string.IsNullOrWhiteSpace(UserAgent))
                 UserAgent = L2TKeys.DefaultUserAgent;
@@ -229,7 +229,7 @@ namespace LinqToTwitter
             {
                 string headerValAsString = headers[responseHeader];
 
-                int.TryParse(headerValAsString, out headerVal);
+                _ = int.TryParse(headerValAsString, out headerVal);
             }
 
             return headerVal;
@@ -482,14 +482,13 @@ namespace LinqToTwitter
         internal IRequestProcessor<T> CreateRequestProcessor<T>(Expression expression)
             where T: class
         {
-            if (expression == null)
-                throw new ArgumentNullException(
-                    nameof(expression),
-                    "Expression passed to CreateRequestProcessor must not be null.");
+            _ = expression ?? throw new ArgumentNullException(nameof(expression), "Expression passed to CreateRequestProcessor must not be null.");
 
-            string requestType = new MethodCallExpressionTypeFinder().GetGenericType(expression).Name;
+            Type? genericType = new MethodCallExpressionTypeFinder().GetGenericType(expression);
 
-            return CreateRequestProcessor<T>(requestType);
+            _ = genericType ?? throw new ArgumentNullException(nameof(expression), "Generic type of Expression passed to CreateRequestProcessor must not be null.");
+
+            return CreateRequestProcessor<T>(genericType.Name);
         }
 
         protected internal IRequestProcessor<T> CreateRequestProcessor<T>(string requestType)
