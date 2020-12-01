@@ -15,10 +15,10 @@ Module Program
     End Sub
 
     Async Function SendTweet() As Task
-
-        Dim credentials As InMemoryCredentialStore = New InMemoryCredentialStore
-        credentials.ConsumerKey = Environment.GetEnvironmentVariable(OAuthKeys.TwitterConsumerKey)
-        credentials.ConsumerSecret = Environment.GetEnvironmentVariable(OAuthKeys.TwitterConsumerSecret)
+        Dim credentials As InMemoryCredentialStore = New InMemoryCredentialStore With {
+            .ConsumerKey = Environment.GetEnvironmentVariable(OAuthKeys.TwitterConsumerKey),
+            .ConsumerSecret = Environment.GetEnvironmentVariable(OAuthKeys.TwitterConsumerSecret)
+        }
 
         Dim auth As PinAuthorizer = New PinAuthorizer()
         auth.CredentialStore = credentials
