@@ -6,7 +6,7 @@ Lists allow you to categorize Twitter accounts.
 
 Get a list of all lists
 
-#### [Reading List Statuses](Managing-Lists/Reading-List_Statuses.md)
+#### [Reading List Statuses](Managing-Lists/Reading-List-Statuses.md)
 
 Read tweets from a list
 
