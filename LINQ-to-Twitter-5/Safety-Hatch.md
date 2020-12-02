@@ -4,10 +4,10 @@ If something isn't quite right or available, you still have a work around. For e
 
 The safety hatch is Raw queries and commands. While a bit more work, this approach is flexible and still helps you avoid much low-level plumbing code, such as HTTP communication and OAuth.
 
-#### [[Raw Queries]]
+#### [Raw Queries](Safety-Hatch/Raw-Queries.md)
 
 Perform a query on any HTTP GET endpoint in the Twitter API.
 
-#### [[Raw Commands]]
+#### [Raw Commands](Safety-Hatch/Raw-Commands.md)
 
 Communicate with any HTTP POST endpoint in the Twitter API.
