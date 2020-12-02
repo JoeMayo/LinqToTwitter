@@ -6,7 +6,7 @@ You can get information on users, their friends, and their followers
 
 Look up details on specified users
 
-#### [Querying User Info](Getting-User-Information/Querying-User-Information.md)
+#### [Querying User Info](Getting-User-Information/Querying-User-Info.md)
 
 Show information for a user
 
