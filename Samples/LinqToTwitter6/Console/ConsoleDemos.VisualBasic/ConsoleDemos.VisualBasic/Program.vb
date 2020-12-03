@@ -15,30 +15,8 @@ Module Program
     End Sub
 
     Async Function SendTweet() As Task
-        Dim credentials As InMemoryCredentialStore = New InMemoryCredentialStore With {
-            .ConsumerKey = Environment.GetEnvironmentVariable(OAuthKeys.TwitterConsumerKey),
-            .ConsumerSecret = Environment.GetEnvironmentVariable(OAuthKeys.TwitterConsumerSecret)
-        }
 
-        Dim auth As PinAuthorizer = New PinAuthorizer()
-        auth.CredentialStore = credentials
-        auth.GetPin =
-                Function()
-                    Console.WriteLine("Next, you'll need to tell Twitter to authorize access. This program will not have access to your credentials, which is the benefit of OAuth. Once you log into Twitter and give this program permission, come back to this console.")
-                    Console.WriteLine()
-                    Console.Write("Please enter the PIN from Twitter: ")
-
-                    Return Console.ReadLine()
-                End Function
-        auth.GoToTwitterAuthorization =
-            Function(pageLink)
-                Dim psi As ProcessStartInfo = New ProcessStartInfo
-                With psi
-                    .FileName = pageLink
-                    .UseShellExecute = True
-                End With
-                Return Process.Start(psi)
-            End Function
+        Dim auth As IAuthorizer = OAuth.ChooseAuthenticationStrategy()
 
         Await auth.AuthorizeAsync()
 
