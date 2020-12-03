@@ -10,11 +10,11 @@ Get information on one or more tweets.
 
 Search for tweets that occurred within the last week.
 
-### Filtered Stream
+### [Filtered Stream](Tweets/Filtered-Stream.md)
 
 Read a real-time stream of tweets, based on your search criteria. Coming soon...
 
-### Sample Stream
+### [Sampled Stream](Tweets/Sampled-Stream.md)
 
 Read a real-time stream sampling around 1% of public tweets. Coming soon...
 
