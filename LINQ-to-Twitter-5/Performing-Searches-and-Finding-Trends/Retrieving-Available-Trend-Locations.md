@@ -11,6 +11,7 @@ Get locations where trends are occurring.
 |------|---------|------|----------|
 | Lat | Latitude coordinate | dec | yes |
 | Long | Longitude coordinate | dec | yes |
+
 ##### v3.0 Example:
 
 ```c#
