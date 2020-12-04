@@ -19,12 +19,12 @@ namespace ConsoleDemo.CSharp
             ConsoleKeyInfo input = Console.ReadKey();
             Console.WriteLine("");
 
-            IAuthorizer auth = input.Key switch
+            IAuthorizer auth = input.KeyChar switch
             {
-                ConsoleKey.D1 => DoPinOAuth(),
-                ConsoleKey.D2 => DoApplicationOnlyAuth(),
-                ConsoleKey.D3 => DoSingleUserAuth(),
-                ConsoleKey.D4 => DoXAuth(),
+                '1' => DoPinOAuth(),
+                '2' => DoApplicationOnlyAuth(),
+                '3' => DoSingleUserAuth(),
+                '4' => DoXAuth(),
                 _ => DoPinOAuth(),
             };
 
