@@ -15,12 +15,15 @@ Perform a search.
 | Lang | Language to return tweets in as defined by [ISO-639-1](http://en.wikipedia.org/wiki/ISO_639-1]. | string | no |
 | Locale | Language used in query. _ja_ is currently the only supported language other than _en_. Defaults to _en_. | string | no |
 | MaxID | Return tweets prior to or equal to this ID. | ulong | no |
-| Query | Search query. Can contain search operators defined at [Twitter Search API docs](https://dev.twitter.com/docs/api/1/get/search]. | string | yes |
+| Query | Search query. | string | yes |
 | ResultType | Specify whether tweets should be Popular, Recent, or Mixed; defaults to recent. | ResultType | no |
 | SearchLanguage | Language of tweets. | int | no |
 | SinceID | Return tweets later than this ID. | ulong | no |
 | Type | Search type. | string | no |
 | Until | Tweets up to this date, YYYY-MM-DD. | string | no |
+
+_Note:_ Can contain search operators defined at [Twitter Search API docs](https://dev.twitter.com/docs/api/1/get/search].
+
 ##### v3.0+ Example:
 
 ```c#
