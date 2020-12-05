@@ -119,7 +119,8 @@ namespace ConsoleDemo.CSharp
             try
             {
                 await
-                    (from strm in twitterCtx.Streaming.WithCancellation(cancelTokenSrc.Token)
+                    (from strm in twitterCtx.Streaming
+                                            .WithCancellation(cancelTokenSrc.Token)
                      where strm.Type == StreamingType.Sample
                      select strm)
                     .StartAsync(async strm =>
