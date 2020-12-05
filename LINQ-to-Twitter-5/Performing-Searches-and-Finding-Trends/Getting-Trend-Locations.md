@@ -10,6 +10,7 @@ Get trends for a specified place.
 | Name | Purpose | Type | Required |
 |------|---------|------|----------|
 | WoeID | Yahoo! Where on Earth ID | int | yes |
+
 ##### Example:
 
 ```c#
