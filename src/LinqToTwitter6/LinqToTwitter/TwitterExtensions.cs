@@ -19,11 +19,11 @@ namespace LinqToTwitter
         /// <returns>Streaming instance to support further LINQ opertations</returns>
         public static async Task<List<Streaming>> StartAsync(this IQueryable<Streaming> streaming, Func<StreamContent, Task> callback)
         {
-            var provider = streaming.Provider as TwitterQueryProvider;
-            provider!
-                .Context
-                .TwitterExecutor
-                .StreamingCallbackAsync = callback;
+            _ = callback ?? throw new ArgumentNullException(nameof(callback), $"{nameof(callback)} is required!");
+
+            ITwitterExecute executor = GetTwitterExecutor(streaming);
+
+            executor.StreamingCallbackAsync = callback;
 
             return await streaming.ToListAsync().ConfigureAwait(false);
         }
@@ -86,13 +86,26 @@ namespace LinqToTwitter
         public static IQueryable<T> WithCancellation<T>(this IQueryable<T> query, CancellationToken cancelToken)
             where T : class
         {
-            var provider = query.Provider as TwitterQueryProvider;
-            provider!
-                .Context
-                .TwitterExecutor
-                .CancellationToken = cancelToken;
+            ITwitterExecute executor = GetTwitterExecutor(query);
+
+            executor.CancellationToken = cancelToken;
 
             return query;
+        }
+
+        /// <summary>
+        /// Safely gets a <see cref="TwitterExecutor"/> from an IQueryable<T>
+        /// </summary>
+        /// <typeparam name="T">IQueryable type</typeparam>
+        /// <param name="query">IQueryable for this request</param>
+        /// <returns><see cref="TwitterExecutor"/> for the <see cref="TwitterContext"/></returns>
+        static ITwitterExecute GetTwitterExecutor<T>(IQueryable<T> query)
+        {
+            var executor = (query.Provider as TwitterQueryProvider)?.Context?.TwitterExecutor;
+
+            _ = executor ?? throw new InvalidOperationException($"{nameof(TwitterContext)} not properly instantiated.");
+
+            return executor;
         }
     }
 }
