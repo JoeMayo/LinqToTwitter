@@ -15,7 +15,7 @@ public async Task<DirectMessageEvents> NewDirectMessageEventAsync(ulong recipien
 | recipientID | ID of user to send to. | ulong | yes |
 | text | Direct message contents. | string | yes |
 
-*Return Type:* [DirectMessageEvents|DirectMessageEvents Entity]
+*Return Type:* [DirectMessageEvents](../LINQ-to-Twitter-Entities/DirectMessageEvents-Entity.md)
 
 ##### v 4.x Example:
 

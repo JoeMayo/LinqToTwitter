@@ -2,7 +2,8 @@
 
 Show direct message events information. Includes DMs to and from a user.
 
-*Entity:* [[DirectMessageEvents|DirectMessageEvents Entity]]
+*Entity:* [DirectMessageEvents](../LINQ-to-Twitter-Entities/DirectMessageEvents-Entity.md)
+
 *Type:* DirectMessageEventsType.List
 
 ##### Parameters/Filters:

@@ -2,7 +2,8 @@
 
 Show direct message events information.
 
-*Entity:* [[DirectMessageEvents|DirectMessageEvents Entity]]
+*Entity:* [DirectMessageEvents](../LINQ-to-Twitter-Entities/DirectMessageEvents-Entity.md)
+
 *Type:* DirectMessageEventsType.Show
 
 ##### Parameters/Filters:
