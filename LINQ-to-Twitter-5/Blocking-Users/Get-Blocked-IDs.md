@@ -2,7 +2,8 @@
 
 Get a list of IDs of the people a user is blocking
 
-*Entity:* [[Blocks|Blocks Entity]]
+*Entity:* [Blocks](LINQ-to-Twitter-Entities/Blocks-Entity)
+
 *Type:* BlockingType.Ids
 
 ##### Parameters/Filters:

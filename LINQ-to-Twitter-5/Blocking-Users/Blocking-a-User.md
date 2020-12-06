@@ -20,7 +20,7 @@ public async Task<User> CreateBlockAsync(
 | skipStatus | Exclude status information | bool | no |
 | userID | ID of user to follow | string | only if ScreenName is empty |
 
-*Return Type:* [[User|User Entity]]
+*Return Type:* [User](LINQ-to-Twitter-Entities/User-Entity.md)
 
 ##### v3.0 Example:
 
