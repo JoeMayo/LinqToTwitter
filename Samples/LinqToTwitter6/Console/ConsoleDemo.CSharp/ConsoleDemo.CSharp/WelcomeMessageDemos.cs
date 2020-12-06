@@ -87,7 +87,7 @@ namespace ConsoleDemo.CSharp
 
         static async Task CreateNewWelcomeMessageAsync(TwitterContext twitterCtx)
         {
-            WelcomeMessage message =
+            WelcomeMessage? message =
                 await twitterCtx.NewWelcomeMessageAsync(
                     "New Welcome Message",
                     "Welcome!");
@@ -106,9 +106,9 @@ namespace ConsoleDemo.CSharp
         {
             Console.Write("Please type welcome message ID: ");
             string? respone = Console.ReadLine();
-            ulong.TryParse(respone, out ulong wecomeMessageID);
+            _ = ulong.TryParse(respone, out ulong wecomeMessageID);
 
-            WelcomeMessage message =
+            WelcomeMessage? message =
                 await twitterCtx.UpdateWelcomeMessageAsync(
                     wecomeMessageID,
                     "New Name",
@@ -128,7 +128,7 @@ namespace ConsoleDemo.CSharp
         {
             Console.Write("Please type welcome message ID: ");
             string? respone = Console.ReadLine();
-            ulong.TryParse(respone, out ulong wecomeMessageID);
+            _ = ulong.TryParse(respone, out ulong wecomeMessageID);
 
             WelcomeMessage? message =
                 await
@@ -152,7 +152,7 @@ namespace ConsoleDemo.CSharp
         {
             int count = 10; // set to a low number to demo paging
             string? cursor = null;
-            List<WelcomeMsg> allWelcomeMessages = new List<WelcomeMsg>();
+            List<WelcomeMsg> allWelcomeMessages = new();
 
             // you don't have a valid cursor until after the first query
             WelcomeMessage? message =
@@ -213,7 +213,7 @@ namespace ConsoleDemo.CSharp
         {
             Console.Write("Please type welcome message ID: ");
             string? respone = Console.ReadLine();
-            ulong.TryParse(respone, out ulong wecomeMessageID);
+            _ = ulong.TryParse(respone, out ulong wecomeMessageID);
 
             await twitterCtx.DeleteWelcomeMessageAsync(wecomeMessageID);
 
@@ -224,9 +224,9 @@ namespace ConsoleDemo.CSharp
         {
             Console.Write("Please type welcome message ID to set as default: ");
             string? respone = Console.ReadLine();
-            ulong.TryParse(respone, out ulong wecomeMessageID);
+            _ = ulong.TryParse(respone, out ulong wecomeMessageID);
 
-            WelcomeMessage welcomeMsg =
+            WelcomeMessage? welcomeMsg =
                 await twitterCtx.NewWelcomeMessageRuleAsync(wecomeMessageID);
 
             WelcomeMessageRule? rule = welcomeMsg?.Value?.WelcomeMessageRule;
@@ -241,7 +241,7 @@ namespace ConsoleDemo.CSharp
         {
             Console.Write("Please type welcome message rule ID: ");
             string? respone = Console.ReadLine();
-            ulong.TryParse(respone, out ulong wecomeMessageID);
+            _ = ulong.TryParse(respone, out ulong wecomeMessageID);
 
             WelcomeMessage? message =
                 await
@@ -265,7 +265,7 @@ namespace ConsoleDemo.CSharp
         {
             int count = 5; // set to a low number to demo paging
             string cursor = "";
-            List<WelcomeMessageRule> allWelcomeMessageRules = new List<WelcomeMessageRule>();
+            List<WelcomeMessageRule> allWelcomeMessageRules = new();
 
             // you don't have a valid cursor until after the first query
             WelcomeMessage? message =
@@ -326,7 +326,7 @@ namespace ConsoleDemo.CSharp
         {
             Console.Write("Please type welcome message rule ID: ");
             string? respone = Console.ReadLine();
-            ulong.TryParse(respone, out ulong wecomeMessageRuleID);
+            _ = ulong.TryParse(respone, out ulong wecomeMessageRuleID);
 
             await twitterCtx.DeleteWelcomeMessageRuleAsync(wecomeMessageRuleID);
 

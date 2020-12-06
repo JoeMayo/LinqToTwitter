@@ -104,7 +104,7 @@ namespace ConsoleDemo.CSharp
             string status = 
                 "Testing LINQ to Twitter Raw Interface - " + 
                 DateTime.Now.ToString() + " #Linq2Twitter";
-            var parameters = new Dictionary<string, string>
+            var parameters = new Dictionary<string, string?>
             {
                 { "status", status }
             };

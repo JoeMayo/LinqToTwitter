@@ -93,7 +93,7 @@ namespace ConsoleDemo.CSharp
 
         static async Task CreateSavedSearchAsync(TwitterContext twitterCtx)
         {
-            SavedSearch savedSearch = 
+            SavedSearch? savedSearch = 
                 await twitterCtx.CreateSavedSearchAsync("linq");
 
             if (savedSearch != null)
@@ -106,7 +106,7 @@ namespace ConsoleDemo.CSharp
         {
             ulong savedSearchID = 0;
 
-            SavedSearch savedSearch = 
+            SavedSearch? savedSearch = 
                 await twitterCtx.DestroySavedSearchAsync(savedSearchID);
 
             if (savedSearch != null)

@@ -55,7 +55,7 @@ namespace ConsoleDemo.CSharp
                         "\nAfter authorizing this application, Twitter " +
                         "will give you a 7-digit PIN Number.\n");
                     Console.Write("Enter the PIN number here: ");
-                    return Console.ReadLine();
+                    return Console.ReadLine() ?? string.Empty;
                 }
             };
 

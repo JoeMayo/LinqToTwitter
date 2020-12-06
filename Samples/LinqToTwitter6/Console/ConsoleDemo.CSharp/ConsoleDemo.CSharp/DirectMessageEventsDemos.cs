@@ -122,7 +122,7 @@ namespace ConsoleDemo.CSharp
         {
             int count = 50; // set to a low number to demo paging
             string cursor = "";
-            List<DMEvent> allDmEvents = new List<DMEvent>();
+            List<DMEvent> allDmEvents = new();
 
             // you don't have a valid cursor until after the first query
             DirectMessageEvents? dmResponse =
@@ -177,7 +177,7 @@ namespace ConsoleDemo.CSharp
         {
             const ulong Linq2TwitrID = 15411837;// 16761255;
 
-            DirectMessageEvents message = 
+            DirectMessageEvents? message = 
                 await twitterCtx.NewDirectMessageEventAsync(
                     Linq2TwitrID, 
                     "DM from @JoeMayo to @Linq2Twitr of $MSFT & $TSLA with #TwitterAPI #chatbot " +
@@ -197,7 +197,7 @@ namespace ConsoleDemo.CSharp
             Console.Write("Which DM would you like to delete? (please enter DM ID): ");
             string? dmInput = Console.ReadLine();
 
-            ulong.TryParse(dmInput, out ulong dmID);
+            _ = ulong.TryParse(dmInput, out ulong dmID);
 
             try
             {
@@ -222,7 +222,7 @@ namespace ConsoleDemo.CSharp
                 mediaCategory: mediaCategory,
                 shared: true);
 
-            DirectMessageEvents message =
+            DirectMessageEvents? message =
                 await twitterCtx.NewDirectMessageEventAsync(
                     Linq2TwitrID,
                     "DM from @JoeMayo to @Linq2Twitr of $MSFT & $TSLA with #TwitterAPI #chatbot " +
@@ -242,7 +242,7 @@ namespace ConsoleDemo.CSharp
         {
             const ulong Linq2TwitrID = 15411837;// 16761255;
 
-            DirectMessageEvents message =
+            DirectMessageEvents? message =
                 await twitterCtx.NewDirectMessageEventAsync(
                     Linq2TwitrID,
                     "DM from @JoeMayo to @Linq2Twitr of $MSFT & $TSLA with #TwitterAPI #chatbot " +
@@ -263,7 +263,7 @@ namespace ConsoleDemo.CSharp
         {
             const ulong Linq2TwitrID = 15411837;// 16761255;
 
-            DirectMessageEvents message =
+            DirectMessageEvents? message =
                 await twitterCtx.NewDirectMessageEventAsync(
                     Linq2TwitrID,
                     "DM from @JoeMayo to @Linq2Twitr of $MSFT & $TSLA with #TwitterAPI #chatbot " +
@@ -303,7 +303,8 @@ namespace ConsoleDemo.CSharp
                     Metadata = "abc003"
                 },
             };
-            DirectMessageEvents message =
+
+            DirectMessageEvents? message =
                 await twitterCtx.RequestQuickReplyOptionsAsync(
                     Linq2TwitrID,
                     "What is your choice?",
@@ -344,7 +345,7 @@ namespace ConsoleDemo.CSharp
                 }
             };
 
-            DirectMessageEvents message =
+            DirectMessageEvents? message =
                 await twitterCtx.RequestButtonChoiceAsync(
                     Linq2TwitrID,
                     "Where would you like to go?",
@@ -372,7 +373,7 @@ namespace ConsoleDemo.CSharp
             Console.Write("Which DM would you mark read? (please enter DM ID): ");
             string? dmInput = Console.ReadLine();
 
-            ulong.TryParse(dmInput, out ulong dmID);
+            _ = ulong.TryParse(dmInput, out ulong dmID);
 
             try
             {
