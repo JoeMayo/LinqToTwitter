@@ -2,7 +2,7 @@
 
 Find out who a user is blocking.
 
-*Entity:* [Blocks](LINQ-to-Twitter-Entities/Blocks-Entity.md)
+*Entity:* [Blocks](../LINQ-to-Twitter-Entities/Blocks-Entity.md)
 
 *Type:* BlockingType.Blocking
 
