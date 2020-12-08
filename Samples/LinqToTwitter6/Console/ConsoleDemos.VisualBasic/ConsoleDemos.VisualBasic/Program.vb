@@ -1,9 +1,5 @@
-Imports System.Globalization
-Imports System.IO
 Imports System.Net
-Imports System.Net.Sockets
 Imports LinqToTwitter
-Imports LinqToTwitter.Common
 Imports LinqToTwitter.OAuth
 
 Module Program
@@ -12,6 +8,7 @@ Module Program
         ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12
 
         SendTweet().Wait()
+
     End Sub
 
     Async Function SendTweet() As Task
@@ -20,18 +17,138 @@ Module Program
 
         Await auth.AuthorizeAsync()
 
+
+        'This Is how you access credentials after authorization.
+        'The oauthToken And oauthTokenSecret do Not expire.
+        'You can use the userID to associate the credentials with the user.
+        'You can save credentials any way you want -database, isolated storage, etc. - it's up to you.
+        'You can retrieve And load all 4 credentials on subsequent queries to avoid the need to re-authorize.
+        'When you've loaded all 4 credentials, LINQ to Twitter will let you make queries without re-authorizing.
+        '
+        'Dim credentials = auth.CredentialStore
+        'Dim oauthToken = credentials.OAuthToken
+        'Dim oauthTokenSecret = credentials.OAuthTokenSecret
+        'Dim screenName = credentials.ScreenName
+        'Dim userID = credentials.UserID
+
         Dim twitterCtx = New TwitterContext(auth)
+        Dim key As Char
 
-        Console.Write("Type '1' to tweet, '2' to search, or '3' to upload a video: ")
-        Dim key = Console.ReadKey()
+        Do
+            ShowMenu()
 
-        If (key.Key = ConsoleKey.D1) Then
-            Await twitterCtx.TweetAsync("Test tweet: " & Date.Now)
-        ElseIf (key.Key = ConsoleKey.D2) Then
-            Await SearchAsync(twitterCtx)
-        Else
-            Await UploadMedia(twitterCtx)
-        End If
+            key = Console.ReadKey(True).KeyChar
+
+            Select Case key
+                Case "0"
+                    Console.WriteLine()
+                    Console.WriteLine("  Running Account Demos...")
+                    Console.WriteLine()
+                    'Await AccountDemos.RunAsync(twitterCtx)
+                Case "1"
+                    Console.WriteLine()
+                    Console.WriteLine("  Running Account Activity Demos...")
+                    Console.WriteLine()
+                    'Await AccountActivityDemos.RunAsync(twitterCtx)
+                Case "2"
+                    Console.WriteLine()
+                    Console.WriteLine("  Running Block Demos...")
+                    Console.WriteLine()
+                'Await BlockDemos.RunAsync(twitterCtx)
+                Case "3"
+                    Console.WriteLine()
+                    Console.WriteLine("  Running Direct Message Events Demos...")
+                    Console.WriteLine()
+                    'Await DirectMessageEventsDemos.RunAsync(twitterCtx)
+                Case "4"
+                    Console.WriteLine()
+                    Console.WriteLine("  Running Favorite Demos...")
+                    Console.WriteLine()
+                    'Await FavoriteDemos.RunAsync(twitterCtx)
+                Case "5"
+                    Console.WriteLine()
+                    Console.WriteLine("  Running Friendship Demos...")
+                    Console.WriteLine()
+                    'Await FriendshipDemos.RunAsync(twitterCtx)
+                Case "6"
+                    Console.WriteLine()
+                    Console.WriteLine("  Running Geo Demos...")
+                    Console.WriteLine()
+                    'Await GeoDemos.RunAsync(twitterCtx)
+                Case "7"
+                    Console.WriteLine()
+                    Console.WriteLine("  Running Help Demos...")
+                    Console.WriteLine()
+                    'Await HelpDemos.RunAsync(twitterCtx)
+                Case "8"
+                    Console.WriteLine()
+                    Console.WriteLine("  Running List Demos...")
+                    Console.WriteLine()
+                    'Await ListDemos.RunAsync(twitterCtx)
+                Case "9"
+                    Console.WriteLine()
+                    Console.WriteLine("  Running Media Demos...")
+                    Console.WriteLine()
+                    Await MediaDemos.RunAsync(twitterCtx)
+                Case "a", "A"
+                    Console.WriteLine()
+                    Console.WriteLine("  Running Mutes Demos...")
+                    Console.WriteLine()
+                    'Await MuteDemos.RunAsync(twitterCtx)
+                Case "b", "B"
+                    Console.WriteLine()
+                    Console.WriteLine("  Running Raw Demos...")
+                    Console.WriteLine()
+                    'Await RawDemos.RunAsync(twitterCtx)
+                Case "c", "C"
+                    Console.WriteLine()
+                    Console.WriteLine("  Running Saved Search Demos...")
+                    Console.WriteLine()
+                    'Await SavedSearchDemos.RunAsync(twitterCtx)
+                Case "d", "D"
+                    Console.WriteLine()
+                    Console.WriteLine("  Running Search Demos...")
+                    Console.WriteLine()
+                    Await SearchDemos.RunAsync(twitterCtx)
+                Case "e", "E"
+                    Console.WriteLine()
+                    Console.WriteLine("  Running Status Demos...")
+                    Console.WriteLine()
+                    'Await StatusDemos.RunAsync(twitterCtx)
+                Case "f", "F"
+                    Console.WriteLine()
+                    Console.WriteLine("  Running Stream Demos...")
+                    Console.WriteLine()
+                    'Await StreamDemos.RunAsync(twitterCtx)
+                Case "g", "G"
+                    Console.WriteLine()
+                    Console.WriteLine("  Running Trend Demos...")
+                    Console.WriteLine()
+                    'Await TrendDemos.RunAsync(twitterCtx)
+                Case "h", "H"
+                    Console.WriteLine()
+                    Console.WriteLine("  Running User Demos...")
+                    Console.WriteLine()
+                Case "i", "I"
+                    Console.WriteLine()
+                    Console.WriteLine("  Running Welcome Message Demos...")
+                    Console.WriteLine()
+                    'Await WelcomeMessageDemos.RunAsync(twitterCtx)
+                Case "j", "J"
+                    Console.WriteLine()
+                    Console.WriteLine("  Running Tweet Demos...")
+                    Console.WriteLine()
+                    Await TweetDemos.RunAsync(twitterCtx)
+                Case "q", "Q"
+                    key = "Q"
+                    Console.WriteLine()
+                    Console.WriteLine("Quitting...")
+                    Console.WriteLine()
+                Case Else
+                    Console.WriteLine(key + " is unknown")
+
+            End Select
+        Loop Until (key = "Q")
 
         Console.WriteLine()
         Console.Write("Press any key to continue...")
@@ -39,56 +156,36 @@ Module Program
 
     End Function
 
-    Private Async Function SearchAsync(twitterCtx As TwitterContext) As Task
-        Dim Response As Search =
-            Await (From search In twitterCtx.Search()
-                   Where search.Type = SearchType.Search _
-                   AndAlso search.TweetMode = TweetMode.Extended _
-                   AndAlso search.Query = "Coronavirus") _
-                  .SingleOrDefaultAsync()
+    Sub ShowMenu()
 
-        Dim tweets As List(Of Status) = Response.Statuses()
+        Console.WriteLine()
+        Console.WriteLine()
+        Console.WriteLine("Please select category:")
+        Console.WriteLine()
 
-        If Response IsNot Nothing AndAlso Response.Statuses IsNot Nothing Then
-            For Each str As Status In tweets
-                Console.WriteLine(str.StatusID.ToString() + " " + str.FullText)
+        Console.WriteLine("    0. Account Demos")
+        Console.WriteLine("    1. Account Activity Demos")
+        Console.WriteLine("    2. Block Demos")
+        Console.WriteLine("    3. Direct Message Event Demos")
+        Console.WriteLine("    4. Favorite Demos")
+        Console.WriteLine("    5. Friendship Demos")
+        Console.WriteLine("    6. Geo Demos")
+        Console.WriteLine("    7. Help Demos")
+        Console.WriteLine("    8. List Demos")
+        Console.WriteLine("    9. Media Demos")
+        Console.WriteLine("    A. Mutes Demos")
+        Console.WriteLine("    B. Raw Demos")
+        Console.WriteLine("    C. Saved Search Demos")
+        Console.WriteLine("    D. Search Demos")
+        Console.WriteLine("    E. Status Demos")
+        Console.WriteLine("    F. Stream Demos")
+        Console.WriteLine("    G. Trend Demos")
+        Console.WriteLine("    H. User Demos")
+        Console.WriteLine("    I. Welcome Message Demos")
+        Console.WriteLine("    J. Tweet Demos")
+        Console.WriteLine()
+        Console.Write("    Q. End Program")
 
-                If str.ExtendedEntities.MediaEntities.Count > 0 Then
-                    Console.WriteLine(" - Media URL: " + str.ExtendedEntities.MediaEntities(0).MediaUrl)
-                End If
-            Next
-        End If
-    End Function
+    End Sub
 
-    Public Async Function UploadMedia(twitterCtx As TwitterContext) As Task
-        Dim Clip_Filename As String = "..\..\..\Images\TwitterTest.mp4"
-        Dim imageBytes As Byte() = File.ReadAllBytes(Clip_Filename)
-        Const JoeMayoUserID As ULong = 15411837
-        Dim additionalOwners = New ULong() {JoeMayoUserID}
-        Dim status As String = "Testing video upload tweet #Linq2Twitter £ " +
-                DateTime.Now.ToString(CultureInfo.InvariantCulture)
-        Dim mediaType1 As String = "video/mp4"
-        Dim mediaCategory As String = "tweet_video"
-        Dim media As Media = Await twitterCtx.UploadMediaAsync(imageBytes, mediaType1, additionalOwners, mediaCategory)
-        Dim mediaStatusResponse As Media = Nothing
-        Do
-
-            If mediaStatusResponse IsNot Nothing Then
-                Dim checkAfterSeconds As Integer = If(mediaStatusResponse?.ProcessingInfo?.CheckAfterSeconds, 0)
-                Console.WriteLine($"Twitter video testing in progress - waiting {checkAfterSeconds} seconds.")
-                Await Task.Delay(checkAfterSeconds * 1000)
-            End If
-            mediaStatusResponse = Await (From stat In twitterCtx.Media Where stat.Type = MediaType.Status AndAlso stat.MediaID = media.MediaID Select stat).SingleOrDefaultAsync()
-
-
-        Loop While mediaStatusResponse?.ProcessingInfo?.State = MediaProcessingInfo.InProgress
-
-        If mediaStatusResponse?.ProcessingInfo?.State = MediaProcessingInfo.Succeeded Then
-            Dim tweet22 As Status = Await twitterCtx.TweetAsync(status.Trim, New ULong() {media.MediaID})
-            If tweet22 IsNot Nothing Then Console.WriteLine($"Tweet sent: {tweet22.Text}")
-        Else
-            Dim [error] As MediaError = mediaStatusResponse?.ProcessingInfo?.[Error]
-            If [error] IsNot Nothing Then Console.WriteLine($"Request failed - Code: {[error].Code}, Name: {[error].Name}, Message: {[error].Message}")
-        End If
-    End Function
 End Module

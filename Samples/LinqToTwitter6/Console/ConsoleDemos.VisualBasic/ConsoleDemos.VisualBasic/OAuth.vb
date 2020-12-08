@@ -13,19 +13,22 @@ Public Class OAuth
 
         Console.WriteLine()
         Console.Write("Please choose (1, 2, 3, or 4): ")
-        Dim Input As ConsoleKeyInfo = Console.ReadKey()
-        Console.WriteLine("")
+
+        Dim Key = Console.ReadKey().KeyChar
+
+        Console.WriteLine()
+        Console.WriteLine()
 
         Dim auth As IAuthorizer
 
-        Select Case Input.Key
-            Case ConsoleKey.D1
+        Select Case Key
+            Case "1"
                 auth = DoPinOAuth()
-            Case ConsoleKey.D2
+            Case "2"
                 auth = DoApplicationOnlyAuth()
-            Case ConsoleKey.D3
+            Case "3"
                 auth = DoSingleUserAuth()
-            Case ConsoleKey.D4
+            Case "4"
                 auth = DoXAuth()
             Case Else
                 auth = DoPinOAuth()
