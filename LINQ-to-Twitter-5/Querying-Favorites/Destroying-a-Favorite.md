@@ -18,7 +18,7 @@ public async Task<Status> DestroyFavoriteAsync(
 | id | ID of tweet to remove from favorites | string | yes |
 | includeEntities | Include Twitter entities (default: true) | bool | no |
 
-*Return Type:* [[Status|Status Entity]]
+*Return Type:* [Status](../LINQ-to-Twitter-Entities/Status-Entity.md)
 
 ##### v3.0 Example:
 

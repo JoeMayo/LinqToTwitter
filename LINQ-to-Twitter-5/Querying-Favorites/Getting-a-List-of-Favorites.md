@@ -2,7 +2,8 @@
 
 Get a list of the last 20 favorites for a user.
 
-*Entity:* [[Favorites|Favorites Entity]]
+*Entity:* [Favorites](../LINQ-to-Twitter-Entities/Favorites-Entity.md)
+
 *Type:* FavoritesTypes.Favorites
 
 ##### Parameters/Filters:
