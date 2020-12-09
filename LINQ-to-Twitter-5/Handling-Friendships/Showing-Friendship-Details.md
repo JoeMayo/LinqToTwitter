@@ -2,7 +2,8 @@
 
 Gets details on the relationship between two users.
 
-*Entity:* [[Friendship|Friendship Entity]]
+*Entity:* [Friendship](../LINQ-to-Twitter-Entities/Friendship-Entity.md)
+
 *Type:* FriendshipType.Show
 
 ##### Parameters/Filters:

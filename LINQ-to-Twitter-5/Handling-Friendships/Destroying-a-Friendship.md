@@ -16,7 +16,7 @@ public async Task<User> DestroyFriendshipAsync(string screenName)
 | screenName | Screen name of user to follow | string | Yes |
 | userID | ID of user to follow | ulong | Yes |
 
-*Return Type:* [[User|User Entity]]
+*Return Type:* [User](../LINQ-to-Twitter-Entities/User-Entity.md)
 
 ##### v3.0 Example:
 

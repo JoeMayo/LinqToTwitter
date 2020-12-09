@@ -2,7 +2,8 @@
 
 Gets User entities for followers.
 
-*Entity:* [[Friendship|Friendship Entity]]
+*Entity:* [Friendship](../LINQ-to-Twitter-Entities/Friendship-Entity.md)
+
 *Type:* FriendshipType.FollowersList
 
 ##### Parameters/Filters:

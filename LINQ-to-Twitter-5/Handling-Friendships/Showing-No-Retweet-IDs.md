@@ -2,7 +2,8 @@
 
 Show IDs of all users for whom the logged in user doesn't want to see retweets.
 
-*Entity:* [[Friendship|Friendship Entity]]
+*Entity:* [Friendship](../LINQ-to-Twitter-Entities/Friendship-Entity.md)
+
 *Type:* FriendshipType.NoRetweetIDs
 
 ##### Parameters/Filters:

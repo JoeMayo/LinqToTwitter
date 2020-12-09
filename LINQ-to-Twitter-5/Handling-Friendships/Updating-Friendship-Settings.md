@@ -22,7 +22,7 @@ public async Task<Friendship> UpdateFriendshipSettingsAsync(
 
 Note: userID or screenName must be provided.
 
-*Return Type:* [[User|User Entity]]
+*Return Type:* [User](../LINQ-to-Twitter-Entities/User-Entity.md)
 
 ##### v3.0 Example:
 

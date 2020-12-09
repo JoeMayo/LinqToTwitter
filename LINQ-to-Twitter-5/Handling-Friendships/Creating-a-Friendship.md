@@ -19,7 +19,7 @@ public async Task<User> CreateFriendshipAsync(
 | screenName | Screen name of user to follow | string | yes |
 | userID | ID of user to follow | ulong | yes |
 
-*Return Type:* [[User|User Entity]]
+*Return Type:* [User](../LINQ-to-Twitter-Entities/User-Entity.md)
 
 ##### v3.0 Example:
 

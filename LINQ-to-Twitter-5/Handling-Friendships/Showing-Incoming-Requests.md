@@ -2,7 +2,8 @@
 
 Show IDs of all users requesting friendship with logged in user.
 
-*Entity:* [[Friendship|Friendship Entity]]
+*Entity:* [Friendship](../LINQ-to-Twitter-Entities/Friendship-Entity.md)
+
 *Type:* FriendshipType.Incoming
 
 ##### Parameters/Filters:

@@ -2,7 +2,8 @@
 
 Gets IDs of people being followed by the user.
 
-*Entity:* [[Friendship|Friendship Entity]]
+*Entity:* [Friendship](../LINQ-to-Twitter-Entities/Friendship-Entity.md)
+
 *Type:* FriendshipType..FriendsIDs
 
 ##### Parameters/Filters:
