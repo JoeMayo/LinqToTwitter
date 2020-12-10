@@ -49,7 +49,7 @@ Module Program
                     Console.WriteLine()
                     Console.WriteLine("  Running Account Activity Demos...")
                     Console.WriteLine()
-                    'Await AccountActivityDemos.RunAsync(twitterCtx)
+                    Await AccountActivityDemos.RunAsync(twitterCtx)
                 Case "2"
                     Console.WriteLine()
                     Console.WriteLine("  Running Block Demos...")
