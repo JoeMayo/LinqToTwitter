@@ -2,7 +2,8 @@
 
 Lets you provide latitude and longitude to get back location/place information.
 
-*Entity:* [[Geo|Geo Entity]]
+*Entity:* [Geo](../LINQ-to-Twitter-Entities/Geo-Entity.md)
+
 *Type:* GeoType.Reverse
 
 ##### Parameters/Filters:

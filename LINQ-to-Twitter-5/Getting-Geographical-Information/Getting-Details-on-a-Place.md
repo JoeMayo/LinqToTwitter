@@ -2,7 +2,8 @@
 
 With a place ID, returned by a Reverse Geocode lookup, you can get more details on the place.
 
-*Entity:* [[Geo|Geo Entity]]
+*Entity:* [Geo](../LINQ-to-Twitter-Entities/Geo-Entity.md)
+
 *Type:* GeoType.ID
 
 ##### Parameters/Filters:

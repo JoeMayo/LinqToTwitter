@@ -2,7 +2,8 @@
 
 Get a list of nearby places with similar names.
 
-*Entity:* [[Geo|Geo Entity]]
+*Entity:* [Geo](../LINQ-to-Twitter-Entities/Geo-Entity.md)
+
 *Type:* GeoType.SimilarPlaces
 
 ##### Parameters/Filters:

@@ -2,7 +2,8 @@
 
 Search for places that can be attached to a status update.
 
-*Entity:* [[Geo|Geo Entity]]
+*Entity:* [Geo](../LINQ-to-Twitter-Entities/Geo-Entity.md)
+
 *Type:* GeoType.Search
 
 ##### Parameters/Filters:
