@@ -54,7 +54,7 @@ Module Program
                     Console.WriteLine()
                     Console.WriteLine("  Running Block Demos...")
                     Console.WriteLine()
-                'Await BlockDemos.RunAsync(twitterCtx)
+                    Await BlockDemos.RunAsync(twitterCtx)
                 Case "3"
                     Console.WriteLine()
                     Console.WriteLine("  Running Direct Message Events Demos...")
