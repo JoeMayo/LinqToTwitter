@@ -2,7 +2,8 @@
 
 Provides a list of languages supported by Twitter.
 
-*Entity:* [[Help|Help Entity]]
+*Entity:* [Help](../LINQ-to-Twitter-Entities/Help-Entity.md)
+
 *Type:* HelpType.Languages
 
 ##### Parameters/Filters:

@@ -2,7 +2,8 @@
 
 Displays the Twitter privacy policy.
 
-*Entity:* [[Help|Help Entity]]
+*Entity:* [Help](../LINQ-to-Twitter-Entities/Help-Entity.md)
+
 *Type:* HelpType.Privacy
 
 ##### Parameters/Filters:

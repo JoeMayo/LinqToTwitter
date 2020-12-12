@@ -2,7 +2,8 @@
 
 Pulls general configuration information such as URL lengths, system names, and photo sizes.
 
-*Entity:* [[Help|Help Entity]]
+*Entity:* [Help](../LINQ-to-Twitter-Entities/Help-Entity.md)
+
 *Type:* HelpType.Configuration
 
 ##### Parameters/Filters:

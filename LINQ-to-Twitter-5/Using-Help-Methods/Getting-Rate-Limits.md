@@ -2,7 +2,8 @@
 
 Provides rate limits for each API endpoint.
 
-*Entity:* [[Help|Help Entity]]
+*Entity:* [Help](../LINQ-to-Twitter-Entities/Help-Entity.md)
+
 *Type:* HelpType.RateLimits
 
 ##### Parameters/Filters:

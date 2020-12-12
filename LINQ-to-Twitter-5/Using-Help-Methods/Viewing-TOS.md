@@ -2,7 +2,8 @@
 
 Displays the Twitter terms of service.
 
-*Entity:* [[Help|Help Entity]]
+*Entity:* [Help](../LINQ-to-Twitter-Entities/Help-Entity.md)
+
 *Type:* HelpType.Tos
 
 ##### Parameters/Filters:
