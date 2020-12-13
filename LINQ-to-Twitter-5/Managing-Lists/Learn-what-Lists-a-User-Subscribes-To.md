@@ -2,7 +2,8 @@
 
 Get lists user has subscribed to.
 
-*Entity:* [[List|List Entity]]
+*Entity:* [List](../LINQ-to-Twitter-Entities/List-Entity.md)
+
 *Type:* ListType.Subscriptions
 
 ##### Parameters/Filters:

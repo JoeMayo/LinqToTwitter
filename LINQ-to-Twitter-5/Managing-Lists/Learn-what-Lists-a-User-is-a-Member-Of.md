@@ -2,7 +2,8 @@
 
 Get lists a user is a member of.
 
-*Entity:* [[List|List Entity]]
+*Entity:* [List](../LINQ-to-Twitter-Entities/List-Entity.md)
+
 *Type:* ListType.Memberships
 
 ##### Parameters/Filters:

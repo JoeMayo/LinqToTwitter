@@ -2,7 +2,8 @@
 
 Read tweets from a list.
 
-*Entity:* [[List|List Entity]]
+*Entity:* [List](../LINQ-to-Twitter-Entities/List-Entity.md)
+
 *Type:* ListType.Statuses
 
 ##### Parameters/Filters:

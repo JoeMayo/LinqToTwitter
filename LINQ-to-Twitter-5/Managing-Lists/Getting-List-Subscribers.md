@@ -2,7 +2,8 @@
 
 Get a list of users who subscribed to a list.
 
-*Entity:* [[List|List Entity]]
+*Entity:* [List](../LINQ-to-Twitter-Entities/List-Entity.md)
+
 *Type:* ListType.Subscribers
 
 ##### Parameters/Filters:

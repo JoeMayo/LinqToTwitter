@@ -17,7 +17,7 @@ public async Task<List> CreateListAsync(
 | listName | Name of list | string | yes |
 | mode | Public or private | string | no |
 
-*Return Type:* [[List|List Entity]]
+*Return Type:* [List](../LINQ-to-Twitter-Entities/List-Entity.md)
 
 ##### v3.0 Example:
 

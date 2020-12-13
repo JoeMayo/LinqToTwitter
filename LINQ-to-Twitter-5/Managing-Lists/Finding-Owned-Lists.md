@@ -2,7 +2,8 @@
 
 Get lists that the authenticated user owns.
 
-*Entity:* [[List|List Entity]]
+*Entity:* [List](../LINQ-to-Twitter-Entities/List-Entity.md)
+
 *Type:* ListType.Ownerships
 
 ##### Parameters/Filters:

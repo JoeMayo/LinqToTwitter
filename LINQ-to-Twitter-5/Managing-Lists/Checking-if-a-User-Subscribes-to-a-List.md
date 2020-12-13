@@ -2,7 +2,8 @@
 
 Determine if a user subscribes to a list.
 
-*Entity:* [[List|List Entity]]
+*Entity:* [List](../LINQ-to-Twitter-Entities/List-Entity.md)
+
 *Type:* ListType.IsSubscriber
 
 ##### Parameters/Filters:

@@ -24,7 +24,7 @@ public async Task<List> UpdateListAsync(
 
 Note: Either listID or slug is required.  If you use slug, you must also specify either ownerID or ownerScreenName.
 
-*Return Type:* [[List|List Entity]]
+*Return Type:* [List](../LINQ-to-Twitter-Entities/List-Entity.md)
 
 ##### v3.0 Example:
 

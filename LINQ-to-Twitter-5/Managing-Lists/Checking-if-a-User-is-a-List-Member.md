@@ -2,7 +2,8 @@
 
 Determine if a user is a member of a list.
 
-*Entity:* [[List|List Entity]]
+*Entity:* [List](../LINQ-to-Twitter-Entities/List-Entity.md)
+
 *Type:* ListType.IsMember
 
 ##### Parameters/Filters:

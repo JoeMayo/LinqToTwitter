@@ -2,7 +2,8 @@
 
 Get a list of all lists.
 
-*Entity:* [[List|List Entity]]
+*Entity:* [List](../LINQ-to-Twitter-Entities/List-Entity.md)
+
 *Type:* ListType.List
 
 ##### Parameters/Filters:

@@ -26,7 +26,7 @@ public async Task<List> AddMemberRangeToListAsync(
 
 Note: Either userIDs or screenNames is required. Either listID or slug is required. If you use slug, you must also specify either ownerID or ownerScreenName. Maximum users per request is 100; requiring multiple invocations if you need to add more than 100 users.
 
-*Return Type:* [[List|List Entity]]
+*Return Type:* [List](../LINQ-to-Twitter-Entities/List-Entity.md)
 
 ##### v3.0 Example:
 

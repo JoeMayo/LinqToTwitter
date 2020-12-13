@@ -2,7 +2,8 @@
 
 Get a list of members of a list.
 
-*Entity:* [[List|List Entity]]
+*Entity:* [List](../LINQ-to-Twitter-Entities/List-Entity.md)
+
 *Type:* ListType.Members
 
 ##### Parameters/Filters:
