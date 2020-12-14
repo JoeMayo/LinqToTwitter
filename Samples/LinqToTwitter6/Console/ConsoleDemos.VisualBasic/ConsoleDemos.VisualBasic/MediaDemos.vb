@@ -8,12 +8,14 @@ Public Class MediaDemos
         Dim imageBytes As Byte() = File.ReadAllBytes(Clip_Filename)
         Const JoeMayoUserID As ULong = 15411837
         Dim additionalOwners = New ULong() {JoeMayoUserID}
-        Dim status As String = "Testing video upload tweet #Linq2Twitter £ " +
-                DateTime.Now.ToString(CultureInfo.InvariantCulture)
+        Dim status As String =
+            "Testing video upload tweet #Linq2Twitter £ " +
+            DateTime.Now.ToString(CultureInfo.InvariantCulture)
         Dim mediaType1 As String = "video/mp4"
         Dim mediaCategory As String = "tweet_video"
         Dim media As Media = Await twitterCtx.UploadMediaAsync(imageBytes, mediaType1, additionalOwners, mediaCategory)
         Dim mediaStatusResponse As Media = Nothing
+
         Do
 
             If mediaStatusResponse IsNot Nothing Then

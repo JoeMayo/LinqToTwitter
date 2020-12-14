@@ -12,9 +12,7 @@ Friend Class AccountDemos
             If verifyResponse IsNot Nothing And verifyResponse.User IsNot Nothing Then
                 Dim user = verifyResponse.User
 
-                Console.WriteLine(
-                        "Credentials are good for {0}.",
-                        user.ScreenNameResponse)
+                Console.WriteLine("Credentials are good for {0}.", user.ScreenNameResponse)
             End If
 
         Catch tqe As Exception

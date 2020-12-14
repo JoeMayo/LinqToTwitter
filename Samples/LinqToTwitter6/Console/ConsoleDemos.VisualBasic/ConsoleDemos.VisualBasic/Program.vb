@@ -59,7 +59,7 @@ Module Program
                     Console.WriteLine()
                     Console.WriteLine("  Running Direct Message Events Demos...")
                     Console.WriteLine()
-                    'Await DirectMessageEventsDemos.RunAsync(twitterCtx)
+                    Await DirectMessageEventsDemos.RunAsync(twitterCtx)
                 Case "4"
                     Console.WriteLine()
                     Console.WriteLine("  Running Favorite Demos...")
