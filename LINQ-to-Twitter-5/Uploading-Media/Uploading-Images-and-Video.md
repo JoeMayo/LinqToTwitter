@@ -24,7 +24,7 @@ public virtual async Task<Media> UploadMediaAsync(
 | mediaCategory | Media category - possible values are tweet_image, tweet_gif, tweet_video, and amplify_video. See this post on the Twitter forums: https://twittercommunity.com/t/media-category-values/64781/6 | string | sometimes |
 | cancelToken | Allows you to cancel async operation | CancellationToken | no |
 
-*Return Type:* [[Status|Status Entity]]
+*Return Type:* [Status](../LINQ-to-Twitter-Entities/Status-Entity.md)
 
 Note: The response you receive differs between images and videos. If uploading videos, the code below works well. However, if uploading images, you shouldn't iterate, waiting for processed status because that happens immediately. See this issue for more info:
 

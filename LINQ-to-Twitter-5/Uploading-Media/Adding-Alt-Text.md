@@ -17,7 +17,7 @@ public virtual async Task CreateMediaMetadataAsync(
 | altText | Media description. | string | yes |
 | cancelToken | Allows you to cancel async operation. | CancellationToken | no |
 
-*Return Type:* [[Status|Status Entity]]
+*Return Type:* [Status](../LINQ-to-Twitter-Entities/Status-Entity.md)
 
 ##### v4.x Example:
 
