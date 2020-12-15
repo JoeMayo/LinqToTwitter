@@ -64,7 +64,7 @@ Module Program
                     Console.WriteLine()
                     Console.WriteLine("  Running Favorite Demos...")
                     Console.WriteLine()
-                    'Await FavoriteDemos.RunAsync(twitterCtx)
+                    Await FavoriteDemos.RunAsync(twitterCtx)
                 Case "5"
                     Console.WriteLine()
                     Console.WriteLine("  Running Friendship Demos...")
