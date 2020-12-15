@@ -2,7 +2,8 @@
 
 Retrieve a list of muted user IDs.
 
-*Entity:* [[Mute|Mute Entity]]
+*Entity:* [Mute](../LINQ-to-Twitter-Entities/Mute-Entity.md)
+
 *Type:* MuteType.IDs
 
 ##### Parameters/Filters:

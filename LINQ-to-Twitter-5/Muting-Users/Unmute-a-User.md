@@ -19,7 +19,7 @@ public async Task<User> UnMuteAsync(
 | screenName | Screen name of user to mute | string | yes (on matching overload) |
 | userID | ID of user to mute | ulong | yes (on matching overload) |
 
-*Return Type:* [[User|User Entity]]
+*Return Type:* [User](../LINQ-to-Twitter-Entities/User-Entity.md)
 
 ##### v3.x Example:
 
