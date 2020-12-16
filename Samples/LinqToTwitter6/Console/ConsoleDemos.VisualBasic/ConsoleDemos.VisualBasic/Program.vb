@@ -69,7 +69,7 @@ Module Program
                     Console.WriteLine()
                     Console.WriteLine("  Running Friendship Demos...")
                     Console.WriteLine()
-                    'Await FriendshipDemos.RunAsync(twitterCtx)
+                    Await FriendshipDemos.RunAsync(twitterCtx)
                 Case "6"
                     Console.WriteLine()
                     Console.WriteLine("  Running Geo Demos...")
