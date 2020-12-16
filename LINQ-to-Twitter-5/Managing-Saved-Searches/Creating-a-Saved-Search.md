@@ -14,7 +14,7 @@ public async Task<SavedSearch> CreateSavedSearchAsync(string query)
 |------|---------|------|----------|
 | query | Text of search query | string | yes |
 
-*Return Type:* [[SavedSearch|SavedSearch Entity]]
+*Return Type:* [SavedSearch](../LINQ-to-Twitter-Entities/SavedSearch-Entity.md)
 
 ##### v3.0 Example:
 

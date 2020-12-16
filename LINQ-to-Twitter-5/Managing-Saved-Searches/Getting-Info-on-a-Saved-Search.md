@@ -2,7 +2,8 @@
 
 Get details on a saved search.
 
-*Entity:* [[SavedSearch|SavedSearch Entity]]
+*Entity:* [SavedSearch](../LINQ-to-Twitter-Entities/SavedSearch-Entity.md)
+
 *Type:* SavedSearchType.Show
 
 ##### Parameters/Filters:

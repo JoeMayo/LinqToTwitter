@@ -14,7 +14,7 @@ public async Task<SavedSearch> DestroySavedSearchAsync(ulong id)
 |------|---------|------|----------|
 | id | Saved search ID | ulong | yes |
 
-*Return Type:* [[SavedSearch|SavedSearch Entity]]
+*Return Type:* [SavedSearch](../LINQ-to-Twitter-Entities/SavedSearch-Entity.md)
 
 ##### v3.0 Example:
 
