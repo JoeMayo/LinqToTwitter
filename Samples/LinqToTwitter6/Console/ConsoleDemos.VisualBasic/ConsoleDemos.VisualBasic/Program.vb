@@ -74,7 +74,7 @@ Module Program
                     Console.WriteLine()
                     Console.WriteLine("  Running Geo Demos...")
                     Console.WriteLine()
-                    'Await GeoDemos.RunAsync(twitterCtx)
+                    Await GeoDemos.RunAsync(twitterCtx)
                 Case "7"
                     Console.WriteLine()
                     Console.WriteLine("  Running Help Demos...")
