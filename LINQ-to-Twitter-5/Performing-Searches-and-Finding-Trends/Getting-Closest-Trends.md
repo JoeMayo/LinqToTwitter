@@ -2,7 +2,8 @@
 
 Get trends closest to a given latitude and longitude.
 
-*Entity:* [[Trends|Trend Entity]]
+*Entity:* [Trends](../LINQ-to-Twitter-Entities/Trend-Entity.md)
+
 *Type:* TrendType.Closest
 
 ##### Parameters/Filters:

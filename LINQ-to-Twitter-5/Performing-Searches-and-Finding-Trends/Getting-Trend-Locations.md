@@ -2,7 +2,8 @@
 
 Get trends for a specified place.
 
-*Entity:* [[Trends|Trend Entity]]
+*Entity:* [Trends](../LINQ-to-Twitter-Entities/Trend-Entity.md)
+
 *Type:* TrendType.Place
 
 ##### Parameters/Filters:

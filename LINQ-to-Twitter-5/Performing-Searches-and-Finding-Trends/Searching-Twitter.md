@@ -2,7 +2,8 @@
 
 Perform a search.
 
-*Entity:* [[Search|Search Entity]]
+*Entity:* [Search](../LINQ-to-Twitter-Entities/Search-Entity.md)
+
 *Type:* SearchType.Search (optional)
 
 ##### Parameters/Filters:
