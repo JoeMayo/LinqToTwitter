@@ -79,7 +79,7 @@ Module Program
                     Console.WriteLine()
                     Console.WriteLine("  Running Help Demos...")
                     Console.WriteLine()
-                    'Await HelpDemos.RunAsync(twitterCtx)
+                    Await HelpDemos.RunAsync(twitterCtx)
                 Case "8"
                     Console.WriteLine()
                     Console.WriteLine("  Running List Demos...")
