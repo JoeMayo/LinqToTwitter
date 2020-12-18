@@ -14,7 +14,7 @@ public async Task<Status> RetweetAsync(ulong tweetID)
 |------|---------|------|----------|
 | tweetID | ID of user replied to. | ulong | yes |
 
-*Return Type:* [[Status|Status Entity]]
+*Return Type:* [Status](../LINQ-to-Twitter-Entities/Status-Entity.md)
 
 ##### Example:
 

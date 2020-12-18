@@ -2,7 +2,8 @@
 
 Gets up to 100 retweets of a tweet.
 
-*Entity:* [[Status|Status Entity]]
+*Entity:* [Status](../LINQ-to-Twitter-Entities/Status-Entity.md)
+
 *Type:* StatusType.Retweets
 
 ##### Parameters/Filters:

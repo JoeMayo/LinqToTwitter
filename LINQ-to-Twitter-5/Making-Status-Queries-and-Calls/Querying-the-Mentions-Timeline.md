@@ -2,7 +2,8 @@
 
 Gets the 20 most recent statuses where the user has been mentioned.  A mention is defined as a tweet that contains the @ScreenName of the user. Only works for authorized user.
 
-*Entity:* [[Status|Status Entity]]
+*Entity:* [Status](../LINQ-to-Twitter-Entities/Status-Entity.md)
+
 *Type:* StatusType.Mentions
 
 ##### Parameters/Filters:

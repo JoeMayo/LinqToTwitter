@@ -51,7 +51,7 @@ public async Task<Status> TweetAsync(
 | status | Text for new tweet. Must be 280 characters or less in length. | string | yes | 
 | tweetMode | Set to TweetMode.Extended for 280 characters returned in Status.FullText. | TweetMode | no |
 
-**Return Type:** [[Status|Status Entity]]
+**Return Type:** [Status](../LINQ-to-Twitter-Entities/Status-Entity.md)
 
 **Note:** When replying, remember to prefix the tweet with the _@UserName_ for the person you're replying to.
 

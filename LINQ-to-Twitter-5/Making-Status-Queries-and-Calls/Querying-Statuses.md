@@ -2,7 +2,8 @@
 
 Gets a specific tweet.
 
-*Entity:* [[Status|Status Entity]]
+*Entity:* [Status](../LINQ-to-Twitter-Entities/Status-Entity.md)
+
 *Type:* StatusType.Show
 
 ##### Parameters/Filters:

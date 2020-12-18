@@ -2,7 +2,8 @@
 
 Gets the 20 most recent statuses for the authorized user (doesn't include user's friends). The max number of tweets you can retrieve is 3200.
 
-*Entity:* [[Status|Status Entity]]
+*Entity:* [Status](../LINQ-to-Twitter-Entities/Status-Entity.md)
+
 *Type:* StatusType.User
 
 ##### Parameters/Filters:

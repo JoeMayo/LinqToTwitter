@@ -6,7 +6,8 @@ This query returns the tweets and retweets shown on a user's home page when they
 
 The maximum number of tweets/retweets returned is 800.
 
-*Entity:* [[Status|Status Entity]]
+*Entity:* [Status](../LINQ-to-Twitter-Entities/Status-Entity.md)
+
 *Type:* StatusType.Home
 
 ##### Parameters/Filters:

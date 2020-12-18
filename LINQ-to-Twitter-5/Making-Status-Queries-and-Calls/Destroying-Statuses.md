@@ -14,7 +14,7 @@ public async Task<Status> DeleteTweetAsync(ulong tweetID)
 |------|---------|------|----------|
 | tweetID | ID of tweet to delete | ulong | yes |
 
-*Return Type:* [[Status|Status Entity]]
+*Return Type:* [Status](../LINQ-to-Twitter-Entities/Status-Entity.md)
 
 ##### v 3.0 Example:
 
