@@ -2,7 +2,8 @@
 
 Gets the 20 most recent retweets about a user.
 
-*Entity:* [[Status|Status Entity]]
+*Entity:* [Status](../LINQ-to-Twitter-Entities/Status-Entity.md)
+
 *Type:* StatusType.RetweetsOfMe
 
 ##### Parameters/Filters:
