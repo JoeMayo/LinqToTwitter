@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using LinqToTwitter.Provider;
 
 namespace LinqToTwitter
@@ -180,7 +181,14 @@ namespace LinqToTwitter
 
         TweetQuery JsonDeserialize(string responseJson)
         {
-            TweetQuery? tweet = JsonSerializer.Deserialize<TweetQuery>(responseJson);
+            var options = new JsonSerializerOptions
+            {
+                Converters =
+                {
+                    new JsonStringEnumConverter()
+                }
+            };
+            TweetQuery? tweet = JsonSerializer.Deserialize<TweetQuery>(responseJson, options);
 
             if (tweet == null)
                 return new TweetQuery

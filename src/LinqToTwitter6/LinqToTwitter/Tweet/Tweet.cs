@@ -111,6 +111,12 @@ namespace LinqToTwitter
         public List<TweetReference>? ReferencedTweets { get; init; }
 
         /// <summary>
+        /// Who can reply to tweet
+        /// </summary>
+        [JsonPropertyName("reply_settings")]
+        public TweetReplySettings ReplySettings { get; set; }
+
+        /// <summary>
         /// The application sending the tweet
         /// </summary>
         [JsonPropertyName("source")]

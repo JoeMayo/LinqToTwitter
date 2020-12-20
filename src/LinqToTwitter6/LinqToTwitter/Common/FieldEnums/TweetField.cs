@@ -12,7 +12,7 @@
             "attachments,author_id,context_annotations,conversation_id," +
             "created_at,entities,geo,id,in_reply_to_user_id,lang,non_public_metrics," +
             "public_metrics,organic_metrics,promoted_metrics,possibly_sensitive," +
-            "referenced_tweets,source,text,withheld";
+            "referenced_tweets,source,text,withheld,reply_settings";
 
         /// <summary>
         /// All expandable fields, except those requiring permissions
@@ -20,7 +20,7 @@
         public const string AllFieldsExceptPermissioned =
             "attachments,author_id,context_annotations,conversation_id," +
             "created_at,entities,geo,id,in_reply_to_user_id,lang,public_metrics," +
-            "possibly_sensitive,referenced_tweets,source,text,withheld";
+            "possibly_sensitive,referenced_tweets,source,text,withheld,reply_settings";
 
         /// <summary>
         /// attachments
@@ -101,6 +101,11 @@
         /// referenced_tweets
         /// </summary>
         public const string ReferencedTweets = "referenced_tweets";
+
+        /// <summary>
+        /// who can reply to a tweet
+        /// </summary>
+        public const string ReplySettings = "reply_settings";
 
         /// <summary>
         /// source
