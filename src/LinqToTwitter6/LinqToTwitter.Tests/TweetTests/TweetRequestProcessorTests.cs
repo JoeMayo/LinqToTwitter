@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
-using LinqToTwitter;
 using LinqToTwitter.Common;
 using LinqToTwitter.Provider;
 using LinqToTwitter.Tests.Common;
@@ -180,6 +179,7 @@ namespace LinqToTwitter.Tests.TweetTests
 			Assert.AreEqual(DateTime.Parse("2020-09-15T15:44:56.000Z").Date, tweet.CreatedAt?.Date);
 			Assert.AreEqual("1305895383260782593", tweet.ConversationID);
 			Assert.IsTrue(tweet.PossiblySensitive ?? false);
+			Assert.AreEqual(tweet.ReplySettings, TweetReplySettings.MentionedUsers);
         }
 
 		[TestMethod]
@@ -376,6 +376,7 @@ namespace LinqToTwitter.Tests.TweetTests
         const string SingleTweet = @"{
 	""data"": [
 		{
+			""reply_settings"": ""mentionedUsers"",
 			""lang"": ""en"",
 			""entities"": {
 				""annotations"": [
