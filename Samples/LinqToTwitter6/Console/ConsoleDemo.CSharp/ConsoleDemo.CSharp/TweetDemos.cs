@@ -36,6 +36,14 @@ namespace ConsoleDemo.CSharp
                         Console.WriteLine("\n\tUn-Hiding a reply...\n");
                         await UnHideReplyAsync(twitterCtx);
                         break;
+                    case '4':
+                        Console.WriteLine("\n\tGetting the Mentions Timeline...\n");
+                        await GetMentionsTimelineAsync(twitterCtx);
+                        break;
+                    case '5':
+                        Console.WriteLine("\n\tGetting the User Timeline...\n");
+                        await GetUserTimelineAsync(twitterCtx);
+                        break;
                     case 'q':
                     case 'Q':
                         Console.WriteLine("\nReturning...\n");
@@ -56,6 +64,8 @@ namespace ConsoleDemo.CSharp
             Console.WriteLine("\t 1. Multi-Tweet Lookup");
             Console.WriteLine("\t 2. Hide a Reply");
             Console.WriteLine("\t 3. Un-Hide a Reply");
+            Console.WriteLine("\t 4. Mentions Timeline");
+            Console.WriteLine("\t 5. User Timeline");
             Console.WriteLine();
             Console.Write("\t Q. Return to Main menu");
         }
@@ -152,6 +162,48 @@ namespace ConsoleDemo.CSharp
             bool isHidden = await twitterCtx.UnHideReplyAsync(TweetID);
 
             Console.WriteLine($"Is Hidden: {isHidden}");
+        }
+
+        static async Task GetMentionsTimelineAsync(TwitterContext twitterCtx)
+        {
+            string userID = "15411837";
+
+            TweetQuery? tweetResponse =
+                await
+                (from tweet in twitterCtx.Tweets
+                 where tweet.Type == TweetType.MentionsTimeline &&
+                       tweet.ID == userID
+                 select tweet)
+                .SingleOrDefaultAsync();
+
+            if (tweetResponse?.Tweets != null)
+                tweetResponse.Tweets.ForEach(tweet =>
+                    Console.WriteLine(
+                        $"\nUser: {tweet.ID}" +
+                        $"\nTweet: {tweet.Text}"));
+            else
+                Console.WriteLine("No entries found.");
+        }
+
+        static async Task GetUserTimelineAsync(TwitterContext twitterCtx)
+        {
+            string userID = "15411837";
+
+            TweetQuery? tweetResponse =
+                await
+                (from tweet in twitterCtx.Tweets
+                 where tweet.Type == TweetType.UserTimeline &&
+                       tweet.ID == userID
+                 select tweet)
+                .SingleOrDefaultAsync();
+
+            if (tweetResponse?.Tweets != null)
+                tweetResponse.Tweets.ForEach(tweet =>
+                    Console.WriteLine(
+                        $"\nUser: {tweet.ID}" +
+                        $"\nTweet: {tweet.Text}"));
+            else
+                Console.WriteLine("No entries found.");
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using LinqToTwitter.Common;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Serialization;
@@ -18,9 +19,24 @@ namespace LinqToTwitter
         public TweetType Type { get; init; }
 
         /// <summary>
-        /// Required - Up to 100 comma-separated IDs to search for
+        /// UTC date/time to search to
+        /// </summary>
+        public DateTime EndTime { get; init; }
+
+        /// <summary>
+        /// Comma-separated list of tweet types to exclude
+        /// </summary>
+        public string? Exclude { get; init; }
+
+        /// <summary>
+        /// Up to 100 comma-separated IDs to search for
         /// </summary>
         public string? Ids { get; init; }
+
+        /// <summary>
+        /// User ID for timeline queries
+        /// </summary>
+        public string? ID { get; init; }
 
         /// <summary>
         /// Comma-separated list of expansion fields
@@ -28,9 +44,19 @@ namespace LinqToTwitter
         public string? Expansions { get; init; }
 
         /// <summary>
+        /// Max number of tweets to return per requrest - default 10 - possible 100
+        /// </summary>
+        public int MaxResults { get; init; }
+
+        /// <summary>
         /// Comma-separated list of fields to return in the media object
         /// </summary>
         public string? MediaFields { get; init; }
+
+        /// <summary>
+        /// If set, with token from previous response metadata, pages forward or backward
+        /// </summary>
+        public string? PaginationToken { get; init; }
 
         /// <summary>
         /// Comma-separated list of fields to return in the place object
@@ -43,9 +69,24 @@ namespace LinqToTwitter
         public string? PollFields { get; init; }
 
         /// <summary>
+        /// returns tweets later than this ID
+        /// </summary>
+        public string? SinceID { get; init; }
+
+        /// <summary>
+        /// Date to search from
+        /// </summary>
+        public DateTime StartTime { get; init; }
+
+        /// <summary>
         /// Comma-separated list of fields to return in the Tweet object
         /// </summary>
         public string? TweetFields { get; init; }
+
+        /// <summary>
+        /// returns tweets earlier than this ID
+        /// </summary>
+        public string? UntilID { get; init; }
 
         /// <summary>
         /// Comma-separated list of fields to return in the User object
