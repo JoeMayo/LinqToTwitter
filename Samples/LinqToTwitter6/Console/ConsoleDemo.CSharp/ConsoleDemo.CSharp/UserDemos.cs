@@ -49,6 +49,14 @@ namespace ConsoleDemo.CSharp
                         Console.WriteLine("\n\tReport spammer...\n");
                         await ReportSpammerAsync(twitterCtx);
                         break;
+                    case '7':
+                        Console.WriteLine("\n\tFinding followers...\n");
+                        await FindFollowersAsync(twitterCtx);
+                        break;
+                    case '8':
+                        Console.WriteLine("\n\tFinding following...\n");
+                        await FindFollowingAsync(twitterCtx);
+                        break;
                     case 'q':
                     case 'Q':
                         Console.WriteLine("\nReturning...\n");
@@ -72,6 +80,8 @@ namespace ConsoleDemo.CSharp
             Console.WriteLine("\t 4. Account Contributors");
             Console.WriteLine("\t 5. Get Profile Banner Sizes");
             Console.WriteLine("\t 6. Report Spammer");
+            Console.WriteLine("\t 7. Find Followers");
+            Console.WriteLine("\t 8. Find Following");
             Console.WriteLine();
             Console.Write("\t Q. Return to Main menu");
         }
@@ -196,6 +206,40 @@ namespace ConsoleDemo.CSharp
             User? spammer = await twitterCtx.ReportSpamAsync(SpammerScreenName, performBlock: true);
 
             Console.WriteLine("You just reported {0} as a spammer.", spammer?.ScreenNameResponse);
+        }
+
+        async static Task FindFollowersAsync(TwitterContext twitterCtx)
+        {
+            string userID = "15411837";
+
+            TwitterUserQuery? userResponse =
+                await
+                (from user in twitterCtx.TwitterUser
+                 where user.Type == UserType.Followers &&
+                       user.ID == userID
+                 select user)
+                .SingleOrDefaultAsync();
+
+            if (userResponse != null)
+                userResponse.Users?.ForEach(user =>
+                    Console.WriteLine("Name: " + user.Username));
+        }
+
+        async static Task FindFollowingAsync(TwitterContext twitterCtx)
+        {
+            string userID = "15411837";
+
+            TwitterUserQuery? userResponse =
+                await
+                (from user in twitterCtx.TwitterUser
+                 where user.Type == UserType.Following &&
+                       user.ID == userID
+                 select user)
+                .SingleOrDefaultAsync();
+
+            if (userResponse != null)
+                userResponse.Users?.ForEach(user =>
+                    Console.WriteLine("ID: " + user.ID));
         }
     }
 }

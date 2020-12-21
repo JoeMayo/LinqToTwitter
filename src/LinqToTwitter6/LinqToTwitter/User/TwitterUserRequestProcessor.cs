@@ -23,6 +23,11 @@ namespace LinqToTwitter
         public UserType Type { get; set; }
 
         /// <summary>
+        /// User ID for following/follower queries
+        /// </summary>
+        public string? ID { get; set; }
+
+        /// <summary>
         /// Required for ID queries - Up to 100 comma-separated IDs to search for
         /// </summary>
         public string? Ids { get; set; }
@@ -36,6 +41,16 @@ namespace LinqToTwitter
         /// Comma-separated list of expansion fields - <see cref="ExpansionField"/>
         /// </summary>
         public string? Expansions { get; set; }
+
+        /// <summary>
+        /// Max number of tweets to return per requrest - default 100 - possible 1000
+        /// </summary>
+        public int MaxResults { get; set; }
+
+        /// <summary>
+        /// If set, with token from previous response metadata, pages forward or backward
+        /// </summary>
+        public string? PaginationToken { get; set; }
 
         /// <summary>
         /// Comma-separated list of fields to return in the Tweet object - <see cref="TweetField"/>
@@ -59,9 +74,12 @@ namespace LinqToTwitter
                    lambdaExpression.Body,
                    new List<string> {
                        nameof(Type),
+                       nameof(ID),
                        nameof(Ids),
                        nameof(Usernames),
                        nameof(Expansions),
+                       nameof(MaxResults),
+                       nameof(PaginationToken),
                        nameof(TweetFields),
                        nameof(UserFields)
                    }) ;
@@ -85,6 +103,8 @@ namespace LinqToTwitter
             {
                 UserType.IdLookup => BuildIdLookupUrl(parameters),
                 UserType.UsernameLookup => BuildUsernameLookupUrl(parameters),
+                UserType.Followers => BuildFollowersUrl(parameters),
+                UserType.Following => BuildFollowingUrl(parameters),
                 _ => throw new InvalidOperationException("The default case of BuildUrl should never execute because a Type must be specified."),
             };
         }
@@ -137,6 +157,74 @@ namespace LinqToTwitter
             BuildSharedUrlParameters(urlParams, parameters);
 
             return req;
+        }
+
+        /// <summary>
+        /// builds a url for people following user
+        /// </summary>
+        /// <param name="parameters">url parameters</param>
+        /// <returns>new url for request</returns>
+        Request BuildFollowersUrl(Dictionary<string, string> parameters)
+        {
+            SetUserID(parameters);
+
+            var req = new Request($"{BaseUrl}users/{ID}/followers");
+
+            BuildFollowParameters(parameters, req);
+
+            return req;
+        }
+
+        /// <summary>
+        /// builds a url for people user follows
+        /// </summary>
+        /// <param name="parameters">url parameters</param>
+        /// <returns>new url for request</returns>
+        Request BuildFollowingUrl(Dictionary<string, string> parameters)
+        {
+            SetUserID(parameters);
+
+            var req = new Request($"{BaseUrl}users/{ID}/following");
+
+            BuildFollowParameters(parameters, req);
+
+            return req;
+        }
+
+        /// <summary>
+        /// builds parameters common to timeline queries
+        /// </summary>
+        /// <param name="parameters">parameters to process</param>
+        /// <param name="req"><see cref="Request"/> object</param>
+        void BuildFollowParameters(Dictionary<string, string> parameters, Request req)
+        {
+            var urlParams = req.RequestParameters;
+
+            if (parameters.ContainsKey(nameof(MaxResults)))
+            {
+                MaxResults = int.Parse(parameters[nameof(MaxResults)]);
+                urlParams.Add(new QueryParameter("max_results", MaxResults.ToString()));
+            }
+
+            if (parameters.ContainsKey(nameof(PaginationToken)))
+            {
+                PaginationToken = parameters[nameof(PaginationToken)];
+                urlParams.Add(new QueryParameter("pagination_token", PaginationToken));
+            }
+
+            BuildSharedUrlParameters(urlParams, parameters);
+        }
+
+        /// <summary>
+        /// Used by follower/following queries - sets parameter, but doesn't treat as a query parameter.
+        /// </summary>
+        /// <param name="parameters">list of parameters</param>
+        void SetUserID(Dictionary<string, string> parameters)
+        {
+            if (parameters.ContainsKey(nameof(ID)))
+                ID = parameters[nameof(ID)];
+            else
+                throw new ArgumentException($"{nameof(ID)} is required", nameof(ID));
         }
 
         /// <summary>
@@ -197,9 +285,12 @@ namespace LinqToTwitter
                 return new TwitterUserQuery
                 {
                     Type = Type,
+                    ID = ID,
                     Ids = Ids,
                     Usernames = Usernames,
                     Expansions = Expansions,
+                    MaxResults = MaxResults,
+                    PaginationToken = PaginationToken,
                     TweetFields = TweetFields,
                     UserFields = UserFields
                 };
@@ -207,9 +298,12 @@ namespace LinqToTwitter
                 return user with
                 {
                     Type = Type,
+                    ID = ID,
                     Ids = Ids,
                     Usernames = Usernames,
                     Expansions = Expansions,
+                    MaxResults = MaxResults,
+                    PaginationToken = PaginationToken,
                     TweetFields = TweetFields,
                     UserFields = UserFields
                 };
