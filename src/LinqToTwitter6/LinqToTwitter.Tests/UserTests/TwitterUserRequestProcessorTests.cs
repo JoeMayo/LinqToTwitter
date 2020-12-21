@@ -29,9 +29,12 @@ namespace LinqToTwitter.Tests.UserTests
             Expression<Func<TwitterUserQuery, bool>> expression =
                 tweet =>
                     tweet.Type == UserType.IdLookup &&
+					tweet.ID == "456" &&
                     tweet.Ids == "2,3" &&
 					tweet.Usernames == "joemayo,linq2twitr" &&
-                    tweet.Expansions == "attachments.poll_ids,author_id" &&
+					tweet.MaxResults == 50 &&
+					tweet.PaginationToken == "123" &&
+					tweet.Expansions == "attachments.poll_ids,author_id" &&
                     tweet.TweetFields == "author_id,created_at" &&
                     tweet.UserFields == "created_at,verified";
 
@@ -42,7 +45,10 @@ namespace LinqToTwitter.Tests.UserTests
             Assert.IsTrue(
                 queryParams.Contains(
                     new KeyValuePair<string, string>(nameof(TwitterUserQuery.Type), ((int)UserType.IdLookup).ToString(CultureInfo.InvariantCulture))));
-            Assert.IsTrue(
+			Assert.IsTrue(
+				queryParams.Contains(
+					new KeyValuePair<string, string>(nameof(TwitterUserQuery.ID), "456")));
+			Assert.IsTrue(
                 queryParams.Contains(
                     new KeyValuePair<string, string>(nameof(TwitterUserQuery.Ids), "2,3")));
 			Assert.IsTrue(
@@ -51,7 +57,13 @@ namespace LinqToTwitter.Tests.UserTests
 			Assert.IsTrue(
                 queryParams.Contains(
                     new KeyValuePair<string, string>(nameof(TwitterUserQuery.Expansions), "attachments.poll_ids,author_id")));
-            Assert.IsTrue(
+			Assert.IsTrue(
+				queryParams.Contains(
+					new KeyValuePair<string, string>(nameof(TwitterUserQuery.MaxResults), "50")));
+			Assert.IsTrue(
+				queryParams.Contains(
+					new KeyValuePair<string, string>(nameof(TwitterUserQuery.PaginationToken), "123")));
+						Assert.IsTrue(
                 queryParams.Contains(
                     new KeyValuePair<string, string>(nameof(TwitterUserQuery.TweetFields), "author_id,created_at")));
             Assert.IsTrue(
@@ -60,7 +72,7 @@ namespace LinqToTwitter.Tests.UserTests
         }
 
         [TestMethod]
-        public void BuildUrl_WithIds_IncludesParameters()
+        public void BuildUrl_ForIdLookup_IncludesParameters()
         {
             const string ExpectedUrl =
                 BaseUrl2 + "users?" +
@@ -83,6 +95,62 @@ namespace LinqToTwitter.Tests.UserTests
 
             Assert.AreEqual(ExpectedUrl, req.FullUrl);
         }
+
+		[TestMethod]
+		public void BuildUrl_ForFollowing_IncludesParameters()
+		{
+			const string ExpectedUrl =
+				BaseUrl2 + "users/123/following?" +
+				"max_results=50&" +
+				"pagination_token=456&" +
+				"expansions=attachments.poll_ids%2Cauthor_id&" +
+				"tweet.fields=author_id%2Ccreated_at&" +
+				"user.fields=created_at%2Cverified";
+			var twitterUserReqProc = new TwitterUserRequestProcessor<TwitterUserQuery> { BaseUrl = BaseUrl2 };
+			var parameters =
+				new Dictionary<string, string>
+				{
+                    { nameof(TwitterUserQuery.Type), UserType.Following.ToString() },
+                    { nameof(TwitterUserQuery.ID), "123" },
+					{ nameof(TwitterUserQuery.Expansions), "attachments.poll_ids,author_id" },
+					{ nameof(TwitterUserQuery.MaxResults), "50" },
+					{ nameof(TwitterUserQuery.PaginationToken), "456" },
+					{ nameof(TwitterUserQuery.TweetFields), "author_id,created_at" },
+					{ nameof(TwitterUserQuery.UserFields), "created_at,verified" },
+			   };
+
+			Request req = twitterUserReqProc.BuildUrl(parameters);
+
+			Assert.AreEqual(ExpectedUrl, req.FullUrl);
+		}
+
+		[TestMethod]
+		public void BuildUrl_ForFollowers_IncludesParameters()
+		{
+			const string ExpectedUrl =
+				BaseUrl2 + "users/123/followers?" +
+				"max_results=50&" +
+				"pagination_token=456&" +
+				"expansions=attachments.poll_ids%2Cauthor_id&" +
+				"tweet.fields=author_id%2Ccreated_at&" +
+				"user.fields=created_at%2Cverified";
+			var twitterUserReqProc = new TwitterUserRequestProcessor<TwitterUserQuery> { BaseUrl = BaseUrl2 };
+			var parameters =
+				new Dictionary<string, string>
+				{
+					{ nameof(TwitterUserQuery.Type), UserType.Followers.ToString() },
+					{ nameof(TwitterUserQuery.ID), "123" },
+					{ nameof(TwitterUserQuery.Expansions), "attachments.poll_ids,author_id" },
+					{ nameof(TwitterUserQuery.MaxResults), "50" },
+					{ nameof(TwitterUserQuery.PaginationToken), "456" },
+					{ nameof(TwitterUserQuery.TweetFields), "author_id,created_at" },
+					{ nameof(TwitterUserQuery.UserFields), "created_at,verified" },
+			   };
+
+			Request req = twitterUserReqProc.BuildUrl(parameters);
+
+			Assert.AreEqual(ExpectedUrl, req.FullUrl);
+		}
 
 		[TestMethod]
 		public void BuildUrl_WithUsernames_IncludesParameters()
@@ -162,6 +230,42 @@ namespace LinqToTwitter.Tests.UserTests
 
             Assert.AreEqual(nameof(TwitterUserQuery.Ids), ex.ParamName);
         }
+
+		[TestMethod]
+		public void BuildUrl_WithoutIDOnFollowers_Throws()
+		{
+			var twitterUserReqProc = new TwitterUserRequestProcessor<TwitterUserQuery> { BaseUrl = BaseUrl2 };
+			var parameters =
+				new Dictionary<string, string>
+				{
+					{ nameof(TwitterUserQuery.Type), UserType.Followers.ToString() },
+                    //{ nameof(TwitterUserQuery.ID), null }
+                };
+
+			ArgumentException ex =
+				L2TAssert.Throws<ArgumentException>(() =>
+					twitterUserReqProc.BuildUrl(parameters));
+
+			Assert.AreEqual(nameof(TwitterUserQuery.ID), ex.ParamName);
+		}
+
+		[TestMethod]
+		public void BuildUrl_WithoutIDOnFollowing_Throws()
+		{
+			var twitterUserReqProc = new TwitterUserRequestProcessor<TwitterUserQuery> { BaseUrl = BaseUrl2 };
+			var parameters =
+				new Dictionary<string, string>
+				{
+					{ nameof(TwitterUserQuery.Type), UserType.Following.ToString() },
+                    //{ nameof(TwitterUserQuery.ID), null }
+                };
+
+			ArgumentException ex =
+				L2TAssert.Throws<ArgumentException>(() =>
+					twitterUserReqProc.BuildUrl(parameters));
+
+			Assert.AreEqual(nameof(TwitterUserQuery.ID), ex.ParamName);
+		}
 
 		[TestMethod]
 		public void BuildUrl_WithoutUsernamesOnUsernameLookup_Throws()
@@ -288,9 +392,12 @@ namespace LinqToTwitter.Tests.UserTests
             {
                 BaseUrl = BaseUrl2,
                 Type = UserType.IdLookup,
+				ID = "890",
 				Ids = "3,7",
 				Usernames = "9,0",
                 Expansions = "123",
+				MaxResults = 50,
+				PaginationToken = "567",
                 TweetFields = "678",
                 UserFields = "234"
             };
@@ -302,9 +409,12 @@ namespace LinqToTwitter.Tests.UserTests
             var twitterUserQuery = results.Single();
             Assert.IsNotNull(twitterUserQuery);
             Assert.AreEqual(UserType.IdLookup, twitterUserQuery.Type);
+			Assert.AreEqual("890", twitterUserQuery.ID);
 			Assert.AreEqual("3,7", twitterUserQuery.Ids);
 			Assert.AreEqual("9,0", twitterUserQuery.Usernames);
             Assert.AreEqual("123", twitterUserQuery.Expansions);
+			Assert.AreEqual(50, twitterUserQuery.MaxResults);
+			Assert.AreEqual("567", twitterUserQuery.PaginationToken);
             Assert.AreEqual("678", twitterUserQuery.TweetFields);
             Assert.AreEqual("234", twitterUserQuery.UserFields);
         }

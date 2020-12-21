@@ -34,5 +34,15 @@
         /// Search users by username
         /// </summary>
         UsernameLookup,
+
+        /// <summary>
+        /// Get list of people that are following user
+        /// </summary>
+        Followers,
+
+        /// <summary>
+        /// Get list of people that user is following 
+        /// </summary>
+        Following,
     }
 }
