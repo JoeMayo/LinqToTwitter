@@ -2,7 +2,8 @@
 
 Get list allowable sizes for profile banners.
 
-*Entity:* [[User|User Entity]]
+*Entity:* [User](../LINQ-to-Twitter-Entities/User-Entity.md)
+
 *Type:* UserType.BannerSizes
 
 ##### Parameters/Filters:

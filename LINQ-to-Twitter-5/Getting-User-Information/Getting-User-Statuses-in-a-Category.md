@@ -2,7 +2,8 @@
 
 Get list of user statuses in a category.
 
-*Entity:* [[User|User Entity]]
+*Entity:* [User](../LINQ-to-Twitter-Entities/User-Entity.md)
+
 *Type:* UserType.CategoryStatus
 
 ##### Parameters/Filters:

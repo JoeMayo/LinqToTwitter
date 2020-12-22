@@ -2,7 +2,8 @@
 
 Look up details on specified users. Returns up to 100 users.
 
-*Entity:* [[User|User Entity]]
+*Entity:* [User](../LINQ-to-Twitter-Entities/User-Entity.md)
+
 *Type:* UserType.Lookup
 
 ##### Parameters/Filters:

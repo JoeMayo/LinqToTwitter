@@ -2,7 +2,8 @@
 
 Find users with a search query.
 
-*Entity:* [[User|User Entity]]
+*Entity:* [User](../LINQ-to-Twitter-Entities/User-Entity.md)
+
 *Type:* UserType.Search
 
 ##### Parameters/Filters:

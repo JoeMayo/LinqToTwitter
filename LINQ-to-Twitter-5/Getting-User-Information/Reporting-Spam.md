@@ -21,7 +21,7 @@ public async Task<User> ReportSpamAsync(
 
 Note: `userID` or `screenName` must be provided.
 
-*Return Type:* [[User|User Entity]]
+*Return Type:* [User](../LINQ-to-Twitter-Entities/User-Entity.md)
 
 ##### Example:
 

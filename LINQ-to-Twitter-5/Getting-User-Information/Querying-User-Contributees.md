@@ -2,7 +2,8 @@
 
 Get list of users that the specified user can contribute to.
 
-*Entity:* [[User|User Entity]]
+*Entity:* [User](../LINQ-to-Twitter-Entities/User-Entity.md)
+
 *Type:* UserType.Contributees
 
 ##### Parameters/Filters:

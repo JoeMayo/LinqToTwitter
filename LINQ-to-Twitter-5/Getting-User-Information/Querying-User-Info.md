@@ -2,7 +2,8 @@
 
 Show information for a user.
 
-*Entity:* [[User|User Entity]]
+*Entity:* [User](../LINQ-to-Twitter-Entities/User-Entity.md)
+
 *Type:* UserType.Show
 
 ##### Parameters/Filters:

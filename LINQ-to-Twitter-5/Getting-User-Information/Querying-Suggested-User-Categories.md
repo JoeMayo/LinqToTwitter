@@ -2,7 +2,8 @@
 
 Get list of categories for suggested users.
 
-*Entity:* [[User|User Entity]]
+*Entity:* [User](../LINQ-to-Twitter-Entities/User-Entity.md)
+
 *Type:* UserType.Categories
 
 ##### Parameters/Filters:
