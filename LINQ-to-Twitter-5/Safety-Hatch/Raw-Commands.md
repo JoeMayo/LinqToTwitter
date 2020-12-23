@@ -15,6 +15,7 @@ public async Task<string> ExecuteRawAsync(
 |------|---------|------|----------|
 | queryString | URL segments | string | yes |
 | parameters | Name/value pairs for post parameters | Dictionary<string, string> | no |
+
 *Return Type:* string
 
 ##### Example:

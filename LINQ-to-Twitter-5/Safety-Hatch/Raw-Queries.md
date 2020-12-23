@@ -11,6 +11,7 @@ A raw query lets you manually add URL segments and parameters to execute any HTT
 | Name | Purpose | Type | Required |
 |------|---------|------|----------|
 | QueryString | URL segments + query parameters | string | yes |
+
 Notes: 
 - Don't include the Base URL in the query string, as it is already set in your TwitterContext instance.
 - Url Encode all parameters.
