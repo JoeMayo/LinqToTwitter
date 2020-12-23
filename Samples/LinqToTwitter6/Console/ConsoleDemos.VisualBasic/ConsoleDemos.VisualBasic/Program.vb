@@ -84,7 +84,7 @@ Module Program
                     Console.WriteLine()
                     Console.WriteLine("  Running List Demos...")
                     Console.WriteLine()
-                    'Await ListDemos.RunAsync(twitterCtx)
+                    Await ListDemos.RunAsync(twitterCtx)
                 Case "9"
                     Console.WriteLine()
                     Console.WriteLine("  Running Media Demos...")
