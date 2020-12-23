@@ -2,7 +2,8 @@
 
 A raw query lets you manually add URL segments and parameters to execute any HTTP GET endpoint in the Twitter API.
 
-*Entity:* [[Raw|Raw Entity]]
+*Entity:* [Raw](../LINQ-to-Twitter-Entities/Raw-Entity.md)
+
 *Type:* N/A
 
 ##### Parameters/Filters:
