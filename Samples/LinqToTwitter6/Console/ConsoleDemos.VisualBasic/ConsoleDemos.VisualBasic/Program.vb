@@ -94,7 +94,7 @@ Module Program
                     Console.WriteLine()
                     Console.WriteLine("  Running Mutes Demos...")
                     Console.WriteLine()
-                    'Await MuteDemos.RunAsync(twitterCtx)
+                    Await MuteDemos.RunAsync(twitterCtx)
                 Case "b", "B"
                     Console.WriteLine()
                     Console.WriteLine("  Running Raw Demos...")
