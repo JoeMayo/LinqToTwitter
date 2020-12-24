@@ -1,6 +1,6 @@
 #### Raw Commands
 
-A raw query lets you manually add URL segments and parameters to communicate with any HTTP POST endpoint in the Twitter API.
+A raw query lets you manually add URL segments and parameters to communicate with any HTTP POST endpoint in the Twitter v2 API.
 
 ##### Signature:
 
