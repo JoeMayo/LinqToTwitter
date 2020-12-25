@@ -99,7 +99,7 @@ Module Program
                     Console.WriteLine()
                     Console.WriteLine("  Running Raw Demos...")
                     Console.WriteLine()
-                    'Await RawDemos.RunAsync(twitterCtx)
+                    Await RawDemos.RunAsync(twitterCtx)
                 Case "c", "C"
                     Console.WriteLine()
                     Console.WriteLine("  Running Saved Search Demos...")
