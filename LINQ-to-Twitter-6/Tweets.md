@@ -21,3 +21,9 @@ Read a real-time stream sampling around 1% of public tweets. Coming soon...
 ### [Hide Replies](Tweets/Hide-Replies.md)
 
 Hides/Unhides replies to a tweet.
+
+### [Mentions Timeline](Tweets/Mentions-Timeline.md)
+
+Read all mentions of a user.
+
+### [Tweets Timeline](Tweets/TweetsTimeline.md)
