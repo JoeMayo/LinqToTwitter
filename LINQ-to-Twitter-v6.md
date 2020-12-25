@@ -14,6 +14,6 @@ Queries for anything you can do with a Tweet such as Lookup, Searches, and Strea
 
 Anything you need for looking up users, their accounts, and profile details.
 
-### [Raw Commands and Queries](LINQ-to-Twitter-6/Raw-Commands-and-Queries.md)
+### [Raw Commands and Queries](LINQ-to-Twitter-6/Raw-Commands-And-Queries.md)
 
 Use a Raw Command or Query any time LINQ to Twitter doesn't have specific support for a Twitter endpoint. e.g. a brand new endpoint that hasn't been implemented yet. 
