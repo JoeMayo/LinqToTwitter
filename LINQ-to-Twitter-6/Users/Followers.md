@@ -1,4 +1,4 @@
-#### Following
+#### Followers
 
 Get a list of a user's followers.
 
