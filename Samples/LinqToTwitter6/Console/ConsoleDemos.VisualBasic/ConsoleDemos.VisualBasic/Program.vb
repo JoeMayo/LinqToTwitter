@@ -104,7 +104,7 @@ Module Program
                     Console.WriteLine()
                     Console.WriteLine("  Running Saved Search Demos...")
                     Console.WriteLine()
-                    'Await SavedSearchDemos.RunAsync(twitterCtx)
+                    Await SavedSearchDemos.RunAsync(twitterCtx)
                 Case "d", "D"
                     Console.WriteLine()
                     Console.WriteLine("  Running Search Demos...")
