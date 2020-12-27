@@ -114,7 +114,7 @@ Module Program
                     Console.WriteLine()
                     Console.WriteLine("  Running Status Demos...")
                     Console.WriteLine()
-                    'Await StatusDemos.RunAsync(twitterCtx)
+                    Await StatusDemos.RunAsync(twitterCtx)
                 Case "f", "F"
                     Console.WriteLine()
                     Console.WriteLine("  Running Stream Demos...")
