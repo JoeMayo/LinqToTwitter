@@ -2,7 +2,7 @@
 
 This page outlines the sections that correspond to the Twitter API. It will be useful to see how to perform commands and queries with LINQ to Twitter. Additionally, you might want to review [The Official Twitter API v2 Documentation](https://developer.twitter.com/en/docs/twitter-api/early-access) for the true source of information on parameters, return values, and more.
 
-### Fundamentals
+### [Fundamentals](LINQ-to-Twitter-6/Fundamentals.md)
 
 Information for Data Dictionary, Fields, Expansions, Tweet Annotations, Metrics, Conversation ID, and Rate Limits. Coming soon...
 
