@@ -119,7 +119,7 @@ Module Program
                     Console.WriteLine()
                     Console.WriteLine("  Running Stream Demos...")
                     Console.WriteLine()
-                    'Await StreamDemos.RunAsync(twitterCtx)
+                    Await StreamDemos.RunAsync(twitterCtx)
                 Case "g", "G"
                     Console.WriteLine()
                     Console.WriteLine("  Running Trend Demos...")
