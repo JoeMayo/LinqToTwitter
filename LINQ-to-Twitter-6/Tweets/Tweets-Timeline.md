@@ -4,7 +4,7 @@ Read all tweets from a user's home timeline.
 
 *Entity:* Tweet|Tweet Entity
 
-*Type:* StatusType.UserTimeline
+*Type:* StatusType.TweetsTimeline
 
 ##### Parameters/Filters:
 

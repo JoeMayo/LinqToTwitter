@@ -27,3 +27,5 @@ Hides/Unhides replies to a tweet.
 Read all mentions of a user.
 
 ### [Tweets Timeline](Tweets/Tweets-Timeline.md)
+
+Read all tweets from a user's home timeline.
