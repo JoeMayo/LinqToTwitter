@@ -13,8 +13,8 @@
         MentionsTimeline,
 
         /// <summary>
-        /// Get the user timeline
+        /// Get the tweets timeline
         /// </summary>
-        UserTimeline
+        TweetsTimeline
     }
 }

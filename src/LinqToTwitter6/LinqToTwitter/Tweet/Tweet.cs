@@ -8,17 +8,8 @@ namespace LinqToTwitter
     public record Tweet
     {
         /// <summary>
-        /// ID of this tweet
+        /// Attachments, such as polls, images, and videos
         /// </summary>
-        [JsonPropertyName("id")]
-        public string? ID { get; init; }
-
-        /// <summary>
-        /// User's tweet text
-        /// </summary>
-        [JsonPropertyName("text")]
-        public string? Text { get; init; }
-
         [JsonPropertyName("attachments")]
         public TweetAttachments? Attachments { get; init; }
 
@@ -29,7 +20,7 @@ namespace LinqToTwitter
         public string? AuthorID { get; init; }
 
         /// <summary>
-        /// Annotations for this tweet
+        /// Contextual metadata associated with tweet
         /// </summary>
         [JsonPropertyName("context_annotations")]
         public List<TweetContextAnnotation>? ContextAnnotations { get; init; }
@@ -57,6 +48,12 @@ namespace LinqToTwitter
         /// </summary>
         [JsonPropertyName("geo")]
         public TweetGeo? Geo { get; init; }
+
+        /// <summary>
+        /// ID of this tweet
+        /// </summary>
+        [JsonPropertyName("id")]
+        public string? ID { get; init; }
 
         /// <summary>
         /// If replying, this is the ID of the user being replied to
@@ -121,6 +118,12 @@ namespace LinqToTwitter
         /// </summary>
         [JsonPropertyName("source")]
         public string? Source { get; init; }
+
+        /// <summary>
+        /// User's tweet text
+        /// </summary>
+        [JsonPropertyName("text")]
+        public string? Text { get; init; }
 
         /// <summary>
         /// Information regarding a request to withhold information

@@ -197,7 +197,7 @@ namespace LinqToTwitter.Tests.TweetTests
 			var parameters =
 				new Dictionary<string, string>
 				{
-					{ nameof(TweetQuery.Type), TweetType.UserTimeline.ToString() },
+					{ nameof(TweetQuery.Type), TweetType.TweetsTimeline.ToString() },
 					{ nameof(TweetQuery.EndTime), new DateTime(2021, 1, 1, 12, 59, 59).ToString() },
 					{ nameof(TweetQuery.Exclude), TweetExcludes.All },
 					{ nameof(TweetQuery.Expansions), "attachments.poll_ids,author_id" },
@@ -286,7 +286,7 @@ namespace LinqToTwitter.Tests.TweetTests
 			var parameters =
 				new Dictionary<string, string>
 				{
-					{ nameof(TweetQuery.Type), TweetType.UserTimeline.ToString() },
+					{ nameof(TweetQuery.Type), TweetType.TweetsTimeline.ToString() },
                     //{ nameof(Tweet.ID), null }
                 };
 
@@ -560,7 +560,7 @@ namespace LinqToTwitter.Tests.TweetTests
 			var tweetProc = new TweetRequestProcessor<TweetQuery>()
 			{
 				BaseUrl = BaseUrl2,
-				Type = TweetType.UserTimeline,
+				Type = TweetType.TweetsTimeline,
 				ID = "567",
 				EndTime = new DateTime(2020, 12, 31),
 				Exclude = TweetExcludes.Retweets,
@@ -583,7 +583,7 @@ namespace LinqToTwitter.Tests.TweetTests
 			Assert.AreEqual(1, results.Count);
 			var tweetQuery = results.Single();
 			Assert.IsNotNull(tweetQuery);
-			Assert.AreEqual(TweetType.UserTimeline, tweetQuery.Type);
+			Assert.AreEqual(TweetType.TweetsTimeline, tweetQuery.Type);
 			Assert.AreEqual(new DateTime(2020, 12, 31), tweetQuery.EndTime);
 			Assert.AreEqual(TweetExcludes.Retweets, tweetQuery.Exclude);
 			Assert.AreEqual("123", tweetQuery.Expansions);

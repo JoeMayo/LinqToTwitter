@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using LinqToTwitter.Common;
 using LinqToTwitter.Provider;
 
@@ -255,7 +256,14 @@ namespace LinqToTwitter
 
         TwitterSearch JsonDeserialize(string responseJson)
         {
-            TwitterSearch? search = JsonSerializer.Deserialize<TwitterSearch>(responseJson);
+            var options = new JsonSerializerOptions
+            {
+                Converters =
+                {
+                    new JsonStringEnumConverter()
+                }
+            };
+            TwitterSearch? search = JsonSerializer.Deserialize<TwitterSearch>(responseJson, options);
 
             if (search == null)
                 return new TwitterSearch

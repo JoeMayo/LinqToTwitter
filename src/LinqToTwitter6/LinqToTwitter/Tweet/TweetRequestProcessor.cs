@@ -152,7 +152,7 @@ namespace LinqToTwitter
                     return BuildLookupUrl(parameters);
                 case TweetType.MentionsTimeline:
                     return BuildMentionsTimelineUrl(parameters);
-                case TweetType.UserTimeline:
+                case TweetType.TweetsTimeline:
                     return BuildUserTimelineUrl(parameters);
                 default:
                     throw new InvalidOperationException("The default case of BuildUrl should never execute because a Type must be specified.");

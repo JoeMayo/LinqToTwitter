@@ -372,6 +372,26 @@ namespace LinqToTwitter.Tests.UserTests
 		}
 
 		[TestMethod]
+		public void ProcessResults_WithFullUserExpansionsAndTweets_Deserializes()
+		{
+			var twitterUserReqProc = new TwitterUserRequestProcessor<TwitterUserQuery> { BaseUrl = BaseUrl2 };
+
+			List<TwitterUserQuery> results = twitterUserReqProc.ProcessResults(FullUserWithTweet);
+
+			Assert.IsNotNull(results);
+			TwitterUserQuery twitterUserQuery = results.SingleOrDefault();
+			Assert.IsNotNull(twitterUserQuery);
+			TwitterInclude includes = twitterUserQuery.Includes;
+			Assert.IsNotNull(includes);
+			List<Tweet> tweets = includes.Tweets;
+			Assert.IsNotNull(tweets);
+			Assert.IsTrue(tweets.Any());
+			Tweet tweet = tweets.First();
+			Assert.IsNotNull(tweet);
+			Assert.AreEqual(TweetReplySettings.Everyone, tweet.ReplySettings);
+		}
+
+		[TestMethod]
         public void ProcessResults_Handles_Response_With_No_Results()
         {
             var twitterUserReqProc = new TwitterUserRequestProcessor<TwitterUserQuery> { BaseUrl = BaseUrl2 };
@@ -546,6 +566,281 @@ namespace LinqToTwitter.Tests.UserTests
 	}
 }
 	]
+}";
+
+		public const string FullUserWithTweet = @"{
+	""data"": [
+		{
+			""protected"": false,
+			""name"": ""Joe Mayo"",
+			""verified"": false,
+			""created_at"": ""2008-07-13T04:35:50.000Z"",
+			""url"": ""https://t.co/Y6dXyWxanS"",
+			""description"": ""Author, Instructor, & Independent Consultant. Author of C# Cookbook:\n\n  - https://t.co/b436r6hCUK - @OReillyMedia\n\n#ai #chatbots #csharp #linq2twitter #twitterapi"",
+			""username"": ""JoeMayo"",
+			""profile_image_url"": ""https://pbs.twimg.com/profile_images/1185764990403268613/8GoXoOtz_normal.jpg"",
+			""pinned_tweet_id"": ""1326282271372963840"",
+			""entities"": {
+				""url"": {
+					""urls"": [
+						{
+							""start"": 0,
+							""end"": 23,
+							""url"": ""https://t.co/Y6dXyWxanS"",
+							""expanded_url"": ""https://github.com/JoeMayo"",
+							""display_url"": ""github.com/JoeMayo""
+						}
+					]
+				},
+				""description"": {
+	""urls"": [
+						{
+		""start"": 74,
+							""end"": 97,
+							""url"": ""https://t.co/b436r6hCUK"",
+							""expanded_url"": ""http://bit.ly/CSharpCookbook"",
+							""display_url"": ""bit.ly/CSharpCookbook""
+						}
+					],
+					""hashtags"": [
+						{
+		""start"": 115,
+							""end"": 118,
+							""tag"": ""ai""
+						},
+						{
+		""start"": 119,
+							""end"": 128,
+							""tag"": ""chatbots""
+						},
+						{
+		""start"": 129,
+							""end"": 136,
+							""tag"": ""csharp""
+						},
+						{
+		""start"": 137,
+							""end"": 150,
+							""tag"": ""linq2twitter""
+						},
+						{
+		""start"": 151,
+							""end"": 162,
+							""tag"": ""twitterapi""
+						}
+					],
+					""mentions"": [
+						{
+		""start"": 100,
+							""end"": 113,
+							""username"": ""OReillyMedia""
+						}
+					]
+				}
+			},
+			""public_metrics"": {
+	""followers_count"": 10094,
+				""following_count"": 2530,
+				""tweet_count"": 3850,
+				""listed_count"": 269
+			},
+			""id"": ""15411837"",
+			""location"": ""Las Vegas, NV""
+		},
+		{
+	""protected"": false,
+			""name"": ""LINQ to Twitr"",
+			""verified"": false,
+			""created_at"": ""2008-10-15T05:15:40.000Z"",
+			""url"": ""https://t.co/7AhNKZC73J"",
+			""description"": ""LINQ to Twitter is a 3rd party library that helps .NET developers write code for the Twitter API - Created by @JoeMayo"",
+			""username"": ""Linq2Twitr"",
+			""profile_image_url"": ""https://pbs.twimg.com/profile_images/378800000625948439/57f4351535721aeedc632745ceaacfea_normal.png"",
+			""entities"": {
+		""url"": {
+			""urls"": [
+						{
+				""start"": 0,
+							""end"": 23,
+							""url"": ""https://t.co/7AhNKZC73J"",
+							""expanded_url"": ""https://github.com/JoeMayo/LinqToTwitter"",
+							""display_url"": ""github.com/JoeMayo/LinqTo…""
+						}
+					]
+				},
+				""description"": {
+			""mentions"": [
+						{
+				""start"": 110,
+							""end"": 118,
+							""username"": ""JoeMayo""
+						}
+					]
+				}
+	},
+			""public_metrics"": {
+		""followers_count"": 354,
+				""following_count"": 40,
+				""tweet_count"": 677,
+				""listed_count"": 14
+			},
+			""id"": ""16761255"",
+			""location"": ""Las Vegas, NV""
+		}
+	],
+	""includes"": {
+	""tweets"": [
+			{
+		""text"": ""Announcing (Early Release) C# Cookbook: Modern Recipes for Professional Developers: https://t.co/dvlZNGp0px\n\nThis is the first two chapters and there are more to come. This is the Raw and Unedited version - available at @OReillyMedia \n\n#dotnet #csharp"",
+				""id"": ""1326282271372963840"",
+				""public_metrics"": {
+			""retweet_count"": 3,
+					""reply_count"": 0,
+					""like_count"": 14,
+					""quote_count"": 0
+				},
+				""entities"": {
+			""urls"": [
+						{
+				""start"": 84,
+							""end"": 107,
+							""url"": ""https://t.co/dvlZNGp0px"",
+							""expanded_url"": ""https://bit.ly/CSharpCookbook"",
+							""display_url"": ""bit.ly/CSharpCookbook"",
+							""images"": [
+								{
+					""url"": ""https://pbs.twimg.com/news_img/1334056172349923328/PVWC5sd_?format=jpg&name=orig"",
+									""width"": 140,
+									""height"": 184
+								},
+								{
+					""url"": ""https://pbs.twimg.com/news_img/1334056172349923328/PVWC5sd_?format=jpg&name=150x150"",
+									""width"": 140,
+									""height"": 140
+								}
+							],
+							""status"": 200,
+							""title"": ""C# Cookbook"",
+							""description"": ""Even if you're familiar with C# syntax, knowing how to combine various language features is a critical skill when building applications. This handy cookbook is packed full of recipes to … - Selection from C# Cookbook [Book]"",
+							""unwound_url"": ""https://www.oreilly.com/library/view/c-cookbook/9781492093688/""
+						}
+					],
+					""mentions"": [
+						{
+				""start"": 220,
+							""end"": 233,
+							""username"": ""OReillyMedia""
+						}
+					],
+					""hashtags"": [
+						{
+				""start"": 236,
+							""end"": 243,
+							""tag"": ""dotnet""
+						},
+						{
+				""start"": 244,
+							""end"": 251,
+							""tag"": ""csharp""
+						}
+					]
+				},
+				""author_id"": ""15411837"",
+				""context_annotations"": [
+					{
+			""domain"": {
+				""id"": ""65"",
+							""name"": ""Interests and Hobbies Vertical"",
+							""description"": ""Top level interests and hobbies groupings, like Food or Travel""
+						},
+						""entity"": {
+				""id"": ""848920371311001600"",
+							""name"": ""Technology"",
+							""description"": ""Technology and computing""
+						}
+		},
+					{
+			""domain"": {
+				""id"": ""66"",
+							""name"": ""Interests and Hobbies Category"",
+							""description"": ""A grouping of interests and hobbies entities, like Novelty Food or Destinations""
+						},
+						""entity"": {
+				""id"": ""848921413196984320"",
+							""name"": ""Computer programming"",
+							""description"": ""Computer programming""
+						}
+		},
+					{
+			""domain"": {
+				""id"": ""66"",
+							""name"": ""Interests and Hobbies Category"",
+							""description"": ""A grouping of interests and hobbies entities, like Novelty Food or Destinations""
+						},
+						""entity"": {
+				""id"": ""898673391980261376"",
+							""name"": ""Web development"",
+							""description"": ""Web Development""
+						}
+		},
+					{
+			""domain"": {
+				""id"": ""85"",
+							""name"": ""Book Genre"",
+							""description"": ""A genre for books, like Fiction""
+						},
+						""entity"": {
+				""id"": ""859532072813158400"",
+							""name"": ""Food inspiration"",
+							""description"": ""Food""
+						}
+		},
+					{
+			""domain"": {
+				""id"": ""65"",
+							""name"": ""Interests and Hobbies Vertical"",
+							""description"": ""Top level interests and hobbies groupings, like Food or Travel""
+						},
+						""entity"": {
+				""id"": ""825047692124442624"",
+							""name"": ""Food"",
+							""description"": ""Food""
+						}
+		},
+					{
+			""domain"": {
+				""id"": ""66"",
+							""name"": ""Interests and Hobbies Category"",
+							""description"": ""A grouping of interests and hobbies entities, like Novelty Food or Destinations""
+						},
+						""entity"": {
+				""id"": ""831530561680191490"",
+							""name"": ""Cooking"",
+							""description"": ""Cooking/Baking""
+						}
+		},
+					{
+			""domain"": {
+				""id"": ""67"",
+							""name"": ""Interests and Hobbies"",
+							""description"": ""Interests, opinions, and behaviors of individuals, groups, or cultures; like Speciality Cooking or Theme Parks""
+						},
+						""entity"": {
+				""id"": ""846736745517350912"",
+							""name"": ""Recipes"",
+							""description"": ""Recipies/Books""
+						}
+		}
+				],
+				""conversation_id"": ""1326282271372963840"",
+				""reply_settings"": ""everyone"",
+				""source"": ""Twitter Web App"",
+				""lang"": ""en"",
+				""created_at"": ""2020-11-10T21:55:09.000Z"",
+				""possibly_sensitive"": false
+			}
+		]
+	}
 }";
 
 		const string ErrorTweet = @"{

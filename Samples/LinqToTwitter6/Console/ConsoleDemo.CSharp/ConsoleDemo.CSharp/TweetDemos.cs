@@ -41,8 +41,8 @@ namespace ConsoleDemo.CSharp
                         await GetMentionsTimelineAsync(twitterCtx);
                         break;
                     case '5':
-                        Console.WriteLine("\n\tGetting the User Timeline...\n");
-                        await GetUserTimelineAsync(twitterCtx);
+                        Console.WriteLine("\n\tGetting the Tweets Timeline...\n");
+                        await GetTweetsTimelineAsync(twitterCtx);
                         break;
                     case 'q':
                     case 'Q':
@@ -65,7 +65,7 @@ namespace ConsoleDemo.CSharp
             Console.WriteLine("\t 2. Hide a Reply");
             Console.WriteLine("\t 3. Un-Hide a Reply");
             Console.WriteLine("\t 4. Mentions Timeline");
-            Console.WriteLine("\t 5. User Timeline");
+            Console.WriteLine("\t 5. Tweets Timeline");
             Console.WriteLine();
             Console.Write("\t Q. Return to Main menu");
         }
@@ -185,14 +185,14 @@ namespace ConsoleDemo.CSharp
                 Console.WriteLine("No entries found.");
         }
 
-        static async Task GetUserTimelineAsync(TwitterContext twitterCtx)
+        static async Task GetTweetsTimelineAsync(TwitterContext twitterCtx)
         {
             string userID = "15411837";
 
             TweetQuery? tweetResponse =
                 await
                 (from tweet in twitterCtx.Tweets
-                 where tweet.Type == TweetType.UserTimeline &&
+                 where tweet.Type == TweetType.TweetsTimeline &&
                        tweet.ID == userID
                  select tweet)
                 .SingleOrDefaultAsync();
