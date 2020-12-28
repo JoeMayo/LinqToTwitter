@@ -4,9 +4,9 @@ The Raw object supports Raw queries. The input column designates whether the pro
 
 ##### Properties:
 
-| Name | Purpose | Type | Input |
-|------|---------|------|-------|
-| QueryString | URL segments + parameters | string | yes |
-| Response | Raw JSON response from Twitter | string | no |
+| Name | Purpose | Type |
+|------|---------|------|
+| QueryString | URL segments + parameters | string |
+| Response | Raw JSON response from Twitter | string |
 
 *Twitter API:* None - LINQ to Twitter type

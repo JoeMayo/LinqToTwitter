@@ -19,5 +19,6 @@ Represents a Twitter user.
 | URL | Profile URL | string |
 | Username | Twitter assigned screen name | string |
 | Verified | Is a Twitter verified account? | bool |
+| Withheld | Details on information to withhold | object |
 
 *Twitter API:* [Tweet Object](https://developer.twitter.com/en/docs/twitter-api/data-dictionary/object-model/tweet)
