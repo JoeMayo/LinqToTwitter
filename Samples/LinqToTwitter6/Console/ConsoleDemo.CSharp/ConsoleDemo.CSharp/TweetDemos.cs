@@ -72,7 +72,7 @@ namespace ConsoleDemo.CSharp
 
         static async Task DoSingleTweetLookupAsync(TwitterContext twitterCtx)
         {
-            const string TweetID = "1305895383260782593";
+            const string TweetID = "1343794019927658496";
 
             // default is id and text and this also brings in created_at and geo
             string tweetFields =
@@ -92,7 +92,7 @@ namespace ConsoleDemo.CSharp
                        tweet.Ids == TweetID &&
                        tweet.TweetFields == TweetField.AllFieldsExceptPermissioned &&
                        tweet.Expansions == ExpansionField.AllTweetFields &&
-                       tweet.MediaFields == MediaField.AllFieldsExceptPermissioned &&
+                       tweet.MediaFields == MediaField.AllFields.Replace(",promoted_metrics", "") &&
                        tweet.PlaceFields == PlaceField.AllFields &&
                        tweet.PollFields == PollField.AllFields &&
                        tweet.UserFields == UserField.AllFields
