@@ -133,7 +133,7 @@ Module Program
                     Console.WriteLine()
                     Console.WriteLine("  Running Welcome Message Demos...")
                     Console.WriteLine()
-                    'Await WelcomeMessageDemos.RunAsync(twitterCtx)
+                    Await WelcomeMessageDemos.RunAsync(twitterCtx)
                 Case "j", "J"
                     Console.WriteLine()
                     Console.WriteLine("  Running Tweet Demos...")
