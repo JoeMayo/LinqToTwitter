@@ -124,7 +124,7 @@ Module Program
                     Console.WriteLine()
                     Console.WriteLine("  Running Trend Demos...")
                     Console.WriteLine()
-                    'Await TrendDemos.RunAsync(twitterCtx)
+                    Await TrendDemos.RunAsync(twitterCtx)
                 Case "h", "H"
                     Console.WriteLine()
                     Console.WriteLine("  Running User Demos...")
