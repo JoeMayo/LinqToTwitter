@@ -14,6 +14,11 @@ A user's tweet
 
 Represents a GIF, photo, or video included with a tweet.
 
+### [TweetPoll Object](Data-Dictionary/TweetPoll-Object.md)
+
+Represents a Poll.
+
 ### [TwitterUser Object](Data-Dictionary/TwitterUser-Object.md)
 
 Represents a Twitter user.
+
