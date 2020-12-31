@@ -129,6 +129,7 @@ Module Program
                     Console.WriteLine()
                     Console.WriteLine("  Running User Demos...")
                     Console.WriteLine()
+                    Await UserDemos.RunAsync(twitterCtx)
                 Case "i", "I"
                     Console.WriteLine()
                     Console.WriteLine("  Running Welcome Message Demos...")
