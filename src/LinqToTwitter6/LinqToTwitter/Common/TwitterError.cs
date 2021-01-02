@@ -11,31 +11,31 @@ namespace LinqToTwitter.Common
     public record TwitterError
     {
         [JsonPropertyName("resource_type")]
-        public string? ResourceType { get; set; }
+        public string? ResourceType { get; init; }
 
         [JsonPropertyName("field")]
-        public string? Field { get; set; }
+        public string? Field { get; init; }
 
         [JsonPropertyName("title")]
-        public string? Title { get; set; }
+        public string? Title { get; init; }
 
         [JsonPropertyName("section")]
-        public string? Section { get; set; }
+        public string? Section { get; init; }
 
         [JsonPropertyName("detail")]
-        public string? Detail { get; set; }
+        public string? Detail { get; init; }
 
         [JsonPropertyName("id")]
-        public string? ID { get; set; }
+        public string? ID { get; init; }
 
         [JsonPropertyName("type")]
-        public string? Type { get; set; }
+        public string? Type { get; init; }
 
         [JsonPropertyName("parameter")]
-        public string? Parameter { get; set; }
+        public string? Parameter { get; init; }
 
         [JsonPropertyName("value")]
-        public string? Value { get; set; }
+        public string? Value { get; init; }
     }
 }
 

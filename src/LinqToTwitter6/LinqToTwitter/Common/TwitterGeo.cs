@@ -6,12 +6,12 @@ namespace LinqToTwitter.Common
     public record TwitterGeo
     {
         [JsonPropertyName("type")]
-        public string? Type { get; set; }
+        public string? Type { get; init; }
 
         [JsonPropertyName("bbox")]
-        public List<float>? BBox { get; set; }
+        public List<float>? BBox { get; init; }
 
         [JsonPropertyName("properties")]
-        public TwitterProperties? Properties { get; set; }
+        public TwitterProperties? Properties { get; init; }
     }
 }

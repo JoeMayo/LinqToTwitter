@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 namespace LinqToTwitter
 {
     /// <summary>
-    /// Tweet attachments
+    /// Type of attachment in a tweet
     /// </summary>
     public record TweetAttachments
     {
