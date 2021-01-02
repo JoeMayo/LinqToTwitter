@@ -18,6 +18,10 @@ Represents a GIF, photo, or video included with a tweet.
 
 Represents a Poll.
 
+### [TwitterPlace Object](Data-Dictionary/TwitterPlace-Object.md)
+
+Represents a Twitter place.
+
 ### [TwitterUser Object](Data-Dictionary/TwitterUser-Object.md)
 
 Represents a Twitter user.
