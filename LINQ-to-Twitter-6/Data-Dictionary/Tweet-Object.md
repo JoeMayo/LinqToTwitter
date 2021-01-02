@@ -6,7 +6,7 @@ Represents a user's tweet.
 
 | Name | Purpose | Type |
 |------|---------|------|
-| Attachments | Attachments, such as polls, images, and videos | [Attachments]() |
+| Attachments | Attachments, such as polls, images, and videos | [TweetAttachment](TweetAttachment-Object.md) |
 | AuthorID | Posting user's ID | string |
 | ContextAnnotations | Contextual metadata associated with tweet | List&lt;[TweetContextAnnotation]()&gt; |
 | ConversationID | ID of conversation this tweet is part of (matches original tweet ID) | string |
