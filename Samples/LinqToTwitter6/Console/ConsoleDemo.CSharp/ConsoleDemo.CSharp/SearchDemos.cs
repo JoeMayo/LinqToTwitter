@@ -182,7 +182,7 @@ namespace ConsoleDemo.CSharp
             if (searchResponse?.Tweets != null)
                 searchResponse.Tweets.ForEach(tweet =>
                     Console.WriteLine(
-                        $"\nUser: {tweet.ID}" +
+                        $"\nID: {tweet.ID}" +
                         $"\nTweet: {tweet.Text}"));
             else
                 Console.WriteLine("No entries found.");
