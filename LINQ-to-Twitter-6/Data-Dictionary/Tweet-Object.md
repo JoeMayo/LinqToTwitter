@@ -8,7 +8,7 @@ Represents a user's tweet.
 |------|---------|------|
 | Attachments | Attachments, such as polls, images, and videos | [TweetAttachment](TweetAttachment-Object.md) |
 | AuthorID | Posting user's ID | string |
-| ContextAnnotations | Contextual metadata associated with tweet | List&lt;[TweetContextAnnotation]()&gt; |
+| ContextAnnotations | Contextual metadata associated with tweet | List&lt;[TweetContextAnnotation](TweetContextAnnotation-Object.md)&gt; |
 | ConversationID | ID of conversation this tweet is part of (matches original tweet ID) | string |
 | CreatedAt | When tweeted | DateTime |
 | Entities | Extracted parts of the tweet, like hashtags, urls, etc. | [TweetEntities]() |
