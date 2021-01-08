@@ -132,7 +132,14 @@ namespace LinqToTwitter
             else
                 throw new ArgumentException($"{nameof(Type)} is required", nameof(Type));
 
-            return BuildSearchUrlParameters(parameters, "tweets/search/recent");
+            string urlSegment = Type switch
+            {
+                SearchType.FullSearch => "tweets/search/all",
+                SearchType.RecentSearch => "tweets/search/recent",
+                _ => throw new ArgumentException($"Unknown SearchType: '{Type}'")
+            };
+
+            return BuildSearchUrlParameters(parameters, urlSegment);
         }
 
         /// <summary>
