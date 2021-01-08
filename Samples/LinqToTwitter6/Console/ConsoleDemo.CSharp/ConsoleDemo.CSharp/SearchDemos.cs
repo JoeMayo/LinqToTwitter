@@ -34,6 +34,10 @@ namespace ConsoleDemo.CSharp
                         Console.WriteLine("\n\tSearching...\n");
                         await DoRecentSearchAsync(twitterCtx);
                         break;
+                    case '3':
+                        Console.WriteLine("\n\tSearching...\n");
+                        await DoFullSearchAsync(twitterCtx);
+                        break;
                     case 'q':
                     case 'Q':
                         Console.WriteLine("\nReturning...\n");
@@ -53,6 +57,7 @@ namespace ConsoleDemo.CSharp
             Console.WriteLine("\t 0. Search");
             Console.WriteLine("\t 1. Paged Search");
             Console.WriteLine("\t 2. Recent Tweets Search");
+            Console.WriteLine("\t 3. Full Tweets Search");
             Console.WriteLine();
             Console.Write("\t Q. Return to Main menu");
         }
@@ -169,6 +174,44 @@ namespace ConsoleDemo.CSharp
                 await
                 (from search in twitterCtx.TwitterSearch
                  where search.Type == SearchType.RecentSearch &&
+                       search.Query == searchTerm &&
+                       search.TweetFields == TweetField.AllFieldsExceptPermissioned &&
+                       search.Expansions == ExpansionField.AllTweetFields &&
+                       search.MediaFields == MediaField.AllFieldsExceptPermissioned &&
+                       search.PlaceFields == PlaceField.AllFields &&
+                       search.PollFields == PollField.AllFields &&
+                       search.UserFields == UserField.AllFields
+                 select search)
+                .SingleOrDefaultAsync();
+
+            if (searchResponse?.Tweets != null)
+                searchResponse.Tweets.ForEach(tweet =>
+                    Console.WriteLine(
+                        $"\nID: {tweet.ID}" +
+                        $"\nTweet: {tweet.Text}"));
+            else
+                Console.WriteLine("No entries found.");
+        }
+
+        static async Task DoFullSearchAsync(TwitterContext twitterCtx)
+        {
+            string searchTerm = "\"LINQ to Twitter\" OR Linq2Twitter OR LinqToTwitter OR JoeMayo";
+
+            // default is id and text and this also brings in created_at and geo
+            string tweetFields =
+                string.Join(",",
+                    new string[]
+                    {
+                        TweetField.CreatedAt,
+                        TweetField.ID,
+                        TweetField.Text,
+                        TweetField.Geo
+                    });
+
+            TwitterSearch? searchResponse =
+                await
+                (from search in twitterCtx.TwitterSearch
+                 where search.Type == SearchType.FullSearch &&
                        search.Query == searchTerm &&
                        search.TweetFields == TweetField.AllFieldsExceptPermissioned &&
                        search.Expansions == ExpansionField.AllTweetFields &&
