@@ -8,7 +8,13 @@ namespace LinqToTwitter
     public record TweetEntityImage
     {
         /// <summary>
-        /// Image URL
+        /// Image height
+        /// </summary>
+        [JsonPropertyName("height")]
+        public int Height { get; init; }
+
+        /// <summary>
+        /// Url where you can find and download the image
         /// </summary>
         [JsonPropertyName("url")]
         public string? Url { get; init; }
@@ -18,11 +24,5 @@ namespace LinqToTwitter
         /// </summary>
         [JsonPropertyName("width")]
         public int Width { get; init; }
-
-        /// <summary>
-        /// Image height
-        /// </summary>
-        [JsonPropertyName("height")]
-        public int Height { get; init; }
     }
 }
