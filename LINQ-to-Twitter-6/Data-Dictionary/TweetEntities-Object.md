@@ -6,7 +6,7 @@ Entities associated with a tweet.
 
 | Name | Purpose | Type |
 |------|---------|------|
-| Urls | URL entities | [TweetEntityUrl]() |
+| Urls | URL entities | [TweetEntityUrl](TweetEntityUrl-Object.md) |
 | Hashtags | Hashtag entities | [TweetEntityHashtag]() |
 | Mentions | Mention entities | [TweetEntityMention]() |
 | Annotations | Annotation entities | [TweetEntityAnnotation]() |
