@@ -33,7 +33,7 @@ namespace LinqToTwitter
         public string? ExpandedUrl { get; init; }
 
         /// <summary>
-        /// Details on images attached to tweet
+        /// Details on images (<see cref="TweetEntityImage"/>) attached to tweet
         /// </summary>
         [JsonPropertyName("images")]
         public List<TweetEntityImage>? Images { get; init; }
