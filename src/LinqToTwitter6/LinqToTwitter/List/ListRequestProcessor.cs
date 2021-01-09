@@ -920,8 +920,11 @@ namespace LinqToTwitter
   
         List<List> HandleMultipleListsResponse(JsonElement listJson)
         {
+            if (!listJson.TryGetProperty("lists", out JsonElement listElement))
+                return new List<List>();
+
             var lists =
-                (from list in listJson.EnumerateArray()
+                (from list in listElement.EnumerateArray()
                  select new List(list))
                 .ToList();
 
