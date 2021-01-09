@@ -6,6 +6,7 @@ using System.Linq.Expressions;
 using LinqToTwitter.Common;
 using LinqToTwitter.Provider;
 using System.Text.Json;
+using System.Reflection.Metadata.Ecma335;
 
 namespace LinqToTwitter
 {
@@ -854,10 +855,12 @@ namespace LinqToTwitter
             switch (Type)
             {
                 case ListType.List:
-                case ListType.Memberships:
-                case ListType.Subscriptions:
-                case ListType.Ownerships:
                     lists = HandleMultipleListsResponse(listJson);
+                    break;
+                case ListType.Memberships:
+                case ListType.Ownerships:
+                case ListType.Subscriptions:
+                    lists = HandleCursoredResponse(listJson);
                     break;
                 case ListType.Show:
                     lists = HandleSingleListResponse(listJson);
@@ -917,14 +920,19 @@ namespace LinqToTwitter
 
             return lists;
         }
-  
-        List<List> HandleMultipleListsResponse(JsonElement listJson)
+
+        List<List> HandleCursoredResponse(JsonElement listJson)
         {
             if (!listJson.TryGetProperty("lists", out JsonElement listElement))
                 return new List<List>();
 
+            return HandleMultipleListsResponse(listElement);
+        }
+
+        List<List> HandleMultipleListsResponse(JsonElement listJson)
+        {
             var lists =
-                (from list in listElement.EnumerateArray()
+                (from list in listJson.EnumerateArray()
                  select new List(list))
                 .ToList();
 

@@ -166,7 +166,7 @@ namespace ConsoleDemo.CSharp
         static async Task GetListStatusesAsync(TwitterContext twitterCtx)
         {
             string ownerScreenName = "Linq2Twitr";
-            string slug = "linq";
+            string slug = "linq-to-twitter";
             int maxStatuses = 30;
             int lastStatusCount = 0;
             // last tweet processed on previous query
@@ -261,7 +261,7 @@ namespace ConsoleDemo.CSharp
                 await
                 (from list in twitterCtx.List
                  where list.Type == ListType.Subscribers &&
-                       list.Slug == "linq" &&
+                       list.Slug == "linq-to-twitter" &&
                        list.OwnerScreenName == "Linq2Twitr"
                  select list)
                 .SingleOrDefaultAsync();
@@ -280,7 +280,7 @@ namespace ConsoleDemo.CSharp
                     (from list in twitterCtx.List
                      where list.Type == ListType.IsSubscriber &&
                            list.ScreenName == "JoeMayo" &&
-                           list.Slug == "linq" &&
+                           list.Slug == "linq-to-twitter" &&
                            list.OwnerScreenName == "Linq2Twitr"
                      select list)
                     .SingleOrDefaultAsync();
@@ -324,7 +324,7 @@ namespace ConsoleDemo.CSharp
                      where list.Type == ListType.IsMember &&
                            list.ScreenName == "JoeMayo" &&
                            list.OwnerScreenName == "Linq2Twitr" &&
-                           list.Slug == "linq"
+                           list.Slug == "linq-to-twitter"
                      select list)
                     .SingleOrDefaultAsync();
 
@@ -364,7 +364,7 @@ namespace ConsoleDemo.CSharp
                 (from list in twitterCtx.List
                  where list.Type == ListType.Members &&
                        list.OwnerScreenName == "Linq2Twitr" &&
-                       list.Slug == "linq" &&
+                       list.Slug == "linq-to-twitter" &&
                        list.SkipStatus == true
                  select list)
                 .SingleOrDefaultAsync();
@@ -381,7 +381,7 @@ namespace ConsoleDemo.CSharp
                 (from list in twitterCtx.List
                  where list.Type == ListType.Show &&
                        list.OwnerScreenName == "Linq2Twitr" &&
-                       list.Slug == "linq"
+                       list.Slug == "linq-to-twitter"
                  select list)
                 .SingleOrDefaultAsync();
 
@@ -435,7 +435,7 @@ namespace ConsoleDemo.CSharp
 
             List? list = 
                 await twitterCtx.DeleteMemberFromListAsync(
-                    0, "Linq2Twitr", 0, "testDemo", 0, ownerScreenName);
+                    0, "Linq2Twitr", 0, "linq-to-twitter", 0, ownerScreenName);
 
             if (list != null)
                 Console.WriteLine("List Name: {0}, Description: {1}",
@@ -448,7 +448,7 @@ namespace ConsoleDemo.CSharp
 
             List? list = 
                 await twitterCtx.SubscribeToListAsync(
-                    0, "testDemo", 0, ownerScreenName);
+                    0, "linq-to-twitter", 0, ownerScreenName);
 
             if (list != null)
                 Console.WriteLine("List Name: {0}, Description: {1}",
@@ -461,7 +461,7 @@ namespace ConsoleDemo.CSharp
 
             List? list = 
                 await twitterCtx.UnsubscribeFromListAsync(
-                    0, "testDemo", 0, ownerScreenName);
+                    0, "linq-to-twitter", 0, ownerScreenName);
 
             if (list != null)
                 Console.WriteLine("List Name: {0}, Description: {1}",
@@ -479,7 +479,7 @@ namespace ConsoleDemo.CSharp
 
             List? list = 
                 await twitterCtx.AddMemberRangeToListAsync(
-                    0, "testDemo", 0, ownerScreenName, screenNames);
+                    0, "linq-to-twitter", 0, ownerScreenName, screenNames);
 
             if (list != null && list.Users != null)
                 list.Users.ForEach(user => Console.WriteLine(user.Name));
@@ -491,7 +491,7 @@ namespace ConsoleDemo.CSharp
 
             List? list = 
                 await twitterCtx.AddMemberToListAsync(
-                    "Linq2Twitr", 0, "testDemo", 0, ownerScreenName);
+                    "Linq2Twitr", 0, "linq-to-twitter", 0, ownerScreenName);
 
             if (list != null)
                 Console.WriteLine("List Name: {0}, Description: {1}",
@@ -504,7 +504,7 @@ namespace ConsoleDemo.CSharp
 
             List? list = 
                 await twitterCtx.DeleteListAsync(
-                    listID, "testDemo", 0, "Linq2Twitr");
+                    listID, "linq-to-twitter", 0, "Linq2Twitr");
 
             if (list != null)
                 Console.WriteLine("List Name: {0}, Description: {1}",
@@ -518,7 +518,7 @@ namespace ConsoleDemo.CSharp
 
             List? list = 
                 await twitterCtx.UpdateListAsync(
-                    listID, "testDemo", "Test List", 0, 
+                    listID, "linq-to-twitter", "Test List", 0, 
                     ownerScreenName, "public", "This is a test2");
 
             if (list != null)
@@ -530,7 +530,7 @@ namespace ConsoleDemo.CSharp
         {
             List? list = 
                 await twitterCtx.CreateListAsync(
-                    "testDemo", "public", "This is a test");
+                    "linq-to-twitter", "public", "This is a test");
 
             if (list != null)
                 Console.WriteLine("List Name: {0}, Description: {1}",
@@ -544,7 +544,7 @@ namespace ConsoleDemo.CSharp
 
             List? list = 
                 await twitterCtx.DeleteMemberRangeFromListAsync(
-                    0, "testDemo", screenNames, 0, ownerScreenName);
+                    0, "linq-to-twitter", screenNames, 0, ownerScreenName);
 
             if (list != null)
                 Console.WriteLine("List Name: {0}, Description: {1}",
