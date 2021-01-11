@@ -31,6 +31,11 @@ namespace LinqToTwitter
         public DateTime EndTime { get; set; }
 
         /// <summary>
+        /// ID for a single job query
+        /// </summary>
+        public string? ID { get; set; }
+
+        /// <summary>
         /// Date to search from
         /// </summary>
         public DateTime StartTime { get; set; }
@@ -53,6 +58,7 @@ namespace LinqToTwitter
                    new List<string> {
                        nameof(Type),
                        nameof(EndTime),
+                       nameof(ID),
                        nameof(StartTime),
                        nameof(Status)
                    }) ;
@@ -60,10 +66,81 @@ namespace LinqToTwitter
             return paramFinder.Parameters;
         }
 
-        public Request BuildUrl(Dictionary<string, string> expressionParameters)
+
+        /// <summary>
+        /// builds url based on input parameters
+        /// </summary>
+        /// <param name="parameters">criteria for url segments and parameters</param>
+        /// <returns>URL conforming to Twitter API</returns>
+        public Request BuildUrl(Dictionary<string, string> parameters)
         {
-            throw new NotImplementedException();
+            if (parameters.ContainsKey(nameof(Type)))
+                Type = RequestProcessorHelper.ParseEnum<ComplianceType>(parameters[nameof(Type)]);
+            else
+                throw new ArgumentException($"{nameof(Type)} is required", nameof(Type));
+
+            switch (Type)
+            {
+                case ComplianceType.MultipleJobs:
+                    return BuildMultipleJobsUrlParameters(parameters);
+                case ComplianceType.SingleJob:
+                    return BuildSingleJobUrl(parameters);
+                default:
+                    throw new InvalidOperationException("The default case of BuildUrl should never execute because a Type must be specified.");
+            }
         }
+
+        /// <summary>
+        /// appends parameters for multiple jobs request
+        /// </summary>
+        /// <param name="parameters">list of parameters from expression tree</param>
+        /// <param name="url">base url</param>
+        /// <returns>base url + parameters</returns>
+        Request BuildMultipleJobsUrlParameters(Dictionary<string, string> parameters)
+        {
+            var req = new Request(BaseUrl + "tweets/compliance/jobs");
+            var urlParams = req.RequestParameters;
+
+
+            if (parameters.ContainsKey(nameof(EndTime)))
+            {
+                EndTime = DateTime.Parse(parameters[nameof(EndTime)]);
+                urlParams.Add(new QueryParameter("end_time", EndTime.ToString(L2TKeys.ISO8601, CultureInfo.InvariantCulture)));
+            }
+
+
+            if (parameters.ContainsKey(nameof(StartTime)))
+            {
+                StartTime = DateTime.Parse(parameters[nameof(StartTime)]);
+                urlParams.Add(new QueryParameter("start_time", StartTime.ToString(L2TKeys.ISO8601, CultureInfo.InvariantCulture)));
+            }
+
+            if (parameters.ContainsKey(nameof(Status)))
+            {
+                Status = parameters[nameof(Status)];
+                urlParams.Add(new QueryParameter("status", Status));
+            }
+
+            return req;
+        }
+
+        /// <summary>
+        /// Mentions timeline URL
+        /// </summary>
+        /// <param name="parameters">Parameters to process</param>
+        /// <returns><see cref="Request"/> object</returns>
+        Request BuildSingleJobUrl(Dictionary<string, string> parameters)
+        {
+            if (parameters.ContainsKey(nameof(ID)))
+                ID = parameters[nameof(ID)];
+            else
+                throw new ArgumentException($"{nameof(ID)} is required", nameof(ID));
+
+            var req = new Request($"{BaseUrl}tweets/compliance/jobs/{ID}");
+
+            return req;
+        }
+
 
         public List<T> ProcessResults(string twitterResponse)
         {

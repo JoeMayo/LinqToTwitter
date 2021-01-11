@@ -21,6 +21,11 @@ namespace LinqToTwitter
         public DateTime EndTime { get; init; }
 
         /// <summary>
+        /// ID for a single job query
+        /// </summary>
+        public string? ID { get; set; }
+
+        /// <summary>
         /// Date to search from
         /// </summary>
         public DateTime StartTime { get; init; }

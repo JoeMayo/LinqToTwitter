@@ -148,7 +148,7 @@ namespace LinqToTwitter
         /// <param name="parameters">list of parameters from expression tree</param>
         /// <param name="url">base url</param>
         /// <returns>base url + parameters</returns>
-        private Request BuildSearchUrlParameters(Dictionary<string, string> parameters, string url)
+        Request BuildSearchUrlParameters(Dictionary<string, string> parameters, string url)
         {
             var req = new Request(BaseUrl + url);
             var urlParams = req.RequestParameters;
