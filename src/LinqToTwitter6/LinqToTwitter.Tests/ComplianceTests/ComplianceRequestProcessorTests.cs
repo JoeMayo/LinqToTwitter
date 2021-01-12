@@ -96,5 +96,59 @@ namespace LinqToTwitter.Tests.SearchTests
             Assert.AreEqual(ExpectedUrl, req.FullUrl);
         }
 
+        [TestMethod]
+        public void BuildUrl_ForSingleJobWithoutID_Throws()
+        {
+            const string ExpectedUrl = BaseUrl2 + "tweets/compliance/jobs/123";
+            var reqProc = new ComplianceRequestProcessor<ComplianceQuery> { BaseUrl = BaseUrl2 };
+            var parameters =
+                new Dictionary<string, string>
+                {
+                    { nameof(ComplianceQuery.Type), ComplianceType.SingleJob.ToString() },
+                    //{ nameof(ComplianceQuery.ID), "123" }
+               };
+
+            ArgumentException ex =
+                L2TAssert.Throws<ArgumentException>(() =>
+                    reqProc.BuildUrl(parameters));
+
+            Assert.AreEqual(nameof(TweetQuery.ID), ex.ParamName);
+        }
+
+        [TestMethod]
+        public void BuildUrl_WithNullParameters_Throws()
+        {
+            var reqProc = new ComplianceRequestProcessor<ComplianceQuery> { BaseUrl = BaseUrl2 };
+
+            L2TAssert.Throws<NullReferenceException>(() =>
+            {
+                reqProc.BuildUrl(null);
+            });
+        }
+
+        [TestMethod]
+        public void BuildUrl_WithSpacesInFields_FixesSpaces()
+        {
+            const string ExpectedUrl =
+                BaseUrl2 + "tweets/compliance/jobs?" +
+                "end_time=2021-01-01T12%3A59%3A59Z&" +
+                "start_time=2020-12-31T00%3A00%3A01Z&" +
+                "status=in_progress%2Cexpired";
+            const string StatusWithSpaces = "in_progress, expired";
+            var reqProc = new ComplianceRequestProcessor<ComplianceQuery> { BaseUrl = BaseUrl2 };
+            var parameters =
+                new Dictionary<string, string>
+                {
+                    { nameof(ComplianceQuery.Type), ComplianceType.MultipleJobs.ToString() },
+                    { nameof(ComplianceQuery.EndTime), new DateTime(2021, 1, 1, 12, 59, 59).ToString() },
+                    { nameof(ComplianceQuery.StartTime), new DateTime(2020, 12, 31, 0, 0, 1).ToString() },
+                    { nameof(ComplianceQuery.Status), StatusWithSpaces }
+               };
+
+            Request req = reqProc.BuildUrl(parameters);
+
+            Assert.AreEqual(ExpectedUrl, req.FullUrl);
+        }
+
     }
 }

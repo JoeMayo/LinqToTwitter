@@ -118,7 +118,7 @@ namespace LinqToTwitter
             if (parameters.ContainsKey(nameof(Status)))
             {
                 Status = parameters[nameof(Status)];
-                urlParams.Add(new QueryParameter("status", Status));
+                urlParams.Add(new QueryParameter("status", Status.Replace(" ", "")));
             }
 
             return req;

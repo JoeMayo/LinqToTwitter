@@ -220,7 +220,7 @@ namespace LinqToTwitter.Tests.TweetTests
 		}
 
 		[TestMethod]
-        public void BuildUrl_Throws_When_Parameters_Null()
+        public void BuildUrl_WithNullParameters_Throws()
         {
             var tweetReqProc = new TweetRequestProcessor<TweetQuery> { BaseUrl = BaseUrl2 };
 
