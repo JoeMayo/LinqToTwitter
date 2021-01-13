@@ -144,7 +144,7 @@ namespace LinqToTwitter
 
         public List<T> ProcessResults(string twitterResponse)
         {
-            throw new NotImplementedException();
+            return new List<T>();
         }
     }
 }

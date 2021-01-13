@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace LinqToTwitter
 {
-    public class ComplianceQuery
+    public record ComplianceQuery
     {
         //
         // Query input fields

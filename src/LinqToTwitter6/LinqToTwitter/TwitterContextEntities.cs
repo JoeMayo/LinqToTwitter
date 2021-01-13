@@ -38,6 +38,17 @@ namespace LinqToTwitter
         }
 
         /// <summary>
+        /// Enables querying compliance jobs
+        /// </summary>
+        public TwitterQueryable<ComplianceQuery> Compliance
+        {
+            get
+            {
+                return new TwitterQueryable<ComplianceQuery>(this);
+            }
+        }
+
+        /// <summary>
         /// enables access to Direct Message Events, supporting Twitter chatbots
         /// </summary>
         public TwitterQueryable<DirectMessageEvents> DirectMessageEvents

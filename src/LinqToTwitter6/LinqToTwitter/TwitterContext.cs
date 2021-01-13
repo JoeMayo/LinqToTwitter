@@ -508,6 +508,12 @@ namespace LinqToTwitter
                 case nameof(Blocks):
                     req = new BlocksRequestProcessor<T>();
                     break;
+                case nameof(ComplianceQuery):
+                    req = new ComplianceRequestProcessor<T>()
+                    {
+                        BaseUrl = BaseUrl2
+                    };
+                    break;
                 case nameof(DirectMessageEvents):
                     req = new DirectMessageEventsRequestProcessor<T>();
                     break;
