@@ -17,7 +17,7 @@ namespace LinqToTwitter
         /// <summary>
         /// Name of the job
         /// </summary>
-        [JsonPropertyName("job_)name")]
+        [JsonPropertyName("job_name")]
         public string? JobName { get; set; }
 
         /// <summary>
@@ -35,7 +35,7 @@ namespace LinqToTwitter
         /// <summary>
         /// Job status
         /// </summary>
-        [JsonPropertyName("complete")]
-        public ComplianceStatus? Status { get; set; }
+        [JsonPropertyName("status")]
+        public string? Status { get; set; }
     }
 }

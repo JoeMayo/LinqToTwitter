@@ -150,5 +150,84 @@ namespace LinqToTwitter.Tests.SearchTests
             Assert.AreEqual(ExpectedUrl, req.FullUrl);
         }
 
+        [TestMethod]
+        public void ProcessResults_Populates_SingleJob()
+        {
+            var reqProc = new ComplianceRequestProcessor<ComplianceQuery> 
+            { 
+                BaseUrl = BaseUrl2,
+                Type = ComplianceType.SingleJob
+            };
+
+            List<ComplianceQuery> results = reqProc.ProcessResults(SingleJob);
+
+            Assert.IsNotNull(results);
+            ComplianceQuery complianceQuery = results.SingleOrDefault();
+            Assert.IsNotNull(complianceQuery);
+            List<ComplianceJob> jobs = complianceQuery.Jobs;
+            Assert.IsNotNull(jobs);
+            Assert.AreEqual(1, jobs.Count);
+            ComplianceJob job = jobs.FirstOrDefault();
+            Assert.IsNotNull(job);
+            Assert.AreEqual("jU8rFK", job.JobID);
+            Assert.AreEqual("Troglomyces twitteri", job.JobName);
+            Assert.AreEqual("https://storage.googleapis.com/twitter-compliance/test_user_ids", job.DownloadUrl);
+            Assert.AreEqual(DateTime.Parse("2020-09-04T20:04:41.819+00:00"), job.DownloadExpiresAt);
+            Assert.AreEqual(ComplianceStatus.Complete, job.Status);
+        }
+
+        [TestMethod]
+        public void ProcessResults_Populates_MultipleJobs()
+        {
+            var reqProc = new ComplianceRequestProcessor<ComplianceQuery>
+            {
+                BaseUrl = BaseUrl2,
+                Type = ComplianceType.MultipleJobs
+            };
+
+            List<ComplianceQuery> results = reqProc.ProcessResults(MultipleJobs);
+
+            Assert.IsNotNull(results);
+            ComplianceQuery complianceQuery = results.SingleOrDefault();
+            Assert.IsNotNull(complianceQuery);
+            List<ComplianceJob> jobs = complianceQuery.Jobs;
+            Assert.IsNotNull(jobs);
+            Assert.AreEqual(2, jobs.Count);
+            ComplianceJob job = jobs.FirstOrDefault();
+            Assert.IsNotNull(job);
+            Assert.AreEqual("NIXh2p", job.JobID);
+            Assert.AreEqual("Feline species research", job.JobName);
+            Assert.AreEqual("https://storage.googleapis.com/twitter-compliance/test_user_ids", job.DownloadUrl);
+            Assert.AreEqual(DateTime.Parse("2020-06-16T11:17:32.819+00:00"), job.DownloadExpiresAt);
+            Assert.AreEqual(ComplianceStatus.Complete, job.Status);
+        }
+
+        const string SingleJob = @"{
+  ""job_id"": ""jU8rFK"",
+  ""job_name"": ""Troglomyces twitteri"",
+  ""download_url"": ""https://storage.googleapis.com/twitter-compliance/test_user_ids"",
+  ""download_expires_at"": ""2020-09-04T20:04:41.819+00:00"",
+  ""status"": ""complete""
+}";
+
+        const string MultipleJobs = @"{
+  ""jobs"": [
+    {
+      ""job_id"": ""NIXh2p"",
+      ""job_name"": ""Feline species research"",
+      ""created_at"": ""2020-09-03T21:17:43.819+00:00"",
+      ""download_url"": ""https://storage.googleapis.com/twitter-compliance/test_user_ids"",
+      ""download_expires_at"": ""2020-06-16T11:17:32.819+00:00"",
+      ""status"": ""complete""
+    },
+    {
+      ""job_id"": ""jU8rFK"",
+      ""job_name"": ""Troglomyces twitteri"",
+      ""download_url"": ""https://storage.googleapis.com/twitter-compliance/test_user_ids"",
+      ""download_expires_at"": ""2020-09-04T20:04:41.819+00:00"",
+      ""status"": ""complete""
+    }
+  ]
+}";
     }
 }

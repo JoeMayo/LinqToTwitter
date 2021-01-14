@@ -142,9 +142,70 @@ namespace LinqToTwitter
         }
 
 
-        public List<T> ProcessResults(string twitterResponse)
+        public List<T> ProcessResults(string responseJson)
         {
-            return new List<T>();
+            IEnumerable<ComplianceQuery> complianceQuery;
+
+            if (string.IsNullOrWhiteSpace(responseJson))
+            {
+                complianceQuery = new List<ComplianceQuery> { new ComplianceQuery() };
+            }
+            else
+            {
+                var result = JsonDeserialize(responseJson);
+                complianceQuery = new List<ComplianceQuery> { result };
+            }
+
+            return complianceQuery.OfType<T>().ToList();
+        }
+
+        ComplianceQuery JsonDeserialize(string responseJson)
+        {
+            var options = new JsonSerializerOptions
+            {
+                Converters =
+                {
+                    new JsonStringEnumConverter()
+                }
+            };
+            ComplianceQuery? complianceQuery = null;
+
+            if (Type == ComplianceType.MultipleJobs)
+            {
+                complianceQuery = JsonSerializer.Deserialize<ComplianceQuery>(responseJson, options);
+            }
+            else
+            {
+                complianceQuery = new ComplianceQuery();
+
+                ComplianceJob? job = JsonSerializer.Deserialize<ComplianceJob>(responseJson, options);
+                if (job is not null)
+                {
+                    complianceQuery = complianceQuery with
+                    {
+                        Jobs = new List<ComplianceJob> { job }
+                    };
+                };
+            }
+
+            if (complianceQuery == null)
+                return new ComplianceQuery
+                {
+                    Type = Type,
+                    EndTime = EndTime,
+                    ID = ID,
+                    StartTime = StartTime,
+                    Status = Status
+                };
+            else
+                return complianceQuery with
+                {
+                    Type = Type,
+                    EndTime = EndTime,
+                    ID = ID,
+                    StartTime = StartTime,
+                    Status = Status
+                };
         }
     }
 }
