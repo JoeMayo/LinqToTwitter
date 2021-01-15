@@ -202,6 +202,64 @@ namespace LinqToTwitter.Tests.SearchTests
             Assert.AreEqual(ComplianceStatus.Complete, job.Status);
         }
 
+        [TestMethod]
+        public void ProcessResults_WithNoResults_ReturnsNoJobs()
+        {
+            var reqProc = new ComplianceRequestProcessor<ComplianceQuery> { BaseUrl = BaseUrl2 };
+
+            List<ComplianceQuery> results = reqProc.ProcessResults(ErrorTweet);
+
+            Assert.IsNotNull(results);
+            ComplianceQuery complianceQuery = results.SingleOrDefault();
+            Assert.IsNotNull(complianceQuery);
+            List<ComplianceJob> jobs = complianceQuery.Jobs;
+            Assert.IsNull(jobs);
+        }
+
+        [TestMethod]
+        public void ProcessResults_ForSingleJob_PopulatesInputParameters()
+        {
+            var reqProc = new ComplianceRequestProcessor<ComplianceQuery>()
+            {
+                BaseUrl = BaseUrl2,
+                Type = ComplianceType.SingleJob,
+                ID = "123"
+            };
+
+            var results = reqProc.ProcessResults(SingleJob);
+
+            Assert.IsNotNull(results);
+            Assert.AreEqual(1, results.Count);
+            var complianceQuery = results.Single();
+            Assert.IsNotNull(complianceQuery);
+            Assert.AreEqual(ComplianceType.SingleJob, complianceQuery.Type);
+            Assert.AreEqual("123", complianceQuery.ID);
+        }
+
+        [TestMethod]
+        public void ProcessResults_ForMultipleJobs_PopulatesInputParameters()
+        {
+            var reqProc = new ComplianceRequestProcessor<ComplianceQuery>()
+            {
+                BaseUrl = BaseUrl2,
+                Type = ComplianceType.MultipleJobs,
+                EndTime = new DateTime(2020, 12, 31),
+                StartTime = new DateTime(2020, 1, 1),
+                Status = ComplianceStatus.Complete
+            };
+
+            var results = reqProc.ProcessResults(SingleJob);
+
+            Assert.IsNotNull(results);
+            Assert.AreEqual(1, results.Count);
+            var complianceQuery = results.Single();
+            Assert.IsNotNull(complianceQuery);
+            Assert.AreEqual(ComplianceType.MultipleJobs, complianceQuery.Type);
+            Assert.AreEqual(new DateTime(2020, 12, 31), complianceQuery.EndTime);
+            Assert.AreEqual(new DateTime(2020, 1, 1), complianceQuery.StartTime);
+            Assert.AreEqual(ComplianceStatus.Complete, complianceQuery.Status);
+        }
+
         const string SingleJob = @"{
   ""job_id"": ""jU8rFK"",
   ""job_name"": ""Troglomyces twitteri"",
@@ -228,6 +286,19 @@ namespace LinqToTwitter.Tests.SearchTests
       ""status"": ""complete""
     }
   ]
+}";
+
+        const string ErrorTweet = @"{
+	""errors"": [
+		{
+			""detail"": ""Could not find tweet with ids: [1]."",
+			""title"": ""Not Found Error"",
+			""resource_type"": ""tweet"",
+			""parameter"": ""ids"",
+			""value"": ""1"",
+			""type"": ""https://api.twitter.com/2/problems/resource-not-found""
+		}
+	]
 }";
     }
 }
