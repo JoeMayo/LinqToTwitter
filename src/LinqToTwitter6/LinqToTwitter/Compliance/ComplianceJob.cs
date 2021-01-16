@@ -21,13 +21,13 @@ namespace LinqToTwitter
         public string? JobName { get; set; }
 
         /// <summary>
-        /// URL where to download job data
+        /// URL where to download job results
         /// </summary>
         [JsonPropertyName("download_url")]
         public string? DownloadUrl { get; set; }
 
         /// <summary>
-        /// Job expiration date/time
+        /// Date/time when results are no longer available
         /// </summary>
         [JsonPropertyName("download_expires_at")]
         public DateTime DownloadExpiresAt { get; set; }
@@ -37,5 +37,17 @@ namespace LinqToTwitter
         /// </summary>
         [JsonPropertyName("status")]
         public string? Status { get; set; }
+
+        /// <summary>
+        /// URL where to upload tweet IDs
+        /// </summary>
+        [JsonPropertyName("upload_url")]
+        public string? UploadUrl { get; set; }
+
+        /// <summary>
+        /// When the job will be reading
+        /// </summary>
+        [JsonPropertyName("upload_expires_at")]
+        public DateTime UploadExpiresAt { get; set; }
     }
 }

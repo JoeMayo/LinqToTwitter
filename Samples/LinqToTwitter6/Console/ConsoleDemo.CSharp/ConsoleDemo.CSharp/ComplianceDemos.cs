@@ -106,7 +106,15 @@ namespace ConsoleDemo.CSharp
 
         static async Task CreateComplianceJobAsync(TwitterContext twitterCtx)
         {
-            Console.WriteLine("TODO");
+            ComplianceJob? job = await twitterCtx.CreateComplianceJobAsync("test", true);
+
+            if (job is not null)
+                Console.WriteLine(
+                    $"\nName: {job.JobName}" +
+                    $"\nStatus: {job.Status}");
+            else
+                Console.WriteLine("Job not returned");
+
         }
     }
 }

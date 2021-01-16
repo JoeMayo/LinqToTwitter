@@ -236,13 +236,13 @@ namespace ConsoleDemo.CSharp
             do
             {
                 var lists =
-                await
-                (from list in twitterCtx.List
-                 where list.Type == ListType.Memberships &&
-                       list.ScreenName == "JoeMayo" && // user to get memberships for
-                       list.Cursor == cursor
-                 select list)
-                .ToListAsync();
+                    await
+                    (from list in twitterCtx.List
+                     where list.Type == ListType.Memberships &&
+                           list.ScreenName == "JoeMayo" && // user to get memberships for
+                           list.Cursor == cursor
+                     select list)
+                    .ToListAsync();
 
                 if (lists != null)
                     lists.ForEach(list =>

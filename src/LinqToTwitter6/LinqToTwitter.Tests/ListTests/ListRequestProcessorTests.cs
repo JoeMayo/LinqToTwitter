@@ -898,6 +898,31 @@ namespace LinqToTwitter.Tests.ListTests
             Assert.AreEqual("test", list.SlugResponse);
         }
 
+        void TestCursoredListsResponse(ListRequestProcessor<List> listProc)
+        {
+            var listsResponse = listProc.ProcessResults(CursoredListResponse);
+
+            var lists = listsResponse as IList<List>;
+            Assert.IsNotNull(lists);
+            Assert.AreEqual(2, lists.Count());
+            var list = lists.First();
+            Assert.AreEqual("bots", list.Name);
+            Assert.AreEqual("@ai_camp_nyc/bots-27035", list.FullName);
+            Assert.AreEqual(1, list.MemberCount);
+            Assert.AreEqual("This is a test2", list.Description);
+            Assert.AreEqual("public", list.Mode);
+            Assert.AreEqual("/ai_camp_nyc/lists/bots-27035", list.Uri);
+            var users = list.Users;
+            Assert.IsNotNull(users);
+            Assert.IsNotNull(users.SingleOrDefault());
+            Assert.AreEqual("AI Camp @NeurIPS 2020", users.First().Name);
+            Assert.AreEqual(1324430544659251201ul, list.ListIDResponse);
+            Assert.AreEqual(2, list.SubscriberCount);
+            Assert.AreEqual(new DateTime(2020, 11, 5, 19, 17, 03), list.CreatedAt);
+            Assert.AreEqual(true, list.Following);
+            Assert.AreEqual("bots-27035", list.SlugResponse);
+        }
+
         [TestMethod]
         public void ProcessResults_Handles_Lists_Response()
         {
@@ -911,7 +936,7 @@ namespace LinqToTwitter.Tests.ListTests
         {
             var listProc = new ListRequestProcessor<List> { Type = ListType.Subscriptions };
 
-            TestMultipleListsResponse(listProc);
+            TestCursoredListsResponse(listProc);
         }
 
         [TestMethod]
@@ -919,7 +944,15 @@ namespace LinqToTwitter.Tests.ListTests
         {
             var listProc = new ListRequestProcessor<List> { Type = ListType.Memberships };
 
-            TestMultipleListsResponse(listProc);
+            TestCursoredListsResponse(listProc);
+        }
+
+        [TestMethod]
+        public void ProcessResults_Handles_Ownerships_Response()
+        {
+            var listProc = new ListRequestProcessor<List> { Type = ListType.Ownerships };
+
+            TestCursoredListsResponse(listProc);
         }
 
         [TestMethod]
@@ -1903,5 +1936,169 @@ namespace LinqToTwitter.Tests.ListTests
       ""text"":""A id\u00e9ia \u00e9 que eu aguente segurar at\u00e9 l\u00e1, mas t\u00e1 dificil \""@BrayanCordeiro: @devnetgomez MENTIRA que ele vai nascer no mesmo dia que eu?! &lt;3\""""
    }
 ]";
+
+        const string CursoredListResponse = @"{
+	""next_cursor"": 5712467026049822720,
+	""next_cursor_str"": ""5712467026049822720"",
+	""previous_cursor"": 0,
+	""previous_cursor_str"": ""0"",
+	""lists"": [
+		{
+			""id"": 1324430544659251201,
+			""id_str"": ""1324430544659251201"",
+			""name"": ""bots"",
+			""uri"": ""/ai_camp_nyc/lists/bots-27035"",
+			""subscriber_count"": 2,
+			""member_count"": 1,
+			""mode"": ""public"",
+			""description"": ""This is a test2"",
+			""slug"": ""bots-27035"",
+			""full_name"": ""@ai_camp_nyc/bots-27035"",
+			""created_at"": ""Thu Nov 05 19:17:03 +0000 2020"",
+			""following"": true,
+			""user"": {
+				""id"": 735950503125868544,
+				""id_str"": ""735950503125868544"",
+				""name"": ""AI Camp @NeurIPS 2020"",
+				""screen_name"": ""ai_camp_nyc"",
+				""location"": ""New York, NY"",
+				""description"": ""Virtual conference focused on open source machine learning and artificial intelligence in the time of Corona. (Domain was stolen by a squatter.)"",
+				""url"": ""https://t.co/bbpDQxMqJM"",
+				""entities"": {
+					""url"": {
+						""urls"": [
+							{
+								""url"": ""https://t.co/bbpDQxMqJM"",
+								""expanded_url"": ""http://ai.camp"",
+								""display_url"": ""ai.camp"",
+								""indices"": [
+									0,
+									23
+								]
+    }
+						]
+					},
+					""description"": {
+    ""urls"": []
+
+                    }
+				},
+				""protected"": false,
+				""followers_count"": 698,
+				""friends_count"": 1317,
+				""listed_count"": 26,
+				""created_at"": ""Thu May 26 21:47:28 +0000 2016"",
+				""favourites_count"": 402,
+				""utc_offset"": null,
+				""time_zone"": null,
+				""geo_enabled"": false,
+				""verified"": false,
+				""statuses_count"": 196,
+				""lang"": null,
+				""contributors_enabled"": false,
+				""is_translator"": false,
+				""is_translation_enabled"": false,
+				""profile_background_color"": ""000000"",
+				""profile_background_image_url"": ""http://abs.twimg.com/images/themes/theme1/bg.png"",
+				""profile_background_image_url_https"": ""https://abs.twimg.com/images/themes/theme1/bg.png"",
+				""profile_background_tile"": false,
+				""profile_image_url"": ""http://pbs.twimg.com/profile_images/741913958173573120/LwUUUIHN_normal.jpg"",
+				""profile_image_url_https"": ""https://pbs.twimg.com/profile_images/741913958173573120/LwUUUIHN_normal.jpg"",
+				""profile_banner_url"": ""https://pbs.twimg.com/profile_banners/735950503125868544/1523652077"",
+				""profile_link_color"": ""7B92A5"",
+				""profile_sidebar_border_color"": ""000000"",
+				""profile_sidebar_fill_color"": ""000000"",
+				""profile_text_color"": ""000000"",
+				""profile_use_background_image"": false,
+				""has_extended_profile"": false,
+				""default_profile"": false,
+				""default_profile_image"": false,
+				""following"": false,
+				""follow_request_sent"": false,
+				""notifications"": false,
+				""translator_type"": ""none""
+			}
+		},
+		{
+    ""id"": 1316971071338315776,
+			""id_str"": ""1316971071338315776"",
+			""name"": ""Tech"",
+			""uri"": ""/dudumimran/lists/tech-19490"",
+			""subscriber_count"": 0,
+			""member_count"": 244,
+			""mode"": ""public"",
+			""description"": """",
+			""slug"": ""tech-19490"",
+			""full_name"": ""@dudumimran/tech-19490"",
+			""created_at"": ""Fri Oct 16 05:15:46 +0000 2020"",
+			""following"": false,
+			""user"": {
+        ""id"": 18075345,
+				""id_str"": ""18075345"",
+				""name"": ""Dudu Mimran"",
+				""screen_name"": ""dudumimran"",
+				""location"": ""Israel"",
+				""description"": ""Technologist in a telco research land focused on cyber security and machine learning"",
+				""url"": ""https://t.co/XVI0vQP7O9"",
+				""entities"": {
+            ""url"": {
+                ""urls"": [
+
+                            {
+                    ""url"": ""https://t.co/XVI0vQP7O9"",
+								""expanded_url"": ""https://www.dudumimran.com"",
+								""display_url"": ""dudumimran.com"",
+								""indices"": [
+
+                                    0,
+									23
+								]
+							}
+						]
+					},
+					""description"": {
+                ""urls"": []
+
+                    }
+        },
+				""protected"": false,
+				""followers_count"": 844,
+				""friends_count"": 190,
+				""listed_count"": 137,
+				""created_at"": ""Fri Dec 12 12:49:29 +0000 2008"",
+				""favourites_count"": 3403,
+				""utc_offset"": null,
+				""time_zone"": null,
+				""geo_enabled"": true,
+				""verified"": false,
+				""statuses_count"": 5004,
+				""lang"": null,
+				""contributors_enabled"": false,
+				""is_translator"": false,
+				""is_translation_enabled"": false,
+				""profile_background_color"": ""131516"",
+				""profile_background_image_url"": ""http://abs.twimg.com/images/themes/theme14/bg.gif"",
+				""profile_background_image_url_https"": ""https://abs.twimg.com/images/themes/theme14/bg.gif"",
+				""profile_background_tile"": true,
+				""profile_image_url"": ""http://pbs.twimg.com/profile_images/1344277340449366020/dscpyOXL_normal.jpg"",
+				""profile_image_url_https"": ""https://pbs.twimg.com/profile_images/1344277340449366020/dscpyOXL_normal.jpg"",
+				""profile_banner_url"": ""https://pbs.twimg.com/profile_banners/18075345/1609335669"",
+				""profile_link_color"": ""222222"",
+				""profile_sidebar_border_color"": ""EEEEEE"",
+				""profile_sidebar_fill_color"": ""EFEFEF"",
+				""profile_text_color"": ""333333"",
+				""profile_use_background_image"": true,
+				""has_extended_profile"": true,
+				""default_profile"": false,
+				""default_profile_image"": false,
+				""following"": true,
+				""follow_request_sent"": false,
+				""notifications"": true,
+				""translator_type"": ""none""
+
+            }
+}
+	]
+}";
     }
 }

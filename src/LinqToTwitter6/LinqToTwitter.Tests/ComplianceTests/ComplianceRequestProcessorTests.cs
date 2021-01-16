@@ -7,7 +7,7 @@ using LinqToTwitter.Provider;
 using LinqToTwitter.Tests.Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace LinqToTwitter.Tests.SearchTests
+namespace LinqToTwitter.Tests.ComplianceTests
 {
     [TestClass]
     public class ComplianceRequestProcessorTests
