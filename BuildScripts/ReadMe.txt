@@ -2,8 +2,8 @@
 
 ## Release Notes:
 
-* Full documentation in the GitHub Wiki:
-    - https://github.com/JoeMayo/LinqToTwitter/wiki 
+* Full documentation:
+    - https://www.linqtotwitter.com/ 
 
 * Demos included in downloadable source code in the /Samples folder. 
 	- ConsoleSamples covers all APIs and there are other technology specific demos too.
@@ -18,11 +18,16 @@
 	- https://stackoverflow.com/questions/tagged/linq-to-twitter
 
 * Please visit the GitHub issues page if you've found a bug or would like to contribute:
-    - https://github.com/JoeMayo/LinqToTwitter/issues 
+    - https://github.com/JoeMayo/LinqToTwitter/issues
+	
+* Most recent version supports .NET 5 and both Twitter API v1.1 and v2.0
+
+* Please take the survey at https://bit.ly/2Luzbpt to make LINQ to Twitter better.
 
 ## Supported Platforms:
 
-	"net48",
+	"net5.0"
+	"net461",
     "uap10.0",
 	"xamarin.ios",
 	"xamarin.mac",

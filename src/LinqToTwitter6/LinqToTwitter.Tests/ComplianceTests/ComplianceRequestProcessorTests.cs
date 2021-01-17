@@ -99,7 +99,6 @@ namespace LinqToTwitter.Tests.ComplianceTests
         [TestMethod]
         public void BuildUrl_ForSingleJobWithoutID_Throws()
         {
-            const string ExpectedUrl = BaseUrl2 + "tweets/compliance/jobs/123";
             var reqProc = new ComplianceRequestProcessor<ComplianceQuery> { BaseUrl = BaseUrl2 };
             var parameters =
                 new Dictionary<string, string>

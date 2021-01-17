@@ -2,32 +2,36 @@
   <PropertyGroup>
     <Version>0.0.0.0</Version>
     <ProjFolder>c:\Projects\</ProjFolder>
-    <L2TSourceFolder>$(ProjFolder)LinqToTwitter\src\LinqToTwitter5\</L2TSourceFolder>
+    <L2T5SourceFolder>$(ProjFolder)LinqToTwitter\src\LinqToTwitter5\</L2T5SourceFolder>
+    <L2T6SourceFolder>$(ProjFolder)LinqToTwitter\src\LinqToTwitter6\</L2T6SourceFolder>
     <L2TBuildScriptsFolder>$(ProjFolder)LinqToTwitter\BuildScripts\</L2TBuildScriptsFolder>
-     <L2TAspNetFolder>$(L2TSourceFolder)LinqToTwitter.AspNet\</L2TAspNetFolder>
+    <L2TAspNetFolder>$(L2T5SourceFolder)LinqToTwitter.AspNet\</L2TAspNetFolder>
     <L2TAspNetRelease>$(L2TAspNetFolder)bin\Release\LinqToTwitter.AspNet.dll</L2TAspNetRelease>
-    <L2TAspNetStdFolder>$(L2TSourceFolder)LinqToTwitter.AspNetStd\</L2TAspNetStdFolder>
+    <L2TAspNetStdFolder>$(L2T5SourceFolder)LinqToTwitter.AspNetStd\</L2TAspNetStdFolder>
     <L2TAspNetStdRelease>$(L2TAspNetStdFolder)bin\Release\netstandard2.0\LinqToTwitter.AspNetStd.dll</L2TAspNetStdRelease>
-    <L2TAspNetCoreFolder>$(L2TSourceFolder)LinqToTwitter.AspNetCore\</L2TAspNetCoreFolder>
+    <L2TAspNetCoreFolder>$(L2T5SourceFolder)LinqToTwitter.AspNetCore\</L2TAspNetCoreFolder>
     <L2TAspNetCoreRelease>$(L2TAspNetCoreFolder)bin\Release\netcoreapp3.1\LinqToTwitter.AspNetCore.dll</L2TAspNetCoreRelease>
-    <L2TDotNetFolder>$(L2TSourceFolder)LinqToTwitter.net\</L2TDotNetFolder>
-    <L2TDotNetRelease>$(L2TDotNetFolder)bin\Release\LinqToTwitter.net.dll</L2TDotNetRelease>
-    <L2TDotCoreFolder>$(L2TSourceFolder)LinqToTwitter.Core\</L2TDotCoreFolder>
+    <L2TDotNet4Folder>$(L2T5SourceFolder)LinqToTwitter.net\</L2TDotNet4Folder>
+    <L2TDotNet4Release>$(L2TDotNet4Folder)bin\Release\LinqToTwitter.net.dll</L2TDotNet4Release>
+    <L2TDotNet5Folder>$(L2T6SourceFolder)LinqToTwitter\</L2TDotNet5Folder>
+    <L2TDotNet5Release>$(L2TDotNet5Folder)bin\Release\net5.0\LinqToTwitter.dll</L2TDotNet5Release>
+    <L2TDotCoreFolder>$(L2T5SourceFolder)LinqToTwitter.Core\</L2TDotCoreFolder>
     <L2TDotCoreRelease>$(L2TDotCoreFolder)bin\Release\netcoreapp3.1\LinqToTwitter.Core.dll</L2TDotCoreRelease>
-    <L2TNetStdFolder>$(L2TSourceFolder)LinqToTwitter.netstandard\</L2TNetStdFolder>
+    <L2TNetStdFolder>$(L2T5SourceFolder)LinqToTwitter.netstandard\</L2TNetStdFolder>
     <L2TNetStdRelease>$(L2TNetStdFolder)bin\Release\netstandard2.0\LinqToTwitter.netstandard.dll</L2TNetStdRelease>
-    <L2TWin10Folder>$(L2TSourceFolder)LinqToTwitter.uap10\</L2TWin10Folder>
+    <L2TWin10Folder>$(L2T5SourceFolder)LinqToTwitter.uap10\</L2TWin10Folder>
     <L2TWin10Release>$(L2TWin10Folder)bin\Release\LinqToTwitter.uap10.dll</L2TWin10Release>
-    <L2TXamarinFolder>$(L2TSourceFolder)LinqToTwitter.xamarin\</L2TXamarinFolder>
+    <L2TXamarinFolder>$(L2T5SourceFolder)LinqToTwitter.xamarin\</L2TXamarinFolder>
     <L2TXamarinRelease>$(L2TXamarinFolder)bin\Release\LinqToTwitter.xamarin.dll</L2TXamarinRelease>
     <NuGetExeFolder>$(ProjFolder)NuGet\</NuGetExeFolder>
-    <NuGetBaseFolder>$(NuGetExeFolder)LinqToTwitter-v5\</NuGetBaseFolder>
+    <NuGetBaseFolder>$(NuGetExeFolder)LinqToTwitter-v6\</NuGetBaseFolder>
     <NuGetVersionFolder>$(NuGetBaseFolder)v$(Version)\</NuGetVersionFolder>
     <NuGetLibFolder>$(NuGetVersionFolder)lib\</NuGetLibFolder>
   </PropertyGroup>
   <PropertyGroup>
     <OutDir>$(NuGetLibFolder)</OutDir>
-    <OutDir>$(NuGetLibFolder)net48</OutDir>
+    <OutDir>$(NuGetLibFolder)net5.0</OutDir>
+    <OutDir>$(NuGetLibFolder)net461</OutDir>
     <OutDir>$(NuGetLibFolder)uap10.0</OutDir>
 	  <OutDir>$(NuGetLibFolder)monoandroid</OutDir>
 	  <OutDir>$(NuGetLibFolder)xamarin.ios</OutDir>
@@ -36,15 +40,17 @@
     <OutDir>$(NuGetLibFolder)netstandard2.0</OutDir>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="$(L2TDotNetFolder)LinqToTwitter.net.csproj" />
-    <ProjectReference Include="$(L2TDotNetFolder)LinqToTwitter.netstandard.csproj" />
+    <ProjectReference Include="$(L2TDotNet5Folder)LinqToTwitter.csproj" />
+    <ProjectReference Include="$(L2TDotNet4Folder)LinqToTwitter.net.csproj" />
+    <ProjectReference Include="$(L2TDotNet4Folder)LinqToTwitter.netstandard.csproj" />
     <ProjectReference Include="$(L2TWin10Folder)LinqToTwitter.uap10.csproj" />
     <ProjectReference Include="$(L2XamarinFolder)LinqToTwitter.xamarin.csproj" />
  </ItemGroup>
   <Target Name="Build">
     <MakeDir Directories="$(OutDir)" Condition="!Exists('$(OutDir)')"  />
 
-    <MSBuild Projects="$(L2TDotNetFolder)LinqToTwitter.net.csproj" Properties="Configuration=Release" Targets="Rebuild" />
+    <MSBuild Projects="$(L2TDotNet5Folder)LinqToTwitter.csproj" Properties="Configuration=Release" Targets="Rebuild" />
+    <MSBuild Projects="$(L2TDotNet4Folder)LinqToTwitter.net.csproj" Properties="Configuration=Release" Targets="Rebuild" />
     <MSBuild Projects="$(L2TDotCoreFolder)LinqToTwitter.Core.csproj" Properties="Configuration=Release" Targets="Rebuild" />
     <MSBuild Projects="$(L2TNetStdFolder)LinqToTwitter.netstandard.csproj" Properties="Configuration=Release" Targets="Rebuild" />
     <MSBuild Projects="$(L2TAspNetFolder)LinqToTwitter.AspNet.csproj" Properties="Configuration=Release" Targets="Rebuild" />
@@ -52,7 +58,11 @@
     <MSBuild Projects="$(L2TAspNetCoreFolder)LinqToTwitter.AspNetCore.csproj" Properties="Configuration=Release" Targets="Rebuild" />
     <MSBuild Projects="$(L2TWin10Folder)LinqToTwitter.uap10.csproj" Properties="Configuration=Release" Targets="Rebuild" />
     <MSBuild Projects="$(L2TXamarinFolder)LinqToTwitter.xamarin.csproj" Properties="Configuration=Release" Targets="Rebuild" />
-    
+
+    <Copy
+      SourceFiles="$(L2TDotNet5Release)"
+      DestinationFiles="$(NuGetLibFolder)net5.0\LinqToTwitter.dll" />
+
     <Copy
       SourceFiles="$(L2TNetStdRelease)"
       DestinationFiles="$(NuGetLibFolder)netstandard2.0\LinqToTwitter.netstandard.dll" />
@@ -68,11 +78,11 @@
       DestinationFiles="$(NuGetLibFolder)netcoreapp3.1\LinqToTwitter.AspNetCore.dll" />
 
     <Copy
-      SourceFiles="$(L2TDotNetRelease)"
-      DestinationFiles="$(NuGetLibFolder)net48\LinqToTwitter.net.dll" />
+      SourceFiles="$(L2TDotNet4Release)"
+      DestinationFiles="$(NuGetLibFolder)net461\LinqToTwitter.net.dll" />
     <Copy
       SourceFiles="$(L2TAspNetRelease)"
-      DestinationFiles="$(NuGetLibFolder)net48\LinqToTwitter.AspNet.dll" />	
+      DestinationFiles="$(NuGetLibFolder)net461\LinqToTwitter.AspNet.dll" />	
 
     <Copy
       SourceFiles="$(L2TNetStdRelease)"
