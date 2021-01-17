@@ -6,4 +6,8 @@
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
+	<ItemGroup>
+	  <ProjectReference Include="..\..\..\..\..\src\LinqToTwitter6\LinqToTwitter\LinqToTwitter.csproj" />
+	</ItemGroup>
+
 </Project>
