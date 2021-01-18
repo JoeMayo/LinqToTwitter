@@ -26,8 +26,8 @@
 
 ## Supported Platforms:
 
-	"net5.0"
 	"net461",
+	"net5.0"
     "uap10.0",
 	"xamarin.ios",
 	"xamarin.mac",
