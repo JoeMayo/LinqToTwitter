@@ -20,69 +20,24 @@ namespace LinqToTwitter.Provider
             if (exp == null)
                 return exp;
 
-            switch (exp.NodeType)
+            return exp.NodeType switch
             {
-                case ExpressionType.Negate:
-                case ExpressionType.NegateChecked:
-                case ExpressionType.Not:
-                case ExpressionType.Convert:
-                case ExpressionType.ConvertChecked:
-                case ExpressionType.ArrayLength:
-                case ExpressionType.Quote:
-                case ExpressionType.TypeAs:
-                    return this.VisitUnary((UnaryExpression)exp);
-                case ExpressionType.Add:
-                case ExpressionType.AddChecked:
-                case ExpressionType.Subtract:
-                case ExpressionType.SubtractChecked:
-                case ExpressionType.Multiply:
-                case ExpressionType.MultiplyChecked:
-                case ExpressionType.Divide:
-                case ExpressionType.Modulo:
-                case ExpressionType.And:
-                case ExpressionType.AndAlso:
-                case ExpressionType.Or:
-                case ExpressionType.OrElse:
-                case ExpressionType.LessThan:
-                case ExpressionType.LessThanOrEqual:
-                case ExpressionType.GreaterThan:
-                case ExpressionType.GreaterThanOrEqual:
-                case ExpressionType.Equal:
-                case ExpressionType.NotEqual:
-                case ExpressionType.Coalesce:
-                case ExpressionType.ArrayIndex:
-                case ExpressionType.RightShift:
-                case ExpressionType.LeftShift:
-                case ExpressionType.ExclusiveOr:
-                    return this.VisitBinary((BinaryExpression)exp);
-                case ExpressionType.TypeIs:
-                    return this.VisitTypeIs((TypeBinaryExpression)exp);
-                case ExpressionType.Conditional:
-                    return this.VisitConditional((ConditionalExpression)exp);
-                case ExpressionType.Constant:
-                    return this.VisitConstant((ConstantExpression)exp);
-                case ExpressionType.Parameter:
-                    return this.VisitParameter((ParameterExpression)exp);
-                case ExpressionType.MemberAccess:
-                    return this.VisitMemberAccess((MemberExpression)exp);
-                case ExpressionType.Call:
-                    return this.VisitMethodCall((MethodCallExpression)exp);
-                case ExpressionType.Lambda:
-                    return this.VisitLambda((LambdaExpression)exp);
-                case ExpressionType.New:
-                    return this.VisitNew((NewExpression)exp);
-                case ExpressionType.NewArrayInit:
-                case ExpressionType.NewArrayBounds:
-                    return this.VisitNewArray((NewArrayExpression)exp);
-                case ExpressionType.Invoke:
-                    return this.VisitInvocation((InvocationExpression)exp);
-                case ExpressionType.MemberInit:
-                    return this.VisitMemberInit((MemberInitExpression)exp);
-                case ExpressionType.ListInit:
-                    return this.VisitListInit((ListInitExpression)exp);
-                default:
-                    throw new Exception(string.Format("Unhandled expression type: '{0}'", exp.NodeType));
-            }
+                ExpressionType.Negate or ExpressionType.NegateChecked or ExpressionType.Not or ExpressionType.Convert or ExpressionType.ConvertChecked or ExpressionType.ArrayLength or ExpressionType.Quote or ExpressionType.TypeAs => this.VisitUnary((UnaryExpression)exp),
+                ExpressionType.Add or ExpressionType.AddChecked or ExpressionType.Subtract or ExpressionType.SubtractChecked or ExpressionType.Multiply or ExpressionType.MultiplyChecked or ExpressionType.Divide or ExpressionType.Modulo or ExpressionType.And or ExpressionType.AndAlso or ExpressionType.Or or ExpressionType.OrElse or ExpressionType.LessThan or ExpressionType.LessThanOrEqual or ExpressionType.GreaterThan or ExpressionType.GreaterThanOrEqual or ExpressionType.Equal or ExpressionType.NotEqual or ExpressionType.Coalesce or ExpressionType.ArrayIndex or ExpressionType.RightShift or ExpressionType.LeftShift or ExpressionType.ExclusiveOr => this.VisitBinary((BinaryExpression)exp),
+                ExpressionType.TypeIs => this.VisitTypeIs((TypeBinaryExpression)exp),
+                ExpressionType.Conditional => this.VisitConditional((ConditionalExpression)exp),
+                ExpressionType.Constant => this.VisitConstant((ConstantExpression)exp),
+                ExpressionType.Parameter => this.VisitParameter((ParameterExpression)exp),
+                ExpressionType.MemberAccess => this.VisitMemberAccess((MemberExpression)exp),
+                ExpressionType.Call => this.VisitMethodCall((MethodCallExpression)exp),
+                ExpressionType.Lambda => this.VisitLambda((LambdaExpression)exp),
+                ExpressionType.New => this.VisitNew((NewExpression)exp),
+                ExpressionType.NewArrayInit or ExpressionType.NewArrayBounds => this.VisitNewArray((NewArrayExpression)exp),
+                ExpressionType.Invoke => this.VisitInvocation((InvocationExpression)exp),
+                ExpressionType.MemberInit => this.VisitMemberInit((MemberInitExpression)exp),
+                ExpressionType.ListInit => this.VisitListInit((ListInitExpression)exp),
+                _ => throw new Exception(string.Format("Unhandled expression type: '{0}'", exp.NodeType)),
+            };
         }
 
         protected virtual MemberBinding VisitBinding(MemberBinding binding)

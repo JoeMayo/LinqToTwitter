@@ -12,7 +12,7 @@ namespace LinqToTwitter.Provider
             queryableItems = items;
         }
 
-        internal Expression CopyAndModify(Expression expression)
+        internal Expression? CopyAndModify(Expression expression)
         {
             return Visit(expression);
         }

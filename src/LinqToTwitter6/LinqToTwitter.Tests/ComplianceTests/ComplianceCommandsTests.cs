@@ -19,7 +19,7 @@ namespace LinqToTwitter.Tests.ComplianceTests
             TestCulture.SetCulture();
         }
 
-        async Task<TwitterContext> InitializeTwitterContextAsync(string result)
+        static async Task<TwitterContext> InitializeTwitterContextAsync(string result)
         {
             await Task.Delay(1);
             var authMock = new Mock<IAuthorizer>();

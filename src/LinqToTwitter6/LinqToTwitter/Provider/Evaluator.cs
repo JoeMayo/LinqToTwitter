@@ -66,20 +66,18 @@ namespace LinqToTwitter.Provider
                 return Visit(exp);
             }
 
-            public override Expression Visit(Expression exp)
+            public override Expression? Visit(Expression? exp)
             {
                 if (exp == null)
-                {
                     return null;
-                }
+
                 if (candidates.Contains(exp))
-                {
                     return Evaluate(exp);
-                }
+
                 return base.Visit(exp);
             }
 
-            Expression Evaluate(Expression e)
+            static Expression Evaluate(Expression e)
             {
                 if (e.NodeType == ExpressionType.Constant)
                 {
@@ -113,7 +111,7 @@ namespace LinqToTwitter.Provider
                 return candidates;
             }
 
-            public override Expression Visit(Expression expression)
+            public override Expression? Visit(Expression? expression)
             {
                 if (expression != null)
                 {

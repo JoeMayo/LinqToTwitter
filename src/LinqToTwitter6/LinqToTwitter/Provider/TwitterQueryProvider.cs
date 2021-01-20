@@ -40,16 +40,25 @@ namespace LinqToTwitter.Provider
         /// <returns>IQueryable that can be executed</returns>
         public IQueryable CreateQuery(Expression expression)
         {
-            Type elementType = TypeSystem.GetElementType(expression.Type);
+            Type? elementType = TypeSystem.GetElementType(expression.Type);
+
+            _ = elementType ?? throw new TwitterQueryException("Expression doesn't have an element type.");
+
             try
             {
-                return (IQueryable)Activator.CreateInstance(
+                object? twitterQueryableInstance = Activator.CreateInstance(
                     typeof(TwitterQueryable<>)
                         .MakeGenericType(elementType), 
                     new object[] { this, expression });
+
+                _ = twitterQueryableInstance ?? throw new TwitterQueryException("Unable to create query instance.");
+
+                return (IQueryable)twitterQueryableInstance;
             }
             catch (TargetInvocationException tie)
             {
+                _ = tie?.InnerException ?? throw new InvalidOperationException("Invalid null exception");
+
                 throw tie.InnerException;
             }
         }

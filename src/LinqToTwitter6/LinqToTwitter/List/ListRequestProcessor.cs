@@ -212,31 +212,20 @@ namespace LinqToTwitter
 
             Type = RequestProcessorHelper.ParseEnum<ListType>(parameters[TypeParam]);
 
-            switch (Type)
+            return Type switch
             {
-                case ListType.List:
-                    return BuildListUrl(parameters);
-                case ListType.Show:
-                    return BuildShowUrl(parameters);
-                case ListType.Statuses:
-                    return BuildStatusesUrl(parameters);
-                case ListType.Memberships:
-                    return BuildMembershipsUrl(parameters);
-                case ListType.Subscriptions:
-                    return BuildSubscriptionsUrl(parameters);
-                case ListType.Members:
-                    return BuildMembersUrl(parameters);
-                case ListType.IsMember:
-                    return BuildIsMemberUrl(parameters);
-                case ListType.Subscribers:
-                    return BuildSubscribersUrl(parameters);
-                case ListType.IsSubscriber:
-                    return BuildIsSubcribedUrl(parameters);
-                case ListType.Ownerships:
-                    return BuildOwnershipsUrl(parameters);
-                default:
-                    throw new ArgumentException("Invalid ListType", TypeParam);
-            }
+                ListType.List => BuildListUrl(parameters),
+                ListType.Show => BuildShowUrl(parameters),
+                ListType.Statuses => BuildStatusesUrl(parameters),
+                ListType.Memberships => BuildMembershipsUrl(parameters),
+                ListType.Subscriptions => BuildSubscriptionsUrl(parameters),
+                ListType.Members => BuildMembersUrl(parameters),
+                ListType.IsMember => BuildIsMemberUrl(parameters),
+                ListType.Subscribers => BuildSubscribersUrl(parameters),
+                ListType.IsSubscriber => BuildIsSubcribedUrl(parameters),
+                ListType.Ownerships => BuildOwnershipsUrl(parameters),
+                _ => throw new ArgumentException("Invalid ListType", TypeParam),
+            };
         }
 
         /// <summary>
@@ -850,37 +839,16 @@ namespace LinqToTwitter
             if (string.IsNullOrWhiteSpace(responseJson)) return new List<T>();
 
             JsonElement listJson = JsonDocument.Parse(responseJson).RootElement;
-
-            List<List> lists;
-            switch (Type)
+            List<List> lists = Type switch
             {
-                case ListType.List:
-                    lists = HandleMultipleListsResponse(listJson);
-                    break;
-                case ListType.Memberships:
-                case ListType.Ownerships:
-                case ListType.Subscriptions:
-                    lists = HandleCursoredResponse(listJson);
-                    break;
-                case ListType.Show:
-                    lists = HandleSingleListResponse(listJson);
-                    break;
-                case ListType.Statuses:
-                    lists = HandleStatusesResponse(listJson);
-                    break;
-                case ListType.Members:
-                case ListType.Subscribers:
-                    lists = HandleMultipleUsersResponse(listJson);
-                    break;
-                case ListType.IsMember:
-                case ListType.IsSubscriber:
-                    lists = HandleSingleUserResponse(listJson);
-                    break;
-                default:
-                    lists = new List<List>();
-                    break;
-            }
-
+                ListType.List => ListRequestProcessor<T>.HandleMultipleListsResponse(listJson),
+                ListType.Memberships or ListType.Ownerships or ListType.Subscriptions => ListRequestProcessor<T>.HandleCursoredResponse(listJson),
+                ListType.Show => ListRequestProcessor<T>.HandleSingleListResponse(listJson),
+                ListType.Statuses => ListRequestProcessor<T>.HandleStatusesResponse(listJson),
+                ListType.Members or ListType.Subscribers => ListRequestProcessor<T>.HandleMultipleUsersResponse(listJson),
+                ListType.IsMember or ListType.IsSubscriber => ListRequestProcessor<T>.HandleSingleUserResponse(listJson),
+                _ => new List<List>(),
+            };
             Cursors? cursors = null;
             if (listJson.ValueKind == JsonValueKind.Object)
                 cursors = new Cursors(listJson);
@@ -910,8 +878,8 @@ namespace LinqToTwitter
 
             return lists.AsEnumerable().OfType<T>().ToList();
         }
-  
-        private List<List> HandleSingleListResponse(JsonElement listJson)
+
+        static List<List> HandleSingleListResponse(JsonElement listJson)
         {
             var lists = new List<List>
             {
@@ -921,15 +889,15 @@ namespace LinqToTwitter
             return lists;
         }
 
-        List<List> HandleCursoredResponse(JsonElement listJson)
+        static List<List> HandleCursoredResponse(JsonElement listJson)
         {
             if (!listJson.TryGetProperty("lists", out JsonElement listElement))
                 return new List<List>();
 
-            return HandleMultipleListsResponse(listElement);
+            return ListRequestProcessor<T>.HandleMultipleListsResponse(listElement);
         }
 
-        List<List> HandleMultipleListsResponse(JsonElement listJson)
+        static List<List> HandleMultipleListsResponse(JsonElement listJson)
         {
             var lists =
                 (from list in listJson.EnumerateArray()
@@ -938,8 +906,8 @@ namespace LinqToTwitter
 
             return lists;
         }
-  
-        List<List> HandleSingleUserResponse(JsonElement listJson)
+
+        static List<List> HandleSingleUserResponse(JsonElement listJson)
         {
             var lists = new List<List>
             {
@@ -952,7 +920,7 @@ namespace LinqToTwitter
             return lists;
         }
 
-        List<List> HandleMultipleUsersResponse(JsonElement listJson)
+        static List<List> HandleMultipleUsersResponse(JsonElement listJson)
         {
             var lists = new List<List>
             {
@@ -968,7 +936,7 @@ namespace LinqToTwitter
             return lists;
         }
 
-        private List<List> HandleStatusesResponse(JsonElement listJson)
+        private static List<List> HandleStatusesResponse(JsonElement listJson)
         {
             var lists = new List<List>
             {
@@ -998,23 +966,11 @@ namespace LinqToTwitter
             {
                 JsonElement listJson = JsonDocument.Parse(responseJson).RootElement;
 
-                switch ((ListAction)theAction)
+                list = ((ListAction)theAction) switch
                 {
-                    case ListAction.Create:
-                    case ListAction.Update:
-                    case ListAction.Delete:
-                    case ListAction.AddMember:
-                    case ListAction.AddMemberRange:
-                    case ListAction.DeleteMember:
-                    case ListAction.Subscribe:
-                    case ListAction.Unsubscribe:
-                    case ListAction.DestroyAll:
-                        list = new List(listJson);
-                        break;
-                    default:
-                        throw new InvalidOperationException(
-                            "The default case of ProcessActionResult should never execute because a Type must be specified.");
-                }
+                    ListAction.Create or ListAction.Update or ListAction.Delete or ListAction.AddMember or ListAction.AddMemberRange or ListAction.DeleteMember or ListAction.Subscribe or ListAction.Unsubscribe or ListAction.DestroyAll => new List(listJson),
+                    _ => throw new InvalidOperationException("The default case of ProcessActionResult should never execute because a Type must be specified."),
+                };
             }
 
             return list.ItemCast(default(T));
