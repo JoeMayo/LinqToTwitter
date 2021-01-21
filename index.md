@@ -1,5 +1,7 @@
 Welcome to LINQ to Twitter documentation. Here, you'll find the technical information you'll need to use LINQ to Twitter in your own applications. We have a FAQ, general Twitter API concepts, a Twitter API technical reference, security information, and error handling.
 
+> Please take the LINQ to Twitter Survey at [https://bit.ly/2Luzbpt](https://bit.ly/2Luzbpt).
+
 Note: The current version of LINQ to Twitter is v6.0, which tracks .NET 5+ and the Twitter API v2. It also offers Twitter API v1.1 support. Please see [LINQ to Twitter v5](LINQ-to-Twitter-v5.md) for Twitter API v1.1 technical endpoint documentation.
 
 ## [LINQ to Twitter FAQ](LINQ-to-Twitter-FAQ.md)
