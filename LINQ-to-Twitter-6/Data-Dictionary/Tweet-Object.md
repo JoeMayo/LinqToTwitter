@@ -11,7 +11,7 @@ Represents a user's tweet.
 | ContextAnnotations | Contextual metadata associated with tweet | List&lt;[TweetContextAnnotation](TweetContextAnnotation-Object.md)&gt; |
 | ConversationID | ID of conversation this tweet is part of (matches original tweet ID) | string |
 | CreatedAt | When tweeted | DateTime |
-| Entities | Extracted parts of the tweet, like hashtags, urls, etc. | [TweetEntities]() |
+| Entities | Extracted parts of the tweet, like hashtags, urls, etc. | [TweetEntities](TweetEntities-Object.md) |
 | Geo | Tweet location (if user provided) | TweetGeo |
 | ID | ID of this tweet | string |
 | InReplyToUserID | If replying, this is the ID of the user being replied to | string |
