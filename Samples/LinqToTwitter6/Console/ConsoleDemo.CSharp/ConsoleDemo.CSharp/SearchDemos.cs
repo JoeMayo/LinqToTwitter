@@ -138,6 +138,8 @@ namespace ConsoleDemo.CSharp
                          select search.Statuses)
                         .SingleOrDefaultAsync();
 
+                    if (searchResponse == null) break;
+
                     combinedSearchResults.AddRange(searchResponse!);
                 } while (searchResponse.Any() && combinedSearchResults.Count < SearchRateLimit);
 
