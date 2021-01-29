@@ -20,7 +20,7 @@ Represents a user's tweet.
 | OrganicMetrics | Organic Metrics | object |
 | PossiblySensitive | Media or links might reveal sensitive information | bool |
 | PromotedMetrics | Promoted content metrics | object |
-| PublicMetrics | Public metrics | [TweetPublicMetrics]() |
+| PublicMetrics | Public metrics | [TweetPublicMetrics](TweetPublicMetrics-Object.md) |
 | ReferencedTweets | Any other tweets that this one refers to | List&lt;[TweetReference]()&gt; |
 | ReplySettings | Who can reply to tweet | [TweetReplySettings]() |
 | Source | The application sending the tweet | string |
