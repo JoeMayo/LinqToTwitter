@@ -33,11 +33,11 @@ namespace LinqToTwitter.Tests.StatusTests
 
             execMock.SetupGet(exec => exec.Authorizer).Returns(authMock.Object);
             execMock.Setup(exec =>
-                exec.SendJsonToTwitterAsync<TweetHidden>(
+                exec.SendJsonToTwitterAsync<TwitterUserTargetID>(
                     HttpMethod.Put.ToString(),
                     It.IsAny<string>(),
                     It.IsAny<IDictionary<string, string>>(),
-                    It.IsAny<TweetHidden>(),
+                    It.IsAny<TwitterUserTargetID>(),
                     It.IsAny<CancellationToken>()))
                 .Returns(tcsResponse.Task);
             var ctx = new TwitterContext(execMock.Object);
