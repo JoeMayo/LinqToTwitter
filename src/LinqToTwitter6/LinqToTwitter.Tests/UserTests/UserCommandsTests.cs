@@ -48,6 +48,14 @@ namespace LinqToTwitterPcl.Tests.AccountTests
                     It.IsAny<bool>(),
                     It.IsAny<CancellationToken>()))
                     .Returns(tcsResponse.Task);
+            execMock.Setup(exec =>
+                exec.SendJsonToTwitterAsync(
+                    HttpMethod.Post.ToString(),
+                    It.IsAny<string>(),
+                    It.IsAny<IDictionary<string, string>>(),
+                    It.IsAny<TwitterUserTargetID>(),
+                    It.IsAny<CancellationToken>()))
+                .Returns(tcsResponse.Task);
             var ctx = new TwitterContext(execMock.Object);
             return ctx;
         }
@@ -142,6 +150,46 @@ namespace LinqToTwitterPcl.Tests.AccountTests
             Assert.AreEqual(ExpectedParamName, ex.ParamName);
         }
 
+        [TestMethod]
+        public async Task Follow_WithProperParameters_Succeeds()
+        {
+            const string followingUser = "abc";
+            const string userToFollow = "def";
+            var ctx = InitTwitterContextWithPostToTwitter<User>(FollowResponse);
+
+            TwitterUserFollowResponse response =
+                await ctx.FollowAsync(followingUser, userToFollow);
+
+            Assert.IsNotNull(response);
+            TwitterUserFollowResponseData data = response.Data;
+            Assert.IsNotNull(data);
+            Assert.IsTrue(data.Following);
+        }
+
+        [TestMethod]
+        public async Task Follow_WithoutSource_Throws()
+        {
+            const string ExpectedParamName = "sourceUserID";
+            var ctx = InitTwitterContextWithPostToTwitter<User>(FollowResponse);
+
+            var ex = await L2TAssert.Throws<ArgumentException>(
+                async () => await ctx.FollowAsync(null, "abc"));
+
+            Assert.AreEqual(ExpectedParamName, ex.ParamName);
+        }
+
+        [TestMethod]
+        public async Task Follow_WithoutTarget_Throws()
+        {
+            const string ExpectedParamName = "targetUserID";
+            var ctx = InitTwitterContextWithPostToTwitter<User>(FollowResponse);
+
+            var ex = await L2TAssert.Throws<ArgumentException>(
+                async () => await ctx.FollowAsync("abc", null));
+
+            Assert.AreEqual(ExpectedParamName, ex.ParamName);
+        }
+
         const string SingleUserResponse = @"{
    ""id"":6253282,
    ""id_str"":""6253282"",
@@ -206,5 +254,13 @@ namespace LinqToTwitterPcl.Tests.AccountTests
    ""follow_request_sent"":false,
    ""notifications"":false
 }";
+
+        const string FollowResponse = @"{
+    ""data"": {
+		""following"": true,
+		""pending_follow"": false
+	}
+}
+";
     }
 }

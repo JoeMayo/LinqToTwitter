@@ -33,7 +33,7 @@ namespace LinqToTwitter.Tests.StatusTests
 
             execMock.SetupGet(exec => exec.Authorizer).Returns(authMock.Object);
             execMock.Setup(exec =>
-                exec.SendJsonToTwitterAsync<TwitterUserTargetID>(
+                exec.SendJsonToTwitterAsync(
                     HttpMethod.Put.ToString(),
                     It.IsAny<string>(),
                     It.IsAny<IDictionary<string, string>>(),

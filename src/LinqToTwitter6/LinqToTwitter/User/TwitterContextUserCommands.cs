@@ -74,7 +74,7 @@ namespace LinqToTwitter
             _ = sourceUserID ?? throw new ArgumentException($"{nameof(sourceUserID)} is a required parameter.", nameof(sourceUserID));
             _ = targetUserID ?? throw new ArgumentException($"{nameof(targetUserID)} is a required parameter.", nameof(targetUserID));
 
-            string url = $"{BaseUrl2}tweets/{sourceUserID}/hidden";
+            string url = $"{BaseUrl2}users/{sourceUserID}/following";
 
             var postData = new Dictionary<string, string>();
             var postObj = new TwitterUserTargetID() { TargetUserID = targetUserID };
@@ -87,7 +87,6 @@ namespace LinqToTwitter
                     postObj,
                     cancelToken)
                    .ConfigureAwait(false);
-
 
             TwitterUserFollowResponse? result = JsonSerializer.Deserialize<TwitterUserFollowResponse>(RawResult);
 
