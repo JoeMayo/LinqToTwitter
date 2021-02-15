@@ -107,6 +107,16 @@ namespace LinqToTwitter.Net
         {
             try
             {
+                bool isXml = responseStr.StartsWith("<?xml");
+
+                if (isXml)
+                    return new TwitterErrorDetails
+                    {
+                        Detail = responseStr,
+                        Title = "Unable to Parse Response - please examine Detail property",
+                        Type = "XML Formatted Error"
+                    };
+
                 var responseJson = JsonDocument.Parse(responseStr);
                 var root = responseJson.RootElement;
 
