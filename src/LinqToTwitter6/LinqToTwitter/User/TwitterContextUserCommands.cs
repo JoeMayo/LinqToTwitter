@@ -93,5 +93,35 @@ namespace LinqToTwitter
             return result;
         }
 
+        /// <summary>
+        /// Make a source user un-follow a target user
+        /// </summary>
+        /// <param name="sourceUserID">Following user ID</param>
+        /// <param name="targetUserID">Followed user ID</param>
+        /// <param name="cancelToken">Allows request cancellation</param>
+        /// <returns>Follow Status</returns>
+        public async Task<TwitterUserFollowResponse?> UnFollowAsync(string sourceUserID, string targetUserID, CancellationToken cancelToken = default(CancellationToken))
+        {
+            _ = sourceUserID ?? throw new ArgumentException($"{nameof(sourceUserID)} is a required parameter.", nameof(sourceUserID));
+            _ = targetUserID ?? throw new ArgumentException($"{nameof(targetUserID)} is a required parameter.", nameof(targetUserID));
+
+            string url = $"{BaseUrl2}users/{sourceUserID}/following/{targetUserID}";
+
+            var postData = new Dictionary<string, string>();
+            var postObj = new TwitterUserTargetID() { TargetUserID = targetUserID };
+
+            RawResult =
+                await TwitterExecutor.SendJsonToTwitterAsync(
+                    HttpMethod.Delete.ToString(),
+                    url,
+                    postData,
+                    postObj,
+                    cancelToken)
+                   .ConfigureAwait(false);
+
+            TwitterUserFollowResponse? result = JsonSerializer.Deserialize<TwitterUserFollowResponse>(RawResult);
+
+            return result;
+        }
     }
 }

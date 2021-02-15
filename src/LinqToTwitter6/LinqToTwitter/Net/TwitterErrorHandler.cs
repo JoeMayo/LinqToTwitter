@@ -57,7 +57,7 @@ namespace LinqToTwitter.Net
             throw new TwitterQueryException(message)
             {
                 HelpLink = L2TKeys.FaqHelpUrl,
-                StatusCode = HttpStatusCode.SeeOther,
+                StatusCode = HttpStatusCode.TooManyRequests,
                 ReasonPhrase = msg.ReasonPhrase + " (HTTP 429 - Too Many Requests)",
                 Title = error.Title,
                 Details = error.Detail,
@@ -114,14 +114,10 @@ namespace LinqToTwitter.Net
 
                 if (apiVersion == TwitterApiV2) // version 2
                 {
-                    
-                    return new TwitterErrorDetails
-                    {
-                        Title = root.GetString("title"),
-                        Detail = root.GetString("detail"),
-                        Type = root.GetString("type"),
-                        Errors =
-                            (from error in root.GetProperty("errors").EnumerateArray()
+                    List<Error>? errors = null;
+                    if (root.TryGetProperty("errors", out JsonElement errorElement))
+                        errors =
+                            (from error in errorElement.EnumerateArray()
                              select new Error
                              {
                                  Message = error.GetString("message"),
@@ -136,7 +132,14 @@ namespace LinqToTwitter.Net
                                      key => key.Name,
                                      val => val.vals)
                              })
-                            .ToList()
+                            .ToList();
+
+                    return new TwitterErrorDetails
+                    {
+                        Title = root.GetString("title"),
+                        Detail = root.GetString("detail"),
+                        Type = root.GetString("type"),
+                        Errors = errors
                     };
                 }
                 else // version 1
@@ -189,9 +192,9 @@ namespace LinqToTwitter.Net
         static int GetTwitterApiVersion(JsonElement root)
         {
             bool hasTitle = root.TryGetProperty("title", out _);
-            bool hasErrors = root.TryGetProperty("errors", out _);
+            bool hasType = root.TryGetProperty("type", out _);
 
-            return hasTitle && hasErrors ? TwitterApiV2 : TwitterApiV1;
+            return hasTitle && hasType ? TwitterApiV2 : TwitterApiV1;
         }
     }
 }

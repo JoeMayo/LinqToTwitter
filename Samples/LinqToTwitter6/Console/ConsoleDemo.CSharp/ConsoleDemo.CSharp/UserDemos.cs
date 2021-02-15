@@ -61,6 +61,11 @@ namespace ConsoleDemo.CSharp
                         Console.WriteLine("\n\tFollowing...\n");
                         await FollowAsync(twitterCtx);
                         break;
+                    case 'a':
+                    case 'A':
+                        Console.WriteLine("\n\tUn-Following...\n");
+                        await UnFollowAsync(twitterCtx);
+                        break;
                     case 'q':
                     case 'Q':
                         Console.WriteLine("\nReturning...\n");
@@ -87,6 +92,7 @@ namespace ConsoleDemo.CSharp
             Console.WriteLine("\t 7. Find Followers");
             Console.WriteLine("\t 8. Find Following");
             Console.WriteLine("\t 9. Follow a User");
+            Console.WriteLine("\t A. Un-Follow a User");
             Console.WriteLine();
             Console.Write("\t Q. Return to Main menu");
         }
@@ -206,7 +212,7 @@ namespace ConsoleDemo.CSharp
 
         static async Task ReportSpammerAsync(TwitterContext twitterCtx)
         {
-            const string SpammerScreenName = "realDonaldTrump";
+            const string SpammerScreenName = "<put screen name here>";
 
             User? spammer = await twitterCtx.ReportSpamAsync(SpammerScreenName, performBlock: true);
 
@@ -254,6 +260,17 @@ namespace ConsoleDemo.CSharp
 
             TwitterUserFollowResponse? response = 
                 await twitterCtx.FollowAsync(followingUser, userToFollow);
+
+            Console.WriteLine($"Is Following: {response?.Data?.Following ?? false}");
+        }
+
+        async static Task UnFollowAsync(TwitterContext twitterCtx)
+        {
+            string followingUser = "15411837";
+            string userToFollow = "<put account ID here>";
+
+            TwitterUserFollowResponse? response =
+                await twitterCtx.UnFollowAsync(followingUser, userToFollow);
 
             Console.WriteLine($"Is Following: {response?.Data?.Following ?? false}");
         }

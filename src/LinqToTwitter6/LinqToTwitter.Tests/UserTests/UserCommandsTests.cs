@@ -190,6 +190,46 @@ namespace LinqToTwitterPcl.Tests.AccountTests
             Assert.AreEqual(ExpectedParamName, ex.ParamName);
         }
 
+        [TestMethod]
+        public async Task UnFollow_WithProperParameters_Succeeds()
+        {
+            const string followingUser = "abc";
+            const string userToFollow = "def";
+            var ctx = InitTwitterContextWithPostToTwitter<User>(UnFollowResponse);
+
+            TwitterUserFollowResponse response =
+                await ctx.UnFollowAsync(followingUser, userToFollow);
+
+            Assert.IsNotNull(response);
+            TwitterUserFollowResponseData data = response.Data;
+            Assert.IsNotNull(data);
+            Assert.IsFalse(data.Following);
+        }
+
+        [TestMethod]
+        public async Task UnFollow_WithoutSource_Throws()
+        {
+            const string ExpectedParamName = "sourceUserID";
+            var ctx = InitTwitterContextWithPostToTwitter<User>(UnFollowResponse);
+
+            var ex = await L2TAssert.Throws<ArgumentException>(
+                async () => await ctx.UnFollowAsync(null, "abc"));
+
+            Assert.AreEqual(ExpectedParamName, ex.ParamName);
+        }
+
+        [TestMethod]
+        public async Task UnFollow_WithoutTarget_Throws()
+        {
+            const string ExpectedParamName = "targetUserID";
+            var ctx = InitTwitterContextWithPostToTwitter<User>(UnFollowResponse);
+
+            var ex = await L2TAssert.Throws<ArgumentException>(
+                async () => await ctx.UnFollowAsync("abc", null));
+
+            Assert.AreEqual(ExpectedParamName, ex.ParamName);
+        }
+
         const string SingleUserResponse = @"{
    ""id"":6253282,
    ""id_str"":""6253282"",
@@ -258,6 +298,14 @@ namespace LinqToTwitterPcl.Tests.AccountTests
         const string FollowResponse = @"{
     ""data"": {
 		""following"": true,
+		""pending_follow"": false
+	}
+}
+";
+
+        const string UnFollowResponse = @"{
+    ""data"": {
+		""following"": false,
 		""pending_follow"": false
 	}
 }
