@@ -15,10 +15,10 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="userID">User id of alleged spammer.</param>
         /// <returns>Alleged spammer user info.</returns>
-        public async Task<User?> ReportSpamAsync(ulong userID, bool performBlock = false, CancellationToken cancelToken = default(CancellationToken))
+        public async Task<User?> ReportSpamAsync(ulong userID, bool performBlock = false, CancellationToken cancelToken = default)
         {
             if (userID == 0)
-                throw new ArgumentException("Twitter doesn't have a user with ID == 0", "userID");
+                throw new ArgumentException("Twitter doesn't have a user with ID == 0", nameof(userID));
 
             var reportParams = new Dictionary<string, string?>
             {
@@ -35,10 +35,10 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="screenName">Screen name of alleged spammer.</param>
         /// <returns>Alleged spammer user info.</returns>
-        public async Task<User?> ReportSpamAsync(string screenName, bool performBlock = false, CancellationToken cancelToken = default(CancellationToken))
+        public async Task<User?> ReportSpamAsync(string screenName, bool performBlock = false, CancellationToken cancelToken = default)
         {
             if (string.IsNullOrWhiteSpace(screenName))
-                throw new ArgumentException("Please supply a valid screen name", "screenName");
+                throw new ArgumentException("Please supply a valid screen name", nameof(screenName));
 
             var reportParams = new Dictionary<string, string?>
             {
@@ -49,7 +49,7 @@ namespace LinqToTwitter
             return await ReportSpamAsync(reportParams, cancelToken).ConfigureAwait(false);
         }
 
-        internal async Task<User?> ReportSpamAsync(IDictionary<string, string?> reportParams, CancellationToken cancelToken = default(CancellationToken))
+        internal async Task<User?> ReportSpamAsync(IDictionary<string, string?> reportParams, CancellationToken cancelToken = default)
         {
             string reportSpamUrl = BaseUrl + "users/report_spam.json";
 
@@ -69,7 +69,7 @@ namespace LinqToTwitter
         /// <param name="targetUserID">Followed user ID</param>
         /// <param name="cancelToken">Allows request cancellation</param>
         /// <returns>Follow Status</returns>
-        public async Task<TwitterUserFollowResponse?> FollowAsync(string sourceUserID, string targetUserID, CancellationToken cancelToken = default(CancellationToken))
+        public async Task<TwitterUserFollowResponse?> FollowAsync(string sourceUserID, string targetUserID, CancellationToken cancelToken = default)
         {
             _ = sourceUserID ?? throw new ArgumentException($"{nameof(sourceUserID)} is a required parameter.", nameof(sourceUserID));
             _ = targetUserID ?? throw new ArgumentException($"{nameof(targetUserID)} is a required parameter.", nameof(targetUserID));
@@ -100,7 +100,7 @@ namespace LinqToTwitter
         /// <param name="targetUserID">Followed user ID</param>
         /// <param name="cancelToken">Allows request cancellation</param>
         /// <returns>Follow Status</returns>
-        public async Task<TwitterUserFollowResponse?> UnFollowAsync(string sourceUserID, string targetUserID, CancellationToken cancelToken = default(CancellationToken))
+        public async Task<TwitterUserFollowResponse?> UnFollowAsync(string sourceUserID, string targetUserID, CancellationToken cancelToken = default)
         {
             _ = sourceUserID ?? throw new ArgumentException($"{nameof(sourceUserID)} is a required parameter.", nameof(sourceUserID));
             _ = targetUserID ?? throw new ArgumentException($"{nameof(targetUserID)} is a required parameter.", nameof(targetUserID));

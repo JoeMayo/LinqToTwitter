@@ -4,7 +4,7 @@
 		<TargetFramework>net5.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<Description>LINQ to Twitter is a 3rd party LINQ Provider that lets you tweet and query with the Twitter API.</Description>
-		<Version>6.4.0</Version>
+		<Version>6.5.0</Version>
 		<Authors>Joe Mayo</Authors>
 		<Company>Joe Mayo</Company>
 		<PackageId>linqtotwitter</PackageId>
@@ -16,9 +16,9 @@
 		<PackageIcon>200xColor_2.png</PackageIcon>
 		<RepositoryUrl>https://github.com/JoeMayo/LinqToTwitter</RepositoryUrl>
 		<PackageTags>twitter twitterapi twitterdev tweet linq social linqtotwitter linq2twitter</PackageTags>
-		<PackageReleaseNotes>- Fixed List processing for Memberships, Ownerships, and Subscriptions queries
-- Added Full Search query
-- Added Compliance queries and command</PackageReleaseNotes>
+		<PackageReleaseNotes>- Added the new FollowAsync Command from the Twitter API v2
+- Added the new UnFollowAsync Command from the Twitter API v2
+- Fixed XAuth bug that wasn't parsing XML response from the Twitter API</PackageReleaseNotes>
 		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
 		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 	</PropertyGroup>
