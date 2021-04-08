@@ -55,7 +55,7 @@ namespace LinqToTwitter.Tests.BlocksTests
             const bool SkipStatus = true;
             var ctx = InitializeTwitterContext();
 
-            User actual = await ctx.CreateBlockAsync(Id, null, SkipStatus);
+            User actual = await ctx.BlockUserAsync(Id, null, SkipStatus);
 
             Assert.AreEqual("LINQ to Tweeter Test", actual.Name);
         }
@@ -67,7 +67,7 @@ namespace LinqToTwitter.Tests.BlocksTests
             const bool SkipStatus = true;
             var ctx = InitializeTwitterContext();
 
-            await ctx.CreateBlockAsync(Id, null, SkipStatus);
+            await ctx.BlockUserAsync(Id, null, SkipStatus);
 
             Assert.AreEqual(BlocksUserJson, ctx.RawResult);
         }
@@ -79,7 +79,7 @@ namespace LinqToTwitter.Tests.BlocksTests
             const bool SkipStatus = true;
             var ctx = InitializeTwitterContext();
 
-            await ctx.CreateBlockAsync(Id, null, SkipStatus);
+            await ctx.BlockUserAsync(Id, null, SkipStatus);
 
             execMock.Verify(exec =>
                 exec.PostFormUrlEncodedToTwitterAsync<User>(
@@ -96,7 +96,7 @@ namespace LinqToTwitter.Tests.BlocksTests
             var ctx = InitializeTwitterContext();
 
             var ex = await L2TAssert.Throws<ArgumentException>(
-                async () => await ctx.CreateBlockAsync(0, null, true));
+                async () => await ctx.BlockUserAsync(0, null, true));
 
             Assert.AreEqual("UserIDOrScreenName", ex.ParamName);
         }
@@ -108,7 +108,7 @@ namespace LinqToTwitter.Tests.BlocksTests
             const bool SkipStatus = true;
             var ctx = InitializeTwitterContext();
 
-            User actual = await ctx.DestroyBlockAsync(Id, null, SkipStatus);
+            User actual = await ctx.UnblockUserAsync(Id, null, SkipStatus);
 
             Assert.AreEqual("LINQ to Tweeter Test", actual.Name);
         }
@@ -120,7 +120,7 @@ namespace LinqToTwitter.Tests.BlocksTests
             const bool SkipStatus = true;
             var ctx = InitializeTwitterContext();
 
-            await ctx.DestroyBlockAsync(Id, null, SkipStatus);
+            await ctx.UnblockUserAsync(Id, null, SkipStatus);
 
             Assert.AreEqual(BlocksUserJson, ctx.RawResult);
         }
@@ -132,7 +132,7 @@ namespace LinqToTwitter.Tests.BlocksTests
             const bool SkipStatus = true;
             var ctx = InitializeTwitterContext();
 
-            await ctx.DestroyBlockAsync(Id, null, SkipStatus);
+            await ctx.UnblockUserAsync(Id, null, SkipStatus);
 
             execMock.Verify(exec =>
                 exec.PostFormUrlEncodedToTwitterAsync<User>(
@@ -149,7 +149,7 @@ namespace LinqToTwitter.Tests.BlocksTests
             var ctx = InitializeTwitterContext();
 
             var ex = await L2TAssert.Throws<ArgumentException>(
-                async () => await ctx.DestroyBlockAsync(0, null, true));
+                async () => await ctx.UnblockUserAsync(0, null, true));
 
             Assert.AreEqual("UserIDOrScreenName", ex.ParamName);
         }
