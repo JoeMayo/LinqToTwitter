@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using LinqToTwitter;
+using LinqToTwitter.Common;
 
 namespace ConsoleDemo.CSharp
 {
@@ -29,11 +30,11 @@ namespace ConsoleDemo.CSharp
                         break;
                     case '2':
                         Console.WriteLine("\n\tBlocking user...\n");
-                        await CreateBlockAsync(twitterCtx);
+                        await BlockUserAsync(twitterCtx);
                         break;
                     case '3':
                         Console.WriteLine("\n\tUnblocking user...\n");
-                        await DestroyBlockAsync(twitterCtx);
+                        await UnblockUserAsync(twitterCtx);
                         break;
                     case 'q':
                     case 'Q':
@@ -86,26 +87,60 @@ namespace ConsoleDemo.CSharp
                 result.IDs.ForEach(block => Console.WriteLine("ID: {0}", block)); 
         }
 
-        static async Task CreateBlockAsync(TwitterContext twitterCtx)
+        static async Task BlockUserAsync(TwitterContext twitterCtx)
         {
             Console.Write("User Screen Name to Block: ");
             string? userName = Console.ReadLine() ?? "";
 
-            var user = await twitterCtx.CreateBlockAsync(0, userName, true);
+            TwitterUserQuery? userResponse =
+                await
+                (from usr in twitterCtx.TwitterUser
+                 where usr.Type == UserType.UsernameLookup &&
+                       usr.Usernames == userName
+                 select usr)
+                .SingleOrDefaultAsync();
 
-            if (user != null)
-                Console.WriteLine("User Name: " + user.Name);
+            string? targetUserID = userResponse?.ID;
+            string? sourceUserID = twitterCtx.Authorizer?.CredentialStore?.UserID.ToString();
+
+            if (targetUserID == null || sourceUserID == null)
+            {
+                Console.WriteLine($"Either {nameof(targetUserID)} or {nameof(sourceUserID)} is null.");
+                return;
+            }
+
+            BlockingResponse? user = await twitterCtx.BlockUserAsync(sourceUserID, targetUserID);
+
+            if (user?.Data != null)
+                Console.WriteLine("Is Blocked: " + user.Data.Blocking);
         }
 
-        static async Task DestroyBlockAsync(TwitterContext twitterCtx)
+        static async Task UnblockUserAsync(TwitterContext twitterCtx)
         {
-            Console.Write("User Screen Name to Unblock: ");
+            Console.Write("User Screen Name to Block: ");
             string? userName = Console.ReadLine() ?? "";
 
-            var user = await twitterCtx.DestroyBlockAsync(0, userName, true);
+            TwitterUserQuery? userResponse =
+                await
+                (from usr in twitterCtx.TwitterUser
+                 where usr.Type == UserType.UsernameLookup &&
+                       usr.Usernames == userName
+                 select usr)
+                .SingleOrDefaultAsync();
 
-            if (user != null) 
-                Console.WriteLine("User Name: " + user.Name);
+            string? targetUserID = userResponse?.ID;
+            string? sourceUserID = twitterCtx.Authorizer?.CredentialStore?.UserID.ToString();
+
+            if (targetUserID == null || sourceUserID == null)
+            {
+                Console.WriteLine($"Either {nameof(targetUserID)} or {nameof(sourceUserID)} is null.");
+                return;
+            }
+
+            BlockingResponse? user = await twitterCtx.UnblockUserAsync(sourceUserID, targetUserID);
+
+            if (user?.Data != null)
+                Console.WriteLine("Is Blocked: " + user.Data.Blocking);
         }
     }
 }
