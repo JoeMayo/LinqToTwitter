@@ -28,7 +28,7 @@ namespace LinqToTwitter.Net
             foreach (char symbol in escapedValue)
             {
                 if (reservedChars.IndexOf(symbol) != -1)
-                    result.Append('%' + String.Format("{0:X2}", (int)symbol).ToUpper());
+                    result.Append('%' + string.Format("{0:X2}", (int)symbol).ToUpper());
                 else
                     result.Append(symbol);
             }

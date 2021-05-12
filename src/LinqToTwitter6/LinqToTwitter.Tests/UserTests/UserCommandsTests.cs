@@ -50,7 +50,7 @@ namespace LinqToTwitterPcl.Tests.AccountTests
                     .Returns(tcsResponse.Task);
             execMock.Setup(exec =>
                 exec.SendJsonToTwitterAsync(
-                    HttpMethod.Post.ToString(),
+                    It.IsAny<string>(),
                     It.IsAny<string>(),
                     It.IsAny<IDictionary<string, string>>(),
                     It.IsAny<TwitterUserTargetID>(),

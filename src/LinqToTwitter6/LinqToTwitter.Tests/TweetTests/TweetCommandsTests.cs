@@ -37,7 +37,7 @@ namespace LinqToTwitter.Tests.StatusTests
                     HttpMethod.Put.ToString(),
                     It.IsAny<string>(),
                     It.IsAny<IDictionary<string, string>>(),
-                    It.IsAny<TwitterUserTargetID>(),
+                    It.IsAny<TweetHidden>(),
                     It.IsAny<CancellationToken>()))
                 .Returns(tcsResponse.Task);
             var ctx = new TwitterContext(execMock.Object);
@@ -50,9 +50,9 @@ namespace LinqToTwitter.Tests.StatusTests
             const string ReplyID = "184835136037191681";
             var ctx = await InitializeTwitterContextAsync(HideReplyResponse);
 
-            bool isHidden = await ctx.HideReplyAsync(ReplyID);
+            TweetHideResponse actual = await ctx.HideReplyAsync(ReplyID);
 
-            Assert.IsTrue(isHidden);
+            Assert.IsTrue(actual.Data.Hidden);
         }
 
         [TestMethod]
@@ -61,9 +61,9 @@ namespace LinqToTwitter.Tests.StatusTests
             const string ReplyID = "184835136037191681";
             var ctx = await InitializeTwitterContextAsync(UnHideReplyResponse);
 
-            bool isHidden = await ctx.HideReplyAsync(ReplyID);
+            TweetHideResponse actual = await ctx.HideReplyAsync(ReplyID);
 
-            Assert.IsFalse(isHidden);
+            Assert.IsFalse(actual.Data.Hidden);
         }
 
         [TestMethod]

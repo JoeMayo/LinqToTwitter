@@ -21,7 +21,7 @@ namespace LinqToTwitter
             _ = sourceUserID ?? throw new ArgumentException($"{nameof(sourceUserID)} is a required parameter.", nameof(sourceUserID));
             _ = targetUserID ?? throw new ArgumentException($"{nameof(targetUserID)} is a required parameter.", nameof(targetUserID));
 
-            var url = $"{BaseUrl}users/{sourceUserID}/blocking";
+            var url = $"{BaseUrl2}users/{sourceUserID}/blocking";
 
             var reqProc = new BlocksRequestProcessor<User>();
 
@@ -54,7 +54,7 @@ namespace LinqToTwitter
             _ = sourceUserID ?? throw new ArgumentException($"{nameof(sourceUserID)} is a required parameter.", nameof(sourceUserID));
             _ = targetUserID ?? throw new ArgumentException($"{nameof(targetUserID)} is a required parameter.", nameof(targetUserID));
 
-            var url = $"{BaseUrl}users/{sourceUserID}/blocking/{targetUserID}";
+            var url = $"{BaseUrl2}users/{sourceUserID}/blocking/{targetUserID}";
 
             var reqProc = new BlocksRequestProcessor<User>();
 

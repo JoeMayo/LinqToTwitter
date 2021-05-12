@@ -150,18 +150,18 @@ namespace ConsoleDemo.CSharp
         {
             const string TweetID = "1327749647515881473";
 
-            bool isHidden = await twitterCtx.HideReplyAsync(TweetID);
+            TweetHideResponse? hideResp = await twitterCtx.HideReplyAsync(TweetID);
 
-            Console.WriteLine($"Is Hidden: {isHidden}");
+            Console.WriteLine($"Is Hidden: {hideResp?.Data?.Hidden}");
         }
 
         static async Task UnHideReplyAsync(TwitterContext twitterCtx)
         {
             const string TweetID = "1327749647515881473";
 
-            bool isHidden = await twitterCtx.UnHideReplyAsync(TweetID);
+            TweetHideResponse? hideResp = await twitterCtx.UnhideReplyAsync(TweetID);
 
-            Console.WriteLine($"Is Hidden: {isHidden}");
+            Console.WriteLine($"Is Hidden: {hideResp?.Data?.Hidden}");
         }
 
         static async Task GetMentionsTimelineAsync(TwitterContext twitterCtx)

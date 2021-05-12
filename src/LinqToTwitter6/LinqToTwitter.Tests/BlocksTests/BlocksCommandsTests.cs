@@ -6,6 +6,7 @@ using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -31,128 +32,172 @@ namespace LinqToTwitter.Tests.BlocksTests
             Assert.IsInstanceOfType(blocksReqProc, typeof(IRequestProcessorWithAction<User>));
         }
 
-        TwitterContext InitializeTwitterContext()
+        TwitterContext InitializeTwitterContext(string response)
         {
             authMock = new Mock<IAuthorizer>();
             var tcsResponse = new TaskCompletionSource<string>();
-            tcsResponse.SetResult(BlocksUserJson);
+            tcsResponse.SetResult(response);
             execMock = new Mock<ITwitterExecute>();
             execMock.SetupGet(exec => exec.Authorizer).Returns(authMock.Object);
-            execMock.Setup(exec => exec.PostFormUrlEncodedToTwitterAsync<User>(
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<Dictionary<string, string>>(),
-                It.IsAny<CancellationToken>()))
+            execMock.Setup(exec =>
+                exec.SendJsonToTwitterAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<IDictionary<string, string>>(),
+                    It.IsAny<TwitterUserTargetID>(),
+                    It.IsAny<CancellationToken>()))
                 .Returns(tcsResponse.Task);
             var ctx = new TwitterContext(execMock.Object);
             return ctx;
         }
 
         [TestMethod]
-        public async Task CreateBlockAsync_Handles_Response()
+        public async Task BlockUserAsync_Handles_Response()
         {
-            const ulong Id = 1;
-            const bool SkipStatus = true;
-            var ctx = InitializeTwitterContext();
+            const string SourceUserID = "1";
+            const string TargetUserID = "2";
+            var ctx = InitializeTwitterContext(BlockUserResponse);
 
-            User actual = await ctx.BlockUserAsync(Id, null, SkipStatus);
+            BlockingResponse actual = await ctx.BlockUserAsync(SourceUserID, TargetUserID);
 
-            Assert.AreEqual("LINQ to Tweeter Test", actual.Name);
+            Assert.IsTrue(actual.Data.Blocking);
         }
 
         [TestMethod]
-        public async Task CreateBlockAsync_WithRawResult_Succeeds()
+        public async Task BlockUserAsync_WithRawResult_Succeeds()
         {
-            const ulong Id = 1;
-            const bool SkipStatus = true;
-            var ctx = InitializeTwitterContext();
+            const string SourceUserID = "1";
+            const string TargetUserID = "2";
+            var ctx = InitializeTwitterContext(BlockUserResponse);
 
-            await ctx.BlockUserAsync(Id, null, SkipStatus);
+            await ctx.BlockUserAsync(SourceUserID, TargetUserID);
 
-            Assert.AreEqual(BlocksUserJson, ctx.RawResult);
+            Assert.AreEqual(BlockUserResponse, ctx.RawResult);
         }
 
         [TestMethod]
-        public async Task CreateBlockAsync_Builds_Url()
+        public async Task BlockUserAsync_Builds_Url()
         {
-            const ulong Id = 1;
-            const bool SkipStatus = true;
-            var ctx = InitializeTwitterContext();
+            const string SourceUserID = "1";
+            const string TargetUserID = "2";
+            var ctx = InitializeTwitterContext(BlockUserResponse);
 
-            await ctx.BlockUserAsync(Id, null, SkipStatus);
+            await ctx.BlockUserAsync(SourceUserID, TargetUserID);
 
             execMock.Verify(exec =>
-                exec.PostFormUrlEncodedToTwitterAsync<User>(
-                    It.IsAny<string>(),
-                    "https://api.twitter.com/1.1/blocks/create.json",
-                    It.IsAny<Dictionary<string, string>>(),
+                exec.SendJsonToTwitterAsync(
+                    HttpMethod.Post.ToString(),
+                    "https://api.twitter.com/2/users/1/blocking",
+                    It.IsAny<IDictionary<string, string>>(),
+                    It.IsAny<TwitterUserTargetID>(),
                     It.IsAny<CancellationToken>()),
                 Times.Once());
         }
 
         [TestMethod]
-        public async Task CreateBlockAsync_Throws_On_Null_UserID_And_ScreenName()
+        public async Task BlockUserAsync_Throws_On_Null_SourceUserID()
         {
-            var ctx = InitializeTwitterContext();
+            const string SourceUserID = null;
+            const string TargetUserID = "2";
+            var ctx = InitializeTwitterContext(BlockUserResponse);
 
             var ex = await L2TAssert.Throws<ArgumentException>(
-                async () => await ctx.BlockUserAsync(0, null, true));
+                async () => await ctx.BlockUserAsync(SourceUserID, TargetUserID));
 
-            Assert.AreEqual("UserIDOrScreenName", ex.ParamName);
+            Assert.AreEqual("sourceUserID", ex.ParamName);
         }
 
         [TestMethod]
-        public async Task DestroyBlockAsync_Handles_Response()
+        public async Task BlockUserAsync_Throws_On_Null_TargetUserID()
         {
-            const ulong Id = 1;
-            const bool SkipStatus = true;
-            var ctx = InitializeTwitterContext();
+            const string SourceUserID = "1";
+            const string TargetUserID = null;
+            var ctx = InitializeTwitterContext(BlockUserResponse);
 
-            User actual = await ctx.UnblockUserAsync(Id, null, SkipStatus);
+            var ex = await L2TAssert.Throws<ArgumentException>(
+                async () => await ctx.BlockUserAsync(SourceUserID, TargetUserID));
 
-            Assert.AreEqual("LINQ to Tweeter Test", actual.Name);
+            Assert.AreEqual("targetUserID", ex.ParamName);
         }
 
         [TestMethod]
-        public async Task DestroyBlockAsync_WithRawResult_Succeeds()
+        public async Task UnblockUserAsync_Handles_Response()
         {
-            const ulong Id = 1;
-            const bool SkipStatus = true;
-            var ctx = InitializeTwitterContext();
+            const string SourceUserID = "1";
+            const string TargetUserID = "2";
+            var ctx = InitializeTwitterContext(UnblockUserResponse);
 
-            await ctx.UnblockUserAsync(Id, null, SkipStatus);
+            BlockingResponse actual = await ctx.UnblockUserAsync(SourceUserID, TargetUserID);
 
-            Assert.AreEqual(BlocksUserJson, ctx.RawResult);
+            Assert.IsFalse(actual.Data.Blocking);
         }
 
         [TestMethod]
-        public async Task DestroyBlockAsync_Builds_Url()
+        public async Task UnblockUserAsync_WithRawResult_Succeeds()
         {
-            const ulong Id = 1;
-            const bool SkipStatus = true;
-            var ctx = InitializeTwitterContext();
+            const string SourceUserID = "1";
+            const string TargetUserID = "2";
+            var ctx = InitializeTwitterContext(UnblockUserResponse);
 
-            await ctx.UnblockUserAsync(Id, null, SkipStatus);
+            await ctx.UnblockUserAsync(SourceUserID, TargetUserID);
+
+            Assert.AreEqual(UnblockUserResponse, ctx.RawResult);
+        }
+
+        [TestMethod]
+        public async Task UnblockUserAsync_Builds_Url()
+        {
+            const string SourceUserID = "1";
+            const string TargetUserID = "2";
+            var ctx = InitializeTwitterContext(UnblockUserResponse);
+
+            await ctx.UnblockUserAsync(SourceUserID, TargetUserID);
 
             execMock.Verify(exec =>
-                exec.PostFormUrlEncodedToTwitterAsync<User>(
-                    It.IsAny<string>(),
-                    "https://api.twitter.com/1.1/blocks/destroy.json",
-                    It.IsAny<Dictionary<string, string>>(),
+                exec.SendJsonToTwitterAsync(
+                    HttpMethod.Delete.ToString(),
+                    "https://api.twitter.com/2/users/1/blocking/2",
+                    It.IsAny<IDictionary<string, string>>(),
+                    It.IsAny<TwitterUserTargetID>(),
                     It.IsAny<CancellationToken>()),
                 Times.Once());
         }
 
         [TestMethod]
-        public async Task DestroyBlockAsync_Throws_On_No_ID_Or_ScreenName()
+        public async Task UnblockUserAsync_Throws_On_No_SourceUserID()
         {
-            var ctx = InitializeTwitterContext();
+            const string SourceUserID = null;
+            const string TargetUserID = "2";
+            var ctx = InitializeTwitterContext(UnblockUserResponse);
 
             var ex = await L2TAssert.Throws<ArgumentException>(
-                async () => await ctx.UnblockUserAsync(0, null, true));
+                async () => await ctx.UnblockUserAsync(SourceUserID, TargetUserID));
 
-            Assert.AreEqual("UserIDOrScreenName", ex.ParamName);
+            Assert.AreEqual("sourceUserID", ex.ParamName);
         }
+
+        [TestMethod]
+        public async Task UnblockUserAsync_Throws_On_No_TargetUserID()
+        {
+            const string SourceUserID = "1";
+            const string TargetUserID = null;
+            var ctx = InitializeTwitterContext(UnblockUserResponse);
+
+            var ex = await L2TAssert.Throws<ArgumentException>(
+                async () => await ctx.UnblockUserAsync(SourceUserID, TargetUserID));
+
+            Assert.AreEqual("targetUserID", ex.ParamName);
+        }
+
+        const string BlockUserResponse = @"{
+    ""data"": {
+        ""blocking"":true}
+    }";
+
+        const string UnblockUserResponse = @"{
+    ""data"": {
+        ""blocking"":false}
+    }";
 
         const string BlocksUserJson = @"{
    ""id"":16761255,

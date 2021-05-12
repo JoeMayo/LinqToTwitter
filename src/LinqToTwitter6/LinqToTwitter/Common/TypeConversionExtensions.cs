@@ -104,6 +104,7 @@ namespace LinqToTwitter.Common
         static readonly string[] dateFormats =
         {
             "ddd MMM dd HH:mm:ss %zzzz yyyy",
+            "yyyy-MM-dd\\THH:mm:ss.000\\Z",
             "yyyy-MM-dd\\THH:mm:ss\\Z",
             "yyyy-MM-dd HH:mm:ss",
             "yyyy-MM-dd HH:mm"
@@ -123,16 +124,7 @@ namespace LinqToTwitter.Common
         public static DateTime GetDate(this JsonElement json, string propertyName, DateTime defaultValue = default)
         {
             string? date = json.GetString(propertyName);
-
-            return
-                string.IsNullOrWhiteSpace(date) ||
-                !DateTime.TryParseExact(
-                        date,
-                        dateFormats,
-                        CultureInfo.InvariantCulture,
-                        DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal, out DateTime result)
-                    ? defaultValue
-                    : result;
+            return date?.GetDate(defaultValue) ?? defaultValue;
         }
 
         public static readonly DateTime EpochBase = new DateTime(1970, 1, 1, 0, 0, 0, 0);
