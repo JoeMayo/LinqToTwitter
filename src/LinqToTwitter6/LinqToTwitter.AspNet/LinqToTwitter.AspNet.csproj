@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <Version>6.2.0</Version>
+    <Version>6.7.0</Version>
     <Authors>Joe Mayo</Authors>
     <Company>Joe Mayo</Company>
     <Product>LINQ to Twitter for ASP.NET</Product>
@@ -16,7 +16,7 @@ This library has ASP.NET authorizers and SessionStateCredentialCache that you'll
     <RepositoryUrl>https://github.com/JoeMayo/LinqToTwitter</RepositoryUrl>
     <RepositoryType></RepositoryType>
     <PackageTags>twitter twitterapi twitterdev tweet linq social linqtotwitter linq2twitter</PackageTags>
-    <PackageReleaseNotes>In previous versions of LINQ to Twitter, this was included in the `linqtotwitter` package. In version 6, ASP.NET Core 5 support is a separate package with a dependency on `linqtotwitter` v6.0+.</PackageReleaseNotes>
+    <PackageReleaseNotes>Note: In previous versions of LINQ to Twitter, this was included in the `linqtotwitter` package. In version 6, ASP.NET Core 5 support is a separate package with a dependency on `linqtotwitter` v6.0+.</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
