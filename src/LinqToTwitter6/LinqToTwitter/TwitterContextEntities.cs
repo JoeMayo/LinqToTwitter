@@ -200,6 +200,12 @@ namespace LinqToTwitter
         /// </summary>
         public TwitterQueryable<TweetQuery> Tweets => new TwitterQueryable<TweetQuery>(this);
 
+
+        /// <summary>
+        /// enables access to Twitter blocking information, such as Lookup
+        /// </summary>
+        public TwitterQueryable<TwitterBlocksQuery> TwitterBlocks => new TwitterQueryable<TwitterBlocksQuery>(this);
+
         /// <summary>
         /// enables access to Twitter User lookup (Twitter API v2)
         /// </summary>
