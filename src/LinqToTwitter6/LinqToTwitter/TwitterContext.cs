@@ -506,7 +506,10 @@ namespace LinqToTwitter
                     req = new AccountActivityRequestProcessor<T>();
                     break;
                 case nameof(Blocks):
-                    req = new BlocksRequestProcessor<T>();
+                    req = new BlocksRequestProcessor<T>()
+                    {
+                        BaseUrl = BaseUrl2
+                    };
                     break;
                 case nameof(ComplianceQuery):
                     req = new ComplianceRequestProcessor<T>()
@@ -574,6 +577,12 @@ namespace LinqToTwitter
                     req = new TweetRequestProcessor<T>
                     {
                         BaseUrl = BaseUrl2
+                    };
+                    break;
+                case nameof(TwitterBlocksQuery):
+                    req = new TwitterBlocksRequestProcessor<T> 
+                    { 
+                        BaseUrl = BaseUrl2 
                     };
                     break;
                 case nameof(TwitterUserQuery):

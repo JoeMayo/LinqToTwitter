@@ -21,18 +21,22 @@ namespace ConsoleDemo.CSharp
                 switch (key)
                 {
                     case '0':
+                        Console.WriteLine("\n\tLookup blocked Users...\n");
+                        await LookupBlockedUsersAsync(twitterCtx);
+                        break;
+                    case '1':
                         Console.WriteLine("\n\tListing blocked Users...\n");
                         await ListBlockedUsersAsync(twitterCtx);
                         break;
-                    case '1':
+                    case '2':
                         Console.WriteLine("\n\tListing blocked IDs...\n");
                         await ListBlockIDsAsyc(twitterCtx);
                         break;
-                    case '2':
+                    case '3':
                         Console.WriteLine("\n\tBlocking user...\n");
                         await BlockUserAsync(twitterCtx);
                         break;
-                    case '3':
+                    case '4':
                         Console.WriteLine("\n\tUnblocking user...\n");
                         await UnblockUserAsync(twitterCtx);
                         break;
@@ -52,12 +56,33 @@ namespace ConsoleDemo.CSharp
         {
             Console.WriteLine("\nBlock Demos - Please select:\n");
 
-            Console.WriteLine("\t 0. List Blocked Users");
-            Console.WriteLine("\t 1. List Blocked IDs");
-            Console.WriteLine("\t 2. Block a User");
-            Console.WriteLine("\t 3. Unblock a User");
+            Console.WriteLine("\t 0. Lookup Blocked Users");
+            Console.WriteLine("\t 1. List Blocked Users");
+            Console.WriteLine("\t 2. List Blocked IDs");
+            Console.WriteLine("\t 3. Block a User");
+            Console.WriteLine("\t 4. Unblock a User");
             Console.WriteLine();
             Console.Write("\t Q. Return to Main menu");
+        }
+
+        static async Task LookupBlockedUsersAsync(TwitterContext twitterCtx)
+        {
+            string userID = "15411837";
+
+            TwitterBlocksQuery? blockResponse =
+                await
+                    (from block in twitterCtx.TwitterBlocks
+                     where
+                        block.Type == BlockingType.Lookup &&
+                        block.ID == userID &&
+                        block.TweetFields == TweetField.AllFields &&
+                        block.UserFields == UserField.AllFields
+                     select block)
+                    .SingleOrDefaultAsync();
+
+            if (blockResponse != null && blockResponse.Users != null)
+                blockResponse.Users.ForEach(user =>
+                        Console.WriteLine(user.Name));
         }
 
         static async Task ListBlockedUsersAsync(TwitterContext twitterCtx)

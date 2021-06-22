@@ -107,7 +107,7 @@ namespace LinqToTwitter.Net
         {
             try
             {
-                bool isXml = responseStr.StartsWith("<?xml");
+                bool isXml = responseStr.StartsWith("<?xml") || responseStr.StartsWith("<!DOCTYPE");
 
                 if (isXml)
                     return new TwitterErrorDetails
