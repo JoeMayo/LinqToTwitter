@@ -39,25 +39,25 @@ namespace LinqToTwitter.Tests.BlocksTests
 
             Assert.IsTrue(
                 queryParams.Contains(
-                    new KeyValuePair<string, string>(nameof(TweetQuery.Type), ((int)BlockingType.Lookup).ToString(CultureInfo.InvariantCulture))));
+                    new KeyValuePair<string, string>(nameof(TwitterBlocksQuery.Type), ((int)BlockingType.Lookup).ToString(CultureInfo.InvariantCulture))));
             Assert.IsTrue(
                 queryParams.Contains(
-                    new KeyValuePair<string, string>(nameof(TweetQuery.Expansions), "attachments.poll_ids,author_id")));
+                    new KeyValuePair<string, string>(nameof(TwitterBlocksQuery.Expansions), "attachments.poll_ids,author_id")));
             Assert.IsTrue(
                 queryParams.Contains(
-                    new KeyValuePair<string, string>(nameof(TweetQuery.ID), "123")));
+                    new KeyValuePair<string, string>(nameof(TwitterBlocksQuery.ID), "123")));
             Assert.IsTrue(
                 queryParams.Contains(
-                    new KeyValuePair<string, string>(nameof(TweetQuery.MaxResults), "99")));
+                    new KeyValuePair<string, string>(nameof(TwitterBlocksQuery.MaxResults), "99")));
             Assert.IsTrue(
                 queryParams.Contains(
-                    new KeyValuePair<string, string>(nameof(TweetQuery.PaginationToken), "456")));
+                    new KeyValuePair<string, string>(nameof(TwitterBlocksQuery.PaginationToken), "456")));
             Assert.IsTrue(
                 queryParams.Contains(
-                    new KeyValuePair<string, string>(nameof(TweetQuery.TweetFields), "author_id,created_at")));
+                    new KeyValuePair<string, string>(nameof(TwitterBlocksQuery.TweetFields), "author_id,created_at")));
             Assert.IsTrue(
                 queryParams.Contains(
-                    new KeyValuePair<string, string>(nameof(TweetQuery.UserFields), "created_at,verified")));
+                    new KeyValuePair<string, string>(nameof(TwitterBlocksQuery.UserFields), "created_at,verified")));
         }
 
         [TestMethod]

@@ -532,6 +532,12 @@ namespace LinqToTwitter
                 case nameof(Help):
                     req = new HelpRequestProcessor<T>();
                     break;
+                case nameof(LikeQuery):
+                    req = new LikeRequestProcessor<T>
+                    {
+                        BaseUrl = BaseUrl2
+                    };
+                    break;
                 case nameof(List):
                     req = new ListRequestProcessor<T>();
                     break;

@@ -115,15 +115,9 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// Enables access to muted users
+        /// enables access to Twitter Likes lookup (Twitter API v2)
         /// </summary>
-        public TwitterQueryable<Mute> Mute
-        {
-            get
-            {
-                return new TwitterQueryable<Mute>(this);
-            }
-        }
+        public TwitterQueryable<LikeQuery> Likes => new TwitterQueryable<LikeQuery>(this);
 
         /// <summary>
         /// enables access to Twitter List info
@@ -133,6 +127,17 @@ namespace LinqToTwitter
             get
             {
                 return new TwitterQueryable<List>(this);
+            }
+        }
+
+        /// <summary>
+        /// Enables access to muted users
+        /// </summary>
+        public TwitterQueryable<Mute> Mute
+        {
+            get
+            {
+                return new TwitterQueryable<Mute>(this);
             }
         }
 
