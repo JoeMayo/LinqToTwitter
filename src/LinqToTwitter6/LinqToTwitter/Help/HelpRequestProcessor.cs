@@ -49,8 +49,6 @@ namespace LinqToTwitter
 
             switch (Type)
             {
-                case HelpType.Configuration:
-                    return new Request(BaseUrl + "help/configuration.json");
                 case HelpType.Languages:
                     return new Request(BaseUrl + "help/languages.json");
                 case HelpType.RateLimits:
@@ -87,9 +85,6 @@ namespace LinqToTwitter
 
             switch (Type)
             {
-                case HelpType.Configuration:
-                    help = HandleHelpConfiguration(helpJson);
-                    break;
                 case HelpType.Languages:
                     help = HandleHelpLanguages(helpJson);
                     break;
@@ -104,40 +99,6 @@ namespace LinqToTwitter
             var helpList = new List<Help> { help };
 
             return helpList.OfType<T>().ToList();
-        }
-
-        Help HandleHelpConfiguration(JsonElement helpJson)
-        {
-            if (helpJson.TryGetProperty("photo_sizes", out JsonElement photoSizeDict))
-                return new Help
-                {
-                    Type = HelpType.Configuration,
-                    Configuration = new Configuration
-                    {
-                        CharactersReservedPerMedia = helpJson.GetInt("characters_reserved_per_media"),
-                        PhotoSizes =
-                            (from key in photoSizeDict.EnumerateObject()
-                             let photoSize = photoSizeDict.GetProperty(key.Name)
-                             select new PhotoSize
-                             {
-                                 Type = key.Name,
-                                 Height = photoSize.GetInt("h"),
-                                 Width = photoSize.GetInt("w"),
-                                 Resize = photoSize.GetString("resize")
-                             })
-                            .ToList(),
-                        ShortUrlLength = helpJson.GetInt("short_url_length"),
-                        PhotoSizeLimit = helpJson.GetInt("photo_size_limit"),
-                        NonUserNamePaths =
-                            (from path in helpJson.GetProperty("non_username_paths").EnumerateArray()
-                             select path.ToString())
-                            .ToList(),
-                        MaxMediaPerUpload = helpJson.GetInt("max_media_per_upload"),
-                        ShortUrlLengthHttps = helpJson.GetInt("short_url_length_https")
-                    }
-                };
-            else
-                return new Help();
         }
 
         Help HandleHelpLanguages(JsonElement helpJson)

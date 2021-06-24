@@ -24,10 +24,6 @@ namespace ConsoleDemo.CSharp
                         await GettingRateLimitsAsync(twitterCtx);
                         break;
                     case '1':
-                        Console.WriteLine("\n\tGetting configuration...\n");
-                        await GetHelpConfigurationAsync(twitterCtx);
-                        break;
-                    case '2':
                         Console.WriteLine("\n\tGetting languages...\n");
                         await GetHelpLanguagesAsync(twitterCtx);
                         break;
@@ -48,8 +44,7 @@ namespace ConsoleDemo.CSharp
             Console.WriteLine("\nHelp Demos - Please select:\n");
 
             Console.WriteLine("\t 0. Get Rate Limits");
-            Console.WriteLine("\t 1. Get Configuration");
-            Console.WriteLine("\t 2. Get Languages");
+            Console.WriteLine("\t 1. Get Languages");
             Console.WriteLine();
             Console.Write("\t Q. Return to Main menu");
         }
@@ -75,44 +70,6 @@ namespace ConsoleDemo.CSharp
                             limit.Resource, limit.Remaining, limit.Reset, limit.Limit);
                     }
                 }
-        }
-
-        static async Task GetHelpConfigurationAsync(TwitterContext twitterCtx)
-        {
-            var helpResult =
-                await
-                (from test in twitterCtx.Help
-                 where test.Type == HelpType.Configuration
-                 select test)
-                .SingleOrDefaultAsync();
-
-            if (helpResult != null && 
-                helpResult.Configuration != null && 
-                helpResult.Configuration.NonUserNamePaths != null && 
-                helpResult.Configuration.PhotoSizes != null)
-            {
-                Configuration cfg = helpResult.Configuration;
-
-                Console.WriteLine("Short URL Length: " + cfg.ShortUrlLength);
-                Console.WriteLine("Short URL HTTPS Length: " + cfg.ShortUrlLengthHttps);
-                Console.WriteLine("Non-UserName Paths: ");
-                foreach (var name in cfg.NonUserNamePaths)
-                {
-                    Console.WriteLine("\t" + name);
-                }
-                Console.WriteLine("Photo Size Limit: " + cfg.PhotoSizeLimit);
-                Console.WriteLine("Max Media Per Upload: " + cfg.MaxMediaPerUpload);
-                Console.WriteLine(
-                    "Characters Reserved Per Media: " + cfg.CharactersReservedPerMedia);
-                Console.WriteLine("Photo Sizes");
-                foreach (var photo in cfg.PhotoSizes)
-                {
-                    Console.WriteLine("\t" + photo.Type);
-                    Console.WriteLine("\t\t" + photo.Width);
-                    Console.WriteLine("\t\t" + photo.Height);
-                    Console.WriteLine("\t\t" + photo.Resize);
-                } 
-            }
         }
 
         static async Task GetHelpLanguagesAsync(TwitterContext twitterCtx)

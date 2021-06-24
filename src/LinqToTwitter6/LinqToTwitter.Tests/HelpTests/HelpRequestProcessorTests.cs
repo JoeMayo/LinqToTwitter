@@ -41,21 +41,6 @@ namespace LinqToTwitter.Tests.HelpTests
         }
 
         [TestMethod]
-        public void BuildUrl_Generates_Configuration_Url()
-        {
-            const string ExpectedUrl = "https://api.twitter.com/1.1/help/configuration.json";
-            var helpReqProc = new HelpRequestProcessor<Help> { BaseUrl = "https://api.twitter.com/1.1/" };
-            var parameters = new Dictionary<string, string>
-             {
-                 {"Type", ((int) HelpType.Configuration).ToString()}
-             };
-
-            Request req = helpReqProc.BuildUrl(parameters);
-
-            Assert.AreEqual(ExpectedUrl, req.FullUrl);
-        }
-
-        [TestMethod]
         public void BuildUrl_Generates_Languages_Url()
         {
             const string ExpectedUrl = "https://api.twitter.com/1.1/help/languages.json";
@@ -122,54 +107,6 @@ namespace LinqToTwitter.Tests.HelpTests
             var helpReqProc = new HelpRequestProcessor<Help>();
 
             Assert.IsInstanceOfType(helpReqProc, typeof(IRequestProcessorWantsJson));
-        }
-
-        [TestMethod]
-        public void ProcessResults_Handles_Configuration_Results()
-        {
-            const int ExpectedCharsRsvpPerMedia = 21;
-            const int ExpectedPhotoSizesCount = 4;
-            const string ExpectedPhotoSizeType = "thumb";
-            const int ExpectedPhotoSizeHeight = 150;
-            const int ExpectedPhotoSizeWidth = 150;
-            const string ExpectedPhotoSizeResize = "crop";
-            const int ExpectedShortUrlLength = 20;
-            const int ExpectedPhotoSizeLimit = 3145728;
-            const int ExpectedNonUsernamePathsCount = 82;
-            const string ExpectedNonUsernamePathsFirstItem = "about";
-            const int ExpectedMaxMediaPerUpload = 1;
-            const int ExpectedShortUrlLengthHttps = 21;
-            var helpReqProc = new HelpRequestProcessor<Help>
-            {
-                Type = HelpType.Configuration,
-                BaseUrl = "https://api.twitter.com/1.1/"
-            };
-
-            List<Help> helpList = helpReqProc.ProcessResults(HelpConfigurationResponse);
-
-            Assert.IsNotNull(helpList);
-            Assert.IsNotNull(helpList.SingleOrDefault());
-            Help help = helpList.Single();
-            Assert.AreEqual(HelpType.Configuration, help.Type);
-            Assert.IsNotNull(help.Configuration);
-            Configuration config = help.Configuration;
-            Assert.AreEqual(ExpectedCharsRsvpPerMedia, config.CharactersReservedPerMedia);
-            List<PhotoSize> photoSizes = config.PhotoSizes;
-            Assert.IsNotNull(photoSizes);
-            Assert.AreEqual(ExpectedPhotoSizesCount, photoSizes.Count);
-            PhotoSize photoSize = photoSizes.First();
-            Assert.AreEqual(ExpectedPhotoSizeType, photoSize.Type);
-            Assert.AreEqual(ExpectedPhotoSizeHeight, photoSize.Height);
-            Assert.AreEqual(ExpectedPhotoSizeWidth, photoSize.Width);
-            Assert.AreEqual(ExpectedPhotoSizeResize, photoSize.Resize);
-            Assert.AreEqual(ExpectedShortUrlLength, config.ShortUrlLength);
-            Assert.AreEqual(ExpectedPhotoSizeLimit, config.PhotoSizeLimit);
-            List<string> nonUsernamePaths = config.NonUserNamePaths;
-            Assert.IsNotNull(nonUsernamePaths);
-            Assert.AreEqual(ExpectedNonUsernamePathsCount, nonUsernamePaths.Count);
-            Assert.AreEqual(ExpectedNonUsernamePathsFirstItem, nonUsernamePaths.First());
-            Assert.AreEqual(ExpectedMaxMediaPerUpload, config.MaxMediaPerUpload);
-            Assert.AreEqual(ExpectedShortUrlLengthHttps, config.ShortUrlLengthHttps);
         }
 
         [TestMethod]

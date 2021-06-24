@@ -16,7 +16,9 @@
 		<PackageIcon>200xColor_2.png</PackageIcon>
 		<RepositoryUrl>https://github.com/JoeMayo/LinqToTwitter</RepositoryUrl>
 		<PackageTags>twitter twitterapi twitterdev tweet linq social linqtotwitter linq2twitter</PackageTags>
-		<PackageReleaseNotes>- Added LikeAsync and UnlikeAsync to support the new Twitter API v2 endpoints.
+		<PackageReleaseNotes>- Added Blocks lookup query
+- Added Likes lookup query
+- Removed deprecated Help.Configuration query
 </PackageReleaseNotes>
 		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
 		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
