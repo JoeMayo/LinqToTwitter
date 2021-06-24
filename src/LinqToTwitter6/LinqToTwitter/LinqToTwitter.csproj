@@ -16,7 +16,8 @@
 		<PackageIcon>200xColor_2.png</PackageIcon>
 		<RepositoryUrl>https://github.com/JoeMayo/LinqToTwitter</RepositoryUrl>
 		<PackageTags>twitter twitterapi twitterdev tweet linq social linqtotwitter linq2twitter</PackageTags>
-		<PackageReleaseNotes>- Added Blocks lookup query
+		<PackageReleaseNotes>- Added Like/Unlike commands
+- Added Blocks lookup query
 - Added Likes lookup query
 - Removed deprecated Help.Configuration query
 </PackageReleaseNotes>
