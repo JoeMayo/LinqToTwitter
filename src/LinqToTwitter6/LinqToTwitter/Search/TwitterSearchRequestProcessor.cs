@@ -267,7 +267,8 @@ namespace LinqToTwitter
             {
                 Converters =
                 {
-                    new JsonStringEnumConverter()
+                    new JsonStringEnumConverter(),
+                    new TweetMediaTypeConverter()
                 }
             };
             TwitterSearch? search = JsonSerializer.Deserialize<TwitterSearch>(responseJson, options);

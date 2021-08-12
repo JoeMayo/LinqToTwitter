@@ -34,7 +34,7 @@ namespace LinqToTwitter
         public object? OrganicMetrics { get; init; }
 
         /// <summary>
-        /// URL to video preview image
+        /// URL to animated GIF and video preview image
         /// </summary>
         [JsonPropertyName("preview_image_url")]
         public string? PreviewImageUrl { get; init; }
@@ -50,8 +50,15 @@ namespace LinqToTwitter
         /// <summary>
         /// Type of media - e.g. gif, photo, or video
         /// </summary>
+        [JsonConverter(typeof(TweetMediaTypeConverter))]
         [JsonPropertyName("type")]
         public TweetMediaType Type { get; init; }
+
+        /// <summary>
+        /// URL to photo preview image
+        /// </summary>
+        [JsonPropertyName("url")]
+        public string? Url { get; init; }
 
         /// <summary>
         /// Width in pixels

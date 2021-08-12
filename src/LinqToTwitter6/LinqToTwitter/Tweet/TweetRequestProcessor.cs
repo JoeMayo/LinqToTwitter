@@ -357,7 +357,8 @@ namespace LinqToTwitter
             {
                 Converters =
                 {
-                    new JsonStringEnumConverter()
+                    new JsonStringEnumConverter(),
+                    new TweetMediaTypeConverter()
                 }
             };
             TweetQuery? tweet = JsonSerializer.Deserialize<TweetQuery>(responseJson, options);

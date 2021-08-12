@@ -160,6 +160,7 @@ namespace ConsoleDemo.CSharp
         static async Task DoRecentSearchAsync(TwitterContext twitterCtx)
         {
             string searchTerm = "\"LINQ to Twitter\" OR Linq2Twitter OR LinqToTwitter OR JoeMayo";
+            searchTerm = "Twitter";
 
             // default is id and text and this also brings in created_at and geo
             string tweetFields =
@@ -177,6 +178,7 @@ namespace ConsoleDemo.CSharp
                 (from search in twitterCtx.TwitterSearch
                  where search.Type == SearchType.RecentSearch &&
                        search.Query == searchTerm &&
+                       search.MaxResults == 100 &&
                        search.TweetFields == TweetField.AllFieldsExceptPermissioned &&
                        search.Expansions == ExpansionField.AllTweetFields &&
                        search.MediaFields == MediaField.AllFieldsExceptPermissioned &&
