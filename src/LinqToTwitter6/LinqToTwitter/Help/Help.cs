@@ -28,11 +28,6 @@ namespace LinqToTwitter
         public string? Policies { get; set; }
 
         /// <summary>
-        /// Populated for Help Configuration query
-        /// </summary>
-        public Configuration? Configuration { get; set; }
-
-        /// <summary>
         /// List of languages, codes, and statuses
         /// </summary>
         public List<Language>? Languages { get; set; }

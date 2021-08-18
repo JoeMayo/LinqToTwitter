@@ -58,7 +58,7 @@ namespace LinqToTwitter
             }
         }
 
-        private Request BuildRateLimitsUrl(Dictionary<string, string> parameters)
+        Request BuildRateLimitsUrl(Dictionary<string, string> parameters)
         {
             var req = new Request(BaseUrl + "application/rate_limit_status.json");
 
