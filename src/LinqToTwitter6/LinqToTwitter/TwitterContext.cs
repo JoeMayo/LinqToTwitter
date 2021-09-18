@@ -517,6 +517,12 @@ namespace LinqToTwitter
                         BaseUrl = BaseUrl2
                     };
                     break;
+                case nameof(Counts):
+                    req = new CountsRequestProcessor<T>()
+                    {
+                        BaseUrl = BaseUrl2
+                    };
+                    break;
                 case nameof(DirectMessageEvents):
                     req = new DirectMessageEventsRequestProcessor<T>();
                     break;

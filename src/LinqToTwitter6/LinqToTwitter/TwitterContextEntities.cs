@@ -48,6 +48,14 @@ namespace LinqToTwitter
             }
         }
 
+        public TwitterQueryable<Counts> Counts 
+        { 
+            get
+            {
+                return new TwitterQueryable<Counts>(this);
+            }
+        }
+
         /// <summary>
         /// enables access to Direct Message Events, supporting Twitter chatbots
         /// </summary>
