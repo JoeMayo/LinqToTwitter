@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using LinqToTwitter;
-using LinqToTwitter.Common;
-using LinqToTwitter.OAuth;
-using LinqToTwitter.Provider;
+﻿using LinqToTwitter.Provider;
 using LinqToTwitter.Tests.Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
