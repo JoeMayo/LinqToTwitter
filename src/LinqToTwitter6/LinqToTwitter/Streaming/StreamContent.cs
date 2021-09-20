@@ -20,7 +20,7 @@ namespace LinqToTwitter
             (Entity, EntityType) = ParseJson(content);
         }
 
-        (StreamTweet? entity, StreamEntityType entityType) ParseJson(string json)
+        public (StreamTweet? entity, StreamEntityType entityType) ParseJson(string json)
         {
             if (string.IsNullOrWhiteSpace(json))
                 return (null, StreamEntityType.Unknown);
