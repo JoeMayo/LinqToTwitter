@@ -11,7 +11,7 @@ namespace LinqToTwitter
         /// ID for rule
         /// </summary>
         [JsonPropertyName("id")]
-        public ulong ID { get; init; }
+        public string? ID { get; init; }
 
         /// <summary>
         /// Rule tag
