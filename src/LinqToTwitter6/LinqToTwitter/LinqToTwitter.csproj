@@ -4,7 +4,7 @@
 		<TargetFramework>net5.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<Description>LINQ to Twitter is a 3rd party LINQ Provider that lets you tweet and query with the Twitter API.</Description>
-		<Version>6.7.1</Version>
+		<Version>6.8.0</Version>
 		<Authors>Joe Mayo</Authors>
 		<Company>Joe Mayo</Company>
 		<PackageId>linqtotwitter</PackageId>
@@ -16,11 +16,11 @@
 		<PackageIcon>200xColor_2.png</PackageIcon>
 		<RepositoryUrl>https://github.com/JoeMayo/LinqToTwitter</RepositoryUrl>
 		<PackageTags>twitter twitterapi twitterdev tweet linq social linqtotwitter linq2twitter</PackageTags>
-		<PackageReleaseNotes>- Added Like/Unlike commands
-- Added Blocks lookup query
-- Added Likes lookup query
-- Removed deprecated Help.Configuration query
-</PackageReleaseNotes>
+		<PackageReleaseNotes>
+      - Added support for Counts queries
+      - Removed deprecated help/configuration queries
+      - Fixed problem where photo and gifs appeared in media Url field instead of PreviewImageUrl
+    </PackageReleaseNotes>
 		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
 		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 	</PropertyGroup>

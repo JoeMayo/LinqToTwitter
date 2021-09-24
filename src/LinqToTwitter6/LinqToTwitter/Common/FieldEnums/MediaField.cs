@@ -9,7 +9,7 @@
         /// All expandable fields
         /// </summary>
         public const string AllFields = 
-            "duration_ms,height,media_key,preview_image_url," +
+            "alt_text,duration_ms,height,media_key,preview_image_url," +
             "type,url,width,public_metrics,non_public_metrics," +
             "organic_metrics,promoted_metrics";
 
@@ -17,8 +17,13 @@
         /// All expandable fields, except those requiring permissions
         /// </summary>
         public const string AllFieldsExceptPermissioned =
-            "duration_ms,height,media_key,preview_image_url," +
+            "alt_text,duration_ms,height,media_key,preview_image_url," +
             "type,url,width,public_metrics";
+
+        /// <summary>
+        /// alt_text
+        /// </summary>
+        public const string AltText = "alt_text";
 
         /// <summary>
         /// duration_ms

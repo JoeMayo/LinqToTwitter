@@ -8,6 +8,12 @@ namespace LinqToTwitter
     public record TweetMedia
     {
         /// <summary>
+        /// Alt text to display with an image
+        /// </summary>
+        [JsonPropertyName("alt_text")]
+        public string? AltText { get; set; }
+
+        /// <summary>
         /// Milliseconds duration for videos
         /// </summary>
         [JsonPropertyName("duration_ms")]

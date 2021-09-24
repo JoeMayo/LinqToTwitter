@@ -110,7 +110,7 @@ namespace ConsoleDemo.CSharp
 
         static async Task DoMultiTweetLookupAsync(TwitterContext twitterCtx)
         {
-            const string TweetIds = "1305895383260782593,1322227053161148422";
+            const string TweetIds = "1441239829472165900,1305895383260782593,1322227053161148422";
 
             // default is id and text and this also brings in created_at and geo
             string tweetFields =
