@@ -6,6 +6,7 @@ using LinqToTwitter;
 using System.IO;
 using LinqToTwitter.Common;
 using System.Collections.Generic;
+using System.Net;
 
 namespace ConsoleDemo.CSharp
 {
@@ -76,75 +77,121 @@ namespace ConsoleDemo.CSharp
         static async Task DoFilterStreamAsync(TwitterContext twitterCtx)
         {
             Console.WriteLine("\nStreamed Content: \n");
+
+            int retries = 3;
             int count = 0;
             var cancelTokenSrc = new CancellationTokenSource();
 
-            try
+            do
             {
-                await
-                    (from strm in twitterCtx.Streaming
-                                            .WithCancellation(cancelTokenSrc.Token)
-                     where strm.Type == StreamingType.Filter
-                     select strm)
-                    .StartAsync(async strm =>
-                    {
-                        await HandleStreamResponse(strm);
+                try
+                {
+                    await
+                        (from strm in twitterCtx.Streaming
+                                                .WithCancellation(cancelTokenSrc.Token)
+                         where strm.Type == StreamingType.Filter
+                         select strm)
+                        .StartAsync(async strm =>
+                        {
+                            await HandleStreamResponse(strm);
 
-                        if (count++ >= 5)
-                            cancelTokenSrc.Cancel();
-                    });
-            }
-            catch (IOException ex)
-            {
-                // Twitter might have closed the stream,
-                // which they do sometimes. You should
-                // restart the stream, but be sure to
-                // read Twitter documentation on stream
-                // back-off strategies to prevent your
-                // app from being blocked.
-                Console.WriteLine(ex.ToString());
-            }
-            catch (OperationCanceledException)
-            {
-                Console.WriteLine("Stream cancelled.");
-            }
+                            if (count++ >= 5)
+                                cancelTokenSrc.Cancel();
+                        });
+
+                    retries = 0;
+                }
+                catch (IOException ex)
+                {
+                    // Twitter might have closed the stream,
+                    // which they do sometimes. You should
+                    // restart the stream, but be sure to
+                    // read Twitter documentation on stream
+                    // back-off strategies to prevent your
+                    // app from being blocked.
+                    Console.WriteLine(ex.ToString());
+                    retries--;
+                }
+                catch (OperationCanceledException)
+                {
+                    Console.WriteLine("Stream cancelled.");
+                    retries = 0;
+                }
+                catch (TwitterQueryException tqe) when (tqe.StatusCode == HttpStatusCode.TooManyRequests)
+                {
+                    int millisecondsToDelay = 30000 * (4 - retries);
+                    retries--;
+
+                    string message = retries >= 0 ?
+                        $"Tried to reconnect too quickly. Delaying for {millisecondsToDelay} milliseconds..."
+                        :
+                        "Too many retries. Stopping query.";
+
+                    Console.WriteLine(message);
+
+                    await Task.Delay(millisecondsToDelay);
+                }
+            } while (retries > 0);
         }
 
         static async Task DoSampleStreamAsync(TwitterContext twitterCtx)
         {
             Console.WriteLine("\nStreamed Content: \n");
+
+            int retries = 3;
             int count = 0;
             var cancelTokenSrc = new CancellationTokenSource();
 
-            try
+            do
             {
-                await
-                    (from strm in twitterCtx.Streaming
-                                            .WithCancellation(cancelTokenSrc.Token)
-                     where strm.Type == StreamingType.Sample
-                     select strm)
-                    .StartAsync(async strm =>
-                    {
-                        await HandleStreamResponse(strm);
+                try
+                {
+                    await
+                        (from strm in twitterCtx.Streaming
+                                                .WithCancellation(cancelTokenSrc.Token)
+                         where strm.Type == StreamingType.Sample
+                         select strm)
+                        .StartAsync(async strm =>
+                        {
+                            await HandleStreamResponse(strm);
 
-                        if (count++ >= 10)
-                            cancelTokenSrc.Cancel();
-                    });
-            }
-            catch (IOException ex)
-            {
-                // Twitter might have closed the stream,
-                // which they do sometimes. You should
-                // restart the stream, but be sure to
-                // read Twitter documentation on stream
-                // back-off strategies to prevent your
-                // app from being blocked.
-                Console.WriteLine(ex.ToString());
-            }
-            catch (OperationCanceledException)
-            {
-                Console.WriteLine("Stream cancelled.");
-            }
+                            if (count++ >= 10)
+                                cancelTokenSrc.Cancel();
+                        });
+
+                    retries = 0;
+                }
+                catch (IOException ex)
+                {
+                    // Twitter might have closed the stream,
+                    // which they do sometimes. You should
+                    // restart the stream, but be sure to
+                    // read Twitter documentation on stream
+                    // back-off strategies to prevent your
+                    // app from being blocked.
+                    Console.WriteLine(ex.ToString());
+                    retries--;
+                }
+                catch (OperationCanceledException)
+                {
+                    Console.WriteLine("Stream cancelled.");
+                    retries = 0;
+                }
+                catch (TwitterQueryException tqe) when (tqe.StatusCode == HttpStatusCode.TooManyRequests)
+                {
+                    int millisecondsToDelay = 30000 * (4 - retries);
+                    retries--;
+
+                    string message = retries >= 0 ?
+                        $"Tried to reconnect too quickly. Delaying for {millisecondsToDelay} milliseconds..."
+                        :
+                        "Too many retries. Stopping query.";
+
+                    Console.WriteLine(message);
+
+                    await Task.Delay(millisecondsToDelay);
+                } 
+            } while (retries > 0);
         }
 
         static async Task<int> HandleStreamResponse(StreamContent strm)

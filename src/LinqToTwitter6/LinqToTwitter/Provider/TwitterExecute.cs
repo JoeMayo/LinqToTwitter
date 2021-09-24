@@ -182,46 +182,57 @@ namespace LinqToTwitter.Provider
 
             await TwitterErrorHandler.ThrowIfErrorAsync(response).ConfigureAwait(false);
 
-            Stream stream = await CreateStream(response).ConfigureAwait(false);
+            Stream? stream = null;
+            MemoryStream? memStr = null;
 
-            const int CarriageReturn = 0x0D;
-            const int LineFeed = 0x0A;
-
-            var memStr = new MemoryStream();
-            byte[] readByte;
-
-            while (stream.CanRead && !IsStreamClosed)
+            try
             {
-                readByte = new byte[1];
-                await stream.ReadAsync(readByte.AsMemory(0, 1), CancellationToken).ConfigureAwait(false);
-                byte nextByte = readByte.SingleOrDefault();
+                const int CarriageReturn = 0x0D;
+                const int LineFeed = 0x0A;
 
-                CancellationToken.ThrowIfCancellationRequested();
+                stream = await CreateStream(response).ConfigureAwait(false);
+                memStr = new MemoryStream();
 
-                if (IsStreamClosed) break;
+                byte[] readByte;
 
-                if (nextByte == 0xff) break;
-
-                if (nextByte != CarriageReturn && nextByte != LineFeed)
-                    memStr.WriteByte(nextByte);
-
-                if (nextByte == LineFeed)
+                while (stream.CanRead && !IsStreamClosed)
                 {
-                    int byteCount = (int)memStr.Length;
-                    byte[] tweetBytes = new byte[byteCount];
+                    readByte = new byte[1];
+                    await stream.ReadAsync(readByte.AsMemory(0, 1), CancellationToken).ConfigureAwait(false);
+                    byte nextByte = readByte.SingleOrDefault();
 
-                    memStr.Position = 0;
-                    await memStr.ReadAsync(tweetBytes.AsMemory(0, byteCount), CancellationToken).ConfigureAwait(false);
+                    CancellationToken.ThrowIfCancellationRequested();
 
-                    string tweet = Encoding.UTF8.GetString(tweetBytes, 0, byteCount);
-                    var strmContent = new StreamContent(this, tweet);
+                    if (IsStreamClosed) break;
 
-                    if (StreamingCallbackAsync != null)
-                        await StreamingCallbackAsync(strmContent).ConfigureAwait(false);
+                    if (nextByte == 0xff) break;
 
-                    memStr.Dispose();
-                    memStr = new MemoryStream();
+                    if (nextByte != CarriageReturn && nextByte != LineFeed)
+                        memStr.WriteByte(nextByte);
+
+                    if (nextByte == LineFeed)
+                    {
+                        int byteCount = (int)memStr.Length;
+                        byte[] tweetBytes = new byte[byteCount];
+
+                        memStr.Position = 0;
+                        await memStr.ReadAsync(tweetBytes.AsMemory(0, byteCount), CancellationToken).ConfigureAwait(false);
+
+                        string tweet = Encoding.UTF8.GetString(tweetBytes, 0, byteCount);
+                        var strmContent = new StreamContent(this, tweet);
+
+                        if (StreamingCallbackAsync != null)
+                            await StreamingCallbackAsync(strmContent).ConfigureAwait(false);
+
+                        memStr.Dispose();
+                        memStr = new MemoryStream();
+                    }
                 }
+            }
+            finally
+            {
+                stream?.Dispose();
+                memStr?.Dispose();
             }
 
             IsStreamClosed = false;
