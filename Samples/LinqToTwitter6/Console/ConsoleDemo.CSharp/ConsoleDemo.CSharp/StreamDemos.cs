@@ -119,7 +119,7 @@ namespace ConsoleDemo.CSharp
                 }
                 catch (TwitterQueryException tqe) when (tqe.StatusCode == HttpStatusCode.TooManyRequests)
                 {
-                    int millisecondsToDelay = 30000 * (4 - retries);
+                    int millisecondsToDelay = 1000 * (4 - retries);
                     retries--;
 
                     string message = retries >= 0 ?
@@ -179,7 +179,7 @@ namespace ConsoleDemo.CSharp
                 }
                 catch (TwitterQueryException tqe) when (tqe.StatusCode == HttpStatusCode.TooManyRequests)
                 {
-                    int millisecondsToDelay = 30000 * (4 - retries);
+                    int millisecondsToDelay = 1000 * (4 - retries);
                     retries--;
 
                     string message = retries >= 0 ?
