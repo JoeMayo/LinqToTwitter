@@ -554,7 +554,10 @@ namespace LinqToTwitter
                     };
                     break;
                 case nameof(Mute):
-                    req = new MuteRequestProcessor<T>();
+                    req = new MuteRequestProcessor<T>
+                    {
+                        BaseUrl = BaseUrl2
+                    };
                     break;
                 case nameof(Raw):
                     req = new RawRequestProcessor<T>();

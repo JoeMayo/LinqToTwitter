@@ -148,7 +148,8 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// Used by timeline queries - sets parameter, but doesn't treat as a query parameter.
+        /// 
+        /// Sets parameter, but doesn't treat as a query parameter.
         /// </summary>
         /// <param name="parameters">list of parameters</param>
         void SetUserID(Dictionary<string, string> parameters)
@@ -166,7 +167,6 @@ namespace LinqToTwitter
         public virtual List<T> ProcessResults(string responseJson)
         {
             IEnumerable<TwitterBlocksQuery> blocks;
-
 
             if (string.IsNullOrWhiteSpace(responseJson))
             {

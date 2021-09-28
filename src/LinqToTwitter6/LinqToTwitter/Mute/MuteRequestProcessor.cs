@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text.Json;
-using LinqToTwitter.Common;
+using System.Text.Json.Serialization;
 using LinqToTwitter.Provider;
 
 namespace LinqToTwitter
@@ -23,30 +23,15 @@ namespace LinqToTwitter
         public virtual string? BaseUrl { get; set; }
 
         /// <summary>
-        /// type of user request (i.e. Friends, Followers, or Show)
+        /// type of mutes request (Muted)
         /// </summary>
         public MuteType Type { get; set; }
 
         /// <summary>
-        /// Indicator for which page to get next
+        /// ID of user to get mutes for
         /// </summary>
-        /// <remarks>
-        /// This is not a page number, but is an indicator to
-        /// Twitter on which page you need back. Your choices
-        /// are Previous and Next, which you can find in the
-        /// CursorResponse property when your response comes back.
-        /// </remarks>
-        public long Cursor { get; set; }
+        public string? ID { get; set; }
 
-        /// <summary>
-        /// Add entities to results
-        /// </summary>
-        public bool IncludeEntities { get; set; }
-
-        /// <summary>
-        /// Remove status from results
-        /// </summary>
-        public bool SkipStatus { get; set; }
 
         /// <summary>
         /// extracts parameters from lambda
@@ -59,10 +44,8 @@ namespace LinqToTwitter
                new ParameterFinder<Mute>(
                    lambdaExpression.Body,
                    new List<string> { 
-                       "Type",
-                       "Cursor",
-                       "IncludeEntities",
-                       "SkipStatus"
+                       nameof(Type),
+                       nameof(ID)
                    });
 
             return paramFinder.Parameters;
@@ -83,53 +66,33 @@ namespace LinqToTwitter
 
             switch (Type)
             {
-                case MuteType.IDs:
-                    return BuildIDsUrl(parameters);
-                case MuteType.List:
-                    return BuildListUrl(parameters);
+                case MuteType.Muted:
+                    return BuildMutedUrl(parameters);
                 default:
                     throw new InvalidOperationException("The default case of BuildUrl should never execute because a Type must be specified.");
             }
         }
 
-        Request BuildIDsUrl(Dictionary<string, string> parameters)
+        Request BuildMutedUrl(Dictionary<string, string> parameters)
         {
-            var req = new Request(BaseUrl + "mutes/users/ids.json");
-            var urlParams = req.RequestParameters;
+            SetUserID(parameters);
 
-            if (parameters.ContainsKey("Cursor"))
-            {
-                Cursor = long.Parse(parameters["Cursor"]);
-                urlParams.Add(new QueryParameter("cursor", parameters["Cursor"]));
-            }
+            var req = new Request($"{BaseUrl}users/{ID}/muting");
+            var urlParams = req.RequestParameters;
 
             return req;
         }
 
-        Request BuildListUrl(Dictionary<string, string> parameters)
+        /// <summary>
+        /// Sets parameter, but doesn't treat as a query parameter.
+        /// </summary>
+        /// <param name="parameters">list of parameters</param>
+        void SetUserID(Dictionary<string, string> parameters)
         {
-            var req = new Request(BaseUrl + "mutes/users/list.json");
-            var urlParams = req.RequestParameters;
-
-            if (parameters.ContainsKey("Cursor"))
-            {
-                Cursor = long.Parse(parameters["Cursor"]);
-                urlParams.Add(new QueryParameter("cursor", parameters["Cursor"]));
-            }
-
-            if (parameters.ContainsKey("IncludeEntities"))
-            {
-                IncludeEntities = bool.Parse(parameters["IncludeEntities"]);
-                urlParams.Add(new QueryParameter("include_entities", parameters["IncludeEntities"].ToLower()));
-            }
-
-            if (parameters.ContainsKey("SkipStatus"))
-            {
-                SkipStatus = bool.Parse(parameters["SkipStatus"]);
-                urlParams.Add(new QueryParameter("skip_status", parameters["SkipStatus"].ToLower()));
-            }
-
-            return req;
+            if (parameters.ContainsKey(nameof(ID)))
+                ID = parameters[nameof(ID)];
+            else
+                throw new ArgumentException($"{nameof(ID)} is required", nameof(ID));
         }
 
         /// <summary>
@@ -141,69 +104,44 @@ namespace LinqToTwitter
         {
             if (string.IsNullOrWhiteSpace(responseJson)) return new List<T>();
 
-            List<Mute>? muteList = null;
-
-            JsonElement mutesJson = JsonDocument.Parse(responseJson).RootElement;
+            List<Mute>? muteList;
 
             switch (Type)
             {
-                case MuteType.IDs:
-                    muteList = HandleIdsResponse(mutesJson);
-                    break;
-                case MuteType.List:
-                    muteList = HandleMultipleUserResponse(mutesJson);
+                case MuteType.Muted:
+                    muteList = new List<Mute> { JsonDeserialize(responseJson) };
                     break;
                 default:
                     muteList = new List<Mute>();
                     break;
             }
 
-            foreach(var mute in muteList)
-            {
-                mute.Type = Type;
-                mute.Cursor = Cursor;
-                mute.IncludeEntities = IncludeEntities;
-                mute.SkipStatus = SkipStatus;
-            }
-
             return muteList.OfType<T>().ToList();
         }
 
-        List<Mute> HandleIdsResponse(JsonElement idsJson)
+        Mute JsonDeserialize(string responseJson)
         {
-            var ids = idsJson.GetProperty("ids");
-            var muteList = new List<Mute>
+            var options = new JsonSerializerOptions
             {
-                new Mute
+                Converters =
                 {
-                    IDList = 
-                        (from id in ids.EnumerateArray()
-                         select id.GetUInt64())
-                        .ToList(),
-                    Users = new List<User>(),
-                    CursorMovement = new Cursors(idsJson)
+                    new JsonStringEnumConverter()
                 }
             };
-            return muteList;
-        }
-  
-        List<Mute> HandleMultipleUserResponse(JsonElement userJson)
-        {
-            var users = userJson.GetProperty("users");
-            List<Mute> muteList = new List<Mute>
-            {
-                new Mute
-                {
-                    IDList = new List<ulong>(),
-                    Users =
-                        (from user in users.EnumerateArray()
-                         select new User(user))
-                        .ToList(),
-                    CursorMovement = new Cursors(userJson)
-                }
-            };
+            Mute? mute = JsonSerializer.Deserialize<Mute>(responseJson, options);
 
-            return muteList;
+            if (mute?.Meta == null || mute.Meta.ResultCount == 0)
+                return new Mute
+                {
+                    Type = Type,
+                    ID = ID,
+                };
+            else
+                return mute with
+                {
+                    Type = Type,
+                    ID = ID
+                };
         }
 
         List<User> HandleSingleUserResponse(JsonElement userJson)
