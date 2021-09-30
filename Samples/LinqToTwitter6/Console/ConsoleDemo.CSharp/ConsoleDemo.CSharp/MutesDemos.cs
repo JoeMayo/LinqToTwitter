@@ -49,7 +49,7 @@ namespace ConsoleDemo.CSharp
 
             Console.WriteLine("\t 0. Lookup Muted User IDs");
             Console.WriteLine("\t 1. Mute User");
-            Console.WriteLine("\t 1. Unmute User");
+            Console.WriteLine("\t 2. Unmute User");
             Console.WriteLine();
             Console.Write("\t Q. Return to Main menu");
         }
@@ -72,20 +72,58 @@ namespace ConsoleDemo.CSharp
 
         static async Task MuteUserAsync(TwitterContext twitterCtx)
         {
-            const string ScreenName = "justinbieber";
+            Console.Write("User Screen Name to Mute: ");
+            string? userName = Console.ReadLine() ?? "";
 
-            User? mutedUser = await twitterCtx.MuteAsync(ScreenName);
+            TwitterUserQuery? userResponse =
+                await
+                (from usr in twitterCtx.TwitterUser
+                 where usr.Type == UserType.UsernameLookup &&
+                       usr.Usernames == userName
+                 select usr)
+                .SingleOrDefaultAsync();
 
-            Console.WriteLine("You muted {0}", mutedUser?.ScreenNameResponse);
+            string? targetUserID = userResponse?.Users?.FirstOrDefault()?.ID;
+            string? sourceUserID = twitterCtx.Authorizer?.CredentialStore?.UserID.ToString();
+
+            if (targetUserID == null || sourceUserID == null)
+            {
+                Console.WriteLine($"Either {nameof(targetUserID)} or {nameof(sourceUserID)} is null.");
+                return;
+            }
+
+            MuteResponse? muted = await twitterCtx.MuteAsync(sourceUserID, targetUserID);
+
+            if (muted?.Data != null)
+                Console.WriteLine("Is Muted: " + muted.Data.Muting);
         }
 
         static async Task UnmuteUserAsync(TwitterContext twitterCtx)
         {
-            const string ScreenName = "JoeMayo";
+            Console.Write("User Screen Name to Unmute: ");
+            string? userName = Console.ReadLine() ?? "";
 
-            User? unmutedUser = await twitterCtx.UnMuteAsync(ScreenName);
+            TwitterUserQuery? userResponse =
+                await
+                (from usr in twitterCtx.TwitterUser
+                 where usr.Type == UserType.UsernameLookup &&
+                       usr.Usernames == userName
+                 select usr)
+                .SingleOrDefaultAsync();
 
-            Console.WriteLine("You un-muted {0}", unmutedUser?.ScreenNameResponse);
+            string? targetUserID = userResponse?.Users?.FirstOrDefault()?.ID;
+            string? sourceUserID = twitterCtx.Authorizer?.CredentialStore?.UserID.ToString();
+
+            if (targetUserID == null || sourceUserID == null)
+            {
+                Console.WriteLine($"Either {nameof(targetUserID)} or {nameof(sourceUserID)} is null.");
+                return;
+            }
+
+            MuteResponse? muted = await twitterCtx.UnMuteAsync(sourceUserID, targetUserID);
+
+            if (muted?.Data != null)
+                Console.WriteLine("Is Muted: " + muted.Data.Muting);
         }
     }
 }
