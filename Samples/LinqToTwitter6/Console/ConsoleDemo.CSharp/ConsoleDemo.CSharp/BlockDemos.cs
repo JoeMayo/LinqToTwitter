@@ -125,7 +125,7 @@ namespace ConsoleDemo.CSharp
                  select usr)
                 .SingleOrDefaultAsync();
 
-            string? targetUserID = userResponse?.ID;
+            string? targetUserID = userResponse?.Users?.FirstOrDefault()?.ID;
             string? sourceUserID = twitterCtx.Authorizer?.CredentialStore?.UserID.ToString();
 
             if (targetUserID == null || sourceUserID == null)
@@ -142,7 +142,7 @@ namespace ConsoleDemo.CSharp
 
         static async Task UnblockUserAsync(TwitterContext twitterCtx)
         {
-            Console.Write("User Screen Name to Block: ");
+            Console.Write("User Screen Name to Unblock: ");
             string? userName = Console.ReadLine() ?? "";
 
             TwitterUserQuery? userResponse =
@@ -153,7 +153,7 @@ namespace ConsoleDemo.CSharp
                  select usr)
                 .SingleOrDefaultAsync();
 
-            string? targetUserID = userResponse?.ID;
+            string? targetUserID = userResponse?.Users?.FirstOrDefault()?.ID;
             string? sourceUserID = twitterCtx.Authorizer?.CredentialStore?.UserID.ToString();
 
             if (targetUserID == null || sourceUserID == null)

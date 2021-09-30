@@ -15,15 +15,13 @@ namespace LinqToTwitter
         /// <param name="sourceUserID">Following user ID</param>
         /// <param name="targetUserID">Followed user ID</param>
         /// <param name="cancelToken">Allows request cancellation</param>
-        /// <returns>User that was unblocked</returns>
+        /// <returns>Indicates whether a user was blocked</returns>
         public async Task<BlockingResponse?> BlockUserAsync(string sourceUserID, string targetUserID, CancellationToken cancelToken = default(CancellationToken))
         {
             _ = sourceUserID ?? throw new ArgumentException($"{nameof(sourceUserID)} is a required parameter.", nameof(sourceUserID));
             _ = targetUserID ?? throw new ArgumentException($"{nameof(targetUserID)} is a required parameter.", nameof(targetUserID));
 
             var url = $"{BaseUrl2}users/{sourceUserID}/blocking";
-
-            var reqProc = new BlocksRequestProcessor<User>();
 
             var postData = new Dictionary<string, string>();
             var postObj = new TwitterUserTargetID() { TargetUserID = targetUserID.ToString() };
@@ -55,8 +53,6 @@ namespace LinqToTwitter
             _ = targetUserID ?? throw new ArgumentException($"{nameof(targetUserID)} is a required parameter.", nameof(targetUserID));
 
             var url = $"{BaseUrl2}users/{sourceUserID}/blocking/{targetUserID}";
-
-            var reqProc = new BlocksRequestProcessor<User>();
 
             var postData = new Dictionary<string, string>();
             var postObj = new TwitterUserTargetID() { TargetUserID = targetUserID.ToString() };

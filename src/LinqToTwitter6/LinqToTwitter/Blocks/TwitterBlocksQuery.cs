@@ -49,11 +49,14 @@ namespace LinqToTwitter
         //
 
         /// <summary>
-        /// Tweet data returned from the search
+        /// Blocked user list
         /// </summary>
         [JsonPropertyName("data")]
         public List<TwitterUser>? Users { get; init; }
 
+        /// <summary>
+        /// Result metadata
+        /// </summary>
         [JsonPropertyName("meta")]
         public BlocksMeta? Meta { get; set; }
     }
