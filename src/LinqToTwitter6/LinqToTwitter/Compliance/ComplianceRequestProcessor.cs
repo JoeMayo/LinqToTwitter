@@ -11,7 +11,7 @@ using LinqToTwitter.Provider;
 namespace LinqToTwitter
 {
     /// <summary>
-    /// Processes <see cref="Tweet"/> queries
+    /// Processes <see cref="ComplianceQuery"/> queries
     /// </summary>
     public class ComplianceRequestProcessor<T> : IRequestProcessor<T>, IRequestProcessorWantsJson
     {

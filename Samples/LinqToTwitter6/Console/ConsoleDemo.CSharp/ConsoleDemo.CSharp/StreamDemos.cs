@@ -89,7 +89,8 @@ namespace ConsoleDemo.CSharp
                     await
                         (from strm in twitterCtx.Streaming
                                                 .WithCancellation(cancelTokenSrc.Token)
-                         where strm.Type == StreamingType.Filter
+                         where strm.Type == StreamingType.Filter &&
+                               strm.TweetFields == TweetField.AllFieldsExceptPermissioned
                          select strm)
                         .StartAsync(async strm =>
                         {
@@ -204,7 +205,7 @@ namespace ConsoleDemo.CSharp
             {
                 Tweet? tweet = strm?.Entity?.Tweet;
                 if (tweet != null)
-                    Console.WriteLine($"\nTweet ID: {tweet.ID}, Tweet Text: {tweet.Text}");
+                    Console.WriteLine($"\n{tweet.CreatedAt}, Tweet ID: {tweet.ID}, Tweet Text: {tweet.Text}");
             }
 
             return await Task.FromResult(0);
