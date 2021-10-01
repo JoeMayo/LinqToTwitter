@@ -29,9 +29,19 @@ namespace LinqToTwitter
         public StreamingType Type { get; set; }
 
         /// <summary>
+        /// Number of minutes in the past to start returning tweets after reconnection
+        /// </summary>
+        public int BackfillMinutes { get; set; }
+
+        /// <summary>
         /// Comma-separated list of expansion fields - <see cref="ExpansionField"/>
         /// </summary>
         public string? Expansions { get; set; }
+
+        /// <summary>
+        /// Comma-separated list of rule ids, for filter rules queries
+        /// </summary>
+        public string? Ids { get; set; }
 
         /// <summary>
         /// Comma-separated list of fields to return in the media object - <see cref="MediaField"/>
@@ -59,11 +69,6 @@ namespace LinqToTwitter
         public string? UserFields { get; set; }
 
         /// <summary>
-        /// Comma-separated list of rule ids, for filter rules queries
-        /// </summary>
-        public string? Ids { get; set; }
-
-        /// <summary>
         /// extracts parameters from lambda
         /// </summary>
         /// <param name="lambdaExpression">lambda expression with where clause</param>
@@ -75,13 +80,14 @@ namespace LinqToTwitter
                    lambdaExpression.Body,
                    new List<string> {
                        nameof(Type),
+                       nameof(BackfillMinutes),
                        nameof(Expansions),
+                       nameof(Ids),
                        nameof(MediaFields),
                        nameof(PlaceFields),
                        nameof(PollFields),
                        nameof(TweetFields),
-                       nameof(UserFields),
-                       nameof(Ids)
+                       nameof(UserFields)
                    }).Parameters;
 
             return parameters;
@@ -125,10 +131,23 @@ namespace LinqToTwitter
         /// <returns>base url + parameters</returns>
         void BuildUrlParameters(Dictionary<string, string> parameters, IList<QueryParameter> urlParams)
         {
+            if (parameters.ContainsKey(nameof(BackfillMinutes)))
+            {
+                int.TryParse(parameters[nameof(BackfillMinutes)], out int minutes);
+                BackfillMinutes = minutes;
+                urlParams.Add(new QueryParameter("backfill_minutes", BackfillMinutes.ToString()));
+            }
+
             if (parameters.ContainsKey(nameof(Expansions)))
             {
                 Expansions = parameters[nameof(Expansions)];
                 urlParams.Add(new QueryParameter("expansions", Expansions.Replace(" ", "")));
+            }
+
+            if (parameters.ContainsKey(nameof(Ids)))
+            {
+                Ids = parameters[nameof(Ids)];
+                urlParams.Add(new QueryParameter("ids", Ids.Replace(" ", "")));
             }
 
             if (parameters.ContainsKey(nameof(MediaFields)))
@@ -159,12 +178,6 @@ namespace LinqToTwitter
             {
                 UserFields = parameters[nameof(UserFields)];
                 urlParams.Add(new QueryParameter("user.fields", UserFields.Replace(" ", "")));
-            }
-
-            if (parameters.ContainsKey(nameof(Ids)))
-            {
-                Ids = parameters[nameof(Ids)];
-                urlParams.Add(new QueryParameter("ids", Ids.Replace(" ", "")));
             }
         }
 

@@ -1,6 +1,7 @@
 ﻿using LinqToTwitter.Provider;
 using System;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Xml.Serialization;
 
 namespace LinqToTwitter
@@ -25,9 +26,19 @@ namespace LinqToTwitter
             if (string.IsNullOrWhiteSpace(json))
                 return (null, StreamEntityType.Unknown);
 
+            var options = new JsonSerializerOptions
+            {
+                Converters =
+                {
+                    new JsonStringEnumConverter(),
+                    new TweetMediaTypeConverter(),
+                    new TweetReplySettingsConverter()
+                }
+            };
+
             try
             {
-                return (JsonSerializer.Deserialize<StreamTweet>(json), StreamEntityType.Tweet);
+                return (JsonSerializer.Deserialize<StreamTweet>(json, options), StreamEntityType.Tweet);
             }
             catch (Exception ex)
             {

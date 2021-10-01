@@ -194,7 +194,9 @@ namespace LinqToTwitter
             {
                 Converters =
                 {
-                    new JsonStringEnumConverter()
+                    new JsonStringEnumConverter(),
+                    new TweetMediaTypeConverter(),
+                    new TweetReplySettingsConverter()
                 }
             };
             TwitterBlocksQuery? blocks = JsonSerializer.Deserialize<TwitterBlocksQuery>(responseJson, options);

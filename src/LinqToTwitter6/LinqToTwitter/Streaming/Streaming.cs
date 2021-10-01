@@ -19,6 +19,11 @@ namespace LinqToTwitter
         public StreamingType Type { get; init; }
 
         /// <summary>
+        /// Number of minutes in the past to start returning tweets after reconnection
+        /// </summary>
+        public int BackfillMinutes { get; set; }
+
+        /// <summary>
         /// Comma-separated list of expansion fields
         /// </summary>
         public string? Expansions { get; init; }

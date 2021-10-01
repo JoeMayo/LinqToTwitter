@@ -229,7 +229,9 @@ namespace LinqToTwitter
             {
                 Converters =
                 {
-                    new JsonStringEnumConverter()
+                    new JsonStringEnumConverter(),
+                    new TweetMediaTypeConverter(),
+                    new TweetReplySettingsConverter()
                 }
             };
             LikeQuery? blocks = JsonSerializer.Deserialize<LikeQuery>(responseJson, options);
