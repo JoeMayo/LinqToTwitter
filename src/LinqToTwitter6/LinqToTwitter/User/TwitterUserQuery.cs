@@ -43,9 +43,24 @@ namespace LinqToTwitter
         public int MaxResults { get; init; }
 
         /// <summary>
+        /// Comma-separated list of fields to return in the media object - <see cref="MediaField"/>
+        /// </summary>
+        public string? MediaFields { get; set; }
+
+        /// <summary>
         /// If set, with token from previous response metadata, pages forward or backward
         /// </summary>
-        public string? PaginationToken { get; init; }
+        public string? PaginationToken { get; set; }
+
+        /// <summary>
+        /// Comma-separated list of fields to return in the place object - <see cref="PlaceField"/>
+        /// </summary>
+        public string? PlaceFields { get; set; }
+
+        /// <summary>
+        /// Comma-separated list of fields to return in the poll object - <see cref="PollField"/>
+        /// </summary>
+        public string? PollFields { get; set; }
 
         /// <summary>
         /// Comma-separated list of fields to return in the Tweet object

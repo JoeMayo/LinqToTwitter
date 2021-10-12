@@ -230,7 +230,7 @@ namespace LinqToTwitter.Tests.TweetTests
             });
         }
 
-        [TestMethod]
+		[TestMethod]
         public void BuildUrl_WithSpacesInFields_FixesSpaces()
         {
             const string ExpectedUrl =

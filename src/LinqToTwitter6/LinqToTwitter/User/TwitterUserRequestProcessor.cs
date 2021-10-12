@@ -49,9 +49,24 @@ namespace LinqToTwitter
         public int MaxResults { get; set; }
 
         /// <summary>
+        /// Comma-separated list of fields to return in the media object - <see cref="MediaField"/>
+        /// </summary>
+        public string? MediaFields { get; set; }
+
+        /// <summary>
         /// If set, with token from previous response metadata, pages forward or backward
         /// </summary>
         public string? PaginationToken { get; set; }
+
+        /// <summary>
+        /// Comma-separated list of fields to return in the place object - <see cref="PlaceField"/>
+        /// </summary>
+        public string? PlaceFields { get; set; }
+
+        /// <summary>
+        /// Comma-separated list of fields to return in the poll object - <see cref="PollField"/>
+        /// </summary>
+        public string? PollFields { get; set; }
 
         /// <summary>
         /// Comma-separated list of fields to return in the Tweet object - <see cref="TweetField"/>
@@ -80,10 +95,13 @@ namespace LinqToTwitter
                        nameof(Usernames),
                        nameof(Expansions),
                        nameof(MaxResults),
+                       nameof(MediaFields),
                        nameof(PaginationToken),
+                       nameof(PlaceFields),
+                       nameof(PollFields),
                        nameof(TweetFields),
                        nameof(UserFields)
-                   }) ;
+                   });
 
             return paramFinder.Parameters;
         }
@@ -106,6 +124,7 @@ namespace LinqToTwitter
                 UserType.UsernameLookup => BuildUsernameLookupUrl(parameters),
                 UserType.Followers => BuildFollowersUrl(parameters),
                 UserType.Following => BuildFollowingUrl(parameters),
+                UserType.RetweetedBy => BuildRetweetedByUrl(parameters),
                 _ => throw new InvalidOperationException("The default case of BuildUrl should never execute because a Type must be specified."),
             };
         }
@@ -188,6 +207,58 @@ namespace LinqToTwitter
             var req = new Request($"{BaseUrl}users/{ID}/following");
 
             BuildFollowParameters(parameters, req);
+
+            return req;
+        }
+
+        /// <summary>
+        /// RetweetedBy URL
+        /// </summary>
+        /// <param name="parameters">Parameters to process</param>
+        /// <returns><see cref="Request"/> object</returns>
+        Request BuildRetweetedByUrl(Dictionary<string, string> parameters)
+        {
+            SetUserID(parameters);
+
+            var req = new Request($"{BaseUrl}tweets/{ID}/retweeted_by");
+
+            var urlParams = req.RequestParameters;
+
+            if (parameters.ContainsKey(nameof(Expansions)))
+            {
+                Expansions = parameters[nameof(Expansions)];
+                urlParams.Add(new QueryParameter("expansions", Expansions.Replace(" ", "")));
+            }
+
+            if (parameters.ContainsKey(nameof(MediaFields)))
+            {
+                MediaFields = parameters[nameof(MediaFields)];
+                urlParams.Add(new QueryParameter("media.fields", MediaFields.Replace(" ", "")));
+            }
+
+            if (parameters.ContainsKey(nameof(PlaceFields)))
+            {
+                PlaceFields = parameters[nameof(PlaceFields)];
+                urlParams.Add(new QueryParameter("place.fields", PlaceFields.Replace(" ", "")));
+            }
+
+            if (parameters.ContainsKey(nameof(PollFields)))
+            {
+                PollFields = parameters[nameof(PollFields)];
+                urlParams.Add(new QueryParameter("poll.fields", PollFields.Replace(" ", "")));
+            }
+
+            if (parameters.ContainsKey(nameof(TweetFields)))
+            {
+                TweetFields = parameters[nameof(TweetFields)];
+                urlParams.Add(new QueryParameter("tweet.fields", TweetFields.Replace(" ", "")));
+            }
+
+            if (parameters.ContainsKey(nameof(UserFields)))
+            {
+                UserFields = parameters[nameof(UserFields)];
+                urlParams.Add(new QueryParameter("user.fields", UserFields.Replace(" ", "")));
+            }
 
             return req;
         }

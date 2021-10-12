@@ -46,7 +46,7 @@ namespace LinqToTwitter
         public string? Ids { get; set; }
 
         /// <summary>
-        /// User ID for timeline queries
+        /// User ID for timeline queries/Tweet ID for retweeted by
         /// </summary>
         public string? ID { get; set; }
 
@@ -146,18 +146,13 @@ namespace LinqToTwitter
 
             Type = RequestProcessorHelper.ParseEnum<TweetType>(parameters[nameof(Type)]);
 
-            switch (Type)
+            return Type switch
             {
-                case TweetType.Lookup:
-                    return BuildLookupUrl(parameters);
-                case TweetType.MentionsTimeline:
-                    return BuildMentionsTimelineUrl(parameters);
-                case TweetType.TweetsTimeline:
-                    return BuildUserTimelineUrl(parameters);
-                default:
-                    throw new InvalidOperationException("The default case of BuildUrl should never execute because a Type must be specified.");
-            }
-
+                TweetType.Lookup => BuildLookupUrl(parameters),
+                TweetType.MentionsTimeline => BuildMentionsTimelineUrl(parameters),
+                TweetType.TweetsTimeline => BuildUserTimelineUrl(parameters),
+                _ => throw new InvalidOperationException("The default case of BuildUrl should never execute because a Type must be specified."),
+            };
         }
 
         /// <summary>
