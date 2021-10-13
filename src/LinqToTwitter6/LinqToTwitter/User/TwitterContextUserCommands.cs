@@ -122,5 +122,67 @@ namespace LinqToTwitter
 
             return result;
         }
+
+        /// <summary>
+        /// Retweet a tweet
+        /// </summary>
+        /// <param name="userID">User retweeting</param>
+        /// <param name="tweetID">Tweet to retweet</param>
+        /// <param name="cancelToken">Allows request cancellation</param>
+        /// <returns>Retweet Status</returns>
+        public async Task<RetweetResponse?> RetweetAsync(string userID, string tweetID, CancellationToken cancelToken = default)
+        {
+            _ = userID ?? throw new ArgumentException($"{nameof(userID)} is a required parameter.", nameof(userID));
+            _ = tweetID ?? throw new ArgumentException($"{nameof(tweetID)} is a required parameter.", nameof(tweetID));
+
+            string url = $"{BaseUrl2}users/{userID}/retweets";
+
+            var postData = new Dictionary<string, string>();
+            var postObj = new RetweetTweetID { TweetID = tweetID };
+
+            RawResult =
+                await TwitterExecutor.SendJsonToTwitterAsync(
+                    HttpMethod.Post.ToString(),
+                    url,
+                    postData,
+                    postObj,
+                    cancelToken)
+                   .ConfigureAwait(false);
+
+            RetweetResponse? result = JsonSerializer.Deserialize<RetweetResponse>(RawResult);
+
+            return result;
+        }
+
+        /// <summary>
+        /// Remove retweet from a tweet
+        /// </summary>
+        /// <param name="userID">Retweeting user</param>
+        /// <param name="sourceTweetID">Tweet to undo retweet</param>
+        /// <param name="cancelToken">Allows request cancellation</param>
+        /// <returns>Retweet Status</returns>
+        public async Task<RetweetResponse?> UndoRetweetAsync(string userID, string sourceTweetID, CancellationToken cancelToken = default)
+        {
+            _ = userID ?? throw new ArgumentException($"{nameof(userID)} is a required parameter.", nameof(userID));
+            _ = sourceTweetID ?? throw new ArgumentException($"{nameof(sourceTweetID)} is a required parameter.", nameof(sourceTweetID));
+
+            string url = $"{BaseUrl2}users/{userID}/retweets/{sourceTweetID}";
+
+            var postData = new Dictionary<string, string>();
+            var postObj = new RetweetTweetID { TweetID = sourceTweetID };
+
+            RawResult =
+                await TwitterExecutor.SendJsonToTwitterAsync(
+                    HttpMethod.Delete.ToString(),
+                    url,
+                    postData,
+                    postObj,
+                    cancelToken)
+                   .ConfigureAwait(false);
+
+            RetweetResponse? result = JsonSerializer.Deserialize<RetweetResponse>(RawResult);
+
+            return result;
+        }
     }
 }

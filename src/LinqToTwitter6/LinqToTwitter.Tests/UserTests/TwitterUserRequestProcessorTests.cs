@@ -33,7 +33,10 @@ namespace LinqToTwitter.Tests.UserTests
                     tweet.Ids == "2,3" &&
 					tweet.Usernames == "joemayo,linq2twitr" &&
 					tweet.MaxResults == 50 &&
+					tweet.MediaFields == "height,width" &&
 					tweet.PaginationToken == "123" &&
+					tweet.PlaceFields == "country" &&
+					tweet.PollFields == "duration_minutes,end_datetime" &&
 					tweet.Expansions == "attachments.poll_ids,author_id" &&
                     tweet.TweetFields == "author_id,created_at" &&
                     tweet.UserFields == "created_at,verified";
@@ -62,8 +65,17 @@ namespace LinqToTwitter.Tests.UserTests
 					new KeyValuePair<string, string>(nameof(TwitterUserQuery.MaxResults), "50")));
 			Assert.IsTrue(
 				queryParams.Contains(
-					new KeyValuePair<string, string>(nameof(TwitterUserQuery.PaginationToken), "123")));
-						Assert.IsTrue(
+					new KeyValuePair<string, string>(nameof(TweetQuery.MediaFields), "height,width")));
+			Assert.IsTrue(
+				queryParams.Contains(
+					new KeyValuePair<string, string>(nameof(TweetQuery.PaginationToken), "123")));
+			Assert.IsTrue(
+			   queryParams.Contains(
+				   new KeyValuePair<string, string>(nameof(TweetQuery.PlaceFields), "country")));
+			Assert.IsTrue(
+			   queryParams.Contains(
+				   new KeyValuePair<string, string>(nameof(TweetQuery.PollFields), "duration_minutes,end_datetime")));
+			Assert.IsTrue(
                 queryParams.Contains(
                     new KeyValuePair<string, string>(nameof(TwitterUserQuery.TweetFields), "author_id,created_at")));
             Assert.IsTrue(
@@ -168,6 +180,36 @@ namespace LinqToTwitter.Tests.UserTests
 					{ nameof(TwitterUserQuery.Type), UserType.UsernameLookup.ToString() },
 					{ nameof(TwitterUserQuery.Usernames), "joemayo,linq2twitr" },
 					{ nameof(TwitterUserQuery.Expansions), "attachments.poll_ids,author_id" },
+					{ nameof(TwitterUserQuery.TweetFields), "author_id,created_at" },
+					{ nameof(TwitterUserQuery.UserFields), "created_at,verified" },
+			   };
+
+			Request req = twitterUserReqProc.BuildUrl(parameters);
+
+			Assert.AreEqual(ExpectedUrl, req.FullUrl);
+		}
+
+		[TestMethod]
+		public void BuildUrl_ForRetweetedBy_IncludesParameters()
+		{
+			const string ExpectedUrl =
+				BaseUrl2 + "tweets/123/retweeted_by?" +
+				"expansions=attachments.poll_ids%2Cauthor_id&" +
+				"media.fields=height%2Cwidth&" +
+				"place.fields=country&" +
+				"poll.fields=duration_minutes%2Cend_datetime&" +
+				"tweet.fields=author_id%2Ccreated_at&" +
+				"user.fields=created_at%2Cverified";
+			var twitterUserReqProc = new TwitterUserRequestProcessor<TwitterUserQuery> { BaseUrl = BaseUrl2 };
+			var parameters =
+				new Dictionary<string, string>
+				{
+					{ nameof(TwitterUserQuery.Type), UserType.RetweetedBy.ToString() },
+					{ nameof(TwitterUserQuery.ID), "123" },
+					{ nameof(TwitterUserQuery.Expansions), "attachments.poll_ids,author_id" },
+					{ nameof(TwitterUserQuery.MediaFields), "height,width" },
+					{ nameof(TwitterUserQuery.PlaceFields), "country" },
+					{ nameof(TwitterUserQuery.PollFields), "duration_minutes,end_datetime" },
 					{ nameof(TwitterUserQuery.TweetFields), "author_id,created_at" },
 					{ nameof(TwitterUserQuery.UserFields), "created_at,verified" },
 			   };
@@ -284,6 +326,24 @@ namespace LinqToTwitter.Tests.UserTests
 
 			Assert.AreEqual(nameof(TwitterUserQuery.Usernames), ex.ParamName);
 		}
+
+		[TestMethod]
+		public void BuildUrl_ForRetweetedBy_RequiresID()
+		{
+			var twitterUserReqProc = new TwitterUserRequestProcessor<TwitterUserQuery> { BaseUrl = BaseUrl2 };
+			var parameters =
+                new Dictionary<string, string>
+                {
+                    { nameof(TweetQuery.Type), UserType.RetweetedBy.ToString() },
+			        //{ nameof(Tweet.ID), null }
+			    };
+
+            ArgumentException ex =
+                L2TAssert.Throws<ArgumentException>(() =>
+					twitterUserReqProc.BuildUrl(parameters));
+
+            Assert.AreEqual(nameof(TwitterUserQuery.ID), ex.ParamName);
+        }
 
 		[TestMethod]
         public void ProcessResults_Populates_Users()

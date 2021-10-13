@@ -66,6 +66,21 @@ namespace ConsoleDemo.CSharp
                         Console.WriteLine("\n\tUn-Following...\n");
                         await UnFollowAsync(twitterCtx);
                         break;
+                    case 'b':
+                    case 'B':
+                        Console.WriteLine("\n\tFinding who retweeted...\n");
+                        await DoRetweetedByAsync(twitterCtx);
+                        break;
+                    case 'c':
+                    case 'C':
+                        Console.WriteLine("\n\tRetweeting...\n");
+                        await RetweetAsync(twitterCtx);
+                        break;
+                    case 'd':
+                    case 'D':
+                        Console.WriteLine("\n\tUndoing Retweet...\n");
+                        await UndoRetweetAsync(twitterCtx);
+                        break;
                     case 'q':
                     case 'Q':
                         Console.WriteLine("\nReturning...\n");
@@ -93,6 +108,9 @@ namespace ConsoleDemo.CSharp
             Console.WriteLine("\t 8. Find Following");
             Console.WriteLine("\t 9. Follow a User");
             Console.WriteLine("\t A. Un-Follow a User");
+            Console.WriteLine("\t B. Retweeted by a User");
+            Console.WriteLine("\t C. Retweet");
+            Console.WriteLine("\t D. Undo Retweet");
             Console.WriteLine();
             Console.Write("\t Q. Return to Main menu");
         }
@@ -273,6 +291,50 @@ namespace ConsoleDemo.CSharp
                 await twitterCtx.UnFollowAsync(followingUser, userToFollow);
 
             Console.WriteLine($"Is Following: {response?.Data?.Following ?? false}");
+        }
+
+        static async Task DoRetweetedByAsync(TwitterContext twitterCtx)
+        {
+            string tweetID = "1446476275246194697";
+
+            TwitterUserQuery? response =
+                await
+                (from user in twitterCtx.TwitterUser
+                 where user.Type == UserType.RetweetedBy &&
+                       user.ID == tweetID
+                 select user)
+                .SingleOrDefaultAsync();
+
+            if (response?.Users != null)
+                response.Users.ForEach(user =>
+                    Console.WriteLine(
+                        $"\nID: {user.ID}" +
+                        $"\nUsername: {user.Username}" +
+                        $"\nName: {user.Name}"));
+            else
+                Console.WriteLine("No entries found.");
+        }
+
+        async static Task RetweetAsync(TwitterContext twitterCtx)
+        {
+            string retweetingUser = "15411837";
+            string tweetToRetweet = "1376560011678085128";
+
+            RetweetResponse? response =
+                await twitterCtx.RetweetAsync(retweetingUser, tweetToRetweet);
+
+            Console.WriteLine($"Is Retweeted: {response?.Data?.Retweeted ?? false}");
+        }
+
+        async static Task UndoRetweetAsync(TwitterContext twitterCtx)
+        {
+            string retweetingUser = "15411837";
+            string tweetToUndoRetweet = "1376560011678085128";
+
+            RetweetResponse? response =
+                await twitterCtx.UndoRetweetAsync(retweetingUser, tweetToUndoRetweet);
+
+            Console.WriteLine($"Is Retweeted: {response?.Data?.Retweeted ?? false}");
         }
     }
 }

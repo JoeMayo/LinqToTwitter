@@ -56,6 +56,14 @@ namespace LinqToTwitterPcl.Tests.AccountTests
                     It.IsAny<TwitterUserTargetID>(),
                     It.IsAny<CancellationToken>()))
                 .Returns(tcsResponse.Task);
+            execMock.Setup(exec =>
+                exec.SendJsonToTwitterAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<IDictionary<string, string>>(),
+                    It.IsAny<RetweetTweetID>(),
+                    It.IsAny<CancellationToken>()))
+                .Returns(tcsResponse.Task);
             var ctx = new TwitterContext(execMock.Object);
             return ctx;
         }
@@ -230,6 +238,86 @@ namespace LinqToTwitterPcl.Tests.AccountTests
             Assert.AreEqual(ExpectedParamName, ex.ParamName);
         }
 
+        [TestMethod]
+        public async Task Retweet_WithProperParameters_Succeeds()
+        {
+            const string userID = "abc";
+            const string tweetID = "def";
+            var ctx = InitTwitterContextWithPostToTwitter<User>(RetweetResponse);
+
+            RetweetResponse response =
+                await ctx.RetweetAsync(userID, tweetID);
+
+            Assert.IsNotNull(response);
+            RetweetResponseData data = response.Data;
+            Assert.IsNotNull(data);
+            Assert.IsTrue(data.Retweeted);
+        }
+
+        [TestMethod]
+        public async Task Retweet_WithoutUserID_Throws()
+        {
+            const string ExpectedParamName = "userID";
+            var ctx = InitTwitterContextWithPostToTwitter<User>(RetweetResponse);
+
+            var ex = await L2TAssert.Throws<ArgumentException>(
+                async () => await ctx.RetweetAsync(null, "abc"));
+
+            Assert.AreEqual(ExpectedParamName, ex.ParamName);
+        }
+
+        [TestMethod]
+        public async Task Retweet_WithoutTweetID_Throws()
+        {
+            const string ExpectedParamName = "tweetID";
+            var ctx = InitTwitterContextWithPostToTwitter<User>(RetweetResponse);
+
+            var ex = await L2TAssert.Throws<ArgumentException>(
+                async () => await ctx.RetweetAsync("abc", null));
+
+            Assert.AreEqual(ExpectedParamName, ex.ParamName);
+        }
+
+        [TestMethod]
+        public async Task UndoRetweet_WithProperParameters_Succeeds()
+        {
+            const string userID = "abc";
+            const string sourceTweetID = "def";
+            var ctx = InitTwitterContextWithPostToTwitter<User>(UndoRetweetResponse);
+
+            RetweetResponse response =
+                await ctx.UndoRetweetAsync(userID, sourceTweetID);
+
+            Assert.IsNotNull(response);
+            RetweetResponseData data = response.Data;
+            Assert.IsNotNull(data);
+            Assert.IsFalse(data.Retweeted);
+        }
+
+        [TestMethod]
+        public async Task UndoRetweet_WithoutUserID_Throws()
+        {
+            const string ExpectedParamName = "userID";
+            var ctx = InitTwitterContextWithPostToTwitter<User>(UndoRetweetResponse);
+
+            var ex = await L2TAssert.Throws<ArgumentException>(
+                async () => await ctx.UndoRetweetAsync(null, "abc"));
+
+            Assert.AreEqual(ExpectedParamName, ex.ParamName);
+        }
+
+        [TestMethod]
+        public async Task UndoRetweet_WithoutTweetID_Throws()
+        {
+            const string ExpectedParamName = "sourceTweetID";
+            var ctx = InitTwitterContextWithPostToTwitter<User>(UndoRetweetResponse);
+
+            var ex = await L2TAssert.Throws<ArgumentException>(
+                async () => await ctx.UndoRetweetAsync("abc", null));
+
+            Assert.AreEqual(ExpectedParamName, ex.ParamName);
+        }
+
         const string SingleUserResponse = @"{
    ""id"":6253282,
    ""id_str"":""6253282"",
@@ -307,6 +395,20 @@ namespace LinqToTwitterPcl.Tests.AccountTests
     ""data"": {
 		""following"": false,
 		""pending_follow"": false
+	}
+}
+";
+
+        const string RetweetResponse = @"{
+    ""data"": {
+		""retweeted"": true
+	}
+}
+";
+
+        const string UndoRetweetResponse = @"{
+    ""data"": {
+		""retweeted"": false
 	}
 }
 ";

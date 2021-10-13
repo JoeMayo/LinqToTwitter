@@ -26,6 +26,11 @@
         IdLookup,
 
         /// <summary>
+        /// Get tweets a user retweeted
+        /// </summary>
+        RetweetedBy,
+
+        /// <summary>
         /// Perform a user search
         /// </summary>
         Search,
