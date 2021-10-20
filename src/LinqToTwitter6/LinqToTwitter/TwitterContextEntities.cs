@@ -125,7 +125,7 @@ namespace LinqToTwitter
         /// <summary>
         /// enables access to Twitter Likes lookup (Twitter API v2)
         /// </summary>
-        public TwitterQueryable<LikeQuery> Likes => new TwitterQueryable<LikeQuery>(this);
+        public TwitterQueryable<LikeQuery> Likes => new(this);
 
         /// <summary>
         /// enables access to Twitter List info
@@ -152,7 +152,7 @@ namespace LinqToTwitter
         /// <summary>
         /// enables access to Raw Query Extensibility (All Twitter API versions)
         /// </summary>
-        public TwitterQueryable<Raw> RawQuery => new TwitterQueryable<Raw>(this);
+        public TwitterQueryable<Raw> RawQuery => new(this);
 
         /// <summary>
         /// enables access to Twitter Saved Searches
@@ -168,12 +168,17 @@ namespace LinqToTwitter
         /// <summary>
         /// enables access to Twitter Search to query tweets (Twitter API v1)
         /// </summary>
-        public TwitterQueryable<Search> Search => new TwitterQueryable<Search>(this);
+        public TwitterQueryable<Search> Search => new(this);
 
         /// <summary>
         /// enables access to Twitter Search v2 to query tweets (Twitter API v2)
         /// </summary>
-        public TwitterQueryable<TwitterSearch> TwitterSearch => new TwitterQueryable<TwitterSearch>(this);
+        public TwitterQueryable<TwitterSearch> TwitterSearch => new(this);
+
+        /// <summary>
+        /// enables access to Twitter Search v2 to search spaces (Twitter API v2)
+        /// </summary>
+        public TwitterQueryable<SpacesQuery> Spaces => new(this);
 
         /// <summary>
         /// enables access to Twitter Status messages (Twitter API v1)
@@ -211,18 +216,18 @@ namespace LinqToTwitter
         /// <summary>
         /// enables access to Twitter Tweets lookup (Twitter API v2)
         /// </summary>
-        public TwitterQueryable<TweetQuery> Tweets => new TwitterQueryable<TweetQuery>(this);
+        public TwitterQueryable<TweetQuery> Tweets => new(this);
 
 
         /// <summary>
         /// enables access to Twitter blocking information, such as Lookup
         /// </summary>
-        public TwitterQueryable<TwitterBlocksQuery> TwitterBlocks => new TwitterQueryable<TwitterBlocksQuery>(this);
+        public TwitterQueryable<TwitterBlocksQuery> TwitterBlocks => new(this);
 
         /// <summary>
         /// enables access to Twitter User lookup (Twitter API v2)
         /// </summary>
-        public TwitterQueryable<TwitterUserQuery> TwitterUser => new TwitterQueryable<TwitterUserQuery>(this);
+        public TwitterQueryable<TwitterUserQuery> TwitterUser => new(this);
 
         /// <summary>
         /// enables access to Twitter User messages, such as Friends and Followers (Twitter API v1)

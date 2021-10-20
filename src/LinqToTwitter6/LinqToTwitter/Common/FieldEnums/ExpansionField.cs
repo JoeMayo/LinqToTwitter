@@ -19,14 +19,34 @@
         public const string AllUserFields = "pinned_tweet_id";
 
         /// <summary>
+        /// All expandable fields on <see cref="Space"/>
+        /// </summary>
+        public const string AllSpaceFields = "creator_id,host_ids,invited_user_ids,speaker_ids";
+
+        /// <summary>
         /// <see cref="Tweet"/> - author_id
         /// </summary>
         public const string AuthorID = "author_id";
 
         /// <summary>
+        /// ID of person who created a <see cref="Space"/>
+        /// </summary>
+        public const string CreatorID = "creator_id";
+
+        /// <summary>
+        /// ID of people hosting a <see cref="Space"/>
+        /// </summary>
+        public const string HostIds = "host_ids";
+
+        /// <summary>
         /// <see cref="Tweet"/> - in_reply_to_user_id
         /// </summary>
         public const string InReplyToUserID = "in_reply_to_user_id";
+
+        /// <summary>
+        /// IDs of users who were invited to a <see cref="Space"/>
+        /// </summary>
+        public const string InvitedUserIds = "invited_user_ids";
 
         /// <summary>
         /// <see cref="Tweet"/> - attachments.media_keys
@@ -62,5 +82,10 @@
         /// <see cref="Tweet"/> - referenced_tweets.id.author_id
         /// </summary>
         public const string ReferencedTweetAuthorID = "referenced_tweets.id.author_id";
+
+        /// <summary>
+        /// IDs of people who are speakers at a <see cref="Space"/>
+        /// </summary>
+        public const string SpeakerIds = "speaker_ids";
     }
 }

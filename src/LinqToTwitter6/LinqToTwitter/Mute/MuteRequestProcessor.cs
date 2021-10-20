@@ -9,7 +9,7 @@ using LinqToTwitter.Provider;
 namespace LinqToTwitter
 {
     /// <summary>
-    /// Processes Twitter User requests.
+    /// Processes Twitter Mute requests.
     /// </summary>
     public class MuteRequestProcessor<T> :
         IRequestProcessor<T>,

@@ -574,6 +574,12 @@ namespace LinqToTwitter
                         BaseUrl = BaseUrl2
                     };
                     break;
+                case nameof(SpacesQuery):
+                    req = new SpacesRequestProcessor<T>
+                    {
+                        BaseUrl = BaseUrl2
+                    };
+                    break;
                 case nameof(Status):
                     req = new StatusRequestProcessor<T>();
                     break;

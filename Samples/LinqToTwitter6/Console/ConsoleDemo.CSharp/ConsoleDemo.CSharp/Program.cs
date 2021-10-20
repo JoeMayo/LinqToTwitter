@@ -155,6 +155,11 @@ static async Task DoDemosAsync()
                 Console.WriteLine("\n\tRunning Counts Demos...\n");
                 await CountsDemos.RunAsync(twitterCtx);
                 break;
+            case 'n':
+            case 'N':
+                Console.WriteLine("\n\tRunning Spaces Demos...\n");
+                await SpacesDemos.RunAsync(twitterCtx);
+                break;
             case 'q':
             case 'Q':
                 Console.WriteLine("\nQuitting...\n");
@@ -194,6 +199,7 @@ static void ShowMenu()
     Console.WriteLine("\t K. Compliance Demos");
     Console.WriteLine("\t L. Like Demos");
     Console.WriteLine("\t M. Counts Demos");
+    Console.WriteLine("\t N. Spaces Demos");
     Console.WriteLine();
     Console.Write("\t Q. End Program");
 }
