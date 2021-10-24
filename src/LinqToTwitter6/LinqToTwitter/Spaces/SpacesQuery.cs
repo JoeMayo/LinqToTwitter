@@ -21,6 +21,11 @@ namespace LinqToTwitter
         public string? Query { get; set; }
 
         /// <summary>
+        /// Comma-separated list of creator IDs to search for
+        /// </summary>
+        public string? CreatorIds { get; set; }
+
+        /// <summary>
         /// Comma-separated list of expansion fields - <see cref="ExpansionField"/>
         /// </summary>
         public string? Expansions { get; set; }
@@ -34,6 +39,11 @@ namespace LinqToTwitter
         /// Comma-separated list of fields to return in the Space object - <see cref="SpaceField"/>
         /// </summary>
         public string? SpaceFields { get; set; }
+
+        /// <summary>
+        /// Comma-separated list of space IDs to search for
+        /// </summary>
+        public string? SpaceIds { get; set; }
 
         /// <summary>
         /// Current state of the space - <see cref="SpaceState"/>

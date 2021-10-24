@@ -33,6 +33,11 @@ namespace LinqToTwitter
         public string? Query { get; set; }
 
         /// <summary>
+        /// Comma-separated list of creator IDs to search for
+        /// </summary>
+        public string? CreatorIds { get; set; }
+
+        /// <summary>
         /// Comma-separated list of expansion fields - <see cref="ExpansionField"/>
         /// </summary>
         public string? Expansions { get; set; }
@@ -46,6 +51,11 @@ namespace LinqToTwitter
         /// Comma-separated list of fields to return in the Space object - <see cref="SpaceField"/>
         /// </summary>
         public string? SpaceFields { get; set; }
+
+        /// <summary>
+        /// Comma-separated list of space IDs to search for
+        /// </summary>
+        public string? SpaceIds { get; set; }
 
         /// <summary>
         /// Current state of the space - <see cref="SpaceState"/>
@@ -70,9 +80,11 @@ namespace LinqToTwitter
                    new List<string> { 
                        nameof(Type),
                        nameof(Query),
+                       nameof(CreatorIds),
                        nameof(Expansions),
                        nameof(MaxResults),
                        nameof(SpaceFields),
+                       nameof(SpaceIds),
                        nameof(State),
                        nameof(UserFields)
                    });
@@ -93,13 +105,77 @@ namespace LinqToTwitter
 
             Type = RequestProcessorHelper.ParseEnum<SpacesType>(parameters["Type"]);
 
-            switch (Type)
+            return Type switch
             {
-                case SpacesType.Search:
-                    return BuildSearchdUrl(parameters);
-                default:
-                    throw new InvalidOperationException("The default case of BuildUrl should never execute because a Type must be specified.");
+                SpacesType.ByCreatorID => BuildByCreatorIdsUrl(parameters),
+                SpacesType.BySpaceID => BuildBySpaceIdsUrl(parameters),
+                SpacesType.Search => BuildSearchdUrl(parameters),
+                _ => throw new InvalidOperationException("The default case of BuildUrl should never execute because a Type must be specified."),
+            };
+        }
+
+        Request BuildByCreatorIdsUrl(Dictionary<string, string> parameters)
+        {
+            var req = new Request($"{BaseUrl}spaces/by/creator_ids");
+            var urlParams = req.RequestParameters;
+
+            if (parameters.ContainsKey(nameof(Expansions)))
+            {
+                Expansions = parameters[nameof(Expansions)];
+                urlParams.Add(new QueryParameter("expansions", Expansions.Replace(" ", "")));
             }
+
+            if (parameters.ContainsKey(nameof(CreatorIds)))
+            {
+                CreatorIds = parameters[nameof(CreatorIds)];
+                urlParams.Add(new QueryParameter("user_ids", CreatorIds.Replace(" ", "")));
+            }
+
+            if (parameters.ContainsKey(nameof(SpaceFields)))
+            {
+                SpaceFields = parameters[nameof(SpaceFields)];
+                urlParams.Add(new QueryParameter("space.fields", SpaceFields.Replace(" ", "")));
+            }
+
+            if (parameters.ContainsKey(nameof(UserFields)))
+            {
+                UserFields = parameters[nameof(UserFields)];
+                urlParams.Add(new QueryParameter("user.fields", UserFields.Replace(" ", "")));
+            }
+
+            return req;
+        }
+
+        Request BuildBySpaceIdsUrl(Dictionary<string, string> parameters)
+        {
+            var req = new Request($"{BaseUrl}spaces");
+            var urlParams = req.RequestParameters;
+
+            if (parameters.ContainsKey(nameof(Expansions)))
+            {
+                Expansions = parameters[nameof(Expansions)];
+                urlParams.Add(new QueryParameter("expansions", Expansions.Replace(" ", "")));
+            }
+
+            if (parameters.ContainsKey(nameof(SpaceIds)))
+            {
+                SpaceIds = parameters[nameof(SpaceIds)];
+                urlParams.Add(new QueryParameter("ids", SpaceIds.Replace(" ", "")));
+            }
+
+            if (parameters.ContainsKey(nameof(SpaceFields)))
+            {
+                SpaceFields = parameters[nameof(SpaceFields)];
+                urlParams.Add(new QueryParameter("space.fields", SpaceFields.Replace(" ", "")));
+            }
+
+            if (parameters.ContainsKey(nameof(UserFields)))
+            {
+                UserFields = parameters[nameof(UserFields)];
+                urlParams.Add(new QueryParameter("user.fields", UserFields.Replace(" ", "")));
+            }
+
+            return req;
         }
 
         Request BuildSearchdUrl(Dictionary<string, string> parameters)
@@ -172,6 +248,8 @@ namespace LinqToTwitter
             switch (Type)
             {
                 case SpacesType.Search:
+                case SpacesType.ByCreatorID:
+                case SpacesType.BySpaceID:
                     spaces = new List<SpacesQuery> { JsonDeserialize(responseJson) };
                     break;
                 default:
@@ -200,9 +278,11 @@ namespace LinqToTwitter
                 {
                     Type = Type,
                     Query = Query,
+                    CreatorIds = CreatorIds,
                     Expansions = Expansions,
                     MaxResults = MaxResults,
                     SpaceFields = SpaceFields,
+                    SpaceIds = SpaceIds,
                     State = State,
                     UserFields = UserFields
                 };
@@ -211,9 +291,11 @@ namespace LinqToTwitter
                 {
                     Type = Type,
                     Query = Query,
+                    CreatorIds = CreatorIds,
                     Expansions = Expansions,
                     MaxResults = MaxResults,
                     SpaceFields = SpaceFields,
+                    SpaceIds = SpaceIds,
                     State = State,
                     UserFields = UserFields
                 };

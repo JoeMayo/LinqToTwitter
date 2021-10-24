@@ -28,7 +28,9 @@ namespace LinqToTwitter.Tests.SpaceTests
                 space =>
                     space.Type == SpacesType.Search &&
                     space.Query == "My Space" &&
-                    space.Expansions == "author_id,attachments.media_keys" &&
+					space.CreatorIds == "123,456" &&
+					space.Expansions == "author_id,attachments.media_keys" &&
+					space.SpaceIds == "789,012" &&
                     space.MaxResults == 100 &&
                     space.SpaceFields == "id,title" &&
                     space.State == "live" &&
@@ -43,10 +45,16 @@ namespace LinqToTwitter.Tests.SpaceTests
             Assert.IsTrue(
                 queryParams.Contains(
                     new KeyValuePair<string, string>(nameof(SpacesQuery.Query), "My Space")));
-            Assert.IsTrue(
+			Assert.IsTrue(
+				queryParams.Contains(
+					new KeyValuePair<string, string>(nameof(SpacesQuery.CreatorIds), "123,456")));
+			Assert.IsTrue(
                 queryParams.Contains(
                     new KeyValuePair<string, string>(nameof(SpacesQuery.Expansions), "author_id,attachments.media_keys")));
-            Assert.IsTrue(
+			Assert.IsTrue(
+				queryParams.Contains(
+					new KeyValuePair<string, string>(nameof(SpacesQuery.SpaceIds), "789,012")));
+			Assert.IsTrue(
                 queryParams.Contains(
                     new KeyValuePair<string, string>(nameof(SpacesQuery.MaxResults), "100")));
             Assert.IsTrue(
@@ -61,7 +69,7 @@ namespace LinqToTwitter.Tests.SpaceTests
         }
 
         [TestMethod]
-        public void BuildUrl_WithParams_ConstructsUrl()
+        public void BuildUrl_ForSearch_ConstructsUrl()
         {
             const string ExpectedUrl = 
                 BaseUrl2 + "spaces/search?" +
@@ -91,15 +99,47 @@ namespace LinqToTwitter.Tests.SpaceTests
         }
 
 		[TestMethod]
+		public void BuildUrl_ForSearchParamsWithSpaces_TrimsSpaces()
+		{
+			const string ExpectedUrl =
+				BaseUrl2 + "spaces/search?" +
+				"query=twitter&" +
+				"expansions=attachments.poll_ids%2Cauthor_id&" +
+				"max_results=99&" +
+				"space.fields=id%2Ctitle&" +
+				"state=live&" +
+				"user.fields=created_at%2Cverified";
+
+			var reqProc = new SpacesRequestProcessor<SpacesQuery> { BaseUrl = BaseUrl2 };
+			var parameters =
+				new Dictionary<string, string>
+				{
+					{ nameof(SpacesQuery.Type), ((int)SpacesType.Search).ToString(CultureInfo.InvariantCulture) },
+					{ nameof(SpacesQuery.Query), "twitter" },
+					{ nameof(SpacesQuery.Expansions), "attachments.poll_ids ,author_id" },
+					{ nameof(SpacesQuery.MaxResults), "99" },
+					{ nameof(SpacesQuery.SpaceFields), "id ,title" },
+					{ nameof(SpacesQuery.State), SpaceState.Live },
+					{ nameof(SpacesQuery.UserFields), "created_at ,verified" }
+				};
+
+			Request req = reqProc.BuildUrl(parameters);
+
+			Assert.AreEqual(ExpectedUrl, req.FullUrl);
+		}
+
+		[TestMethod]
 		public void ProcessResults_WithInputFilters_RepopulatesInputFilterProperties()
         {
 			var reqProc = new SpacesRequestProcessor<SpacesQuery> 
 			{ 
 				Type = SpacesType.Search,
 				Query = "twitter",
+				CreatorIds = "123,456",
 				Expansions = ExpansionField.HostIds,
 				MaxResults = 99,
 				SpaceFields = SpaceField.HostIds,
+				SpaceIds = "789,012",
 				State = SpaceState.Live,
 				UserFields = UserField.Name
 			};
@@ -110,11 +150,113 @@ namespace LinqToTwitter.Tests.SpaceTests
 			Assert.IsNotNull(spaceQuery);
 			Assert.AreEqual(SpacesType.Search, spaceQuery.Type);
 			Assert.AreEqual("twitter", spaceQuery.Query);
+			Assert.AreEqual("123,456", spaceQuery.CreatorIds);
 			Assert.AreEqual(ExpansionField.HostIds, spaceQuery.Expansions);
 			Assert.AreEqual(99, spaceQuery.MaxResults);
 			Assert.AreEqual(SpaceField.HostIds, spaceQuery.SpaceFields);
+			Assert.AreEqual("789,012", spaceQuery.SpaceIds);
 			Assert.AreEqual(SpaceState.Live, spaceQuery.State);
 			Assert.AreEqual(UserField.Name, spaceQuery.UserFields);
+		}
+
+		[TestMethod]
+		public void BuildUrl_ForBySpaceIds_ConstructsUrl()
+		{
+			const string ExpectedUrl =
+				BaseUrl2 + "spaces?" +
+				"expansions=attachments.poll_ids%2Cauthor_id&" +
+				"ids=123%2C456&" +
+				"space.fields=id%2Ctitle&" +
+				"user.fields=created_at%2Cverified";
+			var reqProc = new SpacesRequestProcessor<SpacesQuery> { BaseUrl = BaseUrl2 };
+			var parameters =
+				new Dictionary<string, string>
+				{
+					{ nameof(SpacesQuery.Type), SpacesType.BySpaceID.ToString() },
+					{ nameof(SpacesQuery.SpaceIds), "123,456" },
+					{ nameof(SpacesQuery.Expansions), "attachments.poll_ids,author_id" },
+					{ nameof(SpacesQuery.SpaceFields), "id,title" },
+					{ nameof(SpacesQuery.UserFields), "created_at,verified" }
+			   };
+
+			Request req = reqProc.BuildUrl(parameters);
+
+			Assert.AreEqual(ExpectedUrl, req.FullUrl);
+		}
+
+		[TestMethod]
+		public void BuildUrl_ForBySpaceIdsParamsWithSapces_TrimsSpaces()
+		{
+			const string ExpectedUrl =
+				BaseUrl2 + "spaces?" +
+				"expansions=attachments.poll_ids%2Cauthor_id&" +
+				"ids=123%2C456&" +
+				"space.fields=id%2Ctitle&" +
+				"user.fields=created_at%2Cverified";
+			var reqProc = new SpacesRequestProcessor<SpacesQuery> { BaseUrl = BaseUrl2 };
+			var parameters =
+				new Dictionary<string, string>
+				{
+					{ nameof(SpacesQuery.Type), SpacesType.BySpaceID.ToString() },
+					{ nameof(SpacesQuery.SpaceIds), "123, 456" },
+					{ nameof(SpacesQuery.Expansions), "attachments.poll_ids, author_id" },
+					{ nameof(SpacesQuery.SpaceFields), "id, title" },
+					{ nameof(SpacesQuery.UserFields), "created_at, verified" }
+			   };
+
+			Request req = reqProc.BuildUrl(parameters);
+
+			Assert.AreEqual(ExpectedUrl, req.FullUrl);
+		}
+
+		[TestMethod]
+		public void BuildUrl_ForByCreatorIds_ConstructsUrl()
+		{
+			const string ExpectedUrl =
+				BaseUrl2 + "spaces/by/creator_ids?" +
+				"expansions=attachments.poll_ids%2Cauthor_id&" +
+				"user_ids=123%2C456&" +
+				"space.fields=id%2Ctitle&" +
+				"user.fields=created_at%2Cverified";
+			var reqProc = new SpacesRequestProcessor<SpacesQuery> { BaseUrl = BaseUrl2 };
+			var parameters =
+				new Dictionary<string, string>
+				{
+					{ nameof(SpacesQuery.Type), SpacesType.ByCreatorID.ToString() },
+					{ nameof(SpacesQuery.CreatorIds), "123,456" },
+					{ nameof(SpacesQuery.Expansions), "attachments.poll_ids,author_id" },
+					{ nameof(SpacesQuery.SpaceFields), "id,title" },
+					{ nameof(SpacesQuery.UserFields), "created_at,verified" }
+			   };
+
+			Request req = reqProc.BuildUrl(parameters);
+
+			Assert.AreEqual(ExpectedUrl, req.FullUrl);
+		}
+
+		[TestMethod]
+		public void BuildUrl_ForByCreatorIdsParamsWithSapces_TrimsSpaces()
+		{
+			const string ExpectedUrl =
+				BaseUrl2 + "spaces/by/creator_ids?" +
+				"expansions=attachments.poll_ids%2Cauthor_id&" +
+				"user_ids=123%2C456&" +
+				"space.fields=id%2Ctitle&" +
+				"user.fields=created_at%2Cverified";
+			var reqProc = new SpacesRequestProcessor<SpacesQuery> { BaseUrl = BaseUrl2 };
+			var parameters =
+				new Dictionary<string, string>
+				{
+					{ nameof(SpacesQuery.Type), SpacesType.ByCreatorID.ToString() },
+					{ nameof(SpacesQuery.CreatorIds), "123, 456" },
+					{ nameof(SpacesQuery.Expansions), "attachments.poll_ids, author_id" },
+					{ nameof(SpacesQuery.SpaceFields), "id, title" },
+					{ nameof(SpacesQuery.UserFields), "created_at, verified" }
+			   };
+
+			Request req = reqProc.BuildUrl(parameters);
+
+			Assert.AreEqual(ExpectedUrl, req.FullUrl);
 		}
 
 		[TestMethod]

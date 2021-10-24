@@ -24,6 +24,14 @@ namespace ConsoleDemo.CSharp
                         Console.WriteLine("\n\tSearching...\n");
                         await DoSearchAsync(twitterCtx);
                         break;
+                    case '1':
+                        Console.WriteLine("\n\tGetting by creator IDs...\n");
+                        await DoByCreatorIdsAsync(twitterCtx);
+                        break;
+                    case '2':
+                        Console.WriteLine("\n\tGetting by space IDs...\n");
+                        await DoBySpaceIdsAsync(twitterCtx);
+                        break;
                     case 'q':
                     case 'Q':
                         Console.WriteLine("\nReturning...\n");
@@ -41,8 +49,68 @@ namespace ConsoleDemo.CSharp
             Console.WriteLine("\nSearch Demos - Please select:\n");
 
             Console.WriteLine("\t 0. Search");
+            Console.WriteLine("\t 1. Get by Creator IDs");
+            Console.WriteLine("\t 2. Get by Space IDs");
             Console.WriteLine();
             Console.Write("\t Q. Return to Main menu");
+        }
+
+        static async Task DoByCreatorIdsAsync(TwitterContext twitterCtx)
+        {
+            Console.Write("Please enter one or more creator (user) IDs (comma-separated): ");
+            string? creatorIds = Console.ReadLine();
+
+            SpacesQuery? searchResponse =
+                await
+                (from search in twitterCtx.Spaces
+                 where search.Type == SpacesType.ByCreatorID &&
+                       search.CreatorIds == creatorIds &&
+                       search.Expansions == ExpansionField.AllSpaceFields &&
+                       search.SpaceFields == SpaceField.AllFields &&
+                       search.UserFields == UserField.AllFields
+                 select search)
+                .SingleOrDefaultAsync();
+
+            if (searchResponse?.Spaces != null)
+                searchResponse.Spaces.ForEach(space =>
+                    Console.WriteLine(
+                        "\n  Creator ID: {0}" +
+                        "\n  Space ID: {1}" +
+                        "\n  Date: {2}",
+                        space.CreatorID,
+                        space.ID,
+                        space.CreatedAt));
+            else
+                Console.WriteLine("No entries found.");
+        }
+
+        static async Task DoBySpaceIdsAsync(TwitterContext twitterCtx)
+        {
+            Console.Write("Please enter one or more space IDs (comma-separated): ");
+            string? spaceIds = Console.ReadLine();
+
+            SpacesQuery? searchResponse =
+                await
+                (from search in twitterCtx.Spaces
+                 where search.Type == SpacesType.BySpaceID &&
+                       search.SpaceIds == spaceIds &&
+                       search.Expansions == ExpansionField.AllSpaceFields &&
+                       search.SpaceFields == SpaceField.AllFields &&
+                       search.UserFields == UserField.AllFields
+                 select search)
+                .SingleOrDefaultAsync();
+
+            if (searchResponse?.Spaces != null)
+                searchResponse.Spaces.ForEach(space =>
+                    Console.WriteLine(
+                        "\n  Creator ID: {0}" +
+                        "\n  Space ID: {1}" +
+                        "\n  Date: {2}",
+                        space.CreatorID,
+                        space.ID,
+                        space.CreatedAt));
+            else
+                Console.WriteLine("No entries found.");
         }
 
         static async Task DoSearchAsync(TwitterContext twitterCtx)
@@ -66,8 +134,11 @@ namespace ConsoleDemo.CSharp
             if (searchResponse?.Spaces != null)
                 searchResponse.Spaces.ForEach(space =>
                     Console.WriteLine(
-                        "\n  Creator ID: {0}\n  Date: {1}",
+                        "\n  Creator ID: {0}" +
+                        "\n  Space ID: {1}" +
+                        "\n  Date: {2}",
                         space.CreatorID,
+                        space.ID,
                         space.CreatedAt));
             else
                 Console.WriteLine("No entries found.");
