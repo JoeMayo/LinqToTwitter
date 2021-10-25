@@ -1,4 +1,4 @@
-﻿using System;
+﻿using LinqToTwitter.Compliance;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text.Json;
@@ -12,29 +12,34 @@ namespace LinqToTwitter
         /// <summary>
         /// Creates a new compliance job
         /// </summary>
-        /// <param name="jobName"></param>
-        /// <param name="resumable"></param>
+        /// <param name="jobType">Type of job - e.g. tweets or users</param>
+        /// <param name="jobName">Name of job</param>
+        /// <param name="resumable">Allows resuming uploads</param>
         /// <param name="cancelToken">Optional cancellation token</param>
-        /// <returns>New <see cref="ComplianceJob"/> details</returns>
-        public async Task<ComplianceJob?> CreateComplianceJobAsync(string jobName, bool resumable, CancellationToken cancelToken = default)
+        /// <returns>New <see cref="ComplianceQuery"/> details</returns>
+        public async Task<ComplianceQuerySingle?> CreateComplianceJobAsync(string jobType, string jobName, bool resumable, CancellationToken cancelToken = default)
         {
-            string url = $"{BaseUrl2}tweets/compliance/jobs";
+            string url = $"{BaseUrl2}compliance/jobs";
 
-            var postData = new Dictionary<string, string?>
+            var postData = new Dictionary<string, string>();
+
+            var postObj = new ComplianceJobCreate
             {
-                { "job_name", jobName },
-                { "resumable", resumable ? "true" : "false" }
+                Type = jobType,
+                Name = jobName,
+                Resumable = resumable,
             };
 
             RawResult =
-                await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<ComplianceJob>(
+                await TwitterExecutor.SendJsonToTwitterAsync(
                     HttpMethod.Post.ToString(),
                     url,
                     postData,
+                    postObj,
                     cancelToken)
                    .ConfigureAwait(false);
 
-            ComplianceJob? job = JsonSerializer.Deserialize<ComplianceJob>(RawResult);
+            ComplianceQuerySingle? job = JsonSerializer.Deserialize<ComplianceQuerySingle>(RawResult);
 
             return job;
         }

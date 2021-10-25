@@ -1,9 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace LinqToTwitter
 {
-    public record ComplianceQuery
+    public record ComplianceQuerySingle
     {
         //
         // Query input fields
@@ -37,6 +36,6 @@ namespace LinqToTwitter
         /// Compliance job data returned from the search
         /// </summary>
         [JsonPropertyName("data")]
-        public List<ComplianceJob>? Jobs { get; init; }
+        public ComplianceJob? Job { get; init; }
     }
 }

@@ -77,7 +77,8 @@ namespace ConsoleDemo.CSharp
             if (response?.Jobs?.Any() ?? false)
                 response.Jobs.ForEach(job =>
                     Console.WriteLine(
-                        $"\nName: {job.JobName}" +
+                        $"\nID: {job.ID}" +
+                        $"\nName: {job.Name}" +
                         $"\nStatus: {job.Status}"));
             else
                 Console.WriteLine("No entries found.");
@@ -89,16 +90,16 @@ namespace ConsoleDemo.CSharp
                 await
                 (from job in twitterCtx.Compliance
                  where job.Type == ComplianceType.MultipleJobs &&
-                       job.StartTime == DateTime.Now.AddDays(-2) &&
-                       job.EndTime == DateTime.Now &&
-                       job.Status == ComplianceStatus.All
+                       job.JobType == ComplianceJobType.Tweets //&&
+                       //job.Status == ComplianceStatus.InProgress
                  select job)
                 .SingleOrDefaultAsync();
 
             if (response?.Jobs?.Any() ?? false)
                 response.Jobs.ForEach(job =>
                     Console.WriteLine(
-                        $"\nName: {job.JobName}" +
+                        $"\nID: {job.ID}" +
+                        $"\nName: {job.Name}" +
                         $"\nStatus: {job.Status}"));
             else
                 Console.WriteLine("No entries found.");
@@ -106,11 +107,17 @@ namespace ConsoleDemo.CSharp
 
         static async Task CreateComplianceJobAsync(TwitterContext twitterCtx)
         {
-            ComplianceJob? job = await twitterCtx.CreateComplianceJobAsync("test", true);
+            string jobName = $"test-{DateTime.Now.ToString("yyyyMMddhhmm")}";
+
+            ComplianceQuerySingle? response = 
+                await twitterCtx.CreateComplianceJobAsync(ComplianceJobType.Tweets, jobName, true);
+
+            ComplianceJob? job = response?.Job;
 
             if (job is not null)
                 Console.WriteLine(
-                    $"\nName: {job.JobName}" +
+                    $"\nID: {job.ID}" +
+                    $"\nName: {job.Name}" +
                     $"\nStatus: {job.Status}");
             else
                 Console.WriteLine("Job not returned");
