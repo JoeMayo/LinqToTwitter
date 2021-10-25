@@ -11,14 +11,20 @@ namespace LinqToTwitter
         /// <summary>
         /// Unique ID for job
         /// </summary>
-        [JsonPropertyName("job_id")]
-        public string? JobID { get; set; }
+        [JsonPropertyName("id")]
+        public string? ID { get; set; }
+
+        /// <summary>
+        /// Date/time when job was created
+        /// </summary>
+        [JsonPropertyName("created_at")]
+        public DateTime CreatedAt { get; set; }
 
         /// <summary>
         /// Name of the job
         /// </summary>
-        [JsonPropertyName("job_name")]
-        public string? JobName { get; set; }
+        [JsonPropertyName("name")]
+        public string? Name { get; set; }
 
         /// <summary>
         /// URL where to download job results
@@ -49,5 +55,17 @@ namespace LinqToTwitter
         /// </summary>
         [JsonPropertyName("upload_expires_at")]
         public DateTime UploadExpiresAt { get; set; }
+
+        /// <summary>
+        /// Type of job (tweets or users)
+        /// </summary>
+        [JsonPropertyName("type")]
+        public string? JobType { get; set; }
+
+        /// <summary>
+        /// Job can be resumed
+        /// </summary>
+        [JsonPropertyName("resumable")]
+        public bool Resumable { get; set; }
     }
 }

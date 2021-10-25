@@ -21,14 +21,9 @@ namespace LinqToTwitter
         public string? BaseUrl { get; set; }
 
         /// <summary>
-        /// type of tweet
+        /// type of compliance job
         /// </summary>
         public ComplianceType Type { get; set; }
-
-        /// <summary>
-        /// UTC date/time to search to
-        /// </summary>
-        public DateTime EndTime { get; set; }
 
         /// <summary>
         /// ID for a single job query
@@ -36,9 +31,9 @@ namespace LinqToTwitter
         public string? ID { get; set; }
 
         /// <summary>
-        /// Date to search from
+        /// Type of compliance job to query (tweets or users)
         /// </summary>
-        public DateTime StartTime { get; set; }
+        public string? JobType { get; set; }
 
         /// <summary>
         /// Comma-separated list of job statuses - <see cref="ComplianceStatus"/>
@@ -57,9 +52,8 @@ namespace LinqToTwitter
                    lambdaExpression.Body,
                    new List<string> {
                        nameof(Type),
-                       nameof(EndTime),
                        nameof(ID),
-                       nameof(StartTime),
+                       nameof(JobType),
                        nameof(Status)
                    }) ;
 
@@ -98,27 +92,23 @@ namespace LinqToTwitter
         /// <returns>base url + parameters</returns>
         Request BuildMultipleJobsUrlParameters(Dictionary<string, string> parameters)
         {
-            var req = new Request(BaseUrl + "tweets/compliance/jobs");
+            var req = new Request(BaseUrl + "compliance/jobs");
             var urlParams = req.RequestParameters;
 
-
-            if (parameters.ContainsKey(nameof(EndTime)))
+            if (parameters.ContainsKey(nameof(JobType)))
             {
-                EndTime = DateTime.Parse(parameters[nameof(EndTime)]);
-                urlParams.Add(new QueryParameter("end_time", EndTime.ToString(L2TKeys.ISO8601, CultureInfo.InvariantCulture)));
+                JobType = parameters[nameof(JobType)];
+                urlParams.Add(new QueryParameter("type", JobType));
             }
-
-
-            if (parameters.ContainsKey(nameof(StartTime)))
+            else
             {
-                StartTime = DateTime.Parse(parameters[nameof(StartTime)]);
-                urlParams.Add(new QueryParameter("start_time", StartTime.ToString(L2TKeys.ISO8601, CultureInfo.InvariantCulture)));
+                throw new ArgumentException($"{nameof(JobType)} is required", nameof(JobType));
             }
 
             if (parameters.ContainsKey(nameof(Status)))
             {
                 Status = parameters[nameof(Status)];
-                urlParams.Add(new QueryParameter("status", Status.Replace(" ", "")));
+                urlParams.Add(new QueryParameter("status", Status));
             }
 
             return req;
@@ -136,7 +126,7 @@ namespace LinqToTwitter
             else
                 throw new ArgumentException($"{nameof(ID)} is required", nameof(ID));
 
-            var req = new Request($"{BaseUrl}tweets/compliance/jobs/{ID}");
+            var req = new Request($"{BaseUrl}compliance/jobs/{ID}");
 
             return req;
         }
@@ -176,14 +166,12 @@ namespace LinqToTwitter
             }
             else
             {
-                complianceQuery = new ComplianceQuery();
-
-                ComplianceJob? job = JsonSerializer.Deserialize<ComplianceJob>(responseJson, options);
-                if (job is not null)
+                ComplianceQuerySingle? singleQuery = JsonSerializer.Deserialize<ComplianceQuerySingle>(responseJson, options);
+                if (singleQuery?.Job is not null)
                 {
-                    complianceQuery = complianceQuery with
+                    complianceQuery = new ComplianceQuery
                     {
-                        Jobs = new List<ComplianceJob> { job }
+                        Jobs = new List<ComplianceJob> { singleQuery.Job }
                     };
                 };
             }
@@ -192,18 +180,16 @@ namespace LinqToTwitter
                 return new ComplianceQuery
                 {
                     Type = Type,
-                    EndTime = EndTime,
                     ID = ID,
-                    StartTime = StartTime,
+                    JobType = JobType,
                     Status = Status
                 };
             else
                 return complianceQuery with
                 {
                     Type = Type,
-                    EndTime = EndTime,
                     ID = ID,
-                    StartTime = StartTime,
+                    JobType = JobType,
                     Status = Status
                 };
         }
