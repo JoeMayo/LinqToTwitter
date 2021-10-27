@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -17,114 +18,105 @@ namespace LinqToTwitter
         /// <summary>
         /// Creates a new list.
         /// </summary>
-        /// <param name="listName">name of list</param>
-        /// <param name="mode">public or private</param>
+        /// <param name="name">name of list</param>
         /// <param name="description">list description</param>
+        /// <param name="isPrivate">true or false</param>
         /// <returns>List info for new list</returns>
-        public async Task<List?> CreateListAsync(string listName, string mode, string description, CancellationToken cancelToken = default(CancellationToken))
+        public async Task<ListResponse?> CreateListAsync(string name, string description, bool isPrivate, CancellationToken cancelToken = default(CancellationToken))
         {
-            if (string.IsNullOrWhiteSpace(listName))
-                throw new ArgumentException("listName is required.", "listName");
+            _ = name ?? throw new ArgumentException($"{nameof(name)} is required.", nameof(name));
 
-            var createUrl = BaseUrl + "lists/create.json";
+            var url = $"{BaseUrl2}lists";
 
-            var reqProc = new ListRequestProcessor<List>();
+            var postData = new Dictionary<string, string>();
+            var postObj = new CreateOrUpdateListRequest 
+            {
+                Name = name,
+                Description = description,
+                Private = isPrivate,
+            };
 
             RawResult =
-                await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<List>(
+                await TwitterExecutor.SendJsonToTwitterAsync(
                     HttpMethod.Post.ToString(),
-                    createUrl,
-                    new Dictionary<string, string?>
-                    {
-                        { "name", listName },
-                        { "mode", mode },
-                        { "description", description }
-                    },
+                    url,
+                    postData,
+                    postObj,
                     cancelToken)
-                    .ConfigureAwait(false);
+                   .ConfigureAwait(false);
 
-            return reqProc.ProcessActionResult(RawResult, ListAction.Create);
+            ListResponse? result = JsonSerializer.Deserialize<ListResponse>(RawResult);
+
+            return result;
         }
 
         /// <summary>
         /// Modifies an existing list.
         /// </summary>
-        /// <param name="listID">ID of list</param>
-        /// <param name="slug">name of list</param>
-        /// <param name="ownerID">ID of user who owns the list.</param>
-        /// <param name="ownerScreenName">Screen name of user who owns the list.</param>
-        /// <param name="mode">public or private</param>
+        /// <param name="id">ID of list</param>
+        /// <param name="name">name of list</param>
         /// <param name="description">list description</param>
-        /// <returns>List info for modified list</returns>
-        public async Task<List?> UpdateListAsync(ulong listID, string slug, string name, ulong ownerID, string ownerScreenName, string mode, string description, CancellationToken cancelToken = default(CancellationToken))
+        /// <param name="isPrivate">true or false</param>
+        /// <returns><see cref="ListResponseData.Updated"/> true or false</returns>
+        public async Task<ListResponse?> UpdateListAsync(string id, string name, string description, bool isPrivate, CancellationToken cancelToken = default(CancellationToken))
         {
-            if (listID == 0 && string.IsNullOrWhiteSpace(slug))
-                throw new ArgumentException("Either listID or slug is required.", ListIDOrSlugParam);
+            _ = id ?? throw new ArgumentException($"{nameof(id)} is required.", nameof(id));
 
-            if (!string.IsNullOrWhiteSpace(slug) && ownerID == 0 && string.IsNullOrWhiteSpace(ownerScreenName))
-                throw new ArgumentException("If you specify a Slug, you must also specify either OwnerID or OwnerScreenName.", OwnerIDOrOwnerScreenNameParam);
+            var url = $"{BaseUrl2}lists/{id}";
 
-            var updateListUrl = BaseUrl + "lists/update.json";
-
-            var reqProc = new ListRequestProcessor<List>();
+            var postData = new Dictionary<string, string>();
+            var postObj = new CreateOrUpdateListRequest
+            {
+                Name = name,
+                Description = description,
+                Private = isPrivate,
+            };
 
             RawResult =
-                await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<List>(
-                    HttpMethod.Post.ToString(),
-                    updateListUrl,
-                    new Dictionary<string, string?>
-                    {
-                        { "list_id", listID.ToString() },
-                        { "slug", slug },
-                        { "owner_id", ownerID.ToString() },
-                        { "owner_screen_name", ownerScreenName },
-                        { "mode", mode },
-                        { "description", description },
-                        { "name", name }
-                    },
+                await TwitterExecutor.SendJsonToTwitterAsync(
+                    HttpMethod.Put.ToString(),
+                    url,
+                    postData,
+                    postObj,
                     cancelToken)
-                    .ConfigureAwait(false);
+                   .ConfigureAwait(false);
 
-            return reqProc.ProcessActionResult(RawResult, ListAction.Update);
+            ListResponse? result = JsonSerializer.Deserialize<ListResponse>(RawResult);
+
+            return result;
         }
 
         /// <summary>
         /// Deletes an existing list.
         /// </summary>
-        /// <param name="listID">ID or slug of list</param>
-        /// <param name="slug">name of list</param>
-        /// <param name="ownerID">ID of user who owns the list.</param>
-        /// <param name="ownerScreenName">Screen name of user who owns the list.</param>
-        /// <returns>List info for deleted list</returns>
-        public async Task<List?> DeleteListAsync(ulong listID, string slug, ulong ownerID, string ownerScreenName, CancellationToken cancelToken = default(CancellationToken))
+        /// <param name="id">ID of list</param>
+        /// <returns><see cref="ListResponseData.Deleted"/> true or false</returns>
+        public async Task<ListResponse?> DeleteListAsync(string id, CancellationToken cancelToken = default(CancellationToken))
         {
-            if (listID == 0 && string.IsNullOrWhiteSpace(slug))
-                throw new ArgumentException("listID is required.", ListIDOrSlugParam);
+            _ = id ?? throw new ArgumentException($"{nameof(id)} is required.", nameof(id));
 
-            if (!string.IsNullOrWhiteSpace(slug) && ownerID == 0 && string.IsNullOrWhiteSpace(ownerScreenName))
-                throw new ArgumentException("If you specify a Slug, you must also specify either OwnerID or OwnerScreenName.", OwnerIDOrOwnerScreenNameParam);
+            var url = $"{BaseUrl2}lists/{id}";
 
-            var deleteUrl = BaseUrl + "lists/destroy.json";
-
-            var reqProc = new ListRequestProcessor<List>();
+            var postData = new Dictionary<string, string>();
+            var postObj = new DeleteListRequest
+            {
+                ID = id
+            };
 
             RawResult =
-                await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<List>(
-                    HttpMethod.Post.ToString(),
-                    deleteUrl,
-                    new Dictionary<string, string?>
-                    {
-                        { "list_id", listID.ToString() },
-                        { "slug", slug },
-                        { "owner_id", ownerID.ToString() },
-                        { "owner_screen_name", ownerScreenName }
-                    },
+                await TwitterExecutor.SendJsonToTwitterAsync(
+                    HttpMethod.Delete.ToString(),
+                    url,
+                    postData,
+                    postObj,
                     cancelToken)
-                    .ConfigureAwait(false);
+                   .ConfigureAwait(false);
 
-            return reqProc.ProcessActionResult(RawResult, ListAction.Delete);
+            ListResponse? result = JsonSerializer.Deserialize<ListResponse>(RawResult);
+
+            return result;
         }
-        
+
         /// <summary>
         /// Adds a user as a list member.
         /// </summary>
