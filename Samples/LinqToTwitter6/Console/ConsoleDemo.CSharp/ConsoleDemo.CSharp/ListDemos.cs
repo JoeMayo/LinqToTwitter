@@ -79,33 +79,23 @@ namespace ConsoleDemo.CSharp
                         break;
                     case 'd':
                     case 'D':
-                        Console.WriteLine("\n\tAdding members...\n");
-                        await AddMemberRangeToListAsync(twitterCtx);
-                        break;
-                    case 'e':
-                    case 'E':
                         Console.WriteLine("\n\tAdding member...\n");
                         await AddMemberToListAsync(twitterCtx);
                         break;
-                    case 'f':
-                    case 'F':
+                    case 'e':
+                    case 'E':
                         Console.WriteLine("\n\tDeleting list...\n");
                         await DeleteListAsync(twitterCtx);
                         break;
-                    case 'g':
-                    case 'G':
+                    case 'f':
+                    case 'F':
                         Console.WriteLine("\n\tUpdating list...\n");
                         await UpdateListAsync(twitterCtx);
                         break;
-                    case 'h':
-                    case 'H':
+                    case 'g':
+                    case 'G':
                         Console.WriteLine("\n\tCreating list...\n");
                         await CreateListAsync(twitterCtx);
-                        break;
-                    case 'i':
-                    case 'I':
-                        Console.WriteLine("\n\tRemoving memberships...\n");
-                        await DeleteMemberRangeFromListAsync(twitterCtx);
                         break;
                     case 'q':
                     case 'Q':
@@ -136,12 +126,10 @@ namespace ConsoleDemo.CSharp
             Console.WriteLine("\t A. Delete List Membership");
             Console.WriteLine("\t B. Subscribe to List");
             Console.WriteLine("\t C. Unsubscribe from List");
-            Console.WriteLine("\t D. Add Members to List");
-            Console.WriteLine("\t E. Add Member to List");
-            Console.WriteLine("\t F. Delete List");
-            Console.WriteLine("\t G. Update List");
-            Console.WriteLine("\t H. Create List");
-            Console.WriteLine("\t I. Remove Members from List");
+            Console.WriteLine("\t D. Add Member to List");
+            Console.WriteLine("\t E. Delete List");
+            Console.WriteLine("\t F. Update List");
+            Console.WriteLine("\t G. Create List");
 
             Console.WriteLine();
             Console.Write("\t Q. Return to Main menu");
@@ -431,15 +419,13 @@ namespace ConsoleDemo.CSharp
 
         static async Task DeleteMemberFromListAsync(TwitterContext twitterCtx)
         {
-            string ownerScreenName = "Linq2Twitr";
+            string userID = "Linq2Twitr";
 
-            List? list = 
-                await twitterCtx.DeleteMemberFromListAsync(
-                    0, "Linq2Twitr", 0, "linq-to-twitter", 0, ownerScreenName);
+            ListResponse? list = 
+                await twitterCtx.DeleteMemberFromListAsync("0", userID);
 
-            if (list != null)
-                Console.WriteLine("List Name: {0}, Description: {1}",
-                    list.Name, list.Description);
+            if (list?.Data is not null)
+                Console.WriteLine("Is Member: {0}", list.Data.IsMember);
         }
 
         static async Task SubscribeToListAsync(TwitterContext twitterCtx)
@@ -468,87 +454,47 @@ namespace ConsoleDemo.CSharp
                     list.Name, list.Description);
         }
 
-        static async Task AddMemberRangeToListAsync(TwitterContext twitterCtx)
-        {
-            string ownerScreenName = "Linq2Twitr";
-            var screenNames = new List<string>
-            {
-                "JoeMayo",
-                "Linq2Twitr"
-            };
-
-            List? list = 
-                await twitterCtx.AddMemberRangeToListAsync(
-                    0, "linq-to-twitter", 0, ownerScreenName, screenNames);
-
-            if (list != null && list.Users != null)
-                list.Users.ForEach(user => Console.WriteLine(user.Name));
-        }
-
         static async Task AddMemberToListAsync(TwitterContext twitterCtx)
         {
-            string ownerScreenName = "Linq2Twitr";
+            ListResponse? list = 
+                await twitterCtx.AddMemberToListAsync("Linq2Twitr", "0");
 
-            List? list = 
-                await twitterCtx.AddMemberToListAsync(
-                    "Linq2Twitr", 0, "linq-to-twitter", 0, ownerScreenName);
-
-            if (list != null)
-                Console.WriteLine("List Name: {0}, Description: {1}",
-                    list.Name, list.Description);
+            if (list?.Data is not null)
+                Console.WriteLine("List ID: {0}, Name: {1}",
+                    list.Data.ID, list.Data.Name);
         }
 
         static async Task DeleteListAsync(TwitterContext twitterCtx)
         {
-            ulong listID = 0;
+            string listID = "0";
 
-            List? list = 
-                await twitterCtx.DeleteListAsync(
-                    listID, "linq-to-twitter", 0, "Linq2Twitr");
+            ListResponse? list = 
+                await twitterCtx.DeleteListAsync(listID);
 
-            if (list != null)
-                Console.WriteLine("List Name: {0}, Description: {1}",
-                    list.Name, list.Description);
+            if (list?.Data is not null)
+                Console.WriteLine("Is Deleted: {0}", list.Data.Deleted);
         }
 
         static async Task UpdateListAsync(TwitterContext twitterCtx)
         {
-            string ownerScreenName = "Linq2Twitr";
-            ulong listID = 0;
+            string listID = "0";
 
-            List? list = 
-                await twitterCtx.UpdateListAsync(
-                    listID, "linq-to-twitter", "Test List", 0, 
-                    ownerScreenName, "public", "This is a test2");
+            ListResponse? list = 
+                await twitterCtx.UpdateListAsync(listID, "linq-to-twitter", "Test List", isPrivate: false);
 
-            if (list != null)
-                Console.WriteLine("List Name: {0}, Description: {1}",
-                    list.Name, list.Description);
+            if (list?.Data is not null)
+                Console.WriteLine("List ID: {0}, Name: {1}",
+                    list.Data.ID, list.Data.Name);
         }
 
         static async Task CreateListAsync(TwitterContext twitterCtx)
         {
-            List? list = 
-                await twitterCtx.CreateListAsync(
-                    "linq-to-twitter", "public", "This is a test");
+            ListResponse? list = 
+                await twitterCtx.CreateListAsync("linq-to-twitter", "This is a test", isPrivate: true);
 
-            if (list != null)
-                Console.WriteLine("List Name: {0}, Description: {1}",
-                    list.Name, list.Description);
-        }
-
-        static async Task DeleteMemberRangeFromListAsync(TwitterContext twitterCtx)
-        {
-            string ownerScreenName = "Linq2Twitr";
-            var screenNames = new List<string> { "JoeMayo", "mp2kmag" };
-
-            List? list = 
-                await twitterCtx.DeleteMemberRangeFromListAsync(
-                    0, "linq-to-twitter", screenNames, 0, ownerScreenName);
-
-            if (list != null)
-                Console.WriteLine("List Name: {0}, Description: {1}",
-                    list.Name, list.Description);
+            if (list?.Data is not null)
+                Console.WriteLine("List ID: {0}, Name: {1}",
+                    list.Data.ID, list.Data.Name);
         }
     }
 }

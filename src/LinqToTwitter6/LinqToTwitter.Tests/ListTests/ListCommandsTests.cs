@@ -43,7 +43,7 @@ namespace LinqToTwitter.Tests.ListTests
                     It.IsAny<string>(),
                     It.IsAny<string>(),
                     It.IsAny<IDictionary<string, string>>(),
-                    It.IsAny<CreateOrUpdateListRequest>(),
+                    It.IsAny<ListCreateOrUpdateRequest>(),
                     It.IsAny<CancellationToken>()))
                 .Returns(tcsResponse.Task);
             execMock.Setup(exec =>
@@ -51,7 +51,15 @@ namespace LinqToTwitter.Tests.ListTests
                     HttpMethod.Delete.ToString(),
                     It.IsAny<string>(),
                     It.IsAny<IDictionary<string, string>>(),
-                    It.IsAny<DeleteListRequest>(),
+                    It.IsAny<ListDeleteRequest>(),
+                    It.IsAny<CancellationToken>()))
+                .Returns(tcsResponse.Task);
+            execMock.Setup(exec =>
+                exec.SendJsonToTwitterAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<IDictionary<string, string>>(),
+                    It.IsAny<ListMemberRequest>(),
                     It.IsAny<CancellationToken>()))
                 .Returns(tcsResponse.Task);
             ctx = new TwitterContext(execMock.Object);
@@ -94,7 +102,7 @@ namespace LinqToTwitter.Tests.ListTests
                     HttpMethod.Post.ToString(),
                     "https://api.twitter.com/2/lists",
                     It.IsAny<IDictionary<string, string>>(),
-                    It.IsAny<CreateOrUpdateListRequest>(),
+                    It.IsAny<ListCreateOrUpdateRequest>(),
                     It.IsAny<CancellationToken>()),
                 Times.Once());
         }
@@ -135,7 +143,7 @@ namespace LinqToTwitter.Tests.ListTests
                     HttpMethod.Put.ToString(),
                     "https://api.twitter.com/2/lists/123",
                     It.IsAny<IDictionary<string, string>>(),
-                    It.IsAny<CreateOrUpdateListRequest>(),
+                    It.IsAny<ListCreateOrUpdateRequest>(),
                     It.IsAny<CancellationToken>()),
                 Times.Once());
         }
@@ -155,7 +163,7 @@ namespace LinqToTwitter.Tests.ListTests
         [TestMethod]
         public async Task DeleteListAsync_WithMissingID_Throws()
         {
-            InitializeTwitterContext(TestStatusQueryResponse);
+            InitializeTwitterContext(DeleteListResponse);
 
             var ex = await L2TAssert.Throws<ArgumentException>(
                 async () => await ctx.DeleteListAsync(null));
@@ -166,7 +174,7 @@ namespace LinqToTwitter.Tests.ListTests
         [TestMethod]
         public async Task DeleteListAsync_WithGoodID_BuildsUrl()
         {
-            InitializeTwitterContext(TestStatusQueryResponse);
+            InitializeTwitterContext(DeleteListResponse);
             var parameters = new Dictionary<string, string>
             {
                 { "id", "123" }
@@ -179,305 +187,124 @@ namespace LinqToTwitter.Tests.ListTests
                     HttpMethod.Delete.ToString(),
                     "https://api.twitter.com/2/lists/123",
                     It.IsAny<IDictionary<string, string>>(),
-                    It.IsAny<DeleteListRequest>(),
+                    It.IsAny<ListDeleteRequest>(),
                     It.IsAny<CancellationToken>()),
                 Times.Once());
         }
 
         [TestMethod]
-        public async Task DeleteListAsync_WithRawResult_Succeeds()
+        public async Task DeleteListAsync_WithGoodParams_PopulatesResponse()
         {
-            InitializeTwitterContext(TestStatusQueryResponse);
+            InitializeTwitterContext(DeleteListResponse);
 
-            await ctx.DeleteListAsync("123");
+            ListResponse response = await ctx.DeleteListAsync("123");
 
-            Assert.AreEqual(TestStatusQueryResponse, ctx.RawResult);
+            Assert.IsNotNull(response);
+            ListResponseData data = response.Data;
+            Assert.IsTrue(data.Deleted);
         }
 
         [TestMethod]
-        public async Task AddMemberToListAsync_Requires_UserID_Or_ScreenName()
+        public async Task AddMemberToListAsync_WithoutListID_Throws()
         {
-            InitializeTwitterContext(TestStatusQueryResponse);
+            InitializeTwitterContext(AddListMemberResponse);
 
             var ex = await L2TAssert.Throws<ArgumentException>(
-                async () => await ctx.AddMemberToListAsync(null, 0, null, 0, null));
+                async () => await ctx.AddMemberToListAsync(null, "def"));
 
-            Assert.AreEqual("UserIdOrScreenName", ex.ParamName);
+            Assert.AreEqual("listID", ex.ParamName);
         }
 
         [TestMethod]
-        public async Task AddMemberToListAsync_Requires_ListID_Or_Slug()
+        public async Task AddMemberToListAsync_WithoutUserID_Throws()
         {
-            InitializeTwitterContext(TestStatusQueryResponse);
+            InitializeTwitterContext(AddListMemberResponse);
 
             var ex = await L2TAssert.Throws<ArgumentException>(
-                async () => await ctx.AddMemberToListAsync("JoeMayo", 0, null, 0, null));
+                async () => await ctx.AddMemberToListAsync("abc", null));
 
-            Assert.AreEqual("ListIdOrSlug", ex.ParamName);
+            Assert.AreEqual("userID", ex.ParamName);
         }
 
         [TestMethod]
-        public async Task AddMemberToListAsync_Requires_OwnerID_Or_OwnerScreenName_If_Slug_Used()
+        public async Task AddMemberToListAsync_WithGoodIDs_BuildsUrl()
         {
-            InitializeTwitterContext(TestStatusQueryResponse);
+            InitializeTwitterContext(AddListMemberResponse);
 
-            var ex = await L2TAssert.Throws<ArgumentException>(
-                async () => await ctx.AddMemberToListAsync("JoeMayo", 0, "linq", 0, null));
-
-            Assert.AreEqual("OwnerIdOrOwnerScreenName", ex.ParamName);
-        }
-
-        [TestMethod]
-        public async Task AddMemberToListAsync_Invokes_Executor_Execute()
-        {
-            InitializeTwitterContext(TestStatusQueryResponse);
-            var parameters = new Dictionary<string, string>
-            {
-                { "list_id", "123" },
-                { "slug", "test" },
-                { "screen_name", "JoeMayo" },
-                { "owner_id", "456" },
-                { "owner_screen_name", "JoeMayo" }
-            };
-
-            await ctx.AddMemberToListAsync("JoeMayo", 123, "test", 456, "JoeMayo");
+            await ctx.AddMemberToListAsync("abc", "def");
 
             execMock.Verify(exec =>
-                exec.PostFormUrlEncodedToTwitterAsync<List>(
+                exec.SendJsonToTwitterAsync(
                     HttpMethod.Post.ToString(),
-                    "https://api.twitter.com/1.1/lists/members/create.json",
-                    parameters,
+                    "https://api.twitter.com/2/lists/abc/members",
+                    It.IsAny<IDictionary<string, string>>(),
+                    It.IsAny<ListMemberRequest>(),
                     It.IsAny<CancellationToken>()),
                 Times.Once());
         }
 
         [TestMethod]
-        public async Task AddMemberToListAsync_WithRawResult_Succeeds()
+        public async Task AddMemberToListAsync_WithGoodParams_PopulatesResponse()
         {
-            InitializeTwitterContext(TestStatusQueryResponse);
+            InitializeTwitterContext(AddListMemberResponse);
 
-            await ctx.AddMemberToListAsync("JoeMayo", 123, "test", 456, "JoeMayo");
+            ListResponse response = await ctx.AddMemberToListAsync("abc", "def");
 
-            Assert.AreEqual(TestStatusQueryResponse, ctx.RawResult);
+            Assert.IsNotNull(response);
+            ListResponseData data = response.Data;
+            Assert.IsTrue(data.IsMember);
         }
 
+
         [TestMethod]
-        public async Task AddMemberRangeToListAsync_For_ScreenNames_Requires_ListID_Or_Slug()
+        public async Task DeleteMemberFromListAsync_WithoutListID_Throws()
         {
-            InitializeTwitterContext(TestStatusQueryResponse);
+            InitializeTwitterContext(DeleteListMemberResponse);
 
             var ex = await L2TAssert.Throws<ArgumentException>(
-                async () => await ctx.AddMemberRangeToListAsync(0, null, 0, null, new List<string> { "SomeName" }));
+                async () => await ctx.DeleteMemberFromListAsync(null, "def"));
 
-            Assert.AreEqual("ListIdOrSlug", ex.ParamName);
+            Assert.AreEqual("listID", ex.ParamName);
         }
 
         [TestMethod]
-        public async Task AddMemberRangeToListAsync_For_ScreenNames_Requires_OwnerID_Or_OwnerScreenName_If_Slug_Used()
+        public async Task DeleteMemberFromListAsync_WithoutUserID_Throws()
         {
-            InitializeTwitterContext(TestStatusQueryResponse);
+            InitializeTwitterContext(DeleteListMemberResponse);
 
             var ex = await L2TAssert.Throws<ArgumentException>(
-                async () => await ctx.AddMemberRangeToListAsync(0, "test", 0, null, new List<string> { "SomeOne" }));
+                async () => await ctx.DeleteMemberFromListAsync("abc", null));
 
-            Assert.AreEqual("OwnerIdOrOwnerScreenName", ex.ParamName);
+            Assert.AreEqual("userID", ex.ParamName);
         }
 
         [TestMethod]
-        public async Task AddMemberRangeToListAsync_For_ScreenNames_Requires_ScreenNames()
+        public async Task DeleteMemberFromListAsync_WithGoodIDs_BuildsUrl()
         {
-            InitializeTwitterContext(TestStatusQueryResponse);
+            InitializeTwitterContext(DeleteListMemberResponse);
 
-            var ex = await L2TAssert.Throws<ArgumentException>(
-                async () => await ctx.AddMemberRangeToListAsync(0, "test", 123, null, (List<string>)null));
-
-            Assert.AreEqual("screenNames", ex.ParamName);
-        }
-
-        [TestMethod]
-        public async Task AddMemberRangeToListAsync_For_ScreenNames_Requires_ScreenNames_With_Values()
-        {
-            InitializeTwitterContext(TestStatusQueryResponse);
-
-            var ex = await L2TAssert.Throws<ArgumentException>(
-                async () => await ctx.AddMemberRangeToListAsync(0, "test", 123, null, new List<string>()));
-
-            Assert.AreEqual("screenNames", ex.ParamName);
-        }
-
-        [TestMethod]
-        public async Task AddMemberRangeToListAsync_For_ScreenNames_Requires_ScreenNames_Count_LessThanOrEqualTo_100()
-        {
-            InitializeTwitterContext(TestStatusQueryResponse);
-            var screenNames = Enumerable.Range(1, 101).Select(item => item.ToString(CultureInfo.InvariantCulture)).ToList();
-
-            var ex = await L2TAssert.Throws<ArgumentException>(
-                async () => await ctx.AddMemberRangeToListAsync(0, "test", 123, null, screenNames));
-
-            Assert.AreEqual("screenNames", ex.ParamName);
-        }
-
-        [TestMethod]
-        public async Task AddMemberRangeToListAsync_For_ScreenNames_Invokes_Executor_Execute()
-        {
-            InitializeTwitterContext(TestStatusQueryResponse);
-            var parameters = new Dictionary<string, string>
-            {
-                { "list_id", "123" },
-                { "slug", "test" },
-                { "screen_name", "JoeMayo,Linq2Tweeter,SomeOneElse" },
-                { "owner_id", "456" },
-                { "owner_screen_name", "JoeMayo" },
-            };
-            var screenNames = new List<string> { "JoeMayo", "Linq2Tweeter", "SomeOneElse" };
-
-            await ctx.AddMemberRangeToListAsync(123, "test", 456, "JoeMayo", screenNames);
+            await ctx.DeleteMemberFromListAsync("abc", "def");
 
             execMock.Verify(exec =>
-                exec.PostFormUrlEncodedToTwitterAsync<List>(
-                    HttpMethod.Post.ToString(),
-                    "https://api.twitter.com/1.1/lists/members/create_all.json",
-                    parameters,
+                exec.SendJsonToTwitterAsync(
+                    HttpMethod.Delete.ToString(),
+                    "https://api.twitter.com/2/lists/abc/members/def",
+                    It.IsAny<IDictionary<string, string>>(),
+                    It.IsAny<ListMemberRequest>(),
                     It.IsAny<CancellationToken>()),
                 Times.Once());
         }
 
         [TestMethod]
-        public async Task AddMemberRangeToListAsync_WithRawResult_Succeeds()
+        public async Task DeleteMemberFromListAsync_WithGoodParams_PopulatesResponse()
         {
-            InitializeTwitterContext(TestStatusQueryResponse);
-            var screenNames = new List<string> { "JoeMayo", "Linq2Tweeter", "SomeOneElse" };
+            InitializeTwitterContext(DeleteListMemberResponse);
 
-            await ctx.AddMemberRangeToListAsync(123, "test", 456, "JoeMayo", screenNames);
+            ListResponse response = await ctx.DeleteMemberFromListAsync("abc", "def");
 
-            Assert.AreEqual(TestStatusQueryResponse, ctx.RawResult);
-        }
-
-        [TestMethod]
-        public async Task AddMemberRangeToListAsync_For_UserIDs_Requires_UserIDs()
-        {
-            InitializeTwitterContext(TestStatusQueryResponse);
-
-            var ex = await L2TAssert.Throws<ArgumentException>(
-                async () => await ctx.AddMemberRangeToListAsync(0, "test", 123, null, (List<ulong>)null));
-
-            Assert.AreEqual("userIDs", ex.ParamName);
-        }
-
-        [TestMethod]
-        public async Task AddMemberRangeToListAsync_For_UserIDs_Requires_UserIDs_With_Values()
-        {
-            InitializeTwitterContext(TestStatusQueryResponse);
-
-            var ex = await L2TAssert.Throws<ArgumentException>(
-                async () => await ctx.AddMemberRangeToListAsync(0, "test", 123, null, new List<ulong>()));
-
-            Assert.AreEqual("userIDs", ex.ParamName);
-        }
-
-        [TestMethod]
-        public async Task AddMemberRangeToListAsync_For_UserIDs_Requires_UserIDs_Count_LessThanOrEqualTo_100()
-        {
-            InitializeTwitterContext(TestStatusQueryResponse);
-            var userIDs = Enumerable.Range(1, 101).Select(item => (ulong)item).ToList();
-
-            var ex = await L2TAssert.Throws<ArgumentException>(
-                async () => await ctx.AddMemberRangeToListAsync(0, "test", 123, null, userIDs));
-
-            Assert.AreEqual("userIDs", ex.ParamName);
-        }
-
-        [TestMethod]
-        public async Task AddMemberRangeToListAsync_For_UserIDs_Invokes_Executor_Execute()
-        {
-            InitializeTwitterContext(TestStatusQueryResponse);
-            var parameters = new Dictionary<string, string>
-            {
-                { "list_id", "123" },
-                { "slug", "test" },
-                { "user_id", "123,234,345" },
-                { "owner_id", "456" },
-                { "owner_screen_name", "JoeMayo" },
-            };
-            var userIDs = new List<ulong> { 123ul, 234ul, 345ul };
-
-            await ctx.AddMemberRangeToListAsync(123, "test", 456, "JoeMayo", userIDs);
-
-            execMock.Verify(exec =>
-                exec.PostFormUrlEncodedToTwitterAsync<List>(
-                    HttpMethod.Post.ToString(),
-                    "https://api.twitter.com/1.1/lists/members/create_all.json",
-                    parameters,
-                    It.IsAny<CancellationToken>()),
-                Times.Once());
-        }
-
-        [TestMethod]
-        public async Task DeleteMemberFromListAsync_Requires_UserID_Or_ScreenName()
-        {
-            InitializeTwitterContext(TestStatusQueryResponse);
-
-            var ex = await L2TAssert.Throws<ArgumentException>(
-                async () => await ctx.DeleteMemberFromListAsync(0, null, 0, null, 0, null));
-
-            Assert.AreEqual("UserIdOrScreenName", ex.ParamName);
-        }
-
-        [TestMethod]
-        public async Task DeleteMemberFromListAsync_Requires_ListID_Or_Slug()
-        {
-            InitializeTwitterContext(TestStatusQueryResponse);
-
-            var ex = await L2TAssert.Throws<ArgumentException>(
-                async () => await ctx.DeleteMemberFromListAsync(0, "JoeMayo", 0, null, 0, null));
-
-            Assert.AreEqual("ListIdOrSlug", ex.ParamName);
-        }
-
-        [TestMethod]
-        public async Task DeleteMemberFromListAsync_Requires_OwnerID_Or_OwnerScreenName_If_Slug_Used()
-        {
-            InitializeTwitterContext(TestStatusQueryResponse);
-
-            var ex = await L2TAssert.Throws<ArgumentException>(
-                async () => await ctx.DeleteMemberFromListAsync(0, "JoeMayo", 0, "linq", 0, null));
-
-            Assert.AreEqual("OwnerIdOrOwnerScreenName", ex.ParamName);
-        }
-
-        [TestMethod]
-        public async Task DeleteMemberFromListAsync_Invokes_Executor_Execute()
-        {
-            InitializeTwitterContext(TestStatusQueryResponse);
-            var parameters = new Dictionary<string, string>
-            {
-                { "list_id", "123" },
-                { "slug", "test" },
-                { "user_id", "789" },
-                { "screen_name", "JoeMayo" },
-                { "owner_id", "456" },
-                { "owner_screen_name", "JoeMayo" }
-            };
-
-            await ctx.DeleteMemberFromListAsync(789, "JoeMayo", 123, "test", 456, "JoeMayo");
-
-            execMock.Verify(exec =>
-                exec.PostFormUrlEncodedToTwitterAsync<List>(
-                    HttpMethod.Post.ToString(),
-                    "https://api.twitter.com/1.1/lists/members/destroy.json",
-                    parameters,
-                    It.IsAny<CancellationToken>()),
-                Times.Once());
-        }
-
-        [TestMethod]
-        public async Task DeleteMemberFromListAsync_WithRawResult_Succeeds()
-        {
-            InitializeTwitterContext(TestStatusQueryResponse);
-
-            await ctx.DeleteMemberFromListAsync(789, "JoeMayo", 123, "test", 456, "JoeMayo");
-
-            Assert.AreEqual(TestStatusQueryResponse, ctx.RawResult);
+            Assert.IsNotNull(response);
+            ListResponseData data = response.Data;
+            Assert.IsTrue(data.IsMember);
         }
 
         [TestMethod]
@@ -686,6 +513,18 @@ namespace LinqToTwitter.Tests.ListTests
         const string DeleteListResponse = @"{
   ""data"": {
     ""deleted"": true
+  }
+}";
+
+        const string AddListMemberResponse = @"{
+  ""data"": {
+    ""is_member"": true
+  }
+}";
+
+        const string DeleteListMemberResponse = @"{
+  ""data"": {
+    ""is_member"": false
   }
 }";
 

@@ -2,7 +2,7 @@
 
 namespace LinqToTwitter
 {
-    public record DeleteListRequest
+    public record ListDeleteRequest
     {
         [JsonPropertyName("id")]
         public string? ID { get; set; }

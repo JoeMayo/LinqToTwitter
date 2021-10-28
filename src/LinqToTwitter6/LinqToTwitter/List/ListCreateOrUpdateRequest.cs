@@ -2,7 +2,7 @@
 
 namespace LinqToTwitter
 {
-    public record CreateOrUpdateListRequest
+    public record ListCreateOrUpdateRequest
     {
         [JsonPropertyName("name")]
         public string? Name { get; set; }

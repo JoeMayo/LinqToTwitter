@@ -21,7 +21,7 @@ namespace LinqToTwitter
         /// <param name="name">name of list</param>
         /// <param name="description">list description</param>
         /// <param name="isPrivate">true or false</param>
-        /// <returns>List info for new list</returns>
+        /// <returns>List info for new list - <see cref="ListResponse"/></returns>
         public async Task<ListResponse?> CreateListAsync(string name, string description, bool isPrivate, CancellationToken cancelToken = default(CancellationToken))
         {
             _ = name ?? throw new ArgumentException($"{nameof(name)} is required.", nameof(name));
@@ -29,7 +29,7 @@ namespace LinqToTwitter
             var url = $"{BaseUrl2}lists";
 
             var postData = new Dictionary<string, string>();
-            var postObj = new CreateOrUpdateListRequest 
+            var postObj = new ListCreateOrUpdateRequest 
             {
                 Name = name,
                 Description = description,
@@ -65,7 +65,7 @@ namespace LinqToTwitter
             var url = $"{BaseUrl2}lists/{id}";
 
             var postData = new Dictionary<string, string>();
-            var postObj = new CreateOrUpdateListRequest
+            var postObj = new ListCreateOrUpdateRequest
             {
                 Name = name,
                 Description = description,
@@ -98,7 +98,7 @@ namespace LinqToTwitter
             var url = $"{BaseUrl2}lists/{id}";
 
             var postData = new Dictionary<string, string>();
-            var postObj = new DeleteListRequest
+            var postObj = new ListDeleteRequest
             {
                 ID = id
             };
@@ -120,204 +120,67 @@ namespace LinqToTwitter
         /// <summary>
         /// Adds a user as a list member.
         /// </summary>
+        /// <param name="listID">ID of list.</param>
         /// <param name="userID">ID of user to add to list.</param>
-        /// <param name="listID">ID of list.</param>
-        /// <param name="slug">Name of list to add to.</param>
-        /// <param name="ownerID">ID of user who owns the list.</param>
-        /// <param name="ownerScreenName">Screen name of user who owns the list.</param>
-        /// <returns>List info for list member added to</returns>
-        public async Task<List?> AddMemberToListAsync(ulong userID, ulong listID, string slug, ulong ownerID, string ownerScreenName, CancellationToken cancelToken = default(CancellationToken))
+        /// <returns><see cref="ListResponse.Data"/> confirms add</returns>
+        public async Task<ListResponse?> AddMemberToListAsync(string listID, string userID, CancellationToken cancelToken = default(CancellationToken))
         {
-            return await AddMemberToListAsync(userID, null, listID, slug, ownerID, ownerScreenName, cancelToken).ConfigureAwait(false);
-        }
-        
-        /// <summary>
-        /// Adds a user as a list member.
-        /// </summary>
-        /// <param name="screenName">ScreenName of user to add to list.</param>
-        /// <param name="listID">ID of list.</param>
-        /// <param name="slug">Name of list to add to.</param>
-        /// <param name="ownerID">ID of user who owns the list.</param>
-        /// <param name="ownerScreenName">Screen name of user who owns the list.</param>
-        /// <returns>List info for list member added to</returns>
-        public async Task<List?> AddMemberToListAsync(string screenName, ulong listID, string slug, ulong ownerID, string ownerScreenName, CancellationToken cancelToken = default(CancellationToken))
-        {
-            return await AddMemberToListAsync(0, screenName, listID, slug, ownerID, ownerScreenName, cancelToken).ConfigureAwait(false);
-        }
+            _ = listID ?? throw new ArgumentException($"{nameof(listID)} is required.", nameof(listID));
+            _ = userID ?? throw new ArgumentException($"{nameof(userID)} is required.", nameof(userID));
 
-        /// <summary>
-        /// Adds a user as a list member.
-        /// </summary>
-        /// <param name="userID">ID of user to add to list.</param>
-        /// <param name="screenName">ScreenName of user to add to list.</param>
-        /// <param name="listID">ID of list.</param>
-        /// <param name="slug">Name of list to add to.</param>
-        /// <param name="ownerID">ID of user who owns the list.</param>
-        /// <param name="ownerScreenName">Screen name of user who owns the list.</param>
-        /// <returns>List info for list member added to</returns>
-        async Task<List?> AddMemberToListAsync(ulong userID, string? screenName, ulong listID, string slug, ulong ownerID, string ownerScreenName, CancellationToken cancelToken = default(CancellationToken))
-        {
-            if (userID == 0 && string.IsNullOrWhiteSpace(screenName))
-                throw new ArgumentException("Either userID or screenName is required.", UserIDOrScreenNameParam);
+            var url = $"{BaseUrl2}lists/{listID}/members";
 
-            if (listID == 0 && string.IsNullOrWhiteSpace(slug))
-                throw new ArgumentException("Either listID or slug is required.", ListIDOrSlugParam);
-
-            if (!string.IsNullOrWhiteSpace(slug) && ownerID == 0 && string.IsNullOrWhiteSpace(ownerScreenName))
-                throw new ArgumentException("If using slug, you must also provide either ownerID or ownerScreenName.", OwnerIDOrOwnerScreenNameParam);
-
-            var addMemberUrl = BaseUrl + "lists/members/create.json";
-
-            var parameters = new Dictionary<string, string?>();
-
-            if (listID != 0)
-                parameters.Add("list_id", listID.ToString());
-            if (!string.IsNullOrWhiteSpace(slug))
-                parameters.Add("slug", slug);
-            if (userID != 0)
-                parameters.Add("user_id", userID.ToString());
-            if (!string.IsNullOrWhiteSpace(screenName))
-                parameters.Add("screen_name", screenName);
-            if (ownerID != 0)
-                parameters.Add("owner_id", ownerID.ToString());
-            if (!string.IsNullOrWhiteSpace(ownerScreenName))
-                parameters.Add("owner_screen_name", ownerScreenName);
-
-            var reqProc = new ListRequestProcessor<List>();
+            var postData = new Dictionary<string, string>();
+            var postObj = new ListMemberRequest
+            {
+                UserID = userID
+            };
 
             RawResult =
-                await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<List>(HttpMethod.Post.ToString(), addMemberUrl, parameters, cancelToken).ConfigureAwait(false);
+                await TwitterExecutor.SendJsonToTwitterAsync(
+                    HttpMethod.Post.ToString(),
+                    url,
+                    postData,
+                    postObj,
+                    cancelToken)
+                   .ConfigureAwait(false);
 
-            return reqProc.ProcessActionResult(RawResult, ListAction.AddMember);
-        }
+            ListResponse? result = JsonSerializer.Deserialize<ListResponse>(RawResult);
 
-        /// <summary>
-        /// Adds a list of users to a list.
-        /// </summary>
-        /// <param name="listID">ID of List.</param>
-        /// <param name="slug">List name.</param>
-        /// <param name="ownerID">ID of user who owns the list.</param>
-        /// <param name="ownerScreenName">Screen name of user who owns the list.</param>
-        /// <param name="screenNames">List of user screen names to be list members. (max 100)</param>
-        /// <returns>List info for list members added to.</returns>
-        public async Task<List?> AddMemberRangeToListAsync(ulong listID, string slug, ulong ownerID, string ownerScreenName, List<string> screenNames, CancellationToken cancelToken = default(CancellationToken))
-        {
-            if (screenNames == null || screenNames.Count == 0)
-                throw new ArgumentException("screenNames is required. Check to see if the argument is null or the List<string> is empty.", "screenNames");
-
-            if (screenNames != null && screenNames.Count > 100)
-                throw new ArgumentException("Max screenNames is 100 at a time.", "screenNames");
-
-            return await AddMemberRangeToListAsync(listID, slug, ownerID, ownerScreenName, userIDs: null, screenNames: screenNames, cancelToken: cancelToken).ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// Adds a list of users to a list.
-        /// </summary>
-        /// <param name="listID">ID of List.</param>
-        /// <param name="slug">List name.</param>
-        /// <param name="ownerID">ID of user who owns the list.</param>
-        /// <param name="ownerScreenName">Screen name of user who owns the list.</param>
-        /// <param name="userIDs">List of user IDs to be list members. (max 100)</param>
-        /// <returns>List info for list members added to.</returns>
-        public async Task<List?> AddMemberRangeToListAsync(ulong listID, string slug, ulong ownerID, string? ownerScreenName, List<ulong>? userIDs, CancellationToken cancelToken = default(CancellationToken))
-        {
-            if (userIDs == null || userIDs.Count == 0)
-                throw new ArgumentException("userIDs is required. Check to see if the argument is null or the List<ulong> is empty.", "userIDs");
-
-            if (userIDs != null && userIDs.Count > 100)
-                throw new ArgumentException("Max user IDs is 100 at a time.", "userIDs");
-
-            return await AddMemberRangeToListAsync(listID, slug, ownerID, ownerScreenName, userIDs, screenNames: null, cancelToken: cancelToken).ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// Adds a list of users to a list.
-        /// </summary>
-        /// <param name="listID">ID of List.</param>
-        /// <param name="slug">List name.</param>
-        /// <param name="ownerID">ID of user who owns the list.</param>
-        /// <param name="ownerScreenName">Screen name of user who owns the list.</param>
-        /// <param name="userIDs">List of user IDs to be list members. (max 100)</param>
-        /// <param name="screenNames">List of user screen names to be list members. (max 100)</param>
-        /// <returns>List info for list members added to.</returns>
-        async Task<List?> AddMemberRangeToListAsync(ulong listID, string slug, ulong ownerID, string? ownerScreenName, IEnumerable<ulong>? userIDs, List<string>? screenNames, CancellationToken cancelToken = default(CancellationToken))
-        {
-            if (listID == 0 && string.IsNullOrWhiteSpace(slug))
-                throw new ArgumentException("Either listID or slug is required.", ListIDOrSlugParam);
-
-            if (!string.IsNullOrWhiteSpace(slug) && ownerID == 0 && string.IsNullOrWhiteSpace(ownerScreenName))
-                throw new ArgumentException("If using slug, you must also provide either ownerID or ownerScreenName.", OwnerIDOrOwnerScreenNameParam);
-
-            var addMemberRangeUrl = BaseUrl + "lists/members/create_all.json";
-
-            var reqProc = new ListRequestProcessor<List>();
-
-            var parameters = new Dictionary<string, string?>();
-
-            if (listID != 0)
-                parameters.Add("list_id", listID.ToString());
-            if (!string.IsNullOrWhiteSpace(slug))
-                parameters.Add("slug", slug);
-            if (userIDs != null && userIDs.Any())
-                parameters.Add("user_id", string.Join(",", userIDs.Select(id => id.ToString(CultureInfo.InvariantCulture)).ToArray()));
-            if (screenNames != null && screenNames.Any())
-                parameters.Add("screen_name", string.Join(",", screenNames));
-            if (ownerID != 0)
-                parameters.Add("owner_id", ownerID.ToString());
-            if (!string.IsNullOrWhiteSpace(ownerScreenName))
-                parameters.Add("owner_screen_name", ownerScreenName);
-
-            RawResult =
-                await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<List>(HttpMethod.Post.ToString(), addMemberRangeUrl, parameters, cancelToken).ConfigureAwait(false);
-
-            return reqProc.ProcessActionResult(RawResult, ListAction.AddMember);
+            return result;
         }
 
         /// <summary>
         /// Removes a user as a list member.
         /// </summary>
-        /// <param name="userID">ID of user to add to list.</param>
-        /// <param name="screenName">ScreenName of user to add to list.</param>
         /// <param name="listID">ID of list.</param>
-        /// <param name="slug">Name of list to remove from.</param>
-        /// <param name="ownerID">ID of user who owns the list.</param>
-        /// <param name="ownerScreenName">Screen name of user who owns the list.</param>
-        /// <returns>List info for list member removed from</returns>
-        public async Task<List?> DeleteMemberFromListAsync(ulong userID, string screenName, ulong listID, string slug, ulong ownerID, string ownerScreenName, CancellationToken cancelToken = default(CancellationToken))
+        /// <param name="userID">ID of user to remove from list.</param>
+        /// <returns><see cref="ListResponse.Data"/> confirms delete</returns>
+        public async Task<ListResponse?> DeleteMemberFromListAsync(string listID, string userID, CancellationToken cancelToken = default(CancellationToken))
         {
-            if (userID == 0 && string.IsNullOrWhiteSpace(screenName))
-                throw new ArgumentException("Either userID or screenName is required.", UserIDOrScreenNameParam);
+            _ = listID ?? throw new ArgumentException($"{nameof(listID)} is required.", nameof(listID));
+            _ = userID ?? throw new ArgumentException($"{nameof(userID)} is required.", nameof(userID));
 
-            if (listID == 0 && string.IsNullOrWhiteSpace(slug))
-                throw new ArgumentException("Either listID or slug is required.", ListIDOrSlugParam);
+            var url = $"{BaseUrl2}lists/{listID}/members/{userID}";
 
-            if (!string.IsNullOrWhiteSpace(slug) && ownerID == 0 && string.IsNullOrWhiteSpace(ownerScreenName))
-                throw new ArgumentException("If using slug, you must also provide either ownerID or ownerScreenName.", OwnerIDOrOwnerScreenNameParam);
-
-            var deleteUrl = BaseUrl + "lists/members/destroy.json";
-
-            var reqProc = new ListRequestProcessor<List>();
-
-            var parameters = new Dictionary<string, string?>();
-
-            if (listID != 0)
-                parameters.Add("list_id", listID.ToString());
-            if (!string.IsNullOrWhiteSpace(slug))
-                parameters.Add("slug", slug);
-            if (userID != 0)
-                parameters.Add("user_id", userID.ToString());
-            if (!string.IsNullOrWhiteSpace(screenName))
-                parameters.Add("screen_name", screenName);
-            if (ownerID != 0)
-                parameters.Add("owner_id", ownerID.ToString());
-            if (!string.IsNullOrWhiteSpace(ownerScreenName))
-                parameters.Add("owner_screen_name", ownerScreenName);
+            var postData = new Dictionary<string, string>();
+            var postObj = new ListMemberRequest
+            {
+                UserID = userID
+            };
 
             RawResult =
-                await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<List>(HttpMethod.Post.ToString(), deleteUrl, parameters, cancelToken).ConfigureAwait(false);
+                await TwitterExecutor.SendJsonToTwitterAsync(
+                    HttpMethod.Delete.ToString(),
+                    url,
+                    postData,
+                    postObj,
+                    cancelToken)
+                   .ConfigureAwait(false);
 
-            return reqProc.ProcessActionResult(RawResult, ListAction.DeleteMember);
+            ListResponse? result = JsonSerializer.Deserialize<ListResponse>(RawResult);
+
+            return result;
         }
 
         /// <summary>

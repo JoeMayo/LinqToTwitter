@@ -15,5 +15,8 @@ namespace LinqToTwitter
 
         [JsonPropertyName("deleted")]
         public bool Deleted { get; set; }
+
+        [JsonPropertyName("is_member")]
+        public bool IsMember { get; set; }
     }
 }
