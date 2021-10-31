@@ -370,7 +370,7 @@ namespace LinqToTwitter
         /// <returns>base url + url segment</returns>
         Request BuildOembedUrl(Dictionary<string, string> parameters)
         {
-            var req = new Request(BaseUrl + "statuses/oembed.json");
+            var req = new Request("https://publish.twitter.com/oembed");
             var urlParams = req.RequestParameters;
 
             if (parameters.ContainsKey("ID"))
@@ -383,6 +383,10 @@ namespace LinqToTwitter
             {
                 OEmbedUrl = parameters["OEmbedUrl"];
                 urlParams.Add(new QueryParameter("url", parameters["OEmbedUrl"]));
+            }
+            else
+            {
+                throw new ArgumentException($"{nameof(OEmbedUrl)} is required!", nameof(OEmbedUrl));
             }
 
             if (parameters.ContainsKey("OEmbedMaxWidth"))
