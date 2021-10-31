@@ -184,153 +184,135 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// Adds a user as a list subscriber.
+        /// Adds a user as a list follower.
         /// </summary>
         /// <param name="listID">ID of list.</param>
-        /// <param name="slug">Name of list to add to.</param>
-        /// <param name="ownerID">ID of user who owns the list.</param>
-        /// <param name="ownerScreenName">Screen name of user who owns the list.</param>
-        /// <returns>List info for list subscribed to</returns>
-        public async Task<List?> SubscribeToListAsync(ulong listID, string slug, ulong ownerID, string ownerScreenName, CancellationToken cancelToken = default(CancellationToken))
+        /// <param name="userID">ID of user to follow list.</param>
+        /// <returns><see cref="ListResponse.Data"/> confirms add</returns>
+        public async Task<ListResponse?> AddFollowerToListAsync(string listID, string userID, CancellationToken cancelToken = default(CancellationToken))
         {
-            if (listID == 0 && string.IsNullOrWhiteSpace(slug))
-                throw new ArgumentException("Either listID or slug is required.", ListIDOrSlugParam);
+            _ = listID ?? throw new ArgumentException($"{nameof(listID)} is required.", nameof(listID));
+            _ = userID ?? throw new ArgumentException($"{nameof(userID)} is required.", nameof(userID));
 
-            if (!string.IsNullOrWhiteSpace(slug) && ownerID == 0 && string.IsNullOrWhiteSpace(ownerScreenName))
-                throw new ArgumentException("If using slug, you must also provide either ownerID or ownerScreenName.", OwnerIDOrOwnerScreenNameParam);
+            var url = $"{BaseUrl2}users/{userID}/followed_lists";
 
-            var subscribeUrl = BaseUrl + "lists/subscribers/create.json";
-
-            var reqProc = new ListRequestProcessor<List>();
-
-            var parameters = new Dictionary<string, string?>();
-
-            if (listID != 0)
-                parameters.Add("list_id", listID.ToString());
-            if (!string.IsNullOrWhiteSpace(slug))
-                parameters.Add("slug", slug);
-            if (ownerID != 0)
-                parameters.Add("owner_id", ownerID.ToString());
-            if (!string.IsNullOrWhiteSpace(ownerScreenName))
-                parameters.Add("owner_screen_name", ownerScreenName);
+            var postData = new Dictionary<string, string>();
+            var postObj = new ListFollowOrPinRequest
+            {
+                ListID = listID
+            };
 
             RawResult =
-                await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<List>(HttpMethod.Post.ToString(), subscribeUrl, parameters, cancelToken).ConfigureAwait(false);
+                await TwitterExecutor.SendJsonToTwitterAsync(
+                    HttpMethod.Post.ToString(),
+                    url,
+                    postData,
+                    postObj,
+                    cancelToken)
+                   .ConfigureAwait(false);
 
-            return reqProc.ProcessActionResult(RawResult, ListAction.Subscribe);
+            ListResponse? result = JsonSerializer.Deserialize<ListResponse>(RawResult);
+
+            return result;
         }
 
         /// <summary>
-        /// Removes a user as a list subscriber.
+        /// Removes a user as a list follower.
         /// </summary>
         /// <param name="listID">ID of list.</param>
-        /// <param name="slug">Name of list to remove from.</param>
-        /// <param name="ownerID">ID of user who owns the list.</param>
-        /// <param name="ownerScreenName">Screen name of user who owns the list.</param>
-        /// <returns>List info for list subscription removed from</returns>
-        public async Task<List?> UnsubscribeFromListAsync(ulong listID, string slug, ulong ownerID, string ownerScreenName, CancellationToken cancelToken = default(CancellationToken))
+        /// <param name="userID">ID of user to unfollow from list.</param>
+        /// <returns><see cref="ListResponse.Data"/> confirms delete</returns>
+        public async Task<ListResponse?> DeleteFollowerFromListAsync(string listID, string userID, CancellationToken cancelToken = default(CancellationToken))
         {
-            if (listID == 0 && string.IsNullOrWhiteSpace(slug))
-                throw new ArgumentException("Either listID or slug is required.", ListIDOrSlugParam);
+            _ = listID ?? throw new ArgumentException($"{nameof(listID)} is required.", nameof(listID));
+            _ = userID ?? throw new ArgumentException($"{nameof(userID)} is required.", nameof(userID));
 
-            if (!string.IsNullOrWhiteSpace(slug) && ownerID == 0 && string.IsNullOrWhiteSpace(ownerScreenName))
-                throw new ArgumentException("If using slug, you must also provide either ownerID or ownerScreenName.", OwnerIDOrOwnerScreenNameParam);
+            var url = $"{BaseUrl2}users/{userID}/followed_lists/{listID}";
 
-            var unsubscribeUrl = BaseUrl + "lists/subscribers/destroy.json";
-
-            var reqProc = new ListRequestProcessor<List>();
-
-            var parameters = new Dictionary<string, string?>();
-
-            if (listID != 0)
-                parameters.Add("list_id", listID.ToString());
-            if (!string.IsNullOrWhiteSpace(slug))
-                parameters.Add("slug", slug);
-            if (ownerID != 0)
-                parameters.Add("owner_id", ownerID.ToString());
-            if (!string.IsNullOrWhiteSpace(ownerScreenName))
-                parameters.Add("owner_screen_name", ownerScreenName);
+            var postData = new Dictionary<string, string>();
+            var postObj = new ListFollowOrPinRequest
+            {
+                ListID = listID
+            };
 
             RawResult =
-                await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<List>(HttpMethod.Post.ToString(), unsubscribeUrl, parameters, cancelToken).ConfigureAwait(false);
+                await TwitterExecutor.SendJsonToTwitterAsync(
+                    HttpMethod.Delete.ToString(),
+                    url,
+                    postData,
+                    postObj,
+                    cancelToken)
+                   .ConfigureAwait(false);
 
-            return reqProc.ProcessActionResult(RawResult, ListAction.Unsubscribe);
-        }
-                
-        /// <summary>
-        /// Deletes membership for a comma-separated list of users.
-        /// </summary>
-        /// <param name="listID">ID of list.</param>
-        /// <param name="slug">Name of list to remove from.</param>
-        /// <param name="userIds">List of user IDs of users to remove from list membership.</param>
-        /// <param name="ownerID">ID of users who owns the list.</param>
-        /// <param name="ownerScreenName">Screen name of user who owns the list.</param>
-        /// <returns>List info for list subscription removed from</returns>
-        public async Task<List?> DeleteMemberRangeFromListAsync(ulong listID, string slug, List<ulong> userIDs, ulong ownerID, string ownerScreenName, CancellationToken cancelToken = default(CancellationToken))
-        {
-            return await DeleteMemberRangeFromListAsync(listID, slug, userIDs, null, ownerID, ownerScreenName, cancelToken).ConfigureAwait(false);
+            ListResponse? result = JsonSerializer.Deserialize<ListResponse>(RawResult);
+
+            return result;
         }
 
         /// <summary>
-        /// Deletes membership for a comma-separated list of users.
+        /// Pins a list for a user.
         /// </summary>
         /// <param name="listID">ID of list.</param>
-        /// <param name="slug">Name of list to remove from.</param>
-        /// <param name="screenNames">List of screen names of users to remove from list membership.</param>
-        /// <param name="ownerID">ID of users who owns the list.</param>
-        /// <param name="ownerScreenName">Screen name of user who owns the list.</param>
-        /// <returns>List info for list subscription removed from</returns>
-        public async Task<List?> DeleteMemberRangeFromListAsync(ulong listID, string slug, List<string> screenNames, ulong ownerID, string ownerScreenName, CancellationToken cancelToken = default(CancellationToken))
+        /// <param name="userID">ID of user to follow list.</param>
+        /// <returns><see cref="ListResponse.Data"/> confirms add</returns>
+        public async Task<ListResponse?> PinListAsync(string listID, string userID, CancellationToken cancelToken = default(CancellationToken))
         {
-            return await DeleteMemberRangeFromListAsync(listID, slug, null, screenNames, ownerID, ownerScreenName, cancelToken).ConfigureAwait(false);
-        }
+            _ = listID ?? throw new ArgumentException($"{nameof(listID)} is required.", nameof(listID));
+            _ = userID ?? throw new ArgumentException($"{nameof(userID)} is required.", nameof(userID));
 
-        /// <summary>
-        /// Deletes membership for a comma-separated list of users.
-        /// </summary>
-        /// <param name="listID">ID of list.</param>
-        /// <param name="slug">Name of list to remove from.</param>
-        /// <param name="userIds">List of user IDs of users to remove from list membership.</param>
-        /// <param name="screenNames">List of screen names of users to remove from list membership.</param>
-        /// <param name="ownerID">ID of users who owns the list.</param>
-        /// <param name="ownerScreenName">Screen name of user who owns the list.</param>
-        /// <returns>List info for list subscription removed from</returns>
-        async Task<List?> DeleteMemberRangeFromListAsync(ulong listID, string slug, List<ulong>? userIDs, List<string>? screenNames, ulong ownerID, string ownerScreenName, CancellationToken cancelToken = default(CancellationToken))
-        {
-            if (listID == 0 && string.IsNullOrWhiteSpace(slug))
-                throw new ArgumentException("Either listID or slug is required.", ListIDOrSlugParam);
+            var url = $"{BaseUrl2}users/{userID}/pinned_lists";
 
-            if (listID == 0 && !string.IsNullOrWhiteSpace(slug) && 
-                ownerID == 0 && string.IsNullOrWhiteSpace(ownerScreenName))
-                throw new ArgumentException("If using slug, you must also provide either ownerID or ownerScreenName.", OwnerIDOrOwnerScreenNameParam);
-
-            if ((userIDs != null && userIDs.Count > 100) || 
-                (screenNames != null && screenNames.Count > 100))
-                throw new ArgumentException("You can only remove 100 members at a Time.", "userIDs");
-
-            var destroyAllUrl = BaseUrl + "lists/members/destroy_all.json";
-
-            var reqProc = new ListRequestProcessor<List>();
-
-            var parameters = new Dictionary<string, string?>();
-
-            if (listID != 0)
-                parameters.Add("list_id", listID.ToString());
-            if (!string.IsNullOrWhiteSpace(slug))
-                parameters.Add("slug", slug);
-            if (userIDs != null && userIDs.Any())
-                parameters.Add("user_id", string.Join(",", userIDs.Select(id => id.ToString(CultureInfo.InvariantCulture)).ToArray()));
-            if (screenNames != null && screenNames.Any())
-                parameters.Add("screen_name", string.Join(",", screenNames));
-            if (ownerID != 0)
-                parameters.Add("owner_id", ownerID.ToString());
-            if (!string.IsNullOrWhiteSpace(ownerScreenName))
-                parameters.Add("owner_screen_name", ownerScreenName);
+            var postData = new Dictionary<string, string>();
+            var postObj = new ListFollowOrPinRequest
+            {
+                ListID = listID
+            };
 
             RawResult =
-                await TwitterExecutor.PostFormUrlEncodedToTwitterAsync<List>(HttpMethod.Post.ToString(), destroyAllUrl, parameters, cancelToken).ConfigureAwait(false);
+                await TwitterExecutor.SendJsonToTwitterAsync(
+                    HttpMethod.Post.ToString(),
+                    url,
+                    postData,
+                    postObj,
+                    cancelToken)
+                   .ConfigureAwait(false);
 
-            return reqProc.ProcessActionResult(RawResult, ListAction.DestroyAll);
+            ListResponse? result = JsonSerializer.Deserialize<ListResponse>(RawResult);
+
+            return result;
+        }
+
+        /// <summary>
+        /// Unpins a list for a user.
+        /// </summary>
+        /// <param name="listID">ID of list.</param>
+        /// <param name="userID">ID of user to unfollow from list.</param>
+        /// <returns><see cref="ListResponse.Data"/> confirms delete</returns>
+        public async Task<ListResponse?> UnpinListAsync(string listID, string userID, CancellationToken cancelToken = default(CancellationToken))
+        {
+            _ = listID ?? throw new ArgumentException($"{nameof(listID)} is required.", nameof(listID));
+            _ = userID ?? throw new ArgumentException($"{nameof(userID)} is required.", nameof(userID));
+
+            var url = $"{BaseUrl2}users/{userID}/pinned_lists/{listID}";
+
+            var postData = new Dictionary<string, string>();
+            var postObj = new ListFollowOrPinRequest
+            {
+                ListID = listID
+            };
+
+            RawResult =
+                await TwitterExecutor.SendJsonToTwitterAsync(
+                    HttpMethod.Delete.ToString(),
+                    url,
+                    postData,
+                    postObj,
+                    cancelToken)
+                   .ConfigureAwait(false);
+
+            ListResponse? result = JsonSerializer.Deserialize<ListResponse>(RawResult);
+
+            return result;
         }
     }
 }

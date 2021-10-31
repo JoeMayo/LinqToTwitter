@@ -18,5 +18,11 @@ namespace LinqToTwitter
 
         [JsonPropertyName("is_member")]
         public bool IsMember { get; set; }
+
+        [JsonPropertyName("following")]
+        public bool Following { get; set; }
+
+        [JsonPropertyName("pinned")]
+        public bool Pinned { get; set; }
     }
 }

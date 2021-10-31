@@ -69,13 +69,13 @@ namespace ConsoleDemo.CSharp
                         break;
                     case 'b':
                     case 'B':
-                        Console.WriteLine("\n\tSubscribing...\n");
-                        await SubscribeToListAsync(twitterCtx);
+                        Console.WriteLine("\n\tAdding follower...\n");
+                        await AddFollowerToListAsync(twitterCtx);
                         break;
                     case 'c':
                     case 'C':
-                        Console.WriteLine("\n\tUnsubscribing...\n");
-                        await UnsubscribeFromListAsync(twitterCtx);
+                        Console.WriteLine("\n\tDeleting follower...\n");
+                        await DeleteFollowerFromListAsync(twitterCtx);
                         break;
                     case 'd':
                     case 'D':
@@ -96,6 +96,16 @@ namespace ConsoleDemo.CSharp
                     case 'G':
                         Console.WriteLine("\n\tCreating list...\n");
                         await CreateListAsync(twitterCtx);
+                        break;
+                    case 'h':
+                    case 'H':
+                        Console.WriteLine("\n\tPinning list...\n");
+                        await PinListAsync(twitterCtx);
+                        break;
+                    case 'i':
+                    case 'I':
+                        Console.WriteLine("\n\tUnpinning list...\n");
+                        await UnpinListAsync(twitterCtx);
                         break;
                     case 'q':
                     case 'Q':
@@ -124,12 +134,14 @@ namespace ConsoleDemo.CSharp
             Console.WriteLine("\t 8. Get List Subscriptions");
             Console.WriteLine("\t 9. Get List Ownership");
             Console.WriteLine("\t A. Delete List Membership");
-            Console.WriteLine("\t B. Subscribe to List");
-            Console.WriteLine("\t C. Unsubscribe from List");
+            Console.WriteLine("\t B. Add Follower to List");
+            Console.WriteLine("\t C. DeleteFollower from List");
             Console.WriteLine("\t D. Add Member to List");
             Console.WriteLine("\t E. Delete List");
             Console.WriteLine("\t F. Update List");
             Console.WriteLine("\t G. Create List");
+            Console.WriteLine("\t H. Pin List");
+            Console.WriteLine("\t I. Unpin List");
 
             Console.WriteLine();
             Console.Write("\t Q. Return to Main menu");
@@ -419,39 +431,38 @@ namespace ConsoleDemo.CSharp
 
         static async Task DeleteMemberFromListAsync(TwitterContext twitterCtx)
         {
+            string listID = "0";
             string userID = "Linq2Twitr";
 
             ListResponse? list = 
-                await twitterCtx.DeleteMemberFromListAsync("0", userID);
+                await twitterCtx.DeleteMemberFromListAsync(listID, userID);
 
             if (list?.Data is not null)
                 Console.WriteLine("Is Member: {0}", list.Data.IsMember);
         }
 
-        static async Task SubscribeToListAsync(TwitterContext twitterCtx)
+        static async Task AddFollowerToListAsync(TwitterContext twitterCtx)
         {
-            string ownerScreenName = "Linq2Twitr";
+            string listID = "0";
+            string userID = "Linq2Twitr";
 
-            List? list = 
-                await twitterCtx.SubscribeToListAsync(
-                    0, "linq-to-twitter", 0, ownerScreenName);
+            ListResponse? list = 
+                await twitterCtx.AddFollowerToListAsync(listID, userID);
 
-            if (list != null)
-                Console.WriteLine("List Name: {0}, Description: {1}",
-                    list.Name, list.Description);
+            if (list?.Data is not null)
+                Console.WriteLine("Following: {0}", list.Data.Following);
         }
 
-        static async Task UnsubscribeFromListAsync(TwitterContext twitterCtx)
+        static async Task DeleteFollowerFromListAsync(TwitterContext twitterCtx)
         {
-            string ownerScreenName = "Linq2Twitr";
+            string listID = "0";
+            string userID = "Linq2Twitr";
 
-            List? list = 
-                await twitterCtx.UnsubscribeFromListAsync(
-                    0, "linq-to-twitter", 0, ownerScreenName);
+            ListResponse? list = 
+                await twitterCtx.DeleteFollowerFromListAsync(listID, userID);
 
-            if (list != null)
-                Console.WriteLine("List Name: {0}, Description: {1}",
-                    list.Name, list.Description);
+            if (list?.Data is not null)
+                Console.WriteLine("Following: {0}", list.Data.Following);
         }
 
         static async Task AddMemberToListAsync(TwitterContext twitterCtx)
@@ -495,6 +506,30 @@ namespace ConsoleDemo.CSharp
             if (list?.Data is not null)
                 Console.WriteLine("List ID: {0}, Name: {1}",
                     list.Data.ID, list.Data.Name);
+        }
+
+        static async Task PinListAsync(TwitterContext twitterCtx)
+        {
+            string listID = "0";
+            string userID = "Linq2Twitr";
+
+            ListResponse? list =
+                await twitterCtx.PinListAsync(listID, userID);
+
+            if (list?.Data is not null)
+                Console.WriteLine("Pinned: {0}", list.Data.Pinned);
+        }
+
+        static async Task UnpinListAsync(TwitterContext twitterCtx)
+        {
+            string listID = "0";
+            string userID = "Linq2Twitr";
+
+            ListResponse? list =
+                await twitterCtx.UnpinListAsync(listID, userID);
+
+            if (list?.Data is not null)
+                Console.WriteLine("Pinned: {0}", list.Data.Pinned);
         }
     }
 }

@@ -62,6 +62,14 @@ namespace LinqToTwitter.Tests.ListTests
                     It.IsAny<ListMemberRequest>(),
                     It.IsAny<CancellationToken>()))
                 .Returns(tcsResponse.Task);
+            execMock.Setup(exec =>
+                exec.SendJsonToTwitterAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<IDictionary<string, string>>(),
+                    It.IsAny<ListFollowOrPinRequest>(),
+                    It.IsAny<CancellationToken>()))
+                .Returns(tcsResponse.Task);
             ctx = new TwitterContext(execMock.Object);
         }
 
@@ -304,197 +312,213 @@ namespace LinqToTwitter.Tests.ListTests
 
             Assert.IsNotNull(response);
             ListResponseData data = response.Data;
-            Assert.IsTrue(data.IsMember);
+            Assert.IsFalse(data.IsMember);
         }
 
         [TestMethod]
-        public async Task SubscribeToListAsync_Requires_ListID_Or_Slug()
+        public async Task AddFollowerToListAsync_WithoutListID_Throws()
         {
-            InitializeTwitterContext(TestStatusQueryResponse);
+            InitializeTwitterContext(AddListFollowerResponse);
 
             var ex = await L2TAssert.Throws<ArgumentException>(
-                async () => await ctx.SubscribeToListAsync(0, null, 0, null));
+                async () => await ctx.AddFollowerToListAsync(null, "def"));
 
-            Assert.AreEqual("ListIdOrSlug", ex.ParamName);
+            Assert.AreEqual("listID", ex.ParamName);
         }
 
         [TestMethod]
-        public async Task SubscribeToListAsync_Requires_OwnerID_Or_OwnerScreenName_If_Slug_Used()
+        public async Task AddFollowerToListAsync_WithoutUserID_Throws()
         {
-            InitializeTwitterContext(TestStatusQueryResponse);
+            InitializeTwitterContext(AddListFollowerResponse);
 
             var ex = await L2TAssert.Throws<ArgumentException>(
-                async () => await ctx.SubscribeToListAsync(0, "linq", 0, null));
+                async () => await ctx.AddFollowerToListAsync("abc", null));
 
-            Assert.AreEqual("OwnerIdOrOwnerScreenName", ex.ParamName);
+            Assert.AreEqual("userID", ex.ParamName);
         }
 
         [TestMethod]
-        public async Task SubscribeToListAsync_Invokes_Executor_Execute()
+        public async Task AddFollowerToListAsync_WithGoodIDs_BuildsUrl()
         {
-            InitializeTwitterContext(TestStatusQueryResponse);
-            var parameters = new Dictionary<string, string>
-            {
-                { "list_id", "123" },
-                { "slug", "test" },
-                { "owner_id", "456" },
-                { "owner_screen_name", "JoeMayo" }
-            };
+            InitializeTwitterContext(AddListFollowerResponse);
 
-            await ctx.SubscribeToListAsync(123, "test", 456, "JoeMayo");
+            await ctx.AddFollowerToListAsync("abc", "def");
 
             execMock.Verify(exec =>
-                exec.PostFormUrlEncodedToTwitterAsync<List>(
+                exec.SendJsonToTwitterAsync(
                     HttpMethod.Post.ToString(),
-                    "https://api.twitter.com/1.1/lists/subscribers/create.json",
-                    parameters,
+                    "https://api.twitter.com/2/users/def/followed_lists",
+                    It.IsAny<IDictionary<string, string>>(),
+                    It.IsAny<ListFollowOrPinRequest>(),
                     It.IsAny<CancellationToken>()),
                 Times.Once());
         }
 
         [TestMethod]
-        public async Task SubscribeToListAsync_WithRawResult_Succeeds()
+        public async Task AddFollowerToListAsync_WithGoodParams_PopulatesResponse()
         {
-            InitializeTwitterContext(TestStatusQueryResponse);
+            InitializeTwitterContext(AddListFollowerResponse);
 
-            await ctx.SubscribeToListAsync(123, "test", 456, "JoeMayo");
+            ListResponse response = await ctx.AddFollowerToListAsync("abc", "def");
 
-            Assert.AreEqual(TestStatusQueryResponse, ctx.RawResult);
+            Assert.IsNotNull(response);
+            ListResponseData data = response.Data;
+            Assert.IsTrue(data.Following);
         }
 
+
         [TestMethod]
-        public async Task UnsubscribeFromListAsync_Requires_ListID_Or_Slug()
+        public async Task DeleteFollowerFromListAsync_WithoutListID_Throws()
         {
-            InitializeTwitterContext(TestStatusQueryResponse);
+            InitializeTwitterContext(DeleteListFollowResponse);
 
             var ex = await L2TAssert.Throws<ArgumentException>(
-                async () => await ctx.UnsubscribeFromListAsync(0, null, 0, null));
+                async () => await ctx.DeleteFollowerFromListAsync(null, "def"));
 
-            Assert.AreEqual("ListIdOrSlug", ex.ParamName);
+            Assert.AreEqual("listID", ex.ParamName);
         }
 
         [TestMethod]
-        public async Task UnsubscribeFromListAsync_Requires_OwnerID_Or_OwnerScreenName_If_Slug_Used()
+        public async Task DeleteFollowerFromListAsync_WithoutUserID_Throws()
         {
-            InitializeTwitterContext(TestStatusQueryResponse);
+            InitializeTwitterContext(DeleteListFollowResponse);
 
             var ex = await L2TAssert.Throws<ArgumentException>(
-                async () => await ctx.UnsubscribeFromListAsync(0, "linq", 0, null));
+                async () => await ctx.DeleteFollowerFromListAsync("abc", null));
 
-            Assert.AreEqual("OwnerIdOrOwnerScreenName", ex.ParamName);
+            Assert.AreEqual("userID", ex.ParamName);
         }
 
         [TestMethod]
-        public async Task UnsubscribeFromListAsync_Invokes_Executor_Execute()
+        public async Task DeleteFollowerFromListAsync_WithGoodIDs_BuildsUrl()
         {
-            InitializeTwitterContext(TestStatusQueryResponse);
-            var parameters = new Dictionary<string, string>
-            {
-                { "list_id", "123" },
-                { "slug", "test" },
-                { "owner_id", "456" },
-                { "owner_screen_name", "JoeMayo" }
-            };
+            InitializeTwitterContext(DeleteListFollowResponse);
 
-            await ctx.UnsubscribeFromListAsync(123, "test", 456, "JoeMayo");
+            await ctx.DeleteFollowerFromListAsync("abc", "def");
 
             execMock.Verify(exec =>
-                exec.PostFormUrlEncodedToTwitterAsync<List>(
-                    HttpMethod.Post.ToString(),
-                    "https://api.twitter.com/1.1/lists/subscribers/destroy.json",
-                    parameters,
+                exec.SendJsonToTwitterAsync(
+                    HttpMethod.Delete.ToString(),
+                    "https://api.twitter.com/2/users/def/followed_lists/abc",
+                    It.IsAny<IDictionary<string, string>>(),
+                    It.IsAny<ListFollowOrPinRequest>(),
                     It.IsAny<CancellationToken>()),
                 Times.Once());
         }
 
         [TestMethod]
-        public async Task UnsubscribeFromListAsync_WithRawResult_Succeeds()
+        public async Task DeleteFollowerFromListAsync_WithGoodParams_PopulatesResponse()
         {
-            InitializeTwitterContext(TestStatusQueryResponse);
+            InitializeTwitterContext(DeleteListFollowResponse);
 
-            await ctx.UnsubscribeFromListAsync(123, "test", 456, "JoeMayo");
+            ListResponse response = await ctx.DeleteFollowerFromListAsync("abc", "def");
 
-            Assert.AreEqual(TestStatusQueryResponse, ctx.RawResult);
+            Assert.IsNotNull(response);
+            ListResponseData data = response.Data;
+            Assert.IsFalse(data.Following);
         }
 
         [TestMethod]
-        public async Task DestroyAllFromListAsync_Invokes_Executor_Execute()
+        public async Task PinListAsync_WithoutListID_Throws()
         {
-            InitializeTwitterContext(TestStatusQueryResponse);
-            var userIDs = new List<ulong> { 456 };
-            var parameters = new Dictionary<string, string>
-            {
-                { "list_id", "123" },
-                { "slug", "test" },
-                { "user_id", "456" },
-                { "owner_id", "789" },
-                { "owner_screen_name", "JoeMayo" }
-            };
+            InitializeTwitterContext(PinResponse);
 
-            await ctx.DeleteMemberRangeFromListAsync(123, "test", userIDs, 789, "JoeMayo");
+            var ex = await L2TAssert.Throws<ArgumentException>(
+                async () => await ctx.PinListAsync(null, "def"));
+
+            Assert.AreEqual("listID", ex.ParamName);
+        }
+
+        [TestMethod]
+        public async Task PinListAsync_WithoutUserID_Throws()
+        {
+            InitializeTwitterContext(PinResponse);
+
+            var ex = await L2TAssert.Throws<ArgumentException>(
+                async () => await ctx.AddFollowerToListAsync("abc", null));
+
+            Assert.AreEqual("userID", ex.ParamName);
+        }
+
+        [TestMethod]
+        public async Task PinListAsync_WithGoodIDs_BuildsUrl()
+        {
+            InitializeTwitterContext(PinResponse);
+
+            await ctx.PinListAsync("abc", "def");
 
             execMock.Verify(exec =>
-                exec.PostFormUrlEncodedToTwitterAsync<List>(
+                exec.SendJsonToTwitterAsync(
                     HttpMethod.Post.ToString(),
-                    "https://api.twitter.com/1.1/lists/members/destroy_all.json",
-                    parameters,
+                    "https://api.twitter.com/2/users/def/pinned_lists",
+                    It.IsAny<IDictionary<string, string>>(),
+                    It.IsAny<ListFollowOrPinRequest>(),
                     It.IsAny<CancellationToken>()),
                 Times.Once());
         }
 
         [TestMethod]
-        public async Task DestroyAllFromListAsync_WithRawResult_Succeeds()
+        public async Task PinListAsync_WithGoodParams_PopulatesResponse()
         {
-            InitializeTwitterContext(TestStatusQueryResponse);
-            var userIDs = new List<ulong> { 456 };
+            InitializeTwitterContext(PinResponse);
 
-            await ctx.DeleteMemberRangeFromListAsync(123, "test", userIDs, 789, "JoeMayo");
+            ListResponse response = await ctx.PinListAsync("abc", "def");
 
-            Assert.AreEqual(TestStatusQueryResponse, ctx.RawResult);
+            Assert.IsNotNull(response);
+            ListResponseData data = response.Data;
+            Assert.IsTrue(data.Pinned);
         }
 
+
         [TestMethod]
-        public async Task DestroyAllFromListAsync_Requires_Either_ListID_Or_Slug()
+        public async Task UnpinListAsync_WithoutListID_Throws()
         {
-            InitializeTwitterContext(TestStatusQueryResponse);
-            var userIDs = new List<ulong> { 1, 2, 3 };
+            InitializeTwitterContext(UnpinResponse);
 
             var ex = await L2TAssert.Throws<ArgumentException>(
-                async () => await ctx.DeleteMemberRangeFromListAsync(0, null, userIDs, 0, null));
+                async () => await ctx.UnpinListAsync(null, "def"));
 
-            Assert.AreEqual("ListIdOrSlug", ex.ParamName);
+            Assert.AreEqual("listID", ex.ParamName);
         }
 
         [TestMethod]
-        public async Task DestroyAllFromListAsync_Requires_OwnerID_Or_OwnerScreenName_If_Using_Slug()
+        public async Task UnpinListAsync_WithoutUserID_Throws()
         {
-            InitializeTwitterContext(TestStatusQueryResponse);
-            var userIDs = new List<ulong> { 1, 2, 3 };
+            InitializeTwitterContext(UnpinResponse);
 
             var ex = await L2TAssert.Throws<ArgumentException>(
-                async () => await ctx.DeleteMemberRangeFromListAsync(0, "slug", userIDs, 0, null));
+                async () => await ctx.UnpinListAsync("abc", null));
 
-            Assert.AreEqual("OwnerIdOrOwnerScreenName", ex.ParamName);
+            Assert.AreEqual("userID", ex.ParamName);
         }
 
         [TestMethod]
-        public async Task DeleteMemberRangeFromListAsync_Accepts_Missing_OwnerID_And_OwnerScreenName_If_Using_ListID()
+        public async Task UnpinListAsync_WithGoodIDs_BuildsUrl()
         {
-            InitializeTwitterContext(TestStatusQueryResponse);
-            var userIDs = new List<ulong> { 1, 2, 3 };
+            InitializeTwitterContext(UnpinResponse);
 
-            await ctx.DeleteMemberRangeFromListAsync(1, "slug", userIDs, 0, null);
+            await ctx.UnpinListAsync("abc", "def");
+
+            execMock.Verify(exec =>
+                exec.SendJsonToTwitterAsync(
+                    HttpMethod.Delete.ToString(),
+                    "https://api.twitter.com/2/users/def/pinned_lists/abc",
+                    It.IsAny<IDictionary<string, string>>(),
+                    It.IsAny<ListFollowOrPinRequest>(),
+                    It.IsAny<CancellationToken>()),
+                Times.Once());
         }
 
         [TestMethod]
-        public async Task DeleteMemberRangeFromListAsync_WithRawResult_Succeeds()
+        public async Task UnpinListAsync_WithGoodParams_PopulatesResponse()
         {
-            InitializeTwitterContext(TestStatusQueryResponse);
-            var userIDs = new List<ulong> { 1, 2, 3 };
+            InitializeTwitterContext(DeleteListFollowResponse);
 
-            await ctx.DeleteMemberRangeFromListAsync(1, "slug", userIDs, 0, null);
+            ListResponse response = await ctx.UnpinListAsync("abc", "def");
 
-            Assert.AreEqual(TestStatusQueryResponse, ctx.RawResult);
+            Assert.IsNotNull(response);
+            ListResponseData data = response.Data;
+            Assert.IsFalse(data.Pinned);
         }
 
         const string CreateListResponse = @"{
@@ -525,6 +549,30 @@ namespace LinqToTwitter.Tests.ListTests
         const string DeleteListMemberResponse = @"{
   ""data"": {
     ""is_member"": false
+  }
+}";
+
+        const string AddListFollowerResponse = @"{
+  ""data"": {
+    ""following"": true
+  }
+}";
+
+        const string DeleteListFollowResponse = @"{
+  ""data"": {
+    ""following"": false
+  }
+}";
+
+        const string PinResponse = @"{
+  ""data"": {
+    ""pinned"": true
+  }
+}";
+
+        const string UnpinResponse = @"{
+  ""data"": {
+    ""pinned"": false
   }
 }";
 
