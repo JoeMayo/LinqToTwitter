@@ -338,13 +338,13 @@ namespace ConsoleDemo.CSharp
 
         static async Task OEmbedStatusAsync(TwitterContext twitterCtx)
         {
-            ulong tweetID = 305050067973312514;
+            string url = "https://twitter.com/JoeMayo/status/1450247082019672066";
 
             EmbeddedStatus? embeddedStatus =
                 await
                 (from tweet in twitterCtx.Status
                  where tweet.Type == StatusType.Oembed &&
-                       tweet.ID == tweetID
+                       tweet.OEmbedUrl == url
                  select tweet.EmbeddedStatus)
                 .SingleOrDefaultAsync();
 
