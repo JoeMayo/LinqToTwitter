@@ -44,6 +44,10 @@ namespace ConsoleDemo.CSharp
                         Console.WriteLine("\n\tGetting the Tweets Timeline...\n");
                         await GetTweetsTimelineAsync(twitterCtx);
                         break;
+                    case '6':
+                        Console.WriteLine("\n\tTweeting...");
+                        await TweetAsync(twitterCtx);
+                        break;
                     case 'q':
                     case 'Q':
                         Console.WriteLine("\nReturning...\n");
@@ -66,6 +70,7 @@ namespace ConsoleDemo.CSharp
             Console.WriteLine("\t 3. Un-Hide a Reply");
             Console.WriteLine("\t 4. Mentions Timeline");
             Console.WriteLine("\t 5. Tweets Timeline");
+            Console.WriteLine("\t 6. Tweet");
             Console.WriteLine();
             Console.Write("\t Q. Return to Main menu");
         }
@@ -204,6 +209,41 @@ namespace ConsoleDemo.CSharp
                         $"\nTweet: {tweet.Text}"));
             else
                 Console.WriteLine("No entries found.");
+        }
+
+
+        static async Task TweetAsync(TwitterContext twitterCtx)
+        {
+            Console.Write("Enter text to tweet: ");
+            string? status = Console.ReadLine() ?? "";
+
+            Console.WriteLine("\nHere's what you typed: \n\n\"{0}\"", status);
+            Console.Write("\nDo you want to send this tweet? (y or n): ");
+            string? confirm = Console.ReadLine();
+
+            if (confirm?.ToUpper() == "N")
+            {
+                Console.WriteLine("\nThis tweet is *not* being sent.");
+            }
+            else if (confirm?.ToUpper() == "Y")
+            {
+                Console.WriteLine("\nPress any key to post tweet...\n");
+                Console.ReadKey(true);
+
+                Tweet? tweet = await twitterCtx.TweetAsync(status);
+
+                if (tweet != null)
+                    Console.WriteLine(
+                        "Tweet returned: " +
+                        "(" + tweet.ID + ") " +
+                        tweet.Text + "\n");
+            }
+            else
+            {
+                Console.WriteLine(
+                    $"Sorry, you typed '{confirm}', " +
+                    $"but I only recognize 'Y' or 'N'.");
+            }
         }
     }
 }

@@ -40,8 +40,59 @@ namespace LinqToTwitter.Tests.StatusTests
                     It.IsAny<TweetHidden>(),
                     It.IsAny<CancellationToken>()))
                 .Returns(tcsResponse.Task);
+            execMock.Setup(exec =>
+                exec.SendJsonToTwitterAsync(
+                    HttpMethod.Post.ToString(),
+                    It.IsAny<string>(),
+                    It.IsAny<IDictionary<string, string>>(),
+                    It.IsAny<TweetRequest>(),
+                    It.IsAny<CancellationToken>()))
+                .Returns(tcsResponse.Task);
             var ctx = new TwitterContext(execMock.Object);
             return ctx;
+        }
+
+        [TestMethod]
+        public async Task TweetAsync_WithText_PopulatesResponse()
+        {
+            const string ExpectedText = "Hello";
+            const string ExpectedID = "1460045236168654853";
+            var ctx = await InitializeTwitterContextAsync(TweetResponse);
+
+            Tweet actual = await ctx.TweetAsync(ExpectedText);
+
+            Assert.AreEqual(ExpectedID, actual.ID);
+            Assert.AreEqual(ExpectedText, actual.Text);
+        }
+
+        [TestMethod]
+        public async Task TweetAsync_WithNullText_Throws()
+        {
+            var ctx = await InitializeTwitterContextAsync(TweetResponse);
+
+            ArgumentNullException ex =
+                await L2TAssert.Throws<ArgumentNullException>(async () =>
+                    await ctx.TweetAsync(null));
+
+            Assert.AreEqual("text", ex.ParamName);
+        }
+
+        [TestMethod]
+        public async Task TweetMediaAsync_WithMediaIds_Succeeds()
+        {
+            const string ExpectedText = "Hello";
+            const string ExpectedID = "1460045236168654853";
+
+            List<string> mediaIds = new() { "521449660083609601" };
+            List<string> taggedUserIds = new() { "521449660083609601" };
+
+            var ctx = await InitializeTwitterContextAsync(TweetResponse);
+
+            Tweet actual = await ctx.TweetMediaAsync("a", mediaIds, taggedUserIds);
+
+            Assert.IsNotNull(actual);
+            Assert.AreEqual(ExpectedID, actual.ID);
+            Assert.AreEqual(ExpectedText, actual.Text);
         }
 
         [TestMethod]
@@ -74,6 +125,13 @@ namespace LinqToTwitter.Tests.StatusTests
 
             await L2TAssert.Throws<ArgumentNullException>(() => ctx.HideReplyAsync(ReplyID));
         }
+
+        const string TweetResponse = @"{
+	""data"": {
+		""id"": ""1460045236168654853"",
+		""text"": ""Hello""
+	}
+}";
 
         const string HideReplyResponse = @"{
 	""data"": {

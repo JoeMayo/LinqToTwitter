@@ -1,75 +1,25 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace LinqToTwitter
 {
     /// <summary>
-    /// Represents a Media object, such as gif, photo, or video
+    /// For tweeting uploaded media
     /// </summary>
     public record TweetMedia
     {
         /// <summary>
-        /// Alt text to display with an image
+        /// IDs of uploaded media
         /// </summary>
-        [JsonPropertyName("alt_text")]
-        public string? AltText { get; set; }
+        [JsonPropertyName("media_ids")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public IEnumerable<string>? MediaIds { get; set; }
 
         /// <summary>
-        /// Milliseconds duration for videos
+        /// IDs of tagged users
         /// </summary>
-        [JsonPropertyName("duration_ms")]
-        public int DurationMS { get; init; }
-
-        /// <summary>
-        /// Height in pixels
-        [JsonPropertyName("height")]
-        /// </summary>
-        public int Height { get; init; }
-
-        /// <summary>
-        /// Media ID - Matches MediaKey in TweetAttachments
-        /// </summary>
-        [JsonPropertyName("media_key")]
-        public string? MediaKey { get; init; }
-
-        // TODO
-        [JsonPropertyName("non_public_metrics")]
-        public object? NonPublicMetrics { get; init; }
-
-        // TODO
-        [JsonPropertyName("organic_metrics")]
-        public object? OrganicMetrics { get; init; }
-
-        /// <summary>
-        /// URL to animated GIF and video preview image
-        /// </summary>
-        [JsonPropertyName("preview_image_url")]
-        public string? PreviewImageUrl { get; init; }
-
-        // TODO
-        [JsonPropertyName("promoted_metrics")]
-        public object? PromotedMetrics { get; init; }
-
-        // TODO
-        [JsonPropertyName("public_metrics")]
-        public object? PublicMetrics { get; init; }
-
-        /// <summary>
-        /// Type of media - e.g. gif, photo, or video
-        /// </summary>
-        [JsonConverter(typeof(TweetMediaTypeConverter))]
-        [JsonPropertyName("type")]
-        public TweetMediaType Type { get; init; }
-
-        /// <summary>
-        /// URL to photo preview image
-        /// </summary>
-        [JsonPropertyName("url")]
-        public string? Url { get; init; }
-
-        /// <summary>
-        /// Width in pixels
-        /// </summary>
-        [JsonPropertyName("width")]
-        public int Width { get; init; }
+        [JsonPropertyName("tagged_user_ids")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public IEnumerable<string>? TaggedUserIds { get; set; }
     }
 }

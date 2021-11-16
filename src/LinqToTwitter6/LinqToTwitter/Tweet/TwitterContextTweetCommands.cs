@@ -10,6 +10,111 @@ namespace LinqToTwitter
     public partial class TwitterContext
     {
         /// <summary>
+        /// Posts a new tweet
+        /// </summary>
+        /// <param name="text">Tweet text</param>
+        /// <param name="directMessageLink">Link to a DM</param>
+        /// <param name="forSuperFollowersOnly">Only show to super followers</param>
+        /// <param name="geo">Tweet location - <see cref="TweetGeo"/></param>
+        /// <param name="quoteTweetID">ID of tweet to quote (quoted retweet)</param>
+        /// <param name="replySettings">Who can reply - <see cref="TweetReplySettings"/></param>
+        /// <param name="cancelToken"></param>
+        /// <returns>Tweet with new ID and Text - <see cref="Tweet"/></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public async Task<Tweet?> TweetAsync(
+            string text, 
+            Uri? directMessageLink = null, 
+            bool forSuperFollowersOnly = false, 
+            TweetGeo? geo = null,
+            string? quoteTweetID = null,
+            TweetReplySettings? replySettings = null,
+            CancellationToken cancelToken = default)
+        {
+            _ = text ?? throw new ArgumentNullException(nameof(text));
+
+            string url = $"{BaseUrl2}tweets";
+
+            var postData = new Dictionary<string, string>();
+            var postObj = new TweetRequest
+            {
+                Text = text,
+                DirectMessageDeepLink = directMessageLink?.AbsoluteUri,
+                ForSuperFollowersOnly = forSuperFollowersOnly,
+                Geo = geo,
+                QuoteTweetID = quoteTweetID,
+                ReplySettings = replySettings,
+            };
+
+            RawResult =
+                await TwitterExecutor.SendJsonToTwitterAsync(
+                    HttpMethod.Post.ToString(),
+                    url,
+                    postData,
+                    postObj,
+                    cancelToken)
+                   .ConfigureAwait(false);
+
+            TweetResponse? response = JsonSerializer.Deserialize<TweetResponse>(RawResult);
+            return response?.Tweet;
+        }
+
+        /// <summary>
+        /// Posts a new tweet
+        /// </summary>
+        /// <param name="text">Tweet text</param>
+        /// <param name="directMessageLink">Link to a DM</param>
+        /// <param name="forSuperFollowersOnly">Only show to super followers</param>
+        /// <param name="geo">Tweet location - <see cref="TweetGeo"/></param>
+        /// <param name="quoteTweetID">ID of tweet to quote (quoted retweet)</param>
+        /// <param name="replySettings">Who can reply - <see cref="TweetReplySettings"/></param>
+        /// <param name="cancelToken"></param>
+        /// <returns>Tweet with new ID and Text - <see cref="Tweet"/></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public async Task<Tweet?> TweetMediaAsync(
+            string text,
+            IEnumerable<string> mediaIds,
+            IEnumerable<string>? taggedUserIds = null,
+            Uri? directMessageLink = null,
+            bool forSuperFollowersOnly = false,
+            TweetGeo? geo = null,
+            string? quoteTweetID = null,
+            TweetReplySettings? replySettings = null,
+            CancellationToken cancelToken = default)
+        {
+            _ = text ?? throw new ArgumentNullException(nameof(text));
+
+            string url = $"{BaseUrl2}tweets";
+
+            var postData = new Dictionary<string, string>();
+            var postObj = new TweetRequest
+            {
+                Text = text,
+                DirectMessageDeepLink = directMessageLink?.AbsoluteUri,
+                ForSuperFollowersOnly = forSuperFollowersOnly,
+                Geo = geo,
+                Media = new TweetMedia
+                {
+                    MediaIds = mediaIds,
+                    TaggedUserIds = taggedUserIds,
+                },
+                QuoteTweetID = quoteTweetID,
+                ReplySettings = replySettings,
+            };
+
+            RawResult =
+                await TwitterExecutor.SendJsonToTwitterAsync(
+                    HttpMethod.Post.ToString(),
+                    url,
+                    postData,
+                    postObj,
+                    cancelToken)
+                   .ConfigureAwait(false);
+
+            TweetResponse? response = JsonSerializer.Deserialize<TweetResponse>(RawResult);
+            return response?.Tweet;
+        }
+
+        /// <summary>
         /// Hides a reply to a tweet
         /// </summary>
         /// <param name="tweetID">ID of the replying tweet</param>
