@@ -110,11 +110,11 @@ static async Task DoDemosAsync()
                 Console.WriteLine("\n\tRunning Search Demos...\n");
                 await SearchDemos.RunAsync(twitterCtx);
                 break;
-            //case 'e':
-            //case 'E':
-            //    Console.WriteLine("\n\tRunning Status Demos...\n");
-            //    await StatusDemos.RunAsync(twitterCtx);
-            //    break;
+            case 'e':
+            case 'E':
+                Console.WriteLine("\n\tRunning Status Demos...\n");
+                await StatusDemos.RunAsync(twitterCtx);
+                break;
             case 'f':
             case 'F':
                 Console.WriteLine("\n\tRunning Stream Demos...\n");
