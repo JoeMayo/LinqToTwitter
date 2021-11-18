@@ -44,6 +44,22 @@ namespace ConsoleDemo.CSharp
                         Console.WriteLine("\n\tGetting the Tweets Timeline...\n");
                         await GetTweetsTimelineAsync(twitterCtx);
                         break;
+                    case '6':
+                        Console.WriteLine("\n\tTweeting...");
+                        await TweetAsync(twitterCtx);
+                        break;
+                    case '7':
+                        Console.WriteLine("\n\tTweeting a poll...");
+                        await TweetPollAsync(twitterCtx);
+                        break;
+                    case '8':
+                        Console.WriteLine("\n\tReplying...");
+                        await ReplyAsync(twitterCtx);
+                        break;
+                    case '9':
+                        Console.WriteLine("\n\tDeleting...");
+                        await DeleteTweetAsync(twitterCtx);
+                        break;
                     case 'q':
                     case 'Q':
                         Console.WriteLine("\nReturning...\n");
@@ -66,6 +82,10 @@ namespace ConsoleDemo.CSharp
             Console.WriteLine("\t 3. Un-Hide a Reply");
             Console.WriteLine("\t 4. Mentions Timeline");
             Console.WriteLine("\t 5. Tweets Timeline");
+            Console.WriteLine("\t 6. Tweet");
+            Console.WriteLine("\t 7. Tweet Poll");
+            Console.WriteLine("\t 8. Reply to a Tweet");
+            Console.WriteLine("\t 9. Delete a Tweet");
             Console.WriteLine();
             Console.Write("\t Q. Return to Main menu");
         }
@@ -204,6 +224,87 @@ namespace ConsoleDemo.CSharp
                         $"\nTweet: {tweet.Text}"));
             else
                 Console.WriteLine("No entries found.");
+        }
+
+        static async Task TweetAsync(TwitterContext twitterCtx)
+        {
+            Console.Write("Enter text to tweet: ");
+            string? status = Console.ReadLine() ?? "";
+
+            Console.WriteLine("\nHere's what you typed: \n\n\"{0}\"", status);
+            Console.Write("\nDo you want to send this tweet? (y or n): ");
+            string? confirm = Console.ReadLine();
+
+            if (confirm?.ToUpper() == "N")
+            {
+                Console.WriteLine("\nThis tweet is *not* being sent.");
+            }
+            else if (confirm?.ToUpper() == "Y")
+            {
+                Console.WriteLine("\nPress any key to post tweet...\n");
+                Console.ReadKey(true);
+
+                Tweet? tweet = await twitterCtx.TweetAsync(status);
+
+                if (tweet != null)
+                    Console.WriteLine(
+                        "Tweet returned: " +
+                        "(" + tweet.ID + ") " +
+                        tweet.Text + "\n");
+            }
+            else
+            {
+                Console.WriteLine(
+                    $"Sorry, you typed '{confirm}', " +
+                    $"but I only recognize 'Y' or 'N'.");
+            }
+        }
+
+        static async Task TweetPollAsync(TwitterContext twitterCtx)
+        {
+            string text = "LINQ to Twitter Test Poll";
+            int duration = 360;
+            var options = new string[] { "ein", "zwei", "drei" };
+
+
+            Tweet? tweet = await twitterCtx.TweetPollAsync(text, duration, options);
+
+            if (tweet != null)
+                Console.WriteLine(
+                    "Tweet returned: " +
+                    "(" + tweet.ID + ") " +
+                    tweet.Text + "\n");
+        }
+
+        static async Task ReplyAsync(TwitterContext twitterCtx)
+        {
+            string text = "+1 from LINQ to Twitter";
+            string replyTweetID = "1450247082019672066";
+
+            Tweet? tweet = await twitterCtx.ReplyAsync(text, replyTweetID);
+
+            if (tweet != null)
+                Console.WriteLine(
+                    "Tweet returned: " +
+                    "(" + tweet.ID + ") " +
+                    tweet.Text + "\n");
+        }
+
+        static async Task DeleteTweetAsync(TwitterContext twitterCtx)
+        {
+            Console.Write("What is the tweet ID to delete? ");
+            string? tweetID = Console.ReadLine();
+
+            if (tweetID is not null)
+            {
+                TweetDeletedResponse? response = await twitterCtx.DeleteTweetAsync(tweetID);
+
+                Console.WriteLine($"Is Deleted: {response?.Data?.Deleted}"); 
+            }
+            else
+            {
+                Console.WriteLine($"tweetID is required!");
+            }
         }
     }
 }
