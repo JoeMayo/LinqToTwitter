@@ -12,12 +12,14 @@ namespace LinqToTwitter
         /// Poll options
         /// </summary>
         [JsonPropertyName("options")]
-        public List<string>? Options { get; init; }
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public IEnumerable<string>? Options { get; init; }
 
         /// <summary>
         /// Number of minutes to run poll
         /// </summary>
         [JsonPropertyName("duration_minutes")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public int DurationMinutes { get; init; }
     }
 }

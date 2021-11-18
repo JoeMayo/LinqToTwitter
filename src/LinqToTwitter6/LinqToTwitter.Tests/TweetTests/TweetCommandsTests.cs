@@ -48,6 +48,14 @@ namespace LinqToTwitter.Tests.StatusTests
                     It.IsAny<TweetRequest>(),
                     It.IsAny<CancellationToken>()))
                 .Returns(tcsResponse.Task);
+            execMock.Setup(exec =>
+                exec.SendJsonToTwitterAsync(
+                    HttpMethod.Delete.ToString(),
+                    It.IsAny<string>(),
+                    It.IsAny<IDictionary<string, string>>(),
+                    It.IsAny<TweetDeleteRequest>(),
+                    It.IsAny<CancellationToken>()))
+                .Returns(tcsResponse.Task);
             var ctx = new TwitterContext(execMock.Object);
             return ctx;
         }
@@ -93,6 +101,116 @@ namespace LinqToTwitter.Tests.StatusTests
             Assert.IsNotNull(actual);
             Assert.AreEqual(ExpectedID, actual.ID);
             Assert.AreEqual(ExpectedText, actual.Text);
+        }
+
+        [TestMethod]
+        public async Task TweetMediaAsync_WithoutMediaIds_Throws()
+        {
+            List<string> mediaIds = null;
+            List<string> taggedUserIds = new() { "521449660083609601" };
+
+            var ctx = await InitializeTwitterContextAsync(TweetResponse);
+
+            ArgumentNullException ex =
+                await L2TAssert.Throws<ArgumentNullException>(async () =>
+                    await ctx.TweetMediaAsync("a", mediaIds, taggedUserIds));
+
+            Assert.AreEqual("mediaIds", ex.ParamName);
+        }
+
+        [TestMethod]
+        public async Task TweetPollAsync_WithPollData_Succeeds()
+        {
+            const string ExpectedText = "Hello";
+            const string ExpectedID = "1460045236168654853";
+
+            int duration = 360;
+            List<string> options = new() { "ein", "zwei", "drei" };
+
+            var ctx = await InitializeTwitterContextAsync(TweetResponse);
+
+            Tweet actual = await ctx.TweetPollAsync("a", duration, options);
+
+            Assert.IsNotNull(actual);
+            Assert.AreEqual(ExpectedID, actual.ID);
+            Assert.AreEqual(ExpectedText, actual.Text);
+        }
+
+        [TestMethod]
+        public async Task TweetPollAsync_WithoutDuration_Throws()
+        {
+            int duration = 0;
+            List<string> options = new() { "ein", "zwei", "drei" };
+
+            var ctx = await InitializeTwitterContextAsync(TweetResponse);
+
+            ArgumentNullException ex =
+                await L2TAssert.Throws<ArgumentNullException>(async () =>
+                    await ctx.TweetPollAsync("a", duration, options));
+
+            Assert.AreEqual("duration", ex.ParamName);
+        }
+
+        [TestMethod]
+        public async Task TweetPollAsync_WithoutOptions_Throws()
+        {
+            int duration = 360;
+            List<string> options = null;
+
+            var ctx = await InitializeTwitterContextAsync(TweetResponse);
+
+            ArgumentNullException ex =
+                await L2TAssert.Throws<ArgumentNullException>(async () =>
+                    await ctx.TweetPollAsync("a", duration, options));
+
+            Assert.AreEqual("options", ex.ParamName);
+        }
+
+        [TestMethod]
+        public async Task ReplyAsync_WithText_PopulatesResponse()
+        {
+            const string ExpectedText = "Hello";
+            const string ExpectedID = "1460045236168654853";
+            var ctx = await InitializeTwitterContextAsync(TweetResponse);
+
+            Tweet actual = await ctx.ReplyAsync(ExpectedText, "42");
+
+            Assert.AreEqual(ExpectedID, actual.ID);
+            Assert.AreEqual(ExpectedText, actual.Text);
+        }
+
+        [TestMethod]
+        public async Task ReplyAsync_WithNullText_Throws()
+        {
+            var ctx = await InitializeTwitterContextAsync(TweetResponse);
+
+            ArgumentNullException ex =
+                await L2TAssert.Throws<ArgumentNullException>(async () =>
+                    await ctx.ReplyAsync("Hello", null));
+
+            Assert.AreEqual("replyTweetID", ex.ParamName);
+        }
+
+        [TestMethod]
+        public async Task DeleteTweetAsync_WithTweetID_Succeeds()
+        {
+            var ctx = await InitializeTwitterContextAsync(TweetDeletedResponse);
+
+            TweetDeletedResponse actual = await ctx.DeleteTweetAsync("42");
+
+            Assert.IsTrue(actual.Data.Deleted);
+        }
+
+        [TestMethod]
+        public async Task DeleteTweetAsync_WithMissingID_Throws()
+        {
+            var ctx = await InitializeTwitterContextAsync(TweetDeletedResponse);
+
+            ArgumentNullException ex =
+                await L2TAssert.Throws<ArgumentNullException>(async () =>
+                    await ctx.DeleteTweetAsync(null));
+
+            Assert.AreEqual("tweetID", ex.ParamName);
         }
 
         [TestMethod]
@@ -143,6 +261,12 @@ namespace LinqToTwitter.Tests.StatusTests
 	""data"": {
 		""hidden"": false
 	}
+}";
+
+        const string TweetDeletedResponse = @"{
+  ""data"": {
+    ""deleted"": true
+  }
 }";
     }
 }
