@@ -2,6 +2,9 @@
 
 namespace LinqToTwitter
 {
+    /// <summary>
+    /// Defines who can reply to a tweet
+    /// </summary>
     public enum TweetReplySettings
     {
         /// <summary>

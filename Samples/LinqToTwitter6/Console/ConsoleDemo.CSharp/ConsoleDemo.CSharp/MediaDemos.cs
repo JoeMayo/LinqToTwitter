@@ -64,31 +64,19 @@ namespace ConsoleDemo.CSharp
             Console.Write("\t Q. Return to Main menu");
         }
 
-        static void PrintTweetsResults(List<Status> tweets)
-        {
-            if (tweets != null)
-                tweets.ForEach(tweet =>
-                {
-                    if (tweet != null && tweet.User != null)
-                        Console.WriteLine(
-                            "ID: [{0}] Name: {1}\n\tTweet: {2}",
-                            tweet.StatusID, tweet.User.ScreenNameResponse, tweet.Text);
-                });
-        }
-
         static async Task UploadVideoAsync(TwitterContext twitterCtx)
         {
-            string status =
+            string text =
                 "Testing video upload tweet #Linq2Twitter £ " +
                 DateTime.Now.ToString(CultureInfo.InvariantCulture);
 
             byte[] imageBytes = File.ReadAllBytes(@"..\..\..\images\TwitterTest.mp4");
-            const ulong JoeMayoUserID = 15411837;
-            var additionalOwners = new ulong[] { JoeMayoUserID };
+            const string JoeMayoUserID = "15411837";
+            var taggedUserIds = new string[] { JoeMayoUserID };
             string mediaType = "video/mp4";
             string mediaCategory = "tweet_video";
 
-            Media? media = await twitterCtx.UploadMediaAsync(imageBytes, mediaType, additionalOwners, mediaCategory);
+            Media? media = await twitterCtx.UploadMediaAsync(imageBytes, mediaType, mediaCategory);
 
             if (media == null)
             {
@@ -117,7 +105,7 @@ namespace ConsoleDemo.CSharp
 
             if (mediaStatusResponse?.ProcessingInfo?.State == MediaProcessingInfo.Succeeded)
             {
-                Status? tweet = await twitterCtx.TweetAsync(status, new ulong[] { media.MediaID });
+                Tweet? tweet = await twitterCtx.TweetMediaAsync(text, new List<string> { media.MediaID.ToString() }, taggedUserIds);
 
                 if (tweet != null)
                     Console.WriteLine($"Tweet sent: {tweet.Text}");
@@ -133,17 +121,17 @@ namespace ConsoleDemo.CSharp
 
         static async Task CreateMetadataAsync(TwitterContext twitterCtx)
         {
-            string status =
+            string text =
                 "Testing video upload tweet #Linq2Twitter £ " +
                 DateTime.Now.ToString(CultureInfo.InvariantCulture);
 
             byte[] imageBytes = File.ReadAllBytes(@"..\..\..\images\TwitterTest.mp4");
-            const ulong JoeMayoUserID = 15411837;
-            var additionalOwners = new ulong[] { JoeMayoUserID };
+            const string JoeMayoUserID = "15411837";
+            var taggedUserIds = new string[] { JoeMayoUserID };
             string mediaType = "video/mp4";
             string mediaCategory = "tweet_video";
 
-            Media? media = await twitterCtx.UploadMediaAsync(imageBytes, mediaType, additionalOwners, mediaCategory);
+            Media? media = await twitterCtx.UploadMediaAsync(imageBytes, mediaType, mediaCategory);
 
             if (media == null)
             {
@@ -174,7 +162,7 @@ namespace ConsoleDemo.CSharp
             {
                 await twitterCtx.CreateMediaMetadataAsync(mediaStatusResponse.MediaID, "LINQ to Twitter Alt Text Test");
 
-                Status? tweet = await twitterCtx.TweetAsync(status, new ulong[] { media.MediaID });
+                Tweet? tweet = await twitterCtx.TweetMediaAsync(text, new List<string> { media.MediaID.ToString() }, taggedUserIds);
 
                 if (tweet != null)
                     Console.WriteLine($"Tweet sent: {tweet.Text}");
@@ -190,8 +178,8 @@ namespace ConsoleDemo.CSharp
 
         static async Task UploadSingleImageAsync(TwitterContext twitterCtx)
         {
-            var additionalOwners = new List<ulong> { 3265644348, 15411837 };
-            string status =
+            var taggedUserIds = new List<string> { "3265644348", "15411837" };
+            string text =
                 "Testing single-image tweet #Linq2Twitter £ " +
                 DateTime.Now.ToString(CultureInfo.InvariantCulture);
             string mediaCategory = "tweet_image";
@@ -199,7 +187,6 @@ namespace ConsoleDemo.CSharp
             Media? media = await twitterCtx.UploadMediaAsync(
                 File.ReadAllBytes(@"..\..\..\images\200xColor_2.png"),
                 "image/png",
-                additionalOwners,
                 mediaCategory);
 
             if (media == null)
@@ -208,16 +195,16 @@ namespace ConsoleDemo.CSharp
                 return;
             }
 
-            Status? tweet = await twitterCtx.TweetAsync(status, new ulong[] { media.MediaID }, TweetMode.Extended);
+            Tweet? tweet = await twitterCtx.TweetMediaAsync(text, new List<string> { media.MediaID.ToString() }, taggedUserIds);
 
             if (tweet != null)
-                Console.WriteLine("Tweet sent: " + tweet.FullText);
+                Console.WriteLine("Tweet sent: " + tweet.Text);
         }
 
         static async Task UploadMultipleImagesAsync(TwitterContext twitterCtx)
         {
-            var additionalOwners = new List<ulong> { 3265644348, 15411837 };
-            string status =
+            var taggedUserIds = new List<string> { "3265644348", "15411837" };
+            string text =
                 "Testing multi-image tweet #Linq2Twitter £ " +
                 DateTime.Now.ToString(CultureInfo.InvariantCulture);
             string mediaCategory = "tweet_image";
@@ -225,19 +212,19 @@ namespace ConsoleDemo.CSharp
             var imageUploadTasks =
                 new List<Task<Media?>>
                 {
-                    twitterCtx.UploadMediaAsync(File.ReadAllBytes(@"..\..\..\images\200xColor_2.png"), "image/png", additionalOwners, mediaCategory),
+                    twitterCtx.UploadMediaAsync(File.ReadAllBytes(@"..\..\..\images\200xColor_2.png"), "image/png", mediaCategory),
                     twitterCtx.UploadMediaAsync(File.ReadAllBytes(@"..\..\..\images\WP_000003.jpg"), "image/jpg", mediaCategory),
                     twitterCtx.UploadMediaAsync(File.ReadAllBytes(@"..\..\..\images\13903749474_86bd1290de_o.jpg"), "image/jpg", mediaCategory),
                 };
 
             await Task.WhenAll(imageUploadTasks);
 
-            List<ulong> mediaIds =
+            List<string> mediaIds =
                 (from tsk in imageUploadTasks
-                 select tsk.Result.MediaID)
+                 select tsk.Result.MediaID.ToString())
                 .ToList();
 
-            Status? tweet = await twitterCtx.TweetAsync(status, mediaIds);
+            Tweet? tweet = await twitterCtx.TweetMediaAsync(text, mediaIds, taggedUserIds);
 
             if (tweet != null)
                 Console.WriteLine($"Tweet sent: {tweet.Text}");
