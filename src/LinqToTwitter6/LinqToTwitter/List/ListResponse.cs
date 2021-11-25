@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using LinqToTwitter.Common;
+using System.Text.Json.Serialization;
 
 namespace LinqToTwitter
 {
@@ -6,5 +7,8 @@ namespace LinqToTwitter
     {
         [JsonPropertyName("data")]
         public ListResponseData? Data { get; init; }
+
+        [JsonPropertyName("includes")]
+        public TwitterInclude? Includes { get; set; }
     }
 }
