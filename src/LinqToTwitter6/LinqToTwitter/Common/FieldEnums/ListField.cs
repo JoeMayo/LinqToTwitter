@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace LinqToTwitter.Common.FieldEnums
+﻿namespace LinqToTwitter.Common
 {
-    public class ListFields
+    public class ListField
     {
         /// <summary>
         /// All expandable fields

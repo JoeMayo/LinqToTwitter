@@ -544,8 +544,11 @@ namespace LinqToTwitter
                         BaseUrl = BaseUrl2
                     };
                     break;
-                case nameof(List):
-                    req = new ListRequestProcessor<T>();
+                case nameof(ListQuery):
+                    req = new ListRequestProcessor<T>
+                    {
+                        BaseUrl = BaseUrl2
+                    };
                     break;
                 case nameof(Media):
                     req = new MediaRequestProcessor<T>

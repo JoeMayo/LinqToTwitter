@@ -6,21 +6,15 @@ using System.Linq.Expressions;
 using LinqToTwitter.Common;
 using LinqToTwitter.Provider;
 using System.Text.Json;
-using System.Reflection.Metadata.Ecma335;
+using System.Text.Json.Serialization;
 
 namespace LinqToTwitter
 {
     public class ListRequestProcessor<T> : 
         IRequestProcessor<T>, 
-        IRequestProcessorWantsJson, 
-        IRequestProcessorWithAction<T>
+        IRequestProcessorWantsJson
         where T : class
     {
-        const string TypeParam = "Type";
-        const string ListIdOrSlugParam = "ListIdOrSlug";
-        const string OwnerIdOrOwnerScreenName = "OwnerIdOrOwnerScreenName";
-        const string UserIdOrScreenName = "UserIdOrScreenName";
-
         /// <summary>
         /// base url for request
         /// </summary>
@@ -32,90 +26,39 @@ namespace LinqToTwitter
         public ListType Type { get; set; }
 
         /// <summary>
-        /// Helps page results
+        /// Comma-separated list of expansion fields - <see cref="ExpansionField"/>
         /// </summary>
-        public long Cursor { get; set; }
+        public string? Expansions { get; set; }
 
         /// <summary>
-        /// User ID
+        /// Comma-separated list of list fields - <see cref="ListField"/>
         /// </summary>
-        public ulong UserID { get; set; }
+        public string? ListFields { get; set; }
 
         /// <summary>
         /// List ID
         /// </summary>
-        public ulong ListID { get; set; }
+        public string? ListID { get; set; }
 
         /// <summary>
-        /// Catchword for list
+        /// Max number of results
         /// </summary>
-        public string? Slug { get; set; }
+        public int MaxResults { get; set; }
 
         /// <summary>
-        /// ID of List Owner
+        /// Used to get the next page of results
         /// </summary>
-        public ulong OwnerID { get; set; }
+        public string? PaginationToken { get; set; }
 
         /// <summary>
-        /// ScreenName of List Owner
+        /// Comma-separated list of fields to return in the User object - <see cref="UserField"/>
         /// </summary>
-        public string? OwnerScreenName { get; set; }
+        public string? UserFields { get; set; }
 
         /// <summary>
-        /// Statuses since status ID
+        /// User ID
         /// </summary>
-        public ulong SinceID { get; set; }
-
-        /// <summary>
-        /// Max ID to retrieve for statuses
-        /// </summary>
-        public ulong MaxID { get; set; }
-
-        /// <summary>
-        /// Number of statuses per page
-        /// </summary>
-        public int Count { get; set; }
-
-        /// <summary>
-        /// Page number for statuses
-        /// </summary>
-        public int Page { get; set; }
-
-        /// <summary>
-        /// ScreenName of user for query
-        /// </summary>
-        public string? ScreenName { get; set; }
-
-        /// <summary>
-        /// Truncate all user info, except for ID
-        /// </summary>
-        public bool TrimUser { get; set; }
-
-        /// <summary>
-        /// Add entities to tweets (default: true)
-        /// </summary>
-        public bool IncludeEntities { get; set; }
-
-        /// <summary>
-        /// Add retweets, in addition to normal tweets
-        /// </summary>
-        public bool IncludeRetweets { get; set; }
-
-        /// <summary>
-        /// Only returns lists that belong to authenticated 
-        /// user or user identified by ID or ScreenName
-        /// </summary>
-        public bool FilterToOwnedLists { get; set; }
-
-        /// <summary>
-        /// Don't include statuses in response
-        /// </summary>
-        public bool SkipStatus { get; set; }
-
-        /// <summary>
-        /// Causes Twitter to return the lists owned by the authenticated user first (Query Filter)
-        /// </summary>
-        public bool Reverse { get; set; }
+        public string? UserID { get; set; }
 
         /// <summary>
         /// extracts parameters from lambda
@@ -125,77 +68,19 @@ namespace LinqToTwitter
         public virtual Dictionary<string, string> GetParameters(LambdaExpression lambdaExpression)
         {
             var parameters =
-               new ParameterFinder<List>(
+               new ParameterFinder<ListQuery>(
                    lambdaExpression.Body,
                    new List<string> { 
-                       "Type",
-                       "UserID",
-                       "ScreenName",
-                       "Cursor",
-                       "ListID",
-                       "Slug",
-                       "OwnerID",
-                       "OwnerScreenName",
-                       "MaxID",
-                       "Count",
-                       "Page",
-                       "SinceID",
-                       "TrimUser",
-                       "IncludeEntities",
-                       "IncludeRetweets",
-                       "FilterToOwnedLists",
-                       "SkipStatus",
-                       "Reverse"
+                       nameof(Type),
+                       nameof(Expansions),
+                       nameof(ListFields),
+                       nameof(ListID),
+                       nameof(MaxResults),
+                       nameof(PaginationToken),
+                       nameof(UserFields),
+                       nameof(UserID),
                    })
                    .Parameters;
-
-            if (parameters.ContainsKey("Cursor"))
-                Cursor = long.Parse(parameters["Cursor"]);
-
-            if (parameters.ContainsKey("UserID"))
-                UserID = ulong.Parse(parameters["UserID"]);
-
-            if (parameters.ContainsKey("ScreenName"))
-                ScreenName = parameters["ScreenName"];
-
-            if (parameters.ContainsKey("ListID"))
-                ListID = ulong.Parse(parameters["ListID"]);
-
-            if (parameters.ContainsKey("Slug"))
-                Slug = parameters["Slug"];
-
-            if (parameters.ContainsKey("OwnerID"))
-                OwnerID = ulong.Parse(parameters["OwnerID"]);
-
-            if (parameters.ContainsKey("OwnerScreenName"))
-                OwnerScreenName = parameters["OwnerScreenName"];
-
-            if (parameters.ContainsKey("MaxID"))
-                MaxID = ulong.Parse(parameters["MaxID"]);
-
-            if (parameters.ContainsKey("Count"))
-                Count = int.Parse(parameters["Count"]);
-
-            if (parameters.ContainsKey("Page"))
-                Page = int.Parse(parameters["Page"]);
-
-            if (parameters.ContainsKey("SinceID"))
-                SinceID = ulong.Parse(parameters["SinceID"]);
-
-            if (parameters.ContainsKey("TrimUser"))
-                TrimUser = bool.Parse(parameters["TrimUser"]);
-
-            if (parameters.ContainsKey("IncludeEntities"))
-                IncludeEntities = bool.Parse(parameters["IncludeEntities"]);
-
-            if (parameters.ContainsKey("IncludeRetweets"))
-                IncludeRetweets = bool.Parse(parameters["IncludeRetweets"]);
-
-            if (parameters.ContainsKey("FilterToOwnedLists"))
-                FilterToOwnedLists = bool.Parse(parameters["FilterToOwnedLists"]);
-
-            if (parameters.ContainsKey("Reverse"))
-                Reverse = bool.Parse(parameters["Reverse"]);
 
             return parameters;
         }
@@ -207,623 +92,273 @@ namespace LinqToTwitter
         /// <returns>URL conforming to Twitter API</returns>
         public virtual Request BuildUrl(Dictionary<string, string> parameters)
         {
-            if (parameters == null || !parameters.ContainsKey(TypeParam))
-                throw new ArgumentException("You must set Type.", TypeParam);
+            if (parameters == null || !parameters.ContainsKey(nameof(Type)))
+                throw new ArgumentNullException(nameof(Type), "You must set Type.");
 
-            Type = RequestProcessorHelper.ParseEnum<ListType>(parameters[TypeParam]);
+            Type = RequestProcessorHelper.ParseEnum<ListType>(parameters[nameof(Type)]);
 
             return Type switch
             {
-                ListType.List => BuildListUrl(parameters),
-                ListType.Show => BuildShowUrl(parameters),
-                ListType.Statuses => BuildStatusesUrl(parameters),
-                ListType.Memberships => BuildMembershipsUrl(parameters),
-                ListType.Subscriptions => BuildSubscriptionsUrl(parameters),
-                ListType.Members => BuildMembersUrl(parameters),
-                ListType.IsMember => BuildIsMemberUrl(parameters),
-                ListType.Subscribers => BuildSubscribersUrl(parameters),
-                ListType.IsSubscriber => BuildIsSubcribedUrl(parameters),
-                ListType.Ownerships => BuildOwnershipsUrl(parameters),
-                _ => throw new ArgumentException("Invalid ListType", TypeParam),
+                ListType.Lookup => BuildLookupUrl(parameters),
+                ListType.Owned => BuildOwnedUrl(parameters),
+                ListType.Member => BuildMemberUrl(parameters),
+                ListType.Follow => BuildFollowUrl(parameters),
+                ListType.Pin => BuildPinUrl(parameters),
+                _ => throw new ArgumentException("Invalid ListType", nameof(Type)),
             };
         }
 
+        // TODO: Move this to common so we can use it everywhere
         /// <summary>
-        /// Builds URL to retrieve all of a user's lists.
+        /// Sets parameter, but doen't treat as a query parameter
+        /// </summary>
+        /// <example>
+        /// //
+        /// // Notice how we need UserID as a parameter - we use this pattern a lot.
+        /// //
+        /// 
+        /// SetRequredSegmentParam(parameters, nameof(UserID), val => UserID = val);
+        /// 
+        /// var req = new Request($"{BaseUrl}users/{UserID}/owned_lists");
+        /// 
+        /// </example>
+        /// <param name="parameters">list of parameters</param>
+        /// <param name="paramName">name of parameter containing value to set</param>
+        /// <param name="setter">lambda to set property with value</param>
+        void SetSegment(
+            Dictionary<string, string> parameters, 
+            string paramName, 
+            Action<string> setter)
+        {
+            if (parameters.ContainsKey(paramName))
+                setter(parameters[paramName]);
+            else
+                throw new ArgumentException($"{paramName} is required", paramName);
+        }
+
+        record ParameterSpec(string ParamName, Action<string> Setter, bool ReplaceWhitespace);
+
+        /// <summary>
+        /// Builds URL to retrieve a specified list.
         /// </summary>
         /// <param name="parameters">Parameter List</param>
         /// <returns>Base URL + lists request</returns>
-        Request BuildListUrl(Dictionary<string, string> parameters)
+        Request BuildLookupUrl(Dictionary<string, string> parameters)
         {
-            const string UserIDOrScreenNameParam = "UserIdOrScreenName";
-            if (!(parameters.ContainsKey("UserID") && UserID != 0) &&
-                !(parameters.ContainsKey("ScreenName") && !string.IsNullOrWhiteSpace(parameters["ScreenName"])))
-                throw new ArgumentException("Either UserID or ScreenName are required.", UserIDOrScreenNameParam);
+            SetSegment(parameters, nameof(ListID), val => ListID = val);
 
-            var req = new Request(BaseUrl + "lists/list.json");
+            var req = new Request($"{BaseUrl}lists/{ListID}");
+
             var urlParams = req.RequestParameters;
 
-            if (parameters.ContainsKey("UserID"))
+            if (parameters.ContainsKey(nameof(Expansions)))
             {
-                UserID = ulong.Parse(parameters["UserID"]);
-                urlParams.Add(new QueryParameter("user_id", parameters["UserID"]));
+                Expansions = parameters[nameof(Expansions)];
+                urlParams.Add(new QueryParameter("expansions", Expansions.Replace(" ", "")));
             }
 
-            if (parameters.ContainsKey("ScreenName"))
+            if (parameters.ContainsKey(nameof(ListFields)))
             {
-                ScreenName = parameters["ScreenName"];
-                urlParams.Add(new QueryParameter("screen_name", parameters["ScreenName"]));
+                ListFields = parameters[nameof(ListFields)];
+                urlParams.Add(new QueryParameter("list.fields", ListFields.Replace(" ", "")));
             }
 
-            if (parameters.ContainsKey("Cursor"))
+            if (parameters.ContainsKey(nameof(UserFields)))
             {
-                Cursor = long.Parse(parameters["Cursor"]);
-                urlParams.Add(new QueryParameter("cursor", parameters["Cursor"]));
-            }
-
-            if (parameters.ContainsKey("Reverse"))
-            {
-                Reverse = bool.Parse(parameters["Reverse"]);
-                urlParams.Add(new QueryParameter("reverse", parameters["Reverse"].ToLower()));
+                UserFields = parameters[nameof(UserFields)];
+                urlParams.Add(new QueryParameter("user.fields", UserFields.Replace(" ", "")));
             }
 
             return req;
         }
 
         /// <summary>
-        /// Builds URL to retrieve info on a specific List.
+        /// Builds URL to retrieve a specified list.
         /// </summary>
-        /// <param name="parameters">Contains ID for List</param>
-        /// <returns>URL for List query</returns>
-        Request BuildShowUrl(Dictionary<string, string> parameters)
+        /// <param name="parameters">Parameter List</param>
+        /// <returns>Base URL + lists request</returns>
+        Request BuildOwnedUrl(Dictionary<string, string> parameters)
         {
-            if ((!parameters.ContainsKey("ListID") || string.IsNullOrWhiteSpace(parameters["ListID"])) &&
-                (!parameters.ContainsKey("Slug") || string.IsNullOrWhiteSpace(parameters["Slug"])))
-                throw new ArgumentException("You must specify either ListID or Slug.", ListIdOrSlugParam);
+            SetSegment(parameters, nameof(UserID), val => UserID = val);
 
-            if (parameters.ContainsKey("Slug") &&
-                !(parameters.ContainsKey("OwnerID") && !string.IsNullOrWhiteSpace(parameters["OwnerID"])) &&
-                !(parameters.ContainsKey("OwnerScreenName") && !string.IsNullOrWhiteSpace(parameters["OwnerScreenName"])))
-                throw new ArgumentException("If you specify a Slug, you must also specify either OwnerID or OwnerScreenName.", OwnerIdOrOwnerScreenName);
+            var req = new Request($"{BaseUrl}users/{UserID}/owned_lists");
 
-            var req = new Request(BaseUrl + @"lists/show.json");
             var urlParams = req.RequestParameters;
 
-            if (parameters.ContainsKey("Slug"))
+            if (parameters.ContainsKey(nameof(Expansions)))
             {
-                Slug = parameters["Slug"];
-                urlParams.Add(new QueryParameter("slug", parameters["Slug"]));
+                Expansions = parameters[nameof(Expansions)];
+                urlParams.Add(new QueryParameter("expansions", Expansions.Replace(" ", "")));
             }
 
-            if (parameters.ContainsKey("OwnerID"))
+            if (parameters.ContainsKey(nameof(ListFields)))
             {
-                OwnerID = ulong.Parse(parameters["OwnerID"]);
-                urlParams.Add(new QueryParameter("owner_id", parameters["OwnerID"]));
+                ListFields = parameters[nameof(ListFields)];
+                urlParams.Add(new QueryParameter("list.fields", ListFields.Replace(" ", "")));
             }
 
-            if (parameters.ContainsKey("OwnerScreenName"))
+            if (parameters.ContainsKey(nameof(MaxResults)))
             {
-                OwnerScreenName = parameters["OwnerScreenName"];
-                urlParams.Add(new QueryParameter("owner_screen_name", parameters["OwnerScreenName"]));
+                string maxResultsString = parameters[nameof(MaxResults)];
+                _ = int.TryParse(maxResultsString, out var maxResults);
+                MaxResults = maxResults;
+                urlParams.Add(new QueryParameter("max_results", maxResultsString));
             }
 
-            if (parameters.ContainsKey("ListID"))
+            if (parameters.ContainsKey(nameof(PaginationToken)))
             {
-                ListID = ulong.Parse(parameters["ListID"]);
-                urlParams.Add(new QueryParameter("list_id", parameters["ListID"]));
+                PaginationToken = parameters[nameof(PaginationToken)];
+                urlParams.Add(new QueryParameter("pagination_token", PaginationToken));
+            }
+
+            if (parameters.ContainsKey(nameof(UserFields)))
+            {
+                UserFields = parameters[nameof(UserFields)];
+                urlParams.Add(new QueryParameter("user.fields", UserFields.Replace(" ", "")));
             }
 
             return req;
         }
 
         /// <summary>
-        /// Build url for getting statuses for a list.
+        /// Builds URL to retrieve lists a user is a member of.
         /// </summary>
-        /// <param name="parameters">Contains ListID and optionally MaxID, SinceID, Count, and Page</param>
-        /// <returns>URL for statuses query</returns>
-        Request BuildStatusesUrl(Dictionary<string, string> parameters)
+        /// <param name="parameters">Parameter List</param>
+        /// <returns>Base URL + lists request</returns>
+        Request BuildMemberUrl(Dictionary<string, string> parameters)
         {
-            if ((!parameters.ContainsKey("ListID") || string.IsNullOrWhiteSpace(parameters["ListID"])) &&
-                (!parameters.ContainsKey("Slug") || string.IsNullOrWhiteSpace(parameters["Slug"])))
-                throw new ArgumentException("You must specify either ListID or Slug.", ListIdOrSlugParam);
+            SetSegment(parameters, nameof(UserID), val => UserID = val);
 
-            if (parameters.ContainsKey("Slug") &&
-                !(parameters.ContainsKey("OwnerID") && !string.IsNullOrWhiteSpace(parameters["OwnerID"])) &&
-                !(parameters.ContainsKey("OwnerScreenName") && !string.IsNullOrWhiteSpace(parameters["OwnerScreenName"])))
-                throw new ArgumentException("If you specify a Slug, you must also specify either OwnerID or OwnerScreenName.", OwnerIdOrOwnerScreenName);
+            var req = new Request($"{BaseUrl}users/{UserID}/list_memberships");
 
-            var req = new Request(BaseUrl + "lists/statuses.json");
             var urlParams = req.RequestParameters;
 
-            if (parameters.ContainsKey("OwnerID"))
+            if (parameters.ContainsKey(nameof(Expansions)))
             {
-                OwnerID = ulong.Parse(parameters["OwnerID"]);
-                urlParams.Add(new QueryParameter("owner_id", parameters["OwnerID"]));
+                Expansions = parameters[nameof(Expansions)];
+                urlParams.Add(new QueryParameter("expansions", Expansions.Replace(" ", "")));
             }
 
-            if (parameters.ContainsKey("OwnerScreenName"))
+            if (parameters.ContainsKey(nameof(ListFields)))
             {
-                OwnerScreenName = parameters["OwnerScreenName"];
-                urlParams.Add(new QueryParameter("owner_screen_name", parameters["OwnerScreenName"]));
+                ListFields = parameters[nameof(ListFields)];
+                urlParams.Add(new QueryParameter("list.fields", ListFields.Replace(" ", "")));
             }
 
-            if (parameters.ContainsKey("Slug"))
+            if (parameters.ContainsKey(nameof(MaxResults)))
             {
-                Slug = parameters["Slug"];
-                urlParams.Add(new QueryParameter("slug", parameters["Slug"]));
+                string maxResultsString = parameters[nameof(MaxResults)];
+                _ = int.TryParse(maxResultsString, out var maxResults);
+                MaxResults = maxResults;
+                urlParams.Add(new QueryParameter("max_results", maxResultsString));
             }
 
-            if (parameters.ContainsKey("ListID"))
+            if (parameters.ContainsKey(nameof(PaginationToken)))
             {
-                ListID = ulong.Parse(parameters["ListID"]);
-                urlParams.Add(new QueryParameter("list_id", parameters["ListID"]));
+                PaginationToken = parameters[nameof(PaginationToken)];
+                urlParams.Add(new QueryParameter("pagination_token", PaginationToken));
             }
 
-            if (parameters.ContainsKey("SinceID"))
+            if (parameters.ContainsKey(nameof(UserFields)))
             {
-                SinceID = ulong.Parse(parameters["SinceID"]);
-                urlParams.Add(new QueryParameter("since_id", parameters["SinceID"]));
-            }
-
-            if (parameters.ContainsKey("MaxID"))
-            {
-                MaxID = ulong.Parse(parameters["MaxID"]);
-                urlParams.Add(new QueryParameter("max_id", parameters["MaxID"]));
-            }
-
-            if (parameters.ContainsKey("Count"))
-            {
-                Count = int.Parse(parameters["Count"]);
-                urlParams.Add(new QueryParameter("count", parameters["Count"]));
-                // TODO: twitter seems to be ignoring the documented "count=", but does honor "per_page="
-                // for now, send BOTH
-                urlParams.Add(new QueryParameter("per_page", parameters["Count"]));
-            }
-
-            if (parameters.ContainsKey("Page"))
-            {
-                Page = int.Parse(parameters["Page"]);
-                urlParams.Add(new QueryParameter("page", parameters["Page"]));
-            }
-
-            if (parameters.ContainsKey("TrimUser"))
-            {
-                TrimUser = bool.Parse(parameters["TrimUser"]);
-                urlParams.Add(new QueryParameter("trim_user", parameters["TrimUser"].ToLower()));
-            }
-
-            if (parameters.ContainsKey("IncludeEntities"))
-            {
-                IncludeEntities = bool.Parse(parameters["IncludeEntities"]);
-                urlParams.Add(new QueryParameter("include_entities", parameters["IncludeEntities"].ToLower()));
-            }
-
-            if (parameters.ContainsKey("IncludeRetweets"))
-            {
-                IncludeRetweets = bool.Parse(parameters["IncludeRetweets"]);
-                urlParams.Add(new QueryParameter("include_rts", parameters["IncludeRetweets"].ToLower()));
+                UserFields = parameters[nameof(UserFields)];
+                urlParams.Add(new QueryParameter("user.fields", UserFields.Replace(" ", "")));
             }
 
             return req;
         }
 
         /// <summary>
-        /// Build url for getting list memberships.
+        /// Builds URL to retrieve users followed lists.
         /// </summary>
-        /// <param name="parameters">NoChange required</param>
-        /// <returns>URL for memberships query</returns>
-        Request BuildMembershipsUrl(Dictionary<string, string> parameters)
+        /// <param name="parameters">Parameter List</param>
+        /// <returns>Base URL + lists request</returns>
+        Request BuildFollowUrl(Dictionary<string, string> parameters)
         {
-            if (!(parameters.ContainsKey("UserID") && !string.IsNullOrWhiteSpace(parameters["UserID"])) &&
-                !(parameters.ContainsKey("ScreenName") && !string.IsNullOrWhiteSpace(parameters["ScreenName"])))
-                throw new ArgumentException("Either UserID or ScreenName are required.", UserIdOrScreenName);
+            SetSegment(parameters, nameof(UserID), val => UserID = val);
 
-            var req = new Request(BaseUrl + "lists/memberships.json");
+            var req = new Request($"{BaseUrl}users/{UserID}/followed_lists");
+
             var urlParams = req.RequestParameters;
 
-            if (parameters.ContainsKey("UserID"))
+            if (parameters.ContainsKey(nameof(Expansions)))
             {
-                UserID = ulong.Parse(parameters["UserID"]);
-                urlParams.Add(new QueryParameter("user_id", parameters["UserID"]));
+                Expansions = parameters[nameof(Expansions)];
+                urlParams.Add(new QueryParameter("expansions", Expansions.Replace(" ", "")));
             }
 
-            if (parameters.ContainsKey("ScreenName"))
+            if (parameters.ContainsKey(nameof(ListFields)))
             {
-                ScreenName = parameters["ScreenName"];
-                urlParams.Add(new QueryParameter("screen_name", parameters["ScreenName"]));
+                ListFields = parameters[nameof(ListFields)];
+                urlParams.Add(new QueryParameter("list.fields", ListFields.Replace(" ", "")));
             }
 
-            if (parameters.ContainsKey("Cursor"))
+            if (parameters.ContainsKey(nameof(MaxResults)))
             {
-                Cursor = long.Parse(parameters["Cursor"]);
-                urlParams.Add(new QueryParameter("cursor", parameters["Cursor"]));
+                string maxResultsString = parameters[nameof(MaxResults)];
+                _ = int.TryParse(maxResultsString, out var maxResults);
+                MaxResults = maxResults;
+                urlParams.Add(new QueryParameter("max_results", maxResultsString));
             }
 
-            if (parameters.ContainsKey("FilterToOwnedLists"))
+            if (parameters.ContainsKey(nameof(PaginationToken)))
             {
-                if (RequestProcessorHelper.FlagTrue(parameters, "FilterToOwnedLists"))
-                {
-                    FilterToOwnedLists = true;
-                    urlParams.Add(new QueryParameter("filter_to_owned_lists", "true"));
-                }
+                PaginationToken = parameters[nameof(PaginationToken)];
+                urlParams.Add(new QueryParameter("pagination_token", PaginationToken));
+            }
+
+            if (parameters.ContainsKey(nameof(UserFields)))
+            {
+                UserFields = parameters[nameof(UserFields)];
+                urlParams.Add(new QueryParameter("user.fields", UserFields.Replace(" ", "")));
             }
 
             return req;
         }
 
         /// <summary>
-        /// Build url for getting list subscriptions.
+        /// Builds URL to retrieve user's pinned lists.
         /// </summary>
-        /// <param name="parameters">NoChange required</param>
-        /// <returns>URL for subscriptions query</returns>
-        Request BuildSubscriptionsUrl(Dictionary<string, string> parameters)
+        /// <param name="parameters">Parameter List</param>
+        /// <returns>Base URL + lists request</returns>
+        Request BuildPinUrl(Dictionary<string, string> parameters)
         {
-            if (!(parameters.ContainsKey("UserID") && !string.IsNullOrWhiteSpace(parameters["UserID"])) &&
-                !(parameters.ContainsKey("ScreenName") && !string.IsNullOrWhiteSpace(parameters["ScreenName"])))
-                throw new ArgumentException("Either UserID or ScreenName are required.", UserIdOrScreenName);
+            SetSegment(parameters, nameof(UserID), val => UserID = val);
 
-            var req = new Request(BaseUrl + "lists/subscriptions.json");
+            var req = new Request($"{BaseUrl}users/{UserID}/pinned_lists");
+
             var urlParams = req.RequestParameters;
 
-            if (parameters.ContainsKey("UserID"))
+            if (parameters.ContainsKey(nameof(Expansions)))
             {
-                UserID = ulong.Parse(parameters["UserID"]);
-                urlParams.Add(new QueryParameter("user_id", parameters["UserID"]));
+                Expansions = parameters[nameof(Expansions)];
+                urlParams.Add(new QueryParameter("expansions", Expansions.Replace(" ", "")));
             }
 
-            if (parameters.ContainsKey("ScreenName"))
+            if (parameters.ContainsKey(nameof(ListFields)))
             {
-                ScreenName = parameters["ScreenName"];
-                urlParams.Add(new QueryParameter("screen_name", parameters["ScreenName"]));
+                ListFields = parameters[nameof(ListFields)];
+                urlParams.Add(new QueryParameter("list.fields", ListFields.Replace(" ", "")));
             }
 
-            if (parameters.ContainsKey("Count"))
+            if (parameters.ContainsKey(nameof(MaxResults)))
             {
-                Count = int.Parse(parameters["Count"]);
-                urlParams.Add(new QueryParameter("count", parameters["Count"]));
+                string maxResultsString = parameters[nameof(MaxResults)];
+                _ = int.TryParse(maxResultsString, out var maxResults);
+                MaxResults = maxResults;
+                urlParams.Add(new QueryParameter("max_results", maxResultsString));
             }
 
-            if (parameters.ContainsKey("Cursor"))
+            if (parameters.ContainsKey(nameof(PaginationToken)))
             {
-                Cursor = long.Parse(parameters["Cursor"]);
-                urlParams.Add(new QueryParameter("cursor", parameters["Cursor"]));
+                PaginationToken = parameters[nameof(PaginationToken)];
+                urlParams.Add(new QueryParameter("pagination_token", PaginationToken));
             }
 
-            return req;
-        }
-
-        /// <summary>
-        /// Build url for getting a list of members for a list
-        /// </summary>
-        /// <param name="parameters">Contains ListID and optionally Cursor</param>
-        /// <returns>URL for members query</returns>
-        Request BuildMembersUrl(Dictionary<string, string> parameters)
-        {
-            if ((!parameters.ContainsKey("ListID") || string.IsNullOrWhiteSpace(parameters["ListID"])) &&
-               (!parameters.ContainsKey("Slug") || string.IsNullOrWhiteSpace(parameters["Slug"])))
-                throw new ArgumentException("You must specify either ListID or Slug.", ListIdOrSlugParam);
-
-            if (parameters.ContainsKey("Slug") &&
-                !(parameters.ContainsKey("OwnerID") && !string.IsNullOrWhiteSpace(parameters["OwnerID"])) &&
-                !(parameters.ContainsKey("OwnerScreenName") && !string.IsNullOrWhiteSpace(parameters["OwnerScreenName"])))
+            if (parameters.ContainsKey(nameof(UserFields)))
             {
-                throw new ArgumentException("If you specify a Slug, you must also specify either OwnerID or OwnerScreenName.", OwnerIdOrOwnerScreenName);
-            }
-
-            var req = new Request(BaseUrl + "lists/members.json");
-            var urlParams = req.RequestParameters;
-
-            if (parameters.ContainsKey("OwnerID"))
-            {
-                OwnerID = ulong.Parse(parameters["OwnerID"]);
-                urlParams.Add(new QueryParameter("owner_id", parameters["OwnerID"]));
-            }
-
-            if (parameters.ContainsKey("OwnerScreenName"))
-            {
-                OwnerScreenName = parameters["OwnerScreenName"];
-                urlParams.Add(new QueryParameter("owner_screen_name", parameters["OwnerScreenName"]));
-            }
-
-            if (parameters.ContainsKey("Slug"))
-            {
-                Slug = parameters["Slug"];
-                urlParams.Add(new QueryParameter("slug", parameters["Slug"]));
-            }
-
-            if (parameters.ContainsKey("ListID"))
-            {
-                ListID = ulong.Parse(parameters["ListID"]);
-                urlParams.Add(new QueryParameter("list_id", parameters["ListID"]));
-            }
-
-            if (parameters.ContainsKey("Cursor"))
-            {
-                Cursor = long.Parse(parameters["Cursor"]);
-                urlParams.Add(new QueryParameter("cursor", parameters["Cursor"]));
-            }
-
-            if (parameters.ContainsKey("IncludeEntities"))
-            {
-                IncludeEntities = bool.Parse(parameters["IncludeEntities"]);
-                urlParams.Add(new QueryParameter("include_entities", parameters["IncludeEntities"].ToLower()));
-            }
-
-            if (parameters.ContainsKey("SkipStatus"))
-            {
-                if (RequestProcessorHelper.FlagTrue(parameters, "SkipStatus"))
-                {
-                    SkipStatus = true;
-                    urlParams.Add(new QueryParameter("skip_status", "true"));
-                }
-            }
-
-			if (parameters.ContainsKey("Count"))
-			{
-				Count = int.Parse(parameters["Count"]);
-				urlParams.Add(new QueryParameter("count", parameters["Count"]));
-			}
-
-            return req;
-        }
-
-        /// <summary>
-        /// Build url that determines if a user is a member of a list.
-        /// </summary>
-        /// <param name="parameters">Contains ID and ListID</param>
-        /// <returns>URL for list members query</returns>
-        Request BuildIsMemberUrl(Dictionary<string, string> parameters)
-        {
-            if ((!parameters.ContainsKey("UserID") || string.IsNullOrWhiteSpace(parameters["UserID"])) &&
-               (!parameters.ContainsKey("ScreenName") || string.IsNullOrWhiteSpace(parameters["ScreenName"])))
-                throw new ArgumentException("You must specify either UserID or ScreenName of the user you're checking.", UserIdOrScreenName);
-
-            if ((!parameters.ContainsKey("ListID") || string.IsNullOrWhiteSpace(parameters["ListID"])) &&
-               (!parameters.ContainsKey("Slug") || string.IsNullOrWhiteSpace(parameters["Slug"])))
-                throw new ArgumentException("You must specify either ListID or Slug.", ListIdOrSlugParam);
-
-            if (parameters.ContainsKey("Slug") &&
-                !(parameters.ContainsKey("OwnerID") && !string.IsNullOrWhiteSpace(parameters["OwnerID"])) &&
-                !(parameters.ContainsKey("OwnerScreenName") && !string.IsNullOrWhiteSpace(parameters["OwnerScreenName"])))
-                throw new ArgumentException("If you specify a Slug, you must also specify either OwnerID or OwnerScreenName.", OwnerIdOrOwnerScreenName);
-
-            var req = new Request(BaseUrl + "lists/members/show.json");
-            var urlParams = req.RequestParameters;
-
-            if (parameters.ContainsKey("UserID"))
-            {
-                UserID = ulong.Parse(parameters["UserID"]);
-                urlParams.Add(new QueryParameter("user_id", parameters["UserID"]));
-            }
-
-            if (parameters.ContainsKey("ScreenName"))
-            {
-                ScreenName = parameters["ScreenName"];
-                urlParams.Add(new QueryParameter("screen_name", parameters["ScreenName"]));
-            }
-
-            if (parameters.ContainsKey("Slug"))
-            {
-                Slug = parameters["Slug"];
-                urlParams.Add(new QueryParameter("slug", parameters["Slug"]));
-            }
-
-            if (parameters.ContainsKey("OwnerID"))
-            {
-                OwnerID = ulong.Parse(parameters["OwnerID"]);
-                urlParams.Add(new QueryParameter("owner_id", parameters["OwnerID"]));
-            }
-
-            if (parameters.ContainsKey("OwnerScreenName"))
-            {
-                OwnerScreenName = parameters["OwnerScreenName"];
-                urlParams.Add(new QueryParameter("owner_screen_name", parameters["OwnerScreenName"]));
-            }
-
-            if (parameters.ContainsKey("ListID"))
-            {
-                ListID = ulong.Parse(parameters["ListID"]);
-                urlParams.Add(new QueryParameter("list_id", parameters["ListID"]));
-            }
-
-            if (parameters.ContainsKey("IncludeEntities"))
-            {
-                IncludeEntities = bool.Parse(parameters["IncludeEntities"]);
-                urlParams.Add(new QueryParameter("include_entities", parameters["IncludeEntities"].ToLower()));
-            }
-
-            if (parameters.ContainsKey("SkipStatus"))
-            {
-                if (RequestProcessorHelper.FlagTrue(parameters, "SkipStatus"))
-                {
-                    SkipStatus = true;
-                    urlParams.Add(new QueryParameter("skip_status", "true"));
-                }
-            }
-
-            return req;
-        }
-
-        /// <summary>
-        /// Builds an URL to retrieve subscribers of a list.
-        /// </summary>
-        /// <param name="parameters"></param>
-        /// <returns>URL for list subscribers query</returns>
-        Request BuildSubscribersUrl(Dictionary<string, string> parameters)
-        {
-            if ((!parameters.ContainsKey("ListID") || string.IsNullOrWhiteSpace(parameters["ListID"])) &&
-               (!parameters.ContainsKey("Slug") || string.IsNullOrWhiteSpace(parameters["Slug"])))
-                throw new ArgumentException("You must specify either ListID or Slug.", ListIdOrSlugParam);
-
-            if (parameters.ContainsKey("Slug") &&
-                !(parameters.ContainsKey("OwnerID") && !string.IsNullOrWhiteSpace(parameters["OwnerID"])) &&
-                !(parameters.ContainsKey("OwnerScreenName") && !string.IsNullOrWhiteSpace(parameters["OwnerScreenName"])))
-                throw new ArgumentException("If you specify a Slug, you must also specify either OwnerID or OwnerScreenName.", OwnerIdOrOwnerScreenName);
-
-            var req = new Request(BaseUrl + "lists/subscribers.json");
-            var urlParams = req.RequestParameters;
-
-            if (parameters.ContainsKey("OwnerID"))
-            {
-                OwnerID = ulong.Parse(parameters["OwnerID"]);
-                urlParams.Add(new QueryParameter("owner_id", parameters["OwnerID"]));
-            }
-
-            if (parameters.ContainsKey("OwnerScreenName"))
-            {
-                OwnerScreenName = parameters["OwnerScreenName"];
-                urlParams.Add(new QueryParameter("owner_screen_name", parameters["OwnerScreenName"]));
-            }
-
-            if (parameters.ContainsKey("Slug"))
-            {
-                Slug = parameters["Slug"];
-                urlParams.Add(new QueryParameter("slug", parameters["Slug"]));
-            }
-
-            if (parameters.ContainsKey("ListID"))
-            {
-                ListID = ulong.Parse(parameters["ListID"]);
-                urlParams.Add(new QueryParameter("list_id", parameters["ListID"]));
-            }
-
-            if (parameters.ContainsKey("Cursor"))
-            {
-                Cursor = long.Parse(parameters["Cursor"]);
-                urlParams.Add(new QueryParameter("cursor", parameters["Cursor"]));
-            }
-
-            if (parameters.ContainsKey("IncludeEntities"))
-            {
-                IncludeEntities = bool.Parse(parameters["IncludeEntities"]);
-                urlParams.Add(new QueryParameter("include_entities", parameters["IncludeEntities"].ToLower()));
-            }
-
-            if (parameters.ContainsKey("SkipStatus"))
-            {
-                if (RequestProcessorHelper.FlagTrue(parameters, "SkipStatus"))
-                {
-                    SkipStatus = true;
-                    urlParams.Add(new QueryParameter("skip_status", "true"));
-                }
-            }
-
-            return req;
-        }
-
-        /// <summary>
-        /// Build URL to see if user is subscribed to a list.
-        /// </summary>
-        /// <param name="parameters">Should contain ID and ListID</param>
-        /// <returns>URL for IsSubscriber query</returns>
-        Request BuildIsSubcribedUrl(Dictionary<string, string> parameters)
-        {
-            if ((!parameters.ContainsKey("UserID") || string.IsNullOrWhiteSpace(parameters["UserID"])) &&
-               (!parameters.ContainsKey("ScreenName") || string.IsNullOrWhiteSpace(parameters["ScreenName"])))
-                throw new ArgumentException("You must specify either UserID or ScreenName of the user you're checking.", UserIdOrScreenName);
-
-            if ((!parameters.ContainsKey("ListID") || string.IsNullOrWhiteSpace(parameters["ListID"])) &&
-               (!parameters.ContainsKey("Slug") || string.IsNullOrWhiteSpace(parameters["Slug"])))
-                throw new ArgumentException("You must specify either ListID or Slug.", ListIdOrSlugParam);
-
-            if (parameters.ContainsKey("Slug") &&
-                !(parameters.ContainsKey("OwnerID") && !string.IsNullOrWhiteSpace(parameters["OwnerID"])) &&
-                !(parameters.ContainsKey("OwnerScreenName") && !string.IsNullOrWhiteSpace(parameters["OwnerScreenName"])))
-                throw new ArgumentException("If you specify a Slug, you must also specify either OwnerID or OwnerScreenName.", OwnerIdOrOwnerScreenName);
-
-            var req = new Request(BaseUrl + "lists/subscribers/show.json");
-            var urlParams = req.RequestParameters;
-
-            if (parameters.ContainsKey("UserID"))
-            {
-                UserID = ulong.Parse(parameters["UserID"]);
-                urlParams.Add(new QueryParameter("user_id", parameters["UserID"]));
-            }
-
-            if (parameters.ContainsKey("ScreenName"))
-            {
-                ScreenName = parameters["ScreenName"];
-                urlParams.Add(new QueryParameter("screen_name", parameters["ScreenName"]));
-            }
-
-            if (parameters.ContainsKey("Slug"))
-            {
-                Slug = parameters["Slug"];
-                urlParams.Add(new QueryParameter("slug", parameters["Slug"]));
-            }
-
-            if (parameters.ContainsKey("OwnerID"))
-            {
-                OwnerID = ulong.Parse(parameters["OwnerID"]);
-                urlParams.Add(new QueryParameter("owner_id", parameters["OwnerID"]));
-            }
-
-            if (parameters.ContainsKey("OwnerScreenName"))
-            {
-                OwnerScreenName = parameters["OwnerScreenName"];
-                urlParams.Add(new QueryParameter("owner_screen_name", parameters["OwnerScreenName"]));
-            }
-
-            if (parameters.ContainsKey("ListID"))
-            {
-                ListID = ulong.Parse(parameters["ListID"]);
-                urlParams.Add(new QueryParameter("list_id", parameters["ListID"]));
-            }
-
-            if (parameters.ContainsKey("IncludeEntities"))
-            {
-                IncludeEntities = bool.Parse(parameters["IncludeEntities"]);
-                urlParams.Add(new QueryParameter("include_entities", parameters["IncludeEntities"].ToLower()));
-            }
-
-            if (parameters.ContainsKey("SkipStatus"))
-            {
-                if (RequestProcessorHelper.FlagTrue(parameters, "SkipStatus"))
-                {
-                    SkipStatus = true;
-                    urlParams.Add(new QueryParameter("skip_status", "true"));
-                }
-            }
-
-            return req;
-        }
-
-        /// <summary>
-        /// Build URL to see if user is subscribed to a list.
-        /// </summary>
-        /// <param name="parameters">Should contain ID and ListID</param>
-        /// <returns>URL for IsSubscriber query</returns>
-        Request BuildOwnershipsUrl(Dictionary<string, string> parameters)
-        {
-            if ((!parameters.ContainsKey("UserID") || string.IsNullOrWhiteSpace(parameters["UserID"])) &&
-               (!parameters.ContainsKey("ScreenName") || string.IsNullOrWhiteSpace(parameters["ScreenName"])))
-                throw new ArgumentException("You must specify either UserID or ScreenName of the user you're checking.", UserIdOrScreenName);
-
-            var req = new Request(BaseUrl + "lists/ownerships.json");
-            var urlParams = req.RequestParameters;
-
-            if (parameters.ContainsKey("UserID"))
-            {
-                UserID = ulong.Parse(parameters["UserID"]);
-                urlParams.Add(new QueryParameter("user_id", parameters["UserID"]));
-            }
-
-            if (parameters.ContainsKey("ScreenName"))
-            {
-                ScreenName = parameters["ScreenName"];
-                urlParams.Add(new QueryParameter("screen_name", parameters["ScreenName"]));
-            }
-
-            if (parameters.ContainsKey("Count"))
-            {
-                Count = int.Parse(parameters["Count"]);
-                urlParams.Add(new QueryParameter("count", parameters["Count"]));
-            }
-
-            if (parameters.ContainsKey("Cursor"))
-            {
-                Cursor = long.Parse(parameters["Cursor"]);
-                urlParams.Add(new QueryParameter("cursor", parameters["Cursor"]));
+                UserFields = parameters[nameof(UserFields)];
+                urlParams.Add(new QueryParameter("user.fields", UserFields.Replace(" ", "")));
             }
 
             return req;
@@ -836,144 +371,56 @@ namespace LinqToTwitter
         /// <returns>List of List</returns>
         public virtual List<T> ProcessResults(string responseJson)
         {
-            if (string.IsNullOrWhiteSpace(responseJson)) return new List<T>();
+            IEnumerable<ListQuery> list;
 
-            JsonElement listJson = JsonDocument.Parse(responseJson).RootElement;
-            List<List> lists = Type switch
+            if (string.IsNullOrWhiteSpace(responseJson))
             {
-                ListType.List => ListRequestProcessor<T>.HandleMultipleListsResponse(listJson),
-                ListType.Memberships or ListType.Ownerships or ListType.Subscriptions => ListRequestProcessor<T>.HandleCursoredResponse(listJson),
-                ListType.Show => ListRequestProcessor<T>.HandleSingleListResponse(listJson),
-                ListType.Statuses => ListRequestProcessor<T>.HandleStatusesResponse(listJson),
-                ListType.Members or ListType.Subscribers => ListRequestProcessor<T>.HandleMultipleUsersResponse(listJson),
-                ListType.IsMember or ListType.IsSubscriber => ListRequestProcessor<T>.HandleSingleUserResponse(listJson),
-                _ => new List<List>(),
-            };
-            Cursors? cursors = null;
-            if (listJson.ValueKind == JsonValueKind.Object)
-                cursors = new Cursors(listJson);
-
-            foreach (var list in lists)
+                list = new List<ListQuery> { new ListQuery() };
+            }
+            else
             {
-                list.Type = Type;
-                list.Cursor = Cursor;
-                list.UserID = UserID;
-                list.ListID = ListID;
-                list.Slug = Slug;
-                list.OwnerID = OwnerID;
-                list.OwnerScreenName = OwnerScreenName;
-                list.MaxID = MaxID;
-                list.Count = Count;
-                list.Page = Page;
-                list.ScreenName = ScreenName;
-                list.SinceID = SinceID;
-                list.TrimUser = TrimUser;
-                list.IncludeEntities = IncludeEntities;
-                list.IncludeRetweets = IncludeRetweets;
-                list.FilterToOwnedLists = FilterToOwnedLists;
-                list.CursorMovement = cursors;
-                list.SkipStatus = SkipStatus;
-                list.Reverse = Reverse;
+                var result = JsonDeserialize(responseJson);
+                list = new List<ListQuery> { result };
             }
 
-            return lists.AsEnumerable().OfType<T>().ToList();
+            return list.OfType<T>().ToList();
         }
 
-        static List<List> HandleSingleListResponse(JsonElement listJson)
+        ListQuery JsonDeserialize(string responseJson)
         {
-            var lists = new List<List>
+            var options = new JsonSerializerOptions
             {
-                new List(listJson)
-            };
-
-            return lists;
-        }
-
-        static List<List> HandleCursoredResponse(JsonElement listJson)
-        {
-            if (!listJson.TryGetProperty("lists", out JsonElement listElement))
-                return new List<List>();
-
-            return ListRequestProcessor<T>.HandleMultipleListsResponse(listElement);
-        }
-
-        static List<List> HandleMultipleListsResponse(JsonElement listJson)
-        {
-            var lists =
-                (from list in listJson.EnumerateArray()
-                 select new List(list))
-                .ToList();
-
-            return lists;
-        }
-
-        static List<List> HandleSingleUserResponse(JsonElement listJson)
-        {
-            var lists = new List<List>
-            {
-                new List
+                Converters =
                 {
-                    Users = new List<User> { new User(listJson) }
+                    new JsonStringEnumConverter()
                 }
             };
+            ListQuery? list = JsonSerializer.Deserialize<ListQuery>(responseJson, options);
 
-            return lists;
-        }
-
-        static List<List> HandleMultipleUsersResponse(JsonElement listJson)
-        {
-            var lists = new List<List>
-            {
-                new List
+            if (list == null)
+                return new ListQuery
                 {
-                    Users =
-                        (from user in listJson.GetProperty("users").EnumerateArray()
-                         select new User(user))
-                        .ToList()
-                }
-            };
-
-            return lists;
-        }
-
-        private static List<List> HandleStatusesResponse(JsonElement listJson)
-        {
-            var lists = new List<List>
-            {
-                new List
-                {
-                    Statuses =
-                        (from status in listJson.EnumerateArray()
-                         select new Status(status))
-                        .ToList()
-                }
-            };
-
-            return lists;
-        }
-
-        /// <summary>
-        /// Transforms json into an action response.
-        /// </summary>
-        /// <param name="responseJson">json with Twitter response</param>
-        /// <param name="theAction">Used to specify side-effect methods</param>
-        /// <returns>Action response</returns>
-        public virtual T? ProcessActionResult(string responseJson, Enum theAction)
-        {
-            List? list = null;
-
-            if (!string.IsNullOrWhiteSpace(responseJson))
-            {
-                JsonElement listJson = JsonDocument.Parse(responseJson).RootElement;
-
-                list = ((ListAction)theAction) switch
-                {
-                    ListAction.Create or ListAction.Update or ListAction.Delete or ListAction.AddMember or ListAction.AddMemberRange or ListAction.DeleteMember or ListAction.Subscribe or ListAction.Unsubscribe or ListAction.DestroyAll => new List(listJson),
-                    _ => throw new InvalidOperationException("The default case of ProcessActionResult should never execute because a Type must be specified."),
+                    Type = Type,
+                    Expansions = Expansions,
+                    ListFields = ListFields,
+                    ListID = ListID,
+                    MaxResults = MaxResults,
+                    PaginationToken = PaginationToken,
+                    UserFields = UserFields,
+                    UserID = UserID,
                 };
-            }
-
-            return list.ItemCast(default(T));
+            else
+                return list with
+                {
+                    Type = Type,
+                    Expansions = Expansions,
+                    ListFields = ListFields,
+                    ListID = ListID,
+                    MaxResults = MaxResults,
+                    PaginationToken = PaginationToken,
+                    UserFields = UserFields,
+                    UserID = UserID
+                };
         }
     }
 }

@@ -130,13 +130,7 @@ namespace LinqToTwitter
         /// <summary>
         /// enables access to Twitter List info
         /// </summary>
-        public TwitterQueryable<List> List
-        {
-            get
-            {
-                return new TwitterQueryable<List>(this);
-            }
-        }
+        public TwitterQueryable<ListQuery> List => new(this);
 
         /// <summary>
         /// Enables access to muted users
