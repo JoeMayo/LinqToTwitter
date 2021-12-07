@@ -23,11 +23,11 @@
         /// <summary>
         /// Get lists that user is following
         /// </summary>
-        Follow,
+        Following,
 
         /// <summary>
         /// Gets lists that user has pinned
         /// </summary>
-        Pin,
+        Pinned,
     }
 }

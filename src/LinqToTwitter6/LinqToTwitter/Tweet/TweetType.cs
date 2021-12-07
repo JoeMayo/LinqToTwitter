@@ -3,6 +3,11 @@
     public enum TweetType
     {
         /// <summary>
+        /// Get tweets from a list
+        /// </summary>
+        List,
+
+        /// <summary>
         /// Lookup one or more tweets
         /// </summary>
         Lookup,

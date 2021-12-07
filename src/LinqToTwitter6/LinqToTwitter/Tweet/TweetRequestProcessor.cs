@@ -51,6 +51,11 @@ namespace LinqToTwitter
         public string? ID { get; set; }
 
         /// <summary>
+        /// ID for list to get tweets from
+        /// </summary>
+        public string? ListID { get; set; }
+
+        /// <summary>
         /// Max number of tweets to return per requrest - default 10 - possible 100
         /// </summary>
         public int MaxResults { get; set; }
@@ -117,6 +122,7 @@ namespace LinqToTwitter
                        nameof(Expansions),
                        nameof(Ids),
                        nameof(ID),
+                       nameof(ListID),
                        nameof(MaxResults),
                        nameof(MediaFields),
                        nameof(PaginationToken),
@@ -148,11 +154,60 @@ namespace LinqToTwitter
 
             return Type switch
             {
+                TweetType.List => BuildListUrl(parameters),
                 TweetType.Lookup => BuildLookupUrl(parameters),
                 TweetType.MentionsTimeline => BuildMentionsTimelineUrl(parameters),
                 TweetType.TweetsTimeline => BuildUserTimelineUrl(parameters),
                 _ => throw new InvalidOperationException("The default case of BuildUrl should never execute because a Type must be specified."),
             };
+        }
+
+        /// <summary>
+        /// Builds URL to retrieve tweets from a list
+        /// </summary>
+        /// <param name="parameters">Parameter List</param>
+        /// <returns>Base URL + lists request</returns>
+        Request BuildListUrl(Dictionary<string, string> parameters)
+        {
+            RequestProcessorHelper.SetSegment(parameters, nameof(ListID), val => ListID = val);
+
+            var req = new Request($"{BaseUrl}lists/{ListID}/tweets");
+
+            var urlParams = req.RequestParameters;
+
+            if (parameters.ContainsKey(nameof(Expansions)))
+            {
+                Expansions = parameters[nameof(Expansions)];
+                urlParams.Add(new QueryParameter("expansions", Expansions.Replace(" ", "")));
+            }
+
+            if (parameters.ContainsKey(nameof(MaxResults)))
+            {
+                string maxResultsString = parameters[nameof(MaxResults)];
+                _ = int.TryParse(maxResultsString, out var maxResults);
+                MaxResults = maxResults;
+                urlParams.Add(new QueryParameter("max_results", maxResultsString));
+            }
+
+            if (parameters.ContainsKey(nameof(PaginationToken)))
+            {
+                PaginationToken = parameters[nameof(PaginationToken)];
+                urlParams.Add(new QueryParameter("pagination_token", PaginationToken));
+            }
+
+            if (parameters.ContainsKey(nameof(TweetFields)))
+            {
+                TweetFields = parameters[nameof(TweetFields)];
+                urlParams.Add(new QueryParameter("tweet.fields", TweetFields.Replace(" ", "")));
+            }
+
+            if (parameters.ContainsKey(nameof(UserFields)))
+            {
+                UserFields = parameters[nameof(UserFields)];
+                urlParams.Add(new QueryParameter("user.fields", UserFields.Replace(" ", "")));
+            }
+
+            return req;
         }
 
         /// <summary>

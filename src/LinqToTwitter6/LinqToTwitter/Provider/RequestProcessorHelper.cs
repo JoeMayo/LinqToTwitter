@@ -45,5 +45,32 @@ namespace LinqToTwitter.Provider
 
             return flag;
         }
+
+        /// <summary>
+        /// Sets parameter, but doen't treat as a query parameter
+        /// </summary>
+        /// <example>
+        /// //
+        /// // Notice how we need UserID as a parameter - we use this pattern a lot.
+        /// //
+        /// 
+        /// SetRequredSegmentParam(parameters, nameof(UserID), val => UserID = val);
+        /// 
+        /// var req = new Request($"{BaseUrl}users/{UserID}/owned_lists");
+        /// 
+        /// </example>
+        /// <param name="parameters">list of parameters</param>
+        /// <param name="paramName">name of parameter containing value to set</param>
+        /// <param name="setter">lambda to set property with value</param>
+        internal static void SetSegment(
+            Dictionary<string, string> parameters,
+            string paramName,
+            Action<string> setter)
+        {
+            if (parameters.ContainsKey(paramName))
+                setter(parameters[paramName]);
+            else
+                throw new ArgumentException($"{paramName} is required", paramName);
+        }
     }
 }

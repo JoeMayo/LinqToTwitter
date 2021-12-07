@@ -38,6 +38,11 @@ namespace LinqToTwitter
         public string? ID { get; init; }
 
         /// <summary>
+        /// ID for queries that need users associated with a list
+        /// </summary>
+        public string? ListID { get; set; }
+
+        /// <summary>
         /// Max number of tweets to return per requrest - default 100 - possible 1000
         /// </summary>
         public int MaxResults { get; init; }

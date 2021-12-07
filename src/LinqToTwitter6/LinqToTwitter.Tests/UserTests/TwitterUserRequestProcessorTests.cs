@@ -346,6 +346,146 @@ namespace LinqToTwitter.Tests.UserTests
         }
 
 		[TestMethod]
+		public void BuildUrl_ForListFollowers_IncludesParameters()
+		{
+			const string ExpectedUrl =
+				BaseUrl2 + "lists/12345/followers?" +
+				"expansions=owner_id&" +
+				"max_results=50&" +
+				"pagination_token=def&" +
+				"tweet.fields=author_id%2Ccreated_at&" +
+				"user.fields=created_at%2Cverified";
+			var twitterUserProc = new TwitterUserRequestProcessor<TwitterUserQuery> { BaseUrl = BaseUrl2 };
+			var parameters =
+				new Dictionary<string, string>
+				{
+					{ nameof(TwitterUserQuery.Type), UserType.ListFollowers.ToString() },
+					{ nameof(TwitterUserQuery.Expansions), ExpansionField.OwnerID },
+					{ nameof(TwitterUserQuery.ListID), "12345" },
+					{ nameof(TwitterUserQuery.MaxResults), "50" },
+					{ nameof(TwitterUserQuery.PaginationToken), "def" },
+					{ nameof(TwitterUserQuery.TweetFields), $"{TweetField.AuthorID},{TweetField.CreatedAt}" },
+					{ nameof(TwitterUserQuery.UserFields), $"{UserField.CreatedAt},{UserField.Verified}" },
+			   };
+
+			Request req = twitterUserProc.BuildUrl(parameters);
+
+			Assert.AreEqual(ExpectedUrl, req.FullUrl);
+		}
+
+		[TestMethod]
+		public void BuildUrl_ForListFollowersWithSpacesInFields_RemovesSpaces()
+		{
+			const string ExpectedUrl =
+				BaseUrl2 + "lists/12345/followers?" +
+				"expansions=owner_id&" +
+				"tweet.fields=author_id%2Ccreated_at&" +
+				"user.fields=created_at%2Cverified";
+			var twitterUserProc = new TwitterUserRequestProcessor<TwitterUserQuery> { BaseUrl = BaseUrl2 };
+			var parameters =
+				new Dictionary<string, string>
+				{
+					{ nameof(TwitterUserQuery.Type), UserType.ListFollowers.ToString() },
+					{ nameof(TwitterUserQuery.ListID), "12345" },
+					{ nameof(TwitterUserQuery.Expansions), ExpansionField.OwnerID },
+					{ nameof(TwitterUserQuery.TweetFields), $"{TweetField.AuthorID}, {TweetField.CreatedAt}" },
+					{ nameof(TwitterUserQuery.UserFields), $"{UserField.CreatedAt}, {UserField.Verified}" },
+			   };
+
+			Request req = twitterUserProc.BuildUrl(parameters);
+
+			Assert.AreEqual(ExpectedUrl, req.FullUrl);
+		}
+
+		[TestMethod]
+		public void BuildUrl_ForListFollowers_RequiresListID()
+		{
+			var twitterUserProc = new TwitterUserRequestProcessor<TwitterUserQuery> { BaseUrl = BaseUrl2 };
+			var parameters =
+				new Dictionary<string, string>
+				{
+					{ nameof(TwitterUserQuery.Type), UserType.ListFollowers.ToString() },
+                    //{ nameof(TwitterUserQuery.ListID), null }
+                };
+
+			ArgumentException ex =
+				L2TAssert.Throws<ArgumentException>(() =>
+					twitterUserProc.BuildUrl(parameters));
+
+			Assert.AreEqual(nameof(TwitterUserQuery.ListID), ex.ParamName);
+		}
+
+		[TestMethod]
+		public void BuildUrl_ForListMembers_IncludesParameters()
+		{
+			const string ExpectedUrl =
+				BaseUrl2 + "lists/12345/members?" +
+				"expansions=owner_id&" +
+				"max_results=50&" +
+				"pagination_token=def&" +
+				"tweet.fields=author_id%2Ccreated_at&" +
+				"user.fields=created_at%2Cverified";
+			var twitterUserProc = new TwitterUserRequestProcessor<TwitterUserQuery> { BaseUrl = BaseUrl2 };
+			var parameters =
+				new Dictionary<string, string>
+				{
+					{ nameof(TwitterUserQuery.Type), UserType.ListMembers.ToString() },
+					{ nameof(TwitterUserQuery.Expansions), ExpansionField.OwnerID },
+					{ nameof(TwitterUserQuery.ListID), "12345" },
+					{ nameof(TwitterUserQuery.MaxResults), "50" },
+					{ nameof(TwitterUserQuery.PaginationToken), "def" },
+					{ nameof(TwitterUserQuery.TweetFields), $"{TweetField.AuthorID},{TweetField.CreatedAt}" },
+					{ nameof(TwitterUserQuery.UserFields), $"{UserField.CreatedAt},{UserField.Verified}" },
+			   };
+
+			Request req = twitterUserProc.BuildUrl(parameters);
+
+			Assert.AreEqual(ExpectedUrl, req.FullUrl);
+		}
+
+		[TestMethod]
+		public void BuildUrl_ForListMembersWithSpacesInFields_RemovesSpaces()
+		{
+			const string ExpectedUrl =
+				BaseUrl2 + "lists/12345/members?" +
+				"expansions=owner_id&" +
+				"tweet.fields=author_id%2Ccreated_at&" +
+				"user.fields=created_at%2Cverified";
+			var twitterUserProc = new TwitterUserRequestProcessor<TwitterUserQuery> { BaseUrl = BaseUrl2 };
+			var parameters =
+				new Dictionary<string, string>
+				{
+					{ nameof(TwitterUserQuery.Type), UserType.ListMembers.ToString() },
+					{ nameof(TwitterUserQuery.ListID), "12345" },
+					{ nameof(TwitterUserQuery.Expansions), ExpansionField.OwnerID },
+					{ nameof(TwitterUserQuery.TweetFields), $"{TweetField.AuthorID}, {TweetField.CreatedAt}" },
+					{ nameof(TwitterUserQuery.UserFields), $"{UserField.CreatedAt}, {UserField.Verified}" },
+			   };
+
+			Request req = twitterUserProc.BuildUrl(parameters);
+
+			Assert.AreEqual(ExpectedUrl, req.FullUrl);
+		}
+
+		[TestMethod]
+		public void BuildUrl_ForListMembers_RequiresListID()
+		{
+			var twitterUserProc = new TwitterUserRequestProcessor<TwitterUserQuery> { BaseUrl = BaseUrl2 };
+			var parameters =
+				new Dictionary<string, string>
+				{
+					{ nameof(TwitterUserQuery.Type), UserType.ListMembers.ToString() },
+                    //{ nameof(TwitterUserQuery.ListID), null }
+                };
+
+			ArgumentException ex =
+				L2TAssert.Throws<ArgumentException>(() =>
+					twitterUserProc.BuildUrl(parameters));
+
+			Assert.AreEqual(nameof(TwitterUserQuery.ListID), ex.ParamName);
+		}
+
+		[TestMethod]
         public void ProcessResults_Populates_Users()
         {
             var twitterUserProc = new TwitterUserRequestProcessor<TwitterUserQuery> { BaseUrl = BaseUrl2 };
@@ -476,6 +616,7 @@ namespace LinqToTwitter.Tests.UserTests
 				Ids = "3,7",
 				Usernames = "9,0",
                 Expansions = "123",
+				ListID = "9025",
 				MaxResults = 50,
 				PaginationToken = "567",
                 TweetFields = "678",
@@ -491,12 +632,13 @@ namespace LinqToTwitter.Tests.UserTests
             Assert.AreEqual(UserType.IdLookup, twitterUserQuery.Type);
 			Assert.AreEqual("890", twitterUserQuery.ID);
 			Assert.AreEqual("3,7", twitterUserQuery.Ids);
-			Assert.AreEqual("9,0", twitterUserQuery.Usernames);
             Assert.AreEqual("123", twitterUserQuery.Expansions);
+			Assert.AreEqual("9025", twitterUserQuery.ListID);
 			Assert.AreEqual(50, twitterUserQuery.MaxResults);
 			Assert.AreEqual("567", twitterUserQuery.PaginationToken);
             Assert.AreEqual("678", twitterUserQuery.TweetFields);
             Assert.AreEqual("234", twitterUserQuery.UserFields);
+			Assert.AreEqual("9,0", twitterUserQuery.Usernames);
         }
 
 		[TestMethod]

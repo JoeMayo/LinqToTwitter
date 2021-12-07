@@ -6,8 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LinqToTwitter.Tests.ListTests
 {
@@ -344,7 +342,7 @@ namespace LinqToTwitter.Tests.ListTests
             var parameters =
                 new Dictionary<string, string>
                 {
-                    { nameof(ListQuery.Type), ListType.Follow.ToString() },
+                    { nameof(ListQuery.Type), ListType.Following.ToString() },
                     { nameof(ListQuery.Expansions), ExpansionField.OwnerID },
                     { nameof(ListQuery.ListFields), $"{ListField.Description},{ListField.MemberCount}" },
                     { nameof(ListQuery.MaxResults), "50" },
@@ -370,7 +368,7 @@ namespace LinqToTwitter.Tests.ListTests
             var parameters =
                 new Dictionary<string, string>
                 {
-                    { nameof(ListQuery.Type), ListType.Follow.ToString() },
+                    { nameof(ListQuery.Type), ListType.Following.ToString() },
                     { nameof(ListQuery.UserID), "12345" },
                     { nameof(ListQuery.Expansions), ExpansionField.OwnerID },
                     { nameof(ListQuery.ListFields), $"{ListField.Description}, {ListField.MemberCount}" },
@@ -389,7 +387,7 @@ namespace LinqToTwitter.Tests.ListTests
             var parameters =
                 new Dictionary<string, string>
                 {
-                    { nameof(ListQuery.Type), ListType.Follow.ToString() },
+                    { nameof(ListQuery.Type), ListType.Following.ToString() },
                     //{ nameof(ListType.UserID), null }
                 };
 
@@ -407,18 +405,14 @@ namespace LinqToTwitter.Tests.ListTests
                 BaseUrl2 + "users/12345/pinned_lists?" +
                 "expansions=owner_id&" +
                 "list.fields=description%2Cmember_count&" +
-                "max_results=50&" +
-                "pagination_token=def&" +
                 "user.fields=created_at%2Cverified";
             var reqProc = new ListRequestProcessor<ListQuery> { BaseUrl = BaseUrl2 };
             var parameters =
                 new Dictionary<string, string>
                 {
-                    { nameof(ListQuery.Type), ListType.Pin.ToString() },
+                    { nameof(ListQuery.Type), ListType.Pinned.ToString() },
                     { nameof(ListQuery.Expansions), ExpansionField.OwnerID },
                     { nameof(ListQuery.ListFields), $"{ListField.Description},{ListField.MemberCount}" },
-                    { nameof(ListQuery.MaxResults), "50" },
-                    { nameof(ListQuery.PaginationToken), "def" },
                     { nameof(ListQuery.UserFields), $"{UserField.CreatedAt},{UserField.Verified}" },
                     { nameof(ListQuery.UserID), "12345" },
                };
@@ -440,7 +434,7 @@ namespace LinqToTwitter.Tests.ListTests
             var parameters =
                 new Dictionary<string, string>
                 {
-                    { nameof(ListQuery.Type), ListType.Pin.ToString() },
+                    { nameof(ListQuery.Type), ListType.Pinned.ToString() },
                     { nameof(ListQuery.UserID), "12345" },
                     { nameof(ListQuery.Expansions), ExpansionField.OwnerID },
                     { nameof(ListQuery.ListFields), $"{ListField.Description}, {ListField.MemberCount}" },
@@ -459,7 +453,7 @@ namespace LinqToTwitter.Tests.ListTests
             var parameters =
                 new Dictionary<string, string>
                 {
-                    { nameof(ListQuery.Type), ListType.Pin.ToString() },
+                    { nameof(ListQuery.Type), ListType.Pinned.ToString() },
                     //{ nameof(ListType.UserID), null }
                 };
 
@@ -468,6 +462,38 @@ namespace LinqToTwitter.Tests.ListTests
                     reqProc.BuildUrl(parameters));
 
             Assert.AreEqual(nameof(ListQuery.UserID), ex.ParamName);
+        }
+
+        [TestMethod]
+        public void ProcessResults_PopulatesInputParameters()
+        {
+            var reqProc = new ListRequestProcessor<ListQuery>
+            {
+                BaseUrl = BaseUrl2,
+                Type = ListType.Member,
+                Expansions = "123",
+                ListID = "9025",
+                ListFields = "678",
+                MaxResults = 50,
+                PaginationToken = "567",
+                UserFields = "234",
+                UserID = "3572",
+            };
+
+            var results = reqProc.ProcessResults(SingleListResponse);
+
+            Assert.IsNotNull(results);
+            Assert.AreEqual(1, results.Count);
+            var listQuery = results.Single();
+            Assert.IsNotNull(listQuery);
+            Assert.AreEqual(ListType.Member, listQuery.Type);
+            Assert.AreEqual("123", listQuery.Expansions);
+            Assert.AreEqual("9025", listQuery.ListID);
+            Assert.AreEqual("678", listQuery.ListFields);
+            Assert.AreEqual(50, listQuery.MaxResults);
+            Assert.AreEqual("567", listQuery.PaginationToken);
+            Assert.AreEqual("234", listQuery.UserFields);
+            Assert.AreEqual("3572", listQuery.UserID);
         }
 
         const string SingleListResponse = @"{

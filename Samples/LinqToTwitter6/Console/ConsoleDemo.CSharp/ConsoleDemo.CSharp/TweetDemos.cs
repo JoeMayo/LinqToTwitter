@@ -122,7 +122,7 @@ namespace ConsoleDemo.CSharp
             if (tweetResponse?.Tweets != null)
                 tweetResponse.Tweets.ForEach(tweet =>
                     Console.WriteLine(
-                        $"\nUser: {tweet.ID}" +
+                        $"\nID: {tweet.ID}" +
                         $"\nTweet: {tweet.Text}"));
             else
                 Console.WriteLine("No entries found.");
@@ -160,7 +160,7 @@ namespace ConsoleDemo.CSharp
             if (tweetResponse?.Tweets != null)
                 tweetResponse.Tweets.ForEach(tweet =>
                     Console.WriteLine(
-                        $"\nUser: {tweet.ID}" +
+                        $"\nID: {tweet.ID}" +
                         $"\nTweet: {tweet.Text}"));
             else
                 Console.WriteLine("No entries found.");
@@ -199,7 +199,7 @@ namespace ConsoleDemo.CSharp
             if (tweetResponse?.Tweets != null)
                 tweetResponse.Tweets.ForEach(tweet =>
                     Console.WriteLine(
-                        $"\nUser: {tweet.ID}" +
+                        $"\nID: {tweet.ID}" +
                         $"\nTweet: {tweet.Text}"));
             else
                 Console.WriteLine("No entries found.");
@@ -220,7 +220,7 @@ namespace ConsoleDemo.CSharp
             if (tweetResponse?.Tweets != null)
                 tweetResponse.Tweets.ForEach(tweet =>
                     Console.WriteLine(
-                        $"\nUser: {tweet.ID}" +
+                        $"\nID: {tweet.ID}" +
                         $"\nTweet: {tweet.Text}"));
             else
                 Console.WriteLine("No entries found.");

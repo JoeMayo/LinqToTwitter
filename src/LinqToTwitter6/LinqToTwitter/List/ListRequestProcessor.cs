@@ -102,38 +102,10 @@ namespace LinqToTwitter
                 ListType.Lookup => BuildLookupUrl(parameters),
                 ListType.Owned => BuildOwnedUrl(parameters),
                 ListType.Member => BuildMemberUrl(parameters),
-                ListType.Follow => BuildFollowUrl(parameters),
-                ListType.Pin => BuildPinUrl(parameters),
+                ListType.Following => BuildFollowUrl(parameters),
+                ListType.Pinned => BuildPinnedUrl(parameters),
                 _ => throw new ArgumentException("Invalid ListType", nameof(Type)),
             };
-        }
-
-        // TODO: Move this to common so we can use it everywhere
-        /// <summary>
-        /// Sets parameter, but doen't treat as a query parameter
-        /// </summary>
-        /// <example>
-        /// //
-        /// // Notice how we need UserID as a parameter - we use this pattern a lot.
-        /// //
-        /// 
-        /// SetRequredSegmentParam(parameters, nameof(UserID), val => UserID = val);
-        /// 
-        /// var req = new Request($"{BaseUrl}users/{UserID}/owned_lists");
-        /// 
-        /// </example>
-        /// <param name="parameters">list of parameters</param>
-        /// <param name="paramName">name of parameter containing value to set</param>
-        /// <param name="setter">lambda to set property with value</param>
-        void SetSegment(
-            Dictionary<string, string> parameters, 
-            string paramName, 
-            Action<string> setter)
-        {
-            if (parameters.ContainsKey(paramName))
-                setter(parameters[paramName]);
-            else
-                throw new ArgumentException($"{paramName} is required", paramName);
         }
 
         record ParameterSpec(string ParamName, Action<string> Setter, bool ReplaceWhitespace);
@@ -145,7 +117,7 @@ namespace LinqToTwitter
         /// <returns>Base URL + lists request</returns>
         Request BuildLookupUrl(Dictionary<string, string> parameters)
         {
-            SetSegment(parameters, nameof(ListID), val => ListID = val);
+            RequestProcessorHelper.SetSegment(parameters, nameof(ListID), val => ListID = val);
 
             var req = new Request($"{BaseUrl}lists/{ListID}");
 
@@ -179,7 +151,7 @@ namespace LinqToTwitter
         /// <returns>Base URL + lists request</returns>
         Request BuildOwnedUrl(Dictionary<string, string> parameters)
         {
-            SetSegment(parameters, nameof(UserID), val => UserID = val);
+            RequestProcessorHelper.SetSegment(parameters, nameof(UserID), val => UserID = val);
 
             var req = new Request($"{BaseUrl}users/{UserID}/owned_lists");
 
@@ -227,7 +199,7 @@ namespace LinqToTwitter
         /// <returns>Base URL + lists request</returns>
         Request BuildMemberUrl(Dictionary<string, string> parameters)
         {
-            SetSegment(parameters, nameof(UserID), val => UserID = val);
+            RequestProcessorHelper.SetSegment(parameters, nameof(UserID), val => UserID = val);
 
             var req = new Request($"{BaseUrl}users/{UserID}/list_memberships");
 
@@ -275,7 +247,7 @@ namespace LinqToTwitter
         /// <returns>Base URL + lists request</returns>
         Request BuildFollowUrl(Dictionary<string, string> parameters)
         {
-            SetSegment(parameters, nameof(UserID), val => UserID = val);
+            RequestProcessorHelper.SetSegment(parameters, nameof(UserID), val => UserID = val);
 
             var req = new Request($"{BaseUrl}users/{UserID}/followed_lists");
 
@@ -321,9 +293,9 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="parameters">Parameter List</param>
         /// <returns>Base URL + lists request</returns>
-        Request BuildPinUrl(Dictionary<string, string> parameters)
+        Request BuildPinnedUrl(Dictionary<string, string> parameters)
         {
-            SetSegment(parameters, nameof(UserID), val => UserID = val);
+            RequestProcessorHelper.SetSegment(parameters, nameof(UserID), val => UserID = val);
 
             var req = new Request($"{BaseUrl}users/{UserID}/pinned_lists");
 
@@ -339,20 +311,6 @@ namespace LinqToTwitter
             {
                 ListFields = parameters[nameof(ListFields)];
                 urlParams.Add(new QueryParameter("list.fields", ListFields.Replace(" ", "")));
-            }
-
-            if (parameters.ContainsKey(nameof(MaxResults)))
-            {
-                string maxResultsString = parameters[nameof(MaxResults)];
-                _ = int.TryParse(maxResultsString, out var maxResults);
-                MaxResults = maxResults;
-                urlParams.Add(new QueryParameter("max_results", maxResultsString));
-            }
-
-            if (parameters.ContainsKey(nameof(PaginationToken)))
-            {
-                PaginationToken = parameters[nameof(PaginationToken)];
-                urlParams.Add(new QueryParameter("pagination_token", PaginationToken));
             }
 
             if (parameters.ContainsKey(nameof(UserFields)))
