@@ -29,6 +29,11 @@ namespace LinqToTwitter
         public string? Exclude { get; init; }
 
         /// <summary>
+        /// Comma-separated list of expansion fields
+        /// </summary>
+        public string? Expansions { get; init; }
+
+        /// <summary>
         /// Up to 100 comma-separated IDs to search for
         /// </summary>
         public string? Ids { get; init; }
@@ -39,9 +44,9 @@ namespace LinqToTwitter
         public string? ID { get; init; }
 
         /// <summary>
-        /// Comma-separated list of expansion fields
+        /// ID for list to get tweets from
         /// </summary>
-        public string? Expansions { get; init; }
+        public string? ListID { get; init; }
 
         /// <summary>
         /// Max number of tweets to return per requrest - default 10 - possible 100
@@ -119,5 +124,11 @@ namespace LinqToTwitter
         /// </summary>
         [JsonPropertyName("includes")]
         public TwitterInclude? Includes { get; init; }
+
+        /// <summary>
+        /// Metadata with count and paging details
+        /// </summary>
+        [JsonPropertyName("meta")]
+        public TweetMeta? Meta { get; set; }
     }
 }

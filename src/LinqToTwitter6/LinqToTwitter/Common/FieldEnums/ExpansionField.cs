@@ -59,6 +59,11 @@
         public const string MentionsUsername = "entities.mentions.username";
 
         /// <summary>
+        /// <see cref="List"/> owner ID
+        /// </summary>
+        public const string OwnerID = "owner_id";
+
+        /// <summary>
         /// <see cref="TwitterUser"/> - pinned_tweet_id
         /// </summary>
         public const string PinnedTweetID = "pinned_tweet_id";

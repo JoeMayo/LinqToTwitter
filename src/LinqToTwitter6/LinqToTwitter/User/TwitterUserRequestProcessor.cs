@@ -34,14 +34,14 @@ namespace LinqToTwitter
         public string? Ids { get; set; }
 
         /// <summary>
-        /// Required for username queries - Up to 100 comma-separated usernames to search for
-        /// </summary>
-        public string? Usernames { get; set; }
-
-        /// <summary>
         /// Comma-separated list of expansion fields - <see cref="ExpansionField"/>
         /// </summary>
         public string? Expansions { get; set; }
+
+        /// <summary>
+        /// ID for queries that need users associated with a list
+        /// </summary>
+        public string? ListID { get; set; }
 
         /// <summary>
         /// Max number of tweets to return per requrest - default 100 - possible 1000
@@ -79,6 +79,11 @@ namespace LinqToTwitter
         public string? UserFields { get; set; }
 
         /// <summary>
+        /// Required for username queries - Up to 100 comma-separated usernames to search for
+        /// </summary>
+        public string? Usernames { get; set; }
+
+        /// <summary>
         /// extracts parameters from lambda
         /// </summary>
         /// <param name="lambdaExpression">lambda expression with where clause</param>
@@ -92,15 +97,16 @@ namespace LinqToTwitter
                        nameof(Type),
                        nameof(ID),
                        nameof(Ids),
-                       nameof(Usernames),
                        nameof(Expansions),
+                       nameof(ListID),
                        nameof(MaxResults),
                        nameof(MediaFields),
                        nameof(PaginationToken),
                        nameof(PlaceFields),
                        nameof(PollFields),
                        nameof(TweetFields),
-                       nameof(UserFields)
+                       nameof(UserFields),
+                       nameof(Usernames),
                    });
 
             return paramFinder.Parameters;
@@ -121,10 +127,12 @@ namespace LinqToTwitter
             return Type switch
             {
                 UserType.IdLookup => BuildIdLookupUrl(parameters),
-                UserType.UsernameLookup => BuildUsernameLookupUrl(parameters),
                 UserType.Followers => BuildFollowersUrl(parameters),
                 UserType.Following => BuildFollowingUrl(parameters),
+                UserType.ListFollowers => BuildListFollowersUrl(parameters),
+                UserType.ListMembers => BuildListMembersUrl(parameters),
                 UserType.RetweetedBy => BuildRetweetedByUrl(parameters),
+                UserType.UsernameLookup => BuildUsernameLookupUrl(parameters),
                 _ => throw new InvalidOperationException("The default case of BuildUrl should never execute because a Type must be specified."),
             };
         }
@@ -155,38 +163,13 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// builds a url to search for user info by username(s)
-        /// </summary>
-        /// <param name="parameters">url parameters</param>
-        /// <returns>new url for request</returns>
-        Request BuildUsernameLookupUrl(Dictionary<string, string> parameters)
-        {
-            var req = new Request(BaseUrl + "users/by");
-            var urlParams = req.RequestParameters;
-
-            if (parameters.ContainsKey(nameof(Usernames)))
-            {
-                Usernames = parameters[nameof(Usernames)];
-                urlParams.Add(new QueryParameter("usernames", Usernames.Replace(" ", "")));
-            }
-            else
-            {
-                throw new ArgumentNullException(nameof(Usernames), $"{nameof(Usernames)} is required!");
-            }
-
-            BuildSharedUrlParameters(urlParams, parameters);
-
-            return req;
-        }
-
-        /// <summary>
         /// builds a url for people following user
         /// </summary>
         /// <param name="parameters">url parameters</param>
         /// <returns>new url for request</returns>
         Request BuildFollowersUrl(Dictionary<string, string> parameters)
         {
-            SetUserID(parameters);
+            RequestProcessorHelper.SetSegment(parameters, nameof(ID), val => ID = val);
 
             var req = new Request($"{BaseUrl}users/{ID}/followers");
 
@@ -202,11 +185,107 @@ namespace LinqToTwitter
         /// <returns>new url for request</returns>
         Request BuildFollowingUrl(Dictionary<string, string> parameters)
         {
-            SetUserID(parameters);
+            RequestProcessorHelper.SetSegment(parameters, nameof(ID), val => ID = val);
 
             var req = new Request($"{BaseUrl}users/{ID}/following");
 
             BuildFollowParameters(parameters, req);
+
+            return req;
+        }
+
+        /// <summary>
+        /// ListFollowers URL
+        /// </summary>
+        /// <param name="parameters">Parameters to process</param>
+        /// <returns><see cref="Request"/> object</returns>
+        Request BuildListFollowersUrl(Dictionary<string, string> parameters)
+        {
+            RequestProcessorHelper.SetSegment(parameters, nameof(ListID), val => ListID = val);
+
+            var req = new Request($"{BaseUrl}lists/{ListID}/followers");
+
+            var urlParams = req.RequestParameters;
+
+            if (parameters.ContainsKey(nameof(Expansions)))
+            {
+                Expansions = parameters[nameof(Expansions)];
+                urlParams.Add(new QueryParameter("expansions", Expansions.Replace(" ", "")));
+            }
+
+            if (parameters.ContainsKey(nameof(MaxResults)))
+            {
+                string maxResultsString = parameters[nameof(MaxResults)];
+                _ = int.TryParse(maxResultsString, out var maxResults);
+                MaxResults = maxResults;
+                urlParams.Add(new QueryParameter("max_results", maxResultsString));
+            }
+
+            if (parameters.ContainsKey(nameof(PaginationToken)))
+            {
+                PaginationToken = parameters[nameof(PaginationToken)];
+                urlParams.Add(new QueryParameter("pagination_token", PaginationToken));
+            }
+
+            if (parameters.ContainsKey(nameof(TweetFields)))
+            {
+                TweetFields = parameters[nameof(TweetFields)];
+                urlParams.Add(new QueryParameter("tweet.fields", TweetFields.Replace(" ", "")));
+            }
+
+            if (parameters.ContainsKey(nameof(UserFields)))
+            {
+                UserFields = parameters[nameof(UserFields)];
+                urlParams.Add(new QueryParameter("user.fields", UserFields.Replace(" ", "")));
+            }
+
+            return req;
+        }
+
+        /// <summary>
+        /// ListMembers URL
+        /// </summary>
+        /// <param name="parameters">Parameters to process</param>
+        /// <returns><see cref="Request"/> object</returns>
+        Request BuildListMembersUrl(Dictionary<string, string> parameters)
+        {
+            RequestProcessorHelper.SetSegment(parameters, nameof(ListID), val => ListID = val);
+
+            var req = new Request($"{BaseUrl}lists/{ListID}/members");
+
+            var urlParams = req.RequestParameters;
+
+            if (parameters.ContainsKey(nameof(Expansions)))
+            {
+                Expansions = parameters[nameof(Expansions)];
+                urlParams.Add(new QueryParameter("expansions", Expansions.Replace(" ", "")));
+            }
+
+            if (parameters.ContainsKey(nameof(MaxResults)))
+            {
+                string maxResultsString = parameters[nameof(MaxResults)];
+                _ = int.TryParse(maxResultsString, out var maxResults);
+                MaxResults = maxResults;
+                urlParams.Add(new QueryParameter("max_results", maxResultsString));
+            }
+
+            if (parameters.ContainsKey(nameof(PaginationToken)))
+            {
+                PaginationToken = parameters[nameof(PaginationToken)];
+                urlParams.Add(new QueryParameter("pagination_token", PaginationToken));
+            }
+
+            if (parameters.ContainsKey(nameof(TweetFields)))
+            {
+                TweetFields = parameters[nameof(TweetFields)];
+                urlParams.Add(new QueryParameter("tweet.fields", TweetFields.Replace(" ", "")));
+            }
+
+            if (parameters.ContainsKey(nameof(UserFields)))
+            {
+                UserFields = parameters[nameof(UserFields)];
+                urlParams.Add(new QueryParameter("user.fields", UserFields.Replace(" ", "")));
+            }
 
             return req;
         }
@@ -218,7 +297,7 @@ namespace LinqToTwitter
         /// <returns><see cref="Request"/> object</returns>
         Request BuildRetweetedByUrl(Dictionary<string, string> parameters)
         {
-            SetUserID(parameters);
+            RequestProcessorHelper.SetSegment(parameters, nameof(ID), val => ID = val);
 
             var req = new Request($"{BaseUrl}tweets/{ID}/retweeted_by");
 
@@ -288,15 +367,28 @@ namespace LinqToTwitter
         }
 
         /// <summary>
-        /// Used by follower/following queries - sets parameter, but doesn't treat as a query parameter.
+        /// builds a url to search for user info by username(s)
         /// </summary>
-        /// <param name="parameters">list of parameters</param>
-        void SetUserID(Dictionary<string, string> parameters)
+        /// <param name="parameters">url parameters</param>
+        /// <returns>new url for request</returns>
+        Request BuildUsernameLookupUrl(Dictionary<string, string> parameters)
         {
-            if (parameters.ContainsKey(nameof(ID)))
-                ID = parameters[nameof(ID)];
+            var req = new Request(BaseUrl + "users/by");
+            var urlParams = req.RequestParameters;
+
+            if (parameters.ContainsKey(nameof(Usernames)))
+            {
+                Usernames = parameters[nameof(Usernames)];
+                urlParams.Add(new QueryParameter("usernames", Usernames.Replace(" ", "")));
+            }
             else
-                throw new ArgumentException($"{nameof(ID)} is required", nameof(ID));
+            {
+                throw new ArgumentNullException(nameof(Usernames), $"{nameof(Usernames)} is required!");
+            }
+
+            BuildSharedUrlParameters(urlParams, parameters);
+
+            return req;
         }
 
         /// <summary>
@@ -368,12 +460,13 @@ namespace LinqToTwitter
                     Type = Type,
                     ID = ID,
                     Ids = Ids,
-                    Usernames = Usernames,
                     Expansions = Expansions,
+                    ListID = ListID,
                     MaxResults = MaxResults,
                     PaginationToken = PaginationToken,
                     TweetFields = TweetFields,
-                    UserFields = UserFields
+                    UserFields = UserFields,
+                    Usernames = Usernames
                 };
             else
                 return user with
@@ -381,12 +474,13 @@ namespace LinqToTwitter
                     Type = Type,
                     ID = ID,
                     Ids = Ids,
-                    Usernames = Usernames,
                     Expansions = Expansions,
+                    ListID = ListID,
                     MaxResults = MaxResults,
                     PaginationToken = PaginationToken,
                     TweetFields = TweetFields,
-                    UserFields = UserFields
+                    UserFields = UserFields,
+                    Usernames = Usernames
                 };
         }
     }
