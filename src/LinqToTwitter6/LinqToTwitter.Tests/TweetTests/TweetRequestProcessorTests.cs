@@ -261,7 +261,81 @@ namespace LinqToTwitter.Tests.TweetTests
             Assert.AreEqual(ExpectedUrl, req.FullUrl);
         }
 
-        [TestMethod]
+		[TestMethod]
+		public void BuildUrl_ForList_IncludesParameters()
+		{
+			const string ExpectedUrl =
+				BaseUrl2 + "lists/12345/tweets?" +
+				"expansions=author_id&" +
+				"max_results=50&" +
+				"pagination_token=def&" +
+				"tweet.fields=author_id%2Ccreated_at&" +
+				"user.fields=created_at%2Cverified";
+			var tweetReqProc = new TweetRequestProcessor<TweetQuery> { BaseUrl = BaseUrl2 };
+			var parameters =
+				new Dictionary<string, string>
+				{
+					{ nameof(TweetQuery.Type), TweetType.List.ToString() },
+					{ nameof(TweetQuery.ListID), "12345" },
+					{ nameof(TweetQuery.Expansions), "author_id" },
+					{ nameof(TweetQuery.MaxResults), "50" },
+					{ nameof(TweetQuery.PaginationToken), "def" },
+					{ nameof(TweetQuery.TweetFields), "author_id,created_at" },
+					{ nameof(TweetQuery.UserFields), "created_at,verified" },
+			   };
+
+			Request req = tweetReqProc.BuildUrl(parameters);
+
+			Assert.AreEqual(ExpectedUrl, req.FullUrl);
+		}
+
+		[TestMethod]
+		public void BuildUrl_ForPinnedWithSpacesInFields_RemovesSpaces()
+		{
+			const string ExpectedUrl =
+				BaseUrl2 + "lists/12345/tweets?" +
+				"expansions=author_id&" +
+				"max_results=50&" +
+				"pagination_token=def&" +
+				"tweet.fields=author_id%2Ccreated_at&" +
+				"user.fields=created_at%2Cverified";
+			var tweetReqProc = new TweetRequestProcessor<TweetQuery> { BaseUrl = BaseUrl2 };
+			var parameters =
+				new Dictionary<string, string>
+				{
+					{ nameof(TweetQuery.Type), TweetType.List.ToString() },
+					{ nameof(TweetQuery.ListID), "12345" },
+					{ nameof(TweetQuery.Expansions), "author_id" },
+					{ nameof(TweetQuery.MaxResults), "50" },
+					{ nameof(TweetQuery.PaginationToken), "def" },
+					{ nameof(TweetQuery.TweetFields), "author_id, created_at" },
+					{ nameof(TweetQuery.UserFields), "created_at, verified" },
+			   };
+
+			Request req = tweetReqProc.BuildUrl(parameters);
+
+			Assert.AreEqual(ExpectedUrl, req.FullUrl);
+		}
+
+		[TestMethod]
+		public void BuildUrl_ForPinned_RequiresListID()
+		{
+			var tweetReqProc = new TweetRequestProcessor<TweetQuery> { BaseUrl = BaseUrl2 };
+			var parameters =
+				new Dictionary<string, string>
+				{
+					{ nameof(TweetQuery.Type), TweetType.List.ToString() },
+					//{ nameof(TweetQuery.ListID), "1234" },
+			   };
+
+			ArgumentException ex =
+				L2TAssert.Throws<ArgumentException>(() =>
+					tweetReqProc.BuildUrl(parameters));
+
+			Assert.AreEqual(nameof(TweetQuery.ListID), ex.ParamName);
+		}
+
+		[TestMethod]
         public void BuildUrl_ForLookup_RequiresIds()
         {
             var tweetReqProc = new TweetRequestProcessor<TweetQuery> { BaseUrl = BaseUrl2 };
@@ -485,6 +559,7 @@ namespace LinqToTwitter.Tests.TweetTests
                 Type = TweetType.Lookup,
 				Ids = "3,7",
 				Expansions = "123",
+				ListID = "2048",
                 MediaFields = "456",
                 PlaceFields = "012",
                 PollFields = "345",
@@ -501,6 +576,7 @@ namespace LinqToTwitter.Tests.TweetTests
             Assert.AreEqual(TweetType.Lookup, tweetQuery.Type);
             Assert.AreEqual("123", tweetQuery.Expansions);
 			Assert.AreEqual("3,7", tweetQuery.Ids);
+			Assert.AreEqual("2048", tweetQuery.ListID);
             Assert.AreEqual("456", tweetQuery.MediaFields);
             Assert.AreEqual("012", tweetQuery.PlaceFields);
             Assert.AreEqual("345", tweetQuery.PollFields);
@@ -622,80 +698,6 @@ namespace LinqToTwitter.Tests.TweetTests
             Assert.AreEqual("1", error.Value);
             Assert.AreEqual("https://api.twitter.com/2/problems/resource-not-found", error.Type);
         }
-
-		[TestMethod]
-		public void BuildUrl_ForList_IncludesParameters()
-		{
-			const string ExpectedUrl =
-				BaseUrl2 + "lists/12345/tweets?" +
-				"expansions=author_id&" +
-				"max_results=50&" +
-				"pagination_token=def&" +
-				"tweet.fields=author_id%2Ccreated_at&" +
-				"user.fields=created_at%2Cverified";
-			var tweetReqProc = new TweetRequestProcessor<TweetQuery> { BaseUrl = BaseUrl2 };
-			var parameters =
-				new Dictionary<string, string>
-				{
-					{ nameof(TweetQuery.Type), TweetType.List.ToString() },
-					{ nameof(TweetQuery.ListID), "12345" },
-					{ nameof(TweetQuery.Expansions), "author_id" },
-					{ nameof(TweetQuery.MaxResults), "50" },
-					{ nameof(TweetQuery.PaginationToken), "def" },
-					{ nameof(TweetQuery.TweetFields), "author_id,created_at" },
-					{ nameof(TweetQuery.UserFields), "created_at,verified" },
-			   };
-
-			Request req = tweetReqProc.BuildUrl(parameters);
-
-			Assert.AreEqual(ExpectedUrl, req.FullUrl);
-		}
-
-		[TestMethod]
-		public void BuildUrl_ForPinnedWithSpacesInFields_RemovesSpaces()
-		{
-			const string ExpectedUrl =
-				BaseUrl2 + "lists/12345/tweets?" +
-				"expansions=author_id&" +
-				"max_results=50&" +
-				"pagination_token=def&" +
-				"tweet.fields=author_id%2Ccreated_at&" +
-				"user.fields=created_at%2Cverified";
-			var tweetReqProc = new TweetRequestProcessor<TweetQuery> { BaseUrl = BaseUrl2 };
-			var parameters =
-				new Dictionary<string, string>
-				{
-					{ nameof(TweetQuery.Type), TweetType.List.ToString() },
-					{ nameof(TweetQuery.ListID), "12345" },
-					{ nameof(TweetQuery.Expansions), "author_id" },
-					{ nameof(TweetQuery.MaxResults), "50" },
-					{ nameof(TweetQuery.PaginationToken), "def" },
-					{ nameof(TweetQuery.TweetFields), "author_id, created_at" },
-					{ nameof(TweetQuery.UserFields), "created_at, verified" },
-			   };
-
-			Request req = tweetReqProc.BuildUrl(parameters);
-
-			Assert.AreEqual(ExpectedUrl, req.FullUrl);
-		}
-
-		[TestMethod]
-		public void BuildUrl_ForPinned_RequiresListID()
-		{
-			var tweetReqProc = new TweetRequestProcessor<TweetQuery> { BaseUrl = BaseUrl2 };
-			var parameters =
-				new Dictionary<string, string>
-				{
-					{ nameof(TweetQuery.Type), TweetType.List.ToString() },
-					//{ nameof(TweetQuery.ListID), "1234" },
-			   };
-
-			ArgumentException ex =
-				L2TAssert.Throws<ArgumentException>(() =>
-					tweetReqProc.BuildUrl(parameters));
-
-			Assert.AreEqual(nameof(TweetQuery.ListID), ex.ParamName);
-		}
 
 		const string SingleTweet = @"{
 	""data"": [
