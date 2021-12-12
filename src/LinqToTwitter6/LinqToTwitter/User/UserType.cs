@@ -26,6 +26,16 @@
         IdLookup,
 
         /// <summary>
+        /// Gets users who follow a list
+        /// </summary>
+        ListFollowers,
+
+        /// <summary>
+        /// Get users who are members of a list
+        /// </summary>
+        ListMembers,
+
+        /// <summary>
         /// Get tweets a user retweeted
         /// </summary>
         RetweetedBy,
