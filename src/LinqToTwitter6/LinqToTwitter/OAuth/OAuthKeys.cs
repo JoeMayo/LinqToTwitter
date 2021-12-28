@@ -8,5 +8,7 @@
         public const string TwitterOAuthTokenSecret = "TwitterOAuthTokenSecret";
         public const string TwitterAccessToken = "TwitterAccessToken";
         public const string TwitterAccessTokenSecret = "TwitterAccessTokenSecret";
+        public const string TwitterClientID = "TwitterClientID";
+        public const string TwitterClientSecret = "TwitterClientSecret";
     }
 }

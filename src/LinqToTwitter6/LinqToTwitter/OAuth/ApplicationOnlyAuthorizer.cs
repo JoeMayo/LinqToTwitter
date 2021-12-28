@@ -13,13 +13,13 @@ namespace LinqToTwitter.OAuth
     {
         public string? BasicToken { get; set; }
         public string? BearerToken { get; set; }
-        public string OAuth2Token { get; set; }
-        public string OAuth2InvalidateToken { get; set; }
+        public string OAuth2TokenUrl { get; set; }
+        public string OAuth2InvalidateTokenUrl { get; set; }
 
         public ApplicationOnlyAuthorizer()
         {
-            OAuth2Token = "https://api.twitter.com/oauth2/token";
-            OAuth2InvalidateToken = "https://api.twitter.com/oauth2/invalidate_token";
+            OAuth2TokenUrl = "https://api.twitter.com/oauth2/token";
+            OAuth2InvalidateTokenUrl = "https://api.twitter.com/oauth2/invalidate_token";
         }
 
         public async Task AuthorizeAsync()
@@ -32,7 +32,7 @@ namespace LinqToTwitter.OAuth
         {
             EncodeCredentials();
 
-            var req = new HttpRequestMessage(System.Net.Http.HttpMethod.Post, OAuth2InvalidateToken);
+            var req = new HttpRequestMessage(HttpMethod.Post, OAuth2InvalidateTokenUrl);
             req.Headers.Add("Authorization", "Basic " + BasicToken);
             req.Headers.Add("User-Agent", UserAgent);
             req.Headers.ExpectContinue = false;
@@ -58,7 +58,7 @@ namespace LinqToTwitter.OAuth
   
         async Task GetBearerTokenAsync()
         {
-            var req = new HttpRequestMessage(System.Net.Http.HttpMethod.Post, OAuth2Token);
+            var req = new HttpRequestMessage(HttpMethod.Post, OAuth2TokenUrl);
             req.Headers.Add("Authorization", "Basic " + BasicToken);
             req.Headers.Add("User-Agent", UserAgent);
             req.Headers.ExpectContinue = false;

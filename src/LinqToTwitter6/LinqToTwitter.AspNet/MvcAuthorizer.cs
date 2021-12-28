@@ -7,7 +7,7 @@ namespace LinqToTwitter
 {
     public class MvcAuthorizer : AspNetAuthorizer
     {
-        private string _authUrl;
+        string _authUrl;
 
         public async Task<ActionResult> BeginAuthorizationAsync()
         {
