@@ -1,5 +1,6 @@
 ﻿using LinqToTwitter.OAuth;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace ConsoleDemo.CSharp
@@ -14,6 +15,7 @@ namespace ConsoleDemo.CSharp
             Console.WriteLine("  2 - Application-Only");
             Console.WriteLine("  3 - Single User");
             Console.WriteLine("  4 - XAuth");
+            //Console.WriteLine("  5 - OAuth 2.0");
 
             Console.Write("\nPlease choose (1, 2, 3, or 4): ");
             ConsoleKeyInfo input = Console.ReadKey();
@@ -25,6 +27,7 @@ namespace ConsoleDemo.CSharp
                 '2' => DoApplicationOnlyAuth(),
                 '3' => DoSingleUserAuth(),
                 '4' => DoXAuth(),
+                //'5' => DoOAuth2ConfidentialAuth(),
                 _ => DoPinOAuth(),
             };
 
@@ -75,6 +78,7 @@ namespace ConsoleDemo.CSharp
 
             return auth;
         }
+
         static IAuthorizer DoSingleUserAuth()
         {
             var auth = new SingleUserAuthorizer
@@ -106,5 +110,38 @@ namespace ConsoleDemo.CSharp
 
             return auth;
         }
+
+        // Not yet implemented
+        //static IAuthorizer DoOAuth2ConfidentialAuth()
+        //{
+        //    var auth = new OAuth2Authorizer()
+        //    {
+        //        CredentialStore = new OAuth2CredentialStore
+        //        {
+        //            ClientID = Environment.GetEnvironmentVariable(OAuthKeys.TwitterClientID),
+        //            ClientSecret = Environment.GetEnvironmentVariable(OAuthKeys.TwitterClientSecret),
+        //            Scopes = new List<string> 
+        //            {
+        //                "tweet.read",
+        //                "tweet.write",
+        //                "tweet.moderate.write",
+        //                "users.read",
+        //                "follows.read",
+        //                "follows.write",
+        //                "offline.access",
+        //                "space.read",
+        //                "mute.read",
+        //                "mute.write",
+        //                "like.read",
+        //                "like.write",
+        //                "block.read",
+        //                "block.write"
+        //            },
+        //            RedirectUri = "https://127.0.0.1"
+        //        }
+        //    };
+
+        //    return auth;
+        //}
     }
 }

@@ -25,7 +25,7 @@ static async Task DoDemosAsync()
 
     await auth.AuthorizeAsync();
 
-    // This is how you access credentials after authorization.
+    // For OAuth 1.0A Only: This is how you access credentials after authorization.
     // The oauthToken and oauthTokenSecret do not expire.
     // You can use the userID to associate the credentials with the user.
     // You can save credentials any way you want - database, isolated storage, etc. - it's up to you.

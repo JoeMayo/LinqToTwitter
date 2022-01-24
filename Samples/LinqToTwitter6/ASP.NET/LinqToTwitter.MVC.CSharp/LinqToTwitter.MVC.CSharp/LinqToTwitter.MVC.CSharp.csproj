@@ -5,7 +5,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="LinqToTwitter.AspNet" Version="6.0.1" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="LinqToTwitter">
+      <HintPath>..\..\..\..\..\src\LinqToTwitter6\LinqToTwitter.AspNet\bin\Debug\net5.0\LinqToTwitter.dll</HintPath>
+    </Reference>
+    <Reference Include="LinqToTwitter.AspNet">
+      <HintPath>..\..\..\..\..\src\LinqToTwitter6\LinqToTwitter.AspNet\bin\Debug\net5.0\LinqToTwitter.AspNet.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

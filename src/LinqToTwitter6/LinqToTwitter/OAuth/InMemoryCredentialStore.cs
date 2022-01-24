@@ -20,7 +20,7 @@ namespace LinqToTwitter.OAuth
 
         public virtual ulong UserID { get; set; }
 
-        public bool HasAllCredentials()
+        public virtual bool HasAllCredentials()
         {
             return
                 !string.IsNullOrWhiteSpace(ConsumerKey) &&
