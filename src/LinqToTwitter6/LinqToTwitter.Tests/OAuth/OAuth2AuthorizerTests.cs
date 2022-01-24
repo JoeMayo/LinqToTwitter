@@ -18,17 +18,17 @@ namespace LinqToTwitter.Tests.OAuth
         }
 
         [TestMethod]
-        public void GenerateCodeChallenge_ReturnsValuesGreaterThanOrEqualTo16()
+        public void GenerateCodeChallenge_ReturnsValuesGreaterThanOrEqualTo44()
         {
             string codeChallenge = auth.GenerateCodeChallenge();
-            Assert.IsTrue(codeChallenge.Length >= 16);
+            Assert.IsTrue(codeChallenge.Length >= 44);
         }
 
         [TestMethod]
-        public void GenerateCodeChallenge_ReturnsValuesLessThanOrEqualTo32()
+        public void GenerateCodeChallenge_ReturnsValuesLessThanOrEqualTo127()
         {
             string codeChallenge = auth.GenerateCodeChallenge();
-            Assert.IsTrue(codeChallenge.Length <= 32);
+            Assert.IsTrue(codeChallenge.Length <= 127);
         }
 
         [TestMethod]
@@ -37,13 +37,14 @@ namespace LinqToTwitter.Tests.OAuth
             string codeChallenge = auth.GenerateCodeChallenge();
 
             foreach (var ch in codeChallenge)
-                Assert.IsTrue(char.IsLetter(ch));
+                Assert.IsTrue(OAuth2Authorizer.ValidCharacters.Contains(ch));
         }
 
         [TestMethod]
         public void PrepareAuthorizeUrl_WithAllInputs_BuildsUrl()
         {
-            auth.Callback = "https://www.example.com";
+            const string State = "state";
+
             auth.CredentialStore =
                 new OAuth2CredentialStore
                 {
@@ -52,10 +53,11 @@ namespace LinqToTwitter.Tests.OAuth
                     Scopes = new List<string>
                     {
                         "tweet.read", "users.read", "account.follows.read", "account.follows.write"
-                    }
+                    },
+                    RedirectUri = "https://www.example.com"
                 };
 
-            string authUrl = (auth as OAuth2Authorizer).PrepareAuthorizeUrl();
+            string authUrl = auth.PrepareAuthorizeUrl(State);
 
             string[] parts = authUrl.Split('?');
 
@@ -67,57 +69,26 @@ namespace LinqToTwitter.Tests.OAuth
                     .ToDictionary(key => key[0], val => val[1]);
 
             Assert.IsNotNull(queryParms);
-            Assert.AreEqual(queryParms["response_type"], "code");
-            Assert.AreEqual(queryParms["client_id"], "MyClientID");
-            Assert.AreEqual(queryParms["redirect_uri"], "https://www.example.com");
-            Assert.AreEqual(queryParms["scope"], "tweet.read%20users.read%20account.follows.read%20account.follows.write");
-            Assert.AreEqual(queryParms["state"], "state");
-            Assert.AreEqual(queryParms["code_challenge_method"], "plain");
+            Assert.AreEqual("code", queryParms["response_type"]);
+            Assert.AreEqual("MyClientID", queryParms["client_id"]);
+            Assert.AreEqual("https://www.example.com", queryParms["redirect_uri"]);
+            Assert.AreEqual("tweet.read users.read account.follows.read account.follows.write", queryParms["scope"]);
+            Assert.AreEqual(State, queryParms["state"]);
+            Assert.AreEqual("S256", queryParms["code_challenge_method"]);
             Assert.IsTrue(queryParms["code_challenge"].Length > 16);
         }
 
-        //[TestMethod]
-        //public void PrepareTokenUrl_WithAllInputs_BuildsUrl()
-        //{
-        //    const string CodeFromTwitterAuthorize = "MyCode";
-
-        //    auth.Callback = "https://www.example.com";
-        //    auth.CredentialStore =
-        //        new OAuth2CredentialStore
-        //        {
-        //            ClientID = "MyClientID",
-        //            ClientSecret = "MyClientSecret",
-        //            Scopes = new List<string>
-        //            {
-        //                "tweet.read", "users.read", "account.follows.read", "account.follows.write"
-        //            }
-        //        };
-
-        //    string tokenUrl = (auth as OAuth2Authorizer).PrepareTokenUrl(CodeFromTwitterAuthorize);
-
-        //    string[] parts = tokenUrl.Split('?');
-
-        //    Dictionary<string, string> queryParms = null;
-        //    if (parts.Length == 2)
-        //        queryParms =
-        //            (from parm in parts[1].Split('&')
-        //             select parm.Split('='))
-        //            .ToDictionary(key => key[0], val => val[1]);
-
-        //    Assert.IsNotNull(queryParms);
-        //    Assert.AreEqual(queryParms["code"], CodeFromTwitterAuthorize);
-        //    Assert.AreEqual(queryParms["grant_type"], "authorization_code");
-        //    Assert.AreEqual(queryParms["client_id"], "MyClientID");
-        //    Assert.AreEqual(queryParms["redirect_uri"], "https://www.example.com");
-        //    Assert.AreEqual(queryParms["code_verifier"], "challenge");
-        //}
-
         [TestMethod]
-        public void PrepareTokenParams_WithAllInputs_ReturnsDictionary()
+        public void PrepareTokenParams_WithAllInputs_ReturnsParamString()
         {
             const string CodeFromTwitterAuthorize = "MyCode";
+            const string ExpectedParams = 
+                "code=MyCode&" +
+                "grant_type=authorization_code&" +
+                "client_id=My Client ID&" +
+                "redirect_uri=https://www.example.com&" +
+                "code_verifier=challenge";
 
-            auth.Callback = "https://www.example.com";
             auth.CredentialStore =
                 new OAuth2CredentialStore
                 {
@@ -126,17 +97,15 @@ namespace LinqToTwitter.Tests.OAuth
                     Scopes = new List<string>
                     {
                         "tweet.read", "users.read", "account.follows.read", "account.follows.write"
-                    }
+                    },
+                    RedirectUri = "https://www.example.com",
+                    CodeChallenge = "challenge"
                 };
 
-            Dictionary<string, string> queryParms = (auth as OAuth2Authorizer).PrepareTokenParams(CodeFromTwitterAuthorize);
+            string queryParms = auth.PrepareAccessTokenParams(CodeFromTwitterAuthorize);
 
             Assert.IsNotNull(queryParms);
-            Assert.AreEqual(queryParms["code"], CodeFromTwitterAuthorize);
-            Assert.AreEqual(queryParms["grant_type"], "authorization_code");
-            Assert.AreEqual(queryParms["client_id"], "My%20Client%20ID");
-            Assert.AreEqual(queryParms["redirect_uri"], "https%3A%2F%2Fwww.example.com");
-            Assert.AreEqual(queryParms["code_verifier"], "challenge");
+            Assert.AreEqual(ExpectedParams, queryParms);
         }
     }
 }

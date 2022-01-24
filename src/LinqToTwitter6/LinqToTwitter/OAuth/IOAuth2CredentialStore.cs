@@ -30,5 +30,20 @@ namespace LinqToTwitter.OAuth
         /// </summary>
         string? RefreshToken { get; set; }
 
+        /// <summary>
+        /// Url that Twitter redirects to after user authorizes your app
+        /// </summary>
+        string? RedirectUri { get; set; }
+
+        /// <summary>
+        /// Send when authorizing and getting access token to verify original source
+        /// </summary>
+        string? CodeChallenge { get; set; }
+
+        /// <summary>
+        /// Value to verify against what was sent to Twitter and what was received.
+        /// Helps prevent CSRF attack.
+        /// </summary>
+        string? State { get; set; }
     }
 }

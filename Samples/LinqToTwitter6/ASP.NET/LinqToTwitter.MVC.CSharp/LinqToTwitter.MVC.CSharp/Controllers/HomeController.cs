@@ -16,8 +16,8 @@ namespace LinqToTwitter.MVC.CSharp.Controllers
 
         public IActionResult Index()
         {
-            if (!new SessionStateCredentialStore(HttpContext.Session).HasAllCredentials())
-                return RedirectToAction("Index", "OAuth");
+            if (!new OAuth2SessionCredentialStore(HttpContext.Session).HasAllCredentials())
+                return RedirectToAction("Index", "OAuth2");
 
             return View();
         }

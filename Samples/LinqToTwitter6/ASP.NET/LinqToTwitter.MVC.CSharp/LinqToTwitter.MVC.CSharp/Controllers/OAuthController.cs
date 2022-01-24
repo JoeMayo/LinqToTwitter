@@ -8,11 +8,11 @@ namespace LinqToTwitter.MVC.CSharp.Controllers
 {
     public class OAuthController : Controller
     {
-        private readonly ILogger<OAuthController> _logger;
+        private readonly ILogger<OAuthController> logger;
 
         public OAuthController(ILogger<OAuthController> logger)
         {
-            _logger = logger;
+            this.logger = logger;
         }
 
         public ActionResult Index()
@@ -36,7 +36,7 @@ namespace LinqToTwitter.MVC.CSharp.Controllers
             //var parameters = new Dictionary<string, string> { { "my_custom_param", "val" } };
             //string twitterCallbackUrl = Request.GetDisplayUrl().Replace("Begin", "Complete");
             //return await auth.BeginAuthorizationAsync(new Uri(twitterCallbackUrl), parameters);
-
+            await auth.CredentialStore.ClearAsync();
             string twitterCallbackUrl = Request.GetDisplayUrl().Replace("Begin", "Complete");
             return await auth.BeginAuthorizationAsync(new Uri(twitterCallbackUrl));
         }

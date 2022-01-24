@@ -94,14 +94,14 @@ namespace LinqToTwitter
 
         public override Task ClearAsync()
         {
-            ConsumerKey = null;
-            ConsumerSecret = null;
-            OAuthToken = null;
-            OAuthTokenSecret = null;
-            ScreenName = null;
-            UserID = 0ul;
+            session.Remove("OAuthConsumerKey");
+            session.Remove("OAuthConsumerSecret");
+            session.Remove("OAuthToken");
+            session.Remove("OAuthTokenSecret");
+            session.Remove("ScreenNameToken");
+            session.Remove("UserIdToken");
 
-            return base.ClearAsync();
+            return Task.CompletedTask;
         }
     }
 }

@@ -4,7 +4,7 @@
 		<TargetFramework>net5.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<Description>LINQ to Twitter is a 3rd party LINQ Provider that lets you tweet and query with the Twitter API.</Description>
-		<Version>6.9.0</Version>
+		<Version>6.11.0</Version>
 		<Authors>Joe Mayo</Authors>
 		<Company>Joe Mayo</Company>
 		<PackageId>linqtotwitter</PackageId>
@@ -17,15 +17,11 @@
 		<RepositoryUrl>https://github.com/JoeMayo/LinqToTwitter</RepositoryUrl>
 		<PackageTags>twitter twitterapi twitterdev tweet linq social linqtotwitter linq2twitter</PackageTags>
 		<PackageReleaseNotes>
-- Added Twitter API v2 Spaces API support
-- Added Twitter API v2 Retweets API support
-- Added Twitter API v2 Mutes API support
-- Added Twitter API v2 Compliance API support
-- Added TweetMedia.AltText property
-- Fixed bug where streams weren't being properly closed on cancellation
+- Added OAuth 2.0 support
 		</PackageReleaseNotes>
 		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
 		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+		<PackageReadmeFile>ReadMe.md</PackageReadmeFile>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -36,6 +32,10 @@
 	  <None Include="..\..\..\BuildScripts\200xColor_2.png">
 	    <Pack>True</Pack>
 	    <PackagePath></PackagePath>
+	  </None>
+	  <None Include="..\..\..\ReadMe.md">
+	    <Pack>True</Pack>
+	    <PackagePath>\</PackagePath>
 	  </None>
 	  <None Include="..\.editorconfig" Link=".editorconfig" />
 	</ItemGroup>

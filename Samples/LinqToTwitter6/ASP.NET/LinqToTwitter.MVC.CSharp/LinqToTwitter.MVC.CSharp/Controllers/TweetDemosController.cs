@@ -1,4 +1,5 @@
 ﻿using LinqToTwitter;
+using LinqToTwitter.Common;
 using LinqToTwitter.MVC.CSharp.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -10,11 +11,11 @@ using System.Threading.Tasks;
 
 namespace MvcDemo.Controllers
 {
-    public class StatusDemosController : Controller
+    public class TweetDemosController : Controller
     {
         readonly IWebHostEnvironment webHostEnvironment;
 
-        public StatusDemosController(IWebHostEnvironment webHostEnvironment)
+        public TweetDemosController(IWebHostEnvironment webHostEnvironment)
         {
             this.webHostEnvironment = webHostEnvironment;
         }
@@ -38,14 +39,14 @@ namespace MvcDemo.Controllers
         [ActionName("Tweet")]
         public async Task<ActionResult> TweetAsync(SendTweetViewModel tweet)
         {
-            var auth = new MvcAuthorizer
+            var auth = new MvcOAuth2Authorizer
             {
-                CredentialStore = new SessionStateCredentialStore(HttpContext.Session)
+                CredentialStore = new OAuth2SessionCredentialStore(HttpContext.Session)
             };
 
             var ctx = new TwitterContext(auth);
 
-            Status responseTweet = await ctx.TweetAsync(tweet.Text);
+            Tweet responseTweet = await ctx.TweetAsync(tweet.Text);
 
             var responseTweetVM = new SendTweetViewModel
             {
@@ -56,27 +57,44 @@ namespace MvcDemo.Controllers
             return View(responseTweetVM);
         }
 
-        [ActionName("HomeTimeline")]
-        public async Task<ActionResult> HomeTimelineAsync()
+        [ActionName("TweetTimeline")]
+        public async Task<ActionResult> TweetTimelineAsync()
         {
-            var auth = new MvcAuthorizer
+            var auth = new MvcOAuth2Authorizer
             {
-                CredentialStore = new SessionStateCredentialStore(HttpContext.Session)
+                CredentialStore = new OAuth2SessionCredentialStore(HttpContext.Session)
             };
 
             var ctx = new TwitterContext(auth);
 
-            var tweets =
+            var userQuery =
                 await
-                (from tweet in ctx.Status
-                 where tweet.Type == StatusType.Home
+                (from usr in ctx.TwitterUser
+                 where usr.Type == UserType.UsernameLookup &&
+                       usr.Usernames == "Linq2Twitr" &&
+                       usr.UserFields == UserField.ProfileImageUrl
+                 select usr)
+                .SingleOrDefaultAsync();
+
+            TwitterUser user = userQuery.Users.FirstOrDefault();
+
+            var tweetQuery =
+                await
+                (from tweet in ctx.Tweets
+                 where tweet.Type == TweetType.TweetsTimeline &&
+                       tweet.ID == user.ID.ToString()
+                 select tweet)
+                .SingleOrDefaultAsync();
+            
+            var tweets =
+                (from tweet in tweetQuery.Tweets
                  select new TweetViewModel
                  {
-                     ImageUrl = tweet.User.ProfileImageUrl,
-                     ScreenName = tweet.User.ScreenNameResponse,
-                     Text = tweet.Text
+                    ImageUrl = user.ProfileImageUrl,
+                    ScreenName = user.Name,
+                    Text = tweet.Text
                  })
-                .ToListAsync();
+                .ToList();
 
             return View(tweets);
         }
@@ -84,12 +102,12 @@ namespace MvcDemo.Controllers
         [ActionName("UploadImage")]
         public async Task<ActionResult> UploadImageAsync()
         {
-            var auth = new MvcAuthorizer
+            var auth = new MvcOAuth2Authorizer
             {
-                CredentialStore = new SessionStateCredentialStore(HttpContext.Session)
+                CredentialStore = new OAuth2SessionCredentialStore(HttpContext.Session)
             };
 
-            var twitterCtx = new TwitterContext(auth);
+            var ctx = new TwitterContext(auth);
 
             string status = $"Testing multi-image tweet #Linq2Twitter £ {DateTime.Now}";
             string mediaCategory = "tweet_image";
@@ -102,23 +120,23 @@ namespace MvcDemo.Controllers
             var imageUploadTasks =
                 new List<Task<Media>>
                 {
-                    twitterCtx.UploadMediaAsync(System.IO.File.ReadAllBytes(path), "image/jpg", mediaCategory),
+                    ctx.UploadMediaAsync(System.IO.File.ReadAllBytes(path), "image/jpg", mediaCategory),
                 };
 
             await Task.WhenAll(imageUploadTasks);
 
-            List<ulong> mediaIds =
+            List<string> mediaIds =
                 (from tsk in imageUploadTasks
-                 select tsk.Result.MediaID)
+                 select tsk.Result.MediaID.ToString())
                 .ToList();
 
-            Status tweet = await twitterCtx.TweetAsync(status, mediaIds);
+            Tweet tweet = await ctx.TweetMediaAsync(status, mediaIds);
 
             return View(
-                new TweetViewModel
+                new MediaViewModel
                 {
-                    ImageUrl = tweet.User.ProfileImageUrl,
-                    ScreenName = tweet.User.ScreenNameResponse,
+                    MediaUrl = tweet.Entities.Urls.FirstOrDefault()?.Url,
+                    Description = tweet.Entities.Urls.FirstOrDefault()?.Description,
                     Text = tweet.Text
                 });
         }

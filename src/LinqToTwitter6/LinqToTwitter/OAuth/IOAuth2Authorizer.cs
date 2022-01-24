@@ -4,9 +4,9 @@ namespace LinqToTwitter.OAuth
 {
     public interface IOAuth2Authorizer : IAuthorizer
     {
-        Task BeginAuthorizeAsync();
-        Task CompleteAuthorizeAsync(string code);
-        Task LogoutAsync();
-        Task RefreshAsync();
+        Task BeginAuthorizeAsync(string? state);
+        Task CompleteAuthorizeAsync(string code, string? state);
+        Task<string> RevokeTokenAsync();
+        Task<string> RefreshTokenAsync();
     }
 }

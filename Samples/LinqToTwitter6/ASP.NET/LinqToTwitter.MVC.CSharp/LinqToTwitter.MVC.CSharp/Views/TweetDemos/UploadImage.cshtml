@@ -1,4 +1,4 @@
-﻿@model LinqToTwitter.MVC.CSharp.Models.TweetViewModel
+﻿@model LinqToTwitter.MVC.CSharp.Models.MediaViewModel
 
 @{
     ViewBag.Title = "Upload Image";
@@ -9,21 +9,26 @@
 <div>
     <h4>Image Details</h4>
     <hr />
+    <p>
+        Note: This part of the demo only works with OAuth 1.0a. 
+        To use OAuth 1.0a, visit the HomeController.Index and 
+        switch the redirection to "OAuth" instead of "OAuth2".
+    </p>
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.ImageUrl)
+            @Html.DisplayNameFor(model => model.MediaUrl)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.ImageUrl)
+            @Html.DisplayFor(model => model.MediaUrl)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.ScreenName)
+            @Html.DisplayNameFor(model => model.Description)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.ScreenName)
+            @Html.DisplayFor(model => model.Description)
         </dd>
 
         <dt>

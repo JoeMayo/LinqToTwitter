@@ -126,31 +126,63 @@ namespace LinqToTwitter.Net
                 {
                     List<Error>? errors = null;
                     if (root.TryGetProperty("errors", out JsonElement errorElement))
+                    {
                         errors =
                             (from error in errorElement.EnumerateArray()
                              select new Error
                              {
                                  Message = error.GetString("message"),
                                  Parameters =
-                                 (from parm in error.GetProperty("parameters").EnumerateObject()
-                                  let vals =
-                                    (from val in parm.Value.EnumerateArray()
-                                     select val.GetString())
-                                    .ToArray()
-                                  select new { parm.Name, vals })
-                                 .ToDictionary(
-                                     key => key.Name,
-                                     val => val.vals)
+                                     (from parm in error.GetProperty("parameters").EnumerateObject()
+                                      let vals =
+                                        (from val in parm.Value.EnumerateArray()
+                                         select val.GetString())
+                                        .ToArray()
+                                      select new { parm.Name, vals })
+                                     .ToDictionary(
+                                         key => key.Name,
+                                         val => val.vals)
                              })
                             .ToList();
 
-                    return new TwitterErrorDetails
+                        return new TwitterErrorDetails
+                        {
+                            Title = root.GetString("title"),
+                            Detail = root.GetString("detail"),
+                            Type = root.GetString("type"),
+                            Errors = errors
+                        };
+                    }
+                    else if(root.TryGetProperty("error", out JsonElement errorMessage))
                     {
-                        Title = root.GetString("title"),
-                        Detail = root.GetString("detail"),
-                        Type = root.GetString("type"),
-                        Errors = errors
-                    };
+                        root.TryGetProperty("error_description", out JsonElement errorDescription);
+
+                        return new TwitterErrorDetails
+                        {
+                            Title = errorMessage.GetString(),
+                            Detail = errorDescription.GetString(),
+                            Type = "OAuth2",
+                            Errors = new()
+                            {
+                                new Error
+                                {
+                                    Code = 0,
+                                    Message = errorDescription.GetString(),
+                                    Request = errorMessage.GetString()
+                                }
+                            }
+                        };
+                    }
+                    else
+                    {
+                        return new TwitterErrorDetails
+                        {
+                            Title = "Unknown Error",
+                            Detail = root.GetString(),
+                            Type = "Unknown",
+                            Errors = errors
+                        };
+                    }
                 }
                 else // version 1
                 {
@@ -201,10 +233,13 @@ namespace LinqToTwitter.Net
 
         static int GetTwitterApiVersion(JsonElement root)
         {
+            bool hasError = root.TryGetProperty("error", out _);
+            bool hasErrorDescription = root.TryGetProperty("error_description", out _);
             bool hasTitle = root.TryGetProperty("title", out _);
             bool hasType = root.TryGetProperty("type", out _);
 
-            return hasTitle && hasType ? TwitterApiV2 : TwitterApiV1;
+            return 
+                (hasTitle && hasType) || (hasError && hasErrorDescription) ? TwitterApiV2 : TwitterApiV1;
         }
     }
 }

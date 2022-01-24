@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Net;
 
 namespace LinqToTwitter.OAuth
@@ -10,11 +9,6 @@ namespace LinqToTwitter.OAuth
         /// User-Agent header string sent to Twitter to represent your application. Defaults to LINQ to Twitter.
         /// </summary>
         public string? UserAgent { get; set; }
-
-        /// <summary>
-        /// Url that Twitter redirects to after user authorizes your app
-        /// </summary>
-        public string? Callback { get; set; }
 
         /// <summary>
         /// Allows user to specify a proxy for HTTP requests

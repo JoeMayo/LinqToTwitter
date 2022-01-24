@@ -64,16 +64,17 @@ namespace ConsoleDemo.CSharp
 
         static async Task DoSearchAsync(TwitterContext twitterCtx)
         {
-            string searchTerm = "\"LINQ to Twitter\" OR Linq2Twitter OR LinqToTwitter OR JoeMayo";
+            string searchTerm = "linq to";
+            //string searchTerm = "\"LINQ to Twitter\" OR Linq2Twitter OR LinqToTwitter OR JoeMayo";
             //searchTerm = "кот (";
 
             Search? searchResponse =
                 await
                 (from search in twitterCtx.Search
                  where search.Type == SearchType.Search &&
-                       search.Query == searchTerm &&
-                       search.IncludeEntities == true &&
-                       search.TweetMode == TweetMode.Extended
+                       search.Query == searchTerm //&&
+                       //search.IncludeEntities == true &&
+                       //search.TweetMode == TweetMode.Extended
                  select search)
                 .SingleOrDefaultAsync();
 
