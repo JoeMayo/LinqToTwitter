@@ -38,6 +38,11 @@ static async Task DoDemosAsync()
     //string screenName = credentials.ScreenName;
     //ulong userID = credentials.UserID;
     //
+    // For OAuth 2.0, you can get credentials like this:
+    //var credentials = auth.CredentialStore as IOAuth2CredentialStore;
+    //string accessToken = credentials.AccessToken;
+    //string refreshToken = credentials.RefreshToken
+    //
 
     var twitterCtx = new TwitterContext(auth);
     char key;

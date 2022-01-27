@@ -24,7 +24,7 @@ namespace LinqToTwitter.OAuth
         public string RefreshTokenUrl { get; set; }
         public string RevokeTokenUrl { get; set; }
 
-        public string? BasicToken { get; set; }
+        public string? HtmlResponseString { get; set; }
 
         /// <summary>
         /// This is a hook where you can assign
@@ -253,11 +253,51 @@ namespace LinqToTwitter.OAuth
                 $"token_type_hint=access_token";
         }
 
+        public (string code, string state) ParseRedirectResponse(string response)
+        {
+            const string stateParam = "state=";
+            const string codeParam = "code=";
+
+            int stateStart = response.IndexOf(stateParam) + stateParam.Length;
+            int stateEnd = response.IndexOf(codeParam, stateStart) - 1;
+            int codeStart = response.IndexOf(codeParam, stateEnd) + codeParam.Length;
+            int codeEnd = response.IndexOf(" ", codeStart);
+
+            string state = response.Substring(stateStart, stateEnd-stateStart);
+            string code = response.Substring(codeStart, codeEnd-codeStart);
+
+            return (code, state);
+        }
+
         /// <summary>
         /// Performs Basic Authorization (not implemented yet)
         /// </summary>
         public async Task AuthorizeAsync()
         {
+            if (CredentialStore is not IOAuth2CredentialStore credStore)
+                throw new NullReferenceException(CredentialStoreMessage);
+
+            credStore.State = GenerateCodeChallenge();
+
+            if (string.IsNullOrWhiteSpace(credStore.ClientID))
+                throw new ArgumentException($"You must populate CredentialStore with a {nameof(credStore.ClientID)} before calling AuthorizeAsync.", nameof(credStore.ClientID));
+            if (string.IsNullOrWhiteSpace(credStore.RedirectUri))
+                throw new ArgumentException($"You must populate CredentialStore with a {nameof(credStore.RedirectUri)} before calling AuthorizeAsync.", nameof(credStore.RedirectUri));
+            if (!credStore.Scopes?.Any() ?? false)
+                throw new ArgumentException($"You must populate CredentialStore with {nameof(credStore.Scopes)} (permissions) before calling AuthorizeAsync.", nameof(credStore.Scopes));
+
+            string authUrl = PrepareAuthorizeUrl(credStore.State);
+
+            if (GoToTwitterAuthorization != null)
+                GoToTwitterAuthorization(authUrl);
+
+            Uri uri = new Uri(credStore.RedirectUri);
+            string response = new OAuthListener(HtmlResponseString).Listen(uri.Host, uri.Port);
+
+            (string code, string state) = ParseRedirectResponse(response);
+
+            await CompleteAuthorizeAsync(code, state);
+
             await Task.CompletedTask;
         }
 
@@ -301,8 +341,11 @@ namespace LinqToTwitter.OAuth
         {
             if (CredentialStore is not IOAuth2CredentialStore credStore)
                 throw new NullReferenceException(CredentialStoreMessage);
+            
+            string expectedState = credStore.State ?? string.Empty;
+            string returnedState = Uri.UnescapeDataString(state ?? string.Empty);
 
-            if (state != credStore.State)
+            if (expectedState != returnedState)
                 throw new TwitterQueryException("Possible CSRF attack - State doesn't match. Check that the state sent in the begin request matches the state in the received request.");
 
             string tokenResponse = await GetAccessTokenAsync(code);
