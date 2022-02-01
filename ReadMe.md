@@ -2,8 +2,6 @@
 
 LINQ to Twitter is an open source 3rd party LINQ Provider (Twitter Library) for the [Twitter](https://twitter.com/) micro-blogging service.  It uses standard LINQ syntax for queries and includes method calls for changes via the [Twitter API](https://dev.twitter.com/).
 
-> Please take the LINQ to Twitter Survey at [https://bit.ly/2Luzbpt](https://bit.ly/2Luzbpt).
-
 [![Standard](https://img.shields.io/endpoint?url=https%3A%2F%2Ftwbadges.glitch.me%2Fbadges%2Fstandard)](https://developer.twitter.com/en/docs/twitter-api)
 [![Labs](https://img.shields.io/endpoint?url=https%3A%2F%2Ftwbadges.glitch.me%2Fbadges%2Flabs)](https://developer.twitter.com/en/docs/labs)
 [![v2](https://img.shields.io/endpoint?url=https%3A%2F%2Ftwbadges.glitch.me%2Fbadges%2Fv2)](https://developer.twitter.com/en/docs/twitter-api)
@@ -12,22 +10,22 @@ LINQ to Twitter is an open source 3rd party LINQ Provider (Twitter Library) for 
 
 The following query returns search results where people are tweeting about LINQ to Twitter:
 ```C#
-            var twitterCtx = new TwitterContext(...);
+var twitterCtx = new TwitterContext(...);
 
-            var searchResponse =
-                await
-                (from search in twitterCtx.Search
-                 where search.Type == SearchType.Search &&
-                       search.Query == "\"LINQ to Twitter\""
-                 select search)
-                .SingleOrDefaultAsync();
+var searchResponse =
+    await
+    (from search in twitterCtx.Search
+     where search.Type == SearchType.Search &&
+           search.Query == "\"LINQ to Twitter\""
+     select search)
+    .SingleOrDefaultAsync();
 
-            if (searchResponse != null && searchResponse.Statuses != null)
-                searchResponse.Statuses.ForEach(tweet =>
-                    Console.WriteLine(
-                        "User: {0}, Tweet: {1}", 
-                        tweet.User.ScreenNameResponse,
-                        tweet.Text));
+if (searchResponse != null && searchResponse.Statuses != null)
+    searchResponse.Statuses.ForEach(tweet =>
+        Console.WriteLine(
+            "User: {0}, Tweet: {1}", 
+            tweet.User.ScreenNameResponse,
+            tweet.Text));
 ```
 From a coding experience perspective, the `TwitterContext` type is analogous to the Entity Framework `DBContext`.  You use the `TwitterContext` instance, `twitterCtx`, to access `IQueryable<T>` tweet categories.  In the example above, the `Search` will give you the ability to search Twitter for tweets meeting some criteria.
 
@@ -46,11 +44,9 @@ In addition to being able to download from this site, you can also automatically
 
 ## Available Feature Set
 
-See [Making API Calls](https://github.com/JoeMayo/LinqToTwitter/wiki/Making-API-Calls).
+See [LINQ to Twitter v6 APIs]https://www.linqtotwitter.com/LINQ-to-Twitter-v6.html).
 
 ## For more info:
 
 * follow [@JoeMayo](https://twitter.com/JoeMayo) for releases and related blog posts.
 * follow [@Linq2Twitr](https://twitter.com/Linq2Twitr) for more detailed project information.
-
-> Please take the LINQ to Twitter Survey at [https://bit.ly/2Luzbpt](https://bit.ly/2Luzbpt).

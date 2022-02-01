@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <Version>6.11.0</Version>
+    <Version>6.12.0</Version>
     <Authors>Joe Mayo</Authors>
     <Company>Joe Mayo</Company>
     <Product>LINQ to Twitter for ASP.NET</Product>
@@ -19,8 +19,8 @@ This library has ASP.NET authorizers and SessionStateCredentialCache that you'll
     <PackageReleaseNotes>
 Note: In previous versions of LINQ to Twitter, this was included in the `linqtotwitter` package. In version 6, ASP.NET Core 5 support is a separate package with a dependency on `linqtotwitter` v6.0+.
 
-- Added OAuth 2.0 Support, including a new MvcOAuth2Authorizer and OAuth2SessionStateCredentialStore.
-- Fixed a bug with SessionStateCredentialStore.ClearAsync that prevented it from working.
+- Added default desktop support for AuthorizeAsync in OAuth2Authorizer.
+- Fixed bug in OAuth2Authorizer so that confidential clients now work properly.
 	</PackageReleaseNotes>
     <PackageReadmeFile>ReadMe.md</PackageReadmeFile>
   </PropertyGroup>
