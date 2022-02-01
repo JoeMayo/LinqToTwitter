@@ -55,7 +55,7 @@ namespace LinqToTwitter.OAuth
                 throw new NullReferenceException(CredentialStoreMessage);
 
             bool isAuthorizationRequest(string url) => url.StartsWith(AuthorizeUrl);
-            bool isPublicClient() => !string.IsNullOrWhiteSpace(credStore.ClientSecret);
+            bool isPublicClient() => string.IsNullOrWhiteSpace(credStore.ClientSecret);
 
             if (isAuthorizationRequest(url) || isPublicClient())
                 return;
