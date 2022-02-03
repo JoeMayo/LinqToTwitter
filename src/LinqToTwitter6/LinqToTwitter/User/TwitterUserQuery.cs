@@ -68,6 +68,11 @@ namespace LinqToTwitter
         public string? PollFields { get; set; }
 
         /// <summary>
+        /// ID of space to query for users
+        /// </summary>
+        public string? SpaceID { get; set; }
+
+        /// <summary>
         /// Comma-separated list of fields to return in the Tweet object
         /// </summary>
         public string? TweetFields { get; init; }

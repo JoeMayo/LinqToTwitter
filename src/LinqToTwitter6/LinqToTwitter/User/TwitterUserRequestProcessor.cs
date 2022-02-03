@@ -69,6 +69,11 @@ namespace LinqToTwitter
         public string? PollFields { get; set; }
 
         /// <summary>
+        /// ID of space to query for users
+        /// </summary>
+        public string? SpaceID { get; set; }
+
+        /// <summary>
         /// Comma-separated list of fields to return in the Tweet object - <see cref="TweetField"/>
         /// </summary>
         public string? TweetFields { get; set; }
@@ -104,6 +109,7 @@ namespace LinqToTwitter
                        nameof(PaginationToken),
                        nameof(PlaceFields),
                        nameof(PollFields),
+                       nameof(SpaceID),
                        nameof(TweetFields),
                        nameof(UserFields),
                        nameof(Usernames),
@@ -132,6 +138,7 @@ namespace LinqToTwitter
                 UserType.ListFollowers => BuildListFollowersUrl(parameters),
                 UserType.ListMembers => BuildListMembersUrl(parameters),
                 UserType.RetweetedBy => BuildRetweetedByUrl(parameters),
+                UserType.SpaceBuyers => BuildSpaceBuyersUrl(parameters),
                 UserType.UsernameLookup => BuildUsernameLookupUrl(parameters),
                 _ => throw new InvalidOperationException("The default case of BuildUrl should never execute because a Type must be specified."),
             };
@@ -419,6 +426,52 @@ namespace LinqToTwitter
             }
         }
 
+        Request BuildSpaceBuyersUrl(Dictionary<string, string> parameters)
+        {
+            RequestProcessorHelper.SetSegment(parameters, nameof(SpaceID), val => SpaceID = val);
+
+            var req = new Request($"{BaseUrl}spaces/{SpaceID}/buyers");
+            var urlParams = req.RequestParameters;
+
+            if (parameters.ContainsKey(nameof(Expansions)))
+            {
+                Expansions = parameters[nameof(Expansions)];
+                urlParams.Add(new QueryParameter("expansions", Expansions.Replace(" ", "")));
+            }
+
+            if (parameters.ContainsKey(nameof(MediaFields)))
+            {
+                MediaFields = parameters[nameof(MediaFields)];
+                urlParams.Add(new QueryParameter("media.fields", MediaFields.Replace(" ", "")));
+            }
+
+            if (parameters.ContainsKey(nameof(PlaceFields)))
+            {
+                PlaceFields = parameters[nameof(PlaceFields)];
+                urlParams.Add(new QueryParameter("place.fields", PlaceFields.Replace(" ", "")));
+            }
+
+            if (parameters.ContainsKey(nameof(PollFields)))
+            {
+                PollFields = parameters[nameof(PollFields)];
+                urlParams.Add(new QueryParameter("poll.fields", PollFields.Replace(" ", "")));
+            }
+
+            if (parameters.ContainsKey(nameof(TweetFields)))
+            {
+                TweetFields = parameters[nameof(TweetFields)];
+                urlParams.Add(new QueryParameter("tweet.fields", TweetFields.Replace(" ", "")));
+            }
+
+            if (parameters.ContainsKey(nameof(UserFields)))
+            {
+                UserFields = parameters[nameof(UserFields)];
+                urlParams.Add(new QueryParameter("user.fields", UserFields.Replace(" ", "")));
+            }
+
+            return req;
+        }
+
         /// <summary>
         /// Transforms response from Twitter into List of <see cref="TwitterUserQuery"/>
         /// </summary>
@@ -464,6 +517,7 @@ namespace LinqToTwitter
                     ListID = ListID,
                     MaxResults = MaxResults,
                     PaginationToken = PaginationToken,
+                    SpaceID = SpaceID,
                     TweetFields = TweetFields,
                     UserFields = UserFields,
                     Usernames = Usernames
@@ -478,6 +532,7 @@ namespace LinqToTwitter
                     ListID = ListID,
                     MaxResults = MaxResults,
                     PaginationToken = PaginationToken,
+                    SpaceID= SpaceID,
                     TweetFields = TweetFields,
                     UserFields = UserFields,
                     Usernames = Usernames

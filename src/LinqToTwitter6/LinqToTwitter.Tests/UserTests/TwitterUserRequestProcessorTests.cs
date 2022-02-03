@@ -38,6 +38,7 @@ namespace LinqToTwitter.Tests.UserTests
 					tweet.PlaceFields == "country" &&
 					tweet.PollFields == "duration_minutes,end_datetime" &&
 					tweet.Expansions == "attachments.poll_ids,author_id" &&
+					tweet.SpaceID == "345" &&
                     tweet.TweetFields == "author_id,created_at" &&
                     tweet.UserFields == "created_at,verified";
 
@@ -65,16 +66,19 @@ namespace LinqToTwitter.Tests.UserTests
 					new KeyValuePair<string, string>(nameof(TwitterUserQuery.MaxResults), "50")));
 			Assert.IsTrue(
 				queryParams.Contains(
-					new KeyValuePair<string, string>(nameof(TweetQuery.MediaFields), "height,width")));
+					new KeyValuePair<string, string>(nameof(TwitterUserQuery.MediaFields), "height,width")));
 			Assert.IsTrue(
 				queryParams.Contains(
-					new KeyValuePair<string, string>(nameof(TweetQuery.PaginationToken), "123")));
+					new KeyValuePair<string, string>(nameof(TwitterUserQuery.PaginationToken), "123")));
 			Assert.IsTrue(
 			   queryParams.Contains(
-				   new KeyValuePair<string, string>(nameof(TweetQuery.PlaceFields), "country")));
+				   new KeyValuePair<string, string>(nameof(TwitterUserQuery.PlaceFields), "country")));
 			Assert.IsTrue(
 			   queryParams.Contains(
-				   new KeyValuePair<string, string>(nameof(TweetQuery.PollFields), "duration_minutes,end_datetime")));
+				   new KeyValuePair<string, string>(nameof(TwitterUserQuery.PollFields), "duration_minutes,end_datetime")));
+			Assert.IsTrue(
+			   queryParams.Contains(
+				   new KeyValuePair<string, string>(nameof(TwitterUserQuery.SpaceID), "345")));
 			Assert.IsTrue(
                 queryParams.Contains(
                     new KeyValuePair<string, string>(nameof(TwitterUserQuery.TweetFields), "author_id,created_at")));
@@ -486,6 +490,36 @@ namespace LinqToTwitter.Tests.UserTests
 		}
 
 		[TestMethod]
+		public void BuildUrl_ForSpaceBuyers_ConstructsUrl()
+		{
+			const string ExpectedUrl =
+				BaseUrl2 + "spaces/345/buyers?" +
+				"expansions=attachments.poll_ids%2Cauthor_id&" +
+				"media.fields=height%2Cwidth&" +
+				"place.fields=country&" +
+				"poll.fields=duration_minutes%2Cend_datetime&" +
+				"tweet.fields=author_id%2Ccreated_at&" +
+				"user.fields=created_at%2Cverified";
+			var reqProc = new TwitterUserRequestProcessor<TwitterUserQuery> { BaseUrl = BaseUrl2 };
+			var parameters =
+				new Dictionary<string, string>
+				{
+					{ nameof(TwitterUserQuery.Type), UserType.SpaceBuyers.ToString() },
+					{ nameof(TwitterUserQuery.SpaceID), "345" },
+					{ nameof(TwitterUserQuery.Expansions), "attachments.poll_ids,author_id" },
+					{ nameof(TwitterUserQuery.MediaFields), "height,width" },
+					{ nameof(TwitterUserQuery.PlaceFields), "country" },
+					{ nameof(TwitterUserQuery.PollFields), "duration_minutes,end_datetime" },
+					{ nameof(TwitterUserQuery.TweetFields), "author_id,created_at" },
+					{ nameof(TwitterUserQuery.UserFields), "created_at,verified" }
+			   };
+
+			Request req = reqProc.BuildUrl(parameters);
+
+			Assert.AreEqual(ExpectedUrl, req.FullUrl);
+		}
+
+		[TestMethod]
         public void ProcessResults_Populates_Users()
         {
             var twitterUserProc = new TwitterUserRequestProcessor<TwitterUserQuery> { BaseUrl = BaseUrl2 };
@@ -619,6 +653,7 @@ namespace LinqToTwitter.Tests.UserTests
 				ListID = "9025",
 				MaxResults = 50,
 				PaginationToken = "567",
+				SpaceID = "345",
                 TweetFields = "678",
                 UserFields = "234"
             };
@@ -636,6 +671,7 @@ namespace LinqToTwitter.Tests.UserTests
 			Assert.AreEqual("9025", twitterUserQuery.ListID);
 			Assert.AreEqual(50, twitterUserQuery.MaxResults);
 			Assert.AreEqual("567", twitterUserQuery.PaginationToken);
+			Assert.AreEqual("345", twitterUserQuery.SpaceID);
             Assert.AreEqual("678", twitterUserQuery.TweetFields);
             Assert.AreEqual("234", twitterUserQuery.UserFields);
 			Assert.AreEqual("9,0", twitterUserQuery.Usernames);

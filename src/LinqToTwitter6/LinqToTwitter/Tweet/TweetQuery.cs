@@ -84,6 +84,11 @@ namespace LinqToTwitter
         public DateTime StartTime { get; init; }
 
         /// <summary>
+        /// ID of space to query for tweets
+        /// </summary>
+        public string? SpaceID { get; set; }
+
+        /// <summary>
         /// Comma-separated list of fields to return in the Tweet object
         /// </summary>
         public string? TweetFields { get; init; }
