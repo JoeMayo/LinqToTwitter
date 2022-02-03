@@ -1,5 +1,8 @@
 ﻿namespace LinqToTwitter
 {
+    /// <summary>
+    /// Type of queries for spaces
+    /// </summary>
     public enum SpacesType
     { 
         /// <summary

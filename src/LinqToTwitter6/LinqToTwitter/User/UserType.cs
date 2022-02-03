@@ -59,5 +59,10 @@
         /// Get list of people that user is following 
         /// </summary>
         Following,
+
+        /// <summary>
+        /// People who bought a ticket to a space
+        /// </summary>
+        SpaceBuyers,
     }
 }

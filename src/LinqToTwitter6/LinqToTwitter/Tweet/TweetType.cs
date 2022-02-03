@@ -20,6 +20,11 @@
         /// <summary>
         /// Get the tweets timeline
         /// </summary>
-        TweetsTimeline
+        TweetsTimeline,
+
+        /// <summary>
+        /// Tweets that people shared in a space
+        /// </summary>
+        SpaceTweets,
     }
 }

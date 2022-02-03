@@ -32,6 +32,14 @@ namespace ConsoleDemo.CSharp
                         Console.WriteLine("\n\tGetting by space IDs...\n");
                         await DoBySpaceIdsAsync(twitterCtx);
                         break;
+                    case '3':
+                        Console.WriteLine("\n\tGetting space buyers...");
+                        await DoSpaceBuyerSearchAsync(twitterCtx);
+                        break;
+                    case '4':
+                        Console.WriteLine("\n\tGetting space tweets...");
+                        await DoSpaceTweetsSearchAsync(twitterCtx);
+                        break;
                     case 'q':
                     case 'Q':
                         Console.WriteLine("\nReturning...\n");
@@ -51,6 +59,8 @@ namespace ConsoleDemo.CSharp
             Console.WriteLine("\t 0. Search");
             Console.WriteLine("\t 1. Get by Creator IDs");
             Console.WriteLine("\t 2. Get by Space IDs");
+            Console.WriteLine("\t 3. Get space buyers");
+            Console.WriteLine("\t 4. Get space tweets");
             Console.WriteLine();
             Console.Write("\t Q. Return to Main menu");
         }
@@ -140,6 +150,52 @@ namespace ConsoleDemo.CSharp
                         space.CreatorID,
                         space.ID,
                         space.CreatedAt));
+            else
+                Console.WriteLine("No entries found.");
+        }
+
+        static async Task DoSpaceBuyerSearchAsync(TwitterContext twitterCtx)
+        {
+            TwitterUserQuery? searchResponse =
+                await
+                (from space in twitterCtx.TwitterUser
+                 where space.Type == UserType.SpaceBuyers &&
+                       space.SpaceID == "1DXxyRYNejbKM" &&
+                       space.Expansions == ExpansionField.AllTweetFields &&
+                       space.MediaFields == MediaField.AllFieldsExceptPermissioned &&
+                       space.PlaceFields == PlaceField.AllFields &&
+                       space.PollFields == PollField.AllFields &&
+                       space.UserFields == UserField.AllFields &&
+                       space.TweetFields == TweetField.AllFieldsExceptPermissioned
+                 select space)
+                .SingleOrDefaultAsync();
+
+            if (searchResponse != null)
+                searchResponse.Users?.ForEach(user =>
+                    Console.WriteLine("Name: " + user.Username));
+        }
+
+        static async Task DoSpaceTweetsSearchAsync(TwitterContext twitterCtx)
+        {
+            TweetQuery? tweetResponse =
+                await
+                (from tweet in twitterCtx.Tweets
+                 where tweet.Type == TweetType.SpaceTweets &&
+                       tweet.SpaceID == "1DXxyRYNejbKM" &&
+                       tweet.TweetFields == TweetField.AllFieldsExceptPermissioned &&
+                       tweet.Expansions == ExpansionField.AllTweetFields &&
+                       tweet.MediaFields == MediaField.AllFieldsExceptPermissioned &&
+                       tweet.PlaceFields == PlaceField.AllFields &&
+                       tweet.PollFields == PollField.AllFields &&
+                       tweet.UserFields == UserField.AllFields
+                 select tweet)
+                .SingleOrDefaultAsync();
+
+            if (tweetResponse?.Tweets != null)
+                tweetResponse.Tweets.ForEach(tweet =>
+                    Console.WriteLine(
+                        $"\nID: {tweet.ID}" +
+                        $"\nTweet: {tweet.Text}"));
             else
                 Console.WriteLine("No entries found.");
         }

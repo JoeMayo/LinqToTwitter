@@ -222,18 +222,6 @@ namespace LinqToTwitter
             return req;
         }
 
-        ///// <summary>
-        ///// Sets parameter, but doesn't treat as a query parameter.
-        ///// </summary>
-        ///// <param name="parameters">list of parameters</param>
-        //void SetUserID(Dictionary<string, string> parameters)
-        //{
-        //    if (parameters.ContainsKey(nameof(ID)))
-        //        ID = parameters[nameof(ID)];
-        //    else
-        //        throw new ArgumentException($"{nameof(ID)} is required", nameof(ID));
-        //}
-
         /// <summary>
         /// Transforms Twitter response into List of User
         /// </summary>

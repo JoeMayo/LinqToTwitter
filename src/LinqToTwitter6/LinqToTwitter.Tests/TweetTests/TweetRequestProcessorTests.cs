@@ -41,6 +41,7 @@ namespace LinqToTwitter.Tests.TweetTests
 					tweet.PlaceFields == "country" &&
 					tweet.PollFields == "duration_minutes,end_datetime" &&
 					tweet.SinceID == "789" &&
+					tweet.SpaceID == "345" &&
 					tweet.StartTime == startTime &&
 					tweet.TweetFields == "author_id,created_at" &&
 					tweet.UntilID == "012" &&
@@ -86,6 +87,9 @@ namespace LinqToTwitter.Tests.TweetTests
 			Assert.IsTrue(
 				queryParams.Contains(
 					new KeyValuePair<string, string>(nameof(TweetQuery.SinceID), "789")));
+			Assert.IsTrue(
+				queryParams.Contains(
+					new KeyValuePair<string, string>(nameof(TweetQuery.SpaceID), "345")));
 			Assert.IsTrue(
 				queryParams.Contains(
 					new KeyValuePair<string, string>(nameof(TweetQuery.StartTime), "08/01/2020 00:00:00")));
@@ -390,6 +394,36 @@ namespace LinqToTwitter.Tests.TweetTests
 		}
 
 		[TestMethod]
+		public void BuildUrl_ForSpaceTweets_ConstructsUrl()
+		{
+			const string ExpectedUrl =
+				BaseUrl2 + "spaces/345/tweets?" +
+				"expansions=attachments.poll_ids%2Cauthor_id&" +
+				"media.fields=height%2Cwidth&" +
+				"place.fields=country&" +
+				"poll.fields=duration_minutes%2Cend_datetime&" +
+				"tweet.fields=author_id%2Ccreated_at&" +
+				"user.fields=created_at%2Cverified";
+			var reqProc = new TweetRequestProcessor<TweetQuery> { BaseUrl = BaseUrl2 };
+			var parameters =
+				new Dictionary<string, string>
+				{
+					{ nameof(TweetQuery.Type), TweetType.SpaceTweets.ToString() },
+					{ nameof(TweetQuery.SpaceID), "345" },
+					{ nameof(TweetQuery.Expansions), "attachments.poll_ids,author_id" },
+					{ nameof(TweetQuery.MediaFields), "height,width" },
+					{ nameof(TweetQuery.PlaceFields), "country" },
+					{ nameof(TweetQuery.PollFields), "duration_minutes,end_datetime" },
+					{ nameof(TweetQuery.TweetFields), "author_id,created_at" },
+					{ nameof(TweetQuery.UserFields), "created_at,verified" }
+			   };
+
+			Request req = reqProc.BuildUrl(parameters);
+
+			Assert.AreEqual(ExpectedUrl, req.FullUrl);
+		}
+
+		[TestMethod]
         public void ProcessResults_Populates_Tweets()
         {
             var tweetProc = new TweetRequestProcessor<TweetQuery> { BaseUrl = BaseUrl2 };
@@ -550,48 +584,15 @@ namespace LinqToTwitter.Tests.TweetTests
             Assert.IsNull(tweets);
         }
 
-        [TestMethod]
-        public void ProcessResults_ForLookup_PopulatesInputParameters()
-        {
-            var tweetProc = new TweetRequestProcessor<TweetQuery>()
-            {
-                BaseUrl = BaseUrl2,
-                Type = TweetType.Lookup,
-				Ids = "3,7",
-				Expansions = "123",
-				ListID = "2048",
-                MediaFields = "456",
-                PlaceFields = "012",
-                PollFields = "345",
-				TweetFields = "678",
-                UserFields = "234"
-            };
-
-            var results = tweetProc.ProcessResults(SingleTweet);
-
-            Assert.IsNotNull(results);
-            Assert.AreEqual(1, results.Count);
-            var tweetQuery = results.Single();
-            Assert.IsNotNull(tweetQuery);
-            Assert.AreEqual(TweetType.Lookup, tweetQuery.Type);
-            Assert.AreEqual("123", tweetQuery.Expansions);
-			Assert.AreEqual("3,7", tweetQuery.Ids);
-			Assert.AreEqual("2048", tweetQuery.ListID);
-            Assert.AreEqual("456", tweetQuery.MediaFields);
-            Assert.AreEqual("012", tweetQuery.PlaceFields);
-            Assert.AreEqual("345", tweetQuery.PollFields);
-			Assert.AreEqual("678", tweetQuery.TweetFields);
-            Assert.AreEqual("234", tweetQuery.UserFields);
-        }
-
 		[TestMethod]
-		public void ProcessResults_ForMentionsTimeline_PopulatesInputParameters()
+		public void ProcessResults_PopulatesInputParameters()
 		{
 			var tweetProc = new TweetRequestProcessor<TweetQuery>()
 			{
 				BaseUrl = BaseUrl2,
 				Type = TweetType.MentionsTimeline,
 				ID = "567",
+				Ids = "123,456",
 				EndTime = new DateTime(2020, 12, 31),
 				Exclude = TweetExcludes.Retweets,
 				MaxResults = 73,
@@ -601,6 +602,7 @@ namespace LinqToTwitter.Tests.TweetTests
 				PlaceFields = "012",
 				PollFields = "345",
 				SinceID = "890",
+				SpaceID = "345",
 				StartTime = new DateTime(2020, 1, 1),
 				TweetFields = "678",
 				UntilID = "123",
@@ -618,58 +620,14 @@ namespace LinqToTwitter.Tests.TweetTests
 			Assert.AreEqual(TweetExcludes.Retweets, tweetQuery.Exclude);
 			Assert.AreEqual("123", tweetQuery.Expansions);
 			Assert.AreEqual("567", tweetQuery.ID);
+			Assert.AreEqual("123,456", tweetQuery.Ids);
 			Assert.AreEqual(73, tweetQuery.MaxResults);
 			Assert.AreEqual("456", tweetQuery.MediaFields);
 			Assert.AreEqual("567", tweetQuery.PaginationToken);
 			Assert.AreEqual("012", tweetQuery.PlaceFields);
 			Assert.AreEqual("345", tweetQuery.PollFields);
 			Assert.AreEqual("890", tweetQuery.SinceID);
-			Assert.AreEqual(new DateTime(2020, 1, 1), tweetQuery.StartTime);
-			Assert.AreEqual("678", tweetQuery.TweetFields);
-			Assert.AreEqual("123", tweetQuery.UntilID);
-			Assert.AreEqual("234", tweetQuery.UserFields);
-		}
-
-		[TestMethod]
-		public void ProcessResults_ForUserTimeline_PopulatesInputParameters()
-		{
-			var tweetProc = new TweetRequestProcessor<TweetQuery>()
-			{
-				BaseUrl = BaseUrl2,
-				Type = TweetType.TweetsTimeline,
-				ID = "567",
-				EndTime = new DateTime(2020, 12, 31),
-				Exclude = TweetExcludes.Retweets,
-				MaxResults = 73,
-				Expansions = "123",
-				MediaFields = "456",
-				PaginationToken = "567",
-				PlaceFields = "012",
-				PollFields = "345",
-				SinceID = "890",
-				StartTime = new DateTime(2020, 1, 1),
-				TweetFields = "678",
-				UntilID = "123",
-				UserFields = "234"
-			};
-
-			var results = tweetProc.ProcessResults(SingleTweet);
-
-			Assert.IsNotNull(results);
-			Assert.AreEqual(1, results.Count);
-			var tweetQuery = results.Single();
-			Assert.IsNotNull(tweetQuery);
-			Assert.AreEqual(TweetType.TweetsTimeline, tweetQuery.Type);
-			Assert.AreEqual(new DateTime(2020, 12, 31), tweetQuery.EndTime);
-			Assert.AreEqual(TweetExcludes.Retweets, tweetQuery.Exclude);
-			Assert.AreEqual("123", tweetQuery.Expansions);
-			Assert.AreEqual("567", tweetQuery.ID);
-			Assert.AreEqual(73, tweetQuery.MaxResults);
-			Assert.AreEqual("456", tweetQuery.MediaFields);
-			Assert.AreEqual("567", tweetQuery.PaginationToken);
-			Assert.AreEqual("012", tweetQuery.PlaceFields);
-			Assert.AreEqual("345", tweetQuery.PollFields);
-			Assert.AreEqual("890", tweetQuery.SinceID);
+			Assert.AreEqual("345", tweetQuery.SpaceID);
 			Assert.AreEqual(new DateTime(2020, 1, 1), tweetQuery.StartTime);
 			Assert.AreEqual("678", tweetQuery.TweetFields);
 			Assert.AreEqual("123", tweetQuery.UntilID);
