@@ -79,6 +79,11 @@ namespace LinqToTwitter
         public string? TweetFields { get; set; }
 
         /// <summary>
+        /// ID of tweet that users are associated with. e.g. users who liked a tweet
+        /// </summary>
+        public string? TweetID { get; set; }
+
+        /// <summary>
         /// Comma-separated list of fields to return in the User object - <see cref="UserField"/>
         /// </summary>
         public string? UserFields { get; set; }
@@ -111,6 +116,7 @@ namespace LinqToTwitter
                        nameof(PollFields),
                        nameof(SpaceID),
                        nameof(TweetFields),
+                       nameof(TweetID),
                        nameof(UserFields),
                        nameof(Usernames),
                    });
@@ -135,6 +141,7 @@ namespace LinqToTwitter
                 UserType.IdLookup => BuildIdLookupUrl(parameters),
                 UserType.Followers => BuildFollowersUrl(parameters),
                 UserType.Following => BuildFollowingUrl(parameters),
+                UserType.Liking => BuildLikingUrl(parameters),
                 UserType.ListFollowers => BuildListFollowersUrl(parameters),
                 UserType.ListMembers => BuildListMembersUrl(parameters),
                 UserType.RetweetedBy => BuildRetweetedByUrl(parameters),
@@ -304,9 +311,61 @@ namespace LinqToTwitter
         /// <returns><see cref="Request"/> object</returns>
         Request BuildRetweetedByUrl(Dictionary<string, string> parameters)
         {
-            RequestProcessorHelper.SetSegment(parameters, nameof(ID), val => ID = val);
+            RequestProcessorHelper.SetSegment(parameters, nameof(TweetID), val => TweetID = val);
 
-            var req = new Request($"{BaseUrl}tweets/{ID}/retweeted_by");
+            var req = new Request($"{BaseUrl}tweets/{TweetID}/retweeted_by");
+
+            var urlParams = req.RequestParameters;
+
+            if (parameters.ContainsKey(nameof(Expansions)))
+            {
+                Expansions = parameters[nameof(Expansions)];
+                urlParams.Add(new QueryParameter("expansions", Expansions.Replace(" ", "")));
+            }
+
+            if (parameters.ContainsKey(nameof(MediaFields)))
+            {
+                MediaFields = parameters[nameof(MediaFields)];
+                urlParams.Add(new QueryParameter("media.fields", MediaFields.Replace(" ", "")));
+            }
+
+            if (parameters.ContainsKey(nameof(PlaceFields)))
+            {
+                PlaceFields = parameters[nameof(PlaceFields)];
+                urlParams.Add(new QueryParameter("place.fields", PlaceFields.Replace(" ", "")));
+            }
+
+            if (parameters.ContainsKey(nameof(PollFields)))
+            {
+                PollFields = parameters[nameof(PollFields)];
+                urlParams.Add(new QueryParameter("poll.fields", PollFields.Replace(" ", "")));
+            }
+
+            if (parameters.ContainsKey(nameof(TweetFields)))
+            {
+                TweetFields = parameters[nameof(TweetFields)];
+                urlParams.Add(new QueryParameter("tweet.fields", TweetFields.Replace(" ", "")));
+            }
+
+            if (parameters.ContainsKey(nameof(UserFields)))
+            {
+                UserFields = parameters[nameof(UserFields)];
+                urlParams.Add(new QueryParameter("user.fields", UserFields.Replace(" ", "")));
+            }
+
+            return req;
+        }
+
+        /// <summary>
+        /// RetweetedBy URL
+        /// </summary>
+        /// <param name="parameters">Parameters to process</param>
+        /// <returns><see cref="Request"/> object</returns>
+        Request BuildLikingUrl(Dictionary<string, string> parameters)
+        {
+            RequestProcessorHelper.SetSegment(parameters, nameof(TweetID), val => TweetID = val);
+
+            var req = new Request($"{BaseUrl}tweets/{TweetID}/liking_users");
 
             var urlParams = req.RequestParameters;
 

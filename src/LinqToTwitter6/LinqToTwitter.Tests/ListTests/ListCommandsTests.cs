@@ -74,14 +74,6 @@ namespace LinqToTwitter.Tests.ListTests
         }
 
         [TestMethod]
-        public void ListRequestProcessor_Handles_Actions()
-        {
-            var listReqProc = new ListRequestProcessor<List>();
-
-            Assert.IsInstanceOfType(listReqProc, typeof(IRequestProcessorWithAction<List>));
-        }
-
-        [TestMethod]
         public async Task CreateListAsync_MissingNameParam_Throws()
         {
             InitializeTwitterContext(CreateListResponse);

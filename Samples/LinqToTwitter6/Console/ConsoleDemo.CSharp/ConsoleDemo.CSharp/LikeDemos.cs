@@ -32,6 +32,10 @@ namespace ConsoleDemo.CSharp
                         Console.WriteLine("\n\tLooking for Likes...\n");
                         await LookupLikesAsync(twitterCtx);
                         break;
+                    case '3':
+                        Console.WriteLine("\n\tGetting liking users...\n");
+                        await GetLikingUsersAsync(twitterCtx);
+                        break;
                     case 'q':
                     case 'Q':
                         Console.WriteLine("\nReturning...\n");
@@ -51,6 +55,7 @@ namespace ConsoleDemo.CSharp
             Console.WriteLine("\t 0. Like a Tweet");
             Console.WriteLine("\t 1. Unlike a Tweet");
             Console.WriteLine("\t 2. Lookup Likes");
+            Console.WriteLine("\t 3. Liking Users");
             Console.WriteLine();
             Console.Write("\t Q. Return to Main menu");
         }
@@ -110,6 +115,29 @@ namespace ConsoleDemo.CSharp
             if (likeResponse != null && likeResponse.Tweets != null)
                 likeResponse.Tweets.ForEach(tweet =>
                         Console.WriteLine(tweet.Text));
+        }
+
+        static async Task GetLikingUsersAsync(TwitterContext twitterCtx)
+        {
+            string? tweetID = "1371844879043723273";
+            //string tweetID = "1446476275246194697";
+
+            TwitterUserQuery? response =
+                await
+                (from user in twitterCtx.TwitterUser
+                 where user.Type == UserType.Liking &&
+                       user.TweetID == tweetID
+                 select user)
+                .SingleOrDefaultAsync();
+
+            if (response?.Users != null)
+                response.Users.ForEach(user =>
+                    Console.WriteLine(
+                        $"\nID: {user.ID}" +
+                        $"\nUsername: {user.Username}" +
+                        $"\nName: {user.Name}"));
+            else
+                Console.WriteLine("No entries found.");
         }
     }
 }

@@ -26,6 +26,11 @@
         IdLookup,
 
         /// <summary>
+        /// Users who liked a tweet
+        /// </summary>
+        Liking,
+
+        /// <summary>
         /// Gets users who follow a list
         /// </summary>
         ListFollowers,

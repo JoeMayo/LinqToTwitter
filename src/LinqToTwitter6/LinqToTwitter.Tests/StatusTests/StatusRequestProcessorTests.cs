@@ -250,11 +250,11 @@ namespace LinqToTwitter.Tests.StatusTests
         [TestMethod]
         public void BuildUrl_Returns_Url_For_OEmbed()
         {
-            const string ExpectedUrl = "https://api.twitter.com/1.1/statuses/oembed.json?id=1&url=abc&maxwidth=300&hide_media=true&hide_thread=true&omit_script=true&align=left&related=JoeMayo%2CTwitterAPI&lang=en&tweet_mode=extended";
+            const string ExpectedUrl = "https://publish.twitter.com/oembed?id=1&url=abc&maxwidth=300&hide_media=true&hide_thread=true&omit_script=true&align=left&related=JoeMayo%2CTwitterAPI&lang=en&tweet_mode=extended";
             var reqProc = new StatusRequestProcessor<Status>
             {
                 Type = StatusType.Oembed,
-                BaseUrl = "https://api.twitter.com/1.1/"
+                BaseUrl = "https://publish.twitter.com/"
             };
             var parameters = new Dictionary<string, string>
             {

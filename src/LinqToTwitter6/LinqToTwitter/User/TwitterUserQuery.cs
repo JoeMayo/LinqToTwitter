@@ -78,6 +78,11 @@ namespace LinqToTwitter
         public string? TweetFields { get; init; }
 
         /// <summary>
+        /// ID of tweet that users are associated with. e.g. users who liked a tweet
+        /// </summary>
+        public string? TweetID { get; set; }
+
+        /// <summary>
         /// Comma-separated list of fields to return in the User object
         /// </summary>
         public string? UserFields { get; init; }

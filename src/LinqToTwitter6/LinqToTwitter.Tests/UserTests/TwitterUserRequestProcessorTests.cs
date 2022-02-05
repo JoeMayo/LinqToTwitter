@@ -28,7 +28,8 @@ namespace LinqToTwitter.Tests.UserTests
 
             Expression<Func<TwitterUserQuery, bool>> expression =
                 tweet =>
-                    tweet.Type == UserType.IdLookup &&
+                    tweet.Type == UserType.Liking &&
+					tweet.Expansions == "attachments.poll_ids,author_id" &&
 					tweet.ID == "456" &&
                     tweet.Ids == "2,3" &&
 					tweet.Usernames == "joemayo,linq2twitr" &&
@@ -37,10 +38,10 @@ namespace LinqToTwitter.Tests.UserTests
 					tweet.PaginationToken == "123" &&
 					tweet.PlaceFields == "country" &&
 					tweet.PollFields == "duration_minutes,end_datetime" &&
-					tweet.Expansions == "attachments.poll_ids,author_id" &&
 					tweet.SpaceID == "345" &&
                     tweet.TweetFields == "author_id,created_at" &&
-                    tweet.UserFields == "created_at,verified";
+					tweet.TweetID == "678" &&
+					tweet.UserFields == "created_at,verified";
 
             var lambdaExpression = expression as LambdaExpression;
 
@@ -48,7 +49,7 @@ namespace LinqToTwitter.Tests.UserTests
 
             Assert.IsTrue(
                 queryParams.Contains(
-                    new KeyValuePair<string, string>(nameof(TwitterUserQuery.Type), ((int)UserType.IdLookup).ToString(CultureInfo.InvariantCulture))));
+                    new KeyValuePair<string, string>(nameof(TwitterUserQuery.Type), ((int)UserType.Liking).ToString(CultureInfo.InvariantCulture))));
 			Assert.IsTrue(
 				queryParams.Contains(
 					new KeyValuePair<string, string>(nameof(TwitterUserQuery.ID), "456")));
@@ -82,7 +83,10 @@ namespace LinqToTwitter.Tests.UserTests
 			Assert.IsTrue(
                 queryParams.Contains(
                     new KeyValuePair<string, string>(nameof(TwitterUserQuery.TweetFields), "author_id,created_at")));
-            Assert.IsTrue(
+			Assert.IsTrue(
+			   queryParams.Contains(
+				   new KeyValuePair<string, string>(nameof(TwitterUserQuery.TweetID), "678")));
+			Assert.IsTrue(
                 queryParams.Contains(
                     new KeyValuePair<string, string>(nameof(TwitterUserQuery.UserFields), "created_at,verified")));
         }
@@ -209,7 +213,7 @@ namespace LinqToTwitter.Tests.UserTests
 				new Dictionary<string, string>
 				{
 					{ nameof(TwitterUserQuery.Type), UserType.RetweetedBy.ToString() },
-					{ nameof(TwitterUserQuery.ID), "123" },
+					{ nameof(TwitterUserQuery.TweetID), "123" },
 					{ nameof(TwitterUserQuery.Expansions), "attachments.poll_ids,author_id" },
 					{ nameof(TwitterUserQuery.MediaFields), "height,width" },
 					{ nameof(TwitterUserQuery.PlaceFields), "country" },
@@ -219,6 +223,36 @@ namespace LinqToTwitter.Tests.UserTests
 			   };
 
 			Request req = twitterUserReqProc.BuildUrl(parameters);
+
+			Assert.AreEqual(ExpectedUrl, req.FullUrl);
+		}
+
+		[TestMethod]
+		public void BuildUrl_ForLikingUsers_ConstructsUrl()
+		{
+			const string ExpectedUrl =
+				BaseUrl2 + "tweets/345/liking_users?" +
+				"expansions=attachments.poll_ids%2Cauthor_id&" +
+				"media.fields=height%2Cwidth&" +
+				"place.fields=country&" +
+				"poll.fields=duration_minutes%2Cend_datetime&" +
+				"tweet.fields=author_id%2Ccreated_at&" +
+				"user.fields=created_at%2Cverified";
+			var reqProc = new TwitterUserRequestProcessor<TwitterUserQuery> { BaseUrl = BaseUrl2 };
+			var parameters =
+				new Dictionary<string, string>
+				{
+					{ nameof(TwitterUserQuery.Type), UserType.Liking.ToString() },
+					{ nameof(TwitterUserQuery.TweetID), "345" },
+					{ nameof(TwitterUserQuery.Expansions), "attachments.poll_ids,author_id" },
+					{ nameof(TwitterUserQuery.MediaFields), "height,width" },
+					{ nameof(TwitterUserQuery.PlaceFields), "country" },
+					{ nameof(TwitterUserQuery.PollFields), "duration_minutes,end_datetime" },
+					{ nameof(TwitterUserQuery.TweetFields), "author_id,created_at" },
+					{ nameof(TwitterUserQuery.UserFields), "created_at,verified" }
+			   };
+
+			Request req = reqProc.BuildUrl(parameters);
 
 			Assert.AreEqual(ExpectedUrl, req.FullUrl);
 		}
@@ -332,22 +366,58 @@ namespace LinqToTwitter.Tests.UserTests
 		}
 
 		[TestMethod]
-		public void BuildUrl_ForRetweetedBy_RequiresID()
+		public void BuildUrl_ForRetweetedBy_RequiresTweetID()
 		{
 			var twitterUserReqProc = new TwitterUserRequestProcessor<TwitterUserQuery> { BaseUrl = BaseUrl2 };
 			var parameters =
                 new Dictionary<string, string>
                 {
                     { nameof(TweetQuery.Type), UserType.RetweetedBy.ToString() },
-			        //{ nameof(Tweet.ID), null }
+			        //{ nameof(Tweet.TweetID), null }
 			    };
 
             ArgumentException ex =
                 L2TAssert.Throws<ArgumentException>(() =>
 					twitterUserReqProc.BuildUrl(parameters));
 
-            Assert.AreEqual(nameof(TwitterUserQuery.ID), ex.ParamName);
+            Assert.AreEqual(nameof(TwitterUserQuery.TweetID), ex.ParamName);
         }
+
+		[TestMethod]
+		public void BuildUrl_ForLikingUsers_RequiresTweetID()
+		{
+			var twitterUserReqProc = new TwitterUserRequestProcessor<TwitterUserQuery> { BaseUrl = BaseUrl2 };
+			var parameters =
+				new Dictionary<string, string>
+				{
+					{ nameof(TweetQuery.Type), UserType.Liking.ToString() },
+			        //{ nameof(Tweet.TweetID), null }
+			    };
+
+			ArgumentException ex =
+				L2TAssert.Throws<ArgumentException>(() =>
+					twitterUserReqProc.BuildUrl(parameters));
+
+			Assert.AreEqual(nameof(TwitterUserQuery.TweetID), ex.ParamName);
+		}
+
+		[TestMethod]
+		public void BuildUrl_ForSpaceBuyers_RequiresTweetID()
+		{
+			var twitterUserReqProc = new TwitterUserRequestProcessor<TwitterUserQuery> { BaseUrl = BaseUrl2 };
+			var parameters =
+				new Dictionary<string, string>
+				{
+					{ nameof(TweetQuery.Type), UserType.SpaceBuyers.ToString() },
+			        //{ nameof(Tweet.SpaceID), null }
+			    };
+
+			ArgumentException ex =
+				L2TAssert.Throws<ArgumentException>(() =>
+					twitterUserReqProc.BuildUrl(parameters));
+
+			Assert.AreEqual(nameof(TwitterUserQuery.SpaceID), ex.ParamName);
+		}
 
 		[TestMethod]
 		public void BuildUrl_ForListFollowers_IncludesParameters()
