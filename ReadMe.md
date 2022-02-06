@@ -44,7 +44,7 @@ In addition to being able to download from this site, you can also automatically
 
 ## Available Feature Set
 
-See [LINQ to Twitter v6 APIs]https://www.linqtotwitter.com/LINQ-to-Twitter-v6.html).
+See [LINQ to Twitter v6 APIs](https://www.linqtotwitter.com/LINQ-to-Twitter-v6.html).
 
 ## For more info:
 
