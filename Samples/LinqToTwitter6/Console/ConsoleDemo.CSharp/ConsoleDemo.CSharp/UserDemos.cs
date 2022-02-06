@@ -81,6 +81,11 @@ namespace ConsoleDemo.CSharp
                         Console.WriteLine("\n\tUndoing Retweet...\n");
                         await UndoRetweetAsync(twitterCtx);
                         break;
+                    case 'e':
+                    case 'E':
+                        Console.WriteLine("\n\tGetting authenticated user...");
+                        await GetMeAsync(twitterCtx);
+                        break;
                     case 'q':
                     case 'Q':
                         Console.WriteLine("\nReturning...\n");
@@ -111,6 +116,7 @@ namespace ConsoleDemo.CSharp
             Console.WriteLine("\t B. Retweeted by a User");
             Console.WriteLine("\t C. Retweet");
             Console.WriteLine("\t D. Undo Retweet");
+            Console.WriteLine("\t E. Get Authenticated User");
             Console.WriteLine();
             Console.Write("\t Q. Return to Main menu");
         }
@@ -237,7 +243,7 @@ namespace ConsoleDemo.CSharp
             Console.WriteLine("You just reported {0} as a spammer.", spammer?.ScreenNameResponse);
         }
 
-        async static Task FindFollowersAsync(TwitterContext twitterCtx)
+        static async Task FindFollowersAsync(TwitterContext twitterCtx)
         {
             string userID = "15411837";
 
@@ -254,7 +260,7 @@ namespace ConsoleDemo.CSharp
                     Console.WriteLine("Name: " + user.Username));
         }
 
-        async static Task FindFollowingAsync(TwitterContext twitterCtx)
+        static async Task FindFollowingAsync(TwitterContext twitterCtx)
         {
             string userID = "15411837";
 
@@ -271,7 +277,7 @@ namespace ConsoleDemo.CSharp
                     Console.WriteLine("ID: " + user.ID));
         }
 
-        async static Task FollowAsync(TwitterContext twitterCtx)
+        static async Task FollowAsync(TwitterContext twitterCtx)
         {
             string followingUser = "15411837";
             string userToFollow = "16761255";
@@ -282,7 +288,7 @@ namespace ConsoleDemo.CSharp
             Console.WriteLine($"Is Following: {response?.Data?.Following ?? false}");
         }
 
-        async static Task UnFollowAsync(TwitterContext twitterCtx)
+        static async Task UnFollowAsync(TwitterContext twitterCtx)
         {
             string followingUser = "15411837";
             string userToFollow = "<put account ID here>";
@@ -335,6 +341,24 @@ namespace ConsoleDemo.CSharp
                 await twitterCtx.UndoRetweetAsync(retweetingUser, tweetToUndoRetweet);
 
             Console.WriteLine($"Is Retweeted: {response?.Data?.Retweeted ?? false}");
+        }
+
+        static async Task GetMeAsync(TwitterContext twitterCtx)
+        {
+            TwitterUserQuery? response =
+                await
+                (from usr in twitterCtx.TwitterUser
+                 where usr.Type == UserType.Me
+                 select usr)
+                .SingleOrDefaultAsync();
+
+            TwitterUser? user = response?.Users?.SingleOrDefault();
+
+            if (user != null)
+                Console.WriteLine(
+                    $"\nID: {user.ID}" +
+                    $"\nUsername: {user.Username}" +
+                    $"\nName: {user.Name}");
         }
     }
 }

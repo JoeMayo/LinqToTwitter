@@ -144,6 +144,7 @@ namespace LinqToTwitter
                 UserType.Liking => BuildLikingUrl(parameters),
                 UserType.ListFollowers => BuildListFollowersUrl(parameters),
                 UserType.ListMembers => BuildListMembersUrl(parameters),
+                UserType.Me => BuildMeUrl(parameters),
                 UserType.RetweetedBy => BuildRetweetedByUrl(parameters),
                 UserType.SpaceBuyers => BuildSpaceBuyersUrl(parameters),
                 UserType.UsernameLookup => BuildUsernameLookupUrl(parameters),
@@ -408,6 +409,32 @@ namespace LinqToTwitter
             return req;
         }
 
+        Request BuildMeUrl(Dictionary<string, string> parameters)
+        {
+            var req = new Request($"{BaseUrl}users/me");
+            var urlParams = req.RequestParameters;
+
+            if (parameters.ContainsKey(nameof(Expansions)))
+            {
+                Expansions = parameters[nameof(Expansions)];
+                urlParams.Add(new QueryParameter("expansions", Expansions.Replace(" ", "")));
+            }
+
+            if (parameters.ContainsKey(nameof(TweetFields)))
+            {
+                TweetFields = parameters[nameof(TweetFields)];
+                urlParams.Add(new QueryParameter("tweet.fields", TweetFields.Replace(" ", "")));
+            }
+
+            if (parameters.ContainsKey(nameof(UserFields)))
+            {
+                UserFields = parameters[nameof(UserFields)];
+                urlParams.Add(new QueryParameter("user.fields", UserFields.Replace(" ", "")));
+            }
+
+            return req;
+        }
+
         /// <summary>
         /// builds parameters common to timeline queries
         /// </summary>
@@ -564,7 +591,7 @@ namespace LinqToTwitter
                     new TweetReplySettingsConverter()
                 }
             };
-            TwitterUserQuery? user = JsonSerializer.Deserialize<TwitterUserQuery>(responseJson, options);
+            TwitterUserQuery? user = DeserializeUser(responseJson, options);
 
             if (user == null)
                 return new TwitterUserQuery
@@ -591,11 +618,43 @@ namespace LinqToTwitter
                     ListID = ListID,
                     MaxResults = MaxResults,
                     PaginationToken = PaginationToken,
-                    SpaceID= SpaceID,
+                    SpaceID = SpaceID,
                     TweetFields = TweetFields,
                     UserFields = UserFields,
                     Usernames = Usernames
                 };
+        }
+
+        TwitterUserQuery? DeserializeUser(string responseJson, JsonSerializerOptions options)
+        {
+            TwitterUserQuery? user;
+
+            if (IsSingleUser())
+            {
+                SingleUser? singleUser = JsonSerializer.Deserialize<SingleUser>(responseJson, options);
+                if (singleUser?.User != null)
+                {
+                    user =
+                        new TwitterUserQuery
+                        {
+                            Errors = singleUser.Errors,
+                            Includes = singleUser.Includes,
+                            Users = new List<TwitterUser> { singleUser.User }
+                        };
+                }
+                else
+                {
+                    user = new TwitterUserQuery();
+                }
+            }
+            else
+            {
+                user = JsonSerializer.Deserialize<TwitterUserQuery>(responseJson, options);
+            }
+
+            return user;
+
+            bool IsSingleUser() => Type == UserType.Me;
         }
     }
 }

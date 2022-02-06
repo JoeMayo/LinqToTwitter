@@ -258,6 +258,29 @@ namespace LinqToTwitter.Tests.UserTests
 		}
 
 		[TestMethod]
+		public void BuildUrl_ForMe_ConstructsUrl()
+		{
+			const string ExpectedUrl =
+				BaseUrl2 + "users/me?" +
+				"expansions=attachments.poll_ids%2Cauthor_id&" +
+				"tweet.fields=author_id%2Ccreated_at&" +
+				"user.fields=created_at%2Cverified";
+			var reqProc = new TwitterUserRequestProcessor<TwitterUserQuery> { BaseUrl = BaseUrl2 };
+			var parameters =
+				new Dictionary<string, string>
+				{
+					{ nameof(TwitterUserQuery.Type), UserType.Me.ToString() },
+					{ nameof(TwitterUserQuery.Expansions), "attachments.poll_ids,author_id" },
+					{ nameof(TwitterUserQuery.TweetFields), "author_id,created_at" },
+					{ nameof(TwitterUserQuery.UserFields), "created_at,verified" }
+			   };
+
+			Request req = reqProc.BuildUrl(parameters);
+
+			Assert.AreEqual(ExpectedUrl, req.FullUrl);
+		}
+
+		[TestMethod]
         public void BuildUrl_WithNoParameters_Fails()
         {
             var twitterUserReqProc = new TwitterUserRequestProcessor<TwitterUserQuery> { BaseUrl = BaseUrl2 };
@@ -616,6 +639,31 @@ namespace LinqToTwitter.Tests.UserTests
 			Assert.AreEqual("JoeMayo", user.Username);
 			Assert.IsTrue(user.Verified);
         }
+
+		[TestMethod]
+		public void ProcessResults_WithSingleUser_PopulatesData()
+		{
+			var twitterUserProc = new TwitterUserRequestProcessor<TwitterUserQuery> 
+			{ 
+				BaseUrl = BaseUrl2,
+				Type = UserType.Me
+			};
+
+			List<TwitterUserQuery> results = twitterUserProc.ProcessResults(SingleUser);
+
+			Assert.IsNotNull(results);
+			TwitterUserQuery twitterUserQuery = results.SingleOrDefault();
+			Assert.IsNotNull(twitterUserQuery);
+			List<TwitterUser> users = twitterUserQuery.Users;
+			Assert.IsNotNull(users);
+			TwitterUser user = users.SingleOrDefault();
+			Assert.IsNotNull(user);
+			Assert.AreEqual(DateTime.Parse("2013-12-14").Date, user.CreatedAt.Date);
+			Assert.AreEqual("2244994945", user.ID);
+			Assert.AreEqual("Twitter Dev", user.Name);
+			Assert.AreEqual("1255542774432063488", user.PinnedTweetId);
+			Assert.AreEqual("TwitterDev", user.Username);
+		}
 
 		[TestMethod]
 		public void ProcessResults_Populates_Entities()
@@ -1162,6 +1210,16 @@ namespace LinqToTwitter.Tests.UserTests
 			""type"": ""https://api.twitter.com/2/problems/resource-not-found""
 		}
 	]
+}";
+
+		const string SingleUser = @"{
+  ""data"": {
+    ""created_at"": ""2013-12-14T04:35:55.000Z"",
+    ""username"": ""TwitterDev"",
+    ""pinned_tweet_id"": ""1255542774432063488"",
+    ""id"": ""2244994945"",
+    ""name"": ""Twitter Dev""
+  }
 }";
 
 	}
