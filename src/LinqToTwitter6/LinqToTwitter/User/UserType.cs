@@ -21,6 +21,16 @@
         Contributors,
 
         /// <summary>
+        /// Get list of people that are following user
+        /// </summary>
+        Followers,
+
+        /// <summary>
+        /// Get list of people that user is following 
+        /// </summary>
+        Following,
+
+        /// <summary>
         /// Search users by ids
         /// </summary>
         IdLookup,
@@ -41,6 +51,11 @@
         ListMembers,
 
         /// <summary>
+        /// Gets user information for the currently authenticated user
+        /// </summary>
+        Me,
+
+        /// <summary>
         /// Get tweets a user retweeted
         /// </summary>
         RetweetedBy,
@@ -51,23 +66,13 @@
         Search,
 
         /// <summary>
-        /// Search users by username
-        /// </summary>
-        UsernameLookup,
-
-        /// <summary>
-        /// Get list of people that are following user
-        /// </summary>
-        Followers,
-
-        /// <summary>
-        /// Get list of people that user is following 
-        /// </summary>
-        Following,
-
-        /// <summary>
         /// People who bought a ticket to a space
         /// </summary>
         SpaceBuyers,
+
+        /// <summary>
+        /// Search users by username
+        /// </summary>
+        UsernameLookup,
     }
 }
