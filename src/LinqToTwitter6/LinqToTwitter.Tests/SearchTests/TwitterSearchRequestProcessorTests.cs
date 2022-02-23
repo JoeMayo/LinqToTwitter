@@ -40,6 +40,7 @@ namespace LinqToTwitter.Tests.SearchTests
                     search.PollFields == "duration_minutes,end_datetime" &&
                     search.Query == "LINQ to Twitter" &&
                     search.SinceID == "123" &&
+                    search.SortOrder == SearchSortOrder.Relevancy &&
                     search.StartTime == startTime &&
                     search.TweetFields == "author_id,created_at" &&
                     search.UntilID == "525" &&
@@ -81,6 +82,9 @@ namespace LinqToTwitter.Tests.SearchTests
                     new KeyValuePair<string, string>(nameof(TwitterSearch.SinceID), "123")));
             Assert.IsTrue(
                 queryParams.Contains(
+                    new KeyValuePair<string, string>(nameof(TwitterSearch.SortOrder), "relevancy")));
+            Assert.IsTrue(
+                queryParams.Contains(
                     new KeyValuePair<string, string>(nameof(TwitterSearch.StartTime), "08/01/2020 00:00:00")));
             Assert.IsTrue(
                 queryParams.Contains(
@@ -107,6 +111,7 @@ namespace LinqToTwitter.Tests.SearchTests
                 "place.fields=country&" +
                 "poll.fields=duration_minutes%2Cend_datetime&" +
                 "since_id=123&" +
+                "sort_order=relevancy&" +
                 "start_time=2020-12-31T00%3A00%3A01Z&" +
                 "tweet.fields=author_id%2Ccreated_at&" +
                 "until_id=525&" +
@@ -125,6 +130,7 @@ namespace LinqToTwitter.Tests.SearchTests
                     { nameof(TwitterSearch.PlaceFields), "country" },
                     { nameof(TwitterSearch.PollFields), "duration_minutes,end_datetime" },
                     { nameof(TwitterSearch.SinceID), "123" },
+                    { nameof(TwitterSearch.SortOrder), SearchSortOrder.Relevancy },
                     { nameof(TwitterSearch.StartTime), new DateTime(2020, 12, 31, 0, 0, 1).ToString() },
                     { nameof(TwitterSearch.TweetFields), "author_id,created_at" },
                     { nameof(TwitterSearch.UntilID), "525" },
@@ -161,6 +167,7 @@ namespace LinqToTwitter.Tests.SearchTests
                 "place.fields=full_name&" +
                 "poll.fields=voting_status&" +
                 "since_id=123&" +
+                "sort_order=recency&" +
                 "start_time=2020-12-31T00%3A00%3A01Z&" +
                 "tweet.fields=text&" +
                 "until_id=525&" +
@@ -179,6 +186,7 @@ namespace LinqToTwitter.Tests.SearchTests
                     { nameof(TwitterSearch.PlaceFields), PlaceField.FullName },
                     { nameof(TwitterSearch.PollFields), PollField.VotingStatus },
                     { nameof(TwitterSearch.SinceID), 123.ToString() },
+                    { nameof(TwitterSearch.SortOrder), SearchSortOrder.Recency },
                     { nameof(TwitterSearch.StartTime), new DateTime(2020, 12, 31, 00, 00, 01).ToString() },
                     { nameof(TwitterSearch.TweetFields), TweetField.Text },
                     { nameof(TwitterSearch.UntilID), 525.ToString() },
@@ -328,6 +336,7 @@ namespace LinqToTwitter.Tests.SearchTests
                 PollFields = "345",
                 Query = "JoeMayo",
                 SinceID = "1",
+                SortOrder = SearchSortOrder.Relevancy,
                 StartTime = new DateTime(2020, 1, 1),
                 TweetFields = "678",
                 UntilID = "901",
@@ -350,6 +359,7 @@ namespace LinqToTwitter.Tests.SearchTests
             Assert.AreEqual("345", search.PollFields);
             Assert.AreEqual("JoeMayo", search.Query);
             Assert.AreEqual("1", search.SinceID);
+            Assert.AreEqual(SearchSortOrder.Relevancy, search.SortOrder);
             Assert.AreEqual(new DateTime(2020, 1, 1), search.StartTime);
             Assert.AreEqual("678", search.TweetFields);
             Assert.AreEqual("901", search.UntilID);

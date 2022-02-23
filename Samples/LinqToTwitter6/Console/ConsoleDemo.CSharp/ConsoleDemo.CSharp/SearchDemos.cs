@@ -180,6 +180,7 @@ namespace ConsoleDemo.CSharp
                  where search.Type == SearchType.RecentSearch &&
                        search.Query == searchTerm &&
                        search.MaxResults == 100 &&
+                       search.SortOrder == SearchSortOrder.Relevancy &&
                        search.TweetFields == TweetField.AllFieldsExceptPermissioned &&
                        search.Expansions == ExpansionField.AllTweetFields &&
                        search.MediaFields == MediaField.AllFieldsExceptPermissioned &&

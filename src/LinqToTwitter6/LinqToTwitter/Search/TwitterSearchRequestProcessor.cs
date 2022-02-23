@@ -71,6 +71,11 @@ namespace LinqToTwitter
         public string? SinceID { get; set; }
 
         /// <summary>
+        /// Order to return tweets
+        /// </summary>
+        public string SortOrder { get; set; }
+
+        /// <summary>
         /// Date/Time to start search
         /// </summary>
         public DateTime StartTime { get; set; }
@@ -111,6 +116,7 @@ namespace LinqToTwitter
                        nameof(PollFields),
                        nameof(Query),
                        nameof(SinceID),
+                       nameof(SortOrder),
                        nameof(StartTime),
                        nameof(TweetFields),
                        nameof(UntilID),
@@ -212,6 +218,12 @@ namespace LinqToTwitter
                 urlParams.Add(new QueryParameter("since_id", SinceID));
             }
 
+            if (parameters.ContainsKey(nameof(SortOrder)))
+            {
+                SortOrder = parameters[nameof(SortOrder)];
+                urlParams.Add(new QueryParameter("sort_order", SortOrder));
+            }
+
             if (parameters.ContainsKey(nameof(StartTime)))
             {
                 StartTime = DateTime.Parse(parameters[nameof(StartTime)]);
@@ -287,6 +299,7 @@ namespace LinqToTwitter
                     PollFields = PollFields,
                     Query = Query,
                     SinceID = SinceID,
+                    SortOrder = SortOrder,
                     StartTime = StartTime,
                     TweetFields = TweetFields,
                     UntilID = UntilID,
@@ -305,6 +318,7 @@ namespace LinqToTwitter
                     PollFields = PollFields,
                     Query = Query,
                     SinceID = SinceID,
+                    SortOrder= SortOrder,
                     StartTime = StartTime,
                     TweetFields = TweetFields,
                     UntilID = UntilID,

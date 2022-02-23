@@ -69,6 +69,11 @@ namespace LinqToTwitter
         public string? SinceID { get; init; }
 
         /// <summary>
+        /// Order to return tweets
+        /// </summary>
+        public string SortOrder { get; set; }
+
+        /// <summary>
         /// Date/Time to start search
         /// </summary>
         public DateTime StartTime { get; init; }
