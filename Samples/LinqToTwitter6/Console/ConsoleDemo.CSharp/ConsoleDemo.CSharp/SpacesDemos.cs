@@ -77,6 +77,7 @@ namespace ConsoleDemo.CSharp
                        search.CreatorIds == creatorIds &&
                        search.Expansions == ExpansionField.AllSpaceFields &&
                        search.SpaceFields == SpaceField.AllFields &&
+                       search.TopicFields == TopicField.AllFields &&
                        search.UserFields == UserField.AllFields
                  select search)
                 .SingleOrDefaultAsync();
@@ -106,6 +107,7 @@ namespace ConsoleDemo.CSharp
                        search.SpaceIds == spaceIds &&
                        search.Expansions == ExpansionField.AllSpaceFields &&
                        search.SpaceFields == SpaceField.AllFields &&
+                       search.TopicFields == TopicField.AllFields &&
                        search.UserFields == UserField.AllFields
                  select search)
                 .SingleOrDefaultAsync();
@@ -137,6 +139,7 @@ namespace ConsoleDemo.CSharp
                        search.Expansions == ExpansionField.AllSpaceFields &&
                        search.SpaceFields == SpaceField.AllFields &&
                        search.State == SpaceState.All &&
+                       search.TopicFields == TopicField.AllFields &&
                        search.UserFields == UserField.AllFields
                  select search)
                 .SingleOrDefaultAsync();

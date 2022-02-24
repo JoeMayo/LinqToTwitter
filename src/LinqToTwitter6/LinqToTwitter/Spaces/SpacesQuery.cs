@@ -51,6 +51,11 @@ namespace LinqToTwitter
         public string? State { get; set; }
 
         /// <summary>
+        /// Comma-separated list of fields to return in the Topic object - <see cref="TopicField"/>
+        /// </summary>
+        public string? TopicFields { get; set; }
+
+        /// <summary>
         /// Comma-separated list of fields to return in the User object - <see cref="UserField"/>
         /// </summary>
         public string? UserFields { get; set; }

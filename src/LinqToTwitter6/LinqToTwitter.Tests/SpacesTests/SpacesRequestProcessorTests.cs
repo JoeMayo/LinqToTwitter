@@ -34,6 +34,7 @@ namespace LinqToTwitter.Tests.SpaceTests
                     space.MaxResults == 100 &&
                     space.SpaceFields == "id,title" &&
                     space.State == "live" &&
+					space.TopicFields == "id,name" &&
                     space.UserFields == "id,name";
             var lambdaExpression = expression as LambdaExpression;
 
@@ -63,7 +64,10 @@ namespace LinqToTwitter.Tests.SpaceTests
             Assert.IsTrue(
                 queryParams.Contains(
                     new KeyValuePair<string, string>(nameof(SpacesQuery.State), "live")));
-            Assert.IsTrue(
+			Assert.IsTrue(
+				queryParams.Contains(
+					new KeyValuePair<string, string>(nameof(SpacesQuery.TopicFields), "id,name")));
+			Assert.IsTrue(
                 queryParams.Contains(
                     new KeyValuePair<string, string>(nameof(SpacesQuery.UserFields), "id,name")));
         }
@@ -78,7 +82,8 @@ namespace LinqToTwitter.Tests.SpaceTests
                 "max_results=99&" +
                 "space.fields=id%2Ctitle&" +
                 "state=live&" +
-                "user.fields=created_at%2Cverified";
+				"topic.fields=id%2Cname&" +
+				"user.fields=created_at%2Cverified";
 
             var reqProc = new SpacesRequestProcessor<SpacesQuery> { BaseUrl = BaseUrl2 };
             var parameters =
@@ -90,6 +95,7 @@ namespace LinqToTwitter.Tests.SpaceTests
                     { nameof(SpacesQuery.MaxResults), "99" },
                     { nameof(SpacesQuery.SpaceFields), "id,title" },
                     { nameof(SpacesQuery.State), SpaceState.Live },
+                    { nameof(SpacesQuery.TopicFields), "id,name" },
                     { nameof(SpacesQuery.UserFields), "created_at,verified" }
                 };
 
@@ -108,6 +114,7 @@ namespace LinqToTwitter.Tests.SpaceTests
 				"max_results=99&" +
 				"space.fields=id%2Ctitle&" +
 				"state=live&" +
+				"topic.fields=id%2Cname&" +
 				"user.fields=created_at%2Cverified";
 
 			var reqProc = new SpacesRequestProcessor<SpacesQuery> { BaseUrl = BaseUrl2 };
@@ -120,6 +127,7 @@ namespace LinqToTwitter.Tests.SpaceTests
 					{ nameof(SpacesQuery.MaxResults), "99" },
 					{ nameof(SpacesQuery.SpaceFields), "id ,title" },
 					{ nameof(SpacesQuery.State), SpaceState.Live },
+					{ nameof(SpacesQuery.TopicFields), "id, name" },
 					{ nameof(SpacesQuery.UserFields), "created_at ,verified" }
 				};
 
@@ -141,6 +149,7 @@ namespace LinqToTwitter.Tests.SpaceTests
 				SpaceFields = SpaceField.HostIds,
 				SpaceIds = "789,012",
 				State = SpaceState.Live,
+				TopicFields = TopicField.Description,
 				UserFields = UserField.Name
 			};
 
@@ -156,6 +165,7 @@ namespace LinqToTwitter.Tests.SpaceTests
 			Assert.AreEqual(SpaceField.HostIds, spaceQuery.SpaceFields);
 			Assert.AreEqual("789,012", spaceQuery.SpaceIds);
 			Assert.AreEqual(SpaceState.Live, spaceQuery.State);
+			Assert.AreEqual(TopicField.Description, spaceQuery.TopicFields);
 			Assert.AreEqual(UserField.Name, spaceQuery.UserFields);
 		}
 
@@ -167,6 +177,7 @@ namespace LinqToTwitter.Tests.SpaceTests
 				"expansions=attachments.poll_ids%2Cauthor_id&" +
 				"ids=123%2C456&" +
 				"space.fields=id%2Ctitle&" +
+				"topic.fields=id%2Cname&" +
 				"user.fields=created_at%2Cverified";
 			var reqProc = new SpacesRequestProcessor<SpacesQuery> { BaseUrl = BaseUrl2 };
 			var parameters =
@@ -176,6 +187,7 @@ namespace LinqToTwitter.Tests.SpaceTests
 					{ nameof(SpacesQuery.SpaceIds), "123,456" },
 					{ nameof(SpacesQuery.Expansions), "attachments.poll_ids,author_id" },
 					{ nameof(SpacesQuery.SpaceFields), "id,title" },
+					{ nameof(SpacesQuery.TopicFields), "id,name" },
 					{ nameof(SpacesQuery.UserFields), "created_at,verified" }
 			   };
 
@@ -192,6 +204,7 @@ namespace LinqToTwitter.Tests.SpaceTests
 				"expansions=attachments.poll_ids%2Cauthor_id&" +
 				"ids=123%2C456&" +
 				"space.fields=id%2Ctitle&" +
+				"topic.fields=id%2Cname&" +
 				"user.fields=created_at%2Cverified";
 			var reqProc = new SpacesRequestProcessor<SpacesQuery> { BaseUrl = BaseUrl2 };
 			var parameters =
@@ -201,6 +214,7 @@ namespace LinqToTwitter.Tests.SpaceTests
 					{ nameof(SpacesQuery.SpaceIds), "123, 456" },
 					{ nameof(SpacesQuery.Expansions), "attachments.poll_ids, author_id" },
 					{ nameof(SpacesQuery.SpaceFields), "id, title" },
+					{ nameof(SpacesQuery.TopicFields), "id, name" },
 					{ nameof(SpacesQuery.UserFields), "created_at, verified" }
 			   };
 
@@ -217,6 +231,7 @@ namespace LinqToTwitter.Tests.SpaceTests
 				"expansions=attachments.poll_ids%2Cauthor_id&" +
 				"user_ids=123%2C456&" +
 				"space.fields=id%2Ctitle&" +
+				"topic.fields=id%2Cname&" +
 				"user.fields=created_at%2Cverified";
 			var reqProc = new SpacesRequestProcessor<SpacesQuery> { BaseUrl = BaseUrl2 };
 			var parameters =
@@ -226,6 +241,7 @@ namespace LinqToTwitter.Tests.SpaceTests
 					{ nameof(SpacesQuery.CreatorIds), "123,456" },
 					{ nameof(SpacesQuery.Expansions), "attachments.poll_ids,author_id" },
 					{ nameof(SpacesQuery.SpaceFields), "id,title" },
+					{ nameof(SpacesQuery.TopicFields), "id,name" },
 					{ nameof(SpacesQuery.UserFields), "created_at,verified" }
 			   };
 
@@ -242,6 +258,7 @@ namespace LinqToTwitter.Tests.SpaceTests
 				"expansions=attachments.poll_ids%2Cauthor_id&" +
 				"user_ids=123%2C456&" +
 				"space.fields=id%2Ctitle&" +
+				"topic.fields=id%2Cname&" +
 				"user.fields=created_at%2Cverified";
 			var reqProc = new SpacesRequestProcessor<SpacesQuery> { BaseUrl = BaseUrl2 };
 			var parameters =
@@ -251,6 +268,7 @@ namespace LinqToTwitter.Tests.SpaceTests
 					{ nameof(SpacesQuery.CreatorIds), "123, 456" },
 					{ nameof(SpacesQuery.Expansions), "attachments.poll_ids, author_id" },
 					{ nameof(SpacesQuery.SpaceFields), "id, title" },
+					{ nameof(SpacesQuery.TopicFields), "id, name" },
 					{ nameof(SpacesQuery.UserFields), "created_at, verified" }
 			   };
 
@@ -279,6 +297,7 @@ namespace LinqToTwitter.Tests.SpaceTests
 			Assert.IsNotNull(space.InvitedUserIds);
 			Assert.AreEqual(7, space.InvitedUserIds.Count);
 			Assert.AreEqual(1, space.ParticipantCount);
+			Assert.AreEqual(5, space.SubscriberCount);
 			Assert.AreEqual(true, space.IsTicketed);
 			Assert.AreEqual("fr", space.Lang);
 			Assert.AreEqual("10/20/2021 00:54:23", space.CreatedAt.Value.ToString());
@@ -309,6 +328,7 @@ namespace LinqToTwitter.Tests.SpaceTests
 				""20550618""
 			],
 			""participant_count"": 1,
+			""subscriber_count"": 5,
 			""is_ticketed"": true,
 			""lang"": ""fr"",
 			""created_at"": ""2021-10-20T00:54:23.000Z"",
@@ -336,6 +356,7 @@ namespace LinqToTwitter.Tests.SpaceTests
 				""985972363""
 			],
 			""participant_count"": 8,
+			""subscriber_count"": 3,
 			""is_ticketed"": false,
 			""lang"": ""hi"",
 			""created_at"": ""2021-10-20T03:24:00.000Z"",
