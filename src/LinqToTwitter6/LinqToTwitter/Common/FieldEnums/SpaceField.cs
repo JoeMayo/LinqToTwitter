@@ -9,9 +9,9 @@
         /// All expandable fields
         /// </summary>
         public const string AllFields =
-            "created_at,creator_id,host_ids,id,is_ticketed,lang," +
-            "invited_user_ids,participant_count,scheduled_start," +
-            "speaker_ids,started_at,state,title,updated_at";
+            "created_at,creator_id,ended_at,host_ids,id,is_ticketed,lang," +
+            "invited_user_ids,participant_count,scheduled_start,speaker_ids," +
+            "started_at,state,subscriber_count,topic_ids,title,updated_at";
 
         /// <summary>
         /// created_at
@@ -22,6 +22,11 @@
         /// creator_id
         /// </summary>
         public const string CreatorID = "creator_id";
+
+        /// <summary>
+        /// ended_at
+        /// </summary>
+        public const string EndedAt = "ended_at";
 
         /// <summary>
         /// host_ids
@@ -74,9 +79,19 @@
         public const string State = "state";
 
         /// <summary>
+        /// subscriber_count
+        /// </summary>
+        public const string SubscriberCount = "subscriber_count";
+
+        /// <summary>
         /// title
         /// </summary>
         public const string Title = "title";
+
+        /// <summary>
+        /// topic_ids
+        /// </summary>
+        public const string TopicIds = "topic_ids";
 
         /// <summary>
         /// updated_at

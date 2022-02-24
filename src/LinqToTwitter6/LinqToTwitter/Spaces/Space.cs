@@ -11,6 +11,9 @@ namespace LinqToTwitter
         [JsonPropertyName("creator_id")]
         public string? CreatorID { get; set; }
 
+        [JsonPropertyName("ended_at")]
+        public DateTime? EndedAt { get; set; }
+
         [JsonPropertyName("invited_user_ids")]
         public List<string>? InvitedUserIds { get; set; }
 
@@ -29,6 +32,9 @@ namespace LinqToTwitter
         [JsonPropertyName("updated_at")]
         public DateTime? UpdatedAt { get; set; }
 
+        [JsonPropertyName("scheduled_start")]
+        public DateTime? ScheduledStart { get; set; }
+
         [JsonPropertyName("started_at")]
         public DateTime? StartedAt { get; set; }
 
@@ -37,6 +43,18 @@ namespace LinqToTwitter
 
         [JsonPropertyName("speaker_ids")]
         public List<string>? SpeakerIds { get; set; }
+
+        [JsonPropertyName("state")]
+        public string? State { get; set; }
+
+        [JsonPropertyName("subscriber_count")]
+        public int SubscriberCount { get; set; }
+
+        [JsonPropertyName("title")]
+        public string? Title { get; set; }
+
+        [JsonPropertyName("topic_ids")]
+        public List<string>? TopicIds { get; set; }
 
         [JsonPropertyName("host_ids")]
         public List<string>? HostIds { get; set; }

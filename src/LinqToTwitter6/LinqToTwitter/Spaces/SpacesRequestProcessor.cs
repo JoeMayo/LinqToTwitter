@@ -63,6 +63,11 @@ namespace LinqToTwitter
         public string? State { get; set; }
 
         /// <summary>
+        /// Comma-separated list of fields to return in the Topic object - <see cref="TopicField"/>
+        /// </summary>
+        public string? TopicFields { get; set; }
+
+        /// <summary>
         /// Comma-separated list of fields to return in the User object - <see cref="UserField"/>
         /// </summary>
         public string? UserFields { get; set; }
@@ -86,6 +91,7 @@ namespace LinqToTwitter
                        nameof(SpaceFields),
                        nameof(SpaceIds),
                        nameof(State),
+                       nameof(TopicFields),
                        nameof(UserFields)
                    });
 
@@ -137,6 +143,12 @@ namespace LinqToTwitter
                 urlParams.Add(new QueryParameter("space.fields", SpaceFields.Replace(" ", "")));
             }
 
+            if (parameters.ContainsKey(nameof(TopicFields)))
+            {
+                TopicFields = parameters[nameof(TopicFields)];
+                urlParams.Add(new QueryParameter("topic.fields", TopicFields.Replace(" ", "")));
+            }
+
             if (parameters.ContainsKey(nameof(UserFields)))
             {
                 UserFields = parameters[nameof(UserFields)];
@@ -167,6 +179,12 @@ namespace LinqToTwitter
             {
                 SpaceFields = parameters[nameof(SpaceFields)];
                 urlParams.Add(new QueryParameter("space.fields", SpaceFields.Replace(" ", "")));
+            }
+
+            if (parameters.ContainsKey(nameof(TopicFields)))
+            {
+                TopicFields = parameters[nameof(TopicFields)];
+                urlParams.Add(new QueryParameter("topic.fields", TopicFields.Replace(" ", "")));
             }
 
             if (parameters.ContainsKey(nameof(UserFields)))
@@ -211,6 +229,12 @@ namespace LinqToTwitter
             {
                 State = parameters[nameof(State)];
                 urlParams.Add(new QueryParameter("state", State));
+            }
+
+            if (parameters.ContainsKey(nameof(TopicFields)))
+            {
+                TopicFields = parameters[nameof(TopicFields)];
+                urlParams.Add(new QueryParameter("topic.fields", TopicFields.Replace(" ", "")));
             }
 
             if (parameters.ContainsKey(nameof(UserFields)))
@@ -272,6 +296,7 @@ namespace LinqToTwitter
                     SpaceFields = SpaceFields,
                     SpaceIds = SpaceIds,
                     State = State,
+                    TopicFields = TopicFields,
                     UserFields = UserFields
                 };
             else
@@ -285,6 +310,7 @@ namespace LinqToTwitter
                     SpaceFields = SpaceFields,
                     SpaceIds = SpaceIds,
                     State = State,
+                    TopicFields = TopicFields,
                     UserFields = UserFields
                 };
         }
