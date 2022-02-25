@@ -173,6 +173,28 @@ namespace LinqToTwitter.Net
                             }
                         };
                     }
+                    else if (root.TryGetProperty("detail", out JsonElement detail))
+                    {
+                        root.TryGetProperty("title", out JsonElement title);
+                        root.TryGetProperty("type", out JsonElement type);
+                        root.TryGetProperty("status", out JsonElement status);
+
+                        return new TwitterErrorDetails
+                        {
+                            Title = title.GetString(),
+                            Detail = detail.GetString(),
+                            Type = type.GetString(),
+                            Errors = new()
+                            {
+                                new Error
+                                {
+                                    Code = status.GetInt32(),
+                                    Message = title.GetString(),
+                                    Request = detail.GetString(),
+                                }
+                            }
+                        };
+                    }
                     else
                     {
                         return new TwitterErrorDetails
