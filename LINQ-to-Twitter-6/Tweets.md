@@ -28,4 +28,13 @@ Read all mentions of a user.
 
 ### [Tweets Timeline](Tweets/Tweets-Timeline.md)
 
-Read all tweets from a user's home timeline.
+Read all mentions of a user.
+
+### [Recent Tweets Count](Tweets/Tweets-Count-Recent.md)
+
+Get count of tweets matching a query for the last 7 days.
+
+### [All Tweets Count](Tweets/Tweets-Count-All.md)
+
+Get count of all tweets matching a query (academic only).
+
