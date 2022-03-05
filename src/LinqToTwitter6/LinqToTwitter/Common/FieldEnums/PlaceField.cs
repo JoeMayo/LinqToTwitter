@@ -25,7 +25,7 @@
         /// <summary>
         /// country_code
         /// </summary>
-        public const string CoutryCode = "country_code";
+        public const string CountryCode = "country_code";
 
         /// <summary>
         /// full_name
