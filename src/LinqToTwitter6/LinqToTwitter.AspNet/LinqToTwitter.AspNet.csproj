@@ -10,7 +10,7 @@
 
 This library has ASP.NET authorizers and SessionStateCredentialCache that you'll need for ASP.NET Core 5 applications.</Description>
     <Copyright>LINQ to Twitter</Copyright>
-    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/JoeMayo/LinqToTwitter</PackageProjectUrl>
     <PackageIcon>200xColor_2.png</PackageIcon>
     <RepositoryUrl>https://github.com/JoeMayo/LinqToTwitter</RepositoryUrl>

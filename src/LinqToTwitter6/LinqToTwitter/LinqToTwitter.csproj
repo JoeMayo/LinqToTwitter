@@ -11,7 +11,7 @@
 		<Product>LINQ to Twitter</Product>
 		<SignAssembly>true</SignAssembly>
 		<AssemblyOriginatorKeyFile>LinqToTwitter.snk</AssemblyOriginatorKeyFile>
-		<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageProjectUrl>https://github.com/JoeMayo/LinqToTwitter</PackageProjectUrl>
 		<PackageIcon>200xColor_2.png</PackageIcon>
 		<RepositoryUrl>https://github.com/JoeMayo/LinqToTwitter</RepositoryUrl>
