@@ -23,8 +23,8 @@ assignees: ''
       - [ ] Elevated access 
       - [ ] Academic research access
       - Type of v2 App 👇
-      - [ ] Public Client (_Native App / Single Page App_)
-      - [ ] Confidential Client (_Web App / Automated App or Bot_)
+      - [ ] Public Client  (Native App / Single Page App)
+      - [ ] Confidential Client (Web App / Automated App or Bot)
 
 ### Describe the issue
 <!-- A clear and concise description of what the issue is. -->
