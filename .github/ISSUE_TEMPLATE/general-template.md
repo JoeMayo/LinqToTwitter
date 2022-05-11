@@ -7,7 +7,7 @@ assignees: ''
 
 ---
 
-<!-- use the preview tab ☝ to see how it looks, these are commennts (FYI), not displayed in the output -->
+<!-- use the preview tab ☝ to see how it looks, these are comments (FYI), not displayed in the output -->
 # General Issue
 
 ### Please let us know what you use:
