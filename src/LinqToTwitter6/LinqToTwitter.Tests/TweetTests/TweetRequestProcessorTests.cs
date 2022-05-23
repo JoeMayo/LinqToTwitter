@@ -445,7 +445,8 @@ namespace LinqToTwitter.Tests.TweetTests
 			Assert.AreEqual(DateTime.Parse("2020-09-15T15:44:56.000Z").Date, tweet.CreatedAt?.Date);
 			Assert.AreEqual("1305895383260782593", tweet.ConversationID);
 			Assert.IsTrue(tweet.PossiblySensitive ?? false);
-			Assert.AreEqual(tweet.ReplySettings, TweetReplySettings.MentionedUsers);
+			Assert.AreEqual(tweet.ReplySettings, TweetReplySettings.Everyone);
+			Assert.AreEqual("Twitter Web App", tweet.Source);
         }
 
 		[TestMethod]
@@ -477,8 +478,9 @@ namespace LinqToTwitter.Tests.TweetTests
 
 			TweetEntityMention mention = entities?.Mentions?.FirstOrDefault();
 			Assert.IsNotNull(mention);
-			Assert.AreEqual(7, mention.Start);
 			Assert.AreEqual(14, mention.End);
+			Assert.AreEqual("13334762", mention.ID);
+			Assert.AreEqual(7, mention.Start);
 			Assert.AreEqual("github", mention.Username);
 
 			TweetEntityUrl url = entities?.Urls?.FirstOrDefault();
@@ -489,16 +491,16 @@ namespace LinqToTwitter.Tests.TweetTests
 			Assert.AreEqual("http://bit.ly/1b2wrHb", url.ExpandedUrl);
 			Assert.AreEqual("bit.ly/1b2wrHb", url.DisplayUrl);
 			Assert.AreEqual(200, url.Status);
-			Assert.AreEqual("JoeMayo/LinqToTwitter", url.Title);
-			Assert.AreEqual("LINQ Provider for the Twitter API (Twitter Library) - JoeMayo/LinqToTwitter", url.Description);
+			Assert.AreEqual("GitHub - JoeMayo/LinqToTwitter: LINQ Provider for the Twitter API (C# Twitter Library)", url.Title);
+			Assert.AreEqual("LINQ Provider for the Twitter API (C# Twitter Library) - GitHub - JoeMayo/LinqToTwitter: LINQ Provider for the Twitter API (C# Twitter Library)", url.Description);
 			Assert.AreEqual("https://github.com/JoeMayo/LinqToTwitter", url.UnwoundUrl);
 			List<TweetEntityImage> images = url.Images;
 			Assert.IsNotNull(images);
 			Assert.AreEqual(2, images.Count);
 			TweetEntityImage image = images.First();
-			Assert.AreEqual("https://pbs.twimg.com/news_img/1321470110356287488/pWdfwBk5?format=png&name=orig", image.Url);
-			Assert.AreEqual(100, image.Width);
-			Assert.AreEqual(100, image.Height);
+			Assert.AreEqual("https://pbs.twimg.com/news_img/1527013178009329664/f45coPtn?format=png&name=orig", image.Url);
+			Assert.AreEqual(200, image.Width);
+			Assert.AreEqual(200, image.Height);
 		}
 
 		[TestMethod]
@@ -527,6 +529,10 @@ namespace LinqToTwitter.Tests.TweetTests
 			Assert.AreEqual("46", domain.ID);
 			Assert.AreEqual("Brand Category", domain.Name);
 			Assert.AreEqual("Categories within Brand Verticals that narrow down the scope of Brands", domain.Description);
+			TweetContextAnnotationDetails entity = annotation.Entity;
+			Assert.IsNotNull(entity);
+			Assert.AreEqual("781974596752842752", entity.ID);
+			Assert.AreEqual("Services", entity.Name);
 		}
 
 		[TestMethod]
@@ -660,7 +666,96 @@ namespace LinqToTwitter.Tests.TweetTests
 		const string SingleTweet = @"{
 	""data"": [
 		{
-			""reply_settings"": ""mentionedUsers"",
+			""context_annotations"": [
+				{
+					""domain"": {
+						""id"": ""46"",
+						""name"": ""Brand Category"",
+						""description"": ""Categories within Brand Verticals that narrow down the scope of Brands""
+					},
+					""entity"": {
+						""id"": ""781974596752842752"",
+						""name"": ""Services""
+					}
+				},
+				{
+					""domain"": {
+						""id"": ""47"",
+						""name"": ""Brand"",
+						""description"": ""Brands and Companies""
+					},
+					""entity"": {
+						""id"": ""10045225402"",
+						""name"": ""Twitter""
+					}
+				},
+				{
+					""domain"": {
+						""id"": ""30"",
+						""name"": ""Entities [Entity Service]"",
+						""description"": ""Entity Service top level domain, every item that is in Entity Service should be in this domain""
+					},
+					""entity"": {
+						""id"": ""848920371311001600"",
+						""name"": ""Technology"",
+						""description"": ""Technology and computing""
+					}
+				},
+				{
+					""domain"": {
+						""id"": ""66"",
+						""name"": ""Interests and Hobbies Category"",
+						""description"": ""A grouping of interests and hobbies entities, like Novelty Food or Destinations""
+					},
+					""entity"": {
+						""id"": ""848921413196984320"",
+						""name"": ""Computer programming"",
+						""description"": ""Computer programming""
+					}
+				},
+				{
+					""domain"": {
+						""id"": ""45"",
+						""name"": ""Brand Vertical"",
+						""description"": ""Top level entities that describe a Brands industry""
+					},
+					""entity"": {
+						""id"": ""781974597226799105"",
+						""name"": ""B2B""
+					}
+				},
+				{
+					""domain"": {
+						""id"": ""46"",
+						""name"": ""Brand Category"",
+						""description"": ""Categories within Brand Verticals that narrow down the scope of Brands""
+					},
+					""entity"": {
+						""id"": ""781974597172203520"",
+						""name"": ""Services""
+					}
+				},
+				{
+					""domain"": {
+						""id"": ""47"",
+						""name"": ""Brand"",
+						""description"": ""Brands and Companies""
+					},
+					""entity"": {
+						""id"": ""10040692468"",
+						""name"": ""GitHub""
+					}
+				}
+			],
+			""reply_settings"": ""everyone"",
+			""id"": ""1305895383260782593"",
+			""source"": ""Twitter Web App"",
+			""public_metrics"": {
+				""retweet_count"": 1,
+				""reply_count"": 1,
+				""like_count"": 1,
+				""quote_count"": 0
+			},
 			""lang"": ""en"",
 			""entities"": {
 				""annotations"": [
@@ -672,13 +767,6 @@ namespace LinqToTwitter.Tests.TweetTests
 						""normalized_text"": ""Twitter""
 					}
 				],
-				""mentions"": [
-					{
-						""start"": 7,
-						""end"": 14,
-						""username"": ""github""
-					}
-				],
 				""urls"": [
 					{
 						""start"": 62,
@@ -688,212 +776,141 @@ namespace LinqToTwitter.Tests.TweetTests
 						""display_url"": ""bit.ly/1b2wrHb"",
 						""images"": [
 							{
-								""url"": ""https://pbs.twimg.com/news_img/1321470110356287488/pWdfwBk5?format=png&name=orig"",
-								""width"": 100,
-								""height"": 100
+								""url"": ""https://pbs.twimg.com/news_img/1527013178009329664/f45coPtn?format=png&name=orig"",
+								""width"": 200,
+								""height"": 200
 							},
 							{
-	""url"": ""https://pbs.twimg.com/news_img/1321470110356287488/pWdfwBk5?format=png&name=150x150"",
-								""width"": 100,
-								""height"": 100
+								""url"": ""https://pbs.twimg.com/news_img/1527013178009329664/f45coPtn?format=png&name=150x150"",
+								""width"": 150,
+								""height"": 150
 							}
 						],
 						""status"": 200,
-						""title"": ""JoeMayo/LinqToTwitter"",
-						""description"": ""LINQ Provider for the Twitter API (Twitter Library) - JoeMayo/LinqToTwitter"",
+						""title"": ""GitHub - JoeMayo/LinqToTwitter: LINQ Provider for the Twitter API (C# Twitter Library)"",
+						""description"": ""LINQ Provider for the Twitter API (C# Twitter Library) - GitHub - JoeMayo/LinqToTwitter: LINQ Provider for the Twitter API (C# Twitter Library)"",
 						""unwound_url"": ""https://github.com/JoeMayo/LinqToTwitter""
+					}
+				],
+				""mentions"": [
+					{
+						""start"": 7,
+						""end"": 14,
+						""username"": ""github"",
+						""id"": ""13334762""
 					}
 				]
 			},
 			""text"": ""Thanks @github for approving sponsorship for LINQ to Twitter: https://t.co/jWeDEN07HN"",
-			""id"": ""1305895383260782593"",
-			""author_id"": ""15411837"",
-			""created_at"": ""2020-09-15T15:44:56.000Z"",
 			""conversation_id"": ""1305895383260782593"",
+			""author_id"": ""15411837"",
 			""possibly_sensitive"": true,
-			""context_annotations"": [
-				{
-					""domain"": {
-						""id"": ""46"",
-						""name"": ""Brand Category"",
-						""description"": ""Categories within Brand Verticals that narrow down the scope of Brands""
-					},
-					""entity"": {
-	""id"": ""781974596752842752"",
-						""name"": ""Services""
-					}
-				},
-				{
-	""domain"": {
-		""id"": ""47"",
-						""name"": ""Brand"",
-						""description"": ""Brands and Companies""
-					},
-					""entity"": {
-		""id"": ""10045225402"",
-						""name"": ""Twitter""
-					}
-},
-				{
-	""domain"": {
-		""id"": ""65"",
-						""name"": ""Interests and Hobbies Vertical"",
-						""description"": ""Top level interests and hobbies groupings, like Food or Travel""
-					},
-					""entity"": {
-		""id"": ""848920371311001600"",
-						""name"": ""Technology"",
-						""description"": ""Technology and computing""
-					}
-},
-				{
-	""domain"": {
-		""id"": ""66"",
-						""name"": ""Interests and Hobbies Category"",
-						""description"": ""A grouping of interests and hobbies entities, like Novelty Food or Destinations""
-					},
-					""entity"": {
-		""id"": ""848921413196984320"",
-						""name"": ""Computer programming"",
-						""description"": ""Computer programming""
-					}
-},
-				{
-	""domain"": {
-		""id"": ""45"",
-						""name"": ""Brand Vertical"",
-						""description"": ""Top level entities that describe a Brands industry""
-					},
-					""entity"": {
-		""id"": ""781974597226799105"",
-						""name"": ""B2B""
-					}
-},
-				{
-	""domain"": {
-		""id"": ""46"",
-						""name"": ""Brand Category"",
-						""description"": ""Categories within Brand Verticals that narrow down the scope of Brands""
-					},
-					""entity"": {
-		""id"": ""781974597172203520"",
-						""name"": ""Services""
-					}
-},
-				{
-	""domain"": {
-		""id"": ""47"",
-						""name"": ""Brand"",
-						""description"": ""Brands and Companies""
-					},
-					""entity"": {
-		""id"": ""10040692468"",
-						""name"": ""GitHub""
-					}
-}
-			],
-			""source"": ""Twitter Web App"",
-			""public_metrics"": {
-			""retweet_count"": 1,
-				""reply_count"": 1,
-				""like_count"": 1,
-				""quote_count"": 0
-			}
+			""created_at"": ""2020-09-15T15:44:56.000Z""
 		}
 	],
 	""includes"": {
-	""users"": [
+		""users"": [
 			{
-		""username"": ""JoeMayo"",
+				""verified"": false,
+				""username"": ""JoeMayo"",
+				""created_at"": ""2008-07-13T04:35:50.000Z"",
+				""description"": ""Author, Instructor, and Independent Consultant \n\nNewest Release: C# Cookbook (https://t.co/acNTiAe6HQ)\n\n#AI #Chatbots #CSharp #Linq2Twitter #NLP"",
+				""public_metrics"": {
+					""followers_count"": 10778,
+					""following_count"": 4193,
+					""tweet_count"": 4226,
+					""listed_count"": 271
+				},
+				""url"": ""https://t.co/Pd3XsnJwJU"",
+				""pinned_tweet_id"": ""1516074915803254788"",
 				""protected"": false,
 				""name"": ""Joe Mayo"",
 				""profile_image_url"": ""https://pbs.twimg.com/profile_images/1185764990403268613/8GoXoOtz_normal.jpg"",
-				""id"": ""15411837"",
-				""public_metrics"": {
-			""followers_count"": 10023,
-					""following_count"": 3783,
-					""tweet_count"": 3797,
-					""listed_count"": 269
-				},
-				""verified"": false,
-				""description"": ""Author, Instructor, and Independent Consultant. Author of Programming the Microsoft Bot Framework/MS Press.\n#ai #chatbots #csharp #linq2twitter #twitterapi"",
-				""created_at"": ""2008-07-13T04:35:50.000Z"",
 				""location"": ""Las Vegas, NV"",
-				""url"": ""https://t.co/Y6dXyWxanS"",
 				""entities"": {
-			""url"": {
-				""urls"": [
+					""url"": {
+						""urls"": [
 							{
-					""start"": 0,
+								""start"": 0,
 								""end"": 23,
-								""url"": ""https://t.co/Y6dXyWxanS"",
-								""expanded_url"": ""https://github.com/JoeMayo"",
-								""display_url"": ""github.com/JoeMayo""
+								""url"": ""https://t.co/Pd3XsnJwJU"",
+								""expanded_url"": ""https://joemayo.medium.com"",
+								""display_url"": ""joemayo.medium.com""
 							}
 						]
 					},
 					""description"": {
-				""hashtags"": [
+						""urls"": [
 							{
-					""start"": 108,
-								""end"": 111,
-								""tag"": ""ai""
+								""start"": 78,
+								""end"": 101,
+								""url"": ""https://t.co/acNTiAe6HQ"",
+								""expanded_url"": ""http://bit.ly/CSharpCookbook"",
+								""display_url"": ""bit.ly/CSharpCookbook""
+							}
+						],
+						""hashtags"": [
+							{
+								""start"": 104,
+								""end"": 107,
+								""tag"": ""AI""
 							},
 							{
-					""start"": 112,
-								""end"": 121,
-								""tag"": ""chatbots""
+								""start"": 108,
+								""end"": 117,
+								""tag"": ""Chatbots""
 							},
 							{
-					""start"": 122,
-								""end"": 129,
-								""tag"": ""csharp""
+								""start"": 118,
+								""end"": 125,
+								""tag"": ""CSharp""
 							},
 							{
-					""start"": 130,
-								""end"": 143,
-								""tag"": ""linq2twitter""
+								""start"": 126,
+								""end"": 139,
+								""tag"": ""Linq2Twitter""
 							},
 							{
-					""start"": 144,
-								""end"": 155,
-								""tag"": ""twitterapi""
+								""start"": 140,
+								""end"": 144,
+								""tag"": ""NLP""
 							}
 						]
 					}
-		}
-	},
+				},
+				""id"": ""15411837""
+			},
 			{
-		""username"": ""github"",
+				""verified"": true,
+				""username"": ""github"",
+				""created_at"": ""2008-02-11T04:41:50.000Z"",
+				""description"": ""How people build software. \n\nNeed help? Send us a message at https://t.co/aspNQGzzZH for support."",
+				""public_metrics"": {
+					""followers_count"": 2277687,
+					""following_count"": 334,
+					""tweet_count"": 7061,
+					""listed_count"": 17306
+				},
+				""url"": """",
 				""protected"": false,
 				""name"": ""GitHub"",
-				""profile_image_url"": ""https://pbs.twimg.com/profile_images/1157035760085684224/iuxTnT5g_normal.jpg"",
-				""id"": ""13334762"",
-				""public_metrics"": {
-			""followers_count"": 1997039,
-					""following_count"": 311,
-					""tweet_count"": 5517,
-					""listed_count"": 15474
-				},
-				""verified"": true,
-				""description"": ""How people build software. \n\nNeed help? Send us a message at https://t.co/YU5nzbpDIg for support."",
-				""created_at"": ""2008-02-11T04:41:50.000Z"",
+				""profile_image_url"": ""https://pbs.twimg.com/profile_images/1414990564408262661/r6YemvF9_normal.jpg"",
 				""location"": ""San Francisco, CA"",
-				""url"": """",
 				""entities"": {
-			""description"": {
-				""urls"": [
+					""description"": {
+						""urls"": [
 							{
-					""start"": 61,
+								""start"": 61,
 								""end"": 84,
-								""url"": ""https://t.co/YU5nzbpDIg"",
-								""expanded_url"": ""http://git.io/c"",
-								""display_url"": ""git.io/c""
+								""url"": ""https://t.co/aspNQGzzZH"",
+								""expanded_url"": ""https://support.github.com"",
+								""display_url"": ""support.github.com""
 							}
 						]
 					}
-		}
-	}
+				},
+				""id"": ""13334762""
+			}
 		]
 	}
 }";
