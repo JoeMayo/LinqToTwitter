@@ -8,16 +8,22 @@ namespace LinqToTwitter
     public record TweetEntityMention
     {
         /// <summary>
-        /// Start of mention
-        /// </summary>
-        [JsonPropertyName("start")]
-        public int Start { get; init; }
-
-        /// <summary>
         /// End of mention
         /// </summary>
         [JsonPropertyName("end")]
         public int End { get; init; }
+
+        /// <summary>
+        /// ID of mentioned user
+        /// </summary>
+        [JsonPropertyName("id")]
+        public string? ID { get; set; }
+
+        /// <summary>
+        /// Start of mention
+        /// </summary>
+        [JsonPropertyName("start")]
+        public int Start { get; init; }
 
         /// <summary>
         /// Mentioned username

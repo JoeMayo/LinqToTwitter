@@ -74,7 +74,7 @@ namespace ConsoleDemo.CSharp
 
         static void ShowMenu()
         {
-            Console.WriteLine("\nSearch Demos - Please select:\n");
+            Console.WriteLine("\nTweet Demos - Please select:\n");
 
             Console.WriteLine("\t 0. Single Tweet Lookup");
             Console.WriteLine("\t 1. Multi-Tweet Lookup");
@@ -92,7 +92,7 @@ namespace ConsoleDemo.CSharp
 
         static async Task DoSingleTweetLookupAsync(TwitterContext twitterCtx)
         {
-            const string TweetID = "1343794019927658496";
+            const string TweetID = "1305895383260782593";
 
             // default is id and text and this also brings in created_at and geo
             string tweetFields =
