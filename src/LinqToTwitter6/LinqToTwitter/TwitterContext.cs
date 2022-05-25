@@ -563,7 +563,10 @@ namespace LinqToTwitter
                     };
                     break;
                 case nameof(Raw):
-                    req = new RawRequestProcessor<T>();
+                    req = new RawRequestProcessor<T>
+                    {
+                        BaseUrl = BaseUrl2
+                    };
                     break;
                 case nameof(SavedSearch):
                     req = new SavedSearchRequestProcessor<T>();
