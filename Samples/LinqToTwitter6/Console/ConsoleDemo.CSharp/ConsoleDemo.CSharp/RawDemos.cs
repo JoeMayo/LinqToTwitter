@@ -26,8 +26,8 @@ namespace ConsoleDemo.CSharp
                         await PerformRecentSearchRawAsync(twitterCtx);
                         break;
                     case '1':
-                        Console.WriteLine("\n\tSearching Standard Tweets...\n");
-                        await PerformStandardSearchRawAsync(twitterCtx);
+                        Console.WriteLine("\n\tLooking for liking users...\n");
+                        await GetUsersWhoLikedATweetAsync(twitterCtx);
                         break;
                     case '2':
                         Console.WriteLine("\n\tTweeting...");
@@ -50,7 +50,7 @@ namespace ConsoleDemo.CSharp
             Console.WriteLine("\nRaw Demos - Please select:\n");
 
             Console.WriteLine("\t 0. Perform Recent Search (Query)");
-            Console.WriteLine("\t 1. Perform Standard Search (Query)");
+            Console.WriteLine("\t 1. Users Liking Tweets (Query)");
             Console.WriteLine("\t 2. Update Status (Command)");
             Console.WriteLine();
             Console.Write("\t Q. Return to Main menu");
@@ -81,11 +81,10 @@ namespace ConsoleDemo.CSharp
             twitterCtx.BaseUrl = previousBaseUrl;
         }
 
-        static async Task PerformStandardSearchRawAsync(TwitterContext twitterCtx)
+        static async Task GetUsersWhoLikedATweetAsync(TwitterContext twitterCtx)
         {
-            string unencodedStatus = "LINQ to Twitter";
-            string encodedStatus = Uri.EscapeDataString(unencodedStatus);
-            string queryString = "search/tweets.json?q=" + encodedStatus;
+            string tweetID = "1529204113623330816";
+            string queryString = $"/tweets/{tweetID}/liking_users";
 
             var rawResult =
                 await
