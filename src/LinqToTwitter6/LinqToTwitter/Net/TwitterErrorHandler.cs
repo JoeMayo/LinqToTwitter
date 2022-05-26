@@ -181,9 +181,7 @@ namespace LinqToTwitter.Net
 
                         return new TwitterErrorDetails
                         {
-                            Title = title.GetString(),
                             Detail = detail.GetString(),
-                            Type = type.GetString(),
                             Errors = new()
                             {
                                 new Error
@@ -192,7 +190,10 @@ namespace LinqToTwitter.Net
                                     Message = title.GetString(),
                                     Request = detail.GetString(),
                                 }
-                            }
+                            },
+                            Status = status.GetInt32(),
+                            Title = title.GetString(),
+                            Type = type.GetString()
                         };
                     }
                     else
