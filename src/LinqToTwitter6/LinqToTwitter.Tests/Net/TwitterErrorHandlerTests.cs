@@ -68,6 +68,18 @@ namespace LinqToTwitter.Tests.Net
         }
 
         [TestMethod]
+        public void ParseTwitterErrorMessage_WithApiV2AccountLockedError_Parses()
+        {
+            TwitterErrorDetails errorDetails = TwitterErrorHandler.ParseTwitterErrorMessage(AccountLockedErrorJson);
+
+            Assert.IsNotNull(errorDetails);
+            Assert.AreEqual("Forbidden", errorDetails.Title);
+            Assert.AreEqual("Your account is temporarily locked. Please log in to https://twitter.com to unlock your account.", errorDetails.Detail);
+            Assert.AreEqual("about:blank", errorDetails.Type);
+            Assert.AreEqual(403, errorDetails.Status);
+        }
+
+        [TestMethod]
         public void ParseTwitterErrorMessage_WithUnrecognizedContent_SendsErrorMessage()
         {
             const string GarbageIn = "This is garbage";
@@ -79,6 +91,12 @@ namespace LinqToTwitter.Tests.Net
             Assert.AreEqual(GarbageIn, errorDetails.Detail);
         }
 
+        const string AccountLockedErrorJson = @"{
+	""title"": ""Forbidden"",
+	""detail"": ""Your account is temporarily locked. Please log in to https://twitter.com to unlock your account."",
+	""type"": ""about:blank"",
+	""status"": 403
+}";
 
         const string ApiV1ErrorJson = @"{
 	""errors"": [
@@ -113,7 +131,7 @@ namespace LinqToTwitter.Tests.Net
 	""type"": ""https://api.twitter.com/labs/2/problems/invalid-request""
 }";
 
-    const string MediaErrorJson = @"{
+        const string MediaErrorJson = @"{
 	""request"": ""/1.1/media/metadata/create.json"",
 	""error"": ""media_id field must be provided.""
 }";
