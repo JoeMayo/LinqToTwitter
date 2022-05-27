@@ -3,15 +3,27 @@
 namespace LinqToTwitter
 {
     /// <summary>
-    /// Metadata for tweet queries
+    /// Metadata for tweet timeline queries
     /// </summary>
     public class TweetMeta
     {
         /// <summary>
-        /// Number of results returned
+        /// First ID in the list
         /// </summary>
-        [JsonPropertyName("result_count")]
-        public int ResultCount { get; set; }
+        [JsonPropertyName("newest_id")]
+        public string? NewestID { get; set; }
+
+        /// <summary>
+        /// Token for next page events
+        /// </summary>
+        [JsonPropertyName("next_token")]
+        public string? NextToken { get; set; }
+
+        /// <summary>
+        /// Last ID in the list
+        /// </summary>
+        [JsonPropertyName("oldest_id")]
+        public string? OldestID { get; set; }
 
         /// <summary>
         /// Token for previous page results
@@ -20,9 +32,9 @@ namespace LinqToTwitter
         public string? PreviousToken { get; set; }
 
         /// <summary>
-        /// Token for next page events
+        /// Number of results returned
         /// </summary>
-        [JsonPropertyName("next_token")]
-        public string? NextToken { get; set; }
+        [JsonPropertyName("result_count")]
+        public int ResultCount { get; set; }
     }
 }
