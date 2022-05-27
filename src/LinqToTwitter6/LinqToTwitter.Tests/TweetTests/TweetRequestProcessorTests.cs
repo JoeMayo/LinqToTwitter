@@ -643,7 +643,7 @@ namespace LinqToTwitter.Tests.TweetTests
 		[TestMethod]
         public void ProcessResults_WithErrors_PopulatesErrorList()
         {
-            var tweetProc = new TweetRequestProcessor<TweetQuery> { BaseUrl = "https://api.twitter.com/1.1/search/" };
+            var tweetProc = new TweetRequestProcessor<TweetQuery> { BaseUrl = BaseUrl2 };
 
             List<TweetQuery> results = tweetProc.ProcessResults(ErrorTweet);
 
@@ -662,6 +662,27 @@ namespace LinqToTwitter.Tests.TweetTests
             Assert.AreEqual("1", error.Value);
             Assert.AreEqual("https://api.twitter.com/2/problems/resource-not-found", error.Type);
         }
+
+		[TestMethod]
+		public void ProcessResults_WithTimeline_PopulatesTweetsAndMeta()
+		{
+			var tweetProc = new TweetRequestProcessor<TweetQuery> { BaseUrl = BaseUrl2 };
+
+			List<TweetQuery> results = tweetProc.ProcessResults(TimelineTweets);
+
+			TweetQuery tweetQuery = results?.SingleOrDefault();
+			Assert.IsNotNull(tweetQuery);
+			List<Tweet> tweets = tweetQuery.Tweets;
+			Assert.IsNotNull(tweets);
+			Assert.AreEqual(10, tweets.Count);
+			TweetMeta meta = tweetQuery.Meta;
+			Assert.IsNotNull(meta);
+			Assert.AreEqual("7140dibdnow9c7btw421e9l0f3cacd5qxve3023jqz48g", meta.PreviousToken);
+			Assert.AreEqual("7140dibdnow9c7btw421e9l0f3cacd5qxve3023jqz48g", meta.NextToken);
+			Assert.AreEqual(10, meta.ResultCount);
+			Assert.AreEqual("1529568259011252224", meta.NewestID);
+			Assert.AreEqual("1527016962995343360", meta.OldestID);
+		}
 
 		const string SingleTweet = @"{
 	""data"": [
@@ -912,6 +933,58 @@ namespace LinqToTwitter.Tests.TweetTests
 				""id"": ""13334762""
 			}
 		]
+	}
+}";
+
+		const string TimelineTweets = @"{
+	""data"": [
+		{
+			""id"": ""1529568259011252224"",
+			""text"": ""RT @beeradmoore: HAHAHAHA I accidentally deployed a #dotnetmaui app to my Android watch and it just worked. https://t.co/Ral7om02o1""
+		},
+		{
+			""id"": ""1529490697618763777"",
+			""text"": ""@buhakmeh @alvinashcraft Whatever is the F5 default. Haven't had problems and will probably continue until I learn about a compelling reason to change.""
+		},
+		{
+			""id"": ""1529204113623330816"",
+			""text"": ""That last presentation I did was using C# and .NET 6 on a MacBook Pro M1. With MAUI in GA, the x-plat story for .NET improves.""
+		},
+		{
+			""id"": ""1528511616882421760"",
+			""text"": ""RT @jimwooley: Looks like I won't be able to attend the inaugural @ThatConference Austin due to flight issues. I'll still present the Stati…""
+		},
+		{
+			""id"": ""1528511186790010880"",
+			""text"": ""RT @techgirl1908: Decentralized Twitter has released early code\n\nhttps://t.co/OIgGFKUkov""
+		},
+		{
+			""id"": ""1528181517393899521"",
+			""text"": ""RT @J_aa_p: My new @TwitterDev @Linq2Twitr #Blazor WASM Twitter Client (Alpha ❗) now parses\n\n✅ Retweets\n✅ Quoted Retweets\n✅ Urls\n✅ Hashtags…""
+		},
+		{
+			""id"": ""1528100853294301184"",
+			""text"": ""RT @LauraViglioni: Finally... The GitHub bathroom https://t.co/A43IM1HUaF""
+		},
+		{
+			""id"": ""1527401749329301504"",
+			""text"": ""@RafaelH_us @tacobell https://t.co/VSO4CMu6Xa""
+		},
+		{
+			""id"": ""1527371742343114752"",
+			""text"": ""RT @jguadagno: @buhakmeh @terrajobst @mohdali If you are using C#, use the Linq2Twitter NuGet package by @JoeMayo . Its super easy to use.…""
+		},
+		{
+			""id"": ""1527016962995343360"",
+			""text"": ""Presentation slides and source code for my Intro to LINQ presentation for @DataScienceDojo today:\n\nhttps://t.co/hTx6u3RHmN""
+		}
+	],
+	""meta"": {
+		""previous_token"": ""7140dibdnow9c7btw421e9l0f3cacd5qxve3023jqz48g"",
+		""next_token"": ""7140dibdnow9c7btw421e9l0f3cacd5qxve3023jqz48g"",
+		""result_count"": 10,
+		""newest_id"": ""1529568259011252224"",
+		""oldest_id"": ""1527016962995343360""
 	}
 }";
 
