@@ -14,7 +14,7 @@ namespace LinqToTwitter
 
         /// <summary>
         /// type of search, included for compatibility
-        /// with other APIs
+        /// with other APIs - <see cref="TweetType"/>
         /// </summary>
         public TweetType Type { get; init; }
 
@@ -54,7 +54,7 @@ namespace LinqToTwitter
         public int MaxResults { get; init; }
 
         /// <summary>
-        /// Comma-separated list of fields to return in the media object
+        /// Comma-separated list of fields to return in the media object - <see cref="MediaField"/>
         /// </summary>
         public string? MediaFields { get; init; }
 
@@ -64,12 +64,12 @@ namespace LinqToTwitter
         public string? PaginationToken { get; init; }
 
         /// <summary>
-        /// Comma-separated list of fields to return in the place object
+        /// Comma-separated list of fields to return in the place object - <see cref="PlaceField"/>
         /// </summary>
         public string? PlaceFields { get; init; }
 
         /// <summary>
-        /// Comma-separated list of fields to return in the poll object
+        /// Comma-separated list of fields to return in the poll object - <see cref="PollField"/>
         /// </summary>
         public string? PollFields { get; init; }
 
@@ -89,7 +89,7 @@ namespace LinqToTwitter
         public string? SpaceID { get; set; }
 
         /// <summary>
-        /// Comma-separated list of fields to return in the Tweet object
+        /// Comma-separated list of fields to return in the Tweet object - <see cref="TweetField"/>
         /// </summary>
         public string? TweetFields { get; init; }
 
@@ -99,7 +99,7 @@ namespace LinqToTwitter
         public string? UntilID { get; init; }
 
         /// <summary>
-        /// Comma-separated list of fields to return in the User object
+        /// Comma-separated list of fields to return in the User object - <see cref="UserField"/>
         /// </summary>
         public string? UserFields { get; init; }
 

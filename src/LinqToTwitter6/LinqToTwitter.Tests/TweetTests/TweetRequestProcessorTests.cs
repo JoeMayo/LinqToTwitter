@@ -574,6 +574,20 @@ namespace LinqToTwitter.Tests.TweetTests
 			List<TwitterUser> users = includes.Users;
 			Assert.IsNotNull(users);
 			Assert.AreEqual(2, users.Count);
+			TwitterPoll poll = includes.Polls?.SingleOrDefault();
+			Assert.IsNotNull(poll);
+			Assert.AreEqual(1440, poll.DurationMinutes);
+			Assert.AreEqual(DateTime.Parse("2019-11-28T20:26:41.000Z").ToUniversalTime(), poll.EndDateTime);
+			Assert.AreEqual("1199786642468413448", poll.ID);
+			Assert.AreEqual("closed", poll.VotingStatus);
+			List<TwitterPollOption> options = poll.Options;
+			Assert.IsNotNull(options);
+			Assert.AreEqual(2, options.Count);
+			TwitterPollOption option = options.FirstOrDefault();
+			Assert.IsNotNull(option);
+			Assert.AreEqual(1, option.Position);
+			Assert.AreEqual("“C Sharp”", option.Label);
+			Assert.AreEqual(795, option.Votes);
 		}
 
 		[TestMethod]
@@ -830,6 +844,27 @@ namespace LinqToTwitter.Tests.TweetTests
 		}
 	],
 	""includes"": {
+		""polls"": [
+            {
+                ""id"": ""1199786642468413448"",
+                ""voting_status"": ""closed"",
+                ""duration_minutes"": 1440,
+                ""options"": [
+                    {
+                        ""position"": 1,
+                        ""label"": ""“C Sharp”"",
+                        ""votes"": 795
+
+					},
+                    {
+                        ""position"": 2,
+                        ""label"": ""“C Hashtag”"",
+                        ""votes"": 156
+                    }
+                ],
+                ""end_datetime"": ""2019-11-28T20:26:41.000Z""
+            }
+        ],
 		""users"": [
 			{
 				""verified"": false,

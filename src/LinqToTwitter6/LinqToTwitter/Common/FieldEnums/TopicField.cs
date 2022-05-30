@@ -1,7 +1,7 @@
 ﻿namespace LinqToTwitter.Common
 {
     /// <summary>
-    /// Fields that can be expanded on <see cref="TweetPoll"/>
+    /// Fields that can be expanded on <see cref="SpacesQuery"/>
     /// </summary>
     public class TopicField
     {
