@@ -14,6 +14,9 @@ namespace LinqToTwitter.Common
         [JsonPropertyName("places")]
         public List<TwitterPlace>? Places { get; init; }
 
+        [JsonPropertyName("polls")]
+        public List<TwitterPoll>? Polls { get; init; }
+
         [JsonPropertyName("media")]
         public List<TwitterMedia>? Media { get; init; }
     }

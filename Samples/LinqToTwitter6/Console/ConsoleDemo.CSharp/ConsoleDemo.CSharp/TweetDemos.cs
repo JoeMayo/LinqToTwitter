@@ -92,7 +92,7 @@ namespace ConsoleDemo.CSharp
 
         static async Task DoSingleTweetLookupAsync(TwitterContext twitterCtx)
         {
-            const string TweetID = "1305895383260782593";
+            string TweetID = "1305895383260782593";
 
             // default is id and text and this also brings in created_at and geo
             string tweetFields =
