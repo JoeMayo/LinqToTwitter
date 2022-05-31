@@ -9,11 +9,17 @@ namespace LinqToTwitter
     public record TweetEntities
     {
         /// <summary>
-        /// URL entities
+        /// Annotation entities
         /// </summary>
-        [JsonPropertyName("urls")]
-        public List<TweetEntityUrl>? Urls { get; init; }
-        
+        [JsonPropertyName("annotations")]
+        public List<TweetEntityAnnotation>? Annotations { get; init; }
+
+        /// <summary>
+        /// Hashtag entities
+        /// </summary>
+        [JsonPropertyName("cashtags")]
+        public List<TweetEntityCashtag>? Cashtags { get; init; }
+
         /// <summary>
         /// Hashtag entities
         /// </summary>
@@ -27,9 +33,9 @@ namespace LinqToTwitter
         public List<TweetEntityMention>? Mentions { get; init; }
 
         /// <summary>
-        /// Annotation entities
+        /// URL entities
         /// </summary>
-        [JsonPropertyName("annotations")]
-        public List<TweetEntityAnnotation>? Annotations { get; init; }
+        [JsonPropertyName("urls")]
+        public List<TweetEntityUrl>? Urls { get; init; }
     }
 }

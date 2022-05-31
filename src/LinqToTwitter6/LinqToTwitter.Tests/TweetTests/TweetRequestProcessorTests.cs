@@ -476,6 +476,18 @@ namespace LinqToTwitter.Tests.TweetTests
 			Assert.AreEqual("Organization", annotation.Type);
 			Assert.AreEqual("Twitter", annotation.NormalizedText);
 
+			TweetEntityCashtag cashTag = entities?.Cashtags?.FirstOrDefault();
+			Assert.IsNotNull(cashTag);
+			Assert.AreEqual(23, cashTag.End);
+			Assert.AreEqual(18, cashTag.Start);
+			Assert.AreEqual("twtr", cashTag.Tag);
+
+			TweetEntityHashtag hashTag = entities?.Hashtags?.FirstOrDefault();
+			Assert.IsNotNull(hashTag);
+			Assert.AreEqual(14, hashTag.End);
+			Assert.AreEqual(0, hashTag.Start);
+			Assert.AreEqual("LinqToTwitter", hashTag.Tag);
+
 			TweetEntityMention mention = entities?.Mentions?.FirstOrDefault();
 			Assert.IsNotNull(mention);
 			Assert.AreEqual(14, mention.End);
@@ -800,6 +812,21 @@ namespace LinqToTwitter.Tests.TweetTests
 						""probability"": 0.5865,
 						""type"": ""Organization"",
 						""normalized_text"": ""Twitter""
+					}
+				],
+			   ""cashtags"": [
+					{
+						""start"": 18,
+						""end"": 23,
+						""tag"": ""twtr""
+					}
+				],
+				""hashtags"": [
+					{
+						""start"": 0,
+						""end"": 14,
+						""tag"": ""LinqToTwitter""
+
 					}
 				],
 				""urls"": [
