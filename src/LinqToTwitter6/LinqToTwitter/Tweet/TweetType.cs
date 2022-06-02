@@ -18,6 +18,11 @@
         MentionsTimeline,
 
         /// <summary>
+        /// Most recent tweets and retweets of authenticated user and user follows
+        /// </summary>
+        ReverseChronologicalTimeline,
+
+        /// <summary>
         /// Get the tweets timeline
         /// </summary>
         TweetsTimeline,
@@ -25,6 +30,6 @@
         /// <summary>
         /// Tweets that people shared in a space
         /// </summary>
-        SpaceTweets,
+        SpaceTweets
     }
 }

@@ -41,22 +41,26 @@ namespace ConsoleDemo.CSharp
                         await GetMentionsTimelineAsync(twitterCtx);
                         break;
                     case '5':
+                        Console.WriteLine("\n\tGetting the Reverse Chronological Timeline...\n");
+                        await GetReverseChronologicalTimelineAsync(twitterCtx);
+                        break;
+                    case '6':
                         Console.WriteLine("\n\tGetting the Tweets Timeline...\n");
                         await GetTweetsTimelineAsync(twitterCtx);
                         break;
-                    case '6':
+                    case '7':
                         Console.WriteLine("\n\tTweeting...");
                         await TweetAsync(twitterCtx);
                         break;
-                    case '7':
+                    case '8':
                         Console.WriteLine("\n\tTweeting a poll...");
                         await TweetPollAsync(twitterCtx);
                         break;
-                    case '8':
+                    case '9':
                         Console.WriteLine("\n\tReplying...");
                         await ReplyAsync(twitterCtx);
                         break;
-                    case '9':
+                    case 'A':
                         Console.WriteLine("\n\tDeleting...");
                         await DeleteTweetAsync(twitterCtx);
                         break;
@@ -81,11 +85,12 @@ namespace ConsoleDemo.CSharp
             Console.WriteLine("\t 2. Hide a Reply");
             Console.WriteLine("\t 3. Un-Hide a Reply");
             Console.WriteLine("\t 4. Mentions Timeline");
-            Console.WriteLine("\t 5. Tweets Timeline");
-            Console.WriteLine("\t 6. Tweet");
-            Console.WriteLine("\t 7. Tweet Poll");
-            Console.WriteLine("\t 8. Reply to a Tweet");
-            Console.WriteLine("\t 9. Delete a Tweet");
+            Console.WriteLine("\t 5. Reverse Chronological Timeline");
+            Console.WriteLine("\t 6. Tweets Timeline");
+            Console.WriteLine("\t 7. Tweet");
+            Console.WriteLine("\t 8. Tweet Poll");
+            Console.WriteLine("\t 9. Reply to a Tweet");
+            Console.WriteLine("\t A. Delete a Tweet");
             Console.WriteLine();
             Console.Write("\t Q. Return to Main menu");
         }
@@ -192,6 +197,27 @@ namespace ConsoleDemo.CSharp
                 await
                 (from tweet in twitterCtx.Tweets
                  where tweet.Type == TweetType.MentionsTimeline &&
+                       tweet.ID == userID
+                 select tweet)
+                .SingleOrDefaultAsync();
+
+            if (tweetResponse?.Tweets != null)
+                tweetResponse.Tweets.ForEach(tweet =>
+                    Console.WriteLine(
+                        $"\nID: {tweet.ID}" +
+                        $"\nTweet: {tweet.Text}"));
+            else
+                Console.WriteLine("No entries found.");
+        }
+
+        static async Task GetReverseChronologicalTimelineAsync(TwitterContext twitterCtx)
+        {
+            string userID = "15411837";
+
+            TweetQuery? tweetResponse =
+                await
+                (from tweet in twitterCtx.Tweets
+                 where tweet.Type == TweetType.ReverseChronologicalTimeline &&
                        tweet.ID == userID
                  select tweet)
                 .SingleOrDefaultAsync();

@@ -224,6 +224,50 @@ namespace LinqToTwitter.Tests.TweetTests
 		}
 
 		[TestMethod]
+		public void BuildUrl_ForReverseChronologicalTimeline_IncludesParameters()
+		{
+			const string ExpectedUrl =
+				BaseUrl2 + "users/123/timelines/reverse_chronological?" +
+				"end_time=2021-01-01T12%3A59%3A59Z&" +
+				"exclude=replies%2Cretweets&" +
+				"max_results=50&" +
+				"pagination_token=456&" +
+				"since_id=789&" +
+				"start_time=2020-12-31T00%3A00%3A01Z&" +
+				"until_id=012&" +
+				"expansions=attachments.poll_ids%2Cauthor_id&" +
+				"media.fields=height%2Cwidth&" +
+				"place.fields=country&" +
+				"poll.fields=duration_minutes%2Cend_datetime&" +
+				"tweet.fields=author_id%2Ccreated_at&" +
+				"user.fields=created_at%2Cverified";
+			var tweetReqProc = new TweetRequestProcessor<TweetQuery> { BaseUrl = BaseUrl2 };
+			var parameters =
+				new Dictionary<string, string>
+				{
+					{ nameof(TweetQuery.Type), TweetType.ReverseChronologicalTimeline.ToString() },
+					{ nameof(TweetQuery.EndTime), new DateTime(2021, 1, 1, 12, 59, 59).ToString() },
+					{ nameof(TweetQuery.Exclude), TweetExcludes.All },
+					{ nameof(TweetQuery.Expansions), "attachments.poll_ids,author_id" },
+					{ nameof(TweetQuery.ID), "123" },
+					{ nameof(TweetQuery.MaxResults), "50" },
+					{ nameof(TweetQuery.MediaFields), "height,width" },
+					{ nameof(TweetQuery.PaginationToken), "456" },
+					{ nameof(TweetQuery.PlaceFields), "country" },
+					{ nameof(TweetQuery.PollFields), "duration_minutes,end_datetime" },
+					{ nameof(TweetQuery.SinceID), "789" },
+					{ nameof(TweetQuery.StartTime), new DateTime(2020, 12, 31, 0, 0, 1).ToString() },
+					{ nameof(TweetQuery.TweetFields), "author_id,created_at" },
+					{ nameof(TweetQuery.UntilID), "012" },
+					{ nameof(TweetQuery.UserFields), "created_at,verified" },
+			   };
+
+			Request req = tweetReqProc.BuildUrl(parameters);
+
+			Assert.AreEqual(ExpectedUrl, req.FullUrl);
+		}
+
+		[TestMethod]
         public void BuildUrl_WithNullParameters_Throws()
         {
             var tweetReqProc = new TweetRequestProcessor<TweetQuery> { BaseUrl = BaseUrl2 };
