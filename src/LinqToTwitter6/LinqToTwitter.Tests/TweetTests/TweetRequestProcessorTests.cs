@@ -268,6 +268,40 @@ namespace LinqToTwitter.Tests.TweetTests
 		}
 
 		[TestMethod]
+		public void BuildUrl_ForQuoteTweets_IncludesParameters()
+		{
+			const string ExpectedUrl =
+				BaseUrl2 + "tweets/123/quote_tweets?" +
+				"max_results=50&" +
+				"pagination_token=456&" +
+				"expansions=attachments.poll_ids%2Cauthor_id&" +
+				"media.fields=height%2Cwidth&" +
+				"place.fields=country&" +
+				"poll.fields=duration_minutes%2Cend_datetime&" +
+				"tweet.fields=author_id%2Ccreated_at&" +
+				"user.fields=created_at%2Cverified";
+			var tweetReqProc = new TweetRequestProcessor<TweetQuery> { BaseUrl = BaseUrl2 };
+			var parameters =
+				new Dictionary<string, string>
+				{
+					{ nameof(TweetQuery.Type), TweetType.QuoteTweets.ToString() },
+					{ nameof(TweetQuery.Expansions), "attachments.poll_ids,author_id" },
+					{ nameof(TweetQuery.ID), "123" },
+					{ nameof(TweetQuery.MaxResults), "50" },
+					{ nameof(TweetQuery.MediaFields), "height,width" },
+					{ nameof(TweetQuery.PaginationToken), "456" },
+					{ nameof(TweetQuery.PlaceFields), "country" },
+					{ nameof(TweetQuery.PollFields), "duration_minutes,end_datetime" },
+					{ nameof(TweetQuery.TweetFields), "author_id,created_at" },
+					{ nameof(TweetQuery.UserFields), "created_at,verified" },
+			   };
+
+			Request req = tweetReqProc.BuildUrl(parameters);
+
+			Assert.AreEqual(ExpectedUrl, req.FullUrl);
+		}
+
+		[TestMethod]
         public void BuildUrl_WithNullParameters_Throws()
         {
             var tweetReqProc = new TweetRequestProcessor<TweetQuery> { BaseUrl = BaseUrl2 };

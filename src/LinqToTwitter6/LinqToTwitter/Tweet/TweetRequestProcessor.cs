@@ -163,7 +163,8 @@ namespace LinqToTwitter
                 TweetType.List => BuildListUrl(parameters),
                 TweetType.Lookup => BuildLookupUrl(parameters),
                 TweetType.MentionsTimeline => BuildMentionsTimelineUrl(parameters),
-                TweetType.ReverseChronologicalTimeline => BuildReverseChronologicalTimeline(parameters),
+                TweetType.QuoteTweets => BuildQuoteTweetsUrl(parameters),
+                TweetType.ReverseChronologicalTimeline => BuildReverseChronologicalTimelineUrl(parameters),
                 TweetType.SpaceTweets => BuildSpaceTweetsUrl(parameters),
                 TweetType.TweetsTimeline => BuildUserTimelineUrl(parameters),
                 _ => throw new InvalidOperationException("The default case of BuildUrl should never execute because a Type must be specified."),
@@ -259,8 +260,7 @@ namespace LinqToTwitter
             return req;
         }
 
-
-        Request BuildReverseChronologicalTimeline(Dictionary<string, string> parameters)
+        Request BuildReverseChronologicalTimelineUrl(Dictionary<string, string> parameters)
         {
             SetUserID(parameters);
 
@@ -271,6 +271,16 @@ namespace LinqToTwitter
             return req;
         }
 
+        Request BuildQuoteTweetsUrl(Dictionary<string, string> parameters)
+        {
+            SetUserID(parameters);
+
+            var req = new Request($"{BaseUrl}tweets/{ID}/quote_tweets");
+
+            BuildTimelineParameters(parameters, req);
+
+            return req;
+        }
 
         /// <summary>
         /// User timeline URL
