@@ -35,6 +35,6 @@
         /// <summary>
         /// Tweets that people shared in a space
         /// </summary>
-        SpaceTweets,
+        SpaceTweets
     }
 }

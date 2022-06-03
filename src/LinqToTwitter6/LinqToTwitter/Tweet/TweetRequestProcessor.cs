@@ -260,6 +260,18 @@ namespace LinqToTwitter
             return req;
         }
 
+
+        Request BuildReverseChronologicalTimeline(Dictionary<string, string> parameters)
+        {
+            SetUserID(parameters);
+
+            var req = new Request($"{BaseUrl}users/{ID}/timelines/reverse_chronological");
+
+            BuildTimelineParameters(parameters, req);
+
+            return req;
+        }
+
         Request BuildReverseChronologicalTimelineUrl(Dictionary<string, string> parameters)
         {
             SetUserID(parameters);
