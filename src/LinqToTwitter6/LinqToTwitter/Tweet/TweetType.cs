@@ -3,6 +3,11 @@
     public enum TweetType
     {
         /// <summary>
+        /// Get bookmarked tweets
+        /// </summary>
+        Bookmarks,
+
+        /// <summary>
         /// Get tweets from a list
         /// </summary>
         List,
