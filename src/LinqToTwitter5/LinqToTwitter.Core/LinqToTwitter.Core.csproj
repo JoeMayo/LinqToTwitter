@@ -18,7 +18,7 @@
   <Import Project="..\LinqToTwitter.Shared.net\LinqToTwitter.Shared.net.projitems" Label="Shared" />
 
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="System.Reactive.Core" Version="4.4.1" />
     <PackageReference Include="System.Reactive.Interfaces" Version="4.4.1" />
     <PackageReference Include="System.Reactive.Linq" Version="4.4.1" />
