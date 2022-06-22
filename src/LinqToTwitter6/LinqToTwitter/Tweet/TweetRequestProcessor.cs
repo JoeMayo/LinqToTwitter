@@ -160,6 +160,7 @@ namespace LinqToTwitter
 
             return Type switch
             {
+                TweetType.Bookmarks => BuildBookmarkUrl(parameters),
                 TweetType.List => BuildListUrl(parameters),
                 TweetType.Lookup => BuildLookupUrl(parameters),
                 TweetType.MentionsTimeline => BuildMentionsTimelineUrl(parameters),
@@ -169,6 +170,66 @@ namespace LinqToTwitter
                 TweetType.TweetsTimeline => BuildUserTimelineUrl(parameters),
                 _ => throw new InvalidOperationException("The default case of BuildUrl should never execute because a Type must be specified."),
             };
+        }
+
+        private Request BuildBookmarkUrl(Dictionary<string, string> parameters)
+        {
+            RequestProcessorHelper.SetSegment(parameters, nameof(ID), val => ID = val);
+
+            var req = new Request($"{BaseUrl}users/{ID}/bookmarks");
+            var urlParams = req.RequestParameters;
+
+            if (parameters.ContainsKey(nameof(Expansions)))
+            {
+                Expansions = parameters[nameof(Expansions)];
+                urlParams.Add(new QueryParameter("expansions", Expansions.Replace(" ", "")));
+            }
+
+            if (parameters.ContainsKey(nameof(MaxResults)))
+            {
+                string maxResultsString = parameters[nameof(MaxResults)];
+                _ = int.TryParse(maxResultsString, out var maxResults);
+                MaxResults = maxResults;
+                urlParams.Add(new QueryParameter("max_results", maxResultsString));
+            }
+
+            if (parameters.ContainsKey(nameof(MediaFields)))
+            {
+                MediaFields = parameters[nameof(MediaFields)];
+                urlParams.Add(new QueryParameter("media.fields", MediaFields.Replace(" ", "")));
+            }
+
+            if (parameters.ContainsKey(nameof(PaginationToken)))
+            {
+                PaginationToken = parameters[nameof(PaginationToken)];
+                urlParams.Add(new QueryParameter("pagination_token", PaginationToken));
+            }
+
+            if (parameters.ContainsKey(nameof(PlaceFields)))
+            {
+                PlaceFields = parameters[nameof(PlaceFields)];
+                urlParams.Add(new QueryParameter("place.fields", PlaceFields.Replace(" ", "")));
+            }
+
+            if (parameters.ContainsKey(nameof(PollFields)))
+            {
+                PollFields = parameters[nameof(PollFields)];
+                urlParams.Add(new QueryParameter("poll.fields", PollFields.Replace(" ", "")));
+            }
+
+            if (parameters.ContainsKey(nameof(TweetFields)))
+            {
+                TweetFields = parameters[nameof(TweetFields)];
+                urlParams.Add(new QueryParameter("tweet.fields", TweetFields.Replace(" ", "")));
+            }
+
+            if (parameters.ContainsKey(nameof(UserFields)))
+            {
+                UserFields = parameters[nameof(UserFields)];
+                urlParams.Add(new QueryParameter("user.fields", UserFields.Replace(" ", "")));
+            }
+
+            return req;
         }
 
         /// <summary>

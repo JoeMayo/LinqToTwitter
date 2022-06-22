@@ -104,7 +104,41 @@ namespace LinqToTwitter.Tests.TweetTests
                     new KeyValuePair<string, string>(nameof(TweetQuery.UserFields), "created_at,verified")));
         }
 
-        [TestMethod]
+		[TestMethod]
+		public void BuildUrl_ForBookmarks_IncludesParameters()
+		{
+			const string ExpectedUrl =
+				BaseUrl2 + "users/123/bookmarks?" +
+				"expansions=attachments.poll_ids%2Cauthor_id&" +
+				"max_results=50&" +
+				"media.fields=height%2Cwidth&" +
+				"pagination_token=456&" +
+				"place.fields=country&" +
+				"poll.fields=duration_minutes%2Cend_datetime&" +
+				"tweet.fields=author_id%2Ccreated_at&" +
+				"user.fields=created_at%2Cverified";
+			var tweetReqProc = new TweetRequestProcessor<TweetQuery> { BaseUrl = BaseUrl2 };
+			var parameters =
+				new Dictionary<string, string>
+				{
+					{ nameof(TweetQuery.Type), TweetType.Bookmarks.ToString() },
+					{ nameof(TweetQuery.ID), "123" },
+					{ nameof(TweetQuery.Expansions), "attachments.poll_ids,author_id" },
+					{ nameof(TweetQuery.MaxResults), "50" },
+					{ nameof(TweetQuery.MediaFields), "height,width" },
+					{ nameof(TweetQuery.PaginationToken), "456" },
+					{ nameof(TweetQuery.PlaceFields), "country" },
+					{ nameof(TweetQuery.PollFields), "duration_minutes,end_datetime" },
+					{ nameof(TweetQuery.TweetFields), "author_id,created_at" },
+					{ nameof(TweetQuery.UserFields), "created_at,verified" },
+			   };
+
+			Request req = tweetReqProc.BuildUrl(parameters);
+
+			Assert.AreEqual(ExpectedUrl, req.FullUrl);
+		}
+
+		[TestMethod]
         public void BuildUrl_ForLookup_IncludesParameters()
         {
             const string ExpectedUrl =
@@ -415,6 +449,24 @@ namespace LinqToTwitter.Tests.TweetTests
 					tweetReqProc.BuildUrl(parameters));
 
 			Assert.AreEqual(nameof(TweetQuery.ListID), ex.ParamName);
+		}
+
+		[TestMethod]
+		public void BuildUrl_ForBookmarks_RequiresID()
+		{
+			var tweetReqProc = new TweetRequestProcessor<TweetQuery> { BaseUrl = BaseUrl2 };
+			var parameters =
+				new Dictionary<string, string>
+				{
+					{ nameof(TweetQuery.Type), TweetType.Bookmarks.ToString() },
+                    //{ nameof(Tweet.ID), null }
+                };
+
+			ArgumentException ex =
+				L2TAssert.Throws<ArgumentException>(() =>
+					tweetReqProc.BuildUrl(parameters));
+
+			Assert.AreEqual(nameof(TweetQuery.ID), ex.ParamName);
 		}
 
 		[TestMethod]

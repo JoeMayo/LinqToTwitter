@@ -10,21 +10,21 @@ namespace LinqToTwitter
     public partial class TwitterContext
     {
         /// <summary>
-        /// Likes a tweet
+        /// Bookmarks a tweet
         /// </summary>
-        /// <param name="userID">ID of user who is liking tweet</param>
-        /// <param name="tweetID">ID of the tweet being liked</param>
+        /// <param name="userID">ID of user who is bookmarking tweet</param>
+        /// <param name="tweetID">ID of the bookmarked tweet</param>
         /// <param name="cancelToken">Optional cancellation token</param>
-        /// <returns>Hidden status of reply - true if reply is hidden</returns>
-        public async Task<LikedResponse?> LikeAsync(string userID, string tweetID, CancellationToken cancelToken = default)
+        /// <returns>Bookmark status of reply - true if reply is hidden</returns>
+        public async Task<BookmarkResponse?> BookmarkAsync(string userID, string tweetID, CancellationToken cancelToken = default)
         {
             _ = userID ?? throw new ArgumentNullException(nameof(userID), $"{nameof(userID)} is required.");
             _ = tweetID ?? throw new ArgumentNullException(nameof(tweetID), $"{nameof(tweetID)} is required.");
 
-            string url = $"{BaseUrl2}users/{userID}/likes";
+            string url = $"{BaseUrl2}users/{userID}/bookmarks";
 
             var postData = new Dictionary<string, string>();
-            var postObj = new LikedTweetID { TweetID = tweetID };
+            var postObj = new BookmarkedTweetID { TweetID = tweetID };
 
             RawResult =
                 await TwitterExecutor.SendJsonToTwitterAsync(
@@ -35,27 +35,27 @@ namespace LinqToTwitter
                     cancelToken)
                    .ConfigureAwait(false);
 
-            LikedResponse? result = JsonSerializer.Deserialize<LikedResponse>(RawResult);
+            BookmarkResponse? result = JsonSerializer.Deserialize<BookmarkResponse>(RawResult);
 
             return result;
         }
 
         /// <summary>
-        /// Unlikes a tweet
+        /// Removes a bookmark on a tweet
         /// </summary>
-        /// <param name="userID">ID of user who is liking tweet</param>
-        /// <param name="tweetID">ID of the tweet being liked</param>
+        /// <param name="userID">ID of user who is bookmarking tweet</param>
+        /// <param name="tweetID">ID of the bookmarked tweet</param>
         /// <param name="cancelToken">Optional cancellation token</param>
         /// <returns>Hidden status of reply - false if reply is no longer hidden</returns>
-        public async Task<LikedResponse?> UnlikeAsync(string userID, string tweetID, CancellationToken cancelToken = default)
+        public async Task<BookmarkResponse?> RemoveBookmarkAsync(string userID, string tweetID, CancellationToken cancelToken = default)
         {
             _ = userID ?? throw new ArgumentNullException(nameof(userID), $"{nameof(userID)} is required.");
             _ = tweetID ?? throw new ArgumentNullException(nameof(tweetID), $"{nameof(tweetID)} is required.");
 
-            string url = $"{BaseUrl2}users/{userID}/likes/{tweetID}";
+            string url = $"{BaseUrl2}users/{userID}/bookmarks/{tweetID}";
 
             var postData = new Dictionary<string, string>();
-            var postObj = new LikedTweetID { TweetID = tweetID };
+            var postObj = new BookmarkedTweetID { TweetID = tweetID };
 
             RawResult =
                 await TwitterExecutor.SendJsonToTwitterAsync(
@@ -66,7 +66,7 @@ namespace LinqToTwitter
                     cancelToken)
                    .ConfigureAwait(false);
 
-            LikedResponse? result = JsonSerializer.Deserialize<LikedResponse>(RawResult);
+            BookmarkResponse? result = JsonSerializer.Deserialize<BookmarkResponse>(RawResult);
 
             return result;
         }
