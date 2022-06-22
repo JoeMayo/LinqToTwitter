@@ -136,7 +136,8 @@ namespace ConsoleDemo.CSharp
                         "like.write",
                         "block.read",
                         "block.write",
-                        "bookmark.read"
+                        "bookmark.read",
+                        "bookmark.write"
                     },
                     RedirectUri = "http://127.0.0.1:8599"
                 },
