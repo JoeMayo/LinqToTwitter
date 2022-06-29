@@ -34,7 +34,7 @@ namespace LinqToTwitter
             }
             set
             {
-                session.SetString("OAuth2ClientID", value);
+                session.SetString("OAuth2ClientID", value ?? string.Empty);
             }
         }
 
@@ -49,7 +49,7 @@ namespace LinqToTwitter
             }
             set
             {
-                session.SetString("OAuth2ClientSecret", value);
+                session.SetString("OAuth2ClientSecret", value ?? string.Empty);
             }
         }
 
@@ -64,7 +64,7 @@ namespace LinqToTwitter
             }
             set
             {
-                session.SetString("OAuth2CodeChallenge", value);
+                session.SetString("OAuth2CodeChallenge", value ?? string.Empty);
             }
         }
 
@@ -103,7 +103,7 @@ namespace LinqToTwitter
             }
             set
             {
-                session.SetString("OAuth2AccessToken", value);
+                session.SetString("OAuth2AccessToken", value ?? string.Empty);
             }
         }
 
@@ -118,7 +118,7 @@ namespace LinqToTwitter
             }
             set
             {
-                session.SetString("OAuth2RefreshToken", (string)value);
+                session.SetString("OAuth2RefreshToken", value ?? string.Empty);
             }
         }
 
@@ -133,7 +133,7 @@ namespace LinqToTwitter
             }
             set
             {
-                session.SetString("OAuth2Callback", value);
+                session.SetString("OAuth2Callback", value ?? string.Empty);
             }
         }
 
@@ -149,7 +149,7 @@ namespace LinqToTwitter
             }
             set
             {
-                session.SetString("OAuth2State", value);
+                session.SetString("OAuth2State", value ?? string.Empty);
             }
         }
 
