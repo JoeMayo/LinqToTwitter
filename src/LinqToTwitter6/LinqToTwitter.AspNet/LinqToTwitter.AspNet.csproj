@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <Version>6.14.0</Version>
+    <Version>6.15.0</Version>
     <Authors>Joe Mayo</Authors>
     <Company>Joe Mayo</Company>
     <Product>LINQ to Twitter for ASP.NET</Product>
@@ -17,12 +17,9 @@ This library has ASP.NET authorizers and SessionStateCredentialCache that you'll
     <RepositoryType></RepositoryType>
     <PackageTags>twitter twitterapi twitterdev tweet linq social linqtotwitter linq2twitter</PackageTags>
     <PackageReleaseNotes>
-		Note: In previous versions of LINQ to Twitter, this was included in the `linqtotwitter` package. In version 6, ASP.NET Core 5 support is a separate package with a dependency on `linqtotwitter` v6.0+.
+Note: In previous versions of LINQ to Twitter, this was included in the `linqtotwitter` package. In version 6, ASP.NET Core 5 support is a separate package with a dependency on `linqtotwitter` v6.0+.
 
-		- Implemented space buyers and space tweets queries.
-		- Implemented Liking Users query.
-		- Implemented Me endpoint, which gets info for the authenticated user.
-		- Switched license to MIT.
+- Fixed bug were omitting offline.access scope in OAuth2SessionStateCredentialStore throws a NullReferenceException.
 	</PackageReleaseNotes>
     <PackageReadmeFile>ReadMe.md</PackageReadmeFile>
   </PropertyGroup>
