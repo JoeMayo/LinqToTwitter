@@ -10,7 +10,7 @@ Recent tweets of authorized user and those they follow.
 
 | Name | Purpose | Type | Required |
 |------|---------|------|----------|
-| ID | ID of the user who's timeline should be read | string |
+| ID | ID of the user who's timeline should be read | string | yes |
 | EndTime | Date/Time to search to | DateTime | no |
 | Exclude | Comma-separated list of tweet types to not include ("retweets" or "replies") | string | no |
 | Expansions | Comma-separated list of expansion fields | string (ExpansionField) | no |
