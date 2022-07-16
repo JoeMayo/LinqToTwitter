@@ -1,10 +1,10 @@
-#### Mentions Timeline
+#### Reverse Chronological Timeline
 
-Read all mentions of a user.
+Recent tweets of authorized user and those they follow.
 
 *Entity:* Tweet|Tweet Entity
 
-*Type:* TweetType.MentionsTimeline
+*Type:* TweetType.ReverseChronologicalTimeline
 
 ##### Parameters/Filters:
 
@@ -12,6 +12,7 @@ Read all mentions of a user.
 |------|---------|------|----------|
 | ID | ID of the user who's timeline should be read | string |
 | EndTime | Date/Time to search to | DateTime | no |
+| Exclude | Comma-separated list of tweet types to not include ("retweets" or "replies") | string | no |
 | Expansions | Comma-separated list of expansion fields | string (ExpansionField) | no |
 | MaxResults | Maximum number of tweets to return | int | no |
 | MediaFields | Comma-separated list of fields to return in the media object | string (MediaField) | no |
@@ -26,24 +27,24 @@ Read all mentions of a user.
 
 ##### Example:
 
-```c#
+```csharp
 string userID = "15411837";
 
 TweetQuery? tweetResponse =
-    await
-    (from tweet in twitterCtx.Tweets
-     where tweet.Type == TweetType.MentionsTimeline &&
-           tweet.ID == userID
-     select tweet)
-    .SingleOrDefaultAsync();
+	await
+	(from tweet in twitterCtx.Tweets
+	 where tweet.Type == TweetType.ReverseChronologicalTimeline &&
+		   tweet.ID == userID
+	 select tweet)
+	.SingleOrDefaultAsync();
 
 if (tweetResponse?.Tweets != null)
-    tweetResponse.Tweets.ForEach(tweet =>
-        Console.WriteLine(
-            $"\nUser: {tweet.ID}" +
-            $"\nTweet: {tweet.Text}"));
+	tweetResponse.Tweets.ForEach(tweet =>
+		Console.WriteLine(
+			$"\nID: {tweet.ID}" +
+			$"\nTweet: {tweet.Text}"));
 else
-    Console.WriteLine("No entries found.");
+	Console.WriteLine("No entries found.");
 ```
 
-*Twitter API:* [users/:id/mentions](https://developer.twitter.com/en/docs/twitter-api/tweets/timelines/api-reference/get-users-id-mentions)
+*Twitter API:* [users/:id/timelines/reverse_chronological](https://developer.twitter.com/en/docs/twitter-api/tweets/timelines/api-reference/get-users-id-reverse-chronological)
