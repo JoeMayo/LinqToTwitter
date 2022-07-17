@@ -2,10 +2,6 @@
 
 This method is for testing Twitter connectivity.
 
-#### [Getting Configuration Information](Using-Help-Methods/Getting-Configuration-Information.md)
-
-Pulls general configuration information such as URL lengths, system names, and photo sizes
-
 #### [Retrieving Languages](Using-Help-Methods/Retrieving-Languages.md)
 
 Provides a list of languages supported by Twitter
