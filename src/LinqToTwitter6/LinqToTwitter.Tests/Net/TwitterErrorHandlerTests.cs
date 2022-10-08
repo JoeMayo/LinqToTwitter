@@ -91,6 +91,21 @@ namespace LinqToTwitter.Tests.Net
             Assert.AreEqual(GarbageIn, errorDetails.Detail);
         }
 
+        [TestMethod]
+        public void ParseTwitterErrorMessage_WithApiV2XmlErrorCode415_Parses()
+        {
+            TwitterErrorDetails errorDetails = TwitterErrorHandler.ParseTwitterErrorMessage(ApiV2ErrorXml);
+
+            Assert.IsNotNull(errorDetails);
+            Assert.AreEqual(ApiV2ErrorXml, errorDetails.Detail);
+            List<Error> errors = errorDetails.Errors;
+            Assert.IsNotNull(errors);
+            Assert.AreEqual(1, errors.Count);
+            Error error = errors.First();
+            Assert.AreEqual(415, error.Code);
+            Assert.AreEqual("Callback URL not approved for this client application. Approved callback URLs can be adjusted in your application settings", error.Message);
+        }
+
         const string AccountLockedErrorJson = @"{
 	""title"": ""Forbidden"",
 	""detail"": ""Your account is temporarily locked. Please log in to https://twitter.com to unlock your account."",
@@ -135,5 +150,10 @@ namespace LinqToTwitter.Tests.Net
 	""request"": ""/1.1/media/metadata/create.json"",
 	""error"": ""media_id field must be provided.""
 }";
+
+        const string ApiV2ErrorXml = @"<?xml version='1.0' encoding='UTF-8'?>
+<errors>
+    <error code=""415"">Callback URL not approved for this client application. Approved callback URLs can be adjusted in your application settings</error>
+</errors>";
     }
 }

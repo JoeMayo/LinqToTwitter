@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using LinqToTwitter.Common;
 
 namespace LinqToTwitter.Net
@@ -110,12 +111,35 @@ namespace LinqToTwitter.Net
                 bool isXml = responseStr.StartsWith("<?xml") || responseStr.StartsWith("<!DOCTYPE");
 
                 if (isXml)
-                    return new TwitterErrorDetails
-                    {
-                        Detail = responseStr,
-                        Title = "Unable to Parse Response - please examine Detail property",
-                        Type = "XML Formatted Error"
-                    };
+                {
+                    XElement responseElement = XElement.Parse(responseStr);
+
+                    XElement? errorElement =
+                        responseElement
+                            ?.Descendants("error")
+                            ?.SingleOrDefault();
+
+                    if (errorElement == null)
+                        return new TwitterErrorDetails
+                        {
+                            Detail = responseStr,
+                            Title = "Unable to Parse Response - please examine Detail property",
+                            Type = "XML Formatted Error"
+                        };
+                    else
+                        return new TwitterErrorDetails
+                        {
+                            Detail = responseStr,
+                            Errors = new()
+                            {
+                                new()
+                                {
+                                    Code = int.TryParse(errorElement.Attribute("code")?.Value, out int code) ? code : 0,
+                                    Message = errorElement.Value
+                                }
+                            }
+                        };
+                }
 
                 var responseJson = JsonDocument.Parse(responseStr);
                 var root = responseJson.RootElement;
