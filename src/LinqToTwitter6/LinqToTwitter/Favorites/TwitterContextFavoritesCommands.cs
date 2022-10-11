@@ -14,6 +14,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="id">id of status to add to favorites</param>
         /// <returns>status of favorite</returns>
+        [Obsolete("Please use the new v2 `Like` method instead.")]
         public async Task<Status?> CreateFavoriteAsync(ulong id)
         {
             return await CreateFavoriteAsync(id, true).ConfigureAwait(false);
@@ -25,6 +26,7 @@ namespace LinqToTwitter
         /// <param name="id">id of status to add to favorites</param>
         /// <param name="includeEntities">Response doesn't include entities when false. (default: true)</param>
         /// <returns>status of favorite</returns>
+        [Obsolete("Please use the new v2 `Like` method instead.")]
         public async Task<Status?> CreateFavoriteAsync(ulong id, bool includeEntities, CancellationToken cancelToken = default(CancellationToken))
         {
             if (id == 0)
@@ -54,6 +56,7 @@ namespace LinqToTwitter
         /// </summary>
         /// <param name="id">id of status to add to favorites</param>
         /// <returns>status of favorite</returns>
+        [Obsolete("Please use the new v2 `Unlike` method instead.")]
         public async Task<Status?> DestroyFavoriteAsync(ulong id, CancellationToken cancelToken = default(CancellationToken))
         {
             return await DestroyFavoriteAsync(id, true, cancelToken).ConfigureAwait(false);
@@ -65,6 +68,7 @@ namespace LinqToTwitter
         /// <param name="id">id of status to add to favorites</param>
         /// <param name="includeEntities">Response doesn't include entities when false. (default: true)</param>
         /// <returns>status of favorite</returns>
+        [Obsolete("Please use the new v2 `Unlike` method instead.")]
         public async Task<Status?> DestroyFavoriteAsync(ulong id, bool includeEntities, CancellationToken cancelToken = default(CancellationToken))
         {
             if (id == 0)
