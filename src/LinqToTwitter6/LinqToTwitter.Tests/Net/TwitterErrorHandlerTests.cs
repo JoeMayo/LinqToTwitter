@@ -106,11 +106,40 @@ namespace LinqToTwitter.Tests.Net
             Assert.AreEqual("Callback URL not approved for this client application. Approved callback URLs can be adjusted in your application settings", error.Message);
         }
 
+
+        [TestMethod]
+        public void ParseTwitterErrorMessage_WithInvalidRequestError_Parses()
+        {
+            TwitterErrorDetails errorDetails = TwitterErrorHandler.ParseTwitterErrorMessage(BadRequestErrorMessage);
+
+            Assert.IsNotNull(errorDetails);
+            Assert.AreEqual("Invalid Request", errorDetails.Title);
+            Assert.AreEqual("One or more parameters to your request was invalid.", errorDetails.Detail);
+            Assert.AreEqual("https://api.twitter.com/2/problems/invalid-request", errorDetails.Type);
+            Assert.AreEqual(0, errorDetails.Status);
+            List<Error> errors = errorDetails.Errors;
+            Assert.IsNotNull(errors);
+            Assert.AreEqual(1, errors.Count);
+            Error error = errors[0];
+            Assert.AreEqual("This tweet cannot be found.", error.Message);
+        }
+
+
         const string AccountLockedErrorJson = @"{
 	""title"": ""Forbidden"",
 	""detail"": ""Your account is temporarily locked. Please log in to https://twitter.com to unlock your account."",
 	""type"": ""about:blank"",
 	""status"": 403
+}";
+
+        const string BadRequestErrorMessage = @"{
+    ""errors"":[
+        {
+            ""message"":""This tweet cannot be found.""
+        }],
+    ""title"":""Invalid Request"",
+    ""detail"":""One or more parameters to your request was invalid."",
+    ""type"":""https://api.twitter.com/2/problems/invalid-request""
 }";
 
         const string ApiV1ErrorJson = @"{

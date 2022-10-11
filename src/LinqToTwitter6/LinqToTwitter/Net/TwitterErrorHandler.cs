@@ -156,16 +156,7 @@ namespace LinqToTwitter.Net
                              select new Error
                              {
                                  Message = error.GetString("message"),
-                                 Parameters =
-                                     (from parm in error.GetProperty("parameters").EnumerateObject()
-                                      let vals =
-                                        (from val in parm.Value.EnumerateArray()
-                                         select val.GetString())
-                                        .ToArray()
-                                      select new { parm.Name, vals })
-                                     .ToDictionary(
-                                         key => key.Name,
-                                         val => val.vals)
+                                 Parameters = GetErrorParameters(error)
                              })
                             .ToList();
 
@@ -276,6 +267,23 @@ namespace LinqToTwitter.Net
                 };
             }
 
+        }
+
+        static Dictionary<string, string[]> GetErrorParameters(JsonElement error)
+        {
+            if (error.TryGetProperty("parameters", out JsonElement paramElement))
+                return
+                   (from parm in paramElement.EnumerateObject()
+                    let vals =
+                      (from val in parm.Value.EnumerateArray()
+                       select val.GetString())
+                      .ToArray()
+                    select new { parm.Name, vals })
+                   .ToDictionary(
+                        key => key.Name,
+                        val => val.vals);
+            else
+                return new();
         }
 
         static int GetTwitterApiVersion(JsonElement root)
