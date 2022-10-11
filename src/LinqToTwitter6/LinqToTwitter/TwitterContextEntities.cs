@@ -1,4 +1,5 @@
 ﻿using LinqToTwitter.Provider;
+using System;
 
 namespace LinqToTwitter
 {
@@ -70,6 +71,7 @@ namespace LinqToTwitter
         /// <summary>
         /// enables access to Twitter Favorites
         /// </summary>
+        [Obsolete("Please use the new v2 `Likes` query instead.")]
         public TwitterQueryable<Favorites> Favorites
         {
             get
