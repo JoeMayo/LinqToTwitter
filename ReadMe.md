@@ -2,10 +2,6 @@
 
 LINQ to Twitter is an open source 3rd party LINQ Provider (Twitter Library) for the [Twitter](https://twitter.com/) micro-blogging service.  It uses standard LINQ syntax for queries and includes method calls for changes via the [Twitter API](https://dev.twitter.com/).
 
-[![Standard](https://img.shields.io/endpoint?url=https%3A%2F%2Ftwbadges.glitch.me%2Fbadges%2Fstandard)](https://developer.twitter.com/en/docs/twitter-api)
-[![Labs](https://img.shields.io/endpoint?url=https%3A%2F%2Ftwbadges.glitch.me%2Fbadges%2Flabs)](https://developer.twitter.com/en/docs/labs)
-[![v2](https://img.shields.io/endpoint?url=https%3A%2F%2Ftwbadges.glitch.me%2Fbadges%2Fv2)](https://developer.twitter.com/en/docs/twitter-api)
-
 ## Example
 
 The following query returns search results where people are tweeting about LINQ providers:
