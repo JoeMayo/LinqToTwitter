@@ -18,7 +18,7 @@
     <tags>twitter twitterapi twitterdev tweet linq social linqtotwitter linq2twitter</tags>
     <dependencies>
       <group targetFramework="net461">
-        <dependency id="Newtonsoft.Json" version="12.0.3" />
+        <dependency id="Newtonsoft.Json" version="13.0.1" />
         <dependency id="System.Reactive.Core" version="4.4.1" />
         <dependency id="System.Reactive.Interfaces" version="4.4.1" />
         <dependency id="System.Reactive.Linq" version="4.4.1" />
@@ -28,42 +28,42 @@
         <dependency id="System.Text.Json" version="5.0.1" />
       </group>
       <group targetFramework="uap10.0">
-        <dependency id="Newtonsoft.Json" version="12.0.3" />
+        <dependency id="Newtonsoft.Json" version="13.0.1" />
         <dependency id="System.Reactive.Core" version="4.4.1" />
         <dependency id="System.Reactive.Interfaces" version="4.4.1" />
         <dependency id="System.Reactive.Linq" version="4.4.1" />
         <dependency id="System.Reactive.PlatformServices" version="4.4.1" />
       </group>
       <group targetFramework="xamarin.ios">
-        <dependency id="Newtonsoft.Json" version="12.0.3" />
+        <dependency id="Newtonsoft.Json" version="13.0.1" />
         <dependency id="System.Reactive.Core" version="4.4.1" />
         <dependency id="System.Reactive.Interfaces" version="4.4.1" />
         <dependency id="System.Reactive.Linq" version="4.4.1" />
         <dependency id="System.Reactive.PlatformServices" version="4.4.1" />
       </group>
       <group targetFramework="xamarin.mac">
-        <dependency id="Newtonsoft.Json" version="12.0.3" />
+        <dependency id="Newtonsoft.Json" version="13.0.1" />
         <dependency id="System.Reactive.Core" version="4.4.1" />
         <dependency id="System.Reactive.Interfaces" version="4.4.1" />
         <dependency id="System.Reactive.Linq" version="4.4.1" />
         <dependency id="System.Reactive.PlatformServices" version="4.4.1" />
       </group>
       <group targetFramework="monoandroid">
-        <dependency id="Newtonsoft.Json" version="12.0.3" />
+        <dependency id="Newtonsoft.Json" version="13.0.1" />
         <dependency id="System.Reactive.Core" version="4.4.1" />
         <dependency id="System.Reactive.Interfaces" version="4.4.1" />
         <dependency id="System.Reactive.Linq" version="4.4.1" />
         <dependency id="System.Reactive.PlatformServices" version="4.4.1" />
       </group>
       <group targetFramework="netcoreapp3.1">
-        <dependency id="Newtonsoft.Json" version="12.0.3" />
+        <dependency id="Newtonsoft.Json" version="13.0.1" />
         <dependency id="System.Reactive.Core" version="4.4.1" />
         <dependency id="System.Reactive.Interfaces" version="4.4.1" />
         <dependency id="System.Reactive.Linq" version="4.4.1" />
         <dependency id="System.Reactive.PlatformServices" version="4.4.1" />
      </group>
       <group targetFramework="netstandard2.0">
-        <dependency id="Newtonsoft.Json" version="12.0.3" />
+        <dependency id="Newtonsoft.Json" version="13.0.1" />
         <dependency id="System.Reactive.Core" version="4.4.1" />
         <dependency id="System.Reactive.Interfaces" version="4.4.1" />
         <dependency id="System.Reactive.Linq" version="4.4.1" />
