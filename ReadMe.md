@@ -1,11 +1,3 @@
-# Notice
-
-As with many parts of life, all good things come to an end. I've decided to move on to other endeavors, which means that this repository is unsupported and no longer under active maintenance. I would like to thank all of the supporters through the years that made LINQ to Twitter a successful project and wish you all the best.
-
-Regards,
-
-[Joe Mayo](https://twitter.com/JoeMayo)
-
 ![LINQ to Twitter](https://i.imgur.com/ESNVAR4.png)
 
 LINQ to Twitter is an open source 3rd party LINQ Provider (Twitter Library) for the [Twitter](https://twitter.com/) micro-blogging service.  It uses standard LINQ syntax for queries and includes method calls for changes via the [Twitter API](https://dev.twitter.com/).
