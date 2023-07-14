@@ -44,4 +44,3 @@ See [LINQ to Twitter v6 APIs](https://www.linqtotwitter.com/LINQ-to-Twitter-v6.h
 ## For more info:
 
 * follow [@JoeMayo](https://twitter.com/JoeMayo) for releases and related blog posts.
-* follow [@Linq2Twitr](https://twitter.com/Linq2Twitr) for more detailed project information.
