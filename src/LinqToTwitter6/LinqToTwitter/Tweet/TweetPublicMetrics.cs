@@ -30,5 +30,17 @@ namespace LinqToTwitter
         /// </summary>
         [JsonPropertyName("quote_count")]
         public int QuoteCount { get; init; }
+
+        /// <summary>
+        /// Number of bookmarks
+        /// </summary>
+        [JsonPropertyName("bookmark_count")]
+        public int BookmarkCount { get; init; }
+
+        /// <summary>
+        /// Number of Views
+        /// </summary>
+        [JsonPropertyName("impression_count")]
+        public int ImpressionCount { get; init; }
     }
 }
